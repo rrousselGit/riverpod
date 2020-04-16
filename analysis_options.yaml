@@ -1,0 +1,51 @@
+include: all_lint_rules.yaml
+analyzer:
+  exclude:
+    - "lib/*.g.dart"
+    - "lib/main.g.dart"
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+  errors:
+    # Otherwise cause the import of all_lint_rules to warn because of some rules conflicts.
+    # We explicitly enabled even conflicting rules and are fixing the conflict
+    # in this file
+    included_file_warning: ignore
+
+linter:
+  rules:
+    # Conflicts with `prefer_single_quotes`
+    # Single quotes are easier to type and don't compromise on readability.
+    prefer_double_quotes: false
+
+    # Conflicts with `omit_local_variable_types` and other rules.
+    # As per Dart guidelines, we want to avoid unnecessary types to make the code
+    # more readable.
+    # See https://dart.dev/guides/language/effective-dart/design#avoid-type-annotating-initialized-local-variables
+    always_specify_types: false
+
+    # Incompatible with `prefer_final_locals`
+    # Having immutable local variables makes larger functions more predictible
+    # so we will use `prefer_final_locals` instead.
+    unnecessary_final: false
+
+    # While very useful for packages, it is too tiresome to apply for private projects.
+    # Disabling it avoid redundant comments like:
+    # // The counter
+    # int count;
+    public_member_api_docs: false
+
+    # Not quite suitable for Flutter, which may have a `build` method with a single
+    # return, but that return is still complex enough that a "body" is worth it.
+    prefer_expression_function_bodies: false
+
+    # Conflicts with the convention used by flutter, which puts `Key key`
+    # and `@required Widget child` last.
+    always_put_required_named_parameters_first: false
+
+    # `as` is not that bad (especially with the upcoming non-nullable types).
+    # Explicit exceptions is better than implicit exceptions.
+    avoid_as: false
+
+    # This project doesn't use Flutter-style todos
+    flutter_style_todos: false

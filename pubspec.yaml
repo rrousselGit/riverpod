@@ -1,0 +1,20 @@
+name: flutter_hooks_provider
+description: A new Flutter package project.
+version: 0.0.1
+author:
+homepage:
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  state_notifier:
+  flutter_state_notifier:
+
+dev_dependencies:
+  flutter_hooks: ^0.9.0
+  mockito: ^4.1.0
+  flutter_test:
+    sdk: flutter
