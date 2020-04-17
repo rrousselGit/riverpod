@@ -165,7 +165,7 @@ class _ProviderScopeState extends State<ProviderScope> {
           .._provider = newOverride._provider
           ..didUpdateProvider(oldOverride._provider);
       }
-      // not overriden but now is
+      // Was not overriden but now is
       else {
         // TODO: should it really dispose the state?
         entry.value.dispose();
