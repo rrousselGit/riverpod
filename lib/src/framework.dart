@@ -3,12 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class Provider<T> with DiagnosticableTreeMixin {
-  Provider(this._value);
-
-  final T _value;
-
-  ProviderOverride<T> overrideForSubstree(Provider<T> provider) {
+abstract class InheritedProvider<T> with DiagnosticableTreeMixin {
+  ProviderOverride<T> overrideForSubstree(InheritedProvider<T> provider) {
     return ProviderOverride._(provider, this);
   }
 
@@ -21,17 +17,34 @@ class Provider<T> with DiagnosticableTreeMixin {
       throw StateError('No ProviderScope found');
     }
 
-    final providerState = scope[this] as ProviderState<T, Provider<T>>;
+    final providerState =
+        scope[this] as InheritedProviderState<T, InheritedProvider<T>>;
     return Hook.use(_ProviderHook(providerState));
   }
 
-  ProviderState<T, Provider<T>> createState() => ProviderState(_value);
+  InheritedProviderState<T, InheritedProvider<T>> createState();
+}
+
+class InheritedProviderState<Res, T extends InheritedProvider<Res>>
+    extends StateNotifier<Res> {
+  InheritedProviderState(Res state) : super(state);
+
+  T _provider;
+  T get provider => _provider;
+
+  @mustCallSuper
+  @protected
+  void initState() {}
+
+  @mustCallSuper
+  @protected
+  void didUpdateProvider(T oldProvider) {}
 }
 
 class _ProviderHook<T> extends Hook<T> {
   const _ProviderHook(this._providerState);
 
-  final ProviderState<T, Provider<T>> _providerState;
+  final InheritedProviderState<T, InheritedProvider<T>> _providerState;
 
   @override
   _ProviderHookState<T> createState() => _ProviderHookState();
@@ -77,8 +90,8 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
 class ProviderOverride<T> with DiagnosticableTreeMixin {
   ProviderOverride._(this._provider, this._origin);
 
-  final Provider<T> _origin;
-  final Provider<T> _provider;
+  final InheritedProvider<T> _origin;
+  final InheritedProvider<T> _provider;
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -113,8 +126,8 @@ class _ProviderScopeState extends State<ProviderScope> {
   /// if this [ProviderScope] is the topmost scope.
   // TODO: should not-overiden providers be extracted to a different map
   // that is not disposed?
-  var _providerState =
-      <Provider<Object>, ProviderState<Object, Provider<Object>>>{};
+  var _providerState = <InheritedProvider<Object>,
+      InheritedProviderState<Object, InheritedProvider<Object>>>{};
 
   @override
   void didUpdateWidget(ProviderScope oldWidget) {
@@ -185,16 +198,16 @@ class _ProviderScopeState extends State<ProviderScope> {
     /// It is critical for this function to be "pure". Even is the state
     /// associated to a provider changes in the future, this function
     /// should still point to the original state of the provider.
-    ProviderState<T, Provider<T>> readProviderState<T>(
-      Provider<T> provider, {
-      Provider<Object> origin,
+    InheritedProviderState<T, InheritedProvider<T>> readProviderState<T>(
+      InheritedProvider<T> provider, {
+      InheritedProvider<Object> origin,
     }) {
       return _providerState.putIfAbsent(origin ?? provider, () {
         final state = provider.createState()
           .._provider = provider
           ..initState();
         return state;
-      }) as ProviderState<T, Provider<T>>;
+      }) as InheritedProviderState<T, InheritedProvider<T>>;
     }
 
     // Declaration split in multiple lines because of https://github.com/dart-lang/sdk/issues/41543
@@ -219,13 +232,14 @@ class _ProviderScopeState extends State<ProviderScope> {
 }
 
 // ignore: avoid_private_typedef_functions
-typedef _FallbackProviderStateReader = ProviderState<T, Provider<T>>
-    Function<T>(Provider<T>);
+typedef _FallbackProviderStateReader
+    = InheritedProviderState<T, InheritedProvider<T>> Function<T>(
+        InheritedProvider<T>);
 // ignore: avoid_private_typedef_functions
-typedef _ProviderStateReader = ProviderState<Object, Provider<Object>>
-    Function();
+typedef _ProviderStateReader
+    = InheritedProviderState<Object, InheritedProvider<Object>> Function();
 
-class _ProviderScope extends InheritedModel<Provider<Object>> {
+class _ProviderScope extends InheritedModel<InheritedProvider<Object>> {
   const _ProviderScope({
     Key key,
     @required this.providersState,
@@ -233,7 +247,7 @@ class _ProviderScope extends InheritedModel<Provider<Object>> {
     @required Widget child,
   }) : super(key: key, child: child);
 
-  final Map<Provider<Object>, _ProviderStateReader> providersState;
+  final Map<InheritedProvider<Object>, _ProviderStateReader> providersState;
   final _FallbackProviderStateReader fallback;
 
   @override
@@ -245,7 +259,7 @@ class _ProviderScope extends InheritedModel<Provider<Object>> {
   @override
   bool updateShouldNotifyDependent(
     _ProviderScope oldWidget,
-    Set<Provider<Object>> dependencies,
+    Set<InheritedProvider<Object>> dependencies,
   ) {
     for (final dependency in dependencies) {
       if (this[dependency] != oldWidget[dependency]) {
@@ -255,28 +269,9 @@ class _ProviderScope extends InheritedModel<Provider<Object>> {
     return false;
   }
 
-  ProviderState<Object, Provider<Object>> operator [](
-    Provider<Object> provider,
+  InheritedProviderState<Object, InheritedProvider<Object>> operator [](
+    InheritedProvider<Object> provider,
   ) {
     return providersState[provider]?.call() ?? fallback(provider);
-  }
-}
-
-class ProviderState<Res, T extends Provider<Res>> extends StateNotifier<Res> {
-  ProviderState(Res state) : super(state);
-
-  T _provider;
-  T get provider => _provider;
-
-  @mustCallSuper
-  @protected
-  void initState() {
-    state = provider._value;
-  }
-
-  @mustCallSuper
-  @protected
-  void didUpdateProvider(covariant T oldProvider) {
-    state = provider._value;
   }
 }

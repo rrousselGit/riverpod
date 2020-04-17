@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider_hooks/provider_hooks.dart';
-import 'package:provider_hooks/src/framework.dart' show ProviderState;
+import 'package:provider_hooks/src/framework.dart'
+    show InheritedProvider, InheritedProviderState;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -61,7 +62,7 @@ void main() {
     expect(() => ProviderScope(child: null), throwsAssertionError);
   });
   testWidgets('throws if no ProviderScope found', (tester) async {
-    final useProvider = Provider('foo');
+    final useProvider = Provider.value('foo');
 
     await tester.pumpWidget(
       HookBuilder(builder: (context) {
@@ -538,8 +539,8 @@ void main() {
   });
 
   testWidgets('providers can be overriden', (tester) async {
-    final useProvider = Provider('root');
-    final useProvider2 = Provider('root2');
+    final useProvider = Provider.value('root');
+    final useProvider2 = Provider.value('root2');
 
     final builder = Directionality(
       textDirection: TextDirection.ltr,
@@ -567,7 +568,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          useProvider.overrideForSubstree(Provider('override')),
+          useProvider.overrideForSubstree(Provider.value('override')),
         ],
         child: builder,
       ),
@@ -580,8 +581,8 @@ void main() {
   testWidgets(
       "don't rebuild a dependent if another unrelated useProvider is overriden",
       (tester) async {
-    final useProvider = Provider('root');
-    final useProvider2 = Provider('root2');
+    final useProvider = Provider.value('root');
+    final useProvider2 = Provider.value('root2');
 
     var buildCount = 0;
     var buildCount2 = 0;
@@ -616,7 +617,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          useProvider.overrideForSubstree(Provider('override')),
+          useProvider.overrideForSubstree(Provider.value('override')),
         ],
         child: builder,
       ),
@@ -629,8 +630,8 @@ void main() {
     expect(buildCount2, 1);
   });
   testWidgets('ProviderScope can be nested', (tester) async {
-    final useProvider = Provider('root');
-    final useProvider2 = Provider('root2');
+    final useProvider = Provider.value('root');
+    final useProvider2 = Provider.value('root2');
 
     var buildCount = 0;
     var buildCount2 = 0;
@@ -655,7 +656,7 @@ void main() {
 
     final secondScope = ProviderScope(
       overrides: [
-        useProvider2.overrideForSubstree(Provider('override2')),
+        useProvider2.overrideForSubstree(Provider.value('override2')),
       ],
       child: builder,
     );
@@ -663,7 +664,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          useProvider.overrideForSubstree(Provider('override')),
+          useProvider.overrideForSubstree(Provider.value('override')),
         ],
         child: secondScope,
       ),
@@ -711,14 +712,14 @@ class MockDidUpdateProvider extends Mock {
   void call(TestProviderState state, TestProvider oldProvider);
 }
 
-class TestProvider extends Provider<int> {
+class TestProvider extends InheritedProvider<int> {
   TestProvider(
     this.value, {
     this.onCreateState,
     this.onDidUpdateProvider,
     this.onDispose,
     this.onInitState,
-  }) : super(value);
+  });
 
   final MockCreateState onCreateState;
   final MockInitState onInitState;
@@ -733,7 +734,7 @@ class TestProvider extends Provider<int> {
   }
 }
 
-class TestProviderState extends ProviderState<int, TestProvider> {
+class TestProviderState extends InheritedProviderState<int, TestProvider> {
   TestProviderState(int state) : super(state);
 
   @override
@@ -742,12 +743,14 @@ class TestProviderState extends ProviderState<int, TestProvider> {
     provider.onInitState?.call(
       this,
     );
+    state = provider.value;
   }
 
   @override
   void didUpdateProvider(TestProvider oldProvider) {
     super.didUpdateProvider(oldProvider);
     provider.onDidUpdateProvider?.call(this, oldProvider);
+    state = provider.value;
   }
 
   @override
