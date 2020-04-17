@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_hooks_provider/flutter_hooks_provider.dart';
-import 'package:flutter_hooks_provider/src/framework.dart' show ProviderState;
+import 'package:provider_hooks/provider_hooks.dart';
+import 'package:provider_hooks/src/framework.dart' show ProviderState;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
