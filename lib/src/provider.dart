@@ -1,11 +1,11 @@
 import 'framework.dart';
 
-abstract class Provider<T> extends InheritedProvider<T> {
+abstract class Provider<T> extends BaseProvider<T> {
   factory Provider(T Function() create) = _ProviderCreate<T>;
   factory Provider.value(T value) = _ProviderValue<T>;
 }
 
-class _ProviderCreate<T> extends InheritedProvider<T> implements Provider<T> {
+class _ProviderCreate<T> extends BaseProvider<T> implements Provider<T> {
   _ProviderCreate(this._create);
 
   final T Function() _create;
@@ -15,14 +15,14 @@ class _ProviderCreate<T> extends InheritedProvider<T> implements Provider<T> {
 }
 
 class _ProviderCreateState<Res>
-    extends InheritedProviderState<Res, _ProviderCreate<Res>> {
+    extends BaseProviderState<Res, _ProviderCreate<Res>> {
   @override
   Res initState() {
     return provider._create();
   }
 }
 
-class _ProviderValue<T> extends InheritedProvider<T> implements Provider<T> {
+class _ProviderValue<T> extends BaseProvider<T> implements Provider<T> {
   _ProviderValue(this._value);
 
   final T _value;
@@ -32,7 +32,7 @@ class _ProviderValue<T> extends InheritedProvider<T> implements Provider<T> {
 }
 
 class _ProviderValueState<Res>
-    extends InheritedProviderState<Res, _ProviderValue<Res>> {
+    extends BaseProviderState<Res, _ProviderValue<Res>> {
   @override
   Res initState() {
     return provider._value;

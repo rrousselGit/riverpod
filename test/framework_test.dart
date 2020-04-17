@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider_hooks/provider_hooks.dart';
 import 'package:provider_hooks/src/framework.dart'
-    show InheritedProvider, InheritedProviderState;
+    show BaseProvider, BaseProviderState;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -712,7 +712,7 @@ class MockDidUpdateProvider extends Mock {
   void call(TestProviderState state, TestProvider oldProvider);
 }
 
-class TestProvider extends InheritedProvider<int> {
+class TestProvider extends BaseProvider<int> {
   TestProvider(
     this.value, {
     this.onCreateState,
@@ -734,7 +734,7 @@ class TestProvider extends InheritedProvider<int> {
   }
 }
 
-class TestProviderState extends InheritedProviderState<int, TestProvider> {
+class TestProviderState extends BaseProviderState<int, TestProvider> {
   @override
   int initState() {
     provider.onInitState?.call(
