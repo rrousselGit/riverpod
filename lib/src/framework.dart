@@ -25,16 +25,15 @@ abstract class InheritedProvider<T> with DiagnosticableTreeMixin {
   InheritedProviderState<T, InheritedProvider<T>> createState();
 }
 
-class InheritedProviderState<Res, T extends InheritedProvider<Res>>
+abstract class InheritedProviderState<Res, T extends InheritedProvider<Res>>
     extends StateNotifier<Res> {
-  InheritedProviderState(Res state) : super(state);
+  InheritedProviderState() : super(null);
 
   T _provider;
   T get provider => _provider;
 
-  @mustCallSuper
   @protected
-  void initState() {}
+  Res initState();
 
   @mustCallSuper
   @protected
@@ -203,9 +202,9 @@ class _ProviderScopeState extends State<ProviderScope> {
       InheritedProvider<Object> origin,
     }) {
       return _providerState.putIfAbsent(origin ?? provider, () {
-        final state = provider.createState()
-          .._provider = provider
-          ..initState();
+        final state = provider.createState().._provider = provider;
+        //ignore: invalid_use_of_protected_member
+        state.state = state.initState();
         return state;
       }) as InheritedProviderState<T, InheritedProvider<T>>;
     }

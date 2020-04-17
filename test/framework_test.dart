@@ -730,20 +730,17 @@ class TestProvider extends InheritedProvider<int> {
   @override
   TestProviderState createState() {
     onCreateState?.call();
-    return TestProviderState(value);
+    return TestProviderState();
   }
 }
 
 class TestProviderState extends InheritedProviderState<int, TestProvider> {
-  TestProviderState(int state) : super(state);
-
   @override
-  void initState() {
-    super.initState();
+  int initState() {
     provider.onInitState?.call(
       this,
     );
-    state = provider.value;
+    return provider.value;
   }
 
   @override
