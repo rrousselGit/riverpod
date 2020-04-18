@@ -29,12 +29,6 @@ linter:
     # so we will use `prefer_final_locals` instead.
     unnecessary_final: false
 
-    # While very useful for packages, it is too tiresome to apply for private projects.
-    # Disabling it avoid redundant comments like:
-    # // The counter
-    # int count;
-    public_member_api_docs: false
-
     # Not quite suitable for Flutter, which may have a `build` method with a single
     # return, but that return is still complex enough that a "body" is worth it.
     prefer_expression_function_bodies: false
@@ -49,3 +43,12 @@ linter:
 
     # This project doesn't use Flutter-style todos
     flutter_style_todos: false
+
+    # There are situations where we voluntarily want to catch everything,
+    # especially as a library.
+    avoid_catches_without_on_clauses: false
+
+    # Boring as it sometimes force a line of 81 characters to be split in two.
+    # As long as we try to respect that 80 characters limit, going slightly
+    # above is fine.
+    lines_longer_than_80_chars: false

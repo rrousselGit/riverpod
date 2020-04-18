@@ -1,13 +1,94 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import 'package:meta/meta.dart';
+
+import 'provider.dart' show Provider;
+
+/// A base class for all providers.
+///
+/// Providers are objects that allows passing state around the widget tree,
+/// without having to pass our variables to each individual widgets.
+///
+/// While providers are typically declared as a global variable, they are
+/// **not** global variables/singletons.
+/// As such, you do not need to reset the state of a provider between tests,
+/// since two tests won't share state.
+///
+/// Similarly, providers have a rebuild mechanism, which will make widgets
+/// that use a provider rebuild when the value associated changes.
+///
+/// # Usage
+///
+/// Providers are typically declared as final global variables
+/// (but don't have to be global).
+/// By convention, all provider instances should have their name start
+/// with "use" as a mean to understand that they are "hooks".
+///
+/// Then, the application must be wrapped in a [ProviderScope] widget.
+///
+/// Finally, providers are then consumed by a [HookWidget].
+///
+/// Wrapping up, a "Hello world" example would be:
+///
+/// ```dart
+/// // The provider is stored as a global variable.
+/// // Its name starts with "use" to follow the hook convention.
+/// final useGreeting = Provider((_) => 'Hello world');
+///
+/// void main() {
+///   runApp(
+///     // We wrapped our entire app in a ProviderScope widget.
+///     // This widget is where the state of our providers will be stored.
+///     ProviderScope(
+///       child: MyApp(),
+///     ),
+///   );
+/// }
+///
+/// // Note: This is a HookWidget, not a StatelessWidget
+/// class MyApp extends HookWidget {
+///   @override
+///   Widget build(BuildContext context) {
+///     // Read our provider. Calling `useGreeting` is possible only inside `build`.
+///     final String greeting = useGreeting();
+///
+///     return MaterialApp(
+///       home: Scaffold(
+///         body: Text(greeting),
+///       ),
+///     );
+///   }
+/// }
+/// ```
+///
+/// See also:
+///
+/// - `flutter_hooks` (https://github.com/rrousselGit/flutter_hooks), the package
+///   that provides [HookWidget], which is necessary to consume providers.
+/// - [Provider], a provider that expose an object without
+///   caring about what the object is.
+/// - [ProviderScope], the widget that stores the state of a provider and allows
+///   the state to be overriden.
+/// - [call], to obtain and subscribe to the provider.
+@immutable
 abstract class BaseProvider<T> with DiagnosticableTreeMixin {
-  ProviderOverride<T> overrideForSubstree(BaseProvider<T> provider) {
+  /// Override a provider for a widget tree.
+  ///
+  /// This is used in coordination with [ProviderScope].
+  /// See [ProviderScope] for a usage example.
+  ProviderOverride<T> overrideForSubtree(BaseProvider<T> provider) {
     return ProviderOverride._(provider, this);
   }
 
+  /// Obtain and subscribe to the provider.
+  ///
+  /// This function is a "hook" and can only be used inside [HookWidget.build].
+  /// [HookWidget] is a new kind of widget (different from [StatelessWidget]/...),
+  /// that is implemented by the package `flutter_hooks`.
   T call() {
     final scope =
         useContext().dependOnInheritedWidgetOfExactType<_ProviderScope>(
@@ -21,19 +102,35 @@ abstract class BaseProvider<T> with DiagnosticableTreeMixin {
     return Hook.use(_ProviderHook(providerState));
   }
 
+  /// DO NOT USE. An implementation detail of how the provider's
+  /// state is created.
+  ///
+  /// It is similar to [StatefulWidget.createState].
+  @visibleForOverriding
   BaseProviderState<T, BaseProvider<T>> createState();
 }
 
+/// DO NOT USE. The internal state of a Provider.
+///
+/// It is similar to [State].
+@visibleForOverriding
 abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
     extends StateNotifier<Res> {
+  /// DO NOT USE.
   BaseProviderState() : super(null);
 
   T _provider;
+
+  /// DO NOT USE.
+  @protected
+  @visibleForTesting
   T get provider => _provider;
 
+  /// DO NOT USE.
   @protected
   Res initState();
 
+  /// DO NOT USE.
   @mustCallSuper
   @protected
   void didUpdateProvider(T oldProvider) {}
@@ -85,6 +182,12 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
   }
 }
 
+/// An object used by [ProviderScope] to override a provider for a widget tree.
+///
+/// See also:
+///
+/// - [BaseProvider.overrideForSubtree], to create an instance of
+///   [ProviderOverride] from a provider.
 class ProviderOverride<T> with DiagnosticableTreeMixin {
   ProviderOverride._(this._provider, this._origin);
 
@@ -100,17 +203,110 @@ class ProviderOverride<T> with DiagnosticableTreeMixin {
   }
 }
 
+/// The widget that stores the state of providers, and expose it to its
+/// descendants.
+///
+/// All applications using providers must have _at least_ one [ProviderScope],
+/// usually above [MaterialApp] or "MyApp".
+///
+/// Further [ProviderScope] widgets can be added anywhere in the widget tree
+/// to override for a specific widget tree how a provider is resolved.
+///
+/// # Basic usage
+///
+/// Most apps will have a single [ProviderScope] near the root of their tree:
+///
+/// ```dart
+/// void main() {
+///   runApp(
+///     // ProviderScope is above everything
+///     ProviderScope(
+///       child: MyApp(),
+///     ),
+///   );
+/// }
+/// ```
+///
+/// # Overriding providers for a widget tree
+///
+/// Through [ProviderScope], it is possible to override a provider for
+/// a specific widget tree.
+///
+/// This can be useful for multiple reasons, such as testing or making an
+/// interactive gallery.
+///
+/// To do so, add a [ProviderScope] above the targeted widget tree, and
+/// override the provider of your choice inside the [overrides] parameter.
+///
+/// For example, consider the scenario where we have a `Repository` class
+/// that does some http requests:
+///
+/// ```dart
+/// final useRepository = Provider((_) => Repository());
+/// ```
+///
+/// In that situation, we may want to override that provider to replace
+/// `Repository` with a fake implementation that returns a specific result.
+///
+/// To do so, our test would look like this:
+///
+/// ```dart
+/// testWidgets('example', (tester) async {
+///   // We create our fake repository, usually using Mockito
+///   final mockedRepository = RepositoryMock();
+///
+///   await tester.pumpWidget(
+///     ProviderScope(
+///       overrides: [
+///         // we called overrideForSubtree on the provider that we want
+///         // to override, and passed it the new behavior
+///         useRepository.overrideForSubtree(
+///           Provider.value(mockedRepository),
+///         ),
+///       ],
+///       // Now, when this widget tries to use our `useRepository` provider
+///       // then it will obtain our `mockedRepository` instead.
+///       child: WidgetThatWeWantToTest(),
+///     ),
+///   );
+///   // some tests
+/// });
+/// ```
 class ProviderScope extends StatefulWidget {
+  /// Creates a [ProviderScope] and optionally allows overriding providers.
   const ProviderScope({
     Key key,
     this.overrides = const [],
     @required this.child,
-  })  :
-        // ignore: prefer_asserts_with_message
-        assert(child != null),
+  })  : assert(child != null, 'child cannot be `null`'),
         super(key: key);
 
+  ///
+  @visibleForTesting
   final Widget child;
+
+  /// Override multiple providers for [child] and its descendants.
+  ///
+  /// To create the override, use the [BaseProvider.overrideForSubtree] method
+  /// like so:
+  ///
+  /// ```dart
+  /// final useGreeting = Provider((_) => 'Hello world');
+  ///
+  /// void main() {
+  ///   runApp(
+  ///     ProviderScope(
+  ///       overrides: [
+  ///         useGreeting.overrideForSubtree(
+  ///           Provider((_) => 'Bonjour le monde'),
+  ///         ),
+  ///       ],
+  ///       child: MyApp(),
+  ///     ),
+  ///   );
+  /// }
+  /// ```
+  @visibleForTesting
   final List<ProviderOverride<Object>> overrides;
 
   @override

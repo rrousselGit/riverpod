@@ -1,2 +1,2 @@
-export 'src/framework.dart' show ProviderOverride, ProviderScope;
-export 'src/provider.dart' show Provider;
+export 'src/framework.dart' show ProviderOverride, ProviderScope, BaseProvider;
+export 'src/provider.dart' show Provider, ProviderState;
