@@ -428,8 +428,17 @@ class _ProviderScopeState extends State<ProviderScope> {
   void dispose() {
     // TODO: dispose order -> proxy first
     for (final state in _providerState.values) {
-      // TODO: guard exceptions
-      state.dispose();
+      try {
+        state.dispose();
+      } catch (err, stack) {
+        FlutterError.reportError(
+          FlutterErrorDetails(
+            library: 'provider_hooks',
+            exception: err,
+            stack: stack,
+          ),
+        );
+      }
     }
     super.dispose();
   }

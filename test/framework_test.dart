@@ -58,6 +58,31 @@ import 'package:mockito/mockito.dart';
 // }
 
 void main() {
+  testWidgets('calls all dispose in order even if one crashes', (tester) async {
+    final useProvider = TestProvider(0, onDispose: MockDispose());
+    final useProvider2 = TestProvider(0, onDispose: MockDispose());
+    final error2 = Error();
+    when(useProvider2.onDispose(any)).thenThrow(error2);
+    final useProvider3 = TestProvider(0, onDispose: MockDispose());
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: HookBuilder(builder: (c) {
+          useProvider();
+          useProvider2();
+          useProvider3();
+          return Container();
+        }),
+      ),
+    );
+
+    await tester.pumpWidget(Container());
+
+    expect(tester.takeException(), error2);
+    verify(useProvider.onDispose(argThat(isNotNull))).called(1);
+    verify(useProvider2.onDispose(argThat(isNotNull))).called(1);
+    verify(useProvider3.onDispose(argThat(isNotNull))).called(1);
+  });
   test('ProviderScope requires a child', () {
     expect(() => ProviderScope(child: null), throwsAssertionError);
   });
