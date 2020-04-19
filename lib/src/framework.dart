@@ -102,6 +102,8 @@ abstract class BaseProvider<T> with DiagnosticableTreeMixin {
     return Hook.use(_ProviderHook(providerState));
   }
 
+  Iterable<BaseProvider<Object>> _allDependencies() sync* {}
+
   /// DO NOT USE. An implementation detail of how the provider's
   /// state is created.
   ///
@@ -115,7 +117,7 @@ abstract class BaseProvider<T> with DiagnosticableTreeMixin {
 /// It is similar to [State].
 @visibleForOverriding
 abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
-    extends StateNotifier<Res> {
+    extends StateNotifier<Res> implements ProviderListenerState<Res> {
   /// DO NOT USE.
   BaseProviderState() : super(null);
 
@@ -126,6 +128,10 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
   @visibleForTesting
   T get provider => _provider;
 
+  void _initDependencies(
+    Iterable<BaseProviderState<Object, BaseProvider<Object>>> dependenciesState,
+  ) {}
+
   /// DO NOT USE.
   @protected
   Res initState();
@@ -134,6 +140,56 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
   @mustCallSuper
   @protected
   void didUpdateProvider(T oldProvider) {}
+
+  @override
+  void onChange(void Function(Res p1) listener) {
+    addListener(listener, fireImmediately: false);
+  }
+
+  @override
+  Stream<Res> get stream => throw UnimplementedError();
+
+  @override
+  ValueListenable<Res> get valueListenable => throw UnimplementedError();
+}
+
+abstract class ProviderListenerState<T> {
+  T get state;
+
+  Stream<T> get stream;
+  ValueListenable<T> get valueListenable;
+
+  void onChange(void Function(T) listener);
+}
+
+abstract class BaseProvider1<First, Res> extends BaseProvider<Res> {
+  BaseProvider1(this._first);
+
+  final BaseProvider<First> _first;
+
+  @override
+  Iterable<BaseProvider<Object>> _allDependencies() sync* {
+    yield _first;
+  }
+
+  @override
+  BaseProvider1State<First, Res, BaseProvider1<First, Res>> createState();
+}
+
+abstract class BaseProvider1State<First, Res,
+    T extends BaseProvider1<First, Res>> extends BaseProviderState<Res, T> {
+  ProviderListenerState<First> _firstDependencyState;
+  ProviderListenerState<First> get firstDependencyState {
+    return _firstDependencyState;
+  }
+
+  @override
+  void _initDependencies(
+    Iterable<BaseProviderState<Object, BaseProvider<Object>>> dependenciesState,
+  ) {
+    _firstDependencyState =
+        dependenciesState.first as ProviderListenerState<First>;
+  }
 }
 
 class _ProviderHook<T> extends Hook<T> {
@@ -396,12 +452,24 @@ class _ProviderScopeState extends State<ProviderScope> {
       BaseProvider<T> provider, {
       BaseProvider<Object> origin,
     }) {
-      return _providerState.putIfAbsent(origin ?? provider, () {
-        final state = provider.createState().._provider = provider;
-        //ignore: invalid_use_of_protected_member
-        state.state = state.initState();
-        return state;
-      }) as BaseProviderState<T, BaseProvider<T>>;
+      final key = origin ?? provider;
+
+      final localState = _providerState[key];
+      if (localState != null) {
+        return localState as BaseProviderState<T, BaseProvider<T>>;
+      }
+
+      final state = provider.createState()
+        .._provider = provider
+        .._initDependencies(
+          provider._allDependencies().map(readProviderState),
+        );
+      _providerState[key] = state;
+
+      //ignore: invalid_use_of_protected_member
+      state.state = state.initState();
+
+      return state;
     }
 
     // Declaration split in multiple lines because of https://github.com/dart-lang/sdk/issues/41543
