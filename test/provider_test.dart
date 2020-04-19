@@ -6,6 +6,44 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Provider.value', () {
+    testWidgets(
+        "doesn't rebuild dependents when Provider.value update with == value",
+        (tester) async {
+      final useProvider = Provider.value(42);
+
+      var buildCount = 0;
+      final child = HookBuilder(builder: (c) {
+        buildCount++;
+        return Text(
+          useProvider().toString(),
+          textDirection: TextDirection.ltr,
+        );
+      });
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            useProvider.overrideForSubtree(Provider.value(0)),
+          ],
+          child: child,
+        ),
+      );
+
+      expect(buildCount, 1);
+      expect(find.text('0'), findsOneWidget);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            useProvider.overrideForSubtree(Provider.value(0)),
+          ],
+          child: child,
+        ),
+      );
+
+      expect(buildCount, 1);
+      expect(find.text('0'), findsOneWidget);
+    });
     testWidgets('expose value as is', (tester) async {
       final useProvider = Provider.value(42);
 

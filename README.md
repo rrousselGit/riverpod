@@ -1,6 +1,6 @@
 Welcome to [provider_hooks]!
 
-This project can be considered as an experimental [provider] v2, with a peer
+This project can be considered as an **experimental** [provider] rewrite, with a peer
 dependency on [flutter_hooks].
 
 It is very similar to [provider] in principle, but also has major differences

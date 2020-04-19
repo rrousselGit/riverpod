@@ -258,7 +258,8 @@ class _ProviderValueState<Res>
   @override
   void didUpdateProvider(_ProviderValue<Res> oldProvider) {
     super.didUpdateProvider(oldProvider);
-    // TODO: do nothing if value didn't change
-    state = provider._value;
+    if (provider._value != oldProvider._value) {
+      state = provider._value;
+    }
   }
 }
