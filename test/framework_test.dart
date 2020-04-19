@@ -58,6 +58,115 @@ import 'package:mockito/mockito.dart';
 // }
 
 void main() {
+  testWidgets('adding overrides throws', (tester) async {
+    final useProvider = Provider.value(0);
+
+    await tester.pumpWidget(ProviderScope(child: Container()));
+
+    expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          useProvider.overrideForSubtree(Provider.value(1)),
+        ],
+        child: Container(),
+      ),
+    );
+
+    expect(
+      tester.takeException(),
+      isUnsupportedError.having((s) => s.message, 'message',
+          'Adding or removing provider overrides is not supported'),
+    );
+  });
+  testWidgets('removing overrides throws', (tester) async {
+    final useProvider = Provider.value(0);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          useProvider.overrideForSubtree(Provider.value(1)),
+        ],
+        child: Container(),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(ProviderScope(child: Container()));
+
+    expect(
+      tester.takeException(),
+      isUnsupportedError.having((s) => s.message, 'message',
+          'Adding or removing provider overrides is not supported'),
+    );
+  });
+
+  testWidgets('overrive type mismatch throws', (tester) async {
+    final useProvider = Provider.value(0);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          useProvider.overrideForSubtree(Provider.value(1)),
+        ],
+        child: Container(),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          useProvider.overrideForSubtree(Provider((_) => 1)),
+        ],
+        child: Container(),
+      ),
+    );
+
+    expect(
+      tester.takeException(),
+      isUnsupportedError.having((s) => s.message, 'message', '''
+Replaced the override at index 0 of type _ProviderValue<int> with an override of type _ProviderCreate<int>, which is different.
+Changing the kind of override or reordering overrides is not supported.
+'''),
+    );
+  });
+  testWidgets('overrive origin mismatch throws', (tester) async {
+    final useProvider = Provider.value(0);
+    final useProvider2 = Provider.value(0);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          useProvider.overrideForSubtree(Provider.value(1)),
+        ],
+        child: Container(),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          useProvider2.overrideForSubtree(Provider.value(1)),
+        ],
+        child: Container(),
+      ),
+    );
+
+    expect(
+      tester.takeException(),
+      isUnsupportedError.having(
+        (s) => s.message,
+        'message',
+        'The provider overriden at the index 0 changed, which is unsupported.',
+      ),
+    );
+  });
   testWidgets('calls all dispose in order even if one crashes', (tester) async {
     final useProvider = TestProvider(0, onDispose: MockDispose());
     final useProvider2 = TestProvider(0, onDispose: MockDispose());
@@ -135,263 +244,6 @@ void main() {
       reset(onDispose);
     });
 
-    testWidgets(
-        'override to non-override on different scope calls dispose+createState',
-        (tester) async {
-      final override = TestProvider(
-        21,
-        onCreateState: MockCreateState(),
-        onInitState: MockInitState(),
-        onDidUpdateProvider: MockDidUpdateProvider(),
-        onDispose: MockDispose(),
-      );
-
-      await tester.pumpWidget(
-        ProviderScope(
-          child: ProviderScope(
-            overrides: [useProvider.overrideForSubtree(override)],
-            child: consumer,
-          ),
-        ),
-      );
-
-      expect(find.text('21'), findsOneWidget);
-      clearInteractions(override.onInitState);
-      clearInteractions(override.onCreateState);
-
-      // stop overriding from child scope
-      await tester.pumpWidget(
-        ProviderScope(child: ProviderScope(child: consumer)),
-      );
-
-      expect(find.text('21'), findsNothing);
-      expect(find.text('42'), findsOneWidget);
-      verifyInOrder([
-        override.onDispose(argThat(isNotNull)),
-        onCreateState(),
-        onInitState(argThat(isNotNull)),
-      ]);
-
-      verifyZeroInteractions(override.onCreateState);
-      verifyZeroInteractions(override.onInitState);
-      verifyZeroInteractions(override.onDidUpdateProvider);
-      verifyNoMoreInteractions(override.onDispose);
-
-      verifyNoMoreInteractions(onCreateState);
-      verifyNoMoreInteractions(onInitState);
-      verifyZeroInteractions(onDidUpdateProvider);
-      verifyZeroInteractions(onDispose);
-    });
-    testWidgets(
-        'non-override to override on same scope calls dispose+createState ',
-        (tester) async {
-      await tester.pumpWidget(ProviderScope(child: consumer));
-
-      expect(find.text('42'), findsOneWidget);
-      clearInteractions(onInitState);
-      clearInteractions(onCreateState);
-
-      final override = TestProvider(
-        21,
-        onCreateState: MockCreateState(),
-        onInitState: MockInitState(),
-        onDidUpdateProvider: MockDidUpdateProvider(),
-        onDispose: MockDispose(),
-      );
-
-      // move the override to a different ProviderScope
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [useProvider.overrideForSubtree(override)],
-          child: consumer,
-        ),
-      );
-
-      expect(find.text('42'), findsNothing);
-      expect(find.text('21'), findsOneWidget);
-      verifyInOrder([
-        onDispose(argThat(isNotNull)),
-        override.onCreateState(),
-        override.onInitState(argThat(isNotNull)),
-      ]);
-
-      verifyZeroInteractions(onCreateState);
-      verifyZeroInteractions(onInitState);
-      verifyZeroInteractions(onDidUpdateProvider);
-      verifyNoMoreInteractions(onDispose);
-
-      verifyNoMoreInteractions(override.onCreateState);
-      verifyNoMoreInteractions(override.onInitState);
-      verifyZeroInteractions(override.onDidUpdateProvider);
-      verifyZeroInteractions(override.onDispose);
-    });
-
-    testWidgets(
-        'override to non-override on same scope calls dispose+createState',
-        (tester) async {
-      final override = TestProvider(
-        21,
-        onCreateState: MockCreateState(),
-        onInitState: MockInitState(),
-        onDidUpdateProvider: MockDidUpdateProvider(),
-        onDispose: MockDispose(),
-      );
-
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [useProvider.overrideForSubtree(override)],
-          child: consumer,
-        ),
-      );
-
-      expect(find.text('21'), findsOneWidget);
-      clearInteractions(override.onInitState);
-      clearInteractions(override.onCreateState);
-
-      // no longer override
-      await tester.pumpWidget(
-        ProviderScope(
-          child: ProviderScope(child: consumer),
-        ),
-      );
-
-      expect(find.text('21'), findsNothing);
-      expect(find.text('42'), findsOneWidget);
-      verifyInOrder([
-        override.onDispose(argThat(isNotNull)),
-        onCreateState(),
-        onInitState(argThat(isNotNull)),
-      ]);
-
-      verifyZeroInteractions(override.onCreateState);
-      verifyZeroInteractions(override.onInitState);
-      verifyZeroInteractions(override.onDidUpdateProvider);
-      verifyNoMoreInteractions(override.onDispose);
-
-      verifyNoMoreInteractions(onCreateState);
-      verifyNoMoreInteractions(onInitState);
-      verifyZeroInteractions(onDidUpdateProvider);
-      verifyZeroInteractions(onDispose);
-    });
-
-    testWidgets(
-        'override to override on different scope calls dispose+createState '
-        '(child to parent)', (tester) async {
-      final override = TestProvider(
-        21,
-        onCreateState: MockCreateState(),
-        onInitState: MockInitState(),
-        onDidUpdateProvider: MockDidUpdateProvider(),
-        onDispose: MockDispose(),
-      );
-
-      await tester.pumpWidget(
-        ProviderScope(
-          child: ProviderScope(
-            overrides: [useProvider.overrideForSubtree(override)],
-            child: consumer,
-          ),
-        ),
-      );
-
-      expect(find.text('21'), findsOneWidget);
-      clearInteractions(override.onInitState);
-      clearInteractions(override.onCreateState);
-
-      final override2 = TestProvider(
-        84,
-        onCreateState: MockCreateState(),
-        onInitState: MockInitState(),
-        onDidUpdateProvider: MockDidUpdateProvider(),
-        onDispose: MockDispose(),
-      );
-
-      // move the override to a different ProviderScope
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [useProvider.overrideForSubtree(override2)],
-          child: ProviderScope(child: consumer),
-        ),
-      );
-
-      expect(find.text('21'), findsNothing);
-      expect(find.text('84'), findsOneWidget);
-      verifyInOrder([
-        override.onDispose(argThat(isNotNull)),
-        override2.onCreateState(),
-        override2.onInitState(argThat(isNotNull)),
-      ]);
-
-      verifyZeroInteractions(override.onCreateState);
-      verifyZeroInteractions(override.onInitState);
-      verifyZeroInteractions(override.onDidUpdateProvider);
-      verifyNoMoreInteractions(override.onDispose);
-
-      verifyNoMoreInteractions(override2.onCreateState);
-      verifyNoMoreInteractions(override2.onInitState);
-      verifyZeroInteractions(override2.onDidUpdateProvider);
-      verifyZeroInteractions(override2.onDispose);
-    });
-    testWidgets(
-        'override to override on different scope calls dispose+createState '
-        '(parent to child)', (tester) async {
-      final override = TestProvider(
-        21,
-        onCreateState: MockCreateState(),
-        onInitState: MockInitState(),
-        onDidUpdateProvider: MockDidUpdateProvider(),
-        onDispose: MockDispose(),
-      );
-
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [useProvider.overrideForSubtree(override)],
-          child: ProviderScope(
-            child: consumer,
-          ),
-        ),
-      );
-
-      expect(find.text('21'), findsOneWidget);
-      clearInteractions(override.onInitState);
-      clearInteractions(override.onCreateState);
-
-      final override2 = TestProvider(
-        84,
-        onCreateState: MockCreateState(),
-        onInitState: MockInitState(),
-        onDidUpdateProvider: MockDidUpdateProvider(),
-        onDispose: MockDispose(),
-      );
-
-      // move the override to a different ProviderScope
-      await tester.pumpWidget(
-        ProviderScope(
-          child: ProviderScope(
-            overrides: [useProvider.overrideForSubtree(override2)],
-            child: consumer,
-          ),
-        ),
-      );
-
-      expect(find.text('21'), findsNothing);
-      expect(find.text('84'), findsOneWidget);
-      verifyInOrder([
-        override.onDispose(argThat(isNotNull)),
-        override2.onCreateState(),
-        override2.onInitState(argThat(isNotNull)),
-      ]);
-
-      verifyZeroInteractions(override.onCreateState);
-      verifyZeroInteractions(override.onInitState);
-      verifyZeroInteractions(override.onDidUpdateProvider);
-      verifyNoMoreInteractions(override.onDispose);
-
-      verifyNoMoreInteractions(override2.onCreateState);
-      verifyNoMoreInteractions(override2.onInitState);
-      verifyZeroInteractions(override2.onDidUpdateProvider);
-      verifyZeroInteractions(override2.onDispose);
-    });
     testWidgets('override to override on same scope calls didUpdateProvider',
         (tester) async {
       final override = TestProvider(
@@ -584,7 +436,10 @@ void main() {
     );
 
     await tester.pumpWidget(
-      ProviderScope(child: builder),
+      ProviderScope(
+        key: UniqueKey(),
+        child: builder,
+      ),
     );
 
     expect(find.text('root'), findsOneWidget);
@@ -592,6 +447,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
+        key: UniqueKey(),
         overrides: [
           useProvider.overrideForSubtree(Provider.value('override')),
         ],
@@ -604,7 +460,7 @@ void main() {
     expect(find.text('root2'), findsOneWidget);
   });
   testWidgets(
-      "don't rebuild a dependent if another unrelated useProvider is overriden",
+      "don't rebuild a dependent if another unrelated useProvider is updated",
       (tester) async {
     final useProvider = Provider.value('root');
     final useProvider2 = Provider.value('root2');
@@ -631,10 +487,15 @@ void main() {
     );
 
     await tester.pumpWidget(
-      ProviderScope(child: builder),
+      ProviderScope(
+        overrides: [
+          useProvider.overrideForSubtree(Provider.value('override1')),
+        ],
+        child: builder,
+      ),
     );
 
-    expect(find.text('root'), findsOneWidget);
+    expect(find.text('override1'), findsOneWidget);
     expect(find.text('root2'), findsOneWidget);
     expect(buildCount, 1);
     expect(buildCount2, 1);
@@ -642,14 +503,13 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          useProvider.overrideForSubtree(Provider.value('override')),
+          useProvider.overrideForSubtree(Provider.value('override2')),
         ],
         child: builder,
       ),
     );
 
-    expect(find.text('root'), findsNothing);
-    expect(find.text('override'), findsOneWidget);
+    expect(find.text('override2'), findsOneWidget);
     expect(find.text('root2'), findsOneWidget);
     expect(buildCount, 2);
     expect(buildCount2, 1);
@@ -689,7 +549,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          useProvider.overrideForSubtree(Provider.value('override')),
+          useProvider.overrideForSubtree(Provider.value('rootoverride')),
         ],
         child: secondScope,
       ),
@@ -697,14 +557,20 @@ void main() {
 
     expect(buildCount, 1);
     expect(buildCount2, 1);
-    expect(find.text('override'), findsOneWidget);
+    expect(find.text('rootoverride'), findsOneWidget);
     expect(find.text('override2'), findsOneWidget);
 
-    await tester.pumpWidget(ProviderScope(child: secondScope));
-
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          useProvider.overrideForSubtree(Provider.value('rootoverride2')),
+        ],
+        child: secondScope,
+      ),
+    );
     expect(buildCount, 2);
     expect(buildCount2, 1);
-    expect(find.text('root'), findsOneWidget);
+    expect(find.text('rootoverride2'), findsOneWidget);
     expect(find.text('override2'), findsOneWidget);
   });
 }

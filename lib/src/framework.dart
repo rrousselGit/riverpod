@@ -382,8 +382,36 @@ class _ProviderScopeState extends State<ProviderScope> {
   @override
   void didUpdateWidget(ProviderScope oldWidget) {
     super.didUpdateWidget(oldWidget);
+    assert(() {
+      if (widget.overrides.length != oldWidget.overrides.length) {
+        throw UnsupportedError(
+          'Adding or removing provider overrides is not supported',
+        );
+      }
+
+      for (var i = 0; i < widget.overrides.length; i++) {
+        final previous = oldWidget.overrides[i];
+        final next = widget.overrides[i];
+
+        if (previous._provider.runtimeType != next._provider.runtimeType) {
+          throw UnsupportedError('''
+Replaced the override at index $i of type ${previous._provider.runtimeType} with an override of type ${next._provider.runtimeType}, which is different.
+Changing the kind of override or reordering overrides is not supported.
+''');
+        }
+
+        if (previous._origin != next._origin) {
+          throw UnsupportedError(
+            'The provider overriden at the index $i changed, which is unsupported.',
+          );
+        }
+      }
+
+      return true;
+    }(), '');
     final previousProviderState = _providerState;
     _providerState = {..._providerState};
+
     for (final entry in previousProviderState.entries) {
       final oldOverride = oldWidget.overrides.firstWhere(
         (p) => p._origin == entry.key,
@@ -395,32 +423,13 @@ class _ProviderScopeState extends State<ProviderScope> {
       );
 
       // Wasn't overriden before and is still not overriden
-      if (oldOverride == null && newOverride == null) {
+      if (oldOverride == null || newOverride == null) {
         continue;
       }
 
-      // Was overriden but isn't anymore, so we dispose the previous state.
-      // We don't need to create a new state as it will be done automatically
-      // the next time the state is read.
-      if (newOverride == null) {
-        // TODO: guard exceptions
-        entry.value.dispose();
-        _providerState.remove(entry.key);
-      }
-      // Was overriden and still is, It happens when ProviderScope rebuilds.
-      else if (oldOverride != null) {
-        // TODO: provider runtimeType change
-        // TODO: guard exceptions
-        _providerState[entry.key]
-          .._provider = newOverride._provider
-          ..didUpdateProvider(oldOverride._provider);
-      }
-      // Was not overriden but now is
-      else {
-        // TODO: should it really dispose the state?
-        entry.value.dispose();
-        _providerState.remove(entry.key);
-      }
+      _providerState[entry.key]
+        .._provider = newOverride._provider
+        ..didUpdateProvider(oldOverride._provider);
     }
   }
 

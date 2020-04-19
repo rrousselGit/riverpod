@@ -12,9 +12,6 @@ final provider1 = Provider1(otherProvider, (state, otherState) {
   return 'Hello world';
 });
 
-// TODO: prevent overriding from being toggle (if overriden stays overriden if not stays not) for a given scope
-// Otherwise we cannot statically know where to store a provider using other providers
-
 final useOther = Provider((_) => 42);
 
 final useProvider = Provider1(useOther, (state, otherState) {
