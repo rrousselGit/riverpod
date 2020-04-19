@@ -374,8 +374,6 @@ class _ProviderScopeState extends State<ProviderScope> {
   ///
   /// This includes the state of global providers that were not overriden
   /// if this [ProviderScope] is the topmost scope.
-  // TODO: should not-overiden providers be extracted to a different map
-  // that is not disposed?
   var _providerState =
       <BaseProvider<Object>, BaseProviderState<Object, BaseProvider<Object>>>{};
 
@@ -461,6 +459,8 @@ Changing the kind of override or reordering overrides is not supported.
     // for `readProviderState` to stay pure.
     final _providerState = this._providerState;
 
+    _ProviderScope scope;
+
     /// A function that reads and potentially create the state associated
     /// to a given provider.
     /// It is critical for this function to be "pure". Even is the state
@@ -480,7 +480,7 @@ Changing the kind of override or reordering overrides is not supported.
       final state = provider.createState()
         .._provider = provider
         .._initDependencies(
-          provider._allDependencies().map(readProviderState),
+          provider._allDependencies().map((dep) => scope[dep]),
         );
       _providerState[key] = state;
 
@@ -494,7 +494,7 @@ Changing the kind of override or reordering overrides is not supported.
     var fallback = ancestorScope?.fallback;
     fallback ??= readProviderState;
 
-    return _ProviderScope(
+    return scope = _ProviderScope(
       providersState: {
         ...?ancestorScope?.providersState,
         for (final override in widget.overrides)
