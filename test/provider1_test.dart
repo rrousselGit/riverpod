@@ -4,6 +4,46 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider_hooks/provider_hooks.dart';
 
 void main() {
+  testWidgets('didUpdateProvider check dependencies did not change',
+      (tester) async {
+    final provider = Provider.value(42);
+    final provider2 = Provider.value(0);
+    final otherProvider = Provider.value(0);
+
+    final consumer = HookBuilder(builder: (c) {
+      return Text(
+        otherProvider().toString(),
+        textDirection: TextDirection.ltr,
+      );
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          otherProvider.overrideForSubtree(
+            Provider1<int, int>(provider, (_, other) => other.state * 2),
+          ),
+        ],
+        child: consumer,
+      ),
+    );
+
+    expect(find.text('84'), findsOneWidget);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          otherProvider.overrideForSubtree(
+            // Rebuilds override with a matching `runtimeType` but the dependency changed
+            Provider1<int, int>(provider2, (_, other) => other.state * 2),
+          ),
+        ],
+        child: consumer,
+      ),
+    );
+
+    expect(tester.takeException(), isUnsupportedError);
+  });
   testWidgets('throws if a provider dependency changed', (tester) async {
     final provider = Provider.value(42);
     final otherProvider = Provider1<int, int>(
@@ -38,7 +78,6 @@ void main() {
       ),
     );
 
-    expect(find.text('84'), findsOneWidget);
     expect(tester.takeException(), isUnsupportedError);
   });
   testWidgets('provider1 as override of normal provider', (tester) async {

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:collection/collection.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -128,9 +129,33 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
   @visibleForTesting
   T get provider => _provider;
 
+  /// Keep track of this provider's dependencies on mount to assert that they
+  /// never change.
+  List<BaseProviderState<Object, BaseProvider<Object>>>
+      _debugInitialDependenciesState;
+
+  @mustCallSuper
   void _initDependencies(
     Iterable<BaseProviderState<Object, BaseProvider<Object>>> dependenciesState,
-  ) {}
+  ) {
+    assert(() {
+      _debugInitialDependenciesState = dependenciesState.toList();
+      return true;
+    }(), '');
+  }
+
+  void _debugAssertDependenciesDidNotChange(
+    List<BaseProviderState<Object, BaseProvider<Object>>> dependenciesState,
+  ) {
+    assert(() {
+      if (!const DeepCollectionEquality()
+          .equals(_debugInitialDependenciesState, dependenciesState)) {
+        throw UnsupportedError('''
+The provider $this, which denpends on other providers, was rebuilt with different dependencies.''');
+      }
+      return true;
+    }(), '');
+  }
 
   /// DO NOT USE.
   @protected
@@ -187,6 +212,7 @@ abstract class BaseProvider1State<First, Res,
   void _initDependencies(
     Iterable<BaseProviderState<Object, BaseProvider<Object>>> dependenciesState,
   ) {
+    super._initDependencies(dependenciesState);
     _firstDependencyState =
         dependenciesState.first as ProviderListenerState<First>;
   }
@@ -377,6 +403,8 @@ class _ProviderScopeState extends State<ProviderScope> {
   var _providerState =
       <BaseProvider<Object>, BaseProviderState<Object, BaseProvider<Object>>>{};
 
+  _ProviderScope _lastProviderScope;
+
   @override
   void didUpdateWidget(ProviderScope oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -459,8 +487,6 @@ Changing the kind of override or reordering overrides is not supported.
     // for `readProviderState` to stay pure.
     final _providerState = this._providerState;
 
-    _ProviderScope scope;
-
     /// A function that reads and potentially create the state associated
     /// to a given provider.
     /// It is critical for this function to be "pure". Even is the state
@@ -480,7 +506,7 @@ Changing the kind of override or reordering overrides is not supported.
       final state = provider.createState()
         .._provider = provider
         .._initDependencies(
-          provider._allDependencies().map((dep) => scope[dep]),
+          provider._allDependencies().map((dep) => _lastProviderScope[dep]),
         );
       _providerState[key] = state;
 
@@ -494,7 +520,7 @@ Changing the kind of override or reordering overrides is not supported.
     var fallback = ancestorScope?.fallback;
     fallback ??= readProviderState;
 
-    return scope = _ProviderScope(
+    _lastProviderScope = _ProviderScope(
       providersState: {
         ...?ancestorScope?.providersState,
         for (final override in widget.overrides)
@@ -508,6 +534,21 @@ Changing the kind of override or reordering overrides is not supported.
       fallback: fallback,
       child: widget.child,
     );
+
+    // Verify that the providers that depends on other providers kept the same dependency
+    assert(() {
+      for (final providerState in _providerState.values) {
+        providerState._debugAssertDependenciesDidNotChange(
+          providerState.provider
+              ._allDependencies()
+              .map((dep) => _lastProviderScope[dep])
+              .toList(),
+        );
+      }
+      return true;
+    }(), '');
+
+    return _lastProviderScope;
   }
 }
 
