@@ -48,11 +48,11 @@ class _Provider1State<First, Res>
     return provider.create(this, firstDependencyState);
   }
 
-  @override
-  Res get value => state;
+  // @override
+  // Res get value => state;
 
-  @override
-  set value(Res newValue) => state = newValue;
+  // @override
+  // set value(Res newValue) => state = newValue;
 
   @override
   void onDispose(VoidCallback cb) {

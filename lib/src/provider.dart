@@ -157,14 +157,14 @@ abstract class Provider<T> extends BaseProvider<T> {
 ///
 /// - [Provider], for some usage examples
 abstract class ProviderState<T> {
-  /// The value currently expose by the provider.
-  ///
-  /// Modifying this value will trigger widgets listening to this provider
-  /// to update.
-  ///
-  /// It is `null` by default.
-  T get value;
-  set value(T newValue);
+  // /// The value currently expose by the provider.
+  // ///
+  // /// Modifying this value will trigger widgets listening to this provider
+  // /// to update.
+  // ///
+  // /// It is `null` by default.
+  // T get value;
+  // set value(T newValue);
 
   /// Whether the provider's state was disposed or not.
   ///
@@ -193,16 +193,16 @@ class _ProviderCreateState<Res>
     extends BaseProviderState<Res, _ProviderCreate<Res>>
     implements ProviderState<Res> {
   DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
-  var _debugIsDisposing = false;
+  // var _debugIsDisposing = false;
 
-  @override
-  Res get value => state;
+  // @override
+  // Res get value => state;
 
-  @override
-  set value(Res value) {
-    assert(!_debugIsDisposing, 'Cannot update the state inside `onDispose`');
-    state = value;
-  }
+  // @override
+  // set value(Res value) {
+  //   assert(!_debugIsDisposing, 'Cannot update the state inside `onDispose`');
+  //   state = value;
+  // }
 
   @override
   Res initState() => provider._create(this);
@@ -215,10 +215,10 @@ class _ProviderCreateState<Res>
 
   @override
   void dispose() {
-    assert(() {
-      _debugIsDisposing = true;
-      return true;
-    }(), '');
+    // assert(() {
+    //   _debugIsDisposing = true;
+    //   return true;
+    // }(), '');
 
     if (_onDisposeCallbacks != null) {
       for (final disposeCb in _onDisposeCallbacks) {
