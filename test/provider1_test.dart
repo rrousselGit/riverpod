@@ -6,9 +6,9 @@ import 'package:provider_hooks/provider_hooks.dart';
 void main() {
   testWidgets('didUpdateProvider check dependencies did not change',
       (tester) async {
-    final provider = Provider.value(42);
-    final provider2 = Provider.value(0);
-    final otherProvider = Provider.value(0);
+    final provider = Provider((_) => 42);
+    final provider2 = Provider((_) => 0);
+    final otherProvider = Provider((_) => 0);
 
     final consumer = HookBuilder(builder: (c) {
       return Text(
@@ -45,7 +45,7 @@ void main() {
     expect(tester.takeException(), isUnsupportedError);
   });
   testWidgets('throws if a provider dependency changed', (tester) async {
-    final provider = Provider.value(42);
+    final provider = Provider((_) => 42);
     final otherProvider = Provider1<int, int>(
       provider,
       (_, other) => other.state * 2,
@@ -72,7 +72,7 @@ void main() {
       ProviderScope(
         key: UniqueKey(),
         overrides: [
-          provider.overrideForSubtree(Provider.value(21)),
+          provider.overrideForSubtree(Provider((_) => 21)),
         ],
         child: secondScope,
       ),
@@ -81,8 +81,8 @@ void main() {
     expect(tester.takeException(), isUnsupportedError);
   });
   testWidgets('provider1 as override of normal provider', (tester) async {
-    final provider = Provider.value(42);
-    final provider2 = Provider.value(42);
+    final provider = Provider((_) => 42);
+    final provider2 = Provider((_) => 42);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -136,7 +136,7 @@ void main() {
 
   testWidgets('provider1 uses override if the override is at root',
       (tester) async {
-    final useProvider = Provider.value(0);
+    final useProvider = Provider((_) => 0);
 
     final useProvider1 = Provider1<int, String>(useProvider, (state, first) {
       return first.state.toString();
@@ -145,7 +145,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          useProvider.overrideForSubtree(Provider.value(1)),
+          useProvider.overrideForSubtree(Provider((_) => 1)),
         ],
         child: HookBuilder(builder: (c) {
           return Text(useProvider1(), textDirection: TextDirection.ltr);
@@ -157,7 +157,7 @@ void main() {
     expect(find.text('1'), findsOneWidget);
   });
   testWidgets('provider1 chain', (tester) async {
-    final first = Provider.value(1);
+    final first = Provider((_) => 1);
     final second = Provider1<int, int>(first, (state, first) {
       return first.state + 1;
     });
@@ -179,7 +179,7 @@ void main() {
     expect(find.text('4'), findsOneWidget);
   });
   testWidgets('overriden provider1 chain', (tester) async {
-    final first = Provider.value(1);
+    final first = Provider((_) => 1);
     final second = Provider1<int, int>(first, (state, first) {
       return first.state + 1;
     });
@@ -193,7 +193,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          first.overrideForSubtree(Provider.value(42)),
+          first.overrideForSubtree(Provider((_) => 42)),
         ],
         child: HookBuilder(builder: (c) {
           return Text(forth().toString(), textDirection: TextDirection.ltr);
@@ -204,7 +204,7 @@ void main() {
     expect(find.text('45'), findsOneWidget);
   });
   testWidgets('partial override provider1 chain', (tester) async {
-    final first = Provider.value(1);
+    final first = Provider((_) => 1);
     final second = Provider1<int, int>(first, (state, first) {
       return first.state + 1;
     });
@@ -218,7 +218,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          second.overrideForSubtree(Provider.value(0)),
+          second.overrideForSubtree(Provider((_) => 0)),
         ],
         child: HookBuilder(builder: (c) {
           return Text(forth().toString(), textDirection: TextDirection.ltr);
