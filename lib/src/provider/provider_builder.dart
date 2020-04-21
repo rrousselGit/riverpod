@@ -49,7 +49,7 @@ class ProviderBuilder<Res> = Combiner<Res, Provider> with _Noop;
 
 /// An implementation detail of [ProviderBuilder].
 extension ProviderBuilder1X<A, Res> on Combiner1<A, Res, Provider> {
-  Provider1<A, Res> build(Create1<A, Res, ProviderState<Res>> cb) {
+  Provider1<A, Res> build(Create1<A, Res, ProviderState> cb) {
     return Provider1(first, cb);
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -6,23 +8,42 @@ import 'package:state_notifier/state_notifier.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:meta/meta.dart';
+import 'provider/provider.dart' show Provider;
 
-typedef Create<Res, State> = Res Function(State state);
-typedef Create1<A, Res, State> = Res Function(
+typedef Create<Res, State extends ProviderState> = Res Function(State state);
+typedef Create1<A, Res, State extends ProviderState> = Res Function(
   State state,
   ProviderListenerState<A> first,
 );
-typedef Create2<A, B, Res, State> = Res Function(
+typedef Create2<A, B, Res, State extends ProviderState> = Res Function(
   State state,
   ProviderListenerState<A> first,
   ProviderListenerState<B> second,
 );
-typedef Create3<A, B, C, Res, State> = Res Function(
+typedef Create3<A, B, C, Res, State extends ProviderState> = Res Function(
   State state,
   ProviderListenerState<A> first,
   ProviderListenerState<B> second,
   ProviderListenerState<C> third,
 );
+
+/// An object that allows manipulating the state of a provider or listening
+/// to some life-cycles.
+///
+/// See also:
+///
+/// - [Provider], for some usage examples
+abstract class ProviderState {
+  /// Whether the provider's state was disposed or not.
+  bool get mounted;
+
+  /// Allows performing custom operations before the provider is disposed.
+  ///
+  /// It is possible to call [onDispose] multiple time.
+  /// All callbacks registered using [onDispose] are guanranteed to be executed,
+  /// even if one of them throws. And they will be called in order of registration.
+  void onDispose(VoidCallback cb);
+}
 
 /// A base class for all providers.
 ///
@@ -135,7 +156,8 @@ abstract class BaseProvider<T> with DiagnosticableTreeMixin {
 /// It is similar to [State].
 @visibleForOverriding
 abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
-    extends StateNotifier<Res> implements ProviderListenerState<Res> {
+    extends StateNotifier<Res>
+    implements ProviderListenerState<Res>, ProviderState {
   /// DO NOT USE.
   BaseProviderState() : super(null);
 
@@ -150,6 +172,8 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
   /// never change.
   List<BaseProviderState<Object, BaseProvider<Object>>>
       _debugInitialDependenciesState;
+
+  DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
 
   @mustCallSuper
   void _initDependencies(
@@ -182,6 +206,32 @@ The provider $this, which denpends on other providers, was rebuilt with differen
   @mustCallSuper
   @protected
   void didUpdateProvider(T oldProvider) {}
+
+  @override
+  void onDispose(VoidCallback cb) {
+    _onDisposeCallbacks ??= DoubleLinkedQueue();
+    _onDisposeCallbacks.add(cb);
+  }
+
+  @override
+  void dispose() {
+    if (_onDisposeCallbacks != null) {
+      for (final disposeCb in _onDisposeCallbacks) {
+        try {
+          disposeCb();
+        } catch (err, stack) {
+          FlutterError.reportError(
+            FlutterErrorDetails(
+              library: 'provider_hooks',
+              exception: err,
+              stack: stack,
+            ),
+          );
+        }
+      }
+    }
+    super.dispose();
+  }
 }
 
 /// The interface exposed by providers when listened by other providers.

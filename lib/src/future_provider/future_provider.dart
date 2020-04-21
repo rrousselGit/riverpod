@@ -1,27 +1,27 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../combiner.dart';
+import '../common.dart';
 import '../framework.dart';
+import '../provider/provider.dart' show ProviderBuilder;
 
+part 'future_provider_builder.dart';
 part 'future_provider.freezed.dart';
 
 @freezed
-abstract class FutureSnapshot<T> {
+abstract class AsyncValue<T> {
   @visibleForTesting
-  factory FutureSnapshot.data(T value) = _Data;
+  factory AsyncValue.data(T value) = _Data<T>;
   @visibleForTesting
-  const factory FutureSnapshot.loading() = _Loading;
+  const factory AsyncValue.loading() = _Loading<T>;
   @visibleForTesting
-  factory FutureSnapshot.error(dynamic error, [StackTrace stackTrace]) = _Error;
+  factory AsyncValue.error(dynamic error, [StackTrace stackTrace]) = _Error<T>;
 }
 
-final futureProvider = FutureProvider((state) async {
-  return 42;
-});
-
-class FutureProvider<Res> extends BaseProvider<FutureSnapshot<Res>> {
+class FutureProvider<Res> extends BaseProvider<ImmutableValue<AsyncValue<Res>>> {
   FutureProvider(this._create);
 
-  final Create<Future<Res>, void> _create;
+  final Create<Future<Res>, ProviderState> _create;
 
   @override
   _FutureProviderState<Res> createState() {
@@ -30,10 +30,25 @@ class FutureProvider<Res> extends BaseProvider<FutureSnapshot<Res>> {
 }
 
 class _FutureProviderState<Res>
-    extends BaseProviderState<FutureSnapshot<Res>, FutureProvider<Res>> {
+    extends BaseProviderState<ImmutableValue<AsyncValue<Res>>, FutureProvider<Res>> {
   @override
-  FutureSnapshot<Res> initState() {
-    final future = provider._create(null);
-    return const FutureSnapshot.loading();
+  ImmutableValue<AsyncValue<Res>> initState() {
+    _listen(provider._create(this));
+    return const ImmutableValue(AsyncValue.loading());
+  }
+
+  Future<void> _listen(Future<Res> future) async {
+    try {
+      final value = await future;
+      if (mounted) {
+        // TODO test unmounted
+        state = ImmutableValue(AsyncValue.data(value));
+      }
+    } catch (err, stack) {
+      if (mounted) {
+        // TODO test unmounted
+        state = ImmutableValue(AsyncValue.error(err, stack));
+      }
+    }
   }
 }

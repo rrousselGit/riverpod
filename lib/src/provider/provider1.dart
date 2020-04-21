@@ -1,21 +1,21 @@
 part of 'provider.dart';
 
 abstract class Provider1<First, Res>
-    extends BaseProvider1<First, Immutable<Res>> implements Provider<Res> {
+    extends BaseProvider1<First, ImmutableValue<Res>> implements Provider<Res> {
   factory Provider1(
     BaseProvider<First> firstProvider,
-    Create1<First, Res, ProviderState<Res>> create,
+    Create1<First, Res, ProviderState> create,
   ) = _Provider1<First, Res>;
 }
 
-class _Provider1<First, Res> extends BaseProvider1<First, Immutable<Res>>
+class _Provider1<First, Res> extends BaseProvider1<First, ImmutableValue<Res>>
     implements Provider1<First, Res> {
   _Provider1(
     BaseProvider<First> firstProvider,
     this.create,
   ) : super(firstProvider);
 
-  final Create1<First, Res, ProviderState<Res>> create;
+  final Create1<First, Res, ProviderState> create;
 
   @override
   _Provider1State<First, Res> createState() {
@@ -24,20 +24,15 @@ class _Provider1<First, Res> extends BaseProvider1<First, Immutable<Res>>
 
   @override
   Res call() {
-    return BaseProvider.use(this)._value;
+    // ignore: invalid_use_of_visible_for_testing_member
+    return BaseProvider.use(this).value;
   }
 }
 
 class _Provider1State<First, Res>
-    extends BaseProvider1State<First, Immutable<Res>, _Provider1<First, Res>>
-    implements ProviderState<Res> {
+    extends BaseProvider1State<First, ImmutableValue<Res>, _Provider1<First, Res>> {
   @override
-  Immutable<Res> initState() {
-    return Immutable(provider.create(this, firstDependencyState));
-  }
-
-  @override
-  void onDispose(VoidCallback cb) {
-    // TODO: implement onDispose
+  ImmutableValue<Res> initState() {
+    return ImmutableValue(provider.create(this, firstDependencyState));
   }
 }

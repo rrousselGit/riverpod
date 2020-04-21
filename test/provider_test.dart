@@ -41,7 +41,7 @@ void main() {
     }, skip: true);
 
     testWidgets('mounted', (tester) async {
-      ProviderState<int> providerState;
+      ProviderState providerState;
       bool mountedOnDispose;
       final useProvider = Provider<int>((state) {
         providerState = state;
