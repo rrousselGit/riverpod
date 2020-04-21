@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider_hooks/provider_hooks.dart';
-import 'package:provider_hooks/src/framework.dart';
 
 void main() {
   testWidgets('didUpdateProvider check dependencies did not change',
@@ -238,8 +237,6 @@ void main() {
 
     expect(find.text('2'), findsOneWidget);
   });
-  // TODO make ProviderState hide the current value if the provider is mutable
-
   // TODO state hydratation
   // TODO Multiple async services merged into one
 }

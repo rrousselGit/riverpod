@@ -1,5 +1,5 @@
 export 'src/framework.dart'
-    show ProviderOverride, ProviderScope, BaseProvider, ProviderListenerState;
+    show ProviderOverride, ProviderScope, ProviderListenerState;
 export 'src/provider/provider.dart'
     show
         Provider,
