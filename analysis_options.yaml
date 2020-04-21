@@ -56,5 +56,8 @@ linter:
     # above is fine.
     lines_longer_than_80_chars: false
 
+    # Conflicts with disabling `implicit-dynamic`
+    avoid_annotating_with_dynamic: false
 
     public_member_api_docs: false
+
