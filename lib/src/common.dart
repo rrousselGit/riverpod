@@ -1,16 +1,14 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:meta/meta.dart';
 
-import 'future_provider/future_provider.dart';
-import 'provider/provider.dart';
+part 'common.freezed.dart';
 
-/// A placeholder used by [Provider]/[ProviderX] and [FutureProvider].
-///
-/// It has no purpose other than working around language limitations on generic
-/// parameters through extension methods.
-/// See https://github.com/dart-lang/language/issues/620
-class ImmutableValue<T> {
-  const ImmutableValue(this.value);
-
+@freezed
+abstract class AsyncValue<T> {
   @visibleForTesting
-  final T value;
+  factory AsyncValue.data(T value) = _Data<T>;
+  @visibleForTesting
+  const factory AsyncValue.loading() = _Loading<T>;
+  @visibleForTesting
+  factory AsyncValue.error(dynamic error, [StackTrace stackTrace]) = _Error<T>;
 }

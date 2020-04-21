@@ -637,7 +637,7 @@ class TestProviderState extends BaseProviderState<int, TestProvider> {
   }
 }
 
-class MyImmutableProvider extends BaseProvider<ImmutableValue<int>> {
+class MyImmutableProvider extends BaseProvider<ProviderValue<int>> {
   MyImmutableProvider(this.value);
 
   final int value;
@@ -649,9 +649,9 @@ class MyImmutableProvider extends BaseProvider<ImmutableValue<int>> {
 }
 
 class MyImmutableProviderState
-    extends BaseProviderState<ImmutableValue<int>, MyImmutableProvider> {
+    extends BaseProviderState<ProviderValue<int>, MyImmutableProvider> {
   @override
-  ImmutableValue<int> initState() {
-    return ImmutableValue(provider.value);
+  ProviderValue<int> initState() {
+    return ProviderValue(provider.value);
   }
 }

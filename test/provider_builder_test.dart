@@ -10,8 +10,8 @@ void main() {
 
     // These check the type safety
     ProviderState providerState;
-    ProviderListenerState<ImmutableValue<int>> firstState;
-    final Provider1<ImmutableValue<int>, int> provider1 =
+    ProviderListenerState<ProviderValue<int>> firstState;
+    final Provider1<ProviderValue<int>, int> provider1 =
         ProviderBuilder<int>().add(provider).build(
       (state, first) {
         providerState = state;

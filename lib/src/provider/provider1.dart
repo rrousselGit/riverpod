@@ -1,14 +1,14 @@
 part of 'provider.dart';
 
 abstract class Provider1<First, Res>
-    extends BaseProvider1<First, ImmutableValue<Res>> implements Provider<Res> {
+    extends BaseProvider1<First, ProviderValue<Res>> implements Provider<Res> {
   factory Provider1(
     BaseProvider<First> firstProvider,
     Create1<First, Res, ProviderState> create,
   ) = _Provider1<First, Res>;
 }
 
-class _Provider1<First, Res> extends BaseProvider1<First, ImmutableValue<Res>>
+class _Provider1<First, Res> extends BaseProvider1<First, ProviderValue<Res>>
     implements Provider1<First, Res> {
   _Provider1(
     BaseProvider<First> firstProvider,
@@ -25,14 +25,14 @@ class _Provider1<First, Res> extends BaseProvider1<First, ImmutableValue<Res>>
   @override
   Res call() {
     // ignore: invalid_use_of_visible_for_testing_member
-    return BaseProvider.use(this).value;
+    return BaseProvider.use(this)._value;
   }
 }
 
-class _Provider1State<First, Res>
-    extends BaseProvider1State<First, ImmutableValue<Res>, _Provider1<First, Res>> {
+class _Provider1State<First, Res> extends BaseProvider1State<First,
+    ProviderValue<Res>, _Provider1<First, Res>> {
   @override
-  ImmutableValue<Res> initState() {
-    return ImmutableValue(provider.create(this, firstDependencyState));
+  ProviderValue<Res> initState() {
+    return ProviderValue(provider.create(this, firstDependencyState));
   }
 }

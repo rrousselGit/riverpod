@@ -6,19 +6,23 @@ import '../framework.dart';
 import '../provider/provider.dart' show ProviderBuilder;
 
 part 'future_provider_builder.dart';
-part 'future_provider.freezed.dart';
 
-@freezed
-abstract class AsyncValue<T> {
-  @visibleForTesting
-  factory AsyncValue.data(T value) = _Data<T>;
-  @visibleForTesting
-  const factory AsyncValue.loading() = _Loading<T>;
-  @visibleForTesting
-  factory AsyncValue.error(dynamic error, [StackTrace stackTrace]) = _Error<T>;
+/// A placeholder used by [FutureProvider]/[FutureProviderX].
+///
+/// It has no purpose other than working around language limitations on generic
+/// parameters through extension methods.
+/// See https://github.com/dart-lang/language/issues/620
+class FutureProviderValue<T> {}
+
+extension FutureProviderX<T> on ProviderListenerState<FutureProviderValue<T>> {
+  _BaseFutureProviderState<T> get _state => this as _BaseFutureProviderState<T>;
+
+  /// The [Future] originally returned by the callback passed to [FutureProvider].
+  // TODO test value is identical to future returned, for stacktrace
+  Future<T> get value => _state._future;
 }
 
-class FutureProvider<Res> extends BaseProvider<ImmutableValue<AsyncValue<Res>>> {
+class FutureProvider<Res> extends BaseProvider<FutureProviderValue<Res>> {
   FutureProvider(this._create);
 
   final Create<Future<Res>, ProviderState> _create;
@@ -29,26 +33,19 @@ class FutureProvider<Res> extends BaseProvider<ImmutableValue<AsyncValue<Res>>> 
   }
 }
 
-class _FutureProviderState<Res>
-    extends BaseProviderState<ImmutableValue<AsyncValue<Res>>, FutureProvider<Res>> {
-  @override
-  ImmutableValue<AsyncValue<Res>> initState() {
-    _listen(provider._create(this));
-    return const ImmutableValue(AsyncValue.loading());
-  }
+abstract class _BaseFutureProviderState<Res> {
+  Future<Res> get _future;
+}
 
-  Future<void> _listen(Future<Res> future) async {
-    try {
-      final value = await future;
-      if (mounted) {
-        // TODO test unmounted
-        state = ImmutableValue(AsyncValue.data(value));
-      }
-    } catch (err, stack) {
-      if (mounted) {
-        // TODO test unmounted
-        state = ImmutableValue(AsyncValue.error(err, stack));
-      }
-    }
+class _FutureProviderState<Res>
+    extends BaseProviderState<FutureProviderValue<Res>, FutureProvider<Res>>
+    implements _BaseFutureProviderState<Res>, FutureProviderValue<Res> {
+  @override
+  Future<Res> _future;
+
+  @override
+  FutureProviderValue<Res> initState() {
+    _future = provider._create(this);
+    return this;
   }
 }

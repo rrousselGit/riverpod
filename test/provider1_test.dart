@@ -21,7 +21,7 @@ void main() {
       ProviderScope(
         overrides: [
           otherProvider.overrideForSubtree(
-            Provider1<ImmutableValue<int>, int>(
+            Provider1<ProviderValue<int>, int>(
               provider,
               (_, other) => other.value * 2,
             ),
@@ -38,7 +38,7 @@ void main() {
         overrides: [
           otherProvider.overrideForSubtree(
             // Rebuilds override with a matching `runtimeType` but the dependency changed
-            Provider1<ImmutableValue<int>, int>(
+            Provider1<ProviderValue<int>, int>(
               provider2,
               (_, other) => other.value * 2,
             ),
@@ -52,7 +52,7 @@ void main() {
   });
   testWidgets('throws if a provider dependency changed', (tester) async {
     final provider = Provider((_) => 42);
-    final otherProvider = Provider1<ImmutableValue<int>, int>(
+    final otherProvider = Provider1<ProviderValue<int>, int>(
       provider,
       (_, other) => other.value * 2,
     );
@@ -94,7 +94,7 @@ void main() {
       ProviderScope(
         overrides: [
           provider2.overrideForSubtree(
-            Provider1<ImmutableValue<int>, int>(
+            Provider1<ProviderValue<int>, int>(
                 provider, (_, other) => other.value * 2),
           ),
         ],
@@ -117,7 +117,7 @@ void main() {
     });
     var createCount = 0;
     final useProvider1 =
-        Provider1<ImmutableValue<int>, String>(useProvider, (state, first) {
+        Provider1<ProviderValue<int>, String>(useProvider, (state, first) {
       createCount++;
       // first.onChange((v) {
       //   state.value = v.toString();
@@ -147,7 +147,7 @@ void main() {
     final useProvider = Provider((_) => 0);
 
     final useProvider1 =
-        Provider1<ImmutableValue<int>, String>(useProvider, (state, first) {
+        Provider1<ProviderValue<int>, String>(useProvider, (state, first) {
       return first.value.toString();
     });
 
@@ -167,13 +167,13 @@ void main() {
   });
   testWidgets('provider1 chain', (tester) async {
     final first = Provider((_) => 1);
-    final second = Provider1<ImmutableValue<int>, int>(first, (state, first) {
+    final second = Provider1<ProviderValue<int>, int>(first, (state, first) {
       return first.value + 1;
     });
-    final third = Provider1<ImmutableValue<int>, int>(second, (state, second) {
+    final third = Provider1<ProviderValue<int>, int>(second, (state, second) {
       return second.value + 1;
     });
-    final forth = Provider1<ImmutableValue<int>, int>(third, (state, third) {
+    final forth = Provider1<ProviderValue<int>, int>(third, (state, third) {
       return third.value + 1;
     });
 
@@ -189,13 +189,13 @@ void main() {
   });
   testWidgets('overriden provider1 chain', (tester) async {
     final first = Provider((_) => 1);
-    final second = Provider1<ImmutableValue<int>, int>(first, (state, first) {
+    final second = Provider1<ProviderValue<int>, int>(first, (state, first) {
       return first.value + 1;
     });
-    final third = Provider1<ImmutableValue<int>, int>(second, (state, second) {
+    final third = Provider1<ProviderValue<int>, int>(second, (state, second) {
       return second.value + 1;
     });
-    final forth = Provider1<ImmutableValue<int>, int>(third, (state, third) {
+    final forth = Provider1<ProviderValue<int>, int>(third, (state, third) {
       return third.value + 1;
     });
 
@@ -214,13 +214,13 @@ void main() {
   });
   testWidgets('partial override provider1 chain', (tester) async {
     final first = Provider((_) => 1);
-    final second = Provider1<ImmutableValue<int>, int>(first, (state, first) {
+    final second = Provider1<ProviderValue<int>, int>(first, (state, first) {
       return first.value + 1;
     });
-    final third = Provider1<ImmutableValue<int>, int>(second, (state, second) {
+    final third = Provider1<ProviderValue<int>, int>(second, (state, second) {
       return second.value + 1;
     });
-    final forth = Provider1<ImmutableValue<int>, int>(third, (state, third) {
+    final forth = Provider1<ProviderValue<int>, int>(third, (state, third) {
       return third.value + 1;
     });
 
