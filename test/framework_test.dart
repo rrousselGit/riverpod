@@ -109,7 +109,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          useProvider.overrideForSubtree(TestProvider(0)),
+          useProvider.overrideForSubtree(MyImmutableProvider(0)),
         ],
         child: Container(),
       ),
@@ -129,7 +129,7 @@ void main() {
     expect(
       tester.takeException(),
       isUnsupportedError.having((s) => s.message, 'message', '''
-Replaced the override at index 0 of type TestProvider with an override of type _ProviderCreate<int>, which is different.
+Replaced the override at index 0 of type MyImmutableProvider with an override of type _ProviderCreate<int>, which is different.
 Changing the kind of override or reordering overrides is not supported.
 '''),
     );
@@ -605,6 +605,8 @@ class TestProvider extends BaseProvider<int> {
   final MockDidUpdateProvider onDidUpdateProvider;
   final int value;
 
+  int call() => BaseProvider.use(this);
+
   @override
   TestProviderState createState() {
     onCreateState?.call();
@@ -632,5 +634,24 @@ class TestProviderState extends BaseProviderState<int, TestProvider> {
   void dispose() {
     provider.onDispose?.call(this);
     super.dispose();
+  }
+}
+
+class MyImmutableProvider extends BaseProvider<Immutable<int>> {
+  MyImmutableProvider(this.value);
+
+  final int value;
+
+  @override
+  MyImmutableProviderState createState() {
+    return MyImmutableProviderState();
+  }
+}
+
+class MyImmutableProviderState
+    extends BaseProviderState<Immutable<int>, MyImmutableProvider> {
+  @override
+  Immutable<int> initState() {
+    return Immutable(provider.value);
   }
 }

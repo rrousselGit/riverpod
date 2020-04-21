@@ -5,8 +5,33 @@ import 'package:flutter/material.dart';
 
 import 'framework.dart';
 
-abstract class Provider<T> extends BaseProvider<T> {
+part 'provider1.dart';
+
+/// A placeholder used by [Provider] and [ProviderX].
+///
+/// It has no purpose other than working around language limitations on generic
+/// parameters through extension methods.
+/// See https://github.com/dart-lang/language/issues/620
+class Immutable<T> {
+  @visibleForTesting
+  Immutable(this._value);
+
+  final T _value;
+}
+
+extension ProviderX<T> on ProviderListenerState<Immutable<T>> {
+  BaseProviderState<Immutable<T>, BaseProvider<Immutable<T>>> get _state {
+    return this as BaseProviderState<Immutable<T>, BaseProvider<Immutable<T>>>;
+  }
+
+  // ignore: invalid_use_of_protected_member
+  T get value => _state.state._value;
+}
+
+abstract class Provider<T> extends BaseProvider<Immutable<T>> {
   factory Provider(T Function(ProviderState<T>) create) = _ProviderCreate<T>;
+
+  T call();
 }
 
 /// An object that allows manipulating the state of a provider or listening
@@ -27,7 +52,7 @@ abstract class ProviderState<T> {
 
   /// Whether the provider's state was disposed or not.
   ///
-  /// It can be useful as, once disposed, trying to update [value]
+  /// It can be useful as, once disposed, trying to update [_value]
   /// will cause an exception.
   bool get mounted;
 
@@ -39,17 +64,21 @@ abstract class ProviderState<T> {
   void onDispose(VoidCallback cb);
 }
 
-class _ProviderCreate<T> extends BaseProvider<T> implements Provider<T> {
+class _ProviderCreate<T> extends BaseProvider<Immutable<T>>
+    implements Provider<T> {
   _ProviderCreate(this._create);
 
   final T Function(ProviderState<T>) _create;
+
+  @override
+  T call() => BaseProvider.use(this)._value;
 
   @override
   _ProviderCreateState<T> createState() => _ProviderCreateState();
 }
 
 class _ProviderCreateState<Res>
-    extends BaseProviderState<Res, _ProviderCreate<Res>>
+    extends BaseProviderState<Immutable<Res>, _ProviderCreate<Res>>
     implements ProviderState<Res> {
   DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
   // var _debugIsDisposing = false;
@@ -64,7 +93,7 @@ class _ProviderCreateState<Res>
   // }
 
   @override
-  Res initState() => provider._create(this);
+  Immutable<Res> initState() => Immutable(provider._create(this));
 
   @override
   void onDispose(VoidCallback cb) {

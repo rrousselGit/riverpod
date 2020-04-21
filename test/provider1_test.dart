@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider_hooks/provider_hooks.dart';
+import 'package:provider_hooks/src/framework.dart';
 
 void main() {
   testWidgets('didUpdateProvider check dependencies did not change',
@@ -21,7 +22,10 @@ void main() {
       ProviderScope(
         overrides: [
           otherProvider.overrideForSubtree(
-            Provider1<int, int>(provider, (_, other) => other.state * 2),
+            Provider1<Immutable<int>, int>(
+              provider,
+              (_, other) => other.value * 2,
+            ),
           ),
         ],
         child: consumer,
@@ -35,7 +39,10 @@ void main() {
         overrides: [
           otherProvider.overrideForSubtree(
             // Rebuilds override with a matching `runtimeType` but the dependency changed
-            Provider1<int, int>(provider2, (_, other) => other.state * 2),
+            Provider1<Immutable<int>, int>(
+              provider2,
+              (_, other) => other.value * 2,
+            ),
           ),
         ],
         child: consumer,
@@ -46,9 +53,9 @@ void main() {
   });
   testWidgets('throws if a provider dependency changed', (tester) async {
     final provider = Provider((_) => 42);
-    final otherProvider = Provider1<int, int>(
+    final otherProvider = Provider1<Immutable<int>, int>(
       provider,
-      (_, other) => other.state * 2,
+      (_, other) => other.value * 2,
     );
 
     final secondScope = ProviderScope(
@@ -88,7 +95,8 @@ void main() {
       ProviderScope(
         overrides: [
           provider2.overrideForSubtree(
-            Provider1<int, int>(provider, (_, other) => other.state * 2),
+            Provider1<Immutable<int>, int>(
+                provider, (_, other) => other.value * 2),
           ),
         ],
         child: HookBuilder(builder: (c) {
@@ -109,12 +117,13 @@ void main() {
       return 42;
     });
     var createCount = 0;
-    final useProvider1 = Provider1<int, String>(useProvider, (state, first) {
+    final useProvider1 =
+        Provider1<Immutable<int>, String>(useProvider, (state, first) {
       createCount++;
       // first.onChange((v) {
       //   state.value = v.toString();
       // });
-      return first.state.toString();
+      return first.value.toString();
     });
 
     await tester.pumpWidget(
@@ -138,8 +147,9 @@ void main() {
       (tester) async {
     final useProvider = Provider((_) => 0);
 
-    final useProvider1 = Provider1<int, String>(useProvider, (state, first) {
-      return first.state.toString();
+    final useProvider1 =
+        Provider1<Immutable<int>, String>(useProvider, (state, first) {
+      return first.value.toString();
     });
 
     await tester.pumpWidget(
@@ -158,14 +168,14 @@ void main() {
   });
   testWidgets('provider1 chain', (tester) async {
     final first = Provider((_) => 1);
-    final second = Provider1<int, int>(first, (state, first) {
-      return first.state + 1;
+    final second = Provider1<Immutable<int>, int>(first, (state, first) {
+      return first.value + 1;
     });
-    final third = Provider1<int, int>(second, (state, second) {
-      return second.state + 1;
+    final third = Provider1<Immutable<int>, int>(second, (state, second) {
+      return second.value + 1;
     });
-    final forth = Provider1<int, int>(third, (state, third) {
-      return third.state + 1;
+    final forth = Provider1<Immutable<int>, int>(third, (state, third) {
+      return third.value + 1;
     });
 
     await tester.pumpWidget(
@@ -180,14 +190,14 @@ void main() {
   });
   testWidgets('overriden provider1 chain', (tester) async {
     final first = Provider((_) => 1);
-    final second = Provider1<int, int>(first, (state, first) {
-      return first.state + 1;
+    final second = Provider1<Immutable<int>, int>(first, (state, first) {
+      return first.value + 1;
     });
-    final third = Provider1<int, int>(second, (state, second) {
-      return second.state + 1;
+    final third = Provider1<Immutable<int>, int>(second, (state, second) {
+      return second.value + 1;
     });
-    final forth = Provider1<int, int>(third, (state, third) {
-      return third.state + 1;
+    final forth = Provider1<Immutable<int>, int>(third, (state, third) {
+      return third.value + 1;
     });
 
     await tester.pumpWidget(
@@ -205,14 +215,14 @@ void main() {
   });
   testWidgets('partial override provider1 chain', (tester) async {
     final first = Provider((_) => 1);
-    final second = Provider1<int, int>(first, (state, first) {
-      return first.state + 1;
+    final second = Provider1<Immutable<int>, int>(first, (state, first) {
+      return first.value + 1;
     });
-    final third = Provider1<int, int>(second, (state, second) {
-      return second.state + 1;
+    final third = Provider1<Immutable<int>, int>(second, (state, second) {
+      return second.value + 1;
     });
-    final forth = Provider1<int, int>(third, (state, third) {
-      return third.state + 1;
+    final forth = Provider1<Immutable<int>, int>(third, (state, third) {
+      return third.value + 1;
     });
 
     await tester.pumpWidget(

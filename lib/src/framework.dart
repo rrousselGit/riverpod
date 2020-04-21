@@ -7,7 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:meta/meta.dart';
 
-import 'provider.dart' show Provider;
+import 'provider.dart' show Provider, ProviderX;
 
 /// A base class for all providers.
 ///
@@ -90,16 +90,18 @@ abstract class BaseProvider<T> with DiagnosticableTreeMixin {
   /// This function is a "hook" and can only be used inside [HookWidget.build].
   /// [HookWidget] is a new kind of widget (different from [StatelessWidget]/...),
   /// that is implemented by the package `flutter_hooks`.
-  T call() {
+
+  static T use<T>(BaseProvider<T> provider) {
     final scope =
         useContext().dependOnInheritedWidgetOfExactType<_ProviderScope>(
-      aspect: this,
+      aspect: provider,
     );
     if (scope == null) {
       throw StateError('No ProviderScope found');
     }
 
-    final providerState = scope[this] as BaseProviderState<T, BaseProvider<T>>;
+    final providerState =
+        scope[provider] as BaseProviderState<T, BaseProvider<T>>;
     return Hook.use(_ProviderHook(providerState));
   }
 
@@ -165,27 +167,20 @@ The provider $this, which denpends on other providers, was rebuilt with differen
   @mustCallSuper
   @protected
   void didUpdateProvider(T oldProvider) {}
-
-  @override
-  void onChange(void Function(Res p1) listener) {
-    addListener(listener, fireImmediately: false);
-  }
-
-  @override
-  Stream<Res> get stream => throw UnimplementedError();
-
-  @override
-  ValueListenable<Res> get valueListenable => throw UnimplementedError();
 }
 
-abstract class ProviderListenerState<T> {
-  T get state;
-
-  Stream<T> get stream;
-  ValueListenable<T> get valueListenable;
-
-  void onChange(void Function(T) listener);
-}
+/// The interface exposed by providers when listened by other providers.
+///
+/// This object is always empty by itself. Its implementation is provided through
+/// extensions based on the provider listened.
+///
+/// For example, [Provider<T>] will be listened as [ProviderListenerState<Immutable<T>>],
+/// which is recognized by the extension [ProviderX].
+/// This ultimately expose a `value` property.
+/// 
+/// This is a work-around to a language limitation. 
+/// See https://github.com/dart-lang/language/issues/620
+abstract class ProviderListenerState<T> {}
 
 abstract class BaseProvider1<First, Res> extends BaseProvider<Res> {
   BaseProvider1(this._first);
