@@ -3,9 +3,11 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'framework.dart';
+import '../combiner.dart';
+import '../framework.dart';
 
 part 'provider1.dart';
+part 'provider_builder.dart';
 
 /// A placeholder used by [Provider] and [ProviderX].
 ///
@@ -29,7 +31,7 @@ extension ProviderX<T> on ProviderListenerState<Immutable<T>> {
 }
 
 abstract class Provider<T> extends BaseProvider<Immutable<T>> {
-  factory Provider(T Function(ProviderState<T>) create) = _ProviderCreate<T>;
+  factory Provider(Create<T, ProviderState<T>> create) = _ProviderCreate<T>;
 
   T call();
 }
@@ -68,7 +70,7 @@ class _ProviderCreate<T> extends BaseProvider<Immutable<T>>
     implements Provider<T> {
   _ProviderCreate(this._create);
 
-  final T Function(ProviderState<T>) _create;
+  final Create<T, ProviderState<T>> _create;
 
   @override
   T call() => BaseProvider.use(this)._value;

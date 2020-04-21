@@ -10,8 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  state_notifier:
-  flutter_state_notifier:
+  state_notifier: ^0.4.0
 
 dev_dependencies:
   flutter_hooks: ^0.9.0

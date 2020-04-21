@@ -55,13 +55,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.0"
-  flutter_state_notifier:
-    dependency: "direct main"
-    description:
-      name: flutter_state_notifier
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -88,13 +81,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.1"
-  nested:
-    dependency: transitive
-    description:
-      name: nested
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.4"
   path:
     dependency: transitive
     description:
@@ -102,13 +88,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
-  provider:
-    dependency: transitive
-    description:
-      name: provider
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.1.0-dev+3"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -179,4 +158,3 @@ packages:
     version: "2.0.8"
 sdks:
   dart: ">=2.7.0 <3.0.0"
-  flutter: ">=1.15.17-pre.5"

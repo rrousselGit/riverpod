@@ -7,7 +7,22 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:meta/meta.dart';
 
-import 'provider.dart' show Provider, ProviderX;
+typedef Create<Res, State> = Res Function(State state);
+typedef Create1<A, Res, State> = Res Function(
+  State state,
+  ProviderListenerState<A> first,
+);
+typedef Create2<A, B, Res, State> = Res Function(
+  State state,
+  ProviderListenerState<A> first,
+  ProviderListenerState<B> second,
+);
+typedef Create3<A, B, C, Res, State> = Res Function(
+  State state,
+  ProviderListenerState<A> first,
+  ProviderListenerState<B> second,
+  ProviderListenerState<C> third,
+);
 
 /// A base class for all providers.
 ///
@@ -177,8 +192,8 @@ The provider $this, which denpends on other providers, was rebuilt with differen
 /// For example, [Provider<T>] will be listened as [ProviderListenerState<Immutable<T>>],
 /// which is recognized by the extension [ProviderX].
 /// This ultimately expose a `value` property.
-/// 
-/// This is a work-around to a language limitation. 
+///
+/// This is a work-around to a language limitation.
 /// See https://github.com/dart-lang/language/issues/620
 abstract class ProviderListenerState<T> {}
 

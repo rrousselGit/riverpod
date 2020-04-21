@@ -4,7 +4,7 @@ abstract class Provider1<First, Res>
     extends BaseProvider1<First, Immutable<Res>> implements Provider<Res> {
   factory Provider1(
     BaseProvider<First> firstProvider,
-    Res Function(ProviderState<Res>, ProviderListenerState<First>) create,
+    Create1<First, Res, ProviderState<Res>> create,
   ) = _Provider1<First, Res>;
 }
 
@@ -15,7 +15,7 @@ class _Provider1<First, Res> extends BaseProvider1<First, Immutable<Res>>
     this.create,
   ) : super(firstProvider);
 
-  final Res Function(ProviderState<Res>, ProviderListenerState<First>) create;
+  final Create1<First, Res, ProviderState<Res>> create;
 
   @override
   _Provider1State<First, Res> createState() {
