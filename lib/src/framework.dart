@@ -163,6 +163,9 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
 
   T _provider;
 
+  @override
+  Res get $instance => state;
+
   /// DO NOT USE.
   @protected
   @visibleForTesting
@@ -245,7 +248,13 @@ The provider $this, which denpends on other providers, was rebuilt with differen
 ///
 /// This is a work-around to a language limitation.
 /// See https://github.com/dart-lang/language/issues/620
-abstract class ProviderListenerState<T> {}
+abstract class ProviderListenerState<T> {
+  /// DO NOT USE. Internal implementation detail as a workaround to a language limitation.
+  ///
+  /// See https://github.com/dart-lang/language/issues/620
+  @visibleForOverriding
+  T get $instance;
+}
 
 abstract class BaseProvider1<First, Res> extends BaseProvider<Res> {
   BaseProvider1(this._first);

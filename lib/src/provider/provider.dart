@@ -15,14 +15,7 @@ class ProviderValue<T> {
 }
 
 extension ProviderX<T> on ProviderListenerState<ProviderValue<T>> {
-  BaseProviderState<ProviderValue<T>, BaseProvider<ProviderValue<T>>>
-      get _state {
-    return this
-        as BaseProviderState<ProviderValue<T>, BaseProvider<ProviderValue<T>>>;
-  }
-
-  // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-  T get value => _state.state._value;
+  T get value => $instance._value;
 }
 
 abstract class Provider<T> extends BaseProvider<ProviderValue<T>> {
