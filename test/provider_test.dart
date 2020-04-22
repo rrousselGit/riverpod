@@ -87,37 +87,6 @@ void main() {
 
       await tester.pumpWidget(Container());
     });
-    testWidgets("onDispose can't update the state", (tester) async {
-      // final useProvider = Provider<int>((state) {
-      //   state
-      //     ..onDispose(() {
-      //       state.value = 21;
-      //     })
-      //     ..onDispose(() {
-      //       if (state.value != 42) {
-      //         throw Error();
-      //       }
-      //     });
-      //   return 42;
-      // });
-
-      // await tester.pumpWidget(
-      //   ProviderScope(
-      //     child: HookBuilder(builder: (c) {
-      //       return Text(
-      //         useProvider().toString(),
-      //         textDirection: TextDirection.ltr,
-      //       );
-      //     }),
-      //   ),
-      // );
-
-      // expect(find.text('42'), findsOneWidget);
-
-      // await tester.pumpWidget(Container());
-
-      // expect(tester.takeException(), isAssertionError);
-    }, skip: true);
     testWidgets('onDispose can read state', (tester) async {
       // int onDisposeState;
       // final useProvider = Provider<int>((state) {

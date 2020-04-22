@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 part 'common.freezed.dart';
 
 @freezed
-abstract class AsyncValue<T> {
+abstract class AsyncValue<T> with _$AsyncValue<T> {
   factory AsyncValue.data(T value) = _Data<T>;
   const factory AsyncValue.loading() = _Loading<T>;
   factory AsyncValue.error(dynamic error, [StackTrace stackTrace]) = _Error<T>;

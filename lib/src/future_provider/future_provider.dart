@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../combiner.dart';
 import '../common.dart';
@@ -14,26 +15,102 @@ part 'future_provider_builder.dart';
 /// parameters through extension methods.
 /// See https://github.com/dart-lang/language/issues/620
 class FutureProviderValue<T> {
-  FutureProviderValue._(this._future);
+  FutureProviderValue._({
+    @required Future<T> future,
+    @required AsyncValue<T> value,
+  })  : _future = future,
+        _value = value;
 
   final Future<T> _future;
+  final AsyncValue<T> _value;
 }
 
 extension FutureProviderX<T> on ProviderListenerState<FutureProviderValue<T>> {
-  /// The [Future] originally returned by the callback passed to [FutureProvider].
-  // TODO test value is identical to future returned, for stacktrace
-  Future<T> get value => $instance._future;
+  /// The [Future] returned by the callback of [FutureProvider].
+  /// 
+  /// When using [FutureProvider.debugOverrideFromValue], this [Future] is
+  /// mocked based on the status of the [AsyncValue] passed.
+  Future<T> get future => $instance._future;
 }
 
-class FutureProvider<Res> extends BaseProvider<FutureProviderValue<Res>> {
-  FutureProvider(this._create);
+abstract class FutureProvider<Res>
+    extends BaseProvider<FutureProviderValue<Res>> {
+  factory FutureProvider(Create<Future<Res>, ProviderState> create) =
+      _FutureProvider<Res>;
 
-  final Create<Future<Res>, ProviderState> _create;
+  FutureProvider._();
+
+  factory FutureProvider._debugFromValue(AsyncValue<Res> value) =
+      _DebugFutureProviderValue<Res>;
 
   AsyncValue<Res> call() {
-    final future = BaseProvider.use(this)._future;
-    return Hook.use(_FutureAsyncValueHook(future));
+    return BaseProvider.use(this)._value;
   }
+
+  ProviderOverride debugOverrideFromValue(AsyncValue<Res> value) {
+    return overrideForSubtree(FutureProvider._debugFromValue(value));
+  }
+}
+
+class _DebugFutureProviderValue<Res> extends FutureProvider<Res> {
+  _DebugFutureProviderValue(this._value) : super._();
+
+  final AsyncValue<Res> _value;
+
+  @override
+  _DebugFutureProviderValueState<Res> createState() {
+    _DebugFutureProviderValueState<Res> result;
+    assert(() {
+      result = _DebugFutureProviderValueState<Res>();
+      return true;
+    }(), '');
+    return result;
+  }
+}
+
+class _DebugFutureProviderValueState<Res> extends BaseProviderState<
+    FutureProviderValue<Res>, _DebugFutureProviderValue<Res>> {
+  final _completer = Completer<Res>();
+
+  @override
+  FutureProviderValue<Res> initState() {
+    provider._value.when(
+      data: _completer.complete,
+      loading: () {},
+      error: _completer.completeError,
+    );
+
+    return FutureProviderValue._(
+      future: _completer.future,
+      value: provider._value,
+    );
+  }
+
+  @override
+  void didUpdateProvider(_DebugFutureProviderValue<Res> oldProvider) {
+    super.didUpdateProvider(oldProvider);
+
+    if (provider._value != oldProvider._value) {
+      oldProvider._value.maybeWhen(
+        loading: () {},
+        orElse: () => throw UnsupportedError(
+          'Once an overide was built with a data/error, its state cannot change',
+        ),
+      );
+
+      provider._value.when(
+        data: _completer.complete,
+        loading: () {},
+        error: _completer.completeError,
+      );
+    }
+  }
+}
+
+class _FutureProvider<Res> extends FutureProvider<Res> {
+  _FutureProvider(this._create) : super._();
+
+  final Create<Future<Res>, ProviderState> _create;
 
   @override
   _FutureProviderState<Res> createState() {
@@ -42,55 +119,36 @@ class FutureProvider<Res> extends BaseProvider<FutureProviderValue<Res>> {
 }
 
 class _FutureProviderState<Res>
-    extends BaseProviderState<FutureProviderValue<Res>, FutureProvider<Res>> {
+    extends BaseProviderState<FutureProviderValue<Res>, _FutureProvider<Res>> {
+  Future<Res> _future;
+
   @override
   FutureProviderValue<Res> initState() {
-    return FutureProviderValue._(provider._create(this));
-  }
-}
-
-class _FutureAsyncValueHook<T> extends Hook<AsyncValue<T>> {
-  const _FutureAsyncValueHook(this._future);
-
-  final Future<T> _future;
-
-  @override
-  _FutureAsyncValueHookState<T> createState() {
-    return _FutureAsyncValueHookState<T>();
-  }
-}
-
-class _FutureAsyncValueHookState<T>
-    extends HookState<AsyncValue<T>, _FutureAsyncValueHook<T>> {
-  AsyncValue<T> _value = const AsyncValue.loading();
-
-  @override
-  void initHook() {
-    super.initHook();
+    _future = provider._create(this);
     _listen();
+
+    return FutureProviderValue._(
+      future: _future,
+      value: const AsyncValue.loading(),
+    );
   }
 
   Future<void> _listen() async {
     try {
-      final value = await hook._future;
-      if (context != null) {
-        // TODO test mounted
-        setState(() {
-          _value = AsyncValue.data(value);
-        });
+      final value = await _future;
+      if (mounted) {
+        state = FutureProviderValue._(
+          future: _future,
+          value: AsyncValue.data(value),
+        );
       }
     } catch (err, stack) {
-      if (context != null) {
-        // TODO test mounted
-        setState(() {
-          _value = AsyncValue.error(err, stack);
-        });
+      if (mounted) {
+        state = FutureProviderValue._(
+          future: _future,
+          value: AsyncValue.error(err, stack),
+        );
       }
     }
-  }
-
-  @override
-  AsyncValue<T> build(BuildContext context) {
-    return _value;
   }
 }

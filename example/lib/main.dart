@@ -9,7 +9,7 @@ final useRepository = Provider((_) => Repository());
 final useSomethingElse = ProviderBuilder<SomethingElse>()
     .add(useFutureProvider)
     .build((state, first) {
-  first.value;
+  first.future;
   return SomethingElse();
 });
 
