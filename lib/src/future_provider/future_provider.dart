@@ -8,6 +8,7 @@ import '../framework.dart';
 import '../provider/provider.dart' show ProviderBuilder;
 
 part 'future_provider_builder.dart';
+part 'future_provider1.dart';
 
 /// A placeholder used by [FutureProvider]/[FutureProviderX].
 ///
@@ -27,33 +28,86 @@ class FutureProviderValue<T> {
 
 extension FutureProviderX<T> on ProviderListenerState<FutureProviderValue<T>> {
   /// The [Future] returned by the callback of [FutureProvider].
-  /// 
+  ///
   /// When using [FutureProvider.debugOverrideFromValue], this [Future] is
   /// mocked based on the status of the [AsyncValue] passed.
   Future<T> get future => $instance._future;
 }
 
-abstract class FutureProvider<Res>
-    extends BaseProvider<FutureProviderValue<Res>> {
-  factory FutureProvider(Create<Future<Res>, ProviderState> create) =
-      _FutureProvider<Res>;
+class FutureProvider<Res>
+    extends BaseProvider<FutureProviderValue<Res>>
+    with _FutureProviderMixin<Res> {
+  FutureProvider(this._create);
 
-  FutureProvider._();
+  final Create<Future<Res>, ProviderState> _create;
 
-  factory FutureProvider._debugFromValue(AsyncValue<Res> value) =
-      _DebugFutureProviderValue<Res>;
+  @override
+  _FutureProviderState<Res> createState() {
+    return _FutureProviderState<Res>();
+  }
+}
 
+mixin _FutureProviderMixin<Res> on BaseProvider<FutureProviderValue<Res>> {
   AsyncValue<Res> call() {
     return BaseProvider.use(this)._value;
   }
 
   ProviderOverride debugOverrideFromValue(AsyncValue<Res> value) {
-    return overrideForSubtree(FutureProvider._debugFromValue(value));
+    return overrideForSubtree(
+      _DebugFutureProviderValue(value),
+    );
   }
 }
 
-class _DebugFutureProviderValue<Res> extends FutureProvider<Res> {
-  _DebugFutureProviderValue(this._value) : super._();
+class _FutureProviderState<Res>
+    extends BaseProviderState<FutureProviderValue<Res>, FutureProvider<Res>>
+    with _FutureProviderStateMixin<Res, FutureProvider<Res>> {
+  @override
+  Future<Res> create() {
+    return provider._create(this);
+  }
+}
+
+mixin _FutureProviderStateMixin<Res, Provider extends _FutureProviderMixin<Res>>
+    on BaseProviderState<FutureProviderValue<Res>, Provider> {
+  Future<Res> _future;
+
+  Future<Res> create();
+
+  @override
+  FutureProviderValue<Res> initState() {
+    _future = create();
+    _listen();
+
+    return FutureProviderValue._(
+      future: _future,
+      value: const AsyncValue.loading(),
+    );
+  }
+
+  Future<void> _listen() async {
+    try {
+      final value = await _future;
+      if (mounted) {
+        state = FutureProviderValue._(
+          future: _future,
+          value: AsyncValue.data(value),
+        );
+      }
+    } catch (err, stack) {
+      if (mounted) {
+        state = FutureProviderValue._(
+          future: _future,
+          value: AsyncValue.error(err, stack),
+        );
+      }
+    }
+  }
+}
+
+class _DebugFutureProviderValue<Res>
+    extends BaseProvider<FutureProviderValue<Res>> {
+  _DebugFutureProviderValue(this._value);
 
   final AsyncValue<Res> _value;
 
@@ -103,52 +157,6 @@ class _DebugFutureProviderValueState<Res> extends BaseProviderState<
         loading: () {},
         error: _completer.completeError,
       );
-    }
-  }
-}
-
-class _FutureProvider<Res> extends FutureProvider<Res> {
-  _FutureProvider(this._create) : super._();
-
-  final Create<Future<Res>, ProviderState> _create;
-
-  @override
-  _FutureProviderState<Res> createState() {
-    return _FutureProviderState<Res>();
-  }
-}
-
-class _FutureProviderState<Res>
-    extends BaseProviderState<FutureProviderValue<Res>, _FutureProvider<Res>> {
-  Future<Res> _future;
-
-  @override
-  FutureProviderValue<Res> initState() {
-    _future = provider._create(this);
-    _listen();
-
-    return FutureProviderValue._(
-      future: _future,
-      value: const AsyncValue.loading(),
-    );
-  }
-
-  Future<void> _listen() async {
-    try {
-      final value = await _future;
-      if (mounted) {
-        state = FutureProviderValue._(
-          future: _future,
-          value: AsyncValue.data(value),
-        );
-      }
-    } catch (err, stack) {
-      if (mounted) {
-        state = FutureProviderValue._(
-          future: _future,
-          value: AsyncValue.error(err, stack),
-        );
-      }
     }
   }
 }

@@ -6,6 +6,7 @@ export 'src/future_provider/future_provider.dart'
         FutureProvider,
         FutureProviderX,
         FutureProviderBuilder,
+        FutureProvider1,
         FutureProviderBuilder1X;
 export 'src/provider/provider.dart'
     show
