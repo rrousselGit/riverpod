@@ -74,7 +74,15 @@ class _KeepAliveState<Res>
     };
   }
 
-  // TODO didUpdate throws if provider changed
+  @override
+  void didUpdateProvider(KeepAliveProvider<Res> oldProvider) {
+    super.didUpdateProvider(oldProvider);
+    if (oldProvider._keptAliveProvider != provider._keptAliveProvider) {
+      throw UnsupportedError(
+        'Cannot rebuild a provider that uses "kept alive".',
+      );
+    }
+  }
 
   @override
   void dispose() {
