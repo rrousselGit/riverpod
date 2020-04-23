@@ -4,6 +4,7 @@ export 'src/framework.dart'
 export 'src/future_provider/future_provider.dart'
     show
         FutureProvider,
+        FutureProviderValue,
         FutureProviderX,
         FutureProviderBuilder,
         FutureProvider1,

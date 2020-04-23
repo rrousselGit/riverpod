@@ -21,6 +21,7 @@ extension ProviderX<T> on ProviderListenerState<ProviderValue<T>> {
 abstract class Provider<T> extends BaseProvider<ProviderValue<T>> {
   factory Provider(Create<T, ProviderState> create) = _ProviderCreate<T>;
 
+  @override
   T call();
 }
 

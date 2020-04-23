@@ -10,6 +10,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:meta/meta.dart';
 import 'provider/provider.dart' show Provider;
 
+part 'keep_alive_provider.dart';
+
 typedef Create<Res, State extends ProviderState> = Res Function(State state);
 typedef Create1<A, Res, State extends ProviderState> = Res Function(
   State state,
@@ -113,14 +115,6 @@ abstract class ProviderState {
 /// - [call], to obtain and subscribe to the provider.
 @immutable
 abstract class BaseProvider<T> with DiagnosticableTreeMixin {
-  /// Override a provider for a widget tree.
-  ///
-  /// This is used in coordination with [ProviderScope].
-  /// See [ProviderScope] for a usage example.
-  ProviderOverride<T> overrideForSubtree(BaseProvider<T> provider) {
-    return ProviderOverride._(provider, this);
-  }
-
   /// Obtain and subscribe to the provider.
   ///
   /// This function is a "hook" and can only be used inside [HookWidget.build].
@@ -140,6 +134,25 @@ abstract class BaseProvider<T> with DiagnosticableTreeMixin {
         scope[provider] as BaseProviderState<T, BaseProvider<T>>;
     return Hook.use(_ProviderHook(providerState));
   }
+
+  static BaseProviderState<Res, BaseProvider<Res>> _createProviderState<Res>(
+    BaseProvider<Res> provider,
+    List<BaseProviderState<Object, BaseProvider<Object>>> dependencies,
+  ) {
+    return provider.createState()
+      .._provider = provider
+      .._initDependencies(dependencies);
+  }
+
+  /// Override a provider for a widget tree.
+  ///
+  /// This is used in coordination with [ProviderScope].
+  /// See [ProviderScope] for a usage example.
+  ProviderOverride<T> overrideForSubtree(BaseProvider<T> provider) {
+    return ProviderOverride._(provider, this);
+  }
+
+  Object call();
 
   Iterable<BaseProvider<Object>> _allDependencies() sync* {}
 
@@ -180,7 +193,7 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
 
   @mustCallSuper
   void _initDependencies(
-    Iterable<BaseProviderState<Object, BaseProvider<Object>>> dependenciesState,
+    List<BaseProviderState<Object, BaseProvider<Object>>> dependenciesState,
   ) {
     assert(() {
       _debugInitialDependenciesState = dependenciesState.toList();
@@ -279,7 +292,7 @@ abstract class BaseProvider1State<First, Res,
 
   @override
   void _initDependencies(
-    Iterable<BaseProviderState<Object, BaseProvider<Object>>> dependenciesState,
+    List<BaseProviderState<Object, BaseProvider<Object>>> dependenciesState,
   ) {
     super._initDependencies(dependenciesState);
     _firstDependencyState =
@@ -572,11 +585,10 @@ Changing the kind of override or reordering overrides is not supported.
         return localState as BaseProviderState<T, BaseProvider<T>>;
       }
 
-      final state = provider.createState()
-        .._provider = provider
-        .._initDependencies(
-          provider._allDependencies().map((dep) => _lastProviderScope[dep]),
-        );
+      final state = BaseProvider._createProviderState(
+        provider,
+        provider._allDependencies().map((dep) => _lastProviderScope[dep]).toList(),
+      );
       _providerState[key] = state;
 
       //ignore: invalid_use_of_protected_member

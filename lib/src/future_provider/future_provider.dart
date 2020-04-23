@@ -34,10 +34,48 @@ extension FutureProviderX<T> on ProviderListenerState<FutureProviderValue<T>> {
   Future<T> get future => $instance._future;
 }
 
-class FutureProvider<Res>
-    extends BaseProvider<FutureProviderValue<Res>>
+abstract class FutureProvider<Res>
+    extends BaseProvider<FutureProviderValue<Res>> {
+  factory FutureProvider(
+    Create<Future<Res>, ProviderState> create,
+  ) = _FutureProvider<Res>;
+
+  @override
+  AsyncValue<Res> call();
+
+  ProviderOverride debugOverrideFromValue(AsyncValue<Res> value);
+
+  FutureProvider<Res> asKeepAlive();
+}
+
+mixin _FutureProviderMixin<Res> implements FutureProvider<Res> {
+  @override
+  AsyncValue<Res> call() {
+    return BaseProvider.use(this)._value;
+  }
+
+  @override
+  ProviderOverride debugOverrideFromValue(AsyncValue<Res> value) {
+    return overrideForSubtree(
+      _DebugFutureProviderValue(value),
+    );
+  }
+
+  @override
+  FutureProvider<Res> asKeepAlive() {
+    return _FutureProviderKeepAlive(this);
+  }
+}
+
+class _FutureProviderKeepAlive<Res>
+    extends KeepAliveProvider<FutureProviderValue<Res>>
     with _FutureProviderMixin<Res> {
-  FutureProvider(this._create);
+  _FutureProviderKeepAlive(FutureProvider<Res> origin) : super(origin);
+}
+
+class _FutureProvider<Res> extends BaseProvider<FutureProviderValue<Res>>
+    with _FutureProviderMixin<Res> {
+  _FutureProvider(this._create);
 
   final Create<Future<Res>, ProviderState> _create;
 
@@ -47,21 +85,9 @@ class FutureProvider<Res>
   }
 }
 
-mixin _FutureProviderMixin<Res> on BaseProvider<FutureProviderValue<Res>> {
-  AsyncValue<Res> call() {
-    return BaseProvider.use(this)._value;
-  }
-
-  ProviderOverride debugOverrideFromValue(AsyncValue<Res> value) {
-    return overrideForSubtree(
-      _DebugFutureProviderValue(value),
-    );
-  }
-}
-
 class _FutureProviderState<Res>
-    extends BaseProviderState<FutureProviderValue<Res>, FutureProvider<Res>>
-    with _FutureProviderStateMixin<Res, FutureProvider<Res>> {
+    extends BaseProviderState<FutureProviderValue<Res>, _FutureProvider<Res>>
+    with _FutureProviderStateMixin<Res, _FutureProvider<Res>> {
   @override
   Future<Res> create() {
     return provider._create(this);
@@ -106,7 +132,8 @@ mixin _FutureProviderStateMixin<Res, Provider extends _FutureProviderMixin<Res>>
 }
 
 class _DebugFutureProviderValue<Res>
-    extends BaseProvider<FutureProviderValue<Res>> {
+    extends BaseProvider<FutureProviderValue<Res>>
+    with _FutureProviderMixin<Res> {
   _DebugFutureProviderValue(this._value);
 
   final AsyncValue<Res> _value;
@@ -154,6 +181,7 @@ class _DebugFutureProviderValueState<Res> extends BaseProviderState<
 
       provider._value.when(
         data: _completer.complete,
+        // Never reached. Either it doesn't enter the if, or it throws before
         loading: () {},
         error: _completer.completeError,
       );

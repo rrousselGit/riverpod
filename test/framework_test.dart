@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -459,6 +461,65 @@ Changing the kind of override or reordering overrides is not supported.
     expect(find.text('override'), findsOneWidget);
     expect(find.text('root2'), findsOneWidget);
   });
+  testWidgets('listeners can be moved to depend on a new provider',
+      (tester) async {
+    final firstCompleter = Completer<int>.sync();
+    final secondCompleter = Completer<int>.sync();
+
+    final provider = FutureProvider((_) => firstCompleter.future);
+
+    var buildCount = 0;
+
+    final child = Directionality(
+      key: GlobalKey(),
+      textDirection: TextDirection.ltr,
+      child: HookBuilder(builder: (c) {
+        buildCount++;
+        final value = provider();
+
+        return value.when(
+          data: (v) => Text(v.toString()),
+          loading: () => const Text('loading'),
+          error: (dynamic err, stack) => const Text('error'),
+        );
+      }),
+    );
+
+    await tester.pumpWidget(ProviderScope(child: child));
+
+    expect(find.text('loading'), findsOneWidget);
+    expect(buildCount, 1);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: ProviderScope(
+          overrides: [
+            provider.overrideForSubtree(
+              FutureProvider((_) => secondCompleter.future),
+            ),
+          ],
+          child: child,
+        ),
+      ),
+    );
+
+    expect(find.text('loading'), findsOneWidget);
+    expect(buildCount, 2);
+
+    firstCompleter.complete(42);
+
+    await tester.pump();
+
+    expect(buildCount, 2);
+    expect(find.text('loading'), findsOneWidget);
+
+    secondCompleter.complete(21);
+
+    await tester.pump();
+
+    expect(find.text('21'), findsOneWidget);
+    expect(buildCount, 3);
+  });
   testWidgets(
       "don't rebuild a dependent if another unrelated useProvider is updated",
       (tester) async {
@@ -605,6 +666,7 @@ class TestProvider extends BaseProvider<int> {
   final MockDidUpdateProvider onDidUpdateProvider;
   final int value;
 
+  @override
   int call() => BaseProvider.use(this);
 
   @override
@@ -641,6 +703,9 @@ class MyImmutableProvider extends BaseProvider<ProviderValue<int>> {
   MyImmutableProvider(this.value);
 
   final int value;
+
+  @override
+  void call() {}
 
   @override
   MyImmutableProviderState createState() {
