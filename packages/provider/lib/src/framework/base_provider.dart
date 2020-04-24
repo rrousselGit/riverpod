@@ -18,10 +18,20 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
   T _provider;
 
   var _mounted = true;
+  @override
   bool get mounted => _mounted;
 
+  Res _$state;
   @override
-  Res $state;
+  Res get $state => _$state;
+  set $state(Res $state) {
+    _$state = $state;
+    if (_stateListeners != null) {
+      for (final listener in _stateListeners) {
+        listener.value($state);
+      }
+    }
+  }
 
   @protected
   @visibleForTesting
@@ -36,6 +46,7 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
       _debugInitialDependenciesState;
 
   DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
+  LinkedList<_LinkedListEntry<void Function(Res)>> _stateListeners;
 
   @mustCallSuper
   void _initDependencies(
@@ -60,6 +71,14 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
     _onDisposeCallbacks.add(cb);
   }
 
+  VoidCallback $addStateListener(void Function(Res) listener) {
+    listener($state);
+    _stateListeners ??= LinkedList();
+    final entry = _LinkedListEntry(listener);
+    _stateListeners.add(entry);
+    return entry.unlink;
+  }
+
   void dispose() {
     if (_onDisposeCallbacks != null) {
       for (final disposeCb in _onDisposeCallbacks) {
@@ -72,6 +91,11 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
     }
     _mounted = false;
   }
+}
+
+class _LinkedListEntry<T> extends LinkedListEntry<_LinkedListEntry<T>> {
+  _LinkedListEntry(this.value);
+  final T value;
 }
 
 abstract class BaseProvider1<First, Res> extends BaseProvider<Res> {

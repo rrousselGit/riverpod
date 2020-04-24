@@ -106,3 +106,49 @@ BaseProviderState<T, BaseProvider<T>> dependOnProviderState<T>(
 
   return scope.owner.readProviderState(provider);
 }
+
+class BaseProviderStateHook<T> extends Hook<T> {
+  const BaseProviderStateHook(this._providerState);
+
+  final BaseProviderState<T, BaseProvider<T>> _providerState;
+
+  @override
+  _ProviderHookState<T> createState() => _ProviderHookState();
+}
+
+class _ProviderHookState<T> extends HookState<T, BaseProviderStateHook<T>> {
+  T _state;
+  VoidCallback _removeListener;
+
+  @override
+  T build(BuildContext context) => _state;
+
+  @override
+  void initHook() {
+    super.initHook();
+    _listen(hook._providerState);
+  }
+
+  @override
+  void didUpdateHook(BaseProviderStateHook<T> oldHook) {
+    super.didUpdateHook(oldHook);
+    if (hook._providerState != oldHook._providerState) {
+      _listen(hook._providerState);
+    }
+  }
+
+  void _listen(BaseProviderState<T, BaseProvider<T>> notifier) {
+    _removeListener?.call();
+    _removeListener = notifier.$addStateListener(_listener);
+  }
+
+  void _listener(T value) {
+    setState(() => _state = value);
+  }
+
+  @override
+  void dispose() {
+    _removeListener?.call();
+    super.dispose();
+  }
+}

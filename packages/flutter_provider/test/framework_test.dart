@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_provider/flutter_provider.dart';
+import 'package:flutter_provider/src/framework.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -115,31 +118,7 @@ Changing the kind of override or reordering overrides is not supported.
       ),
     );
   });
-  testWidgets('calls all dispose in order even if one crashes', (tester) async {
-    // final useProvider = TestProvider(0, onDispose: MockDispose());
-    // final useProvider2 = TestProvider(0, onDispose: MockDispose());
-    // final error2 = Error();
-    // when(useProvider2.onDispose(any)).thenThrow(error2);
-    // final useProvider3 = TestProvider(0, onDispose: MockDispose());
 
-    // await tester.pumpWidget(
-    //   ProviderScope(
-    //     child: HookBuilder(builder: (c) {
-    //       useProvider();
-    //       useProvider2();
-    //       useProvider3();
-    //       return Container();
-    //     }),
-    //   ),
-    // );
-
-    // await tester.pumpWidget(Container());
-
-    // expect(tester.takeException(), error2);
-    // verify(useProvider.onDispose(argThat(isNotNull))).called(1);
-    // verify(useProvider2.onDispose(argThat(isNotNull))).called(1);
-    // verify(useProvider3.onDispose(argThat(isNotNull))).called(1);
-  }, skip: true);
   test('ProviderScope requires a child', () {
     expect(() => ProviderScope(child: null), throwsAssertionError);
   });
@@ -160,208 +139,236 @@ Changing the kind of override or reordering overrides is not supported.
     );
   });
 
-  // group('lifecycles', () {
-  //   final onCreateState = MockCreateState();
-  //   final onInitState = MockInitState();
-  //   final onDidUpdateProvider = MockDidUpdateProvider();
-  //   final onDispose = MockDispose();
+  group('lifecycles', () {
+    final onCreateState = MockCreateState();
+    final onInitState = MockInitState();
+    final onDidUpdateProvider = MockDidUpdateProvider();
+    final onDispose = MockDispose();
 
-  //   final useProvider = TestProvider(
-  //     42,
-  //     onCreateState: onCreateState,
-  //     onInitState: onInitState,
-  //     onDidUpdateProvider: onDidUpdateProvider,
-  //     onDispose: onDispose,
-  //   );
+    final useProvider = TestProvider(
+      42,
+      onCreateState: onCreateState,
+      onInitState: onInitState,
+      onDidUpdateProvider: onDidUpdateProvider,
+      onDispose: onDispose,
+    );
 
-  //   var consumerBuildCount = 0;
+    var consumerBuildCount = 0;
 
-  //   final consumer = HookBuilder(builder: (context) {
-  //     consumerBuildCount++;
-  //     // final value = useProvider();
-  //     // return Text(value.toString(), textDirection: TextDirection.ltr);
-  //   });
+    final consumer = HookBuilder(builder: (context) {
+      consumerBuildCount++;
+      final value = useProvider();
+      return Text(value.toString(), textDirection: TextDirection.ltr);
+    });
 
-  //   setUp(() {
-  //     consumerBuildCount = 0;
-  //   });
-  //   tearDown(() {
-  //     reset(onCreateState);
-  //     reset(onInitState);
-  //     reset(onDidUpdateProvider);
-  //     reset(onDispose);
-  //   });
+    setUp(() {
+      consumerBuildCount = 0;
+    });
+    tearDown(() {
+      reset(onCreateState);
+      reset(onInitState);
+      reset(onDidUpdateProvider);
+      reset(onDispose);
+    });
 
-  //   testWidgets('override to override on same scope calls didUpdateProvider',
-  //       (tester) async {
-  //     final override = TestProvider(
-  //       21,
-  //       onCreateState: MockCreateState(),
-  //       onInitState: MockInitState(),
-  //       onDidUpdateProvider: MockDidUpdateProvider(),
-  //       onDispose: MockDispose(),
-  //     );
+    testWidgets('calls all dispose in order even if one crashes',
+        (tester) async {
+      final useProvider = TestProvider(0, onDispose: MockDispose());
+      final useProvider2 = TestProvider(0, onDispose: MockDispose());
+      final error2 = Error();
+      when(useProvider2.onDispose(any)).thenThrow(error2);
+      final useProvider3 = TestProvider(0, onDispose: MockDispose());
 
-  //     await tester.pumpWidget(
-  //       ProviderScope(
-  //         overrides: [useProvider.overrideForSubtree(override)],
-  //         child: consumer,
-  //       ),
-  //     );
+      await tester.pumpWidget(
+        ProviderScope(
+          child: HookBuilder(builder: (c) {
+            useProvider();
+            useProvider2();
+            useProvider3();
+            return Container();
+          }),
+        ),
+      );
 
-  //     expect(find.text('21'), findsOneWidget);
-  //     clearInteractions(override.onInitState);
-  //     clearInteractions(override.onCreateState);
+      await tester.pumpWidget(Container());
 
-  //     final override2 = TestProvider(
-  //       84,
-  //       onCreateState: MockCreateState(),
-  //       onInitState: MockInitState(),
-  //       onDidUpdateProvider: MockDidUpdateProvider(),
-  //       onDispose: MockDispose(),
-  //     );
+      expect(tester.takeException(), error2);
+      verify(useProvider.onDispose(argThat(isNotNull))).called(1);
+      verify(useProvider2.onDispose(argThat(isNotNull))).called(1);
+      verify(useProvider3.onDispose(argThat(isNotNull))).called(1);
+    });
 
-  //     // replace the override with another of thes same type
-  //     await tester.pumpWidget(
-  //       ProviderScope(
-  //         overrides: [useProvider.overrideForSubtree(override2)],
-  //         child: consumer,
-  //       ),
-  //     );
+    testWidgets('override to override on same scope calls didUpdateProvider',
+        (tester) async {
+      final override = TestProvider(
+        21,
+        onCreateState: MockCreateState(),
+        onInitState: MockInitState(),
+        onDidUpdateProvider: MockDidUpdateProvider(),
+        onDispose: MockDispose(),
+      );
 
-  //     expect(find.text('21'), findsNothing);
-  //     expect(find.text('84'), findsOneWidget);
-  //     verifyZeroInteractions(override.onInitState);
-  //     verifyZeroInteractions(override.onCreateState);
-  //     verifyZeroInteractions(override.onDidUpdateProvider);
-  //     verifyZeroInteractions(override.onDispose);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [useProvider.overrideForSubtree(override)],
+          child: consumer,
+        ),
+      );
 
-  //     verifyZeroInteractions(override2.onCreateState);
-  //     verifyZeroInteractions(override2.onInitState);
+      expect(find.text('42'), findsNothing);
+      expect(find.text('21'), findsOneWidget);
+      clearInteractions(override.onInitState);
+      clearInteractions(override.onCreateState);
 
-  //     verify(override2.onDidUpdateProvider(argThat(isNotNull), override))
-  //         .called(1);
-  //     verifyNoMoreInteractions(override2.onDidUpdateProvider);
-  //   });
-  //   testWidgets('unmount non-override', (tester) async {
-  //     await tester.pumpWidget(ProviderScope(child: consumer));
+      final override2 = TestProvider(
+        84,
+        onCreateState: MockCreateState(),
+        onInitState: MockInitState(),
+        onDidUpdateProvider: MockDidUpdateProvider(),
+        onDispose: MockDispose(),
+      );
 
-  //     clearInteractions(onCreateState);
-  //     clearInteractions(onInitState);
+      // replace the override with another of thes same type
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [useProvider.overrideForSubtree(override2)],
+          child: consumer,
+        ),
+      );
 
-  //     await tester.pumpWidget(Container());
+      expect(find.text('21'), findsNothing);
+      expect(find.text('84'), findsOneWidget);
+      verifyZeroInteractions(override.onInitState);
+      verifyZeroInteractions(override.onCreateState);
+      verifyZeroInteractions(override.onDidUpdateProvider);
+      verifyZeroInteractions(override.onDispose);
 
-  //     verifyZeroInteractions(onCreateState);
-  //     verifyZeroInteractions(onInitState);
-  //     verifyZeroInteractions(onDidUpdateProvider);
+      verifyZeroInteractions(override2.onCreateState);
+      verifyZeroInteractions(override2.onInitState);
 
-  //     verify(onDispose(argThat(isNotNull))).called(1);
-  //   });
-  //   testWidgets('unmount overrides', (tester) async {
-  //     final override = TestProvider(
-  //       21,
-  //       onCreateState: MockCreateState(),
-  //       onInitState: MockInitState(),
-  //       onDidUpdateProvider: MockDidUpdateProvider(),
-  //       onDispose: MockDispose(),
-  //     );
+      verify(override2.onDidUpdateProvider(argThat(isNotNull), override))
+          .called(1);
+      verifyNoMoreInteractions(override2.onDidUpdateProvider);
+    });
+    testWidgets('unmount non-override', (tester) async {
+      await tester.pumpWidget(ProviderScope(child: consumer));
 
-  //     await tester.pumpWidget(
-  //       ProviderScope(
-  //         overrides: [useProvider.overrideForSubtree(override)],
-  //         child: consumer,
-  //       ),
-  //     );
+      clearInteractions(onCreateState);
+      clearInteractions(onInitState);
 
-  //     clearInteractions(override.onCreateState);
-  //     clearInteractions(override.onInitState);
+      await tester.pumpWidget(Container());
 
-  //     await tester.pumpWidget(Container());
+      verifyZeroInteractions(onCreateState);
+      verifyZeroInteractions(onInitState);
+      verifyZeroInteractions(onDidUpdateProvider);
 
-  //     verifyZeroInteractions(onCreateState);
-  //     verifyZeroInteractions(onInitState);
-  //     verifyZeroInteractions(onDidUpdateProvider);
-  //     verifyZeroInteractions(onDispose);
+      verify(onDispose(argThat(isNotNull))).called(1);
+    });
+    testWidgets('unmount overrides', (tester) async {
+      final override = TestProvider(
+        21,
+        onCreateState: MockCreateState(),
+        onInitState: MockInitState(),
+        onDidUpdateProvider: MockDidUpdateProvider(),
+        onDispose: MockDispose(),
+      );
 
-  //     verifyZeroInteractions(override.onCreateState);
-  //     verifyZeroInteractions(override.onInitState);
-  //     verifyZeroInteractions(override.onDidUpdateProvider);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [useProvider.overrideForSubtree(override)],
+          child: consumer,
+        ),
+      );
 
-  //     verify(override.onDispose(argThat(isNotNull))).called(1);
-  //   });
-  //   testWidgets('first mount calls createState and initState', (tester) async {
-  //     TestProvider onInitStateProvider;
-  //     useProvider.onInitState.mock((state) {
-  //       onInitStateProvider = state.provider;
-  //     });
-  //     await tester.pumpWidget(ProviderScope(child: consumer));
+      clearInteractions(override.onCreateState);
+      clearInteractions(override.onInitState);
 
-  //     expect(find.text('42'), findsOneWidget);
-  //     verifyInOrder([
-  //       onCreateState(),
-  //       onInitState(argThat(isNotNull)),
-  //     ]);
-  //     verifyZeroInteractions(onDispose);
-  //     verifyZeroInteractions(onDidUpdateProvider);
-  //     expect(onInitStateProvider, useProvider);
-  //   });
-  //   testWidgets('first override mount calls createState and initState',
-  //       (tester) async {
-  //     TestProvider onInitStateProvider;
-  //     final override = TestProvider(
-  //       21,
-  //       onCreateState: MockCreateState(),
-  //       onInitState: MockInitState((state) {
-  //         onInitStateProvider = state.provider;
-  //       }),
-  //       onDidUpdateProvider: MockDidUpdateProvider(),
-  //       onDispose: MockDispose(),
-  //     );
+      await tester.pumpWidget(Container());
 
-  //     await tester.pumpWidget(
-  //       ProviderScope(
-  //         overrides: [
-  //           useProvider.overrideForSubtree(override),
-  //         ],
-  //         child: consumer,
-  //       ),
-  //     );
+      verifyZeroInteractions(onCreateState);
+      verifyZeroInteractions(onInitState);
+      verifyZeroInteractions(onDidUpdateProvider);
+      verifyZeroInteractions(onDispose);
 
-  //     expect(onInitStateProvider, override);
-  //     expect(find.text('42'), findsNothing);
-  //     expect(find.text('21'), findsOneWidget);
-  //     verifyZeroInteractions(onCreateState);
-  //     verifyZeroInteractions(onInitState);
-  //     verifyZeroInteractions(onDispose);
-  //     verifyZeroInteractions(onDidUpdateProvider);
+      verifyZeroInteractions(override.onCreateState);
+      verifyZeroInteractions(override.onInitState);
+      verifyZeroInteractions(override.onDidUpdateProvider);
 
-  //     verifyInOrder([
-  //       override.onCreateState(),
-  //       override.onInitState(argThat(isNotNull)),
-  //     ]);
-  //     verifyZeroInteractions(override.onDispose);
-  //     verifyZeroInteractions(override.onDidUpdateProvider);
-  //   });
-  //   testWidgets('non-override to non-override calls nothing', (tester) async {
-  //     await tester.pumpWidget(ProviderScope(child: consumer));
+      verify(override.onDispose(argThat(isNotNull))).called(1);
+    });
+    testWidgets('first mount calls createState and initState', (tester) async {
+      TestProvider onInitStateProvider;
+      useProvider.onInitState.mock((state) {
+        onInitStateProvider = state.provider;
+      });
+      await tester.pumpWidget(ProviderScope(child: consumer));
 
-  //     expect(find.text('42'), findsOneWidget);
-  //     clearInteractions(onCreateState);
-  //     clearInteractions(onInitState);
+      expect(find.text('42'), findsOneWidget);
+      verifyInOrder([
+        onCreateState(),
+        onInitState(argThat(isNotNull)),
+      ]);
+      verifyZeroInteractions(onDispose);
+      verifyZeroInteractions(onDidUpdateProvider);
+      expect(onInitStateProvider, useProvider);
+    });
+    testWidgets('first override mount calls createState and initState',
+        (tester) async {
+      TestProvider onInitStateProvider;
+      final override = TestProvider(
+        21,
+        onCreateState: MockCreateState(),
+        onInitState: MockInitState((state) {
+          onInitStateProvider = state.provider;
+        }),
+        onDidUpdateProvider: MockDidUpdateProvider(),
+        onDispose: MockDispose(),
+      );
 
-  //     expect(consumerBuildCount, 1);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            useProvider.overrideForSubtree(override),
+          ],
+          child: consumer,
+        ),
+      );
 
-  //     await tester.pumpWidget(ProviderScope(child: consumer));
+      expect(onInitStateProvider, override);
+      expect(find.text('42'), findsNothing);
+      expect(find.text('21'), findsOneWidget);
+      verifyZeroInteractions(onCreateState);
+      verifyZeroInteractions(onInitState);
+      verifyZeroInteractions(onDispose);
+      verifyZeroInteractions(onDidUpdateProvider);
 
-  //     expect(find.text('42'), findsOneWidget);
-  //     verifyZeroInteractions(onCreateState);
-  //     verifyZeroInteractions(onInitState);
-  //     verifyZeroInteractions(onDispose);
-  //     verifyZeroInteractions(onDidUpdateProvider);
+      verifyInOrder([
+        override.onCreateState(),
+        override.onInitState(argThat(isNotNull)),
+      ]);
+      verifyZeroInteractions(override.onDispose);
+      verifyZeroInteractions(override.onDidUpdateProvider);
+    });
+    testWidgets('non-override to non-override calls nothing', (tester) async {
+      await tester.pumpWidget(ProviderScope(child: consumer));
 
-  //     expect(consumerBuildCount, 1);
-  //   });
-  // }, skip: true);
+      expect(find.text('42'), findsOneWidget);
+      clearInteractions(onCreateState);
+      clearInteractions(onInitState);
+
+      expect(consumerBuildCount, 1);
+
+      await tester.pumpWidget(ProviderScope(child: consumer));
+
+      expect(find.text('42'), findsOneWidget);
+      verifyZeroInteractions(onCreateState);
+      verifyZeroInteractions(onInitState);
+      verifyZeroInteractions(onDispose);
+      verifyZeroInteractions(onDidUpdateProvider);
+
+      expect(consumerBuildCount, 1);
+    });
+  });
 
   testWidgets('providers can be overriden', (tester) async {
     final useProvider = Provider((_) => 'root');
@@ -409,63 +416,63 @@ Changing the kind of override or reordering overrides is not supported.
   });
   testWidgets('listeners can be moved to depend on a new provider',
       (tester) async {
-    //   final firstCompleter = Completer<int>.sync();
-    //   final secondCompleter = Completer<int>.sync();
+      final firstCompleter = Completer<int>.sync();
+      final secondCompleter = Completer<int>.sync();
 
-    //   final provider = FutureProvider((_) => firstCompleter.future);
+      final provider = FutureProvider((_) => firstCompleter.future);
 
-    //   var buildCount = 0;
+      var buildCount = 0;
 
-    //   final child = Directionality(
-    //     key: GlobalKey(),
-    //     textDirection: TextDirection.ltr,
-    //     child: HookBuilder(builder: (c) {
-    //       buildCount++;
-    //       final value = provider();
+      final child = Directionality(
+        key: GlobalKey(),
+        textDirection: TextDirection.ltr,
+        child: HookBuilder(builder: (c) {
+          buildCount++;
+          final value = provider();
 
-    //       return value.when(
-    //         data: (v) => Text(v.toString()),
-    //         loading: () => const Text('loading'),
-    //         error: (dynamic err, stack) => const Text('error'),
-    //       );
-    //     }),
-    //   );
+          return value.when(
+            data: (v) => Text(v.toString()),
+            loading: () => const Text('loading'),
+            error: (dynamic err, stack) => const Text('error'),
+          );
+        }),
+      );
 
-    //   await tester.pumpWidget(ProviderScope(child: child));
+      await tester.pumpWidget(ProviderScope(child: child));
 
-    //   expect(find.text('loading'), findsOneWidget);
-    //   expect(buildCount, 1);
+      expect(find.text('loading'), findsOneWidget);
+      expect(buildCount, 1);
 
-    //   await tester.pumpWidget(
-    //     ProviderScope(
-    //       child: ProviderScope(
-    //         overrides: [
-    //           provider.overrideForSubtree(
-    //             FutureProvider((_) => secondCompleter.future),
-    //           ),
-    //         ],
-    //         child: child,
-    //       ),
-    //     ),
-    //   );
+      await tester.pumpWidget(
+        ProviderScope(
+          child: ProviderScope(
+            overrides: [
+              provider.overrideForSubtree(
+                FutureProvider((_) => secondCompleter.future),
+              ),
+            ],
+            child: child,
+          ),
+        ),
+      );
 
-    //   expect(find.text('loading'), findsOneWidget);
-    //   expect(buildCount, 2);
+      expect(find.text('loading'), findsOneWidget);
+      expect(buildCount, 2);
 
-    //   firstCompleter.complete(42);
+      firstCompleter.complete(42);
 
-    //   await tester.pump();
+      await tester.pump();
 
-    //   expect(buildCount, 2);
-    //   expect(find.text('loading'), findsOneWidget);
+      expect(buildCount, 2);
+      expect(find.text('loading'), findsOneWidget);
 
-    //   secondCompleter.complete(21);
+      secondCompleter.complete(21);
 
-    //   await tester.pump();
+      await tester.pump();
 
-    //   expect(find.text('21'), findsOneWidget);
-    //   expect(buildCount, 3);
-  }, skip: true);
+      expect(find.text('21'), findsOneWidget);
+      expect(buildCount, 3);
+  });
   testWidgets(
       "don't rebuild a dependent if another unrelated useProvider is updated",
       (tester) async {
@@ -612,8 +619,10 @@ class TestProvider extends BaseProvider<int> {
   final MockDidUpdateProvider onDidUpdateProvider;
   final int value;
 
-  // @override
-  // int call() => BaseProvider.use(this);
+  int call() {
+    final state = dependOnProviderState(this);
+    return Hook.use(BaseProviderStateHook(state));
+  }
 
   @override
   TestProviderState createState() {
