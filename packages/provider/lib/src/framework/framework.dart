@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 
 part 'base_provider.dart';
+part 'keep_alive_provider.dart';
 
 typedef Create<Res, State extends ProviderState> = Res Function(State state);
 typedef Create1<A, Res, State extends ProviderState> = Res Function(

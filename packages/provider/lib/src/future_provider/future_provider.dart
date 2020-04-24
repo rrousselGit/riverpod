@@ -36,6 +36,8 @@ abstract class FutureProvider<Res>
   ) = _FutureProvider<Res>;
 
   ProviderOverride debugOverrideFromValue(AsyncValue<Res> value);
+
+  FutureProvider<Res> asKeepAlive();
 }
 
 mixin _FutureProviderMixin<Res> implements FutureProvider<Res> {
@@ -45,6 +47,17 @@ mixin _FutureProviderMixin<Res> implements FutureProvider<Res> {
       _DebugFutureProviderValue(value),
     );
   }
+
+  @override
+  FutureProvider<Res> asKeepAlive() {
+    return _FutureProviderKeepAlive(this);
+  }
+}
+
+class _FutureProviderKeepAlive<Res>
+    extends KeepAliveProvider<FutureProviderValue<Res>>
+    with _FutureProviderMixin<Res> {
+  _FutureProviderKeepAlive(FutureProvider<Res> origin) : super(origin);
 }
 
 class _FutureProvider<Res> extends BaseProvider<FutureProviderValue<Res>>

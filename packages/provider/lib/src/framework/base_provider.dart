@@ -71,13 +71,20 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
     _onDisposeCallbacks.add(cb);
   }
 
-  VoidCallback $addStateListener(void Function(Res) listener) {
-    listener($state);
+  VoidCallback $addStateListener(
+    void Function(Res) listener, {
+    bool fireImmediately = true,
+  }) {
+    if (fireImmediately) {
+      listener($state);
+    }
     _stateListeners ??= LinkedList();
     final entry = _LinkedListEntry(listener);
     _stateListeners.add(entry);
     return entry.unlink;
   }
+
+  bool get $hasListeners => _stateListeners?.isNotEmpty ?? false;
 
   void dispose() {
     if (_onDisposeCallbacks != null) {
