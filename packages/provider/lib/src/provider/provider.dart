@@ -4,11 +4,6 @@ import '../framework/framework.dart';
 part 'provider1.dart';
 part 'provider_builder.dart';
 
-/// A placeholder used by [Provider]/[ProviderX].
-///
-/// It has no purpose other than working around language limitations on generic
-/// parameters through extension methods.
-/// See https://github.com/dart-lang/language/issues/620
 class ProviderValue<T> {
   const ProviderValue(this._value);
   final T _value;

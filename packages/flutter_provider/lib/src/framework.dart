@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:provider/src/framework/framework.dart' show OwnerPutIfAbsent;
 
 class ProviderScope extends StatefulWidget {
-  /// Creates a [ProviderScope] and optionally allows overriding providers.
   const ProviderScope({
     Key key,
     this.overrides = const [],
@@ -13,7 +12,6 @@ class ProviderScope extends StatefulWidget {
   })  : assert(child != null, 'child cannot be `null`'),
         super(key: key);
 
-  ///
   @visibleForTesting
   final Widget child;
 
