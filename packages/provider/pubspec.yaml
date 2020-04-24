@@ -1,0 +1,16 @@
+name: provider
+description: A new Flutter package project.
+version: 0.0.1
+author:
+homepage:
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  meta: ^1.1.8
+  collection: ^1.14.12
+
+dev_dependencies:
+  mockito: ^4.1.0
+  test: ^1.14.2
