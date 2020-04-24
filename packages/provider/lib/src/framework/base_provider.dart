@@ -2,15 +2,6 @@ part of 'framework.dart';
 
 @immutable
 abstract class BaseProvider<T> {
-  static BaseProviderState<Res, BaseProvider<Res>> _createProviderState<Res>(
-    BaseProvider<Res> provider,
-    List<BaseProviderState<Object, BaseProvider<Object>>> dependencies,
-  ) {
-    return provider.createState()
-      .._provider = provider
-      .._initDependencies(dependencies);
-  }
-
   ProviderOverride<T> overrideForSubtree(BaseProvider<T> provider) {
     return ProviderOverride._(provider, this);
   }
@@ -36,6 +27,9 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
   @visibleForTesting
   T get provider => _provider;
 
+  ProviderStateOwner _owner;
+  ProviderStateOwner get owner => _owner;
+
   /// Keep track of this provider's dependencies on mount to assert that they
   /// never change.
   List<BaseProviderState<Object, BaseProvider<Object>>>
@@ -48,7 +42,7 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
     List<BaseProviderState<Object, BaseProvider<Object>>> dependenciesState,
   ) {
     assert(() {
-      _debugInitialDependenciesState = dependenciesState.toList();
+      _debugInitialDependenciesState = dependenciesState;
       return true;
     }(), '');
   }
@@ -72,7 +66,7 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
         try {
           disposeCb();
         } catch (err, stack) {
-          ProviderStateOwner.reportError(err, stack);
+          owner._onError?.call(err, stack);
         }
       }
     }

@@ -35,19 +35,13 @@ class ProviderStateOwner {
   ProviderStateOwner({
     ProviderStateOwner parent,
     List<ProviderOverride> overrides = const [],
-  }) : _overrides = overrides {
+    void Function(dynamic error, StackTrace stackTrace) onError,
+  })  : _overrides = overrides,
+        _onError = onError {
     updateParent(parent);
   }
 
-  static void reportError(dynamic error, [StackTrace stackTrace]) {
-    // FlutterError.reportError(
-    //   FlutterErrorDetails(
-    //     library: 'flutter_provider',
-    //     exception: err,
-    //     stack: stack,
-    //   ),
-    // );
-  }
+  final void Function(dynamic error, StackTrace stackTrace) _onError;
 
   List<ProviderOverride> _overrides;
 
@@ -72,6 +66,26 @@ class ProviderStateOwner {
           );
         },
     };
+
+    // Verify that the providers that depends on other providers kept the same dependency
+    assert(() {
+      for (final providerState in _providerState.values) {
+        final newDendencies = providerState.provider
+            ._allDependencies()
+            .map(readProviderState)
+            .toList();
+
+        if (!const DeepCollectionEquality().equals(
+            providerState._debugInitialDependenciesState, newDendencies)) {
+          _onError?.call(
+            UnsupportedError('''
+The provider $this, which denpends on other providers, was rebuilt with different dependencies.'''),
+            StackTrace.current,
+          );
+        }
+      }
+      return true;
+    }(), '');
   }
 
   BaseProviderState<T, BaseProvider<T>> _putIfAbsent<T>(
@@ -85,7 +99,7 @@ class ProviderStateOwner {
       return localState as BaseProviderState<T, BaseProvider<T>>;
     }
 
-    final state = BaseProvider._createProviderState(
+    final state = _createProviderState(
       provider,
       provider //
           ._allDependencies()
@@ -98,6 +112,16 @@ class ProviderStateOwner {
     state.$state = state.initState();
 
     return state;
+  }
+
+  BaseProviderState<Res, BaseProvider<Res>> _createProviderState<Res>(
+    BaseProvider<Res> provider,
+    List<BaseProviderState<Object, BaseProvider<Object>>> dependencies,
+  ) {
+    return provider.createState()
+      .._provider = provider
+      .._owner = this
+      .._initDependencies(dependencies);
   }
 
   void updateOverrides(List<ProviderOverride> overrides) {
@@ -169,22 +193,13 @@ The provider ${previous._provider}, which denpends on other providers, was rebui
       try {
         state.dispose();
       } catch (err, stack) {
-        reportError(err, stack);
+        _onError?.call(err, stack);
       }
     }
   }
 }
 
 extension OwnerPutIfAbsent on ProviderStateOwner {
-  static BaseProviderState<Res, BaseProvider<Res>> _createProviderState<Res>(
-    BaseProvider<Res> provider,
-    List<BaseProviderState<Object, BaseProvider<Object>>> dependencies,
-  ) {
-    return provider.createState()
-      .._provider = provider
-      .._initDependencies(dependencies);
-  }
-
   BaseProviderState<Res, BaseProvider<Res>> readProviderState<Res>(
     BaseProvider<Res> provider,
   ) {

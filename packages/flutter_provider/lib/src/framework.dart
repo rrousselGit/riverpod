@@ -47,9 +47,17 @@ class _ProviderScopeState extends State<ProviderScope> {
 
     if (_owner == null) {
       _owner = ProviderStateOwner(
-        parent: ancestorOwner,
-        overrides: widget.overrides,
-      );
+          parent: ancestorOwner,
+          overrides: widget.overrides,
+          onError: (dynamic error, stack) {
+            FlutterError.reportError(
+              FlutterErrorDetails(
+                library: 'flutter_provider',
+                exception: error,
+                stack: stack,
+              ),
+            );
+          });
     } else {
       _owner.updateParent(ancestorOwner);
     }

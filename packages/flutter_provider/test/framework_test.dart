@@ -1,61 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_provider/flutter_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-
-// class AsyncResult<T> {}
-
-// class Configurations {
-//   Configurations.fromJson(dynamic json);
-// }
-
-// class FutureProvider<T> extends Provider<AsyncResult<T>> {
-//   FutureProvider(FutureOr<T> Function() value) : super(value);
-// }
-
-// /// Loads configurations from a file
-// /// [FutureProvider] works like it does in `provider`, as the exception
-// /// that reading the configuration returns an equivalent to [AsyncSnapshot].
-// final useConfig = FutureProvider<Configurations>(() async {
-//   final source = await File('path').readAsString();
-//   return Configurations.fromJson(json.decode(source));
-// });
-
-// /// Creates a ChangeNotifier from the configurations.
-// /// [FutureProxyProvider1] listens to "1" provider and build another
-// /// provider out of it.
-// final useModel = FutureProxyProvider1(useConfig, (configNotifier) async {
-//   // `configNotifier` expose a bunch of utilities to read the config provider.
-//   // It exposes things like "onChange", "currentValue", "asStream" and more.
-
-//   // Reads the first value emited by the configuration provider
-//   final config = await configNotifier.first;
-//   return ChangeNotifierProvider(() => Model(config));
-// });
-
-// class Example extends HookWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     /// Since [useModel] is created from asyncronous data, then
-//     /// we don't have direct access to the [Model] object.
-//     /// Instead we have a sealed class that we can use to switch over
-//     /// loading/error/data states.
-//     final model = useModel();
-
-//     return model.when(
-//       loading: () => const CircularProgressIndicator(),
-//       error: (error) => Text('Oops'),
-//       data: (model) {
-//         // The Text will rebuild when content of `model` changes.
-//         return Text(model.person.name);
-//       },
-//     );
-//   }
-// }
 
 void main() {
   testWidgets('adding overrides throws', (tester) async {
@@ -212,208 +160,208 @@ Changing the kind of override or reordering overrides is not supported.
     );
   });
 
-  group('lifecycles', () {
-    final onCreateState = MockCreateState();
-    final onInitState = MockInitState();
-    final onDidUpdateProvider = MockDidUpdateProvider();
-    final onDispose = MockDispose();
+  // group('lifecycles', () {
+  //   final onCreateState = MockCreateState();
+  //   final onInitState = MockInitState();
+  //   final onDidUpdateProvider = MockDidUpdateProvider();
+  //   final onDispose = MockDispose();
 
-    final useProvider = TestProvider(
-      42,
-      onCreateState: onCreateState,
-      onInitState: onInitState,
-      onDidUpdateProvider: onDidUpdateProvider,
-      onDispose: onDispose,
-    );
+  //   final useProvider = TestProvider(
+  //     42,
+  //     onCreateState: onCreateState,
+  //     onInitState: onInitState,
+  //     onDidUpdateProvider: onDidUpdateProvider,
+  //     onDispose: onDispose,
+  //   );
 
-    var consumerBuildCount = 0;
+  //   var consumerBuildCount = 0;
 
-    final consumer = HookBuilder(builder: (context) {
-      consumerBuildCount++;
-      // final value = useProvider();
-      // return Text(value.toString(), textDirection: TextDirection.ltr);
-    });
+  //   final consumer = HookBuilder(builder: (context) {
+  //     consumerBuildCount++;
+  //     // final value = useProvider();
+  //     // return Text(value.toString(), textDirection: TextDirection.ltr);
+  //   });
 
-    setUp(() {
-      consumerBuildCount = 0;
-    });
-    tearDown(() {
-      reset(onCreateState);
-      reset(onInitState);
-      reset(onDidUpdateProvider);
-      reset(onDispose);
-    });
+  //   setUp(() {
+  //     consumerBuildCount = 0;
+  //   });
+  //   tearDown(() {
+  //     reset(onCreateState);
+  //     reset(onInitState);
+  //     reset(onDidUpdateProvider);
+  //     reset(onDispose);
+  //   });
 
-    testWidgets('override to override on same scope calls didUpdateProvider',
-        (tester) async {
-      final override = TestProvider(
-        21,
-        onCreateState: MockCreateState(),
-        onInitState: MockInitState(),
-        onDidUpdateProvider: MockDidUpdateProvider(),
-        onDispose: MockDispose(),
-      );
+  //   testWidgets('override to override on same scope calls didUpdateProvider',
+  //       (tester) async {
+  //     final override = TestProvider(
+  //       21,
+  //       onCreateState: MockCreateState(),
+  //       onInitState: MockInitState(),
+  //       onDidUpdateProvider: MockDidUpdateProvider(),
+  //       onDispose: MockDispose(),
+  //     );
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [useProvider.overrideForSubtree(override)],
-          child: consumer,
-        ),
-      );
+  //     await tester.pumpWidget(
+  //       ProviderScope(
+  //         overrides: [useProvider.overrideForSubtree(override)],
+  //         child: consumer,
+  //       ),
+  //     );
 
-      expect(find.text('21'), findsOneWidget);
-      clearInteractions(override.onInitState);
-      clearInteractions(override.onCreateState);
+  //     expect(find.text('21'), findsOneWidget);
+  //     clearInteractions(override.onInitState);
+  //     clearInteractions(override.onCreateState);
 
-      final override2 = TestProvider(
-        84,
-        onCreateState: MockCreateState(),
-        onInitState: MockInitState(),
-        onDidUpdateProvider: MockDidUpdateProvider(),
-        onDispose: MockDispose(),
-      );
+  //     final override2 = TestProvider(
+  //       84,
+  //       onCreateState: MockCreateState(),
+  //       onInitState: MockInitState(),
+  //       onDidUpdateProvider: MockDidUpdateProvider(),
+  //       onDispose: MockDispose(),
+  //     );
 
-      // replace the override with another of thes same type
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [useProvider.overrideForSubtree(override2)],
-          child: consumer,
-        ),
-      );
+  //     // replace the override with another of thes same type
+  //     await tester.pumpWidget(
+  //       ProviderScope(
+  //         overrides: [useProvider.overrideForSubtree(override2)],
+  //         child: consumer,
+  //       ),
+  //     );
 
-      expect(find.text('21'), findsNothing);
-      expect(find.text('84'), findsOneWidget);
-      verifyZeroInteractions(override.onInitState);
-      verifyZeroInteractions(override.onCreateState);
-      verifyZeroInteractions(override.onDidUpdateProvider);
-      verifyZeroInteractions(override.onDispose);
+  //     expect(find.text('21'), findsNothing);
+  //     expect(find.text('84'), findsOneWidget);
+  //     verifyZeroInteractions(override.onInitState);
+  //     verifyZeroInteractions(override.onCreateState);
+  //     verifyZeroInteractions(override.onDidUpdateProvider);
+  //     verifyZeroInteractions(override.onDispose);
 
-      verifyZeroInteractions(override2.onCreateState);
-      verifyZeroInteractions(override2.onInitState);
+  //     verifyZeroInteractions(override2.onCreateState);
+  //     verifyZeroInteractions(override2.onInitState);
 
-      verify(override2.onDidUpdateProvider(argThat(isNotNull), override))
-          .called(1);
-      verifyNoMoreInteractions(override2.onDidUpdateProvider);
-    });
-    testWidgets('unmount non-override', (tester) async {
-      await tester.pumpWidget(ProviderScope(child: consumer));
+  //     verify(override2.onDidUpdateProvider(argThat(isNotNull), override))
+  //         .called(1);
+  //     verifyNoMoreInteractions(override2.onDidUpdateProvider);
+  //   });
+  //   testWidgets('unmount non-override', (tester) async {
+  //     await tester.pumpWidget(ProviderScope(child: consumer));
 
-      clearInteractions(onCreateState);
-      clearInteractions(onInitState);
+  //     clearInteractions(onCreateState);
+  //     clearInteractions(onInitState);
 
-      await tester.pumpWidget(Container());
+  //     await tester.pumpWidget(Container());
 
-      verifyZeroInteractions(onCreateState);
-      verifyZeroInteractions(onInitState);
-      verifyZeroInteractions(onDidUpdateProvider);
+  //     verifyZeroInteractions(onCreateState);
+  //     verifyZeroInteractions(onInitState);
+  //     verifyZeroInteractions(onDidUpdateProvider);
 
-      verify(onDispose(argThat(isNotNull))).called(1);
-    });
-    testWidgets('unmount overrides', (tester) async {
-      final override = TestProvider(
-        21,
-        onCreateState: MockCreateState(),
-        onInitState: MockInitState(),
-        onDidUpdateProvider: MockDidUpdateProvider(),
-        onDispose: MockDispose(),
-      );
+  //     verify(onDispose(argThat(isNotNull))).called(1);
+  //   });
+  //   testWidgets('unmount overrides', (tester) async {
+  //     final override = TestProvider(
+  //       21,
+  //       onCreateState: MockCreateState(),
+  //       onInitState: MockInitState(),
+  //       onDidUpdateProvider: MockDidUpdateProvider(),
+  //       onDispose: MockDispose(),
+  //     );
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [useProvider.overrideForSubtree(override)],
-          child: consumer,
-        ),
-      );
+  //     await tester.pumpWidget(
+  //       ProviderScope(
+  //         overrides: [useProvider.overrideForSubtree(override)],
+  //         child: consumer,
+  //       ),
+  //     );
 
-      clearInteractions(override.onCreateState);
-      clearInteractions(override.onInitState);
+  //     clearInteractions(override.onCreateState);
+  //     clearInteractions(override.onInitState);
 
-      await tester.pumpWidget(Container());
+  //     await tester.pumpWidget(Container());
 
-      verifyZeroInteractions(onCreateState);
-      verifyZeroInteractions(onInitState);
-      verifyZeroInteractions(onDidUpdateProvider);
-      verifyZeroInteractions(onDispose);
+  //     verifyZeroInteractions(onCreateState);
+  //     verifyZeroInteractions(onInitState);
+  //     verifyZeroInteractions(onDidUpdateProvider);
+  //     verifyZeroInteractions(onDispose);
 
-      verifyZeroInteractions(override.onCreateState);
-      verifyZeroInteractions(override.onInitState);
-      verifyZeroInteractions(override.onDidUpdateProvider);
+  //     verifyZeroInteractions(override.onCreateState);
+  //     verifyZeroInteractions(override.onInitState);
+  //     verifyZeroInteractions(override.onDidUpdateProvider);
 
-      verify(override.onDispose(argThat(isNotNull))).called(1);
-    });
-    testWidgets('first mount calls createState and initState', (tester) async {
-      TestProvider onInitStateProvider;
-      useProvider.onInitState.mock((state) {
-        onInitStateProvider = state.provider;
-      });
-      await tester.pumpWidget(ProviderScope(child: consumer));
+  //     verify(override.onDispose(argThat(isNotNull))).called(1);
+  //   });
+  //   testWidgets('first mount calls createState and initState', (tester) async {
+  //     TestProvider onInitStateProvider;
+  //     useProvider.onInitState.mock((state) {
+  //       onInitStateProvider = state.provider;
+  //     });
+  //     await tester.pumpWidget(ProviderScope(child: consumer));
 
-      expect(find.text('42'), findsOneWidget);
-      verifyInOrder([
-        onCreateState(),
-        onInitState(argThat(isNotNull)),
-      ]);
-      verifyZeroInteractions(onDispose);
-      verifyZeroInteractions(onDidUpdateProvider);
-      expect(onInitStateProvider, useProvider);
-    });
-    testWidgets('first override mount calls createState and initState',
-        (tester) async {
-      TestProvider onInitStateProvider;
-      final override = TestProvider(
-        21,
-        onCreateState: MockCreateState(),
-        onInitState: MockInitState((state) {
-          onInitStateProvider = state.provider;
-        }),
-        onDidUpdateProvider: MockDidUpdateProvider(),
-        onDispose: MockDispose(),
-      );
+  //     expect(find.text('42'), findsOneWidget);
+  //     verifyInOrder([
+  //       onCreateState(),
+  //       onInitState(argThat(isNotNull)),
+  //     ]);
+  //     verifyZeroInteractions(onDispose);
+  //     verifyZeroInteractions(onDidUpdateProvider);
+  //     expect(onInitStateProvider, useProvider);
+  //   });
+  //   testWidgets('first override mount calls createState and initState',
+  //       (tester) async {
+  //     TestProvider onInitStateProvider;
+  //     final override = TestProvider(
+  //       21,
+  //       onCreateState: MockCreateState(),
+  //       onInitState: MockInitState((state) {
+  //         onInitStateProvider = state.provider;
+  //       }),
+  //       onDidUpdateProvider: MockDidUpdateProvider(),
+  //       onDispose: MockDispose(),
+  //     );
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            useProvider.overrideForSubtree(override),
-          ],
-          child: consumer,
-        ),
-      );
+  //     await tester.pumpWidget(
+  //       ProviderScope(
+  //         overrides: [
+  //           useProvider.overrideForSubtree(override),
+  //         ],
+  //         child: consumer,
+  //       ),
+  //     );
 
-      expect(onInitStateProvider, override);
-      expect(find.text('42'), findsNothing);
-      expect(find.text('21'), findsOneWidget);
-      verifyZeroInteractions(onCreateState);
-      verifyZeroInteractions(onInitState);
-      verifyZeroInteractions(onDispose);
-      verifyZeroInteractions(onDidUpdateProvider);
+  //     expect(onInitStateProvider, override);
+  //     expect(find.text('42'), findsNothing);
+  //     expect(find.text('21'), findsOneWidget);
+  //     verifyZeroInteractions(onCreateState);
+  //     verifyZeroInteractions(onInitState);
+  //     verifyZeroInteractions(onDispose);
+  //     verifyZeroInteractions(onDidUpdateProvider);
 
-      verifyInOrder([
-        override.onCreateState(),
-        override.onInitState(argThat(isNotNull)),
-      ]);
-      verifyZeroInteractions(override.onDispose);
-      verifyZeroInteractions(override.onDidUpdateProvider);
-    });
-    testWidgets('non-override to non-override calls nothing', (tester) async {
-      await tester.pumpWidget(ProviderScope(child: consumer));
+  //     verifyInOrder([
+  //       override.onCreateState(),
+  //       override.onInitState(argThat(isNotNull)),
+  //     ]);
+  //     verifyZeroInteractions(override.onDispose);
+  //     verifyZeroInteractions(override.onDidUpdateProvider);
+  //   });
+  //   testWidgets('non-override to non-override calls nothing', (tester) async {
+  //     await tester.pumpWidget(ProviderScope(child: consumer));
 
-      expect(find.text('42'), findsOneWidget);
-      clearInteractions(onCreateState);
-      clearInteractions(onInitState);
+  //     expect(find.text('42'), findsOneWidget);
+  //     clearInteractions(onCreateState);
+  //     clearInteractions(onInitState);
 
-      expect(consumerBuildCount, 1);
+  //     expect(consumerBuildCount, 1);
 
-      await tester.pumpWidget(ProviderScope(child: consumer));
+  //     await tester.pumpWidget(ProviderScope(child: consumer));
 
-      expect(find.text('42'), findsOneWidget);
-      verifyZeroInteractions(onCreateState);
-      verifyZeroInteractions(onInitState);
-      verifyZeroInteractions(onDispose);
-      verifyZeroInteractions(onDidUpdateProvider);
+  //     expect(find.text('42'), findsOneWidget);
+  //     verifyZeroInteractions(onCreateState);
+  //     verifyZeroInteractions(onInitState);
+  //     verifyZeroInteractions(onDispose);
+  //     verifyZeroInteractions(onDidUpdateProvider);
 
-      expect(consumerBuildCount, 1);
-    });
-  }, skip: true);
+  //     expect(consumerBuildCount, 1);
+  //   });
+  // }, skip: true);
 
   testWidgets('providers can be overriden', (tester) async {
     final useProvider = Provider((_) => 'root');
