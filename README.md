@@ -28,6 +28,140 @@ it is _testable_ and _scallable_.
 
 # Motivation
 
+# All providers
+
+## Variants explanation
+
+### SetState\*Provider
+
+<!--
+Allows the function that created the state to emit updates, but in exchange
+when combining providers, the value can't be read without a listening mechanism.
+
+Example: [Provider] vs [SetStateProvider]
+
+[Provider] does two things:
+
+- it creates a value that never ever changes, and the value created is not
+  "listenable".
+- it offers a way to clean-up resources when the provider is destroyed.
+
+[SetStateProvider] inherits the functionalities of [Provider], and adds a
+way to change the value exposed.
+
+This, for example, allows to subscribe to a stream and update the exposed
+value when a new value is pushed onto the stream.
+
+```dart
+final example = SetStateProvider((state) {
+  // a stream coming from somewhere (firebase?)
+  Stream<int> stream;
+
+  final subscription = stream.listen((value) {
+    // changes the value emitted when a new value is pushed to the stream
+    state.value = value;
+  });
+
+  state.onDispose(() => subscription.cancel());
+
+  // initial value
+  return 0;
+});
+```
+
+The downside of this extra possibility is when creating another provider from this
+provider.
+
+Combining a [Provider] into another provider is "easy":
+
+```dart
+final someValue = Provider((_) => 42);
+
+// using `provider` into another object
+final combiningExample = ProviderBuilder<int>()
+  .add(someValue)
+  .build((_, someValueState) {
+    // Since `someValueState` is a Provider, we can read the value directly
+    final value = someValueState.value;
+
+    // do something with the obtained value, doesn't matter
+    return value * 2;
+  });
+```
+
+Being able to do `someValueState.value` is one of the privileges of [Provider].
+
+This privilege disappears with [SetStateProvider], because the value is no-longer
+immutable.\
+While it may seem limiting, this is to ensure a bug-free experience: Refactoring
+from [Provider] to [SetStateProvider] will highlight all the places that likely
+need to be updated.
+
+Instead, we need to "listen" to the value.
+
+An alternate implementation of the previous `build` would be:
+
+```dart
+.build((_, someValueState) {
+  int value;
+
+  // Listens to `someValueState` for changes.
+  // `listen` fires immediatly with the current value
+  final removeListener = someValueState.listen((newValue) {
+    value = newValue;
+  });
+  // Stop the subscription as we need only the first value
+  removeListener();
+
+  // do something with the obtained value, doesn't matter
+  return value * 2;
+});
+```
+
+Which can be simplified into:
+
+```dart
+.build((_, someValueState) {
+  // We explicitly care only about the very first value and ignore other values
+  final value = someValueState.first;
+
+  // do something with the obtained value, doesn't matter
+  return value * 2;
+});
+``` -->
+
+### KeepAlive\*Provider
+
+## Provider family
+
+[Provider] exposes a value that never changes.
+
+Creation:
+
+```dart
+final myProvider = Provider((_) => value);
+```
+
+Usage:
+
+- `myProvider.read(context);` outside of build
+- `myProvider.watch(context);` inside build (because global-keys)
+- `myProvider()` (hook)
+- `myProvider.select((value) => value.property)` (hook)
+- `myProvider.readOwner(owner)`, equivalent to `read` but independent from Flutter
+- `myProvider.watchOwner(owner, (value) {})`, equivalent to `myProvider()` but independent from Flutter
+
+|                           | .read | .watch | .call | .readOwner | .watchOwner |
+| ------------------------- | ----- | ------ | ----- | ---------- | ----------- |
+| Provider                  | yes   | yes    | yes   | yes        | yes         |
+| SetStateProvider          | yes   | yes    | yes   | yes        | yes         |
+| KeepAliveProvider         | no    | no     | yes   | no         | yes         |
+| KeepAliveSetStateProvider | no    | no     | yes   | no         | yes         |
+
+## FutureProvider family
+
+[FutureProvider] exposes a value that is created from a
+
 # FAQ
 
 ## Why another project when [provider] already exists?
@@ -89,3 +223,42 @@ and that the community likes it, I do not want to force people to migrate.
 [provider]: https://github.com/rrousselGit/provider
 [provider_hooks]: https://github.com/rrousselGit/provider_hooks
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+
+# Roadmap
+
+Provider
+FutureProvider
+StreamProvider
+KeepAliveProvider
+KeepAliveFutureProvider
+KeepAliveStreamProvider
+
+- [ ] context.read/watch
+- [ ] provider.select((value) => value.property)
+- [ ] SetState can be overriden with a value
+- [ ] Provider
+- [ ] ProviderBuilder
+  - [ ] KeepAlive
+  - [ ] SetState
+  - [ ] Future
+  - [ ] Stream
+- [ ] FutureProvider
+- [ ] StreamProvider
+- [ ] ChangeNotifierProvider
+- [ ] ChangeNotifierProviderBuilder
+  - [ ] KeepAlive
+  - [ ] SetState
+  - [ ] Future
+  - [ ] Stream
+- [ ] ValueNotifierProvider
+- [ ] ValueNotifierProviderBuilder
+  - [ ] KeepAlive
+  - [ ] SetState
+  - [ ] Future
+  - [ ] Stream
+- [ ] StateNotifierProvider
+- [ ] StateNotifierProviderBuilder
+  - [ ] KeepAlive
+  - [ ] SetState
+  - [ ] Future
+  - [ ] Stream

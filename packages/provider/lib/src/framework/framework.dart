@@ -2,28 +2,11 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
+import '../common.dart';
 
 part 'base_provider.dart';
+part 'base_provider1.dart';
 part 'keep_alive_provider.dart';
-
-typedef Create<Res, State extends ProviderState> = Res Function(State state);
-typedef Create1<A, Res, State extends ProviderState> = Res Function(
-  State state,
-  ProviderListenerState<A> first,
-);
-typedef Create2<A, B, Res, State extends ProviderState> = Res Function(
-  State state,
-  ProviderListenerState<A> first,
-  ProviderListenerState<B> second,
-);
-typedef Create3<A, B, C, Res, State extends ProviderState> = Res Function(
-  State state,
-  ProviderListenerState<A> first,
-  ProviderListenerState<B> second,
-  ProviderListenerState<C> third,
-);
-
-typedef VoidCallback = void Function();
 
 // ignore: avoid_private_typedef_functions
 typedef _FallbackProviderStateReader = BaseProviderState<T, BaseProvider<T>>
@@ -224,4 +207,6 @@ abstract class ProviderState {
   bool get mounted;
 
   void onDispose(VoidCallback cb);
+
+  // TODO report error?
 }

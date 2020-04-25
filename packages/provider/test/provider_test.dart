@@ -13,19 +13,19 @@ void main() {
     });
 
     expect(callCount, 0);
-    expect(provider.consume(owner), 42);
+    expect(provider.readOwner(owner), 42);
     expect(callCount, 1);
-    expect(provider.consume(owner), 42);
+    expect(provider.readOwner(owner), 42);
     expect(callCount, 1);
 
     final owner2 = ProviderStateOwner();
 
     result = 21;
-    expect(provider.consume(owner2), 21);
+    expect(provider.readOwner(owner2), 21);
     expect(callCount, 2);
-    expect(provider.consume(owner2), 21);
+    expect(provider.readOwner(owner2), 21);
     expect(callCount, 2);
-    expect(provider.consume(owner), 42);
+    expect(provider.readOwner(owner), 42);
     expect(callCount, 2);
   });
 
@@ -37,7 +37,7 @@ void main() {
       return 42;
     });
 
-    expect(provider.consume(owner), 42);
+    expect(provider.readOwner(owner), 42);
 
     verifyZeroInteractions(onDispose);
 

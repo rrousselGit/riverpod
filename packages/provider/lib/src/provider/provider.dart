@@ -1,8 +1,12 @@
 import '../combiner.dart';
+import '../common.dart';
 import '../framework/framework.dart';
 
 part 'provider1.dart';
-part 'provider_builder.dart';
+
+mixin _Noop {}
+
+class ProviderBuilder<Res> = Combiner<Res, Provider> with _Noop;
 
 class ProviderValue<T> {
   const ProviderValue(this._value);
@@ -18,7 +22,7 @@ abstract class Provider<T> extends BaseProvider<ProviderValue<T>> {
 }
 
 extension ProviderConsume<T> on Provider<T> {
-  T consume(ProviderStateOwner owner) {
+  T readOwner(ProviderStateOwner owner) {
     final state = owner.readProviderState(this);
     return state.value;
   }
