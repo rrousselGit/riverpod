@@ -3,7 +3,7 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  test('can read value', () {
+  test('readOwner', () {
     var result = 42;
     final owner = ProviderStateOwner();
     var callCount = 0;
@@ -28,6 +28,7 @@ void main() {
     expect(provider.readOwner(owner), 42);
     expect(callCount, 2);
   });
+  // TODO watchOwner
 
   test('dispose', () {
     final owner = ProviderStateOwner();

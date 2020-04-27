@@ -3,11 +3,12 @@ import '../common.dart';
 import '../framework/framework.dart';
 
 part 'provider1.dart';
+part 'base.dart';
 
-mixin _Noop {}
+// This files contains the interfaces for all the variants of Provider.
+// This is the public API.
 
-class ProviderBuilder<Res> = Combiner<Res, Provider> with _Noop;
-
+/* Value */
 class ProviderValue<T> {
   const ProviderValue(this._value);
   final T _value;
@@ -17,29 +18,16 @@ extension ProviderX<T> on ProviderListenerState<ProviderValue<T>> {
   T get value => $state._value;
 }
 
+/* Providers */
+
 abstract class Provider<T> extends BaseProvider<ProviderValue<T>> {
   factory Provider(Create<T, ProviderState> create) = _ProviderCreate<T>;
+
+  T readOwner(ProviderStateOwner owner);
 }
 
-extension ProviderConsume<T> on Provider<T> {
-  T readOwner(ProviderStateOwner owner) {
-    final state = owner.readProviderState(this);
-    return state.value;
-  }
-}
+/* Builder */
 
-class _ProviderCreate<T> extends BaseProvider<ProviderValue<T>>
-    implements Provider<T> {
-  _ProviderCreate(this._create);
+mixin _Noop {}
 
-  final Create<T, ProviderState> _create;
-
-  @override
-  _ProviderCreateState<T> createState() => _ProviderCreateState();
-}
-
-class _ProviderCreateState<Res>
-    extends BaseProviderState<ProviderValue<Res>, _ProviderCreate<Res>> {
-  @override
-  ProviderValue<Res> initState() => ProviderValue(provider._create(this));
-}
+class ProviderBuilder<Res> = Combiner<Res, Provider> with _Noop;

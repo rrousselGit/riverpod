@@ -11,6 +11,7 @@ abstract class Provider1<First, Res>
 }
 
 class _Provider1<First, Res> extends BaseProvider1<First, ProviderValue<Res>>
+    with _ProviderMixin<Res>
     implements Provider1<First, Res> {
   _Provider1(
     BaseProvider<First> firstProvider,
@@ -34,7 +35,7 @@ class _Provider1State<First, Res> extends BaseProvider1State<First,
 }
 
 extension ProviderBuilder1X<First, Res> on Combiner1<First, Res, Provider> {
-  Provider1<First, Res> build(Create1<First, Res, ProviderState> cb) {
+  Provider<Res> build(Create1<First, Res, ProviderState> cb) {
     return Provider1(first, cb);
   }
 }
@@ -53,6 +54,7 @@ abstract class Provider2<First, Second, Res>
 
 class _Provider2<First, Second, Res>
     extends BaseProvider2<First, Second, ProviderValue<Res>>
+    with _ProviderMixin<Res>
     implements Provider2<First, Second, Res> {
   _Provider2(
     BaseProvider<First> firstProvider,
@@ -82,8 +84,7 @@ class _Provider2State<First, Second, Res> extends BaseProvider2State<First,
 
 extension ProviderBuilder2X<First, Second, Res>
     on Combiner2<First, Second, Res, Provider> {
-  Provider2<First, Second, Res> build(
-      Create2<First, Second, Res, ProviderState> cb) {
+  Provider<Res> build(Create2<First, Second, Res, ProviderState> cb) {
     return Provider2(first, second, cb);
   }
 }

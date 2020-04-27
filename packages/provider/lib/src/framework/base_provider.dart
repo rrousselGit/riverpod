@@ -1,30 +1,35 @@
 part of 'framework.dart';
 
 @immutable
-abstract class BaseProvider<T> {
-  ProviderOverride<T> overrideForSubtree(BaseProvider<T> provider) {
+abstract class BaseProvider<CombiningValue> {
+  ProviderOverride<CombiningValue> overrideForSubtree(BaseProvider<CombiningValue> provider) {
     return ProviderOverride._(provider, this);
   }
 
   Iterable<BaseProvider<Object>> _allDependencies() sync* {}
 
   @visibleForOverriding
-  BaseProviderState<T, BaseProvider<T>> createState();
+  BaseProviderState<CombiningValue, BaseProvider<CombiningValue>> createState();
+
+  VoidCallback watchOwner(ProviderStateOwner owner, void Function(CombiningValue) listener) {
+    final state = owner.readProviderState(this);
+    return state.$addStateListener(listener);
+  }
 }
 
 @visibleForOverriding
-abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
-    implements ProviderListenerState<Res>, ProviderState {
-  T _provider;
+abstract class BaseProviderState<CombiningValue, P extends BaseProvider<CombiningValue>>
+    implements ProviderListenerState<CombiningValue>, ProviderState {
+  P _provider;
 
   var _mounted = true;
   @override
   bool get mounted => _mounted;
 
-  Res _$state;
+  CombiningValue _$state;
   @override
-  Res get $state => _$state;
-  set $state(Res $state) {
+  CombiningValue get $state => _$state;
+  set $state(CombiningValue $state) {
     _$state = $state;
     if (_stateListeners != null) {
       for (final listener in _stateListeners) {
@@ -35,7 +40,7 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
 
   @protected
   @visibleForTesting
-  T get provider => _provider;
+  P get provider => _provider;
 
   ProviderStateOwner _owner;
   ProviderStateOwner get owner => _owner;
@@ -46,7 +51,7 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
       _debugInitialDependenciesState;
 
   DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
-  LinkedList<_LinkedListEntry<void Function(Res)>> _stateListeners;
+  LinkedList<_LinkedListEntry<void Function(CombiningValue)>> _stateListeners;
 
   @mustCallSuper
   void _initDependencies(
@@ -59,11 +64,11 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
   }
 
   @protected
-  Res initState();
+  CombiningValue initState();
 
   @mustCallSuper
   @protected
-  void didUpdateProvider(T oldProvider) {}
+  void didUpdateProvider(P oldProvider) {}
 
   @override
   void onDispose(VoidCallback cb) {
@@ -72,7 +77,7 @@ abstract class BaseProviderState<Res, T extends BaseProvider<Res>>
   }
 
   VoidCallback $addStateListener(
-    void Function(Res) listener, {
+    void Function(CombiningValue) listener, {
     bool fireImmediately = true,
   }) {
     if (fireImmediately) {
