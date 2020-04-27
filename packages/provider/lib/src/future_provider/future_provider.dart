@@ -29,7 +29,7 @@ extension FutureProviderX<T> on ProviderListenerState<FutureProviderValue<T>> {
 }
 
 abstract class FutureProvider<Res>
-    extends BaseProvider<FutureProviderValue<Res>> {
+    extends BaseProvider<FutureProviderValue<Res>, AsyncValue<Res>> {
   factory FutureProvider(
     Create<Future<Res>, ProviderState> create,
   ) = _FutureProvider<Res>;
@@ -54,12 +54,13 @@ mixin _FutureProviderMixin<Res> implements FutureProvider<Res> {
 }
 
 class _FutureProviderKeepAlive<Res>
-    extends KeepAliveProvider<FutureProviderValue<Res>>
+    extends KeepAliveProvider<FutureProviderValue<Res>, AsyncValue<Res>>
     with _FutureProviderMixin<Res> {
   _FutureProviderKeepAlive(FutureProvider<Res> origin) : super(origin);
 }
 
-class _FutureProvider<Res> extends BaseProvider<FutureProviderValue<Res>>
+class _FutureProvider<Res>
+    extends BaseProvider<FutureProviderValue<Res>, AsyncValue<Res>>
     with _FutureProviderMixin<Res> {
   _FutureProvider(this._create);
 
@@ -71,8 +72,8 @@ class _FutureProvider<Res> extends BaseProvider<FutureProviderValue<Res>>
   }
 }
 
-class _FutureProviderState<Res>
-    extends BaseProviderState<FutureProviderValue<Res>, _FutureProvider<Res>>
+class _FutureProviderState<Res> extends BaseProviderState<
+        FutureProviderValue<Res>, AsyncValue<Res>, _FutureProvider<Res>>
     with _FutureProviderStateMixin<Res, _FutureProvider<Res>> {
   @override
   Future<Res> create() {
@@ -81,7 +82,7 @@ class _FutureProviderState<Res>
 }
 
 mixin _FutureProviderStateMixin<Res, Provider extends _FutureProviderMixin<Res>>
-    on BaseProviderState<FutureProviderValue<Res>, Provider> {
+    on BaseProviderState<FutureProviderValue<Res>, AsyncValue<Res>, Provider> {
   Future<Res> _future;
 
   Future<Res> create();
@@ -115,10 +116,16 @@ mixin _FutureProviderStateMixin<Res, Provider extends _FutureProviderMixin<Res>>
       }
     }
   }
+
+  @override
+  AsyncValue<Res> combiningValueAsListenedValue(
+      FutureProviderValue<Res> value) {
+    return value._value;
+  }
 }
 
 class _DebugFutureProviderValue<Res>
-    extends BaseProvider<FutureProviderValue<Res>>
+    extends BaseProvider<FutureProviderValue<Res>, AsyncValue<Res>>
     with _FutureProviderMixin<Res> {
   _DebugFutureProviderValue(this._value);
 
@@ -136,7 +143,7 @@ class _DebugFutureProviderValue<Res>
 }
 
 class _DebugFutureProviderValueState<Res> extends BaseProviderState<
-    FutureProviderValue<Res>, _DebugFutureProviderValue<Res>> {
+    FutureProviderValue<Res>, AsyncValue<Res>, _DebugFutureProviderValue<Res>> {
   final _completer = Completer<Res>();
 
   @override
@@ -172,5 +179,11 @@ class _DebugFutureProviderValueState<Res> extends BaseProviderState<
         error: _completer.completeError,
       );
     }
+  }
+
+  @override
+  AsyncValue<Res> combiningValueAsListenedValue(
+      FutureProviderValue<Res> value) {
+    return value._value;
   }
 }

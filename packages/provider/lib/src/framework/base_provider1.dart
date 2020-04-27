@@ -2,22 +2,25 @@ part of 'framework.dart';
 
 // BaseProvider1
 
-abstract class BaseProvider1<First, Res> extends BaseProvider<Res> {
+abstract class BaseProvider1<First, CombiningValue, ListenedValue>
+    extends BaseProvider<CombiningValue, ListenedValue> {
   BaseProvider1(this._first);
 
-  final BaseProvider<First> _first;
+  final BaseProvider<First, Object> _first;
 
   @override
-  Iterable<BaseProvider<Object>> _allDependencies() sync* {
+  Iterable<BaseProvider<Object, Object>> _allDependencies() sync* {
     yield _first;
   }
 
   @override
-  BaseProvider1State<First, Res, BaseProvider1<First, Res>> createState();
+  BaseProvider1State<First, CombiningValue, ListenedValue,
+      BaseProvider1<First, CombiningValue, ListenedValue>> createState();
 }
 
-abstract class BaseProvider1State<First, Res,
-    T extends BaseProvider1<First, Res>> extends BaseProviderState<Res, T> {
+abstract class BaseProvider1State<First, CombiningValue, ListenedValue,
+        T extends BaseProvider1<First, CombiningValue, ListenedValue>>
+    extends BaseProviderState<CombiningValue, ListenedValue, T> {
   ProviderListenerState<First> _firstDependencyState;
   ProviderListenerState<First> get firstDependencyState {
     return _firstDependencyState;
@@ -25,7 +28,8 @@ abstract class BaseProvider1State<First, Res,
 
   @override
   void _initDependencies(
-    List<BaseProviderState<Object, BaseProvider<Object>>> dependenciesState,
+    List<BaseProviderState<Object, Object, BaseProvider<Object, Object>>>
+        dependenciesState,
   ) {
     super._initDependencies(dependenciesState);
     _firstDependencyState =
@@ -35,26 +39,28 @@ abstract class BaseProvider1State<First, Res,
 
 // BaseProvider2
 
-abstract class BaseProvider2<First, Second, Res> extends BaseProvider<Res> {
+abstract class BaseProvider2<First, Second, CombiningValue, ListenedValue>
+    extends BaseProvider<CombiningValue, ListenedValue> {
   BaseProvider2(this._first, this._second);
 
-  final BaseProvider<First> _first;
-  final BaseProvider<Second> _second;
+  final BaseProvider<First, Object> _first;
+  final BaseProvider<Second, Object> _second;
 
   @override
-  Iterable<BaseProvider<Object>> _allDependencies() sync* {
+  Iterable<BaseProvider<Object, Object>> _allDependencies() sync* {
     yield _first;
     yield _second;
   }
 
   @override
-  BaseProvider2State<First, Second, Res, BaseProvider2<First, Second, Res>>
+  BaseProvider2State<First, Second, CombiningValue, ListenedValue,
+          BaseProvider2<First, Second, CombiningValue, ListenedValue>>
       createState();
 }
 
-abstract class BaseProvider2State<First, Second, Res,
-        T extends BaseProvider2<First, Second, Res>>
-    extends BaseProviderState<Res, T> {
+abstract class BaseProvider2State<First, Second, CombiningValue, ListenedValue,
+        T extends BaseProvider2<First, Second, CombiningValue, ListenedValue>>
+    extends BaseProviderState<CombiningValue, ListenedValue, T> {
   ProviderListenerState<First> _firstDependencyState;
   ProviderListenerState<First> get firstDependencyState {
     return _firstDependencyState;
@@ -67,7 +73,8 @@ abstract class BaseProvider2State<First, Second, Res,
 
   @override
   void _initDependencies(
-    List<BaseProviderState<Object, BaseProvider<Object>>> dependenciesState,
+    List<BaseProviderState<Object, Object, BaseProvider<Object, Object>>>
+        dependenciesState,
   ) {
     super._initDependencies(dependenciesState);
     _firstDependencyState =

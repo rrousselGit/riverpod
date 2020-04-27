@@ -16,7 +16,7 @@ class ProviderScope extends StatefulWidget {
   final Widget child;
 
   @visibleForTesting
-  final List<ProviderOverride<Object>> overrides;
+  final List<ProviderOverride<Object, Object>> overrides;
 
   @override
   _ProviderScopeState createState() => _ProviderScopeState();
@@ -92,8 +92,8 @@ class _ProviderStateOwnerScope extends InheritedWidget {
   }
 }
 
-BaseProviderState<T, BaseProvider<T>> dependOnProviderState<T>(
-  BaseProvider<T> provider,
+BaseProviderState<Object, T, BaseProvider<Object, T>> dependOnProviderState<T>(
+  BaseProvider<Object, T> provider,
 ) {
   final scope = useContext()
       .dependOnInheritedWidgetOfExactType<_ProviderStateOwnerScope>();
@@ -102,13 +102,15 @@ BaseProviderState<T, BaseProvider<T>> dependOnProviderState<T>(
     throw StateError('No ProviderScope found');
   }
 
+  // TODO return Hook.use(BaseProviderStateHook(scope.owner, provider));
+
   return scope.owner.readProviderState(provider);
 }
 
 class BaseProviderStateHook<T> extends Hook<T> {
   const BaseProviderStateHook(this._providerState);
 
-  final BaseProviderState<T, BaseProvider<T>> _providerState;
+  final BaseProviderState<Object, T, BaseProvider<Object, T>> _providerState;
 
   @override
   _ProviderHookState<T> createState() => _ProviderHookState();
@@ -135,9 +137,9 @@ class _ProviderHookState<T> extends HookState<T, BaseProviderStateHook<T>> {
     }
   }
 
-  void _listen(BaseProviderState<T, BaseProvider<T>> notifier) {
+  void _listen(BaseProviderState<Object, T, BaseProvider<Object, T>> notifier) {
     _removeListener?.call();
-    _removeListener = notifier.$addStateListener(_listener);
+    _removeListener = notifier.$addListenedValueListener(_listener);
   }
 
   void _listener(T value) {

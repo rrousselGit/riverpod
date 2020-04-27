@@ -1,24 +1,31 @@
 part of 'framework.dart';
 
 @immutable
-abstract class BaseProvider<CombiningValue> {
-  ProviderOverride<CombiningValue> overrideForSubtree(BaseProvider<CombiningValue> provider) {
+abstract class BaseProvider<CombiningValue, ListenedValue> {
+  ProviderOverride<CombiningValue, ListenedValue> overrideForSubtree(
+    BaseProvider<CombiningValue, ListenedValue> provider,
+  ) {
     return ProviderOverride._(provider, this);
   }
 
-  Iterable<BaseProvider<Object>> _allDependencies() sync* {}
+  Iterable<BaseProvider<Object, Object>> _allDependencies() sync* {}
 
   @visibleForOverriding
-  BaseProviderState<CombiningValue, BaseProvider<CombiningValue>> createState();
+  BaseProviderState<CombiningValue, ListenedValue,
+      BaseProvider<CombiningValue, ListenedValue>> createState();
 
-  VoidCallback watchOwner(ProviderStateOwner owner, void Function(CombiningValue) listener) {
+  VoidCallback watchOwner(
+    ProviderStateOwner owner,
+    void Function(ListenedValue) listener,
+  ) {
     final state = owner.readProviderState(this);
-    return state.$addStateListener(listener);
+    return state.$addListenedValueListener(listener);
   }
 }
 
 @visibleForOverriding
-abstract class BaseProviderState<CombiningValue, P extends BaseProvider<CombiningValue>>
+abstract class BaseProviderState<CombiningValue, ListenedValue,
+        P extends BaseProvider<CombiningValue, ListenedValue>>
     implements ProviderListenerState<CombiningValue>, ProviderState {
   P _provider;
 
@@ -47,7 +54,7 @@ abstract class BaseProviderState<CombiningValue, P extends BaseProvider<Combinin
 
   /// Keep track of this provider's dependencies on mount to assert that they
   /// never change.
-  List<BaseProviderState<Object, BaseProvider<Object>>>
+  List<BaseProviderState<Object, Object, BaseProvider<Object, Object>>>
       _debugInitialDependenciesState;
 
   DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
@@ -55,7 +62,8 @@ abstract class BaseProviderState<CombiningValue, P extends BaseProvider<Combinin
 
   @mustCallSuper
   void _initDependencies(
-    List<BaseProviderState<Object, BaseProvider<Object>>> dependenciesState,
+    List<BaseProviderState<Object, Object, BaseProvider<Object, Object>>>
+        dependenciesState,
   ) {
     assert(() {
       _debugInitialDependenciesState = dependenciesState;
@@ -65,6 +73,8 @@ abstract class BaseProviderState<CombiningValue, P extends BaseProvider<Combinin
 
   @protected
   CombiningValue initState();
+
+  ListenedValue combiningValueAsListenedValue(CombiningValue value);
 
   @mustCallSuper
   @protected
@@ -76,7 +86,7 @@ abstract class BaseProviderState<CombiningValue, P extends BaseProvider<Combinin
     _onDisposeCallbacks.add(cb);
   }
 
-  VoidCallback $addStateListener(
+  VoidCallback $addCombiningValueListener(
     void Function(CombiningValue) listener, {
     bool fireImmediately = true,
   }) {
@@ -87,6 +97,18 @@ abstract class BaseProviderState<CombiningValue, P extends BaseProvider<Combinin
     final entry = _LinkedListEntry(listener);
     _stateListeners.add(entry);
     return entry.unlink;
+  }
+
+  VoidCallback $addListenedValueListener(
+    void Function(ListenedValue) listener, {
+    bool fireImmediately = true,
+  }) {
+    return $addCombiningValueListener(
+      (combiningValue) {
+        listener(combiningValueAsListenedValue(combiningValue));
+      },
+      fireImmediately: fireImmediately,
+    );
   }
 
   bool get $hasListeners => _stateListeners?.isNotEmpty ?? false;

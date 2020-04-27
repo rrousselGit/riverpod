@@ -20,7 +20,7 @@ extension ProviderX<T> on ProviderListenerState<ProviderValue<T>> {
 
 /* Providers */
 
-abstract class Provider<T> extends BaseProvider<ProviderValue<T>> {
+abstract class Provider<T> extends BaseProvider<ProviderValue<T>, T> {
   factory Provider(Create<T, ProviderState> create) = _ProviderCreate<T>;
 
   T readOwner(ProviderStateOwner owner);

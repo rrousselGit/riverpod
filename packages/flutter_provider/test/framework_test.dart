@@ -60,7 +60,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          useProvider.overrideForSubtree(MyImmutableProvider(0)),
+          useProvider.overrideForSubtree(Provider((_) => 1)),
         ],
         child: Container(),
       ),
@@ -71,7 +71,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          useProvider.overrideForSubtree(Provider((_) => 1)),
+          useProvider.overrideForSubtree(MyImmutableProvider()),
         ],
         child: Container(),
       ),
@@ -80,7 +80,7 @@ void main() {
     expect(
       tester.takeException(),
       isUnsupportedError.having((s) => s.message, 'message', '''
-Replaced the override at index 0 of type MyImmutableProvider with an override of type _ProviderCreate<int>, which is different.
+Replaced the override at index 0 of type _ProviderCreate<int> with an override of type MyImmutableProvider, which is different.
 Changing the kind of override or reordering overrides is not supported.
 '''),
     );
@@ -416,62 +416,62 @@ Changing the kind of override or reordering overrides is not supported.
   });
   testWidgets('listeners can be moved to depend on a new provider',
       (tester) async {
-      final firstCompleter = Completer<int>.sync();
-      final secondCompleter = Completer<int>.sync();
+    final firstCompleter = Completer<int>.sync();
+    final secondCompleter = Completer<int>.sync();
 
-      final provider = FutureProvider((_) => firstCompleter.future);
+    final provider = FutureProvider((_) => firstCompleter.future);
 
-      var buildCount = 0;
+    var buildCount = 0;
 
-      final child = Directionality(
-        key: GlobalKey(),
-        textDirection: TextDirection.ltr,
-        child: HookBuilder(builder: (c) {
-          buildCount++;
-          final value = provider();
+    final child = Directionality(
+      key: GlobalKey(),
+      textDirection: TextDirection.ltr,
+      child: HookBuilder(builder: (c) {
+        buildCount++;
+        final value = provider();
 
-          return value.when(
-            data: (v) => Text(v.toString()),
-            loading: () => const Text('loading'),
-            error: (dynamic err, stack) => const Text('error'),
-          );
-        }),
-      );
+        return value.when(
+          data: (v) => Text(v.toString()),
+          loading: () => const Text('loading'),
+          error: (dynamic err, stack) => const Text('error'),
+        );
+      }),
+    );
 
-      await tester.pumpWidget(ProviderScope(child: child));
+    await tester.pumpWidget(ProviderScope(child: child));
 
-      expect(find.text('loading'), findsOneWidget);
-      expect(buildCount, 1);
+    expect(find.text('loading'), findsOneWidget);
+    expect(buildCount, 1);
 
-      await tester.pumpWidget(
-        ProviderScope(
-          child: ProviderScope(
-            overrides: [
-              provider.overrideForSubtree(
-                FutureProvider((_) => secondCompleter.future),
-              ),
-            ],
-            child: child,
-          ),
+    await tester.pumpWidget(
+      ProviderScope(
+        child: ProviderScope(
+          overrides: [
+            provider.overrideForSubtree(
+              FutureProvider((_) => secondCompleter.future),
+            ),
+          ],
+          child: child,
         ),
-      );
+      ),
+    );
 
-      expect(find.text('loading'), findsOneWidget);
-      expect(buildCount, 2);
+    expect(find.text('loading'), findsOneWidget);
+    expect(buildCount, 2);
 
-      firstCompleter.complete(42);
+    firstCompleter.complete(42);
 
-      await tester.pump();
+    await tester.pump();
 
-      expect(buildCount, 2);
-      expect(find.text('loading'), findsOneWidget);
+    expect(buildCount, 2);
+    expect(find.text('loading'), findsOneWidget);
 
-      secondCompleter.complete(21);
+    secondCompleter.complete(21);
 
-      await tester.pump();
+    await tester.pump();
 
-      expect(find.text('21'), findsOneWidget);
-      expect(buildCount, 3);
+    expect(find.text('21'), findsOneWidget);
+    expect(buildCount, 3);
   });
   testWidgets(
       "don't rebuild a dependent if another unrelated useProvider is updated",
@@ -604,7 +604,7 @@ class MockDidUpdateProvider extends Mock {
   void call(TestProviderState state, TestProvider oldProvider);
 }
 
-class TestProvider extends BaseProvider<int> {
+class TestProvider extends BaseProvider<int, int> {
   TestProvider(
     this.value, {
     this.onCreateState,
@@ -631,7 +631,7 @@ class TestProvider extends BaseProvider<int> {
   }
 }
 
-class TestProviderState extends BaseProviderState<int, TestProvider> {
+class TestProviderState extends BaseProviderState<int, int, TestProvider> {
   @override
   int initState() {
     provider.onInitState?.call(
@@ -652,13 +652,14 @@ class TestProviderState extends BaseProviderState<int, TestProvider> {
     provider.onDispose?.call(this);
     super.dispose();
   }
+
+  @override
+  int combiningValueAsListenedValue(int value) {
+    return value;
+  }
 }
 
-class MyImmutableProvider extends BaseProvider<ProviderValue<int>> {
-  MyImmutableProvider(this.value);
-
-  final int value;
-
+class MyImmutableProvider extends BaseProvider<ProviderValue<int>, int> {
   @override
   MyImmutableProviderState createState() {
     return MyImmutableProviderState();
@@ -666,9 +667,14 @@ class MyImmutableProvider extends BaseProvider<ProviderValue<int>> {
 }
 
 class MyImmutableProviderState
-    extends BaseProviderState<ProviderValue<int>, MyImmutableProvider> {
+    extends BaseProviderState<ProviderValue<int>, int, MyImmutableProvider> {
   @override
   ProviderValue<int> initState() {
-    return ProviderValue(provider.value);
+    throw UnimplementedError();
+  }
+
+  @override
+  int combiningValueAsListenedValue(ProviderValue<int> value) {
+    throw UnimplementedError();
   }
 }

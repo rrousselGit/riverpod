@@ -2,78 +2,80 @@ part of 'provider.dart';
 
 // Provider1
 
-abstract class Provider1<First, Res>
-    extends BaseProvider1<First, ProviderValue<Res>> implements Provider<Res> {
+abstract class Provider1<First, T>
+    extends BaseProvider1<First, ProviderValue<T>, T> implements Provider<T> {
   factory Provider1(
-    BaseProvider<First> firstProvider,
-    Create1<First, Res, ProviderState> create,
-  ) = _Provider1<First, Res>;
+    BaseProvider<First, Object> firstProvider,
+    Create1<First, T, ProviderState> create,
+  ) = _Provider1<First, T>;
 }
 
-class _Provider1<First, Res> extends BaseProvider1<First, ProviderValue<Res>>
-    with _ProviderMixin<Res>
-    implements Provider1<First, Res> {
+class _Provider1<First, T> extends BaseProvider1<First, ProviderValue<T>, T>
+    with _ProviderMixin<T>
+    implements Provider1<First, T> {
   _Provider1(
-    BaseProvider<First> firstProvider,
+    BaseProvider<First, Object> firstProvider,
     this.create,
   ) : super(firstProvider);
 
-  final Create1<First, Res, ProviderState> create;
+  final Create1<First, T, ProviderState> create;
 
   @override
-  _Provider1State<First, Res> createState() {
-    return _Provider1State<First, Res>();
+  _Provider1State<First, T> createState() {
+    return _Provider1State<First, T>();
   }
 }
 
-class _Provider1State<First, Res> extends BaseProvider1State<First,
-    ProviderValue<Res>, _Provider1<First, Res>> {
+class _Provider1State<First, T>
+    extends BaseProvider1State<First, ProviderValue<T>, T, _Provider1<First, T>>
+    with _ProviderStateMixin<T, _Provider1<First, T>> {
   @override
-  ProviderValue<Res> initState() {
+  ProviderValue<T> initState() {
     return ProviderValue(provider.create(this, firstDependencyState));
   }
 }
 
-extension ProviderBuilder1X<First, Res> on Combiner1<First, Res, Provider> {
-  Provider<Res> build(Create1<First, Res, ProviderState> cb) {
+extension ProviderBuilder1X<First, T> on Combiner1<First, T, Provider> {
+  Provider<T> build(Create1<First, T, ProviderState> cb) {
     return Provider1(first, cb);
   }
 }
 
 // Provider2
 
-abstract class Provider2<First, Second, Res>
-    extends BaseProvider2<First, Second, ProviderValue<Res>>
-    implements Provider<Res> {
+abstract class Provider2<First, Second, T>
+    extends BaseProvider2<First, Second, ProviderValue<T>, T>
+    implements Provider<T> {
   factory Provider2(
-    BaseProvider<First> firstProvider,
-    BaseProvider<Second> secondProvider,
-    Create2<First, Second, Res, ProviderState> create,
-  ) = _Provider2<First, Second, Res>;
+    BaseProvider<First, Object> firstProvider,
+    BaseProvider<Second, Object> secondProvider,
+    Create2<First, Second, T, ProviderState> create,
+  ) = _Provider2<First, Second, T>;
 }
 
-class _Provider2<First, Second, Res>
-    extends BaseProvider2<First, Second, ProviderValue<Res>>
-    with _ProviderMixin<Res>
-    implements Provider2<First, Second, Res> {
+class _Provider2<First, Second, T>
+    extends BaseProvider2<First, Second, ProviderValue<T>, T>
+    with _ProviderMixin<T>
+    implements Provider2<First, Second, T> {
   _Provider2(
-    BaseProvider<First> firstProvider,
-    BaseProvider<Second> secondProvider,
+    BaseProvider<First, Object> firstProvider,
+    BaseProvider<Second, Object> secondProvider,
     this.create,
   ) : super(firstProvider, secondProvider);
 
-  final Create2<First, Second, Res, ProviderState> create;
+  final Create2<First, Second, T, ProviderState> create;
 
   @override
-  _Provider2State<First, Second, Res> createState() {
-    return _Provider2State<First, Second, Res>();
+  _Provider2State<First, Second, T> createState() {
+    return _Provider2State<First, Second, T>();
   }
 }
 
-class _Provider2State<First, Second, Res> extends BaseProvider2State<First,
-    Second, ProviderValue<Res>, _Provider2<First, Second, Res>> {
+class _Provider2State<First, Second, T> extends BaseProvider2State<First,
+        Second, ProviderValue<T>, T, _Provider2<First, Second, T>>
+    with _ProviderStateMixin<T, _Provider2<First, Second, T>> {
   @override
-  ProviderValue<Res> initState() {
+  ProviderValue<T> initState() {
     return ProviderValue(provider.create(
       this,
       firstDependencyState,
@@ -82,9 +84,9 @@ class _Provider2State<First, Second, Res> extends BaseProvider2State<First,
   }
 }
 
-extension ProviderBuilder2X<First, Second, Res>
-    on Combiner2<First, Second, Res, Provider> {
-  Provider<Res> build(Create2<First, Second, Res, ProviderState> cb) {
+extension ProviderBuilder2X<First, Second, T>
+    on Combiner2<First, Second, T, Provider> {
+  Provider<T> build(Create2<First, Second, T, ProviderState> cb) {
     return Provider2(first, second, cb);
   }
 }
