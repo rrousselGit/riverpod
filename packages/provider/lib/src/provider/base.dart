@@ -4,7 +4,7 @@ mixin _ProviderMixin<T> implements Provider<T> {
   @override
   T readOwner(ProviderStateOwner owner) {
     final state = owner.readProviderState(this);
-    return state.value;
+    return state.$state;
   }
 }
 
@@ -19,10 +19,10 @@ class _ProviderCreate<T> extends BaseProvider<ProviderValue<T>, T>
 }
 
 mixin _ProviderStateMixin<T, P extends BaseProvider<ProviderValue<T>, T>>
-    on BaseProviderState<ProviderValue<T>, T, P> {
+    implements BaseProviderState<ProviderValue<T>, T, P> {
   @override
-  T combiningValueAsListenedValue(ProviderValue<T> value) {
-    return value._value;
+  ProviderValue<T> createProviderState() {
+    return ProviderValue._($state, this);
   }
 }
 
@@ -30,5 +30,7 @@ class _ProviderCreateState<T>
     extends BaseProviderState<ProviderValue<T>, T, _ProviderCreate<T>>
     with _ProviderStateMixin<T, _ProviderCreate<T>> {
   @override
-  ProviderValue<T> initState() => ProviderValue(provider._create(this));
+  T initState() {
+    return provider._create(ProviderState(this));
+  }
 }

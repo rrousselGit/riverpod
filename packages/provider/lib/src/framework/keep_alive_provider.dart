@@ -1,12 +1,13 @@
 part of 'framework.dart';
 
-abstract class KeepAliveProvider<CombiningValue, ListeningValue> extends BaseProvider<CombiningValue, ListeningValue> {
+abstract class KeepAliveProvider<CombiningValue extends ProviderState,
+    ListeningValue> extends BaseProvider<CombiningValue, ListeningValue> {
   KeepAliveProvider(this._keptAliveProvider);
 
   final BaseProvider<CombiningValue, ListeningValue> _keptAliveProvider;
 
   @override
-  Iterable<BaseProvider<Object, Object>> _allDependencies() {
+  Iterable<BaseProvider<ProviderState, Object>> _allDependencies() {
     return _keptAliveProvider._allDependencies();
   }
 
@@ -16,15 +17,22 @@ abstract class KeepAliveProvider<CombiningValue, ListeningValue> extends BasePro
   }
 }
 
-class _KeepAliveState<CombiningValue, ListeningValue>
-    extends BaseProviderState<CombiningValue, ListeningValue, KeepAliveProvider<CombiningValue, ListeningValue>> {
-  List<BaseProviderState<Object, Object, BaseProvider<Object, Object>>> _dependenciesState;
-  BaseProviderState<CombiningValue, ListeningValue, BaseProvider<CombiningValue, ListeningValue>> _providerState;
+class _KeepAliveState<CombiningValue extends ProviderState, ListeningValue>
+    extends BaseProviderState<CombiningValue, ListeningValue,
+        KeepAliveProvider<CombiningValue, ListeningValue>> {
+  List<
+      BaseProviderState<ProviderState, Object,
+          BaseProvider<ProviderState, Object>>> _dependenciesState;
+  BaseProviderState<CombiningValue, ListeningValue,
+      BaseProvider<CombiningValue, ListeningValue>> _providerState;
   VoidCallback _removeProviderListener;
 
   @override
   void _initDependencies(
-    List<BaseProviderState<Object, Object, BaseProvider<Object, Object>>> dependenciesState,
+    List<
+            BaseProviderState<ProviderState, Object,
+                BaseProvider<ProviderState, Object>>>
+        dependenciesState,
   ) {
     super._initDependencies(dependenciesState);
     _dependenciesState = dependenciesState;
@@ -33,7 +41,7 @@ class _KeepAliveState<CombiningValue, ListeningValue>
   }
 
   @override
-  CombiningValue initState() {
+  ListeningValue initState() {
     return _providerState.initState();
   }
 
@@ -43,14 +51,14 @@ class _KeepAliveState<CombiningValue, ListeningValue>
       _dependenciesState,
     );
 
-    _removeProviderListener = _providerState.$addCombiningValueListener((value) {
+    _removeProviderListener = _providerState.$addStateListener((value) {
       $state = value;
     }, fireImmediately: false);
   }
 
   @override
-  VoidCallback $addCombiningValueListener(
-    void Function(CombiningValue) listener, {
+  VoidCallback $addStateListener(
+    void Function(ListeningValue) listener, {
     bool fireImmediately = true,
   }) {
     if (_providerState == null) {
@@ -58,7 +66,7 @@ class _KeepAliveState<CombiningValue, ListeningValue>
       $state = _providerState.initState();
     }
 
-    final superRemoveListener = super.$addCombiningValueListener(
+    final superRemoveListener = super.$addStateListener(
       listener,
       fireImmediately: fireImmediately,
     );
@@ -75,7 +83,8 @@ class _KeepAliveState<CombiningValue, ListeningValue>
   }
 
   @override
-  void didUpdateProvider(KeepAliveProvider<CombiningValue, ListeningValue> oldProvider) {
+  void didUpdateProvider(
+      KeepAliveProvider<CombiningValue, ListeningValue> oldProvider) {
     super.didUpdateProvider(oldProvider);
     if (oldProvider._keptAliveProvider != provider._keptAliveProvider) {
       throw UnsupportedError(
@@ -92,7 +101,7 @@ class _KeepAliveState<CombiningValue, ListeningValue>
   }
 
   @override
-  ListeningValue combiningValueAsListenedValue(CombiningValue value) {
-    return _providerState.combiningValueAsListenedValue(value);
+  CombiningValue createProviderState() {
+    return _providerState.createProviderState();
   }
 }

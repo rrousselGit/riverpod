@@ -9,23 +9,16 @@ import '../framework/framework.dart';
 part 'future_provider_builder.dart';
 part 'future_provider1.dart';
 
-class FutureProviderValue<T> {
+class FutureProviderValue<T> extends ProviderState {
   FutureProviderValue._({
-    @required Future<T> future,
-    @required AsyncValue<T> value,
-  })  : _future = future,
-        _value = value;
+    @required this.future,
+    @required
+        BaseProviderState<ProviderState, Object,
+                BaseProvider<ProviderState, Object>>
+            providerState,
+  }) : super(providerState);
 
-  final Future<T> _future;
-  final AsyncValue<T> _value;
-}
-
-extension $FutureProviderValue<T> on FutureProviderValue<T> {
-  AsyncValue<T> get value => _value;
-}
-
-extension FutureProviderX<T> on ProviderListenerState<FutureProviderValue<T>> {
-  Future<T> get future => $state._future;
+  final Future<T> future;
 }
 
 abstract class FutureProvider<Res>
@@ -77,7 +70,7 @@ class _FutureProviderState<Res> extends BaseProviderState<
     with _FutureProviderStateMixin<Res, _FutureProvider<Res>> {
   @override
   Future<Res> create() {
-    return provider._create(this);
+    return provider._create(ProviderState(this));
   }
 }
 
@@ -88,39 +81,32 @@ mixin _FutureProviderStateMixin<Res, Provider extends _FutureProviderMixin<Res>>
   Future<Res> create();
 
   @override
-  FutureProviderValue<Res> initState() {
+  AsyncValue<Res> initState() {
     _future = create();
     _listen();
 
-    return FutureProviderValue._(
-      future: _future,
-      value: const AsyncValue.loading(),
-    );
+    return const AsyncValue.loading();
   }
 
   Future<void> _listen() async {
     try {
       final value = await _future;
       if (mounted) {
-        $state = FutureProviderValue._(
-          future: _future,
-          value: AsyncValue.data(value),
-        );
+        $state = AsyncValue.data(value);
       }
     } catch (err, stack) {
       if (mounted) {
-        $state = FutureProviderValue._(
-          future: _future,
-          value: AsyncValue.error(err, stack),
-        );
+        $state = AsyncValue.error(err, stack);
       }
     }
   }
 
   @override
-  AsyncValue<Res> combiningValueAsListenedValue(
-      FutureProviderValue<Res> value) {
-    return value._value;
+  FutureProviderValue<Res> createProviderState() {
+    return FutureProviderValue._(
+      future: _future,
+      providerState: this,
+    );
   }
 }
 
@@ -147,17 +133,14 @@ class _DebugFutureProviderValueState<Res> extends BaseProviderState<
   final _completer = Completer<Res>();
 
   @override
-  FutureProviderValue<Res> initState() {
+  AsyncValue<Res> initState() {
     provider._value.when(
       data: _completer.complete,
       loading: () {},
       error: _completer.completeError,
     );
 
-    return FutureProviderValue._(
-      future: _completer.future,
-      value: provider._value,
-    );
+    return provider._value;
   }
 
   @override
@@ -182,8 +165,10 @@ class _DebugFutureProviderValueState<Res> extends BaseProviderState<
   }
 
   @override
-  AsyncValue<Res> combiningValueAsListenedValue(
-      FutureProviderValue<Res> value) {
-    return value._value;
+  FutureProviderValue<Res> createProviderState() {
+    return FutureProviderValue._(
+      future: _completer.future,
+      providerState: this,
+    );
   }
 }

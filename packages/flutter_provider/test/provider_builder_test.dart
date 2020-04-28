@@ -10,7 +10,7 @@ void main() {
 
     // These check the type safety
     ProviderState providerState;
-    ProviderListenerState<ProviderValue<int>> firstState;
+    ProviderValue<int> firstState;
     final Provider<int> provider1 = ProviderBuilder<int>() //
         .add(provider)
         .build(

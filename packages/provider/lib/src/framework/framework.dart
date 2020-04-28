@@ -10,13 +10,14 @@ part 'keep_alive_provider.dart';
 
 // ignore: avoid_private_typedef_functions
 typedef _FallbackProviderStateReader
-    = BaseProviderState<Object, T, BaseProvider<Object, T>> Function<T>(
-  BaseProvider<Object, T>,
+    = BaseProviderState<ProviderState, T, BaseProvider<ProviderState, T>>
+        Function<T>(
+  BaseProvider<ProviderState, T>,
 );
 // ignore: avoid_private_typedef_functions
-typedef _ProviderStateReader
-    = BaseProviderState<Object, Object, BaseProvider<Object, Object>>
-        Function();
+typedef _ProviderStateReader = BaseProviderState<ProviderState, Object,
+        BaseProvider<ProviderState, Object>>
+    Function();
 
 class ProviderStateOwner {
   ProviderStateOwner({
@@ -32,10 +33,12 @@ class ProviderStateOwner {
 
   List<ProviderOverride> _overrides;
 
-  var _providerState = <BaseProvider<Object, Object>,
-      BaseProviderState<Object, Object, BaseProvider<Object, Object>>>{};
+  var _providerState = <
+      BaseProvider<ProviderState, Object>,
+      BaseProviderState<ProviderState, Object,
+          BaseProvider<ProviderState, Object>>>{};
 
-  Map<BaseProvider<Object, Object>, _ProviderStateReader> _stateReaders;
+  Map<BaseProvider<ProviderState, Object>, _ProviderStateReader> _stateReaders;
 
   _FallbackProviderStateReader _fallback;
 
@@ -75,16 +78,17 @@ The provider $this, which denpends on other providers, was rebuilt with differen
     }(), '');
   }
 
-  BaseProviderState<Object, T, BaseProvider<Object, T>> _putIfAbsent<T>(
-    BaseProvider<Object, T> provider, {
-    BaseProvider<Object, Object> origin,
+  BaseProviderState<ProviderState, T, BaseProvider<ProviderState, T>>
+      _putIfAbsent<T>(
+    BaseProvider<ProviderState, T> provider, {
+    BaseProvider<ProviderState, Object> origin,
   }) {
     final key = origin ?? provider;
 
     final localState = _providerState[key];
     if (localState != null) {
-      return localState
-          as BaseProviderState<Object, T, BaseProvider<Object, T>>;
+      return localState as BaseProviderState<ProviderState, T,
+          BaseProvider<ProviderState, T>>;
     }
 
     final state = _createProviderState(
@@ -104,9 +108,12 @@ The provider $this, which denpends on other providers, was rebuilt with differen
 
   BaseProviderState<CombiningValue, ListeningValue,
           BaseProvider<CombiningValue, ListeningValue>>
-      _createProviderState<CombiningValue, ListeningValue>(
+      _createProviderState<CombiningValue extends ProviderState,
+          ListeningValue>(
     BaseProvider<CombiningValue, ListeningValue> provider,
-    List<BaseProviderState<Object, Object, BaseProvider<Object, Object>>>
+    List<
+            BaseProviderState<ProviderState, Object,
+                BaseProvider<ProviderState, Object>>>
         dependencies,
   ) {
     return provider.createState()
@@ -193,7 +200,7 @@ The provider ${previous._provider}, which denpends on other providers, was rebui
 extension OwnerPutIfAbsent on ProviderStateOwner {
   BaseProviderState<CombiningValue, ListeningValue,
           BaseProvider<CombiningValue, ListeningValue>>
-      readProviderState<CombiningValue, ListeningValue>(
+      readProviderState<CombiningValue extends ProviderState, ListeningValue>(
     BaseProvider<CombiningValue, ListeningValue> provider,
   ) {
     final result = _stateReaders[provider]?.call() ?? _fallback(provider);
@@ -202,21 +209,22 @@ extension OwnerPutIfAbsent on ProviderStateOwner {
   }
 }
 
-class ProviderOverride<CombiningValue, ListeningValue> {
+class ProviderOverride<CombiningValue extends ProviderState, ListeningValue> {
   ProviderOverride._(this._provider, this._origin);
 
   final BaseProvider<CombiningValue, ListeningValue> _origin;
   final BaseProvider<CombiningValue, ListeningValue> _provider;
 }
 
-abstract class ProviderListenerState<T> {
-  T get $state;
-}
+class ProviderState {
+  ProviderState(this._providerState);
 
-abstract class ProviderState {
-  bool get mounted;
+  final BaseProviderState<ProviderState, Object,
+      BaseProvider<ProviderState, Object>> _providerState;
 
-  void onDispose(VoidCallback cb);
+  bool get mounted => _providerState.mounted;
+
+  void onDispose(VoidCallback cb) => _providerState.onDispose(cb);
 
   // TODO report error?
 }
