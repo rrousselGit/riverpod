@@ -20,6 +20,22 @@ void main() {
     verify(listener(AsyncValue.data(42))).called(1);
     verifyNoMoreInteractions(listener);
   });
+  test('listener watchOwner not called anymore if result function called', () {
+    final owner = ProviderStateOwner();
+    final listener = ListenerMock();
+    final completer = Completer<int>.sync();
+
+    final removeListener = FutureProvider((_) => completer.future) //
+        .watchOwner(owner, listener);
+
+    verify(listener(const AsyncValue.loading())).called(1);
+    verifyNoMoreInteractions(listener);
+
+    removeListener();
+    completer.complete(42);
+
+    verifyNoMoreInteractions(listener);
+  });
 }
 
 class ListenerMock extends Mock {

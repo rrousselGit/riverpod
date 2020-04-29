@@ -15,6 +15,8 @@ abstract class BaseProvider<CombiningValue extends ProviderState,
   BaseProviderState<CombiningValue, ListenedValue,
       BaseProvider<CombiningValue, ListenedValue>> createState();
 
+
+  /// The callback may never get called
   VoidCallback watchOwner(
     ProviderStateOwner owner,
     void Function(ListenedValue) listener,
@@ -38,6 +40,7 @@ abstract class BaseProviderState<CombiningValue extends ProviderState,
     _$state = $state;
     if (_stateListeners != null) {
       for (final listener in _stateListeners) {
+        // TODO guard
         listener.value($state);
       }
     }

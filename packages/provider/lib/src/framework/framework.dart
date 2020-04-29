@@ -179,9 +179,14 @@ The provider ${previous._provider}, which denpends on other providers, was rebui
         continue;
       }
 
-      _providerState[entry.key]
-        .._provider = newOverride._provider
-        ..didUpdateProvider(oldOverride._provider);
+      final providerState = _providerState[entry.key]
+        .._provider = newOverride._provider;
+
+      try {
+        providerState.didUpdateProvider(oldOverride._provider);
+      } catch (error, stack) {
+        _onError?.call(error, stack);
+      }
     }
   }
 

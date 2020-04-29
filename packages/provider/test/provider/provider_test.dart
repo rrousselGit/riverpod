@@ -28,7 +28,26 @@ void main() {
     expect(provider.readOwner(owner), 42);
     expect(callCount, 2);
   });
-  // TODO watchOwner
+
+  test('watchOwner', () {
+    final owner = ProviderStateOwner();
+    final provider = Provider((_) => 42);
+
+    int lastValue;
+    var callCount = 0;
+
+    final removeListener = provider.watchOwner(owner, (value) {
+      lastValue = value;
+      callCount++;
+    });
+
+    expect(removeListener, isNotNull);
+    expect(callCount, 1);
+    expect(lastValue, 42);
+
+    removeListener();
+    expect(callCount, 1);
+  });
 
   test('dispose', () {
     final owner = ProviderStateOwner();
