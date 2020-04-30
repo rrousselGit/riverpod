@@ -12,9 +12,21 @@ mixin _SetStateProviderStateMixin<T,
 
 // Provider
 
+class _SetStateProvider<T> extends BaseProvider<SetStateProviderValue<T>, T>
+    implements SetStateProvider<T> {
+  _SetStateProvider(this._create);
+
+  final Create<T, SetStateProviderState<T>> _create;
+
+  @override
+  _SetStateProviderState<T> createState() {
+    return _SetStateProviderState<T>();
+  }
+}
+
 class _SetStateProviderState<T>
-    extends BaseProviderState<SetStateProviderValue<T>, T, SetStateProvider<T>>
-    with _SetStateProviderStateMixin<T, SetStateProvider<T>> {
+    extends BaseProviderState<SetStateProviderValue<T>, T, _SetStateProvider<T>>
+    with _SetStateProviderStateMixin<T, _SetStateProvider<T>> {
   @override
   T initState() {
     return provider._create(SetStateProviderState._(this));
@@ -24,7 +36,8 @@ class _SetStateProviderState<T>
 // Provider1
 
 class _SetStateProvider1<ProviderState1 extends BaseProviderValue, T>
-    extends BaseProvider1<ProviderState1, SetStateProviderValue<T>, T> {
+    extends BaseProvider1<ProviderState1, SetStateProviderValue<T>, T>
+    implements SetStateProvider<T> {
   _SetStateProvider1(
     BaseProvider<ProviderState1, Object> provider1,
     this.create,

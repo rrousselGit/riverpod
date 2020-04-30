@@ -97,9 +97,3 @@ void main() {
 class ListenerMock extends Mock {
   void call(int value);
 }
-
-class MySetStateProvider extends SetStateProvider<int> {
-  MySetStateProvider(
-    Create<int, SetStateProviderState<int>> create,
-  ) : super(create);
-}
