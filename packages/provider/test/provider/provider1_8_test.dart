@@ -11,7 +11,6 @@ void main() {
     final provider = ProviderBuilder<int>() //
         .add(dependency)
         .build((state, first) {
-      // TODO shouldn't have onDispose
       return first.value * 2;
     });
 

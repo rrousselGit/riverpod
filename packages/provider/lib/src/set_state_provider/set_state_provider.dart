@@ -42,10 +42,21 @@ class SetStateProviderState<T> extends ProviderState {
 
 /* Providers */
 
-abstract class SetStateProvider<T>
-    extends BaseProvider<SetStateProviderValue<T>, T> {
-  factory SetStateProvider(Create<T, SetStateProviderState<T>> create) =
-      _SetStateProvider<T>;
+// abstract class SetStateProvider<T>
+//     extends BaseProvider<SetStateProviderValue<T>, T> {
+//   factory SetStateProvider(Create<T, SetStateProviderState<T>> create) =
+//       _SetStateProvider<T>;
+// }
+
+class SetStateProvider<T> extends BaseProvider<SetStateProviderValue<T>, T> {
+  SetStateProvider(this._create);
+
+  final Create<T, SetStateProviderState<T>> _create;
+
+  @override
+  _SetStateProviderState<T> createState() {
+    return _SetStateProviderState<T>();
+  }
 }
 
 /* Builder */

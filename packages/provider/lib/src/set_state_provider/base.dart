@@ -1,7 +1,5 @@
 part of 'set_state_provider.dart';
 
-mixin _SetStateProviderMixin<T> implements SetStateProvider<T> {}
-
 mixin _SetStateProviderStateMixin<T,
         P extends BaseProvider<SetStateProviderValue<T>, T>>
     on BaseProviderState<SetStateProviderValue<T>, T, P> {
@@ -14,32 +12,19 @@ mixin _SetStateProviderStateMixin<T,
 
 // Provider
 
-class _SetStateProvider<T> extends BaseProvider<SetStateProviderValue<T>, T>
-    with _SetStateProviderMixin<T> {
-  _SetStateProvider(this.create);
-
-  final Create<T, SetStateProviderState<T>> create;
-
-  @override
-  _SetStateProviderState<T> createState() {
-    return _SetStateProviderState<T>();
-  }
-}
-
 class _SetStateProviderState<T>
-    extends BaseProviderState<SetStateProviderValue<T>, T, _SetStateProvider<T>>
-    with _SetStateProviderStateMixin<T, _SetStateProvider<T>> {
+    extends BaseProviderState<SetStateProviderValue<T>, T, SetStateProvider<T>>
+    with _SetStateProviderStateMixin<T, SetStateProvider<T>> {
   @override
   T initState() {
-    return provider.create(SetStateProviderState._(this));
+    return provider._create(SetStateProviderState._(this));
   }
 }
 
 // Provider1
 
 class _SetStateProvider1<ProviderState1 extends BaseProviderValue, T>
-    extends BaseProvider1<ProviderState1, SetStateProviderValue<T>, T>
-    with _SetStateProviderMixin<T> {
+    extends BaseProvider1<ProviderState1, SetStateProviderValue<T>, T> {
   _SetStateProvider1(
     BaseProvider<ProviderState1, Object> provider1,
     this.create,
