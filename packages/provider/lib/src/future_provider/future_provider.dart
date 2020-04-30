@@ -9,14 +9,10 @@ import '../framework/framework.dart';
 part 'future_provider_builder.dart';
 part 'future_provider1.dart';
 
-class FutureProviderValue<T> extends ProviderState {
+class FutureProviderValue<T> extends BaseProviderValue {
   FutureProviderValue._({
     @required this.future,
-    @required
-        BaseProviderState<ProviderState, Object,
-                BaseProvider<ProviderState, Object>>
-            providerState,
-  }) : super(providerState);
+  });
 
   final Future<T> future;
 }
@@ -103,10 +99,7 @@ mixin _FutureProviderStateMixin<Res, Provider extends _FutureProviderMixin<Res>>
 
   @override
   FutureProviderValue<Res> createProviderState() {
-    return FutureProviderValue._(
-      future: _future,
-      providerState: this,
-    );
+    return FutureProviderValue._(future: _future);
   }
 }
 
@@ -166,9 +159,6 @@ class _DebugFutureProviderValueState<Res> extends BaseProviderState<
 
   @override
   FutureProviderValue<Res> createProviderState() {
-    return FutureProviderValue._(
-      future: _completer.future,
-      providerState: this,
-    );
+    return FutureProviderValue._(future: _completer.future);
   }
 }

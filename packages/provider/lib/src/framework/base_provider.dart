@@ -1,7 +1,7 @@
 part of 'framework.dart';
 
 @immutable
-abstract class BaseProvider<CombiningValue extends ProviderState,
+abstract class BaseProvider<CombiningValue extends BaseProviderValue,
     ListenedValue> {
   ProviderOverride<CombiningValue, ListenedValue> overrideForSubtree(
     BaseProvider<CombiningValue, ListenedValue> provider,
@@ -9,12 +9,11 @@ abstract class BaseProvider<CombiningValue extends ProviderState,
     return ProviderOverride._(provider, this);
   }
 
-  Iterable<BaseProvider<ProviderState, Object>> _allDependencies() sync* {}
+  Iterable<BaseProvider<BaseProviderValue, Object>> _allDependencies() sync* {}
 
   @visibleForOverriding
   BaseProviderState<CombiningValue, ListenedValue,
       BaseProvider<CombiningValue, ListenedValue>> createState();
-
 
   /// The callback may never get called
   VoidCallback watchOwner(
@@ -27,7 +26,7 @@ abstract class BaseProvider<CombiningValue extends ProviderState,
 }
 
 @visibleForOverriding
-abstract class BaseProviderState<CombiningValue extends ProviderState,
+abstract class BaseProviderState<CombiningValue extends BaseProviderValue,
     ListenedValue, P extends BaseProvider<CombiningValue, ListenedValue>> {
   P _provider;
 
@@ -56,8 +55,8 @@ abstract class BaseProviderState<CombiningValue extends ProviderState,
   /// Keep track of this provider's dependencies on mount to assert that they
   /// never change.
   List<
-      BaseProviderState<ProviderState, Object,
-          BaseProvider<ProviderState, Object>>> _debugInitialDependenciesState;
+      BaseProviderState<BaseProviderValue, Object,
+          BaseProvider<BaseProviderValue, Object>>> _debugInitialDependenciesState;
 
   DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
   LinkedList<_LinkedListEntry<void Function(ListenedValue)>> _stateListeners;
@@ -65,8 +64,8 @@ abstract class BaseProviderState<CombiningValue extends ProviderState,
   @mustCallSuper
   void _initDependencies(
     List<
-            BaseProviderState<ProviderState, Object,
-                BaseProvider<ProviderState, Object>>>
+            BaseProviderState<BaseProviderValue, Object,
+                BaseProvider<BaseProviderValue, Object>>>
         dependenciesState,
   ) {
     assert(() {

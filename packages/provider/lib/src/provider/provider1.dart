@@ -2,7 +2,7 @@ part of 'provider.dart';
 
 // Provider1
 
-abstract class Provider1<First extends ProviderState, T>
+abstract class Provider1<First extends BaseProviderValue, T>
     extends BaseProvider1<First, ProviderValue<T>, T> implements Provider<T> {
   factory Provider1(
     BaseProvider<First, Object> firstProvider,
@@ -10,7 +10,7 @@ abstract class Provider1<First extends ProviderState, T>
   ) = _Provider1<First, T>;
 }
 
-class _Provider1<First extends ProviderState, T>
+class _Provider1<First extends BaseProviderValue, T>
     extends BaseProvider1<First, ProviderValue<T>, T>
     with _ProviderMixin<T>
     implements Provider1<First, T> {
@@ -27,7 +27,7 @@ class _Provider1<First extends ProviderState, T>
   }
 }
 
-class _Provider1State<First extends ProviderState, T>
+class _Provider1State<First extends BaseProviderValue, T>
     extends BaseProvider1State<First, ProviderValue<T>, T, _Provider1<First, T>>
     with _ProviderStateMixin<T, _Provider1<First, T>> {
   @override
@@ -36,7 +36,7 @@ class _Provider1State<First extends ProviderState, T>
   }
 }
 
-extension ProviderBuilder1X<First extends ProviderState, T>
+extension ProviderBuilder1X<First extends BaseProviderValue, T>
     on Combiner1<First, T, Provider> {
   Provider<T> build(Create1<First, T, ProviderState> cb) {
     return Provider1(first, cb);
@@ -46,8 +46,8 @@ extension ProviderBuilder1X<First extends ProviderState, T>
 // Provider2
 
 abstract class Provider2<
-        First extends ProviderState,
-        Second extends ProviderState,
+        First extends BaseProviderValue,
+        Second extends BaseProviderValue,
         T> extends BaseProvider2<First, Second, ProviderValue<T>, T>
     implements Provider<T> {
   factory Provider2(
@@ -57,7 +57,7 @@ abstract class Provider2<
   ) = _Provider2<First, Second, T>;
 }
 
-class _Provider2<First extends ProviderState, Second extends ProviderState, T>
+class _Provider2<First extends BaseProviderValue, Second extends BaseProviderValue, T>
     extends BaseProvider2<First, Second, ProviderValue<T>, T>
     with _ProviderMixin<T>
     implements Provider2<First, Second, T> {
@@ -75,7 +75,7 @@ class _Provider2<First extends ProviderState, Second extends ProviderState, T>
   }
 }
 
-class _Provider2State<First extends ProviderState, Second extends ProviderState,
+class _Provider2State<First extends BaseProviderValue, Second extends BaseProviderValue,
         T>
     extends BaseProvider2State<First, Second, ProviderValue<T>, T,
         _Provider2<First, Second, T>>
@@ -90,8 +90,8 @@ class _Provider2State<First extends ProviderState, Second extends ProviderState,
   }
 }
 
-extension ProviderBuilder2X<First extends ProviderState,
-    Second extends ProviderState, T> on Combiner2<First, Second, T, Provider> {
+extension ProviderBuilder2X<First extends BaseProviderValue,
+    Second extends BaseProviderValue, T> on Combiner2<First, Second, T, Provider> {
   Provider<T> build(Create2<First, Second, T, ProviderState> cb) {
     return Provider2(first, second, cb);
   }

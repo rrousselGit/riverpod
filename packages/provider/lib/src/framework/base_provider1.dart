@@ -3,15 +3,15 @@ part of 'framework.dart';
 // BaseProvider1
 
 abstract class BaseProvider1<
-    First extends ProviderState,
-    CombiningValue extends ProviderState,
+    First extends BaseProviderValue,
+    CombiningValue extends BaseProviderValue,
     ListenedValue> extends BaseProvider<CombiningValue, ListenedValue> {
   BaseProvider1(this._first);
 
   final BaseProvider<First, Object> _first;
 
   @override
-  Iterable<BaseProvider<ProviderState, Object>> _allDependencies() sync* {
+  Iterable<BaseProvider<BaseProviderValue, Object>> _allDependencies() sync* {
     yield _first;
   }
 
@@ -21,8 +21,8 @@ abstract class BaseProvider1<
 }
 
 abstract class BaseProvider1State<
-        First extends ProviderState,
-        CombiningValue extends ProviderState,
+        First extends BaseProviderValue,
+        CombiningValue extends BaseProviderValue,
         ListenedValue,
         T extends BaseProvider1<First, CombiningValue, ListenedValue>>
     extends BaseProviderState<CombiningValue, ListenedValue, T> {
@@ -34,21 +34,29 @@ abstract class BaseProvider1State<
   @override
   void _initDependencies(
     List<
-            BaseProviderState<ProviderState, Object,
-                BaseProvider<ProviderState, Object>>>
+            BaseProviderState<BaseProviderValue, Object,
+                BaseProvider<BaseProviderValue, Object>>>
         dependenciesState,
   ) {
     super._initDependencies(dependenciesState);
-    _firstDependencyState = dependenciesState.first.createProviderState() as First;
+    _firstDependencyState =
+        dependenciesState.first.createProviderState() as First;
+  }
+
+  @override
+  void dispose() {
+    _firstDependencyState.dispose();
+    // TODO test
+    super.dispose();
   }
 }
 
 // BaseProvider2
 
 abstract class BaseProvider2<
-    First extends ProviderState,
-    Second extends ProviderState,
-    CombiningValue extends ProviderState,
+    First extends BaseProviderValue,
+    Second extends BaseProviderValue,
+    CombiningValue extends BaseProviderValue,
     ListenedValue> extends BaseProvider<CombiningValue, ListenedValue> {
   BaseProvider2(this._first, this._second);
 
@@ -56,7 +64,7 @@ abstract class BaseProvider2<
   final BaseProvider<Second, Object> _second;
 
   @override
-  Iterable<BaseProvider<ProviderState, Object>> _allDependencies() sync* {
+  Iterable<BaseProvider<BaseProviderValue, Object>> _allDependencies() sync* {
     yield _first;
     yield _second;
   }
@@ -68,9 +76,9 @@ abstract class BaseProvider2<
 }
 
 abstract class BaseProvider2State<
-        First extends ProviderState,
-        Second extends ProviderState,
-        CombiningValue extends ProviderState,
+        First extends BaseProviderValue,
+        Second extends BaseProviderValue,
+        CombiningValue extends BaseProviderValue,
         ListenedValue,
         T extends BaseProvider2<First, Second, CombiningValue, ListenedValue>>
     extends BaseProviderState<CombiningValue, ListenedValue, T> {
@@ -87,12 +95,22 @@ abstract class BaseProvider2State<
   @override
   void _initDependencies(
     List<
-            BaseProviderState<ProviderState, Object,
-                BaseProvider<ProviderState, Object>>>
+            BaseProviderState<BaseProviderValue, Object,
+                BaseProvider<BaseProviderValue, Object>>>
         dependenciesState,
   ) {
     super._initDependencies(dependenciesState);
-    _firstDependencyState = dependenciesState.first.createProviderState() as First;
-    _secondDependencyState = dependenciesState[1].createProviderState() as Second;
+    _firstDependencyState =
+        dependenciesState.first.createProviderState() as First;
+    _secondDependencyState =
+        dependenciesState[1].createProviderState() as Second;
+  }
+
+  @override
+  void dispose() {
+    _firstDependencyState.dispose();
+    _secondDependencyState.dispose();
+    // TODO test
+    super.dispose();
   }
 }

@@ -9,13 +9,8 @@ part 'base.dart';
 // This is the public API.
 
 /* Value */
-class StreamProviderValue<T> extends ProviderState {
-  StreamProviderValue._(
-    this.stream,
-    BaseProviderState<StreamProviderValue<T>, AsyncValue<T>,
-            BaseProvider<StreamProviderValue<T>, AsyncValue<T>>>
-        _state,
-  ) : super(_state);
+class StreamProviderValue<T> extends BaseProviderValue {
+  StreamProviderValue._(this.stream);
 
   final Stream<T> stream;
 }

@@ -9,11 +9,8 @@ part 'base.dart';
 // This is the public API.
 
 /* Value */
-class ProviderValue<T> extends ProviderState {
-  ProviderValue._(
-    this.value,
-    _ProviderStateMixin<T, BaseProvider<ProviderValue<T>, T>> _state,
-  ) : super(_state);
+class ProviderValue<T> extends BaseProviderValue {
+  ProviderValue._(this.value);
 
   final T value;
 }

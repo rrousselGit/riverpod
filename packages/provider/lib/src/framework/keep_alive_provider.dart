@@ -1,13 +1,13 @@
 part of 'framework.dart';
 
-abstract class KeepAliveProvider<CombiningValue extends ProviderState,
+abstract class KeepAliveProvider<CombiningValue extends BaseProviderValue,
     ListeningValue> extends BaseProvider<CombiningValue, ListeningValue> {
   KeepAliveProvider(this._keptAliveProvider);
 
   final BaseProvider<CombiningValue, ListeningValue> _keptAliveProvider;
 
   @override
-  Iterable<BaseProvider<ProviderState, Object>> _allDependencies() {
+  Iterable<BaseProvider<BaseProviderValue, Object>> _allDependencies() {
     return _keptAliveProvider._allDependencies();
   }
 
@@ -17,12 +17,12 @@ abstract class KeepAliveProvider<CombiningValue extends ProviderState,
   }
 }
 
-class _KeepAliveState<CombiningValue extends ProviderState, ListeningValue>
+class _KeepAliveState<CombiningValue extends BaseProviderValue, ListeningValue>
     extends BaseProviderState<CombiningValue, ListeningValue,
         KeepAliveProvider<CombiningValue, ListeningValue>> {
   List<
-      BaseProviderState<ProviderState, Object,
-          BaseProvider<ProviderState, Object>>> _dependenciesState;
+      BaseProviderState<BaseProviderValue, Object,
+          BaseProvider<BaseProviderValue, Object>>> _dependenciesState;
   BaseProviderState<CombiningValue, ListeningValue,
       BaseProvider<CombiningValue, ListeningValue>> _providerState;
   VoidCallback _removeProviderListener;
@@ -30,8 +30,8 @@ class _KeepAliveState<CombiningValue extends ProviderState, ListeningValue>
   @override
   void _initDependencies(
     List<
-            BaseProviderState<ProviderState, Object,
-                BaseProvider<ProviderState, Object>>>
+            BaseProviderState<BaseProviderValue, Object,
+                BaseProvider<BaseProviderValue, Object>>>
         dependenciesState,
   ) {
     super._initDependencies(dependenciesState);

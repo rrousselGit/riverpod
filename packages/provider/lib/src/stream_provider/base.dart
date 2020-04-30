@@ -29,7 +29,7 @@ class _StreamProviderState<T> extends BaseProviderState<StreamProviderValue<T>,
 
   @override
   StreamProviderValue<T> createProviderState() {
-    return StreamProviderValue._(_stream, this);
+    return StreamProviderValue._(_stream);
   }
 
   @override
@@ -76,7 +76,7 @@ class _ValueStreamProviderState<T> extends BaseProviderState<
 
   @override
   StreamProviderValue<T> createProviderState() {
-    return StreamProviderValue._(_controller.stream, this);
+    return StreamProviderValue._(_controller.stream);
   }
 
   @override

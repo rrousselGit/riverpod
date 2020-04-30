@@ -22,7 +22,7 @@ mixin _ProviderStateMixin<T, P extends BaseProvider<ProviderValue<T>, T>>
     implements BaseProviderState<ProviderValue<T>, T, P> {
   @override
   ProviderValue<T> createProviderState() {
-    return ProviderValue._($state, this);
+    return ProviderValue._($state);
   }
 }
 

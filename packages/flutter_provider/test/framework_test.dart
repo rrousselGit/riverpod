@@ -604,13 +604,8 @@ class MockDidUpdateProvider extends Mock {
   void call(TestProviderState state, TestProvider oldProvider);
 }
 
-class TestProviderValue extends ProviderState {
-  TestProviderValue(
-    this.value,
-    BaseProviderState<ProviderState, Object,
-            BaseProvider<ProviderState, Object>>
-        providerState,
-  ) : super(providerState);
+class TestProviderValue extends BaseProviderValue {
+  TestProviderValue(this.value);
 
   final int value;
 }
@@ -667,7 +662,7 @@ class TestProviderState
 
   @override
   TestProviderValue createProviderState() {
-    return TestProviderValue($state, this);
+    return TestProviderValue($state);
   }
 }
 
@@ -678,8 +673,8 @@ class MyImmutableProvider extends BaseProvider<ProviderValue<int>, int> {
   }
 }
 
-class MyImmutableProviderState
-    extends BaseProviderState<ProviderValue<int>, int, MyImmutableProvider> {
+class MyImmutableProviderState extends BaseProviderState<ProviderValue<int>,
+    int, MyImmutableProvider> {
   @override
   int initState() {
     throw UnimplementedError();

@@ -1,6 +1,6 @@
 part of 'future_provider.dart';
 
-class FutureProvider1<A extends ProviderState, Res>
+class FutureProvider1<A extends BaseProviderValue, Res>
     extends BaseProvider1<A, FutureProviderValue<Res>, AsyncValue<Res>>
     with _FutureProviderMixin<Res> {
   FutureProvider1(BaseProvider<A, Object> first, this._create) : super(first);
@@ -13,7 +13,7 @@ class FutureProvider1<A extends ProviderState, Res>
   }
 }
 
-class _FutureProvider1State<A extends ProviderState, Res>
+class _FutureProvider1State<A extends BaseProviderValue, Res>
     extends BaseProvider1State<A, FutureProviderValue<Res>, AsyncValue<Res>,
         FutureProvider1<A, Res>>
     with _FutureProviderStateMixin<Res, FutureProvider1<A, Res>> {
