@@ -2,12 +2,8 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import '../combiner.dart';
 import '../common.dart';
 import '../framework/framework.dart';
-
-part 'future_provider_builder.dart';
-part 'future_provider1.dart';
 
 class FutureProviderValue<T> extends BaseProviderValue {
   FutureProviderValue._({

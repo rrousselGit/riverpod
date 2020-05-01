@@ -10,4 +10,7 @@ void main() {
     // TODO error handling state.onChange (if any) callback
     // TODO no onError fallback to zone
   });
+  // TODO test dependOn disposes the provider state (keep alive?)
+  // TODO dependOn used on same provider multiple times returns same instance
+  // TODO ProviderState is unusable after dispose (dependOn/onDispose)
 }

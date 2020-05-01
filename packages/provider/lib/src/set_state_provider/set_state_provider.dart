@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import '../combiner.dart';
 import '../common.dart';
 import '../framework/framework.dart';
 
@@ -46,17 +45,4 @@ abstract class SetStateProvider<T>
     extends BaseProvider<SetStateProviderValue<T>, T> {
   factory SetStateProvider(Create<T, SetStateProviderState<T>> create) =
       _SetStateProvider<T>;
-}
-
-/* Builder */
-
-mixin _Noop {}
-
-class SetStateProviderBuilder<Res> = Combiner<Res, SetStateProvider> with _Noop;
-
-extension SetStateProviderBuilder1X<First extends BaseProviderValue, T>
-    on Combiner1<First, T, SetStateProvider> {
-  SetStateProvider<T> build(Create1<First, T, SetStateProviderState<T>> cb) {
-    return _SetStateProvider1(first, cb);
-  }
 }

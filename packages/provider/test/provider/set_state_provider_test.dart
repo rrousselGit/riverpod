@@ -58,9 +58,8 @@ void main() {
       return 1;
     });
 
-    final combining = SetStateProviderBuilder<int>() //
-        .add(provider)
-        .build((state, first) {
+    final combining = SetStateProvider<int>((state) {
+      final first = state.dependOn(provider);
       int result;
       first.watch((value) {
         state.state = result = value * 2;

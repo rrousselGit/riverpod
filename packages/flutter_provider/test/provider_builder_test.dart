@@ -11,15 +11,13 @@ void main() {
     // These check the type safety
     ProviderState providerState;
     ProviderValue<int> firstState;
-    final Provider<int> provider1 = ProviderBuilder<int>() //
-        .add(provider)
-        .build(
-      (state, first) {
-        providerState = state;
-        firstState = first;
-        return first.value * 2;
-      },
-    );
+
+    final Provider<int> provider1 = Provider<int>((state) {
+      final first = state.dependOn(provider);
+      providerState = state;
+      firstState = first;
+      return first.value * 2;
+    });
 
     await tester.pumpWidget(
       ProviderScope(

@@ -189,9 +189,8 @@ void main() {
       );
 
       Stream<int> stream;
-      final combinedProvider = ProviderBuilder<int>() //
-          .add(provider)
-          .build((_, first) {
+      final combinedProvider = Provider<int>((state) {
+        final first = state.dependOn(provider);
         stream = first.stream;
         return 42;
       });
@@ -217,9 +216,8 @@ void main() {
     final provider = StreamProvider((state) => expectedStream);
 
     Stream<int> stream;
-    final combinedProvider = ProviderBuilder<int>() //
-        .add(provider)
-        .build((_, first) {
+    final combinedProvider = Provider<int>((state) {
+      final first = state.dependOn(provider);
       stream = first.stream;
       return 42;
     });

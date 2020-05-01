@@ -9,8 +9,6 @@ abstract class BaseProvider<CombiningValue extends BaseProviderValue,
     return ProviderOverride._(provider, this);
   }
 
-  Iterable<BaseProvider<BaseProviderValue, Object>> _allDependencies() sync* {}
-
   @visibleForOverriding
   BaseProviderState<CombiningValue, ListenedValue,
       BaseProvider<CombiningValue, ListenedValue>> createState();
@@ -52,27 +50,8 @@ abstract class BaseProviderState<CombiningValue extends BaseProviderValue,
   ProviderStateOwner _owner;
   ProviderStateOwner get owner => _owner;
 
-  /// Keep track of this provider's dependencies on mount to assert that they
-  /// never change.
-  List<
-      BaseProviderState<BaseProviderValue, Object,
-          BaseProvider<BaseProviderValue, Object>>> _debugInitialDependenciesState;
-
   DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
   LinkedList<_LinkedListEntry<void Function(ListenedValue)>> _stateListeners;
-
-  @mustCallSuper
-  void _initDependencies(
-    List<
-            BaseProviderState<BaseProviderValue, Object,
-                BaseProvider<BaseProviderValue, Object>>>
-        dependenciesState,
-  ) {
-    assert(() {
-      _debugInitialDependenciesState = dependenciesState;
-      return true;
-    }(), '');
-  }
 
   @protected
   ListenedValue initState();

@@ -32,31 +32,3 @@ class _SetStateProviderState<T>
     return provider._create(SetStateProviderState._(this));
   }
 }
-
-// Provider1
-
-class _SetStateProvider1<ProviderState1 extends BaseProviderValue, T>
-    extends BaseProvider1<ProviderState1, SetStateProviderValue<T>, T>
-    implements SetStateProvider<T> {
-  _SetStateProvider1(
-    BaseProvider<ProviderState1, Object> provider1,
-    this.create,
-  ) : super(provider1);
-
-  final Create1<ProviderState1, T, SetStateProviderState<T>> create;
-
-  @override
-  _SetStateProviderState1<ProviderState1, T> createState() {
-    return _SetStateProviderState1<ProviderState1, T>();
-  }
-}
-
-class _SetStateProviderState1<ProviderState1 extends BaseProviderValue, T>
-    extends BaseProvider1State<ProviderState1, SetStateProviderValue<T>, T,
-        _SetStateProvider1<ProviderState1, T>>
-    with _SetStateProviderStateMixin<T, _SetStateProvider1<ProviderState1, T>> {
-  @override
-  T initState() {
-    return provider.create(SetStateProviderState._(this), firstDependencyState);
-  }
-}

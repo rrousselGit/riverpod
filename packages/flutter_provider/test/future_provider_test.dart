@@ -147,8 +147,9 @@ void main() {
 
     Future<int> future;
     var completed = false;
-    final useProxy = ProviderBuilder<String>().add(useFuture).build(
-      (state, first) {
+    final useProxy = Provider<String>(
+      (state) {
+        final first = state.dependOn(useFuture);
         future = first.future
           ..then(
             (value) => completed = true,

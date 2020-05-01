@@ -7,9 +7,8 @@ void main() {
   testWidgets('FutureProvider into FutureProvider1', (tester) async {
     final useFuture = FutureProvider((_) async => 42);
 
-    final useFuture1 = FutureProviderBuilder<int>() //
-        .add(useFuture)
-        .build((state, other) async {
+    final useFuture1 = FutureProvider<int>((state) async {
+      final other = state.dependOn(useFuture);
       return await other.future * 2;
     });
 
@@ -37,9 +36,8 @@ void main() {
   testWidgets('FutureProvider1 works with other providers', (tester) async {
     final useFuture = Provider((_) => 42);
 
-    final useFuture1 = FutureProviderBuilder<int>() //
-        .add(useFuture)
-        .build((state, other) async {
+    final useFuture1 = FutureProvider<int>((state) async {
+      final other = state.dependOn(useFuture);
       return other.value * 2;
     });
 
@@ -67,12 +65,10 @@ void main() {
   testWidgets('FutureProvider1 can be used directly', (tester) async {
     final useFuture = Provider((_) => 42);
 
-    final useFuture1 = FutureProvider1<ProviderValue<int>, int>(
-      useFuture,
-      (state, other) async {
-        return other.value * 2;
-      },
-    );
+    final useFuture1 = FutureProvider<int>((state) async {
+      final other = state.dependOn(useFuture);
+      return other.value * 2;
+    });
 
     await tester.pumpWidget(
       ProviderScope(

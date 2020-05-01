@@ -1,11 +1,10 @@
 import 'dart:collection';
 
-import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
+
 import '../common.dart';
 
 part 'base_provider.dart';
-part 'base_provider1.dart';
 part 'keep_alive_provider.dart';
 
 // ignore: avoid_private_typedef_functions
@@ -57,26 +56,6 @@ class ProviderStateOwner {
           );
         },
     };
-
-    // Verify that the providers that depends on other providers kept the same dependency
-    assert(() {
-      for (final providerState in _providerState.values) {
-        final newDendencies = providerState.provider
-            ._allDependencies()
-            .map(readProviderState)
-            .toList();
-
-        if (!const DeepCollectionEquality().equals(
-            providerState._debugInitialDependenciesState, newDendencies)) {
-          _onError?.call(
-            UnsupportedError('''
-The provider $this, which denpends on other providers, was rebuilt with different dependencies.'''),
-            StackTrace.current,
-          );
-        }
-      }
-      return true;
-    }(), '');
   }
 
   BaseProviderState<BaseProviderValue, T, BaseProvider<BaseProviderValue, T>>
@@ -92,13 +71,7 @@ The provider $this, which denpends on other providers, was rebuilt with differen
           BaseProvider<BaseProviderValue, T>>;
     }
 
-    final state = _createProviderState(
-      provider,
-      provider //
-          ._allDependencies()
-          .map(readProviderState)
-          .toList(),
-    );
+    final state = _createProviderState(provider);
     _providerState[key] = state;
 
     //ignore: invalid_use_of_protected_member
@@ -112,15 +85,10 @@ The provider $this, which denpends on other providers, was rebuilt with differen
       _createProviderState<CombiningValue extends BaseProviderValue,
           ListeningValue>(
     BaseProvider<CombiningValue, ListeningValue> provider,
-    List<
-            BaseProviderState<BaseProviderValue, Object,
-                BaseProvider<BaseProviderValue, Object>>>
-        dependencies,
   ) {
     return provider.createState()
       .._provider = provider
-      .._owner = this
-      .._initDependencies(dependencies);
+      .._owner = this;
   }
 
   void updateOverrides(List<ProviderOverride> overrides) {
@@ -149,14 +117,6 @@ Changing the kind of override or reordering overrides is not supported.
           throw UnsupportedError(
             'The provider overriden at the index $i changed, which is unsupported.',
           );
-        }
-
-        if (!const DeepCollectionEquality().equals(
-          previous._provider._allDependencies(),
-          next._provider._allDependencies(),
-        )) {
-          throw UnsupportedError('''
-The provider ${previous._provider}, which denpends on other providers, was rebuilt with different dependencies.''');
         }
       }
 
@@ -238,6 +198,20 @@ class ProviderState {
   bool get mounted => _providerState.mounted;
 
   void onDispose(VoidCallback cb) => _providerState.onDispose(cb);
+
+  Map<BaseProvider<BaseProviderValue, Object>, BaseProviderValue> _dependencies;
+
+  T dependOn<T extends BaseProviderValue>(BaseProvider<T, Object> provider) {
+    _dependencies ??= {};
+    return _dependencies.putIfAbsent(provider, () {
+      final targetProviderState = _providerState._owner
+          .readProviderState(provider)
+          .createProviderState();
+      onDispose(targetProviderState.dispose);
+
+      return targetProviderState;
+    }) as T;
+  }
 
   // TODO report error?
 }

@@ -8,9 +8,8 @@ void main() {
   test('Provider1', () {
     final owner = ProviderStateOwner();
 
-    final provider = ProviderBuilder<int>() //
-        .add(dependency)
-        .build((state, first) {
+    final provider = Provider((state) {
+      final first = state.dependOn(dependency);
       return first.value * 2;
     });
 
@@ -21,10 +20,10 @@ void main() {
   test('Provider2', () {
     final owner = ProviderStateOwner();
 
-    final provider = ProviderBuilder<String>() //
-        .add(dependency)
-        .add(dependency2)
-        .build((state, first, second) {
+    final provider = Provider((state) {
+      final first = state.dependOn(dependency);
+      final second = state.dependOn(dependency2);
+
       return '${first.value} ${second.value}';
     });
 

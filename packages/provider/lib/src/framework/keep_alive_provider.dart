@@ -7,11 +7,6 @@ abstract class KeepAliveProvider<CombiningValue extends BaseProviderValue,
   final BaseProvider<CombiningValue, ListeningValue> _keptAliveProvider;
 
   @override
-  Iterable<BaseProvider<BaseProviderValue, Object>> _allDependencies() {
-    return _keptAliveProvider._allDependencies();
-  }
-
-  @override
   _KeepAliveState<CombiningValue, ListeningValue> createState() {
     return _KeepAliveState<CombiningValue, ListeningValue>();
   }
@@ -20,36 +15,18 @@ abstract class KeepAliveProvider<CombiningValue extends BaseProviderValue,
 class _KeepAliveState<CombiningValue extends BaseProviderValue, ListeningValue>
     extends BaseProviderState<CombiningValue, ListeningValue,
         KeepAliveProvider<CombiningValue, ListeningValue>> {
-  List<
-      BaseProviderState<BaseProviderValue, Object,
-          BaseProvider<BaseProviderValue, Object>>> _dependenciesState;
   BaseProviderState<CombiningValue, ListeningValue,
       BaseProvider<CombiningValue, ListeningValue>> _providerState;
   VoidCallback _removeProviderListener;
 
   @override
-  void _initDependencies(
-    List<
-            BaseProviderState<BaseProviderValue, Object,
-                BaseProvider<BaseProviderValue, Object>>>
-        dependenciesState,
-  ) {
-    super._initDependencies(dependenciesState);
-    _dependenciesState = dependenciesState;
-
-    _createProxyState();
-  }
-
-  @override
   ListeningValue initState() {
+    _createProxyState();
     return _providerState.initState();
   }
 
   void _createProxyState() {
-    _providerState = _owner._createProviderState(
-      provider._keptAliveProvider,
-      _dependenciesState,
-    );
+    _providerState = _owner._createProviderState(provider._keptAliveProvider);
 
     _removeProviderListener = _providerState.$addStateListener((value) {
       $state = value;
