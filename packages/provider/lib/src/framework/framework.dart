@@ -74,6 +74,7 @@ class ProviderStateOwner {
     final state = _createProviderState(provider);
     _providerState[key] = state;
 
+    // TODO move before _providerState[key] = state
     //ignore: invalid_use_of_protected_member
     state.$state = state.initState();
 
@@ -152,7 +153,6 @@ Changing the kind of override or reordering overrides is not supported.
   }
 
   void dispose() {
-    // TODO: dispose order -> proxy first
     for (final state in _providerState.values) {
       try {
         state.dispose();
@@ -206,6 +206,7 @@ class ProviderState {
     return _dependencies.putIfAbsent(provider, () {
       final targetProviderState = _providerState._owner
           .readProviderState(provider)
+          // TODO fix naming
           .createProviderState();
       onDispose(targetProviderState.dispose);
 
