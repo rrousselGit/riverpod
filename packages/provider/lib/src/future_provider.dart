@@ -2,13 +2,11 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import '../common.dart';
-import '../framework/framework.dart';
+import 'common.dart';
+import 'framework/framework.dart';
 
 class FutureProviderValue<T> extends BaseProviderValue {
-  FutureProviderValue._({
-    @required this.future,
-  });
+  FutureProviderValue._({@required this.future});
 
   final Future<T> future;
 }

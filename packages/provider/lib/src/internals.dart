@@ -7,7 +7,7 @@ library internals;
 
 export 'common.dart';
 export 'framework/framework.dart';
-export 'future_provider/future_provider.dart';
+export 'future_provider.dart';
 export 'provider.dart';
-export 'set_state_provider/set_state_provider.dart';
+export 'set_state_provider.dart';
 export 'stream_provider/stream_provider.dart';

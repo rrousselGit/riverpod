@@ -1,9 +1,7 @@
 import 'dart:collection';
 
-import '../common.dart';
-import '../framework/framework.dart';
-
-part 'base.dart';
+import 'common.dart';
+import 'framework/framework.dart';
 
 // This files contains the interfaces for all the variants of Provider.
 // This is the public API.
@@ -41,8 +39,26 @@ class SetStateProviderState<T> extends ProviderState {
 
 /* Providers */
 
-abstract class SetStateProvider<T>
-    extends BaseProvider<SetStateProviderValue<T>, T> {
-  factory SetStateProvider(Create<T, SetStateProviderState<T>> create) =
-      _SetStateProvider<T>;
+class SetStateProvider<T> extends BaseProvider<SetStateProviderValue<T>, T> {
+  SetStateProvider(this._create);
+
+  final Create<T, SetStateProviderState<T>> _create;
+
+  @override
+  _SetStateProviderState<T> createState() {
+    return _SetStateProviderState<T>();
+  }
+}
+
+class _SetStateProviderState<T> extends BaseProviderState<
+    SetStateProviderValue<T>, T, SetStateProvider<T>> {
+  @override
+  T initState() {
+    return provider._create(SetStateProviderState._(this));
+  }
+
+  @override
+  SetStateProviderValue<T> createProviderState() {
+    return SetStateProviderValue._(this);
+  }
 }
