@@ -320,7 +320,7 @@ class TestProvider extends BaseProvider<TestProviderValue, int> {
   final int value;
 
   int call() {
-    final state = dependOnProviderState(this);
+    final state = dependOnProviderState(useContext(), this);
     return Hook.use(BaseProviderStateHook(state));
   }
 

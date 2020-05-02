@@ -40,7 +40,7 @@ class _ProviderScopeState extends State<ProviderScope> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final ancestorOwner = context
-        .dependOnInheritedWidgetOfExactType<_ProviderStateOwnerScope>()
+        .dependOnInheritedWidgetOfExactType<ProviderStateOwnerScope>()
         ?.owner;
 
     if (_owner == null) {
@@ -63,7 +63,7 @@ class _ProviderScopeState extends State<ProviderScope> {
 
   @override
   Widget build(BuildContext context) {
-    return _ProviderStateOwnerScope(
+    return ProviderStateOwnerScope(
       owner: _owner,
       child: widget.child,
     );
@@ -76,43 +76,49 @@ class _ProviderScopeState extends State<ProviderScope> {
   }
 }
 
-class _ProviderStateOwnerScope extends InheritedWidget {
-  const _ProviderStateOwnerScope({
+class ProviderStateOwnerScope extends InheritedWidget {
+  const ProviderStateOwnerScope({
     Key key,
     @required this.owner,
     Widget child,
   })  : assert(owner != null, 'ProviderStateOwner cannot be null'),
         super(key: key, child: child);
 
+  static ProviderStateOwner of(BuildContext context) {
+    final scope =
+        context.dependOnInheritedWidgetOfExactType<ProviderStateOwnerScope>();
+
+    if (scope == null) {
+      throw StateError('No ProviderScope found');
+    }
+
+    return scope.owner;
+  }
+
   final ProviderStateOwner owner;
 
   @override
-  bool updateShouldNotify(_ProviderStateOwnerScope oldWidget) {
+  bool updateShouldNotify(ProviderStateOwnerScope oldWidget) {
     return owner != oldWidget.owner;
   }
 }
 
 BaseProviderState<BaseProviderValue, T, BaseProvider<BaseProviderValue, T>>
     dependOnProviderState<T>(
+  BuildContext context,
   BaseProvider<BaseProviderValue, T> provider,
 ) {
-  final scope = useContext()
-      .dependOnInheritedWidgetOfExactType<_ProviderStateOwnerScope>();
-
-  if (scope == null) {
-    throw StateError('No ProviderScope found');
-  }
-
+  final owner = ProviderStateOwnerScope.of(context);
   // TODO return Hook.use(BaseProviderStateHook(scope.owner, provider));
 
-  return scope.owner.readProviderState(provider);
+  return owner.readProviderState(provider);
 }
 
 class BaseProviderStateHook<T> extends Hook<T> {
   const BaseProviderStateHook(this._providerState);
 
-  final BaseProviderState<BaseProviderValue, T, BaseProvider<BaseProviderValue, T>>
-      _providerState;
+  final BaseProviderState<BaseProviderValue, T,
+      BaseProvider<BaseProviderValue, T>> _providerState;
 
   @override
   _ProviderHookState<T> createState() => _ProviderHookState();
