@@ -10,7 +10,7 @@ mixin _StreamProviderMixin<T> implements StreamProvider<T> {
 }
 
 class _StreamProvider<T>
-    extends BaseProvider<StreamProviderValue<T>, AsyncValue<T>>
+    extends AlwaysAliveProvider<StreamProviderValue<T>, AsyncValue<T>>
     with _StreamProviderMixin<T> {
   _StreamProvider(this.create);
 
@@ -58,8 +58,7 @@ class _StreamProviderState<T> extends BaseProviderState<StreamProviderValue<T>,
 }
 
 class _ValueStreamProvider<T>
-    extends BaseProvider<StreamProviderValue<T>, AsyncValue<T>>
-    with _StreamProviderMixin<T> {
+    extends BaseProvider<StreamProviderValue<T>, AsyncValue<T>> {
   _ValueStreamProvider(this.value);
 
   final AsyncValue<T> value;

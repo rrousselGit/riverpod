@@ -1,8 +1,14 @@
 import 'package:mockito/mockito.dart';
+import 'package:provider/src/framework/framework.dart' show AlwaysAliveProvider;
 import 'package:test/test.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  test('is AlwaysAliveProvider', () {
+    final provider = SetStateProvider((_) async => 42);
+
+    expect(provider, isA<AlwaysAliveProvider>());
+  });
   test('SetStateProviderState can read and write state', () {
     final owner = ProviderStateOwner();
     SetStateProviderState<int> providerState;

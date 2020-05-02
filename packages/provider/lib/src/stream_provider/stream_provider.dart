@@ -18,7 +18,7 @@ class StreamProviderValue<T> extends BaseProviderValue {
 /* Providers */
 
 abstract class StreamProvider<T>
-    extends BaseProvider<StreamProviderValue<T>, AsyncValue<T>> {
+    extends AlwaysAliveProvider<StreamProviderValue<T>, AsyncValue<T>> {
   factory StreamProvider(Create<Stream<T>, ProviderState> create) =
       _StreamProvider<T>;
 

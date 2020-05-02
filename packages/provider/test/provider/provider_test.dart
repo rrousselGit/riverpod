@@ -1,8 +1,45 @@
+import 'package:provider/src/framework/framework.dart' show AlwaysAliveProvider;
 import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  test('is AlwaysAliveProvider', () {
+    final provider = Provider((_) async => 42);
+
+    expect(provider, isA<AlwaysAliveProvider>());
+  });
+  group('depend on', () {
+    final dependency = Provider((_) => 1);
+    final dependency2 = Provider((_) => '2');
+
+    test('Provider1', () {
+      final owner = ProviderStateOwner();
+
+      final provider = Provider((state) {
+        final first = state.dependOn(dependency);
+        return first.value * 2;
+      });
+
+      expect(provider.readOwner(owner), 2);
+
+      owner.dispose();
+    });
+    test('Provider2', () {
+      final owner = ProviderStateOwner();
+
+      final provider = Provider((state) {
+        final first = state.dependOn(dependency);
+        final second = state.dependOn(dependency2);
+
+        return '${first.value} ${second.value}';
+      });
+
+      expect(provider.readOwner(owner), '1 2');
+
+      owner.dispose();
+    });
+  });
   test('readOwner', () {
     var result = 42;
     final owner = ProviderStateOwner();

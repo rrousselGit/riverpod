@@ -84,9 +84,17 @@ class ProviderStateOwnerScope extends InheritedWidget {
   })  : assert(owner != null, 'ProviderStateOwner cannot be null'),
         super(key: key, child: child);
 
-  static ProviderStateOwner of(BuildContext context) {
-    final scope =
-        context.dependOnInheritedWidgetOfExactType<ProviderStateOwnerScope>();
+  static ProviderStateOwner of(BuildContext context, {bool listen = true}) {
+    ProviderStateOwnerScope scope;
+
+    if (listen) {
+      scope = context //
+          .dependOnInheritedWidgetOfExactType<ProviderStateOwnerScope>();
+    } else {
+      scope = context
+          .getElementForInheritedWidgetOfExactType<ProviderStateOwnerScope>()
+          .widget as ProviderStateOwnerScope;
+    }
 
     if (scope == null) {
       throw StateError('No ProviderScope found');

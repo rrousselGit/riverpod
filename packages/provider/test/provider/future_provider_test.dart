@@ -2,9 +2,15 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/src/framework/framework.dart' show AlwaysAliveProvider;
 import 'package:test/test.dart';
 
 void main() {
+  test('is AlwaysAliveProvider', () {
+    final provider = FutureProvider((_) async => 42);
+
+    expect(provider, isA<AlwaysAliveProvider>());
+  });
   test('dependOn', () {
     final owner = ProviderStateOwner();
     final completer = Completer<int>.sync();

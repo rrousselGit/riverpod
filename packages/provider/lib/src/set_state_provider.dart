@@ -39,7 +39,8 @@ class SetStateProviderState<T> extends ProviderState {
 
 /* Providers */
 
-class SetStateProvider<T> extends BaseProvider<SetStateProviderValue<T>, T> {
+class SetStateProvider<T>
+    extends AlwaysAliveProvider<SetStateProviderValue<T>, T> {
   SetStateProvider(this._create);
 
   final Create<T, SetStateProviderState<T>> _create;

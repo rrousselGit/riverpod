@@ -8,6 +8,37 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
 void main() {
+  testWidgets('AlwaysAliveProvider.read(context) inside initState',
+      (tester) async {
+    final provider = Provider((_) => 42);
+    int result;
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: InitState(
+          initState: (context) => result = provider.read(context),
+        ),
+      ),
+    );
+
+    expect(result, 42);
+  });
+  testWidgets('AlwaysAliveProvider.read(context) inside build', (tester) async {
+    final provider = Provider((_) => 42);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Builder(
+          builder: (context) {
+            provider.read(context);
+            return Container();
+          },
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isUnsupportedError);
+  });
   testWidgets('adding overrides throws', (tester) async {
     final useProvider = Provider((_) => 0);
 
@@ -315,4 +346,26 @@ void main() {
 
 class MockCreateState extends Mock {
   void call();
+}
+
+class InitState extends StatefulWidget {
+  const InitState({Key key, this.initState}) : super(key: key);
+
+  final void Function(BuildContext context) initState;
+
+  @override
+  _InitStateState createState() => _InitStateState();
+}
+
+class _InitStateState extends State<InitState> {
+  @override
+  void initState() {
+    super.initState();
+    widget.initState(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
 }
