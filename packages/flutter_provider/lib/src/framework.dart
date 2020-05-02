@@ -103,28 +103,28 @@ class ProviderStateOwnerScope extends InheritedWidget {
   }
 }
 
-BaseProviderState<BaseProviderValue, T, BaseProvider<BaseProviderValue, T>>
-    dependOnProviderState<T>(
-  BuildContext context,
+T useProvider<T>(
   BaseProvider<BaseProviderValue, T> provider,
 ) {
-  final owner = ProviderStateOwnerScope.of(context);
-  // TODO return Hook.use(BaseProviderStateHook(scope.owner, provider));
+  final owner = ProviderStateOwnerScope.of(useContext());
 
-  return owner.readProviderState(provider);
+  return Hook.use(_BaseProviderStateHook<T>(owner, provider));
 }
 
-class BaseProviderStateHook<T> extends Hook<T> {
-  const BaseProviderStateHook(this._providerState);
+class _BaseProviderStateHook<T> extends Hook<T> {
+  const _BaseProviderStateHook(
+    this._owner,
+    this._provider,
+  );
 
-  final BaseProviderState<BaseProviderValue, T,
-      BaseProvider<BaseProviderValue, T>> _providerState;
+  final ProviderStateOwner _owner;
+  final BaseProvider<BaseProviderValue, T> _provider;
 
   @override
   _ProviderHookState<T> createState() => _ProviderHookState();
 }
 
-class _ProviderHookState<T> extends HookState<T, BaseProviderStateHook<T>> {
+class _ProviderHookState<T> extends HookState<T, _BaseProviderStateHook<T>> {
   T _state;
   VoidCallback _removeListener;
 
@@ -134,27 +134,22 @@ class _ProviderHookState<T> extends HookState<T, BaseProviderStateHook<T>> {
   @override
   void initHook() {
     super.initHook();
-    _listen(hook._providerState);
+    _listen();
+  }
+
+  void _listen() {
+    _removeListener?.call();
+    _removeListener = hook._provider.watchOwner(hook._owner, (value) {
+      setState(() => _state = value);
+    });
   }
 
   @override
-  void didUpdateHook(BaseProviderStateHook<T> oldHook) {
+  void didUpdateHook(_BaseProviderStateHook<T> oldHook) {
     super.didUpdateHook(oldHook);
-    if (hook._providerState != oldHook._providerState) {
-      _listen(hook._providerState);
+    if (oldHook._provider != hook._provider || oldHook._owner != hook._owner) {
+      _listen();
     }
-  }
-
-  void _listen(
-    BaseProviderState<BaseProviderValue, T, BaseProvider<BaseProviderValue, T>>
-        notifier,
-  ) {
-    _removeListener?.call();
-    _removeListener = notifier.$addStateListener(_listener);
-  }
-
-  void _listener(T value) {
-    setState(() => _state = value);
   }
 
   @override

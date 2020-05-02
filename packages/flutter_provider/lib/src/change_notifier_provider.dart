@@ -9,15 +9,10 @@ class ChangeNotifierProviderValue<T> extends BaseProviderValue {
 }
 
 class ChangeNotifierProvider<T extends ChangeNotifier>
-    extends BaseProvider<ChangeNotifierProviderValue<T>, T> {
+    extends AlwaysAliveProvider<ChangeNotifierProviderValue<T>, T> {
   ChangeNotifierProvider(this._create);
 
   final Create<T, ProviderState> _create;
-
-  T readOwner(ProviderStateOwner owner) {
-    final state = owner.readProviderState(this);
-    return state.$state;
-  }
 
   @override
   _ChangeNotifierProviderState<T> createState() =>

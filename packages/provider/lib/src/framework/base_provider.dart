@@ -18,7 +18,7 @@ abstract class BaseProvider<CombiningValue extends BaseProviderValue,
     ProviderStateOwner owner,
     void Function(ListenedValue) listener,
   ) {
-    final state = owner.readProviderState(this);
+    final state = owner._readProviderState(this);
     return state.$addStateListener(listener);
   }
 }
@@ -93,6 +93,14 @@ abstract class BaseProviderState<CombiningValue extends BaseProviderValue,
       }
     }
     _mounted = false;
+  }
+}
+
+abstract class AlwaysAliveProvider<CombiningValue extends BaseProviderValue,
+    ListenedValue> extends BaseProvider<CombiningValue, ListenedValue> {
+  ListenedValue readOwner(ProviderStateOwner owner) {
+    final state = owner._readProviderState(this);
+    return state.$state;
   }
 }
 

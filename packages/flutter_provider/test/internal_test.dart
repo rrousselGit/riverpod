@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_provider/src/framework.dart';
+import 'package:flutter_provider/flutter_provider.dart';
 import 'package:flutter_provider/src/internal.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -32,7 +32,7 @@ void main() {
     expect(
       tester.takeException(),
       isUnsupportedError.having((s) => s.message, 'message', '''
-Replaced the override at index 0 of type _ProviderCreate<int> with an override of type MyImmutableProvider, which is different.
+Replaced the override at index 0 of type Provider<int> with an override of type MyImmutableProvider, which is different.
 Changing the kind of override or reordering overrides is not supported.
 '''),
     );
@@ -318,11 +318,6 @@ class TestProvider extends BaseProvider<TestProviderValue, int> {
   final MockDispose onDispose;
   final MockDidUpdateProvider onDidUpdateProvider;
   final int value;
-
-  int call() {
-    final state = dependOnProviderState(useContext(), this);
-    return Hook.use(BaseProviderStateHook(state));
-  }
 
   @override
   TestProviderState createState() {

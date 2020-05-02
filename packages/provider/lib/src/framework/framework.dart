@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:meta/meta.dart';
+import 'package:provider/src/internals.dart';
 
 import '../common.dart';
 
@@ -152,6 +153,17 @@ Changing the kind of override or reordering overrides is not supported.
     }
   }
 
+  BaseProviderState<CombiningValue, ListeningValue,
+          BaseProvider<CombiningValue, ListeningValue>>
+      _readProviderState<CombiningValue extends BaseProviderValue,
+          ListeningValue>(
+    BaseProvider<CombiningValue, ListeningValue> provider,
+  ) {
+    final result = _stateReaders[provider]?.call() ?? _fallback(provider);
+    return result as BaseProviderState<CombiningValue, ListeningValue,
+        BaseProvider<CombiningValue, ListeningValue>>;
+  }
+
   void dispose() {
     for (final state in _providerState.values) {
       try {
@@ -160,19 +172,6 @@ Changing the kind of override or reordering overrides is not supported.
         _onError?.call(err, stack);
       }
     }
-  }
-}
-
-extension OwnerPutIfAbsent on ProviderStateOwner {
-  BaseProviderState<CombiningValue, ListeningValue,
-          BaseProvider<CombiningValue, ListeningValue>>
-      readProviderState<CombiningValue extends BaseProviderValue,
-          ListeningValue>(
-    BaseProvider<CombiningValue, ListeningValue> provider,
-  ) {
-    final result = _stateReaders[provider]?.call() ?? _fallback(provider);
-    return result as BaseProviderState<CombiningValue, ListeningValue,
-        BaseProvider<CombiningValue, ListeningValue>>;
   }
 }
 
@@ -205,7 +204,7 @@ class ProviderState {
     _dependencies ??= {};
     return _dependencies.putIfAbsent(provider, () {
       final targetProviderState = _providerState._owner
-          .readProviderState(provider)
+          ._readProviderState(provider)
           // TODO fix naming
           .createProviderState();
       onDispose(targetProviderState.dispose);

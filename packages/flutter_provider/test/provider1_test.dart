@@ -3,8 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_provider/flutter_provider.dart';
 
-import 'package:provider/src/provider/provider.dart';
-
 void main() {
   testWidgets('provider1 as override of normal provider', (tester) async {
     final provider = Provider((_) => 42);
