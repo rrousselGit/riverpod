@@ -32,7 +32,7 @@ void main() {
     expect(
       tester.takeException(),
       isUnsupportedError.having((s) => s.message, 'message', '''
-Replaced the override at index 0 of type Provider<int> with an override of type MyImmutableProvider, which is different.
+Replaced the override at index 0 of type _ProviderCreate<int> with an override of type MyImmutableProvider, which is different.
 Changing the kind of override or reordering overrides is not supported.
 '''),
     );
