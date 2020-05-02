@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import 'package:meta/meta.dart';
-import 'package:provider/src/internals.dart';
 
 import '../common.dart';
 
