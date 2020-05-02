@@ -142,7 +142,7 @@ class _BaseProviderHookState<T> extends HookState<T, _BaseProviderHook<T>> {
       FlutterError.reportError(
         FlutterErrorDetails(
           exception: UnsupportedError(
-            'Changing the provider listened of a Consumer is not supported',
+            'Used `useMyProvider()` with a `useMyProvider` different than it was before',
           ),
           library: 'flutter_provider',
           stack: StackTrace.current,
