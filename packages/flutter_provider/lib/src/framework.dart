@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
 import 'internal.dart';
@@ -45,17 +44,18 @@ class _ProviderScopeState extends State<ProviderScope> {
 
     if (_owner == null) {
       _owner = ProviderStateOwner(
-          parent: ancestorOwner,
-          overrides: widget.overrides,
-          onError: (dynamic error, stack) {
-            FlutterError.reportError(
-              FlutterErrorDetails(
-                library: 'flutter_provider',
-                exception: error,
-                stack: stack,
-              ),
-            );
-          });
+        parent: ancestorOwner,
+        overrides: widget.overrides,
+        onError: (dynamic error, stack) {
+          FlutterError.reportError(
+            FlutterErrorDetails(
+              library: 'flutter_provider',
+              exception: error,
+              stack: stack,
+            ),
+          );
+        },
+      );
     } else {
       _owner.updateParent(ancestorOwner);
     }
@@ -108,61 +108,5 @@ class ProviderStateOwnerScope extends InheritedWidget {
   @override
   bool updateShouldNotify(ProviderStateOwnerScope oldWidget) {
     return owner != oldWidget.owner;
-  }
-}
-
-T useProvider<T>(
-  BaseProvider<BaseProviderValue, T> provider,
-) {
-  final owner = ProviderStateOwnerScope.of(useContext());
-
-  return Hook.use(_BaseProviderStateHook<T>(owner, provider));
-}
-
-class _BaseProviderStateHook<T> extends Hook<T> {
-  const _BaseProviderStateHook(
-    this._owner,
-    this._provider,
-  );
-
-  final ProviderStateOwner _owner;
-  final BaseProvider<BaseProviderValue, T> _provider;
-
-  @override
-  _ProviderHookState<T> createState() => _ProviderHookState();
-}
-
-class _ProviderHookState<T> extends HookState<T, _BaseProviderStateHook<T>> {
-  T _state;
-  VoidCallback _removeListener;
-
-  @override
-  T build(BuildContext context) => _state;
-
-  @override
-  void initHook() {
-    super.initHook();
-    _listen();
-  }
-
-  void _listen() {
-    _removeListener?.call();
-    _removeListener = hook._provider.watchOwner(hook._owner, (value) {
-      setState(() => _state = value);
-    });
-  }
-
-  @override
-  void didUpdateHook(_BaseProviderStateHook<T> oldHook) {
-    super.didUpdateHook(oldHook);
-    if (oldHook._provider != hook._provider || oldHook._owner != hook._owner) {
-      _listen();
-    }
-  }
-
-  @override
-  void dispose() {
-    _removeListener?.call();
-    super.dispose();
   }
 }
