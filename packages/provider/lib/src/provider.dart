@@ -24,7 +24,7 @@ class _ProviderCreateState<T>
   }
 
   @override
-  ProviderValue<T> createProviderState() {
+  ProviderValue<T> createProviderValue() {
     return ProviderValue._($state);
   }
 }

@@ -32,7 +32,7 @@ class _ChangeNotifierProviderState<T extends ChangeNotifier>
   }
 
   @override
-  ChangeNotifierProviderValue<T> createProviderState() {
+  ChangeNotifierProviderValue<T> createProviderValue() {
     return ChangeNotifierProviderValue._($state);
   }
 

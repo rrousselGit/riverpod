@@ -55,7 +55,7 @@ class _FutureProviderState<Res> extends BaseProviderState<
   }
 
   @override
-  FutureProviderValue<Res> createProviderState() {
+  FutureProviderValue<Res> createProviderValue() {
     return FutureProviderValue._(future: _future);
   }
 }
@@ -114,7 +114,7 @@ class _DebugFutureProviderValueState<Res> extends BaseProviderState<
   }
 
   @override
-  FutureProviderValue<Res> createProviderState() {
+  FutureProviderValue<Res> createProviderValue() {
     return FutureProviderValue._(future: _completer.future);
   }
 }

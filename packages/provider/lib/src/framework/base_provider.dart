@@ -1,8 +1,35 @@
 part of 'framework.dart';
 
+/// Internal utility to visit the graph of providers in an order where it is
+/// safe to perform operations on their state (such as dispose/updates).
+/// 
+/// This basically visits the dependencies of a provider before the provider
+/// itself, while ensuring that a given provider is visited only once.
+@visibleForTesting
+void visitNodesInDependencyOrder(
+  Set<BaseProviderState> nodesToVisit,
+  void Function(BaseProviderState value) visitor,
+) {
+  final inResult = <BaseProviderState>{};
+
+  void recurs(BaseProviderState node) {
+    if (inResult.contains(node) || !nodesToVisit.contains(node)) {
+      return;
+    }
+
+    node._dependenciesState.forEach(recurs);
+
+    inResult.add(node);
+    visitor(node);
+  }
+
+  nodesToVisit.forEach(recurs);
+}
+
 @immutable
+@optionalTypeArgs
 abstract class BaseProvider<CombiningValue extends BaseProviderValue,
-    ListenedValue> {
+    ListenedValue extends Object> {
   ProviderOverride<CombiningValue, ListenedValue> overrideForSubtree(
     BaseProvider<CombiningValue, ListenedValue> provider,
   ) {
@@ -24,8 +51,11 @@ abstract class BaseProvider<CombiningValue extends BaseProviderValue,
 }
 
 @visibleForOverriding
-abstract class BaseProviderState<CombiningValue extends BaseProviderValue,
-    ListenedValue, P extends BaseProvider<CombiningValue, ListenedValue>> {
+@optionalTypeArgs
+abstract class BaseProviderState<
+    CombiningValue extends BaseProviderValue,
+    ListenedValue extends Object,
+    P extends BaseProvider<CombiningValue, ListenedValue>> {
   P _provider;
 
   var _mounted = true;
@@ -43,6 +73,21 @@ abstract class BaseProviderState<CombiningValue extends BaseProviderValue,
     }
   }
 
+  Map<BaseProvider, BaseProviderValue> _dependenciesValueCache;
+  final Set<BaseProviderState> _dependenciesState = {};
+
+  T dependOn<T extends BaseProviderValue>(BaseProvider<T, Object> provider) {
+    _dependenciesValueCache ??= {};
+    return _dependenciesValueCache.putIfAbsent(provider, () {
+      final targetProviderState = _owner._readProviderState(provider);
+      _dependenciesState.add(targetProviderState);
+      final targetProviderValue = targetProviderState.createProviderValue();
+      onDispose(targetProviderValue.dispose);
+
+      return targetProviderValue;
+    }) as T;
+  }
+
   @protected
   @visibleForTesting
   P get provider => _provider;
@@ -51,12 +96,13 @@ abstract class BaseProviderState<CombiningValue extends BaseProviderValue,
   ProviderStateOwner get owner => _owner;
 
   DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
-  LinkedList<_LinkedListEntry<void Function(ListenedValue)>> _stateListeners;
+  LinkedList<_LinkedListEntry<void Function(ListenedValue value)>>
+      _stateListeners;
 
   @protected
   ListenedValue initState();
 
-  CombiningValue createProviderState();
+  CombiningValue createProviderValue();
 
   @mustCallSuper
   @protected
@@ -68,7 +114,7 @@ abstract class BaseProviderState<CombiningValue extends BaseProviderValue,
   }
 
   VoidCallback $addStateListener(
-    void Function(ListenedValue) listener, {
+    void Function(ListenedValue value) listener, {
     bool fireImmediately = true,
   }) {
     if (fireImmediately) {

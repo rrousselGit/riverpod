@@ -6,6 +6,7 @@ import 'package:mockito/mockito.dart';
 // import 'package:flutter_provider/src/framework.dart';
 
 void main() {
+  // TODO keep alive depending on itself throws
   testWidgets('wrap FutureProvider in KeepAlive still updates dependents',
       (tester) async {
     // final onCreate = OnCreateMock();

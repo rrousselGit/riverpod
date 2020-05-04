@@ -7,6 +7,8 @@ import '../common.dart';
 part 'base_provider.dart';
 part 'keep_alive_provider.dart';
 
+typedef OnError = void Function(dynamic error, StackTrace stackTrace);
+
 // ignore: avoid_private_typedef_functions
 typedef _FallbackProviderStateReader = BaseProviderState<BaseProviderValue, T,
         BaseProvider<BaseProviderValue, T>>
@@ -22,24 +24,16 @@ class ProviderStateOwner {
   ProviderStateOwner({
     ProviderStateOwner parent,
     List<ProviderOverride> overrides = const [],
-    void Function(dynamic error, StackTrace stackTrace) onError,
+    OnError onError,
   })  : _overrides = overrides,
         _onError = onError {
     updateParent(parent);
   }
 
-  final void Function(dynamic error, StackTrace stackTrace) _onError;
-
+  final OnError _onError;
+  final _providerState = <BaseProvider, BaseProviderState>{};
   List<ProviderOverride> _overrides;
-
-  var _providerState = <
-      BaseProvider<BaseProviderValue, Object>,
-      BaseProviderState<BaseProviderValue, Object,
-          BaseProvider<BaseProviderValue, Object>>>{};
-
-  Map<BaseProvider<BaseProviderValue, Object>, _ProviderStateReader>
-      _stateReaders;
-
+  Map<BaseProvider, _ProviderStateReader> _stateReaders;
   _FallbackProviderStateReader _fallback;
 
   void updateParent(ProviderStateOwner parent) {
@@ -61,7 +55,7 @@ class ProviderStateOwner {
   BaseProviderState<BaseProviderValue, T, BaseProvider<BaseProviderValue, T>>
       _putIfAbsent<T>(
     BaseProvider<BaseProviderValue, T> provider, {
-    BaseProvider<BaseProviderValue, Object> origin,
+    BaseProvider origin,
   }) {
     final key = origin ?? provider;
 
@@ -72,11 +66,9 @@ class ProviderStateOwner {
     }
 
     final state = _createProviderState(provider);
-    _providerState[key] = state;
-
-    // TODO move before _providerState[key] = state
-    //ignore: invalid_use_of_protected_member
     state.$state = state.initState();
+
+    _providerState[key] = state;
 
     return state;
   }
@@ -123,33 +115,35 @@ Changing the kind of override or reordering overrides is not supported.
 
       return true;
     }(), '');
-    final previousProviderState = _providerState;
-    _providerState = {..._providerState};
 
-    for (final entry in previousProviderState.entries) {
-      final oldOverride = oldOverrides.firstWhere(
-        (p) => p._origin == entry.key,
-        orElse: () => null,
-      );
-      final newOverride = overrides.firstWhere(
-        (p) => p._origin == entry.key,
-        orElse: () => null,
-      );
+    final newOverrideForOverridenStates =
+        overrides.fold<Map<BaseProviderState, BaseProvider>>(
+      {},
+      (acc, element) {
+        final state = _providerState[element._origin];
+        if (state != null) {
+          acc[state] = element._provider;
+        }
+        return acc;
+      },
+    );
 
-      // Wasn't overriden before and is still not overriden
-      if (oldOverride == null || newOverride == null) {
-        continue;
-      }
+    visitNodesInDependencyOrder(
+      newOverrideForOverridenStates.keys.toSet(),
+      (state) {
+        final oldOverride = state._provider;
+        final newOverride = newOverrideForOverridenStates[state];
+        assert(newOverride != null, '');
 
-      final providerState = _providerState[entry.key]
-        .._provider = newOverride._provider;
+        state._provider = newOverride;
 
-      try {
-        providerState.didUpdateProvider(oldOverride._provider);
-      } catch (error, stack) {
-        _onError?.call(error, stack);
-      }
-    }
+        try {
+          state.didUpdateProvider(oldOverride);
+        } catch (error, stack) {
+          _onError?.call(error, stack);
+        }
+      },
+    );
   }
 
   BaseProviderState<CombiningValue, ListeningValue,
@@ -164,18 +158,31 @@ Changing the kind of override or reordering overrides is not supported.
   }
 
   void dispose() {
-    for (final state in _providerState.values) {
+    visitNodesInDependencyOrder(_providerState.values.toSet(), (state) {
       try {
         state.dispose();
       } catch (err, stack) {
         _onError?.call(err, stack);
       }
-    }
+    });
+  }
+}
+
+@visibleForTesting
+extension ReadProviderState on ProviderStateOwner {
+  @visibleForTesting
+  BaseProviderState<CombiningValue, ListeningValue,
+          BaseProvider<CombiningValue, ListeningValue>>
+      readProviderState<CombiningValue extends BaseProviderValue,
+          ListeningValue>(
+    BaseProvider<CombiningValue, ListeningValue> provider,
+  ) {
+    return _readProviderState(provider);
   }
 }
 
 class ProviderOverride<CombiningValue extends BaseProviderValue,
-    ListeningValue> {
+    ListeningValue extends Object> {
   ProviderOverride._(this._provider, this._origin);
 
   final BaseProvider<CombiningValue, ListeningValue> _origin;
@@ -190,26 +197,20 @@ abstract class BaseProviderValue {
 class ProviderState {
   ProviderState(this._providerState);
 
-  final BaseProviderState<BaseProviderValue, Object,
-      BaseProvider<BaseProviderValue, Object>> _providerState;
+  final BaseProviderState _providerState;
 
   bool get mounted => _providerState.mounted;
 
-  void onDispose(VoidCallback cb) => _providerState.onDispose(cb);
-
-  Map<BaseProvider<BaseProviderValue, Object>, BaseProviderValue> _dependencies;
+  void onDispose(VoidCallback cb) {
+    assert(
+        mounted, '`onDispose` was called on a state that is already disposed');
+    _providerState.onDispose(cb);
+  }
 
   T dependOn<T extends BaseProviderValue>(BaseProvider<T, Object> provider) {
-    _dependencies ??= {};
-    return _dependencies.putIfAbsent(provider, () {
-      final targetProviderState = _providerState._owner
-          ._readProviderState(provider)
-          // TODO fix naming
-          .createProviderState();
-      onDispose(targetProviderState.dispose);
-
-      return targetProviderState;
-    }) as T;
+    assert(
+        mounted, '`dependOn` was called on a state that is already disposed');
+    return _providerState.dependOn(provider);
   }
 
   // TODO report error?

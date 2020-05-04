@@ -59,7 +59,7 @@ class _SetStateProviderState<T> extends BaseProviderState<
   }
 
   @override
-  SetStateProviderValue<T> createProviderState() {
+  SetStateProviderValue<T> createProviderValue() {
     return SetStateProviderValue._(this);
   }
 }

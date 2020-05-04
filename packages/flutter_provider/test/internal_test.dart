@@ -350,7 +350,7 @@ class TestProviderState
   }
 
   @override
-  TestProviderValue createProviderState() {
+  TestProviderValue createProviderValue() {
     return TestProviderValue($state);
   }
 }
@@ -370,7 +370,7 @@ class MyImmutableProviderState
   }
 
   @override
-  ProviderValue<int> createProviderState() {
+  ProviderValue<int> createProviderValue() {
     throw UnimplementedError();
   }
 }

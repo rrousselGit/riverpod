@@ -78,7 +78,7 @@ class _KeepAliveState<CombiningValue extends BaseProviderValue, ListeningValue>
   }
 
   @override
-  CombiningValue createProviderState() {
-    return _providerState.createProviderState();
+  CombiningValue createProviderValue() {
+    return _providerState.createProviderValue();
   }
 }
