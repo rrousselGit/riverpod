@@ -2,7 +2,7 @@ part of 'framework.dart';
 
 /// Internal utility to visit the graph of providers in an order where it is
 /// safe to perform operations on their state (such as dispose/updates).
-/// 
+///
 /// This basically visits the dependencies of a provider before the provider
 /// itself, while ensuring that a given provider is visited only once.
 @visibleForTesting
@@ -76,16 +76,50 @@ abstract class BaseProviderState<
   Map<BaseProvider, BaseProviderValue> _dependenciesValueCache;
   final Set<BaseProviderState> _dependenciesState = {};
 
-  T dependOn<T extends BaseProviderValue>(BaseProvider<T, Object> provider) {
-    _dependenciesValueCache ??= {};
-    return _dependenciesValueCache.putIfAbsent(provider, () {
-      final targetProviderState = _owner._readProviderState(provider);
-      _dependenciesState.add(targetProviderState);
-      final targetProviderValue = targetProviderState.createProviderValue();
-      onDispose(targetProviderValue.dispose);
+  // TODO multiple owners
+  BaseProvider _debugInitialDependOnRequest;
 
-      return targetProviderValue;
-    }) as T;
+  T dependOn<T extends BaseProviderValue>(BaseProvider<T, Object> provider) {
+    // verify that we are not in a stack overflow of dependOn calls.
+    assert(() {
+      if (_debugInitialDependOnRequest == provider) {
+        throw CircularDependencyError._();
+      }
+      _debugInitialDependOnRequest ??= provider;
+      return true;
+    }(), '');
+    _dependenciesValueCache ??= {};
+
+    try {
+      return _dependenciesValueCache.putIfAbsent(provider, () {
+        final targetProviderState = _owner._readProviderState(provider);
+
+        // verify that the new dependency doesn't depend on "this".
+        assert(() {
+          void recurs(BaseProviderState state) {
+            if (state == this) {
+              throw CircularDependencyError._();
+            }
+            state._dependenciesState.forEach(recurs);
+          }
+          targetProviderState._dependenciesState.forEach(recurs);
+          return true;
+        }(), '');
+
+        _dependenciesState.add(targetProviderState);
+        final targetProviderValue = targetProviderState.createProviderValue();
+        onDispose(targetProviderValue.dispose);
+
+        return targetProviderValue;
+      }) as T;
+    } finally {
+      assert(() {
+        if (_debugInitialDependOnRequest == provider) {
+          _debugInitialDependOnRequest = null;
+        }
+        return true;
+      }(), '');
+    }
   }
 
   @protected

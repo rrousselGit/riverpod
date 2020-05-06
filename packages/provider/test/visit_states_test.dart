@@ -222,7 +222,6 @@ void main() {
   //   \   /
   //     E(1)
   test('graph7', () {
-    // TODO different owner
     final a = Provider<int>((state) => 0);
 
     final b = Provider<int>((state) {
@@ -244,10 +243,21 @@ void main() {
       return 0;
     });
 
+    final owner = ProviderStateOwner();
+    final owner2 = ProviderStateOwner(parent: owner, overrides: [
+      c.overrideForSubtree(c),
+      d.overrideForSubtree(d),
+      e.overrideForSubtree(e),
+    ]);
+
     final perm = Permutations(3, [c, d, e]);
     for (final permutation in perm()) {
+      final states = permutation.map(owner2.readProviderState).toSet();
+      final result = DoubleLinkedQueue<BaseProvider>();
+      visitNodesInDependencyOrder(states, (e) => result.add(e.provider));
+
       expect(
-        compute(permutation),
+        result,
         anyOf([
           [c, d, e],
           [d, c, e],

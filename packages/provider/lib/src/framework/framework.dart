@@ -203,15 +203,24 @@ class ProviderState {
 
   void onDispose(VoidCallback cb) {
     assert(
-        mounted, '`onDispose` was called on a state that is already disposed');
+      mounted,
+      '`onDispose` was called on a state that is already disposed',
+    );
     _providerState.onDispose(cb);
   }
 
   T dependOn<T extends BaseProviderValue>(BaseProvider<T, Object> provider) {
     assert(
-        mounted, '`dependOn` was called on a state that is already disposed');
+      mounted,
+      '`dependOn` was called on a state that is already disposed',
+    );
     return _providerState.dependOn(provider);
   }
 
   // TODO report error?
+}
+
+/// A provider is somehow dependending on itself
+class CircularDependencyError extends Error {
+  CircularDependencyError._();
 }

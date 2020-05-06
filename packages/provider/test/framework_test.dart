@@ -14,8 +14,65 @@ void main() {
     // TODO no onError fallback to zone
   });
   // TODO test dependOn disposes the provider state (keep alive?)
-  // TODO circular dependencies
-  // TODO: updating overrides / dispose don't compute provider states if not loaded yet
+  test(
+      "updating overrides / dispose don't compute provider states if not loaded yet",
+      () {
+    var callCount = 0;
+    final provider = Provider((_) => callCount++);
+
+    final owner = ProviderStateOwner(
+      overrides: [provider.overrideForSubtree(provider)],
+    );
+
+    expect(callCount, 0);
+
+    owner.updateOverrides(
+      [provider.overrideForSubtree(provider)],
+    );
+
+    expect(callCount, 0);
+
+    owner.dispose();
+
+    expect(callCount, 0);
+    expect(provider.readOwner(owner), 0);
+    expect(callCount, 1);
+  });
+  test('circular dependencies', () {
+    Provider<int Function()> provider;
+
+    final provider1 = Provider((state) {
+      return state.dependOn(provider).value() + 1;
+    });
+    final provider2 = Provider((state) {
+      return state.dependOn(provider1).value + 1;
+    });
+    provider = Provider((state) {
+      return () => state.dependOn(provider2).value + 1;
+    });
+
+    final owner = ProviderStateOwner();
+    expect(
+      () => provider.readOwner(owner)(),
+      throwsA(isA<CircularDependencyError>()),
+    );
+  });
+  test('circular dependencies #2', () {
+    final owner = ProviderStateOwner();
+
+    final provider = Provider((state) => state);
+    final provider1 = Provider((state) => state);
+    final provider2 = Provider((state) => state);
+
+    provider1.readOwner(owner).dependOn(provider);
+    provider2.readOwner(owner).dependOn(provider1);
+    final providerState = provider.readOwner(owner);
+
+    expect(
+      () => providerState.dependOn(provider2),
+      throwsA(isA<CircularDependencyError>()),
+    );
+  });
   test('dispose providers in dependency order (simple)', () {
     final owner = ProviderStateOwner();
     final onDispose1 = OnDisposeMock();
