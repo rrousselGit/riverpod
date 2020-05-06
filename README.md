@@ -3,8 +3,7 @@ Welcome to [river_pod]!
 This project can be considered as an **experimental** [provider] rewrite.
 
 If [provider] is a simplification of [InheritedWidget]s, then [river_pod] is
-a reimplementation of [InheritedWidget]s from scratch.
-
+a reimplementation of [InheritedWidget]s from scratch.\
 It is very similar to [provider] in principle, but also has major differences
 as an attempt to fix the common problem that [provider] faces.
 
