@@ -6,11 +6,28 @@ Long story short:
 
 - Declare your providers are global variables:
 
-![provider_example](https://github.com/rrousselGit/river_pod/blob/master/resources/provider_example.png)
+  ```dart
+  final useMyNotifier = ChangeNotifierProvider((_) {
+    return MyNotifier();
+  });
 
-- Use them inside your widgets in a compile-time safe way. No runtime exceptions!
+  class MyNotifier extends ChangeNotifier {
+    int count;
+    // TODO: typical ChangeNotifier logic
+  }
+  ```
 
-![consumer_example](https://github.com/rrousselGit/river_pod/blob/master/resources/consumer_example.png)
+* Use them inside your widgets in a compile-time safe way. No runtime exceptions!
+
+  ```dart
+  class Example extends HookWidget {
+    @override
+    Widget build(BuildContext context) {
+      final myNotifier = useMyNotifier();
+      return Text(myNotifier.count.toString());
+    }
+  }
+  ```
 
 See the [FAQ](#FAQ) if you have questions around what this means for [provider].
 
