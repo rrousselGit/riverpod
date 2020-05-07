@@ -36,6 +36,8 @@ class ProviderStateOwner {
   Map<BaseProvider, _ProviderStateReader> _stateReaders;
   _FallbackProviderStateReader _fallback;
 
+  LinkedList<_LinkedListEntry<BaseProviderValue>> _dependencies;
+
   void updateParent(ProviderStateOwner parent) {
     _fallback = parent?._fallback;
     _fallback ??= _putIfAbsent;
@@ -157,7 +159,25 @@ Changing the kind of override or reordering overrides is not supported.
         BaseProvider<CombiningValue, ListeningValue>>;
   }
 
+  Res dependOn<Res extends BaseProviderValue>(
+    BaseProvider<Res, Object> provider,
+  ) {
+    // TODO: test
+    _dependencies ??= LinkedList();
+
+    final state = _readProviderState(provider);
+    final value = state.createProviderValue();
+    _dependencies.add(_LinkedListEntry(value));
+    return value;
+  }
+
   void dispose() {
+    if (_dependencies != null) {
+      // TODO: test
+      for (final entry in _dependencies) {
+        entry.value.dispose();
+      }
+    }
     visitNodesInDependencyOrder(_providerState.values.toSet(), (state) {
       try {
         state.dispose();

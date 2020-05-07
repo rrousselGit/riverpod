@@ -1,0 +1,9 @@
+include: ../../../analysis_options.yaml
+linter:
+  rules:
+    # Useful for packages but not for apps
+    type_annotate_public_apis: false
+
+    # generates false positives
+    close_sinks: false
+
