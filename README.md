@@ -41,45 +41,57 @@ See the [FAQ](#FAQ) if you have questions around what this means for [provider].
   - [Will this get merged with provider at some point?](#will-this-get-merged-with-provider-at-some-point)
   - [Will provider be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
 
-# TL;DR
-
-[River_pod] has goals similar to [provider]:
-
-Simplifying the management of the different state/services of your app
-and how Flutter's widget tree interacts with them while making sure
-it is _testable_ and _scallable_.
-
 # Motivation
 
 If [provider] is a simplification of [InheritedWidget]s, then [River_pod] is
-a reimplementation of [InheritedWidget]s from scratch.\
+a reimplementation of [InheritedWidget]s from scratch.
+
 It is very similar to [provider] in principle, but also has major differences
-as an attempt to fix the common problem that [provider] faces.
+as an attempt to fix the common problems that [provider] face.
 
 [River_pod] has multiple goals. First, it inherits the goals of [provider]:
 
-- Making [InheritedWidget]s simple, which implies:
-
-  - Being able to safely create and dispose state without having to worry about
-    losing the state on widget rebuild.
-  - Making our objects visible in Flutter's devtool by default.
-  - Make apps testable by avoiding singleton/globals
-  - Improve the readability of [InheritedWidget]s when we have multiple of them
-    (which would naturally lead to a deeply nested widget tree).
-  - Make apps more scalable with a uni-directional data-flow.
+- Being able to safely create, observe and dispose states without having to worry about
+  losing the state on widget rebuild.
+- Making our objects visible in Flutter's devtool by default.
+- Testable and composable
+- Improve the readability of [InheritedWidget]s when we have multiple of them
+  (which would naturally lead to a deeply nested widget tree).
+- Make apps more scalable with a uni-directional data-flow.
 
 From there, [River_pod] goes a few steps beyond:
 
 - Reading objects is now **compile-safe**. No more runtime exception.
-- Making the pattern more flexible, which allows supporting commonly requested
-  features like "disposing the state of a provider when it is no longer used".
-- Revamping the syntax to make it even simpler
-- Making the pattern independent from Flutter
+- Makes the [provider] pattern more flexible, which allows supporting commonly
+  requested features like:
+  - being able to have multiple providers of the same type.
+  - disposing the state of a provider when it is no longer used.
+  - make a provider private.
+- Revamps the syntax to make it simpler
+- Makes the pattern independent from Flutter
 
 These are achieved by no-longer using [InheritedWidget]s. Instead, [River_pod]
 implements its own mechanism that works in a similar fashion.
 
 # Usage
+
+The way [River_pod] is used depends on the application you are using:
+
+- You are building a Flutter app and don't mind using [flutter_hooks]:\
+  You can use the [hooks_river_pod] package.
+
+  This reduces the boilerplate of listening to providers inside widgets.
+
+- You are building a Flutter app, but do not want to use [flutter_hooks]:\
+  You can use the [flutter_river_pod] package.
+
+  It has a more verbose syntax (comparable to `Theme.of(context)` vs `StreamBuilder`).
+  But feature-wise, it is otherwise identical to [hooks_river_pod].
+
+- Your app **does not** use Flutter:\
+  You can use the [river_pod] package.
+
+  It exposes all the non-Flutter-related providers and a way to consume them without widgets.
 
 # FAQ
 
@@ -141,3 +153,5 @@ and that the community likes it, [provider] will still be maintained.
 [river_pod]: https://github.com/rrousselGit/River_pod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
 [inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
+[hooks_river_pod]: https://pub.dev/packages/hooks_river_pod
+[flutter_river_pod]: https://pub.dev/packages/flutter_river_pod
