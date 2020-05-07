@@ -102,6 +102,7 @@ abstract class BaseProviderState<
             }
             state._dependenciesState.forEach(recurs);
           }
+
           targetProviderState._dependenciesState.forEach(recurs);
           return true;
         }(), '');
