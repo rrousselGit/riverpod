@@ -1,4 +1,4 @@
-name: flutter_provider
+name: flutter_river_pod
 description: A new Flutter package project.
 version: 0.0.1
 author:
@@ -13,8 +13,8 @@ dependencies:
     sdk: flutter
   collection: ^1.14.12
   flutter_hooks: ^0.9.0
-  provider:
-    path: ../provider
+  river_pod:
+    path: ../river_pod
 
 dev_dependencies:
   mockito: ^4.1.0

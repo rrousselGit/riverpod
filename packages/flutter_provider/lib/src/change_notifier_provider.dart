@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // ignore: implementation_imports
-import 'package:provider/src/internals.dart';
+import 'package:river_pod/src/internals.dart';
 
 class ChangeNotifierProviderValue<T> extends BaseProviderValue {
   ChangeNotifierProviderValue._(this.value);

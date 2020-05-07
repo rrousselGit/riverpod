@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
-import 'package:provider/src/framework/framework.dart' show AlwaysAliveProvider;
+import 'package:river_pod/river_pod.dart';
+import 'package:river_pod/src/framework/framework.dart' show AlwaysAliveProvider;
 import 'package:test/test.dart';
 
 void main() {

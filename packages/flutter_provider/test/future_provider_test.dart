@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_provider/flutter_provider.dart';
+import 'package:flutter_river_pod/flutter_river_pod.dart';
 
 void main() {
   testWidgets('updates dependents with value', (tester) async {

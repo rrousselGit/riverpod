@@ -55,7 +55,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.0"
-  flutter_provider:
+  flutter_river_pod:
     dependency: "direct main"
     description:
       path: ".."
@@ -102,10 +102,10 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
-  provider:
+  river_pod:
     dependency: transitive
     description:
-      path: "../../provider"
+      path: "../../river_pod"
       relative: true
     source: path
     version: "0.0.1"

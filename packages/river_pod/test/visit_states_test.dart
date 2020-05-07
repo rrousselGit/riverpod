@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:provider/src/internals.dart';
+import 'package:river_pod/src/internals.dart';
 import 'package:test/test.dart';
 import 'package:trotter/trotter.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mockito/mockito.dart';
-import 'package:flutter_provider/flutter_provider.dart';
+import 'package:flutter_river_pod/flutter_river_pod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

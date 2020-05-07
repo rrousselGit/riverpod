@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
+import 'package:river_pod/river_pod.dart';
 
 import 'internal.dart';
 

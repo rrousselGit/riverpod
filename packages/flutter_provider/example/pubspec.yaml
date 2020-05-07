@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_provider:
+  flutter_river_pod:
     path: ..
 
 dev_dependencies:

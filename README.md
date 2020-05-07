@@ -4,7 +4,7 @@ This project can be considered as an **experimental** [provider] rewrite.
 
 Long story short:
 
-- Declare your providers are global variables:
+- Declare your providers as global variables:
 
   ```dart
   final useMyNotifier = ChangeNotifierProvider((_) {
@@ -17,7 +17,7 @@ Long story short:
   }
   ```
 
-* Use them inside your widgets in a compile-time safe way. No runtime exceptions!
+- Use them inside your widgets in a compile-time safe way. No runtime exceptions!
 
   ```dart
   class Example extends HookWidget {
@@ -33,7 +33,6 @@ See the [FAQ](#FAQ) if you have questions around what this means for [provider].
 
 # Index
 
-- [TL;DR](#tldr)
 - [Motivation](#motivation)
 - [Usage](#usage)
 - [FAQ](#faq)
@@ -68,7 +67,7 @@ From there, [River_pod] goes a few steps beyond:
   - being able to have multiple providers of the same type.
   - disposing the state of a provider when it is no longer used.
   - make a provider private.
-- Revamps the syntax to make it simpler
+- Simplifying complex object graphs.
 - Makes the pattern independent from Flutter
 
 These are achieved by no-longer using [InheritedWidget]s. Instead, [River_pod]
@@ -76,12 +75,14 @@ implements its own mechanism that works in a similar fashion.
 
 # Usage
 
-The way [River_pod] is used depends on the application you are using:
+The way [River_pod] is used depends on the application you are using.
+
+You can refer to the following table to help you decide which package to use:
 
 | app type                  | package name        | description                                                                                                                                                 |
 | ------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Flutter + [flutter_hooks] | [hooks_river_pod]   | An improved syntax with less boilerplate for listening providers inside widgets.                                                                            |
-| Flutter only              | [flutter_river_pod] | A slightly more verbose syntax (comparable to `Theme.of(context)` vs `StreamBuilder`).<br>But feature-wise, it is otherwise identical to [hooks_river_pod]. |
+| Flutter only              | [flutter_river_pod] | A slightly more verbose syntax (comparable to `Theme.of` vs `StreamBuilder`).<br>But feature-wise, it is otherwise identical to [hooks_river_pod]. |
 | Dart only (No Flutter)    | [river_pod]         | It exposes all the non-Flutter-related providers and a way to consume them without widgets.                                                                 |
 
 # FAQ

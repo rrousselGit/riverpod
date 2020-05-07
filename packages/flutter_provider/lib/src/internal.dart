@@ -1,1 +1,1 @@
-export 'package:provider/src/internals.dart';
+export 'package:river_pod/src/internals.dart';

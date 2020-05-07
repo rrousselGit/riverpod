@@ -2,8 +2,8 @@
 // import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-// import 'package:flutter_provider/flutter_provider.dart';
-// import 'package:flutter_provider/src/framework.dart';
+// import 'package:flutter_river_pod/flutter_river_pod.dart';
+// import 'package:flutter_river_pod/src/framework.dart';
 
 void main() {
   // TODO keep alive depending on itself throws

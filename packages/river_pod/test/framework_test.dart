@@ -1,7 +1,7 @@
 import 'package:mockito/mockito.dart';
-import 'package:provider/src/internals.dart';
+import 'package:river_pod/src/internals.dart';
 import 'package:test/test.dart';
-import 'package:provider/provider.dart';
+import 'package:river_pod/river_pod.dart';
 
 void main() {
   group('onError', () {
