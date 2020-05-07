@@ -78,21 +78,11 @@ implements its own mechanism that works in a similar fashion.
 
 The way [River_pod] is used depends on the application you are using:
 
-- You are building a Flutter app and don't mind using [flutter_hooks]:\
-  You can use the [hooks_river_pod] package.
-
-  This reduces the boilerplate of listening to providers inside widgets.
-
-- You are building a Flutter app, but do not want to use [flutter_hooks]:\
-  You can use the [flutter_river_pod] package.
-
-  It has a more verbose syntax (comparable to `Theme.of(context)` vs `StreamBuilder`).
-  But feature-wise, it is otherwise identical to [hooks_river_pod].
-
-- Your app **does not** use Flutter:\
-  You can use the [river_pod] package.
-
-  It exposes all the non-Flutter-related providers and a way to consume them without widgets.
+| app type                  | package name        | description                                                                                                                                                 |
+| ------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Flutter + [flutter_hooks] | [hooks_river_pod]   | An improved syntax with less boilerplate for listening providers inside widgets.                                                                            |
+| Flutter only              | [flutter_river_pod] | A slightly more verbose syntax (comparable to `Theme.of(context)` vs `StreamBuilder`).<br>But feature-wise, it is otherwise identical to [hooks_river_pod]. |
+| Dart only (No Flutter)    | [river_pod]         | It exposes all the non-Flutter-related providers and a way to consume them without widgets.                                                                 |
 
 # FAQ
 
