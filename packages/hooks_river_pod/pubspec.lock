@@ -30,7 +30,7 @@ packages:
     source: hosted
     version: "1.0.1"
   collection:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: collection
       url: "https://pub.dartlang.org"
@@ -49,12 +49,19 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_hooks:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_hooks
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.0"
+  flutter_river_pod:
+    dependency: "direct main"
+    description:
+      path: "../flutter_river_pod"
+      relative: true
+    source: path
+    version: "0.0.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -103,7 +110,7 @@ packages:
     source: hosted
     version: "1.7.0"
   river_pod:
-    dependency: "direct main"
+    dependency: transitive
     description:
       path: "../river_pod"
       relative: true
@@ -129,7 +136,7 @@ packages:
     source: hosted
     version: "1.9.3"
   state_notifier:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: state_notifier
       url: "https://pub.dartlang.org"

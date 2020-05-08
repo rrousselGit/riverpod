@@ -43,7 +43,7 @@ abstract class BaseProvider<CombiningValue extends BaseProviderValue,
   /// The callback may never get called
   VoidCallback watchOwner(
     ProviderStateOwner owner,
-    void Function(ListenedValue) listener,
+    void Function(ListenedValue value) listener,
   ) {
     final state = owner._readProviderState(this);
     return state.$addStateListener(listener);

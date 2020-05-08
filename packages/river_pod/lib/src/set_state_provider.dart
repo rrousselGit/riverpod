@@ -15,7 +15,7 @@ class SetStateProviderValue<T> extends BaseProviderValue {
       BaseProvider<SetStateProviderValue<T>, T>> _providerState;
   final _removeListeners = DoubleLinkedQueue<VoidCallback>();
 
-  void watch(void Function(T) listener) {
+  void watch(void Function(T value) listener) {
     _removeListeners.add(_providerState.$addStateListener(listener));
   }
 
