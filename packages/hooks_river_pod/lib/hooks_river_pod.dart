@@ -42,7 +42,8 @@ class _BaseProviderSelectorHookState<Input, Output>
 
   void _listen() {
     _removeListener?.call();
-    _removeListener = hook._selector.watchOwner(hook._owner, (value, lastValue) {
+    _removeListener =
+        hook._selector.watchOwner(hook._owner, (value, lastValue) {
       _lastValue = lastValue;
       if (hook._selector.shouldRebuild(_state, value)) {
         setState(() => _state = value);

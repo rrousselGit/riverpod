@@ -194,7 +194,7 @@ void main() {
       textDirection: TextDirection.ltr,
       child: HookBuilder(builder: (c) {
         buildCount++;
-        return useProvider(provider) .when(
+        return useProvider(provider).when(
           data: (v) => Text(v.toString()),
           loading: () => const Text('loading'),
           error: (dynamic err, stack) => const Text('error'),

@@ -19,7 +19,8 @@ void main() {
           ),
         ],
         child: HookBuilder(builder: (c) {
-          return Text(useProvider(provider2).toString(), textDirection: TextDirection.ltr);
+          return Text(useProvider(provider2).toString(),
+              textDirection: TextDirection.ltr);
         }),
       ),
     );
@@ -103,7 +104,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: HookBuilder(builder: (c) {
-          return Text(useProvider(forth).toString(), textDirection: TextDirection.ltr);
+          return Text(useProvider(forth).toString(),
+              textDirection: TextDirection.ltr);
         }),
       ),
     );
@@ -131,7 +133,8 @@ void main() {
           first.overrideForSubtree(Provider((_) => 42)),
         ],
         child: HookBuilder(builder: (c) {
-          return Text(useProvider(forth).toString(), textDirection: TextDirection.ltr);
+          return Text(useProvider(forth).toString(),
+              textDirection: TextDirection.ltr);
         }),
       ),
     );
@@ -159,7 +162,8 @@ void main() {
           second.overrideForSubtree(Provider((_) => 0)),
         ],
         child: HookBuilder(builder: (c) {
-          return Text(useProvider(forth).toString(), textDirection: TextDirection.ltr);
+          return Text(useProvider(forth).toString(),
+              textDirection: TextDirection.ltr);
         }),
       ),
     );
