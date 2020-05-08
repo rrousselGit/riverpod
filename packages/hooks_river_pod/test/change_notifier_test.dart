@@ -13,7 +13,7 @@ void main() {
       ProviderScope(
         child: HookBuilder(builder: (c) {
           return Text(
-            provider().count.toString(),
+            useProvider(provider).count.toString(),
             textDirection: TextDirection.ltr,
           );
         }),

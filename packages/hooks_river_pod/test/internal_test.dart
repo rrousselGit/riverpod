@@ -7,12 +7,12 @@ import 'package:mockito/mockito.dart';
 
 void main() {
   testWidgets('overrive type mismatch throws', (tester) async {
-    final useProvider = Provider((_) => 0);
+    final provider = Provider((_) => 0);
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          useProvider.overrideForSubtree(Provider((_) => 1)),
+          provider.overrideForSubtree(Provider((_) => 1)),
         ],
         child: Container(),
       ),
@@ -23,7 +23,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          useProvider.overrideForSubtree(MyImmutableProvider()),
+          provider.overrideForSubtree(MyImmutableProvider()),
         ],
         child: Container(),
       ),
@@ -44,7 +44,7 @@ Changing the kind of override or reordering overrides is not supported.
     final onDidUpdateProvider = MockDidUpdateProvider();
     final onDispose = MockDispose();
 
-    final useProvider = TestProvider(
+    final provider = TestProvider(
       42,
       onCreateState: onCreateState,
       onInitState: onInitState,
@@ -56,7 +56,7 @@ Changing the kind of override or reordering overrides is not supported.
 
     final consumer = HookBuilder(builder: (context) {
       consumerBuildCount++;
-      final value = useProvider();
+      final value = useProvider(provider);
       return Text(value.toString(), textDirection: TextDirection.ltr);
     });
 
@@ -72,18 +72,18 @@ Changing the kind of override or reordering overrides is not supported.
 
     testWidgets('calls all dispose in order even if one crashes',
         (tester) async {
-      final useProvider = TestProvider(0, onDispose: MockDispose());
-      final useProvider2 = TestProvider(0, onDispose: MockDispose());
+      final provider = TestProvider(0, onDispose: MockDispose());
+      final provider2 = TestProvider(0, onDispose: MockDispose());
       final error2 = Error();
-      when(useProvider2.onDispose(any)).thenThrow(error2);
-      final useProvider3 = TestProvider(0, onDispose: MockDispose());
+      when(provider2.onDispose(any)).thenThrow(error2);
+      final provider3 = TestProvider(0, onDispose: MockDispose());
 
       await tester.pumpWidget(
         ProviderScope(
           child: HookBuilder(builder: (c) {
-            useProvider();
-            useProvider2();
-            useProvider3();
+            useProvider(provider);
+            useProvider(provider2);
+            useProvider(provider3);
             return Container();
           }),
         ),
@@ -92,9 +92,9 @@ Changing the kind of override or reordering overrides is not supported.
       await tester.pumpWidget(Container());
 
       expect(tester.takeException(), error2);
-      verify(useProvider.onDispose(argThat(isNotNull))).called(1);
-      verify(useProvider2.onDispose(argThat(isNotNull))).called(1);
-      verify(useProvider3.onDispose(argThat(isNotNull))).called(1);
+      verify(provider.onDispose(argThat(isNotNull))).called(1);
+      verify(provider2.onDispose(argThat(isNotNull))).called(1);
+      verify(provider3.onDispose(argThat(isNotNull))).called(1);
     });
 
     testWidgets('override to override on same scope calls didUpdateProvider',
@@ -109,7 +109,7 @@ Changing the kind of override or reordering overrides is not supported.
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [useProvider.overrideForSubtree(override)],
+          overrides: [provider.overrideForSubtree(override)],
           child: consumer,
         ),
       );
@@ -130,7 +130,7 @@ Changing the kind of override or reordering overrides is not supported.
       // replace the override with another of thes same type
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [useProvider.overrideForSubtree(override2)],
+          overrides: [provider.overrideForSubtree(override2)],
           child: consumer,
         ),
       );
@@ -174,7 +174,7 @@ Changing the kind of override or reordering overrides is not supported.
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [useProvider.overrideForSubtree(override)],
+          overrides: [provider.overrideForSubtree(override)],
           child: consumer,
         ),
       );
@@ -197,7 +197,7 @@ Changing the kind of override or reordering overrides is not supported.
     });
     testWidgets('first mount calls createState and initState', (tester) async {
       TestProvider onInitStateProvider;
-      useProvider.onInitState.mock((state) {
+      provider.onInitState.mock((state) {
         onInitStateProvider = state.provider;
       });
       await tester.pumpWidget(ProviderScope(child: consumer));
@@ -209,7 +209,7 @@ Changing the kind of override or reordering overrides is not supported.
       ]);
       verifyZeroInteractions(onDispose);
       verifyZeroInteractions(onDidUpdateProvider);
-      expect(onInitStateProvider, useProvider);
+      expect(onInitStateProvider, provider);
     });
     testWidgets('first override mount calls createState and initState',
         (tester) async {
@@ -227,7 +227,7 @@ Changing the kind of override or reordering overrides is not supported.
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            useProvider.overrideForSubtree(override),
+            provider.overrideForSubtree(override),
           ],
           child: consumer,
         ),

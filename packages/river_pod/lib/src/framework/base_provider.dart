@@ -27,6 +27,47 @@ void visitNodesInDependencyOrder(
 }
 
 @immutable
+abstract class Selector<Input, Output> {
+  ProviderBase<ProviderBaseSubscription, Input> get provider;
+
+  VoidCallback watchOwner(
+    ProviderStateOwner owner,
+    void Function(Output value, Input originValue) listener,
+  );
+
+  Output transform(Input value);
+
+  bool shouldRebuild(Output previousValue, Output newValue);
+}
+
+class _Selector<Input, Output> implements Selector<Input, Output> {
+  _Selector(this._selector, this.provider);
+
+  final Output Function(Input value) _selector;
+  @override
+  final ProviderBase<ProviderBaseSubscription, Input> provider;
+
+  @override
+  Output transform(Input value) {
+    return _selector(value);
+  }
+
+  @override
+  VoidCallback watchOwner(
+    ProviderStateOwner owner,
+    void Function(Output value, Input originValue) listener,
+  ) {
+    return provider.watchOwner(
+        owner, (value) => listener(_selector(value), value));
+  }
+
+  @override
+  bool shouldRebuild(Output previousValue, Output newValue) {
+    return !const DeepCollectionEquality().equals(previousValue, newValue);
+  }
+}
+
+@immutable
 @optionalTypeArgs
 abstract class ProviderBase<CombiningValue extends ProviderBaseSubscription,
     ListenedValue extends Object> {
@@ -47,6 +88,11 @@ abstract class ProviderBase<CombiningValue extends ProviderBaseSubscription,
   ) {
     final state = owner._readProviderState(this);
     return state.$addStateListener(listener);
+  }
+
+  Selector<ListenedValue, Res> select<Res>(
+      Res Function(ListenedValue value) selector) {
+    return _Selector<ListenedValue, Res>(selector, this);
   }
 }
 

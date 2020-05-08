@@ -19,7 +19,7 @@ void main() {
           ),
         ],
         child: HookBuilder(builder: (c) {
-          return Text(provider2().toString(), textDirection: TextDirection.ltr);
+          return Text(useProvider(provider2).toString(), textDirection: TextDirection.ltr);
         }),
       ),
     );
@@ -31,12 +31,12 @@ void main() {
       (tester) async {
     // ProviderContext<int> providerState;
 
-    // final useProvider = Provider<int>((state) {
+    // final provider = Provider<int>((state) {
     //   providerState = state;
     //   return 42;
     // });
     // var createCount = 0;
-    // final useProvider1 =
+    // final provider1 =
     //     Provider1<ProviderSubscription<int>, String>(useProvider, (state, first) {
     //   createCount++;
     //   first.onChange((v) {
@@ -64,20 +64,20 @@ void main() {
 
   testWidgets('provider1 uses override if the override is at root',
       (tester) async {
-    final useProvider = Provider((_) => 0);
+    final provider = Provider((_) => 0);
 
-    final useProvider1 = Provider((state) {
-      final other = state.dependOn(useProvider);
+    final provider1 = Provider((state) {
+      final other = state.dependOn(provider);
       return other.value.toString();
     });
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          useProvider.overrideForSubtree(Provider((_) => 1)),
+          provider.overrideForSubtree(Provider((_) => 1)),
         ],
         child: HookBuilder(builder: (c) {
-          return Text(useProvider1(), textDirection: TextDirection.ltr);
+          return Text(useProvider(provider1), textDirection: TextDirection.ltr);
         }),
       ),
     );
@@ -103,7 +103,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: HookBuilder(builder: (c) {
-          return Text(forth().toString(), textDirection: TextDirection.ltr);
+          return Text(useProvider(forth).toString(), textDirection: TextDirection.ltr);
         }),
       ),
     );
@@ -131,7 +131,7 @@ void main() {
           first.overrideForSubtree(Provider((_) => 42)),
         ],
         child: HookBuilder(builder: (c) {
-          return Text(forth().toString(), textDirection: TextDirection.ltr);
+          return Text(useProvider(forth).toString(), textDirection: TextDirection.ltr);
         }),
       ),
     );
@@ -159,7 +159,7 @@ void main() {
           second.overrideForSubtree(Provider((_) => 0)),
         ],
         child: HookBuilder(builder: (c) {
-          return Text(forth().toString(), textDirection: TextDirection.ltr);
+          return Text(useProvider(forth).toString(), textDirection: TextDirection.ltr);
         }),
       ),
     );

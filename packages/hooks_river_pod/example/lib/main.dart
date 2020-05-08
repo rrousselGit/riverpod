@@ -49,7 +49,7 @@ class MyHomePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final count = counterProvider.value();
+    final count = useProvider(counterProvider.value);
 
     return Scaffold(
       appBar: AppBar(

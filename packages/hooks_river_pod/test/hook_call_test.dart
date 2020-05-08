@@ -12,7 +12,7 @@ void main() {
       ProviderScope(
         child: HookBuilder(
           builder: (context) {
-            final count = provider().count;
+            final count = useProvider(provider).count;
 
             return Text('$count', textDirection: TextDirection.ltr);
           },
@@ -46,7 +46,7 @@ void main() {
       key: GlobalKey(),
       builder: (c) {
         buildCount++;
-        final count = provider().count;
+        final count = useProvider(provider).count;
         return Text('$count', textDirection: TextDirection.ltr);
       },
     );
@@ -112,7 +112,7 @@ void main() {
       ProviderScope(
         child: HookBuilder(
           builder: (context) {
-            final value = provider();
+            final value = useProvider(provider);
             return Text(
               '$value',
               textDirection: TextDirection.ltr,
@@ -130,7 +130,7 @@ void main() {
       ProviderScope(
         child: HookBuilder(
           builder: (context) {
-            final value = provider2();
+            final value = useProvider(provider2);
             return Text(
               '$value',
               textDirection: TextDirection.ltr,

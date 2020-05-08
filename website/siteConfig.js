@@ -1,7 +1,7 @@
 const siteConfig = {
   title: "River pod", // Title for your website.
-  tagline: "A website for testing",
-  url: "https://your-docusaurus-test-site.com", // Your website URL
+  tagline: "A compile-safe Provider",
+  url: "https://river-pod.dev", // Your website URL
   baseUrl: "/", // Base URL for your project */
   // For github.io type URLs, you would set the url and baseUrl like:
   //   url: 'https://facebook.github.io',
@@ -10,7 +10,7 @@ const siteConfig = {
   // Used for publishing and more
   projectName: "river_pod",
   organizationName: "rrousselGit",
-
+ 
   headerLinks: [
     { doc: "getting_started", label: "Getting started" },
     { href: "https://github.com/rrousselGit/river_pod", label: "GitHub" },

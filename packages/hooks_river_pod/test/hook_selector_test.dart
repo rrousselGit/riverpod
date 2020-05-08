@@ -18,7 +18,7 @@ void main() {
         child: HookBuilder(
           builder: (context) {
             buildCount++;
-            final value = provider.select((value) => res);
+            final value = useSelector(provider.select((value) => res));
 
             return Text(value, textDirection: TextDirection.ltr);
           },
@@ -60,7 +60,7 @@ void main() {
         child: HookBuilder(
           builder: (context) {
             buildCount++;
-            final list = provider.select((value) => value);
+            final list = useSelector(provider.select((value) => value));
 
             return Text('$list', textDirection: TextDirection.ltr);
           },
@@ -89,7 +89,7 @@ void main() {
       ProviderScope(
         child: HookBuilder(
           builder: (context) {
-            final count = provider.select((value) => value.count);
+            final count = useSelector(provider.select((value) => value.count));
 
             return Text('$count', textDirection: TextDirection.ltr);
           },
@@ -123,7 +123,7 @@ void main() {
       key: GlobalKey(),
       builder: (c) {
         buildCount++;
-        final count = provider.select((value) => value.count);
+        final count = useSelector(provider.select((value) => value.count));
         return Text('$count', textDirection: TextDirection.ltr);
       },
     );
@@ -189,7 +189,7 @@ void main() {
       ProviderScope(
         child: HookBuilder(
           builder: (context) {
-            final value = provider.select((value) => value);
+            final value = useSelector(provider.select((value) => value));
             return Text(
               '$value',
               textDirection: TextDirection.ltr,
@@ -207,7 +207,7 @@ void main() {
       ProviderScope(
         child: HookBuilder(
           builder: (context) {
-            final value = provider2.select((value) => value);
+            final value = useSelector(provider2.select((value) => value));
             return Text(
               '$value',
               textDirection: TextDirection.ltr,

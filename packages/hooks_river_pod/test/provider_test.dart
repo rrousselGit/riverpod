@@ -32,7 +32,7 @@ void main() {
   testWidgets('mounted', (tester) async {
     ProviderContext providerState;
     bool mountedOnDispose;
-    final useProvider = Provider<int>((state) {
+    final provider = Provider<int>((state) {
       providerState = state;
       state.onDispose(() => mountedOnDispose = state.mounted);
       return 42;
@@ -42,7 +42,7 @@ void main() {
       ProviderScope(
         child: HookBuilder(builder: (c) {
           return Text(
-            useProvider().toString(),
+            useProvider(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -59,13 +59,13 @@ void main() {
   });
 
   testWidgets('no onDispose does not crash', (tester) async {
-    final useProvider = Provider<int>((state) => 42);
+    final provider = Provider<int>((state) => 42);
 
     await tester.pumpWidget(
       ProviderScope(
         child: HookBuilder(builder: (c) {
           return Text(
-            useProvider().toString(),
+            useProvider(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -78,7 +78,7 @@ void main() {
   });
   testWidgets('onDispose can read state', (tester) async {
     // int onDisposeState;
-    // final useProvider = Provider<int>((state) {
+    // final provider = Provider<int>((state) {
     //   state.onDispose(() => onDisposeState = state.value);
     //   return 42;
     // });
@@ -102,7 +102,7 @@ void main() {
   }, skip: true);
   testWidgets("can't read state after dispose", (tester) async {
     // ProviderContext<int> providerState;
-    // final useProvider = Provider<int>((state) {
+    // final provider = Provider<int>((state) {
     //   providerState = state;
     //   return 42;
     // });
@@ -133,7 +133,7 @@ void main() {
 
     final dispose3 = OnDisposeMock();
 
-    final useProvider = Provider<int>((state) {
+    final provider = Provider<int>((state) {
       state..onDispose(dispose1)..onDispose(dispose2)..onDispose(dispose3);
       return 42;
     });
@@ -142,7 +142,7 @@ void main() {
       ProviderScope(
         child: HookBuilder(builder: (c) {
           return Text(
-            useProvider().toString(),
+            useProvider(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -170,7 +170,7 @@ void main() {
 
   testWidgets('expose value as is', (tester) async {
     var callCount = 0;
-    final useProvider = Provider((state) {
+    final provider = Provider((state) {
       assert(state != null, '');
       callCount++;
       return 42;
@@ -180,7 +180,7 @@ void main() {
       ProviderScope(
         child: HookBuilder(builder: (c) {
           return Text(
-            useProvider().toString(),
+            useProvider(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -193,10 +193,10 @@ void main() {
 
   testWidgets('override updates rebuild dependents with new value',
       (tester) async {
-    final useProvider = Provider((_) => 0);
+    final provider = Provider((_) => 0);
     final child = HookBuilder(builder: (c) {
       return Text(
-        useProvider().toString(),
+        useProvider(provider).toString(),
         textDirection: TextDirection.ltr,
       );
     });
@@ -206,7 +206,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          useProvider.overrideForSubtree(
+          provider.overrideForSubtree(
             Provider((state) {
               assert(state != null, '');
               callCount++;
@@ -224,7 +224,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          useProvider.overrideForSubtree(
+          provider.overrideForSubtree(
             Provider((state) {
               assert(state != null, '');
               callCount++;

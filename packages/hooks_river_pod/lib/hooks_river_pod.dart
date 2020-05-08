@@ -2,33 +2,23 @@
 import 'package:flutter_river_pod/src/internal.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:collection/collection.dart';
 
 export 'package:flutter_hooks/flutter_hooks.dart';
 export 'package:flutter_river_pod/flutter_river_pod.dart';
 
-extension BaseProviderHook<T> on ProviderBase<ProviderBaseSubscription, T> {
-  T call() {
-    final owner = ProviderStateOwnerScope.of(useContext());
-    return Hook.use(_BaseProviderHook<T>(owner, this));
-  }
-
-  Res select<Res>(Res Function(T value) selector) {
-    final owner = ProviderStateOwnerScope.of(useContext());
-    return Hook.use(_BaseProviderSelectorHook<T, Res>(owner, this, selector));
-  }
+Output useSelector<Input, Output>(Selector<Input, Output> selector) {
+  final owner = ProviderStateOwnerScope.of(useContext());
+  return Hook.use(_BaseProviderSelectorHook<Input, Output>(owner, selector));
 }
 
 class _BaseProviderSelectorHook<Input, Output> extends Hook<Output> {
   const _BaseProviderSelectorHook(
     this._owner,
-    this._provider,
     this._selector,
   );
 
   final ProviderStateOwner _owner;
-  final ProviderBase<ProviderBaseSubscription, Input> _provider;
-  final Output Function(Input) _selector;
+  final Selector<Input, Output> _selector;
 
   @override
   _BaseProviderSelectorHookState<Input, Output> createState() =>
@@ -52,11 +42,10 @@ class _BaseProviderSelectorHookState<Input, Output>
 
   void _listen() {
     _removeListener?.call();
-    _removeListener = hook._provider.watchOwner(hook._owner, (value) {
-      _lastValue = value;
-      final selected = hook._selector(value);
-      if (!const DeepCollectionEquality().equals(_state, selected)) {
-        setState(() => _state = selected);
+    _removeListener = hook._selector.watchOwner(hook._owner, (value, lastValue) {
+      _lastValue = lastValue;
+      if (hook._selector.shouldRebuild(_state, value)) {
+        setState(() => _state = value);
       }
     });
   }
@@ -64,7 +53,7 @@ class _BaseProviderSelectorHookState<Input, Output>
   @override
   void didUpdateHook(_BaseProviderSelectorHook<Input, Output> oldHook) {
     super.didUpdateHook(oldHook);
-    if (oldHook._provider != hook._provider) {
+    if (oldHook._selector.provider != hook._selector.provider) {
       FlutterError.reportError(
         FlutterErrorDetails(
           exception: UnsupportedError(
@@ -78,7 +67,7 @@ class _BaseProviderSelectorHookState<Input, Output>
     if (oldHook._owner != hook._owner) {
       _listen();
     } else {
-      _state = hook._selector(_lastValue);
+      _state = hook._selector.transform(_lastValue);
     }
   }
 
@@ -87,6 +76,11 @@ class _BaseProviderSelectorHookState<Input, Output>
     _removeListener?.call();
     super.dispose();
   }
+}
+
+T useProvider<T>(ProviderBase<ProviderBaseSubscription, T> provider) {
+  final owner = ProviderStateOwnerScope.of(useContext());
+  return Hook.use(_BaseProviderHook<T>(owner, provider));
 }
 
 class _BaseProviderHook<T> extends Hook<T> {
