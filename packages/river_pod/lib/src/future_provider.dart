@@ -5,17 +5,17 @@ import 'package:meta/meta.dart';
 import 'common.dart';
 import 'framework/framework.dart';
 
-class FutureProviderValue<T> extends BaseProviderValue {
-  FutureProviderValue._({@required this.future});
+class FutureProviderSubscription<T> extends ProviderBaseSubscription {
+  FutureProviderSubscription._({@required this.future});
 
   final Future<T> future;
 }
 
-class FutureProvider<Res>
-    extends AlwaysAliveProvider<FutureProviderValue<Res>, AsyncValue<Res>> {
+class FutureProvider<Res> extends AlwaysAliveProvider<
+    FutureProviderSubscription<Res>, AsyncValue<Res>> {
   FutureProvider(this._create);
 
-  final Create<Future<Res>, ProviderState> _create;
+  final Create<Future<Res>, ProviderContext> _create;
 
   @override
   _FutureProviderState<Res> createState() {
@@ -24,18 +24,18 @@ class FutureProvider<Res>
 
   ProviderOverride debugOverrideFromValue(AsyncValue<Res> value) {
     return overrideForSubtree(
-      _DebugFutureProviderValue(value),
+      _DebugValueFutureProvider(value),
     );
   }
 }
 
-class _FutureProviderState<Res> extends BaseProviderState<
-    FutureProviderValue<Res>, AsyncValue<Res>, FutureProvider<Res>> {
+class _FutureProviderState<Res> extends ProviderBaseState<
+    FutureProviderSubscription<Res>, AsyncValue<Res>, FutureProvider<Res>> {
   Future<Res> _future;
 
   @override
   AsyncValue<Res> initState() {
-    _future = provider._create(ProviderState(this));
+    _future = provider._create(ProviderContext(this));
     _listen();
 
     return const AsyncValue.loading();
@@ -55,30 +55,32 @@ class _FutureProviderState<Res> extends BaseProviderState<
   }
 
   @override
-  FutureProviderValue<Res> createProviderValue() {
-    return FutureProviderValue._(future: _future);
+  FutureProviderSubscription<Res> createProviderSubscription() {
+    return FutureProviderSubscription._(future: _future);
   }
 }
 
-class _DebugFutureProviderValue<Res>
-    extends BaseProvider<FutureProviderValue<Res>, AsyncValue<Res>> {
-  _DebugFutureProviderValue(this._value);
+class _DebugValueFutureProvider<Res>
+    extends ProviderBase<FutureProviderSubscription<Res>, AsyncValue<Res>> {
+  _DebugValueFutureProvider(this._value);
 
   final AsyncValue<Res> _value;
 
   @override
-  _DebugFutureProviderValueState<Res> createState() {
-    _DebugFutureProviderValueState<Res> result;
+  _DebugValueFutureProviderState<Res> createState() {
+    _DebugValueFutureProviderState<Res> result;
     assert(() {
-      result = _DebugFutureProviderValueState<Res>();
+      result = _DebugValueFutureProviderState<Res>();
       return true;
     }(), '');
     return result;
   }
 }
 
-class _DebugFutureProviderValueState<Res> extends BaseProviderState<
-    FutureProviderValue<Res>, AsyncValue<Res>, _DebugFutureProviderValue<Res>> {
+class _DebugValueFutureProviderState<Res> extends ProviderBaseState<
+    FutureProviderSubscription<Res>,
+    AsyncValue<Res>,
+    _DebugValueFutureProvider<Res>> {
   final _completer = Completer<Res>();
 
   @override
@@ -93,7 +95,7 @@ class _DebugFutureProviderValueState<Res> extends BaseProviderState<
   }
 
   @override
-  void didUpdateProvider(_DebugFutureProviderValue<Res> oldProvider) {
+  void didUpdateProvider(_DebugValueFutureProvider<Res> oldProvider) {
     super.didUpdateProvider(oldProvider);
 
     if (provider._value != oldProvider._value) {
@@ -114,7 +116,7 @@ class _DebugFutureProviderValueState<Res> extends BaseProviderState<
   }
 
   @override
-  FutureProviderValue<Res> createProviderValue() {
-    return FutureProviderValue._(future: _completer.future);
+  FutureProviderSubscription<Res> createProviderSubscription() {
+    return FutureProviderSubscription._(future: _completer.future);
   }
 }

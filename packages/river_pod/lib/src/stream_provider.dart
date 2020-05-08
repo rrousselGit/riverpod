@@ -1,20 +1,24 @@
-part of 'stream_provider.dart';
+import 'dart:async';
 
-mixin _StreamProviderMixin<T> implements StreamProvider<T> {
-  @override
-  ProviderOverride<StreamProviderValue<T>, AsyncValue<T>> overrideWithValue(
-    AsyncValue<T> value,
-  ) {
-    return overrideForSubtree(_ValueStreamProvider(value));
-  }
+import 'common.dart';
+import 'framework/framework.dart';
+
+class StreamProviderSubscription<T> extends ProviderBaseSubscription {
+  StreamProviderSubscription._(this.stream);
+
+  final Stream<T> stream;
 }
 
-class _StreamProvider<T>
-    extends AlwaysAliveProvider<StreamProviderValue<T>, AsyncValue<T>>
-    with _StreamProviderMixin<T> {
-  _StreamProvider(this.create);
+class StreamProvider<T>
+    extends AlwaysAliveProvider<StreamProviderSubscription<T>, AsyncValue<T>> {
+  StreamProvider(this._create);
 
-  final Create<Stream<T>, ProviderState> create;
+  final Create<Stream<T>, ProviderContext> _create;
+
+  ProviderOverride<StreamProviderSubscription<T>, AsyncValue<T>>
+      overrideWithValue(AsyncValue<T> value) {
+    return overrideForSubtree(_ValueStreamProvider(value));
+  }
 
   @override
   _StreamProviderState<T> createState() {
@@ -22,19 +26,19 @@ class _StreamProvider<T>
   }
 }
 
-class _StreamProviderState<T> extends BaseProviderState<StreamProviderValue<T>,
-    AsyncValue<T>, _StreamProvider<T>> {
+class _StreamProviderState<T> extends ProviderBaseState<
+    StreamProviderSubscription<T>, AsyncValue<T>, StreamProvider<T>> {
   Stream<T> _stream;
   StreamSubscription<T> _streamSubscription;
 
   @override
-  StreamProviderValue<T> createProviderValue() {
-    return StreamProviderValue._(_stream);
+  StreamProviderSubscription<T> createProviderSubscription() {
+    return StreamProviderSubscription._(_stream);
   }
 
   @override
   AsyncValue<T> initState() {
-    _stream = provider.create(ProviderState(this));
+    _stream = provider._create(ProviderContext(this));
     _streamSubscription = _stream.listen(
       (event) {
         $state = AsyncValue.data(event);
@@ -58,7 +62,7 @@ class _StreamProviderState<T> extends BaseProviderState<StreamProviderValue<T>,
 }
 
 class _ValueStreamProvider<T>
-    extends BaseProvider<StreamProviderValue<T>, AsyncValue<T>> {
+    extends ProviderBase<StreamProviderSubscription<T>, AsyncValue<T>> {
   _ValueStreamProvider(this.value);
 
   final AsyncValue<T> value;
@@ -69,13 +73,13 @@ class _ValueStreamProvider<T>
   }
 }
 
-class _ValueStreamProviderState<T> extends BaseProviderState<
-    StreamProviderValue<T>, AsyncValue<T>, _ValueStreamProvider<T>> {
+class _ValueStreamProviderState<T> extends ProviderBaseState<
+    StreamProviderSubscription<T>, AsyncValue<T>, _ValueStreamProvider<T>> {
   final _controller = StreamController<T>();
 
   @override
-  StreamProviderValue<T> createProviderValue() {
-    return StreamProviderValue._(_controller.stream);
+  StreamProviderSubscription<T> createProviderSubscription() {
+    return StreamProviderSubscription._(_controller.stream);
   }
 
   @override

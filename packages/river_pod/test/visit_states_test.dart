@@ -11,14 +11,14 @@ void main() {
   //  |
   //  C
   test('linear graph', () {
-    final a = Provider<int>((state) => 0);
+    final a = Provider<int>((context) => 0);
 
-    final b = Provider<int>((state) {
-      state.dependOn(a);
+    final b = Provider<int>((context) {
+      context.dependOn(a);
       return 0;
     });
-    final c = Provider<int>((state) {
-      state.dependOn(b);
+    final c = Provider<int>((context) {
+      context.dependOn(b);
       return 0;
     });
 
@@ -34,19 +34,19 @@ void main() {
   //    \  /
   //      D
   test('diamond graph', () {
-    final a = Provider<int>((state) => 0);
+    final a = Provider<int>((context) => 0);
 
-    final b = Provider<int>((state) {
-      state.dependOn(a);
+    final b = Provider<int>((context) {
+      context.dependOn(a);
       return 0;
     });
-    final c = Provider<int>((state) {
-      state.dependOn(a);
+    final c = Provider<int>((context) {
+      context.dependOn(a);
       return 0;
     });
 
-    final d = Provider<int>((state) {
-      state..dependOn(b)..dependOn(c);
+    final d = Provider<int>((context) {
+      context..dependOn(b)..dependOn(c);
       return 0;
     });
 
@@ -67,33 +67,33 @@ void main() {
   //   / \    / \
   //  D > E <F < G
   test('5', () {
-    final a = Provider<int>((state) => 0);
+    final a = Provider<int>((context) => 0);
 
-    final b = Provider<int>((state) {
-      state.dependOn(a);
-      return 0;
-    });
-
-    final e = Provider<int>((state) {
-      state.dependOn(b);
-      return 0;
-    });
-    final d = Provider<int>((state) {
-      state..dependOn(b)..dependOn(e);
+    final b = Provider<int>((context) {
+      context.dependOn(a);
       return 0;
     });
 
-    final c = Provider<int>((state) {
-      state..dependOn(a)..dependOn(b);
+    final e = Provider<int>((context) {
+      context.dependOn(b);
+      return 0;
+    });
+    final d = Provider<int>((context) {
+      context..dependOn(b)..dependOn(e);
       return 0;
     });
 
-    final f = Provider<int>((state) {
-      state..dependOn(c)..dependOn(e);
+    final c = Provider<int>((context) {
+      context..dependOn(a)..dependOn(b);
       return 0;
     });
-    final g = Provider<int>((state) {
-      state..dependOn(c)..dependOn(f);
+
+    final f = Provider<int>((context) {
+      context..dependOn(c)..dependOn(e);
+      return 0;
+    });
+    final g = Provider<int>((context) {
+      context..dependOn(c)..dependOn(f);
       return 0;
     });
 
@@ -119,19 +119,19 @@ void main() {
   //   \   /
   //     D
   test('linked diamond graph', () {
-    final a = Provider<int>((state) => 0);
+    final a = Provider<int>((context) => 0);
 
-    final b = Provider<int>((state) {
-      state.dependOn(a);
+    final b = Provider<int>((context) {
+      context.dependOn(a);
       return 0;
     });
-    final c = Provider<int>((state) {
-      state..dependOn(a)..dependOn(b);
+    final c = Provider<int>((context) {
+      context..dependOn(a)..dependOn(b);
       return 0;
     });
 
-    final d = Provider<int>((state) {
-      state..dependOn(b)..dependOn(c);
+    final d = Provider<int>((context) {
+      context..dependOn(b)..dependOn(c);
       return 0;
     });
 
@@ -149,19 +149,19 @@ void main() {
   //   \   /
   //     D
   test('graph4', () {
-    final a = Provider<int>((state) => 0);
+    final a = Provider<int>((context) => 0);
 
-    final b = Provider<int>((state) {
-      state.dependOn(a);
+    final b = Provider<int>((context) {
+      context.dependOn(a);
       return 0;
     });
-    final c = Provider<int>((state) {
-      state.dependOn(b);
+    final c = Provider<int>((context) {
+      context.dependOn(b);
       return 0;
     });
 
-    final d = Provider<int>((state) {
-      state..dependOn(b)..dependOn(c);
+    final d = Provider<int>((context) {
+      context..dependOn(b)..dependOn(c);
       return 0;
     });
 
@@ -181,24 +181,24 @@ void main() {
   //   \   /
   //     E
   test('graph6', () {
-    final a = Provider<int>((state) => 0);
+    final a = Provider<int>((context) => 0);
 
-    final b = Provider<int>((state) {
-      state.dependOn(a);
+    final b = Provider<int>((context) {
+      context.dependOn(a);
       return 0;
     });
-    final c = Provider<int>((state) {
-      state.dependOn(a);
-      return 0;
-    });
-
-    final d = Provider<int>((state) {
-      state.dependOn(b);
+    final c = Provider<int>((context) {
+      context.dependOn(a);
       return 0;
     });
 
-    final e = Provider<int>((state) {
-      state..dependOn(d)..dependOn(c);
+    final d = Provider<int>((context) {
+      context.dependOn(b);
+      return 0;
+    });
+
+    final e = Provider<int>((context) {
+      context..dependOn(d)..dependOn(c);
       return 0;
     });
 
@@ -222,24 +222,24 @@ void main() {
   //   \   /
   //     E(1)
   test('graph7', () {
-    final a = Provider<int>((state) => 0);
+    final a = Provider<int>((context) => 0);
 
-    final b = Provider<int>((state) {
-      state.dependOn(a);
+    final b = Provider<int>((context) {
+      context.dependOn(a);
       return 0;
     });
-    final c = Provider<int>((state) {
-      state.dependOn(a);
-      return 0;
-    });
-
-    final d = Provider<int>((state) {
-      state.dependOn(b);
+    final c = Provider<int>((context) {
+      context.dependOn(a);
       return 0;
     });
 
-    final e = Provider<int>((state) {
-      state..dependOn(d)..dependOn(c);
+    final d = Provider<int>((context) {
+      context.dependOn(b);
+      return 0;
+    });
+
+    final e = Provider<int>((context) {
+      context..dependOn(d)..dependOn(c);
       return 0;
     });
 
@@ -253,7 +253,7 @@ void main() {
     final perm = Permutations(3, [c, d, e]);
     for (final permutation in perm()) {
       final states = permutation.map(owner2.readProviderState).toSet();
-      final result = DoubleLinkedQueue<BaseProvider>();
+      final result = DoubleLinkedQueue<ProviderBase>();
       visitNodesInDependencyOrder(states, (e) => result.add(e.provider));
 
       expect(
@@ -267,12 +267,12 @@ void main() {
   });
 }
 
-List<BaseProvider> compute(List<BaseProvider> input) {
+List<ProviderBase> compute(List<ProviderBase> input) {
   final owner = ProviderStateOwner();
 
   final states = input.map(owner.readProviderState).toSet();
 
-  final result = DoubleLinkedQueue<BaseProvider>();
+  final result = DoubleLinkedQueue<ProviderBase>();
 
   visitNodesInDependencyOrder(states, (e) => result.add(e.provider));
 

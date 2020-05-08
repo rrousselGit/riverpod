@@ -298,13 +298,13 @@ class MockDidUpdateProvider extends Mock {
   void call(TestProviderState state, TestProvider oldProvider);
 }
 
-class TestProviderValue extends BaseProviderValue {
+class TestProviderValue extends ProviderBaseSubscription {
   TestProviderValue(this.value);
 
   final int value;
 }
 
-class TestProvider extends BaseProvider<TestProviderValue, int> {
+class TestProvider extends ProviderBase<TestProviderValue, int> {
   TestProvider(
     this.value, {
     this.onCreateState,
@@ -327,7 +327,7 @@ class TestProvider extends BaseProvider<TestProviderValue, int> {
 }
 
 class TestProviderState
-    extends BaseProviderState<TestProviderValue, int, TestProvider> {
+    extends ProviderBaseState<TestProviderValue, int, TestProvider> {
   @override
   int initState() {
     provider.onInitState?.call(
@@ -350,27 +350,27 @@ class TestProviderState
   }
 
   @override
-  TestProviderValue createProviderValue() {
+  TestProviderValue createProviderSubscription() {
     return TestProviderValue($state);
   }
 }
 
-class MyImmutableProvider extends BaseProvider<ProviderValue<int>, int> {
+class MyImmutableProvider extends ProviderBase<ProviderSubscription<int>, int> {
   @override
   MyImmutableProviderState createState() {
     return MyImmutableProviderState();
   }
 }
 
-class MyImmutableProviderState
-    extends BaseProviderState<ProviderValue<int>, int, MyImmutableProvider> {
+class MyImmutableProviderState extends ProviderBaseState<
+    ProviderSubscription<int>, int, MyImmutableProvider> {
   @override
   int initState() {
     throw UnimplementedError();
   }
 
   @override
-  ProviderValue<int> createProviderValue() {
+  ProviderSubscription<int> createProviderSubscription() {
     throw UnimplementedError();
   }
 }

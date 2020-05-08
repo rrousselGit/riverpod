@@ -32,14 +32,14 @@ final configurationProvider = FutureProvider((_) async {
 /// Creates a [Repository] from [configurationProvider].
 ///
 /// This will correctly wait until the configurations are available.
-final repositoryProvider = FutureProvider((state) async {
+final repositoryProvider = FutureProvider((context) async {
   /// Reads the configurations from [configurationProvider]. This is type-safe.
-  final configs = await state.dependOn(configurationProvider).future;
+  final configs = await context.dependOn(configurationProvider).future;
 
   final repository = Repository(configs);
   // Releases the resources when the provider is destroyed.
   // This will stop pending HTTP requests.
-  state.onDispose(repository.dispose);
+  context.onDispose(repository.dispose);
 
   return repository;
 });

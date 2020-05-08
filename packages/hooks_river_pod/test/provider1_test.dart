@@ -29,7 +29,7 @@ void main() {
 
   testWidgets('provider1 can read and listen to other providers',
       (tester) async {
-    // ProviderState<int> providerState;
+    // ProviderContext<int> providerState;
 
     // final useProvider = Provider<int>((state) {
     //   providerState = state;
@@ -37,7 +37,7 @@ void main() {
     // });
     // var createCount = 0;
     // final useProvider1 =
-    //     Provider1<ProviderValue<int>, String>(useProvider, (state, first) {
+    //     Provider1<ProviderSubscription<int>, String>(useProvider, (state, first) {
     //   createCount++;
     //   first.onChange((v) {
     //     state.value = v.toString();

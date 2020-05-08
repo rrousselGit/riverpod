@@ -30,7 +30,7 @@ void main() {
     });
   });
   testWidgets('mounted', (tester) async {
-    ProviderState providerState;
+    ProviderContext providerState;
     bool mountedOnDispose;
     final useProvider = Provider<int>((state) {
       providerState = state;
@@ -101,7 +101,7 @@ void main() {
     // expect(onDisposeState, 42);
   }, skip: true);
   testWidgets("can't read state after dispose", (tester) async {
-    // ProviderState<int> providerState;
+    // ProviderContext<int> providerState;
     // final useProvider = Provider<int>((state) {
     //   providerState = state;
     //   return 42;

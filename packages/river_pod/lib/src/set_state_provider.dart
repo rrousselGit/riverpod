@@ -3,16 +3,12 @@ import 'dart:collection';
 import 'common.dart';
 import 'framework/framework.dart';
 
-// This files contains the interfaces for all the variants of Provider.
-// This is the public API.
+class SetStateProviderSubscription<T> extends ProviderBaseSubscription {
+  SetStateProviderSubscription._(this._providerState);
 
-/* Value */
+  final ProviderBaseState<SetStateProviderSubscription<T>, T,
+      ProviderBase<SetStateProviderSubscription<T>, T>> _providerState;
 
-class SetStateProviderValue<T> extends BaseProviderValue {
-  SetStateProviderValue._(this._providerState);
-
-  final BaseProviderState<SetStateProviderValue<T>, T,
-      BaseProvider<SetStateProviderValue<T>, T>> _providerState;
   final _removeListeners = DoubleLinkedQueue<VoidCallback>();
 
   void watch(void Function(T value) listener) {
@@ -27,23 +23,21 @@ class SetStateProviderValue<T> extends BaseProviderValue {
   }
 }
 
-class SetStateProviderState<T> extends ProviderState {
-  SetStateProviderState._(this._providerState) : super(_providerState);
+class SetStateProviderContext<T> extends ProviderContext {
+  SetStateProviderContext._(this._providerState) : super(_providerState);
 
-  final BaseProviderState<SetStateProviderValue<T>, T,
-      BaseProvider<SetStateProviderValue<T>, T>> _providerState;
+  final ProviderBaseState<SetStateProviderSubscription<T>, T,
+      ProviderBase<SetStateProviderSubscription<T>, T>> _providerState;
 
   T get state => _providerState.$state;
   set state(T state) => _providerState.$state = state;
 }
 
-/* Providers */
-
 class SetStateProvider<T>
-    extends AlwaysAliveProvider<SetStateProviderValue<T>, T> {
+    extends AlwaysAliveProvider<SetStateProviderSubscription<T>, T> {
   SetStateProvider(this._create);
 
-  final Create<T, SetStateProviderState<T>> _create;
+  final Create<T, SetStateProviderContext<T>> _create;
 
   @override
   _SetStateProviderState<T> createState() {
@@ -51,15 +45,15 @@ class SetStateProvider<T>
   }
 }
 
-class _SetStateProviderState<T> extends BaseProviderState<
-    SetStateProviderValue<T>, T, SetStateProvider<T>> {
+class _SetStateProviderState<T> extends ProviderBaseState<
+    SetStateProviderSubscription<T>, T, SetStateProvider<T>> {
   @override
   T initState() {
-    return provider._create(SetStateProviderState._(this));
+    return provider._create(SetStateProviderContext._(this));
   }
 
   @override
-  SetStateProviderValue<T> createProviderValue() {
-    return SetStateProviderValue._(this);
+  SetStateProviderSubscription<T> createProviderSubscription() {
+    return SetStateProviderSubscription._(this);
   }
 }

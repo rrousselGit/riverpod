@@ -1,30 +1,30 @@
 import 'common.dart';
 import 'framework/framework.dart';
 
-class ProviderValue<T> extends BaseProviderValue {
-  ProviderValue._(this.value);
+class ProviderSubscription<T> extends ProviderBaseSubscription {
+  ProviderSubscription._(this.value);
 
   final T value;
 }
 
-class Provider<T> extends AlwaysAliveProvider<ProviderValue<T>, T> {
+class Provider<T> extends AlwaysAliveProvider<ProviderSubscription<T>, T> {
   Provider(this._create);
 
-  final Create<T, ProviderState> _create;
+  final Create<T, ProviderContext> _create;
 
   @override
-  _ProviderCreateState<T> createState() => _ProviderCreateState();
+  _ProviderState<T> createState() => _ProviderState();
 }
 
-class _ProviderCreateState<T>
-    extends BaseProviderState<ProviderValue<T>, T, Provider<T>> {
+class _ProviderState<T>
+    extends ProviderBaseState<ProviderSubscription<T>, T, Provider<T>> {
   @override
   T initState() {
-    return provider._create(ProviderState(this));
+    return provider._create(ProviderContext(this));
   }
 
   @override
-  ProviderValue<T> createProviderValue() {
-    return ProviderValue._($state);
+  ProviderSubscription<T> createProviderSubscription() {
+    return ProviderSubscription._($state);
   }
 }

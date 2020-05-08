@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:river_pod/src/internals.dart';
 
-class ChangeNotifierProviderValue<T> extends BaseProviderValue {
-  ChangeNotifierProviderValue._(this.value);
+class ChangeNotifierProviderSubscription<T> extends ProviderBaseSubscription {
+  ChangeNotifierProviderSubscription._(this.value);
 
   final T value;
 }
 
 class ChangeNotifierProvider<T extends ChangeNotifier>
-    extends AlwaysAliveProvider<ChangeNotifierProviderValue<T>, T> {
+    extends AlwaysAliveProvider<ChangeNotifierProviderSubscription<T>, T> {
   ChangeNotifierProvider(this._create);
 
-  final Create<T, ProviderState> _create;
+  final Create<T, ProviderContext> _create;
 
   @override
   _ChangeNotifierProviderState<T> createState() =>
@@ -20,11 +20,11 @@ class ChangeNotifierProvider<T extends ChangeNotifier>
 }
 
 class _ChangeNotifierProviderState<T extends ChangeNotifier>
-    extends BaseProviderState<ChangeNotifierProviderValue<T>, T,
+    extends ProviderBaseState<ChangeNotifierProviderSubscription<T>, T,
         ChangeNotifierProvider<T>> {
   @override
   T initState() {
-    return provider._create(ProviderState(this))..addListener(_listener);
+    return provider._create(ProviderContext(this))..addListener(_listener);
   }
 
   void _listener() {
@@ -32,8 +32,8 @@ class _ChangeNotifierProviderState<T extends ChangeNotifier>
   }
 
   @override
-  ChangeNotifierProviderValue<T> createProviderValue() {
-    return ChangeNotifierProviderValue._($state);
+  ChangeNotifierProviderSubscription<T> createProviderSubscription() {
+    return ChangeNotifierProviderSubscription._($state);
   }
 
   @override

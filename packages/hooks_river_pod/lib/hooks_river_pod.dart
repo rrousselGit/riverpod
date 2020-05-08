@@ -7,7 +7,7 @@ import 'package:collection/collection.dart';
 export 'package:flutter_hooks/flutter_hooks.dart';
 export 'package:flutter_river_pod/flutter_river_pod.dart';
 
-extension BaseProviderHook<T> on BaseProvider<BaseProviderValue, T> {
+extension BaseProviderHook<T> on ProviderBase<ProviderBaseSubscription, T> {
   T call() {
     final owner = ProviderStateOwnerScope.of(useContext());
     return Hook.use(_BaseProviderHook<T>(owner, this));
@@ -27,7 +27,7 @@ class _BaseProviderSelectorHook<Input, Output> extends Hook<Output> {
   );
 
   final ProviderStateOwner _owner;
-  final BaseProvider<BaseProviderValue, Input> _provider;
+  final ProviderBase<ProviderBaseSubscription, Input> _provider;
   final Output Function(Input) _selector;
 
   @override
@@ -96,7 +96,7 @@ class _BaseProviderHook<T> extends Hook<T> {
   );
 
   final ProviderStateOwner _owner;
-  final BaseProvider<BaseProviderValue, T> _provider;
+  final ProviderBase<ProviderBaseSubscription, T> _provider;
 
   @override
   _BaseProviderHookState<T> createState() => _BaseProviderHookState();

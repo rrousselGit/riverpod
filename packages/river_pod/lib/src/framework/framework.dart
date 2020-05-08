@@ -10,14 +10,14 @@ part 'keep_alive_provider.dart';
 typedef OnError = void Function(dynamic error, StackTrace stackTrace);
 
 // ignore: avoid_private_typedef_functions
-typedef _FallbackProviderStateReader = BaseProviderState<BaseProviderValue, T,
-        BaseProvider<BaseProviderValue, T>>
+typedef _FallbackProviderStateReader = ProviderBaseState<
+        ProviderBaseSubscription, T, ProviderBase<ProviderBaseSubscription, T>>
     Function<T>(
-  BaseProvider<BaseProviderValue, T>,
+  ProviderBase<ProviderBaseSubscription, T>,
 );
 // ignore: avoid_private_typedef_functions
-typedef _ProviderStateReader = BaseProviderState<BaseProviderValue, Object,
-        BaseProvider<BaseProviderValue, Object>>
+typedef _ProviderStateReader = ProviderBaseState<ProviderBaseSubscription,
+        Object, ProviderBase<ProviderBaseSubscription, Object>>
     Function();
 
 class ProviderStateOwner {
@@ -31,12 +31,12 @@ class ProviderStateOwner {
   }
 
   final OnError _onError;
-  final _providerState = <BaseProvider, BaseProviderState>{};
+  final _providerState = <ProviderBase, ProviderBaseState>{};
   List<ProviderOverride> _overrides;
-  Map<BaseProvider, _ProviderStateReader> _stateReaders;
+  Map<ProviderBase, _ProviderStateReader> _stateReaders;
   _FallbackProviderStateReader _fallback;
 
-  Map<BaseProvider, BaseProviderValue> _dependencies;
+  Map<ProviderBase, ProviderBaseSubscription> _dependencies;
 
   void updateParent(ProviderStateOwner parent) {
     _fallback = parent?._fallback;
@@ -54,17 +54,17 @@ class ProviderStateOwner {
     };
   }
 
-  BaseProviderState<BaseProviderValue, T, BaseProvider<BaseProviderValue, T>>
-      _putIfAbsent<T>(
-    BaseProvider<BaseProviderValue, T> provider, {
-    BaseProvider origin,
+  ProviderBaseState<ProviderBaseSubscription, T,
+      ProviderBase<ProviderBaseSubscription, T>> _putIfAbsent<T>(
+    ProviderBase<ProviderBaseSubscription, T> provider, {
+    ProviderBase origin,
   }) {
     final key = origin ?? provider;
 
     final localState = _providerState[key];
     if (localState != null) {
-      return localState as BaseProviderState<BaseProviderValue, T,
-          BaseProvider<BaseProviderValue, T>>;
+      return localState as ProviderBaseState<ProviderBaseSubscription, T,
+          ProviderBase<ProviderBaseSubscription, T>>;
     }
 
     final state = _createProviderState(provider);
@@ -75,11 +75,11 @@ class ProviderStateOwner {
     return state;
   }
 
-  BaseProviderState<CombiningValue, ListeningValue,
-          BaseProvider<CombiningValue, ListeningValue>>
-      _createProviderState<CombiningValue extends BaseProviderValue,
+  ProviderBaseState<CombiningValue, ListeningValue,
+          ProviderBase<CombiningValue, ListeningValue>>
+      _createProviderState<CombiningValue extends ProviderBaseSubscription,
           ListeningValue>(
-    BaseProvider<CombiningValue, ListeningValue> provider,
+    ProviderBase<CombiningValue, ListeningValue> provider,
   ) {
     return provider.createState()
       .._provider = provider
@@ -119,7 +119,7 @@ Changing the kind of override or reordering overrides is not supported.
     }(), '');
 
     final newOverrideForOverridenStates =
-        overrides.fold<Map<BaseProviderState, BaseProvider>>(
+        overrides.fold<Map<ProviderBaseState, ProviderBase>>(
       {},
       (acc, element) {
         final state = _providerState[element._origin];
@@ -148,25 +148,25 @@ Changing the kind of override or reordering overrides is not supported.
     );
   }
 
-  BaseProviderState<CombiningValue, ListeningValue,
-          BaseProvider<CombiningValue, ListeningValue>>
-      _readProviderState<CombiningValue extends BaseProviderValue,
+  ProviderBaseState<CombiningValue, ListeningValue,
+          ProviderBase<CombiningValue, ListeningValue>>
+      _readProviderState<CombiningValue extends ProviderBaseSubscription,
           ListeningValue>(
-    BaseProvider<CombiningValue, ListeningValue> provider,
+    ProviderBase<CombiningValue, ListeningValue> provider,
   ) {
     final result = _stateReaders[provider]?.call() ?? _fallback(provider);
-    return result as BaseProviderState<CombiningValue, ListeningValue,
-        BaseProvider<CombiningValue, ListeningValue>>;
+    return result as ProviderBaseState<CombiningValue, ListeningValue,
+        ProviderBase<CombiningValue, ListeningValue>>;
   }
 
-  Res dependOn<Res extends BaseProviderValue>(
-    BaseProvider<Res, Object> provider,
+  Res dependOn<Res extends ProviderBaseSubscription>(
+    ProviderBase<Res, Object> provider,
   ) {
     _dependencies ??= {};
 
     return _dependencies.putIfAbsent(provider, () {
       final state = _readProviderState(provider);
-      return state.createProviderValue();
+      return state.createProviderSubscription();
     }) as Res;
   }
 
@@ -189,33 +189,33 @@ Changing the kind of override or reordering overrides is not supported.
 @visibleForTesting
 extension ReadProviderState on ProviderStateOwner {
   @visibleForTesting
-  BaseProviderState<CombiningValue, ListeningValue,
-          BaseProvider<CombiningValue, ListeningValue>>
-      readProviderState<CombiningValue extends BaseProviderValue,
+  ProviderBaseState<CombiningValue, ListeningValue,
+          ProviderBase<CombiningValue, ListeningValue>>
+      readProviderState<CombiningValue extends ProviderBaseSubscription,
           ListeningValue>(
-    BaseProvider<CombiningValue, ListeningValue> provider,
+    ProviderBase<CombiningValue, ListeningValue> provider,
   ) {
     return _readProviderState(provider);
   }
 }
 
-class ProviderOverride<CombiningValue extends BaseProviderValue,
+class ProviderOverride<CombiningValue extends ProviderBaseSubscription,
     ListeningValue extends Object> {
   ProviderOverride._(this._provider, this._origin);
 
-  final BaseProvider<CombiningValue, ListeningValue> _origin;
-  final BaseProvider<CombiningValue, ListeningValue> _provider;
+  final ProviderBase<CombiningValue, ListeningValue> _origin;
+  final ProviderBase<CombiningValue, ListeningValue> _provider;
 }
 
-abstract class BaseProviderValue {
+abstract class ProviderBaseSubscription {
   @protected
   void dispose() {}
 }
 
-class ProviderState {
-  ProviderState(this._providerState);
+class ProviderContext {
+  ProviderContext(this._providerState);
 
-  final BaseProviderState _providerState;
+  final ProviderBaseState _providerState;
 
   bool get mounted => _providerState.mounted;
 
@@ -227,7 +227,8 @@ class ProviderState {
     _providerState.onDispose(cb);
   }
 
-  T dependOn<T extends BaseProviderValue>(BaseProvider<T, Object> provider) {
+  T dependOn<T extends ProviderBaseSubscription>(
+      ProviderBase<T, Object> provider) {
     assert(
       mounted,
       '`dependOn` was called on a state that is already disposed',

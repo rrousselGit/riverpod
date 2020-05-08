@@ -7,12 +7,12 @@ part of 'framework.dart';
 /// itself, while ensuring that a given provider is visited only once.
 @visibleForTesting
 void visitNodesInDependencyOrder(
-  Set<BaseProviderState> nodesToVisit,
-  void Function(BaseProviderState value) visitor,
+  Set<ProviderBaseState> nodesToVisit,
+  void Function(ProviderBaseState value) visitor,
 ) {
-  final inResult = <BaseProviderState>{};
+  final inResult = <ProviderBaseState>{};
 
-  void recurs(BaseProviderState node) {
+  void recurs(ProviderBaseState node) {
     if (inResult.contains(node) || !nodesToVisit.contains(node)) {
       return;
     }
@@ -28,17 +28,17 @@ void visitNodesInDependencyOrder(
 
 @immutable
 @optionalTypeArgs
-abstract class BaseProvider<CombiningValue extends BaseProviderValue,
+abstract class ProviderBase<CombiningValue extends ProviderBaseSubscription,
     ListenedValue extends Object> {
   ProviderOverride<CombiningValue, ListenedValue> overrideForSubtree(
-    BaseProvider<CombiningValue, ListenedValue> provider,
+    ProviderBase<CombiningValue, ListenedValue> provider,
   ) {
     return ProviderOverride._(provider, this);
   }
 
   @visibleForOverriding
-  BaseProviderState<CombiningValue, ListenedValue,
-      BaseProvider<CombiningValue, ListenedValue>> createState();
+  ProviderBaseState<CombiningValue, ListenedValue,
+      ProviderBase<CombiningValue, ListenedValue>> createState();
 
   /// The callback may never get called
   VoidCallback watchOwner(
@@ -52,10 +52,10 @@ abstract class BaseProvider<CombiningValue extends BaseProviderValue,
 
 @visibleForOverriding
 @optionalTypeArgs
-abstract class BaseProviderState<
-    CombiningValue extends BaseProviderValue,
+abstract class ProviderBaseState<
+    CombiningValue extends ProviderBaseSubscription,
     ListenedValue extends Object,
-    P extends BaseProvider<CombiningValue, ListenedValue>> {
+    P extends ProviderBase<CombiningValue, ListenedValue>> {
   P _provider;
 
   var _mounted = true;
@@ -73,13 +73,14 @@ abstract class BaseProviderState<
     }
   }
 
-  Map<BaseProvider, BaseProviderValue> _dependenciesValueCache;
-  final Set<BaseProviderState> _dependenciesState = {};
+  Map<ProviderBase, ProviderBaseSubscription> _dependenciesValueCache;
+  final Set<ProviderBaseState> _dependenciesState = {};
 
   // TODO multiple owners
-  BaseProvider _debugInitialDependOnRequest;
+  ProviderBase _debugInitialDependOnRequest;
 
-  T dependOn<T extends BaseProviderValue>(BaseProvider<T, Object> provider) {
+  T dependOn<T extends ProviderBaseSubscription>(
+      ProviderBase<T, Object> provider) {
     // verify that we are not in a stack overflow of dependOn calls.
     assert(() {
       if (_debugInitialDependOnRequest == provider) {
@@ -96,7 +97,7 @@ abstract class BaseProviderState<
 
         // verify that the new dependency doesn't depend on "this".
         assert(() {
-          void recurs(BaseProviderState state) {
+          void recurs(ProviderBaseState state) {
             if (state == this) {
               throw CircularDependencyError._();
             }
@@ -108,7 +109,8 @@ abstract class BaseProviderState<
         }(), '');
 
         _dependenciesState.add(targetProviderState);
-        final targetProviderValue = targetProviderState.createProviderValue();
+        final targetProviderValue =
+            targetProviderState.createProviderSubscription();
         onDispose(targetProviderValue.dispose);
 
         return targetProviderValue;
@@ -137,7 +139,7 @@ abstract class BaseProviderState<
   @protected
   ListenedValue initState();
 
-  CombiningValue createProviderValue();
+  CombiningValue createProviderSubscription();
 
   @mustCallSuper
   @protected
@@ -177,8 +179,9 @@ abstract class BaseProviderState<
   }
 }
 
-abstract class AlwaysAliveProvider<CombiningValue extends BaseProviderValue,
-    ListenedValue> extends BaseProvider<CombiningValue, ListenedValue> {
+abstract class AlwaysAliveProvider<
+    CombiningValue extends ProviderBaseSubscription,
+    ListenedValue> extends ProviderBase<CombiningValue, ListenedValue> {
   ListenedValue readOwner(ProviderStateOwner owner) {
     final state = owner._readProviderState(this);
     return state.$state;

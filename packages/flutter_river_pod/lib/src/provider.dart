@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'framework.dart';
 import 'internal.dart';
 
-extension AlwaysAliveProviderX<CombiningValue extends BaseProviderValue,
+extension AlwaysAliveProviderX<CombiningValue extends ProviderBaseSubscription,
     ListenedValue> on AlwaysAliveProvider<CombiningValue, ListenedValue> {
   ListenedValue read(BuildContext context) {
     assert(() {

@@ -10,13 +10,13 @@ void main() {
 
     expect(provider, isA<AlwaysAliveProvider>());
   });
-  test('SetStateProviderState can read and write state', () {
+  test('SetStateProviderContext can read and write state', () {
     final owner = ProviderStateOwner();
-    SetStateProviderState<int> providerState;
+    SetStateProviderContext<int> providerContext;
     int initialValue;
-    final provider = SetStateProvider<int>((state) {
-      initialValue = state.state;
-      providerState = state;
+    final provider = SetStateProvider<int>((context) {
+      initialValue = context.state;
+      providerContext = context;
       return 0;
     });
     final listener = ListenerMock();
@@ -26,11 +26,11 @@ void main() {
     verify(listener(0)).called(1);
     verifyNoMoreInteractions(listener);
     expect(initialValue, null);
-    expect(providerState.state, 0);
+    expect(providerContext.state, 0);
 
-    providerState.state++;
+    providerContext.state++;
 
-    expect(providerState.state, 1);
+    expect(providerContext.state, 1);
     verify(listener(1)).called(1);
     verifyNoMoreInteractions(listener);
 
@@ -38,9 +38,9 @@ void main() {
   });
   test('watchOwner', () {
     final owner = ProviderStateOwner();
-    SetStateProviderState<int> providerState;
-    final provider = SetStateProvider<int>((state) {
-      providerState = state;
+    SetStateProviderContext<int> providerContext;
+    final provider = SetStateProvider<int>((context) {
+      providerContext = context;
       return 0;
     });
     final listener = ListenerMock();
@@ -52,24 +52,24 @@ void main() {
 
     removeListener();
 
-    providerState.state++;
+    providerContext.state++;
 
     verifyNoMoreInteractions(listener);
     owner.dispose();
   });
   test('combining', () {
     final owner = ProviderStateOwner();
-    SetStateProviderState<int> providerState;
-    final provider = SetStateProvider<int>((state) {
-      providerState = state;
+    SetStateProviderContext<int> providerContext;
+    final provider = SetStateProvider<int>((context) {
+      providerContext = context;
       return 1;
     });
 
-    final combining = SetStateProvider<int>((state) {
-      final first = state.dependOn(provider);
+    final combining = SetStateProvider<int>((context) {
+      final first = context.dependOn(provider);
       int result;
       first.watch((value) {
-        state.state = result = value * 2;
+        context.state = result = value * 2;
       });
       return result;
     });
@@ -86,14 +86,14 @@ void main() {
     verify(listener(2)).called(1);
     verifyNoMoreInteractions(listener);
 
-    providerState.state++;
+    providerContext.state++;
 
     verify(listener(4)).called(1);
     verifyNoMoreInteractions(listener);
 
     owner2.dispose();
 
-    providerState.state++;
+    providerContext.state++;
     verifyNoMoreInteractions(listener);
 
     owner.dispose();

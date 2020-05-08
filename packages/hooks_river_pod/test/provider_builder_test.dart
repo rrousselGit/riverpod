@@ -9,8 +9,8 @@ void main() {
     final provider = Provider((_) => 42);
 
     // These check the type safety
-    ProviderState providerState;
-    ProviderValue<int> firstState;
+    ProviderContext providerState;
+    ProviderSubscription<int> firstState;
 
     final Provider<int> provider1 = Provider<int>((state) {
       final first = state.dependOn(provider);

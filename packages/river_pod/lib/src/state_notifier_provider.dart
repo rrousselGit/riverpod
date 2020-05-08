@@ -7,7 +7,7 @@ import 'internals.dart';
 // ignore: must_be_immutable, false positive, value is immutable.
 class StateNotifierProvider<Notifier extends StateNotifier<Value>, Value>
     extends Provider<Notifier> {
-  StateNotifierProvider(Create<Notifier, ProviderState> create)
+  StateNotifierProvider(Create<Notifier, ProviderContext> create)
       : super((state) {
           final notifier = create(state);
           state.onDispose(notifier.dispose);

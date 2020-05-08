@@ -1,10 +1,11 @@
 part of 'framework.dart';
 
-abstract class KeepAliveProvider<CombiningValue extends BaseProviderValue,
-    ListeningValue> extends BaseProvider<CombiningValue, ListeningValue> {
+abstract class KeepAliveProvider<
+    CombiningValue extends ProviderBaseSubscription,
+    ListeningValue> extends ProviderBase<CombiningValue, ListeningValue> {
   KeepAliveProvider(this._keptAliveProvider);
 
-  final BaseProvider<CombiningValue, ListeningValue> _keptAliveProvider;
+  final ProviderBase<CombiningValue, ListeningValue> _keptAliveProvider;
 
   @override
   _KeepAliveState<CombiningValue, ListeningValue> createState() {
@@ -12,11 +13,12 @@ abstract class KeepAliveProvider<CombiningValue extends BaseProviderValue,
   }
 }
 
-class _KeepAliveState<CombiningValue extends BaseProviderValue, ListeningValue>
-    extends BaseProviderState<CombiningValue, ListeningValue,
+class _KeepAliveState<CombiningValue extends ProviderBaseSubscription,
+        ListeningValue>
+    extends ProviderBaseState<CombiningValue, ListeningValue,
         KeepAliveProvider<CombiningValue, ListeningValue>> {
-  BaseProviderState<CombiningValue, ListeningValue,
-      BaseProvider<CombiningValue, ListeningValue>> _providerState;
+  ProviderBaseState<CombiningValue, ListeningValue,
+      ProviderBase<CombiningValue, ListeningValue>> _providerState;
   VoidCallback _removeProviderListener;
 
   @override
@@ -78,7 +80,7 @@ class _KeepAliveState<CombiningValue extends BaseProviderValue, ListeningValue>
   }
 
   @override
-  CombiningValue createProviderValue() {
-    return _providerState.createProviderValue();
+  CombiningValue createProviderSubscription() {
+    return _providerState.createProviderSubscription();
   }
 }

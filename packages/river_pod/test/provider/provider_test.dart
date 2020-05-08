@@ -17,8 +17,8 @@ void main() {
     test('Provider1', () {
       final owner = ProviderStateOwner();
 
-      final provider = Provider((state) {
-        final first = state.dependOn(dependency);
+      final provider = Provider((context) {
+        final first = context.dependOn(dependency);
         return first.value * 2;
       });
 
@@ -29,9 +29,9 @@ void main() {
     test('Provider2', () {
       final owner = ProviderStateOwner();
 
-      final provider = Provider((state) {
-        final first = state.dependOn(dependency);
-        final second = state.dependOn(dependency2);
+      final provider = Provider((context) {
+        final first = context.dependOn(dependency);
+        final second = context.dependOn(dependency2);
 
         return '${first.value} ${second.value}';
       });
@@ -90,8 +90,8 @@ void main() {
   test('dispose', () {
     final owner = ProviderStateOwner();
     final onDispose = OnDisposeMock();
-    final provider = Provider((state) {
-      state.onDispose(onDispose);
+    final provider = Provider((context) {
+      context.onDispose(onDispose);
       return 42;
     });
 

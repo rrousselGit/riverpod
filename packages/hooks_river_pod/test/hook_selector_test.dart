@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('selector change', (tester) async {
-    SetStateProviderState<int> state;
+    SetStateProviderContext<int> state;
     final provider = SetStateProvider<int>((s) {
       state = s;
       return 0;
@@ -48,7 +48,7 @@ void main() {
   });
   testWidgets("don't rebuild dependents when selected value doesn't change",
       (tester) async {
-    SetStateProviderState<List<int>> state;
+    SetStateProviderContext<List<int>> state;
     final provider = SetStateProvider<List<int>>((s) {
       state = s;
       return [0];
