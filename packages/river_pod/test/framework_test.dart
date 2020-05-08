@@ -14,8 +14,32 @@ void main() {
     // TODO error handling state.onChange (if any) callback
     // TODO no onError fallback to zone
   });
-  // TODO test dependOn disposes the provider state (keep alive?)
-  test('dependOn', () {
+  test('State.dependOn disposes the provider state', () {
+    var didDispose = false;
+    final provider = TestProvider((state) {
+      state.onDispose(() => didDispose = true);
+      return 0;
+    });
+    final other = Provider((state) => state.dependOn(provider));
+
+    final owner = ProviderStateOwner();
+    final owner2 = ProviderStateOwner(
+      parent: owner,
+      overrides: [other.overrideForSubtree(other)],
+    );
+
+    final value = other.readOwner(owner2);
+    expect(value, isNotNull);
+    verifyZeroInteractions(provider.onValueDispose);
+    expect(didDispose, isFalse);
+
+    owner2.dispose();
+
+    verify(provider.onValueDispose(value));
+    verifyNoMoreInteractions(provider.onValueDispose);
+    expect(didDispose, isFalse);
+  });
+  test('Owner.dependOn', () {
     final provider = TestProvider((state) => 0);
     final provider2 = TestProvider((state) => 1);
     final owner = ProviderStateOwner();
@@ -38,6 +62,8 @@ void main() {
 
     verify(provider.onValueDispose(value1));
     verify(provider2.onValueDispose(value21));
+    verifyNoMoreInteractions(provider.onValueDispose);
+    verifyNoMoreInteractions(provider2.onValueDispose);
   });
   test(
       "updating overrides / dispose don't compute provider states if not loaded yet",
