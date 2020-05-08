@@ -1,6 +1,6 @@
 {
   "docs": {
-    "Docusaurus": ["doc1"],
+    "Docusaurus": ["getting_started"],
     "First Category": ["doc2"],
     "Second Category": ["doc3"]
   }

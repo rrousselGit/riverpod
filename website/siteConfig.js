@@ -12,7 +12,7 @@ const siteConfig = {
   organizationName: "rrousselGit",
 
   headerLinks: [
-    { doc: "doc1", label: "Docs" },
+    { doc: "getting_started", label: "Getting started" },
     { href: "https://github.com/rrousselGit/river_pod", label: "GitHub" },
   ],
 
