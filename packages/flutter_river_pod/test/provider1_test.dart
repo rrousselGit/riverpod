@@ -167,5 +167,4 @@ void main() {
     expect(find.text('2'), findsOneWidget);
   });
   // TODO state hydratation
-  // TODO Multiple async services merged into one
 }

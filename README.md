@@ -83,7 +83,7 @@ You can refer to the following table to help you decide which package to use:
 | ------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Flutter + [flutter_hooks] | [hooks_river_pod]   | An improved syntax with less boilerplate for listening providers inside widgets.                                                                            |
 | Flutter only              | [flutter_river_pod] | A slightly more verbose syntax (comparable to `Theme.of` vs `StreamBuilder`).<br>But feature-wise, it is otherwise identical to [hooks_river_pod]. |
-| Dart only (No Flutter)    | [river_pod]         | It exposes all the non-Flutter-related providers and a way to consume them without widgets.                                                                 |
+| Dart only (No Flutter)    | [river_pod](https://github.com/rrousselGit/river_pod/tree/master/packages/river_pod)         | It exposes all the non-Flutter-related providers and a way to consume them without widgets.                                                                 |
 
 # FAQ
 

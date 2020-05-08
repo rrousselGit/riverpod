@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:river_pod/src/internals.dart';
 import 'package:test/test.dart';
@@ -14,6 +15,30 @@ void main() {
     // TODO no onError fallback to zone
   });
   // TODO test dependOn disposes the provider state (keep alive?)
+  test('dependOn', () {
+    final provider = TestProvider((state) => 0);
+    final provider2 = TestProvider((state) => 1);
+    final owner = ProviderStateOwner();
+
+    final value1 = owner.dependOn(provider);
+    final value2 = owner.dependOn(provider);
+    final value21 = owner.dependOn(provider2);
+    final value22 = owner.dependOn(provider2);
+
+    expect(value1, value2);
+    expect(value1.value, 0);
+    expect(value21, value22);
+    expect(value21, isNot(value1));
+    expect(value21.value, 1);
+
+    verifyZeroInteractions(provider.onValueDispose);
+    verifyZeroInteractions(provider2.onValueDispose);
+
+    owner.dispose();
+
+    verify(provider.onValueDispose(value1));
+    verify(provider2.onValueDispose(value21));
+  });
   test(
       "updating overrides / dispose don't compute provider states if not loaded yet",
       () {
@@ -227,10 +252,21 @@ class MockDidUpdateProvider extends Mock {
   void call();
 }
 
+class MockOnValueDispose<T> extends Mock {
+  void call(TestProviderValue<T> value);
+}
+
 class TestProviderValue<T> extends BaseProviderValue {
-  TestProviderValue(this.value);
+  TestProviderValue(this.value, {@required this.onDispose});
 
   final T value;
+  final MockOnValueDispose<T> onDispose;
+
+  @override
+  void dispose() {
+    onDispose(this);
+    super.dispose();
+  }
 }
 
 class TestProvider<T> extends AlwaysAliveProvider<TestProviderValue<T>, T> {
@@ -238,6 +274,7 @@ class TestProvider<T> extends AlwaysAliveProvider<TestProviderValue<T>, T> {
 
   final T Function(ProviderState state) create;
   final MockDidUpdateProvider onDidUpdateProvider = MockDidUpdateProvider();
+  final MockOnValueDispose<T> onValueDispose = MockOnValueDispose();
 
   @override
   TestProviderState<T> createState() {
@@ -255,7 +292,7 @@ class TestProviderState<T>
 
   @override
   TestProviderValue<T> createProviderValue() {
-    return TestProviderValue<T>($state);
+    return TestProviderValue<T>($state, onDispose: provider.onValueDispose);
   }
 
   @override
