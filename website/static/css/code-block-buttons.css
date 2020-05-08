@@ -1,0 +1,24 @@
+/* "Copy" code block button */
+pre {
+  position: relative;
+}
+
+pre .btnIcon {
+  background: #011627;
+  border: 1px solid #d6deeb;
+  border-radius: 8px;
+  color: #d6deeb;
+  cursor: pointer;
+  line-height: 12px;
+  opacity: 0;
+  outline: none;
+  padding: 4px 8px;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  transition: opacity ease-out 200ms;
+}
+
+pre:hover .btnIcon {
+  opacity: 1;
+}
