@@ -64,7 +64,7 @@ class HomeSplash extends React.Component {
         <div className="inner">
           <ProjectTitle tagline={siteConfig.tagline} title={siteConfig.title} />
           <PromoSection>
-            <Button href={docUrl('getting_started.html')}>Getting started</Button>
+            <Button href={docUrl('fundamentals/getting_started.html')}>Getting started</Button>
           </PromoSection>
         </div>
       </SplashContainer>

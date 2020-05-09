@@ -1,0 +1,210 @@
+---
+title: Getting started
+---
+
+Before diving into the inner mechanisms of [River_pod], let's start with the basics:
+Installing up [River_pod], and then writing an "Hello world".
+
+## What package to install
+
+Before anything, you need to be aware that [River_pod] is spread across multiple packages, with slightly different usage.\
+As such, the variant of [River_pod] that you will want to install depends on the app you are making.
+
+You can refer to the following table to help you decide which package to use:
+
+| app type                  | package name                                                                         | description                                                                                                                                        |
+| ------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Flutter + [flutter_hooks] | [hooks_river_pod]                                                                    | An improved syntax with less boilerplate for listening providers inside widgets.                                                                   |
+| Flutter only              | [flutter_river_pod]                                                                  | A slightly more verbose syntax (comparable to `Theme.of` vs `StreamBuilder`).<br>But feature-wise, it is otherwise identical to [hooks_river_pod]. |
+| Dart only (No Flutter)    | [river_pod](https://github.com/rrousselGit/river_pod/tree/master/packages/river_pod) | A version of [River_pod] striped out of all the classes related to Flutter                                                                         |
+
+And if not clear enough, you can refer to this decision graph:
+
+![package decision graph](/img/package_decision_graph.svg)
+
+## Installing the package
+
+Once you know what package you want to install, proceed to add the following to your `pubspec.yaml`:
+
+<!--DOCUSAURUS_CODE_TABS-->
+
+<!-- hooks_river_pod -->
+
+```yaml
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">= 1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_hooks: ^0.9.0
+  hooks_river_pod: ^0.0.1
+```
+
+Then run `flutter pub get`.
+
+<!-- flutter_river_pod -->
+
+```yaml
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">= 1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_river_pod: ^0.0.1
+```
+
+Then run `flutter pub get`.
+
+<!-- river_pod -->
+
+```yaml
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  river_pod: ^0.0.1
+```
+
+Then run `pub get`.
+
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+That's it. You've added [River_pod] to your app!
+
+## Usage example: Hello world
+
+Now that we have installed [River_pod], we can start using it.
+
+The following snippets showcase our to use our new dependency to make an "Hello world":
+
+<!--DOCUSAURUS_CODE_TABS-->
+
+<!-- hooks_river_pod -->
+
+```dart
+// lib/main.dart
+import 'package:flutter/material.dart';
+import 'package:hooks_river_pod/hooks_river_pod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+
+// We create a "provider", which will store a value (here "Hello world").
+// By using a provider, this allows us to mock/override the value exposed.
+final helloWorldProvider = Provider((_) => 'Hello world');
+
+void main() {
+  runApp(
+    // For widgets to be able to read providers, we need to wrap the entire
+    // application in a "ProviderScope" widget.
+    // This is where the state of our providers will be stored.
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+
+// Note: MyApp is a HookWidget, from flutter_hooks.
+class MyApp extends HookWidget {
+  @override
+  Widget build(BuildContext context) {
+    // To read our provider, we can use the hook "useProvider".
+    // This is only possible because MyApp is a HookWidget.
+    final String value = useProvider(helloWorldProvider);
+
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Example')),
+        body: Center(
+          child: Text(value),
+        ),
+      ),
+    );
+  }
+}
+```
+
+Which you can then execute with `flutter run`.\
+This will render "Hello world" in on your device.
+
+<!-- flutter_river_pod -->
+
+```dart
+// lib/main.dart
+import 'package:flutter/material.dart';
+import 'package:flutter_river_pod/flutter_river_pod.dart';
+
+// We create a "provider", which will store a value (here "Hello world").
+// By using a provider, this allows us to mock/override the value exposed.
+final helloWorldProvider = Provider((_) => 'Hello world');
+
+void main() {
+  runApp(
+    // For widgets to be able to read providers, we need to wrap the entire
+    // application in a "ProviderScope" widget.
+    // This is where the state of our providers will be stored.
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Example')),
+        body: Center(
+          // The widget "Consumer" is a widget that takes a provider,
+          // read its value, and pass it to its "builder" parameter.
+          // Here it is written as Consumer<String>, because the provider
+          // that we are reading stores a String.
+          child: Consumer<String>(
+            helloWorldProvider,
+            builder: (BuildContext context, String value, Widget child) {
+              return Text(value);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+Which you can then execute with `flutter run`.\
+This will render "Hello world" in on your device.
+
+<!-- river_pod -->
+
+```dart
+// lib/main.dart
+import 'package:river_pod/river_pod.dart';
+
+// We create a "provider", which will store a value (here "Hello world").
+// By using a provider, this allows us to mock/override the value exposed.
+final helloWorldProvider = Provider((_) => 'Hello world');
+
+void main() {
+  // This object is where the state of our providers will be stored.
+  final owner = ProviderStateOwner();
+
+  // Thanks to "owner", we can read our provider.
+  final value = helloWorldProvider.readOwner(owner);
+
+  print(value); // Hello world
+}
+```
+
+Which you can then execute with `dart lib/main.dart`.\
+This will print "Hello world" in the console.
+
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+[river_pod]: https://github.com/rrousselGit/river_pod
+[hooks_river_pod]: https://pub.dev/packages/hooks_river_pod
+[flutter_river_pod]: https://pub.dev/packages/flutter_river_pod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks

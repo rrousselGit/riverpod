@@ -10,9 +10,9 @@ const siteConfig = {
   // Used for publishing and more
   projectName: "river_pod",
   organizationName: "rrousselGit",
- 
+
   headerLinks: [
-    { doc: "getting_started", label: "Getting started" },
+    { doc: "fundamentals/getting_started", label: "Getting started" },
     { href: "https://github.com/rrousselGit/river_pod", label: "GitHub" },
   ],
 
@@ -29,6 +29,10 @@ const siteConfig = {
 
   // This copyright info is used in /core/Footer.js and blog RSS/Atom feeds.
   copyright: `Copyright © ${new Date().getFullYear()} Remi Rousselet`,
+
+  highlight: {
+    theme: "default",
+  },
 
   usePrism: ["dart"],
 

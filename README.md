@@ -75,15 +75,15 @@ implements its own mechanism that works in a similar fashion.
 
 # Usage
 
-The way [River_pod] is used depends on the application you are using.
+The way [River_pod] is used depends on the application you are making.
 
 You can refer to the following table to help you decide which package to use:
 
-| app type                  | package name        | description                                                                                                                                                 |
-| ------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Flutter + [flutter_hooks] | [hooks_river_pod]   | An improved syntax with less boilerplate for listening providers inside widgets.                                                                            |
-| Flutter only              | [flutter_river_pod] | A slightly more verbose syntax (comparable to `Theme.of` vs `StreamBuilder`).<br>But feature-wise, it is otherwise identical to [hooks_river_pod]. |
-| Dart only (No Flutter)    | [river_pod](https://github.com/rrousselGit/river_pod/tree/master/packages/river_pod)         | It exposes all the non-Flutter-related providers and a way to consume them without widgets.                                                                 |
+| app type                  | package name                                                                         | description                                                                                                                                        |
+| ------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Flutter + [flutter_hooks] | [hooks_river_pod]                                                                    | An improved syntax with less boilerplate for listening providers inside widgets.                                                                   |
+| Flutter only              | [flutter_river_pod]                                                                  | A slightly more verbose syntax (comparable to `Theme.of` vs `StreamBuilder`).<br>But feature-wise, it is otherwise identical to [hooks_river_pod]. |
+| Dart only (No Flutter)    | [river_pod](https://github.com/rrousselGit/river_pod/tree/master/packages/river_pod) | A version of [River_pod] striped out of all the classes related to Flutter                                                                         |
 
 # FAQ
 
