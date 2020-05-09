@@ -4,10 +4,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
 
-export 'package:flutter_hooks/flutter_hooks.dart';
 export 'package:flutter_river_pod/flutter_river_pod.dart';
 
-Output useSelector<Input, Output>(Selector<Input, Output> selector) {
+Output useSelector<Input, Output>(SelectorDelegate<Input, Output> selector) {
   final owner = ProviderStateOwnerScope.of(useContext());
   return Hook.use(_BaseProviderSelectorHook<Input, Output>(owner, selector));
 }
@@ -19,7 +18,7 @@ class _BaseProviderSelectorHook<Input, Output> extends Hook<Output> {
   );
 
   final ProviderStateOwner _owner;
-  final Selector<Input, Output> _selector;
+  final SelectorDelegate<Input, Output> _selector;
 
   @override
   _BaseProviderSelectorHookState<Input, Output> createState() =>
@@ -145,7 +144,7 @@ class _BaseProviderHookState<T> extends HookState<T, _BaseProviderHook<T>> {
 }
 
 @immutable
-abstract class Selector<Input, Output> {
+abstract class SelectorDelegate<Input, Output> {
   ProviderBase<ProviderBaseSubscription, Input> get provider;
 
   VoidCallback watchOwner(
@@ -158,8 +157,9 @@ abstract class Selector<Input, Output> {
   bool shouldRebuild(Output previousValue, Output newValue);
 }
 
-class _Selector<Input, Output> implements Selector<Input, Output> {
-  _Selector(this._selector, this.provider);
+class _SelectorDelegate<Input, Output>
+    implements SelectorDelegate<Input, Output> {
+  _SelectorDelegate(this._selector, this.provider);
 
   final Output Function(Input value) _selector;
   @override
@@ -189,9 +189,9 @@ class _Selector<Input, Output> implements Selector<Input, Output> {
 
 extension ProviderSelectX<ListenedValue>
     on ProviderBase<ProviderBaseSubscription, ListenedValue> {
-  Selector<ListenedValue, Res> select<Res>(
+  SelectorDelegate<ListenedValue, Res> select<Res>(
     Res Function(ListenedValue value) selector,
   ) {
-    return _Selector<ListenedValue, Res>(selector, this);
+    return _SelectorDelegate<ListenedValue, Res>(selector, this);
   }
 }
