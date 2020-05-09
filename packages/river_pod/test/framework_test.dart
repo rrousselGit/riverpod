@@ -298,7 +298,7 @@ class TestProviderValue<T> extends ProviderBaseSubscription {
 class TestProvider<T> extends AlwaysAliveProvider<TestProviderValue<T>, T> {
   TestProvider(this.create);
 
-  final T Function(ProviderContext state) create;
+  final T Function(ProviderContext context) create;
   final MockDidUpdateProvider onDidUpdateProvider = MockDidUpdateProvider();
   final MockOnValueDispose<T> onValueDispose = MockOnValueDispose();
 

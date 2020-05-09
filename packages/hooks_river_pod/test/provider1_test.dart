@@ -12,8 +12,8 @@ void main() {
       ProviderScope(
         overrides: [
           provider2.overrideForSubtree(
-            Provider<int>((state) {
-              final other = state.dependOn(provider);
+            Provider<int>((context) {
+              final other = context.dependOn(provider);
               return other.value * 2;
             }),
           ),
@@ -32,16 +32,16 @@ void main() {
       (tester) async {
     // ProviderContext<int> providerState;
 
-    // final provider = Provider<int>((state) {
-    //   providerState = state;
+    // final provider = Provider<int>((context) {
+    //   providerState = context;
     //   return 42;
     // });
     // var createCount = 0;
     // final provider1 =
-    //     Provider1<ProviderSubscription<int>, String>(useProvider, (state, first) {
+    //     Provider1<ProviderSubscription<int>, String>(useProvider, (context, first) {
     //   createCount++;
     //   first.onChange((v) {
-    //     state.value = v.toString();
+    //     context.value = v.toString();
     //   });
     //   return first.value.toString();
     // });
@@ -67,8 +67,8 @@ void main() {
       (tester) async {
     final provider = Provider((_) => 0);
 
-    final provider1 = Provider((state) {
-      final other = state.dependOn(provider);
+    final provider1 = Provider((context) {
+      final other = context.dependOn(provider);
       return other.value.toString();
     });
 
@@ -88,16 +88,16 @@ void main() {
   });
   testWidgets('provider1 chain', (tester) async {
     final first = Provider((_) => 1);
-    final second = Provider<int>((state) {
-      final other = state.dependOn(first);
+    final second = Provider<int>((context) {
+      final other = context.dependOn(first);
       return other.value + 1;
     });
-    final third = Provider<int>((state) {
-      final other = state.dependOn(second);
+    final third = Provider<int>((context) {
+      final other = context.dependOn(second);
       return other.value + 1;
     });
-    final forth = Provider<int>((state) {
-      final other = state.dependOn(third);
+    final forth = Provider<int>((context) {
+      final other = context.dependOn(third);
       return other.value + 1;
     });
 
@@ -114,16 +114,16 @@ void main() {
   });
   testWidgets('overriden provider1 chain', (tester) async {
     final first = Provider((_) => 1);
-    final second = Provider<int>((state) {
-      final other = state.dependOn(first);
+    final second = Provider<int>((context) {
+      final other = context.dependOn(first);
       return other.value + 1;
     });
-    final third = Provider<int>((state) {
-      final other = state.dependOn(second);
+    final third = Provider<int>((context) {
+      final other = context.dependOn(second);
       return other.value + 1;
     });
-    final forth = Provider<int>((state) {
-      final other = state.dependOn(third);
+    final forth = Provider<int>((context) {
+      final other = context.dependOn(third);
       return other.value + 1;
     });
 
@@ -143,16 +143,16 @@ void main() {
   });
   testWidgets('partial override provider1 chain', (tester) async {
     final first = Provider((_) => 1);
-    final second = Provider<int>((state) {
-      final other = state.dependOn(first);
+    final second = Provider<int>((context) {
+      final other = context.dependOn(first);
       return other.value + 1;
     });
-    final third = Provider<int>((state) {
-      final other = state.dependOn(second);
+    final third = Provider<int>((context) {
+      final other = context.dependOn(second);
       return other.value + 1;
     });
-    final forth = Provider<int>((state) {
-      final other = state.dependOn(third);
+    final forth = Provider<int>((context) {
+      final other = context.dependOn(third);
       return other.value + 1;
     });
 
@@ -170,5 +170,5 @@ void main() {
 
     expect(find.text('2'), findsOneWidget);
   });
-  // TODO state hydratation
+  // TODO context hydratation
 }

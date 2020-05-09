@@ -32,9 +32,9 @@ void main() {
   testWidgets('mounted', (tester) async {
     ProviderContext providerState;
     bool mountedOnDispose;
-    final provider = Provider<int>((state) {
-      providerState = state;
-      state.onDispose(() => mountedOnDispose = state.mounted);
+    final provider = Provider<int>((context) {
+      providerState = context;
+      context.onDispose(() => mountedOnDispose = context.mounted);
       return 42;
     });
 
@@ -59,7 +59,7 @@ void main() {
   });
 
   testWidgets('no onDispose does not crash', (tester) async {
-    final provider = Provider<int>((state) => 42);
+    final provider = Provider<int>((context) => 42);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -76,10 +76,10 @@ void main() {
 
     await tester.pumpWidget(Container());
   });
-  testWidgets('onDispose can read state', (tester) async {
+  testWidgets('onDispose can read context', (tester) async {
     // int onDisposeState;
-    // final provider = Provider<int>((state) {
-    //   state.onDispose(() => onDisposeState = state.value);
+    // final provider = Provider<int>((context) {
+    //   context.onDispose(() => onDisposeState = context.value);
     //   return 42;
     // });
 
@@ -100,10 +100,10 @@ void main() {
 
     // expect(onDisposeState, 42);
   }, skip: true);
-  testWidgets("can't read state after dispose", (tester) async {
+  testWidgets("can't read context after dispose", (tester) async {
     // ProviderContext<int> providerState;
-    // final provider = Provider<int>((state) {
-    //   providerState = state;
+    // final provider = Provider<int>((context) {
+    //   providerState = context;
     //   return 42;
     // });
 
@@ -133,8 +133,8 @@ void main() {
 
     final dispose3 = OnDisposeMock();
 
-    final provider = Provider<int>((state) {
-      state..onDispose(dispose1)..onDispose(dispose2)..onDispose(dispose3);
+    final provider = Provider<int>((context) {
+      context..onDispose(dispose1)..onDispose(dispose2)..onDispose(dispose3);
       return 42;
     });
 
@@ -170,8 +170,8 @@ void main() {
 
   testWidgets('expose value as is', (tester) async {
     var callCount = 0;
-    final provider = Provider((state) {
-      assert(state != null, '');
+    final provider = Provider((context) {
+      assert(context != null, '');
       callCount++;
       return 42;
     });
@@ -207,8 +207,8 @@ void main() {
       ProviderScope(
         overrides: [
           provider.overrideForSubtree(
-            Provider((state) {
-              assert(state != null, '');
+            Provider((context) {
+              assert(context != null, '');
               callCount++;
               return 42;
             }),
@@ -225,8 +225,8 @@ void main() {
       ProviderScope(
         overrides: [
           provider.overrideForSubtree(
-            Provider((state) {
-              assert(state != null, '');
+            Provider((context) {
+              assert(context != null, '');
               callCount++;
               throw Error();
             }),

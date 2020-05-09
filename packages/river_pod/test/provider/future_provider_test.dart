@@ -19,10 +19,10 @@ void main() {
     final other = FutureProvider((_) => completer.future);
     final simple = Provider((_) => 21);
 
-    final example = FutureProvider((state) async {
-      final otherValue = await state.dependOn(other).future;
+    final example = FutureProvider((context) async {
+      final otherValue = await context.dependOn(other).future;
 
-      return '${state.dependOn(simple).value} $otherValue';
+      return '${context.dependOn(simple).value} $otherValue';
     });
 
     final listener = StringListenerMock();

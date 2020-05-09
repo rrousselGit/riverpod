@@ -8,23 +8,23 @@ import 'internals.dart';
 class StateNotifierProvider<Notifier extends StateNotifier<Value>, Value>
     extends Provider<Notifier> {
   StateNotifierProvider(Create<Notifier, ProviderContext> create)
-      : super((state) {
-          final notifier = create(state);
-          state.onDispose(notifier.dispose);
+      : super((context) {
+          final notifier = create(context);
+          context.onDispose(notifier.dispose);
           return notifier;
         });
 
   // TODO replace with `late final` when available
   SetStateProvider<Value> _valueProvider;
   SetStateProvider<Value> get value {
-    return _valueProvider ??= SetStateProvider((state) {
-      final notifier = state.dependOn(this).value;
+    return _valueProvider ??= SetStateProvider((context) {
+      final notifier = context.dependOn(this).value;
 
-      state.onDispose(
-        notifier.addListener((newValue) => state.state = newValue),
+      context.onDispose(
+        notifier.addListener((newValue) => context.state = newValue),
       );
 
-      return state.state;
+      return context.state;
     });
   }
 }
