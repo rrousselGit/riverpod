@@ -2,21 +2,21 @@
 title: Getting started
 ---
 
-Before diving into the inner mechanisms of [River_pod], let's start with the basics:
-Installing up [River_pod], and then writing an "Hello world".
+Before diving into the inner mechanisms of [Riverpod], let's start with the basics:
+Installing up [Riverpod], and then writing an "Hello world".
 
 ## What package to install
 
-Before anything, you need to be aware that [River_pod] is spread across multiple packages, with slightly different usage.\
-As such, the variant of [River_pod] that you will want to install depends on the app you are making.
+Before anything, you need to be aware that [Riverpod] is spread across multiple packages, with slightly different usage.\
+As such, the variant of [Riverpod] that you will want to install depends on the app you are making.
 
 You can refer to the following table to help you decide which package to use:
 
 | app type                  | package name                                                                         | description                                                                                                                                        |
 | ------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Flutter + [flutter_hooks] | [hooks_river_pod]                                                                    | An improved syntax with less boilerplate for listening providers inside widgets.                                                                   |
-| Flutter only              | [flutter_river_pod]                                                                  | A slightly more verbose syntax (comparable to `Theme.of` vs `StreamBuilder`).<br>But feature-wise, it is otherwise identical to [hooks_river_pod]. |
-| Dart only (No Flutter)    | [river_pod](https://github.com/rrousselGit/river_pod/tree/master/packages/river_pod) | A version of [River_pod] striped out of all the classes related to Flutter                                                                         |
+| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                    | An improved syntax with less boilerplate for listening providers inside widgets.                                                                   |
+| Flutter only              | [flutter_riverpod]                                                                  | A slightly more verbose syntax (comparable to `Theme.of` vs `StreamBuilder`).<br>But feature-wise, it is otherwise identical to [hooks_riverpod]. |
+| Dart only (No Flutter)    | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | A version of [Riverpod] striped out of all the classes related to Flutter                                                                         |
 
 And if not clear enough, you can refer to this decision graph:
 
@@ -28,7 +28,7 @@ Once you know what package you want to install, proceed to add the following to 
 
 <!--DOCUSAURUS_CODE_TABS-->
 
-<!-- hooks_river_pod -->
+<!-- hooks_riverpod -->
 
 ```yaml
 environment:
@@ -39,12 +39,12 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.9.0
-  hooks_river_pod: ^0.0.1
+  hooks_riverpod: ^0.0.1
 ```
 
 Then run `flutter pub get`.
 
-<!-- flutter_river_pod -->
+<!-- flutter_riverpod -->
 
 ```yaml
 environment:
@@ -54,41 +54,41 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_river_pod: ^0.0.1
+  flutter_riverpod: ^0.0.1
 ```
 
 Then run `flutter pub get`.
 
-<!-- river_pod -->
+<!-- riverpod -->
 
 ```yaml
 environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  river_pod: ^0.0.1
+  riverpod: ^0.0.1
 ```
 
 Then run `pub get`.
 
 <!--END_DOCUSAURUS_CODE_TABS-->
 
-That's it. You've added [River_pod] to your app!
+That's it. You've added [Riverpod] to your app!
 
 ## Usage example: Hello world
 
-Now that we have installed [River_pod], we can start using it.
+Now that we have installed [Riverpod], we can start using it.
 
 The following snippets showcase our to use our new dependency to make an "Hello world":
 
 <!--DOCUSAURUS_CODE_TABS-->
 
-<!-- hooks_river_pod -->
+<!-- hooks_riverpod -->
 
 ```dart
 // lib/main.dart
 import 'package:flutter/material.dart';
-import 'package:hooks_river_pod/hooks_river_pod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 // We create a "provider", which will store a value (here "Hello world").
@@ -129,12 +129,12 @@ class MyApp extends HookWidget {
 Which you can then execute with `flutter run`.\
 This will render "Hello world" in on your device.
 
-<!-- flutter_river_pod -->
+<!-- flutter_riverpod -->
 
 ```dart
 // lib/main.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_river_pod/flutter_river_pod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // We create a "provider", which will store a value (here "Hello world").
 // By using a provider, this allows us to mock/override the value exposed.
@@ -178,11 +178,11 @@ class MyApp extends StatelessWidget {
 Which you can then execute with `flutter run`.\
 This will render "Hello world" in on your device.
 
-<!-- river_pod -->
+<!-- riverpod -->
 
 ```dart
 // lib/main.dart
-import 'package:river_pod/river_pod.dart';
+import 'package:riverpod/riverpod.dart';
 
 // We create a "provider", which will store a value (here "Hello world").
 // By using a provider, this allows us to mock/override the value exposed.
@@ -204,7 +204,7 @@ This will print "Hello world" in the console.
 
 <!--END_DOCUSAURUS_CODE_TABS-->
 
-[river_pod]: https://github.com/rrousselGit/river_pod
-[hooks_river_pod]: https://pub.dev/packages/hooks_river_pod
-[flutter_river_pod]: https://pub.dev/packages/flutter_river_pod
+[riverpod]: https://github.com/rrousselgit/river_pod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks

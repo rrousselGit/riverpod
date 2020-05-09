@@ -1,4 +1,4 @@
-Welcome to [River_pod]!
+Welcome to [Riverpod]!
 
 This project can be considered as an **experimental** [provider] rewrite.
 
@@ -43,13 +43,13 @@ See the [FAQ](#FAQ) if you have questions around what this means for [provider].
 
 # Motivation
 
-If [provider] is a simplification of [InheritedWidget]s, then [River_pod] is
+If [provider] is a simplification of [InheritedWidget]s, then [Riverpod] is
 a reimplementation of [InheritedWidget]s from scratch.
 
 It is very similar to [provider] in principle, but also has major differences
 as an attempt to fix the common problems that [provider] face.
 
-[River_pod] has multiple goals. First, it inherits the goals of [provider]:
+[Riverpod] has multiple goals. First, it inherits the goals of [provider]:
 
 - Being able to safely create, observe and dispose states without having to worry about
   losing the state on widget rebuild.
@@ -59,7 +59,7 @@ as an attempt to fix the common problems that [provider] face.
   (which would naturally lead to a deeply nested widget tree).
 - Make apps more scalable with a uni-directional data-flow.
 
-From there, [River_pod] goes a few steps beyond:
+From there, [Riverpod] goes a few steps beyond:
 
 - Reading objects is now **compile-safe**. No more runtime exception.
 - Makes the [provider] pattern more flexible, which allows supporting commonly
@@ -70,20 +70,20 @@ From there, [River_pod] goes a few steps beyond:
 - Simplifying complex object graphs.
 - Makes the pattern independent from Flutter
 
-These are achieved by no-longer using [InheritedWidget]s. Instead, [River_pod]
+These are achieved by no-longer using [InheritedWidget]s. Instead, [Riverpod]
 implements its own mechanism that works in a similar fashion.
 
 # Usage
 
-The way [River_pod] is used depends on the application you are making.
+The way [Riverpod] is used depends on the application you are making.
 
 You can refer to the following table to help you decide which package to use:
 
 | app type                  | package name                                                                         | description                                                                                                                                        |
 | ------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Flutter + [flutter_hooks] | [hooks_river_pod]                                                                    | An improved syntax with less boilerplate for listening providers inside widgets.                                                                   |
-| Flutter only              | [flutter_river_pod]                                                                  | A slightly more verbose syntax (comparable to `Theme.of` vs `StreamBuilder`).<br>But feature-wise, it is otherwise identical to [hooks_river_pod]. |
-| Dart only (No Flutter)    | [river_pod](https://github.com/rrousselGit/river_pod/tree/master/packages/river_pod) | A version of [River_pod] striped out of all the classes related to Flutter                                                                         |
+| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                    | An improved syntax with less boilerplate for listening providers inside widgets.                                                                   |
+| Flutter only              | [flutter_riverpod]                                                                  | A slightly more verbose syntax (comparable to `Theme.of` vs `StreamBuilder`).<br>But feature-wise, it is otherwise identical to [hooks_riverpod]. |
+| Dart only (No Flutter)    | [riverpod](https://github.com/rrousselgit/river_pod/tree/master/packages/riverpod) | A version of [Riverpod] striped out of all the classes related to Flutter                                                                         |
 
 # FAQ
 
@@ -121,12 +121,12 @@ But I would expect this project to work for most people in its current state
 
 ## Will this get merged with [provider] at some point?
 
-No. At least not until it is proven that the community likes [River_pod]
+No. At least not until it is proven that the community likes [Riverpod]
 and that it doesn't cause more problems than it solves.
 
 While [provider] and this project have a lot in common, they do have some
 major differences. Differences big enough that it would be a large breaking
-change for users of [provider] to migrate [River_pod].
+change for users of [provider] to migrate [Riverpod].
 
 Considering that, separating both projects initially sounds like a better
 compromise.
@@ -138,12 +138,12 @@ Not in the short term, no.
 This project is still experimental and unpopular. While it is, in a way,
 a [provider] 2.0, its worth has yet to be proven.
 
-Until it is certain that [River_pod] is a better way of doing things
+Until it is certain that [Riverpod] is a better way of doing things
 and that the community likes it, [provider] will still be maintained.
 
 [provider]: https://github.com/rrousselGit/provider
-[river_pod]: https://github.com/rrousselGit/River_pod
+[riverpod]: https://github.com/rrousselGit/river_pod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
 [inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
-[hooks_river_pod]: https://pub.dev/packages/hooks_river_pod
-[flutter_river_pod]: https://pub.dev/packages/flutter_river_pod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod

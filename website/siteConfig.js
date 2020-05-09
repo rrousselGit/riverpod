@@ -8,7 +8,7 @@ const siteConfig = {
   //   baseUrl: '/test-site/',
 
   // Used for publishing and more
-  projectName: "river_pod",
+  projectName: "riverpod",
   organizationName: "rrousselGit",
 
   headerLinks: [
