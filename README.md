@@ -7,7 +7,7 @@ Long story short:
 - Declare your providers as global variables:
 
   ```dart
-  final useMyNotifier = ChangeNotifierProvider((_) {
+  final myNotifierProvider = ChangeNotifierProvider((_) {
     return MyNotifier();
   });
 
@@ -23,8 +23,8 @@ Long story short:
   class Example extends HookWidget {
     @override
     Widget build(BuildContext context) {
-      final myNotifier = useMyNotifier();
-      return Text(myNotifier.count.toString());
+      final count = useSelector(myNotifierProvider.select((m) => m.count));
+      return Text(count.toString());
     }
   }
   ```

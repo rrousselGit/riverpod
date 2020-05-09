@@ -2,6 +2,7 @@
 import 'package:flutter_river_pod/src/internal.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:collection/collection.dart';
 
 export 'package:flutter_hooks/flutter_hooks.dart';
 export 'package:flutter_river_pod/flutter_river_pod.dart';
@@ -140,5 +141,57 @@ class _BaseProviderHookState<T> extends HookState<T, _BaseProviderHook<T>> {
   void dispose() {
     _removeListener?.call();
     super.dispose();
+  }
+}
+
+@immutable
+abstract class Selector<Input, Output> {
+  ProviderBase<ProviderBaseSubscription, Input> get provider;
+
+  VoidCallback watchOwner(
+    ProviderStateOwner owner,
+    void Function(Output value, Input originValue) listener,
+  );
+
+  Output transform(Input value);
+
+  bool shouldRebuild(Output previousValue, Output newValue);
+}
+
+class _Selector<Input, Output> implements Selector<Input, Output> {
+  _Selector(this._selector, this.provider);
+
+  final Output Function(Input value) _selector;
+  @override
+  final ProviderBase<ProviderBaseSubscription, Input> provider;
+
+  @override
+  Output transform(Input value) {
+    return _selector(value);
+  }
+
+  @override
+  VoidCallback watchOwner(
+    ProviderStateOwner owner,
+    void Function(Output value, Input originValue) listener,
+  ) {
+    return provider.watchOwner(
+      owner,
+      (value) => listener(_selector(value), value),
+    );
+  }
+
+  @override
+  bool shouldRebuild(Output previousValue, Output newValue) {
+    return !const DeepCollectionEquality().equals(previousValue, newValue);
+  }
+}
+
+extension ProviderSelectX<ListenedValue>
+    on ProviderBase<ProviderBaseSubscription, ListenedValue> {
+  Selector<ListenedValue, Res> select<Res>(
+    Res Function(ListenedValue value) selector,
+  ) {
+    return _Selector<ListenedValue, Res>(selector, this);
   }
 }
