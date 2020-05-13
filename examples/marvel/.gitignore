@@ -1,17 +1,4 @@
-# Ignoring generated files, as they pollute pull requests and can create merge conflicts
-*.g.dart
-*.freezed.dart
-
-# Ignoring native folders of the example as they can be re-generated easily
-**/example/android/
-**/example/ios/
-**/example/web/
-examples/**/android/
-examples/**/ios/
-examples/**/web/
-
 # Miscellaneous
-coverage/
 *.class
 *.log
 *.pyc
@@ -35,16 +22,23 @@ coverage/
 
 # Flutter/Dart/Pub related
 **/doc/api/
+**/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
 .pub-cache/
 .pub/
-build/
+/build/
 
 # Web related
 lib/generated_plugin_registrant.dart
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
