@@ -14,6 +14,38 @@ void main() {
     // TODO error handling state.onChange (if any) callback
     // TODO no onError fallback to zone
   });
+  test('owner.context uses the override', () {
+    final provider = Provider((_) => 42);
+    final owner = ProviderStateOwner();
+    final owner2 = ProviderStateOwner(overrides: [
+      provider.overrideForSubtree(
+        Provider((_) => 21),
+      ),
+    ]);
+
+    final context = owner.context;
+    final context2 = owner2.context;
+
+    expect(context, isNot(context2));
+    expect(owner.context, context);
+    expect(owner2.context, context2);
+
+    expect(context.dependOn(provider).value, 42);
+    expect(context2.dependOn(provider).value, 21);
+
+    owner.updateOverrides([]);
+    owner2.updateOverrides([
+      provider.overrideForSubtree(
+        Provider((_) => 21),
+      ),
+    ]);
+
+    expect(owner.context, context);
+    expect(owner2.context, context2);
+    expect(context.dependOn(provider).value, 42);
+    expect(context2.dependOn(provider).value, 21);
+  });
+
   test('context.dependOn disposes the provider state', () {
     var didDispose = false;
     final provider = TestProvider((context) {
@@ -44,10 +76,10 @@ void main() {
     final provider2 = TestProvider((context) => 1);
     final owner = ProviderStateOwner();
 
-    final value1 = owner.dependOn(provider);
-    final value2 = owner.dependOn(provider);
-    final value21 = owner.dependOn(provider2);
-    final value22 = owner.dependOn(provider2);
+    final value1 = owner.context.dependOn(provider);
+    final value2 = owner.context.dependOn(provider);
+    final value21 = owner.context.dependOn(provider2);
+    final value22 = owner.context.dependOn(provider2);
 
     expect(value1, value2);
     expect(value1.value, 0);

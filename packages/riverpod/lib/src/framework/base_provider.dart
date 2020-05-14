@@ -13,7 +13,7 @@ void visitNodesInDependencyOrder(
   final inResult = <ProviderBaseState>{};
 
   void recurs(ProviderBaseState node) {
-    if (inResult.contains(node) || !nodesToVisit.contains(node)) {
+    if (!nodesToVisit.contains(node) || inResult.contains(node)) {
       return;
     }
 

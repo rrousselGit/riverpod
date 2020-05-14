@@ -3,6 +3,10 @@ import 'dart:collection';
 import 'package:meta/meta.dart';
 
 import '../common.dart';
+import '../provider.dart';
+import 'context.dart';
+
+export 'context.dart';
 
 part 'base_provider.dart';
 part 'keep_alive_provider.dart';
@@ -20,6 +24,8 @@ typedef _ProviderStateReader = ProviderBaseState<ProviderBaseSubscription,
         Object, ProviderBase<ProviderBaseSubscription, Object>>
     Function();
 
+final _contextProvider = Provider((c) => c);
+
 class ProviderStateOwner {
   ProviderStateOwner({
     ProviderStateOwner parent,
@@ -36,6 +42,8 @@ class ProviderStateOwner {
   Map<ProviderBase, _ProviderStateReader> _stateReaders;
   _FallbackProviderStateReader _fallback;
 
+  ProviderContext get context => _contextProvider.readOwner(this);
+
   Map<ProviderBase, ProviderBaseSubscription> _dependencies;
 
   void updateParent(ProviderStateOwner parent) {
@@ -44,6 +52,7 @@ class ProviderStateOwner {
 
     _stateReaders = {
       ...?parent?._stateReaders,
+      _contextProvider: () => _putIfAbsent(_contextProvider),
       for (final override in _overrides)
         override._origin: () {
           return _putIfAbsent(
@@ -159,17 +168,6 @@ Changing the kind of override or reordering overrides is not supported.
         ProviderBase<CombiningValue, ListeningValue>>;
   }
 
-  Res dependOn<Res extends ProviderBaseSubscription>(
-    ProviderBase<Res, Object> provider,
-  ) {
-    _dependencies ??= {};
-
-    return _dependencies.putIfAbsent(provider, () {
-      final state = _readProviderState(provider);
-      return state.createProviderSubscription();
-    }) as Res;
-  }
-
   void dispose() {
     if (_dependencies != null) {
       for (final value in _dependencies.values) {
@@ -210,33 +208,6 @@ class ProviderOverride<CombiningValue extends ProviderBaseSubscription,
 abstract class ProviderBaseSubscription {
   @protected
   void dispose() {}
-}
-
-class ProviderContext {
-  ProviderContext(this._providerState);
-
-  final ProviderBaseState _providerState;
-
-  bool get mounted => _providerState.mounted;
-
-  void onDispose(VoidCallback cb) {
-    assert(
-      mounted,
-      '`onDispose` was called on a state that is already disposed',
-    );
-    _providerState.onDispose(cb);
-  }
-
-  T dependOn<T extends ProviderBaseSubscription>(
-      ProviderBase<T, Object> provider) {
-    assert(
-      mounted,
-      '`dependOn` was called on a state that is already disposed',
-    );
-    return _providerState.dependOn(provider);
-  }
-
-  // TODO report error?
 }
 
 /// A provider is somehow dependending on itself

@@ -51,7 +51,7 @@ Future<void> main() async {
   final owner = ProviderStateOwner();
 
   /// Obtains the [Repository]. This will implicitly load [Configuration] too.
-  final repository = await owner.dependOn(repositoryProvider).future;
+  final repository = await owner.context.dependOn(repositoryProvider).future;
 
   final comics = await repository.fetchComics();
   for (final comic in comics) {

@@ -11,7 +11,7 @@ void main() {
     test('success', () async {
       final owner = ProviderStateOwner();
       final client = FakeDio();
-      final repository = MarvelRepository(owner, client: client);
+      final repository = MarvelRepository(owner.context, client: client);
 
       await expectLater(
         repository.fetchCharacters(offset: 0),

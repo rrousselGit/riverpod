@@ -55,17 +55,17 @@ class MarvelRepository {
   Future<Result<MarvelResponse>> _get(
     String path, {
     Map<String, Object> queryParameters,
-  }) async {
-    final configs = await _context.dependOn(configurationsProvider).future;
+  }) {
+    return Result.guardFuture(() async {
+      final configs = await _context.dependOn(configurationsProvider).future;
 
-    final timestamp = _getCurrentTimestamp();
-    final hash = md5
-        .convert(
-          utf8.encode('$timestamp${configs.privateKey}${configs.publicKey}'),
-        )
-        .toString();
+      final timestamp = _getCurrentTimestamp();
+      final hash = md5
+          .convert(
+            utf8.encode('$timestamp${configs.privateKey}${configs.publicKey}'),
+          )
+          .toString();
 
-    return Result.guard(() async {
       final result = await _client.get<Map<String, Object>>(
           'https://gateway.marvel.com/v1/public/$path',
           queryParameters: <String, Object>{
@@ -74,9 +74,8 @@ class MarvelRepository {
             'hash': hash,
             ...?queryParameters,
           });
-      print(result.data);
       return MarvelResponse.fromJson(result.data);
-    }).flatten();
+    });
   }
 }
 
