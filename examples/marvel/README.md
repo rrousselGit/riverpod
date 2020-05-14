@@ -10,13 +10,14 @@ The process is split into three objects:
 
 # Installation
 
-To run this example, you will need to create a `configuration.json` file next to this README.md
+To run this example, you will need to create a `configuration.json` placed in the `assets` folder:
 
 ```
 example/
   pubspec.yaml
-  README.md
-  configuration.json  << Where to place that file
+  README.md << This readme
+  assets/
+    configuration.json  << Where to place the file
   lib/
 ```
 
