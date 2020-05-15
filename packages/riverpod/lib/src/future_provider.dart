@@ -61,7 +61,7 @@ class _FutureProviderState<Res> extends ProviderBaseState<
 }
 
 class _DebugValueFutureProvider<Res>
-    extends ProviderBase<FutureProviderSubscription<Res>, AsyncValue<Res>> {
+    extends AlwaysAliveProvider<FutureProviderSubscription<Res>, AsyncValue<Res>> {
   _DebugValueFutureProvider(this._value);
 
   final AsyncValue<Res> _value;

@@ -30,12 +30,6 @@ void visitNodesInDependencyOrder(
 @optionalTypeArgs
 abstract class ProviderBase<CombiningValue extends ProviderBaseSubscription,
     ListenedValue extends Object> {
-  ProviderOverride<CombiningValue, ListenedValue> overrideForSubtree(
-    ProviderBase<CombiningValue, ListenedValue> provider,
-  ) {
-    return ProviderOverride._(provider, this);
-  }
-
   @visibleForOverriding
   ProviderBaseState<CombiningValue, ListenedValue,
       ProviderBase<CombiningValue, ListenedValue>> createState();
@@ -185,6 +179,14 @@ abstract class AlwaysAliveProvider<
   ListenedValue readOwner(ProviderStateOwner owner) {
     final state = owner._readProviderState(this);
     return state.$state;
+  }
+
+  // Always alive providers can only be overriden by always alive providers
+  // as automatically disposed providers wouldn't work.
+  ProviderOverride<CombiningValue, ListenedValue> overrideForSubtree(
+    AlwaysAliveProvider<CombiningValue, ListenedValue> provider,
+  ) {
+    return ProviderOverride._(provider, this);
   }
 }
 

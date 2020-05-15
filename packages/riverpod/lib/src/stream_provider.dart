@@ -62,7 +62,7 @@ class _StreamProviderState<T> extends ProviderBaseState<
 }
 
 class _ValueStreamProvider<T>
-    extends ProviderBase<StreamProviderSubscription<T>, AsyncValue<T>> {
+    extends AlwaysAliveProvider<StreamProviderSubscription<T>, AsyncValue<T>> {
   _ValueStreamProvider(this.value);
 
   final AsyncValue<T> value;

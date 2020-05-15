@@ -304,7 +304,7 @@ class TestProviderValue extends ProviderBaseSubscription {
   final int value;
 }
 
-class TestProvider extends ProviderBase<TestProviderValue, int> {
+class TestProvider extends AlwaysAliveProvider<TestProviderValue, int> {
   TestProvider(
     this.value, {
     this.onCreateState,
@@ -355,7 +355,7 @@ class TestProviderState
   }
 }
 
-class MyImmutableProvider extends ProviderBase<ProviderSubscription<int>, int> {
+class MyImmutableProvider extends AlwaysAliveProvider<ProviderSubscription<int>, int> {
   @override
   MyImmutableProviderState createState() {
     return MyImmutableProviderState();
