@@ -20,18 +20,18 @@ import 'result.dart';
 part 'marvel.freezed.dart';
 part 'marvel.g.dart';
 
-final repositoryProvider = Provider((context) => MarvelRepository(context));
+final repositoryProvider = Provider((ref) => MarvelRepository(ref));
 
 class MarvelRepository {
   MarvelRepository(
-    this._context, {
+    this._ref, {
     int Function() getCurrentTimestamp,
     Dio client,
   })  : _getCurrentTimestamp = getCurrentTimestamp ??
             (() => DateTime.now().millisecondsSinceEpoch),
         _client = client ?? Dio();
 
-  final ProviderContext _context;
+  final ProviderReference _ref;
   final Dio _client;
   final int Function() _getCurrentTimestamp;
 
@@ -57,7 +57,7 @@ class MarvelRepository {
     Map<String, Object> queryParameters,
   }) {
     return Result.guardFuture(() async {
-      final configs = await _context.dependOn(configurationsProvider).future;
+      final configs = await _ref.dependOn(configurationsProvider).future;
 
       final timestamp = _getCurrentTimestamp();
       final hash = md5

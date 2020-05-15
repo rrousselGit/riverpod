@@ -7,8 +7,8 @@ void main() {
   testWidgets('FutureProvider into FutureProvider1', (tester) async {
     final futureProvider = FutureProvider((_) async => 42);
 
-    final futureProvider1 = FutureProvider<int>((context) async {
-      final other = context.dependOn(futureProvider);
+    final futureProvider1 = FutureProvider<int>((ref) async {
+      final other = ref.dependOn(futureProvider);
       return await other.future * 2;
     });
 
@@ -36,8 +36,8 @@ void main() {
   testWidgets('FutureProvider1 works with other providers', (tester) async {
     final futureProvider = Provider((_) => 42);
 
-    final futureProvider1 = FutureProvider<int>((context) async {
-      final other = context.dependOn(futureProvider);
+    final futureProvider1 = FutureProvider<int>((ref) async {
+      final other = ref.dependOn(futureProvider);
       return other.value * 2;
     });
 
@@ -65,8 +65,8 @@ void main() {
   testWidgets('FutureProvider1 can be used directly', (tester) async {
     final futureProvider = Provider((_) => 42);
 
-    final futureProvider1 = FutureProvider<int>((context) async {
-      final other = context.dependOn(futureProvider);
+    final futureProvider1 = FutureProvider<int>((ref) async {
+      final other = ref.dependOn(futureProvider);
       return other.value * 2;
     });
 

@@ -4,9 +4,6 @@ import 'package:meta/meta.dart';
 
 import '../common.dart';
 import '../provider.dart';
-import 'context.dart';
-
-export 'context.dart';
 
 part 'base_provider.dart';
 part 'keep_alive_provider.dart';
@@ -24,7 +21,7 @@ typedef _ProviderStateReader = ProviderBaseState<ProviderBaseSubscription,
         Object, ProviderBase<ProviderBaseSubscription, Object>>
     Function();
 
-final _contextProvider = Provider((c) => c);
+final _refProvider = Provider((c) => c);
 
 class ProviderStateOwner {
   ProviderStateOwner({
@@ -42,7 +39,7 @@ class ProviderStateOwner {
   Map<ProviderBase, _ProviderStateReader> _stateReaders;
   _FallbackProviderStateReader _fallback;
 
-  ProviderContext get context => _contextProvider.readOwner(this);
+  ProviderReference get ref => _refProvider.readOwner(this);
 
   Map<ProviderBase, ProviderBaseSubscription> _dependencies;
 
@@ -52,7 +49,7 @@ class ProviderStateOwner {
 
     _stateReaders = {
       ...?parent?._stateReaders,
-      _contextProvider: () => _putIfAbsent(_contextProvider),
+      _refProvider: () => _putIfAbsent(_refProvider),
       for (final override in _overrides)
         override._origin: () {
           return _putIfAbsent(
@@ -213,4 +210,32 @@ abstract class ProviderBaseSubscription {
 /// A provider is somehow dependending on itself
 class CircularDependencyError extends Error {
   CircularDependencyError._();
+}
+
+
+class ProviderReference {
+  ProviderReference(this._providerState);
+
+  final ProviderBaseState _providerState;
+
+  bool get mounted => _providerState.mounted;
+
+  void onDispose(VoidCallback cb) {
+    assert(
+      mounted,
+      '`onDispose` was called on a state that is already disposed',
+    );
+    _providerState.onDispose(cb);
+  }
+
+  T dependOn<T extends ProviderBaseSubscription>(
+      ProviderBase<T, Object> provider) {
+    assert(
+      mounted,
+      '`dependOn` was called on a state that is already disposed',
+    );
+    return _providerState.dependOn(provider);
+  }
+
+  // TODO report error?
 }

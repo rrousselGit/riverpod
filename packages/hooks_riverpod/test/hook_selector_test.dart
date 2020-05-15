@@ -5,9 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('selector change', (tester) async {
-    SetStateProviderContext<int> state;
+    SetStateProviderReference<int> ref;
     final provider = SetStateProvider<int>((s) {
-      state = s;
+      ref = s;
       return 0;
     });
 
@@ -31,7 +31,7 @@ void main() {
 
     // force rebuild
     res = null;
-    state.state++;
+    ref.state++;
     // change the selected value during build
     res = 'updated';
     await tester.pump();
@@ -40,7 +40,7 @@ void main() {
     expect(find.text('updated'), findsOneWidget);
 
     // trigger an update, but selected value didn't change
-    state.state++;
+    ref.state++;
     await tester.pump();
 
     expect(buildCount, 2);
@@ -48,9 +48,9 @@ void main() {
   });
   testWidgets("don't rebuild dependents when selected value doesn't change",
       (tester) async {
-    SetStateProviderContext<List<int>> state;
+    SetStateProviderReference<List<int>> ref;
     final provider = SetStateProvider<List<int>>((s) {
-      state = s;
+      ref = s;
       return [0];
     });
 
@@ -71,12 +71,12 @@ void main() {
     expect(buildCount, 1);
     expect(find.text('[0]'), findsOneWidget);
 
-    state.state = [0];
+    ref.state = [0];
     await tester.pump();
 
     expect(buildCount, 1);
 
-    state.state = [1];
+    ref.state = [1];
     await tester.pump();
 
     expect(find.text('[1]'), findsOneWidget);

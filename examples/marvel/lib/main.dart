@@ -23,12 +23,12 @@ void main() {
   runApp(ProviderScope(child: MyApp()));
 }
 
-final charactersProvider = StreamProvider((context) async* {
+final charactersProvider = StreamProvider((ref) async* {
   var totalCount = 0;
   var offset = 0;
   var allCharacters = const <Character>[];
 
-  final repository = context.dependOn(repositoryProvider).value;
+  final repository = ref.dependOn(repositoryProvider).value;
 
   do {
     final res = await repository.fetchCharacters(offset: offset);

@@ -79,10 +79,10 @@ The way [Riverpod] is used depends on the application you are making.
 
 You can refer to the following table to help you decide which package to use:
 
-| app type                  | package name                                                                         | description                                                                                                                                        |
-| ------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                    | An improved syntax with less boilerplate for listening providers inside widgets.                                                                   |
-| Flutter only              | [flutter_riverpod]                                                                  | A slightly more verbose syntax (comparable to `Theme.of` vs `StreamBuilder`).<br>But feature-wise, it is otherwise identical to [hooks_riverpod]. |
+| app type                  | package name                                                                       | description                                                                                                                                       |
+| ------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                   | An improved syntax with less boilerplate for listening providers inside widgets.                                                                  |
+| Flutter only              | [flutter_riverpod]                                                                 | A slightly more verbose syntax (comparable to `Theme.of` vs `StreamBuilder`).<br>But feature-wise, it is otherwise identical to [hooks_riverpod]. |
 | Dart only (No Flutter)    | [riverpod](https://github.com/rrousselgit/river_pod/tree/master/packages/riverpod) | A version of [Riverpod] striped out of all the classes related to Flutter                                                                         |
 
 # FAQ
@@ -140,6 +140,33 @@ a [provider] 2.0, its worth has yet to be proven.
 
 Until it is certain that [Riverpod] is a better way of doing things
 and that the community likes it, [provider] will still be maintained.
+
+# Roadmap
+
+- FutureChangeNotifier
+- FutureStateNotifier
+- AutoDispose
+- overrideForSubtree AutoDispose
+- Dartdoc for all public APIs
+- review all public APIs
+- README for all packages
+- debugFillProperties
+- Selector
+- CI
+
+Marvel example:
+
+- Write tests for everything
+- publish it on the web
+- handle errors (out of calls/day, no configurations)
+- Added to doc
+
+riverpod.dev
+
+- Combining providers
+- Filtering rebuilds
+- Testing (without flutter, mocking FutureProvider)
+- How it works
 
 [provider]: https://github.com/rrousselGit/provider
 [riverpod]: https://github.com/rrousselGit/river_pod

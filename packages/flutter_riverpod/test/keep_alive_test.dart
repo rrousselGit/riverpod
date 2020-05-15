@@ -12,9 +12,9 @@ void main() {
     // final onCreate = OnCreateMock();
     // final onDispose = OnDisposeMock();
 
-    // final useFuture = FutureProvider((state) async {
+    // final useFuture = FutureProvider((ref) async {
     //   onCreate();
-    //   state.onDispose(onDispose);
+    //   ref.onDispose(onDispose);
 
     //   return 42;
     // }).asKeepAlive();

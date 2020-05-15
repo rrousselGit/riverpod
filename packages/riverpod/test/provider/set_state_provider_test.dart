@@ -10,13 +10,13 @@ void main() {
 
     expect(provider, isA<AlwaysAliveProvider>());
   });
-  test('SetStateProviderContext can read and write state', () {
+  test('SetStateProviderReference can read and write state', () {
     final owner = ProviderStateOwner();
-    SetStateProviderContext<int> providerContext;
+    SetStateProviderReference<int> ref;
     int initialValue;
-    final provider = SetStateProvider<int>((context) {
-      initialValue = context.state;
-      providerContext = context;
+    final provider = SetStateProvider<int>((ref) {
+      initialValue = ref.state;
+      ref = ref;
       return 0;
     });
     final listener = ListenerMock();
@@ -26,11 +26,11 @@ void main() {
     verify(listener(0)).called(1);
     verifyNoMoreInteractions(listener);
     expect(initialValue, null);
-    expect(providerContext.state, 0);
+    expect(ref.state, 0);
 
-    providerContext.state++;
+    ref.state++;
 
-    expect(providerContext.state, 1);
+    expect(ref.state, 1);
     verify(listener(1)).called(1);
     verifyNoMoreInteractions(listener);
 
@@ -38,9 +38,9 @@ void main() {
   });
   test('watchOwner', () {
     final owner = ProviderStateOwner();
-    SetStateProviderContext<int> providerContext;
-    final provider = SetStateProvider<int>((context) {
-      providerContext = context;
+    SetStateProviderReference<int> ref;
+    final provider = SetStateProvider<int>((ref) {
+      ref = ref;
       return 0;
     });
     final listener = ListenerMock();
@@ -52,24 +52,24 @@ void main() {
 
     removeListener();
 
-    providerContext.state++;
+    ref.state++;
 
     verifyNoMoreInteractions(listener);
     owner.dispose();
   });
   test('combining', () {
     final owner = ProviderStateOwner();
-    SetStateProviderContext<int> providerContext;
-    final provider = SetStateProvider<int>((context) {
-      providerContext = context;
+    SetStateProviderReference<int> ref;
+    final provider = SetStateProvider<int>((ref) {
+      ref = ref;
       return 1;
     });
 
-    final combining = SetStateProvider<int>((context) {
-      final first = context.dependOn(provider);
+    final combining = SetStateProvider<int>((ref) {
+      final first = ref.dependOn(provider);
       int result;
       first.watch((value) {
-        context.state = result = value * 2;
+        ref.state = result = value * 2;
       });
       return result;
     });
@@ -86,14 +86,14 @@ void main() {
     verify(listener(2)).called(1);
     verifyNoMoreInteractions(listener);
 
-    providerContext.state++;
+    ref.state++;
 
     verify(listener(4)).called(1);
     verifyNoMoreInteractions(listener);
 
     owner2.dispose();
 
-    providerContext.state++;
+    ref.state++;
     verifyNoMoreInteractions(listener);
 
     owner.dispose();

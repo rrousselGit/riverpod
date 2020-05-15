@@ -5,8 +5,8 @@ import 'framework/framework.dart';
 
 part 'common.freezed.dart';
 
-typedef Create<Res, Context extends ProviderContext> = Res Function(
-    Context context);
+typedef Create<Res, Context extends ProviderReference> = Res Function(
+    Context ref);
 
 typedef VoidCallback = void Function();
 

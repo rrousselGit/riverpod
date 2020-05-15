@@ -11,14 +11,14 @@ void main() {
   //  |
   //  C
   test('linear graph', () {
-    final a = Provider<int>((context) => 0);
+    final a = Provider<int>((ref) => 0);
 
-    final b = Provider<int>((context) {
-      context.dependOn(a);
+    final b = Provider<int>((ref) {
+      ref.dependOn(a);
       return 0;
     });
-    final c = Provider<int>((context) {
-      context.dependOn(b);
+    final c = Provider<int>((ref) {
+      ref.dependOn(b);
       return 0;
     });
 
@@ -34,19 +34,19 @@ void main() {
   //    \  /
   //      D
   test('diamond graph', () {
-    final a = Provider<int>((context) => 0);
+    final a = Provider<int>((ref) => 0);
 
-    final b = Provider<int>((context) {
-      context.dependOn(a);
+    final b = Provider<int>((ref) {
+      ref.dependOn(a);
       return 0;
     });
-    final c = Provider<int>((context) {
-      context.dependOn(a);
+    final c = Provider<int>((ref) {
+      ref.dependOn(a);
       return 0;
     });
 
-    final d = Provider<int>((context) {
-      context..dependOn(b)..dependOn(c);
+    final d = Provider<int>((ref) {
+      ref..dependOn(b)..dependOn(c);
       return 0;
     });
 
@@ -67,33 +67,33 @@ void main() {
   //   / \    / \
   //  D > E <F < G
   test('5', () {
-    final a = Provider<int>((context) => 0);
+    final a = Provider<int>((ref) => 0);
 
-    final b = Provider<int>((context) {
-      context.dependOn(a);
-      return 0;
-    });
-
-    final e = Provider<int>((context) {
-      context.dependOn(b);
-      return 0;
-    });
-    final d = Provider<int>((context) {
-      context..dependOn(b)..dependOn(e);
+    final b = Provider<int>((ref) {
+      ref.dependOn(a);
       return 0;
     });
 
-    final c = Provider<int>((context) {
-      context..dependOn(a)..dependOn(b);
+    final e = Provider<int>((ref) {
+      ref.dependOn(b);
+      return 0;
+    });
+    final d = Provider<int>((ref) {
+      ref..dependOn(b)..dependOn(e);
       return 0;
     });
 
-    final f = Provider<int>((context) {
-      context..dependOn(c)..dependOn(e);
+    final c = Provider<int>((ref) {
+      ref..dependOn(a)..dependOn(b);
       return 0;
     });
-    final g = Provider<int>((context) {
-      context..dependOn(c)..dependOn(f);
+
+    final f = Provider<int>((ref) {
+      ref..dependOn(c)..dependOn(e);
+      return 0;
+    });
+    final g = Provider<int>((ref) {
+      ref..dependOn(c)..dependOn(f);
       return 0;
     });
 
@@ -119,19 +119,19 @@ void main() {
   //   \   /
   //     D
   test('linked diamond graph', () {
-    final a = Provider<int>((context) => 0);
+    final a = Provider<int>((ref) => 0);
 
-    final b = Provider<int>((context) {
-      context.dependOn(a);
+    final b = Provider<int>((ref) {
+      ref.dependOn(a);
       return 0;
     });
-    final c = Provider<int>((context) {
-      context..dependOn(a)..dependOn(b);
+    final c = Provider<int>((ref) {
+      ref..dependOn(a)..dependOn(b);
       return 0;
     });
 
-    final d = Provider<int>((context) {
-      context..dependOn(b)..dependOn(c);
+    final d = Provider<int>((ref) {
+      ref..dependOn(b)..dependOn(c);
       return 0;
     });
 
@@ -149,19 +149,19 @@ void main() {
   //   \   /
   //     D
   test('graph4', () {
-    final a = Provider<int>((context) => 0);
+    final a = Provider<int>((ref) => 0);
 
-    final b = Provider<int>((context) {
-      context.dependOn(a);
+    final b = Provider<int>((ref) {
+      ref.dependOn(a);
       return 0;
     });
-    final c = Provider<int>((context) {
-      context.dependOn(b);
+    final c = Provider<int>((ref) {
+      ref.dependOn(b);
       return 0;
     });
 
-    final d = Provider<int>((context) {
-      context..dependOn(b)..dependOn(c);
+    final d = Provider<int>((ref) {
+      ref..dependOn(b)..dependOn(c);
       return 0;
     });
 
@@ -181,24 +181,24 @@ void main() {
   //   \   /
   //     E
   test('graph6', () {
-    final a = Provider<int>((context) => 0);
+    final a = Provider<int>((ref) => 0);
 
-    final b = Provider<int>((context) {
-      context.dependOn(a);
+    final b = Provider<int>((ref) {
+      ref.dependOn(a);
       return 0;
     });
-    final c = Provider<int>((context) {
-      context.dependOn(a);
-      return 0;
-    });
-
-    final d = Provider<int>((context) {
-      context.dependOn(b);
+    final c = Provider<int>((ref) {
+      ref.dependOn(a);
       return 0;
     });
 
-    final e = Provider<int>((context) {
-      context..dependOn(d)..dependOn(c);
+    final d = Provider<int>((ref) {
+      ref.dependOn(b);
+      return 0;
+    });
+
+    final e = Provider<int>((ref) {
+      ref..dependOn(d)..dependOn(c);
       return 0;
     });
 
@@ -222,24 +222,24 @@ void main() {
   //   \   /
   //     E(1)
   test('graph7', () {
-    final a = Provider<int>((context) => 0);
+    final a = Provider<int>((ref) => 0);
 
-    final b = Provider<int>((context) {
-      context.dependOn(a);
+    final b = Provider<int>((ref) {
+      ref.dependOn(a);
       return 0;
     });
-    final c = Provider<int>((context) {
-      context.dependOn(a);
-      return 0;
-    });
-
-    final d = Provider<int>((context) {
-      context.dependOn(b);
+    final c = Provider<int>((ref) {
+      ref.dependOn(a);
       return 0;
     });
 
-    final e = Provider<int>((context) {
-      context..dependOn(d)..dependOn(c);
+    final d = Provider<int>((ref) {
+      ref.dependOn(b);
+      return 0;
+    });
+
+    final e = Provider<int>((ref) {
+      ref..dependOn(d)..dependOn(c);
       return 0;
     });
 

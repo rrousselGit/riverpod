@@ -10,11 +10,11 @@ void main() {
     // TODO error handling didUpdateProvider
     // TODO error handling dispose
     // TODO error handling watchOwner callback
-    // TODO error handling context.onDispose callback
-    // TODO error handling state.onChange (if any) callback
+    // TODO error handling ref.onDispose callback
+    // TODO error handling ref.onChange (if any) callback
     // TODO no onError fallback to zone
   });
-  test('owner.context uses the override', () {
+  test('owner.ref uses the override', () {
     final provider = Provider((_) => 42);
     final owner = ProviderStateOwner();
     final owner2 = ProviderStateOwner(overrides: [
@@ -23,15 +23,15 @@ void main() {
       ),
     ]);
 
-    final context = owner.context;
-    final context2 = owner2.context;
+    final ref = owner.ref;
+    final ref2 = owner2.ref;
 
-    expect(context, isNot(context2));
-    expect(owner.context, context);
-    expect(owner2.context, context2);
+    expect(ref, isNot(ref2));
+    expect(owner.ref, ref);
+    expect(owner2.ref, ref2);
 
-    expect(context.dependOn(provider).value, 42);
-    expect(context2.dependOn(provider).value, 21);
+    expect(ref.dependOn(provider).value, 42);
+    expect(ref2.dependOn(provider).value, 21);
 
     owner.updateOverrides([]);
     owner2.updateOverrides([
@@ -40,19 +40,19 @@ void main() {
       ),
     ]);
 
-    expect(owner.context, context);
-    expect(owner2.context, context2);
-    expect(context.dependOn(provider).value, 42);
-    expect(context2.dependOn(provider).value, 21);
+    expect(owner.ref, ref);
+    expect(owner2.ref, ref2);
+    expect(ref.dependOn(provider).value, 42);
+    expect(ref2.dependOn(provider).value, 21);
   });
 
-  test('context.dependOn disposes the provider state', () {
+  test('ref.dependOn disposes the provider state', () {
     var didDispose = false;
-    final provider = TestProvider((context) {
-      context.onDispose(() => didDispose = true);
+    final provider = TestProvider((ref) {
+      ref.onDispose(() => didDispose = true);
       return 0;
     });
-    final other = Provider((context) => context.dependOn(provider));
+    final other = Provider((ref) => ref.dependOn(provider));
 
     final owner = ProviderStateOwner();
     final owner2 = ProviderStateOwner(
@@ -72,14 +72,14 @@ void main() {
     expect(didDispose, isFalse);
   });
   test('Owner.dependOn', () {
-    final provider = TestProvider((context) => 0);
-    final provider2 = TestProvider((context) => 1);
+    final provider = TestProvider((ref) => 0);
+    final provider2 = TestProvider((ref) => 1);
     final owner = ProviderStateOwner();
 
-    final value1 = owner.context.dependOn(provider);
-    final value2 = owner.context.dependOn(provider);
-    final value21 = owner.context.dependOn(provider2);
-    final value22 = owner.context.dependOn(provider2);
+    final value1 = owner.ref.dependOn(provider);
+    final value2 = owner.ref.dependOn(provider);
+    final value21 = owner.ref.dependOn(provider2);
+    final value22 = owner.ref.dependOn(provider2);
 
     expect(value1, value2);
     expect(value1.value, 0);
@@ -124,14 +124,14 @@ void main() {
   test('circular dependencies', () {
     Provider<int Function()> provider;
 
-    final provider1 = Provider((context) {
-      return context.dependOn(provider).value() + 1;
+    final provider1 = Provider((ref) {
+      return ref.dependOn(provider).value() + 1;
     });
-    final provider2 = Provider((context) {
-      return context.dependOn(provider1).value + 1;
+    final provider2 = Provider((ref) {
+      return ref.dependOn(provider1).value + 1;
     });
-    provider = Provider((context) {
-      return () => context.dependOn(provider2).value + 1;
+    provider = Provider((ref) {
+      return () => ref.dependOn(provider2).value + 1;
     });
 
     final owner = ProviderStateOwner();
@@ -143,16 +143,16 @@ void main() {
   test('circular dependencies #2', () {
     final owner = ProviderStateOwner();
 
-    final provider = Provider((context) => context);
-    final provider1 = Provider((context) => context);
-    final provider2 = Provider((context) => context);
+    final provider = Provider((ref) => ref);
+    final provider1 = Provider((ref) => ref);
+    final provider2 = Provider((ref) => ref);
 
     provider1.readOwner(owner).dependOn(provider);
     provider2.readOwner(owner).dependOn(provider1);
-    final providerContext = provider.readOwner(owner);
+    final ProviderReference = provider.readOwner(owner);
 
     expect(
-      () => providerContext.dependOn(provider2),
+      () => ProviderReference.dependOn(provider2),
       throwsA(isA<CircularDependencyError>()),
     );
   });
@@ -162,20 +162,20 @@ void main() {
     final onDispose2 = OnDisposeMock();
     final onDispose3 = OnDisposeMock();
 
-    final provider1 = Provider((context) {
-      context.onDispose(onDispose1);
+    final provider1 = Provider((ref) {
+      ref.onDispose(onDispose1);
       return 1;
     });
 
-    final provider2 = Provider((context) {
-      final value = context.dependOn(provider1).value;
-      context.onDispose(onDispose2);
+    final provider2 = Provider((ref) {
+      final value = ref.dependOn(provider1).value;
+      ref.onDispose(onDispose2);
       return value + 1;
     });
 
-    final provider3 = Provider((context) {
-      final value = context.dependOn(provider2).value;
-      context.onDispose(onDispose3);
+    final provider3 = Provider((ref) {
+      final value = ref.dependOn(provider2).value;
+      ref.onDispose(onDispose3);
       return value + 1;
     });
 
@@ -199,19 +199,19 @@ void main() {
     final onDispose2 = OnDisposeMock();
     final onDispose3 = OnDisposeMock();
 
-    final provider1 = Provider((context) {
-      context.onDispose(onDispose1);
+    final provider1 = Provider((ref) {
+      ref.onDispose(onDispose1);
       return 1;
     });
 
-    final provider2 = Provider((context) {
-      context.onDispose(onDispose2);
-      return () => context.dependOn(provider1).value + 1;
+    final provider2 = Provider((ref) {
+      ref.onDispose(onDispose2);
+      return () => ref.dependOn(provider1).value + 1;
     });
 
-    final provider3 = Provider((context) {
-      context.onDispose(onDispose3);
-      return () => context.dependOn(provider2).value() + 1;
+    final provider3 = Provider((ref) {
+      ref.onDispose(onDispose3);
+      return () => ref.dependOn(provider2).value() + 1;
     });
 
     expect(provider3.readOwner(owner)(), 3);
@@ -229,11 +229,11 @@ void main() {
   });
   test('update providers in dependency order', () {
     final provider = TestProvider((_) => 1);
-    final provider1 = TestProvider((context) {
-      return () => context.dependOn(provider).value + 1;
+    final provider1 = TestProvider((ref) {
+      return () => ref.dependOn(provider).value + 1;
     });
-    final provider2 = TestProvider((context) {
-      return () => context.dependOn(provider1).value() + 1;
+    final provider2 = TestProvider((ref) {
+      return () => ref.dependOn(provider1).value() + 1;
     });
 
     final owner = ProviderStateOwner(overrides: [
@@ -273,9 +273,9 @@ void main() {
     ProviderSubscription<int> other;
     ProviderSubscription<int> other2;
 
-    final provider1 = Provider((context) {
-      other = context.dependOn(provider);
-      other2 = context.dependOn(provider);
+    final provider1 = Provider((ref) {
+      other = ref.dependOn(provider);
+      other2 = ref.dependOn(provider);
       return other.value;
     });
 
@@ -284,11 +284,11 @@ void main() {
 
     owner.dispose();
   });
-  test('ProviderContext is unusable after dispose (dependOn/onDispose)', () {
+  test('ProviderReference is unusable after dispose (dependOn/onDispose)', () {
     final owner = ProviderStateOwner();
-    ProviderContext context;
+    ProviderReference ref;
     final provider = Provider((s) {
-      context = s;
+      ref = s;
       return 42;
     });
     final other = Provider((_) => 42);
@@ -296,9 +296,9 @@ void main() {
     expect(provider.readOwner(owner), 42);
     owner.dispose();
 
-    expect(context.mounted, isFalse);
-    expect(() => context.onDispose(() {}), throwsA(isA<AssertionError>()));
-    expect(() => context.dependOn(other), throwsA(isA<AssertionError>()));
+    expect(ref.mounted, isFalse);
+    expect(() => ref.onDispose(() {}), throwsA(isA<AssertionError>()));
+    expect(() => ref.dependOn(other), throwsA(isA<AssertionError>()));
   });
 }
 
@@ -330,7 +330,7 @@ class TestProviderValue<T> extends ProviderBaseSubscription {
 class TestProvider<T> extends AlwaysAliveProvider<TestProviderValue<T>, T> {
   TestProvider(this.create);
 
-  final T Function(ProviderContext context) create;
+  final T Function(ProviderReference ref) create;
   final MockDidUpdateProvider onDidUpdateProvider = MockDidUpdateProvider();
   final MockOnValueDispose<T> onValueDispose = MockOnValueDispose();
 
@@ -355,6 +355,6 @@ class TestProviderState<T>
 
   @override
   T initState() {
-    return provider.create(ProviderContext(this));
+    return provider.create(ProviderReference(this));
   }
 }

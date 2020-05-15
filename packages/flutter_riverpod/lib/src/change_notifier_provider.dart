@@ -12,7 +12,7 @@ class ChangeNotifierProvider<T extends ChangeNotifier>
     extends AlwaysAliveProvider<ChangeNotifierProviderSubscription<T>, T> {
   ChangeNotifierProvider(this._create);
 
-  final Create<T, ProviderContext> _create;
+  final Create<T, ProviderReference> _create;
 
   @override
   _ChangeNotifierProviderState<T> createState() =>
@@ -24,7 +24,7 @@ class _ChangeNotifierProviderState<T extends ChangeNotifier>
         ChangeNotifierProvider<T>> {
   @override
   T initState() {
-    return provider._create(ProviderContext(this))..addListener(_listener);
+    return provider._create(ProviderReference(this))..addListener(_listener);
   }
 
   void _listener() {

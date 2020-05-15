@@ -13,7 +13,7 @@ class StreamProvider<T>
     extends AlwaysAliveProvider<StreamProviderSubscription<T>, AsyncValue<T>> {
   StreamProvider(this._create);
 
-  final Create<Stream<T>, ProviderContext> _create;
+  final Create<Stream<T>, ProviderReference> _create;
 
   ProviderOverride<StreamProviderSubscription<T>, AsyncValue<T>>
       overrideWithValue(AsyncValue<T> value) {
@@ -38,7 +38,7 @@ class _StreamProviderState<T> extends ProviderBaseState<
 
   @override
   AsyncValue<T> initState() {
-    _stream = provider._create(ProviderContext(this));
+    _stream = provider._create(ProviderReference(this));
     _streamSubscription = _stream.listen(
       (event) {
         $state = AsyncValue.data(event);

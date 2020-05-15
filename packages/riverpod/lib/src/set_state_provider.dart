@@ -23,8 +23,8 @@ class SetStateProviderSubscription<T> extends ProviderBaseSubscription {
   }
 }
 
-class SetStateProviderContext<T> extends ProviderContext {
-  SetStateProviderContext._(this._providerState) : super(_providerState);
+class SetStateProviderReference<T> extends ProviderReference {
+  SetStateProviderReference._(this._providerState) : super(_providerState);
 
   final ProviderBaseState<SetStateProviderSubscription<T>, T,
       ProviderBase<SetStateProviderSubscription<T>, T>> _providerState;
@@ -37,7 +37,7 @@ class SetStateProvider<T>
     extends AlwaysAliveProvider<SetStateProviderSubscription<T>, T> {
   SetStateProvider(this._create);
 
-  final Create<T, SetStateProviderContext<T>> _create;
+  final Create<T, SetStateProviderReference<T>> _create;
 
   @override
   _SetStateProviderState<T> createState() {
@@ -49,7 +49,7 @@ class _SetStateProviderState<T> extends ProviderBaseState<
     SetStateProviderSubscription<T>, T, SetStateProvider<T>> {
   @override
   T initState() {
-    return provider._create(SetStateProviderContext._(this));
+    return provider._create(SetStateProviderReference._(this));
   }
 
   @override

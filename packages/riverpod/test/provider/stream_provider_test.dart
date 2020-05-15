@@ -69,8 +69,8 @@ void main() {
     final owner = ProviderStateOwner();
     final controller = StreamController<int>(sync: true);
     final dispose = DisposeMock();
-    final provider = StreamProvider((context) {
-      context.onDispose(dispose);
+    final provider = StreamProvider((ref) {
+      ref.onDispose(dispose);
       return controller.stream;
     });
     final listener = ListenerMock();
@@ -197,8 +197,8 @@ void main() {
       );
 
       Stream<int> stream;
-      final combinedProvider = Provider<int>((context) {
-        final first = context.dependOn(provider);
+      final combinedProvider = Provider<int>((ref) {
+        final first = ref.dependOn(provider);
         stream = first.stream;
         return 42;
       });
@@ -224,8 +224,8 @@ void main() {
     final provider = StreamProvider((_) => expectedStream);
 
     Stream<int> stream;
-    final combinedProvider = Provider<int>((context) {
-      final first = context.dependOn(provider);
+    final combinedProvider = Provider<int>((ref) {
+      final first = ref.dependOn(provider);
       stream = first.stream;
       return 42;
     });

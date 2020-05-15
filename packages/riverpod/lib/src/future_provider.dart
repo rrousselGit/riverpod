@@ -15,7 +15,7 @@ class FutureProvider<Res> extends AlwaysAliveProvider<
     FutureProviderSubscription<Res>, AsyncValue<Res>> {
   FutureProvider(this._create);
 
-  final Create<Future<Res>, ProviderContext> _create;
+  final Create<Future<Res>, ProviderReference> _create;
 
   @override
   _FutureProviderState<Res> createState() {
@@ -35,7 +35,7 @@ class _FutureProviderState<Res> extends ProviderBaseState<
 
   @override
   AsyncValue<Res> initState() {
-    _future = provider._create(ProviderContext(this));
+    _future = provider._create(ProviderReference(this));
     _listen();
 
     return const AsyncValue.loading();
