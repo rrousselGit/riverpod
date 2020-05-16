@@ -58,10 +58,10 @@ packages:
   flutter_riverpod:
     dependency: transitive
     description:
-      path: "../../flutter_riverpod"
-      relative: true
-    source: path
-    version: "0.0.1"
+      name: flutter_riverpod
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1-pre"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -80,7 +80,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.1-pre"
   json_annotation:
     dependency: transitive
     description:
@@ -112,10 +112,10 @@ packages:
   riverpod:
     dependency: transitive
     description:
-      path: "../../riverpod"
-      relative: true
-    source: path
-    version: "0.0.1"
+      name: riverpod
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1-pre"
   sky_engine:
     dependency: transitive
     description: flutter

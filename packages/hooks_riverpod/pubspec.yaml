@@ -11,6 +11,8 @@ dependencies:
   flutter_riverpod: 0.0.1-pre
   flutter:
     sdk: flutter
+  flutter_hooks: ^0.9.0
+  collection: ^1.14.12
 
 dev_dependencies:
   mockito: ^4.1.0

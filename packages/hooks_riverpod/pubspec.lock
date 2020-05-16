@@ -30,7 +30,7 @@ packages:
     source: hosted
     version: "1.0.1"
   collection:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: collection
       url: "https://pub.dartlang.org"
@@ -49,7 +49,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_hooks:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_hooks
       url: "https://pub.dartlang.org"
@@ -58,10 +58,10 @@ packages:
   flutter_riverpod:
     dependency: "direct main"
     description:
-      path: "../flutter_riverpod"
-      relative: true
-    source: path
-    version: "0.0.1"
+      name: flutter_riverpod
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1-pre"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -112,10 +112,10 @@ packages:
   riverpod:
     dependency: transitive
     description:
-      path: "../riverpod"
-      relative: true
-    source: path
-    version: "0.0.1"
+      name: riverpod
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1-pre"
   sky_engine:
     dependency: transitive
     description: flutter

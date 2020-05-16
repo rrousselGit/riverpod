@@ -105,10 +105,10 @@ packages:
   riverpod:
     dependency: "direct main"
     description:
-      path: "../riverpod"
-      relative: true
-    source: path
-    version: "0.0.1"
+      name: riverpod
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1-pre"
   sky_engine:
     dependency: transitive
     description: flutter
