@@ -108,7 +108,7 @@ packages:
       name: riverpod
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1-pre"
+    version: "0.0.1-pre+1"
   sky_engine:
     dependency: transitive
     description: flutter
