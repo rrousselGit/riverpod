@@ -212,7 +212,6 @@ class CircularDependencyError extends Error {
   CircularDependencyError._();
 }
 
-
 class ProviderReference {
   ProviderReference(this._providerState);
 

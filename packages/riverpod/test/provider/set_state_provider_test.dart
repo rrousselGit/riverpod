@@ -1,6 +1,5 @@
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/src/framework/framework.dart'
-    show AlwaysAliveProvider;
+import 'package:riverpod/src/framework/framework.dart' show AlwaysAliveProvider;
 import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 

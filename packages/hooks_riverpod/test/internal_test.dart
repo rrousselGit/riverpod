@@ -355,7 +355,8 @@ class TestProviderState
   }
 }
 
-class MyImmutableProvider extends AlwaysAliveProvider<ProviderSubscription<int>, int> {
+class MyImmutableProvider
+    extends AlwaysAliveProvider<ProviderSubscription<int>, int> {
   @override
   MyImmutableProviderState createState() {
     return MyImmutableProviderState();
