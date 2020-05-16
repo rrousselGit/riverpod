@@ -1,6 +1,6 @@
 name: hooks_riverpod
 description: A new Flutter package project.
-version: 0.0.1
+version: 0.0.1-pre
 author:
 homepage:
 
@@ -8,8 +8,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  flutter_riverpod:
-    path: ../flutter_riverpod
+  flutter_riverpod: 0.0.1-pre
   flutter:
     sdk: flutter
 

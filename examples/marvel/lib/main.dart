@@ -20,7 +20,7 @@ abstract class ReadMore<T> with _$ReadMore<T> {
 }
 
 void main() {
-  runApp(ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 final charactersProvider = StreamProvider((ref) async* {
@@ -56,16 +56,20 @@ final charactersProvider = StreamProvider((ref) async* {
 });
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key key}): super(key: key);
+  
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: Home(),
     );
   }
 }
 
 class Home extends HookWidget {
+  const Home({Key key}): super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final characters = useProvider(charactersProvider);
@@ -74,7 +78,7 @@ class Home extends HookWidget {
       loading: () => const CircularProgressIndicator(),
       error: (err, stack) {
         return Scaffold(
-          appBar: AppBar(title: Text('Error')),
+          appBar: AppBar(title: const Text('Error')),
           body: Center(
             child: Text('$err'),
           ),
@@ -82,7 +86,7 @@ class Home extends HookWidget {
       },
       data: (data) {
         return Scaffold(
-          appBar: AppBar(title: Text('title')),
+          appBar: AppBar(title: const Text('title')),
           body: ListView.builder(
             itemCount: data.data.length,
             itemBuilder: (context, index) {
