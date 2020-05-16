@@ -20,7 +20,6 @@ abstract class Configuration with _$Configuration {
 }
 
 final configurationsProvider = FutureProvider((_) async {
-  // SynchronousFuture
   final content = json.decode(
     await rootBundle.loadString('assets/configurations.json'),
   ) as Map<String, dynamic>;

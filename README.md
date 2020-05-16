@@ -143,6 +143,9 @@ and that the community likes it, [provider] will still be maintained.
 
 # Roadmap
 
+- Owner.updateParent should be removed !important
+- remove onError and implement true error mechanism
+- StreamProvider.overrideWithValue debug-only
 - FutureChangeNotifier
 - FutureStateNotifier
 - AutoDispose
@@ -153,6 +156,7 @@ and that the community likes it, [provider] will still be maintained.
 - debugFillProperties
 - Selector
 - CI
+- provider.watchRef?
 - Packages description/homepage
 
 Marvel example:
