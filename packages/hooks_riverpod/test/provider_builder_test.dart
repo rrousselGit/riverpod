@@ -9,12 +9,12 @@ void main() {
     final provider = Provider((_) => 42);
 
     // These check the type safety
-    ProviderReference ProviderReference;
+    ProviderReference ref;
     ProviderSubscription<int> firstState;
 
-    final Provider<int> provider1 = Provider<int>((ref) {
-      final first = ref.dependOn(provider);
-      ProviderReference = ref;
+    final Provider<int> provider1 = Provider<int>((r) {
+      final first = r.dependOn(provider);
+      ref = r;
       firstState = first;
       return first.value * 2;
     });
@@ -30,7 +30,7 @@ void main() {
       ),
     );
 
-    expect(ProviderReference, isNotNull);
+    expect(ref, isNotNull);
     expect(firstState, isNotNull);
     expect(find.text('84'), findsOneWidget);
   });

@@ -14,9 +14,9 @@ void main() {
     final owner = ProviderStateOwner();
     SetStateProviderReference<int> ref;
     int initialValue;
-    final provider = SetStateProvider<int>((ref) {
-      initialValue = ref.state;
-      ref = ref;
+    final provider = SetStateProvider<int>((r) {
+      initialValue = r.state;
+      ref = r;
       return 0;
     });
     final listener = ListenerMock();
@@ -39,8 +39,8 @@ void main() {
   test('watchOwner', () {
     final owner = ProviderStateOwner();
     SetStateProviderReference<int> ref;
-    final provider = SetStateProvider<int>((ref) {
-      ref = ref;
+    final provider = SetStateProvider<int>((r) {
+      ref = r;
       return 0;
     });
     final listener = ListenerMock();
@@ -60,8 +60,8 @@ void main() {
   test('combining', () {
     final owner = ProviderStateOwner();
     SetStateProviderReference<int> ref;
-    final provider = SetStateProvider<int>((ref) {
-      ref = ref;
+    final provider = SetStateProvider<int>((r) {
+      ref = r;
       return 1;
     });
 
