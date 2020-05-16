@@ -153,6 +153,7 @@ and that the community likes it, [provider] will still be maintained.
 - debugFillProperties
 - Selector
 - CI
+- Packages description/homepage
 
 Marvel example:
 
