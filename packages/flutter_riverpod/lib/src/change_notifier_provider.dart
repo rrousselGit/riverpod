@@ -23,23 +23,23 @@ class _ChangeNotifierProviderState<T extends ChangeNotifier>
     extends ProviderBaseState<ChangeNotifierProviderSubscription<T>, T,
         ChangeNotifierProvider<T>> {
   @override
-  T initState() {
-    return provider._create(ProviderReference(this))..addListener(_listener);
-  }
+  T state;
 
-  void _listener() {
-    $state = $state;
+  @override
+  void initState() {
+    state = provider._create(ProviderReference(this))
+      ..addListener($notifyListeners);
   }
 
   @override
   ChangeNotifierProviderSubscription<T> createProviderSubscription() {
-    return ChangeNotifierProviderSubscription._($state);
+    return ChangeNotifierProviderSubscription._(state);
   }
 
   @override
   void dispose() {
-    $state
-      ..removeListener(_listener)
+    state
+      ..removeListener($notifyListeners)
       ..dispose();
     super.dispose();
   }

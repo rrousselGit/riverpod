@@ -9,16 +9,19 @@ class SetStateProviderSubscription<T> extends ProviderBaseSubscription {
   final ProviderBaseState<SetStateProviderSubscription<T>, T,
       ProviderBase<SetStateProviderSubscription<T>, T>> _providerState;
 
-  final _removeListeners = DoubleLinkedQueue<VoidCallback>();
+  final _subscriptions = DoubleLinkedQueue<ProviderLink>();
 
   void watch(void Function(T value) listener) {
-    _removeListeners.add(_providerState.$addStateListener(listener));
+    // TODO change this
+    final sub = _providerState.$subscribe((read) => listener(read()));
+    _subscriptions.add(sub);
+    listener(sub.read());
   }
 
   @override
   void dispose() {
-    for (final listener in _removeListeners) {
-      listener();
+    for (final sub in _subscriptions) {
+      sub.close();
     }
   }
 }
@@ -26,11 +29,10 @@ class SetStateProviderSubscription<T> extends ProviderBaseSubscription {
 class SetStateProviderReference<T> extends ProviderReference {
   SetStateProviderReference._(this._providerState) : super(_providerState);
 
-  final ProviderBaseState<SetStateProviderSubscription<T>, T,
-      ProviderBase<SetStateProviderSubscription<T>, T>> _providerState;
+  final _SetStateProviderState<T> _providerState;
 
-  T get state => _providerState.$state;
-  set state(T state) => _providerState.$state = state;
+  T get state => _providerState.state;
+  set state(T state) => _providerState.state = state;
 }
 
 class SetStateProvider<T>
@@ -47,9 +49,17 @@ class SetStateProvider<T>
 
 class _SetStateProviderState<T> extends ProviderBaseState<
     SetStateProviderSubscription<T>, T, SetStateProvider<T>> {
+  T _state;
   @override
-  T initState() {
-    return provider._create(SetStateProviderReference._(this));
+  T get state => _state;
+  set state(T state) {
+    _state = state;
+    $notifyListeners();
+  }
+
+  @override
+  void initState() {
+    _state = provider._create(SetStateProviderReference._(this));
   }
 
   @override

@@ -73,8 +73,7 @@ class ProviderStateOwner {
           ProviderBase<ProviderBaseSubscription, T>>;
     }
 
-    final state = _createProviderState(provider);
-    state.$state = state.initState();
+    final state = _createProviderState(provider)..initState();
 
     _providerState[key] = state;
 

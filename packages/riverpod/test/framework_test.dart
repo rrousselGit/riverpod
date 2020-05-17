@@ -141,10 +141,10 @@ void main() {
 
     provider1.readOwner(owner).dependOn(provider);
     provider2.readOwner(owner).dependOn(provider1);
-    final ProviderReference = provider.readOwner(owner);
+    final ref = provider.readOwner(owner);
 
     expect(
-      () => ProviderReference.dependOn(provider2),
+      () => ref.dependOn(provider2),
       throwsA(isA<CircularDependencyError>()),
     );
   });
@@ -335,6 +335,9 @@ class TestProvider<T> extends AlwaysAliveProvider<TestProviderValue<T>, T> {
 class TestProviderState<T>
     extends ProviderBaseState<TestProviderValue<T>, T, TestProvider<T>> {
   @override
+  T state;
+
+  @override
   void didUpdateProvider(TestProvider<T> oldProvider) {
     super.didUpdateProvider(oldProvider);
     provider.onDidUpdateProvider?.call();
@@ -342,11 +345,11 @@ class TestProviderState<T>
 
   @override
   TestProviderValue<T> createProviderSubscription() {
-    return TestProviderValue<T>($state, onDispose: provider.onValueDispose);
+    return TestProviderValue<T>(state, onDispose: provider.onValueDispose);
   }
 
   @override
-  T initState() {
-    return provider.create(ProviderReference(this));
+  void initState() {
+    state = provider.create(ProviderReference(this));
   }
 }

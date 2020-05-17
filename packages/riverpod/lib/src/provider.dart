@@ -19,12 +19,15 @@ class Provider<T> extends AlwaysAliveProvider<ProviderSubscription<T>, T> {
 class _ProviderState<T>
     extends ProviderBaseState<ProviderSubscription<T>, T, Provider<T>> {
   @override
-  T initState() {
-    return provider._create(ProviderReference(this));
+  T state;
+
+  @override
+  void initState() {
+    state = provider._create(ProviderReference(this));
   }
 
   @override
   ProviderSubscription<T> createProviderSubscription() {
-    return ProviderSubscription._($state);
+    return ProviderSubscription._(state);
   }
 }

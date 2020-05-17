@@ -31,27 +31,35 @@ class _StreamProviderState<T> extends ProviderBaseState<
   Stream<T> _stream;
   StreamSubscription<T> _streamSubscription;
 
+  AsyncValue<T> _state;
+  @override
+  AsyncValue<T> get state => _state;
+  set state(AsyncValue<T> state) {
+    _state = state;
+    $notifyListeners();
+  }
+
   @override
   StreamProviderSubscription<T> createProviderSubscription() {
     return StreamProviderSubscription._(_stream);
   }
 
   @override
-  AsyncValue<T> initState() {
+  void initState() {
+    _state = const AsyncValue.loading();
     _stream = provider._create(ProviderReference(this));
     _streamSubscription = _stream.listen(
       (event) {
-        $state = AsyncValue.data(event);
+        state = AsyncValue.data(event);
       },
       onError: (
         dynamic err,
         // ignore: avoid_types_on_closure_parameters
         StackTrace stack,
       ) {
-        $state = AsyncValue.error(err, stack);
+        state = AsyncValue.error(err, stack);
       },
     );
-    return const AsyncValue.loading();
   }
 
   @override
@@ -82,9 +90,17 @@ class _ValueStreamProviderState<T> extends ProviderBaseState<
     return StreamProviderSubscription._(_controller.stream);
   }
 
+  AsyncValue<T> _state;
   @override
-  AsyncValue<T> initState() {
-    return provider.value
+  AsyncValue<T> get state => _state;
+  set state(AsyncValue<T> state) {
+    _state = state;
+    $notifyListeners();
+  }
+
+  @override
+  void initState() {
+    _state = provider.value
       ..when(
         data: _controller.add,
         loading: () {},
@@ -103,7 +119,7 @@ class _ValueStreamProviderState<T> extends ProviderBaseState<
         ),
       );
     }
-    $state = provider.value
+    state = provider.value
       ..when(
         data: _controller.add,
         loading: () {},

@@ -33,23 +33,31 @@ class _FutureProviderState<Res> extends ProviderBaseState<
     FutureProviderSubscription<Res>, AsyncValue<Res>, FutureProvider<Res>> {
   Future<Res> _future;
 
+  AsyncValue<Res> _state;
   @override
-  AsyncValue<Res> initState() {
+  AsyncValue<Res> get state => _state;
+  set state(AsyncValue<Res> state) {
+    _state = state;
+    $notifyListeners();
+  }
+
+  @override
+  void initState() {
+    // TODO test synchronous future
+    _state = const AsyncValue.loading();
     _future = provider._create(ProviderReference(this));
     _listen();
-
-    return const AsyncValue.loading();
   }
 
   Future<void> _listen() async {
     try {
       final value = await _future;
       if (mounted) {
-        $state = AsyncValue.data(value);
+        state = AsyncValue.data(value);
       }
     } catch (err, stack) {
       if (mounted) {
-        $state = AsyncValue.error(err, stack);
+        state = AsyncValue.error(err, stack);
       }
     }
   }
@@ -83,15 +91,23 @@ class _DebugValueFutureProviderState<Res> extends ProviderBaseState<
     _DebugValueFutureProvider<Res>> {
   final _completer = Completer<Res>();
 
+  AsyncValue<Res> _state;
   @override
-  AsyncValue<Res> initState() {
+  AsyncValue<Res> get state => _state;
+  set state(AsyncValue<Res> state) {
+    _state = state;
+    $notifyListeners();
+  }
+
+  @override
+  void initState() {
     provider._value.when(
       data: _completer.complete,
       loading: () {},
       error: _completer.completeError,
     );
 
-    return provider._value;
+    _state = provider._value;
   }
 
   @override

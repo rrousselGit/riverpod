@@ -32,18 +32,17 @@ abstract class ProviderLink<T> {
   void close();
 }
 
-class ProviderLinkImpl<T> implements ProviderLink<T> {
-  ProviderLinkImpl(this._providerBaseState, this._removeListener);
+class _ProviderLinkImpl<T> implements ProviderLink<T> {
+  _ProviderLinkImpl(this._read, this._removeListener);
 
-  final ProviderBaseState<ProviderBaseSubscription, T,
-      ProviderBase<ProviderBaseSubscription, T>> _providerBaseState;
+  final T Function() _read;
   final VoidCallback _removeListener;
 
   @override
   void close() => _removeListener();
 
   @override
-  T read() => _providerBaseState.$state;
+  T read() => _read();
 }
 
 @immutable
@@ -56,17 +55,12 @@ abstract class ProviderBase<CombiningValue extends ProviderBaseSubscription,
 
   /// The callback may never get called
   // TODO why the value isn't passed to onChange
-  ProviderLinkImpl<ListenedValue> subscribe(
+  ProviderLink<ListenedValue> subscribe(
     ProviderStateOwner owner,
     void Function(ListenedValue Function() read) onChange,
   ) {
     final state = owner._readProviderState(this);
-    final removeListener = state.$addStateListener(
-      (_) => onChange(() => state.$state),
-      fireImmediately: false,
-    );
-
-    return ProviderLinkImpl(state, removeListener);
+    return state.$subscribe(onChange);
   }
 }
 
@@ -81,17 +75,7 @@ abstract class ProviderBaseState<
   var _mounted = true;
   bool get mounted => _mounted;
 
-  ListenedValue _$state;
-  ListenedValue get $state => _$state;
-  set $state(ListenedValue $state) {
-    _$state = $state;
-    if (_stateListeners != null) {
-      for (final listener in _stateListeners) {
-        // TODO guard
-        listener.value($state);
-      }
-    }
-  }
+  ListenedValue get state;
 
   Map<ProviderBase, ProviderBaseSubscription> _dependenciesValueCache;
   final Set<ProviderBaseState> _dependenciesState = {};
@@ -100,7 +84,8 @@ abstract class ProviderBaseState<
   ProviderBase _debugInitialDependOnRequest;
 
   T dependOn<T extends ProviderBaseSubscription>(
-      ProviderBase<T, Object> provider) {
+    ProviderBase<T, Object> provider,
+  ) {
     // verify that we are not in a stack overflow of dependOn calls.
     assert(() {
       if (_debugInitialDependOnRequest == provider) {
@@ -153,11 +138,11 @@ abstract class ProviderBaseState<
   ProviderStateOwner get owner => _owner;
 
   DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
-  LinkedList<_LinkedListEntry<void Function(ListenedValue value)>>
+  LinkedList<_LinkedListEntry<void Function(ListenedValue Function() read)>>
       _stateListeners;
 
   @protected
-  ListenedValue initState();
+  void initState();
 
   CombiningValue createProviderSubscription();
 
@@ -170,18 +155,24 @@ abstract class ProviderBaseState<
     _onDisposeCallbacks.add(cb);
   }
 
-  VoidCallback $addStateListener(
-    void Function(ListenedValue value) listener, {
-    bool fireImmediately = true,
-  }) {
-    if (fireImmediately) {
-      listener($state);
-    }
+  ProviderLink<ListenedValue> $subscribe(
+    void Function(ListenedValue Function() read) listener,
+  ) {
     _stateListeners ??= LinkedList();
     final entry = _LinkedListEntry(listener);
     _stateListeners.add(entry);
-    return entry.unlink;
+    return _ProviderLinkImpl(_read, entry.unlink);
   }
+
+  void $notifyListeners() {
+    if (_stateListeners != null) {
+      for (final listener in _stateListeners) {
+        listener.value(_read);
+      }
+    }
+  }
+
+  ListenedValue _read() => state;
 
   bool get $hasListeners => _stateListeners?.isNotEmpty ?? false;
 
@@ -203,8 +194,7 @@ abstract class AlwaysAliveProvider<
     CombiningValue extends ProviderBaseSubscription,
     ListenedValue> extends ProviderBase<CombiningValue, ListenedValue> {
   ListenedValue readOwner(ProviderStateOwner owner) {
-    final state = owner._readProviderState(this);
-    return state.$state;
+    return owner._readProviderState(this).state;
   }
 
   // Always alive providers can only be overriden by always alive providers

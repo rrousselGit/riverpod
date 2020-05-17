@@ -328,19 +328,27 @@ class TestProvider extends AlwaysAliveProvider<TestProviderValue, int> {
 
 class TestProviderState
     extends ProviderBaseState<TestProviderValue, int, TestProvider> {
+  int _state;
   @override
-  int initState() {
+  int get state => _state;
+  set state(int state) {
+    _state = state;
+    $notifyListeners();
+  }
+
+  @override
+  void initState() {
     provider.onInitState?.call(
       this,
     );
-    return provider.value;
+    _state = provider.value;
   }
 
   @override
   void didUpdateProvider(TestProvider oldProvider) {
     super.didUpdateProvider(oldProvider);
     provider.onDidUpdateProvider?.call(this, oldProvider);
-    $state = provider.value;
+    state = provider.value;
   }
 
   @override
@@ -351,7 +359,7 @@ class TestProviderState
 
   @override
   TestProviderValue createProviderSubscription() {
-    return TestProviderValue($state);
+    return TestProviderValue(state);
   }
 }
 
@@ -366,7 +374,7 @@ class MyImmutableProvider
 class MyImmutableProviderState extends ProviderBaseState<
     ProviderSubscription<int>, int, MyImmutableProvider> {
   @override
-  int initState() {
+  void initState() {
     throw UnimplementedError();
   }
 
@@ -374,4 +382,7 @@ class MyImmutableProviderState extends ProviderBaseState<
   ProviderSubscription<int> createProviderSubscription() {
     throw UnimplementedError();
   }
+
+  @override
+  int get state => throw UnimplementedError();
 }
