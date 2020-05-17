@@ -201,7 +201,7 @@ packages:
       name: flutter_riverpod
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1-pre"
+    version: "0.0.1-pre+1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -241,7 +241,7 @@ packages:
       path: "../../packages/hooks_riverpod"
       relative: true
     source: path
-    version: "0.0.1-pre"
+    version: "0.0.1-pre+1"
   html:
     dependency: transitive
     description:
@@ -395,7 +395,7 @@ packages:
       name: riverpod
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1-pre"
+    version: "0.0.1-pre+1"
   shelf:
     dependency: transitive
     description:

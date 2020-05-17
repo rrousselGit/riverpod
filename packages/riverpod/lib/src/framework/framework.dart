@@ -183,7 +183,6 @@ Changing the kind of override or reordering overrides is not supported.
 
 @visibleForTesting
 extension ReadProviderState on ProviderStateOwner {
-  @visibleForTesting
   ProviderBaseState<CombiningValue, ListeningValue,
           ProviderBase<CombiningValue, ListeningValue>>
       readProviderState<CombiningValue extends ProviderBaseSubscription,
