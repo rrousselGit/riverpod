@@ -98,9 +98,9 @@ packages:
   riverpod:
     dependency: "direct main"
     description:
-      name: riverpod
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../riverpod"
+      relative: true
+    source: path
     version: "0.0.1-pre+1"
   sky_engine:
     dependency: transitive

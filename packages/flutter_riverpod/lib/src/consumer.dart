@@ -24,8 +24,7 @@ class Consumer<T> extends StatefulWidget {
 }
 
 class _ConsumerState<T> extends State<Consumer<T>> {
-  T _state;
-  VoidCallback _removeListener;
+  ProviderLink<T> _subscription;
   ProviderStateOwner _owner;
 
   @override
@@ -34,9 +33,9 @@ class _ConsumerState<T> extends State<Consumer<T>> {
     final owner = ProviderStateOwnerScope.of(context);
     if (_owner != owner) {
       _owner = owner;
-      _removeListener?.call();
-      _removeListener = widget._provider.watchOwner(owner, (value) {
-        setState(() => _state = value);
+      _subscription?.close();
+      _subscription = widget._provider.subscribe(owner, (_) {
+        setState(() {});
       });
     }
   }
@@ -59,12 +58,12 @@ class _ConsumerState<T> extends State<Consumer<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return widget._builder(context, _state, widget._child);
+    return widget._builder(context, _subscription.read(), widget._child);
   }
 
   @override
   void dispose() {
-    _removeListener?.call();
+    _subscription?.close();
     super.dispose();
   }
 }

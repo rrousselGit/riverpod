@@ -17,19 +17,19 @@ void main() {
     expect(provider.readOwner(owner).mounted, isFalse);
   });
 
-  test('provider watchOwner called only once', () {
+  test('provider subscribe the callback is never', () {
     final provider = StateNotifierProvider<TestNotifier, int>((_) {
       return TestNotifier();
     });
     final listener = ControllerListenerMock();
     final owner = ProviderStateOwner();
 
-    provider.watchOwner(owner, listener);
+    final sub = provider.subscribe(owner, (read) => listener(read()));
 
-    verify(listener(argThat(isNotNull))).called(1);
+    expect(sub.read(), isA<TestNotifier>());
     verifyNoMoreInteractions(listener);
 
-    provider.readOwner(owner).increment();
+    sub.read().increment();
 
     verifyNoMoreInteractions(listener);
 
@@ -37,16 +37,16 @@ void main() {
 
     verifyNoMoreInteractions(listener);
   });
-  test('provider watchOwner called only once', () {
+  test('provider subscribe callback never called', () {
     final provider = StateNotifierProvider<TestNotifier, int>((_) {
       return TestNotifier();
     });
     final listener = ListenerMock();
     final owner = ProviderStateOwner();
 
-    provider.value.watchOwner(owner, listener);
+    final sub = provider.value.subscribe(owner, (read) => listener(read()));
 
-    verify(listener(0)).called(1);
+    expect(sub.read(), 0);
     verifyNoMoreInteractions(listener);
 
     provider.readOwner(owner).increment();

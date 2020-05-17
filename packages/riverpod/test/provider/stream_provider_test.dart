@@ -12,15 +12,15 @@ void main() {
 
     expect(provider, isA<AlwaysAliveProvider>());
   });
-  test('watchOwner exposes loading synchronously then value on change', () {
+  test('subscribe exposes loading synchronously then value on change', () {
     final owner = ProviderStateOwner();
     final controller = StreamController<int>(sync: true);
     final provider = StreamProvider((_) => controller.stream);
     final listener = ListenerMock();
 
-    provider.watchOwner(owner, listener);
+    final sub = provider.subscribe(owner, (read) => listener(read()));
 
-    verify(listener(const AsyncValue.loading())).called(1);
+    expect(sub.read(), const AsyncValue<int>.loading());
     verifyNoMoreInteractions(listener);
 
     controller.add(42);
@@ -45,9 +45,9 @@ void main() {
     final error = Error();
     final stack = StackTrace.current;
 
-    provider.watchOwner(owner, listener);
+    final sub = provider.subscribe(owner, (read) => listener(read()));
 
-    verify(listener(const AsyncValue.loading())).called(1);
+    expect(sub.read(), const AsyncValue<int>.loading());
     verifyNoMoreInteractions(listener);
 
     controller.addError(error, stack);
@@ -74,9 +74,9 @@ void main() {
     });
     final listener = ListenerMock();
 
-    provider.watchOwner(owner, listener);
+    final sub = provider.subscribe(owner, (read) => listener(read()));
 
-    verify(listener(const AsyncValue.loading())).called(1);
+    expect(sub.read(), const AsyncValue<int>.loading());
     verifyNoMoreInteractions(listener);
 
     controller.add(42);
@@ -105,9 +105,9 @@ void main() {
       );
       final listener = ListenerMock();
 
-      provider.watchOwner(owner, listener);
+      final sub = provider.subscribe(owner, (read) => listener(read()));
 
-      verify(listener(AsyncValue.data(21)));
+      expect(sub.read(), AsyncValue<int>.data(21));
       verifyNoMoreInteractions(listener);
 
       owner.updateOverrides([
@@ -136,9 +136,9 @@ void main() {
       );
       final listener = ListenerMock();
 
-      provider.watchOwner(owner, listener);
+      final sub = provider.subscribe(owner, (read) => listener(read()));
 
-      verify(listener(AsyncValue.data(21)));
+      expect(sub.read(), AsyncValue<int>.data(21));
       verifyNoMoreInteractions(listener);
       expect(onErrorCallCount, 0);
 
@@ -170,9 +170,9 @@ void main() {
       );
       final listener = ListenerMock();
 
-      provider.watchOwner(owner, listener);
+      final sub = provider.subscribe(owner, (read) => listener(read()));
 
-      verify(listener(AsyncValue.error(expectedError)));
+      expect(sub.read(), AsyncValue<int>.error(expectedError));
       verifyNoMoreInteractions(listener);
       expect(onErrorCallCount, 0);
 

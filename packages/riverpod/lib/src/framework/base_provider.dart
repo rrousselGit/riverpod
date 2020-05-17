@@ -26,6 +26,26 @@ void visitNodesInDependencyOrder(
   nodesToVisit.forEach(recurs);
 }
 
+abstract class ProviderLink<T> {
+  T read();
+
+  void close();
+}
+
+class ProviderLinkImpl<T> implements ProviderLink<T> {
+  ProviderLinkImpl(this._providerBaseState, this._removeListener);
+
+  final ProviderBaseState<ProviderBaseSubscription, T,
+      ProviderBase<ProviderBaseSubscription, T>> _providerBaseState;
+  final VoidCallback _removeListener;
+
+  @override
+  void close() => _removeListener();
+
+  @override
+  T read() => _providerBaseState.$state;
+}
+
 @immutable
 @optionalTypeArgs
 abstract class ProviderBase<CombiningValue extends ProviderBaseSubscription,
@@ -35,12 +55,18 @@ abstract class ProviderBase<CombiningValue extends ProviderBaseSubscription,
       ProviderBase<CombiningValue, ListenedValue>> createState();
 
   /// The callback may never get called
-  VoidCallback watchOwner(
+  // TODO why the value isn't passed to onChange
+  ProviderLinkImpl<ListenedValue> subscribe(
     ProviderStateOwner owner,
-    void Function(ListenedValue value) listener,
+    void Function(ListenedValue Function() read) onChange,
   ) {
     final state = owner._readProviderState(this);
-    return state.$addStateListener(listener);
+    final removeListener = state.$addStateListener(
+      (_) => onChange(() => state.$state),
+      fireImmediately: false,
+    );
+
+    return ProviderLinkImpl(state, removeListener);
   }
 }
 

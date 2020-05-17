@@ -26,9 +26,9 @@ void main() {
 
     final listener = StringListenerMock();
 
-    example.watchOwner(owner, listener);
+    final sub = example.subscribe(owner, (read) => listener(read()));
 
-    verify(listener(const AsyncValue.loading())).called(1);
+    expect(sub.read(), const AsyncValue<int>.loading());
     verifyNoMoreInteractions(listener);
 
     completer.complete(42);
@@ -43,9 +43,10 @@ void main() {
     final listener = ListenerMock();
     final completer = Completer<int>.sync();
 
-    FutureProvider((_) => completer.future).watchOwner(owner, listener);
+    final sub = FutureProvider((_) => completer.future)
+        .subscribe(owner, (read) => listener(read()));
 
-    verify(listener(const AsyncValue.loading())).called(1);
+    expect(sub.read(), const AsyncValue<int>.loading());
     verifyNoMoreInteractions(listener);
 
     completer.complete(42);
@@ -54,18 +55,18 @@ void main() {
     verifyNoMoreInteractions(listener);
     owner.dispose();
   });
-  test('listener watchOwner not called anymore if result function called', () {
+  test('listener not called anymore if subscription is closed', () {
     final owner = ProviderStateOwner();
     final listener = ListenerMock();
     final completer = Completer<int>.sync();
 
-    final removeListener = FutureProvider((_) => completer.future) //
-        .watchOwner(owner, listener);
+    final sub = FutureProvider((_) => completer.future) //
+        .subscribe(owner, (read) => listener(read()));
 
-    verify(listener(const AsyncValue.loading())).called(1);
+    expect(sub.read(), const AsyncValue<int>.loading());
     verifyNoMoreInteractions(listener);
 
-    removeListener();
+    sub.close();
     completer.complete(42);
 
     verifyNoMoreInteractions(listener);

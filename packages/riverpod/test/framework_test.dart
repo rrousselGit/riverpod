@@ -5,15 +5,7 @@ import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 
 void main() {
-  group('onError', () {
-    // TODO error handling initState
-    // TODO error handling didUpdateProvider
-    // TODO error handling dispose
-    // TODO error handling watchOwner callback
-    // TODO error handling ref.onDispose callback
-    // TODO error handling ref.onChange (if any) callback
-    // TODO no onError fallback to zone
-  });
+  // TODO error handling
   test('owner.ref uses the override', () {
     final provider = Provider((_) => 42);
     final owner = ProviderStateOwner();

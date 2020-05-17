@@ -20,9 +20,9 @@ void main() {
     });
     final listener = ListenerMock();
 
-    provider.watchOwner(owner, listener);
+    final sub = provider.subscribe(owner, (read) => listener(read()));
 
-    verify(listener(0)).called(1);
+    expect(sub.read(), 0);
     verifyNoMoreInteractions(listener);
     expect(initialValue, null);
     expect(ref.state, 0);
@@ -35,7 +35,7 @@ void main() {
 
     owner.dispose();
   });
-  test('watchOwner', () {
+  test('subscribe', () {
     final owner = ProviderStateOwner();
     SetStateProviderReference<int> ref;
     final provider = SetStateProvider<int>((r) {
@@ -44,12 +44,12 @@ void main() {
     });
     final listener = ListenerMock();
 
-    final removeListener = provider.watchOwner(owner, listener);
+    final sub = provider.subscribe(owner, (read) => listener(read()));
 
-    verify(listener(0)).called(1);
+    expect(sub.read(), 0);
     verifyNoMoreInteractions(listener);
 
-    removeListener();
+    sub.close();
 
     ref.state++;
 
@@ -80,9 +80,9 @@ void main() {
 
     final listener = ListenerMock();
 
-    combining.watchOwner(owner2, listener);
+    final sub = combining.subscribe(owner2, (read) => listener(read()));
 
-    verify(listener(2)).called(1);
+    expect(sub.read(), 2);
     verifyNoMoreInteractions(listener);
 
     ref.state++;

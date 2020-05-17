@@ -18,3 +18,9 @@ dev_dependencies:
   mockito: ^4.1.0
   flutter_test:
     sdk: flutter
+
+dependency_overrides:
+  flutter_riverpod:
+    path: ../flutter_riverpod
+  riverpod:
+    path: ../riverpod
