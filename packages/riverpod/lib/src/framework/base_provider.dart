@@ -64,6 +64,7 @@ abstract class ProviderBase<CombiningValue extends ProviderBaseSubscription,
   }
 }
 
+// TODO: prefix internal methods with $ and public methods without
 @visibleForOverriding
 @optionalTypeArgs
 abstract class ProviderBaseState<
@@ -75,13 +76,36 @@ abstract class ProviderBaseState<
   var _mounted = true;
   bool get mounted => _mounted;
 
+  @protected
   ListenedValue get state;
 
-  Map<ProviderBase, ProviderBaseSubscription> _dependenciesValueCache;
+  Map<ProviderBase, ProviderBaseSubscription> _dependenciesSubscriptionCache;
   final Set<ProviderBaseState> _dependenciesState = {};
 
   // TODO multiple owners
   ProviderBase _debugInitialDependOnRequest;
+
+  @protected
+  @visibleForTesting
+  P get provider => _provider;
+
+  ProviderStateOwner _owner;
+  ProviderStateOwner get owner => _owner;
+
+  DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
+  LinkedList<_LinkedListEntry<void Function(ListenedValue Function() read)>>
+      _stateListeners;
+
+  bool get $hasListeners => _stateListeners?.isNotEmpty ?? false;
+
+  @protected
+  void initState();
+
+  CombiningValue createProviderSubscription();
+
+  @mustCallSuper
+  @protected
+  void didUpdateProvider(P oldProvider) {}
 
   T dependOn<T extends ProviderBaseSubscription>(
     ProviderBase<T, Object> provider,
@@ -94,10 +118,10 @@ abstract class ProviderBaseState<
       _debugInitialDependOnRequest ??= provider;
       return true;
     }(), '');
-    _dependenciesValueCache ??= {};
+    _dependenciesSubscriptionCache ??= {};
 
     try {
-      return _dependenciesValueCache.putIfAbsent(provider, () {
+      return _dependenciesSubscriptionCache.putIfAbsent(provider, () {
         final targetProviderState = _owner._readProviderState(provider);
 
         // verify that the new dependency doesn't depend on "this".
@@ -130,26 +154,6 @@ abstract class ProviderBaseState<
     }
   }
 
-  @protected
-  @visibleForTesting
-  P get provider => _provider;
-
-  ProviderStateOwner _owner;
-  ProviderStateOwner get owner => _owner;
-
-  DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
-  LinkedList<_LinkedListEntry<void Function(ListenedValue Function() read)>>
-      _stateListeners;
-
-  @protected
-  void initState();
-
-  CombiningValue createProviderSubscription();
-
-  @mustCallSuper
-  @protected
-  void didUpdateProvider(P oldProvider) {}
-
   void onDispose(VoidCallback cb) {
     _onDisposeCallbacks ??= DoubleLinkedQueue();
     _onDisposeCallbacks.add(cb);
@@ -173,8 +177,6 @@ abstract class ProviderBaseState<
   }
 
   ListenedValue _read() => state;
-
-  bool get $hasListeners => _stateListeners?.isNotEmpty ?? false;
 
   void dispose() {
     if (_onDisposeCallbacks != null) {

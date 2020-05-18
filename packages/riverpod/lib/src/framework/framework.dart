@@ -205,6 +205,8 @@ abstract class ProviderBaseSubscription {
   void dispose() {}
 }
 
+class ProviderBaseSubscriptionImpl extends ProviderBaseSubscription {}
+
 /// A provider is somehow dependending on itself
 class CircularDependencyError extends Error {
   CircularDependencyError._();
@@ -226,7 +228,8 @@ class ProviderReference {
   }
 
   T dependOn<T extends ProviderBaseSubscription>(
-      ProviderBase<T, Object> provider) {
+    ProviderBase<T, Object> provider,
+  ) {
     assert(
       mounted,
       '`dependOn` was called on a state that is already disposed',
