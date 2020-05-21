@@ -146,18 +146,22 @@ and that the community likes it, [provider] will still be maintained.
 - Owner.updateParent should be removed !important
 - remove onError and implement true error mechanism
 - StreamProvider.overrideWithValue debug-only
+- StreamProvider expose a Future<Data> for last valid value
 - FutureChangeNotifier
 - FutureStateNotifier
 - AutoDispose
+- Selector
+- Computed
 - overrideForSubtree AutoDispose
 - Dartdoc for all public APIs
 - review all public APIs
 - README for all packages
 - debugFillProperties
-- Selector
 - CI
 - provider.watchRef?
 - Packages description/homepage
+- Prevent modifying parents from children (provider -> provider)
+- Prevent modifying parents from children (widget -> provider)
 
 Marvel example:
 
@@ -168,10 +172,23 @@ Marvel example:
 
 riverpod.dev
 
+- concepts
+
+  - Provider
+
+    - You can think of providers as streams.\
+      But providers are readable synchronously and they have
+      a built-in way to combine providers with other providers.
+
+      Similarly, the behavior of a provider can be overriden,
+      for testing purposes or objects depending on a provider
+      more reusable.
+
 - Combining providers
 - Filtering rebuilds
 - Testing (without flutter, mocking FutureProvider)
 - How it works
+- cookbook configurations that change over time
 
 [provider]: https://github.com/rrousselGit/provider
 [riverpod]: https://github.com/rrousselGit/river_pod

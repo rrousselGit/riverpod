@@ -28,7 +28,7 @@ class _ChangeNotifierProviderState<T extends ChangeNotifier>
   @override
   void initState() {
     state = provider._create(ProviderReference(this))
-      ..addListener($notifyListeners);
+      ..addListener(markNeedsNotifyListeners);
   }
 
   @override
@@ -39,7 +39,7 @@ class _ChangeNotifierProviderState<T extends ChangeNotifier>
   @override
   void dispose() {
     state
-      ..removeListener($notifyListeners)
+      ..removeListener(markNeedsNotifyListeners)
       ..dispose();
     super.dispose();
   }

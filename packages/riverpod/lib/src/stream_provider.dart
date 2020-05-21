@@ -36,7 +36,7 @@ class _StreamProviderState<T> extends ProviderBaseState<
   AsyncValue<T> get state => _state;
   set state(AsyncValue<T> state) {
     _state = state;
-    $notifyListeners();
+    markNeedsNotifyListeners();
   }
 
   @override
@@ -95,7 +95,7 @@ class _ValueStreamProviderState<T> extends ProviderBaseState<
   AsyncValue<T> get state => _state;
   set state(AsyncValue<T> state) {
     _state = state;
-    $notifyListeners();
+    markNeedsNotifyListeners();
   }
 
   @override

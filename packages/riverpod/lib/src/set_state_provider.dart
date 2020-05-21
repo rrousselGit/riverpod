@@ -29,7 +29,7 @@ class _SetStateProviderState<T> extends ProviderBaseState<
   T get state => _state;
   set state(T state) {
     _state = state;
-    $notifyListeners();
+    markNeedsNotifyListeners();
   }
 
   @override

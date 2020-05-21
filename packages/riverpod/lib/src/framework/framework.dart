@@ -60,37 +60,6 @@ class ProviderStateOwner {
     };
   }
 
-  ProviderBaseState<ProviderBaseSubscription, T,
-      ProviderBase<ProviderBaseSubscription, T>> _putIfAbsent<T>(
-    ProviderBase<ProviderBaseSubscription, T> provider, {
-    ProviderBase origin,
-  }) {
-    final key = origin ?? provider;
-
-    final localState = _providerState[key];
-    if (localState != null) {
-      return localState as ProviderBaseState<ProviderBaseSubscription, T,
-          ProviderBase<ProviderBaseSubscription, T>>;
-    }
-
-    final state = _createProviderState(provider)..initState();
-
-    _providerState[key] = state;
-
-    return state;
-  }
-
-  ProviderBaseState<CombiningValue, ListeningValue,
-          ProviderBase<CombiningValue, ListeningValue>>
-      _createProviderState<CombiningValue extends ProviderBaseSubscription,
-          ListeningValue>(
-    ProviderBase<CombiningValue, ListeningValue> provider,
-  ) {
-    return provider.createState()
-      .._provider = provider
-      .._owner = this;
-  }
-
   void updateOverrides(List<ProviderOverride> overrides) {
     final oldOverrides = _overrides;
     _overrides = overrides;
@@ -153,17 +122,6 @@ Changing the kind of override or reordering overrides is not supported.
     );
   }
 
-  ProviderBaseState<CombiningValue, ListeningValue,
-          ProviderBase<CombiningValue, ListeningValue>>
-      _readProviderState<CombiningValue extends ProviderBaseSubscription,
-          ListeningValue>(
-    ProviderBase<CombiningValue, ListeningValue> provider,
-  ) {
-    final result = _stateReaders[provider]?.call() ?? _fallback(provider);
-    return result as ProviderBaseState<CombiningValue, ListeningValue,
-        ProviderBase<CombiningValue, ListeningValue>>;
-  }
-
   void dispose() {
     if (_dependencies != null) {
       for (final value in _dependencies.values) {
@@ -177,6 +135,52 @@ Changing the kind of override or reordering overrides is not supported.
         _onError?.call(err, stack);
       }
     });
+  }
+
+  void _scheduleUpdate() {
+    
+  }
+
+  ProviderBaseState<ProviderBaseSubscription, T,
+      ProviderBase<ProviderBaseSubscription, T>> _putIfAbsent<T>(
+    ProviderBase<ProviderBaseSubscription, T> provider, {
+    ProviderBase origin,
+  }) {
+    final key = origin ?? provider;
+
+    final localState = _providerState[key];
+    if (localState != null) {
+      return localState as ProviderBaseState<ProviderBaseSubscription, T,
+          ProviderBase<ProviderBaseSubscription, T>>;
+    }
+
+    final state = _createProviderState(provider)..initState();
+
+    _providerState[key] = state;
+
+    return state;
+  }
+
+  ProviderBaseState<CombiningValue, ListeningValue,
+          ProviderBase<CombiningValue, ListeningValue>>
+      _createProviderState<CombiningValue extends ProviderBaseSubscription,
+          ListeningValue>(
+    ProviderBase<CombiningValue, ListeningValue> provider,
+  ) {
+    return provider.createState()
+      .._provider = provider
+      .._owner = this;
+  }
+
+  ProviderBaseState<CombiningValue, ListeningValue,
+          ProviderBase<CombiningValue, ListeningValue>>
+      _readProviderState<CombiningValue extends ProviderBaseSubscription,
+          ListeningValue>(
+    ProviderBase<CombiningValue, ListeningValue> provider,
+  ) {
+    final result = _stateReaders[provider]?.call() ?? _fallback(provider);
+    return result as ProviderBaseState<CombiningValue, ListeningValue,
+        ProviderBase<CombiningValue, ListeningValue>>;
   }
 }
 

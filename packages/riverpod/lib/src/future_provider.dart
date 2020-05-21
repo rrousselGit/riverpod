@@ -38,7 +38,7 @@ class _FutureProviderState<Res> extends ProviderBaseState<
   AsyncValue<Res> get state => _state;
   set state(AsyncValue<Res> state) {
     _state = state;
-    $notifyListeners();
+    markNeedsNotifyListeners();
   }
 
   @override
@@ -96,7 +96,7 @@ class _DebugValueFutureProviderState<Res> extends ProviderBaseState<
   AsyncValue<Res> get state => _state;
   set state(AsyncValue<Res> state) {
     _state = state;
-    $notifyListeners();
+    markNeedsNotifyListeners();
   }
 
   @override

@@ -71,6 +71,8 @@ abstract class ProviderBaseState<
     CombiningValue extends ProviderBaseSubscription,
     ListenedValue extends Object,
     P extends ProviderBase<CombiningValue, ListenedValue>> {
+  var _dirty = false;
+
   P _provider;
 
   var _mounted = true;
@@ -168,12 +170,17 @@ abstract class ProviderBaseState<
     return _ProviderLinkImpl(_read, entry.unlink);
   }
 
-  void $notifyListeners() {
+  void _notifyListeners() {
     if (_stateListeners != null) {
       for (final listener in _stateListeners) {
         listener.value(_read);
       }
     }
+  }
+
+  void markNeedsNotifyListeners() {
+    _dirty = true;
+    owner._scheduleUpdate();
   }
 
   ListenedValue _read() => state;
