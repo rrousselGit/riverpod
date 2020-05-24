@@ -4,6 +4,9 @@ import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test("don't schedule new listeners synchronously", () {
+// TODO:
+  });
   test('disposes the notifier when provider is unmounted', () {
     final provider = StateNotifierProvider<TestNotifier, int>((_) {
       return TestNotifier();

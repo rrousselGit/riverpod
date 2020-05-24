@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework/framework.dart' show AlwaysAliveProvider;
@@ -99,11 +98,11 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       Object error;
-      runWithErrorHandler(
-        run: () => owner.updateOverrides([
+      runZonedGuarded(
+        () => owner.updateOverrides([
           provider.debugOverrideFromValue(AsyncValue.data(21)),
         ]),
-        onError: (err) => error = err,
+        (err, _) => error = err,
       );
 
       verifyNoMoreInteractions(listener);
@@ -125,11 +124,11 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       Object error;
-      runWithErrorHandler(
-        run: () => owner.updateOverrides([
+      runZonedGuarded(
+        () => owner.updateOverrides([
           provider.debugOverrideFromValue(AsyncValue.error(21)),
         ]),
-        onError: (err) => error = err,
+        (err, _) => error = err,
       );
 
       verifyNoMoreInteractions(listener);
@@ -151,11 +150,11 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       Object error;
-      runWithErrorHandler(
-        run: () => owner.updateOverrides([
+      runZonedGuarded(
+        () => owner.updateOverrides([
           provider.debugOverrideFromValue(const AsyncValue.loading()),
         ]),
-        onError: (err) => error = err,
+        (err, _) => error = err,
       );
 
       verifyNoMoreInteractions(listener);
@@ -252,11 +251,11 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       Object error;
-      runWithErrorHandler(
-        run: () => owner.updateOverrides([
+      runZonedGuarded(
+        () => owner.updateOverrides([
           provider.debugOverrideFromValue(AsyncValue.error(21, stackTrace)),
         ]),
-        onError: (err) => error = err,
+        (err, _) => error = err,
       );
 
       expect(error, isUnsupportedError);
@@ -279,12 +278,12 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       Object error;
-      runWithErrorHandler(
-        run: () => owner.updateOverrides([
+      runZonedGuarded(
+        () => owner.updateOverrides([
           provider
               .debugOverrideFromValue(AsyncValue.error(42, StackTrace.current)),
         ]),
-        onError: (err) => error = err,
+        (err, _) => error = err,
       );
 
       expect(error, isUnsupportedError);
@@ -307,11 +306,11 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       Object error;
-      runWithErrorHandler(
-        run: () => owner.updateOverrides([
+      runZonedGuarded(
+        () => owner.updateOverrides([
           provider.debugOverrideFromValue(AsyncValue.data(42)),
         ]),
-        onError: (err) => error = err,
+        (err, _) => error = err,
       );
 
       expect(error, isUnsupportedError);
@@ -334,30 +333,17 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       Object error;
-      runWithErrorHandler(
-        run: () => owner.updateOverrides([
+      runZonedGuarded(
+        () => owner.updateOverrides([
           provider.debugOverrideFromValue(const AsyncValue.loading()),
         ]),
-        onError: (err) => error = err,
+        (err, _) => error = err,
       );
 
       expect(error, isUnsupportedError);
       verifyNoMoreInteractions(listener);
     });
   });
-}
-
-void runWithErrorHandler({
-  @required void Function() run,
-  @required void Function(Object error) onError,
-}) {
-  Zone.current.fork(
-    specification: ZoneSpecification(
-      handleUncaughtError: (self, parent, zone, err, stack) {
-        onError(err);
-      },
-    ),
-  ).run(run);
 }
 
 class ListenerMock extends Mock {

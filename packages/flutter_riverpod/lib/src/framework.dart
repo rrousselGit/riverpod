@@ -23,11 +23,7 @@ class ProviderScope extends StatefulWidget {
 
 class _ProviderScopeState extends State<ProviderScope> {
   ProviderStateOwner _owner;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  var _dirty = false;
 
   @override
   void didUpdateWidget(ProviderScope oldWidget) {
@@ -46,6 +42,7 @@ class _ProviderScopeState extends State<ProviderScope> {
     _owner ??= ProviderStateOwner(
       parent: ancestorOwner,
       overrides: widget.overrides,
+      markNeedsUpdate: () => setState(() => _dirty = true),
       // TODO How to report to FlutterError?
       // onError: (dynamic error, stack) {
       //   FlutterError.reportError(
@@ -61,6 +58,11 @@ class _ProviderScopeState extends State<ProviderScope> {
 
   @override
   Widget build(BuildContext context) {
+    if (_dirty) {
+      // TODO test
+      _dirty = false;
+      _owner.updateOverrides();
+    }
     return ProviderStateOwnerScope(
       owner: _owner,
       child: widget.child,

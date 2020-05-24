@@ -53,7 +53,10 @@ class _ProviderStateReader {
 
     // the state position in _providerStatesSortedByDepth will get updated as
     // dependOn is called.
-    _providerState.initState();
+    _providerState
+      ..initState()
+      // ignore calls to markNeedNotifyListeners inside initState
+      .._dirty = false;
 
     return _providerState;
   }
@@ -63,7 +66,8 @@ class ProviderStateOwner {
   ProviderStateOwner({
     ProviderStateOwner parent,
     List<ProviderOverride> overrides = const [],
-  }) {
+    VoidCallback markNeedsUpdate,
+  }) : _markNeedsUpdate = markNeedsUpdate {
     assert(() {
       _debugOverrides = overrides;
       return true;
@@ -92,6 +96,7 @@ class ProviderStateOwner {
     };
   }
 
+  final VoidCallback _markNeedsUpdate;
   List<ProviderOverride> _debugOverrides;
   final _overrideForProvider = <ProviderBase, ProviderBase>{};
   final _providerStatesSortedByDepth =
@@ -175,23 +180,20 @@ Changing the kind of override or reordering overrides is not supported.
   void _scheduleNotification() {
     if (!_updateScheduled) {
       _updateScheduled = true;
-      // TODO flush dirty at the end of the event loop of they weren't flushed before
-      // Future.microtask(() {
-      //   _updateScheduled = false;
-
-      // });
+      _markNeedsUpdate?.call();
     }
   }
 
   void _notifyListeners() {
+    // TODO: can't dirty nodes that were already traversed
     for (final entry in _providerStatesSortedByDepth) {
       if (entry.value._dirty) {
         entry.value
-          // TODO test _dirty = false
           .._dirty = false
           .._notifyListeners();
       }
     }
+    _updateScheduled = false;
   }
 
   ProviderBaseState<CombiningValue, ListeningValue,

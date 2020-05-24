@@ -69,7 +69,7 @@ void main() {
   test('subscribe', () {
     final owner = ProviderStateOwner();
     final provider = Provider((_) => 42);
-    
+
     int value;
     var callCount = 0;
 

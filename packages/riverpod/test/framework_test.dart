@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
@@ -298,6 +296,119 @@ void main() {
   });
 
   group('notify listeners', () {
+    test('calls markNeedsUpdate at most once until update is called', () {
+      final rootNeedsUpdate = MockMarkNeedsUpdate();
+      final ownerNeedsUpdate = MockMarkNeedsUpdate();
+      final counter = Counter();
+      final provider = StateNotifierProvider<Counter, int>((_) => counter);
+      final root = ProviderStateOwner(markNeedsUpdate: rootNeedsUpdate);
+      final owner = ProviderStateOwner(
+        parent: root,
+        markNeedsUpdate: ownerNeedsUpdate,
+        overrides: [
+          provider.overrideForSubtree(provider),
+          provider.value.overrideForSubtree(provider.value),
+        ],
+      );
+      final listener = ListenerMock();
+
+      provider.value.watchOwner(owner, listener);
+
+      verify(listener(0)).called(1);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(rootNeedsUpdate);
+      verifyNoMoreInteractions(ownerNeedsUpdate);
+
+      counter.increment();
+
+      verify(ownerNeedsUpdate()).called(1);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(rootNeedsUpdate);
+      verifyNoMoreInteractions(ownerNeedsUpdate);
+
+      counter.increment();
+
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(rootNeedsUpdate);
+      verifyNoMoreInteractions(ownerNeedsUpdate);
+
+      owner.updateOverrides();
+
+      verify(listener(2)).called(1);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(rootNeedsUpdate);
+      verifyNoMoreInteractions(ownerNeedsUpdate);
+
+      counter.increment();
+
+      verify(ownerNeedsUpdate()).called(1);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(rootNeedsUpdate);
+      verifyNoMoreInteractions(ownerNeedsUpdate);
+    });
+    test('noop inside initState', () {
+      final rootNeedsUpdate = MockMarkNeedsUpdate();
+      final ownerNeedsUpdate = MockMarkNeedsUpdate();
+      final provider = TestProvider((ref) {});
+      final root = ProviderStateOwner(markNeedsUpdate: rootNeedsUpdate);
+      final owner = ProviderStateOwner(
+        parent: root,
+        markNeedsUpdate: ownerNeedsUpdate,
+        overrides: [
+          provider.overrideForSubtree(provider),
+        ],
+      );
+      TestProviderState state;
+      when(provider.onInitState(any)).thenAnswer((i) {
+        state = i.positionalArguments.first as TestProviderState;
+
+        expect(state.dirty, true);
+        state..markNeedsNotifyListeners()..markNeedsNotifyListeners();
+      });
+      final listener = ListenerMock();
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(null)).called(1);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(rootNeedsUpdate);
+      verifyNoMoreInteractions(ownerNeedsUpdate);
+      expect(state.dirty, false);
+
+      owner.updateOverrides();
+
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(rootNeedsUpdate);
+      verifyNoMoreInteractions(ownerNeedsUpdate);
+      expect(state.dirty, false);
+    });
+    test('noop if no provider was "dirty"', () {
+      final counter = Counter();
+      final provider = StateNotifierProvider<Counter, int>((_) => counter);
+      final owner = ProviderStateOwner();
+      final listener = ListenerMock();
+
+      provider.value.watchOwner(owner, listener);
+
+      verify(listener(0)).called(1);
+      verifyNoMoreInteractions(listener);
+
+      owner.updateOverrides();
+      verifyNoMoreInteractions(listener);
+
+      counter..increment()..increment();
+
+      verifyNoMoreInteractions(listener);
+
+      owner.updateOverrides();
+
+      verify(listener(2)).called(1);
+      verifyNoMoreInteractions(listener);
+
+      owner.updateOverrides();
+
+      verifyNoMoreInteractions(listener);
+    });
     test('updateOverrides first update providers then dispatch notifications',
         () {
       final futureProvider = FutureProvider((_) async => 0);
@@ -421,8 +532,16 @@ class OnDisposeMock extends Mock {
   void call();
 }
 
+class MockMarkNeedsUpdate extends Mock {
+  void call();
+}
+
 class MockDidUpdateProvider extends Mock {
   void call();
+}
+
+class MockInitState<T> extends Mock {
+  void call(TestProviderState<T> state);
 }
 
 class MockOnValueDispose<T> extends Mock {
@@ -446,6 +565,7 @@ class TestProvider<T> extends AlwaysAliveProvider<TestProviderValue<T>, T> {
   TestProvider(this.create);
 
   final T Function(ProviderReference ref) create;
+  final MockInitState<T> onInitState = MockInitState();
   final MockDidUpdateProvider onDidUpdateProvider = MockDidUpdateProvider();
   final MockOnValueDispose<T> onValueDispose = MockOnValueDispose();
 
@@ -461,6 +581,12 @@ class TestProviderState<T>
   T state;
 
   @override
+  void initState() {
+    provider.onInitState(this);
+    state = provider.create(ProviderReference(this));
+  }
+
+  @override
   void didUpdateProvider(TestProvider<T> oldProvider) {
     super.didUpdateProvider(oldProvider);
     provider.onDidUpdateProvider?.call();
@@ -469,10 +595,5 @@ class TestProviderState<T>
   @override
   TestProviderValue<T> createProviderSubscription() {
     return TestProviderValue<T>(state, onDispose: provider.onValueDispose);
-  }
-
-  @override
-  void initState() {
-    state = provider.create(ProviderReference(this));
   }
 }

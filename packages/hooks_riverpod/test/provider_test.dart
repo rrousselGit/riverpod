@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mockito/mockito.dart';
@@ -154,7 +156,11 @@ void main() {
     verifyZeroInteractions(dispose2);
     verifyZeroInteractions(dispose3);
 
-    await tester.pumpWidget(Container());
+    final errors = <Object>[];
+    await runZonedGuarded(
+      () => tester.pumpWidget(Container()),
+      (err, _) => errors.add(err),
+    );
 
     verifyInOrder([
       dispose1(),
@@ -165,7 +171,7 @@ void main() {
     verifyNoMoreInteractions(dispose2);
     verifyNoMoreInteractions(dispose3);
 
-    expect(tester.takeException(), error2);
+    expect(errors, [error2]);
   });
 
   testWidgets('expose value as is', (tester) async {

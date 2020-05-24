@@ -24,10 +24,11 @@ class _BaseProviderHook<T> extends Hook<T> {
 }
 
 class _BaseProviderHookState<T> extends HookState<T, _BaseProviderHook<T>> {
-  ProviderLink<T> _subscription;
+  VoidCallback _removeListener;
+  T _value;
 
   @override
-  T build(BuildContext context) => _subscription.read();
+  T build(BuildContext context) => _value;
 
   @override
   void initHook() {
@@ -36,9 +37,9 @@ class _BaseProviderHookState<T> extends HookState<T, _BaseProviderHook<T>> {
   }
 
   void _listen() {
-    _subscription?.close();
-    _subscription = hook._provider.subscribe(hook._owner, (value) {
-      setState(() {});
+    _removeListener?.call();
+    _removeListener = hook._provider.watchOwner(hook._owner, (value) {
+      setState(() => _value = value);
     });
   }
 
@@ -63,7 +64,7 @@ class _BaseProviderHookState<T> extends HookState<T, _BaseProviderHook<T>> {
 
   @override
   void dispose() {
-    _subscription?.close();
+    _removeListener?.call();
     super.dispose();
   }
 }

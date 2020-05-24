@@ -217,16 +217,21 @@ void main() {
       expect(completed, true);
       await expectLater(future, completion(42));
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            futureProvider.debugOverrideFromValue(AsyncValue.data(21)),
-          ],
-          child: child,
+      final errors = <Object>[];
+
+      await runZonedGuarded(
+        () => tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              futureProvider.debugOverrideFromValue(AsyncValue.data(21)),
+            ],
+            child: child,
+          ),
         ),
+        (err, _) => errors.add(err),
       );
 
-      expect(tester.takeException(), isUnsupportedError);
+      expect(errors, [isUnsupportedError]);
     });
     testWidgets(
         'fails if completed with error and rebuild with different content',
@@ -244,16 +249,20 @@ void main() {
       expect(completed, true);
       await expectLater(future, throwsA(error));
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            futureProvider.debugOverrideFromValue(AsyncValue.data(21)),
-          ],
-          child: child,
+      final errors = <Object>[];
+      await runZonedGuarded(
+        () => tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              futureProvider.debugOverrideFromValue(AsyncValue.data(21)),
+            ],
+            child: child,
+          ),
         ),
+        (err, _) => errors.add(err),
       );
 
-      expect(tester.takeException(), isUnsupportedError);
+      expect(errors, [isUnsupportedError]);
     });
     testWidgets(
         'FutureProviderSubscription.future completes on rebuild with data',

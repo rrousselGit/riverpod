@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -89,9 +91,14 @@ Changing the kind of override or reordering overrides is not supported.
         ),
       );
 
-      await tester.pumpWidget(Container());
+      final errors = <Object>[];
 
-      expect(tester.takeException(), error2);
+      await runZonedGuarded(
+        () => tester.pumpWidget(Container()),
+        (err, _) => errors.add(err),
+      );
+
+      expect(errors, [error2]);
       verify(provider.onDispose(argThat(isNotNull))).called(1);
       verify(provider2.onDispose(argThat(isNotNull))).called(1);
       verify(provider3.onDispose(argThat(isNotNull))).called(1);

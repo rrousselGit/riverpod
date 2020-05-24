@@ -194,6 +194,10 @@ riverpod.dev
 - How it works
 - cookbook configurations that change over time
 
+Linter:
+
+- When overriding `StateNotifierProvider` on a non-root `ProviderStateOwner`, warn if the `.value` wasn't overriden too.
+
 [provider]: https://github.com/rrousselGit/provider
 [riverpod]: https://github.com/rrousselGit/river_pod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks

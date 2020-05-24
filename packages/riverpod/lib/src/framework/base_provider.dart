@@ -32,7 +32,8 @@ abstract class ProviderBaseState<
   var _depth = 0;
   int get depth => _depth;
 
-  var _dirty = false;
+  // ignore calls to markNeedNotifyListeners inside initState
+  var _dirty = true;
   bool get dirty => _dirty;
 
   P _provider;
@@ -192,8 +193,10 @@ abstract class ProviderBaseState<
   }
 
   void markNeedsNotifyListeners() {
-    _dirty = true;
-    owner._scheduleNotification();
+    if (_dirty == false) {
+      _dirty = true;
+      owner._scheduleNotification();
+    }
   }
 
   void dispose() {
