@@ -8,8 +8,7 @@ export 'src/provider.dart' show Provider, ProviderSubscription;
 export 'src/set_state_provider.dart'
     show
         SetStateProvider,
-        SetStateProviderReference,
-        SetStateProviderSubscription;
+        SetStateProviderReference;
 export 'src/state_notifier_provider.dart' show StateNotifierProvider;
 export 'src/stream_provider.dart'
     show StreamProvider, StreamProviderSubscription;

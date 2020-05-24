@@ -20,9 +20,9 @@ void main() {
     });
     final listener = ListenerMock();
 
-    final sub = provider.subscribe(owner, (read) => listener(read()));
+    provider.watchOwner(owner, listener);
 
-    expect(sub.read(), 0);
+    verify(listener(0)).called(1);
     verifyNoMoreInteractions(listener);
     expect(initialValue, null);
     expect(ref.state, 0);
@@ -30,6 +30,10 @@ void main() {
     ref.state++;
 
     expect(ref.state, 1);
+
+    verifyNoMoreInteractions(listener);
+    owner.updateOverrides();
+
     verify(listener(1)).called(1);
     verifyNoMoreInteractions(listener);
 
@@ -44,14 +48,17 @@ void main() {
     });
     final listener = ListenerMock();
 
-    final sub = provider.subscribe(owner, (read) => listener(read()));
+    final removeListener = provider.watchOwner(owner, listener);
 
-    expect(sub.read(), 0);
+    verify(listener(0)).called(1);
     verifyNoMoreInteractions(listener);
 
-    sub.close();
+    removeListener();
 
     ref.state++;
+
+    verifyNoMoreInteractions(listener);
+    owner.updateOverrides();
 
     verifyNoMoreInteractions(listener);
     owner.dispose();
@@ -80,9 +87,9 @@ void main() {
 
     // final listener = ListenerMock();
 
-    // final sub = combining.subscribe(owner2, (read) => listener(read()));
+    // final removeListener = combining.subscribe(owner2, (read) => listener(read()));
 
-    // expect(sub.read(), 2);
+    // verify(listener(2)).called(1);
     // verifyNoMoreInteractions(listener);
 
     // ref.state++;

@@ -147,6 +147,7 @@ and that the community likes it, [provider] will still be maintained.
 - remove onError and implement true error mechanism
 - StreamProvider.overrideWithValue debug-only
 - StreamProvider expose a Future<Data> for last valid value
+- Cannot add dependencies during dispatching
 - FutureChangeNotifier
 - FutureStateNotifier
 - AutoDispose
@@ -162,6 +163,9 @@ and that the community likes it, [provider] will still be maintained.
 - Packages description/homepage
 - Prevent modifying parents from children (provider -> provider)
 - Prevent modifying parents from children (widget -> provider)
+- DateTime provider
+- Make a common interface between ProviderSubscriptions? (So that we can assign Provider to SetStateProvider)
+- Should some asserts be changed to exceptions in release?
 
 Marvel example:
 

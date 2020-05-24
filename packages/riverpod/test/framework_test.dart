@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
+import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 
 void main() {
   // TODO error handling
+  // TODO owner life-cycles are unusuable after dispose
   test('owner.ref uses the override', () {
     final provider = Provider((_) => 42);
     final owner = ProviderStateOwner();
@@ -292,6 +296,125 @@ void main() {
     expect(() => ref.onDispose(() {}), throwsA(isA<AssertionError>()));
     expect(() => ref.dependOn(other), throwsA(isA<AssertionError>()));
   });
+
+  group('notify listeners', () {
+    test('updateOverrides first update providers then dispatch notifications',
+        () {
+      final futureProvider = FutureProvider((_) async => 0);
+      final owner = ProviderStateOwner(overrides: [
+        futureProvider.debugOverrideFromValue(const AsyncValue.loading()),
+      ]);
+      final listener = AsyncListenerMock();
+
+      futureProvider.watchOwner(owner, listener);
+
+      verify(listener(const AsyncValue.loading())).called(1);
+      verifyNoMoreInteractions(listener);
+
+      owner.updateOverrides([
+        futureProvider.debugOverrideFromValue(AsyncValue.data(42)),
+      ]);
+
+      verify(listener(AsyncValue.data(42))).called(1);
+      verifyNoMoreInteractions(listener);
+    });
+    test('on updateOverrides`', () async {
+      final owner = ProviderStateOwner();
+      final counter = Counter();
+      final provider = StateNotifierProvider<Counter, int>((_) => counter);
+      final listener = ListenerMock();
+
+      provider.value.watchOwner(owner, listener);
+
+      verify(listener(0)).called(1);
+      verifyNoMoreInteractions(listener);
+
+      counter.increment();
+      verifyNoMoreInteractions(listener);
+
+      counter.increment();
+      verifyNoMoreInteractions(listener);
+
+      owner.updateOverrides();
+
+      verify(listener(2)).called(1);
+      verifyNoMoreInteractions(listener);
+    });
+    test('in dependency order', () async {
+      final owner = ProviderStateOwner();
+      final counter = Counter();
+      final counter2 = Counter();
+      final counter3 = Counter();
+
+      final provider = StateNotifierProvider<Counter, int>((_) => counter);
+      final provider2 = StateNotifierProvider<Counter, int>((ref) {
+        ref.dependOn(provider);
+        return counter2;
+      });
+      final provider3 = StateNotifierProvider<Counter, int>((ref) {
+        ref.dependOn(provider2);
+        return counter3;
+      });
+
+      final listener = ListenerMock('first');
+      final listener2 = ListenerMock('second');
+      final listener3 = ListenerMock('third');
+
+      provider3.value.watchOwner(owner, listener3);
+      provider2.value.watchOwner(owner, listener2);
+      provider.value.watchOwner(owner, listener);
+
+      verify(listener(0)).called(1);
+      verifyNoMoreInteractions(listener);
+      verify(listener2(0)).called(1);
+      verifyNoMoreInteractions(listener2);
+      verify(listener3(0)).called(1);
+      verifyNoMoreInteractions(listener3);
+
+      counter3.increment();
+      counter2.increment();
+      counter.increment();
+
+      owner.updateOverrides();
+
+      verifyInOrder([
+        listener(1),
+        listener2(1),
+        listener3(1),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+      verifyNoMoreInteractions(listener3);
+    });
+    test('in dependency order cross owner', () {
+// TODO
+    });
+  });
+}
+
+class AsyncListenerMock extends Mock {
+  void call(AsyncValue<int> value);
+}
+
+class ListenerMock extends Mock {
+  ListenerMock([this.debugLabel]);
+  final String debugLabel;
+
+  void call(int value);
+
+  @override
+  String toString() {
+    if (debugLabel != null) {
+      return debugLabel;
+    }
+    return super.toString();
+  }
+}
+
+class Counter extends StateNotifier<int> {
+  Counter() : super(0);
+
+  void increment() => state++;
 }
 
 class OnDisposeMock extends Mock {

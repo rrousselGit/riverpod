@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:meta/meta.dart';
 
@@ -16,160 +18,180 @@ typedef _FallbackProviderStateReader = ProviderBaseState<
     Function<T>(
   ProviderBase<ProviderBaseSubscription, T>,
 );
-// ignore: avoid_private_typedef_functions
-typedef _ProviderStateReader = ProviderBaseState<ProviderBaseSubscription,
-        Object, ProviderBase<ProviderBaseSubscription, Object>>
-    Function();
 
 final _refProvider = Provider((c) => c);
+
+class _ProviderStateReader {
+  _ProviderStateReader(this._origin, this._owner);
+
+  final ProviderBase _origin;
+  final ProviderStateOwner _owner;
+  ProviderBaseState _providerState;
+
+  ProviderBaseState read() {
+    // TODO: test adding dependency on a provider from a different owner add the state to the proper owner
+    if (_providerState != null) {
+      return _providerState;
+    }
+    final override = _owner._overrideForProvider[_origin] ?? _origin;
+
+    _providerState = override.createState()
+      .._provider = override
+      .._owner = _owner;
+
+    assert(
+      _providerState._dependenciesState.isEmpty,
+      'Cannot add dependencies before `initState`',
+    );
+    // Insert in the beginning of the sorted by depth list, because the provider
+    // doesn't have any depth yet.
+    // The insertion must be done before initState so that dependOn calls
+    // inside initState works.
+    _owner._providerStatesSortedByDepth.addFirst(
+      _providerState._stateEntryInSortedStateList,
+    );
+
+    // the state position in _providerStatesSortedByDepth will get updated as
+    // dependOn is called.
+    _providerState.initState();
+
+    return _providerState;
+  }
+}
 
 class ProviderStateOwner {
   ProviderStateOwner({
     ProviderStateOwner parent,
     List<ProviderOverride> overrides = const [],
-    OnError onError,
-  })  : _overrides = overrides,
-        _onError = onError {
-    updateParent(parent);
-  }
-
-  final OnError _onError;
-  final _providerState = <ProviderBase, ProviderBaseState>{};
-  List<ProviderOverride> _overrides;
-  Map<ProviderBase, _ProviderStateReader> _stateReaders;
-  _FallbackProviderStateReader _fallback;
-
-  ProviderReference get ref => _refProvider.readOwner(this);
-
-  Map<ProviderBase, ProviderBaseSubscription> _dependencies;
-
-  void updateParent(ProviderStateOwner parent) {
-    _fallback = parent?._fallback;
-    _fallback ??= _putIfAbsent;
-
-    _stateReaders = {
-      ...?parent?._stateReaders,
-      _refProvider: () => _putIfAbsent(_refProvider),
-      for (final override in _overrides)
-        override._origin: () {
-          return _putIfAbsent(
-            override._provider,
-            origin: override._origin,
-          );
-        },
-    };
-  }
-
-  void updateOverrides(List<ProviderOverride> overrides) {
-    final oldOverrides = _overrides;
-    _overrides = overrides;
-
+  }) {
     assert(() {
-      if (overrides.length != oldOverrides.length) {
-        throw UnsupportedError(
-          'Adding or removing provider overrides is not supported',
-        );
-      }
-
-      for (var i = 0; i < overrides.length; i++) {
-        final previous = oldOverrides[i];
-        final next = overrides[i];
-
-        if (previous._provider.runtimeType != next._provider.runtimeType) {
-          throw UnsupportedError('''
-Replaced the override at index $i of type ${previous._provider.runtimeType} with an override of type ${next._provider.runtimeType}, which is different.
-Changing the kind of override or reordering overrides is not supported.
-''');
-        }
-
-        if (previous._origin != next._origin) {
-          throw UnsupportedError(
-            'The provider overriden at the index $i changed, which is unsupported.',
-          );
-        }
-      }
-
+      _debugOverrides = overrides;
       return true;
     }(), '');
 
-    final newOverrideForOverridenStates =
-        overrides.fold<Map<ProviderBaseState, ProviderBase>>(
-      {},
-      (acc, element) {
-        final state = _providerState[element._origin];
-        if (state != null) {
-          acc[state] = element._provider;
+    _fallback = parent?._fallback;
+    _fallback ??= <T>(provider) {
+      return _stateReaders.putIfAbsent(provider, () {
+        return _ProviderStateReader(provider, this);
+      }).read() as ProviderBaseState<ProviderBaseSubscription, T,
+          ProviderBase<ProviderBaseSubscription, T>>;
+    };
+
+    for (final override in overrides) {
+      _overrideForProvider[override._origin] = override._provider;
+    }
+
+    _stateReaders = {
+      ...?parent?._stateReaders,
+      _refProvider: _ProviderStateReader(_refProvider, this),
+      for (final override in overrides)
+        override._origin: _ProviderStateReader(
+          override._origin,
+          this,
+        ),
+    };
+  }
+
+  List<ProviderOverride> _debugOverrides;
+  final _overrideForProvider = <ProviderBase, ProviderBase>{};
+  final _providerStatesSortedByDepth =
+      LinkedList<_LinkedListEntry<ProviderBaseState>>();
+  Map<ProviderBase, _ProviderStateReader> _stateReaders;
+  _FallbackProviderStateReader _fallback;
+  var _updateScheduled = false;
+  Map<ProviderBase, ProviderBaseSubscription> _dependencies;
+
+  ProviderReference get ref => _refProvider.readOwner(this);
+
+  void updateOverrides([List<ProviderOverride> overrides]) {
+    if (overrides != null) {
+      assert(() {
+        final oldOverrides = _debugOverrides;
+        _debugOverrides = overrides;
+
+        if (overrides.length != oldOverrides.length) {
+          throw UnsupportedError(
+            'Adding or removing provider overrides is not supported',
+          );
         }
-        return acc;
-      },
-    );
 
-    visitNodesInDependencyOrder(
-      newOverrideForOverridenStates.keys.toSet(),
-      (state) {
-        final oldOverride = state._provider;
-        final newOverride = newOverrideForOverridenStates[state];
-        assert(newOverride != null, '');
+        for (var i = 0; i < overrides.length; i++) {
+          final previous = oldOverrides[i];
+          final next = overrides[i];
 
-        state._provider = newOverride;
+          if (previous._provider.runtimeType != next._provider.runtimeType) {
+            throw UnsupportedError('''
+Replaced the override at index $i of type ${previous._provider.runtimeType} with an override of type ${next._provider.runtimeType}, which is different.
+Changing the kind of override or reordering overrides is not supported.
+''');
+          }
 
+          if (previous._origin != next._origin) {
+            throw UnsupportedError(
+              'The provider overriden at the index $i changed, which is unsupported.',
+            );
+          }
+        }
+
+        return true;
+      }(), '');
+
+      for (final override in overrides) {
+        _overrideForProvider[override._origin] = override._provider;
+
+        // _providerState instead of read() to not compute the state
+        final state = _stateReaders[override._origin]._providerState;
+        if (state == null) {
+          continue;
+        }
+        final oldProvider = state._provider;
+        state._provider = override._provider;
         try {
-          state.didUpdateProvider(oldOverride);
+          state.didUpdateProvider(oldProvider);
         } catch (error, stack) {
-          _onError?.call(error, stack);
+          // TODO: test
+          Zone.current.handleUncaughtError(error, stack);
         }
-      },
-    );
+      }
+    }
+
+    _notifyListeners();
   }
 
   void dispose() {
     if (_dependencies != null) {
+      // TODO: reverse?
       for (final value in _dependencies.values) {
         value.dispose();
       }
     }
-    visitNodesInDependencyOrder(_providerState.values.toSet(), (state) {
-      try {
-        state.dispose();
-      } catch (err, stack) {
-        _onError?.call(err, stack);
-      }
-    });
-  }
 
-  void _scheduleUpdate() {
-    
-  }
-
-  ProviderBaseState<ProviderBaseSubscription, T,
-      ProviderBase<ProviderBaseSubscription, T>> _putIfAbsent<T>(
-    ProviderBase<ProviderBaseSubscription, T> provider, {
-    ProviderBase origin,
-  }) {
-    final key = origin ?? provider;
-
-    final localState = _providerState[key];
-    if (localState != null) {
-      return localState as ProviderBaseState<ProviderBaseSubscription, T,
-          ProviderBase<ProviderBaseSubscription, T>>;
+    // TODO: reverse?
+    for (final entry in _providerStatesSortedByDepth) {
+      Zone.current.runGuarded(entry.value.dispose);
     }
-
-    final state = _createProviderState(provider)..initState();
-
-    _providerState[key] = state;
-
-    return state;
   }
 
-  ProviderBaseState<CombiningValue, ListeningValue,
-          ProviderBase<CombiningValue, ListeningValue>>
-      _createProviderState<CombiningValue extends ProviderBaseSubscription,
-          ListeningValue>(
-    ProviderBase<CombiningValue, ListeningValue> provider,
-  ) {
-    return provider.createState()
-      .._provider = provider
-      .._owner = this;
+  void _scheduleNotification() {
+    if (!_updateScheduled) {
+      _updateScheduled = true;
+      // TODO flush dirty at the end of the event loop of they weren't flushed before
+      // Future.microtask(() {
+      //   _updateScheduled = false;
+
+      // });
+    }
+  }
+
+  void _notifyListeners() {
+    for (final entry in _providerStatesSortedByDepth) {
+      if (entry.value._dirty) {
+        entry.value
+          // TODO test _dirty = false
+          .._dirty = false
+          .._notifyListeners();
+      }
+    }
   }
 
   ProviderBaseState<CombiningValue, ListeningValue,
@@ -178,9 +200,22 @@ Changing the kind of override or reordering overrides is not supported.
           ListeningValue>(
     ProviderBase<CombiningValue, ListeningValue> provider,
   ) {
-    final result = _stateReaders[provider]?.call() ?? _fallback(provider);
+    final result = _stateReaders[provider]?.read() ?? _fallback(provider);
     return result as ProviderBaseState<CombiningValue, ListeningValue,
         ProviderBase<CombiningValue, ListeningValue>>;
+  }
+}
+
+@visibleForTesting
+extension DebugProviderStateOwner on ProviderStateOwner {
+  @visibleForTesting
+  List<ProviderBaseState> get debugProviderStatedSortedByDepth {
+    List<ProviderBaseState> result;
+    assert(() {
+      result = _providerStatesSortedByDepth.map((e) => e.value).toList();
+      return true;
+    }(), '');
+    return result;
   }
 }
 

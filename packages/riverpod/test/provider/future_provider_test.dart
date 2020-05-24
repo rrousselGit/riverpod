@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework/framework.dart' show AlwaysAliveProvider;
@@ -26,12 +27,14 @@ void main() {
 
     final listener = StringListenerMock();
 
-    final sub = example.subscribe(owner, (read) => listener(read()));
+    example.watchOwner(owner, listener);
 
-    expect(sub.read(), const AsyncValue<int>.loading());
+    verify(listener(const AsyncValue<String>.loading())).called(1);
     verifyNoMoreInteractions(listener);
-
     completer.complete(42);
+
+    verifyNoMoreInteractions(listener);
+    owner.updateOverrides();
 
     verify(listener(AsyncValue.data('21 42'))).called(1);
     verifyNoMoreInteractions(listener);
@@ -43,13 +46,15 @@ void main() {
     final listener = ListenerMock();
     final completer = Completer<int>.sync();
 
-    final sub = FutureProvider((_) => completer.future)
-        .subscribe(owner, (read) => listener(read()));
+    FutureProvider((_) => completer.future).watchOwner(owner, listener);
 
-    expect(sub.read(), const AsyncValue<int>.loading());
+    verify(listener(const AsyncValue<int>.loading())).called(1);
     verifyNoMoreInteractions(listener);
 
     completer.complete(42);
+
+    verifyNoMoreInteractions(listener);
+    owner.updateOverrides();
 
     verify(listener(AsyncValue.data(42))).called(1);
     verifyNoMoreInteractions(listener);
@@ -60,18 +65,299 @@ void main() {
     final listener = ListenerMock();
     final completer = Completer<int>.sync();
 
-    final sub = FutureProvider((_) => completer.future) //
-        .subscribe(owner, (read) => listener(read()));
+    final removeListener = FutureProvider((_) => completer.future) //
+        .watchOwner(owner, listener);
 
-    expect(sub.read(), const AsyncValue<int>.loading());
+    verify(listener(const AsyncValue<int>.loading())).called(1);
     verifyNoMoreInteractions(listener);
 
-    sub.close();
+    removeListener();
     completer.complete(42);
+
+    verifyNoMoreInteractions(listener);
+    owner.updateOverrides();
 
     verifyNoMoreInteractions(listener);
     owner.dispose();
   });
+
+  group('mock as value', () {
+    // TODO: do the same tests for StreamProvider
+    test('value immediatly then other value', () async {
+      final provider = FutureProvider((_) async => 0);
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideFromValue(AsyncValue.data(42)),
+      ]);
+      final listener = ListenerMock();
+
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.future, completion(42));
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(AsyncValue.data(42))).called(1);
+      verifyNoMoreInteractions(listener);
+
+      Object error;
+      runWithErrorHandler(
+        run: () => owner.updateOverrides([
+          provider.debugOverrideFromValue(AsyncValue.data(21)),
+        ]),
+        onError: (err) => error = err,
+      );
+
+      verifyNoMoreInteractions(listener);
+      expect(error, isUnsupportedError);
+    });
+    test('value immediatly then error', () async {
+      final provider = FutureProvider((_) async => 0);
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideFromValue(AsyncValue.data(42)),
+      ]);
+      final listener = ListenerMock();
+
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.future, completion(42));
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(AsyncValue.data(42))).called(1);
+      verifyNoMoreInteractions(listener);
+
+      Object error;
+      runWithErrorHandler(
+        run: () => owner.updateOverrides([
+          provider.debugOverrideFromValue(AsyncValue.error(21)),
+        ]),
+        onError: (err) => error = err,
+      );
+
+      verifyNoMoreInteractions(listener);
+      expect(error, isUnsupportedError);
+    });
+    test('value immediatly then loading', () async {
+      final provider = FutureProvider((_) async => 0);
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideFromValue(AsyncValue.data(42)),
+      ]);
+      final listener = ListenerMock();
+
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.future, completion(42));
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(AsyncValue.data(42))).called(1);
+      verifyNoMoreInteractions(listener);
+
+      Object error;
+      runWithErrorHandler(
+        run: () => owner.updateOverrides([
+          provider.debugOverrideFromValue(const AsyncValue.loading()),
+        ]),
+        onError: (err) => error = err,
+      );
+
+      verifyNoMoreInteractions(listener);
+      expect(error, isUnsupportedError);
+    });
+    test('loading immediatly then value', () async {
+      final provider = FutureProvider((_) async => 0);
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideFromValue(const AsyncValue.loading()),
+      ]);
+      final listener = ListenerMock();
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(const AsyncValue.loading())).called(1);
+      verifyNoMoreInteractions(listener);
+
+      owner.updateOverrides([
+        provider.debugOverrideFromValue(AsyncValue.data(42)),
+      ]);
+
+      verify(listener(AsyncValue.data(42))).called(1);
+      verifyNoMoreInteractions(listener);
+
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.future, completion(42));
+    });
+    test('loading immediatly then error', () async {
+      final provider = FutureProvider((_) async => 0);
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideFromValue(const AsyncValue.loading()),
+      ]);
+      final listener = ListenerMock();
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(const AsyncValue.loading())).called(1);
+      verifyNoMoreInteractions(listener);
+
+      final stackTrace = StackTrace.current;
+
+      owner.updateOverrides([
+        provider.debugOverrideFromValue(AsyncValue.error(42, stackTrace)),
+      ]);
+
+      verify(listener(AsyncValue.error(42, stackTrace))).called(1);
+      verifyNoMoreInteractions(listener);
+
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.future, throwsA(42));
+    });
+    test('loading immediatly then loading', () async {
+      final provider = FutureProvider((_) async => 0);
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideFromValue(const AsyncValue.loading()),
+      ]);
+      final listener = ListenerMock();
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(const AsyncValue.loading())).called(1);
+      verifyNoMoreInteractions(listener);
+
+      owner.updateOverrides([
+        provider.debugOverrideFromValue(const AsyncValue.loading()),
+      ]);
+
+      verifyNoMoreInteractions(listener);
+
+      owner.updateOverrides([
+        provider.debugOverrideFromValue(AsyncValue.data(42)),
+      ]);
+
+      verify(listener(AsyncValue.data(42))).called(1);
+      verifyNoMoreInteractions(listener);
+
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.future, completion(42));
+    });
+    test('error immediatly then different error', () async {
+      final stackTrace = StackTrace.current;
+      final provider = FutureProvider((_) async => 0);
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideFromValue(AsyncValue.error(42, stackTrace)),
+      ]);
+      final listener = ListenerMock();
+
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.future, throwsA(42));
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(AsyncValue.error(42, stackTrace))).called(1);
+      verifyNoMoreInteractions(listener);
+
+      Object error;
+      runWithErrorHandler(
+        run: () => owner.updateOverrides([
+          provider.debugOverrideFromValue(AsyncValue.error(21, stackTrace)),
+        ]),
+        onError: (err) => error = err,
+      );
+
+      expect(error, isUnsupportedError);
+      verifyNoMoreInteractions(listener);
+    });
+    test('error immediatly then different stacktrace', () async {
+      final stackTrace = StackTrace.current;
+      final provider = FutureProvider((_) async => 0);
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideFromValue(AsyncValue.error(42, stackTrace)),
+      ]);
+      final listener = ListenerMock();
+
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.future, throwsA(42));
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(AsyncValue.error(42, stackTrace))).called(1);
+      verifyNoMoreInteractions(listener);
+
+      Object error;
+      runWithErrorHandler(
+        run: () => owner.updateOverrides([
+          provider
+              .debugOverrideFromValue(AsyncValue.error(42, StackTrace.current)),
+        ]),
+        onError: (err) => error = err,
+      );
+
+      expect(error, isUnsupportedError);
+      verifyNoMoreInteractions(listener);
+    });
+    test('error immediatly then data', () async {
+      final stackTrace = StackTrace.current;
+      final provider = FutureProvider((_) async => 0);
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideFromValue(AsyncValue.error(42, stackTrace)),
+      ]);
+      final listener = ListenerMock();
+
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.future, throwsA(42));
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(AsyncValue.error(42, stackTrace))).called(1);
+      verifyNoMoreInteractions(listener);
+
+      Object error;
+      runWithErrorHandler(
+        run: () => owner.updateOverrides([
+          provider.debugOverrideFromValue(AsyncValue.data(42)),
+        ]),
+        onError: (err) => error = err,
+      );
+
+      expect(error, isUnsupportedError);
+      verifyNoMoreInteractions(listener);
+    });
+    test('error immediatly then loading', () async {
+      final stackTrace = StackTrace.current;
+      final provider = FutureProvider((_) async => 0);
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideFromValue(AsyncValue.error(42, stackTrace)),
+      ]);
+      final listener = ListenerMock();
+
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.future, throwsA(42));
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(AsyncValue.error(42, stackTrace))).called(1);
+      verifyNoMoreInteractions(listener);
+
+      Object error;
+      runWithErrorHandler(
+        run: () => owner.updateOverrides([
+          provider.debugOverrideFromValue(const AsyncValue.loading()),
+        ]),
+        onError: (err) => error = err,
+      );
+
+      expect(error, isUnsupportedError);
+      verifyNoMoreInteractions(listener);
+    });
+  });
+}
+
+void runWithErrorHandler({
+  @required void Function() run,
+  @required void Function(Object error) onError,
+}) {
+  Zone.current.fork(
+    specification: ZoneSpecification(
+      handleUncaughtError: (self, parent, zone, err, stack) {
+        onError(err);
+      },
+    ),
+  ).run(run);
 }
 
 class ListenerMock extends Mock {

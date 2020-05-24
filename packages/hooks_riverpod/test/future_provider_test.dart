@@ -83,7 +83,7 @@ void main() {
     completer.complete();
 
     // wait for then to tick
-    await Future<void>.value();
+    await Future.value(null);
   });
   testWidgets("future fails after unmount does't crash", (tester) async {
     final completer = Completer<int>();
@@ -105,7 +105,7 @@ void main() {
     completer.completeError(error);
 
     // wait for onError to tick
-    await Future<void>.value();
+    await Future.value(null);
   });
   testWidgets('FutureProvider can be overriden with Future', (tester) async {
     var callCount = 0;
@@ -268,7 +268,7 @@ void main() {
       );
 
       // make sure the future doesn't just complete in one frame
-      await Future<void>.value();
+      await Future.value(null);
 
       expect(completed, false);
       expect(future, isNotNull);
@@ -298,7 +298,7 @@ void main() {
       );
 
       // make sure the future doesn't just complete in one frame
-      await Future<void>.value();
+      await Future.value(null);
 
       expect(completed, false);
       expect(future, isNotNull);
@@ -341,7 +341,7 @@ void main() {
       );
 
       // make sure the future doesn't just complete in one frame
-      await Future<void>.value();
+      await Future.value(null);
 
       expect(completed, false);
       expect(future, isNotNull);

@@ -17,44 +17,52 @@ void main() {
     expect(provider.readOwner(owner).mounted, isFalse);
   });
 
-  test('provider subscribe the callback is never', () {
+  test('provider subscribe the callback is never', () async {
+    final notifier = TestNotifier();
     final provider = StateNotifierProvider<TestNotifier, int>((_) {
-      return TestNotifier();
+      return notifier;
     });
     final listener = ControllerListenerMock();
     final owner = ProviderStateOwner();
 
-    final sub = provider.subscribe(owner, (read) => listener(read()));
+    provider.watchOwner(owner, listener);
 
-    expect(sub.read(), isA<TestNotifier>());
+    verify(listener(argThat(isA<TestNotifier>()))).called(1);
     verifyNoMoreInteractions(listener);
 
-    sub.read().increment();
+    notifier.increment();
+
+    verifyNoMoreInteractions(listener);
+    owner.updateOverrides();
 
     verifyNoMoreInteractions(listener);
 
     owner.dispose();
+    await Future.value(null);
 
     verifyNoMoreInteractions(listener);
   });
-  test('provider subscribe callback never called', () {
+  test('provider subscribe callback never called', () async {
     final provider = StateNotifierProvider<TestNotifier, int>((_) {
       return TestNotifier();
     });
     final listener = ListenerMock();
     final owner = ProviderStateOwner();
 
-    final sub = provider.value.subscribe(owner, (read) => listener(read()));
+    provider.value.watchOwner(owner, listener);
 
-    expect(sub.read(), 0);
+    verify(listener(argThat(equals(0)))).called(1);
     verifyNoMoreInteractions(listener);
 
     provider.readOwner(owner).increment();
 
+    verifyNoMoreInteractions(listener);
+    owner.updateOverrides();
     verify(listener(1)).called(1);
     verifyNoMoreInteractions(listener);
 
     owner.dispose();
+    await Future.value(null);
 
     verifyNoMoreInteractions(listener);
   });

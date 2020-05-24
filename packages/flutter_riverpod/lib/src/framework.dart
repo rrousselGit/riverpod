@@ -38,27 +38,25 @@ class _ProviderScopeState extends State<ProviderScope> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // TODO throw if ancestorOwner changed
     final ancestorOwner = context
         .dependOnInheritedWidgetOfExactType<ProviderStateOwnerScope>()
         ?.owner;
 
-    if (_owner == null) {
-      _owner = ProviderStateOwner(
-        parent: ancestorOwner,
-        overrides: widget.overrides,
-        onError: (dynamic error, stack) {
-          FlutterError.reportError(
-            FlutterErrorDetails(
-              library: 'flutter_provider',
-              exception: error,
-              stack: stack,
-            ),
-          );
-        },
-      );
-    } else {
-      _owner.updateParent(ancestorOwner);
-    }
+    _owner ??= ProviderStateOwner(
+      parent: ancestorOwner,
+      overrides: widget.overrides,
+      // TODO How to report to FlutterError?
+      // onError: (dynamic error, stack) {
+      //   FlutterError.reportError(
+      //     FlutterErrorDetails(
+      //       library: 'flutter_provider',
+      //       exception: error,
+      //       stack: stack,
+      //     ),
+      //   );
+      // },
+    );
   }
 
   @override

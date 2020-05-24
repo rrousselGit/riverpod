@@ -123,10 +123,16 @@ class _DebugValueFutureProviderState<Res> extends ProviderBaseState<
       );
 
       provider._value.when(
-        data: _completer.complete,
+        data: (value) {
+          state = AsyncValue.data(value);
+          _completer.complete(value);
+        },
         // Never reached. Either it doesn't enter the if, or it throws before
         loading: () {},
-        error: _completer.completeError,
+        error: (err, stack) {
+          state = AsyncValue.error(err, stack);
+          _completer.completeError(err, stack);
+        },
       );
     }
   }

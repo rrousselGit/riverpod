@@ -1,50 +1,5 @@
 part of 'framework.dart';
 
-/// Internal utility to visit the graph of providers in an order where it is
-/// safe to perform operations on their state (such as dispose/updates).
-///
-/// This basically visits the dependencies of a provider before the provider
-/// itself, while ensuring that a given provider is visited only once.
-@visibleForTesting
-void visitNodesInDependencyOrder(
-  Set<ProviderBaseState> nodesToVisit,
-  void Function(ProviderBaseState value) visitor,
-) {
-  final inResult = <ProviderBaseState>{};
-
-  void recurs(ProviderBaseState node) {
-    if (!nodesToVisit.contains(node) || inResult.contains(node)) {
-      return;
-    }
-
-    node._dependenciesState.forEach(recurs);
-
-    inResult.add(node);
-    visitor(node);
-  }
-
-  nodesToVisit.forEach(recurs);
-}
-
-abstract class ProviderLink<T> {
-  T read();
-
-  void close();
-}
-
-class _ProviderLinkImpl<T> implements ProviderLink<T> {
-  _ProviderLinkImpl(this._read, this._removeListener);
-
-  final T Function() _read;
-  final VoidCallback _removeListener;
-
-  @override
-  void close() => _removeListener();
-
-  @override
-  T read() => _read();
-}
-
 @immutable
 @optionalTypeArgs
 abstract class ProviderBase<CombiningValue extends ProviderBaseSubscription,
@@ -55,12 +10,11 @@ abstract class ProviderBase<CombiningValue extends ProviderBaseSubscription,
 
   /// The callback may never get called
   // TODO why the value isn't passed to onChange
-  ProviderLink<ListenedValue> subscribe(
+  VoidCallback watchOwner(
     ProviderStateOwner owner,
-    void Function(ListenedValue Function() read) onChange,
+    void Function(ListenedValue value) onChange,
   ) {
-    final state = owner._readProviderState(this);
-    return state.$subscribe(onChange);
+    return owner._readProviderState(this).$addListener(onChange);
   }
 }
 
@@ -71,9 +25,18 @@ abstract class ProviderBaseState<
     CombiningValue extends ProviderBaseSubscription,
     ListenedValue extends Object,
     P extends ProviderBase<CombiningValue, ListenedValue>> {
+  ProviderBaseState() {
+    _stateEntryInSortedStateList = _LinkedListEntry(this);
+  }
+
+  var _depth = 0;
+  int get depth => _depth;
+
   var _dirty = false;
+  bool get dirty => _dirty;
 
   P _provider;
+  _LinkedListEntry<ProviderBaseState> _stateEntryInSortedStateList;
 
   var _mounted = true;
   bool get mounted => _mounted;
@@ -95,7 +58,7 @@ abstract class ProviderBaseState<
   ProviderStateOwner get owner => _owner;
 
   DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
-  LinkedList<_LinkedListEntry<void Function(ListenedValue Function() read)>>
+  LinkedList<_LinkedListEntry<void Function(ListenedValue value)>>
       _stateListeners;
 
   bool get $hasListeners => _stateListeners?.isNotEmpty ?? false;
@@ -140,6 +103,7 @@ abstract class ProviderBaseState<
         }(), '');
 
         _dependenciesState.add(targetProviderState);
+        _redepthAfter(targetProviderState);
         final targetProviderValue =
             targetProviderState.createProviderSubscription();
         onDispose(targetProviderValue.dispose);
@@ -156,46 +120,93 @@ abstract class ProviderBaseState<
     }
   }
 
+  /// Reposition this state in the [LinkedList] associated with [_stateEntryInSortedStateList].
+  ///
+  /// Since the list is sorted, the algorithm starts directly from [_stateEntryInSortedStateList]
+  /// and goes to the next item until it either reaches the end of the list or
+  /// an item that has a depth == to [from] + 1.
+  ///
+  /// This only supports increasing the depth, not decreasing it.
+  ///
+  /// It then proceeds to recursively redepth all the [ProviderBaseState] that
+  /// depends on this state.
+  ///
+  /// Worse case scenario, this is O(N), even on a complex tree.
+  void _redepthAfter(ProviderBaseState from) {
+    final newDepth = max(_depth, from._depth + 1);
+    if (newDepth == _depth) {
+      return;
+    }
+    _depth = newDepth;
+
+    /// Where to start the search on where to relocate the [_stateEntryInSortedStateList].
+    /// Since this is a sorted linked list, we can start directly from
+    /// [from._stateEntryInSortedStateList] instead of [_stateEntryInSortedStateList],
+    /// as we will always insert the entry after [from].
+    /// This optimisation is only possible if [from] is from the same [ProviderStateOwner]
+    /// as otherwise its [_stateEntryInSortedStateList] will point to a different list.
+    _LinkedListEntry<ProviderBaseState> entry;
+    if (from._owner == _owner) {
+      /// unlink before reading [next] so that [next] doesn't point to [_stateEntryInSortedStateList].
+      _stateEntryInSortedStateList.unlink();
+      entry = from._stateEntryInSortedStateList.next;
+    } else {
+      entry = _stateEntryInSortedStateList.next;
+      _stateEntryInSortedStateList.unlink();
+    }
+
+    for (; entry != null && _depth > entry.value._depth; entry = entry.next) {}
+
+    if (entry != null) {
+      entry.insertBefore(_stateEntryInSortedStateList);
+    } else {
+      _owner._providerStatesSortedByDepth.add(_stateEntryInSortedStateList);
+    }
+
+    // for (final dep in _dependenciesState) {
+    //   dep._redepthAfter(this);
+    // }
+  }
+
   void onDispose(VoidCallback cb) {
     _onDisposeCallbacks ??= DoubleLinkedQueue();
     _onDisposeCallbacks.add(cb);
   }
 
-  ProviderLink<ListenedValue> $subscribe(
-    void Function(ListenedValue Function() read) listener,
+  VoidCallback $addListener(
+    void Function(ListenedValue value) listener,
   ) {
+    listener(state);
     _stateListeners ??= LinkedList();
     final entry = _LinkedListEntry(listener);
     _stateListeners.add(entry);
-    return _ProviderLinkImpl(_read, entry.unlink);
+    return entry.unlink;
   }
 
   void _notifyListeners() {
     if (_stateListeners != null) {
       for (final listener in _stateListeners) {
-        listener.value(_read);
+        listener.value(state);
       }
     }
   }
 
   void markNeedsNotifyListeners() {
     _dirty = true;
-    owner._scheduleUpdate();
+    owner._scheduleNotification();
   }
-
-  ListenedValue _read() => state;
 
   void dispose() {
     if (_onDisposeCallbacks != null) {
-      for (final disposeCb in _onDisposeCallbacks) {
-        try {
-          disposeCb();
-        } catch (err, stack) {
-          owner._onError?.call(err, stack);
-        }
-      }
+      // TODO test
+      _onDisposeCallbacks.forEach(Zone.current.runGuarded);
     }
     _mounted = false;
+  }
+
+  @override
+  String toString() {
+    return 'ProviderState<$ListenedValue>(depth: $depth)';
   }
 }
 

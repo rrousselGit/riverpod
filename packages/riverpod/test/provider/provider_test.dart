@@ -69,19 +69,20 @@ void main() {
   test('subscribe', () {
     final owner = ProviderStateOwner();
     final provider = Provider((_) => 42);
-
+    
+    int value;
     var callCount = 0;
 
-    final subscription = provider.subscribe(owner, (read) {
+    final removeListener = provider.watchOwner(owner, (v) {
+      value = v;
       callCount++;
     });
 
-    expect(subscription, isNotNull);
-    expect(callCount, 0);
-    expect(subscription.read(), 42);
+    expect(callCount, 1);
+    expect(value, 42);
 
-    subscription.close();
-    expect(callCount, 0);
+    removeListener();
+    expect(callCount, 1);
   });
 
   test('dispose', () {
