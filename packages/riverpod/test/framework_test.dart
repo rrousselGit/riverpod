@@ -6,7 +6,6 @@ import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 
 void main() {
-  // TODO error handling
   // TODO owner life-cycles are unusuable after dispose
   test('owner.ref uses the override', () {
     final provider = Provider((_) => 42);
@@ -27,8 +26,8 @@ void main() {
     expect(ref.dependOn(provider).value, 42);
     expect(ref2.dependOn(provider).value, 21);
 
-    owner.updateOverrides([]);
-    owner2.updateOverrides([
+    owner.update([]);
+    owner2.update([
       provider.overrideForSubtree(
         Provider((_) => 21),
       ),
@@ -103,7 +102,7 @@ void main() {
 
     expect(callCount, 0);
 
-    owner.updateOverrides(
+    owner.update(
       [provider.overrideForSubtree(provider)],
     );
 
@@ -242,7 +241,7 @@ void main() {
     verifyZeroInteractions(provider1.onDidUpdateProvider);
     verifyZeroInteractions(provider2.onDidUpdateProvider);
 
-    owner.updateOverrides([
+    owner.update([
       provider.overrideForSubtree(provider),
       provider1.overrideForSubtree(provider1),
       provider2.overrideForSubtree(provider2),
@@ -295,6 +294,79 @@ void main() {
     expect(() => ref.dependOn(other), throwsA(isA<AssertionError>()));
   });
 
+  test('if a provider threw on creation, subsequent reads throws too', () {
+    var callCount = 0;
+    final error = Error();
+    final provider = Provider((_) {
+      callCount++;
+      throw error;
+    });
+    final owner = ProviderStateOwner();
+
+    expect(() => provider.readOwner(owner), throwsA(error));
+    expect(callCount, 1);
+    expect(() => provider.readOwner(owner), throwsA(error));
+    expect(callCount, 1);
+
+    expect(() => owner.ref.dependOn(provider), throwsA(error));
+    expect(callCount, 1);
+    expect(() => owner.ref.dependOn(provider), throwsA(error));
+    expect(callCount, 1);
+
+    expect(() => provider.watchOwner(owner, (value) {}), throwsA(error));
+    expect(callCount, 1);
+    expect(() => provider.watchOwner(owner, (value) {}), throwsA(error));
+    expect(callCount, 1);
+  });
+  test('if a provider threw on creation, markNeedsNotify throws StateError',
+      () {
+    var callCount = 0;
+    final error = Error();
+    SetStateProviderReference<int> reference;
+    final provider = SetStateProvider<int>((ref) {
+      reference = ref;
+      callCount++;
+      throw error;
+    });
+    final owner = ProviderStateOwner();
+
+    expect(() => provider.readOwner(owner), throwsA(error));
+    expect(callCount, 1);
+
+    expect(() => reference.state = 42, throwsStateError);
+  });
+  test('if a provider threw on creation, onDispose still works', () {
+    var callCount = 0;
+    final onDispose = OnDisposeMock();
+    final error = Error();
+    ProviderReference reference;
+    final provider = Provider((ref) {
+      reference = ref;
+      callCount++;
+      ref.onDispose(onDispose);
+      throw error;
+    });
+    final owner = ProviderStateOwner();
+
+    expect(() => provider.readOwner(owner), throwsA(error));
+    expect(callCount, 1);
+
+    final onDispose2 = OnDisposeMock();
+    reference.onDispose(onDispose2);
+
+    verifyNoMoreInteractions(onDispose);
+    verifyNoMoreInteractions(onDispose2);
+
+    owner.dispose();
+
+    expect(callCount, 1);
+    verifyInOrder([
+      onDispose(),
+      onDispose2(),
+    ]);
+    verifyNoMoreInteractions(onDispose);
+    verifyNoMoreInteractions(onDispose2);
+  });
   group('notify listeners', () {
     test('calls markNeedsUpdate at most once until update is called', () {
       final rootNeedsUpdate = MockMarkNeedsUpdate();
@@ -332,7 +404,7 @@ void main() {
       verifyNoMoreInteractions(rootNeedsUpdate);
       verifyNoMoreInteractions(ownerNeedsUpdate);
 
-      owner.updateOverrides();
+      owner.update();
 
       verify(listener(2)).called(1);
       verifyNoMoreInteractions(listener);
@@ -375,7 +447,7 @@ void main() {
       verifyNoMoreInteractions(ownerNeedsUpdate);
       expect(state.dirty, false);
 
-      owner.updateOverrides();
+      owner.update();
 
       verifyNoMoreInteractions(listener);
       verifyNoMoreInteractions(rootNeedsUpdate);
@@ -393,24 +465,23 @@ void main() {
       verify(listener(0)).called(1);
       verifyNoMoreInteractions(listener);
 
-      owner.updateOverrides();
+      owner.update();
       verifyNoMoreInteractions(listener);
 
       counter..increment()..increment();
 
       verifyNoMoreInteractions(listener);
 
-      owner.updateOverrides();
+      owner.update();
 
       verify(listener(2)).called(1);
       verifyNoMoreInteractions(listener);
 
-      owner.updateOverrides();
+      owner.update();
 
       verifyNoMoreInteractions(listener);
     });
-    test('updateOverrides first update providers then dispatch notifications',
-        () {
+    test('update first update providers then dispatch notifications', () {
       final futureProvider = FutureProvider((_) async => 0);
       final owner = ProviderStateOwner(overrides: [
         futureProvider.debugOverrideFromValue(const AsyncValue.loading()),
@@ -422,14 +493,14 @@ void main() {
       verify(listener(const AsyncValue.loading())).called(1);
       verifyNoMoreInteractions(listener);
 
-      owner.updateOverrides([
+      owner.update([
         futureProvider.debugOverrideFromValue(AsyncValue.data(42)),
       ]);
 
       verify(listener(AsyncValue.data(42))).called(1);
       verifyNoMoreInteractions(listener);
     });
-    test('on updateOverrides`', () async {
+    test('on update`', () async {
       final owner = ProviderStateOwner();
       final counter = Counter();
       final provider = StateNotifierProvider<Counter, int>((_) => counter);
@@ -446,7 +517,7 @@ void main() {
       counter.increment();
       verifyNoMoreInteractions(listener);
 
-      owner.updateOverrides();
+      owner.update();
 
       verify(listener(2)).called(1);
       verifyNoMoreInteractions(listener);
@@ -486,7 +557,7 @@ void main() {
       counter2.increment();
       counter.increment();
 
-      owner.updateOverrides();
+      owner.update();
 
       verifyInOrder([
         listener(1),
@@ -496,9 +567,6 @@ void main() {
       verifyNoMoreInteractions(listener);
       verifyNoMoreInteractions(listener2);
       verifyNoMoreInteractions(listener3);
-    });
-    test('in dependency order cross owner', () {
-// TODO
     });
   });
 }

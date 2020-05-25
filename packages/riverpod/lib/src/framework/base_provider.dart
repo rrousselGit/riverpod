@@ -32,7 +32,7 @@ abstract class ProviderBaseState<
   var _depth = 0;
   int get depth => _depth;
 
-  // ignore calls to markNeedNotifyListeners inside initState
+  // Initialised to true to ignore calls to markNeedNotifyListeners inside initState
   var _dirty = true;
   bool get dirty => _dirty;
 
@@ -50,6 +50,11 @@ abstract class ProviderBaseState<
 
   // TODO multiple owners
   ProviderBase _debugInitialDependOnRequest;
+
+  /// the exception thrown inside initState, if any.
+  ///
+  /// If [_error] is not `null`, this disable all functionalities of the provider.
+  Object _error;
 
   @protected
   @visibleForTesting
@@ -193,6 +198,11 @@ abstract class ProviderBaseState<
   }
 
   void markNeedsNotifyListeners() {
+    if (_error != null) {
+      throw StateError(
+        'A provider cannot emit updates if an exception was thrown during the provider creation.',
+      );
+    }
     if (_dirty == false) {
       _dirty = true;
       owner._scheduleNotification();
@@ -201,7 +211,6 @@ abstract class ProviderBaseState<
 
   void dispose() {
     if (_onDisposeCallbacks != null) {
-      // TODO test
       _onDisposeCallbacks.forEach(Zone.current.runGuarded);
     }
     _mounted = false;

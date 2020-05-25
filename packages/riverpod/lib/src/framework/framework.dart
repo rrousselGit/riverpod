@@ -31,6 +31,10 @@ class _ProviderStateReader {
   ProviderBaseState read() {
     // TODO: test adding dependency on a provider from a different owner add the state to the proper owner
     if (_providerState != null) {
+      if (_providerState._error != null) {
+        // ignore: only_throw_errors, this is what was throws by initState so it is valid to rethrow it
+        throw _providerState._error;
+      }
       return _providerState;
     }
     final override = _owner._overrideForProvider[_origin] ?? _origin;
@@ -43,20 +47,24 @@ class _ProviderStateReader {
       _providerState._dependenciesState.isEmpty,
       'Cannot add dependencies before `initState`',
     );
-    // Insert in the beginning of the sorted by depth list, because the provider
-    // doesn't have any depth yet.
+    // Insert the new state in the beginning of the sorted by depth list,
+    // because the provider doesn't have any depth yet.
     // The insertion must be done before initState so that dependOn calls
     // inside initState works.
     _owner._providerStatesSortedByDepth.addFirst(
       _providerState._stateEntryInSortedStateList,
     );
-
-    // the state position in _providerStatesSortedByDepth will get updated as
-    // dependOn is called.
-    _providerState
-      ..initState()
+    try {
+      // the state position in _providerStatesSortedByDepth will get updated as
+      // dependOn is called.
+      _providerState.initState();
+    } catch (err) {
+      _providerState._error = err;
+      rethrow;
+    } finally {
       // ignore calls to markNeedNotifyListeners inside initState
-      .._dirty = false;
+      _providerState._dirty = false;
+    }
 
     return _providerState;
   }
@@ -108,7 +116,7 @@ class ProviderStateOwner {
 
   ProviderReference get ref => _refProvider.readOwner(this);
 
-  void updateOverrides([List<ProviderOverride> overrides]) {
+  void update([List<ProviderOverride> overrides]) {
     if (overrides != null) {
       assert(() {
         final oldOverrides = _debugOverrides;
@@ -154,7 +162,6 @@ Changing the kind of override or reordering overrides is not supported.
         try {
           state.didUpdateProvider(oldProvider);
         } catch (error, stack) {
-          // TODO: test
           Zone.current.handleUncaughtError(error, stack);
         }
       }
@@ -277,6 +284,4 @@ class ProviderReference {
     );
     return _providerState.dependOn(provider);
   }
-
-  // TODO report error?
 }

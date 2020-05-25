@@ -95,7 +95,7 @@ it is not perfect either.
 People regularly file issues or ask questions about some problems they face, such as:
 
 - Why do I have a `ProviderNotFoundException`?
-- How can I make that my state is automatically disposed of when not used anymore?
+- How can I make that my state automatically disposed of when not used anymore?
 - How to make a provider that depends on other (potentially complex) providers?
 
 These are legitimate problems, and I believe that something can be improved to fix
@@ -105,19 +105,16 @@ The issue is, these problems are deeply rooted in how [provider] works, and
 fixing those problems is likely impossible without drastic changes to the
 mechanism of [provider].
 
-This _could_ be merged inside [provider] directly, but would be betraying the
-[provider] community to do so.\
-See [Will this get merged with provider at some point?](#will-this-get-merged-with-provider-at-some-point)
-for a deeper explanation.
+In a way, if [provider] is a candle then [Riverpod] is a lightbulb. They have
+very similar usages, but we cannot create a lightbulb by improving our candle.
 
 ## Is it safe to use in production?
 
 The project is still experimental, so use it at your own risk.
 
-In theory, it should scale well to large projects. But it is possible that
-there are some bugs or missing features.
-
-But I would expect this project to work for most people in its current state
+It applied all the lessons learned from [provider], so I would expect this
+project to solve most use-cases.\
+But if your project randomly catches fire, you were warned!
 
 ## Will this get merged with [provider] at some point?
 
@@ -143,8 +140,6 @@ and that the community likes it, [provider] will still be maintained.
 
 # Roadmap
 
-- Owner.updateParent should be removed !important
-- remove onError and implement true error mechanism
 - StreamProvider.overrideWithValue debug-only
 - StreamProvider expose a Future<Data> for last valid value
 - Cannot add dependencies during dispatching

@@ -32,7 +32,7 @@ void main() {
     expect(ref.state, 1);
 
     verifyNoMoreInteractions(listener);
-    owner.updateOverrides();
+    owner.update();
 
     verify(listener(1)).called(1);
     verifyNoMoreInteractions(listener);
@@ -58,7 +58,7 @@ void main() {
     ref.state++;
 
     verifyNoMoreInteractions(listener);
-    owner.updateOverrides();
+    owner.update();
 
     verifyNoMoreInteractions(listener);
     owner.dispose();

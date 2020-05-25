@@ -28,7 +28,7 @@ class _ProviderScopeState extends State<ProviderScope> {
   @override
   void didUpdateWidget(ProviderScope oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _owner.updateOverrides(widget.overrides);
+    _owner.update(widget.overrides);
   }
 
   @override
@@ -59,9 +59,8 @@ class _ProviderScopeState extends State<ProviderScope> {
   @override
   Widget build(BuildContext context) {
     if (_dirty) {
-      // TODO test
       _dirty = false;
-      _owner.updateOverrides();
+      _owner.update();
     }
     return ProviderStateOwnerScope(
       owner: _owner,

@@ -27,14 +27,14 @@ void main() {
     controller.add(42);
 
     verifyNoMoreInteractions(listener);
-    owner.updateOverrides();
+    owner.update();
     verify(listener(AsyncValue.data(42))).called(1);
     verifyNoMoreInteractions(listener);
 
     controller.add(21);
 
     verifyNoMoreInteractions(listener);
-    owner.updateOverrides();
+    owner.update();
     verify(listener(AsyncValue.data(21))).called(1);
     verifyNoMoreInteractions(listener);
 
@@ -58,14 +58,14 @@ void main() {
     controller.addError(error, stack);
 
     verifyNoMoreInteractions(listener);
-    owner.updateOverrides();
+    owner.update();
     verify(listener(AsyncValue.error(error, stack)));
     verifyNoMoreInteractions(listener);
 
     controller.add(21);
 
     verifyNoMoreInteractions(listener);
-    owner.updateOverrides();
+    owner.update();
     verify(listener(AsyncValue.data(21))).called(1);
     verifyNoMoreInteractions(listener);
 
@@ -91,7 +91,7 @@ void main() {
     controller.add(42);
 
     verifyNoMoreInteractions(listener);
-    owner.updateOverrides();
+    owner.update();
     verify(listener(AsyncValue.data(42))).called(1);
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(dispose);
@@ -100,7 +100,7 @@ void main() {
     controller.add(21);
 
     verifyNoMoreInteractions(listener);
-    owner.updateOverrides();
+    owner.update();
     verify(dispose()).called(1);
     verifyNoMoreInteractions(dispose);
     verifyNoMoreInteractions(listener);
@@ -123,7 +123,7 @@ void main() {
       verify(listener(AsyncValue<int>.data(21))).called(1);
       verifyNoMoreInteractions(listener);
 
-      owner.updateOverrides([
+      owner.update([
         provider.overrideWithValue(AsyncValue.data(42)),
       ]);
 
@@ -150,7 +150,7 @@ void main() {
       // verifyNoMoreInteractions(listener);
       // expect(onErrorCallCount, 0);
 
-      // owner.updateOverrides([
+      // owner.update([
       //   provider.overrideWithValue(const AsyncValue.loading()),
       // ]);
 
@@ -184,7 +184,7 @@ void main() {
       // verifyNoMoreInteractions(listener);
       // expect(onErrorCallCount, 0);
 
-      // owner.updateOverrides([
+      // owner.update([
       //   provider.overrideWithValue(const AsyncValue.loading()),
       // ]);
 
@@ -213,7 +213,7 @@ void main() {
       expect(combinedProvider.readOwner(owner), 42);
 
       owner
-        ..updateOverrides([
+        ..update([
           provider.overrideWithValue(AsyncValue.data(42)),
         ])
         ..dispose();
