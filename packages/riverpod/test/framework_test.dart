@@ -7,6 +7,31 @@ import 'package:riverpod/riverpod.dart';
 
 void main() {
   // TODO owner life-cycles are unusuable after dispose
+  test('cannot call markNeedsNotifyListeners after dispose', () {
+    final owner = ProviderStateOwner();
+    final provider = TestProvider((ref) {});
+    ProviderBaseState providerBaseState;
+    provider.onInitState.thenAnswer((state) {
+      providerBaseState = state;
+    });
+
+    provider.readOwner(owner);
+
+    expect(providerBaseState.dirty, false);
+    providerBaseState.markNeedsNotifyListeners();
+    expect(providerBaseState.dirty, true);
+
+    owner.update();
+
+    expect(providerBaseState.dirty, false);
+
+    owner.dispose();
+
+    expect(
+      () => providerBaseState.markNeedsNotifyListeners(),
+      throwsStateError,
+    );
+  });
   test('owner.ref uses the override', () {
     final provider = Provider((_) => 42);
     final owner = ProviderStateOwner();
@@ -50,7 +75,7 @@ void main() {
     final owner = ProviderStateOwner();
     final owner2 = ProviderStateOwner(
       parent: owner,
-      overrides: [other.overrideForSubtree(other)],
+      overrides: [other],
     );
 
     final value = other.readOwner(owner2);
@@ -97,13 +122,13 @@ void main() {
     final provider = Provider((_) => callCount++);
 
     final owner = ProviderStateOwner(
-      overrides: [provider.overrideForSubtree(provider)],
+      overrides: [provider],
     );
 
     expect(callCount, 0);
 
     owner.update(
-      [provider.overrideForSubtree(provider)],
+      [provider],
     );
 
     expect(callCount, 0);
@@ -230,9 +255,9 @@ void main() {
     });
 
     final owner = ProviderStateOwner(overrides: [
-      provider.overrideForSubtree(provider),
-      provider1.overrideForSubtree(provider1),
-      provider2.overrideForSubtree(provider2),
+      provider,
+      provider1,
+      provider2,
     ]);
 
     expect(provider2.readOwner(owner)(), 3);
@@ -242,9 +267,9 @@ void main() {
     verifyZeroInteractions(provider2.onDidUpdateProvider);
 
     owner.update([
-      provider.overrideForSubtree(provider),
-      provider1.overrideForSubtree(provider1),
-      provider2.overrideForSubtree(provider2),
+      provider,
+      provider1,
+      provider2,
     ]);
 
     verifyInOrder([
@@ -378,8 +403,8 @@ void main() {
         parent: root,
         markNeedsUpdate: ownerNeedsUpdate,
         overrides: [
-          provider.overrideForSubtree(provider),
-          provider.value.overrideForSubtree(provider.value),
+          provider,
+          provider.value,
         ],
       );
       final listener = ListenerMock();
@@ -427,7 +452,7 @@ void main() {
         parent: root,
         markNeedsUpdate: ownerNeedsUpdate,
         overrides: [
-          provider.overrideForSubtree(provider),
+          provider,
         ],
       );
       TestProviderState state;
@@ -610,6 +635,16 @@ class MockDidUpdateProvider extends Mock {
 
 class MockInitState<T> extends Mock {
   void call(TestProviderState<T> state);
+
+  void thenAnswer(void Function(TestProviderState<T> state) cb) {
+    when(this(any)).thenAnswer((realInvocation) {
+      Function.apply(
+        cb,
+        realInvocation.positionalArguments,
+        realInvocation.namedArguments,
+      );
+    });
+  }
 }
 
 class MockOnValueDispose<T> extends Mock {

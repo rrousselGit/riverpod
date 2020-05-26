@@ -197,7 +197,7 @@ Changing the kind of override or reordering overrides is not supported.
       if (entry.value._dirty) {
         entry.value
           .._dirty = false
-          .._notifyListeners();
+          ..notifyListeners();
       }
     }
     _updateScheduled = false;
@@ -240,6 +240,8 @@ extension ReadProviderState on ProviderStateOwner {
   }
 }
 
+// The generic parameters makes it more type-safe as it ensure _origin and _provider
+// have the same generic parameters.
 class ProviderOverride<CombiningValue extends ProviderBaseSubscription,
     ListeningValue extends Object> {
   ProviderOverride._(this._provider, this._origin);

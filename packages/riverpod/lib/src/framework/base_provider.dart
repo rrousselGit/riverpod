@@ -3,10 +3,16 @@ part of 'framework.dart';
 @immutable
 @optionalTypeArgs
 abstract class ProviderBase<CombiningValue extends ProviderBaseSubscription,
-    ListenedValue extends Object> {
+        ListenedValue extends Object>
+    implements ProviderOverride<CombiningValue, ListenedValue> {
   @visibleForOverriding
   ProviderBaseState<CombiningValue, ListenedValue,
       ProviderBase<CombiningValue, ListenedValue>> createState();
+
+  @override
+  ProviderBase<CombiningValue, ListenedValue> get _origin => this;
+  @override
+  ProviderBase<CombiningValue, ListenedValue> get _provider => this;
 
   /// The callback may never get called
   // TODO why the value isn't passed to onChange
@@ -109,7 +115,7 @@ abstract class ProviderBaseState<
         }(), '');
 
         _dependenciesState.add(targetProviderState);
-        _redepthAfter(targetProviderState);
+        redepthAfter(targetProviderState);
         final targetProviderValue =
             targetProviderState.createProviderSubscription();
         onDispose(targetProviderValue.dispose);
@@ -138,7 +144,7 @@ abstract class ProviderBaseState<
   /// depends on this state.
   ///
   /// Worse case scenario, this is O(N), even on a complex tree.
-  void _redepthAfter(ProviderBaseState from) {
+  void redepthAfter(ProviderBaseState from) {
     final newDepth = max(_depth, from._depth + 1);
     if (newDepth == _depth) {
       return;
@@ -170,7 +176,7 @@ abstract class ProviderBaseState<
     }
 
     // for (final dep in _dependenciesState) {
-    //   dep._redepthAfter(this);
+    //   dep.redepthAfter(this);
     // }
   }
 
@@ -189,15 +195,26 @@ abstract class ProviderBaseState<
     return entry.unlink;
   }
 
-  void _notifyListeners() {
+  /// Notify all the listeners in order
+  ///
+  /// It may be overriden to not notify listeners if the value didn't change
+  /// while preserving reactivity.
+  @visibleForOverriding
+  void notifyListeners() {
     if (_stateListeners != null) {
       for (final listener in _stateListeners) {
+        // TODO guard
         listener.value(state);
       }
     }
   }
 
   void markNeedsNotifyListeners() {
+    if (!_mounted) {
+      throw StateError(
+        'A provider was marked as needing to perform updates when it was already disposed',
+      );
+    }
     if (_error != null) {
       throw StateError(
         'A provider cannot emit updates if an exception was thrown during the provider creation.',
@@ -222,6 +239,14 @@ abstract class ProviderBaseState<
   }
 }
 
+/// A base class for providers that are never disposed.
+///
+/// Since they are never disposed, this allows a broader way of consuming them,
+/// like with [readOwner], or if using Flutter, with `provider.read(BuildContext)`.
+///
+/// Similarly, since these providers are never disposed, they can only be
+/// overriden by providers that too are never disposed.
+/// Otherwise methods like [readOwner] would stop working.
 abstract class AlwaysAliveProvider<
     CombiningValue extends ProviderBaseSubscription,
     ListenedValue> extends ProviderBase<CombiningValue, ListenedValue> {

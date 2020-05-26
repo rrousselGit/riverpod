@@ -148,6 +148,7 @@ and that the community likes it, [provider] will still be maintained.
 - AutoDispose
 - Selector
 - Computed
+- SetStateSubscription/SelectorSubscription
 - overrideForSubtree AutoDispose
 - Dartdoc for all public APIs
 - review all public APIs
@@ -192,6 +193,7 @@ riverpod.dev
 Linter:
 
 - When overriding `StateNotifierProvider` on a non-root `ProviderStateOwner`, warn if the `.value` wasn't overriden too.
+- Check that when a provider is overriden locally, all of its dependencies are too
 
 [provider]: https://github.com/rrousselGit/provider
 [riverpod]: https://github.com/rrousselGit/river_pod

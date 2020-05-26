@@ -6,6 +6,7 @@
 library internals;
 
 export 'common.dart';
+export 'computed.dart';
 export 'framework/framework.dart';
 export 'future_provider.dart';
 export 'provider.dart';
