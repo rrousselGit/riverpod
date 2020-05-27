@@ -113,7 +113,7 @@ void main() {
       final provider = StreamProvider((_) => const Stream<int>.empty());
       final owner = ProviderStateOwner(
         overrides: [
-          provider.overrideWithValue(AsyncValue.data(21)),
+          provider.debugOverrideWithValue(AsyncValue.data(21)),
         ],
       );
       final listener = ListenerMock();
@@ -124,7 +124,7 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       owner.update([
-        provider.overrideWithValue(AsyncValue.data(42)),
+        provider.debugOverrideWithValue(AsyncValue.data(42)),
       ]);
 
       verify(listener(AsyncValue.data(42)));
@@ -139,7 +139,7 @@ void main() {
       // dynamic error;
       // final owner = ProviderStateOwner(
       //   overrides: [
-      //     provider.overrideWithValue(AsyncValue.data(21)),
+      //     provider.debugOverrideWithValue(AsyncValue.data(21)),
       //   ]
       // );
       // final listener = ListenerMock();
@@ -151,7 +151,7 @@ void main() {
       // expect(onErrorCallCount, 0);
 
       // owner.update([
-      //   provider.overrideWithValue(const AsyncValue.loading()),
+      //   provider.debugOverrideWithValue(const AsyncValue.loading()),
       // ]);
 
       // expect(onErrorCallCount, 1);
@@ -169,7 +169,7 @@ void main() {
       // var onErrorCallCount = 0;
       // final owner = ProviderStateOwner(
       //   overrides: [
-      //     provider.overrideWithValue(AsyncValue.error(expectedError)),
+      //     provider.debugOverrideWithValue(AsyncValue.error(expectedError)),
       //   ],
       //   onError: (dynamic err, _) {
       //     error = err;
@@ -185,7 +185,7 @@ void main() {
       // expect(onErrorCallCount, 0);
 
       // owner.update([
-      //   provider.overrideWithValue(const AsyncValue.loading()),
+      //   provider.debugOverrideWithValue(const AsyncValue.loading()),
       // ]);
 
       // expect(onErrorCallCount, 1);
@@ -199,7 +199,7 @@ void main() {
       final provider = StreamProvider((_) => const Stream<int>.empty());
       final owner = ProviderStateOwner(
         overrides: [
-          provider.overrideWithValue(AsyncValue.data(21)),
+          provider.debugOverrideWithValue(AsyncValue.data(21)),
         ],
       );
 
@@ -214,7 +214,7 @@ void main() {
 
       owner
         ..update([
-          provider.overrideWithValue(AsyncValue.data(42)),
+          provider.debugOverrideWithValue(AsyncValue.data(42)),
         ])
         ..dispose();
 

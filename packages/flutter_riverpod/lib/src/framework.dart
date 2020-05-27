@@ -15,7 +15,7 @@ class ProviderScope extends StatefulWidget {
   final Widget child;
 
   @visibleForTesting
-  final List<ProviderOverride<ProviderBaseSubscription, Object>> overrides;
+  final List<ProviderOverride> overrides;
 
   @override
   _ProviderScopeState createState() => _ProviderScopeState();

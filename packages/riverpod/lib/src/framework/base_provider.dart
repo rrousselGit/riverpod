@@ -4,15 +4,15 @@ part of 'framework.dart';
 @optionalTypeArgs
 abstract class ProviderBase<CombiningValue extends ProviderBaseSubscription,
         ListenedValue extends Object>
-    implements ProviderOverride<CombiningValue, ListenedValue> {
+    implements ProviderOverride {
   @visibleForOverriding
   ProviderBaseState<CombiningValue, ListenedValue,
       ProviderBase<CombiningValue, ListenedValue>> createState();
 
   @override
-  ProviderBase<CombiningValue, ListenedValue> get _origin => this;
+  ProviderBase get _origin => this;
   @override
-  ProviderBase<CombiningValue, ListenedValue> get _provider => this;
+  ProviderBase get _provider => this;
 
   /// The callback may never get called
   // TODO why the value isn't passed to onChange
@@ -256,7 +256,7 @@ abstract class AlwaysAliveProvider<
 
   // Always alive providers can only be overriden by always alive providers
   // as automatically disposed providers wouldn't work.
-  ProviderOverride<CombiningValue, ListenedValue> overrideForSubtree(
+  ProviderOverride overrideForSubtree(
     AlwaysAliveProvider<CombiningValue, ListenedValue> provider,
   ) {
     return ProviderOverride._(provider, this);

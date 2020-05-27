@@ -85,7 +85,7 @@ void main() {
     test('value immediatly then other value', () async {
       final provider = FutureProvider((_) async => 0);
       final owner = ProviderStateOwner(overrides: [
-        provider.debugOverrideFromValue(AsyncValue.data(42)),
+        provider.debugOverrideWithValue(AsyncValue.data(42)),
       ]);
       final listener = ListenerMock();
 
@@ -100,7 +100,7 @@ void main() {
       Object error;
       runZonedGuarded(
         () => owner.update([
-          provider.debugOverrideFromValue(AsyncValue.data(21)),
+          provider.debugOverrideWithValue(AsyncValue.data(21)),
         ]),
         (err, _) => error = err,
       );
@@ -111,7 +111,7 @@ void main() {
     test('value immediatly then error', () async {
       final provider = FutureProvider((_) async => 0);
       final owner = ProviderStateOwner(overrides: [
-        provider.debugOverrideFromValue(AsyncValue.data(42)),
+        provider.debugOverrideWithValue(AsyncValue.data(42)),
       ]);
       final listener = ListenerMock();
 
@@ -126,7 +126,7 @@ void main() {
       Object error;
       runZonedGuarded(
         () => owner.update([
-          provider.debugOverrideFromValue(AsyncValue.error(21)),
+          provider.debugOverrideWithValue(AsyncValue.error(21)),
         ]),
         (err, _) => error = err,
       );
@@ -137,7 +137,7 @@ void main() {
     test('value immediatly then loading', () async {
       final provider = FutureProvider((_) async => 0);
       final owner = ProviderStateOwner(overrides: [
-        provider.debugOverrideFromValue(AsyncValue.data(42)),
+        provider.debugOverrideWithValue(AsyncValue.data(42)),
       ]);
       final listener = ListenerMock();
 
@@ -152,7 +152,7 @@ void main() {
       Object error;
       runZonedGuarded(
         () => owner.update([
-          provider.debugOverrideFromValue(const AsyncValue.loading()),
+          provider.debugOverrideWithValue(const AsyncValue.loading()),
         ]),
         (err, _) => error = err,
       );
@@ -163,7 +163,7 @@ void main() {
     test('loading immediatly then value', () async {
       final provider = FutureProvider((_) async => 0);
       final owner = ProviderStateOwner(overrides: [
-        provider.debugOverrideFromValue(const AsyncValue.loading()),
+        provider.debugOverrideWithValue(const AsyncValue.loading()),
       ]);
       final listener = ListenerMock();
 
@@ -173,7 +173,7 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       owner.update([
-        provider.debugOverrideFromValue(AsyncValue.data(42)),
+        provider.debugOverrideWithValue(AsyncValue.data(42)),
       ]);
 
       verify(listener(AsyncValue.data(42))).called(1);
@@ -185,7 +185,7 @@ void main() {
     test('loading immediatly then error', () async {
       final provider = FutureProvider((_) async => 0);
       final owner = ProviderStateOwner(overrides: [
-        provider.debugOverrideFromValue(const AsyncValue.loading()),
+        provider.debugOverrideWithValue(const AsyncValue.loading()),
       ]);
       final listener = ListenerMock();
 
@@ -197,7 +197,7 @@ void main() {
       final stackTrace = StackTrace.current;
 
       owner.update([
-        provider.debugOverrideFromValue(AsyncValue.error(42, stackTrace)),
+        provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
 
       verify(listener(AsyncValue.error(42, stackTrace))).called(1);
@@ -209,7 +209,7 @@ void main() {
     test('loading immediatly then loading', () async {
       final provider = FutureProvider((_) async => 0);
       final owner = ProviderStateOwner(overrides: [
-        provider.debugOverrideFromValue(const AsyncValue.loading()),
+        provider.debugOverrideWithValue(const AsyncValue.loading()),
       ]);
       final listener = ListenerMock();
 
@@ -219,13 +219,13 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       owner.update([
-        provider.debugOverrideFromValue(const AsyncValue.loading()),
+        provider.debugOverrideWithValue(const AsyncValue.loading()),
       ]);
 
       verifyNoMoreInteractions(listener);
 
       owner.update([
-        provider.debugOverrideFromValue(AsyncValue.data(42)),
+        provider.debugOverrideWithValue(AsyncValue.data(42)),
       ]);
 
       verify(listener(AsyncValue.data(42))).called(1);
@@ -238,7 +238,7 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
       final owner = ProviderStateOwner(overrides: [
-        provider.debugOverrideFromValue(AsyncValue.error(42, stackTrace)),
+        provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
       final listener = ListenerMock();
 
@@ -253,7 +253,7 @@ void main() {
       Object error;
       runZonedGuarded(
         () => owner.update([
-          provider.debugOverrideFromValue(AsyncValue.error(21, stackTrace)),
+          provider.debugOverrideWithValue(AsyncValue.error(21, stackTrace)),
         ]),
         (err, _) => error = err,
       );
@@ -265,7 +265,7 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
       final owner = ProviderStateOwner(overrides: [
-        provider.debugOverrideFromValue(AsyncValue.error(42, stackTrace)),
+        provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
       final listener = ListenerMock();
 
@@ -281,7 +281,7 @@ void main() {
       runZonedGuarded(
         () => owner.update([
           provider
-              .debugOverrideFromValue(AsyncValue.error(42, StackTrace.current)),
+              .debugOverrideWithValue(AsyncValue.error(42, StackTrace.current)),
         ]),
         (err, _) => error = err,
       );
@@ -293,7 +293,7 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
       final owner = ProviderStateOwner(overrides: [
-        provider.debugOverrideFromValue(AsyncValue.error(42, stackTrace)),
+        provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
       final listener = ListenerMock();
 
@@ -308,7 +308,7 @@ void main() {
       Object error;
       runZonedGuarded(
         () => owner.update([
-          provider.debugOverrideFromValue(AsyncValue.data(42)),
+          provider.debugOverrideWithValue(AsyncValue.data(42)),
         ]),
         (err, _) => error = err,
       );
@@ -320,7 +320,7 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
       final owner = ProviderStateOwner(overrides: [
-        provider.debugOverrideFromValue(AsyncValue.error(42, stackTrace)),
+        provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
       final listener = ListenerMock();
 
@@ -335,7 +335,7 @@ void main() {
       Object error;
       runZonedGuarded(
         () => owner.update([
-          provider.debugOverrideFromValue(const AsyncValue.loading()),
+          provider.debugOverrideWithValue(const AsyncValue.loading()),
         ]),
         (err, _) => error = err,
       );

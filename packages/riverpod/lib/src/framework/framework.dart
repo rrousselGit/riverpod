@@ -240,14 +240,11 @@ extension ReadProviderState on ProviderStateOwner {
   }
 }
 
-// The generic parameters makes it more type-safe as it ensure _origin and _provider
-// have the same generic parameters.
-class ProviderOverride<CombiningValue extends ProviderBaseSubscription,
-    ListeningValue extends Object> {
+class ProviderOverride {
   ProviderOverride._(this._provider, this._origin);
 
-  final ProviderBase<CombiningValue, ListeningValue> _origin;
-  final ProviderBase<CombiningValue, ListeningValue> _provider;
+  final ProviderBase _origin;
+  final ProviderBase _provider;
 }
 
 abstract class ProviderBaseSubscription {

@@ -15,9 +15,13 @@ class StreamProvider<T>
 
   final Create<Stream<T>, ProviderReference> _create;
 
-  ProviderOverride<StreamProviderSubscription<T>, AsyncValue<T>>
-      overrideWithValue(AsyncValue<T> value) {
-    return overrideForSubtree(_ValueStreamProvider(value));
+  ProviderOverride debugOverrideWithValue(AsyncValue<T> value) {
+    ProviderOverride res;
+    assert(() {
+      res = overrideForSubtree(_ValueStreamProvider(value));
+      return true;
+    }(), '');
+    return res;
   }
 
   @override

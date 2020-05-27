@@ -509,7 +509,7 @@ void main() {
     test('update first update providers then dispatch notifications', () {
       final futureProvider = FutureProvider((_) async => 0);
       final owner = ProviderStateOwner(overrides: [
-        futureProvider.debugOverrideFromValue(const AsyncValue.loading()),
+        futureProvider.debugOverrideWithValue(const AsyncValue.loading()),
       ]);
       final listener = AsyncListenerMock();
 
@@ -519,7 +519,7 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       owner.update([
-        futureProvider.debugOverrideFromValue(AsyncValue.data(42)),
+        futureProvider.debugOverrideWithValue(AsyncValue.data(42)),
       ]);
 
       verify(listener(AsyncValue.data(42))).called(1);

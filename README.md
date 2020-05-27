@@ -140,7 +140,6 @@ and that the community likes it, [provider] will still be maintained.
 
 # Roadmap
 
-- StreamProvider.overrideWithValue debug-only
 - StreamProvider expose a Future<Data> for last valid value
 - Cannot add dependencies during dispatching
 - FutureChangeNotifier
@@ -148,6 +147,7 @@ and that the community likes it, [provider] will still be maintained.
 - AutoDispose
 - Selector
 - Computed
+- Family (StateNotifier vs .value) -> overriding the entire family at once
 - SetStateSubscription/SelectorSubscription
 - overrideForSubtree AutoDispose
 - Dartdoc for all public APIs
@@ -194,6 +194,7 @@ Linter:
 
 - When overriding `StateNotifierProvider` on a non-root `ProviderStateOwner`, warn if the `.value` wasn't overriden too.
 - Check that when a provider is overriden locally, all of its dependencies are too
+- provider.overrideForSubtree(provider) -> provider
 
 [provider]: https://github.com/rrousselGit/provider
 [riverpod]: https://github.com/rrousselGit/river_pod
