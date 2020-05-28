@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  // TODO handle null
   testWidgets('listen to the notifier', (tester) async {
     final notifier = TestNotifier();
     final provider = ChangeNotifierProvider((_) => notifier);

@@ -141,6 +141,7 @@ and that the community likes it, [provider] will still be maintained.
 # Roadmap
 
 - StreamProvider expose a Future<Data> for last valid value
+- future/changenotifier/...providers cannot return null
 - Cannot add dependencies during dispatching
 - FutureChangeNotifier
 - FutureStateNotifier

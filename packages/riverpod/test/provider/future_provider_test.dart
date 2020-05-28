@@ -6,7 +6,6 @@ import 'package:riverpod/src/framework/framework.dart' show AlwaysAliveProvider;
 import 'package:test/test.dart';
 
 void main() {
-  // TODO handle null
   test('is AlwaysAliveProvider', () {
     final provider = FutureProvider((_) async => 42);
 
@@ -81,7 +80,6 @@ void main() {
   });
 
   group('mock as value', () {
-    // TODO: do the same tests for StreamProvider
     test('value immediatly then other value', () async {
       final provider = FutureProvider((_) async => 0);
       final owner = ProviderStateOwner(overrides: [

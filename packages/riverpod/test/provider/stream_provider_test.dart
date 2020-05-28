@@ -6,7 +6,6 @@ import 'package:riverpod/src/framework/framework.dart' show AlwaysAliveProvider;
 import 'package:test/test.dart';
 
 void main() {
-  // TODO handle null
   test('is AlwaysAliveProvider', () {
     final provider = FutureProvider((_) async => 42);
 
