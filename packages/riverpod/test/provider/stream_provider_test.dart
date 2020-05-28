@@ -108,123 +108,6 @@ void main() {
     await controller.close();
   });
 
-  group('override with value', () {
-    test('with value synchronously', () async {
-      final provider = StreamProvider((_) => const Stream<int>.empty());
-      final owner = ProviderStateOwner(
-        overrides: [
-          provider.debugOverrideWithValue(AsyncValue.data(21)),
-        ],
-      );
-      final listener = ListenerMock();
-
-      provider.watchOwner(owner, listener);
-
-      verify(listener(AsyncValue<int>.data(21))).called(1);
-      verifyNoMoreInteractions(listener);
-
-      owner.update([
-        provider.debugOverrideWithValue(AsyncValue.data(42)),
-      ]);
-
-      verify(listener(AsyncValue.data(42)));
-      verifyNoMoreInteractions(listener);
-
-      owner.dispose();
-    });
-    test('data to loading throws', () {
-      // final provider = StreamProvider((_) async* {
-      //   yield 42;
-      // });
-      // dynamic error;
-      // final owner = ProviderStateOwner(
-      //   overrides: [
-      //     provider.debugOverrideWithValue(AsyncValue.data(21)),
-      //   ]
-      // );
-      // final listener = ListenerMock();
-
-      // final removeListener = provider.watchOwner(owner, listener);
-
-      // verify(listener(AsyncValue<int>.data(21))).called(1);
-      // verifyNoMoreInteractions(listener);
-      // expect(onErrorCallCount, 0);
-
-      // owner.update([
-      //   provider.debugOverrideWithValue(const AsyncValue.loading()),
-      // ]);
-
-      // expect(onErrorCallCount, 1);
-      // expect(error, isUnsupportedError);
-      // verifyNoMoreInteractions(listener);
-
-      // owner.dispose();
-    }, skip: true);
-    test('error to loading throws', () {
-      // final expectedError = Error();
-      // final provider = StreamProvider((_) async* {
-      //   yield 42;
-      // });
-      // dynamic error;
-      // var onErrorCallCount = 0;
-      // final owner = ProviderStateOwner(
-      //   overrides: [
-      //     provider.debugOverrideWithValue(AsyncValue.error(expectedError)),
-      //   ],
-      //   onError: (dynamic err, _) {
-      //     error = err;
-      //     onErrorCallCount++;
-      //   },
-      // );
-      // final listener = ListenerMock();
-
-      // final removeListener = provider.watchOwner(owner, listener);
-
-      // verify(listener(AsyncValue<int>.error(expectedError))).called(1);
-      // verifyNoMoreInteractions(listener);
-      // expect(onErrorCallCount, 0);
-
-      // owner.update([
-      //   provider.debugOverrideWithValue(const AsyncValue.loading()),
-      // ]);
-
-      // expect(onErrorCallCount, 1);
-      // expect(error, isUnsupportedError);
-      // verifyNoMoreInteractions(listener);
-
-      // owner.dispose();
-    }, skip: true);
-
-    test('combine', () async {
-      final provider = StreamProvider((_) => const Stream<int>.empty());
-      final owner = ProviderStateOwner(
-        overrides: [
-          provider.debugOverrideWithValue(AsyncValue.data(21)),
-        ],
-      );
-
-      Stream<int> stream;
-      final combinedProvider = Provider<int>((ref) {
-        final first = ref.dependOn(provider);
-        stream = first.stream;
-        return 42;
-      });
-
-      expect(combinedProvider.readOwner(owner), 42);
-
-      owner
-        ..update([
-          provider.debugOverrideWithValue(AsyncValue.data(42)),
-        ])
-        ..dispose();
-
-      await expectLater(
-        stream,
-        emitsInAnyOrder(<int>[21, 42]),
-      );
-    });
-  });
-
   test('combine', () {
     final owner = ProviderStateOwner();
     const expectedStream = Stream<int>.empty();
@@ -241,6 +124,299 @@ void main() {
     expect(stream, expectedStream);
 
     owner.dispose();
+  });
+
+  group('mock as value', () {
+    test('value immediatly then other value', () async {
+      final provider = StreamProvider<int>((_) async* {});
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideWithValue(AsyncValue.data(42)),
+      ]);
+      final listener = ListenerMock();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.stream.asBroadcastStream();
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(AsyncValue.data(42))).called(1);
+      verifyNoMoreInteractions(listener);
+      await expectLater(stream, emits(42));
+
+      owner.update([
+        provider.debugOverrideWithValue(AsyncValue.data(21)),
+      ]);
+
+      verify(listener(AsyncValue.data(21))).called(1);
+      verifyNoMoreInteractions(listener);
+      await expectLater(stream, emits(21));
+
+      owner.dispose();
+
+      await expectLater(stream, emitsDone);
+    });
+    test('value immediatly then error', () async {
+      final provider = StreamProvider<int>((_) async* {});
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideWithValue(AsyncValue.data(42)),
+      ]);
+      final listener = ListenerMock();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.stream.asBroadcastStream();
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(AsyncValue.data(42))).called(1);
+      verifyNoMoreInteractions(listener);
+      await expectLater(stream, emits(42));
+
+      owner.update([
+        provider.debugOverrideWithValue(AsyncValue.error(21)),
+      ]);
+
+      verify(listener(AsyncValue.error(21))).called(1);
+      verifyNoMoreInteractions(listener);
+      await expectLater(stream, emitsError(21));
+
+      owner.dispose();
+
+      await expectLater(stream, emitsDone);
+    });
+    test('value immediatly then loading', () async {
+      final provider = StreamProvider<int>((_) async* {});
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideWithValue(AsyncValue.data(42)),
+      ]);
+      final listener = ListenerMock();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.stream.asBroadcastStream();
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(AsyncValue.data(42))).called(1);
+      verifyNoMoreInteractions(listener);
+      await expectLater(stream, emits(42));
+
+      Object error;
+      runZonedGuarded(
+        () => owner.update([
+          provider.debugOverrideWithValue(const AsyncValue.loading()),
+        ]),
+        (err, _) => error = err,
+      );
+
+      verifyNoMoreInteractions(listener);
+      expect(error, isUnsupportedError);
+
+      owner.dispose();
+
+      await expectLater(stream, emitsDone);
+    });
+    test('loading immediatly then value', () async {
+      final provider = StreamProvider<int>((_) async* {});
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideWithValue(const AsyncValue.loading()),
+      ]);
+      final listener = ListenerMock();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.stream.asBroadcastStream();
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(const AsyncValue.loading())).called(1);
+      verifyNoMoreInteractions(listener);
+
+      owner.update([
+        provider.debugOverrideWithValue(AsyncValue.data(42)),
+      ]);
+
+      verify(listener(AsyncValue.data(42))).called(1);
+      verifyNoMoreInteractions(listener);
+      await expectLater(stream, emits(42));
+
+      owner.dispose();
+
+      await expectLater(stream, emitsDone);
+    });
+    test('loading immediatly then error', () async {
+      final provider = StreamProvider<int>((_) async* {});
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideWithValue(const AsyncValue.loading()),
+      ]);
+      final listener = ListenerMock();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.stream.asBroadcastStream();
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(const AsyncValue.loading())).called(1);
+      verifyNoMoreInteractions(listener);
+
+      final stackTrace = StackTrace.current;
+
+      owner.update([
+        provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
+      ]);
+
+      verify(listener(AsyncValue.error(42, stackTrace))).called(1);
+      verifyNoMoreInteractions(listener);
+
+      await expectLater(stream, emitsError(42));
+
+      owner.dispose();
+
+      await expectLater(stream, emitsDone);
+    });
+    test('loading immediatly then loading', () async {
+      final provider = StreamProvider<int>((_) async* {});
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideWithValue(const AsyncValue.loading()),
+      ]);
+      final listener = ListenerMock();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.stream.asBroadcastStream();
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(const AsyncValue.loading())).called(1);
+      verifyNoMoreInteractions(listener);
+
+      owner.update([
+        provider.debugOverrideWithValue(const AsyncValue.loading()),
+      ]);
+
+      verifyNoMoreInteractions(listener);
+
+      owner.update([
+        provider.debugOverrideWithValue(AsyncValue.data(42)),
+      ]);
+
+      verify(listener(AsyncValue.data(42))).called(1);
+      verifyNoMoreInteractions(listener);
+
+      await expectLater(stream, emits(42));
+
+      owner.dispose();
+
+      await expectLater(stream, emitsDone);
+    });
+    test('error immediatly then different error', () async {
+      final stackTrace = StackTrace.current;
+      final provider = StreamProvider<int>((_) async* {});
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
+      ]);
+      final listener = ListenerMock();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.stream.asBroadcastStream();
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(AsyncValue.error(42, stackTrace))).called(1);
+      verifyNoMoreInteractions(listener);
+      await expectLater(stream, emitsError(42));
+
+      owner.update([
+        provider.debugOverrideWithValue(AsyncValue.error(21, stackTrace)),
+      ]);
+
+      verify(listener(AsyncValue.error(21, stackTrace))).called(1);
+      verifyNoMoreInteractions(listener);
+      await expectLater(stream, emitsError(21));
+
+      owner.dispose();
+
+      await expectLater(stream, emitsDone);
+    });
+    test('error immediatly then different stacktrace', () async {
+      final stackTrace = StackTrace.current;
+      final provider = StreamProvider<int>((_) async* {});
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
+      ]);
+      final listener = ListenerMock();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.stream.asBroadcastStream();
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(AsyncValue.error(42, stackTrace))).called(1);
+      verifyNoMoreInteractions(listener);
+      await expectLater(stream, emitsError(42));
+
+      final stackTrace2 = StackTrace.current;
+      owner.update([
+        provider.debugOverrideWithValue(
+          AsyncValue.error(42, stackTrace2),
+        ),
+      ]);
+
+      verify(listener(AsyncValue.error(42, stackTrace2))).called(1);
+      verifyNoMoreInteractions(listener);
+      await expectLater(stream, emitsError(42));
+
+      owner.dispose();
+
+      await expectLater(stream, emitsDone);
+    });
+    test('error immediatly then data', () async {
+      final stackTrace = StackTrace.current;
+      final provider = StreamProvider<int>((_) async* {});
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
+      ]);
+      final listener = ListenerMock();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.stream.asBroadcastStream();
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(AsyncValue.error(42, stackTrace))).called(1);
+      verifyNoMoreInteractions(listener);
+      await expectLater(stream, emitsError(42));
+
+      owner.update([
+        provider.debugOverrideWithValue(AsyncValue.data(21)),
+      ]);
+
+      verify(listener(AsyncValue.data(21))).called(1);
+      verifyNoMoreInteractions(listener);
+      await expectLater(stream, emits(21));
+
+      owner.dispose();
+
+      await expectLater(stream, emitsDone);
+    });
+    test('error immediatly then loading', () async {
+      final stackTrace = StackTrace.current;
+      final provider = StreamProvider<int>((_) async* {});
+      final owner = ProviderStateOwner(overrides: [
+        provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
+      ]);
+      final listener = ListenerMock();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.stream.asBroadcastStream();
+
+      provider.watchOwner(owner, listener);
+
+      verify(listener(AsyncValue.error(42, stackTrace))).called(1);
+      verifyNoMoreInteractions(listener);
+      await expectLater(stream, emitsError(42));
+
+      Object error;
+      runZonedGuarded(
+        () => owner.update([
+          provider.debugOverrideWithValue(const AsyncValue.loading()),
+        ]),
+        (err, _) => error = err,
+      );
+
+      expect(error, isUnsupportedError);
+      verifyNoMoreInteractions(listener);
+
+      owner.dispose();
+
+      await expectLater(stream, emitsDone);
+    });
   });
 }
 

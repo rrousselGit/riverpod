@@ -115,20 +115,24 @@ class _ValueStreamProviderState<T> extends ProviderBaseState<
   @override
   void didUpdateProvider(_ValueStreamProvider<T> oldProvider) {
     super.didUpdateProvider(oldProvider);
-    if (provider.value == AsyncValue<T>.loading()) {
-      oldProvider.value.maybeWhen(
-        loading: () {},
-        orElse: () => throw UnsupportedError(
-          'Once an overide was built with a data/error, its state cannot change',
-        ),
-      );
-    }
-    state = provider.value
-      ..when(
-        data: _controller.add,
-        loading: () {},
-        error: _controller.addError,
-      );
+    provider.value.when(
+      data: (data) {
+        _controller.add(data);
+        state = provider.value;
+      },
+      loading: () {
+        oldProvider.value.maybeWhen(
+          loading: () {},
+          orElse: () => throw UnsupportedError(
+            'Once an overide was built with a data/error, it cannot revert to loading',
+          ),
+        );
+      },
+      error: (err, stack) {
+        _controller.addError(err, stack);
+        state = provider.value;
+      },
+    );
   }
 
   @override
