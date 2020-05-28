@@ -4,8 +4,8 @@ import 'common.dart';
 import 'framework/framework.dart';
 import 'internals.dart';
 
-// ignore: must_be_immutable, false positive, value is immutable.
-class StateNotifierProvider<Notifier extends StateNotifier<Value>, Value>
+// ignore: must_be_immutable, false positive, _value is immutable but lazy loaded.
+class StateNotifierProvider<Notifier extends StateNotifier<Object>>
     extends Provider<Notifier> {
   StateNotifierProvider(Create<Notifier, ProviderReference> create)
       : super((ref) {
@@ -14,10 +14,16 @@ class StateNotifierProvider<Notifier extends StateNotifier<Value>, Value>
           return notifier;
         });
 
-  // TODO replace with `late final` when available
-  SetStateProvider<Value> _valueProvider;
+  SetStateProvider<Object> _value;
+}
+
+/// Adds [value] to [StateNotifierProvider].
+/// 
+/// This is done as an extension as a workaround to language limitations.
+extension StateNotifierProviderValue<Value>
+    on StateNotifierProvider<StateNotifier<Value>> {
   SetStateProvider<Value> get value {
-    return _valueProvider ??= SetStateProvider((ref) {
+    _value ??= SetStateProvider<Value>((ref) {
       final notifier = ref.dependOn(this).value;
 
       ref.onDispose(
@@ -26,5 +32,6 @@ class StateNotifierProvider<Notifier extends StateNotifier<Value>, Value>
 
       return ref.state;
     });
+    return _value as SetStateProvider<Value>;
   }
 }

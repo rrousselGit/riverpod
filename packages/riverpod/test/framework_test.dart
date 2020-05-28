@@ -11,7 +11,7 @@ void main() {
   test('provider.overrideForSubtree(provider) can be simplified into provider',
       () {
     final notifier = Counter();
-    final provider = StateNotifierProvider<Counter, int>((_) => notifier);
+    final provider = StateNotifierProvider<Counter>((_) => notifier);
     final root = ProviderStateOwner();
     final owner = ProviderStateOwner(parent: root, overrides: [provider]);
 
@@ -412,7 +412,7 @@ void main() {
       final rootNeedsUpdate = MockMarkNeedsUpdate();
       final ownerNeedsUpdate = MockMarkNeedsUpdate();
       final counter = Counter();
-      final provider = StateNotifierProvider<Counter, int>((_) => counter);
+      final provider = StateNotifierProvider<Counter>((_) => counter);
       final root = ProviderStateOwner(markNeedsUpdate: rootNeedsUpdate);
       final owner = ProviderStateOwner(
         parent: root,
@@ -496,7 +496,7 @@ void main() {
     });
     test('noop if no provider was "dirty"', () {
       final counter = Counter();
-      final provider = StateNotifierProvider<Counter, int>((_) => counter);
+      final provider = StateNotifierProvider<Counter>((_) => counter);
       final owner = ProviderStateOwner();
       final listener = ListenerMock();
 
@@ -543,7 +543,7 @@ void main() {
     test('on update`', () async {
       final owner = ProviderStateOwner();
       final counter = Counter();
-      final provider = StateNotifierProvider<Counter, int>((_) => counter);
+      final provider = StateNotifierProvider<Counter>((_) => counter);
       final listener = ListenerMock();
 
       provider.value.watchOwner(owner, listener);
@@ -568,12 +568,12 @@ void main() {
       final counter2 = Counter();
       final counter3 = Counter();
 
-      final provider = StateNotifierProvider<Counter, int>((_) => counter);
-      final provider2 = StateNotifierProvider<Counter, int>((ref) {
+      final provider = StateNotifierProvider<Counter>((_) => counter);
+      final provider2 = StateNotifierProvider<Counter>((ref) {
         ref.dependOn(provider);
         return counter2;
       });
-      final provider3 = StateNotifierProvider<Counter, int>((ref) {
+      final provider3 = StateNotifierProvider<Counter>((ref) {
         ref.dependOn(provider2);
         return counter3;
       });

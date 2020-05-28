@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 
 void main() {
   test('disposes the notifier when provider is unmounted', () {
-    final provider = StateNotifierProvider<TestNotifier, int>((_) {
+    final provider = StateNotifierProvider<TestNotifier>((_) {
       return TestNotifier();
     });
     final owner = ProviderStateOwner();
@@ -19,7 +19,7 @@ void main() {
 
   test('provider subscribe the callback is never', () async {
     final notifier = TestNotifier();
-    final provider = StateNotifierProvider<TestNotifier, int>((_) {
+    final provider = StateNotifierProvider<TestNotifier>((_) {
       return notifier;
     });
     final listener = ControllerListenerMock();
@@ -43,7 +43,7 @@ void main() {
     verifyNoMoreInteractions(listener);
   });
   test('provider subscribe callback never called', () async {
-    final provider = StateNotifierProvider<TestNotifier, int>((_) {
+    final provider = StateNotifierProvider<TestNotifier>((_) {
       return TestNotifier();
     });
     final listener = ListenerMock();

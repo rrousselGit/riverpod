@@ -64,7 +64,7 @@ void main() {
   });
   test('dispose Computed when all Computed listeners are removed', () {
     final notifier = Notifier(0);
-    final provider = StateNotifierProvider<Notifier<int>, int>((_) => notifier);
+    final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     final computed = Computed((read) => read(provider.value));
     final root = ProviderStateOwner();
     // no need to pass "overrides" as the computed should naturally go to the deepest owner
@@ -87,7 +87,7 @@ void main() {
   test('cannot call read outside of the Computed', () {
     final owner = ProviderStateOwner();
     final notifier = Notifier(0);
-    final provider = StateNotifierProvider<Notifier<int>, int>((_) => notifier);
+    final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     var callCount = 0;
     Reader reader;
     final computed = Computed((read) {
@@ -119,7 +119,7 @@ void main() {
       final owner = ProviderStateOwner();
       final notifier = Notifier(0);
       final provider =
-          StateNotifierProvider<Notifier<int>, int>((_) => notifier);
+          StateNotifierProvider<Notifier<int>>((_) => notifier);
       final computed = Computed((read) {
         return [read(provider.value).isNegative];
       });
@@ -139,7 +139,7 @@ void main() {
       final owner = ProviderStateOwner();
       final notifier = Notifier(0);
       final provider =
-          StateNotifierProvider<Notifier<int>, int>((_) => notifier);
+          StateNotifierProvider<Notifier<int>>((_) => notifier);
       final computed = Computed((read) {
         return {read(provider.value).isNegative};
       });
@@ -159,7 +159,7 @@ void main() {
       final owner = ProviderStateOwner();
       final notifier = Notifier(0);
       final provider =
-          StateNotifierProvider<Notifier<int>, int>((_) => notifier);
+          StateNotifierProvider<Notifier<int>>((_) => notifier);
       final computed = Computed((read) {
         return {'foo': read(provider.value).isNegative};
       });
@@ -179,7 +179,7 @@ void main() {
   test('the value is cached between multiple listeners', () {
     final owner = ProviderStateOwner();
     final notifier = Notifier(0);
-    final provider = StateNotifierProvider<Notifier<int>, int>((_) => notifier);
+    final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     var callCount = 0;
     final computed = Computed((read) {
       callCount++;
@@ -218,7 +218,7 @@ void main() {
   test('Simple Computed flow', () {
     final owner = ProviderStateOwner();
     final notifier = Notifier(0);
-    final provider = StateNotifierProvider<Notifier<int>, int>((_) => notifier);
+    final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     final listener = Listener<bool>();
     var callCount = 0;
     final isPositiveComputed = Computed((read) {
