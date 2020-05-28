@@ -3,16 +3,10 @@ part of 'framework.dart';
 @immutable
 @optionalTypeArgs
 abstract class ProviderBase<CombiningValue extends ProviderBaseSubscription,
-        ListenedValue extends Object>
-    implements ProviderOverride {
+    ListenedValue extends Object> {
   @visibleForOverriding
   ProviderBaseState<CombiningValue, ListenedValue,
       ProviderBase<CombiningValue, ListenedValue>> createState();
-
-  @override
-  ProviderBase get _origin => this;
-  @override
-  ProviderBase get _provider => this;
 
   /// The callback may never get called
   // TODO why the value isn't passed to onChange
@@ -248,11 +242,17 @@ abstract class ProviderBaseState<
 /// overriden by providers that too are never disposed.
 /// Otherwise methods like [readOwner] would stop working.
 abstract class AlwaysAliveProvider<
-    CombiningValue extends ProviderBaseSubscription,
-    ListenedValue> extends ProviderBase<CombiningValue, ListenedValue> {
+        CombiningValue extends ProviderBaseSubscription,
+        ListenedValue> extends ProviderBase<CombiningValue, ListenedValue>
+    implements ProviderOverride {
   ListenedValue readOwner(ProviderStateOwner owner) {
     return owner._readProviderState(this).state;
   }
+
+  @override
+  ProviderBase get _origin => this;
+  @override
+  ProviderBase get _provider => this;
 
   // Always alive providers can only be overriden by always alive providers
   // as automatically disposed providers wouldn't work.

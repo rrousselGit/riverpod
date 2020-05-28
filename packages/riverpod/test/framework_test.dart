@@ -6,7 +6,22 @@ import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 
 void main() {
+  // TODO provider.overrideForSubtree(provider) can be simplified into provider
   // TODO owner life-cycles are unusuable after dispose
+  test('provider.overrideForSubtree(provider) can be simplified into provider',
+      () {
+    final notifier = Counter();
+    final provider = StateNotifierProvider<Counter, int>((_) => notifier);
+    final root = ProviderStateOwner();
+    final owner = ProviderStateOwner(parent: root, overrides: [provider]);
+
+    expect(provider.readOwner(owner), notifier);
+    expect(notifier.mounted, true);
+
+    owner.dispose();
+
+    expect(notifier.mounted, false);
+  });
   test('cannot call markNeedsNotifyListeners after dispose', () {
     final owner = ProviderStateOwner();
     final provider = TestProvider((ref) {});

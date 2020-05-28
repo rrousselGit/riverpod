@@ -6,12 +6,69 @@ import 'package:test/test.dart';
 
 void main() {
   // TODO auto dispose Computed when no longer used (or at least destroy the listeners)
+  test(
+      'Computed are stored on the deeper ProviderStateOwner and cannot be overriden (insert in parent owner first then child owner)',
+      () {
+    final root = ProviderStateOwner();
+    final owner = ProviderStateOwner(parent: root);
+    var callCount = 0;
+    final computed = Computed((_) => callCount++);
+    final rootListener = Listener<int>();
+    final ownerListener = Listener<int>();
+
+    computed.watchOwner(root, rootListener);
+
+    expect(callCount, 1);
+    verify(rootListener(0)).called(1);
+    verifyNoMoreInteractions(rootListener);
+
+    computed.watchOwner(owner, ownerListener);
+
+    expect(callCount, 2);
+    verify(ownerListener(1)).called(1);
+    verifyNoMoreInteractions(ownerListener);
+
+    computed.watchOwner(root, rootListener);
+
+    expect(callCount, 2);
+    verify(rootListener(0)).called(1);
+    verifyNoMoreInteractions(rootListener);
+
+    computed.watchOwner(owner, ownerListener);
+
+    expect(callCount, 2);
+    verify(ownerListener(1)).called(1);
+    verifyNoMoreInteractions(ownerListener);
+  });
+
+  test('Computeds are added to the overall list of providers', () {
+    final owner = ProviderStateOwner();
+    final provider = Provider((_) => 42);
+    final computed = Computed((read) => read(provider) * 2);
+    final provider2 = Provider((ref) => ref.dependOn(computed));
+    final listener = Listener<int>();
+
+    provider2.readOwner(owner);
+    computed.watchOwner(owner, listener);
+
+    verify(listener(84)).called(1);
+    verifyNoMoreInteractions(listener);
+
+    expect(
+      owner.debugProviderStatedSortedByDepth.map((e) => e.provider),
+      [provider, computed, provider2],
+    );
+  });
+  test('Computed are not overrides', () {
+    expect(Computed((_) {}), isNot(isA<ProviderOverride>()));
+  });
   test('dispose Computed when all Computed listeners are removed', () {
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>, int>((_) => notifier);
     final computed = Computed((read) => read(provider.value));
     final root = ProviderStateOwner();
-    final owner = ProviderStateOwner(parent: root, overrides: [computed]);
+    // no need to pass "overrides" as the computed should naturally go to the deepest owner
+    final owner = ProviderStateOwner(parent: root);
     final listener = Listener<int>();
 
     computed.watchOwner(owner, listener);

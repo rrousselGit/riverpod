@@ -5,6 +5,11 @@ import 'internals.dart';
 
 typedef Reader = Res Function<Res>(ProviderBase<ProviderBaseSubscription, Res>);
 
+/// Does not notify dependents if the value returned didn't change.
+///
+/// DON'T do trigger side-effects such as http requests inside [Computed].
+/// [Computed] does not guanrantee that the function won't be re-evaluated
+/// even if the inputs didn't change.
 class Computed<T> extends ProviderBase<ProviderBaseSubscription, T> {
   Computed(this._selector);
 

@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:meta/meta.dart';
 
 import '../common.dart';
+import '../computed.dart';
 import '../provider.dart';
 
 part 'base_provider.dart';
@@ -83,6 +84,8 @@ class ProviderStateOwner {
 
     _fallback = parent?._fallback;
     _fallback ??= <T>(provider) {
+      // It's fine to add new keys to _stateReaders inside fallback
+      // as in this situation, there is no "parent" owner.s
       return _stateReaders.putIfAbsent(provider, () {
         return _ProviderStateReader(provider, this);
       }).read() as ProviderBaseState<ProviderBaseSubscription, T,
@@ -110,6 +113,12 @@ class ProviderStateOwner {
   final _providerStatesSortedByDepth =
       LinkedList<_LinkedListEntry<ProviderBaseState>>();
   Map<ProviderBase, _ProviderStateReader> _stateReaders;
+
+  /// The state of `Computed` providers
+  ///
+  /// It is not stored inside [_stateReaders] as `Computed` are always
+  /// in the deepest [ProviderStateOwner] possible.
+  Map<Computed, _ProviderStateReader> _computedStateReaders;
   _FallbackProviderStateReader _fallback;
   var _updateScheduled = false;
   Map<ProviderBase, ProviderBaseSubscription> _dependencies;
@@ -209,9 +218,17 @@ Changing the kind of override or reordering overrides is not supported.
           ListeningValue>(
     ProviderBase<CombiningValue, ListeningValue> provider,
   ) {
-    final result = _stateReaders[provider]?.read() ?? _fallback(provider);
-    return result as ProviderBaseState<CombiningValue, ListeningValue,
-        ProviderBase<CombiningValue, ListeningValue>>;
+    if (provider is Computed) {
+      _computedStateReaders ??= {};
+      return _computedStateReaders.putIfAbsent(provider as Computed, () {
+        return _ProviderStateReader(provider, this);
+      }).read() as ProviderBaseState<CombiningValue, ListeningValue,
+          ProviderBase<CombiningValue, ListeningValue>>;
+    } else {
+      return (_stateReaders[provider]?.read() ?? _fallback(provider))
+          as ProviderBaseState<CombiningValue, ListeningValue,
+              ProviderBase<CombiningValue, ListeningValue>>;
+    }
   }
 }
 
