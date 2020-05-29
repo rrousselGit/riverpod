@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:riverpod/riverpod.dart';
 
@@ -19,6 +20,28 @@ class ProviderScope extends StatefulWidget {
 
   @override
   _ProviderScopeState createState() => _ProviderScopeState();
+
+  @override
+  _ProviderScopeElement createElement() {
+    return _ProviderScopeElement(this);
+  }
+}
+
+class _ProviderScopeElement extends StatefulElement {
+  _ProviderScopeElement(ProviderScope widget) : super(widget);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    final owner = (state as _ProviderScopeState)._owner;
+
+    // filling the state properties here instead of inside State
+    // so that it is more readable in the devtool (one less indentation)
+    for (final entry in owner.debugProviderStates.entries) {
+      final name = entry.key.name ?? describeIdentity(entry.key);
+      properties.add(DiagnosticsProperty(name, entry.value));
+    }
+  }
 }
 
 class _ProviderScopeState extends State<ProviderScope> {

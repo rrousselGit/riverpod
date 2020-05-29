@@ -156,7 +156,6 @@ and that the community likes it, [provider] will still be maintained.
 - Dartdoc for all public APIs
 - review all public APIs
 - README for all packages
-- debugFillProperties
 - CI
 - provider.watchRef?
 - Packages description/homepage

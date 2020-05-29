@@ -196,11 +196,11 @@ packages:
     source: hosted
     version: "0.9.0"
   flutter_riverpod:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: flutter_riverpod
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../../packages/flutter_riverpod"
+      relative: true
+    source: path
     version: "0.0.1-pre+1"
   flutter_test:
     dependency: "direct dev"
@@ -390,11 +390,11 @@ packages:
     source: hosted
     version: "2.1.3"
   riverpod:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: riverpod
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../../packages/riverpod"
+      relative: true
+    source: path
     version: "0.0.1-pre+1"
   shelf:
     dependency: transitive
@@ -521,5 +521,5 @@ packages:
     source: hosted
     version: "2.2.1"
 sdks:
-  dart: ">=2.7.0 <3.0.0"
+  dart: ">=2.8.0-dev <3.0.0"
   flutter: ">1.17.0"

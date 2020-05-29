@@ -4,7 +4,7 @@ import 'common.dart';
 import 'framework/framework.dart';
 import 'internals.dart';
 
-// ignore: must_be_immutable, false positive, _value is immutable but lazy loaded.
+// ignore: must_be_immutable, false positive, _state is immutable but lazy loaded.
 class StateNotifierProvider<Notifier extends StateNotifier<Object>>
     extends Provider<Notifier> {
   StateNotifierProvider(
@@ -19,7 +19,7 @@ class StateNotifierProvider<Notifier extends StateNotifier<Object>>
           name: name,
         );
 
-  SetStateProvider<Object> _value;
+  SetStateProvider<Object> _state;
 }
 
 /// Adds [value] to [StateNotifierProvider].
@@ -28,7 +28,7 @@ class StateNotifierProvider<Notifier extends StateNotifier<Object>>
 extension StateNotifierProviderValue<Value>
     on StateNotifierProvider<StateNotifier<Value>> {
   SetStateProvider<Value> get value {
-    _value ??= SetStateProvider<Value>((ref) {
+    _state ??= SetStateProvider<Value>((ref) {
       final notifier = ref.dependOn(this).value;
 
       ref.onDispose(
@@ -37,6 +37,6 @@ extension StateNotifierProviderValue<Value>
 
       return ref.state;
     }, name: name == null ? null : '$name.value');
-    return _value as SetStateProvider<Value>;
+    return _state as SetStateProvider<Value>;
   }
 }
