@@ -4,6 +4,20 @@ import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('can specify name', () {
+    final provider = StateNotifierProvider(
+      (_) => TestNotifier(),
+      name: 'example',
+    );
+
+    expect(provider.name, 'example');
+    expect(provider.value.name, 'example.value');
+
+    final provider2 = StateNotifierProvider((_) => TestNotifier());
+
+    expect(provider2.name, isNull);
+    expect(provider2.value.name, isNull);
+  });
   test('disposes the notifier when provider is unmounted', () {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider<TestNotifier>((_) {

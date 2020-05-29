@@ -11,7 +11,7 @@ class StreamProviderSubscription<T> extends ProviderBaseSubscription {
 
 class StreamProvider<T>
     extends AlwaysAliveProvider<StreamProviderSubscription<T>, AsyncValue<T>> {
-  StreamProvider(this._create);
+  StreamProvider(this._create, {String name}) : super(name);
 
   final Create<Stream<T>, ProviderReference> _create;
 
@@ -75,7 +75,7 @@ class _StreamProviderState<T> extends ProviderBaseState<
 
 class _ValueStreamProvider<T>
     extends AlwaysAliveProvider<StreamProviderSubscription<T>, AsyncValue<T>> {
-  _ValueStreamProvider(this.value);
+  _ValueStreamProvider(this.value, {String name}) : super(name);
 
   final AsyncValue<T> value;
 

@@ -318,7 +318,8 @@ class TestProvider extends AlwaysAliveProvider<TestProviderValue, int> {
     this.onDidUpdateProvider,
     this.onDispose,
     this.onInitState,
-  });
+    String name,
+  }) : super(name);
 
   final MockCreateState onCreateState;
   final MockInitState onInitState;
@@ -372,6 +373,8 @@ class TestProviderState
 
 class MyImmutableProvider
     extends AlwaysAliveProvider<ProviderSubscription<int>, int> {
+  MyImmutableProvider({String name}) : super(name);
+
   @override
   MyImmutableProviderState createState() {
     return MyImmutableProviderState();

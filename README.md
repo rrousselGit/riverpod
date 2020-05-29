@@ -200,6 +200,8 @@ Linter:
 - provider.overrideForSubtree(provider) -> provider
 - always_specify_name
 - name_match_variable
+- providers_allow_specifying_name
+
 [provider]: https://github.com/rrousselGit/provider
 [riverpod]: https://github.com/rrousselGit/river_pod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks

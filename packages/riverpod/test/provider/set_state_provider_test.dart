@@ -4,6 +4,18 @@ import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 
 void main() {
+  test('can specify name', () {
+    final provider = SetStateProvider(
+      (_) => 0,
+      name: 'example',
+    );
+
+    expect(provider.name, 'example');
+
+    final provider2 = SetStateProvider((_) => 0);
+
+    expect(provider2.name, isNull);
+  });
   test('is AlwaysAliveProvider', () {
     final provider = SetStateProvider((_) async => 42);
 

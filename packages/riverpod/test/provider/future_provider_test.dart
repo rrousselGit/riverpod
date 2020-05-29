@@ -6,6 +6,18 @@ import 'package:riverpod/src/framework/framework.dart' show AlwaysAliveProvider;
 import 'package:test/test.dart';
 
 void main() {
+  test('can specify name', () {
+    final provider = FutureProvider(
+      (_) async => 0,
+      name: 'example',
+    );
+
+    expect(provider.name, 'example');
+
+    final provider2 = FutureProvider((_) async => 0);
+
+    expect(provider2.name, isNull);
+  });
   test('is AlwaysAliveProvider', () {
     final provider = FutureProvider((_) async => 42);
 

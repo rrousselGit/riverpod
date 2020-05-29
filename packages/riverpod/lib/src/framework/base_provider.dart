@@ -4,9 +4,14 @@ part of 'framework.dart';
 @optionalTypeArgs
 abstract class ProviderBase<CombiningValue extends ProviderBaseSubscription,
     ListenedValue extends Object> {
+  // ignore: prefer_const_constructors_in_immutables
+  ProviderBase(this.name);
+
   @visibleForOverriding
   ProviderBaseState<CombiningValue, ListenedValue,
       ProviderBase<CombiningValue, ListenedValue>> createState();
+
+  final String name;
 
   /// The callback may never get called
   // TODO why the value isn't passed to onChange
@@ -244,6 +249,8 @@ abstract class AlwaysAliveProvider<
         CombiningValue extends ProviderBaseSubscription,
         ListenedValue> extends ProviderBase<CombiningValue, ListenedValue>
     implements ProviderOverride {
+  AlwaysAliveProvider(String name) : super(name);
+
   ListenedValue readOwner(ProviderStateOwner owner) {
     return owner._readProviderState(this).state;
   }

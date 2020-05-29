@@ -4,6 +4,18 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 
 void main() {
+  test('can specify name', () {
+    final provider = Provider(
+      (_) => 0,
+      name: 'example',
+    );
+
+    expect(provider.name, 'example');
+
+    final provider2 = Provider((_) => 0);
+
+    expect(provider2.name, isNull);
+  });
   test('is AlwaysAliveProvider', () {
     final provider = Provider((_) async => 42);
 

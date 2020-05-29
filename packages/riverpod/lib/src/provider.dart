@@ -8,7 +8,7 @@ class ProviderSubscription<T> extends ProviderBaseSubscription {
 }
 
 class Provider<T> extends AlwaysAliveProvider<ProviderSubscription<T>, T> {
-  Provider(this._create);
+  Provider(this._create, {String name}) : super(name);
 
   final Create<T, ProviderReference> _create;
 

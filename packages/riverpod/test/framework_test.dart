@@ -732,7 +732,7 @@ class TestProviderValue<T> extends ProviderBaseSubscription {
 }
 
 class TestProvider<T> extends AlwaysAliveProvider<TestProviderValue<T>, T> {
-  TestProvider(this.create);
+  TestProvider(this.create, {String name}) : super(name);
 
   final T Function(ProviderReference ref) create;
   final MockInitState<T> onInitState = MockInitState();

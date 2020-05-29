@@ -10,7 +10,7 @@ class ChangeNotifierProviderSubscription<T> extends ProviderBaseSubscription {
 
 class ChangeNotifierProvider<T extends ChangeNotifier>
     extends AlwaysAliveProvider<ChangeNotifierProviderSubscription<T>, T> {
-  ChangeNotifierProvider(this._create);
+  ChangeNotifierProvider(this._create, {String name}) : super(name);
 
   final Create<T, ProviderReference> _create;
 

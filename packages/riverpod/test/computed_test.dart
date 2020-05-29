@@ -118,8 +118,7 @@ void main() {
     test('list', () {
       final owner = ProviderStateOwner();
       final notifier = Notifier(0);
-      final provider =
-          StateNotifierProvider<Notifier<int>>((_) => notifier);
+      final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
       final computed = Computed((read) {
         return [read(provider.value).isNegative];
       });
@@ -138,8 +137,7 @@ void main() {
     test('set', () {
       final owner = ProviderStateOwner();
       final notifier = Notifier(0);
-      final provider =
-          StateNotifierProvider<Notifier<int>>((_) => notifier);
+      final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
       final computed = Computed((read) {
         return {read(provider.value).isNegative};
       });
@@ -158,8 +156,7 @@ void main() {
     test('map', () {
       final owner = ProviderStateOwner();
       final notifier = Notifier(0);
-      final provider =
-          StateNotifierProvider<Notifier<int>>((_) => notifier);
+      final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
       final computed = Computed((read) {
         return {'foo': read(provider.value).isNegative};
       });

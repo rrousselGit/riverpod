@@ -13,7 +13,7 @@ class FutureProviderSubscription<T> extends ProviderBaseSubscription {
 
 class FutureProvider<Res> extends AlwaysAliveProvider<
     FutureProviderSubscription<Res>, AsyncValue<Res>> {
-  FutureProvider(this._create);
+  FutureProvider(this._create, {String name}) : super(name);
 
   final Create<Future<Res>, ProviderReference> _create;
 
@@ -75,7 +75,7 @@ class _FutureProviderState<Res> extends ProviderBaseState<
 
 class _DebugValueFutureProvider<Res> extends AlwaysAliveProvider<
     FutureProviderSubscription<Res>, AsyncValue<Res>> {
-  _DebugValueFutureProvider(this._value);
+  _DebugValueFutureProvider(this._value, {String name}) : super(name);
 
   final AsyncValue<Res> _value;
 

@@ -7,18 +7,23 @@ import 'internals.dart';
 // ignore: must_be_immutable, false positive, _value is immutable but lazy loaded.
 class StateNotifierProvider<Notifier extends StateNotifier<Object>>
     extends Provider<Notifier> {
-  StateNotifierProvider(Create<Notifier, ProviderReference> create)
-      : super((ref) {
-          final notifier = create(ref);
-          ref.onDispose(notifier.dispose);
-          return notifier;
-        });
+  StateNotifierProvider(
+    Create<Notifier, ProviderReference> create, {
+    String name,
+  }) : super(
+          (ref) {
+            final notifier = create(ref);
+            ref.onDispose(notifier.dispose);
+            return notifier;
+          },
+          name: name,
+        );
 
   SetStateProvider<Object> _value;
 }
 
 /// Adds [value] to [StateNotifierProvider].
-/// 
+///
 /// This is done as an extension as a workaround to language limitations.
 extension StateNotifierProviderValue<Value>
     on StateNotifierProvider<StateNotifier<Value>> {
@@ -31,7 +36,7 @@ extension StateNotifierProviderValue<Value>
       );
 
       return ref.state;
-    });
+    }, name: name == null ? null : '$name.value');
     return _value as SetStateProvider<Value>;
   }
 }

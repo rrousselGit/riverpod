@@ -12,7 +12,7 @@ class SetStateProviderReference<T> extends ProviderReference {
 
 class SetStateProvider<T>
     extends AlwaysAliveProvider<ProviderBaseSubscription, T> {
-  SetStateProvider(this._create);
+  SetStateProvider(this._create, {String name}) : super(name);
 
   final Create<T, SetStateProviderReference<T>> _create;
 

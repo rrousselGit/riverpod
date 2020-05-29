@@ -11,7 +11,7 @@ typedef Reader = Res Function<Res>(ProviderBase<ProviderBaseSubscription, Res>);
 /// [Computed] does not guanrantee that the function won't be re-evaluated
 /// even if the inputs didn't change.
 class Computed<T> extends ProviderBase<ProviderBaseSubscription, T> {
-  Computed(this._selector);
+  Computed(this._selector, {String name}) : super(name);
 
   final T Function(Reader read) _selector;
 
