@@ -124,6 +124,20 @@ class ProviderStateOwner {
 
   ProviderReference get ref => _refProvider.readOwner(this);
 
+  Map<ProviderBase, Object> get debugProviderStates {
+    Map<ProviderBase, Object> res;
+    assert(() {
+      res = {
+        for (final entry in _stateReaders.entries)
+          if (entry.value._providerState != null)
+            entry.key: entry.value._providerState.state,
+      };
+
+      return true;
+    }(), '');
+    return res;
+  }
+
   void update([List<ProviderOverride> overrides]) {
     if (_disposed) {
       throw StateError(

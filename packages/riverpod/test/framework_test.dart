@@ -6,6 +6,38 @@ import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 
 void main() {
+  test('owner.debugProviderStates', () {
+    final unnamed = Provider((_) => 0);
+    final counter = Counter();
+    final named = StateNotifierProvider((_) {
+      return counter;
+    }, name: 'named');
+    final owner = ProviderStateOwner();
+
+    expect(owner.debugProviderStates, <ProviderBase, Object>{});
+
+    expect(unnamed.readOwner(owner), 0);
+
+    expect(owner.debugProviderStates, {
+      unnamed: 0,
+    });
+
+    expect(named.readOwner(owner), counter);
+
+    expect(owner.debugProviderStates, {
+      unnamed: 0,
+      named: counter,
+    });
+
+    expect(named.value.readOwner(owner), 0);
+
+    expect(owner.debugProviderStates, {
+      unnamed: 0,
+      named: counter,
+      named.value: 0,
+    });
+  });
+
   test('Circular dependency check accross multiple owners', () {
     final provider = Provider((_) => 1);
     final provider2 = Provider((_) => 2);
