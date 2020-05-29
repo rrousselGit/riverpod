@@ -23,24 +23,23 @@ class ProviderScope extends StatefulWidget {
 
 class _ProviderScopeState extends State<ProviderScope> {
   ProviderStateOwner _owner;
+  ProviderStateOwner _debugParentOwner;
   var _dirty = false;
 
   @override
-  void didUpdateWidget(ProviderScope oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _owner.update(widget.overrides);
-  }
+  void initState() {
+    super.initState();
+    final scope = context
+        .getElementForInheritedWidgetOfExactType<ProviderStateOwnerScope>()
+        ?.widget as ProviderStateOwnerScope;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // TODO throw if ancestorOwner changed
-    final ancestorOwner = context
-        .dependOnInheritedWidgetOfExactType<ProviderStateOwnerScope>()
-        ?.owner;
+    assert(() {
+      _debugParentOwner = scope?.owner;
+      return true;
+    }(), '');
 
-    _owner ??= ProviderStateOwner(
-      parent: ancestorOwner,
+    _owner = ProviderStateOwner(
+      parent: scope?.owner,
       overrides: widget.overrides,
       markNeedsUpdate: () => setState(() => _dirty = true),
       // TODO How to report to FlutterError?
@@ -57,7 +56,25 @@ class _ProviderScopeState extends State<ProviderScope> {
   }
 
   @override
+  void didUpdateWidget(ProviderScope oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _owner.update(widget.overrides);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    assert(() {
+      final scope = context
+          .getElementForInheritedWidgetOfExactType<ProviderStateOwnerScope>()
+          ?.widget as ProviderStateOwnerScope;
+
+      if (scope?.owner != _debugParentOwner) {
+        throw UnsupportedError(
+          'ProviderScope was rebuilt with a different ProviderScope ancestor',
+        );
+      }
+      return true;
+    }(), '');
     if (_dirty) {
       _dirty = false;
       _owner.update();
