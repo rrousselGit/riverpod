@@ -48,7 +48,6 @@ abstract class ProviderBaseState<
   Map<ProviderBase, ProviderBaseSubscription> _dependenciesSubscriptionCache;
   final Set<ProviderBaseState> _dependenciesState = {};
 
-  // TODO multiple owners
   ProviderBase _debugInitialDependOnRequest;
 
   /// the exception thrown inside initState, if any.

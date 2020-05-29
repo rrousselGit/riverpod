@@ -6,6 +6,27 @@ import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 
 void main() {
+  test('Circular dependency check accross multiple owners', () {
+    final provider = Provider((_) => 1);
+    final provider2 = Provider((_) => 2);
+    final provider3 = Provider((ref) => ref.dependOn(provider2).value * 2);
+
+    final root = ProviderStateOwner(overrides: [
+      provider.overrideForSubtree(
+        Provider((ref) => ref.dependOn(provider3).value * 2),
+      )
+    ]);
+    final owner = ProviderStateOwner(parent: root, overrides: [
+      provider2.overrideForSubtree(
+          Provider((ref) => ref.dependOn(provider).value * 2)),
+      provider3,
+    ]);
+
+    // read 3 from `owner` -> 2 from owner -> 1 from root -> 3 from root -> 2 from root
+    // 2 * 2 * 2 * 2 * 2
+
+    expect(provider3.readOwner(owner), 32);
+  });
   test(
       'adding dependency on a provider from a different owner add the state to the proper owner',
       () {
