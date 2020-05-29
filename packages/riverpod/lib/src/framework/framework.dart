@@ -113,6 +113,7 @@ class ProviderStateOwner {
   final _providerStatesSortedByDepth =
       LinkedList<_LinkedListEntry<ProviderBaseState>>();
   Map<ProviderBase, _ProviderStateReader> _stateReaders;
+  bool _disposed = false;
 
   /// The state of `Computed` providers
   ///
@@ -126,6 +127,11 @@ class ProviderStateOwner {
   ProviderReference get ref => _refProvider.readOwner(this);
 
   void update([List<ProviderOverride> overrides]) {
+    if (_disposed) {
+      throw StateError(
+        'Called update on a ProviderStateOwner that was already disposed',
+      );
+    }
     if (overrides != null) {
       assert(() {
         final oldOverrides = _debugOverrides;
@@ -180,6 +186,12 @@ Changing the kind of override or reordering overrides is not supported.
   }
 
   void dispose() {
+    if (_disposed) {
+      throw StateError(
+        'Called disposed on a ProviderStateOwner that was already disposed',
+      );
+    }
+    _disposed = true;
     if (_dependencies != null) {
       // TODO: reverse?
       for (final value in _dependencies.values) {
@@ -194,6 +206,11 @@ Changing the kind of override or reordering overrides is not supported.
   }
 
   void _scheduleNotification() {
+    if (_disposed) {
+      throw StateError(
+        'Tried to emit updates from a ProviderStateOwner that was already disposed',
+      );
+    }
     if (!_updateScheduled) {
       _updateScheduled = true;
       _markNeedsUpdate?.call();
@@ -218,6 +235,11 @@ Changing the kind of override or reordering overrides is not supported.
           ListeningValue>(
     ProviderBase<CombiningValue, ListeningValue> provider,
   ) {
+    if (_disposed) {
+      throw StateError(
+        'Tried to read a provider from a ProviderStateOwner that was already disposed',
+      );
+    }
     if (provider is Computed) {
       _computedStateReaders ??= {};
       return _computedStateReaders.putIfAbsent(provider as Computed, () {
@@ -243,6 +265,8 @@ extension DebugProviderStateOwner on ProviderStateOwner {
     }(), '');
     return result;
   }
+
+  void scheduleNotification() => _scheduleNotification();
 }
 
 @visibleForTesting

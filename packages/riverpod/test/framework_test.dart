@@ -6,8 +6,15 @@ import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 
 void main() {
-  // TODO provider.overrideForSubtree(provider) can be simplified into provider
-  // TODO owner life-cycles are unusuable after dispose
+  test('owner life-cycles are unusuable after dispose', () {
+    final owner = ProviderStateOwner()..dispose();
+
+    expect(owner.dispose, throwsStateError);
+    expect(owner.update, throwsStateError);
+    expect(() => owner.ref, throwsStateError);
+    expect(owner.scheduleNotification, throwsStateError);
+    expect(() => owner.readProviderState(Provider((_) => 0)), throwsStateError);
+  });
   test('provider.overrideForSubtree(provider) can be simplified into provider',
       () {
     final notifier = Counter();
@@ -151,8 +158,6 @@ void main() {
     owner.dispose();
 
     expect(callCount, 0);
-    expect(provider.readOwner(owner), 0);
-    expect(callCount, 1);
   });
   test('circular dependencies', () {
     Provider<int Function()> provider;

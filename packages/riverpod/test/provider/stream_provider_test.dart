@@ -96,13 +96,13 @@ void main() {
     verifyNoMoreInteractions(dispose);
 
     owner.dispose();
-    controller.add(21);
 
-    verifyNoMoreInteractions(listener);
-    owner.update();
     verify(dispose()).called(1);
     verifyNoMoreInteractions(dispose);
-    verifyNoMoreInteractions(listener);
+
+    // if the listener wasn't removed, this would throw because markNeedsNotifyListeners
+    // cannot be called once the provider was disposed.
+    controller.add(21);
 
     await controller.close();
   });

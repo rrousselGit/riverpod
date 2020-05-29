@@ -142,6 +142,8 @@ and that the community likes it, [provider] will still be maintained.
 
 - StreamProvider expose a Future<Data> for last valid value
 - future/changenotifier/...providers cannot return null
+- state hydratation
+- Scope.onChange({owner, List<{provider, value}> modified })
 - Cannot add dependencies during dispatching
 - FutureChangeNotifier
 - FutureStateNotifier
@@ -194,9 +196,10 @@ riverpod.dev
 Linter:
 
 - When overriding `StateNotifierProvider` on a non-root `ProviderStateOwner`, warn if the `.value` wasn't overriden too.
-- Check that when a provider is overriden locally, all of its dependencies are too
+- Check that when a provider is overridden locally, all of its dependencies are too
 - provider.overrideForSubtree(provider) -> provider
-
+- always_specify_name
+- name_match_variable
 [provider]: https://github.com/rrousselGit/provider
 [riverpod]: https://github.com/rrousselGit/river_pod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks

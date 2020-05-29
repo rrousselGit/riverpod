@@ -5,16 +5,18 @@ import 'package:test/test.dart';
 
 void main() {
   test('disposes the notifier when provider is unmounted', () {
+    final notifier = TestNotifier();
     final provider = StateNotifierProvider<TestNotifier>((_) {
-      return TestNotifier();
+      return notifier;
     });
     final owner = ProviderStateOwner();
 
-    expect(provider.readOwner(owner).mounted, isTrue);
+    expect(provider.readOwner(owner), notifier);
+    expect(notifier.mounted, isTrue);
 
     owner.dispose();
 
-    expect(provider.readOwner(owner).mounted, isFalse);
+    expect(notifier.mounted, isFalse);
   });
 
   test('provider subscribe the callback is never', () async {
