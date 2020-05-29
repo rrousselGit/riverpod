@@ -170,5 +170,4 @@ void main() {
 
     expect(find.text('2'), findsOneWidget);
   });
-  // TODO state hydratation
 }

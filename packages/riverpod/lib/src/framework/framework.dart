@@ -9,7 +9,6 @@ import '../computed.dart';
 import '../provider.dart';
 
 part 'base_provider.dart';
-part 'keep_alive_provider.dart';
 
 typedef OnError = void Function(dynamic error, StackTrace stackTrace);
 
