@@ -48,9 +48,9 @@ class _FutureProviderState<Res> extends ProviderBaseState<
 
   @override
   void initState() {
-    // TODO test synchronous future
     _state = const AsyncValue.loading();
     _future = provider._create(ProviderReference(this));
+    // may update the value synchronously if the future is a SynchronousFuture from flutter
     _listen();
   }
 

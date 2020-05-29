@@ -30,7 +30,6 @@ class _ProviderStateReader {
   ProviderBaseState _providerState;
 
   ProviderBaseState read() {
-    // TODO: test adding dependency on a provider from a different owner add the state to the proper owner
     if (_providerState != null) {
       if (_providerState._error != null) {
         // ignore: only_throw_errors, this is what was throws by initState so it is valid to rethrow it

@@ -6,6 +6,32 @@ import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 
 void main() {
+  test(
+      'adding dependency on a provider from a different owner add the state to the proper owner',
+      () {
+    final provider1 = Provider((_) => 1);
+    final provider3 = Provider((_) => '1');
+    final provider2 = Provider((ref) => ref.dependOn(provider1).value * 2.5);
+
+    final root = ProviderStateOwner();
+    final owner = ProviderStateOwner(parent: root, overrides: [
+      provider3,
+      provider2,
+    ]);
+
+    expect(provider1.readOwner(owner), 1);
+    expect(provider2.readOwner(owner), 2.5);
+    expect(provider3.readOwner(owner), '1');
+
+    expect(
+      root.debugProviderStatedSortedByDepth.map((s) => s.provider),
+      [provider1],
+    );
+    expect(
+      owner.debugProviderStatedSortedByDepth.map((s) => s.provider),
+      [provider3, provider2],
+    );
+  });
   test('owner life-cycles are unusuable after dispose', () {
     final owner = ProviderStateOwner()..dispose();
 
