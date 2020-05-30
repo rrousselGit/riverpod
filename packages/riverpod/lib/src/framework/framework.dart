@@ -68,12 +68,39 @@ class _ProviderStateReader {
 
     if (_owner._observers != null) {
       for (final observer in _owner._observers) {
-        Zone.current.runBinaryGuarded(
-            observer.didAddProvider, _origin, _providerState.state);
+        _runBinaryGuarded(
+          observer.didAddProvider,
+          _origin,
+          _providerState.state,
+        );
       }
     }
 
     return _providerState;
+  }
+}
+
+void _runGuarded(void Function() cb) {
+  try {
+    cb();
+  } catch (err, stack) {
+    Zone.current.handleUncaughtError(err, stack);
+  }
+}
+
+void _runUnaryGuarded<T>(void Function(T) cb, T value) {
+  try {
+    cb(value);
+  } catch (err, stack) {
+    Zone.current.handleUncaughtError(err, stack);
+  }
+}
+
+void _runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
+  try {
+    cb(value, value2);
+  } catch (err, stack) {
+    Zone.current.handleUncaughtError(err, stack);
   }
 }
 
@@ -214,11 +241,7 @@ Changing the kind of override or reordering overrides is not supported.
         }
         final oldProvider = state._provider;
         state._provider = override._provider;
-        try {
-          state.didUpdateProvider(oldProvider);
-        } catch (error, stack) {
-          Zone.current.handleUncaughtError(error, stack);
-        }
+        _runUnaryGuarded(state.didUpdateProvider, oldProvider);
       }
     }
 
@@ -241,7 +264,7 @@ Changing the kind of override or reordering overrides is not supported.
 
     // TODO: reverse?
     for (final entry in _providerStatesSortedByDepth) {
-      Zone.current.runGuarded(entry.value.dispose);
+      _runGuarded(entry.value.dispose);
     }
   }
 
@@ -270,7 +293,7 @@ Changing the kind of override or reordering overrides is not supported.
       if (_observers != null) {
         final changes = UnmodifiableMapView(_providerChanges);
         for (final observer in _observers) {
-          Zone.current.runUnaryGuarded(
+          _runUnaryGuarded(
             observer.didUpdateProviders,
             changes,
           );

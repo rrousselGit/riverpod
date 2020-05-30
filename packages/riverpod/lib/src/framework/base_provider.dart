@@ -232,12 +232,12 @@ abstract class ProviderBaseState<
     // TODO test can't call dependOn & co inside onDispose
     _mounted = false;
     if (_onDisposeCallbacks != null) {
-      _onDisposeCallbacks.forEach(Zone.current.runGuarded);
+      _onDisposeCallbacks.forEach(_runGuarded);
     }
 
     if (_owner._observers != null) {
       for (final observer in _owner._observers) {
-        Zone.current.runUnaryGuarded(observer.didDisposeProvider, _origin);
+        _runUnaryGuarded(observer.didDisposeProvider, _origin);
       }
     }
   }
