@@ -39,6 +39,7 @@ class _ProviderStateReader {
     final override = _owner._overrideForProvider[_origin] ?? _origin;
 
     _providerState = override.createState()
+      .._origin = _origin
       .._provider = override
       .._owner = _owner;
 
@@ -65,8 +66,24 @@ class _ProviderStateReader {
       _providerState._dirty = false;
     }
 
+    if (_owner._observers != null) {
+      for (final observer in _owner._observers) {
+        Zone.current.runBinaryGuarded(
+            observer.didAddProvider, _origin, _providerState.state);
+      }
+    }
+
     return _providerState;
   }
+}
+
+/// Do not implement, only extend
+abstract class ProviderStateOwnerObserver {
+  void didAddProvider(ProviderBase provider, Object value) {}
+
+  void didUpdateProviders(Map<ProviderBase, Object> changes) {}
+
+  void didDisposeProvider(ProviderBase provider) {}
 }
 
 class ProviderStateOwner {
@@ -74,7 +91,9 @@ class ProviderStateOwner {
     ProviderStateOwner parent,
     List<ProviderOverride> overrides = const [],
     VoidCallback markNeedsUpdate,
-  }) : _markNeedsUpdate = markNeedsUpdate {
+    List<ProviderStateOwnerObserver> observers,
+  })  : _markNeedsUpdate = markNeedsUpdate,
+        _observers = observers {
     assert(() {
       _debugOverrides = overrides;
       return true;
@@ -105,6 +124,7 @@ class ProviderStateOwner {
     };
   }
 
+  final List<ProviderStateOwnerObserver> _observers;
   final VoidCallback _markNeedsUpdate;
   List<ProviderOverride> _debugOverrides;
   final _overrideForProvider = <ProviderBase, ProviderBase>{};
@@ -121,6 +141,11 @@ class ProviderStateOwner {
   _FallbackProviderStateReader _fallback;
   var _updateScheduled = false;
   Map<ProviderBase, ProviderBaseSubscription> _dependencies;
+
+  /// All the providers that changed and their new value
+  ///
+  /// This property is an implementation detail of [ProviderStateOwnerObserver.didUpdateProviders].
+  Map<ProviderBase, Object> _providerChanges;
 
   ProviderReference get ref => _refProvider.readOwner(this);
 
@@ -179,8 +204,11 @@ Changing the kind of override or reordering overrides is not supported.
       for (final override in overrides) {
         _overrideForProvider[override._origin] = override._provider;
 
-        // _providerState instead of read() to not compute the state
-        final state = _stateReaders[override._origin]._providerState;
+        // TODO assert can't override Computed
+        // no need to check _computedStateReaders as they are not overridable
+        final state = _stateReaders[override._origin]
+            // _providerState instead of read() to not compute the state
+            ._providerState;
         if (state == null) {
           continue;
         }
@@ -238,7 +266,26 @@ Changing the kind of override or reordering overrides is not supported.
           ..notifyListeners();
       }
     }
+    if (_providerChanges != null) {
+      if (_observers != null) {
+        final changes = UnmodifiableMapView(_providerChanges);
+        for (final observer in _observers) {
+          Zone.current.runUnaryGuarded(
+            observer.didUpdateProviders,
+            changes,
+          );
+        }
+      }
+      _providerChanges = null;
+    }
     _updateScheduled = false;
+  }
+
+  void _reportChanged(ProviderBase origin, Object state) {
+    if (_observers != null && _observers.isNotEmpty) {
+      _providerChanges ??= {};
+      _providerChanges[origin] = state;
+    }
   }
 
   ProviderBaseState<CombiningValue, ListeningValue,

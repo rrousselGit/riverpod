@@ -8,12 +8,15 @@ class ProviderScope extends StatefulWidget {
   const ProviderScope({
     Key key,
     this.overrides = const [],
+    this.observers,
     @required this.child,
   })  : assert(child != null, 'child cannot be `null`'),
         super(key: key);
 
   @visibleForTesting
   final Widget child;
+
+  final List<ProviderStateOwnerObserver> observers;
 
   @visibleForTesting
   final List<ProviderOverride> overrides;
@@ -64,6 +67,7 @@ class _ProviderScopeState extends State<ProviderScope> {
     _owner = ProviderStateOwner(
       parent: scope?.owner,
       overrides: widget.overrides,
+      observers: widget.observers,
       markNeedsUpdate: () => setState(() => _dirty = true),
       // TODO How to report to FlutterError?
       // onError: (dynamic error, stack) {

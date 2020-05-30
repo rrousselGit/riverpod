@@ -34,6 +34,8 @@ abstract class ProviderBaseState<
     _stateEntryInSortedStateList = _LinkedListEntry(this);
   }
 
+  ProviderBase<ProviderBaseSubscription, Object> _origin;
+
   var _depth = 0;
   int get depth => _depth;
 
@@ -199,6 +201,8 @@ abstract class ProviderBaseState<
   /// while preserving reactivity.
   @visibleForOverriding
   void notifyListeners() {
+    _owner._reportChanged(_origin, state);
+
     if (_stateListeners != null) {
       for (final listener in _stateListeners) {
         // TODO guard
@@ -225,10 +229,17 @@ abstract class ProviderBaseState<
   }
 
   void dispose() {
+    // TODO test can't call dependOn & co inside onDispose
+    _mounted = false;
     if (_onDisposeCallbacks != null) {
       _onDisposeCallbacks.forEach(Zone.current.runGuarded);
     }
-    _mounted = false;
+
+    if (_owner._observers != null) {
+      for (final observer in _owner._observers) {
+        Zone.current.runUnaryGuarded(observer.didDisposeProvider, _origin);
+      }
+    }
   }
 
   @override

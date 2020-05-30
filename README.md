@@ -146,6 +146,7 @@ and that the community likes it, [provider] will still be maintained.
 - Scope.onChange({owner, List<{provider, value}> modified })
 - Cannot add dependencies during dispatching
 - FutureChangeNotifier
+- StateNotifierProvider.value -> state
 - FutureStateNotifier
 - AutoDispose
 - Selector
@@ -200,6 +201,17 @@ Linter:
 - always_specify_name
 - name_match_variable
 - providers_allow_specifying_name
+- extract as class for rebuild optimization
+
+Devtool:
+- entire app state for the root owner
+- highlight state changes
+- number of widgets that rebuilt in the same frame than the state change
+- collapsable state
+- editable state (through Freezed/copyWith/state_notifier)
+- time travel
+- lock further changes
+- lock further changes when a specific property changes
 
 [provider]: https://github.com/rrousselGit/provider
 [riverpod]: https://github.com/rrousselGit/river_pod
