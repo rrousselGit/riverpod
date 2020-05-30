@@ -167,7 +167,6 @@ class ProviderStateOwner {
   Map<Computed, _ProviderStateReader> _computedStateReaders;
   _FallbackProviderStateReader _fallback;
   var _updateScheduled = false;
-  Map<ProviderBase, ProviderBaseSubscription> _dependencies;
 
   /// All the providers that changed and their new value
   ///
@@ -255,12 +254,6 @@ Changing the kind of override or reordering overrides is not supported.
       );
     }
     _disposed = true;
-    if (_dependencies != null) {
-      // TODO: reverse?
-      for (final value in _dependencies.values) {
-        value.dispose();
-      }
-    }
 
     // TODO: reverse?
     for (final entry in _providerStatesSortedByDepth) {

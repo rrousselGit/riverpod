@@ -56,7 +56,7 @@ void main() {
 
     await tester.pumpWidget(Container());
 
-    expect(mountedOnDispose, isTrue);
+    expect(mountedOnDispose, isFalse);
     expect(providerState.mounted, isFalse);
   });
 
