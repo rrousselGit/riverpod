@@ -230,7 +230,10 @@ Changing the kind of override or reordering overrides is not supported.
       for (final override in overrides) {
         _overrideForProvider[override._origin] = override._provider;
 
-        // TODO assert can't override Computed
+        assert(
+          override._origin is! Computed && override._provider is! Computed,
+          'Cannot override Computed',
+        );
         // no need to check _computedStateReaders as they are not overridable
         final state = _stateReaders[override._origin]
             // _providerState instead of read() to not compute the state
@@ -383,20 +386,12 @@ class ProviderReference {
   bool get mounted => _providerState.mounted;
 
   void onDispose(VoidCallback cb) {
-    assert(
-      mounted,
-      '`onDispose` was called on a state that is already disposed',
-    );
     _providerState.onDispose(cb);
   }
 
   T dependOn<T extends ProviderBaseSubscription>(
     ProviderBase<T, Object> provider,
   ) {
-    assert(
-      mounted,
-      '`dependOn` was called on a state that is already disposed',
-    );
     return _providerState.dependOn(provider);
   }
 }

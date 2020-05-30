@@ -87,6 +87,11 @@ abstract class ProviderBaseState<
   T dependOn<T extends ProviderBaseSubscription>(
     ProviderBase<T, Object> provider,
   ) {
+    if (!mounted) {
+      throw StateError(
+        '`dependOn` was called on a state that is already disposed',
+      );
+    }
     // verify that we are not in a stack overflow of dependOn calls.
     assert(() {
       if (_debugInitialDependOnRequest == provider) {
@@ -181,6 +186,11 @@ abstract class ProviderBaseState<
   }
 
   void onDispose(VoidCallback cb) {
+    if (!mounted) {
+      throw StateError(
+        '`onDispose` was called on a state that is already disposed',
+      );
+    }
     _onDisposeCallbacks ??= DoubleLinkedQueue();
     _onDisposeCallbacks.add(cb);
   }
@@ -229,7 +239,6 @@ abstract class ProviderBaseState<
   }
 
   void dispose() {
-    // TODO test can't call dependOn & co inside onDispose
     _mounted = false;
     if (_onDisposeCallbacks != null) {
       _onDisposeCallbacks.forEach(_runGuarded);

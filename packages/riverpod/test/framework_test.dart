@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
@@ -6,6 +8,39 @@ import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 
 void main() {
+  test("can't call onDispose", () {
+    final provider = Provider((ref) {
+      ref.onDispose(() {
+        ref.onDispose(() {});
+      });
+      return ref;
+    });
+    final owner = ProviderStateOwner();
+
+    provider.readOwner(owner);
+
+    final errors = <Object>[];
+    runZonedGuarded(owner.dispose, (err, _) => errors.add(err));
+
+    expect(errors, [isStateError]);
+  });
+  test("can't call dependOn", () {
+    final provider2 = Provider((ref) => 0);
+    final provider = Provider((ref) {
+      ref.onDispose(() {
+        ref.dependOn(provider2);
+      });
+      return ref;
+    });
+    final owner = ProviderStateOwner();
+
+    provider.readOwner(owner);
+
+    final errors = <Object>[];
+    runZonedGuarded(owner.dispose, (err, _) => errors.add(err));
+
+    expect(errors, [isStateError]);
+  });
   test('owner.debugProviderStates', () {
     final unnamed = Provider((_) => 0);
     final counter = Counter();
@@ -414,8 +449,8 @@ void main() {
     owner.dispose();
 
     expect(ref.mounted, isFalse);
-    expect(() => ref.onDispose(() {}), throwsA(isA<AssertionError>()));
-    expect(() => ref.dependOn(other), throwsA(isA<AssertionError>()));
+    expect(() => ref.onDispose(() {}), throwsStateError);
+    expect(() => ref.dependOn(other), throwsStateError);
   });
 
   test('if a provider threw on creation, subsequent reads throws too', () {
