@@ -6,6 +6,7 @@ import 'package:meta/meta.dart';
 
 import '../common.dart';
 import '../computed.dart';
+import '../internals.dart';
 import '../provider.dart';
 
 part 'base_provider.dart';
@@ -54,6 +55,11 @@ class _ProviderStateReader {
     _owner._providerStatesSortedByDepth.addFirst(
       _providerState._stateEntryInSortedStateList,
     );
+
+    // An initState may be called inside another initState, so we can't reset
+    // the flag to null and instead reset the flag to the previously building state.
+    final previousLock = notifyListenersLock;
+    notifyListenersLock = _providerState;
     try {
       // the state position in _providerStatesSortedByDepth will get updated as
       // dependOn is called.
@@ -62,6 +68,7 @@ class _ProviderStateReader {
       _providerState._error = err;
       rethrow;
     } finally {
+      notifyListenersLock = previousLock;
       // ignore calls to markNeedNotifyListeners inside initState
       _providerState._dirty = false;
     }
@@ -103,6 +110,20 @@ void _runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
     Zone.current.handleUncaughtError(err, stack);
   }
 }
+
+/// A flag for checking against invalid operations inside
+/// [ProviderBaseState.initState] and [ProviderBaseState.dispose].
+///
+/// This prevents modifying other providers while inside these life-cycles.
+@visibleForTesting
+ProviderBaseState notifyListenersLock;
+
+/// A flag for checking against invalid operations inside [ProviderBaseState.notifyListeners].
+///
+/// This prevents modifying providers that already notified their listener in
+/// the current frame.
+@visibleForTesting
+int notifyListenersDepthLock = -1;
 
 /// Do not implement, only extend
 abstract class ProviderStateOwnerObserver {
@@ -258,9 +279,12 @@ Changing the kind of override or reordering overrides is not supported.
     }
     _disposed = true;
 
+    assert(notifyListenersLock == null, '');
     // TODO: reverse?
     for (final entry in _providerStatesSortedByDepth) {
+      notifyListenersLock = entry.value;
       _runGuarded(entry.value.dispose);
+      notifyListenersLock = null;
     }
   }
 
@@ -277,12 +301,15 @@ Changing the kind of override or reordering overrides is not supported.
   }
 
   void _notifyListeners() {
-    // TODO: can't dirty nodes that were already traversed
     for (final entry in _providerStatesSortedByDepth) {
       if (entry.value._dirty) {
-        entry.value
-          .._dirty = false
-          ..notifyListeners();
+        entry.value._dirty = false;
+        notifyListenersDepthLock = entry.value.depth;
+        try {
+          entry.value.notifyListeners();
+        } finally {
+          notifyListenersDepthLock = -1;
+        }
       }
     }
     if (_providerChanges != null) {

@@ -198,7 +198,12 @@ abstract class ProviderBaseState<
   VoidCallback $addListener(
     void Function(ListenedValue value) listener,
   ) {
-    listener(state);
+    try {
+      notifyListenersDepthLock = depth;
+      listener(state);
+    } finally {
+      notifyListenersDepthLock = -1;
+    }
     _stateListeners ??= LinkedList();
     final entry = _LinkedListEntry(listener);
     _stateListeners.add(entry);
@@ -222,6 +227,16 @@ abstract class ProviderBaseState<
   }
 
   void markNeedsNotifyListeners() {
+    if (notifyListenersLock != null && notifyListenersLock != this) {
+      throw StateError(
+        'Cannot mark providers as dirty while initializing/disposing another provider',
+      );
+    }
+    if (notifyListenersDepthLock >= depth) {
+      throw StateError(
+        'Cannot mark `$provider` as dirty from `$notifyListenersDepthLock` as the latter depends on it.',
+      );
+    }
     if (!_mounted) {
       throw StateError(
         'A provider was marked as needing to perform updates when it was already disposed',
