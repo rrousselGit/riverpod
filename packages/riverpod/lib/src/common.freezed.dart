@@ -101,11 +101,33 @@ class __$DataCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
   }
 }
 
-class _$_Data<T> implements _Data<T> {
+class _$_Data<T> implements _Data<T>, $DebugFreezed {
   _$_Data(this.value) : assert(value != null);
 
   @override
   final T value;
+
+  @override
+  String get $debugRedirectedClassName {
+    String res;
+    assert(() {
+      res = '_Data';
+      return true;
+    }());
+    return res;
+  }
+
+  @override
+  Map<String, Object> $debugToMap() {
+    Map<String, Object> res;
+    assert(() {
+      res = {
+        'value': value,
+      };
+      return true;
+    }());
+    return res;
+  }
 
   @override
   String toString() {
@@ -207,8 +229,28 @@ class __$LoadingCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
   _Loading<T> get _value => super._value as _Loading<T>;
 }
 
-class _$_Loading<T> implements _Loading<T> {
+class _$_Loading<T> implements _Loading<T>, $DebugFreezed {
   const _$_Loading();
+
+  @override
+  String get $debugRedirectedClassName {
+    String res;
+    assert(() {
+      res = '_Loading';
+      return true;
+    }());
+    return res;
+  }
+
+  @override
+  Map<String, Object> $debugToMap() {
+    Map<String, Object> res;
+    assert(() {
+      res = {};
+      return true;
+    }());
+    return res;
+  }
 
   @override
   String toString() {
@@ -310,13 +352,36 @@ class __$ErrorCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
   }
 }
 
-class _$_Error<T> implements _Error<T> {
+class _$_Error<T> implements _Error<T>, $DebugFreezed {
   _$_Error(this.error, [this.stackTrace]) : assert(error != null);
 
   @override
   final Object error;
   @override
   final StackTrace stackTrace;
+
+  @override
+  String get $debugRedirectedClassName {
+    String res;
+    assert(() {
+      res = '_Error';
+      return true;
+    }());
+    return res;
+  }
+
+  @override
+  Map<String, Object> $debugToMap() {
+    Map<String, Object> res;
+    assert(() {
+      res = {
+        'error': error,
+        'stackTrace': stackTrace,
+      };
+      return true;
+    }());
+    return res;
+  }
 
   @override
   String toString() {
