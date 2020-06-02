@@ -2,21 +2,24 @@
 title: Getting started
 ---
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
 Before diving into the inner mechanisms of [Riverpod], let's start with the basics:
 Installing up [Riverpod], and then writing an "Hello world".
 
 ## What package to install
 
-Before anything, you need to be aware that [Riverpod] is spread across multiple packages, with slightly different usage.\
+Before anything, you need to be aware that [Riverpod] is spread across multiple packages, with slightly different usage.  
 As such, the variant of [Riverpod] that you will want to install depends on the app you are making.
 
 You can refer to the following table to help you decide which package to use:
 
-| app type                  | package name                                                                         | description                                                                                                                                        |
-| ------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                    | An improved syntax with less boilerplate for listening providers inside widgets.                                                                   |
-| Flutter only              | [flutter_riverpod]                                                                  | A slightly more verbose syntax (comparable to `Theme.of` vs `StreamBuilder`).<br>But feature-wise, it is otherwise identical to [hooks_riverpod]. |
-| Dart only (No Flutter)    | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | A version of [Riverpod] striped out of all the classes related to Flutter                                                                         |
+| app type                  | package name                                                                       | description                                                                                                                                    |
+| ------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                   | An improved syntax with less boilerplate for listening providers inside widgets.                                                               |
+| Flutter only              | [flutter_riverpod]                                                                 | A slightly more verbose syntax (comparable to `Theme.of` vs `StreamBuilder`). But feature-wise, it is otherwise identical to [hooks_riverpod]. |
+| Dart only (No Flutter)    | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | A version of [Riverpod] striped out of all the classes related to Flutter                                                                      |
 
 And if not clear enough, you can refer to this decision graph:
 
@@ -26,9 +29,15 @@ And if not clear enough, you can refer to this decision graph:
 
 Once you know what package you want to install, proceed to add the following to your `pubspec.yaml`:
 
-<!--DOCUSAURUS_CODE_TABS-->
-
-<!-- hooks_riverpod -->
+<Tabs
+defaultValue="hooks_riverpod"
+values={[
+{ label: 'Flutter + flutter_hooks', value: 'hooks_riverpod', },
+{ label: 'Flutter', value: 'flutter_riverpod', },
+{ label: 'Dart only', value: 'riverpod', },
+]
+}>
+<TabItem value="hooks_riverpod">
 
 ```yaml
 environment:
@@ -44,7 +53,8 @@ dependencies:
 
 Then run `flutter pub get`.
 
-<!-- flutter_riverpod -->
+</TabItem>
+<TabItem value="flutter_riverpod">
 
 ```yaml
 environment:
@@ -59,7 +69,8 @@ dependencies:
 
 Then run `flutter pub get`.
 
-<!-- riverpod -->
+</TabItem>
+<TabItem value="riverpod">
 
 ```yaml
 environment:
@@ -71,7 +82,8 @@ dependencies:
 
 Then run `pub get`.
 
-<!--END_DOCUSAURUS_CODE_TABS-->
+</TabItem>
+</Tabs>
 
 That's it. You've added [Riverpod] to your app!
 
@@ -81,9 +93,15 @@ Now that we have installed [Riverpod], we can start using it.
 
 The following snippets showcase our to use our new dependency to make an "Hello world":
 
-<!--DOCUSAURUS_CODE_TABS-->
-
-<!-- hooks_riverpod -->
+<Tabs
+  defaultValue="hooks_riverpod"
+  values={[
+    { label: "Flutter + flutter_hooks", value: "hooks_riverpod" },
+    { label: "Flutter", value: "flutter_riverpod" },
+    { label: "Dart only", value: "riverpod" },
+  ]}
+>
+<TabItem value="hooks_riverpod">
 
 ```dart
 // lib/main.dart
@@ -126,10 +144,11 @@ class MyApp extends HookWidget {
 }
 ```
 
-Which you can then execute with `flutter run`.\
+Which you can then execute with `flutter run`.  
 This will render "Hello world" in on your device.
 
-<!-- flutter_riverpod -->
+</TabItem>
+<TabItem value="flutter_riverpod">
 
 ```dart
 // lib/main.dart
@@ -175,10 +194,11 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-Which you can then execute with `flutter run`.\
+Which you can then execute with `flutter run`.  
 This will render "Hello world" in on your device.
 
-<!-- riverpod -->
+</TabItem>
+<TabItem value="riverpod">
 
 ```dart
 // lib/main.dart
@@ -199,10 +219,11 @@ void main() {
 }
 ```
 
-Which you can then execute with `dart lib/main.dart`.\
+Which you can then execute with `dart lib/main.dart`.  
 This will print "Hello world" in the console.
 
-<!--END_DOCUSAURUS_CODE_TABS-->
+</TabItem>
+</Tabs>
 
 [riverpod]: https://github.com/rrousselgit/river_pod
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
