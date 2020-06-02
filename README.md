@@ -4,6 +4,8 @@ Welcome to [Riverpod]!
 
 This project can be considered as an **experimental** [provider] rewrite.
 
+For learning how to use [Riverpod], see its documentation: https://riverpod.dev
+
 Long story short:
 
 - Declare your providers as global variables:
@@ -25,7 +27,7 @@ Long story short:
   class Example extends HookWidget {
     @override
     Widget build(BuildContext context) {
-      final count = useSelector(myNotifierProvider.select((m) => m.count));
+      final count = useProvider(myNotifierProvider);
       return Text(count.toString());
     }
   }
