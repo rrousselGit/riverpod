@@ -25,18 +25,25 @@ class StateNotifierProvider<Notifier extends StateNotifier<Object>>
 /// Adds [value] to [StateNotifierProvider].
 ///
 /// This is done as an extension as a workaround to language limitations.
-extension StateNotifierProviderValue<Value>
+extension StateNotifierValueProviderX<Value>
     on StateNotifierProvider<StateNotifier<Value>> {
   SetStateProvider<Value> get value {
-    _state ??= SetStateProvider<Value>((ref) {
-      final notifier = ref.dependOn(this).value;
-
-      ref.onDispose(
-        notifier.addListener((newValue) => ref.state = newValue),
-      );
-
-      return ref.state;
-    }, name: name == null ? null : '$name.value');
-    return _state as SetStateProvider<Value>;
+    _state ??= StateNotifierValueProvider<Value>(this);
+    return _state as StateNotifierValueProvider<Value>;
   }
+}
+
+class StateNotifierValueProvider<T> extends SetStateProvider<T> {
+  StateNotifierValueProvider(this.controller)
+      : super((ref) {
+          final notifier = ref.dependOn(controller).value;
+
+          ref.onDispose(
+            notifier.addListener((newValue) => ref.state = newValue),
+          );
+
+          return ref.state;
+        }, name: controller.name == null ? null : '${controller.name}.value');
+
+  final StateNotifierProvider<StateNotifier<T>> controller;
 }

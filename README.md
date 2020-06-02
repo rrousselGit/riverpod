@@ -208,6 +208,7 @@ Linter:
 - name_match_variable
 - providers_allow_specifying_name
 - extract as class for rebuild optimization
+- warn if public classes inside /src are not used but not exported
 
 Devtool:
 - entire app state for the root owner

@@ -13,6 +13,6 @@ export 'src/provider.dart' show Provider, ProviderSubscription;
 export 'src/set_state_provider.dart'
     show SetStateProvider, SetStateProviderReference;
 export 'src/state_notifier_provider.dart'
-    show StateNotifierProvider, StateNotifierProviderValue;
+    show StateNotifierProvider, StateNotifierValueProviderX;
 export 'src/stream_provider.dart'
     show StreamProvider, StreamProviderSubscription;
