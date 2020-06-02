@@ -1,3 +1,5 @@
+# Black Lives Matter. [Support the Equal Justice Initiative.](https://support.eji.org/give/153413/#!/donation/checkout)
+
 Welcome to [Riverpod]!
 
 This project can be considered as an **experimental** [provider] rewrite.
@@ -211,6 +213,7 @@ Linter:
 - warn if public classes inside /src are not used but not exported
 
 Devtool:
+
 - entire app state for the root owner
 - highlight state changes
 - number of widgets that rebuilt in the same frame than the state change
