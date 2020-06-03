@@ -22,6 +22,30 @@ Matcher isProvider(ProviderBase provider, {int depth}) {
 
 void main() {
   // TODO: throw if tried to dispose a parent owner that still have undisposed children owners
+  test('remove dependency when owner is disposed', () {
+    final provider = Provider((_) {});
+    final provider2 = Provider((ref) => ref.dependOn(provider));
+    final root = ProviderStateOwner();
+    final owner = ProviderStateOwner(
+      parent: root,
+      overrides: [provider2],
+    );
+
+    provider.readOwner(owner);
+    provider2.readOwner(owner);
+
+    expect(root.debugProviderStateSortedByDepth, [isProvider(provider)]);
+    final state = root.debugProviderStateSortedByDepth.first;
+    expect(owner.debugProviderStateSortedByDepth, [isProvider(provider2)]);
+    final state2 = owner.debugProviderStateSortedByDepth.first;
+
+    expect(state.debugDependents, {state2});
+
+    owner.dispose();
+
+    expect(state.debugDependents, <ProviderStateBase>{});
+  });
+
   test('depth is recursive cross ower', () {
     final provider = Provider((ref) => ref, name: '1');
     final provider2 = Provider((ref) => ref, name: '2');
@@ -33,18 +57,18 @@ void main() {
       overrides: [provider3, provider4],
     );
 
-    expect(owner.debugProviderStatedSortedByDepth, <Object>[]);
+    expect(owner.debugProviderStateSortedByDepth, <Object>[]);
 
     provider.readOwner(owner);
     final ref2 = provider2.readOwner(owner);
     final ref3 = provider3.readOwner(owner);
     final ref4 = provider4.readOwner(owner);
 
-    expect(root.debugProviderStatedSortedByDepth, <Object>[
+    expect(root.debugProviderStateSortedByDepth, <Object>[
       isProvider(provider2, depth: 0),
       isProvider(provider, depth: 0),
     ]);
-    expect(owner.debugProviderStatedSortedByDepth, <Object>[
+    expect(owner.debugProviderStateSortedByDepth, <Object>[
       isProvider(provider4, depth: 0),
       isProvider(provider3, depth: 0),
     ]);
@@ -52,22 +76,22 @@ void main() {
     ref3.dependOn(provider2);
     ref4.dependOn(provider2);
 
-    expect(root.debugProviderStatedSortedByDepth, <Object>[
+    expect(root.debugProviderStateSortedByDepth, <Object>[
       isProvider(provider2, depth: 0),
       isProvider(provider, depth: 0),
     ]);
-    expect(owner.debugProviderStatedSortedByDepth, <Object>[
+    expect(owner.debugProviderStateSortedByDepth, <Object>[
       isProvider(provider4, depth: 1),
       isProvider(provider3, depth: 1),
     ]);
 
     ref2.dependOn(provider);
 
-    expect(root.debugProviderStatedSortedByDepth, <Object>[
+    expect(root.debugProviderStateSortedByDepth, <Object>[
       isProvider(provider, depth: 0),
       isProvider(provider2, depth: 1),
     ]);
-    expect(owner.debugProviderStatedSortedByDepth, <Object>[
+    expect(owner.debugProviderStateSortedByDepth, <Object>[
       isProvider(provider4, depth: 2),
       isProvider(provider3, depth: 2),
     ]);
@@ -79,14 +103,14 @@ void main() {
     final provider3 = Provider((ref) => ref, name: '3');
     final provider4 = Provider((ref) => ref, name: '4');
 
-    expect(owner.debugProviderStatedSortedByDepth, <Object>[]);
+    expect(owner.debugProviderStateSortedByDepth, <Object>[]);
 
     provider.readOwner(owner);
     final ref2 = provider2.readOwner(owner);
     final ref3 = provider3.readOwner(owner);
     final ref4 = provider4.readOwner(owner);
 
-    expect(owner.debugProviderStatedSortedByDepth, <Object>[
+    expect(owner.debugProviderStateSortedByDepth, <Object>[
       isProvider(provider4, depth: 0),
       isProvider(provider3, depth: 0),
       isProvider(provider2, depth: 0),
@@ -95,7 +119,7 @@ void main() {
 
     ref4.dependOn(provider3);
 
-    expect(owner.debugProviderStatedSortedByDepth, <Object>[
+    expect(owner.debugProviderStateSortedByDepth, <Object>[
       isProvider(provider3, depth: 0),
       isProvider(provider2, depth: 0),
       isProvider(provider, depth: 0),
@@ -104,7 +128,7 @@ void main() {
 
     ref3.dependOn(provider2);
 
-    expect(owner.debugProviderStatedSortedByDepth, <Object>[
+    expect(owner.debugProviderStateSortedByDepth, <Object>[
       isProvider(provider2, depth: 0),
       isProvider(provider, depth: 0),
       isProvider(provider3, depth: 1),
@@ -113,7 +137,7 @@ void main() {
 
     ref2.dependOn(provider);
 
-    expect(owner.debugProviderStatedSortedByDepth, <Object>[
+    expect(owner.debugProviderStateSortedByDepth, <Object>[
       isProvider(provider, depth: 0),
       isProvider(provider2, depth: 1),
       isProvider(provider3, depth: 2),
@@ -224,11 +248,11 @@ void main() {
     expect(provider3.readOwner(owner), '1');
 
     expect(
-      root.debugProviderStatedSortedByDepth.map((s) => s.provider),
+      root.debugProviderStateSortedByDepth.map((s) => s.provider),
       [provider1],
     );
     expect(
-      owner.debugProviderStatedSortedByDepth.map((s) => s.provider),
+      owner.debugProviderStateSortedByDepth.map((s) => s.provider),
       [provider3, provider2],
     );
   });

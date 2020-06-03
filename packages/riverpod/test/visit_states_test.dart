@@ -304,7 +304,7 @@ void main() {
 }
 
 List<ProviderBase> compute(ProviderStateOwner owner) {
-  return owner.debugProviderStatedSortedByDepth.map((e) => e.provider).toList();
+  return owner.debugProviderStateSortedByDepth.map((e) => e.provider).toList();
 }
 
 class A {}

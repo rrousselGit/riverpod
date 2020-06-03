@@ -55,7 +55,7 @@ void main() {
     verifyNoMoreInteractions(listener);
 
     expect(
-      owner.debugProviderStatedSortedByDepth.map((e) => e.provider),
+      owner.debugProviderStateSortedByDepth.map((e) => e.provider),
       [provider, computed, provider2],
     );
   });

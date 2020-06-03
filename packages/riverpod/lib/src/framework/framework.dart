@@ -368,7 +368,7 @@ Changing the kind of override or reordering overrides is not supported.
 @visibleForTesting
 extension ProviderStateOwnerInternals on ProviderStateOwner {
   @visibleForTesting
-  List<ProviderStateBase> get debugProviderStatedSortedByDepth {
+  List<ProviderStateBase> get debugProviderStateSortedByDepth {
     List<ProviderStateBase> result;
     assert(() {
       result = _providerStatesSortedByDepth.map((e) => e.value).toList();

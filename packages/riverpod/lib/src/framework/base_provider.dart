@@ -103,10 +103,12 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   /// All the states that depends on this provider.
   final Set<ProviderStateBase> _dependents = {};
 
+  @visibleForTesting
   Set<ProviderStateBase> get debugDependents {
     Set<ProviderStateBase> result;
     assert(() {
       result = {..._dependents};
+      return true;
     }(), '');
     return result;
   }
@@ -280,6 +282,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
     }
   }
 
+  /// Implementation of [ProviderReference.onDispose].
   void onDispose(VoidCallback cb) {
     if (!mounted) {
       throw StateError(
@@ -290,6 +293,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
     _onDisposeCallbacks.add(cb);
   }
 
+  /// Implementation of [ProviderBase.watchOwner].
   VoidCallback $addListener(
     void Function(Result value) listener,
   ) {
@@ -348,6 +352,10 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
     }
   }
 
+  /// Life-cycle for when the provider state is destroyed.
+  /// 
+  /// It triggers [ProviderReference.onDispose]
+  @mustCallSuper
   void dispose() {
     _mounted = false;
     if (_onDisposeCallbacks != null) {
