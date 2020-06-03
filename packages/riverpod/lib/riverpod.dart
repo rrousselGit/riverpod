@@ -1,6 +1,6 @@
 export 'src/common.dart'
     show Create, AsyncValue, AsyncData, $AsyncValueCopyWith, $AsyncValue;
-export 'src/computed.dart' show Computed;
+export 'src/computed.dart' show Computed, Reader;
 export 'src/framework/framework.dart'
     show
         ProviderOverride,

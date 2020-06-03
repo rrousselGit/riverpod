@@ -3,14 +3,55 @@ import 'package:collection/collection.dart';
 import 'framework/framework.dart';
 import 'internals.dart';
 
+/// A function used by [Computed] to read other providers.
+///
+/// By calling this function, it "binds" the [Computed] to the provider obtained.
 typedef Reader = Res Function<Res>(ProviderBase<ProviderBaseSubscription, Res>);
 
-/// Does not notify dependents if the value returned didn't change.
+/// A provider that combines other providers into an immutable value and
+/// cache its result.
 ///
-/// DON'T do trigger side-effects such as http requests inside [Computed].
+/// [Computed] is typically used like so:
+///
+/// ```dart
+/// final userProvider = StreamProvider<User>(...);
+/// final todoListProvider = StateNotifierProvider<TodoList>(...);
+///
+/// final greetingProvider = Computed((read) {
+///   // Uses `read` to obtain the user from `userProvider`.
+///   AsyncData<User> user = read(userProvider).data;
+///   // If the user is loading/in error, show a fallback string
+///   if (user == null) {
+///     return '...';
+///   }
+///   // Obtains TodoList from todoListProvider
+///   TodoList todoList = read(todoListProvider);
+///
+///   // combine TodoList and the user together to make a heading
+///   return 'Hello ${user.value.name}! You gave ${todoList.count} todos';
+/// });
+/// ```
+///
+/// Such usage of [Computed] will automatically update the created value
+/// whenever either the user changes or the list of todos is updated.
+///
+/// Using [Computed] brings two benefits:
+///
+/// - The value is cached.
+///   Even if we read [Computed] multiple times, the function will be evaluated
+///   only once (unless a dependency changed, like a new user is emitted or todos are added).
+///
+/// - If the function is re-evaluated but the result did not change,
+///   then dependents are not notified.
+///
+///   In the context of Flutter, this means that Widgets can safely use
+///   [Computed] to filter rebuilds.
+///
+/// **DON'T* trigger side-effects such as http requests inside [Computed].
 /// [Computed] does not guanrantee that the function won't be re-evaluated
 /// even if the inputs didn't change.
 class Computed<T> extends ProviderBase<ProviderBaseSubscription, T> {
+  /// Creates a [Computed] and allows specifying a [name].
   Computed(this._selector, {String name}) : super(name);
 
   final T Function(Reader read) _selector;
@@ -62,6 +103,7 @@ class _ComputedState<T>
       }(), '');
       T newState;
       try {
+        // TODO what if there's an exception inside selector?
         newState = provider._selector(_reader);
       } finally {
         assert(() {
@@ -79,7 +121,7 @@ class _ComputedState<T>
   Res _reader<Res>(ProviderBase<ProviderBaseSubscription, Res> target) {
     assert(
       _debugSelecting,
-      'Cannot `read` outside of the body of the Computed callback',
+      'Cannot use `read` outside of the body of the Computed callback',
     );
     return _subscritionsCache.putIfAbsent(target, () {
       final state = owner.readProviderState(target);

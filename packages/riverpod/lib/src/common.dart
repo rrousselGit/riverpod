@@ -31,6 +31,34 @@ typedef VoidCallback = void Function();
 /// By using [AsyncValue], you are guanranteed that you cannot forget to
 /// handle the loading/error state of an asynchrounous operation.
 ///
+/// It also expose some utilities to nicely convert an [AsyncValue] to
+/// a different object.
+/// For example, a Flutter Widget may use [when] to convert an [AsyncValue]
+/// into either a progress indicator, an error screen, or to show the data:
+///
+/// ```dart 
+/// /// A provider that asynchronously expose the current user
+/// final userProvider = StreamProvider<User>((_) async* {
+///   // fetch the user
+/// });
+/// 
+/// class Example extends HookWidget {
+///   @override
+///   Widget build(BuildContext context) {
+///     final AsyncValue<User> user = useProvider(userProvider);
+/// 
+///     return user.when(
+///       loading: () => CircularProgressIndicator(),
+///       error: (error, stack) => Text('Oops, something unexpected happened'),
+///       data: (value) => Text('Hello ${user.name}'),
+///     );
+///   }
+/// }
+/// ```
+///
+/// If a consumer of an [AsyncValue] does not care about the loading/error
+/// state, consider using [data] to read the state.
+///
 /// See also:
 ///
 /// - [FutureProvider] and [StreamProvider], which transforms a [Future] into
