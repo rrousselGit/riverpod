@@ -39,6 +39,11 @@ abstract class ProviderBase<Subscription extends ProviderSubscriptionBase,
   ) {
     return owner._readProviderState(this).$addListener(onChange);
   }
+
+  @override
+  String toString() {
+    return '$runtimeType#$hashCode(name: $name)';
+  }
 }
 
 /// Implementation detail of how the state of a provider is stored.
@@ -94,6 +99,17 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   /// All modifications to this property should induce a call to [markNeedsNotifyListeners].
   @protected
   Result get state;
+
+  /// All the states that depends on this provider.
+  final Set<ProviderStateBase> _dependents = {};
+
+  Set<ProviderStateBase> get debugDependents {
+    Set<ProviderStateBase> result;
+    assert(() {
+      result = {..._dependents};
+    }(), '');
+    return result;
+  }
 
   /// All the [ProviderStateBase]s that this provider depends on.
   final Set<ProviderStateBase> _providerStateDependencies = {};
@@ -183,15 +199,21 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
             }
             state._providerStateDependencies.forEach(recurs);
           }
+
           targetProviderState._providerStateDependencies.forEach(recurs);
           return true;
         }(), '');
 
         _providerStateDependencies.add(targetProviderState);
-        redepthAfter(targetProviderState);
+        targetProviderState._dependents.add(this);
         final targetProviderValue =
             targetProviderState.createProviderSubscription();
-        onDispose(targetProviderValue.dispose);
+        onDispose(() {
+          targetProviderState._dependents.remove(this);
+          targetProviderValue.dispose();
+        });
+
+        redepthAfter(targetProviderState);
 
         return targetProviderValue;
       }) as T;
@@ -253,10 +275,9 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
       _owner._providerStatesSortedByDepth.add(_stateEntryInSortedStateList);
     }
 
-    // TODO: recursive _redepth
-    // for (final dep in _providerStateDependencies) {
-    //   dep.redepthAfter(this);
-    // }
+    for (final dep in _dependents) {
+      dep.redepthAfter(this);
+    }
   }
 
   void onDispose(VoidCallback cb) {
@@ -390,8 +411,6 @@ abstract class AlwaysAliveProvider<
     return owner._readProviderState(this).state;
   }
 
-  // Always alive providers can only be overriden by always alive providers
-  // as automatically disposed providers wouldn't work.
   /// Combined with [ProviderStateOwner] (or `ProviderScope` if you are using Flutter),
   /// allows overriding the behavior of this provider for a part of the application.
   ///
@@ -417,6 +436,8 @@ abstract class AlwaysAliveProvider<
   /// });
   /// ```
   ProviderOverride overrideForSubtree(
+    // Always alive providers can only be overriden by always alive providers
+    // as automatically disposed providers wouldn't work.
     AlwaysAliveProvider<Subscription, Result> provider,
   ) {
     return ProviderOverride._(provider, this);
