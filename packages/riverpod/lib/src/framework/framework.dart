@@ -23,6 +23,7 @@ class _LinkedListEntry<T> extends LinkedListEntry<_LinkedListEntry<T>> {
   final T value;
 }
 
+/// An utility to read (an potentially initialize) the state of a provider.
 class _ProviderStateReader {
   _ProviderStateReader(this._origin, this._owner);
 
@@ -123,22 +124,53 @@ ProviderStateBase notifyListenersLock;
 ///
 /// This prevents modifying providers that already notified their listener in
 /// the current frame.
+///
+/// Negative when nothing is locked.
 @visibleForTesting
 int notifyListenersDepthLock = -1;
 
-/// Do not implement, only extend
+/// An object that listens to the changes of a [ProviderStateOwner].
+///
+/// This can be used for logging, making devtools, or saving the state
+/// for offline support.
 abstract class ProviderStateOwnerObserver {
+  /// A provider was initialized, and the value created is [value].
   void didAddProvider(ProviderBase provider, Object value) {}
 
+  /// Some providers emitted updates.
+  ///
+  /// The parameter [changes] contains the list of all providers that
+  /// changed and their new value, but not does include providers
+  /// that did not change.
   void didUpdateProviders(Map<ProviderBase, Object> changes) {}
 
+  /// A provider was disposed
   void didDisposeProvider(ProviderBase provider) {}
 }
 
 /// Implementation detail for [ProviderStateOwner.ref].
 final _refProvider = Provider((c) => c);
 
+/// The object that manages the state of all providers.
+///
+/// The state of a provider is not stored inside the provider, but instead
+/// inside [ProviderStateOwner].
+///
+/// By using [ProviderStateOwner], it is possible to override the behavior
+/// of a provider, by specifying `overrides`.
+///
+/// If the state of a provider update, notifications are not emitted synchronously.
+/// Instead, `markNeedsUpdate` is called (at most once until updates are emitted).
+/// Then, to dispatch the notifications, you have to call [update].
+///
+/// This allows modifying multiple providers at the same time, without
+/// pointlessly triggering too many notifications.
+///
+/// See also:
+/// - [Provider], for more informations on providers and their usage.
+/// - [update], which notify all provider listeners and allow changing overrides.
 class ProviderStateOwner {
+  /// Creates a [ProviderStateOwner] and allows specifying provider overrides.
   ProviderStateOwner({
     ProviderStateOwner parent,
     List<ProviderOverride> overrides = const [],
@@ -178,44 +210,126 @@ class ProviderStateOwner {
 
   final List<ProviderStateOwnerObserver> _observers;
   final VoidCallback _markNeedsUpdate;
-  List<ProviderOverride> _debugOverrides;
+
+  /// The currently overriden providers.
+  ///
+  /// New keys cannot be added after creation, unless this [ProviderStateOwner]
+  /// does not have a `parent`.
+  /// Upating existing keys is possible.
   final _overrideForProvider = <ProviderBase, ProviderBase>{};
+
+  /// The list of all provider states sorted by how deep they are in the graph
+  /// of dependencies.
+  ///
+  /// It exists for [update] and [dispose] to efficiently traverse all providers
+  /// in order of dependency with a O(N) complexity.
   final _providerStatesSortedByDepth =
       LinkedList<_LinkedListEntry<ProviderStateBase>>();
+
+  /// The state of all providers. Reading a provider is O(1).
   Map<ProviderBase, _ProviderStateReader> _stateReaders;
+
+  /// When attempting to read a provider, a provider may not be registered
+  /// inside [_stateReaders] with a [_ProviderStateReader].
+  /// In that situation, [_fallback] is called and will handle register the
+  /// provider accordingly.
+  ///
+  /// This is typically done only when [ProviderStateOwner] has not `parent`.
+  _FallbackProviderStateReader _fallback;
+
+  /// Whether [dispose] was called or not.
+  ///
+  /// This disables the different methods of [ProviderStateOwner], resulting in
+  /// a [StateError] when attempting to use them.
   bool _disposed = false;
+
+  /// A snapshot of the current overrides, used by [update] to ensure that
+  /// updating the list of overrides is done correctly.
+  List<ProviderOverride> _debugOverrides;
 
   /// The state of `Computed` providers
   ///
   /// It is not stored inside [_stateReaders] as `Computed` are always
   /// in the deepest [ProviderStateOwner] possible.
   Map<Computed, _ProviderStateReader> _computedStateReaders;
-  _FallbackProviderStateReader _fallback;
   var _updateScheduled = false;
 
-  /// All the providers that changed and their new value
+  /// All the providers that changed and their new value.
   ///
   /// This property is an implementation detail of [ProviderStateOwnerObserver.didUpdateProviders].
+  /// It is `null` outside of [_notifyListeners].
   Map<ProviderBase, Object> _providerChanges;
 
   // TODO: should _redepth be optimized for this use-case? As `ref` can safely always
   // be the last provider in the list of providers per depth
+  /// An utility to easily obtain a [ProviderReference] from a [ProviderStateOwner].
+  ///
+  /// This is equivalent to:
+  ///
+  /// ```dart
+  /// final refProvider = Provider((ref) => ref);
+  /// final owner = ProviderStateOwnrr(overrides: [refProvider]);
+  ///
+  /// final re = refProvider.readOwner(owner);
+  /// ```
   ProviderReference get ref => _refProvider.readOwner(this);
 
-  Map<ProviderBase, Object> get debugProviderStates {
-    Map<ProviderBase, Object> res;
-    assert(() {
-      res = {
-        for (final entry in _stateReaders.entries)
-          if (entry.value._providerState != null)
-            entry.key: entry.value._providerState.state,
-      };
-
-      return true;
-    }(), '');
-    return res;
-  }
-
+  /// Notify listeners about changes associated to a provider, and optionally
+  /// allow changing the list of provider overrides.
+  ///
+  /// The providers will dispatch their notifications in order
+  /// based on if they depend on other providers or not:
+  ///
+  /// - A provider with no dependency on other providers will notify its
+  ///   listeners first.
+  /// - A provider that depends on all the other providers of the application
+  ///   will notify its listeners last.
+  ///
+  ///
+  /// Updating the list of overrides is possible, but [overrides] cannot
+  /// remove or add new overrides.
+  /// What this means is, if [ProviderStateOwner] was created with 3 overrides,
+  /// calls to [update] that tries to change the list of overrides must override
+  /// these 3 exact providers again.
+  ///
+  /// As an example, consider:
+  ///
+  /// ```dart
+  /// final provider1 = FutureProvider((_) async => 'Hello');
+  /// final provider2 = Provider((_) => 'world');
+  ///
+  /// final owner = ProviderStateOwner(
+  ///   overrides: [
+  ///     provider1.debugOverrideWithValue(const AsyncValue.loading())
+  ///     provider2.overrideForSubtree(Provider((_) => 'London')),
+  ///   ],
+  /// );
+  /// ```
+  ///
+  /// Then we can call update with different overrides:
+  ///
+  /// ```dart
+  /// owner.update([
+  ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
+  ///   provider2.overrideForSubtree(Provider((_) => 'London')),
+  /// ]);
+  /// ```
+  ///
+  /// But we cannot call [update] with different overrides:
+  ///
+  /// ```dart
+  /// // Invalid, provider2 was overiden before but is not anymore
+  /// owner.update([
+  ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
+  /// ]);
+  ///
+  /// // Invalid, provider3 was not overriden before, but now is
+  /// owner.update([
+  ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
+  ///   provider2.overrideForSubtree(Provider((_) => 'London')),
+  ///   provider3.overrideForSubtree(...),
+  /// ]);
+  /// ```
   void update([List<ProviderOverride> overrides]) {
     if (_disposed) {
       throw StateError(
@@ -261,9 +375,11 @@ Changing the kind of override or reordering overrides is not supported.
           override._origin is! Computed && override._provider is! Computed,
           'Cannot override Computed',
         );
-        // no need to check _computedStateReaders as they are not overridable
+        // no need to check _computedStateReaders as they are not overridable.
+        // _stateReaders[override._origin] cannot be null for overriden providers.
         final state = _stateReaders[override._origin]
             // _providerState instead of read() to not compute the state
+            // if it wasn't loaded yet.
             ._providerState;
         if (state == null) {
           continue;
@@ -277,23 +393,12 @@ Changing the kind of override or reordering overrides is not supported.
     _notifyListeners();
   }
 
-  void dispose() {
-    if (_disposed) {
-      throw StateError(
-        'Called disposed on a ProviderStateOwner that was already disposed',
-      );
-    }
-    _disposed = true;
-
-    assert(notifyListenersLock == null, '');
-    // TODO: reverse?
-    for (final entry in _providerStatesSortedByDepth) {
-      notifyListenersLock = entry.value;
-      _runGuarded(entry.value.dispose);
-      notifyListenersLock = null;
-    }
-  }
-
+  /// Used by providers when their state has changed and they want to notify listeners.
+  ///
+  /// If this is the first time a provider wants to notify listeners since the
+  /// last [update] call, this will call [_markNeedsUpdate].
+  ///
+  /// See also [ProviderStateBase.markNeedsNotifyListeners].
   void _scheduleNotification() {
     if (_disposed) {
       throw StateError(
@@ -306,6 +411,14 @@ Changing the kind of override or reordering overrides is not supported.
     }
   }
 
+  /// Call [ProviderStateBase.notifyListeners] on all providers that want to emit
+  /// updates, order from providers with no dependencies to providers that depends
+  /// on the entire application.
+  ///
+  /// This does not call the listeners of a specific provider.
+  /// That is done by [ProviderStateBase.notifyListeners], which may decide not to.
+  /// An example is `Computed`, which will re-execute its `selector` but not
+  /// notify its listeners if the selected value didn't change.
   void _notifyListeners() {
     for (final entry in _providerStatesSortedByDepth) {
       if (entry.value._dirty) {
@@ -320,6 +433,8 @@ Changing the kind of override or reordering overrides is not supported.
     }
     if (_providerChanges != null) {
       if (_observers != null) {
+        // changes is immutable as if observers modified it, the behavior
+        // would be unpredictable.
         final changes = UnmodifiableMapView(_providerChanges);
         for (final observer in _observers) {
           _runUnaryGuarded(
@@ -333,6 +448,10 @@ Changing the kind of override or reordering overrides is not supported.
     _updateScheduled = false;
   }
 
+  /// Used by [ProviderStateBase.notifyListeners] to let [ProviderStateOwner]
+  /// know that a provider _truly_ changed.
+  ///
+  /// This is then used to notify [ProviderStateOwnerObserver]s of the changes.
   void _reportChanged(ProviderBase origin, Object state) {
     if (_observers != null && _observers.isNotEmpty) {
       _providerChanges ??= {};
@@ -340,6 +459,9 @@ Changing the kind of override or reordering overrides is not supported.
     }
   }
 
+  /// Reads the state of a provider, potentially creating it in the processs.
+  ///
+  /// It may throw if the provider requested threw when it was built.
   ProviderStateBase<Subscription, ListeningValue,
           ProviderBase<Subscription, ListeningValue>>
       _readProviderState<Subscription extends ProviderSubscriptionBase,
@@ -363,6 +485,27 @@ Changing the kind of override or reordering overrides is not supported.
               ProviderBase<Subscription, ListeningValue>>;
     }
   }
+
+  /// Release all the resources associated with this [ProviderStateOwner].
+  ///
+  /// This will destroy the state of all providers associated to this
+  /// [ProviderStateOwner] and call [ProviderReference.onDispose] listeners.
+  void dispose() {
+    if (_disposed) {
+      throw StateError(
+        'Called disposed on a ProviderStateOwner that was already disposed',
+      );
+    }
+    _disposed = true;
+
+    assert(notifyListenersLock == null, '');
+    // TODO: reverse?
+    for (final entry in _providerStatesSortedByDepth) {
+      notifyListenersLock = entry.value;
+      _runGuarded(entry.value.dispose);
+      notifyListenersLock = null;
+    }
+  }
 }
 
 @visibleForTesting
@@ -377,6 +520,7 @@ extension ProviderStateOwnerInternals on ProviderStateOwner {
     return result;
   }
 
+  @visibleForTesting
   void scheduleNotification() => _scheduleNotification();
 
   ProviderStateBase<Subscription, ListeningValue,
@@ -386,6 +530,20 @@ extension ProviderStateOwnerInternals on ProviderStateOwner {
     ProviderBase<Subscription, ListeningValue> provider,
   ) {
     return _readProviderState(provider);
+  }
+
+  Map<ProviderBase, Object> get debugProviderStates {
+    Map<ProviderBase, Object> res;
+    assert(() {
+      res = {
+        for (final entry in _stateReaders.entries)
+          if (entry.value._providerState != null)
+            entry.key: entry.value._providerState.state,
+      };
+
+      return true;
+    }(), '');
+    return res;
   }
 }
 
@@ -405,11 +563,13 @@ class ProviderOverride {
   final ProviderBase _provider;
 }
 
+/// A base class for objects returned by [ProviderReference.dependOn].
 abstract class ProviderSubscriptionBase {
   @protected
   void dispose() {}
 }
 
+/// An empty implementation of [ProviderSubscriptionBase].
 class ProviderBaseSubscriptionImpl extends ProviderSubscriptionBase {}
 
 /// An error thrown when a call to [ProviderReference.dependOn] leads
