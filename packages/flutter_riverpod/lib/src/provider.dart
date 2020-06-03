@@ -3,9 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'framework.dart';
 import 'internal.dart';
 
-extension AlwaysAliveProviderX<CombiningValue extends ProviderBaseSubscription,
-    ListenedValue> on AlwaysAliveProvider<CombiningValue, ListenedValue> {
-  ListenedValue read(BuildContext context) {
+extension AlwaysAliveProviderX<Subscription extends ProviderSubscriptionBase,
+    Result> on AlwaysAliveProvider<Subscription, Result> {
+  Result read(BuildContext context) {
     assert(() {
       if (context.debugDoingBuild) {
         throw UnsupportedError(

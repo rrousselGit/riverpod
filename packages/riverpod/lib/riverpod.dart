@@ -3,6 +3,10 @@ export 'src/common.dart'
 export 'src/computed.dart' show Computed, Reader;
 export 'src/framework/framework.dart'
     show
+        AlwaysAliveProvider,
+        CircularDependencyError,
+        ProviderBase,
+        ProviderSubscriptionBase,
         ProviderOverride,
         ProviderReference,
         ProviderStateOwner,

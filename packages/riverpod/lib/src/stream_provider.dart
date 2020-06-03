@@ -3,7 +3,7 @@ import 'dart:async';
 import 'common.dart';
 import 'framework/framework.dart';
 
-class StreamProviderSubscription<T> extends ProviderBaseSubscription {
+class StreamProviderSubscription<T> extends ProviderSubscriptionBase {
   StreamProviderSubscription._(this.stream);
 
   final Stream<T> stream;
@@ -30,7 +30,7 @@ class StreamProvider<T>
   }
 }
 
-class _StreamProviderState<T> extends ProviderBaseState<
+class _StreamProviderState<T> extends ProviderStateBase<
     StreamProviderSubscription<T>, AsyncValue<T>, StreamProvider<T>> {
   Stream<T> _stream;
   StreamSubscription<T> _streamSubscription;
@@ -85,7 +85,7 @@ class _ValueStreamProvider<T>
   }
 }
 
-class _ValueStreamProviderState<T> extends ProviderBaseState<
+class _ValueStreamProviderState<T> extends ProviderStateBase<
     StreamProviderSubscription<T>, AsyncValue<T>, _ValueStreamProvider<T>> {
   final _controller = StreamController<T>();
 

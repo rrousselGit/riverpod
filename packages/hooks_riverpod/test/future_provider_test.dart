@@ -184,7 +184,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(AsyncValue.data(42)),
+            futureProvider.debugOverrideWithValue(const AsyncValue.data(42)),
           ],
           child: child,
         ),
@@ -196,7 +196,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(AsyncValue.data(42)),
+            futureProvider.debugOverrideWithValue(const AsyncValue.data(42)),
           ],
           child: child,
         ),
@@ -208,7 +208,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(AsyncValue.data(42)),
+            futureProvider.debugOverrideWithValue(const AsyncValue.data(42)),
           ],
           child: child,
         ),
@@ -223,7 +223,7 @@ void main() {
         () => tester.pumpWidget(
           ProviderScope(
             overrides: [
-              futureProvider.debugOverrideWithValue(AsyncValue.data(21)),
+              futureProvider.debugOverrideWithValue(const AsyncValue.data(21)),
             ],
             child: child,
           ),
@@ -254,7 +254,7 @@ void main() {
         () => tester.pumpWidget(
           ProviderScope(
             overrides: [
-              futureProvider.debugOverrideWithValue(AsyncValue.data(21)),
+              futureProvider.debugOverrideWithValue(const AsyncValue.data(21)),
             ],
             child: child,
           ),
@@ -285,7 +285,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(AsyncValue.data(42)),
+            futureProvider.debugOverrideWithValue(const AsyncValue.data(42)),
           ],
           child: child,
         ),
@@ -376,7 +376,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(AsyncValue.data(42)),
+            futureProvider.debugOverrideWithValue(const AsyncValue.data(42)),
           ],
           child: child,
         ),

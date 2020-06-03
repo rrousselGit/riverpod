@@ -36,17 +36,17 @@ typedef VoidCallback = void Function();
 /// For example, a Flutter Widget may use [when] to convert an [AsyncValue]
 /// into either a progress indicator, an error screen, or to show the data:
 ///
-/// ```dart 
+/// ```dart
 /// /// A provider that asynchronously expose the current user
 /// final userProvider = StreamProvider<User>((_) async* {
 ///   // fetch the user
 /// });
-/// 
+///
 /// class Example extends HookWidget {
 ///   @override
 ///   Widget build(BuildContext context) {
 ///     final AsyncValue<User> user = useProvider(userProvider);
-/// 
+///
 ///     return user.when(
 ///       loading: () => CircularProgressIndicator(),
 ///       error: (error, stack) => Text('Oops, something unexpected happened'),

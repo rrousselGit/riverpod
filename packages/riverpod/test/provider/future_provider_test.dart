@@ -46,7 +46,7 @@ void main() {
     verifyNoMoreInteractions(listener);
     owner.update();
 
-    verify(listener(AsyncValue.data('21 42'))).called(1);
+    verify(listener(const AsyncValue.data('21 42'))).called(1);
     verifyNoMoreInteractions(listener);
 
     owner.dispose();
@@ -66,7 +66,7 @@ void main() {
     verifyNoMoreInteractions(listener);
     owner.update();
 
-    verify(listener(AsyncValue.data(42))).called(1);
+    verify(listener(const AsyncValue.data(42))).called(1);
     verifyNoMoreInteractions(listener);
     owner.dispose();
   });
@@ -95,7 +95,7 @@ void main() {
     test('value immediatly then other value', () async {
       final provider = FutureProvider((_) async => 0);
       final owner = ProviderStateOwner(overrides: [
-        provider.debugOverrideWithValue(AsyncValue.data(42)),
+        provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
       final listener = ListenerMock();
 
@@ -104,13 +104,13 @@ void main() {
 
       provider.watchOwner(owner, listener);
 
-      verify(listener(AsyncValue.data(42))).called(1);
+      verify(listener(const AsyncValue.data(42))).called(1);
       verifyNoMoreInteractions(listener);
 
       Object error;
       runZonedGuarded(
         () => owner.update([
-          provider.debugOverrideWithValue(AsyncValue.data(21)),
+          provider.debugOverrideWithValue(const AsyncValue.data(21)),
         ]),
         (err, _) => error = err,
       );
@@ -121,7 +121,7 @@ void main() {
     test('value immediatly then error', () async {
       final provider = FutureProvider((_) async => 0);
       final owner = ProviderStateOwner(overrides: [
-        provider.debugOverrideWithValue(AsyncValue.data(42)),
+        provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
       final listener = ListenerMock();
 
@@ -130,7 +130,7 @@ void main() {
 
       provider.watchOwner(owner, listener);
 
-      verify(listener(AsyncValue.data(42))).called(1);
+      verify(listener(const AsyncValue.data(42))).called(1);
       verifyNoMoreInteractions(listener);
 
       Object error;
@@ -147,7 +147,7 @@ void main() {
     test('value immediatly then loading', () async {
       final provider = FutureProvider((_) async => 0);
       final owner = ProviderStateOwner(overrides: [
-        provider.debugOverrideWithValue(AsyncValue.data(42)),
+        provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
       final listener = ListenerMock();
 
@@ -156,7 +156,7 @@ void main() {
 
       provider.watchOwner(owner, listener);
 
-      verify(listener(AsyncValue.data(42))).called(1);
+      verify(listener(const AsyncValue.data(42))).called(1);
       verifyNoMoreInteractions(listener);
 
       Object error;
@@ -183,10 +183,10 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       owner.update([
-        provider.debugOverrideWithValue(AsyncValue.data(42)),
+        provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
 
-      verify(listener(AsyncValue.data(42))).called(1);
+      verify(listener(const AsyncValue.data(42))).called(1);
       verifyNoMoreInteractions(listener);
 
       final dep = owner.ref.dependOn(provider);
@@ -235,10 +235,10 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       owner.update([
-        provider.debugOverrideWithValue(AsyncValue.data(42)),
+        provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
 
-      verify(listener(AsyncValue.data(42))).called(1);
+      verify(listener(const AsyncValue.data(42))).called(1);
       verifyNoMoreInteractions(listener);
 
       final dep = owner.ref.dependOn(provider);
@@ -318,7 +318,7 @@ void main() {
       Object error;
       runZonedGuarded(
         () => owner.update([
-          provider.debugOverrideWithValue(AsyncValue.data(42)),
+          provider.debugOverrideWithValue(const AsyncValue.data(42)),
         ]),
         (err, _) => error = err,
       );

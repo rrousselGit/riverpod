@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 export 'package:flutter_riverpod/flutter_riverpod.dart';
 
-T useProvider<T>(ProviderBase<ProviderBaseSubscription, T> provider) {
+T useProvider<T>(ProviderBase<ProviderSubscriptionBase, T> provider) {
   final owner = ProviderStateOwnerScope.of(useContext());
   return Hook.use(_BaseProviderHook<T>(owner, provider));
 }
@@ -17,7 +17,7 @@ class _BaseProviderHook<T> extends Hook<T> {
   );
 
   final ProviderStateOwner _owner;
-  final ProviderBase<ProviderBaseSubscription, T> _provider;
+  final ProviderBase<ProviderSubscriptionBase, T> _provider;
 
   @override
   _BaseProviderHookState<T> createState() => _BaseProviderHookState();

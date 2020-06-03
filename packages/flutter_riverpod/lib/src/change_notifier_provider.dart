@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:riverpod/src/internals.dart';
 
-class ChangeNotifierProviderSubscription<T> extends ProviderBaseSubscription {
+class ChangeNotifierProviderSubscription<T> extends ProviderSubscriptionBase {
   ChangeNotifierProviderSubscription._(this.value);
 
   final T value;
@@ -20,7 +20,7 @@ class ChangeNotifierProvider<T extends ChangeNotifier>
 }
 
 class _ChangeNotifierProviderState<T extends ChangeNotifier>
-    extends ProviderBaseState<ChangeNotifierProviderSubscription<T>, T,
+    extends ProviderStateBase<ChangeNotifierProviderSubscription<T>, T,
         ChangeNotifierProvider<T>> {
   @override
   T state;

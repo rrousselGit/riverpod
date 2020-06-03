@@ -39,14 +39,14 @@ void main() {
 
     verifyNoMoreInteractions(listener);
     owner.update();
-    verify(listener(AsyncValue.data(42))).called(1);
+    verify(listener(const AsyncValue.data(42))).called(1);
     verifyNoMoreInteractions(listener);
 
     controller.add(21);
 
     verifyNoMoreInteractions(listener);
     owner.update();
-    verify(listener(AsyncValue.data(21))).called(1);
+    verify(listener(const AsyncValue.data(21))).called(1);
     verifyNoMoreInteractions(listener);
 
     await controller.close();
@@ -77,7 +77,7 @@ void main() {
 
     verifyNoMoreInteractions(listener);
     owner.update();
-    verify(listener(AsyncValue.data(21))).called(1);
+    verify(listener(const AsyncValue.data(21))).called(1);
     verifyNoMoreInteractions(listener);
 
     await controller.close();
@@ -103,7 +103,7 @@ void main() {
 
     verifyNoMoreInteractions(listener);
     owner.update();
-    verify(listener(AsyncValue.data(42))).called(1);
+    verify(listener(const AsyncValue.data(42))).called(1);
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(dispose);
 
@@ -141,7 +141,7 @@ void main() {
     test('value immediatly then other value', () async {
       final provider = StreamProvider<int>((_) async* {});
       final owner = ProviderStateOwner(overrides: [
-        provider.debugOverrideWithValue(AsyncValue.data(42)),
+        provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
       final listener = ListenerMock();
       final dep = owner.ref.dependOn(provider);
@@ -149,15 +149,15 @@ void main() {
 
       provider.watchOwner(owner, listener);
 
-      verify(listener(AsyncValue.data(42))).called(1);
+      verify(listener(const AsyncValue.data(42))).called(1);
       verifyNoMoreInteractions(listener);
       await expectLater(stream, emits(42));
 
       owner.update([
-        provider.debugOverrideWithValue(AsyncValue.data(21)),
+        provider.debugOverrideWithValue(const AsyncValue.data(21)),
       ]);
 
-      verify(listener(AsyncValue.data(21))).called(1);
+      verify(listener(const AsyncValue.data(21))).called(1);
       verifyNoMoreInteractions(listener);
       await expectLater(stream, emits(21));
 
@@ -168,7 +168,7 @@ void main() {
     test('value immediatly then error', () async {
       final provider = StreamProvider<int>((_) async* {});
       final owner = ProviderStateOwner(overrides: [
-        provider.debugOverrideWithValue(AsyncValue.data(42)),
+        provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
       final listener = ListenerMock();
       final dep = owner.ref.dependOn(provider);
@@ -176,7 +176,7 @@ void main() {
 
       provider.watchOwner(owner, listener);
 
-      verify(listener(AsyncValue.data(42))).called(1);
+      verify(listener(const AsyncValue.data(42))).called(1);
       verifyNoMoreInteractions(listener);
       await expectLater(stream, emits(42));
 
@@ -195,7 +195,7 @@ void main() {
     test('value immediatly then loading', () async {
       final provider = StreamProvider<int>((_) async* {});
       final owner = ProviderStateOwner(overrides: [
-        provider.debugOverrideWithValue(AsyncValue.data(42)),
+        provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
       final listener = ListenerMock();
       final dep = owner.ref.dependOn(provider);
@@ -203,7 +203,7 @@ void main() {
 
       provider.watchOwner(owner, listener);
 
-      verify(listener(AsyncValue.data(42))).called(1);
+      verify(listener(const AsyncValue.data(42))).called(1);
       verifyNoMoreInteractions(listener);
       await expectLater(stream, emits(42));
 
@@ -237,10 +237,10 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       owner.update([
-        provider.debugOverrideWithValue(AsyncValue.data(42)),
+        provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
 
-      verify(listener(AsyncValue.data(42))).called(1);
+      verify(listener(const AsyncValue.data(42))).called(1);
       verifyNoMoreInteractions(listener);
       await expectLater(stream, emits(42));
 
@@ -298,10 +298,10 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       owner.update([
-        provider.debugOverrideWithValue(AsyncValue.data(42)),
+        provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
 
-      verify(listener(AsyncValue.data(42))).called(1);
+      verify(listener(const AsyncValue.data(42))).called(1);
       verifyNoMoreInteractions(listener);
 
       await expectLater(stream, emits(42));
@@ -386,10 +386,10 @@ void main() {
       await expectLater(stream, emitsError(42));
 
       owner.update([
-        provider.debugOverrideWithValue(AsyncValue.data(21)),
+        provider.debugOverrideWithValue(const AsyncValue.data(21)),
       ]);
 
-      verify(listener(AsyncValue.data(21))).called(1);
+      verify(listener(const AsyncValue.data(21))).called(1);
       verifyNoMoreInteractions(listener);
       await expectLater(stream, emits(21));
 

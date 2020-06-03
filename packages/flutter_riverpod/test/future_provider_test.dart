@@ -11,7 +11,7 @@ void main() {
 
     futureProvider.watchOwner(owner, listener);
 
-    verify(listener(AsyncValue.data(42)));
+    verify(listener(const AsyncValue.data(42)));
     verifyNoMoreInteractions(listener);
 
     owner.update();

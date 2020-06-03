@@ -305,7 +305,7 @@ class MockDidUpdateProvider extends Mock {
   void call(TestProviderState state, TestProvider oldProvider);
 }
 
-class TestProviderValue extends ProviderBaseSubscription {
+class TestProviderValue extends ProviderSubscriptionBase {
   TestProviderValue(this.value);
 
   final int value;
@@ -335,7 +335,7 @@ class TestProvider extends AlwaysAliveProvider<TestProviderValue, int> {
 }
 
 class TestProviderState
-    extends ProviderBaseState<TestProviderValue, int, TestProvider> {
+    extends ProviderStateBase<TestProviderValue, int, TestProvider> {
   int _state;
   @override
   int get state => _state;
@@ -381,7 +381,7 @@ class MyImmutableProvider
   }
 }
 
-class MyImmutableProviderState extends ProviderBaseState<
+class MyImmutableProviderState extends ProviderStateBase<
     ProviderSubscription<int>, int, MyImmutableProvider> {
   @override
   void initState() {

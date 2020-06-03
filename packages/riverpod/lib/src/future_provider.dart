@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 import 'common.dart';
 import 'framework/framework.dart';
 
-class FutureProviderSubscription<T> extends ProviderBaseSubscription {
+class FutureProviderSubscription<T> extends ProviderSubscriptionBase {
   FutureProviderSubscription._({@required this.future});
 
   final Future<T> future;
@@ -34,7 +34,7 @@ class FutureProvider<Res> extends AlwaysAliveProvider<
   }
 }
 
-class _FutureProviderState<Res> extends ProviderBaseState<
+class _FutureProviderState<Res> extends ProviderStateBase<
     FutureProviderSubscription<Res>, AsyncValue<Res>, FutureProvider<Res>> {
   Future<Res> _future;
 
@@ -90,7 +90,7 @@ class _DebugValueFutureProvider<Res> extends AlwaysAliveProvider<
   }
 }
 
-class _DebugValueFutureProviderState<Res> extends ProviderBaseState<
+class _DebugValueFutureProviderState<Res> extends ProviderStateBase<
     FutureProviderSubscription<Res>,
     AsyncValue<Res>,
     _DebugValueFutureProvider<Res>> {

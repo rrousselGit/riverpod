@@ -11,25 +11,26 @@ import '../provider.dart';
 
 part 'base_provider.dart';
 
-typedef OnError = void Function(dynamic error, StackTrace stackTrace);
-
 // ignore: avoid_private_typedef_functions
-typedef _FallbackProviderStateReader = ProviderBaseState<
-        ProviderBaseSubscription, T, ProviderBase<ProviderBaseSubscription, T>>
+typedef _FallbackProviderStateReader = ProviderStateBase<
+        ProviderSubscriptionBase, T, ProviderBase<ProviderSubscriptionBase, T>>
     Function<T>(
-  ProviderBase<ProviderBaseSubscription, T>,
+  ProviderBase<ProviderSubscriptionBase, T>,
 );
 
-final _refProvider = Provider((c) => c);
+class _LinkedListEntry<T> extends LinkedListEntry<_LinkedListEntry<T>> {
+  _LinkedListEntry(this.value);
+  final T value;
+}
 
 class _ProviderStateReader {
   _ProviderStateReader(this._origin, this._owner);
 
   final ProviderBase _origin;
   final ProviderStateOwner _owner;
-  ProviderBaseState _providerState;
+  ProviderStateBase _providerState;
 
-  ProviderBaseState read() {
+  ProviderStateBase read() {
     if (_providerState != null) {
       if (_providerState._error != null) {
         // ignore: only_throw_errors, this is what was throws by initState so it is valid to rethrow it
@@ -45,7 +46,7 @@ class _ProviderStateReader {
       .._owner = _owner;
 
     assert(
-      _providerState._dependenciesState.isEmpty,
+      _providerState._providerStateDependencies.isEmpty,
       'Cannot add dependencies before `initState`',
     );
     // Insert the new state in the beginning of the sorted by depth list,
@@ -112,13 +113,13 @@ void _runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
 }
 
 /// A flag for checking against invalid operations inside
-/// [ProviderBaseState.initState] and [ProviderBaseState.dispose].
+/// [ProviderStateBase.initState] and [ProviderStateBase.dispose].
 ///
 /// This prevents modifying other providers while inside these life-cycles.
 @visibleForTesting
-ProviderBaseState notifyListenersLock;
+ProviderStateBase notifyListenersLock;
 
-/// A flag for checking against invalid operations inside [ProviderBaseState.notifyListeners].
+/// A flag for checking against invalid operations inside [ProviderStateBase.notifyListeners].
 ///
 /// This prevents modifying providers that already notified their listener in
 /// the current frame.
@@ -133,6 +134,9 @@ abstract class ProviderStateOwnerObserver {
 
   void didDisposeProvider(ProviderBase provider) {}
 }
+
+/// Implementation detail for [ProviderStateOwner.ref].
+final _refProvider = Provider((c) => c);
 
 class ProviderStateOwner {
   ProviderStateOwner({
@@ -153,8 +157,8 @@ class ProviderStateOwner {
       // as in this situation, there is no "parent" owner.s
       return _stateReaders.putIfAbsent(provider, () {
         return _ProviderStateReader(provider, this);
-      }).read() as ProviderBaseState<ProviderBaseSubscription, T,
-          ProviderBase<ProviderBaseSubscription, T>>;
+      }).read() as ProviderStateBase<ProviderSubscriptionBase, T,
+          ProviderBase<ProviderSubscriptionBase, T>>;
     };
 
     for (final override in overrides) {
@@ -177,7 +181,7 @@ class ProviderStateOwner {
   List<ProviderOverride> _debugOverrides;
   final _overrideForProvider = <ProviderBase, ProviderBase>{};
   final _providerStatesSortedByDepth =
-      LinkedList<_LinkedListEntry<ProviderBaseState>>();
+      LinkedList<_LinkedListEntry<ProviderStateBase>>();
   Map<ProviderBase, _ProviderStateReader> _stateReaders;
   bool _disposed = false;
 
@@ -194,6 +198,8 @@ class ProviderStateOwner {
   /// This property is an implementation detail of [ProviderStateOwnerObserver.didUpdateProviders].
   Map<ProviderBase, Object> _providerChanges;
 
+  // TODO: should _redepth be optimized for this use-case? As `ref` can safely always
+  // be the last provider in the list of providers per depth
   ProviderReference get ref => _refProvider.readOwner(this);
 
   Map<ProviderBase, Object> get debugProviderStates {
@@ -334,11 +340,11 @@ Changing the kind of override or reordering overrides is not supported.
     }
   }
 
-  ProviderBaseState<CombiningValue, ListeningValue,
-          ProviderBase<CombiningValue, ListeningValue>>
-      _readProviderState<CombiningValue extends ProviderBaseSubscription,
+  ProviderStateBase<Subscription, ListeningValue,
+          ProviderBase<Subscription, ListeningValue>>
+      _readProviderState<Subscription extends ProviderSubscriptionBase,
           ListeningValue>(
-    ProviderBase<CombiningValue, ListeningValue> provider,
+    ProviderBase<Subscription, ListeningValue> provider,
   ) {
     if (_disposed) {
       throw StateError(
@@ -349,21 +355,21 @@ Changing the kind of override or reordering overrides is not supported.
       _computedStateReaders ??= {};
       return _computedStateReaders.putIfAbsent(provider as Computed, () {
         return _ProviderStateReader(provider, this);
-      }).read() as ProviderBaseState<CombiningValue, ListeningValue,
-          ProviderBase<CombiningValue, ListeningValue>>;
+      }).read() as ProviderStateBase<Subscription, ListeningValue,
+          ProviderBase<Subscription, ListeningValue>>;
     } else {
       return (_stateReaders[provider]?.read() ?? _fallback(provider))
-          as ProviderBaseState<CombiningValue, ListeningValue,
-              ProviderBase<CombiningValue, ListeningValue>>;
+          as ProviderStateBase<Subscription, ListeningValue,
+              ProviderBase<Subscription, ListeningValue>>;
     }
   }
 }
 
 @visibleForTesting
-extension DebugProviderStateOwner on ProviderStateOwner {
+extension ProviderStateOwnerInternals on ProviderStateOwner {
   @visibleForTesting
-  List<ProviderBaseState> get debugProviderStatedSortedByDepth {
-    List<ProviderBaseState> result;
+  List<ProviderStateBase> get debugProviderStatedSortedByDepth {
+    List<ProviderStateBase> result;
     assert(() {
       result = _providerStatesSortedByDepth.map((e) => e.value).toList();
       return true;
@@ -372,20 +378,26 @@ extension DebugProviderStateOwner on ProviderStateOwner {
   }
 
   void scheduleNotification() => _scheduleNotification();
-}
 
-@visibleForTesting
-extension ReadProviderState on ProviderStateOwner {
-  ProviderBaseState<CombiningValue, ListeningValue,
-          ProviderBase<CombiningValue, ListeningValue>>
-      readProviderState<CombiningValue extends ProviderBaseSubscription,
+  ProviderStateBase<Subscription, ListeningValue,
+          ProviderBase<Subscription, ListeningValue>>
+      readProviderState<Subscription extends ProviderSubscriptionBase,
           ListeningValue>(
-    ProviderBase<CombiningValue, ListeningValue> provider,
+    ProviderBase<Subscription, ListeningValue> provider,
   ) {
     return _readProviderState(provider);
   }
 }
 
+/// An object used by [ProviderStateOwner] to override the behavior of a provider
+/// for a part of the application.
+///
+/// Do not implement/extend this class.
+///
+/// See also:
+///
+/// - [ProviderStateOwner], which uses this object.
+/// - [AlwaysAliveProvider.overrideForSubtree], which creates a [ProviderOverride].
 class ProviderOverride {
   ProviderOverride._(this._provider, this._origin);
 
@@ -393,30 +405,68 @@ class ProviderOverride {
   final ProviderBase _provider;
 }
 
-abstract class ProviderBaseSubscription {
+abstract class ProviderSubscriptionBase {
   @protected
   void dispose() {}
 }
 
-class ProviderBaseSubscriptionImpl extends ProviderBaseSubscription {}
+class ProviderBaseSubscriptionImpl extends ProviderSubscriptionBase {}
 
-/// A provider is somehow dependending on itself
+/// An error thrown when a call to [ProviderReference.dependOn] leads
+/// to a provider depending on itself.
+///
+/// Circular dependencies are both not supported for performance reasons
+/// and maintainability reasons.
+/// Consider reading about uni-directional data-flow to learn about the
+/// benefits of avoiding circular dependencies.
 class CircularDependencyError extends Error {
   CircularDependencyError._();
 }
 
+/// An object used by providers to interact with other providers and the life-cycles
+/// of the application.
+///
+/// See also:
+/// - [dependOn], a method that allows a provider to consume other providers.
+/// - [mounted], an utility to know whether the provider is still "alive" or not.
+/// - [onDispose], a method that allows performing a task when the provider is destroyed.
+/// - [Provider], an example of a provider that uses [ProviderReference].
+/// - [ProviderStateOwner.ref], an easy way of obtaining a [ProviderReference].
 class ProviderReference {
+  // DO NOT USE, for internal usages only.
   ProviderReference(this._providerState);
 
-  final ProviderBaseState _providerState;
+  final ProviderStateBase _providerState;
 
+  /// An utility to know if a provider was destroyed or not.
+  ///
+  /// This is useful when dealing with asynchronous operations, as the provider
+  /// may have potentially be destroyed before the end of the asyncronous operation.
+  /// In that case, we may want to stop performing further tasks.
   bool get mounted => _providerState.mounted;
 
+  /// Adds a listener to perform an operation right before the provider is destroyed.
+  ///
+  /// See also:
+  ///
+  /// - [ProviderStateOwner.dispose], which will destroy providers.
   void onDispose(VoidCallback cb) {
     _providerState.onDispose(cb);
   }
 
-  T dependOn<T extends ProviderBaseSubscription>(
+  /// Obtain another provider.
+  ///
+  /// The first time this method is called for a given provider can be expensive,
+  /// as it involves modifying the internal graph of providers (which is O(N))
+  /// and potentially mounting the provider if it wasn't before.
+  ///
+  /// It is safe to call [dependOn] multiple times with the same provider
+  /// as parameter and is inexpensive to do so.
+  ///
+  /// See also:
+  ///
+  /// - [Provider], explains in further detail how to use this method.
+  T dependOn<T extends ProviderSubscriptionBase>(
     ProviderBase<T, Object> provider,
   ) {
     return _providerState.dependOn(provider);

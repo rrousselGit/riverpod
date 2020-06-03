@@ -6,7 +6,7 @@ import 'internals.dart';
 /// A function used by [Computed] to read other providers.
 ///
 /// By calling this function, it "binds" the [Computed] to the provider obtained.
-typedef Reader = Res Function<Res>(ProviderBase<ProviderBaseSubscription, Res>);
+typedef Reader = Res Function<Res>(ProviderBase<ProviderSubscriptionBase, Res>);
 
 /// A provider that combines other providers into an immutable value and
 /// cache its result.
@@ -50,7 +50,7 @@ typedef Reader = Res Function<Res>(ProviderBase<ProviderBaseSubscription, Res>);
 /// **DON'T* trigger side-effects such as http requests inside [Computed].
 /// [Computed] does not guanrantee that the function won't be re-evaluated
 /// even if the inputs didn't change.
-class Computed<T> extends ProviderBase<ProviderBaseSubscription, T> {
+class Computed<T> extends ProviderBase<ProviderSubscriptionBase, T> {
   /// Creates a [Computed] and allows specifying a [name].
   Computed(this._selector, {String name}) : super(name);
 
@@ -63,7 +63,7 @@ class Computed<T> extends ProviderBase<ProviderBaseSubscription, T> {
 }
 
 class _ComputedState<T>
-    extends ProviderBaseState<ProviderBaseSubscription, T, Computed<T>> {
+    extends ProviderStateBase<ProviderSubscriptionBase, T, Computed<T>> {
   final _subscritionsCache = <ProviderBase, _Subscription>{};
   var _shouldCompute = true;
   bool _debugSelecting;
@@ -72,7 +72,7 @@ class _ComputedState<T>
   T state;
 
   @override
-  ProviderBaseSubscription createProviderSubscription() {
+  ProviderSubscriptionBase createProviderSubscription() {
     return ProviderBaseSubscriptionImpl();
   }
 
@@ -83,6 +83,7 @@ class _ComputedState<T>
       return true;
     }(), '');
     try {
+      // TODO what if there's an exception inside selector?
       state = provider._selector(_reader);
     } finally {
       assert(() {
@@ -118,7 +119,7 @@ class _ComputedState<T>
     }
   }
 
-  Res _reader<Res>(ProviderBase<ProviderBaseSubscription, Res> target) {
+  Res _reader<Res>(ProviderBase<ProviderSubscriptionBase, Res> target) {
     assert(
       _debugSelecting,
       'Cannot use `read` outside of the body of the Computed callback',

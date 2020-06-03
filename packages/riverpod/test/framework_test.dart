@@ -146,7 +146,7 @@ void main() {
   test('cannot call markNeedsNotifyListeners after dispose', () {
     final owner = ProviderStateOwner();
     final provider = TestProvider((ref) {});
-    ProviderBaseState providerBaseState;
+    ProviderStateBase providerBaseState;
     provider.onInitState.thenAnswer((state) {
       providerBaseState = state;
     });
@@ -653,10 +653,10 @@ void main() {
       verifyNoMoreInteractions(listener);
 
       owner.update([
-        futureProvider.debugOverrideWithValue(AsyncValue.data(42)),
+        futureProvider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
 
-      verify(listener(AsyncValue.data(42))).called(1);
+      verify(listener(const AsyncValue.data(42))).called(1);
       verifyNoMoreInteractions(listener);
     });
     test('on update`', () async {
@@ -785,7 +785,7 @@ class MockOnValueDispose<T> extends Mock {
   void call(TestProviderValue<T> value);
 }
 
-class TestProviderValue<T> extends ProviderBaseSubscription {
+class TestProviderValue<T> extends ProviderSubscriptionBase {
   TestProviderValue(this.value, {@required this.onDispose});
 
   final T value;
@@ -813,7 +813,7 @@ class TestProvider<T> extends AlwaysAliveProvider<TestProviderValue<T>, T> {
 }
 
 class TestProviderState<T>
-    extends ProviderBaseState<TestProviderValue<T>, T, TestProvider<T>> {
+    extends ProviderStateBase<TestProviderValue<T>, T, TestProvider<T>> {
   @override
   T state;
 

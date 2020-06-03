@@ -1,7 +1,7 @@
 import 'common.dart';
 import 'framework/framework.dart';
 
-class ProviderSubscription<T> extends ProviderBaseSubscription {
+class ProviderSubscription<T> extends ProviderSubscriptionBase {
   ProviderSubscription._(this.value);
 
   final T value;
@@ -17,7 +17,7 @@ class Provider<T> extends AlwaysAliveProvider<ProviderSubscription<T>, T> {
 }
 
 class _ProviderState<T>
-    extends ProviderBaseState<ProviderSubscription<T>, T, Provider<T>> {
+    extends ProviderStateBase<ProviderSubscription<T>, T, Provider<T>> {
   @override
   T state;
 
