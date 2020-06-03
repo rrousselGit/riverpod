@@ -32,7 +32,7 @@ void main() {
       return 0;
     });
 
-    expect(provider.value.readOwner(owner), 0);
+    expect(provider.state.readOwner(owner), 0);
 
     expect(() => provider2.readOwner(owner), throwsA(isA<Error>()));
   });
@@ -54,7 +54,7 @@ void main() {
     });
     final owner = ProviderStateOwner(parent: root, overrides: [provider2]);
 
-    expect(provider.value.readOwner(owner), 0);
+    expect(provider.state.readOwner(owner), 0);
     expect(provider2.readOwner(owner), 0);
 
     owner.dispose();
@@ -68,10 +68,10 @@ void main() {
     final provider = StateNotifierProvider((_) => counter);
     final owner = ProviderStateOwner();
 
-    expect(provider.value.readOwner(owner), 0);
+    expect(provider.state.readOwner(owner), 0);
 
     Object error;
-    provider.value.watchOwner(owner, (value) {
+    provider.state.watchOwner(owner, (value) {
       try {
         counter.increment();
       } catch (err) {
@@ -91,14 +91,14 @@ void main() {
     final provider2 = StateNotifierProvider((_) => counter2);
     final owner = ProviderStateOwner(
       parent: root,
-      overrides: [provider2, provider2.value],
+      overrides: [provider2, provider2.state],
     );
     final listener = Listener();
     Object error;
 
-    expect(provider.value.readOwner(owner), 0);
+    expect(provider.state.readOwner(owner), 0);
 
-    provider2.value.watchOwner(owner, (value) {
+    provider2.state.watchOwner(owner, (value) {
       listener(value);
       if (value > 0) {
         try {
@@ -141,7 +141,7 @@ void main() {
     });
     final listener = Listener();
 
-    expect(provider.value.readOwner(owner), 0);
+    expect(provider.state.readOwner(owner), 0);
 
     computed.watchOwner(owner, listener);
 
@@ -155,7 +155,7 @@ void main() {
     final owner = ProviderStateOwner();
     Object error;
     final computed = Computed((read) {
-      final value = read(provider.value);
+      final value = read(provider.state);
       try {
         if (value > 0) {
           counter.increment();
@@ -167,7 +167,7 @@ void main() {
     });
     final listener = Listener();
 
-    expect(provider.value.readOwner(owner), 0);
+    expect(provider.state.readOwner(owner), 0);
 
     computed.watchOwner(owner, listener);
 

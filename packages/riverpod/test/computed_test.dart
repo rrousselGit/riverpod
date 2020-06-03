@@ -65,7 +65,7 @@ void main() {
   test('dispose Computed when all Computed listeners are removed', () {
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
-    final computed = Computed((read) => read(provider.value));
+    final computed = Computed((read) => read(provider.state));
     final root = ProviderStateOwner();
     // no need to pass "overrides" as the computed should naturally go to the deepest owner
     final owner = ProviderStateOwner(parent: root);
@@ -93,7 +93,7 @@ void main() {
     final computed = Computed((read) {
       callCount++;
       reader = read;
-      return read(provider.value);
+      return read(provider.state);
     });
     final listener = Listener<int>();
 
@@ -120,7 +120,7 @@ void main() {
       final notifier = Notifier(0);
       final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
       final computed = Computed((read) {
-        return [read(provider.value).isNegative];
+        return [read(provider.state).isNegative];
       });
       final listener = Listener<List<bool>>();
 
@@ -139,7 +139,7 @@ void main() {
       final notifier = Notifier(0);
       final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
       final computed = Computed((read) {
-        return {read(provider.value).isNegative};
+        return {read(provider.state).isNegative};
       });
       final listener = Listener<Set<bool>>();
 
@@ -158,7 +158,7 @@ void main() {
       final notifier = Notifier(0);
       final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
       final computed = Computed((read) {
-        return {'foo': read(provider.value).isNegative};
+        return {'foo': read(provider.state).isNegative};
       });
       final listener = Listener<Map<String, bool>>();
 
@@ -180,7 +180,7 @@ void main() {
     var callCount = 0;
     final computed = Computed((read) {
       callCount++;
-      return [read(provider.value)];
+      return [read(provider.state)];
     });
 
     List<int> first;
@@ -220,7 +220,7 @@ void main() {
     var callCount = 0;
     final isPositiveComputed = Computed((read) {
       callCount++;
-      return !read(provider.value).isNegative;
+      return !read(provider.state).isNegative;
     });
 
     expect(isPositiveComputed, isNot(isA<AlwaysAliveProvider>()));

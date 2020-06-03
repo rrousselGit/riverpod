@@ -152,7 +152,6 @@ and that the community likes it, [provider] will still be maintained.
 - Scope.onChange({owner, List<{provider, value}> modified })
 - Cannot add dependencies during dispatching
 - FutureChangeNotifier
-- StateNotifierProvider.value -> state
 - FutureStateNotifier
 - AutoDispose
 - Selector

@@ -13,13 +13,10 @@ dependencies:
     sdk: flutter
   collection: ^1.14.12
   state_notifier: ^0.4.0
-  riverpod: 0.0.1-pre+1
+  riverpod:
+    path: ../riverpod
 
 dev_dependencies:
   mockito: ^4.1.0
   flutter_test:
     sdk: flutter
-
-dependency_overrides:
-  riverpod:
-    path: ../riverpod

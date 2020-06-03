@@ -30,9 +30,3 @@ flutter:
   uses-material-design: true
   assets:
     - assets/configurations.json
-
-dependency_overrides:
-  flutter_riverpod:
-    path: ../../packages/flutter_riverpod
-  riverpod:
-    path: ../../packages/riverpod

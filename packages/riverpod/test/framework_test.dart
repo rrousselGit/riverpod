@@ -64,12 +64,12 @@ void main() {
       named: counter,
     });
 
-    expect(named.value.readOwner(owner), 0);
+    expect(named.state.readOwner(owner), 0);
 
     expect(owner.debugProviderStates, {
       unnamed: 0,
       named: counter,
-      named.value: 0,
+      named.state: 0,
     });
   });
 
@@ -538,12 +538,12 @@ void main() {
         markNeedsUpdate: ownerNeedsUpdate,
         overrides: [
           provider,
-          provider.value,
+          provider.state,
         ],
       );
       final listener = ListenerMock();
 
-      provider.value.watchOwner(owner, listener);
+      provider.state.watchOwner(owner, listener);
 
       verify(listener(0)).called(1);
       verifyNoMoreInteractions(listener);
@@ -619,7 +619,7 @@ void main() {
       final owner = ProviderStateOwner();
       final listener = ListenerMock();
 
-      provider.value.watchOwner(owner, listener);
+      provider.state.watchOwner(owner, listener);
 
       verify(listener(0)).called(1);
       verifyNoMoreInteractions(listener);
@@ -665,7 +665,7 @@ void main() {
       final provider = StateNotifierProvider<Counter>((_) => counter);
       final listener = ListenerMock();
 
-      provider.value.watchOwner(owner, listener);
+      provider.state.watchOwner(owner, listener);
 
       verify(listener(0)).called(1);
       verifyNoMoreInteractions(listener);
@@ -701,9 +701,9 @@ void main() {
       final listener2 = ListenerMock('second');
       final listener3 = ListenerMock('third');
 
-      provider3.value.watchOwner(owner, listener3);
-      provider2.value.watchOwner(owner, listener2);
-      provider.value.watchOwner(owner, listener);
+      provider3.state.watchOwner(owner, listener3);
+      provider2.state.watchOwner(owner, listener2);
+      provider.state.watchOwner(owner, listener);
 
       verify(listener(0)).called(1);
       verifyNoMoreInteractions(listener);

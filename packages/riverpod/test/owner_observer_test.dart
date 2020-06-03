@@ -68,12 +68,12 @@ void main() {
       observers: [observer, observer2],
     );
 
-    expect(provider.value.readOwner(owner), 0);
+    expect(provider.state.readOwner(owner), 0);
     verifyInOrder([
       observer.didAddProvider(provider, counter),
       observer2.didAddProvider(provider, counter),
-      observer.didAddProvider(provider.value, 0),
-      observer2.didAddProvider(provider.value, 0)
+      observer.didAddProvider(provider.state, 0),
+      observer2.didAddProvider(provider.state, 0)
     ]);
     verifyNoMoreInteractions(observer);
     verifyNoMoreInteractions(observer2);
@@ -86,8 +86,8 @@ void main() {
     owner.update();
 
     verifyInOrder([
-      observer.didUpdateProviders({provider.value: 1}),
-      observer2.didUpdateProviders({provider.value: 1})
+      observer.didUpdateProviders({provider.state: 1}),
+      observer2.didUpdateProviders({provider.state: 1})
     ]);
     verifyNoMoreInteractions(observer);
     verifyNoMoreInteractions(observer2);
@@ -107,7 +107,7 @@ void main() {
       observers: [observer, observer2, observer3],
     );
 
-    expect(provider.value.readOwner(owner), 0);
+    expect(provider.state.readOwner(owner), 0);
     clearInteractions(observer);
     clearInteractions(observer2);
     clearInteractions(observer3);
@@ -122,9 +122,9 @@ void main() {
 
     expect(errors, ['error1', 'error2']);
     verifyInOrder([
-      observer.didUpdateProviders({provider.value: 1}),
-      observer2.didUpdateProviders({provider.value: 1}),
-      observer3.didUpdateProviders({provider.value: 1}),
+      observer.didUpdateProviders({provider.state: 1}),
+      observer2.didUpdateProviders({provider.state: 1}),
+      observer3.didUpdateProviders({provider.state: 1}),
     ]);
     verifyNoMoreInteractions(observer);
     verifyNoMoreInteractions(observer2);
@@ -136,7 +136,7 @@ void main() {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
     final isNegative = Computed((read) {
-      return read(provider.value).isNegative;
+      return read(provider.state).isNegative;
     });
     final owner = ProviderStateOwner(observers: [observer]);
     final listener = Listener<bool>();
@@ -145,7 +145,7 @@ void main() {
 
     verifyInOrder([
       observer.didAddProvider(provider, counter),
-      observer.didAddProvider(provider.value, 0),
+      observer.didAddProvider(provider.state, 0),
       observer.didAddProvider(isNegative, false),
       listener(false),
     ]);
@@ -159,7 +159,7 @@ void main() {
     owner.update();
 
     verifyInOrder([
-      observer.didUpdateProviders({provider.value: 1}),
+      observer.didUpdateProviders({provider.state: 1}),
     ]);
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(observer);
@@ -172,7 +172,7 @@ void main() {
 
     verifyInOrder([
       listener(true),
-      observer.didUpdateProviders({provider.value: -10, isNegative: true}),
+      observer.didUpdateProviders({provider.state: -10, isNegative: true}),
     ]);
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(observer);

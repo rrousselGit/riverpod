@@ -19,7 +19,7 @@ void main() {
 /// Providers are declared as global variables.
 /// This does not hinder testability, as the state of a provider is instead
 /// stored inside a [ProviderScope].
-final counterProvider = StateNotifierProvider<Counter, int>((_) => Counter());
+final counterProvider = StateNotifierProvider<Counter>((_) => Counter());
 
 /// A simple [StateNotifier] that implements a counter.
 ///
@@ -49,7 +49,7 @@ class MyHomePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final count = useProvider(counterProvider.value);
+    final count = useProvider(counterProvider.state);
 
     return Scaffold(
       appBar: AppBar(

@@ -81,8 +81,8 @@ class Home extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final greeting = useProvider(greetingProvider);
-    final company = useProvider(companyProvider.value);
-    final count = useProvider(counterProvider.value);
+    final company = useProvider(companyProvider.state);
+    final count = useProvider(counterProvider.state);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Example')),

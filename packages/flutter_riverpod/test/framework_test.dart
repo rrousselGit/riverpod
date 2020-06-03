@@ -16,7 +16,7 @@ void main() {
           unnamed,
           builder: (_, value, __) {
             return Consumer<int>(
-              named.value,
+              named.state,
               builder: (_, count, __) {
                 return Text(
                   'value: $value count: $count',
@@ -36,7 +36,7 @@ void main() {
       equalsIgnoringHashCodes('ProviderScope-[GlobalKey#00000]('
           'state: _ProviderScopeState#00000, '
           'Provider<int>#00000: 0, '
-          'counter.value: 0, '
+          'counter.state: 0, '
           "counter: Instance of 'Counter')"),
     );
   });

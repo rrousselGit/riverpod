@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+// ignore: implementation_imports
 import 'package:riverpod/src/internals.dart';
 
 import 'state_notifier_builder.dart';
@@ -129,7 +130,7 @@ class Devtool extends HookWidget {
                     onPressed: indexFromEnd.value + 1 >= value.history.length
                         ? null
                         : () => indexFromEnd.value++,
-                    child: Text('previous'),
+                    child: const Text('previous'),
                   ),
                   Text(
                     '${value.history.length - indexFromEnd.value} / ${value.history.length}',
@@ -139,7 +140,7 @@ class Devtool extends HookWidget {
                     onPressed: indexFromEnd.value == 0
                         ? null
                         : () => indexFromEnd.value--,
-                    child: Text('next'),
+                    child: const Text('next'),
                   ),
                   RaisedButton(
                     onPressed: indexFromEnd.value == 0
@@ -152,7 +153,7 @@ class Devtool extends HookWidget {
                             }
                             indexFromEnd.value = 0;
                           },
-                    child: Text('restore'),
+                    child: const Text('restore'),
                   ),
                 ],
               ),
@@ -207,7 +208,8 @@ class _StateTree extends StatelessWidget {
                         signed: true,
                         decimal: true,
                       ),
-                      onFieldSubmitted: (v) => detail.rebuild(double.tryParse(v)),
+                      onFieldSubmitted: (v) =>
+                          detail.rebuild(double.tryParse(v)),
                       style: theme.doubleValue,
                     ),
                   )

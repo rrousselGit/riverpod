@@ -11,12 +11,12 @@ void main() {
     );
 
     expect(provider.name, 'example');
-    expect(provider.value.name, 'example.value');
+    expect(provider.state.name, 'example.state');
 
     final provider2 = StateNotifierProvider((_) => TestNotifier());
 
     expect(provider2.name, isNull);
-    expect(provider2.value.name, isNull);
+    expect(provider2.state.name, isNull);
   });
   test('disposes the notifier when provider is unmounted', () {
     final notifier = TestNotifier();
@@ -65,7 +65,7 @@ void main() {
     final listener = ListenerMock();
     final owner = ProviderStateOwner();
 
-    provider.value.watchOwner(owner, listener);
+    provider.state.watchOwner(owner, listener);
 
     verify(listener(argThat(equals(0)))).called(1);
     verifyNoMoreInteractions(listener);

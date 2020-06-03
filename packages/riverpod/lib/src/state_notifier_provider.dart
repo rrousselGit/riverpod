@@ -22,12 +22,12 @@ class StateNotifierProvider<Notifier extends StateNotifier<Object>>
   SetStateProvider<Object> _state;
 }
 
-/// Adds [value] to [StateNotifierProvider].
+/// Adds [state] to [StateNotifierProvider].
 ///
 /// This is done as an extension as a workaround to language limitations.
 extension StateNotifierValueProviderX<Value>
     on StateNotifierProvider<StateNotifier<Value>> {
-  SetStateProvider<Value> get value {
+  SetStateProvider<Value> get state {
     _state ??= StateNotifierValueProvider<Value>(this);
     return _state as StateNotifierValueProvider<Value>;
   }
@@ -43,7 +43,7 @@ class StateNotifierValueProvider<T> extends SetStateProvider<T> {
           );
 
           return ref.state;
-        }, name: controller.name == null ? null : '${controller.name}.value');
+        }, name: controller.name == null ? null : '${controller.name}.state');
 
   final StateNotifierProvider<StateNotifier<T>> controller;
 }
