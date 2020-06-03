@@ -148,7 +148,6 @@ and that the community likes it, [provider] will still be maintained.
 - evaluate space complexity
 - StreamProvider expose a Future<Data> for last valid value
 - future/changenotifier/...providers cannot return null
-- state hydratation
 - Scope.onChange({owner, List<{provider, value}> modified })
 - Cannot add dependencies during dispatching
 - FutureChangeNotifier
@@ -201,6 +200,7 @@ riverpod.dev
 - How it works
 - The differences between hooks and not hooks
 - cookbook configurations that change over time
+- state hydratation
 
 Linter:
 

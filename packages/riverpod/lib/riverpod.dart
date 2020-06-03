@@ -1,5 +1,5 @@
 export 'src/common.dart'
-    show Create, AsyncValue, $AsyncValueCopyWith, $AsyncValue;
+    show Create, AsyncValue, AsyncData, $AsyncValueCopyWith, $AsyncValue;
 export 'src/computed.dart' show Computed;
 export 'src/framework/framework.dart'
     show

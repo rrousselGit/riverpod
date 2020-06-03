@@ -12,8 +12,8 @@ T _$identity<T>(T value) => value;
 class _$AsyncValueTearOff {
   const _$AsyncValueTearOff();
 
-  _Data<T> data<T>(T value) {
-    return _Data<T>(
+  AsyncData<T> data<T>(@nullable T value) {
+    return AsyncData<T>(
       value,
     );
   }
@@ -36,26 +36,26 @@ const $AsyncValue = _$AsyncValueTearOff();
 mixin _$AsyncValue<T> {
   @optionalTypeArgs
   Result when<Result extends Object>({
-    @required Result data(T value),
+    @required Result data(@nullable T value),
     @required Result loading(),
     @required Result error(Object error, StackTrace stackTrace),
   });
   @optionalTypeArgs
   Result maybeWhen<Result extends Object>({
-    Result data(T value),
+    Result data(@nullable T value),
     Result loading(),
     Result error(Object error, StackTrace stackTrace),
     @required Result orElse(),
   });
   @optionalTypeArgs
   Result map<Result extends Object>({
-    @required Result data(_Data<T> value),
+    @required Result data(AsyncData<T> value),
     @required Result loading(_Loading<T> value),
     @required Result error(_Error<T> value),
   });
   @optionalTypeArgs
   Result maybeMap<Result extends Object>({
-    Result data(_Data<T> value),
+    Result data(AsyncData<T> value),
     Result loading(_Loading<T> value),
     Result error(_Error<T> value),
     @required Result orElse(),
@@ -77,41 +77,44 @@ class _$AsyncValueCopyWithImpl<T, $Res>
   final $Res Function(AsyncValue<T>) _then;
 }
 
-abstract class _$DataCopyWith<T, $Res> {
-  factory _$DataCopyWith(_Data<T> value, $Res Function(_Data<T>) then) =
-      __$DataCopyWithImpl<T, $Res>;
-  $Res call({T value});
+abstract class $AsyncDataCopyWith<T, $Res> {
+  factory $AsyncDataCopyWith(
+          AsyncData<T> value, $Res Function(AsyncData<T>) then) =
+      _$AsyncDataCopyWithImpl<T, $Res>;
+  $Res call({@nullable T value});
 }
 
-class __$DataCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
-    implements _$DataCopyWith<T, $Res> {
-  __$DataCopyWithImpl(_Data<T> _value, $Res Function(_Data<T>) _then)
-      : super(_value, (v) => _then(v as _Data<T>));
+class _$AsyncDataCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
+    implements $AsyncDataCopyWith<T, $Res> {
+  _$AsyncDataCopyWithImpl(
+      AsyncData<T> _value, $Res Function(AsyncData<T>) _then)
+      : super(_value, (v) => _then(v as AsyncData<T>));
 
   @override
-  _Data<T> get _value => super._value as _Data<T>;
+  AsyncData<T> get _value => super._value as AsyncData<T>;
 
   @override
   $Res call({
     Object value = freezed,
   }) {
-    return _then(_Data<T>(
+    return _then(AsyncData<T>(
       value == freezed ? _value.value : value as T,
     ));
   }
 }
 
-class _$_Data<T> implements _Data<T>, $DebugFreezed {
-  _$_Data(this.value) : assert(value != null);
+class _$AsyncData<T> extends AsyncData<T> implements $DebugFreezed {
+  const _$AsyncData(@nullable this.value) : super._();
 
   @override
+  @nullable
   final T value;
 
   @override
   String get $debugRedirectedClassName {
     String res;
     assert(() {
-      res = '_Data';
+      res = 'AsyncData';
       return true;
     }());
     return res;
@@ -137,7 +140,7 @@ class _$_Data<T> implements _Data<T>, $DebugFreezed {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _Data<T> &&
+        (other is AsyncData<T> &&
             (identical(other.value, value) ||
                 const DeepCollectionEquality().equals(other.value, value)));
   }
@@ -147,13 +150,13 @@ class _$_Data<T> implements _Data<T>, $DebugFreezed {
       runtimeType.hashCode ^ const DeepCollectionEquality().hash(value);
 
   @override
-  _$DataCopyWith<T, _Data<T>> get copyWith =>
-      __$DataCopyWithImpl<T, _Data<T>>(this, _$identity);
+  $AsyncDataCopyWith<T, AsyncData<T>> get copyWith =>
+      _$AsyncDataCopyWithImpl<T, AsyncData<T>>(this, _$identity);
 
   @override
   @optionalTypeArgs
   Result when<Result extends Object>({
-    @required Result data(T value),
+    @required Result data(@nullable T value),
     @required Result loading(),
     @required Result error(Object error, StackTrace stackTrace),
   }) {
@@ -166,7 +169,7 @@ class _$_Data<T> implements _Data<T>, $DebugFreezed {
   @override
   @optionalTypeArgs
   Result maybeWhen<Result extends Object>({
-    Result data(T value),
+    Result data(@nullable T value),
     Result loading(),
     Result error(Object error, StackTrace stackTrace),
     @required Result orElse(),
@@ -181,7 +184,7 @@ class _$_Data<T> implements _Data<T>, $DebugFreezed {
   @override
   @optionalTypeArgs
   Result map<Result extends Object>({
-    @required Result data(_Data<T> value),
+    @required Result data(AsyncData<T> value),
     @required Result loading(_Loading<T> value),
     @required Result error(_Error<T> value),
   }) {
@@ -194,7 +197,7 @@ class _$_Data<T> implements _Data<T>, $DebugFreezed {
   @override
   @optionalTypeArgs
   Result maybeMap<Result extends Object>({
-    Result data(_Data<T> value),
+    Result data(AsyncData<T> value),
     Result loading(_Loading<T> value),
     Result error(_Error<T> value),
     @required Result orElse(),
@@ -207,11 +210,13 @@ class _$_Data<T> implements _Data<T>, $DebugFreezed {
   }
 }
 
-abstract class _Data<T> implements AsyncValue<T> {
-  factory _Data(T value) = _$_Data<T>;
+abstract class AsyncData<T> extends AsyncValue<T> {
+  const AsyncData._() : super._();
+  const factory AsyncData(@nullable T value) = _$AsyncData<T>;
 
+  @nullable
   T get value;
-  _$DataCopyWith<T, _Data<T>> get copyWith;
+  $AsyncDataCopyWith<T, AsyncData<T>> get copyWith;
 }
 
 abstract class _$LoadingCopyWith<T, $Res> {
@@ -229,8 +234,8 @@ class __$LoadingCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
   _Loading<T> get _value => super._value as _Loading<T>;
 }
 
-class _$_Loading<T> implements _Loading<T>, $DebugFreezed {
-  const _$_Loading();
+class _$_Loading<T> extends _Loading<T> implements $DebugFreezed {
+  const _$_Loading() : super._();
 
   @override
   String get $debugRedirectedClassName {
@@ -268,7 +273,7 @@ class _$_Loading<T> implements _Loading<T>, $DebugFreezed {
   @override
   @optionalTypeArgs
   Result when<Result extends Object>({
-    @required Result data(T value),
+    @required Result data(@nullable T value),
     @required Result loading(),
     @required Result error(Object error, StackTrace stackTrace),
   }) {
@@ -281,7 +286,7 @@ class _$_Loading<T> implements _Loading<T>, $DebugFreezed {
   @override
   @optionalTypeArgs
   Result maybeWhen<Result extends Object>({
-    Result data(T value),
+    Result data(@nullable T value),
     Result loading(),
     Result error(Object error, StackTrace stackTrace),
     @required Result orElse(),
@@ -296,7 +301,7 @@ class _$_Loading<T> implements _Loading<T>, $DebugFreezed {
   @override
   @optionalTypeArgs
   Result map<Result extends Object>({
-    @required Result data(_Data<T> value),
+    @required Result data(AsyncData<T> value),
     @required Result loading(_Loading<T> value),
     @required Result error(_Error<T> value),
   }) {
@@ -309,7 +314,7 @@ class _$_Loading<T> implements _Loading<T>, $DebugFreezed {
   @override
   @optionalTypeArgs
   Result maybeMap<Result extends Object>({
-    Result data(_Data<T> value),
+    Result data(AsyncData<T> value),
     Result loading(_Loading<T> value),
     Result error(_Error<T> value),
     @required Result orElse(),
@@ -322,7 +327,8 @@ class _$_Loading<T> implements _Loading<T>, $DebugFreezed {
   }
 }
 
-abstract class _Loading<T> implements AsyncValue<T> {
+abstract class _Loading<T> extends AsyncValue<T> {
+  const _Loading._() : super._();
   const factory _Loading() = _$_Loading<T>;
 }
 
@@ -352,8 +358,10 @@ class __$ErrorCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
   }
 }
 
-class _$_Error<T> implements _Error<T>, $DebugFreezed {
-  _$_Error(this.error, [this.stackTrace]) : assert(error != null);
+class _$_Error<T> extends _Error<T> implements $DebugFreezed {
+  _$_Error(this.error, [this.stackTrace])
+      : assert(error != null),
+        super._();
 
   @override
   final Object error;
@@ -412,7 +420,7 @@ class _$_Error<T> implements _Error<T>, $DebugFreezed {
   @override
   @optionalTypeArgs
   Result when<Result extends Object>({
-    @required Result data(T value),
+    @required Result data(@nullable T value),
     @required Result loading(),
     @required Result error(Object error, StackTrace stackTrace),
   }) {
@@ -425,7 +433,7 @@ class _$_Error<T> implements _Error<T>, $DebugFreezed {
   @override
   @optionalTypeArgs
   Result maybeWhen<Result extends Object>({
-    Result data(T value),
+    Result data(@nullable T value),
     Result loading(),
     Result error(Object error, StackTrace stackTrace),
     @required Result orElse(),
@@ -440,7 +448,7 @@ class _$_Error<T> implements _Error<T>, $DebugFreezed {
   @override
   @optionalTypeArgs
   Result map<Result extends Object>({
-    @required Result data(_Data<T> value),
+    @required Result data(AsyncData<T> value),
     @required Result loading(_Loading<T> value),
     @required Result error(_Error<T> value),
   }) {
@@ -453,7 +461,7 @@ class _$_Error<T> implements _Error<T>, $DebugFreezed {
   @override
   @optionalTypeArgs
   Result maybeMap<Result extends Object>({
-    Result data(_Data<T> value),
+    Result data(AsyncData<T> value),
     Result loading(_Loading<T> value),
     Result error(_Error<T> value),
     @required Result orElse(),
@@ -466,7 +474,8 @@ class _$_Error<T> implements _Error<T>, $DebugFreezed {
   }
 }
 
-abstract class _Error<T> implements AsyncValue<T> {
+abstract class _Error<T> extends AsyncValue<T> {
+  _Error._() : super._();
   factory _Error(Object error, [StackTrace stackTrace]) = _$_Error<T>;
 
   Object get error;
