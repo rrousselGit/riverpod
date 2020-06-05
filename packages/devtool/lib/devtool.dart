@@ -68,7 +68,7 @@ abstract class DevtoolThemeData with _$DevtoolThemeData {
       ),
       providerMargin: const EdgeInsets.only(top: 5),
       otherMargin: const EdgeInsets.symmetric(vertical: 2.5),
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
     );
   }
 }
@@ -102,8 +102,7 @@ class Devtool extends HookWidget {
     final indexFromEnd = useState(0);
     final theme = DevtoolTheme.of(context) ?? DevtoolThemeData.fallback();
 
-    return Container(
-      padding: theme.padding,
+    return ColoredBox(
       color: theme.backgroundColor,
       child: StateNotifierBuilder<StateDetail>(
         stateNotifier: controller,
@@ -176,73 +175,90 @@ class _StateTree extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = DevtoolTheme.of(context) ?? DevtoolThemeData.fallback();
-    return ListView(
-      children: [
-        for (final detail in details)
-          Container(
-            padding: detail.value is ProviderBase
-                ? theme.providerMargin
-                : theme.otherMargin,
-            child: Row(
-              children: [
-                SizedBox(width: detail.depth * 20.0),
-                if (detail.name != null)
-                  Text('${detail.name}: ', style: theme.name),
-                if (detail.value is int)
-                  Flexible(
-                    child: TextFormField(
-                      initialValue: detail.valueDisplay,
-                      enabled: detail.rebuild != null,
-                      keyboardType:
-                          const TextInputType.numberWithOptions(signed: true),
-                      onFieldSubmitted: (v) => detail.rebuild(int.tryParse(v)),
-                      style: theme.intValue,
-                    ),
-                  )
-                else if (detail.value is double)
-                  Flexible(
-                    child: TextFormField(
-                      initialValue: detail.valueDisplay,
-                      enabled: detail.rebuild != null,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        signed: true,
-                        decimal: true,
-                      ),
-                      onFieldSubmitted: (v) =>
-                          detail.rebuild(double.tryParse(v)),
-                      style: theme.doubleValue,
-                    ),
-                  )
-                else if (detail.value is String)
-                  Flexible(
-                    child: TextFormField(
-                      initialValue: detail.valueDisplay,
-                      enabled: detail.rebuild != null,
-                      onFieldSubmitted: detail.rebuild,
-                      style: theme.stringValue,
-                    ),
-                  )
-                else if (detail.value is bool)
-                  Checkbox(
-                    value: detail.value as bool,
-                    onChanged: detail.rebuild,
-                  )
-                else if (detail.valueDisplay != null)
-                  Text(detail.valueDisplay, style: theme.valueFallback),
-                if (detail.type != null)
-                  Flexible(
-                    child: Text(
-                      detail.type,
-                      style: theme.type,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: InteractiveViewer(
+        scaleEnabled: false,
+        constrained: false,
+        child: Padding(
+          padding: theme.padding,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final detail in details)
+                Container(
+                  padding: detail.value is ProviderBase
+                      ? theme.providerMargin
+                      : theme.otherMargin,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(width: detail.depth * 20.0),
+                      if (detail.name != null)
+                        Text('${detail.name}: ', style: theme.name),
+                      if (detail.value is int)
+                        SizedBox(
+                          width: 200,
+                          child: TextFormField(
+                            initialValue: detail.valueDisplay,
+                            enabled: detail.rebuild != null,
+                            keyboardType: const TextInputType.numberWithOptions(
+                                signed: true),
+                            onFieldSubmitted: (v) =>
+                                detail.rebuild(int.tryParse(v)),
+                            style: theme.intValue,
+                          ),
+                        )
+                      else if (detail.value is double)
+                        SizedBox(
+                          width: 200,
+                          child: TextFormField(
+                            initialValue: detail.valueDisplay,
+                            enabled: detail.rebuild != null,
+                            keyboardType: const TextInputType.numberWithOptions(
+                              signed: true,
+                              decimal: true,
+                            ),
+                            onFieldSubmitted: (v) =>
+                                detail.rebuild(double.tryParse(v)),
+                            style: theme.doubleValue,
+                          ),
+                        )
+                      else if (detail.value is String)
+                        SizedBox(
+                          width: 200,
+                          child: TextFormField(
+                            maxLines: null,
+                            initialValue: detail.valueDisplay,
+                            enabled: detail.rebuild != null,
+                            onFieldSubmitted: detail.rebuild,
+                            style: theme.stringValue,
+                          ),
+                        )
+                      else if (detail.value is bool)
+                        Checkbox(
+                          value: detail.value as bool,
+                          onChanged: detail.rebuild,
+                        )
+                      else if (detail.valueDisplay != null)
+                        Text(detail.valueDisplay, style: theme.valueFallback),
+                      if (detail.type != null)
+                        Text(
+                          detail.type,
+                          style: theme.type,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      if (detail.hash != null)
+                        Text('#${detail.hash}', style: theme.hash),
+                    ],
                   ),
-                if (detail.hash != null)
-                  Text('#${detail.hash}', style: theme.hash),
-              ],
-            ),
+                ),
+            ],
           ),
-      ],
+        ),
+      ),
     );
   }
 }

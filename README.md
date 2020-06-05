@@ -144,7 +144,6 @@ and that the community likes it, [provider] will still be maintained.
 
 # Roadmap
 
-- recursive _redepth
 - evaluate time complexity for all operations
 - evaluate space complexity
 - StreamProvider expose a Future<Data> for last valid value
