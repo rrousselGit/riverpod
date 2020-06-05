@@ -1,6 +1,6 @@
 module.exports = {
   title: 'Riverpod',
-  tagline: 'Provider, but without runtime exceptions',
+  tagline: 'Provider, but different',
   url: 'https://riverpod.dev',
   baseUrl: '/',
   favicon: 'img/favicon.ico',

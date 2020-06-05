@@ -30,13 +30,14 @@ And if not clear enough, you can refer to this decision graph:
 Once you know what package you want to install, proceed to add the following to your `pubspec.yaml`:
 
 <Tabs
-defaultValue="hooks_riverpod"
-values={[
-{ label: 'Flutter + flutter_hooks', value: 'hooks_riverpod', },
-{ label: 'Flutter', value: 'flutter_riverpod', },
-{ label: 'Dart only', value: 'riverpod', },
-]
-}>
+  groupId="riverpod"
+  defaultValue="hooks_riverpod"
+  values={[
+    { label: 'Flutter + flutter_hooks', value: 'hooks_riverpod', },
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Dart only', value: 'riverpod', },
+  ]}
+>
 <TabItem value="hooks_riverpod">
 
 ```yaml
@@ -94,6 +95,7 @@ Now that we have installed [Riverpod], we can start using it.
 The following snippets showcase our to use our new dependency to make a "Hello world":
 
 <Tabs
+  groupId="riverpod"
   defaultValue="hooks_riverpod"
   values={[
     { label: "Flutter + flutter_hooks", value: "hooks_riverpod" },
