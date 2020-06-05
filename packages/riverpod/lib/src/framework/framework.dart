@@ -301,7 +301,7 @@ class ProviderStateOwner {
   /// final owner = ProviderStateOwner(
   ///   overrides: [
   ///     provider1.debugOverrideWithValue(const AsyncValue.loading())
-  ///     provider2.overrideForSubtree(Provider((_) => 'London')),
+  ///     provider2.overrideAs(Provider((_) => 'London')),
   ///   ],
   /// );
   /// ```
@@ -311,7 +311,7 @@ class ProviderStateOwner {
   /// ```dart
   /// owner.update([
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
-  ///   provider2.overrideForSubtree(Provider((_) => 'London')),
+  ///   provider2.overrideAs(Provider((_) => 'London')),
   /// ]);
   /// ```
   ///
@@ -326,8 +326,8 @@ class ProviderStateOwner {
   /// // Invalid, provider3 was not overriden before, but now is
   /// owner.update([
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
-  ///   provider2.overrideForSubtree(Provider((_) => 'London')),
-  ///   provider3.overrideForSubtree(...),
+  ///   provider2.overrideAs(Provider((_) => 'London')),
+  ///   provider3.overrideAs(...),
   /// ]);
   /// ```
   void update([List<ProviderOverride> overrides]) {
@@ -555,7 +555,7 @@ extension ProviderStateOwnerInternals on ProviderStateOwner {
 /// See also:
 ///
 /// - [ProviderStateOwner], which uses this object.
-/// - [AlwaysAliveProvider.overrideForSubtree], which creates a [ProviderOverride].
+/// - [AlwaysAliveProvider.overrideAs], which creates a [ProviderOverride].
 class ProviderOverride {
   ProviderOverride._(this._provider, this._origin);
 

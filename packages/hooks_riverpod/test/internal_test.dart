@@ -14,7 +14,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideForSubtree(Provider((_) => 1)),
+          provider.overrideAs(Provider((_) => 1)),
         ],
         child: Container(),
       ),
@@ -25,7 +25,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideForSubtree(MyImmutableProvider()),
+          provider.overrideAs(MyImmutableProvider()),
         ],
         child: Container(),
       ),
@@ -116,7 +116,7 @@ Changing the kind of override or reordering overrides is not supported.
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [provider.overrideForSubtree(override)],
+          overrides: [provider.overrideAs(override)],
           child: consumer,
         ),
       );
@@ -137,7 +137,7 @@ Changing the kind of override or reordering overrides is not supported.
       // replace the override with another of thes same type
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [provider.overrideForSubtree(override2)],
+          overrides: [provider.overrideAs(override2)],
           child: consumer,
         ),
       );
@@ -181,7 +181,7 @@ Changing the kind of override or reordering overrides is not supported.
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [provider.overrideForSubtree(override)],
+          overrides: [provider.overrideAs(override)],
           child: consumer,
         ),
       );
@@ -234,7 +234,7 @@ Changing the kind of override or reordering overrides is not supported.
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            provider.overrideForSubtree(override),
+            provider.overrideAs(override),
           ],
           child: consumer,
         ),

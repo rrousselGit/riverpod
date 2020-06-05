@@ -1,12 +1,20 @@
 import 'common.dart';
 import 'framework/framework.dart';
 
+/// The subscription to a [Provider].
 class ProviderSubscription<T> extends ProviderSubscriptionBase {
   ProviderSubscription._(this.value);
 
+  /// The value exposed by [Provider].
+  /// It is guaranteed to never change.
   final T value;
 }
 
+/// A provider that exposes a read-only value.
+
+// TODO What is a provider (testable, overridable, listenable)
+// TODO how to read a provider (Flutter)
+// TODO how to test a provider 
 class Provider<T> extends AlwaysAliveProvider<ProviderSubscription<T>, T> {
   Provider(this._create, {String name}) : super(name);
 

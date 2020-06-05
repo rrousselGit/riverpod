@@ -283,9 +283,9 @@ void main() {
     for (final permutation in perm()) {
       final owner = ProviderStateOwner();
       final owner2 = ProviderStateOwner(parent: owner, overrides: [
-        c.overrideForSubtree(c),
-        d.overrideForSubtree(d),
-        e.overrideForSubtree(e),
+        c.overrideAs(c),
+        d.overrideAs(d),
+        e.overrideAs(e),
       ]);
 
       for (final provider in permutation) {

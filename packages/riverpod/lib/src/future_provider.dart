@@ -25,7 +25,7 @@ class FutureProvider<Res> extends AlwaysAliveProvider<
   ProviderOverride debugOverrideWithValue(AsyncValue<Res> value) {
     ProviderOverride res;
     assert(() {
-      res = overrideForSubtree(
+      res = overrideAs(
         _DebugValueFutureProvider(value),
       );
       return true;

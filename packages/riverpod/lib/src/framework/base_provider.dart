@@ -434,7 +434,7 @@ abstract class AlwaysAliveProvider<
   ///   await tester.pumpWidget(
   ///     ProviderScope(
   ///       overrides: [
-  ///         repositoryProvider.overrideForSubtree(
+  ///         repositoryProvider.overrideAs(
   ///           Provider((_) => FakeRepository()),
   ///         ),
   ///       ],
@@ -443,7 +443,7 @@ abstract class AlwaysAliveProvider<
   ///   );
   /// });
   /// ```
-  ProviderOverride overrideForSubtree(
+  ProviderOverride overrideAs(
     // Always alive providers can only be overriden by always alive providers
     // as automatically disposed providers wouldn't work.
     AlwaysAliveProvider<Subscription, Result> provider,

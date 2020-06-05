@@ -18,7 +18,7 @@ class StreamProvider<T>
   ProviderOverride debugOverrideWithValue(AsyncValue<T> value) {
     ProviderOverride res;
     assert(() {
-      res = overrideForSubtree(_ValueStreamProvider(value));
+      res = overrideAs(_ValueStreamProvider(value));
       return true;
     }(), '');
     return res;

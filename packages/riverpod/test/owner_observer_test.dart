@@ -12,7 +12,7 @@ void main() {
     final provider = Provider((_) => 0);
     final owner = ProviderStateOwner(
       overrides: [
-        provider.overrideForSubtree(Provider((_) => 42)),
+        provider.overrideAs(Provider((_) => 42)),
       ],
       observers: [observer, observer2],
     );
@@ -34,7 +34,7 @@ void main() {
     final provider = Provider((_) => 0);
     final owner = ProviderStateOwner(
       overrides: [
-        provider.overrideForSubtree(Provider((_) => 42)),
+        provider.overrideAs(Provider((_) => 42)),
       ],
       observers: [observer, observer2, observer3],
     );
@@ -63,7 +63,7 @@ void main() {
     final counter = Counter();
     final owner = ProviderStateOwner(
       overrides: [
-        provider.overrideForSubtree(StateNotifierProvider((_) => counter)),
+        provider.overrideAs(StateNotifierProvider((_) => counter)),
       ],
       observers: [observer, observer2],
     );
@@ -102,7 +102,7 @@ void main() {
     final counter = Counter();
     final owner = ProviderStateOwner(
       overrides: [
-        provider.overrideForSubtree(StateNotifierProvider((_) => counter)),
+        provider.overrideAs(StateNotifierProvider((_) => counter)),
       ],
       observers: [observer, observer2, observer3],
     );
@@ -188,7 +188,7 @@ void main() {
     final onDispose = OnDisposeMock();
     final owner = ProviderStateOwner(
       overrides: [
-        provider.overrideForSubtree(Provider((ref) {
+        provider.overrideAs(Provider((ref) {
           ref.onDispose(onDispose);
           return 0;
         })),

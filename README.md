@@ -158,7 +158,7 @@ and that the community likes it, [provider] will still be maintained.
 - Computed
 - Family (StateNotifier vs .value) -> overriding the entire family at once
 - SetStateSubscription/SelectorSubscription
-- overrideForSubtree AutoDispose
+- overrideAs AutoDispose
 - Dartdoc for all public APIs
 - review all public APIs
 - README for all packages
@@ -207,7 +207,7 @@ Linter:
 
 - When overriding `StateNotifierProvider` on a non-root `ProviderStateOwner`, warn if the `.value` wasn't overriden too.
 - Check that when a provider is overridden locally, all of its dependencies are too
-- provider.overrideForSubtree(provider) -> provider
+- provider.overrideAs(provider) -> provider
 - always_specify_name
 - name_match_variable
 - providers_allow_specifying_name

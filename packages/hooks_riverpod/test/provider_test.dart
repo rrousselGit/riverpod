@@ -212,7 +212,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideForSubtree(
+          provider.overrideAs(
             Provider((ref) {
               assert(ref != null, '');
               callCount++;
@@ -230,7 +230,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideForSubtree(
+          provider.overrideAs(
             Provider((ref) {
               assert(ref != null, '');
               callCount++;

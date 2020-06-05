@@ -215,12 +215,12 @@ void main() {
     final provider3 = Provider((ref) => ref.dependOn(provider2).value * 2);
 
     final root = ProviderStateOwner(overrides: [
-      provider.overrideForSubtree(
+      provider.overrideAs(
         Provider((ref) => ref.dependOn(provider3).value * 2),
       )
     ]);
     final owner = ProviderStateOwner(parent: root, overrides: [
-      provider2.overrideForSubtree(
+      provider2.overrideAs(
           Provider((ref) => ref.dependOn(provider).value * 2)),
       provider3,
     ]);
@@ -265,7 +265,7 @@ void main() {
     expect(owner.scheduleNotification, throwsStateError);
     expect(() => owner.readProviderState(Provider((_) => 0)), throwsStateError);
   });
-  test('provider.overrideForSubtree(provider) can be simplified into provider',
+  test('provider.overrideAs(provider) can be simplified into provider',
       () {
     final notifier = Counter();
     final provider = StateNotifierProvider<Counter>((_) => notifier);
@@ -308,7 +308,7 @@ void main() {
     final provider = Provider((_) => 42);
     final owner = ProviderStateOwner();
     final owner2 = ProviderStateOwner(overrides: [
-      provider.overrideForSubtree(
+      provider.overrideAs(
         Provider((_) => 21),
       ),
     ]);
@@ -325,7 +325,7 @@ void main() {
 
     owner.update([]);
     owner2.update([
-      provider.overrideForSubtree(
+      provider.overrideAs(
         Provider((_) => 21),
       ),
     ]);

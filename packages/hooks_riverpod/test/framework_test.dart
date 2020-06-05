@@ -49,7 +49,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideForSubtree(Provider((_) => 1)),
+          provider.overrideAs(Provider((_) => 1)),
         ],
         child: Container(),
       ),
@@ -67,7 +67,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideForSubtree(Provider((_) => 1)),
+          provider.overrideAs(Provider((_) => 1)),
         ],
         child: Container(),
       ),
@@ -91,7 +91,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideForSubtree(Provider((_) => 1)),
+          provider.overrideAs(Provider((_) => 1)),
         ],
         child: Container(),
       ),
@@ -102,7 +102,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider2.overrideForSubtree(Provider((_) => 1)),
+          provider2.overrideAs(Provider((_) => 1)),
         ],
         child: Container(),
       ),
@@ -170,7 +170,7 @@ void main() {
       ProviderScope(
         key: UniqueKey(),
         overrides: [
-          provider.overrideForSubtree(Provider((_) => 'override')),
+          provider.overrideAs(Provider((_) => 'override')),
         ],
         child: builder,
       ),
@@ -211,7 +211,7 @@ void main() {
       ProviderScope(
         child: ProviderScope(
           overrides: [
-            provider.overrideForSubtree(
+            provider.overrideAs(
               FutureProvider((_) => secondCompleter.future),
             ),
           ],
@@ -267,7 +267,7 @@ void main() {
     // await tester.pumpWidget(
     //   ProviderScope(
     //     overrides: [
-    //       useProvider.overrideForSubtree(Provider.value('override1')),
+    //       useProvider.overrideAs(Provider.value('override1')),
     //     ],
     //     child: builder,
     //   ),
@@ -281,7 +281,7 @@ void main() {
     // await tester.pumpWidget(
     //   ProviderScope(
     //     overrides: [
-    //       useProvider.overrideForSubtree(Provider.value('override2')),
+    //       useProvider.overrideAs(Provider.value('override2')),
     //     ],
     //     child: builder,
     //   ),
@@ -317,7 +317,7 @@ void main() {
 
     final secondScope = ProviderScope(
       overrides: [
-        provider2.overrideForSubtree(Provider((_) => 'override2')),
+        provider2.overrideAs(Provider((_) => 'override2')),
       ],
       child: builder,
     );
@@ -325,7 +325,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideForSubtree(Provider((_) => 'rootoverride')),
+          provider.overrideAs(Provider((_) => 'rootoverride')),
         ],
         child: secondScope,
       ),

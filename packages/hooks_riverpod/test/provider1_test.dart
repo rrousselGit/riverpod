@@ -11,7 +11,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider2.overrideForSubtree(
+          provider2.overrideAs(
             Provider<int>((ref) {
               final other = ref.dependOn(provider);
               return other.value * 2;
@@ -75,7 +75,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideForSubtree(Provider((_) => 1)),
+          provider.overrideAs(Provider((_) => 1)),
         ],
         child: HookBuilder(builder: (c) {
           return Text(useProvider(provider1), textDirection: TextDirection.ltr);
@@ -130,7 +130,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          first.overrideForSubtree(Provider((_) => 42)),
+          first.overrideAs(Provider((_) => 42)),
         ],
         child: HookBuilder(builder: (c) {
           return Text(useProvider(forth).toString(),
@@ -159,7 +159,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          second.overrideForSubtree(Provider((_) => 0)),
+          second.overrideAs(Provider((_) => 0)),
         ],
         child: HookBuilder(builder: (c) {
           return Text(useProvider(forth).toString(),

@@ -117,7 +117,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          futureProvider.overrideForSubtree(FutureProvider((_) async => 21)),
+          futureProvider.overrideAs(FutureProvider((_) async => 21)),
         ],
         child: Directionality(
           textDirection: TextDirection.ltr,
