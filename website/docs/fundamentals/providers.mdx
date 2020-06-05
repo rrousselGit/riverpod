@@ -1,0 +1,84 @@
+---
+title: What is a provider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+In the [previous article](./getting_started), we saw how to install [Riverpod]
+and make a simple "Hello world".
+
+This time, we will do a deep dive on what "providers" are, and how to use them.
+
+## What is a provider
+
+A provider is an object that manages a state and allows you to listen to that state
+from nearly everywhere inside your application.
+
+If you are familiar with these concepts, you can think of providers as the
+fusion between a [Stream] and a service locator (like [InheritedWidget]s or [get_it]).
+
+Providers have multiple purposes:
+
+- **Providers can be listened to a piece of state from anywhere in your application.**
+
+  With providers, you do not need to pass your state as a parameter to all
+  functions/classes. A provider can be accessed like a global variable,
+  without the downsides of global variables.
+
+  Also, in most situations listening to a provider can be done in a single
+  line of code, without having to worry about listeners and stopping the subscription
+  when no longer used.
+
+- **Providers are safe/maintainable.**
+
+  Tired of facing a `ProviderNotFoundException` when using [provider](https://github.com/rrousselgit/provider)?
+  This scenario is **impossible** in [Riverpod].
+
+  Refactoring your application to make configurations to dynamic using firebase?
+  [Riverpod] is compile safe. The refactoring will naturally highlight all
+  the places that need to handle the "error"/"loading" states.
+
+  Providers also naturally promote good-practices like uni-directional data-flow
+  to make architectures scalable.
+
+- **Providers are testable.**
+
+  While providers can be accessed like global variables, they do not involve
+  having a global state.
+  As such, applications using providers are testable _by default_,
+  without having to write any `setup`/`tearDown`.
+
+  Similarly, the behavior of any provider can be overridden. For example,
+  you could use providers to expose a `Repository` object, and replace it
+  during tests with a fake implementation:
+
+- **Providers can be overridden to behave differently for a part of your application.**
+
+  For example, you could have a provider that exposes the "theme" of your
+  application.  
+  Then, you could override the behavior of that provider for only a specific page,
+  such that your entire application uses light mode, besides the setting screen
+  that uses dark mode.  
+  This increases the reusability of the different building blocks of your
+  application.
+
+- **Providers are debuggable.**
+
+  [Riverpod] comes with built-in support for Flutter's devtool, which allows
+  you to inspect the state of your application.
+
+  Furthermore, a more advanced devtool is in progress with advanced features such
+  as:
+
+  - viewing the entire application state
+  - editing the state from the UI (even with complex objects)
+  - seeing the history of all changes, and being able to a previous state.
+
+[get_it]: http://pub.dev/packages/get_it
+[inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
+[stream]: https://api.dart.dev/stable/2.8.4/dart-async/Stream-class.html
+[riverpod]: https://github.com/rrousselgit/river_pod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
