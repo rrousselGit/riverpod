@@ -176,13 +176,9 @@ class ProviderStateOwner {
     List<ProviderOverride> overrides = const [],
     VoidCallback markNeedsUpdate,
     List<ProviderStateOwnerObserver> observers,
-  })  : _markNeedsUpdate = markNeedsUpdate,
+  })  : _overrides = overrides,
+        _markNeedsUpdate = markNeedsUpdate,
         _observers = observers {
-    assert(() {
-      _debugOverrides = overrides;
-      return true;
-    }(), '');
-
     _fallback = parent?._fallback;
     _fallback ??= <T>(provider) {
       // It's fine to add new keys to _stateReaders inside fallback
@@ -243,9 +239,7 @@ class ProviderStateOwner {
   /// a [StateError] when attempting to use them.
   bool _disposed = false;
 
-  /// A snapshot of the current overrides, used by [update] to ensure that
-  /// updating the list of overrides is done correctly.
-  List<ProviderOverride> _debugOverrides;
+  List<ProviderOverride> _overrides;
 
   /// The state of `Computed` providers
   ///
@@ -309,7 +303,7 @@ class ProviderStateOwner {
   /// Then we can call update with different overrides:
   ///
   /// ```dart
-  /// owner.update([
+  /// owner.update(overrides: [
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
   ///   provider2.overrideAs(Provider((_) => 'London')),
   /// ]);
@@ -319,36 +313,33 @@ class ProviderStateOwner {
   ///
   /// ```dart
   /// // Invalid, provider2 was overiden before but is not anymore
-  /// owner.update([
+  /// owner.update(overrides: [
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
   /// ]);
   ///
   /// // Invalid, provider3 was not overriden before, but now is
-  /// owner.update([
+  /// owner.update(overrides: [
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
   ///   provider2.overrideAs(Provider((_) => 'London')),
   ///   provider3.overrideAs(...),
   /// ]);
   /// ```
-  void update([List<ProviderOverride> overrides]) {
+  void update({List<ProviderOverride> overrides}) {
     if (_disposed) {
       throw StateError(
         'Called update on a ProviderStateOwner that was already disposed',
       );
     }
-    if (overrides != null) {
+    if (overrides != null && _overrides != overrides) {
       assert(() {
-        final oldOverrides = _debugOverrides;
-        _debugOverrides = overrides;
-
-        if (overrides.length != oldOverrides.length) {
+        if (overrides.length != _overrides.length) {
           throw UnsupportedError(
             'Adding or removing provider overrides is not supported',
           );
         }
 
         for (var i = 0; i < overrides.length; i++) {
-          final previous = oldOverrides[i];
+          final previous = _overrides[i];
           final next = overrides[i];
 
           if (previous._provider.runtimeType != next._provider.runtimeType) {
@@ -368,6 +359,9 @@ Changing the kind of override or reordering overrides is not supported.
         return true;
       }(), '');
 
+      _overrides = overrides;
+
+      // TODO should didUpdateProvider be debug only for perf?
       for (final override in overrides) {
         _overrideForProvider[override._origin] = override._provider;
 

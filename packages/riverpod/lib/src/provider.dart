@@ -14,7 +14,7 @@ class ProviderSubscription<T> extends ProviderSubscriptionBase {
 
 // TODO What is a provider (testable, overridable, listenable)
 // TODO how to read a provider (Flutter)
-// TODO how to test a provider 
+// TODO how to test a provider
 class Provider<T> extends AlwaysAliveProvider<ProviderSubscription<T>, T> {
   Provider(this._create, {String name}) : super(name);
 

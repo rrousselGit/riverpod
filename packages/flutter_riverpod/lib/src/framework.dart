@@ -85,7 +85,7 @@ class _ProviderScopeState extends State<ProviderScope> {
   @override
   void didUpdateWidget(ProviderScope oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _owner.update(widget.overrides);
+    _dirty = true;
   }
 
   @override
@@ -104,7 +104,7 @@ class _ProviderScopeState extends State<ProviderScope> {
     }(), '');
     if (_dirty) {
       _dirty = false;
-      _owner.update();
+      _owner.update(overrides: widget.overrides);
     }
     return ProviderStateOwnerScope(
       owner: _owner,
@@ -119,7 +119,7 @@ class _ProviderScopeState extends State<ProviderScope> {
   }
 }
 
-class ProviderStateOwnerScope extends InheritedWidget {
+class ProviderStateOwnerScope extends InheritedModel<ProviderBase> {
   const ProviderStateOwnerScope({
     Key key,
     @required this.owner,
@@ -151,5 +151,12 @@ class ProviderStateOwnerScope extends InheritedWidget {
   @override
   bool updateShouldNotify(ProviderStateOwnerScope oldWidget) {
     return owner != oldWidget.owner;
+  }
+
+  @override
+  bool updateShouldNotifyDependent(
+      InheritedModel<ProviderBase<ProviderSubscriptionBase, Object>> oldWidget,
+      Set<ProviderBase<ProviderSubscriptionBase, Object>> dependencies) {
+    return true;
   }
 }

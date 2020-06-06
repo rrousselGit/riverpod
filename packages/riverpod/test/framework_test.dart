@@ -220,8 +220,7 @@ void main() {
       )
     ]);
     final owner = ProviderStateOwner(parent: root, overrides: [
-      provider2.overrideAs(
-          Provider((ref) => ref.dependOn(provider).value * 2)),
+      provider2.overrideAs(Provider((ref) => ref.dependOn(provider).value * 2)),
       provider3,
     ]);
 
@@ -265,8 +264,7 @@ void main() {
     expect(owner.scheduleNotification, throwsStateError);
     expect(() => owner.readProviderState(Provider((_) => 0)), throwsStateError);
   });
-  test('provider.overrideAs(provider) can be simplified into provider',
-      () {
+  test('provider.overrideAs(provider) can be simplified into provider', () {
     final notifier = Counter();
     final provider = StateNotifierProvider<Counter>((_) => notifier);
     final root = ProviderStateOwner();
@@ -323,8 +321,8 @@ void main() {
     expect(ref.dependOn(provider).value, 42);
     expect(ref2.dependOn(provider).value, 21);
 
-    owner.update([]);
-    owner2.update([
+    owner.update(overrides: []);
+    owner2.update(overrides: [
       provider.overrideAs(
         Provider((_) => 21),
       ),
@@ -399,9 +397,7 @@ void main() {
 
     expect(callCount, 0);
 
-    owner.update(
-      [provider],
-    );
+    owner.update(overrides: [provider]);
 
     expect(callCount, 0);
 
@@ -536,7 +532,7 @@ void main() {
     verifyZeroInteractions(provider1.onDidUpdateProvider);
     verifyZeroInteractions(provider2.onDidUpdateProvider);
 
-    owner.update([
+    owner.update(overrides: [
       provider,
       provider1,
       provider2,
@@ -788,7 +784,7 @@ void main() {
       verify(listener(const AsyncValue.loading())).called(1);
       verifyNoMoreInteractions(listener);
 
-      owner.update([
+      owner.update(overrides: [
         futureProvider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
 

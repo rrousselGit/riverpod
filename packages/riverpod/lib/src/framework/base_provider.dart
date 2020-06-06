@@ -353,7 +353,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   }
 
   /// Life-cycle for when the provider state is destroyed.
-  /// 
+  ///
   /// It triggers [ProviderReference.onDispose]
   @mustCallSuper
   void dispose() {

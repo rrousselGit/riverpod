@@ -109,7 +109,7 @@ void main() {
 
       Object error;
       runZonedGuarded(
-        () => owner.update([
+        () => owner.update(overrides: [
           provider.debugOverrideWithValue(const AsyncValue.data(21)),
         ]),
         (err, _) => error = err,
@@ -135,7 +135,7 @@ void main() {
 
       Object error;
       runZonedGuarded(
-        () => owner.update([
+        () => owner.update(overrides: [
           provider.debugOverrideWithValue(AsyncValue.error(21)),
         ]),
         (err, _) => error = err,
@@ -161,7 +161,7 @@ void main() {
 
       Object error;
       runZonedGuarded(
-        () => owner.update([
+        () => owner.update(overrides: [
           provider.debugOverrideWithValue(const AsyncValue.loading()),
         ]),
         (err, _) => error = err,
@@ -182,7 +182,7 @@ void main() {
       verify(listener(const AsyncValue.loading())).called(1);
       verifyNoMoreInteractions(listener);
 
-      owner.update([
+      owner.update(overrides: [
         provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
 
@@ -206,7 +206,7 @@ void main() {
 
       final stackTrace = StackTrace.current;
 
-      owner.update([
+      owner.update(overrides: [
         provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
 
@@ -228,13 +228,13 @@ void main() {
       verify(listener(const AsyncValue.loading())).called(1);
       verifyNoMoreInteractions(listener);
 
-      owner.update([
+      owner.update(overrides: [
         provider.debugOverrideWithValue(const AsyncValue.loading()),
       ]);
 
       verifyNoMoreInteractions(listener);
 
-      owner.update([
+      owner.update(overrides: [
         provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
 
@@ -262,7 +262,7 @@ void main() {
 
       Object error;
       runZonedGuarded(
-        () => owner.update([
+        () => owner.update(overrides: [
           provider.debugOverrideWithValue(AsyncValue.error(21, stackTrace)),
         ]),
         (err, _) => error = err,
@@ -289,7 +289,7 @@ void main() {
 
       Object error;
       runZonedGuarded(
-        () => owner.update([
+        () => owner.update(overrides: [
           provider
               .debugOverrideWithValue(AsyncValue.error(42, StackTrace.current)),
         ]),
@@ -317,7 +317,7 @@ void main() {
 
       Object error;
       runZonedGuarded(
-        () => owner.update([
+        () => owner.update(overrides: [
           provider.debugOverrideWithValue(const AsyncValue.data(42)),
         ]),
         (err, _) => error = err,
@@ -344,7 +344,7 @@ void main() {
 
       Object error;
       runZonedGuarded(
-        () => owner.update([
+        () => owner.update(overrides: [
           provider.debugOverrideWithValue(const AsyncValue.loading()),
         ]),
         (err, _) => error = err,
