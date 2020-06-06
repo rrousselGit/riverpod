@@ -17,8 +17,4 @@ extension AlwaysAliveProviderX<Subscription extends ProviderSubscriptionBase,
 
     return readOwner(ProviderStateOwnerScope.of(context, listen: false));
   }
-
-  Result watch(BuildContext context) {
-    // TODO assert debugDoingBuild
-  }
 }

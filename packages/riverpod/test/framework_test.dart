@@ -64,26 +64,38 @@ void main() {
     final ref3 = provider3.readOwner(owner);
     final ref4 = provider4.readOwner(owner);
 
-    expect(root.debugProviderStateSortedByDepth, <Object>[
-      isProvider(provider2, depth: 0),
-      isProvider(provider, depth: 0),
-    ]);
-    expect(owner.debugProviderStateSortedByDepth, <Object>[
-      isProvider(provider4, depth: 0),
-      isProvider(provider3, depth: 0),
-    ]);
+    expect(
+      root.debugProviderStateSortedByDepth,
+      unorderedMatches(<Object>[
+        isProvider(provider2, depth: 0),
+        isProvider(provider, depth: 0),
+      ]),
+    );
+    expect(
+      owner.debugProviderStateSortedByDepth,
+      unorderedMatches(<Object>[
+        isProvider(provider4, depth: 0),
+        isProvider(provider3, depth: 0),
+      ]),
+    );
 
     ref3.dependOn(provider2);
     ref4.dependOn(provider2);
 
-    expect(root.debugProviderStateSortedByDepth, <Object>[
-      isProvider(provider2, depth: 0),
-      isProvider(provider, depth: 0),
-    ]);
-    expect(owner.debugProviderStateSortedByDepth, <Object>[
-      isProvider(provider4, depth: 1),
-      isProvider(provider3, depth: 1),
-    ]);
+    expect(
+      root.debugProviderStateSortedByDepth,
+      unorderedMatches(<Object>[
+        isProvider(provider2, depth: 0),
+        isProvider(provider, depth: 0),
+      ]),
+    );
+    expect(
+      owner.debugProviderStateSortedByDepth,
+      unorderedMatches(<Object>[
+        isProvider(provider4, depth: 1),
+        isProvider(provider3, depth: 1),
+      ]),
+    );
 
     ref2.dependOn(provider);
 
@@ -91,10 +103,13 @@ void main() {
       isProvider(provider, depth: 0),
       isProvider(provider2, depth: 1),
     ]);
-    expect(owner.debugProviderStateSortedByDepth, <Object>[
-      isProvider(provider4, depth: 2),
-      isProvider(provider3, depth: 2),
-    ]);
+    expect(
+      owner.debugProviderStateSortedByDepth,
+      unorderedMatches(<Object>[
+        isProvider(provider4, depth: 2),
+        isProvider(provider3, depth: 2),
+      ]),
+    );
   });
   test('redepth is recursive', () {
     final owner = ProviderStateOwner();
@@ -110,12 +125,15 @@ void main() {
     final ref3 = provider3.readOwner(owner);
     final ref4 = provider4.readOwner(owner);
 
-    expect(owner.debugProviderStateSortedByDepth, <Object>[
-      isProvider(provider4, depth: 0),
-      isProvider(provider3, depth: 0),
-      isProvider(provider2, depth: 0),
-      isProvider(provider, depth: 0),
-    ]);
+    expect(
+      owner.debugProviderStateSortedByDepth,
+      unorderedMatches(<Object>[
+        isProvider(provider4, depth: 0),
+        isProvider(provider3, depth: 0),
+        isProvider(provider2, depth: 0),
+        isProvider(provider, depth: 0),
+      ]),
+    );
 
     ref4.dependOn(provider3);
 

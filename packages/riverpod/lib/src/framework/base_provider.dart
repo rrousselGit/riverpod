@@ -101,7 +101,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   Result get state;
 
   /// All the states that depends on this provider.
-  final Set<ProviderStateBase> _dependents = {};
+  final _dependents = HashSet<ProviderStateBase>();
 
   @visibleForTesting
   Set<ProviderStateBase> get debugDependents {
@@ -114,7 +114,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   }
 
   /// All the [ProviderStateBase]s that this provider depends on.
-  final Set<ProviderStateBase> _providerStateDependencies = {};
+  final _providerStateDependencies = HashSet<ProviderStateBase>();
 
   /// A cache of the [ProviderSubscriptionBase] associated to the dependencies
   /// listed by [_providerStateDependencies].
