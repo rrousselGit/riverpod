@@ -137,12 +137,11 @@ abstract class ProviderStateOwnerObserver {
   /// A provider was initialized, and the value created is [value].
   void didAddProvider(ProviderBase provider, Object value) {}
 
-  /// Some providers emitted updates.
-  ///
-  /// The parameter [changes] contains the list of all providers that
-  /// changed and their new value, but not does include providers
-  /// that did not change.
-  void didUpdateProviders(Map<ProviderBase, Object> changes) {}
+  /// Called when [ProviderStateOwner.update] fisished to notify listeners.
+  void onNotifyListenersDone() {}
+
+  // Called my providers when they emit a notification.
+  void didProviderNotifyListeners(ProviderBase provider, Object newValue) {}
 
   /// A provider was disposed
   void didDisposeProvider(ProviderBase provider) {}
@@ -247,12 +246,6 @@ class ProviderStateOwner {
   /// in the deepest [ProviderStateOwner] possible.
   Map<Computed, _ProviderStateReader> _computedStateReaders;
   var _updateScheduled = false;
-
-  /// All the providers that changed and their new value.
-  ///
-  /// This property is an implementation detail of [ProviderStateOwnerObserver.didUpdateProviders].
-  /// It is `null` outside of [_notifyListeners].
-  Map<ProviderBase, Object> _providerChanges;
 
   // TODO: should _redepth be optimized for this use-case? As `ref` can safely always
   // be the last provider in the list of providers per depth
@@ -383,8 +376,9 @@ Changing the kind of override or reordering overrides is not supported.
         _runUnaryGuarded(state.didUpdateProvider, oldProvider);
       }
     }
-
-    _notifyListeners();
+    if (_updateScheduled) {
+      _notifyListeners();
+    }
   }
 
   /// Used by providers when their state has changed and they want to notify listeners.
@@ -414,6 +408,11 @@ Changing the kind of override or reordering overrides is not supported.
   /// An example is `Computed`, which will re-execute its `selector` but not
   /// notify its listeners if the selected value didn't change.
   void _notifyListeners() {
+    assert(
+      _updateScheduled,
+      'notifyListeners called when there is no need to notify',
+    );
+    _updateScheduled = false;
     for (final entry in _providerStatesSortedByDepth) {
       if (entry.value._dirty) {
         entry.value._dirty = false;
@@ -425,31 +424,26 @@ Changing the kind of override or reordering overrides is not supported.
         }
       }
     }
-    if (_providerChanges != null) {
-      if (_observers != null) {
-        // changes is immutable as if observers modified it, the behavior
-        // would be unpredictable.
-        final changes = UnmodifiableMapView(_providerChanges);
-        for (final observer in _observers) {
-          _runUnaryGuarded(
-            observer.didUpdateProviders,
-            changes,
-          );
-        }
+    if (_observers != null) {
+      for (final observer in _observers) {
+        _runGuarded(observer.onNotifyListenersDone);
       }
-      _providerChanges = null;
     }
-    _updateScheduled = false;
   }
 
   /// Used by [ProviderStateBase.notifyListeners] to let [ProviderStateOwner]
   /// know that a provider _truly_ changed.
   ///
   /// This is then used to notify [ProviderStateOwnerObserver]s of the changes.
-  void _reportChanged(ProviderBase origin, Object state) {
-    if (_observers != null && _observers.isNotEmpty) {
-      _providerChanges ??= {};
-      _providerChanges[origin] = state;
+  void _reportChanged(ProviderBase origin, Object newState) {
+    if (_observers != null) {
+      for (final observer in _observers) {
+        _runBinaryGuarded(
+          observer.didProviderNotifyListeners,
+          origin,
+          newState,
+        );
+      }
     }
   }
 

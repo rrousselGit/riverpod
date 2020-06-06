@@ -315,14 +315,13 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   /// while preserving reactivity.
   @visibleForOverriding
   void notifyListeners() {
-    _owner._reportChanged(_origin, state);
-
     if (_stateListeners != null) {
       for (final listener in _stateListeners) {
         // TODO guard
         listener.value(state);
       }
     }
+    _owner._reportChanged(_origin, state);
   }
 
   void markNeedsNotifyListeners() {

@@ -9,11 +9,16 @@ extension AlwaysAliveProviderX<Subscription extends ProviderSubscriptionBase,
     assert(() {
       if (context.debugDoingBuild) {
         throw UnsupportedError(
-            'Cannot call `provider.read(context)` inside `build`');
+          'Cannot call `provider.read(context)` inside `build`',
+        );
       }
       return true;
     }(), '');
 
     return readOwner(ProviderStateOwnerScope.of(context, listen: false));
+  }
+
+  Result watch(BuildContext context) {
+    // TODO assert debugDoingBuild
   }
 }

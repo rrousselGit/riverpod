@@ -431,6 +431,8 @@ class DevtoolController extends StateNotifier<StateDetail>
     implements ProviderStateOwnerObserver {
   DevtoolController() : super(StateDetail(history: []));
 
+  Map<ProviderBase, Object> _changes;
+
   @override
   void didAddProvider(ProviderBase provider, Object value) {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
@@ -452,8 +454,8 @@ class DevtoolController extends StateNotifier<StateDetail>
   }
 
   @override
-  void didUpdateProviders(Map<ProviderBase, Object> changes) {
-    final newState = {...?state.currentState, ...changes};
+  void didDisposeProvider(ProviderBase provider) {
+    final newState = {...?state.currentState}..remove(provider);
     state = StateDetail(
       history: [
         ...state.history,
@@ -466,8 +468,15 @@ class DevtoolController extends StateNotifier<StateDetail>
   }
 
   @override
-  void didDisposeProvider(ProviderBase provider) {
-    final newState = {...?state.currentState}..remove(provider);
+  void didProviderNotifyListeners(ProviderBase provider, Object newValue) {
+    _changes ??= {};
+    _changes[provider] = newValue;
+  }
+
+  @override
+  void onNotifyListenersDone() {
+    final newState = {...?state.currentState, ..._changes};
+    _changes = null;
     state = StateDetail(
       history: [
         ...state.history,

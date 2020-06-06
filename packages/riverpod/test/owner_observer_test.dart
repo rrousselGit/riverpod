@@ -86,17 +86,19 @@ void main() {
     owner.update();
 
     verifyInOrder([
-      observer.didUpdateProviders({provider.state: 1}),
-      observer2.didUpdateProviders({provider.state: 1})
+      observer.didProviderNotifyListeners(provider.state, 1),
+      observer2.didProviderNotifyListeners(provider.state, 1),
+      observer.onNotifyListenersDone(),
+      observer2.onNotifyListenersDone(),
     ]);
     verifyNoMoreInteractions(observer);
     verifyNoMoreInteractions(observer2);
   });
   test('guards didUpdateProviders', () {
     final observer = ObserverMock();
-    when(observer.didUpdateProviders(any)).thenThrow('error1');
+    when(observer.didProviderNotifyListeners(any, any)).thenThrow('error1');
     final observer2 = ObserverMock();
-    when(observer2.didUpdateProviders(any)).thenThrow('error2');
+    when(observer2.didProviderNotifyListeners(any, any)).thenThrow('error2');
     final observer3 = ObserverMock();
     final provider = StateNotifierProvider((_) => Counter());
     final counter = Counter();
@@ -122,9 +124,12 @@ void main() {
 
     expect(errors, ['error1', 'error2']);
     verifyInOrder([
-      observer.didUpdateProviders({provider.state: 1}),
-      observer2.didUpdateProviders({provider.state: 1}),
-      observer3.didUpdateProviders({provider.state: 1}),
+      observer.didProviderNotifyListeners(provider.state, 1),
+      observer2.didProviderNotifyListeners(provider.state, 1),
+      observer3.didProviderNotifyListeners(provider.state, 1),
+      observer.onNotifyListenersDone(),
+      observer2.onNotifyListenersDone(),
+      observer3.onNotifyListenersDone(),
     ]);
     verifyNoMoreInteractions(observer);
     verifyNoMoreInteractions(observer2);
@@ -139,42 +144,45 @@ void main() {
       return read(provider.state).isNegative;
     });
     final owner = ProviderStateOwner(observers: [observer]);
-    final listener = Listener<bool>();
+    final isNegativeListener = Listener<bool>();
 
-    isNegative.watchOwner(owner, listener);
+    isNegative.watchOwner(owner, isNegativeListener);
 
     verifyInOrder([
       observer.didAddProvider(provider, counter),
       observer.didAddProvider(provider.state, 0),
       observer.didAddProvider(isNegative, false),
-      listener(false),
+      isNegativeListener(false),
     ]);
-    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(isNegativeListener);
     verifyNoMoreInteractions(observer);
 
     counter.increment();
-    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(isNegativeListener);
     verifyNoMoreInteractions(observer);
 
     owner.update();
 
     verifyInOrder([
-      observer.didUpdateProviders({provider.state: 1}),
+      observer.didProviderNotifyListeners(provider.state, 1),
+      observer.onNotifyListenersDone(),
     ]);
-    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(isNegativeListener);
     verifyNoMoreInteractions(observer);
 
     counter.setState(-10);
-    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(isNegativeListener);
     verifyNoMoreInteractions(observer);
 
     owner.update();
 
     verifyInOrder([
-      listener(true),
-      observer.didUpdateProviders({provider.state: -10, isNegative: true}),
+      observer.didProviderNotifyListeners(provider.state, -10),
+      isNegativeListener(true),
+      observer.didProviderNotifyListeners(isNegative, true),
+      observer.onNotifyListenersDone(),
     ]);
-    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(isNegativeListener);
     verifyNoMoreInteractions(observer);
   });
   test('guards didDisposeProvider', () {
