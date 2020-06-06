@@ -148,7 +148,6 @@ and that the community likes it, [provider] will still be maintained.
 - evaluate space complexity
 - StreamProvider expose a Future<Data> for last valid value
 - future/changenotifier/...providers cannot return null
-- Scope.onChange({owner, List<{provider, value}> modified })
 - Cannot add dependencies during dispatching
 - FutureChangeNotifier
 - FutureStateNotifier
@@ -164,12 +163,10 @@ and that the community likes it, [provider] will still be maintained.
 - CI
 - useProvider(provider.select)
 - provider.watchRef?
-- Packages description/homepage
 - Prevent modifying parents from children (provider -> provider)
 - Prevent modifying parents from children (widget -> provider)
 - DateTime provider
 - Make a common interface between ProviderSubscriptions? (So that we can assign Provider to SetStateProvider)
-- provider.watch(buildContext) (but no computed.watch and provider.select)
 - Should some asserts be changed to exceptions in release?
 - Should some exceptions have a custom error?
 
