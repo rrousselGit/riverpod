@@ -213,11 +213,14 @@ class ProviderStateOwner {
   /// Upating existing keys is possible.
   final _overrideForProvider = <ProviderBase, ProviderBase>{};
 
+  final _providerStates = LinkedList<_LinkedListEntry<ProviderStateBase>>();
+
   /// The list of all provider states sorted by how deep they are in the graph
   /// of dependencies.
   ///
   /// It exists for [update] and [dispose] to efficiently traverse all providers
   /// in order of dependency with a O(N) complexity.
+  @deprecated
   final _providerStatesSortedByDepth =
       LinkedList<_LinkedListEntry<ProviderStateBase>>();
 
@@ -488,11 +491,11 @@ Changing the kind of override or reordering overrides is not supported.
 
     assert(notifyListenersLock == null, '');
     // TODO: reverse?
-    for (final entry in _providerStatesSortedByDepth) {
-      notifyListenersLock = entry.value;
-      _runGuarded(entry.value.dispose);
-      notifyListenersLock = null;
-    }
+    // for (final entry in _providerStatesSortedByDepth) {
+    //   notifyListenersLock = entry.value;
+    //   _runGuarded(entry.value.dispose);
+    //   notifyListenersLock = null;
+    // }
   }
 }
 

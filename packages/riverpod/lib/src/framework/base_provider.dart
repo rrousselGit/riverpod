@@ -1,5 +1,21 @@
 part of 'framework.dart';
 
+class ProviderSnapshot<T> {
+  ProviderSnapshot._(this.changed, this.value);
+
+  final bool changed;
+  final T value;
+}
+
+class LazySubscription<T> {
+  LazySubscription._({this.flush, this.close, this.read});
+
+  final void Function() flush;
+  final void Function() close;
+
+  final T Function() read;
+}
+
 /// A base class for all providers.
 ///
 /// Do not extend or implement.
@@ -22,22 +38,14 @@ abstract class ProviderBase<Subscription extends ProviderSubscriptionBase,
   /// - It can be used as a serialisable unique identifier for state serialisation/deserialisation.
   final String name;
 
-  /// Adds a listener to the provider.
-  ///
-  /// If you are using Flutter, you probably do not need to care about this method.
-  ///
-  /// The callback is called synchronously immediatly with the latest value.
-  /// It is then called whenever [ProviderStateOwner.update] was called and the
-  /// provider listened had changed.
-  ///
-  /// The result of this method is a function that allows removing the listener.
-  ///
-  /// The callback will be called at most once per [ProviderStateOwner.update] calls.
-  VoidCallback watchOwner(
-    ProviderStateOwner owner,
-    void Function(Result value) onChange,
-  ) {
-    return owner._readProviderState(this).$addListener(onChange);
+  LazySubscription addLazyListener(
+    ProviderStateOwner owner, {
+    @required void Function() mayHaveChanged,
+    @required void Function(Result value) onChange,
+  }) {
+    return owner
+        ._readProviderState(this)
+        .addLazyListener(mayHaveChanged: mayHaveChanged, onChange: onChange);
   }
 
   @override
@@ -94,11 +102,13 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   /// See also [ProviderReference.mounted].
   bool get mounted => _mounted;
 
+  Result _state;
+
   /// The value currently exposed.
   ///
   /// All modifications to this property should induce a call to [markNeedsNotifyListeners].
   @protected
-  Result get state;
+  Result get state => _state;
 
   /// All the states that depends on this provider.
   final _dependents = HashSet<ProviderStateBase>();
@@ -144,20 +154,15 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
 
   /// The listeners of this provider (using [ProviderBase.watchOwner]).
-  LinkedList<_LinkedListEntry<void Function(Result value)>> _stateListeners;
+  LinkedList<_LinkedListEntry<void Function()>> _mayHaveChangedListeners;
 
   /// Whether this provider is listened or not.
   // TODO: factor [createSubscription]
   bool get $hasListeners => _stateListeners?.isNotEmpty ?? false;
 
-  /// Initializes the provider.
-  ///
-  /// If an exception is thrown inside [initState], all attempts
-  /// at reading the provider will result in throwing [_error].
-  ///
-  /// It is safe to call [markNeedsNotifyListeners] inside [initState].
-  @protected
-  void initState();
+  bool shouldNotifyListeners();
+
+  Result compute();
 
   /// Creates the object returned by [ProviderReference.dependOn].
   Subscription createProviderSubscription();
@@ -293,61 +298,47 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
     _onDisposeCallbacks.add(cb);
   }
 
-  /// Implementation of [ProviderBase.watchOwner].
-  VoidCallback $addListener(
-    void Function(Result value) listener,
-  ) {
-    try {
-      notifyListenersDepthLock = depth;
-      listener(state);
-    } finally {
-      notifyListenersDepthLock = -1;
-    }
-    _stateListeners ??= LinkedList();
-    final entry = _LinkedListEntry(listener);
-    _stateListeners.add(entry);
-    return entry.unlink;
+  LazySubscription<Result> addLazyListener({
+    @required void Function() mayHaveChanged,
+    @required void Function(Result value) onChange,
+  }) {
+    onChange(state);
+
+    _mayHaveChangedListeners ??= LinkedList();
+    final mayHaveChangedEntry = _LinkedListEntry(mayHaveChanged);
+    _mayHaveChangedListeners.add(mayHaveChangedEntry);
+
+    return LazySubscription._(
+      read: () {},
+      close: () {
+        onChangeEntry.unlink();
+        mayHaveChangedEntry.unlink();
+      },
+    );
   }
 
-  /// Notify all the listeners in order
-  ///
-  /// It may be overriden to not notify listeners if the value didn't change
-  /// while preserving reactivity.
-  @visibleForOverriding
-  void notifyListeners() {
-    if (_stateListeners != null) {
-      for (final listener in _stateListeners) {
-        // TODO guard
-        listener.value(state);
+  void _flush() {
+    if (_dirty) {
+      _dirty = false;
+
+      if (shouldNotifyListeners()) {
+        final newState = state;
+        for (final listener in _stateListeners) {
+          // TODO guard
+          listener.value(newState);
+        }
       }
     }
-    _owner._reportChanged(_origin, state);
   }
 
-  void markNeedsNotifyListeners() {
-    if (notifyListenersLock != null && notifyListenersLock != this) {
-      throw StateError(
-        'Cannot mark providers as dirty while initializing/disposing another provider',
-      );
-    }
-    if (notifyListenersDepthLock >= depth) {
-      throw StateError(
-        'Cannot mark `$provider` as dirty from `$notifyListenersDepthLock` as the latter depends on it.',
-      );
-    }
-    if (!_mounted) {
-      throw StateError(
-        'A provider was marked as needing to perform updates when it was already disposed',
-      );
-    }
-    if (_error != null) {
-      throw StateError(
-        'A provider cannot emit updates if an exception was thrown during the provider creation.',
-      );
-    }
-    if (_dirty == false) {
+  void markMayHaveChanged() {
+    if (!_dirty) {
       _dirty = true;
-      owner._scheduleNotification();
+
+      for (final mayHaveChanged in _mayHaveChangedListeners) {
+        // TODO guard
+        mayHaveChanged.value();
+      }
     }
   }
 

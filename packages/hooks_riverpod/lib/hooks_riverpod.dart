@@ -11,10 +11,7 @@ T useProvider<T>(ProviderBase<ProviderSubscriptionBase, T> provider) {
 }
 
 class _BaseProviderHook<T> extends Hook<T> {
-  const _BaseProviderHook(
-    this._owner,
-    this._provider,
-  );
+  const _BaseProviderHook(this._owner, this._provider);
 
   final ProviderStateOwner _owner;
   final ProviderBase<ProviderSubscriptionBase, T> _provider;
@@ -24,11 +21,9 @@ class _BaseProviderHook<T> extends Hook<T> {
 }
 
 class _BaseProviderHookState<T> extends HookState<T, _BaseProviderHook<T>> {
-  VoidCallback _removeListener;
-  T _value;
-
-  @override
-  T build(BuildContext context) => _value;
+  T _state;
+  LazySubscription _link;
+  bool _shouldRebuild = false;
 
   @override
   void initHook() {
@@ -37,10 +32,24 @@ class _BaseProviderHookState<T> extends HookState<T, _BaseProviderHook<T>> {
   }
 
   void _listen() {
-    _removeListener?.call();
-    _removeListener = hook._provider.watchOwner(hook._owner, (value) {
-      setState(() => _value = value);
-    });
+    _link?.close();
+    _link = hook._provider.addLazyListener(
+      hook._owner,
+      mayHaveChanged: markMayNeedRebuild,
+      onChange: (newState) {
+        _shouldRebuild = true;
+        _state = newState;
+      },
+    );
+  }
+
+  @override
+  bool shouldRebuild() {
+    _link.flush();
+    if (_shouldRebuild) {
+      _shouldRebuild = false;
+      return true;
+    }
   }
 
   @override
@@ -63,8 +72,11 @@ class _BaseProviderHookState<T> extends HookState<T, _BaseProviderHook<T>> {
   }
 
   @override
+  T build(BuildContext context) => _state;
+
+  @override
   void dispose() {
-    _removeListener?.call();
+    _link.close();
     super.dispose();
   }
 }
