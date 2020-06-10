@@ -112,7 +112,7 @@ void main() {
     owner.dispose();
 
     verify(onDispose()).called(1);
-  });
+  }, skip: true);
 }
 
 class OnDisposeMock extends Mock {

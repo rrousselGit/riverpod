@@ -341,7 +341,7 @@ class TestProviderState
   int get state => _state;
   set state(int state) {
     _state = state;
-    markNeedsNotifyListeners();
+    markMayHaveChanged();
   }
 
   @override

@@ -9,12 +9,15 @@ void main() {
     final owner = ProviderStateOwner();
     final listener = Listener();
 
-    futureProvider.watchOwner(owner, listener);
-
+    final sub = futureProvider.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: listener,
+    );
     verify(listener(const AsyncValue.data(42)));
     verifyNoMoreInteractions(listener);
 
-    owner.update();
+    sub.flush();
 
     verifyNoMoreInteractions(listener);
   });

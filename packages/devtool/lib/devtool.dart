@@ -468,7 +468,7 @@ class DevtoolController extends StateNotifier<StateDetail>
   }
 
   @override
-  void didProviderNotifyListeners(ProviderBase provider, Object newValue) {
+  void didUpdateProvider(ProviderBase provider, Object newValue) {
     _changes ??= {};
     _changes[provider] = newValue;
   }

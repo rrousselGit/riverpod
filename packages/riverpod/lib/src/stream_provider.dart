@@ -40,7 +40,7 @@ class _StreamProviderState<T> extends ProviderStateBase<
   AsyncValue<T> get state => _state;
   set state(AsyncValue<T> state) {
     _state = state;
-    markNeedsNotifyListeners();
+    markMayHaveChanged();
   }
 
   @override
@@ -99,7 +99,7 @@ class _ValueStreamProviderState<T> extends ProviderStateBase<
   AsyncValue<T> get state => _state;
   set state(AsyncValue<T> state) {
     _state = state;
-    markNeedsNotifyListeners();
+    markMayHaveChanged();
   }
 
   @override

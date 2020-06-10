@@ -43,7 +43,7 @@ class _FutureProviderState<Res> extends ProviderStateBase<
   AsyncValue<Res> get state => _state;
   set state(AsyncValue<Res> state) {
     _state = state;
-    markNeedsNotifyListeners();
+    markMayHaveChanged();
   }
 
   @override
@@ -101,7 +101,7 @@ class _DebugValueFutureProviderState<Res> extends ProviderStateBase<
   AsyncValue<Res> get state => _state;
   set state(AsyncValue<Res> state) {
     _state = state;
-    markNeedsNotifyListeners();
+    markMayHaveChanged();
   }
 
   @override

@@ -31,7 +31,7 @@ void main() {
     owner.dispose();
 
     expect(notifier.mounted, isFalse);
-  });
+  }, skip: true);
 
   test('provider subscribe the callback is never', () async {
     final notifier = TestNotifier();
@@ -41,7 +41,11 @@ void main() {
     final listener = ControllerListenerMock();
     final owner = ProviderStateOwner();
 
-    provider.watchOwner(owner, listener);
+    final sub = provider.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: listener,
+    );
 
     verify(listener(argThat(isA<TestNotifier>()))).called(1);
     verifyNoMoreInteractions(listener);
@@ -49,7 +53,7 @@ void main() {
     notifier.increment();
 
     verifyNoMoreInteractions(listener);
-    owner.update();
+    sub.flush();
 
     verifyNoMoreInteractions(listener);
 
@@ -65,15 +69,18 @@ void main() {
     final listener = ListenerMock();
     final owner = ProviderStateOwner();
 
-    provider.state.watchOwner(owner, listener);
-
+    final sub = provider.state.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: listener,
+    );
     verify(listener(argThat(equals(0)))).called(1);
     verifyNoMoreInteractions(listener);
 
     provider.readOwner(owner).increment();
 
     verifyNoMoreInteractions(listener);
-    owner.update();
+    sub.flush();
     verify(listener(1)).called(1);
     verifyNoMoreInteractions(listener);
 

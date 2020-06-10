@@ -137,11 +137,8 @@ abstract class ProviderStateOwnerObserver {
   /// A provider was initialized, and the value created is [value].
   void didAddProvider(ProviderBase provider, Object value) {}
 
-  /// Called when [ProviderStateOwner.update] fisished to notify listeners.
-  void onNotifyListenersDone() {}
-
   // Called my providers when they emit a notification.
-  void didProviderNotifyListeners(ProviderBase provider, Object newValue) {}
+  void didUpdateProvider(ProviderBase provider, Object newValue) {}
 
   /// A provider was disposed
   void didDisposeProvider(ProviderBase provider) {}
@@ -173,10 +170,8 @@ class ProviderStateOwner {
   ProviderStateOwner({
     ProviderStateOwner parent,
     List<ProviderOverride> overrides = const [],
-    VoidCallback markNeedsUpdate,
     List<ProviderStateOwnerObserver> observers,
   })  : _overrides = overrides,
-        _markNeedsUpdate = markNeedsUpdate,
         _observers = observers {
     _fallback = parent?._fallback;
     _fallback ??= <T>(provider) {
@@ -204,7 +199,6 @@ class ProviderStateOwner {
   }
 
   final List<ProviderStateOwnerObserver> _observers;
-  final VoidCallback _markNeedsUpdate;
 
   /// The currently overriden providers.
   ///
@@ -320,14 +314,14 @@ class ProviderStateOwner {
   ///   provider3.overrideAs(...),
   /// ]);
   /// ```
-  void update({List<ProviderOverride> overrides}) {
-    if (_disposed) {
-      throw StateError(
-        'Called update on a ProviderStateOwner that was already disposed',
-      );
-    }
-    if (overrides != null && _overrides != overrides) {
-      assert(() {
+  void debugUpdate({List<ProviderOverride> overrides}) {
+    assert(() {
+      if (_disposed) {
+        throw StateError(
+          'Called update on a ProviderStateOwner that was already disposed',
+        );
+      }
+      if (overrides != null && _overrides != overrides) {
         if (overrides.length != _overrides.length) {
           throw UnsupportedError(
             'Adding or removing provider overrides is not supported',
@@ -352,86 +346,33 @@ Changing the kind of override or reordering overrides is not supported.
           }
         }
 
-        return true;
-      }(), '');
+        _overrides = overrides;
 
-      _overrides = overrides;
+        // TODO should didUpdateProvider be debug only for perf?
+        for (final override in overrides) {
+          _overrideForProvider[override._origin] = override._provider;
 
-      // TODO should didUpdateProvider be debug only for perf?
-      for (final override in overrides) {
-        _overrideForProvider[override._origin] = override._provider;
-
-        assert(
-          override._origin is! Computed && override._provider is! Computed,
-          'Cannot override Computed',
-        );
-        // no need to check _computedStateReaders as they are not overridable.
-        // _stateReaders[override._origin] cannot be null for overriden providers.
-        final state = _stateReaders[override._origin]
-            // _providerState instead of read() to not compute the state
-            // if it wasn't loaded yet.
-            ._providerState;
-        if (state == null) {
-          continue;
-        }
-        final oldProvider = state._provider;
-        state._provider = override._provider;
-        _runUnaryGuarded(state.didUpdateProvider, oldProvider);
-      }
-    }
-    if (_updateScheduled) {
-      _notifyListeners();
-    }
-  }
-
-  /// Used by providers when their state has changed and they want to notify listeners.
-  ///
-  /// If this is the first time a provider wants to notify listeners since the
-  /// last [update] call, this will call [_markNeedsUpdate].
-  ///
-  /// See also [ProviderStateBase.markNeedsNotifyListeners].
-  void _scheduleNotification() {
-    if (_disposed) {
-      throw StateError(
-        'Tried to emit updates from a ProviderStateOwner that was already disposed',
-      );
-    }
-    if (!_updateScheduled) {
-      _updateScheduled = true;
-      _markNeedsUpdate?.call();
-    }
-  }
-
-  /// Call [ProviderStateBase.notifyListeners] on all providers that want to emit
-  /// updates, order from providers with no dependencies to providers that depends
-  /// on the entire application.
-  ///
-  /// This does not call the listeners of a specific provider.
-  /// That is done by [ProviderStateBase.notifyListeners], which may decide not to.
-  /// An example is `Computed`, which will re-execute its `selector` but not
-  /// notify its listeners if the selected value didn't change.
-  void _notifyListeners() {
-    assert(
-      _updateScheduled,
-      'notifyListeners called when there is no need to notify',
-    );
-    _updateScheduled = false;
-    for (final entry in _providerStatesSortedByDepth) {
-      if (entry.value._dirty) {
-        entry.value._dirty = false;
-        notifyListenersDepthLock = entry.value.depth;
-        try {
-          entry.value.notifyListeners();
-        } finally {
-          notifyListenersDepthLock = -1;
+          assert(
+            override._origin is! Computed && override._provider is! Computed,
+            'Cannot override Computed',
+          );
+          // no need to check _computedStateReaders as they are not overridable.
+          // _stateReaders[override._origin] cannot be null for overriden providers.
+          final state = _stateReaders[override._origin]
+              // _providerState instead of read() to not compute the state
+              // if it wasn't loaded yet.
+              ._providerState;
+          if (state == null) {
+            continue;
+          }
+          final oldProvider = state._provider;
+          state._provider = override._provider;
+          _runUnaryGuarded(state.didUpdateProvider, oldProvider);
         }
       }
-    }
-    if (_observers != null) {
-      for (final observer in _observers) {
-        _runGuarded(observer.onNotifyListenersDone);
-      }
-    }
+
+      return true;
+    }(), '');
   }
 
   /// Used by [ProviderStateBase.notifyListeners] to let [ProviderStateOwner]
@@ -442,7 +383,7 @@ Changing the kind of override or reordering overrides is not supported.
     if (_observers != null) {
       for (final observer in _observers) {
         _runBinaryGuarded(
-          observer.didProviderNotifyListeners,
+          observer.didUpdateProvider,
           origin,
           newState,
         );
@@ -510,9 +451,6 @@ extension ProviderStateOwnerInternals on ProviderStateOwner {
     }(), '');
     return result;
   }
-
-  @visibleForTesting
-  void scheduleNotification() => _scheduleNotification();
 
   ProviderStateBase<Subscription, ListeningValue,
           ProviderBase<Subscription, ListeningValue>>

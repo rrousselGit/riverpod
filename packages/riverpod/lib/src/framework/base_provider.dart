@@ -8,12 +8,37 @@ class ProviderSnapshot<T> {
 }
 
 class LazySubscription<T> {
-  LazySubscription._({this.flush, this.close, this.read});
+  LazySubscription._(
+    this._providerState,
+    this._onChange,
+    this._entry,
+  ) : _lastNotificationCount = _providerState._notificationCount;
 
-  final void Function() flush;
-  final void Function() close;
+  int _lastNotificationCount;
+  final ProviderStateBase<ProviderSubscriptionBase, T,
+      ProviderBase<ProviderSubscriptionBase, T>> _providerState;
+  final void Function(T value) _onChange;
+  final LinkedListEntry _entry;
 
-  final T Function() read;
+  bool flush() {
+    if (_entry.list == null) {
+      // TODO test
+      return false;
+    }
+    _providerState.flush();
+    assert(
+      !_providerState.dirty,
+      'flush must either cancel or confirm the notification',
+    );
+    if (_providerState._notificationCount != _lastNotificationCount) {
+      _lastNotificationCount = _providerState._notificationCount;
+      _onChange(_providerState.state);
+      return true;
+    }
+    return false;
+  }
+
+  void close() => _entry.unlink();
 }
 
 /// A base class for all providers.
@@ -38,7 +63,7 @@ abstract class ProviderBase<Subscription extends ProviderSubscriptionBase,
   /// - It can be used as a serialisable unique identifier for state serialisation/deserialisation.
   final String name;
 
-  LazySubscription addLazyListener(
+  LazySubscription<Result> addLazyListener(
     ProviderStateOwner owner, {
     @required void Function() mayHaveChanged,
     @required void Function(Result value) onChange,
@@ -46,6 +71,21 @@ abstract class ProviderBase<Subscription extends ProviderSubscriptionBase,
     return owner
         ._readProviderState(this)
         .addLazyListener(mayHaveChanged: mayHaveChanged, onChange: onChange);
+  }
+
+  VoidCallback watchOwner(
+    ProviderStateOwner owner,
+    void Function(Result value) onChange,
+  ) {
+    LazySubscription<Result> sub;
+
+    sub = addLazyListener(
+      owner,
+      mayHaveChanged: () => sub.flush(),
+      onChange: onChange,
+    );
+
+    return sub.close;
   }
 
   @override
@@ -87,6 +127,8 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   // Initialised to true to ignore calls to markNeedNotifyListeners inside initState
   var _dirty = true;
 
+  int _notificationCount = 0;
+
   /// Whether this provider was marked as needing to notify its listeners.
   ///
   /// See also [markNeedsNotifyListeners].
@@ -102,13 +144,12 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   /// See also [ProviderReference.mounted].
   bool get mounted => _mounted;
 
-  Result _state;
-
   /// The value currently exposed.
   ///
-  /// All modifications to this property should induce a call to [markNeedsNotifyListeners].
+  /// All modifications to this property should induce a call to [markMayHaveChanged]
+  /// followed by [markDidChange].
   @protected
-  Result get state => _state;
+  Result get state;
 
   /// All the states that depends on this provider.
   final _dependents = HashSet<ProviderStateBase>();
@@ -158,11 +199,9 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
 
   /// Whether this provider is listened or not.
   // TODO: factor [createSubscription]
-  bool get $hasListeners => _stateListeners?.isNotEmpty ?? false;
+  bool get $hasListeners => _mayHaveChangedListeners?.isNotEmpty ?? false;
 
-  bool shouldNotifyListeners();
-
-  Result compute();
+  void initState();
 
   /// Creates the object returned by [ProviderReference.dependOn].
   Subscription createProviderSubscription();
@@ -309,35 +348,50 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
     _mayHaveChangedListeners.add(mayHaveChangedEntry);
 
     return LazySubscription._(
-      read: () {},
-      close: () {
-        onChangeEntry.unlink();
-        mayHaveChangedEntry.unlink();
-      },
+      this,
+      onChange,
+      mayHaveChangedEntry,
     );
   }
 
-  void _flush() {
+  @visibleForOverriding
+  void flush() {
     if (_dirty) {
-      _dirty = false;
-
-      if (shouldNotifyListeners()) {
-        final newState = state;
-        for (final listener in _stateListeners) {
-          // TODO guard
-          listener.value(newState);
-        }
-      }
+      markDidChange();
     }
   }
 
+  void markDidChange() {
+    assert(_dirty, 'must call markMayHaveChanged before markDidChange');
+    if (!_mounted) {
+      throw StateError(
+        'Cannot notify listeners of a provider after if was dispose',
+      );
+    }
+    _dirty = false;
+    _notificationCount++;
+    _owner._reportChanged(_origin, state);
+  }
+
+  void markCancelChange() {
+    assert(_dirty, 'must call markCancelChange before markDidChange');
+    _dirty = false;
+  }
+
   void markMayHaveChanged() {
+    if (!_mounted) {
+      throw StateError(
+        'Cannot notify listeners of a provider after if was dispose',
+      );
+    }
     if (!_dirty) {
       _dirty = true;
 
-      for (final mayHaveChanged in _mayHaveChangedListeners) {
-        // TODO guard
-        mayHaveChanged.value();
+      if (_mayHaveChangedListeners != null) {
+        for (final mayHaveChanged in _mayHaveChangedListeners) {
+          // TODO guard
+          mayHaveChanged.value();
+        }
       }
     }
   }

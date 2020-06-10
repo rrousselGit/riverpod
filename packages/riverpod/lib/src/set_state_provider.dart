@@ -29,7 +29,7 @@ class _SetStateProviderState<T> extends ProviderStateBase<
   T get state => _state;
   set state(T state) {
     _state = state;
-    markNeedsNotifyListeners();
+    markMayHaveChanged();
   }
 
   @override

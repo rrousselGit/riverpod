@@ -64,9 +64,12 @@ class Computed<T> extends ProviderBase<ProviderSubscriptionBase, T> {
 
 class _ComputedState<T>
     extends ProviderStateBase<ProviderSubscriptionBase, T, Computed<T>> {
-  final _subscritionsCache = <ProviderBase, _Dependency>{};
-  var _shouldCompute = false;
+  final _dependencies = <ProviderBase, _Dependency>{};
   bool _debugSelecting;
+
+  T _state;
+  @override
+  T get state => _state;
 
   @override
   ProviderSubscriptionBase createProviderSubscription() {
@@ -74,15 +77,31 @@ class _ComputedState<T>
   }
 
   @override
-  bool shouldNotifyListeners() {
-    for (final sub in _subscritionsCache.values) {
-      sub.subscription.flush();
-    }
-    return _shouldCompute;
+  void initState() {
+    // force initial computation
+    _state = _compute();
   }
 
   @override
-  T compute() {
+  void flush() {
+    var dependencyDidUpdate = false;
+    for (final dep in _dependencies.values) {
+      if (dep.subscription.flush()) {
+        dependencyDidUpdate = true;
+      }
+    }
+    if (dependencyDidUpdate) {
+      final newState = _compute();
+      if (!const DeepCollectionEquality().equals(_state, newState)) {
+        _state = newState;
+        markDidChange();
+      } else {
+        markCancelChange();
+      }
+    }
+  }
+
+  T _compute() {
     assert(() {
       _debugSelecting = true;
       return true;
@@ -103,17 +122,14 @@ class _ComputedState<T>
       _debugSelecting,
       'Cannot use `read` outside of the body of the Computed callback',
     );
-    return _subscritionsCache.putIfAbsent(target, () {
+    return _dependencies.putIfAbsent(target, () {
       final state = owner.readProviderState(target);
       redepthAfter(state);
 
       final dep = _Dependency();
       dep.subscription = state.addLazyListener(
         mayHaveChanged: markMayHaveChanged,
-        onChange: (value) {
-          dep._state = value;
-          _shouldCompute = true;
-        },
+        onChange: (value) => dep._state = value,
       );
       return dep;
     })._state as Res;
@@ -121,7 +137,7 @@ class _ComputedState<T>
 
   @override
   void dispose() {
-    for (final subscription in _subscritionsCache.values) {
+    for (final subscription in _dependencies.values) {
       subscription.subscription.close();
     }
     super.dispose();

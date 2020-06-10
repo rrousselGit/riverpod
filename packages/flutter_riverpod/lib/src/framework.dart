@@ -68,7 +68,8 @@ class _ProviderScopeState extends State<ProviderScope> {
       parent: scope?.owner,
       overrides: widget.overrides,
       observers: widget.observers,
-      markNeedsUpdate: () => setState(() => _dirty = true),
+      // TODO prevent update from widgets?
+      // markNeedsUpdate: () => setState(() => _dirty = true),
       // TODO How to report to FlutterError?
       // onError: (dynamic error, stack) {
       //   FlutterError.reportError(
@@ -100,12 +101,12 @@ class _ProviderScopeState extends State<ProviderScope> {
           'ProviderScope was rebuilt with a different ProviderScope ancestor',
         );
       }
+      if (_dirty) {
+        _dirty = false;
+        _owner.debugUpdate(overrides: widget.overrides);
+      }
       return true;
     }(), '');
-    if (_dirty) {
-      _dirty = false;
-      _owner.update(overrides: widget.overrides);
-    }
     return ProviderStateOwnerScope(
       owner: _owner,
       child: widget.child,
