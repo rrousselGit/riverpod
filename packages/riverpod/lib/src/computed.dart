@@ -94,9 +94,9 @@ class _ComputedState<T>
       final newState = _compute();
       if (!const DeepCollectionEquality().equals(_state, newState)) {
         _state = newState;
-        markDidChange();
+        notifyChanged();
       } else {
-        markCancelChange();
+        cancelChangeNotification();
       }
     }
   }

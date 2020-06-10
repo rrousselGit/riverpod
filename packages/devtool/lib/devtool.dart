@@ -432,6 +432,7 @@ class DevtoolController extends StateNotifier<StateDetail>
   DevtoolController() : super(StateDetail(history: []));
 
   Map<ProviderBase, Object> _changes;
+  bool _updateBatchStarted = false;
 
   @override
   void didAddProvider(ProviderBase provider, Object value) {
@@ -469,22 +470,23 @@ class DevtoolController extends StateNotifier<StateDetail>
 
   @override
   void didUpdateProvider(ProviderBase provider, Object newValue) {
+    if (!_updateBatchStarted) {
+      _updateBatchStarted = true;
+      Future.microtask(() {
+        final newState = {...?state.currentState, ..._changes};
+        _changes = null;
+        state = StateDetail(
+          history: [
+            ...state.history,
+            StateSnapshot(
+              state: newState,
+              details: _parseProperties(newState).toList(),
+            ),
+          ],
+        );
+      });
+    }
     _changes ??= {};
     _changes[provider] = newValue;
-  }
-
-  @override
-  void onNotifyListenersDone() {
-    final newState = {...?state.currentState, ..._changes};
-    _changes = null;
-    state = StateDetail(
-      history: [
-        ...state.history,
-        StateSnapshot(
-          state: newState,
-          details: _parseProperties(newState).toList(),
-        ),
-      ],
-    );
   }
 }

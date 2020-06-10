@@ -124,14 +124,14 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   /// The raw unmodified provider before applying [ProviderOverride].
   ProviderBase<ProviderSubscriptionBase, Object> _origin;
 
+  int _notificationCount = 0;
+
   // Initialised to true to ignore calls to markNeedNotifyListeners inside initState
   var _dirty = true;
 
-  int _notificationCount = 0;
-
   /// Whether this provider was marked as needing to notify its listeners.
   ///
-  /// See also [markNeedsNotifyListeners].
+  /// See also [markMayHaveChanged].
   bool get dirty => _dirty;
 
   var _mounted = true;
@@ -144,7 +144,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   /// The value currently exposed.
   ///
   /// All modifications to this property should induce a call to [markMayHaveChanged]
-  /// followed by [markDidChange].
+  /// followed by [notifyChanged].
   @protected
   Result get state;
 
@@ -216,7 +216,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
 
   /// Life-cycle for when [provider] was replaced with a new one.
   ///
-  /// This typically happen on [ProviderStateOwner.update] call with new
+  /// This typically happen on [ProviderStateOwner.debugUpdate] call with new
   /// overrides.
   @mustCallSuper
   @protected
@@ -321,12 +321,12 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   @visibleForOverriding
   void flush() {
     if (_dirty) {
-      markDidChange();
+      notifyChanged();
     }
   }
 
-  void markDidChange() {
-    assert(_dirty, 'must call markMayHaveChanged before markDidChange');
+  void notifyChanged() {
+    assert(_dirty, 'must call markMayHaveChanged before notifyChanged');
     if (!_mounted) {
       throw StateError(
         'Cannot notify listeners of a provider after if was dispose',
@@ -337,8 +337,8 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
     _owner._reportChanged(_origin, state);
   }
 
-  void markCancelChange() {
-    assert(_dirty, 'must call markCancelChange before markDidChange');
+  void cancelChangeNotification() {
+    assert(_dirty, 'must call cancelChangeNotification before notifyChanged');
     _dirty = false;
   }
 

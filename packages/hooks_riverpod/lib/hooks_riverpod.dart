@@ -23,7 +23,6 @@ class _BaseProviderHook<T> extends Hook<T> {
 class _BaseProviderHookState<T> extends HookState<T, _BaseProviderHook<T>> {
   T _state;
   LazySubscription _link;
-  bool _shouldRebuild = false;
 
   @override
   void initHook() {
@@ -36,20 +35,13 @@ class _BaseProviderHookState<T> extends HookState<T, _BaseProviderHook<T>> {
     _link = hook._provider.addLazyListener(
       hook._owner,
       mayHaveChanged: markMayNeedRebuild,
-      onChange: (newState) {
-        _shouldRebuild = true;
-        _state = newState;
-      },
+      onChange: (newState) => _state = newState,
     );
   }
 
   @override
   bool shouldRebuild() {
-    _link.flush();
-    if (_shouldRebuild) {
-      _shouldRebuild = false;
-      return true;
-    }
+    return _link.flush();
   }
 
   @override

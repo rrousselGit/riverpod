@@ -280,7 +280,7 @@ void main() {
     final owner = ProviderStateOwner()..dispose();
 
     expect(owner.dispose, throwsStateError);
-    expect(owner.debugUpdate, throwsStateError);
+    expect(() => owner.debugUpdate([]), throwsStateError);
     expect(() => owner.ref, throwsStateError);
     expect(() => owner.readProviderState(Provider((_) => 0)), throwsStateError);
   });
@@ -341,8 +341,8 @@ void main() {
     expect(ref.dependOn(provider).value, 42);
     expect(ref2.dependOn(provider).value, 21);
 
-    owner.debugUpdate(overrides: []);
-    owner2.debugUpdate(overrides: [
+    owner.debugUpdate([]);
+    owner2.debugUpdate([
       provider.overrideAs(
         Provider((_) => 21),
       ),
@@ -417,7 +417,7 @@ void main() {
 
     expect(callCount, 0);
 
-    owner.debugUpdate(overrides: [provider]);
+    owner.debugUpdate([provider]);
 
     expect(callCount, 0);
 
@@ -552,7 +552,7 @@ void main() {
     verifyZeroInteractions(provider1.onDidUpdateProvider);
     verifyZeroInteractions(provider2.onDidUpdateProvider);
 
-    owner.debugUpdate(overrides: [
+    owner.debugUpdate([
       provider,
       provider1,
       provider2,
@@ -809,7 +809,7 @@ void main() {
       verify(listener(const AsyncValue.loading())).called(1);
       verifyNoMoreInteractions(listener);
 
-      owner.debugUpdate(overrides: [
+      owner.debugUpdate([
         futureProvider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
 

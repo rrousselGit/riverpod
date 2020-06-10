@@ -165,7 +165,7 @@ void main() {
       verifyNoMoreInteractions(listener);
       await expectLater(stream, emits(42));
 
-      owner.debugUpdate(overrides: [
+      owner.debugUpdate([
         provider.debugOverrideWithValue(const AsyncValue.data(21)),
       ]);
 
@@ -192,7 +192,7 @@ void main() {
       verifyNoMoreInteractions(listener);
       await expectLater(stream, emits(42));
 
-      owner.debugUpdate(overrides: [
+      owner.debugUpdate([
         provider.debugOverrideWithValue(AsyncValue.error(21)),
       ]);
 
@@ -221,7 +221,7 @@ void main() {
 
       Object error;
       runZonedGuarded(
-        () => owner.debugUpdate(overrides: [
+        () => owner.debugUpdate([
           provider.debugOverrideWithValue(const AsyncValue.loading()),
         ]),
         (err, _) => error = err,
@@ -248,7 +248,7 @@ void main() {
       verify(listener(const AsyncValue.loading())).called(1);
       verifyNoMoreInteractions(listener);
 
-      owner.debugUpdate(overrides: [
+      owner.debugUpdate([
         provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
 
@@ -276,7 +276,7 @@ void main() {
 
       final stackTrace = StackTrace.current;
 
-      owner.debugUpdate(overrides: [
+      owner.debugUpdate([
         provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
 
@@ -303,13 +303,13 @@ void main() {
       verify(listener(const AsyncValue.loading())).called(1);
       verifyNoMoreInteractions(listener);
 
-      owner.debugUpdate(overrides: [
+      owner.debugUpdate([
         provider.debugOverrideWithValue(const AsyncValue.loading()),
       ]);
 
       verifyNoMoreInteractions(listener);
 
-      owner.debugUpdate(overrides: [
+      owner.debugUpdate([
         provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
 
@@ -338,7 +338,7 @@ void main() {
       verifyNoMoreInteractions(listener);
       await expectLater(stream, emitsError(42));
 
-      owner.debugUpdate(overrides: [
+      owner.debugUpdate([
         provider.debugOverrideWithValue(AsyncValue.error(21, stackTrace)),
       ]);
 
@@ -367,7 +367,7 @@ void main() {
       await expectLater(stream, emitsError(42));
 
       final stackTrace2 = StackTrace.current;
-      owner.debugUpdate(overrides: [
+      owner.debugUpdate([
         provider.debugOverrideWithValue(
           AsyncValue.error(42, stackTrace2),
         ),
@@ -397,7 +397,7 @@ void main() {
       verifyNoMoreInteractions(listener);
       await expectLater(stream, emitsError(42));
 
-      owner.debugUpdate(overrides: [
+      owner.debugUpdate([
         provider.debugOverrideWithValue(const AsyncValue.data(21)),
       ]);
 
@@ -427,7 +427,7 @@ void main() {
 
       Object error;
       runZonedGuarded(
-        () => owner.debugUpdate(overrides: [
+        () => owner.debugUpdate([
           provider.debugOverrideWithValue(const AsyncValue.loading()),
         ]),
         (err, _) => error = err,

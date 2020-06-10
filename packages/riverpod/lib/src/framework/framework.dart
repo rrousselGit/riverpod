@@ -112,7 +112,7 @@ void _runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
 @visibleForTesting
 ProviderStateBase notifyListenersLock;
 
-/// A flag for checking against invalid operations inside [ProviderStateBase.notifyListeners].
+/// A flag for checking against invalid operations inside [ProviderStateBase.markMayHaveChanged].
 ///
 /// This prevents modifying providers that already notified their listener in
 /// the current frame.
@@ -147,16 +147,8 @@ final _refProvider = Provider((c) => c);
 /// By using [ProviderStateOwner], it is possible to override the behavior
 /// of a provider, by specifying `overrides`.
 ///
-/// If the state of a provider update, notifications are not emitted synchronously.
-/// Instead, `markNeedsUpdate` is called (at most once until updates are emitted).
-/// Then, to dispatch the notifications, you have to call [update].
-///
-/// This allows modifying multiple providers at the same time, without
-/// pointlessly triggering too many notifications.
-///
 /// See also:
 /// - [Provider], for more informations on providers and their usage.
-/// - [update], which notify all provider listeners and allow changing overrides.
 class ProviderStateOwner {
   /// Creates a [ProviderStateOwner] and allows specifying provider overrides.
   ProviderStateOwner({
@@ -224,8 +216,6 @@ class ProviderStateOwner {
   /// in the deepest [ProviderStateOwner] possible.
   Map<Computed, _ProviderStateReader> _computedStateReaders;
 
-  // TODO: should _redepth be optimized for this use-case? As `ref` can safely always
-  // be the last provider in the list of providers per depth
   /// An utility to easily obtain a [ProviderReference] from a [ProviderStateOwner].
   ///
   /// This is equivalent to:
@@ -249,11 +239,10 @@ class ProviderStateOwner {
   /// - A provider that depends on all the other providers of the application
   ///   will notify its listeners last.
   ///
-  ///
   /// Updating the list of overrides is possible, but [overrides] cannot
   /// remove or add new overrides.
   /// What this means is, if [ProviderStateOwner] was created with 3 overrides,
-  /// calls to [update] that tries to change the list of overrides must override
+  /// calls to [debugUpdate] that tries to change the list of overrides must override
   /// these 3 exact providers again.
   ///
   /// As an example, consider:
@@ -273,32 +262,32 @@ class ProviderStateOwner {
   /// Then we can call update with different overrides:
   ///
   /// ```dart
-  /// owner.update(overrides: [
+  /// owner.debugUpdate(overrides: [
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
   ///   provider2.overrideAs(Provider((_) => 'London')),
   /// ]);
   /// ```
   ///
-  /// But we cannot call [update] with different overrides:
+  /// But we cannot call [debugUpdate] with different overrides:
   ///
   /// ```dart
   /// // Invalid, provider2 was overiden before but is not anymore
-  /// owner.update(overrides: [
+  /// owner.debugUpdate(overrides: [
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
   /// ]);
   ///
   /// // Invalid, provider3 was not overriden before, but now is
-  /// owner.update(overrides: [
+  /// owner.debugUpdate(overrides: [
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
   ///   provider2.overrideAs(Provider((_) => 'London')),
   ///   provider3.overrideAs(...),
   /// ]);
   /// ```
-  void debugUpdate({List<ProviderOverride> overrides}) {
+  void debugUpdate(List<ProviderOverride> overrides) {
     assert(() {
       if (_disposed) {
         throw StateError(
-          'Called update on a ProviderStateOwner that was already disposed',
+          'Called debugUpdate on a ProviderStateOwner that was already disposed',
         );
       }
       if (overrides != null && _overrides != overrides) {
@@ -355,7 +344,7 @@ Changing the kind of override or reordering overrides is not supported.
     }(), '');
   }
 
-  /// Used by [ProviderStateBase.notifyListeners] to let [ProviderStateOwner]
+  /// Used by [ProviderStateBase.notifyChanged] to let [ProviderStateOwner]
   /// know that a provider _truly_ changed.
   ///
   /// This is then used to notify [ProviderStateOwnerObserver]s of the changes.

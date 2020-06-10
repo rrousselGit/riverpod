@@ -35,6 +35,7 @@ class _ConsumerState<T> extends State<Consumer<T>> {
     if (_owner != owner) {
       _owner = owner;
       _removeListener?.call();
+      // TODO use lazy listener
       _removeListener = widget._provider.watchOwner(owner, (value) {
         setState(() => _value = value);
       });

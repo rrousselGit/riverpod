@@ -103,7 +103,7 @@ class _ProviderScopeState extends State<ProviderScope> {
       }
       if (_dirty) {
         _dirty = false;
-        _owner.debugUpdate(overrides: widget.overrides);
+        _owner.debugUpdate(widget.overrides);
       }
       return true;
     }(), '');
@@ -120,7 +120,7 @@ class _ProviderScopeState extends State<ProviderScope> {
   }
 }
 
-class ProviderStateOwnerScope extends InheritedModel<ProviderBase> {
+class ProviderStateOwnerScope extends InheritedWidget {
   const ProviderStateOwnerScope({
     Key key,
     @required this.owner,
@@ -152,12 +152,5 @@ class ProviderStateOwnerScope extends InheritedModel<ProviderBase> {
   @override
   bool updateShouldNotify(ProviderStateOwnerScope oldWidget) {
     return owner != oldWidget.owner;
-  }
-
-  @override
-  bool updateShouldNotifyDependent(
-      InheritedModel<ProviderBase<ProviderSubscriptionBase, Object>> oldWidget,
-      Set<ProviderBase<ProviderSubscriptionBase, Object>> dependencies) {
-    return true;
   }
 }
