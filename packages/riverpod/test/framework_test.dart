@@ -7,21 +7,18 @@ import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 
-Matcher isProvider(ProviderBase provider, {int depth}) {
+Matcher isProvider(ProviderBase provider) {
   final res = isA<ProviderStateBase>().having(
     (s) => s.provider,
     'provider',
     provider,
   );
-
-  if (depth != null) {
-    return res.having((s) => s.depth, 'depth', depth);
-  }
   return res;
 }
 
 void main() {
   // TODO: throw if tried to dispose a parent owner that still have undisposed children owners
+  // TODO reading unflushed triggers flush
   test('remove dependency when owner is disposed', () {
     final provider = Provider((_) {});
     final provider2 = Provider((ref) => ref.dependOn(provider));
@@ -34,17 +31,17 @@ void main() {
     provider.readOwner(owner);
     provider2.readOwner(owner);
 
-    expect(root.debugProviderStateSortedByDepth, [isProvider(provider)]);
-    final state = root.debugProviderStateSortedByDepth.first;
-    expect(owner.debugProviderStateSortedByDepth, [isProvider(provider2)]);
-    final state2 = owner.debugProviderStateSortedByDepth.first;
+    expect(root.debugProviderStates, [isProvider(provider)]);
+    final state = root.debugProviderStates.first;
+    expect(owner.debugProviderStates, [isProvider(provider2)]);
+    final state2 = owner.debugProviderStates.first;
 
     expect(state.debugDependents, {state2});
 
     owner.dispose();
 
     expect(state.debugDependents, <ProviderStateBase>{});
-  }, skip: true);
+  });
 
   test('depth is recursive cross ower', () {
     final provider = Provider((ref) => ref, name: '1');
@@ -57,7 +54,7 @@ void main() {
       overrides: [provider3, provider4],
     );
 
-    expect(owner.debugProviderStateSortedByDepth, <Object>[]);
+    expect(owner.debugProviderStates, <Object>[]);
 
     provider.readOwner(owner);
     final ref2 = provider2.readOwner(owner);
@@ -65,17 +62,17 @@ void main() {
     final ref4 = provider4.readOwner(owner);
 
     expect(
-      root.debugProviderStateSortedByDepth,
+      root.debugProviderStates,
       unorderedMatches(<Object>[
-        isProvider(provider2, depth: 0),
-        isProvider(provider, depth: 0),
+        isProvider(provider2),
+        isProvider(provider),
       ]),
     );
     expect(
-      owner.debugProviderStateSortedByDepth,
+      owner.debugProviderStates,
       unorderedMatches(<Object>[
-        isProvider(provider4, depth: 0),
-        isProvider(provider3, depth: 0),
+        isProvider(provider4),
+        isProvider(provider3),
       ]),
     );
 
@@ -83,31 +80,31 @@ void main() {
     ref4.dependOn(provider2);
 
     expect(
-      root.debugProviderStateSortedByDepth,
+      root.debugProviderStates,
       unorderedMatches(<Object>[
-        isProvider(provider2, depth: 0),
-        isProvider(provider, depth: 0),
+        isProvider(provider2),
+        isProvider(provider),
       ]),
     );
     expect(
-      owner.debugProviderStateSortedByDepth,
+      owner.debugProviderStates,
       unorderedMatches(<Object>[
-        isProvider(provider4, depth: 1),
-        isProvider(provider3, depth: 1),
+        isProvider(provider4),
+        isProvider(provider3),
       ]),
     );
 
     ref2.dependOn(provider);
 
-    expect(root.debugProviderStateSortedByDepth, <Object>[
-      isProvider(provider, depth: 0),
-      isProvider(provider2, depth: 1),
+    expect(root.debugProviderStates, <Object>[
+      isProvider(provider),
+      isProvider(provider2),
     ]);
     expect(
-      owner.debugProviderStateSortedByDepth,
+      owner.debugProviderStates,
       unorderedMatches(<Object>[
-        isProvider(provider4, depth: 2),
-        isProvider(provider3, depth: 2),
+        isProvider(provider4),
+        isProvider(provider3),
       ]),
     );
   });
@@ -118,7 +115,7 @@ void main() {
     final provider3 = Provider((ref) => ref, name: '3');
     final provider4 = Provider((ref) => ref, name: '4');
 
-    expect(owner.debugProviderStateSortedByDepth, <Object>[]);
+    expect(owner.debugProviderStates, <Object>[]);
 
     provider.readOwner(owner);
     final ref2 = provider2.readOwner(owner);
@@ -126,40 +123,43 @@ void main() {
     final ref4 = provider4.readOwner(owner);
 
     expect(
-      owner.debugProviderStateSortedByDepth,
+      owner.debugProviderStates,
       unorderedMatches(<Object>[
-        isProvider(provider4, depth: 0),
-        isProvider(provider3, depth: 0),
-        isProvider(provider2, depth: 0),
-        isProvider(provider, depth: 0),
+        isProvider(provider4),
+        isProvider(provider3),
+        isProvider(provider2),
+        isProvider(provider),
       ]),
     );
 
     ref4.dependOn(provider3);
 
-    expect(owner.debugProviderStateSortedByDepth, <Object>[
-      isProvider(provider3, depth: 0),
-      isProvider(provider2, depth: 0),
-      isProvider(provider, depth: 0),
-      isProvider(provider4, depth: 1),
-    ]);
+    expect(
+      owner.debugProviderStates,
+      containsAllInOrder(<Object>[
+        isProvider(provider3),
+        isProvider(provider4),
+      ]),
+    );
 
     ref3.dependOn(provider2);
 
-    expect(owner.debugProviderStateSortedByDepth, <Object>[
-      isProvider(provider2, depth: 0),
-      isProvider(provider, depth: 0),
-      isProvider(provider3, depth: 1),
-      isProvider(provider4, depth: 2),
-    ]);
+    expect(
+      owner.debugProviderStates,
+      containsAllInOrder(<Object>[
+        isProvider(provider2),
+        isProvider(provider3),
+        isProvider(provider4),
+      ]),
+    );
 
     ref2.dependOn(provider);
 
-    expect(owner.debugProviderStateSortedByDepth, <Object>[
-      isProvider(provider, depth: 0),
-      isProvider(provider2, depth: 1),
-      isProvider(provider3, depth: 2),
-      isProvider(provider4, depth: 3),
+    expect(owner.debugProviderStates, <Object>[
+      isProvider(provider),
+      isProvider(provider2),
+      isProvider(provider3),
+      isProvider(provider4),
     ]);
   });
   test("can't call onDispose inside onDispose", () {
@@ -177,7 +177,7 @@ void main() {
     runZonedGuarded(owner.dispose, (err, _) => errors.add(err));
 
     expect(errors, [isStateError]);
-  }, skip: true);
+  });
   test("can't call dependOn inside onDispose", () {
     final provider2 = Provider((ref) => 0);
     final provider = Provider((ref) {
@@ -194,8 +194,8 @@ void main() {
     runZonedGuarded(owner.dispose, (err, _) => errors.add(err));
 
     expect(errors, [isStateError]);
-  }, skip: true);
-  test('owner.debugProviderStates', () {
+  });
+  test('owner.debugProviderValues', () {
     final unnamed = Provider((_) => 0);
     final counter = Counter();
     final named = StateNotifierProvider((_) {
@@ -203,24 +203,24 @@ void main() {
     }, name: 'named');
     final owner = ProviderStateOwner();
 
-    expect(owner.debugProviderStates, <ProviderBase, Object>{});
+    expect(owner.debugProviderValues, <ProviderBase, Object>{});
 
     expect(unnamed.readOwner(owner), 0);
 
-    expect(owner.debugProviderStates, {
+    expect(owner.debugProviderValues, {
       unnamed: 0,
     });
 
     expect(named.readOwner(owner), counter);
 
-    expect(owner.debugProviderStates, {
+    expect(owner.debugProviderValues, {
       unnamed: 0,
       named: counter,
     });
 
     expect(named.state.readOwner(owner), 0);
 
-    expect(owner.debugProviderStates, {
+    expect(owner.debugProviderValues, {
       unnamed: 0,
       named: counter,
       named.state: 0,
@@ -265,12 +265,15 @@ void main() {
     expect(provider3.readOwner(owner), '1');
 
     expect(
-      root.debugProviderStateSortedByDepth.map((s) => s.provider),
+      root.debugProviderStates.map((s) => s.provider),
       [provider1],
     );
     expect(
-      owner.debugProviderStateSortedByDepth.map((s) => s.provider),
-      [provider3, provider2],
+      owner.debugProviderStates.map((s) => s.provider),
+      anyOf([
+        [provider3, provider2],
+        [provider2, provider3],
+      ]),
     );
   });
   test('owner life-cycles are unusuable after dispose', () {
@@ -280,7 +283,7 @@ void main() {
     expect(owner.debugUpdate, throwsStateError);
     expect(() => owner.ref, throwsStateError);
     expect(() => owner.readProviderState(Provider((_) => 0)), throwsStateError);
-  }, skip: true);
+  });
   test('provider.overrideAs(provider) can be simplified into provider', () {
     final notifier = Counter();
     final provider = StateNotifierProvider<Counter>((_) => notifier);
@@ -293,7 +296,7 @@ void main() {
     owner.dispose();
 
     expect(notifier.mounted, false);
-  }, skip: true);
+  });
   test('cannot call markMayHaveChanged after dispose', () {
     final owner = ProviderStateOwner();
     final provider = TestProvider((ref) {});
@@ -318,7 +321,7 @@ void main() {
       () => providerBaseState.markMayHaveChanged(),
       throwsStateError,
     );
-  }, skip: true);
+  });
   test('owner.ref uses the override', () {
     final provider = Provider((_) => 42);
     final owner = ProviderStateOwner();
@@ -375,7 +378,7 @@ void main() {
     verify(provider.onValueDispose(value));
     verifyNoMoreInteractions(provider.onValueDispose);
     expect(didDispose, isFalse);
-  }, skip: true);
+  });
   test('Owner.dependOn', () {
     final provider = TestProvider((ref) => 0);
     final provider2 = TestProvider((ref) => 1);
@@ -401,7 +404,7 @@ void main() {
     verify(provider2.onValueDispose(value21));
     verifyNoMoreInteractions(provider.onValueDispose);
     verifyNoMoreInteractions(provider2.onValueDispose);
-  }, skip: true);
+  });
   test(
       "updating overrides / dispose don't compute provider states if not loaded yet",
       () {
@@ -421,7 +424,7 @@ void main() {
     owner.dispose();
 
     expect(callCount, 0);
-  }, skip: true);
+  });
   test('circular dependencies', () {
     Provider<int Function()> provider;
 
@@ -485,14 +488,14 @@ void main() {
     owner.dispose();
 
     verifyInOrder([
-      onDispose1(),
-      onDispose2(),
       onDispose3(),
+      onDispose2(),
+      onDispose1(),
     ]);
     verifyNoMoreInteractions(onDispose1);
     verifyNoMoreInteractions(onDispose2);
     verifyNoMoreInteractions(onDispose3);
-  }, skip: true);
+  });
 
   test('dispose providers in dependency order (late binding)', () {
     final owner = ProviderStateOwner();
@@ -520,14 +523,14 @@ void main() {
     owner.dispose();
 
     verifyInOrder([
-      onDispose1(),
-      onDispose2(),
       onDispose3(),
+      onDispose2(),
+      onDispose1(),
     ]);
     verifyNoMoreInteractions(onDispose1);
     verifyNoMoreInteractions(onDispose2);
     verifyNoMoreInteractions(onDispose3);
-  }, skip: true);
+  });
   test('update providers in dependency order', () {
     final provider = TestProvider((_) => 1);
     final provider1 = TestProvider((ref) {
@@ -563,7 +566,7 @@ void main() {
     verifyNoMoreInteractions(provider.onDidUpdateProvider);
     verifyNoMoreInteractions(provider1.onDidUpdateProvider);
     verifyNoMoreInteractions(provider2.onDidUpdateProvider);
-  }, skip: true);
+  });
   test('dependOn used on same provider multiple times returns same instance',
       () {
     final owner = ProviderStateOwner();
@@ -598,7 +601,7 @@ void main() {
     expect(ref.mounted, isFalse);
     expect(() => ref.onDispose(() {}), throwsStateError);
     expect(() => ref.dependOn(other), throwsStateError);
-  }, skip: true);
+  });
 
   test('if a provider threw on creation, subsequent reads throws too', () {
     var callCount = 0;
@@ -640,7 +643,7 @@ void main() {
     expect(callCount, 1);
 
     expect(() => reference.state = 42, throwsStateError);
-  }, skip: true);
+  });
   test('if a provider threw on creation, onDispose still works', () {
     var callCount = 0;
     final onDispose = OnDisposeMock();
@@ -672,7 +675,7 @@ void main() {
     ]);
     verifyNoMoreInteractions(onDispose);
     verifyNoMoreInteractions(onDispose2);
-  }, skip: true);
+  });
   group('notify listeners', () {
     test('calls onChange at most once per flush', () {
       final counter = Counter();
@@ -812,7 +815,7 @@ void main() {
 
       verify(listener(const AsyncValue.data(42))).called(1);
       verifyNoMoreInteractions(listener);
-    }, skip: true);
+    });
     test('on update`', () async {
       final owner = ProviderStateOwner();
       final counter = Counter();

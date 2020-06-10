@@ -31,7 +31,7 @@ void main() {
     owner.dispose();
 
     expect(notifier.mounted, isFalse);
-  }, skip: true);
+  });
 
   test('provider subscribe the callback is never', () async {
     final notifier = TestNotifier();

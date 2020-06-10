@@ -32,7 +32,19 @@ class LazySubscription<T> {
     );
     if (_providerState._notificationCount != _lastNotificationCount) {
       _lastNotificationCount = _providerState._notificationCount;
-      _onChange(_providerState.state);
+
+      try {
+        assert(() {
+          debugNotifyListenersDepthLock = _providerState._debugDepth;
+          return true;
+        }(), '');
+        _onChange(_providerState.state);
+      } finally {
+        assert(() {
+          debugNotifyListenersDepthLock = -1;
+          return true;
+        }(), '');
+      }
       return true;
     }
     return false;
@@ -99,10 +111,6 @@ abstract class ProviderBase<Subscription extends ProviderSubscriptionBase,
 @optionalTypeArgs
 abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
     Result extends Object, P extends ProviderBase<Subscription, Result>> {
-  ProviderStateBase() {
-    _stateEntryInSortedStateList = _LinkedListEntry(this);
-  }
-
   P _provider;
 
   /// The current [ProviderBase] associated with this state.
@@ -116,14 +124,6 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   /// The raw unmodified provider before applying [ProviderOverride].
   ProviderBase<ProviderSubscriptionBase, Object> _origin;
 
-  var _depth = 0;
-
-  /// How deep this provider is in the graph of providers.
-  ///
-  /// It starts at 0, and then calls to [ProviderReference.dependOn] will
-  /// increase [depth] to the [depth] of the consumed provider + 1.
-  int get depth => _depth;
-
   // Initialised to true to ignore calls to markNeedNotifyListeners inside initState
   var _dirty = true;
 
@@ -133,9 +133,6 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   ///
   /// See also [markNeedsNotifyListeners].
   bool get dirty => _dirty;
-
-  /// The location of this state in the internal graph of dependencies of [ProviderStateOwner].
-  _LinkedListEntry<ProviderStateBase> _stateEntryInSortedStateList;
 
   var _mounted = true;
 
@@ -201,6 +198,17 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   // TODO: factor [createSubscription]
   bool get $hasListeners => _mayHaveChangedListeners?.isNotEmpty ?? false;
 
+  int get _debugDepth {
+    int result;
+    assert(() {
+      final states =
+          _owner._visitStatesInReverseOrder().toList().reversed.toList();
+      result = states.indexOf(this);
+      return true;
+    }(), '');
+    return result;
+  }
+
   void initState();
 
   /// Creates the object returned by [ProviderReference.dependOn].
@@ -259,8 +267,6 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
           targetProviderValue.dispose();
         });
 
-        redepthAfter(targetProviderState);
-
         return targetProviderValue;
       }) as T;
     } finally {
@@ -270,59 +276,6 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
         }
         return true;
       }(), '');
-    }
-  }
-
-  /// Reposition this state in the [LinkedList] associated with [_stateEntryInSortedStateList].
-  ///
-  /// Since the list is sorted, the algorithm starts directly from [_stateEntryInSortedStateList]
-  /// and goes to the next item until it either reaches the end of the list or
-  /// an item that has a depth == to [from] + 1.
-  ///
-  /// This only supports increasing the depth, not decreasing it.
-  ///
-  /// It then proceeds to recursively redepth all the [ProviderStateBase] that
-  /// depends on this state.
-  ///
-  /// Worse case scenario, this is O(N), even on a complex tree.
-  void redepthAfter(ProviderStateBase from) {
-    final newDepth = max(_depth, from._depth + 1);
-    // The location of the provider in the graph of dependencies did not change
-    if (newDepth == _depth) {
-      return;
-    }
-    _depth = newDepth;
-
-    /// Where to start the search on where to relocate the [_stateEntryInSortedStateList].
-    /// Since this is a sorted linked list, we can start directly from
-    /// [from._stateEntryInSortedStateList] instead of [_stateEntryInSortedStateList],
-    /// as we will always insert the entry after [from].
-    /// This optimisation is only possible if [from] is from the same [ProviderStateOwner]
-    /// as otherwise its [_stateEntryInSortedStateList] will point to a different list.
-    _LinkedListEntry<ProviderStateBase> entry;
-    if (from._owner == _owner) {
-      /// unlink before reading [next] so that [next] doesn't point to [_stateEntryInSortedStateList].
-      _stateEntryInSortedStateList.unlink();
-      entry = from._stateEntryInSortedStateList.next;
-    } else {
-      entry = _stateEntryInSortedStateList.next;
-      _stateEntryInSortedStateList.unlink();
-    }
-
-    /// Searching for a [ProviderBaseState] in the dependency graph that has a
-    /// [depth] >= the new [depth] of this state.
-    for (; entry != null && _depth > entry.value._depth; entry = entry.next) {}
-
-    if (entry != null) {
-      entry.insertBefore(_stateEntryInSortedStateList);
-    } else {
-      // No matching ProviderBaseState found, so we add this state at the very end
-      // of the list of dependencies.
-      _owner._providerStatesSortedByDepth.add(_stateEntryInSortedStateList);
-    }
-
-    for (final dep in _dependents) {
-      dep.redepthAfter(this);
     }
   }
 
@@ -341,7 +294,18 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
     @required void Function() mayHaveChanged,
     @required void Function(Result value) onChange,
   }) {
-    onChange(state);
+    try {
+      assert(() {
+        debugNotifyListenersDepthLock = _debugDepth;
+        return true;
+      }(), '');
+      onChange(state);
+    } finally {
+      assert(() {
+        debugNotifyListenersDepthLock = -1;
+        return true;
+      }(), '');
+    }
 
     _mayHaveChangedListeners ??= LinkedList();
     final mayHaveChangedEntry = _LinkedListEntry(mayHaveChanged);
@@ -379,6 +343,20 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   }
 
   void markMayHaveChanged() {
+    if (notifyListenersLock != null && notifyListenersLock != this) {
+      throw StateError(
+        'Cannot mark providers as dirty while initializing/disposing another provider',
+      );
+    }
+    assert(
+      debugNotifyListenersDepthLock < _debugDepth,
+      'Cannot mark `$provider` as dirty from `$debugNotifyListenersDepthLock` as the latter depends on it.',
+    );
+    if (_error != null) {
+      throw StateError(
+        'Cannot trigger updates on a provider that threw during creation',
+      );
+    }
     if (!_mounted) {
       throw StateError(
         'Cannot notify listeners of a provider after if was dispose',
@@ -415,7 +393,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
 
   @override
   String toString() {
-    return 'ProviderState<$Result>(depth: $depth)';
+    return 'ProviderState<$Result>(provider: $provider)';
   }
 }
 

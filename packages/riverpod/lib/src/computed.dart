@@ -107,9 +107,11 @@ class _ComputedState<T>
       return true;
     }(), '');
     try {
+      notifyListenersLock = this;
       // TODO what if there's an exception inside selector?
       return provider._selector(_reader);
     } finally {
+      notifyListenersLock = null;
       assert(() {
         _debugSelecting = false;
         return true;
@@ -124,7 +126,6 @@ class _ComputedState<T>
     );
     return _dependencies.putIfAbsent(target, () {
       final state = owner.readProviderState(target);
-      redepthAfter(state);
 
       final dep = _Dependency();
       dep.subscription = state.addLazyListener(

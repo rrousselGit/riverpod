@@ -55,7 +55,7 @@ void main() {
     verifyNoMoreInteractions(listener);
 
     expect(
-      owner.debugProviderStateSortedByDepth.map((e) => e.provider),
+      owner.debugProviderStates.map((e) => e.provider),
       [provider, computed, provider2],
     );
   });
@@ -88,7 +88,6 @@ void main() {
 
     notifier.setState(42);
 
-    verify(mayHaveChanged()).called(1);
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(mayHaveChanged);
 
@@ -96,7 +95,7 @@ void main() {
 
     verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
-  }, skip: true);
+  });
   test('cannot call read outside of the Computed', () {
     final owner = ProviderStateOwner();
     final notifier = Notifier(0);
@@ -299,7 +298,6 @@ void main() {
     verify(mayHaveChanged()).called(1);
     verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
-
 
     sub.flush();
 

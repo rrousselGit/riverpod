@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:math';
 
 import 'package:meta/meta.dart';
 
@@ -49,13 +48,6 @@ class _ProviderStateReader {
     assert(
       _providerState._providerStateDependencies.isEmpty,
       'Cannot add dependencies before `initState`',
-    );
-    // Insert the new state in the beginning of the sorted by depth list,
-    // because the provider doesn't have any depth yet.
-    // The insertion must be done before initState so that dependOn calls
-    // inside initState works.
-    _owner._providerStatesSortedByDepth.addFirst(
-      _providerState._stateEntryInSortedStateList,
     );
 
     // An initState may be called inside another initState, so we can't reset
@@ -127,7 +119,7 @@ ProviderStateBase notifyListenersLock;
 ///
 /// Negative when nothing is locked.
 @visibleForTesting
-int notifyListenersDepthLock = -1;
+int debugNotifyListenersDepthLock = -1;
 
 /// An object that listens to the changes of a [ProviderStateOwner].
 ///
@@ -207,17 +199,6 @@ class ProviderStateOwner {
   /// Upating existing keys is possible.
   final _overrideForProvider = <ProviderBase, ProviderBase>{};
 
-  final _providerStates = LinkedList<_LinkedListEntry<ProviderStateBase>>();
-
-  /// The list of all provider states sorted by how deep they are in the graph
-  /// of dependencies.
-  ///
-  /// It exists for [update] and [dispose] to efficiently traverse all providers
-  /// in order of dependency with a O(N) complexity.
-  @deprecated
-  final _providerStatesSortedByDepth =
-      LinkedList<_LinkedListEntry<ProviderStateBase>>();
-
   /// The state of all providers. Reading a provider is O(1).
   Map<ProviderBase, _ProviderStateReader> _stateReaders;
 
@@ -242,7 +223,6 @@ class ProviderStateOwner {
   /// It is not stored inside [_stateReaders] as `Computed` are always
   /// in the deepest [ProviderStateOwner] possible.
   Map<Computed, _ProviderStateReader> _computedStateReaders;
-  var _updateScheduled = false;
 
   // TODO: should _redepth be optimized for this use-case? As `ref` can safely always
   // be the last provider in the list of providers per depth
@@ -405,17 +385,21 @@ Changing the kind of override or reordering overrides is not supported.
         'Tried to read a provider from a ProviderStateOwner that was already disposed',
       );
     }
+    ProviderStateBase<Subscription, ListeningValue,
+        ProviderBase<Subscription, ListeningValue>> result;
     if (provider is Computed) {
       _computedStateReaders ??= {};
-      return _computedStateReaders.putIfAbsent(provider as Computed, () {
+      result = _computedStateReaders.putIfAbsent(provider as Computed, () {
         return _ProviderStateReader(provider, this);
       }).read() as ProviderStateBase<Subscription, ListeningValue,
           ProviderBase<Subscription, ListeningValue>>;
     } else {
-      return (_stateReaders[provider]?.read() ?? _fallback(provider))
+      result = (_stateReaders[provider]?.read() ?? _fallback(provider))
           as ProviderStateBase<Subscription, ListeningValue,
               ProviderBase<Subscription, ListeningValue>>;
     }
+
+    return result..flush();
   }
 
   /// Release all the resources associated with this [ProviderStateOwner].
@@ -431,22 +415,58 @@ Changing the kind of override or reordering overrides is not supported.
     _disposed = true;
 
     assert(notifyListenersLock == null, '');
-    // TODO: reverse?
-    // for (final entry in _providerStatesSortedByDepth) {
-    //   notifyListenersLock = entry.value;
-    //   _runGuarded(entry.value.dispose);
-    //   notifyListenersLock = null;
-    // }
+
+    for (final state in _visitStatesInReverseOrder()) {
+      notifyListenersLock = state;
+      _runGuarded(state.dispose);
+      notifyListenersLock = null;
+    }
+  }
+
+  /// Visit all nodes of the graph at most once from nodes with no dependents to roots.
+  ///
+  /// This is fairly expensive, up to O(N^2)
+  Iterable<ProviderStateBase> _visitStatesInReverseOrder() sync* {
+    final visitedStates = <ProviderStateBase>{};
+    Iterable<ProviderStateBase> recurs(ProviderStateBase state) sync* {
+      if (state._owner != this || visitedStates.contains(state)) {
+        return;
+      }
+      visitedStates.add(state);
+
+      final dependents = [...state._dependents];
+
+      for (final dependent in dependents) {
+        yield* recurs(dependent);
+      }
+
+      yield state;
+    }
+
+    if (_computedStateReaders != null) {
+      for (final entry in _computedStateReaders.values) {
+        // TODO test _providerState null
+        if (entry._providerState != null) {
+          yield* recurs(entry._providerState);
+        }
+      }
+    }
+    for (final entry in _stateReaders.values) {
+      // TODO test _providerState null
+      if (entry._providerState != null) {
+        yield* recurs(entry._providerState);
+      }
+    }
   }
 }
 
 @visibleForTesting
 extension ProviderStateOwnerInternals on ProviderStateOwner {
   @visibleForTesting
-  List<ProviderStateBase> get debugProviderStateSortedByDepth {
+  List<ProviderStateBase> get debugProviderStates {
     List<ProviderStateBase> result;
     assert(() {
-      result = _providerStatesSortedByDepth.map((e) => e.value).toList();
+      result = _visitStatesInReverseOrder().toList().reversed.toList();
       return true;
     }(), '');
     return result;
@@ -461,7 +481,7 @@ extension ProviderStateOwnerInternals on ProviderStateOwner {
     return _readProviderState(provider);
   }
 
-  Map<ProviderBase, Object> get debugProviderStates {
+  Map<ProviderBase, Object> get debugProviderValues {
     Map<ProviderBase, Object> res;
     assert(() {
       res = {

@@ -40,7 +40,7 @@ class _ProviderScopeElement extends StatefulElement {
 
     // filling the state properties here instead of inside State
     // so that it is more readable in the devtool (one less indentation)
-    for (final entry in owner.debugProviderStates.entries) {
+    for (final entry in owner.debugProviderValues.entries) {
       final name = entry.key.name ?? describeIdentity(entry.key);
       properties.add(DiagnosticsProperty(name, entry.value));
     }

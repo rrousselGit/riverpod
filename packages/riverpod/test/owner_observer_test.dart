@@ -180,7 +180,7 @@ void main() {
     verifyNoMoreInteractions(isNegativeListener);
     verifyNoMoreInteractions(observer);
 
-   sub.flush();
+    sub.flush();
 
     verifyInOrder([
       observer.didUpdateProvider(provider.state, 1),
@@ -233,19 +233,19 @@ void main() {
 
     expect(errors, ['error1', 'error2', 'error1', 'error2']);
     verifyInOrder([
+      observer.didDisposeProvider(provider2),
+      observer2.didDisposeProvider(provider2),
+      observer3.didDisposeProvider(provider2),
       onDispose(),
       observer.didDisposeProvider(provider),
       observer2.didDisposeProvider(provider),
       observer3.didDisposeProvider(provider),
-      observer.didDisposeProvider(provider2),
-      observer2.didDisposeProvider(provider2),
-      observer3.didDisposeProvider(provider2),
     ]);
     verifyNoMoreInteractions(onDispose);
     verifyNoMoreInteractions(observer);
     verifyNoMoreInteractions(observer2);
     verifyNoMoreInteractions(observer3);
-  }, skip: true);
+  });
 }
 
 class OnDisposeMock extends Mock {
