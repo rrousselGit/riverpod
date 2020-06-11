@@ -25,18 +25,15 @@ class LazySubscription<T> {
     if (_providerState._notificationCount != _lastNotificationCount) {
       _lastNotificationCount = _providerState._notificationCount;
 
-      try {
-        assert(() {
-          debugNotifyListenersDepthLock = _providerState._debugDepth;
-          return true;
-        }(), '');
-        _onChange(_providerState.state);
-      } finally {
-        assert(() {
-          debugNotifyListenersDepthLock = -1;
-          return true;
-        }(), '');
-      }
+      assert(() {
+        debugNotifyListenersDepthLock = _providerState._debugDepth;
+        return true;
+      }(), '');
+      _runUnaryGuarded(_onChange, _providerState.state);
+      assert(() {
+        debugNotifyListenersDepthLock = -1;
+        return true;
+      }(), '');
       return true;
     }
     return false;
@@ -286,18 +283,15 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
     @required void Function() mayHaveChanged,
     @required void Function(Result value) onChange,
   }) {
-    try {
-      assert(() {
-        debugNotifyListenersDepthLock = _debugDepth;
-        return true;
-      }(), '');
-      onChange(state);
-    } finally {
-      assert(() {
-        debugNotifyListenersDepthLock = -1;
-        return true;
-      }(), '');
-    }
+    assert(() {
+      debugNotifyListenersDepthLock = _debugDepth;
+      return true;
+    }(), '');
+    _runUnaryGuarded(onChange, state);
+    assert(() {
+      debugNotifyListenersDepthLock = -1;
+      return true;
+    }(), '');
 
     _mayHaveChangedListeners ??= LinkedList();
     final mayHaveChangedEntry = _LinkedListEntry(mayHaveChanged);

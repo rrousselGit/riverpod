@@ -18,6 +18,48 @@ Matcher isProvider(ProviderBase provider) {
 
 void main() {
   // TODO: throw if tried to dispose a parent owner that still have undisposed children owners
+
+  test('guard listeners', () {
+    final notifier = Counter();
+    final provider = StateNotifierProvider((_) => notifier);
+    final owner = ProviderStateOwner();
+    final listener = ListenerMock();
+    final listener2 = ListenerMock();
+
+    final firstErrors = <Object>[];
+    runZonedGuarded(
+      () => provider.state.watchOwner(owner, (value) {
+        listener(value);
+        // ignore: only_throw_errors
+        throw value;
+      }),
+      (err, _) => firstErrors.add(err),
+    );
+
+    verify(listener(0)).called(1);
+    verifyNoMoreInteractions(listener);
+    expect(firstErrors, [0]);
+
+    provider.state.watchOwner(owner, listener2);
+
+    verify(listener2(0)).called(1);
+    verifyNoMoreInteractions(listener2);
+
+    final secondErrors = <Object>[];
+    runZonedGuarded(
+      notifier.increment,
+      (err, _) => secondErrors.add(err),
+    );
+
+    expect(secondErrors, [1]);
+    expect(firstErrors, [0]);
+    verifyInOrder([
+      listener(1),
+      listener2(1),
+    ]);
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(listener2);
+  });
   test('reading unflushed triggers flush', () {
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
