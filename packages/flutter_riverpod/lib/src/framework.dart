@@ -103,7 +103,7 @@ class _ProviderScopeState extends State<ProviderScope> {
       }
       if (_dirty) {
         _dirty = false;
-        _owner.debugUpdate(widget.overrides);
+        _owner.updateOverrides(widget.overrides);
       }
       return true;
     }(), '');

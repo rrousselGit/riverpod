@@ -19,6 +19,32 @@ Matcher isProvider(ProviderBase provider) {
 void main() {
   // TODO: throw if tried to dispose a parent owner that still have undisposed children owners
   // TODO reading unflushed triggers flush
+  test('flusing closed subscription is noop', () {
+    final notifier = Counter();
+    final provider = StateNotifierProvider((_) => notifier);
+    final owner = ProviderStateOwner();
+    final listener = ListenerMock();
+    final mayHaveChanged = MockMarkMayHaveChanged();
+
+    final sub = provider.state.addLazyListener(
+      owner,
+      mayHaveChanged: mayHaveChanged,
+      onChange: listener,
+    );
+
+    verify(listener(0)).called(1);
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(mayHaveChanged);
+
+    sub.close();
+    notifier.increment();
+    final didFlush = sub.flush();
+
+    expect(didFlush, isFalse);
+
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(listener);
+  });
   test('remove dependency when owner is disposed', () {
     final provider = Provider((_) {});
     final provider2 = Provider((ref) => ref.dependOn(provider));
@@ -280,7 +306,7 @@ void main() {
     final owner = ProviderStateOwner()..dispose();
 
     expect(owner.dispose, throwsStateError);
-    expect(() => owner.debugUpdate([]), throwsStateError);
+    expect(() => owner.updateOverrides([]), throwsStateError);
     expect(() => owner.ref, throwsStateError);
     expect(() => owner.readProviderState(Provider((_) => 0)), throwsStateError);
   });
@@ -341,8 +367,8 @@ void main() {
     expect(ref.dependOn(provider).value, 42);
     expect(ref2.dependOn(provider).value, 21);
 
-    owner.debugUpdate([]);
-    owner2.debugUpdate([
+    owner.updateOverrides([]);
+    owner2.updateOverrides([
       provider.overrideAs(
         Provider((_) => 21),
       ),
@@ -417,7 +443,7 @@ void main() {
 
     expect(callCount, 0);
 
-    owner.debugUpdate([provider]);
+    owner.updateOverrides([provider]);
 
     expect(callCount, 0);
 
@@ -552,7 +578,7 @@ void main() {
     verifyZeroInteractions(provider1.onDidUpdateProvider);
     verifyZeroInteractions(provider2.onDidUpdateProvider);
 
-    owner.debugUpdate([
+    owner.updateOverrides([
       provider,
       provider1,
       provider2,
@@ -809,7 +835,7 @@ void main() {
       verify(listener(const AsyncValue.loading())).called(1);
       verifyNoMoreInteractions(listener);
 
-      owner.debugUpdate([
+      owner.updateOverrides([
         futureProvider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
 

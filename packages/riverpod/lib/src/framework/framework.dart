@@ -155,7 +155,7 @@ class ProviderStateOwner {
     ProviderStateOwner parent,
     List<ProviderOverride> overrides = const [],
     List<ProviderStateOwnerObserver> observers,
-  })  : _overrides = overrides,
+  })  : _debugOverrides = overrides,
         _observers = observers {
     _fallback = parent?._fallback;
     _fallback ??= <T>(provider) {
@@ -208,7 +208,7 @@ class ProviderStateOwner {
   /// a [StateError] when attempting to use them.
   bool _disposed = false;
 
-  List<ProviderOverride> _overrides;
+  List<ProviderOverride> _debugOverrides;
 
   /// The state of `Computed` providers
   ///
@@ -242,7 +242,7 @@ class ProviderStateOwner {
   /// Updating the list of overrides is possible, but [overrides] cannot
   /// remove or add new overrides.
   /// What this means is, if [ProviderStateOwner] was created with 3 overrides,
-  /// calls to [debugUpdate] that tries to change the list of overrides must override
+  /// calls to [updateOverrides] that tries to change the list of overrides must override
   /// these 3 exact providers again.
   ///
   /// As an example, consider:
@@ -262,43 +262,43 @@ class ProviderStateOwner {
   /// Then we can call update with different overrides:
   ///
   /// ```dart
-  /// owner.debugUpdate(overrides: [
+  /// owner.updateOverrides(overrides: [
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
   ///   provider2.overrideAs(Provider((_) => 'London')),
   /// ]);
   /// ```
   ///
-  /// But we cannot call [debugUpdate] with different overrides:
+  /// But we cannot call [updateOverrides] with different overrides:
   ///
   /// ```dart
   /// // Invalid, provider2 was overiden before but is not anymore
-  /// owner.debugUpdate(overrides: [
+  /// owner.updateOverrides(overrides: [
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
   /// ]);
   ///
   /// // Invalid, provider3 was not overriden before, but now is
-  /// owner.debugUpdate(overrides: [
+  /// owner.updateOverrides(overrides: [
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
   ///   provider2.overrideAs(Provider((_) => 'London')),
   ///   provider3.overrideAs(...),
   /// ]);
   /// ```
-  void debugUpdate(List<ProviderOverride> overrides) {
+  void updateOverrides(List<ProviderOverride> overrides) {
     assert(() {
       if (_disposed) {
         throw StateError(
-          'Called debugUpdate on a ProviderStateOwner that was already disposed',
+          'Called updateOverrides on a ProviderStateOwner that was already disposed',
         );
       }
-      if (overrides != null && _overrides != overrides) {
-        if (overrides.length != _overrides.length) {
+      if (overrides != null && _debugOverrides != overrides) {
+        if (overrides.length != _debugOverrides.length) {
           throw UnsupportedError(
             'Adding or removing provider overrides is not supported',
           );
         }
 
         for (var i = 0; i < overrides.length; i++) {
-          final previous = _overrides[i];
+          final previous = _debugOverrides[i];
           final next = overrides[i];
 
           if (previous._provider.runtimeType != next._provider.runtimeType) {
@@ -314,34 +314,33 @@ Changing the kind of override or reordering overrides is not supported.
             );
           }
         }
-
-        _overrides = overrides;
-
-        // TODO should didUpdateProvider be debug only for perf?
-        for (final override in overrides) {
-          _overrideForProvider[override._origin] = override._provider;
-
-          assert(
-            override._origin is! Computed && override._provider is! Computed,
-            'Cannot override Computed',
-          );
-          // no need to check _computedStateReaders as they are not overridable.
-          // _stateReaders[override._origin] cannot be null for overriden providers.
-          final state = _stateReaders[override._origin]
-              // _providerState instead of read() to not compute the state
-              // if it wasn't loaded yet.
-              ._providerState;
-          if (state == null) {
-            continue;
-          }
-          final oldProvider = state._provider;
-          state._provider = override._provider;
-          _runUnaryGuarded(state.didUpdateProvider, oldProvider);
-        }
       }
+
+      _debugOverrides = overrides;
 
       return true;
     }(), '');
+
+    for (final override in overrides) {
+      _overrideForProvider[override._origin] = override._provider;
+
+      assert(
+        override._origin is! Computed && override._provider is! Computed,
+        'Cannot override Computed',
+      );
+      // no need to check _computedStateReaders as they are not overridable.
+      // _stateReaders[override._origin] cannot be null for overriden providers.
+      final state = _stateReaders[override._origin]
+          // _providerState instead of read() to not compute the state
+          // if it wasn't loaded yet.
+          ._providerState;
+      if (state == null) {
+        continue;
+      }
+      final oldProvider = state._provider;
+      state._provider = override._provider;
+      _runUnaryGuarded(state.didUpdateProvider, oldProvider);
+    }
   }
 
   /// Used by [ProviderStateBase.notifyChanged] to let [ProviderStateOwner]
@@ -434,14 +433,11 @@ Changing the kind of override or reordering overrides is not supported.
 
     if (_computedStateReaders != null) {
       for (final entry in _computedStateReaders.values) {
-        // TODO test _providerState null
-        if (entry._providerState != null) {
-          yield* recurs(entry._providerState);
-        }
+        // computed states can never be null as they cannot be overriden
+        yield* recurs(entry._providerState);
       }
     }
     for (final entry in _stateReaders.values) {
-      // TODO test _providerState null
       if (entry._providerState != null) {
         yield* recurs(entry._providerState);
       }

@@ -1,12 +1,5 @@
 part of 'framework.dart';
 
-class ProviderSnapshot<T> {
-  ProviderSnapshot._(this.changed, this.value);
-
-  final bool changed;
-  final T value;
-}
-
 class LazySubscription<T> {
   LazySubscription._(
     this._providerState,
@@ -22,7 +15,6 @@ class LazySubscription<T> {
 
   bool flush() {
     if (_entry.list == null) {
-      // TODO test
       return false;
     }
     _providerState.flush();
@@ -216,7 +208,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
 
   /// Life-cycle for when [provider] was replaced with a new one.
   ///
-  /// This typically happen on [ProviderStateOwner.debugUpdate] call with new
+  /// This typically happen on [ProviderStateOwner.updateOverrides] call with new
   /// overrides.
   @mustCallSuper
   @protected
