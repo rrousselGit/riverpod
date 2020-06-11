@@ -6,7 +6,25 @@ import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
 void main() {
-  // TODO report change once even if there are multiple listeners
+  test('report change once even if there are multiple listeners', () {
+    final observer = ObserverMock();
+    final owner = ProviderStateOwner(observers: [observer]);
+    final notifier = Counter();
+    final provider = StateNotifierProvider((_) => notifier);
+
+    provider.state.watchOwner(owner, (value) {});
+    provider.state.watchOwner(owner, (value) {});
+
+    verify(observer.didAddProvider(provider, notifier));
+    verify(observer.didAddProvider(provider.state, 0));
+    verifyNoMoreInteractions(observer);
+
+    notifier.increment();
+
+    verify(observer.didUpdateProvider(provider.state, 1));
+
+    verifyNoMoreInteractions(observer);
+  });
   test('didAddProvider', () {
     final observer = ObserverMock();
     final observer2 = ObserverMock();
