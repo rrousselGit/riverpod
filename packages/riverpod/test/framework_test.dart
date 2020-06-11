@@ -18,7 +18,53 @@ Matcher isProvider(ProviderBase provider) {
 
 void main() {
   // TODO: throw if tried to dispose a parent owner that still have undisposed children owners
-  // TODO reading unflushed triggers flush
+  test('reading unflushed triggers flush', () {
+    final notifier = Counter();
+    final provider = StateNotifierProvider((_) => notifier);
+    final owner = ProviderStateOwner();
+    final listener = ListenerMock();
+    final listener2 = ListenerMock();
+    var callCount = 0;
+    final computed = Computed((read) {
+      callCount++;
+      return read(provider.state);
+    });
+
+    final sub = computed.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: listener,
+    );
+
+    verify(listener(0)).called(1);
+    verifyNoMoreInteractions(listener);
+    expect(callCount, 1);
+
+    notifier.increment();
+
+    verifyNoMoreInteractions(listener);
+
+    final sub2 = computed.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: listener2,
+    );
+
+    expect(callCount, 2);
+    verifyNoMoreInteractions(listener);
+    verify(listener2(1)).called(1);
+    verifyNoMoreInteractions(listener2);
+
+    expect(sub.flush(), true);
+
+    verify(listener(1)).called(1);
+    verifyNoMoreInteractions(listener);
+    expect(callCount, 2);
+
+    expect(sub2.flush(), isFalse);
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(listener2);
+  });
   test('flusing closed subscription is noop', () {
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
