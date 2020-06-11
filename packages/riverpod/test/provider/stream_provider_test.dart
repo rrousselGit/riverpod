@@ -149,6 +149,152 @@ void main() {
     owner.dispose();
   });
 
+  group('currentData', () {
+    group('StreamProvider', () {
+      test('read currentValue before first value', () async {
+        final owner = ProviderStateOwner();
+        final controller = StreamController<int>(sync: true);
+        final provider = StreamProvider<int>((_) => controller.stream);
+
+        final def = owner.ref.dependOn(provider);
+        final future = def.currentData;
+        final future2 = def.currentData;
+        controller.add(42);
+
+        await expectLater(future, completion(42));
+        await expectLater(future2, completion(42));
+
+        await controller.close();
+      });
+      test('read currentValue before after value', () async {
+        final owner = ProviderStateOwner();
+        final controller = StreamController<int>(sync: true);
+        final provider = StreamProvider<int>((_) => controller.stream);
+
+        final def = owner.ref.dependOn(provider);
+        controller.add(42);
+        final future = def.currentData;
+        final future2 = def.currentData;
+
+        await expectLater(future, completion(42));
+        await expectLater(future2, completion(42));
+
+        await controller.close();
+      });
+      test('read currentValue before first error', () async {
+        final owner = ProviderStateOwner();
+        final controller = StreamController<int>(sync: true);
+        final provider = StreamProvider<int>((_) => controller.stream);
+
+        final def = owner.ref.dependOn(provider);
+        final future = def.currentData;
+        final future2 = def.currentData;
+        controller.addError(42);
+
+        await expectLater(future, throwsA(42));
+        await expectLater(future2, throwsA(42));
+
+        await controller.close();
+      });
+      test('read currentValue before after error', () async {
+        final owner = ProviderStateOwner();
+        final controller = StreamController<int>(sync: true);
+        final provider = StreamProvider<int>((_) => controller.stream);
+
+        final def = owner.ref.dependOn(provider);
+        controller.addError(42);
+        final future = def.currentData;
+        final future2 = def.currentData;
+
+        await expectLater(future, throwsA(42));
+        await expectLater(future2, throwsA(42));
+
+        await controller.close();
+      });
+    });
+    group('ValueStreamProvider', () {
+      test('read currentValue before first value', () async {
+        final provider = StreamProvider<int>((_) async* {});
+        final owner = ProviderStateOwner(overrides: [
+          provider.debugOverrideWithValue(const AsyncValue.loading()),
+        ]);
+
+        final def = owner.ref.dependOn(provider);
+        final future = def.currentData;
+        final future2 = def.currentData;
+
+        owner.updateOverrides([
+          provider.debugOverrideWithValue(const AsyncValue.data(42)),
+        ]);
+
+        await expectLater(future, completion(42));
+        await expectLater(future2, completion(42));
+      });
+      test('read currentValue before after value', () async {
+        final provider = StreamProvider<int>((_) async* {});
+        final owner = ProviderStateOwner(overrides: [
+          provider.debugOverrideWithValue(const AsyncValue.loading()),
+        ]);
+
+        final def = owner.ref.dependOn(provider);
+        owner.updateOverrides([
+          provider.debugOverrideWithValue(const AsyncValue.data(42)),
+        ]);
+        final future = def.currentData;
+        final future2 = def.currentData;
+
+        await expectLater(future, completion(42));
+        await expectLater(future2, completion(42));
+      });
+      test('read currentValue before first error', () async {
+        final provider = StreamProvider<int>((_) async* {});
+        final owner = ProviderStateOwner(overrides: [
+          provider.debugOverrideWithValue(const AsyncValue.loading()),
+        ]);
+
+        final def = owner.ref.dependOn(provider);
+        final future = def.currentData;
+        final future2 = def.currentData;
+        owner.updateOverrides([
+          provider.debugOverrideWithValue(AsyncValue.error(42)),
+        ]);
+
+        await expectLater(future, throwsA(42));
+        await expectLater(future2, throwsA(42));
+      });
+      test('read currentValue before after error', () async {
+        final provider = StreamProvider<int>((_) async* {});
+        final owner = ProviderStateOwner(overrides: [
+          provider.debugOverrideWithValue(const AsyncValue.loading()),
+        ]);
+
+        final def = owner.ref.dependOn(provider);
+        owner.updateOverrides([
+          provider.debugOverrideWithValue(AsyncValue.error(42)),
+        ]);
+
+        final future = def.currentData;
+        final future2 = def.currentData;
+
+        await expectLater(future, throwsA(42));
+        await expectLater(future2, throwsA(42));
+      });
+      test('synchronous first event', () async {
+        final provider = StreamProvider<int>((_) async* {});
+        final owner = ProviderStateOwner(overrides: [
+          provider.debugOverrideWithValue(const AsyncValue.data(42)),
+        ]);
+
+        final def = owner.ref.dependOn(provider);
+        final future = def.currentData;
+        final future2 = def.currentData;
+
+        await expectLater(future, completion(42));
+        await expectLater(future2, completion(42));
+      });
+    });
+  });
+
   group('mock as value', () {
     test('value immediatly then other value', () async {
       final provider = StreamProvider<int>((_) async* {});
