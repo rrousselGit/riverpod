@@ -18,7 +18,6 @@ Matcher isProvider(ProviderBase provider) {
 
 void main() {
   // TODO: throw if tried to dispose a parent owner that still have undisposed children owners
-
   test('guard listeners', () {
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);

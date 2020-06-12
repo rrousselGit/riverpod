@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 
 import '../common.dart';
@@ -11,8 +12,8 @@ import '../provider.dart';
 part 'base_provider.dart';
 
 // ignore: avoid_private_typedef_functions
-typedef _FallbackProviderStateReader = ProviderStateBase<
-        ProviderDependencyBase, T, ProviderBase<ProviderDependencyBase, T>>
+typedef _FallbackProviderStateReader = ProviderStateBase<ProviderDependencyBase,
+        T, ProviderBase<ProviderDependencyBase, T>>
     Function<T>(
   ProviderBase<ProviderDependencyBase, T>,
 );

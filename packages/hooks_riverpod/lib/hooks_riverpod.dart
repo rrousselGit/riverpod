@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 export 'package:flutter_riverpod/flutter_riverpod.dart';
 
-T useProvider<T>(ProviderBase<ProviderDependencyBase, T> provider) {
+T useProvider<T>(ProviderListenable<T> provider) {
   final owner = ProviderStateOwnerScope.of(useContext());
   return Hook.use(_BaseProviderHook<T>(owner, provider));
 }
@@ -14,7 +14,7 @@ class _BaseProviderHook<T> extends Hook<T> {
   const _BaseProviderHook(this._owner, this._provider);
 
   final ProviderStateOwner _owner;
-  final ProviderBase<ProviderDependencyBase, T> _provider;
+  final ProviderListenable<T> _provider;
 
   @override
   _BaseProviderHookState<T> createState() => _BaseProviderHookState();
@@ -40,26 +40,33 @@ class _BaseProviderHookState<T> extends HookState<T, _BaseProviderHook<T>> {
   }
 
   @override
-  bool shouldRebuild() {
-    return _link.flush();
-  }
+  bool shouldRebuild() => _link.flush();
 
   @override
   void didUpdateHook(_BaseProviderHook<T> oldHook) {
     super.didUpdateHook(oldHook);
-    if (oldHook._provider != hook._provider) {
-      FlutterError.reportError(
-        FlutterErrorDetails(
-          exception: UnsupportedError(
-            'Used `useMyProvider()` with a `useMyProvider` different than it was before',
-          ),
-          library: 'flutter_provider',
-          stack: StackTrace.current,
-        ),
-      );
-    }
+    assert(
+      oldHook._provider.runtimeType == hook._provider.runtimeType,
+      'The provider listened cannot change',
+    );
     if (oldHook._owner != hook._owner) {
       _listen();
+    } else {
+      final link = _link;
+      if (link is SelectorSubscription<Object, T>) {
+        // this will update _state
+        link.updateSelector(hook._provider);
+      } else if (oldHook._provider != hook._provider) {
+        FlutterError.reportError(
+          FlutterErrorDetails(
+            exception: UnsupportedError(
+              'Used `useMyProvider()` with a `useMyProvider` different than it was before',
+            ),
+            library: 'flutter_provider',
+            stack: StackTrace.current,
+          ),
+        );
+      }
     }
   }
 

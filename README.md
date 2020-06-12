@@ -144,7 +144,6 @@ and that the community likes it, [provider] will still be maintained.
 
 # Roadmap
 
-- revoke riverpod_ci
 - evaluate time complexity for all operations
 - evaluate space complexity
 - future/changenotifier/...providers cannot return null

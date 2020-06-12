@@ -1,7 +1,48 @@
 part of 'framework.dart';
 
-class ProviderSubscription<T> {
-  ProviderSubscription._(
+// ignore: one_member_abstracts
+abstract class ProviderListenable<T> {
+  ProviderSubscription addLazyListener(
+    ProviderStateOwner owner, {
+    @required void Function() mayHaveChanged,
+    @required void Function(T value) onChange,
+  });
+}
+
+class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
+  ProviderSelector._(
+    this._provider,
+    this._selector,
+  );
+
+  final ProviderBase<ProviderDependencyBase, Input> _provider;
+  final Output Function(Input) _selector;
+
+  @override
+  ProviderSubscription addLazyListener(
+    ProviderStateOwner owner, {
+    void Function() mayHaveChanged,
+    void Function(Output value) onChange,
+  }) {
+    final state = owner._readProviderState(_provider);
+    return SelectorSubscription._(
+      state,
+      _selector,
+      mayHaveChanged,
+      onChange,
+    );
+  }
+}
+
+abstract class ProviderSubscription {
+  ProviderSubscription._();
+
+  bool flush();
+  void close();
+}
+
+class _ProviderSubscription<T> implements ProviderSubscription {
+  _ProviderSubscription(
     this._providerState,
     this._onChange,
     this._entry,
@@ -13,6 +54,7 @@ class ProviderSubscription<T> {
   final void Function(T value) _onChange;
   final LinkedListEntry _entry;
 
+  @override
   bool flush() {
     if (_entry.list == null) {
       return false;
@@ -39,7 +81,61 @@ class ProviderSubscription<T> {
     return false;
   }
 
+  @override
   void close() => _entry.unlink();
+}
+
+class SelectorSubscription<Input, Output> implements ProviderSubscription {
+  SelectorSubscription._(
+    ProviderStateBase<ProviderDependencyBase, Input,
+            ProviderBase<ProviderDependencyBase, Input>>
+        providerState,
+    this._selector,
+    void Function() mayHaveChanged,
+    this._onOutputChange,
+  ) {
+    _providerSubscription = providerState.addLazyListener(
+      mayHaveChanged: mayHaveChanged,
+      onChange: _onInputChange,
+    );
+  }
+
+  ProviderSubscription _providerSubscription;
+
+  final void Function(Output value) _onOutputChange;
+  bool _isFirstInputOnChange = true;
+  Input _input;
+  Output _lastOutput;
+  Output Function(Input) _selector;
+
+  void updateSelector(ProviderListenable subscription) {
+    _selector = (subscription as ProviderSelector<Input, Output>)._selector;
+    _providerSubscription.flush();
+    _onOutputChange(_lastOutput = _selector(_input));
+  }
+
+  void _onInputChange(Input input) {
+    _input = input;
+    if (_isFirstInputOnChange) {
+      _isFirstInputOnChange = false;
+      _onOutputChange(_lastOutput = _selector(_input));
+    }
+  }
+
+  @override
+  bool flush() {
+    if (_providerSubscription.flush()) {
+      final newOutput = _selector(_input);
+      if (!const DeepCollectionEquality().equals(_lastOutput, newOutput)) {
+        _onOutputChange(_lastOutput = newOutput);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @override
+  void close() => _providerSubscription.close();
 }
 
 /// A base class for all providers.
@@ -48,7 +144,7 @@ class ProviderSubscription<T> {
 @immutable
 @optionalTypeArgs
 abstract class ProviderBase<Dependency extends ProviderDependencyBase,
-    Result extends Object> {
+    Result extends Object> implements ProviderListenable<Result> {
   /// Allows specifying a name.
   // ignore: prefer_const_constructors_in_immutables, the canonalisation of constants is unsafe for providers.
   ProviderBase(this.name);
@@ -64,7 +160,8 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
   /// - It can be used as a serialisable unique identifier for state serialisation/deserialisation.
   final String name;
 
-  ProviderSubscription<Result> addLazyListener(
+  @override
+  ProviderSubscription addLazyListener(
     ProviderStateOwner owner, {
     @required void Function() mayHaveChanged,
     @required void Function(Result value) onChange,
@@ -78,7 +175,7 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
     ProviderStateOwner owner,
     void Function(Result value) onChange,
   ) {
-    ProviderSubscription<Result> sub;
+    ProviderSubscription sub;
 
     sub = addLazyListener(
       owner,
@@ -87,6 +184,12 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
     );
 
     return sub.close;
+  }
+
+  ProviderListenable<Selected> select<Selected>(
+    Selected Function(Result value) selector,
+  ) {
+    return ProviderSelector._(this, selector);
   }
 
   @override
@@ -279,7 +382,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
     _onDisposeCallbacks.add(cb);
   }
 
-  ProviderSubscription<Result> addLazyListener({
+  ProviderSubscription addLazyListener({
     @required void Function() mayHaveChanged,
     @required void Function(Result value) onChange,
   }) {
@@ -297,7 +400,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
     final mayHaveChangedEntry = _LinkedListEntry(mayHaveChanged);
     _mayHaveChangedListeners.add(mayHaveChangedEntry);
 
-    return ProviderSubscription._(
+    return _ProviderSubscription(
       this,
       onChange,
       mayHaveChangedEntry,
@@ -399,17 +502,17 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
 /// Similarly, since these providers are never disposed, they can only be
 /// overriden by providers that too are never disposed.
 /// Otherwise methods like [readOwner] would have an unknown behavior.
-abstract class AlwaysAliveProvider<
-        Dependency extends ProviderDependencyBase, Result>
-    extends ProviderBase<Dependency, Result> implements ProviderOverride {
+abstract class AlwaysAliveProvider<Dependency extends ProviderDependencyBase,
+        Result> extends ProviderBase<Dependency, Result>
+    implements ProviderOverride {
   /// Creates an [AlwaysAliveProvider] and allows specifing a [name].
   AlwaysAliveProvider(String name) : super(name);
 
   @override
-  ProviderBase get _origin => this;
+  ProviderBase get _provider => this;
 
   @override
-  ProviderBase get _provider => this;
+  ProviderBase<Dependency, Result> get _origin => this;
 
   /// Reads a provider without listening to it and returns the currently
   /// exposed value.

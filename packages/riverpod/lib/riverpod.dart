@@ -10,13 +10,13 @@ export 'src/framework/framework.dart'
         ProviderOverride,
         ProviderReference,
         ProviderStateOwner,
-        ProviderStateOwnerObserver;
-export 'src/future_provider.dart'
-    show FutureProvider, FutureProviderDependency;
+        ProviderStateOwnerObserver,
+        ProviderListenable,
+        ProviderSubscription;
+export 'src/future_provider.dart' show FutureProvider, FutureProviderDependency;
 export 'src/provider.dart' show Provider, ProviderDependency;
 export 'src/set_state_provider.dart'
     show SetStateProvider, SetStateProviderReference;
 export 'src/state_notifier_provider.dart'
     show StateNotifierProvider, StateNotifierValueProviderX;
-export 'src/stream_provider.dart'
-    show StreamProvider, StreamProviderDependency;
+export 'src/stream_provider.dart' show StreamProvider, StreamProviderDependency;

@@ -15,7 +15,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks:
-    path: /Users/remiguest/dev/flutter_hooks
+    path: /Users/remirousselet/dev/flutter_hooks
   collection: ^1.14.12
 
 dev_dependencies:
