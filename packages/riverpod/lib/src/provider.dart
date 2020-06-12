@@ -1,11 +1,12 @@
 import 'common.dart';
 import 'framework/framework.dart';
 
-/// The subscription to a [Provider].
+/// The state to a [Provider].
 class ProviderDependency<T> extends ProviderDependencyBase {
   ProviderDependency._(this.value);
 
   /// The value exposed by [Provider].
+  ///
   /// It is guaranteed to never change.
   final T value;
 }

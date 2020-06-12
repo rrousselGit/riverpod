@@ -15,8 +15,6 @@ export 'src/framework/framework.dart'
         ProviderSubscription;
 export 'src/future_provider.dart' show FutureProvider, FutureProviderDependency;
 export 'src/provider.dart' show Provider, ProviderDependency;
-export 'src/set_state_provider.dart'
-    show SetStateProvider, SetStateProviderReference;
 export 'src/state_notifier_provider.dart'
     show StateNotifierProvider, StateNotifierStateProviderX;
 export 'src/stream_provider.dart' show StreamProvider, StreamProviderDependency;

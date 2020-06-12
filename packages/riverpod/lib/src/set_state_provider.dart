@@ -1,6 +1,8 @@
 import 'common.dart';
 import 'framework/framework.dart';
 
+// Implementation detail of StateNotifierProvider.
+
 class SetStateProviderReference<T> extends ProviderReference {
   SetStateProviderReference._(this._providerState) : super(_providerState);
 

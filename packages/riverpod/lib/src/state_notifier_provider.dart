@@ -4,6 +4,31 @@ import 'common.dart';
 import 'framework/framework.dart';
 import 'internals.dart';
 
+/// Creates a [StateNotifier] and expose its current state.
+///
+/// Listening to this provider will not cause widget to rebuild when [StateNotifier.state]
+/// changes.
+///
+/// Instead, listen to `StateNotifierProvider.state`:
+///
+/// ```dart
+/// class Counter extends StateNotifier<int> {
+///   Counter(): super(0);
+/// }
+///
+/// final counterProvider = StateNotifierProvider((_) => Counter());
+///
+/// // ...
+///
+/// @override
+/// Widget build(BuildContext) {
+///   // read the StateNotifier without rebuilding when state changes
+///   final Counter counter = useProvider(counterProvider);
+///
+///   // listen to the state of the StateNotifier
+///   final int count = useProvider(counterProvider.state);
+/// }
+/// ```
 // ignore: must_be_immutable, false positive, _state is immutable but lazy loaded.
 class StateNotifierProvider<Notifier extends StateNotifier<Object>>
     extends Provider<Notifier> {
@@ -24,7 +49,8 @@ class StateNotifierProvider<Notifier extends StateNotifier<Object>>
 
 /// Adds [state] to [StateNotifierProvider].
 ///
-/// This is done as an extension as a workaround to language limitations.
+/// This is done as an extension as a workaround to language limitations around
+/// generic parameters.
 extension StateNotifierStateProviderX<Value>
     on StateNotifierProvider<StateNotifier<Value>> {
   SetStateProvider<Value> get state {
@@ -33,6 +59,7 @@ extension StateNotifierStateProviderX<Value>
   }
 }
 
+/// Implementation detail of [StateNotifierProvider].
 class StateNotifierStateProvider<T> extends SetStateProvider<T> {
   StateNotifierStateProvider(this.controller)
       : super((ref) {

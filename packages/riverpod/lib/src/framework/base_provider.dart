@@ -1,7 +1,30 @@
 part of 'framework.dart';
 
+/// A base class used that expose the necessary to listen to a provider.
+///
+/// This is the common interface between a "provider" and `myProvider.select`.
+///
+/// See also:
+/// - [ProviderBase], the base class for all providers, which implements [ProviderListenable].
+/// - [ProviderBase.select], a function that allows listening only partially
+///   to a provider.
 // ignore: one_member_abstracts
 abstract class ProviderListenable<T> {
+  /// Listen to changes on a provider.
+  ///
+  /// The [onChange] callback will be called immediatly with the current value.
+  ///
+  /// This method is an implementation detail of [Computed]/[ProviderBase.select].
+  /// It allows listening to a provider partially, without evaluating the computation
+  /// immediatly on change, for performance.
+  ///
+  /// More specifically, when one of the dependencies of [Computed] changes,
+  /// this will call [mayHaveChanged] on all the listeners.
+  /// But this will **not** re-evaluated the [Computed].
+  ///
+  /// Instead, the evaluation of the [Computed] is delayed until [ProviderSubscription.flush]
+  /// is called. Then, if the result of [Computed] changes, [ProviderSubscription.flush]
+  /// will return `true` and [onChange] will be called.
   ProviderSubscription addLazyListener(
     ProviderStateOwner owner, {
     @required void Function() mayHaveChanged,
@@ -9,6 +32,25 @@ abstract class ProviderListenable<T> {
   });
 }
 
+/// Manages a subscription created with [ProviderListenable.addLazyListener].
+abstract class ProviderSubscription {
+  ProviderSubscription._();
+
+  /// Recompute a selector/[Computed] if not computed already.
+  ///
+  /// Calling [flush] will potentially call `onChange` of [ProviderListenable.addLazyListener]
+  /// if the value exposed by the provider listened changed, in which case [flush]
+  /// will return `true`.
+  ///
+  /// On the other hand, the value exposed by the provider did not change,
+  /// `onChange` will not be called and [flush] will return `false`.
+  bool flush();
+
+  /// Stop listening to the provider.
+  void close();
+}
+
+/// An internal class for [ProviderBase.select].
 class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
   ProviderSelector._(
     this._provider,
@@ -34,13 +76,7 @@ class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
   }
 }
 
-abstract class ProviderSubscription {
-  ProviderSubscription._();
-
-  bool flush();
-  void close();
-}
-
+/// The concrete implementation of [ProviderSubscription] for [ProviderBase.addLazyListener].
 class _ProviderSubscription<T> implements ProviderSubscription {
   _ProviderSubscription(
     this._providerState,
@@ -85,6 +121,8 @@ class _ProviderSubscription<T> implements ProviderSubscription {
   void close() => _entry.unlink();
 }
 
+/// A [ProviderSubscription] for [ProviderBase.select], that calls `onChange`
+/// only when the value computed changes.
 class SelectorSubscription<Input, Output> implements ProviderSubscription {
   SelectorSubscription._(
     ProviderStateBase<ProviderDependencyBase, Input,
@@ -108,6 +146,7 @@ class SelectorSubscription<Input, Output> implements ProviderSubscription {
   Output _lastOutput;
   Output Function(Input) _selector;
 
+  /// Change the selector and immediatly call `onChange` with the new value.
   void updateSelector(ProviderListenable subscription) {
     _selector = (subscription as ProviderSelector<Input, Output>)._selector;
     _providerSubscription.flush();
@@ -149,6 +188,7 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
   // ignore: prefer_const_constructors_in_immutables, the canonalisation of constants is unsafe for providers.
   ProviderBase(this.name);
 
+  /// Internal method for creating the state associated to a provider. Do not use.
   @visibleForOverriding
   ProviderStateBase<Dependency, Result, ProviderBase<Dependency, Result>>
       createState();
@@ -171,6 +211,16 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
         .addLazyListener(mayHaveChanged: mayHaveChanged, onChange: onChange);
   }
 
+  /// Listen to a provider and calls [onChange] when the provider updates.
+  ///
+  /// Calls [onChange] immediatly with the latest value.
+  ///
+  /// The result of [watchOwner] is a function that can be called to
+  /// stop listening to the provider.
+  ///
+  /// This is syntax sugar for [addLazyListener] where `mayHaveChanged` calls
+  /// [ProviderSubscription.flush] immediatly.
+  /// Avoid using this on [Computed]/[select] if possible.
   VoidCallback watchOwner(
     ProviderStateOwner owner,
     void Function(Result value) onChange,
@@ -186,6 +236,71 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
     return sub.close;
   }
 
+  /// Partially listen to a provider.
+  ///
+  /// The [select] function allows filtering unwanted rebuilds of a Widget
+  /// by reading only the properties that we care about.
+  ///
+  /// For example, consider the following `ChangeNotifier`:
+  ///
+  /// ```dart
+  /// class Person extends ChangeNotifier {
+  ///   int _age = 0;
+  ///   int get age => _age;
+  ///   set age(int age) {
+  ///     _age = age;
+  ///     notifyListeners();
+  ///   }
+  ///
+  ///   String _name = '';
+  ///   String get name => _name;
+  ///   set name(String name) {
+  ///     _name = name;
+  ///     notifyListeners();
+  ///   }
+  /// }
+  ///
+  /// final personProvider = ChangeNotifierProvider((_) => Person());
+  /// ```
+  ///
+  /// In this class, both `name` and `age` may change, but a widget may need
+  /// only `age`.
+  ///
+  /// If we used `useProvider`/`Consumer` as we normally would, this would cause
+  /// widgets that only use `age` to still rebuild when `name` changes, which
+  /// is inefficient.
+  ///
+  /// The method [select] can be used to fix this, by explicitly reading only
+  /// a specific part of the object.
+  ///
+  /// A typical usage would be:
+  ///
+  /// ```dart
+  /// @override
+  /// Widget build(BuildContext context) {
+  ///   final age = useProvider(personProvider.select((p) => p.age));
+  ///   return Text('$age');
+  /// }
+  /// ```
+  ///
+  /// This will cause our widget to rebuild **only** when `age` changes.
+  ///
+  ///
+  /// **NOTE**: The function passed to [select] can return complex computations
+  /// too.
+  ///
+  /// For example, instead of `age`, we could return a "isAdult" boolean:
+  ///
+  /// ```dart
+  /// @override
+  /// Widget build(BuildContext context) {
+  ///   final isAdult = useProvider(personProvider.select((p) => p.age >= 18));
+  ///   return Text('$isAdult');
+  /// }
+  /// ```
+  ///
+  /// This will further optimise our widget by rebuilding it only when "isAdult"
+  /// changed instead of whenever the age changes.
   ProviderListenable<Selected> select<Selected>(
     Selected Function(Result value) selector,
   ) {
@@ -216,6 +331,8 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   /// The raw unmodified provider before applying [ProviderOverride].
   ProviderBase<ProviderDependencyBase, Object> _origin;
 
+  /// The number of time the value exposed changes.
+  /// This is an implementation detail to [ProviderSubscription.flush].
   int _notificationCount = 0;
 
   // Initialised to true to ignore calls to markNeedNotifyListeners inside initState
@@ -235,8 +352,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
 
   /// The value currently exposed.
   ///
-  /// All modifications to this property should induce a call to [markMayHaveChanged]
-  /// followed by [notifyChanged].
+  /// All modifications to this property should induce a call to [markMayHaveChanged].
   @protected
   Result get state;
 
@@ -261,7 +377,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   ///
   /// This avoid having to call [createProviderDependency] again when this
   /// state already depends on a provider.
-  Map<ProviderBase, ProviderDependencyBase> _providerDependencysCache;
+  Map<ProviderBase, ProviderDependencyBase> _providerDependenciesCache;
 
   /// An implementation detail of [CircularDependencyError].
   ///
@@ -283,7 +399,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   /// The list of listeners to [ProviderReference.onDispose].
   DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
 
-  /// The listeners of this provider (using [ProviderBase.watchOwner]).
+  /// The listeners of this provider (using [ProviderBase.addLazyListener]).
   LinkedList<_LinkedListEntry<void Function()>> _mayHaveChangedListeners;
 
   /// Whether this provider is listened or not.
@@ -301,6 +417,10 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
     return result;
   }
 
+  /// Initialize the state of the provider on creation.
+  /// 
+  /// All calls to [markMayHaveChanged] will be ignored.
+  /// If [initState] throws, reading the provider will result in an exception.
   void initState();
 
   /// Creates the object returned by [ProviderReference.dependOn].
@@ -332,9 +452,9 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
       return true;
     }(), '');
 
-    _providerDependencysCache ??= {};
+    _providerDependenciesCache ??= {};
     try {
-      return _providerDependencysCache.putIfAbsent(provider, () {
+      return _providerDependenciesCache.putIfAbsent(provider, () {
         final targetProviderState = _owner._readProviderState(provider);
 
         // verify that the new dependency doesn't depend on this provider.
@@ -356,7 +476,6 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
             targetProviderState.createProviderDependency();
         onDispose(() {
           targetProviderState._dependents.remove(this);
-          targetProviderValue.dispose();
         });
 
         return targetProviderValue;
@@ -382,6 +501,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
     _onDisposeCallbacks.add(cb);
   }
 
+  /// Implementation of [ProviderBase.addLazyListener].
   ProviderSubscription addLazyListener({
     @required void Function() mayHaveChanged,
     @required void Function(Result value) onChange,
@@ -407,6 +527,10 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
     );
   }
 
+  /// After [markMayHaveChanged] was called, [flush] is called [ProviderSubscription.flush]
+  /// of on [AlwaysAliveProvider.readOwner].
+  /// 
+  /// Must either call [notifyChanged] or [cancelChangeNotification].
   @visibleForOverriding
   void flush() {
     if (_dirty) {
@@ -414,6 +538,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
     }
   }
 
+  /// Notify listeners that a new value was emitted. Can only be called inside [flush].
   void notifyChanged() {
     assert(_dirty, 'must call markMayHaveChanged before notifyChanged');
     if (!_mounted) {
@@ -426,11 +551,16 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
     _owner._reportChanged(_origin, state);
   }
 
+  /// Cancel the fact that the provider changed. Can only be called inside [flush].
   void cancelChangeNotification() {
     assert(_dirty, 'must call cancelChangeNotification before notifyChanged');
     _dirty = false;
   }
 
+  /// Notify listeners that the provider **may** have changed.
+  /// 
+  /// This is used by [Computed]/[ProviderBase.select] to compute the new value
+  /// only when truly needed.
   void markMayHaveChanged() {
     if (notifyListenersLock != null && notifyListenersLock != this) {
       throw StateError(

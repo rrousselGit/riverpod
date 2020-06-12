@@ -23,7 +23,7 @@ class _LinkedListEntry<T> extends LinkedListEntry<_LinkedListEntry<T>> {
   final T value;
 }
 
-/// An utility to read (an potentially initialize) the state of a provider.
+/// A utility to read (an potentially initialize) the state of a provider.
 class _ProviderStateReader {
   _ProviderStateReader(this._origin, this._owner);
 
@@ -142,6 +142,9 @@ final _refProvider = Provider((c) => c);
 
 /// The object that manages the state of all providers.
 ///
+/// If you are using Flutter, you do not need to care about this object as
+/// `ProviderScope` manages it for you.
+///
 /// The state of a provider is not stored inside the provider, but instead
 /// inside [ProviderStateOwner].
 ///
@@ -149,7 +152,8 @@ final _refProvider = Provider((c) => c);
 /// of a provider, by specifying `overrides`.
 ///
 /// See also:
-/// - [Provider], for more informations on providers and their usage.
+///
+/// - [Provider], a basic implementation of a provider.
 class ProviderStateOwner {
   /// Creates a [ProviderStateOwner] and allows specifying provider overrides.
   ProviderStateOwner({
@@ -224,25 +228,16 @@ class ProviderStateOwner {
   ///
   /// ```dart
   /// final refProvider = Provider((ref) => ref);
-  /// final owner = ProviderStateOwnrr(overrides: [refProvider]);
+  /// final owner = ProviderStateOwnrr(parent: ..., overrides: [refProvider]);
   ///
   /// final re = refProvider.readOwner(owner);
   /// ```
   ProviderReference get ref => _refProvider.readOwner(this);
 
-  /// Notify listeners about changes associated to a provider, and optionally
-  /// allow changing the list of provider overrides.
+  /// Updates the list of provider overrides.
   ///
-  /// The providers will dispatch their notifications in order
-  /// based on if they depend on other providers or not:
+  /// It is not possible, to remove or add new overrides.
   ///
-  /// - A provider with no dependency on other providers will notify its
-  ///   listeners first.
-  /// - A provider that depends on all the other providers of the application
-  ///   will notify its listeners last.
-  ///
-  /// Updating the list of overrides is possible, but [overrides] cannot
-  /// remove or add new overrides.
   /// What this means is, if [ProviderStateOwner] was created with 3 overrides,
   /// calls to [updateOverrides] that tries to change the list of overrides must override
   /// these 3 exact providers again.
@@ -264,7 +259,7 @@ class ProviderStateOwner {
   /// Then we can call update with different overrides:
   ///
   /// ```dart
-  /// owner.updateOverrides(overrides: [
+  /// owner.updateOverrides([
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
   ///   provider2.overrideAs(Provider((_) => 'London')),
   /// ]);
@@ -273,13 +268,13 @@ class ProviderStateOwner {
   /// But we cannot call [updateOverrides] with different overrides:
   ///
   /// ```dart
-  /// // Invalid, provider2 was overiden before but is not anymore
-  /// owner.updateOverrides(overrides: [
+  /// // Invalid, provider2 was overriden before but is not anymore
+  /// owner.updateOverrides([
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
   /// ]);
   ///
   /// // Invalid, provider3 was not overriden before, but now is
-  /// owner.updateOverrides(overrides: [
+  /// owner.updateOverrides([
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
   ///   provider2.overrideAs(Provider((_) => 'London')),
   ///   provider3.overrideAs(...),
@@ -346,7 +341,7 @@ Changing the kind of override or reordering overrides is not supported.
   }
 
   /// Used by [ProviderStateBase.notifyChanged] to let [ProviderStateOwner]
-  /// know that a provider _truly_ changed.
+  /// know that a provider changed.
   ///
   /// This is then used to notify [ProviderStateOwnerObserver]s of the changes.
   void _reportChanged(ProviderBase origin, Object newState) {
@@ -506,10 +501,7 @@ class ProviderOverride {
 }
 
 /// A base class for objects returned by [ProviderReference.dependOn].
-abstract class ProviderDependencyBase {
-  @protected
-  void dispose() {}
-}
+abstract class ProviderDependencyBase {}
 
 /// An empty implementation of [ProviderDependencyBase].
 class ProviderBaseDependencyImpl extends ProviderDependencyBase {}
@@ -545,9 +537,15 @@ class ProviderReference {
   /// This is useful when dealing with asynchronous operations, as the provider
   /// may have potentially be destroyed before the end of the asyncronous operation.
   /// In that case, we may want to stop performing further tasks.
+  /// 
+  /// Most providers are never disposed, so in most situations you do not have to
+  /// care about this.
   bool get mounted => _providerState.mounted;
 
   /// Adds a listener to perform an operation right before the provider is destroyed.
+  ///
+  /// This typically happen when a `ProviderScope` is removed from the widget tree
+  /// when using Flutter.
   ///
   /// See also:
   ///
@@ -558,12 +556,10 @@ class ProviderReference {
 
   /// Obtain another provider.
   ///
-  /// The first time this method is called for a given provider can be expensive,
-  /// as it involves modifying the internal graph of providers (which is O(N))
-  /// and potentially mounting the provider if it wasn't before.
-  ///
   /// It is safe to call [dependOn] multiple times with the same provider
   /// as parameter and is inexpensive to do so.
+  ///
+  /// Calling this method is O(1).
   ///
   /// See also:
   ///

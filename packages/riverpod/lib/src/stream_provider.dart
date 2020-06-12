@@ -3,16 +3,23 @@ import 'dart:async';
 import 'common.dart';
 import 'framework/framework.dart';
 
+/// The state of a [StreamProvider].
 class StreamProviderDependency<T> extends ProviderDependencyBase {
   StreamProviderDependency._(this.stream, this._state);
 
+  /// The stream returned by [StreamProvider].
   final Stream<T> stream;
   final _State<T, ProviderBase<StreamProviderDependency<T>, AsyncValue<T>>>
       _state;
 
+  /// The last value emitted by [stream].
+  ///
+  /// The future will fail if the last event is an error instead.ƒ
   Future<T> get currentData => _state.currentData;
 }
 
+/// An internal helper shared between [StreamProvider] and [_ValueStreamProvider]
+/// to implement [StreamProviderDependency.currentData].
 mixin _State<T,
         P extends ProviderBase<StreamProviderDependency<T>, AsyncValue<T>>>
     on ProviderStateBase<StreamProviderDependency<T>, AsyncValue<T>, P> {
@@ -56,12 +63,30 @@ mixin _State<T,
   }
 }
 
+/// Creates a stream and expose its latest event.
+///
+/// Consumers of [StreamProvider] will receive an [AsyncValue] instead of the
+/// raw value emitted.
+/// This is so that dependents can handle loading/error states.
 class StreamProvider<T>
     extends AlwaysAliveProvider<StreamProviderDependency<T>, AsyncValue<T>> {
+  /// Creates a [StreamProvider] and allows specifying a [name].
   StreamProvider(this._create, {String name}) : super(name);
 
   final Create<Stream<T>, ProviderReference> _create;
 
+  /// A test utility to override a [StreamProvider] with a synchronous value.
+  ///
+  /// Overriding a [StreamProvider] with an [AsyncValue.data]/[AsyncValue.error]
+  /// bypass the loading step that most streams have, which simplifies the test.
+  ///
+  /// It is possible to change the state emitted by changing the override
+  /// on [ProviderStateOwner]/`ProviderScope`.
+  ///
+  /// Once an [AsyncValue.data]/[AsyncValue.error] was emitted, it is no longer
+  /// possible to emit a [AsyncValue.loading].
+  ///
+  /// This will create a made up [Stream] for [StreamProviderDependency.stream].
   ProviderOverride debugOverrideWithValue(AsyncValue<T> value) {
     ProviderOverride res;
     assert(() {
@@ -113,6 +138,7 @@ class _StreamProviderState<T> extends ProviderStateBase<
   }
 }
 
+/// Overide a [StreamProvider] with a synchronous value.
 class _ValueStreamProvider<T>
     extends AlwaysAliveProvider<StreamProviderDependency<T>, AsyncValue<T>> {
   _ValueStreamProvider(this.value, {String name}) : super(name);

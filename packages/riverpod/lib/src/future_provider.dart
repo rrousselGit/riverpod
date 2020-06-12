@@ -5,14 +5,17 @@ import 'package:meta/meta.dart';
 import 'common.dart';
 import 'framework/framework.dart';
 
+/// The state of a [FutureProvider].
 class FutureProviderDependency<T> extends ProviderDependencyBase {
   FutureProviderDependency._({@required this.future});
 
+  /// The [Future] created by [FutureProvider].
   final Future<T> future;
 }
 
 class FutureProvider<Res> extends AlwaysAliveProvider<
     FutureProviderDependency<Res>, AsyncValue<Res>> {
+  /// Creates a [FutureProvider] and allows specifying a [name].
   FutureProvider(this._create, {String name}) : super(name);
 
   final Create<Future<Res>, ProviderReference> _create;
@@ -22,6 +25,18 @@ class FutureProvider<Res> extends AlwaysAliveProvider<
     return _FutureProviderState<Res>();
   }
 
+  /// A test utility to override a [FutureProvider] with a synchronous value.
+  ///
+  /// Overriding a [FutureProvider] with an [AsyncValue.data]/[AsyncValue.error]
+  /// bypass the loading step that most streams have, which simplifies the test.
+  ///
+  /// It is possible to change the state emitted by changing the override
+  /// on [ProviderStateOwner]/`ProviderScope`.
+  ///
+  /// Once an [AsyncValue.data]/[AsyncValue.error] was emitted, it is no longer
+  /// possible to change the value exposed.
+  ///
+  /// This will create a made up [Future] for [FutureProviderDependency.future].
   ProviderOverride debugOverrideWithValue(AsyncValue<Res> value) {
     ProviderOverride res;
     assert(() {

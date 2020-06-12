@@ -1,6 +1,8 @@
 
 # Roadmap
 
+## Riverpod 
+
 <!-- - evaluate time complexity for all operations -->
 <!-- - evaluate space complexity -->
 - future/changenotifier/...providers cannot return null
@@ -23,14 +25,16 @@
 - Should some asserts be changed to exceptions in release?
 - Should some exceptions have a custom error?
 
-Marvel example:
+## Examples
+
+### Marvel 
 
 - Write tests for everything
 - publish it on the web
 - handle errors (out of calls/day, no configurations)
-- Added to doc
+- Added to riverpod.dev
 
-riverpod.dev
+## riverpod.dev
 
 - concepts
 
@@ -52,7 +56,7 @@ riverpod.dev
 - cookbook configurations that change over time
 - state hydratation
 
-Linter:
+## Linter:
 
 - When overriding `StateNotifierProvider` on a non-root `ProviderStateOwner`, warn if the `.value` wasn't overriden too.
 - Check that when a provider is overridden locally, all of its dependencies are too
@@ -63,7 +67,7 @@ Linter:
 - extract as class for rebuild optimization
 - warn if public classes inside /src are not used but not exported
 
-Devtool:
+## Devtool:
 
 - entire app state for the root owner
 - highlight state changes

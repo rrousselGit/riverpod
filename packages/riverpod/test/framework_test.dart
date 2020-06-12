@@ -470,7 +470,9 @@ void main() {
   test('ref.dependOn disposes the provider state', () {
     var didDispose = false;
     final provider = TestProvider((ref) {
-      ref.onDispose(() => didDispose = true);
+      ref.onDispose(() {
+        didDispose = true;
+      });
       return 0;
     });
     final other = Provider((ref) => ref.dependOn(provider));
@@ -483,13 +485,10 @@ void main() {
 
     final value = other.readOwner(owner2);
     expect(value, isNotNull);
-    verifyZeroInteractions(provider.onValueDispose);
     expect(didDispose, isFalse);
 
     owner2.dispose();
 
-    verify(provider.onValueDispose(value));
-    verifyNoMoreInteractions(provider.onValueDispose);
     expect(didDispose, isFalse);
   });
   test('Owner.dependOn', () {
@@ -507,16 +506,6 @@ void main() {
     expect(value21, value22);
     expect(value21, isNot(value1));
     expect(value21.value, 1);
-
-    verifyZeroInteractions(provider.onValueDispose);
-    verifyZeroInteractions(provider2.onValueDispose);
-
-    owner.dispose();
-
-    verify(provider.onValueDispose(value1));
-    verify(provider2.onValueDispose(value21));
-    verifyNoMoreInteractions(provider.onValueDispose);
-    verifyNoMoreInteractions(provider2.onValueDispose);
   });
   test(
       "updating overrides / dispose don't compute provider states if not loaded yet",
@@ -1091,16 +1080,9 @@ class MockOnValueDispose<T> extends Mock {
 }
 
 class TestProviderValue<T> extends ProviderDependencyBase {
-  TestProviderValue(this.value, {@required this.onDispose});
+  TestProviderValue(this.value);
 
   final T value;
-  final MockOnValueDispose<T> onDispose;
-
-  @override
-  void dispose() {
-    onDispose(this);
-    super.dispose();
-  }
 }
 
 class TestProvider<T> extends AlwaysAliveProvider<TestProviderValue<T>, T> {
@@ -1109,7 +1091,6 @@ class TestProvider<T> extends AlwaysAliveProvider<TestProviderValue<T>, T> {
   final T Function(ProviderReference ref) create;
   final MockInitState<T> onInitState = MockInitState();
   final MockDidUpdateProvider onDidUpdateProvider = MockDidUpdateProvider();
-  final MockOnValueDispose<T> onValueDispose = MockOnValueDispose();
 
   @override
   TestProviderState<T> createState() {
@@ -1136,6 +1117,6 @@ class TestProviderState<T>
 
   @override
   TestProviderValue<T> createProviderDependency() {
-    return TestProviderValue<T>(state, onDispose: provider.onValueDispose);
+    return TestProviderValue<T>(state);
   }
 }
