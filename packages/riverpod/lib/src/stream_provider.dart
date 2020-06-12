@@ -3,14 +3,61 @@ import 'dart:async';
 import 'common.dart';
 import 'framework/framework.dart';
 
-class StreamProviderSubscription<T> extends ProviderSubscriptionBase {
-  StreamProviderSubscription._(this.stream);
+class StreamProviderDependency<T> extends ProviderDependencyBase {
+  StreamProviderDependency._(this.stream, this._state);
 
   final Stream<T> stream;
+  final _State<T, ProviderBase<StreamProviderDependency<T>, AsyncValue<T>>>
+      _state;
+
+  Future<T> get currentData => _state.currentData;
+}
+
+mixin _State<T,
+        P extends ProviderBase<StreamProviderDependency<T>, AsyncValue<T>>>
+    on ProviderStateBase<StreamProviderDependency<T>, AsyncValue<T>, P> {
+  AsyncValue<T> _state = const AsyncValue.loading();
+  @override
+  AsyncValue<T> get state => _state;
+  set state(AsyncValue<T> state) {
+    _state = state;
+    if (_currentDataCompleter != null) {
+      state.when(
+        data: (value) {
+          _currentDataCompleter.complete(value);
+          _currentDataCompleter = null;
+        },
+        error: (err, stack) {
+          _currentDataCompleter.completeError(err, stack);
+          _currentDataCompleter = null;
+        },
+        loading: () {},
+      );
+    }
+    markMayHaveChanged();
+  }
+
+  Completer<T> _currentDataCompleter;
+  Future<T> get currentData {
+    if (_currentDataCompleter != null) {
+      return _currentDataCompleter.future;
+    }
+
+    return state.when(
+      // We only save the Completer if value is currently available
+      // Only loading state requires a two step operation.
+      loading: () {
+        _currentDataCompleter = Completer<T>();
+        return _currentDataCompleter.future;
+      },
+      data: (value) => Future.value(value),
+      error: (err, stack) => Future.error(err, stack),
+    );
+  }
 }
 
 class StreamProvider<T>
-    extends AlwaysAliveProvider<StreamProviderSubscription<T>, AsyncValue<T>> {
+    extends AlwaysAliveProvider<StreamProviderDependency<T>, AsyncValue<T>> {
   StreamProvider(this._create, {String name}) : super(name);
 
   final Create<Stream<T>, ProviderReference> _create;
@@ -31,28 +78,21 @@ class StreamProvider<T>
 }
 
 class _StreamProviderState<T> extends ProviderStateBase<
-    StreamProviderSubscription<T>, AsyncValue<T>, StreamProvider<T>> {
+    StreamProviderDependency<T>,
+    AsyncValue<T>,
+    StreamProvider<T>> with _State<T, StreamProvider<T>> {
   Stream<T> _stream;
-  StreamSubscription<T> _streamSubscription;
-
-  AsyncValue<T> _state;
-  @override
-  AsyncValue<T> get state => _state;
-  set state(AsyncValue<T> state) {
-    _state = state;
-    markNeedsNotifyListeners();
-  }
+  StreamSubscription<T> _streamDependency;
 
   @override
-  StreamProviderSubscription<T> createProviderSubscription() {
-    return StreamProviderSubscription._(_stream);
+  StreamProviderDependency<T> createProviderDependency() {
+    return StreamProviderDependency._(_stream, this);
   }
 
   @override
   void initState() {
-    _state = const AsyncValue.loading();
     _stream = provider._create(ProviderReference(this));
-    _streamSubscription = _stream.listen(
+    _streamDependency = _stream.listen(
       (event) {
         state = AsyncValue.data(event);
       },
@@ -68,13 +108,13 @@ class _StreamProviderState<T> extends ProviderStateBase<
 
   @override
   void dispose() {
-    _streamSubscription.cancel();
+    _streamDependency.cancel();
     super.dispose();
   }
 }
 
 class _ValueStreamProvider<T>
-    extends AlwaysAliveProvider<StreamProviderSubscription<T>, AsyncValue<T>> {
+    extends AlwaysAliveProvider<StreamProviderDependency<T>, AsyncValue<T>> {
   _ValueStreamProvider(this.value, {String name}) : super(name);
 
   final AsyncValue<T> value;
@@ -86,20 +126,14 @@ class _ValueStreamProvider<T>
 }
 
 class _ValueStreamProviderState<T> extends ProviderStateBase<
-    StreamProviderSubscription<T>, AsyncValue<T>, _ValueStreamProvider<T>> {
+    StreamProviderDependency<T>,
+    AsyncValue<T>,
+    _ValueStreamProvider<T>> with _State<T, _ValueStreamProvider<T>> {
   final _controller = StreamController<T>();
 
   @override
-  StreamProviderSubscription<T> createProviderSubscription() {
-    return StreamProviderSubscription._(_controller.stream);
-  }
-
-  AsyncValue<T> _state;
-  @override
-  AsyncValue<T> get state => _state;
-  set state(AsyncValue<T> state) {
-    _state = state;
-    markNeedsNotifyListeners();
+  StreamProviderDependency<T> createProviderDependency() {
+    return StreamProviderDependency._(_controller.stream, this);
   }
 
   @override

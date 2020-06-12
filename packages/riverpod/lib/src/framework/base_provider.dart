@@ -1,18 +1,156 @@
 part of 'framework.dart';
 
+// ignore: one_member_abstracts
+abstract class ProviderListenable<T> {
+  ProviderSubscription addLazyListener(
+    ProviderStateOwner owner, {
+    @required void Function() mayHaveChanged,
+    @required void Function(T value) onChange,
+  });
+}
+
+class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
+  ProviderSelector._(
+    this._provider,
+    this._selector,
+  );
+
+  final ProviderBase<ProviderDependencyBase, Input> _provider;
+  final Output Function(Input) _selector;
+
+  @override
+  ProviderSubscription addLazyListener(
+    ProviderStateOwner owner, {
+    void Function() mayHaveChanged,
+    void Function(Output value) onChange,
+  }) {
+    final state = owner._readProviderState(_provider);
+    return SelectorSubscription._(
+      state,
+      _selector,
+      mayHaveChanged,
+      onChange,
+    );
+  }
+}
+
+abstract class ProviderSubscription {
+  ProviderSubscription._();
+
+  bool flush();
+  void close();
+}
+
+class _ProviderSubscription<T> implements ProviderSubscription {
+  _ProviderSubscription(
+    this._providerState,
+    this._onChange,
+    this._entry,
+  ) : _lastNotificationCount = _providerState._notificationCount;
+
+  int _lastNotificationCount;
+  final ProviderStateBase<ProviderDependencyBase, T,
+      ProviderBase<ProviderDependencyBase, T>> _providerState;
+  final void Function(T value) _onChange;
+  final LinkedListEntry _entry;
+
+  @override
+  bool flush() {
+    if (_entry.list == null) {
+      return false;
+    }
+    _providerState.flush();
+    assert(
+      !_providerState.dirty,
+      'flush must either cancel or confirm the notification',
+    );
+    if (_providerState._notificationCount != _lastNotificationCount) {
+      _lastNotificationCount = _providerState._notificationCount;
+
+      assert(() {
+        debugNotifyListenersDepthLock = _providerState._debugDepth;
+        return true;
+      }(), '');
+      _runUnaryGuarded(_onChange, _providerState.state);
+      assert(() {
+        debugNotifyListenersDepthLock = -1;
+        return true;
+      }(), '');
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  void close() => _entry.unlink();
+}
+
+class SelectorSubscription<Input, Output> implements ProviderSubscription {
+  SelectorSubscription._(
+    ProviderStateBase<ProviderDependencyBase, Input,
+            ProviderBase<ProviderDependencyBase, Input>>
+        providerState,
+    this._selector,
+    void Function() mayHaveChanged,
+    this._onOutputChange,
+  ) {
+    _providerSubscription = providerState.addLazyListener(
+      mayHaveChanged: mayHaveChanged,
+      onChange: _onInputChange,
+    );
+  }
+
+  ProviderSubscription _providerSubscription;
+
+  final void Function(Output value) _onOutputChange;
+  bool _isFirstInputOnChange = true;
+  Input _input;
+  Output _lastOutput;
+  Output Function(Input) _selector;
+
+  void updateSelector(ProviderListenable subscription) {
+    _selector = (subscription as ProviderSelector<Input, Output>)._selector;
+    _providerSubscription.flush();
+    _onOutputChange(_lastOutput = _selector(_input));
+  }
+
+  void _onInputChange(Input input) {
+    _input = input;
+    if (_isFirstInputOnChange) {
+      _isFirstInputOnChange = false;
+      _onOutputChange(_lastOutput = _selector(_input));
+    }
+  }
+
+  @override
+  bool flush() {
+    if (_providerSubscription.flush()) {
+      final newOutput = _selector(_input);
+      if (!const DeepCollectionEquality().equals(_lastOutput, newOutput)) {
+        _onOutputChange(_lastOutput = newOutput);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @override
+  void close() => _providerSubscription.close();
+}
+
 /// A base class for all providers.
 ///
 /// Do not extend or implement.
 @immutable
 @optionalTypeArgs
-abstract class ProviderBase<Subscription extends ProviderSubscriptionBase,
-    Result extends Object> {
+abstract class ProviderBase<Dependency extends ProviderDependencyBase,
+    Result extends Object> implements ProviderListenable<Result> {
   /// Allows specifying a name.
   // ignore: prefer_const_constructors_in_immutables, the canonalisation of constants is unsafe for providers.
   ProviderBase(this.name);
 
   @visibleForOverriding
-  ProviderStateBase<Subscription, Result, ProviderBase<Subscription, Result>>
+  ProviderStateBase<Dependency, Result, ProviderBase<Dependency, Result>>
       createState();
 
   /// A custom label for the provider.
@@ -22,22 +160,36 @@ abstract class ProviderBase<Subscription extends ProviderSubscriptionBase,
   /// - It can be used as a serialisable unique identifier for state serialisation/deserialisation.
   final String name;
 
-  /// Adds a listener to the provider.
-  ///
-  /// If you are using Flutter, you probably do not need to care about this method.
-  ///
-  /// The callback is called synchronously immediatly with the latest value.
-  /// It is then called whenever [ProviderStateOwner.update] was called and the
-  /// provider listened had changed.
-  ///
-  /// The result of this method is a function that allows removing the listener.
-  ///
-  /// The callback will be called at most once per [ProviderStateOwner.update] calls.
+  @override
+  ProviderSubscription addLazyListener(
+    ProviderStateOwner owner, {
+    @required void Function() mayHaveChanged,
+    @required void Function(Result value) onChange,
+  }) {
+    return owner
+        ._readProviderState(this)
+        .addLazyListener(mayHaveChanged: mayHaveChanged, onChange: onChange);
+  }
+
   VoidCallback watchOwner(
     ProviderStateOwner owner,
     void Function(Result value) onChange,
   ) {
-    return owner._readProviderState(this).$addListener(onChange);
+    ProviderSubscription sub;
+
+    sub = addLazyListener(
+      owner,
+      mayHaveChanged: () => sub.flush(),
+      onChange: onChange,
+    );
+
+    return sub.close;
+  }
+
+  ProviderListenable<Selected> select<Selected>(
+    Selected Function(Result value) selector,
+  ) {
+    return ProviderSelector._(this, selector);
   }
 
   @override
@@ -49,12 +201,8 @@ abstract class ProviderBase<Subscription extends ProviderSubscriptionBase,
 /// Implementation detail of how the state of a provider is stored.
 // TODO: prefix internal methods with $ and public methods without
 @optionalTypeArgs
-abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
-    Result extends Object, P extends ProviderBase<Subscription, Result>> {
-  ProviderStateBase() {
-    _stateEntryInSortedStateList = _LinkedListEntry(this);
-  }
-
+abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
+    Result extends Object, P extends ProviderBase<Dependency, Result>> {
   P _provider;
 
   /// The current [ProviderBase] associated with this state.
@@ -66,26 +214,17 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   P get provider => _provider;
 
   /// The raw unmodified provider before applying [ProviderOverride].
-  ProviderBase<ProviderSubscriptionBase, Object> _origin;
+  ProviderBase<ProviderDependencyBase, Object> _origin;
 
-  var _depth = 0;
-
-  /// How deep this provider is in the graph of providers.
-  ///
-  /// It starts at 0, and then calls to [ProviderReference.dependOn] will
-  /// increase [depth] to the [depth] of the consumed provider + 1.
-  int get depth => _depth;
+  int _notificationCount = 0;
 
   // Initialised to true to ignore calls to markNeedNotifyListeners inside initState
   var _dirty = true;
 
   /// Whether this provider was marked as needing to notify its listeners.
   ///
-  /// See also [markNeedsNotifyListeners].
+  /// See also [markMayHaveChanged].
   bool get dirty => _dirty;
-
-  /// The location of this state in the internal graph of dependencies of [ProviderStateOwner].
-  _LinkedListEntry<ProviderStateBase> _stateEntryInSortedStateList;
 
   var _mounted = true;
 
@@ -96,7 +235,8 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
 
   /// The value currently exposed.
   ///
-  /// All modifications to this property should induce a call to [markNeedsNotifyListeners].
+  /// All modifications to this property should induce a call to [markMayHaveChanged]
+  /// followed by [notifyChanged].
   @protected
   Result get state;
 
@@ -116,12 +256,12 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   /// All the [ProviderStateBase]s that this provider depends on.
   final _providerStateDependencies = HashSet<ProviderStateBase>();
 
-  /// A cache of the [ProviderSubscriptionBase] associated to the dependencies
+  /// A cache of the [ProviderDependencyBase] associated to the dependencies
   /// listed by [_providerStateDependencies].
   ///
-  /// This avoid having to call [createProviderSubscription] again when this
+  /// This avoid having to call [createProviderDependency] again when this
   /// state already depends on a provider.
-  Map<ProviderBase, ProviderSubscriptionBase> _providerSubscriptionsCache;
+  Map<ProviderBase, ProviderDependencyBase> _providerDependencysCache;
 
   /// An implementation detail of [CircularDependencyError].
   ///
@@ -144,34 +284,38 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
 
   /// The listeners of this provider (using [ProviderBase.watchOwner]).
-  LinkedList<_LinkedListEntry<void Function(Result value)>> _stateListeners;
+  LinkedList<_LinkedListEntry<void Function()>> _mayHaveChangedListeners;
 
   /// Whether this provider is listened or not.
-  // TODO: factor [createSubscription]
-  bool get $hasListeners => _stateListeners?.isNotEmpty ?? false;
+  // TODO: factor [createDependency]
+  bool get $hasListeners => _mayHaveChangedListeners?.isNotEmpty ?? false;
 
-  /// Initializes the provider.
-  ///
-  /// If an exception is thrown inside [initState], all attempts
-  /// at reading the provider will result in throwing [_error].
-  ///
-  /// It is safe to call [markNeedsNotifyListeners] inside [initState].
-  @protected
+  int get _debugDepth {
+    int result;
+    assert(() {
+      final states =
+          _owner._visitStatesInReverseOrder().toList().reversed.toList();
+      result = states.indexOf(this);
+      return true;
+    }(), '');
+    return result;
+  }
+
   void initState();
 
   /// Creates the object returned by [ProviderReference.dependOn].
-  Subscription createProviderSubscription();
+  Dependency createProviderDependency();
 
   /// Life-cycle for when [provider] was replaced with a new one.
   ///
-  /// This typically happen on [ProviderStateOwner.update] call with new
+  /// This typically happen on [ProviderStateOwner.updateOverrides] call with new
   /// overrides.
   @mustCallSuper
   @protected
   void didUpdateProvider(P oldProvider) {}
 
   /// The implementation of [ProviderReference.dependOn].
-  T dependOn<T extends ProviderSubscriptionBase>(
+  T dependOn<T extends ProviderDependencyBase>(
     ProviderBase<T, Object> provider,
   ) {
     if (!mounted) {
@@ -188,9 +332,9 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
       return true;
     }(), '');
 
-    _providerSubscriptionsCache ??= {};
+    _providerDependencysCache ??= {};
     try {
-      return _providerSubscriptionsCache.putIfAbsent(provider, () {
+      return _providerDependencysCache.putIfAbsent(provider, () {
         final targetProviderState = _owner._readProviderState(provider);
 
         // verify that the new dependency doesn't depend on this provider.
@@ -209,13 +353,11 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
         _providerStateDependencies.add(targetProviderState);
         targetProviderState._dependents.add(this);
         final targetProviderValue =
-            targetProviderState.createProviderSubscription();
+            targetProviderState.createProviderDependency();
         onDispose(() {
           targetProviderState._dependents.remove(this);
           targetProviderValue.dispose();
         });
-
-        redepthAfter(targetProviderState);
 
         return targetProviderValue;
       }) as T;
@@ -226,59 +368,6 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
         }
         return true;
       }(), '');
-    }
-  }
-
-  /// Reposition this state in the [LinkedList] associated with [_stateEntryInSortedStateList].
-  ///
-  /// Since the list is sorted, the algorithm starts directly from [_stateEntryInSortedStateList]
-  /// and goes to the next item until it either reaches the end of the list or
-  /// an item that has a depth == to [from] + 1.
-  ///
-  /// This only supports increasing the depth, not decreasing it.
-  ///
-  /// It then proceeds to recursively redepth all the [ProviderStateBase] that
-  /// depends on this state.
-  ///
-  /// Worse case scenario, this is O(N), even on a complex tree.
-  void redepthAfter(ProviderStateBase from) {
-    final newDepth = max(_depth, from._depth + 1);
-    // The location of the provider in the graph of dependencies did not change
-    if (newDepth == _depth) {
-      return;
-    }
-    _depth = newDepth;
-
-    /// Where to start the search on where to relocate the [_stateEntryInSortedStateList].
-    /// Since this is a sorted linked list, we can start directly from
-    /// [from._stateEntryInSortedStateList] instead of [_stateEntryInSortedStateList],
-    /// as we will always insert the entry after [from].
-    /// This optimisation is only possible if [from] is from the same [ProviderStateOwner]
-    /// as otherwise its [_stateEntryInSortedStateList] will point to a different list.
-    _LinkedListEntry<ProviderStateBase> entry;
-    if (from._owner == _owner) {
-      /// unlink before reading [next] so that [next] doesn't point to [_stateEntryInSortedStateList].
-      _stateEntryInSortedStateList.unlink();
-      entry = from._stateEntryInSortedStateList.next;
-    } else {
-      entry = _stateEntryInSortedStateList.next;
-      _stateEntryInSortedStateList.unlink();
-    }
-
-    /// Searching for a [ProviderBaseState] in the dependency graph that has a
-    /// [depth] >= the new [depth] of this state.
-    for (; entry != null && _depth > entry.value._depth; entry = entry.next) {}
-
-    if (entry != null) {
-      entry.insertBefore(_stateEntryInSortedStateList);
-    } else {
-      // No matching ProviderBaseState found, so we add this state at the very end
-      // of the list of dependencies.
-      _owner._providerStatesSortedByDepth.add(_stateEntryInSortedStateList);
-    }
-
-    for (final dep in _dependents) {
-      dep.redepthAfter(this);
     }
   }
 
@@ -293,61 +382,84 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
     _onDisposeCallbacks.add(cb);
   }
 
-  /// Implementation of [ProviderBase.watchOwner].
-  VoidCallback $addListener(
-    void Function(Result value) listener,
-  ) {
-    try {
-      notifyListenersDepthLock = depth;
-      listener(state);
-    } finally {
-      notifyListenersDepthLock = -1;
-    }
-    _stateListeners ??= LinkedList();
-    final entry = _LinkedListEntry(listener);
-    _stateListeners.add(entry);
-    return entry.unlink;
+  ProviderSubscription addLazyListener({
+    @required void Function() mayHaveChanged,
+    @required void Function(Result value) onChange,
+  }) {
+    assert(() {
+      debugNotifyListenersDepthLock = _debugDepth;
+      return true;
+    }(), '');
+    _runUnaryGuarded(onChange, state);
+    assert(() {
+      debugNotifyListenersDepthLock = -1;
+      return true;
+    }(), '');
+
+    _mayHaveChangedListeners ??= LinkedList();
+    final mayHaveChangedEntry = _LinkedListEntry(mayHaveChanged);
+    _mayHaveChangedListeners.add(mayHaveChangedEntry);
+
+    return _ProviderSubscription(
+      this,
+      onChange,
+      mayHaveChangedEntry,
+    );
   }
 
-  /// Notify all the listeners in order
-  ///
-  /// It may be overriden to not notify listeners if the value didn't change
-  /// while preserving reactivity.
   @visibleForOverriding
-  void notifyListeners() {
-    if (_stateListeners != null) {
-      for (final listener in _stateListeners) {
-        // TODO guard
-        listener.value(state);
-      }
+  void flush() {
+    if (_dirty) {
+      notifyChanged();
     }
+  }
+
+  void notifyChanged() {
+    assert(_dirty, 'must call markMayHaveChanged before notifyChanged');
+    if (!_mounted) {
+      throw StateError(
+        'Cannot notify listeners of a provider after if was dispose',
+      );
+    }
+    _dirty = false;
+    _notificationCount++;
     _owner._reportChanged(_origin, state);
   }
 
-  void markNeedsNotifyListeners() {
+  void cancelChangeNotification() {
+    assert(_dirty, 'must call cancelChangeNotification before notifyChanged');
+    _dirty = false;
+  }
+
+  void markMayHaveChanged() {
     if (notifyListenersLock != null && notifyListenersLock != this) {
       throw StateError(
         'Cannot mark providers as dirty while initializing/disposing another provider',
       );
     }
-    if (notifyListenersDepthLock >= depth) {
+    assert(
+      debugNotifyListenersDepthLock < _debugDepth,
+      'Cannot mark `$provider` as dirty from `$debugNotifyListenersDepthLock` as the latter depends on it.',
+    );
+    if (_error != null) {
       throw StateError(
-        'Cannot mark `$provider` as dirty from `$notifyListenersDepthLock` as the latter depends on it.',
+        'Cannot trigger updates on a provider that threw during creation',
       );
     }
     if (!_mounted) {
       throw StateError(
-        'A provider was marked as needing to perform updates when it was already disposed',
+        'Cannot notify listeners of a provider after if was dispose',
       );
     }
-    if (_error != null) {
-      throw StateError(
-        'A provider cannot emit updates if an exception was thrown during the provider creation.',
-      );
-    }
-    if (_dirty == false) {
+    if (!_dirty) {
       _dirty = true;
-      owner._scheduleNotification();
+
+      if (_mayHaveChangedListeners != null) {
+        for (final mayHaveChanged in _mayHaveChangedListeners) {
+          // TODO guard
+          mayHaveChanged.value();
+        }
+      }
     }
   }
 
@@ -370,7 +482,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
 
   @override
   String toString() {
-    return 'ProviderState<$Result>(depth: $depth)';
+    return 'ProviderState<$Result>(provider: $provider)';
   }
 }
 
@@ -390,17 +502,17 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
 /// Similarly, since these providers are never disposed, they can only be
 /// overriden by providers that too are never disposed.
 /// Otherwise methods like [readOwner] would have an unknown behavior.
-abstract class AlwaysAliveProvider<
-        Subscription extends ProviderSubscriptionBase, Result>
-    extends ProviderBase<Subscription, Result> implements ProviderOverride {
+abstract class AlwaysAliveProvider<Dependency extends ProviderDependencyBase,
+        Result> extends ProviderBase<Dependency, Result>
+    implements ProviderOverride {
   /// Creates an [AlwaysAliveProvider] and allows specifing a [name].
   AlwaysAliveProvider(String name) : super(name);
 
   @override
-  ProviderBase get _origin => this;
+  ProviderBase get _provider => this;
 
   @override
-  ProviderBase get _provider => this;
+  ProviderBase<Dependency, Result> get _origin => this;
 
   /// Reads a provider without listening to it and returns the currently
   /// exposed value.
@@ -445,7 +557,7 @@ abstract class AlwaysAliveProvider<
   ProviderOverride overrideAs(
     // Always alive providers can only be overriden by always alive providers
     // as automatically disposed providers wouldn't work.
-    AlwaysAliveProvider<Subscription, Result> provider,
+    AlwaysAliveProvider<Dependency, Result> provider,
   ) {
     return ProviderOverride._(provider, this);
   }

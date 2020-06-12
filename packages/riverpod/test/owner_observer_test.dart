@@ -6,6 +6,25 @@ import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('report change once even if there are multiple listeners', () {
+    final observer = ObserverMock();
+    final owner = ProviderStateOwner(observers: [observer]);
+    final notifier = Counter();
+    final provider = StateNotifierProvider((_) => notifier);
+
+    provider.state.watchOwner(owner, (value) {});
+    provider.state.watchOwner(owner, (value) {});
+
+    verify(observer.didAddProvider(provider, notifier));
+    verify(observer.didAddProvider(provider.state, 0));
+    verifyNoMoreInteractions(observer);
+
+    notifier.increment();
+
+    verify(observer.didUpdateProvider(provider.state, 1));
+
+    verifyNoMoreInteractions(observer);
+  });
   test('didAddProvider', () {
     final observer = ObserverMock();
     final observer2 = ObserverMock();
@@ -67,8 +86,16 @@ void main() {
       ],
       observers: [observer, observer2],
     );
+    final listener = Listener<int>();
 
-    expect(provider.state.readOwner(owner), 0);
+    final sub = provider.state.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: listener,
+    );
+
+    verify(listener(0)).called(1);
+    verifyNoMoreInteractions(listener);
     verifyInOrder([
       observer.didAddProvider(provider, counter),
       observer2.didAddProvider(provider, counter),
@@ -80,25 +107,26 @@ void main() {
 
     counter.increment();
 
+    verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(observer);
     verifyNoMoreInteractions(observer2);
 
-    owner.update();
+    sub.flush();
 
     verifyInOrder([
-      observer.didProviderNotifyListeners(provider.state, 1),
-      observer2.didProviderNotifyListeners(provider.state, 1),
-      observer.onNotifyListenersDone(),
-      observer2.onNotifyListenersDone(),
+      observer.didUpdateProvider(provider.state, 1),
+      observer2.didUpdateProvider(provider.state, 1),
+      listener(1),
     ]);
+    verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(observer);
     verifyNoMoreInteractions(observer2);
   });
   test('guards didUpdateProviders', () {
     final observer = ObserverMock();
-    when(observer.didProviderNotifyListeners(any, any)).thenThrow('error1');
+    when(observer.didUpdateProvider(any, any)).thenThrow('error1');
     final observer2 = ObserverMock();
-    when(observer2.didProviderNotifyListeners(any, any)).thenThrow('error2');
+    when(observer2.didUpdateProvider(any, any)).thenThrow('error2');
     final observer3 = ObserverMock();
     final provider = StateNotifierProvider((_) => Counter());
     final counter = Counter();
@@ -108,8 +136,16 @@ void main() {
       ],
       observers: [observer, observer2, observer3],
     );
+    final listener = Listener<int>();
 
-    expect(provider.state.readOwner(owner), 0);
+    final sub = provider.state.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: listener,
+    );
+
+    verify(listener(0)).called(1);
+    verifyNoMoreInteractions(listener);
     clearInteractions(observer);
     clearInteractions(observer2);
     clearInteractions(observer3);
@@ -120,16 +156,13 @@ void main() {
     verifyNoMoreInteractions(observer2);
 
     final errors = <Object>[];
-    runZonedGuarded(owner.update, (err, stack) => errors.add(err));
+    runZonedGuarded(sub.flush, (err, stack) => errors.add(err));
 
     expect(errors, ['error1', 'error2']);
     verifyInOrder([
-      observer.didProviderNotifyListeners(provider.state, 1),
-      observer2.didProviderNotifyListeners(provider.state, 1),
-      observer3.didProviderNotifyListeners(provider.state, 1),
-      observer.onNotifyListenersDone(),
-      observer2.onNotifyListenersDone(),
-      observer3.onNotifyListenersDone(),
+      observer.didUpdateProvider(provider.state, 1),
+      observer2.didUpdateProvider(provider.state, 1),
+      observer3.didUpdateProvider(provider.state, 1),
     ]);
     verifyNoMoreInteractions(observer);
     verifyNoMoreInteractions(observer2);
@@ -146,7 +179,11 @@ void main() {
     final owner = ProviderStateOwner(observers: [observer]);
     final isNegativeListener = Listener<bool>();
 
-    isNegative.watchOwner(owner, isNegativeListener);
+    final sub = isNegative.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: isNegativeListener,
+    );
 
     verifyInOrder([
       observer.didAddProvider(provider, counter),
@@ -161,11 +198,10 @@ void main() {
     verifyNoMoreInteractions(isNegativeListener);
     verifyNoMoreInteractions(observer);
 
-    owner.update();
+    sub.flush();
 
     verifyInOrder([
-      observer.didProviderNotifyListeners(provider.state, 1),
-      observer.onNotifyListenersDone(),
+      observer.didUpdateProvider(provider.state, 1),
     ]);
     verifyNoMoreInteractions(isNegativeListener);
     verifyNoMoreInteractions(observer);
@@ -174,13 +210,12 @@ void main() {
     verifyNoMoreInteractions(isNegativeListener);
     verifyNoMoreInteractions(observer);
 
-    owner.update();
+    sub.flush();
 
     verifyInOrder([
-      observer.didProviderNotifyListeners(provider.state, -10),
+      observer.didUpdateProvider(provider.state, -10),
+      observer.didUpdateProvider(isNegative, true),
       isNegativeListener(true),
-      observer.didProviderNotifyListeners(isNegative, true),
-      observer.onNotifyListenersDone(),
     ]);
     verifyNoMoreInteractions(isNegativeListener);
     verifyNoMoreInteractions(observer);
@@ -216,13 +251,13 @@ void main() {
 
     expect(errors, ['error1', 'error2', 'error1', 'error2']);
     verifyInOrder([
+      observer.didDisposeProvider(provider2),
+      observer2.didDisposeProvider(provider2),
+      observer3.didDisposeProvider(provider2),
       onDispose(),
       observer.didDisposeProvider(provider),
       observer2.didDisposeProvider(provider),
       observer3.didDisposeProvider(provider),
-      observer.didDisposeProvider(provider2),
-      observer2.didDisposeProvider(provider2),
-      observer3.didDisposeProvider(provider2),
     ]);
     verifyNoMoreInteractions(onDispose);
     verifyNoMoreInteractions(observer);

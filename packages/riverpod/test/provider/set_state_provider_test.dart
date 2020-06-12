@@ -32,7 +32,11 @@ void main() {
     });
     final listener = ListenerMock();
 
-    provider.watchOwner(owner, listener);
+    final sub = provider.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: listener,
+    );
 
     verify(listener(0)).called(1);
     verifyNoMoreInteractions(listener);
@@ -44,7 +48,7 @@ void main() {
     expect(ref.state, 1);
 
     verifyNoMoreInteractions(listener);
-    owner.update();
+    sub.flush();
 
     verify(listener(1)).called(1);
     verifyNoMoreInteractions(listener);
@@ -60,17 +64,22 @@ void main() {
     });
     final listener = ListenerMock();
 
-    final removeListener = provider.watchOwner(owner, listener);
+    final sub = provider.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: listener,
+    );
 
     verify(listener(0)).called(1);
     verifyNoMoreInteractions(listener);
 
-    removeListener();
+    sub.close();
 
     ref.state++;
 
     verifyNoMoreInteractions(listener);
-    owner.update();
+
+    sub.flush();
 
     verifyNoMoreInteractions(listener);
     owner.dispose();

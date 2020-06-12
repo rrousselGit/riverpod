@@ -6,7 +6,7 @@ import 'internals.dart';
 /// A function used by [Computed] to read other providers.
 ///
 /// By calling this function, it "binds" the [Computed] to the provider obtained.
-typedef Reader = Res Function<Res>(ProviderBase<ProviderSubscriptionBase, Res>);
+typedef Reader = Res Function<Res>(ProviderBase<ProviderDependencyBase, Res>);
 
 /// A provider that combines other providers into an immutable value and
 /// cache its result.
@@ -50,7 +50,7 @@ typedef Reader = Res Function<Res>(ProviderBase<ProviderSubscriptionBase, Res>);
 /// **DON'T* trigger side-effects such as http requests inside [Computed].
 /// [Computed] does not guanrantee that the function won't be re-evaluated
 /// even if the inputs didn't change.
-class Computed<T> extends ProviderBase<ProviderSubscriptionBase, T> {
+class Computed<T> extends ProviderBase<ProviderDependencyBase, T> {
   /// Creates a [Computed] and allows specifying a [name].
   Computed(this._selector, {String name}) : super(name);
 
@@ -63,29 +63,55 @@ class Computed<T> extends ProviderBase<ProviderSubscriptionBase, T> {
 }
 
 class _ComputedState<T>
-    extends ProviderStateBase<ProviderSubscriptionBase, T, Computed<T>> {
-  final _subscritionsCache = <ProviderBase, _Subscription>{};
-  var _shouldCompute = true;
+    extends ProviderStateBase<ProviderDependencyBase, T, Computed<T>> {
+  final _dependencies = <ProviderBase, _Dependency>{};
   bool _debugSelecting;
 
+  T _state;
   @override
-  T state;
+  T get state => _state;
 
   @override
-  ProviderSubscriptionBase createProviderSubscription() {
-    return ProviderBaseSubscriptionImpl();
+  ProviderDependencyBase createProviderDependency() {
+    return ProviderBaseDependencyImpl();
   }
 
   @override
   void initState() {
+    // force initial computation
+    _state = _compute();
+  }
+
+  @override
+  void flush() {
+    var dependencyDidUpdate = false;
+    for (final dep in _dependencies.values) {
+      if (dep.subscription.flush()) {
+        dependencyDidUpdate = true;
+      }
+    }
+    if (dependencyDidUpdate) {
+      final newState = _compute();
+      if (!const DeepCollectionEquality().equals(_state, newState)) {
+        _state = newState;
+        notifyChanged();
+      } else {
+        cancelChangeNotification();
+      }
+    }
+  }
+
+  T _compute() {
     assert(() {
       _debugSelecting = true;
       return true;
     }(), '');
     try {
+      notifyListenersLock = this;
       // TODO what if there's an exception inside selector?
-      state = provider._selector(_reader);
+      return provider._selector(_reader);
     } finally {
+      notifyListenersLock = null;
       assert(() {
         _debugSelecting = false;
         return true;
@@ -93,63 +119,33 @@ class _ComputedState<T>
     }
   }
 
-  @override
-  void notifyListeners() {
-    if (_shouldCompute) {
-      _shouldCompute = false;
-
-      assert(() {
-        _debugSelecting = true;
-        return true;
-      }(), '');
-      T newState;
-      try {
-        // TODO what if there's an exception inside selector?
-        newState = provider._selector(_reader);
-      } finally {
-        assert(() {
-          _debugSelecting = false;
-          return true;
-        }(), '');
-      }
-      if (!const DeepCollectionEquality().equals(newState, state)) {
-        state = newState;
-        super.notifyListeners();
-      }
-    }
-  }
-
-  Res _reader<Res>(ProviderBase<ProviderSubscriptionBase, Res> target) {
+  Res _reader<Res>(ProviderBase<ProviderDependencyBase, Res> target) {
     assert(
       _debugSelecting,
       'Cannot use `read` outside of the body of the Computed callback',
     );
-    return _subscritionsCache.putIfAbsent(target, () {
+    return _dependencies.putIfAbsent(target, () {
       final state = owner.readProviderState(target);
-      redepthAfter(state);
 
-      final sub = _Subscription();
-      sub._removeListener = state.$addListener(
-        (value) {
-          sub._state = value;
-          _shouldCompute = true;
-          markNeedsNotifyListeners();
-        },
+      final dep = _Dependency();
+      dep.subscription = state.addLazyListener(
+        mayHaveChanged: markMayHaveChanged,
+        onChange: (value) => dep._state = value,
       );
-      return sub;
+      return dep;
     })._state as Res;
   }
 
   @override
   void dispose() {
-    for (final subscription in _subscritionsCache.values) {
-      subscription._removeListener();
+    for (final subscription in _dependencies.values) {
+      subscription.subscription.close();
     }
     super.dispose();
   }
 }
 
-class _Subscription {
-  VoidCallback _removeListener;
+class _Dependency {
+  ProviderSubscription subscription;
   Object _state;
 }

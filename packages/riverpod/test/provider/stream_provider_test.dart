@@ -30,7 +30,11 @@ void main() {
     final provider = StreamProvider((_) => controller.stream);
     final listener = ListenerMock();
 
-    provider.watchOwner(owner, listener);
+    final sub = provider.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: listener,
+    );
 
     verify(listener(const AsyncValue<int>.loading())).called(1);
     verifyNoMoreInteractions(listener);
@@ -38,14 +42,14 @@ void main() {
     controller.add(42);
 
     verifyNoMoreInteractions(listener);
-    owner.update();
+    sub.flush();
     verify(listener(const AsyncValue.data(42))).called(1);
     verifyNoMoreInteractions(listener);
 
     controller.add(21);
 
     verifyNoMoreInteractions(listener);
-    owner.update();
+    sub.flush();
     verify(listener(const AsyncValue.data(21))).called(1);
     verifyNoMoreInteractions(listener);
 
@@ -61,7 +65,11 @@ void main() {
     final error = Error();
     final stack = StackTrace.current;
 
-    provider.watchOwner(owner, listener);
+    final sub = provider.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: listener,
+    );
 
     verify(listener(const AsyncValue<int>.loading())).called(1);
     verifyNoMoreInteractions(listener);
@@ -69,14 +77,14 @@ void main() {
     controller.addError(error, stack);
 
     verifyNoMoreInteractions(listener);
-    owner.update();
+    sub.flush();
     verify(listener(AsyncValue.error(error, stack)));
     verifyNoMoreInteractions(listener);
 
     controller.add(21);
 
     verifyNoMoreInteractions(listener);
-    owner.update();
+    sub.flush();
     verify(listener(const AsyncValue.data(21))).called(1);
     verifyNoMoreInteractions(listener);
 
@@ -94,7 +102,11 @@ void main() {
     });
     final listener = ListenerMock();
 
-    provider.watchOwner(owner, listener);
+    final sub = provider.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: listener,
+    );
 
     verify(listener(const AsyncValue<int>.loading())).called(1);
     verifyNoMoreInteractions(listener);
@@ -102,7 +114,7 @@ void main() {
     controller.add(42);
 
     verifyNoMoreInteractions(listener);
-    owner.update();
+    sub.flush();
     verify(listener(const AsyncValue.data(42))).called(1);
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(dispose);
@@ -137,6 +149,152 @@ void main() {
     owner.dispose();
   });
 
+  group('currentData', () {
+    group('StreamProvider', () {
+      test('read currentValue before first value', () async {
+        final owner = ProviderStateOwner();
+        final controller = StreamController<int>(sync: true);
+        final provider = StreamProvider<int>((_) => controller.stream);
+
+        final def = owner.ref.dependOn(provider);
+        final future = def.currentData;
+        final future2 = def.currentData;
+        controller.add(42);
+
+        await expectLater(future, completion(42));
+        await expectLater(future2, completion(42));
+
+        await controller.close();
+      });
+      test('read currentValue before after value', () async {
+        final owner = ProviderStateOwner();
+        final controller = StreamController<int>(sync: true);
+        final provider = StreamProvider<int>((_) => controller.stream);
+
+        final def = owner.ref.dependOn(provider);
+        controller.add(42);
+        final future = def.currentData;
+        final future2 = def.currentData;
+
+        await expectLater(future, completion(42));
+        await expectLater(future2, completion(42));
+
+        await controller.close();
+      });
+      test('read currentValue before first error', () async {
+        final owner = ProviderStateOwner();
+        final controller = StreamController<int>(sync: true);
+        final provider = StreamProvider<int>((_) => controller.stream);
+
+        final def = owner.ref.dependOn(provider);
+        final future = def.currentData;
+        final future2 = def.currentData;
+        controller.addError(42);
+
+        await expectLater(future, throwsA(42));
+        await expectLater(future2, throwsA(42));
+
+        await controller.close();
+      });
+      test('read currentValue before after error', () async {
+        final owner = ProviderStateOwner();
+        final controller = StreamController<int>(sync: true);
+        final provider = StreamProvider<int>((_) => controller.stream);
+
+        final def = owner.ref.dependOn(provider);
+        controller.addError(42);
+        final future = def.currentData;
+        final future2 = def.currentData;
+
+        await expectLater(future, throwsA(42));
+        await expectLater(future2, throwsA(42));
+
+        await controller.close();
+      });
+    });
+    group('ValueStreamProvider', () {
+      test('read currentValue before first value', () async {
+        final provider = StreamProvider<int>((_) async* {});
+        final owner = ProviderStateOwner(overrides: [
+          provider.debugOverrideWithValue(const AsyncValue.loading()),
+        ]);
+
+        final def = owner.ref.dependOn(provider);
+        final future = def.currentData;
+        final future2 = def.currentData;
+
+        owner.updateOverrides([
+          provider.debugOverrideWithValue(const AsyncValue.data(42)),
+        ]);
+
+        await expectLater(future, completion(42));
+        await expectLater(future2, completion(42));
+      });
+      test('read currentValue before after value', () async {
+        final provider = StreamProvider<int>((_) async* {});
+        final owner = ProviderStateOwner(overrides: [
+          provider.debugOverrideWithValue(const AsyncValue.loading()),
+        ]);
+
+        final def = owner.ref.dependOn(provider);
+        owner.updateOverrides([
+          provider.debugOverrideWithValue(const AsyncValue.data(42)),
+        ]);
+        final future = def.currentData;
+        final future2 = def.currentData;
+
+        await expectLater(future, completion(42));
+        await expectLater(future2, completion(42));
+      });
+      test('read currentValue before first error', () async {
+        final provider = StreamProvider<int>((_) async* {});
+        final owner = ProviderStateOwner(overrides: [
+          provider.debugOverrideWithValue(const AsyncValue.loading()),
+        ]);
+
+        final def = owner.ref.dependOn(provider);
+        final future = def.currentData;
+        final future2 = def.currentData;
+        owner.updateOverrides([
+          provider.debugOverrideWithValue(AsyncValue.error(42)),
+        ]);
+
+        await expectLater(future, throwsA(42));
+        await expectLater(future2, throwsA(42));
+      });
+      test('read currentValue before after error', () async {
+        final provider = StreamProvider<int>((_) async* {});
+        final owner = ProviderStateOwner(overrides: [
+          provider.debugOverrideWithValue(const AsyncValue.loading()),
+        ]);
+
+        final def = owner.ref.dependOn(provider);
+        owner.updateOverrides([
+          provider.debugOverrideWithValue(AsyncValue.error(42)),
+        ]);
+
+        final future = def.currentData;
+        final future2 = def.currentData;
+
+        await expectLater(future, throwsA(42));
+        await expectLater(future2, throwsA(42));
+      });
+      test('synchronous first event', () async {
+        final provider = StreamProvider<int>((_) async* {});
+        final owner = ProviderStateOwner(overrides: [
+          provider.debugOverrideWithValue(const AsyncValue.data(42)),
+        ]);
+
+        final def = owner.ref.dependOn(provider);
+        final future = def.currentData;
+        final future2 = def.currentData;
+
+        await expectLater(future, completion(42));
+        await expectLater(future2, completion(42));
+      });
+    });
+  });
+
   group('mock as value', () {
     test('value immediatly then other value', () async {
       final provider = StreamProvider<int>((_) async* {});
@@ -153,7 +311,7 @@ void main() {
       verifyNoMoreInteractions(listener);
       await expectLater(stream, emits(42));
 
-      owner.update(overrides: [
+      owner.updateOverrides([
         provider.debugOverrideWithValue(const AsyncValue.data(21)),
       ]);
 
@@ -180,7 +338,7 @@ void main() {
       verifyNoMoreInteractions(listener);
       await expectLater(stream, emits(42));
 
-      owner.update(overrides: [
+      owner.updateOverrides([
         provider.debugOverrideWithValue(AsyncValue.error(21)),
       ]);
 
@@ -209,7 +367,7 @@ void main() {
 
       Object error;
       runZonedGuarded(
-        () => owner.update(overrides: [
+        () => owner.updateOverrides([
           provider.debugOverrideWithValue(const AsyncValue.loading()),
         ]),
         (err, _) => error = err,
@@ -236,7 +394,7 @@ void main() {
       verify(listener(const AsyncValue.loading())).called(1);
       verifyNoMoreInteractions(listener);
 
-      owner.update(overrides: [
+      owner.updateOverrides([
         provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
 
@@ -264,7 +422,7 @@ void main() {
 
       final stackTrace = StackTrace.current;
 
-      owner.update(overrides: [
+      owner.updateOverrides([
         provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
 
@@ -291,13 +449,13 @@ void main() {
       verify(listener(const AsyncValue.loading())).called(1);
       verifyNoMoreInteractions(listener);
 
-      owner.update(overrides: [
+      owner.updateOverrides([
         provider.debugOverrideWithValue(const AsyncValue.loading()),
       ]);
 
       verifyNoMoreInteractions(listener);
 
-      owner.update(overrides: [
+      owner.updateOverrides([
         provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
 
@@ -326,7 +484,7 @@ void main() {
       verifyNoMoreInteractions(listener);
       await expectLater(stream, emitsError(42));
 
-      owner.update(overrides: [
+      owner.updateOverrides([
         provider.debugOverrideWithValue(AsyncValue.error(21, stackTrace)),
       ]);
 
@@ -355,7 +513,7 @@ void main() {
       await expectLater(stream, emitsError(42));
 
       final stackTrace2 = StackTrace.current;
-      owner.update(overrides: [
+      owner.updateOverrides([
         provider.debugOverrideWithValue(
           AsyncValue.error(42, stackTrace2),
         ),
@@ -385,7 +543,7 @@ void main() {
       verifyNoMoreInteractions(listener);
       await expectLater(stream, emitsError(42));
 
-      owner.update(overrides: [
+      owner.updateOverrides([
         provider.debugOverrideWithValue(const AsyncValue.data(21)),
       ]);
 
@@ -415,7 +573,7 @@ void main() {
 
       Object error;
       runZonedGuarded(
-        () => owner.update(overrides: [
+        () => owner.updateOverrides([
           provider.debugOverrideWithValue(const AsyncValue.loading()),
         ]),
         (err, _) => error = err,

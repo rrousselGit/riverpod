@@ -1,8 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/src/internal.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -57,9 +54,8 @@ Changing the kind of override or reordering overrides is not supported.
 
     var consumerBuildCount = 0;
 
-    final consumer = HookBuilder(builder: (context) {
+    final consumer = Consumer<int>(provider, builder: (c, value, _) {
       consumerBuildCount++;
-      final value = useProvider(provider);
       return Text(value.toString(), textDirection: TextDirection.ltr);
     });
 
@@ -71,38 +67,6 @@ Changing the kind of override or reordering overrides is not supported.
       reset(onInitState);
       reset(onDidUpdateProvider);
       reset(onDispose);
-    });
-
-    testWidgets('calls all dispose in order even if one crashes',
-        (tester) async {
-      final provider = TestProvider(0, onDispose: MockDispose());
-      final provider2 = TestProvider(0, onDispose: MockDispose());
-      final error2 = Error();
-      when(provider2.onDispose(any)).thenThrow(error2);
-      final provider3 = TestProvider(0, onDispose: MockDispose());
-
-      await tester.pumpWidget(
-        ProviderScope(
-          child: HookBuilder(builder: (c) {
-            useProvider(provider);
-            useProvider(provider2);
-            useProvider(provider3);
-            return Container();
-          }),
-        ),
-      );
-
-      final errors = <Object>[];
-
-      await runZonedGuarded(
-        () => tester.pumpWidget(Container()),
-        (err, _) => errors.add(err),
-      );
-
-      expect(errors, [error2]);
-      verify(provider.onDispose(argThat(isNotNull))).called(1);
-      verify(provider2.onDispose(argThat(isNotNull))).called(1);
-      verify(provider3.onDispose(argThat(isNotNull))).called(1);
     });
 
     testWidgets('override to override on same scope calls didUpdateProvider',
@@ -277,7 +241,7 @@ Changing the kind of override or reordering overrides is not supported.
     });
   });
 
-  group('useProvider(provider.select)', () {
+  group('Consumer(provider.select)', () {
     testWidgets('simple flow', (tester) async {
       final notifier = Counter();
       final provider = StateNotifierProvider((_) => notifier);
@@ -286,14 +250,19 @@ Changing the kind of override or reordering overrides is not supported.
       Object lastSelectedValue;
 
       await tester.pumpWidget(
-        ProviderScope(child: HookBuilder(builder: (c) {
-          buildCount++;
-          lastSelectedValue = useProvider(provider.state.select((value) {
-            selector(value);
-            return value.isNegative;
-          }));
-          return Container();
-        })),
+        ProviderScope(
+          child: Consumer<bool>(
+            provider.state.select((value) {
+              selector(value);
+              return value.isNegative;
+            }),
+            builder: (c, value, _) {
+              buildCount++;
+              lastSelectedValue = value;
+              return Container();
+            },
+          ),
+        ),
       );
 
       expect(lastSelectedValue, false);
@@ -318,11 +287,15 @@ Changing the kind of override or reordering overrides is not supported.
       var buildCount = 0;
 
       await tester.pumpWidget(
-        ProviderScope(child: HookBuilder(builder: (c) {
-          buildCount++;
-          useProvider(provider.select((value) => value.value));
-          return Container();
-        })),
+        ProviderScope(
+          child: Consumer<List<int>>(
+            provider.select((value) => value.value),
+            builder: (c, value, _) {
+              buildCount++;
+              return Container();
+            },
+          ),
+        ),
       );
 
       expect(buildCount, 1);
@@ -341,20 +314,30 @@ Changing the kind of override or reordering overrides is not supported.
       final notifier = Counter();
       final provider = StateNotifierProvider((_) => notifier);
       final selector = SelectorSpy<String>();
-      String value2;
+      var value2 = 'init';
       final build = BuildSpy();
       when(build()).thenAnswer((_) => value2 = 'foo');
       Object lastSelectedValue;
 
       await tester.pumpWidget(
-        ProviderScope(child: HookBuilder(builder: (c) {
-          build();
-          lastSelectedValue = useProvider(provider.state.select((value) {
-            selector('$value $value2');
-            return '$value $value2';
-          }));
-          return Container();
-        })),
+        ProviderScope(
+          child: Consumer<int>(
+            provider.state,
+            builder: (c, v, _) {
+              build();
+              return Consumer<String>(
+                provider.state.select((value) {
+                  selector('$value $value2');
+                  return '$value $value2';
+                }),
+                builder: (c, value, _) {
+                  lastSelectedValue = value;
+                  return Container();
+                },
+              );
+            },
+          ),
+        ),
       );
 
       expect(lastSelectedValue, '0 foo');
@@ -372,82 +355,11 @@ Changing the kind of override or reordering overrides is not supported.
 
       expect(lastSelectedValue, '1 bar');
       verifyInOrder([
-        selector('1 foo'),
         build(),
         selector('1 bar'),
       ]);
       verifyNoMoreInteractions(selector);
       verifyNoMoreInteractions(build);
-    });
-    testWidgets('stop calling selectors after one cause rebuild',
-        (tester) async {
-      final notifier = Counter();
-      final provider = StateNotifierProvider((_) => notifier);
-      bool lastSelectedValue;
-      final selector = SelectorSpy<int>();
-      int lastSelectedValue2;
-      final selector2 = SelectorSpy<int>();
-      Object lastSelectedValue3;
-      final selector3 = SelectorSpy<int>();
-      final build = BuildSpy();
-
-      await tester.pumpWidget(
-        ProviderScope(child: HookBuilder(builder: (c) {
-          build();
-          lastSelectedValue = useProvider(provider.state.select((value) {
-            selector(value);
-            return value.isNegative;
-          }));
-          lastSelectedValue2 = useProvider(provider.state.select((value) {
-            selector2(value);
-            return value;
-          }));
-          lastSelectedValue3 = useProvider(provider.state.select((value) {
-            selector3(value);
-            return value;
-          }));
-          return Container();
-        })),
-      );
-
-      verifyInOrder([
-        build(),
-        selector(0),
-        selector2(0),
-        selector3(0),
-      ]);
-      verifyNoMoreInteractions(build);
-      verifyNoMoreInteractions(selector);
-      verifyNoMoreInteractions(selector2);
-      verifyNoMoreInteractions(selector3);
-      expect(lastSelectedValue, false);
-      expect(lastSelectedValue2, 0);
-      expect(lastSelectedValue3, 0);
-
-      notifier.increment();
-
-      verifyNoMoreInteractions(build);
-      verifyNoMoreInteractions(selector);
-      verifyNoMoreInteractions(selector2);
-      verifyNoMoreInteractions(selector3);
-
-      await tester.pump();
-
-      verifyInOrder([
-        selector(1),
-        selector2(1),
-        build(),
-        selector(1),
-        selector2(1),
-        selector3(1),
-      ]);
-      verifyNoMoreInteractions(build);
-      verifyNoMoreInteractions(selector);
-      verifyNoMoreInteractions(selector2);
-      verifyNoMoreInteractions(selector3);
-      expect(lastSelectedValue, false);
-      expect(lastSelectedValue2, 1);
-      expect(lastSelectedValue3, 1);
     });
   });
 }

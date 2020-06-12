@@ -2,8 +2,8 @@ import 'common.dart';
 import 'framework/framework.dart';
 
 /// The subscription to a [Provider].
-class ProviderSubscription<T> extends ProviderSubscriptionBase {
-  ProviderSubscription._(this.value);
+class ProviderDependency<T> extends ProviderDependencyBase {
+  ProviderDependency._(this.value);
 
   /// The value exposed by [Provider].
   /// It is guaranteed to never change.
@@ -15,7 +15,7 @@ class ProviderSubscription<T> extends ProviderSubscriptionBase {
 // TODO What is a provider (testable, overridable, listenable)
 // TODO how to read a provider (Flutter)
 // TODO how to test a provider
-class Provider<T> extends AlwaysAliveProvider<ProviderSubscription<T>, T> {
+class Provider<T> extends AlwaysAliveProvider<ProviderDependency<T>, T> {
   Provider(this._create, {String name}) : super(name);
 
   final Create<T, ProviderReference> _create;
@@ -25,7 +25,7 @@ class Provider<T> extends AlwaysAliveProvider<ProviderSubscription<T>, T> {
 }
 
 class _ProviderState<T>
-    extends ProviderStateBase<ProviderSubscription<T>, T, Provider<T>> {
+    extends ProviderStateBase<ProviderDependency<T>, T, Provider<T>> {
   @override
   T state;
 
@@ -35,7 +35,7 @@ class _ProviderState<T>
   }
 
   @override
-  ProviderSubscription<T> createProviderSubscription() {
-    return ProviderSubscription._(state);
+  ProviderDependency<T> createProviderDependency() {
+    return ProviderDependency._(state);
   }
 }

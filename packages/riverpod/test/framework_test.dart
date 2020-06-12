@@ -7,21 +7,131 @@ import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 
-Matcher isProvider(ProviderBase provider, {int depth}) {
+Matcher isProvider(ProviderBase provider) {
   final res = isA<ProviderStateBase>().having(
     (s) => s.provider,
     'provider',
     provider,
   );
-
-  if (depth != null) {
-    return res.having((s) => s.depth, 'depth', depth);
-  }
   return res;
 }
 
 void main() {
   // TODO: throw if tried to dispose a parent owner that still have undisposed children owners
+  test('guard listeners', () {
+    final notifier = Counter();
+    final provider = StateNotifierProvider((_) => notifier);
+    final owner = ProviderStateOwner();
+    final listener = ListenerMock();
+    final listener2 = ListenerMock();
+
+    final firstErrors = <Object>[];
+    runZonedGuarded(
+      () => provider.state.watchOwner(owner, (value) {
+        listener(value);
+        // ignore: only_throw_errors
+        throw value;
+      }),
+      (err, _) => firstErrors.add(err),
+    );
+
+    verify(listener(0)).called(1);
+    verifyNoMoreInteractions(listener);
+    expect(firstErrors, [0]);
+
+    provider.state.watchOwner(owner, listener2);
+
+    verify(listener2(0)).called(1);
+    verifyNoMoreInteractions(listener2);
+
+    final secondErrors = <Object>[];
+    runZonedGuarded(
+      notifier.increment,
+      (err, _) => secondErrors.add(err),
+    );
+
+    expect(secondErrors, [1]);
+    expect(firstErrors, [0]);
+    verifyInOrder([
+      listener(1),
+      listener2(1),
+    ]);
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(listener2);
+  });
+  test('reading unflushed triggers flush', () {
+    final notifier = Counter();
+    final provider = StateNotifierProvider((_) => notifier);
+    final owner = ProviderStateOwner();
+    final listener = ListenerMock();
+    final listener2 = ListenerMock();
+    var callCount = 0;
+    final computed = Computed((read) {
+      callCount++;
+      return read(provider.state);
+    });
+
+    final sub = computed.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: listener,
+    );
+
+    verify(listener(0)).called(1);
+    verifyNoMoreInteractions(listener);
+    expect(callCount, 1);
+
+    notifier.increment();
+
+    verifyNoMoreInteractions(listener);
+
+    final sub2 = computed.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: listener2,
+    );
+
+    expect(callCount, 2);
+    verifyNoMoreInteractions(listener);
+    verify(listener2(1)).called(1);
+    verifyNoMoreInteractions(listener2);
+
+    expect(sub.flush(), true);
+
+    verify(listener(1)).called(1);
+    verifyNoMoreInteractions(listener);
+    expect(callCount, 2);
+
+    expect(sub2.flush(), isFalse);
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(listener2);
+  });
+  test('flusing closed subscription is noop', () {
+    final notifier = Counter();
+    final provider = StateNotifierProvider((_) => notifier);
+    final owner = ProviderStateOwner();
+    final listener = ListenerMock();
+    final mayHaveChanged = MockMarkMayHaveChanged();
+
+    final sub = provider.state.addLazyListener(
+      owner,
+      mayHaveChanged: mayHaveChanged,
+      onChange: listener,
+    );
+
+    verify(listener(0)).called(1);
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(mayHaveChanged);
+
+    sub.close();
+    notifier.increment();
+    final didFlush = sub.flush();
+
+    expect(didFlush, isFalse);
+
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(listener);
+  });
   test('remove dependency when owner is disposed', () {
     final provider = Provider((_) {});
     final provider2 = Provider((ref) => ref.dependOn(provider));
@@ -34,10 +144,10 @@ void main() {
     provider.readOwner(owner);
     provider2.readOwner(owner);
 
-    expect(root.debugProviderStateSortedByDepth, [isProvider(provider)]);
-    final state = root.debugProviderStateSortedByDepth.first;
-    expect(owner.debugProviderStateSortedByDepth, [isProvider(provider2)]);
-    final state2 = owner.debugProviderStateSortedByDepth.first;
+    expect(root.debugProviderStates, [isProvider(provider)]);
+    final state = root.debugProviderStates.first;
+    expect(owner.debugProviderStates, [isProvider(provider2)]);
+    final state2 = owner.debugProviderStates.first;
 
     expect(state.debugDependents, {state2});
 
@@ -57,7 +167,7 @@ void main() {
       overrides: [provider3, provider4],
     );
 
-    expect(owner.debugProviderStateSortedByDepth, <Object>[]);
+    expect(owner.debugProviderStates, <Object>[]);
 
     provider.readOwner(owner);
     final ref2 = provider2.readOwner(owner);
@@ -65,17 +175,17 @@ void main() {
     final ref4 = provider4.readOwner(owner);
 
     expect(
-      root.debugProviderStateSortedByDepth,
+      root.debugProviderStates,
       unorderedMatches(<Object>[
-        isProvider(provider2, depth: 0),
-        isProvider(provider, depth: 0),
+        isProvider(provider2),
+        isProvider(provider),
       ]),
     );
     expect(
-      owner.debugProviderStateSortedByDepth,
+      owner.debugProviderStates,
       unorderedMatches(<Object>[
-        isProvider(provider4, depth: 0),
-        isProvider(provider3, depth: 0),
+        isProvider(provider4),
+        isProvider(provider3),
       ]),
     );
 
@@ -83,31 +193,31 @@ void main() {
     ref4.dependOn(provider2);
 
     expect(
-      root.debugProviderStateSortedByDepth,
+      root.debugProviderStates,
       unorderedMatches(<Object>[
-        isProvider(provider2, depth: 0),
-        isProvider(provider, depth: 0),
+        isProvider(provider2),
+        isProvider(provider),
       ]),
     );
     expect(
-      owner.debugProviderStateSortedByDepth,
+      owner.debugProviderStates,
       unorderedMatches(<Object>[
-        isProvider(provider4, depth: 1),
-        isProvider(provider3, depth: 1),
+        isProvider(provider4),
+        isProvider(provider3),
       ]),
     );
 
     ref2.dependOn(provider);
 
-    expect(root.debugProviderStateSortedByDepth, <Object>[
-      isProvider(provider, depth: 0),
-      isProvider(provider2, depth: 1),
+    expect(root.debugProviderStates, <Object>[
+      isProvider(provider),
+      isProvider(provider2),
     ]);
     expect(
-      owner.debugProviderStateSortedByDepth,
+      owner.debugProviderStates,
       unorderedMatches(<Object>[
-        isProvider(provider4, depth: 2),
-        isProvider(provider3, depth: 2),
+        isProvider(provider4),
+        isProvider(provider3),
       ]),
     );
   });
@@ -118,7 +228,7 @@ void main() {
     final provider3 = Provider((ref) => ref, name: '3');
     final provider4 = Provider((ref) => ref, name: '4');
 
-    expect(owner.debugProviderStateSortedByDepth, <Object>[]);
+    expect(owner.debugProviderStates, <Object>[]);
 
     provider.readOwner(owner);
     final ref2 = provider2.readOwner(owner);
@@ -126,43 +236,46 @@ void main() {
     final ref4 = provider4.readOwner(owner);
 
     expect(
-      owner.debugProviderStateSortedByDepth,
+      owner.debugProviderStates,
       unorderedMatches(<Object>[
-        isProvider(provider4, depth: 0),
-        isProvider(provider3, depth: 0),
-        isProvider(provider2, depth: 0),
-        isProvider(provider, depth: 0),
+        isProvider(provider4),
+        isProvider(provider3),
+        isProvider(provider2),
+        isProvider(provider),
       ]),
     );
 
     ref4.dependOn(provider3);
 
-    expect(owner.debugProviderStateSortedByDepth, <Object>[
-      isProvider(provider3, depth: 0),
-      isProvider(provider2, depth: 0),
-      isProvider(provider, depth: 0),
-      isProvider(provider4, depth: 1),
-    ]);
+    expect(
+      owner.debugProviderStates,
+      containsAllInOrder(<Object>[
+        isProvider(provider3),
+        isProvider(provider4),
+      ]),
+    );
 
     ref3.dependOn(provider2);
 
-    expect(owner.debugProviderStateSortedByDepth, <Object>[
-      isProvider(provider2, depth: 0),
-      isProvider(provider, depth: 0),
-      isProvider(provider3, depth: 1),
-      isProvider(provider4, depth: 2),
-    ]);
+    expect(
+      owner.debugProviderStates,
+      containsAllInOrder(<Object>[
+        isProvider(provider2),
+        isProvider(provider3),
+        isProvider(provider4),
+      ]),
+    );
 
     ref2.dependOn(provider);
 
-    expect(owner.debugProviderStateSortedByDepth, <Object>[
-      isProvider(provider, depth: 0),
-      isProvider(provider2, depth: 1),
-      isProvider(provider3, depth: 2),
-      isProvider(provider4, depth: 3),
+    expect(owner.debugProviderStates, <Object>[
+      isProvider(provider),
+      isProvider(provider2),
+      isProvider(provider3),
+      isProvider(provider4),
     ]);
   });
-  test("can't call onDispose", () {
+  test("can't call onDispose inside onDispose", () {
     final provider = Provider((ref) {
       ref.onDispose(() {
         ref.onDispose(() {});
@@ -178,7 +291,7 @@ void main() {
 
     expect(errors, [isStateError]);
   });
-  test("can't call dependOn", () {
+  test("can't call dependOn inside onDispose", () {
     final provider2 = Provider((ref) => 0);
     final provider = Provider((ref) {
       ref.onDispose(() {
@@ -195,7 +308,7 @@ void main() {
 
     expect(errors, [isStateError]);
   });
-  test('owner.debugProviderStates', () {
+  test('owner.debugProviderValues', () {
     final unnamed = Provider((_) => 0);
     final counter = Counter();
     final named = StateNotifierProvider((_) {
@@ -203,24 +316,24 @@ void main() {
     }, name: 'named');
     final owner = ProviderStateOwner();
 
-    expect(owner.debugProviderStates, <ProviderBase, Object>{});
+    expect(owner.debugProviderValues, <ProviderBase, Object>{});
 
     expect(unnamed.readOwner(owner), 0);
 
-    expect(owner.debugProviderStates, {
+    expect(owner.debugProviderValues, {
       unnamed: 0,
     });
 
     expect(named.readOwner(owner), counter);
 
-    expect(owner.debugProviderStates, {
+    expect(owner.debugProviderValues, {
       unnamed: 0,
       named: counter,
     });
 
     expect(named.state.readOwner(owner), 0);
 
-    expect(owner.debugProviderStates, {
+    expect(owner.debugProviderValues, {
       unnamed: 0,
       named: counter,
       named.state: 0,
@@ -265,21 +378,23 @@ void main() {
     expect(provider3.readOwner(owner), '1');
 
     expect(
-      root.debugProviderStateSortedByDepth.map((s) => s.provider),
+      root.debugProviderStates.map((s) => s.provider),
       [provider1],
     );
     expect(
-      owner.debugProviderStateSortedByDepth.map((s) => s.provider),
-      [provider3, provider2],
+      owner.debugProviderStates.map((s) => s.provider),
+      anyOf([
+        [provider3, provider2],
+        [provider2, provider3],
+      ]),
     );
   });
   test('owner life-cycles are unusuable after dispose', () {
     final owner = ProviderStateOwner()..dispose();
 
     expect(owner.dispose, throwsStateError);
-    expect(owner.update, throwsStateError);
+    expect(() => owner.updateOverrides([]), throwsStateError);
     expect(() => owner.ref, throwsStateError);
-    expect(owner.scheduleNotification, throwsStateError);
     expect(() => owner.readProviderState(Provider((_) => 0)), throwsStateError);
   });
   test('provider.overrideAs(provider) can be simplified into provider', () {
@@ -295,7 +410,7 @@ void main() {
 
     expect(notifier.mounted, false);
   });
-  test('cannot call markNeedsNotifyListeners after dispose', () {
+  test('cannot call markMayHaveChanged after dispose', () {
     final owner = ProviderStateOwner();
     final provider = TestProvider((ref) {});
     ProviderStateBase providerBaseState;
@@ -306,17 +421,17 @@ void main() {
     provider.readOwner(owner);
 
     expect(providerBaseState.dirty, false);
-    providerBaseState.markNeedsNotifyListeners();
+    providerBaseState.markMayHaveChanged();
     expect(providerBaseState.dirty, true);
 
-    owner.update();
+    provider.readOwner(owner);
 
     expect(providerBaseState.dirty, false);
 
     owner.dispose();
 
     expect(
-      () => providerBaseState.markNeedsNotifyListeners(),
+      () => providerBaseState.markMayHaveChanged(),
       throwsStateError,
     );
   });
@@ -339,8 +454,8 @@ void main() {
     expect(ref.dependOn(provider).value, 42);
     expect(ref2.dependOn(provider).value, 21);
 
-    owner.update(overrides: []);
-    owner2.update(overrides: [
+    owner.updateOverrides([]);
+    owner2.updateOverrides([
       provider.overrideAs(
         Provider((_) => 21),
       ),
@@ -415,7 +530,7 @@ void main() {
 
     expect(callCount, 0);
 
-    owner.update(overrides: [provider]);
+    owner.updateOverrides([provider]);
 
     expect(callCount, 0);
 
@@ -486,9 +601,9 @@ void main() {
     owner.dispose();
 
     verifyInOrder([
-      onDispose1(),
-      onDispose2(),
       onDispose3(),
+      onDispose2(),
+      onDispose1(),
     ]);
     verifyNoMoreInteractions(onDispose1);
     verifyNoMoreInteractions(onDispose2);
@@ -521,9 +636,9 @@ void main() {
     owner.dispose();
 
     verifyInOrder([
-      onDispose1(),
-      onDispose2(),
       onDispose3(),
+      onDispose2(),
+      onDispose1(),
     ]);
     verifyNoMoreInteractions(onDispose1);
     verifyNoMoreInteractions(onDispose2);
@@ -550,7 +665,7 @@ void main() {
     verifyZeroInteractions(provider1.onDidUpdateProvider);
     verifyZeroInteractions(provider2.onDidUpdateProvider);
 
-    owner.update(overrides: [
+    owner.updateOverrides([
       provider,
       provider1,
       provider2,
@@ -564,16 +679,14 @@ void main() {
     verifyNoMoreInteractions(provider.onDidUpdateProvider);
     verifyNoMoreInteractions(provider1.onDidUpdateProvider);
     verifyNoMoreInteractions(provider2.onDidUpdateProvider);
-
-    owner.dispose();
   });
   test('dependOn used on same provider multiple times returns same instance',
       () {
     final owner = ProviderStateOwner();
     final provider = Provider((_) => 42);
 
-    ProviderSubscription<int> other;
-    ProviderSubscription<int> other2;
+    ProviderDependency<int> other;
+    ProviderDependency<int> other2;
 
     final provider1 = Provider((ref) {
       other = ref.dependOn(provider);
@@ -677,64 +790,63 @@ void main() {
     verifyNoMoreInteractions(onDispose2);
   });
   group('notify listeners', () {
-    test('calls markNeedsUpdate at most once until update is called', () {
-      final rootNeedsUpdate = MockMarkNeedsUpdate();
-      final ownerNeedsUpdate = MockMarkNeedsUpdate();
+    test('calls onChange at most once per flush', () {
       final counter = Counter();
       final provider = StateNotifierProvider<Counter>((_) => counter);
-      final root = ProviderStateOwner(markNeedsUpdate: rootNeedsUpdate);
+      final root = ProviderStateOwner();
       final owner = ProviderStateOwner(
         parent: root,
-        markNeedsUpdate: ownerNeedsUpdate,
         overrides: [
           provider,
           provider.state,
         ],
       );
+      final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = ListenerMock();
 
-      provider.state.watchOwner(owner, listener);
+      final sub = provider.state.addLazyListener(
+        owner,
+        mayHaveChanged: mayHaveChanged,
+        onChange: listener,
+      );
 
       verify(listener(0)).called(1);
+      verifyNoMoreInteractions(mayHaveChanged);
       verifyNoMoreInteractions(listener);
-      verifyNoMoreInteractions(rootNeedsUpdate);
-      verifyNoMoreInteractions(ownerNeedsUpdate);
+
+      sub.flush();
+
+      verifyNoMoreInteractions(mayHaveChanged);
+      verifyNoMoreInteractions(listener);
 
       counter.increment();
 
-      verify(ownerNeedsUpdate()).called(1);
+      verify(mayHaveChanged()).called(1);
+      verifyNoMoreInteractions(mayHaveChanged);
       verifyNoMoreInteractions(listener);
-      verifyNoMoreInteractions(rootNeedsUpdate);
-      verifyNoMoreInteractions(ownerNeedsUpdate);
 
       counter.increment();
 
+      verifyNoMoreInteractions(mayHaveChanged);
       verifyNoMoreInteractions(listener);
-      verifyNoMoreInteractions(rootNeedsUpdate);
-      verifyNoMoreInteractions(ownerNeedsUpdate);
 
-      owner.update();
+      sub.flush();
 
       verify(listener(2)).called(1);
+      verifyNoMoreInteractions(mayHaveChanged);
       verifyNoMoreInteractions(listener);
-      verifyNoMoreInteractions(rootNeedsUpdate);
-      verifyNoMoreInteractions(ownerNeedsUpdate);
 
       counter.increment();
 
-      verify(ownerNeedsUpdate()).called(1);
+      verify(mayHaveChanged()).called(1);
+      verifyNoMoreInteractions(mayHaveChanged);
       verifyNoMoreInteractions(listener);
-      verifyNoMoreInteractions(rootNeedsUpdate);
-      verifyNoMoreInteractions(ownerNeedsUpdate);
     });
     test('noop inside initState', () {
-      final rootNeedsUpdate = MockMarkNeedsUpdate();
-      final ownerNeedsUpdate = MockMarkNeedsUpdate();
       final provider = TestProvider((ref) {});
-      final root = ProviderStateOwner(markNeedsUpdate: rootNeedsUpdate);
+      final root = ProviderStateOwner();
       final owner = ProviderStateOwner(
         parent: root,
-        markNeedsUpdate: ownerNeedsUpdate,
         overrides: [
           provider,
         ],
@@ -744,49 +856,57 @@ void main() {
         state = i.positionalArguments.first as TestProviderState;
 
         expect(state.dirty, true);
-        state..markNeedsNotifyListeners()..markNeedsNotifyListeners();
+        state..markMayHaveChanged()..markMayHaveChanged();
       });
+      final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = ListenerMock();
 
-      provider.watchOwner(owner, listener);
+      final sub = provider.addLazyListener(
+        owner,
+        mayHaveChanged: mayHaveChanged,
+        onChange: listener,
+      );
 
-      verify(listener(null)).called(1);
+      verify(listener(any)).called(1);
       verifyNoMoreInteractions(listener);
-      verifyNoMoreInteractions(rootNeedsUpdate);
-      verifyNoMoreInteractions(ownerNeedsUpdate);
+      verifyNoMoreInteractions(mayHaveChanged);
       expect(state.dirty, false);
 
-      owner.update();
+      sub.flush();
 
       verifyNoMoreInteractions(listener);
-      verifyNoMoreInteractions(rootNeedsUpdate);
-      verifyNoMoreInteractions(ownerNeedsUpdate);
+      verifyNoMoreInteractions(mayHaveChanged);
       expect(state.dirty, false);
     });
     test('noop if no provider was "dirty"', () {
       final counter = Counter();
       final provider = StateNotifierProvider<Counter>((_) => counter);
       final owner = ProviderStateOwner();
+      final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = ListenerMock();
 
-      provider.state.watchOwner(owner, listener);
+      final sub = provider.state.addLazyListener(
+        owner,
+        mayHaveChanged: mayHaveChanged,
+        onChange: listener,
+      );
 
       verify(listener(0)).called(1);
       verifyNoMoreInteractions(listener);
 
-      owner.update();
+      sub.flush();
       verifyNoMoreInteractions(listener);
 
       counter..increment()..increment();
 
       verifyNoMoreInteractions(listener);
 
-      owner.update();
+      sub.flush();
 
       verify(listener(2)).called(1);
       verifyNoMoreInteractions(listener);
 
-      owner.update();
+      sub.flush();
 
       verifyNoMoreInteractions(listener);
     });
@@ -802,7 +922,7 @@ void main() {
       verify(listener(const AsyncValue.loading())).called(1);
       verifyNoMoreInteractions(listener);
 
-      owner.update(overrides: [
+      owner.updateOverrides([
         futureProvider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
 
@@ -813,9 +933,14 @@ void main() {
       final owner = ProviderStateOwner();
       final counter = Counter();
       final provider = StateNotifierProvider<Counter>((_) => counter);
+      final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = ListenerMock();
 
-      provider.state.watchOwner(owner, listener);
+      final sub = provider.state.addLazyListener(
+        owner,
+        mayHaveChanged: mayHaveChanged,
+        onChange: listener,
+      );
 
       verify(listener(0)).called(1);
       verifyNoMoreInteractions(listener);
@@ -826,7 +951,7 @@ void main() {
       counter.increment();
       verifyNoMoreInteractions(listener);
 
-      owner.update();
+      sub.flush();
 
       verify(listener(2)).called(1);
       verifyNoMoreInteractions(listener);
@@ -847,13 +972,29 @@ void main() {
         return counter3;
       });
 
+      final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = ListenerMock('first');
-      final listener2 = ListenerMock('second');
-      final listener3 = ListenerMock('third');
+      final sub = provider.state.addLazyListener(
+        owner,
+        mayHaveChanged: mayHaveChanged,
+        onChange: listener,
+      );
 
-      provider3.state.watchOwner(owner, listener3);
-      provider2.state.watchOwner(owner, listener2);
-      provider.state.watchOwner(owner, listener);
+      final mayHaveChanged2 = MockMarkMayHaveChanged();
+      final listener2 = ListenerMock('second');
+      final sub2 = provider2.state.addLazyListener(
+        owner,
+        mayHaveChanged: mayHaveChanged2,
+        onChange: listener2,
+      );
+
+      final mayHaveChanged3 = MockMarkMayHaveChanged();
+      final listener3 = ListenerMock('third');
+      final sub3 = provider3.state.addLazyListener(
+        owner,
+        mayHaveChanged: mayHaveChanged3,
+        onChange: listener3,
+      );
 
       verify(listener(0)).called(1);
       verifyNoMoreInteractions(listener);
@@ -866,13 +1007,27 @@ void main() {
       counter2.increment();
       counter.increment();
 
-      owner.update();
-
       verifyInOrder([
-        listener(1),
-        listener2(1),
-        listener3(1),
+        mayHaveChanged3(),
+        mayHaveChanged2(),
+        mayHaveChanged(),
       ]);
+
+      sub3.flush();
+
+      verify(listener3(1)).called(1);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+      verifyNoMoreInteractions(listener3);
+
+      sub2.flush();
+      verify(listener2(1)).called(1);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+      verifyNoMoreInteractions(listener3);
+
+      sub.flush();
+      verify(listener(1)).called(1);
       verifyNoMoreInteractions(listener);
       verifyNoMoreInteractions(listener2);
       verifyNoMoreInteractions(listener3);
@@ -909,7 +1064,7 @@ class OnDisposeMock extends Mock {
   void call();
 }
 
-class MockMarkNeedsUpdate extends Mock {
+class MockMarkMayHaveChanged extends Mock {
   void call();
 }
 
@@ -935,7 +1090,7 @@ class MockOnValueDispose<T> extends Mock {
   void call(TestProviderValue<T> value);
 }
 
-class TestProviderValue<T> extends ProviderSubscriptionBase {
+class TestProviderValue<T> extends ProviderDependencyBase {
   TestProviderValue(this.value, {@required this.onDispose});
 
   final T value;
@@ -980,7 +1135,7 @@ class TestProviderState<T>
   }
 
   @override
-  TestProviderValue<T> createProviderSubscription() {
+  TestProviderValue<T> createProviderDependency() {
     return TestProviderValue<T>(state, onDispose: provider.onValueDispose);
   }
 }

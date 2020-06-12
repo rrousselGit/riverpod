@@ -25,16 +25,16 @@ class StateNotifierProvider<Notifier extends StateNotifier<Object>>
 /// Adds [state] to [StateNotifierProvider].
 ///
 /// This is done as an extension as a workaround to language limitations.
-extension StateNotifierValueProviderX<Value>
+extension StateNotifierStateProviderX<Value>
     on StateNotifierProvider<StateNotifier<Value>> {
   SetStateProvider<Value> get state {
-    _state ??= StateNotifierValueProvider<Value>(this);
-    return _state as StateNotifierValueProvider<Value>;
+    _state ??= StateNotifierStateProvider<Value>(this);
+    return _state as StateNotifierStateProvider<Value>;
   }
 }
 
-class StateNotifierValueProvider<T> extends SetStateProvider<T> {
-  StateNotifierValueProvider(this.controller)
+class StateNotifierStateProvider<T> extends SetStateProvider<T> {
+  StateNotifierStateProvider(this.controller)
       : super((ref) {
           final notifier = ref.dependOn(controller).value;
 

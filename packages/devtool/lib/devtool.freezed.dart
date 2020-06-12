@@ -710,7 +710,7 @@ class _$StateSnapshotTearOff {
 
   _StateSnapshot call(
       {@required
-          Map<ProviderBase<ProviderSubscriptionBase, Object>, Object> state,
+          Map<ProviderBase<ProviderDependencyBase, Object>, Object> state,
       @required
           List<_PropertyDetail> details}) {
     return _StateSnapshot(
@@ -724,7 +724,7 @@ class _$StateSnapshotTearOff {
 const $StateSnapshot = _$StateSnapshotTearOff();
 
 mixin _$StateSnapshot {
-  Map<ProviderBase<ProviderSubscriptionBase, Object>, Object> get state;
+  Map<ProviderBase<ProviderDependencyBase, Object>, Object> get state;
   List<_PropertyDetail> get details;
 
   $StateSnapshotCopyWith<StateSnapshot> get copyWith;
@@ -735,7 +735,7 @@ abstract class $StateSnapshotCopyWith<$Res> {
           StateSnapshot value, $Res Function(StateSnapshot) then) =
       _$StateSnapshotCopyWithImpl<$Res>;
   $Res call(
-      {Map<ProviderBase<ProviderSubscriptionBase, Object>, Object> state,
+      {Map<ProviderBase<ProviderDependencyBase, Object>, Object> state,
       List<_PropertyDetail> details});
 }
 
@@ -755,8 +755,7 @@ class _$StateSnapshotCopyWithImpl<$Res>
     return _then(_value.copyWith(
       state: state == freezed
           ? _value.state
-          : state
-              as Map<ProviderBase<ProviderSubscriptionBase, Object>, Object>,
+          : state as Map<ProviderBase<ProviderDependencyBase, Object>, Object>,
       details: details == freezed
           ? _value.details
           : details as List<_PropertyDetail>,
@@ -771,7 +770,7 @@ abstract class _$StateSnapshotCopyWith<$Res>
       __$StateSnapshotCopyWithImpl<$Res>;
   @override
   $Res call(
-      {Map<ProviderBase<ProviderSubscriptionBase, Object>, Object> state,
+      {Map<ProviderBase<ProviderDependencyBase, Object>, Object> state,
       List<_PropertyDetail> details});
 }
 
@@ -793,8 +792,7 @@ class __$StateSnapshotCopyWithImpl<$Res>
     return _then(_StateSnapshot(
       state: state == freezed
           ? _value.state
-          : state
-              as Map<ProviderBase<ProviderSubscriptionBase, Object>, Object>,
+          : state as Map<ProviderBase<ProviderDependencyBase, Object>, Object>,
       details: details == freezed
           ? _value.details
           : details as List<_PropertyDetail>,
@@ -810,7 +808,7 @@ class _$_StateSnapshot
         assert(details != null);
 
   @override
-  final Map<ProviderBase<ProviderSubscriptionBase, Object>, Object> state;
+  final Map<ProviderBase<ProviderDependencyBase, Object>, Object> state;
   @override
   final List<_PropertyDetail> details;
 
@@ -875,12 +873,12 @@ class _$_StateSnapshot
 abstract class _StateSnapshot implements StateSnapshot {
   factory _StateSnapshot(
       {@required
-          Map<ProviderBase<ProviderSubscriptionBase, Object>, Object> state,
+          Map<ProviderBase<ProviderDependencyBase, Object>, Object> state,
       @required
           List<_PropertyDetail> details}) = _$_StateSnapshot;
 
   @override
-  Map<ProviderBase<ProviderSubscriptionBase, Object>, Object> get state;
+  Map<ProviderBase<ProviderDependencyBase, Object>, Object> get state;
   @override
   List<_PropertyDetail> get details;
   @override

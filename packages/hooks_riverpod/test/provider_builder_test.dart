@@ -10,7 +10,7 @@ void main() {
 
     // These check the type safety
     ProviderReference ref;
-    ProviderSubscription<int> firstState;
+    ProviderDependency<int> firstState;
 
     final Provider<int> provider1 = Provider<int>((r) {
       final first = r.dependOn(provider);

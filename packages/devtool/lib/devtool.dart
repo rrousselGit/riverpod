@@ -286,10 +286,10 @@ Iterable<_PropertyDetail> _parseProperties(
     yield* _parseValue(
       entry.value,
       depth: 1,
-      rebuild: entry.key is StateNotifierValueProvider
+      rebuild: entry.key is StateNotifierStateProvider
           ? (value) {
               final controller = providers[
-                      (entry.key as StateNotifierValueProvider).controller]
+                      (entry.key as StateNotifierStateProvider).controller]
                   as StateNotifier;
 
               // ignore: invalid_use_of_protected_member
@@ -432,6 +432,7 @@ class DevtoolController extends StateNotifier<StateDetail>
   DevtoolController() : super(StateDetail(history: []));
 
   Map<ProviderBase, Object> _changes;
+  bool _updateBatchStarted = false;
 
   @override
   void didAddProvider(ProviderBase provider, Object value) {
@@ -468,23 +469,24 @@ class DevtoolController extends StateNotifier<StateDetail>
   }
 
   @override
-  void didProviderNotifyListeners(ProviderBase provider, Object newValue) {
+  void didUpdateProvider(ProviderBase provider, Object newValue) {
+    if (!_updateBatchStarted) {
+      _updateBatchStarted = true;
+      Future.microtask(() {
+        final newState = {...?state.currentState, ..._changes};
+        _changes = null;
+        state = StateDetail(
+          history: [
+            ...state.history,
+            StateSnapshot(
+              state: newState,
+              details: _parseProperties(newState).toList(),
+            ),
+          ],
+        );
+      });
+    }
     _changes ??= {};
     _changes[provider] = newValue;
-  }
-
-  @override
-  void onNotifyListenersDone() {
-    final newState = {...?state.currentState, ..._changes};
-    _changes = null;
-    state = StateDetail(
-      history: [
-        ...state.history,
-        StateSnapshot(
-          state: newState,
-          details: _parseProperties(newState).toList(),
-        ),
-      ],
-    );
   }
 }

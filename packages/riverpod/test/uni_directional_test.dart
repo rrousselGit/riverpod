@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:state_notifier/state_notifier.dart';
@@ -19,7 +21,7 @@ void main() {
 
     expect(setStateRef, isNotNull);
 
-    expect(() => provider2.readOwner(owner), throwsStateError);
+    expect(errorsOf(() => provider2.readOwner(owner)), [isStateError]);
   });
   test("nested initState can't mark dirty other providers", () {
     final counter = Counter();
@@ -34,22 +36,19 @@ void main() {
 
     expect(provider.state.readOwner(owner), 0);
 
-    expect(() => provider2.readOwner(owner), throwsA(isA<Error>()));
+    expect(errorsOf(() => provider2.readOwner(owner)), [
+      isStateError,
+      isA<Error>(),
+    ]);
   });
 
   test("dispose can't dirty anything", () {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
     final root = ProviderStateOwner();
-    Object error;
+    List<Object> errors;
     final provider2 = Provider((ref) {
-      ref.onDispose(() {
-        try {
-          counter.increment();
-        } catch (err) {
-          error = err;
-        }
-      });
+      ref.onDispose(() => errors = errorsOf(counter.increment));
       return 0;
     });
     final owner = ProviderStateOwner(parent: root, overrides: [provider2]);
@@ -59,7 +58,7 @@ void main() {
 
     owner.dispose();
 
-    expect(error, isNotNull);
+    expect(errors, [isStateError, isA<Error>()]);
   });
   test(
       'watchOwner initial read cannot update the provider and its dependencies',
@@ -70,16 +69,12 @@ void main() {
 
     expect(provider.state.readOwner(owner), 0);
 
-    Object error;
+    List<Object> errors;
     provider.state.watchOwner(owner, (value) {
-      try {
-        counter.increment();
-      } catch (err) {
-        error = err;
-      }
+      errors = errorsOf(counter.increment);
     });
 
-    expect(error, isNotNull);
+    expect(errors, [isA<AssertionError>(), isA<Error>()]);
   });
   test(
       'notifyListeners cannot dirty nodes that were already traversed across multiple ownwers',
@@ -94,49 +89,43 @@ void main() {
       overrides: [provider2, provider2.state],
     );
     final listener = Listener();
-    Object error;
+    List<Object> errors;
 
     expect(provider.state.readOwner(owner), 0);
 
-    provider2.state.watchOwner(owner, (value) {
-      listener(value);
-      if (value > 0) {
-        try {
-          counter.increment();
-        } catch (err) {
-          error = err;
+    final sub = provider2.state.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: (value) {
+        listener(value);
+        if (value > 0) {
+          errors = errorsOf(counter.increment);
         }
-      }
-    });
+      },
+    );
 
     verify(listener(0)).called(1);
     verifyNoMoreInteractions(listener);
 
     counter.increment();
     counter2.increment();
-    root.update();
 
     verifyNoMoreInteractions(listener);
 
-    owner.update();
+    sub.flush();
 
-    expect(error, isNotNull);
+    expect(errors, [isA<AssertionError>(), isA<Error>()]);
     verify(listener(1)).called(1);
     verifyNoMoreInteractions(listener);
   });
 
-  // TODO: didUpdate cannot dirty nodes that were already traversed
   test("Computed can't dirty anything on create", () {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
     final owner = ProviderStateOwner();
-    Object error;
+    List<Object> errors;
     final computed = Computed((read) {
-      try {
-        counter.increment();
-      } catch (err) {
-        error = err;
-      }
+      errors = errorsOf(counter.increment);
       return 0;
     });
     final listener = Listener();
@@ -147,21 +136,17 @@ void main() {
 
     verify(listener(0)).called(1);
     verifyNoMoreInteractions(listener);
-    expect(error, isNotNull);
+    expect(errors, [isA<StateError>(), isA<Error>()]);
   });
   test("Computed can't dirty anything on update", () {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
     final owner = ProviderStateOwner();
-    Object error;
+    List<Object> errors;
     final computed = Computed((read) {
       final value = read(provider.state);
-      try {
-        if (value > 0) {
-          counter.increment();
-        }
-      } catch (err) {
-        error = err;
+      if (value > 0) {
+        errors = errorsOf(counter.increment);
       }
       return value;
     });
@@ -169,20 +154,24 @@ void main() {
 
     expect(provider.state.readOwner(owner), 0);
 
-    computed.watchOwner(owner, listener);
+    final sub = computed.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: listener,
+    );
 
     verify(listener(0)).called(1);
     verifyNoMoreInteractions(listener);
-    expect(error, isNull);
+    expect(errors, isNull);
 
     counter.increment();
     verifyNoMoreInteractions(listener);
 
-    owner.update();
+    sub.flush();
 
     verify(listener(1));
     verifyNoMoreInteractions(listener);
-    expect(error, isNotNull);
+    expect(errors, [isA<StateError>(), isA<Error>()]);
   });
 }
 
@@ -194,4 +183,10 @@ class Counter extends StateNotifier<int> {
 
 class Listener extends Mock {
   void call(int value);
+}
+
+List<Object> errorsOf(void Function() cb) {
+  final errors = <Object>[];
+  runZonedGuarded(cb, (err, _) => errors.add(err));
+  return [...errors];
 }

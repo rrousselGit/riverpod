@@ -14,7 +14,8 @@ dependencies:
     path: ../flutter_riverpod
   flutter:
     sdk: flutter
-  flutter_hooks: ^0.9.0
+  flutter_hooks:
+    path: /Users/remirousselet/dev/flutter_hooks
   collection: ^1.14.12
 
 dev_dependencies:

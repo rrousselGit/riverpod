@@ -14,7 +14,6 @@ dependencies:
   flutter:
     sdk: flutter
   collection: ^1.14.12
-  state_notifier: ^0.4.0
   riverpod:
     path: ../riverpod
 

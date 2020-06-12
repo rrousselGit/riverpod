@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:riverpod/src/internals.dart';
 
-class ChangeNotifierProviderSubscription<T> extends ProviderSubscriptionBase {
-  ChangeNotifierProviderSubscription._(this.value);
+class ChangeNotifierProviderDependency<T> extends ProviderDependencyBase {
+  ChangeNotifierProviderDependency._(this.value);
 
   final T value;
 }
 
 class ChangeNotifierProvider<T extends ChangeNotifier>
-    extends AlwaysAliveProvider<ChangeNotifierProviderSubscription<T>, T> {
+    extends AlwaysAliveProvider<ChangeNotifierProviderDependency<T>, T> {
   ChangeNotifierProvider(this._create, {String name}) : super(name);
 
   final Create<T, ProviderReference> _create;
@@ -20,7 +20,7 @@ class ChangeNotifierProvider<T extends ChangeNotifier>
 }
 
 class _ChangeNotifierProviderState<T extends ChangeNotifier>
-    extends ProviderStateBase<ChangeNotifierProviderSubscription<T>, T,
+    extends ProviderStateBase<ChangeNotifierProviderDependency<T>, T,
         ChangeNotifierProvider<T>> {
   @override
   T state;
@@ -28,18 +28,18 @@ class _ChangeNotifierProviderState<T extends ChangeNotifier>
   @override
   void initState() {
     state = provider._create(ProviderReference(this))
-      ..addListener(markNeedsNotifyListeners);
+      ..addListener(markMayHaveChanged);
   }
 
   @override
-  ChangeNotifierProviderSubscription<T> createProviderSubscription() {
-    return ChangeNotifierProviderSubscription._(state);
+  ChangeNotifierProviderDependency<T> createProviderDependency() {
+    return ChangeNotifierProviderDependency._(state);
   }
 
   @override
   void dispose() {
     state
-      ..removeListener(markNeedsNotifyListeners)
+      ..removeListener(markMayHaveChanged)
       ..dispose();
     super.dispose();
   }

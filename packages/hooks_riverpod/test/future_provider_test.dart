@@ -265,7 +265,7 @@ void main() {
       expect(errors, [isUnsupportedError]);
     });
     testWidgets(
-        'FutureProviderSubscription.future completes on rebuild with data',
+        'FutureProviderDependency.future completes on rebuild with data',
         (tester) async {
       await tester.pumpWidget(
         ProviderScope(
@@ -295,7 +295,7 @@ void main() {
       await expectLater(future, completion(42));
     });
     testWidgets(
-        'FutureProviderSubscription.future completes on rebuild with error',
+        'FutureProviderDependency.future completes on rebuild with error',
         (tester) async {
       await tester.pumpWidget(
         ProviderScope(
@@ -326,7 +326,7 @@ void main() {
       await expectLater(future, throwsA(error));
     });
 
-    testWidgets('FutureProviderSubscription.future loading to loading is no-op',
+    testWidgets('FutureProviderDependency.future loading to loading is no-op',
         (tester) async {
       await tester.pumpWidget(
         ProviderScope(

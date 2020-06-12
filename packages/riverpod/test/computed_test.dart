@@ -55,33 +55,45 @@ void main() {
     verifyNoMoreInteractions(listener);
 
     expect(
-      owner.debugProviderStateSortedByDepth.map((e) => e.provider),
+      owner.debugProviderStates.map((e) => e.provider),
       [provider, computed, provider2],
     );
   });
   test('Computed are not overrides', () {
     expect(Computed((_) {}), isNot(isA<ProviderOverride>()));
   });
-  test('dispose Computed when all Computed listeners are removed', () {
+  test('disposing the Computed closes subscriptions', () {
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     final computed = Computed((read) => read(provider.state));
     final root = ProviderStateOwner();
     // no need to pass "overrides" as the computed should naturally go to the deepest owner
     final owner = ProviderStateOwner(parent: root);
+    final mayHaveChanged = MockMarkMayHaveChanged();
     final listener = Listener<int>();
 
-    computed.watchOwner(owner, listener);
+    final sub = computed.addLazyListener(
+      owner,
+      mayHaveChanged: mayHaveChanged,
+      onChange: listener,
+    );
 
     verify(listener(0)).called(1);
+    verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
 
     owner.dispose();
+    verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
 
     notifier.setState(42);
-    root.update();
 
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(mayHaveChanged);
+
+    sub.flush();
+
+    verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
   });
   test('cannot call read outside of the Computed', () {
@@ -95,21 +107,31 @@ void main() {
       reader = read;
       return read(provider.state);
     });
+    final mayHaveChanged = MockMarkMayHaveChanged();
     final listener = Listener<int>();
 
-    computed.watchOwner(owner, listener);
+    final sub = computed.addLazyListener(
+      owner,
+      mayHaveChanged: mayHaveChanged,
+      onChange: listener,
+    );
 
     verify(listener(0)).called(1);
     verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(mayHaveChanged);
     expect(() => reader(provider), throwsA(isA<AssertionError>()));
     expect(callCount, 1);
 
     notifier.setState(42);
+
+    verify(mayHaveChanged()).called(1);
+    verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
 
-    owner.update();
+    sub.flush();
 
     verify(listener(42)).called(1);
+    verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
     expect(() => reader(provider), throwsA(isA<AssertionError>()));
     expect(callCount, 2);
@@ -122,16 +144,28 @@ void main() {
       final computed = Computed((read) {
         return [read(provider.state).isNegative];
       });
+      final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = Listener<List<bool>>();
 
-      computed.watchOwner(owner, listener);
+      final sub = computed.addLazyListener(
+        owner,
+        mayHaveChanged: mayHaveChanged,
+        onChange: listener,
+      );
 
       verify(listener([false])).called(1);
       verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(mayHaveChanged);
 
       notifier.setState(42);
-      owner.update();
 
+      verify(mayHaveChanged()).called(1);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(mayHaveChanged);
+
+      sub.flush();
+
+      verifyNoMoreInteractions(mayHaveChanged);
       verifyNoMoreInteractions(listener);
     });
     test('set', () {
@@ -141,16 +175,28 @@ void main() {
       final computed = Computed((read) {
         return {read(provider.state).isNegative};
       });
+      final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = Listener<Set<bool>>();
 
-      computed.watchOwner(owner, listener);
+      final sub = computed.addLazyListener(
+        owner,
+        mayHaveChanged: mayHaveChanged,
+        onChange: listener,
+      );
 
       verify(listener({false})).called(1);
       verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(mayHaveChanged);
 
       notifier.setState(42);
-      owner.update();
 
+      verify(mayHaveChanged()).called(1);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(mayHaveChanged);
+
+      sub.flush();
+
+      verifyNoMoreInteractions(mayHaveChanged);
       verifyNoMoreInteractions(listener);
     });
     test('map', () {
@@ -160,16 +206,28 @@ void main() {
       final computed = Computed((read) {
         return {'foo': read(provider.state).isNegative};
       });
+      final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = Listener<Map<String, bool>>();
 
-      computed.watchOwner(owner, listener);
+      final sub = computed.addLazyListener(
+        owner,
+        mayHaveChanged: mayHaveChanged,
+        onChange: listener,
+      );
 
       verify(listener({'foo': false})).called(1);
       verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(mayHaveChanged);
 
       notifier.setState(42);
-      owner.update();
 
+      verify(mayHaveChanged()).called(1);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(mayHaveChanged);
+
+      sub.flush();
+
+      verifyNoMoreInteractions(mayHaveChanged);
       verifyNoMoreInteractions(listener);
     });
   });
@@ -205,17 +263,17 @@ void main() {
     ]);
     verifyNoMoreInteractions(firstListener);
     verifyNoMoreInteractions(secondListener);
+  });
+  test('Computed is not a AlwaysAliveProvider', () {
+    final computed = Computed((read) => 0);
 
-    owner.update();
-
-    expect(callCount, 1);
-    verifyNoMoreInteractions(firstListener);
-    verifyNoMoreInteractions(secondListener);
+    expect(computed, isNot(isA<AlwaysAliveProvider>()));
   });
   test('Simple Computed flow', () {
     final owner = ProviderStateOwner();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
+    final mayHaveChanged = MockMarkMayHaveChanged();
     final listener = Listener<bool>();
     var callCount = 0;
     final isPositiveComputed = Computed((read) {
@@ -223,31 +281,41 @@ void main() {
       return !read(provider.state).isNegative;
     });
 
-    expect(isPositiveComputed, isNot(isA<AlwaysAliveProvider>()));
-    verifyNoMoreInteractions(listener);
-    expect(callCount, 0);
+    final sub = isPositiveComputed.addLazyListener(
+      owner,
+      mayHaveChanged: mayHaveChanged,
+      onChange: listener,
+    );
 
-    isPositiveComputed.watchOwner(owner, listener);
     expect(notifier.hasListeners, true);
     verify(listener(true)).called(1);
     expect(callCount, 1);
     verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(mayHaveChanged);
 
     notifier.setState(-1);
+
+    verify(mayHaveChanged()).called(1);
+    verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
 
-    owner.update();
+    sub.flush();
 
     expect(callCount, 2);
     verify(listener(false)).called(1);
+    verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
 
     notifier.setState(-42);
+
+    verify(mayHaveChanged()).called(1);
+    verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
 
-    owner.update();
+    sub.flush();
 
     expect(callCount, 3);
+    verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
   });
 }
@@ -261,4 +329,8 @@ class Notifier<T> extends StateNotifier<T> {
 
 class Listener<T> extends Mock {
   void call(T value);
+}
+
+class MockMarkMayHaveChanged extends Mock {
+  void call();
 }

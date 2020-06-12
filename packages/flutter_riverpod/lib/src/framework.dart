@@ -40,7 +40,7 @@ class _ProviderScopeElement extends StatefulElement {
 
     // filling the state properties here instead of inside State
     // so that it is more readable in the devtool (one less indentation)
-    for (final entry in owner.debugProviderStates.entries) {
+    for (final entry in owner.debugProviderValues.entries) {
       final name = entry.key.name ?? describeIdentity(entry.key);
       properties.add(DiagnosticsProperty(name, entry.value));
     }
@@ -68,7 +68,8 @@ class _ProviderScopeState extends State<ProviderScope> {
       parent: scope?.owner,
       overrides: widget.overrides,
       observers: widget.observers,
-      markNeedsUpdate: () => setState(() => _dirty = true),
+      // TODO prevent update from widgets?
+      // markNeedsUpdate: () => setState(() => _dirty = true),
       // TODO How to report to FlutterError?
       // onError: (dynamic error, stack) {
       //   FlutterError.reportError(
@@ -100,12 +101,12 @@ class _ProviderScopeState extends State<ProviderScope> {
           'ProviderScope was rebuilt with a different ProviderScope ancestor',
         );
       }
+      if (_dirty) {
+        _dirty = false;
+        _owner.updateOverrides(widget.overrides);
+      }
       return true;
     }(), '');
-    if (_dirty) {
-      _dirty = false;
-      _owner.update(overrides: widget.overrides);
-    }
     return ProviderStateOwnerScope(
       owner: _owner,
       child: widget.child,
@@ -119,7 +120,7 @@ class _ProviderScopeState extends State<ProviderScope> {
   }
 }
 
-class ProviderStateOwnerScope extends InheritedModel<ProviderBase> {
+class ProviderStateOwnerScope extends InheritedWidget {
   const ProviderStateOwnerScope({
     Key key,
     @required this.owner,
@@ -151,12 +152,5 @@ class ProviderStateOwnerScope extends InheritedModel<ProviderBase> {
   @override
   bool updateShouldNotify(ProviderStateOwnerScope oldWidget) {
     return owner != oldWidget.owner;
-  }
-
-  @override
-  bool updateShouldNotifyDependent(
-      InheritedModel<ProviderBase<ProviderSubscriptionBase, Object>> oldWidget,
-      Set<ProviderBase<ProviderSubscriptionBase, Object>> dependencies) {
-    return true;
   }
 }

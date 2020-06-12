@@ -5,14 +5,14 @@ import 'package:meta/meta.dart';
 import 'common.dart';
 import 'framework/framework.dart';
 
-class FutureProviderSubscription<T> extends ProviderSubscriptionBase {
-  FutureProviderSubscription._({@required this.future});
+class FutureProviderDependency<T> extends ProviderDependencyBase {
+  FutureProviderDependency._({@required this.future});
 
   final Future<T> future;
 }
 
 class FutureProvider<Res> extends AlwaysAliveProvider<
-    FutureProviderSubscription<Res>, AsyncValue<Res>> {
+    FutureProviderDependency<Res>, AsyncValue<Res>> {
   FutureProvider(this._create, {String name}) : super(name);
 
   final Create<Future<Res>, ProviderReference> _create;
@@ -35,7 +35,7 @@ class FutureProvider<Res> extends AlwaysAliveProvider<
 }
 
 class _FutureProviderState<Res> extends ProviderStateBase<
-    FutureProviderSubscription<Res>, AsyncValue<Res>, FutureProvider<Res>> {
+    FutureProviderDependency<Res>, AsyncValue<Res>, FutureProvider<Res>> {
   Future<Res> _future;
 
   AsyncValue<Res> _state;
@@ -43,7 +43,7 @@ class _FutureProviderState<Res> extends ProviderStateBase<
   AsyncValue<Res> get state => _state;
   set state(AsyncValue<Res> state) {
     _state = state;
-    markNeedsNotifyListeners();
+    markMayHaveChanged();
   }
 
   @override
@@ -68,13 +68,13 @@ class _FutureProviderState<Res> extends ProviderStateBase<
   }
 
   @override
-  FutureProviderSubscription<Res> createProviderSubscription() {
-    return FutureProviderSubscription._(future: _future);
+  FutureProviderDependency<Res> createProviderDependency() {
+    return FutureProviderDependency._(future: _future);
   }
 }
 
 class _DebugValueFutureProvider<Res> extends AlwaysAliveProvider<
-    FutureProviderSubscription<Res>, AsyncValue<Res>> {
+    FutureProviderDependency<Res>, AsyncValue<Res>> {
   _DebugValueFutureProvider(this._value, {String name}) : super(name);
 
   final AsyncValue<Res> _value;
@@ -91,7 +91,7 @@ class _DebugValueFutureProvider<Res> extends AlwaysAliveProvider<
 }
 
 class _DebugValueFutureProviderState<Res> extends ProviderStateBase<
-    FutureProviderSubscription<Res>,
+    FutureProviderDependency<Res>,
     AsyncValue<Res>,
     _DebugValueFutureProvider<Res>> {
   final _completer = Completer<Res>();
@@ -101,7 +101,7 @@ class _DebugValueFutureProviderState<Res> extends ProviderStateBase<
   AsyncValue<Res> get state => _state;
   set state(AsyncValue<Res> state) {
     _state = state;
-    markNeedsNotifyListeners();
+    markMayHaveChanged();
   }
 
   @override
@@ -143,7 +143,7 @@ class _DebugValueFutureProviderState<Res> extends ProviderStateBase<
   }
 
   @override
-  FutureProviderSubscription<Res> createProviderSubscription() {
-    return FutureProviderSubscription._(future: _completer.future);
+  FutureProviderDependency<Res> createProviderDependency() {
+    return FutureProviderDependency._(future: _completer.future);
   }
 }
