@@ -1,0 +1,36 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  build_dart_packages:
+    runs-on: ubuntu-latest
+
+    container:
+      image: cirrusci/flutter:${{ matrix.version }}
+
+    strategy:
+      matrix:
+        package: ["riverpod"]
+        version: ["latest"]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.package }}
+        run: dart pub get
+
+      - name: Analyze
+        working-directory: ${{ matrix.package }}
+        run: dart analyze --fatal-infos --fatal-warnings .
+
+      - name: Run tests
+        working-directory: ${{ matrix.package }}
+        run: dart test --coverage=coverage
+    #   - name: Upload coverage to codecov
+    #     uses: codecov/codecov-action@v1
+    #     with:
+    #       token: ${{ secrets.CODECOV_TOKEN }}
+    #       flags: ${{ matrix.package }}
+    #       file: ./${{ matrix.package }}/coverage/lcov.info
