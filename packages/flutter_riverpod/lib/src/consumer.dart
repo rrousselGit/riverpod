@@ -7,13 +7,13 @@ import 'internal.dart';
 ///
 /// Do not modify any state or start any http request inside `builder`.
 ///
-/// As an usage example, consider:
+/// As a usage example, consider:
 ///
 /// ```dart
 /// final helloWorldProvider = Provider((_) => 'Hello world');
 /// ```
 ///
-/// We can then use [Consumer] to listen to `counterProvider` like so:
+/// We can then use [Consumer] to listen to `helloWorldProvider` like so:
 ///
 /// ```dart
 /// class Example extends StatelessWidget {

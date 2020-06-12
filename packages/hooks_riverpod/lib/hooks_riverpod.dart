@@ -5,6 +5,29 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 export 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// A hook that listens to a provider and returns its current value.
+///
+/// As a usage example, consider:
+///
+/// ```dart
+/// final helloWorldProvider = Provider((_) => 'Hello world');
+/// ```
+///
+/// We can then use [useProvider] to listen to `helloWorldProvider` like so:
+///
+/// ```dart
+/// class Example extends HookWidget {
+///   @override
+///   Widget build(BuildContext context) {
+///     final greeting = useProvider(helloWorldProvider);
+///     return Text(value); // Hello world
+///   }
+/// }
+/// ```
+/// 
+/// See also:
+/// 
+/// - [ProviderBase.select], for filtering unwanted rebuilds.
 T useProvider<T>(ProviderListenable<T> provider) {
   final owner = ProviderStateOwnerScope.of(useContext());
   return Hook.use(_BaseProviderHook<T>(owner, provider));
