@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_hooks:
+  flutter_hooks: ^0.10.0-dev+1
   hooks_riverpod:
     path: ../../packages/hooks_riverpod
   cupertino_icons: ^0.1.3

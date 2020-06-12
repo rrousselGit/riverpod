@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_hooks: ^0.9.0
+  flutter_hooks: ^0.10.0-dev+1
   freezed_annotation: ^0.11.0-dev
   hooks_riverpod:
     path: ../hooks_riverpod
