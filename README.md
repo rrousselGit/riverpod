@@ -154,7 +154,7 @@ and that the community likes it, [provider] will still be maintained.
 - Selector
 - Computed
 - Family (StateNotifier vs .value) -> overriding the entire family at once
-- SetStateSubscription/SelectorSubscription
+- SetStateDependencytorDependency
 - overrideAs AutoDispose
 - Dartdoc for all public APIs
 - review all public APIs
@@ -165,7 +165,7 @@ and that the community likes it, [provider] will still be maintained.
 - Prevent modifying parents from children (provider -> provider)
 - Prevent modifying parents from children (widget -> provider)
 - DateTime provider
-- Make a common interface between ProviderSubscriptions? (So that we can assign Provider to SetStateProvider)
+- Make a common interface between ProviderDependencys? (So that we can assign Provider to SetStateProvider)
 - Should some asserts be changed to exceptions in release?
 - Should some exceptions have a custom error?
 

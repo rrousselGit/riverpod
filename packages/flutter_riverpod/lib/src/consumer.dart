@@ -15,7 +15,7 @@ class Consumer<T> extends StatefulWidget {
         _builder = builder,
         super(key: key);
 
-  final ProviderBase<ProviderSubscriptionBase, T> _provider;
+  final ProviderBase<ProviderDependencyBase, T> _provider;
   final Widget _child;
   final ValueWidgetBuilder<T> _builder;
 

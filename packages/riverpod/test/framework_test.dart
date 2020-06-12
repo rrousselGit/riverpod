@@ -686,8 +686,8 @@ void main() {
     final owner = ProviderStateOwner();
     final provider = Provider((_) => 42);
 
-    ProviderSubscription<int> other;
-    ProviderSubscription<int> other2;
+    ProviderDependency<int> other;
+    ProviderDependency<int> other2;
 
     final provider1 = Provider((ref) {
       other = ref.dependOn(provider);
@@ -1091,7 +1091,7 @@ class MockOnValueDispose<T> extends Mock {
   void call(TestProviderValue<T> value);
 }
 
-class TestProviderValue<T> extends ProviderSubscriptionBase {
+class TestProviderValue<T> extends ProviderDependencyBase {
   TestProviderValue(this.value, {@required this.onDispose});
 
   final T value;
@@ -1136,7 +1136,7 @@ class TestProviderState<T>
   }
 
   @override
-  TestProviderValue<T> createProviderSubscription() {
+  TestProviderValue<T> createProviderDependency() {
     return TestProviderValue<T>(state, onDispose: provider.onValueDispose);
   }
 }

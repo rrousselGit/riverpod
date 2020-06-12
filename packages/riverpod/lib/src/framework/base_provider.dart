@@ -1,15 +1,15 @@
 part of 'framework.dart';
 
-class LazySubscription<T> {
-  LazySubscription._(
+class ProviderSubscription<T> {
+  ProviderSubscription._(
     this._providerState,
     this._onChange,
     this._entry,
   ) : _lastNotificationCount = _providerState._notificationCount;
 
   int _lastNotificationCount;
-  final ProviderStateBase<ProviderSubscriptionBase, T,
-      ProviderBase<ProviderSubscriptionBase, T>> _providerState;
+  final ProviderStateBase<ProviderDependencyBase, T,
+      ProviderBase<ProviderDependencyBase, T>> _providerState;
   final void Function(T value) _onChange;
   final LinkedListEntry _entry;
 
@@ -47,14 +47,14 @@ class LazySubscription<T> {
 /// Do not extend or implement.
 @immutable
 @optionalTypeArgs
-abstract class ProviderBase<Subscription extends ProviderSubscriptionBase,
+abstract class ProviderBase<Dependency extends ProviderDependencyBase,
     Result extends Object> {
   /// Allows specifying a name.
   // ignore: prefer_const_constructors_in_immutables, the canonalisation of constants is unsafe for providers.
   ProviderBase(this.name);
 
   @visibleForOverriding
-  ProviderStateBase<Subscription, Result, ProviderBase<Subscription, Result>>
+  ProviderStateBase<Dependency, Result, ProviderBase<Dependency, Result>>
       createState();
 
   /// A custom label for the provider.
@@ -64,7 +64,7 @@ abstract class ProviderBase<Subscription extends ProviderSubscriptionBase,
   /// - It can be used as a serialisable unique identifier for state serialisation/deserialisation.
   final String name;
 
-  LazySubscription<Result> addLazyListener(
+  ProviderSubscription<Result> addLazyListener(
     ProviderStateOwner owner, {
     @required void Function() mayHaveChanged,
     @required void Function(Result value) onChange,
@@ -78,7 +78,7 @@ abstract class ProviderBase<Subscription extends ProviderSubscriptionBase,
     ProviderStateOwner owner,
     void Function(Result value) onChange,
   ) {
-    LazySubscription<Result> sub;
+    ProviderSubscription<Result> sub;
 
     sub = addLazyListener(
       owner,
@@ -98,8 +98,8 @@ abstract class ProviderBase<Subscription extends ProviderSubscriptionBase,
 /// Implementation detail of how the state of a provider is stored.
 // TODO: prefix internal methods with $ and public methods without
 @optionalTypeArgs
-abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
-    Result extends Object, P extends ProviderBase<Subscription, Result>> {
+abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
+    Result extends Object, P extends ProviderBase<Dependency, Result>> {
   P _provider;
 
   /// The current [ProviderBase] associated with this state.
@@ -111,7 +111,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   P get provider => _provider;
 
   /// The raw unmodified provider before applying [ProviderOverride].
-  ProviderBase<ProviderSubscriptionBase, Object> _origin;
+  ProviderBase<ProviderDependencyBase, Object> _origin;
 
   int _notificationCount = 0;
 
@@ -153,12 +153,12 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   /// All the [ProviderStateBase]s that this provider depends on.
   final _providerStateDependencies = HashSet<ProviderStateBase>();
 
-  /// A cache of the [ProviderSubscriptionBase] associated to the dependencies
+  /// A cache of the [ProviderDependencyBase] associated to the dependencies
   /// listed by [_providerStateDependencies].
   ///
-  /// This avoid having to call [createProviderSubscription] again when this
+  /// This avoid having to call [createProviderDependency] again when this
   /// state already depends on a provider.
-  Map<ProviderBase, ProviderSubscriptionBase> _providerSubscriptionsCache;
+  Map<ProviderBase, ProviderDependencyBase> _providerDependencysCache;
 
   /// An implementation detail of [CircularDependencyError].
   ///
@@ -184,7 +184,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   LinkedList<_LinkedListEntry<void Function()>> _mayHaveChangedListeners;
 
   /// Whether this provider is listened or not.
-  // TODO: factor [createSubscription]
+  // TODO: factor [createDependency]
   bool get $hasListeners => _mayHaveChangedListeners?.isNotEmpty ?? false;
 
   int get _debugDepth {
@@ -201,7 +201,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   void initState();
 
   /// Creates the object returned by [ProviderReference.dependOn].
-  Subscription createProviderSubscription();
+  Dependency createProviderDependency();
 
   /// Life-cycle for when [provider] was replaced with a new one.
   ///
@@ -212,7 +212,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
   void didUpdateProvider(P oldProvider) {}
 
   /// The implementation of [ProviderReference.dependOn].
-  T dependOn<T extends ProviderSubscriptionBase>(
+  T dependOn<T extends ProviderDependencyBase>(
     ProviderBase<T, Object> provider,
   ) {
     if (!mounted) {
@@ -229,9 +229,9 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
       return true;
     }(), '');
 
-    _providerSubscriptionsCache ??= {};
+    _providerDependencysCache ??= {};
     try {
-      return _providerSubscriptionsCache.putIfAbsent(provider, () {
+      return _providerDependencysCache.putIfAbsent(provider, () {
         final targetProviderState = _owner._readProviderState(provider);
 
         // verify that the new dependency doesn't depend on this provider.
@@ -250,7 +250,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
         _providerStateDependencies.add(targetProviderState);
         targetProviderState._dependents.add(this);
         final targetProviderValue =
-            targetProviderState.createProviderSubscription();
+            targetProviderState.createProviderDependency();
         onDispose(() {
           targetProviderState._dependents.remove(this);
           targetProviderValue.dispose();
@@ -279,7 +279,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
     _onDisposeCallbacks.add(cb);
   }
 
-  LazySubscription<Result> addLazyListener({
+  ProviderSubscription<Result> addLazyListener({
     @required void Function() mayHaveChanged,
     @required void Function(Result value) onChange,
   }) {
@@ -297,7 +297,7 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
     final mayHaveChangedEntry = _LinkedListEntry(mayHaveChanged);
     _mayHaveChangedListeners.add(mayHaveChangedEntry);
 
-    return LazySubscription._(
+    return ProviderSubscription._(
       this,
       onChange,
       mayHaveChangedEntry,
@@ -400,8 +400,8 @@ abstract class ProviderStateBase<Subscription extends ProviderSubscriptionBase,
 /// overriden by providers that too are never disposed.
 /// Otherwise methods like [readOwner] would have an unknown behavior.
 abstract class AlwaysAliveProvider<
-        Subscription extends ProviderSubscriptionBase, Result>
-    extends ProviderBase<Subscription, Result> implements ProviderOverride {
+        Dependency extends ProviderDependencyBase, Result>
+    extends ProviderBase<Dependency, Result> implements ProviderOverride {
   /// Creates an [AlwaysAliveProvider] and allows specifing a [name].
   AlwaysAliveProvider(String name) : super(name);
 
@@ -454,7 +454,7 @@ abstract class AlwaysAliveProvider<
   ProviderOverride overrideAs(
     // Always alive providers can only be overriden by always alive providers
     // as automatically disposed providers wouldn't work.
-    AlwaysAliveProvider<Subscription, Result> provider,
+    AlwaysAliveProvider<Dependency, Result> provider,
   ) {
     return ProviderOverride._(provider, this);
   }

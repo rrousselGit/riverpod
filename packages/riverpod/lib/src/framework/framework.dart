@@ -12,9 +12,9 @@ part 'base_provider.dart';
 
 // ignore: avoid_private_typedef_functions
 typedef _FallbackProviderStateReader = ProviderStateBase<
-        ProviderSubscriptionBase, T, ProviderBase<ProviderSubscriptionBase, T>>
+        ProviderDependencyBase, T, ProviderBase<ProviderDependencyBase, T>>
     Function<T>(
-  ProviderBase<ProviderSubscriptionBase, T>,
+  ProviderBase<ProviderDependencyBase, T>,
 );
 
 class _LinkedListEntry<T> extends LinkedListEntry<_LinkedListEntry<T>> {
@@ -163,8 +163,8 @@ class ProviderStateOwner {
       // as in this situation, there is no "parent" owner.s
       return _stateReaders.putIfAbsent(provider, () {
         return _ProviderStateReader(provider, this);
-      }).read() as ProviderStateBase<ProviderSubscriptionBase, T,
-          ProviderBase<ProviderSubscriptionBase, T>>;
+      }).read() as ProviderStateBase<ProviderDependencyBase, T,
+          ProviderBase<ProviderDependencyBase, T>>;
     };
 
     for (final override in overrides) {
@@ -362,29 +362,29 @@ Changing the kind of override or reordering overrides is not supported.
   /// Reads the state of a provider, potentially creating it in the processs.
   ///
   /// It may throw if the provider requested threw when it was built.
-  ProviderStateBase<Subscription, ListeningValue,
-          ProviderBase<Subscription, ListeningValue>>
-      _readProviderState<Subscription extends ProviderSubscriptionBase,
+  ProviderStateBase<Dependency, ListeningValue,
+          ProviderBase<Dependency, ListeningValue>>
+      _readProviderState<Dependency extends ProviderDependencyBase,
           ListeningValue>(
-    ProviderBase<Subscription, ListeningValue> provider,
+    ProviderBase<Dependency, ListeningValue> provider,
   ) {
     if (_disposed) {
       throw StateError(
         'Tried to read a provider from a ProviderStateOwner that was already disposed',
       );
     }
-    ProviderStateBase<Subscription, ListeningValue,
-        ProviderBase<Subscription, ListeningValue>> result;
+    ProviderStateBase<Dependency, ListeningValue,
+        ProviderBase<Dependency, ListeningValue>> result;
     if (provider is Computed) {
       _computedStateReaders ??= {};
       result = _computedStateReaders.putIfAbsent(provider as Computed, () {
         return _ProviderStateReader(provider, this);
-      }).read() as ProviderStateBase<Subscription, ListeningValue,
-          ProviderBase<Subscription, ListeningValue>>;
+      }).read() as ProviderStateBase<Dependency, ListeningValue,
+          ProviderBase<Dependency, ListeningValue>>;
     } else {
       result = (_stateReaders[provider]?.read() ?? _fallback(provider))
-          as ProviderStateBase<Subscription, ListeningValue,
-              ProviderBase<Subscription, ListeningValue>>;
+          as ProviderStateBase<Dependency, ListeningValue,
+              ProviderBase<Dependency, ListeningValue>>;
     }
 
     return result..flush();
@@ -457,11 +457,11 @@ extension ProviderStateOwnerInternals on ProviderStateOwner {
     return result;
   }
 
-  ProviderStateBase<Subscription, ListeningValue,
-          ProviderBase<Subscription, ListeningValue>>
-      readProviderState<Subscription extends ProviderSubscriptionBase,
+  ProviderStateBase<Dependency, ListeningValue,
+          ProviderBase<Dependency, ListeningValue>>
+      readProviderState<Dependency extends ProviderDependencyBase,
           ListeningValue>(
-    ProviderBase<Subscription, ListeningValue> provider,
+    ProviderBase<Dependency, ListeningValue> provider,
   ) {
     return _readProviderState(provider);
   }
@@ -498,13 +498,13 @@ class ProviderOverride {
 }
 
 /// A base class for objects returned by [ProviderReference.dependOn].
-abstract class ProviderSubscriptionBase {
+abstract class ProviderDependencyBase {
   @protected
   void dispose() {}
 }
 
-/// An empty implementation of [ProviderSubscriptionBase].
-class ProviderBaseSubscriptionImpl extends ProviderSubscriptionBase {}
+/// An empty implementation of [ProviderDependencyBase].
+class ProviderBaseDependencyImpl extends ProviderDependencyBase {}
 
 /// An error thrown when a call to [ProviderReference.dependOn] leads
 /// to a provider depending on itself.
@@ -560,7 +560,7 @@ class ProviderReference {
   /// See also:
   ///
   /// - [Provider], explains in further detail how to use this method.
-  T dependOn<T extends ProviderSubscriptionBase>(
+  T dependOn<T extends ProviderDependencyBase>(
     ProviderBase<T, Object> provider,
   ) {
     return _providerState.dependOn(provider);

@@ -6,17 +6,17 @@ export 'src/framework/framework.dart'
         AlwaysAliveProvider,
         CircularDependencyError,
         ProviderBase,
-        ProviderSubscriptionBase,
+        ProviderDependencyBase,
         ProviderOverride,
         ProviderReference,
         ProviderStateOwner,
         ProviderStateOwnerObserver;
 export 'src/future_provider.dart'
-    show FutureProvider, FutureProviderSubscription;
-export 'src/provider.dart' show Provider, ProviderSubscription;
+    show FutureProvider, FutureProviderDependency;
+export 'src/provider.dart' show Provider, ProviderDependency;
 export 'src/set_state_provider.dart'
     show SetStateProvider, SetStateProviderReference;
 export 'src/state_notifier_provider.dart'
     show StateNotifierProvider, StateNotifierValueProviderX;
 export 'src/stream_provider.dart'
-    show StreamProvider, StreamProviderSubscription;
+    show StreamProvider, StreamProviderDependency;

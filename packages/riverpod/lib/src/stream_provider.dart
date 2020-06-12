@@ -3,19 +3,19 @@ import 'dart:async';
 import 'common.dart';
 import 'framework/framework.dart';
 
-class StreamProviderSubscription<T> extends ProviderSubscriptionBase {
-  StreamProviderSubscription._(this.stream, this._state);
+class StreamProviderDependency<T> extends ProviderDependencyBase {
+  StreamProviderDependency._(this.stream, this._state);
 
   final Stream<T> stream;
-  final _State<T, ProviderBase<StreamProviderSubscription<T>, AsyncValue<T>>>
+  final _State<T, ProviderBase<StreamProviderDependency<T>, AsyncValue<T>>>
       _state;
 
   Future<T> get currentData => _state.currentData;
 }
 
 mixin _State<T,
-        P extends ProviderBase<StreamProviderSubscription<T>, AsyncValue<T>>>
-    on ProviderStateBase<StreamProviderSubscription<T>, AsyncValue<T>, P> {
+        P extends ProviderBase<StreamProviderDependency<T>, AsyncValue<T>>>
+    on ProviderStateBase<StreamProviderDependency<T>, AsyncValue<T>, P> {
   AsyncValue<T> _state = const AsyncValue.loading();
   @override
   AsyncValue<T> get state => _state;
@@ -57,7 +57,7 @@ mixin _State<T,
 }
 
 class StreamProvider<T>
-    extends AlwaysAliveProvider<StreamProviderSubscription<T>, AsyncValue<T>> {
+    extends AlwaysAliveProvider<StreamProviderDependency<T>, AsyncValue<T>> {
   StreamProvider(this._create, {String name}) : super(name);
 
   final Create<Stream<T>, ProviderReference> _create;
@@ -78,21 +78,21 @@ class StreamProvider<T>
 }
 
 class _StreamProviderState<T> extends ProviderStateBase<
-    StreamProviderSubscription<T>,
+    StreamProviderDependency<T>,
     AsyncValue<T>,
     StreamProvider<T>> with _State<T, StreamProvider<T>> {
   Stream<T> _stream;
-  StreamSubscription<T> _streamSubscription;
+  StreamSubscription<T> _streamDependency;
 
   @override
-  StreamProviderSubscription<T> createProviderSubscription() {
-    return StreamProviderSubscription._(_stream, this);
+  StreamProviderDependency<T> createProviderDependency() {
+    return StreamProviderDependency._(_stream, this);
   }
 
   @override
   void initState() {
     _stream = provider._create(ProviderReference(this));
-    _streamSubscription = _stream.listen(
+    _streamDependency = _stream.listen(
       (event) {
         state = AsyncValue.data(event);
       },
@@ -108,13 +108,13 @@ class _StreamProviderState<T> extends ProviderStateBase<
 
   @override
   void dispose() {
-    _streamSubscription.cancel();
+    _streamDependency.cancel();
     super.dispose();
   }
 }
 
 class _ValueStreamProvider<T>
-    extends AlwaysAliveProvider<StreamProviderSubscription<T>, AsyncValue<T>> {
+    extends AlwaysAliveProvider<StreamProviderDependency<T>, AsyncValue<T>> {
   _ValueStreamProvider(this.value, {String name}) : super(name);
 
   final AsyncValue<T> value;
@@ -126,14 +126,14 @@ class _ValueStreamProvider<T>
 }
 
 class _ValueStreamProviderState<T> extends ProviderStateBase<
-    StreamProviderSubscription<T>,
+    StreamProviderDependency<T>,
     AsyncValue<T>,
     _ValueStreamProvider<T>> with _State<T, _ValueStreamProvider<T>> {
   final _controller = StreamController<T>();
 
   @override
-  StreamProviderSubscription<T> createProviderSubscription() {
-    return StreamProviderSubscription._(_controller.stream, this);
+  StreamProviderDependency<T> createProviderDependency() {
+    return StreamProviderDependency._(_controller.stream, this);
   }
 
   @override

@@ -6,7 +6,7 @@ import 'internals.dart';
 /// A function used by [Computed] to read other providers.
 ///
 /// By calling this function, it "binds" the [Computed] to the provider obtained.
-typedef Reader = Res Function<Res>(ProviderBase<ProviderSubscriptionBase, Res>);
+typedef Reader = Res Function<Res>(ProviderBase<ProviderDependencyBase, Res>);
 
 /// A provider that combines other providers into an immutable value and
 /// cache its result.
@@ -50,7 +50,7 @@ typedef Reader = Res Function<Res>(ProviderBase<ProviderSubscriptionBase, Res>);
 /// **DON'T* trigger side-effects such as http requests inside [Computed].
 /// [Computed] does not guanrantee that the function won't be re-evaluated
 /// even if the inputs didn't change.
-class Computed<T> extends ProviderBase<ProviderSubscriptionBase, T> {
+class Computed<T> extends ProviderBase<ProviderDependencyBase, T> {
   /// Creates a [Computed] and allows specifying a [name].
   Computed(this._selector, {String name}) : super(name);
 
@@ -63,7 +63,7 @@ class Computed<T> extends ProviderBase<ProviderSubscriptionBase, T> {
 }
 
 class _ComputedState<T>
-    extends ProviderStateBase<ProviderSubscriptionBase, T, Computed<T>> {
+    extends ProviderStateBase<ProviderDependencyBase, T, Computed<T>> {
   final _dependencies = <ProviderBase, _Dependency>{};
   bool _debugSelecting;
 
@@ -72,8 +72,8 @@ class _ComputedState<T>
   T get state => _state;
 
   @override
-  ProviderSubscriptionBase createProviderSubscription() {
-    return ProviderBaseSubscriptionImpl();
+  ProviderDependencyBase createProviderDependency() {
+    return ProviderBaseDependencyImpl();
   }
 
   @override
@@ -119,7 +119,7 @@ class _ComputedState<T>
     }
   }
 
-  Res _reader<Res>(ProviderBase<ProviderSubscriptionBase, Res> target) {
+  Res _reader<Res>(ProviderBase<ProviderDependencyBase, Res> target) {
     assert(
       _debugSelecting,
       'Cannot use `read` outside of the body of the Computed callback',
@@ -146,6 +146,6 @@ class _ComputedState<T>
 }
 
 class _Dependency {
-  LazySubscription subscription;
+  ProviderSubscription subscription;
   Object _state;
 }

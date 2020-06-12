@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 export 'package:flutter_riverpod/flutter_riverpod.dart';
 
-T useProvider<T>(ProviderBase<ProviderSubscriptionBase, T> provider) {
+T useProvider<T>(ProviderBase<ProviderDependencyBase, T> provider) {
   final owner = ProviderStateOwnerScope.of(useContext());
   return Hook.use(_BaseProviderHook<T>(owner, provider));
 }
@@ -14,7 +14,7 @@ class _BaseProviderHook<T> extends Hook<T> {
   const _BaseProviderHook(this._owner, this._provider);
 
   final ProviderStateOwner _owner;
-  final ProviderBase<ProviderSubscriptionBase, T> _provider;
+  final ProviderBase<ProviderDependencyBase, T> _provider;
 
   @override
   _BaseProviderHookState<T> createState() => _BaseProviderHookState();
@@ -22,7 +22,7 @@ class _BaseProviderHook<T> extends Hook<T> {
 
 class _BaseProviderHookState<T> extends HookState<T, _BaseProviderHook<T>> {
   T _state;
-  LazySubscription _link;
+  ProviderSubscription _link;
 
   @override
   void initHook() {

@@ -305,7 +305,7 @@ class MockDidUpdateProvider extends Mock {
   void call(TestProviderState state, TestProvider oldProvider);
 }
 
-class TestProviderValue extends ProviderSubscriptionBase {
+class TestProviderValue extends ProviderDependencyBase {
   TestProviderValue(this.value);
 
   final int value;
@@ -366,13 +366,13 @@ class TestProviderState
   }
 
   @override
-  TestProviderValue createProviderSubscription() {
+  TestProviderValue createProviderDependency() {
     return TestProviderValue(state);
   }
 }
 
 class MyImmutableProvider
-    extends AlwaysAliveProvider<ProviderSubscription<int>, int> {
+    extends AlwaysAliveProvider<ProviderDependency<int>, int> {
   MyImmutableProvider({String name}) : super(name);
 
   @override
@@ -382,14 +382,14 @@ class MyImmutableProvider
 }
 
 class MyImmutableProviderState extends ProviderStateBase<
-    ProviderSubscription<int>, int, MyImmutableProvider> {
+    ProviderDependency<int>, int, MyImmutableProvider> {
   @override
   void initState() {
     throw UnimplementedError();
   }
 
   @override
-  ProviderSubscription<int> createProviderSubscription() {
+  ProviderDependency<int> createProviderDependency() {
     throw UnimplementedError();
   }
 

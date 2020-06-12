@@ -38,7 +38,7 @@ void main() {
     // });
     // var createCount = 0;
     // final provider1 =
-    //     Provider1<ProviderSubscription<int>, String>(useProvider, (ref, first) {
+    //     Provider1<ProviderDependency<int>, String>(useProvider, (ref, first) {
     //   createCount++;
     //   first.onChange((v) {
     //     ref.value = v.toString();
