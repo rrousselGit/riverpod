@@ -4,10 +4,27 @@ import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('implicit provider.state override works on children owner too', () {
+    final notifier = TestNotifier(42);
+    final provider = StateNotifierProvider((_) => TestNotifier());
+    final root = ProviderStateOwner();
+    final root2 = ProviderStateOwner(
+      parent: root,
+      overrides: [
+        provider.overrideAs(StateNotifierProvider((_) => notifier))
+      ],
+    );
+    final owner = ProviderStateOwner(parent: root2);
+
+    expect(provider.readOwner(owner), notifier);
+    expect(provider.state.readOwner(owner), 42);
+  });
   test('overriding the provider overrides provider.state too', () {
     final notifier = TestNotifier(42);
     final provider = StateNotifierProvider((_) => TestNotifier());
+    final root = ProviderStateOwner();
     final owner = ProviderStateOwner(
+      parent: root,
       overrides: [
         provider.overrideAs(StateNotifierProvider((_) => TestNotifier(10)))
       ],
