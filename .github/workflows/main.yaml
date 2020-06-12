@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-            token: 7f84dfbaddf4e86ac51a3b5ddfb07e30c848a216
+            token: d4af1dac4392b36631db17f0b4cfa68c68c7b00b
 
       - name: Install dependencies
         working-directory: ${{ matrix.package }}
