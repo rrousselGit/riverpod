@@ -755,8 +755,7 @@ class _$StateSnapshotCopyWithImpl<$Res>
     return _then(_value.copyWith(
       state: state == freezed
           ? _value.state
-          : state
-              as Map<ProviderBase<ProviderDependencyBase, Object>, Object>,
+          : state as Map<ProviderBase<ProviderDependencyBase, Object>, Object>,
       details: details == freezed
           ? _value.details
           : details as List<_PropertyDetail>,
@@ -793,8 +792,7 @@ class __$StateSnapshotCopyWithImpl<$Res>
     return _then(_StateSnapshot(
       state: state == freezed
           ? _value.state
-          : state
-              as Map<ProviderBase<ProviderDependencyBase, Object>, Object>,
+          : state as Map<ProviderBase<ProviderDependencyBase, Object>, Object>,
       details: details == freezed
           ? _value.details
           : details as List<_PropertyDetail>,

@@ -60,7 +60,7 @@ class _BaseProviderHookState<T> extends HookState<T, _BaseProviderHook<T>> {
         FlutterError.reportError(
           FlutterErrorDetails(
             exception: UnsupportedError(
-              'Used `useMyProvider()` with a `useMyProvider` different than it was before',
+              'Used `useProvider(provider)` with a `provider` different than it was before',
             ),
             library: 'flutter_provider',
             stack: StackTrace.current,

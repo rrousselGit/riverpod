@@ -15,7 +15,7 @@ class Consumer<T> extends StatefulWidget {
         _builder = builder,
         super(key: key);
 
-  final ProviderBase<ProviderDependencyBase, T> _provider;
+  final ProviderListenable<T> _provider;
   final Widget _child;
   final ValueWidgetBuilder<T> _builder;
 
@@ -24,9 +24,11 @@ class Consumer<T> extends StatefulWidget {
 }
 
 class _ConsumerState<T> extends State<Consumer<T>> {
-  VoidCallback _removeListener;
+  ProviderSubscription _subscription;
   T _value;
   ProviderStateOwner _owner;
+  Widget _buildCache;
+  bool _isOptionalRebuild = false;
 
   @override
   void didChangeDependencies() {
@@ -34,10 +36,24 @@ class _ConsumerState<T> extends State<Consumer<T>> {
     final owner = ProviderStateOwnerScope.of(context);
     if (_owner != owner) {
       _owner = owner;
-      _removeListener?.call();
+      _subscription?.close();
       // TODO use lazy listener
-      _removeListener = widget._provider.watchOwner(owner, (value) {
-        setState(() => _value = value);
+      _subscription = widget._provider.addLazyListener(owner,
+          mayHaveChanged: _markMayNeedRebuild, onChange: _onChange);
+    }
+  }
+
+  void _onChange(T value) {
+    setState(() {
+      _value = value;
+    });
+  }
+
+  void _markMayNeedRebuild() {
+    // TODO test
+    if (_isOptionalRebuild != false) {
+      setState(() {
+        _isOptionalRebuild = true;
       });
     }
   }
@@ -45,11 +61,20 @@ class _ConsumerState<T> extends State<Consumer<T>> {
   @override
   void didUpdateWidget(Consumer<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget._provider != widget._provider) {
+    assert(
+      oldWidget._provider.runtimeType == widget._provider.runtimeType,
+      'The provider listened cannot change',
+    );
+    _isOptionalRebuild = false;
+    final subscription = _subscription;
+    if (subscription is SelectorSubscription<Object, T>) {
+      // this will update _state
+      subscription.updateSelector(widget._provider);
+    } else if (oldWidget._provider != widget._provider) {
       FlutterError.reportError(
         FlutterErrorDetails(
           exception: UnsupportedError(
-            'Changing the provider listened of a Consumer is not supported',
+            'Used `Consumer(provider)` with a `provider` different than it was before',
           ),
           library: 'flutter_provider',
           stack: StackTrace.current,
@@ -60,12 +85,18 @@ class _ConsumerState<T> extends State<Consumer<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return widget._builder(context, _value, widget._child);
+    final mustRebuild = _isOptionalRebuild != true || _subscription.flush();
+    _isOptionalRebuild = null;
+    if (!mustRebuild) {
+      return _buildCache;
+    }
+
+    return _buildCache = widget._builder(context, _value, widget._child);
   }
 
   @override
   void dispose() {
-    _removeListener?.call();
+    _subscription?.close();
     super.dispose();
   }
 }

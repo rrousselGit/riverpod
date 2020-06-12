@@ -22,8 +22,8 @@ class SetStateProvider<T>
   }
 }
 
-class _SetStateProviderState<T> extends ProviderStateBase<
-    ProviderDependencyBase, T, SetStateProvider<T>> {
+class _SetStateProviderState<T>
+    extends ProviderStateBase<ProviderDependencyBase, T, SetStateProvider<T>> {
   T _state;
   @override
   T get state => _state;
