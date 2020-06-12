@@ -4,6 +4,69 @@ import 'package:riverpod/riverpod.dart';
 
 import 'internal.dart';
 
+/// A widget that stores the state of providers.
+///
+/// All Flutter applications using Riverpod must contain a [ProviderScope] at
+/// the root of their widget tree. It is done as followed:
+///
+/// ```dart
+/// void main() {
+///   runApp(
+///     // Enabled Riverpod for the entire application
+///     ProviderScope(
+///       child: MyApp(),
+///     ),
+///   );
+/// }
+/// ```
+///
+/// It optionally possible to specify `overrides` to change the behavior of
+/// some providers. This can be useful for testing purposes:
+///
+/// ```dart
+/// testWidgets('Test example', (tester) async {
+///   await tester.pumpWidget(
+///     ProviderScope(
+///       overrides: [
+///         // override the behavior of repositoryProvider to provide a fake
+///         // implementation for test purposes.
+///         repositoryProvider.overrideAs(
+///           Provider((_) => FakeRepository()),
+///         ),
+///       ],
+///       child: MyApp(),
+///     ),
+///   );
+/// });
+/// ```
+/// 
+/// 
+/// Similarly, it is possible to insert other [ProviderScope] anywhere inside
+/// the widget tree to override the behavior of a provider for only a part of the
+/// application:
+/// 
+/// ```dart
+/// void main() {
+///   runApp(
+///     ProviderScope(
+///       child: MaterialApp(
+///         // Home uses the default behavior for all providers.
+///         home: Home(),
+///         routes: {
+///           // Overrides themeProvider for the /gallery route only
+///           '/gallery': (_) => ProviderScope(
+///             overrides: [
+///               themeProvider.overrideAs(
+///                 Provider((_) => MyTheme.dark()),
+///               ),
+///             ],
+///           ),
+///         },
+///       ),
+///     ),
+///   );
+/// }
+/// ```
 class ProviderScope extends StatefulWidget {
   const ProviderScope({
     Key key,
@@ -107,6 +170,7 @@ class _ProviderScopeState extends State<ProviderScope> {
       }
       return true;
     }(), '');
+
     return ProviderStateOwnerScope(
       owner: _owner,
       child: widget.child,
@@ -120,6 +184,7 @@ class _ProviderScopeState extends State<ProviderScope> {
   }
 }
 
+/// An internal InheritedWidget that exposes a [ProviderStateOwner] to the widget tree.
 class ProviderStateOwnerScope extends InheritedWidget {
   const ProviderStateOwnerScope({
     Key key,

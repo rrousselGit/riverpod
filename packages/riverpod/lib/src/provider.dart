@@ -2,12 +2,17 @@ import 'common.dart';
 import 'framework/framework.dart';
 
 /// The state to a [Provider].
-class ProviderDependency<T> extends ProviderDependencyBase {
-  ProviderDependency._(this.value);
-
+abstract class ProviderDependency<T> extends ProviderDependencyBase {
   /// The value exposed by [Provider].
   ///
   /// It is guaranteed to never change.
+  T get value;
+}
+
+class ProviderDependencyImpl<T> implements ProviderDependency<T> {
+  ProviderDependencyImpl(this.value);
+
+  @override
   final T value;
 }
 
@@ -37,6 +42,6 @@ class _ProviderState<T>
 
   @override
   ProviderDependency<T> createProviderDependency() {
-    return ProviderDependency._(state);
+    return ProviderDependencyImpl(state);
   }
 }

@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:riverpod/src/internals.dart';
 
-class ChangeNotifierProviderDependency<T> extends ProviderDependencyBase {
-  ChangeNotifierProviderDependency._(this.value);
-
-  final T value;
-}
-
+/// Creates a [ChangeNotifier] and subscribes to it.
+/// 
+/// Note: By using Riverpod, [ChangeNotifier] will no-longer be O(N^2) for
+/// dispatching notifications and O(N) for adding/removing listeners.
 class ChangeNotifierProvider<T extends ChangeNotifier>
-    extends AlwaysAliveProvider<ChangeNotifierProviderDependency<T>, T> {
+    extends AlwaysAliveProvider<ProviderDependency<T>, T> {
   ChangeNotifierProvider(this._create, {String name}) : super(name);
 
   final Create<T, ProviderReference> _create;
@@ -20,7 +18,7 @@ class ChangeNotifierProvider<T extends ChangeNotifier>
 }
 
 class _ChangeNotifierProviderState<T extends ChangeNotifier>
-    extends ProviderStateBase<ChangeNotifierProviderDependency<T>, T,
+    extends ProviderStateBase<ProviderDependency<T>, T,
         ChangeNotifierProvider<T>> {
   @override
   T state;
@@ -32,8 +30,8 @@ class _ChangeNotifierProviderState<T extends ChangeNotifier>
   }
 
   @override
-  ChangeNotifierProviderDependency<T> createProviderDependency() {
-    return ChangeNotifierProviderDependency._(state);
+  ProviderDependency<T> createProviderDependency() {
+    return ProviderDependencyImpl(state);
   }
 
   @override
