@@ -4,6 +4,27 @@ import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('overriding the provider overrides provider.state too', () {
+    final notifier = TestNotifier(42);
+    final provider = StateNotifierProvider((_) => TestNotifier());
+    final owner = ProviderStateOwner(
+      overrides: [
+        provider.overrideAs(StateNotifierProvider((_) => TestNotifier(10)))
+      ],
+    );
+
+    // does not crash
+    owner.updateOverrides([
+      provider.overrideAs(StateNotifierProvider((_) => notifier)),
+    ]);
+
+    expect(provider.readOwner(owner), notifier);
+    expect(provider.state.readOwner(owner), 42);
+
+    notifier.increment();
+
+    expect(provider.state.readOwner(owner), 43);
+  });
   test('can specify name', () {
     final provider = StateNotifierProvider(
       (_) => TestNotifier(),
@@ -92,7 +113,7 @@ void main() {
 }
 
 class TestNotifier extends StateNotifier<int> {
-  TestNotifier() : super(0);
+  TestNotifier([int initialValue = 0]) : super(initialValue);
 
   void increment() => state++;
 }

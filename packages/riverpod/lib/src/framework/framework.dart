@@ -169,7 +169,8 @@ class ProviderStateOwner {
     };
 
     for (final override in overrides) {
-      _overrideForProvider[override._origin] = override._provider;
+      final origin = override._origin;
+      _overrideForProvider[origin] = override._provider;
     }
 
     _stateReaders = {
@@ -367,28 +368,34 @@ Changing the kind of override or reordering overrides is not supported.
           ProviderBase<Dependency, ListeningValue>>
       _readProviderState<Dependency extends ProviderDependencyBase,
           ListeningValue>(
-    ProviderBase<Dependency, ListeningValue> provider,
+    final ProviderBase<Dependency, ListeningValue> provider,
   ) {
     if (_disposed) {
       throw StateError(
         'Tried to read a provider from a ProviderStateOwner that was already disposed',
       );
     }
-    ProviderStateBase<Dependency, ListeningValue,
-        ProviderBase<Dependency, ListeningValue>> result;
+    ProviderStateBase result;
     if (provider is Computed) {
       _computedStateReaders ??= {};
       result = _computedStateReaders.putIfAbsent(provider as Computed, () {
         return _ProviderStateReader(provider, this);
-      }).read() as ProviderStateBase<Dependency, ListeningValue,
-          ProviderBase<Dependency, ListeningValue>>;
+      }).read();
     } else {
-      result = (_stateReaders[provider]?.read() ?? _fallback(provider))
-          as ProviderStateBase<Dependency, ListeningValue,
-              ProviderBase<Dependency, ListeningValue>>;
+      result = _stateReaders[provider]?.read();
+      if (result == null && provider is StateNotifierStateProvider) {
+        final state = provider as StateNotifierStateProvider;
+        if (_stateReaders[state.controller] != null) {
+          _stateReaders[provider] = _ProviderStateReader(provider, this);
+          result = _stateReaders[provider].read();
+        }
+      }
+      result ??= _fallback(provider);
     }
 
-    return result..flush();
+    result.flush();
+    return result as ProviderStateBase<Dependency, ListeningValue,
+        ProviderBase<Dependency, ListeningValue>>;
   }
 
   /// Release all the resources associated with this [ProviderStateOwner].

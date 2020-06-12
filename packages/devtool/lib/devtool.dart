@@ -286,10 +286,10 @@ Iterable<_PropertyDetail> _parseProperties(
     yield* _parseValue(
       entry.value,
       depth: 1,
-      rebuild: entry.key is StateNotifierValueProvider
+      rebuild: entry.key is StateNotifierStateProvider
           ? (value) {
               final controller = providers[
-                      (entry.key as StateNotifierValueProvider).controller]
+                      (entry.key as StateNotifierStateProvider).controller]
                   as StateNotifier;
 
               // ignore: invalid_use_of_protected_member
