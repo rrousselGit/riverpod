@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:state_notifier/state_notifier.dart';

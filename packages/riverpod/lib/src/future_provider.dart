@@ -18,6 +18,14 @@ class FutureProvider<Res> extends AlwaysAliveProvider<
   /// Creates a [FutureProvider] and allows specifying a [name].
   FutureProvider(this._create, {String name}) : super(name);
 
+  /// Creates a [FutureProvider] and allows specifying a [name].
+  FutureProvider._family(
+    this._create, {
+    String name,
+    @required Family family,
+    @required Object parameter,
+  }) : super.fromFamily(name, family: family, parameter: parameter);
+
   final Create<Future<Res>, ProviderReference> _create;
 
   @override
@@ -37,7 +45,7 @@ class FutureProvider<Res> extends AlwaysAliveProvider<
   /// possible to change the value exposed.
   ///
   /// This will create a made up [Future] for [FutureProviderDependency.future].
-  ProviderOverride debugOverrideWithValue(AsyncValue<Res> value) {
+  Override debugOverrideWithValue(AsyncValue<Res> value) {
     ProviderOverride res;
     assert(() {
       res = overrideAs(
@@ -161,4 +169,15 @@ class _DebugValueFutureProviderState<Res> extends ProviderStateBase<
   FutureProviderDependency<Res> createProviderDependency() {
     return FutureProviderDependency._(future: _completer.future);
   }
+}
+
+class FutureProvider1<Result, A> extends Family<FutureProvider<Result>, A> {
+  FutureProvider1(Future<Result> Function(ProviderReference ref, A a) create)
+      : super((family, a) {
+          return FutureProvider._family(
+            (ref) => create(ref, a),
+            family: family,
+            parameter: a,
+          );
+        });
 }

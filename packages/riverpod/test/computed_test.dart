@@ -60,7 +60,7 @@ void main() {
     );
   });
   test('Computed are not overrides', () {
-    expect(Computed((_) {}), isNot(isA<ProviderOverride>()));
+    expect(Computed((_) {}), isNot(isA<Override>()));
   });
   test('disposing the Computed closes subscriptions', () {
     final notifier = Notifier(0);

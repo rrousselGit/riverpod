@@ -103,34 +103,12 @@ class _$AsyncDataCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
   }
 }
 
-class _$AsyncData<T> extends AsyncData<T> implements $DebugFreezed {
+class _$AsyncData<T> extends AsyncData<T> {
   const _$AsyncData(@nullable this.value) : super._();
 
   @override
   @nullable
   final T value;
-
-  @override
-  String get $debugRedirectedClassName {
-    String res;
-    assert(() {
-      res = 'AsyncData';
-      return true;
-    }());
-    return res;
-  }
-
-  @override
-  Map<String, Object> $debugToMap() {
-    Map<String, Object> res;
-    assert(() {
-      res = {
-        'value': value,
-      };
-      return true;
-    }());
-    return res;
-  }
 
   @override
   String toString() {
@@ -234,28 +212,8 @@ class __$LoadingCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
   _Loading<T> get _value => super._value as _Loading<T>;
 }
 
-class _$_Loading<T> extends _Loading<T> implements $DebugFreezed {
+class _$_Loading<T> extends _Loading<T> {
   const _$_Loading() : super._();
-
-  @override
-  String get $debugRedirectedClassName {
-    String res;
-    assert(() {
-      res = '_Loading';
-      return true;
-    }());
-    return res;
-  }
-
-  @override
-  Map<String, Object> $debugToMap() {
-    Map<String, Object> res;
-    assert(() {
-      res = {};
-      return true;
-    }());
-    return res;
-  }
 
   @override
   String toString() {
@@ -358,7 +316,7 @@ class __$ErrorCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
   }
 }
 
-class _$_Error<T> extends _Error<T> implements $DebugFreezed {
+class _$_Error<T> extends _Error<T> {
   _$_Error(this.error, [this.stackTrace])
       : assert(error != null),
         super._();
@@ -367,29 +325,6 @@ class _$_Error<T> extends _Error<T> implements $DebugFreezed {
   final Object error;
   @override
   final StackTrace stackTrace;
-
-  @override
-  String get $debugRedirectedClassName {
-    String res;
-    assert(() {
-      res = '_Error';
-      return true;
-    }());
-    return res;
-  }
-
-  @override
-  Map<String, Object> $debugToMap() {
-    Map<String, Object> res;
-    assert(() {
-      res = {
-        'error': error,
-        'stackTrace': stackTrace,
-      };
-      return true;
-    }());
-    return res;
-  }
 
   @override
   String toString() {

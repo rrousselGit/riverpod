@@ -10,6 +10,7 @@ import '../internals.dart';
 import '../provider.dart';
 
 part 'base_provider.dart';
+part 'family.dart';
 
 // ignore: avoid_private_typedef_functions
 typedef _FallbackProviderStateReader = ProviderStateBase<ProviderDependencyBase,
@@ -158,7 +159,7 @@ class ProviderStateOwner {
   /// Creates a [ProviderStateOwner] and allows specifying provider overrides.
   ProviderStateOwner({
     ProviderStateOwner parent,
-    List<ProviderOverride> overrides = const [],
+    List<Override> overrides = const [],
     List<ProviderStateOwnerObserver> observers,
   })  : _debugOverrides = overrides,
         _observers = observers {
@@ -172,19 +173,35 @@ class ProviderStateOwner {
           ProviderBase<ProviderDependencyBase, T>>;
     };
 
+    final overridenFamilies = <Family>{};
+
     for (final override in overrides) {
-      final origin = override._origin;
-      _overrideForProvider[origin] = override._provider;
+      if (override is ProviderOverride) {
+        _overrideForProvider[override._origin] = override._provider;
+      } else if (override is FamilyOverride) {
+        _overrideForFamily[override._family] = override;
+        overridenFamilies.add(override._family);
+      } else {
+        // TODO
+      }
     }
 
     _stateReaders = {
-      ...?parent?._stateReaders,
+      // TODO test two families one overriden the other not
+      /// Imports [_ProviderStateReader]s from the parent, but exclude locally
+      /// overriden families.
+      if (parent != null)
+        for (final entry in parent._stateReaders.entries)
+          if (!overridenFamilies.contains(entry.key.family))
+            entry.key: entry.value,
       _refProvider: _ProviderStateReader(_refProvider, this),
       for (final override in overrides)
-        override._origin: _ProviderStateReader(
-          override._origin,
-          this,
-        ),
+        // Only applies provider overrides. Family overrides are applied on read
+        if (override is ProviderOverride)
+          override._origin: _ProviderStateReader(
+            override._origin,
+            this,
+          ),
     };
   }
 
@@ -197,8 +214,16 @@ class ProviderStateOwner {
   /// Upating existing keys is possible.
   final _overrideForProvider = <ProviderBase, ProviderBase>{};
 
+  final _overrideForFamily = <Family, FamilyOverride>{};
+
   /// The state of all providers. Reading a provider is O(1).
   Map<ProviderBase, _ProviderStateReader> _stateReaders;
+
+  /// The state of `Computed` providers
+  ///
+  /// It is not stored inside [_stateReaders] as `Computed` are always
+  /// in the deepest [ProviderStateOwner] possible.
+  Map<Computed, _ProviderStateReader> _computedStateReaders;
 
   /// When attempting to read a provider, a provider may not be registered
   /// inside [_stateReaders] with a [_ProviderStateReader].
@@ -214,13 +239,7 @@ class ProviderStateOwner {
   /// a [StateError] when attempting to use them.
   bool _disposed = false;
 
-  List<ProviderOverride> _debugOverrides;
-
-  /// The state of `Computed` providers
-  ///
-  /// It is not stored inside [_stateReaders] as `Computed` are always
-  /// in the deepest [ProviderStateOwner] possible.
-  Map<Computed, _ProviderStateReader> _computedStateReaders;
+  List<Override> _debugOverrides;
 
   /// An utility to easily obtain a [ProviderReference] from a [ProviderStateOwner].
   ///
@@ -280,7 +299,7 @@ class ProviderStateOwner {
   ///   provider3.overrideAs(...),
   /// ]);
   /// ```
-  void updateOverrides(List<ProviderOverride> overrides) {
+  void updateOverrides(List<Override> overrides) {
     assert(() {
       if (_disposed) {
         throw StateError(
@@ -295,21 +314,24 @@ class ProviderStateOwner {
         }
 
         for (var i = 0; i < overrides.length; i++) {
-          final previous = _debugOverrides[i];
           final next = overrides[i];
 
-          if (previous._provider.runtimeType != next._provider.runtimeType) {
-            throw UnsupportedError('''
+          if (next is ProviderOverride) {
+            final previous = _debugOverrides[i] as ProviderOverride;
+            if (previous._provider.runtimeType != next._provider.runtimeType) {
+              throw UnsupportedError('''
 Replaced the override at index $i of type ${previous._provider.runtimeType} with an override of type ${next._provider.runtimeType}, which is different.
 Changing the kind of override or reordering overrides is not supported.
 ''');
-          }
+            }
 
-          if (previous._origin != next._origin) {
-            throw UnsupportedError(
-              'The provider overriden at the index $i changed, which is unsupported.',
-            );
+            if (previous._origin != next._origin) {
+              throw UnsupportedError(
+                'The provider overriden at the index $i changed, which is unsupported.',
+              );
+            }
           }
+          // TODO
         }
       }
 
@@ -319,24 +341,27 @@ Changing the kind of override or reordering overrides is not supported.
     }(), '');
 
     for (final override in overrides) {
-      _overrideForProvider[override._origin] = override._provider;
+      // No need to handle Family overrides, a provider can never "update".
+      if (override is ProviderOverride) {
+        _overrideForProvider[override._origin] = override._provider;
 
-      assert(
-        override._origin is! Computed && override._provider is! Computed,
-        'Cannot override Computed',
-      );
-      // no need to check _computedStateReaders as they are not overridable.
-      // _stateReaders[override._origin] cannot be null for overriden providers.
-      final state = _stateReaders[override._origin]
-          // _providerState instead of read() to not compute the state
-          // if it wasn't loaded yet.
-          ._providerState;
-      if (state == null) {
-        continue;
+        assert(
+          override._origin is! Computed && override._provider is! Computed,
+          'Cannot override Computed',
+        );
+        // no need to check _computedStateReaders as they are not overridable.
+        // _stateReaders[override._origin] cannot be null for overriden providers.
+        final state = _stateReaders[override._origin]
+            // _providerState instead of read() to not compute the state
+            // if it wasn't loaded yet.
+            ._providerState;
+        if (state == null) {
+          continue;
+        }
+        final oldProvider = state._provider;
+        state._provider = override._provider;
+        _runUnaryGuarded(state.didUpdateProvider, oldProvider);
       }
-      final oldProvider = state._provider;
-      state._provider = override._provider;
-      _runUnaryGuarded(state.didUpdateProvider, oldProvider);
     }
   }
 
@@ -370,26 +395,36 @@ Changing the kind of override or reordering overrides is not supported.
         'Tried to read a provider from a ProviderStateOwner that was already disposed',
       );
     }
-    ProviderStateBase result;
-    if (provider is Computed) {
-      _computedStateReaders ??= {};
-      result = _computedStateReaders.putIfAbsent(provider as Computed, () {
-        return _ProviderStateReader(provider, this);
-      }).read();
-    } else {
-      result = _stateReaders[provider]?.read();
-      if (result == null && provider is StateNotifierStateProvider) {
-        final state = provider as StateNotifierStateProvider;
-        if (_stateReaders[state.controller] != null) {
-          _stateReaders[provider] = _ProviderStateReader(provider, this);
-          result = _stateReaders[provider].read();
+    var reader = _stateReaders[provider];
+
+    if (reader == null) {
+      // Doesn't have a reader yet – let's create it.
+      if (provider is Computed) {
+        _computedStateReaders ??= {};
+        reader = _computedStateReaders.putIfAbsent(provider as Computed, () {
+          return _ProviderStateReader(provider, this);
+        });
+      } else if (provider.family != null &&
+          _overrideForFamily[provider.family] != null) {
+        final familyOverride = _overrideForFamily[provider.family];
+
+        if (familyOverride != null) {
+          _overrideForProvider[provider] =
+              familyOverride.createOverride(provider.parameter);
         }
+
+        reader = _stateReaders[provider] = _ProviderStateReader(provider, this);
+      } else if (provider is StateNotifierStateProvider &&
+          _stateReaders[(provider as StateNotifierStateProvider).controller] !=
+              null) {
+        reader = _stateReaders[provider] = _ProviderStateReader(provider, this);
       }
-      result ??= _fallback(provider);
     }
 
-    result.flush();
-    return result as ProviderStateBase<Dependency, ListeningValue,
+    final state = reader?.read() ?? _fallback(provider);
+
+    state.flush();
+    return state as ProviderStateBase<Dependency, ListeningValue,
         ProviderBase<Dependency, ListeningValue>>;
   }
 
@@ -493,12 +528,14 @@ extension ProviderStateOwnerInternals on ProviderStateOwner {
 ///
 /// - [ProviderStateOwner], which uses this object.
 /// - [AlwaysAliveProvider.overrideAs], which creates a [ProviderOverride].
-class ProviderOverride {
+class ProviderOverride implements Override {
   ProviderOverride._(this._provider, this._origin);
 
   final ProviderBase _origin;
   final ProviderBase _provider;
 }
+
+class Override {}
 
 /// A base class for objects returned by [ProviderReference.dependOn].
 abstract class ProviderDependencyBase {}
@@ -537,7 +574,7 @@ class ProviderReference {
   /// This is useful when dealing with asynchronous operations, as the provider
   /// may have potentially be destroyed before the end of the asyncronous operation.
   /// In that case, we may want to stop performing further tasks.
-  /// 
+  ///
   /// Most providers are never disposed, so in most situations you do not have to
   /// care about this.
   bool get mounted => _providerState.mounted;

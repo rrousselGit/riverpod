@@ -24,9 +24,9 @@ export 'package:flutter_riverpod/flutter_riverpod.dart';
 ///   }
 /// }
 /// ```
-/// 
+///
 /// See also:
-/// 
+///
 /// - [ProviderBase.select], for filtering unwanted rebuilds.
 T useProvider<T>(ProviderListenable<T> provider) {
   final owner = ProviderStateOwnerScope.of(useContext());

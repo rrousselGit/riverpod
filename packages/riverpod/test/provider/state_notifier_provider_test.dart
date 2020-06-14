@@ -10,9 +10,7 @@ void main() {
     final root = ProviderStateOwner();
     final root2 = ProviderStateOwner(
       parent: root,
-      overrides: [
-        provider.overrideAs(StateNotifierProvider((_) => notifier))
-      ],
+      overrides: [provider.overrideAs(StateNotifierProvider((_) => notifier))],
     );
     final owner = ProviderStateOwner(parent: root2);
 

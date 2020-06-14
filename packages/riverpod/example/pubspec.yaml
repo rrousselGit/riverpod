@@ -8,11 +8,11 @@ environment:
 dependencies:
   riverpod:
     path: ..
-  freezed_annotation: ^0.11.0-dev
+  freezed_annotation: ^0.11.0
   crypto: ^2.1.4
   dio: ^3.0.9
 
 dev_dependencies:
-  freezed: ^0.11.0-dev
+  freezed: ^0.11.0
   json_serializable:
   build_runner: ^1.8.1

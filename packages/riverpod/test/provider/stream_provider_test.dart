@@ -19,7 +19,7 @@ void main() {
     expect(provider2.name, isNull);
   });
   test('is AlwaysAliveProvider', () {
-    final provider = FutureProvider((_) async => 42);
+    final provider = StreamProvider<int>((_) async* {});
 
     expect(provider, isA<AlwaysAliveProvider>());
   });

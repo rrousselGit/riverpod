@@ -39,12 +39,12 @@ import 'internal.dart';
 ///   );
 /// });
 /// ```
-/// 
-/// 
+///
+///
 /// Similarly, it is possible to insert other [ProviderScope] anywhere inside
 /// the widget tree to override the behavior of a provider for only a part of the
 /// application:
-/// 
+///
 /// ```dart
 /// void main() {
 ///   runApp(
@@ -82,7 +82,7 @@ class ProviderScope extends StatefulWidget {
   final List<ProviderStateOwnerObserver> observers;
 
   @visibleForTesting
-  final List<ProviderOverride> overrides;
+  final List<Override> overrides;
 
   @override
   _ProviderScopeState createState() => _ProviderScopeState();

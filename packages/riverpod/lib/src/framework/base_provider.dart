@@ -186,7 +186,16 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
     Result extends Object> implements ProviderListenable<Result> {
   /// Allows specifying a name.
   // ignore: prefer_const_constructors_in_immutables, the canonalisation of constants is unsafe for providers.
-  ProviderBase(this.name);
+  ProviderBase(this.name)
+      : parameter = null,
+        family = null;
+
+  // ignore: prefer_const_constructors_in_immutables, the canonalisation of constants is unsafe for providers.
+  ProviderBase.fromFamily(
+    this.name, {
+    @required this.parameter,
+    @required this.family,
+  });
 
   /// Internal method for creating the state associated to a provider. Do not use.
   @visibleForOverriding
@@ -199,6 +208,10 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
   /// - It makes devtools and logging more readable
   /// - It can be used as a serialisable unique identifier for state serialisation/deserialisation.
   final String name;
+
+  final Family family;
+
+  final Object parameter;
 
   @override
   ProviderSubscription addLazyListener(
@@ -418,7 +431,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   }
 
   /// Initialize the state of the provider on creation.
-  /// 
+  ///
   /// All calls to [markMayHaveChanged] will be ignored.
   /// If [initState] throws, reading the provider will result in an exception.
   void initState();
@@ -529,7 +542,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
 
   /// After [markMayHaveChanged] was called, [flush] is called [ProviderSubscription.flush]
   /// of on [AlwaysAliveProvider.readOwner].
-  /// 
+  ///
   /// Must either call [notifyChanged] or [cancelChangeNotification].
   @visibleForOverriding
   void flush() {
@@ -558,7 +571,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   }
 
   /// Notify listeners that the provider **may** have changed.
-  /// 
+  ///
   /// This is used by [Computed]/[ProviderBase.select] to compute the new value
   /// only when truly needed.
   void markMayHaveChanged() {
@@ -637,6 +650,13 @@ abstract class AlwaysAliveProvider<Dependency extends ProviderDependencyBase,
     implements ProviderOverride {
   /// Creates an [AlwaysAliveProvider] and allows specifing a [name].
   AlwaysAliveProvider(String name) : super(name);
+
+  /// Creates an [AlwaysAliveProvider] and allows specifing a [name].
+  AlwaysAliveProvider.fromFamily(
+    String name, {
+    @required Family family,
+    @required Object parameter,
+  }) : super.fromFamily(name, family: family, parameter: parameter);
 
   @override
   ProviderBase get _provider => this;

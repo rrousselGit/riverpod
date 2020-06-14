@@ -5,6 +5,8 @@
 
 <!-- - evaluate time complexity for all operations -->
 <!-- - evaluate space complexity -->
+- remove name
+- think about state_notifier & consumer tree-shaking
 - future/changenotifier/...providers cannot return null
 - Cannot add dependencies during dispatching
 - FutureChangeNotifier

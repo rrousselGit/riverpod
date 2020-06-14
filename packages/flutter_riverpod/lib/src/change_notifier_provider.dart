@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod/src/internals.dart';
 
 /// Creates a [ChangeNotifier] and subscribes to it.
-/// 
+///
 /// Note: By using Riverpod, [ChangeNotifier] will no-longer be O(N^2) for
 /// dispatching notifications and O(N) for adding/removing listeners.
 class ChangeNotifierProvider<T extends ChangeNotifier>
