@@ -16,6 +16,38 @@ Matcher isProvider(ProviderBase provider) {
 }
 
 void main() {
+  test('hasListeners', () {
+    final root = ProviderStateOwner();
+    final provider = Provider((_) => 42);
+    final provider2 = Provider((ref) => ref.dependOn(provider).value * 2);
+    final owner = ProviderStateOwner(parent: root, overrides: [provider2]);
+
+    expect(provider.readOwner(owner), 42);
+
+    final state = root.debugProviderStates.single;
+
+    expect(state.$hasListeners, false);
+
+    final removeListener = provider.watchOwner(owner, (value) {});
+
+    expect(state.$hasListeners, true);
+
+    removeListener();
+
+    expect(state.$hasListeners, false);
+
+    expect(provider2.readOwner(owner), 84);
+
+    final state2 = owner.debugProviderStates.single;
+
+    expect(state.$hasListeners, true);
+    expect(state2.$hasListeners, false);
+
+    owner.dispose();
+
+    expect(state2.$hasListeners, false);
+    expect(state.$hasListeners, false);
+  });
   test('test two families one overriden the other not', () {
     var callCount = 0;
     final family = Provider1<String, int>((ref, value) {
@@ -49,7 +81,19 @@ void main() {
     expect(callCount2, 1);
   });
 
-  // TODO: throw if tried to dispose a parent owner that still have undisposed children owners
+  test(
+      'throw if tried to dispose a parent owner that still have undisposed children owners',
+      () {
+    final provider = Provider((_) => 42);
+    final provider2 = Provider((ref) => ref.dependOn(provider).value * 2);
+    final root = ProviderStateOwner();
+    final owner = ProviderStateOwner(parent: root, overrides: [provider2]);
+
+    expect(provider.readOwner(owner), 42);
+    expect(provider2.readOwner(owner), 84);
+
+    expect(root.dispose, throwsA(isA<AssertionError>()));
+  });
   test('changing the override type at a given index throws', () {
     final provider = Provider((ref) => 0);
     final family = Provider1<int, int>((ref, value) => 0);

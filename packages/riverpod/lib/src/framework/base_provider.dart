@@ -265,8 +265,10 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   LinkedList<_LinkedListEntry<void Function()>> _mayHaveChangedListeners;
 
   /// Whether this provider is listened or not.
-  // TODO: factor [createDependency]
-  bool get $hasListeners => _mayHaveChangedListeners?.isNotEmpty ?? false;
+  bool get $hasListeners {
+    return _dependents.isNotEmpty ||
+        (_mayHaveChangedListeners?.isNotEmpty ?? false);
+  }
 
   int get _debugDepth {
     int result;
@@ -334,6 +336,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
 
         _providerStateDependencies.add(targetProviderState);
         targetProviderState._dependents.add(this);
+
         final targetProviderValue =
             targetProviderState.createProviderDependency();
         onDispose(() {
@@ -460,10 +463,18 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   /// It triggers [ProviderReference.onDispose]
   @mustCallSuper
   void dispose() {
+    assert(
+      _dependents.isEmpty,
+      'The provider $provider was disposed when other providers are still listening to it',
+    );
     _mounted = false;
+    _providerStateDependencies.clear();
+    _providerDependenciesCache = null;
+    _mayHaveChangedListeners = null;
     if (_onDisposeCallbacks != null) {
       _onDisposeCallbacks.forEach(_runGuarded);
     }
+    _onDisposeCallbacks = null;
 
     if (_owner._observers != null) {
       for (final observer in _owner._observers) {

@@ -73,38 +73,6 @@ Changing the kind of override or reordering overrides is not supported.
       reset(onDispose);
     });
 
-    testWidgets('calls all dispose in order even if one crashes',
-        (tester) async {
-      final provider = TestProvider(0, onDispose: MockDispose());
-      final provider2 = TestProvider(0, onDispose: MockDispose());
-      final error2 = Error();
-      when(provider2.onDispose(any)).thenThrow(error2);
-      final provider3 = TestProvider(0, onDispose: MockDispose());
-
-      await tester.pumpWidget(
-        ProviderScope(
-          child: HookBuilder(builder: (c) {
-            useProvider(provider);
-            useProvider(provider2);
-            useProvider(provider3);
-            return Container();
-          }),
-        ),
-      );
-
-      final errors = <Object>[];
-
-      await runZonedGuarded(
-        () => tester.pumpWidget(Container()),
-        (err, _) => errors.add(err),
-      );
-
-      expect(errors, [error2]);
-      verify(provider.onDispose(argThat(isNotNull))).called(1);
-      verify(provider2.onDispose(argThat(isNotNull))).called(1);
-      verify(provider3.onDispose(argThat(isNotNull))).called(1);
-    });
-
     testWidgets('override to override on same scope calls didUpdateProvider',
         (tester) async {
       final override = TestProvider(

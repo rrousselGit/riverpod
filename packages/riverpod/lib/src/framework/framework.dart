@@ -468,8 +468,11 @@ Changing the kind of override or reordering overrides is not supported.
 
     for (final state in _visitStatesInReverseOrder()) {
       notifyListenersLock = state;
-      _runGuarded(state.dispose);
-      notifyListenersLock = null;
+      try {
+        state.dispose();
+      } finally {
+        notifyListenersLock = null;
+      }
     }
   }
 
