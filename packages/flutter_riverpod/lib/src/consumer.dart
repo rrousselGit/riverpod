@@ -131,7 +131,6 @@ class _ConsumerState extends State<Consumer> {
       return true;
     }(), '');
     try {
-      // TODO what if there's an exception inside selector?
       return _buildCache = widget._builder(context, _reader);
     } finally {
       assert(() {

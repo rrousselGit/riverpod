@@ -133,8 +133,6 @@ class ProviderScopeState extends State<ProviderScope> {
       parent: scope?.owner,
       overrides: widget.overrides,
       observers: widget.observers,
-      // TODO prevent update from widgets?
-      // markNeedsUpdate: () => setState(() => _dirty = true),
       // TODO How to report to FlutterError?
       // onError: (dynamic error, stack) {
       //   FlutterError.reportError(

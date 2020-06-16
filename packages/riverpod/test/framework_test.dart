@@ -16,7 +16,67 @@ Matcher isProvider(ProviderBase provider) {
 }
 
 void main() {
+  test('test two families one overriden the other not', () {
+    var callCount = 0;
+    final family = Provider1<String, int>((ref, value) {
+      callCount++;
+      return '$value';
+    });
+    var callCount2 = 0;
+    final family2 = Provider1<String, int>((ref, value) {
+      callCount2++;
+      return '$value 2';
+    });
+    final root = ProviderStateOwner();
+    final owner = ProviderStateOwner(parent: root, overrides: [
+      family.overrideAs((ref, value) => 'override $value'),
+    ]);
+
+    expect(callCount, 0);
+    expect(family(0).readOwner(root), '0');
+    expect(callCount, 1);
+
+    expect(callCount2, 0);
+    expect(family2(0).readOwner(root), '0 2');
+    expect(callCount2, 1);
+
+    expect(callCount, 1);
+    expect(family(0).readOwner(owner), 'override 0');
+    expect(callCount, 1);
+
+    expect(callCount2, 1);
+    expect(family2(0).readOwner(owner), '0 2');
+    expect(callCount2, 1);
+  });
+
   // TODO: throw if tried to dispose a parent owner that still have undisposed children owners
+  test('changing the override type at a given index throws', () {
+    final provider = Provider((ref) => 0);
+    final family = Provider1<int, int>((ref, value) => 0);
+    final owner = ProviderStateOwner(overrides: [
+      family.overrideAs((ref, value) => 0),
+    ]);
+
+    expect(
+      () => owner.updateOverrides([provider.overrideAs(Provider((_) => 42))]),
+      throwsUnsupportedError,
+    );
+  });
+  test('last family override is applied', () {
+    final family = Provider1<int, int>((ref, value) => 0);
+    final owner = ProviderStateOwner(overrides: [
+      family.overrideAs((ref, value) => 1),
+    ]);
+
+    expect(family(0).readOwner(owner), 1);
+
+    owner.updateOverrides([
+      family.overrideAs((ref, value) => 2),
+    ]);
+
+    expect(family(0).readOwner(owner), 1);
+    expect(family(1).readOwner(owner), 2);
+  });
   test('mount in parent owner then in child owner', () {
     final root = ProviderStateOwner();
     final notifier = Counter();

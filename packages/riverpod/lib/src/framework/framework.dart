@@ -182,8 +182,6 @@ class ProviderStateOwner {
       } else if (override is FamilyOverride) {
         _overrideForFamily[override._family] = override;
         overridenFamilies.add(override._family);
-      } else {
-        // TODO
       }
     }
 
@@ -203,7 +201,6 @@ class ProviderStateOwner {
     }
 
     _stateReaders = {
-      // TODO test two families one overriden the other not
       /// Imports [_ProviderStateReader]s from the parent, but exclude locally
       /// overriden families.
       if (parent != null)
@@ -273,8 +270,8 @@ class ProviderStateOwner {
   /// It is not possible, to remove or add new overrides.
   ///
   /// What this means is, if [ProviderStateOwner] was created with 3 overrides,
-  /// calls to [updateOverrides] that tries to change the list of overrides must override
-  /// these 3 exact providers again.
+  /// calls to [updateOverrides] that tries to change the list of overrides must
+  /// override these 3 exact providers again, in the same order.
   ///
   /// As an example, consider:
   ///
@@ -313,6 +310,12 @@ class ProviderStateOwner {
   ///   provider2.overrideAs(Provider((_) => 'London')),
   ///   provider3.overrideAs(...),
   /// ]);
+  ///
+  /// // Invalid the order of the overrides
+  /// owner.updateOverrides([
+  ///   provider2.overrideAs(Provider((_) => 'London')),
+  ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
+  /// ]);
   /// ```
   void updateOverrides(List<Override> overrides) {
     assert(() {
@@ -330,9 +333,16 @@ class ProviderStateOwner {
 
         for (var i = 0; i < overrides.length; i++) {
           final next = overrides[i];
+          final previous = _debugOverrides[i];
 
-          if (next is ProviderOverride) {
-            final previous = _debugOverrides[i] as ProviderOverride;
+          if (previous.runtimeType != next.runtimeType) {
+            throw UnsupportedError('''
+Replaced the override at index $i of type ${previous.runtimeType} with an override of type ${next.runtimeType}, which is different.
+Changing the kind of override or reordering overrides is not supported.
+''');
+          }
+
+          if (next is ProviderOverride && previous is ProviderOverride) {
             if (previous._provider.runtimeType != next._provider.runtimeType) {
               throw UnsupportedError('''
 Replaced the override at index $i of type ${previous._provider.runtimeType} with an override of type ${next._provider.runtimeType}, which is different.
@@ -346,17 +356,14 @@ Changing the kind of override or reordering overrides is not supported.
               );
             }
           }
-          // TODO
+          // No need to assert anything for family overrides as they can't "didUpdateProvider".
         }
       }
-
       _debugOverrides = overrides;
-
       return true;
     }(), '');
 
     for (final override in overrides) {
-      // No need to handle Family overrides, a provider can never "update".
       if (override is ProviderOverride) {
         _overrideForProvider[override._origin] = override._provider;
 
@@ -376,6 +383,8 @@ Changing the kind of override or reordering overrides is not supported.
         final oldProvider = state._provider;
         state._provider = override._provider;
         _runUnaryGuarded(state.didUpdateProvider, oldProvider);
+      } else if (override is FamilyOverride) {
+        _overrideForFamily[override._family] = override;
       }
     }
   }

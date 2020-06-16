@@ -1,7 +1,5 @@
 part of 'framework.dart';
 
-// TODO throw if a family provider is overriden
-
 abstract class Family<P extends ProviderBase, A> {
   Family(this._create);
 
