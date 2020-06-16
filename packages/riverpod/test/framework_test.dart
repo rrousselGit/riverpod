@@ -17,6 +17,63 @@ Matcher isProvider(ProviderBase provider) {
 
 void main() {
   // TODO: throw if tried to dispose a parent owner that still have undisposed children owners
+  test('mount in parent owner then in child owner', () {
+    final root = ProviderStateOwner();
+    final notifier = Counter();
+    final provider = StateNotifierProvider((_) => notifier);
+
+    expect(provider.state.readOwner(root), 0);
+
+    expect(root.debugProviderValues, {
+      provider: notifier,
+      provider.state: 0,
+    });
+
+    expect(
+      root.debugProviderStates,
+      unorderedEquals(<Matcher>[
+        // ignore: invalid_use_of_protected_member
+        isA<ProviderStateBase>().having((s) => s.state, 'state', notifier),
+        // ignore: invalid_use_of_protected_member
+        isA<ProviderStateBase>().having((s) => s.state, 'state', 0),
+      ]),
+    );
+
+    final notifier2 = Counter(42);
+    final owner = ProviderStateOwner(parent: root, overrides: [
+      provider.overrideAs(StateNotifierProvider((_) => notifier2))
+    ]);
+
+    expect(provider.state.readOwner(owner), 42);
+
+    expect(root.debugProviderValues, {
+      provider: notifier,
+      provider.state: 0,
+    });
+    expect(owner.debugProviderValues, {
+      provider: notifier2,
+      provider.state: 42,
+    });
+
+    expect(
+      root.debugProviderStates,
+      unorderedEquals(<Matcher>[
+        // ignore: invalid_use_of_protected_member
+        isA<ProviderStateBase>().having((s) => s.state, 'state', notifier),
+        // ignore: invalid_use_of_protected_member
+        isA<ProviderStateBase>().having((s) => s.state, 'state', 0),
+      ]),
+    );
+    expect(
+      owner.debugProviderStates,
+      unorderedEquals(<Matcher>[
+        // ignore: invalid_use_of_protected_member
+        isA<ProviderStateBase>().having((s) => s.state, 'state', notifier2),
+        // ignore: invalid_use_of_protected_member
+        isA<ProviderStateBase>().having((s) => s.state, 'state', 42),
+      ]),
+    );
+  });
   test('guard listeners', () {
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
@@ -1043,7 +1100,7 @@ class ListenerMock extends Mock {
 }
 
 class Counter extends StateNotifier<int> {
-  Counter() : super(0);
+  Counter([int initialValue = 0]) : super(initialValue);
 
   void increment() => state++;
 }

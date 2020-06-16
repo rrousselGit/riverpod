@@ -32,16 +32,13 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: ProviderScope(
-          child: Consumer<AsyncValue<int>>(
-            futureProvider,
-            builder: (c, value, _) {
-              return value.when(
-                data: (data) => Text(data.toString()),
-                loading: () => const Text('loading'),
-                error: (dynamic err, stack) => Text('$err'),
-              );
-            },
-          ),
+          child: Consumer((c, read) {
+            return read(futureProvider).when(
+              data: (data) => Text(data.toString()),
+              loading: () => const Text('loading'),
+              error: (dynamic err, stack) => Text('$err'),
+            );
+          }),
         ),
       ),
     );
@@ -63,20 +60,17 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: ProviderScope(
-          child: Consumer<AsyncValue<int>>(
-            futureProvider,
-            builder: (c, value, _) {
-              return value.when(
-                data: (data) => Text(data.toString()),
-                loading: () => const Text('loading'),
-                error: (dynamic err, stack) {
-                  whenError = err;
-                  whenStack = stack;
-                  return const Text('error');
-                },
-              );
-            },
-          ),
+          child: Consumer((c, read) {
+            return read(futureProvider).when(
+              data: (data) => Text(data.toString()),
+              loading: () => const Text('loading'),
+              error: (dynamic err, stack) {
+                whenError = err;
+                whenStack = stack;
+                return const Text('error');
+              },
+            );
+          }),
         ),
       ),
     );
@@ -95,10 +89,10 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer<AsyncValue<int>>(
-          futureProvider,
-          builder: (c, value, _) => Container(),
-        ),
+        child: Consumer((c, read) {
+          read(futureProvider);
+          return Container();
+        }),
       ),
     );
 
@@ -116,10 +110,10 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer<AsyncValue<int>>(
-          futureProvider,
-          builder: (c, value, _) => Container(),
-        ),
+        child: Consumer((c, read) {
+          read(futureProvider);
+          return Container();
+        }),
       ),
     );
 
@@ -146,15 +140,12 @@ void main() {
         ],
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer<AsyncValue<int>>(
-            futureProvider,
-            builder: (c, value, _) {
-              return value.maybeWhen(
-                data: (data) => Text(data.toString()),
-                orElse: () => const Text('else'),
-              );
-            },
-          ),
+          child: Consumer((c, read) {
+            return read(futureProvider).maybeWhen(
+              data: (data) => Text(data.toString()),
+              orElse: () => const Text('else'),
+            );
+          }),
         ),
       ),
     );
@@ -195,24 +186,16 @@ void main() {
 
     final child = Directionality(
       textDirection: TextDirection.ltr,
-      child: Consumer<String>(
-        // TODO why?
-        proxy,
-        builder: (c, value, _) {
-          return Consumer<AsyncValue<int>>(
-            futureProvider,
-            builder: (c, value, _) {
-              return value.when(
-                data: (data) => Text(data.toString()),
-                loading: () => const Text('loading'),
-                error: (dynamic err, stack) {
-                  return const Text('error');
-                },
-              );
-            },
-          );
-        },
-      ),
+      child: Consumer((c, read) {
+        read(proxy);
+        return read(futureProvider).when(
+          data: (data) => Text(data.toString()),
+          loading: () => const Text('loading'),
+          error: (dynamic err, stack) {
+            return const Text('error');
+          },
+        );
+      }),
     );
 
     testWidgets('no-op if completed and rebuild with same value',
@@ -455,16 +438,13 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer<AsyncValue<int>>(
-            futureProvider1,
-            builder: (c, value, _) {
-              return value.when(
-                data: (value) => Text(value.toString()),
-                loading: () => const Text('loading'),
-                error: (dynamic err, stack) => const Text('error'),
-              );
-            },
-          ),
+          child: Consumer((c, read) {
+            return read(futureProvider1).when(
+              data: (value) => Text(value.toString()),
+              loading: () => const Text('loading'),
+              error: (dynamic err, stack) => const Text('error'),
+            );
+          }),
         ),
       ),
     );
@@ -487,16 +467,13 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer<AsyncValue<int>>(
-            futureProvider1,
-            builder: (c, value, _) {
-              return value.when(
-                data: (value) => Text(value.toString()),
-                loading: () => const Text('loading'),
-                error: (dynamic err, stack) => const Text('error'),
-              );
-            },
-          ),
+          child: Consumer((c, read) {
+            return read(futureProvider1).when(
+              data: (value) => Text(value.toString()),
+              loading: () => const Text('loading'),
+              error: (dynamic err, stack) => const Text('error'),
+            );
+          }),
         ),
       ),
     );
@@ -519,16 +496,13 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer<AsyncValue<int>>(
-            futureProvider1,
-            builder: (c, value, _) {
-              return value.when(
-                data: (value) => Text(value.toString()),
-                loading: () => const Text('loading'),
-                error: (dynamic err, stack) => const Text('error'),
-              );
-            },
-          ),
+          child: Consumer((c, read) {
+            return read(futureProvider1).when(
+              data: (value) => Text(value.toString()),
+              loading: () => const Text('loading'),
+              error: (dynamic err, stack) => const Text('error'),
+            );
+          }),
         ),
       ),
     );

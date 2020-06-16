@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'framework.dart';
 import 'internal.dart';
 
+typedef ConsumerBuilder = Widget Function(BuildContext context, Reader read);
+
 /// Listen to a provider and build a widget tree out of it.
 ///
 /// Do not modify any state or start any http request inside `builder`.
@@ -69,102 +71,103 @@ import 'internal.dart';
 ///
 /// Notice how the [Text] is built outside of `builder`, so it'll no-longer
 /// rebuild when `themeProvider` changes.
-class Consumer<T> extends StatefulWidget {
+class Consumer extends StatefulWidget {
   // ignore: prefer_const_constructors_in_immutables, const is impossible to use with `builder`
-  Consumer(
-    this._provider, {
-    Key key,
-    @required ValueWidgetBuilder<T> builder,
-    Widget child,
-  })  : assert(builder != null, 'the parameter builder cannot be null'),
-        _child = child,
+  Consumer(ConsumerBuilder builder, {Key key})
+      : assert(builder != null, 'the parameter builder cannot be null'),
         _builder = builder,
         super(key: key);
 
-  final ProviderListenable<T> _provider;
-  final Widget _child;
-  final ValueWidgetBuilder<T> _builder;
+  final ConsumerBuilder _builder;
 
   @override
-  _ConsumerState<T> createState() => _ConsumerState<T>();
+  _ConsumerState createState() => _ConsumerState();
 }
 
-class _ConsumerState<T> extends State<Consumer<T>> {
-  ProviderSubscription _subscription;
-  T _value;
+class _ConsumerState extends State<Consumer> {
   ProviderStateOwner _owner;
+  final _dependencies = <ProviderBase, _Dependency>{};
+  bool _debugSelecting;
   Widget _buildCache;
-  bool _isOptionalRebuild = false;
+  // initialized at true for the first build
+  bool _isExternalBuild = true;
+
+  @override
+  void didUpdateWidget(Consumer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _isExternalBuild = true;
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final owner = ProviderStateOwnerScope.of(context);
-    if (_owner != owner) {
-      _owner = owner;
-      _subscription?.close();
-      _subscription = widget._provider.addLazyListener(
-        owner,
-        mayHaveChanged: _markMayNeedRebuild,
-        onChange: _onChange,
-      );
-    }
-  }
-
-  void _onChange(T value) {
-    setState(() {
-      _value = value;
-    });
-  }
-
-  void _markMayNeedRebuild() {
-    // TODO test
-    if (_isOptionalRebuild != false) {
-      setState(() {
-        _isOptionalRebuild = true;
-      });
-    }
-  }
-
-  @override
-  void didUpdateWidget(Consumer<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    assert(
-      oldWidget._provider.runtimeType == widget._provider.runtimeType,
-      'The provider listened cannot change',
-    );
-    _isOptionalRebuild = false;
-    final subscription = _subscription;
-    if (subscription is SelectorSubscription<Object, T>) {
-      // this will update _state
-      subscription.updateSelector(widget._provider);
-    } else if (oldWidget._provider != widget._provider) {
-      FlutterError.reportError(
-        FlutterErrorDetails(
-          exception: UnsupportedError(
-            'Used `Consumer(provider)` with a `provider` different than it was before',
-          ),
-          library: 'flutter_provider',
-          stack: StackTrace.current,
-        ),
-      );
+    _isExternalBuild = true;
+    final newOwner = ProviderStateOwnerScope.of(context);
+    if (_owner != newOwner) {
+      _owner = newOwner;
+      for (final dependency in _dependencies.values) {
+        dependency.subscription.close();
+      }
+      _dependencies.clear();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final mustRebuild = _isOptionalRebuild != true || _subscription.flush();
-    _isOptionalRebuild = null;
-    if (!mustRebuild) {
+    var didFlush = false;
+    for (final dep in _dependencies.values) {
+      if (dep.subscription.flush()) {
+        didFlush = true;
+      }
+    }
+    final shouldRecompute = _isExternalBuild || didFlush;
+    _isExternalBuild = false;
+    if (!shouldRecompute) {
       return _buildCache;
     }
 
-    return _buildCache = widget._builder(context, _value, widget._child);
+    assert(() {
+      _debugSelecting = true;
+      return true;
+    }(), '');
+    try {
+      // TODO what if there's an exception inside selector?
+      return _buildCache = widget._builder(context, _reader);
+    } finally {
+      assert(() {
+        _debugSelecting = false;
+        return true;
+      }(), '');
+    }
+  }
+
+  Res _reader<Res>(ProviderBase<ProviderDependencyBase, Res> target) {
+    assert(
+      _debugSelecting,
+      'Cannot use `read` outside of the body of the Computed callback',
+    );
+    return _dependencies.putIfAbsent(target, () {
+      final state = _owner.readProviderState(target);
+
+      final dep = _Dependency();
+      dep.subscription = state.addLazyListener(
+        mayHaveChanged: (context as Element).markNeedsBuild,
+        onChange: (value) => dep._state = value,
+      );
+      return dep;
+    })._state as Res;
   }
 
   @override
   void dispose() {
-    _subscription?.close();
+    for (final dependency in _dependencies.values) {
+      dependency.subscription.close();
+    }
     super.dispose();
   }
+}
+
+class _Dependency {
+  ProviderSubscription subscription;
+  Object _state;
 }

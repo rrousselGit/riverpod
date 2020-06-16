@@ -174,10 +174,12 @@ class ProviderStateOwner {
     };
 
     final overridenFamilies = <Family>{};
+    final overridenProviders = <ProviderBase>{};
 
     for (final override in overrides) {
       if (override is ProviderOverride) {
         _overrideForProvider[override._origin] = override._provider;
+        overridenProviders.add(override._origin);
       } else if (override is FamilyOverride) {
         _overrideForFamily[override._family] = override;
         overridenFamilies.add(override._family);
@@ -186,14 +188,28 @@ class ProviderStateOwner {
       }
     }
 
+    bool isLocallyOverriden(ProviderBase provider) {
+      if (overridenFamilies.contains(provider.family)) {
+        return true;
+      }
+      if (overridenProviders.contains(provider)) {
+        return true;
+      }
+      // TODO find a way to simplify this
+      if (provider is StateNotifierStateProvider &&
+          overridenProviders.contains(provider.controller)) {
+        return true;
+      }
+      return false;
+    }
+
     _stateReaders = {
       // TODO test two families one overriden the other not
       /// Imports [_ProviderStateReader]s from the parent, but exclude locally
       /// overriden families.
       if (parent != null)
         for (final entry in parent._stateReaders.entries)
-          if (!overridenFamilies.contains(entry.key.family))
-            entry.key: entry.value,
+          if (!isLocallyOverriden(entry.key)) entry.key: entry.value,
       _refProvider: _ProviderStateReader(_refProvider, this),
       for (final override in overrides)
         // Only applies provider overrides. Family overrides are applied on read

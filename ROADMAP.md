@@ -1,10 +1,12 @@
-
 # Roadmap
 
-## Riverpod 
+## Riverpod
 
 <!-- - evaluate time complexity for all operations -->
 <!-- - evaluate space complexity -->
+
+- move select to hooks
+- Consumer/Computed close sub when no-longer using a provider (new dep Map on re-compute, reading transfer from old map to new map, remaining ones are destroyed)
 - remove name
 - think about state_notifier & consumer tree-shaking
 - future/changenotifier/...providers cannot return null
@@ -29,7 +31,7 @@
 
 ## Examples
 
-### Marvel 
+### Marvel
 
 - Write tests for everything
 - publish it on the web

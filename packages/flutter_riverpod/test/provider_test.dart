@@ -41,9 +41,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer<int>(provider, builder: (c, value, _) {
+        child: Consumer((c, read) {
           return Text(
-            value.toString(),
+            read(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -64,9 +64,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer<int>(provider, builder: (c, value, _) {
+        child: Consumer((c, read) {
           return Text(
-            value.toString(),
+            read(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -86,7 +86,7 @@ void main() {
 
     // await tester.pumpWidget(
     //   ProviderScope(
-    //     child: Consumer(builder: (c, value, _) {
+    //     child: Consumer((c, read) {
     //       return Text(
     //         useProvider().toString(),
     //         textDirection: TextDirection.ltr,
@@ -110,7 +110,7 @@ void main() {
 
     // await tester.pumpWidget(
     //   ProviderScope(
-    //     child: Consumer(builder: (c, value, _) {
+    //     child: Consumer((c, read) {
     //       return Text(
     //         useProvider().toString(),
     //         textDirection: TextDirection.ltr,
@@ -141,9 +141,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer<int>(provider, builder: (c, value, _) {
+        child: Consumer((c, read) {
           return Text(
-            value.toString(),
+            read(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -183,9 +183,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer<int>(provider, builder: (c, value, _) {
+        child: Consumer((c, read) {
           return Text(
-            value.toString(),
+            read(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -199,9 +199,9 @@ void main() {
   testWidgets('override updates rebuild dependents with new value',
       (tester) async {
     final provider = Provider((_) => 0);
-    final child = Consumer<int>(provider, builder: (c, value, _) {
+    final child = Consumer((c, read) {
       return Text(
-        value.toString(),
+        read(provider).toString(),
         textDirection: TextDirection.ltr,
       );
     });
@@ -258,9 +258,9 @@ void main() {
             }),
           ),
         ],
-        child: Consumer<int>(provider2, builder: (c, value, _) {
+        child: Consumer((c, read) {
           return Text(
-            value.toString(),
+            read(provider2).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -290,7 +290,7 @@ void main() {
 
     // await tester.pumpWidget(
     //   ProviderScope(
-    //     child: Consumer(builder: (c, value, _) {
+    //     child: Consumer((c, read) {
     //       return Text(useProvider1(), textDirection: TextDirection.ltr);
     //     }),
     //   ),
@@ -319,8 +319,8 @@ void main() {
         overrides: [
           provider.overrideAs(Provider((_) => 1)),
         ],
-        child: Consumer<String>(provider1, builder: (c, value, _) {
-          return Text(value, textDirection: TextDirection.ltr);
+        child: Consumer((c, read) {
+          return Text(read(provider1), textDirection: TextDirection.ltr);
         }),
       ),
     );
@@ -345,9 +345,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer<int>(forth, builder: (c, value, _) {
+        child: Consumer((c, read) {
           return Text(
-            value.toString(),
+            read(forth).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -376,9 +376,9 @@ void main() {
         overrides: [
           first.overrideAs(Provider((_) => 42)),
         ],
-        child: Consumer<int>(forth, builder: (c, value, _) {
+        child: Consumer((c, read) {
           return Text(
-            value.toString(),
+            read(forth).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -407,9 +407,9 @@ void main() {
         overrides: [
           second.overrideAs(Provider((_) => 0)),
         ],
-        child: Consumer<int>(forth, builder: (c, value, _) {
+        child: Consumer((c, read) {
           return Text(
-            value.toString(),
+            read(forth).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -435,9 +435,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer<int>(provider1, builder: (c, value, _) {
+        child: Consumer((c, read) {
           return Text(
-            value.toString(),
+            read(provider1).toString(),
             textDirection: TextDirection.ltr,
           );
         }),

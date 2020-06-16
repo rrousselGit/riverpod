@@ -85,7 +85,7 @@ class ProviderScope extends StatefulWidget {
   final List<Override> overrides;
 
   @override
-  _ProviderScopeState createState() => _ProviderScopeState();
+  ProviderScopeState createState() => ProviderScopeState();
 
   @override
   _ProviderScopeElement createElement() {
@@ -99,7 +99,7 @@ class _ProviderScopeElement extends StatefulElement {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    final owner = (state as _ProviderScopeState)._owner;
+    final owner = (state as ProviderScopeState).owner;
 
     // filling the state properties here instead of inside State
     // so that it is more readable in the devtool (one less indentation)
@@ -110,8 +110,10 @@ class _ProviderScopeElement extends StatefulElement {
   }
 }
 
-class _ProviderScopeState extends State<ProviderScope> {
-  ProviderStateOwner _owner;
+@visibleForTesting
+class ProviderScopeState extends State<ProviderScope> {
+  @visibleForTesting
+  ProviderStateOwner owner;
   ProviderStateOwner _debugParentOwner;
   var _dirty = false;
 
@@ -127,7 +129,7 @@ class _ProviderScopeState extends State<ProviderScope> {
       return true;
     }(), '');
 
-    _owner = ProviderStateOwner(
+    owner = ProviderStateOwner(
       parent: scope?.owner,
       overrides: widget.overrides,
       observers: widget.observers,
@@ -166,20 +168,20 @@ class _ProviderScopeState extends State<ProviderScope> {
       }
       if (_dirty) {
         _dirty = false;
-        _owner.updateOverrides(widget.overrides);
+        owner.updateOverrides(widget.overrides);
       }
       return true;
     }(), '');
 
     return ProviderStateOwnerScope(
-      owner: _owner,
+      owner: owner,
       child: widget.child,
     );
   }
 
   @override
   void dispose() {
-    _owner.dispose();
+    owner.dispose();
     super.dispose();
   }
 }

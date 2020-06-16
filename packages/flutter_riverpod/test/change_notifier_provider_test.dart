@@ -22,9 +22,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer<TestNotifier>(provider, builder: (c, notifier, _) {
+        child: Consumer((c, read) {
           return Text(
-            notifier.count.toString(),
+            read(provider).count.toString(),
             textDirection: TextDirection.ltr,
           );
         }),

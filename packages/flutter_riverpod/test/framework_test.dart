@@ -124,7 +124,8 @@ void main() {
     final provider = Provider((_) => 'foo');
 
     await tester.pumpWidget(
-      Consumer<String>(provider, builder: (context, value, _) {
+      Consumer((context, read) {
+        read(provider);
         return Container();
       }),
     );
@@ -144,8 +145,8 @@ void main() {
       textDirection: TextDirection.ltr,
       child: Column(
         children: <Widget>[
-          Consumer<String>(provider, builder: (c, value, _) => Text(value)),
-          Consumer<String>(provider2, builder: (c, value, _) => Text(value)),
+          Consumer((c, read) => Text(read(provider))),
+          Consumer((c, read) => Text(read(provider2))),
         ],
       ),
     );
@@ -186,9 +187,9 @@ void main() {
     final child = Directionality(
       key: GlobalKey(),
       textDirection: TextDirection.ltr,
-      child: Consumer<AsyncValue<int>>(provider, builder: (c, value, _) {
+      child: Consumer((c, read) {
         buildCount++;
-        return value.when(
+        return read(provider).when(
           data: (v) => Text(v.toString()),
           loading: () => const Text('loading'),
           error: (dynamic err, stack) => const Text('error'),
@@ -243,13 +244,13 @@ void main() {
       textDirection: TextDirection.ltr,
       child: Column(
         children: <Widget>[
-          Consumer<String>(provider, builder: (c, value, _) {
+          Consumer((c, read) {
             buildCount++;
-            return Text(value);
+            return Text(read(provider));
           }),
-          Consumer<String>(provider2, builder: (c, value, _) {
+          Consumer((c, read) {
             buildCount2++;
-            return Text(value);
+            return Text(read(provider2));
           }),
         ],
       ),
@@ -284,20 +285,14 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         key: scopeKey,
-        child: Consumer<int>(
-          unnamed,
-          builder: (_, value, __) {
-            return Consumer<int>(
-              named.state,
-              builder: (_, count, __) {
-                return Text(
-                  'value: $value count: $count',
-                  textDirection: TextDirection.ltr,
-                );
-              },
-            );
-          },
-        ),
+        child: Consumer((c, read) {
+          final value = read(unnamed);
+          final count = read(named.state);
+          return Text(
+            'value: $value count: $count',
+            textDirection: TextDirection.ltr,
+          );
+        }),
       ),
     );
 
@@ -306,7 +301,7 @@ void main() {
     expect(
       scopeKey.currentContext.toString(),
       equalsIgnoringHashCodes('ProviderScope-[GlobalKey#00000]('
-          'state: _ProviderScopeState#00000, '
+          'state: ProviderScopeState#00000, '
           'Provider<int>#00000: 0, '
           'counter.state: 0, '
           "counter: Instance of 'Counter')"),
