@@ -2,11 +2,13 @@ part of 'framework.dart';
 
 /// A base class used that expose the necessary to listen to a provider.
 ///
-/// This is the common interface between a "provider" and `myProvider.select`.
+/// This is the common interface between a "provider" and `myProvider.select`
+/// defined by `hooks_riverpod`.
+/// .
 ///
 /// See also:
 /// - [ProviderBase], the base class for all providers, which implements [ProviderListenable].
-/// - [ProviderBase.select], a function that allows listening only partially
+/// - `ProviderBase.select`, a function that allows listening only partially
 ///   to a provider.
 // ignore: one_member_abstracts
 abstract class ProviderListenable<T> {
@@ -14,7 +16,7 @@ abstract class ProviderListenable<T> {
   ///
   /// The [onChange] callback will be called immediatly with the current value.
   ///
-  /// This method is an implementation detail of [Computed]/[ProviderBase.select].
+  /// This method is an implementation detail of [Computed]/`select`.
   /// It allows listening to a provider partially, without evaluating the computation
   /// immediatly on change, for performance.
   ///
@@ -48,32 +50,6 @@ abstract class ProviderSubscription {
 
   /// Stop listening to the provider.
   void close();
-}
-
-/// An internal class for [ProviderBase.select].
-class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
-  ProviderSelector._(
-    this._provider,
-    this._selector,
-  );
-
-  final ProviderBase<ProviderDependencyBase, Input> _provider;
-  final Output Function(Input) _selector;
-
-  @override
-  ProviderSubscription addLazyListener(
-    ProviderStateOwner owner, {
-    void Function() mayHaveChanged,
-    void Function(Output value) onChange,
-  }) {
-    final state = owner._readProviderState(_provider);
-    return SelectorSubscription._(
-      state,
-      _selector,
-      mayHaveChanged,
-      onChange,
-    );
-  }
 }
 
 /// The concrete implementation of [ProviderSubscription] for [ProviderBase.addLazyListener].
@@ -119,62 +95,6 @@ class _ProviderSubscription<T> implements ProviderSubscription {
 
   @override
   void close() => _entry.unlink();
-}
-
-/// A [ProviderSubscription] for [ProviderBase.select], that calls `onChange`
-/// only when the value computed changes.
-class SelectorSubscription<Input, Output> implements ProviderSubscription {
-  SelectorSubscription._(
-    ProviderStateBase<ProviderDependencyBase, Input,
-            ProviderBase<ProviderDependencyBase, Input>>
-        providerState,
-    this._selector,
-    void Function() mayHaveChanged,
-    this._onOutputChange,
-  ) {
-    _providerSubscription = providerState.addLazyListener(
-      mayHaveChanged: mayHaveChanged,
-      onChange: _onInputChange,
-    );
-  }
-
-  ProviderSubscription _providerSubscription;
-
-  final void Function(Output value) _onOutputChange;
-  bool _isFirstInputOnChange = true;
-  Input _input;
-  Output _lastOutput;
-  Output Function(Input) _selector;
-
-  /// Change the selector and immediatly call `onChange` with the new value.
-  void updateSelector(ProviderListenable subscription) {
-    _selector = (subscription as ProviderSelector<Input, Output>)._selector;
-    _providerSubscription.flush();
-    _onOutputChange(_lastOutput = _selector(_input));
-  }
-
-  void _onInputChange(Input input) {
-    _input = input;
-    if (_isFirstInputOnChange) {
-      _isFirstInputOnChange = false;
-      _onOutputChange(_lastOutput = _selector(_input));
-    }
-  }
-
-  @override
-  bool flush() {
-    if (_providerSubscription.flush()) {
-      final newOutput = _selector(_input);
-      if (!const DeepCollectionEquality().equals(_lastOutput, newOutput)) {
-        _onOutputChange(_lastOutput = newOutput);
-        return true;
-      }
-    }
-    return false;
-  }
-
-  @override
-  void close() => _providerSubscription.close();
 }
 
 /// A base class for all providers.
@@ -233,7 +153,7 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
   ///
   /// This is syntax sugar for [addLazyListener] where `mayHaveChanged` calls
   /// [ProviderSubscription.flush] immediatly.
-  /// Avoid using this on [Computed]/[select] if possible.
+  /// Avoid using this on [Computed] if possible.
   VoidCallback watchOwner(
     ProviderStateOwner owner,
     void Function(Result value) onChange,
@@ -247,77 +167,6 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
     );
 
     return sub.close;
-  }
-
-  /// Partially listen to a provider.
-  ///
-  /// The [select] function allows filtering unwanted rebuilds of a Widget
-  /// by reading only the properties that we care about.
-  ///
-  /// For example, consider the following `ChangeNotifier`:
-  ///
-  /// ```dart
-  /// class Person extends ChangeNotifier {
-  ///   int _age = 0;
-  ///   int get age => _age;
-  ///   set age(int age) {
-  ///     _age = age;
-  ///     notifyListeners();
-  ///   }
-  ///
-  ///   String _name = '';
-  ///   String get name => _name;
-  ///   set name(String name) {
-  ///     _name = name;
-  ///     notifyListeners();
-  ///   }
-  /// }
-  ///
-  /// final personProvider = ChangeNotifierProvider((_) => Person());
-  /// ```
-  ///
-  /// In this class, both `name` and `age` may change, but a widget may need
-  /// only `age`.
-  ///
-  /// If we used `useProvider`/`Consumer` as we normally would, this would cause
-  /// widgets that only use `age` to still rebuild when `name` changes, which
-  /// is inefficient.
-  ///
-  /// The method [select] can be used to fix this, by explicitly reading only
-  /// a specific part of the object.
-  ///
-  /// A typical usage would be:
-  ///
-  /// ```dart
-  /// @override
-  /// Widget build(BuildContext context) {
-  ///   final age = useProvider(personProvider.select((p) => p.age));
-  ///   return Text('$age');
-  /// }
-  /// ```
-  ///
-  /// This will cause our widget to rebuild **only** when `age` changes.
-  ///
-  ///
-  /// **NOTE**: The function passed to [select] can return complex computations
-  /// too.
-  ///
-  /// For example, instead of `age`, we could return a "isAdult" boolean:
-  ///
-  /// ```dart
-  /// @override
-  /// Widget build(BuildContext context) {
-  ///   final isAdult = useProvider(personProvider.select((p) => p.age >= 18));
-  ///   return Text('$isAdult');
-  /// }
-  /// ```
-  ///
-  /// This will further optimise our widget by rebuilding it only when "isAdult"
-  /// changed instead of whenever the age changes.
-  ProviderListenable<Selected> select<Selected>(
-    Selected Function(Result value) selector,
-  ) {
-    return ProviderSelector._(this, selector);
   }
 
   @override
@@ -572,7 +421,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
 
   /// Notify listeners that the provider **may** have changed.
   ///
-  /// This is used by [Computed]/[ProviderBase.select] to compute the new value
+  /// This is used by [Computed]/`select` to compute the new value
   /// only when truly needed.
   void markMayHaveChanged() {
     if (notifyListenersLock != null && notifyListenersLock != this) {

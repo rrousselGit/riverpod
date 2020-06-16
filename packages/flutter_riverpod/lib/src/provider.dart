@@ -59,7 +59,7 @@ extension AlwaysAliveProviderX<Dependency extends ProviderDependencyBase,
   /// Relying on [read] for optimisations is very brittle and dependent
   /// on an implementation detail.
   ///
-  /// **CONSIDER** using [select] for filtering unwanted rebuilds
+  /// **CONSIDER** using [Computed]/`select` for filtering unwanted rebuilds
   ///
   /// ```dart
   /// Widget build(BuildContext context) {
@@ -72,7 +72,7 @@ extension AlwaysAliveProviderX<Dependency extends ProviderDependencyBase,
   /// }
   /// ```
   ///
-  /// While more verbose than [read], using [select] is a lot safer.
+  /// While more verbose than [read], using [Computed]/`select` is a lot safer.
   /// It does not rely on implementation details on `Model`, and it makes
   /// impossible to have a bug where our UI does not refresh.
   Result read(BuildContext context) {
