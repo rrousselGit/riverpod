@@ -68,6 +68,8 @@ import 'internal.dart';
 /// }
 /// ```
 class ProviderScope extends StatefulWidget {
+  /// Enabled Riverpod for part of the application and optionally allows overriding
+  /// the behavior of a provider.
   const ProviderScope({
     Key key,
     this.overrides = const [],
@@ -76,12 +78,13 @@ class ProviderScope extends StatefulWidget {
   })  : assert(child != null, 'child cannot be `null`'),
         super(key: key);
 
-  @visibleForTesting
+  /// The part of the widget tree that can use Riverpod and has overriden providers.
   final Widget child;
 
+  /// The listeners that subscribes to changes on providers stored on this [ProviderScope].
   final List<ProviderStateOwnerObserver> observers;
 
-  @visibleForTesting
+  /// Informations on how to override a provider/family.
   final List<Override> overrides;
 
   @override
@@ -110,8 +113,10 @@ class _ProviderScopeElement extends StatefulElement {
   }
 }
 
+/// Do not use: The [State] of [ProviderScope]
 @visibleForTesting
 class ProviderScopeState extends State<ProviderScope> {
+  /// The [ProviderStateOwner] exposed to [ProviderScope.child].
   @visibleForTesting
   ProviderStateOwner owner;
   ProviderStateOwner _debugParentOwner;
@@ -186,6 +191,7 @@ class ProviderScopeState extends State<ProviderScope> {
 
 /// An internal InheritedWidget that exposes a [ProviderStateOwner] to the widget tree.
 class ProviderStateOwnerScope extends InheritedWidget {
+  /// Exposes a [ProviderStateOwner] to the widget tree
   const ProviderStateOwnerScope({
     Key key,
     @required this.owner,
@@ -193,6 +199,7 @@ class ProviderStateOwnerScope extends InheritedWidget {
   })  : assert(owner != null, 'ProviderStateOwner cannot be null'),
         super(key: key, child: child);
 
+  /// Read the current [ProviderStateOwner] for a [BuildContext].
   static ProviderStateOwner of(BuildContext context, {bool listen = true}) {
     ProviderStateOwnerScope scope;
 
@@ -212,6 +219,7 @@ class ProviderStateOwnerScope extends InheritedWidget {
     return scope.owner;
   }
 
+  /// The [ProviderStateOwner] exposes to the widget tree.
   final ProviderStateOwner owner;
 
   @override

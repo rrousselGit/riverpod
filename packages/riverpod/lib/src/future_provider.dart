@@ -4,6 +4,8 @@ import 'package:meta/meta.dart';
 
 import 'common.dart';
 import 'framework/framework.dart';
+import 'provider.dart';
+import 'stream_provider.dart';
 
 /// The state of a [FutureProvider].
 class FutureProviderDependency<T> extends ProviderDependencyBase {
@@ -13,6 +15,12 @@ class FutureProviderDependency<T> extends ProviderDependencyBase {
   final Future<T> future;
 }
 
+/// A provider that asynchronously creates an immutable value.
+///
+/// See also:
+///
+/// - [Provider], a provider that synchronously creates an immutable value
+/// - [StreamProvider], a provider that asynchronously expose a value which can change over time.
 class FutureProvider<Res> extends AlwaysAliveProvider<
     FutureProviderDependency<Res>, AsyncValue<Res>> {
   /// Creates a [FutureProvider] and allows specifying a [name].
@@ -163,14 +171,20 @@ class _DebugValueFutureProviderState<Res> extends ProviderStateBase<
   }
 }
 
+/// Creates a [FutureProvider] from external parameters.
+///
+/// See also:
+///
+/// - [ProviderFamily], which contains an explanation of what a *Family is.
 class FutureProviderFamily<Result, A>
     extends Family<FutureProvider<Result>, A> {
+  /// Creates a [FutureProvider] from external parameters.
   FutureProviderFamily(
       Future<Result> Function(ProviderReference ref, A a) create)
       : super((a) => FutureProvider((ref) => create(ref, a)));
 
   /// Overrides the behavior of a family for a part of the application.
-  FamilyOverride overrideAs(
+  Override overrideAs(
     Future<Result> Function(ProviderReference ref, A value) override,
   ) {
     return FamilyOverride(

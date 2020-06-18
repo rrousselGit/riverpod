@@ -32,6 +32,7 @@ import 'internals.dart';
 // ignore: must_be_immutable, false positive, _state is immutable but lazy loaded.
 class StateNotifierProvider<Notifier extends StateNotifier<Object>>
     extends Provider<Notifier> {
+  /// Creates a [StateNotifier] and expose it + its state.
   StateNotifierProvider(
     Create<Notifier, ProviderReference> create, {
     String name,
@@ -53,40 +54,53 @@ class StateNotifierProvider<Notifier extends StateNotifier<Object>>
 /// generic parameters.
 extension StateNotifierStateProviderX<Value>
     on StateNotifierProvider<StateNotifier<Value>> {
+  /// A provider that expose the state of a [StateNotifier].
   SetStateProvider<Value> get state {
-    _state ??= StateNotifierStateProvider<Value>(this);
+    _state ??= StateNotifierStateProvider<Value>._(this);
     return _state as StateNotifierStateProvider<Value>;
   }
 }
 
 /// Implementation detail of [StateNotifierProvider].
 class StateNotifierStateProvider<T> extends SetStateProvider<T> {
-  StateNotifierStateProvider(this.controller)
+  StateNotifierStateProvider._(this.notifierProvider)
       : super((ref) {
-          final notifier = ref.dependOn(controller).value;
+          final notifier = ref.dependOn(notifierProvider).value;
 
           ref.onDispose(
             notifier.addListener((newValue) => ref.state = newValue),
           );
 
           return ref.state;
-        }, name: controller.name == null ? null : '${controller.name}.state');
+        },
+            name: notifierProvider.name == null
+                ? null
+                : '${notifierProvider.name}.state');
 
-  final StateNotifierProvider<StateNotifier<T>> controller;
+  /// The [StateNotifierProvider] associated with this [StateNotifierStateProvider].
+  final StateNotifierProvider<StateNotifier<T>> notifierProvider;
 }
 
+/// Creates a [StateNotifierProvider] from external parameters.
+///
+/// See also:
+///
+/// - [ProviderFamily], which contains an explanation of what a *Family is.
 class StateNotifierProviderFamily<Result extends StateNotifier<dynamic>, A>
     extends Family<StateNotifierProvider<Result>, A> {
-  StateNotifierProviderFamily(Result Function(ProviderReference ref, A a) create)
+  /// Creates a [StateNotifierProvider] from external parameters.
+  StateNotifierProviderFamily(
+      Result Function(ProviderReference ref, A a) create)
       : super((a) => StateNotifierProvider((ref) => create(ref, a)));
 
   /// Overrides the behavior of a family for a part of the application.
-  FamilyOverride overrideAs(
+  Override overrideAs(
     Result Function(ProviderReference ref, A value) override,
   ) {
     return FamilyOverride(
       this,
-      (value) => StateNotifierProvider<Result>((ref) => override(ref, value as A)),
+      (value) =>
+          StateNotifierProvider<Result>((ref) => override(ref, value as A)),
     );
   }
 }

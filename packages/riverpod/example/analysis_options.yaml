@@ -9,3 +9,5 @@ linter:
 
     # Our example actually wants to print to the console
     avoid_print: false
+
+    public_member_api_docs: false

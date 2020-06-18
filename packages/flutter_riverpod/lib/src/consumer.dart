@@ -72,6 +72,7 @@ typedef ConsumerBuilder = Widget Function(BuildContext context, Reader read);
 /// Notice how the [Text] is built outside of `builder`, so it'll no-longer
 /// rebuild when `themeProvider` changes.
 class Consumer extends StatefulWidget {
+  /// Subscribes to providers and create widgets out of it
   // ignore: prefer_const_constructors_in_immutables, const is impossible to use with `builder`
   Consumer(ConsumerBuilder builder, {Key key})
       : assert(builder != null, 'the parameter builder cannot be null'),

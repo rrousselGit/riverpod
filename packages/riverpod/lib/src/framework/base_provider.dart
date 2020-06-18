@@ -120,9 +120,11 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
   final String name;
 
   Family _family;
+  /// The family from which this provider is coming from, or `null` or none.
   Family get family => _family;
 
   Object _parameter;
+  /// If associated with a family, this is the parameter used to create this provider.
   Object get parameter => _parameter;
 
   @override
@@ -213,6 +215,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   /// All the states that depends on this provider.
   final _dependents = HashSet<ProviderStateBase>();
 
+  /// The list of the providers that depends on this state, or `null` in release mode.
   @visibleForTesting
   Set<ProviderStateBase> get debugDependents {
     Set<ProviderStateBase> result;

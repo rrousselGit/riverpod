@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'common.dart';
 import 'framework/framework.dart';
+import 'provider.dart';
 
 /// The state of a [StreamProvider].
 class StreamProviderDependency<T> extends ProviderDependencyBase {
@@ -202,14 +203,19 @@ class _ValueStreamProviderState<T> extends ProviderStateBase<
   }
 }
 
+/// Creates a [StreamProvider] from external parameters.
+///
+/// See also:
+/// - [ProviderFamily], which contains an explanation of what a *Family is.
 class StreamProviderFamily<Result, A>
     extends Family<StreamProvider<Result>, A> {
+  /// Creates a [StreamProvider] from external parameters.
   StreamProviderFamily(
       Stream<Result> Function(ProviderReference ref, A a) create)
       : super((a) => StreamProvider((ref) => create(ref, a)));
 
   /// Overrides the behavior of a family for a part of the application.
-  FamilyOverride overrideAs(
+  Override overrideAs(
     Stream<Result> Function(ProviderReference ref, A value) override,
   ) {
     return FamilyOverride(

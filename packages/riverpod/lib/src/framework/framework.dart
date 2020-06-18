@@ -130,7 +130,7 @@ abstract class ProviderStateOwnerObserver {
   /// A provider was initialized, and the value created is [value].
   void didAddProvider(ProviderBase provider, Object value) {}
 
-  // Called my providers when they emit a notification.
+  /// Called my providers when they emit a notification.
   void didUpdateProvider(ProviderBase provider, Object newValue) {}
 
   /// A provider was disposed
@@ -194,7 +194,7 @@ class ProviderStateOwner {
       }
       // TODO find a way to simplify this
       if (provider is StateNotifierStateProvider &&
-          overridenProviders.contains(provider.controller)) {
+          overridenProviders.contains(provider.notifierProvider)) {
         return true;
       }
       return false;
@@ -434,13 +434,14 @@ Changing the kind of override or reordering overrides is not supported.
 
         if (familyOverride != null) {
           _overrideForProvider[provider] =
-              familyOverride.createOverride(provider.parameter);
+              familyOverride._createOverride(provider.parameter);
         }
 
         reader = _stateReaders[provider] = _ProviderStateReader(provider, this);
       } else if (provider is StateNotifierStateProvider) {
         // TODO find a way to simplify this
-        final controller = (provider as StateNotifierStateProvider).controller;
+        final controller =
+            (provider as StateNotifierStateProvider).notifierProvider;
         if (_stateReaders[controller] != null ||
             (controller.family != null &&
                 _overrideForFamily[controller.family] != null)) {
@@ -515,8 +516,11 @@ Changing the kind of override or reordering overrides is not supported.
   }
 }
 
+/// Do not use: Utilities for internally creating providers and testing them
 @visibleForTesting
 extension ProviderStateOwnerInternals on ProviderStateOwner {
+  /// All the states of the providers associated to a [ProviderStateOwner], sorted
+  /// in order of dependency.
   @visibleForTesting
   List<ProviderStateBase> get debugProviderStates {
     List<ProviderStateBase> result;
@@ -527,6 +531,7 @@ extension ProviderStateOwnerInternals on ProviderStateOwner {
     return result;
   }
 
+  /// Reads a provider and returns its state.
   ProviderStateBase<Dependency, ListeningValue,
           ProviderBase<Dependency, ListeningValue>>
       readProviderState<Dependency extends ProviderDependencyBase,
@@ -536,6 +541,7 @@ extension ProviderStateOwnerInternals on ProviderStateOwner {
     return _readProviderState(provider);
   }
 
+  /// The value exposed by all providers.
   Map<ProviderBase, Object> get debugProviderValues {
     Map<ProviderBase, Object> res;
     assert(() {
@@ -567,6 +573,10 @@ class ProviderOverride implements Override {
   final ProviderBase _provider;
 }
 
+/// An object used by [ProviderStateOwner]/`ProviderScope` to override the behavior
+/// of a provider/family for part of the application.
+///
+/// Do not extend or implement.
 class Override {}
 
 /// A base class for objects returned by [ProviderReference.dependOn].
@@ -596,7 +606,7 @@ class CircularDependencyError extends Error {
 /// - [Provider], an example of a provider that uses [ProviderReference].
 /// - [ProviderStateOwner.ref], an easy way of obtaining a [ProviderReference].
 class ProviderReference {
-  // DO NOT USE, for internal usages only.
+  /// DO NOT USE, for internal usages only.
   ProviderReference(this._providerState);
 
   final ProviderStateBase _providerState;

@@ -150,7 +150,9 @@ class _Dependency {
   Object _state;
 }
 
+/// Creates a group of [Computed] that depends on external parameters
 class ComputedFamily<Result, A> extends Family<Computed<Result>, A> {
+  /// Creates a group of [Computed] that depends on external parameters
   ComputedFamily(Result Function(Reader read, A a) create)
       : super((a) => Computed((read) => create(read, a)));
 }

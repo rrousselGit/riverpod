@@ -61,5 +61,3 @@ linter:
 
     # Conflicts with disabling `implicit-dynamic`
     avoid_annotating_with_dynamic: false
-
-    public_member_api_docs: false

@@ -7,6 +7,7 @@ import 'src/selector.dart';
 
 export 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// Exposes the `select` method on providers, later used by [useProvider].
 extension ProviderSelect<Value> on ProviderBase<ProviderDependencyBase, Value> {
   /// Partially listen to a provider.
   ///

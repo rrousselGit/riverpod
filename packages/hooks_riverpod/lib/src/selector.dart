@@ -4,6 +4,7 @@ import 'package:riverpod/src/internals.dart';
 
 /// An internal class for `ProviderBase.select`.
 class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
+  /// An internal class for `ProviderBase.select`.
   ProviderSelector(
     this._provider,
     this._selector,
