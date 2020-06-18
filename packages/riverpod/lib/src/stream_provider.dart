@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
-
 import 'common.dart';
 import 'framework/framework.dart';
 
@@ -74,13 +72,6 @@ class StreamProvider<T>
     extends AlwaysAliveProvider<StreamProviderDependency<T>, AsyncValue<T>> {
   /// Creates a [StreamProvider] and allows specifying a [name].
   StreamProvider(this._create, {String name}) : super(name);
-
-  StreamProvider._family(
-    this._create, {
-    String name,
-    @required Family family,
-    @required Object parameter,
-  }) : super.fromFamily(name, family: family, parameter: parameter);
 
   final Create<Stream<T>, ProviderReference> _create;
 
@@ -211,13 +202,18 @@ class _ValueStreamProviderState<T> extends ProviderStateBase<
   }
 }
 
-class StreamProvider1<Result, A> extends Family<StreamProvider<Result>, A> {
-  StreamProvider1(Stream<Result> Function(ProviderReference ref, A a) create)
-      : super((family, a) {
-          return StreamProvider._family(
-            (ref) => create(ref, a),
-            family: family,
-            parameter: a,
-          );
-        });
+class StreamProviderFamily<Result, A>
+    extends Family<StreamProvider<Result>, A> {
+  StreamProviderFamily(
+      Stream<Result> Function(ProviderReference ref, A a) create)
+      : super((a) => StreamProvider((ref) => create(ref, a)));
+
+  FamilyOverride overrideAs(
+    Stream<Result> Function(ProviderReference ref, A value) override,
+  ) {
+    return FamilyOverride(
+      this,
+      (value) => StreamProvider<Result>((ref) => override(ref, value as A)),
+    );
+  }
 }

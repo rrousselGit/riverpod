@@ -22,3 +22,4 @@ dev_dependencies:
   freezed: ^0.11.0
   build_runner: ^1.8.1
   trotter: ^1.2.0
+  test_coverage: ^0.4.1

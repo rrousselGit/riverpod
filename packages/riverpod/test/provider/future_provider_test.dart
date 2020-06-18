@@ -18,6 +18,36 @@ void main() {
 
     expect(provider2.name, isNull);
   });
+  test('handle errors', () async {
+    // ignore: only_throw_errors
+    final provider = FutureProvider<int>((_) async => throw 42);
+    final owner = ProviderStateOwner();
+
+    expect(provider.readOwner(owner), const AsyncValue<int>.loading());
+
+    await Future<void>.value();
+
+    expect(
+      provider.readOwner(owner),
+      isA<AsyncValue>().having(
+        (s) => s.maybeWhen(error: (err, _) => err, orElse: () => null),
+        'error',
+        42,
+      ),
+    );
+  });
+  test('noop if fails after dispose', () async {
+    // ignore: only_throw_errors
+    final provider = FutureProvider<int>((_) async => throw 42);
+    final owner = ProviderStateOwner();
+
+    expect(provider.readOwner(owner), const AsyncValue<int>.loading());
+
+    owner.dispose();
+    await Future<void>.value();
+
+    // No errors are reported to the zone
+  });
   test('is AlwaysAliveProvider', () {
     final provider = FutureProvider((_) async => 42);
 

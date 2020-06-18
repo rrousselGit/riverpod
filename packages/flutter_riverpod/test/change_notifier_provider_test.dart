@@ -3,6 +3,48 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('family', () {
+    final owner = ProviderStateOwner();
+    final provider =
+        ChangeNotifierProviderFamily<ValueNotifier<int>, int>((ref, value) {
+      return ValueNotifier(value);
+    });
+
+    expect(
+      provider(0).readOwner(owner),
+      isA<ValueNotifier<int>>().having((source) => source.value, 'value', 0),
+    );
+    expect(
+      provider(42).readOwner(owner),
+      isA<ValueNotifier<int>>().having((source) => source.value, 'value', 42),
+    );
+  });
+  test('family override', () {
+    final provider =
+        ChangeNotifierProviderFamily<ValueNotifier<int>, int>((ref, value) {
+      return ValueNotifier(value);
+    });
+    final owner = ProviderStateOwner(overrides: [
+      provider.overrideAs((ref, value) => ValueNotifier(value * 2))
+    ]);
+
+    expect(
+      provider(0).readOwner(owner),
+      isA<ValueNotifier<int>>().having((source) => source.value, 'value', 0),
+    );
+    expect(
+      provider(42).readOwner(owner),
+      isA<ValueNotifier<int>>().having((source) => source.value, 'value', 84),
+    );
+  });
+  test('can be assigned to provider', () {
+    final Provider<ValueNotifier<int>> provider = ChangeNotifierProvider((_) {
+      return ValueNotifier(0);
+    });
+    final owner = ProviderStateOwner();
+
+    expect(provider.readOwner(owner), isA<ValueNotifier<int>>());
+  });
   test('can specify name', () {
     final provider = ChangeNotifierProvider(
       (_) => ValueNotifier(0),

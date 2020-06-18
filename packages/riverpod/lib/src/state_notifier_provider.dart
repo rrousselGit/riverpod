@@ -74,3 +74,18 @@ class StateNotifierStateProvider<T> extends SetStateProvider<T> {
 
   final StateNotifierProvider<StateNotifier<T>> controller;
 }
+
+class StateNotifierProviderFamily<Result extends StateNotifier<dynamic>, A>
+    extends Family<StateNotifierProvider<Result>, A> {
+  StateNotifierProviderFamily(Result Function(ProviderReference ref, A a) create)
+      : super((a) => StateNotifierProvider((ref) => create(ref, a)));
+
+  FamilyOverride overrideAs(
+    Result Function(ProviderReference ref, A value) override,
+  ) {
+    return FamilyOverride(
+      this,
+      (value) => StateNotifierProvider<Result>((ref) => override(ref, value as A)),
+    );
+  }
+}

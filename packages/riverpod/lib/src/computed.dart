@@ -149,3 +149,8 @@ class _Dependency {
   ProviderSubscription subscription;
   Object _state;
 }
+
+class ComputedFamily<Result, A> extends Family<Computed<Result>, A> {
+  ComputedFamily(Result Function(Reader read, A a) create)
+      : super((a) => Computed((read) => create(read, a)));
+}

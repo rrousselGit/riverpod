@@ -438,10 +438,15 @@ Changing the kind of override or reordering overrides is not supported.
         }
 
         reader = _stateReaders[provider] = _ProviderStateReader(provider, this);
-      } else if (provider is StateNotifierStateProvider &&
-          _stateReaders[(provider as StateNotifierStateProvider).controller] !=
-              null) {
-        reader = _stateReaders[provider] = _ProviderStateReader(provider, this);
+      } else if (provider is StateNotifierStateProvider) {
+        // TODO find a way to simplify this
+        final controller = (provider as StateNotifierStateProvider).controller;
+        if (_stateReaders[controller] != null ||
+            (controller.family != null &&
+                _overrideForFamily[controller.family] != null)) {
+          reader =
+              _stateReaders[provider] = _ProviderStateReader(provider, this);
+        }
       }
     }
 

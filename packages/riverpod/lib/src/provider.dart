@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 import 'common.dart';
 import 'framework/framework.dart';
 
@@ -26,20 +24,13 @@ class ProviderDependencyImpl<T> implements ProviderDependency<T> {
 class Provider<T> extends AlwaysAliveProvider<ProviderDependency<T>, T> {
   Provider(this._create, {String name}) : super(name);
 
-  Provider._family(
-    this._create, {
-    String name,
-    @required Family family,
-    @required Object parameter,
-  }) : super.fromFamily(name, family: family, parameter: parameter);
-
   final Create<T, ProviderReference> _create;
 
   @override
-  _ProviderState<T> createState() => _ProviderState();
+  ProviderState<T> createState() => ProviderState();
 }
 
-class _ProviderState<T>
+class ProviderState<T>
     extends ProviderStateBase<ProviderDependency<T>, T, Provider<T>> {
   @override
   T state;
@@ -55,15 +46,9 @@ class _ProviderState<T>
   }
 }
 
-class Provider1<Result, A> extends Family<Provider<Result>, A> {
-  Provider1(Result Function(ProviderReference ref, A a) create)
-      : super((family, a) {
-          return Provider._family(
-            (ref) => create(ref, a),
-            family: family,
-            parameter: a,
-          );
-        });
+class ProviderFamily<Result, A> extends Family<Provider<Result>, A> {
+  ProviderFamily(Result Function(ProviderReference ref, A a) create)
+      : super((a) => Provider((ref) => create(ref, a)));
 
   FamilyOverride overrideAs(
     Result Function(ProviderReference ref, A value) override,

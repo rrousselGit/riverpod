@@ -100,22 +100,12 @@ class _ProviderSubscription<T> implements ProviderSubscription {
 /// A base class for all providers.
 ///
 /// Do not extend or implement.
-@immutable
 @optionalTypeArgs
 abstract class ProviderBase<Dependency extends ProviderDependencyBase,
     Result extends Object> implements ProviderListenable<Result> {
   /// Allows specifying a name.
   // ignore: prefer_const_constructors_in_immutables, the canonalisation of constants is unsafe for providers.
-  ProviderBase(this.name)
-      : parameter = null,
-        family = null;
-
-  // ignore: prefer_const_constructors_in_immutables, the canonalisation of constants is unsafe for providers.
-  ProviderBase.fromFamily(
-    this.name, {
-    @required this.parameter,
-    @required this.family,
-  });
+  ProviderBase(this.name);
 
   /// Internal method for creating the state associated to a provider. Do not use.
   @visibleForOverriding
@@ -129,9 +119,11 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
   /// - It can be used as a serialisable unique identifier for state serialisation/deserialisation.
   final String name;
 
-  final Family family;
+  Family _family;
+  Family get family => _family;
 
-  final Object parameter;
+  Object _parameter;
+  Object get parameter => _parameter;
 
   @override
   ProviderSubscription addLazyListener(
@@ -482,11 +474,6 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
       }
     }
   }
-
-  @override
-  String toString() {
-    return 'ProviderState<$Result>(provider: $provider)';
-  }
 }
 
 /// A base class for providers that do not dispose themselves naturally.
@@ -510,13 +497,6 @@ abstract class AlwaysAliveProvider<Dependency extends ProviderDependencyBase,
     implements ProviderOverride {
   /// Creates an [AlwaysAliveProvider] and allows specifing a [name].
   AlwaysAliveProvider(String name) : super(name);
-
-  /// Creates an [AlwaysAliveProvider] and allows specifing a [name].
-  AlwaysAliveProvider.fromFamily(
-    String name, {
-    @required Family family,
-    @required Object parameter,
-  }) : super.fromFamily(name, family: family, parameter: parameter);
 
   @override
   ProviderBase get _provider => this;

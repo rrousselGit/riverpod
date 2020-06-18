@@ -25,7 +25,7 @@ void main() {
     final dependency = Provider((_) => 1);
     final dependency2 = Provider((_) => '2');
 
-    test('Provider1', () {
+    test('ProviderFamily', () {
       final owner = ProviderStateOwner();
 
       final provider = Provider((ref) {

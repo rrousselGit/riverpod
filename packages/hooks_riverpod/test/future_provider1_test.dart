@@ -4,10 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 void main() {
-  testWidgets('FutureProvider into FutureProvider1', (tester) async {
+  testWidgets('FutureProvider into FutureProviderFamily', (tester) async {
     final futureProvider = FutureProvider((_) async => 42);
 
-    final futureProvider1 = FutureProvider<int>((ref) async {
+    final futureProviderFamily = FutureProvider<int>((ref) async {
       final other = ref.dependOn(futureProvider);
       return await other.future * 2;
     });
@@ -17,7 +17,7 @@ void main() {
         child: Directionality(
           textDirection: TextDirection.ltr,
           child: HookBuilder(builder: (c) {
-            return useProvider(futureProvider1).when(
+            return useProvider(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
               error: (dynamic err, stack) => const Text('error'),
@@ -33,10 +33,10 @@ void main() {
 
     expect(find.text('84'), findsOneWidget);
   });
-  testWidgets('FutureProvider1 works with other providers', (tester) async {
+  testWidgets('FutureProviderFamily works with other providers', (tester) async {
     final futureProvider = Provider((_) => 42);
 
-    final futureProvider1 = FutureProvider<int>((ref) async {
+    final futureProviderFamily = FutureProvider<int>((ref) async {
       final other = ref.dependOn(futureProvider);
       return other.value * 2;
     });
@@ -46,7 +46,7 @@ void main() {
         child: Directionality(
           textDirection: TextDirection.ltr,
           child: HookBuilder(builder: (c) {
-            return useProvider(futureProvider1).when(
+            return useProvider(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
               error: (dynamic err, stack) => const Text('error'),
@@ -62,10 +62,10 @@ void main() {
 
     expect(find.text('84'), findsOneWidget);
   });
-  testWidgets('FutureProvider1 can be used directly', (tester) async {
+  testWidgets('FutureProviderFamily can be used directly', (tester) async {
     final futureProvider = Provider((_) => 42);
 
-    final futureProvider1 = FutureProvider<int>((ref) async {
+    final futureProviderFamily = FutureProvider<int>((ref) async {
       final other = ref.dependOn(futureProvider);
       return other.value * 2;
     });
@@ -75,7 +75,7 @@ void main() {
         child: Directionality(
           textDirection: TextDirection.ltr,
           child: HookBuilder(builder: (c) {
-            return useProvider(futureProvider1).when(
+            return useProvider(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
               error: (dynamic err, stack) => const Text('error'),

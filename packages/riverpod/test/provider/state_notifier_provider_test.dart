@@ -4,6 +4,14 @@ import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('can be assigned to provider', () {
+    final Provider<TestNotifier> provider = StateNotifierProvider((_) {
+      return TestNotifier();
+    });
+    final owner = ProviderStateOwner();
+
+    expect(provider.readOwner(owner), isA<TestNotifier>());
+  });
   test('implicit provider.state override works on children owner too', () {
     final notifier = TestNotifier(42);
     final provider = StateNotifierProvider((_) => TestNotifier());

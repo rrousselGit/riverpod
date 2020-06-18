@@ -280,7 +280,7 @@ void main() {
     // });
     // var createCount = 0;
     // final provider1 =
-    //     Provider1<ProviderDependency<int>, String>(useProvider, (ref, first) {
+    //     ProviderFamily<ProviderDependency<int>, String>(useProvider, (ref, first) {
     //   createCount++;
     //   first.onChange((v) {
     //     ref.value = v.toString();
@@ -291,7 +291,7 @@ void main() {
     // await tester.pumpWidget(
     //   ProviderScope(
     //     child: Consumer((c, read) {
-    //       return Text(useProvider1(), textDirection: TextDirection.ltr);
+    //       return Text(useProviderFamily(), textDirection: TextDirection.ltr);
     //     }),
     //   ),
     // );

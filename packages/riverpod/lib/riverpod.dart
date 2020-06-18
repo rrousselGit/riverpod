@@ -1,6 +1,6 @@
 export 'src/common.dart'
     show Create, AsyncValue, AsyncData, $AsyncValueCopyWith, $AsyncValue;
-export 'src/computed.dart' show Computed, Reader;
+export 'src/computed.dart' show Computed, Reader, ComputedFamily;
 export 'src/framework/framework.dart'
     show
         AlwaysAliveProvider,
@@ -15,9 +15,14 @@ export 'src/framework/framework.dart'
         ProviderListenable,
         ProviderSubscription;
 export 'src/future_provider.dart'
-    show FutureProvider, FutureProviderDependency, FutureProvider1;
-export 'src/provider.dart' show Provider, ProviderDependency, Provider1;
+    show FutureProvider, FutureProviderDependency, FutureProviderFamily;
+export 'src/provider.dart' show Provider, ProviderDependency, ProviderFamily;
+export 'src/set_state_provider.dart'
+    show SetStateProvider, SetStateProviderReference;
 export 'src/state_notifier_provider.dart'
-    show StateNotifierProvider, StateNotifierStateProviderX;
+    show
+        StateNotifierProvider,
+        StateNotifierStateProviderX,
+        StateNotifierProviderFamily;
 export 'src/stream_provider.dart'
-    show StreamProvider, StreamProviderDependency, StreamProvider1;
+    show StreamProvider, StreamProviderDependency, StreamProviderFamily;

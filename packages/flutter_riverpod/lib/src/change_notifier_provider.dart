@@ -6,11 +6,9 @@ import 'package:riverpod/src/internals.dart';
 ///
 /// Note: By using Riverpod, [ChangeNotifier] will no-longer be O(N^2) for
 /// dispatching notifications and O(N) for adding/removing listeners.
-class ChangeNotifierProvider<T extends ChangeNotifier>
-    extends AlwaysAliveProvider<ProviderDependency<T>, T> {
-  ChangeNotifierProvider(this._create, {String name}) : super(name);
-
-  final Create<T, ProviderReference> _create;
+class ChangeNotifierProvider<T extends ChangeNotifier> extends Provider<T> {
+  ChangeNotifierProvider(Create<T, ProviderReference> create, {String name})
+      : super(create, name: name);
 
   @override
   _ChangeNotifierProviderState<T> createState() =>
@@ -18,20 +16,11 @@ class ChangeNotifierProvider<T extends ChangeNotifier>
 }
 
 class _ChangeNotifierProviderState<T extends ChangeNotifier>
-    extends ProviderStateBase<ProviderDependency<T>, T,
-        ChangeNotifierProvider<T>> {
-  @override
-  T state;
-
+    extends ProviderState<T> {
   @override
   void initState() {
-    state = provider._create(ProviderReference(this))
-      ..addListener(markMayHaveChanged);
-  }
-
-  @override
-  ProviderDependency<T> createProviderDependency() {
-    return ProviderDependencyImpl(state);
+    super.initState();
+    state.addListener(markMayHaveChanged);
   }
 
   @override
@@ -40,5 +29,25 @@ class _ChangeNotifierProviderState<T extends ChangeNotifier>
       ..removeListener(markMayHaveChanged)
       ..dispose();
     super.dispose();
+  }
+}
+
+class ChangeNotifierProviderFamily<Result extends ChangeNotifier, A>
+    extends Family<ChangeNotifierProvider<Result>, A> {
+  ChangeNotifierProviderFamily(
+    Result Function(ProviderReference ref, A a) create,
+  ) : super((a) => ChangeNotifierProvider((ref) => create(ref, a)));
+
+  FamilyOverride overrideAs(
+    Result Function(ProviderReference ref, A value) override,
+  ) {
+    return FamilyOverride(
+      this,
+      (value) {
+        return ChangeNotifierProvider<Result>(
+          (ref) => override(ref, value as A),
+        );
+      },
+    );
   }
 }

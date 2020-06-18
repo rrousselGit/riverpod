@@ -426,10 +426,10 @@ void main() {
       await expectLater(future, throwsA(error));
     });
   });
-  testWidgets('FutureProvider into FutureProvider1', (tester) async {
+  testWidgets('FutureProvider into FutureProviderFamily', (tester) async {
     final futureProvider = FutureProvider((_) async => 42);
 
-    final futureProvider1 = FutureProvider<int>((ref) async {
+    final futureProviderFamily = FutureProvider<int>((ref) async {
       final other = ref.dependOn(futureProvider);
       return await other.future * 2;
     });
@@ -439,7 +439,7 @@ void main() {
         child: Directionality(
           textDirection: TextDirection.ltr,
           child: Consumer((c, read) {
-            return read(futureProvider1).when(
+            return read(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
               error: (dynamic err, stack) => const Text('error'),
@@ -455,10 +455,10 @@ void main() {
 
     expect(find.text('84'), findsOneWidget);
   });
-  testWidgets('FutureProvider1 works with other providers', (tester) async {
+  testWidgets('FutureProviderFamily works with other providers', (tester) async {
     final futureProvider = Provider((_) => 42);
 
-    final futureProvider1 = FutureProvider<int>((ref) async {
+    final futureProviderFamily = FutureProvider<int>((ref) async {
       final other = ref.dependOn(futureProvider);
       return other.value * 2;
     });
@@ -468,7 +468,7 @@ void main() {
         child: Directionality(
           textDirection: TextDirection.ltr,
           child: Consumer((c, read) {
-            return read(futureProvider1).when(
+            return read(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
               error: (dynamic err, stack) => const Text('error'),
@@ -484,10 +484,10 @@ void main() {
 
     expect(find.text('84'), findsOneWidget);
   });
-  testWidgets('FutureProvider1 can be used directly', (tester) async {
+  testWidgets('FutureProviderFamily can be used directly', (tester) async {
     final futureProvider = Provider((_) => 42);
 
-    final futureProvider1 = FutureProvider<int>((ref) async {
+    final futureProviderFamily = FutureProvider<int>((ref) async {
       final other = ref.dependOn(futureProvider);
       return other.value * 2;
     });
@@ -497,7 +497,7 @@ void main() {
         child: Directionality(
           textDirection: TextDirection.ltr,
           child: Consumer((c, read) {
-            return read(futureProvider1).when(
+            return read(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
               error: (dynamic err, stack) => const Text('error'),

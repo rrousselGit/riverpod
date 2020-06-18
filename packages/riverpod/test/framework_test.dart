@@ -50,12 +50,12 @@ void main() {
   });
   test('test two families one overriden the other not', () {
     var callCount = 0;
-    final family = Provider1<String, int>((ref, value) {
+    final family = ProviderFamily<String, int>((ref, value) {
       callCount++;
       return '$value';
     });
     var callCount2 = 0;
-    final family2 = Provider1<String, int>((ref, value) {
+    final family2 = ProviderFamily<String, int>((ref, value) {
       callCount2++;
       return '$value 2';
     });
@@ -96,7 +96,7 @@ void main() {
   });
   test('changing the override type at a given index throws', () {
     final provider = Provider((ref) => 0);
-    final family = Provider1<int, int>((ref, value) => 0);
+    final family = ProviderFamily<int, int>((ref, value) => 0);
     final owner = ProviderStateOwner(overrides: [
       family.overrideAs((ref, value) => 0),
     ]);
@@ -107,7 +107,7 @@ void main() {
     );
   });
   test('last family override is applied', () {
-    final family = Provider1<int, int>((ref, value) => 0);
+    final family = ProviderFamily<int, int>((ref, value) => 0);
     final owner = ProviderStateOwner(overrides: [
       family.overrideAs((ref, value) => 1),
     ]);
