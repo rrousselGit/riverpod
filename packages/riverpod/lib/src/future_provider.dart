@@ -169,6 +169,7 @@ class FutureProviderFamily<Result, A>
       Future<Result> Function(ProviderReference ref, A a) create)
       : super((a) => FutureProvider((ref) => create(ref, a)));
 
+  /// Overrides the behavior of a family for a part of the application.
   FamilyOverride overrideAs(
     Future<Result> Function(ProviderReference ref, A value) override,
   ) {

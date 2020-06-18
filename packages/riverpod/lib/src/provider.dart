@@ -50,6 +50,7 @@ class ProviderFamily<Result, A> extends Family<Provider<Result>, A> {
   ProviderFamily(Result Function(ProviderReference ref, A a) create)
       : super((a) => Provider((ref) => create(ref, a)));
 
+  /// Overrides the behavior of a family for a part of the application.
   FamilyOverride overrideAs(
     Result Function(ProviderReference ref, A value) override,
   ) {

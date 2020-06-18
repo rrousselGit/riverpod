@@ -208,6 +208,7 @@ class StreamProviderFamily<Result, A>
       Stream<Result> Function(ProviderReference ref, A a) create)
       : super((a) => StreamProvider((ref) => create(ref, a)));
 
+  /// Overrides the behavior of a family for a part of the application.
   FamilyOverride overrideAs(
     Stream<Result> Function(ProviderReference ref, A value) override,
   ) {

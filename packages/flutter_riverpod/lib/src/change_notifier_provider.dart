@@ -38,6 +38,7 @@ class ChangeNotifierProviderFamily<Result extends ChangeNotifier, A>
     Result Function(ProviderReference ref, A a) create,
   ) : super((a) => ChangeNotifierProvider((ref) => create(ref, a)));
 
+  /// Overrides the behavior of a family for a part of the application.
   FamilyOverride overrideAs(
     Result Function(ProviderReference ref, A value) override,
   ) {
