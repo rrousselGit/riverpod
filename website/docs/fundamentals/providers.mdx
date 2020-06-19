@@ -1,5 +1,5 @@
 ---
-title: What is a provider
+title: Providers
 ---
 
 import Tabs from "@theme/Tabs";
@@ -12,68 +12,191 @@ This time, we will do a deep dive on what "providers" are, and how to use them.
 
 ## What is a provider
 
-A provider is an object that manages a state and allows you to listen to that state
-from nearly everywhere inside your application.
+Providers are the most important piece [Riverpod]. In short, you can think
+of providers as an access point to a shared state.
 
-If you are familiar with these concepts, you can think of providers as the
-fusion between a [Stream] and a service locator (like [InheritedWidget]s or [get_it]).
+Providers solve the following problems:
 
-Providers have multiple purposes:
+- Providers have the flexibility of global variables, without their downsides.  
+  Providers can be accessed from anywhere, while ensuring testability and scalability.
 
-- **Providers can be listened to a piece of state from anywhere in your application.**
+- Providers are safe to use.  
+  As opposed to most existing solutions, using a provider, it is not possible to
+  read a value in an uninitialized state.
+  If we can write the code to read a state, that state is available and ready.
+  Even if loaded asynchronously.
 
-  With providers, you do not need to pass your state as a parameter to all
-  functions/classes. A provider can be accessed like a global variable,
-  without the downsides of global variables.
+- Providers allow easily and efficiently listen to a piece of state.  
+  They can be accessed in a single line of code, and offers many way to optimize
+  your application.
 
-  Also, in most situations listening to a provider can be done in a single
-  line of code, without having to worry about listeners and stopping the subscription
-  when no longer used.
+## Creating a provider
 
-- **Providers are safe/maintainable.**
+Providers come in many variants, but they all work the same way.
 
-  Tired of facing a `ProviderNotFoundException` when using [provider](https://github.com/rrousselgit/provider)?
-  This scenario is **impossible** in [Riverpod].
+The most common usage is to declare them as global variables like so:
 
-  Refactoring your application to make configurations to dynamic using firebase?
-  [Riverpod] is compile safe. The refactoring will naturally highlight all
-  the places that need to handle the "error"/"loading" states.
+```dart
+final myProvider = Provider((ref) {
+  return MyValue();
+});
+```
 
-  Providers also naturally promote good-practices like uni-directional data-flow
-  to make architectures scalable.
+:::note
+You do not have to declare providers as globals. It is simply usually the most
+logical choice.
+:::
 
-- **Providers are testable.**
+This snippet consist of three components:
 
-  While providers can be accessed like global variables, they do not involve
-  having a global state.
-  As such, applications using providers are testable _by default_,
-  without having to write any `setup`/`tearDown`.
+- `final myProvider`, the declaration of a variable.  
+  This variable is what we will use in the future to read the state of our provider.
+  It should always be immutable.
 
-  Similarly, the behavior of any provider can be overridden. For example,
-  you could use providers to expose a `Repository` object, and replace it
-  during tests with a fake implementation:
+- `Provider`, the provider that we decided to used.  
+  [Provider] is the most basic of all providers. It exposes an object that never
+  changes.  
+  We could replace [Provider] with other providers like [StreamProvider] or
+  [StateNotifierProvider], to change how the value is interacted with.
 
-- **Providers can be overridden to behave differently for a part of your application.**
+- A function that creates the shared state.  
+  That function will always receive an object called `ref` as parameter. This object
+  allows us to read other providers or to perform some operations when the state
+  of our provider will be destroyed.
 
-  For example, you could have a provider that exposes the "theme" of your
-  application.  
-  Then, you could override the behavior of that provider for only a specific page,
-  such that your entire application uses light mode, besides the setting screen
-  that uses dark mode.  
-  This increases the reusability of the different building blocks of your
-  application.
+The type of the object created by the function passed to a provider depends on
+the provider used.  
+For example, the function of a [Provider] can create any object.
+On the other hand, a [StreamProvider]'s callback will be expected to return a [Stream].
 
-- **Providers are debuggable.**
+:::info
+You can declare as many providers as you, want without limitations.  
+As opposed to when using `package:provider`, in [Riverpod] we can have two
+providers expose a state of the same "type":
 
-  [Riverpod] comes with built-in support for Flutter's devtool, which allows
-  you to inspect the state of your application.
+```dart
+final cityProvider = Provider((ref) => 'London');
+final countryProvider = Provider((ref) => 'England');
+```
 
-  Furthermore, a more advanced devtool is in progress with advanced features such
-  as:
+The fact that both providers creates a `String` does not cause conflicts. We will be
+able to read both values independently from each other without issue.
+:::
 
-  - viewing the entire application state
-  - editing the state from the UI (even with complex objects)
-  - seeing the history of all changes, and being able to a previous state.
+## Combining providers
+
+We've previously seen how to create a simple provider. But the reality is,
+in many situation a provider will want to read the state of another provider.
+
+To do that, we can use the `ref` object passed to the callback of our provider,
+and use its `dependOn` method.
+
+As an example, consider the following provider:
+
+```dart
+final cityProvider = Provider((ref) => 'London');
+```
+
+We can now create another provider that will consume our `cityProvider`:
+
+```dart
+final weatherProvider = FutureProvider((ref) async {
+  // We use `ref.dependOn` to read another provider, and we pass it the provider
+  // that we want to consume. Here: cityProvider
+  final city = ref.dependOn(cityProvider).value;
+
+  // We can then use the result to do something based on the value of `cityProvider`.
+  return fetchWeather(city: city);
+});
+```
+
+### Creating an object that depends on a lot of providers.
+
+Sometimes, we may want to create an object that depends on a lot of providers
+like so:
+
+```dart
+final cityProvider = Provider((ref) => 'London');
+final countryProvider = Provider((ref) => 'England');
+
+final weatherProvider = Provider((ref) {
+  final city = ref.dependOn(cityProvider).value;
+  final country = ref.dependOn(countryProvider).value;
+
+  return Location(city: city, country: country);
+});
+
+class Location {
+  Location({this.city, this.country});
+
+  final String city;
+  final String country;
+
+  String get label => '$city ($country)';
+}
+```
+
+This can quickly become tedious.
+
+In that situation, it may be reasonable to pass the `ref` variable to our
+object directly:
+
+```dart
+final cityProvider = Provider((ref) => 'London');
+final countryProvider = Provider((ref) => 'England');
+
+final weatherProvider = Provider((ref) {
+  // Pass the `ref` object to our `Location` class.
+  // `Location` will then be able to call `ref.dependOn` to read the providers.
+  return Location(ref);
+});
+
+class Location {
+  Location(this._ref);
+
+  final ProviderReference _ref;
+
+  String get label {
+    final city = _ref.dependOn(cityProvider).value;
+    final country = _ref.dependOn(countryProvider).value;
+    return '$city ($country)';
+  }
+}
+```
+
+This is fine as, as opposed to `BuildContext` from Flutter, that `ref` object
+is completely independent from the Flutter/the UI.
+
+## Disposing the resources the state is destroyed
+
+During the lifetime of an application, the state associated with a provider may
+get destroyed.  
+In this situation, we may want to perform a clean-up before the state destruction.
+
+This is done by using the `ref` object that is passed to the callback of all providers.
+
+That `ref` object expose an `onDispose` method, which can be used to listen to
+the state destruction even to perform some task.
+
+The following example uses `ref.onDispose` to close a `StreamController`:
+
+```dart
+final example = StreamProvider((ref) {
+  final streamController = StreamController<int>();
+
+  ref.onDispose(() {
+    // Close the StreamController when the state of this provider is destroyed.
+    streamController.close();
+  });
+
+  return streamController.stream;
+});
+```
+
+:::note
+Depending on the provider used, it already take care of the clean-up process.  
+For example, [StateNotifierProvider] will call the `dispose` method of a `StateNotifier`.
+:::
 
 [get_it]: http://pub.dev/packages/get_it
 [inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
@@ -82,3 +205,6 @@ Providers have multiple purposes:
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
 [flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
+[streamprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StreamProvider-class.html
+[statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html

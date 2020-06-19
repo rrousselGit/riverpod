@@ -26,10 +26,10 @@ class MyApp extends StatelessWidget {
 }
 
 /// Providers are declared globally and specifies how to create a state
-final counterProvider = StateNotifierProvider((_) {
-  return Counter();
-});
+final counterProvider = StateNotifierProvider((ref) => Counter());
 
+/// This is our application state. It could be changed to a [ChangeNotifier] or
+/// a [Stream] for example.
 class Counter extends StateNotifier<int> {
   Counter() : super(0);
 

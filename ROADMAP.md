@@ -6,6 +6,7 @@
 <!-- - evaluate space complexity -->
 <!-- - think about state_notifier & Computed tree-shaking -->
 
+- ref.dependOn(Provider).value -> ref.read(Provider)
 - Consumer/Computed close sub when no-longer using a provider (new dep Map on re-compute, reading transfer from old map to new map, remaining ones are destroyed)
 - future/changenotifier/...providers cannot return null
 - Cannot add dependencies during dispatching
@@ -13,13 +14,10 @@
 - FutureStateNotifier
 - `AutoDispose`
 - `overrideAs` AutoDispose
-- Dartdoc for all public APIs
-- review all public APIs
 - CI
-- Prevent modifying parents from children (provider -> provider)
 - Prevent modifying parents from children (widget -> provider)
 - DateTime provider
-- Make a common interface between ProviderDependencys? (So that we can assign Provider to SetStateProvider)
+- Make a common interface between ProviderDependency? (So that we can assign Provider to SetStateProvider)
 - Should some asserts be changed to exceptions in release?
 - Should some exceptions have a custom error?
 
