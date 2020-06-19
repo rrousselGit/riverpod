@@ -5,7 +5,6 @@
 <!-- - evaluate time complexity for all operations -->
 <!-- - evaluate space complexity -->
 <!-- - think about state_notifier & Computed tree-shaking -->
-
 - force re-evaluating Computed on hot-reload
 - useProvider allows changing the provider on hot-reload.
 - ref.dependOn(Provider).value -> ref.read(Provider)

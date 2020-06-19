@@ -6,8 +6,44 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:state_notifier/state_notifier.dart';
 
 void main() {
+  testWidgets(
+      'mutliple useProviders, when one of them forces rebuild, all dependencies are still flushed',
+      (tester) async {
+    final notifier = Counter();
+    final provider = StateNotifierProvider((_) => notifier);
+    var callCount = 0;
+    final computed = Computed((read) {
+      callCount++;
+      return read(provider.state);
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: HookBuilder(
+          builder: (context) {
+            final first = useProvider(provider.state);
+            final second = useProvider(computed);
+            return Text(
+              '$first $second',
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
+      ),
+    );
+
+    expect(find.text('0 0'), findsOneWidget);
+    expect(callCount, 1);
+
+    notifier.increment();
+    await tester.pump();
+
+    expect(find.text('1 1'), findsOneWidget);
+    expect(callCount, 2);
+  });
   testWidgets('AlwaysAliveProvider.read(context) inside initState',
       (tester) async {
     final provider = Provider((_) => 42);
@@ -336,6 +372,12 @@ void main() {
     expect(find.text('rootoverride'), findsOneWidget);
     expect(find.text('override2'), findsOneWidget);
   });
+}
+
+class Counter extends StateNotifier<int> {
+  Counter() : super(0);
+
+  void increment() => state++;
 }
 
 class MockCreateState extends Mock {

@@ -71,11 +71,7 @@ class _ProviderSubscription<T> implements ProviderSubscription {
     if (_entry.list == null) {
       return false;
     }
-    _providerState.flush();
-    assert(
-      !_providerState.dirty,
-      'flush must either cancel or confirm the notification',
-    );
+    _providerState._performFlush();
     if (_providerState._notificationCount != _lastNotificationCount) {
       _lastNotificationCount = _providerState._notificationCount;
 
@@ -261,6 +257,8 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   /// The listeners of this provider (using [ProviderBase.addLazyListener]).
   LinkedList<_LinkedListEntry<void Function()>> _mayHaveChangedListeners;
 
+  bool _debugIsPerformingFlush = false;
+
   /// Whether this provider is listened or not.
   bool get $hasListeners {
     return _dependents.isNotEmpty ||
@@ -392,31 +390,42 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   /// After [markMayHaveChanged] was called, [flush] is called [ProviderSubscription.flush]
   /// of on [AlwaysAliveProvider.readOwner].
   ///
-  /// Must either call [notifyChanged] or [cancelChangeNotification].
+  /// Do not call directy. Instead call it through [_performFlush].
   @visibleForOverriding
+  @protected
   void flush() {
+    notifyChanged();
+  }
+
+  void _performFlush() {
     if (_dirty) {
-      notifyChanged();
+      _dirty = false;
+      assert(() {
+        _debugIsPerformingFlush = true;
+        return true;
+      }(), '');
+      try {
+        flush();
+      } finally {
+        assert(() {
+          _debugIsPerformingFlush = false;
+          return true;
+        }(), '');
+      }
     }
   }
 
   /// Notify listeners that a new value was emitted. Can only be called inside [flush].
   void notifyChanged() {
-    assert(_dirty, 'must call markMayHaveChanged before notifyChanged');
+    assert(_debugIsPerformingFlush,
+        '`notifyChanged` can only be called within `flush`');
     if (!_mounted) {
       throw StateError(
         'Cannot notify listeners of a provider after if was dispose',
       );
     }
-    _dirty = false;
     _notificationCount++;
     _owner._reportChanged(_origin, state);
-  }
-
-  /// Cancel the fact that the provider changed. Can only be called inside [flush].
-  void cancelChangeNotification() {
-    assert(_dirty, 'must call cancelChangeNotification before notifyChanged');
-    _dirty = false;
   }
 
   /// Notify listeners that the provider **may** have changed.
@@ -424,10 +433,6 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   /// This is used by [Computed]/`select` to compute the new value
   /// only when truly needed.
   void markMayHaveChanged() {
-    if (provider is Computed<List>) {
-      print('mayHaveChanged $provider');
-    }
-
     if (notifyListenersLock != null && notifyListenersLock != this) {
       throw StateError(
         'Cannot mark providers as dirty while initializing/disposing another provider',

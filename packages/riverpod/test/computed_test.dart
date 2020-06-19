@@ -7,6 +7,90 @@ import 'package:test/test.dart';
 void main() {
   // TODO auto dispose Computed when no longer used (or at least destroy the listeners)
   test(
+      'mutliple read, when one of them forces re-evaluate, all dependencies are still flushed',
+      () {
+    final owner = ProviderStateOwner();
+    final notifier = Notifier(0);
+    final provider = StateNotifierProvider((_) => notifier);
+    var callCount = 0;
+    final computed = Computed((read) {
+      callCount++;
+      return read(provider.state);
+    });
+
+    final tested = Computed((read) {
+      final first = read(provider.state);
+      final second = read(computed);
+      return '$first $second';
+    });
+    final listener = Listener<String>();
+
+    final sub = tested.addLazyListener(
+      owner,
+      mayHaveChanged: () {},
+      onChange: listener,
+    );
+
+    verify(listener('0 0')).called(1);
+    verifyNoMoreInteractions(listener);
+    expect(callCount, 1);
+
+    notifier.setState(1);
+    sub.flush();
+
+    verify(listener('1 1')).called(1);
+    verifyNoMoreInteractions(listener);
+    expect(callCount, 2);
+  });
+  test(
+      'computed on computed, the first aborts rebuild, the second should no longer be dirty after a flush',
+      () {
+    final owner = ProviderStateOwner();
+    final notifier = Notifier(0);
+    final provider = StateNotifierProvider((_) => notifier);
+    final first = Computed((read) {
+      // force re-evauating the computed
+      read(provider.state);
+      return 0;
+    });
+    final second = Computed((read) {
+      return read(first);
+    });
+    final mayHaveChanged = MockMarkMayHaveChanged();
+    final listener = Listener<int>();
+
+    final sub = second.addLazyListener(
+      owner,
+      mayHaveChanged: mayHaveChanged,
+      onChange: listener,
+    );
+
+    verify(listener(0)).called(1);
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(mayHaveChanged);
+
+    notifier.setState(42);
+
+    verify(mayHaveChanged()).called(1);
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(mayHaveChanged);
+
+    sub.flush();
+
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(mayHaveChanged);
+
+    final firstState = owner //
+        .debugProviderStates
+        .firstWhere((s) => s.provider == first);
+    final secondState = owner //
+        .debugProviderStates
+        .firstWhere((s) => s.provider == second);
+
+    expect(firstState.dirty, false);
+    expect(secondState.dirty, false);
+  });
+  test(
       'Computed are stored on the deeper ProviderStateOwner and cannot be overriden (insert in parent owner first then child owner)',
       () {
     final root = ProviderStateOwner();

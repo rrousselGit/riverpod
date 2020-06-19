@@ -5,6 +5,39 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 void main() {
+  testWidgets(
+      'mutliple useProviders/read, when one of them forces rebuild, all dependencies are still flushed',
+      (tester) async {
+    final notifier = TestNotifier();
+    final provider = StateNotifierProvider((_) => notifier);
+    var callCount = 0;
+    final computed = Computed((read) {
+      callCount++;
+      return read(provider.state);
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer((context, read) {
+          final first = read(provider.state);
+          final second = read(computed);
+          return Text(
+            '$first $second',
+            textDirection: TextDirection.ltr,
+          );
+        }),
+      ),
+    );
+
+    expect(find.text('0 0'), findsOneWidget);
+    expect(callCount, 1);
+
+    notifier.increment();
+    await tester.pump();
+
+    expect(find.text('1 1'), findsOneWidget);
+    expect(callCount, 2);
+  });
   testWidgets("don't rebuild if Computed didn't actually change",
       (tester) async {
     final notifier = TestNotifier();

@@ -455,7 +455,8 @@ void main() {
 
     expect(find.text('84'), findsOneWidget);
   });
-  testWidgets('FutureProviderFamily works with other providers', (tester) async {
+  testWidgets('FutureProviderFamily works with other providers',
+      (tester) async {
     final futureProvider = Provider((_) => 42);
 
     final futureProviderFamily = FutureProvider<int>((ref) async {

@@ -142,6 +142,12 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
   bool shouldRebuild() => _link.flush();
 
   @override
+  T build(BuildContext context) {
+    _link.flush();
+    return _state;
+  }
+
+  @override
   void didUpdateHook(_ProviderHook<T> oldHook) {
     super.didUpdateHook(oldHook);
     assert(
@@ -168,9 +174,6 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
       }
     }
   }
-
-  @override
-  T build(BuildContext context) => _state;
 
   @override
   void dispose() {

@@ -453,7 +453,8 @@ Changing the kind of override or reordering overrides is not supported.
 
     final state = reader?.read() ?? _fallback(provider);
 
-    state.flush();
+    state._performFlush();
+
     return state as ProviderStateBase<Dependency, ListeningValue,
         ProviderBase<Dependency, ListeningValue>>;
   }
@@ -550,9 +551,10 @@ extension ProviderStateOwnerInternals on ProviderStateOwner {
           if (entry.value._providerState != null)
             entry.key: entry.value._providerState.state,
         // TODO
-        for (final entry in _computedStateReaders.entries)
-          if (entry.value._providerState != null)
-            entry.key: entry.value._providerState.state,
+        if (_computedStateReaders != null)
+          for (final entry in _computedStateReaders.entries)
+            if (entry.value._providerState != null)
+              entry.key: entry.value._providerState.state,
       };
 
       return true;

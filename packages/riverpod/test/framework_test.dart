@@ -16,6 +16,7 @@ Matcher isProvider(ProviderBase provider) {
 }
 
 void main() {
+  // TODO flushing inside mayHaveChanged calls onChanged only after all mayHaveChanged were executed
   test('hasListeners', () {
     final root = ProviderStateOwner();
     final provider = Provider((_) => 42);
