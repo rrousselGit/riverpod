@@ -106,20 +106,20 @@ extension ProviderSelect<Value> on ProviderBase<ProviderDependencyBase, Value> {
 /// - [Computed]/`select`, for filtering unwanted rebuilds.
 T useProvider<T>(ProviderListenable<T> provider) {
   final owner = ProviderStateOwnerScope.of(useContext());
-  return Hook.use(_BaseProviderHook<T>(owner, provider));
+  return Hook.use(_ProviderHook<T>(owner, provider));
 }
 
-class _BaseProviderHook<T> extends Hook<T> {
-  const _BaseProviderHook(this._owner, this._provider);
+class _ProviderHook<T> extends Hook<T> {
+  const _ProviderHook(this._owner, this._provider);
 
   final ProviderStateOwner _owner;
   final ProviderListenable<T> _provider;
 
   @override
-  _BaseProviderHookState<T> createState() => _BaseProviderHookState();
+  _ProviderHookState<T> createState() => _ProviderHookState();
 }
 
-class _BaseProviderHookState<T> extends HookState<T, _BaseProviderHook<T>> {
+class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
   T _state;
   ProviderSubscription _link;
 
@@ -142,7 +142,7 @@ class _BaseProviderHookState<T> extends HookState<T, _BaseProviderHook<T>> {
   bool shouldRebuild() => _link.flush();
 
   @override
-  void didUpdateHook(_BaseProviderHook<T> oldHook) {
+  void didUpdateHook(_ProviderHook<T> oldHook) {
     super.didUpdateHook(oldHook);
     assert(
       oldHook._provider.runtimeType == hook._provider.runtimeType,

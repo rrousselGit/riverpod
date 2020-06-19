@@ -549,6 +549,10 @@ extension ProviderStateOwnerInternals on ProviderStateOwner {
         for (final entry in _stateReaders.entries)
           if (entry.value._providerState != null)
             entry.key: entry.value._providerState.state,
+        // TODO
+        for (final entry in _computedStateReaders.entries)
+          if (entry.value._providerState != null)
+            entry.key: entry.value._providerState.state,
       };
 
       return true;

@@ -120,10 +120,12 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
   final String name;
 
   Family _family;
+
   /// The family from which this provider is coming from, or `null` or none.
   Family get family => _family;
 
   Object _parameter;
+
   /// If associated with a family, this is the parameter used to create this provider.
   Object get parameter => _parameter;
 
@@ -422,6 +424,10 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   /// This is used by [Computed]/`select` to compute the new value
   /// only when truly needed.
   void markMayHaveChanged() {
+    if (provider is Computed<List>) {
+      print('mayHaveChanged $provider');
+    }
+
     if (notifyListenersLock != null && notifyListenersLock != this) {
       throw StateError(
         'Cannot mark providers as dirty while initializing/disposing another provider',
