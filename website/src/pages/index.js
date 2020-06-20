@@ -12,8 +12,9 @@ const features = [
     imageUrl: "img/undraw_security.svg",
     description: (
       <>
-        No more <code>ProviderNotFoundException</code> or forgetting to handle
-        loading states. Using Riverpod, if your code compiles, it works.
+        No more <code>ProviderNotFoundException</code> or
+        forgetting to handle loading states. Using
+        Riverpod, if your code compiles, it works.
       </>
     ),
   },
@@ -22,18 +23,20 @@ const features = [
     imageUrl: "img/undraw_friendship.svg",
     description: (
       <>
-        Riverpod learned from the flaws of <code>provider</code> to fix its
-        issues. Combining asynchronous providers has never been easier.
+        Riverpod has support for multiple providers of
+        the same type; combining asynchronous
+        providers; adding providers from anywhere, ...
       </>
     ),
   },
   {
-    title: <>Dev tool ready</>,
+    title: <>Performant</>,
     imageUrl: "img/undraw_programming.svg",
     description: (
       <>
-        Inspect the state of your app, see the history of all changes, and
-        modify the state on the fly.
+        With <code>Computed</code> and "families", Riverpod offers
+        a powerful cache mechanism for derived states,
+        and updates the UI only when truly needed.
       </>
     ),
   },

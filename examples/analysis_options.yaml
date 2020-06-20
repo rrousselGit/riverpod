@@ -10,4 +10,8 @@ linter:
     # Our example actually wants to print to the console
     avoid_print: false
 
+    # Not necessary for examples
     public_member_api_docs: false
+
+    # Not necessary for examples
+    use_key_in_widget_constructors: false

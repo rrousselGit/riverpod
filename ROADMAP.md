@@ -6,7 +6,6 @@
 <!-- - evaluate space complexity -->
 <!-- - think about state_notifier & Computed tree-shaking -->
 - useProvider allows changing the provider on hot-reload.
-- ref.read(Provider).value -> ref.read(Provider)
 - Consumer/Computed close sub when no-longer using a provider (new dep Map on re-compute, reading transfer from old map to new map, remaining ones are destroyed)
 - future/changenotifier/...providers cannot return null
 - Cannot add dependencies during dispatching
