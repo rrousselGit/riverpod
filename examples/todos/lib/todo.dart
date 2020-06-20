@@ -1,10 +1,9 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:uuid/uuid.dart';
 
 var _uuid = Uuid();
 
-@freezed
 class Todo {
   Todo({
     this.description,

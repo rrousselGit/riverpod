@@ -67,13 +67,6 @@ class Home extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final owner = ProviderStateOwnerScope.of(context);
-    // final state = owner.debugProviderStates.firstWhere((p) {
-    //   return p.provider == filteredTodos;
-    // });
-
-    // state.flush();
-
     final todos = useProvider(filteredTodos);
     final newTodoController = useTextEditingController();
 
@@ -211,41 +204,39 @@ class TodoItem extends HookWidget {
     final textEditingController = useTextEditingController();
     final textFieldFocusNode = useFocusNode();
 
-    return Semantics(
-      child: Material(
-        color: Colors.white,
-        elevation: 6,
-        child: Focus(
-          focusNode: itemFocusNode,
-          onFocusChange: (focused) {
-            if (focused) {
-              textEditingController.text = todo.description;
-            }
+    return Material(
+      color: Colors.white,
+      elevation: 6,
+      child: Focus(
+        focusNode: itemFocusNode,
+        onFocusChange: (focused) {
+          if (focused) {
+            textEditingController.text = todo.description;
+          }
+        },
+        child: ListTile(
+          onTap: () {
+            itemFocusNode.requestFocus();
+            textFieldFocusNode.requestFocus();
           },
-          child: ListTile(
-            onTap: () {
-              itemFocusNode.requestFocus();
-              textFieldFocusNode.requestFocus();
-            },
-            leading: Checkbox(
-              value: todo.completed,
-              onChanged: (value) =>
-                  todoListProvider.read(context).toggle(todo.id),
-            ),
-            title: isFocused
-                ? TextField(
-                    autofocus: true,
-                    focusNode: textFieldFocusNode,
-                    controller: textEditingController,
-                    onEditingComplete: itemFocusNode.unfocus,
-                    onSubmitted: (value) {
-                      todoListProvider
-                          .read(context)
-                          .edit(id: todo.id, description: value);
-                    },
-                  )
-                : Text(todo.description),
+          leading: Checkbox(
+            value: todo.completed,
+            onChanged: (value) =>
+                todoListProvider.read(context).toggle(todo.id),
           ),
+          title: isFocused
+              ? TextField(
+                  autofocus: true,
+                  focusNode: textFieldFocusNode,
+                  controller: textEditingController,
+                  onEditingComplete: itemFocusNode.unfocus,
+                  onSubmitted: (value) {
+                    todoListProvider
+                        .read(context)
+                        .edit(id: todo.id, description: value);
+                  },
+                )
+              : Text(todo.description),
         ),
       ),
     );
