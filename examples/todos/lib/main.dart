@@ -49,6 +49,9 @@ final uncompletedTodosCount = Computed((read) {
 });
 
 /// The list of todos after applying of [todoListFilter].
+/// 
+/// This too uses [Computed], to avoid recomputing the filtered list unless either
+/// the filter of or the todo-list updates.
 final filteredTodos = Computed((read) {
   final filter = read(todoListFilter);
   final todos = read(todoListProvider.state);
