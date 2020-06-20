@@ -2,11 +2,21 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_riverpod/src/internal.dart';
 
 import 'todo.dart';
 
-final todoListProvider = StateNotifierProvider((ref) => TodoList());
+final addTodoKey = UniqueKey();
+final activeFilterKey = UniqueKey();
+final completedFilterKey = UniqueKey();
+final allFilterKey = UniqueKey();
+
+final todoListProvider = StateNotifierProvider((ref) {
+  return TodoList([
+    Todo(id: 'todo-0', description: 'hi'),
+    Todo(id: 'todo-1', description: 'hello'),
+    Todo(id: 'todo-2', description: 'bonjour'),
+  ]);
+});
 
 enum TodoListFilter {
   all,
@@ -24,8 +34,6 @@ final uncompletedTodosCount = Computed((read) {
 final filteredTodos = Computed((read) {
   final filter = read(todoListFilter);
   final todos = read(todoListProvider.state);
-
-  print('filter $filter');
 
   switch (filter.value) {
     case TodoListFilter.completed:
@@ -77,6 +85,7 @@ class Home extends HookWidget {
           children: [
             const Title(),
             TextField(
+              key: addTodoKey,
               controller: newTodoController,
               decoration: const InputDecoration(
                 labelText: 'What needs to be done?',
@@ -134,6 +143,7 @@ class Toolbar extends HookWidget {
             ),
           ),
           Tooltip(
+            key: allFilterKey,
             message: 'All todos',
             child: FlatButton(
               onPressed: () => filter.value = TodoListFilter.all,
@@ -143,6 +153,7 @@ class Toolbar extends HookWidget {
             ),
           ),
           Tooltip(
+            key: activeFilterKey,
             message: 'Only uncompleted todos',
             child: FlatButton(
               onPressed: () => filter.value = TodoListFilter.active,
@@ -152,6 +163,7 @@ class Toolbar extends HookWidget {
             ),
           ),
           Tooltip(
+            key: completedFilterKey,
             message: 'Only completed todos',
             child: FlatButton(
               onPressed: () => filter.value = TodoListFilter.completed,
@@ -199,39 +211,41 @@ class TodoItem extends HookWidget {
     final textEditingController = useTextEditingController();
     final textFieldFocusNode = useFocusNode();
 
-    return Material(
-      color: Colors.white,
-      elevation: 6,
-      child: Focus(
-        focusNode: itemFocusNode,
-        onFocusChange: (focused) {
-          if (focused) {
-            textEditingController.text = todo.description;
-          }
-        },
-        child: ListTile(
-          onTap: () {
-            itemFocusNode.requestFocus();
-            textFieldFocusNode.requestFocus();
+    return Semantics(
+      child: Material(
+        color: Colors.white,
+        elevation: 6,
+        child: Focus(
+          focusNode: itemFocusNode,
+          onFocusChange: (focused) {
+            if (focused) {
+              textEditingController.text = todo.description;
+            }
           },
-          leading: Checkbox(
-            value: todo.completed,
-            onChanged: (value) =>
-                todoListProvider.read(context).toggle(todo.id),
+          child: ListTile(
+            onTap: () {
+              itemFocusNode.requestFocus();
+              textFieldFocusNode.requestFocus();
+            },
+            leading: Checkbox(
+              value: todo.completed,
+              onChanged: (value) =>
+                  todoListProvider.read(context).toggle(todo.id),
+            ),
+            title: isFocused
+                ? TextField(
+                    autofocus: true,
+                    focusNode: textFieldFocusNode,
+                    controller: textEditingController,
+                    onEditingComplete: itemFocusNode.unfocus,
+                    onSubmitted: (value) {
+                      todoListProvider
+                          .read(context)
+                          .edit(id: todo.id, description: value);
+                    },
+                  )
+                : Text(todo.description),
           ),
-          title: isFocused
-              ? TextField(
-                  autofocus: true,
-                  focusNode: textFieldFocusNode,
-                  controller: textEditingController,
-                  onEditingComplete: itemFocusNode.unfocus,
-                  onSubmitted: (value) {
-                    todoListProvider
-                        .read(context)
-                        .edit(id: todo.id, description: value);
-                  },
-                )
-              : Text(todo.description),
         ),
       ),
     );

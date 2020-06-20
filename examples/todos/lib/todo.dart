@@ -23,12 +23,7 @@ class Todo {
 }
 
 class TodoList extends StateNotifier<List<Todo>> {
-  TodoList()
-      : super([
-          Todo(description: 'hi'),
-          Todo(description: 'hello'),
-          Todo(description: 'bonjour'),
-        ]);
+  TodoList([List<Todo> initialTodos]) : super(initialTodos ?? []);
 
   void add(String description) {
     state = [
