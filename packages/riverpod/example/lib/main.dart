@@ -34,7 +34,7 @@ final configurationProvider = FutureProvider((_) async {
 /// This will correctly wait until the configurations are available.
 final repositoryProvider = FutureProvider((ref) async {
   /// Reads the configurations from [configurationProvider]. This is type-safe.
-  final configs = await ref.dependOn(configurationProvider).future;
+  final configs = await ref.read(configurationProvider).future;
 
   final repository = Repository(configs);
   // Releases the resources when the provider is destroyed.
@@ -51,7 +51,7 @@ Future<void> main() async {
   final owner = ProviderStateOwner();
 
   /// Obtains the [Repository]. This will implicitly load [Configuration] too.
-  final repository = await owner.ref.dependOn(repositoryProvider).future;
+  final repository = await owner.ref.read(repositoryProvider).future;
 
   final comics = await repository.fetchComics();
   for (final comic in comics) {

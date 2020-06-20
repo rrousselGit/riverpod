@@ -8,7 +8,7 @@ void main() {
     final futureProvider = FutureProvider((_) async => 42);
 
     final futureProviderFamily = FutureProvider<int>((ref) async {
-      final other = ref.dependOn(futureProvider);
+      final other = ref.read(futureProvider);
       return await other.future * 2;
     });
 
@@ -38,7 +38,7 @@ void main() {
     final futureProvider = Provider((_) => 42);
 
     final futureProviderFamily = FutureProvider<int>((ref) async {
-      final other = ref.dependOn(futureProvider);
+      final other = ref.read(futureProvider);
       return other.value * 2;
     });
 
@@ -67,7 +67,7 @@ void main() {
     final futureProvider = Provider((_) => 42);
 
     final futureProviderFamily = FutureProvider<int>((ref) async {
-      final other = ref.dependOn(futureProvider);
+      final other = ref.read(futureProvider);
       return other.value * 2;
     });
 

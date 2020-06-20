@@ -84,7 +84,7 @@ class ProviderState<T>
 ///
 ///   ```dart
 ///   final userProvider = FutureProviderFamily<User, int>((ref, userId) async {
-///     final userRepository = ref.dependOn(userRepositoryProvider);
+///     final userRepository = ref.read(userRepositoryProvider);
 ///     return await userRepository.fetch(userId);
 ///   });
 ///
@@ -113,7 +113,7 @@ class ProviderState<T>
 ///   ```dart
 ///   final repositoryProvider = ProviderFamily<String, FutureProvider<Configurations>>((ref, configurationsProvider) {
 ///     // Read a provider without knowing what that provider is.
-///     final configurations = await ref.dependOn(configurationsProvider).future;
+///     final configurations = await ref.read(configurationsProvider).future;
 ///     return Repository(host: configurations.host);
 ///   });
 ///   ```

@@ -65,7 +65,7 @@ extension StateNotifierStateProviderX<Value>
 class StateNotifierStateProvider<T> extends SetStateProvider<T> {
   StateNotifierStateProvider._(this.notifierProvider)
       : super((ref) {
-          final notifier = ref.dependOn(notifierProvider).value;
+          final notifier = ref.read(notifierProvider).value;
 
           ref.onDispose(
             notifier.addListener((newValue) => ref.state = newValue),

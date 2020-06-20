@@ -149,7 +149,7 @@ void main() {
     var completed = false;
     final proxy = Provider<String>(
       (ref) {
-        final first = ref.dependOn(futureProvider);
+        final first = ref.read(futureProvider);
         future = first.future
           ..then(
             (value) => completed = true,

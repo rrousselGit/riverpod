@@ -1,23 +1,22 @@
-import 'package:riverpod/src/provider.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 import 'common.dart';
 import 'framework/framework.dart';
 import 'state_notifier_provider.dart';
 
+/// A [StateNotifier] that allows modifying its [state] from outside.
+///
+///
 class StateController<T> extends StateNotifier<T> {
-  StateController._(T state) : super(state);
+  /// Initialize the state of [StateController].
+  StateController(T state) : super(state);
 
   // Remove the protected status
   @override
   T get state => super.state;
 
   @override
-  set state(T value) {
-    if (value != state) {
-      super.state = value;
-    }
-  }
+  set state(T value) => super.state = value;
 }
 
 /// A provider that expose a value which can be modified from outside.
@@ -46,7 +45,7 @@ class _ProviderState<T> extends ProviderStateBase<ProviderDependencyBase,
 
   @override
   void initState() {
-    state = StateController._(provider._create(ProviderReference(this)));
+    state = StateController(provider._create(ProviderReference(this)));
     _removeListener = state.addListener((_) => markMayHaveChanged());
   }
 

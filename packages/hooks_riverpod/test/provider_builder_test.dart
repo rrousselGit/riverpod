@@ -13,7 +13,7 @@ void main() {
     ProviderDependency<int> firstState;
 
     final Provider<int> provider1 = Provider<int>((r) {
-      final first = r.dependOn(provider);
+      final first = r.read(provider);
       ref = r;
       firstState = first;
       return first.value * 2;

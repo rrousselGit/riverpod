@@ -67,7 +67,7 @@ This snippet consist of three components:
 The type of the object created by the function passed to a provider depends on
 the provider used.  
 For example, the function of a [Provider] can create any object.
-On the other hand, a [StreamProvider]'s callback will be expected to return a [Stream].
+On the other hand, [StreamProvider]'s callback will be expected to return a [Stream].
 
 :::info
 You can declare as many providers as you, want without limitations.  
@@ -89,7 +89,7 @@ We've previously seen how to create a simple provider. But the reality is,
 in many situation a provider will want to read the state of another provider.
 
 To do that, we can use the `ref` object passed to the callback of our provider,
-and use its `dependOn` method.
+and use its `read` method.
 
 As an example, consider the following provider:
 
@@ -101,9 +101,9 @@ We can now create another provider that will consume our `cityProvider`:
 
 ```dart
 final weatherProvider = FutureProvider((ref) async {
-  // We use `ref.dependOn` to read another provider, and we pass it the provider
+  // We use `ref.read` to read another provider, and we pass it the provider
   // that we want to consume. Here: cityProvider
-  final city = ref.dependOn(cityProvider).value;
+  final city = ref.read(cityProvider).value;
 
   // We can then use the result to do something based on the value of `cityProvider`.
   return fetchWeather(city: city);
@@ -120,8 +120,8 @@ final cityProvider = Provider((ref) => 'London');
 final countryProvider = Provider((ref) => 'England');
 
 final weatherProvider = Provider((ref) {
-  final city = ref.dependOn(cityProvider).value;
-  final country = ref.dependOn(countryProvider).value;
+  final city = ref.read(cityProvider).value;
+  final country = ref.read(countryProvider).value;
 
   return Location(city: city, country: country);
 });
@@ -147,7 +147,7 @@ final countryProvider = Provider((ref) => 'England');
 
 final weatherProvider = Provider((ref) {
   // Pass the `ref` object to our `Location` class.
-  // `Location` will then be able to call `ref.dependOn` to read the providers.
+  // `Location` will then be able to call `ref.read` to read the providers.
   return Location(ref);
 });
 
@@ -157,8 +157,8 @@ class Location {
   final ProviderReference _ref;
 
   String get label {
-    final city = _ref.dependOn(cityProvider).value;
-    final country = _ref.dependOn(countryProvider).value;
+    final city = _ref.read(cityProvider).value;
+    final country = _ref.read(countryProvider).value;
     return '$city ($country)';
   }
 }

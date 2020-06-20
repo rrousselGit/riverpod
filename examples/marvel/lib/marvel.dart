@@ -57,7 +57,7 @@ class MarvelRepository {
     Map<String, Object> queryParameters,
   }) {
     return Result.guardFuture(() async {
-      final configs = await _ref.dependOn(configurationsProvider).future;
+      final configs = await _ref.read(configurationsProvider).future;
 
       final timestamp = _getCurrentTimestamp();
       final hash = md5

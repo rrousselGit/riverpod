@@ -93,7 +93,7 @@ void main() {
     // });
 
     // final combining = SetStateProvider<int>((ref) {
-    //   final first = ref.dependOn(provider);
+    //   final first = ref.read(provider);
     //   int result;
     //   first.watch((value) {
     //     ref.state = result = value * 2;

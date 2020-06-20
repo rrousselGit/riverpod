@@ -29,7 +29,7 @@ void main() {
     final nested = Provider((_) => 0);
     final owner = ProviderStateOwner();
     final provider2 = Provider((ref) {
-      ref.dependOn(nested);
+      ref.read(nested);
       counter.increment();
       return 0;
     });
