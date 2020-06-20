@@ -5,11 +5,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'todo.dart';
 
+/// Some keys used for testing
 final addTodoKey = UniqueKey();
 final activeFilterKey = UniqueKey();
 final completedFilterKey = UniqueKey();
 final allFilterKey = UniqueKey();
 
+/// Creates a [TodoList] and initialise it with pre-defined values.
 final todoListProvider = StateNotifierProvider((ref) {
   return TodoList([
     Todo(id: 'todo-0', description: 'hi'),
@@ -18,19 +20,30 @@ final todoListProvider = StateNotifierProvider((ref) {
   ]);
 });
 
+/// The different ways to filter the list of todos
 enum TodoListFilter {
   all,
   active,
   completed,
 }
 
+/// The currently active filter
 final todoListFilter =
     ChangeNotifierProvider((_) => ValueNotifier(TodoListFilter.all));
 
+/// The number of uncompleted todos
+///
+/// By using [Computed], this value is cached, making it performant.\
+/// Even multiple widgets try to read the number of uncompleted todos,
+/// the value will be computed only once (until the todo-list changes).
+/// 
+/// This will also optimise unneeded rebuilds if the todo-list changes, but the
+/// number of uncompleted todos doesn't (such as when editing a todo).
 final uncompletedTodosCount = Computed((read) {
   return read(todoListProvider.state).where((todo) => !todo.completed).length;
 });
 
+/// The list of todos after applying of [todoListFilter].
 final filteredTodos = Computed((read) {
   final filter = read(todoListFilter);
   final todos = read(todoListProvider.state);
@@ -53,7 +66,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(

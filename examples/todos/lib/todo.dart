@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 
 var _uuid = Uuid();
 
+/// A read-only description of a todo-item
 class Todo {
   Todo({
     this.description,
@@ -21,6 +22,7 @@ class Todo {
   }
 }
 
+/// An object that controls a list of [Todo].
 class TodoList extends StateNotifier<List<Todo>> {
   TodoList([List<Todo> initialTodos]) : super(initialTodos ?? []);
 
