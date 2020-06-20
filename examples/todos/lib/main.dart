@@ -12,6 +12,9 @@ final completedFilterKey = UniqueKey();
 final allFilterKey = UniqueKey();
 
 /// Creates a [TodoList] and initialise it with pre-defined values.
+///
+/// We are using [StateNotifierProvider] here as a `List<Todo>` is a complex
+/// object, with advanced business logic like how to edit a todo.
 final todoListProvider = StateNotifierProvider((ref) {
   return TodoList([
     Todo(id: 'todo-0', description: 'hi'),
@@ -27,16 +30,18 @@ enum TodoListFilter {
   completed,
 }
 
-/// The currently active filter
-final todoListFilter =
-    ChangeNotifierProvider((_) => ValueNotifier(TodoListFilter.all));
+/// The currently active filter.
+///
+/// We use [StateProvider] here as there is no fancy logic behind manipulating
+/// the value since it's just enum.
+final todoListFilter = StateProvider((_) => TodoListFilter.all);
 
 /// The number of uncompleted todos
 ///
 /// By using [Computed], this value is cached, making it performant.\
 /// Even multiple widgets try to read the number of uncompleted todos,
 /// the value will be computed only once (until the todo-list changes).
-/// 
+///
 /// This will also optimise unneeded rebuilds if the todo-list changes, but the
 /// number of uncompleted todos doesn't (such as when editing a todo).
 final uncompletedTodosCount = Computed((read) {
@@ -48,7 +53,7 @@ final filteredTodos = Computed((read) {
   final filter = read(todoListFilter);
   final todos = read(todoListProvider.state);
 
-  switch (filter.value) {
+  switch (filter.state) {
     case TodoListFilter.completed:
       return todos.where((todo) => todo.completed).toList();
     case TodoListFilter.active:
@@ -134,7 +139,7 @@ class Toolbar extends HookWidget {
     final filter = useProvider(todoListFilter);
 
     Color textColorFor(TodoListFilter value) {
-      return filter.value == value ? Colors.blue : null;
+      return filter.state == value ? Colors.blue : null;
     }
 
     return Material(
@@ -151,7 +156,7 @@ class Toolbar extends HookWidget {
             key: allFilterKey,
             message: 'All todos',
             child: FlatButton(
-              onPressed: () => filter.value = TodoListFilter.all,
+              onPressed: () => filter.state = TodoListFilter.all,
               visualDensity: VisualDensity.compact,
               textColor: textColorFor(TodoListFilter.all),
               child: const Text('All'),
@@ -161,7 +166,7 @@ class Toolbar extends HookWidget {
             key: activeFilterKey,
             message: 'Only uncompleted todos',
             child: FlatButton(
-              onPressed: () => filter.value = TodoListFilter.active,
+              onPressed: () => filter.state = TodoListFilter.active,
               visualDensity: VisualDensity.compact,
               textColor: textColorFor(TodoListFilter.active),
               child: const Text('Active'),
@@ -171,7 +176,7 @@ class Toolbar extends HookWidget {
             key: completedFilterKey,
             message: 'Only completed todos',
             child: FlatButton(
-              onPressed: () => filter.value = TodoListFilter.completed,
+              onPressed: () => filter.state = TodoListFilter.completed,
               visualDensity: VisualDensity.compact,
               textColor: textColorFor(TodoListFilter.completed),
               child: const Text('Completed'),
