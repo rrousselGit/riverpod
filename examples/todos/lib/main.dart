@@ -243,7 +243,7 @@ class TodoItem extends HookWidget {
           if (focused) {
             textEditingController.text = todo.description;
           } else {
-            // Commit changes only whent the textfield is unfocused, for performance
+            // Commit changes only when the textfield is unfocused, for performance
             todoListProvider
                 .read(context)
                 .edit(id: todo.id, description: textEditingController.text);
