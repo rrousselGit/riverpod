@@ -31,18 +31,6 @@
 
 ## riverpod.dev
 
-- concepts
-
-  - Provider
-
-    - You can think of providers as streams.\
-      But providers are readable synchronously and they have
-      a built-in way to combine providers with other providers.
-
-      Similarly, the behavior of a provider can be overridden,
-      for testing purposes or objects depending on a provider
-      more reusable.
-
 - Combining providers
 - Filtering rebuilds
 - Testing (without flutter, mocking FutureProvider)
