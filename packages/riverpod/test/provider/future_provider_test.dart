@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/framework/framework.dart' show AlwaysAliveProvider;
+import 'package:riverpod/src/framework/framework.dart'
+    show AlwaysAliveProviderBase;
 import 'package:test/test.dart';
 
 void main() {
@@ -48,10 +49,10 @@ void main() {
 
     // No errors are reported to the zone
   });
-  test('is AlwaysAliveProvider', () {
+  test('is AlwaysAliveProviderBase', () {
     final provider = FutureProvider((_) async => 42);
 
-    expect(provider, isA<AlwaysAliveProvider>());
+    expect(provider, isA<AlwaysAliveProviderBase>());
   });
   test('read', () {
     final owner = ProviderStateOwner();

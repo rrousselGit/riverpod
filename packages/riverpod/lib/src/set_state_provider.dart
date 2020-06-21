@@ -18,7 +18,7 @@ class SetStateProviderReference<T> extends ProviderReference {
 
 /// A provider that expose a value which can change over time
 class SetStateProvider<T>
-    extends AlwaysAliveProvider<ProviderDependencyBase, T> {
+    extends AlwaysAliveProviderBase<ProviderDependencyBase, T> {
   /// A provider that expose a value which can change over time
   SetStateProvider(this._create, {String name}) : super(name);
 

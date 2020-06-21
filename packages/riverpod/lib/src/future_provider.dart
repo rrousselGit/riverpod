@@ -21,7 +21,7 @@ class FutureProviderDependency<T> extends ProviderDependencyBase {
 ///
 /// - [Provider], a provider that synchronously creates an immutable value
 /// - [StreamProvider], a provider that asynchronously expose a value which can change over time.
-class FutureProvider<Res> extends AlwaysAliveProvider<
+class FutureProvider<Res> extends AlwaysAliveProviderBase<
     FutureProviderDependency<Res>, AsyncValue<Res>> {
   /// Creates a [FutureProvider] and allows specifying a [name].
   FutureProvider(this._create, {String name}) : super(name);
@@ -96,7 +96,7 @@ class _FutureProviderState<Res> extends ProviderStateBase<
   }
 }
 
-class _DebugValueFutureProvider<Res> extends AlwaysAliveProvider<
+class _DebugValueFutureProvider<Res> extends AlwaysAliveProviderBase<
     FutureProviderDependency<Res>, AsyncValue<Res>> {
   _DebugValueFutureProvider(this._value, {String name}) : super(name);
 

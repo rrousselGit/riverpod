@@ -90,7 +90,10 @@ class _ProviderSubscription<T> implements ProviderSubscription {
   }
 
   @override
-  void close() => _entry.unlink();
+  void close() {
+    // TODO
+    _entry.unlink();
+  }
 }
 
 /// A base class for all providers.
@@ -335,6 +338,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
         final targetProviderValue =
             targetProviderState.createProviderDependency();
         onDispose(() {
+          // TODO hashListener
           targetProviderState._dependents.remove(this);
         });
 
@@ -388,7 +392,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   }
 
   /// After [markMayHaveChanged] was called, [flush] is called [ProviderSubscription.flush]
-  /// of on [AlwaysAliveProvider.readOwner].
+  /// of on [AlwaysAliveProviderBase.readOwner].
   ///
   /// Do not call directy. Instead call it through [_performFlush].
   @visibleForOverriding
@@ -506,11 +510,11 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
 /// Similarly, since these providers are never disposed, they can only be
 /// overriden by providers that too are never disposed.
 /// Otherwise methods like [readOwner] would have an unknown behavior.
-abstract class AlwaysAliveProvider<Dependency extends ProviderDependencyBase,
-        Result> extends ProviderBase<Dependency, Result>
-    implements ProviderOverride {
-  /// Creates an [AlwaysAliveProvider] and allows specifing a [name].
-  AlwaysAliveProvider(String name) : super(name);
+abstract class AlwaysAliveProviderBase<
+        Dependency extends ProviderDependencyBase, Result>
+    extends ProviderBase<Dependency, Result> implements ProviderOverride {
+  /// Creates an [AlwaysAliveProviderBase] and allows specifing a [name].
+  AlwaysAliveProviderBase(String name) : super(name);
 
   @override
   ProviderBase get _provider => this;
@@ -561,8 +565,16 @@ abstract class AlwaysAliveProvider<Dependency extends ProviderDependencyBase,
   ProviderOverride overrideAs(
     // Always alive providers can only be overriden by always alive providers
     // as automatically disposed providers wouldn't work.
-    AlwaysAliveProvider<Dependency, Result> provider,
+    AlwaysAliveProviderBase<Dependency, Result> provider,
   ) {
     return ProviderOverride._(provider, this);
   }
+}
+
+abstract class AutoDisposeProviderBase<
+    Dependency extends ProviderDependencyBase,
+    Result> extends ProviderBase<Dependency, Result> {
+  AutoDisposeProviderBase(String name) : super(name);
+
+  // TODO overrideAs
 }

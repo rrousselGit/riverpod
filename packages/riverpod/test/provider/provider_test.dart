@@ -1,4 +1,5 @@
-import 'package:riverpod/src/framework/framework.dart' show AlwaysAliveProvider;
+import 'package:riverpod/src/framework/framework.dart'
+    show AlwaysAliveProviderBase;
 import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
@@ -16,10 +17,10 @@ void main() {
 
     expect(provider2.name, isNull);
   });
-  test('is AlwaysAliveProvider', () {
+  test('is AlwaysAliveProviderBase', () {
     final provider = Provider((_) async => 42);
 
-    expect(provider, isA<AlwaysAliveProvider>());
+    expect(provider, isA<AlwaysAliveProviderBase>());
   });
   group('depend on', () {
     final dependency = Provider((_) => 1);

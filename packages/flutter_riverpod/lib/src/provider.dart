@@ -4,8 +4,8 @@ import 'framework.dart';
 import 'internal.dart';
 
 /// Adds [read] to providers that are never destroyed
-extension AlwaysAliveProviderX<Dependency extends ProviderDependencyBase,
-    Result> on AlwaysAliveProvider<Dependency, Result> {
+extension AlwaysAliveProviderBaseX<Dependency extends ProviderDependencyBase,
+    Result> on AlwaysAliveProviderBase<Dependency, Result> {
   /// Reads a provider without listening to it.
   ///
   /// This method should not be called inside the `build` method of a widget.

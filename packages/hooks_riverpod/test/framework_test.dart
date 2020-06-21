@@ -44,7 +44,7 @@ void main() {
     expect(find.text('1 1'), findsOneWidget);
     expect(callCount, 2);
   });
-  testWidgets('AlwaysAliveProvider.read(context) inside initState',
+  testWidgets('AlwaysAliveProviderBase.read(context) inside initState',
       (tester) async {
     final provider = Provider((_) => 42);
     int result;
@@ -59,7 +59,8 @@ void main() {
 
     expect(result, 42);
   });
-  testWidgets('AlwaysAliveProvider.read(context) inside build', (tester) async {
+  testWidgets('AlwaysAliveProviderBase.read(context) inside build',
+      (tester) async {
     final provider = Provider((_) => 42);
 
     await tester.pumpWidget(

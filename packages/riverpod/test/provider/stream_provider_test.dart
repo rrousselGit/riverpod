@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/framework/framework.dart' show AlwaysAliveProvider;
+import 'package:riverpod/src/framework/framework.dart'
+    show AlwaysAliveProviderBase;
 import 'package:test/test.dart';
 
 void main() {
@@ -18,10 +19,10 @@ void main() {
 
     expect(provider2.name, isNull);
   });
-  test('is AlwaysAliveProvider', () {
+  test('is AlwaysAliveProviderBase', () {
     final provider = StreamProvider<int>((_) async* {});
 
-    expect(provider, isA<AlwaysAliveProvider>());
+    expect(provider, isA<AlwaysAliveProviderBase>());
   });
   test('subscribe exposes loading synchronously then value on change',
       () async {

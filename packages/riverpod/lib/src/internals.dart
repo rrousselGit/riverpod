@@ -5,6 +5,7 @@
 /// It is used by the flutter and hooks implementation, but is not stable.
 library internals;
 
+export 'auto_dispose_provider.dart';
 export 'common.dart';
 export 'computed.dart';
 export 'framework/framework.dart';

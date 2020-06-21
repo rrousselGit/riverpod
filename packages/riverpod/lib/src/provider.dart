@@ -19,11 +19,8 @@ class ProviderDependencyImpl<T> implements ProviderDependency<T> {
 }
 
 /// A provider that exposes a read-only value.
-
-// TODO What is a provider (testable, overridable, listenable)
-// TODO how to read a provider (Flutter)
-// TODO how to test a provider
-class Provider<T> extends AlwaysAliveProvider<ProviderDependency<T>, T> {
+// TODO doc
+class Provider<T> extends AlwaysAliveProviderBase<ProviderDependency<T>, T> {
   /// Creates an immutable value.
   Provider(this._create, {String name}) : super(name);
 

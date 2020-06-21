@@ -16,10 +16,10 @@ void main() {
 
     expect(provider2.name, isNull);
   });
-  test('is AlwaysAliveProvider', () {
+  test('is AlwaysAliveProviderBase', () {
     final provider = SetStateProvider((_) async => 42);
 
-    expect(provider, isA<AlwaysAliveProvider>());
+    expect(provider, isA<AlwaysAliveProviderBase>());
   });
   test('SetStateProviderReference can read and write state', () {
     final owner = ProviderStateOwner();

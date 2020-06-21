@@ -1245,7 +1245,7 @@ class TestProviderValue<T> extends ProviderDependencyBase {
   final T value;
 }
 
-class TestProvider<T> extends AlwaysAliveProvider<TestProviderValue<T>, T> {
+class TestProvider<T> extends AlwaysAliveProviderBase<TestProviderValue<T>, T> {
   TestProvider(this.create, {String name}) : super(name);
 
   final T Function(ProviderReference ref) create;

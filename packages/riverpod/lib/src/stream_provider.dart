@@ -69,8 +69,8 @@ mixin _State<T,
 /// Consumers of [StreamProvider] will receive an [AsyncValue] instead of the
 /// raw value emitted.
 /// This is so that dependents can handle loading/error states.
-class StreamProvider<T>
-    extends AlwaysAliveProvider<StreamProviderDependency<T>, AsyncValue<T>> {
+class StreamProvider<T> extends AlwaysAliveProviderBase<
+    StreamProviderDependency<T>, AsyncValue<T>> {
   /// Creates a [StreamProvider] and allows specifying a [name].
   StreamProvider(this._create, {String name}) : super(name);
 
@@ -140,8 +140,8 @@ class _StreamProviderState<T> extends ProviderStateBase<
 }
 
 /// Overide a [StreamProvider] with a synchronous value.
-class _ValueStreamProvider<T>
-    extends AlwaysAliveProvider<StreamProviderDependency<T>, AsyncValue<T>> {
+class _ValueStreamProvider<T> extends AlwaysAliveProviderBase<
+    StreamProviderDependency<T>, AsyncValue<T>> {
   _ValueStreamProvider(this.value, {String name}) : super(name);
 
   final AsyncValue<T> value;

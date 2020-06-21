@@ -460,7 +460,7 @@ class TestProviderValue extends ProviderDependencyBase {
   final int value;
 }
 
-class TestProvider extends AlwaysAliveProvider<TestProviderValue, int> {
+class TestProvider extends AlwaysAliveProviderBase<TestProviderValue, int> {
   TestProvider(
     this.value, {
     this.onCreateState,
@@ -521,7 +521,7 @@ class TestProviderState
 }
 
 class MyImmutableProvider
-    extends AlwaysAliveProvider<ProviderDependency<int>, int> {
+    extends AlwaysAliveProviderBase<ProviderDependency<int>, int> {
   MyImmutableProvider({String name}) : super(name);
 
   @override

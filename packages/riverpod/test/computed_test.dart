@@ -348,10 +348,10 @@ void main() {
     verifyNoMoreInteractions(firstListener);
     verifyNoMoreInteractions(secondListener);
   });
-  test('Computed is not a AlwaysAliveProvider', () {
+  test('Computed is not a AlwaysAliveProviderBase', () {
     final computed = Computed((read) => 0);
 
-    expect(computed, isNot(isA<AlwaysAliveProvider>()));
+    expect(computed, isNot(isA<AlwaysAliveProviderBase>()));
   });
   test('Simple Computed flow', () {
     final owner = ProviderStateOwner();

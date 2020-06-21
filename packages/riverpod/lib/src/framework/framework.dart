@@ -571,7 +571,7 @@ extension ProviderStateOwnerInternals on ProviderStateOwner {
 /// See also:
 ///
 /// - [ProviderStateOwner], which uses this object.
-/// - [AlwaysAliveProvider.overrideAs], which creates a [ProviderOverride].
+/// - [AlwaysAliveProviderBase.overrideAs], which creates a [ProviderOverride].
 class ProviderOverride implements Override {
   ProviderOverride._(this._provider, this._origin);
 
