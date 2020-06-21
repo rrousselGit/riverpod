@@ -11,6 +11,16 @@ final activeFilterKey = UniqueKey();
 final completedFilterKey = UniqueKey();
 final allFilterKey = UniqueKey();
 
+final titleProvider = ProviderFamily<String, Locale>((ref, locale) {
+  if (locale == const Locale('en')) {
+    return 'Hello London';
+  } else if (locale == const Locale('fr')) {
+    return 'Bonjour Paris';
+  } else {
+    throw UnsupportedError('Unknown locale $locale');
+  }
+});
+
 /// Creates a [TodoList] and initialise it with pre-defined values.
 ///
 /// We are using [StateNotifierProvider] here as a `List<Todo>` is a complex
@@ -49,7 +59,7 @@ final uncompletedTodosCount = Computed((read) {
 });
 
 /// The list of todos after applying of [todoListFilter].
-/// 
+///
 /// This too uses [Computed], to avoid recomputing the filtered list unless either
 /// the filter of or the todo-list updates.
 final filteredTodos = Computed((read) {

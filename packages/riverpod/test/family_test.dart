@@ -67,6 +67,22 @@ void main() {
     );
   });
 
+  test('StateProvider', () async {
+    final provider = StateProviderFamily<String, int>((ref, a) {
+      return '$a';
+    });
+    final owner = ProviderStateOwner();
+
+    expect(
+      provider(0).readOwner(owner),
+      isA<StateController>().having((s) => s.state, 'state', '0'),
+    );
+    expect(
+      provider(1).readOwner(owner),
+      isA<StateController>().having((s) => s.state, 'state', '1'),
+    );
+  });
+
   group('overrides', () {
     test('family override', () {
       final provider = ProviderFamily<String, int>((ref, a) => '$a');
@@ -139,6 +155,23 @@ void main() {
       expect(
         provider(0).readOwner(owner),
         const AsyncValue<String>.data('override 0'),
+      );
+    });
+    test('StateProvider', () async {
+      final provider = StateProviderFamily<String, int>((ref, a) {
+        return '$a';
+      });
+      final owner = ProviderStateOwner(overrides: [
+        provider.overrideAs((ref, a) => 'override $a'),
+      ]);
+
+      expect(
+        provider(0).readOwner(owner),
+        isA<StateController>().having((s) => s.state, 'state', 'override 0'),
+      );
+      expect(
+        provider(1).readOwner(owner),
+        isA<StateController>().having((s) => s.state, 'state', 'override 1'),
       );
     });
     test('Computed', () {

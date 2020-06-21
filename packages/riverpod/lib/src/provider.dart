@@ -134,7 +134,7 @@ class ProviderState<T>
 ///
 /// # Parameter restrictions
 ///
-/// For families to work correctly, it is critical that the parameter passed to
+/// For families to work correctly, it is critical for the parameter passed to
 /// a provider to have a consistent `hashCode` and `==`.
 ///
 /// Ideally the parameter should either be a primitive (bool/int/double/String),

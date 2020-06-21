@@ -2,6 +2,7 @@ import 'package:state_notifier/state_notifier.dart';
 
 import 'common.dart';
 import 'framework/framework.dart';
+import 'provider.dart';
 import 'state_notifier_provider.dart';
 
 /// A [StateNotifier] that allows modifying its [state] from outside.
@@ -59,5 +60,26 @@ class _ProviderState<T> extends ProviderStateBase<ProviderDependencyBase,
     _removeListener();
     state.dispose();
     super.dispose();
+  }
+}
+
+/// Creates a [StateProvider] from external parameters.
+///
+/// See also:
+///
+/// - [ProviderFamily], which contains an explanation of what a *Family is.
+class StateProviderFamily<Result, A> extends Family<StateProvider<Result>, A> {
+  /// Creates a [StateProvider] from external parameters.
+  StateProviderFamily(Result Function(ProviderReference ref, A a) create)
+      : super((a) => StateProvider((ref) => create(ref, a)));
+
+  /// Overrides the behavior of a family for a part of the application.
+  Override overrideAs(
+    Result Function(ProviderReference ref, A value) override,
+  ) {
+    return FamilyOverride(
+      this,
+      (value) => StateProvider<Result>((ref) => override(ref, value as A)),
+    );
   }
 }
