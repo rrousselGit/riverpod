@@ -5,25 +5,27 @@ title: Reading a provider
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-In the [previous article](./provider), we talking about what is a "provider"
+In the [previous article](./provider), we talked about what is a "provider"
 and how to create one.  
 Now, we will see how to read a provider
 
-For part, we will implement a simple "counter" application.
-For this, we will start by creating a "counter" provider using [StateProvider]:
+For this, we will implement a simple "counter" application.
+As a first step, let's create a "counter" provider using [StateProvider]:
 
+:::info
 [StateProvider] is a provider that creates an initial value and allow the
 application to change that value, which will cause objects listening to our
 provider to update.
+:::
 
-In our case, we are making a counter, so we want to create an `int` and initialise
+In our case, we are making a counter, so we want to create an `int` and initialize
 it at `0`. This is done like so:
 
 ```dart
 final counterProvider = StateProvider((ref) => 0);
 ```
 
-:::note
+:::caution
 Before continuing, make sure that you've added [ProviderScope] at the root
 of your Flutter application:
 
@@ -142,7 +144,7 @@ class Count extends StatelessWidget {
 </TabItem>
 </Tabs>
 
-Both snippets behaves the same: They build a [Text] that changes when the counter
+Both snippets behave the same: They build a [Text] that changes when the counter
 updates.  
 But [useProvider] offers a slightly simplified syntax.
 
@@ -205,7 +207,7 @@ Widget build(BuildContext context) {
 ```
 
 By doing so, clicking on our button still increments the counter. But the
-[RaisedButton] no-longer unnecesserily rebuild when the counter changes.
+[RaisedButton] no-longer unnecessarily rebuild when the counter changes.
 
 :::info
 Depending on the provider that you are listening to, you may not need to do this.  
