@@ -11,16 +11,6 @@ final activeFilterKey = UniqueKey();
 final completedFilterKey = UniqueKey();
 final allFilterKey = UniqueKey();
 
-final titleProvider = ProviderFamily<String, Locale>((ref, locale) {
-  if (locale == const Locale('en')) {
-    return 'Hello London';
-  } else if (locale == const Locale('fr')) {
-    return 'Bonjour Paris';
-  } else {
-    throw UnsupportedError('Unknown locale $locale');
-  }
-});
-
 /// Creates a [TodoList] and initialise it with pre-defined values.
 ///
 /// We are using [StateNotifierProvider] here as a `List<Todo>` is a complex
