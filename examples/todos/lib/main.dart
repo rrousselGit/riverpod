@@ -242,6 +242,11 @@ class TodoItem extends HookWidget {
         onFocusChange: (focused) {
           if (focused) {
             textEditingController.text = todo.description;
+          } else {
+            // Commit changes only whent the textfield is unfocused, for performance
+            todoListProvider
+                .read(context)
+                .edit(id: todo.id, description: textEditingController.text);
           }
         },
         child: ListTile(
@@ -259,12 +264,6 @@ class TodoItem extends HookWidget {
                   autofocus: true,
                   focusNode: textFieldFocusNode,
                   controller: textEditingController,
-                  onEditingComplete: itemFocusNode.unfocus,
-                  onSubmitted: (value) {
-                    todoListProvider
-                        .read(context)
-                        .edit(id: todo.id, description: value);
-                  },
                 )
               : Text(todo.description),
         ),

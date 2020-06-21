@@ -83,7 +83,34 @@ void main() {
     expect(find.text('2 items left'), findsOneWidget);
     expect(find.text('3 items left'), findsNothing);
   });
-  testWidgets('Editing the todo', (tester) async {
+  testWidgets('Editing the todo on unfocus', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+
+    expect(
+      find.descendant(of: firstItem, matching: find.text('hi')),
+      findsOneWidget,
+    );
+
+    await tester.tap(firstItem);
+    // wait for the textfield to appear
+    await tester.pump();
+
+    // don't use tester.enterText to check that the textfield is auto-focused
+    tester.testTextInput.enterText('new description');
+    tester.testTextInput.closeConnection();
+
+    await tester.pump();
+
+    expect(
+      find.descendant(of: firstItem, matching: find.text('hi')),
+      findsNothing,
+    );
+    expect(
+      find.descendant(of: firstItem, matching: find.text('new description')),
+      findsOneWidget,
+    );
+  });
+  testWidgets('Editing the todo on done', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
     expect(
