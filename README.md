@@ -35,7 +35,7 @@ Long story short:
 
 See the [FAQ](#FAQ) if you have questions around what this means for [provider].
 
-# Index
+## Index
 
 - [Motivation](#motivation)
 - [Usage](#usage)
@@ -45,7 +45,7 @@ See the [FAQ](#FAQ) if you have questions around what this means for [provider].
   - [Will this get merged with provider at some point?](#will-this-get-merged-with-provider-at-some-point)
   - [Will provider be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
 
-# Motivation
+## Motivation
 
 If [provider] is a simplification of [InheritedWidget]s, then [Riverpod] is
 a reimplementation of [InheritedWidget]s from scratch.
@@ -66,32 +66,34 @@ as an attempt to fix the common problems that [provider] face.
 From there, [Riverpod] goes a few steps beyond:
 
 - Reading objects is now **compile-safe**. No more runtime exception.
-- Makes the [provider] pattern more flexible, which allows supporting commonly
+- It makes the [provider] pattern more flexible, which allows supporting commonly
   requested features like:
-  - being able to have multiple providers of the same type.
-  - disposing the state of a provider when it is no longer used.
-  - make a provider private.
-- Simplifying complex object graphs.
+  - Being able to have multiple providers of the same type.
+  - Disposing the state of a provider when it is no longer used.
+  - Have computed states
+  - Making a provider private.
+- Simplifies complex object graphs. It is easier to depend on asynchrounous state.
 - Makes the pattern independent from Flutter
 
 These are achieved by no-longer using [InheritedWidget]s. Instead, [Riverpod]
 implements its own mechanism that works in a similar fashion.
 
-# Usage
+For learning how to use [Riverpod], see its documentation: https://riverpod.dev
 
-The way [Riverpod] is used depends on the application you are making.
+## Contributing
 
-You can refer to the following table to help you decide which package to use:
+Contributions are welcomed!
 
-| app type                  | package name                                                                       | description                                                                                                                                       |
-| ------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                   | An improved syntax with less boilerplate for listening providers inside widgets.                                                                  |
-| Flutter only              | [flutter_riverpod]                                                                 | A slightly more verbose syntax (comparable to `Theme.of` vs `StreamBuilder`).<br>But feature-wise, it is otherwise identical to [hooks_riverpod]. |
-| Dart only (No Flutter)    | [riverpod](https://github.com/rrousselgit/river_pod/tree/master/packages/riverpod) | A version of [Riverpod] striped out of all the classes related to Flutter                                                                         |
+Here is a curated list of how you can help:
 
-# FAQ
+- Report bugs and scenarios that are difficult to implement
+- Report parts of the documentation that are unclear
+- Update the documentation / add examples
+- Implement new features by making a pull-request
 
-## Why another project when [provider] already exists?
+## FAQ
+
+### Why another project when [provider] already exists?
 
 While [provider] is largely used and well accepted by the community,
 it is not perfect either.
@@ -112,7 +114,7 @@ mechanism of [provider].
 In a way, if [provider] is a candle then [Riverpod] is a lightbulb. They have
 very similar usages, but we cannot create a lightbulb by improving our candle.
 
-## Is it safe to use in production?
+### Is it safe to use in production?
 
 The project is still experimental, so use it at your own risk.
 
@@ -120,7 +122,7 @@ It applied all the lessons learned from [provider], so I would expect this
 project to solve most use-cases.\
 But if your project randomly catches fire, you were warned!
 
-## Will this get merged with [provider] at some point?
+### Will this get merged with [provider] at some point?
 
 No. At least not until it is proven that the community likes [Riverpod]
 and that it doesn't cause more problems than it solves.
@@ -132,7 +134,7 @@ change for users of [provider] to migrate [Riverpod].
 Considering that, separating both projects initially sounds like a better
 compromise.
 
-## Will [provider] be deprecated/stop being supported?
+### Will [provider] be deprecated/stop being supported?
 
 Not in the short term, no.
 

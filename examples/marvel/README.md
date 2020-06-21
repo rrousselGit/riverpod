@@ -1,5 +1,7 @@
 A Flutter app that displays the list of comics from https://developer.marvel.com/
 
+**Note**: This example is still work in progress
+
 The process is split into three objects:
 
 - `Configuration`, which stores the API keys of a marvel account.

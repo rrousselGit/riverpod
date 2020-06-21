@@ -2,9 +2,6 @@
 title: Providers
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-
 In the [previous article](./getting_started), we saw how to install [Riverpod]
 and make a simple "Hello world".
 
@@ -12,8 +9,8 @@ This time, we will do a deep dive on what "providers" are, and how to use them.
 
 ## What is a provider
 
-Providers are the most important piece [Riverpod]. In short, you can think
-of providers as an access point to a shared state.
+Providers are the most important components of [Riverpod]. In short, you can think
+of providers as an access point to a **shared state**.
 
 Providers solve the following problems:
 
@@ -26,7 +23,7 @@ Providers solve the following problems:
   If we can write the code to read a state, that state is available and ready.
   Even if loaded asynchronously.
 
-- Providers allow easily and efficiently listen to a piece of state.  
+- Providers allow easily and efficiently listening to a piece of state.  
   They can be accessed in a single line of code, and offers many way to optimize
   your application.
 
@@ -53,14 +50,14 @@ This snippet consist of three components:
   This variable is what we will use in the future to read the state of our provider.
   It should always be immutable.
 
-- `Provider`, the provider that we decided to used.  
+- `Provider`, the provider that we decided to use.  
   [Provider] is the most basic of all providers. It exposes an object that never
   changes.  
   We could replace [Provider] with other providers like [StreamProvider] or
   [StateNotifierProvider], to change how the value is interacted with.
 
 - A function that creates the shared state.  
-  That function will always receive an object called `ref` as parameter. This object
+  That function will always receive an object called `ref` as a parameter. This object
   allows us to read other providers or to perform some operations when the state
   of our provider will be destroyed.
 
@@ -81,6 +78,18 @@ final countryProvider = Provider((ref) => 'England');
 
 The fact that both providers creates a `String` does not cause conflicts. We will be
 able to read both values independently from each other without issue.
+:::
+
+:::warning
+For providers to work, you have to add [ProviderScope] at the root of your
+Flutter applications:
+
+```dart
+void main() {
+  runApp(ProviderScope(child: MyApp()));
+}
+```
+
 :::
 
 ## Combining providers
@@ -109,6 +118,8 @@ final weatherProvider = FutureProvider((ref) async {
   return fetchWeather(city: city);
 });
 ```
+
+That's it. We've created a provider that depends on another provider.
 
 ### Creating an object that depends on a lot of providers.
 
@@ -164,8 +175,12 @@ class Location {
 }
 ```
 
+This avoids having to implement a constructor, which makes changes on the object
+easier.
+
 This is fine as, as opposed to `BuildContext` from Flutter, that `ref` object
-is completely independent from the Flutter/the UI.
+is completely independent from the Flutter/the UI.  
+As such the object can still be shared and tested.
 
 ## Disposing the resources the state is destroyed
 
@@ -208,3 +223,4 @@ For example, [StateNotifierProvider] will call the `dispose` method of a `StateN
 [provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
 [streamprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StreamProvider-class.html
 [statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
