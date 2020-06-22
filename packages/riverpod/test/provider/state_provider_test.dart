@@ -3,6 +3,39 @@ import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('StateProvideyFamily', () async {
+    final provider = StateProviderFamily<String, int>((ref, a) {
+      return '$a';
+    });
+    final owner = ProviderStateOwner();
+
+    expect(
+      provider(0).readOwner(owner),
+      isA<StateController>().having((s) => s.state, 'state', '0'),
+    );
+    expect(
+      provider(1).readOwner(owner),
+      isA<StateController>().having((s) => s.state, 'state', '1'),
+    );
+  });
+
+  test('StateProvideyFamily override', () async {
+    final provider = StateProviderFamily<String, int>((ref, a) {
+      return '$a';
+    });
+    final owner = ProviderStateOwner(overrides: [
+      provider.overrideAs((ref, a) => 'override $a'),
+    ]);
+
+    expect(
+      provider(0).readOwner(owner),
+      isA<StateController>().having((s) => s.state, 'state', 'override 0'),
+    );
+    expect(
+      provider(1).readOwner(owner),
+      isA<StateController>().having((s) => s.state, 'state', 'override 1'),
+    );
+  });
   test('Expose a state and allows modifying it', () {
     final owner = ProviderStateOwner();
     final provider = StateProvider((ref) => 0);

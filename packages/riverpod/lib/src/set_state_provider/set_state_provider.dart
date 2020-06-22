@@ -1,5 +1,5 @@
-import 'common.dart';
-import 'framework/framework.dart';
+import '../common.dart';
+import '../framework/framework.dart';
 
 // Implementation detail of StateNotifierProvider.
 

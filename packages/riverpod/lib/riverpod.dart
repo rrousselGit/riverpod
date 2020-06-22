@@ -28,7 +28,9 @@ export 'src/provider/provider.dart'
         Provider,
         ProviderDependency,
         ProviderFamily;
-export 'src/set_state_provider.dart'
+export 'src/set_state_provider/auto_dispose_set_state_provider.dart'
+    show AutoDisposeSetStateProvider, AutoDisposeSetStateProviderReference;
+export 'src/set_state_provider/set_state_provider.dart'
     show SetStateProvider, SetStateProviderReference;
 export 'src/state_notifier_provider.dart'
     show
