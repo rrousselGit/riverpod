@@ -1,22 +1,22 @@
 import 'package:state_notifier/state_notifier.dart';
 
-import 'common.dart';
-import 'framework/framework.dart';
-import 'internals.dart';
+import '../common.dart';
+import '../framework/framework.dart';
+import '../internals.dart';
 
 /// Creates a [StateNotifier] and expose its current state.
 ///
 /// Listening to this provider will not cause widget to rebuild when [StateNotifier.state]
 /// changes.
 ///
-/// Instead, listen to `StateNotifierProvider.state`:
+/// Instead, listen to `AutoDisposeStateNotifierProvider.state`:
 ///
 /// ```dart
 /// class Counter extends StateNotifier<int> {
 ///   Counter(): super(0);
 /// }
 ///
-/// final counterProvider = StateNotifierProvider((_) => Counter());
+/// final counterProvider = AutoDisposeStateNotifierProvider((_) => Counter());
 ///
 /// // ...
 ///
@@ -30,10 +30,10 @@ import 'internals.dart';
 /// }
 /// ```
 // ignore: must_be_immutable, false positive, _state is immutable but lazy loaded.
-class StateNotifierProvider<Notifier extends StateNotifier<Object>>
-    extends Provider<Notifier> {
+class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<Object>>
+    extends AutoDisposeProvider<Notifier> {
   /// Creates a [StateNotifier] and expose it + its state.
-  StateNotifierProvider(
+  AutoDisposeStateNotifierProvider(
     Create<Notifier, ProviderReference> create, {
     String name,
   }) : super(
@@ -45,25 +45,26 @@ class StateNotifierProvider<Notifier extends StateNotifier<Object>>
           name: name,
         );
 
-  SetStateProvider<Object> _state;
+  AutoDisposeSetStateProvider<Object> _state;
 }
 
-/// Adds [state] to [StateNotifierProvider].
+/// Adds [state] to [AutoDisposeStateNotifierProvider].
 ///
 /// This is done as an extension as a workaround to language limitations around
 /// generic parameters.
-extension StateNotifierStateProviderX<Value>
-    on StateNotifierProvider<StateNotifier<Value>> {
+extension AutoDisposeStateNotifierStateProviderX<Value>
+    on AutoDisposeStateNotifierProvider<StateNotifier<Value>> {
   /// A provider that expose the state of a [StateNotifier].
-  SetStateProvider<Value> get state {
-    _state ??= StateNotifierStateProvider<Value>._(this);
-    return _state as StateNotifierStateProvider<Value>;
+  AutoDisposeStateNotifierStateProvider<Value> get state {
+    _state ??= AutoDisposeStateNotifierStateProvider<Value>._(this);
+    return _state as AutoDisposeStateNotifierStateProvider<Value>;
   }
 }
 
-/// Implementation detail of [StateNotifierProvider].
-class StateNotifierStateProvider<T> extends SetStateProvider<T> {
-  StateNotifierStateProvider._(this.notifierProvider)
+/// Implementation detail of [AutoDisposeStateNotifierProvider].
+class AutoDisposeStateNotifierStateProvider<T>
+    extends AutoDisposeSetStateProvider<T> {
+  AutoDisposeStateNotifierStateProvider._(this.notifierProvider)
       : super((ref) {
           final notifier = ref.read(notifierProvider).value;
 
@@ -77,21 +78,22 @@ class StateNotifierStateProvider<T> extends SetStateProvider<T> {
                 ? null
                 : '${notifierProvider.name}.state');
 
-  /// The [StateNotifierProvider] associated with this [StateNotifierStateProvider].
-  final StateNotifierProvider<StateNotifier<T>> notifierProvider;
+  /// The [AutoDisposeStateNotifierProvider] associated with this [AutoDisposeStateNotifierStateProvider].
+  final AutoDisposeStateNotifierProvider<StateNotifier<T>> notifierProvider;
 }
 
-/// Creates a [StateNotifierProvider] from external parameters.
+/// Creates a [AutoDisposeStateNotifierProvider] from external parameters.
 ///
 /// See also:
 ///
 /// - [ProviderFamily], which contains an explanation of what a *Family is.
-class StateNotifierProviderFamily<Result extends StateNotifier<dynamic>, A>
-    extends Family<StateNotifierProvider<Result>, A> {
-  /// Creates a [StateNotifierProvider] from external parameters.
-  StateNotifierProviderFamily(
+class AutoDisposeStateNotifierProviderFamily<
+    Result extends StateNotifier<dynamic>,
+    A> extends Family<AutoDisposeStateNotifierProvider<Result>, A> {
+  /// Creates a [AutoDisposeStateNotifierProvider] from external parameters.
+  AutoDisposeStateNotifierProviderFamily(
       Result Function(ProviderReference ref, A a) create)
-      : super((a) => StateNotifierProvider((ref) => create(ref, a)));
+      : super((a) => AutoDisposeStateNotifierProvider((ref) => create(ref, a)));
 
   /// Overrides the behavior of a family for a part of the application.
   Override overrideAs(
@@ -99,8 +101,11 @@ class StateNotifierProviderFamily<Result extends StateNotifier<dynamic>, A>
   ) {
     return FamilyOverride(
       this,
-      (value) =>
-          StateNotifierProvider<Result>((ref) => override(ref, value as A)),
+      (value) {
+        return AutoDisposeStateNotifierProvider<Result>(
+          (ref) => override(ref, value as A),
+        );
+      },
     );
   }
 }

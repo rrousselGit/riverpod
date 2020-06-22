@@ -198,6 +198,10 @@ class ProviderStateOwner {
           overridenProviders.contains(provider.notifierProvider)) {
         return true;
       }
+      if (provider is AutoDisposeStateNotifierStateProvider &&
+          overridenProviders.contains(provider.notifierProvider)) {
+        return true;
+      }
       return false;
     }
 
@@ -443,6 +447,15 @@ Changing the kind of override or reordering overrides is not supported.
         // TODO find a way to simplify this
         final controller =
             (provider as StateNotifierStateProvider).notifierProvider;
+        if (_stateReaders[controller] != null ||
+            (controller.family != null &&
+                _overrideForFamily[controller.family] != null)) {
+          reader =
+              _stateReaders[provider] = _ProviderStateReader(provider, this);
+        }
+      } else if (provider is AutoDisposeStateNotifierStateProvider) {
+        final controller = (provider as AutoDisposeStateNotifierStateProvider)
+            .notifierProvider;
         if (_stateReaders[controller] != null ||
             (controller.family != null &&
                 _overrideForFamily[controller.family] != null)) {
