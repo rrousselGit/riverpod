@@ -7,6 +7,75 @@ import 'package:riverpod/src/framework/framework.dart'
 import 'package:test/test.dart';
 
 void main() {
+  test('AutoDisposeStreamProvider', () async {
+    var future = Stream.value(42);
+    final onDispose = DisposeMock();
+    final provider = AutoDisposeStreamProvider((ref) {
+      ref.onDispose(onDispose);
+      return future;
+    });
+    final owner = ProviderStateOwner();
+    final listener = ListenerMock();
+
+    final removeListener = provider.watchOwner(owner, listener);
+
+    verify(listener(const AsyncValue.loading())).called(1);
+    verifyNoMoreInteractions(listener);
+
+    removeListener();
+
+    await Future<void>.value();
+
+    verify(onDispose()).called(1);
+    verifyNoMoreInteractions(onDispose);
+
+    future = Stream.value(21);
+
+    provider.watchOwner(owner, listener);
+
+    verify(listener(const AsyncValue.loading())).called(1);
+
+    await Future<void>.value();
+
+    verify(listener(const AsyncValue.data(21))).called(1);
+    verifyNoMoreInteractions(listener);
+  });
+  test('AutoDisposeStreamProviderFamily override', () async {
+    final provider = AutoDisposeStreamProviderFamily<int, int>((ref, a) {
+      return Stream.value(a * 2);
+    });
+    final owner = ProviderStateOwner();
+    final listener = ListenerMock();
+
+    provider(21).watchOwner(owner, listener);
+
+    verify(listener(const AsyncValue.loading())).called(1);
+    verifyNoMoreInteractions(listener);
+
+    await Future<void>.value();
+
+    verify(listener(const AsyncValue.data(42))).called(1);
+    verifyNoMoreInteractions(listener);
+  });
+  test('AutoDisposeStreamProviderFamily override', () async {
+    final provider = AutoDisposeStreamProviderFamily<int, int>((ref, a) {
+      return Stream.value(a * 2);
+    });
+    final owner = ProviderStateOwner(overrides: [
+      provider.overrideAs((ref, a) => Stream.value(a * 4)),
+    ]);
+    final listener = ListenerMock();
+
+    provider(21).watchOwner(owner, listener);
+
+    verify(listener(const AsyncValue.loading())).called(1);
+    verifyNoMoreInteractions(listener);
+
+    await Future<void>.value();
+
+    verify(listener(const AsyncValue.data(84))).called(1);
+    verifyNoMoreInteractions(listener);
+  });
   test('StreamProviderFamily', () async {
     final provider = StreamProviderFamily<String, int>((ref, a) {
       return Stream.value('$a');

@@ -70,7 +70,7 @@ void main() {
   });
   test('AutoDisposeSetStateProviderReference can read and write state', () {
     final owner = ProviderStateOwner();
-    AutoDisposeSetStateProviderReference<int> ref;
+    SetStateProviderReference<int> ref;
     int initialValue;
     final provider = AutoDisposeSetStateProvider<int>((r) {
       initialValue = r.state;
@@ -104,7 +104,7 @@ void main() {
   });
   test('subscribe', () {
     final owner = ProviderStateOwner();
-    AutoDisposeSetStateProviderReference<int> ref;
+    SetStateProviderReference<int> ref;
     final provider = AutoDisposeSetStateProvider<int>((r) {
       ref = r;
       return 0;

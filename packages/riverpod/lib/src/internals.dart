@@ -16,4 +16,4 @@ export 'set_state_provider/set_state_provider.dart';
 export 'state_notifier_provider/auto_dispose_state_notifier_provider.dart';
 export 'state_notifier_provider/state_notifier_provider.dart';
 export 'state_provider.dart';
-export 'stream_provider.dart';
+export 'stream_provider/stream_provider.dart';

@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 import '../common.dart';
 import '../framework/framework.dart';
 import '../provider/provider.dart';
-import '../stream_provider.dart';
+import '../stream_provider/stream_provider.dart';
 
 part 'auto_dispose_future_provider.dart';
 

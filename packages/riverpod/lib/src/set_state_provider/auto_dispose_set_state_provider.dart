@@ -6,9 +6,9 @@ import 'set_state_provider.dart';
 // Implementation detail of StateNotifierProvider.
 
 /// Manages a piece of state that can change over time.
-class AutoDisposeSetStateProviderReference<T> extends ProviderReference
+class _SetStateProviderReference<T> extends ProviderReference
     implements SetStateProviderReference<T> {
-  AutoDisposeSetStateProviderReference._(this._providerState)
+  _SetStateProviderReference._(this._providerState)
       : super(_providerState);
 
   final _AutoDisposeSetStateProviderState<T> _providerState;
@@ -29,7 +29,7 @@ class AutoDisposeSetStateProvider<T>
   /// A provider that expose a value which can change over time
   AutoDisposeSetStateProvider(this._create, {String name}) : super(name);
 
-  final Create<T, AutoDisposeSetStateProviderReference<T>> _create;
+  final Create<T, _SetStateProviderReference<T>> _create;
 
   @override
   _AutoDisposeSetStateProviderState<T> createState() {
@@ -49,7 +49,7 @@ class _AutoDisposeSetStateProviderState<T> extends AutoDisposeProviderStateBase<
 
   @override
   void initState() {
-    _state = provider._create(AutoDisposeSetStateProviderReference._(this));
+    _state = provider._create(_SetStateProviderReference._(this));
   }
 
   @override

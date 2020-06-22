@@ -6,8 +6,8 @@ import 'provider/provider.dart';
 import 'state_notifier_provider/state_notifier_provider.dart';
 
 /// A [StateNotifier] that allows modifying its [state] from outside.
-///
-///
+/// 
+/// This avoids having to make a [StateNotifier] subclass for simple scenarios.
 class StateController<T> extends StateNotifier<T> {
   /// Initialize the state of [StateController].
   StateController(T state) : super(state);

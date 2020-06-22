@@ -40,5 +40,11 @@ export 'src/state_notifier_provider/state_notifier_provider.dart'
         StateNotifierProviderFamily;
 export 'src/state_provider.dart'
     show StateController, StateProvider, StateProviderFamily;
-export 'src/stream_provider.dart'
-    show StreamProvider, StreamProviderDependency, StreamProviderFamily;
+
+export 'src/stream_provider/stream_provider.dart'
+    show
+        AutoDisposeStreamProvider,
+        AutoDisposeStreamProviderFamily,
+        StreamProvider,
+        StreamProviderDependency,
+        StreamProviderFamily;

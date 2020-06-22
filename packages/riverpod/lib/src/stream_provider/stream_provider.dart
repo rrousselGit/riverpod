@@ -1,8 +1,10 @@
 import 'dart:async';
 
-import 'common.dart';
-import 'framework/framework.dart';
-import 'provider/provider.dart';
+import '../common.dart';
+import '../framework/framework.dart';
+import '../provider/provider.dart';
+
+part 'auto_dispose_stream_provider.dart';
 
 /// The state of a [StreamProvider].
 class StreamProviderDependency<T> extends ProviderDependencyBase {
@@ -103,12 +105,14 @@ class StreamProvider<T> extends AlwaysAliveProviderBase<
   }
 }
 
-class _StreamProviderState<T> extends ProviderStateBase<
-    StreamProviderDependency<T>,
-    AsyncValue<T>,
-    StreamProvider<T>> with _State<T, StreamProvider<T>> {
+mixin _StreamProviderStateMixin<T,
+        P extends ProviderBase<StreamProviderDependency<T>, AsyncValue<T>>>
+    on ProviderStateBase<StreamProviderDependency<T>, AsyncValue<T>, P>
+    implements _State<T, P> {
   Stream<T> _stream;
   StreamSubscription<T> _streamDependency;
+
+  Stream<T> create();
 
   @override
   StreamProviderDependency<T> createProviderDependency() {
@@ -117,7 +121,7 @@ class _StreamProviderState<T> extends ProviderStateBase<
 
   @override
   void initState() {
-    _stream = provider._create(ProviderReference(this));
+    _stream = create();
     _streamDependency = _stream.listen(
       (event) {
         state = AsyncValue.data(event);
@@ -137,6 +141,15 @@ class _StreamProviderState<T> extends ProviderStateBase<
     _streamDependency.cancel();
     super.dispose();
   }
+}
+
+class _StreamProviderState<T> extends ProviderStateBase<
+        StreamProviderDependency<T>, AsyncValue<T>, StreamProvider<T>>
+    with
+        _State<T, StreamProvider<T>>,
+        _StreamProviderStateMixin<T, StreamProvider<T>> {
+  @override
+  Stream<T> create() => provider._create(ProviderReference(this));
 }
 
 /// Overide a [StreamProvider] with a synchronous value.
