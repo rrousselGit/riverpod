@@ -1,6 +1,4 @@
-import 'common.dart';
-import 'framework/framework.dart';
-import 'provider.dart';
+part of 'provider.dart';
 
 /// A AutoDisposeprovider that exposes a read-only value.
 // TODO doc

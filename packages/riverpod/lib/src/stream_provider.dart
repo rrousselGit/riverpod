@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'common.dart';
 import 'framework/framework.dart';
-import 'provider.dart';
+import 'provider/provider.dart';
 
 /// The state of a [StreamProvider].
 class StreamProviderDependency<T> extends ProviderDependencyBase {

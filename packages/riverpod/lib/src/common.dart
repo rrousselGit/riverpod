@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 
 import 'framework/framework.dart';
 import 'future_provider.dart';
-import 'provider.dart';
+import 'provider/provider.dart';
 import 'stream_provider.dart';
 
 part 'common.freezed.dart';

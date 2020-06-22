@@ -1,5 +1,7 @@
-import 'common.dart';
-import 'framework/framework.dart';
+import '../common.dart';
+import '../framework/framework.dart';
+
+part 'auto_dispose_provider.dart';
 
 /// The state to a [Provider].
 abstract class ProviderDependency<T> extends ProviderDependencyBase {

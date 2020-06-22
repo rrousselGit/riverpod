@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
 import '../common.dart';
 import '../computed.dart';
 import '../internals.dart';
-import '../provider.dart';
+import '../provider/provider.dart';
 
 part 'base_provider.dart';
 part 'family.dart';

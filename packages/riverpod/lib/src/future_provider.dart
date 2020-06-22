@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 
 import 'common.dart';
 import 'framework/framework.dart';
-import 'provider.dart';
+import 'provider/provider.dart';
 import 'stream_provider.dart';
 
 /// The state of a [FutureProvider].

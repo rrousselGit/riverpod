@@ -5,12 +5,11 @@
 /// It is used by the flutter and hooks implementation, but is not stable.
 library internals;
 
-export 'auto_dispose_provider.dart';
 export 'common.dart';
 export 'computed.dart';
 export 'framework/framework.dart';
 export 'future_provider.dart';
-export 'provider.dart';
+export 'provider/provider.dart';
 export 'set_state_provider.dart';
 export 'state_notifier_provider.dart';
 export 'state_provider.dart';

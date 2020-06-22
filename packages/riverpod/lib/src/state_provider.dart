@@ -2,7 +2,7 @@ import 'package:state_notifier/state_notifier.dart';
 
 import 'common.dart';
 import 'framework/framework.dart';
-import 'provider.dart';
+import 'provider/provider.dart';
 import 'state_notifier_provider.dart';
 
 /// A [StateNotifier] that allows modifying its [state] from outside.
