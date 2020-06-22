@@ -62,8 +62,8 @@ class Computed<T> extends AutoDisposeProviderBase<ProviderDependencyBase, T> {
   }
 }
 
-class _ComputedState<T>
-    extends AutoDisposeProviderStateBase<ProviderDependencyBase, T, Computed<T>> {
+class _ComputedState<T> extends AutoDisposeProviderStateBase<
+    ProviderDependencyBase, T, Computed<T>> {
   final _dependencies = <ProviderBase, _Dependency>{};
   bool _debugSelecting;
 

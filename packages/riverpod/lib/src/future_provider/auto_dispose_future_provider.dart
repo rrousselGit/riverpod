@@ -50,7 +50,8 @@ class AutoDisposeFutureProviderFamily<Result, A>
   ) {
     return FamilyOverride(
       this,
-      (value) => AutoDisposeFutureProvider<Result>((ref) => override(ref, value as A)),
+      (value) =>
+          AutoDisposeFutureProvider<Result>((ref) => override(ref, value as A)),
     );
   }
 }

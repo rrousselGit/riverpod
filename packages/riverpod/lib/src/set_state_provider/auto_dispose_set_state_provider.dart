@@ -8,8 +8,7 @@ import 'set_state_provider.dart';
 /// Manages a piece of state that can change over time.
 class _SetStateProviderReference<T> extends ProviderReference
     implements SetStateProviderReference<T> {
-  _SetStateProviderReference._(this._providerState)
-      : super(_providerState);
+  _SetStateProviderReference._(this._providerState) : super(_providerState);
 
   final _AutoDisposeSetStateProviderState<T> _providerState;
 
