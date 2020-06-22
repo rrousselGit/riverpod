@@ -29,3 +29,27 @@ class AutoDisposeProviderState<T> extends AutoDisposeProviderStateBase<
     return ProviderDependencyImpl(state);
   }
 }
+
+/// Creates an [AutoDisposeProvider] from external parameters.
+///
+/// See also:
+///
+/// - [ProviderFamily], which contains an explanation of what a *Family is.
+class AutoDisposeProviderFamily<Result, A>
+    extends Family<AutoDisposeProvider<Result>, A> {
+  /// Creates a value from an external parameter
+  AutoDisposeProviderFamily(Result Function(ProviderReference ref, A a) create)
+      : super((a) => AutoDisposeProvider((ref) => create(ref, a)));
+
+  /// Overrides the behavior of a family for a part of the application.
+  Override overrideAs(
+    Result Function(ProviderReference ref, A value) override,
+  ) {
+    return FamilyOverride(
+      this,
+      (value) {
+        return AutoDisposeProvider<Result>((ref) => override(ref, value as A));
+      },
+    );
+  }
+}

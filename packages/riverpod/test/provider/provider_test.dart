@@ -5,6 +5,55 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 
 void main() {
+  test('AutoDisposeProviderFamily', () async {
+    final onDispose = OnDisposeMock();
+    final provider = AutoDisposeProviderFamily<String, int>((ref, value) {
+      ref.onDispose(onDispose);
+      return '$value';
+    });
+    final listener = Listener();
+    final owner = ProviderStateOwner();
+
+    final removeListener = provider(0).watchOwner(owner, listener);
+
+    verify(listener('0')).called(1);
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(onDispose);
+
+    removeListener();
+
+    verifyNoMoreInteractions(onDispose);
+    await Future<void>.value();
+
+    verify(onDispose()).called(1);
+    verifyNoMoreInteractions(onDispose);
+  });
+  test('AutoDisposeProviderFamily override', () async {
+    final onDispose = OnDisposeMock();
+    final provider = AutoDisposeProviderFamily<String, int>((ref, value) {
+      return '$value';
+    });
+    final listener = Listener();
+    final owner = ProviderStateOwner(overrides: [
+      provider.overrideAs((ref, value) {
+        ref.onDispose(onDispose);
+        return '$value override';
+      })
+    ]);
+
+    final removeListener = provider(0).watchOwner(owner, listener);
+
+    verify(listener('0 override')).called(1);
+    verifyNoMoreInteractions(listener);
+
+    removeListener();
+
+    verifyNoMoreInteractions(onDispose);
+    await Future<void>.value();
+
+    verify(onDispose()).called(1);
+    verifyNoMoreInteractions(onDispose);
+  });
   test('can specify name', () {
     final provider = Provider(
       (_) => 0,
@@ -118,4 +167,8 @@ void main() {
 
 class OnDisposeMock extends Mock {
   void call();
+}
+
+class Listener extends Mock {
+  void call(String value);
 }

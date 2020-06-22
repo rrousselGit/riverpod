@@ -15,9 +15,19 @@ export 'src/framework/framework.dart'
         ProviderListenable,
         ProviderSubscription;
 export 'src/future_provider/future_provider.dart'
-    show FutureProvider, FutureProviderDependency, FutureProviderFamily;
+    show
+        AutoDisposeFutureProvider,
+        AutoDisposeFutureProviderFamily,
+        FutureProvider,
+        FutureProviderDependency,
+        FutureProviderFamily;
 export 'src/provider/provider.dart'
-    show AutoDisposeProvider, Provider, ProviderDependency, ProviderFamily;
+    show
+        AutoDisposeProvider,
+        AutoDisposeProviderFamily,
+        Provider,
+        ProviderDependency,
+        ProviderFamily;
 export 'src/set_state_provider.dart'
     show SetStateProvider, SetStateProviderReference;
 export 'src/state_notifier_provider.dart'

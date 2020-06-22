@@ -7,6 +7,8 @@ import '../framework/framework.dart';
 import '../provider/provider.dart';
 import '../stream_provider.dart';
 
+part 'auto_dispose_future_provider.dart';
+
 /// The state of a [FutureProvider].
 class FutureProviderDependency<T> extends ProviderDependencyBase {
   FutureProviderDependency._({@required this.future});
@@ -57,8 +59,9 @@ class FutureProvider<Res> extends AlwaysAliveProviderBase<
   }
 }
 
-class _FutureProviderState<Res> extends ProviderStateBase<
-    FutureProviderDependency<Res>, AsyncValue<Res>, FutureProvider<Res>> {
+mixin _FutureProviderStateMixin<Res,
+        P extends ProviderBase<FutureProviderDependency<Res>, AsyncValue<Res>>>
+    on ProviderStateBase<FutureProviderDependency<Res>, AsyncValue<Res>, P> {
   Future<Res> _future;
 
   AsyncValue<Res> _state;
@@ -69,10 +72,12 @@ class _FutureProviderState<Res> extends ProviderStateBase<
     markMayHaveChanged();
   }
 
+  Future<Res> create();
+
   @override
   void initState() {
     _state = const AsyncValue.loading();
-    _future = provider._create(ProviderReference(this));
+    _future = create();
     // may update the value synchronously if the future is a SynchronousFuture from flutter
     _listen();
   }
@@ -93,6 +98,15 @@ class _FutureProviderState<Res> extends ProviderStateBase<
   @override
   FutureProviderDependency<Res> createProviderDependency() {
     return FutureProviderDependency._(future: _future);
+  }
+}
+
+class _FutureProviderState<Res> extends ProviderStateBase<
+        FutureProviderDependency<Res>, AsyncValue<Res>, FutureProvider<Res>>
+    with _FutureProviderStateMixin<Res, FutureProvider<Res>> {
+  @override
+  Future<Res> create() {
+    return provider._create(ProviderReference(this));
   }
 }
 

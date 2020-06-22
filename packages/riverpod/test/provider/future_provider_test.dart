@@ -7,6 +7,75 @@ import 'package:riverpod/src/framework/framework.dart'
 import 'package:test/test.dart';
 
 void main() {
+  test('AutoDisposeFutureProvider', () async {
+    var future = Future.value(42);
+    final onDispose = OnDisposeMock();
+    final provider = AutoDisposeFutureProvider((ref) {
+      ref.onDispose(onDispose);
+      return future;
+    });
+    final owner = ProviderStateOwner();
+    final listener = ListenerMock();
+
+    final removeListener = provider.watchOwner(owner, listener);
+
+    verify(listener(const AsyncValue.loading())).called(1);
+    verifyNoMoreInteractions(listener);
+
+    removeListener();
+
+    await Future<void>.value();
+
+    verify(onDispose()).called(1);
+    verifyNoMoreInteractions(onDispose);
+
+    future = Future.value(21);
+
+    provider.watchOwner(owner, listener);
+
+    verify(listener(const AsyncValue.loading())).called(1);
+
+    await Future<void>.value();
+
+    verify(listener(const AsyncValue.data(21))).called(1);
+    verifyNoMoreInteractions(listener);
+  });
+  test('AutoDisposeFutureProviderFamily override', () async {
+    final provider = AutoDisposeFutureProviderFamily<int, int>((ref, a) {
+      return Future.value(a * 2);
+    });
+    final owner = ProviderStateOwner();
+    final listener = ListenerMock();
+
+    provider(21).watchOwner(owner, listener);
+
+    verify(listener(const AsyncValue.loading())).called(1);
+    verifyNoMoreInteractions(listener);
+
+    await Future<void>.value();
+
+    verify(listener(const AsyncValue.data(42))).called(1);
+    verifyNoMoreInteractions(listener);
+  });
+  test('AutoDisposeFutureProviderFamily override', () async {
+    final provider = AutoDisposeFutureProviderFamily<int, int>((ref, a) {
+      return Future.value(a * 2);
+    });
+    final owner = ProviderStateOwner(overrides: [
+      provider.overrideAs((ref, a) => Future.value(a * 4)),
+    ]);
+    final listener = ListenerMock();
+
+    provider(21).watchOwner(owner, listener);
+
+    verify(listener(const AsyncValue.loading())).called(1);
+    verifyNoMoreInteractions(listener);
+
+    await Future<void>.value();
+
+    verify(listener(const AsyncValue.data(84))).called(1);
+    verifyNoMoreInteractions(listener);
+  });
   test('FutureProviderFamily override', () async {
     final provider = FutureProviderFamily<String, int>((ref, a) {
       return Future.value('$a');
@@ -434,6 +503,10 @@ void main() {
 
 class ListenerMock extends Mock {
   void call(AsyncValue<int> value);
+}
+
+class OnDisposeMock extends Mock {
+  void call();
 }
 
 class StringListenerMock extends Mock {
