@@ -1,28 +1,11 @@
 import 'common.dart';
 import 'framework/framework.dart';
-
-/// The state to a [Provider].
-abstract class AutoDisposeProviderDependency<T> extends ProviderDependencyBase {
-  /// The value exposed by [Provider].
-  ///
-  /// It is guaranteed to never change.
-  T get value;
-}
-
-// ignore: public_member_api_docs
-class AutoDisposeProviderDependencyImpl<T>
-    implements AutoDisposeProviderDependency<T> {
-  // ignore: public_member_api_docs
-  AutoDisposeProviderDependencyImpl(this.value);
-
-  @override
-  final T value;
-}
+import 'provider.dart';
 
 /// A AutoDisposeprovider that exposes a read-only value.
 // TODO doc
 class AutoDisposeProvider<T>
-    extends AlwaysAliveProviderBase<AutoDisposeProviderDependency<T>, T> {
+    extends OverridableAutoDisposeProviderBase<ProviderDependency<T>, T> {
   /// Creates an immutable value.
   AutoDisposeProvider(this._create, {String name}) : super(name);
 
@@ -34,7 +17,7 @@ class AutoDisposeProvider<T>
 
 /// The internal state of a [Provider].
 class AutoDisposeProviderState<T> extends AutoDisposeProviderStateBase<
-    AutoDisposeProviderDependency<T>, T, AutoDisposeProvider<T>> {
+    ProviderDependency<T>, T, AutoDisposeProvider<T>> {
   @override
   T state;
 
@@ -44,7 +27,7 @@ class AutoDisposeProviderState<T> extends AutoDisposeProviderStateBase<
   }
 
   @override
-  AutoDisposeProviderDependency<T> createProviderDependency() {
-    return AutoDisposeProviderDependencyImpl(state);
+  ProviderDependency<T> createProviderDependency() {
+    return ProviderDependencyImpl(state);
   }
 }

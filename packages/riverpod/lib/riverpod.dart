@@ -1,5 +1,4 @@
-export 'src/auto_dispose_provider.dart'
-    show AutoDisposeProvider, AutoDisposeProviderDependency;
+export 'src/auto_dispose_provider.dart' show AutoDisposeProvider;
 export 'src/common.dart'
     show Create, AsyncValue, AsyncData, $AsyncValueCopyWith, $AsyncValue;
 export 'src/computed.dart' show Computed, Reader, ComputedFamily;

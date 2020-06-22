@@ -5,7 +5,26 @@ import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
 void main() {
-  // TODO auto dispose Computed when no longer used (or at least destroy the listeners)
+  test('auto dispose Computed when no longer used', () async {
+    final owner = ProviderStateOwner();
+    final onDispose = OnDisposeMock();
+    final provider = AutoDisposeProvider((ref) {
+      ref.onDispose(onDispose);
+      return 42;
+    });
+    final computed = Computed((read) => read(provider));
+
+    final removeListener = computed.watchOwner(owner, (value) {});
+
+    verifyNoMoreInteractions(onDispose);
+    removeListener();
+    verifyNoMoreInteractions(onDispose);
+
+    await Future<void>.value();
+
+    verify(onDispose());
+    verifyNoMoreInteractions(onDispose);
+  });
   test(
       'mutliple read, when one of them forces re-evaluate, all dependencies are still flushed',
       () {
@@ -413,6 +432,10 @@ class Notifier<T> extends StateNotifier<T> {
 
 class Listener<T> extends Mock {
   void call(T value);
+}
+
+class OnDisposeMock extends Mock {
+  void call();
 }
 
 class MockMarkMayHaveChanged extends Mock {

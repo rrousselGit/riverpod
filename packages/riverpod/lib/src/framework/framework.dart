@@ -10,6 +10,7 @@ import '../provider.dart';
 
 part 'base_provider.dart';
 part 'family.dart';
+part 'auto_dispose.dart';
 
 // ignore: avoid_private_typedef_functions
 typedef _FallbackProviderStateReader = ProviderStateBase<ProviderDependencyBase,
@@ -550,7 +551,6 @@ extension ProviderStateOwnerInternals on ProviderStateOwner {
         for (final entry in _stateReaders.entries)
           if (entry.value._providerState != null)
             entry.key: entry.value._providerState.state,
-        // TODO
         if (_computedStateReaders != null)
           for (final entry in _computedStateReaders.entries)
             if (entry.value._providerState != null)

@@ -50,7 +50,7 @@ typedef Reader = Res Function<Res>(ProviderBase<ProviderDependencyBase, Res>);
 /// **DON'T* trigger side-effects such as http requests inside [Computed].
 /// [Computed] does not guanrantee that the function won't be re-evaluated
 /// even if the inputs didn't change.
-class Computed<T> extends ProviderBase<ProviderDependencyBase, T> {
+class Computed<T> extends AutoDisposeProviderBase<ProviderDependencyBase, T> {
   /// Creates a [Computed] and allows specifying a [name].
   Computed(this._selector, {String name}) : super(name);
 
@@ -63,7 +63,7 @@ class Computed<T> extends ProviderBase<ProviderDependencyBase, T> {
 }
 
 class _ComputedState<T>
-    extends ProviderStateBase<ProviderDependencyBase, T, Computed<T>> {
+    extends AutoDisposeProviderStateBase<ProviderDependencyBase, T, Computed<T>> {
   final _dependencies = <ProviderBase, _Dependency>{};
   bool _debugSelecting;
 

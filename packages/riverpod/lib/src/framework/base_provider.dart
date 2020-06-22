@@ -91,8 +91,8 @@ class _ProviderSubscription<T> implements ProviderSubscription {
 
   @override
   void close() {
-    // TODO
     _entry.unlink();
+    _providerState?.onRemoveListener();
   }
 }
 
@@ -338,8 +338,8 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
         final targetProviderValue =
             targetProviderState.createProviderDependency();
         onDispose(() {
-          // TODO hashListener
           targetProviderState._dependents.remove(this);
+          targetProviderState.onRemoveListener();
         });
 
         return targetProviderValue;
@@ -353,6 +353,11 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
       }(), '');
     }
   }
+
+  /// Called when a listener is removed, for potentially destroying the state
+  ///
+  /// Does nothing by default.
+  void onRemoveListener() {}
 
   /// Implementation of [ProviderReference.onDispose].
   void onDispose(VoidCallback cb) {
@@ -569,12 +574,4 @@ abstract class AlwaysAliveProviderBase<
   ) {
     return ProviderOverride._(provider, this);
   }
-}
-
-abstract class AutoDisposeProviderBase<
-    Dependency extends ProviderDependencyBase,
-    Result> extends ProviderBase<Dependency, Result> {
-  AutoDisposeProviderBase(String name) : super(name);
-
-  // TODO overrideAs
 }
