@@ -7,6 +7,38 @@ import 'package:riverpod/src/framework/framework.dart'
 import 'package:test/test.dart';
 
 void main() {
+  test('FutureProviderFamily override', () async {
+    final provider = FutureProviderFamily<String, int>((ref, a) {
+      return Future.value('$a');
+    });
+    final owner = ProviderStateOwner();
+
+    expect(provider(0).readOwner(owner), const AsyncValue<String>.loading());
+
+    await Future<void>.value();
+
+    expect(
+      provider(0).readOwner(owner),
+      const AsyncValue<String>.data('0'),
+    );
+  });
+  test('FutureProviderFamily override', () async {
+    final provider = FutureProviderFamily<String, int>((ref, a) {
+      return Future.value('$a');
+    });
+    final owner = ProviderStateOwner(overrides: [
+      provider.overrideAs((ref, a) => Future.value('override $a')),
+    ]);
+
+    expect(provider(0).readOwner(owner), const AsyncValue<String>.loading());
+
+    await Future<void>.value();
+
+    expect(
+      provider(0).readOwner(owner),
+      const AsyncValue<String>.data('override 0'),
+    );
+  });
   test('can specify name', () {
     final provider = FutureProvider(
       (_) async => 0,

@@ -4,6 +4,39 @@ import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 
 void main() {
+  test('StateProvideyFamily', () async {
+    final provider = StateProviderFamily<String, int>((ref, a) {
+      return '$a';
+    });
+    final owner = ProviderStateOwner();
+
+    expect(
+      provider(0).readOwner(owner),
+      isA<StateController>().having((s) => s.state, 'state', '0'),
+    );
+    expect(
+      provider(1).readOwner(owner),
+      isA<StateController>().having((s) => s.state, 'state', '1'),
+    );
+  });
+
+  test('StateProvideyFamily override', () async {
+    final provider = StateProviderFamily<String, int>((ref, a) {
+      return '$a';
+    });
+    final owner = ProviderStateOwner(overrides: [
+      provider.overrideAs((ref, a) => 'override $a'),
+    ]);
+
+    expect(
+      provider(0).readOwner(owner),
+      isA<StateController>().having((s) => s.state, 'state', 'override 0'),
+    );
+    expect(
+      provider(1).readOwner(owner),
+      isA<StateController>().having((s) => s.state, 'state', 'override 1'),
+    );
+  });
   test('can specify name', () {
     final provider = SetStateProvider(
       (_) => 0,
@@ -84,47 +117,6 @@ void main() {
     verifyNoMoreInteractions(listener);
     owner.dispose();
   });
-  test('combining', () {
-    // final owner = ProviderStateOwner();
-    // SetStateProviderReference<int> ref;
-    // final provider = SetStateProvider<int>((r) {
-    //   ref = r;
-    //   return 1;
-    // });
-
-    // final combining = SetStateProvider<int>((ref) {
-    //   final first = ref.read(provider);
-    //   int result;
-    //   first.watch((value) {
-    //     ref.state = result = value * 2;
-    //   });
-    //   return result;
-    // });
-
-    // final owner2 = ProviderStateOwner(
-    //   parent: owner,
-    //   overrides: [combining.overrideAs(combining)],
-    // );
-
-    // final listener = ListenerMock();
-
-    // final removeListener = combining.subscribe(owner2, (read) => listener(read()));
-
-    // verify(listener(2)).called(1);
-    // verifyNoMoreInteractions(listener);
-
-    // ref.state++;
-
-    // verify(listener(4)).called(1);
-    // verifyNoMoreInteractions(listener);
-
-    // owner2.dispose();
-
-    // ref.state++;
-    // verifyNoMoreInteractions(listener);
-
-    // owner.dispose();
-  }, skip: true);
 }
 
 class ListenerMock extends Mock {

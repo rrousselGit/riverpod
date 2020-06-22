@@ -14,7 +14,7 @@ export 'src/framework/framework.dart'
         ProviderStateOwnerObserver,
         ProviderListenable,
         ProviderSubscription;
-export 'src/future_provider.dart'
+export 'src/future_provider/future_provider.dart'
     show FutureProvider, FutureProviderDependency, FutureProviderFamily;
 export 'src/provider/provider.dart'
     show AutoDisposeProvider, Provider, ProviderDependency, ProviderFamily;

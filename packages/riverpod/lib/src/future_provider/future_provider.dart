@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import 'common.dart';
-import 'framework/framework.dart';
-import 'provider/provider.dart';
-import 'stream_provider.dart';
+import '../common.dart';
+import '../framework/framework.dart';
+import '../provider/provider.dart';
+import '../stream_provider.dart';
 
 /// The state of a [FutureProvider].
 class FutureProviderDependency<T> extends ProviderDependencyBase {

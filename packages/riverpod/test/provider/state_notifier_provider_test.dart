@@ -4,6 +4,25 @@ import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('StateNotifierFamily override', () {
+    final notifier = TestNotifier();
+    final notifier2 = TestNotifier(42);
+    final provider =
+        StateNotifierProviderFamily<TestNotifier, int>((ref, a) => notifier);
+    final root = ProviderStateOwner();
+    final owner = ProviderStateOwner(parent: root, overrides: [
+      provider.overrideAs((ref, a) => notifier2),
+    ]);
+
+    // populate in the root first
+    expect(provider(0).state.readOwner(root), 0);
+    expect(provider(0).readOwner(root), notifier);
+
+    // access in the child owner
+    // try to read provider.state before provider and see if it points to the override
+    expect(provider(0).state.readOwner(owner), 42);
+    expect(provider(0).readOwner(owner), notifier2);
+  });
   test('can be assigned to provider', () {
     final Provider<TestNotifier> provider = StateNotifierProvider((_) {
       return TestNotifier();

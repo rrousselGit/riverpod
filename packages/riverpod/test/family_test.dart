@@ -67,133 +67,24 @@ void main() {
     );
   });
 
-  test('StateProvider', () async {
-    final provider = StateProviderFamily<String, int>((ref, a) {
-      return '$a';
-    });
-    final owner = ProviderStateOwner();
+  test('family override', () {
+    final provider = ProviderFamily<String, int>((ref, a) => '$a');
+    final root = ProviderStateOwner();
+    final owner = ProviderStateOwner(parent: root, overrides: [
+      // Provider overrides always takes over family overrides
+      provider(84).overrideAs(Provider((_) => 'Bonjour 84')),
+      provider.overrideAs((ref, a) => 'Hello $a'),
+      provider(21).overrideAs(Provider((_) => 'Hi 21')),
+    ]);
 
-    expect(
-      provider(0).readOwner(owner),
-      isA<StateController>().having((s) => s.state, 'state', '0'),
-    );
-    expect(
-      provider(1).readOwner(owner),
-      isA<StateController>().having((s) => s.state, 'state', '1'),
-    );
-  });
+    expect(provider(42).readOwner(root), '42');
+    expect(provider(42).readOwner(owner), 'Hello 42');
 
-  group('overrides', () {
-    test('family override', () {
-      final provider = ProviderFamily<String, int>((ref, a) => '$a');
-      final root = ProviderStateOwner();
-      final owner = ProviderStateOwner(parent: root, overrides: [
-        // Provider overrides always takes over family overrides
-        provider(84).overrideAs(Provider((_) => 'Bonjour 84')),
-        provider.overrideAs((ref, a) => 'Hello $a'),
-        provider(21).overrideAs(Provider((_) => 'Hi 21')),
-      ]);
+    expect(provider(21).readOwner(root), '21');
+    expect(provider(21).readOwner(owner), 'Hi 21');
 
-      expect(provider(42).readOwner(root), '42');
-      expect(provider(42).readOwner(owner), 'Hello 42');
-
-      expect(provider(21).readOwner(root), '21');
-      expect(provider(21).readOwner(owner), 'Hi 21');
-
-      expect(provider(84).readOwner(root), '84');
-      expect(provider(84).readOwner(owner), 'Bonjour 84');
-    });
-
-    test('StateNotifier family override', () {
-      final notifier = Counter();
-      final notifier2 = Counter(42);
-      final provider =
-          StateNotifierProviderFamily<Counter, int>((ref, a) => notifier);
-      final root = ProviderStateOwner();
-      final owner = ProviderStateOwner(parent: root, overrides: [
-        provider.overrideAs((ref, a) => notifier2),
-      ]);
-
-      // populate in the root first
-      expect(provider(0).state.readOwner(root), 0);
-      expect(provider(0).readOwner(root), notifier);
-
-      // access in the child owner
-      // try to read provider.state before provider and see if it points to the override
-      expect(provider(0).state.readOwner(owner), 42);
-      expect(provider(0).readOwner(owner), notifier2);
-    });
-    test('StreamProvider', () async {
-      final provider = StreamProviderFamily<String, int>((ref, a) {
-        return Stream.value('$a');
-      });
-      final owner = ProviderStateOwner(overrides: [
-        provider.overrideAs((ref, a) => Stream.value('override $a')),
-      ]);
-
-      expect(provider(0).readOwner(owner), const AsyncValue<String>.loading());
-
-      await Future<void>.value();
-
-      expect(
-        provider(0).readOwner(owner),
-        const AsyncValue<String>.data('override 0'),
-      );
-    });
-    test('FutureProvider', () async {
-      final provider = FutureProviderFamily<String, int>((ref, a) {
-        return Future.value('$a');
-      });
-      final owner = ProviderStateOwner(overrides: [
-        provider.overrideAs((ref, a) => Future.value('override $a')),
-      ]);
-
-      expect(provider(0).readOwner(owner), const AsyncValue<String>.loading());
-
-      await Future<void>.value();
-
-      expect(
-        provider(0).readOwner(owner),
-        const AsyncValue<String>.data('override 0'),
-      );
-    });
-    test('StateProvider', () async {
-      final provider = StateProviderFamily<String, int>((ref, a) {
-        return '$a';
-      });
-      final owner = ProviderStateOwner(overrides: [
-        provider.overrideAs((ref, a) => 'override $a'),
-      ]);
-
-      expect(
-        provider(0).readOwner(owner),
-        isA<StateController>().having((s) => s.state, 'state', 'override 0'),
-      );
-      expect(
-        provider(1).readOwner(owner),
-        isA<StateController>().having((s) => s.state, 'state', 'override 1'),
-      );
-    });
-    test('Computed', () {
-      final computed =
-          ComputedFamily<String, SetStateProvider<int>>((read, provider) {
-        return read(provider).toString();
-      });
-      final notifier = Counter();
-      final provider = StateNotifierProvider((_) => notifier);
-      final owner = ProviderStateOwner();
-      final listener = Listener<String>();
-
-      computed(provider.state).watchOwner(owner, listener);
-
-      verify(listener('0')).called(1);
-      verifyNoMoreInteractions(listener);
-
-      notifier.state = 42;
-
-      verify(listener('42')).called(1);
-      verifyNoMoreInteractions(listener);
-    });
+    expect(provider(84).readOwner(root), '84');
+    expect(provider(84).readOwner(owner), 'Bonjour 84');
   });
 }
 

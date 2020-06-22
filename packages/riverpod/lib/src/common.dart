@@ -2,7 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:meta/meta.dart';
 
 import 'framework/framework.dart';
-import 'future_provider.dart';
+import 'future_provider/future_provider.dart';
 import 'provider/provider.dart';
 import 'stream_provider.dart';
 

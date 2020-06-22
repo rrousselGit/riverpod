@@ -4,7 +4,36 @@ import 'package:riverpod/src/internals.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
+class Counter extends StateNotifier<int> {
+  Counter([int initialValue = 0]) : super(initialValue);
+
+  @override
+  int get state => super.state;
+  @override
+  set state(int value) => super.state = value;
+}
+
 void main() {
+  test('ComputedFamily', () {
+    final computed =
+        ComputedFamily<String, SetStateProvider<int>>((read, provider) {
+      return read(provider).toString();
+    });
+    final notifier = Counter();
+    final provider = StateNotifierProvider((_) => notifier);
+    final owner = ProviderStateOwner();
+    final listener = Listener<String>();
+
+    computed(provider.state).watchOwner(owner, listener);
+
+    verify(listener('0')).called(1);
+    verifyNoMoreInteractions(listener);
+
+    notifier.state = 42;
+
+    verify(listener('42')).called(1);
+    verifyNoMoreInteractions(listener);
+  });
   test('auto dispose Computed when no longer used', () async {
     final owner = ProviderStateOwner();
     final onDispose = OnDisposeMock();

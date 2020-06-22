@@ -8,7 +8,7 @@ library internals;
 export 'common.dart';
 export 'computed.dart';
 export 'framework/framework.dart';
-export 'future_provider.dart';
+export 'future_provider/future_provider.dart';
 export 'provider/provider.dart';
 export 'set_state_provider.dart';
 export 'state_notifier_provider.dart';
