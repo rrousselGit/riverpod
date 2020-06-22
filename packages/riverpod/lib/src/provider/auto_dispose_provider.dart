@@ -1,7 +1,12 @@
 part of 'provider.dart';
 
-/// A AutoDisposeprovider that exposes a read-only value.
-// TODO doc
+/// A provider that exposes a read-only value and automatically disposes it
+/// when the value is no-longer listened.
+///
+/// See also:
+///
+/// - [Provider], a provider with the same behavior, but that doesn't automatically
+///   disposes of the state when no-longer used.
 class AutoDisposeProvider<T>
     extends OverridableAutoDisposeProviderBase<ProviderDependency<T>, T> {
   /// Creates an immutable value.

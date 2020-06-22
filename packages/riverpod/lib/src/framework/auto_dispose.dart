@@ -1,8 +1,14 @@
 part of 'framework.dart';
 
+/// A base class for providers that destroy their state when no-longer listened.
+///
+/// See also:
+///
+/// - [AutoDisposeProvider], a variant of [Provider] that auto-dispose its state.
 abstract class AutoDisposeProviderBase<
     Dependency extends ProviderDependencyBase,
     Result> extends ProviderBase<Dependency, Result> {
+  /// Allows specifying a name
   AutoDisposeProviderBase(String name) : super(name);
 
   @override
@@ -10,10 +16,17 @@ abstract class AutoDisposeProviderBase<
       AutoDisposeProviderBase<Dependency, Result>> createState();
 }
 
+/// A base class for providers that destroy their state when no-longer listened
+/// _and_ can be overriden,
+///
+/// See also:
+///
+/// - [AutoDisposeProvider], a variant of [Provider] that auto-dispose its state.
 abstract class OverridableAutoDisposeProviderBase<
         Dependency extends ProviderDependencyBase,
         Result> extends AutoDisposeProviderBase<Dependency, Result>
     implements ProviderOverride {
+  /// Allows specifying a name
   OverridableAutoDisposeProviderBase(String name) : super(name);
 
   @override
@@ -22,6 +35,30 @@ abstract class OverridableAutoDisposeProviderBase<
   @override
   ProviderBase<Dependency, Result> get _origin => this;
 
+  /// Combined with [ProviderStateOwner] (or `ProviderScope` if you are using Flutter),
+  /// allows overriding the behavior of this provider for a part of the application.
+  ///
+  /// A use-case could be for testing, to override the implementation of a
+  /// `Repository` class with a fake implementation.
+  ///
+  /// In a Flutter application, this would look like:
+  ///
+  /// ```dart
+  /// final repositoryProvider = Provider((_) => Repository());
+  ///
+  /// testWidgets('Override example', (tester) async {
+  ///   await tester.pumpWidget(
+  ///     ProviderScope(
+  ///       overrides: [
+  ///         repositoryProvider.overrideAs(
+  ///           Provider((_) => FakeRepository()),
+  ///         ),
+  ///       ],
+  ///       child: MyApp(),
+  ///     ),
+  ///   );
+  /// });
+  /// ```
   ProviderOverride overrideAs(
     // Auto-disposed providers can be overriden by anything that matches
     // as they don't have a `read` method.
@@ -31,6 +68,7 @@ abstract class OverridableAutoDisposeProviderBase<
   }
 }
 
+/// The state of an [AutoDisposeProvider].
 abstract class AutoDisposeProviderStateBase<
         Dependency extends ProviderDependencyBase,
         Result,
