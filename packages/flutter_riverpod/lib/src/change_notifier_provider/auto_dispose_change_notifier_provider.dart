@@ -10,7 +10,7 @@ class AutoDisposeChangeNotifierProvider<T extends ChangeNotifier>
     extends AutoDisposeProvider<T> {
   /// Created a [AutoDisposeChangeNotifierProvider] and allows specifying [name].
   AutoDisposeChangeNotifierProvider(
-    Create<T, ProviderReference> create, {
+    Create<T, AutoDisposeProviderReference> create, {
     String name,
   }) : super(create, name: name);
 
@@ -44,12 +44,12 @@ class AutoDisposeChangeNotifierProviderFamily<Result extends ChangeNotifier, A>
     extends Family<AutoDisposeChangeNotifierProvider<Result>, A> {
   /// Creates a [ChangeNotifier] from an external parameter.
   AutoDisposeChangeNotifierProviderFamily(
-    Result Function(ProviderReference ref, A a) create,
+    Result Function(AutoDisposeProviderReference ref, A a) create,
   ) : super((a) => AutoDisposeChangeNotifierProvider((ref) => create(ref, a)));
 
   /// Overrides the behavior of a family for a part of the application.
   Override overrideAs(
-    Result Function(ProviderReference ref, A value) override,
+    Result Function(AutoDisposeProviderReference ref, A value) override,
   ) {
     return FamilyOverride(
       this,

@@ -34,7 +34,7 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<Object>>
     extends AutoDisposeProvider<Notifier> {
   /// Creates a [StateNotifier] and expose it + its state.
   AutoDisposeStateNotifierProvider(
-    Create<Notifier, ProviderReference> create, {
+    Create<Notifier, AutoDisposeProviderReference> create, {
     String name,
   }) : super(
           (ref) {
@@ -92,12 +92,12 @@ class AutoDisposeStateNotifierProviderFamily<
     A> extends Family<AutoDisposeStateNotifierProvider<Result>, A> {
   /// Creates a [AutoDisposeStateNotifierProvider] from external parameters.
   AutoDisposeStateNotifierProviderFamily(
-      Result Function(ProviderReference ref, A a) create)
+      Result Function(AutoDisposeProviderReference ref, A a) create)
       : super((a) => AutoDisposeStateNotifierProvider((ref) => create(ref, a)));
 
   /// Overrides the behavior of a family for a part of the application.
   Override overrideAs(
-    Result Function(ProviderReference ref, A value) override,
+    Result Function(AutoDisposeProviderReference ref, A value) override,
   ) {
     return FamilyOverride(
       this,

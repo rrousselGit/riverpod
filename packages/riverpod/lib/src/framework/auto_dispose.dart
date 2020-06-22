@@ -1,5 +1,28 @@
 part of 'framework.dart';
 
+/// A [ProviderReference] that allows controlling whether the associated
+/// provider should dispose when all listeners are removed or not.
+class AutoDisposeProviderReference extends ProviderReference {
+  /// DO NOT USE, for internal usages only.
+  @visibleForTesting
+  AutoDisposeProviderReference(AutoDisposeProviderStateBase providerState)
+      : super(providerState);
+
+  /// Whether to destroy the state of the provider when all listeners are removed or not.
+  ///
+  /// Can be changed at any time, in which case when setting it to `false`,
+  /// may destroy the provider state if it no-longer have listeners.
+  ///
+  /// Defaults to `false`.
+  bool get maintainState {
+    return (_providerState as AutoDisposeProviderStateBase).maintainState;
+  }
+
+  set maintainState(bool value) {
+    (_providerState as AutoDisposeProviderStateBase).maintainState = value;
+  }
+}
+
 /// A base class for providers that destroy their state when no-longer listened.
 ///
 /// See also:
@@ -74,6 +97,23 @@ abstract class AutoDisposeProviderStateBase<
         Result,
         P extends AutoDisposeProviderBase<Dependency, Result>>
     extends ProviderStateBase<Dependency, Result, P> {
+  bool _maintainState = false;
+
+  /// Whether to destroy the state of the provider when all listeners are removed or not.
+  ///
+  /// Can be changed at any time, in which case when setting it to `true`,
+  /// may destroy the provider state if it no-longer have listeners.
+  ///
+  /// Defaults to true.
+  bool get maintainState => _maintainState;
+
+  set maintainState(bool value) {
+    if (value != _maintainState && !value) {
+      onRemoveListener();
+    }
+    _maintainState = value;
+  }
+
   @override
   void onRemoveListener() {
     if (!$hasListeners) {
@@ -88,9 +128,9 @@ class _AutoDisposer {
   static final _AutoDisposer instance = _AutoDisposer();
 
   bool _scheduled = false;
-  LinkedList<_LinkedListEntry<ProviderStateBase>> _stateToDispose;
+  LinkedList<_LinkedListEntry<AutoDisposeProviderStateBase>> _stateToDispose;
 
-  void scheduleDispose(ProviderStateBase state) {
+  void scheduleDispose(AutoDisposeProviderStateBase state) {
     _stateToDispose ??= LinkedList();
     _stateToDispose.add(_LinkedListEntry(state));
 
@@ -114,7 +154,9 @@ class _AutoDisposer {
     /// but when the parent is traverse first, it will still have listeners,
     /// and the second time it is traversed, it won't anymore.
     for (var entry = _stateToDispose.first; entry != null; entry = entry.next) {
-      if (entry.value.$hasListeners || !entry.value.mounted) {
+      if (entry.value.maintainState ||
+          entry.value.$hasListeners ||
+          !entry.value.mounted) {
         continue;
       }
       entry.value.dispose();

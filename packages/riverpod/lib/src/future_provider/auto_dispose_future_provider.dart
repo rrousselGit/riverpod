@@ -11,7 +11,7 @@ class AutoDisposeFutureProvider<Res> extends AutoDisposeProviderBase<
   /// Creates a [FutureProvider] and allows specifying a [name].
   AutoDisposeFutureProvider(this._create, {String name}) : super(name);
 
-  final Create<Future<Res>, ProviderReference> _create;
+  final Create<Future<Res>, AutoDisposeProviderReference> _create;
 
   @override
   _AutoDisposeFutureProviderState<Res> createState() {
@@ -28,7 +28,8 @@ class _AutoDisposeFutureProviderState<Res> extends AutoDisposeProviderStateBase<
     with _FutureProviderStateMixin<Res, AutoDisposeFutureProvider<Res>> {
   @override
   Future<Res> create() {
-    return provider._create(ProviderReference(this));
+    // ignore: invalid_use_of_visible_for_testing_member
+    return provider._create(AutoDisposeProviderReference(this));
   }
 }
 
@@ -41,12 +42,12 @@ class AutoDisposeFutureProviderFamily<Result, A>
     extends Family<AutoDisposeFutureProvider<Result>, A> {
   /// Creates a [AutoDisposeFutureProvider] from external parameters.
   AutoDisposeFutureProviderFamily(
-      Future<Result> Function(ProviderReference ref, A a) create)
+      Future<Result> Function(AutoDisposeProviderReference ref, A a) create)
       : super((a) => AutoDisposeFutureProvider((ref) => create(ref, a)));
 
   /// Overrides the behavior of a family for a part of the application.
   Override overrideAs(
-    Future<Result> Function(ProviderReference ref, A value) override,
+    Future<Result> Function(AutoDisposeProviderReference ref, A value) override,
   ) {
     return FamilyOverride(
       this,

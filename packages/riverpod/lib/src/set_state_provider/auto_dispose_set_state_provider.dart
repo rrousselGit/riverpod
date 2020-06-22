@@ -6,7 +6,7 @@ import 'set_state_provider.dart';
 // Implementation detail of StateNotifierProvider.
 
 /// Manages a piece of state that can change over time.
-class _SetStateProviderReference<T> extends ProviderReference
+class _SetStateProviderReference<T> extends AutoDisposeProviderReference
     implements SetStateProviderReference<T> {
   _SetStateProviderReference._(this._providerState) : super(_providerState);
 

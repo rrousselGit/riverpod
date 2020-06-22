@@ -106,6 +106,7 @@ class _FutureProviderState<Res> extends ProviderStateBase<
     with _FutureProviderStateMixin<Res, FutureProvider<Res>> {
   @override
   Future<Res> create() {
+    // ignore: invalid_use_of_visible_for_testing_member
     return provider._create(ProviderReference(this));
   }
 }

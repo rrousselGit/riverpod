@@ -10,7 +10,7 @@ class AutoDisposeStreamProvider<T> extends AutoDisposeProviderBase<
   /// Creates a [AutoDisposeStreamProvider] and allows specifying a [name].
   AutoDisposeStreamProvider(this._create, {String name}) : super(name);
 
-  final Create<Stream<T>, ProviderReference> _create;
+  final Create<Stream<T>, AutoDisposeProviderReference> _create;
 
   @override
   _AutoDisposeStreamProviderState<T> createState() {
@@ -29,7 +29,8 @@ class _AutoDisposeStreamProviderState<T> extends AutoDisposeProviderStateBase<
         _StreamProviderStateMixin<T, AutoDisposeStreamProvider<T>> {
   @override
   Stream<T> create() {
-    return provider._create(ProviderReference(this));
+    // ignore: invalid_use_of_visible_for_testing_member
+    return provider._create(AutoDisposeProviderReference(this));
   }
 }
 
@@ -41,12 +42,12 @@ class AutoDisposeStreamProviderFamily<Result, A>
     extends Family<AutoDisposeStreamProvider<Result>, A> {
   /// Creates a [AutoDisposeStreamProvider] from external parameters.
   AutoDisposeStreamProviderFamily(
-      Stream<Result> Function(ProviderReference ref, A a) create)
+      Stream<Result> Function(AutoDisposeProviderReference ref, A a) create)
       : super((a) => AutoDisposeStreamProvider((ref) => create(ref, a)));
 
   /// Overrides the behavior of a family for a part of the application.
   Override overrideAs(
-    Stream<Result> Function(ProviderReference ref, A value) override,
+    Stream<Result> Function(AutoDisposeProviderReference ref, A value) override,
   ) {
     return FamilyOverride(
       this,

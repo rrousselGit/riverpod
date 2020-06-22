@@ -149,6 +149,7 @@ class _StreamProviderState<T> extends ProviderStateBase<
         _State<T, StreamProvider<T>>,
         _StreamProviderStateMixin<T, StreamProvider<T>> {
   @override
+  // ignore: invalid_use_of_visible_for_testing_member
   Stream<T> create() => provider._create(ProviderReference(this));
 }
 

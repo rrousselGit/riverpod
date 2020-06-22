@@ -46,6 +46,7 @@ class _ProviderState<T> extends ProviderStateBase<ProviderDependencyBase,
 
   @override
   void initState() {
+    // ignore: invalid_use_of_visible_for_testing_member
     state = StateController(provider._create(ProviderReference(this)));
     _removeListener = state.addListener((_) => markMayHaveChanged());
   }

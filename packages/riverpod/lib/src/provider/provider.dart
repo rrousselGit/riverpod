@@ -241,6 +241,7 @@ class ProviderState<T>
 
   @override
   void initState() {
+    // ignore: invalid_use_of_visible_for_testing_member
     state = provider._create(ProviderReference(this));
   }
 

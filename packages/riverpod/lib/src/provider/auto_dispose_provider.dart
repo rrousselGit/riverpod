@@ -12,7 +12,7 @@ class AutoDisposeProvider<T>
   /// Creates an immutable value.
   AutoDisposeProvider(this._create, {String name}) : super(name);
 
-  final Create<T, ProviderReference> _create;
+  final Create<T, AutoDisposeProviderReference> _create;
 
   @override
   AutoDisposeProviderState<T> createState() => AutoDisposeProviderState();
@@ -26,7 +26,8 @@ class AutoDisposeProviderState<T> extends AutoDisposeProviderStateBase<
 
   @override
   void initState() {
-    state = provider._create(ProviderReference(this));
+    // ignore: invalid_use_of_visible_for_testing_member
+    state = provider._create(AutoDisposeProviderReference(this));
   }
 
   @override
@@ -43,12 +44,13 @@ class AutoDisposeProviderState<T> extends AutoDisposeProviderStateBase<
 class AutoDisposeProviderFamily<Result, A>
     extends Family<AutoDisposeProvider<Result>, A> {
   /// Creates a value from an external parameter
-  AutoDisposeProviderFamily(Result Function(ProviderReference ref, A a) create)
+  AutoDisposeProviderFamily(
+      Result Function(AutoDisposeProviderReference ref, A a) create)
       : super((a) => AutoDisposeProvider((ref) => create(ref, a)));
 
   /// Overrides the behavior of a family for a part of the application.
   Override overrideAs(
-    Result Function(ProviderReference ref, A value) override,
+    Result Function(AutoDisposeProviderReference ref, A value) override,
   ) {
     return FamilyOverride(
       this,

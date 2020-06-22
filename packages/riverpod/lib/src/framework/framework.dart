@@ -626,6 +626,7 @@ class CircularDependencyError extends Error {
 /// - [ProviderStateOwner.ref], an easy way of obtaining a [ProviderReference].
 class ProviderReference {
   /// DO NOT USE, for internal usages only.
+  @visibleForTesting
   ProviderReference(this._providerState);
 
   final ProviderStateBase _providerState;

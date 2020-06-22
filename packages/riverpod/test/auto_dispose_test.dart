@@ -3,6 +3,70 @@ import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('setting maintainState to false destroys the state when not listener',
+      () async {
+    final onDispose = OnDisposeMock();
+    AutoDisposeProviderReference ref;
+    final provider = AutoDisposeProvider((_ref) {
+      ref = _ref;
+      ref.onDispose(onDispose);
+      ref.maintainState = true;
+    });
+    final owner = ProviderStateOwner();
+
+    final removeListener = provider.watchOwner(owner, (value) {});
+    removeListener();
+    await idle();
+
+    verifyZeroInteractions(onDispose);
+
+    ref.maintainState = false;
+
+    verifyZeroInteractions(onDispose);
+
+    await idle();
+
+    verify(onDispose()).called(1);
+    verifyNoMoreInteractions(onDispose);
+  });
+  test("maintainState to true don't dispose the state when no-longer listened",
+      () async {
+    var value = 42;
+    final onDispose = OnDisposeMock();
+    final provider = AutoDisposeProvider((ref) {
+      ref.onDispose(onDispose);
+      ref.maintainState = true;
+      return value;
+    });
+    final owner = ProviderStateOwner();
+    final listener = Listener();
+
+    final removeListener = provider.watchOwner(owner, listener);
+    verify(listener(42)).called(1);
+    verifyNoMoreInteractions(listener);
+    removeListener();
+    await idle();
+
+    verifyZeroInteractions(onDispose);
+
+    value = 21;
+    provider.watchOwner(owner, listener);
+
+    verify(listener(42)).called(1);
+    verifyNoMoreInteractions(listener);
+  });
+  test('maintainState defaults to false', () {
+    bool maintainState;
+    final provider = AutoDisposeProvider((ref) {
+      maintainState = ref.maintainState;
+      return 42;
+    });
+    final owner = ProviderStateOwner();
+
+    provider.watchOwner(owner, (value) {});
+
+    expect(maintainState, false);
+  });
   test('overridable provider can be overriden by anything', () {
     final provider = AutoDisposeProvider((_) => 42);
     final ProviderBase<ProviderDependency<int>, int> override = Provider((_) {
