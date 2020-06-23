@@ -609,7 +609,7 @@ class ProviderBaseDependencyImpl extends ProviderDependencyBase {}
 ///
 /// Circular dependencies are both not supported for performance reasons
 /// and maintainability reasons.
-/// Consider reading about uni-directional data-flow to learn about the
+/// Consider reading about unidirectional data-flow to learn about the
 /// benefits of avoiding circular dependencies.
 class CircularDependencyError extends Error {
   CircularDependencyError._();
