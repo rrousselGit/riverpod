@@ -75,7 +75,7 @@ From there, [Riverpod] goes a few steps beyond:
 - Simplifies complex object graphs. It is easier to depend on asynchronous state.
 - Makes the pattern independent from Flutter
 
-These are achieved by no-longer using [InheritedWidget]s. Instead, [Riverpod]
+These are achieved by no longer using [InheritedWidget]s. Instead, [Riverpod]
 implements its own mechanism that works in a similar fashion.
 
 For learning how to use [Riverpod], see its documentation: https://riverpod.dev
@@ -139,7 +139,7 @@ compromise.
 Not in the short term, no.
 
 This project is still experimental and unpopular. While it is, in a way,
-a [provider] 2.0, it's worth has yet to be proven.
+a [provider] 2.0, its worth has yet to be proven.
 
 Until it is certain that [Riverpod] is a better way of doing things
 and that the community likes it, [provider] will still be maintained.
