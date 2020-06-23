@@ -61,7 +61,7 @@ as an attempt to fix the common problems that [provider] face.
 - Testable and composable
 - Improve the readability of [InheritedWidget]s when we have multiple of them
   (which would naturally lead to a deeply nested widget tree).
-- Make apps more scalable with a uni-directional data-flow.
+- Make apps more scalable with a unidirectional data-flow.
 
 From there, [Riverpod] goes a few steps beyond:
 
@@ -72,7 +72,7 @@ From there, [Riverpod] goes a few steps beyond:
   - Disposing the state of a provider when it is no longer used.
   - Have computed states
   - Making a provider private.
-- Simplifies complex object graphs. It is easier to depend on asynchrounous state.
+- Simplifies complex object graphs. It is easier to depend on asynchronous state.
 - Makes the pattern independent from Flutter
 
 These are achieved by no-longer using [InheritedWidget]s. Instead, [Riverpod]
@@ -139,7 +139,7 @@ compromise.
 Not in the short term, no.
 
 This project is still experimental and unpopular. While it is, in a way,
-a [provider] 2.0, its worth has yet to be proven.
+a [provider] 2.0, it's worth has yet to be proven.
 
 Until it is certain that [Riverpod] is a better way of doing things
 and that the community likes it, [provider] will still be maintained.
