@@ -1,6 +1,7 @@
 A Flutter app that displays the list of comics from https://developer.marvel.com/
 
-**Note**: This example is still work in progress
+**Note**: This example is outdated and still work in progress. This is not
+(yet) representation of how to use [Riverpod] 
 
 The process is split into three objects:
 

@@ -12,9 +12,8 @@ const features = [
     imageUrl: "img/undraw_security.svg",
     description: (
       <>
-        No more <code>ProviderNotFoundException</code> or
-        forgetting to handle loading states. Using
-        Riverpod, if your code compiles, it works.
+        No more <code>ProviderNotFoundException</code> or forgetting to handle
+        loading states. Using Riverpod, if your code compiles, it works.
       </>
     ),
   },
@@ -23,20 +22,19 @@ const features = [
     imageUrl: "img/undraw_friendship.svg",
     description: (
       <>
-        Riverpod has support for multiple providers of
-        the same type; combining asynchronous
-        providers; adding providers from anywhere, ...
+        Riverpod has support for multiple providers of the same type; combining
+        asynchronous providers; adding providers from anywhere, ...
       </>
     ),
   },
   {
-    title: <>Performant</>,
+    title: <>Doesn't depend on Flutter</>,
     imageUrl: "img/undraw_programming.svg",
     description: (
       <>
-        With <code>Computed</code> and "families", Riverpod offers
-        a powerful cache mechanism for derived states,
-        and updates the UI only when truly needed.
+        Create/share/tests providers, with no dependency on Flutter. This
+        includes being able to listen to providers without a
+        <code>BuildContext</code>.
       </>
     ),
   },
@@ -115,6 +113,76 @@ function Home() {
           </section>
         )}
 
+        <section>
+          <div className={styles.detailedFeatures}>
+            <div class="container">
+              <div class="row">
+                <div className="col">
+                  <h2>Declare shared state from anywhere</h2>
+                  <p>
+                    No need to jump between your <code>main.dart</code> and your
+                    UI files anymore.<br></br>
+                    <br></br>
+                    Place the code of your shared state where it belongs, be it
+                    in a separate package or right next to the Widget that needs
+                    it,
+                    <strong> without losing testability</strong>.
+                  </p>
+                </div>
+                <div className="col">
+                  <img
+                    src="img/intro/declare_anywhere.png"
+                    alt="Declare your providers anywhere"
+                  ></img>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={styles.detailedFeatures}>
+            <div class="container">
+              <div class="row">
+                <div className="col">
+                  <img
+                    src="img/intro/computed.png"
+                    alt="Declare your providers anywhere"
+                  ></img>
+                </div>
+                <div className="col">
+                  <h2>Recompute states/rebuild UI only when needed</h2>
+                  <p>
+                    We no-longer have to sort/filter lists inside the{" "}
+                    <code>build</code>
+                    method or have to resort to advanced cache mechanism.
+                    <br></br><br></br>
+                    With <code>Computed</code> and "families", sort your lists
+                    or do HTTP requests only when you <strong>truly</strong>{" "}
+                    need it.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={styles.detailedFeatures}>
+            <div class="container">
+              <div class="row">
+                <div className="col">
+                  <h2>Inspect your state in the devtool</h2>
+                  <p>
+                    Using <code>Riverpod</code>, your state is visible out of
+                    the box inside Flutter's devtool. <br></br> Futhermore, a
+                    full-blown state-inspector is in progress.
+                  </p>
+                </div>
+                <div className="col">
+                  <img
+                    src="img/intro/devtool.png"
+                    alt="Consume the provider"
+                  ></img>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
     </Layout>
   );
