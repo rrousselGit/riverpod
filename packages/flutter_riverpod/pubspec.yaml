@@ -8,7 +8,7 @@ authors:
   - Remi Rousselet <darky12s@gmail.com>
 
 environment:
-  sdk: ">=2.8.0-dev <3.0.0"
+  sdk: ">=2.8.0 <3.0.0"
   flutter: ">= 1.17.0"
 
 dependencies:
