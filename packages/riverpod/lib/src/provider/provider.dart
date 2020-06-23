@@ -194,7 +194,7 @@ class ProviderDependencyImpl<T> implements ProviderDependency<T> {
 /// easier.
 ///
 /// This is fine as, as opposed to `BuildContext` from Flutter, that `ref` object
-/// is completely independent from the Flutter/the UI.\
+/// is completely independent from Flutter/the UI.\
 /// As such the object can still be shared and tested.
 ///
 /// ## Disposing the resources the state is destroyed
@@ -215,7 +215,7 @@ class ProviderDependencyImpl<T> implements ProviderDependency<T> {
 ///   final streamController = StreamController<int>();
 ///
 ///   ref.onDispose(() {
-///     // Close the StreamController when the state of this provider is destroyed.
+///     // Closes the StreamController when the state of this provider is destroyed.
 ///     streamController.close();
 ///   });
 ///

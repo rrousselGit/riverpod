@@ -179,7 +179,7 @@ This avoids having to implement a constructor, which makes changes on the object
 easier.
 
 This is fine as, as opposed to `BuildContext` from Flutter, that `ref` object
-is completely independent from the Flutter/the UI.  
+is completely independent from Flutter/the UI.  
 As such the object can still be shared and tested.
 
 ## Disposing the resources the state is destroyed
@@ -200,7 +200,7 @@ final example = StreamProvider((ref) {
   final streamController = StreamController<int>();
 
   ref.onDispose(() {
-    // Close the StreamController when the state of this provider is destroyed.
+    // Closes the StreamController when the state of this provider is destroyed.
     streamController.close();
   });
 
@@ -209,7 +209,7 @@ final example = StreamProvider((ref) {
 ```
 
 :::note
-Depending on the provider used, it already take care of the clean-up process.  
+Depending on the provider used, it may already take care of the clean-up process.  
 For example, [StateNotifierProvider] will call the `dispose` method of a `StateNotifier`.
 :::
 
