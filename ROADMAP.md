@@ -43,7 +43,7 @@
 
 ## Linter:
 
-- When overriding `StateNotifierProvider` on a non-root `ProviderStateOwner`, warn if the `.value` wasn't overriden too.
+- No circular dependency
 - Check that when a provider is overridden locally, all of its dependencies are too
 - `provider.overrideAs(provider)` -> `provider`
 - `always_specify_name`
