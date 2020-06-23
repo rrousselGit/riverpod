@@ -182,7 +182,7 @@ function Home() {
                   a valid value.
                   <br></br><br></br>
                   This even applies to asynchronously loaded values. As opposed
-                  to with provider, Riverpod allows cleaning handling
+                  to with provider, Riverpod allows cleanly handling
                   loading/error cases.
                 </div>
                 <div className="col">
@@ -206,7 +206,7 @@ function Home() {
                 <div className="col">
                   <h2>Inspect your state in the devtool</h2>
                   <p>
-                    Using <code>Riverpod</code>, your state is visible out of
+                    Using Riverpod, your state is visible out of
                     the box inside Flutter's devtool. <br></br> Futhermore, a
                     full-blown state-inspector is in progress.
                   </p>
