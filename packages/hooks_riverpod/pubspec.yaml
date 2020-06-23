@@ -11,12 +11,13 @@ environment:
   sdk: ">=2.8.0 <3.0.0"
 
 dependencies:
-  flutter_riverpod:
-    path: ../flutter_riverpod
+  flutter_riverpod: ^0.1.0
+  riverpod: ^0.1.0
   flutter:
     sdk: flutter
   flutter_hooks: ^0.10.0
   collection: ^1.14.12
+  state_notifier: ^0.5.0
 
 dev_dependencies:
   mockito: ^4.1.0
