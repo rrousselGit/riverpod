@@ -179,16 +179,12 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(title: Text('Example')),
         body: Center(
-          // The widget "Consumer" is a widget that takes a provider,
-          // read its value, and pass it to its "builder" parameter.
-          // Here it is written as Consumer<String>, because the provider
-          // that we are reading stores a String.
-          child: Consumer<String>(
-            helloWorldProvider,
-            builder: (BuildContext context, String value, Widget child) {
-              return Text(value);
-            },
-          ),
+          // A widget that can consume providers
+          child: Consumer((context, read) {
+            // Subscribes Consumer to helloWorldProvider
+            final value = read(helloWorldProvider);
+            return Text(value);
+          }),
         ),
       ),
     );
