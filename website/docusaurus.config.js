@@ -58,7 +58,7 @@ module.exports = {
             },
             {
               label: "GitHub",
-              href: "https://github.com/rrousselgit/riverpod",
+              href: "https://github.com/rrousselgit/river_pod",
             },
           ],
         },
