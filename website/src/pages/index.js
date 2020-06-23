@@ -71,7 +71,7 @@ function Home() {
   return (
     <Layout
       title={siteConfig.tagline}
-      description="Description will go into a meta tag in <head />"
+      description="A boilerplate-free and safe way to share state"
     >
       <header className={classnames("hero hero--primary", styles.heroBanner)}>
         <div className="container">
