@@ -144,7 +144,7 @@ function Home() {
                 <div className="col">
                   <img
                     src="img/intro/computed.png"
-                    alt="Declare your providers anywhere"
+                    alt="Computed state"
                   ></img>
                 </div>
                 <div className="col">
@@ -153,10 +153,20 @@ function Home() {
                     We no-longer have to sort/filter lists inside the{" "}
                     <code>build</code>
                     method or have to resort to advanced cache mechanism.
-                    <br></br><br></br>
-                    With <code>Computed</code> and "families", sort your lists
-                    or do HTTP requests only when you <strong>truly</strong>{" "}
-                    need it.
+                    <br></br>
+                    <br></br>
+                    With
+                    <code>
+                      <a href={useBaseUrl("docs/fundamentals/computed")}>
+                        Computed
+                      </a>
+                    </code>
+                    and
+                    <a href={useBaseUrl("docs/fundamentals/family")}>
+                      "families"
+                    </a>
+                    , sort your lists or do HTTP requests only when you{" "}
+                    <strong>truly</strong> need it.
                   </p>
                 </div>
               </div>
@@ -166,18 +176,40 @@ function Home() {
             <div class="container">
               <div class="row">
                 <div className="col">
+                  <h2>Safely read providers</h2>
+                  Reading a provider will never result in a bad state. If you
+                  can write the code needed to read a provider, you will obtain
+                  a valid value.
+                  <br></br><br></br>
+                  This even applies to asynchronously loaded values. As opposed
+                  to with provider, Riverpod allows cleaning handling
+                  loading/error cases.
+                </div>
+                <div className="col">
+                  <img
+                    src="img/intro/async.png"
+                    alt="Asynchronously loaded providers"
+                  ></img>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={styles.detailedFeatures}>
+            <div class="container">
+              <div class="row">
+                <div className="col">
+                  <img
+                    src="img/intro/devtool.png"
+                    alt="Devtool support"
+                  ></img>
+                </div>
+                <div className="col">
                   <h2>Inspect your state in the devtool</h2>
                   <p>
                     Using <code>Riverpod</code>, your state is visible out of
                     the box inside Flutter's devtool. <br></br> Futhermore, a
                     full-blown state-inspector is in progress.
                   </p>
-                </div>
-                <div className="col">
-                  <img
-                    src="img/intro/devtool.png"
-                    alt="Consume the provider"
-                  ></img>
                 </div>
               </div>
             </div>
