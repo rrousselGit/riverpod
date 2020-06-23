@@ -240,6 +240,23 @@ Widget build(BuildContext context) {
 
 :::
 
+:::caution
+The `myProvider.read(BuildContext)` method is defined by [flutter_riverpod] using
+extension methods.  
+As such, if you need this method, don't:
+
+```dart
+package:riverpod/riverpod.dart
+```
+
+Instead do:
+
+```dart
+package:flutter_riverpod/flutter_riverpod.dart
+```
+
+:::
+
 ## Wrapping up: A full counter example
 
 Now that we've seen a few way to use our providers inside a Flutter application,
