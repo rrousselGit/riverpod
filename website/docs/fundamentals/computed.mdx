@@ -42,7 +42,7 @@ From there, we could use [Computed] to compute the initials of that person:
 ```dart
 final initialsProvider = Computed((read) {
   final firstName = read(firstNameProvider).state;
-  final lastName = read(firstNameProvider).state;
+  final lastName = read(lastNameProvider).state;
 
   return '${firstName[0]}${lastName[0]}';
 });
