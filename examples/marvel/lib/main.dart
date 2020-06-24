@@ -75,7 +75,9 @@ class Home extends HookWidget {
     final characters = useProvider(charactersProvider);
 
     return characters.when(
-      loading: () => const CircularProgressIndicator(),
+      loading: () => Container(
+          color: Colors.white,
+          child: const Center(child: CircularProgressIndicator())),
       error: (err, stack) {
         return Scaffold(
           appBar: AppBar(title: const Text('Error')),
