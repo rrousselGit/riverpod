@@ -99,6 +99,14 @@ Consumer((context, read) {
 })
 ```
 
+:::caution
+The `read` method passed as argument of [Consumer] cannot be called asynchrously,
+like inside `onPressed` or a [RaisedButton].
+
+If you need to read a provider in response to a user event, see [myProvider.read(BuildContext)](#myproviderreadbuildcontext)
+:::
+
+
 ### useProvider (hooks_riverpod only)
 
 If you are using [flutter_hooks]/[hooks_riverpod], an alternative to the previous
@@ -209,6 +217,21 @@ Widget build(BuildContext context) {
 By doing so, clicking on our button still increments the counter. But the
 [RaisedButton] no-longer unnecessarily rebuild when the counter changes.
 
+> I don't see the `read` method on my provider, why is that?
+
+Multiple reasons that can explain why you don't see the `read` method
+on your provider:
+
+- You imported `package:riverpod` instead of either `package:flutter_riverpod`
+  or `package:hooks_riverpod`.  
+  The `read` method is added using extension methods, defined in [flutter_riverpod].
+  As such, if you do not import the Flutter/hooks variant, you won't see the `read` method.
+
+- Your provider is either an "AutoDispose\*Provider" or a [Computed].  
+  These providers do have support for the `read` method and can only be listened.  
+  This is because when the provider is no-longer listened, they will release the
+  associated resources.
+
 :::info
 Depending on the provider that you are listening to, you may not need to do this.  
 For example, [StateNotifierProvider] has a built-in way obtain a [StateNotifier]
@@ -241,20 +264,8 @@ Widget build(BuildContext context) {
 :::
 
 :::caution
-The `myProvider.read(BuildContext)` method is defined by [flutter_riverpod] using
-extension methods.  
-As such, if you need this method, don't:
-
-```dart
-package:riverpod/riverpod.dart
-```
-
-Instead do:
-
-```dart
-package:flutter_riverpod/flutter_riverpod.dart
-```
-
+The `read` method **cannot** be called inside the `build` method of a widget.  
+If you want to optimize rebuilds, instead use [Computed].
 :::
 
 ## Wrapping up: A full counter example
@@ -362,11 +373,13 @@ class Home extends StatelessWidget {
 </TabItem>
 </Tabs>
 
+[computed]: /docs/fundamentals/computed
 [stateprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider-class.html
 [providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
 [consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
 [useprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/useProvider-class.html
 [raisedbutton]: https://api.flutter.dev/flutter/material/RaisedButton-class.html
+[StreamBuilder]: https://api.flutter.dev/flutter/material/StreamBuilder-class.html
 [riverpod]: https://github.com/rrousselgit/river_pod
 [text]: https://api.flutter.dev/flutter/widgets/Text-class.html
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod

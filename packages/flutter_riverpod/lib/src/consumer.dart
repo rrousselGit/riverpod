@@ -144,7 +144,7 @@ class _ConsumerState extends State<Consumer> {
   Res _reader<Res>(ProviderBase<ProviderDependencyBase, Res> target) {
     assert(
       _debugSelecting,
-      'Cannot use `read` outside of the body of the Computed callback',
+      'Cannot use `read` outside of the body of the Consumer callback',
     );
     return _dependencies.putIfAbsent(target, () {
       final state = _owner.readProviderState(target);

@@ -5,6 +5,7 @@
 <!-- - evaluate time complexity for all operations -->
 <!-- - evaluate space complexity -->
 <!-- - think about state_notifier & Computed tree-shaking -->
+
 - useProvider allows changing the provider on hot-reload.
 - Consumer/Computed close sub when no-longer using a provider (new dep Map on re-compute, reading transfer from old map to new map, remaining ones are destroyed)
 - future/changenotifier/...providers cannot return null
@@ -33,10 +34,17 @@
 
 - Combining providers
 - Filtering rebuilds
+- pre-fetch a provider
 - Testing (without flutter, mocking FutureProvider)
 - How it works
 - The differences between hooks and not hooks
+- fundamentals
+  - ProviderScope
+- FAQ
+  - My Consumer behaves differently inside overlays/transition
 - cookbooks:
+  - migration from provider
+  - list items + family, don't pass the id to the item and instead expose a "currentItem" provider
   - canceling http requests when leaving the screen
   - state hydration
   - configurations that change over time
