@@ -28,13 +28,12 @@ But the reality is: While providers are declared as globals, the state of a prov
 is **not** global.
 
 Instead, it is stored in an object named [ProviderStateOwner], that you may have
-seen if you've read the dart-only examples on how to read a provider.  
+seen if you've read the dart-only examples.  
 If you haven't, know that this [ProviderStateOwner] object is implicitly created
-by [ProviderScope], the widget we used in our Flutter application to enable [Riverpod]
-on our project.
+by [ProviderScope], the widget that enables [Riverpod] on our project.
 
-In more understandable words, concretely what this means is, two `testWidgets`
-using providers do not share any state.  
+Concretely what this means is, two `testWidgets` using providers do not share
+any state.  
 As such, there is no need for any `setUp`/`tearDown` at all.
 
 But an example is better than lengthy explanations:
