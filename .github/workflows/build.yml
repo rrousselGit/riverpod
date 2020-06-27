@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 jobs:
   dart:
+    runs-on: ubuntu-latest
     container: google/dart
 
     strategy:
@@ -33,6 +34,7 @@ jobs:
         working-directory: ${{ matrix.package }}
 
   flutter:
+    runs-on: ubuntu-latest
     container: cirrusci/flutter
 
     strategy:
