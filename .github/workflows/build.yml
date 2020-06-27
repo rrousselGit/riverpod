@@ -54,6 +54,8 @@ jobs:
           - master
 
     steps:
+      - run: git
+
       - uses: actions/checkout@v2
 
       # It is executed separatly
