@@ -45,10 +45,13 @@ jobs:
     strategy:
       matrix:
         package:
+          - examples/counter
+          - examples/todos
+          # - examples/marvel
           - packages/flutter_riverpod
-          # - packages/flutter_riverpod/example
+          - packages/flutter_riverpod/example
           - packages/hooks_riverpod
-          # - packages/hooks_riverpod/example
+          - packages/hooks_riverpod/example
         channel:
           - dev
 
