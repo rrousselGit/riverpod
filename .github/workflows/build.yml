@@ -1,0 +1,66 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  dart:
+    runs-on: google/dart
+
+    strategy:
+      matrix:
+        package:
+          - packages/riverpod
+        channel:
+          - master
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: dart pub get
+        working-directory: ${{ matrix.package }}
+
+      - name: Check format
+        run: dart format --set-exit-if-changed .
+        working-directory: ${{ matrix.package }}
+
+      - name: Analyze
+        run: dart analyze
+        working-directory: ${{ matrix.package }}
+
+      - name: Run tests
+        run: dart test
+        working-directory: ${{ matrix.package }}
+
+  flutter:
+    runs-on: cirrusci/flutter
+
+    strategy:
+      matrix:
+        package:
+          - packages/flutter_riverpod
+          - packages/hooks_riverpod
+        channel:
+          - master
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Override dependencies
+        run: ./scripts/setup_dependencies.sh
+
+      - name: Install dependencies
+        run: flutter pub get
+        working-directory: ${{ matrix.package }}
+
+      - name: Check format
+        run: flutter format --set-exit-if-changed .
+        working-directory: ${{ matrix.package }}
+
+      - name: Analyze
+        run: flutter analyze
+        working-directory: ${{ matrix.package }}
+
+      - name: Run tests
+        run: flutter test
+        working-directory: ${{ matrix.package }}
