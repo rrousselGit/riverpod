@@ -11,7 +11,7 @@ jobs:
       matrix:
         package:
           - packages/riverpod
-          - packages/riverpod/example
+          # - packages/riverpod/example
         channel:
           - master
 
@@ -47,9 +47,9 @@ jobs:
       matrix:
         package:
           - packages/flutter_riverpod
-          - packages/flutter_riverpod/example
+          # - packages/flutter_riverpod/example
           - packages/hooks_riverpod
-          - packages/hooks_riverpod/example
+          # - packages/hooks_riverpod/example
         channel:
           - master
 
