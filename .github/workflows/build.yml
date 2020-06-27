@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   dart:
     runs-on: ubuntu-latest
-    container: google/dart
+    container: google/dart:dev
 
     strategy:
       matrix:
