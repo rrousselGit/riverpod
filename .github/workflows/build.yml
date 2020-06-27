@@ -54,9 +54,9 @@ jobs:
           - master
 
     steps:
+      - run: ls -la
       - uses: actions/checkout@v2
 
-      - run: ls -la
 
       # It is executed separatly
       - name: Removing example folder
