@@ -41,7 +41,6 @@ jobs:
 
   flutter:
     runs-on: ubuntu-latest
-    container: cirrusci/flutter
 
     strategy:
       matrix:
@@ -54,9 +53,11 @@ jobs:
           - master
 
     steps:
-      - run: git
-
       - uses: actions/checkout@v2
+
+      - uses: subosito/flutter-action@v1
+      with:
+        channel: ${{ matrix.channel }}
 
       # It is executed separatly
       - name: Removing example folder
