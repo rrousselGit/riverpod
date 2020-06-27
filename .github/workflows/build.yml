@@ -18,6 +18,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      # It is executed separatly
+      - name: Removing example folder
+        run: rm -rf example
+        working-directory: ${{ matrix.package }}
+
       - name: Install dependencies
         run: dart pub get
         working-directory: ${{ matrix.package }}
@@ -27,7 +32,7 @@ jobs:
         working-directory: ${{ matrix.package }}
 
       - name: Analyze
-        run: dart analyze /lib /test
+        run: dart analyze
         working-directory: ${{ matrix.package }}
 
       - name: Run tests
@@ -42,14 +47,19 @@ jobs:
       matrix:
         package:
           - packages/flutter_riverpod
-          # - packages/flutter_riverpod/example
+          - packages/flutter_riverpod/example
           - packages/hooks_riverpod
-          # - packages/hooks_riverpod/example
+          - packages/hooks_riverpod/example
         channel:
           - master
 
     steps:
       - uses: actions/checkout@v2
+
+      # It is executed separatly
+      - name: Removing example folder
+        run: rm -rf example
+        working-directory: ${{ matrix.package }}
 
       - name: Override dependencies
         run: ./scripts/setup_dependencies.sh
@@ -63,7 +73,7 @@ jobs:
         working-directory: ${{ matrix.package }}
 
       - name: Analyze
-        run: flutter analyze /lib /test
+        run: flutter analyze
         working-directory: ${{ matrix.package }}
 
       - name: Run tests
