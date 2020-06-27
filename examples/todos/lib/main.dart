@@ -239,23 +239,10 @@ class TodoItem extends HookWidget {
                 .edit(id: todo.id, description: textEditingController.text);
           }
         },
-        child: ListTile(
-          onTap: () {
-            itemFocusNode.requestFocus();
-            textFieldFocusNode.requestFocus();
-          },
-          leading: Checkbox(
-            value: todo.completed,
-            onChanged: (value) =>
-                todoListProvider.read(context).toggle(todo.id),
-          ),
-          title: isFocused
-              ? TextField(
-                  autofocus: true,
-                  focusNode: textFieldFocusNode,
-                  controller: textEditingController,
-                )
-              : Text(todo.description),
+        child: CheckboxListTile(
+          value: todo.completed,
+          onChanged: (value) => todoListProvider.read(context).toggle(todo.id),
+          title: Text(todo.description),
         ),
       ),
     );
