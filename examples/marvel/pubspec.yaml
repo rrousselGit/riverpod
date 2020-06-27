@@ -24,7 +24,15 @@ dev_dependencies:
   freezed: ^0.11.0
   mockito: ^4.1.0
   build_runner: ^1.9.0
-  json_serializable:
+  json_serializable: ^3.3.0
+
+dependency_overrides:
+  flutter_riverpod:
+    path: ../../packages/flutter_riverpod
+  riverpod:
+    path: ../../packages/riverpod
+  hooks_riverpod:
+    path: ../../packages/hooks_riverpod
 
 flutter:
   uses-material-design: true

@@ -16,3 +16,4 @@ dev_dependencies:
   freezed: ^0.11.0
   json_serializable:
   build_runner: ^1.8.1
+  test:
