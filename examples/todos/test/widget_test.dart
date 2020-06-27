@@ -5,6 +5,8 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -62,7 +64,7 @@ void main() {
       find.byType(MyApp),
       matchesGoldenFile('initial_state.png'),
     );
-  });
+  }, skip: !Platform.isMacOS);
   testWidgets('Clicking on checkbox toggles the todo', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
@@ -204,5 +206,5 @@ void main() {
     expect(find.text('Newly added todo'), findsOneWidget);
     expect(find.text('4 items left'), findsOneWidget);
     expect(find.text('3 items left'), findsNothing);
-  });
+  }, skip: !Platform.isMacOS);
 }
