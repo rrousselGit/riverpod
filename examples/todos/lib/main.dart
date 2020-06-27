@@ -254,7 +254,13 @@ class TodoItem extends HookWidget {
                     focusNode: textFieldFocusNode,
                     controller: textEditingController,
                   )
-                : Text(todo.description),
+                : Text(
+                    todo.description,
+                    style: todo.completed
+                        ? const TextStyle(
+                            decoration: TextDecoration.lineThrough)
+                        : null,
+                  ),
           ),
         ),
       ),
