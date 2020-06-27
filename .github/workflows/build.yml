@@ -11,7 +11,7 @@ jobs:
       matrix:
         package:
           - packages/riverpod
-          # - packages/riverpod/example
+          - packages/riverpod/example
         channel:
           - master
 
