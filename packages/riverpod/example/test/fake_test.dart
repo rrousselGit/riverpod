@@ -1,3 +1,7 @@
+import 'package:test/test.dart';
+
 void main() {
-  // An empty test so that the CI pass
+  test('nothing', () {
+    // An empty test so that the CI pass
+  });
 }
