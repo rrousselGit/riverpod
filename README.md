@@ -1,3 +1,7 @@
+![CI](https://github.com/rrousselGit/river_pod/workflows/build/badge.svg)
+[![pub package](https://img.shields.io/pub/v/riverpod.svg)](https://pub.dev/packages/riverpod)
+
+
 # Black Lives Matter. [Support the Equal Justice Initiative.](https://support.eji.org/give/153413/#!/donation/checkout)
 
 Welcome to [Riverpod]!
