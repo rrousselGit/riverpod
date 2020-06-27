@@ -30,6 +30,13 @@ jobs:
       - name: Check format
         run: dart format --set-exit-if-changed .
         working-directory: ${{ matrix.package }}
+      
+      - name: Generate
+        run: |
+          if grep -q build_runner "pubspec.yaml"; then
+            dart pub run build_runner build --delete-conflicting-outputs
+          fi
+        working-directory: ${{ matrix.package }}
 
       - name: Analyze
         run: dart analyze
@@ -77,6 +84,12 @@ jobs:
       - name: Check format
         run: flutter format --set-exit-if-changed .
         working-directory: ${{ matrix.package }}
+
+      - name: Generate
+        run: |
+          if grep -q build_runner "pubspec.yaml"; then
+            flutter pub run build_runner build --delete-conflicting-outputs
+          fi
 
       - name: Analyze
         run: flutter analyze
