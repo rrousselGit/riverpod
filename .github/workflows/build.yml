@@ -11,6 +11,7 @@ jobs:
       matrix:
         package:
           - packages/riverpod
+          - packages/riverpod/example
         channel:
           - master
 
@@ -26,7 +27,7 @@ jobs:
         working-directory: ${{ matrix.package }}
 
       - name: Analyze
-        run: dart analyze
+        run: dart analyze /lib /test
         working-directory: ${{ matrix.package }}
 
       - name: Run tests
@@ -41,7 +42,9 @@ jobs:
       matrix:
         package:
           - packages/flutter_riverpod
+          # - packages/flutter_riverpod/example
           - packages/hooks_riverpod
+          # - packages/hooks_riverpod/example
         channel:
           - master
 
@@ -60,7 +63,7 @@ jobs:
         working-directory: ${{ matrix.package }}
 
       - name: Analyze
-        run: flutter analyze
+        run: flutter analyze /lib /test
         working-directory: ${{ matrix.package }}
 
       - name: Run tests
