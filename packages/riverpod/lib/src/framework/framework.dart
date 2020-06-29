@@ -668,4 +668,17 @@ class ProviderReference {
   ) {
     return _providerState.read(provider);
   }
+
+  /// Reads the value of a provider.
+  ///
+  /// This is syntax sugar for `ref.dependOn(provider).value`, avoiding
+  /// having to read `.value` on providers that expose such property.
+  ///
+  /// See also:
+  ///
+  /// - [dependOn], which reads a provider and returns a [ProviderDependencyBase]
+  ///   instead of a value directly.
+  T read<T>(ProviderBase<ProviderDependency<T>, Object> provider) {
+    return dependOn(provider).value;
+  }
 }

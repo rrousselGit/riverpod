@@ -53,7 +53,7 @@ class UserRepository {
 final userRepositoryProvider = Provider<UserRepository>((ref) => UserRepository());
 
 final userProvider = FutureProviderFamily<User, int>((ref, userID) async {
-  final userRepository = ref.read(userRepositoryProvider).value;
+  final userRepository = ref.read(userRepositoryProvider);
   // TODO
 });
 ```
@@ -65,7 +65,7 @@ So we can combine both to perform our HTTP request:
 // ...
 
 final userProvider = FutureProviderFamily<User, int>((ref, userID) async {
-  final userRepository = ref.read(userRepositoryProvider).value;
+  final userRepository = ref.read(userRepositoryProvider);
   return userRepository.fetchUser(userID);
 });
 ```

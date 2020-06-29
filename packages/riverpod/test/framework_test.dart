@@ -17,6 +17,14 @@ Matcher isProvider(ProviderBase provider) {
 
 void main() {
   // TODO flushing inside mayHaveChanged calls onChanged only after all mayHaveChanged were executed
+  test('ref.read(provider) for providers with an immutable value', () {
+    final ProviderBase<ProviderDependency<int>, int> provider = Provider((_) {
+      return 42;
+    });
+    final owner = ProviderStateOwner();
+
+    expect(owner.ref.read(provider), 42);
+  });
   test('hasListeners', () {
     final root = ProviderStateOwner();
     final provider = Provider((_) => 42);
