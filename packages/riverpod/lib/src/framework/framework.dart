@@ -598,13 +598,13 @@ class ProviderOverride implements Override {
 /// Do not extend or implement.
 class Override {}
 
-/// A base class for objects returned by [ProviderReference.read].
+/// A base class for objects returned by [ProviderReference.dependOn].
 abstract class ProviderDependencyBase {}
 
 /// An empty implementation of [ProviderDependencyBase].
 class ProviderBaseDependencyImpl extends ProviderDependencyBase {}
 
-/// An error thrown when a call to [ProviderReference.read] leads
+/// An error thrown when a call to [ProviderReference.dependOn] leads
 /// to a provider depending on itself.
 ///
 /// Circular dependencies are both not supported for performance reasons
@@ -619,7 +619,7 @@ class CircularDependencyError extends Error {
 /// of the application.
 ///
 /// See also:
-/// - [read], a method that allows a provider to consume other providers.
+/// - [dependOn], a method that allows a provider to consume other providers.
 /// - [mounted], an utility to know whether the provider is still "alive" or not.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// - [Provider], an example of a provider that uses [ProviderReference].
@@ -655,7 +655,7 @@ class ProviderReference {
 
   /// Obtain another provider.
   ///
-  /// It is safe to call [read] multiple times with the same provider
+  /// It is safe to call [dependOn] multiple times with the same provider
   /// as parameter and is inexpensive to do so.
   ///
   /// Calling this method is O(1).
@@ -663,7 +663,7 @@ class ProviderReference {
   /// See also:
   ///
   /// - [Provider], explains in further detail how to use this method.
-  T read<T extends ProviderDependencyBase>(
+  T dependOn<T extends ProviderDependencyBase>(
     ProviderBase<T, Object> provider,
   ) {
     return _providerState.read(provider);

@@ -27,8 +27,8 @@ class StateController<T> extends StateNotifier<T> {
 ///
 /// This is syntax sugar for [StateNotifierProvider] for simple values like enums
 /// or booleans.
-class StateProvider<T> extends AlwaysAliveProviderBase<ProviderDependencyBase,
-    StateController<T>> {
+class StateProvider<T> extends AlwaysAliveProviderBase<
+    ProviderDependency<StateController<T>>, StateController<T>> {
   /// Creates the initial value
   StateProvider(this._create, {String name}) : super(name);
 
@@ -38,8 +38,10 @@ class StateProvider<T> extends AlwaysAliveProviderBase<ProviderDependencyBase,
   _ProviderState<T> createState() => _ProviderState();
 }
 
-class _ProviderState<T> extends ProviderStateBase<ProviderDependencyBase,
-    StateController<T>, StateProvider<T>> {
+class _ProviderState<T> extends ProviderStateBase<
+    ProviderDependency<StateController<T>>,
+    StateController<T>,
+    StateProvider<T>> {
   @override
   StateController<T> state;
   VoidCallback _removeListener;
@@ -52,8 +54,8 @@ class _ProviderState<T> extends ProviderStateBase<ProviderDependencyBase,
   }
 
   @override
-  ProviderDependencyBase createProviderDependency() {
-    return ProviderBaseDependencyImpl();
+  ProviderDependency<StateController<T>> createProviderDependency() {
+    return ProviderDependencyImpl(state);
   }
 
   @override

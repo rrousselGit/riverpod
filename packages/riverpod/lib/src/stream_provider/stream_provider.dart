@@ -7,15 +7,17 @@ import '../provider/provider.dart';
 part 'auto_dispose_stream_provider.dart';
 
 /// The state of a [StreamProvider].
-class StreamProviderDependency<T> extends ProviderDependencyBase {
-  StreamProviderDependency._(this.stream, this._state);
+class StreamProviderDependency<T> extends ProviderDependencyImpl<Stream<T>> {
+  StreamProviderDependency._(this.stream, this._state) : super(stream);
+
+  @Deprecated('`stream` will be removed in 0.3.0. Use `value` instead.')
 
   /// The stream returned by [StreamProvider].
   final Stream<T> stream;
   final _State<T, ProviderBase<StreamProviderDependency<T>, AsyncValue<T>>>
       _state;
 
-  /// The last value emitted by [stream].
+  /// The last value emitted by [value].
   ///
   /// The future will fail if the last event is an error instead.ƒ
   Future<T> get currentData => _state.currentData;
@@ -89,7 +91,7 @@ class StreamProvider<T> extends AlwaysAliveProviderBase<
   /// Once an [AsyncValue.data]/[AsyncValue.error] was emitted, it is no longer
   /// possible to emit a [AsyncValue.loading].
   ///
-  /// This will create a made up [Stream] for [StreamProviderDependency.stream].
+  /// This will create a made up [Stream] for [ProviderDependency.value].
   ProviderOverride debugOverrideWithValue(AsyncValue<T> value) {
     ProviderOverride res;
     assert(() {

@@ -28,7 +28,7 @@ final charactersProvider = StreamProvider((ref) async* {
   var offset = 0;
   var allCharacters = const <Character>[];
 
-  final repository = ref.read(repositoryProvider).value;
+  final repository = ref.dependOn(repositoryProvider).value;
 
   do {
     final res = await repository.fetchCharacters(offset: offset);

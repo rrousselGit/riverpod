@@ -92,7 +92,7 @@ void main() {
     final bDispose = OnDisposeMock();
     final b = AutoDisposeProvider((ref) {
       ref.onDispose(bDispose);
-      ref.read(a);
+      ref.dependOn(a);
       return '42';
     });
     final root = ProviderStateOwner();
@@ -135,7 +135,7 @@ void main() {
     final bDispose = OnDisposeMock();
     final b = AutoDisposeProvider((ref) {
       ref.onDispose(bDispose);
-      ref.read(a);
+      ref.dependOn(a);
       return '42';
     });
 
@@ -169,7 +169,7 @@ void main() {
     final onDispose2 = OnDisposeMock();
     final provider2 = AutoDisposeProvider((ref) {
       ref.onDispose(onDispose2);
-      return ref.read(provider).value;
+      return ref.dependOn(provider).value;
     });
     final listener = Listener();
 
@@ -392,13 +392,13 @@ void main() {
       ref.onDispose(onDispose);
       return value;
     });
-    final dependent = Provider((ref) => ref.read(provider).value);
+    final dependent = Provider((ref) => ref.dependOn(provider).value);
     final root = ProviderStateOwner();
     final owner = ProviderStateOwner(parent: root, overrides: [dependent]);
     final owner2 = ProviderStateOwner(parent: root, overrides: [dependent]);
 
     expect(unrelated.readOwner(owner), 42);
-    expect(owner.ref.read(dependent).value, 42);
+    expect(owner.ref.dependOn(dependent).value, 42);
 
     expect(
       root.debugProviderStates,
@@ -420,7 +420,7 @@ void main() {
     expect(root.debugProviderStates, [isA<ProviderState<int>>()]);
 
     value = 21;
-    expect(owner2.ref.read(dependent).value, 21);
+    expect(owner2.ref.dependOn(dependent).value, 21);
     verifyNoMoreInteractions(onDispose);
     expect(
       root.debugProviderStates,

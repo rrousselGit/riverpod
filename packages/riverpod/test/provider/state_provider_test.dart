@@ -3,6 +3,17 @@ import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('StateNotifierProviderDependency can be assigned to ProviderDependency',
+      () async {
+    final provider = StateProvider((ref) => 0);
+    final owner = ProviderStateOwner();
+
+    // ignore: omit_local_variable_types
+    final ProviderDependency<StateController<int>> dep =
+        owner.ref.dependOn(provider);
+
+    await expectLater(dep.value.state, 0);
+  });
   test('StateProvideyFamily', () async {
     final provider = StateProviderFamily<String, int>((ref, a) {
       return '$a';

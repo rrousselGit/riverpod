@@ -7,12 +7,24 @@ import 'package:riverpod/src/framework/framework.dart'
 import 'package:test/test.dart';
 
 void main() {
+  test('StreamProviderDependency can be assigned to ProviderDependency',
+      () async {
+    final provider = StreamProvider((ref) {
+      return Stream.value(42).asBroadcastStream();
+    });
+    final owner = ProviderStateOwner();
+
+    // ignore: omit_local_variable_types
+    final ProviderDependency<Stream<int>> dep = owner.ref.dependOn(provider);
+
+    await expectLater(dep.value, emits(42));
+  });
   test('AutoDisposeStreamProvider', () async {
-    var future = Stream.value(42);
+    var stream = Stream.value(42);
     final onDispose = DisposeMock();
     final provider = AutoDisposeStreamProvider((ref) {
       ref.onDispose(onDispose);
-      return future;
+      return stream;
     });
     final owner = ProviderStateOwner();
     final listener = ListenerMock();
@@ -29,7 +41,7 @@ void main() {
     verify(onDispose()).called(1);
     verifyNoMoreInteractions(onDispose);
 
-    future = Stream.value(21);
+    stream = Stream.value(21);
 
     provider.watchOwner(owner, listener);
 
@@ -240,8 +252,8 @@ void main() {
 
     Stream<int> stream;
     final combinedProvider = Provider<int>((ref) {
-      final first = ref.read(provider);
-      stream = first.stream;
+      final first = ref.dependOn(provider);
+      stream = first.value;
       return 42;
     });
 
@@ -258,12 +270,12 @@ void main() {
         final controller = StreamController<int>(sync: true);
         final provider = StreamProvider<int>((_) => controller.stream);
 
-        final def = owner.ref.read(provider);
-        final future = def.currentData;
+        final def = owner.ref.dependOn(provider);
+        final stream = def.currentData;
         final future2 = def.currentData;
         controller.add(42);
 
-        await expectLater(future, completion(42));
+        await expectLater(stream, completion(42));
         await expectLater(future2, completion(42));
 
         await controller.close();
@@ -273,12 +285,12 @@ void main() {
         final controller = StreamController<int>(sync: true);
         final provider = StreamProvider<int>((_) => controller.stream);
 
-        final def = owner.ref.read(provider);
+        final def = owner.ref.dependOn(provider);
         controller.add(42);
-        final future = def.currentData;
+        final stream = def.currentData;
         final future2 = def.currentData;
 
-        await expectLater(future, completion(42));
+        await expectLater(stream, completion(42));
         await expectLater(future2, completion(42));
 
         await controller.close();
@@ -288,12 +300,12 @@ void main() {
         final controller = StreamController<int>(sync: true);
         final provider = StreamProvider<int>((_) => controller.stream);
 
-        final def = owner.ref.read(provider);
-        final future = def.currentData;
+        final def = owner.ref.dependOn(provider);
+        final stream = def.currentData;
         final future2 = def.currentData;
         controller.addError(42);
 
-        await expectLater(future, throwsA(42));
+        await expectLater(stream, throwsA(42));
         await expectLater(future2, throwsA(42));
 
         await controller.close();
@@ -303,12 +315,12 @@ void main() {
         final controller = StreamController<int>(sync: true);
         final provider = StreamProvider<int>((_) => controller.stream);
 
-        final def = owner.ref.read(provider);
+        final def = owner.ref.dependOn(provider);
         controller.addError(42);
-        final future = def.currentData;
+        final stream = def.currentData;
         final future2 = def.currentData;
 
-        await expectLater(future, throwsA(42));
+        await expectLater(stream, throwsA(42));
         await expectLater(future2, throwsA(42));
 
         await controller.close();
@@ -321,15 +333,15 @@ void main() {
           provider.debugOverrideWithValue(const AsyncValue.loading()),
         ]);
 
-        final def = owner.ref.read(provider);
-        final future = def.currentData;
+        final def = owner.ref.dependOn(provider);
+        final stream = def.currentData;
         final future2 = def.currentData;
 
         owner.updateOverrides([
           provider.debugOverrideWithValue(const AsyncValue.data(42)),
         ]);
 
-        await expectLater(future, completion(42));
+        await expectLater(stream, completion(42));
         await expectLater(future2, completion(42));
       });
       test('read currentValue before after value', () async {
@@ -338,14 +350,14 @@ void main() {
           provider.debugOverrideWithValue(const AsyncValue.loading()),
         ]);
 
-        final def = owner.ref.read(provider);
+        final def = owner.ref.dependOn(provider);
         owner.updateOverrides([
           provider.debugOverrideWithValue(const AsyncValue.data(42)),
         ]);
-        final future = def.currentData;
+        final stream = def.currentData;
         final future2 = def.currentData;
 
-        await expectLater(future, completion(42));
+        await expectLater(stream, completion(42));
         await expectLater(future2, completion(42));
       });
       test('read currentValue before first error', () async {
@@ -354,14 +366,14 @@ void main() {
           provider.debugOverrideWithValue(const AsyncValue.loading()),
         ]);
 
-        final def = owner.ref.read(provider);
-        final future = def.currentData;
+        final def = owner.ref.dependOn(provider);
+        final stream = def.currentData;
         final future2 = def.currentData;
         owner.updateOverrides([
           provider.debugOverrideWithValue(AsyncValue.error(42)),
         ]);
 
-        await expectLater(future, throwsA(42));
+        await expectLater(stream, throwsA(42));
         await expectLater(future2, throwsA(42));
       });
       test('read currentValue before after error', () async {
@@ -370,15 +382,15 @@ void main() {
           provider.debugOverrideWithValue(const AsyncValue.loading()),
         ]);
 
-        final def = owner.ref.read(provider);
+        final def = owner.ref.dependOn(provider);
         owner.updateOverrides([
           provider.debugOverrideWithValue(AsyncValue.error(42)),
         ]);
 
-        final future = def.currentData;
+        final stream = def.currentData;
         final future2 = def.currentData;
 
-        await expectLater(future, throwsA(42));
+        await expectLater(stream, throwsA(42));
         await expectLater(future2, throwsA(42));
       });
       test('synchronous first event', () async {
@@ -387,11 +399,11 @@ void main() {
           provider.debugOverrideWithValue(const AsyncValue.data(42)),
         ]);
 
-        final def = owner.ref.read(provider);
-        final future = def.currentData;
+        final def = owner.ref.dependOn(provider);
+        final stream = def.currentData;
         final future2 = def.currentData;
 
-        await expectLater(future, completion(42));
+        await expectLater(stream, completion(42));
         await expectLater(future2, completion(42));
       });
     });
@@ -404,8 +416,8 @@ void main() {
         provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
       final listener = ListenerMock();
-      final dep = owner.ref.read(provider);
-      final stream = dep.stream.asBroadcastStream();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.value.asBroadcastStream();
 
       provider.watchOwner(owner, listener);
 
@@ -431,8 +443,8 @@ void main() {
         provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
       final listener = ListenerMock();
-      final dep = owner.ref.read(provider);
-      final stream = dep.stream.asBroadcastStream();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.value.asBroadcastStream();
 
       provider.watchOwner(owner, listener);
 
@@ -458,8 +470,8 @@ void main() {
         provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
       final listener = ListenerMock();
-      final dep = owner.ref.read(provider);
-      final stream = dep.stream.asBroadcastStream();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.value.asBroadcastStream();
 
       provider.watchOwner(owner, listener);
 
@@ -488,8 +500,8 @@ void main() {
         provider.debugOverrideWithValue(const AsyncValue.loading()),
       ]);
       final listener = ListenerMock();
-      final dep = owner.ref.read(provider);
-      final stream = dep.stream.asBroadcastStream();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.value.asBroadcastStream();
 
       provider.watchOwner(owner, listener);
 
@@ -514,8 +526,8 @@ void main() {
         provider.debugOverrideWithValue(const AsyncValue.loading()),
       ]);
       final listener = ListenerMock();
-      final dep = owner.ref.read(provider);
-      final stream = dep.stream.asBroadcastStream();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.value.asBroadcastStream();
 
       provider.watchOwner(owner, listener);
 
@@ -543,8 +555,8 @@ void main() {
         provider.debugOverrideWithValue(const AsyncValue.loading()),
       ]);
       final listener = ListenerMock();
-      final dep = owner.ref.read(provider);
-      final stream = dep.stream.asBroadcastStream();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.value.asBroadcastStream();
 
       provider.watchOwner(owner, listener);
 
@@ -577,8 +589,8 @@ void main() {
         provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
       final listener = ListenerMock();
-      final dep = owner.ref.read(provider);
-      final stream = dep.stream.asBroadcastStream();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.value.asBroadcastStream();
 
       provider.watchOwner(owner, listener);
 
@@ -605,8 +617,8 @@ void main() {
         provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
       final listener = ListenerMock();
-      final dep = owner.ref.read(provider);
-      final stream = dep.stream.asBroadcastStream();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.value.asBroadcastStream();
 
       provider.watchOwner(owner, listener);
 
@@ -636,8 +648,8 @@ void main() {
         provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
       final listener = ListenerMock();
-      final dep = owner.ref.read(provider);
-      final stream = dep.stream.asBroadcastStream();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.value.asBroadcastStream();
 
       provider.watchOwner(owner, listener);
 
@@ -664,8 +676,8 @@ void main() {
         provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
       final listener = ListenerMock();
-      final dep = owner.ref.read(provider);
-      final stream = dep.stream.asBroadcastStream();
+      final dep = owner.ref.dependOn(provider);
+      final stream = dep.value.asBroadcastStream();
 
       provider.watchOwner(owner, listener);
 

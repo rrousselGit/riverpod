@@ -227,7 +227,7 @@ void main() {
     when(observer2.didDisposeProvider(any)).thenThrow('error2');
     final observer3 = ObserverMock();
     final provider = Provider((_) => 0);
-    final provider2 = Provider((ref) => ref.read(provider).value);
+    final provider2 = Provider((ref) => ref.dependOn(provider).value);
     final onDispose = OnDisposeMock();
     final owner = ProviderStateOwner(
       overrides: [

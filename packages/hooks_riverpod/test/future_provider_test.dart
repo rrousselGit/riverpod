@@ -149,8 +149,8 @@ void main() {
     var completed = false;
     final proxy = Provider<String>(
       (ref) {
-        final first = ref.read(futureProvider);
-        future = first.future
+        final first = ref.dependOn(futureProvider);
+        future = first.value
           ..then(
             (value) => completed = true,
             onError: (dynamic _) => completed = true,
