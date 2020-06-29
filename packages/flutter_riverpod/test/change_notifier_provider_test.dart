@@ -3,6 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('ChangeNotifierProviderDependency can be assigned to ProviderDependency',
+      () async {
+    final provider = ChangeNotifierProvider((ref) {
+      return ValueNotifier(0);
+    });
+    final owner = ProviderStateOwner();
+
+    // ignore: omit_local_variable_types
+    final ProviderDependency<ValueNotifier<int>> dep =
+        owner.ref.dependOn(provider);
+
+    await expectLater(dep.value.value, 0);
+  });
   test('family', () {
     final owner = ProviderStateOwner();
     final provider =

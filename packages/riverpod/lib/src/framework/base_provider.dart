@@ -239,7 +239,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
 
   /// An implementation detail of [CircularDependencyError].
   ///
-  /// This handles the case where [ProviderReference.read] is called
+  /// This handles the case where [ProviderReference.dependOn] is called
   /// synchronously during the creation of the provider.
   ProviderBase _debugInitialDependOnRequest;
 
@@ -285,7 +285,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   /// If [initState] throws, reading the provider will result in an exception.
   void initState();
 
-  /// Creates the object returned by [ProviderReference.read].
+  /// Creates the object returned by [ProviderReference.dependOn].
   Dependency createProviderDependency();
 
   /// Life-cycle for when [provider] was replaced with a new one.
@@ -296,7 +296,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   @protected
   void didUpdateProvider(P oldProvider) {}
 
-  /// The implementation of [ProviderReference.read].
+  /// The implementation of [ProviderReference.dependOn].
   T read<T extends ProviderDependencyBase>(
     ProviderBase<T, Object> provider,
   ) {

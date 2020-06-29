@@ -119,7 +119,7 @@ We can now create another provider that will consume our `cityProvider`:
 final weatherProvider = FutureProvider((ref) async {
   // We use `ref.read` to read another provider, and we pass it the provider
   // that we want to consume. Here: cityProvider
-  final city = ref.read(cityProvider).value;
+  final city = ref.read(cityProvider);
 
   // We can then use the result to do something based on the value of `cityProvider`.
   return fetchWeather(city: city);
@@ -138,8 +138,8 @@ final cityProvider = Provider((ref) => 'London');
 final countryProvider = Provider((ref) => 'England');
 
 final weatherProvider = Provider((ref) {
-  final city = ref.read(cityProvider).value;
-  final country = ref.read(countryProvider).value;
+  final city = ref.read(cityProvider);
+  final country = ref.read(countryProvider);
 
   return Location(city: city, country: country);
 });
@@ -175,8 +175,8 @@ class Location {
   final ProviderReference _ref;
 
   String get label {
-    final city = _ref.read(cityProvider).value;
-    final country = _ref.read(countryProvider).value;
+    final city = _ref.read(cityProvider);
+    final country = _ref.read(countryProvider);
     return '$city ($country)';
   }
 }

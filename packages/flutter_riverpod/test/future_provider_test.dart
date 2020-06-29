@@ -168,8 +168,8 @@ void main() {
     var completed = false;
     final proxy = Provider<String>(
       (ref) {
-        final first = ref.read(futureProvider);
-        future = first.future
+        final first = ref.dependOn(futureProvider);
+        future = first.value
           ..then(
             (value) => completed = true,
             onError: (dynamic _) => completed = true,
@@ -430,8 +430,8 @@ void main() {
     final futureProvider = FutureProvider((_) async => 42);
 
     final futureProviderFamily = FutureProvider<int>((ref) async {
-      final other = ref.read(futureProvider);
-      return await other.future * 2;
+      final other = ref.dependOn(futureProvider);
+      return await other.value * 2;
     });
 
     await tester.pumpWidget(
@@ -460,7 +460,7 @@ void main() {
     final futureProvider = Provider((_) => 42);
 
     final futureProviderFamily = FutureProvider<int>((ref) async {
-      final other = ref.read(futureProvider);
+      final other = ref.dependOn(futureProvider);
       return other.value * 2;
     });
 
@@ -489,7 +489,7 @@ void main() {
     final futureProvider = Provider((_) => 42);
 
     final futureProviderFamily = FutureProvider<int>((ref) async {
-      final other = ref.read(futureProvider);
+      final other = ref.dependOn(futureProvider);
       return other.value * 2;
     });
 

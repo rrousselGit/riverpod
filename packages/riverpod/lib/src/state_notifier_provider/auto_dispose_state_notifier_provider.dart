@@ -66,7 +66,7 @@ class AutoDisposeStateNotifierStateProvider<T>
     extends AutoDisposeSetStateProvider<T> {
   AutoDisposeStateNotifierStateProvider._(this.notifierProvider)
       : super((ref) {
-          final notifier = ref.read(notifierProvider).value;
+          final notifier = ref.dependOn(notifierProvider).value;
 
           ref.onDispose(
             notifier.addListener((newValue) => ref.state = newValue),

@@ -17,10 +17,18 @@ Matcher isProvider(ProviderBase provider) {
 
 void main() {
   // TODO flushing inside mayHaveChanged calls onChanged only after all mayHaveChanged were executed
+  test('ref.read(provider) for providers with an immutable value', () {
+    final ProviderBase<ProviderDependency<int>, int> provider = Provider((_) {
+      return 42;
+    });
+    final owner = ProviderStateOwner();
+
+    expect(owner.ref.read(provider), 42);
+  });
   test('hasListeners', () {
     final root = ProviderStateOwner();
     final provider = Provider((_) => 42);
-    final provider2 = Provider((ref) => ref.read(provider).value * 2);
+    final provider2 = Provider((ref) => ref.dependOn(provider).value * 2);
     final owner = ProviderStateOwner(parent: root, overrides: [provider2]);
 
     expect(provider.readOwner(owner), 42);
@@ -86,7 +94,7 @@ void main() {
       'throw if tried to dispose a parent owner that still have undisposed children owners',
       () {
     final provider = Provider((_) => 42);
-    final provider2 = Provider((ref) => ref.read(provider).value * 2);
+    final provider2 = Provider((ref) => ref.dependOn(provider).value * 2);
     final root = ProviderStateOwner();
     final owner = ProviderStateOwner(parent: root, overrides: [provider2]);
 
@@ -295,7 +303,7 @@ void main() {
   });
   test('remove dependency when owner is disposed', () {
     final provider = Provider((_) {});
-    final provider2 = Provider((ref) => ref.read(provider));
+    final provider2 = Provider((ref) => ref.dependOn(provider));
     final root = ProviderStateOwner();
     final owner = ProviderStateOwner(
       parent: root,
@@ -350,8 +358,8 @@ void main() {
       ]),
     );
 
-    ref3.read(provider2);
-    ref4.read(provider2);
+    ref3.dependOn(provider2);
+    ref4.dependOn(provider2);
 
     expect(
       root.debugProviderStates,
@@ -368,7 +376,7 @@ void main() {
       ]),
     );
 
-    ref2.read(provider);
+    ref2.dependOn(provider);
 
     expect(root.debugProviderStates, <Object>[
       isProvider(provider),
@@ -406,7 +414,7 @@ void main() {
       ]),
     );
 
-    ref4.read(provider3);
+    ref4.dependOn(provider3);
 
     expect(
       owner.debugProviderStates,
@@ -416,7 +424,7 @@ void main() {
       ]),
     );
 
-    ref3.read(provider2);
+    ref3.dependOn(provider2);
 
     expect(
       owner.debugProviderStates,
@@ -427,7 +435,7 @@ void main() {
       ]),
     );
 
-    ref2.read(provider);
+    ref2.dependOn(provider);
 
     expect(owner.debugProviderStates, <Object>[
       isProvider(provider),
@@ -456,7 +464,7 @@ void main() {
     final provider2 = Provider((ref) => 0);
     final provider = Provider((ref) {
       ref.onDispose(() {
-        ref.read(provider2);
+        ref.dependOn(provider2);
       });
       return ref;
     });
@@ -504,15 +512,15 @@ void main() {
   test('Circular dependency check accross multiple owners', () {
     final provider = Provider((_) => 1);
     final provider2 = Provider((_) => 2);
-    final provider3 = Provider((ref) => ref.read(provider2).value * 2);
+    final provider3 = Provider((ref) => ref.dependOn(provider2).value * 2);
 
     final root = ProviderStateOwner(overrides: [
       provider.overrideAs(
-        Provider((ref) => ref.read(provider3).value * 2),
+        Provider((ref) => ref.dependOn(provider3).value * 2),
       )
     ]);
     final owner = ProviderStateOwner(parent: root, overrides: [
-      provider2.overrideAs(Provider((ref) => ref.read(provider).value * 2)),
+      provider2.overrideAs(Provider((ref) => ref.dependOn(provider).value * 2)),
       provider3,
     ]);
 
@@ -526,7 +534,7 @@ void main() {
       () {
     final provider1 = Provider((_) => 1);
     final provider3 = Provider((_) => '1');
-    final provider2 = Provider((ref) => ref.read(provider1).value * 2.5);
+    final provider2 = Provider((ref) => ref.dependOn(provider1).value * 2.5);
 
     final root = ProviderStateOwner();
     final owner = ProviderStateOwner(parent: root, overrides: [
@@ -612,8 +620,8 @@ void main() {
     expect(owner.ref, ref);
     expect(owner2.ref, ref2);
 
-    expect(ref.read(provider).value, 42);
-    expect(ref2.read(provider).value, 21);
+    expect(ref.dependOn(provider).value, 42);
+    expect(ref2.dependOn(provider).value, 21);
 
     owner.updateOverrides([]);
     owner2.updateOverrides([
@@ -624,8 +632,8 @@ void main() {
 
     expect(owner.ref, ref);
     expect(owner2.ref, ref2);
-    expect(ref.read(provider).value, 42);
-    expect(ref2.read(provider).value, 21);
+    expect(ref.dependOn(provider).value, 42);
+    expect(ref2.dependOn(provider).value, 21);
   });
 
   test('ref.read disposes the provider state', () {
@@ -636,7 +644,7 @@ void main() {
       });
       return 0;
     });
-    final other = Provider((ref) => ref.read(provider));
+    final other = Provider((ref) => ref.dependOn(provider));
 
     final owner = ProviderStateOwner();
     final owner2 = ProviderStateOwner(
@@ -657,10 +665,10 @@ void main() {
     final provider2 = TestProvider((ref) => 1);
     final owner = ProviderStateOwner();
 
-    final value1 = owner.ref.read(provider);
-    final value2 = owner.ref.read(provider);
-    final value21 = owner.ref.read(provider2);
-    final value22 = owner.ref.read(provider2);
+    final value1 = owner.ref.dependOn(provider);
+    final value2 = owner.ref.dependOn(provider);
+    final value21 = owner.ref.dependOn(provider2);
+    final value22 = owner.ref.dependOn(provider2);
 
     expect(value1, value2);
     expect(value1.value, 0);
@@ -692,13 +700,13 @@ void main() {
     Provider<int Function()> provider;
 
     final provider1 = Provider((ref) {
-      return ref.read(provider).value() + 1;
+      return ref.dependOn(provider).value() + 1;
     });
     final provider2 = Provider((ref) {
-      return ref.read(provider1).value + 1;
+      return ref.dependOn(provider1).value + 1;
     });
     provider = Provider((ref) {
-      return () => ref.read(provider2).value + 1;
+      return () => ref.dependOn(provider2).value + 1;
     });
 
     final owner = ProviderStateOwner();
@@ -714,12 +722,12 @@ void main() {
     final provider1 = Provider((ref) => ref);
     final provider2 = Provider((ref) => ref);
 
-    provider1.readOwner(owner).read(provider);
-    provider2.readOwner(owner).read(provider1);
+    provider1.readOwner(owner).dependOn(provider);
+    provider2.readOwner(owner).dependOn(provider1);
     final ref = provider.readOwner(owner);
 
     expect(
-      () => ref.read(provider2),
+      () => ref.dependOn(provider2),
       throwsA(isA<CircularDependencyError>()),
     );
   });
@@ -735,13 +743,13 @@ void main() {
     });
 
     final provider2 = Provider((ref) {
-      final value = ref.read(provider1).value;
+      final value = ref.dependOn(provider1).value;
       ref.onDispose(onDispose2);
       return value + 1;
     });
 
     final provider3 = Provider((ref) {
-      final value = ref.read(provider2).value;
+      final value = ref.dependOn(provider2).value;
       ref.onDispose(onDispose3);
       return value + 1;
     });
@@ -773,12 +781,12 @@ void main() {
 
     final provider2 = Provider((ref) {
       ref.onDispose(onDispose2);
-      return () => ref.read(provider1).value + 1;
+      return () => ref.dependOn(provider1).value + 1;
     });
 
     final provider3 = Provider((ref) {
       ref.onDispose(onDispose3);
-      return () => ref.read(provider2).value() + 1;
+      return () => ref.dependOn(provider2).value() + 1;
     });
 
     expect(provider3.readOwner(owner)(), 3);
@@ -797,10 +805,10 @@ void main() {
   test('update providers in dependency order', () {
     final provider = TestProvider((_) => 1);
     final provider1 = TestProvider((ref) {
-      return () => ref.read(provider).value + 1;
+      return () => ref.dependOn(provider).value + 1;
     });
     final provider2 = TestProvider((ref) {
-      return () => ref.read(provider1).value() + 1;
+      return () => ref.dependOn(provider1).value() + 1;
     });
 
     final owner = ProviderStateOwner(overrides: [
@@ -838,8 +846,8 @@ void main() {
     ProviderDependency<int> other2;
 
     final provider1 = Provider((ref) {
-      other = ref.read(provider);
-      other2 = ref.read(provider);
+      other = ref.dependOn(provider);
+      other2 = ref.dependOn(provider);
       return other.value;
     });
 
@@ -862,7 +870,7 @@ void main() {
 
     expect(ref.mounted, isFalse);
     expect(() => ref.onDispose(() {}), throwsStateError);
-    expect(() => ref.read(other), throwsStateError);
+    expect(() => ref.dependOn(other), throwsStateError);
   });
 
   test('if a provider threw on creation, subsequent reads throws too', () {
@@ -879,9 +887,9 @@ void main() {
     expect(() => provider.readOwner(owner), throwsA(error));
     expect(callCount, 1);
 
-    expect(() => owner.ref.read(provider), throwsA(error));
+    expect(() => owner.ref.dependOn(provider), throwsA(error));
     expect(callCount, 1);
-    expect(() => owner.ref.read(provider), throwsA(error));
+    expect(() => owner.ref.dependOn(provider), throwsA(error));
     expect(callCount, 1);
 
     expect(() => provider.watchOwner(owner, (value) {}), throwsA(error));
@@ -1113,11 +1121,11 @@ void main() {
 
       final provider = StateNotifierProvider<Counter>((_) => counter);
       final provider2 = StateNotifierProvider<Counter>((ref) {
-        ref.read(provider);
+        ref.dependOn(provider);
         return counter2;
       });
       final provider3 = StateNotifierProvider<Counter>((ref) {
-        ref.read(provider2);
+        ref.dependOn(provider2);
         return counter3;
       });
 

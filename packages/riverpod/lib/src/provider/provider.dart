@@ -127,7 +127,7 @@ class ProviderDependencyImpl<T> implements ProviderDependency<T> {
 /// final weatherProvider = FutureProvider((ref) async {
 ///   // We use `ref.read` to read another provider, and we pass it the provider
 ///   // that we want to consume. Here: cityProvider
-///   final city = ref.read(cityProvider).value;
+///   final city = ref.read(cityProvider);
 ///
 ///   // We can then use the result to do something based on the value of `cityProvider`.
 ///   return fetchWeather(city: city);
@@ -146,8 +146,8 @@ class ProviderDependencyImpl<T> implements ProviderDependency<T> {
 /// final countryProvider = Provider((ref) => 'England');
 ///
 /// final weatherProvider = Provider((ref) {
-///   final city = ref.read(cityProvider).value;
-///   final country = ref.read(countryProvider).value;
+///   final city = ref.read(cityProvider);
+///   final country = ref.read(countryProvider);
 ///
 ///   return Location(city: city, country: country);
 /// });
@@ -183,8 +183,8 @@ class ProviderDependencyImpl<T> implements ProviderDependency<T> {
 ///   final ProviderReference _ref;
 ///
 ///   String get label {
-///     final city = _ref.read(cityProvider).value;
-///     final country = _ref.read(countryProvider).value;
+///     final city = _ref.read(cityProvider);
+///     final country = _ref.read(countryProvider);
 ///     return '$city ($country)';
 ///   }
 /// }
@@ -314,7 +314,7 @@ class ProviderState<T>
 ///   ```dart
 ///   final repositoryProvider = ProviderFamily<String, FutureProvider<Configurations>>((ref, configurationsProvider) {
 ///     // Read a provider without knowing what that provider is.
-///     final configurations = await ref.read(configurationsProvider).future;
+///     final configurations = await ref.read(configurationsProvider);
 ///     return Repository(host: configurations.host);
 ///   });
 ///   ```

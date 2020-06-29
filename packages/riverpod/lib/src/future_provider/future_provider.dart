@@ -10,10 +10,11 @@ import '../stream_provider/stream_provider.dart';
 part 'auto_dispose_future_provider.dart';
 
 /// The state of a [FutureProvider].
-class FutureProviderDependency<T> extends ProviderDependencyBase {
-  FutureProviderDependency._({@required this.future});
+class FutureProviderDependency<T> extends ProviderDependencyImpl<Future<T>> {
+  FutureProviderDependency._({@required this.future}) : super(future);
 
   /// The [Future] created by [FutureProvider].
+  @Deprecated('`future` will be removed in 0.3.0. Use `value` instead.')
   final Future<T> future;
 }
 
@@ -46,7 +47,7 @@ class FutureProvider<Res> extends AlwaysAliveProviderBase<
   /// Once an [AsyncValue.data]/[AsyncValue.error] was emitted, it is no longer
   /// possible to change the value exposed.
   ///
-  /// This will create a made up [Future] for [FutureProviderDependency.future].
+  /// This will create a made up [Future] for [ProviderDependency.value].
   Override debugOverrideWithValue(AsyncValue<Res> value) {
     ProviderOverride res;
     assert(() {

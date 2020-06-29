@@ -177,7 +177,7 @@ void main() {
     final owner = ProviderStateOwner();
     final provider = Provider((_) => 42);
     final computed = Computed((read) => read(provider) * 2);
-    final provider2 = Provider((ref) => ref.read(computed));
+    final provider2 = Provider((ref) => ref.dependOn(computed));
     final listener = Listener<int>();
 
     provider2.readOwner(owner);

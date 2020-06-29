@@ -24,7 +24,7 @@ dependency_overrides:
   flutter_riverpod:
     path: ../../packages/flutter_riverpod
   riverpod:
-    path: ../../packages/riverpod" >> $BASEDIR/../packages/hooks_riverpod/pubspec.yaml
+    path: ../../packages/riverpod" >> pubspec.yaml
 
 echo "Installing hooks_riverpod"
 flutter pub get

@@ -182,7 +182,7 @@ final repositoryProvider = Provider((ref) => Repository());
 /// [Repository] and doing nothing else.
 final todoListProvider = FutureProvider((ref) async {
   // Obtains the Repository instance
-  final repository = ref.read(repositoryProvider).value;
+  final repository = ref.read(repositoryProvider);
 
   // Fetch the todos and expose them to the UI.
   return repository.fetchTodos();
@@ -313,7 +313,7 @@ final repositoryProvider = Provider((ref) => Repository());
 /// [Repository] and doing nothing else.
 final todoListProvider = FutureProvider((ref) async {
   // Obtains the Repository instance
-  final repository = ref.read(repositoryProvider).value;
+  final repository = ref.read(repositoryProvider);
 
   // Fetch the todos and expose them to the UI.
   return repository.fetchTodos();

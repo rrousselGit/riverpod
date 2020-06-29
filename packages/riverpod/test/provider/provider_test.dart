@@ -79,7 +79,7 @@ void main() {
       final owner = ProviderStateOwner();
 
       final provider = Provider((ref) {
-        final first = ref.read(dependency);
+        final first = ref.dependOn(dependency);
         return first.value * 2;
       });
 
@@ -91,8 +91,8 @@ void main() {
       final owner = ProviderStateOwner();
 
       final provider = Provider((ref) {
-        final first = ref.read(dependency);
-        final second = ref.read(dependency2);
+        final first = ref.dependOn(dependency);
+        final second = ref.dependOn(dependency2);
 
         return '${first.value} ${second.value}';
       });

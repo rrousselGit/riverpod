@@ -7,6 +7,18 @@ import 'package:riverpod/src/framework/framework.dart'
 import 'package:test/test.dart';
 
 void main() {
+  test('FutureProviderDependency can be assigned to ProviderDependency',
+      () async {
+    final provider = FutureProvider((ref) {
+      return Future.value(42);
+    });
+    final owner = ProviderStateOwner();
+
+    // ignore: omit_local_variable_types
+    final ProviderDependency<Future<int>> dep = owner.ref.dependOn(provider);
+
+    await expectLater(dep.value, completion(42));
+  });
   test('AutoDisposeFutureProvider', () async {
     var future = Future.value(42);
     final onDispose = OnDisposeMock();
@@ -162,9 +174,9 @@ void main() {
     final simple = Provider((_) => 21);
 
     final example = FutureProvider((ref) async {
-      final otherValue = await ref.read(other).future;
+      final otherValue = await ref.dependOn(other).value;
 
-      return '${ref.read(simple).value} $otherValue';
+      return '${ref.dependOn(simple).value} $otherValue';
     });
 
     final listener = StringListenerMock();
@@ -244,8 +256,8 @@ void main() {
       ]);
       final listener = ListenerMock();
 
-      final dep = owner.ref.read(provider);
-      await expectLater(dep.future, completion(42));
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.value, completion(42));
 
       provider.watchOwner(owner, listener);
 
@@ -270,8 +282,8 @@ void main() {
       ]);
       final listener = ListenerMock();
 
-      final dep = owner.ref.read(provider);
-      await expectLater(dep.future, completion(42));
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.value, completion(42));
 
       provider.watchOwner(owner, listener);
 
@@ -296,8 +308,8 @@ void main() {
       ]);
       final listener = ListenerMock();
 
-      final dep = owner.ref.read(provider);
-      await expectLater(dep.future, completion(42));
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.value, completion(42));
 
       provider.watchOwner(owner, listener);
 
@@ -334,8 +346,8 @@ void main() {
       verify(listener(const AsyncValue.data(42))).called(1);
       verifyNoMoreInteractions(listener);
 
-      final dep = owner.ref.read(provider);
-      await expectLater(dep.future, completion(42));
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.value, completion(42));
     });
     test('loading immediatly then error', () async {
       final provider = FutureProvider((_) async => 0);
@@ -358,8 +370,8 @@ void main() {
       verify(listener(AsyncValue.error(42, stackTrace))).called(1);
       verifyNoMoreInteractions(listener);
 
-      final dep = owner.ref.read(provider);
-      await expectLater(dep.future, throwsA(42));
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.value, throwsA(42));
     });
     test('loading immediatly then loading', () async {
       final provider = FutureProvider((_) async => 0);
@@ -386,8 +398,8 @@ void main() {
       verify(listener(const AsyncValue.data(42))).called(1);
       verifyNoMoreInteractions(listener);
 
-      final dep = owner.ref.read(provider);
-      await expectLater(dep.future, completion(42));
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.value, completion(42));
     });
     test('error immediatly then different error', () async {
       final stackTrace = StackTrace.current;
@@ -397,8 +409,8 @@ void main() {
       ]);
       final listener = ListenerMock();
 
-      final dep = owner.ref.read(provider);
-      await expectLater(dep.future, throwsA(42));
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.value, throwsA(42));
 
       provider.watchOwner(owner, listener);
 
@@ -424,8 +436,8 @@ void main() {
       ]);
       final listener = ListenerMock();
 
-      final dep = owner.ref.read(provider);
-      await expectLater(dep.future, throwsA(42));
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.value, throwsA(42));
 
       provider.watchOwner(owner, listener);
 
@@ -452,8 +464,8 @@ void main() {
       ]);
       final listener = ListenerMock();
 
-      final dep = owner.ref.read(provider);
-      await expectLater(dep.future, throwsA(42));
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.value, throwsA(42));
 
       provider.watchOwner(owner, listener);
 
@@ -479,8 +491,8 @@ void main() {
       ]);
       final listener = ListenerMock();
 
-      final dep = owner.ref.read(provider);
-      await expectLater(dep.future, throwsA(42));
+      final dep = owner.ref.dependOn(provider);
+      await expectLater(dep.value, throwsA(42));
 
       provider.watchOwner(owner, listener);
 

@@ -253,7 +253,7 @@ void main() {
         overrides: [
           provider2.overrideAs(
             Provider<int>((ref) {
-              final other = ref.read(provider);
+              final other = ref.dependOn(provider);
               return other.value * 2;
             }),
           ),
@@ -310,7 +310,7 @@ void main() {
     final provider = Provider((_) => 0);
 
     final provider1 = Provider((ref) {
-      final other = ref.read(provider);
+      final other = ref.dependOn(provider);
       return other.value.toString();
     });
 
@@ -331,15 +331,15 @@ void main() {
   testWidgets('provider1 chain', (tester) async {
     final first = Provider((_) => 1);
     final second = Provider<int>((ref) {
-      final other = ref.read(first);
+      final other = ref.dependOn(first);
       return other.value + 1;
     });
     final third = Provider<int>((ref) {
-      final other = ref.read(second);
+      final other = ref.dependOn(second);
       return other.value + 1;
     });
     final forth = Provider<int>((ref) {
-      final other = ref.read(third);
+      final other = ref.dependOn(third);
       return other.value + 1;
     });
 
@@ -359,15 +359,15 @@ void main() {
   testWidgets('overriden provider1 chain', (tester) async {
     final first = Provider((_) => 1);
     final second = Provider<int>((ref) {
-      final other = ref.read(first);
+      final other = ref.dependOn(first);
       return other.value + 1;
     });
     final third = Provider<int>((ref) {
-      final other = ref.read(second);
+      final other = ref.dependOn(second);
       return other.value + 1;
     });
     final forth = Provider<int>((ref) {
-      final other = ref.read(third);
+      final other = ref.dependOn(third);
       return other.value + 1;
     });
 
@@ -390,15 +390,15 @@ void main() {
   testWidgets('partial override provider1 chain', (tester) async {
     final first = Provider((_) => 1);
     final second = Provider<int>((ref) {
-      final other = ref.read(first);
+      final other = ref.dependOn(first);
       return other.value + 1;
     });
     final third = Provider<int>((ref) {
-      final other = ref.read(second);
+      final other = ref.dependOn(second);
       return other.value + 1;
     });
     final forth = Provider<int>((ref) {
-      final other = ref.read(third);
+      final other = ref.dependOn(third);
       return other.value + 1;
     });
 
@@ -427,7 +427,7 @@ void main() {
 
     // ignore: omit_local_variable_types
     final Provider<int> provider1 = Provider<int>((r) {
-      final first = r.read(provider);
+      final first = r.dependOn(provider);
       ref = r;
       firstState = first;
       return first.value * 2;
