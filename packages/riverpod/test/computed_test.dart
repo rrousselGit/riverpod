@@ -11,9 +11,144 @@ class Counter extends StateNotifier<int> {
   int get state => super.state;
   @override
   set state(int value) => super.state = value;
+
+  void increment() => state++;
 }
 
 void main() {
+  test(
+      'Computed removing one of multiple listeners on a provider still listen to the provider',
+      () {
+    final stateProvider = StateProvider((ref) => 0, name: 'state');
+    final notifier0 = Counter();
+    final notifier1 = Counter(42);
+    final provider0 = StateNotifierProvider((_) => notifier0, name: '0');
+    final provider1 = StateNotifierProvider((_) => notifier1, name: '1');
+    var buildCount = 0;
+    final computed = Computed((read) {
+      buildCount++;
+
+      final state = read(stateProvider).state;
+      final value = state == 0 ? read(provider0.state) : read(provider1.state);
+
+      return '${read(provider0.state)} $value';
+    });
+    final listener = Listener<String>();
+    final owner = ProviderStateOwner();
+
+    provider0.state.readOwner(owner);
+    provider1.state.readOwner(owner);
+    final familyState0 = owner.debugProviderStates.firstWhere((p) {
+      return p.provider == provider0.state;
+    });
+    final familyState1 = owner.debugProviderStates.firstWhere((p) {
+      return p.provider == provider1.state;
+    });
+
+    computed.watchOwner(owner, listener);
+
+    expect(buildCount, 1);
+    expect(familyState0.$hasListeners, true);
+    expect(familyState1.$hasListeners, false);
+    verify(listener('0 0')).called(1);
+    verifyNoMoreInteractions(listener);
+
+    notifier0.increment();
+
+    expect(buildCount, 2);
+    verify(listener('1 1')).called(1);
+    verifyNoMoreInteractions(listener);
+
+    notifier1.increment();
+
+    expect(buildCount, 2);
+    verifyNoMoreInteractions(listener);
+
+    // changing the provider that computed is subscribed to
+    stateProvider.readOwner(owner).state = 1;
+
+    expect(buildCount, 3);
+    verify(listener('1 43')).called(1);
+    verifyNoMoreInteractions(listener);
+    expect(familyState1.$hasListeners, true);
+    expect(familyState0.$hasListeners, true);
+
+    notifier1.increment();
+
+    expect(buildCount, 4);
+    verify(listener('1 44')).called(1);
+    verifyNoMoreInteractions(listener);
+
+    notifier0.increment();
+
+    expect(buildCount, 5);
+    verify(listener('2 44')).called(1);
+    verifyNoMoreInteractions(listener);
+  });
+  test('Stops listening to a provider when recomputed but no longer using it',
+      () {
+    final stateProvider = StateProvider((ref) => 0, name: 'state');
+    final notifier0 = Counter();
+    final notifier1 = Counter(42);
+    final provider0 = StateNotifierProvider((_) => notifier0, name: '0');
+    final provider1 = StateNotifierProvider((_) => notifier1, name: '1');
+    var buildCount = 0;
+    final computed = Computed((read) {
+      buildCount++;
+      final state = read(stateProvider).state;
+      return state == 0 ? read(provider0.state) : read(provider1.state);
+    });
+    final listener = Listener<int>();
+    final owner = ProviderStateOwner();
+
+    provider0.state.readOwner(owner);
+    provider1.state.readOwner(owner);
+    final familyState0 = owner.debugProviderStates.firstWhere((p) {
+      return p.provider == provider0.state;
+    });
+    final familyState1 = owner.debugProviderStates.firstWhere((p) {
+      return p.provider == provider1.state;
+    });
+
+    computed.watchOwner(owner, listener);
+
+    expect(buildCount, 1);
+    expect(familyState0.$hasListeners, true);
+    expect(familyState1.$hasListeners, false);
+    verify(listener(0)).called(1);
+    verifyNoMoreInteractions(listener);
+
+    notifier0.increment();
+
+    expect(buildCount, 2);
+    verify(listener(1)).called(1);
+    verifyNoMoreInteractions(listener);
+
+    notifier1.increment();
+
+    expect(buildCount, 2);
+    verifyNoMoreInteractions(listener);
+
+    // changing the provider that computed is subscribed to
+    stateProvider.readOwner(owner).state = 1;
+
+    expect(buildCount, 3);
+    verify(listener(43)).called(1);
+    verifyNoMoreInteractions(listener);
+    expect(familyState1.$hasListeners, true);
+    expect(familyState0.$hasListeners, false);
+
+    notifier1.increment();
+
+    expect(buildCount, 4);
+    verify(listener(44)).called(1);
+    verifyNoMoreInteractions(listener);
+
+    notifier0.increment();
+
+    expect(buildCount, 4);
+    verifyNoMoreInteractions(listener);
+  });
   test('ComputedFamily', () {
     final computed =
         ComputedFamily<String, SetStateProvider<int>>((read, provider) {

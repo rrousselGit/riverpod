@@ -6,11 +6,12 @@ import 'package:riverpod/src/internals.dart';
 class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
   /// An internal class for `ProviderBase.select`.
   ProviderSelector(
-    this._provider,
+    this.provider,
     this._selector,
   );
 
-  final ProviderBase<ProviderDependencyBase, Input> _provider;
+  /// The selected provider
+  final ProviderBase<ProviderDependencyBase, Input> provider;
   final Output Function(Input) _selector;
 
   @override
@@ -19,7 +20,7 @@ class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
     void Function() mayHaveChanged,
     void Function(Output value) onChange,
   }) {
-    final state = owner.readProviderState(_provider);
+    final state = owner.readProviderState(provider);
     return SelectorSubscription._(
       state,
       _selector,
@@ -47,7 +48,6 @@ class SelectorSubscription<Input, Output> implements ProviderSubscription {
   }
 
   ProviderSubscription _providerSubscription;
-
   final void Function(Output value) _onOutputChange;
   bool _isFirstInputOnChange = true;
   Input _input;

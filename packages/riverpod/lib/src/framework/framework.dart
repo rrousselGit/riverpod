@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 
 import '../common.dart';
-import '../computed.dart';
 import '../internals.dart';
 import '../provider/provider.dart';
 
+part 'computed.dart';
 part 'base_provider.dart';
 part 'family.dart';
 part 'auto_dispose.dart';

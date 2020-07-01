@@ -7,6 +7,93 @@ import 'package:mockito/mockito.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 void main() {
+  testWidgets('useProvider supports changing the selected provider',
+      (tester) async {
+    final notifier1 = Counter();
+    final provider1 = StateNotifierProvider((_) => notifier1);
+    final notifier2 = Counter(42);
+    final provider2 = StateNotifierProvider((_) => notifier2);
+    var buildCount = 0;
+    var selectCount = 0;
+
+    Widget build(StateNotifierProvider<Counter> provider) {
+      return ProviderScope(
+        child: HookBuilder(builder: (c) {
+          buildCount++;
+          final value = useProvider(provider.state.select((value) {
+            selectCount++;
+            return value > 5;
+          }));
+          return Text('$value', textDirection: TextDirection.ltr);
+        }),
+      );
+    }
+
+    await tester.pumpWidget(build(provider1));
+
+    expect(find.text('false'), findsOneWidget);
+    expect(buildCount, 1);
+    expect(selectCount, 1);
+
+    await tester.pumpWidget(build(provider2));
+
+    expect(find.text('true'), findsOneWidget);
+    expect(buildCount, 2);
+    expect(selectCount, 2);
+
+    notifier1.state = 42;
+    await tester.pump();
+
+    expect(find.text('true'), findsOneWidget);
+    expect(buildCount, 2);
+    expect(selectCount, 2);
+
+    notifier2.state = 0;
+    await tester.pump();
+
+    expect(find.text('false'), findsOneWidget);
+    expect(buildCount, 3);
+    expect(selectCount, 4);
+  });
+  testWidgets('useProvider supports changing the provider', (tester) async {
+    final notifier1 = Counter();
+    final provider1 = StateNotifierProvider((_) => notifier1);
+    final notifier2 = Counter(42);
+    final provider2 = StateNotifierProvider((_) => notifier2);
+    var buildCount = 0;
+
+    Widget build(StateNotifierProvider<Counter> provider) {
+      return ProviderScope(
+        child: HookBuilder(builder: (c) {
+          buildCount++;
+          final value = useProvider(provider.state);
+          return Text('$value', textDirection: TextDirection.ltr);
+        }),
+      );
+    }
+
+    await tester.pumpWidget(build(provider1));
+
+    expect(find.text('0'), findsOneWidget);
+    expect(buildCount, 1);
+
+    await tester.pumpWidget(build(provider2));
+
+    expect(find.text('42'), findsOneWidget);
+    expect(buildCount, 2);
+
+    notifier1.increment();
+    await tester.pump();
+
+    expect(find.text('42'), findsOneWidget);
+    expect(buildCount, 2);
+
+    notifier2.increment();
+    await tester.pump();
+
+    expect(find.text('43'), findsOneWidget);
+    expect(buildCount, 3);
+  });
   testWidgets('overrive type mismatch throws', (tester) async {
     final provider = Provider((_) => 0);
 
@@ -547,7 +634,12 @@ class MyImmutableProviderState extends ProviderStateBase<
 }
 
 class Counter extends StateNotifier<int> {
-  Counter() : super(0);
+  Counter([int initialValue = 0]) : super(initialValue);
 
   void increment() => state++;
+
+  @override
+  set state(int value) {
+    super.state = value;
+  }
 }
