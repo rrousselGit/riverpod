@@ -43,7 +43,6 @@ See the [FAQ](#FAQ) if you have questions around what this means for [provider].
 ## Index
 
 - [Motivation](#motivation)
-- [Usage](#usage)
 - [FAQ](#faq)
   - [Why another project when provider already exists?](#why-another-project-when-provider-already-exists)
   - [Is it safe to use in production?](#is-it-safe-to-use-in-production)
