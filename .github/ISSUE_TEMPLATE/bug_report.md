@@ -1,10 +1,8 @@
 ---
 name: Bug report
 about: There is a problem in how provider behaves
-title: ''
+title: ""
 labels: bug
-assignees: rrousselGit
-
 ---
 
 **Describe the bug**

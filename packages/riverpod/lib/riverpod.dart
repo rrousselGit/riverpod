@@ -1,6 +1,5 @@
 export 'src/common.dart'
     show Create, AsyncValue, AsyncData, $AsyncValueCopyWith, $AsyncValue;
-export 'src/computed.dart' show Computed, Reader, ComputedFamily;
 export 'src/framework/framework.dart'
     show
         AlwaysAliveProviderBase,
@@ -13,7 +12,10 @@ export 'src/framework/framework.dart'
         ProviderStateOwner,
         ProviderStateOwnerObserver,
         ProviderListenable,
-        ProviderSubscription;
+        ProviderSubscription,
+        Computed,
+        Reader,
+        ComputedFamily;
 export 'src/future_provider/future_provider.dart'
     show
         AutoDisposeFutureProvider,

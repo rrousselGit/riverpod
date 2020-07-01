@@ -105,43 +105,6 @@ void main() {
     expect(buildCount, 4);
     expect(find.text('1'), findsOneWidget);
   });
-  testWidgets('changing provider', (tester) async {
-    final provider = Provider((_) => 0);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        child: HookBuilder(
-          builder: (context) {
-            final value = useProvider(provider);
-            return Text(
-              '$value',
-              textDirection: TextDirection.ltr,
-            );
-          },
-        ),
-      ),
-    );
-
-    expect(find.text('0'), findsOneWidget);
-
-    final provider2 = Provider((_) => 42);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        child: HookBuilder(
-          builder: (context) {
-            final value = useProvider(provider2);
-            return Text(
-              '$value',
-              textDirection: TextDirection.ltr,
-            );
-          },
-        ),
-      ),
-    );
-
-    expect(tester.takeException(), isUnsupportedError);
-  });
 }
 
 class TestNotifier extends ChangeNotifier {

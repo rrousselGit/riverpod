@@ -156,22 +156,22 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
     );
     if (oldHook._owner != hook._owner) {
       _listen();
-    } else {
-      final link = _link;
-      if (link is SelectorSubscription<Object, T>) {
+    } else if (_link is SelectorSubscription<Object, T>) {
+      final link = _link as SelectorSubscription<Object, T>;
+      assert(
+        hook._provider is ProviderSelector<Object, T>,
+        'useProvider was updated from `useProvider(provider.select(...)) '
+        'to useProvider(provider), which is unsupported',
+      );
+      if ((hook._provider as ProviderSelector<Object, T>).provider !=
+          (oldHook._provider as ProviderSelector<Object, T>).provider) {
+        _listen();
+      } else {
         // this will update _state
         link.updateSelector(hook._provider);
-      } else if (oldHook._provider != hook._provider) {
-        FlutterError.reportError(
-          FlutterErrorDetails(
-            exception: UnsupportedError(
-              'Used `useProvider(provider)` with a `provider` different than it was before',
-            ),
-            library: 'flutter_provider',
-            stack: StackTrace.current,
-          ),
-        );
       }
+    } else if (oldHook._provider != hook._provider) {
+      _listen();
     }
   }
 

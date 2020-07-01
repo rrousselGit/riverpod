@@ -87,7 +87,8 @@ class Consumer extends StatefulWidget {
 
 class _ConsumerState extends State<Consumer> {
   ProviderStateOwner _owner;
-  final _dependencies = <ProviderBase, _Dependency>{};
+  var _dependencies = <ProviderBase, _Dependency>{};
+  Map<ProviderBase, _Dependency> _oldDependencies;
   bool _debugSelecting;
   Widget _buildCache;
   // initialized at true for the first build
@@ -132,12 +133,18 @@ class _ConsumerState extends State<Consumer> {
       return true;
     }(), '');
     try {
+      _oldDependencies = _dependencies;
+      _dependencies = {};
       return _buildCache = widget._builder(context, _reader);
     } finally {
       assert(() {
         _debugSelecting = false;
         return true;
       }(), '');
+      for (final dep in _oldDependencies.values) {
+        dep.subscription.close();
+      }
+      _oldDependencies = null;
     }
   }
 
@@ -147,6 +154,12 @@ class _ConsumerState extends State<Consumer> {
       'Cannot use `read` outside of the body of the Consumer callback',
     );
     return _dependencies.putIfAbsent(target, () {
+      final oldDependency = _oldDependencies?.remove(target);
+
+      if (oldDependency != null) {
+        return oldDependency;
+      }
+
       final state = _owner.readProviderState(target);
 
       final dep = _Dependency();

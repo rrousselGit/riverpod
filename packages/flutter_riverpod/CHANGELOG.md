@@ -1,3 +1,8 @@
+# 0.2.1
+
+- `Computed` and `Consumer` now correctly unsubscribe to a provider when their
+  function stops using a provider.
+
 # 0.2.0
 
 - `ref.read` is renamed as `ref.dependOn`

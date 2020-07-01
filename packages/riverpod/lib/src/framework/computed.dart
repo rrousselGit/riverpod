@@ -1,7 +1,4 @@
-import 'package:collection/collection.dart';
-
-import 'framework/framework.dart';
-import 'internals.dart';
+part of 'framework.dart';
 
 /// A function used by [Computed] to read other providers.
 ///
@@ -64,7 +61,8 @@ class Computed<T> extends AutoDisposeProviderBase<ProviderDependencyBase, T> {
 
 class _ComputedState<T> extends AutoDisposeProviderStateBase<
     ProviderDependencyBase, T, Computed<T>> {
-  final _dependencies = <ProviderBase, _Dependency>{};
+  var _dependencies = <ProviderBase, _Dependency>{};
+  Map<ProviderBase, _Dependency> _oldDependencies;
   bool _debugSelecting;
 
   T _state;
@@ -106,6 +104,8 @@ class _ComputedState<T> extends AutoDisposeProviderStateBase<
     }(), '');
     try {
       notifyListenersLock = this;
+      _oldDependencies = _dependencies;
+      _dependencies = {};
       // TODO what if there's an exception inside selector?
       return provider._selector(_reader);
     } finally {
@@ -114,6 +114,10 @@ class _ComputedState<T> extends AutoDisposeProviderStateBase<
         _debugSelecting = false;
         return true;
       }(), '');
+      for (final dep in _oldDependencies.values) {
+        dep.subscription.close();
+      }
+      _oldDependencies = null;
     }
   }
 
@@ -123,7 +127,13 @@ class _ComputedState<T> extends AutoDisposeProviderStateBase<
       'Cannot use `read` outside of the body of the Computed callback',
     );
     return _dependencies.putIfAbsent(target, () {
-      final state = owner.readProviderState(target);
+      final oldDependency = _oldDependencies?.remove(target);
+
+      if (oldDependency != null) {
+        return oldDependency;
+      }
+
+      final state = owner._readProviderState(target);
 
       final dep = _Dependency();
       dep.subscription = state.addLazyListener(
