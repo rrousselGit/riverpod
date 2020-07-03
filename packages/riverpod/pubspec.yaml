@@ -4,8 +4,6 @@ description: >
   while robust and being testable.
 version: 0.3.0
 homepage: https://riverpod.dev
-authors:
-  - Remi Rousselet <darky12s@gmail.com>
 
 environment:
   sdk: ">=2.8.0 <3.0.0"
