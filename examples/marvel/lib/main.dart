@@ -249,12 +249,12 @@ class CharacterView extends HookWidget {
       'CharacterItem cannot be used but _characterIndex is undefined',
     );
 
-    final character = useProvider(characterAtIndex(index));
+    final character = useProvider(characterAtIndex(index)).data.value;
     return Scaffold(
       appBar: AppBar(
-        title: Text(character.data.value.name),
+        title: Text(character.name),
       ),
-      body: LoadingImage(url: character.data.value.thumbnail.url),
+      body: LoadingImage(url: character.thumbnail.url),
     );
   }
 }
