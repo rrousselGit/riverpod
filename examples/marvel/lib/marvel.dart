@@ -15,7 +15,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meta/meta.dart';
 
 import 'configuration.dart';
-import 'result.dart';
 
 part 'marvel.freezed.dart';
 part 'marvel.g.dart';
@@ -35,47 +34,52 @@ class MarvelRepository {
   final Dio _client;
   final int Function() _getCurrentTimestamp;
 
-  Future<Result<MarvelListCharactersReponse>> fetchCharacters({
+  Future<MarvelListCharactersReponse> fetchCharacters({
     @required int offset,
+    int limit,
+    String nameStartsWith,
   }) async {
+    final cleanNameFilter = nameStartsWith?.trim();
+
     final response = await _get('characters', queryParameters: <String, Object>{
       'offset': offset,
+      if (limit != null) 'limit': limit,
+      if (cleanNameFilter != null && cleanNameFilter.isNotEmpty)
+        'nameStartsWith': cleanNameFilter,
     });
 
-    return response.chain((value) {
-      return MarvelListCharactersReponse(
-        characters: value.data.results.map((e) {
-          return Character.fromJson(e);
-        }).toList(growable: false),
-        totalCount: value.data.total,
-      );
-    });
+    return MarvelListCharactersReponse(
+      characters: response.data.results.map((e) {
+        return Character.fromJson(e);
+      }).toList(growable: false),
+      totalCount: response.data.total,
+    );
   }
 
-  Future<Result<MarvelResponse>> _get(
+  Future<MarvelResponse> _get(
     String path, {
     Map<String, Object> queryParameters,
-  }) {
-    return Result.guardFuture(() async {
-      final configs = await _ref.dependOn(configurationsProvider).value;
+  }) async {
+    final configs = await _ref.dependOn(configurationsProvider).value;
 
-      final timestamp = _getCurrentTimestamp();
-      final hash = md5
-          .convert(
-            utf8.encode('$timestamp${configs.privateKey}${configs.publicKey}'),
-          )
-          .toString();
+    final timestamp = _getCurrentTimestamp();
+    final hash = md5
+        .convert(
+          utf8.encode('$timestamp${configs.privateKey}${configs.publicKey}'),
+        )
+        .toString();
 
-      final result = await _client.get<Map<String, Object>>(
-          'https://gateway.marvel.com/v1/public/$path',
-          queryParameters: <String, Object>{
-            'apikey': configs.publicKey,
-            'ts': timestamp,
-            'hash': hash,
-            ...?queryParameters,
-          });
-      return MarvelResponse.fromJson(result.data);
-    });
+    final result = await _client.get<Map<String, Object>>(
+      'https://gateway.marvel.com/v1/public/$path',
+      queryParameters: <String, Object>{
+        'apikey': configs.publicKey,
+        'ts': timestamp,
+        'hash': hash,
+        ...?queryParameters,
+      },
+      // TODO deserialize error message
+    );
+    return MarvelResponse.fromJson(result.data);
   }
 }
 

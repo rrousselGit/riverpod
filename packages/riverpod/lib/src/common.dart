@@ -77,12 +77,12 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
   /// Creates an [AsyncValue] in loading state.
   ///
   /// Prefer always using this constructor with the `const` keyword.
-  const factory AsyncValue.loading() = _Loading<T>;
+  const factory AsyncValue.loading() = AsyncLoading<T>;
 
   /// Creates an [AsyncValue] in error state.
   ///
   /// The parameter [error] cannot be `null`.
-  factory AsyncValue.error(Object error, [StackTrace stackTrace]) = _Error<T>;
+  factory AsyncValue.error(Object error, [StackTrace stackTrace]) = AsyncError<T>;
 
   /// The current data, or null if in loading/error.
   ///
@@ -119,4 +119,19 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
     );
   }
   // TODO: Add a `value` extension on non-nullable AsyncValue
+
+  /// Shorthand for [when] to handle only the `data` case.
+  AsyncValue<R> whenData<R>(R Function(T value) cb) {
+    return when(
+      data: (value) {
+        try {
+          return AsyncValue.data(cb(value));
+        } catch (err, stack) {
+          return AsyncValue.error(err, stack);
+        }
+      },
+      loading: () => const AsyncValue.loading(),
+      error: (err, stack) => AsyncValue.error(err, stack),
+    );
+  }
 }

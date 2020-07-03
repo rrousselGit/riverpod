@@ -2,7 +2,7 @@ name: hooks_riverpod
 description: >
   A simple way to access state from anywhere in your application
   while robust and being testable.
-version: 0.2.1
+version: 0.3.0
 homepage: https://riverpod.dev
 authors:
   - Remi Rousselet <darky12s@gmail.com>
@@ -11,8 +11,8 @@ environment:
   sdk: ">=2.8.0 <3.0.0"
 
 dependencies:
-  flutter_riverpod: ^0.2.1
-  riverpod: ^0.2.1
+  flutter_riverpod: ^0.3.0
+  riverpod: ^0.3.0
   flutter:
     sdk: flutter
   flutter_hooks: ^0.10.0

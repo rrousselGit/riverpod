@@ -520,8 +520,10 @@ Changing the kind of override or reordering overrides is not supported.
 
     if (_computedStateReaders != null) {
       for (final entry in _computedStateReaders.values) {
-        // computed states can never be null as they cannot be overriden
-        yield* recurs(entry._providerState);
+        // A computed state may be null if it was listened then disposed
+        if (entry._providerState != null) {
+          yield* recurs(entry._providerState);
+        }
       }
     }
     for (final entry in _stateReaders.values) {

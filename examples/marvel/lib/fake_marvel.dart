@@ -22,15 +22,15 @@ class FakeDio implements Dio {
     CancelToken cancelToken,
     ProgressCallback onReceiveProgress,
   }) async {
-    final mapEquals = const MapEquality<String, dynamic>().equals;
     switch (path) {
       case 'https://gateway.marvel.com/v1/public/characters':
-        if (mapEquals(queryParameters,
-            <String, dynamic>{'apikey': _apiKey, 'offset': 0})) {
+        if (_apiKey != null && queryParameters['apikey'] != _apiKey) {
+          break;
+        }
+        if (queryParameters['offset'] == 0) {
           return FakeResponse(_characters) as Response<T>;
         }
-        if (mapEquals(queryParameters,
-            <String, dynamic>{'apikey': _apiKey, 'offset': 20})) {
+        if (queryParameters['offset'] == 20) {
           return FakeResponse(_characters20) as Response<T>;
         }
         break;
