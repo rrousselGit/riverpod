@@ -221,6 +221,8 @@ class LoadingImage extends StatelessWidget {
     return Image.network(
       url,
       fit: BoxFit.cover,
+      width: double.infinity,
+      height: double.infinity,
       errorBuilder: (c, err, stack) {
         return const Center(child: Text('error'));
       },
@@ -248,6 +250,9 @@ class CharacterView extends HookWidget {
     );
 
     final character = useProvider(characterAtIndex(index));
-    return LoadingImage(url: character.data.value.thumbnail.url);
+    return Scaffold(
+      appBar: AppBar(),
+      body: LoadingImage(url: character.data.value.thumbnail.url),
+    );
   }
 }
