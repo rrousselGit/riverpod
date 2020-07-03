@@ -183,7 +183,7 @@ class CharacterItem extends HookWidget {
         Navigator.pushNamed(context, '/character');
       },
       child: character.when(
-        loading: () => const CircularProgressIndicator(),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) => Text('Error $err'),
         data: (character) {
           return Card(
