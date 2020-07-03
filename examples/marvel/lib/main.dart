@@ -251,7 +251,9 @@ class CharacterView extends HookWidget {
 
     final character = useProvider(characterAtIndex(index));
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text(character.data.value.name),
+      ),
       body: LoadingImage(url: character.data.value.thumbnail.url),
     );
   }
