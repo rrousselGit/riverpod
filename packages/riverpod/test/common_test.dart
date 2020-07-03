@@ -1,7 +1,23 @@
+import 'dart:async';
+
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('AsyncValue.whenData', () {
+    expect(
+      const AsyncValue.data(42).whenData((value) => '$value'),
+      isA<AsyncData<String>>().having((s) => s.value, 'value', '42'),
+    );
+    expect(
+      const AsyncValue<int>.loading().whenData((value) => '$value'),
+      isA<AsyncLoading<String>>(),
+    );
+    expect(
+      AsyncValue<int>.error(21).whenData((value) => '$value'),
+      isA<AsyncError<String>>().having((s) => s.error, 'error', 21),
+    );
+  });
   test('AsyncValue.data', () {
     expect(
       const AsyncValue.data(42).data,

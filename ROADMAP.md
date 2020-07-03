@@ -11,7 +11,6 @@
 - Cannot add dependencies during dispatching
 - FutureChangeNotifier
 - FutureStateNotifier
-- `AutoDispose`
 - `overrideAs` AutoDispose
 - CI
 - Prevent modifying parents from children (widget -> provider)
@@ -21,6 +20,9 @@
 - Should some exceptions have a custom error?
 
 ## Examples
+
+- synchronizing two lists with the same editable content
+  (two todo lists, editing a todo in one list edits it in another list too)
 
 ### Marvel
 

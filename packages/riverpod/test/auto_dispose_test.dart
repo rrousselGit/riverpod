@@ -3,6 +3,18 @@ import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test(
+      'after a state is destroyed, Owner.traverse states does not visit the state',
+      () async {
+    final provider = AutoDisposeProvider((ref) {});
+    final owner = ProviderStateOwner();
+
+    provider.watchOwner(owner, (value) {})();
+
+    await idle();
+
+    expect(owner.debugProviderStates, <ProviderState>[]);
+  });
   test('setting maintainState to false destroys the state when not listener',
       () async {
     final onDispose = OnDisposeMock();

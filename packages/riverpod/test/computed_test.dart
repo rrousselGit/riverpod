@@ -17,6 +17,42 @@ class Counter extends StateNotifier<int> {
 
 void main() {
   test(
+      'after a computed is destroyed, Owner.traverse states does not visit the state',
+      () async {
+    final notifier = Counter(1);
+    final provider = StateNotifierProvider((ref) => notifier);
+    final computed = Computed((read) => read(provider.state) * 2);
+    final listener = Listener<int>();
+    final owner = ProviderStateOwner();
+
+    computed.watchOwner(owner, listener)();
+
+    verify(listener(2)).called(1);
+    verifyNoMoreInteractions(listener);
+
+    await Future<void>.value();
+
+    verifyNoMoreInteractions(listener);
+    expect(
+      owner.debugProviderValues.keys,
+      unorderedMatches(<Object>[provider, provider.state]),
+    );
+
+    notifier.state++;
+
+    await Future<void>.value();
+    verifyNoMoreInteractions(listener);
+
+    computed.watchOwner(owner, listener);
+
+    verify(listener(4)).called(1);
+    verifyNoMoreInteractions(listener);
+    expect(
+      owner.debugProviderValues.keys,
+      unorderedMatches(<Object>[provider, provider.state, computed]),
+    );
+  });
+  test(
       'Computed removing one of multiple listeners on a provider still listen to the provider',
       () {
     final stateProvider = StateProvider((ref) => 0, name: 'state');

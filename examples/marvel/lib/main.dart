@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
@@ -11,48 +10,66 @@ import 'marvel.dart';
 
 part 'main.freezed.dart';
 
-@freezed
-abstract class ReadMore<T> with _$ReadMore<T> {
-  factory ReadMore(
-    T data, {
-    @required void Function() readMore,
-  }) = _ReadMore<T>;
-}
-
 void main() {
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(
+    const ProviderScope(
+      // uncomment to mock the HTTP requests
+
+      // overrides: [
+      //   repositoryProvider.overrideAs(
+      //     Provider(
+      //       (ref) => MarvelRepository(ref, client: FakeDio(null)),
+      //     ),
+      //   ),
+      // ],
+      child: MyApp(),
+    ),
+  );
 }
 
-final charactersProvider = StreamProvider((ref) async* {
-  var totalCount = 0;
-  var offset = 0;
-  var allCharacters = const <Character>[];
+const kCharactersPageLimit = 50;
 
-  final repository = ref.dependOn(repositoryProvider).value;
+@freezed
+abstract class CharacterPagination with _$CharacterPagination {
+  factory CharacterPagination({
+    @required int page,
+    String name,
+  }) = _CharacterPagination;
+}
 
-  do {
-    final res = await repository.fetchCharacters(offset: offset);
+final characterPages = AutoDisposeFutureProviderFamily<
+    MarvelListCharactersReponse, CharacterPagination>(
+  (ref, meta) async {
+    final repository = ref.read(repositoryProvider);
 
-    final data = res.dataOrThrow;
+    return repository.fetchCharacters(
+      offset: meta.page * kCharactersPageLimit,
+      limit: kCharactersPageLimit,
+      nameStartsWith: meta.name,
+    );
+  },
+);
 
-    totalCount = data.totalCount;
-    offset += data.characters.length;
+final nameFilter = StateProvider((ref) => 'Ab');
 
-    allCharacters = [
-      ...allCharacters,
-      ...data.characters,
-    ];
+final totalCharactersCount = Computed((read) {
+  final meta = CharacterPagination(page: 0, name: read(nameFilter).state);
 
-    final completer = Completer<void>();
+  return read(characterPages(meta)).whenData((value) => value.totalCount);
+});
 
-    yield ReadMore(allCharacters, readMore: () {
-      if (!completer.isCompleted) {
-        completer.complete();
-      }
-    });
+final characterAtIndex =
+    ComputedFamily<AsyncValue<Character>, int>((read, index) {
+  final offsetInPage = index % kCharactersPageLimit;
 
-    await completer.future;
-  } while (allCharacters.length + 1 < totalCount);
+  final meta = CharacterPagination(
+    page: index ~/ kCharactersPageLimit,
+    name: read(nameFilter).state,
+  );
+
+  return read(characterPages(meta)).whenData(
+    (value) => value.characters[offsetInPage],
+  );
 });
 
 class MyApp extends StatelessWidget {
@@ -61,8 +78,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Home(),
+    return MaterialApp(
+      home: const Home(),
+      routes: {
+        '/character': (c) => const CharacterView(),
+      },
     );
   }
 }
@@ -72,9 +92,7 @@ class Home extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final characters = useProvider(charactersProvider);
-
-    return characters.when(
+    return useProvider(totalCharactersCount).when(
       loading: () => Container(
           color: Colors.white,
           child: const Center(child: CircularProgressIndicator())),
@@ -86,33 +104,150 @@ class Home extends HookWidget {
           ),
         );
       },
-      data: (data) {
+      data: (totalCharactersCount) {
         return Scaffold(
-          appBar: AppBar(title: const Text('title')),
-          body: ListView.builder(
-            itemCount: data.data.length,
-            itemBuilder: (context, index) {
-              if (index + 1 == data.data.length) {
-                data.readMore();
-              }
-              return Padding(
-                padding: const EdgeInsets.all(8),
-                child: Card(
-                  child: Column(
-                    children: <Widget>[
-                      Image.network(data.data[index].thumbnail.url),
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Text(data.data[index].name),
-                      ),
-                    ],
+          appBar: AppBar(title: const Text('Marvel characters')),
+          body: Column(
+            children: [
+              const Searchbar(),
+              Expanded(
+                child: GridView.builder(
+                  itemCount: totalCharactersCount,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.8,
                   ),
+                  itemBuilder: (context, index) {
+                    return ProviderScope(
+                      overrides: [
+                        _characterIndex.overrideAs(Provider((ref) => index)),
+                      ],
+                      child: const CharacterItem(),
+                    );
+                  },
                 ),
-              );
-            },
+              ),
+            ],
           ),
         );
       },
     );
+  }
+}
+
+class Searchbar extends HookWidget {
+  const Searchbar({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final filter = useProvider(nameFilter);
+    final searchController = useTextEditingController(text: filter.state);
+
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Focus(
+        onFocusChange: (focused) {
+          if (focused == false) {
+            filter.state = searchController.text;
+          }
+        },
+        child: TextField(
+          controller: searchController,
+        ),
+      ),
+    );
+  }
+}
+
+final _characterIndex = Provider<int>((ref) => null);
+
+class CharacterItem extends HookWidget {
+  const CharacterItem({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final index = useProvider(_characterIndex);
+    assert(
+      index != null,
+      'CharacterItem cannot be used but _characterIndex is undefined',
+    );
+
+    final character = useProvider(characterAtIndex(index));
+    return GestureDetector(
+      onTap: () {
+        selectedCharacterIndex.read(context).state = index;
+        Navigator.pushNamed(context, '/character');
+      },
+      child: character.when(
+        loading: () => const CircularProgressIndicator(),
+        error: (err, stack) => Text('Error $err'),
+        data: (character) {
+          return Card(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Expanded(
+                  child: Hero(
+                    tag: 'character-${character.id}',
+                    child: LoadingImage(url: character.thumbnail.url),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(character.name),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class LoadingImage extends StatelessWidget {
+  const LoadingImage({
+    Key key,
+    @required this.url,
+  }) : super(key: key);
+
+  final String url;
+  @override
+  Widget build(BuildContext context) {
+    return Image.network(
+      url,
+      fit: BoxFit.cover,
+      errorBuilder: (c, err, stack) {
+        return const Center(child: Text('error'));
+      },
+      frameBuilder: (c, image, frame, sync) {
+        if (!sync && frame == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return image;
+      },
+    );
+  }
+}
+
+final selectedCharacterIndex = StateProvider<int>((ref) => null);
+
+class CharacterView extends HookWidget {
+  const CharacterView({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final index = useProvider(selectedCharacterIndex).state;
+    assert(
+      index != null,
+      'CharacterItem cannot be used but _characterIndex is undefined',
+    );
+
+    final character = useProvider(characterAtIndex(index));
+    return LoadingImage(url: character.data.value.thumbnail.url);
   }
 }

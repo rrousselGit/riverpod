@@ -1,3 +1,11 @@
+# 0.3.0
+
+- Added `AsyncValue.whenData`, syntax sugar for `AsyncValue.when` to handle
+  only the `data` case and do nothing for the error/loading cases.
+
+- Fixed a bug that caused [Computed] to crash if it stopped being listened
+  then was listened again.
+
 # 0.2.1
 
 - `Computed` and `Consumer` now correctly unsubscribe to a provider when their
