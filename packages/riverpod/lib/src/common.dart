@@ -82,7 +82,8 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
   /// Creates an [AsyncValue] in error state.
   ///
   /// The parameter [error] cannot be `null`.
-  factory AsyncValue.error(Object error, [StackTrace stackTrace]) = AsyncError<T>;
+  factory AsyncValue.error(Object error, [StackTrace stackTrace]) =
+      AsyncError<T>;
 
   /// The current data, or null if in loading/error.
   ///
