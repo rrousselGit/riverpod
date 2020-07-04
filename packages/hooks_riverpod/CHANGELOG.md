@@ -1,3 +1,7 @@
+# 0.3.1
+
+- Loosen the version constraint of `flutter_hooks` used to support latest versions.
+
 # 0.3.0
 
 - Added `AsyncValue.whenData`, syntax sugar for `AsyncValue.when` to handle
