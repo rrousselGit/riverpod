@@ -221,6 +221,8 @@ class LoadingImage extends StatelessWidget {
     return Image.network(
       url,
       fit: BoxFit.cover,
+      width: double.infinity,
+      height: double.infinity,
       errorBuilder: (c, err, stack) {
         return const Center(child: Text('error'));
       },
@@ -247,7 +249,12 @@ class CharacterView extends HookWidget {
       'CharacterItem cannot be used but _characterIndex is undefined',
     );
 
-    final character = useProvider(characterAtIndex(index));
-    return LoadingImage(url: character.data.value.thumbnail.url);
+    final character = useProvider(characterAtIndex(index)).data.value;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(character.name),
+      ),
+      body: LoadingImage(url: character.thumbnail.url),
+    );
   }
 }
