@@ -106,7 +106,7 @@ extension ProviderSelect<Value> on ProviderBase<ProviderDependencyBase, Value> {
 /// - [Computed]/`select`, for filtering unwanted rebuilds.
 T useProvider<T>(ProviderListenable<T> provider) {
   final owner = ProviderStateOwnerScope.of(useContext());
-  return Hook.use(_ProviderHook<T>(owner, provider));
+  return use(_ProviderHook<T>(owner, provider));
 }
 
 class _ProviderHook<T> extends Hook<T> {
