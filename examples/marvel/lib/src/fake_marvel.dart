@@ -9,6 +9,15 @@ final _characters = _$_charactersJsonLiteral;
 @JsonLiteral('characters_20.json')
 final _characters20 = _$_characters20JsonLiteral;
 
+@JsonLiteral('characters_name= Iron man.json')
+final _charactersIronMan = _$_charactersIronManJsonLiteral;
+
+@JsonLiteral('characters_name= Iron man (.json')
+final _charactersIronMan2 = _$_charactersIronMan2JsonLiteral;
+
+@JsonLiteral('character_1009368.json')
+final _character1009368 = _$_character1009368JsonLiteral;
+
 class FakeDio implements Dio {
   FakeDio([this._apiKey = '42']);
 
@@ -22,10 +31,19 @@ class FakeDio implements Dio {
     CancelToken cancelToken,
     ProgressCallback onReceiveProgress,
   }) async {
+    if (_apiKey != null && queryParameters['apikey'] != _apiKey) {
+      throw StateError('Missing api key');
+    }
+
     switch (path) {
+      case 'https://gateway.marvel.com/v1/public/characters/1009368':
+        return FakeResponse(_character1009368) as Response<T>;
       case 'https://gateway.marvel.com/v1/public/characters':
-        if (_apiKey != null && queryParameters['apikey'] != _apiKey) {
-          break;
+        if (queryParameters['nameStartsWith'] == 'Iron man') {
+          return FakeResponse(_charactersIronMan) as Response<T>;
+        }
+        if (queryParameters['nameStartsWith'] == 'Iron man (') {
+          return FakeResponse(_charactersIronMan2) as Response<T>;
         }
         if (queryParameters['offset'] == 0) {
           return FakeResponse(_characters) as Response<T>;

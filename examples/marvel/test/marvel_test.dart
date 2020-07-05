@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:marvel/marvel.dart';
-import 'package:marvel/fake_marvel.dart';
-import 'package:marvel/result.dart';
+import 'package:marvel/src/marvel.dart';
+import 'package:marvel/src/fake_marvel.dart';
+import 'package:marvel/src/result.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 

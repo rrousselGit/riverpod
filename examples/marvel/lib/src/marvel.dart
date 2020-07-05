@@ -38,6 +38,7 @@ class MarvelRepository {
     @required int offset,
     int limit,
     String nameStartsWith,
+    CancelToken cancelToken,
   }) async {
     final cleanNameFilter = nameStartsWith?.trim();
 
@@ -56,9 +57,15 @@ class MarvelRepository {
     );
   }
 
+  Future<Character> fetchCharacter(String id, {CancelToken cancelToken}) async {
+    final response = await _get('characters/$id', cancelToken: cancelToken);
+    return Character.fromJson(response.data.results.single);
+  }
+
   Future<MarvelResponse> _get(
     String path, {
     Map<String, Object> queryParameters,
+    CancelToken cancelToken,
   }) async {
     final configs = await _ref.dependOn(configurationsProvider).value;
 
@@ -71,6 +78,7 @@ class MarvelRepository {
 
     final result = await _client.get<Map<String, Object>>(
       'https://gateway.marvel.com/v1/public/$path',
+      cancelToken: cancelToken,
       queryParameters: <String, Object>{
         'apikey': configs.publicKey,
         'ts': timestamp,
