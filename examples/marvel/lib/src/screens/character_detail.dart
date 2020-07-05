@@ -5,7 +5,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../marvel.dart';
 import '../widgets/loading_image.dart';
-import 'home.dart' show characterPages;
 
 /// The selected Character's ID
 ///
@@ -20,20 +19,6 @@ import 'home.dart' show characterPages;
 /// - [CharacterView], which consumes this provider and [character] to
 ///   show the informations of one specific [Character].
 final selectedCharacterId = Provider<String>((ref) => null);
-
-/// A cache of [Character] shared between the providers [character] and [characterPages].
-///
-/// Its purpose is so that when navigating to a [Character]'s detail page
-/// by clicking on it in the home page, this doesn't unnecesserily download
-/// the [Character] informations.
-///
-/// See also:
-/// - [character], a provider that fetches an individual [Character] if it isn't
-///   inside [characterCache].
-///
-/// - [characterPages], the home-page provider that inserts the obtains [Character]s
-///   inside [characterCache].
-final characterCache = Provider((ref) => <String, Character>{});
 
 /// A provider that individually fetches a [Character] based on its ID.
 ///
@@ -50,27 +35,19 @@ final characterCache = Provider((ref) => <String, Character>{});
 /// the request is cancelled.
 final character = AutoDisposeFutureProviderFamily<Character, String>(
   (ref, id) async {
-    Character character;
+    // The user used a deep-link to land in the Character page, so we fetch
+    // the Character individually.
 
-    final cache = ref.read(characterCache);
-    if (cache.containsKey(id)) {
-      // The Character was already obtained in the Home page
-      character = cache[id];
-    } else {
-      // The user used a deep-link to land in the Character page, so we fetch
-      // the Character individually.
+    // Cancel the HTTP request if the user leaves the detail page before
+    // the request completes.
+    final cancelToken = CancelToken();
+    ref.onDispose(cancelToken.cancel);
 
-      // Cancel the HTTP request if the user leaves the detail page before
-      // the request completes.
-      final cancelToken = CancelToken();
-      ref.onDispose(cancelToken.cancel);
-
-      final repository = ref.read(repositoryProvider);
-      character = await repository.fetchCharacter(
-        id,
-        cancelToken: cancelToken,
-      );
-    }
+    final repository = ref.read(repositoryProvider);
+    final character = await repository.fetchCharacter(
+      id,
+      cancelToken: cancelToken,
+    );
 
     /// Cache the Character once it was successfully obtained.
     ref.maintainState = true;

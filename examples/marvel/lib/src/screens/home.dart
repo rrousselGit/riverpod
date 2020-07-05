@@ -9,7 +9,6 @@ import '../marvel.dart';
 import '../widgets/loading_image.dart';
 import '../widgets/marvel_logo.dart';
 import '../widgets/search_bar.dart';
-import 'character_detail.dart';
 
 part 'home.freezed.dart';
 
@@ -39,14 +38,6 @@ final characterPages = AutoDisposeFutureProviderFamily<
       nameStartsWith: meta.name,
       cancelToken: cancelToken,
     );
-
-    // Cache the characters obtained using the "list" API, such that when viewing
-    // the /chacters/id page by passing from the home view, this doesn't trigger
-    // a pointless request.
-    final cache = ref.read(characterCache);
-    for (final character in charactersResponse.characters) {
-      cache[character.id.toString()] = character;
-    }
 
     // Once a page was downloaded, preserve its state to avoid re-downloading it again.
     ref.maintainState = true;

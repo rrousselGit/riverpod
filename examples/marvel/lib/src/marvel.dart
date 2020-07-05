@@ -33,6 +33,7 @@ class MarvelRepository {
   final ProviderReference _ref;
   final Dio _client;
   final int Function() _getCurrentTimestamp;
+  final _characterCache = <String, Character>{};
 
   Future<MarvelListCharactersReponse> fetchCharacters({
     @required int offset,
@@ -49,15 +50,27 @@ class MarvelRepository {
         'nameStartsWith': cleanNameFilter,
     });
 
-    return MarvelListCharactersReponse(
+    final result = MarvelListCharactersReponse(
       characters: response.data.results.map((e) {
         return Character.fromJson(e);
       }).toList(growable: false),
       totalCount: response.data.total,
     );
+
+    for (final character in result.characters) {
+      _characterCache[character.id.toString()] = character;
+    }
+
+    return result;
   }
 
   Future<Character> fetchCharacter(String id, {CancelToken cancelToken}) async {
+    // Don't fetch the Character if it was already obtained previously, either
+    // in the home page or in the detail page.
+    if (_characterCache.containsKey(id)) {
+      return _characterCache[id];
+    }
+
     final response = await _get('characters/$id', cancelToken: cancelToken);
     return Character.fromJson(response.data.results.single);
   }
