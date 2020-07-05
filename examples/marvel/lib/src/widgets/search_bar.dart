@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:marvel/src/screens/character_detail.dart';
-import 'package:marvel/src/screens/home.dart';
+
+import '../screens/home.dart';
 
 class _SearchTheme {
   const _SearchTheme({
@@ -51,7 +53,7 @@ class SearchBar extends HookWidget {
     final theme = searchFocusNode.hasFocus ? _kFocusedTheme : _kUnfocusedTheme;
 
     final textFocusNode = useFocusNode();
-    final textEditingController = useTextEditingController(text: 'Iron man');
+    final textEditingController = useTextEditingController();
 
     return Focus(
       focusNode: searchFocusNode,
@@ -76,8 +78,32 @@ class SearchBar extends HookWidget {
   }
 }
 
+/// Listens to the keyboard inputs, but debounce updates to avoid triggering
+/// too many HTTP requests.
+String _useDecouncedSearch(TextEditingController textEditingController) {
+  final search = useState(textEditingController.text);
+  useEffect(() {
+    Timer timer;
+    void listener() {
+      timer?.cancel();
+      timer = Timer(
+        const Duration(milliseconds: 200),
+        () => search.value = textEditingController.text,
+      );
+    }
+
+    textEditingController.addListener(listener);
+    return () {
+      timer?.cancel();
+      textEditingController.removeListener(listener);
+    };
+  }, [textEditingController]);
+
+  return search.value;
+}
+
 class _SearchHints extends HookWidget {
-  _SearchHints({
+  const _SearchHints({
     Key key,
     @required this.textEditingController,
   }) : super(key: key);
@@ -86,10 +112,9 @@ class _SearchHints extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final filter = useValueListenable(textEditingController).text;
-    print(filter);
+    final search = _useDecouncedSearch(textEditingController);
 
-    return useProvider(charactersCount(filter)).when(
+    return useProvider(charactersCount(search)).when(
       loading: () => const Center(
         heightFactor: 1,
         child: Padding(
@@ -113,7 +138,7 @@ class _SearchHints extends HookWidget {
             return HookBuilder(
               builder: (context) {
                 final character = useProvider(characterAtIndex(
-                  CharacterOffset(offset: index, name: filter),
+                  CharacterOffset(offset: index, name: search),
                 ));
 
                 return character.when(
@@ -124,7 +149,10 @@ class _SearchHints extends HookWidget {
                   data: (character) {
                     return ListTile(
                       visualDensity: VisualDensity.compact,
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(
+                            context, '/characters/${character.id}');
+                      },
                       title: Text(
                         character.name,
                         style: Theme.of(context).textTheme.bodyText2,
@@ -223,7 +251,6 @@ class _SearchbarView extends StatelessWidget {
               child: TextField(
                 controller: textEditingController,
                 focusNode: textFocusNode,
-                onTap: () {},
                 scrollController: ScrollController(),
                 decoration: const InputDecoration(
                   border: InputBorder.none,

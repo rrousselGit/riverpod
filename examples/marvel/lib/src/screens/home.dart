@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -25,17 +26,33 @@ abstract class CharacterPagination with _$CharacterPagination {
 final characterPages = AutoDisposeFutureProviderFamily<
     MarvelListCharactersReponse, CharacterPagination>(
   (ref, meta) async {
-    final repository = ref.read(repositoryProvider);
+    // Cancel the page request if the UI no-longer needs it before the request
+    // is finished.
+    // This typically happen if the user scrolls very fast
+    final cancelToken = CancelToken();
+    ref.onDispose(cancelToken.cancel);
 
-    return repository.fetchCharacters(
+    final repository = ref.read(repositoryProvider);
+    final charactersResponse = await repository.fetchCharacters(
       offset: meta.page * kCharactersPageLimit,
       limit: kCharactersPageLimit,
       nameStartsWith: meta.name,
+      cancelToken: cancelToken,
     );
+
+    // Cache the characters obtained using the "list" API, such that when viewing
+    // the /chacters/id page by passing from the home view, this doesn't trigger
+    // a pointless request.
+    final cache = ref.read(characterCache);
+    for (final character in charactersResponse.characters) {
+      cache[character.id.toString()] = character;
+    }
+
+    // Once a page was downloaded, preserve its state to avoid re-downloading it again.
+    ref.maintainState = true;
+    return charactersResponse;
   },
 );
-
-final nameFilter = StateProvider((ref) => '');
 
 final charactersCount = ComputedFamily<AsyncValue<int>, String>((read, name) {
   final meta = CharacterPagination(page: 0, name: name);
@@ -47,7 +64,7 @@ final charactersCount = ComputedFamily<AsyncValue<int>, String>((read, name) {
 abstract class CharacterOffset with _$CharacterOffset {
   factory CharacterOffset({
     @required int offset,
-    String name,
+    @Default('') String name,
   }) = _CharacterOffset;
 }
 
@@ -70,19 +87,7 @@ class Home extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = useProvider(nameFilter).state;
-    final scrollController = useMemoized(() {
-      print('create');
-      return ScrollController();
-    }, []);
-    useEffect(() {
-      scrollController.addListener(() {
-        print('scroll changed ${scrollController.offset}');
-      });
-      return scrollController.dispose;
-    }, []);
-
-    return useProvider(charactersCount(name)).when(
+    return useProvider(charactersCount('')).when(
       loading: () => Container(
         color: Colors.white,
         child: const Center(child: CircularProgressIndicator()),
@@ -98,7 +103,6 @@ class Home extends HookWidget {
       data: (charactersCount) {
         return Scaffold(
           body: CustomScrollView(
-            controller: scrollController,
             slivers: [
               SliverAppBar(
                 expandedHeight: 200,
@@ -117,8 +121,8 @@ class Home extends HookWidget {
                   titlePadding: const EdgeInsetsDirectional.only(bottom: 8),
                 ),
                 pinned: true,
-                actions: [
-                  const SearchBar(),
+                actions: const [
+                  SearchBar(),
                 ],
               ),
               SliverPadding(
@@ -139,6 +143,12 @@ class Home extends HookWidget {
                 ),
               ),
             ],
+          ),
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () =>
+                Navigator.pushNamed(context, '/characters/1009368'),
+            label: const Text('Deep link to Iron-man'),
+            icon: const Icon(Icons.link),
           ),
         );
       },
@@ -161,21 +171,19 @@ class CharacterItem extends HookWidget {
       'CharacterItem cannot be used but _characterIndex is undefined',
     );
 
-    final character = useProvider(characterAtIndex(CharacterOffset(
-      offset: index,
-      name: useProvider(nameFilter).state,
-    )));
+    final character = useProvider(
+      characterAtIndex(CharacterOffset(offset: index)),
+    );
 
-    return GestureDetector(
-      onTap: () {
-        selectedCharacterIndex.read(context).state = index;
-        Navigator.pushNamed(context, '/character');
-      },
-      child: character.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Text('Error $err'),
-        data: (character) {
-          return Card(
+    return character.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, stack) => Text('Error $err'),
+      data: (character) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, '/characters/${character.id}');
+          },
+          child: Card(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
@@ -191,9 +199,9 @@ class CharacterItem extends HookWidget {
                 ),
               ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
