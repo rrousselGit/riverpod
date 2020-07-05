@@ -5,6 +5,7 @@ A Flutter app that displays the list of comics from https://developer.marvel.com
 This example demonstrates how to:
 
 - perform HTTP requests
+- handle pagination
 - cancel HTTP requests if the UI stops listening to the response before completion
 - implement a search-bar that has its own independent state.
 - support deep-linking to an item
