@@ -18,14 +18,14 @@ This example demonstrates how to:
 
 # Installation
 
-To run this example, you will need to create a `configuration.json` placed in the `assets` folder:
+To run this example, you will need to create a `configurations.json` placed in the `assets` folder:
 
 ```
 example/
   pubspec.yaml
   README.md << This readme
   assets/
-    configuration.json  << Where to place the file
+    configurations.json  << Where to place the file
   lib/
 ```
 
