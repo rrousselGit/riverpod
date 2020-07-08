@@ -33,7 +33,7 @@ final selectedCharacterId = Provider<String>((ref) => null);
 ///
 /// If the user leaves the detail page before the HTTP request completes,
 /// the request is cancelled.
-final character = AutoDisposeFutureProviderFamily<Character, String>(
+final character = FutureProvider.autoDispose.family<Character, String>(
   (ref, id) async {
     // The user used a deep-link to land in the Character page, so we fetch
     // the Character individually.
@@ -52,7 +52,7 @@ final character = AutoDisposeFutureProviderFamily<Character, String>(
     /// Cache the Character once it was successfully obtained.
     ref.maintainState = true;
     return character;
-  },
+  }
 );
 
 class CharacterView extends HookWidget {

@@ -11,6 +11,10 @@ class ChangeNotifierProvider<T extends ChangeNotifier> extends Provider<T> {
   ChangeNotifierProvider(Create<T, ProviderReference> create, {String name})
       : super(create, name: name);
 
+  // TODO: ChangeNotifierBuilder
+  // static const family = ChangeNotifierProviderFamilyBuilder();
+  // static const autoDispose = AutoDisposeChangeNotifierProviderBuilder();
+
   @override
   _ChangeNotifierProviderState<T> createState() =>
       _ChangeNotifierProviderState();

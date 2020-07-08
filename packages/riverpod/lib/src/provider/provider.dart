@@ -1,3 +1,4 @@
+import '../builders.dart';
 import '../common.dart';
 import '../framework/framework.dart';
 import '../state_notifier_provider/state_notifier_provider.dart';
@@ -222,10 +223,12 @@ class ProviderDependencyImpl<T> implements ProviderDependency<T> {
 ///   return streamController.stream;
 /// });
 /// ```
-
 class Provider<T> extends AlwaysAliveProviderBase<ProviderDependency<T>, T> {
   /// Creates an immutable value.
   Provider(this._create, {String name}) : super(name);
+
+  static const family = ProviderFamilyBuilder();
+  static const autoDispose = AutoDisposeProviderBuilder();
 
   final Create<T, ProviderReference> _create;
 

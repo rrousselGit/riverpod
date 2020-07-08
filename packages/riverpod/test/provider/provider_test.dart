@@ -5,9 +5,9 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 
 void main() {
-  test('AutoDisposeProviderFamily', () async {
+  test('Provider.autoDispose.family', () async {
     final onDispose = OnDisposeMock();
-    final provider = AutoDisposeProviderFamily<String, int>((ref, value) {
+    final provider = Provider.autoDispose.family<String, int>((ref, value) {
       ref.onDispose(onDispose);
       return '$value';
     });
@@ -28,9 +28,9 @@ void main() {
     verify(onDispose()).called(1);
     verifyNoMoreInteractions(onDispose);
   });
-  test('AutoDisposeProviderFamily override', () async {
+  test('Provider.autoDispose.family override', () async {
     final onDispose = OnDisposeMock();
-    final provider = AutoDisposeProviderFamily<String, int>((ref, value) {
+    final provider = Provider.autoDispose.family<String, int>((ref, value) {
       return '$value';
     });
     final listener = Listener();

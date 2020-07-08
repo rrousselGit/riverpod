@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
+import '../builders.dart';
 import '../common.dart';
 import '../framework/framework.dart';
 import '../provider/provider.dart';
@@ -28,6 +29,9 @@ class FutureProvider<Res> extends AlwaysAliveProviderBase<
     FutureProviderDependency<Res>, AsyncValue<Res>> {
   /// Creates a [FutureProvider] and allows specifying a [name].
   FutureProvider(this._create, {String name}) : super(name);
+
+  static const family = FutureProviderFamilyBuilder();
+  static const autoDispose = AutoDisposeFutureProviderBuilder();
 
   final Create<Future<Res>, ProviderReference> _create;
 

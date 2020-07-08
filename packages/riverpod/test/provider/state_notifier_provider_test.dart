@@ -21,7 +21,7 @@ void main() {
     final notifier = TestNotifier();
     final notifier2 = TestNotifier(42);
     final provider =
-        StateNotifierProviderFamily<TestNotifier, int>((ref, a) => notifier);
+        StateNotifierProvider.family<TestNotifier, int>((ref, a) => notifier);
     final root = ProviderStateOwner();
     final owner = ProviderStateOwner(parent: root, overrides: [
       provider.overrideAs((ref, a) => notifier2),

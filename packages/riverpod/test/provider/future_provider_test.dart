@@ -19,10 +19,10 @@ void main() {
 
     await expectLater(dep.value, completion(42));
   });
-  test('AutoDisposeFutureProvider', () async {
+  test('FutureProvider.autoDispose', () async {
     var future = Future.value(42);
     final onDispose = OnDisposeMock();
-    final provider = AutoDisposeFutureProvider((ref) {
+    final provider = FutureProvider.autoDispose((ref) {
       ref.onDispose(onDispose);
       return future;
     });
@@ -52,8 +52,8 @@ void main() {
     verify(listener(const AsyncValue.data(21))).called(1);
     verifyNoMoreInteractions(listener);
   });
-  test('AutoDisposeFutureProviderFamily override', () async {
-    final provider = AutoDisposeFutureProviderFamily<int, int>((ref, a) {
+  test('FutureProvider.autoDispose.family override', () async {
+    final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
       return Future.value(a * 2);
     });
     final owner = ProviderStateOwner();
@@ -69,8 +69,8 @@ void main() {
     verify(listener(const AsyncValue.data(42))).called(1);
     verifyNoMoreInteractions(listener);
   });
-  test('AutoDisposeFutureProviderFamily override', () async {
-    final provider = AutoDisposeFutureProviderFamily<int, int>((ref, a) {
+  test('FutureProvider.autoDispose.family override', () async {
+    final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
       return Future.value(a * 2);
     });
     final owner = ProviderStateOwner(overrides: [
@@ -88,8 +88,8 @@ void main() {
     verify(listener(const AsyncValue.data(84))).called(1);
     verifyNoMoreInteractions(listener);
   });
-  test('FutureProviderFamily override', () async {
-    final provider = FutureProviderFamily<String, int>((ref, a) {
+  test('FutureProvider.family override', () async {
+    final provider = FutureProvider.family<String, int>((ref, a) {
       return Future.value('$a');
     });
     final owner = ProviderStateOwner();
@@ -103,8 +103,8 @@ void main() {
       const AsyncValue<String>.data('0'),
     );
   });
-  test('FutureProviderFamily override', () async {
-    final provider = FutureProviderFamily<String, int>((ref, a) {
+  test('FutureProvider.family override', () async {
+    final provider = FutureProvider.family<String, int>((ref, a) {
       return Future.value('$a');
     });
     final owner = ProviderStateOwner(overrides: [

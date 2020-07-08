@@ -19,10 +19,10 @@ void main() {
 
     await expectLater(dep.value, emits(42));
   });
-  test('AutoDisposeStreamProvider', () async {
+  test('StreamProvider.autoDispose', () async {
     var stream = Stream.value(42);
     final onDispose = DisposeMock();
-    final provider = AutoDisposeStreamProvider((ref) {
+    final provider = StreamProvider.autoDispose((ref) {
       ref.onDispose(onDispose);
       return stream;
     });
@@ -52,8 +52,8 @@ void main() {
     verify(listener(const AsyncValue.data(21))).called(1);
     verifyNoMoreInteractions(listener);
   });
-  test('AutoDisposeStreamProviderFamily override', () async {
-    final provider = AutoDisposeStreamProviderFamily<int, int>((ref, a) {
+  test('StreamProvider.autoDispose.family override', () async {
+    final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
       return Stream.value(a * 2);
     });
     final owner = ProviderStateOwner();
@@ -69,8 +69,8 @@ void main() {
     verify(listener(const AsyncValue.data(42))).called(1);
     verifyNoMoreInteractions(listener);
   });
-  test('AutoDisposeStreamProviderFamily override', () async {
-    final provider = AutoDisposeStreamProviderFamily<int, int>((ref, a) {
+  test('StreamProvider.autoDispose.family override', () async {
+    final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
       return Stream.value(a * 2);
     });
     final owner = ProviderStateOwner(overrides: [
@@ -88,8 +88,8 @@ void main() {
     verify(listener(const AsyncValue.data(84))).called(1);
     verifyNoMoreInteractions(listener);
   });
-  test('StreamProviderFamily', () async {
-    final provider = StreamProviderFamily<String, int>((ref, a) {
+  test('StreamProvider.family', () async {
+    final provider = StreamProvider.family<String, int>((ref, a) {
       return Stream.value('$a');
     });
     final owner = ProviderStateOwner();
@@ -103,8 +103,8 @@ void main() {
       const AsyncValue<String>.data('0'),
     );
   });
-  test('StreamProviderFamily override', () async {
-    final provider = StreamProviderFamily<String, int>((ref, a) {
+  test('StreamProvider.family override', () async {
+    final provider = StreamProvider.family<String, int>((ref, a) {
       return Stream.value('$a');
     });
     final owner = ProviderStateOwner(overrides: [
