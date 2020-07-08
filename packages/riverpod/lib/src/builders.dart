@@ -24,8 +24,6 @@ class StateProviderFamilyBuilder {
   }) {
     return StateProviderFamily(create);
   }
-
-  
 }
 
 class StateNotifierProviderBuilder {
@@ -38,21 +36,25 @@ class StateNotifierProviderBuilder {
     return StateNotifierProvider(create, name: name);
   }
 
-  AutoDisposeStateNotifierProviderBuilder get autoDispose => const AutoDisposeStateNotifierProviderBuilder();
-  StateNotifierProviderFamilyBuilder get family => const StateNotifierProviderFamilyBuilder();
+  AutoDisposeStateNotifierProviderBuilder get autoDispose =>
+      const AutoDisposeStateNotifierProviderBuilder();
+  StateNotifierProviderFamilyBuilder get family =>
+      const StateNotifierProviderFamilyBuilder();
 }
 
 class StateNotifierProviderFamilyBuilder {
   const StateNotifierProviderFamilyBuilder();
 
-  StateNotifierProviderFamily<T, Value> call<T extends StateNotifier<dynamic>, Value>(
+  StateNotifierProviderFamily<T, Value>
+      call<T extends StateNotifier<dynamic>, Value>(
     T Function(ProviderReference ref, Value value) create, {
     String name,
   }) {
     return StateNotifierProviderFamily(create);
   }
 
-  AutoDisposeStateNotifierProviderFamilyBuilder get autoDispose => const AutoDisposeStateNotifierProviderFamilyBuilder();
+  AutoDisposeStateNotifierProviderFamilyBuilder get autoDispose =>
+      const AutoDisposeStateNotifierProviderFamilyBuilder();
 }
 
 class ProviderBuilder {
@@ -65,7 +67,8 @@ class ProviderBuilder {
     return Provider(create, name: name);
   }
 
-  AutoDisposeProviderBuilder get autoDispose => const AutoDisposeProviderBuilder();
+  AutoDisposeProviderBuilder get autoDispose =>
+      const AutoDisposeProviderBuilder();
   ProviderFamilyBuilder get family => const ProviderFamilyBuilder();
 }
 
@@ -79,7 +82,8 @@ class ProviderFamilyBuilder {
     return ProviderFamily(create);
   }
 
-  AutoDisposeProviderFamilyBuilder get autoDispose => const AutoDisposeProviderFamilyBuilder();
+  AutoDisposeProviderFamilyBuilder get autoDispose =>
+      const AutoDisposeProviderFamilyBuilder();
 }
 
 class FutureProviderBuilder {
@@ -92,7 +96,8 @@ class FutureProviderBuilder {
     return FutureProvider(create, name: name);
   }
 
-  AutoDisposeFutureProviderBuilder get autoDispose => const AutoDisposeFutureProviderBuilder();
+  AutoDisposeFutureProviderBuilder get autoDispose =>
+      const AutoDisposeFutureProviderBuilder();
   FutureProviderFamilyBuilder get family => const FutureProviderFamilyBuilder();
 }
 
@@ -106,7 +111,8 @@ class FutureProviderFamilyBuilder {
     return FutureProviderFamily(create);
   }
 
-  AutoDisposeFutureProviderFamilyBuilder get autoDispose => const AutoDisposeFutureProviderFamilyBuilder();
+  AutoDisposeFutureProviderFamilyBuilder get autoDispose =>
+      const AutoDisposeFutureProviderFamilyBuilder();
 }
 
 class StreamProviderBuilder {
@@ -119,7 +125,8 @@ class StreamProviderBuilder {
     return StreamProvider(create, name: name);
   }
 
-  AutoDisposeStreamProviderBuilder get autoDispose => const AutoDisposeStreamProviderBuilder();
+  AutoDisposeStreamProviderBuilder get autoDispose =>
+      const AutoDisposeStreamProviderBuilder();
   StreamProviderFamilyBuilder get family => const StreamProviderFamilyBuilder();
 }
 
@@ -133,7 +140,8 @@ class StreamProviderFamilyBuilder {
     return StreamProviderFamily(create);
   }
 
-  AutoDisposeStreamProviderFamilyBuilder get autoDispose => const AutoDisposeStreamProviderFamilyBuilder();
+  AutoDisposeStreamProviderFamilyBuilder get autoDispose =>
+      const AutoDisposeStreamProviderFamilyBuilder();
 }
 
 class AutoDisposeStateNotifierProviderBuilder {
@@ -146,20 +154,20 @@ class AutoDisposeStateNotifierProviderBuilder {
     return AutoDisposeStateNotifierProvider(create, name: name);
   }
 
-  AutoDisposeStateNotifierProviderFamilyBuilder get family => const AutoDisposeStateNotifierProviderFamilyBuilder();
+  AutoDisposeStateNotifierProviderFamilyBuilder get family =>
+      const AutoDisposeStateNotifierProviderFamilyBuilder();
 }
 
 class AutoDisposeStateNotifierProviderFamilyBuilder {
   const AutoDisposeStateNotifierProviderFamilyBuilder();
 
-  AutoDisposeStateNotifierProviderFamily<T, Value> call<T extends StateNotifier<dynamic>, Value>(
+  AutoDisposeStateNotifierProviderFamily<T, Value>
+      call<T extends StateNotifier<dynamic>, Value>(
     T Function(AutoDisposeProviderReference ref, Value value) create, {
     String name,
   }) {
     return AutoDisposeStateNotifierProviderFamily(create);
   }
-
-  
 }
 
 class AutoDisposeProviderBuilder {
@@ -172,7 +180,8 @@ class AutoDisposeProviderBuilder {
     return AutoDisposeProvider(create, name: name);
   }
 
-  AutoDisposeProviderFamilyBuilder get family => const AutoDisposeProviderFamilyBuilder();
+  AutoDisposeProviderFamilyBuilder get family =>
+      const AutoDisposeProviderFamilyBuilder();
 }
 
 class AutoDisposeProviderFamilyBuilder {
@@ -184,8 +193,6 @@ class AutoDisposeProviderFamilyBuilder {
   }) {
     return AutoDisposeProviderFamily(create);
   }
-
-  
 }
 
 class AutoDisposeFutureProviderBuilder {
@@ -198,7 +205,8 @@ class AutoDisposeFutureProviderBuilder {
     return AutoDisposeFutureProvider(create, name: name);
   }
 
-  AutoDisposeFutureProviderFamilyBuilder get family => const AutoDisposeFutureProviderFamilyBuilder();
+  AutoDisposeFutureProviderFamilyBuilder get family =>
+      const AutoDisposeFutureProviderFamilyBuilder();
 }
 
 class AutoDisposeFutureProviderFamilyBuilder {
@@ -210,8 +218,6 @@ class AutoDisposeFutureProviderFamilyBuilder {
   }) {
     return AutoDisposeFutureProviderFamily(create);
   }
-
-  
 }
 
 class AutoDisposeStreamProviderBuilder {
@@ -224,7 +230,8 @@ class AutoDisposeStreamProviderBuilder {
     return AutoDisposeStreamProvider(create, name: name);
   }
 
-  AutoDisposeStreamProviderFamilyBuilder get family => const AutoDisposeStreamProviderFamilyBuilder();
+  AutoDisposeStreamProviderFamilyBuilder get family =>
+      const AutoDisposeStreamProviderFamilyBuilder();
 }
 
 class AutoDisposeStreamProviderFamilyBuilder {
@@ -236,7 +243,4 @@ class AutoDisposeStreamProviderFamilyBuilder {
   }) {
     return AutoDisposeStreamProviderFamily(create);
   }
-
-  
 }
-
