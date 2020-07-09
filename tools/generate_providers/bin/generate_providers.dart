@@ -52,8 +52,8 @@ const matrix = Tuple3(
   ProviderType.values,
 );
 
-
-const autoDisposeDoc = '''
+const _autoDisposeDoc = '''
+/// {@template riverpod.autoDispose}
 /// Marks the provider as automatically disposed when no-longer listened.
 ///
 /// Some typical use-cases:
@@ -106,10 +106,21 @@ const autoDisposeDoc = '''
 ///   ref.maintainState = true;
 ///   return response;
 /// });
-/// ```''';
+/// ```
+/// {@endtemplate}''';
 
+bool _didAddAutoDisposeTemplate = false;
 
-const familyDoc = '''
+String autoDisposeDoc() {
+  if (_didAddAutoDisposeTemplate) {
+    return '/// {@macro riverpod.autoDispose}';
+  }
+  _didAddAutoDisposeTemplate = true;
+  return _autoDisposeDoc;
+}
+
+const _familyDoc = r'''
+/// {@template riverpod.family}
 /// Creates a provider from external parameters.
 ///
 /// Marking a provider with `family` is an easy way to have more advanced
@@ -129,7 +140,7 @@ const familyDoc = '''
 ///
 /// ```dart
 /// final messages = FutureProvider.family<Message, String>((ref, id) async {
-///   return dio.get('http://my_api.dev/messages/\$id);
+///   return dio.get('http://my_api.dev/messages/$id);
 /// });
 /// ```
 ///
@@ -161,7 +172,18 @@ const familyDoc = '''
 ///   final response2 = useProvider(messages('42'));
 ///   // Correctly listens to both `messages('21')` and `messages('42')`
 /// }
-/// ```''';
+/// ```
+/// {@endtemplate}''';
+
+bool _didAddFamilyTemplate = false;
+
+String familyDoc() {
+  if (_didAddFamilyTemplate) {
+    return '/// {@macro riverpod.family}';
+  }
+  _didAddFamilyTemplate = true;
+  return _familyDoc;
+}
 
 void main() {
   print("import 'package:state_notifier/state_notifier.dart';\n");
@@ -235,7 +257,7 @@ extension on Tuple3<DisposeType, StateType, ProviderType> {
       if (item1 == DisposeType.none && item2 != StateType.state) {
         yield '''
 
-${autoDisposeDoc.replaceAll('///', '  ///')}
+${autoDisposeDoc().replaceAll('///', '  ///')}
   AutoDispose${providerName}Builder get autoDispose {
     return const AutoDispose${providerName}Builder();
   }''';
@@ -244,7 +266,7 @@ ${autoDisposeDoc.replaceAll('///', '  ///')}
       if (item3 == ProviderType.single) {
         yield '''
 
-${familyDoc.replaceAll('///', '  ///')}
+${familyDoc().replaceAll('///', '  ///')}
   ${providerName}FamilyBuilder get family {
     return const ${providerName}FamilyBuilder();
   }''';
@@ -279,7 +301,7 @@ class ${configs.providerName}Builder {
   /// Builds a [${configs.providerName}].
   const ${configs.providerName}Builder();
 
-${familyDoc.replaceAll('///', '  ///')}
+${familyDoc().replaceAll('///', '  ///')}
   ${configs.providerName}<T, Value> call<T${configs.constraint}, Value>(
     ${configs.createType} Function(${configs.ref} ref, Value value) create, {
     String name,
@@ -305,7 +327,7 @@ class ${configs.providerName}Builder {
   /// Builds a [${configs.providerName}].
   const ${configs.providerName}Builder();
 
-${autoDisposeDoc.replaceAll('///', '  ///')}
+${autoDisposeDoc().replaceAll('///', '  ///')}
   ${configs.providerName}<T> call<T${configs.constraint}>(
     ${configs.createType} Function(${configs.ref} ref) create, {
     String name,

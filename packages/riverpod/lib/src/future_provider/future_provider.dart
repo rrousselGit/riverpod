@@ -30,7 +30,9 @@ class FutureProvider<Res> extends AlwaysAliveProviderBase<
   /// Creates a [FutureProvider] and allows specifying a [name].
   FutureProvider(this._create, {String name}) : super(name);
 
+  /// {@macro riverpod.family}
   static const family = FutureProviderFamilyBuilder();
+  /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeFutureProviderBuilder();
 
   final Create<Future<Res>, ProviderReference> _create;

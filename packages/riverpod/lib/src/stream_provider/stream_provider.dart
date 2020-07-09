@@ -79,7 +79,10 @@ class StreamProvider<T> extends AlwaysAliveProviderBase<
   /// Creates a [StreamProvider] and allows specifying a [name].
   StreamProvider(this._create, {String name}) : super(name);
 
+  /// {@macro riverpod.family}
   static const family = StreamProviderFamilyBuilder();
+
+  /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStreamProviderBuilder();
 
   final Create<Stream<T>, ProviderReference> _create;

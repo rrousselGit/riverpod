@@ -227,7 +227,10 @@ class Provider<T> extends AlwaysAliveProviderBase<ProviderDependency<T>, T> {
   /// Creates an immutable value.
   Provider(this._create, {String name}) : super(name);
 
+  /// {@macro riverpod.family}
   static const family = ProviderFamilyBuilder();
+
+  /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeProviderBuilder();
 
   final Create<T, ProviderReference> _create;
