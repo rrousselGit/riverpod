@@ -52,6 +52,117 @@ const matrix = Tuple3(
   ProviderType.values,
 );
 
+
+const autoDisposeDoc = '''
+/// Marks the provider as automatically disposed when no-longer listened.
+///
+/// Some typical use-cases:
+///
+/// - Combined with [StreamProvider], this can be used as a mean to keep
+///   the connection with Firebase alive only when truly needed (to reduce costs).
+/// - Automatically reset a form state when leaving the screen.
+/// - Automatically retry HTTP requests that failed when the user exit and
+///   re-enter the screen.
+/// - Cancel HTTP requests if the user leaves a screen before the request completed.
+///
+/// Marking a provider with `autoDispose` has two effects:
+///
+/// - this adds a new property on the `ref` parameter of your provider: `maintainState`
+/// - the `readOwner(ProviderStateOwner)` and `read(BuildContext)` methods
+///   of a provider are removed.
+///   It is no-longer possible to read a provider without listening to it.
+///
+/// The `maintainState` property is a boolean (`false` by default) that allows
+/// the provider to tell Riverpod if the state of the provider should be preserved
+/// even if no-longer listened.
+///
+/// A use-case would be to set this flag to `true` after an HTTP request have
+/// completed:
+///
+/// ```dart
+/// final myProvider = FutureProvider.autoDispose((ref) async {
+///   final response = await httpClient.get(...);
+///   ref.maintainState = true;
+///   return response;
+/// });
+/// ```
+///
+/// This way, if the request failed and the UI leaves the screen then re-enters
+/// it, then the request will be performed again.
+/// But if the request completed successfuly, the state will be preserved
+/// and re-entering the screen will not trigger a new request.
+///
+/// It can be combined with `ref.onDispose` for more advanced behaviors, such
+/// as cancelling pending HTTP requests when the user leaves a screen.
+/// For example, modifying our previous snippet and using `dio`, we would have:
+///
+/// ```diff
+/// final myProvider = FutureProvider.autoDispose((ref) async {
+/// + final cancelToken = CancelToken();
+/// + ref.onDispose(() => cancelToken.cancel());
+/// 
+/// + final response = await dio.get('path', cancelToken: cancelToken);
+/// - final response = await dio.get('path');
+///   ref.maintainState = true;
+///   return response;
+/// });
+/// ```''';
+
+
+const familyDoc = '''
+/// Creates a provider from external parameters.
+///
+/// Marking a provider with `family` is an easy way to have more advanced
+/// behaviors for our providers.
+///
+/// A common use-case would be to use `family` to make a provider that fetches
+/// a data from its ID.
+/// By using `family`, this will make our UI automatically support cases such as:
+/// - The ID changed, so we need to fetch the new data and update the UI.
+/// - The UI is reading multiple IDs at the same time.
+///
+/// The way families works is by adding an extra parameter to the provider.
+/// This parameter can then be freely used in our provider to create some state.
+///
+/// For example, we could combine `family` with [FutureProvider] to fetch
+/// a "message" from its ID:
+///
+/// ```dart
+/// final messages = FutureProvider.family<Message, String>((ref, id) async {
+///   return dio.get('http://my_api.dev/messages/\$id);
+/// });
+/// ```
+///
+/// Then, when using our `messages` provider, the syntax is slightly modified.
+/// The usual:
+/// 
+/// ```dart
+/// Widget build(BuildContext) {
+///   // Error – messages is not a provider
+///   final response = useProvider(messages);
+/// }
+/// ```
+///
+/// will not work anymore.
+/// Instead, we need to pass a parameter to `messages`:
+///
+/// ```dart
+/// Widget build(BuildContext) {
+///   final response = useProvider(messages('id'));
+/// }
+/// ```
+///
+/// Note that it is entirely possible for a widget to listen to `messages` with
+/// different ids simultaneously:
+/// 
+/// ```dart
+/// Widget build(BuildContext) {
+///   final response = useProvider(messages('21'));
+///   final response2 = useProvider(messages('42'));
+///   // Correctly listens to both `messages('21')` and `messages('42')`
+/// }
+/// ```''';
+
 void main() {
   print("import 'package:state_notifier/state_notifier.dart';\n");
   print("import 'internals.dart';\n");
@@ -122,37 +233,25 @@ extension on Tuple3<DisposeType, StateType, ProviderType> {
   ) {
     Iterable<String> other() sync* {
       if (item1 == DisposeType.none && item2 != StateType.state) {
-        yield 'AutoDispose${providerName}Builder get autoDispose => const AutoDispose${providerName}Builder();';
-      }
-      // if (item2 == StateType.none) {
-      //   String nameFor(StateType type) {
-      //     final clone = Tuple3(item1, type, item3);
-      //     return clone.providerName;
-      //   }
+        yield '''
 
-      // if (matrix.item2.contains(StateType.future)) {
-      //   yield 'final future = const ${nameFor(StateType.future)}Builder();';
-      // }
-      // if (matrix.item2.contains(StateType.stateNotifier)) {
-      //   yield 'final stateNotifier = const ${nameFor(StateType.stateNotifier)}Builder();';
-      // }
-      // if (item1 != DisposeType.autoDispose &&
-      //     matrix.item2.contains(StateType.state)) {
-      //   yield 'final state = const ${nameFor(StateType.state)}Builder();';
-      // }
-      // if (matrix.item2.contains(StateType.stream)) {
-      //   yield 'final stream = const ${nameFor(StateType.stream)}Builder();';
-      // }
-      // if (matrix.item2.contains(StateType.changeNotifier)) {
-      //   yield 'final changeNotifier = const ${nameFor(StateType.changeNotifier)}Builder();';
-      // }
-      // }
+${autoDisposeDoc.replaceAll('///', '  ///')}
+  AutoDispose${providerName}Builder get autoDispose {
+    return const AutoDispose${providerName}Builder();
+  }''';
+      }
+
       if (item3 == ProviderType.single) {
-        yield '${providerName}FamilyBuilder get family => const ${providerName}FamilyBuilder();';
+        yield '''
+
+${familyDoc.replaceAll('///', '  ///')}
+  ${providerName}FamilyBuilder get family {
+    return const ${providerName}FamilyBuilder();
+  }''';
       }
     }
 
-    return other().join('\n  ');
+    return other().join('\n');
   }
 }
 
@@ -175,17 +274,19 @@ class FamilyBuilder {
   @override
   String toString() {
     return '''
+/// Builds a [${configs.providerName}].
 class ${configs.providerName}Builder {
+  /// Builds a [${configs.providerName}].
   const ${configs.providerName}Builder();
 
+${familyDoc.replaceAll('///', '  ///')}
   ${configs.providerName}<T, Value> call<T${configs.constraint}, Value>(
     ${configs.createType} Function(${configs.ref} ref, Value value) create, {
     String name,
   }) {
     return ${configs.providerName}(create);
   }
-
-  ${configs.links(matrix)}
+${configs.links(matrix)}
 }
 ''';
   }
@@ -199,17 +300,19 @@ class ProviderBuilder {
   @override
   String toString() {
     return '''
+/// Builds a [${configs.providerName}].
 class ${configs.providerName}Builder {
+  /// Builds a [${configs.providerName}].
   const ${configs.providerName}Builder();
 
+${autoDisposeDoc.replaceAll('///', '  ///')}
   ${configs.providerName}<T> call<T${configs.constraint}>(
     ${configs.createType} Function(${configs.ref} ref) create, {
     String name,
   }) {
     return ${configs.providerName}(create, name: name);
   }
-
-  ${configs.links(matrix)}
+${configs.links(matrix)}
 }
 ''';
   }
