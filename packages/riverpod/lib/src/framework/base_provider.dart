@@ -422,8 +422,10 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
 
   /// Notify listeners that a new value was emitted. Can only be called inside [flush].
   void notifyChanged() {
-    assert(_debugIsPerformingFlush,
-        '`notifyChanged` can only be called within `flush`');
+    assert(
+      _debugIsPerformingFlush,
+      '`notifyChanged` can only be called within `flush`',
+    );
     if (!_mounted) {
       throw StateError(
         'Cannot notify listeners of a provider after if was dispose',

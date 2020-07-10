@@ -36,8 +36,7 @@ export 'src/state_notifier_provider/auto_dispose_state_notifier_provider.dart'
 export 'src/state_notifier_provider/state_notifier_provider.dart'
     show StateNotifierProvider, StateNotifierStateProviderX;
 
-export 'src/state_provider.dart'
-    show StateController, StateProvider, StateProviderFamily;
+export 'src/state_provider.dart' show StateController, StateProvider;
 
 export 'src/stream_provider/stream_provider.dart'
     show StreamProvider, StreamProviderDependency;
