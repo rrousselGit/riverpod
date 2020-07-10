@@ -48,7 +48,7 @@ jobs:
 
       - name: Coverage
         run: |
-          if "${{ matrix.package }}" != "packages/riverpod/example"; then
+          if [ "${{ matrix.package }}" != "packages/riverpod/example" ]; then
             echo "run"
             pwd
             dart pub run test_coverage
