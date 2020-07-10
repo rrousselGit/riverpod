@@ -47,6 +47,7 @@ jobs:
         working-directory: ${{ matrix.package }}
 
       - name: Coverage
+        if: ${{ matrix.package }} != packages/riverpod/example
         run: dart pub run test_coverage
         working-directory: ${{ matrix.package }}
 
