@@ -53,7 +53,7 @@ class ChangeNotifierProviderBuilder {
   /// final myProvider = FutureProvider.autoDispose((ref) async {
   /// + final cancelToken = CancelToken();
   /// + ref.onDispose(() => cancelToken.cancel());
-  /// 
+  ///
   /// + final response = await dio.get('path', cancelToken: cancelToken);
   /// - final response = await dio.get('path');
   ///   ref.maintainState = true;
@@ -99,7 +99,7 @@ class ChangeNotifierProviderBuilder {
   ///
   /// Then, when using our `messages` provider, the syntax is slightly modified.
   /// The usual:
-  /// 
+  ///
   /// ```dart
   /// Widget build(BuildContext) {
   ///   // Error – messages is not a provider
@@ -118,7 +118,7 @@ class ChangeNotifierProviderBuilder {
   ///
   /// Note that it is entirely possible for a widget to listen to `messages` with
   /// different ids simultaneously:
-  /// 
+  ///
   /// ```dart
   /// Widget build(BuildContext) {
   ///   final response = useProvider(messages('21'));
@@ -131,6 +131,7 @@ class ChangeNotifierProviderBuilder {
     return const ChangeNotifierProviderFamilyBuilder();
   }
 }
+
 /// Builds a [ChangeNotifierProviderFamily].
 class ChangeNotifierProviderFamilyBuilder {
   /// Builds a [ChangeNotifierProviderFamily].
@@ -149,6 +150,7 @@ class ChangeNotifierProviderFamilyBuilder {
     return const AutoDisposeChangeNotifierProviderFamilyBuilder();
   }
 }
+
 /// Builds a [AutoDisposeChangeNotifierProvider].
 class AutoDisposeChangeNotifierProviderBuilder {
   /// Builds a [AutoDisposeChangeNotifierProvider].
@@ -167,17 +169,18 @@ class AutoDisposeChangeNotifierProviderBuilder {
     return const AutoDisposeChangeNotifierProviderFamilyBuilder();
   }
 }
+
 /// Builds a [AutoDisposeChangeNotifierProviderFamily].
 class AutoDisposeChangeNotifierProviderFamilyBuilder {
   /// Builds a [AutoDisposeChangeNotifierProviderFamily].
   const AutoDisposeChangeNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  AutoDisposeChangeNotifierProviderFamily<T, Value> call<T extends ChangeNotifier, Value>(
+  AutoDisposeChangeNotifierProviderFamily<T, Value>
+      call<T extends ChangeNotifier, Value>(
     T Function(AutoDisposeProviderReference ref, Value value) create, {
     String name,
   }) {
     return AutoDisposeChangeNotifierProviderFamily(create);
   }
-
 }

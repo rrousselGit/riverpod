@@ -32,6 +32,7 @@ class FutureProvider<Res> extends AlwaysAliveProviderBase<
 
   /// {@macro riverpod.family}
   static const family = FutureProviderFamilyBuilder();
+
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeFutureProviderBuilder();
 

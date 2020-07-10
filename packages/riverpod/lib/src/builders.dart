@@ -53,7 +53,7 @@ class StateProviderBuilder {
   /// final myProvider = FutureProvider.autoDispose((ref) async {
   /// + final cancelToken = CancelToken();
   /// + ref.onDispose(() => cancelToken.cancel());
-  /// 
+  ///
   /// + final response = await dio.get('path', cancelToken: cancelToken);
   /// - final response = await dio.get('path');
   ///   ref.maintainState = true;
@@ -94,7 +94,7 @@ class StateProviderBuilder {
   ///
   /// Then, when using our `messages` provider, the syntax is slightly modified.
   /// The usual:
-  /// 
+  ///
   /// ```dart
   /// Widget build(BuildContext) {
   ///   // Error – messages is not a provider
@@ -113,7 +113,7 @@ class StateProviderBuilder {
   ///
   /// Note that it is entirely possible for a widget to listen to `messages` with
   /// different ids simultaneously:
-  /// 
+  ///
   /// ```dart
   /// Widget build(BuildContext) {
   ///   final response = useProvider(messages('21'));
@@ -126,6 +126,7 @@ class StateProviderBuilder {
     return const StateProviderFamilyBuilder();
   }
 }
+
 /// Builds a [StateProviderFamily].
 class StateProviderFamilyBuilder {
   /// Builds a [StateProviderFamily].
@@ -138,8 +139,8 @@ class StateProviderFamilyBuilder {
   }) {
     return StateProviderFamily(create);
   }
-
 }
+
 /// Builds a [StateNotifierProvider].
 class StateNotifierProviderBuilder {
   /// Builds a [StateNotifierProvider].
@@ -163,13 +164,15 @@ class StateNotifierProviderBuilder {
     return const StateNotifierProviderFamilyBuilder();
   }
 }
+
 /// Builds a [StateNotifierProviderFamily].
 class StateNotifierProviderFamilyBuilder {
   /// Builds a [StateNotifierProviderFamily].
   const StateNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  StateNotifierProviderFamily<T, Value> call<T extends StateNotifier<dynamic>, Value>(
+  StateNotifierProviderFamily<T, Value>
+      call<T extends StateNotifier<dynamic>, Value>(
     T Function(ProviderReference ref, Value value) create, {
     String name,
   }) {
@@ -181,6 +184,7 @@ class StateNotifierProviderFamilyBuilder {
     return const AutoDisposeStateNotifierProviderFamilyBuilder();
   }
 }
+
 /// Builds a [Provider].
 class ProviderBuilder {
   /// Builds a [Provider].
@@ -204,6 +208,7 @@ class ProviderBuilder {
     return const ProviderFamilyBuilder();
   }
 }
+
 /// Builds a [ProviderFamily].
 class ProviderFamilyBuilder {
   /// Builds a [ProviderFamily].
@@ -222,6 +227,7 @@ class ProviderFamilyBuilder {
     return const AutoDisposeProviderFamilyBuilder();
   }
 }
+
 /// Builds a [FutureProvider].
 class FutureProviderBuilder {
   /// Builds a [FutureProvider].
@@ -245,6 +251,7 @@ class FutureProviderBuilder {
     return const FutureProviderFamilyBuilder();
   }
 }
+
 /// Builds a [FutureProviderFamily].
 class FutureProviderFamilyBuilder {
   /// Builds a [FutureProviderFamily].
@@ -263,6 +270,7 @@ class FutureProviderFamilyBuilder {
     return const AutoDisposeFutureProviderFamilyBuilder();
   }
 }
+
 /// Builds a [StreamProvider].
 class StreamProviderBuilder {
   /// Builds a [StreamProvider].
@@ -286,6 +294,7 @@ class StreamProviderBuilder {
     return const StreamProviderFamilyBuilder();
   }
 }
+
 /// Builds a [StreamProviderFamily].
 class StreamProviderFamilyBuilder {
   /// Builds a [StreamProviderFamily].
@@ -304,6 +313,7 @@ class StreamProviderFamilyBuilder {
     return const AutoDisposeStreamProviderFamilyBuilder();
   }
 }
+
 /// Builds a [AutoDisposeStateNotifierProvider].
 class AutoDisposeStateNotifierProviderBuilder {
   /// Builds a [AutoDisposeStateNotifierProvider].
@@ -322,20 +332,22 @@ class AutoDisposeStateNotifierProviderBuilder {
     return const AutoDisposeStateNotifierProviderFamilyBuilder();
   }
 }
+
 /// Builds a [AutoDisposeStateNotifierProviderFamily].
 class AutoDisposeStateNotifierProviderFamilyBuilder {
   /// Builds a [AutoDisposeStateNotifierProviderFamily].
   const AutoDisposeStateNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  AutoDisposeStateNotifierProviderFamily<T, Value> call<T extends StateNotifier<dynamic>, Value>(
+  AutoDisposeStateNotifierProviderFamily<T, Value>
+      call<T extends StateNotifier<dynamic>, Value>(
     T Function(AutoDisposeProviderReference ref, Value value) create, {
     String name,
   }) {
     return AutoDisposeStateNotifierProviderFamily(create);
   }
-
 }
+
 /// Builds a [AutoDisposeProvider].
 class AutoDisposeProviderBuilder {
   /// Builds a [AutoDisposeProvider].
@@ -354,6 +366,7 @@ class AutoDisposeProviderBuilder {
     return const AutoDisposeProviderFamilyBuilder();
   }
 }
+
 /// Builds a [AutoDisposeProviderFamily].
 class AutoDisposeProviderFamilyBuilder {
   /// Builds a [AutoDisposeProviderFamily].
@@ -366,8 +379,8 @@ class AutoDisposeProviderFamilyBuilder {
   }) {
     return AutoDisposeProviderFamily(create);
   }
-
 }
+
 /// Builds a [AutoDisposeFutureProvider].
 class AutoDisposeFutureProviderBuilder {
   /// Builds a [AutoDisposeFutureProvider].
@@ -386,6 +399,7 @@ class AutoDisposeFutureProviderBuilder {
     return const AutoDisposeFutureProviderFamilyBuilder();
   }
 }
+
 /// Builds a [AutoDisposeFutureProviderFamily].
 class AutoDisposeFutureProviderFamilyBuilder {
   /// Builds a [AutoDisposeFutureProviderFamily].
@@ -398,8 +412,8 @@ class AutoDisposeFutureProviderFamilyBuilder {
   }) {
     return AutoDisposeFutureProviderFamily(create);
   }
-
 }
+
 /// Builds a [AutoDisposeStreamProvider].
 class AutoDisposeStreamProviderBuilder {
   /// Builds a [AutoDisposeStreamProvider].
@@ -418,6 +432,7 @@ class AutoDisposeStreamProviderBuilder {
     return const AutoDisposeStreamProviderFamilyBuilder();
   }
 }
+
 /// Builds a [AutoDisposeStreamProviderFamily].
 class AutoDisposeStreamProviderFamilyBuilder {
   /// Builds a [AutoDisposeStreamProviderFamily].
@@ -430,5 +445,4 @@ class AutoDisposeStreamProviderFamilyBuilder {
   }) {
     return AutoDisposeStreamProviderFamily(create);
   }
-
 }

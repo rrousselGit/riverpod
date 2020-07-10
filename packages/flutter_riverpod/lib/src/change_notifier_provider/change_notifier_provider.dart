@@ -17,6 +17,7 @@ class ChangeNotifierProvider<T extends ChangeNotifier> extends Provider<T> {
 
   /// {@macro riverpod.family}
   static const family = ChangeNotifierProviderFamilyBuilder();
+
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeChangeNotifierProviderBuilder();
 
