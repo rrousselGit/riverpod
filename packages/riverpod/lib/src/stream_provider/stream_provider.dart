@@ -9,12 +9,8 @@ part 'auto_dispose_stream_provider.dart';
 
 /// The state of a [StreamProvider].
 class StreamProviderDependency<T> extends ProviderDependencyImpl<Stream<T>> {
-  StreamProviderDependency._(this.stream, this._state) : super(stream);
+  StreamProviderDependency._(Stream<T> stream, this._state) : super(stream);
 
-  @Deprecated('`stream` will be removed in 0.3.0. Use `value` instead.')
-
-  /// The stream returned by [StreamProvider].
-  final Stream<T> stream;
   final _State<T, ProviderBase<StreamProviderDependency<T>, AsyncValue<T>>>
       _state;
 

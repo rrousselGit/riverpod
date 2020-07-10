@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
-
 import '../builders.dart';
 import '../common.dart';
 import '../framework/framework.dart';
@@ -12,11 +10,7 @@ part 'auto_dispose_future_provider.dart';
 
 /// The state of a [FutureProvider].
 class FutureProviderDependency<T> extends ProviderDependencyImpl<Future<T>> {
-  FutureProviderDependency._({@required this.future}) : super(future);
-
-  /// The [Future] created by [FutureProvider].
-  @Deprecated('`future` will be removed in 0.3.0. Use `value` instead.')
-  final Future<T> future;
+  FutureProviderDependency._(Future<T> future) : super(future);
 }
 
 /// A provider that asynchronously creates an immutable value.
@@ -105,7 +99,7 @@ mixin _FutureProviderStateMixin<Res,
 
   @override
   FutureProviderDependency<Res> createProviderDependency() {
-    return FutureProviderDependency._(future: _future);
+    return FutureProviderDependency._(_future);
   }
 }
 
@@ -190,7 +184,7 @@ class _DebugValueFutureProviderState<Res> extends ProviderStateBase<
 
   @override
   FutureProviderDependency<Res> createProviderDependency() {
-    return FutureProviderDependency._(future: _completer.future);
+    return FutureProviderDependency._(_completer.future);
   }
 }
 

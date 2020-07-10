@@ -1,3 +1,26 @@
+# 0.4.0
+
+Changed the syntax of "AutoDispose*" and "*Family" to use a syntax similar to
+named constructors instead.
+
+Before:
+
+```dart
+final myProvider = AutoDisposeStateNotifierProviderFamily<MyStateNotifier, int>((ref, id) {
+  return MyStateNotifier(id: id);
+});
+```
+
+After:
+
+```dart
+final myProvider = StateNotifierProvider.autoDispose.family<MyStateNotifier, int>((ref, id) {
+  return MyStateNotifier(id: id);
+});
+```
+
+The behavior is the same. Only the syntax changed.
+
 # 0.3.1
 
 - Loosen the version constraint of `flutter_hooks` used to support latest versions.
