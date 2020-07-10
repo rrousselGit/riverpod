@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-// ignore: implementation_imports
-import 'package:riverpod/src/internals.dart';
+part of 'change_notifier_provider.dart';
 
 /// Creates a [ChangeNotifier] and subscribes to it.
 ///

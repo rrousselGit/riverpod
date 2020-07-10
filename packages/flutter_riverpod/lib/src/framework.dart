@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:riverpod/riverpod.dart';
 
-import 'internal.dart';
+import 'internals.dart';
 
 /// A widget that stores the state of providers.
 ///

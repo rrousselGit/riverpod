@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'framework.dart';
-import 'internal.dart';
+import 'internals.dart';
 
 /// Adds [read] to providers that are never destroyed
 extension AlwaysAliveProviderBaseX<Dependency extends ProviderDependencyBase,

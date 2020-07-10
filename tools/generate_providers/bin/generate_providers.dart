@@ -1,4 +1,6 @@
 // ignore_for_file: avoid_print
+import 'dart:io';
+
 import 'package:trotter/trotter.dart';
 import 'package:tuple/tuple.dart';
 
@@ -39,18 +41,6 @@ const providerLabel = {
   ProviderType.single: 'Provider',
   ProviderType.family: 'ProviderFamily',
 };
-
-const matrix = Tuple3(
-  DisposeType.values,
-  [
-    StateType.state,
-    StateType.stateNotifier,
-    StateType.none,
-    StateType.future,
-    StateType.stream,
-  ],
-  ProviderType.values,
-);
 
 const _autoDisposeDoc = '''
 /// {@template riverpod.autoDispose}
@@ -185,15 +175,71 @@ String familyDoc() {
   return _familyDoc;
 }
 
-void main() {
-  print("import 'package:state_notifier/state_notifier.dart';\n");
-  print("import 'internals.dart';\n");
-  for (final obj in generateAll()) {
-    print(obj.toString());
+Future<void> main(List<String> args) async {
+  if (args.length != 2) {
+    print('usage: generate_providers <riverpod/flutter_riverpod> file');
+    return;
+  }
+  if (args.first != 'riverpod' && args.first != 'flutter_riverpod') {
+    print('Unknown argument ${args.first}');
+    return;
+  }
+
+  final file = File.fromUri(Uri.parse(args[1]));
+  if (file.existsSync() && file.statSync().type != FileSystemEntityType.file) {
+    print('${args[1]} is not a file');
+    return;
+  }
+
+  Tuple3<List<DisposeType>, List<StateType>, List<ProviderType>> matrix;
+
+  switch (args.first) {
+    case 'riverpod':
+      matrix = const Tuple3(
+        DisposeType.values,
+        [
+          StateType.state,
+          StateType.stateNotifier,
+          StateType.none,
+          StateType.future,
+          StateType.stream,
+        ],
+        ProviderType.values,
+      );
+      await file.writeAsString(
+        """
+import 'package:state_notifier/state_notifier.dart';
+import 'internals.dart';
+
+""",
+      );
+      break;
+    case 'flutter_riverpod':
+      matrix = const Tuple3(
+        DisposeType.values,
+        [StateType.changeNotifier],
+        ProviderType.values,
+      );
+      await file.writeAsString(
+        """
+import 'package:flutter/foundation.dart';
+import 'internals.dart';
+
+""",
+      );
+      break;
+    default:
+      throw FallThroughError();
+  }
+
+  for (final obj in generateAll(matrix)) {
+    await file.writeAsString(obj.toString(), mode: FileMode.append);
   }
 }
 
-Iterable<Object> generateAll() sync* {
+Iterable<Object> generateAll(
+  Tuple3<List<DisposeType>, List<StateType>, List<ProviderType>> matrix,
+) sync* {
   final combos = Combinations(3, <Object>[
     ...matrix.item1,
     ...matrix.item2,
