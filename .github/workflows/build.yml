@@ -30,7 +30,7 @@ jobs:
       - name: Check format
         run: dart format --set-exit-if-changed .
         working-directory: ${{ matrix.package }}
-      
+
       - name: Generate
         run: |
           if grep -q build_runner "pubspec.yaml"; then
@@ -45,6 +45,15 @@ jobs:
       - name: Run tests
         run: dart test
         working-directory: ${{ matrix.package }}
+
+      - name: Coverage
+        run: dart pub run test_coverage
+        working-directory: ${{ matrix.package }}
+
+      - name: Upload coverage to codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   flutter:
     runs-on: ubuntu-latest
@@ -96,5 +105,10 @@ jobs:
         working-directory: ${{ matrix.package }}
 
       - name: Run tests
-        run: flutter test
+        run: flutter test --coverage
         working-directory: ${{ matrix.package }}
+
+      - name: Upload coverage to codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
