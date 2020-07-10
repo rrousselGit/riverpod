@@ -6,7 +6,7 @@ void main() {
   test(
       'after a state is destroyed, Owner.traverse states does not visit the state',
       () async {
-    final provider = AutoDisposeProvider((ref) {});
+    final provider = Provider.autoDispose((ref) {});
     final owner = ProviderStateOwner();
 
     provider.watchOwner(owner, (value) {})();
@@ -19,7 +19,7 @@ void main() {
       () async {
     final onDispose = OnDisposeMock();
     AutoDisposeProviderReference ref;
-    final provider = AutoDisposeProvider((_ref) {
+    final provider = Provider.autoDispose((_ref) {
       ref = _ref;
       ref.onDispose(onDispose);
       ref.maintainState = true;
@@ -45,7 +45,7 @@ void main() {
       () async {
     var value = 42;
     final onDispose = OnDisposeMock();
-    final provider = AutoDisposeProvider((ref) {
+    final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose);
       ref.maintainState = true;
       return value;
@@ -69,7 +69,7 @@ void main() {
   });
   test('maintainState defaults to false', () {
     bool maintainState;
-    final provider = AutoDisposeProvider((ref) {
+    final provider = Provider.autoDispose((ref) {
       maintainState = ref.maintainState;
       return 42;
     });
@@ -80,7 +80,7 @@ void main() {
     expect(maintainState, false);
   });
   test('overridable provider can be overriden by anything', () {
-    final provider = AutoDisposeProvider((_) => 42);
+    final provider = Provider.autoDispose((_) => 42);
     final ProviderBase<ProviderDependency<int>, int> override = Provider((_) {
       return 21;
     });
@@ -97,12 +97,12 @@ void main() {
 
   test('cross-owner dispose in order', () async {
     final aDispose = OnDisposeMock();
-    final a = AutoDisposeProvider((ref) {
+    final a = Provider.autoDispose((ref) {
       ref.onDispose(aDispose);
       return 42;
     });
     final bDispose = OnDisposeMock();
-    final b = AutoDisposeProvider((ref) {
+    final b = Provider.autoDispose((ref) {
       ref.onDispose(bDispose);
       ref.dependOn(a);
       return '42';
@@ -140,12 +140,12 @@ void main() {
       () async {
     final owner = ProviderStateOwner();
     final aDispose = OnDisposeMock();
-    final a = AutoDisposeProvider((ref) {
+    final a = Provider.autoDispose((ref) {
       ref.onDispose(aDispose);
       return 42;
     });
     final bDispose = OnDisposeMock();
-    final b = AutoDisposeProvider((ref) {
+    final b = Provider.autoDispose((ref) {
       ref.onDispose(bDispose);
       ref.dependOn(a);
       return '42';
@@ -174,12 +174,12 @@ void main() {
     final owner = ProviderStateOwner();
     final onDispose = OnDisposeMock();
     var value = 42;
-    final provider = AutoDisposeProvider((ref) {
+    final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose);
       return value;
     });
     final onDispose2 = OnDisposeMock();
-    final provider2 = AutoDisposeProvider((ref) {
+    final provider2 = Provider.autoDispose((ref) {
       ref.onDispose(onDispose2);
       return ref.dependOn(provider).value;
     });
@@ -219,12 +219,12 @@ void main() {
   test("auto dispose A then auto dispose B doesn't dispose A again", () async {
     final owner = ProviderStateOwner();
     final aDispose = OnDisposeMock();
-    final a = AutoDisposeProvider((ref) {
+    final a = Provider.autoDispose((ref) {
       ref.onDispose(aDispose);
       return 42;
     });
     final bDispose = OnDisposeMock();
-    final b = AutoDisposeProvider((ref) {
+    final b = Provider.autoDispose((ref) {
       ref.onDispose(bDispose);
       return 42;
     });
@@ -257,11 +257,11 @@ void main() {
   //   final aDispose = OnDisposeMock();
   //   final bDispose = OnDisposeMock();
 
-  //   final a = AutoDisposeProvider((ref) {
+  //   final a = Provider.autoDispose((ref) {
   //     ref.onDispose(aDispose);
   //     return 42;
   //   });
-  //   final a = AutoDisposeProvider((ref) {
+  //   final a = Provider.autoDispose((ref) {
   //     ref.onDispose(aDispose);
   //     return 42;
   //   });
@@ -272,7 +272,7 @@ void main() {
       () async {
     final owner = ProviderStateOwner();
     final onDispose = OnDisposeMock();
-    final provider = AutoDisposeProvider((ref) {
+    final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose);
       return 42;
     });
@@ -296,7 +296,7 @@ void main() {
   test('unsub no-op if another sub is added before event-loop', () async {
     final owner = ProviderStateOwner();
     final onDispose = OnDisposeMock();
-    final provider = AutoDisposeProvider((ref) {
+    final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose);
       return 42;
     });
@@ -324,7 +324,7 @@ void main() {
       () async {
     final owner = ProviderStateOwner();
     final onDispose = OnDisposeMock();
-    final provider = AutoDisposeProvider((ref) {
+    final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose);
       return 42;
     });
@@ -350,7 +350,7 @@ void main() {
     final onDispose = OnDisposeMock();
     final unrelated = Provider((_) => 42);
     var value = 42;
-    final provider = AutoDisposeProvider((ref) {
+    final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose);
       return value;
     });
@@ -400,7 +400,7 @@ void main() {
     final onDispose = OnDisposeMock();
     final unrelated = Provider((_) => 42);
     var value = 42;
-    final provider = AutoDisposeProvider((ref) {
+    final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose);
       return value;
     });

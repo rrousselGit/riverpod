@@ -9,14 +9,14 @@ import '../internals.dart';
 /// Listening to this provider will not cause widget to rebuild when [StateNotifier.state]
 /// changes.
 ///
-/// Instead, listen to `AutoDisposeStateNotifierProvider.state`:
+/// Instead, listen to `StateNotifierProvider.state`:
 ///
 /// ```dart
 /// class Counter extends StateNotifier<int> {
 ///   Counter(): super(0);
 /// }
 ///
-/// final counterProvider = AutoDisposeStateNotifierProvider((_) => Counter());
+/// final counterProvider = StateNotifierProvider.autoDispose((_) => Counter());
 ///
 /// // ...
 ///
