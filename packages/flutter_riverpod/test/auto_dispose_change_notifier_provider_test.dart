@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/src/internals.dart' as internals;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -7,7 +8,7 @@ void main() {
   test('auto-dispose notifier when stop listening', () async {
     final owner = ProviderStateOwner();
     final onDispose = OnDisposeMock();
-    final provider = AutoDisposeChangeNotifierProvider((ref) {
+    final provider = ChangeNotifierProvider.autoDispose((ref) {
       ref.onDispose(onDispose);
       return ValueNotifier(0);
     });
@@ -25,9 +26,8 @@ void main() {
   });
   test('family', () {
     final owner = ProviderStateOwner();
-    final provider =
-        AutoDisposeChangeNotifierProviderFamily<ValueNotifier<int>, int>(
-            (ref, value) {
+    final provider = ChangeNotifierProvider.autoDispose
+        .family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
     });
     final listener1 = Listener<ValueNotifier<int>>();
@@ -47,9 +47,8 @@ void main() {
     verifyNoMoreInteractions(listener2);
   });
   test('family override', () {
-    final provider =
-        AutoDisposeChangeNotifierProviderFamily<ValueNotifier<int>, int>(
-            (ref, value) {
+    final provider = ChangeNotifierProvider.autoDispose
+        .family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
     });
     final owner = ProviderStateOwner(overrides: [
@@ -73,13 +72,13 @@ void main() {
   });
   test('can be assigned to provider', () {
     // ignore: unused_local_variable
-    final AutoDisposeProvider<ValueNotifier<int>> provider =
-        AutoDisposeChangeNotifierProvider((_) {
+    final internals.AutoDisposeProvider<ValueNotifier<int>> provider =
+        ChangeNotifierProvider.autoDispose((_) {
       return ValueNotifier(0);
     });
   });
   test('can specify name', () {
-    final provider = AutoDisposeChangeNotifierProvider(
+    final provider = ChangeNotifierProvider.autoDispose(
       (_) => ValueNotifier(0),
       name: 'example',
     );
@@ -87,14 +86,14 @@ void main() {
     expect(provider.name, 'example');
 
     final provider2 =
-        AutoDisposeChangeNotifierProvider((_) => ValueNotifier(0));
+        ChangeNotifierProvider.autoDispose((_) => ValueNotifier(0));
 
     expect(provider2.name, isNull);
   });
 
   testWidgets('listen to the notifier', (tester) async {
     final notifier = TestNotifier();
-    final provider = AutoDisposeChangeNotifierProvider((_) => notifier);
+    final provider = ChangeNotifierProvider.autoDispose((_) => notifier);
 
     await tester.pumpWidget(
       ProviderScope(

@@ -188,7 +188,7 @@ class ProviderStateOwner {
     }
 
     bool isLocallyOverriden(ProviderBase provider) {
-      if (overridenFamilies.contains(provider.family)) {
+      if (overridenFamilies.contains(provider._family)) {
         return true;
       }
       if (overridenProviders.contains(provider)) {
@@ -434,9 +434,9 @@ Changing the kind of override or reordering overrides is not supported.
         reader = _computedStateReaders.putIfAbsent(provider as Computed, () {
           return _ProviderStateReader(provider, this);
         });
-      } else if (provider.family != null &&
-          _overrideForFamily[provider.family] != null) {
-        final familyOverride = _overrideForFamily[provider.family];
+      } else if (provider._family != null &&
+          _overrideForFamily[provider._family] != null) {
+        final familyOverride = _overrideForFamily[provider._family];
 
         if (familyOverride != null) {
           _overrideForProvider[provider] =
@@ -449,8 +449,8 @@ Changing the kind of override or reordering overrides is not supported.
         final controller =
             (provider as StateNotifierStateProvider).notifierProvider;
         if (_stateReaders[controller] != null ||
-            (controller.family != null &&
-                _overrideForFamily[controller.family] != null)) {
+            (controller._family != null &&
+                _overrideForFamily[controller._family] != null)) {
           reader =
               _stateReaders[provider] = _ProviderStateReader(provider, this);
         }
@@ -458,8 +458,8 @@ Changing the kind of override or reordering overrides is not supported.
         final controller = (provider as AutoDisposeStateNotifierStateProvider)
             .notifierProvider;
         if (_stateReaders[controller] != null ||
-            (controller.family != null &&
-                _overrideForFamily[controller.family] != null)) {
+            (controller._family != null &&
+                _overrideForFamily[controller._family] != null)) {
           reader =
               _stateReaders[provider] = _ProviderStateReader(provider, this);
         }

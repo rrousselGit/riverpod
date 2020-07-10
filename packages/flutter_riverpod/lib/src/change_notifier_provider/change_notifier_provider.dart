@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:riverpod/src/internals.dart';
 
+import '../builders.dart';
+
+part 'auto_dispose_change_notifier_provider.dart';
+
 /// Creates a [ChangeNotifier] and subscribes to it.
 ///
 /// Note: By using Riverpod, [ChangeNotifier] will no-longer be O(N^2) for
@@ -10,6 +14,12 @@ class ChangeNotifierProvider<T extends ChangeNotifier> extends Provider<T> {
   /// Created a [ChangeNotifierProvider] and allows specifying [name].
   ChangeNotifierProvider(Create<T, ProviderReference> create, {String name})
       : super(create, name: name);
+
+  /// {@macro riverpod.family}
+  static const family = ChangeNotifierProviderFamilyBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  static const autoDispose = AutoDisposeChangeNotifierProviderBuilder();
 
   @override
   _ChangeNotifierProviderState<T> createState() =>
@@ -36,7 +46,7 @@ class _ChangeNotifierProviderState<T extends ChangeNotifier>
 /// Creates a [ChangeNotifierProvider] from external parameters.
 ///
 /// See also:
-/// - [ProviderFamily], which contains an explanation of what a *Family is.
+/// - [Provider.family], which contains an explanation of what a families are.
 class ChangeNotifierProviderFamily<Result extends ChangeNotifier, A>
     extends Family<ChangeNotifierProvider<Result>, A> {
   /// Creates a [ChangeNotifier] from an external parameter.

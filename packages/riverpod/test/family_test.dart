@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 
 void main() {
   test('caches the provider per value', () {
-    final provider = ProviderFamily<String, int>((ref, a) => '$a');
+    final provider = Provider.family<String, int>((ref, a) => '$a');
     final owner = ProviderStateOwner();
 
     expect(provider(42), provider(42));
@@ -21,7 +21,7 @@ void main() {
       0: StreamController<String>(sync: true),
       1: StreamController<String>(sync: true),
     };
-    final provider = StreamProviderFamily<String, int>((ref, a) {
+    final provider = StreamProvider.family<String, int>((ref, a) {
       return controllers[a].stream;
     });
     final owner = ProviderStateOwner();
@@ -52,23 +52,21 @@ void main() {
   });
   test('Pass family and parameter properties', () {
     final provider =
-        StateNotifierProviderFamily<Counter, int>((_, a) => Counter());
+        StateNotifierProvider.family<Counter, int>((_, a) => Counter());
     expect(
       provider(0),
       isA<StateNotifierProvider<Counter>>()
-          .having((p) => p.family, 'family', provider)
           .having((p) => p.parameter, 'parameter', 0),
     );
     expect(
       provider(1),
       isA<StateNotifierProvider<Counter>>()
-          .having((p) => p.family, 'family', provider)
           .having((p) => p.parameter, 'parameter', 1),
     );
   });
 
   test('family override', () {
-    final provider = ProviderFamily<String, int>((ref, a) => '$a');
+    final provider = Provider.family<String, int>((ref, a) => '$a');
     final root = ProviderStateOwner();
     final owner = ProviderStateOwner(parent: root, overrides: [
       // Provider overrides always takes over family overrides

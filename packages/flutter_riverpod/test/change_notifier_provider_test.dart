@@ -19,7 +19,7 @@ void main() {
   test('family', () {
     final owner = ProviderStateOwner();
     final provider =
-        ChangeNotifierProviderFamily<ValueNotifier<int>, int>((ref, value) {
+        ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
     });
 
@@ -34,7 +34,7 @@ void main() {
   });
   test('family override', () {
     final provider =
-        ChangeNotifierProviderFamily<ValueNotifier<int>, int>((ref, value) {
+        ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
     });
     final owner = ProviderStateOwner(overrides: [

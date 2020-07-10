@@ -40,7 +40,7 @@ class AutoDisposeProviderState<T> extends AutoDisposeProviderStateBase<
 ///
 /// See also:
 ///
-/// - [ProviderFamily], which contains an explanation of what a *Family is.
+/// - [Provider.family], which contains an explanation of what a families are.
 class AutoDisposeProviderFamily<Result, A>
     extends Family<AutoDisposeProvider<Result>, A> {
   /// Creates a value from an external parameter

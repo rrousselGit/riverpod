@@ -7,6 +7,7 @@ export 'src/common.dart'
         AsyncError,
         $AsyncValueCopyWith,
         $AsyncValue;
+
 export 'src/framework/framework.dart'
     show
         AlwaysAliveProviderBase,
@@ -23,37 +24,19 @@ export 'src/framework/framework.dart'
         Computed,
         Reader,
         ComputedFamily;
+
 export 'src/future_provider/future_provider.dart'
-    show
-        AutoDisposeFutureProvider,
-        AutoDisposeFutureProviderFamily,
-        FutureProvider,
-        FutureProviderDependency,
-        FutureProviderFamily;
-export 'src/provider/provider.dart'
-    show
-        AutoDisposeProvider,
-        AutoDisposeProviderFamily,
-        Provider,
-        ProviderDependency,
-        ProviderFamily;
+    show FutureProvider, FutureProviderDependency;
+
+export 'src/provider/provider.dart' show Provider, ProviderDependency;
+
 export 'src/state_notifier_provider/auto_dispose_state_notifier_provider.dart'
-    show
-        AutoDisposeStateNotifierProvider,
-        AutoDisposeStateNotifierStateProviderX,
-        AutoDisposeStateNotifierProviderFamily;
+    show AutoDisposeStateNotifierStateProviderX;
+
 export 'src/state_notifier_provider/state_notifier_provider.dart'
-    show
-        StateNotifierProvider,
-        StateNotifierStateProviderX,
-        StateNotifierProviderFamily;
-export 'src/state_provider.dart'
-    show StateController, StateProvider, StateProviderFamily;
+    show StateNotifierProvider, StateNotifierStateProviderX;
+
+export 'src/state_provider.dart' show StateController, StateProvider;
 
 export 'src/stream_provider/stream_provider.dart'
-    show
-        AutoDisposeStreamProvider,
-        AutoDisposeStreamProviderFamily,
-        StreamProvider,
-        StreamProviderDependency,
-        StreamProviderFamily;
+    show StreamProvider, StreamProviderDependency;

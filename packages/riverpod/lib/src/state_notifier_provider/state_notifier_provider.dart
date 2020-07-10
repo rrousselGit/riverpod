@@ -1,5 +1,6 @@
 import 'package:state_notifier/state_notifier.dart';
 
+import '../builders.dart';
 import '../common.dart';
 import '../framework/framework.dart';
 import '../internals.dart';
@@ -44,6 +45,12 @@ class StateNotifierProvider<Notifier extends StateNotifier<Object>>
           },
           name: name,
         );
+
+  /// {@macro riverpod.family}
+  static const family = StateNotifierProviderFamilyBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  static const autoDispose = AutoDisposeStateNotifierProviderBuilder();
 
   SetStateProvider<Object> _state;
 }

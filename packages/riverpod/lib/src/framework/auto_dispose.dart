@@ -27,7 +27,7 @@ class AutoDisposeProviderReference extends ProviderReference {
 ///
 /// See also:
 ///
-/// - [AutoDisposeProvider], a variant of [Provider] that auto-dispose its state.
+/// - [Provider.autoDispose], a variant of [Provider] that auto-dispose its state.
 abstract class AutoDisposeProviderBase<
     Dependency extends ProviderDependencyBase,
     Result> extends ProviderBase<Dependency, Result> {
@@ -44,7 +44,7 @@ abstract class AutoDisposeProviderBase<
 ///
 /// See also:
 ///
-/// - [AutoDisposeProvider], a variant of [Provider] that auto-dispose its state.
+/// - [Provider.autoDispose], a variant of [Provider] that auto-dispose its state.
 abstract class OverridableAutoDisposeProviderBase<
         Dependency extends ProviderDependencyBase,
         Result> extends AutoDisposeProviderBase<Dependency, Result>

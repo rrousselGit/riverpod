@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
+import '../builders.dart';
 import '../common.dart';
 import '../framework/framework.dart';
 import '../provider/provider.dart';
@@ -28,6 +29,12 @@ class FutureProvider<Res> extends AlwaysAliveProviderBase<
     FutureProviderDependency<Res>, AsyncValue<Res>> {
   /// Creates a [FutureProvider] and allows specifying a [name].
   FutureProvider(this._create, {String name}) : super(name);
+
+  /// {@macro riverpod.family}
+  static const family = FutureProviderFamilyBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  static const autoDispose = AutoDisposeFutureProviderBuilder();
 
   final Create<Future<Res>, ProviderReference> _create;
 
@@ -191,7 +198,7 @@ class _DebugValueFutureProviderState<Res> extends ProviderStateBase<
 ///
 /// See also:
 ///
-/// - [ProviderFamily], which contains an explanation of what a *Family is.
+/// - [Provider.family], which contains an explanation of what a families are.
 class FutureProviderFamily<Result, A>
     extends Family<FutureProvider<Result>, A> {
   /// Creates a [FutureProvider] from external parameters.

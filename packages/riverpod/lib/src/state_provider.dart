@@ -1,5 +1,6 @@
 import 'package:state_notifier/state_notifier.dart';
 
+import 'builders.dart';
 import 'common.dart';
 import 'framework/framework.dart';
 import 'provider/provider.dart';
@@ -31,6 +32,9 @@ class StateProvider<T> extends AlwaysAliveProviderBase<
     ProviderDependency<StateController<T>>, StateController<T>> {
   /// Creates the initial value
   StateProvider(this._create, {String name}) : super(name);
+
+  /// {@macro riverpod.family}
+  static const family = StateProviderFamilyBuilder();
 
   final Create<T, ProviderReference> _create;
 

@@ -227,8 +227,9 @@ on your provider:
   The `read` method is added using extension methods, defined in [flutter_riverpod].
   As such, if you do not import the Flutter/hooks variant, you won't see the `read` method.
 
-- Your provider is either an "AutoDispose\*Provider" or a [Computed].  
-  These providers do have support for the `read` method and can only be listened.  
+- Your provider uses the `.autoDispose` modified (such as `Provider.autoDispose(...)`)
+  or a is [Computed].  
+  These providers do not support the `read` method and can only be listened.  
   This is because when the provider is no-longer listened, they will release the
   associated resources.
 

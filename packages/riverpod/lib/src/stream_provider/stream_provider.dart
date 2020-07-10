@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import '../builders.dart';
 import '../common.dart';
 import '../framework/framework.dart';
 import '../provider/provider.dart';
@@ -77,6 +78,12 @@ class StreamProvider<T> extends AlwaysAliveProviderBase<
     StreamProviderDependency<T>, AsyncValue<T>> {
   /// Creates a [StreamProvider] and allows specifying a [name].
   StreamProvider(this._create, {String name}) : super(name);
+
+  /// {@macro riverpod.family}
+  static const family = StreamProviderFamilyBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  static const autoDispose = AutoDisposeStreamProviderBuilder();
 
   final Create<Stream<T>, ProviderReference> _create;
 

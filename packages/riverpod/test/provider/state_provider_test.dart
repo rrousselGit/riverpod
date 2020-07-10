@@ -15,7 +15,7 @@ void main() {
     await expectLater(dep.value.state, 0);
   });
   test('StateProvideyFamily', () async {
-    final provider = StateProviderFamily<String, int>((ref, a) {
+    final provider = StateProvider.family<String, int>((ref, a) {
       return '$a';
     });
     final owner = ProviderStateOwner();
@@ -31,7 +31,7 @@ void main() {
   });
 
   test('StateProvideyFamily override', () async {
-    final provider = StateProviderFamily<String, int>((ref, a) {
+    final provider = StateProvider.family<String, int>((ref, a) {
       return '$a';
     });
     final owner = ProviderStateOwner(overrides: [

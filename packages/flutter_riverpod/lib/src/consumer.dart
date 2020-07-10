@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'framework.dart';
-import 'internal.dart';
+import 'internals.dart';
 
 typedef ConsumerBuilder = Widget Function(BuildContext context, Reader read);
 

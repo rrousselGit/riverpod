@@ -208,7 +208,7 @@ void main() {
   test('auto dispose Computed when no longer used', () async {
     final owner = ProviderStateOwner();
     final onDispose = OnDisposeMock();
-    final provider = AutoDisposeProvider((ref) {
+    final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose);
       return 42;
     });
