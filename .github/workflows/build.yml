@@ -47,8 +47,10 @@ jobs:
         working-directory: ${{ matrix.package }}
 
       - name: Coverage
-        if: ${{ matrix.package }} != packages/riverpod/example
-        run: dart pub run test_coverage
+        run: 
+          if ${{ matrix.package }} != "packages/riverpod/example"; then
+            dart pub run test_coverage
+          fi
         working-directory: ${{ matrix.package }}
 
       - name: Upload coverage to codecov
