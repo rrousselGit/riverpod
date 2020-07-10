@@ -21,7 +21,7 @@ void main() {
     AutoDisposeFutureProviderBuilder();
     AutoDisposeFutureProviderFamilyBuilder();
 
-     expect(
+    expect(
       FutureProvider.family,
       const FutureProviderFamilyBuilder(),
     );
