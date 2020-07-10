@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:trotter/trotter.dart';
 import 'package:tuple/tuple.dart';
+import 'package:dart_style/dart_style.dart';
 
 enum DisposeType {
   none,
@@ -193,6 +194,8 @@ Future<void> main(List<String> args) async {
 
   Tuple3<List<DisposeType>, List<StateType>, List<ProviderType>> matrix;
 
+  final builder = StringBuffer();
+
   switch (args.first) {
     case 'riverpod':
       matrix = const Tuple3(
@@ -206,11 +209,10 @@ Future<void> main(List<String> args) async {
         ],
         ProviderType.values,
       );
-      await file.writeAsString(
+      builder.writeln(
         """
 import 'package:state_notifier/state_notifier.dart';
 import 'internals.dart';
-
 """,
       );
       break;
@@ -220,11 +222,10 @@ import 'internals.dart';
         [StateType.changeNotifier],
         ProviderType.values,
       );
-      await file.writeAsString(
+      builder.writeln(
         """
 import 'package:flutter/foundation.dart';
 import 'internals.dart';
-
 """,
       );
       break;
@@ -232,9 +233,11 @@ import 'internals.dart';
       throw FallThroughError();
   }
 
-  for (final obj in generateAll(matrix)) {
-    await file.writeAsString(obj.toString(), mode: FileMode.append);
-  }
+  builder.writeAll(generateAll(matrix), '\n');
+
+  await file.writeAsString(
+    DartFormatter().format(builder.toString()),
+  );
 }
 
 Iterable<Object> generateAll(
