@@ -18,8 +18,8 @@ parsers:
 ignore:
   - "**/example/"
   - "examples"
-  - "**/*.g.dart"
-  - "**/*.freezed.dart"
+  # - "**/*.g.dart"
+  # - "**/*.freezed.dart"
 
 comment:
   layout: "reach,diff,flags,tree"
