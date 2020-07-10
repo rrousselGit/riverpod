@@ -46,7 +46,7 @@ class _ChangeNotifierProviderState<T extends ChangeNotifier>
 /// Creates a [ChangeNotifierProvider] from external parameters.
 ///
 /// See also:
-/// - [ProviderFamily], which contains an explanation of what a *Family is.
+/// - [Provider.family], which contains an explanation of what a families are.
 class ChangeNotifierProviderFamily<Result extends ChangeNotifier, A>
     extends Family<ChangeNotifierProvider<Result>, A> {
   /// Creates a [ChangeNotifier] from an external parameter.

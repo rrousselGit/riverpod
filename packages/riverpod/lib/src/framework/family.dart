@@ -11,7 +11,7 @@ abstract class Family<P extends ProviderBase, A> {
   /// Create a provider from an external value.
   ///
   /// That external value should be immutable and preferrably override `==`/`hashCode`.
-  /// See the documentation of [ProviderFamily] for more informations.
+  /// See the documentation of [Provider.family] for more informations.
   P call(A value) {
     return _cache.putIfAbsent(value, () {
       final provider = _create(value);

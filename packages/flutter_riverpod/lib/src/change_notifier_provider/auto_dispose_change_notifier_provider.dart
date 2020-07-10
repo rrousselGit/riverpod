@@ -37,7 +37,7 @@ class _AutoDisposeChangeNotifierProviderState<T extends ChangeNotifier>
 /// Creates a [AutoDisposeChangeNotifierProvider] from external parameters.
 ///
 /// See also:
-/// - [ProviderFamily], which contains an explanation of what a *Family is.
+/// - [Provider.family], which contains an explanation of what a families are.
 class AutoDisposeChangeNotifierProviderFamily<Result extends ChangeNotifier, A>
     extends Family<AutoDisposeChangeNotifierProvider<Result>, A> {
   /// Creates a [ChangeNotifier] from an external parameter.

@@ -37,7 +37,7 @@ class _AutoDisposeFutureProviderState<Res> extends AutoDisposeProviderStateBase<
 ///
 /// See also:
 ///
-/// - [ProviderFamily], which contains an explanation of what a *Family is.
+/// - [Provider.family], which contains an explanation of what a families are.
 class AutoDisposeFutureProviderFamily<Result, A>
     extends Family<AutoDisposeFutureProvider<Result>, A> {
   /// Creates a [AutoDisposeFutureProvider] from external parameters.

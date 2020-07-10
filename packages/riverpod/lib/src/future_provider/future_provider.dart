@@ -198,7 +198,7 @@ class _DebugValueFutureProviderState<Res> extends ProviderStateBase<
 ///
 /// See also:
 ///
-/// - [ProviderFamily], which contains an explanation of what a *Family is.
+/// - [Provider.family], which contains an explanation of what a families are.
 class FutureProviderFamily<Result, A>
     extends Family<FutureProvider<Result>, A> {
   /// Creates a [FutureProvider] from external parameters.
