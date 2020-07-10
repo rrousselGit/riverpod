@@ -190,7 +190,7 @@ Widget build(BuildContext context) {
   return Consumer((context, read) {
     final counter = read(counterProvider);
     return RaisedButton(
-      onTap: () => counter.state++;
+      onPressed: () => counter.state++;
       child: Text('increment'),
     )
   });
@@ -208,7 +208,7 @@ Using it, we could refactor our previous code to:
 @override
 Widget build(BuildContext context) {
   return RaisedButton(
-    onTap: () => counterProvider.read(context).state++,
+    onPressed: () => counterProvider.read(context).state++,
     child: Text('increment'),
   );
 }
@@ -256,7 +256,7 @@ Widget build(BuildContext context) {
   final Counter counter = useProvider(counterProvider);
 
   return RaisedButton(
-    onTap: () => counter.increment(),
+    onPressed: () => counter.increment(),
     child: Text('increment'),
   );
 }
