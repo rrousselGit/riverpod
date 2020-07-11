@@ -67,10 +67,12 @@ typedef VoidCallback = void Function();
 ///   return Text('Hello ${user?.name}');
 /// }
 /// ```
+///
 /// See also:
 ///
 /// - [FutureProvider] and [StreamProvider], which transforms a [Future] into
 ///   an [AsyncValue].
+/// - [AsyncValue.guard], to simplify tranforming a [Future] into an [AsyncValue].
 /// - The package Freezed (https://github.com/rrousselgit/freezed), which have
 ///   generated this [AsyncValue] class and explains how [map]/[when] works.
 @freezed
@@ -92,6 +94,57 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
   /// The parameter [error] cannot be `null`.
   factory AsyncValue.error(Object error, [StackTrace stackTrace]) =
       AsyncError<T>;
+
+  /// Transforms a [Future] that may fail into something that is safe to read.
+  ///
+  /// This is useful to avoid having to do a tedious `try/catch`. Instead of:
+  ///
+  /// ```dart
+  /// class MyNotifier extends StateNotifier<AsyncValue<MyData> {
+  ///   MyNotifier(): super(const AsncValue.loading()) {
+  ///     _fetchData();
+  ///   }
+  ///
+  ///   Future<void> _fetchData() async {
+  ///     state = const AsncValue.loading();
+  ///     try {
+  ///       final response = await dio.get('my_api/data');
+  ///       final data = MyData.fromJson(response);
+  ///       state = AsyncValue.data(data);
+  ///     } catch (err, stack) {
+  ///       state = AsyncValue.error(err, stack);
+  ///     }
+  ///   }
+  /// }
+  /// ```
+  ///
+  /// which is redundant as the application grows and we need more and more of this
+  /// pattern – we can use [guard] to simplify it:
+  ///
+  ///
+  /// ```dart
+  /// class MyNotifier extends StateNotifier<AsyncValue<MyData> {
+  ///   MyNotifier(): super(const AsncValue.loading()) {
+  ///     _fetchData();
+  ///   }
+  ///
+  ///   Future<void> _fetchData() async {
+  ///     state = const AsncValue.loading();
+  ///     // does the try/catch for us like previously
+  ///     state = await AsyncValue.guard(() async {
+  ///       final response = await dio.get('my_api/data');
+  ///       final data = Data.fromJson(response);
+  ///     });
+  ///   }
+  /// }
+  /// ```
+  static Future<AsyncValue<T>> guard<T>(Future<T> Function() future) async {
+    try {
+      return AsyncValue.data(await future());
+    } catch (err, stack) {
+      return AsyncValue.error(err, stack);
+    }
+  }
 
   /// The current data, or null if in loading/error.
   ///
