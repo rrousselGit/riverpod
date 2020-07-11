@@ -51,6 +51,13 @@ class Computed<T> extends AutoDisposeProviderBase<ProviderDependencyBase, T> {
   /// Creates a [Computed] and allows specifying a [name].
   Computed(this._selector, {String name}) : super(name);
 
+  /// {@macro riverpod.family}
+  static ComputedFamily<T, A> family<T, A>(
+    T Function(Reader read, A param) create,
+  ) {
+    return ComputedFamily(create);
+  }
+
   final T Function(Reader read) _selector;
 
   @override

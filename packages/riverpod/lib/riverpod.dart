@@ -22,8 +22,7 @@ export 'src/framework/framework.dart'
         ProviderListenable,
         ProviderSubscription,
         Computed,
-        Reader,
-        ComputedFamily;
+        Reader;
 
 export 'src/future_provider/future_provider.dart'
     show FutureProvider, FutureProviderDependency;
