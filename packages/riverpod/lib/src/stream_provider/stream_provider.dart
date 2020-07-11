@@ -3,8 +3,8 @@ import 'dart:async';
 import '../builders.dart';
 import '../common.dart';
 import '../framework/framework.dart';
-import '../provider/provider.dart';
 import '../future_provider/future_provider.dart';
+import '../provider/provider.dart';
 
 part 'auto_dispose_stream_provider.dart';
 

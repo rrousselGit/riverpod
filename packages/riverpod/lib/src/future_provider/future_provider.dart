@@ -65,7 +65,7 @@ class FutureProviderDependency<T> extends ProviderDependencyImpl<Future<T>> {
 ///   );
 /// }
 /// ```
-/// 
+///
 /// This will automatically rebuild the UI when the [Future] completes.
 ///
 /// As you can see, listening to a [FutureProvider] inside a widget returns
