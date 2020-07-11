@@ -5,6 +5,7 @@ import '../common.dart';
 import '../framework/framework.dart';
 import '../internals.dart';
 
+/// {@template riverpod.statenotifierprovider}
 /// Creates a [StateNotifier] and expose its current state.
 ///
 /// Listening to this provider will not cause widget to rebuild when [StateNotifier.state]
@@ -30,10 +31,11 @@ import '../internals.dart';
 ///   final int count = useProvider(counterProvider.state);
 /// }
 /// ```
+/// {@endtemplate}
 // ignore: must_be_immutable, false positive, _state is immutable but lazy loaded.
 class StateNotifierProvider<Notifier extends StateNotifier<Object>>
     extends Provider<Notifier> {
-  /// Creates a [StateNotifier] and expose it + its state.
+  /// {@macro riverpod.statenotifierprovider}
   StateNotifierProvider(
     Create<Notifier, ProviderReference> create, {
     String name,

@@ -4,6 +4,7 @@ import '../builders.dart';
 import '../common.dart';
 import '../framework/framework.dart';
 import '../provider/provider.dart';
+import '../future_provider/future_provider.dart';
 
 part 'auto_dispose_stream_provider.dart';
 
@@ -65,14 +66,56 @@ mixin _State<T,
   }
 }
 
+/// {@template riverpod.statenotifierprovider}
 /// Creates a stream and expose its latest event.
 ///
-/// Consumers of [StreamProvider] will receive an [AsyncValue] instead of the
-/// raw value emitted.
-/// This is so that dependents can handle loading/error states.
+/// [StreamProvider] is identical in behavior/usage to [FutureProvider], modulo
+/// the fact that the value created is a [Stream] instead of a [Future].
+///
+/// It can be used to express a value asynchronously loaded that can change over
+/// time, such as an editable `Message` coming from a web socket:
+///
+/// ```dart
+/// final messageProvider = StreamProvider.autoDispose<String>((ref) async* {
+///   // Open the connection
+///   final channel = IOWebSocketChannel.connect('ws://echo.websocket.org');
+///
+///   // Close the connection when the stream is destroyed
+///   ref.onDispose(() => channel.sink.close());
+///
+///   // Parse the value received and emit a Message instance
+///   await for (final value in channel.stream) {
+///     yield value.toString();
+///   }
+/// });
+/// ```
+///
+/// Which the UI can then listen:
+///
+/// ```dart
+/// Widget build(BuildContext) {
+///   AsyncValue<String> message = useProvider(messageProvider);
+///
+///   return message.when(
+///     loading: () => const CircularProgressIndicator(),
+///     error: (err, stack) => Text('Error: $err'),
+///     data: (message) {
+///       return Text(message);
+///     },
+///   );
+/// }
+/// ```
+///
+/// **Note**:
+/// When listening to web sockets, firebase, or anything that consumes resources,
+/// it is important to use [StreamProvider.autoDispose] instead of simply [StreamProvider].
+///
+/// This ensures that the resources are released when no-longer needed as,
+/// by default, a [StreamProvider] is almost never destroyed.
+/// {@endtemplate}
 class StreamProvider<T> extends AlwaysAliveProviderBase<
     StreamProviderDependency<T>, AsyncValue<T>> {
-  /// Creates a [StreamProvider] and allows specifying a [name].
+  /// {@macro riverpod.statenotifierprovider}
   StreamProvider(this._create, {String name}) : super(name);
 
   /// {@macro riverpod.family}

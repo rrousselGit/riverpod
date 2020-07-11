@@ -57,8 +57,16 @@ typedef VoidCallback = void Function();
 /// ```
 ///
 /// If a consumer of an [AsyncValue] does not care about the loading/error
-/// state, consider using [data] to read the state.
+/// state, consider using [data] to read the state:
 ///
+/// ```dart
+/// Widget build(BuildContext context) {
+///   // reads the data state directly – will be null during loading/error states
+///   final User user = useProvider(userProvider).data?.value;
+///
+///   return Text('Hello ${user?.name}');
+/// }
+/// ```
 /// See also:
 ///
 /// - [FutureProvider] and [StreamProvider], which transforms a [Future] into
