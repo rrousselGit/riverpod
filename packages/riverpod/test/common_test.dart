@@ -38,4 +38,20 @@ void main() {
       throwsA(isA<AssertionError>()),
     );
   });
+  test('AsyncValue.guard emits the data when the created future completes',
+      () async {
+    await expectLater(
+      AsyncValue.guard(() => Future.value(42)),
+      completion(const AsyncValue.data(42)),
+    );
+  });
+  test('AsyncValue.guard emits the error when the created future fails',
+      () async {
+    final stack = StackTrace.current;
+
+    await expectLater(
+      AsyncValue.guard(() => Future<int>.error(42, stack)),
+      completion(AsyncValue<int>.error(42, stack)),
+    );
+  });
 }

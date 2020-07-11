@@ -23,6 +23,7 @@ class ProviderDependencyImpl<T> implements ProviderDependency<T> {
   final T value;
 }
 
+/// {@template riverpod.provider}
 /// A provider that exposes a read-only value.
 ///
 /// ## What is a provider
@@ -223,8 +224,9 @@ class ProviderDependencyImpl<T> implements ProviderDependency<T> {
 ///   return streamController.stream;
 /// });
 /// ```
+/// {@endtemplate}
 class Provider<T> extends AlwaysAliveProviderBase<ProviderDependency<T>, T> {
-  /// Creates an immutable value.
+  /// {@macro riverpod.provider}
   Provider(this._create, {String name}) : super(name);
 
   /// {@macro riverpod.family}

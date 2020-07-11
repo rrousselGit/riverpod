@@ -45,7 +45,7 @@ final characterPages = FutureProvider.autoDispose
   },
 );
 
-final charactersCount = ComputedFamily<AsyncValue<int>, String>((read, name) {
+final charactersCount = Computed.family<AsyncValue<int>, String>((read, name) {
   final meta = CharacterPagination(page: 0, name: name);
 
   return read(characterPages(meta)).whenData((value) => value.totalCount);
@@ -60,7 +60,7 @@ abstract class CharacterOffset with _$CharacterOffset {
 }
 
 final characterAtIndex =
-    ComputedFamily<AsyncValue<Character>, CharacterOffset>((read, query) {
+    Computed.family<AsyncValue<Character>, CharacterOffset>((read, query) {
   final offsetInPage = query.offset % kCharactersPageLimit;
 
   final meta = CharacterPagination(

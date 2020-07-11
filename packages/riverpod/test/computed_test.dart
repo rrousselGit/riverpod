@@ -185,9 +185,9 @@ void main() {
     expect(buildCount, 4);
     verifyNoMoreInteractions(listener);
   });
-  test('ComputedFamily', () {
+  test('Computed.family', () {
     final computed =
-        ComputedFamily<String, SetStateProvider<int>>((read, provider) {
+        Computed.family<String, SetStateProvider<int>>((read, provider) {
       return read(provider).toString();
     });
     final notifier = Counter();

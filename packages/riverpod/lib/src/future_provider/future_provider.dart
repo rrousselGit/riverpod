@@ -13,15 +13,75 @@ class FutureProviderDependency<T> extends ProviderDependencyImpl<Future<T>> {
   FutureProviderDependency._(Future<T> future) : super(future);
 }
 
-/// A provider that asynchronously creates an immutable value.
+/// {@template riverpod.futureprovider}
+/// Asynchronously creates a single immutable value.
+///
+/// [FutureProvider] can be considered as a combination of [Provider] and
+/// `FutureBuilder`.
+/// By using [FutureProvider], the UI will be able to read the state of the
+/// future syncronously, handle the loading/error states, and rebuild when the
+/// future completes.
+///
+/// A common use-case for [FutureProvider] is to represent an asynchronous operation
+/// such as reading a file or making an HTTP request, that is then listened by the UI.
+///
+/// It can then be combined with:
+/// - [family], for parametrizing the http request based on external parameters,
+///   such as fetching a `User` from its id.
+/// - [autoDispose], to cancel the HTTP request when the UI leaves the screen,
+///   or to restart the HTTP request if failed.
+///
+/// ## Usage example: reading a configuration file
+///
+/// [FutureProvider] can be a convenient way to expose a `Configuration` object
+/// created by reading a JSON file.
+///
+/// Creating the configuration would be done with your typical async/await
+/// syntax, but inside the provider.
+/// Using Flutter's asset system, this would be:
+///
+/// ```dart
+/// final configProvider = FutureProvider<Configuration>((ref) async {
+///   final content = json.decode(
+///     await rootBundle.loadString('assets/configurations.json'),
+///   ) as Map<String, dynamic>;
+///
+///   return Configuration.fromJson(content);
+/// });
+/// ```
+///
+/// Then, the UI can listen to configurations like so:
+///
+/// ```dart
+/// Widget build(BuildContext) {
+///   AsyncValue<Configuration> config = useProvider(configProvider);
+///
+///   return config.when(
+///     loading: () => const CircularProgressIndicator(),
+///     error: (err, stack) => Text('Error: $err'),
+///     data: (config) {
+///       return Text(config.host);
+///     },
+///   );
+/// }
+/// ```
+///
+/// This will automatically rebuild the UI when the [Future] completes.
+///
+/// As you can see, listening to a [FutureProvider] inside a widget returns
+/// an [AsyncValue] – which allows handling the error/loading states.
 ///
 /// See also:
 ///
 /// - [Provider], a provider that synchronously creates an immutable value
-/// - [StreamProvider], a provider that asynchronously expose a value which can change over time.
+/// - [StreamProvider], a provider that asynchronously expose a value which
+///   can change over time.
+/// - [family], to create a [FutureProvider] from external parameters
+/// - [autoDispose], to destroy the state of a [FutureProvider] when no-longer needed.
+/// {@endtemplate}
 class FutureProvider<Res> extends AlwaysAliveProviderBase<
     FutureProviderDependency<Res>, AsyncValue<Res>> {
-  /// Creates a [FutureProvider] and allows specifying a [name].
+  /// {@macro riverpod.futureprovider}
   FutureProvider(this._create, {String name}) : super(name);
 
   /// {@macro riverpod.family}
