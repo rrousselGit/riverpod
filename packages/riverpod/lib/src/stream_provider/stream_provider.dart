@@ -66,7 +66,7 @@ mixin _State<T,
   }
 }
 
-/// {@template riverpod.statenotifierprovider}
+/// {@template riverpod.stream}
 /// Creates a stream and expose its latest event.
 ///
 /// [StreamProvider] is identical in behavior/usage to [FutureProvider], modulo
@@ -115,7 +115,7 @@ mixin _State<T,
 /// {@endtemplate}
 class StreamProvider<T> extends AlwaysAliveProviderBase<
     StreamProviderDependency<T>, AsyncValue<T>> {
-  /// {@macro riverpod.statenotifierprovider}
+  /// {@macro riverpod.stream}
   StreamProvider(this._create, {String name}) : super(name);
 
   /// {@macro riverpod.family}

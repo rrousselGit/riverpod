@@ -1,4 +1,4 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/4af6fc5e-df37-4173-b56f-88519c67347b/deploy-status)](https://app.netlify.com/sites/river-pod/deploys) [![pub package](https://img.shields.io/pub/v/riverpod.svg?label=riverpod)](https://pub.dartlang.org/packages/riverpod)
+[![pub package](https://img.shields.io/pub/v/riverpod.svg?label=riverpod)](https://pub.dartlang.org/packages/riverpod)
 [![pub package](https://img.shields.io/pub/v/riverpod.svg?label=flutter_riverpod)](https://pub.dartlang.org/packages/flutter_riverpod)
 [![pub package](https://img.shields.io/pub/v/riverpod.svg?label=hooks_riverpod)](https://pub.dartlang.org/packages/hooks_riverpod)
 [![Build Status](https://github.com/rrousselGit/river_pod/workflows/Build/badge.svg)](https://github.com/rrousselGit/river_pod/actions) [![codecov](https://codecov.io/gh/rrousselGit/river_pod/branch/master/graph/badge.svg)](https://codecov.io/gh/rrousselGit/river_pod)
