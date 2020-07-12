@@ -1,10 +1,16 @@
-# 0.5.0
+# 0.5.1
+
+- Fixed the documentation of `StateNotifierProvider` incorrectly showing the
+  documentation of `StreamProvider`.
+- Improve the documentation of `StateProvider`.
+
+# 0.5.1
 
 - Changed `ComputedFamily` into `Computed.family`
 - Added [AsyncValue.guard](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue/guard.html to simplify transforming a Future into an AsyncValue.
 - Improved the documentation of the different providers
 
-# 0.5.0
+# 0.4.0
 
 Changed the syntax of "AutoDispose*" and "*Family" to use a syntax similar to
 named constructors instead.
