@@ -4,7 +4,6 @@ import 'builders.dart';
 import 'common.dart';
 import 'framework/framework.dart';
 import 'provider/provider.dart';
-import 'state_notifier_provider/state_notifier_provider.dart';
 
 /// A [StateNotifier] that allows modifying its [state] from outside.
 ///
@@ -23,11 +22,35 @@ class StateController<T> extends StateNotifier<T> {
 
 /// A provider that expose a value which can be modified from outside.
 ///
-/// Listening to this provider will trigger a rebuild when the value exposed
-/// changed.
+/// It can be useful for very simple states, like a filter or the currently
+/// selected item – which can then be combined with [Computed] or accessed
+/// in multiple screens.
 ///
-/// This is syntax sugar for [StateNotifierProvider] for simple values like enums
-/// or booleans.
+/// The following code shows a list of products, and allows selecting
+/// a product by tapping on it.
+///
+/// ```dart
+/// final selectedProductIdProvider = StateProvider<String>((ref) => null);
+/// final productsProvider = StateNotifierProvider<ProductsNotifier>((ref) => ProductsNotifier());
+///
+/// Widget build(BuildContext context) {
+///   final List<Product> products = useProvider(productsProvider.state);
+///   final selectedProductId = useProvider(selectedProductIdProvider);
+///
+///   return ListView(
+///     children: [
+///       for (final product in products)
+///         GestureDetector(
+///           onTap: () => selectedProductId.state = product.id,
+///           child: ProductItem(
+///             product: product,
+///             isSelected: selectedProductId.state == product.id,
+///           ),
+///         ),
+///     ],
+///   );
+/// }
+/// ```
 class StateProvider<T> extends AlwaysAliveProviderBase<
     ProviderDependency<StateController<T>>, StateController<T>> {
   /// Creates the initial value
