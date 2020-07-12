@@ -33,8 +33,9 @@ final selectedCharacterId = Provider<String>((ref) => null);
 ///
 /// If the user leaves the detail page before the HTTP request completes,
 /// the request is cancelled.
-final character =
-    FutureProvider.autoDispose.family<Character, String>((ref, id) async {
+// workaround to https://github.com/dart-lang/sdk/issues/41449
+final $family = FutureProvider.autoDispose.family;
+final character = $family<Character, String>((ref, id) async {
   // The user used a deep-link to land in the Character page, so we fetch
   // the Character individually.
 

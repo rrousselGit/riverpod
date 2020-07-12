@@ -135,7 +135,7 @@ abstract class Thumbnail with _$Thumbnail {
       _$ThumbnailFromJson(json);
 
   @late
-  String get url => '$path.$extension';
+  String get url => '${path.replaceFirst('http://', 'https://')}.$extension';
 }
 
 @freezed
