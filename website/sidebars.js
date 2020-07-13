@@ -2,10 +2,16 @@ module.exports = {
   someSidebar: {
     Fundamentals: [
       "fundamentals/getting_started",
-      "fundamentals/providers",
-      "fundamentals/reading",
-      "fundamentals/computed",
-      "fundamentals/family",
+      {
+        type: "category",
+        label: "Concepts",
+        items: [
+          "fundamentals/concepts/providers",
+          "fundamentals/concepts/reading",
+          "fundamentals/concepts/computed",
+          "fundamentals/concepts/family",
+        ],
+      },
     ],
     Cookbooks: [
       "cookbooks/testing",
@@ -35,17 +41,20 @@ module.exports = {
       {
         type: "link",
         label: "riverpod",
-        href: "https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html",
+        href:
+          "https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html",
       },
       {
         type: "link",
         label: "flutter_riverpod",
-        href: "https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/flutter_riverpod-library.html",
+        href:
+          "https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/flutter_riverpod-library.html",
       },
       {
         type: "link",
         label: "hooks_riverpod",
-        href: "https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html",
+        href:
+          "https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html",
       },
     ],
   },
