@@ -157,12 +157,12 @@ function Home() {
                     <br></br>
                     With
                     <code>
-                      <a href={useBaseUrl("docs/fundamentals/computed")}>
+                      <a href={useBaseUrl("docs/fundamentals/concepts/computed")}>
                         Computed
                       </a>
                     </code>
                     and
-                    <a href={useBaseUrl("docs/fundamentals/family")}>
+                    <a href={useBaseUrl("docs/fundamentals/concepts/family")}>
                       "families"
                     </a>
                     , sort your lists or do HTTP requests only when you{" "}
