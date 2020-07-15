@@ -7,31 +7,14 @@ import 'package:riverpod/src/internals.dart' as internals;
 
 void main() {
   test('StateNotifierFamily override', () async {
-    final notifier = TestNotifier();
     final notifier2 = TestNotifier(42);
-    final provider =
-        StateNotifierProvider.autoDispose.family<TestNotifier, int>(
-      (ref, a) => notifier,
+    final provider = StateNotifierProvider.autoDispose
+        .family<TestNotifier, int>((ref, a) => TestNotifier());
+    final container = ProviderContainer(
+      overrides: [provider.overrideAs((ref, a) => notifier2)],
     );
-    final root = ProviderContainer();
-    final container = ProviderContainer(parent: root, overrides: [
-      provider.overrideAs((ref, a) => notifier2),
-    ]);
-    final rootStateListener = Listener<int>();
-    final rootNotifierListener = Listener<TestNotifier>();
     final ownerStateListener = Listener<int>();
     final ownerNotifierListener = Listener<TestNotifier>();
-
-    // populate in the root first
-    final rootStateRemove =
-        provider(0).state.watchOwner(root, rootStateListener);
-    verify(rootStateListener(0)).called(1);
-    verifyNoMoreInteractions(rootStateListener);
-
-    final rootNotifierRemove =
-        provider(0).watchOwner(root, rootNotifierListener);
-    verify(rootNotifierListener(notifier)).called(1);
-    verifyNoMoreInteractions(rootNotifierListener);
 
     // access in the child container
     // try to read provider.state before provider and see if it points to the override
@@ -45,22 +28,17 @@ void main() {
     verify(ownerNotifierListener(notifier2)).called(1);
     verifyNoMoreInteractions(ownerNotifierListener);
 
-    rootStateRemove();
     ownerNotifierRemove();
 
     await Future<void>.value();
 
-    expect(notifier.mounted, true);
     expect(notifier2.mounted, true);
 
-    rootNotifierRemove();
     ownerStateRemove();
 
-    expect(notifier.mounted, true);
     expect(notifier2.mounted, true);
     await Future<void>.value();
 
-    expect(notifier.mounted, false);
     expect(notifier2.mounted, false);
   });
   test('can be assigned to Provider.autoDispose', () {
@@ -70,37 +48,15 @@ void main() {
       return TestNotifier();
     });
   });
-  test('implicit provider.state override works on children container too', () {
-    final notifier = TestNotifier(42);
-    final provider = StateNotifierProvider.autoDispose((_) => TestNotifier());
-    final root = ProviderContainer();
-    final root2 = ProviderContainer(
-      parent: root,
-      overrides: [
-        provider.overrideAs(StateNotifierProvider.autoDispose((_) => notifier))
-      ],
-    );
-    final container = ProviderContainer(parent: root2);
-    final stateListener = Listener<int>();
-    final notifierListener = Listener<TestNotifier>();
 
-    provider.watchOwner(container, notifierListener);
-    verify(notifierListener(notifier)).called(1);
-    verifyNoMoreInteractions(notifierListener);
-
-    provider.state.watchOwner(container, stateListener);
-    verify(stateListener(42)).called(1);
-    verifyNoMoreInteractions(stateListener);
-  });
   test('overriding the provider overrides provider.state too', () {
-    final notifier = TestNotifier(42);
     final provider = StateNotifierProvider.autoDispose((_) => TestNotifier());
-    final root = ProviderContainer();
+    final notifier = TestNotifier(42);
     final container = ProviderContainer(
-      parent: root,
       overrides: [
         provider.overrideAs(
-            StateNotifierProvider.autoDispose((_) => TestNotifier(10)))
+          StateNotifierProvider.autoDispose((_) => TestNotifier(10)),
+        )
       ],
     );
     final stateListener = Listener<int>();

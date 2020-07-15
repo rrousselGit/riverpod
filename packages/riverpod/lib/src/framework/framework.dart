@@ -164,6 +164,12 @@ class ProviderContainer {
     List<ProviderObserver> observers,
   })  : _debugOverrides = overrides,
         _observers = observers {
+    if (parent != null && overrides.isNotEmpty) {
+      throw UnsupportedError(
+        'Cannot override providers on a non-root ProviderContainer/ProviderScope',
+      );
+    }
+
     _fallback = parent?._fallback;
     _fallback ??= <T>(provider) {
       // It's fine to add new keys to _stateReaders inside fallback
@@ -489,12 +495,7 @@ Changing the kind of override or reordering overrides is not supported.
     assert(notifyListenersLock == null, '');
 
     for (final state in _visitStatesInReverseOrder()) {
-      notifyListenersLock = state;
-      try {
-        state.dispose();
-      } finally {
-        notifyListenersLock = null;
-      }
+      state.dispose();
     }
   }
 

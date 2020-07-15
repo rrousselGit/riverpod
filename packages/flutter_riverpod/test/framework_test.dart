@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -176,63 +174,6 @@ void main() {
     expect(find.text('override'), findsOneWidget);
     expect(find.text('root2'), findsOneWidget);
   });
-  testWidgets('listeners can be moved to depend on a new provider',
-      (tester) async {
-    final firstCompleter = Completer<int>.sync();
-    final secondCompleter = Completer<int>.sync();
-
-    final provider = FutureProvider((_) => firstCompleter.future);
-
-    var buildCount = 0;
-
-    final child = Directionality(
-      key: GlobalKey(),
-      textDirection: TextDirection.ltr,
-      child: Consumer((c, read) {
-        buildCount++;
-        return read(provider).when(
-          data: (v) => Text(v.toString()),
-          loading: () => const Text('loading'),
-          error: (dynamic err, stack) => const Text('error'),
-        );
-      }),
-    );
-
-    await tester.pumpWidget(ProviderScope(child: child));
-
-    expect(find.text('loading'), findsOneWidget);
-    expect(buildCount, 1);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        child: ProviderScope(
-          overrides: [
-            provider.overrideAs(
-              FutureProvider((_) => secondCompleter.future),
-            ),
-          ],
-          child: child,
-        ),
-      ),
-    );
-
-    expect(find.text('loading'), findsOneWidget);
-    expect(buildCount, 2);
-
-    firstCompleter.complete(42);
-
-    await tester.pump();
-
-    expect(buildCount, 2);
-    expect(find.text('loading'), findsOneWidget);
-
-    secondCompleter.complete(21);
-
-    await tester.pump();
-
-    expect(find.text('21'), findsOneWidget);
-    expect(buildCount, 3);
-  });
 
   testWidgets('ProviderScope can be nested', (tester) async {
     final provider = Provider((_) => 'root');
@@ -257,26 +198,19 @@ void main() {
       ),
     );
 
-    final secondScope = ProviderScope(
-      overrides: [
-        provider2.overrideAs(Provider((_) => 'override2')),
-      ],
-      child: builder,
-    );
-
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           provider.overrideAs(Provider((_) => 'rootoverride')),
         ],
-        child: secondScope,
+        child: ProviderScope(child: builder),
       ),
     );
 
     expect(buildCount, 1);
     expect(buildCount2, 1);
     expect(find.text('rootoverride'), findsOneWidget);
-    expect(find.text('override2'), findsOneWidget);
+    expect(find.text('root2'), findsOneWidget);
   });
   testWidgets('debugFillProperties', (tester) async {
     final unnamed = Provider((_) => 0);

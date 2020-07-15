@@ -95,47 +95,6 @@ void main() {
     verifyNoMoreInteractions(listener);
   });
 
-  test('cross-container dispose in order', () async {
-    final aDispose = OnDisposeMock();
-    final a = Provider.autoDispose((ref) {
-      ref.onDispose(aDispose);
-      return 42;
-    });
-    final bDispose = OnDisposeMock();
-    final b = Provider.autoDispose((ref) {
-      ref.onDispose(bDispose);
-      ref.dependOn(a);
-      return '42';
-    });
-    final root = ProviderContainer();
-    final container = ProviderContainer(parent: root, overrides: [b]);
-
-    final bRemoveListener = b.watchOwner(container, (value) {});
-
-    expect(
-      container.debugProviderStates,
-      [isA<AutoDisposeProviderState<String>>()],
-    );
-    expect(
-      root.debugProviderStates,
-      [isA<AutoDisposeProviderState<int>>()],
-    );
-
-    bRemoveListener();
-
-    await idle();
-
-    expect(container.debugProviderStates, isEmpty);
-    expect(root.debugProviderStates, isEmpty);
-
-    verifyInOrder([
-      bDispose(),
-      aDispose(),
-    ]);
-    verifyNoMoreInteractions(aDispose);
-    verifyNoMoreInteractions(bDispose);
-  });
-
   test('unsub to A then make B sub to A then unsub to B disposes B before A',
       () async {
     final container = ProviderContainer();
@@ -398,48 +357,24 @@ void main() {
   test('unmount on removing ref.read', () async {
     final onDispose = OnDisposeMock();
     final unrelated = Provider((_) => 42);
-    var value = 42;
     final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose);
-      return value;
+      return 42;
     });
     final dependent = Provider((ref) => ref.dependOn(provider).value);
-    final root = ProviderContainer();
-    final container = ProviderContainer(parent: root, overrides: [dependent]);
-    final container2 = ProviderContainer(parent: root, overrides: [dependent]);
+    final container = ProviderContainer(overrides: [dependent]);
 
     expect(unrelated.readOwner(container), 42);
     expect(container.ref.dependOn(dependent).value, 42);
 
-    expect(
-      root.debugProviderStates,
-      unorderedMatches(<Matcher>[
-        isA<ProviderState<int>>(),
-        isA<AutoDisposeProviderState<int>>(),
-      ]),
-    );
-    verifyNoMoreInteractions(onDispose);
-
     container.dispose();
 
+    verify(onDispose()).called(1);
     verifyNoMoreInteractions(onDispose);
 
     await idle();
 
-    verify(onDispose()).called(1);
     verifyNoMoreInteractions(onDispose);
-    expect(root.debugProviderStates, [isA<ProviderState<int>>()]);
-
-    value = 21;
-    expect(container2.ref.dependOn(dependent).value, 21);
-    verifyNoMoreInteractions(onDispose);
-    expect(
-      root.debugProviderStates,
-      unorderedMatches(<Matcher>[
-        isA<ProviderState<int>>(),
-        isA<AutoDisposeProviderState<int>>(),
-      ]),
-    );
   });
 }
 

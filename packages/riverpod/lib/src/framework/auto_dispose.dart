@@ -159,12 +159,17 @@ class _AutoDisposer {
           !entry.value.mounted) {
         continue;
       }
-      entry.value.dispose();
-      final reader = entry.value._origin is Computed
-          ? entry.value._owner._computedStateReaders[entry.value._origin]
-          : entry.value._owner._stateReaders[entry.value._origin];
-      // TODO remove ProviderStateReader on dispose for non-overriden providers.
-      reader._providerState = null;
+      notifyListenersLock = entry.value;
+      try {
+        entry.value.dispose();
+      } finally {
+        notifyListenersLock = null;
+        final reader = entry.value._origin is Computed
+            ? entry.value._owner._computedStateReaders[entry.value._origin]
+            : entry.value._owner._stateReaders[entry.value._origin];
+        // TODO remove ProviderStateReader on dispose for non-overriden providers.
+        reader._providerState = null;
+      }
     }
   }
 }

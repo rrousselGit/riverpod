@@ -278,9 +278,20 @@ void main() {
     }, key: key);
 
     await tester.pumpWidget(
-      ProviderScope(
-        key: firstOwnerKey,
-        child: consumer,
+      Column(
+        children: [
+          ProviderScope(
+            key: firstOwnerKey,
+            child: consumer,
+          ),
+          ProviderScope(
+            key: secondOwnerKey,
+            overrides: [
+              provider.overrideAs(override),
+            ],
+            child: Container(),
+          ),
+        ],
       ),
     );
 
@@ -295,15 +306,20 @@ void main() {
     expect(find.text('0'), findsOneWidget);
 
     await tester.pumpWidget(
-      ProviderScope(
-        key: firstOwnerKey,
-        child: ProviderScope(
-          key: secondOwnerKey,
-          overrides: [
-            provider.overrideAs(override),
-          ],
-          child: consumer,
-        ),
+      Column(
+        children: [
+          ProviderScope(
+            key: firstOwnerKey,
+            child: Container(),
+          ),
+          ProviderScope(
+            key: secondOwnerKey,
+            overrides: [
+              provider.overrideAs(override),
+            ],
+            child: consumer,
+          ),
+        ],
       ),
     );
 
@@ -417,77 +433,7 @@ void main() {
     notifier.increment();
     await tester.pump();
   });
-  testWidgets('relocating consumer with GlobalKey', (tester) async {
-    final notifier = TestNotifier();
-    final notifier2 = TestNotifier(42);
 
-    final provider = StateNotifierProvider((_) => notifier);
-    final override = provider.overrideAs(
-      StateNotifierProvider((_) => notifier2),
-    );
-
-    var buildCount = 0;
-    final consumer = Consumer((context, read) {
-      buildCount++;
-      final count = read(provider.state);
-      return Text('$count', textDirection: TextDirection.ltr);
-    }, key: GlobalKey());
-
-    await tester.pumpWidget(
-      ProviderScope(
-        child: Column(
-          textDirection: TextDirection.ltr,
-          children: <Widget>[
-            ProviderScope(
-              overrides: [override],
-              child: consumer,
-            ),
-          ],
-        ),
-      ),
-    );
-
-    expect(find.text('42'), findsOneWidget);
-    expect(buildCount, 1);
-
-    notifier2.increment();
-    await tester.pump();
-
-    expect(find.text('43'), findsOneWidget);
-    expect(buildCount, 2);
-
-    // move the consumer without disposing the currently listener notifier
-    await tester.pumpWidget(
-      ProviderScope(
-        child: Column(
-          textDirection: TextDirection.ltr,
-          children: <Widget>[
-            ProviderScope(
-              overrides: [override],
-              child: Container(),
-            ),
-            consumer,
-          ],
-        ),
-      ),
-    );
-
-    expect(buildCount, 3);
-    expect(find.text('42'), findsNothing);
-    expect(find.text('0'), findsOneWidget);
-
-    // does nothing because listener was removed
-    notifier2.increment();
-    await tester.pump();
-
-    expect(buildCount, 3);
-
-    notifier.increment();
-    await tester.pump();
-
-    expect(buildCount, 4);
-    expect(find.text('1'), findsOneWidget);
-  });
   testWidgets('changing provider', (tester) async {
     final provider = Provider((_) => 0);
 

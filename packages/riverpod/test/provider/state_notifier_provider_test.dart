@@ -18,18 +18,12 @@ void main() {
     await expectLater(dep.value.state, 0);
   });
   test('StateNotifierFamily override', () {
-    final notifier = TestNotifier();
+    final provider = StateNotifierProvider.family<TestNotifier, int>(
+        (ref, a) => TestNotifier());
     final notifier2 = TestNotifier(42);
-    final provider =
-        StateNotifierProvider.family<TestNotifier, int>((ref, a) => notifier);
-    final root = ProviderContainer();
-    final container = ProviderContainer(parent: root, overrides: [
-      provider.overrideAs((ref, a) => notifier2),
-    ]);
-
-    // populate in the root first
-    expect(provider(0).state.readOwner(root), 0);
-    expect(provider(0).readOwner(root), notifier);
+    final container = ProviderContainer(
+      overrides: [provider.overrideAs((ref, a) => notifier2)],
+    );
 
     // access in the child container
     // try to read provider.state before provider and see if it points to the override
@@ -44,25 +38,10 @@ void main() {
 
     expect(provider.readOwner(container), isA<TestNotifier>());
   });
-  test('implicit provider.state override works on children container too', () {
-    final notifier = TestNotifier(42);
-    final provider = StateNotifierProvider((_) => TestNotifier());
-    final root = ProviderContainer();
-    final root2 = ProviderContainer(
-      parent: root,
-      overrides: [provider.overrideAs(StateNotifierProvider((_) => notifier))],
-    );
-    final container = ProviderContainer(parent: root2);
-
-    expect(provider.readOwner(container), notifier);
-    expect(provider.state.readOwner(container), 42);
-  });
   test('overriding the provider overrides provider.state too', () {
     final notifier = TestNotifier(42);
     final provider = StateNotifierProvider((_) => TestNotifier());
-    final root = ProviderContainer();
     final container = ProviderContainer(
-      parent: root,
       overrides: [
         provider.overrideAs(StateNotifierProvider((_) => TestNotifier(10)))
       ],

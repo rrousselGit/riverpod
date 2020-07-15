@@ -67,21 +67,17 @@ void main() {
 
   test('family override', () {
     final provider = Provider.family<String, int>((ref, a) => '$a');
-    final root = ProviderContainer();
-    final container = ProviderContainer(parent: root, overrides: [
+    final container = ProviderContainer(overrides: [
       // Provider overrides always takes over family overrides
       provider(84).overrideAs(Provider((_) => 'Bonjour 84')),
       provider.overrideAs((ref, a) => 'Hello $a'),
       provider(21).overrideAs(Provider((_) => 'Hi 21')),
     ]);
 
-    expect(provider(42).readOwner(root), '42');
     expect(provider(42).readOwner(container), 'Hello 42');
 
-    expect(provider(21).readOwner(root), '21');
     expect(provider(21).readOwner(container), 'Hi 21');
 
-    expect(provider(84).readOwner(root), '84');
     expect(provider(84).readOwner(container), 'Bonjour 84');
   });
 }
