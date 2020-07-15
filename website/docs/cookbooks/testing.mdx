@@ -116,18 +116,18 @@ void main() {
   test('defaults to 0 and notify listeners when value changes', () {
     // An object that will allow us to read providers
     // Do not share this between tests.
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final listener = Listener();
 
     // Observe a provider and spy the changes.
-    counterProvider.watchOwner(owner, (value) => listener(value.state));
+    counterProvider.watchOwner(container, (value) => listener(value.state));
 
     // the listener is called immediatly with 0, the default value
     verify(listener(0)).called(1);
     verifyNoMoreInteractions(listener);
 
     // We increment the value
-    counterProvider.readOwner(owner).state++;
+    counterProvider.readOwner(container).state++;
 
     // The listener was called again, but with 1 this time
     verify(listener(1)).called(1);
@@ -137,10 +137,10 @@ void main() {
   test('the counter state is not shared between tests', () {
     // We use a different ProviderContainer to read our provider.
     // This unsure that no state is reused between tests
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final listener = Listener();
 
-    counterProvider.watchOwner(owner, (value) => listener(value.state));
+    counterProvider.watchOwner(container, (value) => listener(value.state));
 
     // The new test correcly uses the default value: 0
     verify(listener(0)).called(1);
@@ -230,7 +230,7 @@ testWidgets('override repositoryProvider', (tester) async {
 
 ```dart {6}
 test('override repositoryProvider', () async {
-  final owner = ProviderContainer(
+  final container = ProviderContainer(
     overrides: [
       // Override the behavior of repositoryProvider to return
       // FakeRepository instead of Repository.
@@ -242,7 +242,7 @@ test('override repositoryProvider', () async {
 
   // The first read if the loading state
   expect(
-    todoListProvider.readOwner(owner),
+    todoListProvider.readOwner(container),
     const AsyncValue<List<Todo>>.loading(),
   );
 
@@ -250,7 +250,7 @@ test('override repositoryProvider', () async {
   await Future<void>.value();
 
   // Exposes the data fetched
-  expect(todoListProvider.readOwner(owner).data.value, [
+  expect(todoListProvider.readOwner(container).data.value, [
     isA<Todo>()
         .having((s) => s.id, 'id', '42')
         .having((s) => s.label, 'label', 'Hello world')

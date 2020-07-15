@@ -167,7 +167,7 @@ class ProviderContainer {
     _fallback = parent?._fallback;
     _fallback ??= <T>(provider) {
       // It's fine to add new keys to _stateReaders inside fallback
-      // as in this situation, there is no "parent" owner.s
+      // as in this situation, there is no "parent" container.s
       return _stateReaders.putIfAbsent(provider, () {
         return _ProviderStateReader(provider, this);
       }).read() as ProviderStateBase<ProviderDependencyBase, T,
@@ -265,9 +265,9 @@ class ProviderContainer {
   ///
   /// ```dart
   /// final refProvider = Provider((ref) => ref);
-  /// final owner = ProviderStateOwnrr(parent: ..., overrides: [refProvider]);
+  /// final container = ProviderStateOwnrr(parent: ..., overrides: [refProvider]);
   ///
-  /// final re = refProvider.readOwner(owner);
+  /// final re = refProvider.readOwner(container);
   /// ```
   ProviderReference get ref => _refProvider.readOwner(this);
 
@@ -285,7 +285,7 @@ class ProviderContainer {
   /// final provider1 = FutureProvider((_) async => 'Hello');
   /// final provider2 = Provider((_) => 'world');
   ///
-  /// final owner = ProviderContainer(
+  /// final container = ProviderContainer(
   ///   overrides: [
   ///     provider1.debugOverrideWithValue(const AsyncValue.loading())
   ///     provider2.overrideAs(Provider((_) => 'London')),
@@ -296,7 +296,7 @@ class ProviderContainer {
   /// Then we can call update with different overrides:
   ///
   /// ```dart
-  /// owner.updateOverrides([
+  /// container.updateOverrides([
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
   ///   provider2.overrideAs(Provider((_) => 'London')),
   /// ]);
@@ -306,19 +306,19 @@ class ProviderContainer {
   ///
   /// ```dart
   /// // Invalid, provider2 was overriden before but is not anymore
-  /// owner.updateOverrides([
+  /// container.updateOverrides([
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
   /// ]);
   ///
   /// // Invalid, provider3 was not overriden before, but now is
-  /// owner.updateOverrides([
+  /// container.updateOverrides([
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
   ///   provider2.overrideAs(Provider((_) => 'London')),
   ///   provider3.overrideAs(...),
   /// ]);
   ///
   /// // Invalid the order of the overrides
-  /// owner.updateOverrides([
+  /// container.updateOverrides([
   ///   provider2.overrideAs(Provider((_) => 'London')),
   ///   provider1.debugOverrideWithValue(const AsyncValue.data('Hi'))
   /// ]);

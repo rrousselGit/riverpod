@@ -6,11 +6,11 @@ void main() {
   test('StateNotifierProviderDependency can be assigned to ProviderDependency',
       () async {
     final provider = StateProvider((ref) => 0);
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
 
     // ignore: omit_local_variable_types
     final ProviderDependency<StateController<int>> dep =
-        owner.ref.dependOn(provider);
+        container.ref.dependOn(provider);
 
     await expectLater(dep.value.state, 0);
   });
@@ -18,14 +18,14 @@ void main() {
     final provider = StateProvider.family<String, int>((ref, a) {
       return '$a';
     });
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
 
     expect(
-      provider(0).readOwner(owner),
+      provider(0).readOwner(container),
       isA<StateController>().having((s) => s.state, 'state', '0'),
     );
     expect(
-      provider(1).readOwner(owner),
+      provider(1).readOwner(container),
       isA<StateController>().having((s) => s.state, 'state', '1'),
     );
   });
@@ -34,28 +34,28 @@ void main() {
     final provider = StateProvider.family<String, int>((ref, a) {
       return '$a';
     });
-    final owner = ProviderContainer(overrides: [
+    final container = ProviderContainer(overrides: [
       provider.overrideAs((ref, a) => 'override $a'),
     ]);
 
     expect(
-      provider(0).readOwner(owner),
+      provider(0).readOwner(container),
       isA<StateController>().having((s) => s.state, 'state', 'override 0'),
     );
     expect(
-      provider(1).readOwner(owner),
+      provider(1).readOwner(container),
       isA<StateController>().having((s) => s.state, 'state', 'override 1'),
     );
   });
   test('Expose a state and allows modifying it', () {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final provider = StateProvider((ref) => 0);
     final listener = Listener();
 
-    final controller = provider.readOwner(owner);
+    final controller = provider.readOwner(container);
     expect(controller.state, 0);
 
-    provider.watchOwner(owner, listener);
+    provider.watchOwner(container, listener);
     verify(listener(controller));
     verifyNoMoreInteractions(listener);
     expect(controller.mounted, true);
@@ -65,7 +65,7 @@ void main() {
     verify(listener(controller));
     verifyNoMoreInteractions(listener);
 
-    owner.dispose();
+    container.dispose();
 
     expect(controller.mounted, false);
   });

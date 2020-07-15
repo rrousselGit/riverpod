@@ -10,9 +10,9 @@ void main() {
     final provider = SetStateProvider<Object>((ref) {
       return ref;
     });
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final setStateRef =
-        provider.readOwner(owner) as SetStateProviderReference<Object>;
+        provider.readOwner(container) as SetStateProviderReference<Object>;
 
     final provider2 = Provider((_) {
       setStateRef.state = 42;
@@ -21,22 +21,22 @@ void main() {
 
     expect(setStateRef, isNotNull);
 
-    expect(errorsOf(() => provider2.readOwner(owner)), [isStateError]);
+    expect(errorsOf(() => provider2.readOwner(container)), [isStateError]);
   });
   test("nested initState can't mark dirty other providers", () {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
     final nested = Provider((_) => 0);
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final provider2 = Provider((ref) {
       ref.dependOn(nested);
       counter.increment();
       return 0;
     });
 
-    expect(provider.state.readOwner(owner), 0);
+    expect(provider.state.readOwner(container), 0);
 
-    expect(errorsOf(() => provider2.readOwner(owner)), [
+    expect(errorsOf(() => provider2.readOwner(container)), [
       isStateError,
       isA<Error>(),
     ]);
@@ -51,12 +51,12 @@ void main() {
       ref.onDispose(() => errors = errorsOf(counter.increment));
       return 0;
     });
-    final owner = ProviderContainer(parent: root, overrides: [provider2]);
+    final container = ProviderContainer(parent: root, overrides: [provider2]);
 
-    expect(provider.state.readOwner(owner), 0);
-    expect(provider2.readOwner(owner), 0);
+    expect(provider.state.readOwner(container), 0);
+    expect(provider2.readOwner(container), 0);
 
-    owner.dispose();
+    container.dispose();
 
     expect(errors, [isStateError, isA<Error>()]);
   });
@@ -65,12 +65,12 @@ void main() {
       () {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
 
-    expect(provider.state.readOwner(owner), 0);
+    expect(provider.state.readOwner(container), 0);
 
     List<Object> errors;
-    provider.state.watchOwner(owner, (value) {
+    provider.state.watchOwner(container, (value) {
       errors = errorsOf(counter.increment);
     });
 
@@ -84,17 +84,17 @@ void main() {
     final root = ProviderContainer();
     final counter2 = Counter();
     final provider2 = StateNotifierProvider((_) => counter2);
-    final owner = ProviderContainer(
+    final container = ProviderContainer(
       parent: root,
       overrides: [provider2, provider2.state],
     );
     final listener = Listener();
     List<Object> errors;
 
-    expect(provider.state.readOwner(owner), 0);
+    expect(provider.state.readOwner(container), 0);
 
     final sub = provider2.state.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: () {},
       onChange: (value) {
         listener(value);
@@ -122,7 +122,7 @@ void main() {
   test("Computed can't dirty anything on create", () {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     List<Object> errors;
     final computed = Computed((read) {
       errors = errorsOf(counter.increment);
@@ -130,9 +130,9 @@ void main() {
     });
     final listener = Listener();
 
-    expect(provider.state.readOwner(owner), 0);
+    expect(provider.state.readOwner(container), 0);
 
-    computed.watchOwner(owner, listener);
+    computed.watchOwner(container, listener);
 
     verify(listener(0)).called(1);
     verifyNoMoreInteractions(listener);
@@ -141,7 +141,7 @@ void main() {
   test("Computed can't dirty anything on update", () {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     List<Object> errors;
     final computed = Computed((read) {
       final value = read(provider.state);
@@ -152,10 +152,10 @@ void main() {
     });
     final listener = Listener();
 
-    expect(provider.state.readOwner(owner), 0);
+    expect(provider.state.readOwner(container), 0);
 
     final sub = computed.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: () {},
       onChange: listener,
     );

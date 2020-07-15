@@ -9,11 +9,11 @@ import 'package:mockito/mockito.dart';
 void main() {
   test('SynchronousFuture', () {
     final futureProvider = FutureProvider((_) => SynchronousFuture(42));
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final listener = Listener();
 
     final sub = futureProvider.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: () {},
       onChange: listener,
     );

@@ -14,7 +14,7 @@ void main() {
       (ref, a) => notifier,
     );
     final root = ProviderContainer();
-    final owner = ProviderContainer(parent: root, overrides: [
+    final container = ProviderContainer(parent: root, overrides: [
       provider.overrideAs((ref, a) => notifier2),
     ]);
     final rootStateListener = Listener<int>();
@@ -33,15 +33,15 @@ void main() {
     verify(rootNotifierListener(notifier)).called(1);
     verifyNoMoreInteractions(rootNotifierListener);
 
-    // access in the child owner
+    // access in the child container
     // try to read provider.state before provider and see if it points to the override
     final ownerStateRemove =
-        provider(0).state.watchOwner(owner, ownerStateListener);
+        provider(0).state.watchOwner(container, ownerStateListener);
     verify(ownerStateListener(42)).called(1);
     verifyNoMoreInteractions(ownerStateListener);
 
     final ownerNotifierRemove =
-        provider(0).watchOwner(owner, ownerNotifierListener);
+        provider(0).watchOwner(container, ownerNotifierListener);
     verify(ownerNotifierListener(notifier2)).called(1);
     verifyNoMoreInteractions(ownerNotifierListener);
 
@@ -70,7 +70,7 @@ void main() {
       return TestNotifier();
     });
   });
-  test('implicit provider.state override works on children owner too', () {
+  test('implicit provider.state override works on children container too', () {
     final notifier = TestNotifier(42);
     final provider = StateNotifierProvider.autoDispose((_) => TestNotifier());
     final root = ProviderContainer();
@@ -80,15 +80,15 @@ void main() {
         provider.overrideAs(StateNotifierProvider.autoDispose((_) => notifier))
       ],
     );
-    final owner = ProviderContainer(parent: root2);
+    final container = ProviderContainer(parent: root2);
     final stateListener = Listener<int>();
     final notifierListener = Listener<TestNotifier>();
 
-    provider.watchOwner(owner, notifierListener);
+    provider.watchOwner(container, notifierListener);
     verify(notifierListener(notifier)).called(1);
     verifyNoMoreInteractions(notifierListener);
 
-    provider.state.watchOwner(owner, stateListener);
+    provider.state.watchOwner(container, stateListener);
     verify(stateListener(42)).called(1);
     verifyNoMoreInteractions(stateListener);
   });
@@ -96,7 +96,7 @@ void main() {
     final notifier = TestNotifier(42);
     final provider = StateNotifierProvider.autoDispose((_) => TestNotifier());
     final root = ProviderContainer();
-    final owner = ProviderContainer(
+    final container = ProviderContainer(
       parent: root,
       overrides: [
         provider.overrideAs(
@@ -107,15 +107,15 @@ void main() {
     final notifierListener = Listener<TestNotifier>();
 
     // does not crash
-    owner.updateOverrides([
+    container.updateOverrides([
       provider.overrideAs(StateNotifierProvider.autoDispose((_) => notifier)),
     ]);
 
-    provider.watchOwner(owner, notifierListener);
+    provider.watchOwner(container, notifierListener);
     verify(notifierListener(notifier)).called(1);
     verifyNoMoreInteractions(notifierListener);
 
-    provider.state.watchOwner(owner, stateListener);
+    provider.state.watchOwner(container, stateListener);
     verify(stateListener(42)).called(1);
     verifyNoMoreInteractions(stateListener);
 
@@ -144,12 +144,12 @@ void main() {
     final provider = StateNotifierProvider.autoDispose<TestNotifier>((_) {
       return notifier;
     });
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
 
-    provider.watchOwner(owner, (value) {});
+    provider.watchOwner(container, (value) {});
     expect(notifier.mounted, isTrue);
 
-    owner.dispose();
+    container.dispose();
 
     expect(notifier.mounted, isFalse);
   });
@@ -160,10 +160,10 @@ void main() {
       return notifier;
     });
     final listener = ControllerListenerMock();
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
 
     final sub = provider.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: () {},
       onChange: listener,
     );
@@ -178,7 +178,7 @@ void main() {
 
     verifyNoMoreInteractions(listener);
 
-    owner.dispose();
+    container.dispose();
     await Future.value(null);
 
     verifyNoMoreInteractions(listener);
@@ -189,10 +189,10 @@ void main() {
       return notifier;
     });
     final listener = Listener<int>();
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
 
     final sub = provider.state.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: () {},
       onChange: listener,
     );
@@ -206,7 +206,7 @@ void main() {
     verify(listener(1)).called(1);
     verifyNoMoreInteractions(listener);
 
-    owner.dispose();
+    container.dispose();
     await Future.value(null);
 
     verifyNoMoreInteractions(listener);

@@ -8,12 +8,12 @@ import 'package:test/test.dart';
 void main() {
   test('report change once even if there are multiple listeners', () {
     final observer = ObserverMock();
-    final owner = ProviderContainer(observers: [observer]);
+    final container = ProviderContainer(observers: [observer]);
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
 
-    provider.state.watchOwner(owner, (value) {});
-    provider.state.watchOwner(owner, (value) {});
+    provider.state.watchOwner(container, (value) {});
+    provider.state.watchOwner(container, (value) {});
 
     verify(observer.didAddProvider(provider, notifier));
     verify(observer.didAddProvider(provider.state, 0));
@@ -29,14 +29,14 @@ void main() {
     final observer = ObserverMock();
     final observer2 = ObserverMock();
     final provider = Provider((_) => 0);
-    final owner = ProviderContainer(
+    final container = ProviderContainer(
       overrides: [
         provider.overrideAs(Provider((_) => 42)),
       ],
       observers: [observer, observer2],
     );
 
-    expect(provider.readOwner(owner), 42);
+    expect(provider.readOwner(container), 42);
     verifyInOrder([
       observer.didAddProvider(provider, 42),
       observer2.didAddProvider(provider, 42)
@@ -51,7 +51,7 @@ void main() {
     when(observer2.didAddProvider(any, any)).thenThrow('error2');
     final observer3 = ObserverMock();
     final provider = Provider((_) => 0);
-    final owner = ProviderContainer(
+    final container = ProviderContainer(
       overrides: [
         provider.overrideAs(Provider((_) => 42)),
       ],
@@ -60,7 +60,7 @@ void main() {
 
     final errors = <Object>[];
     final result = runZonedGuarded(
-      () => provider.readOwner(owner),
+      () => provider.readOwner(container),
       (err, stack) {
         errors.add(err);
       },
@@ -80,7 +80,7 @@ void main() {
     final observer2 = ObserverMock();
     final provider = StateNotifierProvider((_) => Counter());
     final counter = Counter();
-    final owner = ProviderContainer(
+    final container = ProviderContainer(
       overrides: [
         provider.overrideAs(StateNotifierProvider((_) => counter)),
       ],
@@ -89,7 +89,7 @@ void main() {
     final listener = Listener<int>();
 
     final sub = provider.state.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: () {},
       onChange: listener,
     );
@@ -130,7 +130,7 @@ void main() {
     final observer3 = ObserverMock();
     final provider = StateNotifierProvider((_) => Counter());
     final counter = Counter();
-    final owner = ProviderContainer(
+    final container = ProviderContainer(
       overrides: [
         provider.overrideAs(StateNotifierProvider((_) => counter)),
       ],
@@ -139,7 +139,7 @@ void main() {
     final listener = Listener<int>();
 
     final sub = provider.state.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: () {},
       onChange: listener,
     );
@@ -176,11 +176,11 @@ void main() {
     final isNegative = Computed((read) {
       return read(provider.state).isNegative;
     });
-    final owner = ProviderContainer(observers: [observer]);
+    final container = ProviderContainer(observers: [observer]);
     final isNegativeListener = Listener<bool>();
 
     final sub = isNegative.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: () {},
       onChange: isNegativeListener,
     );
@@ -229,7 +229,7 @@ void main() {
     final provider = Provider((_) => 0);
     final provider2 = Provider((ref) => ref.dependOn(provider).value);
     final onDispose = OnDisposeMock();
-    final owner = ProviderContainer(
+    final container = ProviderContainer(
       overrides: [
         provider.overrideAs(Provider((ref) {
           ref.onDispose(onDispose);
@@ -239,15 +239,15 @@ void main() {
       observers: [observer, observer2, observer3],
     );
 
-    expect(provider.readOwner(owner), 0);
-    expect(provider2.readOwner(owner), 0);
+    expect(provider.readOwner(container), 0);
+    expect(provider2.readOwner(container), 0);
     clearInteractions(observer);
     clearInteractions(observer2);
     clearInteractions(observer3);
     verifyNoMoreInteractions(onDispose);
 
     final errors = <Object>[];
-    runZonedGuarded(owner.dispose, (err, stack) => errors.add(err));
+    runZonedGuarded(container.dispose, (err, stack) => errors.add(err));
 
     expect(errors, ['error1', 'error2', 'error1', 'error2']);
     verifyInOrder([

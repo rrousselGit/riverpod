@@ -9,9 +9,9 @@ import 'package:riverpod/riverpod.dart';
 void main() {
   group('fetch characters', () {
     test('success', () async {
-      final owner = ProviderContainer();
+      final container = ProviderContainer();
       final client = FakeDio();
-      final repository = MarvelRepository(owner.ref, client: client);
+      final repository = MarvelRepository(container.ref, client: client);
 
       await expectLater(
         repository.fetchCharacters(offset: 0),

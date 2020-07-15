@@ -8,27 +8,27 @@ void main() {
     final provider = ChangeNotifierProvider((ref) {
       return ValueNotifier(0);
     });
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
 
     // ignore: omit_local_variable_types
     final ProviderDependency<ValueNotifier<int>> dep =
-        owner.ref.dependOn(provider);
+        container.ref.dependOn(provider);
 
     await expectLater(dep.value.value, 0);
   });
   test('family', () {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final provider =
         ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
     });
 
     expect(
-      provider(0).readOwner(owner),
+      provider(0).readOwner(container),
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 0),
     );
     expect(
-      provider(42).readOwner(owner),
+      provider(42).readOwner(container),
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 42),
     );
   });
@@ -37,16 +37,16 @@ void main() {
         ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
     });
-    final owner = ProviderContainer(overrides: [
+    final container = ProviderContainer(overrides: [
       provider.overrideAs((ref, value) => ValueNotifier(value * 2))
     ]);
 
     expect(
-      provider(0).readOwner(owner),
+      provider(0).readOwner(container),
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 0),
     );
     expect(
-      provider(42).readOwner(owner),
+      provider(42).readOwner(container),
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 84),
     );
   });
@@ -54,9 +54,9 @@ void main() {
     final Provider<ValueNotifier<int>> provider = ChangeNotifierProvider((_) {
       return ValueNotifier(0);
     });
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
 
-    expect(provider.readOwner(owner), isA<ValueNotifier<int>>());
+    expect(provider.readOwner(container), isA<ValueNotifier<int>>());
   });
   test('can specify name', () {
     final provider = ChangeNotifierProvider(

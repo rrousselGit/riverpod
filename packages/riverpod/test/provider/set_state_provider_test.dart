@@ -8,14 +8,14 @@ void main() {
     final provider = StateProvider.family<String, int>((ref, a) {
       return '$a';
     });
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
 
     expect(
-      provider(0).readOwner(owner),
+      provider(0).readOwner(container),
       isA<StateController>().having((s) => s.state, 'state', '0'),
     );
     expect(
-      provider(1).readOwner(owner),
+      provider(1).readOwner(container),
       isA<StateController>().having((s) => s.state, 'state', '1'),
     );
   });
@@ -24,16 +24,16 @@ void main() {
     final provider = StateProvider.family<String, int>((ref, a) {
       return '$a';
     });
-    final owner = ProviderContainer(overrides: [
+    final container = ProviderContainer(overrides: [
       provider.overrideAs((ref, a) => 'override $a'),
     ]);
 
     expect(
-      provider(0).readOwner(owner),
+      provider(0).readOwner(container),
       isA<StateController>().having((s) => s.state, 'state', 'override 0'),
     );
     expect(
-      provider(1).readOwner(owner),
+      provider(1).readOwner(container),
       isA<StateController>().having((s) => s.state, 'state', 'override 1'),
     );
   });
@@ -55,7 +55,7 @@ void main() {
     expect(provider, isA<AlwaysAliveProviderBase>());
   });
   test('SetStateProviderReference can read and write state', () {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     SetStateProviderReference<int> ref;
     int initialValue;
     final provider = SetStateProvider<int>((r) {
@@ -66,7 +66,7 @@ void main() {
     final listener = ListenerMock();
 
     final sub = provider.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: () {},
       onChange: listener,
     );
@@ -86,10 +86,10 @@ void main() {
     verify(listener(1)).called(1);
     verifyNoMoreInteractions(listener);
 
-    owner.dispose();
+    container.dispose();
   });
   test('subscribe', () {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     SetStateProviderReference<int> ref;
     final provider = SetStateProvider<int>((r) {
       ref = r;
@@ -98,7 +98,7 @@ void main() {
     final listener = ListenerMock();
 
     final sub = provider.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: () {},
       onChange: listener,
     );
@@ -115,7 +115,7 @@ void main() {
     sub.flush();
 
     verifyNoMoreInteractions(listener);
-    owner.dispose();
+    container.dispose();
   });
 }
 

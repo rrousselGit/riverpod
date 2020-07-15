@@ -140,7 +140,7 @@ class _ComputedState<T> extends AutoDisposeProviderStateBase<
         return oldDependency;
       }
 
-      final state = owner._readProviderState(target);
+      final state = container._readProviderState(target);
 
       final dep = _Dependency();
       dep.subscription = state.addLazyListener(

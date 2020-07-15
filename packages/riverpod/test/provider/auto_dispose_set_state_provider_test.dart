@@ -12,9 +12,9 @@ void main() {
       ref = r;
       return 0;
     });
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
 
-    provider.watchOwner(owner, (value) {});
+    provider.watchOwner(container, (value) {});
 
     expect(ref, isNotNull);
   });
@@ -25,10 +25,10 @@ void main() {
       ref.onDispose(onDispose);
       return initialValue;
     });
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final listener = ListenerMock();
 
-    final removeListener = provider.watchOwner(owner, listener);
+    final removeListener = provider.watchOwner(container, listener);
 
     verify(listener(42)).called(1);
     verifyNoMoreInteractions(listener);
@@ -44,7 +44,7 @@ void main() {
 
     initialValue = 21;
 
-    provider.watchOwner(owner, listener);
+    provider.watchOwner(container, listener);
 
     verify(listener(21)).called(1);
     verifyNoMoreInteractions(listener);
@@ -69,7 +69,7 @@ void main() {
     expect(provider, isA<AutoDisposeProviderBase>());
   });
   test('AutoDisposeSetStateProviderReference can read and write state', () {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     SetStateProviderReference<int> ref;
     int initialValue;
     final provider = AutoDisposeSetStateProvider<int>((r) {
@@ -80,7 +80,7 @@ void main() {
     final listener = ListenerMock();
 
     final sub = provider.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: () {},
       onChange: listener,
     );
@@ -100,10 +100,10 @@ void main() {
     verify(listener(1)).called(1);
     verifyNoMoreInteractions(listener);
 
-    owner.dispose();
+    container.dispose();
   });
   test('subscribe', () {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     SetStateProviderReference<int> ref;
     final provider = AutoDisposeSetStateProvider<int>((r) {
       ref = r;
@@ -112,7 +112,7 @@ void main() {
     final listener = ListenerMock();
 
     final sub = provider.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: () {},
       onChange: listener,
     );
@@ -129,7 +129,7 @@ void main() {
     sub.flush();
 
     verifyNoMoreInteractions(listener);
-    owner.dispose();
+    container.dispose();
   });
 }
 

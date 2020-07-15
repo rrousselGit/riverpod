@@ -220,10 +220,10 @@ final helloWorldProvider = Provider((_) => 'Hello world');
 
 void main() {
   // This object is where the state of our providers will be stored.
-  final owner = ProviderContainer();
+  final container = ProviderContainer();
 
-  // Thanks to "owner", we can read our provider.
-  final value = helloWorldProvider.readOwner(owner);
+  // Thanks to "container", we can read our provider.
+  final value = helloWorldProvider.readOwner(container);
 
   print(value); // Hello world
 }

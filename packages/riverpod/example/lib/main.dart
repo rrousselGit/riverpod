@@ -48,16 +48,16 @@ Future<void> main() async {
   // Where the state of our providers will be stored.
   // Avoid making this a global variable, for testability purposes.
   // If you are using Flutter, you do not need this.
-  final owner = ProviderContainer();
+  final container = ProviderContainer();
 
   /// Obtains the [Repository]. This will implicitly load [Configuration] too.
-  final repository = await owner.ref.dependOn(repositoryProvider).value;
+  final repository = await container.ref.dependOn(repositoryProvider).value;
 
   final comics = await repository.fetchComics();
   for (final comic in comics) {
     print(comic.title);
   }
 
-  /// Disposes the providers associated to [owner].
-  owner.dispose();
+  /// Disposes the providers associated to [container].
+  container.dispose();
 }

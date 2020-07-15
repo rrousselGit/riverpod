@@ -6,14 +6,14 @@ import 'package:mockito/mockito.dart';
 
 void main() {
   test('auto-dispose notifier when stop listening', () async {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final onDispose = OnDisposeMock();
     final provider = ChangeNotifierProvider.autoDispose((ref) {
       ref.onDispose(onDispose);
       return ValueNotifier(0);
     });
 
-    final removeListener = provider.watchOwner(owner, (value) {});
+    final removeListener = provider.watchOwner(container, (value) {});
 
     removeListener();
 
@@ -25,7 +25,7 @@ void main() {
     verifyNoMoreInteractions(onDispose);
   });
   test('family', () {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final provider = ChangeNotifierProvider.autoDispose
         .family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
@@ -33,8 +33,8 @@ void main() {
     final listener1 = Listener<ValueNotifier<int>>();
     final listener2 = Listener<ValueNotifier<int>>();
 
-    provider(0).watchOwner(owner, listener1);
-    provider(42).watchOwner(owner, listener2);
+    provider(0).watchOwner(container, listener1);
+    provider(42).watchOwner(container, listener2);
 
     verify(listener1(argThat(
       isA<ValueNotifier<int>>().having((s) => s.value, 'value', 0),
@@ -51,14 +51,14 @@ void main() {
         .family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
     });
-    final owner = ProviderContainer(overrides: [
+    final container = ProviderContainer(overrides: [
       provider.overrideAs((ref, value) => ValueNotifier(value * 2))
     ]);
     final listener1 = Listener<ValueNotifier<int>>();
     final listener2 = Listener<ValueNotifier<int>>();
 
-    provider(0).watchOwner(owner, listener1);
-    provider(42).watchOwner(owner, listener2);
+    provider(0).watchOwner(container, listener1);
+    provider(42).watchOwner(container, listener2);
 
     verify(listener1(argThat(
       isA<ValueNotifier<int>>().having((s) => s.value, 'value', 0),

@@ -28,7 +28,7 @@ abstract class ProviderListenable<T> {
   /// is called. Then, if the result of [Computed] changes, [ProviderSubscription.flush]
   /// will return `true` and [onChange] will be called.
   ProviderSubscription addLazyListener(
-    ProviderContainer owner, {
+    ProviderContainer container, {
     @required void Function() mayHaveChanged,
     @required void Function(T value) onChange,
   });
@@ -126,11 +126,11 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
 
   @override
   ProviderSubscription addLazyListener(
-    ProviderContainer owner, {
+    ProviderContainer container, {
     @required void Function() mayHaveChanged,
     @required void Function(Result value) onChange,
   }) {
-    return owner
+    return container
         ._readProviderState(this)
         .addLazyListener(mayHaveChanged: mayHaveChanged, onChange: onChange);
   }
@@ -146,13 +146,13 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
   /// [ProviderSubscription.flush] immediatly.
   /// Avoid using this on [Computed] if possible.
   VoidCallback watchOwner(
-    ProviderContainer owner,
+    ProviderContainer container,
     void Function(Result value) onChange,
   ) {
     ProviderSubscription sub;
 
     sub = addLazyListener(
-      owner,
+      container,
       mayHaveChanged: () => sub.flush(),
       onChange: onChange,
     );
@@ -248,7 +248,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   ProviderContainer _owner;
 
   /// The [ProviderContainer] that keeps a reference to this state.
-  ProviderContainer get owner => _owner;
+  ProviderContainer get container => _owner;
 
   /// The list of listeners to [ProviderReference.onDispose].
   DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
@@ -532,13 +532,13 @@ abstract class AlwaysAliveProviderBase<
   /// final greetingProvider = Provider((_) => 'Hello world');
   ///
   /// void main() {
-  ///   final owner = ProviderContainer();
+  ///   final container = ProviderContainer();
   ///
-  ///   print(greetingProvider.readOwner(owner)); // Hello World
+  ///   print(greetingProvider.readOwner(container)); // Hello World
   /// }
   /// ```
-  Result readOwner(ProviderContainer owner) {
-    return owner._readProviderState(this).state;
+  Result readOwner(ProviderContainer container) {
+    return container._readProviderState(this).state;
   }
 
   /// Combined with [ProviderContainer] (or `ProviderScope` if you are using Flutter),

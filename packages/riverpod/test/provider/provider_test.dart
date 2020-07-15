@@ -12,9 +12,9 @@ void main() {
       return '$value';
     });
     final listener = Listener();
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
 
-    final removeListener = provider(0).watchOwner(owner, listener);
+    final removeListener = provider(0).watchOwner(container, listener);
 
     verify(listener('0')).called(1);
     verifyNoMoreInteractions(listener);
@@ -34,14 +34,14 @@ void main() {
       return '$value';
     });
     final listener = Listener();
-    final owner = ProviderContainer(overrides: [
+    final container = ProviderContainer(overrides: [
       provider.overrideAs((ref, value) {
         ref.onDispose(onDispose);
         return '$value override';
       })
     ]);
 
-    final removeListener = provider(0).watchOwner(owner, listener);
+    final removeListener = provider(0).watchOwner(container, listener);
 
     verify(listener('0 override')).called(1);
     verifyNoMoreInteractions(listener);
@@ -76,19 +76,19 @@ void main() {
     final dependency2 = Provider((_) => '2');
 
     test('ProviderFamily', () {
-      final owner = ProviderContainer();
+      final container = ProviderContainer();
 
       final provider = Provider((ref) {
         final first = ref.dependOn(dependency);
         return first.value * 2;
       });
 
-      expect(provider.readOwner(owner), 2);
+      expect(provider.readOwner(container), 2);
 
-      owner.dispose();
+      container.dispose();
     });
     test('Provider2', () {
-      final owner = ProviderContainer();
+      final container = ProviderContainer();
 
       final provider = Provider((ref) {
         final first = ref.dependOn(dependency);
@@ -97,14 +97,14 @@ void main() {
         return '${first.value} ${second.value}';
       });
 
-      expect(provider.readOwner(owner), '1 2');
+      expect(provider.readOwner(container), '1 2');
 
-      owner.dispose();
+      container.dispose();
     });
   });
   test('readOwner', () {
     var result = 42;
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     var callCount = 0;
     final provider = Provider((_) {
       callCount++;
@@ -112,30 +112,30 @@ void main() {
     });
 
     expect(callCount, 0);
-    expect(provider.readOwner(owner), 42);
+    expect(provider.readOwner(container), 42);
     expect(callCount, 1);
-    expect(provider.readOwner(owner), 42);
+    expect(provider.readOwner(container), 42);
     expect(callCount, 1);
 
-    final owner2 = ProviderContainer();
+    final container2 = ProviderContainer();
 
     result = 21;
-    expect(provider.readOwner(owner2), 21);
+    expect(provider.readOwner(container2), 21);
     expect(callCount, 2);
-    expect(provider.readOwner(owner2), 21);
+    expect(provider.readOwner(container2), 21);
     expect(callCount, 2);
-    expect(provider.readOwner(owner), 42);
+    expect(provider.readOwner(container), 42);
     expect(callCount, 2);
   });
 
   test('subscribe', () {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final provider = Provider((_) => 42);
 
     int value;
     var callCount = 0;
 
-    final removeListener = provider.watchOwner(owner, (v) {
+    final removeListener = provider.watchOwner(container, (v) {
       value = v;
       callCount++;
     });
@@ -148,18 +148,18 @@ void main() {
   });
 
   test('dispose', () {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final onDispose = OnDisposeMock();
     final provider = Provider((ref) {
       ref.onDispose(onDispose);
       return 42;
     });
 
-    expect(provider.readOwner(owner), 42);
+    expect(provider.readOwner(container), 42);
 
     verifyZeroInteractions(onDispose);
 
-    owner.dispose();
+    container.dispose();
 
     verify(onDispose()).called(1);
   });

@@ -102,11 +102,11 @@ class _ProviderScopeElement extends StatefulElement {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    final owner = (state as ProviderScopeState).owner;
+    final container = (state as ProviderScopeState).container;
 
     // filling the state properties here instead of inside State
     // so that it is more readable in the devtool (one less indentation)
-    for (final entry in owner.debugProviderValues.entries) {
+    for (final entry in container.debugProviderValues.entries) {
       final name = entry.key.name ?? describeIdentity(entry.key);
       properties.add(DiagnosticsProperty(name, entry.value));
     }
@@ -118,7 +118,7 @@ class _ProviderScopeElement extends StatefulElement {
 class ProviderScopeState extends State<ProviderScope> {
   /// The [ProviderContainer] exposed to [ProviderScope.child].
   @visibleForTesting
-  ProviderContainer owner;
+  ProviderContainer container;
   ProviderContainer _debugParentOwner;
   var _dirty = false;
 
@@ -130,12 +130,12 @@ class ProviderScopeState extends State<ProviderScope> {
         ?.widget as ProviderContainerScope;
 
     assert(() {
-      _debugParentOwner = scope?.owner;
+      _debugParentOwner = scope?.container;
       return true;
     }(), '');
 
-    owner = ProviderContainer(
-      parent: scope?.owner,
+    container = ProviderContainer(
+      parent: scope?.container,
       overrides: widget.overrides,
       observers: widget.observers,
       // TODO How to report to FlutterError?
@@ -164,27 +164,27 @@ class ProviderScopeState extends State<ProviderScope> {
           .getElementForInheritedWidgetOfExactType<ProviderContainerScope>()
           ?.widget as ProviderContainerScope;
 
-      if (scope?.owner != _debugParentOwner) {
+      if (scope?.container != _debugParentOwner) {
         throw UnsupportedError(
           'ProviderScope was rebuilt with a different ProviderScope ancestor',
         );
       }
       if (_dirty) {
         _dirty = false;
-        owner.updateOverrides(widget.overrides);
+        container.updateOverrides(widget.overrides);
       }
       return true;
     }(), '');
 
     return ProviderContainerScope(
-      owner: owner,
+      container: container,
       child: widget.child,
     );
   }
 
   @override
   void dispose() {
-    owner.dispose();
+    container.dispose();
     super.dispose();
   }
 }
@@ -194,9 +194,9 @@ class ProviderContainerScope extends InheritedWidget {
   /// Exposes a [ProviderContainer] to the widget tree
   const ProviderContainerScope({
     Key key,
-    @required this.owner,
+    @required this.container,
     Widget child,
-  })  : assert(owner != null, 'ProviderContainer cannot be null'),
+  })  : assert(container != null, 'ProviderContainer cannot be null'),
         super(key: key, child: child);
 
   /// Read the current [ProviderContainer] for a [BuildContext].
@@ -216,14 +216,14 @@ class ProviderContainerScope extends InheritedWidget {
       throw StateError('No ProviderScope found');
     }
 
-    return scope.owner;
+    return scope.container;
   }
 
   /// The [ProviderContainer] exposes to the widget tree.
-  final ProviderContainer owner;
+  final ProviderContainer container;
 
   @override
   bool updateShouldNotify(ProviderContainerScope oldWidget) {
-    return owner != oldWidget.owner;
+    return container != oldWidget.container;
   }
 }

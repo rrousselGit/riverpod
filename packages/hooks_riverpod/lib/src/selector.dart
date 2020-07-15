@@ -16,11 +16,11 @@ class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
 
   @override
   ProviderSubscription addLazyListener(
-    ProviderContainer owner, {
+    ProviderContainer container, {
     void Function() mayHaveChanged,
     void Function(Output value) onChange,
   }) {
-    final state = owner.readProviderState(provider);
+    final state = container.readProviderState(provider);
     return SelectorSubscription._(
       state,
       _selector,

@@ -29,16 +29,16 @@ void main() {
         );
       }),
     ));
-    final owner = tester //
+    final container = tester //
         .state<ProviderScopeState>(find.byType(ProviderScope))
-        .owner;
+        .container;
 
-    provider0.state.readOwner(owner);
-    provider1.state.readOwner(owner);
-    final familyState0 = owner.debugProviderStates.firstWhere((p) {
+    provider0.state.readOwner(container);
+    provider1.state.readOwner(container);
+    final familyState0 = container.debugProviderStates.firstWhere((p) {
       return p.provider == provider0.state;
     });
-    final familyState1 = owner.debugProviderStates.firstWhere((p) {
+    final familyState1 = container.debugProviderStates.firstWhere((p) {
       return p.provider == provider1.state;
     });
 
@@ -59,7 +59,7 @@ void main() {
     expect(buildCount, 2);
 
     // changing the provider that computed is subscribed to
-    stateProvider.readOwner(owner).state = 1;
+    stateProvider.readOwner(container).state = 1;
     await tester.pump();
 
     expect(buildCount, 3);
@@ -101,16 +101,16 @@ void main() {
         }),
       ),
     );
-    final owner = tester //
+    final container = tester //
         .state<ProviderScopeState>(find.byType(ProviderScope))
-        .owner;
+        .container;
 
-    provider0.state.readOwner(owner);
-    provider1.state.readOwner(owner);
-    final familyState0 = owner.debugProviderStates.firstWhere((p) {
+    provider0.state.readOwner(container);
+    provider1.state.readOwner(container);
+    final familyState0 = container.debugProviderStates.firstWhere((p) {
       return p.provider == provider0.state;
     });
-    final familyState1 = owner.debugProviderStates.firstWhere((p) {
+    final familyState1 = container.debugProviderStates.firstWhere((p) {
       return p.provider == provider1.state;
     });
 
@@ -131,7 +131,7 @@ void main() {
     expect(buildCount, 2);
 
     // changing the provider that computed is subscribed to
-    stateProvider.readOwner(owner).state = 1;
+    stateProvider.readOwner(container).state = 1;
     await tester.pump();
 
     expect(buildCount, 3);
@@ -263,7 +263,7 @@ void main() {
     expect(buildCount, 2);
   });
 
-  testWidgets('remove listener when changing owner', (tester) async {
+  testWidgets('remove listener when changing container', (tester) async {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider((_) => notifier, name: 'provider');
     final notifier2 = TestNotifier(42);
@@ -286,7 +286,7 @@ void main() {
 
     final owner1 = tester //
         .firstState<ProviderScopeState>(find.byKey(firstOwnerKey))
-        .owner;
+        .container;
 
     final state1 = owner1.debugProviderStates
         .firstWhere((s) => s.provider == provider.state);
@@ -307,11 +307,11 @@ void main() {
       ),
     );
 
-    final owner2 = tester //
+    final container2 = tester //
         .firstState<ProviderScopeState>(find.byKey(secondOwnerKey))
-        .owner;
+        .container;
 
-    final state2 = owner2.debugProviderStates
+    final state2 = container2.debugProviderStates
         .firstWhere((s) => s.provider is StateNotifierStateProvider);
 
     expect(find.text('0'), findsNothing);
@@ -340,11 +340,11 @@ void main() {
       ),
     );
 
-    final owner = tester //
+    final container = tester //
         .firstState<ProviderScopeState>(find.byType(ProviderScope))
-        .owner;
+        .container;
 
-    final state = owner.debugProviderStates
+    final state = container.debugProviderStates
         .firstWhere((s) => s.provider == provider.state);
 
     expect(state.$hasListeners, true);

@@ -23,9 +23,9 @@ void main() {
     final provider = StateNotifierProvider((ref) => notifier);
     final computed = Computed((read) => read(provider.state) * 2);
     final listener = Listener<int>();
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
 
-    computed.watchOwner(owner, listener)();
+    computed.watchOwner(container, listener)();
 
     verify(listener(2)).called(1);
     verifyNoMoreInteractions(listener);
@@ -34,7 +34,7 @@ void main() {
 
     verifyNoMoreInteractions(listener);
     expect(
-      owner.debugProviderValues.keys,
+      container.debugProviderValues.keys,
       unorderedMatches(<Object>[provider, provider.state]),
     );
 
@@ -43,12 +43,12 @@ void main() {
     await Future<void>.value();
     verifyNoMoreInteractions(listener);
 
-    computed.watchOwner(owner, listener);
+    computed.watchOwner(container, listener);
 
     verify(listener(4)).called(1);
     verifyNoMoreInteractions(listener);
     expect(
-      owner.debugProviderValues.keys,
+      container.debugProviderValues.keys,
       unorderedMatches(<Object>[provider, provider.state, computed]),
     );
   });
@@ -70,18 +70,18 @@ void main() {
       return '${read(provider0.state)} $value';
     });
     final listener = Listener<String>();
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
 
-    provider0.state.readOwner(owner);
-    provider1.state.readOwner(owner);
-    final familyState0 = owner.debugProviderStates.firstWhere((p) {
+    provider0.state.readOwner(container);
+    provider1.state.readOwner(container);
+    final familyState0 = container.debugProviderStates.firstWhere((p) {
       return p.provider == provider0.state;
     });
-    final familyState1 = owner.debugProviderStates.firstWhere((p) {
+    final familyState1 = container.debugProviderStates.firstWhere((p) {
       return p.provider == provider1.state;
     });
 
-    computed.watchOwner(owner, listener);
+    computed.watchOwner(container, listener);
 
     expect(buildCount, 1);
     expect(familyState0.$hasListeners, true);
@@ -101,7 +101,7 @@ void main() {
     verifyNoMoreInteractions(listener);
 
     // changing the provider that computed is subscribed to
-    stateProvider.readOwner(owner).state = 1;
+    stateProvider.readOwner(container).state = 1;
 
     expect(buildCount, 3);
     verify(listener('1 43')).called(1);
@@ -135,18 +135,18 @@ void main() {
       return state == 0 ? read(provider0.state) : read(provider1.state);
     });
     final listener = Listener<int>();
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
 
-    provider0.state.readOwner(owner);
-    provider1.state.readOwner(owner);
-    final familyState0 = owner.debugProviderStates.firstWhere((p) {
+    provider0.state.readOwner(container);
+    provider1.state.readOwner(container);
+    final familyState0 = container.debugProviderStates.firstWhere((p) {
       return p.provider == provider0.state;
     });
-    final familyState1 = owner.debugProviderStates.firstWhere((p) {
+    final familyState1 = container.debugProviderStates.firstWhere((p) {
       return p.provider == provider1.state;
     });
 
-    computed.watchOwner(owner, listener);
+    computed.watchOwner(container, listener);
 
     expect(buildCount, 1);
     expect(familyState0.$hasListeners, true);
@@ -166,7 +166,7 @@ void main() {
     verifyNoMoreInteractions(listener);
 
     // changing the provider that computed is subscribed to
-    stateProvider.readOwner(owner).state = 1;
+    stateProvider.readOwner(container).state = 1;
 
     expect(buildCount, 3);
     verify(listener(43)).called(1);
@@ -192,10 +192,10 @@ void main() {
     });
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final listener = Listener<String>();
 
-    computed(provider.state).watchOwner(owner, listener);
+    computed(provider.state).watchOwner(container, listener);
 
     verify(listener('0')).called(1);
     verifyNoMoreInteractions(listener);
@@ -206,7 +206,7 @@ void main() {
     verifyNoMoreInteractions(listener);
   });
   test('auto dispose Computed when no longer used', () async {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final onDispose = OnDisposeMock();
     final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose);
@@ -214,7 +214,7 @@ void main() {
     });
     final computed = Computed((read) => read(provider));
 
-    final removeListener = computed.watchOwner(owner, (value) {});
+    final removeListener = computed.watchOwner(container, (value) {});
 
     verifyNoMoreInteractions(onDispose);
     removeListener();
@@ -228,7 +228,7 @@ void main() {
   test(
       'mutliple read, when one of them forces re-evaluate, all dependencies are still flushed',
       () {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider((_) => notifier);
     var callCount = 0;
@@ -245,7 +245,7 @@ void main() {
     final listener = Listener<String>();
 
     final sub = tested.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: () {},
       onChange: listener,
     );
@@ -264,7 +264,7 @@ void main() {
   test(
       'computed on computed, the first aborts rebuild, the second should no longer be dirty after a flush',
       () {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider((_) => notifier);
     final first = Computed((read) {
@@ -279,7 +279,7 @@ void main() {
     final listener = Listener<int>();
 
     final sub = second.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: mayHaveChanged,
       onChange: listener,
     );
@@ -299,10 +299,10 @@ void main() {
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(mayHaveChanged);
 
-    final firstState = owner //
+    final firstState = container //
         .debugProviderStates
         .firstWhere((s) => s.provider == first);
-    final secondState = owner //
+    final secondState = container //
         .debugProviderStates
         .firstWhere((s) => s.provider == second);
 
@@ -310,10 +310,10 @@ void main() {
     expect(secondState.dirty, false);
   });
   test(
-      'Computed are stored on the deeper ProviderContainer and cannot be overriden (insert in parent owner first then child owner)',
+      'Computed are stored on the deeper ProviderContainer and cannot be overriden (insert in parent container first then child container)',
       () {
     final root = ProviderContainer();
-    final owner = ProviderContainer(parent: root);
+    final container = ProviderContainer(parent: root);
     var callCount = 0;
     final computed = Computed((_) => callCount++);
     final rootListener = Listener<int>();
@@ -325,7 +325,7 @@ void main() {
     verify(rootListener(0)).called(1);
     verifyNoMoreInteractions(rootListener);
 
-    computed.watchOwner(owner, ownerListener);
+    computed.watchOwner(container, ownerListener);
 
     expect(callCount, 2);
     verify(ownerListener(1)).called(1);
@@ -337,7 +337,7 @@ void main() {
     verify(rootListener(0)).called(1);
     verifyNoMoreInteractions(rootListener);
 
-    computed.watchOwner(owner, ownerListener);
+    computed.watchOwner(container, ownerListener);
 
     expect(callCount, 2);
     verify(ownerListener(1)).called(1);
@@ -345,20 +345,20 @@ void main() {
   });
 
   test('Computeds are added to the overall list of providers', () {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final provider = Provider((_) => 42);
     final computed = Computed((read) => read(provider) * 2);
     final provider2 = Provider((ref) => ref.dependOn(computed));
     final listener = Listener<int>();
 
-    provider2.readOwner(owner);
-    computed.watchOwner(owner, listener);
+    provider2.readOwner(container);
+    computed.watchOwner(container, listener);
 
     verify(listener(84)).called(1);
     verifyNoMoreInteractions(listener);
 
     expect(
-      owner.debugProviderStates.map((e) => e.provider),
+      container.debugProviderStates.map((e) => e.provider),
       [provider, computed, provider2],
     );
   });
@@ -370,13 +370,13 @@ void main() {
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     final computed = Computed((read) => read(provider.state));
     final root = ProviderContainer();
-    // no need to pass "overrides" as the computed should naturally go to the deepest owner
-    final owner = ProviderContainer(parent: root);
+    // no need to pass "overrides" as the computed should naturally go to the deepest container
+    final container = ProviderContainer(parent: root);
     final mayHaveChanged = MockMarkMayHaveChanged();
     final listener = Listener<int>();
 
     final sub = computed.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: mayHaveChanged,
       onChange: listener,
     );
@@ -385,7 +385,7 @@ void main() {
     verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
 
-    owner.dispose();
+    container.dispose();
     verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
 
@@ -400,7 +400,7 @@ void main() {
     verifyNoMoreInteractions(listener);
   });
   test('cannot call read outside of the Computed', () {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     var callCount = 0;
@@ -414,7 +414,7 @@ void main() {
     final listener = Listener<int>();
 
     final sub = computed.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: mayHaveChanged,
       onChange: listener,
     );
@@ -441,7 +441,7 @@ void main() {
   });
   group('deeply compares collections', () {
     test('list', () {
-      final owner = ProviderContainer();
+      final container = ProviderContainer();
       final notifier = Notifier(0);
       final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
       final computed = Computed((read) {
@@ -451,7 +451,7 @@ void main() {
       final listener = Listener<List<bool>>();
 
       final sub = computed.addLazyListener(
-        owner,
+        container,
         mayHaveChanged: mayHaveChanged,
         onChange: listener,
       );
@@ -472,7 +472,7 @@ void main() {
       verifyNoMoreInteractions(listener);
     });
     test('set', () {
-      final owner = ProviderContainer();
+      final container = ProviderContainer();
       final notifier = Notifier(0);
       final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
       final computed = Computed((read) {
@@ -482,7 +482,7 @@ void main() {
       final listener = Listener<Set<bool>>();
 
       final sub = computed.addLazyListener(
-        owner,
+        container,
         mayHaveChanged: mayHaveChanged,
         onChange: listener,
       );
@@ -503,7 +503,7 @@ void main() {
       verifyNoMoreInteractions(listener);
     });
     test('map', () {
-      final owner = ProviderContainer();
+      final container = ProviderContainer();
       final notifier = Notifier(0);
       final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
       final computed = Computed((read) {
@@ -513,7 +513,7 @@ void main() {
       final listener = Listener<Map<String, bool>>();
 
       final sub = computed.addLazyListener(
-        owner,
+        container,
         mayHaveChanged: mayHaveChanged,
         onChange: listener,
       );
@@ -535,7 +535,7 @@ void main() {
     });
   });
   test('the value is cached between multiple listeners', () {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     var callCount = 0;
@@ -546,13 +546,13 @@ void main() {
 
     List<int> first;
     final firstListener = Listener<List<int>>();
-    computed.watchOwner(owner, (value) {
+    computed.watchOwner(container, (value) {
       first = value;
       firstListener(value);
     });
     List<int> second;
     final secondListener = Listener<List<int>>();
-    computed.watchOwner(owner, (value) {
+    computed.watchOwner(container, (value) {
       second = value;
       secondListener(value);
     });
@@ -573,7 +573,7 @@ void main() {
     expect(computed, isNot(isA<AlwaysAliveProviderBase>()));
   });
   test('Simple Computed flow', () {
-    final owner = ProviderContainer();
+    final container = ProviderContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     final mayHaveChanged = MockMarkMayHaveChanged();
@@ -585,7 +585,7 @@ void main() {
     });
 
     final sub = isPositiveComputed.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: mayHaveChanged,
       onChange: listener,
     );
