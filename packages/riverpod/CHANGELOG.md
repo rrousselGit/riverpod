@@ -1,3 +1,5 @@
+# 0.6.0-dev
+
 # 0.5.1
 
 - Fixed the documentation of `StateNotifierProvider` incorrectly showing the
