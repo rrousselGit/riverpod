@@ -211,17 +211,6 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   /// All the states that depends on this provider.
   final _dependents = HashSet<ProviderStateBase>();
 
-  /// The list of the providers that depends on this state, or `null` in release mode.
-  @visibleForTesting
-  Set<ProviderStateBase> get debugDependents {
-    Set<ProviderStateBase> result;
-    assert(() {
-      result = {..._dependents};
-      return true;
-    }(), '');
-    return result;
-  }
-
   /// All the [ProviderStateBase]s that this provider depends on.
   final _providerStateDependencies = HashSet<ProviderStateBase>();
 
