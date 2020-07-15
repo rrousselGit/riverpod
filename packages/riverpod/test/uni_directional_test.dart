@@ -10,7 +10,7 @@ void main() {
     final provider = SetStateProvider<Object>((ref) {
       return ref;
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final setStateRef =
         provider.readOwner(owner) as SetStateProviderReference<Object>;
 
@@ -27,7 +27,7 @@ void main() {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
     final nested = Provider((_) => 0);
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final provider2 = Provider((ref) {
       ref.dependOn(nested);
       counter.increment();
@@ -45,13 +45,13 @@ void main() {
   test("dispose can't dirty anything", () {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
-    final root = ProviderStateOwner();
+    final root = ProviderContainer();
     List<Object> errors;
     final provider2 = Provider((ref) {
       ref.onDispose(() => errors = errorsOf(counter.increment));
       return 0;
     });
-    final owner = ProviderStateOwner(parent: root, overrides: [provider2]);
+    final owner = ProviderContainer(parent: root, overrides: [provider2]);
 
     expect(provider.state.readOwner(owner), 0);
     expect(provider2.readOwner(owner), 0);
@@ -65,7 +65,7 @@ void main() {
       () {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     expect(provider.state.readOwner(owner), 0);
 
@@ -81,10 +81,10 @@ void main() {
       () {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
-    final root = ProviderStateOwner();
+    final root = ProviderContainer();
     final counter2 = Counter();
     final provider2 = StateNotifierProvider((_) => counter2);
-    final owner = ProviderStateOwner(
+    final owner = ProviderContainer(
       parent: root,
       overrides: [provider2, provider2.state],
     );
@@ -122,7 +122,7 @@ void main() {
   test("Computed can't dirty anything on create", () {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     List<Object> errors;
     final computed = Computed((read) {
       errors = errorsOf(counter.increment);
@@ -141,7 +141,7 @@ void main() {
   test("Computed can't dirty anything on update", () {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     List<Object> errors;
     final computed = Computed((read) {
       final value = read(provider.state);

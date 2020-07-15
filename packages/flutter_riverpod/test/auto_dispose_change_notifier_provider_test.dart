@@ -6,7 +6,7 @@ import 'package:mockito/mockito.dart';
 
 void main() {
   test('auto-dispose notifier when stop listening', () async {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final onDispose = OnDisposeMock();
     final provider = ChangeNotifierProvider.autoDispose((ref) {
       ref.onDispose(onDispose);
@@ -25,7 +25,7 @@ void main() {
     verifyNoMoreInteractions(onDispose);
   });
   test('family', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final provider = ChangeNotifierProvider.autoDispose
         .family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
@@ -51,7 +51,7 @@ void main() {
         .family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
     });
-    final owner = ProviderStateOwner(overrides: [
+    final owner = ProviderContainer(overrides: [
       provider.overrideAs((ref, value) => ValueNotifier(value * 2))
     ]);
     final listener1 = Listener<ValueNotifier<int>>();

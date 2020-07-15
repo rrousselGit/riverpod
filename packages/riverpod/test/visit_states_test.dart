@@ -22,7 +22,7 @@ void main() {
 
     final perm = Permutations(3, [a, b, c]);
     for (final permutation in perm()) {
-      final owner = ProviderStateOwner();
+      final owner = ProviderContainer();
       for (final provider in permutation) {
         provider.readOwner(owner);
       }
@@ -53,7 +53,7 @@ void main() {
 
     final perm = Permutations(4, [a, b, c, d]);
     for (final permutation in perm()) {
-      final owner = ProviderStateOwner();
+      final owner = ProviderContainer();
       for (final provider in permutation) {
         provider.readOwner(owner);
       }
@@ -115,7 +115,7 @@ void main() {
 
     final perm = Permutations(7, [a, b, c, d, e, f, g]);
     for (final permutation in perm()) {
-      final owner = ProviderStateOwner();
+      final owner = ProviderContainer();
       for (final provider in permutation) {
         provider.readOwner(owner);
       }
@@ -159,7 +159,7 @@ void main() {
 
     final perm = Permutations(4, [a, b, c, d]);
     for (final permutation in perm()) {
-      final owner = ProviderStateOwner();
+      final owner = ProviderContainer();
       for (final provider in permutation) {
         provider.readOwner(owner);
       }
@@ -195,7 +195,7 @@ void main() {
 
     final perm = Permutations(4, [a, b, c, d]);
     for (final permutation in perm()) {
-      final owner = ProviderStateOwner();
+      final owner = ProviderContainer();
       for (final provider in permutation) {
         provider.readOwner(owner);
       }
@@ -236,7 +236,7 @@ void main() {
 
     final perm = Permutations(5, [a, b, c, d, e]);
     for (final permutation in perm()) {
-      final owner = ProviderStateOwner();
+      final owner = ProviderContainer();
       for (final provider in permutation) {
         provider.readOwner(owner);
       }
@@ -281,8 +281,8 @@ void main() {
 
     final perm = Permutations(3, [c, d, e]);
     for (final permutation in perm()) {
-      final owner = ProviderStateOwner();
-      final owner2 = ProviderStateOwner(parent: owner, overrides: [
+      final owner = ProviderContainer();
+      final owner2 = ProviderContainer(parent: owner, overrides: [
         c.overrideAs(c),
         d.overrideAs(d),
         e.overrideAs(e),
@@ -303,7 +303,7 @@ void main() {
   });
 }
 
-List<ProviderBase> compute(ProviderStateOwner owner) {
+List<ProviderBase> compute(ProviderContainer owner) {
   return owner.debugProviderStates.map((e) => e.provider).toList();
 }
 

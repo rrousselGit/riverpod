@@ -12,7 +12,7 @@ void main() {
       return '$value';
     });
     final listener = Listener();
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     final removeListener = provider(0).watchOwner(owner, listener);
 
@@ -34,7 +34,7 @@ void main() {
       return '$value';
     });
     final listener = Listener();
-    final owner = ProviderStateOwner(overrides: [
+    final owner = ProviderContainer(overrides: [
       provider.overrideAs((ref, value) {
         ref.onDispose(onDispose);
         return '$value override';
@@ -76,7 +76,7 @@ void main() {
     final dependency2 = Provider((_) => '2');
 
     test('ProviderFamily', () {
-      final owner = ProviderStateOwner();
+      final owner = ProviderContainer();
 
       final provider = Provider((ref) {
         final first = ref.dependOn(dependency);
@@ -88,7 +88,7 @@ void main() {
       owner.dispose();
     });
     test('Provider2', () {
-      final owner = ProviderStateOwner();
+      final owner = ProviderContainer();
 
       final provider = Provider((ref) {
         final first = ref.dependOn(dependency);
@@ -104,7 +104,7 @@ void main() {
   });
   test('readOwner', () {
     var result = 42;
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     var callCount = 0;
     final provider = Provider((_) {
       callCount++;
@@ -117,7 +117,7 @@ void main() {
     expect(provider.readOwner(owner), 42);
     expect(callCount, 1);
 
-    final owner2 = ProviderStateOwner();
+    final owner2 = ProviderContainer();
 
     result = 21;
     expect(provider.readOwner(owner2), 21);
@@ -129,7 +129,7 @@ void main() {
   });
 
   test('subscribe', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final provider = Provider((_) => 42);
 
     int value;
@@ -148,7 +148,7 @@ void main() {
   });
 
   test('dispose', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final onDispose = OnDisposeMock();
     final provider = Provider((ref) {
       ref.onDispose(onDispose);

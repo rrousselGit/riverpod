@@ -16,7 +16,7 @@ class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
 
   @override
   ProviderSubscription addLazyListener(
-    ProviderStateOwner owner, {
+    ProviderContainer owner, {
     void Function() mayHaveChanged,
     void Function(Output value) onChange,
   }) {

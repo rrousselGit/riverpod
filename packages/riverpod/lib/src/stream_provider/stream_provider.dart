@@ -132,7 +132,7 @@ class StreamProvider<T> extends AlwaysAliveProviderBase<
   /// bypass the loading step that most streams have, which simplifies the test.
   ///
   /// It is possible to change the state emitted by changing the override
-  /// on [ProviderStateOwner]/`ProviderScope`.
+  /// on [ProviderContainer]/`ProviderScope`.
   ///
   /// Once an [AsyncValue.data]/[AsyncValue.error] was emitted, it is no longer
   /// possible to emit a [AsyncValue.loading].

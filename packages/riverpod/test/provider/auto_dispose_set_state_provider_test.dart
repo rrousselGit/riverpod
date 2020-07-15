@@ -12,7 +12,7 @@ void main() {
       ref = r;
       return 0;
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     provider.watchOwner(owner, (value) {});
 
@@ -25,7 +25,7 @@ void main() {
       ref.onDispose(onDispose);
       return initialValue;
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final listener = ListenerMock();
 
     final removeListener = provider.watchOwner(owner, listener);
@@ -69,7 +69,7 @@ void main() {
     expect(provider, isA<AutoDisposeProviderBase>());
   });
   test('AutoDisposeSetStateProviderReference can read and write state', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     SetStateProviderReference<int> ref;
     int initialValue;
     final provider = AutoDisposeSetStateProvider<int>((r) {
@@ -103,7 +103,7 @@ void main() {
     owner.dispose();
   });
   test('subscribe', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     SetStateProviderReference<int> ref;
     final provider = AutoDisposeSetStateProvider<int>((r) {
       ref = r;

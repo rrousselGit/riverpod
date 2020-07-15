@@ -8,7 +8,7 @@ void main() {
     final provider = StateProvider.family<String, int>((ref, a) {
       return '$a';
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     expect(
       provider(0).readOwner(owner),
@@ -24,7 +24,7 @@ void main() {
     final provider = StateProvider.family<String, int>((ref, a) {
       return '$a';
     });
-    final owner = ProviderStateOwner(overrides: [
+    final owner = ProviderContainer(overrides: [
       provider.overrideAs((ref, a) => 'override $a'),
     ]);
 
@@ -55,7 +55,7 @@ void main() {
     expect(provider, isA<AlwaysAliveProviderBase>());
   });
   test('SetStateProviderReference can read and write state', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     SetStateProviderReference<int> ref;
     int initialValue;
     final provider = SetStateProvider<int>((r) {
@@ -89,7 +89,7 @@ void main() {
     owner.dispose();
   });
   test('subscribe', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     SetStateProviderReference<int> ref;
     final provider = SetStateProvider<int>((r) {
       ref = r;

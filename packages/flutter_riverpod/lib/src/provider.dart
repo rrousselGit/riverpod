@@ -85,6 +85,6 @@ extension AlwaysAliveProviderBaseX<Dependency extends ProviderDependencyBase,
       return true;
     }(), '');
 
-    return readOwner(ProviderStateOwnerScope.of(context, listen: false));
+    return readOwner(ProviderContainerScope.of(context, listen: false));
   }
 }

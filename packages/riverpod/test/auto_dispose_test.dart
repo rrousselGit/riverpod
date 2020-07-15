@@ -7,7 +7,7 @@ void main() {
       'after a state is destroyed, Owner.traverse states does not visit the state',
       () async {
     final provider = Provider.autoDispose((ref) {});
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     provider.watchOwner(owner, (value) {})();
 
@@ -24,7 +24,7 @@ void main() {
       ref.onDispose(onDispose);
       ref.maintainState = true;
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     final removeListener = provider.watchOwner(owner, (value) {});
     removeListener();
@@ -50,7 +50,7 @@ void main() {
       ref.maintainState = true;
       return value;
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final listener = Listener();
 
     final removeListener = provider.watchOwner(owner, listener);
@@ -73,7 +73,7 @@ void main() {
       maintainState = ref.maintainState;
       return 42;
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     provider.watchOwner(owner, (value) {});
 
@@ -84,7 +84,7 @@ void main() {
     final ProviderBase<ProviderDependency<int>, int> override = Provider((_) {
       return 21;
     });
-    final owner = ProviderStateOwner(overrides: [
+    final owner = ProviderContainer(overrides: [
       provider.overrideAs(override),
     ]);
     final listener = Listener();
@@ -107,8 +107,8 @@ void main() {
       ref.dependOn(a);
       return '42';
     });
-    final root = ProviderStateOwner();
-    final owner = ProviderStateOwner(parent: root, overrides: [b]);
+    final root = ProviderContainer();
+    final owner = ProviderContainer(parent: root, overrides: [b]);
 
     final bRemoveListener = b.watchOwner(owner, (value) {});
 
@@ -138,7 +138,7 @@ void main() {
 
   test('unsub to A then make B sub to A then unsub to B disposes B before A',
       () async {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final aDispose = OnDisposeMock();
     final a = Provider.autoDispose((ref) {
       ref.onDispose(aDispose);
@@ -171,7 +171,7 @@ void main() {
   });
 
   test('chain', () async {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final onDispose = OnDisposeMock();
     var value = 42;
     final provider = Provider.autoDispose((ref) {
@@ -217,7 +217,7 @@ void main() {
     verifyNoMoreInteractions(onDispose2);
   });
   test("auto dispose A then auto dispose B doesn't dispose A again", () async {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final aDispose = OnDisposeMock();
     final a = Provider.autoDispose((ref) {
       ref.onDispose(aDispose);
@@ -253,7 +253,7 @@ void main() {
   });
 
   // test("auto dispose A then auto dispose B doesn't dispose A again", () {
-  //   final owner = ProviderStateOwner();
+  //   final owner = ProviderContainer();
   //   final aDispose = OnDisposeMock();
   //   final bDispose = OnDisposeMock();
 
@@ -267,10 +267,9 @@ void main() {
   //   });
   // });
 
-  test(
-      'ProviderStateOwner was disposed before AutoDisposer handled the dispose',
+  test('ProviderContainer was disposed before AutoDisposer handled the dispose',
       () async {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final onDispose = OnDisposeMock();
     final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose);
@@ -294,7 +293,7 @@ void main() {
     verifyNoMoreInteractions(onDispose);
   });
   test('unsub no-op if another sub is added before event-loop', () async {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final onDispose = OnDisposeMock();
     final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose);
@@ -322,7 +321,7 @@ void main() {
   });
   test('no-op if when removing listener if there is still a listener',
       () async {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final onDispose = OnDisposeMock();
     final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose);
@@ -346,7 +345,7 @@ void main() {
     verifyNoMoreInteractions(onDispose);
   });
   test('unmount on removing watchOwner', () async {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final onDispose = OnDisposeMock();
     final unrelated = Provider((_) => 42);
     var value = 42;
@@ -405,9 +404,9 @@ void main() {
       return value;
     });
     final dependent = Provider((ref) => ref.dependOn(provider).value);
-    final root = ProviderStateOwner();
-    final owner = ProviderStateOwner(parent: root, overrides: [dependent]);
-    final owner2 = ProviderStateOwner(parent: root, overrides: [dependent]);
+    final root = ProviderContainer();
+    final owner = ProviderContainer(parent: root, overrides: [dependent]);
+    final owner2 = ProviderContainer(parent: root, overrides: [dependent]);
 
     expect(unrelated.readOwner(owner), 42);
     expect(owner.ref.dependOn(dependent).value, 42);

@@ -30,7 +30,7 @@ class _ProviderStateReader {
   _ProviderStateReader(this._origin, this._owner);
 
   final ProviderBase _origin;
-  final ProviderStateOwner _owner;
+  final ProviderContainer _owner;
   ProviderStateBase _providerState;
 
   ProviderStateBase read() {
@@ -124,11 +124,11 @@ ProviderStateBase notifyListenersLock;
 @visibleForTesting
 int debugNotifyListenersDepthLock = -1;
 
-/// An object that listens to the changes of a [ProviderStateOwner].
+/// An object that listens to the changes of a [ProviderContainer].
 ///
 /// This can be used for logging, making devtools, or saving the state
 /// for offline support.
-abstract class ProviderStateOwnerObserver {
+abstract class ProviderObserver {
   /// A provider was initialized, and the value created is [value].
   void didAddProvider(ProviderBase provider, Object value) {}
 
@@ -139,7 +139,7 @@ abstract class ProviderStateOwnerObserver {
   void didDisposeProvider(ProviderBase provider) {}
 }
 
-/// Implementation detail for [ProviderStateOwner.ref].
+/// Implementation detail for [ProviderContainer.ref].
 final _refProvider = Provider((c) => c);
 
 /// The object that manages the state of all providers.
@@ -148,20 +148,20 @@ final _refProvider = Provider((c) => c);
 /// `ProviderScope` manages it for you.
 ///
 /// The state of a provider is not stored inside the provider, but instead
-/// inside [ProviderStateOwner].
+/// inside [ProviderContainer].
 ///
-/// By using [ProviderStateOwner], it is possible to override the behavior
+/// By using [ProviderContainer], it is possible to override the behavior
 /// of a provider, by specifying `overrides`.
 ///
 /// See also:
 ///
 /// - [Provider], a basic implementation of a provider.
-class ProviderStateOwner {
-  /// Creates a [ProviderStateOwner] and allows specifying provider overrides.
-  ProviderStateOwner({
-    ProviderStateOwner parent,
+class ProviderContainer {
+  /// Creates a [ProviderContainer] and allows specifying provider overrides.
+  ProviderContainer({
+    ProviderContainer parent,
     List<Override> overrides = const [],
-    List<ProviderStateOwnerObserver> observers,
+    List<ProviderObserver> observers,
   })  : _debugOverrides = overrides,
         _observers = observers {
     _fallback = parent?._fallback;
@@ -223,11 +223,11 @@ class ProviderStateOwner {
     };
   }
 
-  final List<ProviderStateOwnerObserver> _observers;
+  final List<ProviderObserver> _observers;
 
   /// The currently overriden providers.
   ///
-  /// New keys cannot be added after creation, unless this [ProviderStateOwner]
+  /// New keys cannot be added after creation, unless this [ProviderContainer]
   /// does not have a `parent`.
   /// Upating existing keys is possible.
   final _overrideForProvider = <ProviderBase, ProviderBase>{};
@@ -240,7 +240,7 @@ class ProviderStateOwner {
   /// The state of `Computed` providers
   ///
   /// It is not stored inside [_stateReaders] as `Computed` are always
-  /// in the deepest [ProviderStateOwner] possible.
+  /// in the deepest [ProviderContainer] possible.
   Map<Computed, _ProviderStateReader> _computedStateReaders;
 
   /// When attempting to read a provider, a provider may not be registered
@@ -248,18 +248,18 @@ class ProviderStateOwner {
   /// In that situation, [_fallback] is called and will handle register the
   /// provider accordingly.
   ///
-  /// This is typically done only when [ProviderStateOwner] has not `parent`.
+  /// This is typically done only when [ProviderContainer] has not `parent`.
   _FallbackProviderStateReader _fallback;
 
   /// Whether [dispose] was called or not.
   ///
-  /// This disables the different methods of [ProviderStateOwner], resulting in
+  /// This disables the different methods of [ProviderContainer], resulting in
   /// a [StateError] when attempting to use them.
   bool _disposed = false;
 
   List<Override> _debugOverrides;
 
-  /// An utility to easily obtain a [ProviderReference] from a [ProviderStateOwner].
+  /// An utility to easily obtain a [ProviderReference] from a [ProviderContainer].
   ///
   /// This is equivalent to:
   ///
@@ -275,7 +275,7 @@ class ProviderStateOwner {
   ///
   /// It is not possible, to remove or add new overrides.
   ///
-  /// What this means is, if [ProviderStateOwner] was created with 3 overrides,
+  /// What this means is, if [ProviderContainer] was created with 3 overrides,
   /// calls to [updateOverrides] that tries to change the list of overrides must
   /// override these 3 exact providers again, in the same order.
   ///
@@ -285,7 +285,7 @@ class ProviderStateOwner {
   /// final provider1 = FutureProvider((_) async => 'Hello');
   /// final provider2 = Provider((_) => 'world');
   ///
-  /// final owner = ProviderStateOwner(
+  /// final owner = ProviderContainer(
   ///   overrides: [
   ///     provider1.debugOverrideWithValue(const AsyncValue.loading())
   ///     provider2.overrideAs(Provider((_) => 'London')),
@@ -327,7 +327,7 @@ class ProviderStateOwner {
     assert(() {
       if (_disposed) {
         throw StateError(
-          'Called updateOverrides on a ProviderStateOwner that was already disposed',
+          'Called updateOverrides on a ProviderContainer that was already disposed',
         );
       }
       if (overrides != null && _debugOverrides != overrides) {
@@ -395,10 +395,10 @@ Changing the kind of override or reordering overrides is not supported.
     }
   }
 
-  /// Used by [ProviderStateBase.notifyChanged] to let [ProviderStateOwner]
+  /// Used by [ProviderStateBase.notifyChanged] to let [ProviderContainer]
   /// know that a provider changed.
   ///
-  /// This is then used to notify [ProviderStateOwnerObserver]s of the changes.
+  /// This is then used to notify [ProviderObserver]s of the changes.
   void _reportChanged(ProviderBase origin, Object newState) {
     if (_observers != null) {
       for (final observer in _observers) {
@@ -422,7 +422,7 @@ Changing the kind of override or reordering overrides is not supported.
   ) {
     if (_disposed) {
       throw StateError(
-        'Tried to read a provider from a ProviderStateOwner that was already disposed',
+        'Tried to read a provider from a ProviderContainer that was already disposed',
       );
     }
     var reader = _stateReaders[provider];
@@ -474,14 +474,14 @@ Changing the kind of override or reordering overrides is not supported.
         ProviderBase<Dependency, ListeningValue>>;
   }
 
-  /// Release all the resources associated with this [ProviderStateOwner].
+  /// Release all the resources associated with this [ProviderContainer].
   ///
   /// This will destroy the state of all providers associated to this
-  /// [ProviderStateOwner] and call [ProviderReference.onDispose] listeners.
+  /// [ProviderContainer] and call [ProviderReference.onDispose] listeners.
   void dispose() {
     if (_disposed) {
       throw StateError(
-        'Called disposed on a ProviderStateOwner that was already disposed',
+        'Called disposed on a ProviderContainer that was already disposed',
       );
     }
     _disposed = true;
@@ -536,8 +536,8 @@ Changing the kind of override or reordering overrides is not supported.
 
 /// Do not use: Utilities for internally creating providers and testing them
 @visibleForTesting
-extension ProviderStateOwnerInternals on ProviderStateOwner {
-  /// All the states of the providers associated to a [ProviderStateOwner], sorted
+extension ProviderStateOwnerInternals on ProviderContainer {
+  /// All the states of the providers associated to a [ProviderContainer], sorted
   /// in order of dependency.
   @visibleForTesting
   List<ProviderStateBase> get debugProviderStates {
@@ -579,14 +579,14 @@ extension ProviderStateOwnerInternals on ProviderStateOwner {
   }
 }
 
-/// An object used by [ProviderStateOwner] to override the behavior of a provider
+/// An object used by [ProviderContainer] to override the behavior of a provider
 /// for a part of the application.
 ///
 /// Do not implement/extend this class.
 ///
 /// See also:
 ///
-/// - [ProviderStateOwner], which uses this object.
+/// - [ProviderContainer], which uses this object.
 /// - [AlwaysAliveProviderBase.overrideAs], which creates a [ProviderOverride].
 class ProviderOverride implements Override {
   ProviderOverride._(this._provider, this._origin);
@@ -595,7 +595,7 @@ class ProviderOverride implements Override {
   final ProviderBase _provider;
 }
 
-/// An object used by [ProviderStateOwner]/`ProviderScope` to override the behavior
+/// An object used by [ProviderContainer]/`ProviderScope` to override the behavior
 /// of a provider/family for part of the application.
 ///
 /// Do not extend or implement.
@@ -626,7 +626,7 @@ class CircularDependencyError extends Error {
 /// - [mounted], an utility to know whether the provider is still "alive" or not.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// - [Provider], an example of a provider that uses [ProviderReference].
-/// - [ProviderStateOwner.ref], an easy way of obtaining a [ProviderReference].
+/// - [ProviderContainer.ref], an easy way of obtaining a [ProviderReference].
 class ProviderReference {
   /// DO NOT USE, for internal usages only.
   @visibleForTesting
@@ -651,7 +651,7 @@ class ProviderReference {
   ///
   /// See also:
   ///
-  /// - [ProviderStateOwner.dispose], which will destroy providers.
+  /// - [ProviderContainer.dispose], which will destroy providers.
   void onDispose(VoidCallback cb) {
     _providerState.onDispose(cb);
   }

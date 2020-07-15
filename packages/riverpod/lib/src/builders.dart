@@ -21,7 +21,7 @@ class StateProviderBuilder {
   /// Marking a provider with `autoDispose` has two effects:
   ///
   /// - this adds a new property on the `ref` parameter of your provider: `maintainState`
-  /// - the `readOwner(ProviderStateOwner)` and `read(BuildContext)` methods
+  /// - the `readOwner(ProviderContainer)` and `read(BuildContext)` methods
   ///   of a provider are removed.
   ///   It is no-longer possible to read a provider without listening to it.
   ///

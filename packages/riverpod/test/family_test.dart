@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 void main() {
   test('caches the provider per value', () {
     final provider = Provider.family<String, int>((ref, a) => '$a');
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     expect(provider(42), provider(42));
     expect(provider(42).readOwner(owner), '42');
@@ -24,7 +24,7 @@ void main() {
     final provider = StreamProvider.family<String, int>((ref, a) {
       return controllers[a].stream;
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final listener = Listener<AsyncValue<String>>();
     final listener2 = Listener<AsyncValue<String>>();
 
@@ -67,8 +67,8 @@ void main() {
 
   test('family override', () {
     final provider = Provider.family<String, int>((ref, a) => '$a');
-    final root = ProviderStateOwner();
-    final owner = ProviderStateOwner(parent: root, overrides: [
+    final root = ProviderContainer();
+    final owner = ProviderContainer(parent: root, overrides: [
       // Provider overrides always takes over family overrides
       provider(84).overrideAs(Provider((_) => 'Bonjour 84')),
       provider.overrideAs((ref, a) => 'Hello $a'),

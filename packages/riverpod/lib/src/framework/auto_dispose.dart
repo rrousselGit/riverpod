@@ -58,7 +58,7 @@ abstract class OverridableAutoDisposeProviderBase<
   @override
   ProviderBase<Dependency, Result> get _origin => this;
 
-  /// Combined with [ProviderStateOwner] (or `ProviderScope` if you are using Flutter),
+  /// Combined with [ProviderContainer] (or `ProviderScope` if you are using Flutter),
   /// allows overriding the behavior of this provider for a part of the application.
   ///
   /// A use-case could be for testing, to override the implementation of a

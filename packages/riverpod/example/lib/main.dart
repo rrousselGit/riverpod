@@ -48,7 +48,7 @@ Future<void> main() async {
   // Where the state of our providers will be stored.
   // Avoid making this a global variable, for testability purposes.
   // If you are using Flutter, you do not need this.
-  final owner = ProviderStateOwner();
+  final owner = ProviderContainer();
 
   /// Obtains the [Repository]. This will implicitly load [Configuration] too.
   final repository = await owner.ref.dependOn(repositoryProvider).value;

@@ -9,7 +9,7 @@ import 'package:riverpod/riverpod.dart';
 void main() {
   group('fetch characters', () {
     test('success', () async {
-      final owner = ProviderStateOwner();
+      final owner = ProviderContainer();
       final client = FakeDio();
       final repository = MarvelRepository(owner.ref, client: client);
 

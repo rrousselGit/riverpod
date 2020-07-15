@@ -8,7 +8,7 @@ void main() {
     final provider = ChangeNotifierProvider((ref) {
       return ValueNotifier(0);
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     // ignore: omit_local_variable_types
     final ProviderDependency<ValueNotifier<int>> dep =
@@ -17,7 +17,7 @@ void main() {
     await expectLater(dep.value.value, 0);
   });
   test('family', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final provider =
         ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
@@ -37,7 +37,7 @@ void main() {
         ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
     });
-    final owner = ProviderStateOwner(overrides: [
+    final owner = ProviderContainer(overrides: [
       provider.overrideAs((ref, value) => ValueNotifier(value * 2))
     ]);
 
@@ -54,7 +54,7 @@ void main() {
     final Provider<ValueNotifier<int>> provider = ChangeNotifierProvider((_) {
       return ValueNotifier(0);
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     expect(provider.readOwner(owner), isA<ValueNotifier<int>>());
   });

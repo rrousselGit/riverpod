@@ -27,9 +27,9 @@ lengthy `setUp`/`tearDown`.
 But the reality is: While providers are declared as globals, the state of a provider
 is **not** global.
 
-Instead, it is stored in an object named [ProviderStateOwner], that you may have
+Instead, it is stored in an object named [ProviderContainer], that you may have
 seen if you've read the dart-only examples.  
-If you haven't, know that this [ProviderStateOwner] object is implicitly created
+If you haven't, know that this [ProviderContainer] object is implicitly created
 by [ProviderScope], the widget that enables [Riverpod] on our project.
 
 Concretely what this means is, two `testWidgets` using providers do not share
@@ -116,7 +116,7 @@ void main() {
   test('defaults to 0 and notify listeners when value changes', () {
     // An object that will allow us to read providers
     // Do not share this between tests.
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final listener = Listener();
 
     // Observe a provider and spy the changes.
@@ -135,9 +135,9 @@ void main() {
   });
 
   test('the counter state is not shared between tests', () {
-    // We use a different ProviderStateOwner to read our provider.
+    // We use a different ProviderContainer to read our provider.
     // This unsure that no state is reused between tests
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final listener = Listener();
 
     counterProvider.watchOwner(owner, (value) => listener(value.state));
@@ -196,14 +196,14 @@ a pre-defined response instead of making a real HTTP request.
 We will then want our `todoListProvider` or equivalent to use the mocked implementation
 of `Repository`.
 
-To achieve this, we can use the `overrides` parameter of [ProviderScope]/[ProviderStateOwner]
+To achieve this, we can use the `overrides` parameter of [ProviderScope]/[ProviderContainer]
 to override the behavior of `repositoryProvider`:
 
 <Tabs
   defaultValue="ProviderScope"
   values={[
     { label: 'ProviderScope (Flutter)', value: 'ProviderScope', },
-    { label: 'ProviderStateOwner (Dart only)', value: 'ProviderStateOwner', },
+    { label: 'ProviderContainer (Dart only)', value: 'ProviderContainer', },
   ]}
 >
 <TabItem value="ProviderScope">
@@ -226,11 +226,11 @@ testWidgets('override repositoryProvider', (tester) async {
 ```
 
 </TabItem>
-<TabItem value="ProviderStateOwner">
+<TabItem value="ProviderContainer">
 
 ```dart {6}
 test('override repositoryProvider', () async {
-  final owner = ProviderStateOwner(
+  final owner = ProviderContainer(
     overrides: [
       // Override the behavior of repositoryProvider to return
       // FakeRepository instead of Repository.
@@ -262,7 +262,7 @@ test('override repositoryProvider', () async {
 </TabItem>
 </Tabs>
 
-As you can see by the highlighted code, [ProviderScope]/[ProviderStateOwner]
+As you can see by the highlighted code, [ProviderScope]/[ProviderContainer]
 allows replacing the implementation of a provider with a different behavior.
 
 :::info
@@ -388,6 +388,6 @@ void main() {
 
 [riverpod]: https://github.com/rrousselgit/river_pod
 [providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
-[providerstateowner]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderStateOwner-class.html
+[providerstateowner]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
 [futureprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/FutureProvider-class.html
 [zone]: https://api.flutter.dev/flutter/dart-async/Zone-class.html

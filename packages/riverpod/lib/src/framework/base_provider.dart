@@ -28,7 +28,7 @@ abstract class ProviderListenable<T> {
   /// is called. Then, if the result of [Computed] changes, [ProviderSubscription.flush]
   /// will return `true` and [onChange] will be called.
   ProviderSubscription addLazyListener(
-    ProviderStateOwner owner, {
+    ProviderContainer owner, {
     @required void Function() mayHaveChanged,
     @required void Function(T value) onChange,
   });
@@ -126,7 +126,7 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
 
   @override
   ProviderSubscription addLazyListener(
-    ProviderStateOwner owner, {
+    ProviderContainer owner, {
     @required void Function() mayHaveChanged,
     @required void Function(Result value) onChange,
   }) {
@@ -146,7 +146,7 @@ abstract class ProviderBase<Dependency extends ProviderDependencyBase,
   /// [ProviderSubscription.flush] immediatly.
   /// Avoid using this on [Computed] if possible.
   VoidCallback watchOwner(
-    ProviderStateOwner owner,
+    ProviderContainer owner,
     void Function(Result value) onChange,
   ) {
     ProviderSubscription sub;
@@ -245,10 +245,10 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   /// and trying to read the provider will result in throwing this object again.
   Object _error;
 
-  ProviderStateOwner _owner;
+  ProviderContainer _owner;
 
-  /// The [ProviderStateOwner] that keeps a reference to this state.
-  ProviderStateOwner get owner => _owner;
+  /// The [ProviderContainer] that keeps a reference to this state.
+  ProviderContainer get owner => _owner;
 
   /// The list of listeners to [ProviderReference.onDispose].
   DoubleLinkedQueue<VoidCallback> _onDisposeCallbacks;
@@ -286,7 +286,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
 
   /// Life-cycle for when [provider] was replaced with a new one.
   ///
-  /// This typically happen on [ProviderStateOwner.updateOverrides] call with new
+  /// This typically happen on [ProviderContainer.updateOverrides] call with new
   /// overrides.
   @mustCallSuper
   @protected
@@ -532,16 +532,16 @@ abstract class AlwaysAliveProviderBase<
   /// final greetingProvider = Provider((_) => 'Hello world');
   ///
   /// void main() {
-  ///   final owner = ProviderStateOwner();
+  ///   final owner = ProviderContainer();
   ///
   ///   print(greetingProvider.readOwner(owner)); // Hello World
   /// }
   /// ```
-  Result readOwner(ProviderStateOwner owner) {
+  Result readOwner(ProviderContainer owner) {
     return owner._readProviderState(this).state;
   }
 
-  /// Combined with [ProviderStateOwner] (or `ProviderScope` if you are using Flutter),
+  /// Combined with [ProviderContainer] (or `ProviderScope` if you are using Flutter),
   /// allows overriding the behavior of this provider for a part of the application.
   ///
   /// A use-case could be for testing, to override the implementation of a

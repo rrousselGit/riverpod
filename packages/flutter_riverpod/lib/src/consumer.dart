@@ -86,7 +86,7 @@ class Consumer extends StatefulWidget {
 }
 
 class _ConsumerState extends State<Consumer> {
-  ProviderStateOwner _owner;
+  ProviderContainer _owner;
   var _dependencies = <ProviderBase, _Dependency>{};
   Map<ProviderBase, _Dependency> _oldDependencies;
   bool _debugSelecting;
@@ -104,7 +104,7 @@ class _ConsumerState extends State<Consumer> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _isExternalBuild = true;
-    final newOwner = ProviderStateOwnerScope.of(context);
+    final newOwner = ProviderContainerScope.of(context);
     if (_owner != newOwner) {
       _owner = newOwner;
       for (final dependency in _dependencies.values) {

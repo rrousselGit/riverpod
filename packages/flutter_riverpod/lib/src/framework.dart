@@ -82,7 +82,7 @@ class ProviderScope extends StatefulWidget {
   final Widget child;
 
   /// The listeners that subscribes to changes on providers stored on this [ProviderScope].
-  final List<ProviderStateOwnerObserver> observers;
+  final List<ProviderObserver> observers;
 
   /// Informations on how to override a provider/family.
   final List<Override> overrides;
@@ -116,25 +116,25 @@ class _ProviderScopeElement extends StatefulElement {
 /// Do not use: The [State] of [ProviderScope]
 @visibleForTesting
 class ProviderScopeState extends State<ProviderScope> {
-  /// The [ProviderStateOwner] exposed to [ProviderScope.child].
+  /// The [ProviderContainer] exposed to [ProviderScope.child].
   @visibleForTesting
-  ProviderStateOwner owner;
-  ProviderStateOwner _debugParentOwner;
+  ProviderContainer owner;
+  ProviderContainer _debugParentOwner;
   var _dirty = false;
 
   @override
   void initState() {
     super.initState();
     final scope = context
-        .getElementForInheritedWidgetOfExactType<ProviderStateOwnerScope>()
-        ?.widget as ProviderStateOwnerScope;
+        .getElementForInheritedWidgetOfExactType<ProviderContainerScope>()
+        ?.widget as ProviderContainerScope;
 
     assert(() {
       _debugParentOwner = scope?.owner;
       return true;
     }(), '');
 
-    owner = ProviderStateOwner(
+    owner = ProviderContainer(
       parent: scope?.owner,
       overrides: widget.overrides,
       observers: widget.observers,
@@ -161,8 +161,8 @@ class ProviderScopeState extends State<ProviderScope> {
   Widget build(BuildContext context) {
     assert(() {
       final scope = context
-          .getElementForInheritedWidgetOfExactType<ProviderStateOwnerScope>()
-          ?.widget as ProviderStateOwnerScope;
+          .getElementForInheritedWidgetOfExactType<ProviderContainerScope>()
+          ?.widget as ProviderContainerScope;
 
       if (scope?.owner != _debugParentOwner) {
         throw UnsupportedError(
@@ -176,7 +176,7 @@ class ProviderScopeState extends State<ProviderScope> {
       return true;
     }(), '');
 
-    return ProviderStateOwnerScope(
+    return ProviderContainerScope(
       owner: owner,
       child: widget.child,
     );
@@ -189,27 +189,27 @@ class ProviderScopeState extends State<ProviderScope> {
   }
 }
 
-/// An internal InheritedWidget that exposes a [ProviderStateOwner] to the widget tree.
-class ProviderStateOwnerScope extends InheritedWidget {
-  /// Exposes a [ProviderStateOwner] to the widget tree
-  const ProviderStateOwnerScope({
+/// An internal InheritedWidget that exposes a [ProviderContainer] to the widget tree.
+class ProviderContainerScope extends InheritedWidget {
+  /// Exposes a [ProviderContainer] to the widget tree
+  const ProviderContainerScope({
     Key key,
     @required this.owner,
     Widget child,
-  })  : assert(owner != null, 'ProviderStateOwner cannot be null'),
+  })  : assert(owner != null, 'ProviderContainer cannot be null'),
         super(key: key, child: child);
 
-  /// Read the current [ProviderStateOwner] for a [BuildContext].
-  static ProviderStateOwner of(BuildContext context, {bool listen = true}) {
-    ProviderStateOwnerScope scope;
+  /// Read the current [ProviderContainer] for a [BuildContext].
+  static ProviderContainer of(BuildContext context, {bool listen = true}) {
+    ProviderContainerScope scope;
 
     if (listen) {
       scope = context //
-          .dependOnInheritedWidgetOfExactType<ProviderStateOwnerScope>();
+          .dependOnInheritedWidgetOfExactType<ProviderContainerScope>();
     } else {
       scope = context
-          .getElementForInheritedWidgetOfExactType<ProviderStateOwnerScope>()
-          .widget as ProviderStateOwnerScope;
+          .getElementForInheritedWidgetOfExactType<ProviderContainerScope>()
+          .widget as ProviderContainerScope;
     }
 
     if (scope == null) {
@@ -219,11 +219,11 @@ class ProviderStateOwnerScope extends InheritedWidget {
     return scope.owner;
   }
 
-  /// The [ProviderStateOwner] exposes to the widget tree.
-  final ProviderStateOwner owner;
+  /// The [ProviderContainer] exposes to the widget tree.
+  final ProviderContainer owner;
 
   @override
-  bool updateShouldNotify(ProviderStateOwnerScope oldWidget) {
+  bool updateShouldNotify(ProviderContainerScope oldWidget) {
     return owner != oldWidget.owner;
   }
 }

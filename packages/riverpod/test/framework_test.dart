@@ -21,15 +21,15 @@ void main() {
     final ProviderBase<ProviderDependency<int>, int> provider = Provider((_) {
       return 42;
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     expect(owner.ref.read(provider), 42);
   });
   test('hasListeners', () {
-    final root = ProviderStateOwner();
+    final root = ProviderContainer();
     final provider = Provider((_) => 42);
     final provider2 = Provider((ref) => ref.dependOn(provider).value * 2);
-    final owner = ProviderStateOwner(parent: root, overrides: [provider2]);
+    final owner = ProviderContainer(parent: root, overrides: [provider2]);
 
     expect(provider.readOwner(owner), 42);
 
@@ -68,8 +68,8 @@ void main() {
       callCount2++;
       return '$value 2';
     });
-    final root = ProviderStateOwner();
-    final owner = ProviderStateOwner(parent: root, overrides: [
+    final root = ProviderContainer();
+    final owner = ProviderContainer(parent: root, overrides: [
       family.overrideAs((ref, value) => 'override $value'),
     ]);
 
@@ -95,8 +95,8 @@ void main() {
       () {
     final provider = Provider((_) => 42);
     final provider2 = Provider((ref) => ref.dependOn(provider).value * 2);
-    final root = ProviderStateOwner();
-    final owner = ProviderStateOwner(parent: root, overrides: [provider2]);
+    final root = ProviderContainer();
+    final owner = ProviderContainer(parent: root, overrides: [provider2]);
 
     expect(provider.readOwner(owner), 42);
     expect(provider2.readOwner(owner), 84);
@@ -106,7 +106,7 @@ void main() {
   test('changing the override type at a given index throws', () {
     final provider = Provider((ref) => 0);
     final family = ProviderFamily<int, int>((ref, value) => 0);
-    final owner = ProviderStateOwner(overrides: [
+    final owner = ProviderContainer(overrides: [
       family.overrideAs((ref, value) => 0),
     ]);
 
@@ -117,7 +117,7 @@ void main() {
   });
   test('last family override is applied', () {
     final family = ProviderFamily<int, int>((ref, value) => 0);
-    final owner = ProviderStateOwner(overrides: [
+    final owner = ProviderContainer(overrides: [
       family.overrideAs((ref, value) => 1),
     ]);
 
@@ -131,7 +131,7 @@ void main() {
     expect(family(1).readOwner(owner), 2);
   });
   test('mount in parent owner then in child owner', () {
-    final root = ProviderStateOwner();
+    final root = ProviderContainer();
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
 
@@ -153,7 +153,7 @@ void main() {
     );
 
     final notifier2 = Counter(42);
-    final owner = ProviderStateOwner(parent: root, overrides: [
+    final owner = ProviderContainer(parent: root, overrides: [
       provider.overrideAs(StateNotifierProvider((_) => notifier2))
     ]);
 
@@ -190,7 +190,7 @@ void main() {
   test('guard listeners', () {
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final listener = ListenerMock();
     final listener2 = ListenerMock();
 
@@ -231,7 +231,7 @@ void main() {
   test('reading unflushed triggers flush', () {
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final listener = ListenerMock();
     final listener2 = ListenerMock();
     var callCount = 0;
@@ -278,7 +278,7 @@ void main() {
   test('flusing closed subscription is noop', () {
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final listener = ListenerMock();
     final mayHaveChanged = MockMarkMayHaveChanged();
 
@@ -304,8 +304,8 @@ void main() {
   test('remove dependency when owner is disposed', () {
     final provider = Provider((_) {});
     final provider2 = Provider((ref) => ref.dependOn(provider));
-    final root = ProviderStateOwner();
-    final owner = ProviderStateOwner(
+    final root = ProviderContainer();
+    final owner = ProviderContainer(
       parent: root,
       overrides: [provider2],
     );
@@ -330,8 +330,8 @@ void main() {
     final provider2 = Provider((ref) => ref, name: '2');
     final provider3 = Provider((ref) => ref, name: '3');
     final provider4 = Provider((ref) => ref, name: '4');
-    final root = ProviderStateOwner();
-    final owner = ProviderStateOwner(
+    final root = ProviderContainer();
+    final owner = ProviderContainer(
       parent: root,
       overrides: [provider3, provider4],
     );
@@ -391,7 +391,7 @@ void main() {
     );
   });
   test('redepth is recursive', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final provider = Provider((ref) => ref, name: '1');
     final provider2 = Provider((ref) => ref, name: '2');
     final provider3 = Provider((ref) => ref, name: '3');
@@ -451,7 +451,7 @@ void main() {
       });
       return ref;
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     provider.readOwner(owner);
 
@@ -468,7 +468,7 @@ void main() {
       });
       return ref;
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     provider.readOwner(owner);
 
@@ -483,7 +483,7 @@ void main() {
     final named = StateNotifierProvider((_) {
       return counter;
     }, name: 'named');
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     expect(owner.debugProviderValues, <ProviderBase, Object>{});
 
@@ -514,12 +514,12 @@ void main() {
     final provider2 = Provider((_) => 2);
     final provider3 = Provider((ref) => ref.dependOn(provider2).value * 2);
 
-    final root = ProviderStateOwner(overrides: [
+    final root = ProviderContainer(overrides: [
       provider.overrideAs(
         Provider((ref) => ref.dependOn(provider3).value * 2),
       )
     ]);
-    final owner = ProviderStateOwner(parent: root, overrides: [
+    final owner = ProviderContainer(parent: root, overrides: [
       provider2.overrideAs(Provider((ref) => ref.dependOn(provider).value * 2)),
       provider3,
     ]);
@@ -536,8 +536,8 @@ void main() {
     final provider3 = Provider((_) => '1');
     final provider2 = Provider((ref) => ref.dependOn(provider1).value * 2.5);
 
-    final root = ProviderStateOwner();
-    final owner = ProviderStateOwner(parent: root, overrides: [
+    final root = ProviderContainer();
+    final owner = ProviderContainer(parent: root, overrides: [
       provider3,
       provider2,
     ]);
@@ -559,7 +559,7 @@ void main() {
     );
   });
   test('owner life-cycles are unusuable after dispose', () {
-    final owner = ProviderStateOwner()..dispose();
+    final owner = ProviderContainer()..dispose();
 
     expect(owner.dispose, throwsStateError);
     expect(() => owner.updateOverrides([]), throwsStateError);
@@ -569,8 +569,8 @@ void main() {
   test('provider.overrideAs(provider) can be simplified into provider', () {
     final notifier = Counter();
     final provider = StateNotifierProvider<Counter>((_) => notifier);
-    final root = ProviderStateOwner();
-    final owner = ProviderStateOwner(parent: root, overrides: [provider]);
+    final root = ProviderContainer();
+    final owner = ProviderContainer(parent: root, overrides: [provider]);
 
     expect(provider.readOwner(owner), notifier);
     expect(notifier.mounted, true);
@@ -580,7 +580,7 @@ void main() {
     expect(notifier.mounted, false);
   });
   test('cannot call markMayHaveChanged after dispose', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final provider = TestProvider((ref) {});
     ProviderStateBase providerBaseState;
     provider.onInitState.thenAnswer((state) {
@@ -606,8 +606,8 @@ void main() {
   });
   test('owner.ref uses the override', () {
     final provider = Provider((_) => 42);
-    final owner = ProviderStateOwner();
-    final owner2 = ProviderStateOwner(overrides: [
+    final owner = ProviderContainer();
+    final owner2 = ProviderContainer(overrides: [
       provider.overrideAs(
         Provider((_) => 21),
       ),
@@ -646,8 +646,8 @@ void main() {
     });
     final other = Provider((ref) => ref.dependOn(provider));
 
-    final owner = ProviderStateOwner();
-    final owner2 = ProviderStateOwner(
+    final owner = ProviderContainer();
+    final owner2 = ProviderContainer(
       parent: owner,
       overrides: [other],
     );
@@ -663,7 +663,7 @@ void main() {
   test('Owner.read', () {
     final provider = TestProvider((ref) => 0);
     final provider2 = TestProvider((ref) => 1);
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     final value1 = owner.ref.dependOn(provider);
     final value2 = owner.ref.dependOn(provider);
@@ -682,7 +682,7 @@ void main() {
     var callCount = 0;
     final provider = Provider((_) => callCount++);
 
-    final owner = ProviderStateOwner(
+    final owner = ProviderContainer(
       overrides: [provider],
     );
 
@@ -709,14 +709,14 @@ void main() {
       return () => ref.dependOn(provider2).value + 1;
     });
 
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     expect(
       () => provider.readOwner(owner)(),
       throwsA(isA<CircularDependencyError>()),
     );
   });
   test('circular dependencies #2', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     final provider = Provider((ref) => ref);
     final provider1 = Provider((ref) => ref);
@@ -732,7 +732,7 @@ void main() {
     );
   });
   test('dispose providers in dependency order (simple)', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final onDispose1 = OnDisposeMock();
     final onDispose2 = OnDisposeMock();
     final onDispose3 = OnDisposeMock();
@@ -769,7 +769,7 @@ void main() {
   });
 
   test('dispose providers in dependency order (late binding)', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final onDispose1 = OnDisposeMock();
     final onDispose2 = OnDisposeMock();
     final onDispose3 = OnDisposeMock();
@@ -811,7 +811,7 @@ void main() {
       return () => ref.dependOn(provider1).value() + 1;
     });
 
-    final owner = ProviderStateOwner(overrides: [
+    final owner = ProviderContainer(overrides: [
       provider,
       provider1,
       provider2,
@@ -839,7 +839,7 @@ void main() {
     verifyNoMoreInteractions(provider2.onDidUpdateProvider);
   });
   test('read used on same provider multiple times returns same instance', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final provider = Provider((_) => 42);
 
     ProviderDependency<int> other;
@@ -857,7 +857,7 @@ void main() {
     owner.dispose();
   });
   test('ProviderReference is unusable after dispose (read/onDispose)', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     ProviderReference ref;
     final provider = Provider((s) {
       ref = s;
@@ -880,7 +880,7 @@ void main() {
       callCount++;
       throw error;
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     expect(() => provider.readOwner(owner), throwsA(error));
     expect(callCount, 1);
@@ -907,7 +907,7 @@ void main() {
       callCount++;
       throw error;
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     expect(() => provider.readOwner(owner), throwsA(error));
     expect(callCount, 1);
@@ -925,7 +925,7 @@ void main() {
       ref.onDispose(onDispose);
       throw error;
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     expect(() => provider.readOwner(owner), throwsA(error));
     expect(callCount, 1);
@@ -950,8 +950,8 @@ void main() {
     test('calls onChange at most once per flush', () {
       final counter = Counter();
       final provider = StateNotifierProvider<Counter>((_) => counter);
-      final root = ProviderStateOwner();
-      final owner = ProviderStateOwner(
+      final root = ProviderContainer();
+      final owner = ProviderContainer(
         parent: root,
         overrides: [
           provider,
@@ -1001,8 +1001,8 @@ void main() {
     });
     test('noop inside initState', () {
       final provider = TestProvider((ref) {});
-      final root = ProviderStateOwner();
-      final owner = ProviderStateOwner(
+      final root = ProviderContainer();
+      final owner = ProviderContainer(
         parent: root,
         overrides: [
           provider,
@@ -1038,7 +1038,7 @@ void main() {
     test('noop if no provider was "dirty"', () {
       final counter = Counter();
       final provider = StateNotifierProvider<Counter>((_) => counter);
-      final owner = ProviderStateOwner();
+      final owner = ProviderContainer();
       final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = ListenerMock();
 
@@ -1069,7 +1069,7 @@ void main() {
     });
     test('update first update providers then dispatch notifications', () {
       final futureProvider = FutureProvider((_) async => 0);
-      final owner = ProviderStateOwner(overrides: [
+      final owner = ProviderContainer(overrides: [
         futureProvider.debugOverrideWithValue(const AsyncValue.loading()),
       ]);
       final listener = AsyncListenerMock();
@@ -1087,7 +1087,7 @@ void main() {
       verifyNoMoreInteractions(listener);
     });
     test('on update`', () async {
-      final owner = ProviderStateOwner();
+      final owner = ProviderContainer();
       final counter = Counter();
       final provider = StateNotifierProvider<Counter>((_) => counter);
       final mayHaveChanged = MockMarkMayHaveChanged();
@@ -1114,7 +1114,7 @@ void main() {
       verifyNoMoreInteractions(listener);
     });
     test('in dependency order', () async {
-      final owner = ProviderStateOwner();
+      final owner = ProviderContainer();
       final counter = Counter();
       final counter2 = Counter();
       final counter3 = Counter();

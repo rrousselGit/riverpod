@@ -6,7 +6,7 @@ void main() {
   test('StateNotifierProviderDependency can be assigned to ProviderDependency',
       () async {
     final provider = StateProvider((ref) => 0);
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     // ignore: omit_local_variable_types
     final ProviderDependency<StateController<int>> dep =
@@ -18,7 +18,7 @@ void main() {
     final provider = StateProvider.family<String, int>((ref, a) {
       return '$a';
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     expect(
       provider(0).readOwner(owner),
@@ -34,7 +34,7 @@ void main() {
     final provider = StateProvider.family<String, int>((ref, a) {
       return '$a';
     });
-    final owner = ProviderStateOwner(overrides: [
+    final owner = ProviderContainer(overrides: [
       provider.overrideAs((ref, a) => 'override $a'),
     ]);
 
@@ -48,7 +48,7 @@ void main() {
     );
   });
   test('Expose a state and allows modifying it', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final provider = StateProvider((ref) => 0);
     final listener = Listener();
 

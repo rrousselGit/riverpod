@@ -26,7 +26,7 @@ abstract class Family<P extends ProviderBase, A> {
   }
 }
 
-/// Do not use: Internal object to used by [ProviderStateOwner]/`ProviderScope`
+/// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
 /// to override the behavior of a "family" for part of the application.
 class FamilyOverride implements Override {
   /// Do not use

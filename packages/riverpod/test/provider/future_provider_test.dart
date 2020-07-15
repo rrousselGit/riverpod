@@ -12,7 +12,7 @@ void main() {
     final provider = FutureProvider((ref) {
       return Future.value(42);
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     // ignore: omit_local_variable_types
     final ProviderDependency<Future<int>> dep = owner.ref.dependOn(provider);
@@ -26,7 +26,7 @@ void main() {
       ref.onDispose(onDispose);
       return future;
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final listener = ListenerMock();
 
     final removeListener = provider.watchOwner(owner, listener);
@@ -56,7 +56,7 @@ void main() {
     final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
       return Future.value(a * 2);
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final listener = ListenerMock();
 
     provider(21).watchOwner(owner, listener);
@@ -73,7 +73,7 @@ void main() {
     final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
       return Future.value(a * 2);
     });
-    final owner = ProviderStateOwner(overrides: [
+    final owner = ProviderContainer(overrides: [
       provider.overrideAs((ref, a) => Future.value(a * 4)),
     ]);
     final listener = ListenerMock();
@@ -92,7 +92,7 @@ void main() {
     final provider = FutureProvider.family<String, int>((ref, a) {
       return Future.value('$a');
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     expect(provider(0).readOwner(owner), const AsyncValue<String>.loading());
 
@@ -107,7 +107,7 @@ void main() {
     final provider = FutureProvider.family<String, int>((ref, a) {
       return Future.value('$a');
     });
-    final owner = ProviderStateOwner(overrides: [
+    final owner = ProviderContainer(overrides: [
       provider.overrideAs((ref, a) => Future.value('override $a')),
     ]);
 
@@ -135,7 +135,7 @@ void main() {
   test('handle errors', () async {
     // ignore: only_throw_errors
     final provider = FutureProvider<int>((_) async => throw 42);
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     expect(provider.readOwner(owner), const AsyncValue<int>.loading());
 
@@ -153,7 +153,7 @@ void main() {
   test('noop if fails after dispose', () async {
     // ignore: only_throw_errors
     final provider = FutureProvider<int>((_) async => throw 42);
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     expect(provider.readOwner(owner), const AsyncValue<int>.loading());
 
@@ -168,7 +168,7 @@ void main() {
     expect(provider, isA<AlwaysAliveProviderBase>());
   });
   test('read', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final completer = Completer<int>.sync();
     final other = FutureProvider((_) => completer.future);
     final simple = Provider((_) => 21);
@@ -200,7 +200,7 @@ void main() {
     owner.dispose();
   });
   test('exposes data', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final listener = ListenerMock();
     final completer = Completer<int>.sync();
     final provider = FutureProvider((_) => completer.future);
@@ -224,7 +224,7 @@ void main() {
     owner.dispose();
   });
   test('listener not called anymore if subscription is closed', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final listener = ListenerMock();
     final completer = Completer<int>.sync();
     final provider = FutureProvider((_) => completer.future);
@@ -251,7 +251,7 @@ void main() {
   group('mock as value', () {
     test('value immediatly then other value', () async {
       final provider = FutureProvider((_) async => 0);
-      final owner = ProviderStateOwner(overrides: [
+      final owner = ProviderContainer(overrides: [
         provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
       final listener = ListenerMock();
@@ -277,7 +277,7 @@ void main() {
     });
     test('value immediatly then error', () async {
       final provider = FutureProvider((_) async => 0);
-      final owner = ProviderStateOwner(overrides: [
+      final owner = ProviderContainer(overrides: [
         provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
       final listener = ListenerMock();
@@ -303,7 +303,7 @@ void main() {
     });
     test('value immediatly then loading', () async {
       final provider = FutureProvider((_) async => 0);
-      final owner = ProviderStateOwner(overrides: [
+      final owner = ProviderContainer(overrides: [
         provider.debugOverrideWithValue(const AsyncValue.data(42)),
       ]);
       final listener = ListenerMock();
@@ -329,7 +329,7 @@ void main() {
     });
     test('loading immediatly then value', () async {
       final provider = FutureProvider((_) async => 0);
-      final owner = ProviderStateOwner(overrides: [
+      final owner = ProviderContainer(overrides: [
         provider.debugOverrideWithValue(const AsyncValue.loading()),
       ]);
       final listener = ListenerMock();
@@ -351,7 +351,7 @@ void main() {
     });
     test('loading immediatly then error', () async {
       final provider = FutureProvider((_) async => 0);
-      final owner = ProviderStateOwner(overrides: [
+      final owner = ProviderContainer(overrides: [
         provider.debugOverrideWithValue(const AsyncValue.loading()),
       ]);
       final listener = ListenerMock();
@@ -375,7 +375,7 @@ void main() {
     });
     test('loading immediatly then loading', () async {
       final provider = FutureProvider((_) async => 0);
-      final owner = ProviderStateOwner(overrides: [
+      final owner = ProviderContainer(overrides: [
         provider.debugOverrideWithValue(const AsyncValue.loading()),
       ]);
       final listener = ListenerMock();
@@ -404,7 +404,7 @@ void main() {
     test('error immediatly then different error', () async {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
-      final owner = ProviderStateOwner(overrides: [
+      final owner = ProviderContainer(overrides: [
         provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
       final listener = ListenerMock();
@@ -431,7 +431,7 @@ void main() {
     test('error immediatly then different stacktrace', () async {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
-      final owner = ProviderStateOwner(overrides: [
+      final owner = ProviderContainer(overrides: [
         provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
       final listener = ListenerMock();
@@ -459,7 +459,7 @@ void main() {
     test('error immediatly then data', () async {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
-      final owner = ProviderStateOwner(overrides: [
+      final owner = ProviderContainer(overrides: [
         provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
       final listener = ListenerMock();
@@ -486,7 +486,7 @@ void main() {
     test('error immediatly then loading', () async {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
-      final owner = ProviderStateOwner(overrides: [
+      final owner = ProviderContainer(overrides: [
         provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
       final listener = ListenerMock();

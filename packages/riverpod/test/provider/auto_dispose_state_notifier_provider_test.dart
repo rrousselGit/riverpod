@@ -13,8 +13,8 @@ void main() {
         StateNotifierProvider.autoDispose.family<TestNotifier, int>(
       (ref, a) => notifier,
     );
-    final root = ProviderStateOwner();
-    final owner = ProviderStateOwner(parent: root, overrides: [
+    final root = ProviderContainer();
+    final owner = ProviderContainer(parent: root, overrides: [
       provider.overrideAs((ref, a) => notifier2),
     ]);
     final rootStateListener = Listener<int>();
@@ -73,14 +73,14 @@ void main() {
   test('implicit provider.state override works on children owner too', () {
     final notifier = TestNotifier(42);
     final provider = StateNotifierProvider.autoDispose((_) => TestNotifier());
-    final root = ProviderStateOwner();
-    final root2 = ProviderStateOwner(
+    final root = ProviderContainer();
+    final root2 = ProviderContainer(
       parent: root,
       overrides: [
         provider.overrideAs(StateNotifierProvider.autoDispose((_) => notifier))
       ],
     );
-    final owner = ProviderStateOwner(parent: root2);
+    final owner = ProviderContainer(parent: root2);
     final stateListener = Listener<int>();
     final notifierListener = Listener<TestNotifier>();
 
@@ -95,8 +95,8 @@ void main() {
   test('overriding the provider overrides provider.state too', () {
     final notifier = TestNotifier(42);
     final provider = StateNotifierProvider.autoDispose((_) => TestNotifier());
-    final root = ProviderStateOwner();
-    final owner = ProviderStateOwner(
+    final root = ProviderContainer();
+    final owner = ProviderContainer(
       parent: root,
       overrides: [
         provider.overrideAs(
@@ -144,7 +144,7 @@ void main() {
     final provider = StateNotifierProvider.autoDispose<TestNotifier>((_) {
       return notifier;
     });
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     provider.watchOwner(owner, (value) {});
     expect(notifier.mounted, isTrue);
@@ -160,7 +160,7 @@ void main() {
       return notifier;
     });
     final listener = ControllerListenerMock();
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     final sub = provider.addLazyListener(
       owner,
@@ -189,7 +189,7 @@ void main() {
       return notifier;
     });
     final listener = Listener<int>();
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     final sub = provider.state.addLazyListener(
       owner,

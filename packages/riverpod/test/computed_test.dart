@@ -23,7 +23,7 @@ void main() {
     final provider = StateNotifierProvider((ref) => notifier);
     final computed = Computed((read) => read(provider.state) * 2);
     final listener = Listener<int>();
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     computed.watchOwner(owner, listener)();
 
@@ -70,7 +70,7 @@ void main() {
       return '${read(provider0.state)} $value';
     });
     final listener = Listener<String>();
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     provider0.state.readOwner(owner);
     provider1.state.readOwner(owner);
@@ -135,7 +135,7 @@ void main() {
       return state == 0 ? read(provider0.state) : read(provider1.state);
     });
     final listener = Listener<int>();
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
 
     provider0.state.readOwner(owner);
     provider1.state.readOwner(owner);
@@ -192,7 +192,7 @@ void main() {
     });
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final listener = Listener<String>();
 
     computed(provider.state).watchOwner(owner, listener);
@@ -206,7 +206,7 @@ void main() {
     verifyNoMoreInteractions(listener);
   });
   test('auto dispose Computed when no longer used', () async {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final onDispose = OnDisposeMock();
     final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose);
@@ -228,7 +228,7 @@ void main() {
   test(
       'mutliple read, when one of them forces re-evaluate, all dependencies are still flushed',
       () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider((_) => notifier);
     var callCount = 0;
@@ -264,7 +264,7 @@ void main() {
   test(
       'computed on computed, the first aborts rebuild, the second should no longer be dirty after a flush',
       () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider((_) => notifier);
     final first = Computed((read) {
@@ -310,10 +310,10 @@ void main() {
     expect(secondState.dirty, false);
   });
   test(
-      'Computed are stored on the deeper ProviderStateOwner and cannot be overriden (insert in parent owner first then child owner)',
+      'Computed are stored on the deeper ProviderContainer and cannot be overriden (insert in parent owner first then child owner)',
       () {
-    final root = ProviderStateOwner();
-    final owner = ProviderStateOwner(parent: root);
+    final root = ProviderContainer();
+    final owner = ProviderContainer(parent: root);
     var callCount = 0;
     final computed = Computed((_) => callCount++);
     final rootListener = Listener<int>();
@@ -345,7 +345,7 @@ void main() {
   });
 
   test('Computeds are added to the overall list of providers', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final provider = Provider((_) => 42);
     final computed = Computed((read) => read(provider) * 2);
     final provider2 = Provider((ref) => ref.dependOn(computed));
@@ -369,9 +369,9 @@ void main() {
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     final computed = Computed((read) => read(provider.state));
-    final root = ProviderStateOwner();
+    final root = ProviderContainer();
     // no need to pass "overrides" as the computed should naturally go to the deepest owner
-    final owner = ProviderStateOwner(parent: root);
+    final owner = ProviderContainer(parent: root);
     final mayHaveChanged = MockMarkMayHaveChanged();
     final listener = Listener<int>();
 
@@ -400,7 +400,7 @@ void main() {
     verifyNoMoreInteractions(listener);
   });
   test('cannot call read outside of the Computed', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     var callCount = 0;
@@ -441,7 +441,7 @@ void main() {
   });
   group('deeply compares collections', () {
     test('list', () {
-      final owner = ProviderStateOwner();
+      final owner = ProviderContainer();
       final notifier = Notifier(0);
       final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
       final computed = Computed((read) {
@@ -472,7 +472,7 @@ void main() {
       verifyNoMoreInteractions(listener);
     });
     test('set', () {
-      final owner = ProviderStateOwner();
+      final owner = ProviderContainer();
       final notifier = Notifier(0);
       final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
       final computed = Computed((read) {
@@ -503,7 +503,7 @@ void main() {
       verifyNoMoreInteractions(listener);
     });
     test('map', () {
-      final owner = ProviderStateOwner();
+      final owner = ProviderContainer();
       final notifier = Notifier(0);
       final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
       final computed = Computed((read) {
@@ -535,7 +535,7 @@ void main() {
     });
   });
   test('the value is cached between multiple listeners', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     var callCount = 0;
@@ -573,7 +573,7 @@ void main() {
     expect(computed, isNot(isA<AlwaysAliveProviderBase>()));
   });
   test('Simple Computed flow', () {
-    final owner = ProviderStateOwner();
+    final owner = ProviderContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     final mayHaveChanged = MockMarkMayHaveChanged();

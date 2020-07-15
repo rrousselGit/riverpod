@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 void main() {
   test('report change once even if there are multiple listeners', () {
     final observer = ObserverMock();
-    final owner = ProviderStateOwner(observers: [observer]);
+    final owner = ProviderContainer(observers: [observer]);
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
 
@@ -29,7 +29,7 @@ void main() {
     final observer = ObserverMock();
     final observer2 = ObserverMock();
     final provider = Provider((_) => 0);
-    final owner = ProviderStateOwner(
+    final owner = ProviderContainer(
       overrides: [
         provider.overrideAs(Provider((_) => 42)),
       ],
@@ -51,7 +51,7 @@ void main() {
     when(observer2.didAddProvider(any, any)).thenThrow('error2');
     final observer3 = ObserverMock();
     final provider = Provider((_) => 0);
-    final owner = ProviderStateOwner(
+    final owner = ProviderContainer(
       overrides: [
         provider.overrideAs(Provider((_) => 42)),
       ],
@@ -80,7 +80,7 @@ void main() {
     final observer2 = ObserverMock();
     final provider = StateNotifierProvider((_) => Counter());
     final counter = Counter();
-    final owner = ProviderStateOwner(
+    final owner = ProviderContainer(
       overrides: [
         provider.overrideAs(StateNotifierProvider((_) => counter)),
       ],
@@ -130,7 +130,7 @@ void main() {
     final observer3 = ObserverMock();
     final provider = StateNotifierProvider((_) => Counter());
     final counter = Counter();
-    final owner = ProviderStateOwner(
+    final owner = ProviderContainer(
       overrides: [
         provider.overrideAs(StateNotifierProvider((_) => counter)),
       ],
@@ -176,7 +176,7 @@ void main() {
     final isNegative = Computed((read) {
       return read(provider.state).isNegative;
     });
-    final owner = ProviderStateOwner(observers: [observer]);
+    final owner = ProviderContainer(observers: [observer]);
     final isNegativeListener = Listener<bool>();
 
     final sub = isNegative.addLazyListener(
@@ -229,7 +229,7 @@ void main() {
     final provider = Provider((_) => 0);
     final provider2 = Provider((ref) => ref.dependOn(provider).value);
     final onDispose = OnDisposeMock();
-    final owner = ProviderStateOwner(
+    final owner = ProviderContainer(
       overrides: [
         provider.overrideAs(Provider((ref) {
           ref.onDispose(onDispose);
@@ -283,7 +283,7 @@ class Counter extends StateNotifier<int> {
   void setState(int value) => state = value;
 }
 
-class ObserverMock extends Mock implements ProviderStateOwnerObserver {}
+class ObserverMock extends Mock implements ProviderObserver {}
 
-// can subclass ProviderStateOwnerObserver without implementing all life-cycles
-class CustomObserver extends ProviderStateOwnerObserver {}
+// can subclass ProviderObserver without implementing all life-cycles
+class CustomObserver extends ProviderObserver {}
