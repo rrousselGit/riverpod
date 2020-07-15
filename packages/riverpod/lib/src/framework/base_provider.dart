@@ -182,6 +182,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   P get provider => _provider;
 
   /// The raw unmodified provider before applying [ProviderOverride].
+  // TODO try remove this
   ProviderBase<ProviderDependencyBase, Object> _origin;
 
   /// The number of time the value exposed changes.
