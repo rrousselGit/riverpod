@@ -309,40 +309,6 @@ void main() {
     expect(firstState.dirty, false);
     expect(secondState.dirty, false);
   });
-  test(
-      'Computed are stored on the deeper ProviderContainer and cannot be overriden (insert in parent container first then child container)',
-      () {
-    final root = ProviderContainer();
-    final container = ProviderContainer(parent: root);
-    var callCount = 0;
-    final computed = Computed((_) => callCount++);
-    final rootListener = Listener<int>();
-    final ownerListener = Listener<int>();
-
-    computed.watchOwner(root, rootListener);
-
-    expect(callCount, 1);
-    verify(rootListener(0)).called(1);
-    verifyNoMoreInteractions(rootListener);
-
-    computed.watchOwner(container, ownerListener);
-
-    expect(callCount, 2);
-    verify(ownerListener(1)).called(1);
-    verifyNoMoreInteractions(ownerListener);
-
-    computed.watchOwner(root, rootListener);
-
-    expect(callCount, 2);
-    verify(rootListener(0)).called(1);
-    verifyNoMoreInteractions(rootListener);
-
-    computed.watchOwner(container, ownerListener);
-
-    expect(callCount, 2);
-    verify(ownerListener(1)).called(1);
-    verifyNoMoreInteractions(ownerListener);
-  });
 
   test('Computeds are added to the overall list of providers', () {
     final container = ProviderContainer();
@@ -369,13 +335,11 @@ void main() {
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     final computed = Computed((read) => read(provider.state));
-    final root = ProviderContainer();
-    // no need to pass "overrides" as the computed should naturally go to the deepest container
-    final container = ProviderContainer(parent: root);
+    final container = ProviderContainer();
     final mayHaveChanged = MockMarkMayHaveChanged();
     final listener = Listener<int>();
 
-    final sub = computed.addLazyListener(
+    computed.addLazyListener(
       container,
       mayHaveChanged: mayHaveChanged,
       onChange: listener,
@@ -386,15 +350,6 @@ void main() {
     verifyNoMoreInteractions(listener);
 
     container.dispose();
-    verifyNoMoreInteractions(mayHaveChanged);
-    verifyNoMoreInteractions(listener);
-
-    notifier.setState(42);
-
-    verifyNoMoreInteractions(listener);
-    verifyNoMoreInteractions(mayHaveChanged);
-
-    sub.flush();
 
     verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);

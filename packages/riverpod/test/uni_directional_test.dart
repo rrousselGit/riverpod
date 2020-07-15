@@ -42,22 +42,26 @@ void main() {
     ]);
   });
 
-  test("dispose can't dirty anything", () {
+  test("auto dispose can't dirty anything", () async {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
-    final root = ProviderContainer();
     List<Object> errors;
-    final provider2 = Provider((ref) {
-      ref.onDispose(() => errors = errorsOf(counter.increment));
+    var didDispose = false;
+    final provider2 = Provider.autoDispose((ref) {
+      ref.onDispose(() {
+        didDispose = true;
+        errors = errorsOf(counter.increment);
+      });
       return 0;
     });
-    final container = ProviderContainer(parent: root, overrides: [provider2]);
+    final container = ProviderContainer();
 
     expect(provider.state.readOwner(container), 0);
-    expect(provider2.readOwner(container), 0);
+    provider2.watchOwner(container, (v) {})();
 
-    container.dispose();
+    await Future<void>.value();
 
+    expect(didDispose, true);
     expect(errors, [isStateError, isA<Error>()]);
   });
   test(
@@ -75,48 +79,6 @@ void main() {
     });
 
     expect(errors, [isA<AssertionError>(), isA<Error>()]);
-  });
-  test(
-      'notifyListeners cannot dirty nodes that were already traversed across multiple ownwers',
-      () {
-    final counter = Counter();
-    final provider = StateNotifierProvider((_) => counter);
-    final root = ProviderContainer();
-    final counter2 = Counter();
-    final provider2 = StateNotifierProvider((_) => counter2);
-    final container = ProviderContainer(
-      parent: root,
-      overrides: [provider2, provider2.state],
-    );
-    final listener = Listener();
-    List<Object> errors;
-
-    expect(provider.state.readOwner(container), 0);
-
-    final sub = provider2.state.addLazyListener(
-      container,
-      mayHaveChanged: () {},
-      onChange: (value) {
-        listener(value);
-        if (value > 0) {
-          errors = errorsOf(counter.increment);
-        }
-      },
-    );
-
-    verify(listener(0)).called(1);
-    verifyNoMoreInteractions(listener);
-
-    counter.increment();
-    counter2.increment();
-
-    verifyNoMoreInteractions(listener);
-
-    sub.flush();
-
-    expect(errors, [isA<AssertionError>(), isA<Error>()]);
-    verify(listener(1)).called(1);
-    verifyNoMoreInteractions(listener);
   });
 
   test("Computed can't dirty anything on create", () {
@@ -139,6 +101,7 @@ void main() {
     expect(errors, [isA<StateError>(), isA<Error>()]);
   });
   test("Computed can't dirty anything on update", () {
+    // TODO
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
     final container = ProviderContainer();

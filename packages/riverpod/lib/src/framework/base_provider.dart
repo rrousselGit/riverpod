@@ -36,8 +36,6 @@ abstract class ProviderListenable<T> {
 
 /// Manages a subscription created with [ProviderListenable.addLazyListener].
 abstract class ProviderSubscription {
-  ProviderSubscription._();
-
   /// Recompute a selector/[Computed] if not computed already.
   ///
   /// Calling [flush] will potentially call `onChange` of [ProviderListenable.addLazyListener]
@@ -182,6 +180,7 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
   P get provider => _provider;
 
   /// The raw unmodified provider before applying [ProviderOverride].
+  // TODO try remove this
   ProviderBase<ProviderDependencyBase, Object> _origin;
 
   /// The number of time the value exposed changes.
@@ -211,17 +210,6 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
 
   /// All the states that depends on this provider.
   final _dependents = HashSet<ProviderStateBase>();
-
-  /// The list of the providers that depends on this state, or `null` in release mode.
-  @visibleForTesting
-  Set<ProviderStateBase> get debugDependents {
-    Set<ProviderStateBase> result;
-    assert(() {
-      result = {..._dependents};
-      return true;
-    }(), '');
-    return result;
-  }
 
   /// All the [ProviderStateBase]s that this provider depends on.
   final _providerStateDependencies = HashSet<ProviderStateBase>();
@@ -514,16 +502,10 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
 /// overriden by providers that too are never disposed.
 /// Otherwise methods like [readOwner] would have an unknown behavior.
 abstract class AlwaysAliveProviderBase<
-        Dependency extends ProviderDependencyBase, Result>
-    extends ProviderBase<Dependency, Result> implements ProviderOverride {
+    Dependency extends ProviderDependencyBase,
+    Result> extends ProviderBase<Dependency, Result> {
   /// Creates an [AlwaysAliveProviderBase] and allows specifing a [name].
   AlwaysAliveProviderBase(String name) : super(name);
-
-  @override
-  ProviderBase get _provider => this;
-
-  @override
-  ProviderBase<Dependency, Result> get _origin => this;
 
   /// Reads a provider without listening to it and returns the currently
   /// exposed value.

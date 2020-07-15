@@ -17,6 +17,38 @@ Matcher isProvider(ProviderBase provider) {
 
 void main() {
   // TODO flushing inside mayHaveChanged calls onChanged only after all mayHaveChanged were executed
+  test('throw if locally overriding a provider', () {
+    final provider = Provider((_) => 42);
+    final root = ProviderContainer(overrides: [
+      provider.overrideAs(Provider((_) => 21)),
+    ]);
+
+    expect(provider.readOwner(root), 21);
+
+    expect(
+      () => ProviderContainer(
+        parent: root,
+        overrides: [provider.overrideAs(Provider((_) => 84))],
+      ),
+      throwsUnsupportedError,
+    );
+  });
+  test('throw if locally overriding a family', () {
+    final provider = Provider.family<int, int>((_, id) => id * 2);
+    final root = ProviderContainer(overrides: [
+      provider.overrideAs((ref, id) => id),
+    ]);
+
+    expect(provider(21).readOwner(root), 21);
+
+    expect(
+      () => ProviderContainer(
+        parent: root,
+        overrides: [provider.overrideAs((ref, id) => id * 3)],
+      ),
+      throwsUnsupportedError,
+    );
+  });
   test('ref.read(provider) for providers with an immutable value', () {
     final ProviderBase<ProviderDependency<int>, int> provider = Provider((_) {
       return 42;
@@ -26,14 +58,12 @@ void main() {
     expect(container.ref.read(provider), 42);
   });
   test('hasListeners', () {
-    final root = ProviderContainer();
+    final container = ProviderContainer();
     final provider = Provider((_) => 42);
-    final provider2 = Provider((ref) => ref.dependOn(provider).value * 2);
-    final container = ProviderContainer(parent: root, overrides: [provider2]);
 
     expect(provider.readOwner(container), 42);
 
-    final state = root.debugProviderStates.single;
+    final state = container.debugProviderStates.single;
 
     expect(state.$hasListeners, false);
 
@@ -43,18 +73,6 @@ void main() {
 
     removeListener();
 
-    expect(state.$hasListeners, false);
-
-    expect(provider2.readOwner(container), 84);
-
-    final state2 = container.debugProviderStates.single;
-
-    expect(state.$hasListeners, true);
-    expect(state2.$hasListeners, false);
-
-    container.dispose();
-
-    expect(state2.$hasListeners, false);
     expect(state.$hasListeners, false);
   });
   test('test two families one overriden the other not', () {
@@ -68,40 +86,17 @@ void main() {
       callCount2++;
       return '$value 2';
     });
-    final root = ProviderContainer();
-    final container = ProviderContainer(parent: root, overrides: [
+    final container = ProviderContainer(overrides: [
       family.overrideAs((ref, value) => 'override $value'),
     ]);
 
-    expect(callCount, 0);
-    expect(family(0).readOwner(root), '0');
-    expect(callCount, 1);
+    expect(family(0).readOwner(container), 'override 0');
 
     expect(callCount2, 0);
-    expect(family2(0).readOwner(root), '0 2');
-    expect(callCount2, 1);
-
-    expect(callCount, 1);
-    expect(family(0).readOwner(container), 'override 0');
-    expect(callCount, 1);
-
-    expect(callCount2, 1);
     expect(family2(0).readOwner(container), '0 2');
     expect(callCount2, 1);
-  });
 
-  test(
-      'throw if tried to dispose a parent container that still have undisposed children owners',
-      () {
-    final provider = Provider((_) => 42);
-    final provider2 = Provider((ref) => ref.dependOn(provider).value * 2);
-    final root = ProviderContainer();
-    final container = ProviderContainer(parent: root, overrides: [provider2]);
-
-    expect(provider.readOwner(container), 42);
-    expect(provider2.readOwner(container), 84);
-
-    expect(root.dispose, throwsA(isA<AssertionError>()));
+    expect(callCount, 0);
   });
   test('changing the override type at a given index throws', () {
     final provider = Provider((ref) => 0);
@@ -131,63 +126,7 @@ void main() {
     expect(family(0).readOwner(container), 1);
     expect(family(1).readOwner(container), 2);
   });
-  test('mount in parent container then in child container', () {
-    final root = ProviderContainer();
-    final notifier = Counter();
-    final provider = StateNotifierProvider((_) => notifier);
 
-    expect(provider.state.readOwner(root), 0);
-
-    expect(root.debugProviderValues, {
-      provider: notifier,
-      provider.state: 0,
-    });
-
-    expect(
-      root.debugProviderStates,
-      unorderedEquals(<Matcher>[
-        // ignore: invalid_use_of_protected_member
-        isA<ProviderStateBase>().having((s) => s.state, 'state', notifier),
-        // ignore: invalid_use_of_protected_member
-        isA<ProviderStateBase>().having((s) => s.state, 'state', 0),
-      ]),
-    );
-
-    final notifier2 = Counter(42);
-    final container = ProviderContainer(parent: root, overrides: [
-      provider.overrideAs(StateNotifierProvider((_) => notifier2))
-    ]);
-
-    expect(provider.state.readOwner(container), 42);
-
-    expect(root.debugProviderValues, {
-      provider: notifier,
-      provider.state: 0,
-    });
-    expect(container.debugProviderValues, {
-      provider: notifier2,
-      provider.state: 42,
-    });
-
-    expect(
-      root.debugProviderStates,
-      unorderedEquals(<Matcher>[
-        // ignore: invalid_use_of_protected_member
-        isA<ProviderStateBase>().having((s) => s.state, 'state', notifier),
-        // ignore: invalid_use_of_protected_member
-        isA<ProviderStateBase>().having((s) => s.state, 'state', 0),
-      ]),
-    );
-    expect(
-      container.debugProviderStates,
-      unorderedEquals(<Matcher>[
-        // ignore: invalid_use_of_protected_member
-        isA<ProviderStateBase>().having((s) => s.state, 'state', notifier2),
-        // ignore: invalid_use_of_protected_member
-        isA<ProviderStateBase>().having((s) => s.state, 'state', 42),
-      ]),
-    );
-  });
   test('guard listeners', () {
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
@@ -302,95 +241,7 @@ void main() {
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener);
   });
-  test('remove dependency when container is disposed', () {
-    final provider = Provider((_) {});
-    final provider2 = Provider((ref) => ref.dependOn(provider));
-    final root = ProviderContainer();
-    final container = ProviderContainer(
-      parent: root,
-      overrides: [provider2],
-    );
 
-    provider.readOwner(container);
-    provider2.readOwner(container);
-
-    expect(root.debugProviderStates, [isProvider(provider)]);
-    final state = root.debugProviderStates.first;
-    expect(container.debugProviderStates, [isProvider(provider2)]);
-    final state2 = container.debugProviderStates.first;
-
-    expect(state.debugDependents, {state2});
-
-    container.dispose();
-
-    expect(state.debugDependents, <ProviderStateBase>{});
-  });
-
-  test('depth is recursive cross ower', () {
-    final provider = Provider((ref) => ref, name: '1');
-    final provider2 = Provider((ref) => ref, name: '2');
-    final provider3 = Provider((ref) => ref, name: '3');
-    final provider4 = Provider((ref) => ref, name: '4');
-    final root = ProviderContainer();
-    final container = ProviderContainer(
-      parent: root,
-      overrides: [provider3, provider4],
-    );
-
-    expect(container.debugProviderStates, <Object>[]);
-
-    provider.readOwner(container);
-    final ref2 = provider2.readOwner(container);
-    final ref3 = provider3.readOwner(container);
-    final ref4 = provider4.readOwner(container);
-
-    expect(
-      root.debugProviderStates,
-      unorderedMatches(<Object>[
-        isProvider(provider2),
-        isProvider(provider),
-      ]),
-    );
-    expect(
-      container.debugProviderStates,
-      unorderedMatches(<Object>[
-        isProvider(provider4),
-        isProvider(provider3),
-      ]),
-    );
-
-    ref3.dependOn(provider2);
-    ref4.dependOn(provider2);
-
-    expect(
-      root.debugProviderStates,
-      unorderedMatches(<Object>[
-        isProvider(provider2),
-        isProvider(provider),
-      ]),
-    );
-    expect(
-      container.debugProviderStates,
-      unorderedMatches(<Object>[
-        isProvider(provider4),
-        isProvider(provider3),
-      ]),
-    );
-
-    ref2.dependOn(provider);
-
-    expect(root.debugProviderStates, <Object>[
-      isProvider(provider),
-      isProvider(provider2),
-    ]);
-    expect(
-      container.debugProviderStates,
-      unorderedMatches(<Object>[
-        isProvider(provider4),
-        isProvider(provider3),
-      ]),
-    );
-  });
   test('redepth is recursive', () {
     final container = ProviderContainer();
     final provider = Provider((ref) => ref, name: '1');
@@ -510,55 +361,6 @@ void main() {
     });
   });
 
-  test('Circular dependency check accross multiple owners', () {
-    final provider = Provider((_) => 1);
-    final provider2 = Provider((_) => 2);
-    final provider3 = Provider((ref) => ref.dependOn(provider2).value * 2);
-
-    final root = ProviderContainer(overrides: [
-      provider.overrideAs(
-        Provider((ref) => ref.dependOn(provider3).value * 2),
-      )
-    ]);
-    final container = ProviderContainer(parent: root, overrides: [
-      provider2.overrideAs(Provider((ref) => ref.dependOn(provider).value * 2)),
-      provider3,
-    ]);
-
-    // read 3 from `container` -> 2 from container -> 1 from root -> 3 from root -> 2 from root
-    // 2 * 2 * 2 * 2 * 2
-
-    expect(provider3.readOwner(container), 32);
-  });
-  test(
-      'adding dependency on a provider from a different container add the state to the proper container',
-      () {
-    final provider1 = Provider((_) => 1);
-    final provider3 = Provider((_) => '1');
-    final provider2 = Provider((ref) => ref.dependOn(provider1).value * 2.5);
-
-    final root = ProviderContainer();
-    final container = ProviderContainer(parent: root, overrides: [
-      provider3,
-      provider2,
-    ]);
-
-    expect(provider1.readOwner(container), 1);
-    expect(provider2.readOwner(container), 2.5);
-    expect(provider3.readOwner(container), '1');
-
-    expect(
-      root.debugProviderStates.map((s) => s.provider),
-      [provider1],
-    );
-    expect(
-      container.debugProviderStates.map((s) => s.provider),
-      anyOf([
-        [provider3, provider2],
-        [provider2, provider3],
-      ]),
-    );
-  });
   test('container life-cycles are unusuable after dispose', () {
     final container = ProviderContainer()..dispose();
 
@@ -568,19 +370,7 @@ void main() {
     expect(() => container.readProviderState(Provider((_) => 0)),
         throwsStateError);
   });
-  test('provider.overrideAs(provider) can be simplified into provider', () {
-    final notifier = Counter();
-    final provider = StateNotifierProvider<Counter>((_) => notifier);
-    final root = ProviderContainer();
-    final container = ProviderContainer(parent: root, overrides: [provider]);
 
-    expect(provider.readOwner(container), notifier);
-    expect(notifier.mounted, true);
-
-    container.dispose();
-
-    expect(notifier.mounted, false);
-  });
   test('cannot call markMayHaveChanged after dispose', () {
     final container = ProviderContainer();
     final provider = TestProvider((ref) {});
@@ -638,30 +428,6 @@ void main() {
     expect(ref2.dependOn(provider).value, 21);
   });
 
-  test('ref.read disposes the provider state', () {
-    var didDispose = false;
-    final provider = TestProvider((ref) {
-      ref.onDispose(() {
-        didDispose = true;
-      });
-      return 0;
-    });
-    final other = Provider((ref) => ref.dependOn(provider));
-
-    final container = ProviderContainer();
-    final container2 = ProviderContainer(
-      parent: container,
-      overrides: [other],
-    );
-
-    final value = other.readOwner(container2);
-    expect(value, isNotNull);
-    expect(didDispose, isFalse);
-
-    container2.dispose();
-
-    expect(didDispose, isFalse);
-  });
   test('Owner.read', () {
     final provider = TestProvider((ref) => 0);
     final provider2 = TestProvider((ref) => 1);
@@ -685,12 +451,14 @@ void main() {
     final provider = Provider((_) => callCount++);
 
     final container = ProviderContainer(
-      overrides: [provider],
+      overrides: [provider.overrideAs(provider)],
     );
 
     expect(callCount, 0);
 
-    container.updateOverrides([provider]);
+    container.updateOverrides([
+      provider.overrideAs(provider),
+    ]);
 
     expect(callCount, 0);
 
@@ -814,9 +582,9 @@ void main() {
     });
 
     final container = ProviderContainer(overrides: [
-      provider,
-      provider1,
-      provider2,
+      provider.overrideAs(provider),
+      provider1.overrideAs(provider1),
+      provider2.overrideAs(provider2),
     ]);
 
     expect(provider2.readOwner(container)(), 3);
@@ -826,9 +594,9 @@ void main() {
     verifyZeroInteractions(provider2.onDidUpdateProvider);
 
     container.updateOverrides([
-      provider,
-      provider1,
-      provider2,
+      provider.overrideAs(provider),
+      provider1.overrideAs(provider1),
+      provider2.overrideAs(provider2),
     ]);
 
     verifyInOrder([
@@ -952,14 +720,7 @@ void main() {
     test('calls onChange at most once per flush', () {
       final counter = Counter();
       final provider = StateNotifierProvider<Counter>((_) => counter);
-      final root = ProviderContainer();
-      final container = ProviderContainer(
-        parent: root,
-        overrides: [
-          provider,
-          provider.state,
-        ],
-      );
+      final container = ProviderContainer();
       final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = ListenerMock();
 
@@ -1003,13 +764,7 @@ void main() {
     });
     test('noop inside initState', () {
       final provider = TestProvider((ref) {});
-      final root = ProviderContainer();
-      final container = ProviderContainer(
-        parent: root,
-        overrides: [
-          provider,
-        ],
-      );
+      final container = ProviderContainer();
       TestProviderState state;
       when(provider.onInitState(any)).thenAnswer((i) {
         state = i.positionalArguments.first as TestProviderState;

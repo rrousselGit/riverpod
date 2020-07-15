@@ -164,7 +164,14 @@ class ProviderContainer {
     List<ProviderObserver> observers,
   })  : _debugOverrides = overrides,
         _observers = observers {
+    if (parent != null && overrides.isNotEmpty) {
+      throw UnsupportedError(
+        'Cannot override providers on a non-root ProviderContainer/ProviderScope',
+      );
+    }
+
     _fallback = parent?._fallback;
+    // Can't do parent != null? parent._fallback : <T>() {...} because of a compiler bug.
     _fallback ??= <T>(provider) {
       // It's fine to add new keys to _stateReaders inside fallback
       // as in this situation, there is no "parent" container.s
@@ -174,44 +181,15 @@ class ProviderContainer {
           ProviderBase<ProviderDependencyBase, T>>;
     };
 
-    final overridenFamilies = <Family>{};
-    final overridenProviders = <ProviderBase>{};
-
     for (final override in overrides) {
       if (override is ProviderOverride) {
         _overrideForProvider[override._origin] = override._provider;
-        overridenProviders.add(override._origin);
       } else if (override is FamilyOverride) {
         _overrideForFamily[override._family] = override;
-        overridenFamilies.add(override._family);
       }
-    }
-
-    bool isLocallyOverriden(ProviderBase provider) {
-      if (overridenFamilies.contains(provider._family)) {
-        return true;
-      }
-      if (overridenProviders.contains(provider)) {
-        return true;
-      }
-      // TODO find a way to simplify this
-      if (provider is StateNotifierStateProvider &&
-          overridenProviders.contains(provider.notifierProvider)) {
-        return true;
-      }
-      if (provider is AutoDisposeStateNotifierStateProvider &&
-          overridenProviders.contains(provider.notifierProvider)) {
-        return true;
-      }
-      return false;
     }
 
     _stateReaders = {
-      /// Imports [_ProviderStateReader]s from the parent, but exclude locally
-      /// overriden families.
-      if (parent != null)
-        for (final entry in parent._stateReaders.entries)
-          if (!isLocallyOverriden(entry.key)) entry.key: entry.value,
       _refProvider: _ProviderStateReader(_refProvider, this),
       for (final override in overrides)
         // Only applies provider overrides. Family overrides are applied on read
@@ -222,42 +200,6 @@ class ProviderContainer {
           ),
     };
   }
-
-  final List<ProviderObserver> _observers;
-
-  /// The currently overriden providers.
-  ///
-  /// New keys cannot be added after creation, unless this [ProviderContainer]
-  /// does not have a `parent`.
-  /// Upating existing keys is possible.
-  final _overrideForProvider = <ProviderBase, ProviderBase>{};
-
-  final _overrideForFamily = <Family, FamilyOverride>{};
-
-  /// The state of all providers. Reading a provider is O(1).
-  Map<ProviderBase, _ProviderStateReader> _stateReaders;
-
-  /// The state of `Computed` providers
-  ///
-  /// It is not stored inside [_stateReaders] as `Computed` are always
-  /// in the deepest [ProviderContainer] possible.
-  Map<Computed, _ProviderStateReader> _computedStateReaders;
-
-  /// When attempting to read a provider, a provider may not be registered
-  /// inside [_stateReaders] with a [_ProviderStateReader].
-  /// In that situation, [_fallback] is called and will handle register the
-  /// provider accordingly.
-  ///
-  /// This is typically done only when [ProviderContainer] has not `parent`.
-  _FallbackProviderStateReader _fallback;
-
-  /// Whether [dispose] was called or not.
-  ///
-  /// This disables the different methods of [ProviderContainer], resulting in
-  /// a [StateError] when attempting to use them.
-  bool _disposed = false;
-
-  List<Override> _debugOverrides;
 
   /// An utility to easily obtain a [ProviderReference] from a [ProviderContainer].
   ///
@@ -270,6 +212,27 @@ class ProviderContainer {
   /// final re = refProvider.readOwner(container);
   /// ```
   ProviderReference get ref => _refProvider.readOwner(this);
+
+  final List<ProviderObserver> _observers;
+
+  final _overrideForProvider = <ProviderBase, ProviderBase>{};
+  final _overrideForFamily = <Family, FamilyOverride>{};
+  List<Override> _debugOverrides;
+
+  /// The state of all providers. Reading a provider is O(1).
+  Map<ProviderBase, _ProviderStateReader> _stateReaders;
+
+  /// When attempting to read a provider, a provider may not be registered
+  /// inside [_stateReaders] with a [_ProviderStateReader].
+  /// In that situation, [_fallback] is called and will register the
+  /// provider accordingly.
+  _FallbackProviderStateReader _fallback;
+
+  /// Whether [dispose] was called or not.
+  ///
+  /// This disables the different methods of [ProviderContainer], resulting in
+  /// a [StateError] when attempting to use them.
+  bool _disposed = false;
 
   /// Updates the list of provider overrides.
   ///
@@ -324,6 +287,7 @@ class ProviderContainer {
   /// ]);
   /// ```
   void updateOverrides(List<Override> overrides) {
+    // TODO allow calling updateOverrides for only one of the overriden providers
     assert(() {
       if (_disposed) {
         throw StateError(
@@ -373,14 +337,9 @@ Changing the kind of override or reordering overrides is not supported.
       if (override is ProviderOverride) {
         _overrideForProvider[override._origin] = override._provider;
 
-        assert(
-          override._origin is! Computed && override._provider is! Computed,
-          'Cannot override Computed',
-        );
-        // no need to check _computedStateReaders as they are not overridable.
         // _stateReaders[override._origin] cannot be null for overriden providers.
         final state = _stateReaders[override._origin]
-            // _providerState instead of read() to not compute the state
+            // use _providerState instead of read() to not compute the state
             // if it wasn't loaded yet.
             ._providerState;
         if (state == null) {
@@ -427,43 +386,18 @@ Changing the kind of override or reordering overrides is not supported.
     }
     var reader = _stateReaders[provider];
 
-    if (reader == null) {
+    if (reader == null &&
+        provider._family != null &&
+        _overrideForFamily[provider._family] != null) {
       // Doesn't have a reader yet – let's create it.
-      if (provider is Computed) {
-        _computedStateReaders ??= {};
-        reader = _computedStateReaders.putIfAbsent(provider as Computed, () {
-          return _ProviderStateReader(provider, this);
-        });
-      } else if (provider._family != null &&
-          _overrideForFamily[provider._family] != null) {
-        final familyOverride = _overrideForFamily[provider._family];
+      final familyOverride = _overrideForFamily[provider._family];
 
-        if (familyOverride != null) {
-          _overrideForProvider[provider] =
-              familyOverride._createOverride(provider.parameter);
-        }
-
-        reader = _stateReaders[provider] = _ProviderStateReader(provider, this);
-      } else if (provider is StateNotifierStateProvider) {
-        // TODO find a way to simplify this
-        final controller =
-            (provider as StateNotifierStateProvider).notifierProvider;
-        if (_stateReaders[controller] != null ||
-            (controller._family != null &&
-                _overrideForFamily[controller._family] != null)) {
-          reader =
-              _stateReaders[provider] = _ProviderStateReader(provider, this);
-        }
-      } else if (provider is AutoDisposeStateNotifierStateProvider) {
-        final controller = (provider as AutoDisposeStateNotifierStateProvider)
-            .notifierProvider;
-        if (_stateReaders[controller] != null ||
-            (controller._family != null &&
-                _overrideForFamily[controller._family] != null)) {
-          reader =
-              _stateReaders[provider] = _ProviderStateReader(provider, this);
-        }
+      if (familyOverride != null) {
+        _overrideForProvider[provider] =
+            familyOverride._createOverride(provider.parameter);
       }
+
+      reader = _stateReaders[provider] = _ProviderStateReader(provider, this);
     }
 
     final state = reader?.read() ?? _fallback(provider);
@@ -489,12 +423,7 @@ Changing the kind of override or reordering overrides is not supported.
     assert(notifyListenersLock == null, '');
 
     for (final state in _visitStatesInReverseOrder()) {
-      notifyListenersLock = state;
-      try {
-        state.dispose();
-      } finally {
-        notifyListenersLock = null;
-      }
+      state.dispose();
     }
   }
 
@@ -518,14 +447,6 @@ Changing the kind of override or reordering overrides is not supported.
       yield state;
     }
 
-    if (_computedStateReaders != null) {
-      for (final entry in _computedStateReaders.values) {
-        // A computed state may be null if it was listened then disposed
-        if (entry._providerState != null) {
-          yield* recurs(entry._providerState);
-        }
-      }
-    }
     for (final entry in _stateReaders.values) {
       if (entry._providerState != null) {
         yield* recurs(entry._providerState);
@@ -567,10 +488,6 @@ extension ProviderStateOwnerInternals on ProviderContainer {
         for (final entry in _stateReaders.entries)
           if (entry.value._providerState != null)
             entry.key: entry.value._providerState.state,
-        if (_computedStateReaders != null)
-          for (final entry in _computedStateReaders.entries)
-            if (entry.value._providerState != null)
-              entry.key: entry.value._providerState.state,
       };
 
       return true;

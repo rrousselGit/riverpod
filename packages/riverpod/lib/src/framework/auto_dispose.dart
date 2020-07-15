@@ -46,17 +46,10 @@ abstract class AutoDisposeProviderBase<
 ///
 /// - [Provider.autoDispose], a variant of [Provider] that auto-dispose its state.
 abstract class OverridableAutoDisposeProviderBase<
-        Dependency extends ProviderDependencyBase,
-        Result> extends AutoDisposeProviderBase<Dependency, Result>
-    implements ProviderOverride {
+    Dependency extends ProviderDependencyBase,
+    Result> extends AutoDisposeProviderBase<Dependency, Result> {
   /// Allows specifying a name
   OverridableAutoDisposeProviderBase(String name) : super(name);
-
-  @override
-  ProviderBase get _provider => this;
-
-  @override
-  ProviderBase<Dependency, Result> get _origin => this;
 
   /// Combined with [ProviderContainer] (or `ProviderScope` if you are using Flutter),
   /// allows overriding the behavior of this provider for a part of the application.
@@ -159,12 +152,15 @@ class _AutoDisposer {
           !entry.value.mounted) {
         continue;
       }
-      entry.value.dispose();
-      final reader = entry.value._origin is Computed
-          ? entry.value._owner._computedStateReaders[entry.value._origin]
-          : entry.value._owner._stateReaders[entry.value._origin];
-      // TODO remove ProviderStateReader on dispose for non-overriden providers.
-      reader._providerState = null;
+      notifyListenersLock = entry.value;
+      try {
+        entry.value.dispose();
+      } finally {
+        notifyListenersLock = null;
+        final reader = entry.value._owner._stateReaders[entry.value._origin];
+        // TODO remove ProviderStateReader on dispose for non-overriden providers.
+        reader._providerState = null;
+      }
     }
   }
 }

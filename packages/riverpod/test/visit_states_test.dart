@@ -250,57 +250,6 @@ void main() {
       );
     }
   });
-  //     A(0)
-  //   /   \
-  //  B(0)  C(1)
-  //  |     |
-  //  D(1)  |
-  //   \   /
-  //     E(1)
-  test('graph7', () {
-    final a = Provider<A>((ref) => A());
-
-    final b = Provider<B>((ref) {
-      ref.dependOn(a);
-      return B();
-    });
-    final c = Provider<C>((ref) {
-      ref.dependOn(a);
-      return C();
-    });
-
-    final d = Provider<D>((ref) {
-      ref.dependOn(b);
-      return D();
-    });
-
-    final e = Provider<E>((ref) {
-      ref..dependOn(d)..dependOn(c);
-      return E();
-    });
-
-    final perm = Permutations(3, [c, d, e]);
-    for (final permutation in perm()) {
-      final container = ProviderContainer();
-      final container2 = ProviderContainer(parent: container, overrides: [
-        c.overrideAs(c),
-        d.overrideAs(d),
-        e.overrideAs(e),
-      ]);
-
-      for (final provider in permutation) {
-        provider.readOwner(container2);
-      }
-
-      expect(
-        compute(container2),
-        anyOf([
-          [c, d, e],
-          [d, c, e],
-        ]),
-      );
-    }
-  });
 }
 
 List<ProviderBase> compute(ProviderContainer container) {
