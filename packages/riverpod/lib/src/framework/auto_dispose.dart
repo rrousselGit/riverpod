@@ -46,17 +46,10 @@ abstract class AutoDisposeProviderBase<
 ///
 /// - [Provider.autoDispose], a variant of [Provider] that auto-dispose its state.
 abstract class OverridableAutoDisposeProviderBase<
-        Dependency extends ProviderDependencyBase,
-        Result> extends AutoDisposeProviderBase<Dependency, Result>
-    implements ProviderOverride {
+    Dependency extends ProviderDependencyBase,
+    Result> extends AutoDisposeProviderBase<Dependency, Result> {
   /// Allows specifying a name
   OverridableAutoDisposeProviderBase(String name) : super(name);
-
-  @override
-  ProviderBase get _provider => this;
-
-  @override
-  ProviderBase<Dependency, Result> get _origin => this;
 
   /// Combined with [ProviderContainer] (or `ProviderScope` if you are using Flutter),
   /// allows overriding the behavior of this provider for a part of the application.

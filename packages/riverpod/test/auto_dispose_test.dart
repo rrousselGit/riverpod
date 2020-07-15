@@ -362,7 +362,7 @@ void main() {
       return 42;
     });
     final dependent = Provider((ref) => ref.dependOn(provider).value);
-    final container = ProviderContainer(overrides: [dependent]);
+    final container = ProviderContainer();
 
     expect(unrelated.readOwner(container), 42);
     expect(container.ref.dependOn(dependent).value, 42);

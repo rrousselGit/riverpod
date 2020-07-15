@@ -451,12 +451,14 @@ void main() {
     final provider = Provider((_) => callCount++);
 
     final container = ProviderContainer(
-      overrides: [provider],
+      overrides: [provider.overrideAs(provider)],
     );
 
     expect(callCount, 0);
 
-    container.updateOverrides([provider]);
+    container.updateOverrides([
+      provider.overrideAs(provider),
+    ]);
 
     expect(callCount, 0);
 
@@ -580,9 +582,9 @@ void main() {
     });
 
     final container = ProviderContainer(overrides: [
-      provider,
-      provider1,
-      provider2,
+      provider.overrideAs(provider),
+      provider1.overrideAs(provider1),
+      provider2.overrideAs(provider2),
     ]);
 
     expect(provider2.readOwner(container)(), 3);
@@ -592,9 +594,9 @@ void main() {
     verifyZeroInteractions(provider2.onDidUpdateProvider);
 
     container.updateOverrides([
-      provider,
-      provider1,
-      provider2,
+      provider.overrideAs(provider),
+      provider1.overrideAs(provider1),
+      provider2.overrideAs(provider2),
     ]);
 
     verifyInOrder([
