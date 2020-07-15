@@ -4,7 +4,7 @@
   documentation of `StreamProvider`.
 - Improve the documentation of `StateProvider`.
 
-# 0.5.1
+# 0.5.0
 
 - Changed `ComputedFamily` into `Computed.family`
 - Added [AsyncValue.guard](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue/guard.html to simplify transforming a Future into an AsyncValue.
