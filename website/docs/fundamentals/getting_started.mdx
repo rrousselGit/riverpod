@@ -223,7 +223,7 @@ void main() {
   final container = ProviderContainer();
 
   // Thanks to "container", we can read our provider.
-  final value = helloWorldProvider.readOwner(container);
+  final value = container.read(helloWorldProvider);
 
   print(value); // Hello world
 }

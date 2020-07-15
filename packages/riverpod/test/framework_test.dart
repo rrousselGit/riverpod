@@ -23,7 +23,7 @@ void main() {
       provider.overrideAs(Provider((_) => 21)),
     ]);
 
-    expect(provider.readOwner(root), 21);
+    expect(root.read(provider), 21);
 
     expect(
       () => ProviderContainer(
@@ -39,7 +39,7 @@ void main() {
       provider.overrideAs((ref, id) => id),
     ]);
 
-    expect(provider(21).readOwner(root), 21);
+    expect(root.read(provider(21)), 21);
 
     expect(
       () => ProviderContainer(
@@ -61,7 +61,7 @@ void main() {
     final container = ProviderContainer();
     final provider = Provider((_) => 42);
 
-    expect(provider.readOwner(container), 42);
+    expect(container.read(provider), 42);
 
     final state = container.debugProviderStates.single;
 
@@ -90,10 +90,10 @@ void main() {
       family.overrideAs((ref, value) => 'override $value'),
     ]);
 
-    expect(family(0).readOwner(container), 'override 0');
+    expect(container.read(family(0)), 'override 0');
 
     expect(callCount2, 0);
-    expect(family2(0).readOwner(container), '0 2');
+    expect(container.read(family2(0)), '0 2');
     expect(callCount2, 1);
 
     expect(callCount, 0);
@@ -117,16 +117,15 @@ void main() {
       family.overrideAs((ref, value) => 1),
     ]);
 
-    expect(family(0).readOwner(container), 1);
+    expect(container.read(family(0)), 1);
 
     container.updateOverrides([
       family.overrideAs((ref, value) => 2),
     ]);
 
-    expect(family(0).readOwner(container), 1);
-    expect(family(1).readOwner(container), 2);
+    expect(container.read(family(0)), 1);
+    expect(container.read(family(1)), 2);
   });
-
   test('guard listeners', () {
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
@@ -251,10 +250,10 @@ void main() {
 
     expect(container.debugProviderStates, <Object>[]);
 
-    provider.readOwner(container);
-    final ref2 = provider2.readOwner(container);
-    final ref3 = provider3.readOwner(container);
-    final ref4 = provider4.readOwner(container);
+    container.read(provider);
+    final ref2 = container.read(provider2);
+    final ref3 = container.read(provider3);
+    final ref4 = container.read(provider4);
 
     expect(
       container.debugProviderStates,
@@ -305,7 +304,7 @@ void main() {
     });
     final container = ProviderContainer();
 
-    provider.readOwner(container);
+    container.read(provider);
 
     final errors = <Object>[];
     runZonedGuarded(container.dispose, (err, _) => errors.add(err));
@@ -322,7 +321,7 @@ void main() {
     });
     final container = ProviderContainer();
 
-    provider.readOwner(container);
+    container.read(provider);
 
     final errors = <Object>[];
     runZonedGuarded(container.dispose, (err, _) => errors.add(err));
@@ -339,20 +338,20 @@ void main() {
 
     expect(container.debugProviderValues, <ProviderBase, Object>{});
 
-    expect(unnamed.readOwner(container), 0);
+    expect(container.read(unnamed), 0);
 
     expect(container.debugProviderValues, {
       unnamed: 0,
     });
 
-    expect(named.readOwner(container), counter);
+    expect(container.read(named), counter);
 
     expect(container.debugProviderValues, {
       unnamed: 0,
       named: counter,
     });
 
-    expect(named.state.readOwner(container), 0);
+    expect(container.read(named.state), 0);
 
     expect(container.debugProviderValues, {
       unnamed: 0,
@@ -379,13 +378,13 @@ void main() {
       providerBaseState = state;
     });
 
-    provider.readOwner(container);
+    container.read(provider);
 
     expect(providerBaseState.dirty, false);
     providerBaseState.markMayHaveChanged();
     expect(providerBaseState.dirty, true);
 
-    provider.readOwner(container);
+    container.read(provider);
 
     expect(providerBaseState.dirty, false);
 
@@ -481,7 +480,7 @@ void main() {
 
     final container = ProviderContainer();
     expect(
-      () => provider.readOwner(container)(),
+      () => container.read(provider)(),
       throwsA(isA<CircularDependencyError>()),
     );
   });
@@ -492,9 +491,9 @@ void main() {
     final provider1 = Provider((ref) => ref);
     final provider2 = Provider((ref) => ref);
 
-    provider1.readOwner(container).dependOn(provider);
-    provider2.readOwner(container).dependOn(provider1);
-    final ref = provider.readOwner(container);
+    container.read(provider1).dependOn(provider);
+    container.read(provider2).dependOn(provider1);
+    final ref = container.read(provider);
 
     expect(
       () => ref.dependOn(provider2),
@@ -524,7 +523,7 @@ void main() {
       return value + 1;
     });
 
-    expect(provider3.readOwner(container), 3);
+    expect(container.read(provider3), 3);
 
     container.dispose();
 
@@ -559,7 +558,7 @@ void main() {
       return () => ref.dependOn(provider2).value() + 1;
     });
 
-    expect(provider3.readOwner(container)(), 3);
+    expect(container.read(provider3)(), 3);
 
     container.dispose();
 
@@ -587,7 +586,7 @@ void main() {
       provider2.overrideAs(provider2),
     ]);
 
-    expect(provider2.readOwner(container)(), 3);
+    expect(container.read(provider2)(), 3);
 
     verifyZeroInteractions(provider.onDidUpdateProvider);
     verifyZeroInteractions(provider1.onDidUpdateProvider);
@@ -621,7 +620,7 @@ void main() {
       return other.value;
     });
 
-    expect(provider1.readOwner(container), 42);
+    expect(container.read(provider1), 42);
     expect(other, other2);
 
     container.dispose();
@@ -635,7 +634,7 @@ void main() {
     });
     final other = Provider((_) => 42);
 
-    expect(provider.readOwner(container), 42);
+    expect(container.read(provider), 42);
     container.dispose();
 
     expect(ref.mounted, isFalse);
@@ -652,9 +651,9 @@ void main() {
     });
     final container = ProviderContainer();
 
-    expect(() => provider.readOwner(container), throwsA(error));
+    expect(() => container.read(provider), throwsA(error));
     expect(callCount, 1);
-    expect(() => provider.readOwner(container), throwsA(error));
+    expect(() => container.read(provider), throwsA(error));
     expect(callCount, 1);
 
     expect(() => container.ref.dependOn(provider), throwsA(error));
@@ -679,7 +678,7 @@ void main() {
     });
     final container = ProviderContainer();
 
-    expect(() => provider.readOwner(container), throwsA(error));
+    expect(() => container.read(provider), throwsA(error));
     expect(callCount, 1);
 
     expect(() => reference.state = 42, throwsStateError);
@@ -697,7 +696,7 @@ void main() {
     });
     final container = ProviderContainer();
 
-    expect(() => provider.readOwner(container), throwsA(error));
+    expect(() => container.read(provider), throwsA(error));
     expect(callCount, 1);
 
     final onDispose2 = OnDisposeMock();

@@ -27,8 +27,8 @@ void main() {
 
     // access in the child container
     // try to read provider.state before provider and see if it points to the override
-    expect(provider(0).state.readOwner(container), 42);
-    expect(provider(0).readOwner(container), notifier2);
+    expect(container.read(provider(0).state), 42);
+    expect(container.read(provider(0)), notifier2);
   });
   test('can be assigned to provider', () {
     final Provider<TestNotifier> provider = StateNotifierProvider((_) {
@@ -36,7 +36,7 @@ void main() {
     });
     final container = ProviderContainer();
 
-    expect(provider.readOwner(container), isA<TestNotifier>());
+    expect(container.read(provider), isA<TestNotifier>());
   });
   test('overriding the provider overrides provider.state too', () {
     final notifier = TestNotifier(42);
@@ -52,12 +52,12 @@ void main() {
       provider.overrideAs(StateNotifierProvider((_) => notifier)),
     ]);
 
-    expect(provider.readOwner(container), notifier);
-    expect(provider.state.readOwner(container), 42);
+    expect(container.read(provider), notifier);
+    expect(container.read(provider.state), 42);
 
     notifier.increment();
 
-    expect(provider.state.readOwner(container), 43);
+    expect(container.read(provider.state), 43);
   });
   test('can specify name', () {
     final provider = StateNotifierProvider(
@@ -80,7 +80,7 @@ void main() {
     });
     final container = ProviderContainer();
 
-    expect(provider.readOwner(container), notifier);
+    expect(container.read(provider), notifier);
     expect(notifier.mounted, isTrue);
 
     container.dispose();
@@ -132,7 +132,7 @@ void main() {
     verify(listener(argThat(equals(0)))).called(1);
     verifyNoMoreInteractions(listener);
 
-    provider.readOwner(container).increment();
+    container.read(provider).increment();
 
     verifyNoMoreInteractions(listener);
     sub.flush();

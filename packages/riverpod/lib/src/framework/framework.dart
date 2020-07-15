@@ -207,11 +207,10 @@ class ProviderContainer {
   ///
   /// ```dart
   /// final refProvider = Provider((ref) => ref);
-  /// final container = ProviderStateOwnrr(parent: ..., overrides: [refProvider]);
-  ///
-  /// final re = refProvider.readOwner(container);
+  /// final container = ProviderContainer();
+  /// final ref = container.read(refProvider);
   /// ```
-  ProviderReference get ref => _refProvider.readOwner(this);
+  ProviderReference get ref => read(_refProvider);
 
   final List<ProviderObserver> _observers;
 
@@ -233,6 +232,24 @@ class ProviderContainer {
   /// This disables the different methods of [ProviderContainer], resulting in
   /// a [StateError] when attempting to use them.
   bool _disposed = false;
+
+  /// Reads a provider without listening to it and returns the currently
+  /// exposed value.
+  ///
+  /// ```dart
+  /// final greetingProvider = Provider((_) => 'Hello world');
+  ///
+  /// void main() {
+  ///   final container = ProviderContainer();
+  ///
+  ///   print(greetingcontainer.read(provider)); // Hello World
+  /// }
+  /// ```
+  Result read<Result>(
+    AlwaysAliveProviderBase<ProviderDependencyBase, Result> provider,
+  ) {
+    return _readProviderState(provider).state;
+  }
 
   /// Updates the list of provider overrides.
   ///

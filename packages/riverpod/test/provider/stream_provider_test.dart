@@ -95,13 +95,12 @@ void main() {
     });
     final container = ProviderContainer();
 
-    expect(
-        provider(0).readOwner(container), const AsyncValue<String>.loading());
+    expect(container.read(provider(0)), const AsyncValue<String>.loading());
 
     await Future<void>.value();
 
     expect(
-      provider(0).readOwner(container),
+      container.read(provider(0)),
       const AsyncValue<String>.data('0'),
     );
   });
@@ -113,13 +112,12 @@ void main() {
       provider.overrideAs((ref, a) => Stream.value('override $a')),
     ]);
 
-    expect(
-        provider(0).readOwner(container), const AsyncValue<String>.loading());
+    expect(container.read(provider(0)), const AsyncValue<String>.loading());
 
     await Future<void>.value();
 
     expect(
-      provider(0).readOwner(container),
+      container.read(provider(0)),
       const AsyncValue<String>.data('override 0'),
     );
   });
@@ -260,7 +258,7 @@ void main() {
       return 42;
     });
 
-    expect(combinedProvider.readOwner(container), 42);
+    expect(container.read(combinedProvider), 42);
     expect(stream, expectedStream);
 
     container.dispose();

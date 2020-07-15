@@ -380,8 +380,8 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
     );
   }
 
-  /// After [markMayHaveChanged] was called, [flush] is called [ProviderSubscription.flush]
-  /// of on [AlwaysAliveProviderBase.readOwner].
+  /// After [markMayHaveChanged] was called, [flush] is called  by either
+  /// [ProviderSubscription.flush] or [ProviderContainer.read].
   ///
   /// Do not call directy. Instead call it through [_performFlush].
   @visibleForOverriding
@@ -495,33 +495,17 @@ abstract class ProviderStateBase<Dependency extends ProviderDependencyBase,
 /// Since the provider is never destroyed, we can safely read the provider
 /// without "listening" to it.
 ///
-/// This allows implementing methods like [readOwner], or if using Flutter
-/// do `provider.read(BuildContext)`.
+/// This allows writing:
+/// - `ProviderContainer.read(myProvider)`
+/// - (Flutter only) `context.read(myProvider)`.
 ///
 /// Similarly, since these providers are never disposed, they can only be
 /// overriden by providers that too are never disposed.
-/// Otherwise methods like [readOwner] would have an unknown behavior.
 abstract class AlwaysAliveProviderBase<
     Dependency extends ProviderDependencyBase,
     Result> extends ProviderBase<Dependency, Result> {
   /// Creates an [AlwaysAliveProviderBase] and allows specifing a [name].
   AlwaysAliveProviderBase(String name) : super(name);
-
-  /// Reads a provider without listening to it and returns the currently
-  /// exposed value.
-  ///
-  /// ```dart
-  /// final greetingProvider = Provider((_) => 'Hello world');
-  ///
-  /// void main() {
-  ///   final container = ProviderContainer();
-  ///
-  ///   print(greetingProvider.readOwner(container)); // Hello World
-  /// }
-  /// ```
-  Result readOwner(ProviderContainer container) {
-    return container._readProviderState(this).state;
-  }
 
   /// Combined with [ProviderContainer] (or `ProviderScope` if you are using Flutter),
   /// allows overriding the behavior of this provider for a part of the application.

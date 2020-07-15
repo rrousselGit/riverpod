@@ -127,7 +127,7 @@ void main() {
     verifyNoMoreInteractions(listener);
 
     // We increment the value
-    counterProvider.readOwner(container).state++;
+    container.read(counterProvider).state++;
 
     // The listener was called again, but with 1 this time
     verify(listener(1)).called(1);
@@ -242,7 +242,7 @@ test('override repositoryProvider', () async {
 
   // The first read if the loading state
   expect(
-    todoListProvider.readOwner(container),
+    container.read(todoListProvider),
     const AsyncValue<List<Todo>>.loading(),
   );
 
@@ -250,7 +250,7 @@ test('override repositoryProvider', () async {
   await Future<void>.value();
 
   // Exposes the data fetched
-  expect(todoListProvider.readOwner(container).data.value, [
+  expect(container.read(todoListProvider).data.value, [
     isA<Todo>()
         .having((s) => s.id, 'id', '42')
         .having((s) => s.label, 'label', 'Hello world')

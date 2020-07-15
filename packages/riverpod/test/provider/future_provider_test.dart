@@ -95,13 +95,12 @@ void main() {
     });
     final container = ProviderContainer();
 
-    expect(
-        provider(0).readOwner(container), const AsyncValue<String>.loading());
+    expect(container.read(provider(0)), const AsyncValue<String>.loading());
 
     await Future<void>.value();
 
     expect(
-      provider(0).readOwner(container),
+      container.read(provider(0)),
       const AsyncValue<String>.data('0'),
     );
   });
@@ -113,13 +112,12 @@ void main() {
       provider.overrideAs((ref, a) => Future.value('override $a')),
     ]);
 
-    expect(
-        provider(0).readOwner(container), const AsyncValue<String>.loading());
+    expect(container.read(provider(0)), const AsyncValue<String>.loading());
 
     await Future<void>.value();
 
     expect(
-      provider(0).readOwner(container),
+      container.read(provider(0)),
       const AsyncValue<String>.data('override 0'),
     );
   });
@@ -140,12 +138,12 @@ void main() {
     final provider = FutureProvider<int>((_) async => throw 42);
     final container = ProviderContainer();
 
-    expect(provider.readOwner(container), const AsyncValue<int>.loading());
+    expect(container.read(provider), const AsyncValue<int>.loading());
 
     await Future<void>.value();
 
     expect(
-      provider.readOwner(container),
+      container.read(provider),
       isA<AsyncValue>().having(
         (s) => s.maybeWhen(error: (err, _) => err, orElse: () => null),
         'error',
@@ -158,7 +156,7 @@ void main() {
     final provider = FutureProvider<int>((_) async => throw 42);
     final container = ProviderContainer();
 
-    expect(provider.readOwner(container), const AsyncValue<int>.loading());
+    expect(container.read(provider), const AsyncValue<int>.loading());
 
     container.dispose();
     await Future<void>.value();

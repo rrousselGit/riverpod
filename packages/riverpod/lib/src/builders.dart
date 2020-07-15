@@ -21,9 +21,8 @@ class StateProviderBuilder {
   /// Marking a provider with `autoDispose` has two effects:
   ///
   /// - this adds a new property on the `ref` parameter of your provider: `maintainState`
-  /// - the `readOwner(ProviderContainer)` and `read(BuildContext)` methods
-  ///   of a provider are removed.
-  ///   It is no-longer possible to read a provider without listening to it.
+  /// - It is no-longer possible to write `myProvider.read(BuildContext)` and
+  ///   `ProviderContainer.read(myProvider)`.
   ///
   /// The `maintainState` property is a boolean (`false` by default) that allows
   /// the provider to tell Riverpod if the state of the provider should be preserved

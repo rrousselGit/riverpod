@@ -12,7 +12,7 @@ void main() {
     });
     final container = ProviderContainer();
     final setStateRef =
-        provider.readOwner(container) as SetStateProviderReference<Object>;
+        container.read(provider) as SetStateProviderReference<Object>;
 
     final provider2 = Provider((_) {
       setStateRef.state = 42;
@@ -21,7 +21,7 @@ void main() {
 
     expect(setStateRef, isNotNull);
 
-    expect(errorsOf(() => provider2.readOwner(container)), [isStateError]);
+    expect(errorsOf(() => container.read(provider2)), [isStateError]);
   });
   test("nested initState can't mark dirty other providers", () {
     final counter = Counter();
@@ -34,9 +34,9 @@ void main() {
       return 0;
     });
 
-    expect(provider.state.readOwner(container), 0);
+    expect(container.read(provider.state), 0);
 
-    expect(errorsOf(() => provider2.readOwner(container)), [
+    expect(errorsOf(() => container.read(provider2)), [
       isStateError,
       isA<Error>(),
     ]);
@@ -56,7 +56,7 @@ void main() {
     });
     final container = ProviderContainer();
 
-    expect(provider.state.readOwner(container), 0);
+    expect(container.read(provider.state), 0);
     provider2.watchOwner(container, (v) {})();
 
     await Future<void>.value();
@@ -71,7 +71,7 @@ void main() {
     final provider = StateNotifierProvider((_) => counter);
     final container = ProviderContainer();
 
-    expect(provider.state.readOwner(container), 0);
+    expect(container.read(provider.state), 0);
 
     List<Object> errors;
     provider.state.watchOwner(container, (value) {
@@ -92,7 +92,7 @@ void main() {
     });
     final listener = Listener();
 
-    expect(provider.state.readOwner(container), 0);
+    expect(container.read(provider.state), 0);
 
     computed.watchOwner(container, listener);
 
@@ -115,7 +115,7 @@ void main() {
     });
     final listener = Listener();
 
-    expect(provider.state.readOwner(container), 0);
+    expect(container.read(provider.state), 0);
 
     final sub = computed.addLazyListener(
       container,

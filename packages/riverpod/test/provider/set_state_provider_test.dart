@@ -11,11 +11,11 @@ void main() {
     final container = ProviderContainer();
 
     expect(
-      provider(0).readOwner(container),
+      container.read(provider(0)),
       isA<StateController>().having((s) => s.state, 'state', '0'),
     );
     expect(
-      provider(1).readOwner(container),
+      container.read(provider(1)),
       isA<StateController>().having((s) => s.state, 'state', '1'),
     );
   });
@@ -29,11 +29,11 @@ void main() {
     ]);
 
     expect(
-      provider(0).readOwner(container),
+      container.read(provider(0)),
       isA<StateController>().having((s) => s.state, 'state', 'override 0'),
     );
     expect(
-      provider(1).readOwner(container),
+      container.read(provider(1)),
       isA<StateController>().having((s) => s.state, 'state', 'override 1'),
     );
   });

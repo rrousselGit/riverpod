@@ -36,7 +36,7 @@ void main() {
       observers: [observer, observer2],
     );
 
-    expect(provider.readOwner(container), 42);
+    expect(container.read(provider), 42);
     verifyInOrder([
       observer.didAddProvider(provider, 42),
       observer2.didAddProvider(provider, 42)
@@ -60,7 +60,7 @@ void main() {
 
     final errors = <Object>[];
     final result = runZonedGuarded(
-      () => provider.readOwner(container),
+      () => container.read(provider),
       (err, stack) {
         errors.add(err);
       },
@@ -239,8 +239,8 @@ void main() {
       observers: [observer, observer2, observer3],
     );
 
-    expect(provider.readOwner(container), 0);
-    expect(provider2.readOwner(container), 0);
+    expect(container.read(provider), 0);
+    expect(container.read(provider2), 0);
     clearInteractions(observer);
     clearInteractions(observer2);
     clearInteractions(observer3);

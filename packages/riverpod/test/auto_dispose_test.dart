@@ -314,7 +314,7 @@ void main() {
     });
     final listener = Listener();
 
-    expect(unrelated.readOwner(container), 42);
+    expect(container.read(unrelated), 42);
     var removeListener = provider.watchOwner(container, listener);
 
     expect(
@@ -364,7 +364,7 @@ void main() {
     final dependent = Provider((ref) => ref.dependOn(provider).value);
     final container = ProviderContainer();
 
-    expect(unrelated.readOwner(container), 42);
+    expect(container.read(unrelated), 42);
     expect(container.ref.dependOn(dependent).value, 42);
 
     container.dispose();

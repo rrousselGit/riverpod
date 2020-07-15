@@ -11,10 +11,10 @@ void main() {
     final container = ProviderContainer();
 
     expect(provider(42), provider(42));
-    expect(provider(42).readOwner(container), '42');
+    expect(container.read(provider(42)), '42');
 
     expect(provider(21), provider(21));
-    expect(provider(21).readOwner(container), '21');
+    expect(container.read(provider(21)), '21');
   });
   test('each provider updates their dependents independently', () {
     final controllers = {
@@ -74,11 +74,11 @@ void main() {
       provider(21).overrideAs(Provider((_) => 'Hi 21')),
     ]);
 
-    expect(provider(42).readOwner(container), 'Hello 42');
+    expect(container.read(provider(42)), 'Hello 42');
 
-    expect(provider(21).readOwner(container), 'Hi 21');
+    expect(container.read(provider(21)), 'Hi 21');
 
-    expect(provider(84).readOwner(container), 'Bonjour 84');
+    expect(container.read(provider(84)), 'Bonjour 84');
   });
 }
 

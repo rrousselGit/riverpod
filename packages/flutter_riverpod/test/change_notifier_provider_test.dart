@@ -24,11 +24,11 @@ void main() {
     });
 
     expect(
-      provider(0).readOwner(container),
+      container.read(provider(0)),
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 0),
     );
     expect(
-      provider(42).readOwner(container),
+      container.read(provider(42)),
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 42),
     );
   });
@@ -42,11 +42,11 @@ void main() {
     ]);
 
     expect(
-      provider(0).readOwner(container),
+      container.read(provider(0)),
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 0),
     );
     expect(
-      provider(42).readOwner(container),
+      container.read(provider(42)),
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 84),
     );
   });
@@ -56,7 +56,7 @@ void main() {
     });
     final container = ProviderContainer();
 
-    expect(provider.readOwner(container), isA<ValueNotifier<int>>());
+    expect(container.read(provider), isA<ValueNotifier<int>>());
   });
   test('can specify name', () {
     final provider = ChangeNotifierProvider(

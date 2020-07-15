@@ -33,8 +33,8 @@ void main() {
         .state<ProviderScopeState>(find.byType(ProviderScope))
         .container;
 
-    provider0.state.readOwner(container);
-    provider1.state.readOwner(container);
+    container.read(provider0.state);
+    container.read(provider1.state);
     final familyState0 = container.debugProviderStates.firstWhere((p) {
       return p.provider == provider0.state;
     });
@@ -59,7 +59,7 @@ void main() {
     expect(buildCount, 2);
 
     // changing the provider that computed is subscribed to
-    stateProvider.readOwner(container).state = 1;
+    container.read(stateProvider).state = 1;
     await tester.pump();
 
     expect(buildCount, 3);
@@ -105,8 +105,8 @@ void main() {
         .state<ProviderScopeState>(find.byType(ProviderScope))
         .container;
 
-    provider0.state.readOwner(container);
-    provider1.state.readOwner(container);
+    container.read(provider0.state);
+    container.read(provider1.state);
     final familyState0 = container.debugProviderStates.firstWhere((p) {
       return p.provider == provider0.state;
     });
@@ -131,7 +131,7 @@ void main() {
     expect(buildCount, 2);
 
     // changing the provider that computed is subscribed to
-    stateProvider.readOwner(container).state = 1;
+    container.read(stateProvider).state = 1;
     await tester.pump();
 
     expect(buildCount, 3);

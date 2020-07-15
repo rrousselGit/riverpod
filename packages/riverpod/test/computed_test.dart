@@ -72,8 +72,8 @@ void main() {
     final listener = Listener<String>();
     final container = ProviderContainer();
 
-    provider0.state.readOwner(container);
-    provider1.state.readOwner(container);
+    container.read(provider0.state);
+    container.read(provider1.state);
     final familyState0 = container.debugProviderStates.firstWhere((p) {
       return p.provider == provider0.state;
     });
@@ -101,7 +101,7 @@ void main() {
     verifyNoMoreInteractions(listener);
 
     // changing the provider that computed is subscribed to
-    stateProvider.readOwner(container).state = 1;
+    container.read(stateProvider).state = 1;
 
     expect(buildCount, 3);
     verify(listener('1 43')).called(1);
@@ -137,8 +137,8 @@ void main() {
     final listener = Listener<int>();
     final container = ProviderContainer();
 
-    provider0.state.readOwner(container);
-    provider1.state.readOwner(container);
+    container.read(provider0.state);
+    container.read(provider1.state);
     final familyState0 = container.debugProviderStates.firstWhere((p) {
       return p.provider == provider0.state;
     });
@@ -166,7 +166,7 @@ void main() {
     verifyNoMoreInteractions(listener);
 
     // changing the provider that computed is subscribed to
-    stateProvider.readOwner(container).state = 1;
+    container.read(stateProvider).state = 1;
 
     expect(buildCount, 3);
     verify(listener(43)).called(1);
@@ -317,7 +317,7 @@ void main() {
     final provider2 = Provider((ref) => ref.dependOn(computed));
     final listener = Listener<int>();
 
-    provider2.readOwner(container);
+    container.read(provider2);
     computed.watchOwner(container, listener);
 
     verify(listener(84)).called(1);

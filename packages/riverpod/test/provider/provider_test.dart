@@ -83,7 +83,7 @@ void main() {
         return first.value * 2;
       });
 
-      expect(provider.readOwner(container), 2);
+      expect(container.read(provider), 2);
 
       container.dispose();
     });
@@ -97,12 +97,12 @@ void main() {
         return '${first.value} ${second.value}';
       });
 
-      expect(provider.readOwner(container), '1 2');
+      expect(container.read(provider), '1 2');
 
       container.dispose();
     });
   });
-  test('readOwner', () {
+  test('ProviderContainer.read', () {
     var result = 42;
     final container = ProviderContainer();
     var callCount = 0;
@@ -112,19 +112,19 @@ void main() {
     });
 
     expect(callCount, 0);
-    expect(provider.readOwner(container), 42);
+    expect(container.read(provider), 42);
     expect(callCount, 1);
-    expect(provider.readOwner(container), 42);
+    expect(container.read(provider), 42);
     expect(callCount, 1);
 
     final container2 = ProviderContainer();
 
     result = 21;
-    expect(provider.readOwner(container2), 21);
+    expect(container2.read(provider), 21);
     expect(callCount, 2);
-    expect(provider.readOwner(container2), 21);
+    expect(container2.read(provider), 21);
     expect(callCount, 2);
-    expect(provider.readOwner(container), 42);
+    expect(container.read(provider), 42);
     expect(callCount, 2);
   });
 
@@ -155,7 +155,7 @@ void main() {
       return 42;
     });
 
-    expect(provider.readOwner(container), 42);
+    expect(container.read(provider), 42);
 
     verifyZeroInteractions(onDispose);
 

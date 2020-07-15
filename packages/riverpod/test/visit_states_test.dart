@@ -23,9 +23,7 @@ void main() {
     final perm = Permutations(3, [a, b, c]);
     for (final permutation in perm()) {
       final container = ProviderContainer();
-      for (final provider in permutation) {
-        provider.readOwner(container);
-      }
+      permutation.forEach(container.read);
       expect(compute(container), [a, b, c]);
     }
   });
@@ -54,9 +52,7 @@ void main() {
     final perm = Permutations(4, [a, b, c, d]);
     for (final permutation in perm()) {
       final container = ProviderContainer();
-      for (final provider in permutation) {
-        provider.readOwner(container);
-      }
+      permutation.forEach(container.read);
       expect(
         compute(container),
         anyOf([
@@ -116,9 +112,7 @@ void main() {
     final perm = Permutations(7, [a, b, c, d, e, f, g]);
     for (final permutation in perm()) {
       final container = ProviderContainer();
-      for (final provider in permutation) {
-        provider.readOwner(container);
-      }
+      permutation.forEach(container.read);
       expect(
         compute(container),
         anyOf([
@@ -160,9 +154,7 @@ void main() {
     final perm = Permutations(4, [a, b, c, d]);
     for (final permutation in perm()) {
       final container = ProviderContainer();
-      for (final provider in permutation) {
-        provider.readOwner(container);
-      }
+      permutation.forEach(container.read);
       expect(
         compute(container),
         [a, b, c, d],
@@ -196,9 +188,7 @@ void main() {
     final perm = Permutations(4, [a, b, c, d]);
     for (final permutation in perm()) {
       final container = ProviderContainer();
-      for (final provider in permutation) {
-        provider.readOwner(container);
-      }
+      permutation.forEach(container.read);
       expect(
         compute(container),
         [a, b, c, d],
@@ -237,9 +227,7 @@ void main() {
     final perm = Permutations(5, [a, b, c, d, e]);
     for (final permutation in perm()) {
       final container = ProviderContainer();
-      for (final provider in permutation) {
-        provider.readOwner(container);
-      }
+      permutation.forEach(container.read);
       expect(
         compute(container),
         anyOf([
