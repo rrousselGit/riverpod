@@ -47,10 +47,10 @@ final characterPages =
   },
 );
 
-final charactersCount = Computed.family<AsyncValue<int>, String>((read, name) {
+final charactersCount = Computed.family<AsyncValue<int>, String>((watch, name) {
   final meta = CharacterPagination(page: 0, name: name);
 
-  return read(characterPages(meta)).whenData((value) => value.totalCount);
+  return watch(characterPages(meta)).whenData((value) => value.totalCount);
 });
 
 @freezed
@@ -62,7 +62,7 @@ abstract class CharacterOffset with _$CharacterOffset {
 }
 
 final characterAtIndex =
-    Computed.family<AsyncValue<Character>, CharacterOffset>((read, query) {
+    Computed.family<AsyncValue<Character>, CharacterOffset>((watch, query) {
   final offsetInPage = query.offset % kCharactersPageLimit;
 
   final meta = CharacterPagination(
@@ -70,7 +70,7 @@ final characterAtIndex =
     name: query.name,
   );
 
-  return read(characterPages(meta)).whenData(
+  return watch(characterPages(meta)).whenData(
     (value) => value.characters[offsetInPage],
   );
 });

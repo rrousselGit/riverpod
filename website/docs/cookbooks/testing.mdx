@@ -59,8 +59,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Consumer((context, read) {
-        final counter = read(counterProvider);
+      home: Consumer((context, watch) {
+        final counter = watch(counterProvider);
         return RaisedButton(
           onPressed: () => counter.state++,
           child: Text('${counter.state}'),
@@ -349,8 +349,8 @@ void main() {
         // You may extract this into a MyApp widget
         child: MaterialApp(
           home: Scaffold(
-            body: Consumer((context, read) {
-              final todos = read(todoListProvider);
+            body: Consumer((context, watch) {
+              final todos = watch(todoListProvider);
               // The list of todos is loading or in error
               if (todos.data == null) {
                 return const CircularProgressIndicator();

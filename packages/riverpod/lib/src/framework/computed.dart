@@ -14,15 +14,15 @@ typedef Reader = Res Function<Res>(ProviderBase<ProviderDependencyBase, Res>);
 /// final userProvider = StreamProvider<User>(...);
 /// final todoListProvider = StateNotifierProvider<TodoList>(...);
 ///
-/// final greetingProvider = Computed((read) {
+/// final greetingProvider = Computed((watch) {
 ///   // Uses `read` to obtain the user from `userProvider`.
-///   AsyncData<User> user = read(userProvider).data;
+///   AsyncData<User> user = watch(userProvider).data;
 ///   // If the user is loading/in error, show a fallback string
 ///   if (user == null) {
 ///     return '...';
 ///   }
 ///   // Obtains TodoList from todoListProvider
-///   TodoList todoList = read(todoListProvider);
+///   TodoList todoList = watch(todoListProvider);
 ///
 ///   // combine TodoList and the user together to make a heading
 ///   return 'Hello ${user.value.name}! You gave ${todoList.count} todos';
@@ -58,7 +58,7 @@ class Computed<T> extends AutoDisposeProviderBase<ProviderDependencyBase, T> {
     return ComputedFamily(create);
   }
 
-  final T Function(Reader read) _selector;
+  final T Function(Reader watch) _selector;
 
   @override
   _ComputedState<T> createState() {
@@ -169,5 +169,5 @@ class _Dependency {
 class ComputedFamily<Result, A> extends Family<Computed<Result>, A> {
   /// Creates a group of [Computed] that depends on external parameters
   ComputedFamily(Result Function(Reader read, A a) create)
-      : super((a) => Computed((read) => create(read, a)));
+      : super((a) => Computed((watch) => create(watch, a)));
 }

@@ -174,9 +174,9 @@ void main() {
     final listener = ListenerMock();
     final listener2 = ListenerMock();
     var callCount = 0;
-    final computed = Computed((read) {
+    final computed = Computed((watch) {
       callCount++;
-      return read(provider.state);
+      return watch(provider.state);
     });
 
     final sub = computed.addLazyListener(
@@ -607,7 +607,9 @@ void main() {
     verifyNoMoreInteractions(provider1.onDidUpdateProvider);
     verifyNoMoreInteractions(provider2.onDidUpdateProvider);
   });
-  test('read used on same provider multiple times returns same instance', () {
+  test(
+      'container.read used on same provider multiple times returns same instance',
+      () {
     final container = ProviderContainer();
     final provider = Provider((_) => 42);
 

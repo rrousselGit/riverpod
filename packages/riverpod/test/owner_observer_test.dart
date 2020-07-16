@@ -173,8 +173,8 @@ void main() {
     final observer = ObserverMock();
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
-    final isNegative = Computed((read) {
-      return read(provider.state).isNegative;
+    final isNegative = Computed((watch) {
+      return watch(provider.state).isNegative;
     });
     final container = ProviderContainer(observers: [observer]);
     final isNegativeListener = Listener<bool>();

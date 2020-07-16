@@ -77,9 +77,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, read) {
+        child: Consumer((c, watch) {
           return Text(
-            read(provider).count.toString(),
+            watch(provider).count.toString(),
             textDirection: TextDirection.ltr,
           );
         }),

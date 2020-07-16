@@ -32,8 +32,8 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: ProviderScope(
-          child: Consumer((c, read) {
-            return read(futureProvider).when(
+          child: Consumer((c, watch) {
+            return watch(futureProvider).when(
               data: (data) => Text(data.toString()),
               loading: () => const Text('loading'),
               error: (dynamic err, stack) => Text('$err'),
@@ -60,8 +60,8 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: ProviderScope(
-          child: Consumer((c, read) {
-            return read(futureProvider).when(
+          child: Consumer((c, watch) {
+            return watch(futureProvider).when(
               data: (data) => Text(data.toString()),
               loading: () => const Text('loading'),
               error: (dynamic err, stack) {
@@ -89,8 +89,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, read) {
-          read(futureProvider);
+        child: Consumer((c, watch) {
+          watch(futureProvider);
           return Container();
         }),
       ),
@@ -110,8 +110,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, read) {
-          read(futureProvider);
+        child: Consumer((c, watch) {
+          watch(futureProvider);
           return Container();
         }),
       ),
@@ -140,8 +140,8 @@ void main() {
         ],
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer((c, read) {
-            return read(futureProvider).maybeWhen(
+          child: Consumer((c, watch) {
+            return watch(futureProvider).maybeWhen(
               data: (data) => Text(data.toString()),
               orElse: () => const Text('else'),
             );
@@ -186,9 +186,9 @@ void main() {
 
     final child = Directionality(
       textDirection: TextDirection.ltr,
-      child: Consumer((c, read) {
-        read(proxy);
-        return read(futureProvider).when(
+      child: Consumer((c, watch) {
+        watch(proxy);
+        return watch(futureProvider).when(
           data: (data) => Text(data.toString()),
           loading: () => const Text('loading'),
           error: (dynamic err, stack) {
@@ -438,8 +438,8 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer((c, read) {
-            return read(futureProviderFamily).when(
+          child: Consumer((c, watch) {
+            return watch(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
               error: (dynamic err, stack) => const Text('error'),
@@ -468,8 +468,8 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer((c, read) {
-            return read(futureProviderFamily).when(
+          child: Consumer((c, watch) {
+            return watch(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
               error: (dynamic err, stack) => const Text('error'),
@@ -497,8 +497,8 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer((c, read) {
-            return read(futureProviderFamily).when(
+          child: Consumer((c, watch) {
+            return watch(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
               error: (dynamic err, stack) => const Text('error'),

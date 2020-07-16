@@ -41,9 +41,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, read) {
+        child: Consumer((c, watch) {
           return Text(
-            read(provider).toString(),
+            watch(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -64,9 +64,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, read) {
+        child: Consumer((c, watch) {
           return Text(
-            read(provider).toString(),
+            watch(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -77,54 +77,7 @@ void main() {
 
     await tester.pumpWidget(Container());
   });
-  testWidgets('onDispose can read ref', (tester) async {
-    // int onDisposeState;
-    // final provider = Provider<int>((ref) {
-    //   ref.onDispose(() => onDisposeState = ref.value);
-    //   return 42;
-    // });
 
-    // await tester.pumpWidget(
-    //   ProviderScope(
-    //     child: Consumer((c, read) {
-    //       return Text(
-    //         useProvider().toString(),
-    //         textDirection: TextDirection.ltr,
-    //       );
-    //     }),
-    //   ),
-    // );
-
-    // expect(find.text('42'), findsOneWidget);
-
-    // await tester.pumpWidget(Container());
-
-    // expect(onDisposeState, 42);
-  }, skip: true);
-  testWidgets("can't read ref after dispose", (tester) async {
-    // ProviderReference<int> providerState;
-    // final provider = Provider<int>((ref) {
-    //   providerState = ref;
-    //   return 42;
-    // });
-
-    // await tester.pumpWidget(
-    //   ProviderScope(
-    //     child: Consumer((c, read) {
-    //       return Text(
-    //         useProvider().toString(),
-    //         textDirection: TextDirection.ltr,
-    //       );
-    //     }),
-    //   ),
-    // );
-
-    // expect(find.text('42'), findsOneWidget);
-
-    // await tester.pumpWidget(Container());
-
-    // expect(() => providerState.value, throwsStateError);
-  }, skip: true);
   testWidgets('onDispose calls all callbacks in order', (tester) async {
     final dispose1 = OnDisposeMock();
 
@@ -141,9 +94,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, read) {
+        child: Consumer((c, watch) {
           return Text(
-            read(provider).toString(),
+            watch(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -183,9 +136,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, read) {
+        child: Consumer((c, watch) {
           return Text(
-            read(provider).toString(),
+            watch(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -199,9 +152,9 @@ void main() {
   testWidgets('override updates rebuild dependents with new value',
       (tester) async {
     final provider = Provider((_) => 0);
-    final child = Consumer((c, read) {
+    final child = Consumer((c, watch) {
       return Text(
-        read(provider).toString(),
+        watch(provider).toString(),
         textDirection: TextDirection.ltr,
       );
     });
@@ -258,9 +211,9 @@ void main() {
             }),
           ),
         ],
-        child: Consumer((c, read) {
+        child: Consumer((c, watch) {
           return Text(
-            read(provider2).toString(),
+            watch(provider2).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -269,41 +222,6 @@ void main() {
 
     expect(find.text('84'), findsOneWidget);
   });
-
-  testWidgets('provider1 can read and listen to other providers',
-      (tester) async {
-    // ProviderReference<int> providerState;
-
-    // final provider = Provider<int>((ref) {
-    //   providerState = ref;
-    //   return 42;
-    // });
-    // var createCount = 0;
-    // final provider1 =
-    //     ProviderFamily<ProviderDependency<int>, String>(useProvider, (ref, first) {
-    //   createCount++;
-    //   first.onChange((v) {
-    //     ref.value = v.toString();
-    //   });
-    //   return first.value.toString();
-    // });
-
-    // await tester.pumpWidget(
-    //   ProviderScope(
-    //     child: Consumer((c, read) {
-    //       return Text(useProviderFamily(), textDirection: TextDirection.ltr);
-    //     }),
-    //   ),
-    // );
-
-    // expect(find.text('42'), findsOneWidget);
-
-    // providerState.value = 21;
-    // await tester.pump();
-
-    // expect(createCount, 1);
-    // expect(find.text('21'), findsOneWidget);
-  }, skip: true);
 
   testWidgets('provider1 uses override if the override is at root',
       (tester) async {
@@ -319,8 +237,8 @@ void main() {
         overrides: [
           provider.overrideAs(Provider((_) => 1)),
         ],
-        child: Consumer((c, read) {
-          return Text(read(provider1), textDirection: TextDirection.ltr);
+        child: Consumer((c, watch) {
+          return Text(watch(provider1), textDirection: TextDirection.ltr);
         }),
       ),
     );
@@ -345,9 +263,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, read) {
+        child: Consumer((c, watch) {
           return Text(
-            read(forth).toString(),
+            watch(forth).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -376,9 +294,9 @@ void main() {
         overrides: [
           first.overrideAs(Provider((_) => 42)),
         ],
-        child: Consumer((c, read) {
+        child: Consumer((c, watch) {
           return Text(
-            read(forth).toString(),
+            watch(forth).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -407,9 +325,9 @@ void main() {
         overrides: [
           second.overrideAs(Provider((_) => 0)),
         ],
-        child: Consumer((c, read) {
+        child: Consumer((c, watch) {
           return Text(
-            read(forth).toString(),
+            watch(forth).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -435,9 +353,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, read) {
+        child: Consumer((c, watch) {
           return Text(
-            read(provider1).toString(),
+            watch(provider1).toString(),
             textDirection: TextDirection.ltr,
           );
         }),

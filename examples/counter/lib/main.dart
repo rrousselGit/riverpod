@@ -30,8 +30,8 @@ class Home extends StatelessWidget {
       body: Center(
         // Consumer is a widget that allows you reading providers.
         // You could also use the hook "useProvider" if you uses flutter_hooks
-        child: Consumer((context, read) {
-          final count = read(counterProvider).state;
+        child: Consumer((context, watch) {
+          final count = watch(counterProvider).state;
           return Text('$count');
         }),
       ),

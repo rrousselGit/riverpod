@@ -86,7 +86,7 @@ void main() {
     final provider = StateNotifierProvider((_) => counter);
     final container = ProviderContainer();
     List<Object> errors;
-    final computed = Computed((read) {
+    final computed = Computed((watch) {
       errors = errorsOf(counter.increment);
       return 0;
     });
@@ -106,8 +106,8 @@ void main() {
     final provider = StateNotifierProvider((_) => counter);
     final container = ProviderContainer();
     List<Object> errors;
-    final computed = Computed((read) {
-      final value = read(provider.state);
+    final computed = Computed((watch) {
+      final value = watch(provider.state);
       if (value > 0) {
         errors = errorsOf(counter.increment);
       }

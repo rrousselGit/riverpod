@@ -123,8 +123,8 @@ void main() {
     final provider = Provider((_) => 'foo');
 
     await tester.pumpWidget(
-      Consumer((context, read) {
-        read(provider);
+      Consumer((context, watch) {
+        watch(provider);
         return Container();
       }),
     );
@@ -144,8 +144,8 @@ void main() {
       textDirection: TextDirection.ltr,
       child: Column(
         children: <Widget>[
-          Consumer((c, read) => Text(read(provider))),
-          Consumer((c, read) => Text(read(provider2))),
+          Consumer((c, watch) => Text(watch(provider))),
+          Consumer((c, watch) => Text(watch(provider2))),
         ],
       ),
     );
@@ -186,13 +186,13 @@ void main() {
       textDirection: TextDirection.ltr,
       child: Column(
         children: <Widget>[
-          Consumer((c, read) {
+          Consumer((c, watch) {
             buildCount++;
-            return Text(read(provider));
+            return Text(watch(provider));
           }),
-          Consumer((c, read) {
+          Consumer((c, watch) {
             buildCount2++;
-            return Text(read(provider2));
+            return Text(watch(provider2));
           }),
         ],
       ),
@@ -220,9 +220,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         key: scopeKey,
-        child: Consumer((c, read) {
-          final value = read(unnamed);
-          final count = read(named.state);
+        child: Consumer((c, watch) {
+          final value = watch(unnamed);
+          final count = watch(named.state);
           return Text(
             'value: $value count: $count',
             textDirection: TextDirection.ltr,

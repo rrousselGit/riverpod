@@ -13,9 +13,9 @@ void main() {
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
     var callCount = 0;
-    final computed = Computed((read) {
+    final computed = Computed((watch) {
       callCount++;
-      return read(provider.state);
+      return watch(provider.state);
     });
 
     await tester.pumpWidget(

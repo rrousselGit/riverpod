@@ -54,10 +54,10 @@ Changing the kind of override or reordering overrides is not supported.
 
     var consumerBuildCount = 0;
 
-    final consumer = Consumer((c, read) {
+    final consumer = Consumer((c, watch) {
       consumerBuildCount++;
       return Text(
-        read(provider).toString(),
+        watch(provider).toString(),
         textDirection: TextDirection.ltr,
       );
     });
@@ -242,127 +242,6 @@ Changing the kind of override or reordering overrides is not supported.
 
       expect(consumerBuildCount, 1);
     });
-  });
-
-  group('Consumer(provider.select)', () {
-    testWidgets('simple flow', (tester) async {
-      // final notifier = Counter();
-      // final provider = StateNotifierProvider((_) => notifier);
-      // final selector = SelectorSpy<int>();
-      // var buildCount = 0;
-      // Object lastSelectedValue;
-
-      // await tester.pumpWidget(
-      //   ProviderScope(
-      //     child: Consumer<bool>(
-      //       provider.state.select((value) {
-      //         selector(value);
-      //         return value.isNegative;
-      //       }),
-      //       builder: (c, value, _) {
-      //         buildCount++;
-      //         lastSelectedValue = value;
-      //         return Container();
-      //       },
-      //     ),
-      //   ),
-      // );
-
-      // expect(lastSelectedValue, false);
-      // expect(buildCount, 1);
-      // verify(selector(0)).called(1);
-      // verifyNoMoreInteractions(selector);
-
-      // notifier.increment();
-
-      // verifyNoMoreInteractions(selector);
-
-      // await tester.pump();
-
-      // expect(lastSelectedValue, false);
-      // expect(buildCount, 1);
-      // verify(selector(1)).called(1);
-      // verifyNoMoreInteractions(selector);
-    }, skip: true);
-    testWidgets('deeply compares collections', (tester) async {
-      // final notifier = ValueNotifier([0]);
-      // final provider = ChangeNotifierProvider((_) => notifier);
-      // var buildCount = 0;
-
-      // await tester.pumpWidget(
-      //   ProviderScope(
-      //     child: Consumer<List<int>>(
-      //       provider.select((value) => value.value),
-      //       builder: (c, value, _) {
-      //         buildCount++;
-      //         return Container();
-      //       },
-      //     ),
-      //   ),
-      // );
-
-      // expect(buildCount, 1);
-
-      // notifier.value = [0];
-      // await tester.pump();
-
-      // expect(buildCount, 1);
-
-      // notifier.value = [1];
-      // await tester.pump();
-
-      // expect(buildCount, 2);
-    }, skip: true);
-    testWidgets('recompute value when changing selector', (tester) async {
-      //   final notifier = Counter();
-      //   final provider = StateNotifierProvider((_) => notifier);
-      //   final selector = SelectorSpy<String>();
-      //   var value2 = 'init';
-      //   final build = BuildSpy();
-      //   when(build()).thenAnswer((_) => value2 = 'foo');
-      //   Object lastSelectedValue;
-
-      //   await tester.pumpWidget(
-      //     ProviderScope(
-      //       child: Consumer((c, read) {
-      //         build();
-      //         // force child consumer to rebuild when provider.state changes
-      //         read(provider.state);
-      //         return Consumer(
-      //           provider.state.select((value) {
-      //             selector('$value $value2');
-      //             return '$value $value2';
-      //           }),
-      //           builder: (c, value, _) {
-      //             lastSelectedValue = value;
-      //             return Container();
-      //           },
-      //         );
-      //       }),
-      //     ),
-      //   );
-
-      //   expect(lastSelectedValue, '0 foo');
-      //   verifyInOrder([
-      //     build(),
-      //     selector('0 foo'),
-      //   ]);
-      //   verifyNoMoreInteractions(selector);
-      //   verifyNoMoreInteractions(build);
-
-      //   notifier.increment();
-      //   when(build()).thenAnswer((_) => value2 = 'bar');
-
-      //   await tester.pump();
-
-      //   expect(lastSelectedValue, '1 bar');
-      //   verifyInOrder([
-      //     build(),
-      //     selector('1 bar'),
-      //   ]);
-      //   verifyNoMoreInteractions(selector);
-      //   verifyNoMoreInteractions(build);
-    }, skip: true);
   });
 }
 

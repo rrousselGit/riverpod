@@ -17,14 +17,14 @@ void main() {
     var buildCount = 0;
 
     await tester.pumpWidget(ProviderScope(
-      child: Consumer((c, read) {
+      child: Consumer((c, watch) {
         buildCount++;
-        final state = read(stateProvider).state;
+        final state = watch(stateProvider).state;
         final value =
-            state == 0 ? read(provider0.state) : read(provider1.state);
+            state == 0 ? watch(provider0.state) : watch(provider1.state);
 
         return Text(
-          '${read(provider0.state)} $value',
+          '${watch(provider0.state)} $value',
           textDirection: TextDirection.ltr,
         );
       }),
@@ -91,12 +91,12 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, read) {
+        child: Consumer((c, watch) {
           buildCount++;
-          final state = read(stateProvider).state;
+          final state = watch(stateProvider).state;
           final result = state == 0 //
-              ? read(provider0.state)
-              : read(provider1.state);
+              ? watch(provider0.state)
+              : watch(provider1.state);
           return Text('$result', textDirection: TextDirection.ltr);
         }),
       ),
@@ -159,9 +159,9 @@ void main() {
 
     Widget build(StateNotifierProvider<TestNotifier> provider) {
       return ProviderScope(
-        child: Consumer((c, read) {
+        child: Consumer((c, watch) {
           buildCount++;
-          final value = read(provider.state);
+          final value = watch(provider.state);
           return Text('$value', textDirection: TextDirection.ltr);
         }),
       );
@@ -190,21 +190,21 @@ void main() {
     expect(buildCount, 3);
   });
   testWidgets(
-      'mutliple useProviders/read, when one of them forces rebuild, all dependencies are still flushed',
+      'mutliple watch, when one of them forces rebuild, all dependencies are still flushed',
       (tester) async {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider((_) => notifier);
     var callCount = 0;
-    final computed = Computed((read) {
+    final computed = Computed((watch) {
       callCount++;
-      return read(provider.state);
+      return watch(provider.state);
     });
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, read) {
-          final first = read(provider.state);
-          final second = read(computed);
+        child: Consumer((context, watch) {
+          final first = watch(provider.state);
+          final second = watch(computed);
           return Text(
             '$first $second',
             textDirection: TextDirection.ltr,
@@ -226,15 +226,15 @@ void main() {
       (tester) async {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider((_) => notifier);
-    final computed = Computed((read) => !read(provider.state).isNegative);
+    final computed = Computed((watch) => !watch(provider.state).isNegative);
     var buildCount = 0;
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, read) {
+        child: Consumer((c, watch) {
           buildCount++;
           return Text(
-            'isPositive ${read(computed)}',
+            'isPositive ${watch(computed)}',
             textDirection: TextDirection.ltr,
           );
         }),
@@ -272,8 +272,8 @@ void main() {
     const secondOwnerKey = Key('second');
     final key = GlobalKey();
 
-    final consumer = Consumer((context, read) {
-      final value = read(provider.state);
+    final consumer = Consumer((context, watch) {
+      final value = watch(provider.state);
       return Text('$value', textDirection: TextDirection.ltr);
     }, key: key);
 
@@ -349,8 +349,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, read) {
-          final value = read(provider.state);
+        child: Consumer((context, watch) {
+          final value = watch(provider.state);
           return Text('$value', textDirection: TextDirection.ltr);
         }),
       ),
@@ -383,9 +383,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, read) {
-          final first = read(firstProvider.state);
-          final second = read(secondProvider.state);
+        child: Consumer((context, watch) {
+          final first = watch(firstProvider.state);
+          final second = watch(secondProvider.state);
           return Text(
             'first $first second $second',
             textDirection: TextDirection.ltr,
@@ -414,8 +414,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, read) {
-          final count = read(provider.state);
+        child: Consumer((context, watch) {
+          final count = watch(provider.state);
           return Text('$count', textDirection: TextDirection.ltr);
         }),
       ),
@@ -439,8 +439,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, read) {
-          final value = read(provider);
+        child: Consumer((context, watch) {
+          final value = watch(provider);
           return Text(
             '$value',
             textDirection: TextDirection.ltr,
@@ -455,8 +455,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, read) {
-          final value = read(provider2);
+        child: Consumer((context, watch) {
+          final value = watch(provider2);
           return Text(
             '$value',
             textDirection: TextDirection.ltr,

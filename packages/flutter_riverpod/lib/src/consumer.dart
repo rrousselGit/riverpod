@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'framework.dart';
 import 'internals.dart';
 
-typedef ConsumerBuilder = Widget Function(BuildContext context, Reader read);
+typedef ConsumerBuilder = Widget Function(BuildContext context, Reader watch);
 
 /// Listen to a provider and build a widget tree out of it.
 ///

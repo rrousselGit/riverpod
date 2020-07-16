@@ -192,9 +192,9 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(title: Text('Example')),
         body: Center(
           // A widget that can consume providers
-          child: Consumer((context, read) {
+          child: Consumer((context, watch) {
             // Subscribes Consumer to helloWorldProvider
-            final value = read(helloWorldProvider);
+            final value = watch(helloWorldProvider);
             return Text(value);
           }),
         ),

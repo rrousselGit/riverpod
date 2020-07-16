@@ -40,9 +40,9 @@ final lastNameProvider = StateProvider((ref) => 'Lisa');
 From there, we could use [Computed] to compute the initials of that person:
 
 ```dart
-final initialsProvider = Computed((read) {
-  final firstName = read(firstNameProvider).state;
-  final lastName = read(lastNameProvider).state;
+final initialsProvider = Computed((watch) {
+  final firstName = watch(firstNameProvider).state;
+  final lastName = watch(lastNameProvider).state;
 
   return '${firstName[0]}${lastName[0]}';
 });
@@ -76,8 +76,8 @@ Widget build(BuildContext context) {
 ```dart
 @override
 Widget build(BuildContext context) {
-  return Consumer((context, read) {
-    final initials = read(initialsProvider);
+  return Consumer((context, watch) {
+    final initials = watch(initialsProvider);
     return Text(initials);
   });
 }

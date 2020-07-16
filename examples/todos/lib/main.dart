@@ -44,17 +44,17 @@ final todoListFilter = StateProvider((_) => TodoListFilter.all);
 ///
 /// This will also optimise unneeded rebuilds if the todo-list changes, but the
 /// number of uncompleted todos doesn't (such as when editing a todo).
-final uncompletedTodosCount = Computed((read) {
-  return read(todoListProvider.state).where((todo) => !todo.completed).length;
+final uncompletedTodosCount = Computed((watch) {
+  return watch(todoListProvider.state).where((todo) => !todo.completed).length;
 });
 
 /// The list of todos after applying of [todoListFilter].
 ///
 /// This too uses [Computed], to avoid recomputing the filtered list unless either
 /// the filter of or the todo-list updates.
-final filteredTodos = Computed((read) {
-  final filter = read(todoListFilter);
-  final todos = read(todoListProvider.state);
+final filteredTodos = Computed((watch) {
+  final filter = watch(todoListFilter);
+  final todos = watch(todoListProvider.state);
 
   switch (filter.state) {
     case TodoListFilter.completed:

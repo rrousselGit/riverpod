@@ -21,7 +21,7 @@ void main() {
       () async {
     final notifier = Counter(1);
     final provider = StateNotifierProvider((ref) => notifier);
-    final computed = Computed((read) => read(provider.state) * 2);
+    final computed = Computed((watch) => watch(provider.state) * 2);
     final listener = Listener<int>();
     final container = ProviderContainer();
 
@@ -61,13 +61,14 @@ void main() {
     final provider0 = StateNotifierProvider((_) => notifier0, name: '0');
     final provider1 = StateNotifierProvider((_) => notifier1, name: '1');
     var buildCount = 0;
-    final computed = Computed((read) {
+    final computed = Computed((watch) {
       buildCount++;
 
-      final state = read(stateProvider).state;
-      final value = state == 0 ? read(provider0.state) : read(provider1.state);
+      final state = watch(stateProvider).state;
+      final value =
+          state == 0 ? watch(provider0.state) : watch(provider1.state);
 
-      return '${read(provider0.state)} $value';
+      return '${watch(provider0.state)} $value';
     });
     final listener = Listener<String>();
     final container = ProviderContainer();
@@ -129,10 +130,10 @@ void main() {
     final provider0 = StateNotifierProvider((_) => notifier0, name: '0');
     final provider1 = StateNotifierProvider((_) => notifier1, name: '1');
     var buildCount = 0;
-    final computed = Computed((read) {
+    final computed = Computed((watch) {
       buildCount++;
-      final state = read(stateProvider).state;
-      return state == 0 ? read(provider0.state) : read(provider1.state);
+      final state = watch(stateProvider).state;
+      return state == 0 ? watch(provider0.state) : watch(provider1.state);
     });
     final listener = Listener<int>();
     final container = ProviderContainer();
@@ -187,8 +188,8 @@ void main() {
   });
   test('Computed.family', () {
     final computed =
-        Computed.family<String, SetStateProvider<int>>((read, provider) {
-      return read(provider).toString();
+        Computed.family<String, SetStateProvider<int>>((watch, provider) {
+      return watch(provider).toString();
     });
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
@@ -212,7 +213,7 @@ void main() {
       ref.onDispose(onDispose);
       return 42;
     });
-    final computed = Computed((read) => read(provider));
+    final computed = Computed((watch) => watch(provider));
 
     final removeListener = computed.watchOwner(container, (value) {});
 
@@ -226,20 +227,20 @@ void main() {
     verifyNoMoreInteractions(onDispose);
   });
   test(
-      'mutliple read, when one of them forces re-evaluate, all dependencies are still flushed',
+      'mutliple watch, when one of them forces re-evaluate, all dependencies are still flushed',
       () {
     final container = ProviderContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider((_) => notifier);
     var callCount = 0;
-    final computed = Computed((read) {
+    final computed = Computed((watch) {
       callCount++;
-      return read(provider.state);
+      return watch(provider.state);
     });
 
-    final tested = Computed((read) {
-      final first = read(provider.state);
-      final second = read(computed);
+    final tested = Computed((watch) {
+      final first = watch(provider.state);
+      final second = watch(computed);
       return '$first $second';
     });
     final listener = Listener<String>();
@@ -267,13 +268,13 @@ void main() {
     final container = ProviderContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider((_) => notifier);
-    final first = Computed((read) {
+    final first = Computed((watch) {
       // force re-evauating the computed
-      read(provider.state);
+      watch(provider.state);
       return 0;
     });
-    final second = Computed((read) {
-      return read(first);
+    final second = Computed((watch) {
+      return watch(first);
     });
     final mayHaveChanged = MockMarkMayHaveChanged();
     final listener = Listener<int>();
@@ -313,7 +314,7 @@ void main() {
   test('Computeds are added to the overall list of providers', () {
     final container = ProviderContainer();
     final provider = Provider((_) => 42);
-    final computed = Computed((read) => read(provider) * 2);
+    final computed = Computed((watch) => watch(provider) * 2);
     final provider2 = Provider((ref) => ref.dependOn(computed));
     final listener = Listener<int>();
 
@@ -334,7 +335,7 @@ void main() {
   test('disposing the Computed closes subscriptions', () {
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
-    final computed = Computed((read) => read(provider.state));
+    final computed = Computed((watch) => watch(provider.state));
     final container = ProviderContainer();
     final mayHaveChanged = MockMarkMayHaveChanged();
     final listener = Listener<int>();
@@ -354,16 +355,16 @@ void main() {
     verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
   });
-  test('cannot call read outside of the Computed', () {
+  test('cannot call watch outside of the Computed', () {
     final container = ProviderContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     var callCount = 0;
     Reader reader;
-    final computed = Computed((read) {
+    final computed = Computed((watch) {
       callCount++;
-      reader = read;
-      return read(provider.state);
+      reader = watch;
+      return watch(provider.state);
     });
     final mayHaveChanged = MockMarkMayHaveChanged();
     final listener = Listener<int>();
@@ -399,8 +400,8 @@ void main() {
       final container = ProviderContainer();
       final notifier = Notifier(0);
       final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
-      final computed = Computed((read) {
-        return [read(provider.state).isNegative];
+      final computed = Computed((watch) {
+        return [watch(provider.state).isNegative];
       });
       final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = Listener<List<bool>>();
@@ -430,8 +431,8 @@ void main() {
       final container = ProviderContainer();
       final notifier = Notifier(0);
       final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
-      final computed = Computed((read) {
-        return {read(provider.state).isNegative};
+      final computed = Computed((watch) {
+        return {watch(provider.state).isNegative};
       });
       final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = Listener<Set<bool>>();
@@ -461,8 +462,8 @@ void main() {
       final container = ProviderContainer();
       final notifier = Notifier(0);
       final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
-      final computed = Computed((read) {
-        return {'foo': read(provider.state).isNegative};
+      final computed = Computed((watch) {
+        return {'foo': watch(provider.state).isNegative};
       });
       final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = Listener<Map<String, bool>>();
@@ -494,9 +495,9 @@ void main() {
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     var callCount = 0;
-    final computed = Computed((read) {
+    final computed = Computed((watch) {
       callCount++;
-      return [read(provider.state)];
+      return [watch(provider.state)];
     });
 
     List<int> first;
@@ -523,7 +524,7 @@ void main() {
     verifyNoMoreInteractions(secondListener);
   });
   test('Computed is not a AlwaysAliveProviderBase', () {
-    final computed = Computed((read) => 0);
+    final computed = Computed((watch) => 0);
 
     expect(computed, isNot(isA<AlwaysAliveProviderBase>()));
   });
@@ -534,9 +535,9 @@ void main() {
     final mayHaveChanged = MockMarkMayHaveChanged();
     final listener = Listener<bool>();
     var callCount = 0;
-    final isPositiveComputed = Computed((read) {
+    final isPositiveComputed = Computed((watch) {
       callCount++;
-      return !read(provider.state).isNegative;
+      return !watch(provider.state).isNegative;
     });
 
     final sub = isPositiveComputed.addLazyListener(
