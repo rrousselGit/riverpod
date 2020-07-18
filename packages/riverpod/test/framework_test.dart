@@ -6,13 +6,14 @@ import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 
+import 'utils.dart';
+
 Matcher isProvider(ProviderBase provider) {
-  final res = isA<ProviderStateBase>().having(
-    (s) => s.provider,
+  return isA<ProviderElement>().having(
+    (e) => e.origin,
     'provider',
     provider,
   );
-  return res;
 }
 
 void main() {
@@ -50,7 +51,7 @@ void main() {
     );
   });
   test('ref.read(provider) for providers with an immutable value', () {
-    final ProviderBase<ProviderDependency<int>, int> provider = Provider((_) {
+    final ProviderBase<int, int> provider = Provider((_) {
       return 42;
     });
     final container = ProviderContainer();
@@ -65,15 +66,15 @@ void main() {
 
     final state = container.debugProviderStates.single;
 
-    expect(state.$hasListeners, false);
+    expect(state.hasListeners, false);
 
-    final removeListener = provider.watchOwner(container, (value) {});
+    final sub = container.watch(provider, () {});
 
-    expect(state.$hasListeners, true);
+    expect(state.hasListeners, true);
 
-    removeListener();
+    sub.close();
 
-    expect(state.$hasListeners, false);
+    expect(state.hasListeners, false);
   });
   test('test two families one overriden the other not', () {
     var callCount = 0;
@@ -171,19 +172,13 @@ void main() {
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
     final container = ProviderContainer();
-    final listener = ListenerMock();
-    final listener2 = ListenerMock();
     var callCount = 0;
-    final computed = Computed((watch) {
+    final computed = Provider((ref) {
       callCount++;
-      return watch(provider.state);
+      return ref.watch(provider.state);
     });
 
-    final sub = computed.addLazyListener(
-      container,
-      mayHaveChanged: () {},
-      onChange: listener,
-    );
+    final sub = container.watch(computed, () {});
 
     verify(listener(0)).called(1);
     verifyNoMoreInteractions(listener);

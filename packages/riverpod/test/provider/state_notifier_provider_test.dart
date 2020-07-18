@@ -3,20 +3,9 @@ import 'package:riverpod/riverpod.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
+import '../utils.dart';
+
 void main() {
-  test('StateNotifierProviderDependency can be assigned to ProviderDependency',
-      () async {
-    final provider = StateNotifierProvider((ref) {
-      return StateController(0);
-    });
-    final container = ProviderContainer();
-
-    // ignore: omit_local_variable_types
-    final ProviderDependency<StateController<int>> dep =
-        container.ref.dependOn(provider);
-
-    await expectLater(dep.value.state, 0);
-  });
   test('StateNotifierFamily override', () {
     final provider = StateNotifierProvider.family<TestNotifier, int>(
         (ref, a) => TestNotifier());
@@ -30,6 +19,7 @@ void main() {
     expect(container.read(provider(0).state), 42);
     expect(container.read(provider(0)), notifier2);
   });
+
   test('can be assigned to provider', () {
     final Provider<TestNotifier> provider = StateNotifierProvider((_) {
       return TestNotifier();
@@ -38,6 +28,7 @@ void main() {
 
     expect(container.read(provider), isA<TestNotifier>());
   });
+
   test('overriding the provider overrides provider.state too', () {
     final notifier = TestNotifier(42);
     final provider = StateNotifierProvider((_) => TestNotifier());
@@ -59,6 +50,7 @@ void main() {
 
     expect(container.read(provider.state), 43);
   });
+
   test('can specify name', () {
     final provider = StateNotifierProvider(
       (_) => TestNotifier(),
@@ -73,6 +65,7 @@ void main() {
     expect(provider2.name, isNull);
     expect(provider2.state.name, isNull);
   });
+
   test('disposes the notifier when provider is unmounted', () {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider<TestNotifier>((_) {
@@ -108,7 +101,7 @@ void main() {
     notifier.increment();
 
     verifyNoMoreInteractions(listener);
-    sub.flush();
+    sub.read();
 
     verifyNoMoreInteractions(listener);
 
@@ -117,6 +110,7 @@ void main() {
 
     verifyNoMoreInteractions(listener);
   });
+
   test('provider subscribe callback never called', () async {
     final provider = StateNotifierProvider<TestNotifier>((_) {
       return TestNotifier();
@@ -129,13 +123,14 @@ void main() {
       mayHaveChanged: () {},
       onChange: listener,
     );
-    verify(listener(argThat(equals(0)))).called(1);
+
+    verify(listener(0)).called(1);
     verifyNoMoreInteractions(listener);
 
     container.read(provider).increment();
 
     verifyNoMoreInteractions(listener);
-    sub.flush();
+    sub.read();
     verify(listener(1)).called(1);
     verifyNoMoreInteractions(listener);
 

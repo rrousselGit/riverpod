@@ -1,5 +1,7 @@
 import 'package:state_notifier/state_notifier.dart';
+import 'framework.dart';
 import 'internals.dart';
+import 'provider.dart';
 
 /// Builds a [StateProvider].
 class StateProviderBuilder {

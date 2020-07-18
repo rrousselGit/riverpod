@@ -1,28 +1,48 @@
-part of 'framework.dart';
+part of '../framework.dart';
 
 /// A base class for all *Family variants of providers.
-abstract class Family<P extends ProviderBase, A> {
-  /// Creates the provider from an external value.
-  Family(this._create);
+abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
+    P extends ProviderBase<Created, Listened>> {
+  Family(this._builder, this.name);
 
-  final P Function(A value) _create;
-  final _cache = <A, P>{};
+  final Created Function(Ref ref, Param param) _builder;
+  final String name;
+
+  final _cache = <Param, P>{};
 
   /// Create a provider from an external value.
   ///
   /// That external value should be immutable and preferrably override `==`/`hashCode`.
   /// See the documentation of [Provider.family] for more informations.
-  P call(A value) {
+  P call(Param value) {
     return _cache.putIfAbsent(value, () {
-      final provider = _create(value);
+      final provider = create(value, _builder);
       assert(
-        provider._family == null,
+        provider._from == null,
         'The provider created already belongs to a Family',
       );
       return provider
-        .._family = this
-        .._parameter = value;
+        .._from = this
+        .._argument = value;
     });
+  }
+
+  P create(Param value, Created Function(Ref ref, Param param) builder);
+}
+
+extension FamilyX<Created, Listened, Param, Ref extends ProviderReference,
+        P extends ProviderBase<Created, Listened>>
+    on Family<Created, Listened, Param, Ref, P> {
+  /// Overrides the behavior of a family for a part of the application.
+  Override overrideAs(
+    Created Function(Ref ref, Param param) builderOverride,
+  ) {
+    return FamilyOverride(
+      this,
+      (dynamic param) {
+        return create(param as Param, builderOverride);
+      },
+    );
   }
 }
 
@@ -32,6 +52,6 @@ class FamilyOverride implements Override {
   /// Do not use
   FamilyOverride(this._family, this._createOverride);
 
-  final ProviderBase Function(Object value) _createOverride;
+  final ProviderBase Function(dynamic param) _createOverride;
   final Family _family;
 }

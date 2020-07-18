@@ -5,23 +5,24 @@ import 'package:riverpod/src/internals.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
+import 'utils.dart';
+
 void main() {
   test("initState can't mark dirty other provider", () {
-    final provider = SetStateProvider<Object>((ref) {
-      return ref;
-    });
+    final provider = StateProvider((ref) => 0);
     final container = ProviderContainer();
-    final setStateRef =
-        container.read(provider) as SetStateProviderReference<Object>;
 
-    final provider2 = Provider((_) {
-      setStateRef.state = 42;
+    final provider2 = Provider((ref) {
+      ref.read(provider).state = 42;
       return 0;
     });
 
-    expect(setStateRef, isNotNull);
+    expect(container.read(provider).state, 0);
 
-    expect(errorsOf(() => container.read(provider2)), [isStateError]);
+    expect(
+      errorsOf(() => container.read(provider2)),
+      [isStateError],
+    );
   });
   test("nested initState can't mark dirty other providers", () {
     final counter = Counter();
@@ -29,7 +30,7 @@ void main() {
     final nested = Provider((_) => 0);
     final container = ProviderContainer();
     final provider2 = Provider((ref) {
-      ref.dependOn(nested);
+      ref.read(nested);
       counter.increment();
       return 0;
     });
@@ -57,7 +58,7 @@ void main() {
     final container = ProviderContainer();
 
     expect(container.read(provider.state), 0);
-    provider2.watchOwner(container, (v) {})();
+    container.watch(provider2, () {}).close();
 
     await Future<void>.value();
 
@@ -136,20 +137,4 @@ void main() {
     verifyNoMoreInteractions(listener);
     expect(errors, [isA<StateError>(), isA<Error>()]);
   });
-}
-
-class Counter extends StateNotifier<int> {
-  Counter() : super(0);
-
-  void increment() => state++;
-}
-
-class Listener extends Mock {
-  void call(int value);
-}
-
-List<Object> errorsOf(void Function() cb) {
-  final errors = <Object>[];
-  runZonedGuarded(cb, (err, _) => errors.add(err));
-  return [...errors];
 }

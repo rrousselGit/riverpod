@@ -1,8 +1,8 @@
-import 'package:riverpod/src/framework/framework.dart'
-    show AlwaysAliveProviderBase;
 import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
+
+import '../utils.dart';
 
 void main() {
   test('Provider.autoDispose.family', () async {
@@ -79,8 +79,8 @@ void main() {
       final container = ProviderContainer();
 
       final provider = Provider((ref) {
-        final first = ref.dependOn(dependency);
-        return first.value * 2;
+        final first = ref.watch(dependency);
+        return first * 2;
       });
 
       expect(container.read(provider), 2);
@@ -91,10 +91,10 @@ void main() {
       final container = ProviderContainer();
 
       final provider = Provider((ref) {
-        final first = ref.dependOn(dependency);
-        final second = ref.dependOn(dependency2);
+        final first = ref.watch(dependency);
+        final second = ref.watch(dependency2);
 
-        return '${first.value} ${second.value}';
+        return '$first $second';
       });
 
       expect(container.read(provider), '1 2');

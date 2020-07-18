@@ -1,6 +1,9 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
+import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
+
+import 'utils.dart';
 
 void main() {
   test(
@@ -9,11 +12,12 @@ void main() {
     final provider = Provider.autoDispose((ref) {});
     final container = ProviderContainer();
 
-    provider.watchOwner(container, (value) {})();
+    final sub = container.listen(provider);
+    sub.close();
 
     await idle();
 
-    expect(container.debugProviderStates, <ProviderState>[]);
+    expect(container.debugProviderStates, <ProviderElement>[]);
   });
   test('setting maintainState to false destroys the state when not listener',
       () async {
@@ -81,7 +85,7 @@ void main() {
   });
   test('overridable provider can be overriden by anything', () {
     final provider = Provider.autoDispose((_) => 42);
-    final ProviderBase<ProviderDependency<int>, int> override = Provider((_) {
+    final ProviderBase<Object, int> override = Provider((_) {
       return 21;
     });
     final container = ProviderContainer(overrides: [
@@ -106,7 +110,7 @@ void main() {
     final bDispose = OnDisposeMock();
     final b = Provider.autoDispose((ref) {
       ref.onDispose(bDispose);
-      ref.dependOn(a);
+      ref.watch(a);
       return '42';
     });
 
@@ -140,7 +144,7 @@ void main() {
     final onDispose2 = OnDisposeMock();
     final provider2 = Provider.autoDispose((ref) {
       ref.onDispose(onDispose2);
-      return ref.dependOn(provider).value;
+      return ref.watch(provider);
     });
     final listener = Listener();
 
@@ -320,8 +324,8 @@ void main() {
     expect(
       container.debugProviderStates,
       unorderedMatches(<Matcher>[
-        isA<ProviderState<int>>(),
-        isA<AutoDisposeProviderState<int>>(),
+        isA<ProviderElement<Object, int>>(),
+        isA<AutoDisposeProviderElement<Object, int>>(),
       ]),
     );
     verify(listener(42)).called(1);
@@ -338,7 +342,8 @@ void main() {
     verify(onDispose()).called(1);
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(onDispose);
-    expect(container.debugProviderStates, [isA<ProviderState<int>>()]);
+    expect(
+        container.debugProviderStates, [isA<ProviderElement<Object, int>>()]);
 
     value = 21;
     removeListener = provider.watchOwner(container, listener);
@@ -349,8 +354,8 @@ void main() {
     expect(
       container.debugProviderStates,
       unorderedMatches(<Matcher>[
-        isA<ProviderState<int>>(),
-        isA<AutoDisposeProviderState<int>>(),
+        isA<ProviderElement<Object, int>>(),
+        isA<AutoDisposeProviderElement<Object, int>>(),
       ]),
     );
   });
@@ -361,11 +366,11 @@ void main() {
       ref.onDispose(onDispose);
       return 42;
     });
-    final dependent = Provider((ref) => ref.dependOn(provider).value);
+    final dependent = Provider((ref) => ref.watch(provider));
     final container = ProviderContainer();
 
     expect(container.read(unrelated), 42);
-    expect(container.ref.dependOn(dependent).value, 42);
+    expect(container.ref.watch(dependent), 42);
 
     container.dispose();
 

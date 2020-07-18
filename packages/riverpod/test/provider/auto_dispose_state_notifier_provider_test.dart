@@ -5,6 +5,8 @@ import 'package:test/test.dart';
 
 import 'package:riverpod/src/internals.dart' as internals;
 
+import '../utils.dart';
+
 void main() {
   test('StateNotifierFamily override', () async {
     final notifier2 = TestNotifier(42);
@@ -130,7 +132,7 @@ void main() {
     notifier.increment();
 
     verifyNoMoreInteractions(listener);
-    sub.flush();
+    sub.read();
 
     verifyNoMoreInteractions(listener);
 
@@ -158,7 +160,7 @@ void main() {
     notifier.increment();
 
     verifyNoMoreInteractions(listener);
-    sub.flush();
+    sub.read();
     verify(listener(1)).called(1);
     verifyNoMoreInteractions(listener);
 

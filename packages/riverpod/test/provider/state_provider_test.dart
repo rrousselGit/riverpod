@@ -2,18 +2,9 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
+import '../utils.dart';
+
 void main() {
-  test('StateNotifierProviderDependency can be assigned to ProviderDependency',
-      () async {
-    final provider = StateProvider((ref) => 0);
-    final container = ProviderContainer();
-
-    // ignore: omit_local_variable_types
-    final ProviderDependency<StateController<int>> dep =
-        container.ref.dependOn(provider);
-
-    await expectLater(dep.value.state, 0);
-  });
   test('StateProvideyFamily', () async {
     final provider = StateProvider.family<String, int>((ref, a) {
       return '$a';
@@ -58,16 +49,44 @@ void main() {
     provider.watchOwner(container, listener);
     verify(listener(controller));
     verifyNoMoreInteractions(listener);
-    expect(controller.mounted, true);
 
     controller.state = 42;
 
     verify(listener(controller));
     verifyNoMoreInteractions(listener);
+  });
+  test('disposes the controller when the container is disposed', () {
+    final container = ProviderContainer();
+    final provider = StateProvider((ref) => 0);
+
+    final controller = container.read(provider);
+
+    expect(controller.mounted, true);
 
     container.dispose();
 
     expect(controller.mounted, false);
+  });
+  test('disposes the controller when the provider is re-evaluated', () {
+    final container = ProviderContainer();
+    final other = StateProvider((ref) => 0);
+    final provider = StateProvider((ref) => ref.watch(other).state * 2);
+
+    final otherController = container.read(other);
+    final firstController = container.read(provider);
+
+    final sub = container.listen(provider);
+
+    expect(sub.read(), firstController);
+    expect(firstController.mounted, true);
+
+    otherController.state++;
+
+    final secondController = sub.read();
+    expect(secondController, isNot(firstController));
+    expect(secondController.mounted, true);
+    expect(secondController.state, 2);
+    expect(firstController.mounted, false);
   });
 }
 
