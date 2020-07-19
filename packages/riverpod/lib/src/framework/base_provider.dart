@@ -119,12 +119,22 @@ class ProviderSubscription<Listened> {
   }
 
   bool flush() {
+    if (_listener.list == null) {
+      throw StateError(
+        'Cannot call ProviderSubscription.flush() after close was called',
+      );
+    }
     _listener.element.flush();
     return _listener.element._notificationCount >
         _listener.lastNotificationCount;
   }
 
   Listened read() {
+    if (_listener.list == null) {
+      throw StateError(
+        'Cannot call ProviderSubscription.read() after close was called',
+      );
+    }
     _listener.element.flush();
     _listener.lastNotificationCount = _listener.element._notificationCount;
     return _listener.element.getExposedValue();
@@ -177,6 +187,9 @@ class ProviderElement<Created, Listened> implements ProviderReference {
 
   @override
   void onDispose(void Function() listener) {
+    if (!_mounted) {
+      throw StateError('Cannot call onDispose after a provider was dispose');
+    }
     _onDisposeListeners ??= DoubleLinkedQueue();
     _onDisposeListeners.add(listener);
   }
@@ -261,6 +274,9 @@ class ProviderElement<Created, Listened> implements ProviderReference {
 
   @protected
   void notifyMayHaveChanged() {
+    if (!_mounted) {
+      throw StateError('Cannot call onDispose after a provider was dispose');
+    }
     if (_dirty) {
       return;
     }
@@ -300,9 +316,9 @@ class ProviderElement<Created, Listened> implements ProviderReference {
 
   @protected
   void dispose() {
+    _mounted = false;
     _runOnDispose();
 
-    _mounted = false;
     for (final sub in _subscriptions.entries) {
       sub.key._dependents.remove(this);
       sub.value.close();

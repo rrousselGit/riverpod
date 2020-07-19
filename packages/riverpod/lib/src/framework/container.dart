@@ -31,6 +31,8 @@ void _runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
 @visibleForTesting
 ProviderElement notifyListenersLock;
 
+ProviderBase _circularDependencyLock;
+
 /// A flag for checking against invalid operations inside [ProviderStateBase.markMayHaveChanged].
 ///
 /// This prevents modifying providers that already notified their listener in
@@ -132,6 +134,8 @@ class ProviderContainer {
           continue;
         }
         _runUnaryGuarded(element.update, override._provider);
+      } else if (override is FamilyOverride) {
+        _overrideForFamily[override._family] = override;
       }
     }
   }
@@ -148,25 +152,36 @@ class ProviderContainer {
         'Tried to read a provider from a ProviderContainer that was already disposed',
       );
     }
-    final element = _stateReaders.putIfAbsent(provider, () {
-      ProviderBase<Created, Listened> override;
-      override ??=
-          _overrideForProvider[provider] as ProviderBase<Created, Listened>;
-      if (override == null &&
-          provider.from != null &&
-          _overrideForFamily[provider.from] != null) {
-        final familyOverride = _overrideForFamily[provider.from];
-        override = familyOverride._createOverride(provider._argument)
-            as ProviderBase<Created, Listened>;
+    if (provider == _circularDependencyLock) {
+      throw CircularDependencyError._();
+    }
+    _circularDependencyLock ??= provider;
+
+    try {
+      final element = _stateReaders.putIfAbsent(provider, () {
+        ProviderBase<Created, Listened> override;
+        override ??=
+            _overrideForProvider[provider] as ProviderBase<Created, Listened>;
+        if (override == null &&
+            provider.from != null &&
+            _overrideForFamily[provider.from] != null) {
+          final familyOverride = _overrideForFamily[provider.from];
+          override = familyOverride._createOverride(provider._argument)
+              as ProviderBase<Created, Listened>;
+        }
+        override ??= provider;
+        return override.createElement()
+          .._provider = override
+          .._origin = provider
+          .._container = this
+          ..mount();
+      }) as ProviderElement<Created, Listened>;
+      return element..flush();
+    } finally {
+      if (_circularDependencyLock == provider) {
+        _circularDependencyLock = null;
       }
-      override ??= provider;
-      return override.createElement()
-        .._provider = override
-        .._origin = provider
-        .._container = this
-        ..mount();
-    }) as ProviderElement<Created, Listened>;
-    return element..flush();
+    }
   }
 
   /// Release all the resources associated with this [ProviderContainer].

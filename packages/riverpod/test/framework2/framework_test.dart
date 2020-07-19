@@ -114,6 +114,7 @@ void main() {
     expect(secondElement.hasListeners, false);
   });
 
+  // TODO cannot call watch outside of build
   test('remove dependencies on dispose', () async {
     final first = StateProvider((ref) => 0);
     final computed = Provider.autoDispose((ref) {
