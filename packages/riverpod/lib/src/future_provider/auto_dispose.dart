@@ -12,6 +12,14 @@ class AutoDisposeFutureProvider<T>
   /// {@macro riverpod.family}
   static const family = AutoDisposeFutureProviderFamilyBuilder();
 
+  ProviderBase<Future<T>, Future<T>> _future;
+  ProviderBase<Future<T>, Future<T>> get future {
+    return _future ??= AutoDisposeCreatedProvider(
+      this,
+      name: name == null ? null : '$name.future',
+    );
+  }
+
   @override
   _AutoDisposeFutureProviderState<T> createState() =>
       _AutoDisposeFutureProviderState();

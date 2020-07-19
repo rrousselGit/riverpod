@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'builders.dart';
 import 'common.dart' show AsyncValue;
+import 'created_provider.dart';
 import 'framework.dart';
 
 part 'stream_provider/base.dart';
