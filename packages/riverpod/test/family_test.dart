@@ -8,6 +8,24 @@ import 'package:test/test.dart';
 import 'utils.dart';
 
 void main() {
+  test(
+      'MyProvider.autoDispos.family removes the key when the provider is destroyed',
+      () async {
+    final family = Provider.autoDispose.family<int, int>((ref, id) => id);
+    final container = ProviderContainer();
+
+    final sub = container.listen(family(0));
+    final sub2 = container.listen(family(2));
+
+    expect(sub.read(), 0);
+    expect(sub2.read(), 2);
+    expect(family.debugKeys, unorderedEquals(<int>[0, 2]));
+
+    sub.close();
+    await Future<void>.value();
+
+    expect(family.debugKeys, [2]);
+  });
   test('caches the provider per value', () {
     final family = Provider.family<String, int>((ref, a) => '$a');
     final container = ProviderContainer();

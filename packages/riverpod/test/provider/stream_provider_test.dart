@@ -260,7 +260,7 @@ void main() {
 
       controller.add(42);
       // just making sure the dependent isn't updated asynchronously
-      await controller.stream;
+      await Future<void>.value();
 
       expect(sub.read(), controller.stream);
       expect(callCount, 1);
@@ -349,7 +349,7 @@ void main() {
 
       controller.add(42);
       // just making sure the dependent isn't updated asynchronously
-      await controller.stream;
+      await Future<void>.value();
 
       expect(sub.read(), controller.stream);
       expect(callCount, 1);

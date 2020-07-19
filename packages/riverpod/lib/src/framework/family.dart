@@ -28,6 +28,15 @@ abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
   }
 
   P create(Param value, Created Function(Ref ref, Param param) builder);
+
+  List<Param> get debugKeys {
+    List<Param> result;
+    assert(() {
+      result = _cache.keys.toList(growable: false);
+      return true;
+    }(), '');
+    return result;
+  }
 }
 
 extension FamilyX<Created, Listened, Param, Ref extends ProviderReference,
