@@ -1,8 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/src/internals.dart' as internals;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+
+import 'utils.dart';
 
 void main() {
   test('auto-dispose notifier when stop listening', () async {
@@ -52,7 +53,7 @@ void main() {
       return ValueNotifier(value);
     });
     final container = ProviderContainer(overrides: [
-      provider.overrideAs((ref, value) => ValueNotifier(value * 2))
+      provider.overrideAsProvider((ref, value) => ValueNotifier(value * 2))
     ]);
     final listener1 = Listener<ValueNotifier<int>>();
     final listener2 = Listener<ValueNotifier<int>>();
@@ -69,13 +70,6 @@ void main() {
       isA<ValueNotifier<int>>().having((s) => s.value, 'value', 84),
     ))).called(1);
     verifyNoMoreInteractions(listener2);
-  });
-  test('can be assigned to provider', () {
-    // ignore: unused_local_variable
-    final internals.AutoDisposeProvider<ValueNotifier<int>> provider =
-        ChangeNotifierProvider.autoDispose((_) {
-      return ValueNotifier(0);
-    });
   });
   test('can specify name', () {
     final provider = ChangeNotifierProvider.autoDispose(

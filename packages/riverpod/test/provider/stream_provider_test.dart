@@ -62,7 +62,7 @@ void main() {
       return Stream.value(a * 2);
     });
     final container = ProviderContainer(overrides: [
-      provider.overrideAs((ref, a) => Stream.value(a * 4)),
+      provider.overrideAsProvider((ref, a) => Stream.value(a * 4)),
     ]);
     final listener = ListenerMock();
 
@@ -96,7 +96,7 @@ void main() {
       return Stream.value('$a');
     });
     final container = ProviderContainer(overrides: [
-      provider.overrideAs((ref, a) => Stream.value('override $a')),
+      provider.overrideAsProvider((ref, a) => Stream.value('override $a')),
     ]);
 
     expect(container.read(provider(0)), const AsyncValue<String>.loading());

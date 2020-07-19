@@ -32,15 +32,27 @@ extension StateNotifierStateProviderX<Value>
 
 class StateNotifierStateProvider<T>
     extends AlwaysAliveProviderBase<StateNotifier<T>, T> {
-  StateNotifierStateProvider._(StateNotifierProvider<StateNotifier<T>> provider)
+  StateNotifierStateProvider._(this._provider)
       : super(
-          (ref) => ref.watch(provider),
-          provider.name != null ? '${provider.name}.state' : null,
+          (ref) => ref.watch(_provider),
+          _provider.name != null ? '${_provider.name}.state' : null,
         );
+
+  final StateNotifierProvider<StateNotifier<T>> _provider;
 
   @override
   _StateNotifierStateProviderState<T> createState() {
     return _StateNotifierStateProviderState<T>();
+  }
+
+  @override
+  Override overrideAsValue(T value) {
+    return ProviderOverride(
+      ValueProvider<StateNotifier<T>, T>((ref) {
+        return ref.watch(_provider);
+      }, value),
+      this,
+    );
   }
 }
 

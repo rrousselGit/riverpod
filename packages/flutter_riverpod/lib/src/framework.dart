@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' hide describeIdentity;
 import 'package:flutter/widgets.dart';
 import 'package:riverpod/riverpod.dart';
 
@@ -30,7 +30,7 @@ import 'internals.dart';
 ///       overrides: [
 ///         // override the behavior of repositoryProvider to provide a fake
 ///         // implementation for test purposes.
-///         repositoryProvider.overrideAs(
+///         repositoryProvider.overrideAsProvider(
 ///           Provider((_) => FakeRepository()),
 ///         ),
 ///       ],
@@ -56,7 +56,7 @@ import 'internals.dart';
 ///           // Overrides themeProvider for the /gallery route only
 ///           '/gallery': (_) => ProviderScope(
 ///             overrides: [
-///               themeProvider.overrideAs(
+///               themeProvider.overrideAsProvider(
 ///                 Provider((_) => MyTheme.dark()),
 ///               ),
 ///             ],
@@ -73,7 +73,7 @@ class ProviderScope extends StatefulWidget {
   const ProviderScope({
     Key key,
     this.overrides = const [],
-    this.observers,
+    // this.observers,
     @required this.child,
   })  : assert(child != null, 'child cannot be `null`'),
         super(key: key);
@@ -82,7 +82,7 @@ class ProviderScope extends StatefulWidget {
   final Widget child;
 
   /// The listeners that subscribes to changes on providers stored on this [ProviderScope].
-  final List<ProviderObserver> observers;
+  // final List<ProviderObserver> observers;
 
   /// Informations on how to override a provider/family.
   final List<Override> overrides;
@@ -137,7 +137,7 @@ class ProviderScopeState extends State<ProviderScope> {
     container = ProviderContainer(
       parent: scope?.container,
       overrides: widget.overrides,
-      observers: widget.observers,
+      // observers: widget.observers,
       // TODO How to report to FlutterError?
       // onError: (dynamic error, stack) {
       //   FlutterError.reportError(

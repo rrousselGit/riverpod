@@ -89,7 +89,7 @@ void main() {
       return 21;
     });
     final container = ProviderContainer(overrides: [
-      provider.overrideAs(override),
+      provider.overrideAsProvider(override),
     ]);
     final listener = Listener();
 

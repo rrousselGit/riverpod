@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'change_notifier_provider.dart';
 import 'internals.dart';
 
 /// Builds a [ChangeNotifierProvider].

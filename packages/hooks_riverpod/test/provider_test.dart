@@ -19,7 +19,7 @@ void main() {
 
     Builder(builder: (context) {
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      int providerValue = provider.read(context);
+      int providerValue = context.read(provider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
       AsyncValue<int> futureProviderValue = futureProvider.read(context);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
@@ -212,7 +212,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAs(
+          provider.overrideAsProvider(
             Provider((ref) {
               assert(ref != null, '');
               callCount++;
@@ -230,7 +230,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAs(
+          provider.overrideAsProvider(
             Provider((ref) {
               assert(ref != null, '');
               callCount++;

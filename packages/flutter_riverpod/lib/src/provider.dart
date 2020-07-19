@@ -3,9 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'framework.dart';
 import 'internals.dart';
 
-/// Adds [read] to providers that are never destroyed
-extension AlwaysAliveProviderBaseX<Dependency extends ProviderDependencyBase,
-    Result> on AlwaysAliveProviderBase<Dependency, Result> {
+/// Adds `context.read`
+extension BuildContextX on BuildContext {
   /// Reads a provider without listening to it.
   ///
   /// This method should not be called inside the `build` method of a widget.
@@ -75,16 +74,7 @@ extension AlwaysAliveProviderBaseX<Dependency extends ProviderDependencyBase,
   /// While more verbose than [read], using [Computed]/`select` is a lot safer.
   /// It does not rely on implementation details on `Model`, and it makes
   /// impossible to have a bug where our UI does not refresh.
-  Result read(BuildContext context) {
-    assert(() {
-      if (context.debugDoingBuild) {
-        throw UnsupportedError(
-          'Cannot call `provider.read(context)` inside `build`',
-        );
-      }
-      return true;
-    }(), '');
-
-    return ProviderContainerScope.of(context, listen: false).read(this);
+  T read<T>(AlwaysAliveProviderBase<Object, T> provider) {
+    return ProviderContainerScope.of(this, listen: false).read(provider);
   }
 }

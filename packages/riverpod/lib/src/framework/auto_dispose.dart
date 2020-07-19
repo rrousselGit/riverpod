@@ -17,9 +17,9 @@ abstract class AutoDisposeProviderBase<Created, Listened>
     return AutoDisposeProviderElement(this);
   }
 
-  // Accepts AlwaysAliveProviders too
-  Override overrideAs(ProviderBase<Object, Listened> provider) {
-    return ProviderOverride._(provider, this);
+  // Cannot be overriden by AutoDisposeProviders
+  Override overrideAsProvider(ProviderBase<Object, Listened> provider) {
+    return ProviderOverride(provider, this);
   }
 }
 

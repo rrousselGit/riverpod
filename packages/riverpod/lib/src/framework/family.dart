@@ -43,7 +43,7 @@ extension FamilyX<Created, Listened, Param, Ref extends ProviderReference,
         P extends ProviderBase<Created, Listened>>
     on Family<Created, Listened, Param, Ref, P> {
   /// Overrides the behavior of a family for a part of the application.
-  Override overrideAs(
+  Override overrideAsProvider(
     Created Function(Ref ref, Param param) builderOverride,
   ) {
     return FamilyOverride(

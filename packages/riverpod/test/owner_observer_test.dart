@@ -31,7 +31,7 @@ void main() {
     final provider = Provider((_) => 0);
     final container = ProviderContainer(
       overrides: [
-        provider.overrideAs(Provider((_) => 42)),
+        provider.overrideAsProvider(Provider((_) => 42)),
       ],
       observers: [observer, observer2],
     );
@@ -53,7 +53,7 @@ void main() {
     final provider = Provider((_) => 0);
     final container = ProviderContainer(
       overrides: [
-        provider.overrideAs(Provider((_) => 42)),
+        provider.overrideAsProvider(Provider((_) => 42)),
       ],
       observers: [observer, observer2, observer3],
     );
@@ -82,7 +82,7 @@ void main() {
     final counter = Counter();
     final container = ProviderContainer(
       overrides: [
-        provider.overrideAs(StateNotifierProvider((_) => counter)),
+        provider.overrideAsProvider(StateNotifierProvider((_) => counter)),
       ],
       observers: [observer, observer2],
     );
@@ -132,7 +132,7 @@ void main() {
     final counter = Counter();
     final container = ProviderContainer(
       overrides: [
-        provider.overrideAs(StateNotifierProvider((_) => counter)),
+        provider.overrideAsProvider(StateNotifierProvider((_) => counter)),
       ],
       observers: [observer, observer2, observer3],
     );
@@ -231,7 +231,7 @@ void main() {
     final onDispose = OnDisposeMock();
     final container = ProviderContainer(
       overrides: [
-        provider.overrideAs(Provider((ref) {
+        provider.overrideAsProvider(Provider((ref) {
           ref.onDispose(onDispose);
           return 0;
         })),

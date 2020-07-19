@@ -47,10 +47,10 @@ final characterPages =
   },
 );
 
-final charactersCount = Computed.family<AsyncValue<int>, String>((watch, name) {
+final charactersCount = Provider.family<AsyncValue<int>, String>((ref, name) {
   final meta = CharacterPagination(page: 0, name: name);
 
-  return watch(characterPages(meta)).whenData((value) => value.totalCount);
+  return ref.watch(characterPages(meta)).whenData((value) => value.totalCount);
 });
 
 @freezed
@@ -62,7 +62,7 @@ abstract class CharacterOffset with _$CharacterOffset {
 }
 
 final characterAtIndex =
-    Computed.family<AsyncValue<Character>, CharacterOffset>((watch, query) {
+    Provider.family<AsyncValue<Character>, CharacterOffset>((ref, query) {
   final offsetInPage = query.offset % kCharactersPageLimit;
 
   final meta = CharacterPagination(
@@ -70,7 +70,7 @@ final characterAtIndex =
     name: query.name,
   );
 
-  return watch(characterPages(meta)).whenData(
+  return ref.watch(characterPages(meta)).whenData(
     (value) => value.characters[offsetInPage],
   );
 });
@@ -128,7 +128,7 @@ class Home extends HookWidget {
                   delegate: SliverChildBuilderDelegate((c, index) {
                     return ProviderScope(
                       overrides: [
-                        _characterIndex.overrideAs(Provider((ref) => index)),
+                        _characterIndex.overrideAsProvider(Provider((ref) => index)),
                       ],
                       child: const CharacterItem(),
                     );

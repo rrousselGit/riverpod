@@ -18,14 +18,14 @@ void main() {
 
     Builder(builder: (context) {
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      int providerValue = provider.read(context);
+      int providerValue = context.read(provider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      AsyncValue<int> futureProviderValue = futureProvider.read(context);
+      AsyncValue<int> futureProviderValue = context.read(futureProvider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      AsyncValue<int> streamProviderValue = streamProvider.read(context);
+      AsyncValue<int> streamProviderValue = context.read(streamProvider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
       ValueNotifier<int> changeNotifierProviderValue =
-          changeNotifierProvider.read(context);
+          context.read(changeNotifierProvider);
 
       return Container();
     });
@@ -164,7 +164,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAs(
+          provider.overrideAsProvider(
             Provider((ref) {
               assert(ref != null, '');
               callCount++;
@@ -182,7 +182,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAs(
+          provider.overrideAsProvider(
             Provider((ref) {
               assert(ref != null, '');
               callCount++;
@@ -204,10 +204,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider2.overrideAs(
+          provider2.overrideAsProvider(
             Provider<int>((ref) {
-              final other = ref.dependOn(provider);
-              return other.value * 2;
+              return ref.watch(provider) * 2;
             }),
           ),
         ],
@@ -228,14 +227,13 @@ void main() {
     final provider = Provider((_) => 0);
 
     final provider1 = Provider((ref) {
-      final other = ref.dependOn(provider);
-      return other.value.toString();
+      return ref.watch(provider).toString();
     });
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAs(Provider((_) => 1)),
+          provider.overrideAsProvider(Provider((_) => 1)),
         ],
         child: Consumer((c, watch) {
           return Text(watch(provider1), textDirection: TextDirection.ltr);
@@ -249,16 +247,13 @@ void main() {
   testWidgets('provider1 chain', (tester) async {
     final first = Provider((_) => 1);
     final second = Provider<int>((ref) {
-      final other = ref.dependOn(first);
-      return other.value + 1;
+      return ref.watch(first) + 1;
     });
     final third = Provider<int>((ref) {
-      final other = ref.dependOn(second);
-      return other.value + 1;
+      return ref.watch(second) + 1;
     });
     final forth = Provider<int>((ref) {
-      final other = ref.dependOn(third);
-      return other.value + 1;
+      return ref.watch(third) + 1;
     });
 
     await tester.pumpWidget(
@@ -277,22 +272,19 @@ void main() {
   testWidgets('overriden provider1 chain', (tester) async {
     final first = Provider((_) => 1);
     final second = Provider<int>((ref) {
-      final other = ref.dependOn(first);
-      return other.value + 1;
+      return ref.watch(first) + 1;
     });
     final third = Provider<int>((ref) {
-      final other = ref.dependOn(second);
-      return other.value + 1;
+      return ref.watch(second) + 1;
     });
     final forth = Provider<int>((ref) {
-      final other = ref.dependOn(third);
-      return other.value + 1;
+      return ref.watch(third) + 1;
     });
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          first.overrideAs(Provider((_) => 42)),
+          first.overrideAsProvider(Provider((_) => 42)),
         ],
         child: Consumer((c, watch) {
           return Text(
@@ -308,22 +300,19 @@ void main() {
   testWidgets('partial override provider1 chain', (tester) async {
     final first = Provider((_) => 1);
     final second = Provider<int>((ref) {
-      final other = ref.dependOn(first);
-      return other.value + 1;
+      return ref.watch(first) + 1;
     });
     final third = Provider<int>((ref) {
-      final other = ref.dependOn(second);
-      return other.value + 1;
+      return ref.watch(second) + 1;
     });
     final forth = Provider<int>((ref) {
-      final other = ref.dependOn(third);
-      return other.value + 1;
+      return ref.watch(third) + 1;
     });
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          second.overrideAs(Provider((_) => 0)),
+          second.overrideAsProvider(Provider((_) => 0)),
         ],
         child: Consumer((c, watch) {
           return Text(
@@ -341,14 +330,12 @@ void main() {
 
     // These check the type safety
     ProviderReference ref;
-    ProviderDependency<int> firstState;
 
     // ignore: omit_local_variable_types
     final Provider<int> provider1 = Provider<int>((r) {
-      final first = r.dependOn(provider);
+      final first = r.watch(provider);
       ref = r;
-      firstState = first;
-      return first.value * 2;
+      return first * 2;
     });
 
     await tester.pumpWidget(
@@ -363,7 +350,6 @@ void main() {
     );
 
     expect(ref, isNotNull);
-    expect(firstState, isNotNull);
     expect(find.text('84'), findsOneWidget);
   });
 }

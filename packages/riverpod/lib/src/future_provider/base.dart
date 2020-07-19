@@ -25,6 +25,25 @@ class FutureProvider<T>
 
   @override
   _FutureProviderState<T> createState() => _FutureProviderState();
+
+  @override
+  Override overrideAsValue(AsyncValue<T> value) {
+    return ProviderOverride(
+      ValueProvider<Future<T>, AsyncValue<T>>((ref) {
+        final controller = Completer<T>();
+        ref.onChange = (newValue) {
+          newValue.when(
+            data: controller.complete,
+            loading: () {},
+            error: controller.completeError
+          );
+        };
+        ref.onChange(value);
+        return controller.future;
+      }, value),
+      this,
+    );
+  }
 }
 
 class _FutureProviderState<T> = ProviderStateBase<Future<T>, AsyncValue<T>>

@@ -50,8 +50,10 @@ abstract class AlwaysAliveProviderBase<Created, Listened>
   }
 
   // Cannot be overriden by AutoDisposeProviders
-  Override overrideAs(AlwaysAliveProviderBase<Object, Listened> provider) {
-    return ProviderOverride._(provider, this);
+  Override overrideAsProvider(
+    AlwaysAliveProviderBase<Object, Listened> provider,
+  ) {
+    return ProviderOverride(provider, this);
   }
 }
 
@@ -80,6 +82,14 @@ abstract class ProviderBase<Created, Listened> {
     }.entries.where((e) => e.value != null).map((e) => '${e.key}: ${e.value}');
 
     return '${describeIdentity(this)}$content';
+  }
+
+  // Works only on ProviderBase<T, T> scenario by default
+  Override overrideAsValue(Listened value) {
+    return ProviderOverride(
+      ValueProvider<Object, Listened>((ref) => value, value),
+      this,
+    );
   }
 }
 
@@ -303,6 +313,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   void didRemoveListener() {}
 
   @protected
+  @mustCallSuper
   void mount() {
     _mounted = true;
     _state._element = this;
@@ -311,10 +322,15 @@ class ProviderElement<Created, Listened> implements ProviderReference {
     _dependencyMayHaveChanged = false;
   }
 
+  // ignore: use_setters_to_change_properties
   @protected
-  void update(ProviderBase<Created, Listened> oldProvider) {}
+  @mustCallSuper
+  void update(ProviderBase<Created, Listened> newProvider) {
+    _provider = newProvider;
+  }
 
   @protected
+  @mustCallSuper
   void dispose() {
     _mounted = false;
     _runOnDispose();

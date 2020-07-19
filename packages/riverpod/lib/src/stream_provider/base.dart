@@ -25,6 +25,26 @@ class StreamProvider<T>
 
   @override
   _StreamProviderState<T> createState() => _StreamProviderState();
+
+  @override
+  Override overrideAsValue(AsyncValue<T> value) {
+    return ProviderOverride(
+      ValueProvider<Stream<T>, AsyncValue<T>>((ref) {
+        final controller = StreamController<T>();
+        ref.onDispose(controller.close);
+        ref.onChange = (newValue) {
+          newValue.when(
+            data: controller.add,
+            loading: () {},
+            error: controller.addError,
+          );
+        };
+        ref.onChange(value);
+        return controller.stream;
+      }, value),
+      this,
+    );
+  }
 }
 
 class _StreamProviderState<T> = ProviderStateBase<Stream<T>, AsyncValue<T>>

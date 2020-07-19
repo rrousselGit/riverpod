@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart';
-import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -84,6 +83,34 @@ void main() {
       expect(callCount, 1);
     });
   });
+  test('disposing child container does not dispose the providers', () {
+    final container = ProviderContainer();
+    final child = ProviderContainer(parent: container);
+    var disposed = false;
+    final provider = Provider((ref) {
+      ref.onDispose(() => disposed = true);
+      return 0;
+    });
+
+    expect(child.read(provider), 0);
+
+    child.dispose();
+
+    expect(disposed, false);
+
+    container.dispose();
+
+    expect(disposed, true);
+  });
+  test('child container uses root overrides', () {
+    final provider = Provider((ref) => 0);
+    final container = ProviderContainer(
+      overrides: [provider.overrideAsValue(42)],
+    );
+    final child = ProviderContainer(parent: container);
+
+    expect(child.read(provider), 42);
+  });
 
   test('re-evaluating a provider can stop listening to a dependency', () {
     final first = StateProvider((ref) => 0);
@@ -112,6 +139,81 @@ void main() {
     expect(firstElement.hasListeners, true);
     expect(secondElement.dependents, <ProviderElement>{});
     expect(secondElement.hasListeners, false);
+  });
+  group('overrideAsValue', () {
+    test('synchronously overrides the value', () {
+      var callCount = 0;
+      final provider = FutureProvider((ref) async {
+        callCount++;
+        return 0;
+      });
+      final container = ProviderContainer(overrides: [
+        provider.overrideAsValue(const AsyncValue.data(42)),
+      ]);
+
+      addTearDown(container.dispose);
+
+      final sub = container.listen(provider);
+
+      expect(callCount, 0);
+      expect(sub.read(), const AsyncValue.data(42));
+    });
+
+    test('notify listeners when value changes', () {
+      final provider = Provider((ref) => 0);
+      final container = ProviderContainer(overrides: [
+        provider.overrideAsValue(42),
+      ]);
+
+      addTearDown(container.dispose);
+
+      final sub = container.listen(
+        provider,
+        mayHaveChanged: mayHaveChanged,
+        didChange: didChange,
+      );
+
+      verifyZeroInteractions(mayHaveChanged);
+      verifyZeroInteractions(didChange);
+
+      container.updateOverrides([
+        provider.overrideAsValue(21),
+      ]);
+
+      verifyOnly(mayHaveChanged, mayHaveChanged(sub));
+      verifyZeroInteractions(didChange);
+
+      expect(sub.read(), 21);
+
+      verifyOnly(didChange, didChange(sub));
+      verifyNoMoreInteractions(mayHaveChanged);
+    });
+    test('does not notify listeners if updated with the same value', () {
+      final provider = Provider((ref) => 0);
+      final container = ProviderContainer(overrides: [
+        provider.overrideAsValue(42),
+      ]);
+
+      addTearDown(container.dispose);
+
+      final sub = container.listen(
+        provider,
+        mayHaveChanged: mayHaveChanged,
+        didChange: didChange,
+      );
+
+      verifyZeroInteractions(mayHaveChanged);
+      verifyZeroInteractions(didChange);
+
+      container.updateOverrides([
+        provider.overrideAsValue(42),
+      ]);
+
+      verifyZeroInteractions(didChange);
+      verifyZeroInteractions(mayHaveChanged);
+
+      expect(sub.read(), 42);
+    });
   });
 
   // TODO cannot call watch outside of build

@@ -10,19 +10,8 @@ void main() {
   test('SynchronousFuture', () {
     final futureProvider = FutureProvider((_) => SynchronousFuture(42));
     final container = ProviderContainer();
-    final listener = Listener();
 
-    final sub = futureProvider.addLazyListener(
-      container,
-      mayHaveChanged: () {},
-      onChange: listener,
-    );
-    verify(listener(const AsyncValue.data(42)));
-    verifyNoMoreInteractions(listener);
-
-    sub.flush();
-
-    verifyNoMoreInteractions(listener);
+    expect(container.read(futureProvider), const AsyncValue.data(42));
   });
 
   testWidgets('updates dependents with value', (tester) async {
@@ -136,7 +125,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          futureProvider.overrideAs(FutureProvider((_) async => 21)),
+          futureProvider.overrideAsProvider(FutureProvider((_) async => 21)),
         ],
         child: Directionality(
           textDirection: TextDirection.ltr,
@@ -157,7 +146,7 @@ void main() {
 
     expect(find.text('21'), findsOneWidget);
   });
-  group('debugOverrideWithValue', () {
+  group('overrideAsValue', () {
     var callCount = 0;
     final futureProvider = FutureProvider((s) async {
       callCount++;
@@ -168,8 +157,8 @@ void main() {
     var completed = false;
     final proxy = Provider<String>(
       (ref) {
-        final first = ref.dependOn(futureProvider);
-        future = first.value
+        final first = ref.watch(futureProvider.future);
+        future = first
           ..then(
             (value) => completed = true,
             onError: (dynamic _) => completed = true,
@@ -203,7 +192,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(const AsyncValue.data(42)),
+            futureProvider.overrideAsValue(const AsyncValue.data(42)),
           ],
           child: child,
         ),
@@ -215,7 +204,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(const AsyncValue.data(42)),
+            futureProvider.overrideAsValue(const AsyncValue.data(42)),
           ],
           child: child,
         ),
@@ -227,7 +216,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(const AsyncValue.data(42)),
+            futureProvider.overrideAsValue(const AsyncValue.data(42)),
           ],
           child: child,
         ),
@@ -242,7 +231,7 @@ void main() {
         () => tester.pumpWidget(
           ProviderScope(
             overrides: [
-              futureProvider.debugOverrideWithValue(const AsyncValue.data(21)),
+              futureProvider.overrideAsValue(const AsyncValue.data(21)),
             ],
             child: child,
           ),
@@ -250,7 +239,7 @@ void main() {
         (err, _) => errors.add(err),
       );
 
-      expect(errors, [isUnsupportedError]);
+      expect(errors, [isStateError]);
     });
     testWidgets(
         'fails if completed with error and rebuild with different content',
@@ -259,7 +248,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(AsyncValue.error(error)),
+            futureProvider.overrideAsValue(AsyncValue.error(error)),
           ],
           child: child,
         ),
@@ -273,7 +262,7 @@ void main() {
         () => tester.pumpWidget(
           ProviderScope(
             overrides: [
-              futureProvider.debugOverrideWithValue(const AsyncValue.data(21)),
+              futureProvider.overrideAsValue(const AsyncValue.data(21)),
             ],
             child: child,
           ),
@@ -281,7 +270,7 @@ void main() {
         (err, _) => errors.add(err),
       );
 
-      expect(errors, [isUnsupportedError]);
+      expect(errors, [isStateError]);
     });
     testWidgets(
         'FutureProviderDependency.future completes on rebuild with data',
@@ -289,7 +278,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(const AsyncValue.loading()),
+            futureProvider.overrideAsValue(const AsyncValue.loading()),
           ],
           child: child,
         ),
@@ -304,7 +293,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(const AsyncValue.data(42)),
+            futureProvider.overrideAsValue(const AsyncValue.data(42)),
           ],
           child: child,
         ),
@@ -319,7 +308,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(const AsyncValue.loading()),
+            futureProvider.overrideAsValue(const AsyncValue.loading()),
           ],
           child: child,
         ),
@@ -335,7 +324,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(AsyncValue.error(error)),
+            futureProvider.overrideAsValue(AsyncValue.error(error)),
           ],
           child: child,
         ),
@@ -350,7 +339,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(const AsyncValue.loading()),
+            futureProvider.overrideAsValue(const AsyncValue.loading()),
           ],
           child: child,
         ),
@@ -362,7 +351,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(const AsyncValue.loading()),
+            futureProvider.overrideAsValue(const AsyncValue.loading()),
           ],
           child: child,
         ),
@@ -379,7 +368,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(const AsyncValue.loading()),
+            futureProvider.overrideAsValue(const AsyncValue.loading()),
           ],
           child: child,
         ),
@@ -395,7 +384,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(const AsyncValue.data(42)),
+            futureProvider.overrideAsValue(const AsyncValue.data(42)),
           ],
           child: child,
         ),
@@ -413,7 +402,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.debugOverrideWithValue(AsyncValue.error(error)),
+            futureProvider.overrideAsValue(AsyncValue.error(error)),
           ],
           child: child,
         ),
@@ -430,8 +419,8 @@ void main() {
     final futureProvider = FutureProvider((_) async => 42);
 
     final futureProviderFamily = FutureProvider<int>((ref) async {
-      final other = ref.dependOn(futureProvider);
-      return await other.value * 2;
+      final other = ref.watch(futureProvider.future);
+      return await other * 2;
     });
 
     await tester.pumpWidget(
@@ -457,11 +446,10 @@ void main() {
   });
   testWidgets('FutureProviderFamily works with other providers',
       (tester) async {
-    final futureProvider = Provider((_) => 42);
+    final provider = Provider((_) => 42);
 
     final futureProviderFamily = FutureProvider<int>((ref) async {
-      final other = ref.dependOn(futureProvider);
-      return other.value * 2;
+      return ref.watch(provider) * 2;
     });
 
     await tester.pumpWidget(
@@ -489,8 +477,8 @@ void main() {
     final futureProvider = Provider((_) => 42);
 
     final futureProviderFamily = FutureProvider<int>((ref) async {
-      final other = ref.dependOn(futureProvider);
-      return other.value * 2;
+      final other = ref.watch(futureProvider);
+      return other * 2;
     });
 
     await tester.pumpWidget(

@@ -91,9 +91,9 @@ void main() {
     final family = Provider.family<String, int>((ref, a) => '$a');
     final container = ProviderContainer(overrides: [
       // Provider overrides always takes over family overrides
-      family(84).overrideAs(Provider((_) => 'Bonjour 84')),
-      family.overrideAs((ref, a) => 'Hello $a'),
-      family(21).overrideAs(Provider((_) => 'Hi 21')),
+      family(84).overrideAsProvider(Provider((_) => 'Bonjour 84')),
+      family.overrideAsProvider((ref, a) => 'Hello $a'),
+      family(21).overrideAsProvider(Provider((_) => 'Hi 21')),
     ]);
 
     expect(container.read(family(21)), 'Hi 21');

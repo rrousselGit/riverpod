@@ -11,7 +11,7 @@ void main() {
         (ref, a) => TestNotifier());
     final notifier2 = TestNotifier(42);
     final container = ProviderContainer(
-      overrides: [provider.overrideAs((ref, a) => notifier2)],
+      overrides: [provider.overrideAsProvider((ref, a) => notifier2)],
     );
 
     // access in the child container
@@ -34,13 +34,13 @@ void main() {
     final provider = StateNotifierProvider((_) => TestNotifier());
     final container = ProviderContainer(
       overrides: [
-        provider.overrideAs(StateNotifierProvider((_) => TestNotifier(10)))
+        provider.overrideAsProvider(StateNotifierProvider((_) => TestNotifier(10)))
       ],
     );
 
     // does not crash
     container.updateOverrides([
-      provider.overrideAs(StateNotifierProvider((_) => notifier)),
+      provider.overrideAsProvider(StateNotifierProvider((_) => notifier)),
     ]);
 
     expect(container.read(provider), notifier);

@@ -3,19 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('ChangeNotifierProviderDependency can be assigned to ProviderDependency',
-      () async {
-    final provider = ChangeNotifierProvider((ref) {
-      return ValueNotifier(0);
-    });
-    final container = ProviderContainer();
-
-    // ignore: omit_local_variable_types
-    final ProviderDependency<ValueNotifier<int>> dep =
-        container.ref.dependOn(provider);
-
-    await expectLater(dep.value.value, 0);
-  });
   test('family', () {
     final container = ProviderContainer();
     final provider =
@@ -38,7 +25,7 @@ void main() {
       return ValueNotifier(value);
     });
     final container = ProviderContainer(overrides: [
-      provider.overrideAs((ref, value) => ValueNotifier(value * 2))
+      provider.overrideAsProvider((ref, value) => ValueNotifier(value * 2))
     ]);
 
     expect(
@@ -49,14 +36,6 @@ void main() {
       container.read(provider(42)),
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 84),
     );
-  });
-  test('can be assigned to provider', () {
-    final Provider<ValueNotifier<int>> provider = ChangeNotifierProvider((_) {
-      return ValueNotifier(0);
-    });
-    final container = ProviderContainer();
-
-    expect(container.read(provider), isA<ValueNotifier<int>>());
   });
   test('can specify name', () {
     final provider = ChangeNotifierProvider(

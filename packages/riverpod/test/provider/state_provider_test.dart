@@ -26,7 +26,7 @@ void main() {
       return '$a';
     });
     final container = ProviderContainer(overrides: [
-      provider.overrideAs((ref, a) => 'override $a'),
+      provider.overrideAsProvider((ref, a) => 'override $a'),
     ]);
 
     expect(

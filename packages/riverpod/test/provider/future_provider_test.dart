@@ -62,7 +62,7 @@ void main() {
       return Future.value(a * 2);
     });
     final container = ProviderContainer(overrides: [
-      provider.overrideAs((ref, a) => Future.value(a * 4)),
+      provider.overrideAsProvider((ref, a) => Future.value(a * 4)),
     ]);
     final listener = ListenerMock();
 
@@ -96,7 +96,7 @@ void main() {
       return Future.value('$a');
     });
     final container = ProviderContainer(overrides: [
-      provider.overrideAs((ref, a) => Future.value('override $a')),
+      provider.overrideAsProvider((ref, a) => Future.value('override $a')),
     ]);
 
     expect(container.read(provider(0)), const AsyncValue<String>.loading());
@@ -361,27 +361,23 @@ void main() {
   });
   test('listener not called anymore if subscription is closed', () {
     final container = ProviderContainer();
-    final listener = ListenerMock();
+    final mayHaveChanged = MayHaveChangedMock<AsyncValue<int>>();
+    final didChange = DidChangedMock<AsyncValue<int>>();
     final completer = Completer<int>.sync();
     final provider = FutureProvider((_) => completer.future);
 
-    final sub = provider.addLazyListener(
-      container,
-      mayHaveChanged: () {},
-      onChange: listener,
+    final sub = container.listen(
+      provider,
+      mayHaveChanged: mayHaveChanged,
+      didChange: didChange,
     );
 
-    verify(listener(const AsyncValue<int>.loading())).called(1);
-    verifyNoMoreInteractions(listener);
-
     sub.close();
+
     completer.complete(42);
 
-    verifyNoMoreInteractions(listener);
-    sub.flush();
-
-    verifyNoMoreInteractions(listener);
-    container.dispose();
+    verifyZeroInteractions(mayHaveChanged);
+    verifyZeroInteractions(didChange);
   });
 
   // group('mock as value', () {

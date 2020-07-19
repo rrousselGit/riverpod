@@ -195,9 +195,9 @@ void main() {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider((_) => notifier);
     var callCount = 0;
-    final computed = Computed((watch) {
+    final computed = Provider((ref) {
       callCount++;
-      return watch(provider.state);
+      return ref.watch(provider.state);
     });
 
     await tester.pumpWidget(
@@ -222,11 +222,11 @@ void main() {
     expect(find.text('1 1'), findsOneWidget);
     expect(callCount, 2);
   });
-  testWidgets("don't rebuild if Computed didn't actually change",
+  testWidgets("don't rebuild if Provider ref't actually change",
       (tester) async {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider((_) => notifier);
-    final computed = Computed((watch) => !watch(provider.state).isNegative);
+    final computed = Provider((ref) => !ref.watch(provider.state).isNegative);
     var buildCount = 0;
 
     await tester.pumpWidget(
@@ -287,7 +287,7 @@ void main() {
           ProviderScope(
             key: secondOwnerKey,
             overrides: [
-              provider.overrideAs(override),
+              provider.overrideAsProvider(override),
             ],
             child: Container(),
           ),
@@ -315,7 +315,7 @@ void main() {
           ProviderScope(
             key: secondOwnerKey,
             overrides: [
-              provider.overrideAs(override),
+              provider.overrideAsProvider(override),
             ],
             child: consumer,
           ),

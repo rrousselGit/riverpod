@@ -48,7 +48,8 @@ class ProviderContainer {
   ProviderContainer({
     ProviderContainer parent,
     List<Override> overrides = const [],
-  }) : _stateReaders = parent?._stateReaders ?? {} {
+  })  : _root = parent?._root ?? parent,
+        _stateReaders = parent?._stateReaders ?? {} {
     if (parent != null && overrides.isNotEmpty) {
       throw UnsupportedError(
         'Cannot override providers on a non-root ProviderContainer/ProviderScope',
@@ -64,6 +65,7 @@ class ProviderContainer {
     }
   }
 
+  final ProviderContainer _root;
   final _overrideForProvider = <ProviderBase, ProviderBase>{};
   final _overrideForFamily = <Family, FamilyOverride>{};
 
@@ -116,6 +118,12 @@ class ProviderContainer {
       );
     }
 
+    List<Override> unusedOverrides;
+    assert(() {
+      unusedOverrides = [...overrides];
+      return true;
+    }(), '');
+
     for (final override in overrides) {
       if (override is ProviderOverride) {
         assert(
@@ -133,10 +141,22 @@ class ProviderContainer {
         if (element == null) {
           continue;
         }
+        assert(() {
+          unusedOverrides.remove(override);
+          return true;
+        }(), '');
         _runUnaryGuarded(element.update, override._provider);
       } else if (override is FamilyOverride) {
+        assert(() {
+          unusedOverrides.remove(override);
+          return true;
+        }(), '');
         _overrideForFamily[override._family] = override;
       }
+      assert(
+        unusedOverrides.isEmpty,
+        'Updated the list of overrides with providers that were not overriden before',
+      );
     }
   }
 
@@ -151,6 +171,9 @@ class ProviderContainer {
       throw StateError(
         'Tried to read a provider from a ProviderContainer that was already disposed',
       );
+    }
+    if (_root != null) {
+      return _root.readProviderElement(provider);
     }
     if (provider == _circularDependencyLock) {
       throw CircularDependencyError._();
@@ -195,6 +218,10 @@ class ProviderContainer {
       );
     }
     _disposed = true;
+
+    if (_root != null) {
+      return;
+    }
 
     assert(notifyListenersLock == null, '');
 
@@ -275,9 +302,9 @@ extension ProviderStateOwnerInternals on ProviderContainer {
 /// See also:
 ///
 /// - [ProviderContainer], which uses this object.
-/// - [AlwaysAliveProviderBase.overrideAs], which creates a [ProviderOverride].
+/// - [AlwaysAliveProviderBase.overrideAsProvider], which creates a [ProviderOverride].
 class ProviderOverride implements Override {
-  ProviderOverride._(this._provider, this._origin);
+  ProviderOverride(this._provider, this._origin);
 
   final ProviderBase _origin;
   final ProviderBase _provider;

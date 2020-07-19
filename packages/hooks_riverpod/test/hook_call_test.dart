@@ -37,7 +37,7 @@ void main() {
     final notifier2 = TestNotifier()..count = 42;
 
     final provider = ChangeNotifierProvider((_) => notifier);
-    final provider2 = provider.overrideAs(
+    final provider2 = provider.overrideAsProvider(
       ChangeNotifierProvider((_) => notifier2),
     );
 

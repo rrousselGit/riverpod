@@ -35,7 +35,7 @@ void main() {
     });
     final listener = Listener();
     final container = ProviderContainer(overrides: [
-      provider.overrideAs((ref, value) {
+      provider.overrideAsProvider((ref, value) {
         ref.onDispose(onDispose);
         return '$value override';
       })
