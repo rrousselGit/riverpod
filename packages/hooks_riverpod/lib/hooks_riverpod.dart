@@ -95,7 +95,7 @@ extension ProviderSelect<Value> on ProviderBase<ProviderDependencyBase, Value> {
 /// class Example extends HookWidget {
 ///   @override
 ///   Widget build(BuildContext context) {
-///     final greeting = useProvider(helloWorldProvider);
+///     final value = useProvider(helloWorldProvider);
 ///     return Text(value); // Hello world
 ///   }
 /// }
