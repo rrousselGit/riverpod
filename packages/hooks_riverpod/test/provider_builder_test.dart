@@ -10,13 +10,11 @@ void main() {
 
     // These check the type safety
     ProviderReference ref;
-    ProviderDependency<int> firstState;
 
-    final Provider<int> provider1 = Provider<int>((r) {
-      final first = r.dependOn(provider);
+    final provider1 = Provider<int>((r) {
+      final first = r.watch(provider);
       ref = r;
-      firstState = first;
-      return first.value * 2;
+      return first * 2;
     });
 
     await tester.pumpWidget(
@@ -31,7 +29,6 @@ void main() {
     );
 
     expect(ref, isNotNull);
-    expect(firstState, isNotNull);
     expect(find.text('84'), findsOneWidget);
   });
 }

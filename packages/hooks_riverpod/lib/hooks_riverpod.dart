@@ -8,7 +8,7 @@ import 'src/selector.dart';
 export 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Exposes the `select` method on providers, later used by [useProvider].
-extension ProviderSelect<Value> on ProviderBase<ProviderDependencyBase, Value> {
+extension ProviderSelect<Value> on ProviderBase<Object, Value> {
   /// Partially listen to a provider.
   ///
   /// The [select] function allows filtering unwanted rebuilds of a Widget
@@ -74,11 +74,11 @@ extension ProviderSelect<Value> on ProviderBase<ProviderDependencyBase, Value> {
   ///
   /// This will further optimise our widget by rebuilding it only when "isAdult"
   /// changed instead of whenever the age changes.
-  ProviderListenable<Selected> select<Selected>(
-    Selected Function(Value value) selector,
-  ) {
-    return ProviderSelector(this, selector);
-  }
+  // ProviderListenable<Selected> select<Selected>(
+    // Selected Function(Value value) selector,
+  // ) {
+    // return ProviderSelector(this, selector);
+  // }
 }
 
 /// A hook that listens to a provider and returns its current value.
@@ -110,9 +110,9 @@ T useProvider<T>(ProviderListenable<T> provider) {
 }
 
 class _ProviderHook<T> extends Hook<T> {
-  const _ProviderHook(this._owner, this._provider);
+  const _ProviderHook(this._container, this._provider);
 
-  final ProviderContainer _owner;
+  final ProviderContainer _container;
   final ProviderListenable<T> _provider;
 
   @override
@@ -120,8 +120,7 @@ class _ProviderHook<T> extends Hook<T> {
 }
 
 class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
-  T _state;
-  ProviderSubscription _link;
+  ProviderSubscription<T> _link;
 
   @override
   void initHook() {
@@ -131,11 +130,13 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
 
   void _listen() {
     _link?.close();
-    _link = hook._provider.addLazyListener(
-      hook._owner,
-      mayHaveChanged: markMayNeedRebuild,
-      onChange: (newState) => _state = newState,
-    );
+    final provider = hook._provider;
+    if (provider is ProviderBase<Object, T>) {
+      _link = hook._container.listen<T>(
+        provider,
+        mayHaveChanged: (_) => markMayNeedRebuild(),
+      );
+    }
   }
 
   @override
@@ -143,8 +144,7 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
 
   @override
   T build(BuildContext context) {
-    _link.flush();
-    return _state;
+    return _link.read();
   }
 
   @override
@@ -154,23 +154,25 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
       oldHook._provider.runtimeType == hook._provider.runtimeType,
       'The provider listened cannot change',
     );
-    if (oldHook._owner != hook._owner) {
+    if (oldHook._container != hook._container) {
       _listen();
-    } else if (_link is SelectorSubscription<Object, T>) {
-      final link = _link as SelectorSubscription<Object, T>;
-      assert(
-        hook._provider is ProviderSelector<Object, T>,
-        'useProvider was updated from `useProvider(provider.select(...)) '
-        'to useProvider(provider), which is unsupported',
-      );
-      if ((hook._provider as ProviderSelector<Object, T>).provider !=
-          (oldHook._provider as ProviderSelector<Object, T>).provider) {
-        _listen();
-      } else {
-        // this will update _state
-        link.updateSelector(hook._provider);
-      }
-    } else if (oldHook._provider != hook._provider) {
+    }
+    //  else if (_link is SelectorSubscription<Object, T>) {
+    //   final link = _link as SelectorSubscription<Object, T>;
+    //   assert(
+    //     hook._provider is ProviderSelector<Object, T>,
+    //     'useProvider was updated from `useProvider(provider.select(...)) '
+    //     'to useProvider(provider), which is unsupported',
+    //   );
+    // if ((hook._provider as ProviderSelector<Object, T>).provider !=
+    //     (oldHook._provider as ProviderSelector<Object, T>).provider) {
+    //   _listen();
+    // } else {
+    //   // this will update _state
+    //   link.updateSelector(hook._provider);
+    // }
+    // }
+    else if (oldHook._provider != hook._provider) {
       _listen();
     }
   }

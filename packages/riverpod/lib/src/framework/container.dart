@@ -48,8 +48,15 @@ class ProviderContainer {
   ProviderContainer({
     ProviderContainer parent,
     List<Override> overrides = const [],
-  })  : _root = parent?._root ?? parent,
+    List<ProviderObserver> observers,
+  })  : _localObservers = observers,
+        _root = parent?._root ?? parent,
         _stateReaders = parent?._stateReaders ?? {} {
+    if (parent != null && observers != null) {
+      throw UnsupportedError(
+        'Cannot specify observers on a non-root ProviderContainer/ProviderScope',
+      );
+    }
     if (parent != null && overrides.isNotEmpty) {
       throw UnsupportedError(
         'Cannot override providers on a non-root ProviderContainer/ProviderScope',
@@ -72,6 +79,14 @@ class ProviderContainer {
   final Map<ProviderBase, ProviderElement> _stateReaders;
 
   ProviderReference get ref => read(_refProvider);
+
+  final List<ProviderObserver> _localObservers;
+  Iterable<ProviderObserver> get _observers sync* {
+    final iterable = _root == null ? _localObservers : _root._localObservers;
+    if (iterable != null) {
+      yield* iterable;
+    }
+  }
 
   /// Whether [dispose] was called or not.
   ///
@@ -193,11 +208,20 @@ class ProviderContainer {
               as ProviderBase<Created, Listened>;
         }
         override ??= provider;
-        return override.createElement()
+        final element = override.createElement()
           .._provider = override
           .._origin = provider
           .._container = this
           ..mount();
+
+        for (final observer in _observers) {
+          _runBinaryGuarded(
+            observer.didAddProvider,
+            provider,
+            element.state._exposedValue,
+          );
+        }
+        return element;
       }) as ProviderElement<Created, Listened>;
       return element..flush();
     } finally {
@@ -292,6 +316,29 @@ extension ProviderStateOwnerInternals on ProviderContainer {
     }(), '');
     return res;
   }
+}
+
+/// An object that listens to the changes of a [ProviderContainer].
+///
+/// This can be used for logging, making devtools, or saving the state
+/// for offline support.
+abstract class ProviderObserver {
+  /// A provider was initialized, and the value created is [value].
+  void didAddProvider(ProviderBase provider, Object value) {}
+
+  /// Called when the dependency of a provider changed, but it is not yet
+  /// sure if the computed value changes.
+  ///
+  /// It is possible that [mayHaveChanged] will be called, without [didUpdateProvider]
+  /// being called, such as when a [Provider] is re-computed but returns
+  /// a value == to the previous one.
+  void mayHaveChanged(ProviderBase provider) {}
+
+  /// Called my providers when they emit a notification.
+  void didUpdateProvider(ProviderBase provider, Object newValue) {}
+
+  /// A provider was disposed
+  void didDisposeProvider(ProviderBase provider) {}
 }
 
 /// An object used by [ProviderContainer] to override the behavior of a provider

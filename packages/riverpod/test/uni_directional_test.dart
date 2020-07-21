@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
-import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
 import 'utils.dart';
@@ -58,7 +57,8 @@ void main() {
     final container = ProviderContainer();
 
     expect(container.read(provider.state), 0);
-    container.watch(provider2, () {}).close();
+    final sub = container.listen(provider2);
+    sub.close();
 
     await Future<void>.value();
 
@@ -82,12 +82,12 @@ void main() {
     expect(errors, [isA<AssertionError>(), isA<Error>()]);
   });
 
-  test("Computed can't dirty anything on create", () {
+  test("Provider can't dirty anything on create", () {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
     final container = ProviderContainer();
     List<Object> errors;
-    final computed = Computed((watch) {
+    final computed = Provider((ref) {
       errors = errorsOf(counter.increment);
       return 0;
     });
@@ -101,14 +101,14 @@ void main() {
     verifyNoMoreInteractions(listener);
     expect(errors, [isA<StateError>(), isA<Error>()]);
   });
-  test("Computed can't dirty anything on update", () {
+  test("Provider can't dirty anything on update", () {
     // TODO
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
     final container = ProviderContainer();
     List<Object> errors;
-    final computed = Computed((watch) {
-      final value = watch(provider.state);
+    final computed = Provider((ref) {
+      final value = ref.watch(provider.state);
       if (value > 0) {
         errors = errorsOf(counter.increment);
       }
@@ -137,4 +137,8 @@ void main() {
     verifyNoMoreInteractions(listener);
     expect(errors, [isA<StateError>(), isA<Error>()]);
   });
+}
+
+class Listener extends Mock {
+  void call(int value);
 }

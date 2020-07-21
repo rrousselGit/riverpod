@@ -37,6 +37,8 @@ String shortHash(Object object) {
   return object.hashCode.toUnsigned(20).toRadixString(16).padLeft(5, '0');
 }
 
+abstract class ProviderListenable<Listened> {}
+
 abstract class AlwaysAliveProviderBase<Created, Listened>
     extends ProviderBase<Created, Listened> {
   AlwaysAliveProviderBase(
@@ -57,7 +59,8 @@ abstract class AlwaysAliveProviderBase<Created, Listened>
   }
 }
 
-abstract class ProviderBase<Created, Listened> {
+abstract class ProviderBase<Created, Listened>
+    implements ProviderListenable<Listened> {
   ProviderBase(this._create, this.name);
 
   final Created Function(ProviderReference ref) _create;
@@ -187,6 +190,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   bool _mounted = false;
   @override
   bool get mounted => _mounted;
+  bool _didMount = false;
 
   ProviderException _exception;
 
@@ -278,6 +282,9 @@ class ProviderElement<Created, Listened> implements ProviderReference {
 
   @protected
   void markDidChange() {
+    if (!_didMount) {
+      return;
+    }
     _notificationCount++;
     notifyMayHaveChanged();
   }
@@ -297,6 +304,14 @@ class ProviderElement<Created, Listened> implements ProviderReference {
         _runGuarded(listener.mayHaveChanged);
       }
     }
+    if (_didMount) {
+      for (final observer in _container._observers) {
+        _runUnaryGuarded(
+          observer.mayHaveChanged,
+          _origin,
+        );
+      }
+    }
   }
 
   @protected
@@ -306,6 +321,13 @@ class ProviderElement<Created, Listened> implements ProviderReference {
       if (listener.didChange != null) {
         _runGuarded(listener.didChange);
       }
+    }
+    for (final observer in _container._observers) {
+      _runBinaryGuarded(
+        observer.didUpdateProvider,
+        _origin,
+        _state._exposedValue,
+      );
     }
   }
 
@@ -318,6 +340,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
     _mounted = true;
     _state._element = this;
     _runStateCreate();
+    _didMount = true;
     _dirty = false;
     _dependencyMayHaveChanged = false;
   }
@@ -339,6 +362,14 @@ class ProviderElement<Created, Listened> implements ProviderReference {
       sub.key._dependents.remove(this);
       sub.value.close();
     }
+
+    for (final observer in _container._observers) {
+      _runUnaryGuarded(
+        observer.didDisposeProvider,
+        _origin,
+      );
+    }
+
     _listeners.clear();
     _state.dispose();
   }

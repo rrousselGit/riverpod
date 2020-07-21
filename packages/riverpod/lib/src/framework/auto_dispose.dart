@@ -30,8 +30,8 @@ class AutoDisposeProviderElement<Created, Listened>
     AutoDisposeProviderBase<Created, Listened> provider,
   ) : super(provider);
 
-  @override
   bool _maintainState = false;
+  @override
   bool get maintainState => _maintainState;
   set maintainState(bool value) {
     _maintainState = value;

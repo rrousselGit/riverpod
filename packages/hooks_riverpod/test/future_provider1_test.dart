@@ -8,8 +8,7 @@ void main() {
     final futureProvider = FutureProvider((_) async => 42);
 
     final futureProviderFamily = FutureProvider<int>((ref) async {
-      final other = ref.dependOn(futureProvider);
-      return await other.value * 2;
+      return await ref.watch(futureProvider.future) * 2;
     });
 
     await tester.pumpWidget(
@@ -35,11 +34,10 @@ void main() {
   });
   testWidgets('FutureProviderFamily works with other providers',
       (tester) async {
-    final futureProvider = Provider((_) => 42);
+    final provider = Provider((_) => 42);
 
     final futureProviderFamily = FutureProvider<int>((ref) async {
-      final other = ref.dependOn(futureProvider);
-      return other.value * 2;
+      return ref.watch(provider) * 2;
     });
 
     await tester.pumpWidget(
@@ -64,11 +62,10 @@ void main() {
     expect(find.text('84'), findsOneWidget);
   });
   testWidgets('FutureProviderFamily can be used directly', (tester) async {
-    final futureProvider = Provider((_) => 42);
+    final provider = Provider((_) => 42);
 
     final futureProviderFamily = FutureProvider<int>((ref) async {
-      final other = ref.dependOn(futureProvider);
-      return other.value * 2;
+      return ref.watch(provider) * 2;
     });
 
     await tester.pumpWidget(

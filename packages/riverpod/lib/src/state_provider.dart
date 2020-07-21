@@ -25,7 +25,7 @@ class StateController<T> extends StateNotifier<T> {
 /// A provider that expose a value which can be modified from outside.
 ///
 /// It can be useful for very simple states, like a filter or the currently
-/// selected item – which can then be combined with [Computed] or accessed
+/// selected item – which can then be combined with other providers or accessed
 /// in multiple screens.
 ///
 /// The following code shows a list of products, and allows selecting

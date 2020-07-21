@@ -13,6 +13,7 @@ mixin _FutureProviderStateMixin<T>
   // Used to determine if we are still listening to a future or not inside its `then`
   Future<T> listenedFuture;
 
+  @override
   void valueChanged({Future<T> previous}) {
     if (createdValue == previous) {
       return;

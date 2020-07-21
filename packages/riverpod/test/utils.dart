@@ -48,7 +48,6 @@ VerifyOnly get verifyOnly {
 }
 
 extension Legacy<T> on ProviderBase<Object, T> {
-  @deprecated
   void Function() watchOwner(
     ProviderContainer container,
     void Function(T value) listener,
@@ -61,7 +60,6 @@ extension Legacy<T> on ProviderBase<Object, T> {
     return sub.close;
   }
 
-  @deprecated
   ProviderSubscription<T> addLazyListener(
     ProviderContainer container, {
     void Function() mayHaveChanged,

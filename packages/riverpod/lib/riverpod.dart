@@ -17,14 +17,12 @@ export 'src/framework.dart'
         ProviderBase,
         Override,
         ProviderReference,
+        ProviderListenable,
         ProviderContainer,
-        // ProviderObserver,
-        // ProviderListenable,
+        ProviderObserver,
         ProviderSubscription,
         FamilyX,
         ProviderException;
-// Computed,
-// Reader;
 
 export 'src/future_provider.dart' show FutureProvider;
 

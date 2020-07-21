@@ -21,12 +21,12 @@ void main() {
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
       int providerValue = context.read(provider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      AsyncValue<int> futureProviderValue = futureProvider.read(context);
+      AsyncValue<int> futureProviderValue = context.read(futureProvider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      AsyncValue<int> streamProviderValue = streamProvider.read(context);
+      AsyncValue<int> streamProviderValue = context.read(streamProvider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
       ValueNotifier<int> changeNotifierProviderValue =
-          changeNotifierProvider.read(context);
+          context.read(changeNotifierProvider);
 
       return Container();
     });

@@ -107,7 +107,7 @@ class Home extends HookWidget {
                 labelText: 'What needs to be done?',
               ),
               onSubmitted: (value) {
-                todoListProvider.read(context).add(value);
+                context.read(todoListProvider).add(value);
                 newTodoController.clear();
               },
             ),
@@ -121,7 +121,7 @@ class Home extends HookWidget {
                   Dismissible(
                     key: ValueKey(todos[i].id),
                     onDismissed: (_) {
-                      todoListProvider.read(context).remove(todos[i]);
+                      context.read(todoListProvider).remove(todos[i]);
                     },
                     child: TodoItem(todos[i]),
                   )
