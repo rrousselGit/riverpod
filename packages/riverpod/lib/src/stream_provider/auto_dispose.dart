@@ -2,12 +2,13 @@ part of '../stream_provider.dart';
 
 /// {@macro riverpod.streamprovider}
 class AutoDisposeStreamProvider<T>
-    extends AutoDisposeProviderBase<Stream<T>, AsyncValue<T>> {
+    extends AutoDisposeProviderBase<Stream<T>, AsyncValue<T>>
+    with _StreamProviderMixin<T> {
   /// {@macro riverpod.streamprovider}
   AutoDisposeStreamProvider(
     Create<Stream<T>, AutoDisposeProviderReference> create, {
     String name,
-  }) : super(create, name);
+  }) : super((ref) => create(ref).asBroadcastStream(), name);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStreamProviderFamilyBuilder();
@@ -19,6 +20,14 @@ class AutoDisposeStreamProvider<T>
       name: name == null ? null : '$name.stream',
     );
   }
+
+  // ProviderBase<Object, Future<T>> _last;
+  // ProviderBase<Object, Future<T>> get last {
+  //   return _last ??= _AutoDisposeLastValueProvider(
+  //     this,
+  //     name: name == null ? null : '$name.last',
+  //   );
+  // }
 
   @override
   _AutoDisposeStreamProviderState<T> createState() =>

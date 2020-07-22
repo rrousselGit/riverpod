@@ -47,4 +47,46 @@ void main() {
     expect(sub.flush(), true);
     expect(sub.read(), const AsyncValue<int>.data(42));
   });
+  test('provider.stream is a broadcast stream', () async {
+    controller = StreamController<int>();
+
+    final sub = container.listen(provider.stream);
+
+    controller.add(42);
+
+    await expectLater(sub.read(), emits(42));
+  });
+  group('overrideAsValue(T)', () {
+    test('.stream is a broadcast stream', () async {
+      final provider = StreamProvider((ref) => controller.stream);
+      final container = ProviderContainer(overrides: [
+        provider.overrideAsValue(const AsyncValue<int>.data(42)),
+      ]);
+
+      final sub = container.listen(provider.stream);
+
+      await expectLater(sub.read(), emits(42));
+
+      container.updateOverrides([
+        provider.overrideAsValue(const AsyncValue<int>.data(21)),
+      ]);
+
+      await expectLater(sub.read(), emits(21));
+    });
+    test('.stream emits done when the container is disposed', () async {
+      final provider = StreamProvider.autoDispose((ref) => controller.stream);
+      final container = ProviderContainer(overrides: [
+        provider.overrideAsValue(const AsyncValue<int>.data(42)),
+      ]);
+
+      final sub = container.listen(provider.stream);
+
+      final stream = sub.read();
+
+      container.dispose();
+
+      await expectLater(stream, emits(42));
+      await expectLater(stream, emitsDone);
+    });
+  });
 }

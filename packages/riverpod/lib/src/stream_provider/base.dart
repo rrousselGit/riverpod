@@ -2,12 +2,13 @@ part of '../stream_provider.dart';
 
 /// {@macro riverpod.streamprovider}
 class StreamProvider<T>
-    extends AlwaysAliveProviderBase<Stream<T>, AsyncValue<T>> {
+    extends AlwaysAliveProviderBase<Stream<T>, AsyncValue<T>>
+    with _StreamProviderMixin<T> {
   /// {@macro riverpod.streamprovider}
   StreamProvider(
     Create<Stream<T>, ProviderReference> create, {
     String name,
-  }) : super(create, name);
+  }) : super((ref) => create(ref).asBroadcastStream(), name);
 
   /// {@macro riverpod.family}
   static const family = StreamProviderFamilyBuilder();
@@ -23,28 +24,16 @@ class StreamProvider<T>
     );
   }
 
-  @override
-  _StreamProviderState<T> createState() => _StreamProviderState();
+  // AlwaysAliveProviderBase<Object, Future<T>> _last;
+  // AlwaysAliveProviderBase<Object, Future<T>> get last {
+  //   return _last ??= _LastValueProvider(
+  //     this,
+  //     name: name == null ? null : '$name.last',
+  //   );
+  // }
 
   @override
-  Override overrideAsValue(AsyncValue<T> value) {
-    return ProviderOverride(
-      ValueProvider<Stream<T>, AsyncValue<T>>((ref) {
-        final controller = StreamController<T>();
-        ref.onDispose(controller.close);
-        ref.onChange = (newValue) {
-          newValue.when(
-            data: controller.add,
-            loading: () {},
-            error: controller.addError,
-          );
-        };
-        ref.onChange(value);
-        return controller.stream;
-      }, value),
-      this,
-    );
-  }
+  _StreamProviderState<T> createState() => _StreamProviderState();
 }
 
 class _StreamProviderState<T> = ProviderStateBase<Stream<T>, AsyncValue<T>>

@@ -4,19 +4,47 @@ import 'builders.dart';
 import 'common.dart' show AsyncValue;
 import 'created_provider.dart';
 import 'framework.dart';
+import 'provider.dart';
 
 part 'stream_provider/base.dart';
 part 'stream_provider/auto_dispose.dart';
 
+mixin _StreamProviderMixin<T> on ProviderBase<Stream<T>, AsyncValue<T>> {
+  @override
+  Override overrideAsValue(AsyncValue<T> value) {
+    return ProviderOverride(
+      ValueProvider<Stream<T>, AsyncValue<T>>((ref) {
+        final controller = StreamController<T>();
+        ref.onDispose(controller.close);
+
+        ref.onChange = (newValue) {
+          newValue.when(
+            data: controller.add,
+            loading: () {},
+            error: controller.addError,
+          );
+        };
+
+        ref.onChange(value);
+
+        return controller.stream.asBroadcastStream();
+      }, value),
+      this,
+    );
+  }
+}
+
 /// {@template riverpod.streamprovider}
 /// Hello world
 /// {@endtemplate}
+// TODO restore StreamProvider doc
 mixin _StreamProviderStateMixin<T>
     on ProviderStateBase<Stream<T>, AsyncValue<T>> {
   StreamSubscription<T> sub;
 
   @override
   void valueChanged({Stream<T> previous}) {
+    assert(createdValue == null || createdValue.isBroadcast, 'Bad state');
     if (createdValue == previous) {
       return;
     }
@@ -39,3 +67,35 @@ mixin _StreamProviderStateMixin<T>
     super.dispose();
   }
 }
+
+// class _LastValueProvider<T> extends Provider<Future<T>> {
+//   _LastValueProvider(
+//     ProviderBase<Stream<T>, AsyncValue<T>> provider, {
+//     String name,
+//   }) : super((ref) {
+//           ref.watch(provider);
+//           // ignore: invalid_use_of_visible_for_testing_member
+//           final element = ref as ProviderElement;
+//           // ignore: invalid_use_of_visible_for_testing_member
+//           final targetElement = element.container
+//               .readProviderElement(provider)
+//               .state as _StreamProviderStateMixin<T>;
+
+//           return targetElement.state.createdValue;
+//         }, name: name);
+// }
+
+// class _AutoDisposeLastValueProvider<T> extends AutoDisposeProvider<Future<T>> {
+//   _AutoDisposeLastValueProvider(
+//     ProviderBase<Stream<T>, AsyncValue<T>> provider, {
+//     String name,
+//   }) : super((ref) {
+//           ref.watch(provider);
+//           // ignore: invalid_use_of_visible_for_testing_member
+//           final element = ref as ProviderElement;
+//           // ignore: invalid_use_of_visible_for_testing_member
+//           final targetElement = element.container.readProviderElement(provider);
+
+//           return targetElement.state.createdValue;
+//         }, name: name);
+// }

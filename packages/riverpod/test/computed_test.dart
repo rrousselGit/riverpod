@@ -4,6 +4,7 @@ import 'package:riverpod/src/internals.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
+import 'auto_dispose_test.dart';
 import 'utils.dart';
 
 class Counter extends StateNotifier<int> {
@@ -286,44 +287,29 @@ void main() {
     verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
   });
-  test('cannot call ref.watch outside of the Provider', () {
+  test('cannot call ref.watch outside of the Provider', () async {
     final container = ProviderContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
     var callCount = 0;
-    Reader reader;
-    final computed = Provider((ref) {
+    final computed = StreamProvider((ref) async* {
       callCount++;
-      reader = ref.watch;
-      return ref.watch(provider.state);
+      yield ref.watch(provider.state);
     });
-    final mayHaveChanged = MockMarkMayHaveChanged();
-    final listener = Listener<int>();
 
-    final sub = computed.addLazyListener(
-      container,
-      mayHaveChanged: mayHaveChanged,
-      onChange: listener,
-    );
+    final sub = container.listen(computed);
 
-    verify(listener(0)).called(1);
-    verifyNoMoreInteractions(listener);
-    verifyNoMoreInteractions(mayHaveChanged);
-    expect(() => reader(provider), throwsA(isA<AssertionError>()));
+    expect(sub.read(), const AsyncValue<int>.loading());
+    await container.read(computed.stream).first;
+    expect(sub.read(), const AsyncValue<int>.data(0));
     expect(callCount, 1);
 
     notifier.setState(42);
-
-    verify(mayHaveChanged()).called(1);
-    verifyNoMoreInteractions(mayHaveChanged);
-    verifyNoMoreInteractions(listener);
-
     sub.read();
 
-    verify(listener(42)).called(1);
-    verifyNoMoreInteractions(mayHaveChanged);
-    verifyNoMoreInteractions(listener);
-    expect(() => reader(provider), throwsA(isA<AssertionError>()));
+    expect(sub.read(), const AsyncValue<int>.loading());
+    await idle();
+    expect(sub.read(), const AsyncValue<int>.data(1));
     expect(callCount, 2);
   });
   test('the value is cached between multiple listeners', () {

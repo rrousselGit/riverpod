@@ -8,6 +8,26 @@ import 'framework.dart';
 part 'future_provider/base.dart';
 part 'future_provider/auto_dispose.dart';
 
+mixin _FutureProviderMixin<T> on ProviderBase<Future<T>, AsyncValue<T>> {
+  @override
+  Override overrideAsValue(AsyncValue<T> value) {
+    return ProviderOverride(
+      ValueProvider<Future<T>, AsyncValue<T>>((ref) {
+        final controller = Completer<T>();
+        ref.onChange = (newValue) {
+          newValue.when(
+              data: controller.complete,
+              loading: () {},
+              error: controller.completeError);
+        };
+        ref.onChange(value);
+        return controller.future;
+      }, value),
+      this,
+    );
+  }
+}
+
 mixin _FutureProviderStateMixin<T>
     on ProviderStateBase<Future<T>, AsyncValue<T>> {
   // Used to determine if we are still listening to a future or not inside its `then`

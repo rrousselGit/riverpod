@@ -2,7 +2,8 @@ part of '../future_provider.dart';
 
 /// {@macro riverpod.futureprovider}
 class AutoDisposeFutureProvider<T>
-    extends AutoDisposeProviderBase<Future<T>, AsyncValue<T>> {
+    extends AutoDisposeProviderBase<Future<T>, AsyncValue<T>>
+    with _FutureProviderMixin<T> {
   /// {@macro riverpod.futureprovider}
   AutoDisposeFutureProvider(
       Create<Future<T>, AutoDisposeProviderReference> create,

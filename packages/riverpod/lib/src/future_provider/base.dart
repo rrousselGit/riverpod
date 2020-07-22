@@ -2,7 +2,7 @@ part of '../future_provider.dart';
 
 /// {@macro riverpod.futureprovider}
 class FutureProvider<T>
-    extends AlwaysAliveProviderBase<Future<T>, AsyncValue<T>> {
+    extends AlwaysAliveProviderBase<Future<T>, AsyncValue<T>> with _FutureProviderMixin<T>{
   /// {@macro riverpod.futureprovider}
   FutureProvider(
     Create<Future<T>, ProviderReference> create, {
@@ -25,25 +25,6 @@ class FutureProvider<T>
 
   @override
   _FutureProviderState<T> createState() => _FutureProviderState();
-
-  @override
-  Override overrideAsValue(AsyncValue<T> value) {
-    return ProviderOverride(
-      ValueProvider<Future<T>, AsyncValue<T>>((ref) {
-        final controller = Completer<T>();
-        ref.onChange = (newValue) {
-          newValue.when(
-            data: controller.complete,
-            loading: () {},
-            error: controller.completeError
-          );
-        };
-        ref.onChange(value);
-        return controller.future;
-      }, value),
-      this,
-    );
-  }
 }
 
 class _FutureProviderState<T> = ProviderStateBase<Future<T>, AsyncValue<T>>
