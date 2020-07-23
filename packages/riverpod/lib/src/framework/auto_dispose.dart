@@ -18,7 +18,8 @@ abstract class AutoDisposeProviderBase<Created, Listened>
   }
 
   // Cannot be overriden by AutoDisposeProviders
-  Override overrideAsProvider(ProviderBase<Object, Listened> provider) {
+  ProviderOverride<Created, Listened> overrideAsProvider(
+      ProviderBase<Created, Listened> provider) {
     return ProviderOverride(provider, this);
   }
 }

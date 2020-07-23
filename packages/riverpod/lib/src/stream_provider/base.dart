@@ -8,7 +8,7 @@ class StreamProvider<T>
   StreamProvider(
     Create<Stream<T>, ProviderReference> create, {
     String name,
-  }) : super((ref) => create(ref).asBroadcastStream(), name);
+  }) : super(create, name);
 
   /// {@macro riverpod.family}
   static const family = StreamProviderFamilyBuilder();
@@ -18,19 +18,19 @@ class StreamProvider<T>
 
   AlwaysAliveProviderBase<Stream<T>, Stream<T>> _stream;
   AlwaysAliveProviderBase<Stream<T>, Stream<T>> get stream {
-    return _stream ??= CreatedProvider(
+    return _stream ??= _CreatedStreamProvider(
       this,
       name: name == null ? null : '$name.stream',
     );
   }
 
-  // AlwaysAliveProviderBase<Object, Future<T>> _last;
-  // AlwaysAliveProviderBase<Object, Future<T>> get last {
-  //   return _last ??= _LastValueProvider(
-  //     this,
-  //     name: name == null ? null : '$name.last',
-  //   );
-  // }
+  AlwaysAliveProviderBase<Object, Future<T>> _last;
+  AlwaysAliveProviderBase<Object, Future<T>> get last {
+    return _last ??= Provider(
+      (ref) => _readLast(ref, this),
+      name: name == null ? null : '$name.last',
+    );
+  }
 
   @override
   _StreamProviderState<T> createState() => _StreamProviderState();

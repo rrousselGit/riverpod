@@ -16,9 +16,7 @@ class CreatedProvider<T> extends Provider<T> {
   }) : super((ref) {
           ref.watch(provider);
           // ignore: invalid_use_of_visible_for_testing_member
-          final element = ref as ProviderElement;
-          // ignore: invalid_use_of_visible_for_testing_member
-          final targetElement = element.container.readProviderElement(provider);
+          final targetElement = ref.container.readProviderElement(provider);
 
           return targetElement.state.createdValue;
         }, name: name);
@@ -33,9 +31,7 @@ class AutoDisposeCreatedProvider<T> extends AutoDisposeProvider<T> {
   }) : super((ref) {
           ref.watch(provider);
           // ignore: invalid_use_of_visible_for_testing_member
-          final element = ref as ProviderElement;
-          // ignore: invalid_use_of_visible_for_testing_member
-          final targetElement = element.container.readProviderElement(provider);
+          final targetElement = ref.container.readProviderElement(provider);
 
           return targetElement.state.createdValue;
         }, name: name);

@@ -56,6 +56,38 @@ void main() {
 
     await expectLater(sub.read(), emits(42));
   });
+  test(
+      'StreamProvider does not update dependents if the created stream did not change',
+      () {
+    final dep = StateProvider((ref) => 0);
+    final provider = StreamProvider((ref) {
+      ref.watch(dep);
+      return const Stream<int>.empty();
+    });
+
+    final sub = container.listen(provider);
+    sub.read();
+
+    container.read(dep).state++;
+
+    expect(sub.flush(), false);
+  });
+  test(
+      'StreamProvider.stream does not update dependents if the created stream did not change',
+      () {
+    final dep = StateProvider((ref) => 0);
+    final provider = StreamProvider((ref) {
+      ref.watch(dep);
+      return const Stream<int>.empty();
+    });
+
+    final sub = container.listen(provider);
+    sub.read();
+
+    container.read(dep).state++;
+
+    expect(sub.flush(), false);
+  });
   group('overrideAsValue(T)', () {
     test('.stream is a broadcast stream', () async {
       final provider = StreamProvider((ref) => controller.stream);

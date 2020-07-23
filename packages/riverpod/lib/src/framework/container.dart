@@ -77,7 +77,7 @@ class ProviderContainer {
   final _overrideForFamily = <Family, FamilyOverride>{};
 
   final Map<ProviderBase, ProviderElement> _stateReaders;
-// TODO remove ref
+
   ProviderReference get ref => read(_refProvider);
 
   final List<ProviderObserver> _localObservers;
@@ -108,6 +108,13 @@ class ProviderContainer {
   /// ```
   Result read<Result>(
     AlwaysAliveProviderBase<Object, Result> provider,
+  ) {
+    return unsafeRead(provider);
+  }
+
+  // TODO add to ProviderReference too
+  Result unsafeRead<Result>(
+    ProviderBase<Object, Result> provider,
   ) {
     final element = readProviderElement(provider);
     element.flush();
@@ -350,11 +357,11 @@ abstract class ProviderObserver {
 ///
 /// - [ProviderContainer], which uses this object.
 /// - [AlwaysAliveProviderBase.overrideAsProvider], which creates a [ProviderOverride].
-class ProviderOverride implements Override {
+class ProviderOverride<Created, Listened> implements Override {
   ProviderOverride(this._provider, this._origin);
 
-  final ProviderBase _origin;
-  final ProviderBase _provider;
+  final ProviderBase<Created, Listened> _origin;
+  final ProviderBase<Created, Listened> _provider;
 }
 
 /// An object used by [ProviderContainer]/`ProviderScope` to override the behavior

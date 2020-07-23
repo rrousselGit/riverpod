@@ -84,7 +84,7 @@ void main() {
   });
   test('overridable provider can be overriden by anything', () {
     final provider = Provider.autoDispose((_) => 42);
-    final ProviderBase<Object, int> override = Provider((_) {
+    final ProviderBase<int, int> override = Provider((_) {
       return 21;
     });
     final container = ProviderContainer(overrides: [

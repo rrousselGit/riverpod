@@ -13,21 +13,21 @@ class AutoDisposeStreamProvider<T>
   /// {@macro riverpod.family}
   static const family = AutoDisposeStreamProviderFamilyBuilder();
 
-  ProviderBase<Stream<T>, Stream<T>> _stream;
-  ProviderBase<Stream<T>, Stream<T>> get stream {
-    return _stream ??= AutoDisposeCreatedProvider(
+  AutoDisposeProviderBase<Stream<T>, Stream<T>> _stream;
+  AutoDisposeProviderBase<Stream<T>, Stream<T>> get stream {
+    return _stream ??= _AutoDisposeCreatedStreamProvider(
       this,
       name: name == null ? null : '$name.stream',
     );
   }
 
-  // ProviderBase<Object, Future<T>> _last;
-  // ProviderBase<Object, Future<T>> get last {
-  //   return _last ??= _AutoDisposeLastValueProvider(
-  //     this,
-  //     name: name == null ? null : '$name.last',
-  //   );
-  // }
+  AutoDisposeProviderBase<Object, Future<T>> _last;
+  AutoDisposeProviderBase<Object, Future<T>> get last {
+    return _last ??= Provider.autoDispose(
+      (ref) => _readLast(ref, this),
+      name: name == null ? null : '$name.last',
+    );
+  }
 
   @override
   _AutoDisposeStreamProviderState<T> createState() =>

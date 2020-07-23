@@ -32,6 +32,8 @@ mixin _StreamProviderMixin<T> on ProviderBase<Stream<T>, AsyncValue<T>> {
       this,
     );
   }
+
+  ProviderBase<Stream<T>, Stream<T>> get stream;
 }
 
 /// {@template riverpod.streamprovider}
@@ -41,18 +43,20 @@ mixin _StreamProviderMixin<T> on ProviderBase<Stream<T>, AsyncValue<T>> {
 mixin _StreamProviderStateMixin<T>
     on ProviderStateBase<Stream<T>, AsyncValue<T>> {
   StreamSubscription<T> sub;
+  Stream<T> _realStream;
 
   @override
   void valueChanged({Stream<T> previous}) {
-    assert(createdValue == null || createdValue.isBroadcast, 'Bad state');
     if (createdValue == previous) {
       return;
     }
+    _realStream = createdValue.asBroadcastStream();
+
     sub?.cancel();
     // TODO transition between state ??= vs =
     // TODO don't notify if already loading
     exposedValue = const AsyncValue.loading();
-    sub = createdValue?.listen(
+    sub = _realStream?.listen(
       (value) => exposedValue = AsyncValue.data(value),
       // ignore: avoid_types_on_closure_parameters
       onError: (Object error, StackTrace stack) {
@@ -68,34 +72,47 @@ mixin _StreamProviderStateMixin<T>
   }
 }
 
-// class _LastValueProvider<T> extends Provider<Future<T>> {
-//   _LastValueProvider(
-//     ProviderBase<Stream<T>, AsyncValue<T>> provider, {
-//     String name,
-//   }) : super((ref) {
-//           ref.watch(provider);
-//           // ignore: invalid_use_of_visible_for_testing_member
-//           final element = ref as ProviderElement;
-//           // ignore: invalid_use_of_visible_for_testing_member
-//           final targetElement = element.container
-//               .readProviderElement(provider)
-//               .state as _StreamProviderStateMixin<T>;
+Future<T> _readLast<T>(
+  ProviderReference ref,
+  _StreamProviderMixin<T> provider,
+) {
+  return ref.watch(provider).when(
+        data: (value) => Future.value(value),
+        loading: () => ref.watch(provider.stream).first,
+        error: (err, stack) => Future.error(err, stack),
+      );
+}
 
-//           return targetElement.state.createdValue;
-//         }, name: name);
-// }
+// Fork of CreatedProvider to retreive _realStream instead of createdValue
 
-// class _AutoDisposeLastValueProvider<T> extends AutoDisposeProvider<Future<T>> {
-//   _AutoDisposeLastValueProvider(
-//     ProviderBase<Stream<T>, AsyncValue<T>> provider, {
-//     String name,
-//   }) : super((ref) {
-//           ref.watch(provider);
-//           // ignore: invalid_use_of_visible_for_testing_member
-//           final element = ref as ProviderElement;
-//           // ignore: invalid_use_of_visible_for_testing_member
-//           final targetElement = element.container.readProviderElement(provider);
+class _CreatedStreamProvider<T> extends Provider<Stream<T>> {
+  _CreatedStreamProvider(
+    ProviderBase<Stream<T>, Object> provider, {
+    String name,
+  }) : super((ref) {
+          ref.watch(provider);
+          // ignore: invalid_use_of_visible_for_testing_member
+          final state = ref.container.readProviderElement(provider).state;
 
-//           return targetElement.state.createdValue;
-//         }, name: name);
-// }
+          return state is _StreamProviderStateMixin<T>
+              ? state._realStream
+              : state.createdValue;
+        }, name: name);
+}
+
+class _AutoDisposeCreatedStreamProvider<T>
+    extends AutoDisposeProvider<Stream<T>> {
+  _AutoDisposeCreatedStreamProvider(
+    ProviderBase<Stream<T>, Object> provider, {
+    String name,
+  }) : super((ref) {
+          ref.watch(provider);
+          // ignore: invalid_use_of_visible_for_testing_member
+          final state = ref.container.readProviderElement(provider).state;
+
+          return state is _StreamProviderStateMixin<T>
+              ? state._realStream
+              // Reached when using `.stream` on a `StreamProvider.overrideAsValue`
+              : state.createdValue;
+        }, name: name);
+}

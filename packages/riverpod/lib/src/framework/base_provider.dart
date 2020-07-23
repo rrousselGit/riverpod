@@ -52,8 +52,8 @@ abstract class AlwaysAliveProviderBase<Created, Listened>
   }
 
   // Cannot be overriden by AutoDisposeProviders
-  Override overrideAsProvider(
-    AlwaysAliveProviderBase<Object, Listened> provider,
+  ProviderOverride<Created, Listened> overrideAsProvider(
+    AlwaysAliveProviderBase<Created, Listened> provider,
   ) {
     return ProviderOverride(provider, this);
   }
@@ -88,6 +88,7 @@ abstract class ProviderBase<Created, Listened>
   }
 
   // Works only on ProviderBase<T, T> scenario by default
+  // TODO support ChangeNotifier/StateNotifier
   Override overrideAsValue(Listened value) {
     return ProviderOverride(
       ValueProvider<Object, Listened>((ref) => value, value),
@@ -98,10 +99,13 @@ abstract class ProviderBase<Created, Listened>
 
 abstract class ProviderReference {
   bool get mounted;
+  // TODO test
+  ProviderContainer get container;
 
   void onDispose(void Function() cb);
 
   T read<T>(AlwaysAliveProviderBase<Object, T> provider);
+  T unsafeRead<T>(AlwaysAliveProviderBase<Object, T> provider);
   T watch<T>(ProviderBase<Object, T> provider);
 }
 
@@ -168,6 +172,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   ProviderStateBase<Created, Listened> get state => _state;
 
   ProviderContainer _container;
+  @override
   ProviderContainer get container => _container;
 
   Set<ProviderElement> _dependents;
@@ -200,6 +205,11 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   }
 
   @override
+  T unsafeRead<T>(ProviderBase<Object, T> provider) {
+    return _container.unsafeRead(provider);
+  }
+
+  @override
   void onDispose(void Function() listener) {
     if (!_mounted) {
       throw StateError('Cannot call onDispose after a provider was dispose');
@@ -220,6 +230,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
       element._dependents.add(this);
       // TODO
       // onDispose(() => element._dependents.remove(this));
+      // TODO refactor to not use `listen`
       return element.listen(mayHaveChanged: _markDependencyMayHaveChanged);
     }) as ProviderSubscription<T>;
     return sub.read();
@@ -412,6 +423,8 @@ class ProviderElement<Created, Listened> implements ProviderReference {
 
 abstract class ProviderStateBase<Created, Listened> {
   ProviderElement<Created, Listened> _element;
+  ProviderReference get ref => _element;
+
   Created _createdValue;
   Created get createdValue => _createdValue;
 
@@ -427,6 +440,9 @@ abstract class ProviderStateBase<Created, Listened> {
 
   @protected
   void dispose() {}
+
+  @protected
+  void markMayHaveChanged() => _element.notifyMayHaveChanged();
 }
 
 class ProviderException implements Exception {
