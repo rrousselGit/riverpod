@@ -377,8 +377,7 @@ Iterable<Object> generateAll(
 
     if (first is DisposeType &&
         second is StateType &&
-        third is ProviderType &&
-        (first == DisposeType.none || second != StateType.state)) {
+        third is ProviderType) {
       yield* generate(Tuple3(first, second, third), matrix);
     }
   }

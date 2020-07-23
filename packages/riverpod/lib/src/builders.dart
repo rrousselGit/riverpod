@@ -1,7 +1,5 @@
 import 'package:state_notifier/state_notifier.dart';
-import 'framework.dart';
 import 'internals.dart';
-import 'provider.dart';
 
 /// Builds a [StateProvider].
 class StateProviderBuilder {
@@ -435,6 +433,39 @@ class StreamProviderFamilyBuilder {
   /// {@macro riverpod.autoDispose}
   AutoDisposeStreamProviderFamilyBuilder get autoDispose {
     return const AutoDisposeStreamProviderFamilyBuilder();
+  }
+}
+
+/// Builds a [AutoDisposeStateProvider].
+class AutoDisposeStateProviderBuilder {
+  /// Builds a [AutoDisposeStateProvider].
+  const AutoDisposeStateProviderBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeStateProvider<T> call<T>(
+    T Function(AutoDisposeProviderReference ref) create, {
+    String name,
+  }) {
+    return AutoDisposeStateProvider(create, name: name);
+  }
+
+  /// {@macro riverpod.family}
+  AutoDisposeStateProviderFamilyBuilder get family {
+    return const AutoDisposeStateProviderFamilyBuilder();
+  }
+}
+
+/// Builds a [AutoDisposeStateProviderFamily].
+class AutoDisposeStateProviderFamilyBuilder {
+  /// Builds a [AutoDisposeStateProviderFamily].
+  const AutoDisposeStateProviderFamilyBuilder();
+
+  /// {@macro riverpod.family}
+  AutoDisposeStateProviderFamily<T, Value> call<T, Value>(
+    T Function(AutoDisposeProviderReference ref, Value value) create, {
+    String name,
+  }) {
+    return AutoDisposeStateProviderFamily(create);
   }
 }
 

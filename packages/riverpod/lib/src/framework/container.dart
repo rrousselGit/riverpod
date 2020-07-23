@@ -357,11 +357,11 @@ abstract class ProviderObserver {
 ///
 /// - [ProviderContainer], which uses this object.
 /// - [AlwaysAliveProviderBase.overrideAsProvider], which creates a [ProviderOverride].
-class ProviderOverride<Created, Listened> implements Override {
+class ProviderOverride implements Override {
   ProviderOverride(this._provider, this._origin);
 
-  final ProviderBase<Created, Listened> _origin;
-  final ProviderBase<Created, Listened> _provider;
+  final ProviderBase _origin;
+  final ProviderBase _provider;
 }
 
 /// An object used by [ProviderContainer]/`ProviderScope` to override the behavior

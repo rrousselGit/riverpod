@@ -11,8 +11,7 @@ class StateProvider<T>
   static const family = StateProviderFamilyBuilder();
 
   /// {@macro riverpod.autoDispose}
-  // TODO
-  // static const autoDispose = AutoDisposeStateProviderBuilder();
+  static const autoDispose = AutoDisposeStateProviderBuilder();
 
   @override
   _StateProviderState<T> createState() {

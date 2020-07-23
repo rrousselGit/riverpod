@@ -82,21 +82,6 @@ void main() {
 
     expect(maintainState, false);
   });
-  test('overridable provider can be overriden by anything', () {
-    final provider = Provider.autoDispose((_) => 42);
-    final ProviderBase<int, int> override = Provider((_) {
-      return 21;
-    });
-    final container = ProviderContainer(overrides: [
-      provider.overrideAsProvider(override),
-    ]);
-    final listener = Listener();
-
-    provider.watchOwner(container, listener);
-
-    verify(listener(21)).called(1);
-    verifyNoMoreInteractions(listener);
-  });
 
   test('unsub to A then make B sub to A then unsub to B disposes B before A',
       () async {

@@ -8,6 +8,32 @@ void main() {
   setUp(() => container = ProviderContainer());
   tearDown(() => container.dispose());
 
+  test('Provider.autoDispose can be overriden by anything', () {
+    final provider = Provider.autoDispose((_) => 42);
+    final ProviderBase<Object, int> override = Provider((_) {
+      return 21;
+    });
+    final container = ProviderContainer(overrides: [
+      provider.overrideAsProvider(override),
+    ]);
+
+    final sub = container.listen(provider);
+
+    expect(sub.read(), 21);
+  });
+  test('Provider can be overriden by anything', () {
+    final provider = Provider((_) => 42);
+    final ProviderBase<Object, int> override = Provider((_) {
+      return 21;
+    });
+    final container = ProviderContainer(overrides: [
+      provider.overrideAsProvider(override),
+    ]);
+
+    final sub = container.listen(provider);
+
+    expect(sub.read(), 21);
+  });
   test('Read creates the value only once', () {
     var callCount = 0;
     final provider = Provider((ref) {

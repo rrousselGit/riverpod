@@ -16,6 +16,29 @@ class AutoDisposeStateProvider<T>
 class _AutoDisposeStateProviderState<T> = ProviderStateBase<StateController<T>,
     StateController<T>> with _StateProviderStateMixin<T>;
 
+class AutoDisposeStateProviderFamily<T, A> extends Family<
+    StateController<T>,
+    StateController<T>,
+    A,
+    AutoDisposeProviderReference,
+    AutoDisposeStateProvider<T>> {
+  AutoDisposeStateProviderFamily(
+    T Function(AutoDisposeProviderReference ref, A a) create, {
+    String name,
+  }) : super((ref, a) => StateController(create(ref, a)), name);
+
+  @override
+  AutoDisposeStateProvider<T> create(
+    A value,
+    StateController<T> Function(AutoDisposeProviderReference ref, A param)
+        builder,
+  ) {
+    return AutoDisposeStateProvider((ref) {
+      return builder(ref, value).state;
+    }, name: name);
+  }
+}
+
 extension AutoDisposeStateFamilyX<T, Param> on Family<
     StateController<T>,
     StateController<T>,

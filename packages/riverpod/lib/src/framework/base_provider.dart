@@ -52,7 +52,7 @@ abstract class AlwaysAliveProviderBase<Created, Listened>
   }
 
   // Cannot be overriden by AutoDisposeProviders
-  ProviderOverride<Created, Listened> overrideAsProvider(
+  ProviderOverride overrideAsProvider(
     AlwaysAliveProviderBase<Created, Listened> provider,
   ) {
     return ProviderOverride(provider, this);
