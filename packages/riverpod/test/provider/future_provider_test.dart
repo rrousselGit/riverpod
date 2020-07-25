@@ -380,269 +380,254 @@ void main() {
     verifyZeroInteractions(didChange);
   });
 
-  // group('mock as value', () {
-  //   test('value immediatly then other value', () async {
-  //     final provider = FutureProvider((_) async => 0);
-  //     final container = ProviderContainer(overrides: [
-  //       provider.debugOverrideWithValue(const AsyncValue.data(42)),
-  //     ]);
-  //     final listener = ListenerMock();
+  group('mock as value', () {
+    test('value immediatly then other value', () async {
+      final provider = FutureProvider((_) async => 0);
+      final container = ProviderContainer(overrides: [
+        provider.overrideAsValue(const AsyncValue.data(42)),
+      ]);
 
-  //     final dep = container.ref.dependOn(provider);
-  //     await expectLater(dep.value, completion(42));
+      await expectLater(
+        container.read(provider.future),
+        completion(42),
+      );
 
-  //     provider.watchOwner(container, listener);
+      final sub = container.listen(provider);
 
-  //     verify(listener(const AsyncValue.data(42))).called(1);
-  //     verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue.data(42));
 
-  //     Object error;
-  //     runZonedGuarded(
-  //       () => container.updateOverrides([
-  //         provider.debugOverrideWithValue(const AsyncValue.data(21)),
-  //       ]),
-  //       (err, _) => error = err,
-  //     );
+      container.updateOverrides([
+        provider.overrideAsValue(const AsyncValue.data(21)),
+      ]);
 
-  //     verifyNoMoreInteractions(listener);
-  //     expect(error, isUnsupportedError);
-  //   });
-  //   test('value immediatly then error', () async {
-  //     final provider = FutureProvider((_) async => 0);
-  //     final container = ProviderContainer(overrides: [
-  //       provider.debugOverrideWithValue(const AsyncValue.data(42)),
-  //     ]);
-  //     final listener = ListenerMock();
+      await expectLater(
+        container.read(provider.future),
+        completion(21),
+      );
+      expect(sub.read(), const AsyncValue.data(21));
+    });
+    test('value immediatly then error', () async {
+      final provider = FutureProvider((_) async => 0);
+      final container = ProviderContainer(overrides: [
+        provider.overrideAsValue(const AsyncValue.data(42)),
+      ]);
 
-  //     final dep = container.ref.dependOn(provider);
-  //     await expectLater(dep.value, completion(42));
+      await expectLater(
+        container.read(provider.future),
+        completion(42),
+      );
 
-  //     provider.watchOwner(container, listener);
+      final sub = container.listen(provider);
 
-  //     verify(listener(const AsyncValue.data(42))).called(1);
-  //     verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue.data(42));
 
-  //     Object error;
-  //     runZonedGuarded(
-  //       () => container.updateOverrides([
-  //         provider.debugOverrideWithValue(AsyncValue.error(21)),
-  //       ]),
-  //       (err, _) => error = err,
-  //     );
+      container.updateOverrides([
+        provider.overrideAsValue(AsyncValue.error(21)),
+      ]);
 
-  //     verifyNoMoreInteractions(listener);
-  //     expect(error, isUnsupportedError);
-  //   });
-  //   test('value immediatly then loading', () async {
-  //     final provider = FutureProvider((_) async => 0);
-  //     final container = ProviderContainer(overrides: [
-  //       provider.debugOverrideWithValue(const AsyncValue.data(42)),
-  //     ]);
-  //     final listener = ListenerMock();
+      await expectLater(
+        container.read(provider.future),
+        throwsA(21),
+      );
+      expect(sub.read(), AsyncValue<int>.error(21));
+    });
+    test('value immediatly then loading', () async {
+      final provider = FutureProvider((_) async => 0);
+      final container = ProviderContainer(overrides: [
+        provider.overrideAsValue(const AsyncValue.data(42)),
+      ]);
 
-  //     final dep = container.ref.dependOn(provider);
-  //     await expectLater(dep.value, completion(42));
+      final future = container.read(provider.future);
 
-  //     provider.watchOwner(container, listener);
+      await expectLater(
+        future,
+        completion(42),
+      );
 
-  //     verify(listener(const AsyncValue.data(42))).called(1);
-  //     verifyNoMoreInteractions(listener);
+      final sub = container.listen(provider);
 
-  //     Object error;
-  //     runZonedGuarded(
-  //       () => container.updateOverrides([
-  //         provider.debugOverrideWithValue(const AsyncValue.loading()),
-  //       ]),
-  //       (err, _) => error = err,
-  //     );
+      expect(sub.read(), const AsyncValue<int>.data(42));
 
-  //     verifyNoMoreInteractions(listener);
-  //     expect(error, isUnsupportedError);
-  //   });
-  //   test('loading immediatly then value', () async {
-  //     final provider = FutureProvider((_) async => 0);
-  //     final container = ProviderContainer(overrides: [
-  //       provider.debugOverrideWithValue(const AsyncValue.loading()),
-  //     ]);
-  //     final listener = ListenerMock();
+      container.updateOverrides([
+        provider.overrideAsValue(const AsyncValue.loading()),
+      ]);
 
-  //     provider.watchOwner(container, listener);
+      expect(container.read(provider.future), isNot(future));
+      expect(sub.read(), const AsyncValue<int>.loading());
+    });
+    test('loading immediatly then value', () async {
+      final provider = FutureProvider((_) async => 0);
+      final container = ProviderContainer(overrides: [
+        provider.overrideAsValue(const AsyncValue.loading()),
+      ]);
 
-  //     verify(listener(const AsyncValue.loading())).called(1);
-  //     verifyNoMoreInteractions(listener);
+      final future = container.read(provider.future);
 
-  //     container.updateOverrides([
-  //       provider.debugOverrideWithValue(const AsyncValue.data(42)),
-  //     ]);
+      final sub = container.listen(provider);
 
-  //     verify(listener(const AsyncValue.data(42))).called(1);
-  //     verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue<int>.loading());
 
-  //     final dep = container.ref.dependOn(provider);
-  //     await expectLater(dep.value, completion(42));
-  //   });
-  //   test('loading immediatly then error', () async {
-  //     final provider = FutureProvider((_) async => 0);
-  //     final container = ProviderContainer(overrides: [
-  //       provider.debugOverrideWithValue(const AsyncValue.loading()),
-  //     ]);
-  //     final listener = ListenerMock();
+      container.updateOverrides([
+        provider.overrideAsValue(const AsyncValue.data(42)),
+      ]);
 
-  //     provider.watchOwner(container, listener);
+      expect(sub.read(), const AsyncValue<int>.data(42));
 
-  //     verify(listener(const AsyncValue.loading())).called(1);
-  //     verifyNoMoreInteractions(listener);
+      await expectLater(future, completion(42));
+    });
+    test('loading immediatly then error', () async {
+      final provider = FutureProvider((_) async => 0);
+      final container = ProviderContainer(overrides: [
+        provider.overrideAsValue(const AsyncValue.loading()),
+      ]);
 
-  //     final stackTrace = StackTrace.current;
+      final future = container.read(provider.future);
 
-  //     container.updateOverrides([
-  //       provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
-  //     ]);
+      final sub = container.listen(provider);
 
-  //     verify(listener(AsyncValue.error(42, stackTrace))).called(1);
-  //     verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue<int>.loading());
 
-  //     final dep = container.ref.dependOn(provider);
-  //     await expectLater(dep.value, throwsA(42));
-  //   });
-  //   test('loading immediatly then loading', () async {
-  //     final provider = FutureProvider((_) async => 0);
-  //     final container = ProviderContainer(overrides: [
-  //       provider.debugOverrideWithValue(const AsyncValue.loading()),
-  //     ]);
-  //     final listener = ListenerMock();
+      final stackTrace = StackTrace.current;
 
-  //     provider.watchOwner(container, listener);
+      container.updateOverrides([
+        provider.overrideAsValue(AsyncValue.error(42, stackTrace)),
+      ]);
 
-  //     verify(listener(const AsyncValue.loading())).called(1);
-  //     verifyNoMoreInteractions(listener);
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
 
-  //     container.updateOverrides([
-  //       provider.debugOverrideWithValue(const AsyncValue.loading()),
-  //     ]);
+      await expectLater(future, throwsA(42));
+    });
+    test('loading immediatly then loading', () async {
+      final provider = FutureProvider((_) async => 0);
+      final container = ProviderContainer(overrides: [
+        provider.overrideAsValue(const AsyncValue.loading()),
+      ]);
 
-  //     verifyNoMoreInteractions(listener);
+      final future = container.read(provider.future);
 
-  //     container.updateOverrides([
-  //       provider.debugOverrideWithValue(const AsyncValue.data(42)),
-  //     ]);
+      final sub = container.listen(provider);
 
-  //     verify(listener(const AsyncValue.data(42))).called(1);
-  //     verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue<int>.loading());
 
-  //     final dep = container.ref.dependOn(provider);
-  //     await expectLater(dep.value, completion(42));
-  //   });
-  //   test('error immediatly then different error', () async {
-  //     final stackTrace = StackTrace.current;
-  //     final provider = FutureProvider((_) async => 0);
-  //     final container = ProviderContainer(overrides: [
-  //       provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
-  //     ]);
-  //     final listener = ListenerMock();
+      container.updateOverrides([
+        provider.overrideAsValue(const AsyncValue.loading()),
+      ]);
 
-  //     final dep = container.ref.dependOn(provider);
-  //     await expectLater(dep.value, throwsA(42));
+      expect(sub.flush(), false);
 
-  //     provider.watchOwner(container, listener);
+      container.updateOverrides([
+        provider.overrideAsValue(const AsyncValue.data(42)),
+      ]);
 
-  //     verify(listener(AsyncValue.error(42, stackTrace))).called(1);
-  //     verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue<int>.data(42));
 
-  //     Object error;
-  //     runZonedGuarded(
-  //       () => container.updateOverrides([
-  //         provider.debugOverrideWithValue(AsyncValue.error(21, stackTrace)),
-  //       ]),
-  //       (err, _) => error = err,
-  //     );
+      await expectLater(future, completion(42));
+    });
+    test('error immediatly then different error', () async {
+      final stackTrace = StackTrace.current;
+      final provider = FutureProvider((_) async => 0);
+      final container = ProviderContainer(overrides: [
+        provider.overrideAsValue(AsyncValue.error(42, stackTrace)),
+      ]);
 
-  //     expect(error, isUnsupportedError);
-  //     verifyNoMoreInteractions(listener);
-  //   });
-  //   test('error immediatly then different stacktrace', () async {
-  //     final stackTrace = StackTrace.current;
-  //     final provider = FutureProvider((_) async => 0);
-  //     final container = ProviderContainer(overrides: [
-  //       provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
-  //     ]);
-  //     final listener = ListenerMock();
+      await expectLater(
+        container.read(provider.future),
+        throwsA(42),
+      );
 
-  //     final dep = container.ref.dependOn(provider);
-  //     await expectLater(dep.value, throwsA(42));
+      final sub = container.listen(provider);
 
-  //     provider.watchOwner(container, listener);
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
 
-  //     verify(listener(AsyncValue.error(42, stackTrace))).called(1);
-  //     verifyNoMoreInteractions(listener);
+      container.updateOverrides([
+        provider.overrideAsValue(AsyncValue.error(21, stackTrace)),
+      ]);
 
-  //     Object error;
-  //     runZonedGuarded(
-  //       () => container.updateOverrides([
-  //         provider
-  //             .debugOverrideWithValue(AsyncValue.error(42, StackTrace.current)),
-  //       ]),
-  //       (err, _) => error = err,
-  //     );
+      await expectLater(
+        container.read(provider.future),
+        throwsA(21),
+      );
+      expect(sub.read(), AsyncValue<int>.error(21, stackTrace));
+    });
+    test('error immediatly then different stacktrace', () async {
+      final stackTrace = StackTrace.current;
+      final provider = FutureProvider((_) async => 0);
+      final container = ProviderContainer(overrides: [
+        provider.overrideAsValue(AsyncValue.error(42, stackTrace)),
+      ]);
 
-  //     expect(error, isUnsupportedError);
-  //     verifyNoMoreInteractions(listener);
-  //   });
-  //   test('error immediatly then data', () async {
-  //     final stackTrace = StackTrace.current;
-  //     final provider = FutureProvider((_) async => 0);
-  //     final container = ProviderContainer(overrides: [
-  //       provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
-  //     ]);
-  //     final listener = ListenerMock();
+      final future = container.read(provider.future);
 
-  //     final dep = container.ref.dependOn(provider);
-  //     await expectLater(dep.value, throwsA(42));
+      await expectLater(future, throwsA(42));
 
-  //     provider.watchOwner(container, listener);
+      final sub = container.listen(provider);
 
-  //     verify(listener(AsyncValue.error(42, stackTrace))).called(1);
-  //     verifyNoMoreInteractions(listener);
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
 
-  //     Object error;
-  //     runZonedGuarded(
-  //       () => container.updateOverrides([
-  //         provider.debugOverrideWithValue(const AsyncValue.data(42)),
-  //       ]),
-  //       (err, _) => error = err,
-  //     );
+      final stack2 = StackTrace.current;
 
-  //     expect(error, isUnsupportedError);
-  //     verifyNoMoreInteractions(listener);
-  //   });
-  //   test('error immediatly then loading', () async {
-  //     final stackTrace = StackTrace.current;
-  //     final provider = FutureProvider((_) async => 0);
-  //     final container = ProviderContainer(overrides: [
-  //       provider.debugOverrideWithValue(AsyncValue.error(42, stackTrace)),
-  //     ]);
-  //     final listener = ListenerMock();
+      container.updateOverrides([
+        provider.overrideAsValue(AsyncValue.error(42, stack2)),
+      ]);
 
-  //     final dep = container.ref.dependOn(provider);
-  //     await expectLater(dep.value, throwsA(42));
+      expect(
+        container.read(provider.future),
+        isNot(future),
+      );
+      await expectLater(
+        container.read(provider.future),
+        throwsA(42),
+      );
+      expect(sub.read(), AsyncValue<int>.error(42, stack2));
+    });
+    test('error immediatly then data', () async {
+      final stackTrace = StackTrace.current;
+      final provider = FutureProvider((_) async => 0);
+      final container = ProviderContainer(overrides: [
+        provider.overrideAsValue(AsyncValue.error(42, stackTrace)),
+      ]);
 
-  //     provider.watchOwner(container, listener);
+      await expectLater(
+        container.read(provider.future),
+        throwsA(42),
+      );
 
-  //     verify(listener(AsyncValue.error(42, stackTrace))).called(1);
-  //     verifyNoMoreInteractions(listener);
+      final sub = container.listen(provider);
 
-  //     Object error;
-  //     runZonedGuarded(
-  //       () => container.updateOverrides([
-  //         provider.debugOverrideWithValue(const AsyncValue.loading()),
-  //       ]),
-  //       (err, _) => error = err,
-  //     );
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
 
-  //     expect(error, isUnsupportedError);
-  //     verifyNoMoreInteractions(listener);
-  //   });
-  // });
+      container.updateOverrides([
+        provider.overrideAsValue(const AsyncValue.data(42)),
+      ]);
+
+      await expectLater(
+        container.read(provider.future),
+        completion(42),
+      );
+      expect(sub.read(), const AsyncValue<int>.data(42));
+    });
+    test('error immediatly then loading', () async {
+      final stackTrace = StackTrace.current;
+      final provider = FutureProvider((_) async => 0);
+      final container = ProviderContainer(overrides: [
+        provider.overrideAsValue(AsyncValue.error(42, stackTrace)),
+      ]);
+
+      final future = container.read(provider.future);
+      await expectLater(future, throwsA(42));
+
+      final sub = container.listen(provider);
+
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
+
+      container.updateOverrides([
+        provider.overrideAsValue(const AsyncValue.loading()),
+      ]);
+
+      expect(container.read(provider.future), isNot(future));
+      expect(sub.read(), const AsyncValue<int>.loading());
+    });
+  });
 }
 
 class ListenerMock extends Mock {

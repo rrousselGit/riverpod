@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'builders.dart';
-import 'common.dart' show AsyncValue;
-import 'created_provider.dart';
+import 'common.dart' show AsyncLoading, AsyncValue;
 import 'framework.dart';
 import 'provider.dart';
 
@@ -14,15 +13,21 @@ mixin _StreamProviderMixin<T> on ProviderBase<Stream<T>, AsyncValue<T>> {
   Override overrideAsValue(AsyncValue<T> value) {
     return ProviderOverride(
       ValueProvider<Stream<T>, AsyncValue<T>>((ref) {
+        AsyncValue<T> lastValue;
         final controller = StreamController<T>();
         ref.onDispose(controller.close);
 
         ref.onChange = (newValue) {
           newValue.when(
             data: controller.add,
-            loading: () {},
+            loading: () {
+              if (lastValue != null && lastValue is! AsyncLoading) {
+                ref.markMustRecomputeState();
+              }
+            },
             error: controller.addError,
           );
+          lastValue = newValue;
         };
 
         ref.onChange(value);

@@ -13,15 +13,20 @@ mixin _FutureProviderMixin<T> on ProviderBase<Future<T>, AsyncValue<T>> {
   Override overrideAsValue(AsyncValue<T> value) {
     return ProviderOverride(
       ValueProvider<Future<T>, AsyncValue<T>>((ref) {
-        final controller = Completer<T>();
+        final completer = Completer<T>();
         ref.onChange = (newValue) {
-          newValue.when(
-              data: controller.complete,
+          if (completer.isCompleted) {
+            ref.markMustRecomputeState();
+          } else {
+            newValue.when(
+              data: completer.complete,
               loading: () {},
-              error: controller.completeError);
+              error: completer.completeError,
+            );
+          }
         };
         ref.onChange(value);
-        return controller.future;
+        return completer.future;
       }, value),
       this,
     );

@@ -189,6 +189,9 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   bool _dirty = true;
   // initialized to true so that the initial state creation don't notify listeners
   bool _dependencyMayHaveChanged = true;
+  // equivalent to _dependencyMayHaveChanged that does not rely on
+  // ProviderSubscription.flush, to force recomputed a state
+  bool _dependencyDidChange = false;
 
   bool get hasListeners => _listeners.isNotEmpty;
 
@@ -228,12 +231,16 @@ class ProviderElement<Created, Listened> implements ProviderReference {
       }
       element._dependents ??= {};
       element._dependents.add(this);
-      // TODO
-      // onDispose(() => element._dependents.remove(this));
-      // TODO refactor to not use `listen`
       return element.listen(mayHaveChanged: _markDependencyMayHaveChanged);
     }) as ProviderSubscription<T>;
     return sub.read();
+  }
+
+  void _markDependencyMayHaveChanged(ProviderSubscription sub) {
+    if (!_dependencyMayHaveChanged) {
+      _dependencyMayHaveChanged = true;
+      notifyMayHaveChanged();
+    }
   }
 
   ProviderSubscription<Listened> listen({
@@ -252,14 +259,14 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   }
 
   void flush() {
-    if (_dependencyMayHaveChanged) {
+    if (_dependencyMayHaveChanged || _dependencyDidChange) {
       _dependencyMayHaveChanged = false;
       // must be executed before _runStateCreate() so that errors during
       // creation are not silenced
       _exception = null;
       _runOnDispose();
 
-      var hasAnyDependencyChanged = false;
+      var hasAnyDependencyChanged = _dependencyDidChange;
       for (final sub in _subscriptions.values) {
         if (sub.flush()) {
           hasAnyDependencyChanged = true;
@@ -268,10 +275,12 @@ class ProviderElement<Created, Listened> implements ProviderReference {
       if (hasAnyDependencyChanged) {
         _runStateCreate();
       }
+      _dependencyDidChange = false;
     }
     _dirty = false;
     if (_notifyDidChangeLastNotificationCount != _notificationCount) {
-      notifyDidChange();
+      _notifyDidChangeLastNotificationCount = _notificationCount;
+      _notifyDidChange();
     }
     assert(!_dirty, 'flush did not reset the dirty flag for $provider');
     assert(
@@ -326,8 +335,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   }
 
   @protected
-  void notifyDidChange() {
-    _notifyDidChangeLastNotificationCount = _notificationCount;
+  void _notifyDidChange() {
     for (final listener in _listeners) {
       if (listener.didChange != null) {
         _runGuarded(listener.didChange);
@@ -385,6 +393,11 @@ class ProviderElement<Created, Listened> implements ProviderReference {
     _state.dispose();
   }
 
+  void markMustRecomputeState() {
+    _dependencyDidChange = true;
+    notifyMayHaveChanged();
+  }
+
   @protected
   void _runOnDispose() {
     _onDisposeListeners?.forEach(_runGuarded);
@@ -409,14 +422,6 @@ class ProviderElement<Created, Listened> implements ProviderReference {
         }
       }
       _previousSubscriptions = null;
-    }
-  }
-
-  @protected
-  void _markDependencyMayHaveChanged(ProviderSubscription<Object> sub) {
-    if (!_dependencyMayHaveChanged) {
-      _dependencyMayHaveChanged = true;
-      notifyMayHaveChanged();
     }
   }
 }

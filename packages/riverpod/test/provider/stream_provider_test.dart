@@ -548,6 +548,88 @@ void main() {
       });
     });
     group('from StreamProvider.overrideAsValue', () {
+      test('loading to data to loading creates a new stream too', () async {
+        final provider = StreamProvider<int>((_) async* {});
+        final container = ProviderContainer(overrides: [
+          provider.overrideAsValue(const AsyncValue.loading()),
+        ]);
+
+        final stream0 = container.read(provider.stream);
+
+        container.updateOverrides([
+          provider.overrideAsValue(const AsyncValue.data(42)),
+        ]);
+
+        final stream1 = container.read(provider.stream);
+
+        expect(stream0, stream1);
+        await expectLater(stream1, emits(42));
+
+        container.updateOverrides([
+          provider.overrideAsValue(const AsyncValue.loading()),
+        ]);
+
+        final stream2 = container.read(provider.stream);
+
+        expect(stream2, isNot(stream1));
+        await expectLater(stream1, emitsDone);
+
+        container.updateOverrides([
+          provider.overrideAsValue(const AsyncValue.data(21)),
+        ]);
+
+        await expectLater(stream2, emits(21));
+      });
+      test('data to loading creates a new stream', () async {
+        final provider = StreamProvider<int>((_) async* {});
+        final container = ProviderContainer(overrides: [
+          provider.overrideAsValue(const AsyncValue.data(42)),
+        ]);
+
+        final stream1 = container.read(provider.stream);
+
+        await expectLater(stream1, emits(42));
+
+        container.updateOverrides([
+          provider.overrideAsValue(const AsyncValue.loading()),
+        ]);
+
+        final stream2 = container.read(provider.stream);
+
+        expect(stream2, isNot(stream1));
+        await expectLater(stream1, emitsDone);
+
+        container.updateOverrides([
+          provider.overrideAsValue(const AsyncValue.data(21)),
+        ]);
+
+        await expectLater(stream2, emits(21));
+      });
+      test('error to loading creates a new stream', () async {
+        final provider = StreamProvider<int>((_) async* {});
+        final container = ProviderContainer(overrides: [
+          provider.overrideAsValue(AsyncValue.error(42)),
+        ]);
+
+        final stream1 = container.read(provider.stream);
+
+        await expectLater(stream1, emitsError(42));
+
+        container.updateOverrides([
+          provider.overrideAsValue(const AsyncValue.loading()),
+        ]);
+
+        final stream2 = container.read(provider.stream);
+
+        expect(stream2, isNot(stream1));
+        await expectLater(stream1, emitsDone);
+
+        container.updateOverrides([
+          provider.overrideAsValue(const AsyncValue.data(21)),
+        ]);
+
+        await expectLater(stream2, emits(21));
+      });
       test('read currentValue before first value', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
@@ -623,21 +705,18 @@ void main() {
       final container = ProviderContainer(overrides: [
         provider.overrideAsValue(const AsyncValue.data(42)),
       ]);
-      final listener = ListenerMock();
-      final stream = container.ref.read(provider.stream);
+      final stream = container.read(provider.stream);
 
-      provider.watchOwner(container, listener);
+      final sub = container.listen(provider);
 
-      verify(listener(const AsyncValue.data(42))).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue.data(42));
       await expectLater(stream, emits(42));
 
       container.updateOverrides([
         provider.overrideAsValue(const AsyncValue.data(21)),
       ]);
 
-      verify(listener(const AsyncValue.data(21))).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue.data(21));
       await expectLater(stream, emits(21));
 
       container.dispose();
@@ -649,21 +728,19 @@ void main() {
       final container = ProviderContainer(overrides: [
         provider.overrideAsValue(const AsyncValue.data(42)),
       ]);
-      final listener = ListenerMock();
-      final stream = container.ref.read(provider.stream);
+      final stream = container.read(provider.stream);
 
-      provider.watchOwner(container, listener);
+      final sub = container.listen(provider);
 
-      verify(listener(const AsyncValue.data(42))).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue.data(42));
       await expectLater(stream, emits(42));
 
       container.updateOverrides([
         provider.overrideAsValue(AsyncValue.error(21)),
       ]);
 
-      verify(listener(AsyncValue.error(21))).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), AsyncValue<int>.error(21));
+      expect(sub.read(), AsyncValue<int>.error(21));
       await expectLater(stream, emitsError(21));
 
       container.dispose();
@@ -675,21 +752,18 @@ void main() {
       final container = ProviderContainer(overrides: [
         provider.overrideAsValue(const AsyncValue.data(42)),
       ]);
-      final listener = ListenerMock();
-      final stream = container.ref.read(provider.stream);
+      final stream = container.read(provider.stream);
 
-      provider.watchOwner(container, listener);
+      final sub = container.listen(provider);
 
-      verify(listener(const AsyncValue.data(42))).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue.data(42));
       await expectLater(stream, emits(42));
 
       container.updateOverrides([
-        provider.overrideAsValue(const AsyncValue.loading()),
+        provider.overrideAsValue(const AsyncValue<int>.loading()),
       ]);
 
-      verify(listener(const AsyncValue.loading())).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue<int>.loading());
 
       container.dispose();
 
@@ -698,22 +772,19 @@ void main() {
     test('loading immediatly then value', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(const AsyncValue.loading()),
+        provider.overrideAsValue(const AsyncValue<int>.loading()),
       ]);
-      final listener = ListenerMock();
-      final stream = container.ref.read(provider.stream);
+      final stream = container.read(provider.stream);
 
-      provider.watchOwner(container, listener);
+      final sub = container.listen(provider);
 
-      verify(listener(const AsyncValue.loading())).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue<int>.loading());
 
       container.updateOverrides([
         provider.overrideAsValue(const AsyncValue.data(42)),
       ]);
 
-      verify(listener(const AsyncValue.data(42))).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue.data(42));
       await expectLater(stream, emits(42));
 
       container.dispose();
@@ -723,24 +794,21 @@ void main() {
     test('loading immediatly then error', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(const AsyncValue.loading()),
+        provider.overrideAsValue(const AsyncValue<int>.loading()),
       ]);
-      final listener = ListenerMock();
-      final stream = container.ref.read(provider.stream);
+      final stream = container.read(provider.stream);
 
-      provider.watchOwner(container, listener);
+      final sub = container.listen(provider);
 
-      verify(listener(const AsyncValue.loading())).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue<int>.loading());
 
       final stackTrace = StackTrace.current;
 
       container.updateOverrides([
-        provider.overrideAsValue(AsyncValue.error(42, stackTrace)),
+        provider.overrideAsValue(AsyncValue<int>.error(42, stackTrace)),
       ]);
 
-      verify(listener(AsyncValue.error(42, stackTrace))).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
 
       await expectLater(stream, emitsError(42));
 
@@ -751,28 +819,25 @@ void main() {
     test('loading immediatly then loading', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(const AsyncValue.loading()),
+        provider.overrideAsValue(const AsyncValue<int>.loading()),
       ]);
-      final listener = ListenerMock();
-      final stream = container.ref.read(provider.stream);
+      final stream = container.read(provider.stream);
 
-      provider.watchOwner(container, listener);
+      final sub = container.listen(provider);
 
-      verify(listener(const AsyncValue.loading())).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue<int>.loading());
 
       container.updateOverrides([
-        provider.overrideAsValue(const AsyncValue.loading()),
+        provider.overrideAsValue(const AsyncValue<int>.loading()),
       ]);
 
-      verifyNoMoreInteractions(listener);
+      expect(sub.flush(), false);
 
       container.updateOverrides([
         provider.overrideAsValue(const AsyncValue.data(42)),
       ]);
 
-      verify(listener(const AsyncValue.data(42))).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue.data(42));
 
       await expectLater(stream, emits(42));
 
@@ -784,23 +849,20 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(AsyncValue.error(42, stackTrace)),
+        provider.overrideAsValue(AsyncValue<int>.error(42, stackTrace)),
       ]);
-      final listener = ListenerMock();
-      final stream = container.ref.read(provider.stream);
+      final stream = container.read(provider.stream);
 
-      provider.watchOwner(container, listener);
+      final sub = container.listen(provider);
 
-      verify(listener(AsyncValue.error(42, stackTrace))).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
       await expectLater(stream, emitsError(42));
 
       container.updateOverrides([
-        provider.overrideAsValue(AsyncValue.error(21, stackTrace)),
+        provider.overrideAsValue(AsyncValue<int>.error(21, stackTrace)),
       ]);
 
-      verify(listener(AsyncValue.error(21, stackTrace))).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), AsyncValue<int>.error(21, stackTrace));
       await expectLater(stream, emitsError(21));
 
       container.dispose();
@@ -811,26 +873,23 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(AsyncValue.error(42, stackTrace)),
+        provider.overrideAsValue(AsyncValue<int>.error(42, stackTrace)),
       ]);
-      final listener = ListenerMock();
-      final stream = container.ref.read(provider.stream);
+      final stream = container.read(provider.stream);
 
-      provider.watchOwner(container, listener);
+      final sub = container.listen(provider);
 
-      verify(listener(AsyncValue.error(42, stackTrace))).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
       await expectLater(stream, emitsError(42));
 
       final stackTrace2 = StackTrace.current;
       container.updateOverrides([
         provider.overrideAsValue(
-          AsyncValue.error(42, stackTrace2),
+          AsyncValue<int>.error(42, stackTrace2),
         ),
       ]);
 
-      verify(listener(AsyncValue.error(42, stackTrace2))).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace2));
       await expectLater(stream, emitsError(42));
 
       container.dispose();
@@ -841,23 +900,20 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(AsyncValue.error(42, stackTrace)),
+        provider.overrideAsValue(AsyncValue<int>.error(42, stackTrace)),
       ]);
-      final listener = ListenerMock();
-      final stream = container.ref.read(provider.stream);
+      final stream = container.read(provider.stream);
 
-      provider.watchOwner(container, listener);
+      final sub = container.listen(provider);
 
-      verify(listener(AsyncValue.error(42, stackTrace))).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
       await expectLater(stream, emitsError(42));
 
       container.updateOverrides([
         provider.overrideAsValue(const AsyncValue.data(21)),
       ]);
 
-      verify(listener(const AsyncValue.data(21))).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue.data(21));
       await expectLater(stream, emits(21));
 
       container.dispose();
@@ -868,23 +924,20 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(AsyncValue.error(42, stackTrace)),
+        provider.overrideAsValue(AsyncValue<int>.error(42, stackTrace)),
       ]);
-      final listener = ListenerMock();
-      final stream = container.ref.read(provider.stream);
+      final stream = container.read(provider.stream);
 
-      provider.watchOwner(container, listener);
+      final sub = container.listen(provider);
 
-      verify(listener(AsyncValue.error(42, stackTrace))).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
       await expectLater(stream, emitsError(42));
 
       container.updateOverrides([
-        provider.overrideAsValue(const AsyncValue.loading()),
+        provider.overrideAsValue(const AsyncValue<int>.loading()),
       ]);
 
-      verify(listener(const AsyncValue.loading())).called(1);
-      verifyNoMoreInteractions(listener);
+      expect(sub.read(), const AsyncValue<int>.loading());
 
       container.dispose();
 

@@ -401,10 +401,10 @@ void main() {
     final provider2 = Provider((ref) => 1);
     final container = ProviderContainer();
 
-    final value1 = container.ref.read(provider);
-    final value2 = container.ref.read(provider);
-    final value21 = container.ref.read(provider2);
-    final value22 = container.ref.read(provider2);
+    final value1 = container.read(provider);
+    final value2 = container.read(provider);
+    final value21 = container.read(provider2);
+    final value22 = container.read(provider2);
 
     expect(value1, value2);
     expect(value1, 0);

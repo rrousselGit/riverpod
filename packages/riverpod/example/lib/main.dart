@@ -51,7 +51,7 @@ Future<void> main() async {
   final container = ProviderContainer();
 
   /// Obtains the [Repository]. This will implicitly load [Configuration] too.
-  final repository = await container.ref.read(repositoryProvider.future);
+  final repository = await container.read(repositoryProvider.future);
 
   final comics = await repository.fetchComics();
   for (final comic in comics) {
