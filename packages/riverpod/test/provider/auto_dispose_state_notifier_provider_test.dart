@@ -66,7 +66,8 @@ void main() {
 
     // does not crash
     container.updateOverrides([
-      provider.overrideAsProvider(StateNotifierProvider.autoDispose((_) => notifier)),
+      provider.overrideAsProvider(
+          StateNotifierProvider.autoDispose((_) => notifier)),
     ]);
 
     provider.watchOwner(container, notifierListener);

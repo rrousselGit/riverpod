@@ -160,7 +160,9 @@ class ProviderSubscription<Listened> {
 
 @visibleForTesting
 class ProviderElement<Created, Listened> implements ProviderReference {
-  ProviderElement(this._provider) : _state = _provider.createState();
+  ProviderElement(this._provider) : state = _provider.createState();
+
+  static ProviderElement _debugCurrentlyBuildingElement;
 
   ProviderBase<Created, Listened> _origin;
   ProviderBase<Created, Listened> get origin => _origin;
@@ -168,8 +170,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   ProviderBase<Created, Listened> _provider;
   ProviderBase<Created, Listened> get provider => _provider;
 
-  ProviderStateBase<Created, Listened> _state;
-  ProviderStateBase<Created, Listened> get state => _state;
+  final ProviderStateBase<Created, Listened> state;
 
   ProviderContainer _container;
   @override
@@ -204,11 +205,13 @@ class ProviderElement<Created, Listened> implements ProviderReference {
 
   @override
   T read<T>(AlwaysAliveProviderBase<Object, T> provider) {
+    // TODO throw if non-circular dependency
     return _container.read(provider);
   }
 
   @override
   T unsafeRead<T>(ProviderBase<Object, T> provider) {
+    // TODO mark the provider as needing dispose if AutoDispose & no listener
     return _container.unsafeRead(provider);
   }
 
@@ -297,7 +300,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
     if (_exception != null) {
       throw _exception;
     }
-    return _state._exposedValue;
+    return state._exposedValue;
   }
 
   @protected
@@ -311,6 +314,28 @@ class ProviderElement<Created, Listened> implements ProviderReference {
 
   @protected
   void notifyMayHaveChanged() {
+    assert(() {
+      if (_debugCurrentlyBuildingElement == null ||
+          _debugCurrentlyBuildingElement == this) {
+        return true;
+      }
+      final parentsQueue = DoubleLinkedQueue<ProviderElement>.from(
+        _subscriptions.keys,
+      );
+
+      while (parentsQueue.isNotEmpty) {
+        final parent = parentsQueue.removeFirst();
+        if (parent == _debugCurrentlyBuildingElement) {
+          return true;
+        }
+        parentsQueue.addAll(parent._subscriptions.keys);
+      }
+
+      throw AssertionError('''
+The provider $provider was marked as needing to be recomputed while creating ${_debugCurrentlyBuildingElement.provider},
+but $provider does not depend on ${_debugCurrentlyBuildingElement.provider}.
+''');
+    }(), '');
     if (!_mounted) {
       throw StateError('Cannot call onDispose after a provider was dispose');
     }
@@ -345,7 +370,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
       _runBinaryGuarded(
         observer.didUpdateProvider,
         _origin,
-        _state._exposedValue,
+        state._exposedValue,
       );
     }
   }
@@ -357,7 +382,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   @mustCallSuper
   void mount() {
     _mounted = true;
-    _state._element = this;
+    state._element = this;
     _runStateCreate();
     _didMount = true;
     _dirty = false;
@@ -390,7 +415,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
     }
 
     _listeners.clear();
-    _state.dispose();
+    state.dispose();
   }
 
   void markMustRecomputeState() {
@@ -406,15 +431,25 @@ class ProviderElement<Created, Listened> implements ProviderReference {
 
   @protected
   void _runStateCreate() {
-    final previous = _state._createdValue;
+    final previous = state._createdValue;
     _previousSubscriptions = _subscriptions;
     _subscriptions = {};
+    ProviderElement previouslyBuildingElement;
+    assert(() {
+      previouslyBuildingElement = _debugCurrentlyBuildingElement;
+      _debugCurrentlyBuildingElement = this;
+      return true;
+    }(), '');
     try {
-      _state._createdValue = _provider._create(this);
-      _state.valueChanged(previous: previous);
+      state._createdValue = _provider._create(this);
+      state.valueChanged(previous: previous);
     } catch (err, stack) {
       _exception = ProviderException._(err, stack, _provider);
     } finally {
+      assert(() {
+        _debugCurrentlyBuildingElement = previouslyBuildingElement;
+        return true;
+      }(), '');
       if (_previousSubscriptions != null) {
         for (final sub in _previousSubscriptions.entries) {
           sub.key._dependents.remove(this);

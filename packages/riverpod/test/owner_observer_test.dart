@@ -155,7 +155,7 @@ void main() {
     );
     final listener = Listener<int>();
 
-    final sub = provider.state.addLazyListener(
+    provider.state.addLazyListener(
       container,
       mayHaveChanged: () {},
       onChange: listener,

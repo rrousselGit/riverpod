@@ -210,68 +210,7 @@ void main() {
         ),
       );
     });
-    testWidgets(
-        'fails if completed with value and rebuild with different content',
-        (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            futureProvider.overrideAsValue(const AsyncValue.data(42)),
-          ],
-          child: child,
-        ),
-      );
 
-      expect(completed, true);
-      await expectLater(future, completion(42));
-
-      final errors = <Object>[];
-
-      await runZonedGuarded(
-        () => tester.pumpWidget(
-          ProviderScope(
-            overrides: [
-              futureProvider.overrideAsValue(const AsyncValue.data(21)),
-            ],
-            child: child,
-          ),
-        ),
-        (err, _) => errors.add(err),
-      );
-
-      expect(errors, [isStateError]);
-    });
-    testWidgets(
-        'fails if completed with error and rebuild with different content',
-        (tester) async {
-      final error = Error();
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            futureProvider.overrideAsValue(AsyncValue.error(error)),
-          ],
-          child: child,
-        ),
-      );
-
-      expect(completed, true);
-      await expectLater(future, throwsA(error));
-
-      final errors = <Object>[];
-      await runZonedGuarded(
-        () => tester.pumpWidget(
-          ProviderScope(
-            overrides: [
-              futureProvider.overrideAsValue(const AsyncValue.data(21)),
-            ],
-            child: child,
-          ),
-        ),
-        (err, _) => errors.add(err),
-      );
-
-      expect(errors, [isStateError]);
-    });
     testWidgets(
         'FutureProviderDependency.future completes on rebuild with data',
         (tester) async {

@@ -75,9 +75,9 @@ extension ProviderSelect<Value> on ProviderBase<Object, Value> {
   /// This will further optimise our widget by rebuilding it only when "isAdult"
   /// changed instead of whenever the age changes.
   // ProviderListenable<Selected> select<Selected>(
-    // Selected Function(Value value) selector,
+  // Selected Function(Value value) selector,
   // ) {
-    // return ProviderSelector(this, selector);
+  // return ProviderSelector(this, selector);
   // }
 }
 

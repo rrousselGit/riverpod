@@ -24,23 +24,7 @@ void _runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
   }
 }
 
-/// A flag for checking against invalid operations inside
-/// [ProviderStateBase.initState] and [ProviderStateBase.dispose].
-///
-/// This prevents modifying other providers while inside these life-cycles.
-@visibleForTesting
-ProviderElement notifyListenersLock;
-
 ProviderBase _circularDependencyLock;
-
-/// A flag for checking against invalid operations inside [ProviderStateBase.markMayHaveChanged].
-///
-/// This prevents modifying providers that already notified their listener in
-/// the current frame.
-///
-/// Negative when nothing is locked.
-@visibleForTesting
-int debugNotifyListenersDepthLock = -1;
 
 final _refProvider = Provider((ref) => ref);
 
@@ -254,8 +238,6 @@ class ProviderContainer {
       return;
     }
 
-    assert(notifyListenersLock == null, '');
-
     for (final state
         in _visitStatesInOrder().toList(growable: false).reversed) {
       state.dispose();
@@ -315,8 +297,8 @@ extension ProviderStateOwnerInternals on ProviderContainer {
     assert(() {
       res = {
         for (final entry in _stateReaders.entries)
-          if (entry.value._state != null)
-            entry.key: entry.value._state.exposedValue,
+          if (entry.value.state != null)
+            entry.key: entry.value.state.exposedValue,
       };
 
       return true;

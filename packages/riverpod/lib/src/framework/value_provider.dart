@@ -37,7 +37,6 @@ class ValueProviderElement<Created, Listened>
   @override
   void mount() {
     super.mount();
-    state.exposedValue = (provider as ValueProvider<Created, Listened>)._value;
   }
 
   @override
@@ -54,5 +53,9 @@ class ValueProviderElement<Created, Listened>
 class _ValueProviderState<Created, Listened>
     extends ProviderStateBase<Created, Listened> {
   @override
-  void valueChanged({Object previous}) {}
+  void valueChanged({Object previous}) {
+    exposedValue =
+        ((ref as ProviderElement).provider as ValueProvider<Created, Listened>)
+            ._value;
+  }
 }

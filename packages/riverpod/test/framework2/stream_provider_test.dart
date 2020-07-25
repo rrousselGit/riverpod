@@ -89,7 +89,7 @@ void main() {
     expect(sub.flush(), false);
   });
   group('overrideAsValue(T)', () {
-    test('.stream is a broadcast stream', () async {
+    test('.stream is a broadcast stream a', () async {
       final provider = StreamProvider((ref) => controller.stream);
       final container = ProviderContainer(overrides: [
         provider.overrideAsValue(const AsyncValue<int>.data(42)),

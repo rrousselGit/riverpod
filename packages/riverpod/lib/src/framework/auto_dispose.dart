@@ -96,21 +96,16 @@ class _AutoDisposer {
           !entry.value.mounted) {
         continue;
       }
-      notifyListenersLock = entry.value;
-      try {
-        assert(entry.value._origin != null, 'No origin specified – bug?');
-        assert(
-          entry.value._container._stateReaders.containsKey(entry.value._origin),
-          'Removed a key that does not exist',
-        );
-        entry.value._container._stateReaders.remove(entry.value._origin);
-        if (entry.value.origin.from != null) {
-          entry.value.origin.from._cache.remove(entry.value.origin.argument);
-        }
-        entry.value.dispose();
-      } finally {
-        notifyListenersLock = null;
+      assert(entry.value._origin != null, 'No origin specified – bug?');
+      assert(
+        entry.value._container._stateReaders.containsKey(entry.value._origin),
+        'Removed a key that does not exist',
+      );
+      entry.value._container._stateReaders.remove(entry.value._origin);
+      if (entry.value.origin.from != null) {
+        entry.value.origin.from._cache.remove(entry.value.origin.argument);
       }
+      entry.value.dispose();
     }
   }
 }

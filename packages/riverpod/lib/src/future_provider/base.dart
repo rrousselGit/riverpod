@@ -2,7 +2,8 @@ part of '../future_provider.dart';
 
 /// {@macro riverpod.futureprovider}
 class FutureProvider<T>
-    extends AlwaysAliveProviderBase<Future<T>, AsyncValue<T>> with _FutureProviderMixin<T>{
+    extends AlwaysAliveProviderBase<Future<T>, AsyncValue<T>>
+    with _FutureProviderMixin<T> {
   /// {@macro riverpod.futureprovider}
   FutureProvider(
     Create<Future<T>, ProviderReference> create, {
