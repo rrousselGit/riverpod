@@ -5,6 +5,7 @@ import 'dart:collection';
 
 import 'package:meta/meta.dart';
 
+import 'framework/select.dart';
 import 'provider.dart';
 
 part 'framework/auto_dispose.dart';

@@ -106,14 +106,24 @@ class ProviderContainer {
   }
 
   ProviderSubscription<Result> listen<Result>(
-    ProviderBase<Object, Result> provider, {
+    ProviderListenable<Result> providerListenable, {
     void Function(ProviderSubscription<Result> sub) mayHaveChanged,
     void Function(ProviderSubscription<Result> sub) didChange,
   }) {
-    return readProviderElement(provider).listen(
-      mayHaveChanged: mayHaveChanged,
-      didChange: didChange,
-    );
+    if (providerListenable is ProviderBase<Object, Result>) {
+      return readProviderElement(providerListenable).listen(
+        mayHaveChanged: mayHaveChanged,
+        didChange: didChange,
+      );
+    } else if (providerListenable is ProviderSelector<Object, Result>) {
+      return providerListenable.listen(
+        this,
+        mayHaveChanged: mayHaveChanged,
+        didChange: didChange,
+      );
+    } else {
+      throw UnsupportedError('Unknown ProviderListenable $providerListenable');
+    }
   }
 
   void updateOverrides(List<Override> overrides) {

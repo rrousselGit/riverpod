@@ -37,6 +37,9 @@ String shortHash(Object object) {
   return object.hashCode.toUnsigned(20).toRadixString(16).padLeft(5, '0');
 }
 
+/// A base class for all providers, used to consume a provider.
+///
+/// Do not implement or extend.
 abstract class ProviderListenable<Listened> {}
 
 abstract class AlwaysAliveProviderBase<Created, Listened>
@@ -85,6 +88,80 @@ abstract class ProviderBase<Created, Listened>
     }.entries.where((e) => e.value != null).map((e) => '${e.key}: ${e.value}');
 
     return '${describeIdentity(this)}$content';
+  }
+
+  /// Partially listen to a provider.
+  ///
+  /// The [select] function allows filtering unwanted rebuilds of a Widget
+  /// by reading only the properties that we care about.
+  ///
+  /// For example, consider the following `ChangeNotifier`:
+  ///
+  /// ```dart
+  /// class Person extends ChangeNotifier {
+  ///   int _age = 0;
+  ///   int get age => _age;
+  ///   set age(int age) {
+  ///     _age = age;
+  ///     notifyListeners();
+  ///   }
+  ///
+  ///   String _name = '';
+  ///   String get name => _name;
+  ///   set name(String name) {
+  ///     _name = name;
+  ///     notifyListeners();
+  ///   }
+  /// }
+  ///
+  /// final personProvider = ChangeNotifierProvider((_) => Person());
+  /// ```
+  ///
+  /// In this class, both `name` and `age` may change, but a widget may need
+  /// only `age`.
+  ///
+  /// If we used `useProvider`/`Consumer` as we normally would, this would cause
+  /// widgets that only use `age` to still rebuild when `name` changes, which
+  /// is inefficient.
+  ///
+  /// The method [select] can be used to fix this, by explicitly reading only
+  /// a specific part of the object.
+  ///
+  /// A typical usage would be:
+  ///
+  /// ```dart
+  /// @override
+  /// Widget build(BuildContext context) {
+  ///   final age = useProvider(personProvider.select((p) => p.age));
+  ///   return Text('$age');
+  /// }
+  /// ```
+  ///
+  /// This will cause our widget to rebuild **only** when `age` changes.
+  ///
+  ///
+  /// **NOTE**: The function passed to [select] can return complex computations
+  /// too.
+  ///
+  /// For example, instead of `age`, we could return a "isAdult" boolean:
+  ///
+  /// ```dart
+  /// @override
+  /// Widget build(BuildContext context) {
+  ///   final isAdult = useProvider(personProvider.select((p) => p.age >= 18));
+  ///   return Text('$isAdult');
+  /// }
+  /// ```
+  ///
+  /// This will further optimise our widget by rebuilding it only when "isAdult"
+  /// changed instead of whenever the age changes.
+  ProviderListenable<Selected> select<Selected>(
+    Selected Function(Listened value) selector,
+  ) {
+    return ProviderSelector<Listened, Selected>(
+      provider: this,
+      selector: selector,
+    );
   }
 
   // Works only on ProviderBase<T, T> scenario by default

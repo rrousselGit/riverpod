@@ -8,6 +8,7 @@ library internals;
 export 'builders.dart';
 export 'common.dart';
 export 'framework.dart';
+export 'framework/select.dart';
 export 'future_provider.dart';
 export 'provider.dart';
 export 'state_notifier_provider.dart';

@@ -28,41 +28,6 @@ void main() {
     expect(find.text('84'), findsOneWidget);
   });
 
-  testWidgets('provider1 can read and listen to other providers',
-      (tester) async {
-    // ProviderReference<int> providerState;
-
-    // final provider = Provider<int>((ref) {
-    //   providerState = ref;
-    //   return 42;
-    // });
-    // var createCount = 0;
-    // final provider1 =
-    //     ProviderFamily<ProviderDependency<int>, String>(useProvider, (ref, first) {
-    //   createCount++;
-    //   first.onChange((v) {
-    //     ref.value = v.toString();
-    //   });
-    //   return first.value.toString();
-    // });
-
-    // await tester.pumpWidget(
-    //   ProviderScope(
-    //     child: HookBuilder(builder: (c) {
-    //       return Text(useProviderFamily(), textDirection: TextDirection.ltr);
-    //     }),
-    //   ),
-    // );
-
-    // expect(find.text('42'), findsOneWidget);
-
-    // providerState.value = 21;
-    // await tester.pump();
-
-    // expect(createCount, 1);
-    // expect(find.text('21'), findsOneWidget);
-  }, skip: true);
-
   testWidgets('provider1 uses override if the override is at root',
       (tester) async {
     final provider = Provider((_) => 0);
