@@ -39,6 +39,9 @@ String shortHash(Object object) {
 
 /// A base class for all providers, used to consume a provider.
 ///
+/// It is used by [ProviderContainer.listen] and `useProvider` to listen to
+/// both a provider and `provider.select`.
+///
 /// Do not implement or extend.
 abstract class ProviderListenable<Listened> {}
 
@@ -54,7 +57,34 @@ abstract class AlwaysAliveProviderBase<Created, Listened>
     return ProviderElement(this);
   }
 
+  /// {@template riverpod.overrideWithProvider}
   /// Overrides the behavior of this provider with another provider.
+  ///
+  /// Some common use-cases are:
+  /// - testing, by replacing a service with a fake implementation, or to reach
+  ///   a very specific state easily.
+  /// - multiple environments, by changing the implementation of a class
+  ///   based on the platform or other parameters.
+  ///
+  /// This function should be used in combination with `ProviderScope.overrides`
+  /// or `ProviderContainer.overrides`:
+  /// 
+  /// ```dart
+  /// final myService = Provider((ref) => MyService());
+  ///
+  /// runApp(
+  ///   ProviderScope(
+  ///     overrides: [
+  ///       myService.overrideWithProvider(
+  ///         // Replace the implementation of MyService with a fake implementation
+  ///         Provider((ref) => MyFakeService())
+  ///       ),
+  ///     ],
+  ///     child: MyApp(),
+  ///   ),
+  /// );
+  /// ```
+  /// {@endtemplate}
   // Cannot be overriden by AutoDisposeProviders
   ProviderOverride overrideWithProvider(
     AlwaysAliveProviderBase<Created, Listened> provider,
