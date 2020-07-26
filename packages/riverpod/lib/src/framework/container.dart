@@ -120,7 +120,6 @@ class ProviderContainer {
   }
 
   void updateOverrides(List<Override> overrides) {
-    // TODO test allow calling updateOverrides for only one of the overriden providers
     if (_disposed) {
       throw StateError(
         'Called updateOverrides on a ProviderContainer that was already disposed',

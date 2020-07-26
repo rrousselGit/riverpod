@@ -45,9 +45,11 @@ abstract class AutoDisposeProviderBase<Created, Listened>
   }
 }
 
+/// The [ProviderElement] of an [AutoDisposeProviderBase].
 class AutoDisposeProviderElement<Created, Listened>
     extends ProviderElement<Created, Listened>
     implements AutoDisposeProviderReference {
+  /// The [ProviderElement] of an [AutoDisposeProviderBase].
   AutoDisposeProviderElement(
     AutoDisposeProviderBase<Created, Listened> provider,
   ) : super(provider);
@@ -55,6 +57,7 @@ class AutoDisposeProviderElement<Created, Listened>
   bool _maintainState = false;
   @override
   bool get maintainState => _maintainState;
+  @override
   set maintainState(bool value) {
     _maintainState = value;
     if (!_maintainState && !hasListeners) {
@@ -76,12 +79,19 @@ class _LinkedListEntry<T> extends LinkedListEntry<_LinkedListEntry<T>> {
   final T value;
 }
 
+/// The class that handlers disposing [AutoDisposeProviderBase] when they are
+/// no-longer listened.
+///
+/// This will typically cause a provider to be disposed after the next event loop,
+/// unless by that time the provider is listened once again, or if
+/// [AutoDisposeProviderReference.maintainState] was set to `true`.
 class _AutoDisposer {
   static final _AutoDisposer instance = _AutoDisposer();
 
   bool _scheduled = false;
   LinkedList<_LinkedListEntry<AutoDisposeProviderElement>> _stateToDispose;
 
+  /// Marks an [AutoDisposeProvider] as potentially needing to be disposed.
   void scheduleDispose(AutoDisposeProviderElement element) {
     assert(
       !element.hasListeners,
