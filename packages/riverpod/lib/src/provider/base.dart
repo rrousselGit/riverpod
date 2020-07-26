@@ -15,7 +15,7 @@ class Provider<T> extends AlwaysAliveProviderBase<T, T> {
   static const autoDispose = AutoDisposeProviderBuilder();
 
   @override
-  ProviderOverride overrideAsProvider(ProviderBase<Object, T> provider) {
+  ProviderOverride overrideWithProvider(ProviderBase<Object, T> provider) {
     return ProviderOverride(provider, this);
   }
 

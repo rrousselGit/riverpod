@@ -13,7 +13,7 @@ void main() {
     final provider = StateNotifierProvider.autoDispose
         .family<TestNotifier, int>((ref, a) => TestNotifier());
     final container = ProviderContainer(
-      overrides: [provider.overrideAsProvider((ref, a) => notifier2)],
+      overrides: [provider.overrideWithProvider((ref, a) => notifier2)],
     );
     final ownerStateListener = Listener<int>();
     final ownerNotifierListener = Listener<TestNotifier>();
@@ -56,7 +56,7 @@ void main() {
     final notifier = TestNotifier(42);
     final container = ProviderContainer(
       overrides: [
-        provider.overrideAsProvider(
+        provider.overrideWithProvider(
           StateNotifierProvider.autoDispose((_) => TestNotifier(10)),
         )
       ],
@@ -66,7 +66,7 @@ void main() {
 
     // does not crash
     container.updateOverrides([
-      provider.overrideAsProvider(
+      provider.overrideWithProvider(
           StateNotifierProvider.autoDispose((_) => notifier)),
     ]);
 

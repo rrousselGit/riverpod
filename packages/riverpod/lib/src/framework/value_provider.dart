@@ -21,7 +21,7 @@ class ValueProvider<Created, Listened>
   }
 
   @override
-  Override overrideAsValue(Listened value) {
+  Override overrideWithValue(Listened value) {
     throw UnimplementedError();
   }
 }

@@ -10,7 +10,7 @@ part 'future_provider/auto_dispose.dart';
 
 mixin _FutureProviderMixin<T> on ProviderBase<Future<T>, AsyncValue<T>> {
   @override
-  Override overrideAsValue(AsyncValue<T> value) {
+  Override overrideWithValue(AsyncValue<T> value) {
     return ProviderOverride(
       ValueProvider<Future<T>, AsyncValue<T>>((ref) {
         final completer = Completer<T>();

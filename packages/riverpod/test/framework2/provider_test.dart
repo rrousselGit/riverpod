@@ -14,7 +14,7 @@ void main() {
       return 21;
     });
     final container = ProviderContainer(overrides: [
-      provider.overrideAsProvider(override),
+      provider.overrideWithProvider(override),
     ]);
 
     final sub = container.listen(provider);
@@ -27,7 +27,7 @@ void main() {
       return 21;
     });
     final container = ProviderContainer(overrides: [
-      provider.overrideAsProvider(override),
+      provider.overrideWithProvider(override),
     ]);
 
     final sub = container.listen(provider);

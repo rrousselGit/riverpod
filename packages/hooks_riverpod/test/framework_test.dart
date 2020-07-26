@@ -110,7 +110,7 @@ void main() {
       ProviderScope(
         key: UniqueKey(),
         overrides: [
-          provider.overrideAsProvider(Provider((_) => 'override')),
+          provider.overrideWithProvider(Provider((_) => 'override')),
         ],
         child: builder,
       ),

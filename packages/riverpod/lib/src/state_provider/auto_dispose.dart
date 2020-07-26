@@ -46,7 +46,7 @@ extension AutoDisposeStateFamilyX<T, Param> on Family<
     AutoDisposeProviderReference,
     AutoDisposeStateProvider<T>> {
   /// Overrides the behavior of a family for a part of the application.
-  Override overrideAsProvider(
+  Override overrideWithProvider(
     T Function(AutoDisposeProviderReference ref, Param param) builderOverride,
   ) {
     return FamilyOverride(

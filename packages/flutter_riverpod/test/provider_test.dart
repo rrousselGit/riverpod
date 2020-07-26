@@ -164,7 +164,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAsProvider(
+          provider.overrideWithProvider(
             Provider((ref) {
               assert(ref != null, '');
               callCount++;
@@ -182,7 +182,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAsProvider(
+          provider.overrideWithProvider(
             Provider((ref) {
               assert(ref != null, '');
               callCount++;
@@ -204,7 +204,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider2.overrideAsProvider(
+          provider2.overrideWithProvider(
             Provider<int>((ref) {
               return ref.watch(provider) * 2;
             }),
@@ -233,7 +233,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAsProvider(Provider((_) => 1)),
+          provider.overrideWithProvider(Provider((_) => 1)),
         ],
         child: Consumer((c, watch) {
           return Text(watch(provider1), textDirection: TextDirection.ltr);
@@ -284,7 +284,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          first.overrideAsProvider(Provider((_) => 42)),
+          first.overrideWithProvider(Provider((_) => 42)),
         ],
         child: Consumer((c, watch) {
           return Text(
@@ -312,7 +312,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          second.overrideAsProvider(Provider((_) => 0)),
+          second.overrideWithProvider(Provider((_) => 0)),
         ],
         child: Consumer((c, watch) {
           return Text(

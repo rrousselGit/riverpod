@@ -41,7 +41,7 @@ class StateProviderFamily<T, A> extends Family<StateController<T>,
 extension StateFamilyX<T, Param> on Family<StateController<T>,
     StateController<T>, Param, ProviderReference, StateProvider<T>> {
   /// Overrides the behavior of a family for a part of the application.
-  Override overrideAsProvider(
+  Override overrideWithProvider(
     T Function(ProviderReference ref, Param param) builderOverride,
   ) {
     return FamilyOverride(

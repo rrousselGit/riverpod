@@ -52,7 +52,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAsProvider(Provider((_) => 1)),
+          provider.overrideWithProvider(Provider((_) => 1)),
         ],
         child: Container(),
       ),
@@ -72,7 +72,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAsProvider(Provider((_) => 1)),
+          provider.overrideWithProvider(Provider((_) => 1)),
         ],
         child: consumer,
       ),
@@ -92,7 +92,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAsProvider(Provider((_) => 1)),
+          provider.overrideWithProvider(Provider((_) => 1)),
         ],
         child: Container(),
       ),
@@ -103,7 +103,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider2.overrideAsProvider(Provider((_) => 1)),
+          provider2.overrideWithProvider(Provider((_) => 1)),
         ],
         child: Container(),
       ),
@@ -160,7 +160,7 @@ void main() {
       ProviderScope(
         key: UniqueKey(),
         overrides: [
-          provider.overrideAsProvider(Provider((_) => 'override')),
+          provider.overrideWithProvider(Provider((_) => 'override')),
         ],
         child: builder,
       ),
@@ -178,7 +178,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAsProvider(Provider((_) => 'rootoverride')),
+          provider.overrideWithProvider(Provider((_) => 'rootoverride')),
         ],
         child: ProviderScope(
           child: Consumer((c, watch) {

@@ -21,7 +21,7 @@ void main() {
   test('throw if locally overriding a provider', () {
     final provider = Provider((_) => 42);
     final root = ProviderContainer(overrides: [
-      provider.overrideAsProvider(Provider((_) => 21)),
+      provider.overrideWithProvider(Provider((_) => 21)),
     ]);
 
     expect(root.read(provider), 21);
@@ -29,7 +29,7 @@ void main() {
     expect(
       () => ProviderContainer(
         parent: root,
-        overrides: [provider.overrideAsProvider(Provider((_) => 84))],
+        overrides: [provider.overrideWithProvider(Provider((_) => 84))],
       ),
       throwsUnsupportedError,
     );
@@ -37,7 +37,7 @@ void main() {
   test('throw if locally overriding a family', () {
     final provider = Provider.family<int, int>((_, id) => id * 2);
     final root = ProviderContainer(overrides: [
-      provider.overrideAsProvider((ref, id) => id),
+      provider.overrideWithProvider((ref, id) => id),
     ]);
 
     expect(root.read(provider(21)), 21);
@@ -45,7 +45,7 @@ void main() {
     expect(
       () => ProviderContainer(
         parent: root,
-        overrides: [provider.overrideAsProvider((ref, id) => id * 3)],
+        overrides: [provider.overrideWithProvider((ref, id) => id * 3)],
       ),
       throwsUnsupportedError,
     );
@@ -80,7 +80,7 @@ void main() {
       return '$value 2';
     });
     final container = ProviderContainer(overrides: [
-      family.overrideAsProvider((ref, value) => 'override $value'),
+      family.overrideWithProvider((ref, value) => 'override $value'),
     ]);
 
     expect(container.read(family(0)), 'override 0');
@@ -95,12 +95,12 @@ void main() {
     final provider = Provider((ref) => 0);
     final family = Provider.family<int, int>((ref, value) => 0);
     final container = ProviderContainer(overrides: [
-      family.overrideAsProvider((ref, value) => 0),
+      family.overrideWithProvider((ref, value) => 0),
     ]);
 
     expect(
       () => container.updateOverrides(
-        [provider.overrideAsProvider(Provider((_) => 42))],
+        [provider.overrideWithProvider(Provider((_) => 42))],
       ),
       throwsA(isA<AssertionError>()),
     );
@@ -108,13 +108,13 @@ void main() {
   test('last family override is applied', () {
     final family = Provider.family<int, int>((ref, value) => 0);
     final container = ProviderContainer(overrides: [
-      family.overrideAsProvider((ref, value) => 1),
+      family.overrideWithProvider((ref, value) => 1),
     ]);
 
     expect(container.read(family(0)), 1);
 
     container.updateOverrides([
-      family.overrideAsProvider((ref, value) => 2),
+      family.overrideWithProvider((ref, value) => 2),
     ]);
 
     expect(container.read(family(0)), 1);
@@ -368,7 +368,7 @@ void main() {
     final provider = Provider((_) => 42);
     final container = ProviderContainer();
     final container2 = ProviderContainer(overrides: [
-      provider.overrideAsProvider(
+      provider.overrideWithProvider(
         Provider((_) => 21),
       ),
     ]);
@@ -385,7 +385,7 @@ void main() {
 
     container.updateOverrides([]);
     container2.updateOverrides([
-      provider.overrideAsProvider(
+      provider.overrideWithProvider(
         Provider((_) => 21),
       ),
     ]);
@@ -419,13 +419,13 @@ void main() {
     final provider = Provider((_) => callCount++);
 
     final container = ProviderContainer(
-      overrides: [provider.overrideAsProvider(provider)],
+      overrides: [provider.overrideWithProvider(provider)],
     );
 
     expect(callCount, 0);
 
     container.updateOverrides([
-      provider.overrideAsProvider(provider),
+      provider.overrideWithProvider(provider),
     ]);
 
     expect(callCount, 0);

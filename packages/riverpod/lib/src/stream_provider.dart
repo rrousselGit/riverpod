@@ -10,7 +10,7 @@ part 'stream_provider/auto_dispose.dart';
 
 mixin _StreamProviderMixin<T> on ProviderBase<Stream<T>, AsyncValue<T>> {
   @override
-  Override overrideAsValue(AsyncValue<T> value) {
+  Override overrideWithValue(AsyncValue<T> value) {
     return ProviderOverride(
       ValueProvider<Stream<T>, AsyncValue<T>>((ref) {
         AsyncValue<T> lastValue;
@@ -117,7 +117,7 @@ class _AutoDisposeCreatedStreamProvider<T>
 
           return state is _StreamProviderStateMixin<T>
               ? state._realStream
-              // Reached when using `.stream` on a `StreamProvider.overrideAsValue`
+              // Reached when using `.stream` on a `StreamProvider.overrideWithValue`
               : state.createdValue;
         }, name: name);
 }

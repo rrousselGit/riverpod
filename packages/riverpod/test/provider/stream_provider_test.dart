@@ -62,7 +62,7 @@ void main() {
       return Stream.value(a * 2);
     });
     final container = ProviderContainer(overrides: [
-      provider.overrideAsProvider((ref, a) => Stream.value(a * 4)),
+      provider.overrideWithProvider((ref, a) => Stream.value(a * 4)),
     ]);
     final listener = ListenerMock();
 
@@ -96,7 +96,7 @@ void main() {
       return Stream.value('$a');
     });
     final container = ProviderContainer(overrides: [
-      provider.overrideAsProvider((ref, a) => Stream.value('override $a')),
+      provider.overrideWithProvider((ref, a) => Stream.value('override $a')),
     ]);
 
     expect(container.read(provider(0)), const AsyncValue<String>.loading());
@@ -422,17 +422,17 @@ void main() {
       });
     });
 
-    group('from StreamProvider.overrideAsValue', () {
+    group('from StreamProvider.overrideWithValue', () {
       test('read currentValue before first value', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
-          provider.overrideAsValue(const AsyncValue.loading()),
+          provider.overrideWithValue(const AsyncValue.loading()),
         ]);
 
         final future = container.read(provider.last);
 
         container.updateOverrides([
-          provider.overrideAsValue(const AsyncValue.data(42)),
+          provider.overrideWithValue(const AsyncValue.data(42)),
         ]);
 
         await expectLater(future, completion(42));
@@ -440,11 +440,11 @@ void main() {
       test('read currentValue before after value', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
-          provider.overrideAsValue(const AsyncValue.loading()),
+          provider.overrideWithValue(const AsyncValue.loading()),
         ]);
 
         container.updateOverrides([
-          provider.overrideAsValue(const AsyncValue.data(42)),
+          provider.overrideWithValue(const AsyncValue.data(42)),
         ]);
 
         final future = container.read(provider.last);
@@ -454,13 +454,13 @@ void main() {
       test('read currentValue before first error', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
-          provider.overrideAsValue(const AsyncValue.loading()),
+          provider.overrideWithValue(const AsyncValue.loading()),
         ]);
 
         final future = container.read(provider.last);
 
         container.updateOverrides([
-          provider.overrideAsValue(AsyncValue.error(42)),
+          provider.overrideWithValue(AsyncValue.error(42)),
         ]);
 
         await expectLater(future, throwsA(42));
@@ -468,11 +468,11 @@ void main() {
       test('read currentValue before after error', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
-          provider.overrideAsValue(const AsyncValue.loading()),
+          provider.overrideWithValue(const AsyncValue.loading()),
         ]);
 
         container.updateOverrides([
-          provider.overrideAsValue(AsyncValue.error(42)),
+          provider.overrideWithValue(AsyncValue.error(42)),
         ]);
 
         final future = container.read(provider.last);
@@ -482,7 +482,7 @@ void main() {
       test('synchronous first event', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
-          provider.overrideAsValue(const AsyncValue.data(42)),
+          provider.overrideWithValue(const AsyncValue.data(42)),
         ]);
 
         final future = container.read(provider.last);
@@ -547,17 +547,17 @@ void main() {
         await controller.close();
       });
     });
-    group('from StreamProvider.overrideAsValue', () {
+    group('from StreamProvider.overrideWithValue', () {
       test('loading to data to loading creates a new stream too', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
-          provider.overrideAsValue(const AsyncValue.loading()),
+          provider.overrideWithValue(const AsyncValue.loading()),
         ]);
 
         final stream0 = container.read(provider.stream);
 
         container.updateOverrides([
-          provider.overrideAsValue(const AsyncValue.data(42)),
+          provider.overrideWithValue(const AsyncValue.data(42)),
         ]);
 
         final stream1 = container.read(provider.stream);
@@ -566,7 +566,7 @@ void main() {
         await expectLater(stream1, emits(42));
 
         container.updateOverrides([
-          provider.overrideAsValue(const AsyncValue.loading()),
+          provider.overrideWithValue(const AsyncValue.loading()),
         ]);
 
         final stream2 = container.read(provider.stream);
@@ -575,7 +575,7 @@ void main() {
         await expectLater(stream1, emitsDone);
 
         container.updateOverrides([
-          provider.overrideAsValue(const AsyncValue.data(21)),
+          provider.overrideWithValue(const AsyncValue.data(21)),
         ]);
 
         await expectLater(stream2, emits(21));
@@ -583,7 +583,7 @@ void main() {
       test('data to loading creates a new stream', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
-          provider.overrideAsValue(const AsyncValue.data(42)),
+          provider.overrideWithValue(const AsyncValue.data(42)),
         ]);
 
         final stream1 = container.read(provider.stream);
@@ -591,7 +591,7 @@ void main() {
         await expectLater(stream1, emits(42));
 
         container.updateOverrides([
-          provider.overrideAsValue(const AsyncValue.loading()),
+          provider.overrideWithValue(const AsyncValue.loading()),
         ]);
 
         final stream2 = container.read(provider.stream);
@@ -600,7 +600,7 @@ void main() {
         await expectLater(stream1, emitsDone);
 
         container.updateOverrides([
-          provider.overrideAsValue(const AsyncValue.data(21)),
+          provider.overrideWithValue(const AsyncValue.data(21)),
         ]);
 
         await expectLater(stream2, emits(21));
@@ -608,7 +608,7 @@ void main() {
       test('error to loading creates a new stream', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
-          provider.overrideAsValue(AsyncValue.error(42)),
+          provider.overrideWithValue(AsyncValue.error(42)),
         ]);
 
         final stream1 = container.read(provider.stream);
@@ -616,7 +616,7 @@ void main() {
         await expectLater(stream1, emitsError(42));
 
         container.updateOverrides([
-          provider.overrideAsValue(const AsyncValue.loading()),
+          provider.overrideWithValue(const AsyncValue.loading()),
         ]);
 
         final stream2 = container.read(provider.stream);
@@ -625,7 +625,7 @@ void main() {
         await expectLater(stream1, emitsDone);
 
         container.updateOverrides([
-          provider.overrideAsValue(const AsyncValue.data(21)),
+          provider.overrideWithValue(const AsyncValue.data(21)),
         ]);
 
         await expectLater(stream2, emits(21));
@@ -633,13 +633,13 @@ void main() {
       test('read currentValue before first value', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
-          provider.overrideAsValue(const AsyncValue.loading()),
+          provider.overrideWithValue(const AsyncValue.loading()),
         ]);
 
         final stream = container.read(provider.stream);
 
         container.updateOverrides([
-          provider.overrideAsValue(const AsyncValue.data(42)),
+          provider.overrideWithValue(const AsyncValue.data(42)),
         ]);
 
         await expectLater(stream, emits(42));
@@ -647,11 +647,11 @@ void main() {
       test('read currentValue before after value', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
-          provider.overrideAsValue(const AsyncValue.loading()),
+          provider.overrideWithValue(const AsyncValue.loading()),
         ]);
 
         container.updateOverrides([
-          provider.overrideAsValue(const AsyncValue.data(42)),
+          provider.overrideWithValue(const AsyncValue.data(42)),
         ]);
 
         final stream = container.read(provider.stream);
@@ -661,13 +661,13 @@ void main() {
       test('read currentValue before first error', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
-          provider.overrideAsValue(const AsyncValue.loading()),
+          provider.overrideWithValue(const AsyncValue.loading()),
         ]);
 
         final stream = container.read(provider.stream);
 
         container.updateOverrides([
-          provider.overrideAsValue(AsyncValue.error(42)),
+          provider.overrideWithValue(AsyncValue.error(42)),
         ]);
 
         await expectLater(stream, emitsError(42));
@@ -675,11 +675,11 @@ void main() {
       test('read currentValue before after error', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
-          provider.overrideAsValue(const AsyncValue.loading()),
+          provider.overrideWithValue(const AsyncValue.loading()),
         ]);
 
         container.updateOverrides([
-          provider.overrideAsValue(AsyncValue.error(42)),
+          provider.overrideWithValue(AsyncValue.error(42)),
         ]);
 
         final stream = container.read(provider.stream);
@@ -689,7 +689,7 @@ void main() {
       test('synchronous first event', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
-          provider.overrideAsValue(const AsyncValue.data(42)),
+          provider.overrideWithValue(const AsyncValue.data(42)),
         ]);
 
         final stream = container.read(provider.stream);
@@ -703,7 +703,7 @@ void main() {
     test('value immediatly then other value', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(const AsyncValue.data(42)),
+        provider.overrideWithValue(const AsyncValue.data(42)),
       ]);
       final stream = container.read(provider.stream);
 
@@ -713,7 +713,7 @@ void main() {
       await expectLater(stream, emits(42));
 
       container.updateOverrides([
-        provider.overrideAsValue(const AsyncValue.data(21)),
+        provider.overrideWithValue(const AsyncValue.data(21)),
       ]);
 
       expect(sub.read(), const AsyncValue.data(21));
@@ -726,7 +726,7 @@ void main() {
     test('value immediatly then error', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(const AsyncValue.data(42)),
+        provider.overrideWithValue(const AsyncValue.data(42)),
       ]);
       final stream = container.read(provider.stream);
 
@@ -736,7 +736,7 @@ void main() {
       await expectLater(stream, emits(42));
 
       container.updateOverrides([
-        provider.overrideAsValue(AsyncValue.error(21)),
+        provider.overrideWithValue(AsyncValue.error(21)),
       ]);
 
       expect(sub.read(), AsyncValue<int>.error(21));
@@ -750,7 +750,7 @@ void main() {
     test('value immediatly then loading', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(const AsyncValue.data(42)),
+        provider.overrideWithValue(const AsyncValue.data(42)),
       ]);
       final stream = container.read(provider.stream);
 
@@ -760,7 +760,7 @@ void main() {
       await expectLater(stream, emits(42));
 
       container.updateOverrides([
-        provider.overrideAsValue(const AsyncValue<int>.loading()),
+        provider.overrideWithValue(const AsyncValue<int>.loading()),
       ]);
 
       expect(sub.read(), const AsyncValue<int>.loading());
@@ -772,7 +772,7 @@ void main() {
     test('loading immediatly then value', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(const AsyncValue<int>.loading()),
+        provider.overrideWithValue(const AsyncValue<int>.loading()),
       ]);
       final stream = container.read(provider.stream);
 
@@ -781,7 +781,7 @@ void main() {
       expect(sub.read(), const AsyncValue<int>.loading());
 
       container.updateOverrides([
-        provider.overrideAsValue(const AsyncValue.data(42)),
+        provider.overrideWithValue(const AsyncValue.data(42)),
       ]);
 
       expect(sub.read(), const AsyncValue.data(42));
@@ -794,7 +794,7 @@ void main() {
     test('loading immediatly then error', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(const AsyncValue<int>.loading()),
+        provider.overrideWithValue(const AsyncValue<int>.loading()),
       ]);
       final stream = container.read(provider.stream);
 
@@ -805,7 +805,7 @@ void main() {
       final stackTrace = StackTrace.current;
 
       container.updateOverrides([
-        provider.overrideAsValue(AsyncValue<int>.error(42, stackTrace)),
+        provider.overrideWithValue(AsyncValue<int>.error(42, stackTrace)),
       ]);
 
       expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
@@ -819,7 +819,7 @@ void main() {
     test('loading immediatly then loading', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(const AsyncValue<int>.loading()),
+        provider.overrideWithValue(const AsyncValue<int>.loading()),
       ]);
       final stream = container.read(provider.stream);
 
@@ -828,13 +828,13 @@ void main() {
       expect(sub.read(), const AsyncValue<int>.loading());
 
       container.updateOverrides([
-        provider.overrideAsValue(const AsyncValue<int>.loading()),
+        provider.overrideWithValue(const AsyncValue<int>.loading()),
       ]);
 
       expect(sub.flush(), false);
 
       container.updateOverrides([
-        provider.overrideAsValue(const AsyncValue.data(42)),
+        provider.overrideWithValue(const AsyncValue.data(42)),
       ]);
 
       expect(sub.read(), const AsyncValue.data(42));
@@ -849,7 +849,7 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(AsyncValue<int>.error(42, stackTrace)),
+        provider.overrideWithValue(AsyncValue<int>.error(42, stackTrace)),
       ]);
       final stream = container.read(provider.stream);
 
@@ -859,7 +859,7 @@ void main() {
       await expectLater(stream, emitsError(42));
 
       container.updateOverrides([
-        provider.overrideAsValue(AsyncValue<int>.error(21, stackTrace)),
+        provider.overrideWithValue(AsyncValue<int>.error(21, stackTrace)),
       ]);
 
       expect(sub.read(), AsyncValue<int>.error(21, stackTrace));
@@ -873,7 +873,7 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(AsyncValue<int>.error(42, stackTrace)),
+        provider.overrideWithValue(AsyncValue<int>.error(42, stackTrace)),
       ]);
       final stream = container.read(provider.stream);
 
@@ -884,7 +884,7 @@ void main() {
 
       final stackTrace2 = StackTrace.current;
       container.updateOverrides([
-        provider.overrideAsValue(
+        provider.overrideWithValue(
           AsyncValue<int>.error(42, stackTrace2),
         ),
       ]);
@@ -900,7 +900,7 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(AsyncValue<int>.error(42, stackTrace)),
+        provider.overrideWithValue(AsyncValue<int>.error(42, stackTrace)),
       ]);
       final stream = container.read(provider.stream);
 
@@ -910,7 +910,7 @@ void main() {
       await expectLater(stream, emitsError(42));
 
       container.updateOverrides([
-        provider.overrideAsValue(const AsyncValue.data(21)),
+        provider.overrideWithValue(const AsyncValue.data(21)),
       ]);
 
       expect(sub.read(), const AsyncValue.data(21));
@@ -924,7 +924,7 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(AsyncValue<int>.error(42, stackTrace)),
+        provider.overrideWithValue(AsyncValue<int>.error(42, stackTrace)),
       ]);
       final stream = container.read(provider.stream);
 
@@ -934,7 +934,7 @@ void main() {
       await expectLater(stream, emitsError(42));
 
       container.updateOverrides([
-        provider.overrideAsValue(const AsyncValue<int>.loading()),
+        provider.overrideWithValue(const AsyncValue<int>.loading()),
       ]);
 
       expect(sub.read(), const AsyncValue<int>.loading());

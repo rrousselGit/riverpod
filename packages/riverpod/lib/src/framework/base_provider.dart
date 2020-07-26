@@ -54,8 +54,9 @@ abstract class AlwaysAliveProviderBase<Created, Listened>
     return ProviderElement(this);
   }
 
+  /// Overrides the behavior of this provider with another provider.
   // Cannot be overriden by AutoDisposeProviders
-  ProviderOverride overrideAsProvider(
+  ProviderOverride overrideWithProvider(
     AlwaysAliveProviderBase<Created, Listened> provider,
   ) {
     return ProviderOverride(provider, this);
@@ -169,7 +170,7 @@ abstract class ProviderBase<Created, Listened>
 
   // Works only on ProviderBase<T, T> scenario by default
   // TODO support ChangeNotifier/StateNotifier
-  Override overrideAsValue(Listened value) {
+  Override overrideWithValue(Listened value) {
     return ProviderOverride(
       ValueProvider<Object, Listened>((ref) => value, value),
       this,

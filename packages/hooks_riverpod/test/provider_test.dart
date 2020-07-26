@@ -165,7 +165,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAsProvider(
+          provider.overrideWithProvider(
             Provider((ref) {
               assert(ref != null, '');
               callCount++;
@@ -183,7 +183,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAsProvider(
+          provider.overrideWithProvider(
             Provider((ref) {
               assert(ref != null, '');
               callCount++;

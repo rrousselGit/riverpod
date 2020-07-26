@@ -30,7 +30,7 @@ import 'internals.dart';
 ///       overrides: [
 ///         // override the behavior of repositoryProvider to provide a fake
 ///         // implementation for test purposes.
-///         repositoryProvider.overrideAsProvider(
+///         repositoryProvider.overrideWithProvider(
 ///           Provider((_) => FakeRepository()),
 ///         ),
 ///       ],
@@ -56,7 +56,7 @@ import 'internals.dart';
 ///           // Overrides themeProvider for the /gallery route only
 ///           '/gallery': (_) => ProviderScope(
 ///             overrides: [
-///               themeProvider.overrideAsProvider(
+///               themeProvider.overrideWithProvider(
 ///                 Provider((_) => MyTheme.dark()),
 ///               ),
 ///             ],

@@ -25,7 +25,7 @@ void main() {
       return ValueNotifier(value);
     });
     final container = ProviderContainer(overrides: [
-      provider.overrideAsProvider((ref, value) => ValueNotifier(value * 2))
+      provider.overrideWithProvider((ref, value) => ValueNotifier(value * 2))
     ]);
 
     expect(

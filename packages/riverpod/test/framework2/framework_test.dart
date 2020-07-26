@@ -105,7 +105,7 @@ void main() {
   test('child container uses root overrides', () {
     final provider = Provider((ref) => 0);
     final container = ProviderContainer(
-      overrides: [provider.overrideAsValue(42)],
+      overrides: [provider.overrideWithValue(42)],
     );
     final child = ProviderContainer(parent: container);
 
@@ -140,7 +140,7 @@ void main() {
     expect(secondElement.dependents, <ProviderElement>{});
     expect(secondElement.hasListeners, false);
   });
-  group('overrideAsValue', () {
+  group('overrideWithValue', () {
     test('synchronously overrides the value', () {
       var callCount = 0;
       final provider = FutureProvider((ref) async {
@@ -148,7 +148,7 @@ void main() {
         return 0;
       });
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(const AsyncValue.data(42)),
+        provider.overrideWithValue(const AsyncValue.data(42)),
       ]);
 
       addTearDown(container.dispose);
@@ -162,7 +162,7 @@ void main() {
     test('notify listeners when value changes', () {
       final provider = Provider((ref) => 0);
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(42),
+        provider.overrideWithValue(42),
       ]);
 
       addTearDown(container.dispose);
@@ -177,7 +177,7 @@ void main() {
       verifyZeroInteractions(didChange);
 
       container.updateOverrides([
-        provider.overrideAsValue(21),
+        provider.overrideWithValue(21),
       ]);
 
       verifyOnly(mayHaveChanged, mayHaveChanged(sub));
@@ -191,7 +191,7 @@ void main() {
     test('does not notify listeners if updated with the same value', () {
       final provider = Provider((ref) => 0);
       final container = ProviderContainer(overrides: [
-        provider.overrideAsValue(42),
+        provider.overrideWithValue(42),
       ]);
 
       addTearDown(container.dispose);
@@ -206,7 +206,7 @@ void main() {
       verifyZeroInteractions(didChange);
 
       container.updateOverrides([
-        provider.overrideAsValue(42),
+        provider.overrideWithValue(42),
       ]);
 
       verifyZeroInteractions(didChange);

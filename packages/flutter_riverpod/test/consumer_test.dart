@@ -287,7 +287,7 @@ void main() {
           ProviderScope(
             key: secondOwnerKey,
             overrides: [
-              provider.overrideAsProvider(override),
+              provider.overrideWithProvider(override),
             ],
             child: Container(),
           ),
@@ -315,7 +315,7 @@ void main() {
           ProviderScope(
             key: secondOwnerKey,
             overrides: [
-              provider.overrideAsProvider(override),
+              provider.overrideWithProvider(override),
             ],
             child: consumer,
           ),

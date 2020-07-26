@@ -1,12 +1,32 @@
 part of '../framework.dart';
 
+/// A [ProviderReference] for providers that are automatically destroyed when
+/// no-longer used.
+///
+/// The difference with [ProviderReference] is that it has an extra
+/// [maintainState] property, to help determine if the state can be destroyed
+///  or not.
 abstract class AutoDisposeProviderReference extends ProviderReference {
+  /// Whether to destroy the state of the provider when all listeners are removed or not.
+  ///
+  /// Can be changed at any time, in which case when setting it to `false`,
+  /// may destroy the provider state if it currently has no listeners.
+  ///
+  /// Defaults to `false`.
   bool get maintainState;
   set maintainState(bool value);
 }
 
+/// {@template riverpod.AutoDisposeProviderBase}
+/// A base class for providers that destroy their state when no-longer listened.
+///
+/// See also:
+///
+/// - [Provider.autoDispose], a variant of [Provider] that auto-dispose its state.
+/// {@endtemplate}
 abstract class AutoDisposeProviderBase<Created, Listened>
     extends ProviderBase<Created, Listened> {
+  /// {@macro riverpod.AutoDisposeProviderBase}
   AutoDisposeProviderBase(
     Created Function(AutoDisposeProviderReference ref) create,
     String name,
@@ -17,8 +37,8 @@ abstract class AutoDisposeProviderBase<Created, Listened>
     return AutoDisposeProviderElement(this);
   }
 
-  // Cannot be overriden by AutoDisposeProviders
-  ProviderOverride overrideAsProvider(
+  /// {@macro riverpod.overrideWithProvider}
+  ProviderOverride overrideWithProvider(
     ProviderBase<Created, Listened> provider,
   ) {
     return ProviderOverride(provider, this);

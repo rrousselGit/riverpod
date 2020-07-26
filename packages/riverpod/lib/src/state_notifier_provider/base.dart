@@ -46,7 +46,7 @@ class StateNotifierStateProvider<T>
   }
 
   @override
-  Override overrideAsValue(T value) {
+  Override overrideWithValue(T value) {
     return ProviderOverride(
       ValueProvider<StateNotifier<T>, T>((ref) {
         return ref.watch(_provider);
