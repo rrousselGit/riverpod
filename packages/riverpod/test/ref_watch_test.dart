@@ -287,7 +287,7 @@ void main() {
     verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
   });
-  test('cannot call ref.watch outside of the Provider', () async {
+  test('can call ref.watch outside of the Provider', () async {
     final container = ProviderContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
@@ -299,17 +299,18 @@ void main() {
 
     final sub = container.listen(computed);
 
+    expect(callCount, 0);
     expect(sub.read(), const AsyncValue<int>.loading());
     await container.read(computed.stream).first;
     expect(sub.read(), const AsyncValue<int>.data(0));
     expect(callCount, 1);
 
     notifier.setState(42);
-    sub.read();
 
     expect(sub.read(), const AsyncValue<int>.loading());
-    await idle();
-    expect(sub.read(), const AsyncValue<int>.data(1));
+    expect(callCount, 1);
+    await container.read(computed.stream).first;
+    expect(sub.read(), const AsyncValue<int>.data(42));
     expect(callCount, 2);
   });
   test('the value is cached between multiple listeners', () {
