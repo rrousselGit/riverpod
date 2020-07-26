@@ -92,6 +92,9 @@ abstract class ProviderBase<Created, Listened>
 
   /// Partially listen to a provider.
   ///
+  /// Note: This method of listening to an object is currently only supported
+  /// by `useProvider` from `hooks_riverpod` and [ProviderContainer.listen].
+  ///
   /// The [select] function allows filtering unwanted rebuilds of a Widget
   /// by reading only the properties that we care about.
   ///
@@ -174,6 +177,32 @@ abstract class ProviderBase<Created, Listened>
   }
 }
 
+/// An internal class for `ProviderBase.select`.
+class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
+  /// An internal class for `ProviderBase.select`.
+  ProviderSelector({
+    this.provider,
+    this.selector,
+  });
+
+  final ProviderBase<Object, Input> provider;
+  final Output Function(Input) selector;
+
+  SelectorSubscription<Input, Output> _listen(
+    ProviderContainer container, {
+    void Function(SelectorSubscription<Input, Output> sub) mayHaveChanged,
+    void Function(SelectorSubscription<Input, Output> sub) didChange,
+  }) {
+    return SelectorSubscription(
+      container: container,
+      selector: selector,
+      provider: provider,
+      mayHaveChanged: mayHaveChanged,
+      didChange: didChange,
+    );
+  }
+}
+
 abstract class ProviderReference {
   bool get mounted;
   // TODO test
@@ -181,8 +210,7 @@ abstract class ProviderReference {
 
   void onDispose(void Function() cb);
 
-  T read<T>(AlwaysAliveProviderBase<Object, T> provider);
-  T unsafeRead<T>(AlwaysAliveProviderBase<Object, T> provider);
+  T read<T>(ProviderBase<Object, T> provider);
   T watch<T>(ProviderBase<Object, T> provider);
 }
 
@@ -281,15 +309,9 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   ProviderException _exception;
 
   @override
-  T read<T>(AlwaysAliveProviderBase<Object, T> provider) {
+  T read<T>(ProviderBase<Object, T> provider) {
     // TODO throw if non-circular dependency
     return _container.read(provider);
-  }
-
-  @override
-  T unsafeRead<T>(ProviderBase<Object, T> provider) {
-    // TODO mark the provider as needing dispose if AutoDispose & no listener
-    return _container.unsafeRead(provider);
   }
 
   @override

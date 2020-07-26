@@ -6,7 +6,7 @@ import '../framework.dart';
 /// only when the value computed changes.
 class SelectorSubscription<Input, Output>
     implements ProviderSubscription<Output> {
-  SelectorSubscription._({
+  SelectorSubscription({
     @required ProviderContainer container,
     @required Output Function(Input) selector,
     @required ProviderBase<Object, Input> provider,
@@ -55,31 +55,5 @@ class SelectorSubscription<Input, Output>
   Output read() {
     flush();
     return _lastOutput;
-  }
-}
-
-/// An internal class for `ProviderBase.select`.
-class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
-  /// An internal class for `ProviderBase.select`.
-  ProviderSelector({
-    this.provider,
-    this.selector,
-  });
-
-  final ProviderBase<Object, Input> provider;
-  final Output Function(Input) selector;
-
-  SelectorSubscription<Input, Output> listen(
-    ProviderContainer container, {
-    void Function(SelectorSubscription<Input, Output> sub) mayHaveChanged,
-    void Function(SelectorSubscription<Input, Output> sub) didChange,
-  }) {
-    return SelectorSubscription._(
-      container: container,
-      selector: selector,
-      provider: provider,
-      mayHaveChanged: mayHaveChanged,
-      didChange: didChange,
-    );
   }
 }

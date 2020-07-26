@@ -91,13 +91,6 @@ class ProviderContainer {
   /// }
   /// ```
   Result read<Result>(
-    AlwaysAliveProviderBase<Object, Result> provider,
-  ) {
-    return unsafeRead(provider);
-  }
-
-  // TODO add to ProviderReference too
-  Result unsafeRead<Result>(
     ProviderBase<Object, Result> provider,
   ) {
     final element = readProviderElement(provider);
@@ -116,7 +109,7 @@ class ProviderContainer {
         didChange: didChange,
       );
     } else if (providerListenable is ProviderSelector<Object, Result>) {
-      return providerListenable.listen(
+      return providerListenable._listen(
         this,
         mayHaveChanged: mayHaveChanged,
         didChange: didChange,
