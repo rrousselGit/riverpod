@@ -7,9 +7,7 @@ import 'internals.dart';
 extension BuildContextX on BuildContext {
   /// Reads a provider without listening to it.
   ///
-  /// This method should not be called inside the `build` method of a widget.
-  ///
-  /// **DON'T** call [read] inside build if the value is used only for events:
+  /// **AVOID** calling [read] inside build if the value is used only for events:
   ///
   /// ```dart
   /// Widget build(BuildContext context) {
@@ -42,7 +40,7 @@ extension BuildContextX on BuildContext {
   /// This has the same efficiency as the previous anti-pattern, but does not
   /// suffer from the drawback of being brittle.
   ///
-  /// **DON'T** use [read] for creating widgets with a value that never changes
+  /// **AVOID** using [read] for creating widgets with a value that never changes
   ///
   /// ```dart
   /// Widget build(BuildContext context) {
@@ -53,12 +51,12 @@ extension BuildContextX on BuildContext {
   /// }
   /// ```
   ///
-  /// While the idea of not rebuilding the widget if something else changes is
-  /// good, this should not be done with [read].
+  /// While the idea of not rebuilding the widget if unnecessary is good,
+  /// this should not be done with [read].
   /// Relying on [read] for optimisations is very brittle and dependent
   /// on an implementation detail.
   ///
-  /// **CONSIDER** using [Computed]/`select` for filtering unwanted rebuilds
+  /// **CONSIDER** using [Provider] or `select` for filtering unwanted rebuilds:
   ///
   /// ```dart
   /// Widget build(BuildContext context) {
@@ -71,7 +69,7 @@ extension BuildContextX on BuildContext {
   /// }
   /// ```
   ///
-  /// While more verbose than [read], using [Computed]/`select` is a lot safer.
+  /// While more verbose than [read], using [Provider]/`select` is a lot safer.
   /// It does not rely on implementation details on `Model`, and it makes
   /// impossible to have a bug where our UI does not refresh.
   T read<T>(ProviderBase<Object, T> provider) {
