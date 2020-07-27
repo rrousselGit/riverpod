@@ -107,9 +107,11 @@ abstract class ProviderBase<Created, Listened>
 
   final Created Function(ProviderReference ref) _create;
 
+  /// {@template riverpod.name}
   /// A custom label for providers.
   ///
   /// This is picked-up by devtools and [toString] to show better messages.
+  /// {@endtemplate}
   final String name;
 
   Family _from;

@@ -3,6 +3,7 @@ part of '../framework.dart';
 /// A base class for all *Family variants of providers.
 abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
     P extends ProviderBase<Created, Listened>> {
+  /// A base class for all *Family variants of providers.
   Family(this._builder, this.name);
 
   final Created Function(Ref ref, Param param) _builder;
@@ -28,8 +29,11 @@ abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
     });
   }
 
+  /// Creates the provider for a given parameter.
+  @protected
   P create(Param value, Created Function(Ref ref, Param param) builder);
 
+  /// A debug-only list of all the parameters passed to this family.
   List<Param> get debugKeys {
     List<Param> result;
     assert(() {
@@ -40,10 +44,16 @@ abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
   }
 }
 
+/// Implements [overrideWithProvider] for families.
+///
+/// This is implemented as an extension so that providers can override the
+/// behavior of [overrideWithProvider] with a function that has a different prototype.
 extension FamilyX<Created, Listened, Param, Ref extends ProviderReference,
         P extends ProviderBase<Created, Listened>>
     on Family<Created, Listened, Param, Ref, P> {
   /// Overrides the behavior of a family for a part of the application.
+  /// 
+  /// {@macro riverpod.overideWith}
   Override overrideWithProvider(
     Created Function(Ref ref, Param param) builderOverride,
   ) {
