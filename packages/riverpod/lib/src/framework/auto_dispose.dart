@@ -37,7 +37,9 @@ abstract class AutoDisposeProviderBase<Created, Listened>
     return AutoDisposeProviderElement(this);
   }
 
-  /// {@macro riverpod.overrideWithProvider}
+  /// Overrides the behavior of this provider with another provider.
+  ///
+  /// {@macro riverpod.overideWith}
   ProviderOverride overrideWithProvider(
     ProviderBase<Created, Listened> provider,
   ) {
