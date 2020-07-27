@@ -343,18 +343,17 @@ void main() {
       ]),
     );
   });
-  test('unmount on removing ref.read', () async {
+  test('Do not dispose twice when ProviderContainer is disposed first',
+      () async {
     final onDispose = OnDisposeMock();
-    final unrelated = Provider((_) => 42);
     final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose);
       return 42;
     });
-    final dependent = Provider((ref) => ref.watch(provider));
     final container = ProviderContainer();
 
-    expect(container.read(unrelated), 42);
-    expect(container.ref.watch(dependent), 42);
+    final sub = container.listen(provider);
+    sub.close();
 
     container.dispose();
 

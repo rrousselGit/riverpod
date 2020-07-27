@@ -338,18 +338,6 @@ void main() {
     });
   });
 
-  test('container life-cycles are unusuable after dispose', () {
-    final container = ProviderContainer()..dispose();
-
-    expect(container.dispose, throwsStateError);
-    expect(() => container.updateOverrides([]), throwsStateError);
-    expect(() => container.ref, throwsStateError);
-    expect(
-      () => container.readProviderElement(Provider((_) => 0)),
-      throwsStateError,
-    );
-  });
-
   test('cannot call markMayHaveChanged after dispose', () {
     final container = ProviderContainer();
     final provider = Provider((ref) {});
@@ -363,37 +351,6 @@ void main() {
       element.notifyMayHaveChanged,
       throwsStateError,
     );
-  });
-  test('container.ref uses the override', () {
-    final provider = Provider((_) => 42);
-    final container = ProviderContainer();
-    final container2 = ProviderContainer(overrides: [
-      provider.overrideWithProvider(
-        Provider((_) => 21),
-      ),
-    ]);
-
-    final ref = container.ref;
-    final ref2 = container2.ref;
-
-    expect(ref, isNot(ref2));
-    expect(container.ref, ref);
-    expect(container2.ref, ref2);
-
-    expect(ref.read(provider), 42);
-    expect(ref2.read(provider), 21);
-
-    container.updateOverrides([]);
-    container2.updateOverrides([
-      provider.overrideWithProvider(
-        Provider((_) => 21),
-      ),
-    ]);
-
-    expect(container.ref, ref);
-    expect(container2.ref, ref2);
-    expect(ref.read(provider), 42);
-    expect(ref2.read(provider), 21);
   });
 
   test('Owner.read', () {

@@ -28,7 +28,15 @@ ProviderBase _circularDependencyLock;
 
 final _refProvider = Provider((ref) => ref);
 
+/// {@template riverpod.providercontainer}
+/// An object that stores the state of the providers and allows overriding the
+/// behavior of a specific provider.
+///
+/// If you are using Flutter, you do not need to care about this object
+/// (outside of testing), as it is implicitly created for you by `ProviderScope`.
+/// {@endtemplate}
 class ProviderContainer {
+  /// {@macro riverpod.providercontainer}
   ProviderContainer({
     ProviderContainer parent,
     List<Override> overrides = const [],
@@ -61,8 +69,6 @@ class ProviderContainer {
   final _overrideForFamily = <Family, FamilyOverride>{};
 
   final Map<ProviderBase, ProviderElement> _stateReaders;
-
-  ProviderReference get ref => read(_refProvider);
 
   final List<ProviderObserver> _localObservers;
   Iterable<ProviderObserver> get _observers sync* {
@@ -98,27 +104,50 @@ class ProviderContainer {
     return element.getExposedValue();
   }
 
+  /// Subscribe to this provider.
+  ///
+  /// * [mayHaveChanged] will be called the first time that any of the dependency
+  ///   of a provider changed.
+  ///
+  /// * [didChange] will be called after the first [ProviderSubscription.flush]
+  ///   or [ProviderSubscription.read], only if when it is confirmed that the
+  ///   value exposed changed.
+  ///
+  /// See also:
+  ///
+  /// - [ProviderSubscription], which allows reading the current value and
+  ///   closing the subscription.
+  /// - [ProviderReference.watch], which is an easier way for providers to listen
+  ///   to another provider.
   ProviderSubscription<Result> listen<Result>(
-    ProviderListenable<Result> providerListenable, {
+    ProviderListenable<Result> provider, {
     void Function(ProviderSubscription<Result> sub) mayHaveChanged,
     void Function(ProviderSubscription<Result> sub) didChange,
   }) {
-    if (providerListenable is ProviderBase<Object, Result>) {
-      return readProviderElement(providerListenable).listen(
+    if (provider is ProviderBase<Object, Result>) {
+      return readProviderElement(provider).listen(
         mayHaveChanged: mayHaveChanged,
         didChange: didChange,
       );
-    } else if (providerListenable is ProviderSelector<Object, Result>) {
-      return providerListenable._listen(
+    } else if (provider is ProviderSelector<Object, Result>) {
+      return provider._listen(
         this,
         mayHaveChanged: mayHaveChanged,
         didChange: didChange,
       );
     } else {
-      throw UnsupportedError('Unknown ProviderListenable $providerListenable');
+      throw UnsupportedError('Unknown ProviderListenable $provider');
     }
   }
 
+  /// Updates the list of provider overrides.
+  ///
+  /// If you are using flutter, this is done implicitly for you by `ProviderScope`.
+  ///
+  /// Updating a [ProviderBase.overrideWithValue] with a different value
+  /// will cause the listeners to rebuild.
+  ///
+  /// It is not possible, to remove or add new overrides, only update existing ones.
   void updateOverrides(List<Override> overrides) {
     if (_disposed) {
       throw StateError(
@@ -171,7 +200,9 @@ class ProviderContainer {
   /// Reads the state of a provider, potentially creating it in the processs.
   ///
   /// It may throw if the provider requested threw when it was built.
-  @visibleForTesting
+  ///
+  /// Do not use this in production code. This is exposed only for testing
+  /// and devtools, to be able to test if a provider has listeners or similar.
   ProviderElement<Created, Listened> readProviderElement<Created, Listened>(
     ProviderBase<Created, Listened> provider,
   ) {
@@ -248,7 +279,7 @@ class ProviderContainer {
 
   /// Visit all nodes of the graph at most once, from roots to leaves.
   ///
-  /// This is a breadth traversal algorithm, that removes duplicate branches.
+  /// This is a breadth-first traversal algorithm, that removes duplicate branches.
   ///
   /// It is O(N log N) with N the number of providers currently alive.
   Iterable<ProviderElement> _visitStatesInOrder() sync* {
@@ -276,14 +307,9 @@ class ProviderContainer {
       }
     }
   }
-}
 
-/// Do not use: Utilities for internally creating providers and testing them
-@visibleForTesting
-extension ProviderStateOwnerInternals on ProviderContainer {
-  /// All the states of the providers associated to a [ProviderContainer], sorted
+  /// The states of the providers associated to this [ProviderContainer], sorted
   /// in order of dependency.
-  @visibleForTesting
   List<ProviderElement> get debugProviderStates {
     List<ProviderElement> result;
     assert(() {
@@ -293,7 +319,7 @@ extension ProviderStateOwnerInternals on ProviderContainer {
     return result;
   }
 
-  /// The value exposed by all providers.
+  /// The value exposed by all providers currently alive.
   Map<ProviderBase, Object> get debugProviderValues {
     Map<ProviderBase, Object> res;
     assert(() {
@@ -311,10 +337,9 @@ extension ProviderStateOwnerInternals on ProviderContainer {
 
 /// An object that listens to the changes of a [ProviderContainer].
 ///
-/// This can be used for logging, making devtools, or saving the state
-/// for offline support.
+/// This can be used for logging or making devtools.
 abstract class ProviderObserver {
-  /// A provider was initialized, and the value created is [value].
+  /// A provider was initialized, and the value exposed is [value].
   void didAddProvider(ProviderBase provider, Object value) {}
 
   /// Called when the dependency of a provider changed, but it is not yet
@@ -342,6 +367,7 @@ abstract class ProviderObserver {
 /// - [ProviderContainer], which uses this object.
 /// - [AlwaysAliveProviderBase.overrideWithProvider], which creates a [ProviderOverride].
 class ProviderOverride implements Override {
+  /// Internal use only
   ProviderOverride(this._provider, this._origin);
 
   final ProviderBase _origin;
