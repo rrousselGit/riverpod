@@ -6,14 +6,16 @@ class AutoDisposeFutureProvider<T>
     with _FutureProviderMixin<T> {
   /// {@macro riverpod.futureprovider}
   AutoDisposeFutureProvider(
-      Create<Future<T>, AutoDisposeProviderReference> create,
-      {String name})
-      : super(create, name);
+    Create<Future<T>, AutoDisposeProviderReference> create, {
+    String name,
+  }) : super(create, name);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeFutureProviderFamilyBuilder();
 
   ProviderBase<Future<T>, Future<T>> _future;
+
+  /// {@macro riverpod.futureprovider.future}
   ProviderBase<Future<T>, Future<T>> get future {
     return _future ??= AutoDisposeCreatedProvider(
       this,
@@ -29,12 +31,14 @@ class AutoDisposeFutureProvider<T>
 class _AutoDisposeFutureProviderState<T> = ProviderStateBase<Future<T>,
     AsyncValue<T>> with _FutureProviderStateMixin<T>;
 
+/// {@macro riverpod.futureprovider.family}
 class AutoDisposeFutureProviderFamily<T, A> extends Family<
     Future<T>,
     AsyncValue<T>,
     A,
     AutoDisposeProviderReference,
     AutoDisposeFutureProvider<T>> {
+  /// {@macro riverpod.futureprovider.family}
   AutoDisposeFutureProviderFamily(
     Future<T> Function(AutoDisposeProviderReference ref, A a) create, {
     String name,

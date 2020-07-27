@@ -26,8 +26,6 @@ void _runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
 
 ProviderBase _circularDependencyLock;
 
-final _refProvider = Provider((ref) => ref);
-
 /// {@template riverpod.providercontainer}
 /// An object that stores the state of the providers and allows overriding the
 /// behavior of a specific provider.

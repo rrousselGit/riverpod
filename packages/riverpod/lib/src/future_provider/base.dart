@@ -17,6 +17,28 @@ class FutureProvider<T>
   static const autoDispose = AutoDisposeFutureProviderBuilder();
 
   AlwaysAliveProviderBase<Future<T>, Future<T>> _future;
+
+  /// {@template riverpod.futureprovider.future}
+  /// A provider that exposes the [Future] created by a [FutureProvider].
+  ///
+  /// The instance of [Future] obtained may change over time, if the provider
+  /// was recreated (such as when using [ProviderReference.watch]).
+  ///
+  /// This provider allows using `async`/`await` to easily combine
+  /// [FutureProvider] together:
+  ///
+  /// ```dart
+  /// final configsProvider = FutureProvider((ref) async => Configs());
+  ///
+  /// final productsProvider = FutureProvider((ref) async {
+  ///   // Wait for the configurations to resolve
+  ///   final configs = await ref.watch(configsProvider.future);
+  ///
+  ///   // Do something with the result
+  ///   return await http.get('${configs.host}/products');
+  /// });
+  /// ```
+  /// {@endtemplate}
   AlwaysAliveProviderBase<Future<T>, Future<T>> get future {
     return _future ??= CreatedProvider(
       this,
@@ -31,8 +53,12 @@ class FutureProvider<T>
 class _FutureProviderState<T> = ProviderStateBase<Future<T>, AsyncValue<T>>
     with _FutureProviderStateMixin<T>;
 
+/// {@template riverpod.futureprovider.family}
+/// A class that allows building a [FutureProvider] from an external parameter.
+/// {@endtemplate}
 class FutureProviderFamily<T, A> extends Family<Future<T>, AsyncValue<T>, A,
     ProviderReference, FutureProvider<T>> {
+  /// {@macro riverpod.futureprovider.family}
   FutureProviderFamily(
     Future<T> Function(ProviderReference ref, A a) create, {
     String name,
