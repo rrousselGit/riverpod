@@ -37,12 +37,14 @@ class AutoDisposeStreamProvider<T>
 class _AutoDisposeStreamProviderState<T> = ProviderStateBase<Stream<T>,
     AsyncValue<T>> with _StreamProviderStateMixin<T>;
 
+/// {@macro riverpod.streamprovider.family}
 class AutoDisposeStreamProviderFamily<T, A> extends Family<
     Stream<T>,
     AsyncValue<T>,
     A,
     AutoDisposeProviderReference,
     AutoDisposeStreamProvider<T>> {
+  /// {@macro riverpod.streamprovider.family}
   AutoDisposeStreamProviderFamily(
     Stream<T> Function(AutoDisposeProviderReference ref, A a) create, {
     String name,

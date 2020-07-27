@@ -39,8 +39,12 @@ class StreamProvider<T>
 class _StreamProviderState<T> = ProviderStateBase<Stream<T>, AsyncValue<T>>
     with _StreamProviderStateMixin<T>;
 
+/// {@template riverpod.streamprovider.family}
+/// A class that allows building a [StreamProvider] from an external parameter.
+/// {@endtemplate}
 class StreamProviderFamily<T, A> extends Family<Stream<T>, AsyncValue<T>, A,
     ProviderReference, StreamProvider<T>> {
+  /// {@macro riverpod.streamprovider.family}
   StreamProviderFamily(
     Stream<T> Function(ProviderReference ref, A a) create, {
     String name,
