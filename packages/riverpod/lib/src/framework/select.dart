@@ -2,10 +2,13 @@ import 'package:meta/meta.dart';
 
 import '../framework.dart';
 
-/// A [ProviderSubscription] for `ProviderBase.select`, that calls `onChange`
-/// only when the value computed changes.
+/// {@template riverpod.SelectorSubscription}
+/// A [ProviderSubscription] for [ProviderBase.select], that notify its listeners
+/// only if the result of the selector changes.
+/// {@endtemplate}
 class SelectorSubscription<Input, Output>
     implements ProviderSubscription<Output> {
+  /// {@macro riverpod.SelectorSubscription}
   SelectorSubscription({
     @required ProviderContainer container,
     @required Output Function(Input) selector,
@@ -26,6 +29,10 @@ class SelectorSubscription<Input, Output>
   Output _lastOutput;
   Output Function(Input) _selector;
 
+  /// Updates the selector associated with this [SelectorSubscription], and
+  /// immediatly recompute the value exposed.
+  ///
+  /// This does not call `mayHaveChanged` and `didChange`.
   void updateSelector(ProviderListenable<Output> providerListenable) {
     _selector =
         (providerListenable as ProviderSelector<Input, Output>).selector;
@@ -49,11 +56,11 @@ class SelectorSubscription<Input, Output>
   }
 
   @override
-  void close() => _sub.close();
-
-  @override
   Output read() {
     flush();
     return _lastOutput;
   }
+
+  @override
+  void close() => _sub.close();
 }
