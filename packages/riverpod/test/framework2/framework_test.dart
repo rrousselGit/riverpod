@@ -83,6 +83,7 @@ void main() {
       expect(callCount, 1);
     });
   });
+
   test('disposing child container does not dispose the providers', () {
     final container = ProviderContainer();
     final child = ProviderContainer(parent: container);
@@ -102,6 +103,7 @@ void main() {
 
     expect(disposed, true);
   });
+
   test('child container uses root overrides', () {
     final provider = Provider((ref) => 0);
     final container = ProviderContainer(

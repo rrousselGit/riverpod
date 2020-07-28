@@ -34,6 +34,7 @@ void main() {
       throwsUnsupportedError,
     );
   });
+
   test('throw if locally overriding a family', () {
     final provider = Provider.family<int, int>((_, id) => id * 2);
     final root = ProviderContainer(overrides: [
@@ -50,6 +51,7 @@ void main() {
       throwsUnsupportedError,
     );
   });
+
   test('hasListeners', () {
     final container = ProviderContainer();
     final provider = Provider((_) => 42);
@@ -68,6 +70,7 @@ void main() {
 
     expect(state.hasListeners, false);
   });
+
   test('test two families one overriden the other not', () {
     var callCount = 0;
     final family = Provider.family<String, int>((ref, value) {
@@ -91,6 +94,7 @@ void main() {
 
     expect(callCount, 0);
   });
+
   test('changing the override type at a given index throws', () {
     final provider = Provider((ref) => 0);
     final family = Provider.family<int, int>((ref, value) => 0);
@@ -105,6 +109,7 @@ void main() {
       throwsA(isA<AssertionError>()),
     );
   });
+
   test('last family override is applied', () {
     final family = Provider.family<int, int>((ref, value) => 0);
     final container = ProviderContainer(overrides: [
@@ -120,6 +125,7 @@ void main() {
     expect(container.read(family(0)), 1);
     expect(container.read(family(1)), 2);
   });
+
   test('guard listeners', () {
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
@@ -161,6 +167,7 @@ void main() {
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener2);
   });
+
   test('reading unflushed triggers flush', () {
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
@@ -207,6 +214,7 @@ void main() {
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener2);
   });
+
   test('flusing closed subscription throws', () {
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
@@ -231,6 +239,7 @@ void main() {
 
     verifyNoMoreInteractions(listener);
   });
+
   test('reading closed subscription is throws', () {
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
@@ -272,6 +281,7 @@ void main() {
 
     expect(errors, [isStateError]);
   });
+
   test("can't call read inside onDispose", () {
     final provider2 = Provider((ref) => 0);
     final provider = Provider((ref) {
@@ -289,6 +299,7 @@ void main() {
 
     expect(errors, [isStateError]);
   });
+
   test("can't call watch inside onDispose", () {
     final provider2 = Provider((ref) => 0);
     final provider = Provider((ref) {
@@ -306,6 +317,7 @@ void main() {
 
     expect(errors, [isStateError]);
   });
+
   test('container.debugProviderValues', () {
     final unnamed = Provider((_) => 0);
     final counter = Counter();
@@ -369,6 +381,7 @@ void main() {
     expect(value21, isNot(value1));
     expect(value21, 1);
   });
+
   test(
       "updating overrides / dispose don't compute provider states if not loaded yet",
       () {
@@ -391,6 +404,7 @@ void main() {
 
     expect(callCount, 0);
   });
+
   test('circular dependencies (sync)', () {
     Provider<int> provider;
 
@@ -410,6 +424,7 @@ void main() {
       throwsA(isA<ProviderException>()),
     );
   });
+
   test('circular dependencies (async)', () {
     Provider<int Function()> provider;
 
@@ -429,6 +444,7 @@ void main() {
       throwsA(isA<ProviderException>()),
     );
   });
+
   test('circular dependencies #2', () {
     final container = ProviderContainer();
 
@@ -445,6 +461,7 @@ void main() {
       isNotNull,
     );
   });
+
   test('dispose providers in dependency order (simple)', () {
     final container = ProviderContainer();
     final onDispose1 = OnDisposeMock();

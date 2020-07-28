@@ -24,6 +24,7 @@ void main() {
 
     expect(container.read(provider), const AsyncValue<int>.data(42));
   });
+
   test('Loading to error', () {
     expect(container.read(provider), const AsyncValue<int>.loading());
 
@@ -32,6 +33,7 @@ void main() {
 
     expect(container.read(provider), AsyncValue<int>.error(42, stack));
   });
+
   test('does not filter identical values', () {
     final sub = container.listen(provider);
 
@@ -47,6 +49,7 @@ void main() {
     expect(sub.flush(), true);
     expect(sub.read(), const AsyncValue<int>.data(42));
   });
+
   test('provider.stream is a broadcast stream', () async {
     controller = StreamController<int>();
 
@@ -56,6 +59,7 @@ void main() {
 
     await expectLater(sub.read(), emits(42));
   });
+
   test(
       'StreamProvider does not update dependents if the created stream did not change',
       () {
@@ -72,6 +76,7 @@ void main() {
 
     expect(sub.flush(), false);
   });
+
   test(
       'StreamProvider.stream does not update dependents if the created stream did not change',
       () {

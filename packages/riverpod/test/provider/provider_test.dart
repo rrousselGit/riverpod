@@ -28,6 +28,7 @@ void main() {
     verify(onDispose()).called(1);
     verifyNoMoreInteractions(onDispose);
   });
+
   test('Provider.autoDispose.family override', () async {
     final onDispose = OnDisposeMock();
     final provider = Provider.autoDispose.family<String, int>((ref, value) {
@@ -54,6 +55,7 @@ void main() {
     verify(onDispose()).called(1);
     verifyNoMoreInteractions(onDispose);
   });
+
   test('can specify name', () {
     final provider = Provider(
       (_) => 0,
@@ -66,6 +68,7 @@ void main() {
 
     expect(provider2.name, isNull);
   });
+
   test('is AlwaysAliveProviderBase', () {
     final provider = Provider((_) async => 42);
 
@@ -102,6 +105,7 @@ void main() {
       container.dispose();
     });
   });
+
   test('ProviderContainer.read', () {
     var result = 42;
     final container = ProviderContainer();

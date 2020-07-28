@@ -43,6 +43,7 @@ void main() {
 
     expect(notifier2.mounted, false);
   });
+
   test('can be assigned to Provider.autoDispose', () {
     // ignore: unused_local_variable
     final internals.AutoDisposeProvider<TestNotifier> provider =
@@ -84,6 +85,7 @@ void main() {
     verifyNoMoreInteractions(notifierListener);
     verifyNoMoreInteractions(stateListener);
   });
+
   test('can specify name', () {
     final provider = StateNotifierProvider.autoDispose(
       (_) => TestNotifier(),
@@ -98,6 +100,7 @@ void main() {
     expect(provider2.name, isNull);
     expect(provider2.state.name, isNull);
   });
+
   test('disposes the notifier when provider is unmounted', () {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider.autoDispose<TestNotifier>((_) {
@@ -142,6 +145,7 @@ void main() {
 
     verifyNoMoreInteractions(listener);
   });
+
   test('provider subscribe callback never called', () async {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider.autoDispose<TestNotifier>((_) {

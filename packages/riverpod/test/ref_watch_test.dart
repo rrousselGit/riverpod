@@ -89,6 +89,7 @@ void main() {
     verify(listener('2 44')).called(1);
     verifyNoMoreInteractions(listener);
   });
+
   test('Stops listening to a provider when recomputed but no longer using it',
       () {
     final stateProvider = StateProvider((ref) => 0, name: 'state');
@@ -213,6 +214,7 @@ void main() {
     verifyNoMoreInteractions(listener);
     expect(callCount, 2);
   });
+
   test(
       'computed on computed, the first aborts rebuild, the second should not be re-evaluated',
       () {
@@ -261,9 +263,11 @@ void main() {
       [provider, computed, provider2],
     );
   });
+
   test('Provider are not overrides', () {
     expect(Provider((_) {}), isNot(isA<Override>()));
   });
+
   test('disposing the Provider closes subscriptions', () {
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
@@ -287,6 +291,7 @@ void main() {
     verifyNoMoreInteractions(mayHaveChanged);
     verifyNoMoreInteractions(listener);
   });
+
   test('can call ref.watch outside of the Provider', () async {
     final container = ProviderContainer();
     final notifier = Notifier(0);
@@ -313,6 +318,7 @@ void main() {
     expect(sub.read(), const AsyncValue<int>.data(42));
     expect(callCount, 2);
   });
+
   test('the value is cached between multiple listeners', () {
     final container = ProviderContainer();
     final notifier = Notifier(0);

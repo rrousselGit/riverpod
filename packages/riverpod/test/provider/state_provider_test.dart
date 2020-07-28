@@ -38,6 +38,7 @@ void main() {
       isA<StateController>().having((s) => s.state, 'state', 'override 1'),
     );
   });
+
   test('Expose a state and allows modifying it', () {
     final container = ProviderContainer();
     final provider = StateProvider((ref) => 0);
@@ -55,6 +56,7 @@ void main() {
     verify(listener(controller));
     verifyNoMoreInteractions(listener);
   });
+
   test('disposes the controller when the container is disposed', () {
     final container = ProviderContainer();
     final provider = StateProvider((ref) => 0);
@@ -67,6 +69,7 @@ void main() {
 
     expect(controller.mounted, false);
   });
+
   test('disposes the controller when the provider is re-evaluated', () {
     final container = ProviderContainer();
     final other = StateProvider((ref) => 0);

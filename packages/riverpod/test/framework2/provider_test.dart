@@ -21,6 +21,7 @@ void main() {
 
     expect(sub.read(), 21);
   });
+
   test('Provider can be overriden by anything', () {
     final provider = Provider((_) => 42);
     final ProviderBase<Object, int> override = Provider((_) {
@@ -34,6 +35,7 @@ void main() {
 
     expect(sub.read(), 21);
   });
+
   test('Read creates the value only once', () {
     var callCount = 0;
     final provider = Provider((ref) {
@@ -48,6 +50,7 @@ void main() {
     expect(container.read(provider), 42);
     expect(callCount, 1);
   });
+
   test("rebuild don't notify clients if == doesn't change", () {
     final counter = Counter();
     final other = StateNotifierProvider((ref) => counter);
@@ -65,6 +68,7 @@ void main() {
     expect(sub.flush(), false);
     expect(sub.read(), true);
   });
+
   test('rebuild notify clients if == did change', () {
     final counter = Counter();
     final other = StateNotifierProvider((ref) => counter);

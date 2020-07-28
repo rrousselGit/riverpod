@@ -30,6 +30,7 @@ void main() {
 
     expect(errorsOf(() => container.read(child)), isNotEmpty);
   });
+
   test('initState can dirty descendants', () {
     StateController<int> counter;
     final rebuildToken = StateProvider((ref) => 0);
@@ -51,6 +52,7 @@ void main() {
     container.read(ancestor);
     expect(counter.state, 1);
   });
+
   test("initState can't dirty siblings", () {
     final ancestor = StateProvider((_) => 0, name: 'ancestor');
     final counter = Counter();
@@ -70,6 +72,7 @@ void main() {
     expect(errorsOf(() => container.read(child)), isNotEmpty);
     expect(didWatchAncestor, true);
   });
+
   test("initState can't mark dirty other provider", () {
     final provider = StateProvider((ref) => 0);
     final provider2 = Provider((ref) {
@@ -81,6 +84,7 @@ void main() {
 
     expect(errorsOf(() => container.read(provider2)), isNotEmpty);
   });
+
   test("nested initState can't mark dirty other providers", () {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);

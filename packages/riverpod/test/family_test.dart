@@ -26,6 +26,7 @@ void main() {
 
     expect(family.debugKeys, [2]);
   });
+
   test('caches the provider per value', () {
     final family = Provider.family<String, int>((ref, a) => '$a');
     final container = ProviderContainer();
@@ -36,6 +37,7 @@ void main() {
     expect(family(21), family(21));
     expect(container.read(family(21)), '21');
   });
+
   test('each provider updates their dependents independently', () {
     final controllers = {
       0: StreamController<String>(sync: true),
@@ -70,6 +72,7 @@ void main() {
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener2);
   });
+
   test('Pass family and argument properties', () {
     final family =
         StateNotifierProvider.family<Counter, int>((_, a) => Counter());

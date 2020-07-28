@@ -40,6 +40,7 @@ void main() {
     verify(listener(const AsyncValue.data(21))).called(1);
     verifyNoMoreInteractions(listener);
   });
+
   test('FutureProvider.autoDispose.family override', () async {
     final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
       return Future.value(a * 2);
@@ -57,6 +58,7 @@ void main() {
     verify(listener(const AsyncValue.data(42))).called(1);
     verifyNoMoreInteractions(listener);
   });
+
   test('FutureProvider.autoDispose.family override', () async {
     final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
       return Future.value(a * 2);
@@ -76,6 +78,7 @@ void main() {
     verify(listener(const AsyncValue.data(84))).called(1);
     verifyNoMoreInteractions(listener);
   });
+
   test('FutureProvider.family override', () async {
     final provider = FutureProvider.family<String, int>((ref, a) {
       return Future.value('$a');
@@ -91,6 +94,7 @@ void main() {
       const AsyncValue<String>.data('0'),
     );
   });
+
   test('FutureProvider.family override', () async {
     final provider = FutureProvider.family<String, int>((ref, a) {
       return Future.value('$a');
@@ -108,6 +112,7 @@ void main() {
       const AsyncValue<String>.data('override 0'),
     );
   });
+
   test('can specify name', () {
     final provider = FutureProvider(
       (_) async => 0,
@@ -120,6 +125,7 @@ void main() {
 
     expect(provider2.name, isNull);
   });
+
   test('handle errors', () async {
     // ignore: only_throw_errors
     final provider = FutureProvider<int>((_) async => throw 42);
@@ -138,6 +144,7 @@ void main() {
       ),
     );
   });
+
   test('noop if fails after dispose', () async {
     // ignore: only_throw_errors
     final provider = FutureProvider<int>((_) async => throw 42);
@@ -150,6 +157,7 @@ void main() {
 
     // No errors are reported to the zone
   });
+
   test('is AlwaysAliveProviderBase', () {
     final provider = FutureProvider((_) async => 42);
 
@@ -303,6 +311,7 @@ void main() {
       expect(didDispose, true);
     });
   });
+
   test('read', () {
     final container = ProviderContainer();
     final completer = Completer<int>.sync();
@@ -335,6 +344,7 @@ void main() {
 
     container.dispose();
   });
+
   test('exposes data', () {
     final container = ProviderContainer();
     final listener = ListenerMock();
@@ -359,6 +369,7 @@ void main() {
     verifyNoMoreInteractions(listener);
     container.dispose();
   });
+
   test('listener not called anymore if subscription is closed', () {
     final container = ProviderContainer();
     final mayHaveChanged = MayHaveChangedMock<AsyncValue<int>>();

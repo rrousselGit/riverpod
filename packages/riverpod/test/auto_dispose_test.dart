@@ -18,6 +18,7 @@ void main() {
 
     expect(container.debugProviderStates, <ProviderElement>[]);
   });
+
   test('setting maintainState to false destroys the state when not listener',
       () async {
     final onDispose = OnDisposeMock();
@@ -44,6 +45,7 @@ void main() {
     verify(onDispose()).called(1);
     verifyNoMoreInteractions(onDispose);
   });
+
   test("maintainState to true don't dispose the state when no-longer listened",
       () async {
     var value = 42;
@@ -70,6 +72,7 @@ void main() {
     verify(listener(42)).called(1);
     verifyNoMoreInteractions(listener);
   });
+
   test('maintainState defaults to false', () {
     bool maintainState;
     final provider = Provider.autoDispose((ref) {
@@ -163,6 +166,7 @@ void main() {
     verifyNoMoreInteractions(onDispose);
     verifyNoMoreInteractions(onDispose2);
   });
+
   test("auto dispose A then auto dispose B doesn't dispose A again", () async {
     final container = ProviderContainer();
     final aDispose = OnDisposeMock();
@@ -239,6 +243,7 @@ void main() {
 
     verifyNoMoreInteractions(onDispose);
   });
+
   test('unsub no-op if another sub is added before event-loop', () async {
     final container = ProviderContainer();
     final onDispose = OnDisposeMock();
@@ -266,6 +271,7 @@ void main() {
     verify(onDispose()).called(1);
     verifyNoMoreInteractions(onDispose);
   });
+
   test('no-op if when removing listener if there is still a listener',
       () async {
     final container = ProviderContainer();
@@ -291,6 +297,7 @@ void main() {
     verify(onDispose()).called(1);
     verifyNoMoreInteractions(onDispose);
   });
+
   test('unmount on removing watchOwner', () async {
     final container = ProviderContainer();
     final onDispose = OnDisposeMock();
@@ -343,6 +350,7 @@ void main() {
       ]),
     );
   });
+
   test('Do not dispose twice when ProviderContainer is disposed first',
       () async {
     final onDispose = OnDisposeMock();

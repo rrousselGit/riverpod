@@ -25,6 +25,7 @@ void main() {
     verify(onDispose()).called(1);
     verifyNoMoreInteractions(onDispose);
   });
+
   test('family', () {
     final container = ProviderContainer();
     final provider = ChangeNotifierProvider.autoDispose
@@ -47,6 +48,7 @@ void main() {
     ))).called(1);
     verifyNoMoreInteractions(listener2);
   });
+
   test('family override', () {
     final provider = ChangeNotifierProvider.autoDispose
         .family<ValueNotifier<int>, int>((ref, value) {
@@ -71,6 +73,7 @@ void main() {
     ))).called(1);
     verifyNoMoreInteractions(listener2);
   });
+
   test('can specify name', () {
     final provider = ChangeNotifierProvider.autoDispose(
       (_) => ValueNotifier(0),

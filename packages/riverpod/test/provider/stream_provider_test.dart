@@ -40,6 +40,7 @@ void main() {
     verify(listener(const AsyncValue.data(21))).called(1);
     verifyNoMoreInteractions(listener);
   });
+
   test('StreamProvider.autoDispose.family override', () async {
     final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
       return Stream.value(a * 2);
@@ -57,6 +58,7 @@ void main() {
     verify(listener(const AsyncValue.data(42))).called(1);
     verifyNoMoreInteractions(listener);
   });
+
   test('StreamProvider.autoDispose.family override', () async {
     final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
       return Stream.value(a * 2);
@@ -76,6 +78,7 @@ void main() {
     verify(listener(const AsyncValue.data(84))).called(1);
     verifyNoMoreInteractions(listener);
   });
+
   test('StreamProvider.family', () async {
     final provider = StreamProvider.family<String, int>((ref, a) {
       return Stream.value('$a');
@@ -91,6 +94,7 @@ void main() {
       const AsyncValue<String>.data('0'),
     );
   });
+
   test('StreamProvider.family override', () async {
     final provider = StreamProvider.family<String, int>((ref, a) {
       return Stream.value('$a');
@@ -108,6 +112,7 @@ void main() {
       const AsyncValue<String>.data('override 0'),
     );
   });
+
   test('can specify name', () {
     final provider = StreamProvider(
       (_) => const Stream<int>.empty(),
@@ -120,11 +125,13 @@ void main() {
 
     expect(provider2.name, isNull);
   });
+
   test('is AlwaysAliveProviderBase', () {
     final provider = StreamProvider<int>((_) async* {});
 
     expect(provider, isA<AlwaysAliveProviderBase>());
   });
+
   test('subscribe exposes loading synchronously then value on change',
       () async {
     final container = ProviderContainer();

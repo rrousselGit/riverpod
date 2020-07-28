@@ -19,6 +19,7 @@ void main() {
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 42),
     );
   });
+
   test('family override', () {
     final provider =
         ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
@@ -37,6 +38,7 @@ void main() {
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 84),
     );
   });
+
   test('can specify name', () {
     final provider = ChangeNotifierProvider(
       (_) => ValueNotifier(0),

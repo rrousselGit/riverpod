@@ -18,6 +18,7 @@ void main() {
       throwsUnsupportedError,
     );
   });
+
   test('report change once even if there are multiple listeners', () {
     final observer = ObserverMock();
     final container = ProviderContainer(observers: [observer]);
@@ -42,6 +43,7 @@ void main() {
 
     verifyOnly(observer, observer.didUpdateProvider(provider.state, 1));
   });
+
   test('didAddProvider', () {
     final observer = ObserverMock();
     final observer2 = ObserverMock();
@@ -61,6 +63,7 @@ void main() {
     verifyNoMoreInteractions(observer);
     verifyNoMoreInteractions(observer2);
   });
+
   test('catch exceptions on didAddProvider', () {
     final observer = ObserverMock();
     when(observer.didAddProvider(any, any)).thenThrow('error1');
@@ -92,6 +95,7 @@ void main() {
     ]);
     verifyNoMoreInteractions(observer);
   });
+
   test('didUpdateProviders', () {
     final observer = ObserverMock();
     final observer2 = ObserverMock();
@@ -139,6 +143,7 @@ void main() {
     verifyNoMoreInteractions(observer);
     verifyNoMoreInteractions(observer2);
   });
+
   test('guards mayHaveChanged', () {
     final observer = ObserverMock();
     when(observer.mayHaveChanged(any)).thenThrow('error1');
@@ -180,6 +185,7 @@ void main() {
     verifyNoMoreInteractions(observer2);
     verifyNoMoreInteractions(observer3);
   });
+
   test('guards didUpdateProviders', () {
     final observer = ObserverMock();
     when(observer.didUpdateProvider(any, any)).thenThrow('error1');
@@ -285,6 +291,7 @@ void main() {
     verifyNoMoreInteractions(isNegativeListener);
     verifyNoMoreInteractions(observer);
   });
+
   test('guards didDisposeProvider', () {
     final observer = ObserverMock();
     when(observer.didDisposeProvider(any)).thenThrow('error1');
