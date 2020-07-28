@@ -22,14 +22,21 @@ class StateNotifierProvider<T extends StateNotifier<Object>>
   StateNotifierStateProvider<Object> _state;
 }
 
+/// Adds [state] to [StateNotifierProvider.autoDispose].
 extension StateNotifierStateProviderX<Value>
     on StateNotifierProvider<StateNotifier<Value>> {
+  /// {@template riverpod.statenotifierprovider.state.provider}
   StateNotifierStateProvider<Value> get state {
     _state ??= StateNotifierStateProvider<Value>._(this);
     return _state as StateNotifierStateProvider<Value>;
   }
 }
 
+/// {@template riverpod.statenotifierprovider.state.provider}
+/// A provider that exposes the state of a [StateNotifier].
+///
+/// It is created by [StateNotifierProvider]
+/// {@endtemplate}
 class StateNotifierStateProvider<T>
     extends AlwaysAliveProviderBase<StateNotifier<T>, T> {
   StateNotifierStateProvider._(this._provider)
@@ -59,8 +66,12 @@ class StateNotifierStateProvider<T>
 class _StateNotifierStateProviderState<T> = ProviderStateBase<StateNotifier<T>,
     T> with _StateNotifierStateProviderStateMixin<T>;
 
+/// {@template riverpod.provider.family}
+/// A class that allows building a [StateNotifierProvider] from an external parameter.
+/// {@endtemplate}
 class StateNotifierProviderFamily<T extends StateNotifier<Object>, A>
     extends Family<T, T, A, ProviderReference, StateNotifierProvider<T>> {
+  /// {@macro riverpod.provider.family}
   StateNotifierProviderFamily(
     T Function(ProviderReference ref, A a) create, {
     String name,

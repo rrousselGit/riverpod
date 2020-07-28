@@ -25,8 +25,12 @@ class Provider<T> extends AlwaysAliveProviderBase<T, T> {
 
 class _ProviderState<T> = ProviderStateBase<T, T> with _ProviderStateMixin<T>;
 
+/// {@template riverpod.provider.family}
+/// A class that allows building a [Provider] from an external parameter.
+/// {@endtemplate}
 class ProviderFamily<T, A>
     extends Family<T, T, A, ProviderReference, Provider<T>> {
+  /// {@macro riverpod.provider.family}
   ProviderFamily(
     T Function(ProviderReference ref, A a) create, {
     String name,

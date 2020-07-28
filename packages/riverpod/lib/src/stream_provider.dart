@@ -95,7 +95,7 @@ mixin _StreamProviderMixin<T> on ProviderBase<Stream<T>, AsyncValue<T>> {
 /// - [FutureProvider], a provider that asynchronously expose a value which
 ///   can change over time.
 /// - [StreamProvider.stream], to obtain the [Stream] created instead of an [AsyncValue].
-/// - [StreamProvider.last], to obtain the the last value emitted by a [Stream].
+/// - [StreamProvider.last], to obtain the last value emitted by a [Stream].
 /// - [StreamProvider.family], to create a [StreamProvider] from external parameters
 /// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no-longer needed.
 /// {@endtemplate}

@@ -19,14 +19,17 @@ class AutoDisposeStateNotifierProvider<T extends StateNotifier<Object>>
   AutoDisposeStateNotifierStateProvider<Object> _state;
 }
 
+/// Adds [state] to [StateNotifierProvider.autoDispose].
 extension AutoDisposeStateNotifierStateProviderX<Value>
     on AutoDisposeStateNotifierProvider<StateNotifier<Value>> {
+  /// {@macro riverpod.statenotifierprovider.state.provider}
   AutoDisposeStateNotifierStateProvider<Value> get state {
     _state ??= AutoDisposeStateNotifierStateProvider<Value>._(this);
     return _state as AutoDisposeStateNotifierStateProvider<Value>;
   }
 }
 
+/// {@macro riverpod.statenotifierprovider.state.provider}
 class AutoDisposeStateNotifierStateProvider<T>
     extends AutoDisposeProviderBase<StateNotifier<T>, T> {
   AutoDisposeStateNotifierStateProvider._(
@@ -45,9 +48,11 @@ class AutoDisposeStateNotifierStateProvider<T>
 class _AutoDisposeStateNotifierStateProviderState<T> = ProviderStateBase<
     StateNotifier<T>, T> with _StateNotifierStateProviderStateMixin<T>;
 
+/// {@macro riverpod.provider.family}
 class AutoDisposeStateNotifierProviderFamily<T extends StateNotifier<Object>, A>
     extends Family<T, T, A, AutoDisposeProviderReference,
         AutoDisposeStateNotifierProvider<T>> {
+  /// {@macro riverpod.provider.family}
   AutoDisposeStateNotifierProviderFamily(
     T Function(AutoDisposeProviderReference ref, A a) create, {
     String name,
