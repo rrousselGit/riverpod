@@ -138,6 +138,23 @@ class ProviderContainer {
     }
   }
 
+  /// Forces a provider to re-evaluate its state immediatly, and return the created value.
+  /// 
+  /// This method is useful for features like "pull to refresh" or "retry on error",
+  /// to restart a specific provider.
+  Created refresh<Created>(ProviderBase<Created, Object> provider) {
+    final element = _stateReaders[provider];
+
+    if (element == null) {
+      return readProviderElement(provider).state.createdValue;
+    } else {
+      element.markMustRecomputeState();
+      element.flush();
+      return element.state.createdValue as Created;
+    }
+  }
+
+
   /// Updates the list of provider overrides.
   ///
   /// If you are using flutter, this is done implicitly for you by `ProviderScope`.
@@ -331,6 +348,7 @@ class ProviderContainer {
     }(), '');
     return res;
   }
+
 }
 
 /// An object that listens to the changes of a [ProviderContainer].

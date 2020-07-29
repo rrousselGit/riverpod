@@ -6,6 +6,20 @@ import 'package:state_notifier/state_notifier.dart';
 import 'package:mockito/mockito.dart';
 
 void main() {
+  testWidgets('context.refresh forces a provider to refresh', (tester) async {
+    var future = Future.value(21);
+    final provider = FutureProvider((ref) => future);
+
+    await tester.pumpWidget(ProviderScope(child: Container()));
+
+    final context = tester.element(find.byType(Container));
+
+    await expectLater(context.read(provider.future), completion(21));
+
+    future = Future.value(42);
+
+    await expectLater(context.refresh(provider), completion(42));
+  });
   testWidgets('AlwaysAliveProviderBase.read(context) inside initState',
       (tester) async {
     final provider = Provider((_) => 42);

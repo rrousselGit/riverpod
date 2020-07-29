@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'framework.dart';
@@ -74,5 +75,39 @@ extension BuildContextX on BuildContext {
   /// impossible to have a bug where our UI does not refresh.
   T read<T>(ProviderBase<Object, T> provider) {
     return ProviderContainerScope.of(this, listen: false).read(provider);
+  }
+
+  /// Forces a provider to re-evaluate its state immediatly, and return the created value.
+  ///
+  /// This method is useful for features like "pull to refresh" or "retry on error",
+  /// to restart a specific provider.
+  ///
+  /// For example, a pull-to-refresh may be implemented by combining
+  /// [FutureProvider] and a [RefreshIndicator]:
+  ///
+  /// ```dart
+  /// final productsProvider = FutureProvider((ref) async {
+  ///   final response = await httpClient.get('https://host.com/products');
+  ///   return Products.fromJson(response.data);
+  /// });
+  ///
+  /// class Example extends HookWidget {
+  ///   @override
+  ///   Widget build(BuildContext context) {
+  ///     final Products products = useProvider(productsProvider);
+  ///
+  ///     return RefreshIndicator(
+  ///       onRefresh: () => context.refresh(productsProvider),
+  ///       child: ListView(
+  ///         children: [
+  ///           for (final product in products.items) ProductItem(product: product),
+  ///         ],
+  ///       ),
+  ///     );
+  ///   }
+  /// }
+  /// ```
+  Created refresh<Created>(ProviderBase<Created, Object> provider) {
+    return ProviderContainerScope.of(this, listen: false).refresh(provider);
   }
 }

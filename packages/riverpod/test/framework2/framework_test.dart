@@ -534,4 +534,66 @@ void main() {
       });
     });
   });
+
+  group('container.retry', () {
+    test('Immediatly creates a new value, even if no changes are pending',
+        () async {
+      var future = Future.value(42);
+      var callCount = 0;
+      final provider = FutureProvider((_) {
+        callCount++;
+        return future;
+      });
+      final container = ProviderContainer();
+
+      await expectLater(container.read(provider.future), completion(42));
+      expect(callCount, 1);
+
+      future = Future.value(21);
+
+      await expectLater(container.refresh(provider), completion(21));
+      expect(callCount, 2);
+      await expectLater(container.read(provider.future), completion(21));
+      expect(callCount, 2);
+    });
+    test('retrying an unmounted provider just mounts it', () async {
+      var callCount = 0;
+      final provider = FutureProvider((_) {
+        callCount++;
+        return Future.value(42);
+      });
+      final container = ProviderContainer();
+
+      expect(callCount, 0);
+      await expectLater(container.refresh(provider), completion(42));
+      expect(callCount, 1);
+      await expectLater(container.read(provider.future), completion(42));
+      expect(callCount, 1);
+    });
+    test(
+        'retrying a provider already marked as needing to update do not create the value twice',
+        () async {
+      var future = Future.value(42);
+      var callCount = 0;
+      final dep = StateProvider((_) => 0);
+      final provider = FutureProvider((ref) {
+        callCount++;
+        ref.watch(dep);
+        return future;
+      });
+      final container = ProviderContainer();
+
+      await expectLater(container.refresh(provider), completion(42));
+      expect(callCount, 1);
+
+      container.read(dep).state++;
+      future = Future.value(21);
+
+      expect(callCount, 1);
+      await expectLater(container.refresh(provider), completion(21));
+      expect(callCount, 2);
+      await expectLater(container.read(provider.future), completion(21));
+      expect(callCount, 2);
+    });
+  });
 }
