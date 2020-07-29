@@ -68,6 +68,7 @@ class FutureProviderFamily<T, A> extends Family<Future<T>, AsyncValue<T>, A,
   FutureProvider<T> create(
     A value,
     Future<T> Function(ProviderReference ref, A param) builder,
+    String name,
   ) {
     return FutureProvider((ref) => builder(ref, value), name: name);
   }

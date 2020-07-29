@@ -40,6 +40,7 @@ class ProviderFamily<T, A>
   Provider<T> create(
     A value,
     T Function(ProviderReference ref, A param) builder,
+    String name,
   ) {
     return Provider((ref) => builder(ref, value), name: name);
   }

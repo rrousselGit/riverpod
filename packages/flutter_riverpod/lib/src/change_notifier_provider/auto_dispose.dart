@@ -35,6 +35,7 @@ class AutoDisposeChangeNotifierProviderFamily<T extends ChangeNotifier, A>
   AutoDisposeChangeNotifierProvider<T> create(
     A value,
     T Function(AutoDisposeProviderReference ref, A param) builder,
+    String name,
   ) {
     return AutoDisposeChangeNotifierProvider(
       (ref) => builder(ref, value),

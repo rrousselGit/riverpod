@@ -38,6 +38,7 @@ class AutoDisposeStateProviderFamily<T, A> extends Family<
     A value,
     StateController<T> Function(AutoDisposeProviderReference ref, A param)
         builder,
+    String name,
   ) {
     return AutoDisposeStateProvider((ref) {
       return builder(ref, value).state;
@@ -62,6 +63,7 @@ extension AutoDisposeStateFamilyX<T, Param> on Family<
         return create(
           param as Param,
           (ref, a) => StateController(builderOverride(ref, a)),
+          null,
         );
       },
     );

@@ -22,7 +22,7 @@ part of 'framework.dart';
 ///
 /// See also:
 ///
-/// - [Computed]/`select`, for filtering unwanted rebuilds.
+/// - [Provider]/`select`, for filtering unwanted rebuilds.
 T useProvider<T>(ProviderListenable<T> provider) {
   final container = ProviderContainerScope.of(useContext());
   return use(_ProviderHook<T>(container, provider));

@@ -48,6 +48,7 @@ class AutoDisposeFutureProviderFamily<T, A> extends Family<
   AutoDisposeFutureProvider<T> create(
     A value,
     Future<T> Function(AutoDisposeProviderReference ref, A param) builder,
+    String name,
   ) {
     return AutoDisposeFutureProvider((ref) => builder(ref, value), name: name);
   }

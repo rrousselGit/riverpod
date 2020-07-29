@@ -22,6 +22,19 @@ void main() {
     container.dispose();
   });
 
+  group('Provider.name', () {
+    test('is directed by the family, if any', () {
+      final family = Provider.family<int, int>((ref, _) => 0);
+
+      expect(family(0).name, null);
+
+      final family2 = Provider.family<int, int>((ref, _) => 0, name: 'name');
+
+      expect(family2(0).name, 'name (0)');
+      expect(family2(1).name, 'name (1)');
+    });
+  });
+
   group('combining providers', () {
     StreamController<int> controller;
     final streamProvider = StreamProvider((ref) => controller.stream);

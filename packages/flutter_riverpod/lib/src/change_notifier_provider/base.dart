@@ -39,6 +39,7 @@ class ChangeNotifierProviderFamily<T extends ChangeNotifier, A>
   ChangeNotifierProvider<T> create(
     A value,
     T Function(ProviderReference ref, A param) builder,
+    String name,
   ) {
     return ChangeNotifierProvider((ref) => builder(ref, value), name: name);
   }

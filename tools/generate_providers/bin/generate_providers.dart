@@ -476,7 +476,7 @@ ${familyDoc().replaceAll('///', '  ///')}
     ${configs.createType} Function(${configs.ref} ref, Value value) create, {
     String name,
   }) {
-    return ${configs.providerName}(create);
+    return ${configs.providerName}(create, name: name);
   }
 ${configs.links(matrix)}
 }

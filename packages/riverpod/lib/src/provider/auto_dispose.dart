@@ -37,6 +37,7 @@ class AutoDisposeProviderFamily<T, A> extends Family<T, T, A,
   AutoDisposeProvider<T> create(
     A value,
     T Function(AutoDisposeProviderReference ref, A param) builder,
+    String name,
   ) {
     return AutoDisposeProvider((ref) => builder(ref, value), name: name);
   }

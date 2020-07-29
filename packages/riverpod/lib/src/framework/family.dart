@@ -4,11 +4,10 @@ part of '../framework.dart';
 abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
     P extends ProviderBase<Created, Listened>> {
   /// A base class for all *Family variants of providers.
-  Family(this._builder, this.name);
+  Family(this._builder, this._name);
 
   final Created Function(Ref ref, Param param) _builder;
-  // TODO make private and pass the contatenario with `param` to [create]
-  final String name;
+  final String _name;
 
   final _cache = <Param, P>{};
 
@@ -18,7 +17,7 @@ abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
   /// See the documentation of [Provider.family] for more informations.
   P call(Param value) {
     return _cache.putIfAbsent(value, () {
-      final provider = create(value, _builder);
+      final provider = create(value, _builder, _name == null ? null : '$_name ($value)');
       assert(
         provider._from == null,
         'The provider created already belongs to a Family',
@@ -30,7 +29,11 @@ abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
   }
 
   /// Creates the provider for a given parameter.
-  P create(Param value, Created Function(Ref ref, Param param) builder);
+  P create(
+    Param value,
+    Created Function(Ref ref, Param param) builder,
+    String name,
+  );
 
   /// A debug-only list of all the parameters passed to this family.
   List<Param> get debugKeys {
@@ -59,7 +62,7 @@ extension FamilyX<Created, Listened, Param, Ref extends ProviderReference,
     return FamilyOverride(
       this,
       (dynamic param) {
-        return create(param as Param, builderOverride);
+        return create(param as Param, builderOverride, null);
       },
     );
   }

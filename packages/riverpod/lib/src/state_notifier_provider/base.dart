@@ -81,6 +81,7 @@ class StateNotifierProviderFamily<T extends StateNotifier<Object>, A>
   StateNotifierProvider<T> create(
     A value,
     T Function(ProviderReference ref, A param) builder,
+    String name,
   ) {
     return StateNotifierProvider((ref) => builder(ref, value), name: name);
   }

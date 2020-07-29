@@ -37,6 +37,7 @@ class StateProviderFamily<T, A> extends Family<StateController<T>,
   StateProvider<T> create(
     A value,
     StateController<T> Function(ProviderReference ref, A param) builder,
+    String name,
   ) {
     return StateProvider((ref) => builder(ref, value).state, name: name);
   }
@@ -55,6 +56,7 @@ extension StateFamilyX<T, Param> on Family<StateController<T>,
         return create(
           param as Param,
           (ref, a) => StateController(builderOverride(ref, a)),
+          null,
         );
       },
     );

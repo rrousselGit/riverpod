@@ -56,6 +56,7 @@ class StreamProviderFamily<T, A> extends Family<Stream<T>, AsyncValue<T>, A,
   StreamProvider<T> create(
     A value,
     Stream<T> Function(ProviderReference ref, A param) builder,
+    String name,
   ) {
     return StreamProvider((ref) => builder(ref, value), name: name);
   }

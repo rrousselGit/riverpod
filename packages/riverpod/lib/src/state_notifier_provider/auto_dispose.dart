@@ -62,6 +62,7 @@ class AutoDisposeStateNotifierProviderFamily<T extends StateNotifier<Object>, A>
   AutoDisposeStateNotifierProvider<T> create(
     A value,
     T Function(AutoDisposeProviderReference ref, A param) builder,
+    String name,
   ) {
     return AutoDisposeStateNotifierProvider((ref) => builder(ref, value),
         name: name);

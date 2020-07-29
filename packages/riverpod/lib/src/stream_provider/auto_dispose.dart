@@ -56,6 +56,7 @@ class AutoDisposeStreamProviderFamily<T, A> extends Family<
   AutoDisposeStreamProvider<T> create(
     A value,
     Stream<T> Function(AutoDisposeProviderReference ref, A param) builder,
+    String name,
   ) {
     return AutoDisposeStreamProvider((ref) => builder(ref, value), name: name);
   }
