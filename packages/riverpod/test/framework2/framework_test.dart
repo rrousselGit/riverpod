@@ -22,6 +22,14 @@ void main() {
     container.dispose();
   });
 
+  test('ProviderReference.container exposes the root container', () {
+    final root = ProviderContainer();
+    final container = ProviderContainer(parent: root);
+    final provider = Provider((ref) => ref);
+
+    expect(container.read(provider).container, root);
+  });
+
   group('Provider.name', () {
     test('is directed by the family, if any', () {
       final family = Provider.family<int, int>((ref, _) => 0);

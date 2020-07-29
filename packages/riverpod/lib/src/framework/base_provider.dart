@@ -281,7 +281,6 @@ abstract class ProviderReference {
   bool get mounted;
 
   /// The [ProviderContainer] that this provider is associated with.
-  // TODO test
   ProviderContainer get container;
 
   /// Adds a listener to perform an operation right before the provider is destroyed.
