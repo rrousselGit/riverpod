@@ -42,6 +42,7 @@ void main() {
     expect(find.text('1 1'), findsOneWidget);
     expect(callCount, 2);
   });
+
   testWidgets('AlwaysAliveProviderBase.read(context) inside initState',
       (tester) async {
     final provider = Provider((_) => 42);
@@ -61,6 +62,7 @@ void main() {
   test('ProviderScope requires a child', () {
     expect(() => ProviderScope(child: null), throwsAssertionError);
   });
+
   testWidgets('throws if no ProviderScope found', (tester) async {
     final provider = Provider((_) => 'foo');
 

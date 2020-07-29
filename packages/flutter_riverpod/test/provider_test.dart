@@ -30,6 +30,7 @@ void main() {
       return Container();
     });
   });
+
   testWidgets('mounted', (tester) async {
     ProviderReference providerState;
     bool mountedOnDispose;
@@ -197,6 +198,7 @@ void main() {
     expect(callCount, 1);
     expect(find.text('42'), findsOneWidget);
   });
+
   testWidgets('provider1 as override of normal provider', (tester) async {
     final provider = Provider((_) => 42);
     final provider2 = Provider((_) => 42);
@@ -244,6 +246,7 @@ void main() {
     expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
   });
+
   testWidgets('provider1 chain', (tester) async {
     final first = Provider((_) => 1);
     final second = Provider<int>((ref) {
@@ -269,6 +272,7 @@ void main() {
 
     expect(find.text('4'), findsOneWidget);
   });
+
   testWidgets('overriden provider1 chain', (tester) async {
     final first = Provider((_) => 1);
     final second = Provider<int>((ref) {
@@ -297,6 +301,7 @@ void main() {
 
     expect(find.text('45'), findsOneWidget);
   });
+
   testWidgets('partial override provider1 chain', (tester) async {
     final first = Provider((_) => 1);
     final second = Provider<int>((ref) {
@@ -325,6 +330,7 @@ void main() {
 
     expect(find.text('2'), findsOneWidget);
   });
+
   testWidgets('ProviderBuilder1', (tester) async {
     final provider = Provider((_) => 42);
 

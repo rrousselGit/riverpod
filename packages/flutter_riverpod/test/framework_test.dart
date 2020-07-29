@@ -20,6 +20,7 @@ void main() {
 
     await expectLater(context.refresh(provider), completion(42));
   });
+
   testWidgets('AlwaysAliveProviderBase.read(context) inside initState',
       (tester) async {
     final provider = Provider((_) => 42);
@@ -35,6 +36,7 @@ void main() {
 
     expect(result, 42);
   });
+
   testWidgets('AlwaysAliveProviderBase.read(context) inside build',
       (tester) async {
     final provider = Provider((_) => 42);
@@ -56,6 +58,7 @@ void main() {
 
     expect(find.text('42'), findsOneWidget);
   });
+
   testWidgets('adding overrides throws', (tester) async {
     final provider = Provider((_) => 0);
 
@@ -74,6 +77,7 @@ void main() {
 
     expect(tester.takeException(), isAssertionError);
   });
+
   testWidgets('removing overrides is no-op', (tester) async {
     final provider = Provider((_) => 0);
 
@@ -129,6 +133,7 @@ void main() {
   test('ProviderScope requires a child', () {
     expect(() => ProviderScope(child: null), throwsAssertionError);
   });
+
   testWidgets('throws if no ProviderScope found', (tester) async {
     final provider = Provider((_) => 'foo');
 
@@ -210,6 +215,7 @@ void main() {
     expect(find.text('root root2'), findsNothing);
     expect(find.text('rootoverride root2'), findsOneWidget);
   });
+
   testWidgets('debugFillProperties', (tester) async {
     final unnamed = Provider((_) => 0);
     final named = StateNotifierProvider((_) => Counter(), name: 'counter');
@@ -240,6 +246,7 @@ void main() {
           'counter.state: 0)'),
     );
   });
+
   testWidgets('ProviderScope throws if ancestorOwner changed', (tester) async {
     final key = GlobalKey();
 
@@ -267,6 +274,7 @@ void main() {
 
     expect(tester.takeException(), isUnsupportedError);
   });
+
   testWidgets('ProviderScope throws if ancestorOwner removed', (tester) async {
     final key = GlobalKey();
 

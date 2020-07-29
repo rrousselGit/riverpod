@@ -55,6 +55,7 @@ void main() {
     expect(buildCount, 3);
     expect(selectCount, 4);
   });
+
   testWidgets('useProvider supports changing the provider', (tester) async {
     final notifier1 = Counter();
     final provider1 = StateNotifierProvider((_) => notifier1);

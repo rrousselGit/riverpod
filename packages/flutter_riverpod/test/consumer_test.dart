@@ -79,6 +79,7 @@ void main() {
     expect(buildCount, 5);
     expect(find.text('2 44'), findsOneWidget);
   });
+
   testWidgets(
       'Stops listening to a provider when recomputed but no longer using it',
       (tester) async {
@@ -150,6 +151,7 @@ void main() {
 
     expect(buildCount, 4);
   });
+
   testWidgets('Consumer supports changing the provider', (tester) async {
     final notifier1 = TestNotifier();
     final provider1 = StateNotifierProvider((_) => notifier1);
@@ -189,6 +191,7 @@ void main() {
     expect(find.text('43'), findsOneWidget);
     expect(buildCount, 3);
   });
+
   testWidgets(
       'mutliple watch, when one of them forces rebuild, all dependencies are still flushed',
       (tester) async {
@@ -222,6 +225,7 @@ void main() {
     expect(find.text('1 1'), findsOneWidget);
     expect(callCount, 2);
   });
+
   testWidgets("don't rebuild if Provider ref't actually change",
       (tester) async {
     final notifier = TestNotifier();
@@ -343,6 +347,7 @@ void main() {
     expect(state1.hasListeners, false);
     expect(state2.hasListeners, true);
   });
+
   testWidgets('remove listener when destroying the consumer', (tester) async {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider((_) => notifier);

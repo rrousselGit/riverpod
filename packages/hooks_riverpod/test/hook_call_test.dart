@@ -32,6 +32,7 @@ void main() {
     notifier.count++;
     await tester.pump();
   });
+
   testWidgets('relocating consumer with GlobalKey', (tester) async {
     final notifier = TestNotifier();
     final notifier2 = TestNotifier()..count = 42;

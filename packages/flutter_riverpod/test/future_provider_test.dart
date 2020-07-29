@@ -38,6 +38,7 @@ void main() {
 
     expect(find.text('42'), findsOneWidget);
   });
+
   testWidgets('updates dependents with error', (tester) async {
     final error = Error();
     final futureProvider = FutureProvider<int>((s) async => throw error);
@@ -72,6 +73,7 @@ void main() {
     expect(whenError, error);
     expect(whenStack, isNotNull);
   });
+
   testWidgets("future completes after unmount does't crash", (tester) async {
     final completer = Completer<int>();
     final futureProvider = FutureProvider((s) => completer.future);
@@ -93,6 +95,7 @@ void main() {
     // wait for then to tick
     await Future.value(null);
   });
+
   testWidgets("future fails after unmount does't crash", (tester) async {
     final completer = Completer<int>();
     final futureProvider = FutureProvider((s) => completer.future);
@@ -115,6 +118,7 @@ void main() {
     // wait for onError to tick
     await Future.value(null);
   });
+
   testWidgets('FutureProvider can be overriden with Future', (tester) async {
     var callCount = 0;
     final futureProvider = FutureProvider((s) async {
@@ -354,6 +358,7 @@ void main() {
       await expectLater(future, throwsA(error));
     });
   });
+
   testWidgets('FutureProvider into FutureProviderFamily', (tester) async {
     final futureProvider = FutureProvider((_) async => 42);
 
@@ -383,6 +388,7 @@ void main() {
 
     expect(find.text('84'), findsOneWidget);
   });
+
   testWidgets('FutureProviderFamily works with other providers',
       (tester) async {
     final provider = Provider((_) => 42);
@@ -412,6 +418,7 @@ void main() {
 
     expect(find.text('84'), findsOneWidget);
   });
+
   testWidgets('FutureProviderFamily can be used directly', (tester) async {
     final futureProvider = Provider((_) => 42);
 

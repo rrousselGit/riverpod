@@ -51,6 +51,7 @@ void main() {
     expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
   });
+
   testWidgets('provider1 chain', (tester) async {
     final first = Provider((_) => 1);
     final second = Provider<int>((ref) {
@@ -77,6 +78,7 @@ void main() {
 
     expect(find.text('4'), findsOneWidget);
   });
+
   testWidgets('overriden provider1 chain', (tester) async {
     final first = Provider((_) => 1);
     final second = Provider<int>((ref) {
@@ -106,6 +108,7 @@ void main() {
 
     expect(find.text('45'), findsOneWidget);
   });
+
   testWidgets('partial override provider1 chain', (tester) async {
     final first = Provider((_) => 1);
     final second = Provider<int>((ref) {
