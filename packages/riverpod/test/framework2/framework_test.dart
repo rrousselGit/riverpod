@@ -82,6 +82,32 @@ void main() {
       expect(container.read(provider), null);
       expect(callCount, 1);
     });
+    test(
+        'recomputing a provider calls onDispose and clear the dispose listeners',
+        () {
+      final onDispose = OnDisposeMock();
+      final build = BuildMock();
+      final provider = Provider((ref) {
+        build();
+        ref.onDispose(onDispose);
+      });
+      final container = ProviderContainer();
+
+      container.read(provider);
+
+      verifyOnly(build, build());
+      verifyZeroInteractions(onDispose);
+
+      container.refresh(provider);
+
+      verifyOnly(build, build());
+      verifyOnly(onDispose, onDispose());
+
+      container.refresh(provider);
+
+      verifyOnly(build, build());
+      verifyOnly(onDispose, onDispose());
+    });
   });
 
   test('disposing child container does not dispose the providers', () {
@@ -596,4 +622,12 @@ void main() {
       expect(callCount, 2);
     });
   });
+}
+
+class OnDisposeMock extends Mock {
+  void call();
+}
+
+class BuildMock extends Mock {
+  void call();
 }

@@ -14,6 +14,7 @@ class AutoDisposeStreamProvider<T>
   static const family = AutoDisposeStreamProviderFamilyBuilder();
 
   AutoDisposeProviderBase<Stream<T>, Stream<T>> _stream;
+  @override
   AutoDisposeProviderBase<Stream<T>, Stream<T>> get stream {
     return _stream ??= _AutoDisposeCreatedStreamProvider(
       this,
@@ -22,6 +23,7 @@ class AutoDisposeStreamProvider<T>
   }
 
   AutoDisposeProviderBase<Object, Future<T>> _last;
+  @override
   AutoDisposeProviderBase<Object, Future<T>> get last {
     return _last ??= Provider.autoDispose(
       (ref) => _readLast(ref, this),

@@ -24,7 +24,7 @@ class AutoDisposeProvider<T> extends AutoDisposeProviderBase<T, T> {
 class _AutoDisposeProviderState<T> = ProviderStateBase<T, T>
     with _ProviderStateMixin<T>;
 
-  /// {@macro riverpod.provider.family}
+/// {@macro riverpod.provider.family}
 class AutoDisposeProviderFamily<T, A> extends Family<T, T, A,
     AutoDisposeProviderReference, AutoDisposeProvider<T>> {
   /// {@macro riverpod.provider.family}

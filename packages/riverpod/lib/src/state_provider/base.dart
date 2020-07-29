@@ -1,7 +1,9 @@
 part of '../state_provider.dart';
 
+/// {@macro riverpod.stateprovider}
 class StateProvider<T>
     extends AlwaysAliveProviderBase<StateController<T>, StateController<T>> {
+  /// {@macro riverpod.stateprovider}
   StateProvider(
     Create<T, ProviderReference> create, {
     String name,
@@ -22,8 +24,10 @@ class StateProvider<T>
 class _StateProviderState<T> = ProviderStateBase<StateController<T>,
     StateController<T>> with _StateProviderStateMixin<T>;
 
+/// {@macro riverpod.stateprovider.family}
 class StateProviderFamily<T, A> extends Family<StateController<T>,
     StateController<T>, A, ProviderReference, StateProvider<T>> {
+  /// {@macro riverpod.stateprovider.family}
   StateProviderFamily(
     T Function(ProviderReference ref, A a) create, {
     String name,
@@ -38,6 +42,7 @@ class StateProviderFamily<T, A> extends Family<StateController<T>,
   }
 }
 
+/// Overrides [overrideWithProvider] for [StateProvider.family].
 extension StateFamilyX<T, Param> on Family<StateController<T>,
     StateController<T>, Param, ProviderReference, StateProvider<T>> {
   /// Overrides the behavior of a family for a part of the application.

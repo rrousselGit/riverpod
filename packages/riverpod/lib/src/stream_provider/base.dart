@@ -17,6 +17,7 @@ class StreamProvider<T>
   static const autoDispose = AutoDisposeStreamProviderBuilder();
 
   AlwaysAliveProviderBase<Stream<T>, Stream<T>> _stream;
+  @override
   AlwaysAliveProviderBase<Stream<T>, Stream<T>> get stream {
     return _stream ??= _CreatedStreamProvider(
       this,
@@ -25,6 +26,7 @@ class StreamProvider<T>
   }
 
   AlwaysAliveProviderBase<Object, Future<T>> _last;
+  @override
   AlwaysAliveProviderBase<Object, Future<T>> get last {
     return _last ??= Provider(
       (ref) => _readLast(ref, this),

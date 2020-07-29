@@ -66,12 +66,12 @@ class StateNotifierStateProvider<T>
 class _StateNotifierStateProviderState<T> = ProviderStateBase<StateNotifier<T>,
     T> with _StateNotifierStateProviderStateMixin<T>;
 
-/// {@template riverpod.provider.family}
+/// {@template riverpod.statenotifierprovider.family}
 /// A class that allows building a [StateNotifierProvider] from an external parameter.
 /// {@endtemplate}
 class StateNotifierProviderFamily<T extends StateNotifier<Object>, A>
     extends Family<T, T, A, ProviderReference, StateNotifierProvider<T>> {
-  /// {@macro riverpod.provider.family}
+  /// {@macro riverpod.statenotifierprovider.family}
   StateNotifierProviderFamily(
     T Function(ProviderReference ref, A a) create, {
     String name,

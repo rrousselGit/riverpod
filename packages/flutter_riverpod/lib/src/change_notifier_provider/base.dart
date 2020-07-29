@@ -24,8 +24,12 @@ class _ChangeNotifierProviderState<
         T extends ChangeNotifier> = ProviderStateBase<T, T>
     with _ChangeNotifierProviderStateMixin<T>;
 
+/// {@template riverpod.changenotifierprovider.family}
+/// A class that allows building a [ChangeNotifierProvider] from an external parameter.
+/// {@endtemplate}
 class ChangeNotifierProviderFamily<T extends ChangeNotifier, A>
     extends Family<T, T, A, ProviderReference, ChangeNotifierProvider<T>> {
+/// {@macro riverpod.changenotifierprovider.family}
   ChangeNotifierProviderFamily(
     T Function(ProviderReference ref, A a) create, {
     String name,

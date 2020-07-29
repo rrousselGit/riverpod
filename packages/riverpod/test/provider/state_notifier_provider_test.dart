@@ -34,8 +34,8 @@ void main() {
     final provider = StateNotifierProvider((_) => TestNotifier());
     final container = ProviderContainer(
       overrides: [
-        provider
-            .overrideWithProvider(StateNotifierProvider((_) => TestNotifier(10)))
+        provider.overrideWithProvider(
+            StateNotifierProvider((_) => TestNotifier(10)))
       ],
     );
 

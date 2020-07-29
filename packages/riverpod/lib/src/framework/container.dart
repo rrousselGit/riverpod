@@ -139,7 +139,7 @@ class ProviderContainer {
   }
 
   /// Forces a provider to re-evaluate its state immediatly, and return the created value.
-  /// 
+  ///
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
   Created refresh<Created>(ProviderBase<Created, Object> provider) {
@@ -153,7 +153,6 @@ class ProviderContainer {
       return element.state.createdValue as Created;
     }
   }
-
 
   /// Updates the list of provider overrides.
   ///
@@ -348,7 +347,6 @@ class ProviderContainer {
     }(), '');
     return res;
   }
-
 }
 
 /// An object that listens to the changes of a [ProviderContainer].

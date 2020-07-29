@@ -39,7 +39,117 @@ mixin _StreamProviderMixin<T> on ProviderBase<Stream<T>, AsyncValue<T>> {
     );
   }
 
+  /// Exposes the [Stream] created by a [StreamProvider].
+  ///
+  /// The stream obtained is not strictly identical to the stream created.
+  /// Instead, this stream is always a broadcast stream.
+  ///
+  /// The stream obtained may change over time, if the [StreamProvider] is
+  /// re-evaluted, such as when it is using [ProviderReference.watch] and the
+  /// provider listened changes, or on [ProviderContainer.refresh].
+  ///
+  /// If the [StreamProvider] was overriden using `overrideWithValue`,
+  /// a stream will be generated and manipulated based on the [AsyncValue] used.
   ProviderBase<Stream<T>, Stream<T>> get stream;
+
+  /// Exposes a [Future] which resolves with the last value or error emitted.
+  ///
+  /// This can be useful for scenarios where we want to read the current value
+  /// exposed by a [StreamProvider], but also handle the scenario were no
+  /// value were emitted yet:
+  ///
+  /// ```dart
+  /// final configsProvider = StreamProvider<Configuration>((ref) async* {
+  ///   // somehow emit a Configuration instance
+  /// });
+  ///
+  /// final productsProvider = FutureProvider<Products>((ref) async {
+  ///   // If a "Configuration" was emitted, retreive it.
+  ///   // Otherwise, wait for a Configuration to be emitted.
+  ///   final configs = await ref.watch(configsProvider.last);
+  ///
+  ///   final response = await httpClient.get('${configs.host}/products');
+  ///   return Products.fromJson(response.data);
+  /// });
+  /// ```
+  ///
+  /// ## Why not use [StreamProvider.stream.first] instead?
+  ///
+  /// If you are familiar with streams, you may wonder why not use [Stream.first]
+  /// instead:
+  /// 
+  /// ```dart
+  /// final configsProvider = StreamProvider<Configuration>((ref) {...});
+  /// 
+  /// final productsProvider = FutureProvider<Products>((ref) async {
+  ///   final configs = await ref.watch(configsProvider.stream).first;
+  ///   ...
+  /// }
+  /// ```
+  /// 
+  /// The problem with this code is, unless your [StreamProvider] is creating
+  /// a `BehaviorSubject` from `package:rxdart`, you have a bug.
+  /// 
+  /// By default, if we call [Stream.first] **after** the first value was emitted,
+  /// then the [Future] created will not obtain that first value but instead
+  /// wait for a second one – which may never come.
+  /// 
+  /// The following code desmontrate this problem:
+  /// 
+  /// ```dart
+  /// final exampleProvider = StreamProvider<int>((ref) async* {
+  ///   yield 42;
+  /// });
+  /// 
+  /// final anotherProvider = FutureProvider<void>((ref) async {
+  ///   print(await ref.watch(exampleProvider.stream).first);
+  ///   // The code will block here and wait forever
+  ///   print(await ref.watch(exampleProvider.stream).first);
+  ///   print('this code is never reached');
+  /// });
+  /// 
+  /// void main() async {
+  ///   final container = ProviderContainer();
+  ///   await container.read(anotherProvider.future);
+  ///   // never reached
+  ///   print('done');
+  /// }
+  /// ```
+  /// 
+  /// This snippet will print `42` once, then wait forever.
+  /// 
+  /// On the other hand, if we used [StreamProvider.last], our code would
+  /// correctly execute:
+  /// 
+  /// ```dart
+  /// final exampleProvider = StreamProvider<int>((ref) async* {
+  ///   yield 42;
+  /// });
+  /// 
+  /// final anotherProvider = FutureProvider<void>((ref) async {
+  ///   print(await ref.watch(exampleProvider.last));
+  ///   print(await ref.watch(exampleProvider.last));
+  ///   print('completed');
+  /// });
+  /// 
+  /// void main() async {
+  ///   final container = ProviderContainer();
+  ///   await container.read(anotherProvider.future);
+  ///   print('done');
+  /// }
+  /// ```
+  /// 
+  /// with this modification, our code will now print:
+  /// 
+  /// ```
+  /// 42
+  /// 42
+  /// completed
+  /// done
+  /// ```
+  /// 
+  /// which is the expepected behavior.
+  ProviderBase<Object, Future<T>> get last;
 }
 
 /// {@template riverpod.streamprovider}

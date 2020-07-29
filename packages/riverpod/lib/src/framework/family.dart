@@ -30,7 +30,6 @@ abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
   }
 
   /// Creates the provider for a given parameter.
-  @protected
   P create(Param value, Created Function(Ref ref, Param param) builder);
 
   /// A debug-only list of all the parameters passed to this family.
@@ -52,7 +51,7 @@ extension FamilyX<Created, Listened, Param, Ref extends ProviderReference,
         P extends ProviderBase<Created, Listened>>
     on Family<Created, Listened, Param, Ref, P> {
   /// Overrides the behavior of a family for a part of the application.
-  /// 
+  ///
   /// {@macro riverpod.overideWith}
   Override overrideWithProvider(
     Created Function(Ref ref, Param param) builderOverride,

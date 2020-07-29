@@ -4,7 +4,6 @@ import 'package:riverpod/src/internals.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
-import 'auto_dispose_test.dart';
 import 'utils.dart';
 
 class Counter extends StateNotifier<int> {

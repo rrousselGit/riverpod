@@ -21,9 +21,11 @@ class _AutoDisposeChangeNotifierProviderState<
         T extends ChangeNotifier> = ProviderStateBase<T, T>
     with _ChangeNotifierProviderStateMixin<T>;
 
+/// {@macro riverpod.changenotifierprovider.family}
 class AutoDisposeChangeNotifierProviderFamily<T extends ChangeNotifier, A>
     extends Family<T, T, A, AutoDisposeProviderReference,
         AutoDisposeChangeNotifierProvider<T>> {
+  /// {@macro riverpod.changenotifierprovider.family}
   AutoDisposeChangeNotifierProviderFamily(
     T Function(AutoDisposeProviderReference ref, A a) create, {
     String name,
