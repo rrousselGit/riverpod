@@ -50,7 +50,8 @@ class MyApp extends HookWidget {
         if (settings.name.startsWith('/characters/') && split.length == 3) {
           result = ProviderScope(
             overrides: [
-              selectedCharacterId.overrideWithProvider(Provider((ref) => split.last))
+              selectedCharacterId
+                  .overrideWithProvider(Provider((ref) => split.last))
             ],
             child: const CharacterView(),
           );

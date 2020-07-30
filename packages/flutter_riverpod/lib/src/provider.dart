@@ -74,7 +74,7 @@ extension BuildContextX on BuildContext {
   /// It does not rely on implementation details on `Model`, and it makes
   /// impossible to have a bug where our UI does not refresh.
   T read<T>(ProviderBase<Object, T> provider) {
-    return ProviderContainerScope.of(this, listen: false).read(provider);
+    return ProviderScope.containerOf(this, listen: false).read(provider);
   }
 
   /// Forces a provider to re-evaluate its state immediatly, and return the created value.
@@ -108,6 +108,6 @@ extension BuildContextX on BuildContext {
   /// }
   /// ```
   Created refresh<Created>(ProviderBase<Created, Object> provider) {
-    return ProviderContainerScope.of(this, listen: false).refresh(provider);
+    return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
 }

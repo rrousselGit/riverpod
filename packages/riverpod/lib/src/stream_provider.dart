@@ -77,37 +77,37 @@ mixin _StreamProviderMixin<T> on ProviderBase<Stream<T>, AsyncValue<T>> {
   ///
   /// If you are familiar with streams, you may wonder why not use [Stream.first]
   /// instead:
-  /// 
+  ///
   /// ```dart
   /// final configsProvider = StreamProvider<Configuration>((ref) {...});
-  /// 
+  ///
   /// final productsProvider = FutureProvider<Products>((ref) async {
   ///   final configs = await ref.watch(configsProvider.stream).first;
   ///   ...
   /// }
   /// ```
-  /// 
+  ///
   /// The problem with this code is, unless your [StreamProvider] is creating
   /// a `BehaviorSubject` from `package:rxdart`, you have a bug.
-  /// 
+  ///
   /// By default, if we call [Stream.first] **after** the first value was emitted,
   /// then the [Future] created will not obtain that first value but instead
   /// wait for a second one – which may never come.
-  /// 
+  ///
   /// The following code desmontrate this problem:
-  /// 
+  ///
   /// ```dart
   /// final exampleProvider = StreamProvider<int>((ref) async* {
   ///   yield 42;
   /// });
-  /// 
+  ///
   /// final anotherProvider = FutureProvider<void>((ref) async {
   ///   print(await ref.watch(exampleProvider.stream).first);
   ///   // The code will block here and wait forever
   ///   print(await ref.watch(exampleProvider.stream).first);
   ///   print('this code is never reached');
   /// });
-  /// 
+  ///
   /// void main() async {
   ///   final container = ProviderContainer();
   ///   await container.read(anotherProvider.future);
@@ -115,39 +115,39 @@ mixin _StreamProviderMixin<T> on ProviderBase<Stream<T>, AsyncValue<T>> {
   ///   print('done');
   /// }
   /// ```
-  /// 
+  ///
   /// This snippet will print `42` once, then wait forever.
-  /// 
+  ///
   /// On the other hand, if we used [StreamProvider.last], our code would
   /// correctly execute:
-  /// 
+  ///
   /// ```dart
   /// final exampleProvider = StreamProvider<int>((ref) async* {
   ///   yield 42;
   /// });
-  /// 
+  ///
   /// final anotherProvider = FutureProvider<void>((ref) async {
   ///   print(await ref.watch(exampleProvider.last));
   ///   print(await ref.watch(exampleProvider.last));
   ///   print('completed');
   /// });
-  /// 
+  ///
   /// void main() async {
   ///   final container = ProviderContainer();
   ///   await container.read(anotherProvider.future);
   ///   print('done');
   /// }
   /// ```
-  /// 
+  ///
   /// with this modification, our code will now print:
-  /// 
+  ///
   /// ```
   /// 42
   /// 42
   /// completed
   /// done
   /// ```
-  /// 
+  ///
   /// which is the expepected behavior.
   ProviderBase<Object, Future<T>> get last;
 }

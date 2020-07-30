@@ -71,8 +71,8 @@ final characterAtIndex =
   );
 
   return ref.watch(characterPages(meta)).whenData(
-    (value) => value.characters[offsetInPage],
-  );
+        (value) => value.characters[offsetInPage],
+      );
 });
 
 class Home extends HookWidget {
@@ -128,7 +128,8 @@ class Home extends HookWidget {
                   delegate: SliverChildBuilderDelegate((c, index) {
                     return ProviderScope(
                       overrides: [
-                        _characterIndex.overrideWithProvider(Provider((ref) => index)),
+                        _characterIndex
+                            .overrideWithProvider(Provider((ref) => index)),
                       ],
                       child: const CharacterItem(),
                     );

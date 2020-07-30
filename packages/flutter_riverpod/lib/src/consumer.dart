@@ -104,7 +104,7 @@ class _ConsumerState extends State<Consumer> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _isExternalBuild = true;
-    final newContainer = ProviderContainerScope.of(context);
+    final newContainer = ProviderScope.containerOf(context);
     if (_container != newContainer) {
       _container = newContainer;
       for (final dependency in _dependencies.values) {

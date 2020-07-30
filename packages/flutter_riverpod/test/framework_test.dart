@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:mockito/mockito.dart';
@@ -19,6 +18,25 @@ void main() {
     future = Future.value(42);
 
     await expectLater(context.refresh(provider), completion(42));
+  });
+
+  testWidgets('ProviderScope allows specifying a ProviderContainer',
+      (tester) async {
+    final provider = FutureProvider((ref) async => 42);
+    final container = ProviderContainer(overrides: [
+      provider.overrideWithValue(const AsyncValue.data(42)),
+    ]);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: Container(),
+      ),
+    );
+
+    final context = tester.element(find.byType(Container));
+
+    expect(context.read(provider), const AsyncValue.data(42));
   });
 
   testWidgets('AlwaysAliveProviderBase.read(context) inside initState',
@@ -216,7 +234,7 @@ void main() {
     expect(find.text('rootoverride root2'), findsOneWidget);
   });
 
-  testWidgets('debugFillProperties', (tester) async {
+  testWidgets('ProviderScope debugFillProperties', (tester) async {
     final unnamed = Provider((_) => 0);
     final named = StateNotifierProvider((_) => Counter(), name: 'counter');
     final scopeKey = GlobalKey();
@@ -239,11 +257,41 @@ void main() {
 
     expect(
       scopeKey.currentContext.toString(),
-      equalsIgnoringHashCodes('ProviderScope-[GlobalKey#00000]('
-          'state: ProviderScopeState#00000, '
-          'Provider<int>#00000: 0, '
-          "counter: Instance of 'Counter', "
-          'counter.state: 0)'),
+      equalsIgnoringHashCodes(
+        'ProviderScope-[GlobalKey#00000]('
+        'state: ProviderScopeState#00000, '
+        'Provider<int>#00000: 0, '
+        "counter: Instance of 'Counter', "
+        'counter.state: 0)',
+      ),
+    );
+  });
+
+  testWidgets('UncontrolledProviderScope debugFillProperties', (tester) async {
+    final unnamed = Provider((_) => 0);
+    final named = StateNotifierProvider((_) => Counter(), name: 'counter');
+    final container = ProviderContainer();
+    final scopeKey = GlobalKey();
+
+    container.read(unnamed);
+    container.read(named.state);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        key: scopeKey,
+        container: container,
+        child: Container(),
+      ),
+    );
+
+    expect(
+      scopeKey.currentContext.toString(),
+      equalsIgnoringHashCodes(
+        'UncontrolledProviderScope-[GlobalKey#00000]('
+        'Provider<int>#00000: 0, '
+        "counter: Instance of 'Counter', "
+        'counter.state: 0)',
+      ),
     );
   });
 

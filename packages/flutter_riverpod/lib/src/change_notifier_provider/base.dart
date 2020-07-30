@@ -29,7 +29,7 @@ class _ChangeNotifierProviderState<
 /// {@endtemplate}
 class ChangeNotifierProviderFamily<T extends ChangeNotifier, A>
     extends Family<T, T, A, ProviderReference, ChangeNotifierProvider<T>> {
-/// {@macro riverpod.changenotifierprovider.family}
+  /// {@macro riverpod.changenotifierprovider.family}
   ChangeNotifierProviderFamily(
     T Function(ProviderReference ref, A a) create, {
     String name,

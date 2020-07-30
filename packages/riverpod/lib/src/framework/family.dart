@@ -17,7 +17,8 @@ abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
   /// See the documentation of [Provider.family] for more informations.
   P call(Param value) {
     return _cache.putIfAbsent(value, () {
-      final provider = create(value, _builder, _name == null ? null : '$_name ($value)');
+      final provider =
+          create(value, _builder, _name == null ? null : '$_name ($value)');
       assert(
         provider._from == null,
         'The provider created already belongs to a Family',

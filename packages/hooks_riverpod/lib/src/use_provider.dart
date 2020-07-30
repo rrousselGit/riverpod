@@ -24,7 +24,7 @@ part of 'framework.dart';
 ///
 /// - [Provider]/`select`, for filtering unwanted rebuilds.
 T useProvider<T>(ProviderListenable<T> provider) {
-  final container = ProviderContainerScope.of(useContext());
+  final container = ProviderScope.containerOf(useContext());
   return use(_ProviderHook<T>(container, provider));
 }
 

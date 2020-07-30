@@ -375,9 +375,7 @@ Iterable<Object> generateAll(
     final second = permutation[1];
     final third = permutation[2];
 
-    if (first is DisposeType &&
-        second is StateType &&
-        third is ProviderType) {
+    if (first is DisposeType && second is StateType && third is ProviderType) {
       yield* generate(Tuple3(first, second, third), matrix);
     }
   }
