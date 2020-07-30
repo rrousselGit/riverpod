@@ -20,7 +20,3 @@ dev_dependencies:
   mockito: ^4.1.0
   flutter_test:
     sdk: flutter
-
-dependency_overrides:
-  riverpod:
-    path: ../../packages/riverpod
