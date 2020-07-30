@@ -38,23 +38,26 @@ final todoListFilter = StateProvider((_) => TodoListFilter.all);
 
 /// The number of uncompleted todos
 ///
-/// By using [Computed], this value is cached, making it performant.\
+/// By using [Provider], this value is cached, making it performant.\
 /// Even multiple widgets try to read the number of uncompleted todos,
 /// the value will be computed only once (until the todo-list changes).
 ///
 /// This will also optimise unneeded rebuilds if the todo-list changes, but the
 /// number of uncompleted todos doesn't (such as when editing a todo).
-final uncompletedTodosCount = Computed((watch) {
-  return watch(todoListProvider.state).where((todo) => !todo.completed).length;
+final uncompletedTodosCount = Provider((ref) {
+  return ref
+      .watch(todoListProvider.state)
+      .where((todo) => !todo.completed)
+      .length;
 });
 
 /// The list of todos after applying of [todoListFilter].
 ///
-/// This too uses [Computed], to avoid recomputing the filtered list unless either
+/// This too uses [Provider], to avoid recomputing the filtered list unless either
 /// the filter of or the todo-list updates.
-final filteredTodos = Computed((watch) {
-  final filter = watch(todoListFilter);
-  final todos = watch(todoListProvider.state);
+final filteredTodos = Provider((ref) {
+  final filter = ref.watch(todoListFilter);
+  final todos = ref.watch(todoListProvider.state);
 
   switch (filter.state) {
     case TodoListFilter.completed:
@@ -104,7 +107,7 @@ class Home extends HookWidget {
                 labelText: 'What needs to be done?',
               ),
               onSubmitted: (value) {
-                todoListProvider.read(context).add(value);
+                context.read(todoListProvider).add(value);
                 newTodoController.clear();
               },
             ),
@@ -118,7 +121,7 @@ class Home extends HookWidget {
                   Dismissible(
                     key: ValueKey(todos[i].id),
                     onDismissed: (_) {
-                      todoListProvider.read(context).remove(todos[i]);
+                      context.read(todoListProvider).remove(todos[i]);
                     },
                     child: TodoItem(todos[i]),
                   )
@@ -234,8 +237,8 @@ class TodoItem extends HookWidget {
             textEditingController.text = todo.description;
           } else {
             // Commit changes only when the textfield is unfocused, for performance
-            todoListProvider
-                .read(context)
+            context
+                .read(todoListProvider)
                 .edit(id: todo.id, description: textEditingController.text);
           }
         },
@@ -247,7 +250,7 @@ class TodoItem extends HookWidget {
           leading: Checkbox(
             value: todo.completed,
             onChanged: (value) =>
-                todoListProvider.read(context).toggle(todo.id),
+                context.read(todoListProvider).toggle(todo.id),
           ),
           title: isFocused
               ? TextField(

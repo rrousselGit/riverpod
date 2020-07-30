@@ -1,9 +1,10 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' hide describeIdentity;
 import 'package:flutter/widgets.dart';
 import 'package:riverpod/riverpod.dart';
 
-import 'internals.dart';
+import 'internals.dart' show describeIdentity;
 
+/// {@template riverpod.providerscope}
 /// A widget that stores the state of providers.
 ///
 /// All Flutter applications using Riverpod must contain a [ProviderScope] at
@@ -30,7 +31,7 @@ import 'internals.dart';
 ///       overrides: [
 ///         // override the behavior of repositoryProvider to provide a fake
 ///         // implementation for test purposes.
-///         repositoryProvider.overrideAs(
+///         repositoryProvider.overrideWithProvider(
 ///           Provider((_) => FakeRepository()),
 ///         ),
 ///       ],
@@ -56,7 +57,7 @@ import 'internals.dart';
 ///           // Overrides themeProvider for the /gallery route only
 ///           '/gallery': (_) => ProviderScope(
 ///             overrides: [
-///               themeProvider.overrideAs(
+///               themeProvider.overrideWithProvider(
 ///                 Provider((_) => MyTheme.dark()),
 ///               ),
 ///             ],
@@ -67,9 +68,14 @@ import 'internals.dart';
 ///   );
 /// }
 /// ```
+///
+/// See also:
+/// - [ProviderContainer], a Dart-only class that allows manipulating providers
+/// - [UncontrolledProviderScope], which exposes a [ProviderContainer] to the widget
+///   tree without managing its life-cycles.
+/// {@endtemplate}
 class ProviderScope extends StatefulWidget {
-  /// Enabled Riverpod for part of the application and optionally allows overriding
-  /// the behavior of a provider.
+  /// {@macro riverpod.providerscope}
   const ProviderScope({
     Key key,
     this.overrides = const [],
@@ -77,6 +83,29 @@ class ProviderScope extends StatefulWidget {
     @required this.child,
   })  : assert(child != null, 'child cannot be `null`'),
         super(key: key);
+
+  /// Read the current [ProviderContainer] for a [BuildContext].
+  static ProviderContainer containerOf(
+    BuildContext context, {
+    bool listen = true,
+  }) {
+    UncontrolledProviderScope scope;
+
+    if (listen) {
+      scope = context //
+          .dependOnInheritedWidgetOfExactType<UncontrolledProviderScope>();
+    } else {
+      scope = context
+          .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
+          .widget as UncontrolledProviderScope;
+    }
+
+    if (scope == null) {
+      throw StateError('No ProviderScope found');
+    }
+
+    return scope.container;
+  }
 
   /// The part of the widget tree that can use Riverpod and has overriden providers.
   final Widget child;
@@ -126,8 +155,8 @@ class ProviderScopeState extends State<ProviderScope> {
   void initState() {
     super.initState();
     final scope = context
-        .getElementForInheritedWidgetOfExactType<ProviderContainerScope>()
-        ?.widget as ProviderContainerScope;
+        .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
+        ?.widget as UncontrolledProviderScope;
 
     assert(() {
       _debugParentOwner = scope?.container;
@@ -161,8 +190,8 @@ class ProviderScopeState extends State<ProviderScope> {
   Widget build(BuildContext context) {
     assert(() {
       final scope = context
-          .getElementForInheritedWidgetOfExactType<ProviderContainerScope>()
-          ?.widget as ProviderContainerScope;
+          .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
+          ?.widget as UncontrolledProviderScope;
 
       if (scope?.container != _debugParentOwner) {
         throw UnsupportedError(
@@ -176,7 +205,7 @@ class ProviderScopeState extends State<ProviderScope> {
       return true;
     }(), '');
 
-    return ProviderContainerScope(
+    return UncontrolledProviderScope(
       container: container,
       child: widget.child,
     );
@@ -189,41 +218,34 @@ class ProviderScopeState extends State<ProviderScope> {
   }
 }
 
-/// An internal InheritedWidget that exposes a [ProviderContainer] to the widget tree.
-class ProviderContainerScope extends InheritedWidget {
-  /// Exposes a [ProviderContainer] to the widget tree
-  const ProviderContainerScope({
+/// {@template riverpod.UncontrolledProviderScope}
+/// Expose a [ProviderContainer] to the widget tree.
+///
+/// This is what makes `useProvider`/`Consumer`/`context.read` work.
+/// {@endtemplate}
+class UncontrolledProviderScope extends InheritedWidget {
+  /// {@macro riverpod.UncontrolledProviderScope}
+  const UncontrolledProviderScope({
     Key key,
     @required this.container,
-    Widget child,
+    @required Widget child,
   })  : assert(container != null, 'ProviderContainer cannot be null'),
         super(key: key, child: child);
 
-  /// Read the current [ProviderContainer] for a [BuildContext].
-  static ProviderContainer of(BuildContext context, {bool listen = true}) {
-    ProviderContainerScope scope;
-
-    if (listen) {
-      scope = context //
-          .dependOnInheritedWidgetOfExactType<ProviderContainerScope>();
-    } else {
-      scope = context
-          .getElementForInheritedWidgetOfExactType<ProviderContainerScope>()
-          .widget as ProviderContainerScope;
-    }
-
-    if (scope == null) {
-      throw StateError('No ProviderScope found');
-    }
-
-    return scope.container;
-  }
-
-  /// The [ProviderContainer] exposes to the widget tree.
+  /// The [ProviderContainer] exposed to the widget tree.
   final ProviderContainer container;
 
   @override
-  bool updateShouldNotify(ProviderContainerScope oldWidget) {
+  bool updateShouldNotify(UncontrolledProviderScope oldWidget) {
     return container != oldWidget.container;
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    for (final entry in container.debugProviderValues.entries) {
+      final name = entry.key.name ?? describeIdentity(entry.key);
+      properties.add(DiagnosticsProperty(name, entry.value));
+    }
   }
 }

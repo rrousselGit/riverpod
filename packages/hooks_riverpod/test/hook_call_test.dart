@@ -32,12 +32,13 @@ void main() {
     notifier.count++;
     await tester.pump();
   });
+
   testWidgets('relocating consumer with GlobalKey', (tester) async {
     final notifier = TestNotifier();
     final notifier2 = TestNotifier()..count = 42;
 
     final provider = ChangeNotifierProvider((_) => notifier);
-    final provider2 = provider.overrideAs(
+    final provider2 = provider.overrideWithProvider(
       ChangeNotifierProvider((_) => notifier2),
     );
 

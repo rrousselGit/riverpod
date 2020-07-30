@@ -215,7 +215,7 @@ testWidgets('override repositoryProvider', (tester) async {
       overrides: [
         // Override the behavior of repositoryProvider to return
         // FakeRepository instead of Repository.
-        repositoryProvider.overrideAs(Provider((ref) => FakeRepository()))
+        repositoryProvider.overrideWithProvider(Provider((ref) => FakeRepository()))
         // We do not have to override `todoListProvider`, it will automatically
         // use the overriden repositoryProvider
       ],
@@ -234,7 +234,7 @@ test('override repositoryProvider', () async {
     overrides: [
       // Override the behavior of repositoryProvider to return
       // FakeRepository instead of Repository.
-      repositoryProvider.overrideAs(Provider((ref) => FakeRepository()))
+      repositoryProvider.overrideWithProvider(Provider((ref) => FakeRepository()))
       // We do not have to override `todoListProvider`, it will automatically
       // use the overriden repositoryProvider
     ],
@@ -343,7 +343,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          repositoryProvider.overrideAs(Provider((ref) => FakeRepository()))
+          repositoryProvider.overrideWithProvider(Provider((ref) => FakeRepository()))
         ],
         // Our application, which will read from todoListProvider to display the todo-list.
         // You may extract this into a MyApp widget

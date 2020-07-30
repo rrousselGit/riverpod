@@ -5,13 +5,15 @@ import 'package:test/test.dart';
 
 import 'package:riverpod/src/internals.dart' as internals;
 
+import '../utils.dart';
+
 void main() {
   test('StateNotifierFamily override', () async {
     final notifier2 = TestNotifier(42);
     final provider = StateNotifierProvider.autoDispose
         .family<TestNotifier, int>((ref, a) => TestNotifier());
     final container = ProviderContainer(
-      overrides: [provider.overrideAs((ref, a) => notifier2)],
+      overrides: [provider.overrideWithProvider((ref, a) => notifier2)],
     );
     final ownerStateListener = Listener<int>();
     final ownerNotifierListener = Listener<TestNotifier>();
@@ -41,6 +43,7 @@ void main() {
 
     expect(notifier2.mounted, false);
   });
+
   test('can be assigned to Provider.autoDispose', () {
     // ignore: unused_local_variable
     final internals.AutoDisposeProvider<TestNotifier> provider =
@@ -54,7 +57,7 @@ void main() {
     final notifier = TestNotifier(42);
     final container = ProviderContainer(
       overrides: [
-        provider.overrideAs(
+        provider.overrideWithProvider(
           StateNotifierProvider.autoDispose((_) => TestNotifier(10)),
         )
       ],
@@ -64,7 +67,8 @@ void main() {
 
     // does not crash
     container.updateOverrides([
-      provider.overrideAs(StateNotifierProvider.autoDispose((_) => notifier)),
+      provider.overrideWithProvider(
+          StateNotifierProvider.autoDispose((_) => notifier)),
     ]);
 
     provider.watchOwner(container, notifierListener);
@@ -81,6 +85,7 @@ void main() {
     verifyNoMoreInteractions(notifierListener);
     verifyNoMoreInteractions(stateListener);
   });
+
   test('can specify name', () {
     final provider = StateNotifierProvider.autoDispose(
       (_) => TestNotifier(),
@@ -95,6 +100,7 @@ void main() {
     expect(provider2.name, isNull);
     expect(provider2.state.name, isNull);
   });
+
   test('disposes the notifier when provider is unmounted', () {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider.autoDispose<TestNotifier>((_) {
@@ -130,7 +136,7 @@ void main() {
     notifier.increment();
 
     verifyNoMoreInteractions(listener);
-    sub.flush();
+    sub.read();
 
     verifyNoMoreInteractions(listener);
 
@@ -139,6 +145,7 @@ void main() {
 
     verifyNoMoreInteractions(listener);
   });
+
   test('provider subscribe callback never called', () async {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider.autoDispose<TestNotifier>((_) {
@@ -158,7 +165,7 @@ void main() {
     notifier.increment();
 
     verifyNoMoreInteractions(listener);
-    sub.flush();
+    sub.read();
     verify(listener(1)).called(1);
     verifyNoMoreInteractions(listener);
 

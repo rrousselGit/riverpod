@@ -15,6 +15,7 @@ void main() {
       StreamProvider.family.autoDispose,
     );
   });
+
   test('FutureProvider', () {
     final futureProviderBuilder = FutureProviderBuilder();
     FutureProviderFamilyBuilder();
@@ -46,6 +47,7 @@ void main() {
       isA<FutureProvider<int>>().having((s) => s.name, 'name', 'foo'),
     );
   });
+
   test('StreamProvider', () {
     final streamProviderBuilder = StreamProviderBuilder();
     StreamProviderFamilyBuilder();
@@ -77,6 +79,7 @@ void main() {
       isA<StreamProvider<int>>().having((s) => s.name, 'name', 'foo'),
     );
   });
+
   test('StateNotifierProvider', () {
     final stateNotifierProviderBuilder = StateNotifierProviderBuilder();
     StateNotifierProviderFamilyBuilder();
@@ -109,6 +112,7 @@ void main() {
           .having((s) => s.name, 'name', 'foo'),
     );
   });
+
   test('Provider', () {
     final providerBuilder = ProviderBuilder();
     ProviderFamilyBuilder();
@@ -141,6 +145,7 @@ void main() {
           .having((s) => s.name, 'name', 'foo'),
     );
   });
+
   test('StateProvider', () {
     final stateProviderBuilder = StateProviderBuilder();
     StateProviderFamilyBuilder();

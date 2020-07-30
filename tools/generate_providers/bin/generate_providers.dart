@@ -375,10 +375,7 @@ Iterable<Object> generateAll(
     final second = permutation[1];
     final third = permutation[2];
 
-    if (first is DisposeType &&
-        second is StateType &&
-        third is ProviderType &&
-        (first == DisposeType.none || second != StateType.state)) {
+    if (first is DisposeType && second is StateType && third is ProviderType) {
       yield* generate(Tuple3(first, second, third), matrix);
     }
   }
@@ -477,7 +474,7 @@ ${familyDoc().replaceAll('///', '  ///')}
     ${configs.createType} Function(${configs.ref} ref, Value value) create, {
     String name,
   }) {
-    return ${configs.providerName}(create);
+    return ${configs.providerName}(create, name: name);
   }
 ${configs.links(matrix)}
 }

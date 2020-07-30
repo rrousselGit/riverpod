@@ -13,9 +13,9 @@ void main() {
     final notifier = Counter();
     final provider = StateNotifierProvider((_) => notifier);
     var callCount = 0;
-    final computed = Computed((watch) {
+    final computed = Provider((ref) {
       callCount++;
-      return watch(provider.state);
+      return ref.watch(provider.state);
     });
 
     await tester.pumpWidget(
@@ -42,6 +42,7 @@ void main() {
     expect(find.text('1 1'), findsOneWidget);
     expect(callCount, 2);
   });
+
   testWidgets('AlwaysAliveProviderBase.read(context) inside initState',
       (tester) async {
     final provider = Provider((_) => 42);
@@ -50,112 +51,18 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: InitState(
-          initState: (context) => result = provider.read(context),
+          initState: (context) => result = context.read(provider),
         ),
       ),
     );
 
     expect(result, 42);
   });
-  testWidgets('AlwaysAliveProviderBase.read(context) inside build',
-      (tester) async {
-    final provider = Provider((_) => 42);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        child: Builder(
-          builder: (context) {
-            provider.read(context);
-            return Container();
-          },
-        ),
-      ),
-    );
-
-    expect(tester.takeException(), isUnsupportedError);
-  });
-  testWidgets('adding overrides throws', (tester) async {
-    final provider = Provider((_) => 0);
-
-    await tester.pumpWidget(ProviderScope(child: Container()));
-
-    expect(tester.takeException(), isNull);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          provider.overrideAs(Provider((_) => 1)),
-        ],
-        child: Container(),
-      ),
-    );
-
-    expect(
-      tester.takeException(),
-      isUnsupportedError.having((s) => s.message, 'message',
-          'Adding or removing provider overrides is not supported'),
-    );
-  });
-  testWidgets('removing overrides throws', (tester) async {
-    final provider = Provider((_) => 0);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          provider.overrideAs(Provider((_) => 1)),
-        ],
-        child: Container(),
-      ),
-    );
-
-    expect(tester.takeException(), isNull);
-
-    await tester.pumpWidget(ProviderScope(child: Container()));
-
-    expect(
-      tester.takeException(),
-      isUnsupportedError.having((s) => s.message, 'message',
-          'Adding or removing provider overrides is not supported'),
-    );
-  });
-
-  testWidgets('overrive origin mismatch throws', (tester) async {
-    final provider = Provider((_) => 0);
-    final provider2 = Provider((_) => 0);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          provider.overrideAs(Provider((_) => 1)),
-        ],
-        child: Container(),
-      ),
-    );
-
-    expect(tester.takeException(), isNull);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          provider2.overrideAs(Provider((_) => 1)),
-        ],
-        child: Container(),
-      ),
-    );
-
-    expect(
-      tester.takeException(),
-      isUnsupportedError.having(
-        (s) => s.message,
-        'message',
-        'The provider overriden at the index 0 changed, which is unsupported.',
-      ),
-    );
-  });
 
   test('ProviderScope requires a child', () {
     expect(() => ProviderScope(child: null), throwsAssertionError);
   });
+
   testWidgets('throws if no ProviderScope found', (tester) async {
     final provider = Provider((_) => 'foo');
 
@@ -205,7 +112,7 @@ void main() {
       ProviderScope(
         key: UniqueKey(),
         overrides: [
-          provider.overrideAs(Provider((_) => 'override')),
+          provider.overrideWithProvider(Provider((_) => 'override')),
         ],
         child: builder,
       ),

@@ -62,7 +62,7 @@ class MyHomePage extends HookWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => counterProvider.read(context).increment(),
+        onPressed: () => context.read(counterProvider).increment(),
         child: const Icon(Icons.add),
       ),
     );

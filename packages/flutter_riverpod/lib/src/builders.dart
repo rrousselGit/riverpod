@@ -264,7 +264,7 @@ class ChangeNotifierProviderFamilyBuilder {
     T Function(ProviderReference ref, Value value) create, {
     String name,
   }) {
-    return ChangeNotifierProviderFamily(create);
+    return ChangeNotifierProviderFamily(create, name: name);
   }
 
   /// {@macro riverpod.autoDispose}
@@ -303,6 +303,6 @@ class AutoDisposeChangeNotifierProviderFamilyBuilder {
     T Function(AutoDisposeProviderReference ref, Value value) create, {
     String name,
   }) {
-    return AutoDisposeChangeNotifierProviderFamily(create);
+    return AutoDisposeChangeNotifierProviderFamily(create, name: name);
   }
 }

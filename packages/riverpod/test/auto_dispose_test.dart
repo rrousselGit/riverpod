@@ -2,6 +2,8 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
+import 'utils.dart';
+
 void main() {
   test(
       'after a state is destroyed, Owner.traverse states does not visit the state',
@@ -9,12 +11,14 @@ void main() {
     final provider = Provider.autoDispose((ref) {});
     final container = ProviderContainer();
 
-    provider.watchOwner(container, (value) {})();
+    final sub = container.listen(provider);
+    sub.close();
 
     await idle();
 
-    expect(container.debugProviderStates, <ProviderState>[]);
+    expect(container.debugProviderStates, <ProviderElement>[]);
   });
+
   test('setting maintainState to false destroys the state when not listener',
       () async {
     final onDispose = OnDisposeMock();
@@ -41,6 +45,7 @@ void main() {
     verify(onDispose()).called(1);
     verifyNoMoreInteractions(onDispose);
   });
+
   test("maintainState to true don't dispose the state when no-longer listened",
       () async {
     var value = 42;
@@ -67,6 +72,7 @@ void main() {
     verify(listener(42)).called(1);
     verifyNoMoreInteractions(listener);
   });
+
   test('maintainState defaults to false', () {
     bool maintainState;
     final provider = Provider.autoDispose((ref) {
@@ -78,21 +84,6 @@ void main() {
     provider.watchOwner(container, (value) {});
 
     expect(maintainState, false);
-  });
-  test('overridable provider can be overriden by anything', () {
-    final provider = Provider.autoDispose((_) => 42);
-    final ProviderBase<ProviderDependency<int>, int> override = Provider((_) {
-      return 21;
-    });
-    final container = ProviderContainer(overrides: [
-      provider.overrideAs(override),
-    ]);
-    final listener = Listener();
-
-    provider.watchOwner(container, listener);
-
-    verify(listener(21)).called(1);
-    verifyNoMoreInteractions(listener);
   });
 
   test('unsub to A then make B sub to A then unsub to B disposes B before A',
@@ -106,7 +97,7 @@ void main() {
     final bDispose = OnDisposeMock();
     final b = Provider.autoDispose((ref) {
       ref.onDispose(bDispose);
-      ref.dependOn(a);
+      ref.watch(a);
       return '42';
     });
 
@@ -140,7 +131,7 @@ void main() {
     final onDispose2 = OnDisposeMock();
     final provider2 = Provider.autoDispose((ref) {
       ref.onDispose(onDispose2);
-      return ref.dependOn(provider).value;
+      return ref.watch(provider);
     });
     final listener = Listener();
 
@@ -175,6 +166,7 @@ void main() {
     verifyNoMoreInteractions(onDispose);
     verifyNoMoreInteractions(onDispose2);
   });
+
   test("auto dispose A then auto dispose B doesn't dispose A again", () async {
     final container = ProviderContainer();
     final aDispose = OnDisposeMock();
@@ -251,6 +243,7 @@ void main() {
 
     verifyNoMoreInteractions(onDispose);
   });
+
   test('unsub no-op if another sub is added before event-loop', () async {
     final container = ProviderContainer();
     final onDispose = OnDisposeMock();
@@ -278,6 +271,7 @@ void main() {
     verify(onDispose()).called(1);
     verifyNoMoreInteractions(onDispose);
   });
+
   test('no-op if when removing listener if there is still a listener',
       () async {
     final container = ProviderContainer();
@@ -303,6 +297,7 @@ void main() {
     verify(onDispose()).called(1);
     verifyNoMoreInteractions(onDispose);
   });
+
   test('unmount on removing watchOwner', () async {
     final container = ProviderContainer();
     final onDispose = OnDisposeMock();
@@ -320,8 +315,8 @@ void main() {
     expect(
       container.debugProviderStates,
       unorderedMatches(<Matcher>[
-        isA<ProviderState<int>>(),
-        isA<AutoDisposeProviderState<int>>(),
+        isA<ProviderElement<Object, int>>(),
+        isA<AutoDisposeProviderElement<Object, int>>(),
       ]),
     );
     verify(listener(42)).called(1);
@@ -338,7 +333,8 @@ void main() {
     verify(onDispose()).called(1);
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(onDispose);
-    expect(container.debugProviderStates, [isA<ProviderState<int>>()]);
+    expect(
+        container.debugProviderStates, [isA<ProviderElement<Object, int>>()]);
 
     value = 21;
     removeListener = provider.watchOwner(container, listener);
@@ -349,23 +345,23 @@ void main() {
     expect(
       container.debugProviderStates,
       unorderedMatches(<Matcher>[
-        isA<ProviderState<int>>(),
-        isA<AutoDisposeProviderState<int>>(),
+        isA<ProviderElement<Object, int>>(),
+        isA<AutoDisposeProviderElement<Object, int>>(),
       ]),
     );
   });
-  test('unmount on removing ref.read', () async {
+
+  test('Do not dispose twice when ProviderContainer is disposed first',
+      () async {
     final onDispose = OnDisposeMock();
-    final unrelated = Provider((_) => 42);
     final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose);
       return 42;
     });
-    final dependent = Provider((ref) => ref.dependOn(provider).value);
     final container = ProviderContainer();
 
-    expect(container.read(unrelated), 42);
-    expect(container.ref.dependOn(dependent).value, 42);
+    final sub = container.listen(provider);
+    sub.close();
 
     container.dispose();
 

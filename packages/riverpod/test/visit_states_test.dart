@@ -12,11 +12,11 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.dependOn(a);
+      ref.read(a);
       return B();
     });
     final c = Provider<C>((ref) {
-      ref.dependOn(b);
+      ref.read(b);
       return C();
     });
 
@@ -36,16 +36,16 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.dependOn(a);
+      ref.read(a);
       return B();
     });
     final c = Provider<C>((ref) {
-      ref.dependOn(a);
+      ref.read(a);
       return C();
     });
 
     final d = Provider<D>((ref) {
-      ref..dependOn(b)..dependOn(c);
+      ref..read(b)..read(c);
       return D();
     });
 
@@ -82,30 +82,30 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.dependOn(a);
+      ref.read(a);
       return B();
     });
 
     final e = Provider<E>((ref) {
-      ref.dependOn(b);
+      ref.read(b);
       return E();
     });
     final d = Provider<D>((ref) {
-      ref..dependOn(b)..dependOn(e);
+      ref..read(b)..read(e);
       return D();
     });
 
     final c = Provider<C>((ref) {
-      ref..dependOn(a)..dependOn(b);
+      ref..read(a)..read(b);
       return C();
     });
 
     final f = Provider<F>((ref) {
-      ref..dependOn(c)..dependOn(e);
+      ref..read(c)..read(e);
       return F();
     });
     final g = Provider<G>((ref) {
-      ref..dependOn(c)..dependOn(f);
+      ref..read(c)..read(f);
       return G();
     });
 
@@ -138,16 +138,16 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.dependOn(a);
+      ref.read(a);
       return B();
     });
     final c = Provider<C>((ref) {
-      ref..dependOn(a)..dependOn(b);
+      ref..read(a)..read(b);
       return C();
     });
 
     final d = Provider<D>((ref) {
-      ref..dependOn(b)..dependOn(c);
+      ref..read(b)..read(c);
       return D();
     });
 
@@ -172,16 +172,16 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.dependOn(a);
+      ref.read(a);
       return B();
     });
     final c = Provider<C>((ref) {
-      ref.dependOn(b);
+      ref.read(b);
       return C();
     });
 
     final d = Provider<D>((ref) {
-      ref..dependOn(b)..dependOn(c);
+      ref..read(b)..read(c);
       return D();
     });
 
@@ -206,21 +206,21 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.dependOn(a);
+      ref.read(a);
       return B();
     });
     final c = Provider<C>((ref) {
-      ref.dependOn(a);
+      ref.read(a);
       return C();
     });
 
     final d = Provider<D>((ref) {
-      ref.dependOn(b);
+      ref.read(b);
       return D();
     });
 
     final e = Provider<E>((ref) {
-      ref..dependOn(d)..dependOn(c);
+      ref..read(d)..read(c);
       return E();
     });
 

@@ -1,9 +1,10 @@
 import 'package:state_notifier/state_notifier.dart';
 
 import 'builders.dart';
-import 'common.dart';
-import 'framework/framework.dart';
-import 'provider/provider.dart';
+import 'framework.dart';
+
+part 'state_provider/base.dart';
+part 'state_provider/auto_dispose.dart';
 
 /// A [StateNotifier] that allows modifying its [state] from outside.
 ///
@@ -20,10 +21,11 @@ class StateController<T> extends StateNotifier<T> {
   set state(T value) => super.state = value;
 }
 
+/// {@template riverpod.stateprovider}
 /// A provider that expose a value which can be modified from outside.
 ///
 /// It can be useful for very simple states, like a filter or the currently
-/// selected item – which can then be combined with [Computed] or accessed
+/// selected item – which can then be combined with other providers or accessed
 /// in multiple screens.
 ///
 /// The following code shows a list of products, and allows selecting
@@ -51,65 +53,28 @@ class StateController<T> extends StateNotifier<T> {
 ///   );
 /// }
 /// ```
-class StateProvider<T> extends AlwaysAliveProviderBase<
-    ProviderDependency<StateController<T>>, StateController<T>> {
-  /// Creates the initial value
-  StateProvider(this._create, {String name}) : super(name);
-
-  /// {@macro riverpod.family}
-  static const family = StateProviderFamilyBuilder();
-
-  final Create<T, ProviderReference> _create;
+/// {@endtemplate}
+mixin _StateProviderStateMixin<T>
+    on ProviderStateBase<StateController<T>, StateController<T>> {
+  void Function() removeListener;
 
   @override
-  _ProviderState<T> createState() => _ProviderState();
-}
+  void valueChanged({StateController previous}) {
+    if (createdValue == previous) {
+      return;
+    }
 
-class _ProviderState<T> extends ProviderStateBase<
-    ProviderDependency<StateController<T>>,
-    StateController<T>,
-    StateProvider<T>> {
-  @override
-  StateController<T> state;
-  VoidCallback _removeListener;
-
-  @override
-  void initState() {
-    // ignore: invalid_use_of_visible_for_testing_member
-    state = StateController(provider._create(ProviderReference(this)));
-    _removeListener = state.addListener((_) => markMayHaveChanged());
-  }
-
-  @override
-  ProviderDependency<StateController<T>> createProviderDependency() {
-    return ProviderDependencyImpl(state);
+    removeListener?.call();
+    exposedValue?.dispose();
+    removeListener = createdValue.addListener((state) {
+      exposedValue = createdValue;
+    });
   }
 
   @override
   void dispose() {
-    _removeListener();
-    state.dispose();
+    removeListener?.call();
+    exposedValue.dispose();
     super.dispose();
-  }
-}
-
-/// Creates a [StateProvider] from external parameters.
-///
-/// See also:
-///
-/// - [ProviderFamily], which contains an explanation of what a *Family is.
-class StateProviderFamily<Result, A> extends Family<StateProvider<Result>, A> {
-  /// Creates a [StateProvider] from external parameters.
-  StateProviderFamily(Result Function(ProviderReference ref, A a) create)
-      : super((a) => StateProvider((ref) => create(ref, a)));
-
-  /// Overrides the behavior of a family for a part of the application.
-  Override overrideAs(
-    Result Function(ProviderReference ref, A value) override,
-  ) {
-    return FamilyOverride(
-      this,
-      (value) => StateProvider<Result>((ref) => override(ref, value as A)),
-    );
   }
 }

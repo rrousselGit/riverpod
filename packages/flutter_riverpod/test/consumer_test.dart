@@ -43,8 +43,8 @@ void main() {
     });
 
     expect(buildCount, 1);
-    expect(familyState0.$hasListeners, true);
-    expect(familyState1.$hasListeners, false);
+    expect(familyState0.hasListeners, true);
+    expect(familyState1.hasListeners, false);
     expect(find.text('0 0'), findsOneWidget);
 
     notifier0.increment();
@@ -64,8 +64,8 @@ void main() {
 
     expect(buildCount, 3);
     expect(find.text('1 43'), findsOneWidget);
-    expect(familyState1.$hasListeners, true);
-    expect(familyState0.$hasListeners, true);
+    expect(familyState1.hasListeners, true);
+    expect(familyState0.hasListeners, true);
 
     notifier1.increment();
     await tester.pump();
@@ -79,6 +79,7 @@ void main() {
     expect(buildCount, 5);
     expect(find.text('2 44'), findsOneWidget);
   });
+
   testWidgets(
       'Stops listening to a provider when recomputed but no longer using it',
       (tester) async {
@@ -115,8 +116,8 @@ void main() {
     });
 
     expect(buildCount, 1);
-    expect(familyState0.$hasListeners, true);
-    expect(familyState1.$hasListeners, false);
+    expect(familyState0.hasListeners, true);
+    expect(familyState1.hasListeners, false);
     expect(find.text('0'), findsOneWidget);
 
     notifier0.increment();
@@ -136,8 +137,8 @@ void main() {
 
     expect(buildCount, 3);
     expect(find.text('43'), findsOneWidget);
-    expect(familyState1.$hasListeners, true);
-    expect(familyState0.$hasListeners, false);
+    expect(familyState1.hasListeners, true);
+    expect(familyState0.hasListeners, false);
 
     notifier1.increment();
     await tester.pump();
@@ -150,6 +151,7 @@ void main() {
 
     expect(buildCount, 4);
   });
+
   testWidgets('Consumer supports changing the provider', (tester) async {
     final notifier1 = TestNotifier();
     final provider1 = StateNotifierProvider((_) => notifier1);
@@ -189,15 +191,16 @@ void main() {
     expect(find.text('43'), findsOneWidget);
     expect(buildCount, 3);
   });
+
   testWidgets(
       'mutliple watch, when one of them forces rebuild, all dependencies are still flushed',
       (tester) async {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider((_) => notifier);
     var callCount = 0;
-    final computed = Computed((watch) {
+    final computed = Provider((ref) {
       callCount++;
-      return watch(provider.state);
+      return ref.watch(provider.state);
     });
 
     await tester.pumpWidget(
@@ -222,11 +225,12 @@ void main() {
     expect(find.text('1 1'), findsOneWidget);
     expect(callCount, 2);
   });
-  testWidgets("don't rebuild if Computed didn't actually change",
+
+  testWidgets("don't rebuild if Provider ref't actually change",
       (tester) async {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider((_) => notifier);
-    final computed = Computed((watch) => !watch(provider.state).isNegative);
+    final computed = Provider((ref) => !ref.watch(provider.state).isNegative);
     var buildCount = 0;
 
     await tester.pumpWidget(
@@ -287,7 +291,7 @@ void main() {
           ProviderScope(
             key: secondOwnerKey,
             overrides: [
-              provider.overrideAs(override),
+              provider.overrideWithProvider(override),
             ],
             child: Container(),
           ),
@@ -302,7 +306,7 @@ void main() {
     final state1 = owner1.debugProviderStates
         .firstWhere((s) => s.provider == provider.state);
 
-    expect(state1.$hasListeners, true);
+    expect(state1.hasListeners, true);
     expect(find.text('0'), findsOneWidget);
 
     await tester.pumpWidget(
@@ -315,7 +319,7 @@ void main() {
           ProviderScope(
             key: secondOwnerKey,
             overrides: [
-              provider.overrideAs(override),
+              provider.overrideWithProvider(override),
             ],
             child: consumer,
           ),
@@ -332,17 +336,18 @@ void main() {
 
     expect(find.text('0'), findsNothing);
     expect(find.text('42'), findsOneWidget);
-    expect(state1.$hasListeners, false);
-    expect(state2.$hasListeners, true);
+    expect(state1.hasListeners, false);
+    expect(state2.hasListeners, true);
 
     notifier2.increment();
     await tester.pump();
 
     expect(find.text('0'), findsNothing);
     expect(find.text('43'), findsOneWidget);
-    expect(state1.$hasListeners, false);
-    expect(state2.$hasListeners, true);
+    expect(state1.hasListeners, false);
+    expect(state2.hasListeners, true);
   });
+
   testWidgets('remove listener when destroying the consumer', (tester) async {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider((_) => notifier);
@@ -363,7 +368,7 @@ void main() {
     final state = container.debugProviderStates
         .firstWhere((s) => s.provider == provider.state);
 
-    expect(state.$hasListeners, true);
+    expect(state.hasListeners, true);
     expect(find.text('0'), findsOneWidget);
 
     await tester.pumpWidget(
@@ -372,7 +377,7 @@ void main() {
       ),
     );
 
-    expect(state.$hasListeners, false);
+    expect(state.hasListeners, false);
   });
 
   testWidgets('Multiple providers', (tester) async {

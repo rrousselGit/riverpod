@@ -18,18 +18,19 @@ void main() {
 
     Builder(builder: (context) {
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      int providerValue = provider.read(context);
+      int providerValue = context.read(provider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      AsyncValue<int> futureProviderValue = futureProvider.read(context);
+      AsyncValue<int> futureProviderValue = context.read(futureProvider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      AsyncValue<int> streamProviderValue = streamProvider.read(context);
+      AsyncValue<int> streamProviderValue = context.read(streamProvider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
       ValueNotifier<int> changeNotifierProviderValue =
-          changeNotifierProvider.read(context);
+          context.read(changeNotifierProvider);
 
       return Container();
     });
   });
+
   testWidgets('mounted', (tester) async {
     ProviderReference providerState;
     bool mountedOnDispose;
@@ -164,7 +165,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAs(
+          provider.overrideWithProvider(
             Provider((ref) {
               assert(ref != null, '');
               callCount++;
@@ -182,7 +183,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAs(
+          provider.overrideWithProvider(
             Provider((ref) {
               assert(ref != null, '');
               callCount++;
@@ -197,6 +198,7 @@ void main() {
     expect(callCount, 1);
     expect(find.text('42'), findsOneWidget);
   });
+
   testWidgets('provider1 as override of normal provider', (tester) async {
     final provider = Provider((_) => 42);
     final provider2 = Provider((_) => 42);
@@ -204,10 +206,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider2.overrideAs(
+          provider2.overrideWithProvider(
             Provider<int>((ref) {
-              final other = ref.dependOn(provider);
-              return other.value * 2;
+              return ref.watch(provider) * 2;
             }),
           ),
         ],
@@ -228,14 +229,13 @@ void main() {
     final provider = Provider((_) => 0);
 
     final provider1 = Provider((ref) {
-      final other = ref.dependOn(provider);
-      return other.value.toString();
+      return ref.watch(provider).toString();
     });
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAs(Provider((_) => 1)),
+          provider.overrideWithProvider(Provider((_) => 1)),
         ],
         child: Consumer((c, watch) {
           return Text(watch(provider1), textDirection: TextDirection.ltr);
@@ -246,19 +246,17 @@ void main() {
     expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
   });
+
   testWidgets('provider1 chain', (tester) async {
     final first = Provider((_) => 1);
     final second = Provider<int>((ref) {
-      final other = ref.dependOn(first);
-      return other.value + 1;
+      return ref.watch(first) + 1;
     });
     final third = Provider<int>((ref) {
-      final other = ref.dependOn(second);
-      return other.value + 1;
+      return ref.watch(second) + 1;
     });
     final forth = Provider<int>((ref) {
-      final other = ref.dependOn(third);
-      return other.value + 1;
+      return ref.watch(third) + 1;
     });
 
     await tester.pumpWidget(
@@ -274,25 +272,23 @@ void main() {
 
     expect(find.text('4'), findsOneWidget);
   });
+
   testWidgets('overriden provider1 chain', (tester) async {
     final first = Provider((_) => 1);
     final second = Provider<int>((ref) {
-      final other = ref.dependOn(first);
-      return other.value + 1;
+      return ref.watch(first) + 1;
     });
     final third = Provider<int>((ref) {
-      final other = ref.dependOn(second);
-      return other.value + 1;
+      return ref.watch(second) + 1;
     });
     final forth = Provider<int>((ref) {
-      final other = ref.dependOn(third);
-      return other.value + 1;
+      return ref.watch(third) + 1;
     });
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          first.overrideAs(Provider((_) => 42)),
+          first.overrideWithProvider(Provider((_) => 42)),
         ],
         child: Consumer((c, watch) {
           return Text(
@@ -305,25 +301,23 @@ void main() {
 
     expect(find.text('45'), findsOneWidget);
   });
+
   testWidgets('partial override provider1 chain', (tester) async {
     final first = Provider((_) => 1);
     final second = Provider<int>((ref) {
-      final other = ref.dependOn(first);
-      return other.value + 1;
+      return ref.watch(first) + 1;
     });
     final third = Provider<int>((ref) {
-      final other = ref.dependOn(second);
-      return other.value + 1;
+      return ref.watch(second) + 1;
     });
     final forth = Provider<int>((ref) {
-      final other = ref.dependOn(third);
-      return other.value + 1;
+      return ref.watch(third) + 1;
     });
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          second.overrideAs(Provider((_) => 0)),
+          second.overrideWithProvider(Provider((_) => 0)),
         ],
         child: Consumer((c, watch) {
           return Text(
@@ -336,19 +330,18 @@ void main() {
 
     expect(find.text('2'), findsOneWidget);
   });
+
   testWidgets('ProviderBuilder1', (tester) async {
     final provider = Provider((_) => 42);
 
     // These check the type safety
     ProviderReference ref;
-    ProviderDependency<int> firstState;
 
     // ignore: omit_local_variable_types
     final Provider<int> provider1 = Provider<int>((r) {
-      final first = r.dependOn(provider);
+      final first = r.watch(provider);
       ref = r;
-      firstState = first;
-      return first.value * 2;
+      return first * 2;
     });
 
     await tester.pumpWidget(
@@ -363,7 +356,6 @@ void main() {
     );
 
     expect(ref, isNotNull);
-    expect(firstState, isNotNull);
     expect(find.text('84'), findsOneWidget);
   });
 }

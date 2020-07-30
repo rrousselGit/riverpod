@@ -37,7 +37,7 @@ class Home extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         // The read method is an utility to read a provider without listening to it
-        onPressed: () => counterProvider.read(context).state++,
+        onPressed: () => context.read(counterProvider).state++,
         child: const Icon(Icons.add),
       ),
     );

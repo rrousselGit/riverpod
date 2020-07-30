@@ -85,6 +85,7 @@ void main() {
     expect(find.text('2 items left'), findsOneWidget);
     expect(find.text('3 items left'), findsNothing);
   });
+
   testWidgets('Editing the todo on unfocus', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
@@ -112,6 +113,7 @@ void main() {
       findsOneWidget,
     );
   });
+
   testWidgets('Editing the todo on done', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
@@ -139,6 +141,7 @@ void main() {
       findsOneWidget,
     );
   });
+
   testWidgets('Dismissing the todo', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
@@ -169,6 +172,7 @@ void main() {
     expect(secondItem, findsOneWidget);
     expect(thirdItem, findsOneWidget);
   });
+
   testWidgets('The input allows adding todos', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
