@@ -1,7 +1,7 @@
 name: flutter_riverpod
 description: >
   A simple way to access state from anywhere in your application
-  while robust and being testable.
+  while robust and testable.
 version: 0.6.0-dev
 homepage: https://riverpod.dev
 
