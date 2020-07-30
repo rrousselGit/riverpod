@@ -100,7 +100,7 @@ Consumer((context, watch) {
 ```
 
 :::caution
-The `watch` method passed as argument of [Consumer] cannot be called asynchrously,
+The `read` method passed as argument of [Consumer] cannot be called asynchronously,
 like inside `onPressed` or a [RaisedButton].
 
 If you need to read a provider in response to a user event, see [myProvider.read(BuildContext)](#myproviderreadbuildcontext)
