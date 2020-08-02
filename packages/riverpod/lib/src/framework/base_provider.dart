@@ -16,7 +16,7 @@ part of '../framework.dart';
 typedef Create<T, Ref extends ProviderReference> = T Function(Ref ref);
 
 /// A function that reads the state of a provider.
-typedef Reader = T Function<T>(ProviderBase<Object, T> provider);
+typedef Reader = T Function<T>(RootProvider<Object, T> provider);
 
 // Copied from Flutter
 /// Returns a summary of the runtime type and hash code of `object`.
@@ -51,7 +51,7 @@ abstract class ProviderListenable<Listened> {}
 /// This is the default base class for providers, unless a provider was marked
 /// with the `.autoDispose` modifier, like: `Provider.autoDispose(...)`
 abstract class AlwaysAliveProviderBase<Created, Listened>
-    extends ProviderBase<Created, Listened> {
+    extends RootProvider<Created, Listened> {
   /// Creates an [AlwaysAliveProviderBase].
   AlwaysAliveProviderBase(
     Created Function(ProviderReference ref) create,
@@ -141,6 +141,12 @@ abstract class ProviderBase<Created, Listened>
 
     return '${describeIdentity(this)}$content';
   }
+}
+
+abstract class RootProvider<Created, Listened>
+    extends ProviderBase<Created, Listened> {
+  RootProvider(Created Function(ProviderReference ref) create, String name)
+      : super(create, name);
 
   /// Partially listen to a provider.
   ///
@@ -222,7 +228,7 @@ abstract class ProviderBase<Created, Listened>
   /// Overrides the behavior of a provider with a value.
   ///
   /// {@macro riverpod.overideWith}
-  // Works only on ProviderBase<T, T> scenario by default
+  // Works only on RootProvider<T, T> scenario by default
   // TODO support ChangeNotifier/StateNotifier
   Override overrideWithValue(Listened value) {
     return ProviderOverride(
@@ -232,16 +238,16 @@ abstract class ProviderBase<Created, Listened>
   }
 }
 
-/// An internal class for `ProviderBase.select`.
+/// An internal class for `RootProvider.select`.
 class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
-  /// An internal class for `ProviderBase.select`.
+  /// An internal class for `RootProvider.select`.
   ProviderSelector({
     this.provider,
     this.selector,
   });
 
   /// The provider that was selected
-  final ProviderBase<Object, Input> provider;
+  final RootProvider<Object, Input> provider;
 
   /// The selector applied
   final Output Function(Input) selector;
@@ -332,7 +338,7 @@ abstract class ProviderReference {
   ///
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
-  T read<T>(ProviderBase<Object, T> provider);
+  T read<T>(RootProvider<Object, T> provider);
 
   /// Obtains the state of a provider and cause the state to be re-evaluated
   /// when that provider emits a new value.
@@ -384,7 +390,7 @@ abstract class ProviderReference {
   /// - if multiple widgets depends on `sortedTodosProvider` the list will be
   ///   sorted only once.
   /// - if nothing is listening to `sortedTodosProvider`, then no sort if performed.
-  T watch<T>(ProviderBase<Object, T> provider);
+  T watch<T>(RootProvider<Object, T> provider);
 }
 
 class _Listener<Listened> extends LinkedListEntry<_Listener<Listened>> {
@@ -512,7 +518,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   ProviderException _exception;
 
   @override
-  T read<T>(ProviderBase<Object, T> provider) {
+  T read<T>(RootProvider<Object, T> provider) {
     return _container.read(provider);
   }
 
@@ -717,7 +723,7 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement.provider}.
   /// Called when the override of a provider changes.
   ///
   /// See also:
-  /// - [ProviderBase.overrideWithValue], which relies on [update] to handle
+  /// - [RootProvider.overrideWithValue], which relies on [update] to handle
   ///   the scenario where the value changed.
   @protected
   @mustCallSuper

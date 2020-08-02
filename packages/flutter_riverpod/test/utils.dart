@@ -47,7 +47,7 @@ VerifyOnly get verifyOnly {
   };
 }
 
-extension Legacy<T> on ProviderBase<Object, T> {
+extension Legacy<T> on RootProvider<Object, T> {
   void Function() watchOwner(
     ProviderContainer container,
     void Function(T value) listener,

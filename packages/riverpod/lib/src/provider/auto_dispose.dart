@@ -12,7 +12,7 @@ class AutoDisposeProvider<T> extends AutoDisposeProviderBase<T, T> {
   static const family = AutoDisposeProviderFamilyBuilder();
 
   @override
-  ProviderOverride overrideWithProvider(ProviderBase<Object, T> provider) {
+  ProviderOverride overrideWithProvider(RootProvider<Object, T> provider) {
     return ProviderOverride(provider, this);
   }
 

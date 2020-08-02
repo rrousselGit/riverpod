@@ -112,22 +112,23 @@ class Home extends HookWidget {
               },
             ),
             const SizedBox(height: 42),
-            Column(
-              children: [
-                const Toolbar(),
-                if (todos.isNotEmpty) const Divider(height: 0),
-                for (var i = 0; i < todos.length; i++) ...[
-                  if (i > 0) const Divider(height: 0),
-                  Dismissible(
-                    key: ValueKey(todos[i].id),
-                    onDismissed: (_) {
-                      context.read(todoListProvider).remove(todos[i]);
-                    },
-                    child: TodoItem(todos[i]),
-                  )
-                ],
-              ],
-            ),
+            const Toolbar(),
+            if (todos.isNotEmpty) const Divider(height: 0),
+            for (var i = 0; i < todos.length; i++) ...[
+              if (i > 0) const Divider(height: 0),
+              Dismissible(
+                key: ValueKey(todos[i].id),
+                onDismissed: (_) {
+                  context.read(todoListProvider).remove(todos[i]);
+                },
+                child: ProviderScope(
+                  overrides: [
+                    _currentTodo.overrideWithValue(todos[i]),
+                  ],
+                  child: const TodoItem(),
+                ),
+              )
+            ],
           ],
         ),
       ),
@@ -212,13 +213,21 @@ class Title extends StatelessWidget {
   }
 }
 
-class TodoItem extends HookWidget {
-  const TodoItem(this.todo, {Key key}) : super(key: key);
+/// A provider which exposes the [Todo] displayed by a [TodoItem].
+///
+/// By retreiving the [Todo] through a provider instead of through its
+/// constructor, this allows [TodoItem] to be instantiated using the `const` keyword.
+///
+/// This ensures that when we add/remove/edit todos, only what the
+/// impacted widgets rebuilds, instead of the entire list of items.
+final _currentTodo = ScopedProvider<Todo>((_) => throw UnimplementedError());
 
-  final Todo todo;
+class TodoItem extends HookWidget {
+  const TodoItem({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final todo = useProvider(_currentTodo);
     final itemFocusNode = useFocusNode();
     // listen to focus chances
     useListenable(itemFocusNode);

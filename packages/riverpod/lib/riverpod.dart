@@ -11,10 +11,12 @@ export 'src/framework.dart'
     show
         Create,
         Reader,
+        ScopedProvider,
+        ScopedReader,
         AlwaysAliveProviderBase,
         Family,
         CircularDependencyError,
-        ProviderBase,
+        RootProvider,
         Override,
         ProviderReference,
         ProviderListenable,

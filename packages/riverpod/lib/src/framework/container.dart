@@ -40,17 +40,22 @@ class ProviderContainer {
     List<Override> overrides = const [],
     List<ProviderObserver> observers,
   })  : _localObservers = observers,
-        _root = parent?._root ?? parent,
-        _stateReaders = parent?._stateReaders ?? {} {
-    if (parent != null && observers != null) {
-      throw UnsupportedError(
-        'Cannot specify observers on a non-root ProviderContainer/ProviderScope',
-      );
-    }
-    if (parent != null && overrides.isNotEmpty) {
-      throw UnsupportedError(
-        'Cannot override providers on a non-root ProviderContainer/ProviderScope',
-      );
+        _root = parent?._root ?? parent {
+    if (parent != null) {
+      if (observers != null) {
+        throw UnsupportedError(
+          'Cannot specify observers on a non-root ProviderContainer/ProviderScope',
+        );
+      }
+      for (final override in overrides) {
+        if (override is ProviderOverride &&
+            override._origin is ScopedProvider) {
+        } else {
+          throw UnsupportedError(
+            'Cannot override providers on a non-root ProviderContainer/ProviderScope',
+          );
+        }
+      }
     }
 
     for (final override in overrides) {
@@ -66,7 +71,7 @@ class ProviderContainer {
   final _overrideForProvider = <ProviderBase, ProviderBase>{};
   final _overrideForFamily = <Family, FamilyOverride>{};
 
-  final Map<ProviderBase, ProviderElement> _stateReaders;
+  final Map<ProviderBase, ProviderElement> _stateReaders = {};
 
   final List<ProviderObserver> _localObservers;
   Iterable<ProviderObserver> get _observers sync* {
@@ -142,7 +147,7 @@ class ProviderContainer {
   ///
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
-  Created refresh<Created>(ProviderBase<Created, Object> provider) {
+  Created refresh<Created>(RootProvider<Created, Object> provider) {
     final element = _stateReaders[provider];
 
     if (element == null) {
@@ -158,7 +163,7 @@ class ProviderContainer {
   ///
   /// If you are using flutter, this is done implicitly for you by `ProviderScope`.
   ///
-  /// Updating a [ProviderBase.overrideWithValue] with a different value
+  /// Updating a [RootProvider.overrideWithValue] with a different value
   /// will cause the listeners to rebuild.
   ///
   /// It is not possible, to remove or add new overrides, only update existing ones.
@@ -225,7 +230,7 @@ class ProviderContainer {
         'Tried to read a provider from a ProviderContainer that was already disposed',
       );
     }
-    if (_root != null) {
+    if (_root != null && provider is RootProvider) {
       return _root.readProviderElement(provider);
     }
     if (provider == _circularDependencyLock) {

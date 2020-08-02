@@ -11,7 +11,7 @@ import 'provider.dart';
 class CreatedProvider<T> extends Provider<T> {
   /// {@macro riverpod.createdprovider}
   CreatedProvider(
-    ProviderBase<T, Object> provider, {
+    RootProvider<T, Object> provider, {
     String name,
   }) : super((ref) {
           ref.watch(provider);
@@ -26,7 +26,7 @@ class CreatedProvider<T> extends Provider<T> {
 class AutoDisposeCreatedProvider<T> extends AutoDisposeProvider<T> {
   /// {@macro riverpod.createdprovider}
   AutoDisposeCreatedProvider(
-    ProviderBase<T, Object> provider, {
+    RootProvider<T, Object> provider, {
     String name,
   }) : super((ref) {
           ref.watch(provider);
