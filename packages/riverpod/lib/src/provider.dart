@@ -20,10 +20,10 @@ part 'provider/auto_dispose.dart';
 ///   Providers can be accessed from anywhere, while ensuring testability and scalability.
 ///
 /// - Providers are safe to use.\
-///   As opposed to most existing solutions, using a provider, it is not possible to
-///   read a value in an uninitialized state.\
-///   If we can write the code to read a state, that state is available and ready.
-///   Even if loaded asynchronously.
+///   As opposed to most service-locator solutions, using a provider, it is not
+///   possible to read a value in an uninitialized state.\
+///   If we can write the code to read a state, the code will execute properly.
+///   Even if the state is loaded asynchronously.
 ///
 /// - Providers allow easily and efficiently listening to a piece of state.\
 ///   They can be accessed in a single line of code, and offers many way to optimize
@@ -42,9 +42,9 @@ part 'provider/auto_dispose.dart';
 /// ```
 ///
 /// **NOTE**
-/// You do not have to declare providers as globals. It is simply usually the most
-/// logical choice.
-///
+/// Do not feel threatened by the fact that a provider is declared as a global.
+/// While providers are globals, the variable is fully immutable.
+/// This makes creating a provider no different from declaring a function or a class.
 ///
 /// This snippet consist of three components:
 ///
@@ -69,7 +69,7 @@ part 'provider/auto_dispose.dart';
 /// On the other hand, [StreamProvider]'s callback will be expected to return a [Stream].
 ///
 /// **NOTE**:
-/// You can declare as many providers as you, want without limitations.\
+/// You can declare as many providers as you want, without limitations.\
 /// As opposed to when using `package:provider`, in `Riverpod` we can have two
 /// providers expose a state of the same "type":
 ///
@@ -78,12 +78,11 @@ part 'provider/auto_dispose.dart';
 /// final countryProvider = Provider((ref) => 'England');
 /// ```
 ///
-/// The fact that both providers creates a `String` does not cause conflicts. We will be
-/// able to read both values independently from each other without issue.
-///
+/// The fact that both providers creates a `String` does not cause conflicts.
+/// We will be able to read both values independently from each other without issue.
 ///
 /// **WARNING**
-/// For providers to work, you have to add `ProviderScope` at the root of your
+/// For providers to work, you need to add `ProviderScope` at the root of your
 /// Flutter applications:
 ///
 /// ```dart
@@ -98,7 +97,7 @@ part 'provider/auto_dispose.dart';
 /// in many situation a provider will want to read the state of another provider.
 ///
 /// To do that, we can use the `ref` object passed to the callback of our provider,
-/// and use its `read` method.
+/// and use its `watch` method.
 ///
 /// As an example, consider the following provider:
 ///
@@ -110,9 +109,9 @@ part 'provider/auto_dispose.dart';
 ///
 /// ```dart
 /// final weatherProvider = FutureProvider((ref) async {
-///   // We use `ref.read` to read another provider, and we pass it the provider
+///   // We use `ref.watch` to watch another provider, and we pass it the provider
 ///   // that we want to consume. Here: cityProvider
-///   final city = ref.read(cityProvider);
+///   final city = ref.watch(cityProvider);
 ///
 ///   // We can then use the result to do something based on the value of `cityProvider`.
 ///   return fetchWeather(city: city);
@@ -120,6 +119,9 @@ part 'provider/auto_dispose.dart';
 /// ```
 ///
 /// That's it. We've created a provider that depends on another provider.
+///
+/// One interesting aspect of this code is, if `city` ever changes,
+/// this will automatically call `fetchWeather` again and update the UI accordingly.
 ///
 /// ### Creating an object that depends on a lot of providers.
 ///
@@ -196,7 +198,7 @@ part 'provider/auto_dispose.dart';
 /// The following example uses `ref.onDispose` to close a `StreamController`:
 ///
 /// ```dart
-/// final example = StreamProvider((ref) {
+/// final example = StreamProvider.autoDispose((ref) {
 ///   final streamController = StreamController<int>();
 ///
 ///   ref.onDispose(() {
@@ -207,6 +209,12 @@ part 'provider/auto_dispose.dart';
 ///   return streamController.stream;
 /// });
 /// ```
+/// 
+/// See also:
+/// 
+/// - [Provider.autoDispose], to automatically destroy the state of a provider
+///   when that provider is no-longer listened.
+/// - [Provider.family], to allow providers to create a value from external parameters.
 /// {@endtemplate}
 mixin _ProviderStateMixin<T> on ProviderStateBase<T, T> {
   @override

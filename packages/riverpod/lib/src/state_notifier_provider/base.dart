@@ -25,7 +25,7 @@ class StateNotifierProvider<T extends StateNotifier<Object>>
 /// Adds [state] to [StateNotifierProvider.autoDispose].
 extension StateNotifierStateProviderX<Value>
     on StateNotifierProvider<StateNotifier<Value>> {
-  /// {@template riverpod.statenotifierprovider.state.provider}
+  /// {@macro riverpod.statenotifierprovider.state.provider}
   StateNotifierStateProvider<Value> get state {
     _state ??= StateNotifierStateProvider<Value>._(this);
     return _state as StateNotifierStateProvider<Value>;

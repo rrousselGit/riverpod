@@ -143,8 +143,16 @@ abstract class ProviderBase<Created, Listened>
   }
 }
 
+/// {@template riverpod.rootprovider}
+/// A base class for non-scoped providers.
+///
+/// By making typing a parameter as [RootProvider] instead of [ProviderBase],
+/// this excludes [ScopedProvider] – which may not be supported by your code
+/// due to its particular behavior. 
+/// {@endtemplate}
 abstract class RootProvider<Created, Listened>
     extends ProviderBase<Created, Listened> {
+  /// {@macro riverpod.rootprovider}
   RootProvider(Created Function(ProviderReference ref) create, String name)
       : super(create, name);
 
@@ -305,7 +313,7 @@ abstract class ProviderReference {
   /// Read the state associated with a provider, without listening to that provider.
   ///
   /// By calling [read] instead of [watch], this will not cause a provider's
-  /// state to be recreated when the provider listened changes.
+  /// state to be recreated when the provider obtained changes.
   ///
   /// A typical use-case for this method is when passing it to the created
   /// object like so:
@@ -343,9 +351,8 @@ abstract class ProviderReference {
   /// Obtains the state of a provider and cause the state to be re-evaluated
   /// when that provider emits a new value.
   ///
-  /// Using [watch] allows supporting the scenario where the state obtained
-  /// may change over time, in which case this would cause our provider to be
-  /// re-evaluated.
+  /// Using [watch] allows supporting the scenario where we want to re-create
+  /// our state when one of the object we are listening to changed.
   ///
   /// This method should be your go-to way to make a provider read another
   /// provider – even if the value exposed by that other provider never changes.
@@ -354,13 +361,14 @@ abstract class ProviderReference {
   ///
   /// Consider a todo-list application. We may want to implement a sort feature,
   /// to see the uncompleted todos first.\
-  /// As such, we will want to create a sorted list of todos based on the
-  /// combination of the unsorted list and a sort, both of which may change
-  /// over time.
+  /// We will want to create a sorted list of todos based on the
+  /// combination of the unsorted list and a sort method (ascendant, descendant, ...),
+  /// both of which may change over time.
   ///
   /// In this situation, what we do not want to do is to sort our list
   /// directly inside the `build` method of our UI, as sorting a list can be
-  /// expensive. But maintaining a cache manually is difficult and error prone.
+  /// expensive.
+  /// But maintaining a cache manually is difficult and error prone.
   ///
   /// To solve this problem, we could create a separate [Provider] that will
   /// expose the sorted list, and use [watch] to automatically re-evaluate

@@ -7,8 +7,11 @@ import 'builders.dart';
 part 'change_notifier_provider/base.dart';
 part 'change_notifier_provider/auto_dispose.dart';
 
-/// {@template riverpod.streamprovider}
-/// Hello world
+/// {@template riverpod.changenotifierprovider}
+/// Creates a [ChangeNotifier] and subscribes to it.
+///
+/// Note: By using Riverpod, [ChangeNotifier] will no-longer be O(N^2) for
+/// dispatching notifications, but instead O(N)
 /// {@endtemplate}
 mixin _ChangeNotifierProviderStateMixin<T extends ChangeNotifier>
     on ProviderStateBase<T, T> {

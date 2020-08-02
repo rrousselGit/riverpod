@@ -17,6 +17,7 @@ export 'src/framework.dart'
         Family,
         CircularDependencyError,
         RootProvider,
+        ProviderBase,
         Override,
         ProviderReference,
         ProviderListenable,

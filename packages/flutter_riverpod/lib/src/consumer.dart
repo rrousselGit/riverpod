@@ -7,6 +7,9 @@ typedef ConsumerBuilder = Widget Function(
     BuildContext context, ScopedReader watch);
 
 /// Listen to a provider and build a widget tree out of it.
+/// 
+/// Using [Consumer], this allows the widget tree to listen to changes on provider,
+/// so that the UI automatically updates when needed.
 ///
 /// Do not modify any state or start any http request inside `builder`.
 ///
@@ -22,56 +25,23 @@ typedef ConsumerBuilder = Widget Function(
 /// class Example extends StatelessWidget {
 ///   @override
 ///   Widget build(BuildContext context) {
-///     return Consumer<String>(
-///       helloWorldProvider,
-///       builder: (context, value, child) {
-///         return Text(value); // Hello world
-///       },
-///     );
+///     return Consumer((context, watch) {
+///       final value = watch(helloWorldProvider);
+///       return Text(value); // Hello world
+///     });
 ///   }
 /// }
 /// ```
-///
-/// # Optimising rebuilds with `child`
-///
-/// [Consumer] provides an optional `child` parameter to optimise rebuilds of
-/// the widget tree when a part of it doesn't depend on the listened value.
-///
-/// For example, we may have:
-///
+/// 
+/// **Note**  
+/// You can watch as many providers inside [Consumer] as you want to:
+/// 
 /// ```dart
-/// Consumer<MyTheme>(
-///   themeProvider,
-///   builder: (context, theme, child) {
-///     return ColoredBox(
-///       color: theme.primaryColor,
-///       child: Text('hello world'),
-///     );
-///   }
-/// )
-/// ```
-///
-/// This is not ideal as [Text] is inside `builder` but doesn't depend on `themeProvider`.
-/// As such, when the theme change, [Text] will rebuild for no reason.
-///
-///
-/// We could use `child` to optimise such code by writing the following:
-///
-/// ```dart
-/// Consumer<MyTheme>(
-///   themeProvider,
-///   builder: (context, theme, child) {
-///     return ColoredBox(
-///       color: theme.primaryColor,
-///       child: child,
-///     );
-///   },
-///   child: Text('hello world'),
-/// )
-/// ```
-///
-/// Notice how the [Text] is built outside of `builder`, so it'll no-longer
-/// rebuild when `themeProvider` changes.
+/// Consumer((context, watch) {
+///   final value = watch(someProvider);
+///   final another = watch(anotherProvider);
+///   ...
+/// });
 class Consumer extends StatefulWidget {
   /// Subscribes to providers and create widgets out of it
   // ignore: prefer_const_constructors_in_immutables, const is impossible to use with `builder`

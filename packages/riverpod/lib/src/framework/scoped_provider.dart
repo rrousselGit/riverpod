@@ -7,15 +7,15 @@ typedef ScopedCreate<T> = T Function(ScopedReader watch);
 /// {@template riverpod.scopedprovider}
 /// A provider that may behave differently for a specific part of the application.
 ///
-/// A common use-case to [ScopedProvider] is to avoid having to pass the argument
+/// A common use-case for [ScopedProvider] is to avoid having to pass the argument
 /// of a [Provider.family] in the widget tree.
 ///
 /// More specifically, we may have a `ListView` that wants to render of list of
 /// products. But for both performance and simplicity, we do not want to pass
-/// the product's id/index to the item's index.
+/// the product id/index to the item's constructor.
 ///
 /// In that situation, we could use [ScopedProvider], in combination with `ProviderScope`,
-/// to to allow our items to access their id/index, without receiving it from its
+/// to allow our items to access the id/index, without receiving it from its
 /// constructor.
 ///
 /// For this, we first need to define our [ScopedProvider] like any other provider:
@@ -24,7 +24,7 @@ typedef ScopedCreate<T> = T Function(ScopedReader watch);
 /// final currentProductIndex = ScopedProvider<int>((_) => throw UnimplementedError());
 /// ```
 ///
-/// **Note**:
+/// **Note**:  
 /// We made our [ScopedProvider] throw by default, as our list items by design
 /// requires an index to be specified.
 /// Another possibility would be to return `null` and have the item handle the
@@ -47,7 +47,7 @@ typedef ScopedCreate<T> = T Function(ScopedReader watch);
 /// ```
 ///
 /// This code means that for the first item in our `ListView`, `currentProductIndex`
-/// will return `0`. Whereas for the second item, it will return `1`, ...
+/// will return `0`; whereas for the second item, it will return `1`, ...
 ///
 /// Finally, we can read the item index inside our `ProductItem`:
 ///

@@ -13,7 +13,7 @@ extension BuildContextX on BuildContext {
   /// ```dart
   /// Widget build(BuildContext context) {
   ///   // counter is used only for the onPressed of RaisedButton
-  ///   final counter = counterProvider.read(context);
+  ///   final counter = context.read(counterProvider);
   ///
   ///   return RaisedButton(
   ///     onPressed: () => counter.increment(),
@@ -32,7 +32,7 @@ extension BuildContextX on BuildContext {
   ///   return RaisedButton(
   ///     onPressed: () {
   ///       // as performant as the previous previous solution, but resilient to refactoring
-  ///       counterProvider.read(context).increment(),
+  ///       context.read(counterProvider).increment(),
   ///     },
   ///   );
   /// }
@@ -46,7 +46,7 @@ extension BuildContextX on BuildContext {
   /// ```dart
   /// Widget build(BuildContext context) {
   ///   // using read because we only use a value that never changes.
-  ///   final model = modelProvider.read(context);
+  ///   final model = context.read(modelProvider);
   ///
   ///   return Text('${model.valueThatNeverChanges}');
   /// }
