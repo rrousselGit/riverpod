@@ -128,8 +128,7 @@ class Home extends HookWidget {
                   delegate: SliverChildBuilderDelegate((c, index) {
                     return ProviderScope(
                       overrides: [
-                        _characterIndex
-                            .overrideWithProvider(Provider((ref) => index)),
+                        _characterIndex.overrideWithValue(index),
                       ],
                       child: const CharacterItem(),
                     );
@@ -150,7 +149,9 @@ class Home extends HookWidget {
   }
 }
 
-final _characterIndex = Provider<int>((ref) => null);
+final _characterIndex = ScopedProvider<int>((ref) {
+  throw UnimplementedError();
+});
 
 class CharacterItem extends HookWidget {
   const CharacterItem({
