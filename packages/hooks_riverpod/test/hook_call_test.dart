@@ -32,12 +32,13 @@ void main() {
     notifier.count++;
     await tester.pump();
   });
+
   testWidgets('relocating consumer with GlobalKey', (tester) async {
     final notifier = TestNotifier();
     final notifier2 = TestNotifier()..count = 42;
 
     final provider = ChangeNotifierProvider((_) => notifier);
-    final provider2 = provider.overrideAs(
+    final provider2 = provider.overrideWithProvider(
       ChangeNotifierProvider((_) => notifier2),
     );
 
@@ -52,16 +53,17 @@ void main() {
     );
 
     await tester.pumpWidget(
-      ProviderScope(
-        child: Column(
-          textDirection: TextDirection.ltr,
-          children: <Widget>[
-            ProviderScope(
-              overrides: [provider2],
-              child: consumer,
-            ),
-          ],
-        ),
+      Column(
+        textDirection: TextDirection.ltr,
+        children: <Widget>[
+          ProviderScope(
+            child: Container(),
+          ),
+          ProviderScope(
+            overrides: [provider2],
+            child: consumer,
+          ),
+        ],
       ),
     );
 
@@ -76,17 +78,17 @@ void main() {
 
     // move the consumer without disposing the currently listener notifier
     await tester.pumpWidget(
-      ProviderScope(
-        child: Column(
-          textDirection: TextDirection.ltr,
-          children: <Widget>[
-            ProviderScope(
-              overrides: [provider2],
-              child: Container(),
-            ),
-            consumer,
-          ],
-        ),
+      Column(
+        textDirection: TextDirection.ltr,
+        children: <Widget>[
+          ProviderScope(
+            child: consumer,
+          ),
+          ProviderScope(
+            overrides: [provider2],
+            child: Container(),
+          ),
+        ],
       ),
     );
 

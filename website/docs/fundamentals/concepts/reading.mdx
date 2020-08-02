@@ -65,8 +65,8 @@ class Home extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Counter example')),
       body: Center(
-        child: Consumer((context, read) {
-          final count = read(counterProvider).state;
+        child: Consumer((context, watch) {
+          final count = watch(counterProvider).state;
           return Text('$count');
         }),
       ),
@@ -78,12 +78,12 @@ class Home extends StatelessWidget {
 This example will make our UI listen to `counterProvider` and rebuild a [Text]
 (and only that [Text]) when the counter changes.
 
-Notice how the value of `counterProvider` is obtained by a function called `read`.  
+Notice how the value of `counterProvider` is obtained by a function called `watch`.  
 This function is what makes [Consumer] listen to our provider and rebuild
 when the value exposed changed.
 
 The interesting part of this syntax is that you can listen to multiple providers
-easily, by calling `read` multiple times:
+easily, by calling `watch` multiple times:
 
 ```dart
 final counterProvider = StateProvider((ref) => 0);
@@ -91,10 +91,10 @@ final titleProvider = Provider((ref) => 'Hello world');
 
 // ...
 
-Consumer((context, read) {
+Consumer((context, watch) {
   // Listens to both counterProvider and titleProvider at the same time
-  final count = read(counterProvider).state;
-  final title = read(titleProvider);
+  final count = watch(counterProvider).state;
+  final title = watch(titleProvider);
   return Text('$title: $count');
 })
 ```
@@ -141,8 +141,8 @@ class Count extends HookWidget {
 class Count extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer((context, read) {
-      final count = read(counterProvider).state;
+    return Consumer((context, watch) {
+      final count = watch(counterProvider).state;
       return Text('$count');
     });
   }
@@ -156,7 +156,7 @@ Both snippets behave the same: They build a [Text] that changes when the counter
 updates.  
 But [useProvider] offers a slightly simplified syntax.
 
-Similarly to [Consumer]'s `read` function, [useProvider] can be used multiple
+Similarly to [Consumer]'s `watch` function, [useProvider] can be used multiple
 times in a widget:
 
 ```dart
@@ -187,8 +187,8 @@ We _could_ use [useProvider]/[Consumer]:
 ```dart {4,6}
 @override
 Widget build(BuildContext context) {
-  return Consumer((context, read) {
-    final counter = read(counterProvider);
+  return Consumer((context, watch) {
+    final counter = watch(counterProvider);
     return RaisedButton(
       onPressed: () => counter.state++;
       child: Text('increment'),
@@ -355,8 +355,8 @@ class Home extends StatelessWidget {
       appBar: AppBar(title: const Text('Counter example')),
       body: Center(
         // Rebuild only the Text when the counter changes
-        child: Consumer((context, read) {
-          final count = read(counterProvider).state;
+        child: Consumer((context, watch) {
+          final count = watch(counterProvider).state;
           return Text('$count');
         }),
       ),

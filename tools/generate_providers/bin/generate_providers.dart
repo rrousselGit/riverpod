@@ -59,9 +59,8 @@ const _autoDisposeDoc = '''
 /// Marking a provider with `autoDispose` has two effects:
 ///
 /// - this adds a new property on the `ref` parameter of your provider: `maintainState`
-/// - the `readOwner(ProviderStateOwner)` and `read(BuildContext)` methods
-///   of a provider are removed.
-///   It is no-longer possible to read a provider without listening to it.
+/// - It is no-longer possible to write `myProvider.read(BuildContext)` and
+///   `ProviderContainer.read(myProvider)`.
 ///
 /// The `maintainState` property is a boolean (`false` by default) that allows
 /// the provider to tell Riverpod if the state of the provider should be preserved
@@ -376,10 +375,7 @@ Iterable<Object> generateAll(
     final second = permutation[1];
     final third = permutation[2];
 
-    if (first is DisposeType &&
-        second is StateType &&
-        third is ProviderType &&
-        (first == DisposeType.none || second != StateType.state)) {
+    if (first is DisposeType && second is StateType && third is ProviderType) {
       yield* generate(Tuple3(first, second, third), matrix);
     }
   }
@@ -478,7 +474,7 @@ ${familyDoc().replaceAll('///', '  ///')}
     ${configs.createType} Function(${configs.ref} ref, Value value) create, {
     String name,
   }) {
-    return ${configs.providerName}(create);
+    return ${configs.providerName}(create, name: name);
   }
 ${configs.links(matrix)}
 }

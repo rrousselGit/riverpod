@@ -19,18 +19,19 @@ void main() {
 
     Builder(builder: (context) {
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      int providerValue = provider.read(context);
+      int providerValue = context.read(provider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      AsyncValue<int> futureProviderValue = futureProvider.read(context);
+      AsyncValue<int> futureProviderValue = context.read(futureProvider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      AsyncValue<int> streamProviderValue = streamProvider.read(context);
+      AsyncValue<int> streamProviderValue = context.read(streamProvider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
       ValueNotifier<int> changeNotifierProviderValue =
-          changeNotifierProvider.read(context);
+          context.read(changeNotifierProvider);
 
       return Container();
     });
   });
+
   testWidgets('mounted', (tester) async {
     ProviderReference providerState;
     bool mountedOnDispose;
@@ -78,54 +79,7 @@ void main() {
 
     await tester.pumpWidget(Container());
   });
-  testWidgets('onDispose can read ref', (tester) async {
-    // int onDisposeState;
-    // final provider = Provider<int>((ref) {
-    //   ref.onDispose(() => onDisposeState = ref.value);
-    //   return 42;
-    // });
 
-    // await tester.pumpWidget(
-    //   ProviderScope(
-    //     child: HookBuilder(builder: (c) {
-    //       return Text(
-    //         useProvider().toString(),
-    //         textDirection: TextDirection.ltr,
-    //       );
-    //     }),
-    //   ),
-    // );
-
-    // expect(find.text('42'), findsOneWidget);
-
-    // await tester.pumpWidget(Container());
-
-    // expect(onDisposeState, 42);
-  }, skip: true);
-  testWidgets("can't read ref after dispose", (tester) async {
-    // ProviderReference<int> providerState;
-    // final provider = Provider<int>((ref) {
-    //   providerState = ref;
-    //   return 42;
-    // });
-
-    // await tester.pumpWidget(
-    //   ProviderScope(
-    //     child: HookBuilder(builder: (c) {
-    //       return Text(
-    //         useProvider().toString(),
-    //         textDirection: TextDirection.ltr,
-    //       );
-    //     }),
-    //   ),
-    // );
-
-    // expect(find.text('42'), findsOneWidget);
-
-    // await tester.pumpWidget(Container());
-
-    // expect(() => providerState.value, throwsStateError);
-  }, skip: true);
   testWidgets('onDispose calls all callbacks in order', (tester) async {
     final dispose1 = OnDisposeMock();
 
@@ -212,7 +166,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAs(
+          provider.overrideWithProvider(
             Provider((ref) {
               assert(ref != null, '');
               callCount++;
@@ -230,7 +184,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideAs(
+          provider.overrideWithProvider(
             Provider((ref) {
               assert(ref != null, '');
               callCount++;

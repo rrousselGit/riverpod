@@ -59,7 +59,7 @@ Here's another example with [Computed]:
 <TabItem value="ComputedFamily">
 
 ```dart
-final myComputedFamily = ComputedFamily<Result, Parameter>((read, parameter) {
+final myComputedFamily = ComputedFamily<Result, Parameter>((watch, parameter) {
   // TODO: somehow use `parameter`
   return Result();
 });
@@ -69,7 +69,7 @@ final myComputedFamily = ComputedFamily<Result, Parameter>((read, parameter) {
 <TabItem value="Computed">
 
 ```dart
-final myComputed = Computed((read) {
+final myComputed = Computed((watch) {
   return Result();
 });
 ```
@@ -139,12 +139,12 @@ Widget build(BuildContext context) {
 ```dart
 @override
 Widget build(BuildContext context) {
-  return Consumer((context, read) {
+  return Consumer((context, watch) {
     // First, we obtain the current locale
     final locale = Localizations.localeOf(context);
 
     // Then, we pass the locale to titleProvider, which can later be used by useProvider
-    final title = read(titleProvider(locale));
+    final title = watch(titleProvider(locale));
 
     // Finally we can freely use the result
     return Text(title);

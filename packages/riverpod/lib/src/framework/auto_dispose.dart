@@ -1,138 +1,107 @@
-part of 'framework.dart';
+part of '../framework.dart';
 
-/// A [ProviderReference] that allows controlling whether the associated
-/// provider should dispose when all listeners are removed or not.
-class AutoDisposeProviderReference extends ProviderReference {
-  /// DO NOT USE, for internal usages only.
-  @visibleForTesting
-  AutoDisposeProviderReference(AutoDisposeProviderStateBase providerState)
-      : super(providerState);
-
+/// A [ProviderReference] for providers that are automatically destroyed when
+/// no-longer used.
+///
+/// The difference with [ProviderReference] is that it has an extra
+/// [maintainState] property, to help determine if the state can be destroyed
+///  or not.
+abstract class AutoDisposeProviderReference extends ProviderReference {
   /// Whether to destroy the state of the provider when all listeners are removed or not.
   ///
   /// Can be changed at any time, in which case when setting it to `false`,
-  /// may destroy the provider state if it no-longer have listeners.
+  /// may destroy the provider state if it currently has no listeners.
   ///
   /// Defaults to `false`.
-  bool get maintainState {
-    return (_providerState as AutoDisposeProviderStateBase).maintainState;
-  }
-
-  set maintainState(bool value) {
-    (_providerState as AutoDisposeProviderStateBase).maintainState = value;
-  }
+  bool get maintainState;
+  set maintainState(bool value);
 }
 
+/// {@template riverpod.AutoDisposeProviderBase}
 /// A base class for providers that destroy their state when no-longer listened.
 ///
 /// See also:
 ///
 /// - [Provider.autoDispose], a variant of [Provider] that auto-dispose its state.
-abstract class AutoDisposeProviderBase<
-    Dependency extends ProviderDependencyBase,
-    Result> extends ProviderBase<Dependency, Result> {
-  /// Allows specifying a name
-  AutoDisposeProviderBase(String name) : super(name);
+/// {@endtemplate}
+abstract class AutoDisposeProviderBase<Created, Listened>
+    extends RootProvider<Created, Listened> {
+  /// {@macro riverpod.AutoDisposeProviderBase}
+  AutoDisposeProviderBase(
+    Created Function(AutoDisposeProviderReference ref) create,
+    String name,
+  ) : super((ref) => create(ref as AutoDisposeProviderReference), name);
 
   @override
-  AutoDisposeProviderStateBase<Dependency, Result,
-      AutoDisposeProviderBase<Dependency, Result>> createState();
-}
+  AutoDisposeProviderElement<Created, Listened> createElement() {
+    return AutoDisposeProviderElement(this);
+  }
 
-/// A base class for providers that destroy their state when no-longer listened
-/// _and_ can be overriden,
-///
-/// See also:
-///
-/// - [Provider.autoDispose], a variant of [Provider] that auto-dispose its state.
-abstract class OverridableAutoDisposeProviderBase<
-        Dependency extends ProviderDependencyBase,
-        Result> extends AutoDisposeProviderBase<Dependency, Result>
-    implements ProviderOverride {
-  /// Allows specifying a name
-  OverridableAutoDisposeProviderBase(String name) : super(name);
-
-  @override
-  ProviderBase get _provider => this;
-
-  @override
-  ProviderBase<Dependency, Result> get _origin => this;
-
-  /// Combined with [ProviderStateOwner] (or `ProviderScope` if you are using Flutter),
-  /// allows overriding the behavior of this provider for a part of the application.
+  /// Overrides the behavior of this provider with another provider.
   ///
-  /// A use-case could be for testing, to override the implementation of a
-  /// `Repository` class with a fake implementation.
-  ///
-  /// In a Flutter application, this would look like:
-  ///
-  /// ```dart
-  /// final repositoryProvider = Provider((_) => Repository());
-  ///
-  /// testWidgets('Override example', (tester) async {
-  ///   await tester.pumpWidget(
-  ///     ProviderScope(
-  ///       overrides: [
-  ///         repositoryProvider.overrideAs(
-  ///           Provider((_) => FakeRepository()),
-  ///         ),
-  ///       ],
-  ///       child: MyApp(),
-  ///     ),
-  ///   );
-  /// });
-  /// ```
-  ProviderOverride overrideAs(
-    // Auto-disposed providers can be overriden by anything that matches
-    // as they don't have a `read` method.
-    ProviderBase<Dependency, Result> provider,
+  /// {@macro riverpod.overideWith}
+  ProviderOverride overrideWithProvider(
+    RootProvider<Created, Listened> provider,
   ) {
-    return ProviderOverride._(provider, this);
+    return ProviderOverride(provider, this);
   }
 }
 
-/// The state of an [AutoDisposeProvider].
-abstract class AutoDisposeProviderStateBase<
-        Dependency extends ProviderDependencyBase,
-        Result,
-        P extends AutoDisposeProviderBase<Dependency, Result>>
-    extends ProviderStateBase<Dependency, Result, P> {
+/// The [ProviderElement] of an [AutoDisposeProviderBase].
+class AutoDisposeProviderElement<Created, Listened>
+    extends ProviderElement<Created, Listened>
+    implements AutoDisposeProviderReference {
+  /// The [ProviderElement] of an [AutoDisposeProviderBase].
+  AutoDisposeProviderElement(
+    ProviderBase<Created, Listened> provider,
+  ) : super(provider);
+
   bool _maintainState = false;
-
-  /// Whether to destroy the state of the provider when all listeners are removed or not.
-  ///
-  /// Can be changed at any time, in which case when setting it to `true`,
-  /// may destroy the provider state if it no-longer have listeners.
-  ///
-  /// Defaults to true.
+  @override
   bool get maintainState => _maintainState;
-
+  @override
   set maintainState(bool value) {
-    if (value != _maintainState && !value) {
-      onRemoveListener();
-    }
     _maintainState = value;
+    if (!_maintainState && !hasListeners) {
+      _AutoDisposer.instance.scheduleDispose(this);
+    }
   }
 
   @override
-  void onRemoveListener() {
-    if (!$hasListeners) {
+  void didRemoveListener() {
+    if (!maintainState && !hasListeners) {
       _AutoDisposer.instance.scheduleDispose(this);
     }
   }
 }
 
-/// A class that handles automatically disposing provider states when they are
+class _LinkedListEntry<T> extends LinkedListEntry<_LinkedListEntry<T>> {
+  _LinkedListEntry(this.value);
+
+  final T value;
+}
+
+/// The class that handlers disposing [AutoDisposeProviderBase] when they are
 /// no-longer listened.
+///
+/// This will typically cause a provider to be disposed after the next event loop,
+/// unless by that time the provider is listened once again, or if
+/// [AutoDisposeProviderReference.maintainState] was set to `true`.
 class _AutoDisposer {
   static final _AutoDisposer instance = _AutoDisposer();
 
   bool _scheduled = false;
-  LinkedList<_LinkedListEntry<AutoDisposeProviderStateBase>> _stateToDispose;
+  LinkedList<_LinkedListEntry<AutoDisposeProviderElement>> _stateToDispose;
 
-  void scheduleDispose(AutoDisposeProviderStateBase state) {
+  /// Marks an [AutoDisposeProvider] as potentially needing to be disposed.
+  void scheduleDispose(AutoDisposeProviderElement element) {
+    assert(
+      !element.hasListeners,
+      'Tried to dispose ${element._provider} , but still has listeners',
+    );
+
     _stateToDispose ??= LinkedList();
-    _stateToDispose.add(_LinkedListEntry(state));
+    _stateToDispose.add(_LinkedListEntry(element));
 
     if (!_scheduled) {
       _scheduled = true;
@@ -155,16 +124,20 @@ class _AutoDisposer {
     /// and the second time it is traversed, it won't anymore.
     for (var entry = _stateToDispose.first; entry != null; entry = entry.next) {
       if (entry.value.maintainState ||
-          entry.value.$hasListeners ||
+          entry.value.hasListeners ||
           !entry.value.mounted) {
         continue;
       }
+      assert(entry.value._origin != null, 'No origin specified – bug?');
+      assert(
+        entry.value._container._stateReaders.containsKey(entry.value._origin),
+        'Removed a key that does not exist',
+      );
+      entry.value._container._stateReaders.remove(entry.value._origin);
+      if (entry.value.origin.from != null) {
+        entry.value.origin.from._cache.remove(entry.value.origin.argument);
+      }
       entry.value.dispose();
-      final reader = entry.value._origin is Computed
-          ? entry.value._owner._computedStateReaders[entry.value._origin]
-          : entry.value._owner._stateReaders[entry.value._origin];
-      // TODO remove ProviderStateReader on dispose for non-overriden providers.
-      reader._providerState = null;
     }
   }
 }

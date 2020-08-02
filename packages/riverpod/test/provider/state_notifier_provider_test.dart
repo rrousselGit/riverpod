@@ -3,83 +3,55 @@ import 'package:riverpod/riverpod.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
+import '../utils.dart';
+
 void main() {
-  test('StateNotifierProviderDependency can be assigned to ProviderDependency',
-      () async {
-    final provider = StateNotifierProvider((ref) {
-      return StateController(0);
-    });
-    final owner = ProviderStateOwner();
-
-    // ignore: omit_local_variable_types
-    final ProviderDependency<StateController<int>> dep =
-        owner.ref.dependOn(provider);
-
-    await expectLater(dep.value.state, 0);
-  });
   test('StateNotifierFamily override', () {
-    final notifier = TestNotifier();
+    final provider = StateNotifierProvider.family<TestNotifier, int>(
+        (ref, a) => TestNotifier());
     final notifier2 = TestNotifier(42);
-    final provider =
-        StateNotifierProvider.family<TestNotifier, int>((ref, a) => notifier);
-    final root = ProviderStateOwner();
-    final owner = ProviderStateOwner(parent: root, overrides: [
-      provider.overrideAs((ref, a) => notifier2),
-    ]);
+    final container = ProviderContainer(
+      overrides: [provider.overrideWithProvider((ref, a) => notifier2)],
+    );
 
-    // populate in the root first
-    expect(provider(0).state.readOwner(root), 0);
-    expect(provider(0).readOwner(root), notifier);
-
-    // access in the child owner
+    // access in the child container
     // try to read provider.state before provider and see if it points to the override
-    expect(provider(0).state.readOwner(owner), 42);
-    expect(provider(0).readOwner(owner), notifier2);
+    expect(container.read(provider(0).state), 42);
+    expect(container.read(provider(0)), notifier2);
   });
+
   test('can be assigned to provider', () {
     final Provider<TestNotifier> provider = StateNotifierProvider((_) {
       return TestNotifier();
     });
-    final owner = ProviderStateOwner();
+    final container = ProviderContainer();
 
-    expect(provider.readOwner(owner), isA<TestNotifier>());
+    expect(container.read(provider), isA<TestNotifier>());
   });
-  test('implicit provider.state override works on children owner too', () {
-    final notifier = TestNotifier(42);
-    final provider = StateNotifierProvider((_) => TestNotifier());
-    final root = ProviderStateOwner();
-    final root2 = ProviderStateOwner(
-      parent: root,
-      overrides: [provider.overrideAs(StateNotifierProvider((_) => notifier))],
-    );
-    final owner = ProviderStateOwner(parent: root2);
 
-    expect(provider.readOwner(owner), notifier);
-    expect(provider.state.readOwner(owner), 42);
-  });
   test('overriding the provider overrides provider.state too', () {
     final notifier = TestNotifier(42);
     final provider = StateNotifierProvider((_) => TestNotifier());
-    final root = ProviderStateOwner();
-    final owner = ProviderStateOwner(
-      parent: root,
+    final container = ProviderContainer(
       overrides: [
-        provider.overrideAs(StateNotifierProvider((_) => TestNotifier(10)))
+        provider.overrideWithProvider(
+            StateNotifierProvider((_) => TestNotifier(10)))
       ],
     );
 
     // does not crash
-    owner.updateOverrides([
-      provider.overrideAs(StateNotifierProvider((_) => notifier)),
+    container.updateOverrides([
+      provider.overrideWithProvider(StateNotifierProvider((_) => notifier)),
     ]);
 
-    expect(provider.readOwner(owner), notifier);
-    expect(provider.state.readOwner(owner), 42);
+    expect(container.read(provider), notifier);
+    expect(container.read(provider.state), 42);
 
     notifier.increment();
 
-    expect(provider.state.readOwner(owner), 43);
+    expect(container.read(provider.state), 43);
   });
+
   test('can specify name', () {
     final provider = StateNotifierProvider(
       (_) => TestNotifier(),
@@ -94,17 +66,18 @@ void main() {
     expect(provider2.name, isNull);
     expect(provider2.state.name, isNull);
   });
+
   test('disposes the notifier when provider is unmounted', () {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider<TestNotifier>((_) {
       return notifier;
     });
-    final owner = ProviderStateOwner();
+    final container = ProviderContainer();
 
-    expect(provider.readOwner(owner), notifier);
+    expect(container.read(provider), notifier);
     expect(notifier.mounted, isTrue);
 
-    owner.dispose();
+    container.dispose();
 
     expect(notifier.mounted, isFalse);
   });
@@ -115,10 +88,10 @@ void main() {
       return notifier;
     });
     final listener = ControllerListenerMock();
-    final owner = ProviderStateOwner();
+    final container = ProviderContainer();
 
     final sub = provider.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: () {},
       onChange: listener,
     );
@@ -129,38 +102,40 @@ void main() {
     notifier.increment();
 
     verifyNoMoreInteractions(listener);
-    sub.flush();
+    sub.read();
 
     verifyNoMoreInteractions(listener);
 
-    owner.dispose();
+    container.dispose();
     await Future.value(null);
 
     verifyNoMoreInteractions(listener);
   });
+
   test('provider subscribe callback never called', () async {
     final provider = StateNotifierProvider<TestNotifier>((_) {
       return TestNotifier();
     });
     final listener = ListenerMock();
-    final owner = ProviderStateOwner();
+    final container = ProviderContainer();
 
     final sub = provider.state.addLazyListener(
-      owner,
+      container,
       mayHaveChanged: () {},
       onChange: listener,
     );
-    verify(listener(argThat(equals(0)))).called(1);
+
+    verify(listener(0)).called(1);
     verifyNoMoreInteractions(listener);
 
-    provider.readOwner(owner).increment();
+    container.read(provider).increment();
 
     verifyNoMoreInteractions(listener);
-    sub.flush();
+    sub.read();
     verify(listener(1)).called(1);
     verifyNoMoreInteractions(listener);
 
-    owner.dispose();
+    container.dispose();
     await Future.value(null);
 
     verifyNoMoreInteractions(listener);

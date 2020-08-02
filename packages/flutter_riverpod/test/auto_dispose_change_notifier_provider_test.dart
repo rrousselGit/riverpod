@@ -1,19 +1,20 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/src/internals.dart' as internals;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
+import 'utils.dart';
+
 void main() {
   test('auto-dispose notifier when stop listening', () async {
-    final owner = ProviderStateOwner();
+    final container = ProviderContainer();
     final onDispose = OnDisposeMock();
     final provider = ChangeNotifierProvider.autoDispose((ref) {
       ref.onDispose(onDispose);
       return ValueNotifier(0);
     });
 
-    final removeListener = provider.watchOwner(owner, (value) {});
+    final removeListener = provider.watchOwner(container, (value) {});
 
     removeListener();
 
@@ -24,8 +25,9 @@ void main() {
     verify(onDispose()).called(1);
     verifyNoMoreInteractions(onDispose);
   });
+
   test('family', () {
-    final owner = ProviderStateOwner();
+    final container = ProviderContainer();
     final provider = ChangeNotifierProvider.autoDispose
         .family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
@@ -33,8 +35,8 @@ void main() {
     final listener1 = Listener<ValueNotifier<int>>();
     final listener2 = Listener<ValueNotifier<int>>();
 
-    provider(0).watchOwner(owner, listener1);
-    provider(42).watchOwner(owner, listener2);
+    provider(0).watchOwner(container, listener1);
+    provider(42).watchOwner(container, listener2);
 
     verify(listener1(argThat(
       isA<ValueNotifier<int>>().having((s) => s.value, 'value', 0),
@@ -46,19 +48,20 @@ void main() {
     ))).called(1);
     verifyNoMoreInteractions(listener2);
   });
+
   test('family override', () {
     final provider = ChangeNotifierProvider.autoDispose
         .family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
     });
-    final owner = ProviderStateOwner(overrides: [
-      provider.overrideAs((ref, value) => ValueNotifier(value * 2))
+    final container = ProviderContainer(overrides: [
+      provider.overrideWithProvider((ref, value) => ValueNotifier(value * 2))
     ]);
     final listener1 = Listener<ValueNotifier<int>>();
     final listener2 = Listener<ValueNotifier<int>>();
 
-    provider(0).watchOwner(owner, listener1);
-    provider(42).watchOwner(owner, listener2);
+    provider(0).watchOwner(container, listener1);
+    provider(42).watchOwner(container, listener2);
 
     verify(listener1(argThat(
       isA<ValueNotifier<int>>().having((s) => s.value, 'value', 0),
@@ -70,13 +73,7 @@ void main() {
     ))).called(1);
     verifyNoMoreInteractions(listener2);
   });
-  test('can be assigned to provider', () {
-    // ignore: unused_local_variable
-    final internals.AutoDisposeProvider<ValueNotifier<int>> provider =
-        ChangeNotifierProvider.autoDispose((_) {
-      return ValueNotifier(0);
-    });
-  });
+
   test('can specify name', () {
     final provider = ChangeNotifierProvider.autoDispose(
       (_) => ValueNotifier(0),
@@ -97,9 +94,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, read) {
+        child: Consumer((c, watch) {
           return Text(
-            read(provider).count.toString(),
+            watch(provider).count.toString(),
             textDirection: TextDirection.ltr,
           );
         }),

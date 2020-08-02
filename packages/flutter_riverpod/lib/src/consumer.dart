@@ -3,7 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'framework.dart';
 import 'internals.dart';
 
-typedef ConsumerBuilder = Widget Function(BuildContext context, Reader read);
+typedef ConsumerBuilder = Widget Function(
+    BuildContext context, ScopedReader watch);
 
 /// Listen to a provider and build a widget tree out of it.
 ///
@@ -86,9 +87,9 @@ class Consumer extends StatefulWidget {
 }
 
 class _ConsumerState extends State<Consumer> {
-  ProviderStateOwner _owner;
-  var _dependencies = <ProviderBase, _Dependency>{};
-  Map<ProviderBase, _Dependency> _oldDependencies;
+  ProviderContainer _container;
+  var _dependencies = <ProviderBase, ProviderSubscription>{};
+  Map<ProviderBase, ProviderSubscription> _oldDependencies;
   bool _debugSelecting;
   Widget _buildCache;
   // initialized at true for the first build
@@ -104,11 +105,11 @@ class _ConsumerState extends State<Consumer> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _isExternalBuild = true;
-    final newOwner = ProviderStateOwnerScope.of(context);
-    if (_owner != newOwner) {
-      _owner = newOwner;
+    final newContainer = ProviderScope.containerOf(context);
+    if (_container != newContainer) {
+      _container = newContainer;
       for (final dependency in _dependencies.values) {
-        dependency.subscription.close();
+        dependency.close();
       }
       _dependencies.clear();
     }
@@ -118,7 +119,7 @@ class _ConsumerState extends State<Consumer> {
   Widget build(BuildContext context) {
     var didFlush = false;
     for (final dep in _dependencies.values) {
-      if (dep.subscription.flush()) {
+      if (dep.flush()) {
         didFlush = true;
       }
     }
@@ -142,13 +143,13 @@ class _ConsumerState extends State<Consumer> {
         return true;
       }(), '');
       for (final dep in _oldDependencies.values) {
-        dep.subscription.close();
+        dep.close();
       }
       _oldDependencies = null;
     }
   }
 
-  Res _reader<Res>(ProviderBase<ProviderDependencyBase, Res> target) {
+  Res _reader<Res>(ProviderBase<Object, Res> target) {
     assert(
       _debugSelecting,
       'Cannot use `read` outside of the body of the Consumer callback',
@@ -160,27 +161,22 @@ class _ConsumerState extends State<Consumer> {
         return oldDependency;
       }
 
-      final state = _owner.readProviderState(target);
-
-      final dep = _Dependency();
-      dep.subscription = state.addLazyListener(
-        mayHaveChanged: (context as Element).markNeedsBuild,
-        onChange: (value) => dep._state = value,
+      return _container.listen<Res>(
+        target,
+        mayHaveChanged: _mayHaveChanged,
       );
-      return dep;
-    })._state as Res;
+    }).read() as Res;
+  }
+
+  void _mayHaveChanged(ProviderSubscription sub) {
+    (context as Element).markNeedsBuild();
   }
 
   @override
   void dispose() {
     for (final dependency in _dependencies.values) {
-      dependency.subscription.close();
+      dependency.close();
     }
     super.dispose();
   }
-}
-
-class _Dependency {
-  ProviderSubscription subscription;
-  Object _state;
 }

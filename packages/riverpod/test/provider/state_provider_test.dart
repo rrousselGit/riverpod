@@ -2,30 +2,21 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
+import '../utils.dart';
+
 void main() {
-  test('StateNotifierProviderDependency can be assigned to ProviderDependency',
-      () async {
-    final provider = StateProvider((ref) => 0);
-    final owner = ProviderStateOwner();
-
-    // ignore: omit_local_variable_types
-    final ProviderDependency<StateController<int>> dep =
-        owner.ref.dependOn(provider);
-
-    await expectLater(dep.value.state, 0);
-  });
   test('StateProvideyFamily', () async {
     final provider = StateProvider.family<String, int>((ref, a) {
       return '$a';
     });
-    final owner = ProviderStateOwner();
+    final container = ProviderContainer();
 
     expect(
-      provider(0).readOwner(owner),
+      container.read(provider(0)),
       isA<StateController>().having((s) => s.state, 'state', '0'),
     );
     expect(
-      provider(1).readOwner(owner),
+      container.read(provider(1)),
       isA<StateController>().having((s) => s.state, 'state', '1'),
     );
   });
@@ -34,40 +25,71 @@ void main() {
     final provider = StateProvider.family<String, int>((ref, a) {
       return '$a';
     });
-    final owner = ProviderStateOwner(overrides: [
-      provider.overrideAs((ref, a) => 'override $a'),
+    final container = ProviderContainer(overrides: [
+      provider.overrideWithProvider((ref, a) => 'override $a'),
     ]);
 
     expect(
-      provider(0).readOwner(owner),
+      container.read(provider(0)),
       isA<StateController>().having((s) => s.state, 'state', 'override 0'),
     );
     expect(
-      provider(1).readOwner(owner),
+      container.read(provider(1)),
       isA<StateController>().having((s) => s.state, 'state', 'override 1'),
     );
   });
+
   test('Expose a state and allows modifying it', () {
-    final owner = ProviderStateOwner();
+    final container = ProviderContainer();
     final provider = StateProvider((ref) => 0);
     final listener = Listener();
 
-    final controller = provider.readOwner(owner);
+    final controller = container.read(provider);
     expect(controller.state, 0);
 
-    provider.watchOwner(owner, listener);
+    provider.watchOwner(container, listener);
     verify(listener(controller));
     verifyNoMoreInteractions(listener);
-    expect(controller.mounted, true);
 
     controller.state = 42;
 
     verify(listener(controller));
     verifyNoMoreInteractions(listener);
+  });
 
-    owner.dispose();
+  test('disposes the controller when the container is disposed', () {
+    final container = ProviderContainer();
+    final provider = StateProvider((ref) => 0);
+
+    final controller = container.read(provider);
+
+    expect(controller.mounted, true);
+
+    container.dispose();
 
     expect(controller.mounted, false);
+  });
+
+  test('disposes the controller when the provider is re-evaluated', () {
+    final container = ProviderContainer();
+    final other = StateProvider((ref) => 0);
+    final provider = StateProvider((ref) => ref.watch(other).state * 2);
+
+    final otherController = container.read(other);
+    final firstController = container.read(provider);
+
+    final sub = container.listen(provider);
+
+    expect(sub.read(), firstController);
+    expect(firstController.mounted, true);
+
+    otherController.state++;
+
+    final secondController = sub.read();
+    expect(secondController, isNot(firstController));
+    expect(secondController.mounted, true);
+    expect(secondController.state, 2);
+    expect(firstController.mounted, false);
   });
 }
 

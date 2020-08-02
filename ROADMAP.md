@@ -2,23 +2,6 @@
 
 ## Riverpod
 
-<!-- - evaluate time complexity for all operations -->
-<!-- - evaluate space complexity -->
-<!-- - think about state_notifier & Computed tree-shaking -->
-
-- useProvider allows changing the provider on hot-reload.
-- future/changenotifier/...providers cannot return null
-- Cannot add dependencies during dispatching
-- FutureChangeNotifier
-- FutureStateNotifier
-- `overrideAs` AutoDispose
-- CI
-- Prevent modifying parents from children (widget -> provider)
-- DateTime provider
-- Make a common interface between ProviderDependency? (So that we can assign Provider to SetStateProvider)
-- Should some asserts be changed to exceptions in release?
-- Should some exceptions have a custom error?
-
 ## Examples
 
 - synchronizing two lists with the same editable content
@@ -64,7 +47,7 @@
 
 ## Devtool:
 
-- entire app state for the root `ProviderStateOwner`
+- entire app state for the root `ProviderContainer`
 - highlight state changes
 - Show the number of widgets that rebuilt in the same frame than the state change
 - editable state (through Freezed/copyWith/state_notifier)

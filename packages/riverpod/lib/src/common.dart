@@ -1,30 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:meta/meta.dart';
 
-import 'framework/framework.dart';
-import 'future_provider/future_provider.dart';
-import 'provider/provider.dart';
-import 'stream_provider/stream_provider.dart';
+import 'future_provider.dart' show FutureProvider;
+import 'stream_provider.dart' show StreamProvider;
 
 part 'common.freezed.dart';
-
-/// A callback used by providers to create the value exposed.
-///
-/// If an exception is thrown within that callback, all attempts at reading
-/// the provider associated with the given callback will throw.
-///
-/// The parameter [ref] can be used to interact with other providers
-/// and the life-cycles of this provider.
-///
-/// See also:
-///
-/// - [ProviderReference], which exposes the methods to read other providers.
-/// - [Provider], a provier that uses [Create] to expose an immutable value.
-typedef Create<Result, Ref extends ProviderReference> = Result Function(
-  Ref ref,
-);
-
-typedef VoidCallback = void Function();
 
 /// An utility for safely manipulating asynchronous data.
 ///

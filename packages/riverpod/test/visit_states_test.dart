@@ -12,21 +12,19 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.dependOn(a);
+      ref.read(a);
       return B();
     });
     final c = Provider<C>((ref) {
-      ref.dependOn(b);
+      ref.read(b);
       return C();
     });
 
     final perm = Permutations(3, [a, b, c]);
     for (final permutation in perm()) {
-      final owner = ProviderStateOwner();
-      for (final provider in permutation) {
-        provider.readOwner(owner);
-      }
-      expect(compute(owner), [a, b, c]);
+      final container = ProviderContainer();
+      permutation.forEach(container.read);
+      expect(compute(container), [a, b, c]);
     }
   });
   //     A
@@ -38,27 +36,25 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.dependOn(a);
+      ref.read(a);
       return B();
     });
     final c = Provider<C>((ref) {
-      ref.dependOn(a);
+      ref.read(a);
       return C();
     });
 
     final d = Provider<D>((ref) {
-      ref..dependOn(b)..dependOn(c);
+      ref..read(b)..read(c);
       return D();
     });
 
     final perm = Permutations(4, [a, b, c, d]);
     for (final permutation in perm()) {
-      final owner = ProviderStateOwner();
-      for (final provider in permutation) {
-        provider.readOwner(owner);
-      }
+      final container = ProviderContainer();
+      permutation.forEach(container.read);
       expect(
-        compute(owner),
+        compute(container),
         anyOf([
           [a, b, c, d],
           [a, c, b, d],
@@ -86,41 +82,39 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.dependOn(a);
+      ref.read(a);
       return B();
     });
 
     final e = Provider<E>((ref) {
-      ref.dependOn(b);
+      ref.read(b);
       return E();
     });
     final d = Provider<D>((ref) {
-      ref..dependOn(b)..dependOn(e);
+      ref..read(b)..read(e);
       return D();
     });
 
     final c = Provider<C>((ref) {
-      ref..dependOn(a)..dependOn(b);
+      ref..read(a)..read(b);
       return C();
     });
 
     final f = Provider<F>((ref) {
-      ref..dependOn(c)..dependOn(e);
+      ref..read(c)..read(e);
       return F();
     });
     final g = Provider<G>((ref) {
-      ref..dependOn(c)..dependOn(f);
+      ref..read(c)..read(f);
       return G();
     });
 
     final perm = Permutations(7, [a, b, c, d, e, f, g]);
     for (final permutation in perm()) {
-      final owner = ProviderStateOwner();
-      for (final provider in permutation) {
-        provider.readOwner(owner);
-      }
+      final container = ProviderContainer();
+      permutation.forEach(container.read);
       expect(
-        compute(owner),
+        compute(container),
         anyOf([
           [a, b, c, e, d, f, g],
           [a, b, c, e, f, g, d],
@@ -144,27 +138,25 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.dependOn(a);
+      ref.read(a);
       return B();
     });
     final c = Provider<C>((ref) {
-      ref..dependOn(a)..dependOn(b);
+      ref..read(a)..read(b);
       return C();
     });
 
     final d = Provider<D>((ref) {
-      ref..dependOn(b)..dependOn(c);
+      ref..read(b)..read(c);
       return D();
     });
 
     final perm = Permutations(4, [a, b, c, d]);
     for (final permutation in perm()) {
-      final owner = ProviderStateOwner();
-      for (final provider in permutation) {
-        provider.readOwner(owner);
-      }
+      final container = ProviderContainer();
+      permutation.forEach(container.read);
       expect(
-        compute(owner),
+        compute(container),
         [a, b, c, d],
       );
     }
@@ -180,27 +172,25 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.dependOn(a);
+      ref.read(a);
       return B();
     });
     final c = Provider<C>((ref) {
-      ref.dependOn(b);
+      ref.read(b);
       return C();
     });
 
     final d = Provider<D>((ref) {
-      ref..dependOn(b)..dependOn(c);
+      ref..read(b)..read(c);
       return D();
     });
 
     final perm = Permutations(4, [a, b, c, d]);
     for (final permutation in perm()) {
-      final owner = ProviderStateOwner();
-      for (final provider in permutation) {
-        provider.readOwner(owner);
-      }
+      final container = ProviderContainer();
+      permutation.forEach(container.read);
       expect(
-        compute(owner),
+        compute(container),
         [a, b, c, d],
       );
     }
@@ -216,32 +206,30 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.dependOn(a);
+      ref.read(a);
       return B();
     });
     final c = Provider<C>((ref) {
-      ref.dependOn(a);
+      ref.read(a);
       return C();
     });
 
     final d = Provider<D>((ref) {
-      ref.dependOn(b);
+      ref.read(b);
       return D();
     });
 
     final e = Provider<E>((ref) {
-      ref..dependOn(d)..dependOn(c);
+      ref..read(d)..read(c);
       return E();
     });
 
     final perm = Permutations(5, [a, b, c, d, e]);
     for (final permutation in perm()) {
-      final owner = ProviderStateOwner();
-      for (final provider in permutation) {
-        provider.readOwner(owner);
-      }
+      final container = ProviderContainer();
+      permutation.forEach(container.read);
       expect(
-        compute(owner),
+        compute(container),
         anyOf([
           [a, b, d, c, e],
           [a, b, c, d, e],
@@ -250,61 +238,10 @@ void main() {
       );
     }
   });
-  //     A(0)
-  //   /   \
-  //  B(0)  C(1)
-  //  |     |
-  //  D(1)  |
-  //   \   /
-  //     E(1)
-  test('graph7', () {
-    final a = Provider<A>((ref) => A());
-
-    final b = Provider<B>((ref) {
-      ref.dependOn(a);
-      return B();
-    });
-    final c = Provider<C>((ref) {
-      ref.dependOn(a);
-      return C();
-    });
-
-    final d = Provider<D>((ref) {
-      ref.dependOn(b);
-      return D();
-    });
-
-    final e = Provider<E>((ref) {
-      ref..dependOn(d)..dependOn(c);
-      return E();
-    });
-
-    final perm = Permutations(3, [c, d, e]);
-    for (final permutation in perm()) {
-      final owner = ProviderStateOwner();
-      final owner2 = ProviderStateOwner(parent: owner, overrides: [
-        c.overrideAs(c),
-        d.overrideAs(d),
-        e.overrideAs(e),
-      ]);
-
-      for (final provider in permutation) {
-        provider.readOwner(owner2);
-      }
-
-      expect(
-        compute(owner2),
-        anyOf([
-          [c, d, e],
-          [d, c, e],
-        ]),
-      );
-    }
-  });
 }
 
-List<ProviderBase> compute(ProviderStateOwner owner) {
-  return owner.debugProviderStates.map((e) => e.provider).toList();
+List<ProviderBase> compute(ProviderContainer container) {
+  return container.debugProviderStates.map((e) => e.provider).toList();
 }
 
 class A {}

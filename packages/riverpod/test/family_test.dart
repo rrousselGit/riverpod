@@ -5,35 +5,57 @@ import 'package:riverpod/riverpod.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
+import 'utils.dart';
+
 void main() {
-  test('caches the provider per value', () {
-    final provider = Provider.family<String, int>((ref, a) => '$a');
-    final owner = ProviderStateOwner();
+  test(
+      'MyProvider.autoDispos.family removes the key when the provider is destroyed',
+      () async {
+    final family = Provider.autoDispose.family<int, int>((ref, id) => id);
+    final container = ProviderContainer();
 
-    expect(provider(42), provider(42));
-    expect(provider(42).readOwner(owner), '42');
+    final sub = container.listen(family(0));
+    final sub2 = container.listen(family(2));
 
-    expect(provider(21), provider(21));
-    expect(provider(21).readOwner(owner), '21');
+    expect(sub.read(), 0);
+    expect(sub2.read(), 2);
+    expect(family.debugKeys, unorderedEquals(<int>[0, 2]));
+
+    sub.close();
+    await Future<void>.value();
+
+    expect(family.debugKeys, [2]);
   });
+
+  test('caches the provider per value', () {
+    final family = Provider.family<String, int>((ref, a) => '$a');
+    final container = ProviderContainer();
+
+    expect(family(42), family(42));
+    expect(container.read(family(42)), '42');
+
+    expect(family(21), family(21));
+    expect(container.read(family(21)), '21');
+  });
+
   test('each provider updates their dependents independently', () {
     final controllers = {
       0: StreamController<String>(sync: true),
       1: StreamController<String>(sync: true),
     };
-    final provider = StreamProvider.family<String, int>((ref, a) {
+    final family = StreamProvider.family<String, int>((ref, a) {
       return controllers[a].stream;
     });
-    final owner = ProviderStateOwner();
+    final container = ProviderContainer();
     final listener = Listener<AsyncValue<String>>();
     final listener2 = Listener<AsyncValue<String>>();
 
-    provider(0).watchOwner(owner, listener);
+    family(0).watchOwner(container, listener);
     verify(listener(const AsyncValue.loading()));
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener2);
 
-    provider(1).watchOwner(owner, listener2);
+    family(1).watchOwner(container, listener2);
     verify(listener2(const AsyncValue.loading()));
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener2);
@@ -50,39 +72,36 @@ void main() {
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener2);
   });
-  test('Pass family and parameter properties', () {
-    final provider =
+
+  test('Pass family and argument properties', () {
+    final family =
         StateNotifierProvider.family<Counter, int>((_, a) => Counter());
     expect(
-      provider(0),
+      family(0),
       isA<StateNotifierProvider<Counter>>()
-          .having((p) => p.parameter, 'parameter', 0),
+          .having((p) => p.argument, 'argument', 0)
+          .having((p) => p.from, 'from', family),
     );
     expect(
-      provider(1),
+      family(1),
       isA<StateNotifierProvider<Counter>>()
-          .having((p) => p.parameter, 'parameter', 1),
+          .having((p) => p.from, 'from', family)
+          .having((p) => p.argument, 'argument', 1),
     );
   });
 
   test('family override', () {
-    final provider = Provider.family<String, int>((ref, a) => '$a');
-    final root = ProviderStateOwner();
-    final owner = ProviderStateOwner(parent: root, overrides: [
+    final family = Provider.family<String, int>((ref, a) => '$a');
+    final container = ProviderContainer(overrides: [
       // Provider overrides always takes over family overrides
-      provider(84).overrideAs(Provider((_) => 'Bonjour 84')),
-      provider.overrideAs((ref, a) => 'Hello $a'),
-      provider(21).overrideAs(Provider((_) => 'Hi 21')),
+      family(84).overrideWithProvider(Provider((_) => 'Bonjour 84')),
+      family.overrideWithProvider((ref, a) => 'Hello $a'),
+      family(21).overrideWithProvider(Provider((_) => 'Hi 21')),
     ]);
 
-    expect(provider(42).readOwner(root), '42');
-    expect(provider(42).readOwner(owner), 'Hello 42');
-
-    expect(provider(21).readOwner(root), '21');
-    expect(provider(21).readOwner(owner), 'Hi 21');
-
-    expect(provider(84).readOwner(root), '84');
-    expect(provider(84).readOwner(owner), 'Bonjour 84');
+    expect(container.read(family(21)), 'Hi 21');
+    expect(container.read(family(84)), 'Bonjour 84');
+    expect(container.read(family(42)), 'Hello 42');
   });
 }
 

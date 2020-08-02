@@ -21,9 +21,8 @@ class StateProviderBuilder {
   /// Marking a provider with `autoDispose` has two effects:
   ///
   /// - this adds a new property on the `ref` parameter of your provider: `maintainState`
-  /// - the `readOwner(ProviderStateOwner)` and `read(BuildContext)` methods
-  ///   of a provider are removed.
-  ///   It is no-longer possible to read a provider without listening to it.
+  /// - It is no-longer possible to write `myProvider.read(BuildContext)` and
+  ///   `ProviderContainer.read(myProvider)`.
   ///
   /// The `maintainState` property is a boolean (`false` by default) that allows
   /// the provider to tell Riverpod if the state of the provider should be preserved
@@ -260,7 +259,7 @@ class StateProviderFamilyBuilder {
     T Function(ProviderReference ref, Value value) create, {
     String name,
   }) {
-    return StateProviderFamily(create);
+    return StateProviderFamily(create, name: name);
   }
 }
 
@@ -299,7 +298,7 @@ class StateNotifierProviderFamilyBuilder {
     T Function(ProviderReference ref, Value value) create, {
     String name,
   }) {
-    return StateNotifierProviderFamily(create);
+    return StateNotifierProviderFamily(create, name: name);
   }
 
   /// {@macro riverpod.autoDispose}
@@ -342,7 +341,7 @@ class ProviderFamilyBuilder {
     T Function(ProviderReference ref, Value value) create, {
     String name,
   }) {
-    return ProviderFamily(create);
+    return ProviderFamily(create, name: name);
   }
 
   /// {@macro riverpod.autoDispose}
@@ -385,7 +384,7 @@ class FutureProviderFamilyBuilder {
     Future<T> Function(ProviderReference ref, Value value) create, {
     String name,
   }) {
-    return FutureProviderFamily(create);
+    return FutureProviderFamily(create, name: name);
   }
 
   /// {@macro riverpod.autoDispose}
@@ -428,12 +427,45 @@ class StreamProviderFamilyBuilder {
     Stream<T> Function(ProviderReference ref, Value value) create, {
     String name,
   }) {
-    return StreamProviderFamily(create);
+    return StreamProviderFamily(create, name: name);
   }
 
   /// {@macro riverpod.autoDispose}
   AutoDisposeStreamProviderFamilyBuilder get autoDispose {
     return const AutoDisposeStreamProviderFamilyBuilder();
+  }
+}
+
+/// Builds a [AutoDisposeStateProvider].
+class AutoDisposeStateProviderBuilder {
+  /// Builds a [AutoDisposeStateProvider].
+  const AutoDisposeStateProviderBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeStateProvider<T> call<T>(
+    T Function(AutoDisposeProviderReference ref) create, {
+    String name,
+  }) {
+    return AutoDisposeStateProvider(create, name: name);
+  }
+
+  /// {@macro riverpod.family}
+  AutoDisposeStateProviderFamilyBuilder get family {
+    return const AutoDisposeStateProviderFamilyBuilder();
+  }
+}
+
+/// Builds a [AutoDisposeStateProviderFamily].
+class AutoDisposeStateProviderFamilyBuilder {
+  /// Builds a [AutoDisposeStateProviderFamily].
+  const AutoDisposeStateProviderFamilyBuilder();
+
+  /// {@macro riverpod.family}
+  AutoDisposeStateProviderFamily<T, Value> call<T, Value>(
+    T Function(AutoDisposeProviderReference ref, Value value) create, {
+    String name,
+  }) {
+    return AutoDisposeStateProviderFamily(create, name: name);
   }
 }
 
@@ -467,7 +499,7 @@ class AutoDisposeStateNotifierProviderFamilyBuilder {
     T Function(AutoDisposeProviderReference ref, Value value) create, {
     String name,
   }) {
-    return AutoDisposeStateNotifierProviderFamily(create);
+    return AutoDisposeStateNotifierProviderFamily(create, name: name);
   }
 }
 
@@ -500,7 +532,7 @@ class AutoDisposeProviderFamilyBuilder {
     T Function(AutoDisposeProviderReference ref, Value value) create, {
     String name,
   }) {
-    return AutoDisposeProviderFamily(create);
+    return AutoDisposeProviderFamily(create, name: name);
   }
 }
 
@@ -533,7 +565,7 @@ class AutoDisposeFutureProviderFamilyBuilder {
     Future<T> Function(AutoDisposeProviderReference ref, Value value) create, {
     String name,
   }) {
-    return AutoDisposeFutureProviderFamily(create);
+    return AutoDisposeFutureProviderFamily(create, name: name);
   }
 }
 
@@ -566,6 +598,6 @@ class AutoDisposeStreamProviderFamilyBuilder {
     Stream<T> Function(AutoDisposeProviderReference ref, Value value) create, {
     String name,
   }) {
-    return AutoDisposeStreamProviderFamily(create);
+    return AutoDisposeStreamProviderFamily(create, name: name);
   }
 }

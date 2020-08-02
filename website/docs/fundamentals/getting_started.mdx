@@ -61,7 +61,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.11.0
-  hooks_riverpod: ^0.5.1
+  hooks_riverpod: ^0.6.0-dev
 ```
 
 Then run `flutter pub get`.
@@ -77,7 +77,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^0.5.1
+  flutter_riverpod: ^0.6.0-dev
 ```
 
 Then run `flutter pub get`.
@@ -90,7 +90,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  riverpod: ^0.5.1
+  riverpod: ^0.6.0-dev
 ```
 
 Then run `pub get`.
@@ -192,9 +192,9 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(title: Text('Example')),
         body: Center(
           // A widget that can consume providers
-          child: Consumer((context, read) {
+          child: Consumer((context, watch) {
             // Subscribes Consumer to helloWorldProvider
-            final value = read(helloWorldProvider);
+            final value = watch(helloWorldProvider);
             return Text(value);
           }),
         ),
@@ -220,10 +220,10 @@ final helloWorldProvider = Provider((_) => 'Hello world');
 
 void main() {
   // This object is where the state of our providers will be stored.
-  final owner = ProviderStateOwner();
+  final container = ProviderContainer();
 
-  // Thanks to "owner", we can read our provider.
-  final value = helloWorldProvider.readOwner(owner);
+  // Thanks to "container", we can read our provider.
+  final value = container.read(helloWorldProvider);
 
   print(value); // Hello world
 }

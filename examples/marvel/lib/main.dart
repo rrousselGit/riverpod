@@ -17,7 +17,7 @@ void main() {
       // uncomment to mock the HTTP requests
 
       // overrides: [
-      //   repositoryProvider.overrideAs(
+      //   repositoryProvider.overrideWithProvider(
       //     Provider(
       //       (ref) => MarvelRepository(ref, client: FakeDio(null)),
       //     ),
@@ -50,7 +50,7 @@ class MyApp extends HookWidget {
         if (settings.name.startsWith('/characters/') && split.length == 3) {
           result = ProviderScope(
             overrides: [
-              selectedCharacterId.overrideAs(Provider((ref) => split.last))
+              selectedCharacterId.overrideWithValue(split.last),
             ],
             child: const CharacterView(),
           );

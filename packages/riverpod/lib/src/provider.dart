@@ -1,27 +1,10 @@
-import '../builders.dart';
-import '../common.dart';
-import '../framework/framework.dart';
-import '../state_notifier_provider/state_notifier_provider.dart';
-import '../stream_provider/stream_provider.dart';
+import 'builders.dart';
+import 'framework.dart';
+import 'state_notifier_provider.dart';
+import 'stream_provider.dart';
 
-part 'auto_dispose_provider.dart';
-
-/// The state to a [Provider].
-abstract class ProviderDependency<T> extends ProviderDependencyBase {
-  /// The value exposed by [Provider].
-  ///
-  /// It is guaranteed to never change.
-  T get value;
-}
-
-// ignore: public_member_api_docs
-class ProviderDependencyImpl<T> implements ProviderDependency<T> {
-  // ignore: public_member_api_docs
-  ProviderDependencyImpl(this.value);
-
-  @override
-  final T value;
-}
+part 'provider/base.dart';
+part 'provider/auto_dispose.dart';
 
 /// {@template riverpod.provider}
 /// A provider that exposes a read-only value.
@@ -225,53 +208,11 @@ class ProviderDependencyImpl<T> implements ProviderDependency<T> {
 /// });
 /// ```
 /// {@endtemplate}
-class Provider<T> extends AlwaysAliveProviderBase<ProviderDependency<T>, T> {
-  /// {@macro riverpod.provider}
-  Provider(this._create, {String name}) : super(name);
-
-  /// {@macro riverpod.family}
-  static const family = ProviderFamilyBuilder();
-
-  /// {@macro riverpod.autoDispose}
-  static const autoDispose = AutoDisposeProviderBuilder();
-
-  final Create<T, ProviderReference> _create;
-
+mixin _ProviderStateMixin<T> on ProviderStateBase<T, T> {
   @override
-  ProviderState<T> createState() => ProviderState();
-}
-
-/// The internal state of a [Provider].
-class ProviderState<T>
-    extends ProviderStateBase<ProviderDependency<T>, T, Provider<T>> {
-  @override
-  T state;
-
-  @override
-  void initState() {
-    // ignore: invalid_use_of_visible_for_testing_member
-    state = provider._create(ProviderReference(this));
-  }
-
-  @override
-  ProviderDependency<T> createProviderDependency() {
-    return ProviderDependencyImpl(state);
-  }
-}
-
-/// A family of [Provider].
-class ProviderFamily<Result, A> extends Family<Provider<Result>, A> {
-  /// Creates a value from an external parameter
-  ProviderFamily(Result Function(ProviderReference ref, A a) create)
-      : super((a) => Provider((ref) => create(ref, a)));
-
-  /// Overrides the behavior of a family for a part of the application.
-  Override overrideAs(
-    Result Function(ProviderReference ref, A value) override,
-  ) {
-    return FamilyOverride(
-      this,
-      (value) => Provider<Result>((ref) => override(ref, value as A)),
-    );
+  void valueChanged({T previous}) {
+    if (createdValue != exposedValue) {
+      exposedValue = createdValue;
+    }
   }
 }

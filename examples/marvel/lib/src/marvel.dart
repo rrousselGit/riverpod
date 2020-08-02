@@ -19,19 +19,18 @@ import 'configuration.dart';
 part 'marvel.freezed.dart';
 part 'marvel.g.dart';
 
+final dioProvider = Provider((ref) => Dio());
+
 final repositoryProvider = Provider((ref) => MarvelRepository(ref));
 
 class MarvelRepository {
   MarvelRepository(
     this._ref, {
     int Function() getCurrentTimestamp,
-    Dio client,
-  })  : _getCurrentTimestamp = getCurrentTimestamp ??
-            (() => DateTime.now().millisecondsSinceEpoch),
-        _client = client ?? Dio();
+  }) : _getCurrentTimestamp = getCurrentTimestamp ??
+            (() => DateTime.now().millisecondsSinceEpoch);
 
   final ProviderReference _ref;
-  final Dio _client;
   final int Function() _getCurrentTimestamp;
   final _characterCache = <String, Character>{};
 
@@ -80,7 +79,7 @@ class MarvelRepository {
     Map<String, Object> queryParameters,
     CancelToken cancelToken,
   }) async {
-    final configs = await _ref.dependOn(configurationsProvider).value;
+    final configs = await _ref.watch(configurationsProvider.future);
 
     final timestamp = _getCurrentTimestamp();
     final hash = md5
@@ -89,7 +88,7 @@ class MarvelRepository {
         )
         .toString();
 
-    final result = await _client.get<Map<String, Object>>(
+    final result = await _ref.read(dioProvider).get<Map<String, Object>>(
       'https://gateway.marvel.com/v1/public/$path',
       cancelToken: cancelToken,
       queryParameters: <String, Object>{
