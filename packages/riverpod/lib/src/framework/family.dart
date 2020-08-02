@@ -2,7 +2,7 @@ part of '../framework.dart';
 
 /// A base class for all *Family variants of providers.
 abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
-    P extends ProviderBase<Created, Listened>> {
+    P extends RootProvider<Created, Listened>> {
   /// A base class for all *Family variants of providers.
   Family(this._builder, this._name);
 
@@ -52,7 +52,7 @@ abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
 /// This is implemented as an extension so that providers can override the
 /// behavior of [overrideWithProvider] with a function that has a different prototype.
 extension FamilyX<Created, Listened, Param, Ref extends ProviderReference,
-        P extends ProviderBase<Created, Listened>>
+        P extends RootProvider<Created, Listened>>
     on Family<Created, Listened, Param, Ref, P> {
   /// Overrides the behavior of a family for a part of the application.
   ///
@@ -75,6 +75,6 @@ class FamilyOverride implements Override {
   /// Do not use
   FamilyOverride(this._family, this._createOverride);
 
-  final ProviderBase Function(dynamic param) _createOverride;
+  final RootProvider Function(dynamic param) _createOverride;
   final Family _family;
 }

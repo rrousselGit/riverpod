@@ -7,6 +7,42 @@ import 'package:mockito/mockito.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 void main() {
+  testWidgets('useProvider can read scoped providers', (tester) async {
+    final provider = ScopedProvider((_) => 0);
+
+    final child = HookBuilder(
+      builder: (context) {
+        final value = useProvider(provider);
+        return Text(
+          '$value',
+          textDirection: TextDirection.ltr,
+        );
+      },
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          provider.overrideWithValue(42),
+        ],
+        child: child,
+      ),
+    );
+
+    expect(find.text('42'), findsOneWidget);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          provider.overrideWithValue(21),
+        ],
+        child: child,
+      ),
+    );
+
+    expect(find.text('21'), findsOneWidget);
+  });
+
   testWidgets(
       'mutliple useProviders, when one of them forces rebuild, all dependencies are still flushed',
       (tester) async {

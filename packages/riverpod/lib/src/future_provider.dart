@@ -76,7 +76,7 @@ part 'future_provider/auto_dispose.dart';
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no-longer needed.
 /// {@endtemplate}
-mixin _FutureProviderMixin<T> on ProviderBase<Future<T>, AsyncValue<T>> {
+mixin _FutureProviderMixin<T> on RootProvider<Future<T>, AsyncValue<T>> {
   @override
   Override overrideWithValue(AsyncValue<T> value) {
     return ProviderOverride(

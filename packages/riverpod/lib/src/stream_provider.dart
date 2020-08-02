@@ -9,7 +9,7 @@ import 'provider.dart';
 part 'stream_provider/base.dart';
 part 'stream_provider/auto_dispose.dart';
 
-mixin _StreamProviderMixin<T> on ProviderBase<Stream<T>, AsyncValue<T>> {
+mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
   @override
   Override overrideWithValue(AsyncValue<T> value) {
     return ProviderOverride(
@@ -50,7 +50,7 @@ mixin _StreamProviderMixin<T> on ProviderBase<Stream<T>, AsyncValue<T>> {
   ///
   /// If the [StreamProvider] was overriden using `overrideWithValue`,
   /// a stream will be generated and manipulated based on the [AsyncValue] used.
-  ProviderBase<Stream<T>, Stream<T>> get stream;
+  RootProvider<Stream<T>, Stream<T>> get stream;
 
   /// Exposes a [Future] which resolves with the last value or error emitted.
   ///
@@ -149,7 +149,7 @@ mixin _StreamProviderMixin<T> on ProviderBase<Stream<T>, AsyncValue<T>> {
   /// ```
   ///
   /// which is the expepected behavior.
-  ProviderBase<Object, Future<T>> get last;
+  RootProvider<Object, Future<T>> get last;
 }
 
 /// {@template riverpod.streamprovider}
@@ -256,7 +256,7 @@ Future<T> _readLast<T>(
 
 class _CreatedStreamProvider<T> extends Provider<Stream<T>> {
   _CreatedStreamProvider(
-    ProviderBase<Stream<T>, Object> provider, {
+    RootProvider<Stream<T>, Object> provider, {
     String name,
   }) : super((ref) {
           ref.watch(provider);
@@ -272,7 +272,7 @@ class _CreatedStreamProvider<T> extends Provider<Stream<T>> {
 class _AutoDisposeCreatedStreamProvider<T>
     extends AutoDisposeProvider<Stream<T>> {
   _AutoDisposeCreatedStreamProvider(
-    ProviderBase<Stream<T>, Object> provider, {
+    RootProvider<Stream<T>, Object> provider, {
     String name,
   }) : super((ref) {
           ref.watch(provider);

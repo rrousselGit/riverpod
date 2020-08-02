@@ -8,7 +8,7 @@ import 'package:riverpod/riverpod.dart';
 
 import 'utils.dart';
 
-Matcher isProvider(ProviderBase provider) {
+Matcher isProvider(RootProvider provider) {
   return isA<ProviderElement>().having(
     (e) => e.origin,
     'provider',
@@ -326,7 +326,7 @@ void main() {
     }, name: 'named');
     final container = ProviderContainer();
 
-    expect(container.debugProviderValues, <ProviderBase, Object>{});
+    expect(container.debugProviderValues, <RootProvider, Object>{});
 
     expect(container.read(unnamed), 0);
 

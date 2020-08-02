@@ -473,6 +473,40 @@ void main() {
     expect(find.text('0'), findsNothing);
     expect(find.text('42'), findsOneWidget);
   });
+
+  testWidgets('can read scoped providers', (tester) async {
+    final provider = ScopedProvider((_) => 0);
+
+    final child = Consumer((context, watch) {
+      final value = watch(provider);
+      return Text(
+        '$value',
+        textDirection: TextDirection.ltr,
+      );
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          provider.overrideWithValue(42),
+        ],
+        child: child,
+      ),
+    );
+
+    expect(find.text('42'), findsOneWidget);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          provider.overrideWithValue(21),
+        ],
+        child: child,
+      ),
+    );
+
+    expect(find.text('21'), findsOneWidget);
+  });
 }
 
 class TestNotifier extends StateNotifier<int> {

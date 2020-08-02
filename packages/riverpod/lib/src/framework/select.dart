@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import '../framework.dart';
 
 /// {@template riverpod.SelectorSubscription}
-/// A [ProviderSubscription] for [ProviderBase.select], that notify its listeners
+/// A [ProviderSubscription] for [RootProvider.select], that notify its listeners
 /// only if the result of the selector changes.
 /// {@endtemplate}
 class SelectorSubscription<Input, Output>
@@ -12,7 +12,7 @@ class SelectorSubscription<Input, Output>
   SelectorSubscription({
     @required ProviderContainer container,
     @required Output Function(Input) selector,
-    @required ProviderBase<Object, Input> provider,
+    @required RootProvider<Object, Input> provider,
     void Function(SelectorSubscription<Input, Output> sub) mayHaveChanged,
     void Function(SelectorSubscription<Input, Output> sub) didChange,
   })  : _selector = selector,
