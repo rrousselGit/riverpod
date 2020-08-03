@@ -6,7 +6,7 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
 Before diving into the inner mechanisms of [Riverpod], let's start with the basics:
-Installing up [Riverpod], and then writing a "Hello world".
+Installing up [Riverpod], then writing a "Hello world".
 
 You can also watch this video which explains the problems that [Riverpod] tries
 to solve.
@@ -20,10 +20,13 @@ to solve.
   allowfullscreen
 ></iframe>
 
+(Note: this video does not explain how [Riverpod] works. It only explains the
+problems)
+
 ## What package to install
 
 Before anything, you need to be aware that [Riverpod] is spread across multiple packages, with slightly different usage.  
-As such, the variant of [Riverpod] that you will want to install depends on the app you are making.
+The variant of [Riverpod] that you will want to install depends on the app you are making.
 
 You can refer to the following table to help you decide which package to use:
 
@@ -52,7 +55,7 @@ Once you know what package you want to install, proceed to add the following to 
 >
 <TabItem value="hooks_riverpod">
 
-```yaml
+```yaml title="pubspec.yaml"
 environment:
   sdk: ">=2.7.0 <3.0.0"
   flutter: ">= 1.17.0"
@@ -69,7 +72,7 @@ Then run `flutter pub get`.
 </TabItem>
 <TabItem value="flutter_riverpod">
 
-```yaml
+```yaml title="pubspec.yaml"
 environment:
   sdk: ">=2.7.0 <3.0.0"
   flutter: ">= 1.17.0"
@@ -85,7 +88,7 @@ Then run `flutter pub get`.
 </TabItem>
 <TabItem value="riverpod">
 
-```yaml
+```yaml title="pubspec.yaml"
 environment:
   sdk: ">=2.7.0 <3.0.0"
 
@@ -117,8 +120,7 @@ The following snippets showcase our to use our new dependency to make a "Hello w
 >
 <TabItem value="hooks_riverpod">
 
-```dart
-// lib/main.dart
+```dart title="lib/main.dart"
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -164,8 +166,7 @@ This will render "Hello world" in on your device.
 </TabItem>
 <TabItem value="flutter_riverpod">
 
-```dart
-// lib/main.dart
+```dart title="lib/main.dart"
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -210,8 +211,7 @@ This will render "Hello world" in on your device.
 </TabItem>
 <TabItem value="riverpod">
 
-```dart
-// lib/main.dart
+```dart title="lib/main.dart"
 import 'package:riverpod/riverpod.dart';
 
 // We create a "provider", which will store a value (here "Hello world").

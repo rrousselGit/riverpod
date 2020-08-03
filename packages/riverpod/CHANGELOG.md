@@ -70,18 +70,18 @@
   Before:
 
   ```dart
-  final streamProvider = StreamProvider<T>(...);
+  final futureProvider = FutureProvider<T>(...);
   final example = Provider((ref) {
-    Stream<T> stream = ref.read(streamProvider);
+    Future<T> future = ref.read(futureProvider);
   });
   ```
 
   After:
 
   ```dart
-  final streamProvider = StreamProvider<T>(...);
+  final futureProvider = FutureProvider<T>(...);
   final example = Provider((ref) {
-    Stream<T> stream = ref.watch(streamProvider.future);
+    Future<T> future = ref.watch(futureProvider.future);
   });
   ```
 
