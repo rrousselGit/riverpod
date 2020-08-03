@@ -790,7 +790,9 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement.provider}.
       state._createdValue = _provider._create(this);
       state.valueChanged(previous: previous);
     } catch (err, stack) {
-      _exception = ProviderException._(err, stack, _provider);
+      if (!state.handleError(err, stack)) {
+        _exception = ProviderException._(err, stack, _provider);
+      }
     } finally {
       assert(() {
         _debugCurrentlyBuildingElement = previouslyBuildingElement;
@@ -844,6 +846,17 @@ abstract class ProviderStateBase<Created, Listened> {
   /// On first call, **must** set [exposedValue].
   @protected
   void valueChanged({Created previous});
+
+  /// Optionally handles errors inside the `create` callback.
+  ///
+  /// This method should return `true` if it handled the error successfully,
+  /// otherwise `false`.
+  ///
+  /// Always returns `false` by default.
+  @protected
+  bool handleError(Object error, StackTrace stackTrace) {
+    return false;
+  }
 
   /// Release the resources associated with this state.
   @protected

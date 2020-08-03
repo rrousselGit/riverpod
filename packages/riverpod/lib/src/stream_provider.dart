@@ -235,6 +235,12 @@ mixin _StreamProviderStateMixin<T>
   }
 
   @override
+  bool handleError(Object error, StackTrace stackTrace) {
+    exposedValue = AsyncValue.error(error, stackTrace);
+    return true;
+  }
+
+  @override
   void dispose() {
     sub?.cancel();
     super.dispose();

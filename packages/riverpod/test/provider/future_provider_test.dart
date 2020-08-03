@@ -41,6 +41,17 @@ void main() {
     verifyNoMoreInteractions(listener);
   });
 
+    test('throwing inside "create" result in an AsyncValue.error', () {
+    // ignore: only_throw_errors
+    final provider = FutureProvider<int>((ref) => throw 42);
+    final container = ProviderContainer();
+
+    expect(
+      container.read(provider),
+      isA<AsyncError>().having((s) => s.error, 'error', 42),
+    );
+  });
+
   test('FutureProvider.autoDispose.family override', () async {
     final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
       return Future.value(a * 2);
