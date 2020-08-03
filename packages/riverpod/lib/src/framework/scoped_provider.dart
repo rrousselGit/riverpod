@@ -72,6 +72,7 @@ typedef ScopedCreate<T> = T Function(ScopedReader watch);
 /// not rebuild unless what it uses changed.
 /// {@endtemplate}
 class ScopedProvider<Listened> extends ProviderBase<Listened, Listened> {
+  /// {@macro riverpod.scopedprovider}
   ScopedProvider(
     ScopedCreate<Listened> create, {
     String name,
