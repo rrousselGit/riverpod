@@ -209,9 +209,9 @@ part 'provider/auto_dispose.dart';
 ///   return streamController.stream;
 /// });
 /// ```
-/// 
+///
 /// See also:
-/// 
+///
 /// - [Provider.autoDispose], to automatically destroy the state of a provider
 ///   when that provider is no-longer listened.
 /// - [Provider.family], to allow providers to create a value from external parameters.

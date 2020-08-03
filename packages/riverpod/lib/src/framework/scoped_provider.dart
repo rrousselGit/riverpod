@@ -24,7 +24,7 @@ typedef ScopedCreate<T> = T Function(ScopedReader watch);
 /// final currentProductIndex = ScopedProvider<int>((_) => throw UnimplementedError());
 /// ```
 ///
-/// **Note**:  
+/// **Note**:
 /// We made our [ScopedProvider] throw by default, as our list items by design
 /// requires an index to be specified.
 /// Another possibility would be to return `null` and have the item handle the

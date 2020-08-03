@@ -148,7 +148,7 @@ abstract class ProviderBase<Created, Listened>
 ///
 /// By making typing a parameter as [RootProvider] instead of [ProviderBase],
 /// this excludes [ScopedProvider] – which may not be supported by your code
-/// due to its particular behavior. 
+/// due to its particular behavior.
 /// {@endtemplate}
 abstract class RootProvider<Created, Listened>
     extends ProviderBase<Created, Listened> {

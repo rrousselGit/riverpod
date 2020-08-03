@@ -7,7 +7,7 @@ typedef ConsumerBuilder = Widget Function(
     BuildContext context, ScopedReader watch);
 
 /// Listen to a provider and build a widget tree out of it.
-/// 
+///
 /// Using [Consumer], this allows the widget tree to listen to changes on provider,
 /// so that the UI automatically updates when needed.
 ///
@@ -32,10 +32,10 @@ typedef ConsumerBuilder = Widget Function(
 ///   }
 /// }
 /// ```
-/// 
-/// **Note**  
+///
+/// **Note**
 /// You can watch as many providers inside [Consumer] as you want to:
-/// 
+///
 /// ```dart
 /// Consumer((context, watch) {
 ///   final value = watch(someProvider);
