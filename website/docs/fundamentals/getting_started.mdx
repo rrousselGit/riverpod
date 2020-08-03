@@ -8,6 +8,18 @@ import TabItem from "@theme/TabItem";
 Before diving into the inner mechanisms of [Riverpod], let's start with the basics:
 Installing up [Riverpod], and then writing a "Hello world".
 
+You can also watch this video which explains the problems that [Riverpod] tries
+to solve.
+
+<iframe
+  width="560"
+  height="315"
+  src="https://www.youtube.com/embed/zjBulEwjzeI"
+  frameborder="0"
+  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen
+></iframe>
+
 ## What package to install
 
 Before anything, you need to be aware that [Riverpod] is spread across multiple packages, with slightly different usage.  
@@ -48,8 +60,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_hooks: ^0.10.0
-  hooks_riverpod: ^0.1.0
+  flutter_hooks: ^0.11.0
+  hooks_riverpod: ^0.6.0-dev+2
 ```
 
 Then run `flutter pub get`.
@@ -65,7 +77,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^0.1.0
+  flutter_riverpod: ^0.6.0-dev+2
 ```
 
 Then run `flutter pub get`.
@@ -78,7 +90,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  riverpod: ^0.1.0
+  riverpod: ^0.6.0-dev+2
 ```
 
 Then run `pub get`.
@@ -180,9 +192,9 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(title: Text('Example')),
         body: Center(
           // A widget that can consume providers
-          child: Consumer((context, read) {
+          child: Consumer((context, watch) {
             // Subscribes Consumer to helloWorldProvider
-            final value = read(helloWorldProvider);
+            final value = watch(helloWorldProvider);
             return Text(value);
           }),
         ),
@@ -208,10 +220,10 @@ final helloWorldProvider = Provider((_) => 'Hello world');
 
 void main() {
   // This object is where the state of our providers will be stored.
-  final owner = ProviderStateOwner();
+  final container = ProviderContainer();
 
-  // Thanks to "owner", we can read our provider.
-  final value = helloWorldProvider.readOwner(owner);
+  // Thanks to "container", we can read our provider.
+  final value = container.read(helloWorldProvider);
 
   print(value); // Hello world
 }
@@ -222,6 +234,15 @@ This will print "Hello world" in the console.
 
 </TabItem>
 </Tabs>
+
+## Going further: Installing code snippets
+
+If you are using `Flutter` and `Vscode` consider [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
+
+If you are using `Flutter` and `Android Studio` or `IntelliJ` consider [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
+
+![img](/img/snippets/greetingProvider.gif)
+![img](/img/snippets/providerFamily.gif)
 
 [riverpod]: https://github.com/rrousselgit/river_pod
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod

@@ -1,11 +1,15 @@
 import 'package:flutter/widgets.dart';
 
 import 'framework.dart';
-import 'internal.dart';
+import 'internals.dart';
 
-typedef ConsumerBuilder = Widget Function(BuildContext context, Reader read);
+typedef ConsumerBuilder = Widget Function(
+    BuildContext context, ScopedReader watch);
 
 /// Listen to a provider and build a widget tree out of it.
+///
+/// Using [Consumer], this allows the widget tree to listen to changes on provider,
+/// so that the UI automatically updates when needed.
 ///
 /// Do not modify any state or start any http request inside `builder`.
 ///
@@ -21,56 +25,23 @@ typedef ConsumerBuilder = Widget Function(BuildContext context, Reader read);
 /// class Example extends StatelessWidget {
 ///   @override
 ///   Widget build(BuildContext context) {
-///     return Consumer<String>(
-///       helloWorldProvider,
-///       builder: (context, value, child) {
-///         return Text(value); // Hello world
-///       },
-///     );
+///     return Consumer((context, watch) {
+///       final value = watch(helloWorldProvider);
+///       return Text(value); // Hello world
+///     });
 ///   }
 /// }
 /// ```
 ///
-/// # Optimising rebuilds with `child`
-///
-/// [Consumer] provides an optional `child` parameter to optimise rebuilds of
-/// the widget tree when a part of it doesn't depend on the listened value.
-///
-/// For example, we may have:
+/// **Note**
+/// You can watch as many providers inside [Consumer] as you want to:
 ///
 /// ```dart
-/// Consumer<MyTheme>(
-///   themeProvider,
-///   builder: (context, theme, child) {
-///     return ColoredBox(
-///       color: theme.primaryColor,
-///       child: Text('hello world'),
-///     );
-///   }
-/// )
-/// ```
-///
-/// This is not ideal as [Text] is inside `builder` but doesn't depend on `themeProvider`.
-/// As such, when the theme change, [Text] will rebuild for no reason.
-///
-///
-/// We could use `child` to optimise such code by writing the following:
-///
-/// ```dart
-/// Consumer<MyTheme>(
-///   themeProvider,
-///   builder: (context, theme, child) {
-///     return ColoredBox(
-///       color: theme.primaryColor,
-///       child: child,
-///     );
-///   },
-///   child: Text('hello world'),
-/// )
-/// ```
-///
-/// Notice how the [Text] is built outside of `builder`, so it'll no-longer
-/// rebuild when `themeProvider` changes.
+/// Consumer((context, watch) {
+///   final value = watch(someProvider);
+///   final another = watch(anotherProvider);
+///   ...
+/// });
 class Consumer extends StatefulWidget {
   /// Subscribes to providers and create widgets out of it
   // ignore: prefer_const_constructors_in_immutables, const is impossible to use with `builder`
@@ -86,8 +57,9 @@ class Consumer extends StatefulWidget {
 }
 
 class _ConsumerState extends State<Consumer> {
-  ProviderStateOwner _owner;
-  final _dependencies = <ProviderBase, _Dependency>{};
+  ProviderContainer _container;
+  var _dependencies = <ProviderBase, ProviderSubscription>{};
+  Map<ProviderBase, ProviderSubscription> _oldDependencies;
   bool _debugSelecting;
   Widget _buildCache;
   // initialized at true for the first build
@@ -103,11 +75,11 @@ class _ConsumerState extends State<Consumer> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _isExternalBuild = true;
-    final newOwner = ProviderStateOwnerScope.of(context);
-    if (_owner != newOwner) {
-      _owner = newOwner;
+    final newContainer = ProviderScope.containerOf(context);
+    if (_container != newContainer) {
+      _container = newContainer;
       for (final dependency in _dependencies.values) {
-        dependency.subscription.close();
+        dependency.close();
       }
       _dependencies.clear();
     }
@@ -117,7 +89,7 @@ class _ConsumerState extends State<Consumer> {
   Widget build(BuildContext context) {
     var didFlush = false;
     for (final dep in _dependencies.values) {
-      if (dep.subscription.flush()) {
+      if (dep.flush()) {
         didFlush = true;
       }
     }
@@ -132,42 +104,49 @@ class _ConsumerState extends State<Consumer> {
       return true;
     }(), '');
     try {
+      _oldDependencies = _dependencies;
+      _dependencies = {};
       return _buildCache = widget._builder(context, _reader);
     } finally {
       assert(() {
         _debugSelecting = false;
         return true;
       }(), '');
+      for (final dep in _oldDependencies.values) {
+        dep.close();
+      }
+      _oldDependencies = null;
     }
   }
 
-  Res _reader<Res>(ProviderBase<ProviderDependencyBase, Res> target) {
+  Res _reader<Res>(ProviderBase<Object, Res> target) {
     assert(
       _debugSelecting,
-      'Cannot use `read` outside of the body of the Computed callback',
+      'Cannot use `read` outside of the body of the Consumer callback',
     );
     return _dependencies.putIfAbsent(target, () {
-      final state = _owner.readProviderState(target);
+      final oldDependency = _oldDependencies?.remove(target);
 
-      final dep = _Dependency();
-      dep.subscription = state.addLazyListener(
-        mayHaveChanged: (context as Element).markNeedsBuild,
-        onChange: (value) => dep._state = value,
+      if (oldDependency != null) {
+        return oldDependency;
+      }
+
+      return _container.listen<Res>(
+        target,
+        mayHaveChanged: _mayHaveChanged,
       );
-      return dep;
-    })._state as Res;
+    }).read() as Res;
+  }
+
+  void _mayHaveChanged(ProviderSubscription sub) {
+    (context as Element).markNeedsBuild();
   }
 
   @override
   void dispose() {
     for (final dependency in _dependencies.values) {
-      dependency.subscription.close();
+      dependency.close();
     }
     super.dispose();
   }
-}
-
-class _Dependency {
-  ProviderSubscription subscription;
-  Object _state;
 }

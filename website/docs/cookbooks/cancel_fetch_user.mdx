@@ -1,3 +1,28 @@
+---
+title: Abort HTTP requests if the user leaves the screen
+---
+
+In this article we will see how the different tools offered by [Riverpod], we can
+improve the user experience by stopping HTTP requests when the user don't care
+about the result anymore.
+
+The behavior we are looking for is as followed:
+
+- When a user enter a specific screen or scroll to a specific widget, an HTTP
+  request is triggered to download the informations needed by the UI.
+
+- The user can continue interacting with the UI freely during the download,
+  including leaving the page or scrolling further (which hides the widget).
+
+- In the situation where the user leaves the page or the widget becomes hidden,
+  we will want to stop the HTTP requests associated with that widget.
+
+- If the user re-opens the page, the HTTP request should be triggered once again,
+  **unless** the request managed to complete previously, in which case we just
+  show the previously obtained result.
+
+This should allow users with a slow connection to obtain what truly matters to
+them faster.
 
 ## Real-world example: Fetching a user from its user ID
 
@@ -28,7 +53,7 @@ class UserRepository {
 final userRepositoryProvider = Provider<UserRepository>((ref) => UserRepository());
 
 final userProvider = FutureProviderFamily<User, int>((ref, userID) async {
-  final userRepository = ref.read(userRepositoryProvider).value;
+  final userRepository = ref.read(userRepositoryProvider);
   // TODO
 });
 ```
@@ -40,7 +65,7 @@ So we can combine both to perform our HTTP request:
 // ...
 
 final userProvider = FutureProviderFamily<User, int>((ref, userID) async {
-  final userRepository = ref.read(userRepositoryProvider).value;
+  final userRepository = ref.read(userRepositoryProvider);
   return userRepository.fetchUser(userID);
 });
 ```
@@ -99,3 +124,7 @@ Doing this has multiple benefits:
 
 - Our `userProvider` can be easily expanded to cancel HTTP requests if the UI
   stops listening to the user before the request was completed.
+
+[riverpod]: https://github.com/rrousselgit/river_pod
+[futureproviderfamily]: https://pub.dev/documentation/riverpod/latest/riverpod/futureproviderfamily-class.html
+[computed]: https://pub.dev/documentation/riverpod/latest/riverpod/Computed-class.html

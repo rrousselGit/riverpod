@@ -1,118 +1,90 @@
-import 'dart:async';
-import 'dart:ui';
-
+// ignore_for_file: unused_import, prefer_const_constructors
+// Ignored so that uncommenting the code to mock HTP requests is simple.
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'marvel.dart';
-
-part 'main.freezed.dart';
-
-@freezed
-abstract class ReadMore<T> with _$ReadMore<T> {
-  factory ReadMore(
-    T data, {
-    @required void Function() readMore,
-  }) = _ReadMore<T>;
-}
+import 'src/fake_marvel.dart';
+import 'src/marvel.dart';
+import 'src/screens/character_detail.dart';
+import 'src/screens/home.dart';
 
 void main() {
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(
+    ProviderScope(
+      // uncomment to mock the HTTP requests
+
+      // overrides: [
+      //   repositoryProvider.overrideWithProvider(
+      //     Provider(
+      //       (ref) => MarvelRepository(ref, client: FakeDio(null)),
+      //     ),
+      //   ),
+      // ],
+      child: MyApp(),
+    ),
+  );
 }
 
-final charactersProvider = StreamProvider((ref) async* {
-  var totalCount = 0;
-  var offset = 0;
-  var allCharacters = const <Character>[];
-
-  final repository = ref.read(repositoryProvider).value;
-
-  do {
-    final res = await repository.fetchCharacters(offset: offset);
-
-    final data = res.dataOrThrow;
-
-    totalCount = data.totalCount;
-    offset += data.characters.length;
-
-    allCharacters = [
-      ...allCharacters,
-      ...data.characters,
-    ];
-
-    final completer = Completer<void>();
-
-    yield ReadMore(allCharacters, readMore: () {
-      if (!completer.isCompleted) {
-        completer.complete();
-      }
-    });
-
-    await completer.future;
-  } while (allCharacters.length + 1 < totalCount);
-});
-
-class MyApp extends StatelessWidget {
+class MyApp extends HookWidget {
   const MyApp({Key key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Home(),
+    return MaterialApp(
+      theme: ThemeData(primarySwatch: Colors.red),
+      builder: (context, child) {
+        return _Unfocus(
+          child: child,
+        );
+      },
+      home: const Portal(child: Home()),
+      onGenerateRoute: (settings) {
+        if (settings?.name == null) {
+          return null;
+        }
+        final split = settings.name.split('/');
+        Widget result;
+        if (settings.name.startsWith('/characters/') && split.length == 3) {
+          result = ProviderScope(
+            overrides: [
+              selectedCharacterId.overrideWithValue(split.last),
+            ],
+            child: const CharacterView(),
+          );
+        }
+
+        if (result == null) {
+          return null;
+        }
+        return MaterialPageRoute<void>(builder: (context) => result);
+      },
+      routes: {
+        '/character': (c) => const CharacterView(),
+      },
     );
   }
 }
 
-class Home extends HookWidget {
-  const Home({Key key}) : super(key: key);
+/// A widget that unfocus everything when tapped.
+///
+/// This implements the "Unfocus when tapping in empty space" behavior for the
+/// entire application.
+class _Unfocus extends HookWidget {
+  const _Unfocus({Key key, this.child}) : super(key: key);
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final characters = useProvider(charactersProvider);
-
-    return characters.when(
-      loading: () => Container(
-          color: Colors.white,
-          child: const Center(child: CircularProgressIndicator())),
-      error: (err, stack) {
-        return Scaffold(
-          appBar: AppBar(title: const Text('Error')),
-          body: Center(
-            child: Text('$err'),
-          ),
-        );
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
       },
-      data: (data) {
-        return Scaffold(
-          appBar: AppBar(title: const Text('title')),
-          body: ListView.builder(
-            itemCount: data.data.length,
-            itemBuilder: (context, index) {
-              if (index + 1 == data.data.length) {
-                data.readMore();
-              }
-              return Padding(
-                padding: const EdgeInsets.all(8),
-                child: Card(
-                  child: Column(
-                    children: <Widget>[
-                      Image.network(data.data[index].thumbnail.url),
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Text(data.data[index].name),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        );
-      },
+      child: child,
     );
   }
 }

@@ -1,0 +1,34 @@
+name: counter
+description: A new Flutter project.
+
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod:
+    path: ../../flutter_riverpod
+  riverpod:
+    path: ../../riverpod
+  hooks_riverpod:
+    path: ../../hooks_riverpod
+  cupertino_icons: ^0.1.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+dependency_overrides:
+  flutter_riverpod:
+    path: ../../flutter_riverpod
+  riverpod:
+    path: ../../riverpod
+  hooks_riverpod:
+    path: ../../hooks_riverpod
+
+flutter:
+  uses-material-design: true

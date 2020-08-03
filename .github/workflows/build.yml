@@ -1,0 +1,117 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  dart:
+    runs-on: ubuntu-latest
+    container: google/dart:dev
+
+    strategy:
+      matrix:
+        package:
+          - packages/riverpod
+          - packages/riverpod/example
+        channel:
+          - master
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # It is executed separatly
+      - name: Removing example folder
+        run: rm -rf example
+        working-directory: ${{ matrix.package }}
+
+      - name: Install dependencies
+        run: dart pub get
+        working-directory: ${{ matrix.package }}
+
+      - name: Check format
+        run: dart format --set-exit-if-changed .
+        working-directory: ${{ matrix.package }}
+
+      - name: Generate
+        run: |
+          if grep -q build_runner "pubspec.yaml"; then
+            dart pub run build_runner build --delete-conflicting-outputs
+          fi
+        working-directory: ${{ matrix.package }}
+
+      - name: Analyze
+        run: dart analyze
+        working-directory: ${{ matrix.package }}
+
+      - name: Run tests
+        run: dart test
+        working-directory: ${{ matrix.package }}
+
+      - name: Coverage
+        run: |
+          if [ "${{ matrix.package }}" != "packages/riverpod/example" ]; then
+            dart pub run test_coverage
+          fi
+        working-directory: ${{ matrix.package }}
+
+      - name: Upload coverage to codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  flutter:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        package:
+          - examples/counter
+          - examples/todos
+          # - examples/marvel
+          - packages/flutter_riverpod
+          - packages/flutter_riverpod/example
+          - packages/hooks_riverpod
+          - packages/hooks_riverpod/example
+        channel:
+          - dev
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: ${{ matrix.channel }}
+
+      # It is executed separatly
+      - name: Removing example folder
+        run: rm -rf example
+        working-directory: ${{ matrix.package }}
+
+      - name: Override dependencies
+        run: ./scripts/setup_dependencies.sh
+
+      - name: Install dependencies
+        run: flutter pub get
+        working-directory: ${{ matrix.package }}
+
+      - name: Check format
+        run: flutter format --set-exit-if-changed .
+        working-directory: ${{ matrix.package }}
+
+      - name: Generate
+        run: |
+          if grep -q build_runner "pubspec.yaml"; then
+            flutter pub run build_runner build --delete-conflicting-outputs
+          fi
+
+      - name: Analyze
+        run: flutter analyze
+        working-directory: ${{ matrix.package }}
+
+      - name: Run tests
+        run: flutter test --coverage
+        working-directory: ${{ matrix.package }}
+
+      - name: Upload coverage to codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

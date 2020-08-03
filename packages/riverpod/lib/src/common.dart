@@ -1,30 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:meta/meta.dart';
 
-import 'framework/framework.dart';
-import 'future_provider/future_provider.dart';
-import 'provider/provider.dart';
-import 'stream_provider/stream_provider.dart';
+import 'future_provider.dart' show FutureProvider;
+import 'stream_provider.dart' show StreamProvider;
 
 part 'common.freezed.dart';
-
-/// A callback used by providers to create the value exposed.
-///
-/// If an exception is thrown within that callback, all attempts at reading
-/// the provider associated with the given callback will throw.
-///
-/// The parameter [ref] can be used to interact with other providers
-/// and the life-cycles of this provider.
-///
-/// See also:
-///
-/// - [ProviderReference], which exposes the methods to read other providers.
-/// - [Provider], a provier that uses [Create] to expose an immutable value.
-typedef Create<Result, Ref extends ProviderReference> = Result Function(
-  Ref ref,
-);
-
-typedef VoidCallback = void Function();
 
 /// An utility for safely manipulating asynchronous data.
 ///
@@ -57,12 +37,22 @@ typedef VoidCallback = void Function();
 /// ```
 ///
 /// If a consumer of an [AsyncValue] does not care about the loading/error
-/// state, consider using [data] to read the state.
+/// state, consider using [data] to read the state:
+///
+/// ```dart
+/// Widget build(BuildContext context) {
+///   // reads the data state directly – will be null during loading/error states
+///   final User user = useProvider(userProvider).data?.value;
+///
+///   return Text('Hello ${user?.name}');
+/// }
+/// ```
 ///
 /// See also:
 ///
 /// - [FutureProvider] and [StreamProvider], which transforms a [Future] into
 ///   an [AsyncValue].
+/// - [AsyncValue.guard], to simplify tranforming a [Future] into an [AsyncValue].
 /// - The package Freezed (https://github.com/rrousselgit/freezed), which have
 ///   generated this [AsyncValue] class and explains how [map]/[when] works.
 @freezed
@@ -77,12 +67,64 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
   /// Creates an [AsyncValue] in loading state.
   ///
   /// Prefer always using this constructor with the `const` keyword.
-  const factory AsyncValue.loading() = _Loading<T>;
+  const factory AsyncValue.loading() = AsyncLoading<T>;
 
   /// Creates an [AsyncValue] in error state.
   ///
   /// The parameter [error] cannot be `null`.
-  factory AsyncValue.error(Object error, [StackTrace stackTrace]) = _Error<T>;
+  factory AsyncValue.error(Object error, [StackTrace stackTrace]) =
+      AsyncError<T>;
+
+  /// Transforms a [Future] that may fail into something that is safe to read.
+  ///
+  /// This is useful to avoid having to do a tedious `try/catch`. Instead of:
+  ///
+  /// ```dart
+  /// class MyNotifier extends StateNotifier<AsyncValue<MyData> {
+  ///   MyNotifier(): super(const AsncValue.loading()) {
+  ///     _fetchData();
+  ///   }
+  ///
+  ///   Future<void> _fetchData() async {
+  ///     state = const AsncValue.loading();
+  ///     try {
+  ///       final response = await dio.get('my_api/data');
+  ///       final data = MyData.fromJson(response);
+  ///       state = AsyncValue.data(data);
+  ///     } catch (err, stack) {
+  ///       state = AsyncValue.error(err, stack);
+  ///     }
+  ///   }
+  /// }
+  /// ```
+  ///
+  /// which is redundant as the application grows and we need more and more of this
+  /// pattern – we can use [guard] to simplify it:
+  ///
+  ///
+  /// ```dart
+  /// class MyNotifier extends StateNotifier<AsyncValue<MyData> {
+  ///   MyNotifier(): super(const AsncValue.loading()) {
+  ///     _fetchData();
+  ///   }
+  ///
+  ///   Future<void> _fetchData() async {
+  ///     state = const AsncValue.loading();
+  ///     // does the try/catch for us like previously
+  ///     state = await AsyncValue.guard(() async {
+  ///       final response = await dio.get('my_api/data');
+  ///       final data = Data.fromJson(response);
+  ///     });
+  ///   }
+  /// }
+  /// ```
+  static Future<AsyncValue<T>> guard<T>(Future<T> Function() future) async {
+    try {
+      return AsyncValue.data(await future());
+    } catch (err, stack) {
+      return AsyncValue.error(err, stack);
+    }
+  }
 
   /// The current data, or null if in loading/error.
   ///
@@ -119,4 +161,19 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
     );
   }
   // TODO: Add a `value` extension on non-nullable AsyncValue
+
+  /// Shorthand for [when] to handle only the `data` case.
+  AsyncValue<R> whenData<R>(R Function(T value) cb) {
+    return when(
+      data: (value) {
+        try {
+          return AsyncValue.data(cb(value));
+        } catch (err, stack) {
+          return AsyncValue.error(err, stack);
+        }
+      },
+      loading: () => const AsyncValue.loading(),
+      error: (err, stack) => AsyncValue.error(err, stack),
+    );
+  }
 }

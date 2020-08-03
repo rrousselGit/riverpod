@@ -7,6 +7,7 @@ module.exports = {
   organizationName: "rrousselgit", // Usually your GitHub org/user name.
   projectName: "riverpod", // Usually your repo name.
   themeConfig: {
+    sidebarCollapsible: false,
     googleAnalytics: {
       trackingID: "UA-138675999-4",
     },
@@ -14,11 +15,11 @@ module.exports = {
       additionalLanguages: ["dart", "yaml"],
     },
     navbar: {
-      title: "My Site",
-      logo: {
-        alt: "My Site Logo",
-        src: "img/logo.svg",
-      },
+      title: "Riverpod",
+      // logo: {
+      //   alt: "My Site Logo",
+      //   src: "img/logo.svg",
+      // },
       links: [
         {
           to: "docs/fundamentals/getting_started",
@@ -27,7 +28,7 @@ module.exports = {
           position: "left",
         },
         {
-          href: "https://github.com/facebook/docusaurus",
+          href: "https://github.com/rrousselGit/river_pod",
           label: "GitHub",
           position: "right",
         },
@@ -75,8 +76,7 @@ module.exports = {
           homePageId: "doc1",
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
-          editUrl:
-            "https://github.com/facebook/docusaurus/edit/master/website/",
+          editUrl: "https://github.com/rrousselGit/river_pod",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),

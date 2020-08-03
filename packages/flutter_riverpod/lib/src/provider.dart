@@ -1,21 +1,19 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'framework.dart';
-import 'internal.dart';
+import 'internals.dart';
 
-/// Adds [read] to providers that are never destroyed
-extension AlwaysAliveProviderBaseX<Dependency extends ProviderDependencyBase,
-    Result> on AlwaysAliveProviderBase<Dependency, Result> {
+/// Adds `context.read`
+extension BuildContextX on BuildContext {
   /// Reads a provider without listening to it.
   ///
-  /// This method should not be called inside the `build` method of a widget.
-  ///
-  /// **DON'T** call [read] inside build if the value is used only for events:
+  /// **AVOID** calling [read] inside build if the value is used only for events:
   ///
   /// ```dart
   /// Widget build(BuildContext context) {
   ///   // counter is used only for the onPressed of RaisedButton
-  ///   final counter = counterProvider.read(context);
+  ///   final counter = context.read(counterProvider);
   ///
   ///   return RaisedButton(
   ///     onPressed: () => counter.increment(),
@@ -34,7 +32,7 @@ extension AlwaysAliveProviderBaseX<Dependency extends ProviderDependencyBase,
   ///   return RaisedButton(
   ///     onPressed: () {
   ///       // as performant as the previous previous solution, but resilient to refactoring
-  ///       counterProvider.read(context).increment(),
+  ///       context.read(counterProvider).increment(),
   ///     },
   ///   );
   /// }
@@ -43,23 +41,23 @@ extension AlwaysAliveProviderBaseX<Dependency extends ProviderDependencyBase,
   /// This has the same efficiency as the previous anti-pattern, but does not
   /// suffer from the drawback of being brittle.
   ///
-  /// **DON'T** use [read] for creating widgets with a value that never changes
+  /// **AVOID** using [read] for creating widgets with a value that never changes
   ///
   /// ```dart
   /// Widget build(BuildContext context) {
   ///   // using read because we only use a value that never changes.
-  ///   final model = modelProvider.read(context);
+  ///   final model = context.read(modelProvider);
   ///
   ///   return Text('${model.valueThatNeverChanges}');
   /// }
   /// ```
   ///
-  /// While the idea of not rebuilding the widget if something else changes is
-  /// good, this should not be done with [read].
+  /// While the idea of not rebuilding the widget if unnecessary is good,
+  /// this should not be done with [read].
   /// Relying on [read] for optimisations is very brittle and dependent
   /// on an implementation detail.
   ///
-  /// **CONSIDER** using [Computed]/`select` for filtering unwanted rebuilds
+  /// **CONSIDER** using [Provider] or `select` for filtering unwanted rebuilds:
   ///
   /// ```dart
   /// Widget build(BuildContext context) {
@@ -72,19 +70,44 @@ extension AlwaysAliveProviderBaseX<Dependency extends ProviderDependencyBase,
   /// }
   /// ```
   ///
-  /// While more verbose than [read], using [Computed]/`select` is a lot safer.
+  /// While more verbose than [read], using [Provider]/`select` is a lot safer.
   /// It does not rely on implementation details on `Model`, and it makes
   /// impossible to have a bug where our UI does not refresh.
-  Result read(BuildContext context) {
-    assert(() {
-      if (context.debugDoingBuild) {
-        throw UnsupportedError(
-          'Cannot call `provider.read(context)` inside `build`',
-        );
-      }
-      return true;
-    }(), '');
+  T read<T>(RootProvider<Object, T> provider) {
+    return ProviderScope.containerOf(this, listen: false).read(provider);
+  }
 
-    return readOwner(ProviderStateOwnerScope.of(context, listen: false));
+  /// Forces a provider to re-evaluate its state immediatly, and return the created value.
+  ///
+  /// This method is useful for features like "pull to refresh" or "retry on error",
+  /// to restart a specific provider.
+  ///
+  /// For example, a pull-to-refresh may be implemented by combining
+  /// [FutureProvider] and a [RefreshIndicator]:
+  ///
+  /// ```dart
+  /// final productsProvider = FutureProvider((ref) async {
+  ///   final response = await httpClient.get('https://host.com/products');
+  ///   return Products.fromJson(response.data);
+  /// });
+  ///
+  /// class Example extends HookWidget {
+  ///   @override
+  ///   Widget build(BuildContext context) {
+  ///     final Products products = useProvider(productsProvider);
+  ///
+  ///     return RefreshIndicator(
+  ///       onRefresh: () => context.refresh(productsProvider),
+  ///       child: ListView(
+  ///         children: [
+  ///           for (final product in products.items) ProductItem(product: product),
+  ///         ],
+  ///       ),
+  ///     );
+  ///   }
+  /// }
+  /// ```
+  Created refresh<Created>(RootProvider<Created, Object> provider) {
+    return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
 }

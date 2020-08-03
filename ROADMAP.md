@@ -2,25 +2,10 @@
 
 ## Riverpod
 
-<!-- - evaluate time complexity for all operations -->
-<!-- - evaluate space complexity -->
-<!-- - think about state_notifier & Computed tree-shaking -->
-- useProvider allows changing the provider on hot-reload.
-- Consumer/Computed close sub when no-longer using a provider (new dep Map on re-compute, reading transfer from old map to new map, remaining ones are destroyed)
-- future/changenotifier/...providers cannot return null
-- Cannot add dependencies during dispatching
-- FutureChangeNotifier
-- FutureStateNotifier
-- `AutoDispose`
-- `overrideAs` AutoDispose
-- CI
-- Prevent modifying parents from children (widget -> provider)
-- DateTime provider
-- Make a common interface between ProviderDependency? (So that we can assign Provider to SetStateProvider)
-- Should some asserts be changed to exceptions in release?
-- Should some exceptions have a custom error?
-
 ## Examples
+
+- synchronizing two lists with the same editable content
+  (two todo lists, editing a todo in one list edits it in another list too)
 
 ### Marvel
 
@@ -33,17 +18,24 @@
 
 - Combining providers
 - Filtering rebuilds
+- pre-fetch a provider
 - Testing (without flutter, mocking FutureProvider)
 - How it works
 - The differences between hooks and not hooks
+- fundamentals
+  - ProviderScope
+- FAQ
+  - My Consumer behaves differently inside overlays/transition
 - cookbooks:
+  - migration from provider
+  - list items + family, don't pass the id to the item and instead expose a "currentItem" provider
   - canceling http requests when leaving the screen
   - state hydration
   - configurations that change over time
 
 ## Linter:
 
-- When overriding `StateNotifierProvider` on a non-root `ProviderStateOwner`, warn if the `.value` wasn't overriden too.
+- No circular dependency
 - Check that when a provider is overridden locally, all of its dependencies are too
 - `provider.overrideAs(provider)` -> `provider`
 - `always_specify_name`
@@ -55,7 +47,7 @@
 
 ## Devtool:
 
-- entire app state for the root `ProviderStateOwner`
+- entire app state for the root `ProviderContainer`
 - highlight state changes
 - Show the number of widgets that rebuilt in the same frame than the state change
 - editable state (through Freezed/copyWith/state_notifier)

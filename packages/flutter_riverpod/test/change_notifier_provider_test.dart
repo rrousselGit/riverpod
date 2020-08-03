@@ -4,47 +4,41 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('family', () {
-    final owner = ProviderStateOwner();
+    final container = ProviderContainer();
     final provider =
-        ChangeNotifierProviderFamily<ValueNotifier<int>, int>((ref, value) {
+        ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
     });
 
     expect(
-      provider(0).readOwner(owner),
+      container.read(provider(0)),
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 0),
     );
     expect(
-      provider(42).readOwner(owner),
+      container.read(provider(42)),
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 42),
     );
   });
+
   test('family override', () {
     final provider =
-        ChangeNotifierProviderFamily<ValueNotifier<int>, int>((ref, value) {
+        ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
     });
-    final owner = ProviderStateOwner(overrides: [
-      provider.overrideAs((ref, value) => ValueNotifier(value * 2))
+    final container = ProviderContainer(overrides: [
+      provider.overrideWithProvider((ref, value) => ValueNotifier(value * 2))
     ]);
 
     expect(
-      provider(0).readOwner(owner),
+      container.read(provider(0)),
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 0),
     );
     expect(
-      provider(42).readOwner(owner),
+      container.read(provider(42)),
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 84),
     );
   });
-  test('can be assigned to provider', () {
-    final Provider<ValueNotifier<int>> provider = ChangeNotifierProvider((_) {
-      return ValueNotifier(0);
-    });
-    final owner = ProviderStateOwner();
 
-    expect(provider.readOwner(owner), isA<ValueNotifier<int>>());
-  });
   test('can specify name', () {
     final provider = ChangeNotifierProvider(
       (_) => ValueNotifier(0),
@@ -64,9 +58,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, read) {
+        child: Consumer((c, watch) {
           return Text(
-            read(provider).count.toString(),
+            watch(provider).count.toString(),
             textDirection: TextDirection.ltr,
           );
         }),

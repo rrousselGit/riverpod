@@ -1,3 +1,8 @@
+[![pub package](https://img.shields.io/pub/v/riverpod.svg?label=riverpod)](https://pub.dartlang.org/packages/riverpod)
+[![pub package](https://img.shields.io/pub/v/riverpod.svg?label=flutter_riverpod)](https://pub.dartlang.org/packages/flutter_riverpod)
+[![pub package](https://img.shields.io/pub/v/riverpod.svg?label=hooks_riverpod)](https://pub.dartlang.org/packages/hooks_riverpod)
+[![Build Status](https://github.com/rrousselGit/river_pod/workflows/Build/badge.svg)](https://github.com/rrousselGit/river_pod/actions) [![codecov](https://codecov.io/gh/rrousselGit/river_pod/branch/master/graph/badge.svg)](https://codecov.io/gh/rrousselGit/river_pod)
+
 # Black Lives Matter. [Support the Equal Justice Initiative.](https://support.eji.org/give/153413/#!/donation/checkout)
 
 Welcome to [Riverpod]!
@@ -38,7 +43,6 @@ See the [FAQ](#FAQ) if you have questions around what this means for [provider].
 ## Index
 
 - [Motivation](#motivation)
-- [Usage](#usage)
 - [FAQ](#faq)
   - [Why another project when provider already exists?](#why-another-project-when-provider-already-exists)
   - [Is it safe to use in production?](#is-it-safe-to-use-in-production)
@@ -75,7 +79,7 @@ From there, [Riverpod] goes a few steps beyond:
 - Simplifies complex object graphs. It is easier to depend on asynchronous state.
 - Makes the pattern independent from Flutter
 
-These are achieved by no-longer using [InheritedWidget]s. Instead, [Riverpod]
+These are achieved by no longer using [InheritedWidget]s. Instead, [Riverpod]
 implements its own mechanism that works in a similar fashion.
 
 For learning how to use [Riverpod], see its documentation: https://riverpod.dev
@@ -139,7 +143,7 @@ compromise.
 Not in the short term, no.
 
 This project is still experimental and unpopular. While it is, in a way,
-a [provider] 2.0, it's worth has yet to be proven.
+a [provider] 2.0, its worth has yet to be proven.
 
 Until it is certain that [Riverpod] is a better way of doing things
 and that the community likes it, [provider] will still be maintained.

@@ -1,7 +1,7 @@
 name: counter
 description: A new Flutter project.
 
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
@@ -12,11 +12,23 @@ dependencies:
     sdk: flutter
   flutter_riverpod:
     path: ../../packages/flutter_riverpod
+  riverpod:
+    path: ../../packages/riverpod
+  hooks_riverpod:
+    path: ../../packages/hooks_riverpod
   cupertino_icons: ^0.1.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+dependency_overrides:
+  flutter_riverpod:
+    path: ../../packages/flutter_riverpod
+  riverpod:
+    path: ../../packages/riverpod
+  hooks_riverpod:
+    path: ../../packages/hooks_riverpod
 
 flutter:
   uses-material-design: true

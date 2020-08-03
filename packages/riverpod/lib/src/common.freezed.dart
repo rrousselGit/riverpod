@@ -18,12 +18,12 @@ class _$AsyncValueTearOff {
     );
   }
 
-  _Loading<T> loading<T>() {
-    return _Loading<T>();
+  AsyncLoading<T> loading<T>() {
+    return AsyncLoading<T>();
   }
 
-  _Error<T> error<T>(Object error, [StackTrace stackTrace]) {
-    return _Error<T>(
+  AsyncError<T> error<T>(Object error, [StackTrace stackTrace]) {
+    return AsyncError<T>(
       error,
       stackTrace,
     );
@@ -50,14 +50,14 @@ mixin _$AsyncValue<T> {
   @optionalTypeArgs
   Result map<Result extends Object>({
     @required Result data(AsyncData<T> value),
-    @required Result loading(_Loading<T> value),
-    @required Result error(_Error<T> value),
+    @required Result loading(AsyncLoading<T> value),
+    @required Result error(AsyncError<T> value),
   });
   @optionalTypeArgs
   Result maybeMap<Result extends Object>({
     Result data(AsyncData<T> value),
-    Result loading(_Loading<T> value),
-    Result error(_Error<T> value),
+    Result loading(AsyncLoading<T> value),
+    Result error(AsyncError<T> value),
     @required Result orElse(),
   });
 }
@@ -163,8 +163,8 @@ class _$AsyncData<T> extends AsyncData<T> {
   @optionalTypeArgs
   Result map<Result extends Object>({
     @required Result data(AsyncData<T> value),
-    @required Result loading(_Loading<T> value),
-    @required Result error(_Error<T> value),
+    @required Result loading(AsyncLoading<T> value),
+    @required Result error(AsyncError<T> value),
   }) {
     assert(data != null);
     assert(loading != null);
@@ -176,8 +176,8 @@ class _$AsyncData<T> extends AsyncData<T> {
   @optionalTypeArgs
   Result maybeMap<Result extends Object>({
     Result data(AsyncData<T> value),
-    Result loading(_Loading<T> value),
-    Result error(_Error<T> value),
+    Result loading(AsyncLoading<T> value),
+    Result error(AsyncError<T> value),
     @required Result orElse(),
   }) {
     assert(orElse != null);
@@ -197,23 +197,25 @@ abstract class AsyncData<T> extends AsyncValue<T> {
   $AsyncDataCopyWith<T, AsyncData<T>> get copyWith;
 }
 
-abstract class _$LoadingCopyWith<T, $Res> {
-  factory _$LoadingCopyWith(
-          _Loading<T> value, $Res Function(_Loading<T>) then) =
-      __$LoadingCopyWithImpl<T, $Res>;
+abstract class $AsyncLoadingCopyWith<T, $Res> {
+  factory $AsyncLoadingCopyWith(
+          AsyncLoading<T> value, $Res Function(AsyncLoading<T>) then) =
+      _$AsyncLoadingCopyWithImpl<T, $Res>;
 }
 
-class __$LoadingCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
-    implements _$LoadingCopyWith<T, $Res> {
-  __$LoadingCopyWithImpl(_Loading<T> _value, $Res Function(_Loading<T>) _then)
-      : super(_value, (v) => _then(v as _Loading<T>));
+class _$AsyncLoadingCopyWithImpl<T, $Res>
+    extends _$AsyncValueCopyWithImpl<T, $Res>
+    implements $AsyncLoadingCopyWith<T, $Res> {
+  _$AsyncLoadingCopyWithImpl(
+      AsyncLoading<T> _value, $Res Function(AsyncLoading<T>) _then)
+      : super(_value, (v) => _then(v as AsyncLoading<T>));
 
   @override
-  _Loading<T> get _value => super._value as _Loading<T>;
+  AsyncLoading<T> get _value => super._value as AsyncLoading<T>;
 }
 
-class _$_Loading<T> extends _Loading<T> {
-  const _$_Loading() : super._();
+class _$AsyncLoading<T> extends AsyncLoading<T> {
+  const _$AsyncLoading() : super._();
 
   @override
   String toString() {
@@ -222,7 +224,7 @@ class _$_Loading<T> extends _Loading<T> {
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other is _Loading<T>);
+    return identical(this, other) || (other is AsyncLoading<T>);
   }
 
   @override
@@ -260,8 +262,8 @@ class _$_Loading<T> extends _Loading<T> {
   @optionalTypeArgs
   Result map<Result extends Object>({
     @required Result data(AsyncData<T> value),
-    @required Result loading(_Loading<T> value),
-    @required Result error(_Error<T> value),
+    @required Result loading(AsyncLoading<T> value),
+    @required Result error(AsyncError<T> value),
   }) {
     assert(data != null);
     assert(loading != null);
@@ -273,8 +275,8 @@ class _$_Loading<T> extends _Loading<T> {
   @optionalTypeArgs
   Result maybeMap<Result extends Object>({
     Result data(AsyncData<T> value),
-    Result loading(_Loading<T> value),
-    Result error(_Error<T> value),
+    Result loading(AsyncLoading<T> value),
+    Result error(AsyncError<T> value),
     @required Result orElse(),
   }) {
     assert(orElse != null);
@@ -285,39 +287,42 @@ class _$_Loading<T> extends _Loading<T> {
   }
 }
 
-abstract class _Loading<T> extends AsyncValue<T> {
-  const _Loading._() : super._();
-  const factory _Loading() = _$_Loading<T>;
+abstract class AsyncLoading<T> extends AsyncValue<T> {
+  const AsyncLoading._() : super._();
+  const factory AsyncLoading() = _$AsyncLoading<T>;
 }
 
-abstract class _$ErrorCopyWith<T, $Res> {
-  factory _$ErrorCopyWith(_Error<T> value, $Res Function(_Error<T>) then) =
-      __$ErrorCopyWithImpl<T, $Res>;
+abstract class $AsyncErrorCopyWith<T, $Res> {
+  factory $AsyncErrorCopyWith(
+          AsyncError<T> value, $Res Function(AsyncError<T>) then) =
+      _$AsyncErrorCopyWithImpl<T, $Res>;
   $Res call({Object error, StackTrace stackTrace});
 }
 
-class __$ErrorCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
-    implements _$ErrorCopyWith<T, $Res> {
-  __$ErrorCopyWithImpl(_Error<T> _value, $Res Function(_Error<T>) _then)
-      : super(_value, (v) => _then(v as _Error<T>));
+class _$AsyncErrorCopyWithImpl<T, $Res>
+    extends _$AsyncValueCopyWithImpl<T, $Res>
+    implements $AsyncErrorCopyWith<T, $Res> {
+  _$AsyncErrorCopyWithImpl(
+      AsyncError<T> _value, $Res Function(AsyncError<T>) _then)
+      : super(_value, (v) => _then(v as AsyncError<T>));
 
   @override
-  _Error<T> get _value => super._value as _Error<T>;
+  AsyncError<T> get _value => super._value as AsyncError<T>;
 
   @override
   $Res call({
     Object error = freezed,
     Object stackTrace = freezed,
   }) {
-    return _then(_Error<T>(
+    return _then(AsyncError<T>(
       error == freezed ? _value.error : error,
       stackTrace == freezed ? _value.stackTrace : stackTrace as StackTrace,
     ));
   }
 }
 
-class _$_Error<T> extends _Error<T> {
-  _$_Error(this.error, [this.stackTrace])
+class _$AsyncError<T> extends AsyncError<T> {
+  _$AsyncError(this.error, [this.stackTrace])
       : assert(error != null),
         super._();
 
@@ -334,7 +339,7 @@ class _$_Error<T> extends _Error<T> {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other is _Error<T> &&
+        (other is AsyncError<T> &&
             (identical(other.error, error) ||
                 const DeepCollectionEquality().equals(other.error, error)) &&
             (identical(other.stackTrace, stackTrace) ||
@@ -349,8 +354,8 @@ class _$_Error<T> extends _Error<T> {
       const DeepCollectionEquality().hash(stackTrace);
 
   @override
-  _$ErrorCopyWith<T, _Error<T>> get copyWith =>
-      __$ErrorCopyWithImpl<T, _Error<T>>(this, _$identity);
+  $AsyncErrorCopyWith<T, AsyncError<T>> get copyWith =>
+      _$AsyncErrorCopyWithImpl<T, AsyncError<T>>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -384,8 +389,8 @@ class _$_Error<T> extends _Error<T> {
   @optionalTypeArgs
   Result map<Result extends Object>({
     @required Result data(AsyncData<T> value),
-    @required Result loading(_Loading<T> value),
-    @required Result error(_Error<T> value),
+    @required Result loading(AsyncLoading<T> value),
+    @required Result error(AsyncError<T> value),
   }) {
     assert(data != null);
     assert(loading != null);
@@ -397,8 +402,8 @@ class _$_Error<T> extends _Error<T> {
   @optionalTypeArgs
   Result maybeMap<Result extends Object>({
     Result data(AsyncData<T> value),
-    Result loading(_Loading<T> value),
-    Result error(_Error<T> value),
+    Result loading(AsyncLoading<T> value),
+    Result error(AsyncError<T> value),
     @required Result orElse(),
   }) {
     assert(orElse != null);
@@ -409,11 +414,11 @@ class _$_Error<T> extends _Error<T> {
   }
 }
 
-abstract class _Error<T> extends AsyncValue<T> {
-  _Error._() : super._();
-  factory _Error(Object error, [StackTrace stackTrace]) = _$_Error<T>;
+abstract class AsyncError<T> extends AsyncValue<T> {
+  AsyncError._() : super._();
+  factory AsyncError(Object error, [StackTrace stackTrace]) = _$AsyncError<T>;
 
   Object get error;
   StackTrace get stackTrace;
-  _$ErrorCopyWith<T, _Error<T>> get copyWith;
+  $AsyncErrorCopyWith<T, AsyncError<T>> get copyWith;
 }

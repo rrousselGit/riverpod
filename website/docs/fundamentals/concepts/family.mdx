@@ -1,0 +1,204 @@
+---
+title: Families
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+Before reading this, consider reading about [providers](./provider) and [how to read them](./reading).
+
+In this part, we will talk about the concept of "families".
+
+## Why use Families
+
+A family represents not one provider, but a group of providers. Their main
+purpose is to offer a way for the UI to pass parameters to providers.
+
+A real-world use-case would be a provider that exposes a user details on a chat
+application.  
+In a chat application, we have multiple users. As such, a single provider
+is not enough to represent all the users.  
+Instead, we'd need one provider per unique user.
+
+Families allow doing exactly that.  
+A family is a way to create multiple providers based on external values, such as
+the ID of a user.
+
+## Creating a family
+
+The syntax for a family depends on what kind of provider you want to create.
+
+As an example, consider a simple [Provider] usage:
+
+```dart
+final myProvider = Provider<String>((ref) => 'Hello world');
+```
+
+To create a family of [Provider], we would instead write:
+
+```dart
+final myFamily = ProviderFamily<String, int>((ref, int parameter) {
+  return 'Hello $parameter';
+});
+```
+
+Notice how similar the structure of both codes is.  
+A family is but a variant of a provider, that adds an extra parameter to the
+function that creates our value.
+
+The difference between a provider and its family variant is the same for all providers.
+Here's another example with [Computed]:
+
+<Tabs
+  defaultValue="ComputedFamily"
+  values={[
+    { label: 'ComputedFamily', value: 'ComputedFamily', },
+    { label: 'Computed', value: 'Computed', },
+  ]}
+>
+<TabItem value="ComputedFamily">
+
+```dart
+final myComputedFamily = ComputedFamily<Result, Parameter>((watch, parameter) {
+  // TODO: somehow use `parameter`
+  return Result();
+});
+```
+
+</TabItem>
+<TabItem value="Computed">
+
+```dart
+final myComputed = Computed((watch) {
+  return Result();
+});
+```
+
+</TabItem>
+</Tabs>
+
+## Reading a family
+
+Now that we've seen how to create a family, let's see how to consume them.
+
+Consider a family that creates a localized title for our application:
+
+```dart
+final titleProvider = ProviderFamily<String, Locale>((ref, locale) {
+  if (locale == const Locale('en')) {
+    return 'Hello London';
+  } else if (locale == const Locale('fr')) {
+    return 'Bonjour Paris';
+  } else {
+    throw UnsupportedError('Unknown locale $locale');
+  }
+})
+```
+
+In this situation, we will not be able to read our provider the same way than
+we did before:
+
+```dart
+@override
+Widget build(BuildContext context) {
+  // Doesn't work, titleProvider is not a provider
+  final title = useProvider(titleProvider);
+  ...
+}
+```
+
+The syntax is slightly different. We need to pass a `Locale` to our provider to
+be able to read it:
+
+<Tabs
+  defaultValue="useProvider"
+  values={[
+    { label: 'useProvider', value: 'useProvider', },
+    { label: 'Consumer', value: 'Consumer', },
+  ]}
+>
+<TabItem value="useProvider">
+
+```dart
+@override
+Widget build(BuildContext context) {
+  // First, we obtain the current locale
+  final locale = Localizations.localeOf(context);
+
+  // Then, we pass the locale to titleProvider, which can later be used by useProvider
+  final title = useProvider(titleProvider(locale));
+
+  // Finally we can freely use the result
+  return Text(title);
+}
+```
+
+</TabItem>
+<TabItem value="Consumer">
+
+```dart
+@override
+Widget build(BuildContext context) {
+  return Consumer((context, watch) {
+    // First, we obtain the current locale
+    final locale = Localizations.localeOf(context);
+
+    // Then, we pass the locale to titleProvider, which can later be used by useProvider
+    final title = watch(titleProvider(locale));
+
+    // Finally we can freely use the result
+    return Text(title);
+  });
+}
+```
+
+</TabItem>
+</Tabs>
+
+That's it!
+
+Some notes:
+
+- By doing so, the title will automatically update the locale changes.
+- If multiple widgets request the title with the same locale, the title
+  will not be unnecessarily recomputed, and both widgets will share the same state.
+
+:::tip
+It is possible to listen to a family with different parameters simultaneously.  
+For example, we could read both the French and English translation of our title
+at the same time:
+
+```dart
+final frenchTitle = useProvider(titleProvider(Locale('fr')));
+final englishTitle = useProvider(titleProvider(Locale('en')));
+
+return Text('$frenchTitle / $englishTitle'); // Bonjour Paris / Hello London
+```
+
+:::
+
+## Parameters restrictions
+
+It is important to note that we cannot pass _anything_ as parameter of a family.
+
+For families to work correctly, it is critical for the parameter passed to
+a provider to have a consistent `hashCode` and `==`.
+
+Although not required, ideally the parameter should either be a primitive (bool/int/double/String),
+a constant (providers), or an immutable object that override `==` and `hashCode`.
+
+A good rule of thumb is, either the parameter never changes, or it overrides `==`/`hashCode`.
+
+:::danger
+Avoid passing complex objects that changes often a parameter of a family.  
+Once a family is used with a specific parameter, that parameter will forever
+stay in memory.
+
+In most situations (primitives/constants), this is completely fine.  
+But for complex objects that change over time, it could lead to memory leaks.
+:::
+
+
+[provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
+[futureproviderfamily]: https://pub.dev/documentation/riverpod/latest/riverpod/futureproviderfamily-class.html
+[computed]: https://pub.dev/documentation/riverpod/latest/riverpod/Computed-class.html
