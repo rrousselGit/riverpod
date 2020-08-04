@@ -40,8 +40,6 @@
 - It is no-longer possible to add `ProviderObserver` anywhere in the widget tree.
   They can be added only on the top-most `ProviderContainer`.
 
-- `ref.read` no-longer throws `CircularDependencyError` in most situations.
-
 - Added `ProviderContainer.refresh(provider)`.
   This method allows forcing the refresh of a provider, which can be useful
   for things like "retry on error" or "pull to refresh".

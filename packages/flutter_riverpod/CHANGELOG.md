@@ -43,8 +43,6 @@
 - `Provider.read(BuildContext)` is changed into `context.read(provider)`, and
   can now read `Provider.autoDispose`.
 
-- `ref.read` no-longer throws `CircularDependencyError` in most situations.
-
 - Added `ProviderContainer.refresh(provider)` and `context.refresh(provider)`.
   These method allows forcing the refresh of a provider, which can be useful
   for things like "retry on error" or "pull to refresh".
