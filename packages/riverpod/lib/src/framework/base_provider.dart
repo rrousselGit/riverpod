@@ -646,6 +646,13 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   @protected
   void notifyMayHaveChanged() {
     assert(() {
+      for (final vsync in container.debugVsyncs) {
+        vsync();
+      }
+      return true;
+    }(), '');
+
+    assert(() {
       if (_debugCurrentlyBuildingElement == null ||
           _debugCurrentlyBuildingElement == this) {
         return true;

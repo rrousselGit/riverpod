@@ -68,6 +68,7 @@ void main() {
       verifyOnly(didChange, didChange(sub));
       verifyNoMoreInteractions(mayHaveChanged);
     });
+
     test('can change the selector without creating a new subscription', () {
       final provider = Provider((_) => 42);
 
@@ -87,6 +88,7 @@ void main() {
       verifyZeroInteractions(mayHaveChanged);
       verifyZeroInteractions(didChange);
     });
+
     test('closing the subscription closes the internal subscription too', () {
       final element = container.readProviderElement(provider);
 

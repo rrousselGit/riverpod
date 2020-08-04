@@ -284,6 +284,7 @@ void main() {
       expect(completed, false);
       expect(future, isNotNull);
     });
+
     testWidgets('Initial build as value', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
@@ -300,6 +301,7 @@ void main() {
       expect(completed, true);
       await expectLater(future, completion(42));
     });
+
     testWidgets('Initial build as error', (tester) async {
       final error = Error();
 

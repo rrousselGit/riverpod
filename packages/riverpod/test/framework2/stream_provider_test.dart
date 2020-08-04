@@ -120,6 +120,7 @@ void main() {
 
       await expectLater(sub.read(), emits(21));
     });
+
     test('.stream emits done when the container is disposed', () async {
       final provider = StreamProvider.autoDispose((ref) => controller.stream);
       final container = ProviderContainer(overrides: [

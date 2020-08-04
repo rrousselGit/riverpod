@@ -176,6 +176,7 @@ void main() {
       verifyNoMoreInteractions(selector);
       verifyNoMoreInteractions(build);
     });
+
     testWidgets('stop calling selectors after one cause rebuild',
         (tester) async {
       final notifier = Counter();

@@ -262,6 +262,7 @@ void main() {
 
       expect(callCount, 1);
     });
+
     test('update dependents when the future changes', () async {
       final streamProvider = StateProvider((ref) => Stream.value(42));
       // a StreamProvider that can rebuild with a new future
@@ -282,6 +283,7 @@ void main() {
       await expectLater(container.read(dependent), emits(21));
       expect(callCount, 2);
     });
+
     test('.name is the listened name.future', () {
       expect(
         StreamProvider<int>((ref) async* {}, name: 'hey').stream.name,
@@ -328,6 +330,7 @@ void main() {
       await expectLater(container.read(dependent), emits(21));
       expect(callCount, 2);
     });
+
     test('does not update dependents when the future completes', () async {
       final controller = StreamController<int>(sync: true);
       addTearDown(controller.close);
@@ -730,6 +733,7 @@ void main() {
 
       await expectLater(stream, emitsDone);
     });
+
     test('value immediatly then error', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
@@ -754,6 +758,7 @@ void main() {
 
       await expectLater(stream, emitsDone);
     });
+
     test('value immediatly then loading', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
@@ -776,6 +781,7 @@ void main() {
 
       await expectLater(stream, emitsDone);
     });
+
     test('loading immediatly then value', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
@@ -798,6 +804,7 @@ void main() {
 
       await expectLater(stream, emitsDone);
     });
+
     test('loading immediatly then error', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
@@ -823,6 +830,7 @@ void main() {
 
       await expectLater(stream, emitsDone);
     });
+
     test('loading immediatly then loading', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
@@ -852,6 +860,7 @@ void main() {
 
       await expectLater(stream, emitsDone);
     });
+
     test('error immediatly then different error', () async {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
@@ -876,6 +885,7 @@ void main() {
 
       await expectLater(stream, emitsDone);
     });
+
     test('error immediatly then different stacktrace', () async {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
@@ -903,6 +913,7 @@ void main() {
 
       await expectLater(stream, emitsDone);
     });
+
     test('error immediatly then data', () async {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
@@ -927,6 +938,7 @@ void main() {
 
       await expectLater(stream, emitsDone);
     });
+
     test('error immediatly then loading', () async {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});

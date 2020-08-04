@@ -16,6 +16,7 @@ void main() {
       expect(container.debugProviderValues, {provider: 0});
       expect(root.debugProviderValues, isEmpty);
     });
+
     test('can be overriden on non-root container', () {
       final provider = ScopedProvider((watch) => 0);
       final root = ProviderContainer();
@@ -25,6 +26,7 @@ void main() {
 
       expect(container.read(provider), 42);
     });
+
     test('can listen to other scoped providers', () {
       final mayHaveChanged = MayHaveChangedMock<int>();
       final provider = ScopedProvider((watch) => 0);
@@ -49,6 +51,7 @@ void main() {
 
       expect(sub.read(), 4);
     });
+
     test('can listen to other normal providers', () {
       final mayHaveChanged = MayHaveChangedMock<int>();
       final provider = StateProvider((ref) => 1);
@@ -69,6 +72,7 @@ void main() {
 
       expect(sub.read(), 4);
     });
+
     test('compare result with ==', () {
       final mayHaveChanged = MayHaveChangedMock<int>();
       final provider = StateProvider((ref) => 1);
@@ -89,6 +93,7 @@ void main() {
 
       expect(sub.flush(), false);
     });
+
     test('compare result with == cross override', () {
       final mayHaveChanged = MayHaveChangedMock<int>();
       final provider = ScopedProvider((watch) => 0);
