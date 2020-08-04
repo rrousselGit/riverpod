@@ -22,25 +22,6 @@ void main() {
     container.dispose();
   });
 
-  test('calls ProviderContainer.debugVsyncs before modifying a provider', () {
-    final provider = StateProvider((ref) => 0);
-    final container = ProviderContainer();
-    final vsync = VsyncMock();
-    final vsync2 = VsyncMock();
-
-    container.debugVsyncs.addAll([vsync, vsync2]);
-
-    final state = container.read(provider);
-
-    verifyZeroInteractions(vsync);
-    verifyZeroInteractions(vsync2);
-
-    state.state++;
-
-    verifyOnly(vsync, vsync());
-    verifyOnly(vsync2, vsync2());
-  });
-
   test('ProviderReference.container exposes the root container', () {
     final root = ProviderContainer();
     final container = ProviderContainer(parent: root);
@@ -677,9 +658,5 @@ class OnDisposeMock extends Mock {
 }
 
 class BuildMock extends Mock {
-  void call();
-}
-
-class VsyncMock extends Mock {
   void call();
 }

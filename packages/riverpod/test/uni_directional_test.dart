@@ -22,6 +22,136 @@ void main() {
     container.dispose();
   });
 
+  group('ProviderContainer.debugVsyncs', () {
+    test('are called before modifying a provider', () {
+      final provider = StateProvider((ref) => 0);
+      final container = ProviderContainer();
+      final vsync = VsyncMock();
+      final vsync2 = VsyncMock();
+
+      container.debugVsyncs.addAll([vsync, vsync2]);
+
+      final state = container.read(provider);
+
+      verifyZeroInteractions(vsync);
+      verifyZeroInteractions(vsync2);
+
+      state.state++;
+
+      verifyOnly(vsync, vsync());
+      verifyOnly(vsync2, vsync2());
+    });
+
+    test('are not called when flushing a provider', () {
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider((ref) {
+        return ref.watch(dep);
+      });
+      final container = ProviderContainer();
+      final vsync = VsyncMock();
+
+      final sub = container.listen(provider);
+      container.read(dep).state++;
+
+      container.debugVsyncs.add(vsync);
+
+      sub.flush();
+
+      verifyZeroInteractions(vsync);
+    });
+
+    test('are not called when re-creating a provider', () {
+      final provider = Provider((ref) => 0);
+      final container = ProviderContainer();
+      final vsync = VsyncMock();
+
+      final sub = container.listen(provider);
+      container.refresh(provider);
+
+      container.debugVsyncs.add(vsync);
+
+      sub.flush();
+
+      verifyZeroInteractions(vsync);
+    });
+  });
+
+  group('ref.watch cannot end-up in a circular dependency', () {
+    test('direct dependency', () {
+      final provider = Provider((ref) => ref);
+      final provider2 = Provider((ref) => ref);
+      final container = ProviderContainer();
+
+      final ref = container.read(provider);
+      final ref2 = container.read(provider2);
+
+      ref.watch(provider2);
+      expect(
+        () => ref2.watch(provider),
+        throwsA(isA<CircularDependencyError>()),
+      );
+    });
+    test('indirect dependency', () {
+      final provider = Provider((ref) => ref);
+      final provider2 = Provider((ref) => ref);
+      final provider3 = Provider((ref) => ref);
+      final provider4 = Provider((ref) => ref);
+      final container = ProviderContainer();
+
+      final ref = container.read(provider);
+      final ref2 = container.read(provider2);
+      final ref3 = container.read(provider3);
+      final ref4 = container.read(provider4);
+
+      ref.watch(provider2);
+      ref2.watch(provider3);
+      ref3.watch(provider4);
+
+      expect(
+        () => ref4.watch(provider),
+        throwsA(isA<CircularDependencyError>()),
+      );
+    });
+  });
+
+  group('ref.read cannot end-up in a circular dependency', () {
+    test('direct dependency', () {
+      final provider = Provider((ref) => ref);
+      final provider2 = Provider((ref) => ref);
+      final container = ProviderContainer();
+
+      final ref = container.read(provider);
+      final ref2 = container.read(provider2);
+
+      ref.watch(provider2);
+      expect(
+        () => ref2.read(provider),
+        throwsA(isA<CircularDependencyError>()),
+      );
+    });
+    test('indirect dependency', () {
+      final provider = Provider((ref) => ref);
+      final provider2 = Provider((ref) => ref);
+      final provider3 = Provider((ref) => ref);
+      final provider4 = Provider((ref) => ref);
+      final container = ProviderContainer();
+
+      final ref = container.read(provider);
+      final ref2 = container.read(provider2);
+      final ref3 = container.read(provider3);
+      final ref4 = container.read(provider4);
+
+      ref.watch(provider2);
+      ref2.watch(provider3);
+      ref3.watch(provider4);
+
+      expect(
+        () => ref4.read(provider),
+        throwsA(isA<CircularDependencyError>()),
+      );
+    });
+  });
+
   test("initState can't dirty ancestors", () {
     final ancestor = StateProvider((_) => 0);
     final child = Provider((ref) {
@@ -146,4 +276,8 @@ void main() {
 
 class Listener extends Mock {
   void call(int value);
+}
+
+class VsyncMock extends Mock {
+  void call();
 }

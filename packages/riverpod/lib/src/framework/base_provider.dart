@@ -511,6 +511,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
 
   int _notificationCount = 0;
   int _notifyDidChangeLastNotificationCount = 0;
+  bool _debugIsFlushing = false;
   bool _dirty = true;
   // initialized to true so that the initial state creation don't notify listeners
   bool _dependencyMayHaveChanged = true;
@@ -526,11 +527,6 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   ProviderException _exception;
 
   @override
-  T read<T>(RootProvider<Object, T> provider) {
-    return _container.read(provider);
-  }
-
-  @override
   void onDispose(void Function() listener) {
     if (!_mounted) {
       throw StateError('Cannot call onDispose after a provider was dispose');
@@ -539,8 +535,39 @@ class ProviderElement<Created, Listened> implements ProviderReference {
     _onDisposeListeners.add(listener);
   }
 
+  bool _debugAssertCanDependOn(ProviderBase provider) {
+    assert(() {
+      final queue = Queue<ProviderElement>();
+      if (_dependents != null) {
+        queue.addAll(_dependents);
+      }
+
+      while (queue.isNotEmpty) {
+        final current = queue.removeFirst();
+        if (current._dependents != null) {
+          queue.addAll(current.dependents);
+        }
+
+        if (current.origin == provider) {
+          throw CircularDependencyError._();
+        }
+      }
+
+      return true;
+    }(), '');
+    return true;
+  }
+
+  @override
+  T read<T>(RootProvider<Object, T> provider) {
+    assert(_debugAssertCanDependOn(provider), '');
+    return _container.read(provider);
+  }
+
   @override
   T watch<T>(ProviderBase<Object, T> provider) {
+    assert(_debugAssertCanDependOn(provider), '');
+
     final element = _container.readProviderElement(provider);
     final sub = _subscriptions.putIfAbsent(element, () {
       final previousSub = _previousSubscriptions?.remove(element);
@@ -584,34 +611,46 @@ class ProviderElement<Created, Listened> implements ProviderReference {
 
   /// {@macro riverpod.flush}
   void flush() {
-    if (_dependencyMayHaveChanged || _dependencyDidChange) {
-      _dependencyMayHaveChanged = false;
-      // must be executed before _runStateCreate() so that errors during
-      // creation are not silenced
-      _exception = null;
-      _runOnDispose();
+    assert(() {
+      _debugIsFlushing = true;
+      return true;
+    }(), '');
 
-      var hasAnyDependencyChanged = _dependencyDidChange;
-      for (final sub in _subscriptions.values) {
-        if (sub.flush()) {
-          hasAnyDependencyChanged = true;
+    try {
+      if (_dependencyMayHaveChanged || _dependencyDidChange) {
+        _dependencyMayHaveChanged = false;
+        // must be executed before _runStateCreate() so that errors during
+        // creation are not silenced
+        _exception = null;
+        _runOnDispose();
+
+        var hasAnyDependencyChanged = _dependencyDidChange;
+        for (final sub in _subscriptions.values) {
+          if (sub.flush()) {
+            hasAnyDependencyChanged = true;
+          }
         }
+        if (hasAnyDependencyChanged) {
+          _runStateCreate();
+        }
+        _dependencyDidChange = false;
       }
-      if (hasAnyDependencyChanged) {
-        _runStateCreate();
+      _dirty = false;
+      if (_notifyDidChangeLastNotificationCount != _notificationCount) {
+        _notifyDidChangeLastNotificationCount = _notificationCount;
+        _notifyDidChange();
       }
-      _dependencyDidChange = false;
+      assert(!_dirty, 'flush did not reset the dirty flag for $provider');
+      assert(
+        !_dependencyMayHaveChanged,
+        'flush did not reset the _dependencyMayHaveChanged flag for $provider',
+      );
+    } finally {
+      assert(() {
+        _debugIsFlushing = false;
+        return true;
+      }(), '');
     }
-    _dirty = false;
-    if (_notifyDidChangeLastNotificationCount != _notificationCount) {
-      _notifyDidChangeLastNotificationCount = _notificationCount;
-      _notifyDidChange();
-    }
-    assert(!_dirty, 'flush did not reset the dirty flag for $provider');
-    assert(
-      !_dependencyMayHaveChanged,
-      'flush did not reset the _dependencyMayHaveChanged flag for $provider',
-    );
   }
 
   /// Returns the currently exposed by a provider
@@ -626,6 +665,17 @@ class ProviderElement<Created, Listened> implements ProviderReference {
       throw _exception;
     }
     return state._exposedValue;
+  }
+
+  void _debugMarkWillChange() {
+    assert(() {
+      if (!_debugIsFlushing) {
+        for (final vsync in container.debugVsyncs) {
+          vsync();
+        }
+      }
+      return true;
+    }(), '');
   }
 
   /// Notify that the state associated to this provider have changes.
@@ -645,13 +695,6 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   /// possible that it did.
   @protected
   void notifyMayHaveChanged() {
-    assert(() {
-      for (final vsync in container.debugVsyncs) {
-        vsync();
-      }
-      return true;
-    }(), '');
-
     assert(() {
       if (_debugCurrentlyBuildingElement == null ||
           _debugCurrentlyBuildingElement == this) {
@@ -728,7 +771,18 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement.provider}.
   void mount() {
     _mounted = true;
     state._element = this;
-    _runStateCreate();
+    assert(() {
+      _debugIsFlushing = true;
+      return true;
+    }(), '');
+    try {
+      _runStateCreate();
+    } finally {
+      assert(() {
+        _debugIsFlushing = false;
+        return true;
+      }(), '');
+    }
     _didMount = true;
     _dirty = false;
     _dependencyMayHaveChanged = false;
@@ -841,6 +895,10 @@ abstract class ProviderStateBase<Created, Listened> {
   /// Must be set during [valueChanged].
   Listened get exposedValue => _exposedValue;
   set exposedValue(Listened exposedValue) {
+    assert(() {
+      _element._debugMarkWillChange();
+      return true;
+    }(), '');
     _exposedValue = exposedValue;
     _element.markDidChange();
   }
