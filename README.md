@@ -2,7 +2,21 @@
 [![pub package](https://img.shields.io/pub/v/riverpod.svg?label=flutter_riverpod)](https://pub.dartlang.org/packages/flutter_riverpod)
 [![pub package](https://img.shields.io/pub/v/riverpod.svg?label=hooks_riverpod)](https://pub.dartlang.org/packages/hooks_riverpod)
 
-[![Build Status](https://github.com/rrousselGit/river_pod/workflows/Build/badge.svg)](https://github.com/rrousselGit/river_pod/actions) [![codecov](https://codecov.io/gh/rrousselGit/river_pod/branch/master/graph/badge.svg)](https://codecov.io/gh/rrousselGit/river_pod) <a href="https://www.buymeacoffee.com/remirousselet" target="_blank" style="height: 25px !important;"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee"  ></a>
+[![Build Status](https://github.com/rrousselGit/river_pod/workflows/Build/badge.svg)](https://github.com/rrousselGit/river_pod/actions) [![codecov](https://codecov.io/gh/rrousselGit/river_pod/branch/master/graph/badge.svg)](https://codecov.io/gh/rrousselGit/river_pod)
+
+<style>.bmc-button img{height: 34px !important;width: 35px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{padding: 7px 15px 7px 10px !important;line-height: 35px !important;height:51px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#FF813F !important;border-radius: 5px !important;border: 1px solid transparent !important;padding: 7px 15px 7px 10px !important;font-size: 28px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#ffffff !important;}</style><link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/remirousselet"><img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a Pizza"><span style="margin-left:5px;font-size:28px !important;">Buy me a Pizza</span></a>
+
+<a
+ target="_blank"
+ href="https://www.buymeacoffee.com/remirousselet"
+ style="
+  padding: 7px 15px 7px 10px;line-height: 35px;height:51px;text-decoration: none;display:inline-flex;color:#ffffff;background-color:#FF813F;border-radius: 5px;border: 1px solid transparent;padding: 7px 15px 7px 10px;font-size: 28px;letter-spacing:0.6px;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5);-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5);margin: 0 auto;font-family:'Cookie', cursive;-webkit-box-sizing: border-box;box-sizing: border-box;
+ ">
+  <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a Pizza">
+  <span style="margin-left:5px;font-size:28px !important;">
+  Buy me a Pizza
+  </span>
+</a>
 
 # Black Lives Matter. [Support the Equal Justice Initiative.](https://support.eji.org/give/153413/#!/donation/checkout)
 
