@@ -60,6 +60,16 @@ void main() {
     await expectLater(sub.read(), emits(42));
   });
 
+  test('throwing inside "create" result in an AsyncValue.error', () {
+    // ignore: only_throw_errors
+    final provider = StreamProvider<int>((ref) => throw 42);
+
+    expect(
+      container.read(provider),
+      isA<AsyncError>().having((s) => s.error, 'error', 42),
+    );
+  });
+
   test(
       'StreamProvider does not update dependents if the created stream did not change',
       () {
@@ -110,6 +120,7 @@ void main() {
 
       await expectLater(sub.read(), emits(21));
     });
+
     test('.stream emits done when the container is disposed', () async {
       final provider = StreamProvider.autoDispose((ref) => controller.stream);
       final container = ProviderContainer(overrides: [

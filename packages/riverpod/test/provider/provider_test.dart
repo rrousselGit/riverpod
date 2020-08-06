@@ -90,6 +90,7 @@ void main() {
 
       container.dispose();
     });
+
     test('Provider2', () {
       final container = ProviderContainer();
 

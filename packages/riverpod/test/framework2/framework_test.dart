@@ -71,6 +71,7 @@ void main() {
       expect(container.read(provider), null);
       expect(callCount, 1);
     });
+
     test('watch cause recomputing when dependency changes', () {
       var callCount = 0;
       final provider = Provider((ref) {
@@ -88,6 +89,7 @@ void main() {
       expect(container.read(provider), 42);
       expect(callCount, 2);
     });
+
     test("watch is no-op if dependency didn't change", () {
       var callCount = 0;
       final provider = Provider((ref) {
@@ -103,6 +105,7 @@ void main() {
       expect(container.read(provider), null);
       expect(callCount, 1);
     });
+
     test(
         'recomputing a provider calls onDispose and clear the dispose listeners',
         () {
@@ -237,6 +240,7 @@ void main() {
       verifyOnly(didChange, didChange(sub));
       verifyNoMoreInteractions(mayHaveChanged);
     });
+
     test('does not notify listeners if updated with the same value', () {
       final provider = Provider((ref) => 0);
       final container = ProviderContainer(overrides: [
@@ -436,6 +440,7 @@ void main() {
         verifyOnly(mayHaveChanged, mayHaveChanged(sub));
       });
     });
+
     test("doesn't trow when creating a provider that failed", () {
       final provider = Provider((ref) {
         throw Error();
@@ -445,6 +450,7 @@ void main() {
 
       expect(sub, isA<ProviderSubscription>());
     });
+
     test('is guarded', () {
       final counter = Counter();
       final provider = StateNotifierProvider((ref) => counter);
@@ -603,6 +609,7 @@ void main() {
       await expectLater(container.read(provider.future), completion(21));
       expect(callCount, 2);
     });
+
     test('retrying an unmounted provider just mounts it', () async {
       var callCount = 0;
       final provider = FutureProvider((_) {
@@ -617,6 +624,7 @@ void main() {
       await expectLater(container.read(provider.future), completion(42));
       expect(callCount, 1);
     });
+
     test(
         'retrying a provider already marked as needing to update do not create the value twice',
         () async {

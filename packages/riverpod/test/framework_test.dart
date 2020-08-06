@@ -594,6 +594,7 @@ void main() {
       verifyNoMoreInteractions(mayHaveChanged);
       verifyNoMoreInteractions(listener);
     });
+
     test('noop if no provider was "dirty"', () {
       final counter = Counter();
       final provider = StateNotifierProvider<Counter>((_) => counter);
@@ -654,6 +655,7 @@ void main() {
       verify(listener(2)).called(1);
       verifyNoMoreInteractions(listener);
     });
+
     test('in dependency order', () async {
       final container = ProviderContainer();
       final counter = Counter();

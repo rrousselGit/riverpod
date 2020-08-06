@@ -1,7 +1,9 @@
 [![pub package](https://img.shields.io/pub/v/riverpod.svg?label=riverpod)](https://pub.dartlang.org/packages/riverpod)
 [![pub package](https://img.shields.io/pub/v/riverpod.svg?label=flutter_riverpod)](https://pub.dartlang.org/packages/flutter_riverpod)
 [![pub package](https://img.shields.io/pub/v/riverpod.svg?label=hooks_riverpod)](https://pub.dartlang.org/packages/hooks_riverpod)
-[![Build Status](https://github.com/rrousselGit/river_pod/workflows/Build/badge.svg)](https://github.com/rrousselGit/river_pod/actions) [![codecov](https://codecov.io/gh/rrousselGit/river_pod/branch/master/graph/badge.svg)](https://codecov.io/gh/rrousselGit/river_pod)
+
+[![Build Status](https://github.com/rrousselGit/river_pod/workflows/Build/badge.svg)](https://github.com/rrousselGit/river_pod/actions) [![codecov](https://codecov.io/gh/rrousselGit/river_pod/branch/master/graph/badge.svg)](https://codecov.io/gh/rrousselGit/river_pod) 
+<a href="https://www.buymeacoffee.com/remirousselet" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="25px"></a>
 
 # Black Lives Matter. [Support the Equal Justice Initiative.](https://support.eji.org/give/153413/#!/donation/checkout)
 

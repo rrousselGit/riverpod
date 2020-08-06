@@ -81,6 +81,12 @@ class ProviderContainer {
     }
   }
 
+  /// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
+  /// if it is safe to modify a provider.
+  ///
+  /// This corresponds to all the widgets that a [Provider] is associated with.
+  final DoubleLinkedQueue<void Function()> debugVsyncs = DoubleLinkedQueue();
+
   /// Whether [dispose] was called or not.
   ///
   /// This disables the different methods of [ProviderContainer], resulting in
@@ -279,6 +285,7 @@ class ProviderContainer {
   /// This will destroy the state of all providers associated to this
   /// [ProviderContainer] and call [ProviderReference.onDispose] listeners.
   void dispose() {
+    debugVsyncs.clear();
     if (_disposed) {
       throw StateError(
         'Called disposed on a ProviderContainer that was already disposed',

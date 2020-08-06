@@ -41,6 +41,17 @@ void main() {
     verifyNoMoreInteractions(listener);
   });
 
+  test('throwing inside "create" result in an AsyncValue.error', () {
+    // ignore: only_throw_errors
+    final provider = FutureProvider<int>((ref) => throw 42);
+    final container = ProviderContainer();
+
+    expect(
+      container.read(provider),
+      isA<AsyncError>().having((s) => s.error, 'error', 42),
+    );
+  });
+
   test('FutureProvider.autoDispose.family override', () async {
     final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
       return Future.value(a * 2);
@@ -171,6 +182,7 @@ void main() {
 
       expect(container.read(provider.future), completer.future);
     });
+
     test('does not update dependents when the future completes', () async {
       final completer = Completer<int>.sync();
       final provider = FutureProvider((_) => completer.future);
@@ -193,6 +205,7 @@ void main() {
       expect(sub.read(), completer.future);
       expect(callCount, 1);
     });
+
     test('update dependents when the future changes', () {
       final futureProvider = StateProvider((ref) => Future.value(42));
       // a FutureProvider that can rebuild with a new future
@@ -213,6 +226,7 @@ void main() {
       expect(container.read(dependent), futureController.state);
       expect(callCount, 2);
     });
+
     test('.name is the listened name.future', () {
       expect(
         FutureProvider((ref) async {}, name: 'hey').future.name,
@@ -257,6 +271,7 @@ void main() {
       expect(container.read(dependent), futureController.state);
       expect(callCount, 2);
     });
+
     test('does not update dependents when the future completes', () async {
       final completer = Completer<int>.sync();
       final provider = FutureProvider.autoDispose((_) => completer.future);
@@ -279,6 +294,7 @@ void main() {
       expect(sub.read(), completer.future);
       expect(callCount, 1);
     });
+
     test('returns a future identical to the one created', () {
       final completer = Completer<int>.sync();
       final provider = FutureProvider.autoDispose((ref) {
@@ -289,6 +305,7 @@ void main() {
 
       expect(sub.read(), completer.future);
     });
+
     test('disposes the main provider when no-longer used', () async {
       final completer = Completer<int>.sync();
       var didDispose = false;
@@ -417,6 +434,7 @@ void main() {
       );
       expect(sub.read(), const AsyncValue.data(21));
     });
+
     test('value immediatly then error', () async {
       final provider = FutureProvider((_) async => 0);
       final container = ProviderContainer(overrides: [
@@ -442,6 +460,7 @@ void main() {
       );
       expect(sub.read(), AsyncValue<int>.error(21));
     });
+
     test('value immediatly then loading', () async {
       final provider = FutureProvider((_) async => 0);
       final container = ProviderContainer(overrides: [
@@ -466,6 +485,7 @@ void main() {
       expect(container.read(provider.future), isNot(future));
       expect(sub.read(), const AsyncValue<int>.loading());
     });
+
     test('loading immediatly then value', () async {
       final provider = FutureProvider((_) async => 0);
       final container = ProviderContainer(overrides: [
@@ -486,6 +506,7 @@ void main() {
 
       await expectLater(future, completion(42));
     });
+
     test('loading immediatly then error', () async {
       final provider = FutureProvider((_) async => 0);
       final container = ProviderContainer(overrides: [
@@ -508,6 +529,7 @@ void main() {
 
       await expectLater(future, throwsA(42));
     });
+
     test('loading immediatly then loading', () async {
       final provider = FutureProvider((_) async => 0);
       final container = ProviderContainer(overrides: [
@@ -534,6 +556,7 @@ void main() {
 
       await expectLater(future, completion(42));
     });
+
     test('error immediatly then different error', () async {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
@@ -560,6 +583,7 @@ void main() {
       );
       expect(sub.read(), AsyncValue<int>.error(21, stackTrace));
     });
+
     test('error immediatly then different stacktrace', () async {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
@@ -591,6 +615,7 @@ void main() {
       );
       expect(sub.read(), AsyncValue<int>.error(42, stack2));
     });
+
     test('error immediatly then data', () async {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
@@ -617,6 +642,7 @@ void main() {
       );
       expect(sub.read(), const AsyncValue<int>.data(42));
     });
+
     test('error immediatly then loading', () async {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);

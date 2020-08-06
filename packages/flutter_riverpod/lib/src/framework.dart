@@ -248,4 +248,54 @@ class UncontrolledProviderScope extends InheritedWidget {
       properties.add(DiagnosticsProperty(name, entry.value));
     }
   }
+
+  @override
+  _UncontrolledProviderScopeElement createElement() {
+    return _UncontrolledProviderScopeElement(this);
+  }
+}
+
+class _UncontrolledProviderScopeElement extends InheritedElement {
+  _UncontrolledProviderScopeElement(UncontrolledProviderScope widget)
+      : super(widget);
+
+  @override
+  void mount(Element parent, dynamic newSlot) {
+    assert(() {
+      (widget as UncontrolledProviderScope)
+          .container
+          .debugVsyncs
+          .add(markNeedsBuild);
+      return true;
+    }(), '');
+    super.mount(parent, newSlot);
+  }
+
+  @override
+  void update(ProxyWidget newWidget) {
+    assert(() {
+      (widget as UncontrolledProviderScope)
+          .container
+          .debugVsyncs
+          .remove(markNeedsBuild);
+      (newWidget as UncontrolledProviderScope)
+          .container
+          .debugVsyncs
+          .add(markNeedsBuild);
+      return true;
+    }(), '');
+    super.update(newWidget);
+  }
+
+  @override
+  void unmount() {
+    assert(() {
+      (widget as UncontrolledProviderScope)
+          .container
+          .debugVsyncs
+          .remove(markNeedsBuild);
+      return true;
+    }(), '');
+    super.unmount();
+  }
 }

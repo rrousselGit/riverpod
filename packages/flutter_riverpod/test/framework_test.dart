@@ -5,6 +5,61 @@ import 'package:state_notifier/state_notifier.dart';
 import 'package:mockito/mockito.dart';
 
 void main() {
+  testWidgets('widgets cannot modify providers in their build method',
+      (tester) async {
+    final onError = FlutterError.onError;
+    Object error;
+    FlutterError.onError = (details) {
+      error = details.exception;
+    };
+
+    final provider = StateProvider((ref) => 0);
+    final container = ProviderContainer();
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: Consumer((context, watch) {
+          watch(provider).state++;
+          return Container();
+        }),
+      ),
+    );
+
+    FlutterError.onError = onError;
+    expect(error, isNotNull);
+  });
+
+  testWidgets(
+      'UncontrolledProviderScope gracefully handles ProviderContainer.vsync',
+      (tester) async {
+    final container = ProviderContainer();
+
+    expect(container.debugVsyncs.length, 0);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: Container(),
+      ),
+    );
+
+    expect(container.debugVsyncs.length, 1);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: Container(),
+      ),
+    );
+
+    expect(container.debugVsyncs.length, 1);
+
+    await tester.pumpWidget(Container());
+
+    expect(container.debugVsyncs.length, 0);
+  });
+
   testWidgets('context.refresh forces a provider to refresh', (tester) async {
     var future = Future.value(21);
     final provider = FutureProvider((ref) => future);

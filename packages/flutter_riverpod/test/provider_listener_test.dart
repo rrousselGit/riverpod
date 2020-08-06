@@ -22,6 +22,7 @@ void main() {
 
       expect(find.text('hello'), findsOneWidget);
     });
+
     testWidgets('calls onChange at the end of frame after a mayHaveChanged',
         (tester) async {
       final container = ProviderContainer();
@@ -47,6 +48,7 @@ void main() {
 
       verifyOnly(onChange, onChange(1));
     });
+
     testWidgets('can mark parents as dirty during onChange', (tester) async {
       final container = ProviderContainer();
       final provider = StateProvider((ref) => 0);

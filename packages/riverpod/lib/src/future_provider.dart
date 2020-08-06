@@ -133,6 +133,12 @@ mixin _FutureProviderStateMixin<T>
   }
 
   @override
+  bool handleError(Object error, StackTrace stackTrace) {
+    exposedValue = AsyncValue.error(error, stackTrace);
+    return true;
+  }
+
+  @override
   void dispose() {
     // Equivalent to StreamSubscription.cancel()
     listenedFuture = null;
