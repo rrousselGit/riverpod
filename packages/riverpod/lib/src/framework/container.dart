@@ -110,6 +110,7 @@ class ProviderContainer {
   ) {
     final element = readProviderElement(provider);
     element.flush();
+    element.mayNeedDispose();
     return element.getExposedValue();
   }
 

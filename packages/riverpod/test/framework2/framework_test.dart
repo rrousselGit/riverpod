@@ -289,6 +289,20 @@ void main() {
     expect(firstElement.hasListeners, false);
   });
 
+  test(
+      'ProviderContainer.read(MyProvider.autoDispose) disposes the provider if not listened',
+      () async {
+    final provider = StateProvider.autoDispose((ref) => 0);
+
+    final state = container.read(provider);
+
+    expect(state.mounted, true);
+
+    await Future<void>.value();
+
+    expect(state.mounted, false);
+  });
+
   group('Element.listen', () {
     group('didChange', () {
       test('is called next sub.read', () {
@@ -377,6 +391,7 @@ void main() {
         expect(errors, unorderedEquals(<Object>[42, 21]));
       });
     });
+
     group('mayHaveChanged', () {
       test('is optional', () {
         final counter = Counter();
