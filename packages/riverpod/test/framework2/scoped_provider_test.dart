@@ -26,8 +26,7 @@ void main() {
       expect(root.debugProviderValues, isEmpty);
     });
 
-    test('can read both parent and child simultaneously',
-        () async {
+    test('can read both parent and child simultaneously', () async {
       final provider = ScopedProvider((watch) => 0);
       final root = ProviderContainer(overrides: [
         provider.overrideWithValue(21),
