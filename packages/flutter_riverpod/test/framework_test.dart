@@ -382,24 +382,55 @@ void main() {
     final key = GlobalKey();
 
     await tester.pumpWidget(
-      ProviderScope(
-        child: ProviderScope(
-          key: key,
-          child: Container(),
-        ),
+      Stack(
+        textDirection: TextDirection.ltr,
+        children: [
+          ProviderScope(
+            key: const Key('foo'),
+            child: ProviderScope(
+              key: key,
+              child: Container(),
+            ),
+          ),
+        ],
       ),
     );
 
     expect(find.byType(Container), findsOneWidget);
 
     await tester.pumpWidget(
-      ProviderScope(
-        key: key,
-        child: Container(),
+      Stack(
+        textDirection: TextDirection.ltr,
+        children: [
+          ProviderScope(
+            key: const Key('foo'),
+            child: Container(),
+          ),
+          ProviderScope(
+            key: key,
+            child: Container(),
+          ),
+        ],
       ),
     );
 
     expect(tester.takeException(), isUnsupportedError);
+
+    // re-pump the original tree so that it disposes correctly
+    await tester.pumpWidget(
+      Stack(
+        textDirection: TextDirection.ltr,
+        children: [
+          ProviderScope(
+            key: const Key('foo'),
+            child: ProviderScope(
+              key: key,
+              child: Container(),
+            ),
+          ),
+        ],
+      ),
+    );
   });
 }
 
