@@ -18,6 +18,15 @@ Matcher isProvider(RootProvider provider) {
 
 void main() {
   // TODO flushing inside mayHaveChanged calls onChanged only after all mayHaveChanged were executed
+
+  test('disposing parent container when child container is not dispose throws',
+      () {
+    final root = ProviderContainer();
+    ProviderContainer(parent: root);
+
+    expect(root.dispose, throwsStateError);
+  });
+
   test('throw if locally overriding a provider', () {
     final provider = Provider((_) => 42);
     final root = ProviderContainer(overrides: [

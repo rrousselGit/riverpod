@@ -39,9 +39,10 @@ class ProviderContainer {
     ProviderContainer parent,
     List<Override> overrides = const [],
     List<ProviderObserver> observers,
-  })  : _localObservers = observers,
+  })  : _parent = parent,
+        _localObservers = observers,
         _root = parent?._root ?? parent {
-    if (parent != null) {
+    if (_parent != null) {
       if (observers != null) {
         throw UnsupportedError(
           'Cannot specify observers on a non-root ProviderContainer/ProviderScope',
@@ -56,6 +57,10 @@ class ProviderContainer {
           );
         }
       }
+      _parent._children.add(this);
+
+      _overrideForProvider.addEntries(parent._overrideForProvider.entries
+          .where((e) => e.key is ScopedProvider));
     }
 
     for (final override in overrides) {
@@ -68,6 +73,14 @@ class ProviderContainer {
   }
 
   final ProviderContainer _root;
+  final HashSet<ProviderContainer> _children = HashSet();
+
+  final ProviderContainer _parent;
+
+  /// All the containers that have this container as `parent`.
+  ///
+  /// Do not use in production
+  Set<ProviderContainer> get debugChildren => {..._children};
   final _overrideForProvider = <ProviderBase, ProviderBase>{};
   final _overrideForFamily = <Family, FamilyOverride>{};
 
@@ -110,6 +123,7 @@ class ProviderContainer {
   ) {
     final element = readProviderElement(provider);
     element.flush();
+    element.mayNeedDispose();
     return element.getExposedValue();
   }
 
@@ -196,7 +210,21 @@ class ProviderContainer {
           'Changing the kind of override or reordering overrides is not supported.',
         );
 
+        final previousOverride = _overrideForProvider[override._origin];
         _overrideForProvider[override._origin] = override._provider;
+
+        if (override._origin is ScopedProvider) {
+          for (final child in _children) {
+            if (override._provider is! ValueProvider ||
+                (override._provider as ValueProvider)._value !=
+                    (previousOverride as ValueProvider)._value) {
+              if (child._overrideForProvider[override._origin] ==
+                  previousOverride) {
+                child.updateOverrides([override]);
+              }
+            }
+          }
+        }
 
         // _stateReaders[override._origin] cannot be null for overriden providers.
         final element = _stateReaders[override._origin];
@@ -285,20 +313,23 @@ class ProviderContainer {
   /// This will destroy the state of all providers associated to this
   /// [ProviderContainer] and call [ProviderReference.onDispose] listeners.
   void dispose() {
-    debugVsyncs.clear();
     if (_disposed) {
       throw StateError(
         'Called disposed on a ProviderContainer that was already disposed',
       );
     }
-    _disposed = true;
-
-    if (_root != null) {
-      return;
+    if (_children.isNotEmpty) {
+      throw StateError(
+        'Tried to dispose a ProviderContainer that still has children containers.',
+      );
     }
 
-    for (final state
-        in _visitStatesInOrder().toList(growable: false).reversed) {
+    debugVsyncs.clear();
+    _parent?._children?.remove(this);
+
+    _disposed = true;
+
+    for (final state in _visitStatesInOrder().toList().reversed) {
       state.dispose();
     }
   }
@@ -329,7 +360,11 @@ class ProviderContainer {
       yield element;
 
       if (element._dependents != null) {
-        queue.addAll(element._dependents);
+        for (final dependent in element._dependents) {
+          if (dependent._container == this) {
+            queue.add(dependent);
+          }
+        }
       }
     }
   }

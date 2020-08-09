@@ -432,7 +432,7 @@ class ProviderSubscription<Listened> {
   void close() {
     if (_listener.list != null) {
       _listener.unlink();
-      _listener.element.didRemoveListener();
+      _listener.element.mayNeedDispose();
     }
   }
 
@@ -501,7 +501,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   /// Whether this [ProviderElement] is currently listened or not.
   ///
   /// This maps to listeners added with [listen].
-  /// See also [didRemoveListener], called when [hasListeners] may have changed.
+  /// See also [mayNeedDispose], called when [hasListeners] may have changed.
   bool get hasListeners => _listeners.isNotEmpty;
 
   final _listeners = LinkedList<_Listener<Listened>>();
@@ -763,7 +763,7 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement.provider}.
   ///   state of a provider when no-longer used.
   @protected
   @visibleForOverriding
-  void didRemoveListener() {}
+  void mayNeedDispose() {}
 
   /// Called the first time a provider is obtained.
   @protected

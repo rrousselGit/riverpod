@@ -6,6 +6,148 @@ import '../utils.dart';
 
 void main() {
   group('ScopedProvider', () {
+    test('use the deepest override', () {
+      final provider = ScopedProvider((watch) => 0);
+      final root = ProviderContainer(overrides: [
+        provider.overrideWithValue(1),
+      ]);
+      final mid = ProviderContainer(
+        parent: root,
+        overrides: [
+          provider.overrideWithValue(42),
+        ],
+      );
+      final container = ProviderContainer(parent: mid);
+
+      expect(container.read(provider), 42);
+
+      expect(container.debugProviderValues, {provider: 42});
+      expect(mid.debugProviderValues, isEmpty);
+      expect(root.debugProviderValues, isEmpty);
+    });
+
+    test('can read both parent and child simultaneously', () async {
+      final provider = ScopedProvider((watch) => 0);
+      final root = ProviderContainer(overrides: [
+        provider.overrideWithValue(21),
+      ]);
+      final container = ProviderContainer(parent: root, overrides: [
+        provider.overrideWithValue(42),
+      ]);
+
+      expect(container.read(provider), 42);
+      expect(root.read(provider), 21);
+      expect(container.read(provider), 42);
+      expect(root.read(provider), 21);
+    });
+
+    test('updating parent override when there is a child override is no-op',
+        () async {
+      final provider = ScopedProvider((watch) => 0);
+      final root = ProviderContainer(overrides: [
+        provider.overrideWithValue(21),
+      ]);
+      final container = ProviderContainer(parent: root, overrides: [
+        provider.overrideWithValue(42),
+      ]);
+      var mayHaveChanged = false;
+
+      final sub = container.listen(
+        provider,
+        mayHaveChanged: (_) => mayHaveChanged = true,
+      );
+
+      expect(sub.read(), 42);
+
+      root.updateOverrides([
+        provider.overrideWithValue(22),
+      ]);
+
+      expect(sub.read(), 42);
+      expect(mayHaveChanged, false);
+    });
+
+    test('are auto disposed', () async {
+      final provider = ScopedProvider((watch) => 0);
+      final container = ProviderContainer();
+
+      final sub = container.listen(provider);
+      final element = container.readProviderElement(provider);
+
+      expect(element.mounted, true);
+      expect(sub.read(), 0);
+
+      sub.close();
+      await Future<void>.value();
+
+      expect(element.mounted, false);
+    });
+
+    test('overridesAs are auto disposed', () async {
+      final provider = ScopedProvider((watch) => 0);
+      final container = ProviderContainer(overrides: [
+        provider.overrideAs((ref) => 42),
+      ]);
+
+      final sub = container.listen(provider);
+      final element = container.readProviderElement(provider);
+
+      expect(element.mounted, true);
+      expect(sub.read(), 42);
+
+      sub.close();
+      await Future<void>.value();
+
+      expect(element.mounted, false);
+    });
+
+    test('are disposed on nested containers', () {
+      final provider = ScopedProvider((watch) => 0);
+      final root = ProviderContainer(overrides: [
+        provider.overrideWithValue(1),
+      ]);
+      final mid = ProviderContainer(
+        parent: root,
+        overrides: [
+          provider.overrideWithValue(42),
+        ],
+      );
+      final container = ProviderContainer(parent: mid);
+
+      final element = container.readProviderElement(provider);
+
+      expect(element.mounted, true);
+
+      container.dispose();
+
+      expect(element.mounted, false);
+    });
+
+    test('handles parent override update', () {
+      final provider = ScopedProvider((watch) => 0);
+      final root = ProviderContainer(overrides: [
+        provider.overrideWithValue(1),
+      ]);
+      final mid = ProviderContainer(
+        parent: root,
+        overrides: [
+          provider.overrideWithValue(42),
+        ],
+      );
+      final container = ProviderContainer(parent: mid);
+
+      final sub = container.listen(provider);
+
+      expect(sub.read(), 42);
+
+      mid.updateOverrides([
+        provider.overrideWithValue(21),
+      ]);
+
+      expect(sub.flush(), true);
+      expect(sub.read(), 21);
+    });
+
     test('are mounted on the closest container', () {
       final root = ProviderContainer();
       final container = ProviderContainer(parent: root);
