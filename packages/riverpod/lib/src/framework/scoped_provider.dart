@@ -96,7 +96,7 @@ class ScopedProvider<Listened> extends ProviderBase<Listened, Listened> {
   /// {@macro riverpod.overideWith}
   Override overrideWithValue(Listened value) {
     return ProviderOverride(
-      ValueProvider<Object, Listened>((ref) => value, value),
+      ValueProvider<Listened, Listened>((ref) => value, value),
       this,
     );
   }

@@ -22,6 +22,47 @@ void main() {
     container.dispose();
   });
 
+  test('ProviderContainer.children', () {
+    final root = ProviderContainer();
+
+    expect(root.debugChildren, isEmpty);
+
+    final mid = ProviderContainer(parent: root);
+
+    expect(root.debugChildren, containsAll(<ProviderContainer>[mid]));
+    expect(mid.debugChildren, isEmpty);
+
+    final mid2 = ProviderContainer(parent: root);
+
+    expect(root.debugChildren, containsAll(<ProviderContainer>[mid, mid2]));
+    expect(mid.debugChildren, isEmpty);
+    expect(mid2.debugChildren, isEmpty);
+
+    final leaf = ProviderContainer(parent: mid);
+
+    expect(root.debugChildren, containsAll(<ProviderContainer>[mid, mid2]));
+    expect(mid.debugChildren, containsAll(<ProviderContainer>[leaf]));
+    expect(mid2.debugChildren, isEmpty);
+    expect(leaf.debugChildren, isEmpty);
+
+    leaf.dispose();
+
+    expect(root.debugChildren, containsAll(<ProviderContainer>[mid, mid2]));
+    expect(mid.debugChildren, isEmpty);
+    expect(mid2.debugChildren, isEmpty);
+
+    mid.dispose();
+
+    expect(root.debugChildren, containsAll(<ProviderContainer>[mid2]));
+    expect(mid2.debugChildren, isEmpty);
+
+    mid2.dispose();
+
+    expect(root.debugChildren, isEmpty);
+
+    root.dispose();
+  });
+
   test('ProviderReference.container exposes the root container', () {
     final root = ProviderContainer();
     final container = ProviderContainer(parent: root);
