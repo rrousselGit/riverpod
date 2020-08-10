@@ -4,12 +4,12 @@ title: Providers
 
 Now that we have installed [Riverpod], let's talk about "providers".
 
-## What is a provider
-
-Providers are the most important part of a [Riverpod] application.
-
-A provider is an object that encapsulate a piece of state and allow listening
+Providers are the most important part of a [Riverpod] application.  
+A provider is an object that encapsulate a piece of state and allows listening
 to that state.
+
+## Why use providers?
+
 By wrapping a piece of state in a provider, this:
 
 - Allows easily accessing that state in multiple locations.  
@@ -96,9 +96,40 @@ void main() {
 
 :::
 
-That's it for this guide!  
-You can continue by reading [How to combine providers](./combining_providers).
-Alternatively, you can see [How to read a provider](./reading)
+## Provider Modifiers
+
+All Providers have a built-in way to add extra functionalities to your different providers.
+
+They may add new features to the `ref` object or change slightly how the provider
+is consumed.  
+Modifiers can be used on all providers, with a syntax similar to named constructor:
+
+```dart
+final myAutoDisposeProvider = StateProvider.autoDispose<String>((ref) => 0);
+final myFamilyProvider = Provider.family<String, int>((ref, id) => '$id');
+```
+
+At the moment, there are two modifiers available:
+
+- [`.autoDispose`](./modifiers/auto_dispose), which will make the provider automatically destroy its state
+  when it is no-longer listened.
+- [`.family`](./modifiers/family), which allows creating a provider from external parameters.
+
+:::note
+A provider can use multiple modifiers at once:
+
+```dart
+final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) async {
+  return fetchUser(userId);
+});
+```
+
+:::
+
+That's it for this guide!
+
+You can continue with [How to read a provider](./reading).
+Alternatively, you can see [How to combine providers](./combining_providers).
 
 [get_it]: http://pub.dev/packages/get_it
 [inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html

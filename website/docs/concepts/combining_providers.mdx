@@ -1,0 +1,221 @@
+---
+title: Combining providers
+---
+
+Make sure to [read about Providers](./provider) first.  
+In this guide, we will see everything there is to know about combining providers.
+
+## Combining providers
+
+We've previously seen how to create a simple provider. But the reality is,
+in many situation a provider will want to read the state of another provider.
+
+To do that, we can use the [ref] object passed to the callback of our provider,
+and use its [watch] method.
+
+As an example, consider the following provider:
+
+```dart
+final cityProvider = Provider((ref) => 'London');
+```
+
+We can now create another provider that will consume our `cityProvider`:
+
+```dart
+final weatherProvider = FutureProvider((ref) async {
+  // We use `ref.watch` to read another provider, and we pass it the provider
+  // that we want to consume. Here: cityProvider
+  final city = ref.watch(cityProvider);
+
+  // We can then use the result to do something based on the value of `cityProvider`.
+  return fetchWeather(city: city);
+});
+```
+
+That's it. We've created a provider that depends on another provider.
+
+<!-- TODO warn about watching autoDispose providers -->
+
+## What if the value listened changes over time?
+
+Depending on the provider that you are listening, the value obtained may change
+over time.  
+For example, you may be reading a [StateNotifierProvider], or the provider
+listened was forced to refresh using [ProviderContainer.refresh]/[context.refresh].
+
+When using [watch], Riverpod is able to detect that the value listened changed
+and will _automatically_ re-execute the provider when needed.
+
+This can be useful for computed states.
+For example, consider a [StateNotifierProvider] that exposes a todo-list:
+
+```dart
+class TodoList extends StateNotifier<List<Todo>> {
+  TodoList(): super(const []);
+}
+
+final todoListProvider = StateNotifierProvider((ref) => TodoList());
+```
+
+A common use-case would be to have the UI filter the list of todos to show
+only the completed/uncompleted todos.
+
+An easy way to implement such scenario would be to:
+
+- create [StateProvider], which exposes the currently selected filter method:
+
+  ```dart
+  enum Filter {
+    none,
+    completed,
+    uncompleted,
+  }
+
+  final filterProvider = StateProvider((ref) => Filter.none);
+  ```
+
+- make a separate provider which combines the filter method and the todo-list
+  to expose the filtered todo-list:
+
+  ```dart
+  final filteredTodoListProvider = Provider<List<Todo>>((ref) {
+    final todos = ref.watch(todoListProvider.state);
+
+    switch (ref.watch(filterProvider)) {
+      case Filter.none:
+        return todos;
+      case Filter.completed:
+        return todos.where((todo) => todo.completed).toList();
+      case Filter.uncompleted:
+        return todos.where((todo) => !todo.completed).toList();
+    }
+  });
+  ```
+
+Then, our UI can listen to `filteredTodoListProvider` to listen to the filtered todo-list.  
+Using such approach, the UI will automatically update when either the filter
+or the todo-list changes.
+
+To see this approach in action, you can look at the source code of the [Todo List
+example](https://github.com/rrousselGit/river_pod/tree/master/examples/todos)
+
+### Why not filter the list inside the build method of a function?
+
+
+
+
+## FAQ
+
+### My provider updates too often, what can I do?
+
+If your object is re-created too often chances are, your provider is listening
+to objects that it doesn't care about.
+
+For example, you may be listening a `Configuration` object, but only use the `host`
+property.  
+By listening to the entire `Configuration` object, if a property other than `host`
+changes, this would still cause your provider to be re-evaluated – which may be
+undesired.
+
+The solution to this problem is to create a separate provider that exposes _only_
+what you need in `Configuration` (so `host`):
+
+**AVOID** listening to the entire object:
+
+```dart
+final configsProvider = StreamProvider<Configuration>(...);
+
+final productsProvider = FutureProvider<List<Product>>((ref) async {
+  // Will cause productsProvider to re-fetch the products if anything in the
+  // configurations changes
+  final configs = await ref.watch(configsProvider.last);
+
+  return dio.get('${configs.host}/products');
+});
+```
+
+**PREFER** listening to only what you use:
+
+```dart
+final configsProvider = StreamProvider<Configuration>(...);
+
+/// A provider that exposes only the current host
+final _hostProvider = Provider<AsyncValue<String>>((ref) {
+  return ref.watch(configsProvider).whenData((configs) => configs.host);
+});
+
+final productsProvider = FutureProvider<List<Product>>((ref) async {
+  // Listens only to the host. If something else in the configurations
+  // changes, this will not pointlessly re-evalute our provider.
+  final host = await ref.watch(_hostProvider);
+
+  return dio.get('$host/products');
+});
+```
+
+<!-- ### Creating an object that depends on a lot of providers.
+
+Sometimes, we may want to create an object that depends on a lot of providers
+like so:
+
+```dart
+final configsProvider = Provider((ref) => Configuration());
+
+final repositoryProvider = Provider((ref) {
+  return Location(ref.watch(configsProvider));
+});
+
+class Repository {
+  Repository(this.configs);
+
+  final Configuration configs;
+
+  Future<User> fetchUser(String id) async {
+    final response = await dio.get('${configs.host}/users/$id');
+    return User.fromJson(response.data);
+  }
+}
+```
+
+This can quickly become tedious as your object receives more parameters.
+
+
+In that situation, it may be reasonable to pass [ref.read] variable to our
+object directly:
+
+```dart
+final cityProvider = Provider((ref) => 'London');
+final countryProvider = Provider((ref) => 'England');
+
+final weatherProvider = Provider((ref) {
+  // Pass the ref.read object to our Location class.
+  // Location will then be able to use this function to read other providers
+  return Location(ref.read);
+});
+
+class Location {
+  Location(this._read);
+
+  final Reader _read;
+
+  String get label {
+    final city = _read(cityProvider);
+    final country = _read(countryProvider);
+    return '$city ($country)';
+  }
+}
+```
+
+This avoids having to implement a constructor, which makes changes on the object
+easier.
+
+This is fine as, as opposed to `BuildContext` from Flutter, that [ref] object
+is completely independent from Flutter/the UI.
+As such the object can still be shared and tested. -->
+
+[statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
+[ref]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference-class.html
+[watch]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference/watch.html
+[read]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference/read.html
+[providercontainer.refresh]: https://pub.dev/documentation/riverpod/0.6.0-dev+2/riverpod/ProviderContainer/refresh.html
+[context.refresh]: https://pub.dev/documentation/flutter_riverpod/0.6.0-dev+2/flutter_riverpod/BuildContextX/refresh.html

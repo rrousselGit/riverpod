@@ -1,15 +1,19 @@
 module.exports = {
   Sidebar: [
-    "fundamentals/getting_started",
+    "getting_started",
     {
       type: "category",
       label: "Concepts",
       items: [
-        "fundamentals/concepts/providers",
-        "fundamentals/concepts/reading",
-        "fundamentals/concepts/combining_providers",
-        "fundamentals/concepts/computed",
-        "fundamentals/concepts/family",
+        "concepts/providers",
+        "concepts/reading",
+        "concepts/combining_providers",
+        "concepts/computed",
+        {
+          type: "category",
+          label: "Modifiers",
+          items: ["concepts/modifiers/family"],
+        },
       ],
     },
     {

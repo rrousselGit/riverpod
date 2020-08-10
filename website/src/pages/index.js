@@ -83,7 +83,7 @@ function Home() {
                 "button button--outline button--secondary button--lg",
                 styles.getStarted
               )}
-              to={useBaseUrl("docs/fundamentals/getting_started")}
+              to={useBaseUrl("docs/getting_started")}
             >
               Get Started
             </Link>
@@ -157,12 +157,12 @@ function Home() {
                     <br></br>
                     With
                     <code>
-                      <a href={useBaseUrl("docs/fundamentals/concepts/computed")}>
+                      <a href={useBaseUrl("docs/concepts/computed")}>
                         Computed
                       </a>
                     </code>
                     and
-                    <a href={useBaseUrl("docs/fundamentals/concepts/family")}>
+                    <a href={useBaseUrl("docs/concepts/family")}>
                       "families"
                     </a>
                     , sort your lists or do HTTP requests only when you{" "}

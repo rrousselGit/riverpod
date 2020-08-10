@@ -1,0 +1,41 @@
+---
+title: .family
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+## Disposing the resources the state is destroyed
+
+During the lifetime of an application, the state associated with a provider may
+get destroyed.  
+In this situation, we may want to perform a clean-up before the state destruction.
+
+This is done by using the `ref` object that is passed to the callback of all providers.
+
+That `ref` object expose an `onDispose` method, which can be used to listen to
+the state destruction even to perform some task.
+
+The following example uses `ref.onDispose` to close a `StreamController`:
+
+```dart
+final example = StreamProvider((ref) {
+  final streamController = StreamController<int>();
+
+  ref.onDispose(() {
+    // Closes the StreamController when the state of this provider is destroyed.
+    streamController.close();
+  });
+
+  return streamController.stream;
+});
+```
+
+:::note
+Depending on the provider used, it may already take care of the clean-up process.  
+For example, [StateNotifierProvider] will call the `dispose` method of a `StateNotifier`.
+:::
+
+[freezed]: https://pub.dev/packages/freezed
+[provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
+[futureprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/FutureProvider-class.html

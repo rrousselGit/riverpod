@@ -1,0 +1,136 @@
+---
+title: .family
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+Before reading this, consider reading about [providers](./provider) and [how to read them](./reading).  
+In this part, we will talk in detail about the `.family` provider modifier.
+
+The `.family` modifier has one purpose: Creating a provider from external values.
+
+Some common use-cases for `family` would be:
+
+- Combining [FutureProvider] with `.family` to fetch a `Message` from its ID
+- Passing the current `Locale` to a provider, so that we can handle translations:
+- Connecting a provider with another provider without having access to its variable.
+
+## Usage
+
+The way families works is by adding an extra parameter to the provider.
+This parameter can then be freely used in our provider to create some state.
+
+For example, we could combine `family` with [FutureProvider] to fetch
+a `Message` from its ID:
+
+```dart
+final messagesFamily = FutureProvider.family<Message, String>((ref, id) async {
+  return dio.get('http://my_api.dev/messages/$id');
+});
+```
+
+Then, when using our `messagesFamily` provider, the syntax is slightly modified.  
+The usual syntax will not work anymore:
+
+```dart
+Widget build(BuildContext context) {
+  // Error – messagesFamily is not a provider
+  final response = useProvider(messagesFamily);
+}
+```
+
+Instead, we need to pass a parameter to `messagesFamily`:
+
+```dart
+Widget build(BuildContext context) {
+  final response = useProvider(messagesFamily('id'));
+}
+```
+
+:::info
+It is possible to use a family with different parameters simultaneously.  
+For example, we could use a `titleFamily` to read both the french and english
+translations at the same time:
+
+```dart
+@override
+Widget build(BuildContext context) {
+  final frenchTitle = useProvider(titleFamily(const Locale('fr')));
+  final englishTitle = useProvider(titleFamily(const Locale('en')));
+
+  return Text('fr: $frenchTitle en: $englishTitle');
+}
+```
+
+:::
+
+## Parameter restrictions
+
+For families to work correctly, it is critical for the parameter passed to
+a provider to have a consistent `hashCode` and `==`.
+
+Ideally the parameter should either be a primitive (bool/int/double/String),
+a constant (providers), or an immutable object that override `==` and `hashCode`.
+
+### _PREFER_ using `autoDispose` when the parameter is not constant:
+
+You may want to use families to pass the input of a searchfield to your provider.
+But that value can change often and never be reused.  
+This could cause memory leaks as, by default, a provider is never destroyed even
+if no-longer used.
+
+Using both `.family` and `.autoDispose` fixes that memory leak:
+
+```dart
+final characters = FutureProvider.autoDispose.family<List<Character>, String>((ref, filter) async {
+  return fetchCharacters(filter: filter);
+});
+```
+
+## Passing multiple parameters to a family
+
+Families have no built-in support for passing multiple values to a provider.
+
+On the other hand, that value could be _anything_ (as long as it matches with
+the restrictions mentioned previously).
+
+This includes:
+
+- A tuple from [tuple](http://pub.dev/packages/tuple)
+- Objects generated with [Freezed] or [built_value](https://pub.dev/packages/built_value)
+- Objects using [equatable](https://pub.dev/packages/equatable)
+
+Here's an example using [Freezed]:
+
+```dart
+@freezed
+abstract class MyParameter with _$MyParameter {
+  factory MyParameter({
+    int userId,
+    Locale locale,
+  }) = _MyParameter;
+}
+
+final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
+  print(myParameter.userId);
+  print(myParameter.locale);
+  // Do something with userId/locale
+})
+
+@override
+Widget build(BuildContext context) {
+  int userId; // Read the user ID from somewhere
+  final locale = Localizations.localeOf(context);
+
+  final something = useProvider(
+    exampleProvider(MyParameter(userId: userId, locale: locale)),
+  );
+
+  ...
+}
+```
+
+[freezed]: https://pub.dev/packages/freezed
+[provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
+[futureprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/FutureProvider-class.html
