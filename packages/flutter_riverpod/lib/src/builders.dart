@@ -29,7 +29,7 @@ class ChangeNotifierProviderBuilder {
   ///
   /// ```dart
   /// final myProvider = FutureProvider.autoDispose((ref) async {
-  ///   final response = await httpClient.get(...);
+  ///   final response = await dio.get('path');
   ///   ref.maintainState = true;
   ///   return response;
   /// });
