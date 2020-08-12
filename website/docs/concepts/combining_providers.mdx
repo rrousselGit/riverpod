@@ -99,12 +99,37 @@ or the todo-list changes.
 To see this approach in action, you can look at the source code of the [Todo List
 example](https://github.com/rrousselGit/river_pod/tree/master/examples/todos)
 
-### Why not filter the list inside the build method of a function?
+:::info
+This behavior is not specific to [Provider], and works with all providers.
 
+For example, you could combine [watch] with [FutureProvider] to implement a search
+feature or live-configurations change:
 
+```dart
+// The current search filter
+final searchProvider = StateProvider((ref) => '');
 
+/// Configurations which can change over time
+final configsProvider = StreamProvider<Configuration>(...);
+
+final charactersProvider = FutureProvider<List<Character>>((ref) async {
+  final search = ref.watch(searchProvider);
+  final configs = await ref.watch(configsProvider.last);
+  final response = await dio.get('${configs.host}/characters?search=$search');
+
+  return response.data.map((json) => Character.fromJson(json)).toList();
+});
+```
+
+This code will fetch a list of characters from the service, and automatically
+re-fetch the list whenever the configurations changes or when the search query changes.
+:::
 
 ## FAQ
+
+### What happens if the provider listened was recomputed but returned the same value?
+
+ 
 
 ### My provider updates too often, what can I do?
 
@@ -213,6 +238,7 @@ This is fine as, as opposed to `BuildContext` from Flutter, that [ref] object
 is completely independent from Flutter/the UI.
 As such the object can still be shared and tested. -->
 
+[provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
 [statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
 [ref]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference-class.html
 [watch]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference/watch.html
