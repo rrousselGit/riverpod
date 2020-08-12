@@ -32,8 +32,13 @@ void main() {
       expect(second.mounted, true);
     });
   });
+
   group('StateProvider.family.autoDispose', () {
     test('creates a new controller when no-longer listened', () async {
+      StateProvider.family.autoDispose<int, String>((ref, id) {
+        return 42;
+      });
+
       final provider =
           StateProvider.autoDispose.family<int, int>((ref, id) => id);
 
