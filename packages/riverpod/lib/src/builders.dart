@@ -63,6 +63,11 @@ class StateProviderBuilder {
     return StateProvider(create, name: name);
   }
 
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeStateProviderBuilder get autoDispose {
+    return const AutoDisposeStateProviderBuilder();
+  }
+
   /// {@template riverpod.family}
   /// A group of providers that builds their value from an external parameter.
   ///
@@ -257,6 +262,11 @@ class StateProviderFamilyBuilder {
     String name,
   }) {
     return StateProviderFamily(create, name: name);
+  }
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeStateProviderFamilyBuilder get autoDispose {
+    return const AutoDisposeStateProviderFamilyBuilder();
   }
 }
 

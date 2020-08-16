@@ -419,7 +419,7 @@ extension on Tuple3<DisposeType, StateType, ProviderType> {
     Tuple3<List<DisposeType>, List<StateType>, List<ProviderType>> matrix,
   ) {
     Iterable<String> other() sync* {
-      if (item1 == DisposeType.none && item2 != StateType.state) {
+      if (item1 == DisposeType.none) {
         yield '''
 
 ${autoDisposeDoc().replaceAll('///', '  ///')}
