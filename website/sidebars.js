@@ -8,11 +8,14 @@ module.exports = {
         "concepts/providers",
         "concepts/reading",
         "concepts/combining_providers",
-        "concepts/computed",
+        // "concepts/computed",
         {
           type: "category",
           label: "Modifiers",
-          items: ["concepts/modifiers/family"],
+          items: [
+            "concepts/modifiers/family",
+            "concepts/modifiers/auto_dispose",
+          ],
         },
       ],
     },
