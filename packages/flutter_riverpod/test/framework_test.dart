@@ -314,6 +314,8 @@ void main() {
       scopeKey.currentContext.toString(),
       equalsIgnoringHashCodes(
         'ProviderScope-[GlobalKey#00000]('
+        'observers: null, '
+        'overrides: [], '
         'state: ProviderScopeState#00000, '
         'Provider<int>#00000: 0, '
         "counter: Instance of 'Counter', "
