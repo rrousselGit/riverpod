@@ -61,3 +61,6 @@ linter:
 
     # Conflicts with disabling `implicit-dynamic`
     avoid_annotating_with_dynamic: false
+
+    # conflicts with `prefer_relative_imports`
+    always_use_package_imports: false

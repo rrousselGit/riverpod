@@ -5,6 +5,7 @@ linter:
     - always_put_required_named_parameters_first
     - always_require_non_null_named_parameters
     - always_specify_types
+    - always_use_package_imports
     - annotate_overrides
     - avoid_annotating_with_dynamic
     - avoid_as
@@ -55,9 +56,11 @@ linter:
     - curly_braces_in_flow_control_structures
     - diagnostic_describe_all_properties
     - directives_ordering
+    - do_not_use_environment
     - empty_catches
     - empty_constructor_bodies
     - empty_statements
+    - exhaustive_cases
     - file_names
     - flutter_style_todos
     - hash_and_equals
@@ -73,6 +76,7 @@ linter:
     - literal_only_boolean_expressions
     - missing_whitespace_between_adjacent_strings
     - no_adjacent_strings_in_list
+    - no_default_cases
     - no_duplicate_case_values
     - no_logic_in_create_state
     - no_runtimeType_toString
@@ -127,6 +131,7 @@ linter:
     - provide_deprecation_message
     - public_member_api_docs
     - recursive_getters
+    - sized_box_for_whitespace
     - slash_for_doc_comments
     - sort_child_properties_last
     - sort_constructors_first
@@ -146,6 +151,7 @@ linter:
     - unnecessary_new
     - unnecessary_null_aware_assignments
     - unnecessary_null_in_if_null_operators
+    - unnecessary_nullable_for_final_variable_declarations
     - unnecessary_overrides
     - unnecessary_parenthesis
     - unnecessary_raw_strings
@@ -157,7 +163,9 @@ linter:
     - unsafe_html
     - use_full_hex_values_for_flutter_colors
     - use_function_type_syntax_for_parameters
+    - use_is_even_rather_than_modulo
     - use_key_in_widget_constructors
+    - use_late_for_private_fields_and_variables
     - use_raw_strings
     - use_rethrow_when_possible
     - use_setters_to_change_properties

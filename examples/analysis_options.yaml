@@ -15,3 +15,6 @@ linter:
 
     # Not necessary for examples
     use_key_in_widget_constructors: false
+
+    # Too verbose for apps and bring very little value
+    diagnostic_describe_all_properties: false

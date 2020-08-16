@@ -445,6 +445,7 @@ class MockCreateState extends Mock {
 class InitState extends StatefulWidget {
   const InitState({Key key, this.initState}) : super(key: key);
 
+  // ignore: diagnostic_describe_all_properties
   final void Function(BuildContext context) initState;
 
   @override

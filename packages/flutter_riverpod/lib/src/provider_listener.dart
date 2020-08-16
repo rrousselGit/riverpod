@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'internals.dart';
 
@@ -34,6 +35,16 @@ class ProviderListener<T> extends StatefulWidget {
 
   @override
   _ProviderListenerState<T> createState() => _ProviderListenerState<T>();
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty<void Function(T value)>('onChange', onChange),
+    );
+    properties.add(
+      DiagnosticsProperty<ProviderBase<Object, T>>('provider', provider),
+    );
+  }
 }
 
 class _ProviderListenerState<T> extends State<ProviderListener<T>> {
