@@ -141,6 +141,23 @@ abstract class ProviderBase<Created, Listened>
 
     return '${describeIdentity(this)}$content';
   }
+
+  // Custom implementation of hash code optimized for reading providers.
+  //
+  // The value is designed to fit within the SMI representation. This makes
+  // the cached value use less memory (one field and no extra heap objects) and
+  // cheap to compare (no indirection).
+  //
+  // See also:
+  //
+  //  * https://dart.dev/articles/dart-vm/numeric-computation, which
+  //    explains how numbers are represented in Dart.
+  @nonVirtual
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes, hash_and_equals
+  int get hashCode => _cachedHash;
+  final int _cachedHash = _nextHashCode = (_nextHashCode + 1) % 0xffffff;
+  static int _nextHashCode = 1;
 }
 
 /// {@template riverpod.rootprovider}
