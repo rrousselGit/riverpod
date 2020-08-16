@@ -41,6 +41,53 @@ For this guide, consider the following provider:
 final counterProvider = StateProvider((ref) => 0);
 ```
 
+## Deciding what to read
+
+Depending on the provider you want to listen, you may have multiple possible
+values that you can listen.
+
+An example, consider the following [StreamProvider]:
+
+```dart
+final userProvider = StreamProvider<User>(...);
+```
+
+When reading reading this `userProvider`, you can:
+
+- synchronously read the current state by listening to `userProvider` itself:
+
+  ```dart
+  Widget build(BuildContext context) {
+    AsyncValue<User> user = useProvider(userProvider);
+
+    return user.when(
+      loading: () => const CircularProgressIndicator(),
+      error: (error, stack) => const Text('Oops'),
+      data: (user) => Text(user.name),
+    );
+  }
+  ```
+
+- obtain the associated [Stream], by listening to `userProvider.stream`:
+
+  ```dart
+  Widget build(BuildContext context) {
+    Stream<User> user = useProvider(userProvider.stream);
+  }
+  ```
+
+- obtain a [Future] that resolves with the latest value emitted, by listening to `userProvider.last`:
+
+  ```dart
+  Widget build(BuildContext context) {
+    Future<User> user = useProvider(userProvider.last);
+  }
+  ```
+
+For more information, refer to the documentation of each individual provider by
+consulting the [API reference](https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html).
+
+
 ## Consuming a provider inside widgets
 
 In this section, we will see how Flutter widgets can interact with providers.
