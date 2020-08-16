@@ -96,6 +96,35 @@ void main() {
 
 :::
 
+## Performing actions before the state destruction
+
+In some cases, the state of a provider may get destroyed or re-created.
+A common use-case in those situations is to perform a cleanup before the state of a provider
+is destroyed, such as closing a `StreamController`.
+
+This is done by using the `ref` object that is passed to the callback of all providers;
+using its [onDispose] method
+
+The following example uses [onDispose] to close a `StreamController`:
+
+```dart
+final example = StreamProvider.autoDispose((ref) {
+  final streamController = StreamController<int>();
+
+  ref.onDispose(() {
+    // Closes the StreamController when the state of this provider is destroyed.
+    streamController.close();
+  });
+
+  return streamController.stream;
+});
+```
+
+:::note
+Depending on the provider used, it may already take care of the clean-up process.  
+For example, [StateNotifierProvider] will call the `dispose` method of a `StateNotifier`.
+:::
+
 ## Provider Modifiers
 
 All Providers have a built-in way to add extra functionalities to your different providers.
@@ -134,6 +163,7 @@ Alternatively, you can see [How to combine providers](./combining_providers).
 [get_it]: http://pub.dev/packages/get_it
 [inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
 [stream]: https://api.dart.dev/stable/2.8.4/dart-async/Stream-class.html
+[ondispose]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference/onDispose.html
 [riverpod]: https://github.com/rrousselgit/river_pod
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
 [flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
