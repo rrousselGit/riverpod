@@ -64,3 +64,6 @@ linter:
 
     # conflicts with `prefer_relative_imports`
     always_use_package_imports: false
+
+    # Disabled for now until we have NNBD as it otherwise conflicts with `missing_return`
+    no_default_cases: false
