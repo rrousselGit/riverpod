@@ -418,13 +418,13 @@ void main() {
     Provider<int> provider;
 
     final provider1 = Provider((ref) {
-      return ref.read(provider) + 1;
+      return ref.watch(provider) + 1;
     });
     final provider2 = Provider((ref) {
-      return ref.read(provider1) + 1;
+      return ref.watch(provider1) + 1;
     });
     provider = Provider((ref) {
-      return ref.read(provider2) + 1;
+      return ref.watch(provider2) + 1;
     });
 
     final container = ProviderContainer();
@@ -438,13 +438,13 @@ void main() {
     Provider<int Function()> provider;
 
     final provider1 = Provider((ref) {
-      return ref.read(provider)() + 1;
+      return ref.watch(provider)() + 1;
     });
     final provider2 = Provider((ref) {
-      return ref.read(provider1) + 1;
+      return ref.watch(provider1) + 1;
     });
     provider = Provider((ref) {
-      return () => ref.read(provider2) + 1;
+      return () => ref.watch(provider2) + 1;
     });
 
     final container = ProviderContainer();
@@ -480,19 +480,19 @@ void main() {
     final provider1 = Provider((ref) {
       ref.onDispose(onDispose1);
       return 1;
-    });
+    }, name: '1');
 
     final provider2 = Provider((ref) {
-      final value = ref.read(provider1);
+      final value = ref.watch(provider1);
       ref.onDispose(onDispose2);
       return value + 1;
-    });
+    }, name: '2');
 
     final provider3 = Provider((ref) {
-      final value = ref.read(provider2);
+      final value = ref.watch(provider2);
       ref.onDispose(onDispose3);
       return value + 1;
-    });
+    }, name: '3');
 
     expect(container.read(provider3), 3);
 
@@ -673,11 +673,11 @@ void main() {
 
       final provider = StateNotifierProvider<Counter>((_) => counter);
       final provider2 = StateNotifierProvider<Counter>((ref) {
-        ref.read(provider);
+        ref.watch(provider);
         return counter2;
       });
       final provider3 = StateNotifierProvider<Counter>((ref) {
-        ref.read(provider2);
+        ref.watch(provider2);
         return counter3;
       });
 

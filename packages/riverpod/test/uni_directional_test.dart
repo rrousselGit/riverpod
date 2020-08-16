@@ -206,7 +206,7 @@ void main() {
   test("initState can't mark dirty other provider", () {
     final provider = StateProvider((ref) => 0);
     final provider2 = Provider((ref) {
-      ref.read(provider).state = 42;
+      ref.watch(provider).state = 42;
       return 0;
     });
 
@@ -220,7 +220,7 @@ void main() {
     final provider = StateNotifierProvider((_) => counter);
     final nested = Provider((_) => 0);
     final provider2 = Provider((ref) {
-      ref.read(nested);
+      ref.watch(nested);
       counter.increment();
       return 0;
     });

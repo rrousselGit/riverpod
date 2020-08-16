@@ -95,7 +95,7 @@ void main() {
       controller.close();
     });
 
-    test("read doesn't cause recomputing", () {
+    test("ref.read doesn't cause recomputing", () {
       var callCount = 0;
       final provider = Provider((ref) {
         callCount++;

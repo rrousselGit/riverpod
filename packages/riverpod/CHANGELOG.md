@@ -1,3 +1,9 @@
+# 0.6.1
+
+- Fixed a bug where when disposing `ProviderContainer`, providers may be disposed
+  in an incorrect order.
+- Improved the performances of reading providers by 25%
+
 # 0.6.0
 
 - Merged `Computed` and `Provider`. Now, all providers have the ability to rebuild

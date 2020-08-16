@@ -73,18 +73,18 @@ class ProviderContainer {
   }
 
   final ProviderContainer _root;
-  final HashSet<ProviderContainer> _children = HashSet();
-
   final ProviderContainer _parent;
+
+  final _children = HashSet<ProviderContainer>();
 
   /// All the containers that have this container as `parent`.
   ///
   /// Do not use in production
   Set<ProviderContainer> get debugChildren => {..._children};
-  final _overrideForProvider = <ProviderBase, ProviderBase>{};
-  final _overrideForFamily = <Family, FamilyOverride>{};
 
-  final Map<ProviderBase, ProviderElement> _stateReaders = {};
+  final _overrideForProvider = HashMap<ProviderBase, ProviderBase>();
+  final _overrideForFamily = HashMap<Family, FamilyOverride>();
+  final _stateReaders = HashMap<ProviderBase, ProviderElement>();
 
   final List<ProviderObserver> _localObservers;
   Iterable<ProviderObserver> get _observers sync* {
@@ -267,13 +267,13 @@ class ProviderContainer {
     if (_root != null && provider is RootProvider) {
       return _root.readProviderElement(provider);
     }
-    if (provider == _circularDependencyLock) {
-      throw CircularDependencyError._();
-    }
-    _circularDependencyLock ??= provider;
 
-    try {
-      final element = _stateReaders.putIfAbsent(provider, () {
+    final element = _stateReaders.putIfAbsent(provider, () {
+      if (provider == _circularDependencyLock) {
+        throw CircularDependencyError._();
+      }
+      _circularDependencyLock ??= provider;
+      try {
         ProviderBase<Created, Listened> override;
         override ??=
             _overrideForProvider[provider] as ProviderBase<Created, Listened>;
@@ -299,13 +299,14 @@ class ProviderContainer {
           );
         }
         return element;
-      }) as ProviderElement<Created, Listened>;
-      return element..flush();
-    } finally {
-      if (_circularDependencyLock == provider) {
-        _circularDependencyLock = null;
+      } finally {
+        if (_circularDependencyLock == provider) {
+          _circularDependencyLock = null;
+        }
       }
-    }
+    }) as ProviderElement<Created, Listened>;
+
+    return element..flush();
   }
 
   /// Release all the resources associated with this [ProviderContainer].
@@ -340,11 +341,11 @@ class ProviderContainer {
   ///
   /// It is O(N log N) with N the number of providers currently alive.
   Iterable<ProviderElement> _visitStatesInOrder() sync* {
-    final visitedNodes = <ProviderElement>{};
+    final visitedNodes = HashSet<ProviderElement>();
     final queue = DoubleLinkedQueue<ProviderElement>();
 
     for (final element in _stateReaders.values) {
-      if (element._subscriptions == null || element._subscriptions.isEmpty) {
+      if (element.dependents == null || element._subscriptions.isEmpty) {
         queue.add(element);
       }
     }
@@ -359,11 +360,14 @@ class ProviderContainer {
 
       yield element;
 
-      if (element._dependents != null) {
-        for (final dependent in element._dependents) {
-          if (dependent._container == this) {
-            queue.add(dependent);
-          }
+      if (element._dependents == null) {
+        continue;
+      }
+      for (final dependent in element._dependents) {
+        if (dependent._container == this &&
+            // All the parents of a node must have been visited before a node is visited
+            dependent._subscriptions.keys.every(visitedNodes.contains)) {
+          queue.add(dependent);
         }
       }
     }
