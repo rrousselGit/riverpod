@@ -112,7 +112,7 @@ abstract class MyParameter with _$MyParameter {
   }) = _MyParameter;
 }
 
-final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
+final exampleProvider = Provider.autoDispose.family<Something, MyParameter>((ref, myParameter) {
   print(myParameter.userId);
   print(myParameter.locale);
   // Do something with userId/locale
