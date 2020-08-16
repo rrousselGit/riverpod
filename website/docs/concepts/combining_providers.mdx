@@ -23,7 +23,7 @@ We can now create another provider that will consume our `cityProvider`:
 
 ```dart
 final weatherProvider = FutureProvider((ref) async {
-  // We use `ref.watch` to read another provider, and we pass it the provider
+  // We use `ref.watch` to listen to another provider, and we pass it the provider
   // that we want to consume. Here: cityProvider
   final city = ref.watch(cityProvider);
 
@@ -34,13 +34,13 @@ final weatherProvider = FutureProvider((ref) async {
 
 That's it. We've created a provider that depends on another provider.
 
-<!-- TODO warn about watching autoDispose providers -->
+## FAQ
 
-## What if the value listened changes over time?
+### What if the value listened changes over time?
 
 Depending on the provider that you are listening, the value obtained may change
 over time.  
-For example, you may be reading a [StateNotifierProvider], or the provider
+For example, you may be listening to a [StateNotifierProvider], or the provider
 listened was forced to refresh using [ProviderContainer.refresh]/[context.refresh].
 
 When using [watch], Riverpod is able to detect that the value listened changed
@@ -125,11 +125,79 @@ This code will fetch a list of characters from the service, and automatically
 re-fetch the list whenever the configurations changes or when the search query changes.
 :::
 
-## FAQ
+### Can I read a provider without listening to it?
 
-### What happens if the provider listened was recomputed but returned the same value?
+Sometimes, we want to read the content of a provider, but without re-creating
+the value exposed when the value obtained changes.
 
- 
+An example would be a `Repository`, which reads from another provider the user token
+for authentification.  
+We could use [watch] and create a new `Repository` whenever the user token changes,
+but there is little to no use in doing that.
+
+In this situation, we can use [read], which is similar to [watch], but will not
+cause the provider to recreate its value exposed when the value obtained changes.
+
+In that case, a common practice is to pass `ref.read` to the object created.
+The object created will then be able to read providers whenever it wants.
+
+```dart
+final userTokenProvider = StateProvider<String>((ref) => null);
+
+final repositoryProvider = Provider((ref) => Repository(ref.read));
+
+class Repository {
+  Repository(this.read);
+
+  /// The `ref.read` function
+  final Reader read;
+
+  Future<Catalog> fetchCatalog() async {
+    String token = read(userTokenProvider).state;
+
+    final response = await dio.get('/path', queryParameters: {
+      'token': token,
+    });
+
+    return Catalog.fromJson(response.data);
+  }
+}
+```
+
+:::danger **DON'T** call [read] inside the body of a provider
+
+```dart
+final myProvider = Provider((ref) {
+  // Bad practice to call `read` here
+  final value = ref.read(anotherProvider);
+});
+```
+
+If you want to avoid unwanted rebuilds of your object, see [My provider updates too often, what can I do?](#my-provider-updates-too-often-what-can-i-do)
+
+:::
+
+### How to test an object that receives [read] as parameter of its constructor?
+
+If you are using the pattern described in [Can I read a provider without listening to it?](#can-i-read-a-provider-without-listening-to-it),
+you may be wondering how to write tests for your object.
+
+In this scenario, consider testing the provider directly instead of the raw object.
+You can do so by using the [ProviderContainer] class:
+
+```dart
+final repositoryProvider = Provider((ref) => Repository(ref.read));
+
+test('fetches catalog', () async {
+  final container = ProviderContainer();
+  Repository repository = container.read(repositoryProvider);
+
+  await expectLater(
+    repository.fetchCatalog(),
+    completion(Catalog()),
+  );
+});
+```
 
 ### My provider updates too often, what can I do?
 
@@ -239,6 +307,8 @@ is completely independent from Flutter/the UI.
 As such the object can still be shared and tested. -->
 
 [provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
+[stateprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider-class.html
+[futureprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/FutureProvider-class.html
 [statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
 [ref]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference-class.html
 [watch]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference/watch.html
