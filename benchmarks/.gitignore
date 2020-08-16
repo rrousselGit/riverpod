@@ -1,6 +1,7 @@
 /android
 /ios
 /web
+/macos
 
 # Miscellaneous
 *.class
