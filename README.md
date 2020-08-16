@@ -5,8 +5,6 @@
 [![Build Status](https://github.com/rrousselGit/river_pod/workflows/Build/badge.svg)](https://github.com/rrousselGit/river_pod/actions) [![codecov](https://codecov.io/gh/rrousselGit/river_pod/branch/master/graph/badge.svg)](https://codecov.io/gh/rrousselGit/river_pod) 
 <a href="https://www.buymeacoffee.com/remirousselet" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="25px"></a>
 
-# Black Lives Matter. [Support the Equal Justice Initiative.](https://support.eji.org/give/153413/#!/donation/checkout)
-
 Welcome to [Riverpod]!
 
 This project can be considered as an **experimental** [provider] rewrite.

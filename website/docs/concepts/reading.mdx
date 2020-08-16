@@ -1,0 +1,395 @@
+---
+title: Reading a provider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+Before reading this guide, make sure to [read about Providers](./provider) first.
+
+In this guide, we will see how to consume a provider.
+
+There are multiple ways to read a provider, which change slightly based on different
+critirias.  
+Long story short, here is a decision graph to help you decide what to use to
+read a provider:
+
+<!-- - Are you inside the `build` method of a Widget?
+  - Are you using [flutter_hooks]?
+    Yes: use [useProvider]
+    No: use [Consumer]
+- Are you in the `onPressed` on a button or inside the life-cycle of a Widget
+  other than `build`?
+  If so, use [context.read].
+- Are you inside a provider that want to read other providers?
+  - Should the object created by your object be reconstructed when the provider
+    obtained changes?
+    Yes: use [ref.watch]
+    No: use [ref.read]
+- Are you inside widgets and you want to listen to a provider to show dialogs or push
+  routes?
+  If so, use [ProviderListener]
+- Are you inside tests or a package with no dependency on Flutter?
+  If so, use [ProviderContainer.read] or [ProviderContainer.listen]. -->
+
+![Decision graph for reading providers](/img/intro/reading.svg)
+
+Next, we will see each individual case and show how they work.  
+For this guide, consider the following provider:
+
+```dart
+final counterProvider = StateProvider((ref) => 0);
+```
+
+## Deciding what to read
+
+Depending on the provider you want to listen, you may have multiple possible
+values that you can listen.
+
+An example, consider the following [StreamProvider]:
+
+```dart
+final userProvider = StreamProvider<User>(...);
+```
+
+When reading reading this `userProvider`, you can:
+
+- synchronously read the current state by listening to `userProvider` itself:
+
+  ```dart
+  Widget build(BuildContext context) {
+    AsyncValue<User> user = useProvider(userProvider);
+
+    return user.when(
+      loading: () => const CircularProgressIndicator(),
+      error: (error, stack) => const Text('Oops'),
+      data: (user) => Text(user.name),
+    );
+  }
+  ```
+
+- obtain the associated [Stream], by listening to `userProvider.stream`:
+
+  ```dart
+  Widget build(BuildContext context) {
+    Stream<User> user = useProvider(userProvider.stream);
+  }
+  ```
+
+- obtain a [Future] that resolves with the latest value emitted, by listening to `userProvider.last`:
+
+  ```dart
+  Widget build(BuildContext context) {
+    Future<User> user = useProvider(userProvider.last);
+  }
+  ```
+
+For more information, refer to the documentation of each individual provider by
+consulting the [API reference](https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html).
+
+
+## Consuming a provider inside widgets
+
+In this section, we will see how Flutter widgets can interact with providers.
+
+### Consumer
+
+[Consumer] is a Widget that allows you to listen to a provider and build widgets
+from the value obtained.
+Its purpose is similar to [StreamBuilder], with a slightly different syntax.
+
+[Consumer] is useful when you want to update your UI based on a value obtained
+from a provider, but do not want to use [flutter_hooks].
+
+```dart {9}
+class Home extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Counter example')),
+      body: Center(
+        child: Consumer((context, watch) {
+          // Listens to the value exposed by counterProvider
+          int count = watch(counterProvider).state;
+          return Text('$count');
+        }),
+      ),
+    );
+  }
+}
+```
+
+This example will make our UI listen to `counterProvider` and rebuild a [Text]
+(and only that [Text]) when the counter changes.
+
+Notice how the value of `counterProvider` is obtained by a function called `watch`.  
+This function is what makes [Consumer] listen to our provider and rebuild
+when the value exposed changed.
+
+The interesting part of this syntax is that you can listen to multiple providers
+easily, by calling `watch` multiple times:
+
+```dart {8,9}
+final counterProvider = StateProvider((ref) => 0);
+final titleProvider = Provider((ref) => 'Hello world');
+
+// ...
+
+Consumer((context, watch) {
+  // Listens to both counterProvider and titleProvider at the same time
+  int count = watch(counterProvider).state;
+  String title = watch(titleProvider);
+  return Text('$title: $count');
+})
+```
+
+:::caution
+The `watch` method passed as argument of [Consumer] should not be called be called
+asynchronously, like inside `onPressed` or a [RaisedButton].
+
+If you need to read a provider in response to a user event, see [myProvider.read(BuildContext)](#myproviderreadbuildcontext)
+:::
+
+### useProvider (hooks_riverpod only)
+
+If you are using [flutter_hooks]/[hooks_riverpod], an alternative to [Consumer]
+is to use [useProvider].
+
+To better understand how it compares to [Consumer], here is a side-by-side
+comparison of both:
+
+<Tabs
+  defaultValue="useProvider"
+  values={[
+    { label: 'useProvider', value: 'useProvider', },
+    { label: 'Consumer', value: 'Consumer', },
+  ]}
+>
+<TabItem value="useProvider">
+
+```dart
+class Count extends HookWidget {
+  @override
+  Widget build(BuildContext context) {
+    int count = useProvider(counterProvider).state;
+    return Text('$count');
+  }
+}
+```
+
+</TabItem>
+<TabItem value="Consumer">
+
+```dart
+class Count extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer((context, watch) {
+      int count = watch(counterProvider).state;
+      return Text('$count');
+    });
+  }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Both snippets behave the same: They build a [Text] that changes when the counter
+updates; but [useProvider] offers a slightly simplified syntax.
+
+Similarly to [Consumer]'s `watch` function, [useProvider] can be used multiple
+times in a Widget:
+
+```dart {9,10}
+final counterProvider = StateProvider((ref) => 0);
+final titleProvider = Provider((ref) => 'Hello world');
+
+// ...
+
+class Count extends HookWidget {
+  @override
+  Widget build(BuildContext context) {
+    int count = useProvider(counterProvider).state;
+    String title = useProvider(titleProvider);
+    return Text('$title: $count');
+  }
+}
+```
+
+### context.read(myProvider)
+
+With [Consumer] and [useProvider], we've seen two ways to _listen_ to a provider.
+
+But in some situations, there's no value in listening to the object. For example,
+we may need the object only for the `onPressed` of a [RaisedButton].
+
+We _could_ use [useProvider]/[Consumer]:
+
+```dart {4,6}
+@override
+Widget build(BuildContext context) {
+  return Consumer((context, watch) {
+    StateController<int> counter = watch(counterProvider);
+    return RaisedButton(
+      onPressed: () => counter.state++,
+      child: Text('increment'),
+    )
+  });
+}
+```
+
+But that is not efficient. Depending on the provider listened, this
+could cause the [RaisedButton] to rebuild when the counter changes,
+even when the counter isn't actually used to _build_ the [RaisedButton].
+
+That's where `context.read(myProvider)` is a solution.
+
+Using it, we could refactor our previous code to:
+
+```dart {4}
+@override
+Widget build(BuildContext context) {
+  return RaisedButton(
+    onPressed: () => counterProvider.read(context).state++,
+    child: Text('increment'),
+  );
+}
+```
+
+By doing so, clicking on our button still increments the counter. But we
+are no-longer listening to the provider, which avoids unnecessary rebuilds.
+
+> I don't see the `context.read` method, why is that?
+
+If you do not see `context.read`, it is likely that you did not import the correct
+package.
+To see this method, you must import either `package:flutter_riverpod` or`package:hooks_riverpod`.
+
+:::info
+Depending on the provider that you are listening to, you may not need to do this.  
+For example, [StateNotifierProvider] has a built-in way obtain a [StateNotifier]
+without listening to its state:
+
+```dart
+class Counter extends StateNotifier<int> {
+  Counter(): super(0);
+
+  void increment() => state++;
+}
+
+final counterProvider = StateNotifierProvider((ref) => Counter());
+
+// ...
+
+@override
+Widget build(BuildContext context) {
+  // Obtains Counter without listening to its state.
+  // Will not cause the button to rebuild when the counter changes.
+  final Counter counter = useProvider(counterProvider);
+
+  return RaisedButton(
+    onPressed: () => counter.increment(),
+    child: Text('increment'),
+  );
+}
+```
+
+:::
+
+:::caution
+Avoid calling `contet.read` inside the `build` method of a Widget.  
+If you want to optimize rebuilds, extract the value listened in a [Provider] instead.
+:::
+
+### ProviderListener
+
+In some situations, you may want to your Widget tree to push a route or show
+a dialog after a change on a provider.
+
+Such behavior would be implemented using the [ProviderListener] Widget.
+
+```dart
+Widget build(BuildContext context) {
+  return ProviderListener<StateController<int>>(
+    provider: counterProvider,
+    onChange: (counter) {
+      if (counter.state == 5) {
+        showDialog(...);
+      }
+    },
+    child: Whatever(),
+  );
+}
+```
+
+This will show a dialog when the counter reaches 5.
+
+## Reading a provider inside another provider
+
+A common use-case when making providers is to want to create an object from other
+objects.  
+For example, we may want to create a `UserController` from a `UserRepository`,
+where both objects would be exposed in a different provider.
+
+Such scenario is possible by using the `ref` object that providers receives as
+parameter:
+
+```dart
+final userRepositoryProvider = Provider((ref) => UserRepository());
+
+final userControllerProvider = StateNotifierProvider((ref) {
+  return UserController(
+    // Read userRepositoryProvider and create a UserController from the result
+    repository: ref.watch(userRepositoryProvider),
+  );
+});
+```
+
+Make sure to check out the [Combining Providers](./combining_providers) guide for
+more informations such as:
+
+- What happens if I create an object from a value which can change over time?
+- Some good practices tips
+
+## Reading a provider outside of providers using Dart only
+
+In some scenarios, you may want to read a provider in a package that has no
+dependency on Flutter.  
+A common use-case is to test a class unrelated to widgets.
+
+In this situation, you can use [ProviderContainer], which is a low-level
+utility to manipulate providers.
+
+The following snippet demonstrates how a test can read providers without using Flutter:
+
+```dart
+test('counter starts at 0', () {
+  final container = ProviderContainer();
+
+  StateController<int> counter = container.read(counterProvider);
+  expect(counter.state, 0);
+});
+```
+
+:::danger
+Do not reuse the instance of [ProviderContainer] between tests.  
+This ensures that the state of your providers properly resets between test cases.
+:::
+
+[provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
+[stateprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider-class.html
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
+[providerlistener]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderListener-class.html
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
+[useprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/useProvider-class.html
+[raisedbutton]: https://api.flutter.dev/flutter/material/RaisedButton-class.html
+[streambuilder]: https://api.flutter.dev/flutter/material/StreamBuilder-class.html
+[riverpod]: https://github.com/rrousselgit/river_pod
+[text]: https://api.flutter.dev/flutter/widgets/Text-class.html
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
