@@ -10,7 +10,7 @@ Before reading this guide, make sure to [read about Providers](./provider) first
 In this guide, we will see how to consume a provider.
 
 There are multiple ways to read a provider, which change slightly based on different
-critirias.  
+criterias.  
 Long story short, here is a decision graph to help you decide what to use to
 read a provider:
 
@@ -52,7 +52,7 @@ An example, consider the following [StreamProvider]:
 final userProvider = StreamProvider<User>(...);
 ```
 
-When reading reading this `userProvider`, you can:
+When reading this `userProvider`, you can:
 
 - synchronously read the current state by listening to `userProvider` itself:
 
@@ -144,7 +144,7 @@ Consumer((context, watch) {
 ```
 
 :::caution
-The `watch` method passed as argument of [Consumer] should not be called be called
+The `watch` method passed as an argument of [Consumer] should not be called
 asynchronously, like inside `onPressed` or a [RaisedButton].
 
 If you need to read a provider in response to a user event, see [myProvider.read(BuildContext)](#myproviderreadbuildcontext)
@@ -264,7 +264,7 @@ are no-longer listening to the provider, which avoids unnecessary rebuilds.
 
 If you do not see `context.read`, it is likely that you did not import the correct
 package.
-To see this method, you must import either `package:flutter_riverpod` or`package:hooks_riverpod`.
+To see this method, you must import either `package:flutter_riverpod` or `package:hooks_riverpod`.
 
 :::info
 Depending on the provider that you are listening to, you may not need to do this.  
