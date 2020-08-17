@@ -164,6 +164,24 @@ class Repository {
 }
 ```
 
+:::note
+You could also pass the `ref` instead of `ref.read` to your object:
+
+```dart
+final repositoryProvider = Provider((ref) => Repository(ref));
+
+class Repository {
+  Repository(this.ref);
+
+  final ProviderReference ref;
+}
+```
+
+The only difference that passing `ref.read` brings is a slightly less verbose
+code and making sure that our object never uses `ref.watch`.
+:::
+
+
 :::danger **DON'T** call [read] inside the body of a provider
 
 ```dart
@@ -173,7 +191,8 @@ final myProvider = Provider((ref) {
 });
 ```
 
-If you want to avoid unwanted rebuilds of your object, see [My provider updates too often, what can I do?](#my-provider-updates-too-often-what-can-i-do)
+If you used [read] as an attempt to avoid unwanted rebuilds of your object,
+refer to [My provider updates too often, what can I do?](#my-provider-updates-too-often-what-can-i-do)
 
 :::
 
