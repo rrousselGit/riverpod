@@ -251,7 +251,7 @@ Using it, we could refactor our previous code to:
 @override
 Widget build(BuildContext context) {
   return RaisedButton(
-    onPressed: () => counterProvider.read(context).state++,
+    onPressed: () => context.read(counterProvider).state++,
     child: Text('increment'),
   );
 }
