@@ -12,11 +12,11 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.read(a);
+      ref.watch(a);
       return B();
     });
     final c = Provider<C>((ref) {
-      ref.read(b);
+      ref.watch(b);
       return C();
     });
 
@@ -36,16 +36,17 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.read(a);
+      ref.watch(a);
       return B();
     });
     final c = Provider<C>((ref) {
-      ref.read(a);
+      ref.watch(a);
       return C();
     });
 
     final d = Provider<D>((ref) {
-      ref..read(b)..read(c);
+      ref.watch(b);
+      ref.watch(c);
       return D();
     });
 
@@ -82,30 +83,34 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.read(a);
+      ref.watch(a);
       return B();
     });
 
     final e = Provider<E>((ref) {
-      ref.read(b);
+      ref.watch(b);
       return E();
     });
     final d = Provider<D>((ref) {
-      ref..read(b)..read(e);
+      ref.watch(b);
+      ref.watch(e);
       return D();
     });
 
     final c = Provider<C>((ref) {
-      ref..read(a)..read(b);
+      ref.watch(a);
+      ref.watch(b);
       return C();
     });
 
     final f = Provider<F>((ref) {
-      ref..read(c)..read(e);
+      ref.watch(c);
+      ref.watch(e);
       return F();
     });
     final g = Provider<G>((ref) {
-      ref..read(c)..read(f);
+      ref.watch(c);
+      ref.watch(f);
       return G();
     });
 
@@ -138,16 +143,18 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.read(a);
+      ref.watch(a);
       return B();
     });
     final c = Provider<C>((ref) {
-      ref..read(a)..read(b);
+      ref.watch(a);
+      ref.watch(b);
       return C();
     });
 
     final d = Provider<D>((ref) {
-      ref..read(b)..read(c);
+      ref.watch(b);
+      ref.watch(c);
       return D();
     });
 
@@ -172,16 +179,17 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.read(a);
+      ref.watch(a);
       return B();
     });
     final c = Provider<C>((ref) {
-      ref.read(b);
+      ref.watch(b);
       return C();
     });
 
     final d = Provider<D>((ref) {
-      ref..read(b)..read(c);
+      ref.watch(b);
+      ref.watch(c);
       return D();
     });
 
@@ -206,21 +214,22 @@ void main() {
     final a = Provider<A>((ref) => A());
 
     final b = Provider<B>((ref) {
-      ref.read(a);
+      ref.watch(a);
       return B();
     });
     final c = Provider<C>((ref) {
-      ref.read(a);
+      ref.watch(a);
       return C();
     });
 
     final d = Provider<D>((ref) {
-      ref.read(b);
+      ref.watch(b);
       return D();
     });
 
     final e = Provider<E>((ref) {
-      ref..read(d)..read(c);
+      ref.watch(d);
+      ref.watch(c);
       return E();
     });
 

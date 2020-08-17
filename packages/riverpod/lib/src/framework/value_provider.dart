@@ -43,11 +43,6 @@ class ValueProviderElement<Created, Listened>
   void Function(Listened value) onChange;
 
   @override
-  void mount() {
-    super.mount();
-  }
-
-  @override
   void update(ProviderBase<Created, Listened> newProvider) {
     super.update(newProvider);
     final newValue = (provider as ValueProvider<Created, Listened>)._value;

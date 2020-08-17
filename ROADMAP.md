@@ -36,14 +36,11 @@
 ## Linter:
 
 - No circular dependency
-- Check that when a provider is overridden locally, all of its dependencies are too
-- `provider.overrideAs(provider)` -> `provider`
+- warn watch(autoDispose) in non-autoDispose provider
 - `always_specify_name`
 - `name_match_variable`
-- `providers_allow_specifying_name`
 - extract widget as class for rebuild optimization
 - warn if public classes inside /src are not used but not exported
-- Don't `family(BuildContext)`
 
 ## Devtool:
 

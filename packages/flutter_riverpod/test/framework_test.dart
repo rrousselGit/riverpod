@@ -314,6 +314,8 @@ void main() {
       scopeKey.currentContext.toString(),
       equalsIgnoringHashCodes(
         'ProviderScope-[GlobalKey#00000]('
+        'observers: null, '
+        'overrides: [], '
         'state: ProviderScopeState#00000, '
         'Provider<int>#00000: 0, '
         "counter: Instance of 'Counter', "
@@ -382,24 +384,55 @@ void main() {
     final key = GlobalKey();
 
     await tester.pumpWidget(
-      ProviderScope(
-        child: ProviderScope(
-          key: key,
-          child: Container(),
-        ),
+      Stack(
+        textDirection: TextDirection.ltr,
+        children: [
+          ProviderScope(
+            key: const Key('foo'),
+            child: ProviderScope(
+              key: key,
+              child: Container(),
+            ),
+          ),
+        ],
       ),
     );
 
     expect(find.byType(Container), findsOneWidget);
 
     await tester.pumpWidget(
-      ProviderScope(
-        key: key,
-        child: Container(),
+      Stack(
+        textDirection: TextDirection.ltr,
+        children: [
+          ProviderScope(
+            key: const Key('foo'),
+            child: Container(),
+          ),
+          ProviderScope(
+            key: key,
+            child: Container(),
+          ),
+        ],
       ),
     );
 
     expect(tester.takeException(), isUnsupportedError);
+
+    // re-pump the original tree so that it disposes correctly
+    await tester.pumpWidget(
+      Stack(
+        textDirection: TextDirection.ltr,
+        children: [
+          ProviderScope(
+            key: const Key('foo'),
+            child: ProviderScope(
+              key: key,
+              child: Container(),
+            ),
+          ),
+        ],
+      ),
+    );
   });
 }
 
@@ -414,6 +447,7 @@ class MockCreateState extends Mock {
 class InitState extends StatefulWidget {
   const InitState({Key key, this.initState}) : super(key: key);
 
+  // ignore: diagnostic_describe_all_properties
   final void Function(BuildContext context) initState;
 
   @override

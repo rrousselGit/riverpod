@@ -123,6 +123,13 @@ class ProviderScope extends StatefulWidget {
   _ProviderScopeElement createElement() {
     return _ProviderScopeElement(this);
   }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(IterableProperty<ProviderObserver>('observers', observers));
+    properties.add(IterableProperty<Override>('overrides', overrides));
+  }
 }
 
 class _ProviderScopeElement extends StatefulElement {
@@ -147,6 +154,7 @@ class _ProviderScopeElement extends StatefulElement {
 class ProviderScopeState extends State<ProviderScope> {
   /// The [ProviderContainer] exposed to [ProviderScope.child].
   @visibleForTesting
+  // ignore: diagnostic_describe_all_properties
   ProviderContainer container;
   ProviderContainer _debugParentOwner;
   var _dirty = false;

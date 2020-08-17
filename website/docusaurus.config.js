@@ -11,6 +11,10 @@ module.exports = {
     googleAnalytics: {
       trackingID: "UA-138675999-4",
     },
+    algolia: {
+      apiKey: '2a84d9068bda0a387816a77f366d855d',
+      indexName: 'riverpod',
+    },
     prism: {
       additionalLanguages: ["dart", "yaml"],
     },
@@ -22,7 +26,7 @@ module.exports = {
       // },
       links: [
         {
-          to: "docs/fundamentals/getting_started",
+          to: "docs/getting_started",
           activeBasePath: "docs",
           label: "Docs",
           position: "left",
@@ -42,7 +46,7 @@ module.exports = {
           items: [
             {
               label: "Getting started",
-              to: "docs/fundamentals/getting_started",
+              to: "docs/getting_started",
             },
           ],
         },

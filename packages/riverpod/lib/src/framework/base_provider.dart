@@ -141,6 +141,23 @@ abstract class ProviderBase<Created, Listened>
 
     return '${describeIdentity(this)}$content';
   }
+
+  // Custom implementation of hash code optimized for reading providers.
+  //
+  // The value is designed to fit within the SMI representation. This makes
+  // the cached value use less memory (one field and no extra heap objects) and
+  // cheap to compare (no indirection).
+  //
+  // See also:
+  //
+  //  * https://dart.dev/articles/dart-vm/numeric-computation, which
+  //    explains how numbers are represented in Dart.
+  @nonVirtual
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes, hash_and_equals
+  int get hashCode => _cachedHash;
+  final int _cachedHash = _nextHashCode = (_nextHashCode + 1) % 0xffffff;
+  static int _nextHashCode = 1;
 }
 
 /// {@template riverpod.rootprovider}
@@ -432,7 +449,7 @@ class ProviderSubscription<Listened> {
   void close() {
     if (_listener.list != null) {
       _listener.unlink();
-      _listener.element.didRemoveListener();
+      _listener.element.mayNeedDispose();
     }
   }
 
@@ -501,7 +518,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   /// Whether this [ProviderElement] is currently listened or not.
   ///
   /// This maps to listeners added with [listen].
-  /// See also [didRemoveListener], called when [hasListeners] may have changed.
+  /// See also [mayNeedDispose], called when [hasListeners] may have changed.
   bool get hasListeners => _listeners.isNotEmpty;
 
   final _listeners = LinkedList<_Listener<Listened>>();
@@ -763,7 +780,7 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement.provider}.
   ///   state of a provider when no-longer used.
   @protected
   @visibleForOverriding
-  void didRemoveListener() {}
+  void mayNeedDispose() {}
 
   /// Called the first time a provider is obtained.
   @protected

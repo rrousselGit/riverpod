@@ -68,7 +68,7 @@ class AutoDisposeProviderElement<Created, Listened>
   }
 
   @override
-  void didRemoveListener() {
+  void mayNeedDispose() {
     if (!maintainState && !hasListeners) {
       _AutoDisposer.instance.scheduleDispose(this);
     }
