@@ -143,8 +143,8 @@ function Home() {
               <div class="row">
                 <div className="col">
                   <img
-                    src="img/intro/computed.png"
-                    alt="Computed state"
+                    src="img/intro/combining_providers.png"
+                    alt="Combining providers"
                   ></img>
                 </div>
                 <div className="col">
@@ -157,12 +157,12 @@ function Home() {
                     <br></br>
                     With
                     <code>
-                      <a href={useBaseUrl("docs/concepts/computed")}>
-                        Computed
+                      <a href={useBaseUrl("docs/concepts/combining_providers")}>
+                        Provider
                       </a>
                     </code>
                     and
-                    <a href={useBaseUrl("docs/concepts/family")}>
+                    <a href={useBaseUrl("docs/concepts/modifiers/family")}>
                       "families"
                     </a>
                     , sort your lists or do HTTP requests only when you{" "}
