@@ -298,7 +298,7 @@ Widget build(BuildContext context) {
 :::
 
 :::caution
-Avoid calling `contet.read` inside the `build` method of a Widget.  
+Avoid calling `context.read` inside the `build` method of a Widget.  
 If you want to optimize rebuilds, extract the value listened in a [Provider] instead.
 :::
 
