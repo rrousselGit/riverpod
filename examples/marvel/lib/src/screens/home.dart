@@ -47,7 +47,8 @@ final characterPages =
   },
 );
 
-final charactersCount = Provider.family<AsyncValue<int>, String>((ref, name) {
+final charactersCount =
+    Provider.autoDispose.family<AsyncValue<int>, String>((ref, name) {
   final meta = CharacterPagination(page: 0, name: name);
 
   return ref.watch(characterPages(meta)).whenData((value) => value.totalCount);
@@ -61,8 +62,8 @@ abstract class CharacterOffset with _$CharacterOffset {
   }) = _CharacterOffset;
 }
 
-final characterAtIndex =
-    Provider.family<AsyncValue<Character>, CharacterOffset>((ref, query) {
+final characterAtIndex = Provider.autoDispose
+    .family<AsyncValue<Character>, CharacterOffset>((ref, query) {
   final offsetInPage = query.offset % kCharactersPageLimit;
 
   final meta = CharacterPagination(
