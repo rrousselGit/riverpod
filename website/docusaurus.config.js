@@ -3,7 +3,7 @@ module.exports = {
   tagline: "Provider, but different",
   url: "https://riverpod.dev",
   baseUrl: "/",
-  favicon: "img/favicon.ico",
+  favicon: "img/logo.svg",
   organizationName: "rrousselgit", // Usually your GitHub org/user name.
   projectName: "riverpod", // Usually your repo name.
   themeConfig: {
@@ -20,10 +20,10 @@ module.exports = {
     },
     navbar: {
       title: "Riverpod",
-      // logo: {
-      //   alt: "My Site Logo",
-      //   src: "img/logo.svg",
-      // },
+      logo: {
+        alt: "Riverpod logo",
+        src: "img/logo.png",
+      },
       links: [
         {
           to: "docs/getting_started",
