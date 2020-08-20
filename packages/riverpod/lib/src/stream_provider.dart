@@ -248,7 +248,7 @@ mixin _StreamProviderStateMixin<T>
 }
 
 Future<T> _readLast<T>(
-  ProviderReference ref,
+  ProviderElement ref,
   _StreamProviderMixin<T> provider,
 ) {
   return ref.watch(provider).when(
@@ -262,7 +262,7 @@ Future<T> _readLast<T>(
 
 class _CreatedStreamProvider<T> extends Provider<Stream<T>> {
   _CreatedStreamProvider(
-    RootProvider<Stream<T>, Object> provider, {
+    AlwaysAliveProviderBase<Stream<T>, Object> provider, {
     String name,
   }) : super((ref) {
           ref.watch(provider);

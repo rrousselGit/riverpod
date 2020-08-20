@@ -170,7 +170,7 @@ const _familyDoc = r'''
 ///   ```dart
 ///   final repositoryProvider = Provider.family<String, FutureProvider<Configurations>>((ref, configurationsProvider) {
 ///     // Read a provider without knowing what that provider is.
-///     final configurations = await ref.read(configurationsProvider);
+///     final configurations = await ref.read(configurationsProvider.future);
 ///     return Repository(host: configurations.host);
 ///   });
 ///   ```

@@ -1,3 +1,10 @@
+# 0.7.0
+
+- `ref.watch` on non ".autoDispose" providers can no-longer read ".autoDispose"
+  providers.
+
+  For more info, see http://riverpod.dev/docs/concepts/modifiers/auto_dispose#the-argument-type-autodisposeprovider-cant-be-assigned-to-the-parameter-type-alwaysaliveproviderbase
+
 # 0.6.1
 
 - Fixed a bug where when disposing `ProviderContainer`, providers may be disposed

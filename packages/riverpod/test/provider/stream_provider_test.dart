@@ -315,19 +315,21 @@ void main() {
       final provider =
           StreamProvider.autoDispose((ref) => ref.watch(streamProvider).state);
       var callCount = 0;
-      final dependent = Provider((ref) {
+      final dependent = Provider.autoDispose((ref) {
         callCount++;
         return ref.watch(provider.stream);
       });
       final container = ProviderContainer();
       final streamController = container.read(streamProvider);
 
-      await expectLater(container.read(dependent), emits(42));
+      final sub = container.listen(dependent);
+
+      await expectLater(sub.read(), emits(42));
       expect(callCount, 1);
 
       streamController.state = Stream.value(21);
 
-      await expectLater(container.read(dependent), emits(21));
+      await expectLater(sub.read(), emits(21));
       expect(callCount, 2);
     });
 
@@ -337,7 +339,7 @@ void main() {
       final provider = StreamProvider.autoDispose((_) => controller.stream);
       final container = ProviderContainer();
       var callCount = 0;
-      final dependent = Provider((ref) {
+      final dependent = Provider.autoDispose((ref) {
         callCount++;
         return ref.watch(provider.stream);
       });

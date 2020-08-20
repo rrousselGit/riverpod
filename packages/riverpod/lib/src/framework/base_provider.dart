@@ -415,7 +415,7 @@ abstract class ProviderReference {
   /// - if multiple widgets depends on `sortedTodosProvider` the list will be
   ///   sorted only once.
   /// - if nothing is listening to `sortedTodosProvider`, then no sort if performed.
-  T watch<T>(RootProvider<Object, T> provider);
+  T watch<T>(AlwaysAliveProviderBase<Object, T> provider);
 }
 
 class _Listener<Listened> extends LinkedListEntry<_Listener<Listened>> {

@@ -77,7 +77,7 @@ class ChangeNotifierProviderBuilder {
   /// - Allowing a "title provider" access the `Locale`
   ///
   ///   ```dart
-  ///   final titleProvider = Provider.family<String, Locale>((_, locale) {
+  ///   final titleFamily = Provider.family<String, Locale>((_, locale) {
   ///     if (locale == const Locale('en')) {
   ///       return 'English title';
   ///     } else if (locale == const Locale('fr')) {
@@ -93,7 +93,7 @@ class ChangeNotifierProviderBuilder {
   ///
   ///     // Obtains the title based on the current Locale.
   ///     // Will automatically update the title when the Locale changes.
-  ///     final title = useProvider(titleProvider(locale));
+  ///     final title = useProvider(titleFamily(locale));
   ///
   ///     return Text(title);
   ///   }
@@ -102,7 +102,7 @@ class ChangeNotifierProviderBuilder {
   /// - Have a "user provider" that receives the user ID as parameter
   ///
   ///   ```dart
-  ///   final userProvider = FutureProvider.family<User, int>((ref, userId) async {
+  ///   final userFamily = FutureProvider.family<User, int>((ref, userId) async {
   ///     final userRepository = ref.read(userRepositoryProvider);
   ///     return await userRepository.fetch(userId);
   ///   });
@@ -115,9 +115,9 @@ class ChangeNotifierProviderBuilder {
   ///
   ///     // Read and potentially fetch the user with id `userId`.
   ///     // When `userId` changes, this will automatically update the UI
-  ///     // Similarly, if two widgets tries to read `userProvider` with the same `userId`
+  ///     // Similarly, if two widgets tries to read `userFamily` with the same `userId`
   ///     // then the user will be fetched only once.
-  ///     final user = useProvider(userProvider(userId));
+  ///     final user = useProvider(userFamily(userId));
   ///
   ///     return user.when(
   ///       data: (user) => Text(user.name),
@@ -132,7 +132,7 @@ class ChangeNotifierProviderBuilder {
   ///   ```dart
   ///   final repositoryProvider = Provider.family<String, FutureProvider<Configurations>>((ref, configurationsProvider) {
   ///     // Read a provider without knowing what that provider is.
-  ///     final configurations = await ref.read(configurationsProvider);
+  ///     final configurations = await ref.read(configurationsProvider.future);
   ///     return Repository(host: configurations.host);
   ///   });
   ///   ```
@@ -143,42 +143,42 @@ class ChangeNotifierProviderBuilder {
   /// This parameter can then be freely used in our provider to create some state.
   ///
   /// For example, we could combine `family` with [FutureProvider] to fetch
-  /// a "message" from its ID:
+  /// a `Message` from its ID:
   ///
   /// ```dart
-  /// final messages = FutureProvider.family<Message, String>((ref, id) async {
-  ///   return dio.get('http://my_api.dev/messages/$id);
+  /// final messagesFamily = FutureProvider.family<Message, String>((ref, id) async {
+  ///   return dio.get('http://my_api.dev/messages/$id');
   /// });
   /// ```
   ///
-  /// Then, when using our `messages` provider, the syntax is slightly modified.
+  /// Then, when using our `messagesFamily` provider, the syntax is slightly modified.
   /// The usual:
   ///
   /// ```dart
   /// Widget build(BuildContext) {
-  ///   // Error – messages is not a provider
-  ///   final response = useProvider(messages);
+  ///   // Error – messagesFamily is not a provider
+  ///   final response = useProvider(messagesFamily);
   /// }
   /// ```
   ///
   /// will not work anymore.
-  /// Instead, we need to pass a parameter to `messages`:
+  /// Instead, we need to pass a parameter to `messagesFamily`:
   ///
   /// ```dart
   /// Widget build(BuildContext) {
-  ///   final response = useProvider(messages('id'));
+  ///   final response = useProvider(messagesFamily('id'));
   /// }
   /// ```
   ///
   /// **NOTE**: It is totally possible to use a family with different parameters
-  /// simultaneously. For example, we could use a `titleProvider` to read both
+  /// simultaneously. For example, we could use a `titleFamily` to read both
   /// the french and english translations at the same time:
   ///
   /// ```dart
   /// @override
   /// Widget build(BuildContext context) {
-  ///   final frenchTitle = useProvider(titleProvider(const Locale('fr')));
-  ///   final englishTitle = useProvider(titleProvider(const Locale('en')));
+  ///   final frenchTitle = useProvider(titleFamily(const Locale('fr')));
+  ///   final englishTitle = useProvider(titleFamily(const Locale('en')));
   ///
   ///   return Text('fr: $frenchTitle en: $englishTitle');
   /// }

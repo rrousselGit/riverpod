@@ -11,7 +11,7 @@ import 'provider.dart';
 class CreatedProvider<T> extends Provider<T> {
   /// {@macro riverpod.createdprovider}
   CreatedProvider(
-    RootProvider<T, Object> provider, {
+    AlwaysAliveProviderBase<T, Object> provider, {
     String name,
   }) : super((ref) {
           ref.watch(provider);

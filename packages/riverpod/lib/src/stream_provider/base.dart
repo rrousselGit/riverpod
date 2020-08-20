@@ -29,7 +29,7 @@ class StreamProvider<T>
   @override
   AlwaysAliveProviderBase<Object, Future<T>> get last {
     return _last ??= Provider(
-      (ref) => _readLast(ref, this),
+      (ref) => _readLast(ref as ProviderElement, this),
       name: name == null ? null : '$name.last',
     );
   }

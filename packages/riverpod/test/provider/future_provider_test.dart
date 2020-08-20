@@ -256,19 +256,21 @@ void main() {
       final provider =
           FutureProvider.autoDispose((ref) => ref.watch(futureProvider).state);
       var callCount = 0;
-      final dependent = Provider((ref) {
+      final dependent = Provider.autoDispose((ref) {
         callCount++;
         return ref.watch(provider.future);
       });
       final container = ProviderContainer();
       final futureController = container.read(futureProvider);
 
-      expect(container.read(dependent), futureController.state);
+      final sub = container.listen(dependent);
+
+      expect(sub.read(), futureController.state);
       expect(callCount, 1);
 
       futureController.state = Future.value(21);
 
-      expect(container.read(dependent), futureController.state);
+      expect(sub.read(), futureController.state);
       expect(callCount, 2);
     });
 
@@ -277,7 +279,7 @@ void main() {
       final provider = FutureProvider.autoDispose((_) => completer.future);
       final container = ProviderContainer();
       var callCount = 0;
-      final dependent = Provider((ref) {
+      final dependent = Provider.autoDispose((ref) {
         callCount++;
         return ref.watch(provider.future);
       });

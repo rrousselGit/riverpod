@@ -15,6 +15,9 @@ abstract class AutoDisposeProviderReference extends ProviderReference {
   /// Defaults to `false`.
   bool get maintainState;
   set maintainState(bool value);
+
+  @override
+  T watch<T>(RootProvider<Object, T> provider);
 }
 
 /// {@template riverpod.AutoDisposeProviderBase}

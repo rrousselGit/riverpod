@@ -16,7 +16,6 @@
 
 ## riverpod.dev
 
-- Combining providers
 - Filtering rebuilds
 - pre-fetch a provider
 - Testing (without flutter, mocking FutureProvider)

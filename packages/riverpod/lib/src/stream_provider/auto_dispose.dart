@@ -26,7 +26,7 @@ class AutoDisposeStreamProvider<T>
   @override
   AutoDisposeProviderBase<Object, Future<T>> get last {
     return _last ??= Provider.autoDispose(
-      (ref) => _readLast(ref, this),
+      (ref) => _readLast(ref as ProviderElement, this),
       name: name == null ? null : '$name.last',
     );
   }
