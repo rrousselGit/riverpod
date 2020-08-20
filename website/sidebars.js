@@ -22,7 +22,7 @@ module.exports = {
     {
       type: "category",
       label: "Cookbooks",
-      items: ["cookbooks/testing"],
+      items: ["cookbooks/testing", "cookbooks/refresh"],
     },
     {
       type: "category",
