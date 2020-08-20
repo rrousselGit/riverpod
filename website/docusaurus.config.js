@@ -21,6 +21,8 @@ module.exports = {
     prism: {
       additionalLanguages: ["dart", "yaml"],
     },
+    image: '/img/cover.png',
+
     navbar: {
       title: "Riverpod",
       logo: {
