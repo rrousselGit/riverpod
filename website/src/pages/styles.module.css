@@ -18,6 +18,15 @@
   }
 }
 
+.mainTitle {
+  display: inline-flex;
+}
+
+.mainTitle > img {
+  width: 56px;
+  margin-right: 10px;
+}
+
 .buttons {
   display: flex;
   align-items: center;
