@@ -12,8 +12,11 @@ module.exports = {
       trackingID: "UA-138675999-4",
     },
     algolia: {
-      apiKey: '2a84d9068bda0a387816a77f366d855d',
-      indexName: 'riverpod',
+      apiKey: "2a84d9068bda0a387816a77f366d855d",
+      indexName: "riverpod",
+    },
+    colorMode: {
+      defaultMode: "light",
     },
     prism: {
       additionalLanguages: ["dart", "yaml"],
@@ -40,6 +43,10 @@ module.exports = {
     },
     footer: {
       style: "dark",
+      logo: {
+        alt: "Riverpod logo",
+        src: "img/full_logo.svg",
+      },
       links: [
         {
           title: "Docs",
