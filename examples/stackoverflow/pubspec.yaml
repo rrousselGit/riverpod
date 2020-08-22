@@ -1,4 +1,4 @@
-name: refresh
+name: stackoverflow
 description: A new Flutter project.
 publish_to: "none"
 version: 1.0.0+1
@@ -14,7 +14,6 @@ dependencies:
     path: ../../packages/hooks_riverpod
   flutter_hooks: ^0.13.2
   freezed_annotation: ^0.11.0
-  uuid: ^2.1.0
   dio: ^3.0.9
   html: ^0.14.0
 
