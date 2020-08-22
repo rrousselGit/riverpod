@@ -17,6 +17,9 @@
   final example = ScopedProvider<int>((watch) => throw UnimplementedError(''));
   ```
 
+- Fixed a bug where `context.refresh` may not work properly if the widget tree
+  contains multiple `ProviderScope`.
+
 # 0.6.1
 
 - Fixed a bug where when disposing `ProviderContainer`, providers may be disposed
