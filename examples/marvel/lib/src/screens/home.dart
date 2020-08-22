@@ -150,9 +150,7 @@ class Home extends HookWidget {
   }
 }
 
-final _characterIndex = ScopedProvider<int>((ref) {
-  throw UnimplementedError();
-});
+final _characterIndex = ScopedProvider<int>(null);
 
 class CharacterItem extends HookWidget {
   const CharacterItem({

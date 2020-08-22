@@ -70,6 +70,24 @@ typedef ScopedCreate<T> = T Function(ScopedReader watch);
 ///
 /// What this means is, even if `ListView` rebuilds, our `ProductItem` will
 /// not rebuild unless what it uses changed.
+///
+/// # ScopedProvider with no default behavior
+///
+/// A common use-case with ScopedProvider is to _not_ provide a default behavior,
+/// and instead always override the provider inside a `ProviderScope`.
+///
+/// In this situation, what we can do is pass `null` instead of a function
+/// to ScopedProvider:
+///
+/// ```dart
+/// final example = ScopedProvider<int>(null);
+/// ```
+///
+/// This is equivalent to:
+///
+/// ```dart
+/// final example = ScopedProvider<int>((watch) => throw UnimplementedError(''));
+/// ```
 /// {@endtemplate}
 class ScopedProvider<Listened> extends ProviderBase<Listened, Listened> {
   /// {@macro riverpod.scopedprovider}
@@ -77,7 +95,10 @@ class ScopedProvider<Listened> extends ProviderBase<Listened, Listened> {
     ScopedCreate<Listened> create, {
     String name,
   }) : super(
-          (ref) => create((ref as _ScopedProviderElement).watch),
+          create == null
+              ? (ref) => throw UnsupportedError(
+                  'No default behavior specified for ScopedProvider<$Listened>')
+              : (ref) => create((ref as _ScopedProviderElement).watch),
           name,
         );
 

@@ -5,6 +5,17 @@
 
   For more info, see http://riverpod.dev/docs/concepts/modifiers/auto_dispose#the-argument-type-autodisposeprovider-cant-be-assigned-to-the-parameter-type-alwaysaliveproviderbase
 
+- `ScopedProvider` now accepts `null` as a function:
+
+  ```dart
+  final example = ScopedProvider<int>(null);
+  ```
+
+  Which is equivalent to:
+
+  ```dart
+  final example = ScopedProvider<int>((watch) => throw UnimplementedError(''));
+  ```
 
 # 0.6.1
 
