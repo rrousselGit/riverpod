@@ -168,7 +168,7 @@ class ProviderContainer {
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
   Created refresh<Created>(RootProvider<Created, Object> provider) {
-    final element = _stateReaders[provider];
+    final element = (_root ?? this)._stateReaders[provider];
 
     if (element == null) {
       return readProviderElement(provider).state.createdValue;

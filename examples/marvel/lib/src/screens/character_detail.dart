@@ -18,9 +18,7 @@ import '../widgets/loading_image.dart';
 ///
 /// - [CharacterView], which consumes this provider and [character] to
 ///   show the informations of one specific [Character].
-final selectedCharacterId = ScopedProvider<String>((ref) {
-  throw UnimplementedError();
-});
+final selectedCharacterId = ScopedProvider<String>(null);
 
 /// A provider that individually fetches a [Character] based on its ID.
 ///

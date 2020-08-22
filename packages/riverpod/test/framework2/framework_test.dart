@@ -644,7 +644,31 @@ void main() {
     });
   });
 
-  group('container.retry', () {
+  group('container.refresh', () {
+    test('still refresh providers on non-root containers', () {
+      final root = ProviderContainer();
+      final container = ProviderContainer(parent: root);
+      var callCount = 0;
+      ProviderReference providerReference;
+      var result = 0;
+      final provider = Provider((ref) {
+        callCount++;
+        providerReference = ref;
+        return result;
+      });
+
+      expect(root.read(provider), 0);
+      expect(callCount, 1);
+      expect(providerReference.container, root);
+
+      result = 1;
+
+      expect(container.refresh(provider), 1);
+      expect(container.read(provider), 1);
+      expect(callCount, 2);
+      expect(providerReference.container, root);
+    });
+
     test('Immediatly creates a new value, even if no changes are pending',
         () async {
       var future = Future.value(42);

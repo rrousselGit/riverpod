@@ -2,10 +2,21 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
+import '../uni_directional_test.dart';
 import '../utils.dart';
 
 void main() {
   group('ScopedProvider', () {
+    test('create is nullable and default to throw UnsupportedError', () {
+      final provider = ScopedProvider<int>(null);
+      final container = ProviderContainer();
+
+      expect(
+        () => container.read(provider),
+        throwsA(isProviderException(isUnsupportedError)),
+      );
+    });
+
     test('use the deepest override', () {
       final provider = ScopedProvider((watch) => 0);
       final root = ProviderContainer(overrides: [
