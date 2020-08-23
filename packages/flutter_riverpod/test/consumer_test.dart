@@ -6,6 +6,12 @@ import 'package:mockito/mockito.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 void main() {
+  testWidgets('can extend ConsumerWidget', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: MyWidget()));
+
+    expect(find.text('hello world'), findsOneWidget);
+  });
+
   testWidgets(
       'Consumer removing one of multiple listeners on a provider still listen to the provider',
       (tester) async {
@@ -17,7 +23,7 @@ void main() {
     var buildCount = 0;
 
     await tester.pumpWidget(ProviderScope(
-      child: Consumer((c, watch) {
+      child: Consumer(builder: (c, watch, _) {
         buildCount++;
         final state = watch(stateProvider).state;
         final value =
@@ -92,7 +98,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           buildCount++;
           final state = watch(stateProvider).state;
           final result = state == 0 //
@@ -161,7 +167,7 @@ void main() {
 
     Widget build(StateNotifierProvider<TestNotifier> provider) {
       return ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           buildCount++;
           final value = watch(provider.state);
           return Text('$value', textDirection: TextDirection.ltr);
@@ -205,7 +211,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, watch) {
+        child: Consumer(builder: (context, watch, _) {
           final first = watch(provider.state);
           final second = watch(computed);
           return Text(
@@ -235,7 +241,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           buildCount++;
           return Text(
             'isPositive ${watch(computed)}',
@@ -276,10 +282,12 @@ void main() {
     const secondOwnerKey = Key('second');
     final key = GlobalKey();
 
-    final consumer = Consumer((context, watch) {
-      final value = watch(provider.state);
-      return Text('$value', textDirection: TextDirection.ltr);
-    }, key: key);
+    final consumer = Consumer(
+        builder: (context, watch, _) {
+          final value = watch(provider.state);
+          return Text('$value', textDirection: TextDirection.ltr);
+        },
+        key: key);
 
     await tester.pumpWidget(
       Column(
@@ -354,7 +362,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, watch) {
+        child: Consumer(builder: (context, watch, _) {
           final value = watch(provider.state);
           return Text('$value', textDirection: TextDirection.ltr);
         }),
@@ -388,7 +396,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, watch) {
+        child: Consumer(builder: (context, watch, _) {
           final first = watch(firstProvider.state);
           final second = watch(secondProvider.state);
           return Text(
@@ -419,7 +427,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, watch) {
+        child: Consumer(builder: (context, watch, _) {
           final count = watch(provider.state);
           return Text('$count', textDirection: TextDirection.ltr);
         }),
@@ -444,7 +452,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, watch) {
+        child: Consumer(builder: (context, watch, _) {
           final value = watch(provider);
           return Text(
             '$value',
@@ -460,7 +468,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, watch) {
+        child: Consumer(builder: (context, watch, _) {
           final value = watch(provider2);
           return Text(
             '$value',
@@ -477,7 +485,7 @@ void main() {
   testWidgets('can read scoped providers', (tester) async {
     final provider = ScopedProvider((_) => 0);
 
-    final child = Consumer((context, watch) {
+    final child = Consumer(builder: (context, watch, _) {
       final value = watch(provider);
       return Text(
         '$value',
@@ -520,4 +528,15 @@ class TestNotifier extends StateNotifier<int> {
 
 class Listener<T> extends Mock {
   void call(T value);
+}
+
+final _provider = Provider((ref) => 'hello world');
+
+class MyWidget extends ConsumerWidget {
+  const MyWidget({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, ScopedReader watch) {
+    return Text(watch(_provider), textDirection: TextDirection.rtl);
+  }
 }

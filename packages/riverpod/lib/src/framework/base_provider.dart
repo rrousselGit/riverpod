@@ -217,8 +217,8 @@ abstract class RootProvider<Created, Listened>
   ///
   /// ```dart
   /// @override
-  /// Widget build(BuildContext context) {
-  ///   final age = useProvider(personProvider.select((p) => p.age));
+  /// Widget build(BuildContext context, ScopedReader watch) {
+  ///   final age = watch(personProvider.select((p) => p.age));
   ///   return Text('$age');
   /// }
   /// ```
@@ -233,8 +233,8 @@ abstract class RootProvider<Created, Listened>
   ///
   /// ```dart
   /// @override
-  /// Widget build(BuildContext context) {
-  ///   final isAdult = useProvider(personProvider.select((p) => p.age >= 18));
+  /// Widget build(BuildContext context, ScopedReader watch) {
+  ///   final isAdult = watch(personProvider.select((p) => p.age >= 18));
   ///   return Text('$isAdult');
   /// }
   /// ```

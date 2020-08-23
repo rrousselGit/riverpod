@@ -91,10 +91,10 @@ extension BuildContextX on BuildContext {
   ///   return Products.fromJson(response.data);
   /// });
   ///
-  /// class Example extends HookWidget {
+  /// class Example extends ConsumerWidget {
   ///   @override
-  ///   Widget build(BuildContext context) {
-  ///     final Products products = useProvider(productsProvider);
+  ///   Widget build(BuildContext context, ScopedReader watch) {
+  ///     final Products products = watch(productsProvider);
   ///
   ///     return RefreshIndicator(
   ///       onRefresh: () => context.refresh(productsProvider),

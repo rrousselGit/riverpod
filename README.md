@@ -29,10 +29,10 @@ Long story short:
 - Use them inside your widgets in a compile-time safe way. No runtime exceptions!
 
   ```dart
-  class Example extends HookWidget {
+  class Example extends ConsumerWidget {
     @override
-    Widget build(BuildContext context) {
-      final count = useProvider(myNotifierProvider);
+    Widget build(BuildContext context, ScopedReader watch) {
+      final count = watch(myNotifierProvider);
       return Text(count.toString());
     }
   }

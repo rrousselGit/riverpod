@@ -19,7 +19,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: Consumer((context, watch) {
+        child: Consumer(builder: (context, watch, _) {
           watch(provider).state++;
           return Container();
         }),
@@ -154,7 +154,7 @@ void main() {
   testWidgets('removing overrides is no-op', (tester) async {
     final provider = Provider((_) => 0);
 
-    final consumer = Consumer((context, watch) {
+    final consumer = Consumer(builder: (context, watch, _) {
       return Text(
         watch(provider).toString(),
         textDirection: TextDirection.ltr,
@@ -211,7 +211,7 @@ void main() {
     final provider = Provider((_) => 'foo');
 
     await tester.pumpWidget(
-      Consumer((context, watch) {
+      Consumer(builder: (context, watch, _) {
         watch(provider);
         return Container();
       }),
@@ -232,8 +232,8 @@ void main() {
       textDirection: TextDirection.ltr,
       child: Column(
         children: <Widget>[
-          Consumer((c, watch) => Text(watch(provider))),
-          Consumer((c, watch) => Text(watch(provider2))),
+          Consumer(builder: (c, watch, _) => Text(watch(provider))),
+          Consumer(builder: (c, watch, _) => Text(watch(provider2))),
         ],
       ),
     );
@@ -273,7 +273,7 @@ void main() {
           provider.overrideWithProvider(Provider((_) => 'rootoverride')),
         ],
         child: ProviderScope(
-          child: Consumer((c, watch) {
+          child: Consumer(builder: (c, watch, _) {
             final first = watch(provider);
             final second = watch(provider2);
             return Text(
@@ -297,7 +297,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         key: scopeKey,
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           final value = watch(unnamed);
           final count = watch(named.state);
           return Text(

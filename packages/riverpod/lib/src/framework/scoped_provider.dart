@@ -52,12 +52,12 @@ typedef ScopedCreate<T> = T Function(ScopedReader watch);
 /// Finally, we can read the item index inside our `ProductItem`:
 ///
 /// ```dart
-/// class ProductItem extends HookWidget {
+/// class ProductItem extends ConsumerWidget {
 ///   const ProductItem({Key key}): super(key: key);
 ///
 ///   @override
-///   Widget build(BuildContext context) {
-///     final index = useProvider(currentProductIndex);
+///   Widget build(BuildContext context, ScopedReader watch) {
+///     final index = watch(currentProductIndex);
 ///     // do something with the index
 ///
 ///   }

@@ -1,5 +1,42 @@
 # 0.7.0
 
+- **Breaking**: `Consumer` is slightly modified to match other Builders like
+  `ValueListenableBuilder`.
+  Before:
+
+  ```dart
+  return Consumer((context, watch) {
+    final value = watch(myProvider);
+    return Text('$value');
+  });
+  ```
+
+  after:
+
+  ```dart
+  return Consumer(
+    builder: (context, watch, child) {
+      final value = watch(myProvider);
+      return Text('$value');
+    },
+  );
+  ```
+
+- Added a `ConsumerWidget` class which can be extended to make a `StatelessWidget`
+  that can read providers:
+
+  ```dart
+  class MyWidget extends ConsumerWidget {
+    const MyWidget({Key key}) : super(key: key);
+
+    @override
+    Widget build(BuildContext context, ScopedReader watch) {
+      final value = watch(myProvider);
+      return Text('$value');
+    }
+  }
+  ```
+
 - `ref.watch` on non ".autoDispose" providers can no-longer read ".autoDispose"
   providers.
 

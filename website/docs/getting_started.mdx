@@ -30,11 +30,11 @@ The variant of [Riverpod] that you will want to install depends on the app you a
 
 You can refer to the following table to help you decide which package to use:
 
-| app type                  | package name                                                                       | description                                                                                                                                    |
-| ------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                   | An improved syntax with less boilerplate for listening providers inside widgets.                                                               |
-| Flutter only              | [flutter_riverpod]                                                                 | A slightly more verbose syntax (comparable to `Theme.of` vs `StreamBuilder`). But feature-wise, it is otherwise identical to [hooks_riverpod]. |
-| Dart only (No Flutter)    | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | A version of [Riverpod] striped out of all the classes related to Flutter                                                                      |
+| app type                  | package name                                                                       | description                                                                          |
+| ------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                   | A way use both [flutter_hooks] and [Riverpod] together, while offering small extras. |
+| Flutter only              | [flutter_riverpod]                                                                 | A basic way of using [Riverpod], which does not depend on [flutter_hooks].           |
+| Dart only (No Flutter)    | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | A version of [Riverpod] striped out of all the classes related to Flutter            |
 
 And if not clear enough, you can refer to this decision graph:
 
@@ -63,8 +63,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_hooks: ^0.11.0
-  hooks_riverpod: ^0.6.0
+  flutter_hooks: ^0.13.2
+  hooks_riverpod: ^0.7.0
 ```
 
 Then run `flutter pub get`.
@@ -80,7 +80,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^0.6.0
+  flutter_riverpod: ^0.7.0
 ```
 
 Then run `flutter pub get`.
@@ -93,7 +93,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  riverpod: ^0.6.0
+  riverpod: ^0.7.0
 ```
 
 Then run `pub get`.
@@ -185,19 +185,17 @@ void main() {
   );
 }
 
-class MyApp extends StatelessWidget {
+// Extend ConsumerWidget instead of StatelessWidget, which is exposed by Riverpod
+class MyApp extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
+    final String value = watch(helloWorldProvider);
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: Text('Example')),
         body: Center(
-          // A widget that can consume providers
-          child: Consumer((context, watch) {
-            // Subscribes Consumer to helloWorldProvider
-            final value = watch(helloWorldProvider);
-            return Text(value);
-          }),
+          child: Text(value);
         ),
       ),
     );

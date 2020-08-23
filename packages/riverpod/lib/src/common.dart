@@ -22,10 +22,10 @@ part 'common.freezed.dart';
 ///   // fetch the user
 /// });
 ///
-/// class Example extends HookWidget {
+/// class Example extends ConsumerWidget {
 ///   @override
-///   Widget build(BuildContext context) {
-///     final AsyncValue<User> user = useProvider(userProvider);
+///   Widget build(BuildContext context, ScopedReader watch) {
+///     final AsyncValue<User> user = watch(userProvider);
 ///
 ///     return user.when(
 ///       loading: () => CircularProgressIndicator(),
@@ -40,9 +40,9 @@ part 'common.freezed.dart';
 /// state, consider using [data] to read the state:
 ///
 /// ```dart
-/// Widget build(BuildContext context) {
+/// Widget build(BuildContext context, ScopedReader watch) {
 ///   // reads the data state directly – will be null during loading/error states
-///   final User user = useProvider(userProvider).data?.value;
+///   final User user = watch(userProvider).data?.value;
 ///
 ///   return Text('Hello ${user?.name}');
 /// }

@@ -34,17 +34,17 @@ Then, when using our `messagesFamily` provider, the syntax is slightly modified.
 The usual syntax will not work anymore:
 
 ```dart
-Widget build(BuildContext context) {
+Widget build(BuildContext context, ScopedReader watch) {
   // Error – messagesFamily is not a provider
-  final response = useProvider(messagesFamily);
+  final response = watch(messagesFamily);
 }
 ```
 
 Instead, we need to pass a parameter to `messagesFamily`:
 
 ```dart
-Widget build(BuildContext context) {
-  final response = useProvider(messagesFamily('id'));
+Widget build(BuildContext context, ScopedReader watch) {
+  final response = watch(messagesFamily('id'));
 }
 ```
 
@@ -55,9 +55,9 @@ translations at the same time:
 
 ```dart
 @override
-Widget build(BuildContext context) {
-  final frenchTitle = useProvider(titleFamily(const Locale('fr')));
-  final englishTitle = useProvider(titleFamily(const Locale('en')));
+Widget build(BuildContext context, ScopedReader watch) {
+  final frenchTitle = watch(titleFamily(const Locale('fr')));
+  final englishTitle = watch(titleFamily(const Locale('en')));
 
   return Text('fr: $frenchTitle en: $englishTitle');
 }
@@ -119,11 +119,11 @@ final exampleProvider = Provider.autoDispose.family<Something, MyParameter>((ref
 })
 
 @override
-Widget build(BuildContext context) {
+Widget build(BuildContext context, ScopedReader watch) {
   int userId; // Read the user ID from somewhere
   final locale = Localizations.localeOf(context);
 
-  final something = useProvider(
+  final something = watch(
     exampleProvider(MyParameter(userId: userId, locale: locale)),
   );
 

@@ -179,8 +179,8 @@ mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
 /// Which the UI can then listen:
 ///
 /// ```dart
-/// Widget build(BuildContext) {
-///   AsyncValue<String> message = useProvider(messageProvider);
+/// Widget build(BuildContext, ScopedReader watch) {
+///   AsyncValue<String> message = watch(messageProvider);
 ///
 ///   return message.when(
 ///     loading: () => const CircularProgressIndicator(),

@@ -50,8 +50,8 @@ part 'future_provider/auto_dispose.dart';
 /// Then, the UI can listen to configurations like so:
 ///
 /// ```dart
-/// Widget build(BuildContext) {
-///   AsyncValue<Configuration> config = useProvider(configProvider);
+/// Widget build(BuildContext, ScopedReader watch) {
+///   AsyncValue<Configuration> config = watch(configProvider);
 ///
 ///   return config.when(
 ///     loading: () => const CircularProgressIndicator(),

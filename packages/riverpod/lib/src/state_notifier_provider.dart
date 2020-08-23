@@ -54,9 +54,9 @@ part 'state_notifier_provider/auto_dispose.dart';
 /// And finally, you can interact with it inside your UI:
 ///
 /// ```dart
-/// Widget build(BuildContext context) {
+/// Widget build(BuildContext context, ScopedReader watch) {
 ///   // rebuild the widget when the todo list changes
-///   List<Todo> todos = useProvider(todosProvider.state);
+///   List<Todo> todos = watch(todosProvider.state);
 ///
 ///   return ListView(
 ///     children: [

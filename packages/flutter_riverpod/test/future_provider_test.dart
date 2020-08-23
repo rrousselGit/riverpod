@@ -21,7 +21,7 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: ProviderScope(
-          child: Consumer((c, watch) {
+          child: Consumer(builder: (c, watch, _) {
             return watch(futureProvider).when(
               data: (data) => Text(data.toString()),
               loading: () => const Text('loading'),
@@ -50,7 +50,7 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: ProviderScope(
-          child: Consumer((c, watch) {
+          child: Consumer(builder: (c, watch, _) {
             return watch(futureProvider).when(
               data: (data) => Text(data.toString()),
               loading: () => const Text('loading'),
@@ -80,7 +80,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           watch(futureProvider);
           return Container();
         }),
@@ -102,7 +102,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           watch(futureProvider);
           return Container();
         }),
@@ -133,7 +133,7 @@ void main() {
         ],
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer((c, watch) {
+          child: Consumer(builder: (c, watch, _) {
             return watch(futureProvider).maybeWhen(
               data: (data) => Text(data.toString()),
               orElse: () => const Text('else'),
@@ -179,7 +179,7 @@ void main() {
 
     final child = Directionality(
       textDirection: TextDirection.ltr,
-      child: Consumer((c, watch) {
+      child: Consumer(builder: (c, watch, _) {
         watch(proxy);
         return watch(futureProvider).when(
           data: (data) => Text(data.toString()),
@@ -374,7 +374,7 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer((c, watch) {
+          child: Consumer(builder: (c, watch, _) {
             return watch(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
@@ -404,7 +404,7 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer((c, watch) {
+          child: Consumer(builder: (c, watch, _) {
             return watch(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
@@ -434,7 +434,7 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer((c, watch) {
+          child: Consumer(builder: (c, watch, _) {
             return watch(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
