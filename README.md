@@ -1,13 +1,13 @@
-[![pub package](https://img.shields.io/pub/v/riverpod.svg?label=riverpod)](https://pub.dartlang.org/packages/riverpod)
-[![pub package](https://img.shields.io/pub/v/riverpod.svg?label=flutter_riverpod)](https://pub.dartlang.org/packages/flutter_riverpod)
-[![pub package](https://img.shields.io/pub/v/riverpod.svg?label=hooks_riverpod)](https://pub.dartlang.org/packages/hooks_riverpod)
-
-[![Build Status](https://github.com/rrousselGit/river_pod/workflows/Build/badge.svg)](https://github.com/rrousselGit/river_pod/actions) [![codecov](https://codecov.io/gh/rrousselGit/river_pod/branch/master/graph/badge.svg)](https://codecov.io/gh/rrousselGit/river_pod) 
+[![pub package](https://img.shields.io/pub/v/riverpod.svg?label=riverpod&color=blue)](https://pub.dartlang.org/packages/riverpod)
+[![pub package](https://img.shields.io/pub/v/riverpod.svg?label=flutter_riverpod&color=blue)](https://pub.dartlang.org/packages/flutter_riverpod)
+[![pub package](https://img.shields.io/pub/v/riverpod.svg?label=hooks_riverpod&color=blue)](https://pub.dartlang.org/packages/hooks_riverpod) <a href="https://riverpod.dev"><img src="https://img.shields.io/badge/documentation-riverpod.dev-blue" alt="documentation"></a> [![Build Status](https://github.com/rrousselGit/river_pod/workflows/Build/badge.svg)](https://github.com/rrousselGit/river_pod/actions) [![codecov](https://codecov.io/gh/rrousselGit/river_pod/branch/master/graph/badge.svg)](https://codecov.io/gh/rrousselGit/river_pod) 
 <a href="https://www.buymeacoffee.com/remirousselet" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="25px"></a>
+<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
 
 Welcome to [Riverpod]!
 
-This project can be considered as an **experimental** [provider] rewrite.
+This project can be considered as a rewrite of [provider] to make improvements
+that would be otherwise impossible.
 
 For learning how to use [Riverpod], see its documentation: https://riverpod.dev
 
@@ -120,11 +120,13 @@ very similar usages, but we cannot create a lightbulb by improving our candle.
 
 ### Is it safe to use in production?
 
-The project is still experimental, so use it at your own risk.
+Yes, but with caution.
 
-It applied all the lessons learned from [provider], so I would expect this
-project to solve most use-cases.\
-But if your project randomly catches fire, you were warned!
+[Riverpod] recently left its experimental status, but it isn't fully stable either.
+The API may change slightly when more features are added, and some use-cases
+may not be as simple as they could be.
+
+But overall, you should be able to use [Riverpod] without trouble.
 
 ### Will this get merged with [provider] at some point?
 
