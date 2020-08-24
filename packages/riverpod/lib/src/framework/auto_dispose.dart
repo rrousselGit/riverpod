@@ -76,6 +76,20 @@ class AutoDisposeProviderElement<Created, Listened>
       _AutoDisposer.instance.scheduleDispose(this);
     }
   }
+
+  @override
+  void dispose() {
+    assert(_origin != null, 'No origin specified – bug?');
+    assert(
+      _container._stateReaders.containsKey(_origin),
+      'Removed a key that does not exist',
+    );
+    _container._stateReaders.remove(_origin);
+    if (_origin.from != null) {
+      _origin.from._cache.remove(_origin.argument);
+    }
+    super.dispose();
+  }
 }
 
 class _LinkedListEntry<T> extends LinkedListEntry<_LinkedListEntry<T>> {
@@ -130,15 +144,6 @@ class _AutoDisposer {
           entry.value.hasListeners ||
           !entry.value.mounted) {
         continue;
-      }
-      assert(entry.value._origin != null, 'No origin specified – bug?');
-      assert(
-        entry.value._container._stateReaders.containsKey(entry.value._origin),
-        'Removed a key that does not exist',
-      );
-      entry.value._container._stateReaders.remove(entry.value._origin);
-      if (entry.value.origin.from != null) {
-        entry.value.origin.from._cache.remove(entry.value.origin.argument);
       }
       entry.value.dispose();
     }
