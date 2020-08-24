@@ -267,6 +267,7 @@ void main() {
 
       expect(sub.flush(), false);
     });
+
     group('overrideAs', () {
       test('is re-evaluated on override change', () {
         final mayHaveChanged = MayHaveChangedMock<int>();

@@ -74,6 +74,7 @@ void main() {
 
     expect(provider, isA<AlwaysAliveProviderBase>());
   });
+
   group('depend on', () {
     final dependency = Provider((_) => 1);
     final dependency2 = Provider((_) => '2');

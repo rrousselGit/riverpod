@@ -174,6 +174,7 @@ void main() {
 
     expect(provider, isA<AlwaysAliveProviderBase>());
   });
+
   group('FutureProvider().future', () {
     test('returns a future identical to the one created', () {
       final completer = Completer<int>.sync();
@@ -238,6 +239,7 @@ void main() {
       );
     });
   });
+
   group('FutureProvider.autoDispose().future', () {
     test('.name is the listened name.future', () {
       expect(

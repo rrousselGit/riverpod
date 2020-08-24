@@ -103,6 +103,7 @@ void main() {
 
     expect(sub.flush(), false);
   });
+
   group('overrideWithValue(T)', () {
     test('.stream is a broadcast stream a', () async {
       final provider = StreamProvider((ref) => controller.stream);

@@ -557,6 +557,7 @@ void main() {
     verifyNoMoreInteractions(onDispose);
     verifyNoMoreInteractions(onDispose2);
   });
+
   group('notify listeners', () {
     test('calls onChange at most once per flush', () {
       final counter = Counter();

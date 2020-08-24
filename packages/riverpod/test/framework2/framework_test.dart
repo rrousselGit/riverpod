@@ -233,6 +233,7 @@ void main() {
     expect(secondElement.dependents, <ProviderElement>{});
     expect(secondElement.hasListeners, false);
   });
+
   group('overrideWithValue', () {
     test('synchronously overrides the value', () {
       var callCount = 0;
@@ -531,6 +532,7 @@ void main() {
       expect(errors, unorderedEquals(<Object>[42, 21]));
     });
   });
+
   group('ProviderSubscription', () {
     test('no-longer call listeners anymore after close', () {
       final counter = Counter();
@@ -555,6 +557,7 @@ void main() {
       verifyZeroInteractions(mayHaveChanged);
       verifyZeroInteractions(didChange);
     });
+
     group('.read', () {
       test('rethrows the exception thrown when building a provider', () {
         final error = Error();
@@ -593,6 +596,7 @@ void main() {
         expect(sub.read(), 1);
       });
     });
+
     group('.flush', () {
       test('initialized to true', () {
         final provider = Provider((ref) => 0);

@@ -295,6 +295,7 @@ void main() {
       );
     });
   });
+
   group('StreamProvider.autoDispose().future', () {
     test('.name is the listened name.future', () {
       expect(
@@ -559,6 +560,7 @@ void main() {
         await controller.close();
       });
     });
+
     group('from StreamProvider.overrideWithValue', () {
       test('loading to data to loading creates a new stream too', () async {
         final provider = StreamProvider<int>((_) async* {});
