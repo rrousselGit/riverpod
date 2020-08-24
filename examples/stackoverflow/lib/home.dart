@@ -47,153 +47,54 @@ abstract class Question with _$Question {
 
 final client = Provider((ref) => Dio());
 
-class PaginatedQuestions extends ChangeNotifier {
-  PaginatedQuestions(this._client);
+final _fetchedPages = StateProvider((ref) => <int>[]);
 
-  final Dio _client;
-  final _pages = <AsyncValue<QuestionsResponse>>[];
-  final _questions = <int, AsyncValue<Question>>{};
-  final _cancelTokens = DoubleLinkedQueue<CancelToken>();
+final paginatedQuestionsProvider = FutureProvider.autoDispose
+    .family<QuestionsResponse, int>((ref, pageIndex) async {
+  final fetchedPages = ref.read(_fetchedPages).state;
+  fetchedPages.add(pageIndex);
+  ref.onDispose(() => fetchedPages.remove(pageIndex));
 
-  Future<QuestionsResponse> _firstPage;
-  Future<QuestionsResponse> get firstPage => _firstPage;
+  final cancelToken = CancelToken();
+  ref.onDispose(cancelToken.cancel);
 
-  AsyncValue<int> get questionsCount {
-    if (_pages.isEmpty) {
-      getQuestionAt(0);
-      return const AsyncValue.loading();
-    }
+  final uri = Uri(
+    scheme: 'https',
+    host: 'api.stackexchange.com',
+    path: '/2.2/questions',
+    queryParameters: <String, Object>{
+      'order': 'desc',
+      'sort': 'creation',
+      'site': 'stackoverflow',
+      'filter': '!17vW1m9jnXcpKOO(p4a5Jj.QeqRQmvxcbquXIXJ1fJcKq4',
+      'tagged': 'flutter',
+      'pagesize': '50',
+      'page': '${pageIndex + 1}',
+    },
+  );
 
-    return _pages.first.whenData((page) => page.total);
-  }
+  final response = await ref
+      .watch(client)
+      .getUri<Map<String, Object>>(uri, cancelToken: cancelToken);
 
-  /// Questions can be deleted as we scroll, so we cannot simply rely on the index
-  /// to fetch question.
-  /// The algorithm instead relies on the creation date of the last previous of
-  /// the previous page, such that the next page starts from the end of the
-  /// previous page.
-  AsyncValue<Question> getQuestionAt(int index) {
-    // If the previous question isn't fetched or failed to fetch, returns a
-    // loading/error status.
-    if (index > 0 && !_questions.containsKey(index)) {
-      final previousQuestion = getQuestionAt(index - 1);
-      if (previousQuestion.data == null) {
-        return previousQuestion;
-      }
-    }
+  final parsed = QuestionsResponse.fromJson(response.data);
+  final page = parsed.copyWith(
+    items: parsed.items.map((e) {
+      final document = parse(e.body);
+      return e.copyWith(body: document.body.text.replaceAll('\n', ' '));
+    }).toList(),
+  );
 
-    // At this point, we are always on the last page since the algorithm
-    // awaits for all the previous questions to be fetched.
-    return _questions.putIfAbsent(index, () {
-      final pageStartDate = _pages.isEmpty
-          ? null
-          : _pages.last.data.value.items.last.creationDate;
+  ref.maintainState = true;
 
-      Future<void> fetch() async {
-        final page = await AsyncValue.guard<QuestionsResponse>(() async {
-          final cancelToken = CancelToken();
-          _cancelTokens.add(cancelToken);
-
-          final uri = Uri(
-            scheme: 'https',
-            host: 'api.stackexchange.com',
-            path: '/2.2/questions',
-            queryParameters: <String, String>{
-              'order': 'desc',
-              'sort': 'creation',
-              'site': 'stackoverflow',
-              'filter': '!17vW1m9jnXcpKOO(p4a5Jj.QeqRQmvxcbquXIXJ1fJcKq4',
-              'tagged': 'flutter',
-              if (pageStartDate != null)
-                'todate':
-                    (pageStartDate.millisecondsSinceEpoch ~/ 1000).toString()
-            },
-          );
-
-          print('fetch $uri');
-
-          final response = await _client.getUri<Map<String, Object>>(
-            uri,
-            cancelToken: cancelToken,
-          );
-          final parsed = QuestionsResponse.fromJson(response.data);
-          final page = parsed.copyWith(
-            items: parsed.items.map((e) {
-              final document = parse(e.body);
-              return e.copyWith(body: document.body.text.replaceAll('\n', ' '));
-            }).toList(),
-          );
-
-          return page;
-        });
-
-        _pages.add(page);
-        notifyListeners();
-
-        page.when(
-          // never reached
-          loading: () {},
-          data: (page) {
-            for (var i = 0; i < page.items.length; i++) {
-              _questions[index + i] = AsyncValue.data(page.items[i]);
-            }
-          },
-          error: (error, stack) {
-            for (var i = index; i < _questions.length; i++) {
-              _questions[i] = AsyncValue.error(error, stack);
-            }
-          },
-        );
-      }
-
-      fetch();
-
-      return const AsyncValue.loading();
-    });
-  }
-
-  @override
-  void dispose() {
-    for (final cancelToken in _cancelTokens) {
-      cancelToken.cancel();
-    }
-    super.dispose();
-  }
-}
-
-final questionsProvider = ChangeNotifierProvider.autoDispose((ref) {
-  return PaginatedQuestions(ref.watch(client));
+  return page;
 });
 
 final questionsCountProvider = Provider.autoDispose((ref) {
-  return ref.watch(questionsProvider).questionsCount;
+  return ref
+      .watch(paginatedQuestionsProvider(0))
+      .whenData((page) => page.total);
 });
-
-// final questionsProvider = FutureProvider.autoDispose
-//     .family<QuestionsResponse, int>((ref, page) async {
-//   final cancelToken = CancelToken();
-//   ref.onDispose(cancelToken.cancel);
-
-//   final response = await ref.watch(client).get<Map<String, Object>>(
-//     'https://api.stackexchange.com/2.2/questions',
-//     cancelToken: cancelToken,
-//     queryParameters: <String, String>{
-//       'order': 'desc',
-//       'sort': 'creation',
-//       'site': 'stackoverflow',
-//       'filter': '!17vW1m9jnXcpKOO(p4a5Jj.QeqRQmvxcbquXIXJ1fJcKq4',
-//       'tagged': 'flutter'
-//     },
-//   );
-
-//   final parsed = QuestionsResponse.fromJson(response.data);
-//   return parsed.copyWith(
-//     items: parsed.items.map((e) {
-//       final document = parse(e.body);
-//       return e.copyWith(body: document.body.text);
-//     }).toList(),
-//   );
-// });
 
 @freezed
 abstract class QuestionTheme with _$QuestionTheme {
@@ -210,26 +111,27 @@ class MyHomePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    useReassemble(() {
-      return Future.microtask(() {
-        context.read(questionsProvider).notifyListeners();
-      });
-    });
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('StackOverflow'),
       ),
       body: HookBuilder(builder: (context) {
         final count = useProvider(questionsCountProvider);
-        print(count);
+
         return count.when(
           loading: () => const CircularProgressIndicator(),
-          error: (err, stack) => Text('Error $err'),
+          error: (err, stack) {
+            if (err is DioError) {
+              return Text(
+                err.response.data.toString(),
+              );
+            }
+            return Text('Error $err\n$stack');
+          },
           data: (count) {
             return RefreshIndicator(
               onRefresh: () {
-                return context.refresh(questionsProvider).firstPage;
+                return context.refresh(paginatedQuestionsProvider(0));
               },
               child: ListView.separated(
                 itemCount: count,
@@ -237,7 +139,8 @@ class MyHomePage extends HookWidget {
                   return ProviderScope(
                     overrides: [
                       currentQuestion.overrideAs((watch) {
-                        return watch(questionsProvider).getQuestionAt(index);
+                        return watch(paginatedQuestionsProvider(index ~/ 50))
+                            .whenData((page) => page.items[index % 50]);
                       }),
                     ],
                     child: const QuestionItem(),
