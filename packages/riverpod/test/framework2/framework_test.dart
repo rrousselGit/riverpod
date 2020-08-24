@@ -364,6 +364,7 @@ void main() {
         expect(sub.read(), 1);
         verifyOnly(didChange, didChange(sub));
       });
+
       test('is called at most once per read', () {
         final counter = Counter();
         final provider = StateNotifierProvider((ref) => counter);
@@ -383,6 +384,7 @@ void main() {
         expect(sub.read(), 3);
         verifyOnly(didChange, didChange(sub));
       });
+
       test('are all executed after one read call', () {
         final counter = Counter();
         final provider = StateNotifierProvider((ref) => counter);
@@ -407,6 +409,7 @@ void main() {
         verifyOnly(didChange, didChange(sub));
         verifyOnly(didChange2, didChange2(sub2));
       });
+
       test('is guarded', () {
         final counter = Counter();
         final provider = StateNotifierProvider((ref) => counter);
@@ -445,6 +448,7 @@ void main() {
         // Does not crash
         counter.increment();
       });
+
       test(
           'is synchronously after a change'
           ' without re-evaluating the provider', () {
@@ -466,6 +470,7 @@ void main() {
         expect(callCount, 1);
         verifyOnly(mayHaveChanged, mayHaveChanged(sub));
       });
+
       test(
           're-evaluating the provider with a new value calls mayHaveChanged only once',
           () {
@@ -482,6 +487,7 @@ void main() {
 
         verifyOnly(mayHaveChanged, mayHaveChanged(sub));
       });
+
       test('is called only onces after multiple changes', () {
         final counter = Counter();
         final counterProvider = StateNotifierProvider((ref) => counter);
@@ -582,6 +588,7 @@ void main() {
           ),
         );
       });
+
       test('flushes the provider', () {
         final counter = Counter();
         final first = StateNotifierProvider((ref) => counter);
@@ -604,6 +611,7 @@ void main() {
 
         expect(sub.flush(), true);
       });
+
       test('updates to false after a read', () {
         final provider = Provider((ref) => 0);
         final sub = container.listen(provider);
@@ -612,6 +620,7 @@ void main() {
 
         expect(sub.flush(), false);
       });
+
       test('updates to true after a change', () {
         final counter = Counter();
         final provider = StateNotifierProvider((ref) => counter);
@@ -624,6 +633,7 @@ void main() {
 
         expect(sub.flush(), true);
       });
+
       test('flushes providers', () {
         final counter = Counter();
         final first = StateNotifierProvider((ref) => counter);

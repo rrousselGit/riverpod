@@ -394,6 +394,7 @@ void main() {
 
         await controller.close();
       });
+
       test('read currentValue before after value', () async {
         final container = ProviderContainer();
         final controller = StreamController<int>();
@@ -407,6 +408,7 @@ void main() {
 
         await controller.close();
       });
+
       test('read currentValue before first error', () async {
         final container = ProviderContainer();
         final controller = StreamController<int>();
@@ -420,6 +422,7 @@ void main() {
 
         await controller.close();
       });
+
       test('read currentValue before after error', () async {
         final container = ProviderContainer();
         final controller = StreamController<int>();
@@ -450,6 +453,7 @@ void main() {
 
         await expectLater(future, completion(42));
       });
+
       test('read currentValue before after value', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
@@ -464,6 +468,7 @@ void main() {
 
         await expectLater(future, completion(42));
       });
+
       test('read currentValue before first error', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
@@ -478,6 +483,7 @@ void main() {
 
         await expectLater(future, throwsA(42));
       });
+
       test('read currentValue before after error', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
@@ -492,6 +498,7 @@ void main() {
 
         await expectLater(future, throwsA(42));
       });
+
       test('synchronous first event', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
@@ -520,6 +527,7 @@ void main() {
 
         await controller.close();
       });
+
       test('read currentValue before after value', () async {
         final container = ProviderContainer();
         final controller = StreamController<int>();
@@ -533,6 +541,7 @@ void main() {
 
         await controller.close();
       });
+
       test('read currentValue before first error', () async {
         final container = ProviderContainer();
         final controller = StreamController<int>();
@@ -546,6 +555,7 @@ void main() {
 
         await controller.close();
       });
+
       test('read currentValue before after error', () async {
         final container = ProviderContainer();
         final controller = StreamController<int>();
@@ -594,6 +604,7 @@ void main() {
 
         await expectLater(stream2, emits(21));
       });
+
       test('data to loading creates a new stream', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
@@ -619,6 +630,7 @@ void main() {
 
         await expectLater(stream2, emits(21));
       });
+
       test('error to loading creates a new stream', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
@@ -644,6 +656,7 @@ void main() {
 
         await expectLater(stream2, emits(21));
       });
+
       test('read currentValue before first value', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
@@ -658,6 +671,7 @@ void main() {
 
         await expectLater(stream, emits(42));
       });
+
       test('read currentValue before after value', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
@@ -672,6 +686,7 @@ void main() {
 
         await expectLater(stream, emits(42));
       });
+
       test('read currentValue before first error', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
@@ -686,6 +701,7 @@ void main() {
 
         await expectLater(stream, emitsError(42));
       });
+
       test('read currentValue before after error', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
@@ -700,6 +716,7 @@ void main() {
 
         await expectLater(stream, emitsError(42));
       });
+
       test('synchronous first event', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
