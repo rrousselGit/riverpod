@@ -206,12 +206,12 @@ class ProviderScopeState extends State<ProviderScope> {
           'ProviderScope was rebuilt with a different ProviderScope ancestor',
         );
       }
-      if (_dirty) {
-        _dirty = false;
-        container.updateOverrides(widget.overrides);
-      }
       return true;
     }(), '');
+    if (_dirty) {
+      _dirty = false;
+      container.updateOverrides(widget.overrides);
+    }
 
     return UncontrolledProviderScope(
       container: container,
