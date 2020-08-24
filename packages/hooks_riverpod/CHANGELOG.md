@@ -1,3 +1,7 @@
+# 0.7.1
+
+- Fixed a bug where in release mode, `ScopedProvider` did not update correctly (https://github.com/rrousselGit/river_pod/issues/101)
+
 # 0.7.0
 
 - **Breaking**: `Consumer` is slightly modified to match other Builders like
