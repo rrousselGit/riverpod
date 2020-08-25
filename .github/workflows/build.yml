@@ -54,9 +54,7 @@ jobs:
         working-directory: ${{ matrix.package }}
 
       - name: Upload coverage to codecov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+        run: curl -s https://codecov.io/bash | bash -t ${{ secrets.CODECOV_TOKEN }}
 
   flutter:
     runs-on: ubuntu-latest
@@ -112,6 +110,4 @@ jobs:
         working-directory: ${{ matrix.package }}
 
       - name: Upload coverage to codecov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+        run: curl -s https://codecov.io/bash | bash -t ${{ secrets.CODECOV_TOKEN }}
