@@ -534,7 +534,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   bool _dependencyMayHaveChanged = true;
   // equivalent to _dependencyMayHaveChanged that does not rely on
   // ProviderSubscription.flush, to force recomputed a state
-  bool _dependencyDidChange = false;
+  bool _mustRecomputeState = false;
 
   bool _mounted = false;
   @override
@@ -593,7 +593,9 @@ class ProviderElement<Created, Listened> implements ProviderReference {
       }
       element._dependents ??= {};
       element._dependents.add(this);
-      return element.listen(mayHaveChanged: _markDependencyMayHaveChanged);
+      return element.listen(
+        mayHaveChanged: _markDependencyMayHaveChanged,
+      );
     }) as ProviderSubscription<T>;
     return sub.read();
   }
@@ -634,14 +636,14 @@ class ProviderElement<Created, Listened> implements ProviderReference {
     }(), '');
 
     try {
-      if (_dependencyMayHaveChanged || _dependencyDidChange) {
+      if (_dependencyMayHaveChanged || _mustRecomputeState) {
         _dependencyMayHaveChanged = false;
         // must be executed before _runStateCreate() so that errors during
         // creation are not silenced
         _exception = null;
         _runOnDispose();
 
-        var hasAnyDependencyChanged = _dependencyDidChange;
+        var hasAnyDependencyChanged = _mustRecomputeState;
         for (final sub in _subscriptions.values) {
           if (sub.flush()) {
             hasAnyDependencyChanged = true;
@@ -650,7 +652,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
         if (hasAnyDependencyChanged) {
           _runStateCreate();
         }
-        _dependencyDidChange = false;
+        _mustRecomputeState = false;
       }
       _dirty = false;
       if (_notifyDidChangeLastNotificationCount != _notificationCount) {
@@ -843,7 +845,7 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement.provider}.
   /// Forces the state of a provider to be re-created, even if none of its
   /// dependencies changed.
   void markMustRecomputeState() {
-    _dependencyDidChange = true;
+    _mustRecomputeState = true;
     notifyMayHaveChanged();
   }
 

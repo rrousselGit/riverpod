@@ -1,3 +1,7 @@
+# 0.7.3
+
+Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstances
+
 # 0.7.1
 
 - Fixed a bug where in release mode, `ScopedProvider` did not update correctly (https://github.com/rrousselGit/river_pod/issues/101)

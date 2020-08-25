@@ -179,6 +179,20 @@ class ProviderContainer {
     }
   }
 
+  void _disposeProvider(ProviderBase<Object, Object> provider) {
+    final element = readProviderElement(provider);
+    assert(element._origin != null, 'No origin specified – bug?');
+    assert(
+      _stateReaders.containsKey(element._origin),
+      'Removed a key that does not exist',
+    );
+    _stateReaders.remove(element._origin);
+    if (element._origin.from != null) {
+      element._origin.from._cache.remove(element._origin.argument);
+    }
+    element.dispose();
+  }
+
   /// Updates the list of provider overrides.
   ///
   /// If you are using flutter, this is done implicitly for you by `ProviderScope`.
