@@ -1,4 +1,4 @@
-# 0.7.3
+# 0.7.2
 
 Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstances
 
