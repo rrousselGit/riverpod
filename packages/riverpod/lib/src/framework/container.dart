@@ -389,7 +389,7 @@ class ProviderContainer {
 
   /// The states of the providers associated to this [ProviderContainer], sorted
   /// in order of dependency.
-  List<ProviderElement> get debugProviderStates {
+  List<ProviderElement> get debugProviderElements {
     List<ProviderElement> result;
     assert(() {
       result = _visitStatesInOrder().toList();

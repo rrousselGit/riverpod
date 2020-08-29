@@ -1,3 +1,7 @@
+# 0.8.0
+
+- Renamed `ProviderContainer.debugProviderStates` to `ProviderContainer.debugProviderElements`
+
 # 0.7.0
 
 - `ref.watch` on non ".autoDispose" providers can no-longer read ".autoDispose"

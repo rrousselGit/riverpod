@@ -250,7 +250,7 @@ void main() {
 }
 
 List<ProviderBase> compute(ProviderContainer container) {
-  return container.debugProviderStates.map((e) => e.provider).toList();
+  return container.debugProviderElements.map((e) => e.provider).toList();
 }
 
 class A {}

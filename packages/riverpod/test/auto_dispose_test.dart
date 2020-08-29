@@ -16,7 +16,7 @@ void main() {
 
     await idle();
 
-    expect(container.debugProviderStates, <ProviderElement>[]);
+    expect(container.debugProviderElements, <ProviderElement>[]);
   });
 
   test('setting maintainState to false destroys the state when not listener',
@@ -313,7 +313,7 @@ void main() {
     var removeListener = provider.watchOwner(container, listener);
 
     expect(
-      container.debugProviderStates,
+      container.debugProviderElements,
       unorderedMatches(<Matcher>[
         isA<ProviderElement<Object, int>>(),
         isA<AutoDisposeProviderElement<Object, int>>(),
@@ -334,7 +334,7 @@ void main() {
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(onDispose);
     expect(
-        container.debugProviderStates, [isA<ProviderElement<Object, int>>()]);
+        container.debugProviderElements, [isA<ProviderElement<Object, int>>()]);
 
     value = 21;
     removeListener = provider.watchOwner(container, listener);
@@ -343,7 +343,7 @@ void main() {
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(onDispose);
     expect(
-      container.debugProviderStates,
+      container.debugProviderElements,
       unorderedMatches(<Matcher>[
         isA<ProviderElement<Object, int>>(),
         isA<AutoDisposeProviderElement<Object, int>>(),

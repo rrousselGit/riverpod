@@ -67,7 +67,7 @@ void main() {
 
     expect(container.read(provider), 42);
 
-    final state = container.debugProviderStates.single;
+    final state = container.debugProviderElements.single;
 
     expect(state.hasListeners, false);
 
