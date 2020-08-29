@@ -1,3 +1,9 @@
+# 0.8.0
+
+- Renamed `ProviderContainer.debugProviderStates` to `ProviderContainer.debugProviderElements`
+- Fixed a bug where updating `ProviderScope.overrides` may cause an exception
+  for no reason (see https://github.com/rrousselGit/river_pod/issues/107)
+
 # 0.7.2
 
 Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstances

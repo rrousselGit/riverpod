@@ -239,16 +239,16 @@ class ProviderContainer {
             }
           }
         }
+        assert(() {
+          unusedOverrides.remove(override);
+          return true;
+        }(), '');
 
         // _stateReaders[override._origin] cannot be null for overriden providers.
         final element = _stateReaders[override._origin];
         if (element == null) {
           continue;
         }
-        assert(() {
-          unusedOverrides.remove(override);
-          return true;
-        }(), '');
         _runUnaryGuarded(element.update, override._provider);
       } else if (override is FamilyOverride) {
         assert(() {
@@ -257,11 +257,12 @@ class ProviderContainer {
         }(), '');
         _overrideForFamily[override._family] = override;
       }
-      assert(
-        unusedOverrides.isEmpty,
-        'Updated the list of overrides with providers that were not overriden before',
-      );
     }
+
+    assert(
+      unusedOverrides.isEmpty,
+      'Updated the list of overrides with providers that were not overriden before',
+    );
   }
 
   /// Reads the state of a provider, potentially creating it in the processs.

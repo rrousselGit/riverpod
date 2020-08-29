@@ -134,6 +134,32 @@ void main() {
       expect(element.mounted, false);
     });
 
+    test('can update multiple ScopeProviders at one', () {
+      final provider = ScopedProvider<int>(null);
+      final provider2 = ScopedProvider<int>(null);
+
+      final container = ProviderContainer(overrides: [
+        provider.overrideWithValue(21),
+        provider2.overrideWithValue(42),
+      ]);
+
+      final sub = container.listen(provider);
+      final sub2 = container.listen(provider2);
+
+      expect(sub.read(), 21);
+      expect(sub2.read(), 42);
+
+      container.updateOverrides([
+        provider.overrideWithValue(22),
+        provider2.overrideWithValue(43),
+      ]);
+
+      expect(sub.flush(), true);
+      expect(sub.read(), 22);
+      expect(sub2.flush(), true);
+      expect(sub2.read(), 43);
+    });
+
     test('handles parent override update', () {
       final provider = ScopedProvider((watch) => 0);
       final root = ProviderContainer(overrides: [
