@@ -29,7 +29,7 @@ class Home extends StatelessWidget {
       appBar: AppBar(title: const Text('Counter example')),
       body: ProviderListener(
         provider: counterProvider,
-        onChange: (ct, value) {
+        onChange: (ct, StateController<int> value) {
           if (value.state % 5 == 0) {
             Scaffold.of(ct).showSnackBar(
               const SnackBar(
