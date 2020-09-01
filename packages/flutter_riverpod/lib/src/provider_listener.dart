@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+
 import 'internals.dart';
+
+typedef OnProviderChange<T> = void Function(BuildContext context, T value);
 
 /// {@template riverpod.providerlistener}
 /// A widget that allows listening to a provider.
@@ -28,18 +31,19 @@ class ProviderListener<T> extends StatefulWidget {
   /// A function called with the new value of [provider] when it changes.
   ///
   /// This function will be called at most once per frame.
-  final void Function(T value) onChange;
+  final OnProviderChange<T> onChange;
 
   /// The descendant of this [ProviderListener]
   final Widget child;
 
   @override
   _ProviderListenerState<T> createState() => _ProviderListenerState<T>();
+
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(
-      DiagnosticsProperty<void Function(T value)>('onChange', onChange),
+      DiagnosticsProperty<OnProviderChange<T>>('onChange', onChange),
     );
     properties.add(
       DiagnosticsProperty<ProviderBase<Object, T>>('provider', provider),
@@ -84,7 +88,7 @@ class _ProviderListenerState<T> extends State<ProviderListener<T>> {
   void _mayHaveChanged(ProviderSubscription<T> subscription) {
     Future.microtask(() {
       if (subscription.flush()) {
-        widget.onChange(subscription.read());
+        widget.onChange(context, subscription.read());
       }
     });
   }

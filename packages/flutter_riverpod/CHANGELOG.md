@@ -1,3 +1,8 @@
+# 0.9.0
+
+- **Breaking** Updating `ProviderListener` so that `onChange` receives the
+  `BuildContext` as parameter
+
 # 0.8.0
 
 - Renamed `ProviderContainer.debugProviderStates` to `ProviderContainer.debugProviderElements`
