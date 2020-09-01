@@ -14,7 +14,7 @@ void main() {
         ProviderScope(
           child: ProviderListener<StateController<int>>(
             provider: provider,
-            onChange: (value) {},
+            onChange: (_, value) {},
             child: const Text('hello', textDirection: TextDirection.ltr),
           ),
         ),
@@ -34,7 +34,7 @@ void main() {
           container: container,
           child: ProviderListener<StateController<int>>(
             provider: provider,
-            onChange: (value) => onChange(value.state),
+            onChange: (_, value) => onChange(value.state),
             child: Container(),
           ),
         ),
@@ -61,7 +61,7 @@ void main() {
               container: container,
               child: ProviderListener<StateController<int>>(
                 provider: provider,
-                onChange: (value) => setState(() {}),
+                onChange: (_, value) => setState(() {}),
                 child: Container(),
               ),
             );
@@ -85,7 +85,7 @@ void main() {
           container: container,
           child: ProviderListener<StateController<int>>(
             provider: provider,
-            onChange: (value) => onChange(value.state),
+            onChange: (_, value) => onChange(value.state),
             child: Container(),
           ),
         ),
@@ -106,7 +106,7 @@ void main() {
           ProviderScope(
             child: ProviderListener<StateController<int>>(
               provider: null,
-              onChange: (value) {},
+              onChange: (_, value) {},
               child: Container(),
             ),
           ),
@@ -118,7 +118,7 @@ void main() {
           ProviderScope(
             child: ProviderListener<StateController<int>>(
               provider: null,
-              onChange: (value) {},
+              onChange: (_, value) {},
               child: Container(),
             ),
           ),
@@ -138,7 +138,7 @@ void main() {
           container: container,
           child: ProviderListener<StateController<int>>(
             provider: provider,
-            onChange: (value) => onChange(value.state),
+            onChange: (_, value) => onChange(value.state),
             child: Container(),
           ),
         ),
@@ -160,7 +160,7 @@ void main() {
           container: container,
           child: ProviderListener<StateController<int>>(
             provider: provider(0),
-            onChange: (value) {},
+            onChange: (_, value) {},
             child: Container(),
           ),
         ),
@@ -174,7 +174,7 @@ void main() {
           container: container,
           child: ProviderListener<StateController<int>>(
             provider: provider(1),
-            onChange: (value) {},
+            onChange: (_, value) {},
             child: Container(),
           ),
         ),
@@ -195,7 +195,7 @@ void main() {
           container: container,
           child: ProviderListener<StateController<int>>(
             provider: provider(0),
-            onChange: (value) => onChange(value.state),
+            onChange: (_, value) => onChange(value.state),
             child: Container(),
           ),
         ),
@@ -206,7 +206,7 @@ void main() {
           container: container,
           child: ProviderListener<StateController<int>>(
             provider: provider(1),
-            onChange: (value) => onChange(value.state),
+            onChange: (_, value) => onChange(value.state),
             child: Container(),
           ),
         ),
@@ -237,7 +237,7 @@ void main() {
           container: container,
           child: ProviderListener<int>(
             provider: provider,
-            onChange: onChange,
+            onChange: (_, value) => onChange(value),
             child: Container(),
           ),
         ),
@@ -248,7 +248,7 @@ void main() {
           container: container2,
           child: ProviderListener<int>(
             provider: provider,
-            onChange: onChange,
+            onChange: (_, value) => onChange(value),
             child: Container(),
           ),
         ),
@@ -278,7 +278,7 @@ void main() {
           container: container,
           child: ProviderListener<int>(
             provider: provider,
-            onChange: onChange,
+            onChange: (_, value) => onChange(value),
             child: Container(),
           ),
         ),
