@@ -7,6 +7,30 @@ import 'utils.dart';
 
 void main() {
   group('ProviderListener', () {
+    testWidgets('receives the buildContext as parameter on change',
+        (tester) async {
+      final provider = StateProvider((ref) => 0);
+      final key = GlobalKey();
+      BuildContext context;
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: ProviderListener<void>(
+            key: key,
+            provider: provider,
+            onChange: (c, _) => context = c,
+            child: Container(),
+          ),
+        ),
+      );
+
+      key.currentContext.read(provider).state++;
+
+      await Future<void>.value();
+
+      expect(context, key.currentContext);
+    });
+
     testWidgets('renders child', (tester) async {
       final provider = StateProvider((ref) => 0);
 
