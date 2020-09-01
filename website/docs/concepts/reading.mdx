@@ -281,7 +281,7 @@ Such behavior would be implemented using the [ProviderListener] Widget.
 Widget build(BuildContext context) {
   return ProviderListener<StateController<int>>(
     provider: counterProvider,
-    onChange: (counter) {
+    onChange: (context, counter) {
       if (counter.state == 5) {
         showDialog(...);
       }
