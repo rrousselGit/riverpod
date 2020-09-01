@@ -1,7 +1,7 @@
 # 0.9.0
 
 - **Breaking** Updating `ProviderListener` so that `onChange` receives the
-  `BuildContext` as parameter
+  `BuildContext` as parameter (thanks to @tbm98)
 
 # 0.8.0
 
