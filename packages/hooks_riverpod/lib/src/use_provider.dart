@@ -53,12 +53,13 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
     final providerListenable = hook._providerListenable;
     _link = hook._container.listen<T>(
       providerListenable,
-      mayHaveChanged: (_) => markMayNeedRebuild(),
+      mayHaveChanged: _mayHaveChanged,
     );
   }
 
-  @override
-  bool shouldRebuild() => _link.flush();
+  void _mayHaveChanged(ProviderSubscription<T> sub) {
+    markMayNeedRebuild();
+  }
 
   @override
   T build(BuildContext context) {
