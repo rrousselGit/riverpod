@@ -57,6 +57,9 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
     );
   }
 
+  @override
+  bool shouldRebuild() => _link.flush();
+
   void _mayHaveChanged(ProviderSubscription<T> sub) {
     markMayNeedRebuild();
   }
