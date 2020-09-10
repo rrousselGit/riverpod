@@ -1,3 +1,7 @@
+# 0.9.2
+
+- Unexported some classes that were not meant to be public
+
 # 0.9.0
 
 - **Breaking** Updating `ProviderListener` so that `onChange` receives the
