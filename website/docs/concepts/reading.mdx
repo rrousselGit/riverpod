@@ -113,9 +113,6 @@ class Home extends ConsumerWidget {
 }
 ```
 
-This example will make our UI listen to `counterProvider` and rebuild a [Text]
-(and only that [Text]) when the counter changes.
-
 Notice how the value of `counterProvider` is obtained by a function called `watch`.  
 This function is what makes [ConsumerWidget] listen to our provider and rebuild
 when the value exposed changed.
@@ -155,6 +152,9 @@ class Home extends StatelessWidget {
   }
 }
 ```
+
+This example will make our UI listen to `counterProvider` and rebuild a [Text]
+(and only that [Text]) when the counter changes.
 
 ### useProvider (hooks_riverpod only)
 
