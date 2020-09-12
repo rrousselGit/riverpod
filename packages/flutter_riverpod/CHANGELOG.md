@@ -1,3 +1,21 @@
+# [Unreleased]
+
+- Added a way to import the implementation class of providers with modifiers,
+  such as `AutoDisposeProvider`.
+
+  This is useful if you want to use Riverpod with the lint `always_specify_types`:
+
+  ```dart
+  import 'package:flutter_riverpod/all.dart';
+
+  final AutoDisposeStateProvider<int> counter = StateProvider.autoDispose<int>((ProviderReference ref) {
+    return 0;
+  });
+  ```
+
+  If you do not use this lint, prefer using the default import instead, to not
+  pollute your auto-complete.
+
 # 0.9.0
 
 - **Breaking** Updating `ProviderListener` so that `onChange` receives the

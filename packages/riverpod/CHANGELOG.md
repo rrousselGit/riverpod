@@ -1,9 +1,26 @@
+# [Unreleased]
+
+- Added a way to import the implementation class of providers with modifiers,
+  such as `AutoDisposeProvider`.
+
+  This is useful if you want to use Riverpod with the lint `always_specify_types`:
+
+  ```dart
+  import 'package:riverpod/all.dart';
+
+  final AutoDisposeStateProvider<int> counter = StateProvider.autoDispose<int>((ProviderReference ref) {
+    return 0;
+  });
+  ```
+
+  If you do not use this lint, prefer using the default import instead, to not
+  pollute your auto-complete.
+
 # 0.8.0
 
 - Renamed `ProviderContainer.debugProviderStates` to `ProviderContainer.debugProviderElements`
 - Fixed a bug where updating `ProviderScope.overrides` may cause an exception
   for no reason (see https://github.com/rrousselGit/river_pod/issues/107)
-
 
 # 0.7.0
 
