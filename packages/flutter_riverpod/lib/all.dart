@@ -4,8 +4,6 @@
 /// import `package:flutter_riverpod/riverpod.dart` instead, to avoid polluting the auto-complete.
 library all;
 
-export 'package:riverpod/all.dart';
-
 export 'flutter_riverpod.dart';
 
 export 'src/change_notifier_provider.dart'
