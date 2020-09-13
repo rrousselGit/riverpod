@@ -1,5 +1,7 @@
 # [Unreleased]
 
+- Fixed a bug where the state of a provider may be disposed when it shouldn't be disposed.
+
 - Added a way to import the implementation class of providers with modifiers,
   such as `AutoDisposeProvider`.
 

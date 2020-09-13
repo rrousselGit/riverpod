@@ -638,10 +638,6 @@ class ProviderElement<Created, Listened> implements ProviderReference {
     try {
       if (_dependencyMayHaveChanged || _mustRecomputeState) {
         _dependencyMayHaveChanged = false;
-        // must be executed before _runStateCreate() so that errors during
-        // creation are not silenced
-        _exception = null;
-        _runOnDispose();
 
         var hasAnyDependencyChanged = _mustRecomputeState;
         for (final sub in _subscriptions.values) {
@@ -650,6 +646,10 @@ class ProviderElement<Created, Listened> implements ProviderReference {
           }
         }
         if (hasAnyDependencyChanged) {
+          // must be executed before _runStateCreate() so that errors during
+          // creation are not silenced
+          _exception = null;
+          _runOnDispose();
           _runStateCreate();
         }
         _mustRecomputeState = false;
