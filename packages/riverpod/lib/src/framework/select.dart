@@ -30,7 +30,7 @@ class SelectorSubscription<Input, Output>
   Output Function(Input) _selector;
 
   /// Updates the selector associated with this [SelectorSubscription], and
-  /// immediatly recompute the value exposed.
+  /// immediately recompute the value exposed.
   ///
   /// This does not call `mayHaveChanged` and `didChange`.
   void updateSelector(ProviderListenable<Output> providerListenable) {

@@ -1,9 +1,9 @@
 // ignore_for_file: avoid_print
 import 'dart:io';
 
+import 'package:dart_style/dart_style.dart';
 import 'package:trotter/trotter.dart';
 import 'package:tuple/tuple.dart';
-import 'package:dart_style/dart_style.dart';
 
 enum DisposeType {
   none,
@@ -75,7 +75,7 @@ const _autoDisposeDoc = '''
 ///
 /// This way, if the request failed and the UI leaves the screen then re-enters
 /// it, then the request will be performed again.
-/// But if the request completed successfuly, the state will be preserved
+/// But if the request completed successfully, the state will be preserved
 /// and re-entering the screen will not trigger a new request.
 ///
 /// It can be combined with `ref.onDispose` for more advanced behaviors, such

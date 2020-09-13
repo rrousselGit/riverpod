@@ -258,7 +258,7 @@ final _hostProvider = Provider<AsyncValue<String>>((ref) {
 
 final productsProvider = FutureProvider<List<Product>>((ref) async {
   // Listens only to the host. If something else in the configurations
-  // changes, this will not pointlessly re-evalute our provider.
+  // changes, this will not pointlessly re-evaluate our provider.
   final host = await ref.watch(_hostProvider);
 
   return dio.get('$host/products');

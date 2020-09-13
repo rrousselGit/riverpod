@@ -12,7 +12,7 @@ part of '../framework.dart';
 /// See also:
 ///
 /// - [ProviderReference], which exposes the methods to read other providers.
-/// - [Provider], a provier that uses [Create] to expose an immutable value.
+/// - [Provider], a provider that uses [Create] to expose an immutable value.
 typedef Create<T, Ref extends ProviderReference> = T Function(Ref ref);
 
 /// A function that reads the state of a provider.
@@ -91,7 +91,7 @@ abstract class AlwaysAliveProviderBase<Created, Listened>
   /// );
   /// ```
   /// {@endtemplate}
-  // Cannot be overriden by AutoDisposeProviders
+  // Cannot be overridden by AutoDisposeProviders
   ProviderOverride overrideWithProvider(
     AlwaysAliveProviderBase<Created, Listened> provider,
   ) {
@@ -304,7 +304,7 @@ abstract class ProviderReference {
   /// An utility to know if a provider was destroyed or not.
   ///
   /// This is useful when dealing with asynchronous operations, as the provider
-  /// may have potentially be destroyed before the end of the asyncronous operation.
+  /// may have potentially be destroyed before the end of the asynchronous operation.
   /// In that case, we may want to stop performing further tasks.
   ///
   /// Most providers are never disposed, so in most situations you do not have to

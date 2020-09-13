@@ -77,7 +77,7 @@ extension BuildContextX on BuildContext {
     return ProviderScope.containerOf(this, listen: false).read(provider);
   }
 
-  /// Forces a provider to re-evaluate its state immediatly, and return the created value.
+  /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.

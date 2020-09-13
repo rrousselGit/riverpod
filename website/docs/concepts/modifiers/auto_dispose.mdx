@@ -77,7 +77,7 @@ The goal is:
 
 - Start an HTTP request when the user enters a screen
 - if the user leaves the screen before the request completed, cancels the HTTP request
-- if the request succeded, leaving and re-entering the screen does not start a new request
+- if the request succeeded, leaving and re-entering the screen does not start a new request
 
 In code, this would be:
 
@@ -88,7 +88,7 @@ final myProvider = FutureProvider.autoDispose((ref) async {
   // When the provider is destroyed, cancel the http request
   ref.onDispose(() => cancelToken.cancel());
 
-  // Fetch our data and pass our `cancelToken` for cancelation to work
+  // Fetch our data and pass our `cancelToken` for cancellation to work
   final response = await dio.get('path', cancelToken: cancelToken);
   // If the request completed successfully, keep the state
   ref.maintainState = true;
