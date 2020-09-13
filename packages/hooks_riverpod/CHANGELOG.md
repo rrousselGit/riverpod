@@ -1,4 +1,4 @@
-# [Unreleased]
+# 0.10.0
 
 - Fixed a bug where the state of a provider may be disposed when it shouldn't be disposed.
 
