@@ -13,12 +13,12 @@ void main() {
 
   test('flutter_riverpod version matches with riverpod', () async {
     final dartVersion = await flutterPubspec.readAsString().then((pub) {
-      return RegExp(r'\briverpod:\s*\^{0,1}([0-9]\.[0-9]\.[0-9])')
+      return RegExp(r'\briverpod:\s*\^{0,1}([0-9]+\.[0-9]+\.[0-9]+)')
           .firstMatch(pub)
           .group(1);
     });
     final actualDartVersion = await dartPubspec.readAsString().then((pub) {
-      return RegExp(r'\bversion:\s*([0-9]\.[0-9]\.[0-9])')
+      return RegExp(r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+)')
           .firstMatch(pub)
           .group(1);
     });
