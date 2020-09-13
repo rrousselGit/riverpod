@@ -13,7 +13,7 @@ abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
 
   /// Create a provider from an external value.
   ///
-  /// That external value should be immutable and preferrably override `==`/`hashCode`.
+  /// That external value should be immutable and preferably override `==`/`hashCode`.
   /// See the documentation of [Provider.family] for more informations.
   P call(Param value) {
     return _cache.putIfAbsent(value, () {

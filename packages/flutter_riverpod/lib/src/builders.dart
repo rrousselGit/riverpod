@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import 'internals.dart';
 
 /// Builds a [ChangeNotifierProvider].
@@ -37,7 +38,7 @@ class ChangeNotifierProviderBuilder {
   ///
   /// This way, if the request failed and the UI leaves the screen then re-enters
   /// it, then the request will be performed again.
-  /// But if the request completed successfuly, the state will be preserved
+  /// But if the request completed successfully, the state will be preserved
   /// and re-entering the screen will not trigger a new request.
   ///
   /// It can be combined with `ref.onDispose` for more advanced behaviors, such

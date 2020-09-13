@@ -6,8 +6,8 @@ import 'framework.dart';
 import 'future_provider.dart';
 import 'provider.dart';
 
-part 'stream_provider/base.dart';
 part 'stream_provider/auto_dispose.dart';
+part 'stream_provider/base.dart';
 
 mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
   @override
@@ -45,10 +45,10 @@ mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
   /// Instead, this stream is always a broadcast stream.
   ///
   /// The stream obtained may change over time, if the [StreamProvider] is
-  /// re-evaluted, such as when it is using [ProviderReference.watch] and the
+  /// re-evaluated, such as when it is using [ProviderReference.watch] and the
   /// provider listened changes, or on [ProviderContainer.refresh].
   ///
-  /// If the [StreamProvider] was overriden using `overrideWithValue`,
+  /// If the [StreamProvider] was overridden using `overrideWithValue`,
   /// a stream will be generated and manipulated based on the [AsyncValue] used.
   RootProvider<Stream<T>, Stream<T>> get stream;
 
@@ -64,7 +64,7 @@ mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
   /// });
   ///
   /// final productsProvider = FutureProvider<Products>((ref) async {
-  ///   // If a "Configuration" was emitted, retreive it.
+  ///   // If a "Configuration" was emitted, retrieve it.
   ///   // Otherwise, wait for a Configuration to be emitted.
   ///   final configs = await ref.watch(configsProvider.last);
   ///
@@ -94,7 +94,7 @@ mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
   /// then the [Future] created will not obtain that first value but instead
   /// wait for a second one – which may never come.
   ///
-  /// The following code desmontrate this problem:
+  /// The following code demonstrate this problem:
   ///
   /// ```dart
   /// final exampleProvider = StreamProvider<int>((ref) async* {
@@ -148,7 +148,7 @@ mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
   /// done
   /// ```
   ///
-  /// which is the expepected behavior.
+  /// which is the expected behavior.
   RootProvider<Object, Future<T>> get last;
 }
 
@@ -258,7 +258,7 @@ Future<T> _readLast<T>(
       );
 }
 
-// Fork of CreatedProvider to retreive _realStream instead of createdValue
+// Fork of CreatedProvider to retrieve _realStream instead of createdValue
 
 class _CreatedStreamProvider<T> extends Provider<Stream<T>> {
   _CreatedStreamProvider(

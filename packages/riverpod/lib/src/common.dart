@@ -8,8 +8,8 @@ part 'common.freezed.dart';
 
 /// An utility for safely manipulating asynchronous data.
 ///
-/// By using [AsyncValue], you are guanranteed that you cannot forget to
-/// handle the loading/error state of an asynchrounous operation.
+/// By using [AsyncValue], you are guaranteed that you cannot forget to
+/// handle the loading/error state of an asynchronous operation.
 ///
 /// It also expose some utilities to nicely convert an [AsyncValue] to
 /// a different object.
@@ -52,7 +52,7 @@ part 'common.freezed.dart';
 ///
 /// - [FutureProvider] and [StreamProvider], which transforms a [Future] into
 ///   an [AsyncValue].
-/// - [AsyncValue.guard], to simplify tranforming a [Future] into an [AsyncValue].
+/// - [AsyncValue.guard], to simplify transforming a [Future] into an [AsyncValue].
 /// - The package Freezed (https://github.com/rrousselgit/freezed), which have
 ///   generated this [AsyncValue] class and explains how [map]/[when] works.
 @freezed
@@ -81,12 +81,12 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
   ///
   /// ```dart
   /// class MyNotifier extends StateNotifier<AsyncValue<MyData> {
-  ///   MyNotifier(): super(const AsncValue.loading()) {
+  ///   MyNotifier(): super(const AsyncValue.loading()) {
   ///     _fetchData();
   ///   }
   ///
   ///   Future<void> _fetchData() async {
-  ///     state = const AsncValue.loading();
+  ///     state = const AsyncValue.loading();
   ///     try {
   ///       final response = await dio.get('my_api/data');
   ///       final data = MyData.fromJson(response);
@@ -104,12 +104,12 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
   ///
   /// ```dart
   /// class MyNotifier extends StateNotifier<AsyncValue<MyData> {
-  ///   MyNotifier(): super(const AsncValue.loading()) {
+  ///   MyNotifier(): super(const AsyncValue.loading()) {
   ///     _fetchData();
   ///   }
   ///
   ///   Future<void> _fetchData() async {
-  ///     state = const AsncValue.loading();
+  ///     state = const AsyncValue.loading();
   ///     // does the try/catch for us like previously
   ///     state = await AsyncValue.guard(() async {
   ///       final response = await dio.get('my_api/data');
@@ -134,7 +134,7 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
   ///
   /// ## Why does [AsyncValue<T>.data] return [AsyncData<T>] instead of [T]?
   ///
-  /// The motivation behind this decision is to allow differenciating between:
+  /// The motivation behind this decision is to allow differentiating between:
   ///
   /// - There is a data, and it is `null`.
   ///   ```dart

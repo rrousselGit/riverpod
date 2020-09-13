@@ -163,7 +163,7 @@ class ProviderContainer {
     }
   }
 
-  /// Forces a provider to re-evaluate its state immediatly, and return the created value.
+  /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
@@ -244,7 +244,7 @@ class ProviderContainer {
           return true;
         }(), '');
 
-        // _stateReaders[override._origin] cannot be null for overriden providers.
+        // _stateReaders[override._origin] cannot be null for overridden providers.
         final element = _stateReaders[override._origin];
         if (element == null) {
           continue;
@@ -265,7 +265,7 @@ class ProviderContainer {
     );
   }
 
-  /// Reads the state of a provider, potentially creating it in the processs.
+  /// Reads the state of a provider, potentially creating it in the process.
   ///
   /// It may throw if the provider requested threw when it was built.
   ///

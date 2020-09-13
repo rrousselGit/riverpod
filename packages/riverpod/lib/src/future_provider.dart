@@ -7,8 +7,8 @@ import 'framework.dart';
 import 'provider.dart';
 import 'stream_provider.dart';
 
-part 'future_provider/base.dart';
 part 'future_provider/auto_dispose.dart';
+part 'future_provider/base.dart';
 
 /// {@template riverpod.futureprovider}
 /// A provider that asynchronously creates a single value.
@@ -16,7 +16,7 @@ part 'future_provider/auto_dispose.dart';
 /// [FutureProvider] can be considered as a combination of [Provider] and
 /// `FutureBuilder`.
 /// By using [FutureProvider], the UI will be able to read the state of the
-/// future syncronously, handle the loading/error states, and rebuild when the
+/// future synchronously, handle the loading/error states, and rebuild when the
 /// future completes.
 ///
 /// A common use-case for [FutureProvider] is to represent an asynchronous operation
