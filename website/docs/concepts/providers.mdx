@@ -102,8 +102,7 @@ In some cases, the state of a provider may get destroyed or re-created.
 A common use-case in those situations is to perform a cleanup before the state of a provider
 is destroyed, such as closing a `StreamController`.
 
-This is done by using the `ref` object that is passed to the callback of all providers;
-using its [onDispose] method
+This is done using the `ref` object, which is passed to the callback of all providers, using its [onDispose] method.
 
 The following example uses [onDispose] to close a `StreamController`:
 
