@@ -16,7 +16,7 @@ module.exports = {
       indexName: "riverpod",
     },
     colorMode: {
-      defaultMode: "light",
+      defaultMode: "dark",
     },
     prism: {
       additionalLanguages: ["dart", "yaml"],
@@ -29,7 +29,7 @@ module.exports = {
         alt: "Riverpod logo",
         src: "img/logo.png",
       },
-      links: [
+      items: [
         {
           to: "docs/getting_started",
           activeBasePath: "docs",
@@ -86,7 +86,6 @@ module.exports = {
       {
         docs: {
           // It is recommended to set document id as docs home page (`docs/` path).
-          homePageId: "doc1",
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
           editUrl: "https://github.com/rrousselGit/river_pod",

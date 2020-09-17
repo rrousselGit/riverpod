@@ -22,6 +22,7 @@ module.exports = {
     {
       type: "category",
       label: "Cookbooks",
+      collapsed: false,
       items: [
         "cookbooks/testing",
         //"cookbooks/refresh",
@@ -30,6 +31,7 @@ module.exports = {
     {
       type: "category",
       label: "Examples",
+      collapsed: false,
       items: [
         {
           type: "link",
