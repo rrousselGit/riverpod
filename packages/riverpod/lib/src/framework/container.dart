@@ -33,6 +33,7 @@ ProviderBase _circularDependencyLock;
 /// If you are using Flutter, you do not need to care about this object
 /// (outside of testing), as it is implicitly created for you by `ProviderScope`.
 /// {@endtemplate}
+@sealed
 class ProviderContainer {
   /// {@macro riverpod.providercontainer}
   ProviderContainer({
@@ -446,6 +447,7 @@ abstract class ProviderObserver {
 ///
 /// - [ProviderContainer], which uses this object.
 /// - [AlwaysAliveProviderBase.overrideWithProvider], which creates a [ProviderOverride].
+@sealed
 class ProviderOverride implements Override {
   /// Internal use only
   ProviderOverride(this._provider, this._origin);

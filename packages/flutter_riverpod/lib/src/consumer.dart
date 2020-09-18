@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 
 import 'framework.dart';
 import 'internals.dart';
@@ -124,6 +125,7 @@ typedef ConsumerBuilder = Widget Function(
 ///
 ///  * [ConsumerWidget], a base-class for widgets that wants to listen to providers.
 /// {@endtemplate}
+@sealed
 class Consumer extends ConsumerWidget {
   /// {@template riverpod.consumer}
   const Consumer({
@@ -235,6 +237,7 @@ abstract class ConsumerWidget extends StatefulWidget {
   _ConsumerState createState() => _ConsumerState();
 }
 
+@sealed
 class _ConsumerState extends State<ConsumerWidget> {
   ProviderContainer _container;
   var _dependencies = <ProviderBase, ProviderSubscription>{};

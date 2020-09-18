@@ -3,6 +3,7 @@ part of '../framework.dart';
 /// A provider that is driven by a value instead of a function.
 ///
 /// This is an implementation detail of [RootProvider.overrideWithValue].
+@sealed
 class ValueProvider<Created, Listened>
     extends AlwaysAliveProviderBase<Created, Listened> {
   /// Creates a [ValueProvider].
@@ -31,6 +32,7 @@ class ValueProvider<Created, Listened>
 }
 
 /// The [ProviderElement] of a [ValueProvider]
+@sealed
 class ValueProviderElement<Created, Listened>
     extends ProviderElement<Created, Listened> {
   /// The [ProviderElement] of a [ValueProvider]
@@ -53,6 +55,7 @@ class ValueProviderElement<Created, Listened>
   }
 }
 
+@sealed
 class _ValueProviderState<Created, Listened>
     extends ProviderStateBase<Created, Listened> {
   @override

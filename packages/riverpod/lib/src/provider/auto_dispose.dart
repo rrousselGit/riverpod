@@ -1,6 +1,7 @@
 part of '../provider.dart';
 
 /// {@macro riverpod.provider}
+@sealed
 class AutoDisposeProvider<T> extends AutoDisposeProviderBase<T, T> {
   /// {@macro riverpod.provider}
   AutoDisposeProvider(
@@ -21,10 +22,12 @@ class AutoDisposeProvider<T> extends AutoDisposeProviderBase<T, T> {
 }
 
 /// The internal state of a [Provider].
+@sealed
 class _AutoDisposeProviderState<T> = ProviderStateBase<T, T>
     with _ProviderStateMixin<T>;
 
 /// {@macro riverpod.provider.family}
+@sealed
 class AutoDisposeProviderFamily<T, A> extends Family<T, T, A,
     AutoDisposeProviderReference, AutoDisposeProvider<T>> {
   /// {@macro riverpod.provider.family}

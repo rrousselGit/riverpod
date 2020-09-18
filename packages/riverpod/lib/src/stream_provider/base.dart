@@ -1,6 +1,7 @@
 part of '../stream_provider.dart';
 
 /// {@macro riverpod.streamprovider}
+@sealed
 class StreamProvider<T>
     extends AlwaysAliveProviderBase<Stream<T>, AsyncValue<T>>
     with _StreamProviderMixin<T> {
@@ -38,12 +39,14 @@ class StreamProvider<T>
   _StreamProviderState<T> createState() => _StreamProviderState();
 }
 
+@sealed
 class _StreamProviderState<T> = ProviderStateBase<Stream<T>, AsyncValue<T>>
     with _StreamProviderStateMixin<T>;
 
 /// {@template riverpod.streamprovider.family}
 /// A class that allows building a [StreamProvider] from an external parameter.
 /// {@endtemplate}
+@sealed
 class StreamProviderFamily<T, A> extends Family<Stream<T>, AsyncValue<T>, A,
     ProviderReference, StreamProvider<T>> {
   /// {@macro riverpod.streamprovider.family}

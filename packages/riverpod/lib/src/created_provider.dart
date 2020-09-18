@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import 'framework.dart';
 
 import 'provider.dart';
@@ -8,6 +10,7 @@ import 'provider.dart';
 /// For example, when listening to a `FutureProvider<int>`, this exposes
 /// the `Future<int>` instead of the typical `AsyncValue<int>`.
 /// {@endtemplate}
+@sealed
 class CreatedProvider<T> extends Provider<T> {
   /// {@macro riverpod.createdprovider}
   CreatedProvider(
@@ -23,6 +26,7 @@ class CreatedProvider<T> extends Provider<T> {
 }
 
 /// {@macro riverpod.createdprovider}
+@sealed
 class AutoDisposeCreatedProvider<T> extends AutoDisposeProvider<T> {
   /// {@macro riverpod.createdprovider}
   AutoDisposeCreatedProvider(

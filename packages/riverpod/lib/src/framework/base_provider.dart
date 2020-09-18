@@ -264,6 +264,7 @@ abstract class RootProvider<Created, Listened>
 }
 
 /// An internal class for `RootProvider.select`.
+@sealed
 class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
   /// An internal class for `RootProvider.select`.
   ProviderSelector({
@@ -300,6 +301,7 @@ class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
 /// - [read] and [watch], two methods that allows a provider to consume other providers.
 /// - [mounted], an utility to know whether the provider is still "alive" or not.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
+@sealed
 abstract class ProviderReference {
   /// An utility to know if a provider was destroyed or not.
   ///
@@ -437,6 +439,7 @@ class _Listener<Listened> extends LinkedListEntry<_Listener<Listened>> {
 /// This object is created by [ProviderContainer.listen].
 /// It allows reading the current value, closing the subscription, or knowing
 /// if the value exposed changed since the last read.
+@sealed
 class ProviderSubscription<Listened> {
   ProviderSubscription._(this._listener);
 

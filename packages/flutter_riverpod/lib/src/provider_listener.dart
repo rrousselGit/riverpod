@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 
 import 'internals.dart';
 
@@ -14,6 +15,7 @@ typedef OnProviderChange<T> = void Function(BuildContext context, T value);
 /// Even if a provider changes many times in a quick succession, [onChange] will
 /// be called only once, at the end of the frame.
 /// {@endtemplate}
+@sealed
 class ProviderListener<T> extends StatefulWidget {
   /// {@macro riverpod.providerlistener}
   const ProviderListener({
@@ -51,6 +53,7 @@ class ProviderListener<T> extends StatefulWidget {
   }
 }
 
+@sealed
 class _ProviderListenerState<T> extends State<ProviderListener<T>> {
   ProviderSubscription<T> _subscription;
   ProviderContainer _container;

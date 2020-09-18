@@ -1,6 +1,7 @@
 part of '../state_provider.dart';
 
 /// {@macro riverpod.stateprovider}
+@sealed
 class StateProvider<T>
     extends AlwaysAliveProviderBase<StateController<T>, StateController<T>> {
   /// {@macro riverpod.stateprovider}
@@ -21,10 +22,12 @@ class StateProvider<T>
   }
 }
 
+@sealed
 class _StateProviderState<T> = ProviderStateBase<StateController<T>,
     StateController<T>> with _StateProviderStateMixin<T>;
 
 /// {@macro riverpod.stateprovider.family}
+@sealed
 class StateProviderFamily<T, A> extends Family<StateController<T>,
     StateController<T>, A, ProviderReference, StateProvider<T>> {
   /// {@macro riverpod.stateprovider.family}

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' hide describeIdentity;
 import 'package:flutter/widgets.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:meta/meta.dart';
 
 import 'internals.dart' show describeIdentity;
 
@@ -74,6 +75,7 @@ import 'internals.dart' show describeIdentity;
 /// - [UncontrolledProviderScope], which exposes a [ProviderContainer] to the widget
 ///   tree without managing its life-cycles.
 /// {@endtemplate}
+@sealed
 class ProviderScope extends StatefulWidget {
   /// {@macro riverpod.providerscope}
   const ProviderScope({
@@ -132,6 +134,7 @@ class ProviderScope extends StatefulWidget {
   }
 }
 
+@sealed
 class _ProviderScopeElement extends StatefulElement {
   _ProviderScopeElement(ProviderScope widget) : super(widget);
 
@@ -151,6 +154,7 @@ class _ProviderScopeElement extends StatefulElement {
 
 /// Do not use: The [State] of [ProviderScope]
 @visibleForTesting
+@sealed
 class ProviderScopeState extends State<ProviderScope> {
   /// The [ProviderContainer] exposed to [ProviderScope.child].
   @visibleForTesting
@@ -231,6 +235,7 @@ class ProviderScopeState extends State<ProviderScope> {
 ///
 /// This is what makes `useProvider`/`Consumer`/`context.read` work.
 /// {@endtemplate}
+@sealed
 class UncontrolledProviderScope extends InheritedWidget {
   /// {@macro riverpod.UncontrolledProviderScope}
   const UncontrolledProviderScope({
@@ -263,6 +268,7 @@ class UncontrolledProviderScope extends InheritedWidget {
   }
 }
 
+@sealed
 class _UncontrolledProviderScopeElement extends InheritedElement {
   _UncontrolledProviderScopeElement(UncontrolledProviderScope widget)
       : super(widget);

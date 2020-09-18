@@ -1,6 +1,7 @@
 part of '../future_provider.dart';
 
 /// {@macro riverpod.futureprovider}
+@sealed
 class AutoDisposeFutureProvider<T>
     extends AutoDisposeProviderBase<Future<T>, AsyncValue<T>>
     with _FutureProviderMixin<T> {
@@ -28,10 +29,12 @@ class AutoDisposeFutureProvider<T>
       _AutoDisposeFutureProviderState();
 }
 
+@sealed
 class _AutoDisposeFutureProviderState<T> = ProviderStateBase<Future<T>,
     AsyncValue<T>> with _FutureProviderStateMixin<T>;
 
 /// {@macro riverpod.futureprovider.family}
+@sealed
 class AutoDisposeFutureProviderFamily<T, A> extends Family<
     Future<T>,
     AsyncValue<T>,

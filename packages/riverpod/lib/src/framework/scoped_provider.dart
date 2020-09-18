@@ -89,6 +89,7 @@ typedef ScopedCreate<T> = T Function(ScopedReader watch);
 /// final example = ScopedProvider<int>((watch) => throw UnimplementedError(''));
 /// ```
 /// {@endtemplate}
+@sealed
 class ScopedProvider<Listened> extends ProviderBase<Listened, Listened> {
   /// {@macro riverpod.scopedprovider}
   ScopedProvider(
@@ -133,6 +134,7 @@ class ScopedProvider<Listened> extends ProviderBase<Listened, Listened> {
   }
 }
 
+@sealed
 class _ScopedProviderElement<T> extends AutoDisposeProviderElement<T, T> {
   _ScopedProviderElement(ScopedProvider<T> provider) : super(provider);
 
@@ -143,6 +145,7 @@ class _ScopedProviderElement<T> extends AutoDisposeProviderElement<T, T> {
   }
 }
 
+@sealed
 class _ScopedProviderState<T> extends ProviderStateBase<T, T> {
   @override
   void valueChanged({T previous}) {

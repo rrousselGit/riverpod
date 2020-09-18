@@ -1,5 +1,7 @@
 # [Unreleased]
 
+- Marked the providers with `@sealed` so that the IDE warns against
+  implementing/subclassing providers.
 - Fix mistakes in `AsyncValue.guard`'s documentation (thanks @mono0926)
 
 # 0.10.0

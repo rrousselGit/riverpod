@@ -56,6 +56,7 @@ part 'common.freezed.dart';
 /// - The package Freezed (https://github.com/rrousselgit/freezed), which have
 ///   generated this [AsyncValue] class and explains how [map]/[when] works.
 @freezed
+@sealed
 abstract class AsyncValue<T> with _$AsyncValue<T> {
   const AsyncValue._();
 
