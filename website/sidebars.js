@@ -8,6 +8,7 @@ module.exports = {
         "concepts/providers",
         "concepts/reading",
         "concepts/combining_providers",
+        "concepts/provider_observer",
         // "concepts/computed",
         {
           type: "category",
