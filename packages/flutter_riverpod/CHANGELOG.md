@@ -1,3 +1,7 @@
+# [Unreleased]
+
+- Fix mistakes in `AsyncValue.guard`'s documentation (thanks @mono0926)
+
 # 0.10.1
 
 - Fixed invalid version error
