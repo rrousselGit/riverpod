@@ -6,4 +6,3 @@ This showcase slightly more advanced state manipulation, using [Computed].
 
 
 [riverpod]: https://github.com/rrousselGit/river_pod
-[computed]: https://pub.dev/documentation/riverpod/latest/riverpod/Computed-class.html

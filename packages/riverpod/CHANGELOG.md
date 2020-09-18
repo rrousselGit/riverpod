@@ -195,7 +195,7 @@
 # 0.5.0
 
 - Changed `ComputedFamily` into `Computed.family`
-- Added [AsyncValue.guard](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue/guard.html to simplify transforming a Future into an AsyncValue.
+- Added [AsyncValue.guard](https://pub.dev/documentation/riverpod/latest/all/AsyncValue/guard.html to simplify transforming a Future into an AsyncValue.
 - Improved the documentation of the different providers
 
 # 0.4.0
