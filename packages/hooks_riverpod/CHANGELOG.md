@@ -3,6 +3,7 @@
 - Marked the providers with `@sealed` so that the IDE warns against
   implementing/subclassing providers.
 - Fix mistakes in `AsyncValue.guard`'s documentation (thanks @mono0926)
+- Loosened the version constraints of `freezed_annotation` to support `0.12.0`
 
 # 0.10.1
 
