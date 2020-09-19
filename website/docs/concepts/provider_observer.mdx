@@ -4,12 +4,22 @@ title: ProviderObserver
 
 [ProviderObserver] listens to the changes of a ProviderContainer.
 
-To use it all you need to do is to extend the class ProviderObserver and override the method diUpdateProvider.
-Every time the provider's update this method will be called.
+To use it, extend the class ProviderObserver and override the method you like to use.
 
-Here is an example of how to use it to log the updated value of the provider
+[ProviderObserver] has four methods :
 
-To use this in your code :
+- `didAddProvider` is called every time a provider was initialized, and the value exposed is value.
+- `didDisposeProvider` is called every time A provider was disposed
+- `didUpdateProvider` is called every time my providers when they emit a notification.
+- `mayHaveChanged` is called when the dependency of a provider changed, but it is not yet sure if the computed value changes.
+
+:::info
+It is possible that mayHaveChanged will be called, without didUpdateProvider being called, such as when a Provider is re-computed but returns a value == to the previous one.
+:::
+
+### Usage :
+
+A simple use case for [ProviderObserver], is to log the changes in providers by overriding the method `didUpdateProvider`.
 
 ```dart
 // A Counter example implemented with riverpod with Logger
@@ -42,7 +52,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/// Providers are declared globally and specifies how to create a state
 final counterProvider = StateProvider((ref) => 0);
 
 class Home extends StatelessWidget {
@@ -51,15 +60,12 @@ class Home extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Counter example')),
       body: Center(
-        // Consumer is a widget that allows you reading providers.
-        // You could also use the hook "useProvider" if you uses flutter_hooks
         child: Consumer(builder: (context, watch, _) {
           final count = watch(counterProvider).state;
           return Text('$count');
         }),
       ),
       floatingActionButton: FloatingActionButton(
-        // The read method is an utility to read a provider without listening to it
         onPressed: () => context.read(counterProvider).state++,
         child: const Icon(Icons.add),
       ),
@@ -68,7 +74,7 @@ class Home extends StatelessWidget {
 }
 ```
 
-Now that everytime the value of our provider is updated we'll see it :
+Now that every time the value of our provider is updated, the logger will log it :
 
 ```
 I/flutter (16783): {
