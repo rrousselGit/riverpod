@@ -1,6 +1,7 @@
 part of '../future_provider.dart';
 
 /// {@macro riverpod.futureprovider}
+@sealed
 class FutureProvider<T>
     extends AlwaysAliveProviderBase<Future<T>, AsyncValue<T>>
     with _FutureProviderMixin<T> {
@@ -50,12 +51,14 @@ class FutureProvider<T>
   _FutureProviderState<T> createState() => _FutureProviderState();
 }
 
+@sealed
 class _FutureProviderState<T> = ProviderStateBase<Future<T>, AsyncValue<T>>
     with _FutureProviderStateMixin<T>;
 
 /// {@template riverpod.futureprovider.family}
 /// A class that allows building a [FutureProvider] from an external parameter.
 /// {@endtemplate}
+@sealed
 class FutureProviderFamily<T, A> extends Family<Future<T>, AsyncValue<T>, A,
     ProviderReference, FutureProvider<T>> {
   /// {@macro riverpod.futureprovider.family}

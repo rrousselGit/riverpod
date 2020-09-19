@@ -1,6 +1,7 @@
 part of '../change_notifier_provider.dart';
 
 /// {@macro riverpod.changenotifierprovider}
+@sealed
 class AutoDisposeChangeNotifierProvider<T extends ChangeNotifier>
     extends AutoDisposeProviderBase<T, T> {
   /// {@macro riverpod.changenotifierprovider}
@@ -17,11 +18,13 @@ class AutoDisposeChangeNotifierProvider<T extends ChangeNotifier>
       _AutoDisposeChangeNotifierProviderState();
 }
 
+@sealed
 class _AutoDisposeChangeNotifierProviderState<
         T extends ChangeNotifier> = ProviderStateBase<T, T>
     with _ChangeNotifierProviderStateMixin<T>;
 
 /// {@macro riverpod.changenotifierprovider.family}
+@sealed
 class AutoDisposeChangeNotifierProviderFamily<T extends ChangeNotifier, A>
     extends Family<T, T, A, AutoDisposeProviderReference,
         AutoDisposeChangeNotifierProvider<T>> {

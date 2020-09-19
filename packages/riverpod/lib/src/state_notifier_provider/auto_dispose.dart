@@ -1,6 +1,7 @@
 part of '../state_notifier_provider.dart';
 
 /// {@macro riverpod.statenotifierprovider}
+@sealed
 class AutoDisposeStateNotifierProvider<T extends StateNotifier<Object>>
     extends AutoDisposeProvider<T> {
   /// {@macro riverpod.statenotifierprovider}
@@ -30,6 +31,7 @@ extension AutoDisposeStateNotifierStateProviderX<Value>
 }
 
 /// {@macro riverpod.statenotifierprovider.state.provider}
+@sealed
 class AutoDisposeStateNotifierStateProvider<T>
     extends AutoDisposeProviderBase<StateNotifier<T>, T> {
   AutoDisposeStateNotifierStateProvider._(
@@ -45,10 +47,12 @@ class AutoDisposeStateNotifierStateProvider<T>
   }
 }
 
+@sealed
 class _AutoDisposeStateNotifierStateProviderState<T> = ProviderStateBase<
     StateNotifier<T>, T> with _StateNotifierStateProviderStateMixin<T>;
 
 /// {@macro riverpod.statenotifierprovider.family}
+@sealed
 class AutoDisposeStateNotifierProviderFamily<T extends StateNotifier<Object>, A>
     extends Family<T, T, A, AutoDisposeProviderReference,
         AutoDisposeStateNotifierProvider<T>> {

@@ -1,6 +1,7 @@
 part of '../state_provider.dart';
 
 /// {@macro riverpod.stateprovider}
+@sealed
 class AutoDisposeStateProvider<T>
     extends AutoDisposeProviderBase<StateController<T>, StateController<T>> {
   /// {@macro riverpod.stateprovider}
@@ -15,12 +16,14 @@ class AutoDisposeStateProvider<T>
   }
 }
 
+@sealed
 class _AutoDisposeStateProviderState<T> = ProviderStateBase<StateController<T>,
     StateController<T>> with _StateProviderStateMixin<T>;
 
 /// {@template riverpod.stateprovider.family}
 /// A class that allows building a [StateProvider] from an external parameter.
 /// {@endtemplate}
+@sealed
 class AutoDisposeStateProviderFamily<T, A> extends Family<
     StateController<T>,
     StateController<T>,

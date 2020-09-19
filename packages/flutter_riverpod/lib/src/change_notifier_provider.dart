@@ -1,6 +1,7 @@
 // ignore: implementation_imports
 import 'package:riverpod/src/internals.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 
 import 'builders.dart';
 

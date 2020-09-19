@@ -1,6 +1,7 @@
 part of '../state_notifier_provider.dart';
 
 /// {@macro riverpod.statenotifierprovider}
+@sealed
 class StateNotifierProvider<T extends StateNotifier<Object>>
     extends Provider<T> {
   /// {@macro riverpod.statenotifierprovider}
@@ -37,6 +38,7 @@ extension StateNotifierStateProviderX<Value>
 ///
 /// It is created by [StateNotifierProvider]
 /// {@endtemplate}
+@sealed
 class StateNotifierStateProvider<T>
     extends AlwaysAliveProviderBase<StateNotifier<T>, T> {
   StateNotifierStateProvider._(this._provider)
@@ -63,12 +65,14 @@ class StateNotifierStateProvider<T>
   }
 }
 
+@sealed
 class _StateNotifierStateProviderState<T> = ProviderStateBase<StateNotifier<T>,
     T> with _StateNotifierStateProviderStateMixin<T>;
 
 /// {@template riverpod.statenotifierprovider.family}
 /// A class that allows building a [StateNotifierProvider] from an external parameter.
 /// {@endtemplate}
+@sealed
 class StateNotifierProviderFamily<T extends StateNotifier<Object>, A>
     extends Family<T, T, A, ProviderReference, StateNotifierProvider<T>> {
   /// {@macro riverpod.statenotifierprovider.family}

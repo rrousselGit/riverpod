@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
+
 import 'builders.dart';
 import 'common.dart' show AsyncLoading, AsyncValue;
 import 'framework.dart';
@@ -260,6 +262,7 @@ Future<T> _readLast<T>(
 
 // Fork of CreatedProvider to retrieve _realStream instead of createdValue
 
+@sealed
 class _CreatedStreamProvider<T> extends Provider<Stream<T>> {
   _CreatedStreamProvider(
     AlwaysAliveProviderBase<Stream<T>, Object> provider, {
@@ -275,6 +278,7 @@ class _CreatedStreamProvider<T> extends Provider<Stream<T>> {
         }, name: name);
 }
 
+@sealed
 class _AutoDisposeCreatedStreamProvider<T>
     extends AutoDisposeProvider<Stream<T>> {
   _AutoDisposeCreatedStreamProvider(

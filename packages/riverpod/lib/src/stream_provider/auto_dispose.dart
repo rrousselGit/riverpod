@@ -1,6 +1,7 @@
 part of '../stream_provider.dart';
 
 /// {@macro riverpod.streamprovider}
+@sealed
 class AutoDisposeStreamProvider<T>
     extends AutoDisposeProviderBase<Stream<T>, AsyncValue<T>>
     with _StreamProviderMixin<T> {
@@ -36,10 +37,12 @@ class AutoDisposeStreamProvider<T>
       _AutoDisposeStreamProviderState();
 }
 
+@sealed
 class _AutoDisposeStreamProviderState<T> = ProviderStateBase<Stream<T>,
     AsyncValue<T>> with _StreamProviderStateMixin<T>;
 
 /// {@macro riverpod.streamprovider.family}
+@sealed
 class AutoDisposeStreamProviderFamily<T, A> extends Family<
     Stream<T>,
     AsyncValue<T>,

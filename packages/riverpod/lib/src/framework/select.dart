@@ -6,6 +6,7 @@ import '../framework.dart';
 /// A [ProviderSubscription] for [RootProvider.select], that notify its listeners
 /// only if the result of the selector changes.
 /// {@endtemplate}
+@sealed
 class SelectorSubscription<Input, Output>
     implements ProviderSubscription<Output> {
   /// {@macro riverpod.SelectorSubscription}
