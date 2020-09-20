@@ -1,6 +1,5 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
 import 'package:riverpod/src/internals.dart' as internals;
