@@ -1,4 +1,4 @@
-# [Unreleased]
+# 0.11.0
 
 - `package:riverpod/riverpod.dart` now exports `StateNotifier`
 - Marked the providers with `@sealed` so that the IDE warns against
