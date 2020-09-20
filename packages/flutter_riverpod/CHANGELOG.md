@@ -1,5 +1,6 @@
 # [Unreleased]
 
+- `package:flutter_riverpod/flutter_riverpod.dart` now exports `StateNotifier`
 - Marked the providers with `@sealed` so that the IDE warns against
   implementing/subclassing providers.
 - Fix mistakes in `AsyncValue.guard`'s documentation (thanks @mono0926)
