@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import 'package:state_notifier/state_notifier.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 var _uuid = Uuid();

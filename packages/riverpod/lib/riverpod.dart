@@ -1,3 +1,5 @@
+export 'package:state_notifier/state_notifier.dart';
+
 export 'src/common.dart'
     show
         AsyncValue,

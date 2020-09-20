@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:state_notifier/state_notifier.dart';
 import 'package:mockito/mockito.dart';
 
 void main() {

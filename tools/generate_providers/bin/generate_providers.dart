@@ -330,7 +330,6 @@ Future<void> main(List<String> args) async {
       );
       builder.writeln(
         """
-import 'package:state_notifier/state_notifier.dart';
 import 'internals.dart';
 """,
       );
