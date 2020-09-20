@@ -7,7 +7,6 @@ module.exports = {
   organizationName: "rrousselgit", // Usually your GitHub org/user name.
   projectName: "riverpod", // Usually your repo name.
   themeConfig: {
-    sidebarCollapsible: false,
     googleAnalytics: {
       trackingID: "UA-138675999-4",
     },

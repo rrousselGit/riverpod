@@ -3,6 +3,15 @@ module.exports = {
     "getting_started",
     {
       type: "category",
+      label: "Guides",
+      collapsed: false,
+      items: [
+        "cookbooks/testing",
+        //"cookbooks/refresh",
+      ],
+    },
+    {
+      type: "category",
       label: "Concepts",
       items: [
         "concepts/providers",
@@ -20,15 +29,7 @@ module.exports = {
         },
       ],
     },
-    {
-      type: "category",
-      label: "Cookbooks",
-      collapsed: false,
-      items: [
-        "cookbooks/testing",
-        //"cookbooks/refresh",
-      ],
-    },
+
     {
       type: "category",
       label: "Examples",
