@@ -18,7 +18,7 @@ dependencies:
 dev_dependencies:
   mockito: ^4.1.0
   test: ^1.14.2
-  freezed: ^0.11.0
+  freezed: ^0.12.1
   build_runner: ^1.8.1
   trotter: ^1.2.0
   test_coverage: ^0.4.1

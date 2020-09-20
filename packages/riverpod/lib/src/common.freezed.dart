@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named
+// ignore_for_file: deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies
 
 part of 'common.dart';
 
@@ -9,19 +9,23 @@ part of 'common.dart';
 
 T _$identity<T>(T value) => value;
 
+/// @nodoc
 class _$AsyncValueTearOff {
   const _$AsyncValueTearOff();
 
+// ignore: unused_element
   AsyncData<T> data<T>(@nullable T value) {
     return AsyncData<T>(
       value,
     );
   }
 
+// ignore: unused_element
   AsyncLoading<T> loading<T>() {
     return AsyncLoading<T>();
   }
 
+// ignore: unused_element
   AsyncError<T> error<T>(Object error, [StackTrace stackTrace]) {
     return AsyncError<T>(
       error,
@@ -30,9 +34,11 @@ class _$AsyncValueTearOff {
   }
 }
 
+/// @nodoc
 // ignore: unused_element
 const $AsyncValue = _$AsyncValueTearOff();
 
+/// @nodoc
 mixin _$AsyncValue<T> {
   @optionalTypeArgs
   Result when<Result extends Object>({
@@ -62,12 +68,14 @@ mixin _$AsyncValue<T> {
   });
 }
 
+/// @nodoc
 abstract class $AsyncValueCopyWith<T, $Res> {
   factory $AsyncValueCopyWith(
           AsyncValue<T> value, $Res Function(AsyncValue<T>) then) =
       _$AsyncValueCopyWithImpl<T, $Res>;
 }
 
+/// @nodoc
 class _$AsyncValueCopyWithImpl<T, $Res>
     implements $AsyncValueCopyWith<T, $Res> {
   _$AsyncValueCopyWithImpl(this._value, this._then);
@@ -77,6 +85,7 @@ class _$AsyncValueCopyWithImpl<T, $Res>
   final $Res Function(AsyncValue<T>) _then;
 }
 
+/// @nodoc
 abstract class $AsyncDataCopyWith<T, $Res> {
   factory $AsyncDataCopyWith(
           AsyncData<T> value, $Res Function(AsyncData<T>) then) =
@@ -84,6 +93,7 @@ abstract class $AsyncDataCopyWith<T, $Res> {
   $Res call({@nullable T value});
 }
 
+/// @nodoc
 class _$AsyncDataCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
     implements $AsyncDataCopyWith<T, $Res> {
   _$AsyncDataCopyWithImpl(
@@ -103,6 +113,7 @@ class _$AsyncDataCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
   }
 }
 
+/// @nodoc
 class _$AsyncData<T> extends AsyncData<T> {
   const _$AsyncData(@nullable this.value) : super._();
 
@@ -197,12 +208,14 @@ abstract class AsyncData<T> extends AsyncValue<T> {
   $AsyncDataCopyWith<T, AsyncData<T>> get copyWith;
 }
 
+/// @nodoc
 abstract class $AsyncLoadingCopyWith<T, $Res> {
   factory $AsyncLoadingCopyWith(
           AsyncLoading<T> value, $Res Function(AsyncLoading<T>) then) =
       _$AsyncLoadingCopyWithImpl<T, $Res>;
 }
 
+/// @nodoc
 class _$AsyncLoadingCopyWithImpl<T, $Res>
     extends _$AsyncValueCopyWithImpl<T, $Res>
     implements $AsyncLoadingCopyWith<T, $Res> {
@@ -214,6 +227,7 @@ class _$AsyncLoadingCopyWithImpl<T, $Res>
   AsyncLoading<T> get _value => super._value as AsyncLoading<T>;
 }
 
+/// @nodoc
 class _$AsyncLoading<T> extends AsyncLoading<T> {
   const _$AsyncLoading() : super._();
 
@@ -292,6 +306,7 @@ abstract class AsyncLoading<T> extends AsyncValue<T> {
   const factory AsyncLoading() = _$AsyncLoading<T>;
 }
 
+/// @nodoc
 abstract class $AsyncErrorCopyWith<T, $Res> {
   factory $AsyncErrorCopyWith(
           AsyncError<T> value, $Res Function(AsyncError<T>) then) =
@@ -299,6 +314,7 @@ abstract class $AsyncErrorCopyWith<T, $Res> {
   $Res call({Object error, StackTrace stackTrace});
 }
 
+/// @nodoc
 class _$AsyncErrorCopyWithImpl<T, $Res>
     extends _$AsyncValueCopyWithImpl<T, $Res>
     implements $AsyncErrorCopyWith<T, $Res> {
@@ -321,6 +337,7 @@ class _$AsyncErrorCopyWithImpl<T, $Res>
   }
 }
 
+/// @nodoc
 class _$AsyncError<T> extends AsyncError<T> {
   _$AsyncError(this.error, [this.stackTrace])
       : assert(error != null),
