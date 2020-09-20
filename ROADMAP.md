@@ -35,6 +35,8 @@
 ## Linter:
 
 - Don't create providers inside `build` (https://github.com/rrousselGit/river_pod/issues/144#issuecomment-695361486)
+- don't mutate other providers inside "create" (https://github.com/rrousselGit/river_pod/issues/144#issuecomment-695764973)
+- wrap with `Consumer`
 - No circular dependency
 - warn watch(autoDispose) in non-autoDispose provider
 - `always_specify_name`
