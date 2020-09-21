@@ -53,6 +53,30 @@ module.exports = {
           href:
             "https://github.com/rrousselGit/river_pod/tree/master/examples/marvel",
         },
+        {
+          type: "link",
+          label: "Android Launcher",
+          href:
+            "https://github.com/lohanidamodar/fl_live_launcher",
+        },
+        {
+          type: "link",
+          label: "Worldtime Clock",
+          href:
+            "https://github.com/lohanidamodar/flutter_worldtime",
+        },
+        {
+          type: "link",
+          label: "Dictionary App",
+          href:
+            "https://github.com/lohanidamodar/fl_dictio",
+        },
+        {
+          type: "link",
+          label: "Firebase Starter",
+          href:
+            "https://github.com/lohanidamodar/flutter_firebase_starter/tree/feature/riverpod",
+        },
       ],
     },
     {
