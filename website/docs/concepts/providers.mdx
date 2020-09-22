@@ -139,9 +139,9 @@ final myFamilyProvider = Provider.family<String, int>((ref, id) => '$id');
 
 At the moment, there are two modifiers available:
 
-- [`.autoDispose`](./modifiers/auto_dispose), which will make the provider automatically destroy its state
+- [`.autoDispose`](/docs/concepts/modifiers/auto_dispose), which will make the provider automatically destroy its state
   when it is no-longer listened.
-- [`.family`](./modifiers/family), which allows creating a provider from external parameters.
+- [`.family`](/docs/concepts/modifiers/family), which allows creating a provider from external parameters.
 
 :::note
 A provider can use multiple modifiers at once:
@@ -156,8 +156,8 @@ final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) 
 
 That's it for this guide!
 
-You can continue with [How to read a provider](./reading).
-Alternatively, you can see [How to combine providers](./combining_providers).
+You can continue with [How to read a provider](/docs/concepts/reading).
+Alternatively, you can see [How to combine providers](/docs/concepts/combining_providers).
 
 [get_it]: http://pub.dev/packages/get_it
 [inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
