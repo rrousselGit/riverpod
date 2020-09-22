@@ -2,9 +2,7 @@
 name: Bug report
 about: There is a problem in how provider behaves
 title: ""
-labels:
-  - bug
-  - needs triage
+labels: bug, needs triage
 ---
 
 **Describe the bug**

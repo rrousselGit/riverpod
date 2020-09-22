@@ -4,9 +4,7 @@ about: >-
   Suggest a new example/documentation or ask for clarification about an
   existing one.
 title: ""
-labels:
-  - documentation
-  - needs triage
+labels: documentation, needs triage
 ---
 
 **Describe what scenario you think is uncovered by the existing examples/articles**
