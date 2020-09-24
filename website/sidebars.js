@@ -77,6 +77,12 @@ module.exports = {
           href:
             "https://github.com/lohanidamodar/flutter_firebase_starter/tree/feature/riverpod",
         },
+        {
+          type: "link",
+          label: "Time Tracking App (with Firebase)",
+          href:
+            "https://github.com/bizz84/starter_architecture_flutter_firebase",
+        },
       ],
     },
     {
