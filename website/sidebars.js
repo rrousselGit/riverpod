@@ -29,11 +29,9 @@ module.exports = {
         },
       ],
     },
-
     {
       type: "category",
-      label: "Examples",
-      collapsed: false,
+      label: "Official examples",
       items: [
         {
           type: "link",
@@ -53,23 +51,26 @@ module.exports = {
           href:
             "https://github.com/rrousselGit/river_pod/tree/master/examples/marvel",
         },
+      ],
+    },
+    {
+      type: "category",
+      label: "Third party examples",
+      items: [
         {
           type: "link",
           label: "Android Launcher",
-          href:
-            "https://github.com/lohanidamodar/fl_live_launcher",
+          href: "https://github.com/lohanidamodar/fl_live_launcher",
         },
         {
           type: "link",
           label: "Worldtime Clock",
-          href:
-            "https://github.com/lohanidamodar/flutter_worldtime",
+          href: "https://github.com/lohanidamodar/flutter_worldtime",
         },
         {
           type: "link",
           label: "Dictionary App",
-          href:
-            "https://github.com/lohanidamodar/fl_dictio",
+          href: "https://github.com/lohanidamodar/fl_dictio",
         },
         {
           type: "link",
@@ -86,14 +87,14 @@ module.exports = {
         {
           type: "link",
           label: "ListView paging with search",
-          href:
-            "https://github.com/tbm98/flutter_loadmore_search",
+          href: "https://github.com/tbm98/flutter_loadmore_search",
         },
       ],
     },
     {
       type: "category",
       label: "Api references",
+      collapsed: false,
       items: [
         {
           type: "link",
