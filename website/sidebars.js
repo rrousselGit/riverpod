@@ -83,6 +83,12 @@ module.exports = {
           href:
             "https://github.com/bizz84/starter_architecture_flutter_firebase",
         },
+        {
+          type: "link",
+          label: "ListView paging with search",
+          href:
+            "https://github.com/tbm98/flutter_loadmore_search",
+        },
       ],
     },
     {
