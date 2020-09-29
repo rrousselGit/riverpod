@@ -1,3 +1,7 @@
+# 0.11.1
+
+- Fixed a bug where hot-reload did not work for `ConsumerWidget`/`Consumer`
+
 # 0.11.0
 
 - `package:flutter_riverpod/flutter_riverpod.dart` now exports `StateNotifier`

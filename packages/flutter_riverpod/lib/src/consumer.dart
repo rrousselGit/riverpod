@@ -254,6 +254,12 @@ class _ConsumerState extends State<ConsumerWidget> {
   }
 
   @override
+  void reassemble() {
+    super.reassemble();
+    _isExternalBuild = true;
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _isExternalBuild = true;

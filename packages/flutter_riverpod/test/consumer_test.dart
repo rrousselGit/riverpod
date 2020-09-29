@@ -11,6 +11,28 @@ void main() {
     expect(find.text('hello world'), findsOneWidget);
   });
 
+  testWidgets('hot-reload forces the widget to refresh', (tester) async {
+    var buildCount = 0;
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(builder: (context, watch, _) {
+          buildCount++;
+          return Container();
+        }),
+      ),
+    );
+
+    expect(find.byType(Container), findsOneWidget);
+    expect(buildCount, 1);
+
+    // ignore: unawaited_futures
+    tester.binding.reassembleApplication();
+    await tester.pump();
+
+    expect(find.byType(Container), findsOneWidget);
+    expect(buildCount, 2);
+  });
+
   testWidgets(
       'Consumer removing one of multiple listeners on a provider still listen to the provider',
       (tester) async {
