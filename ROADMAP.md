@@ -25,12 +25,16 @@
   - ProviderScope
 - FAQ
   - My Consumer behaves differently inside overlays/transition
+  - How to prefetch data _in the main_
 - cookbooks:
   - migration from provider
   - list items + family, don't pass the id to the item and instead expose a "currentItem" provider
   - canceling http requests when leaving the screen
   - state hydration
   - configurations that change over time
+- DO/DON'T
+  - import lints
+  - DO create a provider for states you want to read multiple times
 
 ## Linter:
 
