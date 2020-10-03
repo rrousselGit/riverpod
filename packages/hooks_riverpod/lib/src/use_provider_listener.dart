@@ -63,24 +63,6 @@ class _ProviderListenerHook<T> extends Hook<void> {
 
   @override
   _ProviderListenerHookState<T> createState() => _ProviderListenerHookState();
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty<OnProviderChange<T>>('onChange', onChange),
-    );
-
-    if (_providerListenable is ProviderSelector<dynamic, T>) {
-      properties.add(DiagnosticsProperty<ProviderBase<Object, T>>(
-          'provider',
-          (_providerListenable as ProviderSelector<dynamic, T>).provider
-              as ProviderBase<Object, T>));
-    } else {
-      properties.add(DiagnosticsProperty<ProviderBase<Object, T>>(
-          'provider', _providerListenable as ProviderBase<Object, T>));
-    }
-  }
 }
 
 class _ProviderListenerHookState<T>
@@ -132,10 +114,4 @@ class _ProviderListenerHookState<T>
     _link.close();
     super.dispose();
   }
-
-  @override
-  String get debugLabel => 'useProviderListener';
-
-  @override
-  bool get debugSkipValue => true;
 }
