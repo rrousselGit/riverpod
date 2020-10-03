@@ -14,6 +14,12 @@
 - handle errors (out of calls/day, no configurations)
 - Added to riverpod.dev
 
+### Introduction screen
+
+- Insert a nested UncontrollerProviderScope
+- Pass it a ProviderContainer that overrides the repositories & co to use a specific data-set
+
+
 ## riverpod.dev
 
 - Filtering rebuilds

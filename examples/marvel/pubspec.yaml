@@ -18,7 +18,7 @@ dependencies:
   dio: ^3.0.9
   crypto: ^2.1.4
   flutter_svg: ^0.18.0
-  flutter_portal:
+  flutter_portal: ^0.2.0
 
 dev_dependencies:
   flutter_test:
