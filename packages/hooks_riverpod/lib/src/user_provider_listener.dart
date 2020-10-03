@@ -45,15 +45,15 @@ import 'internals.dart';
 /// See also:
 ///
 /// - [Provider]/`select`, for filtering unwanted rebuilds.
-T useProviderListener<T>(
+void useProviderListener<T>(
     ProviderListenable<T> provider, OnProviderChange<T> onChange) {
   final container = ProviderScope.containerOf(useContext());
-  return use(_ProviderListenerHook<T>(container, provider, onChange));
+  return use(_ProviderListenerHook(container, provider, onChange));
 }
 
 typedef OnProviderChange<T> = void Function(BuildContext context, T value);
 
-class _ProviderListenerHook<T> extends Hook<T> {
+class _ProviderListenerHook<T> extends Hook<void> {
   const _ProviderListenerHook(
       this._container, this._providerListenable, this.onChange);
 
@@ -70,15 +70,21 @@ class _ProviderListenerHook<T> extends Hook<T> {
     properties.add(
       DiagnosticsProperty<OnProviderChange<T>>('onChange', onChange),
     );
-    properties.add(DiagnosticsProperty<ProviderBase<Object, T>>(
-        'provider',
-        (_providerListenable as ProviderSelector<dynamic, T>).provider
-            as ProviderBase<Object, T>));
+
+    if (_providerListenable is ProviderSelector<dynamic, T>) {
+      properties.add(DiagnosticsProperty<ProviderBase<Object, T>>(
+          'provider',
+          (_providerListenable as ProviderSelector<dynamic, T>).provider
+              as ProviderBase<Object, T>));
+    } else {
+      properties.add(DiagnosticsProperty<ProviderBase<Object, T>>(
+          'provider', _providerListenable as ProviderBase<Object, T>));
+    }
   }
 }
 
 class _ProviderListenerHookState<T>
-    extends HookState<T, _ProviderListenerHook<T>> {
+    extends HookState<void, _ProviderListenerHook<T>> {
   ProviderSubscription<T> _link;
 
   @override
@@ -88,7 +94,7 @@ class _ProviderListenerHookState<T>
   }
 
   @override
-  T build(BuildContext context) => _link.read();
+  void build(BuildContext context) {}
 
   void _listen() {
     _link?.close();
@@ -98,9 +104,6 @@ class _ProviderListenerHookState<T>
       mayHaveChanged: _mayHaveChanged,
     );
   }
-
-  @override
-  bool shouldRebuild() => _link.flush();
 
   void _mayHaveChanged(ProviderSubscription<T> subscription) {
     Future.microtask(() {
@@ -145,4 +148,10 @@ class _ProviderListenerHookState<T>
     _link.close();
     super.dispose();
   }
+
+  @override
+  String get debugLabel => 'useProviderListener';
+
+  @override
+  bool get debugSkipValue => true;
 }
