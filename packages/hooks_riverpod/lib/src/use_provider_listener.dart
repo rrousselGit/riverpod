@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,14 +54,15 @@ typedef OnProviderChange<T> = void Function(BuildContext context, T value);
 
 class _ProviderListenerHook<T> extends Hook<void> {
   const _ProviderListenerHook(
-      this._container, this._providerListenable, this.onChange);
+      this._container, this._providerListenable, this._onChange);
 
   final ProviderContainer _container;
   final ProviderListenable<T> _providerListenable;
-  final OnProviderChange<T> onChange;
+  final OnProviderChange<T> _onChange;
 
   @override
   _ProviderListenerHookState<T> createState() => _ProviderListenerHookState();
+  
 }
 
 class _ProviderListenerHookState<T>
@@ -90,7 +90,7 @@ class _ProviderListenerHookState<T>
   void _mayHaveChanged(ProviderSubscription<T> subscription) {
     Future.microtask(() {
       if (subscription.flush()) {
-        hook.onChange(context, subscription.read());
+        hook._onChange(context, subscription.read());
       }
     });
   }
