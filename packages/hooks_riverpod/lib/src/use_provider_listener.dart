@@ -62,7 +62,6 @@ class _ProviderListenerHook<T> extends Hook<void> {
 
   @override
   _ProviderListenerHookState<T> createState() => _ProviderListenerHookState();
-  
 }
 
 class _ProviderListenerHookState<T>
