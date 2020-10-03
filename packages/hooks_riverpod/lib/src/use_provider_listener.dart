@@ -121,24 +121,8 @@ class _ProviderListenerHookState<T>
           hook._providerListenable.runtimeType,
       'The provider listened cannot change',
     );
-    if (oldHook._container != hook._container) {
-      _listen();
-    } else if (_link is SelectorSubscription<dynamic, T>) {
-      final link = _link as SelectorSubscription<dynamic, T>;
-      assert(
-        hook._providerListenable is ProviderSelector<dynamic, T>,
-        'useProvider was updated from `useProvider(provider.select(...)) '
-        'to useProvider(provider), which is unsupported',
-      );
-      if ((hook._providerListenable as ProviderSelector<dynamic, T>).provider !=
-          (oldHook._providerListenable as ProviderSelector<dynamic, T>)
-              .provider) {
-        _listen();
-      } else {
-        // this will update _state
-        link.updateSelector(hook._providerListenable);
-      }
-    } else if (oldHook._providerListenable != hook._providerListenable) {
+    if (oldHook._container != hook._container ||
+        oldHook._providerListenable != hook._providerListenable) {
       _listen();
     }
   }
