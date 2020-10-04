@@ -11,35 +11,38 @@ void main() {
     final countProvider = StateProvider((_) => 0);
     final textProvider = StateProvider((_) => 'initial');
     final key = GlobalKey();
-    await tester.pumpWidget(ProviderScope(
-      child: HookBuilder(
-        key: key,
-        builder: (context) {
-          final count = useProvider(countProvider).state;
-          final text = useProvider(textProvider).state;
-          useProviderListener<StateController<int>>(countProvider,
-              (context, value) {
-            if (value.state.isEven) {
-              context.read(textProvider).state = 'even';
-            } else {
-              context.read(textProvider).state = 'odd';
-            }
-          });
-          return Column(
-            children: [
-              Text(
-                '$count',
-                textDirection: TextDirection.ltr,
-              ),
-              Text(
-                text,
-                textDirection: TextDirection.ltr,
-              )
-            ],
-          );
-        },
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: HookBuilder(
+          key: key,
+          builder: (context) {
+            final count = useProvider(countProvider).state;
+            final text = useProvider(textProvider).state;
+            useProviderListener<StateController<int>>(countProvider,
+                (context, value) {
+              if (value.state.isEven) {
+                context.read(textProvider).state = 'even';
+              } else {
+                context.read(textProvider).state = 'odd';
+              }
+            });
+            return Column(
+              children: [
+                Text(
+                  '$count',
+                  textDirection: TextDirection.ltr,
+                ),
+                Text(
+                  text,
+                  textDirection: TextDirection.ltr,
+                ),
+              ],
+            );
+          },
+        ),
       ),
-    ));
+    );
 
     expect(find.text('0'), findsOneWidget);
     expect(find.text('initial'), findsOneWidget);
@@ -66,14 +69,13 @@ void main() {
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
-          container: container,
-          child: HookBuilder(
-            builder: (context) {
-              useProviderListener<StateController<int>>(
-                  provider, (_, value) => onChange(value.state));
-              return Container();
-            },
-          )),
+        container: container,
+        child: HookBuilder(builder: (context) {
+          useProviderListener<StateController<int>>(
+              provider, (_, value) => onChange(value.state));
+          return Container();
+        }),
+      ),
     );
 
     verifyZeroInteractions(onChange);
@@ -93,26 +95,28 @@ void main() {
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
-          container: container,
-          child: HookBuilder(
-            builder: (context) {
-              useProviderListener<StateController<int>>(
-                  provider(0), (_, value) => onChange(value.state));
-              return Container();
-            },
-          )),
+        container: container,
+        child: HookBuilder(
+          builder: (context) {
+            useProviderListener<StateController<int>>(
+                provider(0), (_, value) => onChange(value.state));
+            return Container();
+          },
+        ),
+      ),
     );
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
-          container: container,
-          child: HookBuilder(
-            builder: (context) {
-              useProviderListener<StateController<int>>(
-                  provider(1), (_, value) => onChange(value.state));
-              return Container();
-            },
-          )),
+        container: container,
+        child: HookBuilder(
+          builder: (context) {
+            useProviderListener<StateController<int>>(
+                provider(1), (_, value) => onChange(value.state));
+            return Container();
+          },
+        ),
+      ),
     );
 
     verifyZeroInteractions(onChange);
@@ -130,28 +134,28 @@ void main() {
       (tester) async {
     final provider = StateProvider((_) => 0);
     final key = GlobalKey();
-    final selector = SelectorSpy<int>();
-    final onChange = ListenerMock<int>();
+    final onChange = ListenerMock<bool>();
 
     await tester.pumpWidget(
       ProviderScope(
         child: HookBuilder(
             key: key,
             builder: (c) {
-              useProvider(provider.select((value) {
-                selector(value.state);
-                return value.state.isNegative;
-              }));
-              useProviderListener<StateController<int>>(
-                  provider, (context, value) => onChange(value.state));
+              useProviderListener<bool>(
+                  provider.select((value) => value.state.isNegative),
+                  (context, value) => onChange(value));
               return Container();
             }),
       ),
     );
 
-    key.currentContext.read(provider).state = 4;
+    key.currentContext.read(provider).state = -1;
     await tester.pump();
-    verify(onChange(4)).called(1);
+    verify(onChange(true)).called(1);
+
+    key.currentContext.read(provider).state = 2;
+    await tester.pump();
+    verify(onChange(false)).called(1);
   });
 
   testWidgets('can mark parents as dirty during onChange', (tester) async {
@@ -160,20 +164,18 @@ void main() {
     final onChange = ListenerMock<int>();
 
     await tester.pumpWidget(
-      StatefulBuilder(
-        builder: (context, setState) {
-          return UncontrolledProviderScope(
-            container: container,
-            child: HookBuilder(
-              builder: (context) {
-                useProviderListener<StateController<int>>(
-                    provider, (_, value) => onChange(value.state));
-                return Container();
-              },
-            ),
-          );
-        },
-      ),
+      StatefulBuilder(builder: (context, setState) {
+        return UncontrolledProviderScope(
+          container: container,
+          child: HookBuilder(
+            builder: (context) {
+              useProviderListener<StateController<int>>(
+                  provider, (_, value) => onChange(value.state));
+              return Container();
+            },
+          ),
+        );
+      }),
     );
 
     verifyZeroInteractions(onChange);
@@ -190,13 +192,11 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: HookBuilder(
-          builder: (context) {
-            useProviderListener<StateController<int>>(
-                provider, (_, value) => onChange(value.state));
-            return Container();
-          },
-        ),
+        child: HookBuilder(builder: (context) {
+          useProviderListener<StateController<int>>(
+              provider, (_, value) => onChange(value.state));
+          return Container();
+        }),
       ),
     );
     verifyZeroInteractions(onChange);
@@ -222,24 +222,20 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: HookBuilder(
-          builder: (context) {
-            useProviderListener<int>(provider, (_, value) => onChange(value));
-            return Container();
-          },
-        ),
+        child: HookBuilder(builder: (context) {
+          useProviderListener<int>(provider, (_, value) => onChange(value));
+          return Container();
+        }),
       ),
     );
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container2,
-        child: HookBuilder(
-          builder: (context) {
-            useProviderListener<int>(provider, (_, value) => onChange(value));
-            return Container();
-          },
-        ),
+        child: HookBuilder(builder: (context) {
+          useProviderListener<int>(provider, (_, value) => onChange(value));
+          return Container();
+        }),
       ),
     );
 
@@ -265,12 +261,10 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: HookBuilder(
-          builder: (context) {
-            useProviderListener<int>(provider, (_, value) => onChange(value));
-            return Container();
-          },
-        ),
+        child: HookBuilder(builder: (context) {
+          useProviderListener<int>(provider, (_, value) => onChange(value));
+          return Container();
+        }),
       ),
     );
 
