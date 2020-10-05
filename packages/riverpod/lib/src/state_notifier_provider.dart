@@ -65,7 +65,7 @@ part 'state_notifier_provider/auto_dispose.dart';
 ///         CheckboxListTile(
 ///            value: todo.completed,
 ///            // When tapping on the todo, change its completed status
-///            onChanged: (value) => todosProvider.read(context).toggle(todo.id),
+///            onChanged: (value) => context.read(todosProvider).toggle(todo.id),
 ///            title: Text(todo.description),
 ///         ),
 ///     ],
