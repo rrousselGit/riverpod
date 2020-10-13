@@ -3,6 +3,7 @@
 [![pub package](https://img.shields.io/pub/v/riverpod.svg?label=hooks_riverpod&color=blue)](https://pub.dartlang.org/packages/hooks_riverpod) [![Build Status](https://github.com/rrousselGit/river_pod/workflows/Build/badge.svg)](https://github.com/rrousselGit/river_pod/actions) [![codecov](https://codecov.io/gh/rrousselGit/river_pod/branch/master/graph/badge.svg)](https://codecov.io/gh/rrousselGit/river_pod)
 <a href="https://www.buymeacoffee.com/remirousselet" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="25px"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a> <a href="https://riverpod.dev"><img src="https://img.shields.io/badge/documentation-riverpod.dev-blue" alt="documentation"></a>
+[![Discord Shield](https://img.shields.io/discord/765557403865186374.svg?logo=discord)](https://discord.com/invite/Bbumvej)
 
 Welcome to [Riverpod]!
 
@@ -10,6 +11,8 @@ This project can be considered as a rewrite of [provider] to make improvements
 that would be otherwise impossible.
 
 For learning how to use [Riverpod], see its documentation: https://riverpod.dev
+
+Also, don't forget to checkout our [Discord] channel, join us https://discord.gg/Bbumvej
 
 Long story short:
 
