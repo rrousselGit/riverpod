@@ -92,6 +92,10 @@ void main() {
       await Future<void>.value();
 
       expect(element.mounted, false);
+
+      container.dispose();
+
+      expect(element.mounted, false);
     });
 
     test('overridesAs are auto disposed', () async {

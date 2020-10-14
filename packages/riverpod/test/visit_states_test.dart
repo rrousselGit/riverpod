@@ -64,6 +64,51 @@ void main() {
     }
   });
 
+  //  A#1
+  //  |
+  //  B#2
+  test('linear across two containers', () {
+    final a = Provider<A>((ref) => A());
+
+    final b = ScopedProvider<B>((watch) {
+      watch(a);
+      return B();
+    });
+
+    final parent = ProviderContainer();
+    final container = ProviderContainer(parent: parent);
+    container.read(b);
+
+    expect(compute(container), [b]);
+  });
+
+  //  A#1  B#2
+  //    \  /
+  //     C#2
+  test('branching across two containers', () {
+    final a = Provider<A>((ref) => A());
+
+    final b = ScopedProvider<B>((watch) {
+      return B();
+    });
+
+    final c = ScopedProvider<C>((watch) {
+      watch(a);
+      watch(b);
+      return C();
+    });
+
+    final parent = ProviderContainer();
+
+    final perm = Permutations(2, [b, c]);
+    for (final permutation in perm()) {
+      final container = ProviderContainer(parent: parent);
+      permutation.forEach(container.read);
+
+      expect(compute(container), [b, c]);
+    }
+  });
+
   ///       A
   ///     /   \
   ///    B __  |

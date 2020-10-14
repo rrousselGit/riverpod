@@ -1,3 +1,8 @@
+# 0.11.2
+
+- Fixed a bug where providers (usually ScopedProviders) did not dispose correctly
+  (see also https://github.com/rrousselGit/river_pod/issues/154).
+
 # 0.11.0
 
 - `package:riverpod/riverpod.dart` now exports `StateNotifier`
