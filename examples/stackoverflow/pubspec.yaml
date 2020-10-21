@@ -8,30 +8,30 @@ environment:
   flutter: "> 1.17.0"
 
 dependencies:
+  dio: ^3.0.9
   flutter:
     sdk: flutter
-  hooks_riverpod:
-    path: ../../packages/hooks_riverpod
   flutter_hooks: ^0.13.2
   freezed_annotation: ^0.11.0
-  dio: ^3.0.9
+  hooks_riverpod:
+    path: ../../packages/hooks_riverpod
   html: ^0.14.0
 
 dev_dependencies:
+  build_runner: ^1.9.0
   flutter_test:
     sdk: flutter
-  mockito: ^4.1.0
   freezed: ^0.11.0
   json_serializable: ^3.3.0
-  build_runner: ^1.9.0
+  mockito: ^4.1.0
 
 dependency_overrides:
   flutter_riverpod:
     path: ../../packages/flutter_riverpod
-  riverpod:
-    path: ../../packages/riverpod
   hooks_riverpod:
     path: ../../packages/hooks_riverpod
+  riverpod:
+    path: ../../packages/riverpod
 
 flutter:
   uses-material-design: true

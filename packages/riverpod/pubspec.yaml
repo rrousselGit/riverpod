@@ -10,15 +10,15 @@ environment:
   sdk: ">=2.8.0 <3.0.0"
 
 dependencies:
-  meta: ^1.1.8
   collection: ^1.14.12
   freezed_annotation: '>=0.11.0 <1.0.0'
+  meta: ^1.1.8
   state_notifier: ">= 0.5.0 <1.0.0"
 
 dev_dependencies:
+  build_runner: ^1.8.1
+  freezed: ^0.12.1
   mockito: ^4.1.0
   test: ^1.14.2
-  freezed: ^0.12.1
-  build_runner: ^1.8.1
-  trotter: ^1.2.0
   test_coverage: ^0.4.1
+  trotter: ^1.2.0

@@ -4,6 +4,9 @@ import 'package:meta/meta.dart';
 import 'framework.dart';
 import 'internals.dart';
 
+/// A function that can also listen to providers
+///
+/// See also [Consumer]
 typedef ConsumerBuilder = Widget Function(
   BuildContext context,
   ScopedReader watch,
