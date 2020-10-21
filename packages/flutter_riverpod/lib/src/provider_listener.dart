@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 import 'internals.dart';
 
 /// A function that can react to changes on a provider
-/// 
+///
 /// See also [ProviderListener]
 typedef OnProviderChange<T> = void Function(BuildContext context, T value);
 
