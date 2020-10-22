@@ -214,25 +214,39 @@ mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
 mixin _StreamProviderStateMixin<T>
     on ProviderStateBase<Stream<T>, AsyncValue<T>> {
   StreamSubscription<T> sub;
-  Stream<T> _realStream;
+  StreamController<T> _proxyController;
+  Stream<T> get proxyStream {
+    _proxyController ??= StreamController.broadcast();
+    return _proxyController.stream;
+  }
 
   @override
   void valueChanged({Stream<T> previous}) {
+    assert(
+      createdValue != null,
+      'StreamProvider does not support "null" for stream',
+    );
     if (createdValue == previous) {
       return;
     }
-    _realStream = createdValue.asBroadcastStream();
-
     sub?.cancel();
+    _proxyController?.close();
+    _proxyController = null;
+
     // TODO transition between state ??= vs =
     // TODO don't notify if already loading
     exposedValue = const AsyncValue.loading();
-    sub = _realStream?.listen(
-      (value) => exposedValue = AsyncValue.data(value),
+    sub = createdValue.listen(
+      (value) {
+        exposedValue = AsyncValue.data(value);
+        _proxyController?.add(value);
+      },
       // ignore: avoid_types_on_closure_parameters
       onError: (Object error, StackTrace stack) {
         exposedValue = AsyncValue.error(error, stack);
+        _proxyController?.addError(error, stack);
       },
+      onDone: () => _proxyController?.close(),
     );
   }
 
@@ -245,6 +259,7 @@ mixin _StreamProviderStateMixin<T>
   @override
   void dispose() {
     sub?.cancel();
+    _proxyController?.close();
     super.dispose();
   }
 }
@@ -260,7 +275,7 @@ Future<T> _readLast<T>(
       );
 }
 
-// Fork of CreatedProvider to retrieve _realStream instead of createdValue
+// Fork of CreatedProvider to retrieve _proxyStream instead of createdValue
 
 @sealed
 class _CreatedStreamProvider<T> extends Provider<Stream<T>> {
@@ -273,7 +288,7 @@ class _CreatedStreamProvider<T> extends Provider<Stream<T>> {
           final state = ref.container.readProviderElement(provider).state;
 
           return state is _StreamProviderStateMixin<T>
-              ? state._realStream
+              ? state.proxyStream
               : state.createdValue;
         }, name: name);
 }
@@ -290,7 +305,7 @@ class _AutoDisposeCreatedStreamProvider<T>
           final state = ref.container.readProviderElement(provider).state;
 
           return state is _StreamProviderStateMixin<T>
-              ? state._realStream
+              ? state.proxyStream
               // Reached when using `.stream` on a `StreamProvider.overrideWithValue`
               : state.createdValue;
         }, name: name);
