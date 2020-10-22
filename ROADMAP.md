@@ -29,6 +29,7 @@
 - The differences between hooks and not hooks
 - fundamentals
   - ProviderScope
+- talks and articles
 - FAQ
   - My Consumer behaves differently inside overlays/transition
   - How to prefetch data _in the main_
