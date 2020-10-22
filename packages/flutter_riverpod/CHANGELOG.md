@@ -1,3 +1,9 @@
+# Unreleased major
+
+- **Breaking** FutureProvider and StreamProvider no-longer supports `null` as a valid value.
+- Fixed a memory leak with StreamProvider (see also https://github.com/rrousselGit/river_pod/issues/193)
+- Fixed an error message typo related to Consumer
+
 # 0.11.2
 
 - Fixed a bug where providers (usually ScopedProviders) did not dispose correctly
