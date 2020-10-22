@@ -73,6 +73,32 @@ void main() {
     expect(didCloseSub, true);
   });
 
+  test('the created stream does not leak on autoDispose providers', () async {
+    final container = ProviderContainer();
+    var didCloseSub = false;
+    final controller = StreamController<int>(
+      onCancel: () => didCloseSub = true,
+    );
+    addTearDown(controller.close);
+
+    final provider = StreamProvider.autoDispose((ref) => controller.stream);
+
+    var didCloseProxy = false;
+
+    final sub = container.listen(provider.stream);
+    sub.read().listen((_) {}, onDone: () => didCloseProxy = true);
+
+    await Future(() {});
+    expect(didCloseProxy, false);
+    expect(didCloseSub, false);
+
+    container.dispose();
+    await Future(() {});
+
+    expect(didCloseProxy, true);
+    expect(didCloseSub, true);
+  });
+
   test('the created stream does not leak on refresh', () async {
     final container = ProviderContainer();
     var didCloseSub = false;
