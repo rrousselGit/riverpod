@@ -1,4 +1,4 @@
-# Unreleased major
+# 0.12.0
 
 - **Breaking** FutureProvider and StreamProvider no-longer supports `null` as a valid value.
 - Fixed a memory leak with StreamProvider (see also https://github.com/rrousselGit/river_pod/issues/193)
