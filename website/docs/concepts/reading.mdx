@@ -178,7 +178,7 @@ This syntax also supports a feature that are not supported by [ConsumerWidget]: 
 class Example extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    bool isAbove5 = useProvider(counterProvider.select((c) => s.state > 5));
+    bool isAbove5 = useProvider(counterProvider.select((s) => s.state > 5));
     return Text('Is counter > 5 ? $isAbove5');
   }
 }
