@@ -14,11 +14,11 @@
 
 ---
 
-A state-manangement library that:
+A state-management library that:
 
-- catch programing errors at compilation rather than
+- catches programming errors at compile time rather than
   at runtime
-- removes nesting for listening/combining objects.
+- removes nesting for listening/combining objects
 - ensures that the code is testable
 
 | riverpod         | [![pub package](https://img.shields.io/pub/v/riverpod.svg?label=riverpod&color=blue)](https://pub.dartlang.org/packages/riverpod)                 |
@@ -48,7 +48,7 @@ Long story short:
   }
   ```
 
-- Use them inside your widgets in a compile-time safe way. No runtime exceptions!
+- Use them inside your widgets in a compile time safe way. No runtime exceptions!
 
   ```dart
   class Example extends ConsumerWidget {
@@ -60,7 +60,7 @@ Long story short:
   }
   ```
 
-See the [FAQ](#FAQ) if you have questions around what this means for [provider].
+See the [FAQ](#FAQ) if you have questions about what this means for [provider].
 
 ## Index
 
