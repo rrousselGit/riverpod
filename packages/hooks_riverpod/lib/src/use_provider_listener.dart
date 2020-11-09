@@ -17,7 +17,7 @@ import 'internals.dart';
 /// final counterProvider = StateNotifierProvider((ref) => Counter());
 /// ```
 ///
-/// We can then use [useProviderListener] to listen to `helloWorldProvider` like so:
+/// We can then use [useProviderListener] to listen to `counterProvider` like so:
 ///
 /// ```dart
 /// class Example extends HookWidget {
