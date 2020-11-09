@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hooks_riverpod/src/internals.dart';
 
 import 'package:mockito/mockito.dart';
 import 'utils.dart';
@@ -267,4 +268,79 @@ void main() {
 
     verifyOnly(onChange, onChange(21));
   });
+
+  testWidgets('didUpdateWidget recognizes SelectorSubscription',
+      (tester) async {
+    final stateProvider = StateProvider((_) => [42, 43]);
+    final provider = Provider((ref) => ref.watch(stateProvider).state);
+    final container = ProviderContainer();
+
+    final onChange = ListenerMock<int>();
+
+    final consumer = HookBuilder(
+      key: GlobalKey(),
+      builder: (c) {
+        final listenable = provider.select((value) => value[0]);
+        final count = useProvider(listenable);
+        useProviderListener<int>(listenable, (_, value) => onChange(value));
+        return Text('$count', textDirection: TextDirection.ltr);
+      },
+    );
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: Column(
+          textDirection: TextDirection.ltr,
+          children: <Widget>[
+            consumer,
+          ],
+        ),
+      ),
+    );
+  });
+
+  testWidgets('didUpdateWidget supports Provider change', (tester) async {
+    //
+    final counter = Counter2();
+    final provider = StateNotifierProvider((_) => counter);
+
+    final counter1 = Counter2(state: 42);
+    final provider1 = StateNotifierProvider((_) => counter1);
+
+    final onChange = ListenerMock<int>();
+
+    Widget build(StateNotifierProvider<Counter2> provider) {
+      return ProviderScope(
+        child: HookBuilder(builder: (c) {
+          final val = useProvider(provider.state);
+
+          useProviderListener<int>(provider.select((value) => value.current),
+              (_, value) => onChange(value));
+          return Text('$val', textDirection: TextDirection.ltr);
+        }),
+      );
+    }
+
+    await tester.pumpWidget(build(provider));
+    counter.setState(5);
+    await tester.pump();
+    expect(find.text('5'), findsOneWidget);
+
+    await tester.pumpWidget(build(provider1));
+    counter1.setState(30);
+    await tester.pump();
+    expect(find.text('30'), findsOneWidget);
+  });
+}
+
+class Counter2 extends StateNotifier<int> {
+  Counter2({int state = 0}) : super(state);
+
+  int get current => state;
+
+  // ignore: use_setters_to_change_properties
+  void setState(int n) {
+    state = n;
+  }
 }
