@@ -19,7 +19,7 @@ dev_dependencies:
   build_runner: ^1.10.4
   freezed:
     git:
-      ref: master
+      ref: fix-inconsistent-analysis-exception
       url: https://github.com/rrousselGit/freezed
       path: packages/freezed
   mockito: ^4.1.0
