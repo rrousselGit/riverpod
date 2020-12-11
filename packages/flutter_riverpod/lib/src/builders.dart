@@ -232,7 +232,40 @@ class ChangeNotifierProviderBuilder {
   ///   print(myParameter.userId);
   ///   print(myParameter.locale);
   ///   // Do something with userId/locale
-  /// })
+  /// });
+  ///
+  /// @override
+  /// Widget build(BuildContext context, ScopedReader watch) {
+  ///   int userId; // Read the user ID from somewhere
+  ///   final locale = Localizations.localeOf(context);
+  ///
+  ///   final something = watch(
+  ///     exampleProvider(MyParameter(userId: userId, locale: locale)),
+  ///   );
+  ///
+  ///   ...
+  /// }
+  /// ```
+  ///
+  /// ```dart
+  /// class MyParameter extends Equatable  {
+  ///   factory MyParameter({
+  ///     int userId,
+  ///     Locale locale,
+  ///   });
+  ///
+  ///   int userId;
+  ///   Local local;
+  ///
+  ///   @override
+  ///   List<Object> get props => [userId,local];
+  /// }
+  ///
+  /// final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
+  ///   print(myParameter.userId);
+  ///   print(myParameter.locale);
+  ///   // Do something with userId/locale
+  /// });
   ///
   /// @override
   /// Widget build(BuildContext context, ScopedReader watch) {
