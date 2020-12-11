@@ -85,12 +85,12 @@ The fact that both providers create a `String` does not cause any problem.
 :::
 
 :::caution
-For providers to work, you must add [ProviderScope] at the root of your
+For providers to work, you must add [Provider] at the root of your
 Flutter applications:
 
 ```dart
 void main() {
-  runApp(ProviderScope(child: MyApp()));
+  runApp(Provider(create: (_) => Counter(), child: MyApp()));
 }
 ```
 
