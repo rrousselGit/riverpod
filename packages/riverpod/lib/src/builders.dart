@@ -1,5 +1,3 @@
-import 'package:collection/collection.dart' as c;
-
 import 'package:state_notifier/state_notifier.dart';
 
 import 'internals.dart';
