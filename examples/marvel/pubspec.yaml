@@ -39,6 +39,5 @@ dependency_overrides:
 flutter:
   uses-material-design: true
   assets:
-    - assets/configurations.json
     - assets/marvel.svg
     - assets/marvel_background.jpeg
