@@ -1,3 +1,7 @@
+# 0.12.2
+
+- Exported `AutoDisposeProviderReference`
+
 # 0.12.1
 
 - Fixed an remaining memory leak related to StreamProvider (see also https://github.com/rrousselGit/river_pod/issues/193)
