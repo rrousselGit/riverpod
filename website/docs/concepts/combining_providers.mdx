@@ -79,9 +79,10 @@ An easy way to implement such scenario would be to:
 
   ```dart
   final filteredTodoListProvider = Provider<List<Todo>>((ref) {
+    final filter = ref.watch(filterProvider);
     final todos = ref.watch(todoListProvider.state);
 
-    switch (ref.watch(filterProvider)) {
+    switch (filter.state) {
       case Filter.none:
         return todos;
       case Filter.completed:

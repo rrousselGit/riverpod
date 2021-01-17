@@ -1,3 +1,22 @@
+# 0.12.2
+
+- Exported `AutoDisposeProviderReference`
+
+# 0.12.1
+
+- Fixed an remaining memory leak related to StreamProvider (see also https://github.com/rrousselGit/river_pod/issues/193)
+
+# 0.12.0
+
+- **Breaking** FutureProvider and StreamProvider no-longer supports `null` as a valid value.
+- Fixed a memory leak with StreamProvider (see also https://github.com/rrousselGit/river_pod/issues/193)
+- Fixed an error message typo related to Consumer
+
+# 0.11.2
+
+- Fixed a bug where providers (usually ScopedProviders) did not dispose correctly
+  (see also https://github.com/rrousselGit/river_pod/issues/154).
+
 # 0.11.1
 
 - Fixed a bug where hot-reload did not work for `ConsumerWidget`/`Consumer`

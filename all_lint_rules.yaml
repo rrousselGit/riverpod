@@ -38,6 +38,7 @@ linter:
     - avoid_shadowing_type_parameters
     - avoid_single_cascade_in_expression_statements
     - avoid_slow_async_io
+    - avoid_type_to_string
     - avoid_types_as_parameter_names
     - avoid_types_on_closure_parameters
     - avoid_unnecessary_containers
@@ -49,6 +50,7 @@ linter:
     - camel_case_types
     - cancel_subscriptions
     - cascade_invocations
+    - cast_nullable_to_non_nullable
     - close_sinks
     - comment_references
     - constant_identifier_names
@@ -81,6 +83,7 @@ linter:
     - no_logic_in_create_state
     - no_runtimeType_toString
     - non_constant_identifier_names
+    - null_check_on_nullable_type_parameter
     - null_closures
     - omit_local_variable_types
     - one_member_abstracts
@@ -139,6 +142,7 @@ linter:
     - sort_unnamed_constructors_first
     - test_types_in_equals
     - throw_in_finally
+    - tighten_type_of_initializing_formals
     - type_annotate_public_apis
     - type_init_formals
     - unawaited_futures
@@ -150,6 +154,7 @@ linter:
     - unnecessary_lambdas
     - unnecessary_new
     - unnecessary_null_aware_assignments
+    - unnecessary_null_checks
     - unnecessary_null_in_if_null_operators
     - unnecessary_nullable_for_final_variable_declarations
     - unnecessary_overrides

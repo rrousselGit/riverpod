@@ -217,35 +217,66 @@ class StateProviderBuilder {
   /// - Objects generated with Freezed/built_value
   /// - Objects based on `package:equatable`
   ///
-  /// Here's an example using Freezed:
+  /// This includes:
+  /// - A tuple (using `package:tuple`)
+  /// - Objects generated with Freezed/built_value, such as:
+  ///   ```dart
+  ///   @freezed
+  ///   abstract class MyParameter with _$MyParameter {
+  ///     factory MyParameter({
+  ///       int userId,
+  ///       Locale locale,
+  ///     }) = _MyParameter;
+  ///   }
   ///
-  /// ```dart
-  /// @freezed
-  /// abstract class MyParameter with _$MyParameter {
-  ///   factory MyParameter({
-  ///     int userId,
-  ///     Locale locale,
-  ///   }) = _MyParameter;
-  /// }
+  ///   final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
+  ///     print(myParameter.userId);
+  ///     print(myParameter.locale);
+  ///     // Do something with userId/locale
+  ///   });
   ///
-  /// final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
-  ///   print(myParameter.userId);
-  ///   print(myParameter.locale);
-  ///   // Do something with userId/locale
-  /// })
+  ///   @override
+  ///   Widget build(BuildContext context, ScopedReader watch) {
+  ///     int userId; // Read the user ID from somewhere
+  ///     final locale = Localizations.localeOf(context);
   ///
-  /// @override
-  /// Widget build(BuildContext context, ScopedReader watch) {
-  ///   int userId; // Read the user ID from somewhere
-  ///   final locale = Localizations.localeOf(context);
+  ///     final something = watch(
+  ///       exampleProvider(MyParameter(userId: userId, locale: locale)),
+  ///     );
+  ///   }
+  ///   ```
   ///
-  ///   final something = watch(
-  ///     exampleProvider(MyParameter(userId: userId, locale: locale)),
-  ///   );
+  /// - Objects based on `package:equatable`, such as:
+  ///   ```dart
+  ///   class MyParameter extends Equatable  {
+  ///     factory MyParameter({
+  ///       int userId,
+  ///       Locale locale,
+  ///     });
   ///
-  ///   ...
-  /// }
-  /// ```
+  ///     int userId;
+  ///     Local local;
+  ///
+  ///     @override
+  ///     List<Object> get props => [userId,local];
+  ///   }
+  ///
+  ///   final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
+  ///     print(myParameter.userId);
+  ///     print(myParameter.locale);
+  ///     // Do something with userId/locale
+  ///   });
+  ///
+  ///   @override
+  ///   Widget build(BuildContext context, ScopedReader watch) {
+  ///     int userId; // Read the user ID from somewhere
+  ///     final locale = Localizations.localeOf(context);
+  ///
+  ///     final something = watch(
+  ///       exampleProvider(MyParameter(userId: userId, locale: locale)),
+  ///     );
+  ///   }
+  ///   ```
   /// {@endtemplate}
   StateProviderFamilyBuilder get family {
     return const StateProviderFamilyBuilder();

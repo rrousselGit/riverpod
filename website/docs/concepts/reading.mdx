@@ -14,24 +14,6 @@ criterias.
 Long story short, here is a decision graph to help you decide what to use to
 read a provider:
 
-<!-- - Are you inside the `build` method of a Widget?
-  - Are you using [flutter_hooks]?
-    Yes: use [useProvider]
-    No: use [Consumer]
-- Are you in the `onPressed` on a button or inside the life-cycle of a Widget
-  other than `build`?
-  If so, use [context.read].
-- Are you inside a provider that want to read other providers?
-  - Should the object created by your object be reconstructed when the provider
-    obtained changes?
-    Yes: use [ref.watch]
-    No: use [ref.read]
-- Are you inside widgets and you want to listen to a provider to show dialogs or push
-  routes?
-  If so, use [ProviderListener]
-- Are you inside tests or a package with no dependency on Flutter?
-  If so, use [ProviderContainer.read] or [ProviderContainer.listen]. -->
-
 ![Decision graph for reading providers](/img/intro/reading.svg)
 
 Next, we will see each individual case and show how they work.  
@@ -85,7 +67,7 @@ When reading this `userProvider`, you can:
   ```
 
 For more information, refer to the documentation of each individual provider by
-consulting the [API reference](https://pub.dev/documentation/riverpod/latest/all/riverpod-library.html).
+consulting the [API reference](https://pub.dev/documentation/riverpod/latest/all/all-library.html).
 
 ## Consuming a provider inside widgets
 
@@ -178,7 +160,7 @@ This syntax also supports a feature that are not supported by [ConsumerWidget]: 
 class Example extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    bool isAbove5 = useProvider(counterProvider.select((c) => s.state > 5));
+    bool isAbove5 = useProvider(counterProvider.select((s) => s.state > 5));
     return Text('Is counter > 5 ? $isAbove5');
   }
 }
@@ -362,3 +344,4 @@ This ensures that the state of your providers properly resets between test cases
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
 [statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/all/StateNotifierProvider-class.html
 [statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[streamprovider]: https://pub.dev/documentation/riverpod/latest/all/StreamProvider-class.html

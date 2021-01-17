@@ -4,6 +4,9 @@ import 'package:meta/meta.dart';
 import 'framework.dart';
 import 'internals.dart';
 
+/// A function that can also listen to providers
+///
+/// See also [Consumer]
 typedef ConsumerBuilder = Widget Function(
   BuildContext context,
   ScopedReader watch,
@@ -310,7 +313,7 @@ class _ConsumerState extends State<ConsumerWidget> {
   Res _reader<Res>(ProviderBase<Object, Res> target) {
     assert(
       _debugSelecting,
-      'Cannot use `read` outside of the body of the Consumer callback',
+      'Cannot use `watch` outside of the body of the Consumer callback',
     );
     return _dependencies.putIfAbsent(target, () {
       final oldDependency = _oldDependencies?.remove(target);

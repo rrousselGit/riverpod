@@ -24,7 +24,7 @@ simply append `.autoDispose` to your provider:
 ```dart
 final userProvider = StreamProvider.autoDispose<User>((ref) {
 
-})
+});
 ```
 
 That's it. Now, the state of `userProvider` will automatically be destroyed
@@ -39,7 +39,7 @@ You can combine `.autoDispose` with other modifiers if you need to:
 ```dart
 final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
 
-})
+});
 ```
 
 :::
@@ -117,7 +117,7 @@ final secondProvider = Provider((ref) {
   // The argument type 'AutoDisposeProvider<int>' can't be assigned to the
   // parameter type 'AlwaysAliveProviderBase<Object, Null>'
   ref.watch(firstProvider);
-})
+});
 ```
 
 This is undesired, as it would cause `firstProvider` to never be disposed.
@@ -129,7 +129,7 @@ final firstProvider = Provider.autoDispose((ref) => 0);
 
 final secondProvider = Provider.autoDispose((ref) {
   ref.watch(firstProvider);
-})
+});
 ```
 
 [provider]: https://pub.dev/documentation/riverpod/latest/all/Provider-class.html

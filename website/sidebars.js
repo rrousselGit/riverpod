@@ -89,6 +89,16 @@ module.exports = {
           label: "ListView paging with search",
           href: "https://github.com/tbm98/flutter_loadmore_search",
         },
+        {
+          type: "link",
+          label: "Resocoder's Weather Bloc to Weather Riverpod",
+          href: "https://github.com/campanagerald/flutter-bloc-library-v1-tutorial",
+        },
+        {
+          type: "link",
+          label: "Blood Pressure Tracker App",
+          href: "https://github.com/UrosTodosijevic/blood_pressure_tracker",
+        },
       ],
     },
     {

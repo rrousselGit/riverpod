@@ -110,6 +110,10 @@ mixin _FutureProviderStateMixin<T>
 
   @override
   void valueChanged({Future<T> previous}) {
+    assert(
+      createdValue != null,
+      'FutureProvider does not support "null" for stream',
+    );
     if (createdValue == previous) {
       return;
     }
@@ -119,7 +123,7 @@ mixin _FutureProviderStateMixin<T>
     // TODO transition between state ??= vs =
     // TODO don't notify if already loading
     exposedValue = const AsyncValue.loading();
-    listenedFuture?.then(
+    listenedFuture.then(
       (value) {
         if (this.listenedFuture == listenedFuture) {
           exposedValue = AsyncValue.data(value);

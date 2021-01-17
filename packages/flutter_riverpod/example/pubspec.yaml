@@ -8,15 +8,15 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  cupertino_icons: ^0.1.3
   flutter:
     sdk: flutter
   flutter_riverpod:
     path: ../../flutter_riverpod
-  riverpod:
-    path: ../../riverpod
   hooks_riverpod:
     path: ../../hooks_riverpod
-  cupertino_icons: ^0.1.3
+  riverpod:
+    path: ../../riverpod
 
 dev_dependencies:
   flutter_test:
@@ -25,10 +25,10 @@ dev_dependencies:
 dependency_overrides:
   flutter_riverpod:
     path: ../../flutter_riverpod
-  riverpod:
-    path: ../../riverpod
   hooks_riverpod:
     path: ../../hooks_riverpod
+  riverpod:
+    path: ../../riverpod
 
 flutter:
   uses-material-design: true

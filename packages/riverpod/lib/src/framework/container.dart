@@ -361,7 +361,10 @@ class ProviderContainer {
     final queue = DoubleLinkedQueue<ProviderElement>();
 
     for (final element in _stateReaders.values) {
-      if (element.dependents == null || element._subscriptions.isEmpty) {
+      if (element._subscriptions == null ||
+          element._subscriptions.keys
+              .where((e) => e._container == this)
+              .isEmpty) {
         queue.add(element);
       }
     }
@@ -376,14 +379,15 @@ class ProviderContainer {
 
       yield element;
 
-      if (element._dependents == null) {
-        continue;
-      }
-      for (final dependent in element._dependents) {
-        if (dependent._container == this &&
-            // All the parents of a node must have been visited before a node is visited
-            dependent._subscriptions.keys.every(visitedNodes.contains)) {
-          queue.add(dependent);
+      if (element._dependents != null) {
+        for (final dependent in element._dependents) {
+          if (dependent._container == this &&
+              // All the parents of a node must have been visited before a node is visited
+              dependent._subscriptions.keys.every((e) {
+                return e._container != this || visitedNodes.contains(e);
+              })) {
+            queue.add(dependent);
+          }
         }
       }
     }

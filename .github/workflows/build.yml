@@ -1,11 +1,17 @@
 name: Build
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  schedule:
+    # runs the CI everyday at 10AM
+    - cron:  '0 10 * * *'
+
 
 jobs:
   dart:
     runs-on: ubuntu-latest
-    container: google/dart:dev
+    container: google/dart:${{matrix.channel}}
 
     strategy:
       matrix:
@@ -13,7 +19,9 @@ jobs:
           - packages/riverpod
           - packages/riverpod/example
         channel:
-          - master
+          - dev
+          # latest is the stable release not master
+          - latest
 
     steps:
       - uses: actions/checkout@v2
@@ -70,6 +78,7 @@ jobs:
           - packages/hooks_riverpod/example
         channel:
           - dev
+          - stable
 
     steps:
       - uses: actions/checkout@v2

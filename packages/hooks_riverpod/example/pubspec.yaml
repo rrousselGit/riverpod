@@ -20,10 +20,10 @@ dev_dependencies:
 dependency_overrides:
   flutter_riverpod:
     path: ../../flutter_riverpod
-  riverpod:
-    path: ../../riverpod
   hooks_riverpod:
     path: ..
+  riverpod:
+    path: ../../riverpod
 
 flutter:
   uses-material-design: true

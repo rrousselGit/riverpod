@@ -71,7 +71,7 @@ For families to work correctly, it is critical for the parameter passed to
 a provider to have a consistent `hashCode` and `==`.
 
 Ideally the parameter should either be a primitive (bool/int/double/String),
-a constant (providers), or an immutable object that override `==` and `hashCode`.
+a constant (providers), or an immutable object that overrides `==` and `hashCode`.
 
 ### _PREFER_ using `autoDispose` when the parameter is not constant:
 
@@ -101,7 +101,18 @@ This includes:
 - Objects generated with [Freezed] or [built_value](https://pub.dev/packages/built_value)
 - Objects using [equatable](https://pub.dev/packages/equatable)
 
-Here's an example using [Freezed]:
+Here's an example using [Freezed] and [equatable]:
+
+<Tabs
+  groupId="family"
+  defaultValue="freezed"
+  values={[
+    { label: 'Freezed', value: 'freezed', },
+    { label: 'Equatable', value: 'equatable', },
+  ]}
+>
+
+<TabItem value="freezed">
 
 ```dart
 @freezed
@@ -116,7 +127,7 @@ final exampleProvider = Provider.autoDispose.family<Something, MyParameter>((ref
   print(myParameter.userId);
   print(myParameter.locale);
   // Do something with userId/locale
-})
+});
 
 @override
 Widget build(BuildContext context, ScopedReader watch) {
@@ -131,6 +142,45 @@ Widget build(BuildContext context, ScopedReader watch) {
 }
 ```
 
+</TabItem>
+<TabItem value="equatable">
+
+```dart
+class MyParameter extends Equatable  {
+  factory MyParameter({
+    int userId,
+    Locale locale,
+  });
+
+  int userId;
+  Local local;
+
+  @override
+  List<Object> get props => [userId,local];
+}
+
+final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
+  print(myParameter.userId);
+  print(myParameter.locale);
+  // Do something with userId/locale
+});
+
+@override
+Widget build(BuildContext context, ScopedReader watch) {
+  int userId; // Read the user ID from somewhere
+  final locale = Localizations.localeOf(context);
+
+  final something = watch(
+    exampleProvider(MyParameter(userId: userId, locale: locale)),
+  );
+
+  ...
+}
+```
+</TabItem>
+</Tabs>
+
 [freezed]: https://pub.dev/packages/freezed
 [provider]: https://pub.dev/documentation/riverpod/latest/all/Provider-class.html
+[equatable]: https://pub.dev/packages/equatable
 [futureprovider]: https://pub.dev/documentation/riverpod/latest/all/FutureProvider-class.html

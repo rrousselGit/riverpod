@@ -1,7 +1,9 @@
 part of '../framework.dart';
 
+/// A function that can both read a [ScopedProvider], normal providers and a `myProvider.select(..)`
 typedef ScopedReader = T Function<T>(ProviderBase<Object, T> provider);
 
+/// The function that [ScopedProvider]s uses to create their state.
 typedef ScopedCreate<T> = T Function(ScopedReader watch);
 
 /// {@template riverpod.scopedprovider}

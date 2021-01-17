@@ -170,7 +170,7 @@ class QuestionItem extends HookWidget {
     final questionTheme = useProvider(questionThemeProvider);
 
     if (question.data == null) {
-      return Center(child: Text('loading'));
+      return const Center(child: Text('loading'));
     }
 
     final data = question.data.value;

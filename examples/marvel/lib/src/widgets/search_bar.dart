@@ -9,13 +9,15 @@ import '../screens/home.dart';
 
 class _SearchTheme {
   const _SearchTheme({
-    this.width,
-    this.searchDecoration,
-    this.iconPadding,
-    this.searchMargin,
+    @required this.width,
+    this.height = 300,
+    @required this.searchDecoration,
+    @required this.iconPadding,
+    @required this.searchMargin,
   });
 
   final double width;
+  final double height;
   final BoxDecoration searchDecoration;
   final EdgeInsets iconPadding;
   final EdgeInsets searchMargin;
@@ -38,7 +40,7 @@ const _kUnfocusedTheme = _SearchTheme(
     borderRadius: BorderRadius.all(Radius.circular(10)),
   ),
   iconPadding: EdgeInsets.zero,
-  searchMargin: EdgeInsets.zero,
+  searchMargin: EdgeInsets.only(right: 10),
 );
 
 class SearchBar extends HookWidget {
@@ -55,24 +57,50 @@ class SearchBar extends HookWidget {
     final textFocusNode = useFocusNode();
     final textEditingController = useTextEditingController();
 
+    final hints = TweenAnimationBuilder<double>(
+      duration: const Duration(milliseconds: 150),
+      tween: Tween(
+        begin: 0,
+        end: searchFocusNode.hasFocus ? 1 : 0,
+      ),
+      builder: (context, opacity, child) {
+        return Opacity(
+          opacity: opacity,
+          child: child,
+        );
+      },
+      child: _SearchHintContainer(
+        theme: theme,
+        child: _SearchHints(textEditingController: textEditingController),
+      ),
+    );
+
+    final searchField = _SearchbarView(
+      theme: theme,
+      isFocused: searchFocusNode.hasFocus,
+      textEditingController: textEditingController,
+      textFocusNode: textFocusNode,
+    );
+
     return Focus(
       focusNode: searchFocusNode,
-      child: _SearchbarView(
-        theme: theme,
-        isFocused: searchFocusNode.hasFocus,
-        textEditingController: textEditingController,
-        textFocusNode: textFocusNode,
-        // TODO move PortalEntry above _SearchbarView after fixing constraint issue on flutter_portal
-        bottom: PortalEntry(
-          visible: searchFocusNode.hasFocus,
-          childAnchor: Alignment.bottomCenter,
-          portalAnchor: Alignment.topCenter,
-          portal: _SearchHintContainer(
-            theme: theme,
-            child: _SearchHints(textEditingController: textEditingController),
-          ),
-          child: Container(),
-        ),
+      child: TweenAnimationBuilder<double>(
+        duration: const Duration(milliseconds: 150),
+        tween: Tween(end: theme.width),
+        builder: (context, width, _) {
+          return Center(
+            child: SizedBox(
+              width: width,
+              child: PortalEntry(
+                visible: width > 40 || searchFocusNode.hasFocus,
+                childAnchor: Alignment.bottomCenter,
+                portalAnchor: Alignment.topCenter,
+                portal: SizedBox(width: width, child: hints),
+                child: searchField,
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -181,26 +209,19 @@ class _SearchHintContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TweenAnimationBuilder<double>(
-      duration: const Duration(milliseconds: 150),
-      tween: Tween(begin: 0, end: 1),
-      builder: (context, value, child) {
-        return Opacity(
-          opacity: value,
-          child: child,
-        );
-      },
-      child: Container(
-        constraints: BoxConstraints(
-          minWidth: theme.width,
-          maxWidth: theme.width,
-          maxHeight: 300,
-        ),
-        margin: theme.searchMargin,
-        child: Material(
-          elevation: 16,
-          borderRadius: theme.searchDecoration.borderRadius,
-          clipBehavior: Clip.hardEdge,
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: theme.height,
+      ),
+      margin: theme.searchMargin,
+      child: Material(
+        elevation: 16,
+        borderRadius: theme.searchDecoration.borderRadius,
+        clipBehavior: Clip.hardEdge,
+        child: OverflowBox(
+          alignment: Alignment.topLeft,
+          maxHeight: theme.height,
+          maxWidth: 300,
           child: child,
         ),
       ),
@@ -215,14 +236,12 @@ class _SearchbarView extends StatelessWidget {
     @required this.isFocused,
     @required this.textEditingController,
     @required this.textFocusNode,
-    @required this.bottom,
   }) : super(key: key);
 
   final _SearchTheme theme;
   final bool isFocused;
   final TextEditingController textEditingController;
   final FocusNode textFocusNode;
-  final Widget bottom;
 
   @override
   Widget build(BuildContext context) {
@@ -260,7 +279,6 @@ class _SearchbarView extends StatelessWidget {
             ),
           ),
         ),
-        Positioned.fill(child: bottom),
         AnimatedTheme(
           data: isFocused //
               ? ThemeData.light()

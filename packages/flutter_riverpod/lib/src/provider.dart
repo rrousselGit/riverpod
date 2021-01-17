@@ -64,7 +64,7 @@ extension BuildContextX on BuildContext {
   ///   // Using select to listen only to the value that used
   ///   final valueThatNeverChanges = useProvider(modelProvider.select((model) {
   ///     return model.valueThatNeverChanges;
-  ///   });
+  ///   }));
   ///
   ///   return Text('$valueThatNeverChanges');
   /// }

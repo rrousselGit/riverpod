@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
+import '../uni_directional_test.dart';
+
 void main() {
   StreamController<int> controller;
   final provider = StreamProvider((ref) => controller.stream);
@@ -32,6 +34,133 @@ void main() {
     controller.addError(42, stack);
 
     expect(container.read(provider), AsyncValue<int>.error(42, stack));
+  });
+
+  test(
+      'StreamProvider does not accept null (as provider.stream is non-nullable)',
+      () {
+    final provider = StreamProvider<void>((ref) => null);
+
+    expect(
+      container.read(provider),
+      isA<AsyncError>().having((e) => e.error, 'exception', isAssertionError),
+    );
+  });
+
+  test('the created stream does not leak on dispose', () async {
+    final container = ProviderContainer();
+    var didCloseSub = false;
+    final controller = StreamController<int>(
+      onCancel: () => didCloseSub = true,
+    );
+    addTearDown(controller.close);
+
+    final provider = StreamProvider((ref) => controller.stream);
+
+    var didCloseProxy = false;
+    container
+        .read(provider.stream)
+        .listen((_) {}, onDone: () => didCloseProxy = true);
+
+    await Future(() {});
+    expect(didCloseProxy, false);
+    expect(didCloseSub, false);
+
+    container.dispose();
+    await Future(() {});
+
+    expect(didCloseProxy, true);
+    expect(didCloseSub, true);
+  });
+
+  test('the created stream does not leak on autoDispose providers', () async {
+    final container = ProviderContainer();
+    var didCloseSub = false;
+    final controller = StreamController<int>(
+      onCancel: () => didCloseSub = true,
+    );
+    addTearDown(controller.close);
+
+    final provider = StreamProvider.autoDispose((ref) => controller.stream);
+
+    var didCloseProxy = false;
+
+    final sub = container.listen(provider.stream);
+    sub.read().listen((_) {}, onDone: () => didCloseProxy = true);
+
+    await Future(() {});
+    expect(didCloseProxy, false);
+    expect(didCloseSub, false);
+
+    container.dispose();
+    await Future(() {});
+
+    expect(didCloseProxy, true);
+    expect(didCloseSub, true);
+  });
+
+  test('the created stream does not leak on refresh', () async {
+    final container = ProviderContainer();
+    var didCloseSub = false;
+    final controller = StreamController<int>(
+      onCancel: () => didCloseSub = true,
+    );
+    var stream = controller.stream;
+    addTearDown(controller.close);
+
+    final provider = StreamProvider((ref) => stream);
+
+    var didClose = false;
+    container
+        .read(provider.stream)
+        .listen((_) {}, onDone: () => didClose = true);
+
+    await Future(() {});
+    expect(didCloseSub, false);
+    expect(didClose, false);
+
+    stream = const Stream.empty();
+    container.refresh(provider);
+    await Future(() {});
+
+    expect(didClose, true);
+    expect(didCloseSub, true);
+  });
+
+  test('myProvider.stream receives all values, errors and done events',
+      () async {
+    int lastValue;
+    dynamic lastError;
+    StackTrace lastStack;
+    var isClosed = false;
+
+    final sub = container.read(provider.stream).listen(
+          (value) => lastValue = value,
+          // ignore: avoid_types_on_closure_parameters
+          onError: (Object err, StackTrace stack) {
+            lastError = err;
+            lastStack = stack;
+          },
+          onDone: () => isClosed = true,
+        );
+    addTearDown(sub.cancel);
+
+    controller.add(42);
+    await Future(() {});
+
+    expect(lastValue, 42);
+
+    final stack = StackTrace.current;
+
+    controller.addError(21, stack);
+    await Future(() {});
+
+    expect(lastError, 21);
+    expect(lastStack, stack);
+
+    await controller.close();
+
+    expect(isClosed, isTrue);
   });
 
   test('does not filter identical values', () {

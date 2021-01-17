@@ -16,7 +16,7 @@ dev_dependencies:
 dependency_overrides:
   flutter_riverpod:
     path: ../packages/flutter_riverpod
-  riverpod:
-    path: ../packages/riverpod
   hooks_riverpod:
     path: ../packages/hooks_riverpod
+  riverpod:
+    path: ../packages/riverpod

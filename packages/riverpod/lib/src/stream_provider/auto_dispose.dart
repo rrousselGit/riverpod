@@ -9,7 +9,7 @@ class AutoDisposeStreamProvider<T>
   AutoDisposeStreamProvider(
     Create<Stream<T>, AutoDisposeProviderReference> create, {
     String name,
-  }) : super((ref) => create(ref).asBroadcastStream(), name);
+  }) : super(create, name);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStreamProviderFamilyBuilder();
