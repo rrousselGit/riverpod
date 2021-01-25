@@ -162,6 +162,7 @@ class Toolbar extends HookWidget {
           Tooltip(
             key: allFilterKey,
             message: 'All todos',
+            // ignore: deprecated_member_use, TextButton is not available in stable yet
             child: FlatButton(
               onPressed: () => filter.state = TodoListFilter.all,
               visualDensity: VisualDensity.compact,
@@ -172,6 +173,7 @@ class Toolbar extends HookWidget {
           Tooltip(
             key: activeFilterKey,
             message: 'Only uncompleted todos',
+            // ignore: deprecated_member_use, TextButton is not available in stable yet
             child: FlatButton(
               onPressed: () => filter.state = TodoListFilter.active,
               visualDensity: VisualDensity.compact,
@@ -182,6 +184,7 @@ class Toolbar extends HookWidget {
           Tooltip(
             key: completedFilterKey,
             message: 'Only completed todos',
+            // ignore: deprecated_member_use, TextButton is not available in stable yet
             child: FlatButton(
               onPressed: () => filter.state = TodoListFilter.completed,
               visualDensity: VisualDensity.compact,
