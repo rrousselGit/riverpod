@@ -5,8 +5,7 @@ on:
   pull_request:
   schedule:
     # runs the CI everyday at 10AM
-    - cron:  '0 10 * * *'
-
+    - cron: "0 10 * * *"
 
 jobs:
   dart:
@@ -21,7 +20,7 @@ jobs:
         channel:
           - dev
           # latest is the stable release not master
-          - latest
+          # - latest
 
     steps:
       - uses: actions/checkout@v2
@@ -63,6 +62,7 @@ jobs:
 
       - name: Upload coverage to codecov
         run: curl -s https://codecov.io/bash | bash
+
   flutter:
     runs-on: ubuntu-latest
 
@@ -78,7 +78,7 @@ jobs:
           - packages/hooks_riverpod/example
         channel:
           - dev
-          - stable
+          # - stable
 
     steps:
       - uses: actions/checkout@v2
