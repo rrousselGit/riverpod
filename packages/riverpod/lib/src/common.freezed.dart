@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies
 
 part of 'common.dart';
 
@@ -13,20 +13,17 @@ T _$identity<T>(T value) => value;
 class _$AsyncValueTearOff {
   const _$AsyncValueTearOff();
 
-// ignore: unused_element
-  AsyncData<T> data<T>(@nullable T value) {
+  AsyncData<T> data<T>(T value) {
     return AsyncData<T>(
       value,
     );
   }
 
-// ignore: unused_element
   AsyncLoading<T> loading<T>() {
     return AsyncLoading<T>();
   }
 
-// ignore: unused_element
-  AsyncError<T> error<T>(Object error, [StackTrace stackTrace]) {
+  AsyncError<T> error<T>(Object error, [StackTrace? stackTrace]) {
     return AsyncError<T>(
       error,
       stackTrace,
@@ -35,36 +32,35 @@ class _$AsyncValueTearOff {
 }
 
 /// @nodoc
-// ignore: unused_element
 const $AsyncValue = _$AsyncValueTearOff();
 
 /// @nodoc
 mixin _$AsyncValue<T> {
   @optionalTypeArgs
-  Result when<Result extends Object>({
-    @required Result data(@nullable T value),
-    @required Result loading(),
-    @required Result error(Object error, StackTrace stackTrace),
+  TResult when<TResult extends Object?>({
+    required TResult Function(T value) data,
+    required TResult Function() loading,
+    required TResult Function(Object error, StackTrace? stackTrace) error,
   });
   @optionalTypeArgs
-  Result maybeWhen<Result extends Object>({
-    Result data(@nullable T value),
-    Result loading(),
-    Result error(Object error, StackTrace stackTrace),
-    @required Result orElse(),
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(T value)? data,
+    TResult Function()? loading,
+    TResult Function(Object error, StackTrace? stackTrace)? error,
+    required TResult orElse(),
   });
   @optionalTypeArgs
-  Result map<Result extends Object>({
-    @required Result data(AsyncData<T> value),
-    @required Result loading(AsyncLoading<T> value),
-    @required Result error(AsyncError<T> value),
+  TResult map<TResult extends Object?>({
+    required TResult Function(AsyncData<T> value) data,
+    required TResult Function(AsyncLoading<T> value) loading,
+    required TResult Function(AsyncError<T> value) error,
   });
   @optionalTypeArgs
-  Result maybeMap<Result extends Object>({
-    Result data(AsyncData<T> value),
-    Result loading(AsyncLoading<T> value),
-    Result error(AsyncError<T> value),
-    @required Result orElse(),
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AsyncData<T> value)? data,
+    TResult Function(AsyncLoading<T> value)? loading,
+    TResult Function(AsyncError<T> value)? error,
+    required TResult orElse(),
   });
 }
 
@@ -90,7 +86,7 @@ abstract class $AsyncDataCopyWith<T, $Res> {
   factory $AsyncDataCopyWith(
           AsyncData<T> value, $Res Function(AsyncData<T>) then) =
       _$AsyncDataCopyWithImpl<T, $Res>;
-  $Res call({@nullable T value});
+  $Res call({T value});
 }
 
 /// @nodoc
@@ -105,7 +101,7 @@ class _$AsyncDataCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
 
   @override
   $Res call({
-    Object value = freezed,
+    Object? value = freezed,
   }) {
     return _then(AsyncData<T>(
       value == freezed ? _value.value : value as T,
@@ -115,15 +111,14 @@ class _$AsyncDataCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
 
 /// @nodoc
 class _$AsyncData<T> extends AsyncData<T> {
-  const _$AsyncData(@nullable this.value) : super._();
+  const _$AsyncData(this.value) : super._();
 
   @override
-  @nullable
   final T value;
 
   @override
   String toString() {
-    return 'AsyncValue<$T>.data(value: $value)';
+    return 'AsyncValue<$T>.data(value: $value, data: $data)';
   }
 
   @override
@@ -138,32 +133,29 @@ class _$AsyncData<T> extends AsyncData<T> {
   int get hashCode =>
       runtimeType.hashCode ^ const DeepCollectionEquality().hash(value);
 
+  @JsonKey(ignore: true)
   @override
   $AsyncDataCopyWith<T, AsyncData<T>> get copyWith =>
       _$AsyncDataCopyWithImpl<T, AsyncData<T>>(this, _$identity);
 
   @override
   @optionalTypeArgs
-  Result when<Result extends Object>({
-    @required Result data(@nullable T value),
-    @required Result loading(),
-    @required Result error(Object error, StackTrace stackTrace),
+  TResult when<TResult extends Object?>({
+    required TResult Function(T value) data,
+    required TResult Function() loading,
+    required TResult Function(Object error, StackTrace? stackTrace) error,
   }) {
-    assert(data != null);
-    assert(loading != null);
-    assert(error != null);
     return data(value);
   }
 
   @override
   @optionalTypeArgs
-  Result maybeWhen<Result extends Object>({
-    Result data(@nullable T value),
-    Result loading(),
-    Result error(Object error, StackTrace stackTrace),
-    @required Result orElse(),
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(T value)? data,
+    TResult Function()? loading,
+    TResult Function(Object error, StackTrace? stackTrace)? error,
+    required TResult orElse(),
   }) {
-    assert(orElse != null);
     if (data != null) {
       return data(value);
     }
@@ -172,26 +164,22 @@ class _$AsyncData<T> extends AsyncData<T> {
 
   @override
   @optionalTypeArgs
-  Result map<Result extends Object>({
-    @required Result data(AsyncData<T> value),
-    @required Result loading(AsyncLoading<T> value),
-    @required Result error(AsyncError<T> value),
+  TResult map<TResult extends Object?>({
+    required TResult Function(AsyncData<T> value) data,
+    required TResult Function(AsyncLoading<T> value) loading,
+    required TResult Function(AsyncError<T> value) error,
   }) {
-    assert(data != null);
-    assert(loading != null);
-    assert(error != null);
     return data(this);
   }
 
   @override
   @optionalTypeArgs
-  Result maybeMap<Result extends Object>({
-    Result data(AsyncData<T> value),
-    Result loading(AsyncLoading<T> value),
-    Result error(AsyncError<T> value),
-    @required Result orElse(),
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AsyncData<T> value)? data,
+    TResult Function(AsyncLoading<T> value)? loading,
+    TResult Function(AsyncError<T> value)? error,
+    required TResult orElse(),
   }) {
-    assert(orElse != null);
     if (data != null) {
       return data(this);
     }
@@ -201,10 +189,10 @@ class _$AsyncData<T> extends AsyncData<T> {
 
 abstract class AsyncData<T> extends AsyncValue<T> {
   const AsyncData._() : super._();
-  const factory AsyncData(@nullable T value) = _$AsyncData<T>;
+  const factory AsyncData(T value) = _$AsyncData<T>;
 
-  @nullable
   T get value;
+  @JsonKey(ignore: true)
   $AsyncDataCopyWith<T, AsyncData<T>> get copyWith;
 }
 
@@ -233,7 +221,7 @@ class _$AsyncLoading<T> extends AsyncLoading<T> {
 
   @override
   String toString() {
-    return 'AsyncValue<$T>.loading()';
+    return 'AsyncValue<$T>.loading(data: $data)';
   }
 
   @override
@@ -246,26 +234,22 @@ class _$AsyncLoading<T> extends AsyncLoading<T> {
 
   @override
   @optionalTypeArgs
-  Result when<Result extends Object>({
-    @required Result data(@nullable T value),
-    @required Result loading(),
-    @required Result error(Object error, StackTrace stackTrace),
+  TResult when<TResult extends Object?>({
+    required TResult Function(T value) data,
+    required TResult Function() loading,
+    required TResult Function(Object error, StackTrace? stackTrace) error,
   }) {
-    assert(data != null);
-    assert(loading != null);
-    assert(error != null);
     return loading();
   }
 
   @override
   @optionalTypeArgs
-  Result maybeWhen<Result extends Object>({
-    Result data(@nullable T value),
-    Result loading(),
-    Result error(Object error, StackTrace stackTrace),
-    @required Result orElse(),
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(T value)? data,
+    TResult Function()? loading,
+    TResult Function(Object error, StackTrace? stackTrace)? error,
+    required TResult orElse(),
   }) {
-    assert(orElse != null);
     if (loading != null) {
       return loading();
     }
@@ -274,26 +258,22 @@ class _$AsyncLoading<T> extends AsyncLoading<T> {
 
   @override
   @optionalTypeArgs
-  Result map<Result extends Object>({
-    @required Result data(AsyncData<T> value),
-    @required Result loading(AsyncLoading<T> value),
-    @required Result error(AsyncError<T> value),
+  TResult map<TResult extends Object?>({
+    required TResult Function(AsyncData<T> value) data,
+    required TResult Function(AsyncLoading<T> value) loading,
+    required TResult Function(AsyncError<T> value) error,
   }) {
-    assert(data != null);
-    assert(loading != null);
-    assert(error != null);
     return loading(this);
   }
 
   @override
   @optionalTypeArgs
-  Result maybeMap<Result extends Object>({
-    Result data(AsyncData<T> value),
-    Result loading(AsyncLoading<T> value),
-    Result error(AsyncError<T> value),
-    @required Result orElse(),
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AsyncData<T> value)? data,
+    TResult Function(AsyncLoading<T> value)? loading,
+    TResult Function(AsyncError<T> value)? error,
+    required TResult orElse(),
   }) {
-    assert(orElse != null);
     if (loading != null) {
       return loading(this);
     }
@@ -311,7 +291,7 @@ abstract class $AsyncErrorCopyWith<T, $Res> {
   factory $AsyncErrorCopyWith(
           AsyncError<T> value, $Res Function(AsyncError<T>) then) =
       _$AsyncErrorCopyWithImpl<T, $Res>;
-  $Res call({Object error, StackTrace stackTrace});
+  $Res call({Object error, StackTrace? stackTrace});
 }
 
 /// @nodoc
@@ -327,30 +307,28 @@ class _$AsyncErrorCopyWithImpl<T, $Res>
 
   @override
   $Res call({
-    Object error = freezed,
-    Object stackTrace = freezed,
+    Object? error = freezed,
+    Object? stackTrace = freezed,
   }) {
     return _then(AsyncError<T>(
-      error == freezed ? _value.error : error,
-      stackTrace == freezed ? _value.stackTrace : stackTrace as StackTrace,
+      error == freezed ? _value.error : error as Object,
+      stackTrace == freezed ? _value.stackTrace : stackTrace as StackTrace?,
     ));
   }
 }
 
 /// @nodoc
 class _$AsyncError<T> extends AsyncError<T> {
-  _$AsyncError(this.error, [this.stackTrace])
-      : assert(error != null),
-        super._();
+  _$AsyncError(this.error, [this.stackTrace]) : super._();
 
   @override
   final Object error;
   @override
-  final StackTrace stackTrace;
+  final StackTrace? stackTrace;
 
   @override
   String toString() {
-    return 'AsyncValue<$T>.error(error: $error, stackTrace: $stackTrace)';
+    return 'AsyncValue<$T>.error(error: $error, stackTrace: $stackTrace, data: $data)';
   }
 
   @override
@@ -370,32 +348,29 @@ class _$AsyncError<T> extends AsyncError<T> {
       const DeepCollectionEquality().hash(error) ^
       const DeepCollectionEquality().hash(stackTrace);
 
+  @JsonKey(ignore: true)
   @override
   $AsyncErrorCopyWith<T, AsyncError<T>> get copyWith =>
       _$AsyncErrorCopyWithImpl<T, AsyncError<T>>(this, _$identity);
 
   @override
   @optionalTypeArgs
-  Result when<Result extends Object>({
-    @required Result data(@nullable T value),
-    @required Result loading(),
-    @required Result error(Object error, StackTrace stackTrace),
+  TResult when<TResult extends Object?>({
+    required TResult Function(T value) data,
+    required TResult Function() loading,
+    required TResult Function(Object error, StackTrace? stackTrace) error,
   }) {
-    assert(data != null);
-    assert(loading != null);
-    assert(error != null);
     return error(this.error, stackTrace);
   }
 
   @override
   @optionalTypeArgs
-  Result maybeWhen<Result extends Object>({
-    Result data(@nullable T value),
-    Result loading(),
-    Result error(Object error, StackTrace stackTrace),
-    @required Result orElse(),
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(T value)? data,
+    TResult Function()? loading,
+    TResult Function(Object error, StackTrace? stackTrace)? error,
+    required TResult orElse(),
   }) {
-    assert(orElse != null);
     if (error != null) {
       return error(this.error, stackTrace);
     }
@@ -404,26 +379,22 @@ class _$AsyncError<T> extends AsyncError<T> {
 
   @override
   @optionalTypeArgs
-  Result map<Result extends Object>({
-    @required Result data(AsyncData<T> value),
-    @required Result loading(AsyncLoading<T> value),
-    @required Result error(AsyncError<T> value),
+  TResult map<TResult extends Object?>({
+    required TResult Function(AsyncData<T> value) data,
+    required TResult Function(AsyncLoading<T> value) loading,
+    required TResult Function(AsyncError<T> value) error,
   }) {
-    assert(data != null);
-    assert(loading != null);
-    assert(error != null);
     return error(this);
   }
 
   @override
   @optionalTypeArgs
-  Result maybeMap<Result extends Object>({
-    Result data(AsyncData<T> value),
-    Result loading(AsyncLoading<T> value),
-    Result error(AsyncError<T> value),
-    @required Result orElse(),
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(AsyncData<T> value)? data,
+    TResult Function(AsyncLoading<T> value)? loading,
+    TResult Function(AsyncError<T> value)? error,
+    required TResult orElse(),
   }) {
-    assert(orElse != null);
     if (error != null) {
       return error(this);
     }
@@ -433,9 +404,10 @@ class _$AsyncError<T> extends AsyncError<T> {
 
 abstract class AsyncError<T> extends AsyncValue<T> {
   AsyncError._() : super._();
-  factory AsyncError(Object error, [StackTrace stackTrace]) = _$AsyncError<T>;
+  factory AsyncError(Object error, [StackTrace? stackTrace]) = _$AsyncError<T>;
 
   Object get error;
-  StackTrace get stackTrace;
+  StackTrace? get stackTrace;
+  @JsonKey(ignore: true)
   $AsyncErrorCopyWith<T, AsyncError<T>> get copyWith;
 }
