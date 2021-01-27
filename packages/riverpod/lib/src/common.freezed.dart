@@ -118,7 +118,7 @@ class _$AsyncData<T> extends AsyncData<T> {
 
   @override
   String toString() {
-    return 'AsyncValue<$T>.data(value: $value, data: $data)';
+    return 'AsyncValue<$T>.data(value: $value)';
   }
 
   @override
@@ -221,7 +221,7 @@ class _$AsyncLoading<T> extends AsyncLoading<T> {
 
   @override
   String toString() {
-    return 'AsyncValue<$T>.loading(data: $data)';
+    return 'AsyncValue<$T>.loading()';
   }
 
   @override
@@ -328,7 +328,7 @@ class _$AsyncError<T> extends AsyncError<T> {
 
   @override
   String toString() {
-    return 'AsyncValue<$T>.error(error: $error, stackTrace: $stackTrace, data: $data)';
+    return 'AsyncValue<$T>.error(error: $error, stackTrace: $stackTrace)';
   }
 
   @override

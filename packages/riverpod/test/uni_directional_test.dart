@@ -8,13 +8,13 @@ import 'utils.dart';
 
 final isAssertionError = isA<AssertionError>();
 
-TypeMatcher isProviderException([Object exceptionMatcher]) {
+TypeMatcher isProviderException([Object? exceptionMatcher]) {
   return isA<ProviderException>()
       .having((s) => s.exception, 'exception', exceptionMatcher);
 }
 
 void main() {
-  ProviderContainer container;
+  late ProviderContainer container;
   setUp(() {
     container = ProviderContainer();
   });
@@ -162,7 +162,7 @@ void main() {
   });
 
   test('initState can dirty descendants', () {
-    StateController<int> counter;
+    late StateController<int> counter;
     final rebuildToken = StateProvider((ref) => 0);
     final ancestor = Provider((ref) {
       if (ref.watch(rebuildToken).state > 0) {
@@ -257,7 +257,7 @@ void main() {
   test("Provider can't dirty anything on create", () {
     final counter = Counter();
     final provider = StateNotifierProvider((_) => counter);
-    List<Object> errors;
+    late List<Object> errors;
     final computed = Provider((ref) {
       errors = errorsOf(counter.increment);
       return 0;

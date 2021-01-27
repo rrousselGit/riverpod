@@ -901,8 +901,8 @@ abstract class ProviderStateBase<Created, Listened> {
   ///
   /// May change over time, in which case [valueChanged] will be called with the
   /// previous value.
-  Created get createdValue => _createdValue;
-  late Created _createdValue;
+  Created get createdValue => _createdValue as Created;
+  Created? _createdValue;
 
   /// The value currently exposed by the provider.
   ///

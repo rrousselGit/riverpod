@@ -66,7 +66,7 @@ void main() {
 
     expect(container.read(provider), 42);
 
-    final state = container.debugProviderElements.single;
+    final state = container.debugProviderElements!.single;
 
     expect(state.hasListeners, false);
 
@@ -414,7 +414,7 @@ void main() {
   });
 
   test('circular dependencies (sync)', () {
-    Provider<int> provider;
+    late Provider<int> provider;
 
     final provider1 = Provider((ref) {
       return ref.watch(provider) + 1;
@@ -434,7 +434,7 @@ void main() {
   });
 
   test('circular dependencies (async)', () {
-    Provider<int Function()> provider;
+    late Provider<int Function()> provider;
 
     final provider1 = Provider((ref) {
       return ref.watch(provider)() + 1;
@@ -509,7 +509,7 @@ void main() {
 
   test('ProviderReference is unusable after dispose (read/onDispose)', () {
     final container = ProviderContainer();
-    ProviderReference ref;
+    late ProviderReference ref;
     final provider = Provider((s) {
       ref = s;
       return 42;
@@ -528,7 +528,7 @@ void main() {
     var callCount = 0;
     final onDispose = OnDisposeMock();
     final error = Error();
-    ProviderReference reference;
+    late ProviderReference reference;
     final provider = Provider((ref) {
       reference = ref;
       callCount++;
@@ -750,14 +750,14 @@ class AsyncListenerMock extends Mock {
 
 class ListenerMock extends Mock {
   ListenerMock([this.debugLabel]);
-  final String debugLabel;
+  final String? debugLabel;
 
   void call(int value);
 
   @override
   String toString() {
     if (debugLabel != null) {
-      return debugLabel;
+      return debugLabel!;
     }
     return super.toString();
   }

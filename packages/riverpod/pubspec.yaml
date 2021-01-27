@@ -17,7 +17,7 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^1.11.0
-  freezed: ">=0.13.0-nullsafety.1 <0.13.0"
+  freezed: ">=0.13.0-nullsafety.2 <0.13.0"
   mockito: ^5.0.0-nullsafety.5
   test: ^1.16.0-nullsafety.16
   # test_coverage: ^0.4.3
