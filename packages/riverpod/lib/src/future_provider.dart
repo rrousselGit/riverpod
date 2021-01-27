@@ -95,7 +95,7 @@ mixin _FutureProviderMixin<T> on RootProvider<Future<T>, AsyncValue<T>> {
             );
           }
         };
-        ref.onChange(value);
+        ref.onChange!(value);
         return completer.future;
       }, value),
       this,
@@ -106,14 +106,10 @@ mixin _FutureProviderMixin<T> on RootProvider<Future<T>, AsyncValue<T>> {
 mixin _FutureProviderStateMixin<T>
     on ProviderStateBase<Future<T>, AsyncValue<T>> {
   // Used to determine if we are still listening to a future or not inside its `then`
-  Future<T> listenedFuture;
+  Future<T>? listenedFuture;
 
   @override
-  void valueChanged({Future<T> previous}) {
-    assert(
-      createdValue != null,
-      'FutureProvider does not support "null" for stream',
-    );
+  void valueChanged({Future<T>? previous}) {
     if (createdValue == previous) {
       return;
     }

@@ -220,7 +220,7 @@ part 'provider/auto_dispose.dart';
 /// {@endtemplate}
 mixin _ProviderStateMixin<T> on ProviderStateBase<T, T> {
   @override
-  void valueChanged({T previous}) {
+  void valueChanged({T? previous}) {
     if (createdValue != exposedValue) {
       exposedValue = createdValue;
     }

@@ -1,7 +1,7 @@
 part of '../framework.dart';
 
 /// A function that can both read a [ScopedProvider], normal providers and a `myProvider.select(..)`
-typedef ScopedReader = T Function<T>(ProviderBase<Object, T> provider);
+typedef ScopedReader = T Function<T>(ProviderBase<Object?, T> provider);
 
 /// The function that [ScopedProvider]s uses to create their state.
 typedef ScopedCreate<T> = T Function(ScopedReader watch);
@@ -88,15 +88,15 @@ typedef ScopedCreate<T> = T Function(ScopedReader watch);
 /// This is equivalent to:
 ///
 /// ```dart
-/// final example = ScopedProvider<int>((watch) => throw UnimplementedError(''));
+/// final example = ScopedProvider<int>((watch) => throw UnsupportedError('<some error message>'));
 /// ```
 /// {@endtemplate}
 @sealed
 class ScopedProvider<Listened> extends ProviderBase<Listened, Listened> {
   /// {@macro riverpod.scopedprovider}
   ScopedProvider(
-    ScopedCreate<Listened> create, {
-    String name,
+    ScopedCreate<Listened>? create, {
+    String? name,
   }) : super(
           create == null
               ? (ref) => throw UnsupportedError(
@@ -150,7 +150,7 @@ class _ScopedProviderElement<T> extends AutoDisposeProviderElement<T, T> {
 @sealed
 class _ScopedProviderState<T> extends ProviderStateBase<T, T> {
   @override
-  void valueChanged({T previous}) {
+  void valueChanged({T? previous}) {
     if (createdValue != exposedValue) {
       exposedValue = createdValue;
     }

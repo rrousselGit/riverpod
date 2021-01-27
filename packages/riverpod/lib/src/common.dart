@@ -154,13 +154,14 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
   ///   print(configs.data); // null, currently loading
   ///   print(configs.data.value); // throws null exception
   ///   ```
-  AsyncData<T> get data {
+  AsyncData<T>? get data {
     return map(
       data: (data) => data,
       loading: (_) => null,
       error: (_) => null,
     );
   }
+
   // TODO: Add a `value` extension on non-nullable AsyncValue
 
   /// Shorthand for [when] to handle only the `data` case.
