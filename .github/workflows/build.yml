@@ -52,7 +52,7 @@ jobs:
         run: melos exec --scope="${{ matrix.package }}" --depends-on="build_runner" --no-flutter -- "dart run build_runner build --delete-conflicting-outputs"
 
       - name: Generate (flutter)
-        run: melos exec --scope="${{ matrix.package }}" --depends-on="build_runner" --flutter -- "dart run build_runner build --delete-conflicting-outputs"
+        run: melos exec --scope="${{ matrix.package }}" --depends-on="build_runner" --flutter -- "flutter pub run build_runner build --delete-conflicting-outputs"
 
       - name: Analyze
         run: flutter analyze packages examples
