@@ -34,46 +34,29 @@ jobs:
         with:
           channel: ${{ matrix.channel }}
 
-      # # It is executed separatly
-      # - name: Removing example folder
-      #   run: rm -rf example
-      #   working-directory: ${{ matrix.package }}
+      - name: Add pub cache to PATH
+        run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
 
-      - name: Install Melos
-        run: dart pub global activate melos
-
-      - run: export PATH="$PATH":"$HOME/.pub-cache/bin"
+      - run: dart pub global activate melos
 
       - name: Install dependencies
-        run: melos bootstrap --scope="${{ matrix.package }}"
+        run: melos bootstrap
 
       - name: Check format
         run: flutter format --set-exit-if-changed .
-        working-directory: ${{ matrix.package }}
 
-      - name: Generate (flutter)
-        run: |
-          if grep -q build_runner "pubspec.yaml"; then
-            melos exec --scope="${{ matrix.package }}" --flutter flutter pub run build_runner build --delete-conflicting-outputs
-          fi
-
-      - name: Generate (dart)
-        run: |
-          if grep -q build_runner "pubspec.yaml"; then
-            melos exec --scope="${{ matrix.package }}" --no-flutter dart run build_runner build --delete-conflicting-outputs
-          fi
+      - name: Generate
+        run: melos exec --scope="${{ matrix.package }}" -- ls # "if grep -q build_runner pubspec.yaml; then dart run build_runner build --delete-conflicting-outputs; fi"
 
       - name: Analyze
-        run: flutter analyze
-        working-directory: ${{ matrix.package }}
+        run: flutter analyze packages examples
 
       - name: Run tests (flutter)
-        run: melos exec --scope="${{ matrix.package }}" --flutter flutter test --coverage
-        working-directory: ${{ matrix.package }}
+        run: melos exec --scope="${{ matrix.package }}" --flutter -- flutter test --coverage
 
       - name: Run tests (dart)
         working-directory: ${{ matrix.package }}
-        run: melos exec --scope="${{ matrix.package }}" --no-flutter ../../tool/coverage.sh
+        run: melos exec --scope="${{ matrix.package }}" --no-flutter -- ../../tool/coverage.sh
 
       - name: Upload coverage to codecov
         run: curl -s https://codecov.io/bash | bash
