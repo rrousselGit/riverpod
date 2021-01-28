@@ -13,16 +13,6 @@ jobs:
 
     strategy:
       matrix:
-        package:
-          - riverpod
-          - riverpod_example
-          - counter
-          - todos
-          # - examples/marvel
-          - flutter_riverpod
-          - flutter_riverpod_example
-          - hooks_riverpod
-          - hooks_riverpod_example
         channel:
           - dev
           # - stable
@@ -55,14 +45,13 @@ jobs:
         run: melos exec --depends-on="build_runner" --flutter -- "flutter pub run build_runner build --delete-conflicting-outputs"
 
       - name: Analyze
-        run: melos exec --scope="${{ matrix.package }}" -- "flutter analyze"
+        run: melos exec --ignore="marvel" -- "flutter analyze"
 
       - name: Run tests (flutter)
-        run: melos exec --scope="${{ matrix.package }}" --flutter -- flutter test --coverage
+        run: melos exec --ignore="marvel" -c 1 --flutter -- "flutter test --coverage"
 
       - name: Run tests (dart)
-        working-directory: ${{ matrix.package }}
-        run: melos exec --scope="${{ matrix.package }}" --no-flutter -- ../../tool/coverage.sh
+        run: melos exec -c 1 --no-flutter -- "\$MELOS_ROOT_PATH/scripts/coverage.sh"
 
       - name: Upload coverage to codecov
         run: curl -s https://codecov.io/bash | bash
