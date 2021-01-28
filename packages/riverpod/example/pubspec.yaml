@@ -16,4 +16,4 @@ dev_dependencies:
   build_runner: ^1.11.0
   freezed: ">=0.13.0-nullsafety.1 <0.13.0"
   json_serializable:
-  test:
+  test: ^1.16.0-nullsafety.16
