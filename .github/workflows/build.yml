@@ -55,7 +55,7 @@ jobs:
         run: melos exec --depends-on="build_runner" --flutter -- "flutter pub run build_runner build --delete-conflicting-outputs"
 
       - name: Analyze
-        run: flutter analyze packages examples
+        run: melos exec -- "flutter analyze"
 
       - name: Run tests (flutter)
         run: melos exec --scope="${{ matrix.package }}" --flutter -- flutter test --coverage
