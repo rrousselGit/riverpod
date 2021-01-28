@@ -45,8 +45,11 @@ jobs:
       - name: Check format
         run: flutter format --set-exit-if-changed .
 
-      - name: Generate
-        run: melos exec --scope="${{ matrix.package }}" -- ls # "if grep -q build_runner pubspec.yaml; then dart run build_runner build --delete-conflicting-outputs; fi"
+      - name: Generate (dart)
+        run: melos exec --scope="${{ matrix.package }}" --depends-on="build_runner" --no-flutter -- "dart run build_runner build --delete-conflicting-outputs"
+
+      - name: Generate (flutter)
+        run: melos exec --scope="${{ matrix.package }}" --depends-on="build_runner" --flutter -- "dart run build_runner build --delete-conflicting-outputs"
 
       - name: Analyze
         run: flutter analyze packages examples
