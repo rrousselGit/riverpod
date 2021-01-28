@@ -37,6 +37,8 @@ jobs:
       - name: Add pub cache to PATH
         run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
 
+      - run: dart pub cache repair
+
       - run: dart pub global activate melos
 
       - name: Install dependencies
@@ -44,8 +46,6 @@ jobs:
 
       - name: Check format
         run: flutter format --set-exit-if-changed .
-
-      - run: dart pub cache repair
 
       - name: Generate (dart)
         run: melos exec --scope="${{ matrix.package }}" --depends-on="build_runner" --no-flutter -- "dart run build_runner build --delete-conflicting-outputs"
