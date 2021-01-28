@@ -9,7 +9,7 @@ void main() {
     final provider = Provider((_) => 42);
 
     // These check the type safety
-    ProviderReference ref;
+    ProviderReference? ref;
 
     final provider1 = Provider<int>((r) {
       final first = r.watch(provider);

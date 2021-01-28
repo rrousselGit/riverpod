@@ -22,3 +22,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mockito: ^5.0.0-nullsafety.5
+
+dependency_overrides:
+  riverpod:
+    path: ../../packages/riverpod
