@@ -7,7 +7,7 @@ class AutoDisposeChangeNotifierProvider<T extends ChangeNotifier>
   /// {@macro riverpod.changenotifierprovider}
   AutoDisposeChangeNotifierProvider(
     Create<T, AutoDisposeProviderReference> create, {
-    String name,
+    String? name,
   }) : super(create, name);
 
   /// {@macro riverpod.family}
@@ -31,14 +31,14 @@ class AutoDisposeChangeNotifierProviderFamily<T extends ChangeNotifier, A>
   /// {@macro riverpod.changenotifierprovider.family}
   AutoDisposeChangeNotifierProviderFamily(
     T Function(AutoDisposeProviderReference ref, A a) create, {
-    String name,
+    String? name,
   }) : super(create, name);
 
   @override
   AutoDisposeChangeNotifierProvider<T> create(
     A value,
     T Function(AutoDisposeProviderReference ref, A param) builder,
-    String name,
+    String? name,
   ) {
     return AutoDisposeChangeNotifierProvider(
       (ref) => builder(ref, value),

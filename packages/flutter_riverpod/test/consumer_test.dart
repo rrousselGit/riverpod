@@ -62,10 +62,10 @@ void main() {
 
     container.read(provider0.state);
     container.read(provider1.state);
-    final familyState0 = container.debugProviderElements.firstWhere((p) {
+    final familyState0 = container.debugProviderElements!.firstWhere((p) {
       return p.provider == provider0.state;
     });
-    final familyState1 = container.debugProviderElements.firstWhere((p) {
+    final familyState1 = container.debugProviderElements!.firstWhere((p) {
       return p.provider == provider1.state;
     });
 
@@ -135,10 +135,10 @@ void main() {
 
     container.read(provider0.state);
     container.read(provider1.state);
-    final familyState0 = container.debugProviderElements.firstWhere((p) {
+    final familyState0 = container.debugProviderElements!.firstWhere((p) {
       return p.provider == provider0.state;
     });
-    final familyState1 = container.debugProviderElements.firstWhere((p) {
+    final familyState1 = container.debugProviderElements!.firstWhere((p) {
       return p.provider == provider1.state;
     });
 
@@ -332,7 +332,7 @@ void main() {
         .firstState<ProviderScopeState>(find.byKey(firstOwnerKey))
         .container;
 
-    final state1 = owner1.debugProviderElements
+    final state1 = owner1.debugProviderElements!
         .firstWhere((s) => s.provider == provider.state);
 
     expect(state1.hasListeners, true);
@@ -360,7 +360,7 @@ void main() {
         .firstState<ProviderScopeState>(find.byKey(secondOwnerKey))
         .container;
 
-    final state2 = container2.debugProviderElements
+    final state2 = container2.debugProviderElements!
         .firstWhere((s) => s.provider is StateNotifierStateProvider);
 
     expect(find.text('0'), findsNothing);
@@ -394,7 +394,7 @@ void main() {
         .firstState<ProviderScopeState>(find.byType(ProviderScope))
         .container;
 
-    final state = container.debugProviderElements
+    final state = container.debugProviderElements!
         .firstWhere((s) => s.provider == provider.state);
 
     expect(state.hasListeners, true);
@@ -554,7 +554,7 @@ class Listener<T> extends Mock {
 final _provider = Provider((ref) => 'hello world');
 
 class MyWidget extends ConsumerWidget {
-  const MyWidget({Key key}) : super(key: key);
+  const MyWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {

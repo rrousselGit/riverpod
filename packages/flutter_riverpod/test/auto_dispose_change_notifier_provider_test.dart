@@ -121,7 +121,7 @@ class OnDisposeMock extends Mock {
 }
 
 class Listener<T> extends Mock {
-  void call(T value);
+  void call(T? value);
 }
 
 class TestNotifier extends ChangeNotifier {
