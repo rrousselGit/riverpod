@@ -138,7 +138,7 @@ void main() {
     final container = ProviderContainer();
     final provider = Provider((_) => 42);
 
-    int value;
+    int? value;
     var callCount = 0;
 
     final removeListener = provider.watchOwner(container, (v) {

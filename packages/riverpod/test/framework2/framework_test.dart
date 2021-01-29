@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
-  ProviderContainer container;
+  late ProviderContainer container;
   final mayHaveChanged = MayHaveChangedMock<int>();
   final didChange = DidChangedMock<int>();
 
@@ -85,7 +85,7 @@ void main() {
   });
 
   group('combining providers', () {
-    StreamController<int> controller;
+    late StreamController<int> controller;
     final streamProvider = StreamProvider((ref) => controller.stream);
 
     setUp(() {
@@ -686,7 +686,7 @@ void main() {
       final root = ProviderContainer();
       final container = ProviderContainer(parent: root);
       var callCount = 0;
-      ProviderReference providerReference;
+      late ProviderReference providerReference;
       var result = 0;
       final provider = Provider((ref) {
         callCount++;

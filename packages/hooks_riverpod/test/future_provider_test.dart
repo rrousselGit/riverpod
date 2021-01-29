@@ -36,7 +36,7 @@ void main() {
     final futureProvider = FutureProvider<int>((s) async => throw error);
 
     dynamic whenError;
-    StackTrace whenStack;
+    StackTrace? whenStack;
 
     await tester.pumpWidget(
       Directionality(
@@ -82,7 +82,7 @@ void main() {
     // unmount ProviderScope which disposes the provider
     await tester.pumpWidget(Container());
 
-    completer.complete();
+    completer.complete(42);
 
     // wait for then to tick
     await Future.value(null);
@@ -150,11 +150,11 @@ void main() {
       return 42;
     });
 
-    Future<int> future;
+    Future<int>? future;
     var completed = false;
     final proxy = Provider<String>(
       (ref) {
-        future = ref.watch(futureProvider.future)
+        future = ref.watch(futureProvider.future)!
           ..then(
             (value) => completed = true,
             onError: (dynamic _) => completed = true,

@@ -102,7 +102,7 @@ void main() {
       final provider = StateNotifierProvider((_) => notifier);
       final selector = SelectorSpy<int>();
       var buildCount = 0;
-      Object lastSelectedValue;
+      Object? lastSelectedValue;
 
       await tester.pumpWidget(
         ProviderScope(
@@ -138,10 +138,10 @@ void main() {
       final notifier = Counter();
       final provider = StateNotifierProvider((_) => notifier);
       final selector = SelectorSpy<String>();
-      String value2;
+      String? value2;
       final build = BuildSpy();
       when(build()).thenAnswer((_) => value2 = 'foo');
-      Object lastSelectedValue;
+      Object? lastSelectedValue;
 
       await tester.pumpWidget(
         ProviderScope(child: HookBuilder(builder: (c) {
@@ -181,11 +181,11 @@ void main() {
         (tester) async {
       final notifier = Counter();
       final provider = StateNotifierProvider((_) => notifier);
-      bool lastSelectedValue;
+      bool? lastSelectedValue;
       final selector = SelectorSpy<int>();
-      int lastSelectedValue2;
+      int? lastSelectedValue2;
       final selector2 = SelectorSpy<int>();
-      Object lastSelectedValue3;
+      Object? lastSelectedValue3;
       final selector3 = SelectorSpy<int>();
       final build = BuildSpy();
 

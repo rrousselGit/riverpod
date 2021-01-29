@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -9,11 +10,11 @@ import '../screens/home.dart';
 
 class _SearchTheme {
   const _SearchTheme({
-    @required this.width,
+    required this.width,
     this.height = 300,
-    @required this.searchDecoration,
-    @required this.iconPadding,
-    @required this.searchMargin,
+    required this.searchDecoration,
+    required this.iconPadding,
+    required this.searchMargin,
   });
 
   final double width;
@@ -44,7 +45,7 @@ const _kUnfocusedTheme = _SearchTheme(
 );
 
 class SearchBar extends HookWidget {
-  const SearchBar({Key key}) : super(key: key);
+  const SearchBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +112,7 @@ class SearchBar extends HookWidget {
 String _useDecouncedSearch(TextEditingController textEditingController) {
   final search = useState(textEditingController.text);
   useEffect(() {
-    Timer timer;
+    Timer? timer;
     void listener() {
       timer?.cancel();
       timer = Timer(
@@ -132,8 +133,8 @@ String _useDecouncedSearch(TextEditingController textEditingController) {
 
 class _SearchHints extends HookWidget {
   const _SearchHints({
-    Key key,
-    @required this.textEditingController,
+    Key? key,
+    required this.textEditingController,
   }) : super(key: key);
 
   final TextEditingController textEditingController;
@@ -199,9 +200,9 @@ class _SearchHints extends HookWidget {
 
 class _SearchHintContainer extends StatelessWidget {
   const _SearchHintContainer({
-    Key key,
-    @required this.theme,
-    @required this.child,
+    Key? key,
+    required this.theme,
+    required this.child,
   }) : super(key: key);
 
   final _SearchTheme theme;
@@ -231,11 +232,11 @@ class _SearchHintContainer extends StatelessWidget {
 
 class _SearchbarView extends StatelessWidget {
   const _SearchbarView({
-    Key key,
-    @required this.theme,
-    @required this.isFocused,
-    @required this.textEditingController,
-    @required this.textFocusNode,
+    Key? key,
+    required this.theme,
+    required this.isFocused,
+    required this.textEditingController,
+    required this.textFocusNode,
   }) : super(key: key);
 
   final _SearchTheme theme;

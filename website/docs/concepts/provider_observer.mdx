@@ -26,7 +26,7 @@ A simple use case for [ProviderObserver], is to log the changes in providers by 
 
 class Logger extends ProviderObserver {
   @override
-  void didUpdateProvider(ProviderBase provider, Object newValue) {
+  void didUpdateProvider(ProviderBase provider, Object? newValue) {
     print('''
 {
   "provider": "${provider.name ?? provider.runtimeType}",
@@ -44,7 +44,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

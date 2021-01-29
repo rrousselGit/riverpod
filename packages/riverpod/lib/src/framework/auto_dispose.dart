@@ -17,7 +17,7 @@ abstract class AutoDisposeProviderReference extends ProviderReference {
   set maintainState(bool value);
 
   @override
-  T watch<T>(RootProvider<Object, T> provider);
+  T watch<T>(RootProvider<Object?, T> provider);
 }
 
 /// {@template riverpod.AutoDisposeProviderBase}
@@ -32,7 +32,7 @@ abstract class AutoDisposeProviderBase<Created, Listened>
   /// {@macro riverpod.AutoDisposeProviderBase}
   AutoDisposeProviderBase(
     Created Function(AutoDisposeProviderReference ref) create,
-    String name,
+    String? name,
   ) : super((ref) => create(ref as AutoDisposeProviderReference), name);
 
   @override
@@ -94,7 +94,8 @@ class _AutoDisposer {
   static final _AutoDisposer instance = _AutoDisposer();
 
   bool _scheduled = false;
-  LinkedList<_LinkedListEntry<AutoDisposeProviderElement>> _stateToDispose;
+  final _stateToDispose =
+      LinkedList<_LinkedListEntry<AutoDisposeProviderElement>>();
 
   /// Marks an [AutoDisposeProvider] as potentially needing to be disposed.
   void scheduleDispose(AutoDisposeProviderElement element) {
@@ -103,7 +104,6 @@ class _AutoDisposer {
       'Tried to dispose ${element._provider} , but still has listeners',
     );
 
-    _stateToDispose ??= LinkedList();
     _stateToDispose.add(_LinkedListEntry(element));
 
     if (!_scheduled) {
@@ -113,7 +113,7 @@ class _AutoDisposer {
           _performDispose();
         } finally {
           _scheduled = false;
-          _stateToDispose = null;
+          _stateToDispose.clear();
         }
       });
     }
@@ -125,7 +125,10 @@ class _AutoDisposer {
     /// Worse case scenario, a parent will be added twice to the list (parent child parent)
     /// but when the parent is traverse first, it will still have listeners,
     /// and the second time it is traversed, it won't anymore.
-    for (var entry = _stateToDispose.first; entry != null; entry = entry.next) {
+    for (_LinkedListEntry<AutoDisposeProviderElement<Object?, Object?>>? entry =
+            _stateToDispose.first;
+        entry != null;
+        entry = entry.next) {
       if (entry.value.maintainState ||
           entry.value.hasListeners ||
           !entry.value.mounted) {

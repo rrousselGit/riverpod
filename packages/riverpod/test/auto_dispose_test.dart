@@ -22,7 +22,7 @@ void main() {
   test('setting maintainState to false destroys the state when not listener',
       () async {
     final onDispose = OnDisposeMock();
-    AutoDisposeProviderReference ref;
+    late AutoDisposeProviderReference ref;
     final provider = Provider.autoDispose((_ref) {
       ref = _ref;
       ref.onDispose(onDispose);
@@ -74,7 +74,7 @@ void main() {
   });
 
   test('maintainState defaults to false', () {
-    bool maintainState;
+    late bool maintainState;
     final provider = Provider.autoDispose((ref) {
       maintainState = ref.maintainState;
       return 42;
@@ -315,8 +315,8 @@ void main() {
     expect(
       container.debugProviderElements,
       unorderedMatches(<Matcher>[
-        isA<ProviderElement<Object, int>>(),
-        isA<AutoDisposeProviderElement<Object, int>>(),
+        isA<ProviderElement<Object?, int>>(),
+        isA<AutoDisposeProviderElement<Object?, int>>(),
       ]),
     );
     verify(listener(42)).called(1);
@@ -333,8 +333,8 @@ void main() {
     verify(onDispose()).called(1);
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(onDispose);
-    expect(
-        container.debugProviderElements, [isA<ProviderElement<Object, int>>()]);
+    expect(container.debugProviderElements,
+        [isA<ProviderElement<Object?, int>>()]);
 
     value = 21;
     removeListener = provider.watchOwner(container, listener);
@@ -345,8 +345,8 @@ void main() {
     expect(
       container.debugProviderElements,
       unorderedMatches(<Matcher>[
-        isA<ProviderElement<Object, int>>(),
-        isA<AutoDisposeProviderElement<Object, int>>(),
+        isA<ProviderElement<Object?, int>>(),
+        isA<AutoDisposeProviderElement<Object?, int>>(),
       ]),
     );
   });

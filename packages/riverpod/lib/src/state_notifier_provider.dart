@@ -75,14 +75,10 @@ part 'state_notifier_provider/auto_dispose.dart';
 /// {@endtemplate}
 mixin _StateNotifierStateProviderStateMixin<T>
     on ProviderStateBase<StateNotifier<T>, T> {
-  void Function() removeListener;
+  void Function()? removeListener;
 
   @override
-  void valueChanged({StateNotifier<T> previous}) {
-    assert(
-      createdValue != null,
-      'StateNotifierProvider must return a non-null value',
-    );
+  void valueChanged({StateNotifier<T>? previous}) {
     if (createdValue == previous) {
       return;
     }
