@@ -1,34 +1,10 @@
-# Copied from https://github.com/mobxjs/mobx.dart/blob/master/tool/coverage.sh
-
 #!/bin/bash
 
 # Fast fail the script on failures.
 set -e
 
-OBS_PORT=9292
-echo "Collecting coverage on port $OBS_PORT..."
+dart pub global activate coverage
 
-# Start tests in one VM.
-echo "Starting tests..."
-dart \
-  --disable-service-auth-codes \
-  --pause-isolates-on-exit \
-  --enable_asserts \
-  --enable-vm-service=$OBS_PORT \
-  test/all_tests.dart &
+dart test --coverage="coverage"
 
-# Run the coverage collector to generate the JSON coverage report.
-echo "Collecting coverage..."
-nohup pub run coverage:collect_coverage \
-  --port=$OBS_PORT \
-  --out=coverage/coverage.json \
-  --wait-paused \
-  --resume-isolates
-
-echo "Generating LCOV report..."
-pub run coverage:format_coverage \
-  --lcov \
-  --in=coverage/coverage.json \
-  --out=coverage/lcov.info \
-  --packages=.packages \
-  --report-on=lib
+format_coverage --packages=.packages -i coverage/test/** -l --out coverage.lcov
