@@ -33,7 +33,7 @@ class StateController<T> extends StateNotifier<T> {
 /// a product by tapping on it.
 ///
 /// ```dart
-/// final selectedProductIdProvider = StateProvider<String>((ref) => null);
+/// final selectedProductIdProvider = StateProvider<String?>((ref) => null);
 /// final productsProvider = StateNotifierProvider<ProductsNotifier>((ref) => ProductsNotifier());
 ///
 /// Widget build(BuildContext context, ScopedReader watch) {

@@ -55,7 +55,7 @@ typedef ScopedCreate<T> = T Function(ScopedReader watch);
 ///
 /// ```dart
 /// class ProductItem extends ConsumerWidget {
-///   const ProductItem({Key key}): super(key: key);
+///   const ProductItem({Key? key}): super(key: key);
 ///
 ///   @override
 ///   Widget build(BuildContext context, ScopedReader watch) {

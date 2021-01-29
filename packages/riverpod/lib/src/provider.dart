@@ -142,7 +142,7 @@ part 'provider/auto_dispose.dart';
 /// });
 ///
 /// class Location {
-///   Location({this.city, this.country});
+///   Location({required this.city, required this.country});
 ///
 ///   final String city;
 ///   final String country;

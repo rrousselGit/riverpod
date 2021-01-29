@@ -79,7 +79,7 @@ typedef ConsumerBuilder = Widget Function(
 /// final counterProvider = StateProvider((ref) => 0);
 ///
 /// class MyHomePage extends StatelessWidget {
-///   MyHomePage({Key key, this.title}) : super(key: key);
+///   MyHomePage({Key? key, this.title}) : super(key: key);
 ///   final String title;
 ///
 ///   @override
@@ -166,7 +166,7 @@ class Consumer extends ConsumerWidget {
 ///
 /// ```dart
 /// class Example extends ConsumerWidget {
-///   const Example({Key key}): super(key: key);
+///   const Example({Key? key}): super(key: key);
 ///
 ///   @override
 ///   Widget build(BuildContext context, ScopedReader watch) {
