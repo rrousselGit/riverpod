@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:uuid/uuid.dart';
 
@@ -7,9 +6,9 @@ var _uuid = Uuid();
 /// A read-only description of a todo-item
 class Todo {
   Todo({
-    this.description,
+    required this.description,
     this.completed = false,
-    String id,
+    String? id,
   }) : id = id ?? _uuid.v4();
 
   final String id;
@@ -24,7 +23,7 @@ class Todo {
 
 /// An object that controls a list of [Todo].
 class TodoList extends StateNotifier<List<Todo>> {
-  TodoList([List<Todo> initialTodos]) : super(initialTodos ?? []);
+  TodoList([List<Todo>? initialTodos]) : super(initialTodos ?? []);
 
   void add(String description) {
     state = [
@@ -47,7 +46,7 @@ class TodoList extends StateNotifier<List<Todo>> {
     ];
   }
 
-  void edit({@required String id, @required String description}) {
+  void edit({required String id, required String description}) {
     state = [
       for (final todo in state)
         if (todo.id == id)

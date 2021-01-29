@@ -182,9 +182,9 @@ class TestNotifier extends StateNotifier<int> {
 }
 
 class Listener<T> extends Mock {
-  void call(T value);
+  void call(T? value);
 }
 
 class ControllerListenerMock extends Mock {
-  void call(TestNotifier value);
+  void call(TestNotifier? value);
 }

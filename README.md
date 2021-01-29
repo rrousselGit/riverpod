@@ -38,13 +38,14 @@ Long story short:
 - Declare your providers as global variables:
 
   ```dart
-  final myNotifierProvider = ChangeNotifierProvider((_) {
-    return MyNotifier();
+  final counterProvider = StateNotifierProvider((ref) {
+    return Counter();
   });
 
-  class MyNotifier extends ChangeNotifier {
-    int count;
-    // TODO: typical ChangeNotifier logic
+  class Counter extends StateNotifier<int> {
+    Counter(): super(0);
+
+    void increment() => state++;
   }
   ```
 
@@ -54,7 +55,7 @@ Long story short:
   class Example extends ConsumerWidget {
     @override
     Widget build(BuildContext context, ScopedReader watch) {
-      final count = watch(myNotifierProvider).count;
+      final count = watch(counterProvider.state);
       return Text(count.toString());
     }
   }
@@ -64,12 +65,14 @@ See the [FAQ](#FAQ) if you have questions about what this means for [provider].
 
 ## Index
 
+- [Index](#index)
 - [Motivation](#motivation)
+- [Contributing](#contributing)
 - [FAQ](#faq)
-  - [Why another project when provider already exists?](#why-another-project-when-provider-already-exists)
+  - [Why another project when [provider] already exists?](#why-another-project-when-provider-already-exists)
   - [Is it safe to use in production?](#is-it-safe-to-use-in-production)
-  - [Will this get merged with provider at some point?](#will-this-get-merged-with-provider-at-some-point)
-  - [Will provider be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
+  - [Will this get merged with [provider] at some point?](#will-this-get-merged-with-provider-at-some-point)
+  - [Will [provider] be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
 
 ## Motivation
 

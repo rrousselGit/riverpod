@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:crypto/crypto.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
 
 part 'models.freezed.dart';
@@ -14,8 +15,8 @@ part 'models.g.dart';
 abstract class Configuration with _$Configuration {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory Configuration({
-    @required String publicKey,
-    @required String privateKey,
+    required String publicKey,
+    required String privateKey,
   }) = _Configuration;
 
   factory Configuration.fromJson(Map<String, dynamic> json) =>
@@ -79,8 +80,8 @@ abstract class MarvelData with _$MarvelData {
 @freezed
 abstract class Comic with _$Comic {
   factory Comic({
-    @required int id,
-    @required String title,
+    required int id,
+    required String title,
   }) = _Comic;
 
   factory Comic.fromJson(Map<String, dynamic> json) => _$ComicFromJson(json);

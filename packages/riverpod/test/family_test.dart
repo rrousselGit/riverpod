@@ -43,7 +43,7 @@ void main() {
       1: StreamController<String>(sync: true),
     };
     final family = StreamProvider.family<String, int>((ref, a) {
-      return controllers[a].stream;
+      return controllers[a]!.stream;
     });
     final container = ProviderContainer();
     final listener = Listener<AsyncValue<String>>();
@@ -59,13 +59,13 @@ void main() {
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener2);
 
-    controllers[0].add('42');
+    controllers[0]!.add('42');
 
     verify(listener(const AsyncValue.data('42')));
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener2);
 
-    controllers[1].add('21');
+    controllers[1]!.add('21');
 
     verify(listener2(const AsyncValue.data('21')));
     verifyNoMoreInteractions(listener);

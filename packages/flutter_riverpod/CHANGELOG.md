@@ -1,3 +1,7 @@
+# 0.13.0-nullsafety.0
+
+Migrated to null-safety
+
 # 0.12.2
 
 - Exported `AutoDisposeProviderReference`
@@ -101,7 +105,7 @@ Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstance
 
   ```dart
   class MyWidget extends ConsumerWidget {
-    const MyWidget({Key key}) : super(key: key);
+    const MyWidget({Key? key}) : super(key: key);
 
     @override
     Widget build(BuildContext context, ScopedReader watch) {

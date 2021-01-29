@@ -11,7 +11,7 @@ void main() {
         (tester) async {
       final provider = StateProvider((ref) => 0);
       final key = GlobalKey();
-      BuildContext context;
+      BuildContext? context;
 
       await tester.pumpWidget(
         ProviderScope(
@@ -24,7 +24,7 @@ void main() {
         ),
       );
 
-      key.currentContext.read(provider).state++;
+      key.currentContext!.read(provider).state++;
 
       await Future<void>.value();
 

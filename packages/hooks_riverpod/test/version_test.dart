@@ -19,19 +19,22 @@ void main() {
     final gettingStarted = await gettingStartedDoc.readAsString();
 
     final dartVersion = await dartPubspec.readAsString().then((pub) {
-      return RegExp(r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+)')
-          .firstMatch(pub)
-          .group(1);
+      return RegExp(
+        r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+.*)$',
+        multiLine: true,
+      ).firstMatch(pub)!.group(1);
     });
     final hooksVersion = await hooksPubspec.readAsString().then((pub) {
-      return RegExp(r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+)')
-          .firstMatch(pub)
-          .group(1);
+      return RegExp(
+        r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+.*)$',
+        multiLine: true,
+      ).firstMatch(pub)!.group(1);
     });
     final flutterVersion = await flutterPubspec.readAsString().then((pub) {
-      return RegExp(r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+)')
-          .firstMatch(pub)
-          .group(1);
+      return RegExp(
+        r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+.*)$',
+        multiLine: true,
+      ).firstMatch(pub)!.group(1);
     });
 
     expect(
@@ -50,28 +53,32 @@ void main() {
 
   test('hooks_riverpod version matches with riverpod', () async {
     final dartVersion = await hooksPubspec.readAsString().then((pub) {
-      return RegExp(r'\briverpod:\s*\^{0,1}([0-9]+\.[0-9]+\.[0-9]+)')
-          .firstMatch(pub)
-          .group(1);
+      return RegExp(
+        r'\briverpod:\s*\^{0,1}([0-9]+\.[0-9]+\.[0-9]+.*)$',
+        multiLine: true,
+      ).firstMatch(pub)!.group(1);
     });
     final actualDartVersion = await dartPubspec.readAsString().then((pub) {
-      return RegExp(r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+)')
-          .firstMatch(pub)
-          .group(1);
+      return RegExp(
+        r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+.*)$',
+        multiLine: true,
+      ).firstMatch(pub)!.group(1);
     });
 
     expect(dartVersion, actualDartVersion);
   }, skip: !hooksPubspec.existsSync() || !dartPubspec.existsSync());
   test('hooks_riverpod version matches with flutter_riverpod', () async {
     final dartVersion = await hooksPubspec.readAsString().then((pub) {
-      return RegExp(r'\bflutter_riverpod:\s*\^{0,1}([0-9]+\.[0-9]+\.[0-9]+)')
-          .firstMatch(pub)
-          .group(1);
+      return RegExp(
+        r'\bflutter_riverpod:\s*\^{0,1}([0-9]+\.[0-9]+\.[0-9]+.*)$',
+        multiLine: true,
+      ).firstMatch(pub)!.group(1);
     });
     final actualDartVersion = await flutterPubspec.readAsString().then((pub) {
-      return RegExp(r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+)')
-          .firstMatch(pub)
-          .group(1);
+      return RegExp(
+        r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+.*)$',
+        multiLine: true,
+      ).firstMatch(pub)!.group(1);
     });
 
     expect(dartVersion, actualDartVersion);

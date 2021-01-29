@@ -3,12 +3,10 @@ import 'dart:async';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import '../uni_directional_test.dart';
-
 void main() {
-  StreamController<int> controller;
+  late StreamController<int> controller;
   final provider = StreamProvider((ref) => controller.stream);
-  ProviderContainer container;
+  late ProviderContainer container;
 
   setUp(() {
     container = ProviderContainer();
@@ -34,17 +32,6 @@ void main() {
     controller.addError(42, stack);
 
     expect(container.read(provider), AsyncValue<int>.error(42, stack));
-  });
-
-  test(
-      'StreamProvider does not accept null (as provider.stream is non-nullable)',
-      () {
-    final provider = StreamProvider<void>((ref) => null);
-
-    expect(
-      container.read(provider),
-      isA<AsyncError>().having((e) => e.error, 'exception', isAssertionError),
-    );
   });
 
   test('the created stream does not leak on dispose', () async {
@@ -129,9 +116,9 @@ void main() {
 
   test('myProvider.stream receives all values, errors and done events',
       () async {
-    int lastValue;
-    dynamic lastError;
-    StackTrace lastStack;
+    int? lastValue;
+    Object? lastError;
+    StackTrace? lastStack;
     var isClosed = false;
 
     final sub = container.read(provider.stream).listen(

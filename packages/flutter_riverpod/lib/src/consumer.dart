@@ -10,7 +10,7 @@ import 'internals.dart';
 typedef ConsumerBuilder = Widget Function(
   BuildContext context,
   ScopedReader watch,
-  Widget child,
+  Widget? child,
 );
 
 /// {@template riverpod.consumer}
@@ -79,7 +79,7 @@ typedef ConsumerBuilder = Widget Function(
 /// final counterProvider = StateProvider((ref) => 0);
 ///
 /// class MyHomePage extends StatelessWidget {
-///   MyHomePage({Key key, this.title}) : super(key: key);
+///   MyHomePage({Key? key, required this.title}) : super(key: key);
 ///   final String title;
 ///
 ///   @override
@@ -132,16 +132,15 @@ typedef ConsumerBuilder = Widget Function(
 class Consumer extends ConsumerWidget {
   /// {@template riverpod.consumer}
   const Consumer({
-    Key key,
-    @required ConsumerBuilder builder,
-    Widget child,
+    Key? key,
+    required ConsumerBuilder builder,
+    Widget? child,
   })  : _child = child,
         _builder = builder,
-        assert(builder != null, 'the parameter builder cannot be null'),
         super(key: key);
 
   final ConsumerBuilder _builder;
-  final Widget _child;
+  final Widget? _child;
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
@@ -167,7 +166,7 @@ class Consumer extends ConsumerWidget {
 ///
 /// ```dart
 /// class Example extends ConsumerWidget {
-///   const Example({Key key}): super(key: key);
+///   const Example({Key? key}): super(key: key);
 ///
 ///   @override
 ///   Widget build(BuildContext context, ScopedReader watch) {
@@ -194,7 +193,7 @@ class Consumer extends ConsumerWidget {
 /// {@endtemplate}
 abstract class ConsumerWidget extends StatefulWidget {
   /// {@macro riverpod.consumerwidget}
-  const ConsumerWidget({Key key}) : super(key: key);
+  const ConsumerWidget({Key? key}) : super(key: key);
 
   /// Describes the part of the user interface represented by this widget.
   ///
@@ -242,11 +241,11 @@ abstract class ConsumerWidget extends StatefulWidget {
 
 @sealed
 class _ConsumerState extends State<ConsumerWidget> {
-  ProviderContainer _container;
+  ProviderContainer? _container;
   var _dependencies = <ProviderBase, ProviderSubscription>{};
-  Map<ProviderBase, ProviderSubscription> _oldDependencies;
-  bool _debugSelecting;
-  Widget _buildCache;
+  Map<ProviderBase, ProviderSubscription>? _oldDependencies;
+  bool _debugSelecting = false;
+  late Widget _buildCache;
   // initialized at true for the first build
   bool _isExternalBuild = true;
 
@@ -303,14 +302,14 @@ class _ConsumerState extends State<ConsumerWidget> {
         _debugSelecting = false;
         return true;
       }(), '');
-      for (final dep in _oldDependencies.values) {
+      for (final dep in _oldDependencies!.values) {
         dep.close();
       }
       _oldDependencies = null;
     }
   }
 
-  Res _reader<Res>(ProviderBase<Object, Res> target) {
+  Res _reader<Res>(ProviderBase<Object?, Res> target) {
     assert(
       _debugSelecting,
       'Cannot use `watch` outside of the body of the Consumer callback',
@@ -322,7 +321,7 @@ class _ConsumerState extends State<ConsumerWidget> {
         return oldDependency;
       }
 
-      return _container.listen<Res>(
+      return _container!.listen<Res>(
         target,
         mayHaveChanged: _mayHaveChanged,
       );

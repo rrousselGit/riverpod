@@ -7,7 +7,7 @@ class ChangeNotifierProvider<T extends ChangeNotifier>
   /// {@macro riverpod.changenotifierprovider}
   ChangeNotifierProvider(
     Create<T, ProviderReference> create, {
-    String name,
+    String? name,
   }) : super(create, name);
 
   /// {@macro riverpod.family}
@@ -35,14 +35,14 @@ class ChangeNotifierProviderFamily<T extends ChangeNotifier, A>
   /// {@macro riverpod.changenotifierprovider.family}
   ChangeNotifierProviderFamily(
     T Function(ProviderReference ref, A a) create, {
-    String name,
+    String? name,
   }) : super(create, name);
 
   @override
   ChangeNotifierProvider<T> create(
     A value,
     T Function(ProviderReference ref, A param) builder,
-    String name,
+    String? name,
   ) {
     return ChangeNotifierProvider((ref) => builder(ref, value), name: name);
   }

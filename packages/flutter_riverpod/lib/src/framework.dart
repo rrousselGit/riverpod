@@ -79,27 +79,27 @@ import 'internals.dart' show describeIdentity;
 class ProviderScope extends StatefulWidget {
   /// {@macro riverpod.providerscope}
   const ProviderScope({
-    Key key,
+    Key? key,
     this.overrides = const [],
     this.observers,
-    @required this.child,
-  })  : assert(child != null, 'child cannot be `null`'),
-        super(key: key);
+    required this.child,
+  }) : super(key: key);
 
   /// Read the current [ProviderContainer] for a [BuildContext].
   static ProviderContainer containerOf(
     BuildContext context, {
     bool listen = true,
   }) {
-    UncontrolledProviderScope scope;
+    UncontrolledProviderScope? scope;
 
     if (listen) {
       scope = context //
           .dependOnInheritedWidgetOfExactType<UncontrolledProviderScope>();
     } else {
+      // TODO(rrousselGit): Test getElementForInheritedWidgetOfExactType return null
       scope = context
           .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
-          .widget as UncontrolledProviderScope;
+          ?.widget as UncontrolledProviderScope?;
     }
 
     if (scope == null) {
@@ -113,7 +113,7 @@ class ProviderScope extends StatefulWidget {
   final Widget child;
 
   /// The listeners that subscribes to changes on providers stored on this [ProviderScope].
-  final List<ProviderObserver> observers;
+  final List<ProviderObserver>? observers;
 
   /// Informations on how to override a provider/family.
   final List<Override> overrides;
@@ -145,7 +145,7 @@ class _ProviderScopeElement extends StatefulElement {
 
     // filling the state properties here instead of inside State
     // so that it is more readable in the devtool (one less indentation)
-    for (final entry in container.debugProviderValues.entries) {
+    for (final entry in container.debugProviderValues!.entries) {
       final name = entry.key.name ?? describeIdentity(entry.key);
       properties.add(DiagnosticsProperty(name, entry.value));
     }
@@ -159,8 +159,8 @@ class ProviderScopeState extends State<ProviderScope> {
   /// The [ProviderContainer] exposed to [ProviderScope.child].
   @visibleForTesting
   // ignore: diagnostic_describe_all_properties
-  ProviderContainer container;
-  ProviderContainer _debugParentOwner;
+  late ProviderContainer container;
+  ProviderContainer? _debugParentOwner;
   var _dirty = false;
 
   @override
@@ -168,7 +168,7 @@ class ProviderScopeState extends State<ProviderScope> {
     super.initState();
     final scope = context
         .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
-        ?.widget as UncontrolledProviderScope;
+        ?.widget as UncontrolledProviderScope?;
 
     assert(() {
       _debugParentOwner = scope?.container;
@@ -203,7 +203,7 @@ class ProviderScopeState extends State<ProviderScope> {
     assert(() {
       final scope = context
           .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
-          ?.widget as UncontrolledProviderScope;
+          ?.widget as UncontrolledProviderScope?;
 
       if (scope?.container != _debugParentOwner) {
         throw UnsupportedError(
@@ -239,11 +239,10 @@ class ProviderScopeState extends State<ProviderScope> {
 class UncontrolledProviderScope extends InheritedWidget {
   /// {@macro riverpod.UncontrolledProviderScope}
   const UncontrolledProviderScope({
-    Key key,
-    @required this.container,
-    @required Widget child,
-  })  : assert(container != null, 'ProviderContainer cannot be null'),
-        super(key: key, child: child);
+    Key? key,
+    required this.container,
+    required Widget child,
+  }) : super(key: key, child: child);
 
   /// The [ProviderContainer] exposed to the widget tree.
   final ProviderContainer container;
@@ -256,7 +255,7 @@ class UncontrolledProviderScope extends InheritedWidget {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    for (final entry in container.debugProviderValues.entries) {
+    for (final entry in container.debugProviderValues!.entries) {
       final name = entry.key.name ?? describeIdentity(entry.key);
       properties.add(DiagnosticsProperty(name, entry.value));
     }
@@ -274,7 +273,7 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
       : super(widget);
 
   @override
-  void mount(Element parent, dynamic newSlot) {
+  void mount(Element? parent, Object? newSlot) {
     assert(() {
       (widget as UncontrolledProviderScope)
           .container

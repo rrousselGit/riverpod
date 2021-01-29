@@ -1,3 +1,4 @@
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +18,8 @@ const kCharactersPageLimit = 50;
 @freezed
 abstract class CharacterPagination with _$CharacterPagination {
   factory CharacterPagination({
-    @required int page,
-    String name,
+    required int page,
+    String? name,
   }) = _CharacterPagination;
 }
 
@@ -57,7 +58,7 @@ final charactersCount =
 @freezed
 abstract class CharacterOffset with _$CharacterOffset {
   factory CharacterOffset({
-    @required int offset,
+    required int offset,
     @Default('') String name,
   }) = _CharacterOffset;
 }
@@ -77,7 +78,7 @@ final characterAtIndex = Provider.autoDispose
 });
 
 class Home extends HookWidget {
-  const Home({Key key}) : super(key: key);
+  const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -153,17 +154,11 @@ class Home extends HookWidget {
 final _characterIndex = ScopedProvider<int>(null);
 
 class CharacterItem extends HookWidget {
-  const CharacterItem({
-    Key key,
-  }) : super(key: key);
+  const CharacterItem({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final index = useProvider(_characterIndex);
-    assert(
-      index != null,
-      'CharacterItem cannot be used but _characterIndex is undefined',
-    );
 
     final character = useProvider(
       characterAtIndex(CharacterOffset(offset: index)),

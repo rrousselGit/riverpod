@@ -32,8 +32,8 @@ void main() {
   });
 
   testWidgets('mounted', (tester) async {
-    ProviderReference providerState;
-    bool mountedOnDispose;
+    late ProviderReference providerState;
+    bool? mountedOnDispose;
     final provider = Provider<int>((ref) {
       providerState = ref;
       ref.onDispose(() => mountedOnDispose = ref.mounted);
@@ -130,7 +130,6 @@ void main() {
   testWidgets('expose value as is', (tester) async {
     var callCount = 0;
     final provider = Provider((ref) {
-      assert(ref != null, '');
       callCount++;
       return 42;
     });
@@ -167,7 +166,6 @@ void main() {
         overrides: [
           provider.overrideWithProvider(
             Provider((ref) {
-              assert(ref != null, '');
               callCount++;
               return 42;
             }),
@@ -185,7 +183,6 @@ void main() {
         overrides: [
           provider.overrideWithProvider(
             Provider((ref) {
-              assert(ref != null, '');
               callCount++;
               throw Error();
             }),
@@ -335,7 +332,7 @@ void main() {
     final provider = Provider((_) => 42);
 
     // These check the type safety
-    ProviderReference ref;
+    ProviderReference? ref;
 
     // ignore: omit_local_variable_types
     final Provider<int> provider1 = Provider<int>((r) {

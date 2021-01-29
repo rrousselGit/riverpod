@@ -3,6 +3,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -29,7 +30,7 @@ void main() {
 }
 
 class MyApp extends HookWidget {
-  const MyApp({Key key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,17 +38,17 @@ class MyApp extends HookWidget {
       theme: ThemeData(primarySwatch: Colors.red),
       builder: (context, child) {
         return _Unfocus(
-          child: child,
+          child: child!,
         );
       },
       home: const Portal(child: Home()),
       onGenerateRoute: (settings) {
-        if (settings?.name == null) {
+        if (settings.name == null) {
           return null;
         }
-        final split = settings.name.split('/');
-        Widget result;
-        if (settings.name.startsWith('/characters/') && split.length == 3) {
+        final split = settings.name!.split('/');
+        Widget? result;
+        if (settings.name!.startsWith('/characters/') && split.length == 3) {
           result = ProviderScope(
             overrides: [
               selectedCharacterId.overrideWithValue(split.last),
@@ -59,7 +60,7 @@ class MyApp extends HookWidget {
         if (result == null) {
           return null;
         }
-        return MaterialPageRoute<void>(builder: (context) => result);
+        return MaterialPageRoute<void>(builder: (context) => result!);
       },
       routes: {
         '/character': (c) => const CharacterView(),
@@ -73,7 +74,10 @@ class MyApp extends HookWidget {
 /// This implements the "Unfocus when tapping in empty space" behavior for the
 /// entire application.
 class _Unfocus extends HookWidget {
-  const _Unfocus({Key key, this.child}) : super(key: key);
+  const _Unfocus({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
 
   final Widget child;
 

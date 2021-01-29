@@ -1,3 +1,4 @@
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -21,16 +22,17 @@ final _character1009368 = _$_character1009368JsonLiteral;
 class FakeDio implements Dio {
   FakeDio([this._apiKey = '42']);
 
-  final String _apiKey;
+  final String? _apiKey;
 
   @override
   Future<Response<T>> get<T>(
     String path, {
-    Map<String, dynamic> queryParameters,
-    Options options,
-    CancelToken cancelToken,
-    ProgressCallback onReceiveProgress,
+    required Map<String, dynamic> queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onReceiveProgress,
   }) async {
+    print('hello $_apiKey $queryParameters');
     if (_apiKey != null && queryParameters['apikey'] != _apiKey) {
       throw StateError('Missing api key');
     }

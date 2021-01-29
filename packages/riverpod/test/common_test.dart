@@ -30,15 +30,8 @@ void main() {
 
   test('AsyncValue.data handles null', () {
     expect(
-      const AsyncValue<int>.data(null).data,
-      isA<AsyncData<int>>().having((s) => s.value, 'value', null),
-    );
-  });
-
-  test('AsyncValue.error does now allow null', () {
-    expect(
-      () => AsyncValue<void>.error(null),
-      throwsA(isA<AssertionError>()),
+      const AsyncValue<int?>.data(null).data,
+      isA<AsyncData<int?>>().having((s) => s.value, 'value', null),
     );
   });
 
