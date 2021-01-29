@@ -51,10 +51,10 @@ jobs:
         run: melos exec --ignore="marvel" -- "flutter analyze"
 
       - name: Run tests (flutter)
-        run: melos exec --ignore="marvel" -c 1 --flutter -- "flutter test --coverage"
+        run: melos exec --dir-exists="test" -c 1 --flutter -- "flutter test --coverage"
 
       - name: Run tests (dart)
-        run: melos exec -c 1 --no-flutter -- "\$MELOS_ROOT_PATH/scripts/coverage.sh"
+        run: melos exec --dir-exists="test" -c 1 --no-flutter -- "\$MELOS_ROOT_PATH/scripts/coverage.sh"
 
       - name: Upload coverage to codecov
         run: curl -s https://codecov.io/bash | bash
