@@ -78,7 +78,7 @@ class StateProviderBuilder {
   /// - Allowing a "title provider" access the `Locale`
   ///
   ///   ```dart
-  ///   final titleFamily = Provider.family<String, Locale>((_, locale) {
+  ///   final titleFamily = Provider.family<String, Locale>((ref, locale) {
   ///     if (locale == const Locale('en')) {
   ///       return 'English title';
   ///     } else if (locale == const Locale('fr')) {
@@ -224,8 +224,8 @@ class StateProviderBuilder {
   ///   @freezed
   ///   abstract class MyParameter with _$MyParameter {
   ///     factory MyParameter({
-  ///       int userId,
-  ///       Locale locale,
+  ///       required int userId,
+  ///       required Locale locale,
   ///     }) = _MyParameter;
   ///   }
   ///
@@ -250,15 +250,15 @@ class StateProviderBuilder {
   ///   ```dart
   ///   class MyParameter extends Equatable  {
   ///     factory MyParameter({
-  ///       int userId,
-  ///       Locale locale,
+  ///       required this.userId,
+  ///       requires this.locale,
   ///     });
   ///
-  ///     int userId;
-  ///     Local local;
+  ///     final int userId;
+  ///     final Local locale;
   ///
   ///     @override
-  ///     List<Object> get props => [userId,local];
+  ///     List<Object> get props => [userId, locale];
   ///   }
   ///
   ///   final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
@@ -308,7 +308,7 @@ class StateNotifierProviderBuilder {
   const StateNotifierProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
-  StateNotifierProvider<T> call<T extends StateNotifier<dynamic>>(
+  StateNotifierProvider<T> call<T extends StateNotifier<Object?>>(
     T Function(ProviderReference ref) create, {
     String? name,
   }) {
@@ -333,7 +333,7 @@ class StateNotifierProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   StateNotifierProviderFamily<T, Value>
-      call<T extends StateNotifier<dynamic>, Value>(
+      call<T extends StateNotifier<Object?>, Value>(
     T Function(ProviderReference ref, Value value) create, {
     String? name,
   }) {
@@ -514,7 +514,7 @@ class AutoDisposeStateNotifierProviderBuilder {
   const AutoDisposeStateNotifierProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
-  AutoDisposeStateNotifierProvider<T> call<T extends StateNotifier<dynamic>>(
+  AutoDisposeStateNotifierProvider<T> call<T extends StateNotifier<Object?>>(
     T Function(AutoDisposeProviderReference ref) create, {
     String? name,
   }) {

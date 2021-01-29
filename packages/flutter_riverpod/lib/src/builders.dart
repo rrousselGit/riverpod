@@ -77,7 +77,7 @@ class ChangeNotifierProviderBuilder {
   /// - Allowing a "title provider" access the `Locale`
   ///
   ///   ```dart
-  ///   final titleFamily = Provider.family<String, Locale>((_, locale) {
+  ///   final titleFamily = Provider.family<String, Locale>((ref, locale) {
   ///     if (locale == const Locale('en')) {
   ///       return 'English title';
   ///     } else if (locale == const Locale('fr')) {
@@ -223,8 +223,8 @@ class ChangeNotifierProviderBuilder {
   ///   @freezed
   ///   abstract class MyParameter with _$MyParameter {
   ///     factory MyParameter({
-  ///       int userId,
-  ///       Locale locale,
+  ///       required int userId,
+  ///       required Locale locale,
   ///     }) = _MyParameter;
   ///   }
   ///
@@ -249,15 +249,15 @@ class ChangeNotifierProviderBuilder {
   ///   ```dart
   ///   class MyParameter extends Equatable  {
   ///     factory MyParameter({
-  ///       int userId,
-  ///       Locale locale,
+  ///       required this.userId,
+  ///       requires this.locale,
   ///     });
   ///
-  ///     int userId;
-  ///     Local local;
+  ///     final int userId;
+  ///     final Local locale;
   ///
   ///     @override
-  ///     List<Object> get props => [userId,local];
+  ///     List<Object> get props => [userId, locale];
   ///   }
   ///
   ///   final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
