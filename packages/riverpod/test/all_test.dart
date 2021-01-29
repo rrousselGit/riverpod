@@ -9,15 +9,19 @@ import 'container_observer_test.dart' as container_observer_test;
 import 'family_test.dart' as family_test;
 import 'framework2/framework_test.dart' as framework2_framework_test;
 import 'framework2/provider_test.dart' as framework2_provider_test;
-import 'framework2/scoped_provider_test.dart' as framework2_scoped_provider_test;
+import 'framework2/scoped_provider_test.dart'
+    as framework2_scoped_provider_test;
 import 'framework2/select_test.dart' as framework2_select_test;
 import 'framework2/state_provider_test.dart' as framework2_state_provider_test;
-import 'framework2/stream_provider_test.dart' as framework2_stream_provider_test;
+import 'framework2/stream_provider_test.dart'
+    as framework2_stream_provider_test;
 import 'framework_test.dart' as framework_test;
-import 'provider/auto_dispose_state_notifier_provider_test.dart' as provider_auto_dispose_state_notifier_provider_test;
+import 'provider/auto_dispose_state_notifier_provider_test.dart'
+    as provider_auto_dispose_state_notifier_provider_test;
 import 'provider/future_provider_test.dart' as provider_future_provider_test;
 import 'provider/provider_test.dart' as provider_provider_test;
-import 'provider/state_notifier_provider_test.dart' as provider_state_notifier_provider_test;
+import 'provider/state_notifier_provider_test.dart'
+    as provider_state_notifier_provider_test;
 import 'provider/state_provider_test.dart' as provider_state_provider_test;
 import 'provider/stream_provider_test.dart' as provider_stream_provider_test;
 import 'ref_watch_test.dart' as ref_watch_test;
