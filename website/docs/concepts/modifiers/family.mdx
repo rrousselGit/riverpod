@@ -118,8 +118,8 @@ Here's an example using [Freezed] and [equatable]:
 @freezed
 abstract class MyParameter with _$MyParameter {
   factory MyParameter({
-    int userId,
-    Locale locale,
+    required int userId,
+    required Locale locale,
   }) = _MyParameter;
 }
 
@@ -147,16 +147,16 @@ Widget build(BuildContext context, ScopedReader watch) {
 
 ```dart
 class MyParameter extends Equatable  {
-  factory MyParameter({
-    int userId,
-    Locale locale,
+  MyParameter({
+    required this.userId,
+    required this.locale,
   });
 
-  int userId;
-  Local local;
+  final int userId;
+  final Locale locale;
 
   @override
-  List<Object> get props => [userId,local];
+  List<Object> get props => [userId, locale];
 }
 
 final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
