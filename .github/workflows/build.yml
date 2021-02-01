@@ -5,17 +5,80 @@ on:
   pull_request:
   schedule:
     # runs the CI everyday at 10AM
-    - cron: "0 10 * * *"
+    - cron:  '0 10 * * *'
+
 
 jobs:
-  build:
+  dart:
+    runs-on: ubuntu-latest
+    container: google/dart:${{matrix.channel}}
+
+    strategy:
+      matrix:
+        package:
+          - packages/riverpod
+          - packages/riverpod/example
+        channel:
+          - dev
+          # latest is the stable release not master
+          - latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # It is executed separatly
+      - name: Removing example folder
+        run: rm -rf example
+        working-directory: ${{ matrix.package }}
+
+      - name: Install dependencies
+        run: dart pub get
+        working-directory: ${{ matrix.package }}
+
+      - name: Check format
+        run: dart format --set-exit-if-changed .
+        working-directory: ${{ matrix.package }}
+
+      - name: Generate
+        run: |
+          if grep -q build_runner "pubspec.yaml"; then
+            dart pub run build_runner build --delete-conflicting-outputs
+          fi
+        working-directory: ${{ matrix.package }}
+
+      - name: Analyze
+        run: dart analyze
+        working-directory: ${{ matrix.package }}
+
+      - name: Run tests
+        run: dart test
+        working-directory: ${{ matrix.package }}
+
+      - name: Coverage
+        run: |
+          if [ "${{ matrix.package }}" != "packages/riverpod/example" ]; then
+            dart pub run test_coverage
+          fi
+        working-directory: ${{ matrix.package }}
+
+      - name: Upload coverage to codecov
+        run: curl -s https://codecov.io/bash | bash
+  flutter:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
+        package:
+          - examples/counter
+          - examples/todos
+          # - examples/marvel
+          - packages/flutter_riverpod
+          - packages/flutter_riverpod/example
+          - packages/hooks_riverpod
+          - packages/hooks_riverpod/example
         channel:
           - dev
-          # - stable
+          - stable
 
     steps:
       - uses: actions/checkout@v2
@@ -24,33 +87,34 @@ jobs:
         with:
           channel: ${{ matrix.channel }}
 
-      - name: Add pub cache bin to PATH
-        run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+      # It is executed separatly
+      - name: Removing example folder
+        run: rm -rf example
+        working-directory: ${{ matrix.package }}
 
-      - name: Add pub cache to PATH
-        run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
-
-      - run: dart pub global activate melos
+      - name: Override dependencies
+        run: ./scripts/setup_dependencies.sh
 
       - name: Install dependencies
-        run: melos bootstrap
+        run: flutter pub get
+        working-directory: ${{ matrix.package }}
 
       - name: Check format
         run: flutter format --set-exit-if-changed .
+        working-directory: ${{ matrix.package }}
 
-      - name: Generate (dart)
-        run: melos exec --depends-on="build_runner" --no-flutter -- "dart run build_runner build --delete-conflicting-outputs"
-
-      - name: Generate (flutter)
+      - name: Generate
         run: |
-          cd examples/stackoverflow && flutter pub run build_runner build --delete-conflicting-outputs && cd - 
-          cd examples/marvel && flutter pub run build_runner build --delete-conflicting-outputs && cd - 
-          cd examples/todos && flutter pub run build_runner build --delete-conflicting-outputs
+          if grep -q build_runner "pubspec.yaml"; then
+            flutter pub run build_runner build --delete-conflicting-outputs
+          fi
       - name: Analyze
-        run: melos exec --ignore="marvel" -- "flutter analyze"
+        run: flutter analyze
+        working-directory: ${{ matrix.package }}
 
       - name: Run tests
-        run: melos run test
+        run: flutter test --coverage
+        working-directory: ${{ matrix.package }}
 
       - name: Upload coverage to codecov
         run: curl -s https://codecov.io/bash | bash
