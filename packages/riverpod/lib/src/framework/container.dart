@@ -24,7 +24,7 @@ void _runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
   }
 }
 
-ProviderBase? _circularDependencyLock;
+ProviderBase _circularDependencyLock;
 
 /// {@template riverpod.providercontainer}
 /// An object that stores the state of the providers and allows overriding the
@@ -37,13 +37,13 @@ ProviderBase? _circularDependencyLock;
 class ProviderContainer {
   /// {@macro riverpod.providercontainer}
   ProviderContainer({
-    ProviderContainer? parent,
+    ProviderContainer parent,
     List<Override> overrides = const [],
-    List<ProviderObserver>? observers,
+    List<ProviderObserver> observers,
   })  : _parent = parent,
         _localObservers = observers,
         _root = parent?._root ?? parent {
-    if (parent != null) {
+    if (_parent != null) {
       if (observers != null) {
         throw UnsupportedError(
           'Cannot specify observers on a non-root ProviderContainer/ProviderScope',
@@ -58,8 +58,7 @@ class ProviderContainer {
           );
         }
       }
-
-      parent._children.add(this);
+      _parent._children.add(this);
 
       _overrideForProvider.addEntries(parent._overrideForProvider.entries
           .where((e) => e.key is ScopedProvider));
@@ -74,8 +73,8 @@ class ProviderContainer {
     }
   }
 
-  final ProviderContainer? _root;
-  final ProviderContainer? _parent;
+  final ProviderContainer _root;
+  final ProviderContainer _parent;
 
   final _children = HashSet<ProviderContainer>();
 
@@ -88,10 +87,9 @@ class ProviderContainer {
   final _overrideForFamily = HashMap<Family, FamilyOverride>();
   final _stateReaders = HashMap<ProviderBase, ProviderElement>();
 
-  final List<ProviderObserver>? _localObservers;
-
+  final List<ProviderObserver> _localObservers;
   Iterable<ProviderObserver> get _observers sync* {
-    final iterable = _root == null ? _localObservers : _root!._localObservers;
+    final iterable = _root == null ? _localObservers : _root._localObservers;
     if (iterable != null) {
       yield* iterable;
     }
@@ -122,7 +120,7 @@ class ProviderContainer {
   /// }
   /// ```
   Result read<Result>(
-    ProviderBase<Object?, Result> provider,
+    ProviderBase<Object, Result> provider,
   ) {
     final element = readProviderElement(provider);
     element.flush();
@@ -147,15 +145,15 @@ class ProviderContainer {
   ///   to another provider.
   ProviderSubscription<Result> listen<Result>(
     ProviderListenable<Result> provider, {
-    void Function(ProviderSubscription<Result> sub)? mayHaveChanged,
-    void Function(ProviderSubscription<Result> sub)? didChange,
+    void Function(ProviderSubscription<Result> sub) mayHaveChanged,
+    void Function(ProviderSubscription<Result> sub) didChange,
   }) {
-    if (provider is ProviderBase<Object?, Result>) {
+    if (provider is ProviderBase<Object, Result>) {
       return readProviderElement(provider).listen(
         mayHaveChanged: mayHaveChanged,
         didChange: didChange,
       );
-    } else if (provider is ProviderSelector<Object?, Result>) {
+    } else if (provider is ProviderSelector<Object, Result>) {
       return provider._listen(
         this,
         mayHaveChanged: mayHaveChanged,
@@ -170,7 +168,7 @@ class ProviderContainer {
   ///
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
-  Created refresh<Created>(RootProvider<Created, Object?> provider) {
+  Created refresh<Created>(RootProvider<Created, Object> provider) {
     final element = (_root ?? this)._stateReaders[provider];
 
     if (element == null) {
@@ -182,15 +180,16 @@ class ProviderContainer {
     }
   }
 
-  void _disposeProvider(ProviderBase<Object?, Object?> provider) {
+  void _disposeProvider(ProviderBase<Object, Object> provider) {
     final element = readProviderElement(provider);
+    assert(element._origin != null, 'No origin specified – bug?');
     assert(
       _stateReaders.containsKey(element._origin),
       'Removed a key that does not exist',
     );
     _stateReaders.remove(element._origin);
     if (element._origin.from != null) {
-      element._origin.from!._cache.remove(element._origin.argument);
+      element._origin.from._cache.remove(element._origin.argument);
     }
     element.dispose();
   }
@@ -210,7 +209,7 @@ class ProviderContainer {
       );
     }
 
-    List<Override>? unusedOverrides;
+    List<Override> unusedOverrides;
     assert(() {
       unusedOverrides = [...overrides];
       return true;
@@ -233,7 +232,7 @@ class ProviderContainer {
           for (final child in _children) {
             if (override._provider is! ValueProvider ||
                 (override._provider as ValueProvider)._value !=
-                    (previousOverride! as ValueProvider)._value) {
+                    (previousOverride as ValueProvider)._value) {
               if (child._overrideForProvider[override._origin] ==
                   previousOverride) {
                 child.updateOverrides([override]);
@@ -242,7 +241,7 @@ class ProviderContainer {
           }
         }
         assert(() {
-          unusedOverrides!.remove(override);
+          unusedOverrides.remove(override);
           return true;
         }(), '');
 
@@ -254,7 +253,7 @@ class ProviderContainer {
         _runUnaryGuarded(element.update, override._provider);
       } else if (override is FamilyOverride) {
         assert(() {
-          unusedOverrides!.remove(override);
+          unusedOverrides.remove(override);
           return true;
         }(), '');
         _overrideForFamily[override._family] = override;
@@ -262,7 +261,7 @@ class ProviderContainer {
     }
 
     assert(
-      unusedOverrides!.isEmpty,
+      unusedOverrides.isEmpty,
       'Updated the list of overrides with providers that were not overriden before',
     );
   }
@@ -282,7 +281,7 @@ class ProviderContainer {
       );
     }
     if (_root != null && provider is RootProvider) {
-      return _root!.readProviderElement(provider);
+      return _root.readProviderElement(provider);
     }
 
     final element = _stateReaders.putIfAbsent(provider, () {
@@ -291,16 +290,16 @@ class ProviderContainer {
       }
       _circularDependencyLock ??= provider;
       try {
-        var override = _overrideForProvider[provider];
-
+        ProviderBase<Created, Listened> override;
+        override ??=
+            _overrideForProvider[provider] as ProviderBase<Created, Listened>;
         if (override == null &&
             provider.from != null &&
             _overrideForFamily[provider.from] != null) {
-          final familyOverride = _overrideForFamily[provider.from]!;
+          final familyOverride = _overrideForFamily[provider.from];
           override = familyOverride._createOverride(provider._argument)
               as ProviderBase<Created, Listened>;
         }
-
         override ??= provider;
         final element = override.createElement()
           .._provider = override
@@ -309,7 +308,7 @@ class ProviderContainer {
           ..mount();
 
         for (final observer in _observers) {
-          _runBinaryGuarded<ProviderBase, Object?>(
+          _runBinaryGuarded(
             observer.didAddProvider,
             provider,
             element.state._exposedValue,
@@ -343,7 +342,7 @@ class ProviderContainer {
     }
 
     debugVsyncs.clear();
-    _parent?._children.remove(this);
+    _parent?._children?.remove(this);
 
     _disposed = true;
 
@@ -362,9 +361,10 @@ class ProviderContainer {
     final queue = DoubleLinkedQueue<ProviderElement>();
 
     for (final element in _stateReaders.values) {
-      if (element._subscriptions.keys
-          .where((e) => e._container == this)
-          .isEmpty) {
+      if (element._subscriptions == null ||
+          element._subscriptions.keys
+              .where((e) => e._container == this)
+              .isEmpty) {
         queue.add(element);
       }
     }
@@ -380,7 +380,7 @@ class ProviderContainer {
       yield element;
 
       if (element._dependents != null) {
-        for (final dependent in element._dependents!) {
+        for (final dependent in element._dependents) {
           if (dependent._container == this &&
               // All the parents of a node must have been visited before a node is visited
               dependent._subscriptions.keys.every((e) {
@@ -395,8 +395,8 @@ class ProviderContainer {
 
   /// The states of the providers associated to this [ProviderContainer], sorted
   /// in order of dependency.
-  List<ProviderElement>? get debugProviderElements {
-    List<ProviderElement>? result;
+  List<ProviderElement> get debugProviderElements {
+    List<ProviderElement> result;
     assert(() {
       result = _visitStatesInOrder().toList();
       return true;
@@ -405,12 +405,13 @@ class ProviderContainer {
   }
 
   /// The value exposed by all providers currently alive.
-  Map<ProviderBase, Object?>? get debugProviderValues {
-    Map<ProviderBase, Object?>? res;
+  Map<ProviderBase, Object> get debugProviderValues {
+    Map<ProviderBase, Object> res;
     assert(() {
       res = {
         for (final entry in _stateReaders.entries)
-          entry.key: entry.value.state.exposedValue,
+          if (entry.value.state != null)
+            entry.key: entry.value.state.exposedValue,
       };
 
       return true;
@@ -424,7 +425,7 @@ class ProviderContainer {
 /// This can be used for logging or making devtools.
 abstract class ProviderObserver {
   /// A provider was initialized, and the value exposed is [value].
-  void didAddProvider(ProviderBase provider, Object? value) {}
+  void didAddProvider(ProviderBase provider, Object value) {}
 
   /// Called when the dependency of a provider changed, but it is not yet
   /// sure if the computed value changes.
@@ -435,7 +436,7 @@ abstract class ProviderObserver {
   void mayHaveChanged(ProviderBase provider) {}
 
   /// Called my providers when they emit a notification.
-  void didUpdateProvider(ProviderBase provider, Object? newValue) {}
+  void didUpdateProvider(ProviderBase provider, Object newValue) {}
 
   /// A provider was disposed
   void didDisposeProvider(ProviderBase provider) {}

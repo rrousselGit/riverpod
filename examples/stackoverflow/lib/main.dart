@@ -20,10 +20,10 @@ class MyApp extends StatelessWidget {
             tagThemeProvider.overrideWithValue(
               TagTheme(
                 padding: EdgeInsets.symmetric(
-                  horizontal: theme.textTheme.bodyText1!.fontSize! * 0.5,
-                  vertical: theme.textTheme.bodyText1!.fontSize! * 0.4,
+                  horizontal: theme.textTheme.bodyText1.fontSize * 0.5,
+                  vertical: theme.textTheme.bodyText1.fontSize * 0.4,
                 ),
-                style: theme.textTheme.bodyText2!.copyWith(
+                style: theme.textTheme.bodyText2.copyWith(
                   color: const Color(0xff9cc3db),
                 ),
                 borderRadius: BorderRadius.circular(3),
@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
           ],
           child: ListTileTheme(
             textColor: const Color(0xFFe7e8eb),
-            child: child!,
+            child: child,
           ),
         );
       },

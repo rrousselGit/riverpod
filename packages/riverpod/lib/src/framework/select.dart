@@ -11,25 +11,23 @@ class SelectorSubscription<Input, Output>
     implements ProviderSubscription<Output> {
   /// {@macro riverpod.SelectorSubscription}
   SelectorSubscription({
-    required ProviderContainer container,
-    required Output Function(Input) selector,
-    required RootProvider<Object?, Input> provider,
-    void Function(SelectorSubscription<Input, Output> sub)? mayHaveChanged,
-    void Function(SelectorSubscription<Input, Output> sub)? didChange,
+    @required ProviderContainer container,
+    @required Output Function(Input) selector,
+    @required RootProvider<Object, Input> provider,
+    void Function(SelectorSubscription<Input, Output> sub) mayHaveChanged,
+    void Function(SelectorSubscription<Input, Output> sub) didChange,
   })  : _selector = selector,
         _didChange = didChange {
     _sub = container.listen(
       provider,
-      // TODO(rrousselGit) add test
-      mayHaveChanged:
-          mayHaveChanged == null ? null : (_) => mayHaveChanged(this),
+      mayHaveChanged: (_) => mayHaveChanged(this),
     );
   }
 
-  final void Function(SelectorSubscription<Input, Output> sub)? _didChange;
+  final void Function(SelectorSubscription<Input, Output> sub) _didChange;
   bool _isFirstBuild = true;
-  late ProviderSubscription<Input> _sub;
-  Output? _lastOutput;
+  ProviderSubscription<Input> _sub;
+  Output _lastOutput;
   Output Function(Input) _selector;
 
   /// Updates the selector associated with this [SelectorSubscription], and
@@ -61,7 +59,7 @@ class SelectorSubscription<Input, Output>
   @override
   Output read() {
     flush();
-    return _lastOutput as Output;
+    return _lastOutput;
   }
 
   @override

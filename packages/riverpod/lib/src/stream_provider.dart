@@ -16,7 +16,7 @@ mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
   Override overrideWithValue(AsyncValue<T> value) {
     return ProviderOverride(
       ValueProvider<Stream<T>, AsyncValue<T>>((ref) {
-        AsyncValue<T>? lastValue;
+        AsyncValue<T> lastValue;
         final controller = StreamController<T>();
         ref.onDispose(controller.close);
 
@@ -33,7 +33,7 @@ mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
           lastValue = newValue;
         };
 
-        ref.onChange!(value);
+        ref.onChange(value);
 
         return controller.stream.asBroadcastStream();
       }, value),
@@ -151,7 +151,7 @@ mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
   /// ```
   ///
   /// which is the expected behavior.
-  RootProvider<Object?, Future<T>> get last;
+  RootProvider<Object, Future<T>> get last;
 }
 
 /// {@template riverpod.streamprovider}
@@ -213,15 +213,19 @@ mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
 /// {@endtemplate}
 mixin _StreamProviderStateMixin<T>
     on ProviderStateBase<Stream<T>, AsyncValue<T>> {
-  StreamSubscription<T>? sub;
-  StreamController<T>? _proxyController;
+  StreamSubscription<T> sub;
+  StreamController<T> _proxyController;
   Stream<T> get proxyStream {
     _proxyController ??= StreamController.broadcast();
-    return _proxyController!.stream;
+    return _proxyController.stream;
   }
 
   @override
-  void valueChanged({Stream<T>? previous}) {
+  void valueChanged({Stream<T> previous}) {
+    assert(
+      createdValue != null,
+      'StreamProvider does not support "null" for stream',
+    );
     if (createdValue == previous) {
       return;
     }
@@ -276,8 +280,8 @@ Future<T> _readLast<T>(
 @sealed
 class _CreatedStreamProvider<T> extends Provider<Stream<T>> {
   _CreatedStreamProvider(
-    AlwaysAliveProviderBase<Stream<T>, Object?> provider, {
-    String? name,
+    AlwaysAliveProviderBase<Stream<T>, Object> provider, {
+    String name,
   }) : super((ref) {
           ref.watch(provider);
           // ignore: invalid_use_of_visible_for_testing_member
@@ -293,8 +297,8 @@ class _CreatedStreamProvider<T> extends Provider<Stream<T>> {
 class _AutoDisposeCreatedStreamProvider<T>
     extends AutoDisposeProvider<Stream<T>> {
   _AutoDisposeCreatedStreamProvider(
-    RootProvider<Stream<T>, Object?> provider, {
-    String? name,
+    RootProvider<Stream<T>, Object> provider, {
+    String name,
   }) : super((ref) {
           ref.watch(provider);
           // ignore: invalid_use_of_visible_for_testing_member

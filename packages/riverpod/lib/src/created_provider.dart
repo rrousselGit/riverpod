@@ -14,8 +14,8 @@ import 'provider.dart';
 class CreatedProvider<T> extends Provider<T> {
   /// {@macro riverpod.createdprovider}
   CreatedProvider(
-    AlwaysAliveProviderBase<T, Object?> provider, {
-    String? name,
+    AlwaysAliveProviderBase<T, Object> provider, {
+    String name,
   }) : super((ref) {
           ref.watch(provider);
           // ignore: invalid_use_of_visible_for_testing_member
@@ -30,8 +30,8 @@ class CreatedProvider<T> extends Provider<T> {
 class AutoDisposeCreatedProvider<T> extends AutoDisposeProvider<T> {
   /// {@macro riverpod.createdprovider}
   AutoDisposeCreatedProvider(
-    RootProvider<T, Object?> provider, {
-    String? name,
+    RootProvider<T, Object> provider, {
+    String name,
   }) : super((ref) {
           ref.watch(provider);
           // ignore: invalid_use_of_visible_for_testing_member

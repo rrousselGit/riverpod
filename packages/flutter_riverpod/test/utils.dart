@@ -61,8 +61,8 @@ extension Legacy<T> on RootProvider<Object, T> {
 
   ProviderSubscription<T> addLazyListener(
     ProviderContainer container, {
-    required void Function() mayHaveChanged,
-    required void Function(T value) onChange,
+    void Function() mayHaveChanged,
+    void Function(T value) onChange,
   }) {
     final sub = container.listen<T>(
       this,

@@ -9,10 +9,10 @@ library marvel;
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:meta/meta.dart';
 
 import 'configuration.dart';
 
@@ -26,7 +26,7 @@ final repositoryProvider = Provider((ref) => MarvelRepository(ref.read));
 class MarvelRepository {
   MarvelRepository(
     this._read, {
-    int Function()? getCurrentTimestamp,
+    int Function() getCurrentTimestamp,
   }) : _getCurrentTimestamp = getCurrentTimestamp ??
             (() => DateTime.now().millisecondsSinceEpoch);
 
@@ -35,10 +35,10 @@ class MarvelRepository {
   final _characterCache = <String, Character>{};
 
   Future<MarvelListCharactersReponse> fetchCharacters({
-    required int offset,
-    int? limit,
-    String? nameStartsWith,
-    CancelToken? cancelToken,
+    @required int offset,
+    int limit,
+    String nameStartsWith,
+    CancelToken cancelToken,
   }) async {
     final cleanNameFilter = nameStartsWith?.trim();
 
@@ -63,14 +63,11 @@ class MarvelRepository {
     return result;
   }
 
-  Future<Character> fetchCharacter(
-    String id, {
-    CancelToken? cancelToken,
-  }) async {
+  Future<Character> fetchCharacter(String id, {CancelToken cancelToken}) async {
     // Don't fetch the Character if it was already obtained previously, either
     // in the home page or in the detail page.
     if (_characterCache.containsKey(id)) {
-      return _characterCache[id]!;
+      return _characterCache[id];
     }
 
     final response = await _get('characters/$id', cancelToken: cancelToken);
@@ -79,8 +76,8 @@ class MarvelRepository {
 
   Future<MarvelResponse> _get(
     String path, {
-    Map<String, Object>? queryParameters,
-    CancelToken? cancelToken,
+    Map<String, Object> queryParameters,
+    CancelToken cancelToken,
   }) async {
     final configs = await _read(configurationsProvider.future);
 
@@ -109,17 +106,17 @@ class MarvelRepository {
 @freezed
 abstract class MarvelListCharactersReponse with _$MarvelListCharactersReponse {
   factory MarvelListCharactersReponse({
-    required int totalCount,
-    required List<Character> characters,
+    @required int totalCount,
+    @required List<Character> characters,
   }) = _MarvelListCharactersReponse;
 }
 
 @freezed
 abstract class Character with _$Character {
   factory Character({
-    required int id,
-    required String name,
-    required Thumbnail thumbnail,
+    @required int id,
+    @required String name,
+    @required Thumbnail thumbnail,
   }) = _Character;
 
   factory Character.fromJson(Map<String, dynamic> json) =>
@@ -129,16 +126,15 @@ abstract class Character with _$Character {
 @freezed
 abstract class Thumbnail with _$Thumbnail {
   factory Thumbnail({
-    required String path,
-    required String extension,
+    @required String path,
+    @required String extension,
   }) = _Thumbnail;
-  Thumbnail._();
 
   factory Thumbnail.fromJson(Map<String, dynamic> json) =>
       _$ThumbnailFromJson(json);
 
-  late final String url =
-      '${path.replaceFirst('http://', 'https://')}.$extension';
+  @late
+  String get url => '${path.replaceFirst('http://', 'https://')}.$extension';
 }
 
 @freezed

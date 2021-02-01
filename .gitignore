@@ -25,7 +25,6 @@ coverage/
 .buildlog/
 .history
 .svn/
-coverage.lcov
 
 # IntelliJ related
 *.iml

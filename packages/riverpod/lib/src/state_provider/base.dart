@@ -7,7 +7,7 @@ class StateProvider<T>
   /// {@macro riverpod.stateprovider}
   StateProvider(
     Create<T, ProviderReference> create, {
-    String? name,
+    String name,
   }) : super((ref) => StateController(create(ref)), name);
 
   /// {@macro riverpod.family}
@@ -33,14 +33,14 @@ class StateProviderFamily<T, A> extends Family<StateController<T>,
   /// {@macro riverpod.stateprovider.family}
   StateProviderFamily(
     T Function(ProviderReference ref, A a) create, {
-    String? name,
+    String name,
   }) : super((ref, a) => StateController(create(ref, a)), name);
 
   @override
   StateProvider<T> create(
     A value,
     StateController<T> Function(ProviderReference ref, A param) builder,
-    String? name,
+    String name,
   ) {
     return StateProvider((ref) => builder(ref, value).state, name: name);
   }

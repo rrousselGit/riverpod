@@ -7,7 +7,7 @@ void main() {
   testWidgets('widgets cannot modify providers in their build method',
       (tester) async {
     final onError = FlutterError.onError;
-    Object? error;
+    Object error;
     FlutterError.onError = (details) {
       error = details.exception;
     };
@@ -96,7 +96,7 @@ void main() {
   testWidgets('AlwaysAliveProviderBase.read(context) inside initState',
       (tester) async {
     final provider = Provider((_) => 42);
-    int? result;
+    int result;
 
     await tester.pumpWidget(
       ProviderScope(
@@ -200,6 +200,10 @@ void main() {
     );
 
     expect(tester.takeException(), isAssertionError);
+  });
+
+  test('ProviderScope requires a child', () {
+    expect(() => ProviderScope(child: null), throwsAssertionError);
   });
 
   testWidgets('throws if no ProviderScope found', (tester) async {
@@ -440,10 +444,7 @@ class MockCreateState extends Mock {
 }
 
 class InitState extends StatefulWidget {
-  const InitState({
-    Key? key,
-    required this.initState,
-  }) : super(key: key);
+  const InitState({Key key, this.initState}) : super(key: key);
 
   // ignore: diagnostic_describe_all_properties
   final void Function(BuildContext context) initState;

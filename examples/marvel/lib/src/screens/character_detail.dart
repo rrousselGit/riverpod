@@ -1,4 +1,3 @@
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -57,11 +56,15 @@ final character = $family<Character, String>((ref, id) async {
 });
 
 class CharacterView extends HookWidget {
-  const CharacterView({Key? key}) : super(key: key);
+  const CharacterView({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final id = useProvider(selectedCharacterId);
+    assert(
+      id != null,
+      'CharacterView used but selectedCharacterId is null',
+    );
 
     return useProvider(character(id)).when(
       loading: () {

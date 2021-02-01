@@ -152,5 +152,5 @@ class ListenerMock extends Mock {
 }
 
 class ControllerListenerMock extends Mock {
-  void call(TestNotifier? value);
+  void call(TestNotifier value);
 }

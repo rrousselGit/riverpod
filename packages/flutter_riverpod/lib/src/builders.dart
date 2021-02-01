@@ -58,7 +58,7 @@ class ChangeNotifierProviderBuilder {
   /// {@endtemplate}
   ChangeNotifierProvider<T> call<T extends ChangeNotifier>(
     T Function(ProviderReference ref) create, {
-    String? name,
+    String name,
   }) {
     return ChangeNotifierProvider(create, name: name);
   }
@@ -77,7 +77,7 @@ class ChangeNotifierProviderBuilder {
   /// - Allowing a "title provider" access the `Locale`
   ///
   ///   ```dart
-  ///   final titleFamily = Provider.family<String, Locale>((ref, locale) {
+  ///   final titleFamily = Provider.family<String, Locale>((_, locale) {
   ///     if (locale == const Locale('en')) {
   ///       return 'English title';
   ///     } else if (locale == const Locale('fr')) {
@@ -223,8 +223,8 @@ class ChangeNotifierProviderBuilder {
   ///   @freezed
   ///   abstract class MyParameter with _$MyParameter {
   ///     factory MyParameter({
-  ///       required int userId,
-  ///       required Locale locale,
+  ///       int userId,
+  ///       Locale locale,
   ///     }) = _MyParameter;
   ///   }
   ///
@@ -249,15 +249,15 @@ class ChangeNotifierProviderBuilder {
   ///   ```dart
   ///   class MyParameter extends Equatable  {
   ///     factory MyParameter({
-  ///       required this.userId,
-  ///       requires this.locale,
+  ///       int userId,
+  ///       Locale locale,
   ///     });
   ///
-  ///     final int userId;
-  ///     final Local locale;
+  ///     int userId;
+  ///     Local local;
   ///
   ///     @override
-  ///     List<Object> get props => [userId, locale];
+  ///     List<Object> get props => [userId,local];
   ///   }
   ///
   ///   final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
@@ -290,7 +290,7 @@ class ChangeNotifierProviderFamilyBuilder {
   /// {@macro riverpod.family}
   ChangeNotifierProviderFamily<T, Value> call<T extends ChangeNotifier, Value>(
     T Function(ProviderReference ref, Value value) create, {
-    String? name,
+    String name,
   }) {
     return ChangeNotifierProviderFamily(create, name: name);
   }
@@ -309,7 +309,7 @@ class AutoDisposeChangeNotifierProviderBuilder {
   /// {@macro riverpod.autoDispose}
   AutoDisposeChangeNotifierProvider<T> call<T extends ChangeNotifier>(
     T Function(AutoDisposeProviderReference ref) create, {
-    String? name,
+    String name,
   }) {
     return AutoDisposeChangeNotifierProvider(create, name: name);
   }
@@ -329,7 +329,7 @@ class AutoDisposeChangeNotifierProviderFamilyBuilder {
   AutoDisposeChangeNotifierProviderFamily<T, Value>
       call<T extends ChangeNotifier, Value>(
     T Function(AutoDisposeProviderReference ref, Value value) create, {
-    String? name,
+    String name,
   }) {
     return AutoDisposeChangeNotifierProviderFamily(create, name: name);
   }

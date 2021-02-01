@@ -12,8 +12,8 @@ part 'configuration.g.dart';
 abstract class Configuration with _$Configuration {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory Configuration({
-    required String publicKey,
-    required String privateKey,
+    @required String publicKey,
+    @required String privateKey,
   }) = _Configuration;
 
   factory Configuration.fromJson(Map<String, dynamic> json) =>

@@ -4,9 +4,24 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
+import '../uni_directional_test.dart';
 import '../utils.dart';
 
 void main() {
+  test(
+      'FutureProvider does not accept null (as provider.stream is non-nullable)',
+      () {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    final provider = FutureProvider<void>((ref) => null);
+
+    expect(
+      container.read(provider),
+      isA<AsyncError>().having((e) => e.error, 'exception', isAssertionError),
+    );
+  });
+
   test('FutureProvider.autoDispose', () async {
     var future = Future.value(42);
     final onDispose = OnDisposeMock();

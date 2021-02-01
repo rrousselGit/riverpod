@@ -8,7 +8,7 @@ import '../utils.dart';
 void main() {
   final mayHaveChanged = MayHaveChangedMock<String>();
   final didChange = DidChangedMock<String>();
-  late ProviderContainer container;
+  ProviderContainer container;
   final provider = StateProvider((_) => 0);
   setUp(() {
     container = ProviderContainer();

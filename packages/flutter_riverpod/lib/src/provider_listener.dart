@@ -22,16 +22,16 @@ typedef OnProviderChange<T> = void Function(BuildContext context, T value);
 class ProviderListener<T> extends StatefulWidget {
   /// {@macro riverpod.providerlistener}
   const ProviderListener({
-    Key? key,
-    required this.onChange,
-    required this.provider,
-    required this.child,
+    Key key,
+    @required this.onChange,
+    @required this.provider,
+    @required this.child,
   }) : super(key: key);
 
   /// The provider listened.
   ///
   /// Can be `null`.
-  final ProviderBase<Object, T>? provider;
+  final ProviderBase<Object, T> provider;
 
   /// A function called with the new value of [provider] when it changes.
   ///
@@ -58,8 +58,8 @@ class ProviderListener<T> extends StatefulWidget {
 
 @sealed
 class _ProviderListenerState<T> extends State<ProviderListener<T>> {
-  ProviderSubscription<T>? _subscription;
-  ProviderContainer? _container;
+  ProviderSubscription<T> _subscription;
+  ProviderContainer _container;
 
   @override
   void didChangeDependencies() {
@@ -84,8 +84,8 @@ class _ProviderListenerState<T> extends State<ProviderListener<T>> {
     _subscription?.close();
     _subscription = null;
     if (widget.provider != null) {
-      _subscription = _container!.listen<T>(
-        widget.provider!,
+      _subscription = _container.listen<T>(
+        widget.provider,
         mayHaveChanged: _mayHaveChanged,
       );
     }
