@@ -117,10 +117,14 @@ void main() {
     // An object that will allow us to read providers
     // Do not share this between tests.
     final container = ProviderContainer();
+    addTearDown(container.dispose);
     final listener = Listener();
 
     // Observe a provider and spy the changes.
-    counterProvider.watchOwner(container, (value) => listener(value.state));
+    container.listen<StateController<int>>(
+      counterProvider,
+      didChange: (sub) => listener(sub.read().state),
+    );
 
     // the listener is called immediatly with 0, the default value
     verify(listener(0)).called(1);
@@ -138,9 +142,13 @@ void main() {
     // We use a different ProviderContainer to read our provider.
     // This unsure that no state is reused between tests
     final container = ProviderContainer();
+    addTearDown(container.dispose);
     final listener = Listener();
 
-    counterProvider.watchOwner(container, (value) => listener(value.state));
+    container.listen<StateController<int>>(
+      counterProvider,
+      didChange: (sub) => listener(sub.read().state),
+    );
 
     // The new test correcly uses the default value: 0
     verify(listener(0)).called(1);

@@ -218,7 +218,7 @@ abstract class RootProvider<Created, Listened>
   /// ```dart
   /// @override
   /// Widget build(BuildContext context, ScopedReader watch) {
-  ///   final age = watch(personProvider.select((p) => p.age));
+  ///   final age = useProvider(personProvider.select((p) => p.age));
   ///   return Text('$age');
   /// }
   /// ```

@@ -52,6 +52,7 @@
 - don't mutate other providers inside "create" (https://github.com/rrousselGit/river_pod/issues/144#issuecomment-695764973)
 - wrap with `Consumer`
 - No circular dependency
+- warn about `ref.watch(autoDispose)` after an await (https://github.com/rrousselGit/river_pod/issues/243)
 - warn watch(autoDispose) in non-autoDispose provider
 - `always_specify_name`
 - `name_match_variable`

@@ -270,7 +270,43 @@ Future<T> _readLast<T>(
 ) {
   return ref.watch(provider).when(
         data: (value) => Future.value(value),
-        loading: () => ref.watch(provider.stream).first,
+        loading: () {
+          final stream = ref.watch(provider.stream);
+
+          final completer = Completer<T>();
+          StreamSubscription<T> sub;
+
+          sub = stream.listen(
+            (value) {
+              completer.complete(value);
+              sub.cancel();
+            },
+            // ignore: avoid_types_on_closure_parameters
+            onError: (Object err, StackTrace stack) {
+              completer.completeError(err, stack);
+              sub.cancel();
+            },
+            onDone: () {
+              completer.completeError(
+                StateError('The stream was closed before emitting a value'),
+              );
+              sub.cancel();
+            },
+          );
+
+          ref.onDispose(() {
+            sub.cancel();
+            if (!completer.isCompleted) {
+              completer.completeError(
+                StateError(
+                  'The provider was disposed the stream could emit a value',
+                ),
+              );
+            }
+          });
+
+          return completer.future;
+        },
         error: (err, stack) => Future.error(err, stack),
       );
 }
