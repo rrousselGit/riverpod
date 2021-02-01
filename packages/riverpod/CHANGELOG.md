@@ -1,3 +1,7 @@
+# 0.12.3
+
+- Fixed a but where listening to StreamProvider.last could result in a StateError (#217)
+
 # 0.12.2
 
 - Exported `AutoDisposeProviderReference`
