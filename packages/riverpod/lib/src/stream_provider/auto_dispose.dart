@@ -8,13 +8,13 @@ class AutoDisposeStreamProvider<T>
   /// {@macro riverpod.streamprovider}
   AutoDisposeStreamProvider(
     Create<Stream<T>, AutoDisposeProviderReference> create, {
-    String? name,
+    String name,
   }) : super(create, name);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStreamProviderFamilyBuilder();
 
-  AutoDisposeProviderBase<Stream<T>, Stream<T>>? _stream;
+  AutoDisposeProviderBase<Stream<T>, Stream<T>> _stream;
   @override
   AutoDisposeProviderBase<Stream<T>, Stream<T>> get stream {
     return _stream ??= _AutoDisposeCreatedStreamProvider(
@@ -23,9 +23,9 @@ class AutoDisposeStreamProvider<T>
     );
   }
 
-  AutoDisposeProviderBase<Object?, Future<T>>? _last;
+  AutoDisposeProviderBase<Object, Future<T>> _last;
   @override
-  AutoDisposeProviderBase<Object?, Future<T>> get last {
+  AutoDisposeProviderBase<Object, Future<T>> get last {
     return _last ??= Provider.autoDispose(
       (ref) => _readLast(ref as ProviderElement, this),
       name: name == null ? null : '$name.last',
@@ -52,14 +52,14 @@ class AutoDisposeStreamProviderFamily<T, A> extends Family<
   /// {@macro riverpod.streamprovider.family}
   AutoDisposeStreamProviderFamily(
     Stream<T> Function(AutoDisposeProviderReference ref, A a) create, {
-    String? name,
+    String name,
   }) : super(create, name);
 
   @override
   AutoDisposeStreamProvider<T> create(
     A value,
     Stream<T> Function(AutoDisposeProviderReference ref, A param) builder,
-    String? name,
+    String name,
   ) {
     return AutoDisposeStreamProvider((ref) => builder(ref, value), name: name);
   }

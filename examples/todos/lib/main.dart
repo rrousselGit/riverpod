@@ -75,7 +75,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +86,7 @@ class MyApp extends StatelessWidget {
 }
 
 class Home extends HookWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -138,14 +138,14 @@ class Home extends HookWidget {
 
 class Toolbar extends HookWidget {
   const Toolbar({
-    Key? key,
+    Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final filter = useProvider(todoListFilter);
 
-    Color? textColorFor(TodoListFilter value) {
+    Color textColorFor(TodoListFilter value) {
       return filter.state == value ? Colors.blue : null;
     }
 
@@ -199,7 +199,7 @@ class Toolbar extends HookWidget {
 }
 
 class Title extends StatelessWidget {
-  const Title({Key? key}) : super(key: key);
+  const Title({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -226,7 +226,7 @@ class Title extends StatelessWidget {
 final _currentTodo = ScopedProvider<Todo>(null);
 
 class TodoItem extends HookWidget {
-  const TodoItem({Key? key}) : super(key: key);
+  const TodoItem({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

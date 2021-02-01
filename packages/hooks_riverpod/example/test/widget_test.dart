@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:hooks_riverpod_example/main.dart';
+import 'package:example/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (tester) async {

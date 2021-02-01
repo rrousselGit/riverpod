@@ -353,3 +353,8 @@ class Counter extends StateNotifier<int> {
   // ignore: use_setters_to_change_properties
   void setState(int value) => state = value;
 }
+
+class ObserverMock extends Mock implements ProviderObserver {}
+
+// can subclass ProviderObserver without implementing all life-cycles
+class CustomObserver extends ProviderObserver {}

@@ -10,10 +10,8 @@ class ValueProvider<Created, Listened>
   ValueProvider(
     Created Function(ValueProviderElement<Created, Listened> ref) create,
     this._value,
-  ) : super(
-          (ref) => create(ref as ValueProviderElement<Created, Listened>),
-          null,
-        );
+  ) : super((ref) => create(ref as ValueProviderElement<Created, Listened>),
+            null);
 
   final Listened _value;
 
@@ -44,7 +42,7 @@ class ValueProviderElement<Created, Listened>
 
   /// A custom listener called when [RootProvider.overrideWithValue] changes
   /// with a different value.
-  void Function(Listened value)? onChange;
+  void Function(Listened value) onChange;
 
   @override
   void update(ProviderBase<Created, Listened> newProvider) {
@@ -61,7 +59,7 @@ class ValueProviderElement<Created, Listened>
 class _ValueProviderState<Created, Listened>
     extends ProviderStateBase<Created, Listened> {
   @override
-  void valueChanged({Object? previous}) {
+  void valueChanged({Object previous}) {
     exposedValue =
         ((ref as ProviderElement).provider as ValueProvider<Created, Listened>)
             ._value;

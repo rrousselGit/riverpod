@@ -14,10 +14,10 @@ part 'change_notifier_provider/auto_dispose.dart';
 /// Note: By using Riverpod, [ChangeNotifier] will no-longer be O(N^2) for
 /// dispatching notifications, but instead O(N)
 /// {@endtemplate}
-mixin _ChangeNotifierProviderStateMixin<T extends ChangeNotifier?>
+mixin _ChangeNotifierProviderStateMixin<T extends ChangeNotifier>
     on ProviderStateBase<T, T> {
   @override
-  void valueChanged({T? previous}) {
+  void valueChanged({T previous}) {
     if (createdValue == previous) {
       return;
     }

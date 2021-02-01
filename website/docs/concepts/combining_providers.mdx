@@ -182,6 +182,7 @@ The only difference that passing `ref.read` brings is a slightly less verbose
 code and making sure that our object never uses `ref.watch`.
 :::
 
+
 :::danger **DON'T** call [read] inside the body of a provider
 
 ```dart
@@ -264,6 +265,66 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
   return dio.get('$host/products');
 });
 ```
+
+<!-- ### Creating an object that depends on a lot of providers.
+
+Sometimes, we may want to create an object that depends on a lot of providers
+like so:
+
+```dart
+final configsProvider = Provider((ref) => Configuration());
+
+final repositoryProvider = Provider((ref) {
+  return Location(ref.watch(configsProvider));
+});
+
+class Repository {
+  Repository(this.configs);
+
+  final Configuration configs;
+
+  Future<User> fetchUser(String id) async {
+    final response = await dio.get('${configs.host}/users/$id');
+    return User.fromJson(response.data);
+  }
+}
+```
+
+This can quickly become tedious as your object receives more parameters.
+
+
+In that situation, it may be reasonable to pass [ref.read] variable to our
+object directly:
+
+```dart
+final cityProvider = Provider((ref) => 'London');
+final countryProvider = Provider((ref) => 'England');
+
+final weatherProvider = Provider((ref) {
+  // Pass the ref.read object to our Location class.
+  // Location will then be able to use this function to read other providers
+  return Location(ref.read);
+});
+
+class Location {
+  Location(this._read);
+
+  final Reader _read;
+
+  String get label {
+    final city = _read(cityProvider);
+    final country = _read(countryProvider);
+    return '$city ($country)';
+  }
+}
+```
+
+This avoids having to implement a constructor, which makes changes on the object
+easier.
+
+This is fine as, as opposed to `BuildContext` from Flutter, that [ref] object
+is completely independent from Flutter/the UI.
+As such the object can still be shared and tested. -->
 
 [provider]: https://pub.dev/documentation/riverpod/latest/all/Provider-class.html
 [stateprovider]: https://pub.dev/documentation/riverpod/latest/all/StateProvider-class.html

@@ -4,10 +4,12 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
+import '../uni_directional_test.dart';
+
 void main() {
-  late StreamController<int> controller;
+  StreamController<int> controller;
   final provider = StreamProvider((ref) => controller.stream);
-  late ProviderContainer container;
+  ProviderContainer container;
 
   setUp(() {
     container = ProviderContainer();
@@ -174,6 +176,17 @@ void main() {
     });
   });
 
+  test(
+      'StreamProvider does not accept null (as provider.stream is non-nullable)',
+      () {
+    final provider = StreamProvider<void>((ref) => null);
+
+    expect(
+      container.read(provider),
+      isA<AsyncError>().having((e) => e.error, 'exception', isAssertionError),
+    );
+  });
+
   test('the created stream does not leak on dispose', () async {
     final container = ProviderContainer();
     var didCloseSub = false;
@@ -256,9 +269,9 @@ void main() {
 
   test('myProvider.stream receives all values, errors and done events',
       () async {
-    int? lastValue;
-    Object? lastError;
-    StackTrace? lastStack;
+    int lastValue;
+    dynamic lastError;
+    StackTrace lastStack;
     var isClosed = false;
 
     final sub = container.read(provider.stream).listen(
@@ -396,35 +409,6 @@ void main() {
   });
 }
 
-class MockStream<T> extends Mock implements Stream<T> {
-  @override
-  StreamSubscription<T> listen(
-    void Function(T event)? onData, {
-    Function? onError,
-    void Function()? onDone,
-    bool? cancelOnError,
-  }) {
-    return super.noSuchMethod(
-      Invocation.method(
-        #listen,
-        [onData],
-        {
-          #onError: onError,
-          #onDone: onDone,
-          #cancelOnError: cancelOnError,
-        },
-      ),
-      MockSubscription<T>(),
-    ) as StreamSubscription<T>;
-  }
-}
+class MockStream<T> extends Mock implements Stream<T> {}
 
-class MockSubscription<T> extends Mock implements StreamSubscription<T> {
-  @override
-  Future<void> cancel() {
-    return super.noSuchMethod(
-      Invocation.method(#cancel, []),
-      Future<void>.value(),
-    ) as Future<void>;
-  }
-}
+class MockSubscription<T> extends Mock implements StreamSubscription<T> {}

@@ -27,12 +27,12 @@ class TimestampParser implements JsonConverter<DateTime, int> {
 abstract class Owner with _$Owner {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory Owner({
-    required int reputation,
-    required int userId,
-    BadgeCount? badgeCounts,
-    required String displayName,
-    required String profileImage,
-    required String link,
+    @required int reputation,
+    @required int userId,
+    BadgeCount badgeCounts,
+    @required String displayName,
+    @required String profileImage,
+    @required String link,
   }) = _Owner;
 
   factory Owner.fromJson(Map<String, Object> json) => _$OwnerFromJson(json);
@@ -41,9 +41,9 @@ abstract class Owner with _$Owner {
 @freezed
 abstract class BadgeCount with _$BadgeCount {
   factory BadgeCount({
-    required int bronze,
-    required int silver,
-    required int gold,
+    @required int bronze,
+    @required int silver,
+    @required int gold,
   }) = _BadgeCount;
 
   factory BadgeCount.fromJson(Map<String, Object> json) =>
@@ -53,8 +53,8 @@ abstract class BadgeCount with _$BadgeCount {
 class AnswersCount extends StatelessWidget {
   const AnswersCount(
     this.answerCount, {
-    Key? key,
-    required this.accepted,
+    Key key,
+    @required this.accepted,
   }) : super(key: key);
 
   final int answerCount;
@@ -87,7 +87,7 @@ class AnswersCount extends StatelessWidget {
 }
 
 class UpvoteCount extends StatelessWidget {
-  const UpvoteCount(this.upvoteCount, {Key? key}) : super(key: key);
+  const UpvoteCount(this.upvoteCount, {Key key}) : super(key: key);
 
   final int upvoteCount;
 
@@ -140,9 +140,9 @@ String _useCreatedSince(DateTime creationDate) {
 
 class PostInfo extends HookWidget {
   const PostInfo({
-    Key? key,
-    required this.owner,
-    required this.creationDate,
+    Key key,
+    @required this.owner,
+    @required this.creationDate,
   }) : super(key: key);
 
   final Owner owner;
@@ -196,7 +196,7 @@ class PostInfo extends HookWidget {
                       ),
                     ),
                     if (owner.badgeCounts != null) ...[
-                      if (owner.badgeCounts!.gold > 0) ...[
+                      if (owner.badgeCounts.gold > 0) ...[
                         const SizedBox(width: 4),
                         Container(
                           width: 6,
@@ -208,7 +208,7 @@ class PostInfo extends HookWidget {
                         ),
                         const SizedBox(width: 2),
                         Text(
-                          '${owner.badgeCounts!.gold}',
+                          '${owner.badgeCounts.gold}',
                           style: const TextStyle(
                             color: Color(0xff9fa6ad),
                             fontSize: 12,
@@ -216,7 +216,7 @@ class PostInfo extends HookWidget {
                           ),
                         ),
                       ],
-                      if (owner.badgeCounts!.silver > 0) ...[
+                      if (owner.badgeCounts.silver > 0) ...[
                         const SizedBox(width: 4),
                         Container(
                           width: 6,
@@ -228,7 +228,7 @@ class PostInfo extends HookWidget {
                         ),
                         const SizedBox(width: 2),
                         Text(
-                          '${owner.badgeCounts!.silver}',
+                          '${owner.badgeCounts.silver}',
                           style: const TextStyle(
                             color: Color(0xff9fa6ad),
                             fontSize: 12,
@@ -236,7 +236,7 @@ class PostInfo extends HookWidget {
                           ),
                         ),
                       ],
-                      if (owner.badgeCounts!.bronze > 0) ...[
+                      if (owner.badgeCounts.bronze > 0) ...[
                         const SizedBox(width: 4),
                         Container(
                           width: 6,
@@ -248,7 +248,7 @@ class PostInfo extends HookWidget {
                         ),
                         const SizedBox(width: 2),
                         Text(
-                          '${owner.badgeCounts!.bronze}',
+                          '${owner.badgeCounts.bronze}',
                           style: const TextStyle(
                             color: Color(0xff9fa6ad),
                             fontSize: 12,
@@ -271,10 +271,10 @@ class PostInfo extends HookWidget {
 @freezed
 abstract class TagTheme with _$TagTheme {
   const factory TagTheme({
-    required TextStyle style,
-    required EdgeInsets padding,
-    required Color backgroundColor,
-    required BorderRadius borderRadius,
+    @required TextStyle style,
+    @required EdgeInsets padding,
+    @required Color backgroundColor,
+    @required BorderRadius borderRadius,
   }) = _TagTheme;
 }
 
@@ -282,8 +282,8 @@ final tagThemeProvider = ScopedProvider<TagTheme>(null);
 
 class Tag extends HookWidget {
   const Tag({
-    Key? key,
-    required this.tag,
+    Key key,
+    @required this.tag,
   }) : super(key: key);
 
   final String tag;

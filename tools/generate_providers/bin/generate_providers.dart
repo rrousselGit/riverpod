@@ -115,7 +115,7 @@ const _familyDoc = r'''
 /// - Allowing a "title provider" access the `Locale`
 ///
 ///   ```dart
-///   final titleFamily = Provider.family<String, Locale>((ref, locale) {
+///   final titleFamily = Provider.family<String, Locale>((_, locale) {
 ///     if (locale == const Locale('en')) {
 ///       return 'English title';
 ///     } else if (locale == const Locale('fr')) {
@@ -261,8 +261,8 @@ const _familyDoc = r'''
 ///   @freezed
 ///   abstract class MyParameter with _$MyParameter {
 ///     factory MyParameter({
-///       required int userId,
-///       required Locale locale,
+///       int userId,
+///       Locale locale,
 ///     }) = _MyParameter;
 ///   }
 ///
@@ -287,15 +287,15 @@ const _familyDoc = r'''
 ///   ```dart
 ///   class MyParameter extends Equatable  {
 ///     factory MyParameter({
-///       required this.userId,
-///       requires this.locale,
+///       int userId,
+///       Locale locale,
 ///     });
 ///
-///     final int userId;
-///     final Local locale;
+///     int userId;
+///     Local local;
 ///
 ///     @override
-///     List<Object> get props => [userId, locale];
+///     List<Object> get props => [userId,local];
 ///   }
 ///
 ///   final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
@@ -361,8 +361,6 @@ Future<void> main(List<String> args) async {
       );
       builder.writeln(
         """
-import 'package:state_notifier/state_notifier.dart';
-
 import 'internals.dart';
 """,
       );
@@ -428,7 +426,7 @@ extension on Tuple3<DisposeType, StateType, ProviderType> {
   String get constraint {
     switch (item2) {
       case StateType.stateNotifier:
-        return ' extends StateNotifier<Object?>';
+        return ' extends StateNotifier<dynamic>';
       case StateType.changeNotifier:
         return ' extends ChangeNotifier';
       default:
@@ -501,7 +499,7 @@ class ${configs.providerName}Builder {
 ${familyDoc().replaceAll('///', '  ///')}
   ${configs.providerName}<T, Value> call<T${configs.constraint}, Value>(
     ${configs.createType} Function(${configs.ref} ref, Value value) create, {
-    String? name,
+    String name,
   }) {
     return ${configs.providerName}(create, name: name);
   }
@@ -527,7 +525,7 @@ class ${configs.providerName}Builder {
 ${autoDisposeDoc().replaceAll('///', '  ///')}
   ${configs.providerName}<T> call<T${configs.constraint}>(
     ${configs.createType} Function(${configs.ref} ref) create, {
-    String? name,
+    String name,
   }) {
     return ${configs.providerName}(create, name: name);
   }

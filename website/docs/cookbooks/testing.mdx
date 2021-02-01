@@ -307,11 +307,7 @@ class Repository {
 }
 
 class Todo {
-  Todo({
-    required this.id,
-    required this.label,
-    required this.completed,
-  });
+  Todo({this.id, this.label, this.completed});
 
   final String id;
   final String label;
@@ -342,7 +338,7 @@ class FakeRepository implements Repository {
 }
 
 class TodoItem extends StatelessWidget {
-  const TodoItem({Key? key, required this.todo}) : super(key: key);
+  const TodoItem({Key key, this.todo}) : super(key: key);
   final Todo todo;
   @override
   Widget build(BuildContext context) {

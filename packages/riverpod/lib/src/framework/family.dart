@@ -7,7 +7,7 @@ abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
   Family(this._builder, this._name);
 
   final Created Function(Ref ref, Param param) _builder;
-  final String? _name;
+  final String _name;
 
   final _cache = <Param, P>{};
 
@@ -33,12 +33,12 @@ abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
   P create(
     Param value,
     Created Function(Ref ref, Param param) builder,
-    String? name,
+    String name,
   );
 
   /// A debug-only list of all the parameters passed to this family.
-  List<Param>? get debugKeys {
-    List<Param>? result;
+  List<Param> get debugKeys {
+    List<Param> result;
     assert(() {
       result = _cache.keys.toList(growable: false);
       return true;

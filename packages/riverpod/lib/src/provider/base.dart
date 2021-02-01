@@ -6,7 +6,7 @@ class Provider<T> extends AlwaysAliveProviderBase<T, T> {
   /// {@macro riverpod.provider}
   Provider(
     Create<T, ProviderReference> create, {
-    String? name,
+    String name,
   }) : super(create, name);
 
   /// {@macro riverpod.family}
@@ -16,7 +16,7 @@ class Provider<T> extends AlwaysAliveProviderBase<T, T> {
   static const autoDispose = AutoDisposeProviderBuilder();
 
   @override
-  ProviderOverride overrideWithProvider(RootProvider<Object?, T> provider) {
+  ProviderOverride overrideWithProvider(RootProvider<Object, T> provider) {
     return ProviderOverride(provider, this);
   }
 
@@ -36,14 +36,14 @@ class ProviderFamily<T, A>
   /// {@macro riverpod.provider.family}
   ProviderFamily(
     T Function(ProviderReference ref, A a) create, {
-    String? name,
+    String name,
   }) : super(create, name);
 
   @override
   Provider<T> create(
     A value,
     T Function(ProviderReference ref, A param) builder,
-    String? name,
+    String name,
   ) {
     return Provider((ref) => builder(ref, value), name: name);
   }

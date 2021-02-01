@@ -4,13 +4,13 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
-  late ProviderContainer container;
+  ProviderContainer container;
   setUp(() => container = ProviderContainer());
   tearDown(() => container.dispose());
 
   test('Provider.autoDispose can be overriden by anything', () {
     final provider = Provider.autoDispose((_) => 42);
-    final RootProvider<Object?, int> override = Provider((_) {
+    final RootProvider<Object, int> override = Provider((_) {
       return 21;
     });
     final container = ProviderContainer(overrides: [
@@ -24,7 +24,7 @@ void main() {
 
   test('Provider can be overriden by anything', () {
     final provider = Provider((_) => 42);
-    final RootProvider<Object?, int> override = Provider((_) {
+    final RootProvider<Object, int> override = Provider((_) {
       return 21;
     });
     final container = ProviderContainer(overrides: [

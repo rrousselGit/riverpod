@@ -43,7 +43,7 @@ class _ProviderHook<T> extends Hook<T> {
 }
 
 class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
-  ProviderSubscription<T>? _link;
+  ProviderSubscription<T> _link;
 
   @override
   void initHook() {
@@ -62,7 +62,7 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
   }
 
   @override
-  bool shouldRebuild() => _link!.flush();
+  bool shouldRebuild() => _link.flush();
 
   void _mayHaveChanged(ProviderSubscription<T> sub) {
     markMayNeedRebuild();
@@ -70,7 +70,7 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
 
   @override
   T build(BuildContext context) {
-    return _link!.read();
+    return _link.read();
   }
 
   @override
@@ -81,12 +81,10 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
           hook._providerListenable.runtimeType,
       'The provider listened cannot change',
     );
-
-    final link = _link;
-
     if (oldHook._container != hook._container) {
       _listen();
-    } else if (link is SelectorSubscription<dynamic, T>) {
+    } else if (_link is SelectorSubscription<dynamic, T>) {
+      final link = _link as SelectorSubscription<dynamic, T>;
       assert(
         hook._providerListenable is ProviderSelector<dynamic, T>,
         'useProvider was updated from `useProvider(provider.select(...)) '
@@ -107,7 +105,7 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
 
   @override
   void dispose() {
-    _link!.close();
+    _link.close();
     super.dispose();
   }
 }
