@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
@@ -32,6 +33,145 @@ void main() {
     controller.addError(42, stack);
 
     expect(container.read(provider), AsyncValue<int>.error(42, stack));
+  });
+
+  group('.last', () {
+    test(
+        'throws StateError if the provider is disposed before a value was emitted',
+        () async {
+      final subMock = MockSubscription<int>();
+      when(subMock.cancel())
+          .thenAnswer((realInvocation) => Future<void>.value());
+      final streamMock = MockStream<int>();
+
+      when(streamMock.listen(
+        any,
+        onError: anyNamed('onError'),
+        onDone: anyNamed('onDone'),
+      )).thenReturn(subMock);
+
+      final container = ProviderContainer(overrides: [
+        provider.stream.overrideWithValue(streamMock),
+      ]);
+
+      final last = container.read(provider.last);
+
+      container.dispose();
+
+      await expectLater(
+        last,
+        throwsA(
+          isA<StateError>().having((e) => e.message, 'message',
+              'The provider was disposed the stream could emit a value'),
+        ),
+      );
+
+      verify(subMock.cancel()).called(1);
+    });
+
+    test('throws StateError if the stream is closed before a value was emitted',
+        () async {
+      final subMock = MockSubscription<int>();
+      when(subMock.cancel())
+          .thenAnswer((realInvocation) => Future<void>.value());
+      final streamMock = MockStream<int>();
+
+      when(streamMock.listen(
+        any,
+        onError: anyNamed('onError'),
+        onDone: anyNamed('onDone'),
+      )).thenReturn(subMock);
+
+      final container = ProviderContainer(overrides: [
+        provider.stream.overrideWithValue(streamMock),
+      ]);
+
+      final last = container.read(provider.last);
+
+      final onDone = verify(streamMock.listen(
+        any,
+        onError: anyNamed('onError'),
+        onDone: captureAnyNamed('onDone'),
+      )).captured.first as void Function();
+
+      onDone();
+
+      await expectLater(
+        last,
+        throwsA(
+          isA<StateError>().having((e) => e.message, 'message',
+              'The stream was closed before emitting a value'),
+        ),
+      );
+
+      verify(subMock.cancel()).called(1);
+    });
+
+    test('reports the error if an error is pushed into the stream', () async {
+      final subMock = MockSubscription<int>();
+      when(subMock.cancel())
+          .thenAnswer((realInvocation) => Future<void>.value());
+      final streamMock = MockStream<int>();
+
+      when(streamMock.listen(
+        any,
+        onError: anyNamed('onError'),
+        onDone: anyNamed('onDone'),
+      )).thenReturn(subMock);
+
+      final container = ProviderContainer(overrides: [
+        provider.stream.overrideWithValue(streamMock),
+      ]);
+
+      final last = container.read(provider.last);
+
+      final onError = verify(streamMock.listen(
+        any,
+        onError: captureAnyNamed('onError'),
+        onDone: anyNamed('onDone'),
+      )).captured.first as void Function(Object, StackTrace);
+
+      final error = Error();
+      final stack = StackTrace.current;
+
+      onError(error, stack);
+
+      // TODO(rrousselGit) test that the stacktrace is preserved
+      await expectLater(last, throwsA(error));
+
+      verify(subMock.cancel()).called(1);
+    });
+
+    test('reports the first value emitted', () async {
+      final subMock = MockSubscription<int>();
+      when(subMock.cancel())
+          .thenAnswer((realInvocation) => Future<void>.value());
+      final streamMock = MockStream<int>();
+
+      when(streamMock.listen(
+        any,
+        onError: anyNamed('onError'),
+        onDone: anyNamed('onDone'),
+      )).thenReturn(subMock);
+
+      final container = ProviderContainer(overrides: [
+        provider.stream.overrideWithValue(streamMock),
+      ]);
+
+      final last = container.read(provider.last);
+
+      final onValue = verify(streamMock.listen(
+        captureAny,
+        onError: anyNamed('onError'),
+        onDone: anyNamed('onDone'),
+      )).captured.first as void Function(int);
+
+      onValue(42);
+
+      await expectLater(last, completion(42));
+
+      verify(subMock.cancel()).called(1);
+    });
   });
 
   test('the created stream does not leak on dispose', () async {
@@ -254,4 +394,37 @@ void main() {
       await expectLater(stream, emitsDone);
     });
   });
+}
+
+class MockStream<T> extends Mock implements Stream<T> {
+  @override
+  StreamSubscription<T> listen(
+    void Function(T event)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
+  }) {
+    return super.noSuchMethod(
+      Invocation.method(
+        #listen,
+        [onData],
+        {
+          #onError: onError,
+          #onDone: onDone,
+          #cancelOnError: cancelOnError,
+        },
+      ),
+      MockSubscription<T>(),
+    ) as StreamSubscription<T>;
+  }
+}
+
+class MockSubscription<T> extends Mock implements StreamSubscription<T> {
+  @override
+  Future<void> cancel() {
+    return super.noSuchMethod(
+      Invocation.method(#cancel, []),
+      Future<void>.value(),
+    ) as Future<void>;
+  }
 }

@@ -1,3 +1,7 @@
+# 0.13.0-nullsafety.1
+
+- Fixed a but where listening to `StreamProvider.last` could result in a `StateError` (#217)
+
 # 0.13.0-nullsafety.0
 
 Migrated to null-safety
