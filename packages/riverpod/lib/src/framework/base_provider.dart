@@ -13,7 +13,8 @@ part of '../framework.dart';
 ///
 /// - [ProviderReference], which exposes the methods to read other providers.
 /// - [Provider], a provider that uses [Create] to expose an immutable value.
-typedef Create<T, Ref extends ProviderReference> = T Function(Ref ref);
+typedef Create<T, Listened, Ref extends ProviderReference<Listened>> = T
+    Function(Ref ref);
 
 /// A function that reads the state of a provider.
 typedef Reader = T Function<T>(RootProvider<Object?, T> provider);
@@ -54,7 +55,7 @@ abstract class AlwaysAliveProviderBase<Created, Listened>
     extends RootProvider<Created, Listened> {
   /// Creates an [AlwaysAliveProviderBase].
   AlwaysAliveProviderBase(
-    Created Function(ProviderReference ref) create,
+    Created Function(ProviderReference<Listened> ref) create,
     String? name,
   ) : super(create, name);
 
@@ -105,7 +106,7 @@ abstract class ProviderBase<Created, Listened>
   /// A base class for _all_ providers.
   ProviderBase(this._create, this.name);
 
-  final Created Function(ProviderReference ref) _create;
+  final Created Function(ProviderReference<Listened> ref) _create;
 
   /// {@template riverpod.name}
   /// A custom label for providers.
@@ -171,7 +172,7 @@ abstract class RootProvider<Created, Listened>
     extends ProviderBase<Created, Listened> {
   /// {@macro riverpod.rootprovider}
   RootProvider(
-    Created Function(ProviderReference ref) create,
+    Created Function(ProviderReference<Listened> ref) create,
     String? name,
   ) : super(create, name);
 
@@ -304,7 +305,7 @@ class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
 /// - [mounted], an utility to know whether the provider is still "alive" or not.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 @sealed
-abstract class ProviderReference {
+abstract class ProviderReference<Listened> {
   /// An utility to know if a provider was destroyed or not.
   ///
   /// This is useful when dealing with asynchronous operations, as the provider
@@ -491,7 +492,8 @@ class ProviderSubscription<Listened> {
 /// An internal class that handles the state of a provider.
 ///
 /// Do not use.
-class ProviderElement<Created, Listened> implements ProviderReference {
+class ProviderElement<Created, Listened>
+    implements ProviderReference<Listened> {
   /// Do not use.
   ProviderElement(this._provider) : state = _provider.createState();
 

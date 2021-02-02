@@ -6,7 +6,8 @@ part of '../framework.dart';
 /// The difference with [ProviderReference] is that it has an extra
 /// [maintainState] property, to help determine if the state can be destroyed
 ///  or not.
-abstract class AutoDisposeProviderReference extends ProviderReference {
+abstract class AutoDisposeProviderReference<Listened>
+    extends ProviderReference<Listened> {
   /// Whether to destroy the state of the provider when all listeners are removed or not.
   ///
   /// Can be changed at any time, in which case when setting it to `false`,
@@ -31,9 +32,10 @@ abstract class AutoDisposeProviderBase<Created, Listened>
     extends RootProvider<Created, Listened> {
   /// {@macro riverpod.AutoDisposeProviderBase}
   AutoDisposeProviderBase(
-    Created Function(AutoDisposeProviderReference ref) create,
+    Created Function(AutoDisposeProviderReference<Listened> ref) create,
     String? name,
-  ) : super((ref) => create(ref as AutoDisposeProviderReference), name);
+  ) : super((ref) => create(ref as AutoDisposeProviderReference<Listened>),
+            name);
 
   @override
   AutoDisposeProviderElement<Created, Listened> createElement() {
@@ -53,7 +55,7 @@ abstract class AutoDisposeProviderBase<Created, Listened>
 /// The [ProviderElement] of an [AutoDisposeProviderBase].
 class AutoDisposeProviderElement<Created, Listened>
     extends ProviderElement<Created, Listened>
-    implements AutoDisposeProviderReference {
+    implements AutoDisposeProviderReference<Listened> {
   /// The [ProviderElement] of an [AutoDisposeProviderBase].
   AutoDisposeProviderElement(
     ProviderBase<Created, Listened> provider,

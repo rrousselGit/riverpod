@@ -7,7 +7,9 @@ class AutoDisposeFutureProvider<T>
     with _FutureProviderMixin<T> {
   /// {@macro riverpod.futureprovider}
   AutoDisposeFutureProvider(
-    Create<Future<T>, AutoDisposeProviderReference> create, {
+    Create<Future<T>, AsyncValue<T>,
+            AutoDisposeProviderReference<AsyncValue<T>>>
+        create, {
     String? name,
   }) : super(create, name);
 
@@ -39,18 +41,20 @@ class AutoDisposeFutureProviderFamily<T, A> extends Family<
     Future<T>,
     AsyncValue<T>,
     A,
-    AutoDisposeProviderReference,
+    AutoDisposeProviderReference<AsyncValue<T>>,
     AutoDisposeFutureProvider<T>> {
   /// {@macro riverpod.futureprovider.family}
   AutoDisposeFutureProviderFamily(
-    Future<T> Function(AutoDisposeProviderReference ref, A a) create, {
+    Future<T> Function(AutoDisposeProviderReference<AsyncValue<T>> ref, A a)
+        create, {
     String? name,
   }) : super(create, name);
 
   @override
   AutoDisposeFutureProvider<T> create(
     A value,
-    Future<T> Function(AutoDisposeProviderReference ref, A param) builder,
+    Future<T> Function(AutoDisposeProviderReference<AsyncValue<T>> ref, A param)
+        builder,
     String? name,
   ) {
     return AutoDisposeFutureProvider((ref) => builder(ref, value), name: name);

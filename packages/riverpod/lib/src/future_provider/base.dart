@@ -7,7 +7,7 @@ class FutureProvider<T>
     with _FutureProviderMixin<T> {
   /// {@macro riverpod.futureprovider}
   FutureProvider(
-    Create<Future<T>, ProviderReference> create, {
+    Create<Future<T>, AsyncValue<T>, ProviderReference<AsyncValue<T>>> create, {
     String? name,
   }) : super(create, name);
 
@@ -60,17 +60,17 @@ class _FutureProviderState<T> = ProviderStateBase<Future<T>, AsyncValue<T>>
 /// {@endtemplate}
 @sealed
 class FutureProviderFamily<T, A> extends Family<Future<T>, AsyncValue<T>, A,
-    ProviderReference, FutureProvider<T>> {
+    ProviderReference<AsyncValue<T>>, FutureProvider<T>> {
   /// {@macro riverpod.futureprovider.family}
   FutureProviderFamily(
-    Future<T> Function(ProviderReference ref, A a) create, {
+    Future<T> Function(ProviderReference<AsyncValue<T>> ref, A a) create, {
     String? name,
   }) : super(create, name);
 
   @override
   FutureProvider<T> create(
     A value,
-    Future<T> Function(ProviderReference ref, A param) builder,
+    Future<T> Function(ProviderReference<AsyncValue<T>> ref, A param) builder,
     String? name,
   ) {
     return FutureProvider((ref) => builder(ref, value), name: name);

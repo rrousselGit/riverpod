@@ -336,7 +336,7 @@ Future<void> main(List<String> args) async {
     return;
   }
 
-  final file = File.fromUri(Uri.parse(args[1]));
+  final file = File.fromUri(Uri.file(args[1]));
   if (file.existsSync() && file.statSync().type != FileSystemEntityType.file) {
     print('${args[1]} is not a file');
     return;
@@ -416,12 +416,42 @@ extension on Tuple3<DisposeType, StateType, ProviderType> {
   }
 
   String get ref {
-    switch (item1) {
-      case DisposeType.autoDispose:
-        return 'AutoDisposeProviderReference';
-      case DisposeType.none:
+    switch (item2) {
+      case StateType.state:
+        switch (item1) {
+          case DisposeType.autoDispose:
+            return 'AutoDisposeProviderReference<StateController<T>>';
+          case DisposeType.none:
+          default:
+            return 'ProviderReference<StateController<T>>';
+        }
+        break;
+      case StateType.future:
+        switch (item1) {
+          case DisposeType.autoDispose:
+            return 'AutoDisposeProviderReference<AsyncValue<T>>';
+          case DisposeType.none:
+          default:
+            return 'ProviderReference<AsyncValue<T>>';
+        }
+        break;
+      case StateType.stream:
+        switch (item1) {
+          case DisposeType.autoDispose:
+            return 'AutoDisposeProviderReference<AsyncValue<T>>';
+          case DisposeType.none:
+          default:
+            return 'ProviderReference<AsyncValue<T>>';
+        }
+        break;
       default:
-        return 'ProviderReference';
+        switch (item1) {
+          case DisposeType.autoDispose:
+            return 'AutoDisposeProviderReference<T>';
+          case DisposeType.none:
+          default:
+            return 'ProviderReference<T>';
+        }
     }
   }
 

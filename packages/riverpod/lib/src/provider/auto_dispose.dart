@@ -5,7 +5,7 @@ part of '../provider.dart';
 class AutoDisposeProvider<T> extends AutoDisposeProviderBase<T, T> {
   /// {@macro riverpod.provider}
   AutoDisposeProvider(
-    Create<T, AutoDisposeProviderReference> create, {
+    Create<T, T, AutoDisposeProviderReference<T>> create, {
     String? name,
   }) : super(create, name);
 
@@ -29,19 +29,19 @@ class _AutoDisposeProviderState<T> = ProviderStateBase<T, T>
 /// {@macro riverpod.provider.family}
 @sealed
 class AutoDisposeProviderFamily<T, A> extends Family<T, T, A,
-    AutoDisposeProviderReference, AutoDisposeProvider<T>> {
+    AutoDisposeProviderReference<T>, AutoDisposeProvider<T>> {
   /// {@macro riverpod.provider.family}
   AutoDisposeProviderFamily(
-    T Function(AutoDisposeProviderReference ref, A a) create, {
+    T Function(AutoDisposeProviderReference<T> ref, A a) create, {
     String? name,
   }) : super(create, name);
 
   @override
   AutoDisposeProvider<T> create(
     A value,
-    T Function(AutoDisposeProviderReference ref, A param) builder,
+    T Function(AutoDisposeProviderReference<T> ref, A param) builder,
     String? name,
   ) {
-    return AutoDisposeProvider((ref) => builder(ref, value), name: name);
+    return AutoDisposeProvider<T>((ref) => builder(ref, value), name: name);
   }
 }

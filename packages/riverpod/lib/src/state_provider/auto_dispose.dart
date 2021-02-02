@@ -6,7 +6,9 @@ class AutoDisposeStateProvider<T>
     extends AutoDisposeProviderBase<StateController<T>, StateController<T>> {
   /// {@macro riverpod.stateprovider}
   AutoDisposeStateProvider(
-    Create<T, AutoDisposeProviderReference> create, {
+    Create<T, StateController<T>,
+            AutoDisposeProviderReference<StateController<T>>>
+        create, {
     String? name,
   }) : super((ref) => StateController(create(ref)), name);
 
@@ -28,18 +30,20 @@ class AutoDisposeStateProviderFamily<T, A> extends Family<
     StateController<T>,
     StateController<T>,
     A,
-    AutoDisposeProviderReference,
+    AutoDisposeProviderReference<StateController<T>>,
     AutoDisposeStateProvider<T>> {
   /// {@macro riverpod.stateprovider.family}
   AutoDisposeStateProviderFamily(
-    T Function(AutoDisposeProviderReference ref, A a) create, {
+    T Function(AutoDisposeProviderReference<StateController<T>> ref, A a)
+        create, {
     String? name,
   }) : super((ref, a) => StateController(create(ref, a)), name);
 
   @override
   AutoDisposeStateProvider<T> create(
     A value,
-    StateController<T> Function(AutoDisposeProviderReference ref, A param)
+    StateController<T> Function(
+            AutoDisposeProviderReference<StateController<T>> ref, A param)
         builder,
     String? name,
   ) {

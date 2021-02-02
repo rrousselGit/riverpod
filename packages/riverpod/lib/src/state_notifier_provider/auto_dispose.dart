@@ -6,7 +6,7 @@ class AutoDisposeStateNotifierProvider<T extends StateNotifier<Object?>>
     extends AutoDisposeProvider<T> {
   /// {@macro riverpod.statenotifierprovider}
   AutoDisposeStateNotifierProvider(
-    Create<T, AutoDisposeProviderReference> create, {
+    Create<T, T, AutoDisposeProviderReference<T>> create, {
     String? name,
   }) : super((ref) {
           final controller = create(ref);
@@ -56,21 +56,21 @@ class _AutoDisposeStateNotifierStateProviderState<T> = ProviderStateBase<
 @sealed
 class AutoDisposeStateNotifierProviderFamily<T extends StateNotifier<Object?>,
         A>
-    extends Family<T, T, A, AutoDisposeProviderReference,
+    extends Family<T, T, A, AutoDisposeProviderReference<T>,
         AutoDisposeStateNotifierProvider<T>> {
   /// {@macro riverpod.statenotifierprovider.family}
   AutoDisposeStateNotifierProviderFamily(
-    T Function(AutoDisposeProviderReference ref, A a) create, {
+    T Function(AutoDisposeProviderReference<T> ref, A a) create, {
     String? name,
   }) : super(create, name);
 
   @override
   AutoDisposeStateNotifierProvider<T> create(
     A value,
-    T Function(AutoDisposeProviderReference ref, A param) builder,
+    T Function(AutoDisposeProviderReference<T> ref, A param) builder,
     String? name,
   ) {
-    return AutoDisposeStateNotifierProvider(
+    return AutoDisposeStateNotifierProvider<T>(
       (ref) => builder(ref, value),
       name: name,
     );

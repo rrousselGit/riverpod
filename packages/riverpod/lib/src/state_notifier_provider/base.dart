@@ -6,7 +6,7 @@ class StateNotifierProvider<T extends StateNotifier<Object?>>
     extends Provider<T> {
   /// {@macro riverpod.statenotifierprovider}
   StateNotifierProvider(
-    Create<T, ProviderReference> create, {
+    Create<T, T, ProviderReference<T>> create, {
     String? name,
   }) : super((ref) {
           final controller = create(ref);
@@ -75,17 +75,17 @@ class _StateNotifierStateProviderState<T> = ProviderStateBase<StateNotifier<T>,
 /// {@endtemplate}
 @sealed
 class StateNotifierProviderFamily<T extends StateNotifier<Object?>, A>
-    extends Family<T, T, A, ProviderReference, StateNotifierProvider<T>> {
+    extends Family<T, T, A, ProviderReference<T>, StateNotifierProvider<T>> {
   /// {@macro riverpod.statenotifierprovider.family}
   StateNotifierProviderFamily(
-    T Function(ProviderReference ref, A a) create, {
+    T Function(ProviderReference<T> ref, A a) create, {
     String? name,
   }) : super(create, name);
 
   @override
   StateNotifierProvider<T> create(
     A value,
-    T Function(ProviderReference ref, A param) builder,
+    T Function(ProviderReference<T> ref, A param) builder,
     String? name,
   ) {
     return StateNotifierProvider((ref) => builder(ref, value), name: name);

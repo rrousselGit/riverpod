@@ -6,7 +6,8 @@ class StateProvider<T>
     extends AlwaysAliveProviderBase<StateController<T>, StateController<T>> {
   /// {@macro riverpod.stateprovider}
   StateProvider(
-    Create<T, ProviderReference> create, {
+    Create<T, StateController<T>, ProviderReference<StateController<T>>>
+        create, {
     String? name,
   }) : super((ref) => StateController(create(ref)), name);
 
@@ -28,18 +29,24 @@ class _StateProviderState<T> = ProviderStateBase<StateController<T>,
 
 /// {@macro riverpod.stateprovider.family}
 @sealed
-class StateProviderFamily<T, A> extends Family<StateController<T>,
-    StateController<T>, A, ProviderReference, StateProvider<T>> {
+class StateProviderFamily<T, A> extends Family<
+    StateController<T>,
+    StateController<T>,
+    A,
+    ProviderReference<StateController<T>>,
+    StateProvider<T>> {
   /// {@macro riverpod.stateprovider.family}
   StateProviderFamily(
-    T Function(ProviderReference ref, A a) create, {
+    T Function(ProviderReference<StateController<T>> ref, A a) create, {
     String? name,
   }) : super((ref, a) => StateController(create(ref, a)), name);
 
   @override
   StateProvider<T> create(
     A value,
-    StateController<T> Function(ProviderReference ref, A param) builder,
+    StateController<T> Function(
+            ProviderReference<StateController<T>> ref, A param)
+        builder,
     String? name,
   ) {
     return StateProvider((ref) => builder(ref, value).state, name: name);
@@ -47,11 +54,16 @@ class StateProviderFamily<T, A> extends Family<StateController<T>,
 }
 
 /// Overrides [overrideWithProvider] for [StateProvider.family].
-extension StateFamilyX<T, Param> on Family<StateController<T>,
-    StateController<T>, Param, ProviderReference, StateProvider<T>> {
+extension StateFamilyX<T, Param> on Family<
+    StateController<T>,
+    StateController<T>,
+    Param,
+    ProviderReference<StateController<T>>,
+    StateProvider<T>> {
   /// Overrides the behavior of a family for a part of the application.
   Override overrideWithProvider(
-    T Function(ProviderReference ref, Param param) builderOverride,
+    T Function(ProviderReference<StateController<T>> ref, Param param)
+        builderOverride,
   ) {
     return FamilyOverride(
       this,

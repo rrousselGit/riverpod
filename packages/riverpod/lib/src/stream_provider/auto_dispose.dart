@@ -7,7 +7,9 @@ class AutoDisposeStreamProvider<T>
     with _StreamProviderMixin<T> {
   /// {@macro riverpod.streamprovider}
   AutoDisposeStreamProvider(
-    Create<Stream<T>, AutoDisposeProviderReference> create, {
+    Create<Stream<T>, AsyncValue<T>,
+            AutoDisposeProviderReference<AsyncValue<T>>>
+        create, {
     String? name,
   }) : super(create, name);
 
@@ -47,18 +49,20 @@ class AutoDisposeStreamProviderFamily<T, A> extends Family<
     Stream<T>,
     AsyncValue<T>,
     A,
-    AutoDisposeProviderReference,
+    AutoDisposeProviderReference<AsyncValue<T>>,
     AutoDisposeStreamProvider<T>> {
   /// {@macro riverpod.streamprovider.family}
   AutoDisposeStreamProviderFamily(
-    Stream<T> Function(AutoDisposeProviderReference ref, A a) create, {
+    Stream<T> Function(AutoDisposeProviderReference<AsyncValue<T>> ref, A a)
+        create, {
     String? name,
   }) : super(create, name);
 
   @override
   AutoDisposeStreamProvider<T> create(
     A value,
-    Stream<T> Function(AutoDisposeProviderReference ref, A param) builder,
+    Stream<T> Function(AutoDisposeProviderReference<AsyncValue<T>> ref, A param)
+        builder,
     String? name,
   ) {
     return AutoDisposeStreamProvider((ref) => builder(ref, value), name: name);
