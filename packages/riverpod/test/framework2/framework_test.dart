@@ -102,8 +102,11 @@ void main() {
         r.currentValue;
         return 0;
       });
-      expect(() => container.read(provider),
-          throwsA(isProviderException(isAssertionError)));
+
+      expect(
+        () => container.read(provider),
+        throwsA(isProviderException(isAssertionError)),
+      );
     });
   });
 
