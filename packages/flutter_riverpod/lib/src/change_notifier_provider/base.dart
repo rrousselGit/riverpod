@@ -6,7 +6,7 @@ class ChangeNotifierProvider<T extends ChangeNotifier>
     extends AlwaysAliveProviderBase<T, T> {
   /// {@macro riverpod.changenotifierprovider}
   ChangeNotifierProvider(
-    Create<T, ProviderReference> create, {
+    Create<T, T, ProviderReference<T>> create, {
     String? name,
   }) : super(create, name);
 
@@ -31,17 +31,17 @@ class _ChangeNotifierProviderState<
 /// {@endtemplate}
 @sealed
 class ChangeNotifierProviderFamily<T extends ChangeNotifier, A>
-    extends Family<T, T, A, ProviderReference, ChangeNotifierProvider<T>> {
+    extends Family<T, T, A, ProviderReference<T>, ChangeNotifierProvider<T>> {
   /// {@macro riverpod.changenotifierprovider.family}
   ChangeNotifierProviderFamily(
-    T Function(ProviderReference ref, A a) create, {
+    T Function(ProviderReference<T> ref, A a) create, {
     String? name,
   }) : super(create, name);
 
   @override
   ChangeNotifierProvider<T> create(
     A value,
-    T Function(ProviderReference ref, A param) builder,
+    T Function(ProviderReference<T> ref, A param) builder,
     String? name,
   ) {
     return ChangeNotifierProvider((ref) => builder(ref, value), name: name);

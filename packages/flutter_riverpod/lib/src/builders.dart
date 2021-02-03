@@ -57,7 +57,7 @@ class ChangeNotifierProviderBuilder {
   /// ```
   /// {@endtemplate}
   ChangeNotifierProvider<T> call<T extends ChangeNotifier>(
-    T Function(ProviderReference ref) create, {
+    T Function(ProviderReference<T> ref) create, {
     String? name,
   }) {
     return ChangeNotifierProvider(create, name: name);
@@ -289,7 +289,7 @@ class ChangeNotifierProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   ChangeNotifierProviderFamily<T, Value> call<T extends ChangeNotifier, Value>(
-    T Function(ProviderReference ref, Value value) create, {
+    T Function(ProviderReference<T> ref, Value value) create, {
     String? name,
   }) {
     return ChangeNotifierProviderFamily(create, name: name);
@@ -308,7 +308,7 @@ class AutoDisposeChangeNotifierProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   AutoDisposeChangeNotifierProvider<T> call<T extends ChangeNotifier>(
-    T Function(AutoDisposeProviderReference ref) create, {
+    T Function(AutoDisposeProviderReference<T> ref) create, {
     String? name,
   }) {
     return AutoDisposeChangeNotifierProvider(create, name: name);
@@ -328,7 +328,7 @@ class AutoDisposeChangeNotifierProviderFamilyBuilder {
   /// {@macro riverpod.family}
   AutoDisposeChangeNotifierProviderFamily<T, Value>
       call<T extends ChangeNotifier, Value>(
-    T Function(AutoDisposeProviderReference ref, Value value) create, {
+    T Function(AutoDisposeProviderReference<T> ref, Value value) create, {
     String? name,
   }) {
     return AutoDisposeChangeNotifierProviderFamily(create, name: name);
