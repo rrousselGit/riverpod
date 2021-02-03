@@ -5,6 +5,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
+import '../uni_directional_test.dart';
 import '../utils.dart';
 
 void main() {
@@ -69,6 +70,41 @@ void main() {
     final provider = Provider((ref) => ref);
 
     expect(container.read(provider).container, root);
+  });
+
+  group('ProviderReference.currentValue', () {
+    test('exposes correct value', () async {
+      final container = ProviderContainer();
+      late Completer<int> completer;
+      final stateProvider = StateProvider((_) => 0);
+      final provider = Provider<int>((ref) {
+        completer = Completer<int>();
+        (() async {
+          await Future.microtask(() => completer.complete(ref.currentValue));
+        })();
+
+        return ref.watch(stateProvider).state;
+      });
+
+      container.read(provider);
+      var refVal = await completer.future;
+      expect(refVal, 0);
+
+      container.read(stateProvider).state = 1;
+      container.read(provider);
+      refVal = await completer.future;
+      expect(refVal, 1);
+    });
+
+    test('will assert if accessed during build', () {
+      final container = ProviderContainer();
+      final provider = Provider<int>((r) {
+        r.currentValue;
+        return 0;
+      });
+      expect(() => container.read(provider),
+          throwsA(isProviderException(isAssertionError)));
+    });
   });
 
   group('Provider.name', () {
