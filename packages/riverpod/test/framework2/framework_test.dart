@@ -72,7 +72,7 @@ void main() {
     expect(container.read(provider).container, root);
   });
 
-  group('ProviderReference.currentValue', () {
+  group('ProviderReference.currentState', () {
     test('exposes correct value', () async {
       final container = ProviderContainer();
       late Completer<int> completer;
@@ -80,7 +80,7 @@ void main() {
       final provider = Provider<int>((ref) {
         completer = Completer<int>();
         (() async {
-          await Future.microtask(() => completer.complete(ref.currentValue));
+          await Future.microtask(() => completer.complete(ref.currentState));
         })();
 
         return ref.watch(stateProvider).state;
@@ -99,7 +99,7 @@ void main() {
     test('will assert if accessed during build', () {
       final container = ProviderContainer();
       final provider = Provider<int>((r) {
-        r.currentValue;
+        r.currentState;
         return 0;
       });
 

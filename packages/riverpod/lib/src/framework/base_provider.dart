@@ -316,10 +316,11 @@ abstract class ProviderReference<Listened> {
   /// care about this.
   bool get mounted;
 
-  /// Will return the currently exposed value of the provider.
+  /// Will return the currently exposed state of the provider.
   ///
   /// This is useful when dealing with asynchronous operations.
-  Listened get currentValue;
+  /// Cannot be used while building a provider.
+  Listened get currentState;
 
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
@@ -898,7 +899,11 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
   }
 
   @override
-  Listened get currentValue => getExposedValue();
+  Listened get currentState {
+    assert(_debugIsFlushing == false,
+        'Cannot call ref.currentState while building $_provider');
+    return getExposedValue();
+  }
 }
 
 /// The internal state of a provider
