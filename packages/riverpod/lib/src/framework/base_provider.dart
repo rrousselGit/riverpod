@@ -319,9 +319,28 @@ abstract class ProviderReference<Listened> {
   /// Will return the currently exposed state of the provider.
   ///
   /// This is useful when dealing with asynchronous operations.
-  /// Cannot be used while building a provider.
+  ///
+  /// __Cannot__ be used while building a provider.
+  /// ```dart
+  /// final provider = Provider<int>((ref) {
+  ///   Future.value(1).then((value) => print(ref.currentState));
+  ///   return 0;
+  /// });
+  /// ```
   Listened get currentState;
 
+  /// Will allow to update the currently exposed state which will also update all
+  /// dependent providers.
+  ///
+  /// This is useful when dealing with asynchronous operations.
+  ///
+  /// __Cannot__ be used while building a provider or in [ProviderReference.onDispose]
+  /// ```dart
+  /// final provider = Provider<int>((ref) {
+  ///   Future.value(1).then((value) => ref.setState(value));
+  ///   return 0;
+  /// });
+  /// ```
   void setState(Listened newState);
 
   /// The [ProviderContainer] that this provider is associated with.
