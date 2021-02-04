@@ -44,10 +44,12 @@ import 'internals.dart' show describeIdentity;
 ///
 ///
 /// Similarly, it is possible to insert other [ProviderScope] anywhere inside
-/// the widget tree to override the behavior of a provider for only a part of the
+/// the widget tree to override the behavior of a [ScopedProvider] for only a part of the
 /// application:
 ///
 /// ```dart
+/// final themeProvider = ScopedProvider((ref) => MyTheme.light());
+///
 /// void main() {
 ///   runApp(
 ///     ProviderScope(
@@ -58,9 +60,7 @@ import 'internals.dart' show describeIdentity;
 ///           // Overrides themeProvider for the /gallery route only
 ///           '/gallery': (_) => ProviderScope(
 ///             overrides: [
-///               themeProvider.overrideWithProvider(
-///                 Provider((_) => MyTheme.dark()),
-///               ),
+///               themeProvider.overrideWithValue(MyTheme.dark()),
 ///             ],
 ///           ),
 ///         },

@@ -1,3 +1,7 @@
+# 0.12.3+1
+
+- Fixed outdated doc
+
 # 0.12.3
 
 - Fixed a but where listening to StreamProvider.last could result in a StateError (#217)
