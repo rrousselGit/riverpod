@@ -322,6 +322,8 @@ abstract class ProviderReference<Listened> {
   /// Cannot be used while building a provider.
   Listened get currentState;
 
+  void setState(Listened newState);
+
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
 
@@ -515,6 +517,13 @@ class ProviderElement<Created, Listened>
 
   final ProviderStateBase<Created, Listened> state;
 
+  @override
+  Listened get currentState {
+    assert(_debugCurrentlyBuildingElement == null,
+        'Cannot call ref.currentState while building $_provider');
+    return state._exposedValue as Listened;
+  }
+
   /// The [ProviderContainer] that owns this [ProviderElement].
   @override
   ProviderContainer get container => _container;
@@ -614,6 +623,14 @@ class ProviderElement<Created, Listened>
       _dependencyMayHaveChanged = true;
       notifyMayHaveChanged();
     }
+  }
+
+  @override
+  void setState(Listened newState) {
+    assert(_debugIsFlushing == false,
+        'Cannot call .setState(newState) while building/onDispose on $_provider');
+    state.exposedValue = newState;
+    markDidChange();
   }
 
   /// Listen to this provider.
@@ -896,13 +913,6 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
       }
       _previousSubscriptions = null;
     }
-  }
-
-  @override
-  Listened get currentState {
-    assert(_debugCurrentlyBuildingElement == null,
-        'Cannot call ref.currentState while building $_provider');
-    return state._exposedValue as Listened;
   }
 }
 

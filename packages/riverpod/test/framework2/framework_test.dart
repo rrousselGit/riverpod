@@ -72,6 +72,119 @@ void main() {
     expect(container.read(provider).container, root);
   });
 
+  group('ProviderReference.setState', () {
+    test('will update exposedValue', () async {
+      final container = ProviderContainer();
+      final completer = Completer<void>();
+      final provider = Provider<int>((ref) {
+        (() async {
+          await Future.microtask(() {
+            ref.setState(1);
+            completer.complete();
+          });
+        })();
+
+        return 0;
+      });
+
+      container.read(provider);
+      await completer.future;
+      expect(container.read(provider), 1);
+    });
+
+    test('will update other providers', () {
+      final container = ProviderContainer();
+      final event = StateProvider((_) => 0);
+      final setStateProvider = Provider<int>((ref) {
+        final ev = ref.watch(event);
+        ref.onDispose(ev.addListener((state) {
+          ref.setState(state);
+        }, fireImmediately: false));
+        return ev.state;
+      });
+      final updatedProvider = Provider<int>((ref) {
+        return ref.watch(setStateProvider);
+      });
+
+      expect(container.read(updatedProvider), 0);
+      container.read(event).state = 1;
+      expect(container.read(setStateProvider), 1);
+      expect(container.read(updatedProvider), 1);
+    });
+
+    test('will assert if accessed during build', () {
+      final container = ProviderContainer();
+      final provider = Provider<int>((ref) {
+        ref.setState(1);
+        return 0;
+      });
+
+      expect(() => container.read(provider),
+          throwsA(isProviderException(isAssertionError)));
+    });
+
+    test('will assert if accessed in onDispose', () {
+      final container = ProviderContainer();
+      final event = StateProvider<int>((_) => 0);
+      final provider = Provider<int>((ref) {
+        ref.onDispose(() {
+          ref.setState(1);
+        });
+
+        return ref.watch(event).state;
+      });
+
+      container.read(provider);
+      container.read(event).state = 1;
+      runZonedGuarded(() => container.read(provider), (err, stack) {
+        expect(
+          err,
+          isAssertionError.having(
+            (s) => s.message,
+            'message',
+            contains(
+                'Cannot call .setState(newState) while building/onDispose on'),
+          ),
+        );
+      });
+    });
+
+    test('will assert as long as a provider is building', () {
+      final container = ProviderContainer();
+      final provider = Provider<int>((ref) {
+        ref.setState(1);
+        return 0;
+      });
+
+      final provider2 = Provider<int>((ref) {
+        final i = ref.watch(provider);
+
+        return i;
+      });
+
+      runZonedGuarded(
+        () => container.read(provider2),
+        (err, stack) {
+          expect(
+            err,
+            isA<ProviderException>()
+                .having(
+                  (s) => s.exception.toString(),
+                  'exception.toString',
+                  contains(
+                      'Cannot call .setState(newState) while building/onDispose on'),
+                )
+                .having(
+                  (s) => (s.exception as ProviderException).provider,
+                  'exception.exception.provider',
+                  provider,
+                ),
+          );
+        },
+      );
+    });
+  });
+
   group('ProviderReference.currentState', () {
     test('exposes correct value', () async {
       final container = ProviderContainer();
