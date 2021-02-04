@@ -96,16 +96,69 @@ void main() {
       expect(refVal, 1);
     });
 
+    test('exposes correct value onDispose', () async {
+      final container = ProviderContainer();
+      final stateProvider = StateProvider((_) => 0);
+      late int dispose;
+      final provider = Provider<int>((ref) {
+        ref.onDispose(() {
+          dispose = ref.currentState;
+        });
+
+        return ref.watch(stateProvider).state;
+      });
+      container.read(provider);
+      container.read(stateProvider).state = 1;
+      container.read(provider);
+      expect(dispose, 0);
+
+      container.read(stateProvider).state = 2;
+      container.read(provider);
+      expect(dispose, 1);
+    });
+
     test('will assert if accessed during build', () {
       final container = ProviderContainer();
-      final provider = Provider<int>((r) {
-        r.currentState;
+      final provider = Provider<int>((ref) {
+        ref.currentState;
         return 0;
       });
 
-      expect(
-        () => container.read(provider),
-        throwsA(isProviderException(isAssertionError)),
+      expect(() => container.read(provider),
+          throwsA(isProviderException(isAssertionError)));
+    });
+
+    test('will assert as long as a provider is building', () {
+      final container = ProviderContainer();
+      final provider = Provider<int>((ref) {
+        ref.currentState;
+        return 0;
+      });
+
+      final provider2 = Provider<int>((ref) {
+        final i = ref.watch(provider);
+
+        return i;
+      });
+
+      runZonedGuarded(
+        () => container.read(provider2),
+        (err, stack) {
+          expect(
+            err,
+            isA<ProviderException>()
+                .having(
+                  (s) => s.exception.toString(),
+                  'exception.toString',
+                  contains('Cannot call ref.currentState while building'),
+                )
+                .having(
+                  (s) => (s.exception as ProviderException).provider,
+                  'exception.exception.provider',
+                  provider,
+                ),
+          );
+        },
       );
     });
   });

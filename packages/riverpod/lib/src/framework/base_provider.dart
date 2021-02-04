@@ -900,9 +900,9 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
 
   @override
   Listened get currentState {
-    assert(_debugIsFlushing == false,
+    assert(_debugCurrentlyBuildingElement == null,
         'Cannot call ref.currentState while building $_provider');
-    return getExposedValue();
+    return state._exposedValue as Listened;
   }
 }
 
