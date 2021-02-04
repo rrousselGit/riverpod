@@ -123,6 +123,29 @@ void main() {
           throwsA(isProviderException(isAssertionError)));
     });
 
+    test('will throw on access while no longer mounted', () {
+      final container = ProviderContainer();
+      late void Function() setState;
+      final provider = Provider<int>((ref) {
+        setState = () => ref.setState(1);
+        return 0;
+      });
+
+      container.read(provider);
+      container.dispose();
+
+      expect(
+        () => setState(),
+        throwsA(
+          isStateError.having(
+            (s) => s.message,
+            'message',
+            contains('Cannot call setState after a provider was dispose'),
+          ),
+        ),
+      );
+    });
+
     test('will assert if accessed in onDispose', () {
       final container = ProviderContainer();
       final event = StateProvider<int>((_) => 0);

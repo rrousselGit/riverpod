@@ -627,6 +627,9 @@ class ProviderElement<Created, Listened>
 
   @override
   void setState(Listened newState) {
+    if (!_mounted) {
+      throw StateError('Cannot call setState after a provider was dispose');
+    }
     assert(_debugIsFlushing == false,
         'Cannot call .setState(newState) while building/onDispose on $_provider');
     state.exposedValue = newState;
