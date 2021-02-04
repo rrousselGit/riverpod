@@ -49,7 +49,7 @@ import 'internals.dart' show describeIdentity;
 ///
 /// ```dart
 /// final themeProvider = ScopedProvider((ref) => MyTheme.light());
-/// 
+///
 /// void main() {
 ///   runApp(
 ///     ProviderScope(
