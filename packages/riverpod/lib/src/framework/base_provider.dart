@@ -550,11 +550,11 @@ class ProviderElement<Created, Listened>
   Listened get currentState {
     assert(_debugCurrentlyBuildingElement == null,
         'Cannot call ref.currentState while building $_provider');
-    return state._exposedValue as Listened;
+    return state.exposedValue as Listened;
   }
 
   @override
-  Listened? get previousState => state._previousValue;
+  Listened? get previousState => state.previousValue;
 
   /// The [ProviderContainer] that owns this [ProviderElement].
   @override
