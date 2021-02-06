@@ -975,6 +975,7 @@ abstract class ProviderStateBase<Created, Listened> {
   Listened? get exposedValue => _exposedValue;
   Listened? _exposedValue;
 
+  /// The value previously exposed by the provider
   Listened? get previousValue => _previousValue;
   Listened? _previousValue;
 
