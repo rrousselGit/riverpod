@@ -329,6 +329,16 @@ abstract class ProviderReference<Listened> {
   /// ```
   Listened get currentState;
 
+  /// Will return the previous exposed state of the provider.
+  ///
+  /// ```dart
+  /// final provider = Provider<int>((ref) {
+  ///   Future.value(1).then((value) => print(ref.previousState));
+  ///   return 0;
+  /// });
+  /// ```
+  Listened? get previousState;
+
   /// Will allow to update the currently exposed state which will also update all
   /// dependent providers.
   ///
@@ -543,6 +553,9 @@ class ProviderElement<Created, Listened>
     return state._exposedValue as Listened;
   }
 
+  @override
+  Listened? get previousState => state._previousValue;
+
   /// The [ProviderContainer] that owns this [ProviderElement].
   @override
   ProviderContainer get container => _container;
@@ -651,6 +664,7 @@ class ProviderElement<Created, Listened>
     }
     assert(_debugIsFlushing == false,
         'Cannot call .setState(newState) while building/onDispose on $_provider');
+    state._previousValue = state._exposedValue;
     state.exposedValue = newState;
     markDidChange();
   }
@@ -698,6 +712,7 @@ class ProviderElement<Created, Listened>
           // creation are not silenced
           _exception = null;
           _runOnDispose();
+          state._previousValue = state._exposedValue;
           _runStateCreate();
         }
         _mustRecomputeState = false;
@@ -959,6 +974,9 @@ abstract class ProviderStateBase<Created, Listened> {
   /// Must be set during [valueChanged].
   Listened? get exposedValue => _exposedValue;
   Listened? _exposedValue;
+
+  Listened? get previousValue => _previousValue;
+  Listened? _previousValue;
 
   set exposedValue(Listened? exposedValue) {
     assert(
