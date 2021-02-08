@@ -323,8 +323,9 @@ abstract class ProviderReference<Listened> {
   /// __Cannot__ be used while building a provider.
   /// ```dart
   /// final provider = Provider<int>((ref) {
-  ///   Future.value(1).then((value) => print(ref.currentState));
-  ///   return 0;
+  ///   // update currently exposed state based on the current state
+  ///   Future.value(1).then((value) => ref.setState(value + ref.currentState));
+  ///   return 1;
   /// });
   /// ```
   Listened get currentState;
