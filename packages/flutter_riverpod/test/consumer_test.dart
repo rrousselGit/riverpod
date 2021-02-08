@@ -5,6 +5,30 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
 void main() {
+  testWidgets('can use "watch" inside ListView.builder', (tester) async {
+    final provider = Provider((ref) => 'hello world');
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Consumer(
+            builder: (context, watch, _) {
+              return ListView.builder(
+                itemCount: 1,
+                itemBuilder: (context, index) {
+                  return Text(watch(provider));
+                },
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('hello world'), findsOneWidget);
+  });
+
   testWidgets('can extend ConsumerWidget', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: MyWidget()));
 
