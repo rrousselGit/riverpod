@@ -8,7 +8,7 @@ class AutoDisposeFutureProvider<T>
   /// {@macro riverpod.futureprovider}
   AutoDisposeFutureProvider(
     Create<Future<T>, AsyncValue<T>,
-            AutoDisposeProviderReference<AsyncValue<T>>>
+            AutoDisposeProviderReferenceAdvanced<AsyncValue<T>>>
         create, {
     String? name,
   }) : super(create, name);
@@ -45,10 +45,14 @@ class AutoDisposeFutureProviderFamily<T, A> extends Family<
     AutoDisposeFutureProvider<T>> {
   /// {@macro riverpod.futureprovider.family}
   AutoDisposeFutureProviderFamily(
-    Future<T> Function(AutoDisposeProviderReference<AsyncValue<T>> ref, A a)
+    Future<T> Function(
+            AutoDisposeProviderReferenceAdvanced<AsyncValue<T>> ref, A a)
         create, {
     String? name,
-  }) : super(create, name);
+  }) : super(
+            (ref, a) => create(
+                ref as AutoDisposeProviderReferenceAdvanced<AsyncValue<T>>, a),
+            name);
 
   @override
   AutoDisposeFutureProvider<T> create(

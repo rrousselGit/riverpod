@@ -353,7 +353,7 @@ class ProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   Provider<T> call<T>(
-    T Function(ProviderReference<T> ref) create, {
+    T Function(ProviderReferenceAdvanced<T> ref) create, {
     String? name,
   }) {
     return Provider(create, name: name);
@@ -377,7 +377,7 @@ class ProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   ProviderFamily<T, Value> call<T, Value>(
-    T Function(ProviderReference<T> ref, Value value) create, {
+    T Function(ProviderReferenceAdvanced<T> ref, Value value) create, {
     String? name,
   }) {
     return ProviderFamily(create, name: name);
@@ -396,7 +396,7 @@ class FutureProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   FutureProvider<T> call<T>(
-    Future<T> Function(ProviderReference<AsyncValue<T>> ref) create, {
+    Future<T> Function(ProviderReferenceAdvanced<AsyncValue<T>> ref) create, {
     String? name,
   }) {
     return FutureProvider(create, name: name);
@@ -420,7 +420,8 @@ class FutureProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   FutureProviderFamily<T, Value> call<T, Value>(
-    Future<T> Function(ProviderReference<AsyncValue<T>> ref, Value value)
+    Future<T> Function(
+            ProviderReferenceAdvanced<AsyncValue<T>> ref, Value value)
         create, {
     String? name,
   }) {
@@ -440,7 +441,7 @@ class StreamProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   StreamProvider<T> call<T>(
-    Stream<T> Function(ProviderReference<AsyncValue<T>> ref) create, {
+    Stream<T> Function(ProviderReferenceAdvanced<AsyncValue<T>> ref) create, {
     String? name,
   }) {
     return StreamProvider(create, name: name);
@@ -464,7 +465,8 @@ class StreamProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   StreamProviderFamily<T, Value> call<T, Value>(
-    Stream<T> Function(ProviderReference<AsyncValue<T>> ref, Value value)
+    Stream<T> Function(
+            ProviderReferenceAdvanced<AsyncValue<T>> ref, Value value)
         create, {
     String? name,
   }) {
@@ -553,7 +555,7 @@ class AutoDisposeProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   AutoDisposeProvider<T> call<T>(
-    T Function(AutoDisposeProviderReference<T> ref) create, {
+    T Function(AutoDisposeProviderReferenceAdvanced<T> ref) create, {
     String? name,
   }) {
     return AutoDisposeProvider(create, name: name);
@@ -572,7 +574,8 @@ class AutoDisposeProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   AutoDisposeProviderFamily<T, Value> call<T, Value>(
-    T Function(AutoDisposeProviderReference<T> ref, Value value) create, {
+    T Function(AutoDisposeProviderReferenceAdvanced<T> ref, Value value)
+        create, {
     String? name,
   }) {
     return AutoDisposeProviderFamily(create, name: name);
@@ -586,7 +589,7 @@ class AutoDisposeFutureProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   AutoDisposeFutureProvider<T> call<T>(
-    Future<T> Function(AutoDisposeProviderReference<AsyncValue<T>> ref)
+    Future<T> Function(AutoDisposeProviderReferenceAdvanced<AsyncValue<T>> ref)
         create, {
     String? name,
   }) {
@@ -606,8 +609,8 @@ class AutoDisposeFutureProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   AutoDisposeFutureProviderFamily<T, Value> call<T, Value>(
-    Future<T> Function(
-            AutoDisposeProviderReference<AsyncValue<T>> ref, Value value)
+    Future<T> Function(AutoDisposeProviderReferenceAdvanced<AsyncValue<T>> ref,
+            Value value)
         create, {
     String? name,
   }) {
@@ -622,7 +625,7 @@ class AutoDisposeStreamProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   AutoDisposeStreamProvider<T> call<T>(
-    Stream<T> Function(AutoDisposeProviderReference<AsyncValue<T>> ref)
+    Stream<T> Function(AutoDisposeProviderReferenceAdvanced<AsyncValue<T>> ref)
         create, {
     String? name,
   }) {
@@ -642,8 +645,8 @@ class AutoDisposeStreamProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   AutoDisposeStreamProviderFamily<T, Value> call<T, Value>(
-    Stream<T> Function(
-            AutoDisposeProviderReference<AsyncValue<T>> ref, Value value)
+    Stream<T> Function(AutoDisposeProviderReferenceAdvanced<AsyncValue<T>> ref,
+            Value value)
         create, {
     String? name,
   }) {
