@@ -414,7 +414,8 @@ class MockStream<T> extends Mock implements Stream<T> {
           #cancelOnError: cancelOnError,
         },
       ),
-      MockSubscription<T>(),
+      returnValue: MockSubscription<T>(),
+      returnValueForMissingStub: MockSubscription<T>(),
     ) as StreamSubscription<T>;
   }
 }
@@ -424,7 +425,8 @@ class MockSubscription<T> extends Mock implements StreamSubscription<T> {
   Future<void> cancel() {
     return super.noSuchMethod(
       Invocation.method(#cancel, []),
-      Future<void>.value(),
+      returnValue: Future<void>.value(),
+      returnValueForMissingStub: Future<void>.value(),
     ) as Future<void>;
   }
 }
