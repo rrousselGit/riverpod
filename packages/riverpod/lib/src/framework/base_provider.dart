@@ -55,7 +55,7 @@ abstract class AlwaysAliveProviderBase<Created, Listened>
     extends RootProvider<Created, Listened> {
   /// Creates an [AlwaysAliveProviderBase].
   AlwaysAliveProviderBase(
-    Created Function(ProviderReference<Listened> ref) create,
+    Created Function(ProviderReferenceAdvanced<Listened> ref) create,
     String? name,
   ) : super(create, name);
 
@@ -106,7 +106,7 @@ abstract class ProviderBase<Created, Listened>
   /// A base class for _all_ providers.
   ProviderBase(this._create, this.name);
 
-  final Created Function(ProviderReference<Listened> ref) _create;
+  final Created Function(ProviderReferenceAdvanced<Listened> ref) _create;
 
   /// {@template riverpod.name}
   /// A custom label for providers.
@@ -172,7 +172,7 @@ abstract class RootProvider<Created, Listened>
     extends ProviderBase<Created, Listened> {
   /// {@macro riverpod.rootprovider}
   RootProvider(
-    Created Function(ProviderReference<Listened> ref) create,
+    Created Function(ProviderReferenceAdvanced<Listened> ref) create,
     String? name,
   ) : super(create, name);
 
@@ -339,20 +339,6 @@ abstract class ProviderReference<Listened> {
   /// ```
   Listened? get previousState;
 
-  /// Will allow to update the currently exposed state which will also update all
-  /// dependent providers.
-  ///
-  /// This is useful when dealing with asynchronous operations.
-  ///
-  /// __Cannot__ be used while building a provider or in [ProviderReference.onDispose]
-  /// ```dart
-  /// final provider = Provider<int>((ref) {
-  ///   Future.value(1).then((value) => ref.setState(value));
-  ///   return 0;
-  /// });
-  /// ```
-  void setState(Listened newState);
-
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
 
@@ -460,6 +446,43 @@ abstract class ProviderReference<Listened> {
   T watch<T>(AlwaysAliveProviderBase<Object?, T> provider);
 }
 
+/// Helper class to share advanced feature across different implementations
+/// of [ProviderReference].
+///
+/// See
+///
+/// - [ProviderReferenceAdvanced]
+/// - [AutoDisposeProviderReferenceAdvanced]
+// ignore: one_member_abstracts
+abstract class ProviderReferenceAdvancedFeatures<Listened> {
+  /// Will allow to update the currently exposed state which will also update all
+  /// dependent providers.
+  ///
+  /// This is useful when dealing with asynchronous operations.
+  ///
+  /// __Cannot__ be used while building a provider or in [ProviderReference.onDispose]
+  /// ```dart
+  /// final provider = Provider<int>((ref) {
+  ///   Future.value(1).then((value) => ref.setState(value));
+  ///   return 0;
+  /// });
+  /// ```
+  void setState(Listened newState);
+}
+
+/// An object used by providers to interact with the provider,
+/// other providers and the life-cycles of the application.
+///
+/// See also:
+///
+/// - [setState], a method that allows updating the currently exposed state.
+abstract class ProviderReferenceAdvanced<Listened>
+    extends ProviderReference<Listened>
+    implements ProviderReferenceAdvancedFeatures<Listened> {
+  @override
+  void setState(Listened newState);
+}
+
 class _Listener<Listened> extends LinkedListEntry<_Listener<Listened>> {
   _Listener({
     this.mayHaveChanged,
@@ -530,7 +553,7 @@ class ProviderSubscription<Listened> {
 ///
 /// Do not use.
 class ProviderElement<Created, Listened>
-    implements ProviderReference<Listened> {
+    implements ProviderReferenceAdvanced<Listened> {
   /// Do not use.
   ProviderElement(this._provider) : state = _provider.createState();
 

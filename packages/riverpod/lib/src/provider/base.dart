@@ -5,7 +5,7 @@ part of '../provider.dart';
 class Provider<T> extends AlwaysAliveProviderBase<T, T> {
   /// {@macro riverpod.provider}
   Provider(
-    Create<T, T, ProviderReference<T>> create, {
+    Create<T, T, ProviderReferenceAdvanced<T>> create, {
     String? name,
   }) : super(create, name);
 
@@ -35,9 +35,9 @@ class ProviderFamily<T, A>
     extends Family<T, T, A, ProviderReference<T>, Provider<T>> {
   /// {@macro riverpod.provider.family}
   ProviderFamily(
-    T Function(ProviderReference<T> ref, A a) create, {
+    T Function(ProviderReferenceAdvanced<T> ref, A a) create, {
     String? name,
-  }) : super(create, name);
+  }) : super((ref, a) => create(ref as ProviderReferenceAdvanced<T>, a), name);
 
   @override
   Provider<T> create(

@@ -21,6 +21,33 @@ abstract class AutoDisposeProviderReference<Listened>
   T watch<T>(RootProvider<Object?, T> provider);
 }
 
+/// A [ProviderReference] for providers that are automatically destroyed when
+/// no-longer used.
+///
+/// The difference with [ProviderReference] is that it has an extra
+/// [maintainState] property, to help determine if the state can be destroyed
+///  or not.
+///  It will also allow the call [setState] to update the currently exposed state
+///  of the provider.
+abstract class AutoDisposeProviderReferenceAdvanced<Listened>
+    extends AutoDisposeProviderReference<Listened>
+    implements ProviderReferenceAdvancedFeatures<Listened> {
+  /// Will allow to update the currently exposed state which will also update all
+  /// dependent providers.
+  ///
+  /// This is useful when dealing with asynchronous operations.
+  ///
+  /// __Cannot__ be used while building a provider or in [ProviderReference.onDispose]
+  /// ```dart
+  /// final provider = Provider<int>((ref) {
+  ///   Future.value(1).then((value) => ref.setState(value));
+  ///   return 0;
+  /// });
+  /// ```
+  @override
+  void setState(Listened newState);
+}
+
 /// {@template riverpod.AutoDisposeProviderBase}
 /// A base class for providers that destroy their state when no-longer listened.
 ///
@@ -32,9 +59,11 @@ abstract class AutoDisposeProviderBase<Created, Listened>
     extends RootProvider<Created, Listened> {
   /// {@macro riverpod.AutoDisposeProviderBase}
   AutoDisposeProviderBase(
-    Created Function(AutoDisposeProviderReference<Listened> ref) create,
+    Created Function(AutoDisposeProviderReferenceAdvanced<Listened> ref) create,
     String? name,
-  ) : super((ref) => create(ref as AutoDisposeProviderReference<Listened>),
+  ) : super(
+            (ref) =>
+                create(ref as AutoDisposeProviderReferenceAdvanced<Listened>),
             name);
 
   @override
@@ -55,7 +84,7 @@ abstract class AutoDisposeProviderBase<Created, Listened>
 /// The [ProviderElement] of an [AutoDisposeProviderBase].
 class AutoDisposeProviderElement<Created, Listened>
     extends ProviderElement<Created, Listened>
-    implements AutoDisposeProviderReference<Listened> {
+    implements AutoDisposeProviderReferenceAdvanced<Listened> {
   /// The [ProviderElement] of an [AutoDisposeProviderBase].
   AutoDisposeProviderElement(
     ProviderBase<Created, Listened> provider,

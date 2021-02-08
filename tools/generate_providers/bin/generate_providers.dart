@@ -417,6 +417,15 @@ extension on Tuple3<DisposeType, StateType, ProviderType> {
 
   String get ref {
     switch (item2) {
+      case StateType.none:
+        switch (item1) {
+          case DisposeType.autoDispose:
+            return 'AutoDisposeProviderReferenceAdvanced<T>';
+          case DisposeType.none:
+          default:
+            return 'ProviderReferenceAdvanced<T>';
+        }
+        break;
       case StateType.state:
         switch (item1) {
           case DisposeType.autoDispose:
