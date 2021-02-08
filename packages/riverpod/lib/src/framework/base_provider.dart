@@ -603,6 +603,7 @@ class ProviderElement<Created, Listened>
   int _notificationCount = 0;
   int _notifyDidChangeLastNotificationCount = 0;
   bool _debugIsFlushing = false;
+  bool _debugIsDisposing = false;
   bool _dirty = true;
   // initialized to true so that the initial state creation don't notify listeners
   bool _dependencyMayHaveChanged = true;
@@ -686,8 +687,12 @@ class ProviderElement<Created, Listened>
     if (!_mounted) {
       throw StateError('Cannot call setState after a provider was disposed');
     }
-    assert(_debugIsFlushing == false,
-        'Cannot call .setState(newState) while building/onDispose on $_provider');
+    assert(_debugIsDisposing == false,
+        'Cannot call .setState(newState) in onDispose on $_provider');
+
+    assert(_debugCurrentlyBuildingElement == null,
+        'Cannot call .setState(newState) while building $_provider');
+
     state._previousValue = state._exposedValue;
     state.exposedValue = newState;
     markDidChange();
@@ -938,8 +943,19 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
 
   @protected
   void _runOnDispose() {
-    _onDisposeListeners?.forEach(_runGuarded);
-    _onDisposeListeners = null;
+    assert(() {
+      _debugIsDisposing = true;
+      return true;
+    }(), '');
+    try {
+      _onDisposeListeners?.forEach(_runGuarded);
+      _onDisposeListeners = null;
+    } finally {
+      assert(() {
+        _debugIsDisposing = false;
+        return true;
+      }(), '');
+    }
   }
 
   @protected

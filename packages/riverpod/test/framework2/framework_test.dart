@@ -165,8 +165,7 @@ void main() {
           isAssertionError.having(
             (s) => s.message,
             'message',
-            contains(
-                'Cannot call .setState(newState) while building/onDispose on'),
+            contains('Cannot call .setState(newState) in onDispose on'),
           ),
         );
       });
@@ -194,8 +193,7 @@ void main() {
                 .having(
                   (s) => s.exception.toString(),
                   'exception.toString',
-                  contains(
-                      'Cannot call .setState(newState) while building/onDispose on'),
+                  contains('Cannot call .setState(newState) while building'),
                 )
                 .having(
                   (s) => (s.exception as ProviderException).provider,
