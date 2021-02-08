@@ -1,3 +1,7 @@
+# 0.12.4
+
+- deprecated `import 'riverpod/all.dart'`. Now everything is available with `riverpod/riverpod.dart`.
+
 # 0.12.3
 
 - Fixed a but where listening to StreamProvider.last could result in a StateError (#217)

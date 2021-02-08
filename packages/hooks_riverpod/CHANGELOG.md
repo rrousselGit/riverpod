@@ -1,3 +1,7 @@
+# 0.12.4
+
+- deprecated `import 'hooks_riverpod/all.dart'`. Now everything is available with `hooks_riverpod/hooks_riverpod.dart`.
+
 # 0.12.3+1
 
 - Fixed outdated doc

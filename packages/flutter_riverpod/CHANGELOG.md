@@ -1,3 +1,7 @@
+# 0.12.4
+
+- deprecated `import 'flutter_riverpod/all.dart'`. Now everything is available with `flutter_riverpod/flutter_riverpod.dart`.
+ 
 # 0.12.3+1
 
 - Fixed outdated doc
