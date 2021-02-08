@@ -1,3 +1,7 @@
+# 0.13.0-nullsafety.3
+
+- deprecated `import 'hooks_riverpod/all.dart'`. Now everything is available with `hooks_riverpod/hooks_riverpod.dart`.
+
 # 0.13.0-nullsafety.2
 
 - Fixed outdated doc
