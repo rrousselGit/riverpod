@@ -244,7 +244,6 @@ class _ConsumerState extends State<ConsumerWidget> {
   ProviderContainer? _container;
   var _dependencies = <ProviderBase, ProviderSubscription>{};
   Map<ProviderBase, ProviderSubscription>? _oldDependencies;
-  bool _debugSelecting = false;
   late Widget _buildCache;
   // initialized at true for the first build
   bool _isExternalBuild = true;
@@ -289,19 +288,11 @@ class _ConsumerState extends State<ConsumerWidget> {
       return _buildCache;
     }
 
-    assert(() {
-      _debugSelecting = true;
-      return true;
-    }(), '');
     try {
       _oldDependencies = _dependencies;
       _dependencies = {};
       return _buildCache = widget.build(context, _reader);
     } finally {
-      assert(() {
-        _debugSelecting = false;
-        return true;
-      }(), '');
       for (final dep in _oldDependencies!.values) {
         dep.close();
       }
@@ -310,10 +301,6 @@ class _ConsumerState extends State<ConsumerWidget> {
   }
 
   Res _reader<Res>(ProviderBase<Object?, Res> target) {
-    assert(
-      _debugSelecting,
-      'Cannot use `watch` outside of the body of the Consumer callback',
-    );
     return _dependencies.putIfAbsent(target, () {
       final oldDependency = _oldDependencies?.remove(target);
 

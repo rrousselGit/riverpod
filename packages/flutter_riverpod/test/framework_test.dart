@@ -4,6 +4,34 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
 void main() {
+  testWidgets('context.read can read ScopedProviders', (tester) async {
+    final provider = ScopedProvider((watch) => 42);
+
+    await tester.pumpWidget(ProviderScope(child: Container()));
+
+    final context = tester.element(find.byType(Container));
+
+    expect(context.read(provider), 42);
+  });
+
+  testWidgets('context.read obtains the nearest ScopedProvider possible',
+      (tester) async {
+    final provider = ScopedProvider((watch) => 42);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: ProviderScope(
+          overrides: [provider.overrideWithValue(21)],
+          child: Container(),
+        ),
+      ),
+    );
+
+    final context = tester.element(find.byType(Container));
+
+    expect(context.read(provider), 21);
+  });
+
   testWidgets('widgets cannot modify providers in their build method',
       (tester) async {
     final onError = FlutterError.onError;
@@ -338,12 +366,26 @@ void main() {
 
     expect(
       scopeKey.currentContext.toString(),
-      equalsIgnoringHashCodes(
-        'UncontrolledProviderScope-[GlobalKey#00000]('
-        'Provider<int>#00000: 0, '
-        "counter: Instance of 'Counter', "
-        'counter.state: 0)',
-      ),
+      anyOf([
+        equalsIgnoringHashCodes(
+          'UncontrolledProviderScope-[GlobalKey#00000]('
+          'Provider<int>#00000: 0, '
+          "counter: Instance of 'Counter', "
+          'counter.state: 0)',
+        ),
+        equalsIgnoringHashCodes(
+          'UncontrolledProviderScope-[GlobalKey#00000]('
+          "counter: Instance of 'Counter', "
+          'Provider<int>#00000: 0, '
+          'counter.state: 0)',
+        ),
+        equalsIgnoringHashCodes(
+          'UncontrolledProviderScope-[GlobalKey#00000]('
+          'counter.state: 0, '
+          'Provider<int>#00000: 0, '
+          "counter: Instance of 'Counter')",
+        ),
+      ]),
     );
   });
 
