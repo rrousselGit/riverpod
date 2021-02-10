@@ -22,8 +22,7 @@ void main() {
   });
 
   test('can be assigned to provider', () {
-    final StateNotifierProvider<TestNotifier> provider =
-        StateNotifierProvider((_) {
+    final provider = StateNotifierProvider((_) {
       return TestNotifier();
     });
     final container = ProviderContainer();
