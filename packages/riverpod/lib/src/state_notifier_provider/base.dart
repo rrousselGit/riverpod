@@ -3,16 +3,12 @@ part of '../state_notifier_provider.dart';
 /// {@macro riverpod.statenotifierprovider}
 @sealed
 class StateNotifierProvider<T extends StateNotifier<Object?>>
-    extends Provider<T> {
+    extends AlwaysAliveProviderBase<T, T> {
   /// {@macro riverpod.statenotifierprovider}
   StateNotifierProvider(
     Create<T, T, ProviderReference<T>> create, {
     String? name,
-  }) : super((ref) {
-          final controller = create(ref);
-          ref.onDispose(controller.dispose);
-          return controller;
-        }, name: name);
+  }) : super((ref) => create(ref), name);
 
   /// {@macro riverpod.family}
   static const family = StateNotifierProviderFamilyBuilder();
@@ -21,7 +17,16 @@ class StateNotifierProvider<T extends StateNotifier<Object?>>
   static const autoDispose = AutoDisposeStateNotifierProviderBuilder();
 
   StateNotifierStateProvider<Object?>? _state;
+
+  @override
+  _StateNotifierProviderState<T> createState() =>
+      _StateNotifierProviderState<T>();
 }
+
+@sealed
+class _StateNotifierProviderState<
+        T extends StateNotifier<Object?>> = ProviderStateBase<T, T>
+    with _StateNotifierProviderStateMixin<T>;
 
 /// Adds [state] to [StateNotifierProvider.autoDispose].
 extension StateNotifierStateProviderX<Value>

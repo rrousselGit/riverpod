@@ -4,8 +4,8 @@ import 'package:state_notifier/state_notifier.dart';
 import 'builders.dart';
 import 'framework.dart';
 
-part 'state_provider/base.dart';
 part 'state_provider/auto_dispose.dart';
+part 'state_provider/base.dart';
 
 /// A [StateNotifier] that allows modifying its [state] from outside.
 ///
@@ -69,6 +69,15 @@ mixin _StateProviderStateMixin<T>
     exposedValue?.dispose();
     removeListener = createdValue.addListener((state) {
       exposedValue = createdValue;
+    });
+  }
+
+  @override
+  void exposedValueChanged(StateController<T> newValue) {
+    removeListener?.call();
+    exposedValue?.dispose();
+    removeListener = newValue.addListener((state) {
+      exposedValue = newValue;
     });
   }
 

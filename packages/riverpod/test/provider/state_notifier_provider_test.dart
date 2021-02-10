@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
@@ -20,7 +22,8 @@ void main() {
   });
 
   test('can be assigned to provider', () {
-    final Provider<TestNotifier> provider = StateNotifierProvider((_) {
+    final StateNotifierProvider<TestNotifier> provider =
+        StateNotifierProvider((_) {
       return TestNotifier();
     });
     final container = ProviderContainer();
@@ -79,6 +82,65 @@ void main() {
     container.dispose();
 
     expect(notifier.mounted, isFalse);
+  });
+
+  test(
+      'disposes the notifier when provider is unmounted when ref provider changes',
+      () async {
+    final notifier = TestNotifier();
+    final notifier2 = TestNotifier();
+    final completer = Completer<void>();
+    final watchedProvider = Provider<int>((ref) {
+      Future.microtask(() {}).then((value) {
+        ref.setState(1);
+        completer.complete();
+      });
+      return 0;
+    });
+    final provider = StateNotifierProvider<TestNotifier>((ref) {
+      return ref.watch(watchedProvider) == 0 ? notifier : notifier2;
+    });
+    final container = ProviderContainer();
+
+    expect(container.read(provider), notifier);
+    expect(notifier.mounted, isTrue);
+
+    await completer.future;
+
+    container.read(provider);
+    expect(notifier.mounted, isFalse);
+    expect(notifier2.mounted, isTrue);
+
+    container.dispose();
+
+    expect(notifier2.mounted, isFalse);
+  });
+
+  test('disposes the notifier when provider is unmounted or on set state',
+      () async {
+    final notifier = TestNotifier();
+    final notifier2 = TestNotifier();
+    final completer = Completer<void>();
+    final provider = StateNotifierProvider<TestNotifier>((ref) {
+      Future.microtask(() {}).then((value) {
+        ref.setState(notifier2);
+        completer.complete();
+      });
+      return notifier;
+    });
+    final container = ProviderContainer();
+
+    expect(container.read(provider), notifier);
+    expect(notifier.mounted, isTrue);
+
+    await completer.future;
+
+    expect(notifier.mounted, isFalse);
+    expect(notifier2.mounted, isTrue);
+
+    container.dispose();
+
+    expect(notifier2.mounted, isFalse);
   });
 
   test('provider subscribe the callback is never', () async {

@@ -6,8 +6,8 @@ import 'framework.dart';
 import 'future_provider.dart';
 import 'provider.dart';
 
-part 'state_notifier_provider/base.dart';
 part 'state_notifier_provider/auto_dispose.dart';
+part 'state_notifier_provider/base.dart';
 
 /// {@template riverpod.statenotifierprovider}
 /// Creates a [StateNotifier] and expose its current state.
@@ -92,8 +92,36 @@ mixin _StateNotifierStateProviderStateMixin<T>
   }
 
   @override
+  void exposedValueChanged(T newValue) => exposedValue = newValue;
+
+  @override
   void dispose() {
     removeListener?.call();
+    super.dispose();
+  }
+}
+
+mixin _StateNotifierProviderStateMixin<T extends StateNotifier<Object?>>
+    on ProviderStateBase<T, T> {
+  @override
+  void valueChanged({T? previous}) {
+    if (createdValue == previous) {
+      return;
+    }
+
+    exposedValue?.dispose();
+    exposedValue = createdValue;
+  }
+
+  @override
+  void exposedValueChanged(T newValue) {
+    exposedValue?.dispose();
+    exposedValue = newValue;
+  }
+
+  @override
+  void dispose() {
+    exposedValue?.dispose();
     super.dispose();
   }
 }

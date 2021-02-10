@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -76,6 +78,59 @@ void main() {
 
     await tester.pumpWidget(Container());
 
+    expect(notifier.mounted, isFalse);
+  });
+
+  test('can set state', () async {
+    final container = ProviderContainer();
+    final initialNotifier = TestNotifier();
+    final notifier = TestNotifier();
+    final completer = Completer<void>();
+    final provider = ChangeNotifierProvider((ref) {
+      Future.microtask(() {}).then((value) {
+        ref.setState(notifier);
+        completer.complete();
+      });
+      return initialNotifier;
+    });
+
+    container.read(provider);
+    await completer.future;
+    expect(container.read(provider), notifier);
+  });
+
+  test('dispose', () async {
+    final container = ProviderContainer();
+    final notifier = TestNotifier();
+    final provider = ChangeNotifierProvider((ref) {
+      return notifier;
+    });
+
+    container.read(provider);
+    container.dispose();
+    expect(notifier.mounted, isFalse);
+  });
+
+  test('dispose when used with set state', () async {
+    final container = ProviderContainer();
+    final initialNotifier = TestNotifier();
+    final notifier = TestNotifier();
+    final completer = Completer<void>();
+    final provider = ChangeNotifierProvider((ref) {
+      Future.microtask(() {}).then((value) {
+        ref.setState(notifier);
+        completer.complete();
+      });
+      return initialNotifier;
+    });
+
+    container.read(provider);
+    await completer.future;
+    container.read(provider);
+    expect(initialNotifier.mounted, isFalse);
+    expect(notifier.mounted, isTrue);
+
+    container.dispose();
     expect(notifier.mounted, isFalse);
   });
 }

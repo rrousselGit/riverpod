@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
@@ -68,6 +70,33 @@ void main() {
     container.dispose();
 
     expect(controller.mounted, false);
+  });
+
+  test('disposes the notifier when provider is unmounted or on set state',
+      () async {
+    final ctrl = StateController<int>(0);
+    final completer = Completer<void>();
+    final provider = StateProvider<int>((ref) {
+      Future.microtask(() {}).then((value) {
+        ref.setState(ctrl);
+        completer.complete();
+      });
+      return -1;
+    });
+    final container = ProviderContainer();
+
+    final initialCtrl = container.read(provider);
+    await completer.future;
+
+    expect(initialCtrl.mounted, isFalse);
+    expect(container.read(provider), ctrl);
+    expect(ctrl.mounted, isTrue);
+
+    container.read(provider).state = 100;
+    expect(container.read(provider), ctrl);
+
+    container.dispose();
+    expect(ctrl.mounted, isFalse);
   });
 
   test('disposes the controller when the provider is re-evaluated', () {

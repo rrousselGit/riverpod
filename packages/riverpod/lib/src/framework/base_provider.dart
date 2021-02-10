@@ -343,6 +343,20 @@ abstract class ProviderReference<Listened> {
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
 
+  /// Will allow to update the currently exposed state which will also update all
+  /// dependent providers.
+  ///
+  /// This is useful when dealing with asynchronous operations.
+  ///
+  /// __Cannot__ be used while building a provider or in [ProviderReference.onDispose]
+  /// ```dart
+  /// final provider = Provider<int>((ref) {
+  ///   Future.value(1).then((value) => ref.setState(value));
+  ///   return 0;
+  /// });
+  /// ```
+  void setState(Listened newState);
+
   /// Adds a listener to perform an operation right before the provider is destroyed.
   ///
   /// This typically happen when a provider marked with `.autoDispose` is no-longer
@@ -455,21 +469,7 @@ abstract class ProviderReference<Listened> {
 /// - [ProviderReferenceAdvanced]
 /// - [AutoDisposeProviderReferenceAdvanced]
 // ignore: one_member_abstracts
-abstract class ProviderReferenceAdvancedFeatures<Listened> {
-  /// Will allow to update the currently exposed state which will also update all
-  /// dependent providers.
-  ///
-  /// This is useful when dealing with asynchronous operations.
-  ///
-  /// __Cannot__ be used while building a provider or in [ProviderReference.onDispose]
-  /// ```dart
-  /// final provider = Provider<int>((ref) {
-  ///   Future.value(1).then((value) => ref.setState(value));
-  ///   return 0;
-  /// });
-  /// ```
-  void setState(Listened newState);
-}
+abstract class ProviderReferenceAdvancedFeatures<Listened> {}
 
 /// An object used by providers to interact with the provider,
 /// other providers and the life-cycles of the application.
@@ -694,8 +694,8 @@ class ProviderElement<Created, Listened>
         'Cannot call .setState(newState) while building $_provider');
 
     state._previousValue = state._exposedValue;
-    state.exposedValue = newState;
-    markDidChange();
+    state.exposedValueChanged(newState);
+    // markDidChange();
   }
 
   /// Listen to this provider.
@@ -1040,6 +1040,12 @@ abstract class ProviderStateBase<Created, Listened> {
   /// On first call, **must** set [exposedValue].
   @protected
   void valueChanged({Created? previous});
+
+  /// Updates the currently exposed value.
+  ///
+  /// This will usually be called by [ProviderReference.setState].
+  @protected
+  void exposedValueChanged(Listened newValue);
 
   /// Optionally handles errors inside the `create` callback.
   ///

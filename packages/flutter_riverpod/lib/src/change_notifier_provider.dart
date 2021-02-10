@@ -1,12 +1,12 @@
 // ignore: implementation_imports
-import 'package:riverpod/src/internals.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
+import 'package:riverpod/src/internals.dart';
 
 import 'builders.dart';
 
-part 'change_notifier_provider/base.dart';
 part 'change_notifier_provider/auto_dispose.dart';
+part 'change_notifier_provider/base.dart';
 
 /// {@template riverpod.changenotifierprovider}
 /// Creates a [ChangeNotifier] and subscribes to it.
@@ -27,14 +27,22 @@ mixin _ChangeNotifierProviderStateMixin<T extends ChangeNotifier?>
     createdValue?.addListener(_listener);
   }
 
+  @override
+  void exposedValueChanged(T newValue) {
+    exposedValue?.removeListener(_listener);
+    exposedValue?.dispose();
+    exposedValue = newValue;
+    newValue?.addListener(_listener);
+  }
+
   void _listener() {
     exposedValue = createdValue;
   }
 
   @override
   void dispose() {
-    createdValue?.removeListener(_listener);
-    createdValue?.dispose();
+    exposedValue?.removeListener(_listener);
+    exposedValue?.dispose();
     super.dispose();
   }
 }

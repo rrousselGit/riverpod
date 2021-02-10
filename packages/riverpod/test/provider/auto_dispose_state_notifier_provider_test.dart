@@ -1,8 +1,7 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:test/test.dart';
-
 import 'package:riverpod/src/internals.dart' as internals;
+import 'package:test/test.dart';
 
 import '../utils.dart';
 
@@ -41,14 +40,6 @@ void main() {
     await Future<void>.value();
 
     expect(notifier2.mounted, false);
-  });
-
-  test('can be assigned to Provider.autoDispose', () {
-    // ignore: unused_local_variable
-    final internals.AutoDisposeProvider<TestNotifier> provider =
-        StateNotifierProvider.autoDispose((_) {
-      return TestNotifier();
-    });
   });
 
   test('overriding the provider overrides provider.state too', () {
