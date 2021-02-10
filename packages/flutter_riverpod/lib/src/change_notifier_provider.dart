@@ -1,9 +1,9 @@
 // ignore: implementation_imports
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
-import 'package:riverpod/src/internals.dart';
 
 import 'builders.dart';
+import 'internals.dart';
 
 part 'change_notifier_provider/auto_dispose.dart';
 part 'change_notifier_provider/base.dart';
