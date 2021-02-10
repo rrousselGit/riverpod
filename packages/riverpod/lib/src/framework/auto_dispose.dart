@@ -17,21 +17,6 @@ abstract class AutoDisposeProviderReference<Listened>
   bool get maintainState;
   set maintainState(bool value);
 
-  /// Will allow to update the currently exposed state which will also update all
-  /// dependent providers.
-  ///
-  /// This is useful when dealing with asynchronous operations.
-  ///
-  /// __Cannot__ be used while building a provider or in [ProviderReference.onDispose]
-  /// ```dart
-  /// final provider = Provider<int>((ref) {
-  ///   Future.value(1).then((value) => ref.setState(value));
-  ///   return 0;
-  /// });
-  /// ```
-  @override
-  void setState(Listened newState);
-
   @override
   T watch<T>(RootProvider<Object?, T> provider);
 }

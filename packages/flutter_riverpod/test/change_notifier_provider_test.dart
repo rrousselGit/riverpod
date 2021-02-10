@@ -128,9 +128,12 @@ void main() {
     await completer.future;
     container.read(provider);
     expect(initialNotifier.mounted, isFalse);
+    expect(() => initialNotifier.hasListeners, throwsFlutterError);
     expect(notifier.mounted, isTrue);
+    expect(notifier.hasListeners, isTrue);
 
     container.dispose();
+    expect(() => notifier.hasListeners, throwsFlutterError);
     expect(notifier.mounted, isFalse);
   });
 }
@@ -144,6 +147,10 @@ class TestNotifier extends ChangeNotifier {
     _count = count;
     notifyListeners();
   }
+
+  @override
+  // ignore: unnecessary_overrides
+  bool get hasListeners => super.hasListeners;
 
   @override
   void dispose() {

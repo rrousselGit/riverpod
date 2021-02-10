@@ -121,7 +121,7 @@ void main() {
     final notifier2 = TestNotifier();
     final completer = Completer<void>();
     final provider = StateNotifierProvider<TestNotifier>((ref) {
-      Future.microtask(() {}).then((value) {
+      Future(() {
         ref.setState(notifier2);
         completer.complete();
       });
@@ -132,14 +132,22 @@ void main() {
     expect(container.read(provider), notifier);
     expect(notifier.mounted, isTrue);
 
+    container.read(provider.state);
+    expect(notifier.hasListeners, isTrue);
+
     await completer.future;
 
+    container.read(provider.state);
+
     expect(notifier.mounted, isFalse);
+    expect(() => notifier.hasListeners, throwsStateError);
     expect(notifier2.mounted, isTrue);
+    expect(notifier2.hasListeners, isTrue);
 
     container.dispose();
 
     expect(notifier2.mounted, isFalse);
+    expect(() => notifier2.hasListeners, throwsStateError);
   });
 
   test('provider subscribe the callback is never', () async {
