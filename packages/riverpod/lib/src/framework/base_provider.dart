@@ -998,11 +998,14 @@ abstract class ProviderStateBase<Created, Listened> {
   @protected
   void valueChanged({Created? previous});
 
+  // ignore: use_setters_to_change_properties
   /// Updates the currently exposed value.
   ///
   /// This will usually be called by [ProviderReference.setState].
   @protected
-  void exposedValueChanged(Listened newValue);
+  void exposedValueChanged(Listened newValue) {
+    exposedValue = newValue;
+  }
 
   /// Optionally handles errors inside the `create` callback.
   ///

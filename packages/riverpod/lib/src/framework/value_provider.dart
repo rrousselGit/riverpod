@@ -66,11 +66,4 @@ class _ValueProviderState<Created, Listened>
         ((ref as ProviderElement).provider as ValueProvider<Created, Listened>)
             ._value;
   }
-
-  @override
-  void exposedValueChanged(Listened newValue) {
-    exposedValue =
-        ((ref as ProviderElement).provider as ValueProvider<Created, Listened>)
-            ._value;
-  }
 }

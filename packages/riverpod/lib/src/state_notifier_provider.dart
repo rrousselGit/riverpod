@@ -92,9 +92,6 @@ mixin _StateNotifierStateProviderStateMixin<T>
   }
 
   @override
-  void exposedValueChanged(T newValue) => exposedValue = newValue;
-
-  @override
   void dispose() {
     removeListener?.call();
     super.dispose();

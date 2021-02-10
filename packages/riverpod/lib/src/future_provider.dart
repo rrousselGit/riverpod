@@ -135,9 +135,6 @@ mixin _FutureProviderStateMixin<T>
   }
 
   @override
-  void exposedValueChanged(AsyncValue<T> newValue) => exposedValue = newValue;
-
-  @override
   bool handleError(Object error, StackTrace stackTrace) {
     exposedValue = AsyncValue.error(error, stackTrace);
     return true;

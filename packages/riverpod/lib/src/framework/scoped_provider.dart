@@ -155,7 +155,4 @@ class _ScopedProviderState<T> extends ProviderStateBase<T, T> {
       exposedValue = createdValue;
     }
   }
-
-  @override
-  void exposedValueChanged(T newValue) => exposedValue = newValue;
 }

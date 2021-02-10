@@ -225,7 +225,4 @@ mixin _ProviderStateMixin<T> on ProviderStateBase<T, T> {
       exposedValue = createdValue;
     }
   }
-
-  @override
-  void exposedValueChanged(T newValue) => exposedValue = newValue;
 }
