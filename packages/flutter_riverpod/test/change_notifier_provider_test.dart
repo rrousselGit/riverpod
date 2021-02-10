@@ -87,7 +87,7 @@ void main() {
     final notifier = TestNotifier();
     final completer = Completer<void>();
     final provider = ChangeNotifierProvider((ref) {
-      Future.microtask(() {}).then((value) {
+      Future(() {
         ref.setState(notifier);
         completer.complete();
       });
