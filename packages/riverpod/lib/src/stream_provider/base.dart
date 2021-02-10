@@ -7,8 +7,7 @@ class StreamProvider<T>
     with _StreamProviderMixin<T> {
   /// {@macro riverpod.streamprovider}
   StreamProvider(
-    Create<Stream<T>, AsyncValue<T>, ProviderReferenceAdvanced<AsyncValue<T>>>
-        create, {
+    Create<Stream<T>, AsyncValue<T>, ProviderReference<AsyncValue<T>>> create, {
     String? name,
   }) : super(create, name);
 
@@ -52,13 +51,9 @@ class StreamProviderFamily<T, A> extends Family<Stream<T>, AsyncValue<T>, A,
     ProviderReference<AsyncValue<T>>, StreamProvider<T>> {
   /// {@macro riverpod.streamprovider.family}
   StreamProviderFamily(
-    Stream<T> Function(ProviderReferenceAdvanced<AsyncValue<T>> ref, A a)
-        create, {
+    Stream<T> Function(ProviderReference<AsyncValue<T>> ref, A a) create, {
     String? name,
-  }) : super(
-            (ref, a) =>
-                create(ref as ProviderReferenceAdvanced<AsyncValue<T>>, a),
-            name);
+  }) : super(create, name);
 
   @override
   StreamProvider<T> create(

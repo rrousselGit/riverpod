@@ -17,21 +17,6 @@ abstract class AutoDisposeProviderReference<Listened>
   bool get maintainState;
   set maintainState(bool value);
 
-  @override
-  T watch<T>(RootProvider<Object?, T> provider);
-}
-
-/// A [ProviderReference] for providers that are automatically destroyed when
-/// no-longer used.
-///
-/// The difference with [ProviderReference] is that it has an extra
-/// [maintainState] property, to help determine if the state can be destroyed
-///  or not.
-///  It will also allow the call [setState] to update the currently exposed state
-///  of the provider.
-abstract class AutoDisposeProviderReferenceAdvanced<Listened>
-    extends AutoDisposeProviderReference<Listened>
-    implements ProviderReferenceAdvancedFeatures<Listened> {
   /// Will allow to update the currently exposed state which will also update all
   /// dependent providers.
   ///
@@ -46,6 +31,9 @@ abstract class AutoDisposeProviderReferenceAdvanced<Listened>
   /// ```
   @override
   void setState(Listened newState);
+
+  @override
+  T watch<T>(RootProvider<Object?, T> provider);
 }
 
 /// {@template riverpod.AutoDisposeProviderBase}
@@ -59,11 +47,9 @@ abstract class AutoDisposeProviderBase<Created, Listened>
     extends RootProvider<Created, Listened> {
   /// {@macro riverpod.AutoDisposeProviderBase}
   AutoDisposeProviderBase(
-    Created Function(AutoDisposeProviderReferenceAdvanced<Listened> ref) create,
+    Created Function(AutoDisposeProviderReference<Listened> ref) create,
     String? name,
-  ) : super(
-            (ref) =>
-                create(ref as AutoDisposeProviderReferenceAdvanced<Listened>),
+  ) : super((ref) => create(ref as AutoDisposeProviderReference<Listened>),
             name);
 
   @override
@@ -84,7 +70,7 @@ abstract class AutoDisposeProviderBase<Created, Listened>
 /// The [ProviderElement] of an [AutoDisposeProviderBase].
 class AutoDisposeProviderElement<Created, Listened>
     extends ProviderElement<Created, Listened>
-    implements AutoDisposeProviderReferenceAdvanced<Listened> {
+    implements AutoDisposeProviderReference<Listened> {
   /// The [ProviderElement] of an [AutoDisposeProviderBase].
   AutoDisposeProviderElement(
     ProviderBase<Created, Listened> provider,

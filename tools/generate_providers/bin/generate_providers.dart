@@ -417,15 +417,6 @@ extension on Tuple3<DisposeType, StateType, ProviderType> {
 
   String get ref {
     switch (item2) {
-      case StateType.none:
-        switch (item1) {
-          case DisposeType.autoDispose:
-            return 'AutoDisposeProviderReferenceAdvanced<T>';
-          case DisposeType.none:
-          default:
-            return 'ProviderReferenceAdvanced<T>';
-        }
-        break;
       case StateType.state:
         switch (item1) {
           case DisposeType.autoDispose:
@@ -438,19 +429,19 @@ extension on Tuple3<DisposeType, StateType, ProviderType> {
       case StateType.future:
         switch (item1) {
           case DisposeType.autoDispose:
-            return 'AutoDisposeProviderReferenceAdvanced<AsyncValue<T>>';
+            return 'AutoDisposeProviderReference<AsyncValue<T>>';
           case DisposeType.none:
           default:
-            return 'ProviderReferenceAdvanced<AsyncValue<T>>';
+            return 'ProviderReference<AsyncValue<T>>';
         }
         break;
       case StateType.stream:
         switch (item1) {
           case DisposeType.autoDispose:
-            return 'AutoDisposeProviderReferenceAdvanced<AsyncValue<T>>';
+            return 'AutoDisposeProviderReference<AsyncValue<T>>';
           case DisposeType.none:
           default:
-            return 'ProviderReferenceAdvanced<AsyncValue<T>>';
+            return 'ProviderReference<AsyncValue<T>>';
         }
         break;
       default:
