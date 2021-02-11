@@ -50,8 +50,8 @@ class ValueProviderElement<Created, Listened>
   void update(ProviderBase<Created, Listened> newProvider) {
     super.update(newProvider);
     final newValue = (provider as ValueProvider<Created, Listened>)._value;
-    if (newValue != state._exposedValue) {
-      state.exposedValue = newValue;
+    if (newValue != providerState._exposedValue) {
+      providerState.exposedValue = newValue;
       onChange?.call(newValue);
     }
   }

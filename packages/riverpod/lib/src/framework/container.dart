@@ -174,11 +174,11 @@ class ProviderContainer {
     final element = (_root ?? this)._stateReaders[provider];
 
     if (element == null) {
-      return readProviderElement(provider).state.createdValue;
+      return readProviderElement(provider).providerState.createdValue;
     } else {
       element.markMustRecomputeState();
       element.flush();
-      return element.state.createdValue as Created;
+      return element.providerState.createdValue as Created;
     }
   }
 
@@ -312,7 +312,7 @@ class ProviderContainer {
           _runBinaryGuarded<ProviderBase, Object?>(
             observer.didAddProvider,
             provider,
-            element.state._exposedValue,
+            element.providerState._exposedValue,
           );
         }
         return element;
@@ -410,7 +410,7 @@ class ProviderContainer {
     assert(() {
       res = {
         for (final entry in _stateReaders.entries)
-          entry.key: entry.value.state.exposedValue,
+          entry.key: entry.value.providerState.exposedValue,
       };
 
       return true;

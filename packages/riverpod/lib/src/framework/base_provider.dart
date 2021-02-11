@@ -327,10 +327,7 @@ abstract class ProviderReference<Listened> {
   ///   return AsyncValue.loading();
   /// });
   /// ```
-  Listened get currentState;
-
-  /// The [ProviderContainer] that this provider is associated with.
-  ProviderContainer get container;
+  Listened get state;
 
   /// Will allow to update the currently exposed state which will also update all
   /// dependent providers.
@@ -345,6 +342,9 @@ abstract class ProviderReference<Listened> {
   /// });
   /// ```
   void setState(Listened newState);
+
+  /// The [ProviderContainer] that this provider is associated with.
+  ProviderContainer get container;
 
   /// Adds a listener to perform an operation right before the provider is destroyed.
   ///
@@ -522,7 +522,7 @@ class ProviderSubscription<Listened> {
 class ProviderElement<Created, Listened>
     implements ProviderReference<Listened> {
   /// Do not use.
-  ProviderElement(this._provider) : state = _provider.createState();
+  ProviderElement(this._provider) : providerState = _provider.createState();
 
   static ProviderElement? _debugCurrentlyBuildingElement;
 
@@ -534,13 +534,13 @@ class ProviderElement<Created, Listened>
   ProviderBase<Created, Listened> get provider => _provider;
   ProviderBase<Created, Listened> _provider;
 
-  final ProviderStateBase<Created, Listened> state;
+  final ProviderStateBase<Created, Listened> providerState;
 
   @override
-  Listened get currentState {
+  Listened get state {
     assert(_debugCurrentlyBuildingElement == null,
-        'Cannot call ref.currentState while building $_provider');
-    return state.exposedValue as Listened;
+        'Cannot call ref.state while building $_provider');
+    return providerState.exposedValue as Listened;
   }
 
   /// The [ProviderContainer] that owns this [ProviderElement].
@@ -656,7 +656,7 @@ class ProviderElement<Created, Listened>
     assert(_debugCurrentlyBuildingElement == null,
         'Cannot call .setState(newState) while building $_provider');
 
-    state.exposedValueChanged(newState);
+    providerState.exposedValueChanged(newState);
   }
 
   /// Listen to this provider.
@@ -735,7 +735,7 @@ class ProviderElement<Created, Listened>
     if (_exception != null) {
       throw _exception!;
     }
-    return state._exposedValue as Listened;
+    return providerState._exposedValue as Listened;
   }
 
   void _debugMarkWillChange() {
@@ -821,7 +821,7 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
       _runBinaryGuarded(
         observer.didUpdateProvider,
         _origin,
-        state._exposedValue,
+        providerState._exposedValue,
       );
     }
   }
@@ -841,7 +841,7 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
   @mustCallSuper
   void mount() {
     _mounted = true;
-    state._element = this;
+    providerState._element = this;
     assert(() {
       _debugIsFlushing = true;
       return true;
@@ -891,7 +891,7 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
     }
 
     _listeners.clear();
-    state.dispose();
+    providerState.dispose();
   }
 
   /// Forces the state of a provider to be re-created, even if none of its
@@ -920,7 +920,7 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
 
   @protected
   void _runStateCreate() {
-    final previous = state._createdValue;
+    final previous = providerState._createdValue;
     _previousSubscriptions = _subscriptions;
     _subscriptions = {};
     ProviderElement? debugPreviouslyBuildingElement;
@@ -931,10 +931,10 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
     }(), '');
 
     try {
-      state._createdValue = _provider._create(this);
-      state.valueChanged(previous: previous);
+      providerState._createdValue = _provider._create(this);
+      providerState.valueChanged(previous: previous);
     } catch (err, stack) {
-      if (!state.handleError(err, stack)) {
+      if (!providerState.handleError(err, stack)) {
         _exception = ProviderException._(err, stack, _provider);
       }
     } finally {

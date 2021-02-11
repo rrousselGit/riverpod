@@ -317,7 +317,8 @@ class _CreatedStreamProvider<T> extends Provider<Stream<T>> {
   }) : super((ref) {
           ref.watch(provider);
           // ignore: invalid_use_of_visible_for_testing_member
-          final state = ref.container.readProviderElement(provider).state;
+          final state =
+              ref.container.readProviderElement(provider).providerState;
 
           return state is _StreamProviderStateMixin<T>
               ? state.proxyStream
@@ -334,7 +335,8 @@ class _AutoDisposeCreatedStreamProvider<T>
   }) : super((ref) {
           ref.watch(provider);
           // ignore: invalid_use_of_visible_for_testing_member
-          final state = ref.container.readProviderElement(provider).state;
+          final state =
+              ref.container.readProviderElement(provider).providerState;
 
           return state is _StreamProviderStateMixin<T>
               ? state.proxyStream

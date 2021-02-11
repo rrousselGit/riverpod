@@ -206,7 +206,7 @@ void main() {
     });
   });
 
-  group('ProviderReference.currentState', () {
+  group('ProviderReference.state', () {
     test('exposes correct value', () async {
       final container = ProviderContainer();
       late Completer<int> completer;
@@ -214,7 +214,7 @@ void main() {
       final provider = Provider<int>((ref) {
         completer = Completer<int>();
         (() async {
-          await Future.microtask(() => completer.complete(ref.currentState));
+          await Future.microtask(() => completer.complete(ref.state));
         })();
 
         return ref.watch(stateProvider).state;
@@ -237,7 +237,7 @@ void main() {
       late int dispose;
       final provider = Provider<int>((ref) {
         ref.onDispose(() {
-          dispose = ref.currentState;
+          dispose = ref.state;
         });
 
         return ref.watch(stateProvider).state;
@@ -255,7 +255,7 @@ void main() {
     test('will assert if accessed during build', () {
       final container = ProviderContainer();
       final provider = Provider<int>((ref) {
-        ref.currentState;
+        ref.state;
         return 0;
       });
 
@@ -266,7 +266,7 @@ void main() {
     test('will assert as long as a provider is building', () {
       final container = ProviderContainer();
       final provider = Provider<int>((ref) {
-        ref.currentState;
+        ref.state;
         return 0;
       });
 
@@ -285,7 +285,7 @@ void main() {
                 .having(
                   (s) => s.exception.toString(),
                   'exception.toString',
-                  contains('Cannot call ref.currentState while building'),
+                  contains('Cannot call ref.state while building'),
                 )
                 .having(
                   (s) => (s.exception as ProviderException).provider,

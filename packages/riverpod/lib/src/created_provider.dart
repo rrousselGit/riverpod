@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import 'framework.dart';
-
 import 'provider.dart';
 
 /// {@template riverpod.createdprovider}
@@ -21,7 +20,7 @@ class CreatedProvider<T> extends Provider<T> {
           // ignore: invalid_use_of_visible_for_testing_member
           final targetElement = ref.container.readProviderElement(provider);
 
-          return targetElement.state.createdValue;
+          return targetElement.providerState.createdValue;
         }, name: name);
 }
 
@@ -37,6 +36,6 @@ class AutoDisposeCreatedProvider<T> extends AutoDisposeProvider<T> {
           // ignore: invalid_use_of_visible_for_testing_member
           final targetElement = ref.container.readProviderElement(provider);
 
-          return targetElement.state.createdValue;
+          return targetElement.providerState.createdValue;
         }, name: name);
 }
