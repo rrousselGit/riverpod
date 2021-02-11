@@ -88,7 +88,7 @@ void main() {
     final completer = Completer<void>();
     final provider = ChangeNotifierProvider((ref) {
       Future(() {
-        ref.setState(notifier);
+        ref.state = notifier;
         completer.complete();
       });
       return initialNotifier;
@@ -118,7 +118,7 @@ void main() {
     final completer = Completer<void>();
     final provider = ChangeNotifierProvider((ref) {
       Future(() {
-        ref.setState(notifier);
+        ref.state = notifier;
         completer.complete();
       });
       return initialNotifier;

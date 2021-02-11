@@ -91,7 +91,7 @@ void main() {
     final completer = Completer<void>();
     final watchedProvider = Provider<int>((ref) {
       Future.microtask(() {}).then((value) {
-        ref.setState(1);
+        ref.state = 1;
         completer.complete();
       });
       return 0;
@@ -122,7 +122,7 @@ void main() {
     final completer = Completer<void>();
     final provider = StateNotifierProvider<TestNotifier>((ref) {
       Future(() {
-        ref.setState(notifier2);
+        ref.state = notifier2;
         completer.complete();
       });
       return notifier;

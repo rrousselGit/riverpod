@@ -322,9 +322,9 @@ abstract class ProviderReference<Listened> {
   ///
   /// __Cannot__ be used while building a provider.
   /// ```dart
-  /// final provider = Provider<AsyncValue<Todos>>((ref) {
-  ///   get('endpoint').then((todos) => ref.setState(AsyncValue.data(todos)));
-  ///   return AsyncValue.loading();
+  /// final provider = Provider<List<Foo>>((ref) {
+  ///   get('endpoint').then((foo) => ref.state = [...ref.state, ...foo);
+  ///   return <Foo>[];
   /// });
   /// ```
   Listened get state;
@@ -336,12 +336,12 @@ abstract class ProviderReference<Listened> {
   ///
   /// __Cannot__ be used while building a provider or in [ProviderReference.onDispose]
   /// ```dart
-  /// final provider = Provider<int>((ref) {
-  ///   Future.value(1).then((value) => ref.setState(value));
-  ///   return 0;
+  /// final provider = Provider<AsyncValue<Foo>>((ref) {
+  ///   get('endpoint').then((foo) => ref.state = AsyncValue.data(foo));
+  ///   return AsyncValue.loading();
   /// });
   /// ```
-  void setState(Listened newState);
+  set state(Listened newState);
 
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
@@ -543,6 +543,19 @@ class ProviderElement<Created, Listened>
     return providerState.exposedValue as Listened;
   }
 
+  set state(Listened newState) {
+    if (!_mounted) {
+      throw StateError('Cannot set state after a provider was disposed');
+    }
+    assert(_debugIsDisposing == false,
+        'Cannot set state in onDispose on $_provider');
+
+    assert(_debugCurrentlyBuildingElement == null,
+        'Cannot set state while building $_provider');
+
+    providerState.exposedValueChanged(newState);
+  }
+
   /// The [ProviderContainer] that owns this [ProviderElement].
   @override
   ProviderContainer get container => _container;
@@ -643,20 +656,6 @@ class ProviderElement<Created, Listened>
       _dependencyMayHaveChanged = true;
       notifyMayHaveChanged();
     }
-  }
-
-  @override
-  void setState(Listened newState) {
-    if (!_mounted) {
-      throw StateError('Cannot call setState after a provider was disposed');
-    }
-    assert(_debugIsDisposing == false,
-        'Cannot call .setState(newState) in onDispose on $_provider');
-
-    assert(_debugCurrentlyBuildingElement == null,
-        'Cannot call .setState(newState) while building $_provider');
-
-    providerState.exposedValueChanged(newState);
   }
 
   /// Listen to this provider.
@@ -1000,7 +999,7 @@ abstract class ProviderStateBase<Created, Listened> {
   // ignore: use_setters_to_change_properties
   /// Updates the currently exposed value.
   ///
-  /// This will usually be called by [ProviderReference.setState].
+  /// This will usually be called by [ProviderReference.state].
   @protected
   void exposedValueChanged(Listened newValue) {
     exposedValue = newValue;

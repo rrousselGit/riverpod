@@ -72,14 +72,14 @@ void main() {
     expect(container.read(provider).container, root);
   });
 
-  group('ProviderReference.setState', () {
+  group('ProviderReference.state set', () {
     test('will update exposedValue', () async {
       final container = ProviderContainer();
       final completer = Completer<void>();
       final provider = Provider<int>((ref) {
         (() async {
           await Future.microtask(() {
-            ref.setState(1);
+            ref.state = 1;
             completer.complete();
           });
         })();
@@ -98,7 +98,7 @@ void main() {
       final setStateProvider = Provider<int>((ref) {
         final ev = ref.watch(event);
         ref.onDispose(ev.addListener((state) {
-          ref.setState(state);
+          ref.state = state;
         }, fireImmediately: false));
         return ev.state;
       });
@@ -115,7 +115,7 @@ void main() {
     test('will assert if accessed during build', () {
       final container = ProviderContainer();
       final provider = Provider<int>((ref) {
-        ref.setState(1);
+        ref.state = 1;
         return 0;
       });
 
@@ -127,7 +127,7 @@ void main() {
       final container = ProviderContainer();
       late void Function() setState;
       final provider = Provider<int>((ref) {
-        setState = () => ref.setState(1);
+        setState = () => ref.state = 1;
         return 0;
       });
 
@@ -140,7 +140,7 @@ void main() {
           isStateError.having(
             (s) => s.message,
             'message',
-            contains('Cannot call setState after a provider was dispose'),
+            contains('Cannot set state after a provider was dispose'),
           ),
         ),
       );
@@ -151,7 +151,7 @@ void main() {
       final event = StateProvider<int>((_) => 0);
       final provider = Provider<int>((ref) {
         ref.onDispose(() {
-          ref.setState(1);
+          ref.state = 1;
         });
 
         return ref.watch(event).state;
@@ -165,7 +165,7 @@ void main() {
           isAssertionError.having(
             (s) => s.message,
             'message',
-            contains('Cannot call .setState(newState) in onDispose on'),
+            contains('Cannot set state in onDispose on'),
           ),
         );
       });
@@ -174,7 +174,7 @@ void main() {
     test('will assert as long as a provider is building', () {
       final container = ProviderContainer();
       final provider = Provider<int>((ref) {
-        ref.setState(1);
+        ref.state = 1;
         return 0;
       });
 
@@ -193,7 +193,7 @@ void main() {
                 .having(
                   (s) => s.exception.toString(),
                   'exception.toString',
-                  contains('Cannot call .setState(newState) while building'),
+                  contains('Cannot set state while building'),
                 )
                 .having(
                   (s) => (s.exception as ProviderException).provider,

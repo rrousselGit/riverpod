@@ -78,7 +78,7 @@ void main() {
     final completer = Completer<void>();
     final provider = StateProvider<int>((ref) {
       Future.microtask(() {}).then((value) {
-        ref.setState(ctrl);
+        ref.state = ctrl;
         completer.complete();
       });
       return -1;
