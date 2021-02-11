@@ -543,6 +543,7 @@ class ProviderElement<Created, Listened>
     return providerState.exposedValue as Listened;
   }
 
+  @override
   set state(Listened newState) {
     if (!_mounted) {
       throw StateError('Cannot set state after a provider was disposed');
