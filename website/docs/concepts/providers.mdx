@@ -96,6 +96,26 @@ void main() {
 
 :::
 
+## Different Types of Providers
+
+There are multiple types of providers for multiple different use cases.
+
+Technically some built-in providers could be made by just combinations of the most simple providers, but
+they are made available to make common use cases more convenient.
+
+| Provider Type          | Description                                                                                   |
+| ---------------------- | --------------------------------------------------------------------------------------------- |
+| Provider               | Provides for plain dart objects                                                               |
+| FutureProvider         | Provider for async values                                                                     |
+| StreamProvider         | Provider for streams                                                                          |
+| StateProvider          | Provider for a value that can be changed externally                                           |
+| StateNotifierProvider  | Provider for StateNotifiers allowing complex immutable objects with an interface for update   |
+| ChangeNotifierProvider | Provider for ChangeNotifiers allowing for complex mutable state with an interface for changes |
+
+With all of these providers available, it is sometimes difficult to understand when to use one provider type over another.
+While all providers have their purpose, `ChangeNotifierProviders` are not recommended for frequent use, because of // TODO: Add in link to why mutable state is bad
+general issues with mutable state. It exists in the `flutter_riverpod` package to provide an easy migration path from `package:provider`.
+
 ## Performing actions before the state destruction
 
 In some cases, the state of a provider may get destroyed or re-created.
