@@ -19,6 +19,10 @@ abstract class AutoDisposeProviderReference<Listened>
 
   @override
   T watch<T>(RootProvider<Object?, T> provider);
+
+  @override
+  void listenTo<T>(
+      RootProvider<Object?, T> provider, void Function(T state) onChange);
 }
 
 /// {@template riverpod.AutoDisposeProviderBase}

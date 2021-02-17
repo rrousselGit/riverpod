@@ -448,6 +448,29 @@ abstract class ProviderReference<Listened> {
   ///   sorted only once.
   /// - if nothing is listening to `sortedTodosProvider`, then no sort if performed.
   T watch<T>(AlwaysAliveProviderBase<Object?, T> provider);
+
+  /// This will allow a provider to listen to state changes of another provider by
+  /// providing an [onChange] callback.
+  /// [onChange] will not be called during the build of the provider.
+  ///
+  /// It will _not_ rebuild the listening provider.
+  ///
+  /// [onChange] will no longer be called after the listening provider has been
+  /// disposed.
+  ///
+  /// It is not recommended to [watch] **and** [listenTo] to the same provider.
+  ///
+  /// ```dart
+  /// final setDataProvider = StateProvider<Data>((ref) => Data());
+  /// final dataProvider = StreamProvider<Data>((ref) async* {
+  ///   yield await loadData();
+  ///   ref.listenTo<StateController<Data>>(setDataProvider, (ctrl) {
+  ///     ref.state = ctrl.state;
+  ///   });
+  /// });
+  /// ```
+  void listenTo<T>(AlwaysAliveProviderBase<Object?, T> provider,
+      void Function(T state) onChange);
 }
 
 class _Listener<Listened> extends LinkedListEntry<_Listener<Listened>> {
@@ -657,6 +680,19 @@ class ProviderElement<Created, Listened>
       _dependencyMayHaveChanged = true;
       notifyMayHaveChanged();
     }
+  }
+
+  @override
+  void listenTo<T>(
+      ProviderBase<Object?, T> provider, void Function(T state) onChange) {
+    assert(_debugAssertCanDependOn(provider), '');
+
+    final sub = _container.listen<T>(
+      provider,
+      mayHaveChanged: (sub) => sub.flush(),
+      didChange: (sub) => onChange(sub.read()),
+    );
+    onDispose(sub.close);
   }
 
   /// Listen to this provider.
