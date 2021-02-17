@@ -1,7 +1,7 @@
 import 'package:riverpod/riverpod.dart';
 import 'package:uuid/uuid.dart';
 
-var _uuid = Uuid();
+var _uuid = const Uuid();
 
 /// A read-only description of a todo-item
 class Todo {
