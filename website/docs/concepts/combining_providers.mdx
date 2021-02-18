@@ -1,14 +1,14 @@
 ---
-title: Combining providers
+title: Combining Provider States
 ---
 
 Make sure to [read about Providers](/docs/concepts/providers) first.  
-In this guide, we will see everything there is to know about combining providers.
+In this guide, we will see everything there is to know about combining provider states.
 
-## Combining providers
+## Combining provider states
 
 We've previously seen how to create a simple provider. But the reality is,
-in many situation a provider will want to read the state of another provider.
+in many situations a provider will want to read the state of another provider.
 
 To do that, we can use the [ref] object passed to the callback of our provider,
 and use its [watch] method.
@@ -265,12 +265,12 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 });
 ```
 
-[provider]: https://pub.dev/documentation/riverpod/latest/all/Provider-class.html
-[stateprovider]: https://pub.dev/documentation/riverpod/latest/all/StateProvider-class.html
-[futureprovider]: https://pub.dev/documentation/riverpod/latest/all/FutureProvider-class.html
-[statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/all/StateNotifierProvider-class.html
-[ref]: https://pub.dev/documentation/riverpod/latest/all/ProviderReference-class.html
-[watch]: https://pub.dev/documentation/riverpod/latest/all/ProviderReference/watch.html
-[read]: https://pub.dev/documentation/riverpod/latest/all/ProviderReference/read.html
-[providercontainer.refresh]: https://pub.dev/documentation/riverpod/latest/all/ProviderContainer/refresh.html
-[context.refresh]: https://pub.dev/documentation/flutter_riverpod/latest/all/BuildContextX/refresh.html
+[provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
+[stateprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider-class.html
+[futureprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/FutureProvider-class.html
+[statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
+[ref]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference-class.html
+[watch]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference/watch.html
+[read]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference/read.html
+[providercontainer.refresh]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer/refresh.html
+[context.refresh]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/BuildContextX/refresh.html

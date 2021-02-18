@@ -8,9 +8,10 @@ module.exports = {
       items: [
         "concepts/providers",
         "concepts/reading",
+        "concepts/provider_lifecycles",
         "concepts/combining_providers",
         "concepts/provider_observer",
-        // "concepts/computed",
+        "concepts/why_immutability",
         {
           type: "category",
           label: "Modifiers",
