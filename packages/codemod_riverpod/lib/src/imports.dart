@@ -2,10 +2,11 @@
 import 'package:analyzer/analyzer.dart';
 import 'package:codemod/codemod.dart';
 
-class RiverpodImportAllMigrationSuggestor extends GeneralizingAstVisitor
+/// A suggestor that yields changes to deprecated import directives
+class RiverpodImportAllMigrationSuggestor extends GeneralizingAstVisitor<void>
     with AstVisitingSuggestorMixin {
   @override
-  void visitImportDirective(ImportDirective node) async {
+  void visitImportDirective(ImportDirective node) {
     final imports = {
       'package:riverpod/all.dart': 'package:riverpod/riverpod.dart',
       'package:flutter_riverpod/all.dart':

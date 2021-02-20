@@ -17,7 +17,7 @@ import 'package:flutter_riverpod/all.dart';
 // With double quotes
 import "package:flutter_riverpod/all.dart";
 ''');
-      final expectedOutput = '''
+      const expectedOutput = '''
 // Don't touch path
 import 'package:path/path.dart';
 
