@@ -25,7 +25,7 @@ dev_dependencies:
 
 Then on the command line
 ```
+dart pub global activate codemod_riverpod
 cd path/to/your/code
-flutter pub get
-flutter pub run codemod_riverpod
+pub global run codemod_riverpod
 ```
