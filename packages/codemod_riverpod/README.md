@@ -17,9 +17,15 @@
 A migration tool for [riverpod](https://pub.dev/packages/riverpod).
 
 To use:
-
+Add to your `pubspec.yaml`:
+```yaml
+dev_dependencies:
+  codemod_riverpod: ^0.0.1
 ```
-dart pub global activate codemod_riverpod
+
+Then on the command line
+```
 cd path/to/your/code
-pub global run codemod_riverpod
+flutter pub get
+flutter pub run codemod_riverpod
 ```
