@@ -1,0 +1,14 @@
+name: codemod_riverpod_test
+description: Test riverpod codemods
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: '>=2.10.0 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter  
+  flutter_riverpod: any
+  hooks_riverpod: any
+  riverpod: any
