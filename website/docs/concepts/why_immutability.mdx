@@ -26,34 +26,34 @@ Immutability is desireable for many different reasons
 
 You can use any package you want to create immutable state.
 
-For immutable collections: (i.e. Map, Set, List)
+For immutable objects:
+
+- [package:freezed](https://pub.dev/packages/freezed)
+- [package:built_value](https://pub.dev/packages/built_value)
+
+For immutable collections (Map, Set, List):
 
 - [package:fast_immutable_collections](https://pub.dev/packages/fast_immutable_collections)
 - [package:built_collection](https://pub.dev/packages/built_collection)
 - [package:kt_dart](https://pub.dev/packages/kt_dart)
 - [package:dartz](https://pub.dev/packages/dartz)
 
-For immutable objects:
+It is highly recommended to use `freezed`,
+since it has several nice additions beyond just making immutable objects including:
 
-- [package:freezed](https://pub.dev/packages/freezed)
-- [package:built_value](https://pub.dev/packages/built_value)
-
-It is highly recommended to use `freezed`, since it has several nice additions beyond just making an immutable object.
-Such as:
-
-- A generated `copyWith` method
-- Deep copy
+- A generated copyWith method
+- Deep copy (copyWith on nested freezed objects)
 - Union types
 - Union mapping functions
 
-In fact `freezed` is used within the `riverpod` framework to give you [AsyncValue]
+In fact freezed is used within the riverpod framework to give you [AsyncValue]
 
 ### Using immutable state
 
 Immutable state is best fit for using a [StateNotifier] in combination with [StateNotifierProvider].
 Though a [ChangeNotifier] can also be used with immutable state, it requires an explicit
 `notifyListeners()` call whenever the state changes. State notifier just requires that you set the `state` to the new state.
-This makes it less prone to errors from not remembering to call `notifyListeners`.
+This makes it less prone to errors from not remembering to call `notifyListeners()`.
 
 Here is an example of a simple immutable settings class for changing an app theme.
 
