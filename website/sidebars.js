@@ -118,7 +118,7 @@ module.exports = {
           type: "link",
           label: "flutter_riverpod",
           href:
-            "https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/flutter_riverpod-library.html",
+            "https://pub.dev/documentation//flutter_riverpod/latest/flutter_riverpod/flutter_riverpod-library.html",
         },
         {
           type: "link",

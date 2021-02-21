@@ -53,10 +53,8 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
 
   void _listen() {
     _link?.close();
-    // De-reference the providerListenable so that `is` promotes the type
-    final providerListenable = hook._providerListenable;
     _link = hook._container.listen<T>(
-      providerListenable,
+      hook._providerListenable,
       mayHaveChanged: _mayHaveChanged,
     );
   }
