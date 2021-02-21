@@ -9,12 +9,12 @@ class RiverpodNotifierChangesMigrationSuggestor
     with ResolvedAstVisitingSuggestorMixin {
   @override
   void visitPrefixedIdentifier(PrefixedIdentifier node) {
+    // StateNotifierProvider
+    // watch(provider.state) => watch(provider)
     if (node.identifier.name == 'state') {
       if (node.prefix.staticType
           .getDisplayString()
           .contains('StateNotifierProvider')) {
-        // StateNotifierProvider
-        // watch(provider.state) => watch(provider)
         yieldPatch(node.prefix.end, node.end, '');
       }
     }
@@ -23,10 +23,10 @@ class RiverpodNotifierChangesMigrationSuggestor
 
   @override
   void visitPropertyAccess(PropertyAccess node) {
+    // StateProvider
+    // watch(provider).state => watch(provider)
     if (node.propertyName.name == 'state') {
       if (node.target is FunctionExpressionInvocation) {
-        // StateProvider
-        // watch(provider).state => watch(provider)
         final target = node.target as FunctionExpressionInvocation;
         if (target.function.toSource() == 'watch') {
           if (target.argumentList.arguments.first.staticType
