@@ -12,6 +12,7 @@ module.exports = {
         "concepts/combining_providers",
         "concepts/provider_observer",
         "concepts/why_immutability",
+        "concepts/scopes",
         {
           type: "category",
           label: "Modifiers",
