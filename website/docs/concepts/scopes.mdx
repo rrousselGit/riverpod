@@ -39,7 +39,7 @@ You will quickly become disoriented and confused.
 
 A `ProviderContainer` by itself should only be utilized for testing and dart-only usage.
 In Flutter it should not be used, unless you have a need for asynchronous initialization prior
-to showing any screens. For asynchronous concerns see the [asynchronous cookbook](/docs/cookbook/asynchrony)
+to showing any screens. For asynchronous concerns see the [asynchronous cookbook](/docs/cookbooks/asynchrony)
 
 ## ScopedProvider and ScopedReader
 
@@ -139,5 +139,6 @@ flutter: Build Item 0
 Note that not all apps need to optimize performance like this. In fact this will probably not affect your performance too drastically.
 Avoid premature optimization until you measure a performance impact.
 
-However, this approach does come with some nice organizational properties. It keeps your constructors clean from an ever growing list of parameters being passed down.
-Therefore it is an important tool in the dependency injection part of riverpod.
+However, this approach does come with some nice organizational properties,
+such as keeping your widget constructors clean from an ever growing list of parameters being passed down.
+Therefore it is an important tool as part of riverpod dependency injection.
