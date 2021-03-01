@@ -26,6 +26,8 @@ void _runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
 
 ProviderBase? _circularDependencyLock;
 
+int _debugNextId = 0;
+
 /// {@template riverpod.providercontainer}
 /// An object that stores the state of the providers and allows overriding the
 /// behavior of a specific provider.
@@ -43,6 +45,15 @@ class ProviderContainer {
   })  : _parent = parent,
         _localObservers = observers,
         _root = parent?._root ?? parent {
+    assert(() {
+      _debugId = '${_debugNextId++}';
+      RiverpodBinding.debugInstance.containers = {
+        ...RiverpodBinding.debugInstance.containers,
+        _debugId: this,
+      };
+      return true;
+    }(), '');
+
     if (parent != null) {
       if (observers != null) {
         throw UnsupportedError(
@@ -72,6 +83,22 @@ class ProviderContainer {
         _overrideForFamily[override._family] = override;
       }
     }
+  }
+
+  late final String _debugId;
+
+  /// A unique ID for this object, used by the devtool to differentiate two [ProviderContainer].
+  ///
+  /// Should not be used.
+  @visibleForTesting
+  String get debugId {
+    String? id;
+    assert(() {
+      id = _debugId;
+      return true;
+    }(), '');
+
+    return id!;
   }
 
   final ProviderContainer? _root;
@@ -342,6 +369,12 @@ class ProviderContainer {
       );
     }
 
+    assert(() {
+      RiverpodBinding.debugInstance.containers =
+          Map.from(RiverpodBinding.debugInstance.containers)..remove(_debugId);
+      return true;
+    }(), '');
+
     debugVsyncs.clear();
     _parent?._children.remove(this);
 
@@ -395,8 +428,8 @@ class ProviderContainer {
 
   /// The states of the providers associated to this [ProviderContainer], sorted
   /// in order of dependency.
-  List<ProviderElement>? get debugProviderElements {
-    List<ProviderElement>? result;
+  List<ProviderElement> get debugProviderElements {
+    late List<ProviderElement> result;
     assert(() {
       result = _visitStatesInOrder().toList();
       return true;
@@ -405,8 +438,8 @@ class ProviderContainer {
   }
 
   /// The value exposed by all providers currently alive.
-  Map<ProviderBase, Object?>? get debugProviderValues {
-    Map<ProviderBase, Object?>? res;
+  Map<ProviderBase, Object?> get debugProviderValues {
+    late Map<ProviderBase, Object?> res;
     assert(() {
       res = {
         for (final entry in _stateReaders.entries)
@@ -423,6 +456,11 @@ class ProviderContainer {
 ///
 /// This can be used for logging or making devtools.
 abstract class ProviderObserver {
+  /// An object that listens to the changes of a [ProviderContainer].
+  ///
+  /// This can be used for logging or making devtools.
+  const ProviderObserver();
+
   /// A provider was initialized, and the value exposed is [value].
   void didAddProvider(ProviderBase provider, Object? value) {}
 

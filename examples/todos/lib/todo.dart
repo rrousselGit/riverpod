@@ -7,13 +7,20 @@ const _uuid = Uuid();
 class Todo {
   Todo({
     required this.description,
+    required this.id,
     this.completed = false,
-    String? id,
-  }) : id = id ?? _uuid.v4();
+  });
+
+  static int foo = 42;
+  static const int bar = 42;
 
   final String id;
   final String description;
   final bool completed;
+
+  late final example = 42;
+
+  int get getter => 21;
 
   @override
   String toString() {
@@ -28,7 +35,10 @@ class TodoList extends StateNotifier<List<Todo>> {
   void add(String description) {
     state = [
       ...state,
-      Todo(description: description),
+      Todo(
+        id: _uuid.v4(),
+        description: description,
+      ),
     ];
   }
 
