@@ -11,16 +11,9 @@ class Todo {
     this.completed = false,
   });
 
-  static int foo = 42;
-  static const int bar = 42;
-
   final String id;
   final String description;
   final bool completed;
-
-  late final example = 42;
-
-  int get getter => 21;
 
   @override
   String toString() {
