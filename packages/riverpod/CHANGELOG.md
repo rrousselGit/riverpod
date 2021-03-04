@@ -1,3 +1,12 @@
+# 0.13.0
+
+- stable null-safety release
+- `ProviderObserver` can now have a const constructor
+- Added the mechanism for state-inspection using the Flutter devtool
+- loosened the version constraints of `freezed_annotation`
+- deprecated `import 'riverpod/all.dart'`. Now everything is available with `riverpod/riverpod.dart`.
+- Fixed a but where listening to `StreamProvider.last` could result in a `StateError` (#217)
+
 # 0.13.0-nullsafety.3
 
 - deprecated `import 'riverpod/all.dart'`. Now everything is available with `riverpod/riverpod.dart`.
