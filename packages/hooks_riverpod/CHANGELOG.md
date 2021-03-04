@@ -1,3 +1,15 @@
+# 0.13.0
+
+- stable null-safety release
+- `ProviderObserver` can now have a const constructor
+- Added the mechanism for state-inspection using the Flutter devtool
+- loosened the version constraints of `freezed_annotation`
+- deprecated `import 'hooks_riverpod/all.dart'`. Now everything is available with `hooks_riverpod/hooks_riverpod.dart`.
+- Fixed a but where listening to `StreamProvider.last` could result in a `StateError` (#217)
+- removed the assert preventing ConsumerWidget's "watch" from being used after the `build` method completed.
+  This allows "watch" to be used inside `ListView.builder`.
+- `context.read(myProvider)` now accepts `ScopeProviders`
+
 # 0.13.0-nullsafety.3
 
 - deprecated `import 'hooks_riverpod/all.dart'`. Now everything is available with `hooks_riverpod/hooks_riverpod.dart`.
