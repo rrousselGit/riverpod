@@ -8,15 +8,15 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  crypto: ^3.0.0-nullsafety.0
+  crypto: ^3.0.0
   cupertino_icons: ^1.0.2
   dio: ^3.0.9
   flutter:
     sdk: flutter
-  flutter_hooks: ^0.16.0-nullsafety.0
+  flutter_hooks: ^0.16.0
   flutter_portal: ^0.2.0
-  flutter_svg: ^0.20.0-nullsafety.3
-  freezed_annotation: ^0.13.0-nullsafety.0
+  flutter_svg: ^0.20.0-nullsafety.0
+  freezed_annotation: ^0.14.0
   hooks_riverpod:
     path: ../../packages/hooks_riverpod
 
@@ -24,9 +24,9 @@ dev_dependencies:
   build_runner: ^1.11.0
   flutter_test:
     sdk: flutter
-  freezed: ^0.13.0-nullsafety.0
-  json_serializable: ^4.0.0-nullsafety.0
-  mockito: ^5.0.0-nullsafety.0
+  freezed: ^0.14.0
+  json_serializable: ^4.0.0
+  mockito: ^5.0.0
 
 dependency_overrides:
   flutter_riverpod:
