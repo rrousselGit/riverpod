@@ -81,7 +81,7 @@ final paginatedQuestionsProvider = FutureProvider.autoDispose
   final page = parsed.copyWith(
     items: parsed.items.map((e) {
       final document = parse(e.body);
-      return e.copyWith(body: document.body.text.replaceAll('\n', ' '));
+      return e.copyWith(body: document.body!.text.replaceAll('\n', ' '));
     }).toList(),
   );
 

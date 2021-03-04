@@ -103,7 +103,12 @@ abstract class AlwaysAliveProviderBase<Created, Listened>
 abstract class ProviderBase<Created, Listened>
     implements ProviderListenable<Listened> {
   /// A base class for _all_ providers.
-  ProviderBase(this._create, this.name);
+  ProviderBase(this._create, this.name) {
+    assert(() {
+      debugId = '${_debugNextId++}';
+      return true;
+    }(), '');
+  }
 
   final Created Function(ProviderReference ref) _create;
 
@@ -130,6 +135,11 @@ abstract class ProviderBase<Created, Listened>
 
   /// An internal method that defines how a provider behaves.
   ProviderElement<Created, Listened> createElement();
+
+  /// A unique identifier for this provider, used by devtools to differentiate providers
+  ///
+  /// Available only during development.
+  late final String debugId;
 
   @override
   String toString() {
@@ -705,6 +715,13 @@ class ProviderElement<Created, Listened> implements ProviderReference {
     if (!_didMount) {
       return;
     }
+    assert(() {
+      RiverpodBinding.debugInstance.providerChanged(
+        containerId: container.debugId,
+        providerId: provider.debugId,
+      );
+      return true;
+    }(), '');
     _notificationCount++;
     notifyMayHaveChanged();
   }
@@ -792,6 +809,9 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
     _mounted = true;
     state._element = this;
     assert(() {
+      RiverpodBinding.debugInstance
+          .providerListChangedFor(containerId: container._debugId);
+
       _debugIsFlushing = true;
       return true;
     }(), '');
@@ -824,6 +844,12 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
   @protected
   @mustCallSuper
   void dispose() {
+    assert(() {
+      RiverpodBinding.debugInstance
+          .providerListChangedFor(containerId: container._debugId);
+      return true;
+    }(), '');
+
     _mounted = false;
     _runOnDispose();
 

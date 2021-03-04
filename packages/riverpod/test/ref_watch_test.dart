@@ -40,10 +40,10 @@ void main() {
 
     container.read(provider0.state);
     container.read(provider1.state);
-    final familyState0 = container.debugProviderElements!.firstWhere((p) {
+    final familyState0 = container.debugProviderElements.firstWhere((p) {
       return p.provider == provider0.state;
     });
-    final familyState1 = container.debugProviderElements!.firstWhere((p) {
+    final familyState1 = container.debugProviderElements.firstWhere((p) {
       return p.provider == provider1.state;
     });
 
@@ -108,10 +108,10 @@ void main() {
 
     container.read(provider0.state);
     container.read(provider1.state);
-    final familyState0 = container.debugProviderElements!.firstWhere((p) {
+    final familyState0 = container.debugProviderElements.firstWhere((p) {
       return p.provider == provider0.state;
     });
-    final familyState1 = container.debugProviderElements!.firstWhere((p) {
+    final familyState1 = container.debugProviderElements.firstWhere((p) {
       return p.provider == provider1.state;
     });
 
@@ -258,7 +258,7 @@ void main() {
     verifyNoMoreInteractions(listener);
 
     expect(
-      container.debugProviderElements!.map((e) => e.provider),
+      container.debugProviderElements.map((e) => e.provider),
       [provider, computed, provider2],
     );
   });

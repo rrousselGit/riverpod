@@ -18,6 +18,16 @@ Matcher isProvider(RootProvider provider) {
 void main() {
   // TODO flushing inside mayHaveChanged calls onChanged only after all mayHaveChanged were executed
 
+  test('ProviderObservers can have const constructors', () {
+    final root = ProviderContainer(
+      observers: [
+        const ConstObserver(),
+      ],
+    );
+
+    root.dispose();
+  });
+
   test('disposing parent container when child container is not dispose throws',
       () {
     final root = ProviderContainer();
@@ -66,7 +76,7 @@ void main() {
 
     expect(container.read(provider), 42);
 
-    final state = container.debugProviderElements!.single;
+    final state = container.debugProviderElements.single;
 
     expect(state.hasListeners, false);
 
@@ -779,4 +789,8 @@ class MockMarkMayHaveChanged extends Mock {
 
 class MockDidUpdateProvider extends Mock {
   void call();
+}
+
+class ConstObserver extends ProviderObserver {
+  const ConstObserver();
 }
