@@ -7,6 +7,23 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
+  test(
+      'when overriden with an error but provider.stream is not listened, it should not emit an error to the zone',
+      () async {
+    final error = Error();
+    final stream = StreamProvider<int>((ref) => const Stream.empty());
+
+    final container = ProviderContainer(overrides: [
+      stream.overrideWithValue(AsyncValue.error(error)),
+    ]);
+    addTearDown(container.dispose);
+
+    expect(
+      container.read(stream),
+      AsyncValue<int>.error(error),
+    );
+  });
+
   test('StreamProvider.autoDispose', () async {
     var stream = Stream.value(42);
     final onDispose = DisposeMock();

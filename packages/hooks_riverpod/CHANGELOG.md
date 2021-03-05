@@ -1,3 +1,7 @@
+# 0.13.1
+
+- Fixed a bug where overriding a `FutureProvider` with an error value could cause tests to fail (see https://github.com/rrousselGit/river_pod/issues/355)
+
 # 0.13.0
 
 - stable null-safety release

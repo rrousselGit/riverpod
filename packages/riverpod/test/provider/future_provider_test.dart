@@ -7,6 +7,25 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
+  test(
+      'when overriden with an error but provider.future is not listened, it should not emit an error to the zone',
+      () async {
+    final error = Error();
+    final future = FutureProvider<int>((ref) async => 0);
+
+    final container = ProviderContainer(overrides: [
+      future.overrideWithValue(AsyncValue.error(error)),
+    ]);
+    addTearDown(container.dispose);
+
+    expect(
+      container.read(future),
+      AsyncValue<int>.error(error),
+    );
+
+    // the test will naturally fail if a non-caught future is created
+  });
+
   test('FutureProvider.autoDispose', () async {
     var future = Future.value(42);
     final onDispose = OnDisposeMock();
