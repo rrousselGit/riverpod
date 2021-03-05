@@ -83,7 +83,10 @@ mixin _FutureProviderMixin<T> on RootProvider<Future<T>, AsyncValue<T>> {
   Override overrideWithValue(AsyncValue<T> value) {
     return ProviderOverride(
       ValueProvider<Future<T>, AsyncValue<T>>((ref) {
-        final completer = Completer<T>();
+        final completer = Completer<T>()
+          // Catch the error so that it isn't pushed to the zone. This is safe since FutureProvider catches errors for us
+          // ignore: avoid_types_on_closure_parameters
+          ..future.then((_) {}, onError: (Object _) {});
         ref.onChange = (newValue) {
           if (completer.isCompleted) {
             ref.markMustRecomputeState();
