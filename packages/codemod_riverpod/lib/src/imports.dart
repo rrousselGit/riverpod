@@ -6,7 +6,7 @@ import 'package:codemod/codemod.dart';
 class RiverpodImportAllMigrationSuggestor extends GeneralizingAstVisitor<void>
     with AstVisitingSuggestor {
   @override
-  bool shouldResolveAst(FileContext context) => true;
+  bool shouldResolveAst(FileContext context) => false;
   @override
   void visitImportDirective(ImportDirective node) {
     final imports = {

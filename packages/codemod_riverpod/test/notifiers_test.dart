@@ -6,15 +6,35 @@ import 'package:test/test.dart';
 
 import 'goldens.dart';
 
-final path = Platform.script.toFilePath();
 void main() {
   group('notifiers', () {
-    test('change notifier', () async {
+    test('ChangeNotifier', () async {
       final sourceFile = await fileContextForGolden(
-          '$path/notifiers/input/change_notifier_provider.dart');
+          './test/files/notifiers/input/change_notifier_provider.dart');
       final expected =
-          File('$path/notifiers/golden/change_notifier_provider.dart')
+          File('./test/files/notifiers/golden/change_notifier_provider.dart')
               .readAsStringSync();
+
+      expectSuggestorGeneratesPatches(
+          RiverpodNotifierChangesMigrationSuggestor(), sourceFile, expected);
+    });
+
+    test('StateNotifier', () async {
+      final sourceFile = await fileContextForGolden(
+          './test/files/notifiers/input/state_notifier_provider.dart');
+      final expected =
+          File('./test/files/notifiers/golden/state_notifier_provider.dart')
+              .readAsStringSync();
+
+      expectSuggestorGeneratesPatches(
+          RiverpodNotifierChangesMigrationSuggestor(), sourceFile, expected);
+    });
+
+    test('StateProvider', () async {
+      final sourceFile = await fileContextForGolden(
+          './test/files/notifiers/input/state_provider.dart');
+      final expected = File('./test/files/notifiers/golden/state_provider.dart')
+          .readAsStringSync();
 
       expectSuggestorGeneratesPatches(
           RiverpodNotifierChangesMigrationSuggestor(), sourceFile, expected);
