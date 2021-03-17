@@ -1,10 +1,15 @@
+import 'dart:developer' as developer;
+
+import 'package:meta/meta.dart';
+
 import 'builders.dart';
 import 'framework.dart';
 import 'state_notifier_provider.dart';
 import 'stream_provider.dart';
 
-part 'provider/base.dart';
+part 'devtool.dart';
 part 'provider/auto_dispose.dart';
+part 'provider/base.dart';
 
 /// {@template riverpod.provider}
 /// A provider that exposes a read-only value.
@@ -140,7 +145,7 @@ part 'provider/auto_dispose.dart';
 /// });
 ///
 /// class Location {
-///   Location({this.city, this.country});
+///   Location({required this.city, required this.country});
 ///
 ///   final String city;
 ///   final String country;
@@ -218,7 +223,7 @@ part 'provider/auto_dispose.dart';
 /// {@endtemplate}
 mixin _ProviderStateMixin<T> on ProviderStateBase<T, T> {
   @override
-  void valueChanged({T previous}) {
+  void valueChanged({T? previous}) {
     if (createdValue != exposedValue) {
       exposedValue = createdValue;
     }

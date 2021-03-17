@@ -1,12 +1,13 @@
 part of '../state_provider.dart';
 
 /// {@macro riverpod.stateprovider}
+@sealed
 class AutoDisposeStateProvider<T>
     extends AutoDisposeProviderBase<StateController<T>, StateController<T>> {
   /// {@macro riverpod.stateprovider}
   AutoDisposeStateProvider(
     Create<T, AutoDisposeProviderReference> create, {
-    String name,
+    String? name,
   }) : super((ref) => StateController(create(ref)), name);
 
   @override
@@ -15,12 +16,14 @@ class AutoDisposeStateProvider<T>
   }
 }
 
+@sealed
 class _AutoDisposeStateProviderState<T> = ProviderStateBase<StateController<T>,
     StateController<T>> with _StateProviderStateMixin<T>;
 
 /// {@template riverpod.stateprovider.family}
 /// A class that allows building a [StateProvider] from an external parameter.
 /// {@endtemplate}
+@sealed
 class AutoDisposeStateProviderFamily<T, A> extends Family<
     StateController<T>,
     StateController<T>,
@@ -30,7 +33,7 @@ class AutoDisposeStateProviderFamily<T, A> extends Family<
   /// {@macro riverpod.stateprovider.family}
   AutoDisposeStateProviderFamily(
     T Function(AutoDisposeProviderReference ref, A a) create, {
-    String name,
+    String? name,
   }) : super((ref, a) => StateController(create(ref, a)), name);
 
   @override
@@ -38,7 +41,7 @@ class AutoDisposeStateProviderFamily<T, A> extends Family<
     A value,
     StateController<T> Function(AutoDisposeProviderReference ref, A param)
         builder,
-    String name,
+    String? name,
   ) {
     return AutoDisposeStateProvider((ref) {
       return builder(ref, value).state;

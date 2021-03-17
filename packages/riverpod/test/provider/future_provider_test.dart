@@ -7,6 +7,25 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
+  test(
+      'when overriden with an error but provider.future is not listened, it should not emit an error to the zone',
+      () async {
+    final error = Error();
+    final future = FutureProvider<int>((ref) async => 0);
+
+    final container = ProviderContainer(overrides: [
+      future.overrideWithValue(AsyncValue.error(error)),
+    ]);
+    addTearDown(container.dispose);
+
+    expect(
+      container.read(future),
+      AsyncValue<int>.error(error),
+    );
+
+    // the test will naturally fail if a non-caught future is created
+  });
+
   test('FutureProvider.autoDispose', () async {
     var future = Future.value(42);
     final onDispose = OnDisposeMock();
@@ -174,6 +193,7 @@ void main() {
 
     expect(provider, isA<AlwaysAliveProviderBase>());
   });
+
   group('FutureProvider().future', () {
     test('returns a future identical to the one created', () {
       final completer = Completer<int>.sync();
@@ -238,6 +258,7 @@ void main() {
       );
     });
   });
+
   group('FutureProvider.autoDispose().future', () {
     test('.name is the listened name.future', () {
       expect(
@@ -256,19 +277,21 @@ void main() {
       final provider =
           FutureProvider.autoDispose((ref) => ref.watch(futureProvider).state);
       var callCount = 0;
-      final dependent = Provider((ref) {
+      final dependent = Provider.autoDispose((ref) {
         callCount++;
         return ref.watch(provider.future);
       });
       final container = ProviderContainer();
       final futureController = container.read(futureProvider);
 
-      expect(container.read(dependent), futureController.state);
+      final sub = container.listen(dependent);
+
+      expect(sub.read(), futureController.state);
       expect(callCount, 1);
 
       futureController.state = Future.value(21);
 
-      expect(container.read(dependent), futureController.state);
+      expect(sub.read(), futureController.state);
       expect(callCount, 2);
     });
 
@@ -277,7 +300,7 @@ void main() {
       final provider = FutureProvider.autoDispose((_) => completer.future);
       final container = ProviderContainer();
       var callCount = 0;
-      final dependent = Provider((ref) {
+      final dependent = Provider.autoDispose((ref) {
         callCount++;
         return ref.watch(provider.future);
       });

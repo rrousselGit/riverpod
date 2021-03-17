@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:state_notifier/state_notifier.dart';
 
 class Counter extends StateNotifier<int> {
   Counter() : super(0);
@@ -62,8 +61,8 @@ extension Legacy<T> on RootProvider<Object, T> {
 
   ProviderSubscription<T> addLazyListener(
     ProviderContainer container, {
-    void Function() mayHaveChanged,
-    void Function(T value) onChange,
+    required void Function() mayHaveChanged,
+    required void Function(T value) onChange,
   }) {
     final sub = container.listen<T>(
       this,

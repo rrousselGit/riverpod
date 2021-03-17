@@ -1,13 +1,14 @@
 part of '../future_provider.dart';
 
 /// {@macro riverpod.futureprovider}
+@sealed
 class FutureProvider<T>
     extends AlwaysAliveProviderBase<Future<T>, AsyncValue<T>>
     with _FutureProviderMixin<T> {
   /// {@macro riverpod.futureprovider}
   FutureProvider(
     Create<Future<T>, ProviderReference> create, {
-    String name,
+    String? name,
   }) : super(create, name);
 
   /// {@macro riverpod.family}
@@ -16,7 +17,7 @@ class FutureProvider<T>
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeFutureProviderBuilder();
 
-  AlwaysAliveProviderBase<Future<T>, Future<T>> _future;
+  AlwaysAliveProviderBase<Future<T>, Future<T>>? _future;
 
   /// {@template riverpod.futureprovider.future}
   /// A provider that exposes the [Future] created by a [FutureProvider].
@@ -50,25 +51,27 @@ class FutureProvider<T>
   _FutureProviderState<T> createState() => _FutureProviderState();
 }
 
+@sealed
 class _FutureProviderState<T> = ProviderStateBase<Future<T>, AsyncValue<T>>
     with _FutureProviderStateMixin<T>;
 
 /// {@template riverpod.futureprovider.family}
 /// A class that allows building a [FutureProvider] from an external parameter.
 /// {@endtemplate}
+@sealed
 class FutureProviderFamily<T, A> extends Family<Future<T>, AsyncValue<T>, A,
     ProviderReference, FutureProvider<T>> {
   /// {@macro riverpod.futureprovider.family}
   FutureProviderFamily(
     Future<T> Function(ProviderReference ref, A a) create, {
-    String name,
+    String? name,
   }) : super(create, name);
 
   @override
   FutureProvider<T> create(
     A value,
     Future<T> Function(ProviderReference ref, A param) builder,
-    String name,
+    String? name,
   ) {
     return FutureProvider((ref) => builder(ref, value), name: name);
   }

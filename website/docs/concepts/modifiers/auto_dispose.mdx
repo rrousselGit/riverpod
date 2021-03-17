@@ -24,7 +24,7 @@ simply append `.autoDispose` to your provider:
 ```dart
 final userProvider = StreamProvider.autoDispose<User>((ref) {
 
-})
+});
 ```
 
 That's it. Now, the state of `userProvider` will automatically be destroyed
@@ -39,22 +39,6 @@ You can combine `.autoDispose` with other modifiers if you need to:
 ```dart
 final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
 
-})
-```
-
-:::
-
-:::danger
-If other providers are listening to a provider marked with `autoDispose`, make
-sure that these providers also use `autoDispose`.  
-Failing to do so may cause the state of your provider to never be destroyed:
-
-```dart
-final userProvider = StreamProvider.autoDispose<User>((ref) {});
-
-// Warning: otherProvider is not using autoDispose but userProvider is
-final otherProvider = Provider((ref) {
-  final user = ref.watch(userProvider);
 });
 ```
 
@@ -93,7 +77,7 @@ The goal is:
 
 - Start an HTTP request when the user enters a screen
 - if the user leaves the screen before the request completed, cancels the HTTP request
-- if the request succeded, leaving and re-entering the screen does not start a new request
+- if the request succeeded, leaving and re-entering the screen does not start a new request
 
 In code, this would be:
 
@@ -104,11 +88,47 @@ final myProvider = FutureProvider.autoDispose((ref) async {
   // When the provider is destroyed, cancel the http request
   ref.onDispose(() => cancelToken.cancel());
 
-  // Fetch our data and pass our `cancelToken` for cancelation to work
+  // Fetch our data and pass our `cancelToken` for cancellation to work
   final response = await dio.get('path', cancelToken: cancelToken);
   // If the request completed successfully, keep the state
   ref.maintainState = true;
   return response;
+});
+```
+
+## The argument type 'AutoDisposeProvider' can't be assigned to the parameter type 'AlwaysAliveProviderBase'
+
+When using `.autoDispose`, you may find yourself in a situation where your
+application does not compile with an error similar to:
+
+> The argument type 'AutoDisposeProvider' can't be assigned to the parameter
+> type 'AlwaysAliveProviderBase'
+
+Don't worry! This error is voluntary. It happens because you most likely
+have a bug:
+
+You tried to listen to a provider marked with `.autoDispose` in a provider that
+is **not** marked with `.autoDispose`, such as:
+
+```dart
+final firstProvider = Provider.autoDispose((ref) => 0);
+
+final secondProvider = Provider((ref) {
+  // The argument type 'AutoDisposeProvider<int>' can't be assigned to the
+  // parameter type 'AlwaysAliveProviderBase<Object, Null>'
+  ref.watch(firstProvider);
+});
+```
+
+This is undesired, as it would cause `firstProvider` to never be disposed.
+
+To fix, consider marking `secondProvider` with `.autoDispose` too:
+
+```dart
+final firstProvider = Provider.autoDispose((ref) => 0);
+
+final secondProvider = Provider.autoDispose((ref) {
+  ref.watch(firstProvider);
 });
 ```
 

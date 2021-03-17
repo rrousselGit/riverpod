@@ -1,9 +1,9 @@
 // ignore_for_file: avoid_print
 import 'dart:io';
 
+import 'package:dart_style/dart_style.dart';
 import 'package:trotter/trotter.dart';
 import 'package:tuple/tuple.dart';
-import 'package:dart_style/dart_style.dart';
 
 enum DisposeType {
   none,
@@ -75,7 +75,7 @@ const _autoDisposeDoc = '''
 ///
 /// This way, if the request failed and the UI leaves the screen then re-enters
 /// it, then the request will be performed again.
-/// But if the request completed successfuly, the state will be preserved
+/// But if the request completed successfully, the state will be preserved
 /// and re-entering the screen will not trigger a new request.
 ///
 /// It can be combined with `ref.onDispose` for more advanced behaviors, such
@@ -115,7 +115,7 @@ const _familyDoc = r'''
 /// - Allowing a "title provider" access the `Locale`
 ///
 ///   ```dart
-///   final titleFamily = Provider.family<String, Locale>((_, locale) {
+///   final titleFamily = Provider.family<String, Locale>((ref, locale) {
 ///     if (locale == const Locale('en')) {
 ///       return 'English title';
 ///     } else if (locale == const Locale('fr')) {
@@ -126,12 +126,12 @@ const _familyDoc = r'''
 ///   // ...
 ///
 ///   @override
-///   Widget build(BuildContext context) {
+///   Widget build(BuildContext context, ScopedReader watch) {
 ///     final locale = Localizations.localeOf(context);
 ///
 ///     // Obtains the title based on the current Locale.
 ///     // Will automatically update the title when the Locale changes.
-///     final title = useProvider(titleFamily(locale));
+///     final title = watch(titleFamily(locale));
 ///
 ///     return Text(title);
 ///   }
@@ -148,14 +148,14 @@ const _familyDoc = r'''
 ///   // ...
 ///
 ///   @override
-///   Widget build(BuildContext context) {
+///   Widget build(BuildContext context, ScopedReader watch) {
 ///     int userId; // Read the user ID from somewhere
 ///
 ///     // Read and potentially fetch the user with id `userId`.
 ///     // When `userId` changes, this will automatically update the UI
 ///     // Similarly, if two widgets tries to read `userFamily` with the same `userId`
 ///     // then the user will be fetched only once.
-///     final user = useProvider(userFamily(userId));
+///     final user = watch(userFamily(userId));
 ///
 ///     return user.when(
 ///       data: (user) => Text(user.name),
@@ -170,7 +170,7 @@ const _familyDoc = r'''
 ///   ```dart
 ///   final repositoryProvider = Provider.family<String, FutureProvider<Configurations>>((ref, configurationsProvider) {
 ///     // Read a provider without knowing what that provider is.
-///     final configurations = await ref.read(configurationsProvider);
+///     final configurations = await ref.read(configurationsProvider.future);
 ///     return Repository(host: configurations.host);
 ///   });
 ///   ```
@@ -193,9 +193,9 @@ const _familyDoc = r'''
 /// The usual:
 /// 
 /// ```dart
-/// Widget build(BuildContext) {
+/// Widget build(BuildContext, ScopedReader watch) {
 ///   // Error – messagesFamily is not a provider
-///   final response = useProvider(messagesFamily);
+///   final response = watch(messagesFamily);
 /// }
 /// ```
 ///
@@ -203,8 +203,8 @@ const _familyDoc = r'''
 /// Instead, we need to pass a parameter to `messagesFamily`:
 ///
 /// ```dart
-/// Widget build(BuildContext) {
-///   final response = useProvider(messagesFamily('id'));
+/// Widget build(BuildContext, ScopedReader watch) {
+///   final response = watch(messagesFamily('id'));
 /// }
 /// ```
 ///
@@ -214,9 +214,9 @@ const _familyDoc = r'''
 ///
 /// ```dart
 /// @override
-/// Widget build(BuildContext context) {
-///   final frenchTitle = useProvider(titleFamily(const Locale('fr')));
-///   final englishTitle = useProvider(titleFamily(const Locale('en')));
+/// Widget build(BuildContext context, ScopedReader watch) {
+///   final frenchTitle = watch(titleFamily(const Locale('fr')));
+///   final englishTitle = watch(titleFamily(const Locale('en')));
 ///
 ///   return Text('fr: $frenchTitle en: $englishTitle');
 /// }
@@ -254,35 +254,66 @@ const _familyDoc = r'''
 /// - Objects generated with Freezed/built_value
 /// - Objects based on `package:equatable`
 ///
-/// Here's an example using Freezed:
+/// This includes:
+/// - A tuple (using `package:tuple`)
+/// - Objects generated with Freezed/built_value, such as:
+///   ```dart
+///   @freezed
+///   abstract class MyParameter with _$MyParameter {
+///     factory MyParameter({
+///       required int userId,
+///       required Locale locale,
+///     }) = _MyParameter;
+///   }
 ///
-/// ```dart
-/// @freezed
-/// abstract class MyParameter with _$MyParameter {
-///   factory MyParameter({
-///     int userId,
-///     Locale locale,
-///   }) = _MyParameter;
-/// }
+///   final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
+///     print(myParameter.userId);
+///     print(myParameter.locale);
+///     // Do something with userId/locale
+///   });
 ///
-/// final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
-///   print(myParameter.userId);
-///   print(myParameter.locale);
-///   // Do something with userId/locale
-/// })
+///   @override
+///   Widget build(BuildContext context, ScopedReader watch) {
+///     int userId; // Read the user ID from somewhere
+///     final locale = Localizations.localeOf(context);
 ///
-/// @override
-/// Widget build(BuildContext context) {
-///   int userId; // Read the user ID from somewhere
-///   final locale = Localizations.localeOf(context);
+///     final something = watch(
+///       exampleProvider(MyParameter(userId: userId, locale: locale)),
+///     );
+///   }
+///   ```
 ///
-///   final something = useProvider(
-///     exampleProvider(MyParameter(userId: userId, locale: locale)),
-///   );
+/// - Objects based on `package:equatable`, such as:
+///   ```dart
+///   class MyParameter extends Equatable  {
+///     factory MyParameter({
+///       required this.userId,
+///       requires this.locale,
+///     });
 ///
-///   ...
-/// }
-/// ```
+///     final int userId;
+///     final Local locale;
+///
+///     @override
+///     List<Object> get props => [userId, locale];
+///   }
+///
+///   final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
+///     print(myParameter.userId);
+///     print(myParameter.locale);
+///     // Do something with userId/locale
+///   });
+///
+///   @override
+///   Widget build(BuildContext context, ScopedReader watch) {
+///     int userId; // Read the user ID from somewhere
+///     final locale = Localizations.localeOf(context);
+///
+///     final something = watch(
+///       exampleProvider(MyParameter(userId: userId, locale: locale)),
+///     );
+///   }
+///   ```
 /// {@endtemplate}''';
 
 bool _didAddFamilyTemplate = false;
@@ -331,6 +362,7 @@ Future<void> main(List<String> args) async {
       builder.writeln(
         """
 import 'package:state_notifier/state_notifier.dart';
+
 import 'internals.dart';
 """,
       );
@@ -396,7 +428,7 @@ extension on Tuple3<DisposeType, StateType, ProviderType> {
   String get constraint {
     switch (item2) {
       case StateType.stateNotifier:
-        return ' extends StateNotifier<dynamic>';
+        return ' extends StateNotifier<Object?>';
       case StateType.changeNotifier:
         return ' extends ChangeNotifier';
       default:
@@ -469,7 +501,7 @@ class ${configs.providerName}Builder {
 ${familyDoc().replaceAll('///', '  ///')}
   ${configs.providerName}<T, Value> call<T${configs.constraint}, Value>(
     ${configs.createType} Function(${configs.ref} ref, Value value) create, {
-    String name,
+    String? name,
   }) {
     return ${configs.providerName}(create, name: name);
   }
@@ -495,7 +527,7 @@ class ${configs.providerName}Builder {
 ${autoDisposeDoc().replaceAll('///', '  ///')}
   ${configs.providerName}<T> call<T${configs.constraint}>(
     ${configs.createType} Function(${configs.ref} ref) create, {
-    String name,
+    String? name,
   }) {
     return ${configs.providerName}(create, name: name);
   }

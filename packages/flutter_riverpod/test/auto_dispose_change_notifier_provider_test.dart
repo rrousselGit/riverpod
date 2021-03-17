@@ -94,7 +94,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           return Text(
             watch(provider).count.toString(),
             textDirection: TextDirection.ltr,
@@ -121,7 +121,7 @@ class OnDisposeMock extends Mock {
 }
 
 class Listener<T> extends Mock {
-  void call(T value);
+  void call(T? value);
 }
 
 class TestNotifier extends ChangeNotifier {

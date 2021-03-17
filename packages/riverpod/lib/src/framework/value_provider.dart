@@ -3,14 +3,17 @@ part of '../framework.dart';
 /// A provider that is driven by a value instead of a function.
 ///
 /// This is an implementation detail of [RootProvider.overrideWithValue].
+@sealed
 class ValueProvider<Created, Listened>
     extends AlwaysAliveProviderBase<Created, Listened> {
   /// Creates a [ValueProvider].
   ValueProvider(
     Created Function(ValueProviderElement<Created, Listened> ref) create,
     this._value,
-  ) : super((ref) => create(ref as ValueProviderElement<Created, Listened>),
-            null);
+  ) : super(
+          (ref) => create(ref as ValueProviderElement<Created, Listened>),
+          null,
+        );
 
   final Listened _value;
 
@@ -31,6 +34,7 @@ class ValueProvider<Created, Listened>
 }
 
 /// The [ProviderElement] of a [ValueProvider]
+@sealed
 class ValueProviderElement<Created, Listened>
     extends ProviderElement<Created, Listened> {
   /// The [ProviderElement] of a [ValueProvider]
@@ -40,7 +44,7 @@ class ValueProviderElement<Created, Listened>
 
   /// A custom listener called when [RootProvider.overrideWithValue] changes
   /// with a different value.
-  void Function(Listened value) onChange;
+  void Function(Listened value)? onChange;
 
   @override
   void update(ProviderBase<Created, Listened> newProvider) {
@@ -53,10 +57,11 @@ class ValueProviderElement<Created, Listened>
   }
 }
 
+@sealed
 class _ValueProviderState<Created, Listened>
     extends ProviderStateBase<Created, Listened> {
   @override
-  void valueChanged({Object previous}) {
+  void valueChanged({Object? previous}) {
     exposedValue =
         ((ref as ProviderElement).provider as ValueProvider<Created, Listened>)
             ._value;

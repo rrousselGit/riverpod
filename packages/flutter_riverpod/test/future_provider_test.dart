@@ -21,7 +21,7 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: ProviderScope(
-          child: Consumer((c, watch) {
+          child: Consumer(builder: (c, watch, _) {
             return watch(futureProvider).when(
               data: (data) => Text(data.toString()),
               loading: () => const Text('loading'),
@@ -44,13 +44,13 @@ void main() {
     final futureProvider = FutureProvider<int>((s) async => throw error);
 
     dynamic whenError;
-    StackTrace whenStack;
+    StackTrace? whenStack;
 
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: ProviderScope(
-          child: Consumer((c, watch) {
+          child: Consumer(builder: (c, watch, _) {
             return watch(futureProvider).when(
               data: (data) => Text(data.toString()),
               loading: () => const Text('loading'),
@@ -80,7 +80,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           watch(futureProvider);
           return Container();
         }),
@@ -90,7 +90,7 @@ void main() {
     // unmount ProviderScope which disposes the provider
     await tester.pumpWidget(Container());
 
-    completer.complete();
+    completer.complete(42);
 
     // wait for then to tick
     await Future.value(null);
@@ -102,7 +102,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           watch(futureProvider);
           return Container();
         }),
@@ -133,7 +133,7 @@ void main() {
         ],
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer((c, watch) {
+          child: Consumer(builder: (c, watch, _) {
             return watch(futureProvider).maybeWhen(
               data: (data) => Text(data.toString()),
               orElse: () => const Text('else'),
@@ -150,6 +150,7 @@ void main() {
 
     expect(find.text('21'), findsOneWidget);
   });
+
   group('overrideWithValue', () {
     var callCount = 0;
     final futureProvider = FutureProvider((s) async {
@@ -157,7 +158,7 @@ void main() {
       return 42;
     });
 
-    Future<int> future;
+    Future<int>? future;
     var completed = false;
     final proxy = Provider<String>(
       (ref) {
@@ -179,7 +180,7 @@ void main() {
 
     final child = Directionality(
       textDirection: TextDirection.ltr,
-      child: Consumer((c, watch) {
+      child: Consumer(builder: (c, watch, _) {
         watch(proxy);
         return watch(futureProvider).when(
           data: (data) => Text(data.toString()),
@@ -374,7 +375,7 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer((c, watch) {
+          child: Consumer(builder: (c, watch, _) {
             return watch(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
@@ -404,7 +405,7 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer((c, watch) {
+          child: Consumer(builder: (c, watch, _) {
             return watch(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
@@ -434,7 +435,7 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer((c, watch) {
+          child: Consumer(builder: (c, watch, _) {
             return watch(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),

@@ -1,6 +1,5 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -153,5 +152,5 @@ class ListenerMock extends Mock {
 }
 
 class ControllerListenerMock extends Mock {
-  void call(TestNotifier value);
+  void call(TestNotifier? value);
 }

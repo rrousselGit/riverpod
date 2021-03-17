@@ -37,7 +37,7 @@ class ChangeNotifierProviderBuilder {
   ///
   /// This way, if the request failed and the UI leaves the screen then re-enters
   /// it, then the request will be performed again.
-  /// But if the request completed successfuly, the state will be preserved
+  /// But if the request completed successfully, the state will be preserved
   /// and re-entering the screen will not trigger a new request.
   ///
   /// It can be combined with `ref.onDispose` for more advanced behaviors, such
@@ -58,7 +58,7 @@ class ChangeNotifierProviderBuilder {
   /// {@endtemplate}
   ChangeNotifierProvider<T> call<T extends ChangeNotifier>(
     T Function(ProviderReference ref) create, {
-    String name,
+    String? name,
   }) {
     return ChangeNotifierProvider(create, name: name);
   }
@@ -77,7 +77,7 @@ class ChangeNotifierProviderBuilder {
   /// - Allowing a "title provider" access the `Locale`
   ///
   ///   ```dart
-  ///   final titleProvider = Provider.family<String, Locale>((_, locale) {
+  ///   final titleFamily = Provider.family<String, Locale>((ref, locale) {
   ///     if (locale == const Locale('en')) {
   ///       return 'English title';
   ///     } else if (locale == const Locale('fr')) {
@@ -88,12 +88,12 @@ class ChangeNotifierProviderBuilder {
   ///   // ...
   ///
   ///   @override
-  ///   Widget build(BuildContext context) {
+  ///   Widget build(BuildContext context, ScopedReader watch) {
   ///     final locale = Localizations.localeOf(context);
   ///
   ///     // Obtains the title based on the current Locale.
   ///     // Will automatically update the title when the Locale changes.
-  ///     final title = useProvider(titleProvider(locale));
+  ///     final title = watch(titleFamily(locale));
   ///
   ///     return Text(title);
   ///   }
@@ -102,7 +102,7 @@ class ChangeNotifierProviderBuilder {
   /// - Have a "user provider" that receives the user ID as parameter
   ///
   ///   ```dart
-  ///   final userProvider = FutureProvider.family<User, int>((ref, userId) async {
+  ///   final userFamily = FutureProvider.family<User, int>((ref, userId) async {
   ///     final userRepository = ref.read(userRepositoryProvider);
   ///     return await userRepository.fetch(userId);
   ///   });
@@ -110,14 +110,14 @@ class ChangeNotifierProviderBuilder {
   ///   // ...
   ///
   ///   @override
-  ///   Widget build(BuildContext context) {
+  ///   Widget build(BuildContext context, ScopedReader watch) {
   ///     int userId; // Read the user ID from somewhere
   ///
   ///     // Read and potentially fetch the user with id `userId`.
   ///     // When `userId` changes, this will automatically update the UI
-  ///     // Similarly, if two widgets tries to read `userProvider` with the same `userId`
+  ///     // Similarly, if two widgets tries to read `userFamily` with the same `userId`
   ///     // then the user will be fetched only once.
-  ///     final user = useProvider(userProvider(userId));
+  ///     final user = watch(userFamily(userId));
   ///
   ///     return user.when(
   ///       data: (user) => Text(user.name),
@@ -132,7 +132,7 @@ class ChangeNotifierProviderBuilder {
   ///   ```dart
   ///   final repositoryProvider = Provider.family<String, FutureProvider<Configurations>>((ref, configurationsProvider) {
   ///     // Read a provider without knowing what that provider is.
-  ///     final configurations = await ref.read(configurationsProvider);
+  ///     final configurations = await ref.read(configurationsProvider.future);
   ///     return Repository(host: configurations.host);
   ///   });
   ///   ```
@@ -143,42 +143,42 @@ class ChangeNotifierProviderBuilder {
   /// This parameter can then be freely used in our provider to create some state.
   ///
   /// For example, we could combine `family` with [FutureProvider] to fetch
-  /// a "message" from its ID:
+  /// a `Message` from its ID:
   ///
   /// ```dart
-  /// final messages = FutureProvider.family<Message, String>((ref, id) async {
-  ///   return dio.get('http://my_api.dev/messages/$id);
+  /// final messagesFamily = FutureProvider.family<Message, String>((ref, id) async {
+  ///   return dio.get('http://my_api.dev/messages/$id');
   /// });
   /// ```
   ///
-  /// Then, when using our `messages` provider, the syntax is slightly modified.
+  /// Then, when using our `messagesFamily` provider, the syntax is slightly modified.
   /// The usual:
   ///
   /// ```dart
-  /// Widget build(BuildContext) {
-  ///   // Error – messages is not a provider
-  ///   final response = useProvider(messages);
+  /// Widget build(BuildContext, ScopedReader watch) {
+  ///   // Error – messagesFamily is not a provider
+  ///   final response = watch(messagesFamily);
   /// }
   /// ```
   ///
   /// will not work anymore.
-  /// Instead, we need to pass a parameter to `messages`:
+  /// Instead, we need to pass a parameter to `messagesFamily`:
   ///
   /// ```dart
-  /// Widget build(BuildContext) {
-  ///   final response = useProvider(messages('id'));
+  /// Widget build(BuildContext, ScopedReader watch) {
+  ///   final response = watch(messagesFamily('id'));
   /// }
   /// ```
   ///
   /// **NOTE**: It is totally possible to use a family with different parameters
-  /// simultaneously. For example, we could use a `titleProvider` to read both
+  /// simultaneously. For example, we could use a `titleFamily` to read both
   /// the french and english translations at the same time:
   ///
   /// ```dart
   /// @override
-  /// Widget build(BuildContext context) {
-  ///   final frenchTitle = useProvider(titleProvider(const Locale('fr')));
-  ///   final englishTitle = useProvider(titleProvider(const Locale('en')));
+  /// Widget build(BuildContext context, ScopedReader watch) {
+  ///   final frenchTitle = watch(titleFamily(const Locale('fr')));
+  ///   final englishTitle = watch(titleFamily(const Locale('en')));
   ///
   ///   return Text('fr: $frenchTitle en: $englishTitle');
   /// }
@@ -216,35 +216,66 @@ class ChangeNotifierProviderBuilder {
   /// - Objects generated with Freezed/built_value
   /// - Objects based on `package:equatable`
   ///
-  /// Here's an example using Freezed:
+  /// This includes:
+  /// - A tuple (using `package:tuple`)
+  /// - Objects generated with Freezed/built_value, such as:
+  ///   ```dart
+  ///   @freezed
+  ///   abstract class MyParameter with _$MyParameter {
+  ///     factory MyParameter({
+  ///       required int userId,
+  ///       required Locale locale,
+  ///     }) = _MyParameter;
+  ///   }
   ///
-  /// ```dart
-  /// @freezed
-  /// abstract class MyParameter with _$MyParameter {
-  ///   factory MyParameter({
-  ///     int userId,
-  ///     Locale locale,
-  ///   }) = _MyParameter;
-  /// }
+  ///   final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
+  ///     print(myParameter.userId);
+  ///     print(myParameter.locale);
+  ///     // Do something with userId/locale
+  ///   });
   ///
-  /// final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
-  ///   print(myParameter.userId);
-  ///   print(myParameter.locale);
-  ///   // Do something with userId/locale
-  /// })
+  ///   @override
+  ///   Widget build(BuildContext context, ScopedReader watch) {
+  ///     int userId; // Read the user ID from somewhere
+  ///     final locale = Localizations.localeOf(context);
   ///
-  /// @override
-  /// Widget build(BuildContext context) {
-  ///   int userId; // Read the user ID from somewhere
-  ///   final locale = Localizations.localeOf(context);
+  ///     final something = watch(
+  ///       exampleProvider(MyParameter(userId: userId, locale: locale)),
+  ///     );
+  ///   }
+  ///   ```
   ///
-  ///   final something = useProvider(
-  ///     exampleProvider(MyParameter(userId: userId, locale: locale)),
-  ///   );
+  /// - Objects based on `package:equatable`, such as:
+  ///   ```dart
+  ///   class MyParameter extends Equatable  {
+  ///     factory MyParameter({
+  ///       required this.userId,
+  ///       requires this.locale,
+  ///     });
   ///
-  ///   ...
-  /// }
-  /// ```
+  ///     final int userId;
+  ///     final Local locale;
+  ///
+  ///     @override
+  ///     List<Object> get props => [userId, locale];
+  ///   }
+  ///
+  ///   final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
+  ///     print(myParameter.userId);
+  ///     print(myParameter.locale);
+  ///     // Do something with userId/locale
+  ///   });
+  ///
+  ///   @override
+  ///   Widget build(BuildContext context, ScopedReader watch) {
+  ///     int userId; // Read the user ID from somewhere
+  ///     final locale = Localizations.localeOf(context);
+  ///
+  ///     final something = watch(
+  ///       exampleProvider(MyParameter(userId: userId, locale: locale)),
+  ///     );
+  ///   }
+  ///   ```
   /// {@endtemplate}
   ChangeNotifierProviderFamilyBuilder get family {
     return const ChangeNotifierProviderFamilyBuilder();
@@ -259,7 +290,7 @@ class ChangeNotifierProviderFamilyBuilder {
   /// {@macro riverpod.family}
   ChangeNotifierProviderFamily<T, Value> call<T extends ChangeNotifier, Value>(
     T Function(ProviderReference ref, Value value) create, {
-    String name,
+    String? name,
   }) {
     return ChangeNotifierProviderFamily(create, name: name);
   }
@@ -278,7 +309,7 @@ class AutoDisposeChangeNotifierProviderBuilder {
   /// {@macro riverpod.autoDispose}
   AutoDisposeChangeNotifierProvider<T> call<T extends ChangeNotifier>(
     T Function(AutoDisposeProviderReference ref) create, {
-    String name,
+    String? name,
   }) {
     return AutoDisposeChangeNotifierProvider(create, name: name);
   }
@@ -298,7 +329,7 @@ class AutoDisposeChangeNotifierProviderFamilyBuilder {
   AutoDisposeChangeNotifierProviderFamily<T, Value>
       call<T extends ChangeNotifier, Value>(
     T Function(AutoDisposeProviderReference ref, Value value) create, {
-    String name,
+    String? name,
   }) {
     return AutoDisposeChangeNotifierProviderFamily(create, name: name);
   }

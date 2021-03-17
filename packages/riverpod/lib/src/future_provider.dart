@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
+
 import 'builders.dart';
 import 'common.dart' show AsyncValue;
 import 'created_provider.dart';
@@ -7,8 +9,8 @@ import 'framework.dart';
 import 'provider.dart';
 import 'stream_provider.dart';
 
-part 'future_provider/base.dart';
 part 'future_provider/auto_dispose.dart';
+part 'future_provider/base.dart';
 
 /// {@template riverpod.futureprovider}
 /// A provider that asynchronously creates a single value.
@@ -16,7 +18,7 @@ part 'future_provider/auto_dispose.dart';
 /// [FutureProvider] can be considered as a combination of [Provider] and
 /// `FutureBuilder`.
 /// By using [FutureProvider], the UI will be able to read the state of the
-/// future syncronously, handle the loading/error states, and rebuild when the
+/// future synchronously, handle the loading/error states, and rebuild when the
 /// future completes.
 ///
 /// A common use-case for [FutureProvider] is to represent an asynchronous operation
@@ -50,8 +52,8 @@ part 'future_provider/auto_dispose.dart';
 /// Then, the UI can listen to configurations like so:
 ///
 /// ```dart
-/// Widget build(BuildContext) {
-///   AsyncValue<Configuration> config = useProvider(configProvider);
+/// Widget build(BuildContext, ScopedReader watch) {
+///   AsyncValue<Configuration> config = watch(configProvider);
 ///
 ///   return config.when(
 ///     loading: () => const CircularProgressIndicator(),
@@ -81,7 +83,10 @@ mixin _FutureProviderMixin<T> on RootProvider<Future<T>, AsyncValue<T>> {
   Override overrideWithValue(AsyncValue<T> value) {
     return ProviderOverride(
       ValueProvider<Future<T>, AsyncValue<T>>((ref) {
-        final completer = Completer<T>();
+        final completer = Completer<T>()
+          // Catch the error so that it isn't pushed to the zone. This is safe since FutureProvider catches errors for us
+          // ignore: avoid_types_on_closure_parameters
+          ..future.then((_) {}, onError: (Object _) {});
         ref.onChange = (newValue) {
           if (completer.isCompleted) {
             ref.markMustRecomputeState();
@@ -93,7 +98,7 @@ mixin _FutureProviderMixin<T> on RootProvider<Future<T>, AsyncValue<T>> {
             );
           }
         };
-        ref.onChange(value);
+        ref.onChange!(value);
         return completer.future;
       }, value),
       this,
@@ -104,10 +109,10 @@ mixin _FutureProviderMixin<T> on RootProvider<Future<T>, AsyncValue<T>> {
 mixin _FutureProviderStateMixin<T>
     on ProviderStateBase<Future<T>, AsyncValue<T>> {
   // Used to determine if we are still listening to a future or not inside its `then`
-  Future<T> listenedFuture;
+  Future<T>? listenedFuture;
 
   @override
-  void valueChanged({Future<T> previous}) {
+  void valueChanged({Future<T>? previous}) {
     if (createdValue == previous) {
       return;
     }
@@ -117,7 +122,7 @@ mixin _FutureProviderStateMixin<T>
     // TODO transition between state ??= vs =
     // TODO don't notify if already loading
     exposedValue = const AsyncValue.loading();
-    listenedFuture?.then(
+    listenedFuture.then(
       (value) {
         if (this.listenedFuture == listenedFuture) {
           exposedValue = AsyncValue.data(value);

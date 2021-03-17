@@ -6,31 +6,34 @@ import '../framework.dart';
 /// A [ProviderSubscription] for [RootProvider.select], that notify its listeners
 /// only if the result of the selector changes.
 /// {@endtemplate}
+@sealed
 class SelectorSubscription<Input, Output>
     implements ProviderSubscription<Output> {
   /// {@macro riverpod.SelectorSubscription}
   SelectorSubscription({
-    @required ProviderContainer container,
-    @required Output Function(Input) selector,
-    @required RootProvider<Object, Input> provider,
-    void Function(SelectorSubscription<Input, Output> sub) mayHaveChanged,
-    void Function(SelectorSubscription<Input, Output> sub) didChange,
+    required ProviderContainer container,
+    required Output Function(Input) selector,
+    required RootProvider<Object?, Input> provider,
+    void Function(SelectorSubscription<Input, Output> sub)? mayHaveChanged,
+    void Function(SelectorSubscription<Input, Output> sub)? didChange,
   })  : _selector = selector,
         _didChange = didChange {
     _sub = container.listen(
       provider,
-      mayHaveChanged: (_) => mayHaveChanged(this),
+      // TODO(rrousselGit) add test
+      mayHaveChanged:
+          mayHaveChanged == null ? null : (_) => mayHaveChanged(this),
     );
   }
 
-  final void Function(SelectorSubscription<Input, Output> sub) _didChange;
+  final void Function(SelectorSubscription<Input, Output> sub)? _didChange;
   bool _isFirstBuild = true;
-  ProviderSubscription<Input> _sub;
-  Output _lastOutput;
+  late ProviderSubscription<Input> _sub;
+  Output? _lastOutput;
   Output Function(Input) _selector;
 
   /// Updates the selector associated with this [SelectorSubscription], and
-  /// immediatly recompute the value exposed.
+  /// immediately recompute the value exposed.
   ///
   /// This does not call `mayHaveChanged` and `didChange`.
   void updateSelector(ProviderListenable<Output> providerListenable) {
@@ -58,7 +61,7 @@ class SelectorSubscription<Input, Output>
   @override
   Output read() {
     flush();
-    return _lastOutput;
+    return _lastOutput as Output;
   }
 
   @override

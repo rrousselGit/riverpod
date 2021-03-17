@@ -1,3 +1,5 @@
+export 'package:state_notifier/state_notifier.dart';
+
 export 'src/common.dart'
     show
         AsyncValue,
@@ -19,25 +21,57 @@ export 'src/framework.dart'
         RootProvider,
         ProviderBase,
         Override,
+        AutoDisposeProviderReference,
         ProviderReference,
         ProviderListenable,
         ProviderContainer,
         ProviderObserver,
         ProviderSubscription,
         FamilyX,
-        ProviderException;
+        ProviderException,
+        AutoDisposeProviderBase,
+        AutoDisposeProviderElement,
+        ProviderElement,
+        ScopedCreate;
 
-export 'src/future_provider.dart' show FutureProvider;
+export 'src/future_provider.dart'
+    show
+        AutoDisposeFutureProvider,
+        AutoDisposeFutureProviderFamily,
+        FutureProvider,
+        FutureProviderFamily;
 
-export 'src/provider.dart' show Provider;
+export 'src/provider.dart'
+    show
+        AutoDisposeProvider,
+        AutoDisposeProviderFamily,
+        Provider,
+        ProviderFamily;
 
 export 'src/state_notifier_provider.dart'
     show
+        AutoDisposeStateNotifierProvider,
+        AutoDisposeStateNotifierProviderFamily,
+        AutoDisposeStateNotifierStateProvider,
         StateNotifierProvider,
-        StateNotifierStateProviderX,
-        AutoDisposeStateNotifierStateProviderX;
+        StateNotifierProviderFamily,
+        StateNotifierStateProvider,
+        AutoDisposeStateNotifierStateProviderX,
+        StateNotifierStateProviderX;
 
 export 'src/state_provider.dart'
-    show StateController, StateProvider, StateFamilyX, AutoDisposeStateFamilyX;
+    show
+        StateController,
+        StateProvider,
+        StateFamilyX,
+        AutoDisposeStateFamilyX,
+        AutoDisposeStateProvider,
+        AutoDisposeStateProviderFamily,
+        StateProviderFamily;
 
-export 'src/stream_provider.dart' show StreamProvider;
+export 'src/stream_provider.dart'
+    show
+        AutoDisposeStreamProvider,
+        AutoDisposeStreamProviderFamily,
+        StreamProvider,
+        StreamProviderFamily;

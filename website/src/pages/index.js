@@ -75,7 +75,10 @@ function Home() {
     >
       <header className={classnames("hero hero--primary", styles.heroBanner)}>
         <div className="container">
-          <h1 className="hero__title">{siteConfig.title}</h1>
+          <h1 className={classnames("hero__title", styles.mainTitle)}>
+            <img src="/img/logo.svg" alt="Riverpod logo"></img>
+            {siteConfig.title}
+          </h1>
           <p className="hero__subtitle">{siteConfig.tagline}</p>
           <div className={styles.buttons}>
             <Link
@@ -180,7 +183,8 @@ function Home() {
                   Reading a provider will never result in a bad state. If you
                   can write the code needed to read a provider, you will obtain
                   a valid value.
-                  <br></br><br></br>
+                  <br></br>
+                  <br></br>
                   This even applies to asynchronously loaded values. As opposed
                   to with provider, Riverpod allows cleanly handling
                   loading/error cases.
@@ -198,17 +202,14 @@ function Home() {
             <div class="container">
               <div class="row">
                 <div className="col">
-                  <img
-                    src="img/intro/devtool.png"
-                    alt="Devtool support"
-                  ></img>
+                  <img src="img/intro/devtool.png" alt="Devtool support"></img>
                 </div>
                 <div className="col">
                   <h2>Inspect your state in the devtool</h2>
                   <p>
-                    Using Riverpod, your state is visible out of
-                    the box inside Flutter's devtool. <br></br> Futhermore, a
-                    full-blown state-inspector is in progress.
+                    Using Riverpod, your state is visible out of the box inside
+                    Flutter's devtool. <br></br> Futhermore, a full-blown
+                    state-inspector is in progress.
                   </p>
                 </div>
               </div>

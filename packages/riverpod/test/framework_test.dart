@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
-import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 
@@ -18,6 +17,16 @@ Matcher isProvider(RootProvider provider) {
 
 void main() {
   // TODO flushing inside mayHaveChanged calls onChanged only after all mayHaveChanged were executed
+
+  test('ProviderObservers can have const constructors', () {
+    final root = ProviderContainer(
+      observers: [
+        const ConstObserver(),
+      ],
+    );
+
+    root.dispose();
+  });
 
   test('disposing parent container when child container is not dispose throws',
       () {
@@ -67,7 +76,7 @@ void main() {
 
     expect(container.read(provider), 42);
 
-    final state = container.debugProviderStates.single;
+    final state = container.debugProviderElements.single;
 
     expect(state.hasListeners, false);
 
@@ -415,7 +424,7 @@ void main() {
   });
 
   test('circular dependencies (sync)', () {
-    Provider<int> provider;
+    late Provider<int> provider;
 
     final provider1 = Provider((ref) {
       return ref.watch(provider) + 1;
@@ -435,7 +444,7 @@ void main() {
   });
 
   test('circular dependencies (async)', () {
-    Provider<int Function()> provider;
+    late Provider<int Function()> provider;
 
     final provider1 = Provider((ref) {
       return ref.watch(provider)() + 1;
@@ -510,7 +519,7 @@ void main() {
 
   test('ProviderReference is unusable after dispose (read/onDispose)', () {
     final container = ProviderContainer();
-    ProviderReference ref;
+    late ProviderReference ref;
     final provider = Provider((s) {
       ref = s;
       return 42;
@@ -529,7 +538,7 @@ void main() {
     var callCount = 0;
     final onDispose = OnDisposeMock();
     final error = Error();
-    ProviderReference reference;
+    late ProviderReference reference;
     final provider = Provider((ref) {
       reference = ref;
       callCount++;
@@ -557,6 +566,7 @@ void main() {
     verifyNoMoreInteractions(onDispose);
     verifyNoMoreInteractions(onDispose2);
   });
+
   group('notify listeners', () {
     test('calls onChange at most once per flush', () {
       final counter = Counter();
@@ -750,14 +760,14 @@ class AsyncListenerMock extends Mock {
 
 class ListenerMock extends Mock {
   ListenerMock([this.debugLabel]);
-  final String debugLabel;
+  final String? debugLabel;
 
   void call(int value);
 
   @override
   String toString() {
     if (debugLabel != null) {
-      return debugLabel;
+      return debugLabel!;
     }
     return super.toString();
   }
@@ -779,4 +789,8 @@ class MockMarkMayHaveChanged extends Mock {
 
 class MockDidUpdateProvider extends Mock {
   void call();
+}
+
+class ConstObserver extends ProviderObserver {
+  const ConstObserver();
 }

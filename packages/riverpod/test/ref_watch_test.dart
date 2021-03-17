@@ -1,7 +1,6 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart';
-import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
 import 'utils.dart';
@@ -41,10 +40,10 @@ void main() {
 
     container.read(provider0.state);
     container.read(provider1.state);
-    final familyState0 = container.debugProviderStates.firstWhere((p) {
+    final familyState0 = container.debugProviderElements.firstWhere((p) {
       return p.provider == provider0.state;
     });
-    final familyState1 = container.debugProviderStates.firstWhere((p) {
+    final familyState1 = container.debugProviderElements.firstWhere((p) {
       return p.provider == provider1.state;
     });
 
@@ -109,10 +108,10 @@ void main() {
 
     container.read(provider0.state);
     container.read(provider1.state);
-    final familyState0 = container.debugProviderStates.firstWhere((p) {
+    final familyState0 = container.debugProviderElements.firstWhere((p) {
       return p.provider == provider0.state;
     });
-    final familyState1 = container.debugProviderStates.firstWhere((p) {
+    final familyState1 = container.debugProviderElements.firstWhere((p) {
       return p.provider == provider1.state;
     });
 
@@ -158,7 +157,8 @@ void main() {
 
   test('Provider.family', () {
     final computed =
-        Provider.family<String, RootProvider<Object, int>>((ref, provider) {
+        Provider.family<String, AlwaysAliveProviderBase<Object?, int>>(
+            (ref, provider) {
       return ref.watch(provider).toString();
     });
     final notifier = Counter();
@@ -258,7 +258,7 @@ void main() {
     verifyNoMoreInteractions(listener);
 
     expect(
-      container.debugProviderStates.map((e) => e.provider),
+      container.debugProviderElements.map((e) => e.provider),
       [provider, computed, provider2],
     );
   });
@@ -328,13 +328,14 @@ void main() {
       return [ref.watch(provider.state)];
     });
 
-    List<int> first;
+    late List<int> first;
     final firstListener = Listener<List<int>>();
     computed.watchOwner(container, (value) {
       first = value;
       firstListener(value);
     });
-    List<int> second;
+
+    late List<int> second;
     final secondListener = Listener<List<int>>();
     computed.watchOwner(container, (value) {
       second = value;

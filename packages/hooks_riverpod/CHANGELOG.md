@@ -1,3 +1,175 @@
+# 0.13.1
+
+- Fixed a bug where overriding a `FutureProvider` with an error value could cause tests to fail (see https://github.com/rrousselGit/river_pod/issues/355)
+
+# 0.13.0
+
+- stable null-safety release
+- `ProviderObserver` can now have a const constructor
+- Added the mechanism for state-inspection using the Flutter devtool
+- loosened the version constraints of `freezed_annotation`
+- deprecated `import 'hooks_riverpod/all.dart'`. Now everything is available with `hooks_riverpod/hooks_riverpod.dart`.
+- Fixed a but where listening to `StreamProvider.last` could result in a `StateError` (#217)
+- removed the assert preventing ConsumerWidget's "watch" from being used after the `build` method completed.
+  This allows "watch" to be used inside `ListView.builder`.
+- `context.read(myProvider)` now accepts `ScopeProviders`
+
+# 0.13.0-nullsafety.3
+
+- deprecated `import 'hooks_riverpod/all.dart'`. Now everything is available with `hooks_riverpod/hooks_riverpod.dart`.
+- removed the assert preventing ConsumerWidget's "watch" from being used after the `build` method completed.
+  This allows "watch" to be used inside `ListView.builder`.
+- `context.read(myProvider)` now accepts `ScopeProviders`
+
+# 0.13.0-nullsafety.2
+
+- Fixed outdated doc
+
+# 0.13.0-nullsafety.1
+
+- Fixed a but where listening to `StreamProvider.last` could result in a `StateError` (#217)
+
+# 0.13.0-nullsafety.0
+
+Migrated to null-safety
+
+# 0.12.2
+
+- Exported `AutoDisposeProviderReference`
+
+# 0.12.1
+
+- Fixed an remaining memory leak related to StreamProvider (see also https://github.com/rrousselGit/river_pod/issues/193)
+
+# 0.12.0
+
+- **Breaking** FutureProvider and StreamProvider no-longer supports `null` as a valid value.
+- Fixed a memory leak with StreamProvider (see also https://github.com/rrousselGit/river_pod/issues/193)
+- Fixed an error message typo related to Consumer
+
+# 0.11.2
+
+- Fixed a bug where providers (usually ScopedProviders) did not dispose correctly
+  (see also https://github.com/rrousselGit/river_pod/issues/154).
+
+# 0.11.1
+
+- Fixed a bug where hot-reload did not work for `ConsumerWidget`/`Consumer`
+
+# 0.11.0
+
+- `package:hooks_riverpod/hooks_riverpod.dart` now exports `StateNotifier`
+- Marked the providers with `@sealed` so that the IDE warns against
+  implementing/subclassing providers.
+- Fix mistakes in `AsyncValue.guard`'s documentation (thanks @mono0926)
+- Loosened the version constraints of `freezed_annotation` to support `0.12.0`
+
+# 0.10.1
+
+- Fixed invalid version error
+
+# 0.10.0
+
+- Fixed a bug where the state of a provider may be disposed when it shouldn't be disposed.
+
+- Added a way to import the implementation class of providers with modifiers,
+  such as `AutoDisposeProvider`.
+
+  This is useful if you want to use Riverpod with the lint `always_specify_types`:
+
+  ```dart
+  import 'package:hooks_riverpod/all.dart';
+
+  final AutoDisposeStateProvider<int> counter = StateProvider.autoDispose<int>((ProviderReference ref) {
+    return 0;
+  });
+  ```
+
+  If you do not use this lint, prefer using the default import instead, to not
+  pollute your auto-complete.
+
+# 0.9.2
+
+- Unexported some classes that were not meant to be public
+
+# 0.9.0
+
+- **Breaking** Updating `ProviderListener` so that `onChange` receives the
+  `BuildContext` as parameter (thanks to @tbm98)
+
+# 0.8.0
+
+- Renamed `ProviderContainer.debugProviderStates` to `ProviderContainer.debugProviderElements`
+- Fixed a bug where updating `ProviderScope.overrides` may cause an exception
+  for no reason (see https://github.com/rrousselGit/river_pod/issues/107)
+
+# 0.7.2
+
+Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstances
+
+# 0.7.1
+
+- Fixed a bug where in release mode, `ScopedProvider` did not update correctly (https://github.com/rrousselGit/river_pod/issues/101)
+
+# 0.7.0
+
+- **Breaking**: `Consumer` is slightly modified to match other Builders like
+  `ValueListenableBuilder`.
+  Before:
+
+  ```dart
+  return Consumer((context, watch) {
+    final value = watch(myProvider);
+    return Text('$value');
+  });
+  ```
+
+  after:
+
+  ```dart
+  return Consumer(
+    builder: (context, watch, child) {
+      final value = watch(myProvider);
+      return Text('$value');
+    },
+  );
+  ```
+
+- Added a `ConsumerWidget` class which can be extended to make a `StatelessWidget`
+  that can read providers:
+
+  ```dart
+  class MyWidget extends ConsumerWidget {
+    const MyWidget({Key? key}) : super(key: key);
+
+    @override
+    Widget build(BuildContext context, ScopedReader watch) {
+      final value = watch(myProvider);
+      return Text('$value');
+    }
+  }
+  ```
+
+- `ref.watch` on non ".autoDispose" providers can no-longer read ".autoDispose"
+  providers.
+
+  For more info, see http://riverpod.dev/docs/concepts/modifiers/auto_dispose#the-argument-type-autodisposeprovider-cant-be-assigned-to-the-parameter-type-alwaysaliveproviderbase
+
+- `ScopedProvider` now accepts `null` as a function:
+
+  ```dart
+  final example = ScopedProvider<int>(null);
+  ```
+
+  Which is equivalent to:
+
+  ```dart
+  final example = ScopedProvider<int>((watch) => throw UnimplementedError(''));
+  ```
+
+* Fixed a bug where `context.refresh` may not work properly if the widget tree
+  contains multiple `ProviderScope`.
+
 # 0.6.1
 
 - Fixed a bug where when disposing `ProviderContainer`, providers may be disposed

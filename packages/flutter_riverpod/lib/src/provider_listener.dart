@@ -1,6 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
+
 import 'internals.dart';
+
+/// A function that can react to changes on a provider
+///
+/// See also [ProviderListener]
+typedef OnProviderChange<T> = void Function(BuildContext context, T value);
 
 /// {@template riverpod.providerlistener}
 /// A widget that allows listening to a provider.
@@ -11,35 +18,37 @@ import 'internals.dart';
 /// Even if a provider changes many times in a quick succession, [onChange] will
 /// be called only once, at the end of the frame.
 /// {@endtemplate}
+@sealed
 class ProviderListener<T> extends StatefulWidget {
   /// {@macro riverpod.providerlistener}
   const ProviderListener({
-    Key key,
-    @required this.onChange,
-    @required this.provider,
-    @required this.child,
+    Key? key,
+    required this.onChange,
+    required this.provider,
+    required this.child,
   }) : super(key: key);
 
   /// The provider listened.
   ///
   /// Can be `null`.
-  final ProviderBase<Object, T> provider;
+  final ProviderBase<Object, T>? provider;
 
   /// A function called with the new value of [provider] when it changes.
   ///
   /// This function will be called at most once per frame.
-  final void Function(T value) onChange;
+  final OnProviderChange<T> onChange;
 
   /// The descendant of this [ProviderListener]
   final Widget child;
 
   @override
   _ProviderListenerState<T> createState() => _ProviderListenerState<T>();
+
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(
-      DiagnosticsProperty<void Function(T value)>('onChange', onChange),
+      DiagnosticsProperty<OnProviderChange<T>>('onChange', onChange),
     );
     properties.add(
       DiagnosticsProperty<ProviderBase<Object, T>>('provider', provider),
@@ -47,9 +56,10 @@ class ProviderListener<T> extends StatefulWidget {
   }
 }
 
+@sealed
 class _ProviderListenerState<T> extends State<ProviderListener<T>> {
-  ProviderSubscription<T> _subscription;
-  ProviderContainer _container;
+  ProviderSubscription<T>? _subscription;
+  ProviderContainer? _container;
 
   @override
   void didChangeDependencies() {
@@ -74,8 +84,8 @@ class _ProviderListenerState<T> extends State<ProviderListener<T>> {
     _subscription?.close();
     _subscription = null;
     if (widget.provider != null) {
-      _subscription = _container.listen<T>(
-        widget.provider,
+      _subscription = _container!.listen<T>(
+        widget.provider!,
         mayHaveChanged: _mayHaveChanged,
       );
     }
@@ -84,7 +94,7 @@ class _ProviderListenerState<T> extends State<ProviderListener<T>> {
   void _mayHaveChanged(ProviderSubscription<T> subscription) {
     Future.microtask(() {
       if (subscription.flush()) {
-        widget.onChange(subscription.read());
+        widget.onChange(context, subscription.read());
       }
     });
   }

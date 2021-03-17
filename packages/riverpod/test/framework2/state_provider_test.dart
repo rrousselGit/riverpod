@@ -2,7 +2,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 void main() {
-  ProviderContainer container;
+  late ProviderContainer container;
   setUp(() {
     container = ProviderContainer();
   });

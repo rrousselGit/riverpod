@@ -1,7 +1,9 @@
 part of '../framework.dart';
 
-typedef ScopedReader = T Function<T>(ProviderBase<Object, T> provider);
+/// A function that can both read a [ScopedProvider], normal providers and a `myProvider.select(..)`
+typedef ScopedReader = T Function<T>(ProviderBase<Object?, T> provider);
 
+/// The function that [ScopedProvider]s uses to create their state.
 typedef ScopedCreate<T> = T Function(ScopedReader watch);
 
 /// {@template riverpod.scopedprovider}
@@ -52,12 +54,12 @@ typedef ScopedCreate<T> = T Function(ScopedReader watch);
 /// Finally, we can read the item index inside our `ProductItem`:
 ///
 /// ```dart
-/// class ProductItem extends HookWidget {
-///   const ProductItem({Key key}): super(key: key);
+/// class ProductItem extends ConsumerWidget {
+///   const ProductItem({Key? key}): super(key: key);
 ///
 ///   @override
-///   Widget build(BuildContext context) {
-///     final index = useProvider(currentProductIndex);
+///   Widget build(BuildContext context, ScopedReader watch) {
+///     final index = watch(currentProductIndex);
 ///     // do something with the index
 ///
 ///   }
@@ -70,14 +72,36 @@ typedef ScopedCreate<T> = T Function(ScopedReader watch);
 ///
 /// What this means is, even if `ListView` rebuilds, our `ProductItem` will
 /// not rebuild unless what it uses changed.
+///
+/// # ScopedProvider with no default behavior
+///
+/// A common use-case with ScopedProvider is to _not_ provide a default behavior,
+/// and instead always override the provider inside a `ProviderScope`.
+///
+/// In this situation, what we can do is pass `null` instead of a function
+/// to ScopedProvider:
+///
+/// ```dart
+/// final example = ScopedProvider<int>(null);
+/// ```
+///
+/// This is equivalent to:
+///
+/// ```dart
+/// final example = ScopedProvider<int>((watch) => throw UnsupportedError('<some error message>'));
+/// ```
 /// {@endtemplate}
+@sealed
 class ScopedProvider<Listened> extends ProviderBase<Listened, Listened> {
   /// {@macro riverpod.scopedprovider}
   ScopedProvider(
-    ScopedCreate<Listened> create, {
-    String name,
+    ScopedCreate<Listened>? create, {
+    String? name,
   }) : super(
-          (ref) => create((ref as _ScopedProviderElement).watch),
+          create == null
+              ? (ref) => throw UnsupportedError(
+                  'No default behavior specified for ScopedProvider<$Listened>')
+              : (ref) => create((ref as _ScopedProviderElement).watch),
           name,
         );
 
@@ -112,6 +136,7 @@ class ScopedProvider<Listened> extends ProviderBase<Listened, Listened> {
   }
 }
 
+@sealed
 class _ScopedProviderElement<T> extends AutoDisposeProviderElement<T, T> {
   _ScopedProviderElement(ScopedProvider<T> provider) : super(provider);
 
@@ -122,9 +147,10 @@ class _ScopedProviderElement<T> extends AutoDisposeProviderElement<T, T> {
   }
 }
 
+@sealed
 class _ScopedProviderState<T> extends ProviderStateBase<T, T> {
   @override
-  void valueChanged({T previous}) {
+  void valueChanged({T? previous}) {
     if (createdValue != exposedValue) {
       exposedValue = createdValue;
     }

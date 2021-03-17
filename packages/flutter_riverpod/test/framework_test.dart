@@ -1,14 +1,41 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:state_notifier/state_notifier.dart';
 import 'package:mockito/mockito.dart';
 
 void main() {
+  testWidgets('context.read can read ScopedProviders', (tester) async {
+    final provider = ScopedProvider((watch) => 42);
+
+    await tester.pumpWidget(ProviderScope(child: Container()));
+
+    final context = tester.element(find.byType(Container));
+
+    expect(context.read(provider), 42);
+  });
+
+  testWidgets('context.read obtains the nearest ScopedProvider possible',
+      (tester) async {
+    final provider = ScopedProvider((watch) => 42);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: ProviderScope(
+          overrides: [provider.overrideWithValue(21)],
+          child: Container(),
+        ),
+      ),
+    );
+
+    final context = tester.element(find.byType(Container));
+
+    expect(context.read(provider), 21);
+  });
+
   testWidgets('widgets cannot modify providers in their build method',
       (tester) async {
     final onError = FlutterError.onError;
-    Object error;
+    Object? error;
     FlutterError.onError = (details) {
       error = details.exception;
     };
@@ -19,7 +46,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: Consumer((context, watch) {
+        child: Consumer(builder: (context, watch, _) {
           watch(provider).state++;
           return Container();
         }),
@@ -97,7 +124,7 @@ void main() {
   testWidgets('AlwaysAliveProviderBase.read(context) inside initState',
       (tester) async {
     final provider = Provider((_) => 42);
-    int result;
+    int? result;
 
     await tester.pumpWidget(
       ProviderScope(
@@ -154,7 +181,7 @@ void main() {
   testWidgets('removing overrides is no-op', (tester) async {
     final provider = Provider((_) => 0);
 
-    final consumer = Consumer((context, watch) {
+    final consumer = Consumer(builder: (context, watch, _) {
       return Text(
         watch(provider).toString(),
         textDirection: TextDirection.ltr,
@@ -203,15 +230,11 @@ void main() {
     expect(tester.takeException(), isAssertionError);
   });
 
-  test('ProviderScope requires a child', () {
-    expect(() => ProviderScope(child: null), throwsAssertionError);
-  });
-
   testWidgets('throws if no ProviderScope found', (tester) async {
     final provider = Provider((_) => 'foo');
 
     await tester.pumpWidget(
-      Consumer((context, watch) {
+      Consumer(builder: (context, watch, _) {
         watch(provider);
         return Container();
       }),
@@ -232,8 +255,8 @@ void main() {
       textDirection: TextDirection.ltr,
       child: Column(
         children: <Widget>[
-          Consumer((c, watch) => Text(watch(provider))),
-          Consumer((c, watch) => Text(watch(provider2))),
+          Consumer(builder: (c, watch, _) => Text(watch(provider))),
+          Consumer(builder: (c, watch, _) => Text(watch(provider2))),
         ],
       ),
     );
@@ -273,7 +296,7 @@ void main() {
           provider.overrideWithProvider(Provider((_) => 'rootoverride')),
         ],
         child: ProviderScope(
-          child: Consumer((c, watch) {
+          child: Consumer(builder: (c, watch, _) {
             final first = watch(provider);
             final second = watch(provider2);
             return Text(
@@ -297,7 +320,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         key: scopeKey,
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           final value = watch(unnamed);
           final count = watch(named.state);
           return Text(
@@ -343,12 +366,26 @@ void main() {
 
     expect(
       scopeKey.currentContext.toString(),
-      equalsIgnoringHashCodes(
-        'UncontrolledProviderScope-[GlobalKey#00000]('
-        'Provider<int>#00000: 0, '
-        "counter: Instance of 'Counter', "
-        'counter.state: 0)',
-      ),
+      anyOf([
+        equalsIgnoringHashCodes(
+          'UncontrolledProviderScope-[GlobalKey#00000]('
+          'Provider<int>#00000: 0, '
+          "counter: Instance of 'Counter', "
+          'counter.state: 0)',
+        ),
+        equalsIgnoringHashCodes(
+          'UncontrolledProviderScope-[GlobalKey#00000]('
+          "counter: Instance of 'Counter', "
+          'Provider<int>#00000: 0, '
+          'counter.state: 0)',
+        ),
+        equalsIgnoringHashCodes(
+          'UncontrolledProviderScope-[GlobalKey#00000]('
+          'counter.state: 0, '
+          'Provider<int>#00000: 0, '
+          "counter: Instance of 'Counter')",
+        ),
+      ]),
     );
   });
 
@@ -445,7 +482,10 @@ class MockCreateState extends Mock {
 }
 
 class InitState extends StatefulWidget {
-  const InitState({Key key, this.initState}) : super(key: key);
+  const InitState({
+    Key? key,
+    required this.initState,
+  }) : super(key: key);
 
   // ignore: diagnostic_describe_all_properties
   final void Function(BuildContext context) initState;

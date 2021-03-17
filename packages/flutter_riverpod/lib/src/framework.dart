@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' hide describeIdentity;
 import 'package:flutter/widgets.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:meta/meta.dart';
 
 import 'internals.dart' show describeIdentity;
 
@@ -43,10 +44,12 @@ import 'internals.dart' show describeIdentity;
 ///
 ///
 /// Similarly, it is possible to insert other [ProviderScope] anywhere inside
-/// the widget tree to override the behavior of a provider for only a part of the
+/// the widget tree to override the behavior of a [ScopedProvider] for only a part of the
 /// application:
 ///
 /// ```dart
+/// final themeProvider = ScopedProvider((ref) => MyTheme.light());
+///
 /// void main() {
 ///   runApp(
 ///     ProviderScope(
@@ -57,9 +60,7 @@ import 'internals.dart' show describeIdentity;
 ///           // Overrides themeProvider for the /gallery route only
 ///           '/gallery': (_) => ProviderScope(
 ///             overrides: [
-///               themeProvider.overrideWithProvider(
-///                 Provider((_) => MyTheme.dark()),
-///               ),
+///               themeProvider.overrideWithValue(MyTheme.dark()),
 ///             ],
 ///           ),
 ///         },
@@ -74,30 +75,31 @@ import 'internals.dart' show describeIdentity;
 /// - [UncontrolledProviderScope], which exposes a [ProviderContainer] to the widget
 ///   tree without managing its life-cycles.
 /// {@endtemplate}
+@sealed
 class ProviderScope extends StatefulWidget {
   /// {@macro riverpod.providerscope}
   const ProviderScope({
-    Key key,
+    Key? key,
     this.overrides = const [],
     this.observers,
-    @required this.child,
-  })  : assert(child != null, 'child cannot be `null`'),
-        super(key: key);
+    required this.child,
+  }) : super(key: key);
 
   /// Read the current [ProviderContainer] for a [BuildContext].
   static ProviderContainer containerOf(
     BuildContext context, {
     bool listen = true,
   }) {
-    UncontrolledProviderScope scope;
+    UncontrolledProviderScope? scope;
 
     if (listen) {
       scope = context //
           .dependOnInheritedWidgetOfExactType<UncontrolledProviderScope>();
     } else {
+      // TODO(rrousselGit): Test getElementForInheritedWidgetOfExactType return null
       scope = context
           .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
-          .widget as UncontrolledProviderScope;
+          ?.widget as UncontrolledProviderScope?;
     }
 
     if (scope == null) {
@@ -107,11 +109,11 @@ class ProviderScope extends StatefulWidget {
     return scope.container;
   }
 
-  /// The part of the widget tree that can use Riverpod and has overriden providers.
+  /// The part of the widget tree that can use Riverpod and has overridden providers.
   final Widget child;
 
   /// The listeners that subscribes to changes on providers stored on this [ProviderScope].
-  final List<ProviderObserver> observers;
+  final List<ProviderObserver>? observers;
 
   /// Informations on how to override a provider/family.
   final List<Override> overrides;
@@ -132,6 +134,7 @@ class ProviderScope extends StatefulWidget {
   }
 }
 
+@sealed
 class _ProviderScopeElement extends StatefulElement {
   _ProviderScopeElement(ProviderScope widget) : super(widget);
 
@@ -151,12 +154,13 @@ class _ProviderScopeElement extends StatefulElement {
 
 /// Do not use: The [State] of [ProviderScope]
 @visibleForTesting
+@sealed
 class ProviderScopeState extends State<ProviderScope> {
   /// The [ProviderContainer] exposed to [ProviderScope.child].
   @visibleForTesting
   // ignore: diagnostic_describe_all_properties
-  ProviderContainer container;
-  ProviderContainer _debugParentOwner;
+  late ProviderContainer container;
+  ProviderContainer? _debugParentOwner;
   var _dirty = false;
 
   @override
@@ -164,7 +168,7 @@ class ProviderScopeState extends State<ProviderScope> {
     super.initState();
     final scope = context
         .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
-        ?.widget as UncontrolledProviderScope;
+        ?.widget as UncontrolledProviderScope?;
 
     assert(() {
       _debugParentOwner = scope?.container;
@@ -199,19 +203,19 @@ class ProviderScopeState extends State<ProviderScope> {
     assert(() {
       final scope = context
           .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
-          ?.widget as UncontrolledProviderScope;
+          ?.widget as UncontrolledProviderScope?;
 
       if (scope?.container != _debugParentOwner) {
         throw UnsupportedError(
           'ProviderScope was rebuilt with a different ProviderScope ancestor',
         );
       }
-      if (_dirty) {
-        _dirty = false;
-        container.updateOverrides(widget.overrides);
-      }
       return true;
     }(), '');
+    if (_dirty) {
+      _dirty = false;
+      container.updateOverrides(widget.overrides);
+    }
 
     return UncontrolledProviderScope(
       container: container,
@@ -231,14 +235,14 @@ class ProviderScopeState extends State<ProviderScope> {
 ///
 /// This is what makes `useProvider`/`Consumer`/`context.read` work.
 /// {@endtemplate}
+@sealed
 class UncontrolledProviderScope extends InheritedWidget {
   /// {@macro riverpod.UncontrolledProviderScope}
   const UncontrolledProviderScope({
-    Key key,
-    @required this.container,
-    @required Widget child,
-  })  : assert(container != null, 'ProviderContainer cannot be null'),
-        super(key: key, child: child);
+    Key? key,
+    required this.container,
+    required Widget child,
+  }) : super(key: key, child: child);
 
   /// The [ProviderContainer] exposed to the widget tree.
   final ProviderContainer container;
@@ -263,12 +267,13 @@ class UncontrolledProviderScope extends InheritedWidget {
   }
 }
 
+@sealed
 class _UncontrolledProviderScopeElement extends InheritedElement {
   _UncontrolledProviderScopeElement(UncontrolledProviderScope widget)
       : super(widget);
 
   @override
-  void mount(Element parent, dynamic newSlot) {
+  void mount(Element? parent, Object? newSlot) {
     assert(() {
       (widget as UncontrolledProviderScope)
           .container

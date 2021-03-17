@@ -12,11 +12,11 @@ part of '../framework.dart';
 /// See also:
 ///
 /// - [ProviderReference], which exposes the methods to read other providers.
-/// - [Provider], a provier that uses [Create] to expose an immutable value.
+/// - [Provider], a provider that uses [Create] to expose an immutable value.
 typedef Create<T, Ref extends ProviderReference> = T Function(Ref ref);
 
 /// A function that reads the state of a provider.
-typedef Reader = T Function<T>(RootProvider<Object, T> provider);
+typedef Reader = T Function<T>(RootProvider<Object?, T> provider);
 
 // Copied from Flutter
 /// Returns a summary of the runtime type and hash code of `object`.
@@ -28,13 +28,13 @@ typedef Reader = T Function<T>(RootProvider<Object, T> provider);
 ///    distinguish instances of the same class (hash collisions are
 ///    possible, but rare enough that its use in debug output is useful).
 ///  * [Object.runtimeType], the [Type] of an object.
-String describeIdentity(Object object) {
+String describeIdentity(Object? object) {
   return '${object.runtimeType}#${shortHash(object)}';
 }
 
 // Copied from Flutter
 /// [Object.hashCode]'s 20 least-significant bits.
-String shortHash(Object object) {
+String shortHash(Object? object) {
   return object.hashCode.toUnsigned(20).toRadixString(16).padLeft(5, '0');
 }
 
@@ -55,7 +55,7 @@ abstract class AlwaysAliveProviderBase<Created, Listened>
   /// Creates an [AlwaysAliveProviderBase].
   AlwaysAliveProviderBase(
     Created Function(ProviderReference ref) create,
-    String name,
+    String? name,
   ) : super(create, name);
 
   @override
@@ -91,7 +91,7 @@ abstract class AlwaysAliveProviderBase<Created, Listened>
   /// );
   /// ```
   /// {@endtemplate}
-  // Cannot be overriden by AutoDisposeProviders
+  // Cannot be overridden by AutoDisposeProviders
   ProviderOverride overrideWithProvider(
     AlwaysAliveProviderBase<Created, Listened> provider,
   ) {
@@ -103,7 +103,12 @@ abstract class AlwaysAliveProviderBase<Created, Listened>
 abstract class ProviderBase<Created, Listened>
     implements ProviderListenable<Listened> {
   /// A base class for _all_ providers.
-  ProviderBase(this._create, this.name);
+  ProviderBase(this._create, this.name) {
+    assert(() {
+      debugId = '${_debugNextId++}';
+      return true;
+    }(), '');
+  }
 
   final Created Function(ProviderReference ref) _create;
 
@@ -112,24 +117,29 @@ abstract class ProviderBase<Created, Listened>
   ///
   /// This is picked-up by devtools and [toString] to show better messages.
   /// {@endtemplate}
-  final String name;
+  final String? name;
 
-  Family _from;
+  Family? _from;
 
   /// If this provider was created with the `.family` modifier, [from] is the `.family` instance.
-  Family get from => _from;
+  Family? get from => _from;
 
-  Object _argument;
+  Object? _argument;
 
   /// If this provider was created with the `.family` modifier, [argument] is
   /// variable used.
-  Object get argument => _argument;
+  Object? get argument => _argument;
 
   /// An internal method that creates the state of a provider.
   ProviderStateBase<Created, Listened> createState();
 
   /// An internal method that defines how a provider behaves.
   ProviderElement<Created, Listened> createElement();
+
+  /// A unique identifier for this provider, used by devtools to differentiate providers
+  ///
+  /// Available only during development.
+  late final String debugId;
 
   @override
   String toString() {
@@ -170,8 +180,10 @@ abstract class ProviderBase<Created, Listened>
 abstract class RootProvider<Created, Listened>
     extends ProviderBase<Created, Listened> {
   /// {@macro riverpod.rootprovider}
-  RootProvider(Created Function(ProviderReference ref) create, String name)
-      : super(create, name);
+  RootProvider(
+    Created Function(ProviderReference ref) create,
+    String? name,
+  ) : super(create, name);
 
   /// Partially listen to a provider.
   ///
@@ -217,7 +229,7 @@ abstract class RootProvider<Created, Listened>
   ///
   /// ```dart
   /// @override
-  /// Widget build(BuildContext context) {
+  /// Widget build(BuildContext context, ScopedReader watch) {
   ///   final age = useProvider(personProvider.select((p) => p.age));
   ///   return Text('$age');
   /// }
@@ -233,8 +245,8 @@ abstract class RootProvider<Created, Listened>
   ///
   /// ```dart
   /// @override
-  /// Widget build(BuildContext context) {
-  ///   final isAdult = useProvider(personProvider.select((p) => p.age >= 18));
+  /// Widget build(BuildContext context, ScopedReader watch) {
+  ///   final isAdult = watch(personProvider.select((p) => p.age >= 18));
   ///   return Text('$isAdult');
   /// }
   /// ```
@@ -257,30 +269,31 @@ abstract class RootProvider<Created, Listened>
   // TODO support ChangeNotifier/StateNotifier
   Override overrideWithValue(Listened value) {
     return ProviderOverride(
-      ValueProvider<Object, Listened>((ref) => value, value),
+      ValueProvider<Object?, Listened>((ref) => value, value),
       this,
     );
   }
 }
 
 /// An internal class for `RootProvider.select`.
+@sealed
 class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
   /// An internal class for `RootProvider.select`.
   ProviderSelector({
-    this.provider,
-    this.selector,
+    required this.provider,
+    required this.selector,
   });
 
   /// The provider that was selected
-  final RootProvider<Object, Input> provider;
+  final RootProvider<Object?, Input> provider;
 
   /// The selector applied
   final Output Function(Input) selector;
 
   SelectorSubscription<Input, Output> _listen(
     ProviderContainer container, {
-    void Function(SelectorSubscription<Input, Output> sub) mayHaveChanged,
-    void Function(SelectorSubscription<Input, Output> sub) didChange,
+    void Function(SelectorSubscription<Input, Output> sub)? mayHaveChanged,
+    void Function(SelectorSubscription<Input, Output> sub)? didChange,
   }) {
     return SelectorSubscription(
       container: container,
@@ -300,11 +313,12 @@ class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
 /// - [read] and [watch], two methods that allows a provider to consume other providers.
 /// - [mounted], an utility to know whether the provider is still "alive" or not.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
+@sealed
 abstract class ProviderReference {
   /// An utility to know if a provider was destroyed or not.
   ///
   /// This is useful when dealing with asynchronous operations, as the provider
-  /// may have potentially be destroyed before the end of the asyncronous operation.
+  /// may have potentially be destroyed before the end of the asynchronous operation.
   /// In that case, we may want to stop performing further tasks.
   ///
   /// Most providers are never disposed, so in most situations you do not have to
@@ -363,7 +377,7 @@ abstract class ProviderReference {
   ///
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
-  T read<T>(RootProvider<Object, T> provider);
+  T read<T>(RootProvider<Object?, T> provider);
 
   /// Obtains the state of a provider and cause the state to be re-evaluated
   /// when that provider emits a new value.
@@ -415,21 +429,21 @@ abstract class ProviderReference {
   /// - if multiple widgets depends on `sortedTodosProvider` the list will be
   ///   sorted only once.
   /// - if nothing is listening to `sortedTodosProvider`, then no sort if performed.
-  T watch<T>(RootProvider<Object, T> provider);
+  T watch<T>(AlwaysAliveProviderBase<Object?, T> provider);
 }
 
 class _Listener<Listened> extends LinkedListEntry<_Listener<Listened>> {
   _Listener({
     this.mayHaveChanged,
     this.didChange,
-    @required this.element,
+    required this.element,
   }) : lastNotificationCount = element._notificationCount - 1;
 
   int lastNotificationCount;
 
-  final void Function() mayHaveChanged;
-  final void Function() didChange;
-  final ProviderElement<Object, Listened> element;
+  final void Function()? mayHaveChanged;
+  final void Function()? didChange;
+  final ProviderElement<Object?, Listened> element;
 }
 
 /// An object that allows watching the state of a provider.
@@ -437,6 +451,7 @@ class _Listener<Listened> extends LinkedListEntry<_Listener<Listened>> {
 /// This object is created by [ProviderContainer.listen].
 /// It allows reading the current value, closing the subscription, or knowing
 /// if the value exposed changed since the last read.
+@sealed
 class ProviderSubscription<Listened> {
   ProviderSubscription._(this._listener);
 
@@ -490,30 +505,26 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   /// Do not use.
   ProviderElement(this._provider) : state = _provider.createState();
 
-  static ProviderElement _debugCurrentlyBuildingElement;
-
-  ProviderBase<Created, Listened> _origin;
+  static ProviderElement? _debugCurrentlyBuildingElement;
 
   /// The provider associated to this [ProviderElement], before applying overrides.
   ProviderBase<Created, Listened> get origin => _origin;
-
-  ProviderBase<Created, Listened> _provider;
+  late ProviderBase<Created, Listened> _origin;
 
   /// The provider associated to this [ProviderElement], after applying overrides.
   ProviderBase<Created, Listened> get provider => _provider;
+  ProviderBase<Created, Listened> _provider;
 
   final ProviderStateBase<Created, Listened> state;
-
-  ProviderContainer _container;
 
   /// The [ProviderContainer] that owns this [ProviderElement].
   @override
   ProviderContainer get container => _container;
-
-  Set<ProviderElement> _dependents;
+  late ProviderContainer _container;
 
   /// All the [ProviderElement]s that depend on this [ProviderElement].
   Set<ProviderElement> get dependents => {...?_dependents};
+  Set<ProviderElement>? _dependents;
 
   /// Whether this [ProviderElement] is currently listened or not.
   ///
@@ -523,8 +534,8 @@ class ProviderElement<Created, Listened> implements ProviderReference {
 
   final _listeners = LinkedList<_Listener<Listened>>();
   var _subscriptions = <ProviderElement, ProviderSubscription>{};
-  Map<ProviderElement, ProviderSubscription> _previousSubscriptions;
-  DoubleLinkedQueue<void Function()> _onDisposeListeners;
+  Map<ProviderElement, ProviderSubscription>? _previousSubscriptions;
+  DoubleLinkedQueue<void Function()>? _onDisposeListeners;
 
   int _notificationCount = 0;
   int _notifyDidChangeLastNotificationCount = 0;
@@ -534,14 +545,14 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   bool _dependencyMayHaveChanged = true;
   // equivalent to _dependencyMayHaveChanged that does not rely on
   // ProviderSubscription.flush, to force recomputed a state
-  bool _dependencyDidChange = false;
+  bool _mustRecomputeState = false;
 
-  bool _mounted = false;
   @override
   bool get mounted => _mounted;
+  bool _mounted = false;
   bool _didMount = false;
 
-  ProviderException _exception;
+  ProviderException? _exception;
 
   @override
   void onDispose(void Function() listener) {
@@ -549,14 +560,14 @@ class ProviderElement<Created, Listened> implements ProviderReference {
       throw StateError('Cannot call onDispose after a provider was dispose');
     }
     _onDisposeListeners ??= DoubleLinkedQueue();
-    _onDisposeListeners.add(listener);
+    _onDisposeListeners!.add(listener);
   }
 
   bool _debugAssertCanDependOn(ProviderBase provider) {
     assert(() {
       final queue = Queue<ProviderElement>();
       if (_dependents != null) {
-        queue.addAll(_dependents);
+        queue.addAll(_dependents!);
       }
 
       while (queue.isNotEmpty) {
@@ -576,13 +587,13 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   }
 
   @override
-  T read<T>(RootProvider<Object, T> provider) {
+  T read<T>(RootProvider<Object?, T> provider) {
     assert(_debugAssertCanDependOn(provider), '');
     return _container.read(provider);
   }
 
   @override
-  T watch<T>(ProviderBase<Object, T> provider) {
+  T watch<T>(ProviderBase<Object?, T> provider) {
     assert(_debugAssertCanDependOn(provider), '');
 
     final element = _container.readProviderElement(provider);
@@ -592,8 +603,10 @@ class ProviderElement<Created, Listened> implements ProviderReference {
         return previousSub;
       }
       element._dependents ??= {};
-      element._dependents.add(this);
-      return element.listen(mayHaveChanged: _markDependencyMayHaveChanged);
+      element._dependents!.add(this);
+      return element.listen(
+        mayHaveChanged: _markDependencyMayHaveChanged,
+      );
     }) as ProviderSubscription<T>;
     return sub.read();
   }
@@ -612,10 +625,10 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   /// - [ProviderContainer.listen], which internally calls this method
   /// - [ProviderReference.watch], which makes a provider listen to another provider.
   ProviderSubscription<Listened> listen({
-    void Function(ProviderSubscription<Listened> sub) mayHaveChanged,
-    void Function(ProviderSubscription<Listened> sub) didChange,
+    void Function(ProviderSubscription<Listened> sub)? mayHaveChanged,
+    void Function(ProviderSubscription<Listened> sub)? didChange,
   }) {
-    ProviderSubscription<Listened> sub;
+    late ProviderSubscription<Listened> sub;
     final entry = _Listener<Listened>(
       mayHaveChanged: mayHaveChanged == null ? null : () => mayHaveChanged(sub),
       didChange: didChange == null ? null : () => didChange(sub),
@@ -634,23 +647,23 @@ class ProviderElement<Created, Listened> implements ProviderReference {
     }(), '');
 
     try {
-      if (_dependencyMayHaveChanged || _dependencyDidChange) {
+      if (_dependencyMayHaveChanged || _mustRecomputeState) {
         _dependencyMayHaveChanged = false;
-        // must be executed before _runStateCreate() so that errors during
-        // creation are not silenced
-        _exception = null;
-        _runOnDispose();
 
-        var hasAnyDependencyChanged = _dependencyDidChange;
+        var hasAnyDependencyChanged = _mustRecomputeState;
         for (final sub in _subscriptions.values) {
           if (sub.flush()) {
             hasAnyDependencyChanged = true;
           }
         }
         if (hasAnyDependencyChanged) {
+          // must be executed before _runStateCreate() so that errors during
+          // creation are not silenced
+          _exception = null;
+          _runOnDispose();
           _runStateCreate();
         }
-        _dependencyDidChange = false;
+        _mustRecomputeState = false;
       }
       _dirty = false;
       if (_notifyDidChangeLastNotificationCount != _notificationCount) {
@@ -679,9 +692,9 @@ class ProviderElement<Created, Listened> implements ProviderReference {
       'Called getExposedValue without calling flush before',
     );
     if (_exception != null) {
-      throw _exception;
+      throw _exception!;
     }
-    return state._exposedValue;
+    return state._exposedValue as Listened;
   }
 
   void _debugMarkWillChange() {
@@ -702,6 +715,13 @@ class ProviderElement<Created, Listened> implements ProviderReference {
     if (!_didMount) {
       return;
     }
+    assert(() {
+      RiverpodBinding.debugInstance.providerChanged(
+        containerId: container.debugId,
+        providerId: provider.debugId,
+      );
+      return true;
+    }(), '');
     _notificationCount++;
     notifyMayHaveChanged();
   }
@@ -730,8 +750,8 @@ class ProviderElement<Created, Listened> implements ProviderReference {
       }
 
       throw AssertionError('''
-The provider $provider was marked as needing to be recomputed while creating ${_debugCurrentlyBuildingElement.provider},
-but $provider does not depend on ${_debugCurrentlyBuildingElement.provider}.
+The provider $provider was marked as needing to be recomputed while creating ${_debugCurrentlyBuildingElement!.provider},
+but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
 ''');
     }(), '');
     if (!_mounted) {
@@ -743,7 +763,7 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement.provider}.
     _dirty = true;
     for (final listener in _listeners) {
       if (listener.mayHaveChanged != null) {
-        _runGuarded(listener.mayHaveChanged);
+        _runGuarded(listener.mayHaveChanged!);
       }
     }
     if (_didMount) {
@@ -760,7 +780,7 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement.provider}.
   void _notifyDidChange() {
     for (final listener in _listeners) {
       if (listener.didChange != null) {
-        _runGuarded(listener.didChange);
+        _runGuarded(listener.didChange!);
       }
     }
     for (final observer in _container._observers) {
@@ -789,6 +809,9 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement.provider}.
     _mounted = true;
     state._element = this;
     assert(() {
+      RiverpodBinding.debugInstance
+          .providerListChangedFor(containerId: container._debugId);
+
       _debugIsFlushing = true;
       return true;
     }(), '');
@@ -821,11 +844,17 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement.provider}.
   @protected
   @mustCallSuper
   void dispose() {
+    assert(() {
+      RiverpodBinding.debugInstance
+          .providerListChangedFor(containerId: container._debugId);
+      return true;
+    }(), '');
+
     _mounted = false;
     _runOnDispose();
 
     for (final sub in _subscriptions.entries) {
-      sub.key._dependents.remove(this);
+      sub.key._dependents?.remove(this);
       sub.value.close();
     }
 
@@ -843,7 +872,7 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement.provider}.
   /// Forces the state of a provider to be re-created, even if none of its
   /// dependencies changed.
   void markMustRecomputeState() {
-    _dependencyDidChange = true;
+    _mustRecomputeState = true;
     notifyMayHaveChanged();
   }
 
@@ -858,12 +887,13 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement.provider}.
     final previous = state._createdValue;
     _previousSubscriptions = _subscriptions;
     _subscriptions = {};
-    ProviderElement previouslyBuildingElement;
+    ProviderElement? debugPreviouslyBuildingElement;
     assert(() {
-      previouslyBuildingElement = _debugCurrentlyBuildingElement;
+      debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
       _debugCurrentlyBuildingElement = this;
       return true;
     }(), '');
+
     try {
       state._createdValue = _provider._create(this);
       state.valueChanged(previous: previous);
@@ -873,12 +903,12 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement.provider}.
       }
     } finally {
       assert(() {
-        _debugCurrentlyBuildingElement = previouslyBuildingElement;
+        _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
         return true;
       }(), '');
       if (_previousSubscriptions != null) {
-        for (final sub in _previousSubscriptions.entries) {
-          sub.key._dependents.remove(this);
+        for (final sub in _previousSubscriptions!.entries) {
+          sub.key._dependents?.remove(this);
           sub.value.close();
         }
       }
@@ -889,20 +919,16 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement.provider}.
 
 /// The internal state of a provider
 abstract class ProviderStateBase<Created, Listened> {
-  ProviderElement<Created, Listened> _element;
-
   /// The [ProviderReference] associated with this provider.
   ProviderReference get ref => _element;
-
-  Created _createdValue;
+  late ProviderElement<Created, Listened> _element;
 
   /// The last value that was created by a provider.
   ///
   /// May change over time, in which case [valueChanged] will be called with the
   /// previous value.
-  Created get createdValue => _createdValue;
-
-  Listened _exposedValue;
+  Created get createdValue => _createdValue as Created;
+  Created? _createdValue;
 
   /// The value currently exposed by the provider.
   ///
@@ -910,8 +936,14 @@ abstract class ProviderStateBase<Created, Listened> {
   /// that the exposed value changed.
   ///
   /// Must be set during [valueChanged].
-  Listened get exposedValue => _exposedValue;
-  set exposedValue(Listened exposedValue) {
+  Listened? get exposedValue => _exposedValue;
+  Listened? _exposedValue;
+
+  set exposedValue(Listened? exposedValue) {
+    assert(
+      exposedValue is Listened,
+      'A provider tried to assign `null` to a non-nullable `exposedValue`',
+    );
     assert(() {
       _element._debugMarkWillChange();
       return true;
@@ -927,7 +959,7 @@ abstract class ProviderStateBase<Created, Listened> {
   ///
   /// On first call, **must** set [exposedValue].
   @protected
-  void valueChanged({Created previous});
+  void valueChanged({Created? previous});
 
   /// Optionally handles errors inside the `create` callback.
   ///

@@ -1,12 +1,13 @@
 part of '../state_provider.dart';
 
 /// {@macro riverpod.stateprovider}
+@sealed
 class StateProvider<T>
     extends AlwaysAliveProviderBase<StateController<T>, StateController<T>> {
   /// {@macro riverpod.stateprovider}
   StateProvider(
     Create<T, ProviderReference> create, {
-    String name,
+    String? name,
   }) : super((ref) => StateController(create(ref)), name);
 
   /// {@macro riverpod.family}
@@ -21,23 +22,25 @@ class StateProvider<T>
   }
 }
 
+@sealed
 class _StateProviderState<T> = ProviderStateBase<StateController<T>,
     StateController<T>> with _StateProviderStateMixin<T>;
 
 /// {@macro riverpod.stateprovider.family}
+@sealed
 class StateProviderFamily<T, A> extends Family<StateController<T>,
     StateController<T>, A, ProviderReference, StateProvider<T>> {
   /// {@macro riverpod.stateprovider.family}
   StateProviderFamily(
     T Function(ProviderReference ref, A a) create, {
-    String name,
+    String? name,
   }) : super((ref, a) => StateController(create(ref, a)), name);
 
   @override
   StateProvider<T> create(
     A value,
     StateController<T> Function(ProviderReference ref, A param) builder,
-    String name,
+    String? name,
   ) {
     return StateProvider((ref) => builder(ref, value).state, name: name);
   }

@@ -8,8 +8,8 @@ part 'common.freezed.dart';
 
 /// An utility for safely manipulating asynchronous data.
 ///
-/// By using [AsyncValue], you are guanranteed that you cannot forget to
-/// handle the loading/error state of an asynchrounous operation.
+/// By using [AsyncValue], you are guaranteed that you cannot forget to
+/// handle the loading/error state of an asynchronous operation.
 ///
 /// It also expose some utilities to nicely convert an [AsyncValue] to
 /// a different object.
@@ -22,10 +22,10 @@ part 'common.freezed.dart';
 ///   // fetch the user
 /// });
 ///
-/// class Example extends HookWidget {
+/// class Example extends ConsumerWidget {
 ///   @override
-///   Widget build(BuildContext context) {
-///     final AsyncValue<User> user = useProvider(userProvider);
+///   Widget build(BuildContext context, ScopedReader watch) {
+///     final AsyncValue<User> user = watch(userProvider);
 ///
 ///     return user.when(
 ///       loading: () => CircularProgressIndicator(),
@@ -40,9 +40,9 @@ part 'common.freezed.dart';
 /// state, consider using [data] to read the state:
 ///
 /// ```dart
-/// Widget build(BuildContext context) {
+/// Widget build(BuildContext context, ScopedReader watch) {
 ///   // reads the data state directly – will be null during loading/error states
-///   final User user = useProvider(userProvider).data?.value;
+///   final User user = watch(userProvider).data?.value;
 ///
 ///   return Text('Hello ${user?.name}');
 /// }
@@ -52,17 +52,18 @@ part 'common.freezed.dart';
 ///
 /// - [FutureProvider] and [StreamProvider], which transforms a [Future] into
 ///   an [AsyncValue].
-/// - [AsyncValue.guard], to simplify tranforming a [Future] into an [AsyncValue].
+/// - [AsyncValue.guard], to simplify transforming a [Future] into an [AsyncValue].
 /// - The package Freezed (https://github.com/rrousselgit/freezed), which have
 ///   generated this [AsyncValue] class and explains how [map]/[when] works.
 @freezed
+@sealed
 abstract class AsyncValue<T> with _$AsyncValue<T> {
   const AsyncValue._();
 
   /// Creates an [AsyncValue] with a data.
   ///
   /// The data can be `null`.
-  const factory AsyncValue.data(@nullable T value) = AsyncData<T>;
+  const factory AsyncValue.data(T value) = AsyncData<T>;
 
   /// Creates an [AsyncValue] in loading state.
   ///
@@ -72,7 +73,7 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
   /// Creates an [AsyncValue] in error state.
   ///
   /// The parameter [error] cannot be `null`.
-  factory AsyncValue.error(Object error, [StackTrace stackTrace]) =
+  factory AsyncValue.error(Object error, [StackTrace? stackTrace]) =
       AsyncError<T>;
 
   /// Transforms a [Future] that may fail into something that is safe to read.
@@ -81,12 +82,12 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
   ///
   /// ```dart
   /// class MyNotifier extends StateNotifier<AsyncValue<MyData> {
-  ///   MyNotifier(): super(const AsncValue.loading()) {
+  ///   MyNotifier(): super(const AsyncValue.loading()) {
   ///     _fetchData();
   ///   }
   ///
   ///   Future<void> _fetchData() async {
-  ///     state = const AsncValue.loading();
+  ///     state = const AsyncValue.loading();
   ///     try {
   ///       final response = await dio.get('my_api/data');
   ///       final data = MyData.fromJson(response);
@@ -103,17 +104,17 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
   ///
   ///
   /// ```dart
-  /// class MyNotifier extends StateNotifier<AsyncValue<MyData> {
-  ///   MyNotifier(): super(const AsncValue.loading()) {
+  /// class MyNotifier extends StateNotifier<AsyncValue<MyData>> {
+  ///   MyNotifier(): super(const AsyncValue.loading()) {
   ///     _fetchData();
   ///   }
   ///
   ///   Future<void> _fetchData() async {
-  ///     state = const AsncValue.loading();
+  ///     state = const AsyncValue.loading();
   ///     // does the try/catch for us like previously
   ///     state = await AsyncValue.guard(() async {
   ///       final response = await dio.get('my_api/data');
-  ///       final data = Data.fromJson(response);
+  ///       return Data.fromJson(response);
   ///     });
   ///   }
   /// }
@@ -134,7 +135,7 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
   ///
   /// ## Why does [AsyncValue<T>.data] return [AsyncData<T>] instead of [T]?
   ///
-  /// The motivation behind this decision is to allow differenciating between:
+  /// The motivation behind this decision is to allow differentiating between:
   ///
   /// - There is a data, and it is `null`.
   ///   ```dart
@@ -153,13 +154,14 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
   ///   print(configs.data); // null, currently loading
   ///   print(configs.data.value); // throws null exception
   ///   ```
-  AsyncData<T> get data {
+  AsyncData<T>? get data {
     return map(
       data: (data) => data,
       loading: (_) => null,
       error: (_) => null,
     );
   }
+
   // TODO: Add a `value` extension on non-nullable AsyncValue
 
   /// Shorthand for [when] to handle only the `data` case.

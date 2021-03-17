@@ -1,11 +1,12 @@
-name: example
+name: hooks_riverpod_example
 description: A new Flutter project.
 
 publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0-0 <3.0.0"
+  flutter: ">=1.17.0"
 
 dependencies:
   flutter:
@@ -16,14 +17,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-dependency_overrides:
-  flutter_riverpod:
-    path: ../../flutter_riverpod
-  riverpod:
-    path: ../../riverpod
-  hooks_riverpod:
-    path: ..
 
 flutter:
   uses-material-design: true

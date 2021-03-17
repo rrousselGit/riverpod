@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 import 'builders.dart';
@@ -32,12 +33,12 @@ class StateController<T> extends StateNotifier<T> {
 /// a product by tapping on it.
 ///
 /// ```dart
-/// final selectedProductIdProvider = StateProvider<String>((ref) => null);
+/// final selectedProductIdProvider = StateProvider<String?>((ref) => null);
 /// final productsProvider = StateNotifierProvider<ProductsNotifier>((ref) => ProductsNotifier());
 ///
-/// Widget build(BuildContext context) {
-///   final List<Product> products = useProvider(productsProvider.state);
-///   final selectedProductId = useProvider(selectedProductIdProvider);
+/// Widget build(BuildContext context, ScopedReader watch) {
+///   final List<Product> products = watch(productsProvider.state);
+///   final selectedProductId = watch(selectedProductIdProvider);
 ///
 ///   return ListView(
 ///     children: [
@@ -56,10 +57,10 @@ class StateController<T> extends StateNotifier<T> {
 /// {@endtemplate}
 mixin _StateProviderStateMixin<T>
     on ProviderStateBase<StateController<T>, StateController<T>> {
-  void Function() removeListener;
+  void Function()? removeListener;
 
   @override
-  void valueChanged({StateController previous}) {
+  void valueChanged({StateController? previous}) {
     if (createdValue == previous) {
       return;
     }
@@ -74,7 +75,7 @@ mixin _StateProviderStateMixin<T>
   @override
   void dispose() {
     removeListener?.call();
-    exposedValue.dispose();
+    exposedValue!.dispose();
     super.dispose();
   }
 }

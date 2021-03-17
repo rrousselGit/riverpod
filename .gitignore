@@ -12,6 +12,7 @@ pubspec.lock
 examples/**/android/
 examples/**/ios/
 examples/**/web/
+examples/**/macos/
 
 # Miscellaneous
 coverage/
@@ -24,6 +25,7 @@ coverage/
 .buildlog/
 .history
 .svn/
+coverage.lcov
 
 # IntelliJ related
 *.iml

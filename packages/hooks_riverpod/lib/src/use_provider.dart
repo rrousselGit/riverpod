@@ -1,4 +1,8 @@
-part of 'framework.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'internals.dart';
 
 /// A hook that listens to a provider and returns its current value.
 ///
@@ -39,7 +43,7 @@ class _ProviderHook<T> extends Hook<T> {
 }
 
 class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
-  ProviderSubscription<T> _link;
+  ProviderSubscription<T>? _link;
 
   @override
   void initHook() {
@@ -49,20 +53,22 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
 
   void _listen() {
     _link?.close();
-    // De-reference the providerListenable so that `is` promotes the type
-    final providerListenable = hook._providerListenable;
     _link = hook._container.listen<T>(
-      providerListenable,
-      mayHaveChanged: (_) => markMayNeedRebuild(),
+      hook._providerListenable,
+      mayHaveChanged: _mayHaveChanged,
     );
   }
 
   @override
-  bool shouldRebuild() => _link.flush();
+  bool shouldRebuild() => _link!.flush();
+
+  void _mayHaveChanged(ProviderSubscription<T> sub) {
+    markMayNeedRebuild();
+  }
 
   @override
   T build(BuildContext context) {
-    return _link.read();
+    return _link!.read();
   }
 
   @override
@@ -73,10 +79,12 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
           hook._providerListenable.runtimeType,
       'The provider listened cannot change',
     );
+
+    final link = _link;
+
     if (oldHook._container != hook._container) {
       _listen();
-    } else if (_link is SelectorSubscription<dynamic, T>) {
-      final link = _link as SelectorSubscription<dynamic, T>;
+    } else if (link is SelectorSubscription<dynamic, T>) {
       assert(
         hook._providerListenable is ProviderSelector<dynamic, T>,
         'useProvider was updated from `useProvider(provider.select(...)) '
@@ -97,7 +105,7 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
 
   @override
   void dispose() {
-    _link.close();
+    _link!.close();
     super.dispose();
   }
 }

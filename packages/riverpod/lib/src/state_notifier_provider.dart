@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 import 'builders.dart';
@@ -54,9 +55,9 @@ part 'state_notifier_provider/auto_dispose.dart';
 /// And finally, you can interact with it inside your UI:
 ///
 /// ```dart
-/// Widget build(BuildContext context) {
+/// Widget build(BuildContext context, ScopedReader watch) {
 ///   // rebuild the widget when the todo list changes
-///   List<Todo> todos = useProvider(todosProvider.state);
+///   List<Todo> todos = watch(todosProvider.state);
 ///
 ///   return ListView(
 ///     children: [
@@ -64,7 +65,7 @@ part 'state_notifier_provider/auto_dispose.dart';
 ///         CheckboxListTile(
 ///            value: todo.completed,
 ///            // When tapping on the todo, change its completed status
-///            onChanged: (value) => todosProvider.read(context).toggle(todo.id),
+///            onChanged: (value) => context.read(todosProvider).toggle(todo.id),
 ///            title: Text(todo.description),
 ///         ),
 ///     ],
@@ -74,14 +75,10 @@ part 'state_notifier_provider/auto_dispose.dart';
 /// {@endtemplate}
 mixin _StateNotifierStateProviderStateMixin<T>
     on ProviderStateBase<StateNotifier<T>, T> {
-  void Function() removeListener;
+  void Function()? removeListener;
 
   @override
-  void valueChanged({StateNotifier<T> previous}) {
-    assert(
-      createdValue != null,
-      'StateNotifierProvider must return a non-null value',
-    );
+  void valueChanged({StateNotifier<T>? previous}) {
     if (createdValue == previous) {
       return;
     }

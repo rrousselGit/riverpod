@@ -2,10 +2,21 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
+import '../uni_directional_test.dart';
 import '../utils.dart';
 
 void main() {
   group('ScopedProvider', () {
+    test('create is nullable and default to throw UnsupportedError', () {
+      final provider = ScopedProvider<int>(null);
+      final container = ProviderContainer();
+
+      expect(
+        () => container.read(provider),
+        throwsA(isProviderException(isUnsupportedError)),
+      );
+    });
+
     test('use the deepest override', () {
       final provider = ScopedProvider((watch) => 0);
       final root = ProviderContainer(overrides: [
@@ -81,6 +92,10 @@ void main() {
       await Future<void>.value();
 
       expect(element.mounted, false);
+
+      container.dispose();
+
+      expect(element.mounted, false);
     });
 
     test('overridesAs are auto disposed', () async {
@@ -121,6 +136,32 @@ void main() {
       container.dispose();
 
       expect(element.mounted, false);
+    });
+
+    test('can update multiple ScopeProviders at one', () {
+      final provider = ScopedProvider<int>(null);
+      final provider2 = ScopedProvider<int>(null);
+
+      final container = ProviderContainer(overrides: [
+        provider.overrideWithValue(21),
+        provider2.overrideWithValue(42),
+      ]);
+
+      final sub = container.listen(provider);
+      final sub2 = container.listen(provider2);
+
+      expect(sub.read(), 21);
+      expect(sub2.read(), 42);
+
+      container.updateOverrides([
+        provider.overrideWithValue(22),
+        provider2.overrideWithValue(43),
+      ]);
+
+      expect(sub.flush(), true);
+      expect(sub.read(), 22);
+      expect(sub2.flush(), true);
+      expect(sub2.read(), 43);
     });
 
     test('handles parent override update', () {
@@ -256,6 +297,7 @@ void main() {
 
       expect(sub.flush(), false);
     });
+
     group('overrideAs', () {
       test('is re-evaluated on override change', () {
         final mayHaveChanged = MayHaveChangedMock<int>();

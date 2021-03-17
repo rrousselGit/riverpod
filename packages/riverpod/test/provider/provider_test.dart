@@ -74,6 +74,7 @@ void main() {
 
     expect(provider, isA<AlwaysAliveProviderBase>());
   });
+
   group('depend on', () {
     final dependency = Provider((_) => 1);
     final dependency2 = Provider((_) => '2');
@@ -137,7 +138,7 @@ void main() {
     final container = ProviderContainer();
     final provider = Provider((_) => 42);
 
-    int value;
+    int? value;
     var callCount = 0;
 
     final removeListener = provider.watchOwner(container, (v) {

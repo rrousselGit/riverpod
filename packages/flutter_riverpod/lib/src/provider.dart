@@ -64,7 +64,7 @@ extension BuildContextX on BuildContext {
   ///   // Using select to listen only to the value that used
   ///   final valueThatNeverChanges = useProvider(modelProvider.select((model) {
   ///     return model.valueThatNeverChanges;
-  ///   });
+  ///   }));
   ///
   ///   return Text('$valueThatNeverChanges');
   /// }
@@ -73,11 +73,11 @@ extension BuildContextX on BuildContext {
   /// While more verbose than [read], using [Provider]/`select` is a lot safer.
   /// It does not rely on implementation details on `Model`, and it makes
   /// impossible to have a bug where our UI does not refresh.
-  T read<T>(RootProvider<Object, T> provider) {
+  T read<T>(ProviderBase<Object, T> provider) {
     return ProviderScope.containerOf(this, listen: false).read(provider);
   }
 
-  /// Forces a provider to re-evaluate its state immediatly, and return the created value.
+  /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
@@ -91,10 +91,10 @@ extension BuildContextX on BuildContext {
   ///   return Products.fromJson(response.data);
   /// });
   ///
-  /// class Example extends HookWidget {
+  /// class Example extends ConsumerWidget {
   ///   @override
-  ///   Widget build(BuildContext context) {
-  ///     final Products products = useProvider(productsProvider);
+  ///   Widget build(BuildContext context, ScopedReader watch) {
+  ///     final Products products = watch(productsProvider);
   ///
   ///     return RefreshIndicator(
   ///       onRefresh: () => context.refresh(productsProvider),

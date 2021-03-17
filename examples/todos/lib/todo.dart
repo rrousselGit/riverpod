@@ -1,16 +1,15 @@
-import 'package:meta/meta.dart';
-import 'package:state_notifier/state_notifier.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:uuid/uuid.dart';
 
-var _uuid = Uuid();
+const _uuid = Uuid();
 
 /// A read-only description of a todo-item
 class Todo {
   Todo({
-    this.description,
+    required this.description,
+    required this.id,
     this.completed = false,
-    String id,
-  }) : id = id ?? _uuid.v4();
+  });
 
   final String id;
   final String description;
@@ -24,12 +23,15 @@ class Todo {
 
 /// An object that controls a list of [Todo].
 class TodoList extends StateNotifier<List<Todo>> {
-  TodoList([List<Todo> initialTodos]) : super(initialTodos ?? []);
+  TodoList([List<Todo>? initialTodos]) : super(initialTodos ?? []);
 
   void add(String description) {
     state = [
       ...state,
-      Todo(description: description),
+      Todo(
+        id: _uuid.v4(),
+        description: description,
+      ),
     ];
   }
 
@@ -47,7 +49,7 @@ class TodoList extends StateNotifier<List<Todo>> {
     ];
   }
 
-  void edit({@required String id, @required String description}) {
+  void edit({required String id, required String description}) {
     state = [
       for (final todo in state)
         if (todo.id == id)

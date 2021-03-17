@@ -3,9 +3,60 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:state_notifier/state_notifier.dart';
 
 void main() {
+  testWidgets('can use "watch" inside ListView.builder', (tester) async {
+    final provider = Provider((ref) => 'hello world');
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Consumer(
+            builder: (context, watch, _) {
+              return ListView.builder(
+                itemCount: 1,
+                itemBuilder: (context, index) {
+                  return Text(watch(provider));
+                },
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('hello world'), findsOneWidget);
+  });
+
+  testWidgets('can extend ConsumerWidget', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: MyWidget()));
+
+    expect(find.text('hello world'), findsOneWidget);
+  });
+
+  testWidgets('hot-reload forces the widget to refresh', (tester) async {
+    var buildCount = 0;
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(builder: (context, watch, _) {
+          buildCount++;
+          return Container();
+        }),
+      ),
+    );
+
+    expect(find.byType(Container), findsOneWidget);
+    expect(buildCount, 1);
+
+    // ignore: unawaited_futures
+    tester.binding.reassembleApplication();
+    await tester.pump();
+
+    expect(find.byType(Container), findsOneWidget);
+    expect(buildCount, 2);
+  });
+
   testWidgets(
       'Consumer removing one of multiple listeners on a provider still listen to the provider',
       (tester) async {
@@ -17,7 +68,7 @@ void main() {
     var buildCount = 0;
 
     await tester.pumpWidget(ProviderScope(
-      child: Consumer((c, watch) {
+      child: Consumer(builder: (c, watch, _) {
         buildCount++;
         final state = watch(stateProvider).state;
         final value =
@@ -35,10 +86,10 @@ void main() {
 
     container.read(provider0.state);
     container.read(provider1.state);
-    final familyState0 = container.debugProviderStates.firstWhere((p) {
+    final familyState0 = container.debugProviderElements.firstWhere((p) {
       return p.provider == provider0.state;
     });
-    final familyState1 = container.debugProviderStates.firstWhere((p) {
+    final familyState1 = container.debugProviderElements.firstWhere((p) {
       return p.provider == provider1.state;
     });
 
@@ -92,7 +143,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           buildCount++;
           final state = watch(stateProvider).state;
           final result = state == 0 //
@@ -108,10 +159,10 @@ void main() {
 
     container.read(provider0.state);
     container.read(provider1.state);
-    final familyState0 = container.debugProviderStates.firstWhere((p) {
+    final familyState0 = container.debugProviderElements.firstWhere((p) {
       return p.provider == provider0.state;
     });
-    final familyState1 = container.debugProviderStates.firstWhere((p) {
+    final familyState1 = container.debugProviderElements.firstWhere((p) {
       return p.provider == provider1.state;
     });
 
@@ -161,7 +212,7 @@ void main() {
 
     Widget build(StateNotifierProvider<TestNotifier> provider) {
       return ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           buildCount++;
           final value = watch(provider.state);
           return Text('$value', textDirection: TextDirection.ltr);
@@ -205,7 +256,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, watch) {
+        child: Consumer(builder: (context, watch, _) {
           final first = watch(provider.state);
           final second = watch(computed);
           return Text(
@@ -235,7 +286,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           buildCount++;
           return Text(
             'isPositive ${watch(computed)}',
@@ -276,10 +327,12 @@ void main() {
     const secondOwnerKey = Key('second');
     final key = GlobalKey();
 
-    final consumer = Consumer((context, watch) {
-      final value = watch(provider.state);
-      return Text('$value', textDirection: TextDirection.ltr);
-    }, key: key);
+    final consumer = Consumer(
+        builder: (context, watch, _) {
+          final value = watch(provider.state);
+          return Text('$value', textDirection: TextDirection.ltr);
+        },
+        key: key);
 
     await tester.pumpWidget(
       Column(
@@ -303,7 +356,7 @@ void main() {
         .firstState<ProviderScopeState>(find.byKey(firstOwnerKey))
         .container;
 
-    final state1 = owner1.debugProviderStates
+    final state1 = owner1.debugProviderElements
         .firstWhere((s) => s.provider == provider.state);
 
     expect(state1.hasListeners, true);
@@ -331,7 +384,7 @@ void main() {
         .firstState<ProviderScopeState>(find.byKey(secondOwnerKey))
         .container;
 
-    final state2 = container2.debugProviderStates
+    final state2 = container2.debugProviderElements
         .firstWhere((s) => s.provider is StateNotifierStateProvider);
 
     expect(find.text('0'), findsNothing);
@@ -354,7 +407,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, watch) {
+        child: Consumer(builder: (context, watch, _) {
           final value = watch(provider.state);
           return Text('$value', textDirection: TextDirection.ltr);
         }),
@@ -365,7 +418,7 @@ void main() {
         .firstState<ProviderScopeState>(find.byType(ProviderScope))
         .container;
 
-    final state = container.debugProviderStates
+    final state = container.debugProviderElements
         .firstWhere((s) => s.provider == provider.state);
 
     expect(state.hasListeners, true);
@@ -388,7 +441,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, watch) {
+        child: Consumer(builder: (context, watch, _) {
           final first = watch(firstProvider.state);
           final second = watch(secondProvider.state);
           return Text(
@@ -419,7 +472,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, watch) {
+        child: Consumer(builder: (context, watch, _) {
           final count = watch(provider.state);
           return Text('$count', textDirection: TextDirection.ltr);
         }),
@@ -444,7 +497,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, watch) {
+        child: Consumer(builder: (context, watch, _) {
           final value = watch(provider);
           return Text(
             '$value',
@@ -460,7 +513,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((context, watch) {
+        child: Consumer(builder: (context, watch, _) {
           final value = watch(provider2);
           return Text(
             '$value',
@@ -477,7 +530,7 @@ void main() {
   testWidgets('can read scoped providers', (tester) async {
     final provider = ScopedProvider((_) => 0);
 
-    final child = Consumer((context, watch) {
+    final child = Consumer(builder: (context, watch, _) {
       final value = watch(provider);
       return Text(
         '$value',
@@ -520,4 +573,15 @@ class TestNotifier extends StateNotifier<int> {
 
 class Listener<T> extends Mock {
   void call(T value);
+}
+
+final _provider = Provider((ref) => 'hello world');
+
+class MyWidget extends ConsumerWidget {
+  const MyWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, ScopedReader watch) {
+    return Text(watch(_provider), textDirection: TextDirection.rtl);
+  }
 }

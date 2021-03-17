@@ -32,8 +32,8 @@ void main() {
   });
 
   testWidgets('mounted', (tester) async {
-    ProviderReference providerState;
-    bool mountedOnDispose;
+    late ProviderReference providerState;
+    bool? mountedOnDispose;
     final provider = Provider<int>((ref) {
       providerState = ref;
       ref.onDispose(() => mountedOnDispose = ref.mounted);
@@ -42,7 +42,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           return Text(
             watch(provider).toString(),
             textDirection: TextDirection.ltr,
@@ -65,7 +65,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           return Text(
             watch(provider).toString(),
             textDirection: TextDirection.ltr,
@@ -95,7 +95,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           return Text(
             watch(provider).toString(),
             textDirection: TextDirection.ltr,
@@ -130,14 +130,13 @@ void main() {
   testWidgets('expose value as is', (tester) async {
     var callCount = 0;
     final provider = Provider((ref) {
-      assert(ref != null, '');
       callCount++;
       return 42;
     });
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           return Text(
             watch(provider).toString(),
             textDirection: TextDirection.ltr,
@@ -153,7 +152,7 @@ void main() {
   testWidgets('override updates rebuild dependents with new value',
       (tester) async {
     final provider = Provider((_) => 0);
-    final child = Consumer((c, watch) {
+    final child = Consumer(builder: (c, watch, _) {
       return Text(
         watch(provider).toString(),
         textDirection: TextDirection.ltr,
@@ -167,7 +166,6 @@ void main() {
         overrides: [
           provider.overrideWithProvider(
             Provider((ref) {
-              assert(ref != null, '');
               callCount++;
               return 42;
             }),
@@ -185,7 +183,6 @@ void main() {
         overrides: [
           provider.overrideWithProvider(
             Provider((ref) {
-              assert(ref != null, '');
               callCount++;
               throw Error();
             }),
@@ -212,7 +209,7 @@ void main() {
             }),
           ),
         ],
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           return Text(
             watch(provider2).toString(),
             textDirection: TextDirection.ltr,
@@ -237,7 +234,7 @@ void main() {
         overrides: [
           provider.overrideWithProvider(Provider((_) => 1)),
         ],
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           return Text(watch(provider1), textDirection: TextDirection.ltr);
         }),
       ),
@@ -261,7 +258,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           return Text(
             watch(forth).toString(),
             textDirection: TextDirection.ltr,
@@ -290,7 +287,7 @@ void main() {
         overrides: [
           first.overrideWithProvider(Provider((_) => 42)),
         ],
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           return Text(
             watch(forth).toString(),
             textDirection: TextDirection.ltr,
@@ -319,7 +316,7 @@ void main() {
         overrides: [
           second.overrideWithProvider(Provider((_) => 0)),
         ],
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           return Text(
             watch(forth).toString(),
             textDirection: TextDirection.ltr,
@@ -335,7 +332,7 @@ void main() {
     final provider = Provider((_) => 42);
 
     // These check the type safety
-    ProviderReference ref;
+    ProviderReference? ref;
 
     // ignore: omit_local_variable_types
     final Provider<int> provider1 = Provider<int>((r) {
@@ -346,7 +343,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer((c, watch) {
+        child: Consumer(builder: (c, watch, _) {
           return Text(
             watch(provider1).toString(),
             textDirection: TextDirection.ltr,

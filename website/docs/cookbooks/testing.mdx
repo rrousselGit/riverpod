@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Consumer((context, watch) {
+      home: Consumer(builder: (context, watch, _) {
         final counter = watch(counterProvider);
         return RaisedButton(
           onPressed: () => counter.state++,
@@ -117,10 +117,14 @@ void main() {
     // An object that will allow us to read providers
     // Do not share this between tests.
     final container = ProviderContainer();
+    addTearDown(container.dispose);
     final listener = Listener();
 
     // Observe a provider and spy the changes.
-    counterProvider.watchOwner(container, (value) => listener(value.state));
+    container.listen<StateController<int>>(
+      counterProvider,
+      didChange: (sub) => listener(sub.read().state),
+    );
 
     // the listener is called immediatly with 0, the default value
     verify(listener(0)).called(1);
@@ -138,9 +142,13 @@ void main() {
     // We use a different ProviderContainer to read our provider.
     // This unsure that no state is reused between tests
     final container = ProviderContainer();
+    addTearDown(container.dispose);
     final listener = Listener();
 
-    counterProvider.watchOwner(container, (value) => listener(value.state));
+    container.listen<StateController<int>>(
+      counterProvider,
+      didChange: (sub) => listener(sub.read().state),
+    );
 
     // The new test correcly uses the default value: 0
     verify(listener(0)).called(1);
@@ -168,7 +176,7 @@ A common real-world application may have the following objects:
   HTTP requests based on different factors.  
   This may be a `ChangeNotifier`, `Bloc`, or even a provider.
 
-Using [Riverpod], this may be represented as followed:
+Using [Riverpod], this may be represented as follows:
 
 ```dart
 class Repository {
@@ -299,7 +307,11 @@ class Repository {
 }
 
 class Todo {
-  Todo({this.id, this.label, this.completed});
+  Todo({
+    required this.id,
+    required this.label,
+    required this.completed,
+  });
 
   final String id;
   final String label;
@@ -330,7 +342,7 @@ class FakeRepository implements Repository {
 }
 
 class TodoItem extends StatelessWidget {
-  const TodoItem({Key key, this.todo}) : super(key: key);
+  const TodoItem({Key? key, required this.todo}) : super(key: key);
   final Todo todo;
   @override
   Widget build(BuildContext context) {
@@ -349,7 +361,7 @@ void main() {
         // You may extract this into a MyApp widget
         child: MaterialApp(
           home: Scaffold(
-            body: Consumer((context, watch) {
+            body: Consumer(builder: (context, watch, _) {
               final todos = watch(todoListProvider);
               // The list of todos is loading or in error
               if (todos.data == null) {

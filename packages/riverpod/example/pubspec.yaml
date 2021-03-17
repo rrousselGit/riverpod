@@ -1,19 +1,19 @@
-name: example
+name: riverpod_example
 version: 0.0.1
 publish_to: "none"
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0-0 <3.0.0"
 
 dependencies:
+  crypto: ^3.0.0
+  dio: ^3.0.9
+  freezed_annotation: ^0.14.0
   riverpod:
     path: ..
-  freezed_annotation: ^0.11.0
-  crypto: ^2.1.4
-  dio: ^3.0.9
 
 dev_dependencies:
-  freezed: ^0.11.0
+  build_runner: ^1.11.0
+  freezed: ^0.14.0
   json_serializable:
-  build_runner: ^1.8.1
-  test:
+  test: ^1.16.0

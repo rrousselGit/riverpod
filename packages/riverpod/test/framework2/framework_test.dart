@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
-  ProviderContainer container;
+  late ProviderContainer container;
   final mayHaveChanged = MayHaveChangedMock<int>();
   final didChange = DidChangedMock<int>();
 
@@ -85,7 +85,7 @@ void main() {
   });
 
   group('combining providers', () {
-    StreamController<int> controller;
+    late StreamController<int> controller;
     final streamProvider = StreamProvider((ref) => controller.stream);
 
     setUp(() {
@@ -205,6 +205,29 @@ void main() {
     expect(child.read(provider), 42);
   });
 
+  test(
+      'ProviderException not cleared if dependency mayHaveChanged but did not change',
+      () {
+    var callCount = 0;
+    final atom = StateProvider((ref) => 0);
+    final dependency = Provider((ref) => ref.watch(atom).state);
+    final provider = Provider((ref) {
+      callCount++;
+      ref.watch(dependency);
+      if (callCount == 1) {
+        throw Error();
+      }
+    });
+
+    expect(() => container.read(provider), throwsA(isA<ProviderException>()));
+    expect(callCount, 1);
+
+    container.read(atom).state = 0;
+
+    expect(() => container.read(provider), throwsA(isA<ProviderException>()));
+    expect(callCount, 1);
+  });
+
   test('re-evaluating a provider can stop listening to a dependency', () {
     final first = StateProvider((ref) => 0);
     final second = StateProvider((ref) => 0);
@@ -233,6 +256,7 @@ void main() {
     expect(secondElement.dependents, <ProviderElement>{});
     expect(secondElement.hasListeners, false);
   });
+
   group('overrideWithValue', () {
     test('synchronously overrides the value', () {
       var callCount = 0;
@@ -363,6 +387,7 @@ void main() {
         expect(sub.read(), 1);
         verifyOnly(didChange, didChange(sub));
       });
+
       test('is called at most once per read', () {
         final counter = Counter();
         final provider = StateNotifierProvider((ref) => counter);
@@ -382,6 +407,7 @@ void main() {
         expect(sub.read(), 3);
         verifyOnly(didChange, didChange(sub));
       });
+
       test('are all executed after one read call', () {
         final counter = Counter();
         final provider = StateNotifierProvider((ref) => counter);
@@ -406,6 +432,7 @@ void main() {
         verifyOnly(didChange, didChange(sub));
         verifyOnly(didChange2, didChange2(sub2));
       });
+
       test('is guarded', () {
         final counter = Counter();
         final provider = StateNotifierProvider((ref) => counter);
@@ -444,6 +471,7 @@ void main() {
         // Does not crash
         counter.increment();
       });
+
       test(
           'is synchronously after a change'
           ' without re-evaluating the provider', () {
@@ -465,6 +493,7 @@ void main() {
         expect(callCount, 1);
         verifyOnly(mayHaveChanged, mayHaveChanged(sub));
       });
+
       test(
           're-evaluating the provider with a new value calls mayHaveChanged only once',
           () {
@@ -481,6 +510,7 @@ void main() {
 
         verifyOnly(mayHaveChanged, mayHaveChanged(sub));
       });
+
       test('is called only onces after multiple changes', () {
         final counter = Counter();
         final counterProvider = StateNotifierProvider((ref) => counter);
@@ -531,6 +561,7 @@ void main() {
       expect(errors, unorderedEquals(<Object>[42, 21]));
     });
   });
+
   group('ProviderSubscription', () {
     test('no-longer call listeners anymore after close', () {
       final counter = Counter();
@@ -555,6 +586,7 @@ void main() {
       verifyZeroInteractions(mayHaveChanged);
       verifyZeroInteractions(didChange);
     });
+
     group('.read', () {
       test('rethrows the exception thrown when building a provider', () {
         final error = Error();
@@ -579,6 +611,7 @@ void main() {
           ),
         );
       });
+
       test('flushes the provider', () {
         final counter = Counter();
         final first = StateNotifierProvider((ref) => counter);
@@ -593,6 +626,7 @@ void main() {
         expect(sub.read(), 1);
       });
     });
+
     group('.flush', () {
       test('initialized to true', () {
         final provider = Provider((ref) => 0);
@@ -600,6 +634,7 @@ void main() {
 
         expect(sub.flush(), true);
       });
+
       test('updates to false after a read', () {
         final provider = Provider((ref) => 0);
         final sub = container.listen(provider);
@@ -608,6 +643,7 @@ void main() {
 
         expect(sub.flush(), false);
       });
+
       test('updates to true after a change', () {
         final counter = Counter();
         final provider = StateNotifierProvider((ref) => counter);
@@ -620,6 +656,7 @@ void main() {
 
         expect(sub.flush(), true);
       });
+
       test('flushes providers', () {
         final counter = Counter();
         final first = StateNotifierProvider((ref) => counter);
@@ -644,7 +681,31 @@ void main() {
     });
   });
 
-  group('container.retry', () {
+  group('container.refresh', () {
+    test('still refresh providers on non-root containers', () {
+      final root = ProviderContainer();
+      final container = ProviderContainer(parent: root);
+      var callCount = 0;
+      late ProviderReference providerReference;
+      var result = 0;
+      final provider = Provider((ref) {
+        callCount++;
+        providerReference = ref;
+        return result;
+      });
+
+      expect(root.read(provider), 0);
+      expect(callCount, 1);
+      expect(providerReference.container, root);
+
+      result = 1;
+
+      expect(container.refresh(provider), 1);
+      expect(container.read(provider), 1);
+      expect(callCount, 2);
+      expect(providerReference.container, root);
+    });
+
     test('Immediatly creates a new value, even if no changes are pending',
         () async {
       var future = Future.value(42);

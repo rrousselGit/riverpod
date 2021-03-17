@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart';
 
 class Counter extends StateNotifier<int> {
@@ -18,11 +17,11 @@ List<Object> errorsOf(void Function() cb) {
 }
 
 class MayHaveChangedMock<T> extends Mock {
-  void call(ProviderSubscription<T> sub);
+  void call(ProviderSubscription<T>? sub);
 }
 
 class DidChangedMock<T> extends Mock {
-  void call(ProviderSubscription<T> sub);
+  void call(ProviderSubscription<T>? sub);
 }
 
 typedef VerifyOnly = VerificationResult Function<T>(
@@ -47,7 +46,7 @@ VerifyOnly get verifyOnly {
   };
 }
 
-extension Legacy<T> on RootProvider<Object, T> {
+extension Legacy<T> on RootProvider<Object?, T> {
   void Function() watchOwner(
     ProviderContainer container,
     void Function(T value) listener,
@@ -62,8 +61,8 @@ extension Legacy<T> on RootProvider<Object, T> {
 
   ProviderSubscription<T> addLazyListener(
     ProviderContainer container, {
-    void Function() mayHaveChanged,
-    void Function(T value) onChange,
+    required void Function() mayHaveChanged,
+    required void Function(T value) onChange,
   }) {
     final sub = container.listen<T>(
       this,
@@ -131,3 +130,36 @@ class _EqualsIgnoringHashCodes extends Matcher {
     return mismatchDescription;
   }
 }
+
+class ObserverMock extends Mock implements ProviderObserver {
+  @override
+  void didDisposeProvider(ProviderBase? provider) {
+    super.noSuchMethod(
+      Invocation.method(#didDisposeProvider, [provider]),
+    );
+  }
+
+  @override
+  void didAddProvider(ProviderBase? provider, Object? value) {
+    super.noSuchMethod(
+      Invocation.method(#didAddProvider, [provider, value]),
+    );
+  }
+
+  @override
+  void didUpdateProvider(ProviderBase? provider, Object? newValue) {
+    super.noSuchMethod(
+      Invocation.method(#didUpdateProvider, [provider, newValue]),
+    );
+  }
+
+  @override
+  void mayHaveChanged(ProviderBase? provider) {
+    super.noSuchMethod(
+      Invocation.method(#mayHaveChanged, [provider]),
+    );
+  }
+}
+
+// can subclass ProviderObserver without implementing all life-cycles
+class CustomObserver extends ProviderObserver {}

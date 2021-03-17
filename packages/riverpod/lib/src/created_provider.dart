@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 import 'framework.dart';
 
 import 'provider.dart';
@@ -8,11 +10,12 @@ import 'provider.dart';
 /// For example, when listening to a `FutureProvider<int>`, this exposes
 /// the `Future<int>` instead of the typical `AsyncValue<int>`.
 /// {@endtemplate}
+@sealed
 class CreatedProvider<T> extends Provider<T> {
   /// {@macro riverpod.createdprovider}
   CreatedProvider(
-    RootProvider<T, Object> provider, {
-    String name,
+    AlwaysAliveProviderBase<T, Object?> provider, {
+    String? name,
   }) : super((ref) {
           ref.watch(provider);
           // ignore: invalid_use_of_visible_for_testing_member
@@ -23,11 +26,12 @@ class CreatedProvider<T> extends Provider<T> {
 }
 
 /// {@macro riverpod.createdprovider}
+@sealed
 class AutoDisposeCreatedProvider<T> extends AutoDisposeProvider<T> {
   /// {@macro riverpod.createdprovider}
   AutoDisposeCreatedProvider(
-    RootProvider<T, Object> provider, {
-    String name,
+    RootProvider<T, Object?> provider, {
+    String? name,
   }) : super((ref) {
           ref.watch(provider);
           // ignore: invalid_use_of_visible_for_testing_member

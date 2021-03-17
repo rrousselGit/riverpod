@@ -3,28 +3,32 @@ module.exports = {
   tagline: "Provider, but different",
   url: "https://riverpod.dev",
   baseUrl: "/",
-  favicon: "img/favicon.ico",
+  favicon: "img/logo.svg",
   organizationName: "rrousselgit", // Usually your GitHub org/user name.
   projectName: "riverpod", // Usually your repo name.
   themeConfig: {
-    sidebarCollapsible: false,
     googleAnalytics: {
       trackingID: "UA-138675999-4",
     },
     algolia: {
-      apiKey: '2a84d9068bda0a387816a77f366d855d',
-      indexName: 'riverpod',
+      apiKey: "2a84d9068bda0a387816a77f366d855d",
+      indexName: "riverpod",
+    },
+    colorMode: {
+      defaultMode: "dark",
     },
     prism: {
       additionalLanguages: ["dart", "yaml"],
     },
+    image: '/img/cover.png',
+
     navbar: {
       title: "Riverpod",
-      // logo: {
-      //   alt: "My Site Logo",
-      //   src: "img/logo.svg",
-      // },
-      links: [
+      logo: {
+        alt: "Riverpod logo",
+        src: "img/logo.png",
+      },
+      items: [
         {
           to: "docs/getting_started",
           activeBasePath: "docs",
@@ -40,6 +44,10 @@ module.exports = {
     },
     footer: {
       style: "dark",
+      logo: {
+        alt: "Riverpod logo",
+        src: "img/full_logo.svg",
+      },
       links: [
         {
           title: "Docs",
@@ -77,10 +85,9 @@ module.exports = {
       {
         docs: {
           // It is recommended to set document id as docs home page (`docs/` path).
-          homePageId: "doc1",
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
-          editUrl: "https://github.com/rrousselGit/river_pod",
+          editUrl: "https://github.com/rrousselGit/river_pod/edit/master/website/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
