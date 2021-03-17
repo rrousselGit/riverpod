@@ -4,7 +4,9 @@ import 'package:codemod/codemod.dart';
 
 /// A suggestor that yields changes to deprecated import directives
 class RiverpodImportAllMigrationSuggestor extends GeneralizingAstVisitor<void>
-    with AstVisitingSuggestorMixin {
+    with AstVisitingSuggestor {
+  @override
+  bool shouldResolveAst(FileContext context) => true;
   @override
   void visitImportDirective(ImportDirective node) {
     final imports = {
@@ -16,7 +18,7 @@ class RiverpodImportAllMigrationSuggestor extends GeneralizingAstVisitor<void>
     };
     for (final entry in imports.entries) {
       if (entry.key == node.uri.stringValue) {
-        yieldPatch(node.uri.offset + 1, node.uri.end - 1, entry.value);
+        yieldPatch(entry.value, node.uri.offset + 1, node.uri.end - 1);
       }
     }
   }

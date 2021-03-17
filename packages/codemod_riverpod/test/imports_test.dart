@@ -1,12 +1,13 @@
 import 'package:codemod/codemod.dart';
+import 'package:codemod/test.dart';
 import 'package:codemod_riverpod/codemod_riverpod.dart';
 import 'package:source_span/source_span.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('ImportAllRenamer', () {
-    test('renames imports', () {
-      final sourceFile = SourceFile.fromString('''
+    test('renames imports', () async {
+      final sourceFile = await fileContextForTest('test.dart', '''
 // Don't touch path
 import 'package:path/path.dart';
 
@@ -29,10 +30,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import "package:flutter_riverpod/flutter_riverpod.dart";
 ''';
 
-      final patches =
-          RiverpodImportAllMigrationSuggestor().generatePatches(sourceFile);
-      expect(patches, hasLength(4));
-      expect(applyPatches(sourceFile, patches), expectedOutput);
+      expectSuggestorGeneratesPatches(
+          RiverpodImportAllMigrationSuggestor(), sourceFile, expectedOutput);
     });
   });
 }

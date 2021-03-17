@@ -5,8 +5,9 @@ import 'package:codemod/codemod.dart';
 
 /// A suggestor that yields changes to notifier changes
 class RiverpodNotifierChangesMigrationSuggestor
-    extends GeneralizingAstVisitor<void>
-    with ResolvedAstVisitingSuggestorMixin {
+    extends GeneralizingAstVisitor<void> with AstVisitingSuggestor {
+  @override
+  bool shouldResolveAst(FileContext context) => true;
   @override
   void visitPrefixedIdentifier(PrefixedIdentifier node) {
     // StateNotifierProvider
@@ -15,7 +16,7 @@ class RiverpodNotifierChangesMigrationSuggestor
       if (node.prefix.staticType
           .getDisplayString()
           .contains('StateNotifierProvider')) {
-        yieldPatch(node.prefix.end, node.end, '');
+        yieldPatch('', node.prefix.end, node.end);
       }
     }
     super.visitPrefixedIdentifier(node);
@@ -32,7 +33,7 @@ class RiverpodNotifierChangesMigrationSuggestor
           if (target.argumentList.arguments.first.staticType
               .getDisplayString()
               .contains('StateProvider')) {
-            yieldPatch(node.target.end, node.end, '');
+            yieldPatch('', node.target.end, node.end);
           }
         }
       }

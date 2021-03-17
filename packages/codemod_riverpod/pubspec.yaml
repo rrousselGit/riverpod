@@ -14,10 +14,5 @@ dependencies:
 dev_dependencies:
   test: any
 
-dependency_overrides:
-  codemod:
-    path:
-      ../../../dart_codemod/
-
 executables:
   migrate: codemod_riverpod
