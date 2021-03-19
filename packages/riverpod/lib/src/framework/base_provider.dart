@@ -246,7 +246,7 @@ abstract class RootProvider<Created, Listened>
   /// ```dart
   /// @override
   /// Widget build(BuildContext context, ScopedReader watch) {
-  ///   final isAdult = watch(personProvider.select((p) => p.age >= 18));
+  ///   final isAdult = useProvider(personProvider.select((p) => p.age >= 18));
   ///   return Text('$isAdult');
   /// }
   /// ```
