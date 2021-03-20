@@ -48,7 +48,7 @@ jobs:
           cd examples/todos && flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Analyze
-        run: melos exec --ignore="marvel" -- "flutter analyze"
+        run: melos exec --ignore="marvel" --ignore="codemod_riverpod_test_notifiers_golden" -- "flutter analyze"
 
       - name: Run tests
         run: melos run test

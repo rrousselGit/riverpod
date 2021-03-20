@@ -1,4 +1,4 @@
-name: codemod_riverpod_test_notifiers
+name: codemod_riverpod_test_notifiers_golden
 description: Test riverpod codemods
 version: 0.0.1
 publish_to: none
