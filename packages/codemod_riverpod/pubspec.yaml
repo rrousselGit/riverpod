@@ -9,8 +9,9 @@ environment:
 
 dependencies:
   codemod: ^0.3.0
-  pubspec_parse: ^0.1.8
   glob: ^1.2.0
+  pub_semver: ^1.4.4
+  pubspec_parse: ^0.1.8
 
 dev_dependencies:
   test: any
