@@ -22,6 +22,47 @@ class RiverpodNotifierChangesMigrationSuggestor
   }
 
   @override
+  void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
+    // StateNotifierProvider
+    // watch(provider) => watch(provider.notifier)
+    if (node.function.toSource() == 'watch') {
+      if (node.argumentList.arguments.first.staticType
+          .getDisplayString()
+          .contains('StateNotifierProvider')) {
+        yieldPatch('.notifier', node.argumentList.arguments.first.end,
+            node.argumentList.arguments.first.end);
+      }
+    }
+    super.visitFunctionExpressionInvocation(node);
+  }
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    if (node.methodName.toSource() == 'read') {
+      // ref.read
+      // StateNotifierProvider
+      if (node.argumentList.arguments.first.staticType
+          .getDisplayString()
+          .contains('StateNotifierProvider')) {
+        // ref.watch(provider) => ref.watch(provider.notifier)
+        yieldPatch('.notifier', node.argumentList.arguments.first.end,
+            node.argumentList.arguments.first.end);
+      }
+    } else if (node.methodName.toSource() == 'watch') {
+      // ref.watch
+      // StateNotifierProvider
+      if (node.argumentList.arguments.first.staticType
+          .getDisplayString()
+          .contains('StateNotifierProvider')) {
+        // ref.watch(provider) => ref.watch(provider.notifier)
+        yieldPatch('.notifier', node.argumentList.arguments.first.end,
+            node.argumentList.arguments.first.end);
+      }
+    }
+    super.visitMethodInvocation(node);
+  }
+
+  @override
   void visitPropertyAccess(PropertyAccess node) {
     // StateProvider
     // watch(provider).state => watch(provider)
