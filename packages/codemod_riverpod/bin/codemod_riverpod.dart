@@ -7,7 +7,7 @@ import 'package:pub_semver/pub_semver.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
 
 Future<void> main(List<String> args) async {
-  const latestVersion = '0.15.0';
+  const latestVersion = '0.14.0';
   final pubspecFile = File('pubspec.yaml');
   if (!pubspecFile.existsSync()) {
     stderr.writeln(
@@ -35,7 +35,7 @@ Future<void> main(List<String> args) async {
       [
         if (!dep.version.allows(Version.parse('>=0.13.0')))
           RiverpodImportAllMigrationSuggestor(),
-        if (!dep.version.allows(Version.parse('>=0.15.0')))
+        if (!dep.version.allows(Version.parse('>=0.14.0')))
           RiverpodNotifierChangesMigrationSuggestor()
       ],
     ),

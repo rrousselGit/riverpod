@@ -6,7 +6,7 @@ final _root = p.canonicalize('./test/files');
 // Shared analysis context to speed up tests, (analyzer only has to analyze shared dependencies once)
 final _collection = AnalysisContextCollection(includedPaths: [_root]);
 
-Future<FileContext> fileContextForGolden(String name) async {
+Future<FileContext> fileContextForGoldenInput(String name) async {
   final file = p.canonicalize(name);
   return FileContext(file, _collection, root: _root);
 }

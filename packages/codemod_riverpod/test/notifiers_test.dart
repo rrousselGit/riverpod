@@ -8,8 +8,11 @@ import 'goldens.dart';
 
 void main() {
   group('notifiers', () {
+    setUpAll((){
+      
+    });
     test('ChangeNotifier', () async {
-      final sourceFile = await fileContextForGolden(
+      final sourceFile = await fileContextForGoldenInput(
           './test/files/notifiers/input/change_notifier_provider.dart');
       final expected =
           File('./test/files/notifiers/golden/change_notifier_provider.dart')
@@ -20,7 +23,7 @@ void main() {
     });
 
     test('StateNotifier', () async {
-      final sourceFile = await fileContextForGolden(
+      final sourceFile = await fileContextForGoldenInput(
           './test/files/notifiers/input/state_notifier_provider.dart');
       final expected =
           File('./test/files/notifiers/golden/state_notifier_provider.dart')
@@ -31,7 +34,7 @@ void main() {
     });
 
     test('StateProvider', () async {
-      final sourceFile = await fileContextForGolden(
+      final sourceFile = await fileContextForGoldenInput(
           './test/files/notifiers/input/state_provider.dart');
       final expected = File('./test/files/notifiers/golden/state_provider.dart')
           .readAsStringSync();
