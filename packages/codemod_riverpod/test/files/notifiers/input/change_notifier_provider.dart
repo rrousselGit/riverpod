@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -32,6 +34,23 @@ class ConsumerWatch extends ConsumerWidget {
     final count = watch(counterProvider);
     return Center(
       child: Text('$count'),
+    );
+  }
+}
+
+class HooksWatch extends HookWidget {
+  const HooksWatch({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final countNotifier = useProvider(counterProvider);
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          context.read(counterProvider);
+        },
+        child: const Text('Press Me'),
+      ),
     );
   }
 }
