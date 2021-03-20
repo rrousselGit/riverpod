@@ -1,3 +1,7 @@
+# 0.13.1+1
+
+Fixed an issue where `context.read` and `ProviderListener` were unable to read providers that return a nullable value
+
 # 0.13.1
 
 - Fixed a bug where overriding a `FutureProvider` with an error value could cause tests to fail (see https://github.com/rrousselGit/river_pod/issues/355)
