@@ -1,6 +1,6 @@
 name: codemod_riverpod
 description: A migration package for riverpod changes.
-version: 0.0.1
+version: 0.0.2
 homepage: https://riverpod.dev
 repository: https://github.com/rrousselGit/river_pod
 
@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   codemod: ^0.3.0
+  pubspec_parse: ^0.1.8
   glob: ^1.2.0
 
 dev_dependencies:

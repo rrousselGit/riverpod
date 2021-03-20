@@ -19,6 +19,11 @@ class Counter extends ChangeNotifier {
 
 final counterProvider = ChangeNotifierProvider((ref) => Counter());
 
+final otherProvider = Provider((ref) {
+  ref.read(counterProvider.notifier);
+  return ref.watch(counterProvider);
+});
+
 class ConsumerWatch extends ConsumerWidget {
   const ConsumerWatch({Key key}) : super(key: key);
 
