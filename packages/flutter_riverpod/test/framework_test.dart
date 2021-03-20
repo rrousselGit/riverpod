@@ -396,6 +396,12 @@ void main() {
           'Provider<int>#00000: 0, '
           "counter: Instance of 'Counter')",
         ),
+        equalsIgnoringHashCodes(
+          'UncontrolledProviderScope-[GlobalKey#00000]('
+          "counter: Instance of 'Counter', "
+          'counter.state: 0, '
+          'Provider<int>#00000: 0)',
+        ),
       ]),
     );
   });
