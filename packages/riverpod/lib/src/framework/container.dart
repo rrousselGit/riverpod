@@ -61,9 +61,8 @@ class ProviderContainer {
         );
       }
       for (final override in overrides) {
-        if (override is ProviderOverride &&
-            override._origin is ScopedProvider) {
-        } else {
+        if (override is! ProviderOverride ||
+            override._origin is! ScopedProvider) {
           throw UnsupportedError(
             'Cannot override providers on a non-root ProviderContainer/ProviderScope',
           );
