@@ -5,6 +5,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
 void main() {
+  testWidgets('works with providers that returns null', (tester) async {
+    final nullProvider = Provider((ref) => null);
+
+    Consumer(
+      builder: (context, watch, _) {
+        // should compile
+        watch(nullProvider);
+        return Container();
+      },
+    );
+  });
+
   testWidgets('can use "watch" inside ListView.builder', (tester) async {
     final provider = Provider((ref) => 'hello world');
 

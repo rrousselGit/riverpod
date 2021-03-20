@@ -4,6 +4,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
 void main() {
+  testWidgets('context.read works with providers that returns null',
+      (tester) async {
+    final nullProvider = Provider((ref) => null);
+
+    await tester.pumpWidget(ProviderScope(child: Container()));
+
+    final context = tester.element(find.byType(Container));
+
+    expect(context.read(nullProvider), null);
+  });
+
   testWidgets('context.read can read ScopedProviders', (tester) async {
     final provider = ScopedProvider((watch) => 42);
 

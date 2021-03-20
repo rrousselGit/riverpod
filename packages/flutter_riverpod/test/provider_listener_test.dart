@@ -7,6 +7,17 @@ import 'utils.dart';
 
 void main() {
   group('ProviderListener', () {
+    testWidgets('works with providers that returns null', (tester) async {
+      final nullProvider = Provider((ref) => null);
+
+      // should compile
+      ProviderListener<void>(
+        provider: nullProvider,
+        onChange: (context, value) {},
+        child: Container(),
+      );
+    });
+
     testWidgets('receives the buildContext as parameter on change',
         (tester) async {
       final provider = StateProvider((ref) => 0);
