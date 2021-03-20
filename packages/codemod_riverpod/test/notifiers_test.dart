@@ -8,9 +8,6 @@ import 'goldens.dart';
 
 void main() {
   group('notifiers', () {
-    setUpAll((){
-      
-    });
     test('ChangeNotifier', () async {
       final sourceFile = await fileContextForGoldenInput(
           './test/files/notifiers/input/change_notifier_provider.dart');
