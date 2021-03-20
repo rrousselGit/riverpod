@@ -73,7 +73,7 @@ extension BuildContextX on BuildContext {
   /// While more verbose than [read], using [Provider]/`select` is a lot safer.
   /// It does not rely on implementation details on `Model`, and it makes
   /// impossible to have a bug where our UI does not refresh.
-  T read<T>(ProviderBase<Object, T> provider) {
+  T read<T>(ProviderBase<Object?, T> provider) {
     return ProviderScope.containerOf(this, listen: false).read(provider);
   }
 

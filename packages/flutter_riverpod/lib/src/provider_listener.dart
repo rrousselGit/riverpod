@@ -31,7 +31,7 @@ class ProviderListener<T> extends StatefulWidget {
   /// The provider listened.
   ///
   /// Can be `null`.
-  final ProviderBase<Object, T>? provider;
+  final ProviderBase<Object?, T>? provider;
 
   /// A function called with the new value of [provider] when it changes.
   ///
@@ -51,7 +51,7 @@ class ProviderListener<T> extends StatefulWidget {
       DiagnosticsProperty<OnProviderChange<T>>('onChange', onChange),
     );
     properties.add(
-      DiagnosticsProperty<ProviderBase<Object, T>>('provider', provider),
+      DiagnosticsProperty<ProviderBase<Object?, T>>('provider', provider),
     );
   }
 }
