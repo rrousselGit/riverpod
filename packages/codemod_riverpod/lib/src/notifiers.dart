@@ -5,7 +5,6 @@ import 'package:codemod/codemod.dart';
 /// A suggestor that yields changes to notifier changes
 class RiverpodNotifierChangesMigrationSuggestor
     extends GeneralizingAstVisitor<void> with AstVisitingSuggestor {
-  bool _stateProviderAccessedState = false;
   @override
   bool shouldResolveAst(FileContext context) => true;
   @override
@@ -38,17 +37,6 @@ class RiverpodNotifierChangesMigrationSuggestor
         // useProvider(provider) => useProvider(provider.notifier)
         yieldPatch('.notifier', node.argumentList.arguments.first.end,
             node.argumentList.arguments.first.end);
-      } else if (firstArgStaticType.contains('StateProvider') &&
-          !firstArgStaticType.contains('StateNotifierStateProvider')) {
-        if (_stateProviderAccessedState) {
-          // watch(provider).state => watch(provider)
-          _stateProviderAccessedState = false;
-          yieldPatch('', node.end, node.end + '.state'.length);
-        } else {
-          // watch(provider) => watch(provider.notifier)
-          yieldPatch('.notifier', node.argumentList.arguments.first.end,
-              node.argumentList.arguments.first.end);
-        }
       }
     }
     super.visitFunctionExpressionInvocation(node);
@@ -68,34 +56,7 @@ class RiverpodNotifierChangesMigrationSuggestor
         yieldPatch('.notifier', node.argumentList.arguments.first.end,
             node.argumentList.arguments.first.end);
       }
-      // StateProvider
-      if (firstArgStaticType.contains('StateProvider') &&
-          !firstArgStaticType.contains('StateNotifierStateProvider')) {
-        if (_stateProviderAccessedState) {
-          // ref.watch(provider).state => ref.watch(provider)
-          _stateProviderAccessedState = false;
-          yieldPatch('', node.end, node.end + '.state'.length);
-        } else {
-          // ref.watch(provider) => ref.watch(provider.notifier)
-          yieldPatch('.notifier', node.argumentList.arguments.first.end,
-              node.argumentList.arguments.first.end);
-        }
-      }
     }
     super.visitMethodInvocation(node);
-  }
-
-  @override
-  void visitPropertyAccess(PropertyAccess node) {
-    // StateProvider
-    // watch(provider).state => watch(provider)
-    // ref.watch(provider).state => ref.watch(provider)
-    // ref.watch(provider).state => ref.read(provider)
-    // context.read(provider).state => context.read(provider)
-    // useProvider(provider).state => useProvider(provider)
-    if (node.propertyName.name == 'state') {
-      _stateProviderAccessedState = true;
-    }
-    super.visitPropertyAccess(node);
   }
 }
