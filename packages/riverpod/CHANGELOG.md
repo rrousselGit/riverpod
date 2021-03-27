@@ -1,6 +1,6 @@
 # [Unreleased major]
 
-- Hide the `Listener`/`LocatorMixin` typedefs from `package:state_notifier` as the former
+- **BREAKING-CHANGE** Hide the `Listener`/`LocatorMixin` typedefs from `package:state_notifier` as the former
   could cause a name conflict with the widget named `Listener` and the latter is not supported when using Riverpod.
 
 # 0.13.1
