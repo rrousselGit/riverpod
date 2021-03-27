@@ -1,4 +1,4 @@
-export 'package:state_notifier/state_notifier.dart';
+export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
 
 export 'src/common.dart'
     show
