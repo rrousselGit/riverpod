@@ -1,3 +1,13 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+//
+// If you need to modify this file, instead update /tools/generate_providers/bin/generate_providers.dart
+//
+// You can install this utility by executing:
+// dart pub global activate -s path <repository_path>/tools/generate_providers
+//
+// You can then use it in your terminal by executing:
+// generate_providers <riverpod/flutter_riverpod/hooks_riverpod> <path to builder file to update>
+
 import 'package:flutter/foundation.dart';
 import 'internals.dart';
 
@@ -56,8 +66,8 @@ class ChangeNotifierProviderBuilder {
   /// });
   /// ```
   /// {@endtemplate}
-  ChangeNotifierProvider<T> call<T extends ChangeNotifier>(
-    T Function(ProviderReference ref) create, {
+  ChangeNotifierProvider<Notifier> call<Notifier extends ChangeNotifier>(
+    Notifier Function(ProviderReference ref) create, {
     String? name,
   }) {
     return ChangeNotifierProvider(create, name: name);
@@ -288,8 +298,9 @@ class ChangeNotifierProviderFamilyBuilder {
   const ChangeNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  ChangeNotifierProviderFamily<T, Value> call<T extends ChangeNotifier, Value>(
-    T Function(ProviderReference ref, Value value) create, {
+  ChangeNotifierProviderFamily<Notifier, Param>
+      call<Notifier extends ChangeNotifier, Param>(
+    Notifier Function(ProviderReference ref, Param param) create, {
     String? name,
   }) {
     return ChangeNotifierProviderFamily(create, name: name);
@@ -307,8 +318,9 @@ class AutoDisposeChangeNotifierProviderBuilder {
   const AutoDisposeChangeNotifierProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
-  AutoDisposeChangeNotifierProvider<T> call<T extends ChangeNotifier>(
-    T Function(AutoDisposeProviderReference ref) create, {
+  AutoDisposeChangeNotifierProvider<Notifier>
+      call<Notifier extends ChangeNotifier>(
+    Notifier Function(AutoDisposeProviderReference ref) create, {
     String? name,
   }) {
     return AutoDisposeChangeNotifierProvider(create, name: name);
@@ -326,9 +338,9 @@ class AutoDisposeChangeNotifierProviderFamilyBuilder {
   const AutoDisposeChangeNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  AutoDisposeChangeNotifierProviderFamily<T, Value>
-      call<T extends ChangeNotifier, Value>(
-    T Function(AutoDisposeProviderReference ref, Value value) create, {
+  AutoDisposeChangeNotifierProviderFamily<Notifier, Param>
+      call<Notifier extends ChangeNotifier, Param>(
+    Notifier Function(AutoDisposeProviderReference ref, Param param) create, {
     String? name,
   }) {
     return AutoDisposeChangeNotifierProviderFamily(create, name: name);

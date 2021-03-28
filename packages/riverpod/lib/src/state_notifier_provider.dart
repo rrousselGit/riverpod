@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:riverpod/src/created_provider.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 import 'builders.dart';
@@ -73,12 +74,13 @@ part 'state_notifier_provider/auto_dispose.dart';
 /// }
 /// ```
 /// {@endtemplate}
-mixin _StateNotifierStateProviderStateMixin<T>
-    on ProviderStateBase<StateNotifier<T>, T> {
+
+class _StateNotifierProviderState<Notifier extends StateNotifier<Value>, Value>
+    extends ProviderStateBase<Notifier, Value> {
   void Function()? removeListener;
 
   @override
-  void valueChanged({StateNotifier<T>? previous}) {
+  void valueChanged({Notifier? previous}) {
     if (createdValue == previous) {
       return;
     }
@@ -87,7 +89,7 @@ mixin _StateNotifierStateProviderStateMixin<T>
   }
 
   // ignore: use_setters_to_change_properties
-  void _listener(T value) {
+  void _listener(Value value) {
     exposedValue = value;
   }
 
