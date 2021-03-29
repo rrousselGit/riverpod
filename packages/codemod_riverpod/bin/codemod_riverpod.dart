@@ -24,7 +24,6 @@ Future<void> main(List<String> args) async {
     version = dep.version;
   }
 
-  // TODO: path and git dependency version constraints
   await runInteractiveCodemod(
     filePathsFromGlob(Glob('**.dart', recursive: true)),
     aggregate(
