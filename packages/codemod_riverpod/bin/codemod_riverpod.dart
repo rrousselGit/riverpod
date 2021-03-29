@@ -23,14 +23,15 @@ Future<void> main(List<String> args) async {
   if (dep is HostedDependency) {
     version = dep.version;
   }
+
   // TODO: path and git dependency version constraints
   await runInteractiveCodemod(
     filePathsFromGlob(Glob('**.dart', recursive: true)),
     aggregate(
       [
-        if (!version.allows(Version.parse('>=0.13.0')))
+        if (version == null || !version.allows(Version.parse('>=0.13.0')))
           RiverpodImportAllMigrationSuggestor(),
-        if (!version.allows(Version.parse('>=0.14.0')))
+        if (version == null || !version.allows(Version.parse('>=0.14.0')))
           RiverpodNotifierChangesMigrationSuggestor(),
       ],
     ),
@@ -38,6 +39,7 @@ Future<void> main(List<String> args) async {
   );
   await runInteractiveCodemod(
     filePathsFromGlob(Glob('pubspec.yaml', recursive: true)),
-    VersionMigrationSuggestor,
+    versionMigrationSuggestor,
+    args: args,
   );
 }

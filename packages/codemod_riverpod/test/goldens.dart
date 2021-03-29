@@ -11,7 +11,7 @@ final _root = p.canonicalize('./test/files');
 final _collection = AnalysisContextCollection(includedPaths: [_root]);
 
 /// Utility to get file context for a golden file path
-Future<FileContext> fileContextForGoldenInput(String name) async {
+Future<FileContext> fileContextForInput(String name) async {
   final file = p.canonicalize(name);
   return FileContext(file, _collection, root: _root);
 }

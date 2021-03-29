@@ -14,8 +14,8 @@ dependencies:
   pubspec_parse: ^0.1.8
 
 dev_dependencies:
-  test: any
   dart_style: any
+  test: any
 
 executables:
   migrate: codemod_riverpod

@@ -7,36 +7,48 @@ import 'goldens.dart';
 
 void main() {
   group('notifiers', () {
-    test('ChangeNotifier', () async {
-      final sourceFile = await fileContextForGoldenInput(
-          './test/files/notifiers/input/change_notifier_provider.dart');
+    Future<void> testNotifier(String type) async {
+      final sourceFile =
+          await fileContextForInput('./test/files/notifiers/input/$type.dart');
       final expected =
-          File('./test/files/notifiers/golden/change_notifier_provider.dart')
-              .readAsStringSync();
-
+          File('./test/files/notifiers/golden/$type.dart').readAsStringSync();
       expectSuggestorGeneratesFormattedPatches(
           RiverpodNotifierChangesMigrationSuggestor(), sourceFile, expected);
+    }
+
+    Future<void> testNotifierNoOp(String type) async {
+      final sourceFile =
+          await fileContextForInput('./test/files/notifiers/golden/$type.dart');
+      final expected =
+          File('./test/files/notifiers/golden/$type.dart').readAsStringSync();
+      expectSuggestorGeneratesFormattedPatches(
+          RiverpodNotifierChangesMigrationSuggestor(), sourceFile, expected);
+    }
+
+    test('ChangeNotifier', () async {
+      await testNotifier('change_notifier_provider');
     });
 
     test('StateNotifier', () async {
-      final sourceFile = await fileContextForGoldenInput(
-          './test/files/notifiers/input/state_notifier_provider.dart');
-      final expected =
-          File('./test/files/notifiers/golden/state_notifier_provider.dart')
-              .readAsStringSync();
-
-      expectSuggestorGeneratesFormattedPatches(
-          RiverpodNotifierChangesMigrationSuggestor(), sourceFile, expected);
+      await testNotifier('state_notifier_provider');
     });
 
     test('StateProvider', () async {
-      final sourceFile = await fileContextForGoldenInput(
-          './test/files/notifiers/input/state_provider.dart');
-      final expected = File('./test/files/notifiers/golden/state_provider.dart')
-          .readAsStringSync();
+      await testNotifier('state_provider');
+    });
 
-      expectSuggestorGeneratesFormattedPatches(
-          RiverpodNotifierChangesMigrationSuggestor(), sourceFile, expected);
+    group('Already Migrated', () {
+      test('ChangeNotifier', () async {
+        await testNotifierNoOp('change_notifier_provider');
+      });
+
+      test('StateNotifier', () async {
+        await testNotifierNoOp('state_notifier_provider');
+      });
+
+      test('StateProvider', () async {
+        await testNotifierNoOp('state_provider');
+      });
     });
   });
 }

@@ -7,6 +7,11 @@ import 'package:analyzer/dart/element/type.dart';
 class RiverpodNotifierChangesMigrationSuggestor
     extends GeneralizingAstVisitor<void> with AstVisitingSuggestor {
   @override
+  bool shouldSkip(FileContext context) {
+    return super.shouldSkip(context);
+  }
+
+  @override
   bool shouldResolveAst(FileContext context) => true;
 
   @override
@@ -17,15 +22,19 @@ class RiverpodNotifierChangesMigrationSuggestor
       final notifierType = providerType.typeArguments.first as InterfaceType;
       final stateType = notifierType.superclass.typeArguments.first;
       if (nodeType.contains('Family')) {
-        yieldPatch(
-            '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}, ${providerType.typeArguments.last.getDisplayString()}>',
-            node.typeArguments.offset,
-            node.argumentList.offset);
+        if (providerType.typeArguments.length != 3) {
+          yieldPatch(
+              '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}, ${providerType.typeArguments.last.getDisplayString()}>',
+              node.typeArguments.offset,
+              node.argumentList.offset);
+        }
       } else {
-        yieldPatch(
-            '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}>',
-            node.function.end,
-            node.argumentList.offset);
+        if (providerType.typeArguments.length != 2) {
+          yieldPatch(
+              '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}>',
+              node.function.end,
+              node.argumentList.offset);
+        }
       }
     }
 
@@ -39,12 +48,14 @@ class RiverpodNotifierChangesMigrationSuggestor
       final notifierType = providerType.typeArguments.first as InterfaceType;
       final stateType = notifierType.superclass.typeArguments.first;
       final constructorTypeArguments = node.constructorName.type.typeArguments;
-      yieldPatch(
-          '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}>',
-          constructorTypeArguments != null
-              ? constructorTypeArguments.offset
-              : node.constructorName.end,
-          node.argumentList.offset);
+      if (providerType.typeArguments.length != 2) {
+        yieldPatch(
+            '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}>',
+            constructorTypeArguments != null
+                ? constructorTypeArguments.offset
+                : node.constructorName.end,
+            node.argumentList.offset);
+      }
     }
 
     super.visitInstanceCreationExpression(node);
