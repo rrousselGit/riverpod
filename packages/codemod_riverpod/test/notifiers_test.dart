@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:codemod/test.dart';
 import 'package:codemod_riverpod/codemod_riverpod.dart';
 import 'package:test/test.dart';
 
@@ -15,7 +14,7 @@ void main() {
           File('./test/files/notifiers/golden/change_notifier_provider.dart')
               .readAsStringSync();
 
-      expectSuggestorGeneratesPatches(
+      expectSuggestorGeneratesFormattedPatches(
           RiverpodNotifierChangesMigrationSuggestor(), sourceFile, expected);
     });
 
@@ -26,7 +25,7 @@ void main() {
           File('./test/files/notifiers/golden/state_notifier_provider.dart')
               .readAsStringSync();
 
-      expectSuggestorGeneratesPatches(
+      expectSuggestorGeneratesFormattedPatches(
           RiverpodNotifierChangesMigrationSuggestor(), sourceFile, expected);
     });
 
@@ -36,7 +35,7 @@ void main() {
       final expected = File('./test/files/notifiers/golden/state_provider.dart')
           .readAsStringSync();
 
-      expectSuggestorGeneratesPatches(
+      expectSuggestorGeneratesFormattedPatches(
           RiverpodNotifierChangesMigrationSuggestor(), sourceFile, expected);
     });
   });
