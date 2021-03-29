@@ -11,6 +11,15 @@ class Counter extends StateNotifier<int> {
 }
 
 final counterProvider = StateNotifierProvider((ref) => Counter());
+final counterProvider2 = StateNotifierProvider<Counter>((ref) => Counter());
+
+final counterFamilyProvider =
+    StateNotifierProvider.family<Counter, String>((ref, _) => Counter());
+
+final counterDisposeProvider =
+    StateNotifierProvider.autoDispose((ref) => Counter());
+final counterDisposeProvider2 =
+    StateNotifierProvider.autoDispose<Counter>((ref) => Counter());
 
 final otherProvider = Provider((ref) {
   ref.read(counterProvider);

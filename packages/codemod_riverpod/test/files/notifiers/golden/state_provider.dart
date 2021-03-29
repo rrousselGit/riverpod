@@ -5,6 +5,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final counterProvider = StateProvider((ref) => 1);
+final counterFamilyProvider = StateProvider.family<int, String>((ref, _) => 1);
 
 final otherProvider = Provider((ref) {
   ref.read(counterProvider);

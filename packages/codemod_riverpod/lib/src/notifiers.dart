@@ -1,12 +1,55 @@
 // ignore: deprecated_member_use
 import 'package:analyzer/analyzer.dart';
 import 'package:codemod/codemod.dart';
+import 'package:analyzer/dart/element/type.dart';
 
 /// A suggestor that yields changes to notifier changes
 class RiverpodNotifierChangesMigrationSuggestor
     extends GeneralizingAstVisitor<void> with AstVisitingSuggestor {
   @override
   bool shouldResolveAst(FileContext context) => true;
+
+  @override
+  void visitInvocationExpression(InvocationExpression node) {
+    final nodeType = node.staticType.getDisplayString();
+    if (nodeType.contains('StateNotifierProvider')) {
+      final providerType = node.staticType as InterfaceType;
+      final notifierType = providerType.typeArguments.first as InterfaceType;
+      final stateType = notifierType.superclass.typeArguments.first;
+      if (nodeType.contains('Family')) {
+        yieldPatch(
+            '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}, ${providerType.typeArguments.last.getDisplayString()}>',
+            node.typeArguments.offset,
+            node.argumentList.offset);
+      } else {
+        yieldPatch(
+            '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}>',
+            node.function.end,
+            node.argumentList.offset);
+      }
+    }
+
+    super.visitInvocationExpression(node);
+  }
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    if (node.staticType.getDisplayString().contains('StateNotifierProvider')) {
+      final providerType = node.staticType as InterfaceType;
+      final notifierType = providerType.typeArguments.first as InterfaceType;
+      final stateType = notifierType.superclass.typeArguments.first;
+      final constructorTypeArguments = node.constructorName.type.typeArguments;
+      yieldPatch(
+          '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}>',
+          constructorTypeArguments != null
+              ? constructorTypeArguments.offset
+              : node.constructorName.end,
+          node.argumentList.offset);
+    }
+
+    super.visitInstanceCreationExpression(node);
+  }
+
   @override
   void visitPrefixedIdentifier(PrefixedIdentifier node) {
     // StateNotifierProvider

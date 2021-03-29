@@ -2,47 +2,42 @@ import 'dart:io';
 
 import 'package:codemod/codemod.dart';
 import 'package:codemod_riverpod/codemod_riverpod.dart';
+import 'package:codemod_riverpod/src/version.dart';
 import 'package:glob/glob.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
 
 Future<void> main(List<String> args) async {
-  const latestVersion = '0.14.0';
   final pubspecFile = File('pubspec.yaml');
   if (!pubspecFile.existsSync()) {
     stderr.writeln(
         'Pubspec not found! Are you in the root directory of your package / app?');
     return;
   }
-  HostedDependency dep;
   final pubspec = Pubspec.parse(pubspecFile.readAsStringSync());
-  if (pubspec.dependencies.containsKey('riverpod') &&
-      pubspec.dependencies['riverpod'] is HostedDependency) {
-    dep = pubspec.dependencies['riverpod'] as HostedDependency;
-  }
-  if (pubspec.dependencies.containsKey('hooks_riverpod') &&
-      pubspec.dependencies['hooks_riverpod'] is HostedDependency) {
-    dep = pubspec.dependencies['hooks_riverpod'] as HostedDependency;
-  }
-  if (pubspec.dependencies.containsKey('flutter_riverpod') &&
-      pubspec.dependencies['flutter_riverpod'] is HostedDependency) {
-    dep = pubspec.dependencies['flutter_riverpod'] as HostedDependency;
-  }
+  final dep = pubspec.dependencies['hooks_riverpod'] ??
+      pubspec.dependencies['flutter_riverpod'] ??
+      pubspec.dependencies['riverpod'];
 
+  VersionConstraint version;
+  if (dep is HostedDependency) {
+    version = dep.version;
+  }
+  // TODO: path and git dependency version constraints
   await runInteractiveCodemod(
     filePathsFromGlob(Glob('**.dart', recursive: true)),
     aggregate(
       [
-        if (!dep.version.allows(Version.parse('>=0.13.0')))
+        if (!version.allows(Version.parse('>=0.13.0')))
           RiverpodImportAllMigrationSuggestor(),
-        if (!dep.version.allows(Version.parse('>=0.14.0')))
-          RiverpodNotifierChangesMigrationSuggestor()
+        if (!version.allows(Version.parse('>=0.14.0')))
+          RiverpodNotifierChangesMigrationSuggestor(),
       ],
     ),
     args: args,
   );
-
-  pubspecFile.writeAsStringSync(pubspecFile
-      .readAsStringSync()
-      .replaceAll(RegExp('riverpod:.*'), 'riverpod: ^$latestVersion'));
+  await runInteractiveCodemod(
+    filePathsFromGlob(Glob('pubspec.yaml', recursive: true)),
+    VersionMigrationSuggestor,
+  );
 }
