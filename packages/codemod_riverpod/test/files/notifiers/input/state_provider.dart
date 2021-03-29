@@ -14,7 +14,7 @@ final otherProvider = Provider((ref) {
 });
 
 class ConsumerWatch extends ConsumerWidget {
-  const ConsumerWatch({Key key}) : super(key: key);
+  const ConsumerWatch({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
@@ -27,7 +27,7 @@ class ConsumerWatch extends ConsumerWidget {
 }
 
 class HooksWatch extends HookWidget {
-  const HooksWatch({Key key}) : super(key: key);
+  const HooksWatch({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

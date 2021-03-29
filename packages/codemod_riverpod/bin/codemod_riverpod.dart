@@ -28,9 +28,11 @@ Future<void> main(List<String> args) async {
     filePathsFromGlob(Glob('**.dart', recursive: true)),
     aggregate(
       [
-        if (version == null || !version.allows(Version.parse('>=0.13.0')))
+        if (version == null ||
+            version.intersect(VersionConstraint.parse('>=0.13.0')).isEmpty)
           RiverpodImportAllMigrationSuggestor(),
-        if (version == null || !version.allows(Version.parse('>=0.14.0')))
+        if (version == null ||
+            version.intersect(VersionConstraint.parse('>=0.14.0')).isEmpty)
           RiverpodNotifierChangesMigrationSuggestor(),
       ],
     ),

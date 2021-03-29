@@ -5,8 +5,9 @@ const latestVersion = '0.14.0';
 
 /// Migrates the pubspec to the [latestVersion]
 Stream<Patch> versionMigrationSuggestor(FileContext context) async* {
-  final matches = context.sourceText.allMatches('riverpod:.*');
+  final matches = RegExp(r'riverpod:[\s\^>=]*\d+[\.]\d+[\.]\d+\s*\n')
+      .allMatches(context.sourceText);
   for (final m in matches) {
-    yield Patch('riverpod: ^$latestVersion', m.start, m.end);
+    yield Patch('riverpod: ^$latestVersion\n', m.start, m.end);
   }
 }
