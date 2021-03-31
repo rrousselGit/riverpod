@@ -20,7 +20,7 @@ To use:
 Add to your `pubspec.yaml`:
 ```yaml
 dev_dependencies:
-  codemod_riverpod: ^0.0.1
+  codemod_riverpod: ^0.0.2
 ```
 
 Then on the command line
@@ -29,3 +29,11 @@ cd path/to/your/code
 flutter pub get
 flutter pub run codemod_riverpod
 ```
+
+Make sure that your code has no analysis errors otherwise the codemod will have trouble running.
+
+In particular:
+- This will migrate the pubspec.yaml along with your code to the newest version of riverpod
+- It will update to the latest riverpod syntax, even if you are using a path or git dependency of riverpod
+  - You will then have to update the path / git dependency to the newest version of riverpod
+  - It relies on a full analysis of your code, so make sure your code compiles before running
