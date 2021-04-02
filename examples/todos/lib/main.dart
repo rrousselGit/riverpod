@@ -116,7 +116,7 @@ class Home extends HookWidget {
               Dismissible(
                 key: ValueKey(todos[i].id),
                 onDismissed: (_) {
-                  context.read(todoListProvider).remove(todos[i]);
+                  context.read(todoListProvider.notifier).remove(todos[i]);
                 },
                 child: ProviderScope(
                   overrides: [

@@ -148,7 +148,7 @@ void main() {
     expect(firstItem, findsOneWidget);
 
     // dismiss the item
-    await tester.drag(firstItem, const Offset(500, 0));
+    await tester.drag(firstItem, const Offset(1000, 0));
 
     // wait for animation to finish
     await tester.pumpAndSettle();
