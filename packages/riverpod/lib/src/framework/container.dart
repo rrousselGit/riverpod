@@ -486,7 +486,7 @@ abstract class ProviderObserver {
 /// See also:
 ///
 /// - [ProviderContainer], which uses this object.
-/// - [AlwaysAliveProviderBase.overrideWithProvider], which creates a [ProviderOverride].
+/// - `overrideWithProvider`/`overrideWithValue`, which creates a [ProviderOverride].
 @sealed
 class ProviderOverride implements Override {
   /// Internal use only
