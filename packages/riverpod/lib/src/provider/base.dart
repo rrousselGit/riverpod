@@ -2,12 +2,13 @@ part of '../provider.dart';
 
 /// {@macro riverpod.provider}
 @sealed
-class Provider<T> extends AlwaysAliveProviderBase<T, T> {
+class Provider<T> extends AlwaysAliveProviderBase<T, T>
+    with ProviderOverridesMixin<T, T> {
   /// {@macro riverpod.provider}
   Provider(
-    Create<T, ProviderReference> create, {
+    this._create, {
     String? name,
-  }) : super(create, name);
+  }) : super(name);
 
   /// {@macro riverpod.family}
   static const family = ProviderFamilyBuilder();
@@ -15,10 +16,10 @@ class Provider<T> extends AlwaysAliveProviderBase<T, T> {
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeProviderBuilder();
 
+  final Create<T, ProviderReference> _create;
+
   @override
-  ProviderOverride overrideWithProvider(RootProvider<Object?, T> provider) {
-    return ProviderOverride(provider, this);
-  }
+  T create(ProviderReference ref) => _create(ref);
 
   @override
   _ProviderState<T> createState() => _ProviderState();

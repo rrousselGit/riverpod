@@ -51,7 +51,7 @@ void main() {
       )).thenReturn(subMock);
 
       final container = ProviderContainer(overrides: [
-        provider.stream.overrideWithValue(streamMock),
+        provider.overrideWithProvider(StreamProvider((ref) => streamMock)),
       ]);
 
       final last = container.read(provider.last);
@@ -83,7 +83,7 @@ void main() {
       )).thenReturn(subMock);
 
       final container = ProviderContainer(overrides: [
-        provider.stream.overrideWithValue(streamMock),
+        provider.overrideWithProvider(StreamProvider((ref) => streamMock)),
       ]);
 
       final last = container.read(provider.last);
@@ -104,6 +104,10 @@ void main() {
         ),
       );
 
+      verifyZeroInteractions(subMock);
+
+      container.dispose();
+
       verify(subMock.cancel()).called(1);
     });
 
@@ -120,7 +124,7 @@ void main() {
       )).thenReturn(subMock);
 
       final container = ProviderContainer(overrides: [
-        provider.stream.overrideWithValue(streamMock),
+        provider.overrideWithProvider(StreamProvider((ref) => streamMock)),
       ]);
 
       final last = container.read(provider.last);
@@ -139,6 +143,10 @@ void main() {
       // TODO(rrousselGit) test that the stacktrace is preserved
       await expectLater(last, throwsA(error));
 
+      verifyZeroInteractions(subMock);
+
+      container.dispose();
+
       verify(subMock.cancel()).called(1);
     });
 
@@ -155,7 +163,7 @@ void main() {
       )).thenReturn(subMock);
 
       final container = ProviderContainer(overrides: [
-        provider.stream.overrideWithValue(streamMock),
+        provider.overrideWithProvider(StreamProvider((ref) => streamMock)),
       ]);
 
       final last = container.read(provider.last);
@@ -169,6 +177,10 @@ void main() {
       onValue(42);
 
       await expectLater(last, completion(42));
+
+      verifyZeroInteractions(subMock);
+
+      container.dispose();
 
       verify(subMock.cancel()).called(1);
     });

@@ -73,17 +73,18 @@ void main() {
   });
 
   test('Pass family and argument properties', () {
-    final family =
-        StateNotifierProvider.family<Counter, int>((_, a) => Counter());
+    final family = StateNotifierProvider.family<Counter, int, int>((_, a) {
+      return Counter();
+    });
     expect(
       family(0),
-      isA<StateNotifierProvider<Counter>>()
+      isA<StateNotifierProvider<Counter, int>>()
           .having((p) => p.argument, 'argument', 0)
           .having((p) => p.from, 'from', family),
     );
     expect(
       family(1),
-      isA<StateNotifierProvider<Counter>>()
+      isA<StateNotifierProvider<Counter, int>>()
           .having((p) => p.from, 'from', family)
           .having((p) => p.argument, 'argument', 1),
     );

@@ -325,7 +325,9 @@ void main() {
 
   testWidgets('ProviderScope debugFillProperties', (tester) async {
     final unnamed = Provider((_) => 0);
-    final named = StateNotifierProvider((_) => Counter(), name: 'counter');
+    final named = StateNotifierProvider<Counter, int>((_) {
+      return Counter();
+    }, name: 'counter');
     final scopeKey = GlobalKey();
 
     await tester.pumpWidget(
@@ -333,7 +335,7 @@ void main() {
         key: scopeKey,
         child: Consumer(builder: (c, watch, _) {
           final value = watch(unnamed);
-          final count = watch(named.state);
+          final count = watch(named);
           return Text(
             'value: $value count: $count',
             textDirection: TextDirection.ltr,
@@ -352,20 +354,22 @@ void main() {
         'overrides: [], '
         'state: ProviderScopeState#00000, '
         'Provider<int>#00000: 0, '
-        "counter: Instance of 'Counter', "
-        'counter.state: 0)',
+        'counter: 0, '
+        "counter.notifier: Instance of 'Counter')",
       ),
     );
   });
 
   testWidgets('UncontrolledProviderScope debugFillProperties', (tester) async {
     final unnamed = Provider((_) => 0);
-    final named = StateNotifierProvider((_) => Counter(), name: 'counter');
+    final named = StateNotifierProvider<Counter, int>((_) {
+      return Counter();
+    }, name: 'counter');
     final container = ProviderContainer();
     final scopeKey = GlobalKey();
 
     container.read(unnamed);
-    container.read(named.state);
+    container.read(named);
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -381,25 +385,25 @@ void main() {
         equalsIgnoringHashCodes(
           'UncontrolledProviderScope-[GlobalKey#00000]('
           'Provider<int>#00000: 0, '
-          "counter: Instance of 'Counter', "
-          'counter.state: 0)',
+          'counter: 0, '
+          "counter.notifier: Instance of 'Counter')",
         ),
         equalsIgnoringHashCodes(
           'UncontrolledProviderScope-[GlobalKey#00000]('
-          "counter: Instance of 'Counter', "
+          'counter: 0, '
           'Provider<int>#00000: 0, '
-          'counter.state: 0)',
+          "counter.notifier: Instance of 'Counter')",
         ),
         equalsIgnoringHashCodes(
           'UncontrolledProviderScope-[GlobalKey#00000]('
-          'counter.state: 0, '
+          "counter.notifier: Instance of 'Counter', "
           'Provider<int>#00000: 0, '
           "counter: Instance of 'Counter')",
         ),
         equalsIgnoringHashCodes(
           'UncontrolledProviderScope-[GlobalKey#00000]('
-          "counter: Instance of 'Counter', "
-          'counter.state: 0, '
+          'counter: 0, '
+          "counter.notifier: Instance of 'Counter', "
           'Provider<int>#00000: 0)',
         ),
       ]),

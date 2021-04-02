@@ -225,7 +225,7 @@ class ProviderContainer {
   ///
   /// If you are using flutter, this is done implicitly for you by `ProviderScope`.
   ///
-  /// Updating a [RootProvider.overrideWithValue] with a different value
+  /// Updating a `overrideWithValue` with a different value
   /// will cause the listeners to rebuild.
   ///
   /// It is not possible, to remove or add new overrides, only update existing ones.

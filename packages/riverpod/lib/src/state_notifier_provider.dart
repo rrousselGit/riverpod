@@ -1,5 +1,4 @@
 import 'package:meta/meta.dart';
-import 'package:riverpod/src/created_provider.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 import 'builders.dart';
@@ -7,8 +6,8 @@ import 'framework.dart';
 import 'future_provider.dart';
 import 'provider.dart';
 
-part 'state_notifier_provider/base.dart';
 part 'state_notifier_provider/auto_dispose.dart';
+part 'state_notifier_provider/base.dart';
 
 /// {@template riverpod.statenotifierprovider}
 /// Creates a [StateNotifier] and expose its current state.
@@ -97,5 +96,20 @@ class _StateNotifierProviderState<Notifier extends StateNotifier<Value>, Value>
   void dispose() {
     removeListener?.call();
     super.dispose();
+  }
+}
+
+mixin _StateNotifierProviderMixin<Notifier extends StateNotifier<Value>, Value>
+    on RootProvider<Notifier, Value> {
+  ProviderBase<Notifier, Notifier> get notifier;
+
+  /// Overrides the behavior of a provider with a value.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithValue(Notifier value) {
+    return ProviderOverride(
+      ValueProvider<Object?, Notifier>((ref) => value, value),
+      notifier,
+    );
   }
 }

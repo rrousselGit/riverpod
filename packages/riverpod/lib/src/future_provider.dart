@@ -43,7 +43,7 @@ part 'future_provider/base.dart';
 /// final configProvider = FutureProvider<Configuration>((ref) async {
 ///   final content = json.decode(
 ///     await rootBundle.loadString('assets/configurations.json'),
-///   ) as Map<String, dynamic>;
+///   ) as Map<String, Object?>;
 ///
 ///   return Configuration.fromJson(content);
 /// });
@@ -79,7 +79,6 @@ part 'future_provider/base.dart';
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no-longer needed.
 /// {@endtemplate}
 mixin _FutureProviderMixin<T> on RootProvider<Future<T>, AsyncValue<T>> {
-  @override
   Override overrideWithValue(AsyncValue<T> value) {
     return ProviderOverride(
       ValueProvider<Future<T>, AsyncValue<T>>((ref) {

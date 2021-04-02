@@ -1,7 +1,40 @@
 # [Unreleased major]
 
-- **BREAKING-CHANGE** Hide the `Listener`/`LocatorMixin` typedefs from `package:state_notifier` as the former
+- **BREAKING CHANGE** Hide the `Listener`/`LocatorMixin` typedefs from `package:state_notifier` as the former
   could cause a name conflict with the widget named `Listener` and the latter is not supported when using Riverpod.
+- **BREAKING CHANGE** The syntax for using `StateNotifierProvider` was updated.
+  Before:
+
+  ```dart
+  class MyStateNotifier extends StateNotifier<MyModel> {...}
+
+  final provider = StateNotifierProvider<MyStateNotifier>((ref) => MyStateNotifier());
+
+  ...
+  Widget build(context, watch) {
+    MyStateNotifier notifier = watch(provider);
+    MyModel model = watch(provider.state);
+  }
+  ```
+
+  After:
+
+  ```dart
+  class MyStateNotifier extends StateNotifier<MyModel> {...}
+
+  final provider = StateNotifierProvider<MyStateNotifier, MyModel>>((ref) => MyStateNotifier());
+
+  ...
+  Widget build(context, watch) {
+    MyStateNotifier notifier = watch(provider.notifier);
+    MyModel model = watch(provider);
+  }
+  ```
+
+  See also https://github.com/rrousselGit/river_pod/issues/341 for more information.
+
+- **BREAKING CHANGE** `StateNotifierProvider.overrideWithProvider` is removed. Use `overrideWithValue` instead.
+- **BREAKING CHANGE** It is no-longer possible to override `StreamProvider.stream/last` and `FutureProvider.future`.
 
 # 0.13.1
 

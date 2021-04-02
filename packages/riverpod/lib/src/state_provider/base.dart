@@ -6,9 +6,16 @@ class StateProvider<T>
     extends AlwaysAliveProviderBase<StateController<T>, StateController<T>> {
   /// {@macro riverpod.stateprovider}
   StateProvider(
-    Create<T, ProviderReference> create, {
+    this._create, {
     String? name,
-  }) : super((ref) => StateController(create(ref)), name);
+  }) : super(name);
+
+  final Create<T, ProviderReference> _create;
+
+  @override
+  StateController<T> create(ProviderReference ref) {
+    return StateController(_create(ref));
+  }
 
   /// {@macro riverpod.family}
   static const family = StateProviderFamilyBuilder();
@@ -55,7 +62,7 @@ extension StateFamilyX<T, Param> on Family<StateController<T>,
   ) {
     return FamilyOverride(
       this,
-      (dynamic param) {
+      (param) {
         return create(
           param as Param,
           (ref, a) => StateController(builderOverride(ref, a)),

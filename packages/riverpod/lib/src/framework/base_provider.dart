@@ -53,49 +53,11 @@ abstract class ProviderListenable<Listened> {}
 abstract class AlwaysAliveProviderBase<Created, Listened>
     extends RootProvider<Created, Listened> {
   /// Creates an [AlwaysAliveProviderBase].
-  AlwaysAliveProviderBase(
-    Created Function(ProviderReference ref) create,
-    String? name,
-  ) : super(create, name);
+  AlwaysAliveProviderBase(String? name) : super(name);
 
   @override
   ProviderElement<Created, Listened> createElement() {
     return ProviderElement(this);
-  }
-
-  /// Overrides the behavior of this provider with another provider.
-  ///
-  /// {@template riverpod.overideWith}
-  /// Some common use-cases are:
-  /// - testing, by replacing a service with a fake implementation, or to reach
-  ///   a very specific state easily.
-  /// - multiple environments, by changing the implementation of a class
-  ///   based on the platform or other parameters.
-  ///
-  /// This function should be used in combination with `ProviderScope.overrides`
-  /// or `ProviderContainer.overrides`:
-  ///
-  /// ```dart
-  /// final myService = Provider((ref) => MyService());
-  ///
-  /// runApp(
-  ///   ProviderScope(
-  ///     overrides: [
-  ///       myService.overrideWithProvider(
-  ///         // Replace the implementation of MyService with a fake implementation
-  ///         Provider((ref) => MyFakeService())
-  ///       ),
-  ///     ],
-  ///     child: MyApp(),
-  ///   ),
-  /// );
-  /// ```
-  /// {@endtemplate}
-  // Cannot be overridden by AutoDisposeProviders
-  ProviderOverride overrideWithProvider(
-    AlwaysAliveProviderBase<Created, Listened> provider,
-  ) {
-    return ProviderOverride(provider, this);
   }
 }
 
@@ -103,14 +65,14 @@ abstract class AlwaysAliveProviderBase<Created, Listened>
 abstract class ProviderBase<Created, Listened>
     implements ProviderListenable<Listened> {
   /// A base class for _all_ providers.
-  ProviderBase(this._create, this.name) {
+  ProviderBase(this.name) {
     assert(() {
       debugId = '${_debugNextId++}';
       return true;
     }(), '');
   }
 
-  final Created Function(ProviderReference ref) _create;
+  Created create(ProviderReference ref);
 
   /// {@template riverpod.name}
   /// A custom label for providers.
@@ -180,10 +142,7 @@ abstract class ProviderBase<Created, Listened>
 abstract class RootProvider<Created, Listened>
     extends ProviderBase<Created, Listened> {
   /// {@macro riverpod.rootprovider}
-  RootProvider(
-    Created Function(ProviderReference ref) create,
-    String? name,
-  ) : super(create, name);
+  RootProvider(String? name) : super(name);
 
   /// Partially listen to a provider.
   ///
@@ -259,18 +218,6 @@ abstract class RootProvider<Created, Listened>
     return ProviderSelector<Listened, Selected>(
       provider: this,
       selector: selector,
-    );
-  }
-
-  /// Overrides the behavior of a provider with a value.
-  ///
-  /// {@macro riverpod.overideWith}
-  // Works only on RootProvider<T, T> scenario by default
-  // TODO support ChangeNotifier/StateNotifier
-  Override overrideWithValue(Listened value) {
-    return ProviderOverride(
-      ValueProvider<Object?, Listened>((ref) => value, value),
-      this,
     );
   }
 }
@@ -832,7 +779,7 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
   /// Called when the override of a provider changes.
   ///
   /// See also:
-  /// - [RootProvider.overrideWithValue], which relies on [update] to handle
+  /// - `overrideWithValue`, which relies on [update] to handle
   ///   the scenario where the value changed.
   @protected
   @mustCallSuper
@@ -895,7 +842,7 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
     }(), '');
 
     try {
-      state._createdValue = _provider._create(this);
+      state._createdValue = _provider.create(this);
       state.valueChanged(previous: previous);
     } catch (err, stack) {
       if (!state.handleError(err, stack)) {
@@ -1008,5 +955,56 @@ $exception
 Stack trace:
 $stackTrace
 ''';
+  }
+}
+
+@protected
+mixin ProviderOverridesMixin<Created, Listened>
+    on ProviderBase<Created, Listened> {
+  /// Overrides the behavior of a provider with a value.
+  ///
+  /// {@macro riverpod.overideWith}
+  // Works only on RootProvider<T, T> scenario by default
+  // TODO support ChangeNotifier/StateNotifier
+  Override overrideWithValue(Listened value) {
+    return ProviderOverride(
+      ValueProvider<Object?, Listened>((ref) => value, value),
+      this,
+    );
+  }
+
+  /// Overrides the behavior of this provider with another provider.
+  ///
+  /// {@template riverpod.overideWith}
+  /// Some common use-cases are:
+  /// - testing, by replacing a service with a fake implementation, or to reach
+  ///   a very specific state easily.
+  /// - multiple environments, by changing the implementation of a class
+  ///   based on the platform or other parameters.
+  ///
+  /// This function should be used in combination with `ProviderScope.overrides`
+  /// or `ProviderContainer.overrides`:
+  ///
+  /// ```dart
+  /// final myService = Provider((ref) => MyService());
+  ///
+  /// runApp(
+  ///   ProviderScope(
+  ///     overrides: [
+  ///       myService.overrideWithProvider(
+  ///         // Replace the implementation of MyService with a fake implementation
+  ///         Provider((ref) => MyFakeService())
+  ///       ),
+  ///     ],
+  ///     child: MyApp(),
+  ///   ),
+  /// );
+  /// ```
+  /// {@endtemplate}
+  // Cannot be overridden by AutoDisposeProviders
+  ProviderOverride overrideWithProvider(
+    ProviderBase<Object?, Listened> provider,
+  ) {
+    return ProviderOverride(provider, this);
   }
 }

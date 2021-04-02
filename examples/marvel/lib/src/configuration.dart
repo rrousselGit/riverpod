@@ -16,14 +16,14 @@ abstract class Configuration with _$Configuration {
     required String privateKey,
   }) = _Configuration;
 
-  factory Configuration.fromJson(Map<String, dynamic> json) =>
+  factory Configuration.fromJson(Map<String, Object?> json) =>
       _$ConfigurationFromJson(json);
 }
 
-final configurationsProvider = FutureProvider((_) async {
+final configurationsProvider = FutureProvider<Configuration>((_) async {
   final content = json.decode(
     await rootBundle.loadString('assets/configurations.json'),
-  ) as Map<String, dynamic>;
+  ) as Map<String, Object?>;
 
   return Configuration.fromJson(content);
 });

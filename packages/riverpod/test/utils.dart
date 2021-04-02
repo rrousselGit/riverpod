@@ -95,8 +95,8 @@ class _EqualsIgnoringHashCodes extends Matcher {
   }
 
   @override
-  bool matches(dynamic object, Map<dynamic, dynamic> matchState) {
-    final description = _normalize(object as String);
+  bool matches(Object? object, Map<Object?, Object?> matchState) {
+    final description = _normalize(object! as String);
     if (_value != description) {
       matchState[_mismatchedValueKey] = description;
       return false;
@@ -111,13 +111,13 @@ class _EqualsIgnoringHashCodes extends Matcher {
 
   @override
   Description describeMismatch(
-    dynamic item,
+    Object? item,
     Description mismatchDescription,
-    Map<dynamic, dynamic> matchState,
+    Map<Object?, Object?> matchState,
     bool verbose,
   ) {
     if (matchState.containsKey(_mismatchedValueKey)) {
-      final actualValue = matchState[_mismatchedValueKey] as String;
+      final actualValue = matchState[_mismatchedValueKey]! as String;
       // Leading whitespace is added so that lines in the multiline
       // description returned by addDescriptionOf are all indented equally
       // which makes the output easier to read for this case.
@@ -133,28 +133,29 @@ class _EqualsIgnoringHashCodes extends Matcher {
 
 class ObserverMock extends Mock implements ProviderObserver {
   @override
-  void didDisposeProvider(ProviderBase? provider) {
+  void didDisposeProvider(ProviderBase<Object?, Object?>? provider) {
     super.noSuchMethod(
       Invocation.method(#didDisposeProvider, [provider]),
     );
   }
 
   @override
-  void didAddProvider(ProviderBase? provider, Object? value) {
+  void didAddProvider(ProviderBase<Object?, Object?>? provider, Object? value) {
     super.noSuchMethod(
       Invocation.method(#didAddProvider, [provider, value]),
     );
   }
 
   @override
-  void didUpdateProvider(ProviderBase? provider, Object? newValue) {
+  void didUpdateProvider(
+      ProviderBase<Object?, Object?>? provider, Object? newValue) {
     super.noSuchMethod(
       Invocation.method(#didUpdateProvider, [provider, newValue]),
     );
   }
 
   @override
-  void mayHaveChanged(ProviderBase? provider) {
+  void mayHaveChanged(ProviderBase<Object?, Object?>? provider) {
     super.noSuchMethod(
       Invocation.method(#mayHaveChanged, [provider]),
     );

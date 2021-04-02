@@ -3,15 +3,22 @@ part of '../change_notifier_provider.dart';
 /// {@macro riverpod.changenotifierprovider}
 @sealed
 class AutoDisposeChangeNotifierProvider<T extends ChangeNotifier>
-    extends AutoDisposeProviderBase<T, T> {
+    extends AutoDisposeProviderBase<T, T> with ProviderOverridesMixin<T, T> {
   /// {@macro riverpod.changenotifierprovider}
   AutoDisposeChangeNotifierProvider(
-    Create<T, AutoDisposeProviderReference> create, {
+    this._create, {
     String? name,
-  }) : super(create, name);
+  }) : super(name);
 
   /// {@macro riverpod.family}
   static const family = ChangeNotifierProviderFamilyBuilder();
+
+  final Create<T, AutoDisposeProviderReference> _create;
+
+  @override
+  T create(covariant AutoDisposeProviderReference ref) {
+    return _create(ref);
+  }
 
   @override
   _AutoDisposeChangeNotifierProviderState<T> createState() =>

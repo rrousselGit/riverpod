@@ -53,9 +53,9 @@ void main() {
 
   test("rebuild don't notify clients if == doesn't change", () {
     final counter = Counter();
-    final other = StateNotifierProvider((ref) => counter);
+    final other = StateNotifierProvider<Counter, int>((ref) => counter);
     final provider = Provider((ref) {
-      return ref.watch(other.state).isEven;
+      return ref.watch(other).isEven;
     });
 
     final sub = container.listen(provider);
@@ -71,9 +71,9 @@ void main() {
 
   test('rebuild notify clients if == did change', () {
     final counter = Counter();
-    final other = StateNotifierProvider((ref) => counter);
+    final other = StateNotifierProvider<Counter, int>((ref) => counter);
     final provider = Provider((ref) {
-      return ref.watch(other.state).isEven;
+      return ref.watch(other).isEven;
     });
 
     final sub = container.listen(provider);

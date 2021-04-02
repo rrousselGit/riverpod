@@ -27,7 +27,7 @@ class FakeDio implements Dio {
   @override
   Future<Response<T>> get<T>(
     String path, {
-    required Map<String, dynamic> queryParameters,
+    required Map<String, Object?> queryParameters,
     Options? options,
     CancelToken? cancelToken,
     ProgressCallback? onReceiveProgress,
@@ -65,11 +65,11 @@ class FakeDio implements Dio {
   }
 }
 
-class FakeResponse implements Response<Map<String, dynamic>> {
+class FakeResponse implements Response<Map<String, Object?>> {
   FakeResponse(this.data);
 
   @override
-  final Map<String, dynamic> data;
+  final Map<String, Object?> data;
 
   @override
   void noSuchMethod(Invocation invocation) {
