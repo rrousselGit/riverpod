@@ -13,6 +13,27 @@ class ChangeNotifierProvider<T extends ChangeNotifier>
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeChangeNotifierProviderBuilder();
 
+  /// {@template flutter_riverpod.changenotifierprovider.notifier}
+  /// Obtains the [ChangeNotifier] associated with this provider, but without
+  /// listening to it.
+  ///
+  /// Listening to this provider may cause providers/widgets to rebuild in the
+  /// event that the [ChangeNotifier] it recreated.
+  ///
+  ///
+  /// It is preferrable to do:
+  /// ```dart
+  /// ref.watch(changeNotifierProvider.notifier)
+  /// ```
+  ///
+  /// instead of:
+  /// ```dart
+  /// ref.read(changeNotifierProvider)
+  /// ```
+  ///
+  /// The reasoning is, using `read` could cause hard to catch bugs, such as
+  /// not rebuilding dependent providers/widgets after using `context.refresh` on this provider.
+  /// {@endtemplate}
   late final AlwaysAliveProviderBase<T, T> notifier =
       Provider((ref) => ref.watch(this));
 

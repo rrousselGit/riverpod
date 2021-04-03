@@ -35,7 +35,13 @@ class StateNotifierProvider<Notifier extends StateNotifier<Value>, Value>
   StateNotifierProviderFamily<Notifier, Value, Object?>? get from =>
       super.from as StateNotifierProviderFamily<Notifier, Value, Object?>?;
 
-  // TODO name
+  /// {@template riverpod.statenotifierprovider.notifier}
+  /// Obtains the [StateNotifier] associated with this [StateNotifierProvider],
+  /// without listening to it.
+  ///
+  /// Listening to this provider may cause providers/widgets to rebuild in the
+  /// event that the [StateNotifier] it recreated.
+  /// {@endtemplate}
   @override
   late final AlwaysAliveProviderBase<Notifier, Notifier> notifier = from != null
       ? from!._notifierFamily(argument)

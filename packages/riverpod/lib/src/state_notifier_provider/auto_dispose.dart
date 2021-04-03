@@ -36,7 +36,7 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<Value>,
       super.from
           as AutoDisposeStateNotifierProviderFamily<Notifier, Value, Object?>?;
 
-  // TODO name
+  /// {@macro riverpod.statenotifierprovider.notifier}
   @override
   late final AutoDisposeProviderBase<Notifier, Notifier> notifier = from != null
       ? from!._notifierFamily(argument)

@@ -10,6 +10,7 @@ class AutoDisposeStateProvider<T>
     String? name,
   }) : super(name);
 
+  /// {@macro riverpod.stateprovider.notifier}
   late final AutoDisposeProviderBase<StateController<T>, StateController<T>>
       notifier = AutoDisposeProvider((ref) => ref.watch(this));
 

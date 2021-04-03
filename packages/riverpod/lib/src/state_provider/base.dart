@@ -10,6 +10,27 @@ class StateProvider<T>
     String? name,
   }) : super(name);
 
+  /// {@template riverpod.stateprovider.notifier}
+  /// Obtains the [StateController] associated with this provider, but without
+  /// listening to it.
+  ///
+  /// Listening to this provider may cause providers/widgets to rebuild in the
+  /// event that the [StateController] it recreated.
+  ///
+  ///
+  /// It is preferrable to do:
+  /// ```dart
+  /// ref.watch(stateProvider.notifier)
+  /// ```
+  ///
+  /// instead of:
+  /// ```dart
+  /// ref.read(stateProvider)
+  /// ```
+  ///
+  /// The reasoning is, using `read` could cause hard to catch bugs, such as
+  /// not rebuilding dependent providers/widgets after using `context.refresh` on this provider.
+  /// {@endtemplate}
   late final AlwaysAliveProviderBase<StateController<T>, StateController<T>>
       notifier = Provider((ref) => ref.watch(this));
 

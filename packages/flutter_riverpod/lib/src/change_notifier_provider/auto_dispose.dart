@@ -14,6 +14,7 @@ class AutoDisposeChangeNotifierProvider<T extends ChangeNotifier>
   /// {@macro riverpod.family}
   static const family = ChangeNotifierProviderFamilyBuilder();
 
+  /// {@macro flutter_riverpod.changenotifierprovider.notifier}
   late final AutoDisposeProviderBase<T, T> notifier =
       AutoDisposeProvider((ref) => ref.watch(this));
 
