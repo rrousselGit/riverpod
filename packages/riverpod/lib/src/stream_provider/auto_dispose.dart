@@ -5,7 +5,7 @@ part of '../stream_provider.dart';
 class AutoDisposeStreamProvider<T>
     extends AutoDisposeProviderBase<Stream<T>, AsyncValue<T>>
     with
-        ProviderOverridesMixin<Stream<T>, AsyncValue<T>>,
+        AutoDisposeProviderOverridesMixin<Stream<T>, AsyncValue<T>>,
         _StreamProviderMixin<T> {
   /// {@macro riverpod.streamprovider}
   AutoDisposeStreamProvider(this._create, {String? name}) : super(name);

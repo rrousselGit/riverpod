@@ -3,7 +3,8 @@ part of '../change_notifier_provider.dart';
 /// {@macro riverpod.changenotifierprovider}
 @sealed
 class AutoDisposeChangeNotifierProvider<T extends ChangeNotifier>
-    extends AutoDisposeProviderBase<T, T> with ProviderOverridesMixin<T, T> {
+    extends AutoDisposeProviderBase<T, T>
+    with AutoDisposeProviderOverridesMixin<T, T> {
   /// {@macro riverpod.changenotifierprovider}
   AutoDisposeChangeNotifierProvider(
     this._create, {

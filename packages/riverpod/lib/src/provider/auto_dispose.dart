@@ -3,7 +3,7 @@ part of '../provider.dart';
 /// {@macro riverpod.provider}
 @sealed
 class AutoDisposeProvider<T> extends AutoDisposeProviderBase<T, T>
-    with ProviderOverridesMixin<T, T> {
+    with AutoDisposeProviderOverridesMixin<T, T> {
   /// {@macro riverpod.provider}
   AutoDisposeProvider(this._create, {String? name}) : super(name);
 

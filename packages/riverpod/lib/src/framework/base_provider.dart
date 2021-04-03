@@ -960,12 +960,10 @@ $stackTrace
 
 @protected
 mixin ProviderOverridesMixin<Created, Listened>
-    on ProviderBase<Created, Listened> {
+    on AlwaysAliveProviderBase<Created, Listened> {
   /// Overrides the behavior of a provider with a value.
   ///
   /// {@macro riverpod.overideWith}
-  // Works only on RootProvider<T, T> scenario by default
-  // TODO support ChangeNotifier/StateNotifier
   Override overrideWithValue(Listened value) {
     return ProviderOverride(
       ValueProvider<Object?, Listened>((ref) => value, value),
@@ -1003,7 +1001,30 @@ mixin ProviderOverridesMixin<Created, Listened>
   /// {@endtemplate}
   // Cannot be overridden by AutoDisposeProviders
   ProviderOverride overrideWithProvider(
-    ProviderBase<Object?, Listened> provider,
+    AlwaysAliveProviderBase<Object?, Listened> provider,
+  ) {
+    return ProviderOverride(provider, this);
+  }
+}
+
+@protected
+mixin AutoDisposeProviderOverridesMixin<Created, Listened>
+    on AutoDisposeProviderBase<Created, Listened> {
+  /// Overrides the behavior of a provider with a value.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithValue(Listened value) {
+    return ProviderOverride(
+      ValueProvider<Object?, Listened>((ref) => value, value),
+      this,
+    );
+  }
+
+  /// Overrides the behavior of this provider with another provider.
+  ///
+  /// {@macro riverpod.overideWith}
+  ProviderOverride overrideWithProvider(
+    AutoDisposeProviderBase<Object?, Listened> provider,
   ) {
     return ProviderOverride(provider, this);
   }

@@ -5,7 +5,7 @@ part of '../future_provider.dart';
 class AutoDisposeFutureProvider<T>
     extends AutoDisposeProviderBase<Future<T>, AsyncValue<T>>
     with
-        ProviderOverridesMixin<Future<T>, AsyncValue<T>>,
+        AutoDisposeProviderOverridesMixin<Future<T>, AsyncValue<T>>,
         _FutureProviderMixin<T> {
   /// {@macro riverpod.futureprovider}
   AutoDisposeFutureProvider(this._create, {String? name}) : super(name);
