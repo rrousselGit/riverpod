@@ -358,9 +358,7 @@ class ProviderContainer {
   /// [ProviderContainer] and call [ProviderReference.onDispose] listeners.
   void dispose() {
     if (_disposed) {
-      throw StateError(
-        'Called disposed on a ProviderContainer that was already disposed',
-      );
+      return;
     }
     if (_children.isNotEmpty) {
       throw StateError(

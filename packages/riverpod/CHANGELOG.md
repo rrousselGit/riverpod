@@ -1,7 +1,7 @@
 # [Unreleased major]
 
-- **BREAKING CHANGE** Hide the `Listener`/`LocatorMixin` typedefs from `package:state_notifier` as the former
-  could cause a name conflict with the widget named `Listener` and the latter is not supported when using Riverpod.
+- **BREAKING CHANGE** The `Listener`/`LocatorMixin` typedefs are removed as the former could cause a name
+  conflict with the widget named `Listener` and the latter is not supported when using Riverpod.
 - **BREAKING CHANGE** The syntax for using `StateNotifierProvider` was updated.
   Before:
 
@@ -33,8 +33,10 @@
 
   See also https://github.com/rrousselGit/river_pod/issues/341 for more information.
 
-- **BREAKING CHANGE** `StateNotifierProvider.overrideWithProvider` is removed. Use `overrideWithValue` instead.
 - **BREAKING CHANGE** It is no-longer possible to override `StreamProvider.stream/last` and `FutureProvider.future`.
+- feat: Calling `ProviderContainer.dispose` multiple time no-longer throws.
+  This simplifies the tear-off logic of tests.
+- fix: overriding a `StateNotifierProvider`/`ChangeNotifierProvider` with `overrideWithValue` now correctly listens to the notifier.
 
 # 0.13.1
 

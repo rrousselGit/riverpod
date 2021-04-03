@@ -368,6 +368,13 @@ void main() {
     });
   });
 
+  test('disposing an already disposed container is no-op', () {
+    final container = ProviderContainer();
+
+    container.dispose();
+    container.dispose();
+  });
+
   test('cannot call markMayHaveChanged after dispose', () {
     final container = ProviderContainer();
     final provider = Provider((ref) {});

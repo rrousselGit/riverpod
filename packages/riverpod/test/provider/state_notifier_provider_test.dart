@@ -16,6 +16,7 @@ void main() {
         provider.overrideWithProvider((ref, a) => notifier2),
       ],
     );
+    addTearDown(container.dispose);
 
     expect(container.read(provider(0).notifier), notifier2);
     // access in the child container
@@ -32,6 +33,7 @@ void main() {
         provider.overrideWithValue(TestNotifier(10)),
       ],
     );
+    addTearDown(container.dispose);
 
     // does not crash
     container.updateOverrides([
@@ -83,6 +85,7 @@ void main() {
     });
     final listener = ControllerListenerMock();
     final container = ProviderContainer();
+    addTearDown(container.dispose);
 
     final sub = provider.notifier.addLazyListener(
       container,
@@ -112,6 +115,7 @@ void main() {
     });
     final listener = ListenerMock();
     final container = ProviderContainer();
+    addTearDown(container.dispose);
 
     final sub = provider.addLazyListener(
       container,
@@ -133,6 +137,105 @@ void main() {
     await Future.value(null);
 
     verifyNoMoreInteractions(listener);
+  });
+
+  test(
+      'overrideWithValue listens to the notifier, support notifier change, and does not dispose of the notifier',
+      () async {
+    final provider = StateNotifierProvider<TestNotifier, int>((_) {
+      return TestNotifier();
+    });
+    final notifier = TestNotifier(42);
+    final notifier2 = TestNotifier(21);
+    final container = ProviderContainer(overrides: [
+      provider.overrideWithValue(notifier),
+    ]);
+    addTearDown(container.dispose);
+    final listener = ListenerMock();
+
+    final sub = container.listen<int>(
+      provider,
+      didChange: (sub) => listener(sub.read()),
+    );
+
+    expect(sub.read(), 42);
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier.hasListeners, true);
+
+    notifier.increment();
+
+    sub.flush();
+    verifyOnly(listener, listener(43));
+
+    container.updateOverrides([
+      provider.overrideWithValue(notifier2),
+    ]);
+
+    sub.flush();
+    verifyOnly(listener, listener(21));
+    expect(notifier.hasListeners, false);
+    expect(notifier.mounted, true);
+    expect(container.read(provider.notifier), notifier2);
+
+    notifier2.increment();
+
+    sub.flush();
+    verifyOnly(listener, listener(22));
+  });
+
+  test('overrideWithProvider preserves the state accross update', () {
+    final provider = StateNotifierProvider<TestNotifier, int>((_) {
+      return TestNotifier();
+    });
+    final notifier = TestNotifier(42);
+    final notifier2 = TestNotifier(21);
+    final container = ProviderContainer(overrides: [
+      provider.overrideWitProvider(
+        StateNotifierProvider<TestNotifier, int>((_) {
+          return notifier;
+        }),
+      ),
+    ]);
+    addTearDown(container.dispose);
+    final listener = ListenerMock();
+
+    final sub = container.listen<int>(
+      provider,
+      didChange: (sub) => listener(sub.read()),
+    );
+
+    expect(sub.read(), 42);
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier.hasListeners, true);
+
+    notifier.increment();
+
+    sub.flush();
+    verifyOnly(listener, listener(43));
+
+    container.updateOverrides([
+      provider.overrideWitProvider(
+        StateNotifierProvider<TestNotifier, int>((_) {
+          return notifier2;
+        }),
+      ),
+    ]);
+
+    sub.flush();
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier2.hasListeners, false);
+    verifyNoMoreInteractions(listener);
+
+    notifier.increment();
+
+    sub.flush();
+    expect(container.read(provider.notifier), notifier);
+    verifyOnly(listener, listener(44));
+    expect(notifier.mounted, true);
+
+    container.dispose();
+
+    expect(notifier.mounted, false);
   });
 }
 
