@@ -190,7 +190,7 @@ void main() {
     final notifier = TestNotifier(42);
     final notifier2 = TestNotifier(21);
     final container = ProviderContainer(overrides: [
-      provider.overrideWitProvider(
+      provider.overrideWithProvider(
         StateNotifierProvider<TestNotifier, int>((_) {
           return notifier;
         }),
@@ -214,7 +214,7 @@ void main() {
     verifyOnly(listener, listener(43));
 
     container.updateOverrides([
-      provider.overrideWitProvider(
+      provider.overrideWithProvider(
         StateNotifierProvider<TestNotifier, int>((_) {
           return notifier2;
         }),

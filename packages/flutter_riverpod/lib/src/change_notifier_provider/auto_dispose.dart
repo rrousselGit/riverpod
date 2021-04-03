@@ -14,6 +14,12 @@ class AutoDisposeChangeNotifierProvider<T extends ChangeNotifier>
   /// {@macro riverpod.family}
   static const family = ChangeNotifierProviderFamilyBuilder();
 
+  late final AutoDisposeProviderBase<T, T> notifier =
+      AutoDisposeProvider((ref) => ref.watch(this));
+
+  @override
+  Override overrideWithValue(T value) => _overrideWithValue(this, value);
+
   final Create<T, AutoDisposeProviderReference> _create;
 
   @override

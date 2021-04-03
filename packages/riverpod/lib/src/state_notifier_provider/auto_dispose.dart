@@ -45,7 +45,7 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<Value>,
   /// Overrides the behavior of a provider with a another provider.
   ///
   /// {@macro riverpod.overideWith}
-  Override overrideWitProvider(
+  Override overrideWithProvider(
     AutoDisposeStateNotifierProvider<Notifier, Value> provider,
   ) {
     return ProviderOverride(provider.notifier, notifier);

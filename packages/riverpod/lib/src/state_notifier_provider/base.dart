@@ -44,7 +44,7 @@ class StateNotifierProvider<Notifier extends StateNotifier<Value>, Value>
   /// Overrides the behavior of a provider with a another provider.
   ///
   /// {@macro riverpod.overideWith}
-  Override overrideWitProvider(
+  Override overrideWithProvider(
     StateNotifierProvider<Notifier, Value> provider,
   ) {
     return ProviderOverride(provider.notifier, notifier);
