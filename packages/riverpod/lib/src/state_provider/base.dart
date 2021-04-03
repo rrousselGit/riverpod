@@ -10,6 +10,9 @@ class StateProvider<T>
     String? name,
   }) : super(name);
 
+  late final AlwaysAliveProviderBase<StateController<T>, StateController<T>>
+      notifier = Provider((ref) => ref.watch(this));
+
   final Create<T, ProviderReference> _create;
 
   @override

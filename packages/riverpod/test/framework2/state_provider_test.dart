@@ -10,7 +10,75 @@ void main() {
     container.dispose();
   });
 
+  group('StateProvider', () {
+    test('.notifier obtains the controller without listening to it', () {
+      final dep = StateProvider((ref) => 0);
+      final provider = StateProvider((ref) {
+        ref.watch(dep);
+        return 0;
+      });
+
+      var callCount = 0;
+      final sub = container.listen(
+        provider.notifier,
+        didChange: (_) => callCount++,
+      );
+
+      final controller = container.read(provider);
+
+      expect(sub.read(), controller);
+      expect(callCount, 0);
+
+      controller.state++;
+
+      sub.flush();
+      expect(callCount, 0);
+
+      container.read(dep).state++;
+
+      final controller2 = container.read(provider);
+      expect(controller2, isNot(controller));
+
+      sub.flush();
+      expect(sub.read(), controller2);
+      expect(callCount, 1);
+    });
+  });
+
   group('StateProvider.autoDispose', () {
+    test('.notifier obtains the controller without listening to it', () {
+      final dep = StateProvider((ref) => 0);
+      final provider = StateProvider.autoDispose((ref) {
+        ref.watch(dep);
+        return 0;
+      });
+
+      var callCount = 0;
+      final sub = container.listen(
+        provider.notifier,
+        didChange: (_) => callCount++,
+      );
+
+      final controller = container.read(provider);
+
+      expect(sub.read(), controller);
+      expect(callCount, 0);
+
+      controller.state++;
+
+      sub.flush();
+      expect(callCount, 0);
+
+      container.read(dep).state++;
+
+      final controller2 = container.read(provider);
+      expect(controller2, isNot(controller));
+
+      sub.flush();
+      expect(sub.read(), controller2);
+      expect(callCount, 1);
+    });
+
     test('creates a new controller when no-longer listened', () async {
       final provider = StateProvider.autoDispose((ref) => 0);
 

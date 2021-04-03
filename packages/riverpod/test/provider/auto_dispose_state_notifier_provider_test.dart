@@ -163,6 +163,40 @@ void main() {
     verifyNoMoreInteractions(listener);
   });
 
+  test('.notifier obtains the controller without listening to it', () {
+    final dep = StateProvider((ref) => 0);
+    final notifier = TestNotifier();
+    final notifier2 = TestNotifier();
+    final provider =
+        StateNotifierProvider.autoDispose<TestNotifier, int>((ref) {
+      return ref.watch(dep).state == 0 ? notifier : notifier2;
+    });
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    var callCount = 0;
+    final sub = container.listen(
+      provider.notifier,
+      didChange: (_) => callCount++,
+    );
+
+    expect(sub.read(), notifier);
+    expect(callCount, 0);
+
+    notifier.increment();
+
+    sub.flush();
+    expect(callCount, 0);
+
+    container.read(dep).state++;
+
+    expect(sub.read(), notifier2);
+
+    sub.flush();
+    expect(sub.read(), notifier2);
+    expect(callCount, 1);
+  });
+
   test('overrideWithProvider preserves the state accross update', () {
     final provider = StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
       return TestNotifier();

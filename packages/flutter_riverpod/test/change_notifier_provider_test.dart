@@ -79,10 +79,13 @@ void main() {
     expect(notifier.mounted, isFalse);
   });
 
-  test('.notifier does not notify listeners when notifyListeners is called',
-      () {
+  test('.notifier obtains the controller without listening to it', () {
+    final dep = StateProvider((ref) => 0);
     final notifier = TestNotifier();
-    final provider = ChangeNotifierProvider((_) => notifier);
+    final notifier2 = TestNotifier();
+    final provider = ChangeNotifierProvider((ref) {
+      return ref.watch(dep).state == 0 ? notifier : notifier2;
+    });
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
@@ -92,14 +95,21 @@ void main() {
       didChange: (_) => callCount++,
     );
 
-    expect(callCount, 0);
     expect(sub.read(), notifier);
+    expect(callCount, 0);
 
     notifier.count++;
 
     sub.flush();
     expect(callCount, 0);
-    expect(sub.read(), notifier);
+
+    container.read(dep).state++;
+
+    expect(sub.read(), notifier2);
+
+    sub.flush();
+    expect(sub.read(), notifier2);
+    expect(callCount, 1);
   });
 
   test(

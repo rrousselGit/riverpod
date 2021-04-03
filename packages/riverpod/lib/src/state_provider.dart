@@ -1,11 +1,12 @@
 import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
 
+import '../riverpod.dart';
 import 'builders.dart';
 import 'framework.dart';
 
-part 'state_provider/base.dart';
 part 'state_provider/auto_dispose.dart';
+part 'state_provider/base.dart';
 
 /// A [StateNotifier] that allows modifying its [state] from outside.
 ///

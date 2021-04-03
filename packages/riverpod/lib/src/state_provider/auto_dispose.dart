@@ -10,6 +10,9 @@ class AutoDisposeStateProvider<T>
     String? name,
   }) : super(name);
 
+  late final AutoDisposeProviderBase<StateController<T>, StateController<T>>
+      notifier = AutoDisposeProvider((ref) => ref.watch(this));
+
   final Create<T, AutoDisposeProviderReference> _create;
 
   @override
