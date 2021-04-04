@@ -16,17 +16,15 @@
 
 A command line for Riverpod, to help upgrade to newer versions of Riverpod.
 
-To use:
-Add to your `pubspec.yaml`:
+## Installation
 
-```yaml
-dev_dependencies:
-  riverpod_cli: ^0.0.2
+To install the migration tool, do:
+
+```sh
+dart pub global activate riverpod_cli
 ```
 
 ## Usage
-
-### Migration
 
 To easily upgrade your Riverpod version:
 
