@@ -1,5 +1,5 @@
 import 'package:codemod/codemod.dart';
-import 'package:riverpod_cli/riverpod_cli.dart';
+import 'package:riverpod_cli/src/migrate/imports.dart';
 import 'package:source_span/source_span.dart';
 import 'package:test/test.dart';
 

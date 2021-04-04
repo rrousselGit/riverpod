@@ -1,3 +1,8 @@
-library riverpod_cli;
+import 'package:args/command_runner.dart';
+import 'package:riverpod_cli/src/migrate.dart';
 
-export 'src/imports.dart';
+class RiverpodCommand extends CommandRunner<void> {
+  RiverpodCommand() : super('riverpod', '') {
+    addCommand(MigrateCommand());
+  }
+}
