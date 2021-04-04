@@ -31,6 +31,12 @@ module.exports = {
     },
     {
       type: "category",
+      label: "Migration",
+      collapsed: false,
+      items: ["migration/0.13.0_to_0.14.0"],
+    },
+    {
+      type: "category",
       label: "Official examples",
       items: [
         {
@@ -92,7 +98,8 @@ module.exports = {
         {
           type: "link",
           label: "Resocoder's Weather Bloc to Weather Riverpod",
-          href: "https://github.com/campanagerald/flutter-bloc-library-v1-tutorial",
+          href:
+            "https://github.com/campanagerald/flutter-bloc-library-v1-tutorial",
         },
         {
           type: "link",

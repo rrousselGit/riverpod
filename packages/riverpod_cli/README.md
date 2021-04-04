@@ -40,7 +40,7 @@ To easily upgrade your Riverpod version:
 
 One example would be:
 
-```suggestion
+```diff
 - import 'package:riverpod/all.dart';
 + import 'package:riverpod/riverpod.dart';
 ```
