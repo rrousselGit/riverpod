@@ -33,7 +33,10 @@ jobs:
       - run: dart pub global activate melos
 
       - name: Install dependencies
-        run: melos bootstrap && cd packages/riverpod_cli/fixtures/notifiers/input && flutter pub get && cd -
+        run: melos bootstrap
+
+      - name: Install cli fixtures
+        run: cd packages/riverpod_cli/fixtures/notifiers/input && flutter pub get && cd -
 
       - name: Check format
         run: flutter format --set-exit-if-changed .
