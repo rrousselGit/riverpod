@@ -21,7 +21,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dev_dependencies:
-  codemod_riverpod: ^0.0.2
+  riverpod_cli: ^0.0.2
 ```
 
 ## Usage
