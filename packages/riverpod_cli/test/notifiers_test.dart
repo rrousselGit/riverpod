@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:codemod_riverpod/codemod_riverpod.dart';
+import 'package:riverpod_cli/src/migrate/notifiers.dart';
 import 'package:test/test.dart';
 
 import 'goldens.dart';

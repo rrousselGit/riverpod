@@ -1,7 +1,14 @@
+import 'dart:io';
+
 import 'package:args/command_runner.dart';
 import 'package:codemod/codemod.dart';
 import 'package:glob/glob.dart';
+import 'package:pub_semver/pub_semver.dart';
+import 'package:pubspec_parse/pubspec_parse.dart';
+
 import 'migrate/imports.dart';
+import 'migrate/notifiers.dart';
+import 'migrate/version.dart';
 
 class MigrateCommand extends Command<void> {
   @override
@@ -12,10 +19,41 @@ class MigrateCommand extends Command<void> {
       'Analyse a project using Riverpod and migrate it to the latest version available';
 
   @override
-  void run() {
-    runInteractiveCodemod(
+  Future<void> run() async {
+    final pubspecFile = File('pubspec.yaml');
+    if (!pubspecFile.existsSync()) {
+      stderr.writeln(
+          'Pubspec not found! Are you in the root directory of your package / app?');
+      return;
+    }
+    final pubspec = Pubspec.parse(pubspecFile.readAsStringSync());
+    final dep = pubspec.dependencies['hooks_riverpod'] ??
+        pubspec.dependencies['flutter_riverpod'] ??
+        pubspec.dependencies['riverpod'];
+
+    VersionConstraint version;
+    if (dep is HostedDependency) {
+      version = dep.version;
+    }
+
+    await runInteractiveCodemod(
       filePathsFromGlob(Glob('**.dart', recursive: true)),
-      AggregateSuggestor([RiverpodImportAllMigrationSuggestor()]),
+      aggregate(
+        [
+          if (version == null ||
+              version.intersect(VersionConstraint.parse('>=0.13.0')).isEmpty)
+            RiverpodImportAllMigrationSuggestor(),
+          if (version == null ||
+              version.intersect(VersionConstraint.parse('>=0.14.0')).isEmpty)
+            RiverpodNotifierChangesMigrationSuggestor(),
+        ],
+      ),
+      args: argResults.arguments,
+    );
+
+    await runInteractiveCodemod(
+      filePathsFromGlob(Glob('pubspec.yaml', recursive: true)),
+      versionMigrationSuggestor,
       args: argResults.arguments,
     );
   }
