@@ -19,7 +19,8 @@ void main() {
             return useProvider(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
-              error: (dynamic err, stack) => const Text('error'),
+              // ignore: avoid_types_on_closure_parameters
+              error: (Object? err, stack) => const Text('error'),
             );
           }),
         ),
@@ -49,7 +50,8 @@ void main() {
             return useProvider(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
-              error: (dynamic err, stack) => const Text('error'),
+              // ignore: avoid_types_on_closure_parameters
+              error: (Object? err, stack) => const Text('error'),
             );
           }),
         ),
@@ -78,7 +80,8 @@ void main() {
             return useProvider(futureProviderFamily).when(
               data: (value) => Text(value.toString()),
               loading: () => const Text('loading'),
-              error: (dynamic err, stack) => const Text('error'),
+              // ignore: avoid_types_on_closure_parameters
+              error: (Object? err, stack) => const Text('error'),
             );
           }),
         ),

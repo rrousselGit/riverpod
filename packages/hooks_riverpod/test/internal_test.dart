@@ -10,17 +10,17 @@ void main() {
   testWidgets('useProvider supports changing the selected provider',
       (tester) async {
     final notifier1 = Counter();
-    final provider1 = StateNotifierProvider((_) => notifier1);
+    final provider1 = StateNotifierProvider<Counter, int>((_) => notifier1);
     final notifier2 = Counter(42);
-    final provider2 = StateNotifierProvider((_) => notifier2);
+    final provider2 = StateNotifierProvider<Counter, int>((_) => notifier2);
     var buildCount = 0;
     var selectCount = 0;
 
-    Widget build(StateNotifierProvider<Counter> provider) {
+    Widget build(StateNotifierProvider<Counter, int> provider) {
       return ProviderScope(
         child: HookBuilder(builder: (c) {
           buildCount++;
-          final value = useProvider(provider.state.select((value) {
+          final value = useProvider(provider.select((value) {
             selectCount++;
             return value > 5;
           }));
@@ -58,16 +58,16 @@ void main() {
 
   testWidgets('useProvider supports changing the provider', (tester) async {
     final notifier1 = Counter();
-    final provider1 = StateNotifierProvider((_) => notifier1);
+    final provider1 = StateNotifierProvider<Counter, int>((_) => notifier1);
     final notifier2 = Counter(42);
-    final provider2 = StateNotifierProvider((_) => notifier2);
+    final provider2 = StateNotifierProvider<Counter, int>((_) => notifier2);
     var buildCount = 0;
 
-    Widget build(StateNotifierProvider<Counter> provider) {
+    Widget build(StateNotifierProvider<Counter, int> provider) {
       return ProviderScope(
         child: HookBuilder(builder: (c) {
           buildCount++;
-          final value = useProvider(provider.state);
+          final value = useProvider(provider);
           return Text('$value', textDirection: TextDirection.ltr);
         }),
       );
@@ -99,7 +99,7 @@ void main() {
   group('useProvider(provider.select)', () {
     testWidgets('simple flow', (tester) async {
       final notifier = Counter();
-      final provider = StateNotifierProvider((_) => notifier);
+      final provider = StateNotifierProvider<Counter, int>((_) => notifier);
       final selector = SelectorSpy<int>();
       var buildCount = 0;
       Object? lastSelectedValue;
@@ -108,7 +108,7 @@ void main() {
         ProviderScope(
           child: HookBuilder(builder: (c) {
             buildCount++;
-            lastSelectedValue = useProvider(provider.state.select((value) {
+            lastSelectedValue = useProvider(provider.select((value) {
               selector(value);
               return value.isNegative;
             }));
@@ -136,7 +136,7 @@ void main() {
 
     testWidgets('recompute value when changing selector', (tester) async {
       final notifier = Counter();
-      final provider = StateNotifierProvider((_) => notifier);
+      final provider = StateNotifierProvider<Counter, int>((_) => notifier);
       final selector = SelectorSpy<String>();
       String? value2;
       final build = BuildSpy();
@@ -146,7 +146,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(child: HookBuilder(builder: (c) {
           build();
-          lastSelectedValue = useProvider(provider.state.select((value) {
+          lastSelectedValue = useProvider(provider.select((value) {
             selector('$value $value2');
             return '$value $value2';
           }));
@@ -180,7 +180,7 @@ void main() {
     testWidgets('stop calling selectors after one cause rebuild',
         (tester) async {
       final notifier = Counter();
-      final provider = StateNotifierProvider((_) => notifier);
+      final provider = StateNotifierProvider<Counter, int>((_) => notifier);
       bool? lastSelectedValue;
       final selector = SelectorSpy<int>();
       int? lastSelectedValue2;
@@ -192,15 +192,15 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(child: HookBuilder(builder: (c) {
           build();
-          lastSelectedValue = useProvider(provider.state.select((value) {
+          lastSelectedValue = useProvider(provider.select((value) {
             selector(value);
             return value.isNegative;
           }));
-          lastSelectedValue2 = useProvider(provider.state.select((value) {
+          lastSelectedValue2 = useProvider(provider.select((value) {
             selector2(value);
             return value;
           }));
-          lastSelectedValue3 = useProvider(provider.state.select((value) {
+          lastSelectedValue3 = useProvider(provider.select((value) {
             selector3(value);
             return value;
           }));

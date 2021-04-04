@@ -12,9 +12,6 @@ analyzer:
     # in this file
     included_file_warning: ignore
 
-    # Causes false positives (https://github.com/dart-lang/sdk/issues/41571
-    top_level_function_literal_block: ignore
-
 linter:
   rules:
     # Personal preference. I don't find it more readable

@@ -17,7 +17,8 @@ void main() {
             return useProvider(future).when(
               data: (data) => Text(data.toString()),
               loading: () => const Text('loading'),
-              error: (dynamic err, stack) => Text('$err'),
+              // ignore: avoid_types_on_closure_parameters
+              error: (Object? err, stack) => Text('$err'),
             );
           }),
         ),
@@ -35,7 +36,7 @@ void main() {
     final error = Error();
     final futureProvider = FutureProvider<int>((s) async => throw error);
 
-    dynamic whenError;
+    Object? whenError;
     StackTrace? whenStack;
 
     await tester.pumpWidget(
@@ -46,7 +47,8 @@ void main() {
             return useProvider(futureProvider).when(
               data: (data) => Text(data.toString()),
               loading: () => const Text('loading'),
-              error: (dynamic err, stack) {
+              // ignore: avoid_types_on_closure_parameters
+              error: (Object? err, stack) {
                 whenError = err;
                 whenStack = stack;
                 return const Text('error');
@@ -157,7 +159,8 @@ void main() {
         future = ref.watch(futureProvider.future)!
           ..then(
             (value) => completed = true,
-            onError: (dynamic _) => completed = true,
+            // ignore: avoid_types_on_closure_parameters
+            onError: (Object? _) => completed = true,
           );
         return '';
       },
@@ -176,7 +179,8 @@ void main() {
         return useProvider(futureProvider).when(
           data: (data) => Text(data.toString()),
           loading: () => const Text('loading'),
-          error: (dynamic err, stack) {
+          // ignore: avoid_types_on_closure_parameters
+          error: (Object? err, stack) {
             return const Text('error');
           },
         );

@@ -8,11 +8,10 @@ void main() {
   setUp(() => container = ProviderContainer());
   tearDown(() => container.dispose());
 
-  test('Provider.autoDispose can be overriden by anything', () {
+  test('Provider.autoDispose can be overriden by auto-dispose providers', () {
     final provider = Provider.autoDispose((_) => 42);
-    final RootProvider<Object?, int> override = Provider((_) {
-      return 21;
-    });
+    final AutoDisposeProviderBase<Object?, int> override =
+        Provider.autoDispose((_) => 21);
     final container = ProviderContainer(overrides: [
       provider.overrideWithProvider(override),
     ]);
@@ -24,7 +23,7 @@ void main() {
 
   test('Provider can be overriden by anything', () {
     final provider = Provider((_) => 42);
-    final RootProvider<Object?, int> override = Provider((_) {
+    final AlwaysAliveProviderBase<Object?, int> override = Provider((_) {
       return 21;
     });
     final container = ProviderContainer(overrides: [
@@ -53,9 +52,9 @@ void main() {
 
   test("rebuild don't notify clients if == doesn't change", () {
     final counter = Counter();
-    final other = StateNotifierProvider((ref) => counter);
+    final other = StateNotifierProvider<Counter, int>((ref) => counter);
     final provider = Provider((ref) {
-      return ref.watch(other.state).isEven;
+      return ref.watch(other).isEven;
     });
 
     final sub = container.listen(provider);
@@ -71,9 +70,9 @@ void main() {
 
   test('rebuild notify clients if == did change', () {
     final counter = Counter();
-    final other = StateNotifierProvider((ref) => counter);
+    final other = StateNotifierProvider<Counter, int>((ref) => counter);
     final provider = Provider((ref) {
-      return ref.watch(other.state).isEven;
+      return ref.watch(other).isEven;
     });
 
     final sub = container.listen(provider);

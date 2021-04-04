@@ -1,4 +1,4 @@
-export 'package:state_notifier/state_notifier.dart';
+export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
 
 export 'src/common.dart'
     show
@@ -52,12 +52,8 @@ export 'src/state_notifier_provider.dart'
     show
         AutoDisposeStateNotifierProvider,
         AutoDisposeStateNotifierProviderFamily,
-        AutoDisposeStateNotifierStateProvider,
         StateNotifierProvider,
-        StateNotifierProviderFamily,
-        StateNotifierStateProvider,
-        AutoDisposeStateNotifierStateProviderX,
-        StateNotifierStateProviderX;
+        StateNotifierProviderFamily;
 
 export 'src/state_provider.dart'
     show

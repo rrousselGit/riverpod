@@ -4,12 +4,16 @@ part of '../stream_provider.dart';
 @sealed
 class StreamProvider<T>
     extends AlwaysAliveProviderBase<Stream<T>, AsyncValue<T>>
-    with _StreamProviderMixin<T> {
+    with
+        ProviderOverridesMixin<Stream<T>, AsyncValue<T>>,
+        _StreamProviderMixin<T> {
   /// {@macro riverpod.streamprovider}
-  StreamProvider(
-    Create<Stream<T>, ProviderReference> create, {
-    String? name,
-  }) : super(create, name);
+  StreamProvider(this._create, {String? name}) : super(name);
+
+  final Create<Stream<T>, ProviderReference> _create;
+
+  @override
+  Stream<T> create(ProviderReference ref) => _create(ref);
 
   /// {@macro riverpod.family}
   static const family = StreamProviderFamilyBuilder();

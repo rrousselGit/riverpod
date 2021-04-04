@@ -186,7 +186,7 @@ void main() {
   test("initState can't dirty siblings", () {
     final ancestor = StateProvider((_) => 0, name: 'ancestor');
     final counter = Counter();
-    final sibling = StateNotifierProvider((ref) {
+    final sibling = StateNotifierProvider<Counter, int>((ref) {
       ref.watch(ancestor).state;
       return counter;
     }, name: 'sibling');
@@ -197,7 +197,7 @@ void main() {
       counter.increment();
     }, name: 'child');
 
-    container.read(sibling.state);
+    container.read(sibling);
 
     expect(errorsOf(() => container.read(child)), isNotEmpty);
     expect(didWatchAncestor, true);
@@ -217,7 +217,7 @@ void main() {
 
   test("nested initState can't mark dirty other providers", () {
     final counter = Counter();
-    final provider = StateNotifierProvider((_) => counter);
+    final provider = StateNotifierProvider<Counter, int>((_) => counter);
     final nested = Provider((_) => 0);
     final provider2 = Provider((ref) {
       ref.watch(nested);
@@ -225,14 +225,14 @@ void main() {
       return 0;
     });
 
-    expect(container.read(provider.state), 0);
+    expect(container.read(provider), 0);
 
     expect(errorsOf(() => container.read(provider2)), isNotEmpty);
   });
 
   test('auto dispose can dirty providers', () async {
     final counter = Counter();
-    final provider = StateNotifierProvider((_) => counter);
+    final provider = StateNotifierProvider<Counter, int>((_) => counter);
     var didDispose = false;
     final provider2 = Provider.autoDispose((ref) {
       ref.onDispose(() {
@@ -241,7 +241,7 @@ void main() {
       });
     });
 
-    container.read(provider.state);
+    container.read(provider);
 
     final sub = container.listen(provider2);
     sub.close();
@@ -256,7 +256,7 @@ void main() {
 
   test("Provider can't dirty anything on create", () {
     final counter = Counter();
-    final provider = StateNotifierProvider((_) => counter);
+    final provider = StateNotifierProvider<Counter, int>((_) => counter);
     late List<Object> errors;
     final computed = Provider((ref) {
       errors = errorsOf(counter.increment);
@@ -264,7 +264,7 @@ void main() {
     });
     final listener = Listener();
 
-    expect(container.read(provider.state), 0);
+    expect(container.read(provider), 0);
 
     computed.watchOwner(container, listener);
 

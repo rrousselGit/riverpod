@@ -225,7 +225,7 @@ class ProviderContainer {
   ///
   /// If you are using flutter, this is done implicitly for you by `ProviderScope`.
   ///
-  /// Updating a [RootProvider.overrideWithValue] with a different value
+  /// Updating a `overrideWithValue` with a different value
   /// will cause the listeners to rebuild.
   ///
   /// It is not possible, to remove or add new overrides, only update existing ones.
@@ -358,9 +358,7 @@ class ProviderContainer {
   /// [ProviderContainer] and call [ProviderReference.onDispose] listeners.
   void dispose() {
     if (_disposed) {
-      throw StateError(
-        'Called disposed on a ProviderContainer that was already disposed',
-      );
+      return;
     }
     if (_children.isNotEmpty) {
       throw StateError(
@@ -486,7 +484,7 @@ abstract class ProviderObserver {
 /// See also:
 ///
 /// - [ProviderContainer], which uses this object.
-/// - [AlwaysAliveProviderBase.overrideWithProvider], which creates a [ProviderOverride].
+/// - `overrideWithProvider`/`overrideWithValue`, which creates a [ProviderOverride].
 @sealed
 class ProviderOverride implements Override {
   /// Internal use only

@@ -4,12 +4,16 @@ part of '../future_provider.dart';
 @sealed
 class AutoDisposeFutureProvider<T>
     extends AutoDisposeProviderBase<Future<T>, AsyncValue<T>>
-    with _FutureProviderMixin<T> {
+    with
+        AutoDisposeProviderOverridesMixin<Future<T>, AsyncValue<T>>,
+        _FutureProviderMixin<T> {
   /// {@macro riverpod.futureprovider}
-  AutoDisposeFutureProvider(
-    Create<Future<T>, AutoDisposeProviderReference> create, {
-    String? name,
-  }) : super(create, name);
+  AutoDisposeFutureProvider(this._create, {String? name}) : super(name);
+
+  final Create<Future<T>, AutoDisposeProviderReference> _create;
+
+  @override
+  Future<T> create(covariant AutoDisposeProviderReference ref) => _create(ref);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeFutureProviderFamilyBuilder();

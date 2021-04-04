@@ -15,7 +15,7 @@ final allFilterKey = UniqueKey();
 ///
 /// We are using [StateNotifierProvider] here as a `List<Todo>` is a complex
 /// object, with advanced business logic like how to edit a todo.
-final todoListProvider = StateNotifierProvider((ref) {
+final todoListProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) {
   return TodoList([
     Todo(id: 'todo-0', description: 'hi'),
     Todo(id: 'todo-1', description: 'hello'),
@@ -44,20 +44,17 @@ final todoListFilter = StateProvider((_) => TodoListFilter.all);
 ///
 /// This will also optimise unneeded rebuilds if the todo-list changes, but the
 /// number of uncompleted todos doesn't (such as when editing a todo).
-final uncompletedTodosCount = Provider((ref) {
-  return ref
-      .watch(todoListProvider.state)
-      .where((todo) => !todo.completed)
-      .length;
+final uncompletedTodosCount = Provider<int>((ref) {
+  return ref.watch(todoListProvider).where((todo) => !todo.completed).length;
 });
 
 /// The list of todos after applying of [todoListFilter].
 ///
 /// This too uses [Provider], to avoid recomputing the filtered list unless either
 /// the filter of or the todo-list updates.
-final filteredTodos = Provider((ref) {
+final filteredTodos = Provider<List<Todo>>((ref) {
   final filter = ref.watch(todoListFilter);
-  final todos = ref.watch(todoListProvider.state);
+  final todos = ref.watch(todoListProvider);
 
   switch (filter.state) {
     case TodoListFilter.completed:
@@ -107,7 +104,7 @@ class Home extends HookWidget {
                 labelText: 'What needs to be done?',
               ),
               onSubmitted: (value) {
-                context.read(todoListProvider).add(value);
+                context.read(todoListProvider.notifier).add(value);
                 newTodoController.clear();
               },
             ),
@@ -119,7 +116,7 @@ class Home extends HookWidget {
               Dismissible(
                 key: ValueKey(todos[i].id),
                 onDismissed: (_) {
-                  context.read(todoListProvider).remove(todos[i]);
+                  context.read(todoListProvider.notifier).remove(todos[i]);
                 },
                 child: ProviderScope(
                   overrides: [
@@ -250,7 +247,7 @@ class TodoItem extends HookWidget {
           } else {
             // Commit changes only when the textfield is unfocused, for performance
             context
-                .read(todoListProvider)
+                .read(todoListProvider.notifier)
                 .edit(id: todo.id, description: textEditingController.text);
           }
         },
@@ -262,7 +259,7 @@ class TodoItem extends HookWidget {
           leading: Checkbox(
             value: todo.completed,
             onChanged: (value) =>
-                context.read(todoListProvider).toggle(todo.id),
+                context.read(todoListProvider.notifier).toggle(todo.id),
           ),
           title: isFocused
               ? TextField(

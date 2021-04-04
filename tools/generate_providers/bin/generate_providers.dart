@@ -24,14 +24,21 @@ enum StateType {
   stream,
 }
 
-const stateLabel = {
-  StateType.none: '',
-  StateType.state: 'State',
-  StateType.stateNotifier: 'StateNotifier',
-  StateType.changeNotifier: 'ChangeNotifier',
-  StateType.future: 'Future',
-  StateType.stream: 'Stream',
-};
+class StateDetails {
+  StateDetails({
+    this.kind,
+    this.className,
+    this.constraints,
+    this.generics,
+    this.createType,
+  });
+
+  final StateType kind;
+  final String className;
+  final String constraints;
+  final String generics;
+  final String createType;
+}
 
 enum ProviderType {
   single,
@@ -39,8 +46,8 @@ enum ProviderType {
 }
 
 const providerLabel = {
-  ProviderType.single: 'Provider',
-  ProviderType.family: 'ProviderFamily',
+  ProviderType.single: '',
+  ProviderType.family: 'Family',
 };
 
 const _autoDisposeDoc = '''
@@ -342,20 +349,61 @@ Future<void> main(List<String> args) async {
     return;
   }
 
-  Tuple3<List<DisposeType>, List<StateType>, List<ProviderType>> matrix;
+  Tuple3<List<DisposeType>, List<StateDetails>, List<ProviderType>> matrix;
 
-  final builder = StringBuffer();
+  final builder = StringBuffer('''
+// GENERATED CODE - DO NOT MODIFY BY HAND
+//
+// If you need to modify this file, instead update /tools/generate_providers/bin/generate_providers.dart
+//
+// You can install this utility by executing:
+// dart pub global activate -s path <repository_path>/tools/generate_providers
+//
+// You can then use it in your terminal by executing:
+// generate_providers <riverpod/flutter_riverpod/hooks_riverpod> <path to builder file to update>
+
+''');
 
   switch (args.first) {
     case 'riverpod':
-      matrix = const Tuple3(
+      matrix = Tuple3(
         DisposeType.values,
         [
-          StateType.state,
-          StateType.stateNotifier,
-          StateType.none,
-          StateType.future,
-          StateType.stream,
+          StateDetails(
+            kind: StateType.state,
+            className: 'StateProvider',
+            constraints: 'T',
+            generics: 'T',
+            createType: 'T',
+          ),
+          StateDetails(
+            kind: StateType.stateNotifier,
+            className: 'StateNotifierProvider',
+            constraints: 'Notifier extends StateNotifier<Value>, Value',
+            generics: 'Notifier, Value',
+            createType: 'Notifier',
+          ),
+          StateDetails(
+            kind: StateType.none,
+            className: 'Provider',
+            constraints: 'T',
+            generics: 'T',
+            createType: 'T',
+          ),
+          StateDetails(
+            kind: StateType.future,
+            className: 'FutureProvider',
+            constraints: 'T',
+            generics: 'T',
+            createType: 'Future<T>',
+          ),
+          StateDetails(
+            kind: StateType.stream,
+            className: 'StreamProvider',
+            constraints: 'T',
+            generics: 'T',
+            createType: 'Stream<T>',
+          ),
         ],
         ProviderType.values,
       );
@@ -368,9 +416,17 @@ import 'internals.dart';
       );
       break;
     case 'flutter_riverpod':
-      matrix = const Tuple3(
+      matrix = Tuple3(
         DisposeType.values,
-        [StateType.changeNotifier],
+        [
+          StateDetails(
+            kind: StateType.changeNotifier,
+            className: 'ChangeNotifierProvider',
+            constraints: 'Notifier extends ChangeNotifier',
+            generics: 'Notifier',
+            createType: 'Notifier',
+          ),
+        ],
         ProviderType.values,
       );
       builder.writeln(
@@ -392,7 +448,7 @@ import 'internals.dart';
 }
 
 Iterable<Object> generateAll(
-  Tuple3<List<DisposeType>, List<StateType>, List<ProviderType>> matrix,
+  Tuple3<List<DisposeType>, List<StateDetails>, List<ProviderType>> matrix,
 ) sync* {
   final combos = Combinations(3, <Object>[
     ...matrix.item1,
@@ -404,15 +460,17 @@ Iterable<Object> generateAll(
     final second = permutation[1];
     final third = permutation[2];
 
-    if (first is DisposeType && second is StateType && third is ProviderType) {
+    if (first is DisposeType &&
+        second is StateDetails &&
+        third is ProviderType) {
       yield* generate(Tuple3(first, second, third), matrix);
     }
   }
 }
 
-extension on Tuple3<DisposeType, StateType, ProviderType> {
+extension on Tuple3<DisposeType, StateDetails, ProviderType> {
   String get providerName {
-    return '${disposeLabel[item1]}${stateLabel[item2]}${providerLabel[item3]}';
+    return '${disposeLabel[item1]}${item2.className}${providerLabel[item3]}';
   }
 
   String get ref {
@@ -425,30 +483,12 @@ extension on Tuple3<DisposeType, StateType, ProviderType> {
     }
   }
 
-  String get constraint {
-    switch (item2) {
-      case StateType.stateNotifier:
-        return ' extends StateNotifier<Object?>';
-      case StateType.changeNotifier:
-        return ' extends ChangeNotifier';
-      default:
-        return '';
-    }
-  }
+  String get constraint => item2.constraints;
 
-  String get createType {
-    switch (item2) {
-      case StateType.future:
-        return 'Future<T>';
-      case StateType.stream:
-        return 'Stream<T>';
-      default:
-        return 'T';
-    }
-  }
+  String get createType => item2.createType;
 
   String links(
-    Tuple3<List<DisposeType>, List<StateType>, List<ProviderType>> matrix,
+    Tuple3<List<DisposeType>, List<StateDetails>, List<ProviderType>> matrix,
   ) {
     Iterable<String> other() sync* {
       if (item1 == DisposeType.none) {
@@ -475,8 +515,8 @@ ${familyDoc().replaceAll('///', '  ///')}
 }
 
 Iterable<Object> generate(
-  Tuple3<DisposeType, StateType, ProviderType> configs,
-  Tuple3<List<DisposeType>, List<StateType>, List<ProviderType>> matrix,
+  Tuple3<DisposeType, StateDetails, ProviderType> configs,
+  Tuple3<List<DisposeType>, List<StateDetails>, List<ProviderType>> matrix,
 ) sync* {
   if (configs.item3 == ProviderType.family) {
     yield FamilyBuilder(configs, matrix);
@@ -487,8 +527,9 @@ Iterable<Object> generate(
 
 class FamilyBuilder {
   FamilyBuilder(this.configs, this.matrix);
-  final Tuple3<DisposeType, StateType, ProviderType> configs;
-  final Tuple3<List<DisposeType>, List<StateType>, List<ProviderType>> matrix;
+  final Tuple3<DisposeType, StateDetails, ProviderType> configs;
+  final Tuple3<List<DisposeType>, List<StateDetails>, List<ProviderType>>
+      matrix;
 
   @override
   String toString() {
@@ -499,8 +540,8 @@ class ${configs.providerName}Builder {
   const ${configs.providerName}Builder();
 
 ${familyDoc().replaceAll('///', '  ///')}
-  ${configs.providerName}<T, Value> call<T${configs.constraint}, Value>(
-    ${configs.createType} Function(${configs.ref} ref, Value value) create, {
+  ${configs.providerName}<${configs.item2.generics}, Param> call<${configs.constraint}, Param>(
+    ${configs.createType} Function(${configs.ref} ref, Param param) create, {
     String? name,
   }) {
     return ${configs.providerName}(create, name: name);
@@ -513,8 +554,9 @@ ${configs.links(matrix)}
 
 class ProviderBuilder {
   ProviderBuilder(this.configs, this.matrix);
-  final Tuple3<DisposeType, StateType, ProviderType> configs;
-  final Tuple3<List<DisposeType>, List<StateType>, List<ProviderType>> matrix;
+  final Tuple3<DisposeType, StateDetails, ProviderType> configs;
+  final Tuple3<List<DisposeType>, List<StateDetails>, List<ProviderType>>
+      matrix;
 
   @override
   String toString() {
@@ -525,7 +567,7 @@ class ${configs.providerName}Builder {
   const ${configs.providerName}Builder();
 
 ${autoDisposeDoc().replaceAll('///', '  ///')}
-  ${configs.providerName}<T> call<T${configs.constraint}>(
+  ${configs.providerName}<${configs.item2.generics}> call<${configs.constraint}>(
     ${configs.createType} Function(${configs.ref} ref) create, {
     String? name,
   }) {

@@ -372,10 +372,10 @@ void main() {
     group('didChange', () {
       test('is called next sub.read', () {
         final counter = Counter();
-        final provider = StateNotifierProvider((ref) => counter);
+        final provider = StateNotifierProvider<Counter, int>((ref) => counter);
 
         final sub = container.listen(
-          provider.state,
+          provider,
           didChange: didChange,
         );
 
@@ -390,10 +390,10 @@ void main() {
 
       test('is called at most once per read', () {
         final counter = Counter();
-        final provider = StateNotifierProvider((ref) => counter);
+        final provider = StateNotifierProvider<Counter, int>((ref) => counter);
 
         final sub = container.listen(
-          provider.state,
+          provider,
           didChange: didChange,
         );
 
@@ -410,15 +410,15 @@ void main() {
 
       test('are all executed after one read call', () {
         final counter = Counter();
-        final provider = StateNotifierProvider((ref) => counter);
+        final provider = StateNotifierProvider<Counter, int>((ref) => counter);
         final didChange2 = DidChangedMock<int>();
 
         final sub = container.listen(
-          provider.state,
+          provider,
           didChange: didChange,
         );
         final sub2 = container.listen(
-          provider.state,
+          provider,
           didChange: didChange2,
         );
 
@@ -435,17 +435,17 @@ void main() {
 
       test('is guarded', () {
         final counter = Counter();
-        final provider = StateNotifierProvider((ref) => counter);
+        final provider = StateNotifierProvider<Counter, int>((ref) => counter);
         final didChange2 = DidChangedMock<int>();
         when(didChange(any)).thenThrow(42);
         when(didChange2(any)).thenThrow(21);
 
         final sub = container.listen(
-          provider.state,
+          provider,
           didChange: didChange,
         );
         final sub2 = container.listen(
-          provider.state,
+          provider,
           didChange: didChange2,
         );
 
@@ -463,8 +463,9 @@ void main() {
     group('mayHaveChanged', () {
       test('is optional', () {
         final counter = Counter();
-        final counterProvider = StateNotifierProvider((ref) => counter);
-        final provider = Provider((ref) => ref.watch(counterProvider.state));
+        final counterProvider =
+            StateNotifierProvider<Counter, int>((ref) => counter);
+        final provider = Provider((ref) => ref.watch(counterProvider));
 
         container.listen(provider);
 
@@ -476,11 +477,12 @@ void main() {
           'is synchronously after a change'
           ' without re-evaluating the provider', () {
         final counter = Counter();
-        final counterProvider = StateNotifierProvider((ref) => counter);
+        final counterProvider =
+            StateNotifierProvider<Counter, int>((ref) => counter);
         var callCount = 0;
         final provider = Provider((ref) {
           callCount++;
-          return ref.watch(counterProvider.state);
+          return ref.watch(counterProvider);
         });
 
         final sub = container.listen(provider, mayHaveChanged: mayHaveChanged);
@@ -498,9 +500,10 @@ void main() {
           're-evaluating the provider with a new value calls mayHaveChanged only once',
           () {
         final counter = Counter();
-        final counterProvider = StateNotifierProvider((ref) => counter);
+        final counterProvider =
+            StateNotifierProvider<Counter, int>((ref) => counter);
         final provider = Provider((ref) {
-          return ref.watch(counterProvider.state);
+          return ref.watch(counterProvider);
         });
 
         final sub = container.listen(provider, mayHaveChanged: mayHaveChanged);
@@ -513,9 +516,10 @@ void main() {
 
       test('is called only onces after multiple changes', () {
         final counter = Counter();
-        final counterProvider = StateNotifierProvider((ref) => counter);
+        final counterProvider =
+            StateNotifierProvider<Counter, int>((ref) => counter);
         final provider = Provider((ref) {
-          return ref.watch(counterProvider.state);
+          return ref.watch(counterProvider);
         });
 
         final sub = container.listen(provider, mayHaveChanged: mayHaveChanged);
@@ -539,17 +543,17 @@ void main() {
 
     test('is guarded', () {
       final counter = Counter();
-      final provider = StateNotifierProvider((ref) => counter);
+      final provider = StateNotifierProvider<Counter, int>((ref) => counter);
       final mayHaveChanged2 = MayHaveChangedMock<int>();
       when(mayHaveChanged(any)).thenThrow(42);
       when(mayHaveChanged2(any)).thenThrow(21);
 
       final sub = container.listen(
-        provider.state,
+        provider,
         mayHaveChanged: mayHaveChanged,
       );
       final sub2 = container.listen(
-        provider.state,
+        provider,
         mayHaveChanged: mayHaveChanged2,
       );
 
@@ -565,8 +569,8 @@ void main() {
   group('ProviderSubscription', () {
     test('no-longer call listeners anymore after close', () {
       final counter = Counter();
-      final first = StateNotifierProvider((ref) => counter);
-      final provider = Provider((ref) => ref.watch(first.state));
+      final first = StateNotifierProvider<Counter, int>((ref) => counter);
+      final provider = Provider((ref) => ref.watch(first));
       final element = container.readProviderElement(provider);
 
       expect(element.hasListeners, false);
@@ -614,8 +618,8 @@ void main() {
 
       test('flushes the provider', () {
         final counter = Counter();
-        final first = StateNotifierProvider((ref) => counter);
-        final provider = Provider((ref) => ref.watch(first.state));
+        final first = StateNotifierProvider<Counter, int>((ref) => counter);
+        final provider = Provider((ref) => ref.watch(first));
 
         final sub = container.listen(provider);
 
@@ -646,9 +650,9 @@ void main() {
 
       test('updates to true after a change', () {
         final counter = Counter();
-        final provider = StateNotifierProvider((ref) => counter);
+        final provider = StateNotifierProvider<Counter, int>((ref) => counter);
 
-        final sub = container.listen(provider.state);
+        final sub = container.listen(provider);
 
         sub.read();
 
@@ -659,11 +663,11 @@ void main() {
 
       test('flushes providers', () {
         final counter = Counter();
-        final first = StateNotifierProvider((ref) => counter);
+        final first = StateNotifierProvider<Counter, int>((ref) => counter);
         var callCount = 0;
         final provider = Provider((ref) {
           callCount++;
-          return ref.watch(first.state);
+          return ref.watch(first);
         });
 
         expect(callCount, 0);

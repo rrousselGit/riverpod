@@ -2,15 +2,13 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import 'package:riverpod/src/internals.dart' as internals;
-
 import '../utils.dart';
 
 void main() {
   test('StateNotifierFamily override', () async {
     final notifier2 = TestNotifier(42);
     final provider = StateNotifierProvider.autoDispose
-        .family<TestNotifier, int>((ref, a) => TestNotifier());
+        .family<TestNotifier, int, int>((ref, a) => TestNotifier());
     final container = ProviderContainer(
       overrides: [provider.overrideWithProvider((ref, a) => notifier2)],
     );
@@ -20,12 +18,12 @@ void main() {
     // access in the child container
     // try to read provider.state before provider and see if it points to the override
     final ownerStateRemove =
-        provider(0).state.watchOwner(container, ownerStateListener);
+        provider(0).watchOwner(container, ownerStateListener);
     verify(ownerStateListener(42)).called(1);
     verifyNoMoreInteractions(ownerStateListener);
 
     final ownerNotifierRemove =
-        provider(0).watchOwner(container, ownerNotifierListener);
+        provider(0).notifier.watchOwner(container, ownerNotifierListener);
     verify(ownerNotifierListener(notifier2)).called(1);
     verifyNoMoreInteractions(ownerNotifierListener);
 
@@ -43,22 +41,14 @@ void main() {
     expect(notifier2.mounted, false);
   });
 
-  test('can be assigned to Provider.autoDispose', () {
-    // ignore: unused_local_variable
-    final internals.AutoDisposeProvider<TestNotifier> provider =
-        StateNotifierProvider.autoDispose((_) {
+  test('overriding the provider overrides provider.state too', () {
+    final provider = StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
       return TestNotifier();
     });
-  });
-
-  test('overriding the provider overrides provider.state too', () {
-    final provider = StateNotifierProvider.autoDispose((_) => TestNotifier());
     final notifier = TestNotifier(42);
     final container = ProviderContainer(
       overrides: [
-        provider.overrideWithProvider(
-          StateNotifierProvider.autoDispose((_) => TestNotifier(10)),
-        )
+        provider.overrideWithValue(TestNotifier(10)),
       ],
     );
     final stateListener = Listener<int>();
@@ -66,15 +56,14 @@ void main() {
 
     // does not crash
     container.updateOverrides([
-      provider.overrideWithProvider(
-          StateNotifierProvider.autoDispose((_) => notifier)),
+      provider.overrideWithValue(notifier),
     ]);
 
-    provider.watchOwner(container, notifierListener);
+    provider.notifier.watchOwner(container, notifierListener);
     verify(notifierListener(notifier)).called(1);
     verifyNoMoreInteractions(notifierListener);
 
-    provider.state.watchOwner(container, stateListener);
+    provider.watchOwner(container, stateListener);
     verify(stateListener(42)).called(1);
     verifyNoMoreInteractions(stateListener);
 
@@ -91,18 +80,18 @@ void main() {
       name: 'example',
     );
 
+    expect(provider.notifier.name, 'example.notifier');
     expect(provider.name, 'example');
-    expect(provider.state.name, 'example.state');
 
     final provider2 = StateNotifierProvider.autoDispose((_) => TestNotifier());
 
+    expect(provider2.notifier.name, isNull);
     expect(provider2.name, isNull);
-    expect(provider2.state.name, isNull);
   });
 
   test('disposes the notifier when provider is unmounted', () {
     final notifier = TestNotifier();
-    final provider = StateNotifierProvider.autoDispose<TestNotifier>((_) {
+    final provider = StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
       return notifier;
     });
     final container = ProviderContainer();
@@ -117,13 +106,13 @@ void main() {
 
   test('provider subscribe the callback is never', () async {
     final notifier = TestNotifier();
-    final provider = StateNotifierProvider.autoDispose<TestNotifier>((_) {
+    final provider = StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
       return notifier;
     });
     final listener = ControllerListenerMock();
     final container = ProviderContainer();
 
-    final sub = provider.addLazyListener(
+    final sub = provider.notifier.addLazyListener(
       container,
       mayHaveChanged: () {},
       onChange: listener,
@@ -147,13 +136,13 @@ void main() {
 
   test('provider subscribe callback never called', () async {
     final notifier = TestNotifier();
-    final provider = StateNotifierProvider.autoDispose<TestNotifier>((_) {
+    final provider = StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
       return notifier;
     });
     final listener = Listener<int>();
     final container = ProviderContainer();
 
-    final sub = provider.state.addLazyListener(
+    final sub = provider.addLazyListener(
       container,
       mayHaveChanged: () {},
       onChange: listener,
@@ -172,6 +161,95 @@ void main() {
     await Future.value(null);
 
     verifyNoMoreInteractions(listener);
+  });
+
+  test('.notifier obtains the controller without listening to it', () {
+    final dep = StateProvider((ref) => 0);
+    final notifier = TestNotifier();
+    final notifier2 = TestNotifier();
+    final provider =
+        StateNotifierProvider.autoDispose<TestNotifier, int>((ref) {
+      return ref.watch(dep).state == 0 ? notifier : notifier2;
+    });
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    var callCount = 0;
+    final sub = container.listen(
+      provider.notifier,
+      didChange: (_) => callCount++,
+    );
+
+    expect(sub.read(), notifier);
+    expect(callCount, 0);
+
+    notifier.increment();
+
+    sub.flush();
+    expect(callCount, 0);
+
+    container.read(dep).state++;
+
+    expect(sub.read(), notifier2);
+
+    sub.flush();
+    expect(sub.read(), notifier2);
+    expect(callCount, 1);
+  });
+
+  test('overrideWithProvider preserves the state accross update', () {
+    final provider = StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
+      return TestNotifier();
+    });
+    final notifier = TestNotifier(42);
+    final notifier2 = TestNotifier(21);
+    final container = ProviderContainer(overrides: [
+      provider.overrideWithProvider(
+        StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
+          return notifier;
+        }),
+      ),
+    ]);
+    addTearDown(container.dispose);
+    final listener = Listener<int>();
+
+    final sub = container.listen<int>(
+      provider,
+      didChange: (sub) => listener(sub.read()),
+    );
+
+    expect(sub.read(), 42);
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier.hasListeners, true);
+
+    notifier.increment();
+
+    sub.flush();
+    verifyOnly(listener, listener(43));
+
+    container.updateOverrides([
+      provider.overrideWithProvider(
+        StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
+          return notifier2;
+        }),
+      ),
+    ]);
+
+    sub.flush();
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier2.hasListeners, false);
+    verifyNoMoreInteractions(listener);
+
+    notifier.increment();
+
+    sub.flush();
+    expect(container.read(provider.notifier), notifier);
+    verifyOnly(listener, listener(44));
+    expect(notifier.mounted, true);
+
+    container.dispose();
+
+    expect(notifier.mounted, false);
   });
 }
 

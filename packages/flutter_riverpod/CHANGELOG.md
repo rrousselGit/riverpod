@@ -1,3 +1,51 @@
+# [Unreleased major]
+
+- **BREAKING CHANGE** The `Listener`/`LocatorMixin` typedefs are removed as the former could cause a name
+  conflict with the widget named `Listener` and the latter is not supported when using Riverpod.
+- **BREAKING CHANGE** The syntax for using `StateNotifierProvider` was updated.
+  Before:
+
+  ```dart
+  class MyStateNotifier extends StateNotifier<MyModel> {...}
+
+  final provider = StateNotifierProvider<MyStateNotifier>((ref) => MyStateNotifier());
+
+  ...
+  Widget build(context, watch) {
+    MyStateNotifier notifier = watch(provider);
+    MyModel model = watch(provider.state);
+  }
+  ```
+
+  After:
+
+  ```dart
+  class MyStateNotifier extends StateNotifier<MyModel> {...}
+
+  final provider = StateNotifierProvider<MyStateNotifier, MyModel>>((ref) => MyStateNotifier());
+
+  ...
+  Widget build(context, watch) {
+    MyStateNotifier notifier = watch(provider.notifier);
+    MyModel model = watch(provider);
+  }
+  ```
+
+  See also https://github.com/rrousselGit/river_pod/issues/341 for more information.
+
+- **BREAKING CHANGE** It is no-longer possible to override `StreamProvider.stream/last` and `FutureProvider.future`.
+- feat: Calling `ProviderContainer.dispose` multiple time no-longer throws.
+  This simplifies the tear-off logic of tests.
+- feat: Added `ChangeNotifierProvider.notifier` and `StateProvider.notifier`
+  They allow obtaining the notifier associated to the provider, without causing widgets/providers to rebuild when the state updates. 
+- fix: overriding a `StateNotifierProvider`/`ChangeNotifierProvider` with `overrideWithValue` now correctly listens to the notifier.
+
+# 0.1
+
+# 0.13.1+1
+
+Fixed an issue where `context.read` and `ProviderListener` were unable to read providers that return a nullable value
+
 # 0.13.1
 
 - Fixed a bug where overriding a `FutureProvider` with an error value could cause tests to fail (see https://github.com/rrousselGit/river_pod/issues/355)

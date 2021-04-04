@@ -22,25 +22,25 @@ void main() {
     final observer = ObserverMock();
     final container = ProviderContainer(observers: [observer]);
     final notifier = Counter();
-    final provider = StateNotifierProvider((_) => notifier);
+    final provider = StateNotifierProvider<Counter, int>((_) => notifier);
 
-    final sub = container.listen(provider.state);
+    final sub = container.listen(provider);
 
-    verify(observer.didAddProvider(provider, notifier));
-    verify(observer.didAddProvider(provider.state, 0));
+    verify(observer.didAddProvider(provider.notifier, notifier));
+    verify(observer.didAddProvider(provider, 0));
     verifyNoMoreInteractions(observer);
 
-    container.listen(provider.state);
+    container.listen(provider);
 
     verifyNoMoreInteractions(observer);
 
     notifier.increment();
 
-    verifyOnly(observer, observer.mayHaveChanged(provider.state));
+    verifyOnly(observer, observer.mayHaveChanged(provider));
 
     sub.read();
 
-    verifyOnly(observer, observer.didUpdateProvider(provider.state, 1));
+    verifyOnly(observer, observer.didUpdateProvider(provider, 1));
   });
 
   test('didAddProvider', () {
@@ -98,17 +98,17 @@ void main() {
   test('didUpdateProviders', () {
     final observer = ObserverMock();
     final observer2 = ObserverMock();
-    final provider = StateNotifierProvider((_) => Counter());
+    final provider = StateNotifierProvider<Counter, int>((_) => Counter());
     final counter = Counter();
     final container = ProviderContainer(
       overrides: [
-        provider.overrideWithProvider(StateNotifierProvider((_) => counter)),
+        provider.overrideWithValue(counter),
       ],
       observers: [observer, observer2],
     );
     final listener = Listener<int>();
 
-    final sub = provider.state.addLazyListener(
+    final sub = provider.addLazyListener(
       container,
       mayHaveChanged: () {},
       onChange: listener,
@@ -117,10 +117,10 @@ void main() {
     verify(listener(0)).called(1);
     verifyNoMoreInteractions(listener);
     verifyInOrder([
-      observer.didAddProvider(provider, counter),
-      observer2.didAddProvider(provider, counter),
-      observer.didAddProvider(provider.state, 0),
-      observer2.didAddProvider(provider.state, 0)
+      observer.didAddProvider(provider.notifier, counter),
+      observer2.didAddProvider(provider.notifier, counter),
+      observer.didAddProvider(provider, 0),
+      observer2.didAddProvider(provider, 0),
     ]);
     verifyNoMoreInteractions(observer);
     verifyNoMoreInteractions(observer2);
@@ -128,15 +128,15 @@ void main() {
     counter.increment();
 
     verifyNoMoreInteractions(listener);
-    verifyOnly(observer, observer.mayHaveChanged(provider.state));
-    verifyOnly(observer2, observer2.mayHaveChanged(provider.state));
+    verifyOnly(observer, observer.mayHaveChanged(provider));
+    verifyOnly(observer2, observer2.mayHaveChanged(provider));
 
     sub.flush();
 
     verifyInOrder([
       listener(1),
-      observer.didUpdateProvider(provider.state, 1),
-      observer2.didUpdateProvider(provider.state, 1),
+      observer.didUpdateProvider(provider, 1),
+      observer2.didUpdateProvider(provider, 1),
     ]);
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(observer);
@@ -149,17 +149,17 @@ void main() {
     final observer2 = ObserverMock();
     when(observer2.mayHaveChanged(any)).thenThrow('error2');
     final observer3 = ObserverMock();
-    final provider = StateNotifierProvider((_) => Counter());
+    final provider = StateNotifierProvider<Counter, int>((_) => Counter());
     final counter = Counter();
     final container = ProviderContainer(
       overrides: [
-        provider.overrideWithProvider(StateNotifierProvider((_) => counter)),
+        provider.overrideWithValue(counter),
       ],
       observers: [observer, observer2, observer3],
     );
     final listener = Listener<int>();
 
-    provider.state.addLazyListener(
+    provider.addLazyListener(
       container,
       mayHaveChanged: () {},
       onChange: listener,
@@ -176,9 +176,9 @@ void main() {
 
     expect(errors, ['error1', 'error2']);
     verifyInOrder([
-      observer.mayHaveChanged(provider.state),
-      observer2.mayHaveChanged(provider.state),
-      observer3.mayHaveChanged(provider.state),
+      observer.mayHaveChanged(provider),
+      observer2.mayHaveChanged(provider),
+      observer3.mayHaveChanged(provider),
     ]);
     verifyNoMoreInteractions(observer);
     verifyNoMoreInteractions(observer2);
@@ -191,17 +191,17 @@ void main() {
     final observer2 = ObserverMock();
     when(observer2.didUpdateProvider(any, any)).thenThrow('error2');
     final observer3 = ObserverMock();
-    final provider = StateNotifierProvider((_) => Counter());
+    final provider = StateNotifierProvider<Counter, int>((_) => Counter());
     final counter = Counter();
     final container = ProviderContainer(
       overrides: [
-        provider.overrideWithProvider(StateNotifierProvider((_) => counter)),
+        provider.overrideWithValue(counter),
       ],
       observers: [observer, observer2, observer3],
     );
     final listener = Listener<int>();
 
-    final sub = provider.state.addLazyListener(
+    final sub = provider.addLazyListener(
       container,
       mayHaveChanged: () {},
       onChange: listener,
@@ -224,9 +224,9 @@ void main() {
 
     expect(errors, ['error1', 'error2']);
     verifyInOrder([
-      observer.didUpdateProvider(provider.state, 1),
-      observer2.didUpdateProvider(provider.state, 1),
-      observer3.didUpdateProvider(provider.state, 1),
+      observer.didUpdateProvider(provider, 1),
+      observer2.didUpdateProvider(provider, 1),
+      observer3.didUpdateProvider(provider, 1),
     ]);
     verifyNoMoreInteractions(observer);
     verifyNoMoreInteractions(observer2);
@@ -236,9 +236,9 @@ void main() {
   test("Computed don't call didUpdateProviders when value doesn't change", () {
     final observer = ObserverMock();
     final counter = Counter();
-    final provider = StateNotifierProvider((_) => counter);
+    final provider = StateNotifierProvider<Counter, int>((_) => counter);
     final isNegative = Provider((ref) {
-      return ref.watch(provider.state).isNegative;
+      return ref.watch(provider).isNegative;
     });
     final container = ProviderContainer(observers: [observer]);
     final isNegativeListener = Listener<bool>();
@@ -250,8 +250,8 @@ void main() {
     );
 
     verifyInOrder([
-      observer.didAddProvider(provider, counter),
-      observer.didAddProvider(provider.state, 0),
+      observer.didAddProvider(provider.notifier, counter),
+      observer.didAddProvider(provider, 0),
       observer.didAddProvider(isNegative, false),
       isNegativeListener(false),
     ]);
@@ -262,13 +262,13 @@ void main() {
 
     verifyNoMoreInteractions(isNegativeListener);
     verify(observer.mayHaveChanged(isNegative));
-    verify(observer.mayHaveChanged(provider.state));
+    verify(observer.mayHaveChanged(provider));
     verifyNoMoreInteractions(observer);
 
     sub.flush();
 
     verifyInOrder([
-      observer.didUpdateProvider(provider.state, 1),
+      observer.didUpdateProvider(provider, 1),
     ]);
     verifyNoMoreInteractions(isNegativeListener);
     verifyNoMoreInteractions(observer);
@@ -277,13 +277,13 @@ void main() {
 
     verifyNoMoreInteractions(isNegativeListener);
     verify(observer.mayHaveChanged(isNegative));
-    verify(observer.mayHaveChanged(provider.state));
+    verify(observer.mayHaveChanged(provider));
     verifyNoMoreInteractions(observer);
 
     sub.flush();
 
     verifyInOrder([
-      observer.didUpdateProvider(provider.state, -10),
+      observer.didUpdateProvider(provider, -10),
       isNegativeListener(true),
       observer.didUpdateProvider(isNegative, true),
     ]);

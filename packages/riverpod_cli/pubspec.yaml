@@ -1,6 +1,6 @@
-name: codemod_riverpod
-description: A migration package for riverpod changes.
-version: 0.0.2
+name: riverpod_cli
+description: A command line tool for Riverpod
+version: 0.0.1
 homepage: https://riverpod.dev
 repository: https://github.com/rrousselGit/river_pod
 
@@ -8,6 +8,7 @@ environment:
   sdk: '>=2.10.0 <3.0.0'
 
 dependencies:
+  args: ^1.5.0
   codemod: ^0.3.0
   glob: ^1.2.0
   pub_semver: ^1.4.4
@@ -18,4 +19,4 @@ dev_dependencies:
   test: any
 
 executables:
-  migrate: codemod_riverpod
+  riverpod: riverpod_cli

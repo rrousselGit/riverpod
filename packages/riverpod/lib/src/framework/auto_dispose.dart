@@ -30,23 +30,14 @@ abstract class AutoDisposeProviderReference extends ProviderReference {
 abstract class AutoDisposeProviderBase<Created, Listened>
     extends RootProvider<Created, Listened> {
   /// {@macro riverpod.AutoDisposeProviderBase}
-  AutoDisposeProviderBase(
-    Created Function(AutoDisposeProviderReference ref) create,
-    String? name,
-  ) : super((ref) => create(ref as AutoDisposeProviderReference), name);
+  AutoDisposeProviderBase(String? name) : super(name);
+
+  @override
+  Created create(covariant AutoDisposeProviderReference ref);
 
   @override
   AutoDisposeProviderElement<Created, Listened> createElement() {
     return AutoDisposeProviderElement(this);
-  }
-
-  /// Overrides the behavior of this provider with another provider.
-  ///
-  /// {@macro riverpod.overideWith}
-  ProviderOverride overrideWithProvider(
-    RootProvider<Created, Listened> provider,
-  ) {
-    return ProviderOverride(provider, this);
   }
 }
 

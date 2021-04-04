@@ -4,12 +4,16 @@ part of '../stream_provider.dart';
 @sealed
 class AutoDisposeStreamProvider<T>
     extends AutoDisposeProviderBase<Stream<T>, AsyncValue<T>>
-    with _StreamProviderMixin<T> {
+    with
+        AutoDisposeProviderOverridesMixin<Stream<T>, AsyncValue<T>>,
+        _StreamProviderMixin<T> {
   /// {@macro riverpod.streamprovider}
-  AutoDisposeStreamProvider(
-    Create<Stream<T>, AutoDisposeProviderReference> create, {
-    String? name,
-  }) : super(create, name);
+  AutoDisposeStreamProvider(this._create, {String? name}) : super(name);
+
+  final Create<Stream<T>, AutoDisposeProviderReference> _create;
+
+  @override
+  Stream<T> create(covariant AutoDisposeProviderReference ref) => _create(ref);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStreamProviderFamilyBuilder();

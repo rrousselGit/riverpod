@@ -4,10 +4,15 @@ part of '../framework.dart';
 abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
     P extends RootProvider<Created, Listened>> {
   /// A base class for all *Family variants of providers.
-  Family(this._builder, this._name);
+  Family(this.builder, this.name);
 
-  final Created Function(Ref ref, Param param) _builder;
-  final String? _name;
+  /// Implementation detail. Do not use.
+  @protected
+  final Created Function(Ref ref, Param param) builder;
+
+  /// Implementation detail. Do not use.
+  @protected
+  final String? name;
 
   final _cache = <Param, P>{};
 
@@ -18,7 +23,7 @@ abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
   P call(Param value) {
     return _cache.putIfAbsent(value, () {
       final provider =
-          create(value, _builder, _name == null ? null : '$_name ($value)');
+          create(value, builder, name == null ? null : '$name ($value)');
       assert(
         provider._from == null,
         'The provider created already belongs to a Family',
@@ -62,9 +67,7 @@ extension FamilyX<Created, Listened, Param, Ref extends ProviderReference,
   ) {
     return FamilyOverride(
       this,
-      (dynamic param) {
-        return create(param as Param, builderOverride, null);
-      },
+      (param) => create(param as Param, builderOverride, null),
     );
   }
 }
@@ -75,6 +78,6 @@ class FamilyOverride implements Override {
   /// Do not use
   FamilyOverride(this._family, this._createOverride);
 
-  final RootProvider Function(dynamic param) _createOverride;
+  final RootProvider Function(Object? param) _createOverride;
   final Family _family;
 }
