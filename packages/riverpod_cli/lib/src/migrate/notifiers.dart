@@ -2,13 +2,20 @@
 import 'package:analyzer/analyzer.dart';
 import 'package:codemod/codemod.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:pub_semver/pub_semver.dart';
 
 /// A suggestor that yields changes to notifier changes
 class RiverpodNotifierChangesMigrationSuggestor
     extends GeneralizingAstVisitor<void> with AstVisitingSuggestor {
+  RiverpodNotifierChangesMigrationSuggestor(this.riverpodVersion);
+
+  final VersionConstraint riverpodVersion;
+
   @override
   bool shouldSkip(FileContext context) {
-    return super.shouldSkip(context);
+    return riverpodVersion.allowsAny(
+      VersionConstraint.parse('^0.14.0'),
+    );
   }
 
   @override
@@ -21,20 +28,17 @@ class RiverpodNotifierChangesMigrationSuggestor
       final providerType = node.staticType as InterfaceType;
       final notifierType = providerType.typeArguments.first as InterfaceType;
       final stateType = notifierType.superclass.typeArguments.first;
+
       if (nodeType.contains('Family')) {
-        if (providerType.typeArguments.length != 3) {
-          yieldPatch(
-              '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}, ${providerType.typeArguments.last.getDisplayString()}>',
-              node.typeArguments.offset,
-              node.argumentList.offset);
-        }
+        yieldPatch(
+            '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}, ${providerType.typeArguments.last.getDisplayString()}>',
+            node.typeArguments.offset,
+            node.argumentList.offset);
       } else {
-        if (providerType.typeArguments.length != 2) {
-          yieldPatch(
-              '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}>',
-              node.function.end,
-              node.argumentList.offset);
-        }
+        yieldPatch(
+            '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}>',
+            node.function.end,
+            node.argumentList.offset);
       }
     }
 
@@ -48,14 +52,12 @@ class RiverpodNotifierChangesMigrationSuggestor
       final notifierType = providerType.typeArguments.first as InterfaceType;
       final stateType = notifierType.superclass.typeArguments.first;
       final constructorTypeArguments = node.constructorName.type.typeArguments;
-      if (providerType.typeArguments.length != 2) {
-        yieldPatch(
-            '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}>',
-            constructorTypeArguments != null
-                ? constructorTypeArguments.offset
-                : node.constructorName.end,
-            node.argumentList.offset);
-      }
+      yieldPatch(
+          '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}>',
+          constructorTypeArguments != null
+              ? constructorTypeArguments.offset
+              : node.constructorName.end,
+          node.argumentList.offset);
     }
 
     super.visitInstanceCreationExpression(node);

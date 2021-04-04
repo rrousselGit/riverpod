@@ -32,26 +32,17 @@ To easily upgrade your Riverpod version:
 
 - open in a terminal the project you want to migrate.
   You should be located in the same folder than the project's `pubspec.yaml` .
-
 - Make sure that your code has no analysis errors otherwise the migration will have trouble running.
-  In particular:
-  - This will migrate the pubspec.yaml along with your code to the newest version of riverpod
-  - It will update to the latest riverpod syntax, even if you are using a path or
-    git dependency of riverpod
-    - You will then have to update the path / git dependency to the newest version of riverpod
-    - It relies on a full analysis of your code, so make sure your code compiles before running
-
 - run:
   ```sh
   riverpod migrate
   ```
 
-This will analyse your project then suggest changes (if any). One example would be:
+One example would be:
 
 ```suggestion
 - import 'package:riverpod/all.dart';
 + import 'package:riverpod/riverpod.dart';
 ```
-
 
 You can then press `y` to accept the change or `n` to reject it.

@@ -21,7 +21,7 @@ class Counter extends ChangeNotifier {
 
 final counterProvider = ChangeNotifierProvider((ref) => Counter());
 
-final otherProvider = Provider((ref) {
+final otherProvider = Provider<Counter>((ref) {
   ref.read(counterProvider);
   return ref.watch(counterProvider);
 });
@@ -43,6 +43,7 @@ class HooksWatch extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     final countNotifier = useProvider(counterProvider);
     return Center(
       child: ElevatedButton(

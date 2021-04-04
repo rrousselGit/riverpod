@@ -23,7 +23,8 @@ class MigrateCommand extends Command<void> {
     final pubspecFile = File('pubspec.yaml');
     if (!pubspecFile.existsSync()) {
       stderr.writeln(
-          'Pubspec not found! Are you in the root directory of your package / app?');
+        'Pubspec not found! Are you in the root directory of your package / app?',
+      );
       return;
     }
     final pubspec = Pubspec.parse(pubspecFile.readAsStringSync());
@@ -40,12 +41,8 @@ class MigrateCommand extends Command<void> {
       filePathsFromGlob(Glob('**.dart', recursive: true)),
       aggregate(
         [
-          if (version == null ||
-              version.intersect(VersionConstraint.parse('>=0.13.0')).isEmpty)
-            RiverpodImportAllMigrationSuggestor(),
-          if (version == null ||
-              version.intersect(VersionConstraint.parse('>=0.14.0')).isEmpty)
-            RiverpodNotifierChangesMigrationSuggestor(),
+          RiverpodImportAllMigrationSuggestor(),
+          RiverpodNotifierChangesMigrationSuggestor(version),
         ],
       ),
       args: argResults.arguments,

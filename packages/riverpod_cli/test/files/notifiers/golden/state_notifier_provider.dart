@@ -22,7 +22,7 @@ final counterDisposeProvider =
 final counterDisposeProvider2 =
     StateNotifierProvider.autoDispose<Counter, int>((ref) => Counter());
 
-final otherProvider = Provider((ref) {
+final otherProvider = Provider<int>((ref) {
   ref.read(counterProvider.notifier);
   ref.read(counterProvider);
   ref.watch(counterProvider.notifier);
@@ -34,6 +34,7 @@ class ConsumerWatch extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
+    // ignore: unused_local_variable
     final countNotifier = watch(counterProvider.notifier);
     final count = watch(counterProvider);
     return Center(
@@ -47,7 +48,9 @@ class HooksWatch extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     final countNotifier = useProvider(counterProvider.notifier);
+    // ignore: unused_local_variable
     final count = useProvider(counterProvider);
     return Center(
       child: ElevatedButton(
