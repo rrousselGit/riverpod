@@ -13,10 +13,11 @@ void main() {
       VersionConstraint versionConstraint,
     ) async {
       final sourceFile =
-          await fileContextForInput('./test/files/notifiers/input/$type.dart');
+          await fileContextForInput('./fixtures/notifiers/input/$type.dart');
       final expected =
-          File('./test/files/notifiers/golden/$type.dart').readAsStringSync();
-      expectSuggestorGeneratesFormattedPatches(
+          File('./fixtures/notifiers/golden/$type.dart').readAsStringSync();
+
+      await expectSuggestorGeneratesFormattedPatches(
         RiverpodNotifierChangesMigrationSuggestor(versionConstraint),
         sourceFile,
         expected,
@@ -28,10 +29,11 @@ void main() {
       VersionConstraint versionConstraint,
     ) async {
       final sourceFile =
-          await fileContextForInput('./test/files/notifiers/golden/$type.dart');
+          await fileContextForInput('./fixtures/notifiers/golden/$type.dart');
       final expected =
-          File('./test/files/notifiers/golden/$type.dart').readAsStringSync();
-      expectSuggestorGeneratesFormattedPatches(
+          File('./fixtures/notifiers/golden/$type.dart').readAsStringSync();
+
+      await expectSuggestorGeneratesFormattedPatches(
         RiverpodNotifierChangesMigrationSuggestor(versionConstraint),
         sourceFile,
         expected,

@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 import 'package:dart_style/dart_style.dart';
 
 final _formatter = DartFormatter();
-final _root = p.canonicalize('./test/files');
+final _root = p.canonicalize('./fixtures');
 // Shared analysis context to speed up tests, (analyzer only has to analyze shared dependencies once)
 final _collection = AnalysisContextCollection(includedPaths: [_root]);
 
@@ -23,10 +23,16 @@ Future<FileContext> fileContextForInput(String name) async {
 /// also formats the file with the patches to make it match the golden
 /// expected output after formatting applied. Note this is only for tests, and
 /// formatting doesn't actually occur during the generation of the patches.
-void expectSuggestorGeneratesFormattedPatches(
-    Suggestor suggestor, FileContext context, dynamic resultMatcher) {
-  expect(
-      suggestor(context).toList().then((patches) =>
-          _formatter.format(applyPatches(context.sourceFile, patches))),
-      completion(resultMatcher));
+Future<void> expectSuggestorGeneratesFormattedPatches(
+  Suggestor suggestor,
+  FileContext context,
+  Object resultMatcher,
+) async {
+  await expectLater(
+    Future(() async {
+      final patches = await suggestor(context).toList();
+      return _formatter.format(applyPatches(context.sourceFile, patches));
+    }),
+    completion(resultMatcher),
+  );
 }
