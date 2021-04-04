@@ -3,6 +3,7 @@ name: my_project
 packages:
   - packages/**
   - examples/**
+  - packages/riverpod_cli/fixtures/*/golden/
 
 scripts:
   analyze:
