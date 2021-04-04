@@ -1,4 +1,4 @@
-# [Unreleased major]
+# 0.14.0
 
 - **BREAKING CHANGE** The `Listener`/`LocatorMixin` typedefs are removed as the former could cause a name
   conflict with the widget named `Listener` and the latter is not supported when using Riverpod.
