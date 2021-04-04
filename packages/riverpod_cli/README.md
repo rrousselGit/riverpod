@@ -14,18 +14,41 @@
 
 ---
 
-A migration tool for [riverpod](https://pub.dev/packages/riverpod).
+A command line for Riverpod, to help upgrade to newer versions of Riverpod.
 
-To use:
-Add to your `pubspec.yaml`:
-```yaml
-dev_dependencies:
-  codemod_riverpod: ^0.0.1
+## Installation
+
+To install the command line, do:
+
+```sh
+dart pub global activate riverpod_cli
 ```
 
-Then on the command line
+You should now have access to a new command line:
+
+```sh
+riverpod --help
 ```
-cd path/to/your/code
-flutter pub get
-flutter pub run codemod_riverpod
+
+## Usage
+
+### Migration
+
+To easily upgrade your Riverpod version:
+
+- open in a terminal the project you want to migrate.
+  You should be located in the same folder than the project's `pubspec.yaml` .
+
+- run:
+  ```sh
+  riverpod migrate
+  ```
+
+This will analyse your project then suggest changes (if any). One example would be:
+
+```suggestion
+- import 'package:riverpod/all.dart';
++ import 'package:riverpod/riverpod.dart';
 ```
+
+You can then press `y` to accept the change or `n` to reject it.

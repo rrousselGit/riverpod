@@ -1,3 +1,3 @@
-library codemod_riverpod;
+library riverpod_cli;
 
 export 'src/imports.dart';
