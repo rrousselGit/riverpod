@@ -492,6 +492,35 @@ void main() {
       ),
     );
   });
+
+  testWidgets(
+      'autoDispose initState+ProviderListener does not destroy the state',
+      (tester) async {
+    var disposeCount = 0;
+    final counterProvider = StateProvider.autoDispose((ref) {
+      ref.onDispose(() => disposeCount++);
+      return 0;
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Demo(
+          initState: (context) {
+            context.read(counterProvider).addListener((state) {});
+          },
+          builder: (context) {
+            return ProviderListener(
+              onChange: (_, __) {},
+              provider: counterProvider,
+              child: Container(),
+            );
+          },
+        ),
+      ),
+    );
+
+    expect(disposeCount, 0);
+  });
 }
 
 class Counter extends StateNotifier<int> {
@@ -525,5 +554,32 @@ class _InitStateState extends State<InitState> {
   @override
   Widget build(BuildContext context) {
     return Container();
+  }
+}
+
+class Demo extends StatefulWidget {
+  const Demo({
+    Key? key,
+    required this.initState,
+    required this.builder,
+  }) : super(key: key);
+
+  final void Function(BuildContext context) initState;
+  final Widget Function(BuildContext context) builder;
+
+  @override
+  _DemoState createState() => _DemoState();
+}
+
+class _DemoState extends State<Demo> {
+  @override
+  void initState() {
+    super.initState();
+    widget.initState(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(context);
   }
 }
