@@ -36,6 +36,8 @@
 - **BREAKING CHANGE** It is no-longer possible to override `StreamProvider.stream/last` and `FutureProvider.future`.
 - feat: Calling `ProviderContainer.dispose` multiple time no-longer throws.
   This simplifies the tear-off logic of tests.
+- feat: Added `ChangeNotifierProvider.notifier` and `StateProvider.notifier`
+  They allow obtaining the notifier associated to the provider, without causing widgets/providers to rebuild when the state updates. 
 - fix: overriding a `StateNotifierProvider`/`ChangeNotifierProvider` with `overrideWithValue` now correctly listens to the notifier.
 
 # 0.13.1
