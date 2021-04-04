@@ -564,7 +564,9 @@ class Demo extends StatefulWidget {
     required this.builder,
   }) : super(key: key);
 
+  // ignore: diagnostic_describe_all_properties
   final void Function(BuildContext context) initState;
+  // ignore: diagnostic_describe_all_properties
   final Widget Function(BuildContext context) builder;
 
   @override
