@@ -9,10 +9,13 @@ environment:
 
 dependencies:
   args: ^1.5.0
-  codemod: ^0.2.0
+  codemod: ^0.3.0
   glob: ^1.2.0
+  pub_semver: ^1.4.4
+  pubspec_parse: ^0.1.8
 
 dev_dependencies:
+  dart_style: any
   test: any
 
 executables:

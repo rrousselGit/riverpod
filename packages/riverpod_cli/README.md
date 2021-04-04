@@ -16,18 +16,12 @@
 
 A command line for Riverpod, to help upgrade to newer versions of Riverpod.
 
-## Installation
+To use:
+Add to your `pubspec.yaml`:
 
-To install the command line, do:
-
-```sh
-dart pub global activate riverpod_cli
-```
-
-You should now have access to a new command line:
-
-```sh
-riverpod --help
+```yaml
+dev_dependencies:
+  codemod_riverpod: ^0.0.2
 ```
 
 ## Usage
@@ -38,6 +32,14 @@ To easily upgrade your Riverpod version:
 
 - open in a terminal the project you want to migrate.
   You should be located in the same folder than the project's `pubspec.yaml` .
+
+- Make sure that your code has no analysis errors otherwise the migration will have trouble running.
+  In particular:
+  - This will migrate the pubspec.yaml along with your code to the newest version of riverpod
+  - It will update to the latest riverpod syntax, even if you are using a path or
+    git dependency of riverpod
+    - You will then have to update the path / git dependency to the newest version of riverpod
+    - It relies on a full analysis of your code, so make sure your code compiles before running
 
 - run:
   ```sh
@@ -50,5 +52,6 @@ This will analyse your project then suggest changes (if any). One example would 
 - import 'package:riverpod/all.dart';
 + import 'package:riverpod/riverpod.dart';
 ```
+
 
 You can then press `y` to accept the change or `n` to reject it.

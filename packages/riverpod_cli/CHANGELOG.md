@@ -1,3 +1,7 @@
+# 0.0.2
+
+- Add migrations for notifiers
+
 # 0.0.1
 
 - Add migrations for imports
