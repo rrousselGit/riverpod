@@ -55,7 +55,7 @@ Long story short:
   class Example extends ConsumerWidget {
     @override
     Widget build(BuildContext context, ScopedReader watch) {
-      final count = watch(counterProvider.state);
+      final count = watch(counterProvider);
       return Text(count.toString());
     }
   }
@@ -69,10 +69,10 @@ See the [FAQ](#FAQ) if you have questions about what this means for [provider].
 - [Motivation](#motivation)
 - [Contributing](#contributing)
 - [FAQ](#faq)
-  - [Why another project when provider already exists?](#why-another-project-when-provider-already-exists)
+  - [Why another project when [provider] already exists?](#why-another-project-when-provider-already-exists)
   - [Is it safe to use in production?](#is-it-safe-to-use-in-production)
-  - [Will this get merged with provider at some point?](#will-this-get-merged-with-provider-at-some-point)
-  - [Will provider be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
+  - [Will this get merged with [provider] at some point?](#will-this-get-merged-with-provider-at-some-point)
+  - [Will [provider] be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
 
 ## Motivation
 

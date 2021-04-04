@@ -57,7 +57,7 @@ part 'state_notifier_provider/base.dart';
 /// ```dart
 /// Widget build(BuildContext context, ScopedReader watch) {
 ///   // rebuild the widget when the todo list changes
-///   List<Todo> todos = watch(todosProvider.state);
+///   List<Todo> todos = watch(todosProvider);
 ///
 ///   return ListView(
 ///     children: [
