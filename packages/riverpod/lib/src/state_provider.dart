@@ -1,11 +1,12 @@
 import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
 
+import '../riverpod.dart';
 import 'builders.dart';
 import 'framework.dart';
 
-part 'state_provider/base.dart';
 part 'state_provider/auto_dispose.dart';
+part 'state_provider/base.dart';
 
 /// A [StateNotifier] that allows modifying its [state] from outside.
 ///
@@ -37,7 +38,7 @@ class StateController<T> extends StateNotifier<T> {
 /// final productsProvider = StateNotifierProvider<ProductsNotifier>((ref) => ProductsNotifier());
 ///
 /// Widget build(BuildContext context, ScopedReader watch) {
-///   final List<Product> products = watch(productsProvider.state);
+///   final List<Product> products = watch(productsProvider);
 ///   final selectedProductId = watch(selectedProductIdProvider);
 ///
 ///   return ListView(

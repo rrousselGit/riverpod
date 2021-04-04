@@ -46,18 +46,18 @@ void main() {
       'mutliple useProviders, when one of them forces rebuild, all dependencies are still flushed',
       (tester) async {
     final notifier = Counter();
-    final provider = StateNotifierProvider((_) => notifier);
+    final provider = StateNotifierProvider<Counter, int>((_) => notifier);
     var callCount = 0;
     final computed = Provider((ref) {
       callCount++;
-      return ref.watch(provider.state);
+      return ref.watch(provider);
     });
 
     await tester.pumpWidget(
       ProviderScope(
         child: HookBuilder(
           builder: (context) {
-            final first = useProvider(provider.state);
+            final first = useProvider(provider);
             final second = useProvider(computed);
             return Text(
               '$first $second',

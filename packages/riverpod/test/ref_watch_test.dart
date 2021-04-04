@@ -23,28 +23,31 @@ void main() {
     final stateProvider = StateProvider((ref) => 0, name: 'state');
     final notifier0 = Counter();
     final notifier1 = Counter(42);
-    final provider0 = StateNotifierProvider((_) => notifier0, name: '0');
-    final provider1 = StateNotifierProvider((_) => notifier1, name: '1');
+    final provider0 = StateNotifierProvider<Counter, int>((_) {
+      return notifier0;
+    }, name: '0');
+    final provider1 = StateNotifierProvider<Counter, int>((_) {
+      return notifier1;
+    }, name: '1');
     var buildCount = 0;
     final computed = Provider((ref) {
       buildCount++;
 
       final state = ref.watch(stateProvider).state;
-      final value =
-          state == 0 ? ref.watch(provider0.state) : ref.watch(provider1.state);
+      final value = state == 0 ? ref.watch(provider0) : ref.watch(provider1);
 
-      return '${ref.watch(provider0.state)} $value';
+      return '${ref.watch(provider0)} $value';
     });
     final listener = Listener<String>();
     final container = ProviderContainer();
 
-    container.read(provider0.state);
-    container.read(provider1.state);
+    container.read(provider0);
+    container.read(provider1);
     final familyState0 = container.debugProviderElements.firstWhere((p) {
-      return p.provider == provider0.state;
+      return p.provider == provider0;
     });
     final familyState1 = container.debugProviderElements.firstWhere((p) {
-      return p.provider == provider1.state;
+      return p.provider == provider1;
     });
 
     computed.watchOwner(container, listener);
@@ -93,26 +96,28 @@ void main() {
     final stateProvider = StateProvider((ref) => 0, name: 'state');
     final notifier0 = Counter();
     final notifier1 = Counter(42);
-    final provider0 = StateNotifierProvider((_) => notifier0, name: '0');
-    final provider1 = StateNotifierProvider((_) => notifier1, name: '1');
+    final provider0 = StateNotifierProvider<Counter, int>((_) {
+      return notifier0;
+    }, name: '0');
+    final provider1 = StateNotifierProvider<Counter, int>((_) {
+      return notifier1;
+    }, name: '1');
     var buildCount = 0;
     final computed = Provider((ref) {
       buildCount++;
       final state = ref.watch(stateProvider).state;
-      return state == 0
-          ? ref.watch(provider0.state)
-          : ref.watch(provider1.state);
+      return state == 0 ? ref.watch(provider0) : ref.watch(provider1);
     });
     final listener = Listener<int>();
     final container = ProviderContainer();
 
-    container.read(provider0.state);
-    container.read(provider1.state);
+    container.read(provider0);
+    container.read(provider1);
     final familyState0 = container.debugProviderElements.firstWhere((p) {
-      return p.provider == provider0.state;
+      return p.provider == provider0;
     });
     final familyState1 = container.debugProviderElements.firstWhere((p) {
-      return p.provider == provider1.state;
+      return p.provider == provider1;
     });
 
     computed.watchOwner(container, listener);
@@ -162,11 +167,13 @@ void main() {
       return ref.watch(provider).toString();
     });
     final notifier = Counter();
-    final provider = StateNotifierProvider((_) => notifier);
+    final provider = StateNotifierProvider<Counter, int>((_) {
+      return notifier;
+    });
     final container = ProviderContainer();
     final listener = Listener<String>();
 
-    computed(provider.state).watchOwner(container, listener);
+    computed(provider).watchOwner(container, listener);
 
     verify(listener('0')).called(1);
     verifyNoMoreInteractions(listener);
@@ -182,15 +189,17 @@ void main() {
       () {
     final container = ProviderContainer();
     final notifier = Notifier(0);
-    final provider = StateNotifierProvider((_) => notifier);
+    final provider = StateNotifierProvider<Notifier<int>, int>((_) {
+      return notifier;
+    });
     var callCount = 0;
     final computed = Provider((ref) {
       callCount++;
-      return ref.watch(provider.state);
+      return ref.watch(provider);
     });
 
     final tested = Provider((ref) {
-      final first = ref.watch(provider.state);
+      final first = ref.watch(provider);
       final second = ref.watch(computed);
       return '$first $second';
     });
@@ -269,8 +278,10 @@ void main() {
 
   test('disposing the Provider closes subscriptions', () {
     final notifier = Notifier(0);
-    final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
-    final computed = Provider((ref) => ref.watch(provider.state));
+    final provider = StateNotifierProvider<Notifier<int>, int>((_) {
+      return notifier;
+    });
+    final computed = Provider((ref) => ref.watch(provider));
     final container = ProviderContainer();
     final mayHaveChanged = MockMarkMayHaveChanged();
     final listener = Listener<int>();
@@ -294,11 +305,13 @@ void main() {
   test('can call ref.watch outside of the Provider', () async {
     final container = ProviderContainer();
     final notifier = Notifier(0);
-    final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
+    final provider = StateNotifierProvider<Notifier<int>, int>((_) {
+      return notifier;
+    });
     var callCount = 0;
     final computed = StreamProvider((ref) async* {
       callCount++;
-      yield ref.watch(provider.state);
+      yield ref.watch(provider);
     });
 
     final sub = container.listen(computed);
@@ -321,11 +334,13 @@ void main() {
   test('the value is cached between multiple listeners', () {
     final container = ProviderContainer();
     final notifier = Notifier(0);
-    final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
+    final provider = StateNotifierProvider<Notifier<int>, int>((_) {
+      return notifier;
+    });
     var callCount = 0;
     final computed = Provider((ref) {
       callCount++;
-      return [ref.watch(provider.state)];
+      return [ref.watch(provider)];
     });
 
     late List<int> first;
@@ -356,13 +371,15 @@ void main() {
   test('Simple Provider flow', () {
     final container = ProviderContainer();
     final notifier = Notifier(0);
-    final provider = StateNotifierProvider<Notifier<int>>((_) => notifier);
+    final provider = StateNotifierProvider<Notifier<int>, int>((_) {
+      return notifier;
+    });
     final mayHaveChanged = MockMarkMayHaveChanged();
     final listener = Listener<bool>();
     var callCount = 0;
     final isPositiveComputed = Provider((ref) {
       callCount++;
-      return !ref.watch(provider.state).isNegative;
+      return !ref.watch(provider).isNegative;
     });
 
     final sub = isPositiveComputed.addLazyListener(

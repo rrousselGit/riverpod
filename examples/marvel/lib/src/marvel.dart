@@ -122,7 +122,7 @@ abstract class Character with _$Character {
     required Thumbnail thumbnail,
   }) = _Character;
 
-  factory Character.fromJson(Map<String, dynamic> json) =>
+  factory Character.fromJson(Map<String, Object?> json) =>
       _$CharacterFromJson(json);
 }
 
@@ -134,7 +134,7 @@ abstract class Thumbnail with _$Thumbnail {
   }) = _Thumbnail;
   Thumbnail._();
 
-  factory Thumbnail.fromJson(Map<String, dynamic> json) =>
+  factory Thumbnail.fromJson(Map<String, Object?> json) =>
       _$ThumbnailFromJson(json);
 
   late final String url =
@@ -145,17 +145,17 @@ abstract class Thumbnail with _$Thumbnail {
 abstract class MarvelResponse with _$MarvelResponse {
   factory MarvelResponse(MarvelData data) = _MarvelResponse;
 
-  factory MarvelResponse.fromJson(Map<String, dynamic> json) =>
+  factory MarvelResponse.fromJson(Map<String, Object?> json) =>
       _$MarvelResponseFromJson(json);
 }
 
 @freezed
 abstract class MarvelData with _$MarvelData {
   factory MarvelData(
-    List<Map<String, dynamic>> results,
+    List<Map<String, Object?>> results,
     int total,
   ) = _MarvelData;
 
-  factory MarvelData.fromJson(Map<String, dynamic> json) =>
+  factory MarvelData.fromJson(Map<String, Object?> json) =>
       _$MarvelDataFromJson(json);
 }

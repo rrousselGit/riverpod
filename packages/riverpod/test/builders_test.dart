@@ -107,8 +107,11 @@ void main() {
       StateNotifierProvider.family,
     );
     expect(
-      stateNotifierProviderBuilder((ref) => StateController(42), name: 'foo'),
-      isA<StateNotifierProvider<StateController<int>>>()
+      stateNotifierProviderBuilder<StateController<int>, int>(
+        (ref) => StateController(42),
+        name: 'foo',
+      ),
+      isA<StateNotifierProvider<StateController<int>, int>>()
           .having((s) => s.name, 'name', 'foo'),
     );
   });

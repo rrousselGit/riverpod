@@ -6,9 +6,40 @@ class StateProvider<T>
     extends AlwaysAliveProviderBase<StateController<T>, StateController<T>> {
   /// {@macro riverpod.stateprovider}
   StateProvider(
-    Create<T, ProviderReference> create, {
+    this._create, {
     String? name,
-  }) : super((ref) => StateController(create(ref)), name);
+  }) : super(name);
+
+  /// {@template riverpod.stateprovider.notifier}
+  /// Obtains the [StateController] associated with this provider, but without
+  /// listening to it.
+  ///
+  /// Listening to this provider may cause providers/widgets to rebuild in the
+  /// event that the [StateController] it recreated.
+  ///
+  ///
+  /// It is preferrable to do:
+  /// ```dart
+  /// ref.watch(stateProvider.notifier)
+  /// ```
+  ///
+  /// instead of:
+  /// ```dart
+  /// ref.read(stateProvider)
+  /// ```
+  ///
+  /// The reasoning is, using `read` could cause hard to catch bugs, such as
+  /// not rebuilding dependent providers/widgets after using `context.refresh` on this provider.
+  /// {@endtemplate}
+  late final AlwaysAliveProviderBase<StateController<T>, StateController<T>>
+      notifier = Provider((ref) => ref.watch(this));
+
+  final Create<T, ProviderReference> _create;
+
+  @override
+  StateController<T> create(ProviderReference ref) {
+    return StateController(_create(ref));
+  }
 
   /// {@macro riverpod.family}
   static const family = StateProviderFamilyBuilder();
@@ -55,7 +86,7 @@ extension StateFamilyX<T, Param> on Family<StateController<T>,
   ) {
     return FamilyOverride(
       this,
-      (dynamic param) {
+      (param) {
         return create(
           param as Param,
           (ref, a) => StateController(builderOverride(ref, a)),

@@ -4,12 +4,16 @@ part of '../future_provider.dart';
 @sealed
 class FutureProvider<T>
     extends AlwaysAliveProviderBase<Future<T>, AsyncValue<T>>
-    with _FutureProviderMixin<T> {
+    with
+        ProviderOverridesMixin<Future<T>, AsyncValue<T>>,
+        _FutureProviderMixin<T> {
   /// {@macro riverpod.futureprovider}
-  FutureProvider(
-    Create<Future<T>, ProviderReference> create, {
-    String? name,
-  }) : super(create, name);
+  FutureProvider(this._create, {String? name}) : super(name);
+
+  final Create<Future<T>, ProviderReference> _create;
+
+  @override
+  Future<T> create(covariant ProviderReference ref) => _create(ref);
 
   /// {@macro riverpod.family}
   static const family = FutureProviderFamilyBuilder();

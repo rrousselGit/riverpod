@@ -52,12 +52,8 @@ export 'src/state_notifier_provider.dart'
     show
         AutoDisposeStateNotifierProvider,
         AutoDisposeStateNotifierProviderFamily,
-        AutoDisposeStateNotifierStateProvider,
         StateNotifierProvider,
-        StateNotifierProviderFamily,
-        StateNotifierStateProvider,
-        AutoDisposeStateNotifierStateProviderX,
-        StateNotifierStateProviderX;
+        StateNotifierProviderFamily;
 
 export 'src/state_provider.dart'
     show

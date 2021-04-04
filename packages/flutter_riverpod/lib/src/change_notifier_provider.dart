@@ -38,3 +38,29 @@ mixin _ChangeNotifierProviderStateMixin<T extends ChangeNotifier?>
     super.dispose();
   }
 }
+
+Override _overrideWithValue<T extends ChangeNotifier>(
+  ProviderBase provider,
+  T value,
+) {
+  return ProviderOverride(
+    ValueProvider<T, T>((ref) {
+      VoidCallback? removeListener;
+
+      void listen(T value) {
+        removeListener?.call();
+        // ignore: invalid_use_of_protected_member
+        value.addListener(ref.markDidChange);
+        // ignore: invalid_use_of_protected_member
+        removeListener = () => value.removeListener(ref.markDidChange);
+      }
+
+      listen(value);
+      ref.onChange = listen;
+
+      ref.onDispose(() => removeListener?.call());
+      return value;
+    }, value),
+    provider,
+  );
+}

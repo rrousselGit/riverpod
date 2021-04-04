@@ -21,4 +21,4 @@ dev_dependencies:
   mockito: ^5.0.0
   test: ^1.16.0
   # test_coverage: ^0.4.3
-  # trotter: ^1.2.0
+  trotter: ^2.0.0-dev.1

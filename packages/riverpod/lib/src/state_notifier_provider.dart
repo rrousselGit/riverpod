@@ -6,8 +6,8 @@ import 'framework.dart';
 import 'future_provider.dart';
 import 'provider.dart';
 
-part 'state_notifier_provider/base.dart';
 part 'state_notifier_provider/auto_dispose.dart';
+part 'state_notifier_provider/base.dart';
 
 /// {@template riverpod.statenotifierprovider}
 /// Creates a [StateNotifier] and expose its current state.
@@ -57,7 +57,7 @@ part 'state_notifier_provider/auto_dispose.dart';
 /// ```dart
 /// Widget build(BuildContext context, ScopedReader watch) {
 ///   // rebuild the widget when the todo list changes
-///   List<Todo> todos = watch(todosProvider.state);
+///   List<Todo> todos = watch(todosProvider);
 ///
 ///   return ListView(
 ///     children: [
@@ -73,12 +73,13 @@ part 'state_notifier_provider/auto_dispose.dart';
 /// }
 /// ```
 /// {@endtemplate}
-mixin _StateNotifierStateProviderStateMixin<T>
-    on ProviderStateBase<StateNotifier<T>, T> {
+
+class _StateNotifierProviderState<Notifier extends StateNotifier<Value>, Value>
+    extends ProviderStateBase<Notifier, Value> {
   void Function()? removeListener;
 
   @override
-  void valueChanged({StateNotifier<T>? previous}) {
+  void valueChanged({Notifier? previous}) {
     if (createdValue == previous) {
       return;
     }
@@ -87,7 +88,7 @@ mixin _StateNotifierStateProviderStateMixin<T>
   }
 
   // ignore: use_setters_to_change_properties
-  void _listener(T value) {
+  void _listener(Value value) {
     exposedValue = value;
   }
 
@@ -95,5 +96,20 @@ mixin _StateNotifierStateProviderStateMixin<T>
   void dispose() {
     removeListener?.call();
     super.dispose();
+  }
+}
+
+mixin _StateNotifierProviderMixin<Notifier extends StateNotifier<Value>, Value>
+    on RootProvider<Notifier, Value> {
+  ProviderBase<Notifier, Notifier> get notifier;
+
+  /// Overrides the behavior of a provider with a value.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithValue(Notifier value) {
+    return ProviderOverride(
+      ValueProvider<Object?, Notifier>((ref) => value, value),
+      notifier,
+    );
   }
 }

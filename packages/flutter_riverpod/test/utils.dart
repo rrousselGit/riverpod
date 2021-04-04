@@ -95,8 +95,8 @@ class _EqualsIgnoringHashCodes extends Matcher {
   }
 
   @override
-  bool matches(dynamic object, Map<dynamic, dynamic> matchState) {
-    final description = _normalize(object as String);
+  bool matches(Object? object, Map<Object?, Object?> matchState) {
+    final description = _normalize(object! as String);
     if (_value != description) {
       matchState[_mismatchedValueKey] = description;
       return false;
@@ -111,13 +111,13 @@ class _EqualsIgnoringHashCodes extends Matcher {
 
   @override
   Description describeMismatch(
-    dynamic item,
+    Object? item,
     Description mismatchDescription,
-    Map<dynamic, dynamic> matchState,
+    Map<Object?, Object?> matchState,
     bool verbose,
   ) {
     if (matchState.containsKey(_mismatchedValueKey)) {
-      final actualValue = matchState[_mismatchedValueKey] as String;
+      final actualValue = matchState[_mismatchedValueKey] as String?;
       // Leading whitespace is added so that lines in the multiline
       // description returned by addDescriptionOf are all indented equally
       // which makes the output easier to read for this case.

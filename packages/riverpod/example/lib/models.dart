@@ -19,7 +19,7 @@ abstract class Configuration with _$Configuration {
     required String privateKey,
   }) = _Configuration;
 
-  factory Configuration.fromJson(Map<String, dynamic> json) =>
+  factory Configuration.fromJson(Map<String, Object?> json) =>
       _$ConfigurationFromJson(json);
 }
 
@@ -37,9 +37,9 @@ class Repository {
         ))
         .toString();
 
-    final result = await _client.get<Map<String, dynamic>>(
+    final result = await _client.get<Map<String, Object?>>(
       'http://gateway.marvel.com/v1/public/comics',
-      queryParameters: <String, dynamic>{
+      queryParameters: <String, Object?>{
         'ts': timestamp,
         'apikey': _configuration.publicKey,
         'hash': hash,
@@ -63,17 +63,17 @@ class Repository {
 abstract class MarvelResponse with _$MarvelResponse {
   factory MarvelResponse(MarvelData data) = _MarvelResponse;
 
-  factory MarvelResponse.fromJson(Map<String, dynamic> json) =>
+  factory MarvelResponse.fromJson(Map<String, Object?> json) =>
       _$MarvelResponseFromJson(json);
 }
 
 @freezed
 abstract class MarvelData with _$MarvelData {
   factory MarvelData(
-    List<Map<String, dynamic>> results,
+    List<Map<String, Object?>> results,
   ) = _MarvelData;
 
-  factory MarvelData.fromJson(Map<String, dynamic> json) =>
+  factory MarvelData.fromJson(Map<String, Object?> json) =>
       _$MarvelDataFromJson(json);
 }
 
@@ -84,5 +84,5 @@ abstract class Comic with _$Comic {
     required String title,
   }) = _Comic;
 
-  factory Comic.fromJson(Map<String, dynamic> json) => _$ComicFromJson(json);
+  factory Comic.fromJson(Map<String, Object?> json) => _$ComicFromJson(json);
 }

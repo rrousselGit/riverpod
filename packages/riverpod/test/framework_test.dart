@@ -146,14 +146,14 @@ void main() {
 
   test('guard listeners', () {
     final notifier = Counter();
-    final provider = StateNotifierProvider((_) => notifier);
+    final provider = StateNotifierProvider<Counter, int>((_) => notifier);
     final container = ProviderContainer();
     final listener = ListenerMock();
     final listener2 = ListenerMock();
 
     final firstErrors = <Object>[];
     runZonedGuarded(
-      () => provider.state.watchOwner(container, (value) {
+      () => provider.watchOwner(container, (value) {
         listener(value);
         // ignore: only_throw_errors
         throw value;
@@ -165,7 +165,7 @@ void main() {
     verifyNoMoreInteractions(listener);
     expect(firstErrors, [0]);
 
-    provider.state.watchOwner(container, listener2);
+    provider.watchOwner(container, listener2);
 
     verify(listener2(0)).called(1);
     verifyNoMoreInteractions(listener2);
@@ -188,12 +188,12 @@ void main() {
 
   test('reading unflushed triggers flush', () {
     final notifier = Counter();
-    final provider = StateNotifierProvider((_) => notifier);
+    final provider = StateNotifierProvider<Counter, int>((_) => notifier);
     final container = ProviderContainer();
     var callCount = 0;
     final computed = Provider((ref) {
       callCount++;
-      return ref.watch(provider.state);
+      return ref.watch(provider);
     });
     final listener = ListenerMock();
     final listener2 = ListenerMock();
@@ -235,12 +235,12 @@ void main() {
 
   test('flusing closed subscription throws', () {
     final notifier = Counter();
-    final provider = StateNotifierProvider((_) => notifier);
+    final provider = StateNotifierProvider<Counter, int>((_) => notifier);
     final container = ProviderContainer();
     final listener = ListenerMock();
     final mayHaveChanged = MockMarkMayHaveChanged();
 
-    final sub = provider.state.addLazyListener(
+    final sub = provider.addLazyListener(
       container,
       mayHaveChanged: mayHaveChanged,
       onChange: listener,
@@ -260,12 +260,12 @@ void main() {
 
   test('reading closed subscription is throws', () {
     final notifier = Counter();
-    final provider = StateNotifierProvider((_) => notifier);
+    final provider = StateNotifierProvider<Counter, int>((_) => notifier);
     final container = ProviderContainer();
     final listener = ListenerMock();
     final mayHaveChanged = MockMarkMayHaveChanged();
 
-    final sub = provider.state.addLazyListener(
+    final sub = provider.addLazyListener(
       container,
       mayHaveChanged: mayHaveChanged,
       onChange: listener,
@@ -339,7 +339,7 @@ void main() {
   test('container.debugProviderValues', () {
     final unnamed = Provider((_) => 0);
     final counter = Counter();
-    final named = StateNotifierProvider((_) {
+    final named = StateNotifierProvider<Counter, int>((_) {
       return counter;
     }, name: 'named');
     final container = ProviderContainer();
@@ -352,20 +352,27 @@ void main() {
       unnamed: 0,
     });
 
-    expect(container.read(named), counter);
+    expect(container.read(named.notifier), counter);
 
     expect(container.debugProviderValues, {
       unnamed: 0,
-      named: counter,
+      named.notifier: counter,
     });
 
-    expect(container.read(named.state), 0);
+    expect(container.read(named), 0);
 
     expect(container.debugProviderValues, {
       unnamed: 0,
-      named: counter,
-      named.state: 0,
+      named.notifier: counter,
+      named: 0,
     });
+  });
+
+  test('disposing an already disposed container is no-op', () {
+    final container = ProviderContainer();
+
+    container.dispose();
+    container.dispose();
   });
 
   test('cannot call markMayHaveChanged after dispose', () {
@@ -570,12 +577,12 @@ void main() {
   group('notify listeners', () {
     test('calls onChange at most once per flush', () {
       final counter = Counter();
-      final provider = StateNotifierProvider<Counter>((_) => counter);
+      final provider = StateNotifierProvider<Counter, int>((_) => counter);
       final container = ProviderContainer();
       final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = ListenerMock();
 
-      final sub = provider.state.addLazyListener(
+      final sub = provider.addLazyListener(
         container,
         mayHaveChanged: mayHaveChanged,
         onChange: listener,
@@ -616,12 +623,12 @@ void main() {
 
     test('noop if no provider was "dirty"', () {
       final counter = Counter();
-      final provider = StateNotifierProvider<Counter>((_) => counter);
+      final provider = StateNotifierProvider<Counter, int>((_) => counter);
       final container = ProviderContainer();
       final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = ListenerMock();
 
-      final sub = provider.state.addLazyListener(
+      final sub = provider.addLazyListener(
         container,
         mayHaveChanged: mayHaveChanged,
         onChange: listener,
@@ -650,11 +657,11 @@ void main() {
     test('on update`', () async {
       final container = ProviderContainer();
       final counter = Counter();
-      final provider = StateNotifierProvider<Counter>((_) => counter);
+      final provider = StateNotifierProvider<Counter, int>((_) => counter);
       final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = ListenerMock();
 
-      final sub = provider.state.addLazyListener(
+      final sub = provider.addLazyListener(
         container,
         mayHaveChanged: mayHaveChanged,
         onChange: listener,
@@ -681,19 +688,24 @@ void main() {
       final counter2 = Counter();
       final counter3 = Counter();
 
-      final provider = StateNotifierProvider<Counter>((_) => counter);
-      final provider2 = StateNotifierProvider<Counter>((ref) {
-        ref.watch(provider);
+      final sprovider = StateNotifierProvider<Counter, int>((_) => counter);
+      final sprovider2 = StateNotifierProvider<Counter, int>((ref) {
+        ref.watch(sprovider);
         return counter2;
       });
-      final provider3 = StateNotifierProvider<Counter>((ref) {
-        ref.watch(provider2);
+      final sprovider3 = StateNotifierProvider<Counter, int>((ref) {
+        ref.watch(sprovider2);
         return counter3;
       });
 
+      // using Provider because StateNotifierProvider synchronously calls its listeners
+      final provider = Provider<int>((ref) => ref.watch(sprovider));
+      final provider2 = Provider<int>((ref) => ref.watch(sprovider2));
+      final provider3 = Provider<int>((ref) => ref.watch(sprovider3));
+
       final mayHaveChanged = MockMarkMayHaveChanged();
       final listener = ListenerMock('first');
-      final sub = provider.state.addLazyListener(
+      final sub = provider.addLazyListener(
         container,
         mayHaveChanged: mayHaveChanged,
         onChange: listener,
@@ -701,7 +713,7 @@ void main() {
 
       final mayHaveChanged2 = MockMarkMayHaveChanged();
       final listener2 = ListenerMock('second');
-      final sub2 = provider2.state.addLazyListener(
+      final sub2 = provider2.addLazyListener(
         container,
         mayHaveChanged: mayHaveChanged2,
         onChange: listener2,
@@ -709,7 +721,7 @@ void main() {
 
       final mayHaveChanged3 = MockMarkMayHaveChanged();
       final listener3 = ListenerMock('third');
-      final sub3 = provider3.state.addLazyListener(
+      final sub3 = provider3.addLazyListener(
         container,
         mayHaveChanged: mayHaveChanged3,
         onChange: listener3,

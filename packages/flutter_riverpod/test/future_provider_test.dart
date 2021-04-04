@@ -43,7 +43,7 @@ void main() {
     final error = Error();
     final futureProvider = FutureProvider<int>((s) async => throw error);
 
-    dynamic whenError;
+    Object? whenError;
     StackTrace? whenStack;
 
     await tester.pumpWidget(
@@ -54,7 +54,8 @@ void main() {
             return watch(futureProvider).when(
               data: (data) => Text(data.toString()),
               loading: () => const Text('loading'),
-              error: (dynamic err, stack) {
+              // ignore: avoid_types_on_closure_parameters
+              error: (Object err, stack) {
                 whenError = err;
                 whenStack = stack;
                 return const Text('error');

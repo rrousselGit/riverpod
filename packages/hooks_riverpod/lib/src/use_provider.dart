@@ -84,14 +84,14 @@ class _ProviderHookState<T> extends HookState<T, _ProviderHook<T>> {
 
     if (oldHook._container != hook._container) {
       _listen();
-    } else if (link is SelectorSubscription<dynamic, T>) {
+    } else if (link is SelectorSubscription<Object?, T>) {
       assert(
-        hook._providerListenable is ProviderSelector<dynamic, T>,
+        hook._providerListenable is ProviderSelector<Object?, T>,
         'useProvider was updated from `useProvider(provider.select(...)) '
         'to useProvider(provider), which is unsupported',
       );
-      if ((hook._providerListenable as ProviderSelector<dynamic, T>).provider !=
-          (oldHook._providerListenable as ProviderSelector<dynamic, T>)
+      if ((hook._providerListenable as ProviderSelector<Object?, T>).provider !=
+          (oldHook._providerListenable as ProviderSelector<Object?, T>)
               .provider) {
         _listen();
       } else {

@@ -2,18 +2,18 @@ part of '../framework.dart';
 
 /// A provider that is driven by a value instead of a function.
 ///
-/// This is an implementation detail of [RootProvider.overrideWithValue].
+/// This is an implementation detail of `overrideWithValue`.
 @sealed
 class ValueProvider<Created, Listened>
     extends AlwaysAliveProviderBase<Created, Listened> {
   /// Creates a [ValueProvider].
-  ValueProvider(
-    Created Function(ValueProviderElement<Created, Listened> ref) create,
-    this._value,
-  ) : super(
-          (ref) => create(ref as ValueProviderElement<Created, Listened>),
-          null,
-        );
+  ValueProvider(this._create, this._value) : super(null);
+
+  final Created Function(ValueProviderElement<Created, Listened> ref) _create;
+
+  @override
+  Created create(covariant ValueProviderElement<Created, Listened> ref) =>
+      _create(ref);
 
   final Listened _value;
 
@@ -26,11 +26,6 @@ class ValueProvider<Created, Listened>
   ValueProviderElement<Created, Listened> createElement() {
     return ValueProviderElement(this);
   }
-
-  @override
-  Override overrideWithValue(Listened value) {
-    throw UnimplementedError();
-  }
 }
 
 /// The [ProviderElement] of a [ValueProvider]
@@ -42,7 +37,7 @@ class ValueProviderElement<Created, Listened>
     ValueProvider<Created, Listened> provider,
   ) : super(provider);
 
-  /// A custom listener called when [RootProvider.overrideWithValue] changes
+  /// A custom listener called when `overrideWithValue` changes
   /// with a different value.
   void Function(Listened value)? onChange;
 

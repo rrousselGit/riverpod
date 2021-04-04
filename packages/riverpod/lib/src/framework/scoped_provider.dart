@@ -95,15 +95,24 @@ typedef ScopedCreate<T> = T Function(ScopedReader watch);
 class ScopedProvider<Listened> extends ProviderBase<Listened, Listened> {
   /// {@macro riverpod.scopedprovider}
   ScopedProvider(
-    ScopedCreate<Listened>? create, {
+    this._create, {
     String? name,
   }) : super(
-          create == null
-              ? (ref) => throw UnsupportedError(
-                  'No default behavior specified for ScopedProvider<$Listened>')
-              : (ref) => create((ref as _ScopedProviderElement).watch),
           name,
         );
+
+  final Listened Function(ScopedReader watch)? _create;
+
+  @override
+  Listened create(covariant _ScopedProviderElement ref) {
+    if (_create == null) {
+      throw UnsupportedError(
+        'No default behavior specified for ScopedProvider<$Listened>',
+      );
+    }
+
+    return _create!(ref.watch);
+  }
 
   @override
   _ScopedProviderElement<Listened> createElement() {

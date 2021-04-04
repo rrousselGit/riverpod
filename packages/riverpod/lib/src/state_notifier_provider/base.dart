@@ -1,18 +1,27 @@
 part of '../state_notifier_provider.dart';
 
+class _NotifierProvider<Notifier extends StateNotifier<Object?>>
+    extends Provider<Notifier> {
+  _NotifierProvider(
+    Create<Notifier, ProviderReference> create, {
+    required String? name,
+  }) : super(
+          (ref) {
+            final notifier = create(ref);
+            ref.onDispose(notifier.dispose);
+            return notifier;
+          },
+          name: name == null ? null : '$name.notifier',
+        );
+}
+
 /// {@macro riverpod.statenotifierprovider}
 @sealed
-class StateNotifierProvider<T extends StateNotifier<Object?>>
-    extends Provider<T> {
+class StateNotifierProvider<Notifier extends StateNotifier<Value>, Value>
+    extends AlwaysAliveProviderBase<Notifier, Value>
+    with _StateNotifierProviderMixin<Notifier, Value> {
   /// {@macro riverpod.statenotifierprovider}
-  StateNotifierProvider(
-    Create<T, ProviderReference> create, {
-    String? name,
-  }) : super((ref) {
-          final controller = create(ref);
-          ref.onDispose(controller.dispose);
-          return controller;
-        }, name: name);
+  StateNotifierProvider(this._create, {String? name}) : super(name);
 
   /// {@macro riverpod.family}
   static const family = StateNotifierProviderFamilyBuilder();
@@ -20,74 +29,97 @@ class StateNotifierProvider<T extends StateNotifier<Object?>>
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStateNotifierProviderBuilder();
 
-  StateNotifierStateProvider<Object?>? _state;
-}
-
-/// Adds [state] to [StateNotifierProvider.autoDispose].
-extension StateNotifierStateProviderX<Value>
-    on StateNotifierProvider<StateNotifier<Value>> {
-  /// {@macro riverpod.statenotifierprovider.state.provider}
-  StateNotifierStateProvider<Value> get state {
-    _state ??= StateNotifierStateProvider<Value>._(this);
-    // ignore: cast_nullable_to_non_nullable, confirmed to be non-null. This avoids one operation
-    return _state as StateNotifierStateProvider<Value>;
-  }
-}
-
-/// {@template riverpod.statenotifierprovider.state.provider}
-/// A provider that exposes the state of a [StateNotifier].
-///
-/// It is created by [StateNotifierProvider]
-/// {@endtemplate}
-@sealed
-class StateNotifierStateProvider<T>
-    extends AlwaysAliveProviderBase<StateNotifier<T>, T> {
-  StateNotifierStateProvider._(this._provider)
-      : super(
-          (ref) => ref.watch(_provider),
-          _provider.name != null ? '${_provider.name}.state' : null,
-        );
-
-  final StateNotifierProvider<StateNotifier<T>> _provider;
+  final Create<Notifier, ProviderReference> _create;
 
   @override
-  _StateNotifierStateProviderState<T> createState() {
-    return _StateNotifierStateProviderState<T>();
+  StateNotifierProviderFamily<Notifier, Value, Object?>? get from =>
+      super.from as StateNotifierProviderFamily<Notifier, Value, Object?>?;
+
+  /// {@template riverpod.statenotifierprovider.notifier}
+  /// Obtains the [StateNotifier] associated with this [StateNotifierProvider],
+  /// without listening to it.
+  ///
+  /// Listening to this provider may cause providers/widgets to rebuild in the
+  /// event that the [StateNotifier] it recreated.
+  /// {@endtemplate}
+  @override
+  late final AlwaysAliveProviderBase<Notifier, Notifier> notifier = from != null
+      ? from!._notifierFamily(argument)
+      : _NotifierProvider(_create, name: name);
+
+  /// Overrides the behavior of a provider with a another provider.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    StateNotifierProvider<Notifier, Value> provider,
+  ) {
+    return ProviderOverride(provider.notifier, notifier);
   }
 
   @override
-  Override overrideWithValue(T value) {
-    return ProviderOverride(
-      ValueProvider<StateNotifier<T>, T>((ref) {
-        return ref.watch(_provider);
-      }, value),
-      this,
-    );
+  Notifier create(ProviderReference ref) => ref.watch(notifier);
+
+  @override
+  _StateNotifierProviderState<Notifier, Value> createState() {
+    return _StateNotifierProviderState<Notifier, Value>();
   }
 }
-
-@sealed
-class _StateNotifierStateProviderState<T> = ProviderStateBase<StateNotifier<T>,
-    T> with _StateNotifierStateProviderStateMixin<T>;
 
 /// {@template riverpod.statenotifierprovider.family}
 /// A class that allows building a [StateNotifierProvider] from an external parameter.
 /// {@endtemplate}
 @sealed
-class StateNotifierProviderFamily<T extends StateNotifier<Object?>, A>
-    extends Family<T, T, A, ProviderReference, StateNotifierProvider<T>> {
+class StateNotifierProviderFamily<Notifier extends StateNotifier<Value>, Value,
+        Param>
+    extends Family<Notifier, Value, Param, ProviderReference,
+        StateNotifierProvider<Notifier, Value>> {
   /// {@macro riverpod.statenotifierprovider.family}
   StateNotifierProviderFamily(
-    T Function(ProviderReference ref, A a) create, {
+    Notifier Function(ProviderReference ref, Param a) create, {
     String? name,
   }) : super(create, name);
 
   @override
-  StateNotifierProvider<T> create(
-    A value,
-    T Function(ProviderReference ref, A param) builder,
+  StateNotifierProvider<Notifier, Value> create(
+    Param value,
+    Notifier Function(ProviderReference ref, Param param) builder,
     String? name,
   ) {
     return StateNotifierProvider((ref) => builder(ref, value), name: name);
+  }
+
+  late final _notifierFamily = _NotifierFamily<Notifier, Param>(builder, name);
+
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    Notifier Function(ProviderReference ref, Param param) builderOverride,
+  ) {
+    return FamilyOverride(
+      _notifierFamily,
+      (param) {
+        return _notifierFamily.create(param as Param, builderOverride, null);
+      },
+    );
+  }
+}
+
+@sealed
+class _NotifierFamily<Notifier extends StateNotifier<Object?>, Param>
+    extends Family<Notifier, Notifier, Param, ProviderReference,
+        _NotifierProvider<Notifier>> {
+  _NotifierFamily(
+    Notifier Function(ProviderReference ref, Param param) builder,
+    String? name,
+  ) : super(builder, name);
+
+  @override
+  _NotifierProvider<Notifier> create(
+    Param value,
+    Notifier Function(ProviderReference ref, Param param) builder,
+    String? name,
+  ) {
+    return _NotifierProvider((ref) => builder(ref, value), name: name);
   }
 }

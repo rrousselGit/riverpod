@@ -78,10 +78,142 @@ void main() {
 
     expect(notifier.mounted, isFalse);
   });
+
+  test('.notifier obtains the controller without listening to it', () {
+    final dep = StateProvider((ref) => 0);
+    final notifier = TestNotifier();
+    final notifier2 = TestNotifier();
+    final provider = ChangeNotifierProvider((ref) {
+      return ref.watch(dep).state == 0 ? notifier : notifier2;
+    });
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    var callCount = 0;
+    final sub = container.listen(
+      provider.notifier,
+      didChange: (_) => callCount++,
+    );
+
+    expect(sub.read(), notifier);
+    expect(callCount, 0);
+
+    notifier.count++;
+
+    sub.flush();
+    expect(callCount, 0);
+
+    container.read(dep).state++;
+
+    expect(sub.read(), notifier2);
+
+    sub.flush();
+    expect(sub.read(), notifier2);
+    expect(callCount, 1);
+  });
+
+  test(
+      'overrideWithValue listens to the notifier, support notifier change, and does not dispose of the notifier',
+      () async {
+    final provider = ChangeNotifierProvider((_) => TestNotifier());
+    final notifier = TestNotifier();
+    final notifier2 = TestNotifier();
+    final container = ProviderContainer(overrides: [
+      provider.overrideWithValue(notifier),
+    ]);
+    addTearDown(container.dispose);
+
+    var callCount = 0;
+    final sub = container.listen(provider, didChange: (_) => callCount++);
+    final notifierSub = container.listen(provider.notifier);
+
+    expect(sub.read(), notifier);
+    expect(callCount, 0);
+    expect(notifierSub.read(), notifier);
+    expect(notifier.hasListeners, true);
+
+    notifier.count++;
+
+    sub.flush();
+    expect(callCount, 1);
+
+    container.updateOverrides([
+      provider.overrideWithValue(notifier2),
+    ]);
+
+    sub.flush();
+    expect(callCount, 2);
+    expect(notifier.hasListeners, false);
+    expect(notifier2.hasListeners, true);
+    expect(notifier.mounted, true);
+    expect(notifierSub.read(), notifier2);
+
+    notifier2.count++;
+
+    sub.flush();
+    expect(callCount, 3);
+
+    container.dispose();
+
+    expect(callCount, 3);
+    expect(notifier2.hasListeners, false);
+    expect(notifier2.mounted, true);
+    expect(notifier.mounted, true);
+  });
+
+  test('overrideWithProvider preserves the state accross update', () {
+    final provider = ChangeNotifierProvider((_) {
+      return TestNotifier();
+    });
+    final notifier = TestNotifier();
+    final notifier2 = TestNotifier();
+    final container = ProviderContainer(overrides: [
+      provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier)),
+    ]);
+    addTearDown(container.dispose);
+
+    var callCount = 0;
+    final sub = container.listen(provider, didChange: (_) => callCount++);
+
+    expect(sub.read(), notifier);
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier.hasListeners, true);
+    expect(callCount, 0);
+
+    notifier.count++;
+
+    sub.flush();
+    expect(callCount, 1);
+
+    container.updateOverrides([
+      provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier2)),
+    ]);
+
+    sub.flush();
+    expect(callCount, 1);
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier2.hasListeners, false);
+
+    notifier.count++;
+
+    sub.flush();
+    expect(callCount, 2);
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier.mounted, true);
+
+    container.dispose();
+
+    expect(callCount, 2);
+    expect(notifier.mounted, false);
+  });
 }
 
 class TestNotifier extends ChangeNotifier {
   bool mounted = true;
+
+  @override
+  // ignore: unnecessary_overrides
+  bool get hasListeners => super.hasListeners;
 
   int _count = 0;
   int get count => _count;
