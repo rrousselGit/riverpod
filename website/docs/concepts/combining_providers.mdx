@@ -252,14 +252,15 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 final configsProvider = StreamProvider<Configuration>(...);
 
 /// A provider that exposes only the current host
-final _hostProvider = Provider<AsyncValue<String>>((ref) {
-  return ref.watch(configsProvider).whenData((configs) => configs.host);
+final _hostProvider = FutureProvider<String>((ref) async {
+  final config = await ref.watch(configsProvider.last);
+  return config.host;
 });
 
 final productsProvider = FutureProvider<List<Product>>((ref) async {
   // Listens only to the host. If something else in the configurations
   // changes, this will not pointlessly re-evaluate our provider.
-  final host = await ref.watch(_hostProvider);
+  final host = await ref.watch(_hostProvider.future);
 
   return dio.get('$host/products');
 });
