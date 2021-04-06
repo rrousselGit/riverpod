@@ -1,3 +1,7 @@
+# 0.14.0+1
+
+- Re-added `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that were unvoluntarily removed.
+
 # 0.14.0
 
 - **BREAKING CHANGE** The `Listener`/`LocatorMixin` typedefs are removed as the former could cause a name
