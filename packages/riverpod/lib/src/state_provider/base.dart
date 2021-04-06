@@ -3,7 +3,8 @@ part of '../state_provider.dart';
 /// {@macro riverpod.stateprovider}
 @sealed
 class StateProvider<T>
-    extends AlwaysAliveProviderBase<StateController<T>, StateController<T>> {
+    extends AlwaysAliveProviderBase<StateController<T>, StateController<T>>
+    with ProviderOverridesMixin<StateController<T>, StateController<T>> {
   /// {@macro riverpod.stateprovider}
   StateProvider(
     this._create, {

@@ -5,6 +5,32 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
+  test('overrideWithProvider', () {
+    final override = StateController(42);
+    final provider = StateProvider((ref) => 0);
+    final provider2 = StateProvider.autoDispose((ref) => 0);
+    final container = ProviderContainer(overrides: [
+      provider.overrideWithValue(override),
+      provider2.overrideWithValue(override),
+    ]);
+    addTearDown(container.dispose);
+    final container2 = ProviderContainer(overrides: [
+      provider.overrideWithProvider(
+        StateProvider((ref) => 42),
+      ),
+      provider2.overrideWithProvider(
+        StateProvider.autoDispose((ref) => 42),
+      ),
+    ]);
+    addTearDown(container.dispose);
+
+    expect(container.read(provider), override);
+    expect(container.read(provider2), override);
+
+    expect(container2.read(provider).state, 42);
+    expect(container2.read(provider2).state, 42);
+  });
+
   test('StateProvideyFamily', () async {
     final provider = StateProvider.family<String, int>((ref, a) {
       return '$a';

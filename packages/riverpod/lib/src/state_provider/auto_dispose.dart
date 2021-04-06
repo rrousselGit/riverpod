@@ -3,7 +3,10 @@ part of '../state_provider.dart';
 /// {@macro riverpod.stateprovider}
 @sealed
 class AutoDisposeStateProvider<T>
-    extends AutoDisposeProviderBase<StateController<T>, StateController<T>> {
+    extends AutoDisposeProviderBase<StateController<T>, StateController<T>>
+    with
+        AutoDisposeProviderOverridesMixin<StateController<T>,
+            StateController<T>> {
   /// {@macro riverpod.stateprovider}
   AutoDisposeStateProvider(
     this._create, {
