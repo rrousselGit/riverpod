@@ -22,3 +22,9 @@ dev_dependencies:
 
 executables:
   riverpod: riverpod_cli
+
+dependency_overrides:
+  codemod:
+    git:
+      url: https://github.com/Workiva/dart_codemod
+      ref: fix_invalid_file_path_on_windows
