@@ -1,0 +1,14 @@
+name: codemod_riverpod_test_unified_syntax
+description: Test riverpod codemods
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: '>=2.12.0-0 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter  
+  flutter_riverpod: ^0.14.0+1
+  hooks_riverpod: ^0.14.0+1
+  riverpod: ^0.14.0+1
