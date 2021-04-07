@@ -1,3 +1,6 @@
+# 0.0.2+1
+- Fix for windows paths
+
 # 0.0.2
 - Fix CHANGELOG and README
 
