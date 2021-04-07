@@ -5,6 +5,7 @@ import 'package:codemod/codemod.dart';
 import 'package:glob/glob.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
+import 'package:riverpod_cli/src/migrate/unified_syntax.dart';
 
 import 'migrate/imports.dart';
 import 'migrate/notifiers.dart';
@@ -43,6 +44,7 @@ class MigrateCommand extends Command<void> {
         [
           RiverpodImportAllMigrationSuggestor(),
           RiverpodNotifierChangesMigrationSuggestor(version),
+          RiverpodUnifiedSyntaxChangesMigrationSuggestor(version)
         ],
       ),
       args: argResults.arguments,
