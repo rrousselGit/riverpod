@@ -22,5 +22,3 @@ dev_dependencies:
 
 executables:
   riverpod: riverpod_cli
-
-
