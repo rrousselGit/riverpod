@@ -119,7 +119,9 @@ class MyHomePage extends HookWidget {
         final count = useProvider(questionsCountProvider);
 
         return count.when(
-          loading: () => const CircularProgressIndicator(),
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
+          ),
           error: (err, stack) {
             if (err is DioError) {
               return Text(
