@@ -9,6 +9,7 @@ Before starting the application, you must first start the code generators.
 
 This can be done with:
 
+```sh
 cd examples/stackoverflow
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
