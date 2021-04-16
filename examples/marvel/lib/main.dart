@@ -18,11 +18,7 @@ void main() {
       // uncomment to mock the HTTP requests
 
       // overrides: [
-      //   repositoryProvider.overrideWithProvider(
-      //     Provider(
-      //       (ref) => MarvelRepository(ref, client: FakeDio(null)),
-      //     ),
-      //   ),
+      //   dioProvider.overrideWithValue(FakeDio(null))
       // ],
       child: MyApp(),
     ),
