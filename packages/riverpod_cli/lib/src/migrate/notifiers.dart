@@ -82,6 +82,19 @@ class RiverpodNotifierChangesMigrationSuggestor
   }
 
   @override
+  void visitPropertyAccess(PropertyAccess node) {
+    // useProvider(Static.provider.state) => useProvider(provider)
+    if (node.propertyName.name == 'state') {
+      if (node.realTarget.staticType
+          .getDisplayString()
+          .contains('StateNotifierProvider')) {
+        yieldPatch('', node.realTarget.end, node.end);
+      }
+    }
+    super.visitPropertyAccess(node);
+  }
+
+  @override
   void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
     if (node.function.toSource() == 'watch' ||
         node.function.toSource() == 'useProvider') {

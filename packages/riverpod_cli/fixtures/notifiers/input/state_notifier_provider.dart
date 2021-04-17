@@ -8,6 +8,8 @@ class Counter extends StateNotifier<int> {
   Counter() : super(1);
   void increment() => state++;
   void decrement() => state--;
+  static final counterStaticProvider =
+      StateNotifierProvider<Counter>((ref) => Counter());
 }
 
 final counterProvider = StateNotifierProvider((ref) => Counter());
@@ -56,6 +58,8 @@ class HooksWatch extends HookWidget {
         onPressed: () {
           context.read(counterProvider);
           context.read(counterProvider.state);
+          context.read(Counter.counterStaticProvider.state);
+          context.read(Counter.counterStaticProvider);
         },
         child: const Text('Press Me'),
       ),
