@@ -107,7 +107,7 @@ extension BuildContextX on BuildContext {
   ///   }
   /// }
   /// ```
-  Created refresh<Created>(RootProvider<Created, Object> provider) {
+  Created refresh<Created>(RootProvider<Created, Object?> provider) {
     return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
 }
