@@ -99,8 +99,8 @@ void main() {
   });
 
   testWidgets('context.refresh forces a provider to refresh', (tester) async {
-    var future = Future.value(21);
-    final provider = FutureProvider((ref) => future);
+    var future = Future<int>.value(21);
+    final provider = FutureProvider<int>((ref) => future);
 
     await tester.pumpWidget(ProviderScope(child: Container()));
 
@@ -108,9 +108,25 @@ void main() {
 
     await expectLater(context.read(provider.future), completion(21));
 
-    future = Future.value(42);
+    future = Future<int>.value(42);
 
     await expectLater(context.refresh(provider), completion(42));
+  });
+
+  testWidgets('context.refresh forces a provider of nullable type to refresh',
+      (tester) async {
+    int? value = 42;
+    final provider = Provider<int?>((ref) => value);
+
+    await tester.pumpWidget(ProviderScope(child: Container()));
+
+    final context = tester.element(find.byType(Container));
+
+    expect(context.read(provider), 42);
+
+    value = null;
+
+    expect(context.refresh(provider), null);
   });
 
   testWidgets('ProviderScope allows specifying a ProviderContainer',
