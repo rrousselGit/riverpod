@@ -6,6 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Counter extends StateNotifier<int> {
   Counter() : super(1);
+
+  static final counterStaticProvider =
+      StateNotifierProvider<Counter, int>((ref) => Counter());
+  static final familyStaticProvider =
+      StateNotifierProvider.family<Counter, int, String>((ref, _) => Counter());
+
   void increment() => state++;
   void decrement() => state--;
 }
@@ -57,6 +63,10 @@ class HooksWatch extends HookWidget {
         onPressed: () {
           context.read(counterProvider.notifier);
           context.read(counterProvider);
+          context.read(Counter.counterStaticProvider);
+          context.read(Counter.counterStaticProvider.notifier);
+          context.read(Counter.familyStaticProvider(''));
+          context.read(Counter.familyStaticProvider('').notifier);
         },
         child: const Text('Press Me'),
       ),
