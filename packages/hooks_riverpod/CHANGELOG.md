@@ -1,3 +1,7 @@
+# 0.14.0+2
+
+- Fix `context.refresh` not compiling when using nullable providers
+
 # 0.14.0+1
 
 - Re-added `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that were unvoluntarily removed.
