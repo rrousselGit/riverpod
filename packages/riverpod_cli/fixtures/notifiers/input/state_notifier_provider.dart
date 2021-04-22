@@ -8,7 +8,7 @@ class Counter extends StateNotifier<int> {
   Counter() : super(1);
 
   static final counterStaticProvider =
-    StateNotifierProvider<Counter, int>((ref) => Counter());
+      StateNotifierProvider<Counter>((ref) => Counter());
 
   void increment() => state++;
   void decrement() => state--;
