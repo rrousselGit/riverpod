@@ -35,10 +35,14 @@ class RiverpodNotifierChangesMigrationSuggestor
             node.typeArguments.offset,
             node.argumentList.offset);
       } else {
-        yieldPatch(
-            '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}>',
-            node.function.end,
-            node.argumentList.offset);
+        if (node.parent is VariableDeclaration) {
+          // Make sure it is variable declaration so we don't add type params
+          // on family accesses
+          yieldPatch(
+              '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}>',
+              node.function.end,
+              node.argumentList.offset);
+        }
       }
     }
 
@@ -47,7 +51,8 @@ class RiverpodNotifierChangesMigrationSuggestor
 
   @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
-    if (node.staticType.getDisplayString().contains('StateNotifierProvider')) {
+    final nodeType = node.staticType.getDisplayString();
+    if (nodeType.contains('StateNotifierProvider')) {
       final providerType = node.staticType as InterfaceType;
       final notifierType = providerType.typeArguments.first as InterfaceType;
       final stateType = notifierType.superclass.typeArguments.first;
@@ -96,7 +101,8 @@ class RiverpodNotifierChangesMigrationSuggestor
 
   @override
   void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
-    if (node.function.toSource() == 'watch' ||
+    if (node.function.toSource() == 'read' ||
+        node.function.toSource() == 'watch' ||
         node.function.toSource() == 'useProvider') {
       final firstArgStaticType =
           node.argumentList.arguments.first.staticType.getDisplayString();
