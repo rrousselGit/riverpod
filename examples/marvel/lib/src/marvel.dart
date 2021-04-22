@@ -91,7 +91,7 @@ class MarvelRepository {
         )
         .toString();
 
-    final result = await _read(dioProvider).get<Map<String, Object>>(
+    final result = await _read(dioProvider).get<Map<String, dynamic>>(
       'https://gateway.marvel.com/v1/public/$path',
       cancelToken: cancelToken,
       queryParameters: <String, Object>{
@@ -102,7 +102,7 @@ class MarvelRepository {
       },
       // TODO deserialize error message
     );
-    return MarvelResponse.fromJson(result.data);
+    return MarvelResponse.fromJson(Map<String, Object>.from(result.data!));
   }
 }
 

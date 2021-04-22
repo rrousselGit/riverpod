@@ -9,8 +9,8 @@ import 'package:html/parser.dart';
 
 import 'common.dart';
 
-part 'home.g.dart';
 part 'home.freezed.dart';
+part 'home.g.dart';
 
 @freezed
 abstract class QuestionsResponse with _$QuestionsResponse {
@@ -75,9 +75,10 @@ final paginatedQuestionsProvider = FutureProvider.autoDispose
 
   final response = await ref
       .watch(client)
-      .getUri<Map<String, Object>>(uri, cancelToken: cancelToken);
+      .getUri<Map<String, dynamic>>(uri, cancelToken: cancelToken);
 
-  final parsed = QuestionsResponse.fromJson(response.data);
+  final parsed =
+      QuestionsResponse.fromJson(Map<String, Object>.from(response.data!));
   final page = parsed.copyWith(
     items: parsed.items.map((e) {
       final document = parse(e.body);
@@ -125,7 +126,7 @@ class MyHomePage extends HookWidget {
           error: (err, stack) {
             if (err is DioError) {
               return Text(
-                err.response.data.toString(),
+                err.response!.data.toString(),
               );
             }
             return Text('Error $err\n$stack');
