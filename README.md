@@ -63,8 +63,15 @@ Long story short:
 
 See the [FAQ](#FAQ) if you have questions about what this means for [provider].
 
+## Migration
+
+With the release of the version 0.14.0, the syntax for using `StateNotifierProvider` changed.
+
+See [the migration guide](https://riverpod.dev/docs/migration/0.13.0_to_0.14.0/) for more informations
+
 ## Index
 
+- [Migration](#migration)
 - [Index](#index)
 - [Motivation](#motivation)
 - [Contributing](#contributing)
