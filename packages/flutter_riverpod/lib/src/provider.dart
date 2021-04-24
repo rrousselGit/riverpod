@@ -23,7 +23,7 @@ extension BuildContextX on BuildContext {
   ///
   /// While this code is not bugged in itself, this is an anti-pattern.
   /// It could easily lead to bugs in the future after refactoring the widget
-  /// to use `counter` for other things, but forget to change [read] into [Consumer]/`useProvider`.
+  /// to use `counter` for other things, but forget to change [read] into [Consumer]/`ref.watch(`.
   ///
   /// **CONSIDER** calling [read] inside event handlers:
   ///
@@ -62,7 +62,7 @@ extension BuildContextX on BuildContext {
   /// ```dart
   /// Widget build(BuildContext context) {
   ///   // Using select to listen only to the value that used
-  ///   final valueThatNeverChanges = useProvider(modelProvider.select((model) {
+  ///   final valueThatNeverChanges = ref.watch(modelProvider.select((model) {
   ///     return model.valueThatNeverChanges;
   ///   }));
   ///

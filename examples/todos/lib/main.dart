@@ -82,12 +82,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Home extends HookWidget {
+class Home extends HookConsumerWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final todos = useProvider(filteredTodos);
+  Widget build(BuildContext context, WidgetReference ref) {
+    final todos = ref.watch(filteredTodos);
     final newTodoController = useTextEditingController();
 
     return GestureDetector(
@@ -133,14 +133,14 @@ class Home extends HookWidget {
   }
 }
 
-class Toolbar extends HookWidget {
+class Toolbar extends HookConsumerWidget {
   const Toolbar({
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final filter = useProvider(todoListFilter);
+  Widget build(BuildContext context, WidgetReference ref) {
+    final filter = ref.watch(todoListFilter);
 
     Color? textColorFor(TodoListFilter value) {
       return filter.state == value ? Colors.blue : null;
@@ -152,7 +152,7 @@ class Toolbar extends HookWidget {
         children: [
           Expanded(
             child: Text(
-              '${useProvider(uncompletedTodosCount).toString()} items left',
+              '${ref.watch(uncompletedTodosCount).toString()} items left',
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -222,12 +222,12 @@ class Title extends StatelessWidget {
 /// impacted widgets rebuilds, instead of the entire list of items.
 final _currentTodo = ScopedProvider<Todo>(null);
 
-class TodoItem extends HookWidget {
+class TodoItem extends HookConsumerWidget {
   const TodoItem({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final todo = useProvider(_currentTodo);
+  Widget build(BuildContext context, WidgetReference ref) {
+    final todo = ref.watch(_currentTodo);
     final itemFocusNode = useFocusNode();
     // listen to focus chances
     useListenable(itemFocusNode);

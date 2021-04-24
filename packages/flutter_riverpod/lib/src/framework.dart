@@ -233,7 +233,7 @@ class ProviderScopeState extends State<ProviderScope> {
 /// {@template riverpod.UncontrolledProviderScope}
 /// Expose a [ProviderContainer] to the widget tree.
 ///
-/// This is what makes `useProvider`/`Consumer`/`context.read` work.
+/// This is what makes `ref.watch(`/`Consumer`/`context.read` work.
 /// {@endtemplate}
 @sealed
 class UncontrolledProviderScope extends InheritedWidget {

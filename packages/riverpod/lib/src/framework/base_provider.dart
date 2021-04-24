@@ -40,7 +40,7 @@ String shortHash(Object? object) {
 
 /// A base class for all providers, used to consume a provider.
 ///
-/// It is used by [ProviderContainer.listen] and `useProvider` to listen to
+/// It is used by [ProviderContainer.listen] and `ref.watch(` to listen to
 /// both a provider and `provider.select`.
 ///
 /// Do not implement or extend.
@@ -147,7 +147,7 @@ abstract class RootProvider<Created, Listened>
   /// Partially listen to a provider.
   ///
   /// Note: This method of listening to an object is currently only supported
-  /// by `useProvider` from `hooks_riverpod` and [ProviderContainer.listen].
+  /// by `ref.watch(` from `hooks_riverpod` and [ProviderContainer.listen].
   ///
   /// The [select] function allows filtering unwanted rebuilds of a Widget
   /// by reading only the properties that we care about.
@@ -177,7 +177,7 @@ abstract class RootProvider<Created, Listened>
   /// In this class, both `name` and `age` may change, but a widget may need
   /// only `age`.
   ///
-  /// If we used `useProvider`/`Consumer` as we normally would, this would cause
+  /// If we used `ref.watch(`/`Consumer` as we normally would, this would cause
   /// widgets that only use `age` to still rebuild when `name` changes, which
   /// is inefficient.
   ///
@@ -189,7 +189,7 @@ abstract class RootProvider<Created, Listened>
   /// ```dart
   /// @override
   /// Widget build(BuildContext context, WidgetReference ref) {
-  ///   final age = useProvider(personProvider.select((p) => p.age));
+  ///   final age = ref.watch(personProvider.select((p) => p.age));
   ///   return Text('$age');
   /// }
   /// ```
@@ -205,7 +205,7 @@ abstract class RootProvider<Created, Listened>
   /// ```dart
   /// @override
   /// Widget build(BuildContext context, WidgetReference ref) {
-  ///   final isAdult = useProvider(personProvider.select((p) => p.age >= 18));
+  ///   final isAdult = ref.watch(personProvider.select((p) => p.age >= 18));
   ///   return Text('$isAdult');
   /// }
   /// ```

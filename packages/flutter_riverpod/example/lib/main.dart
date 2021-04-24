@@ -29,7 +29,7 @@ class Home extends StatelessWidget {
       appBar: AppBar(title: const Text('Counter example')),
       body: Center(
         // Consumer is a widget that allows you reading providers.
-        // You could also use the hook "useProvider" if you uses flutter_hooks
+        // You could also use the hook "ref.watch(" if you uses flutter_hooks
         child: Consumer(builder: (context, ref, _) {
           final count = ref.watch(counterProvider).state;
           return Text('$count');

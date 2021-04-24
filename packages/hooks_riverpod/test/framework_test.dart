@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
 void main() {
-  testWidgets('useProvider can read scoped providers', (tester) async {
+  testWidgets('ref.watch can read scoped providers', (tester) async {
     final provider = ScopedProvider((_) => 0);
 
-    final child = HookBuilder(
-      builder: (context) {
-        final value = useProvider(provider);
+    final child = HookConsumer(
+      builder: (context, ref, child) {
+        final value = ref.watch(provider);
         return Text(
           '$value',
           textDirection: TextDirection.ltr,
@@ -55,10 +54,10 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: HookBuilder(
-          builder: (context) {
-            final first = useProvider(provider);
-            final second = useProvider(computed);
+        child: HookConsumer(
+          builder: (context, ref, child) {
+            final first = ref.watch(provider);
+            final second = ref.watch(computed);
             return Text(
               '$first $second',
               textDirection: TextDirection.ltr,
@@ -98,8 +97,8 @@ void main() {
     final provider = Provider((_) => 'foo');
 
     await tester.pumpWidget(
-      HookBuilder(builder: (context) {
-        useProvider(provider);
+      HookConsumer(builder: (context, ref, child) {
+        ref.watch(provider);
         return Container();
       }),
     );
@@ -117,12 +116,12 @@ void main() {
 
     final builder = Directionality(
       textDirection: TextDirection.ltr,
-      child: HookBuilder(
-        builder: (context) {
+      child: HookConsumer(
+        builder: (context, ref, child) {
           return Column(
             children: <Widget>[
-              Text(useProvider(provider)),
-              Text(useProvider(provider2)),
+              Text(ref.watch(provider)),
+              Text(ref.watch(provider2)),
             ],
           );
         },

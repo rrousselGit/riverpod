@@ -141,13 +141,13 @@ This example will make our UI listen to `counterProvider` and rebuild a [Text]
 ### useProvider (hooks_riverpod only)
 
 If you are using [flutter_hooks]/[hooks_riverpod], an alternative to [ConsumerWidget]
-is to use [useProvider].
+is to use [ref.watch(].
 
 ```dart
-class Count extends HookWidget {
+class Count extends HookConsumerWidget {
   @override
   Widget build(BuildContext context) {
-    int count = useProvider(counterProvider).state;
+    int count = ref.watch(counterProvider).state;
     return Text('$count');
   }
 }
@@ -157,10 +157,10 @@ This can be useful when you want to use both [flutter_hooks] and [Riverpod] toge
 This syntax also supports a feature that are not supported by [ConsumerWidget]: [select]
 
 ```dart
-class Example extends HookWidget {
+class Example extends HookConsumerWidget {
   @override
   Widget build(BuildContext context) {
-    bool isAbove5 = useProvider(counterProvider.select((s) => s.state > 5));
+    bool isAbove5 = ref.watch(counterProvider.select((s) => s.state > 5));
     return Text('Is counter > 5 ? $isAbove5');
   }
 }
@@ -172,12 +172,12 @@ cause our widget to rebuild.
 
 ### context.read(myProvider)
 
-With [Consumer] and [useProvider], we've seen how to _listen_ to a provider.
+With [Consumer] and [ref.watch(], we've seen how to _listen_ to a provider.
 
 But in some situations, there's no value in listening to the object. For example,
 we may need the object only for the `onPressed` of a [RaisedButton].
 
-We _could_ use [useProvider]/[Consumer]:
+We _could_ use [ref.watch(]/[Consumer]:
 
 ```dart {2,4}
 Consumer(builder: (context, ref, _) {
@@ -334,7 +334,7 @@ This ensures that the state of your providers properly resets between test cases
 [providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
 [consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
 [consumerwidget]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ConsumerWidget-class.html
-[useprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/useProvider.html
+[useprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ref.watch(.html
 [raisedbutton]: https://api.flutter.dev/flutter/material/RaisedButton-class.html
 [streambuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
 [riverpod]: https://github.com/rrousselgit/river_pod

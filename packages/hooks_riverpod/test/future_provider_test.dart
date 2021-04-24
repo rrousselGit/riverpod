@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -13,13 +12,13 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: ProviderScope(
-          child: HookBuilder(builder: (c) {
-            return useProvider(future).when(
-              data: (data) => Text(data.toString()),
-              loading: () => const Text('loading'),
-              // ignore: avoid_types_on_closure_parameters
-              error: (Object? err, stack) => Text('$err'),
-            );
+          child: HookConsumer(builder: (c, ref, child) {
+            return ref.watch(future).when(
+                  data: (data) => Text(data.toString()),
+                  loading: () => const Text('loading'),
+                  // ignore: avoid_types_on_closure_parameters
+                  error: (Object? err, stack) => Text('$err'),
+                );
           }),
         ),
       ),
@@ -43,17 +42,17 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: ProviderScope(
-          child: HookBuilder(builder: (c) {
-            return useProvider(futureProvider).when(
-              data: (data) => Text(data.toString()),
-              loading: () => const Text('loading'),
-              // ignore: avoid_types_on_closure_parameters
-              error: (Object? err, stack) {
-                whenError = err;
-                whenStack = stack;
-                return const Text('error');
-              },
-            );
+          child: HookConsumer(builder: (c, ref, child) {
+            return ref.watch(futureProvider).when(
+                  data: (data) => Text(data.toString()),
+                  loading: () => const Text('loading'),
+                  // ignore: avoid_types_on_closure_parameters
+                  error: (Object? err, stack) {
+                    whenError = err;
+                    whenStack = stack;
+                    return const Text('error');
+                  },
+                );
           }),
         ),
       ),
@@ -74,8 +73,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: HookBuilder(builder: (c) {
-          useProvider(futureProvider);
+        child: HookConsumer(builder: (c, ref, child) {
+          ref.watch(futureProvider);
           return Container();
         }),
       ),
@@ -96,8 +95,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: HookBuilder(builder: (c) {
-          useProvider(futureProvider);
+        child: HookConsumer(builder: (c, ref, child) {
+          ref.watch(futureProvider);
           return Container();
         }),
       ),
@@ -127,11 +126,11 @@ void main() {
         ],
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: HookBuilder(builder: (c) {
-            return useProvider(futureProvider).maybeWhen(
-              data: (data) => Text(data.toString()),
-              orElse: () => const Text('else'),
-            );
+          child: HookConsumer(builder: (c, ref, child) {
+            return ref.watch(futureProvider).maybeWhen(
+                  data: (data) => Text(data.toString()),
+                  orElse: () => const Text('else'),
+                );
           }),
         ),
       ),
@@ -174,16 +173,16 @@ void main() {
 
     final child = Directionality(
       textDirection: TextDirection.ltr,
-      child: HookBuilder(builder: (c) {
-        useProvider(proxy);
-        return useProvider(futureProvider).when(
-          data: (data) => Text(data.toString()),
-          loading: () => const Text('loading'),
-          // ignore: avoid_types_on_closure_parameters
-          error: (Object? err, stack) {
-            return const Text('error');
-          },
-        );
+      child: HookConsumer(builder: (c, ref, child) {
+        ref.watch(proxy);
+        return ref.watch(futureProvider).when(
+              data: (data) => Text(data.toString()),
+              loading: () => const Text('loading'),
+              // ignore: avoid_types_on_closure_parameters
+              error: (Object? err, stack) {
+                return const Text('error');
+              },
+            );
       }),
     );
 

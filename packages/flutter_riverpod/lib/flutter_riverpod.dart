@@ -6,7 +6,8 @@ export 'src/change_notifier_provider.dart'
         AutoDisposeChangeNotifierProvider,
         AutoDisposeChangeNotifierProviderFamily,
         ChangeNotifierProviderFamily;
-export 'src/consumer.dart' show Consumer, ConsumerWidget, ConsumerBuilder;
+export 'src/consumer.dart'
+    show Consumer, ConsumerWidget, ConsumerBuilder, WidgetReference;
 export 'src/framework.dart' show ProviderScope, UncontrolledProviderScope;
 export 'src/provider.dart' show BuildContextX;
 export 'src/provider_listener.dart' show ProviderListener, OnProviderChange;

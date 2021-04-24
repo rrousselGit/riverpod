@@ -140,13 +140,13 @@ void main() {
   );
 }
 
-// Note: MyApp is a HookWidget, from flutter_hooks.
-class MyApp extends HookWidget {
+// Note: MyApp is a HookConsumerWidget, from flutter_hooks.
+class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context) {
-    // To read our provider, we can use the hook "useProvider".
-    // This is only possible because MyApp is a HookWidget.
-    final String value = useProvider(helloWorldProvider);
+    // To read our provider, we can use the hook "ref.watch(".
+    // This is only possible because MyApp is a HookConsumerWidget.
+    final String value = ref.watch(helloWorldProvider);
 
     return MaterialApp(
       home: Scaffold(

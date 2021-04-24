@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -10,9 +9,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: HookBuilder(
-          builder: (context) {
-            final count = useProvider(provider).count;
+        child: HookConsumer(
+          builder: (context, ref, child) {
+            final count = ref.watch(provider).count;
 
             return Text('$count', textDirection: TextDirection.ltr);
           },
@@ -43,11 +42,11 @@ void main() {
     );
 
     var buildCount = 0;
-    final consumer = HookBuilder(
+    final consumer = HookConsumer(
       key: GlobalKey(),
-      builder: (c) {
+      builder: (c, ref, child) {
         buildCount++;
-        final count = useProvider(provider).count;
+        final count = ref.watch(provider).count;
         return Text('$count', textDirection: TextDirection.ltr);
       },
     );

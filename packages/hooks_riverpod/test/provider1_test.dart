@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -18,8 +17,8 @@ void main() {
             }),
           ),
         ],
-        child: HookBuilder(builder: (c) {
-          return Text(useProvider(provider2).toString(),
+        child: HookConsumer(builder: (c, ref, child) {
+          return Text(ref.watch(provider2).toString(),
               textDirection: TextDirection.ltr);
         }),
       ),
@@ -42,8 +41,8 @@ void main() {
         overrides: [
           provider.overrideWithProvider(Provider((_) => 1)),
         ],
-        child: HookBuilder(builder: (c) {
-          return Text(useProvider(provider1), textDirection: TextDirection.ltr);
+        child: HookConsumer(builder: (c, ref, child) {
+          return Text(ref.watch(provider1), textDirection: TextDirection.ltr);
         }),
       ),
     );
@@ -69,8 +68,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: HookBuilder(builder: (c) {
-          return Text(useProvider(forth).toString(),
+        child: HookConsumer(builder: (c, ref, child) {
+          return Text(ref.watch(forth).toString(),
               textDirection: TextDirection.ltr);
         }),
       ),
@@ -99,8 +98,8 @@ void main() {
         overrides: [
           first.overrideWithProvider(Provider((_) => 42)),
         ],
-        child: HookBuilder(builder: (c) {
-          return Text(useProvider(forth).toString(),
+        child: HookConsumer(builder: (c, ref, child) {
+          return Text(ref.watch(forth).toString(),
               textDirection: TextDirection.ltr);
         }),
       ),
@@ -129,8 +128,8 @@ void main() {
         overrides: [
           second.overrideWithProvider(Provider((_) => 0)),
         ],
-        child: HookBuilder(builder: (c) {
-          return Text(useProvider(forth).toString(),
+        child: HookConsumer(builder: (c, ref, child) {
+          return Text(ref.watch(forth).toString(),
               textDirection: TextDirection.ltr);
         }),
       ),

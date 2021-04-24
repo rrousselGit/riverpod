@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mockito/mockito.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -43,9 +42,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: HookBuilder(builder: (c) {
+        child: HookConsumer(builder: (c, ref, child) {
           return Text(
-            useProvider(provider).toString(),
+            ref.watch(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -66,9 +65,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: HookBuilder(builder: (c) {
+        child: HookConsumer(builder: (c, ref, child) {
           return Text(
-            useProvider(provider).toString(),
+            ref.watch(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -96,9 +95,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: HookBuilder(builder: (c) {
+        child: HookConsumer(builder: (c, ref, child) {
           return Text(
-            useProvider(provider).toString(),
+            ref.watch(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -137,9 +136,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: HookBuilder(builder: (c) {
+        child: HookConsumer(builder: (c, ref, child) {
           return Text(
-            useProvider(provider).toString(),
+            ref.watch(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -153,9 +152,9 @@ void main() {
   testWidgets('override updates rebuild dependents with new value',
       (tester) async {
     final provider = Provider((_) => 0);
-    final child = HookBuilder(builder: (c) {
+    final child = HookConsumer(builder: (c, ref, child) {
       return Text(
-        useProvider(provider).toString(),
+        ref.watch(provider).toString(),
         textDirection: TextDirection.ltr,
       );
     });

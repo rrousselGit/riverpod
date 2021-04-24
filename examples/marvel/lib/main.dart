@@ -25,11 +25,11 @@ void main() {
   );
 }
 
-class MyApp extends HookWidget {
+class MyApp extends HookConsumerWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetReference ref) {
     return MaterialApp(
       theme: ThemeData(primarySwatch: Colors.red),
       builder: (context, child) {
@@ -69,7 +69,7 @@ class MyApp extends HookWidget {
 ///
 /// This implements the "Unfocus when tapping in empty space" behavior for the
 /// entire application.
-class _Unfocus extends HookWidget {
+class _Unfocus extends HookConsumerWidget {
   const _Unfocus({
     Key? key,
     required this.child,
@@ -78,7 +78,7 @@ class _Unfocus extends HookWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetReference ref) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {

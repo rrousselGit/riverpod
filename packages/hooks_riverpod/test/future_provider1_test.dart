@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -15,13 +14,13 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: HookBuilder(builder: (c) {
-            return useProvider(futureProviderFamily).when(
-              data: (value) => Text(value.toString()),
-              loading: () => const Text('loading'),
-              // ignore: avoid_types_on_closure_parameters
-              error: (Object? err, stack) => const Text('error'),
-            );
+          child: HookConsumer(builder: (c, ref, child) {
+            return ref.watch(futureProviderFamily).when(
+                  data: (value) => Text(value.toString()),
+                  loading: () => const Text('loading'),
+                  // ignore: avoid_types_on_closure_parameters
+                  error: (Object? err, stack) => const Text('error'),
+                );
           }),
         ),
       ),
@@ -46,13 +45,13 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: HookBuilder(builder: (c) {
-            return useProvider(futureProviderFamily).when(
-              data: (value) => Text(value.toString()),
-              loading: () => const Text('loading'),
-              // ignore: avoid_types_on_closure_parameters
-              error: (Object? err, stack) => const Text('error'),
-            );
+          child: HookConsumer(builder: (c, ref, child) {
+            return ref.watch(futureProviderFamily).when(
+                  data: (value) => Text(value.toString()),
+                  loading: () => const Text('loading'),
+                  // ignore: avoid_types_on_closure_parameters
+                  error: (Object? err, stack) => const Text('error'),
+                );
           }),
         ),
       ),
@@ -76,13 +75,13 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: HookBuilder(builder: (c) {
-            return useProvider(futureProviderFamily).when(
-              data: (value) => Text(value.toString()),
-              loading: () => const Text('loading'),
-              // ignore: avoid_types_on_closure_parameters
-              error: (Object? err, stack) => const Text('error'),
-            );
+          child: HookConsumer(builder: (c, ref, child) {
+            return ref.watch(futureProviderFamily).when(
+                  data: (value) => Text(value.toString()),
+                  loading: () => const Text('loading'),
+                  // ignore: avoid_types_on_closure_parameters
+                  error: (Object? err, stack) => const Text('error'),
+                );
           }),
         ),
       ),

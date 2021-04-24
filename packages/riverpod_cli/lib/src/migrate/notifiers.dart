@@ -75,7 +75,7 @@ class RiverpodNotifierChangesMigrationSuggestor
     // ref.watch(provider.state) => ref.watch(provider)
     // ref.read(provider.state) => ref.read(provider)
     // context.read(provider.state) => context.read(provider)
-    // useProvider(provider.state) => useProvider(provider)
+    // ref.watch(provider.state) => ref.watch(provider)
     if (node.identifier.name == 'state') {
       if (node.prefix.staticType
           .getDisplayString()
@@ -88,7 +88,7 @@ class RiverpodNotifierChangesMigrationSuggestor
 
   @override
   void visitPropertyAccess(PropertyAccess node) {
-    // useProvider(Static.provider.state) => useProvider(provider)
+    // ref.watch(Static.provider.state) => ref.watch(provider)
     if (node.propertyName.name == 'state') {
       if (node.realTarget.staticType
           .getDisplayString()
@@ -103,13 +103,13 @@ class RiverpodNotifierChangesMigrationSuggestor
   void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
     if (node.function.toSource() == 'read' ||
         node.function.toSource() == 'watch' ||
-        node.function.toSource() == 'useProvider') {
+        node.function.toSource() == 'ref.watch(') {
       final firstArgStaticType =
           node.argumentList.arguments.first.staticType.getDisplayString();
       if (firstArgStaticType.contains('StateNotifierProvider')) {
         // StateNotifierProvider
         // watch(provider) => watch(provider.notifier)
-        // useProvider(provider) => useProvider(provider.notifier)
+        // ref.watch(provider) => ref.watch(provider.notifier)
         yieldPatch('.notifier', node.argumentList.arguments.first.end,
             node.argumentList.arguments.first.end);
       }
@@ -119,10 +119,10 @@ class RiverpodNotifierChangesMigrationSuggestor
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    // ref.read / ref.watch / context.read / context.watch, useProvider
+    // ref.read / ref.watch / context.read / context.watch, ref.watch(
     if (node.methodName.toSource() == 'read' ||
         node.methodName.toSource() == 'watch' ||
-        node.methodName.toSource() == 'useProvider') {
+        node.methodName.toSource() == 'ref.watch(') {
       final firstArgStaticType =
           node.argumentList.arguments.first.staticType.getDisplayString();
       // StateNotifierProvider
