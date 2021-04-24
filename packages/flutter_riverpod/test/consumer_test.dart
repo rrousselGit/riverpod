@@ -9,9 +9,9 @@ void main() {
     final nullProvider = Provider((ref) => null);
 
     Consumer(
-      builder: (context, watch, _) {
+      builder: (context, ref, _) {
         // should compile
-        watch(nullProvider);
+        ref.watch(nullProvider);
         return Container();
       },
     );
@@ -25,11 +25,11 @@ void main() {
         child: Directionality(
           textDirection: TextDirection.ltr,
           child: Consumer(
-            builder: (context, watch, _) {
+            builder: (context, ref, _) {
               return ListView.builder(
                 itemCount: 1,
                 itemBuilder: (context, index) {
-                  return Text(watch(provider));
+                  return Text(ref.watch(provider));
                 },
               );
             },
@@ -51,7 +51,7 @@ void main() {
     var buildCount = 0;
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (context, watch, _) {
+        child: Consumer(builder: (context, ref, _) {
           buildCount++;
           return Container();
         }),
@@ -84,13 +84,13 @@ void main() {
     var buildCount = 0;
 
     await tester.pumpWidget(ProviderScope(
-      child: Consumer(builder: (c, watch, _) {
+      child: Consumer(builder: (c, ref, _) {
         buildCount++;
-        final state = watch(stateProvider).state;
-        final value = state == 0 ? watch(provider0) : watch(provider1);
+        final state = ref.watch(stateProvider).state;
+        final value = state == 0 ? ref.watch(provider0) : ref.watch(provider1);
 
         return Text(
-          '${watch(provider0)} $value',
+          '${ref.watch(provider0)} $value',
           textDirection: TextDirection.ltr,
         );
       }),
@@ -162,12 +162,12 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           buildCount++;
-          final state = watch(stateProvider).state;
+          final state = ref.watch(stateProvider).state;
           final result = state == 0 //
-              ? watch(provider0)
-              : watch(provider1);
+              ? ref.watch(provider0)
+              : ref.watch(provider1);
           return Text('$result', textDirection: TextDirection.ltr);
         }),
       ),
@@ -235,9 +235,9 @@ void main() {
 
     Widget build(StateNotifierProvider<TestNotifier, int> provider) {
       return ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           buildCount++;
-          final value = watch(provider);
+          final value = ref.watch(provider);
           return Text('$value', textDirection: TextDirection.ltr);
         }),
       );
@@ -281,9 +281,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (context, watch, _) {
-          final first = watch(provider);
-          final second = watch(computed);
+        child: Consumer(builder: (context, ref, _) {
+          final first = ref.watch(provider);
+          final second = ref.watch(computed);
           return Text(
             '$first $second',
             textDirection: TextDirection.ltr,
@@ -311,10 +311,10 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           buildCount++;
           return Text(
-            'isPositive ${watch(computed)}',
+            'isPositive ${ref.watch(computed)}',
             textDirection: TextDirection.ltr,
           );
         }),
@@ -354,8 +354,8 @@ void main() {
     final key = GlobalKey();
 
     final consumer = Consumer(
-        builder: (context, watch, _) {
-          final value = watch(provider);
+        builder: (context, ref, _) {
+          final value = ref.watch(provider);
           return Text('$value', textDirection: TextDirection.ltr);
         },
         key: key);
@@ -433,8 +433,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (context, watch, _) {
-          final value = watch(provider);
+        child: Consumer(builder: (context, ref, _) {
+          final value = ref.watch(provider);
           return Text('$value', textDirection: TextDirection.ltr);
         }),
       ),
@@ -471,9 +471,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (context, watch, _) {
-          final first = watch(firstProvider);
-          final second = watch(secondProvider);
+        child: Consumer(builder: (context, ref, _) {
+          final first = ref.watch(firstProvider);
+          final second = ref.watch(secondProvider);
           return Text(
             'first $first second $second',
             textDirection: TextDirection.ltr,
@@ -502,8 +502,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (context, watch, _) {
-          final count = watch(provider);
+        child: Consumer(builder: (context, ref, _) {
+          final count = ref.watch(provider);
           return Text('$count', textDirection: TextDirection.ltr);
         }),
       ),
@@ -527,8 +527,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (context, watch, _) {
-          final value = watch(provider);
+        child: Consumer(builder: (context, ref, _) {
+          final value = ref.watch(provider);
           return Text(
             '$value',
             textDirection: TextDirection.ltr,
@@ -543,8 +543,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (context, watch, _) {
-          final value = watch(provider2);
+        child: Consumer(builder: (context, ref, _) {
+          final value = ref.watch(provider2);
           return Text(
             '$value',
             textDirection: TextDirection.ltr,
@@ -560,8 +560,8 @@ void main() {
   testWidgets('can read scoped providers', (tester) async {
     final provider = ScopedProvider((_) => 0);
 
-    final child = Consumer(builder: (context, watch, _) {
-      final value = watch(provider);
+    final child = Consumer(builder: (context, ref, _) {
+      final value = ref.watch(provider);
       return Text(
         '$value',
         textDirection: TextDirection.ltr,
@@ -611,7 +611,7 @@ class MyWidget extends ConsumerWidget {
   const MyWidget({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    return Text(watch(_provider), textDirection: TextDirection.rtl);
+  Widget build(BuildContext context, WidgetReference ref) {
+    return Text(ref.watch(_provider), textDirection: TextDirection.rtl);
   }
 }

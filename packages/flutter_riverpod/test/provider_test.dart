@@ -42,9 +42,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(provider).toString(),
+            ref.watch(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -65,9 +65,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(provider).toString(),
+            ref.watch(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -95,9 +95,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(provider).toString(),
+            ref.watch(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -136,9 +136,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(provider).toString(),
+            ref.watch(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -152,9 +152,9 @@ void main() {
   testWidgets('override updates rebuild dependents with new value',
       (tester) async {
     final provider = Provider((_) => 0);
-    final child = Consumer(builder: (c, watch, _) {
+    final child = Consumer(builder: (c, ref, _) {
       return Text(
-        watch(provider).toString(),
+        ref.watch(provider).toString(),
         textDirection: TextDirection.ltr,
       );
     });
@@ -209,9 +209,9 @@ void main() {
             }),
           ),
         ],
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(provider2).toString(),
+            ref.watch(provider2).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -234,8 +234,8 @@ void main() {
         overrides: [
           provider.overrideWithProvider(Provider((_) => 1)),
         ],
-        child: Consumer(builder: (c, watch, _) {
-          return Text(watch(provider1), textDirection: TextDirection.ltr);
+        child: Consumer(builder: (c, ref, _) {
+          return Text(ref.watch(provider1), textDirection: TextDirection.ltr);
         }),
       ),
     );
@@ -258,9 +258,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(forth).toString(),
+            ref.watch(forth).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -287,9 +287,9 @@ void main() {
         overrides: [
           first.overrideWithProvider(Provider((_) => 42)),
         ],
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(forth).toString(),
+            ref.watch(forth).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -316,9 +316,9 @@ void main() {
         overrides: [
           second.overrideWithProvider(Provider((_) => 0)),
         ],
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(forth).toString(),
+            ref.watch(forth).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -343,9 +343,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(provider1).toString(),
+            ref.watch(provider1).toString(),
             textDirection: TextDirection.ltr,
           );
         }),

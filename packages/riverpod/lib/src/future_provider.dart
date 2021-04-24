@@ -52,8 +52,8 @@ part 'future_provider/base.dart';
 /// Then, the UI can listen to configurations like so:
 ///
 /// ```dart
-/// Widget build(BuildContext, ScopedReader watch) {
-///   AsyncValue<Configuration> config = watch(configProvider);
+/// Widget build(BuildContext, WidgetReference ref) {
+///   AsyncValue<Configuration> config = ref.watch(configProvider);
 ///
 ///   return config.when(
 ///     loading: () => const CircularProgressIndicator(),

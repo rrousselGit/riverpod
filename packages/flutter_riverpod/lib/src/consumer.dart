@@ -4,12 +4,17 @@ import 'package:meta/meta.dart';
 import 'framework.dart';
 import 'internals.dart';
 
+// ignore: one_member_abstracts
+abstract class WidgetReference {
+  T watch<T>(ProviderBase<Object?, T> provider);
+}
+
 /// A function that can also listen to providers
 ///
 /// See also [Consumer]
 typedef ConsumerBuilder = Widget Function(
   BuildContext context,
-  ScopedReader watch,
+  WidgetReference ref,
   Widget? child,
 );
 
@@ -38,8 +43,8 @@ typedef ConsumerBuilder = Widget Function(
 ///   @override
 ///   Widget build(BuildContext context) {
 ///     return Consumer(
-///       builder: (context, watch, child) {
-///         final value = watch(helloWorldProvider);
+///       builder: (context, ref, child) {
+///         final value = ref.watch(helloWorldProvider);
 ///         return Text(value); // Hello world
 ///       },
 ///     );
@@ -52,9 +57,9 @@ typedef ConsumerBuilder = Widget Function(
 ///
 /// ```dart
 /// Consumer(
-///   builder: (context, watch, child) {
-///     final value = watch(someProvider);
-///     final another = watch(anotherProvider);
+///   builder: (context, ref, child) {
+///     final value = ref.watch(someProvider);
+///     final another = ref.watch(anotherProvider);
 ///     ...
 ///   },
 /// );
@@ -94,10 +99,10 @@ typedef ConsumerBuilder = Widget Function(
 ///           children: <Widget>[
 ///             Text('You have pushed the button this many times:'),
 ///             Consumer(
-///               builder: (BuildContext context, ScopedReader watch, Widget child) {
+///               builder: (BuildContext context, WidgetReference ref, Widget child) {
 ///                 // This builder will only get called when the counterProvider
 ///                 // is updated.
-///                 final count = watch(counterProvider).state;
+///                 final count = ref.watch(counterProvider).state;
 ///
 ///                 return Row(
 ///                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -143,8 +148,8 @@ class Consumer extends ConsumerWidget {
   final Widget? _child;
 
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    return _builder(context, watch, _child);
+  Widget build(BuildContext context, WidgetReference ref) {
+    return _builder(context, ref, _child);
   }
 }
 
@@ -169,8 +174,8 @@ class Consumer extends ConsumerWidget {
 ///   const Example({Key? key}): super(key: key);
 ///
 ///   @override
-///   Widget build(BuildContext context, ScopedReader watch) {
-///     final value = watch(helloWorldProvider);
+///   Widget build(BuildContext context, WidgetReference ref) {
+///     final value = ref.watch(helloWorldProvider);
 ///     return Text(value); // Hello world
 ///   }
 /// }
@@ -181,9 +186,9 @@ class Consumer extends ConsumerWidget {
 ///
 /// ```dart
 /// @override
-/// Widget build(BuildContext context, ScopedReader watch) {
-///   final value = watch(someProvider);
-///   final another = watch(anotherProvider);
+/// Widget build(BuildContext context, WidgetReference ref) {
+///   final value = ref.watch(someProvider);
+///   final another = ref.watch(anotherProvider);
 ///   return Text(value); // Hello world
 /// }
 /// ```
@@ -233,14 +238,14 @@ abstract class ConsumerWidget extends StatefulWidget {
   /// See also:
   ///
   ///  * [StatelessWidget], which contains the discussion on performance considerations.
-  Widget build(BuildContext context, ScopedReader watch);
+  Widget build(BuildContext context, WidgetReference ref);
 
   @override
   _ConsumerState createState() => _ConsumerState();
 }
 
 @sealed
-class _ConsumerState extends State<ConsumerWidget> {
+class _ConsumerState extends State<ConsumerWidget> implements WidgetReference {
   ProviderContainer? _container;
   var _dependencies = <ProviderBase, ProviderSubscription>{};
   Map<ProviderBase, ProviderSubscription>? _oldDependencies;
@@ -291,7 +296,7 @@ class _ConsumerState extends State<ConsumerWidget> {
     try {
       _oldDependencies = _dependencies;
       _dependencies = {};
-      return _buildCache = widget.build(context, _reader);
+      return _buildCache = widget.build(context, this);
     } finally {
       for (final dep in _oldDependencies!.values) {
         dep.close();
@@ -300,7 +305,8 @@ class _ConsumerState extends State<ConsumerWidget> {
     }
   }
 
-  Res _reader<Res>(ProviderBase<Object?, Res> target) {
+  @override
+  Res watch<Res>(ProviderBase<Object?, Res> target) {
     return _dependencies.putIfAbsent(target, () {
       final oldDependency = _oldDependencies?.remove(target);
 

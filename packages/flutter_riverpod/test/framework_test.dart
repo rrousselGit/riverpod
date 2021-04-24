@@ -57,8 +57,8 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: Consumer(builder: (context, watch, _) {
-          watch(provider).state++;
+        child: Consumer(builder: (context, ref, _) {
+          ref.watch(provider).state++;
           return Container();
         }),
       ),
@@ -208,9 +208,9 @@ void main() {
   testWidgets('removing overrides is no-op', (tester) async {
     final provider = Provider((_) => 0);
 
-    final consumer = Consumer(builder: (context, watch, _) {
+    final consumer = Consumer(builder: (context, ref, _) {
       return Text(
-        watch(provider).toString(),
+        ref.watch(provider).toString(),
         textDirection: TextDirection.ltr,
       );
     });
@@ -261,8 +261,8 @@ void main() {
     final provider = Provider((_) => 'foo');
 
     await tester.pumpWidget(
-      Consumer(builder: (context, watch, _) {
-        watch(provider);
+      Consumer(builder: (context, ref, _) {
+        ref.watch(provider);
         return Container();
       }),
     );
@@ -282,8 +282,8 @@ void main() {
       textDirection: TextDirection.ltr,
       child: Column(
         children: <Widget>[
-          Consumer(builder: (c, watch, _) => Text(watch(provider))),
-          Consumer(builder: (c, watch, _) => Text(watch(provider2))),
+          Consumer(builder: (c, ref, _) => Text(ref.watch(provider))),
+          Consumer(builder: (c, ref, _) => Text(ref.watch(provider2))),
         ],
       ),
     );
@@ -323,9 +323,9 @@ void main() {
           provider.overrideWithProvider(Provider((_) => 'rootoverride')),
         ],
         child: ProviderScope(
-          child: Consumer(builder: (c, watch, _) {
-            final first = watch(provider);
-            final second = watch(provider2);
+          child: Consumer(builder: (c, ref, _) {
+            final first = ref.watch(provider);
+            final second = ref.watch(provider2);
             return Text(
               '$first $second',
               textDirection: TextDirection.ltr,
@@ -349,9 +349,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         key: scopeKey,
-        child: Consumer(builder: (c, watch, _) {
-          final value = watch(unnamed);
-          final count = watch(named);
+        child: Consumer(builder: (c, ref, _) {
+          final value = ref.watch(unnamed);
+          final count = ref.watch(named);
           return Text(
             'value: $value count: $count',
             textDirection: TextDirection.ltr,

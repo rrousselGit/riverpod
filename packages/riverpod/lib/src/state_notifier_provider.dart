@@ -55,9 +55,9 @@ part 'state_notifier_provider/base.dart';
 /// And finally, you can interact with it inside your UI:
 ///
 /// ```dart
-/// Widget build(BuildContext context, ScopedReader watch) {
+/// Widget build(BuildContext context, WidgetReference ref) {
 ///   // rebuild the widget when the todo list changes
-///   List<Todo> todos = watch(todosProvider);
+///   List<Todo> todos = ref.watch(todosProvider);
 ///
 ///   return ListView(
 ///     children: [

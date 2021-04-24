@@ -93,8 +93,8 @@ extension BuildContextX on BuildContext {
   ///
   /// class Example extends ConsumerWidget {
   ///   @override
-  ///   Widget build(BuildContext context, ScopedReader watch) {
-  ///     final Products products = watch(productsProvider);
+  ///   Widget build(BuildContext context, WidgetReference ref) {
+  ///     final Products products = ref.watch(productsProvider);
   ///
   ///     return RefreshIndicator(
   ///       onRefresh: () => context.refresh(productsProvider),

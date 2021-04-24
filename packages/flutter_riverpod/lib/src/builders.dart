@@ -98,12 +98,12 @@ class ChangeNotifierProviderBuilder {
   ///   // ...
   ///
   ///   @override
-  ///   Widget build(BuildContext context, ScopedReader watch) {
+  ///   Widget build(BuildContext context, WidgetReference ref) {
   ///     final locale = Localizations.localeOf(context);
   ///
   ///     // Obtains the title based on the current Locale.
   ///     // Will automatically update the title when the Locale changes.
-  ///     final title = watch(titleFamily(locale));
+  ///     final title = ref.watch(titleFamily(locale));
   ///
   ///     return Text(title);
   ///   }
@@ -120,14 +120,14 @@ class ChangeNotifierProviderBuilder {
   ///   // ...
   ///
   ///   @override
-  ///   Widget build(BuildContext context, ScopedReader watch) {
+  ///   Widget build(BuildContext context, WidgetReference ref) {
   ///     int userId; // Read the user ID from somewhere
   ///
   ///     // Read and potentially fetch the user with id `userId`.
   ///     // When `userId` changes, this will automatically update the UI
   ///     // Similarly, if two widgets tries to read `userFamily` with the same `userId`
   ///     // then the user will be fetched only once.
-  ///     final user = watch(userFamily(userId));
+  ///     final user = ref.watch(userFamily(userId));
   ///
   ///     return user.when(
   ///       data: (user) => Text(user.name),
@@ -165,9 +165,9 @@ class ChangeNotifierProviderBuilder {
   /// The usual:
   ///
   /// ```dart
-  /// Widget build(BuildContext, ScopedReader watch) {
+  /// Widget build(BuildContext, WidgetReference ref) {
   ///   // Error – messagesFamily is not a provider
-  ///   final response = watch(messagesFamily);
+  ///   final response = ref.watch(messagesFamily);
   /// }
   /// ```
   ///
@@ -175,8 +175,8 @@ class ChangeNotifierProviderBuilder {
   /// Instead, we need to pass a parameter to `messagesFamily`:
   ///
   /// ```dart
-  /// Widget build(BuildContext, ScopedReader watch) {
-  ///   final response = watch(messagesFamily('id'));
+  /// Widget build(BuildContext, WidgetReference ref) {
+  ///   final response = ref.watch(messagesFamily('id'));
   /// }
   /// ```
   ///
@@ -186,9 +186,9 @@ class ChangeNotifierProviderBuilder {
   ///
   /// ```dart
   /// @override
-  /// Widget build(BuildContext context, ScopedReader watch) {
-  ///   final frenchTitle = watch(titleFamily(const Locale('fr')));
-  ///   final englishTitle = watch(titleFamily(const Locale('en')));
+  /// Widget build(BuildContext context, WidgetReference ref) {
+  ///   final frenchTitle = ref.watch(titleFamily(const Locale('fr')));
+  ///   final englishTitle = ref.watch(titleFamily(const Locale('en')));
   ///
   ///   return Text('fr: $frenchTitle en: $englishTitle');
   /// }
@@ -245,11 +245,11 @@ class ChangeNotifierProviderBuilder {
   ///   });
   ///
   ///   @override
-  ///   Widget build(BuildContext context, ScopedReader watch) {
+  ///   Widget build(BuildContext context, WidgetReference ref) {
   ///     int userId; // Read the user ID from somewhere
   ///     final locale = Localizations.localeOf(context);
   ///
-  ///     final something = watch(
+  ///     final something = ref.watch(
   ///       exampleProvider(MyParameter(userId: userId, locale: locale)),
   ///     );
   ///   }
@@ -277,11 +277,11 @@ class ChangeNotifierProviderBuilder {
   ///   });
   ///
   ///   @override
-  ///   Widget build(BuildContext context, ScopedReader watch) {
+  ///   Widget build(BuildContext context, WidgetReference ref) {
   ///     int userId; // Read the user ID from somewhere
   ///     final locale = Localizations.localeOf(context);
   ///
-  ///     final something = watch(
+  ///     final something = ref.watch(
   ///       exampleProvider(MyParameter(userId: userId, locale: locale)),
   ///     );
   ///   }
