@@ -34,17 +34,17 @@ Then, when using our `messagesFamily` provider, the syntax is slightly modified.
 The usual syntax will not work anymore:
 
 ```dart
-Widget build(BuildContext context, ScopedReader watch) {
+Widget build(BuildContext context, WidgetReference ref) {
   // Error – messagesFamily is not a provider
-  final response = watch(messagesFamily);
+  final response = ref.watch(messagesFamily);
 }
 ```
 
 Instead, we need to pass a parameter to `messagesFamily`:
 
 ```dart
-Widget build(BuildContext context, ScopedReader watch) {
-  final response = watch(messagesFamily('id'));
+Widget build(BuildContext context, WidgetReference ref) {
+  final response = ref.watch(messagesFamily('id'));
 }
 ```
 
@@ -55,9 +55,9 @@ translations at the same time:
 
 ```dart
 @override
-Widget build(BuildContext context, ScopedReader watch) {
-  final frenchTitle = watch(titleFamily(const Locale('fr')));
-  final englishTitle = watch(titleFamily(const Locale('en')));
+Widget build(BuildContext context, WidgetReference ref) {
+  final frenchTitle = ref.watch(titleFamily(const Locale('fr')));
+  final englishTitle = ref.watch(titleFamily(const Locale('en')));
 
   return Text('fr: $frenchTitle en: $englishTitle');
 }
@@ -130,11 +130,11 @@ final exampleProvider = Provider.autoDispose.family<Something, MyParameter>((ref
 });
 
 @override
-Widget build(BuildContext context, ScopedReader watch) {
+Widget build(BuildContext context, WidgetReference ref) {
   int userId; // Read the user ID from somewhere
   final locale = Localizations.localeOf(context);
 
-  final something = watch(
+  final something = ref.watch(
     exampleProvider(MyParameter(userId: userId, locale: locale)),
   );
 
@@ -166,11 +166,11 @@ final exampleProvider = Provider.family<Something, MyParameter>((ref, myParamete
 });
 
 @override
-Widget build(BuildContext context, ScopedReader watch) {
+Widget build(BuildContext context, WidgetReference ref) {
   int userId; // Read the user ID from somewhere
   final locale = Localizations.localeOf(context);
 
-  final something = watch(
+  final something = ref.watch(
     exampleProvider(MyParameter(userId: userId, locale: locale)),
   );
 

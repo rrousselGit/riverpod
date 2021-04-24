@@ -54,8 +54,8 @@ Long story short:
   ```dart
   class Example extends ConsumerWidget {
     @override
-    Widget build(BuildContext context, ScopedReader watch) {
-      final count = watch(counterProvider);
+    Widget build(BuildContext context, WidgetReference ref) {
+      final count = ref.watch(counterProvider);
       return Text(count.toString());
     }
   }

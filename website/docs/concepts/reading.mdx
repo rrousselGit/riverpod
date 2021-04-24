@@ -39,8 +39,8 @@ When reading this `userProvider`, you can:
 - synchronously read the current state by listening to `userProvider` itself:
 
   ```dart
-  Widget build(BuildContext context, ScopedReader watch) {
-    AsyncValue<User> user = watch(userProvider);
+  Widget build(BuildContext context, WidgetReference ref) {
+    AsyncValue<User> user = ref.watch(userProvider);
 
     return user.when(
       loading: () => const CircularProgressIndicator(),
@@ -53,16 +53,16 @@ When reading this `userProvider`, you can:
 - obtain the associated [Stream], by listening to `userProvider.stream`:
 
   ```dart
-  Widget build(BuildContext context, ScopedReader watch) {
-    Stream<User> user = watch(userProvider.stream);
+  Widget build(BuildContext context, WidgetReference ref) {
+    Stream<User> user = ref.watch(userProvider.stream);
   }
   ```
 
 - obtain a [Future] that resolves with the latest value emitted, by listening to `userProvider.last`:
 
   ```dart
-  Widget build(BuildContext context, ScopedReader watch) {
-    Future<User> user = watch(userProvider.last);
+  Widget build(BuildContext context, WidgetReference ref) {
+    Future<User> user = ref.watch(userProvider.last);
   }
   ```
 
@@ -81,9 +81,9 @@ that allows you to listen to providers.
 ```dart {5}
 class Home extends ConsumerWidget {
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
+  Widget build(BuildContext context, WidgetReference ref) {
     // Listens to the value exposed by counterProvider
-    int count = watch(counterProvider).state;
+    int count = ref.watch(counterProvider).state;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Counter example')),
@@ -123,9 +123,9 @@ class Home extends StatelessWidget {
       body: Center(
         child: Consumer(
           // Rebuild only the Text when counterProvider updates
-          builder: (context, watch, child) {
+          builder: (context, ref, child) {
             // Listens to the value exposed by counterProvider
-            int count = watch(counterProvider).state;
+            int count = ref.watch(counterProvider).state;
             return Text('$count');
           },
         ),
@@ -180,8 +180,8 @@ we may need the object only for the `onPressed` of a [RaisedButton].
 We _could_ use [useProvider]/[Consumer]:
 
 ```dart {2,4}
-Consumer(builder: (context, watch, _) {
-  StateController<int> counter = watch(counterProvider);
+Consumer(builder: (context, ref, _) {
+  StateController<int> counter = ref.watch(counterProvider);
   return RaisedButton(
     onPressed: () => counter.state++,
     child: Text('increment'),
@@ -233,10 +233,10 @@ final counterProvider = StateNotifierProvider((ref) => Counter());
 // ...
 
 @override
-Widget build(BuildContext context, ScopedReader watch) {
+Widget build(BuildContext context, WidgetReference ref) {
   // Obtains Counter without listening to Counter.state.
   // Will not cause the button to rebuild when the counter changes.
-  final Counter counter = watch(counterProvider);
+  final Counter counter = ref.watch(counterProvider);
 
   return RaisedButton(
     onPressed: counter.increment,
