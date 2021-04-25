@@ -158,12 +158,12 @@ class ProviderContainer {
 
   /// Subscribe to this provider.
   ///
-  /// * [mayHaveChanged] will be called the first time that any of the dependency
+  /// * [mayHaveChanged] will be called the first time that any of the dependencies
   ///   of a provider changed.
   ///
   /// * [didChange] will be called after the first [ProviderSubscription.flush]
-  ///   or [ProviderSubscription.read], only if when it is confirmed that the
-  ///   value exposed changed.
+  ///   or [ProviderSubscription.read], only when it is confirmed that the
+  ///   value exposed has changed.
   ///
   /// See also:
   ///
