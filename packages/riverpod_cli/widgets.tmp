@@ -110,15 +110,15 @@ class BasicUseOfCustomHook extends HookConsumerWidget {
   const BasicUseOfCustomHook({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, WidgetReference ref) {
-    useAnotherHook(ref);
+    useAnotherHook();
     return Container();
   }
 }
 
-Object useMyHook(WidgetReference ref) {
+Object useMyHook() {
   return ref.watch(counterProvider);
 }
 
-void useAnotherHook(WidgetReference ref) {
-  useMyHook(ref);
+void useAnotherHook() {
+  useMyHook();
 }

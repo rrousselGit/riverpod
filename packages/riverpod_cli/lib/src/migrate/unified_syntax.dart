@@ -5,6 +5,92 @@ import 'package:pub_semver/pub_semver.dart';
 
 enum ClassType { consumer, hook, stateless, none }
 
+/// Aggregates information needed for the unified syntax change with hooks
+///
+/// Runs before [RiverpodUnifiedSyntaxChangesMigrationSuggestor]
+class RiverpodHooksProviderInfo extends GeneralizingAstVisitor<void>
+    with AstVisitingSuggestor {
+  RiverpodHooksProviderInfo(this.riverpodVersion);
+  final VersionConstraint riverpodVersion;
+  static Map<String, bool> isConsumerHookFunction = {};
+  static Map<String, Set<String>> hookDependencies = {};
+  FunctionDeclaration currentFunction;
+  static bool computedDependencies = false;
+
+  static bool shouldMigrate(String functionName) {
+    _propagateDependencies();
+    return isConsumerHookFunction[functionName];
+  }
+
+  static void _propagateDependencies() {
+    if (computedDependencies) {
+      return;
+    }
+    var changed = true;
+    while (changed) {
+      changed = false;
+      for (final entry in isConsumerHookFunction.entries) {
+        if (entry.value) {
+          for (final dependency in hookDependencies.entries) {
+            if (dependency.value.contains(entry.key) &&
+                !isConsumerHookFunction[dependency.key]) {
+              isConsumerHookFunction[dependency.key] = true;
+              changed = true;
+            }
+          }
+        }
+      }
+    }
+    computedDependencies = true;
+  }
+
+  @override
+  bool shouldResolveAst(FileContext context) => true;
+
+  @override
+  bool shouldSkip(FileContext context) {
+    return riverpodVersion.allowsAny(
+      VersionConstraint.parse('^0.15.0'),
+    );
+  }
+
+  @override
+  void visitFunctionDeclaration(FunctionDeclaration node) {
+    currentFunction = node;
+    isConsumerHookFunction[currentFunction.name.name] = false;
+    hookDependencies[currentFunction.name.name] = {};
+    super.visitFunctionDeclaration(node);
+    currentFunction = null;
+  }
+
+  @override
+  void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
+    final functionName = node.function.toSource();
+    if (functionName.startsWith('use')) {
+      hookDependencies[currentFunction.name.name].add(functionName);
+      if (functionName == 'useProvider') {
+        isConsumerHookFunction[currentFunction.name.name] = true;
+      }
+    }
+    super.visitFunctionExpressionInvocation(node);
+  }
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    final functionName = node.methodName.toSource();
+    if (currentFunction != null) {
+      if (functionName.startsWith('use')) {
+        hookDependencies[currentFunction.name.name].add(functionName);
+        if (functionName == 'useProvider') {
+          hookDependencies[currentFunction.name.name].add(functionName);
+          isConsumerHookFunction[currentFunction.name.name] = true;
+        }
+      }
+    }
+    super.visitMethodInvocation(node);
+  }
+}
+
 /// A suggestor that yields changes to notifier changes
 class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     extends GeneralizingAstVisitor<void> with AstVisitingSuggestor {
@@ -25,7 +111,11 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   ClassType withinClass = ClassType.none;
   ClassDeclaration classDeclaration;
   FormalParameterList params;
+  ConstructorName hookBuilder;
   bool inConsumerBuilder = false;
+  bool inHookBuilder = false;
+  bool lookingForParams = false;
+
   @override
   void visitClassDeclaration(ClassDeclaration node) {
     final name = node.extendsClause.superclass.name.name;
@@ -67,6 +157,17 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           params.parameters[1].offset,
           params.parameters[1].end,
         );
+      } else if (inHookBuilder) {
+        assert(
+          params.parameters.length == 1,
+          'HookBuilders should have a parameter list of length 1, $params',
+        );
+        yieldPatch('HookConsumer', hookBuilder.offset, hookBuilder.end);
+        yieldPatch(
+          ', ref, child',
+          params.parameters.first.end,
+          params.parameters.first.end,
+        );
       } else {
         // In build method
         if (params.parameters.length == 2) {
@@ -91,10 +192,10 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   }
 
   void migrateClass() {
-    if (classDeclaration != null) {
+    if (classDeclaration != null && !inHookBuilder && !inConsumerBuilder) {
       if (withinClass == ClassType.hook) {
         yieldPatch(
-          'ConsumerHookWidget',
+          'HookConsumerWidget',
           classDeclaration.extendsClause.superclass.offset,
           classDeclaration.extendsClause.superclass.end,
         );
@@ -109,53 +210,108 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     }
   }
 
+  void migrateConsumerHookFunctionCall(ArgumentList argumentList) {
+    if (argumentList.arguments.isNotEmpty) {
+      yieldPatch('ref, ', argumentList.arguments.first.offset,
+          argumentList.arguments.first.offset);
+    } else {
+      yieldPatch('ref', argumentList.leftParenthesis.end,
+          argumentList.rightParenthesis.offset);
+    }
+  }
+
+  void migrateFunctionDeclaration(FunctionDeclaration node) {
+    if (node.functionExpression.parameters.parameters.isNotEmpty) {
+      yieldPatch(
+          'WidgetReference ref, ',
+          node.functionExpression.parameters.parameters.first.offset,
+          node.functionExpression.parameters.parameters.first.offset);
+    } else {
+      yieldPatch(
+          'WidgetReference ref',
+          node.functionExpression.parameters.leftParenthesis.end,
+          node.functionExpression.parameters.rightParenthesis.offset);
+    }
+  }
+
   @override
   void visitFunctionExpression(FunctionExpression node) {
-    if (inConsumerBuilder) {
+    if ((inConsumerBuilder || inHookBuilder) && lookingForParams) {
       params = node.parameters;
+      lookingForParams = false;
     }
     super.visitFunctionExpression(node);
   }
 
   @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
-    if (node.staticType.getDisplayString().contains('Consumer')) {
+    final type = node.staticType.getDisplayString();
+    if (type.contains('Consumer')) {
       inConsumerBuilder = true;
+      lookingForParams = true;
+    }
+    if (type.contains('HookBuilder') || type == 'HookBuilder') {
+      inHookBuilder = true;
+      lookingForParams = true;
+      hookBuilder = node.constructorName;
     }
 
     super.visitInstanceCreationExpression(node);
+
     inConsumerBuilder = false;
+    inHookBuilder = false;
   }
 
   @override
   void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
-    if (node.function.toSource() == 'watch' ||
-        node.function.toSource() == 'useProvider') {
+    final functionName = node.function.toSource();
+    if (functionName == 'watch' || functionName == 'useProvider') {
       migrateParams();
       migrateClass();
+
       // watch(provider) => watch(provider.notifier)
       // useProvider(provider) => useProvider(provider.notifier)
       yieldPatch('ref.watch', node.function.offset, node.function.end);
+    } else if (functionName.startsWith('use')) {
+      if (RiverpodHooksProviderInfo.shouldMigrate(functionName)) {
+        migrateConsumerHookFunctionCall(node.argumentList);
+        migrateClass();
+      }
     }
+
     super.visitFunctionExpressionInvocation(node);
   }
 
   @override
+  void visitFunctionDeclaration(FunctionDeclaration node) {
+    final functionName = node.name.name;
+    if (RiverpodHooksProviderInfo.shouldMigrate(functionName)) {
+      migrateFunctionDeclaration(node);
+    }
+    super.visitFunctionDeclaration(node);
+  }
+
+  @override
   void visitMethodInvocation(MethodInvocation node) {
+    final functionName = node.methodName.toSource();
     // ref.read / ref.watch / context.read / context.watch, useProvider
-    if (node.methodName.toSource() == 'watch' ||
-        node.methodName.toSource() == 'useProvider') {
+    if (functionName == 'watch' || functionName == 'useProvider') {
       migrateParams();
       migrateClass();
       yieldPatch('ref.watch', node.offset, node.methodName.end);
-    } else if (node.methodName.toSource() == 'read') {
+    } else if (functionName == 'read') {
       migrateParams();
       migrateClass();
       yieldPatch('ref.read', node.offset, node.methodName.end);
-    } else if (node.methodName.toSource() == 'refresh') {
+    } else if (functionName == 'refresh') {
       migrateParams();
       migrateClass();
       yieldPatch('ref.refresh', node.offset, node.methodName.end);
+    } else if (functionName.startsWith('use')) {
+      if (RiverpodHooksProviderInfo.shouldMigrate(functionName)) {
+        migrateConsumerHookFunctionCall(node.argumentList);
+        migrateClass();
+      }
     }
     super.visitMethodInvocation(node);
   }

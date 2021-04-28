@@ -38,15 +38,18 @@ class MigrateCommand extends Command<void> {
       version = dep.version;
     }
 
-    await runInteractiveCodemod(
+    await runInteractiveCodemodSequence(
       filePathsFromGlob(Glob('**.dart', recursive: true)),
-      aggregate(
-        [
-          RiverpodImportAllMigrationSuggestor(),
-          RiverpodNotifierChangesMigrationSuggestor(version),
-          RiverpodUnifiedSyntaxChangesMigrationSuggestor(version)
-        ],
-      ),
+      [
+        aggregate(
+          [
+            RiverpodImportAllMigrationSuggestor(),
+            RiverpodNotifierChangesMigrationSuggestor(version),
+          ],
+        ),
+        RiverpodHooksProviderInfo(version),
+        RiverpodUnifiedSyntaxChangesMigrationSuggestor(version),
+      ],
       args: argResults.arguments,
     );
 

@@ -83,3 +83,42 @@ class HooksWatch extends HookWidget {
     );
   }
 }
+
+class HooksConsumerWatch extends StatelessWidget {
+  const HooksConsumerWatch({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: HookBuilder(
+        builder: (context) {
+          useProvider(counterProvider);
+          return ElevatedButton(
+            onPressed: () {
+              context.read(counterProvider.notifier);
+              context.read(counterProvider);
+            },
+            child: const Text('Press Me'),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class BasicUseOfCustomHook extends HookWidget {
+  const BasicUseOfCustomHook({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    useAnotherHook();
+    return Container();
+  }
+}
+
+Object useMyHook() {
+  return useProvider(counterProvider);
+}
+
+void useAnotherHook() {
+  useMyHook();
+}

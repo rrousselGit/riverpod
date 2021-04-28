@@ -11,13 +11,18 @@ void main() {
     test('Migration', () async {
       final sourceFile = await fileContextForInput(
           './fixtures/unified_syntax/input/widgets.dart');
-      final expected =
-          File('./fixtures/unified_syntax/golden/widgets.dart').readAsStringSync();
+      final expected = File('./fixtures/unified_syntax/golden/widgets.dart')
+          .readAsStringSync();
 
-      await expectSuggestorGeneratesFormattedPatches(
-        RiverpodUnifiedSyntaxChangesMigrationSuggestor(
-          VersionConstraint.parse('^0.14.0'),
-        ),
+      await expectSuggestorSequenceGeneratesFormattedPatches(
+        [
+          RiverpodHooksProviderInfo(
+            VersionConstraint.parse('^0.14.0'),
+          ),
+          RiverpodUnifiedSyntaxChangesMigrationSuggestor(
+            VersionConstraint.parse('^0.14.0'),
+          ),
+        ],
         sourceFile,
         expected,
       );
@@ -26,13 +31,18 @@ void main() {
     test('Already Migrated', () async {
       final sourceFile = await fileContextForInput(
           './fixtures/unified_syntax/golden/widgets.dart');
-      final expected =
-          File('./fixtures/unified_syntax/golden/widgets.dart').readAsStringSync();
+      final expected = File('./fixtures/unified_syntax/golden/widgets.dart')
+          .readAsStringSync();
 
-      await expectSuggestorGeneratesFormattedPatches(
-        RiverpodUnifiedSyntaxChangesMigrationSuggestor(
-          VersionConstraint.parse('^0.15.0'),
-        ),
+      await expectSuggestorSequenceGeneratesFormattedPatches(
+        [
+          RiverpodHooksProviderInfo(
+            VersionConstraint.parse('^0.15.0'),
+          ),
+          RiverpodUnifiedSyntaxChangesMigrationSuggestor(
+            VersionConstraint.parse('^0.15.0'),
+          ),
+        ],
         sourceFile,
         expected,
       );
