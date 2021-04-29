@@ -487,7 +487,16 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   int _notificationCount = 0;
   int _notifyDidChangeLastNotificationCount = 0;
   bool _debugIsFlushing = false;
+
   bool _dirty = true;
+
+  /// Whether a provider may need to be recomputed
+  ///
+  /// Avoid using. This was exposed for some workarounds and will likely be removed
+  /// in the future.
+  @protected
+  bool get dirty => _dirty;
+
   // initialized to true so that the initial state creation don't notify listeners
   bool _dependencyMayHaveChanged = true;
   // equivalent to _dependencyMayHaveChanged that does not rely on
@@ -887,10 +896,6 @@ abstract class ProviderStateBase<Created, Listened> {
   Listened? _exposedValue;
 
   set exposedValue(Listened? exposedValue) {
-    assert(
-      exposedValue is Listened,
-      'A provider tried to assign `null` to a non-nullable `exposedValue`',
-    );
     assert(() {
       _element._debugMarkWillChange();
       return true;
