@@ -86,7 +86,7 @@ typedef ConsumerBuilder = Widget Function(
 ///   Widget build(BuildContext context) {
 ///     return Scaffold(
 ///       appBar: AppBar(
-///         title: Text(widget.title)
+///         title: Text(title)
 ///       ),
 ///       body: Center(
 ///         child: Column(
@@ -94,7 +94,7 @@ typedef ConsumerBuilder = Widget Function(
 ///           children: <Widget>[
 ///             Text('You have pushed the button this many times:'),
 ///             Consumer(
-///               builder: (BuildContext context, ScopedReader watch, Widget child) {
+///               builder: (BuildContext context, ScopedReader watch, Widget? child) {
 ///                 // This builder will only get called when the counterProvider
 ///                 // is updated.
 ///                 final count = watch(counterProvider).state;
@@ -103,7 +103,7 @@ typedef ConsumerBuilder = Widget Function(
 ///                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 ///                   children: <Widget>[
 ///                     Text('$count'),
-///                     child,
+///                     child!,
 ///                   ],
 ///                 );
 ///               },
