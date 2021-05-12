@@ -103,7 +103,7 @@ typedef ConsumerBuilder = Widget Function(
 ///                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 ///                   children: <Widget>[
 ///                     Text('$count'),
-///                     if (child != null) child,
+///                     child!,
 ///                   ],
 ///                 );
 ///               },
