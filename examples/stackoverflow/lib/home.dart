@@ -19,7 +19,7 @@ abstract class QuestionsResponse with _$QuestionsResponse {
     required int total,
   }) = _QuestionsResponse;
 
-  factory QuestionsResponse.fromJson(Map<String, Object> json) =>
+  factory QuestionsResponse.fromJson(Map<String, Object?> json) =>
       _$QuestionsResponseFromJson(json);
 }
 
@@ -75,10 +75,10 @@ final paginatedQuestionsProvider = FutureProvider.autoDispose
 
   final response = await ref
       .watch(client)
-      .getUri<Map<String, dynamic>>(uri, cancelToken: cancelToken);
+      .getUri<Map<String, Object?>>(uri, cancelToken: cancelToken);
 
   final parsed =
-      QuestionsResponse.fromJson(Map<String, Object>.from(response.data!));
+      QuestionsResponse.fromJson(response.data!);
   final page = parsed.copyWith(
     items: parsed.items.map((e) {
       final document = parse(e.body);
