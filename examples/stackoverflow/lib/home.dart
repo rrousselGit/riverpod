@@ -77,8 +77,7 @@ final paginatedQuestionsProvider = FutureProvider.autoDispose
       .watch(client)
       .getUri<Map<String, Object?>>(uri, cancelToken: cancelToken);
 
-  final parsed =
-      QuestionsResponse.fromJson(response.data!);
+  final parsed = QuestionsResponse.fromJson(response.data!);
   final page = parsed.copyWith(
     items: parsed.items.map((e) {
       final document = parse(e.body);
