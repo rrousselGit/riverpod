@@ -16,7 +16,7 @@ part 'home.freezed.dart';
 const kCharactersPageLimit = 50;
 
 @freezed
-abstract class CharacterPagination with _$CharacterPagination {
+class CharacterPagination with _$CharacterPagination {
   factory CharacterPagination({
     required int page,
     String? name,
@@ -56,7 +56,7 @@ final charactersCount =
 });
 
 @freezed
-abstract class CharacterOffset with _$CharacterOffset {
+class CharacterOffset with _$CharacterOffset {
   factory CharacterOffset({
     required int offset,
     @Default('') String name,

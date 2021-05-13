@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -54,14 +56,17 @@ void main() {
     final provider = StateProvider((ref) => 0);
     final container = ProviderContainer();
 
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: Consumer(builder: (context, watch, _) {
-          watch(provider).state++;
-          return Container();
-        }),
+    await runZonedGuarded(
+      () => tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: Consumer(builder: (context, watch, _) {
+            watch(provider).state++;
+            return Container();
+          }),
+        ),
       ),
+      (err, stack) {},
     );
 
     FlutterError.onError = onError;
