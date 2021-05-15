@@ -112,6 +112,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   ClassType withinClass = ClassType.none;
   ClassDeclaration classDeclaration;
   FormalParameterList params;
+  FunctionBody functionBody;
   ConstructorName hookBuilder;
   bool inConsumerBuilder = false;
   bool inHookBuilder = false;
@@ -148,6 +149,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   void visitMethodDeclaration(MethodDeclaration node) {
     if (node.name.name == 'build') {
       params = node.parameters;
+      functionBody = node.body;
       if (withinClass == ClassType.consumer) {
         // Consumer should be migrated regardless if providers are watched / read or not
         migrateParams();
@@ -271,6 +273,36 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     super.visitFunctionExpression(node);
   }
 
+  void migrateListener(InstanceCreationExpression node) {
+    final provider = node.argumentList.arguments.firstWhere((element) =>
+            element is NamedExpression && element.name.label.name == 'provider')
+        as NamedExpression;
+    final onChange = node.argumentList.arguments.firstWhere((element) =>
+            element is NamedExpression && element.name.label.name == 'onChange')
+        as NamedExpression;
+    final fn = functionBody;
+    final providerSource = context.sourceText
+        .substring(provider.expression.offset, provider.expression.end);
+    final onChangeSource = context.sourceText
+        .substring(onChange.expression.offset, onChange.expression.end);
+
+    final child = node.argumentList.arguments.firstWhere((element) =>
+            element is NamedExpression && element.name.label.name == 'child')
+        as NamedExpression;
+    final childSource = context.sourceText
+        .substring(child.expression.offset, child.expression.end);
+    if (fn is BlockFunctionBody) {
+      yieldPatch('ref.listen($providerSource, $onChangeSource);',
+          fn.block.leftBracket.end, fn.block.leftBracket.end);
+    } else if (fn is ExpressionFunctionBody) {
+      yieldPatch('{\nref.listen($providerSource, $onChangeSource);return ',
+          fn.offset, fn.expression.offset);
+      yieldPatch(';}', fn.endToken.offset, fn.endToken.end);
+    }
+
+    yieldPatch(childSource, node.offset, node.end);
+  }
+
   @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
     final type = node.staticType.getDisplayString();
@@ -282,6 +314,11 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       inHookBuilder = true;
       lookingForParams = true;
       hookBuilder = node.constructorName;
+    }
+    if (type.contains('ProviderListener')) {
+      migrateListener(node);
+      migrateParams();
+      migrateClass();
     }
 
     super.visitInstanceCreationExpression(node);

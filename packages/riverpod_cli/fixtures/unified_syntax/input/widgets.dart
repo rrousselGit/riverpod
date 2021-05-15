@@ -43,6 +43,36 @@ class StatelessRead extends StatelessWidget {
   }
 }
 
+class StatelessListen extends StatelessWidget {
+  const StatelessListen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ProviderListener(
+      provider: counterProvider,
+      onChange: (context, i) {
+        // ignore: avoid_print
+        print(i);
+      },
+      child: const Text('Counter'),
+    );
+  }
+}
+
+class StatelessExpressionListen extends StatelessWidget {
+  const StatelessExpressionListen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => ProviderListener(
+        provider: counterProvider,
+        onChange: (context, i) {
+          // ignore: avoid_print
+          print(i);
+        },
+        child: const Text('Counter'),
+      );
+}
+
 class StatefulConsumer extends StatefulWidget {
   const StatefulConsumer({Key? key}) : super(key: key);
 

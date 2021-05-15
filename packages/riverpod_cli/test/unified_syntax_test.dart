@@ -22,6 +22,9 @@ void main() {
           RiverpodUnifiedSyntaxChangesMigrationSuggestor(
             VersionConstraint.parse('^0.14.0'),
           ),
+          // RiverpodUnifiedSyntaxChangesListenerMigrationRemoverSuggestor(
+          //   VersionConstraint.parse('^0.14.0'),
+          // ),
         ],
         sourceFile,
         expected,
