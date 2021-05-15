@@ -54,13 +54,39 @@ class _StatefulConsumerState extends State<StatefulConsumer> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Consumer(
-        builder: (context, watch, child) {
-          return Text('${watch(counterProvider)}');
+      child: GestureDetector(
+        onTap: () {
+          context.refresh(counterProvider);
         },
+        child: Consumer(
+          builder: (context, watch, child) {
+            return Text('${watch(counterProvider)}');
+          },
+        ),
       ),
     );
   }
+}
+
+class _StatefulConsumerState2 extends State<StatefulConsumer2> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: GestureDetector(
+        onTap: () {
+          context.refresh(counterProvider);
+        },
+        child: const Text('Hi'),
+      ),
+    );
+  }
+}
+
+class StatefulConsumer2 extends StatefulWidget {
+  const StatefulConsumer2({Key? key}) : super(key: key);
+
+  @override
+  _StatefulConsumerState2 createState() => _StatefulConsumerState2();
 }
 
 class HooksWatch extends HookWidget {

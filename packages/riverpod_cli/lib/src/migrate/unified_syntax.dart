@@ -1,9 +1,10 @@
 // ignore: deprecated_member_use
 import 'package:analyzer/analyzer.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:codemod/codemod.dart';
 import 'package:pub_semver/pub_semver.dart';
 
-enum ClassType { consumer, hook, stateless, none }
+enum ClassType { consumer, hook, stateless, stateful, none }
 
 /// Aggregates information needed for the unified syntax change with hooks
 ///
@@ -115,6 +116,8 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   bool inConsumerBuilder = false;
   bool inHookBuilder = false;
   bool lookingForParams = false;
+  final Map<String, ClassDeclaration> statefulDeclarations = {};
+  final Set<String> statefulNeedsMigration = {};
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
@@ -122,6 +125,8 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     classDeclaration = node;
     if (name == 'StatelessWidget') {
       withinClass = ClassType.stateless;
+    } else if (name == 'State') {
+      withinClass = ClassType.stateful;
     } else if (name == 'ConsumerWidget') {
       withinClass = ClassType.consumer;
     } else if (name == 'HookWidget') {
@@ -129,6 +134,12 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     } else {
       withinClass = ClassType.none;
       classDeclaration = null;
+    }
+    if (name == 'StatefulWidget') {
+      statefulDeclarations[node.name.name] = node;
+      if (statefulNeedsMigration.contains(node.name.name)) {
+        migrateStateful(node.name.name);
+      }
     }
     super.visitClassDeclaration(node);
   }
@@ -168,7 +179,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           params.parameters.first.end,
           params.parameters.first.end,
         );
-      } else {
+      } else if (withinClass != ClassType.stateful) {
         // In build method
         if (params.parameters.length == 2) {
           // Consumer
@@ -205,6 +216,23 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           classDeclaration.extendsClause.superclass.offset,
           classDeclaration.extendsClause.superclass.end,
         );
+      } else if (withinClass == ClassType.stateful) {
+        if (classDeclaration.withClause == null) {
+          yieldPatch(
+            ' with ConsumerStateMixin',
+            classDeclaration.extendsClause.superclass.end,
+            classDeclaration.extendsClause.superclass.end,
+          );
+        } else {
+          yieldPatch(
+            ', ConsumerStateMixin',
+            classDeclaration.withClause.mixinTypes.last.end,
+            classDeclaration.withClause.mixinTypes.last.end,
+          );
+        }
+        migrateStateful(classDeclaration
+            .extendsClause.superclass.typeArguments.arguments.first.type
+            .getDisplayString());
       }
       classDeclaration = null;
     }
@@ -314,5 +342,17 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       }
     }
     super.visitMethodInvocation(node);
+  }
+
+  void migrateStateful(String statefulName) {
+    final statefulDeclaration = statefulDeclarations[statefulName];
+    if (statefulDeclaration != null) {
+      yieldPatch(
+          'ConsumerStatefulWidget',
+          statefulDeclaration.extendsClause.superclass.offset,
+          statefulDeclaration.extendsClause.superclass.end);
+    } else {
+      statefulNeedsMigration.add(statefulName);
+    }
   }
 }

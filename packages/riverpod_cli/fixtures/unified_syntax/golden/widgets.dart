@@ -43,24 +43,52 @@ class StatelessRead extends ConsumerWidget {
   }
 }
 
-class StatefulConsumer extends StatefulWidget {
+class StatefulConsumer extends ConsumerStatefulWidget {
   const StatefulConsumer({Key? key}) : super(key: key);
 
   @override
   _StatefulConsumerState createState() => _StatefulConsumerState();
 }
 
-class _StatefulConsumerState extends State<StatefulConsumer> {
+class _StatefulConsumerState extends State<StatefulConsumer>
+    with ConsumerStateMixin {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Consumer(
-        builder: (context, ref, child) {
-          return Text('${ref.watch(counterProvider)}');
+      child: GestureDetector(
+        onTap: () {
+          ref.refresh(counterProvider);
         },
+        child: Consumer(
+          builder: (context, ref, child) {
+            return Text('${ref.watch(counterProvider)}');
+          },
+        ),
       ),
     );
   }
+}
+
+class _StatefulConsumerState2 extends State<StatefulConsumer2>
+    with ConsumerStateMixin {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: GestureDetector(
+        onTap: () {
+          ref.refresh(counterProvider);
+        },
+        child: const Text('Hi'),
+      ),
+    );
+  }
+}
+
+class StatefulConsumer2 extends ConsumerStatefulWidget {
+  const StatefulConsumer2({Key? key}) : super(key: key);
+
+  @override
+  _StatefulConsumerState2 createState() => _StatefulConsumerState2();
 }
 
 class HooksWatch extends HookConsumerWidget {
