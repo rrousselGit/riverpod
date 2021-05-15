@@ -1,3 +1,7 @@
+# 0.14.1
+
+Bump `flutter_hooks` version
+
 # 0.14.0+3
 
 Removed an assert that could cause issues when an application is partially migrated to null safety.
