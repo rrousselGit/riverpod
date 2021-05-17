@@ -14,6 +14,9 @@ analyzer:
 
 linter:
   rules:
+    # Personal preference. I prefer "if (bool) return;" over having it in multiple lines
+    always_put_control_body_on_new_line: false
+
     # Personal preference. I don't find it more readable
     cascade_invocations: false
 

@@ -44,7 +44,8 @@ class ProviderContainer {
     List<ProviderObserver>? observers,
   })  : _parent = parent,
         _localObservers = observers,
-        _root = parent?._root ?? parent {
+        _root = parent?._root ?? parent,
+        _scheduler = parent?._root?._scheduler ?? _ProviderScheduler() {
     assert(() {
       _debugId = '${_debugNextId++}';
       RiverpodBinding.debugInstance.containers = {
@@ -84,6 +85,9 @@ class ProviderContainer {
     }
   }
 
+  /// The object that handles when providers are refreshed and disposed.
+  final _ProviderScheduler _scheduler;
+
   late final String _debugId;
 
   /// A unique ID for this object, used by the devtool to differentiate two [ProviderContainer].
@@ -115,6 +119,11 @@ class ProviderContainer {
   final _stateReaders = HashMap<ProviderBase, ProviderElement>();
 
   final List<ProviderObserver>? _localObservers;
+
+  /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
+  Future<void> pump() async {
+    return _scheduler._pendingFuture;
+  }
 
   Iterable<ProviderObserver> get _observers sync* {
     final iterable = _root == null ? _localObservers : _root!._localObservers;
@@ -151,19 +160,15 @@ class ProviderContainer {
     ProviderBase<Object?, Result> provider,
   ) {
     final element = readProviderElement(provider);
-    element.flush();
+    element._maybeRebuildState();
+
+    // In case `read` was called on a provider that has no listener
     element.mayNeedDispose();
+
     return element.getExposedValue();
   }
 
   /// Subscribe to this provider.
-  ///
-  /// * [mayHaveChanged] will be called the first time that any of the dependency
-  ///   of a provider changed.
-  ///
-  /// * [didChange] will be called after the first [ProviderSubscription.flush]
-  ///   or [ProviderSubscription.read], only if when it is confirmed that the
-  ///   value exposed changed.
   ///
   /// See also:
   ///
@@ -171,25 +176,41 @@ class ProviderContainer {
   ///   closing the subscription.
   /// - [ProviderReference.watch], which is an easier way for providers to listen
   ///   to another provider.
-  ProviderSubscription<Result> listen<Result>(
-    ProviderListenable<Result> provider, {
-    void Function(ProviderSubscription<Result> sub)? mayHaveChanged,
-    void Function(ProviderSubscription<Result> sub)? didChange,
+  ProviderSubscription<Listened> listen<Listened>(
+    ProviderListenable<Listened> provider,
+    void Function(Listened value) listener, {
+    bool fireImmediately = true,
   }) {
-    if (provider is ProviderBase<Object?, Result>) {
-      return readProviderElement(provider).listen(
-        mayHaveChanged: mayHaveChanged,
-        didChange: didChange,
+    if (provider is ProviderBase<Object?, Listened>) {
+      return _listenProvider(
+        provider,
+        listener,
+        fireImmediately: fireImmediately,
       );
-    } else if (provider is ProviderSelector<Object?, Result>) {
-      return provider._listen(
-        this,
-        mayHaveChanged: mayHaveChanged,
-        didChange: didChange,
-      );
-    } else {
+    }
+    // TODO implement selectors
+    else {
       throw UnsupportedError('Unknown ProviderListenable $provider');
     }
+  }
+
+  ProviderSubscription<Listened> _listenProvider<Listened>(
+    ProviderBase<Object?, Listened> provider,
+    void Function(Listened value) listener, {
+    required bool fireImmediately,
+  }) {
+    final element = readProviderElement(provider);
+
+    // TODO(rrousselGit) add fireImmediately parameter
+    // TODO(rrousselGit) add onError parameter
+    // TODO(rrousselGit) test that if the provider threw immediately, the listen call completes corretly
+    if (fireImmediately) {
+      listener(element.getExposedValue());
+    }
+
+    element._listeners.add(listener);
+
+    return ProviderSubscription._(element, listener);
   }
 
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
@@ -200,11 +221,10 @@ class ProviderContainer {
     final element = (_root ?? this)._stateReaders[provider];
 
     if (element == null) {
-      return readProviderElement(provider).state.createdValue;
+      return readProviderElement(provider).getExposedValue() as Created;
     } else {
       element.markMustRecomputeState();
-      element.flush();
-      return element.state.createdValue as Created;
+      return element.getExposedValue() as Created;
     }
   }
 
@@ -349,7 +369,7 @@ class ProviderContainer {
       }
     }) as ProviderElement<Created, Listened>;
 
-    return element..flush();
+    return element;
   }
 
   /// Release all the resources associated with this [ProviderContainer].
@@ -377,76 +397,63 @@ class ProviderContainer {
 
     _disposed = true;
 
-    for (final state in _visitStatesInOrder().toList().reversed) {
-      state.dispose();
+    // Using a set to deduplicate elements
+    final allElementsInOrder = <ProviderElement>{};
+    _visitStatesInOrder(allElementsInOrder.add);
+
+    for (final element in allElementsInOrder.toList(growable: false).reversed) {
+      element.dispose();
     }
   }
 
   /// Visit all nodes of the graph at most once, from roots to leaves.
   ///
-  /// This is a breadth-first traversal algorithm, that removes duplicate branches.
+  /// This is a breadth-first traversal algorithm, that does **not** remove duplicates,
+  /// so it is possible for the same element to be visited multiple times.
   ///
-  /// It is O(N log N) with N the number of providers currently alive.
-  Iterable<ProviderElement> _visitStatesInOrder() sync* {
-    final visitedNodes = HashSet<ProviderElement>();
-    final queue = DoubleLinkedQueue<ProviderElement>();
+  /// The visitor can return `true` if it wants to visit the dependents of that
+  /// element too. Otherwise it can return false.
+  void _visitStatesInOrder(
+    bool Function(ProviderElement element) visitor,
+  ) {
+    void visitElement(ProviderElement element) {
+      if (visitor(element)) {
+        element._dependencies.keys.forEach(visitElement);
+      }
+    }
 
+    // visit roots first
     for (final element in _stateReaders.values) {
-      if (element._subscriptions.keys
-          .where((e) => e._container == this)
-          .isEmpty) {
-        queue.add(element);
-      }
-    }
-
-    while (queue.isNotEmpty) {
-      final element = queue.removeFirst();
-
-      if (!visitedNodes.add(element)) {
-        // Already visited
-        continue;
-      }
-
-      yield element;
-
-      if (element._dependents != null) {
-        for (final dependent in element._dependents!) {
-          if (dependent._container == this &&
-              // All the parents of a node must have been visited before a node is visited
-              dependent._subscriptions.keys.every((e) {
-                return e._container != this || visitedNodes.contains(e);
-              })) {
-            queue.add(dependent);
-          }
-        }
+      if (element._dependencies.isEmpty) {
+        visitElement(element);
       }
     }
   }
 
-  /// The states of the providers associated to this [ProviderContainer], sorted
-  /// in order of dependency.
-  List<ProviderElement> get debugProviderElements {
-    late List<ProviderElement> result;
-    assert(() {
-      result = _visitStatesInOrder().toList();
-      return true;
-    }(), '');
-    return result;
-  }
+  // /// The states of the providers associated to this [ProviderContainer], sorted
+  // /// in order of dependency.
+  // List<ProviderElement> get debugProviderElements {
+  //   late List<ProviderElement> result;
+  //   assert(() {
+  //     result = _visitStatesInOrder().toList();
+  //     return true;
+  //   }(), '');
+  //   return result;
+  // }
 
-  /// The value exposed by all providers currently alive.
-  Map<ProviderBase, Object?> get debugProviderValues {
-    late Map<ProviderBase, Object?> res;
-    assert(() {
-      res = {
-        for (final entry in _stateReaders.entries)
-          entry.key: entry.value.state.exposedValue,
-      };
+  // /// The value exposed by all providers currently alive.
+  // Map<ProviderBase, Object?> get debugProviderValues {
+  //   late Map<ProviderBase, Object?> res;
+  //   assert(() {
+  //     res = {
+  //       for (final entry in _stateReaders.entries)
+  //         entry.key: entry.value.state.exposedValue,
+  //     };
 
-      return true;
-    }(), '');
-    return res;
-  }
+  //     return true;
+  //   }(), '');
+  //   return res;
+  // }
 }
 
 /// An object that listens to the changes of a [ProviderContainer].

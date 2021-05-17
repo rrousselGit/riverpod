@@ -10,18 +10,44 @@ class Counter extends StateNotifier<int> {
   void increment() => state++;
 }
 
+ProviderContainer createContainer({
+  ProviderContainer? parent,
+  List<Override> overrides = const [],
+  List<ProviderObserver>? observers,
+}) {
+  final container = ProviderContainer(
+    parent: parent,
+    overrides: overrides,
+    observers: observers,
+  );
+  addTearDown(container.dispose);
+  return container;
+}
+
 List<Object> errorsOf(void Function() cb) {
   final errors = <Object>[];
   runZonedGuarded(cb, (err, _) => errors.add(err));
   return [...errors];
 }
 
-class MayHaveChangedMock<T> extends Mock {
-  void call(ProviderSubscription<T>? sub);
+// class MayHaveChangedMock<T> extends Mock {
+//   void call(ProviderSubscription<T>? sub);
+// }
+
+// class DidChangedMock<T> extends Mock {
+//   void call(ProviderSubscription<T>? sub);
+// }
+
+class OnBuildMock extends Mock {
+  void call();
 }
 
-class DidChangedMock<T> extends Mock {
-  void call(ProviderSubscription<T>? sub);
+class OnDisposeMock extends Mock {
+  void call();
+}
+
+class Listener<T> extends Mock {
+  void call(T value);
 }
 
 typedef VerifyOnly = VerificationResult Function<T>(
@@ -44,34 +70,6 @@ VerifyOnly get verifyOnly {
     verifyNoMoreInteractions(mock);
     return result;
   };
-}
-
-extension Legacy<T> on RootProvider<Object?, T> {
-  void Function() watchOwner(
-    ProviderContainer container,
-    void Function(T value) listener,
-  ) {
-    final sub = container.listen<T>(
-      this,
-      mayHaveChanged: (sub) => listener(sub.read()),
-    );
-    listener(sub.read());
-    return sub.close;
-  }
-
-  ProviderSubscription<T> addLazyListener(
-    ProviderContainer container, {
-    required void Function() mayHaveChanged,
-    required void Function(T value) onChange,
-  }) {
-    final sub = container.listen<T>(
-      this,
-      mayHaveChanged: (sub) => mayHaveChanged(),
-      didChange: (sub) => onChange(sub.read()),
-    );
-    onChange(sub.read());
-    return sub;
-  }
 }
 
 // Copied from Flutter

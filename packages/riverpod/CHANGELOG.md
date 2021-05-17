@@ -1,3 +1,11 @@
+# [Unreleased]
+
+- `ref.onDispose` now calls the dispose function as soon as one of the provider's dependency
+  is known to have changed
+- Providers no-longer wait until their next read to recompute their state if one of their dependency changed and they have listeners.
+- Added `ProviderContainer.pump`, an utility to easily "await" until providers notify their
+  listeners or are disposed.
+
 # 0.14.0+1
 
 - Re-added `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that were unvoluntarily removed.

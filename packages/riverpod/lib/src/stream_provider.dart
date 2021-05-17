@@ -24,7 +24,7 @@ mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
             data: controller.add,
             loading: () {
               if (lastValue != null && lastValue is! AsyncLoading) {
-                ref.markMustRecomputeState();
+                // ref.markMustRecomputeState();
               }
             },
             error: controller.addError,
@@ -263,6 +263,8 @@ Future<T> _readLast<T>(
   ProviderElement ref,
   _StreamProviderMixin<T> provider,
 ) {
+  // TODO(rrousselGit): refactor to not use `ref.watch(provider)` as this will cause onDispose
+  // which throws an uncaught "the provider was disposed but not value emitted"
   return ref.watch(provider).when(
         data: (value) => Future.value(value),
         loading: () {
@@ -293,6 +295,7 @@ Future<T> _readLast<T>(
             sub.cancel();
             if (!completer.isCompleted) {
               completer.completeError(
+                // TODO(rrousselGit): improve error message
                 StateError(
                   'The provider was disposed the stream could emit a value',
                 ),

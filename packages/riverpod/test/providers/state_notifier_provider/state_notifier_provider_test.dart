@@ -2,7 +2,7 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import '../utils.dart';
+import '../../utils.dart';
 
 void main() {
   test('StateNotifierFamily override', () {
@@ -69,6 +69,7 @@ void main() {
       return notifier;
     });
     final container = ProviderContainer();
+    addTearDown(container.dispose);
 
     expect(container.read(provider.notifier), notifier);
     expect(notifier.mounted, isTrue);
@@ -87,24 +88,17 @@ void main() {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
-    final sub = provider.notifier.addLazyListener(
-      container,
-      mayHaveChanged: () {},
-      onChange: listener,
-    );
+    container.listen(provider.notifier, listener);
 
-    verify(listener(argThat(isA<TestNotifier>()))).called(1);
-    verifyNoMoreInteractions(listener);
+    verifyOnly(listener, listener(argThat(isA<TestNotifier>())));
 
     notifier.increment();
 
-    verifyNoMoreInteractions(listener);
-    sub.read();
+    await container.pump();
 
     verifyNoMoreInteractions(listener);
 
     container.dispose();
-    await Future.value(null);
 
     verifyNoMoreInteractions(listener);
   });
@@ -117,29 +111,20 @@ void main() {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
-    final sub = provider.addLazyListener(
-      container,
-      mayHaveChanged: () {},
-      onChange: listener,
-    );
+    container.listen(provider, listener);
 
-    verify(listener(0)).called(1);
-    verifyNoMoreInteractions(listener);
+    verifyOnly(listener, listener(0));
 
     container.read(provider.notifier).increment();
 
-    verifyNoMoreInteractions(listener);
-    sub.read();
-    verify(listener(1)).called(1);
-    verifyNoMoreInteractions(listener);
+    verifyOnly(listener, listener(1));
 
     container.dispose();
-    await Future.value(null);
 
     verifyNoMoreInteractions(listener);
   });
 
-  test('.notifier obtains the controller without listening to it', () {
+  test('.notifier obtains the controller without listening to it', () async {
     final dep = StateProvider((ref) => 0);
     final notifier = TestNotifier();
     final notifier2 = TestNotifier();
@@ -152,24 +137,26 @@ void main() {
     var callCount = 0;
     final sub = container.listen(
       provider.notifier,
-      didChange: (_) => callCount++,
+      (_) => callCount++,
     );
 
     expect(sub.read(), notifier);
-    expect(callCount, 0);
+    expect(callCount, 1);
 
     notifier.increment();
 
-    sub.flush();
-    expect(callCount, 0);
+    await container.pump();
+
+    expect(callCount, 1);
 
     container.read(dep).state++;
 
     expect(sub.read(), notifier2);
 
-    sub.flush();
+    await container.pump();
+
     expect(sub.read(), notifier2);
-    expect(callCount, 1);
+    expect(callCount, 2);
   });
 
   test(
@@ -186,25 +173,22 @@ void main() {
     addTearDown(container.dispose);
     final listener = ListenerMock();
 
-    final sub = container.listen<int>(
-      provider,
-      didChange: (sub) => listener(sub.read()),
-    );
+    container.listen<int>(provider, listener);
 
-    expect(sub.read(), 42);
+    verifyOnly(listener, listener(42));
     expect(container.read(provider.notifier), notifier);
     expect(notifier.hasListeners, true);
 
     notifier.increment();
 
-    sub.flush();
+    await container.pump();
     verifyOnly(listener, listener(43));
 
     container.updateOverrides([
       provider.overrideWithValue(notifier2),
     ]);
 
-    sub.flush();
+    await container.pump();
     verifyOnly(listener, listener(21));
     expect(notifier.hasListeners, false);
     expect(notifier.mounted, true);
@@ -212,11 +196,11 @@ void main() {
 
     notifier2.increment();
 
-    sub.flush();
+    await container.pump();
     verifyOnly(listener, listener(22));
   });
 
-  test('overrideWithProvider preserves the state accross update', () {
+  test('overrideWithProvider preserves the state accross update', () async {
     final provider = StateNotifierProvider<TestNotifier, int>((_) {
       return TestNotifier();
     });
@@ -232,18 +216,15 @@ void main() {
     addTearDown(container.dispose);
     final listener = ListenerMock();
 
-    final sub = container.listen<int>(
-      provider,
-      didChange: (sub) => listener(sub.read()),
-    );
+    container.listen<int>(provider, listener);
 
-    expect(sub.read(), 42);
+    verifyOnly(listener, listener(42));
     expect(container.read(provider.notifier), notifier);
     expect(notifier.hasListeners, true);
 
     notifier.increment();
 
-    sub.flush();
+    await container.pump();
     verifyOnly(listener, listener(43));
 
     container.updateOverrides([
@@ -254,14 +235,14 @@ void main() {
       ),
     ]);
 
-    sub.flush();
+    await container.pump();
     expect(container.read(provider.notifier), notifier);
     expect(notifier2.hasListeners, false);
     verifyNoMoreInteractions(listener);
 
     notifier.increment();
 
-    sub.flush();
+    await container.pump();
     expect(container.read(provider.notifier), notifier);
     verifyOnly(listener, listener(44));
     expect(notifier.mounted, true);

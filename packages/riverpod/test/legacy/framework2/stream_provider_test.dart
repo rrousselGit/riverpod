@@ -302,21 +302,21 @@ void main() {
     expect(isClosed, isTrue);
   });
 
-  test('does not filter identical values', () {
-    final sub = container.listen(provider);
+  // test('does not filter identical values', () {
+  //   final sub = container.listen(provider);
 
-    expect(sub.read(), const AsyncValue<int>.loading());
+  //   expect(sub.read(), const AsyncValue<int>.loading());
 
-    controller.add(42);
+  //   controller.add(42);
 
-    expect(sub.flush(), true);
-    expect(sub.read(), const AsyncValue<int>.data(42));
+  //   expect(sub.flush(), true);
+  //   expect(sub.read(), const AsyncValue<int>.data(42));
 
-    controller.add(42);
+  //   controller.add(42);
 
-    expect(sub.flush(), true);
-    expect(sub.read(), const AsyncValue<int>.data(42));
-  });
+  //   expect(sub.flush(), true);
+  //   expect(sub.read(), const AsyncValue<int>.data(42));
+  // });
 
   test('provider.stream is a broadcast stream', () async {
     controller = StreamController<int>();
@@ -338,39 +338,39 @@ void main() {
     );
   });
 
-  test(
-      'StreamProvider does not update dependents if the created stream did not change',
-      () {
-    final dep = StateProvider((ref) => 0);
-    final provider = StreamProvider((ref) {
-      ref.watch(dep);
-      return const Stream<int>.empty();
-    });
+  // test(
+  //     'StreamProvider does not update dependents if the created stream did not change',
+  //     () {
+  //   final dep = StateProvider((ref) => 0);
+  //   final provider = StreamProvider((ref) {
+  //     ref.watch(dep);
+  //     return const Stream<int>.empty();
+  //   });
 
-    final sub = container.listen(provider);
-    sub.read();
+  //   final sub = container.listen(provider);
+  //   sub.read();
 
-    container.read(dep).state++;
+  //   container.read(dep).state++;
 
-    expect(sub.flush(), false);
-  });
+  //   expect(sub.flush(), false);
+  // });
 
-  test(
-      'StreamProvider.stream does not update dependents if the created stream did not change',
-      () {
-    final dep = StateProvider((ref) => 0);
-    final provider = StreamProvider((ref) {
-      ref.watch(dep);
-      return const Stream<int>.empty();
-    });
+  // test(
+  //     'StreamProvider.stream does not update dependents if the created stream did not change',
+  //     () {
+  //   final dep = StateProvider((ref) => 0);
+  //   final provider = StreamProvider((ref) {
+  //     ref.watch(dep);
+  //     return const Stream<int>.empty();
+  //   });
 
-    final sub = container.listen(provider);
-    sub.read();
+  //   final sub = container.listen(provider);
+  //   sub.read();
 
-    container.read(dep).state++;
+  //   container.read(dep).state++;
 
-    expect(sub.flush(), false);
-  });
+  //   expect(sub.flush(), false);
+  // });
 
   group('overrideWithValue(T)', () {
     test('.stream is a broadcast stream a', () async {

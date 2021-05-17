@@ -2,7 +2,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/provider.dart';
 import 'package:test/test.dart';
 
-import 'matchers.dart';
+import '../matchers.dart';
 
 void main() {
   late PostEventSpy spy;

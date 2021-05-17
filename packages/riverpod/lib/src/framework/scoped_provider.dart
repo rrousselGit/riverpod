@@ -152,7 +152,8 @@ class _ScopedProviderElement<T> extends AutoDisposeProviderElement<T, T> {
   @override
   void update(ProviderBase<T, T> newProvider) {
     super.update(newProvider);
-    markMustRecomputeState();
+    // TODO(rrousselGit) compare previous and new state
+    // markMustRecomputeState();
   }
 }
 

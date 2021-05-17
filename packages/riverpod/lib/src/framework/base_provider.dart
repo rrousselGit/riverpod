@@ -160,14 +160,14 @@ abstract class RootProvider<Created, Listened>
   ///   int get age => _age;
   ///   set age(int age) {
   ///     _age = age;
-  ///     notifyListeners();
+  ///     _notifyListeners();
   ///   }
   ///
   ///   String _name = '';
   ///   String get name => _name;
   ///   set name(String name) {
   ///     _name = name;
-  ///     notifyListeners();
+  ///     _notifyListeners();
   ///   }
   /// }
   ///
@@ -236,20 +236,31 @@ class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
 
   /// The selector applied
   final Output Function(Input) selector;
+}
 
-  SelectorSubscription<Input, Output> _listen(
-    ProviderContainer container, {
-    void Function(SelectorSubscription<Input, Output> sub)? mayHaveChanged,
-    void Function(SelectorSubscription<Input, Output> sub)? didChange,
-  }) {
-    return SelectorSubscription(
-      container: container,
-      selector: selector,
-      provider: provider,
-      mayHaveChanged: mayHaveChanged,
-      didChange: didChange,
-    );
+class ProviderSubscription<T> {
+  ProviderSubscription._(
+    this._element,
+    this._listener,
+  );
+
+  bool _debugDisposed = false;
+
+  final void Function(T) _listener;
+  final ProviderElement<Object?, T> _element;
+
+  void close() {
+    assert(!_debugDisposed, 'called `close` on an already closed subscription');
+    assert(() {
+      _debugDisposed = true;
+      return true;
+    }(), '');
+
+    _element._listeners.remove(_listener);
+    _element.mayNeedDispose();
   }
+
+  T read() => _element.getExposedValue();
 }
 
 /// An object used by providers to interact with other providers and the life-cycles
@@ -379,72 +390,6 @@ abstract class ProviderReference {
   T watch<T>(AlwaysAliveProviderBase<Object?, T> provider);
 }
 
-class _Listener<Listened> extends LinkedListEntry<_Listener<Listened>> {
-  _Listener({
-    this.mayHaveChanged,
-    this.didChange,
-    required this.element,
-  }) : lastNotificationCount = element._notificationCount - 1;
-
-  int lastNotificationCount;
-
-  final void Function()? mayHaveChanged;
-  final void Function()? didChange;
-  final ProviderElement<Object?, Listened> element;
-}
-
-/// An object that allows watching the state of a provider.
-///
-/// This object is created by [ProviderContainer.listen].
-/// It allows reading the current value, closing the subscription, or knowing
-/// if the value exposed changed since the last read.
-@sealed
-class ProviderSubscription<Listened> {
-  ProviderSubscription._(this._listener);
-
-  final _Listener<Listened> _listener;
-
-  /// Stops listening to the provider.
-  ///
-  /// Calling [close] may lead to the state of the listened provider to be
-  /// destroyed, if that provider uses the `.autoDispose` modifier.
-  void close() {
-    if (_listener.list != null) {
-      _listener.unlink();
-      _listener.element.mayNeedDispose();
-    }
-  }
-
-  /// {@template riverpod.flush}
-  /// Compute the provider (if it needs to be recomputed) and returns whether
-  /// a new value was created or not.
-  /// {@endtemplate}
-  bool flush() {
-    if (_listener.list == null) {
-      throw StateError(
-        'Cannot call ProviderSubscription.flush() after close was called',
-      );
-    }
-    _listener.element.flush();
-    return _listener.element._notificationCount >
-        _listener.lastNotificationCount;
-  }
-
-  /// Obtains the value currently exposed by the provider.
-  ///
-  /// This implicitly calls [flush], which may cause a provider to be recomputed.
-  Listened read() {
-    if (_listener.list == null) {
-      throw StateError(
-        'Cannot call ProviderSubscription.read() after close was called',
-      );
-    }
-    _listener.element.flush();
-    _listener.lastNotificationCount = _listener.element._notificationCount;
-    return _listener.element.getExposedValue();
-  }
-}
-
 /// An internal class that handles the state of a provider.
 ///
 /// Do not use.
@@ -469,59 +414,110 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   ProviderContainer get container => _container;
   late ProviderContainer _container;
 
-  /// All the [ProviderElement]s that depend on this [ProviderElement].
-  Set<ProviderElement> get dependents => {...?_dependents};
-  Set<ProviderElement>? _dependents;
-
   /// Whether this [ProviderElement] is currently listened or not.
   ///
   /// This maps to listeners added with [listen].
   /// See also [mayNeedDispose], called when [hasListeners] may have changed.
-  bool get hasListeners => _listeners.isNotEmpty;
+  // TODO(rrousselGit) test _dependents case
+  bool get hasListeners => _listeners.isNotEmpty || _dependents.isNotEmpty;
 
-  final _listeners = LinkedList<_Listener<Listened>>();
-  var _subscriptions = <ProviderElement, ProviderSubscription>{};
-  Map<ProviderElement, ProviderSubscription>? _previousSubscriptions;
+  // TODO(rrousselGit) refactor to match ChangeNotifier
+  List<void Function(Listened value)> _listeners = [];
+  List<ProviderElement> _dependents = [];
+
+  // TODO(rrousselGit) remove
+  List<void Function(Listened value)> get listeners => _listeners;
+  // TODO(rrousselGit) remove
+  List<ProviderElement> get dependents => _dependents;
+
+  HashMap<ProviderElement, Object> _dependencies =
+      HashMap<ProviderElement, Object>();
+  HashMap<ProviderElement, Object>? _previousDependencies;
   DoubleLinkedQueue<void Function()>? _onDisposeListeners;
 
-  int _notificationCount = 0;
-  int _notifyDidChangeLastNotificationCount = 0;
-  bool _debugIsFlushing = false;
-  bool _dirty = true;
-  // initialized to true so that the initial state creation don't notify listeners
-  bool _dependencyMayHaveChanged = true;
-  // equivalent to _dependencyMayHaveChanged that does not rely on
-  // ProviderSubscription.flush, to force recomputed a state
   bool _mustRecomputeState = false;
 
   @override
   bool get mounted => _mounted;
   bool _mounted = false;
-  bool _didMount = false;
 
   ProviderException? _exception;
 
-  @override
-  void onDispose(void Function() listener) {
-    if (!_mounted) {
-      throw StateError('Cannot call onDispose after a provider was dispose');
+  /// Called the first time a provider is obtained.
+  @protected
+  @mustCallSuper
+  void mount() {
+    _mounted = true;
+    state._element = this;
+    assert(() {
+      RiverpodBinding.debugInstance
+          .providerListChangedFor(containerId: container._debugId);
+
+      return true;
+    }(), '');
+    _buildState();
+  }
+
+  // ignore: use_setters_to_change_properties
+  /// Called when the override of a provider changes.
+  ///
+  /// See also:
+  /// - `overrideWithValue`, which relies on [update] to handle
+  ///   the scenario where the value changed.
+  @protected
+  @mustCallSuper
+  void update(ProviderBase<Created, Listened> newProvider) {
+    _provider = newProvider;
+  }
+
+  void markMustRecomputeState() {
+    if (_mustRecomputeState) return;
+
+    _mustRecomputeState = true;
+    _runOnDispose();
+    _container._scheduler.scheduleProviderRefresh(this);
+  }
+
+  void _maybeRebuildState() {
+    if (_mustRecomputeState) {
+      _previousDependencies = _dependencies;
+      _dependencies = HashMap();
+
+      _buildState();
+
+      // Unsubscribe to everything that a provider no-longer depends on.
+      for (final sub in _previousDependencies!.entries) {
+        // TODO(rrousselGit) refactor
+        sub.key._dependents.remove(this);
+      }
+      _previousDependencies = null;
+      _mustRecomputeState = false;
     }
-    _onDisposeListeners ??= DoubleLinkedQueue();
-    _onDisposeListeners!.add(listener);
+  }
+
+  void _notifyListeners() {
+    final newValue = state._exposedValue as Listened;
+    for (final listener in _listeners) {
+      listener(newValue);
+    }
+    for (final dependent in _dependents) {
+      dependent._didChangeDependency();
+    }
+  }
+
+  void _didChangeDependency() {
+    if (_mustRecomputeState) return;
+
+    markMustRecomputeState();
   }
 
   bool _debugAssertCanDependOn(ProviderBase provider) {
     assert(() {
-      final queue = Queue<ProviderElement>();
-      if (_dependents != null) {
-        queue.addAll(_dependents!);
-      }
+      final queue = Queue<ProviderElement>.from(_dependents);
 
       while (queue.isNotEmpty) {
         final current = queue.removeFirst();
-        if (current._dependents != null) {
-          queue.addAll(current.dependents);
-        }
+        queue.addAll(current._dependents);
 
         if (current.origin == provider) {
           throw CircularDependencyError._();
@@ -544,296 +540,35 @@ class ProviderElement<Created, Listened> implements ProviderReference {
     assert(_debugAssertCanDependOn(provider), '');
 
     final element = _container.readProviderElement(provider);
-    final sub = _subscriptions.putIfAbsent(element, () {
-      final previousSub = _previousSubscriptions?.remove(element);
+    _dependencies.putIfAbsent(element, () {
+      final previousSub = _previousDependencies?.remove(element);
       if (previousSub != null) {
         return previousSub;
       }
-      element._dependents ??= {};
-      element._dependents!.add(this);
-      return element.listen(
-        mayHaveChanged: _markDependencyMayHaveChanged,
-      );
-    }) as ProviderSubscription<T>;
-    return sub.read();
-  }
 
-  void _markDependencyMayHaveChanged(ProviderSubscription sub) {
-    if (!_dependencyMayHaveChanged) {
-      _dependencyMayHaveChanged = true;
-      notifyMayHaveChanged();
-    }
-  }
+      element._dependents.add(this);
 
-  /// Listen to this provider.
-  ///
-  /// See also:
-  ///
-  /// - [ProviderContainer.listen], which internally calls this method
-  /// - [ProviderReference.watch], which makes a provider listen to another provider.
-  ProviderSubscription<Listened> listen({
-    void Function(ProviderSubscription<Listened> sub)? mayHaveChanged,
-    void Function(ProviderSubscription<Listened> sub)? didChange,
-  }) {
-    late ProviderSubscription<Listened> sub;
-    final entry = _Listener<Listened>(
-      mayHaveChanged: mayHaveChanged == null ? null : () => mayHaveChanged(sub),
-      didChange: didChange == null ? null : () => didChange(sub),
-      element: this,
-    );
-    _listeners.add(entry);
+      return Object();
+    });
 
-    return sub = ProviderSubscription._(entry);
-  }
-
-  /// {@macro riverpod.flush}
-  void flush() {
-    assert(() {
-      _debugIsFlushing = true;
-      return true;
-    }(), '');
-
-    try {
-      if (_dependencyMayHaveChanged || _mustRecomputeState) {
-        _dependencyMayHaveChanged = false;
-
-        var hasAnyDependencyChanged = _mustRecomputeState;
-        for (final sub in _subscriptions.values) {
-          if (sub.flush()) {
-            hasAnyDependencyChanged = true;
-          }
-        }
-        if (hasAnyDependencyChanged) {
-          // must be executed before _runStateCreate() so that errors during
-          // creation are not silenced
-          _exception = null;
-          _runOnDispose();
-          _runStateCreate();
-        }
-        _mustRecomputeState = false;
-      }
-      _dirty = false;
-      if (_notifyDidChangeLastNotificationCount != _notificationCount) {
-        _notifyDidChangeLastNotificationCount = _notificationCount;
-        _notifyDidChange();
-      }
-      assert(!_dirty, 'flush did not reset the dirty flag for $provider');
-      assert(
-        !_dependencyMayHaveChanged,
-        'flush did not reset the _dependencyMayHaveChanged flag for $provider',
-      );
-    } finally {
-      assert(() {
-        _debugIsFlushing = false;
-        return true;
-      }(), '');
-    }
+    return element.getExposedValue();
   }
 
   /// Returns the currently exposed by a provider
   ///
   /// May throw if the provider threw when creating the exposed value.
   Listened getExposedValue() {
-    assert(
-      !_dependencyMayHaveChanged,
-      'Called getExposedValue without calling flush before',
-    );
+    _maybeRebuildState();
+
     if (_exception != null) {
       throw _exception!;
     }
     return state._exposedValue as Listened;
   }
 
-  void _debugMarkWillChange() {
-    assert(() {
-      if (!_debugIsFlushing) {
-        for (final vsync in container.debugVsyncs) {
-          vsync();
-        }
-      }
-      return true;
-    }(), '');
-  }
-
-  /// Notify that the state associated to this provider have changes.
-  /// This will cause dependent widgets and providers to rebuild.
   @protected
-  void markDidChange() {
-    if (!_didMount) {
-      return;
-    }
-    assert(() {
-      RiverpodBinding.debugInstance.providerChanged(
-        containerId: container.debugId,
-        providerId: provider.debugId,
-      );
-      return true;
-    }(), '');
-    _notificationCount++;
-    notifyMayHaveChanged();
-  }
-
-  /// Notify that this provider **may** have changed.
-  ///
-  /// This does not guarantee that the provider _did_ change, only that it is
-  /// possible that it did.
-  @protected
-  void notifyMayHaveChanged() {
-    assert(() {
-      if (_debugCurrentlyBuildingElement == null ||
-          _debugCurrentlyBuildingElement == this) {
-        return true;
-      }
-      final parentsQueue = DoubleLinkedQueue<ProviderElement>.from(
-        _subscriptions.keys,
-      );
-
-      while (parentsQueue.isNotEmpty) {
-        final parent = parentsQueue.removeFirst();
-        if (parent == _debugCurrentlyBuildingElement) {
-          return true;
-        }
-        parentsQueue.addAll(parent._subscriptions.keys);
-      }
-
-      throw AssertionError('''
-The provider $provider was marked as needing to be recomputed while creating ${_debugCurrentlyBuildingElement!.provider},
-but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
-''');
-    }(), '');
-    if (!_mounted) {
-      throw StateError('Cannot call onDispose after a provider was dispose');
-    }
-    if (_dirty) {
-      return;
-    }
-    _dirty = true;
-    for (final listener in _listeners) {
-      if (listener.mayHaveChanged != null) {
-        _runGuarded(listener.mayHaveChanged!);
-      }
-    }
-    if (_didMount) {
-      for (final observer in _container._observers) {
-        _runUnaryGuarded(
-          observer.mayHaveChanged,
-          _origin,
-        );
-      }
-    }
-  }
-
-  @protected
-  void _notifyDidChange() {
-    for (final listener in _listeners) {
-      if (listener.didChange != null) {
-        _runGuarded(listener.didChange!);
-      }
-    }
-    for (final observer in _container._observers) {
-      _runBinaryGuarded(
-        observer.didUpdateProvider,
-        _origin,
-        state._exposedValue,
-      );
-    }
-  }
-
-  /// Life-cycle for when a listener is removed.
-  ///
-  /// See also:
-  ///
-  /// - [AutoDisposeProviderElement], which overrides this method to destroy the
-  ///   state of a provider when no-longer used.
-  @protected
-  @visibleForOverriding
-  void mayNeedDispose() {}
-
-  /// Called the first time a provider is obtained.
-  @protected
-  @mustCallSuper
-  void mount() {
-    _mounted = true;
-    state._element = this;
-    assert(() {
-      RiverpodBinding.debugInstance
-          .providerListChangedFor(containerId: container._debugId);
-
-      _debugIsFlushing = true;
-      return true;
-    }(), '');
-    try {
-      _runStateCreate();
-    } finally {
-      assert(() {
-        _debugIsFlushing = false;
-        return true;
-      }(), '');
-    }
-    _didMount = true;
-    _dirty = false;
-    _dependencyMayHaveChanged = false;
-  }
-
-  // ignore: use_setters_to_change_properties
-  /// Called when the override of a provider changes.
-  ///
-  /// See also:
-  /// - `overrideWithValue`, which relies on [update] to handle
-  ///   the scenario where the value changed.
-  @protected
-  @mustCallSuper
-  void update(ProviderBase<Created, Listened> newProvider) {
-    _provider = newProvider;
-  }
-
-  /// Called on [ProviderContainer.dispose].
-  @protected
-  @mustCallSuper
-  void dispose() {
-    assert(() {
-      RiverpodBinding.debugInstance
-          .providerListChangedFor(containerId: container._debugId);
-      return true;
-    }(), '');
-
-    _mounted = false;
-    _runOnDispose();
-
-    for (final sub in _subscriptions.entries) {
-      sub.key._dependents?.remove(this);
-      sub.value.close();
-    }
-
-    for (final observer in _container._observers) {
-      _runUnaryGuarded(
-        observer.didDisposeProvider,
-        _origin,
-      );
-    }
-
-    _listeners.clear();
-    state.dispose();
-  }
-
-  /// Forces the state of a provider to be re-created, even if none of its
-  /// dependencies changed.
-  void markMustRecomputeState() {
-    _mustRecomputeState = true;
-    notifyMayHaveChanged();
-  }
-
-  @protected
-  void _runOnDispose() {
-    _onDisposeListeners?.forEach(_runGuarded);
-    _onDisposeListeners = null;
-  }
-
-  @protected
-  void _runStateCreate() {
+  void _buildState() {
     final previous = state._createdValue;
-    _previousSubscriptions = _subscriptions;
-    _subscriptions = {};
     ProviderElement? debugPreviouslyBuildingElement;
     assert(() {
       debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
@@ -853,14 +588,63 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
         _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
         return true;
       }(), '');
-      if (_previousSubscriptions != null) {
-        for (final sub in _previousSubscriptions!.entries) {
-          sub.key._dependents?.remove(this);
-          sub.value.close();
-        }
-      }
-      _previousSubscriptions = null;
     }
+  }
+
+  /// Called on [ProviderContainer.dispose].
+  @protected
+  @mustCallSuper
+  void dispose() {
+    assert(_mounted, '$provider was disposed twice');
+    assert(() {
+      RiverpodBinding.debugInstance
+          .providerListChangedFor(containerId: container._debugId);
+      return true;
+    }(), '');
+
+    _mounted = false;
+    _runOnDispose();
+    state.dispose();
+
+    for (final sub in _dependencies.entries) {
+      sub.key._dependents.remove(this);
+      sub.key.mayNeedDispose();
+    }
+    _dependencies.clear();
+
+    for (final observer in _container._observers) {
+      _runUnaryGuarded(
+        observer.didDisposeProvider,
+        _origin,
+      );
+    }
+
+    _listeners.clear();
+  }
+
+  /// Life-cycle for when a listener is removed.
+  ///
+  /// See also:
+  ///
+  /// - [AutoDisposeProviderElement], which overrides this method to destroy the
+  ///   state of a provider when no-longer used.
+  @protected
+  @visibleForOverriding
+  void mayNeedDispose() {}
+
+  @override
+  void onDispose(void Function() listener) {
+    if (!_mounted) {
+      throw StateError('Cannot call onDispose after a provider was dispose');
+    }
+    _onDisposeListeners ??= DoubleLinkedQueue();
+    _onDisposeListeners!.add(listener);
+  }
+
+  @protected
+  void _runOnDispose() {
+    _onDisposeListeners?.forEach(_runGuarded);
+    _onDisposeListeners = null;
   }
 }
 
@@ -887,16 +671,13 @@ abstract class ProviderStateBase<Created, Listened> {
   Listened? _exposedValue;
 
   set exposedValue(Listened? exposedValue) {
+    // TODO(rrousselGit) remove this assert
     assert(
       exposedValue is Listened,
       'A provider tried to assign `null` to a non-nullable `exposedValue`',
     );
-    assert(() {
-      _element._debugMarkWillChange();
-      return true;
-    }(), '');
     _exposedValue = exposedValue;
-    _element.markDidChange();
+    _element._notifyListeners();
   }
 
   /// Creates the value exposed by a provider from the value created.
