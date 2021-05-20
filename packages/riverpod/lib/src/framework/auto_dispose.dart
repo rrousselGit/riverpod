@@ -18,6 +18,14 @@ abstract class AutoDisposeProviderReference extends ProviderReference {
 
   @override
   T watch<T>(RootProvider<Object?, T> provider);
+
+  @override
+  void Function() listen<T>(
+    // Overriden to allow AutoDisposeProviderBase
+    ProviderBase<Object?, T> provider,
+    void Function(T value) listener, {
+    bool fireImmediately,
+  });
 }
 
 /// {@template riverpod.AutoDisposeProviderBase}

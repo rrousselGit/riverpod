@@ -39,7 +39,7 @@ class _ProviderScheduler {
     /// child will automatically refresh its parent when it will try to read it
     for (var i = 0; i < _stateToRefresh.length; i++) {
       final element = _stateToRefresh[i];
-      element._maybeRebuildState();
+      element.flush();
     }
   }
 

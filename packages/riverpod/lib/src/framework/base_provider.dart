@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs
 part of '../framework.dart';
 
+typedef NotifyListeners<T> = void Function({T newValue});
+
 /// A callback used by providers to create the value exposed.
 ///
 /// If an exception is thrown within that callback, all attempts at reading
@@ -388,6 +390,22 @@ abstract class ProviderReference {
   ///   sorted only once.
   /// - if nothing is listening to `sortedTodosProvider`, then no sort if performed.
   T watch<T>(AlwaysAliveProviderBase<Object?, T> provider);
+
+  /// Listen to a provider and call `listener` whenever its value changes.
+  ///
+  /// Listeners will automatically be removed when the provider rebuilds (such
+  /// as when a provider listeneed with [watch] changes).
+  ///
+  /// Returns a function that allows cancelling the subscription early.
+  ///
+  /// - `fireImmediately` can be optionally passed to tell Riverpod to immediately
+  ///    call the listener with the current value.
+  ///    Defaults to false.
+  void Function() listen<T>(
+    RootProvider<Object?, T> provider,
+    void Function(T value) listener, {
+    bool fireImmediately,
+  });
 }
 
 /// An internal class that handles the state of a provider.
@@ -424,6 +442,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   // TODO(rrousselGit) refactor to match ChangeNotifier
   List<void Function(Listened value)> _listeners = [];
   List<ProviderElement> _dependents = [];
+  List<ProviderSubscription> _subscriptions = <ProviderSubscription>[];
 
   // TODO(rrousselGit) remove
   List<void Function(Listened value)> get listeners => _listeners;
@@ -436,6 +455,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   DoubleLinkedQueue<void Function()>? _onDisposeListeners;
 
   bool _mustRecomputeState = false;
+  bool _dependencyMayHaveChanged = false;
 
   @override
   bool get mounted => _mounted;
@@ -478,6 +498,17 @@ class ProviderElement<Created, Listened> implements ProviderReference {
     _container._scheduler.scheduleProviderRefresh(this);
   }
 
+  void flush() {
+    _maybeRebuildDependencies();
+    _maybeRebuildState();
+  }
+
+  void _maybeRebuildDependencies() {
+    for (final dependency in _dependencies.keys) {
+      dependency.flush();
+    }
+  }
+
   void _maybeRebuildState() {
     if (_mustRecomputeState) {
       _previousDependencies = _dependencies;
@@ -509,6 +540,20 @@ class ProviderElement<Created, Listened> implements ProviderReference {
     if (_mustRecomputeState) return;
 
     markMustRecomputeState();
+
+    // We don't call this._markDependencyMayHaveChanged here because we voluntarily
+    // do not want to set the _dependencyMayHaveChanged flag to true.
+    // Since the dependency is known to have changed, there is no reason to try
+    // and rebuild it, as it will already get rebuilt.
+    for (var i = 0; i < dependents.length; i++) {
+      dependents[i]._markDependencyMayHaveChanged();
+    }
+  }
+
+  void _markDependencyMayHaveChanged() {
+    for (var i = 0; i < dependents.length; i++) {
+      dependents[i]._markDependencyMayHaveChanged();
+    }
   }
 
   bool _debugAssertCanDependOn(ProviderBase provider) {
@@ -558,7 +603,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   ///
   /// May throw if the provider threw when creating the exposed value.
   Listened getExposedValue() {
-    _maybeRebuildState();
+    flush();
 
     if (_exception != null) {
       throw _exception!;
@@ -643,8 +688,36 @@ class ProviderElement<Created, Listened> implements ProviderReference {
 
   @protected
   void _runOnDispose() {
+    // TODO(rrousselGit) test
+    for (final subscription in _subscriptions) {
+      subscription.close();
+    }
+    _subscriptions.clear();
+
     _onDisposeListeners?.forEach(_runGuarded);
     _onDisposeListeners = null;
+  }
+
+  @override
+  void Function() listen<T>(
+    ProviderBase<Object?, T> provider,
+    void Function(T value) listener, {
+    bool fireImmediately = false,
+  }) {
+    // TODO(rrousselGit) test
+    // TODO(rrousselGit) onError
+    final sub = container.listen(
+      provider,
+      listener,
+      fireImmediately: fireImmediately,
+    );
+
+    _subscriptions.add(sub);
+
+    return () {
+      _subscriptions.remove(sub);
+      sub.close();
+    };
   }
 }
 

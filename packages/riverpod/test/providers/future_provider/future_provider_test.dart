@@ -7,6 +7,8 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('can be refreshed', () {}, skip: true);
+
   // test(
   //     'when overriden with an error but provider.future is not listened, it should not emit an error to the zone',
   //     () async {
@@ -117,7 +119,7 @@ void main() {
 
     expect(container.read(provider(0)), const AsyncValue<String>.loading());
 
-    await Future<void>.value();
+    await container.pump();
 
     expect(
       container.read(provider(0)),
@@ -135,7 +137,7 @@ void main() {
 
     expect(container.read(provider(0)), const AsyncValue<String>.loading());
 
-    await Future<void>.value();
+    await container.pump();
 
     expect(
       container.read(provider(0)),
@@ -163,7 +165,7 @@ void main() {
 
     expect(container.read(provider), const AsyncValue<int>.loading());
 
-    await Future<void>.value();
+    await container.pump();
 
     expect(
       container.read(provider),
@@ -183,7 +185,7 @@ void main() {
     expect(container.read(provider), const AsyncValue<int>.loading());
 
     container.dispose();
-    await Future<void>.value();
+    await container.pump();
 
     // No errors are reported to the zone
   });
@@ -343,12 +345,12 @@ void main() {
       expect(sub.read(), completer.future);
       expect(didDispose, false);
 
-      await Future<void>.value();
+      await container.pump();
       expect(didDispose, false);
 
       sub.close();
 
-      await Future<void>.value();
+      await container.pump();
       expect(didDispose, true);
     });
   });

@@ -12,33 +12,33 @@ part 'stream_provider/auto_dispose.dart';
 part 'stream_provider/base.dart';
 
 mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
-  Override overrideWithValue(AsyncValue<T> value) {
-    return ProviderOverride(
-      ValueProvider<Stream<T>, AsyncValue<T>>((ref) {
-        AsyncValue<T>? lastValue;
-        final controller = StreamController<T>();
-        ref.onDispose(controller.close);
+  // Override overrideWithValue(AsyncValue<T> value) {
+  //   return ProviderOverride(
+  //     ValueProvider<Stream<T>, AsyncValue<T>>((ref) {
+  //       AsyncValue<T>? lastValue;
+  //       final controller = StreamController<T>();
+  //       ref.onDispose(controller.close);
 
-        ref.onChange = (newValue) {
-          newValue.when(
-            data: controller.add,
-            loading: () {
-              if (lastValue != null && lastValue is! AsyncLoading) {
-                // ref.markMustRecomputeState();
-              }
-            },
-            error: controller.addError,
-          );
-          lastValue = newValue;
-        };
+  //       ref.onChange = (newValue) {
+  //         newValue.when(
+  //           data: controller.add,
+  //           loading: () {
+  //             if (lastValue != null && lastValue is! AsyncLoading) {
+  //               // ref.markMustRecomputeState();
+  //             }
+  //           },
+  //           error: controller.addError,
+  //         );
+  //         lastValue = newValue;
+  //       };
 
-        ref.onChange!(value);
+  //       ref.onChange!(value);
 
-        return controller.stream.asBroadcastStream();
-      }, value),
-      this,
-    );
-  }
+  //       return controller.stream.asBroadcastStream();
+  //     }, value),
+  //     this,
+  //   );
+  // }
 
   /// Exposes the [Stream] created by a [StreamProvider].
   ///
@@ -51,7 +51,7 @@ mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
   ///
   /// If the [StreamProvider] was overridden using `overrideWithValue`,
   /// a stream will be generated and manipulated based on the [AsyncValue] used.
-  RootProvider<Stream<T>, Stream<T>> get stream;
+  RootProvider<Object?, Stream<T>> get stream;
 
   /// Exposes a [Future] which resolves with the last value or error emitted.
   ///
@@ -210,137 +210,105 @@ mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
 /// - [StreamProvider.family], to create a [StreamProvider] from external parameters
 /// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no-longer needed.
 /// {@endtemplate}
-mixin _StreamProviderStateMixin<T>
-    on ProviderStateBase<Stream<T>, AsyncValue<T>> {
-  StreamSubscription<T>? sub;
-  StreamController<T>? _proxyController;
-  Stream<T> get proxyStream {
-    _proxyController ??= StreamController.broadcast();
-    return _proxyController!.stream;
-  }
-
-  @override
-  void valueChanged({Stream<T>? previous}) {
-    if (createdValue == previous) {
-      return;
-    }
-    sub?.cancel();
-    _proxyController?.close();
-    _proxyController = null;
-
-    // TODO transition between state ??= vs =
-    // TODO don't notify if already loading
-    exposedValue = const AsyncValue.loading();
-    sub = createdValue.listen(
-      (value) {
-        exposedValue = AsyncValue.data(value);
-        _proxyController?.add(value);
-      },
-      // ignore: avoid_types_on_closure_parameters
-      onError: (Object error, StackTrace stack) {
-        exposedValue = AsyncValue.error(error, stack);
-        _proxyController?.addError(error, stack);
-      },
-      onDone: () => _proxyController?.close(),
-    );
-  }
-
-  @override
-  bool handleError(Object error, StackTrace stackTrace) {
-    exposedValue = AsyncValue.error(error, stackTrace);
-    return true;
-  }
-
-  @override
-  void dispose() {
-    sub?.cancel();
-    _proxyController?.close();
-    super.dispose();
-  }
-}
-
-Future<T> _readLast<T>(
-  ProviderElement ref,
-  _StreamProviderMixin<T> provider,
+AsyncValue<T> _listenStream<T>(
+  Stream<T> Function() stream,
+  ProviderReference ref,
+  NotifyListeners<AsyncValue<T>> notifyListeners,
 ) {
-  // TODO(rrousselGit): refactor to not use `ref.watch(provider)` as this will cause onDispose
-  // which throws an uncaught "the provider was disposed but not value emitted"
-  return ref.watch(provider).when(
-        data: (value) => Future.value(value),
+  try {
+    final sub = stream().listen(
+      (event) => notifyListeners(newValue: AsyncValue.data(event)),
+      // ignore: avoid_types_on_closure_parameters
+      onError: (Object err, StackTrace stack) {
+        notifyListeners(newValue: AsyncValue.error(err, stack));
+      },
+    );
+
+    ref.onDispose(sub.cancel);
+
+    return const AsyncValue.loading();
+  } catch (err, stack) {
+    return AsyncValue.error(err, stack);
+  }
+}
+
+Stream<T> _createStream<T>(
+  ProviderReference ref,
+  Stream<T> Function() create,
+) {
+  return create().asBroadcastStream();
+}
+
+class _LastStreamValueProvider<T>
+    extends AutoDisposeProviderBase<_LastStreamValueProvider<T>, Future<T>> {
+  _LastStreamValueProvider(this._provider)
+      : super(
+          _provider.name == null ? null : '${_provider.name}.last',
+        );
+
+  final RootProvider<Object?, AsyncValue<T>> _provider;
+
+  @override
+  _LastStreamValueProvider<T> create(
+    AutoDisposeProviderReference ref,
+  ) {
+    return this;
+  }
+
+  @override
+  _LastStreamValueProviderState<T> createState() {
+    return _LastStreamValueProviderState<T>();
+  }
+}
+
+class _LastStreamValueProviderState<T>
+    extends ProviderStateBase<_LastStreamValueProvider<T>, Future<T>> {
+  @override
+  void valueChanged({_LastStreamValueProvider<T>? previous}) {
+    final provider = createdValue._provider;
+    final ref = this.ref as AutoDisposeProviderReference;
+
+    if (provider is AlwaysAliveProviderBase) ref.maintainState = true;
+
+    Completer<T>? loadingCompleter;
+
+    ref.onDispose(() {
+      if (loadingCompleter != null) {
+        loadingCompleter!.completeError(
+          StateError('The provider was disposed the stream could emit a value'),
+        );
+      }
+    });
+
+    void listener(AsyncValue<T> value) {
+      value.when(
         loading: () {
-          final stream = ref.watch(provider.stream);
-
-          final completer = Completer<T>();
-          late StreamSubscription<T> sub;
-
-          sub = stream.listen(
-            (value) {
-              completer.complete(value);
-              sub.cancel();
-            },
-            // ignore: avoid_types_on_closure_parameters
-            onError: (Object err, StackTrace stack) {
-              completer.completeError(err, stack);
-              sub.cancel();
-            },
-            onDone: () {
-              completer.completeError(
-                StateError('The stream was closed before emitting a value'),
-              );
-              sub.cancel();
-            },
-          );
-
-          ref.onDispose(() {
-            sub.cancel();
-            if (!completer.isCompleted) {
-              completer.completeError(
-                // TODO(rrousselGit): improve error message
-                StateError(
-                  'The provider was disposed the stream could emit a value',
-                ),
-              );
-            }
-          });
-
-          return completer.future;
+          if (loadingCompleter == null) {
+            loadingCompleter = Completer<T>();
+            exposedValue = loadingCompleter!.future;
+          }
         },
-        error: (err, stack) => Future.error(err, stack),
+        data: (data) {
+          if (loadingCompleter != null) {
+            loadingCompleter!.complete(data);
+            // allow follow-up data calls to go on the 'else' branch
+            loadingCompleter = null;
+          } else {
+            exposedValue = Future.value(data);
+          }
+        },
+        error: (err, stack) {
+          if (loadingCompleter != null) {
+            loadingCompleter!.completeError(err, stack);
+            // allow follow-up error calls to go on the 'else' branch
+            loadingCompleter = null;
+          } else {
+            exposedValue = Future.error(err, stack);
+          }
+        },
       );
-}
+    }
 
-// Fork of CreatedProvider to retrieve _proxyStream instead of createdValue
-
-@sealed
-class _CreatedStreamProvider<T> extends Provider<Stream<T>> {
-  _CreatedStreamProvider(
-    AlwaysAliveProviderBase<Stream<T>, Object?> provider, {
-    String? name,
-  }) : super((ref) {
-          ref.watch(provider);
-          // ignore: invalid_use_of_visible_for_testing_member
-          final state = ref.container.readProviderElement(provider).state;
-
-          return state is _StreamProviderStateMixin<T>
-              ? state.proxyStream
-              : state.createdValue;
-        }, name: name);
-}
-
-@sealed
-class _AutoDisposeCreatedStreamProvider<T>
-    extends AutoDisposeProvider<Stream<T>> {
-  _AutoDisposeCreatedStreamProvider(
-    RootProvider<Stream<T>, Object?> provider, {
-    String? name,
-  }) : super((ref) {
-          ref.watch(provider);
-          // ignore: invalid_use_of_visible_for_testing_member
-          final state = ref.container.readProviderElement(provider).state;
-
-          return state is _StreamProviderStateMixin<T>
-              ? state.proxyStream
-              // Reached when using `.stream` on a `StreamProvider.overrideWithValue`
-              : state.createdValue;
-        }, name: name);
+    ref.listen(provider, listener, fireImmediately: true);
+  }
 }

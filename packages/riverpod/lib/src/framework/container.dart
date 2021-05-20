@@ -160,7 +160,7 @@ class ProviderContainer {
     ProviderBase<Object?, Result> provider,
   ) {
     final element = readProviderElement(provider);
-    element._maybeRebuildState();
+    element.flush();
 
     // In case `read` was called on a provider that has no listener
     element.mayNeedDispose();

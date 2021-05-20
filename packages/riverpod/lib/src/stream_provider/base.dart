@@ -13,7 +13,7 @@ class StreamProvider<T>
   final Create<Stream<T>, ProviderReference> _create;
 
   @override
-  Stream<T> create(ProviderReference ref) => _create(ref);
+  Stream<T> create(ProviderReference ref) => ref.watch(stream);
 
   /// {@macro riverpod.family}
   static const family = StreamProviderFamilyBuilder();
@@ -21,23 +21,16 @@ class StreamProvider<T>
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStreamProviderBuilder();
 
-  AlwaysAliveProviderBase<Stream<T>, Stream<T>>? _stream;
   @override
-  AlwaysAliveProviderBase<Stream<T>, Stream<T>> get stream {
-    return _stream ??= _CreatedStreamProvider(
-      this,
-      name: name == null ? null : '$name.stream',
-    );
-  }
+  late final AlwaysAliveProviderBase<Object?, Stream<T>> stream =
+      Provider((ref) {
+    // TODO(rrousselGit) test that refresh works
+    return _createStream(ref, () => _create(ref));
+  });
 
-  AlwaysAliveProviderBase<Object?, Future<T>>? _last;
   @override
-  AlwaysAliveProviderBase<Object?, Future<T>> get last {
-    return _last ??= Provider(
-      (ref) => _readLast(ref as ProviderElement, this),
-      name: name == null ? null : '$name.last',
-    );
-  }
+  late final RootProvider<Object?, Future<T>> last =
+      _LastStreamValueProvider(this);
 
   @override
   _StreamProviderState<T> createState() => _StreamProviderState();
