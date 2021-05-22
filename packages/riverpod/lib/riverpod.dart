@@ -27,7 +27,6 @@ export 'src/framework.dart'
         ProviderContainer,
         ProviderObserver,
         ProviderSubscription,
-        FamilyX,
         ProviderException,
         AutoDisposeProviderBase,
         AutoDisposeProviderElementBase,
@@ -59,8 +58,6 @@ export 'src/state_provider.dart'
     show
         StateController,
         StateProvider,
-        StateFamilyX,
-        AutoDisposeStateFamilyX,
         AutoDisposeStateProvider,
         AutoDisposeStateProviderFamily,
         StateProviderFamily;

@@ -35,7 +35,7 @@ class StateProvider<State>
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStateProviderBuilder();
 
-  final Create<State, StateProviderRef> _create;
+  final Create<State, StateProviderRef<State>> _create;
 
   @override
   StateController<State> create(StateProviderRef<State> ref) {
@@ -80,7 +80,7 @@ class StateProviderFamily<State, Arg>
   /// {@macro riverpod.stateprovider.family}
   StateProviderFamily(this._create, {String? name}) : super(name);
 
-  final FamilyCreate<State, StateProviderRef, Arg> _create;
+  final FamilyCreate<State, StateProviderRef<State>, Arg> _create;
 
   @override
   StateProvider<State> create(

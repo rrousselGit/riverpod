@@ -48,10 +48,7 @@ class StreamProviderFamily<State, Arg>
   /// {@macro riverpod.streamprovider.family}
   StreamProviderFamily(this._create, {String? name}) : super(name);
 
-  final Stream<State> Function(
-    ProviderRefBase ref,
-    Arg argument,
-  ) _create;
+  final FamilyCreate<Stream<State>, StreamProviderRef<State>, Arg> _create;
 
   @override
   StreamProvider<State> create(Arg argument) {

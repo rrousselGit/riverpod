@@ -28,6 +28,7 @@ class StateDetails {
   StateDetails({
     this.kind,
     this.className,
+    this.ref,
     this.constraints,
     this.generics,
     this.createType,
@@ -35,6 +36,7 @@ class StateDetails {
 
   final StateType kind;
   final String className;
+  final String ref;
   final String constraints;
   final String generics;
   final String createType;
@@ -372,37 +374,42 @@ Future<void> main(List<String> args) async {
           StateDetails(
             kind: StateType.state,
             className: 'StateProvider',
-            constraints: 'T',
-            generics: 'T',
-            createType: 'T',
+            ref: 'StateProviderRef<State>',
+            constraints: 'State',
+            generics: 'State',
+            createType: 'State',
           ),
           StateDetails(
             kind: StateType.stateNotifier,
             className: 'StateNotifierProvider',
-            constraints: 'Notifier extends StateNotifier<Value>, Value',
-            generics: 'Notifier, Value',
+            ref: 'StateNotifierProviderRef<Notifier, State>',
+            constraints: 'Notifier extends StateNotifier<State>, State',
+            generics: 'Notifier, State',
             createType: 'Notifier',
           ),
           StateDetails(
             kind: StateType.none,
             className: 'Provider',
-            constraints: 'T',
-            generics: 'T',
-            createType: 'T',
+            ref: 'ProviderRef<State>',
+            constraints: 'State',
+            generics: 'State',
+            createType: 'State',
           ),
           StateDetails(
             kind: StateType.future,
             className: 'FutureProvider',
-            constraints: 'T',
-            generics: 'T',
-            createType: 'Future<T>',
+            ref: 'FutureProviderRef<State>',
+            constraints: 'State',
+            generics: 'State',
+            createType: 'Future<State>',
           ),
           StateDetails(
             kind: StateType.stream,
             className: 'StreamProvider',
-            constraints: 'T',
-            generics: 'T',
-            createType: 'Stream<T>',
+            ref: 'StreamProviderRef<State>',
+            constraints: 'State',
+            generics: 'State',
+            createType: 'Stream<State>',
           ),
         ],
         ProviderType.values,
@@ -476,10 +483,10 @@ extension on Tuple3<DisposeType, StateDetails, ProviderType> {
   String get ref {
     switch (item1) {
       case DisposeType.autoDispose:
-        return 'AutoDisposeProviderRefBase';
+        return 'AutoDispose${item2.ref}';
       case DisposeType.none:
       default:
-        return 'ProviderRefBase';
+        return item2.ref;
     }
   }
 
@@ -540,8 +547,8 @@ class ${configs.providerName}Builder {
   const ${configs.providerName}Builder();
 
 ${familyDoc().replaceAll('///', '  ///')}
-  ${configs.providerName}<${configs.item2.generics}, Param> call<${configs.constraint}, Param>(
-    ${configs.createType} Function(${configs.ref} ref, Param param) create, {
+  ${configs.providerName}<${configs.item2.generics}, Arg> call<${configs.constraint}, Arg>(
+    FamilyCreate<${configs.createType}, ${configs.ref}, Arg> create, {
     String? name,
   }) {
     return ${configs.providerName}(create, name: name);
@@ -568,7 +575,7 @@ class ${configs.providerName}Builder {
 
 ${autoDisposeDoc().replaceAll('///', '  ///')}
   ${configs.providerName}<${configs.item2.generics}> call<${configs.constraint}>(
-    ${configs.createType} Function(${configs.ref} ref) create, {
+    Create<${configs.createType}, ${configs.ref}> create, {
     String? name,
   }) {
     return ${configs.providerName}(create, name: name);

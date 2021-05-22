@@ -16,7 +16,8 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
   /// {@macro riverpod.family}
   static const family = AutoDisposeStateNotifierProviderFamilyBuilder();
 
-  final Create<Notifier, AutoDisposeProviderRefBase> _create;
+  final Create<Notifier, AutoDisposeStateNotifierProviderRef<Notifier, State>>
+      _create;
 
   /// {@template riverpod.statenotifierprovider.notifier}
   /// Obtains the [StateNotifier] associated with this [AutoDisposeStateNotifierProvider],
@@ -74,12 +75,11 @@ class AutoDisposeStateNotifierProviderFamily<
   AutoDisposeStateNotifierProviderFamily(this._create, {String? name})
       : super(name);
 
-  final Notifier Function(AutoDisposeProviderRefBase ref, Arg a) _create;
+  final FamilyCreate<Notifier,
+      AutoDisposeStateNotifierProviderRef<Notifier, State>, Arg> _create;
 
   @override
-  AutoDisposeStateNotifierProvider<Notifier, State> create(
-    Arg argument,
-  ) {
+  AutoDisposeStateNotifierProvider<Notifier, State> create(Arg argument) {
     final provider = AutoDisposeStateNotifierProvider<Notifier, State>(
       (ref) => _create(ref, argument),
       name: name,

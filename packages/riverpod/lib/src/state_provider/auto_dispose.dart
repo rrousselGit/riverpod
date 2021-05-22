@@ -55,10 +55,7 @@ class AutoDisposeStateProviderFamily<State, Arg> extends Family<
   /// {@macro riverpod.stateprovider.family}
   AutoDisposeStateProviderFamily(this._create, {String? name}) : super(name);
 
-  final State Function(
-    AutoDisposeProviderRefBase ref,
-    Arg argument,
-  ) _create;
+  final FamilyCreate<State, AutoDisposeStateProviderRef<State>, Arg> _create;
 
   @override
   AutoDisposeStateProvider<State> create(
