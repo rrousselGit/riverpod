@@ -246,7 +246,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         }
         migrateStateful(classDecl
             .extendsClause!.superclass.typeArguments!.arguments.first.type!
-            .getDisplayString(withNullability: false));
+            .getDisplayString(withNullability: true));
       }
       classDeclaration = null;
     }
@@ -320,7 +320,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   String providerTypeArgs = '';
   @override
   void visitTypeName(TypeName node) {
-    final typeName = node.type!.getDisplayString(withNullability: false);
+    final typeName = node.type!.getDisplayString(withNullability: true);
     if (typeName.contains('ProviderReference')) {
       final autoDisposePrefix = inAutoDisposeProvider ? 'AutoDispose' : '';
       switch (inProvider) {
@@ -362,7 +362,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
 
   @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
-    final type = node.staticType!.getDisplayString(withNullability: false);
+    final type = node.staticType!.getDisplayString(withNullability: true);
     if (type.contains('Consumer')) {
       inConsumerBuilder = true;
       lookingForParams = true;
@@ -418,7 +418,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
 
   @override
   void visitInvocationExpression(InvocationExpression node) {
-    final type = node.staticType!.getDisplayString(withNullability: false);
+    final type = node.staticType!.getDisplayString(withNullability: true);
 
     if (type.contains('FutureProvider')) {
       inProvider = ProviderType.future;
@@ -516,7 +516,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       migrateClass();
       yieldPatch('ref.refresh', node.offset, node.methodName.end);
       final firstArgStaticType = node.argumentList.arguments.first.staticType!
-          .getDisplayString(withNullability: false);
+          .getDisplayString(withNullability: true);
       if (firstArgStaticType.contains('FutureProvider') ||
           firstArgStaticType.contains('StreamProvider')) {
         // StateNotifierProvider

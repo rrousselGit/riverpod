@@ -24,6 +24,7 @@ final streamProvider = StreamProvider((ProviderReference ref) async* {
   yield 1;
 });
 final plainProvider = Provider((ProviderReference ref) => '');
+final plainNullProvider = Provider<String?>((ProviderReference ref) => null);
 final plainProviderAD = Provider.autoDispose((ProviderReference ref) => '');
 final plainProviderFamilyAD = Provider.family
     .autoDispose<String, String>((ProviderReference ref, _) => '');

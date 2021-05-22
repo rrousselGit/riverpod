@@ -16,9 +16,21 @@ class Counter extends StateNotifier<int> {
   void decrement() => state--;
 }
 
+class CounterNullable extends StateNotifier<int?> {
+  CounterNullable(int? init) : super(init);
+
+  void increment() => state = state! + 1;
+  void decrement() => state = state! - 1;
+}
+
 final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter());
 final counterProvider2 =
     StateNotifierProvider<Counter, int>((ref) => Counter());
+final counterNullableProvider = StateNotifierProvider<CounterNullable, int?>(
+    (ref) => CounterNullable(null));
+final counterNullableProviderFamily =
+    StateNotifierProvider.family<CounterNullable, int?, int?>(
+        (ref, init) => CounterNullable(init));
 
 final counterFamilyProvider =
     StateNotifierProvider.family<Counter, int, String>((ref, _) => Counter());

@@ -25,7 +25,7 @@ class RiverpodNotifierChangesMigrationSuggestor
 
   @override
   void visitInvocationExpression(InvocationExpression node) {
-    final nodeType = node.staticType!.getDisplayString(withNullability: false);
+    final nodeType = node.staticType!.getDisplayString(withNullability: true);
     if (nodeType.contains('StateNotifierProvider')) {
       final providerType = node.staticType as InterfaceType?;
       final notifierType = providerType!.typeArguments.first as InterfaceType?;
@@ -33,7 +33,7 @@ class RiverpodNotifierChangesMigrationSuggestor
 
       if (nodeType.contains('Family')) {
         yieldPatch(
-            '<${notifierType.getDisplayString(withNullability: false)}, ${stateType.getDisplayString(withNullability: false)}, ${providerType.typeArguments.last.getDisplayString(withNullability: false)}>',
+            '<${notifierType.getDisplayString(withNullability: true)}, ${stateType.getDisplayString(withNullability: true)}, ${providerType.typeArguments.last.getDisplayString(withNullability: true)}>',
             node.typeArguments!.offset,
             node.argumentList.offset);
       } else {
@@ -41,7 +41,7 @@ class RiverpodNotifierChangesMigrationSuggestor
           // Make sure it is variable declaration so we don't add type params
           // on family accesses
           yieldPatch(
-              '<${notifierType.getDisplayString(withNullability: false)}, ${stateType.getDisplayString(withNullability: false)}>',
+              '<${notifierType.getDisplayString(withNullability: true)}, ${stateType.getDisplayString(withNullability: true)}>',
               node.function.end,
               node.argumentList.offset);
         }
@@ -53,14 +53,14 @@ class RiverpodNotifierChangesMigrationSuggestor
 
   @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
-    final nodeType = node.staticType!.getDisplayString(withNullability: false);
+    final nodeType = node.staticType!.getDisplayString(withNullability: true);
     if (nodeType.contains('StateNotifierProvider')) {
       final providerType = node.staticType as InterfaceType?;
       final notifierType = providerType!.typeArguments.first as InterfaceType?;
       final stateType = notifierType!.superclass!.typeArguments.first;
       final constructorTypeArguments = node.constructorName.type.typeArguments;
       yieldPatch(
-          '<${notifierType.getDisplayString(withNullability: false)}, ${stateType.getDisplayString(withNullability: false)}>',
+          '<${notifierType.getDisplayString(withNullability: true)}, ${stateType.getDisplayString(withNullability: true)}>',
           constructorTypeArguments != null
               ? constructorTypeArguments.offset
               : node.constructorName.end,
@@ -80,7 +80,7 @@ class RiverpodNotifierChangesMigrationSuggestor
     // useProvider(provider.state) => useProvider(provider)
     if (node.identifier.name == 'state') {
       if (node.prefix.staticType!
-          .getDisplayString(withNullability: false)
+          .getDisplayString(withNullability: true)
           .contains('StateNotifierProvider')) {
         yieldPatch('', node.prefix.end, node.end);
       }
@@ -93,7 +93,7 @@ class RiverpodNotifierChangesMigrationSuggestor
     // useProvider(Static.provider.state) => useProvider(provider)
     if (node.propertyName.name == 'state') {
       if (node.realTarget.staticType!
-          .getDisplayString(withNullability: false)
+          .getDisplayString(withNullability: true)
           .contains('StateNotifierProvider')) {
         yieldPatch('', node.realTarget.end, node.end);
       }
@@ -107,7 +107,7 @@ class RiverpodNotifierChangesMigrationSuggestor
         node.function.toSource() == 'watch' ||
         node.function.toSource() == 'useProvider') {
       final firstArgStaticType = node.argumentList.arguments.first.staticType!
-          .getDisplayString(withNullability: false);
+          .getDisplayString(withNullability: true);
       if (firstArgStaticType.contains('StateNotifierProvider')) {
         // StateNotifierProvider
         // watch(provider) => watch(provider.notifier)
@@ -126,7 +126,7 @@ class RiverpodNotifierChangesMigrationSuggestor
         node.methodName.toSource() == 'watch' ||
         node.methodName.toSource() == 'useProvider') {
       final firstArgStaticType = node.argumentList.arguments.first.staticType!
-          .getDisplayString(withNullability: false);
+          .getDisplayString(withNullability: true);
       // StateNotifierProvider
       if (firstArgStaticType.contains('StateNotifierProvider')) {
         // ref.watch(provider) => ref.watch(provider.notifier)
