@@ -216,7 +216,14 @@ class ProviderContainer {
     );
     _stateReaders.remove(element._origin);
     if (element._origin.from != null) {
-      element._origin.from!._cache.remove(element._origin.argument);
+      final origin = element._origin;
+      if (origin.from != null) {
+        if (origin is! AutoDisposeStateNotifierProvider || !element.container
+            .read(origin.notifier)
+            .hasListeners) {
+          origin.from!._cache.remove(origin.argument);
+        }
+      }
     }
     element.dispose();
   }
