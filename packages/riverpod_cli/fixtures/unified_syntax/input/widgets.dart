@@ -35,6 +35,13 @@ final streamProviderAD = StreamProvider.autoDispose(
 final stateNotifierProvider = StateNotifierProvider<Counter, int>(
     (ProviderReference ref) => Counter(ref));
 
+class Logger extends ProviderObserver {
+  @override
+  void didUpdateProvider(ProviderBase provider, Object? newValue) {
+    print('$provider $newValue');
+  }
+}
+
 class ConsumerWatch extends ConsumerWidget {
   const ConsumerWatch({Key? key}) : super(key: key);
 

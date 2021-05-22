@@ -164,6 +164,9 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         // Consumer should be migrated regardless if providers are watched / read or not
         migrateParams();
       }
+    } else if (node.name.name == 'didUpdateProvider') {
+      yieldPatch(', Object? oldValue, ', node.parameters!.parameters.first.end,
+          node.parameters!.parameters.last.offset);
     }
     super.visitMethodDeclaration(node);
   }
