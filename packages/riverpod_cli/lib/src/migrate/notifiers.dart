@@ -1,5 +1,7 @@
 // ignore: deprecated_member_use
-import 'package:analyzer/analyzer.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+
 import 'package:codemod/codemod.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:pub_semver/pub_semver.dart';
@@ -23,23 +25,23 @@ class RiverpodNotifierChangesMigrationSuggestor
 
   @override
   void visitInvocationExpression(InvocationExpression node) {
-    final nodeType = node.staticType.getDisplayString();
+    final nodeType = node.staticType!.getDisplayString(withNullability: false);
     if (nodeType.contains('StateNotifierProvider')) {
-      final providerType = node.staticType as InterfaceType;
-      final notifierType = providerType.typeArguments.first as InterfaceType;
-      final stateType = notifierType.superclass.typeArguments.first;
+      final providerType = node.staticType as InterfaceType?;
+      final notifierType = providerType!.typeArguments.first as InterfaceType?;
+      final stateType = notifierType!.superclass!.typeArguments.first;
 
       if (nodeType.contains('Family')) {
         yieldPatch(
-            '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}, ${providerType.typeArguments.last.getDisplayString()}>',
-            node.typeArguments.offset,
+            '<${notifierType.getDisplayString(withNullability: false)}, ${stateType.getDisplayString(withNullability: false)}, ${providerType.typeArguments.last.getDisplayString(withNullability: false)}>',
+            node.typeArguments!.offset,
             node.argumentList.offset);
       } else {
         if (node.parent is VariableDeclaration) {
           // Make sure it is variable declaration so we don't add type params
           // on family accesses
           yieldPatch(
-              '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}>',
+              '<${notifierType.getDisplayString(withNullability: false)}, ${stateType.getDisplayString(withNullability: false)}>',
               node.function.end,
               node.argumentList.offset);
         }
@@ -51,14 +53,14 @@ class RiverpodNotifierChangesMigrationSuggestor
 
   @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
-    final nodeType = node.staticType.getDisplayString();
+    final nodeType = node.staticType!.getDisplayString(withNullability: false);
     if (nodeType.contains('StateNotifierProvider')) {
-      final providerType = node.staticType as InterfaceType;
-      final notifierType = providerType.typeArguments.first as InterfaceType;
-      final stateType = notifierType.superclass.typeArguments.first;
+      final providerType = node.staticType as InterfaceType?;
+      final notifierType = providerType!.typeArguments.first as InterfaceType?;
+      final stateType = notifierType!.superclass!.typeArguments.first;
       final constructorTypeArguments = node.constructorName.type.typeArguments;
       yieldPatch(
-          '<${notifierType.getDisplayString()}, ${stateType.getDisplayString()}>',
+          '<${notifierType.getDisplayString(withNullability: false)}, ${stateType.getDisplayString(withNullability: false)}>',
           constructorTypeArguments != null
               ? constructorTypeArguments.offset
               : node.constructorName.end,
@@ -77,8 +79,8 @@ class RiverpodNotifierChangesMigrationSuggestor
     // context.read(provider.state) => context.read(provider)
     // useProvider(provider.state) => useProvider(provider)
     if (node.identifier.name == 'state') {
-      if (node.prefix.staticType
-          .getDisplayString()
+      if (node.prefix.staticType!
+          .getDisplayString(withNullability: false)
           .contains('StateNotifierProvider')) {
         yieldPatch('', node.prefix.end, node.end);
       }
@@ -90,8 +92,8 @@ class RiverpodNotifierChangesMigrationSuggestor
   void visitPropertyAccess(PropertyAccess node) {
     // useProvider(Static.provider.state) => useProvider(provider)
     if (node.propertyName.name == 'state') {
-      if (node.realTarget.staticType
-          .getDisplayString()
+      if (node.realTarget.staticType!
+          .getDisplayString(withNullability: false)
           .contains('StateNotifierProvider')) {
         yieldPatch('', node.realTarget.end, node.end);
       }
@@ -104,8 +106,8 @@ class RiverpodNotifierChangesMigrationSuggestor
     if (node.function.toSource() == 'read' ||
         node.function.toSource() == 'watch' ||
         node.function.toSource() == 'useProvider') {
-      final firstArgStaticType =
-          node.argumentList.arguments.first.staticType.getDisplayString();
+      final firstArgStaticType = node.argumentList.arguments.first.staticType!
+          .getDisplayString(withNullability: false);
       if (firstArgStaticType.contains('StateNotifierProvider')) {
         // StateNotifierProvider
         // watch(provider) => watch(provider.notifier)
@@ -123,8 +125,8 @@ class RiverpodNotifierChangesMigrationSuggestor
     if (node.methodName.toSource() == 'read' ||
         node.methodName.toSource() == 'watch' ||
         node.methodName.toSource() == 'useProvider') {
-      final firstArgStaticType =
-          node.argumentList.arguments.first.staticType.getDisplayString();
+      final firstArgStaticType = node.argumentList.arguments.first.staticType!
+          .getDisplayString(withNullability: false);
       // StateNotifierProvider
       if (firstArgStaticType.contains('StateNotifierProvider')) {
         // ref.watch(provider) => ref.watch(provider.notifier)

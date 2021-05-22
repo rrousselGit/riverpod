@@ -3,21 +3,33 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+// ignore_for_file: avoid_types_on_closure_parameters, type_init_formals, unused_local_variable, avoid_print
 
 class Counter extends StateNotifier<int> {
-  Counter() : super(1);
+  Counter(ProviderReference this.ref) : super(1);
+  final ProviderReference ref;
   void increment() => state++;
   void decrement() => state--;
 }
 
-final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter());
+final counterProvider =
+    StateNotifierProvider<Counter, int>((ref) => Counter(ref));
+final futureProvider = FutureProvider((ProviderReference ref) async {
+  await Future<void>.delayed(const Duration(seconds: 1));
+  return Future.value(0);
+});
+final streamProvider = StreamProvider((ProviderReference ref) async* {
+  yield 0;
+  await Future<void>.delayed(const Duration(seconds: 1));
+  yield 1;
+});
+final plainProvider = Provider((ProviderReference ref) => '');
 
 class ConsumerWatch extends ConsumerWidget {
   const ConsumerWatch({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
-    // ignore: unused_local_variable
     final countNotifier = watch(counterProvider.notifier);
     final count = watch(counterProvider);
     return Center(
@@ -51,7 +63,6 @@ class StatelessListen extends StatelessWidget {
     return ProviderListener(
       provider: counterProvider,
       onChange: (context, i) {
-        // ignore: avoid_print
         print(i);
       },
       child: const Text('Counter'),
@@ -66,7 +77,6 @@ class StatelessExpressionListen extends StatelessWidget {
   Widget build(BuildContext context) => ProviderListener(
         provider: counterProvider,
         onChange: (context, i) {
-          // ignore: avoid_print
           print(i);
         },
         child: const Text('Counter'),
@@ -87,6 +97,8 @@ class _StatefulConsumerState extends State<StatefulConsumer> {
       child: GestureDetector(
         onTap: () {
           context.refresh(counterProvider);
+          context.refresh(futureProvider);
+          context.refresh(streamProvider);
         },
         child: Consumer(
           builder: (context, watch, child) {
@@ -124,9 +136,7 @@ class HooksWatch extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
     final countNotifier = useProvider(counterProvider.notifier);
-    // ignore: unused_local_variable
     final count = useProvider(counterProvider);
     return Center(
       child: ElevatedButton(

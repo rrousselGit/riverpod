@@ -22,9 +22,6 @@ void main() {
           RiverpodUnifiedSyntaxChangesMigrationSuggestor(
             VersionConstraint.parse('^0.14.0'),
           ),
-          // RiverpodUnifiedSyntaxChangesListenerMigrationRemoverSuggestor(
-          //   VersionConstraint.parse('^0.14.0'),
-          // ),
         ],
         sourceFile,
         expected,
@@ -40,10 +37,10 @@ void main() {
       await expectSuggestorSequenceGeneratesFormattedPatches(
         [
           RiverpodHooksProviderInfo(
-            VersionConstraint.parse('^0.15.0'),
+            VersionConstraint.parse('^1.0.0'),
           ),
           RiverpodUnifiedSyntaxChangesMigrationSuggestor(
-            VersionConstraint.parse('^0.15.0'),
+            VersionConstraint.parse('^1.0.0'),
           ),
         ],
         sourceFile,

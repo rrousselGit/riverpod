@@ -1,5 +1,5 @@
 # 0.0.3
-- Migration for unifying syntax (riverpod 0.15.0) [RFC](https://github.com/rrousselGit/river_pod/issues/335)
+- Migration for unifying syntax (riverpod 1.0.0) [RFC](https://github.com/rrousselGit/river_pod/issues/335)
 
 # 0.0.2+2
 - Fix migration for static final providers.

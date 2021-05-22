@@ -36,6 +36,9 @@ class MigrateCommand extends Command<void> {
     VersionConstraint version;
     if (dep is HostedDependency) {
       version = dep.version;
+    } else {
+      throw UnimplementedError(
+          'Migrating git and path dependencies can cause issues because of trying to understand riverpod versioning, please depend on an official package');
     }
 
     await runInteractiveCodemodSequence(
@@ -50,13 +53,13 @@ class MigrateCommand extends Command<void> {
         RiverpodHooksProviderInfo(version),
         RiverpodUnifiedSyntaxChangesMigrationSuggestor(version),
       ],
-      args: argResults.arguments,
+      args: argResults?.arguments ?? [],
     );
 
     await runInteractiveCodemod(
       filePathsFromGlob(Glob('pubspec.yaml', recursive: true)),
       versionMigrationSuggestor,
-      args: argResults.arguments,
+      args: argResults?.arguments ?? [],
     );
   }
 }
