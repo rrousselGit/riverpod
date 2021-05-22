@@ -6,6 +6,15 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 enum ClassType { consumer, hook, stateless, stateful, none }
+enum ProviderType {
+  stream,
+  future,
+  plain,
+  state,
+  statenotifier,
+  changenotifier,
+  none
+}
 
 /// Aggregates information needed for the unified syntax change with hooks
 ///
@@ -306,15 +315,38 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     yieldPatch(childSource, node.offset, node.end);
   }
 
+  ProviderType inProvider = ProviderType.none;
   @override
-  void visitTypeAnnotation(TypeAnnotation node) {
-    final type = node.type!.getDisplayString(withNullability: false);
-    print(type);
-    if (type.contains('ProviderReference')) {
-      print('Visiting ProviderReference type');
-      yieldPatch('ProviderRefBase', node.offset, node.end);
+  void visitTypeName(TypeName node) {
+    final typeName = node.type!.getDisplayString(withNullability: false);
+    if (typeName.contains('ProviderReference')) {
+      switch (inProvider) {
+        case ProviderType.stream:
+          yieldPatch('StreamProviderRef', node.name.offset, node.name.end);
+          break;
+        case ProviderType.future:
+          yieldPatch('FutureProviderRef', node.name.offset, node.name.end);
+          break;
+        case ProviderType.plain:
+          yieldPatch('ProviderRef', node.name.offset, node.name.end);
+          break;
+        case ProviderType.state:
+          yieldPatch('StateProviderRef', node.name.offset, node.name.end);
+          break;
+        case ProviderType.statenotifier:
+          yieldPatch(
+              'StateNotifierProviderRef', node.name.offset, node.name.end);
+          break;
+        case ProviderType.changenotifier:
+          yieldPatch(
+              'ChangeNotifierProviderRef', node.name.offset, node.name.end);
+          break;
+        case ProviderType.none:
+          yieldPatch('ProviderRefBase', node.name.offset, node.name.end);
+          break;
+      }
     }
-    super.visitTypeAnnotation(node);
+    super.visitTypeName(node);
   }
 
   @override
@@ -336,8 +368,23 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     } else if (!type.contains('Family') && type.contains('Provider')) {
       yieldPatch(type, node.constructorName.offset, node.constructorName.end);
     }
+    if (type.contains('FutureProvider')) {
+      inProvider = ProviderType.future;
+    } else if (type.contains('StreamProvider')) {
+      inProvider = ProviderType.stream;
+    } else if (type.contains('StateNotifierProvider')) {
+      inProvider = ProviderType.statenotifier;
+    } else if (type.contains('ChangeNotifierProvider')) {
+      inProvider = ProviderType.changenotifier;
+    } else if (type.contains('StateProvider')) {
+      inProvider = ProviderType.state;
+    } else if (type.contains('Provider')) {
+      inProvider = ProviderType.plain;
+    } else {
+      inProvider = ProviderType.none;
+    }
     super.visitInstanceCreationExpression(node);
-
+    inProvider = ProviderType.none;
     inConsumerBuilder = false;
     inHookBuilder = false;
   }
