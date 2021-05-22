@@ -14,16 +14,27 @@ class Counter extends StateNotifier<int> {
 
 final counterProvider =
     StateNotifierProvider<Counter, int>((ref) => Counter(ref));
-final futureProvider = FutureProvider<int>((FutureProviderRef ref) async {
+final futureProvider = FutureProvider<int>((FutureProviderRef<int> ref) async {
   await Future<void>.delayed(const Duration(seconds: 1));
   return Future.value(0);
 });
-final streamProvider = StreamProvider<int>((StreamProviderRef ref) async* {
+final streamProvider = StreamProvider<int>((StreamProviderRef<int> ref) async* {
   yield 0;
   await Future<void>.delayed(const Duration(seconds: 1));
   yield 1;
 });
-final plainProvider = Provider<String>((ProviderRef ref) => '');
+final plainProvider = Provider<String>((ProviderRef<String> ref) => '');
+final plainProviderAD =
+    Provider.autoDispose<String>((AutoDisposeProviderRef<String> ref) => '');
+final plainProviderFamilyAD = Provider.family
+    .autoDispose<String, String>((AutoDisposeProviderRef<String> ref, _) => '');
+final futureProviderAD = FutureProvider.autoDispose<String>(
+    (AutoDisposeFutureProviderRef<String> ref) async => '');
+final streamProviderAD = StreamProvider.autoDispose<String>(
+    (AutoDisposeStreamProviderRef<String> ref) =>
+        Stream.fromIterable(['1', '2', '3']));
+final stateNotifierProvider = StateNotifierProvider<Counter, int>(
+    (StateNotifierProviderRef<Counter, int> ref) => Counter(ref));
 
 class ConsumerWatch extends ConsumerWidget {
   const ConsumerWatch({Key? key}) : super(key: key);

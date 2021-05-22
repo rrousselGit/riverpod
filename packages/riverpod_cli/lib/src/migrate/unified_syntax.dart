@@ -316,30 +316,41 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   }
 
   ProviderType inProvider = ProviderType.none;
+  bool inAutoDisposeProvider = false;
+  String providerTypeArgs = '';
   @override
   void visitTypeName(TypeName node) {
     final typeName = node.type!.getDisplayString(withNullability: false);
     if (typeName.contains('ProviderReference')) {
+      final autoDisposePrefix = inAutoDisposeProvider ? 'AutoDispose' : '';
       switch (inProvider) {
         case ProviderType.stream:
-          yieldPatch('StreamProviderRef', node.name.offset, node.name.end);
+          yieldPatch('${autoDisposePrefix}StreamProviderRef<$providerTypeArgs>',
+              node.name.offset, node.name.end);
           break;
         case ProviderType.future:
-          yieldPatch('FutureProviderRef', node.name.offset, node.name.end);
+          yieldPatch('${autoDisposePrefix}FutureProviderRef<$providerTypeArgs>',
+              node.name.offset, node.name.end);
           break;
         case ProviderType.plain:
-          yieldPatch('ProviderRef', node.name.offset, node.name.end);
+          yieldPatch('${autoDisposePrefix}ProviderRef<$providerTypeArgs>',
+              node.name.offset, node.name.end);
           break;
         case ProviderType.state:
-          yieldPatch('StateProviderRef', node.name.offset, node.name.end);
+          yieldPatch('${autoDisposePrefix}StateProviderRef<$providerTypeArgs>',
+              node.name.offset, node.name.end);
           break;
         case ProviderType.statenotifier:
           yieldPatch(
-              'StateNotifierProviderRef', node.name.offset, node.name.end);
+              '${autoDisposePrefix}StateNotifierProviderRef<$providerTypeArgs>',
+              node.name.offset,
+              node.name.end);
           break;
         case ProviderType.changenotifier:
           yieldPatch(
-              'ChangeNotifierProviderRef', node.name.offset, node.name.end);
+              '${autoDisposePrefix}ChangeNotifierProviderRef<$providerTypeArgs>',
+              node.name.offset,
+              node.name.end);
           break;
         case ProviderType.none:
           yieldPatch('ProviderRefBase', node.name.offset, node.name.end);
@@ -370,23 +381,93 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     }
     if (type.contains('FutureProvider')) {
       inProvider = ProviderType.future;
+      providerTypeArgs =
+          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
     } else if (type.contains('StreamProvider')) {
       inProvider = ProviderType.stream;
+      providerTypeArgs =
+          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
     } else if (type.contains('StateNotifierProvider')) {
       inProvider = ProviderType.statenotifier;
+      providerTypeArgs =
+          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
     } else if (type.contains('ChangeNotifierProvider')) {
       inProvider = ProviderType.changenotifier;
+      providerTypeArgs =
+          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
     } else if (type.contains('StateProvider')) {
       inProvider = ProviderType.state;
+      providerTypeArgs =
+          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
     } else if (type.contains('Provider')) {
       inProvider = ProviderType.plain;
+      providerTypeArgs =
+          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
     } else {
       inProvider = ProviderType.none;
+    }
+    if (type.contains('AutoDispose')) {
+      inAutoDisposeProvider = true;
     }
     super.visitInstanceCreationExpression(node);
     inProvider = ProviderType.none;
     inConsumerBuilder = false;
     inHookBuilder = false;
+    inAutoDisposeProvider = false;
+  }
+
+  @override
+  void visitInvocationExpression(InvocationExpression node) {
+    final type = node.staticType!.getDisplayString(withNullability: false);
+
+    if (type.contains('FutureProvider')) {
+      inProvider = ProviderType.future;
+      providerTypeArgs =
+          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
+    } else if (type.contains('StreamProvider')) {
+      inProvider = ProviderType.stream;
+      providerTypeArgs =
+          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
+    } else if (type.contains('StateNotifierProvider')) {
+      inProvider = ProviderType.statenotifier;
+      providerTypeArgs =
+          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
+    } else if (type.contains('ChangeNotifierProvider')) {
+      inProvider = ProviderType.changenotifier;
+      providerTypeArgs =
+          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
+    } else if (type.contains('StateProvider')) {
+      inProvider = ProviderType.state;
+      providerTypeArgs =
+          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
+    } else if (type.contains('Provider')) {
+      inProvider = ProviderType.plain;
+      providerTypeArgs =
+          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
+    } else {
+      inProvider = ProviderType.none;
+    }
+    if (type.contains('AutoDispose')) {
+      inAutoDisposeProvider = true;
+    }
+    if (type.contains('Family')) {
+      // Too many type args for ProviderRef
+      providerTypeArgs =
+          providerTypeArgs.substring(0, providerTypeArgs.lastIndexOf(','));
+    }
+    // Add type parameters if not already there
+    if (!type.contains('Family') &&
+        type.contains('Provider') &&
+        !type.contains('ProviderScope') &&
+        !type.contains('ProviderListener')) {
+      if (node.typeArguments == null) {
+        yieldPatch('<$providerTypeArgs>', node.argumentList.offset,
+            node.argumentList.offset);
+      }
+    }
+    super.visitInvocationExpression(node);
+    inProvider = ProviderType.none;
+    inAutoDisposeProvider = false;
   }
 
   @override

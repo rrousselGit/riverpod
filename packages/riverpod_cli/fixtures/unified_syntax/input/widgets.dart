@@ -24,6 +24,15 @@ final streamProvider = StreamProvider((ProviderReference ref) async* {
   yield 1;
 });
 final plainProvider = Provider((ProviderReference ref) => '');
+final plainProviderAD = Provider.autoDispose((ProviderReference ref) => '');
+final plainProviderFamilyAD = Provider.family
+    .autoDispose<String, String>((ProviderReference ref, _) => '');
+final futureProviderAD =
+    FutureProvider.autoDispose((ProviderReference ref) async => '');
+final streamProviderAD = StreamProvider.autoDispose(
+    (ProviderReference ref) => Stream.fromIterable(['1', '2', '3']));
+final stateNotifierProvider = StateNotifierProvider<Counter, int>(
+    (ProviderReference ref) => Counter(ref));
 
 class ConsumerWatch extends ConsumerWidget {
   const ConsumerWatch({Key? key}) : super(key: key);
