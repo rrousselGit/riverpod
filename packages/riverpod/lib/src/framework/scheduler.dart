@@ -8,12 +8,12 @@ part of '../framework.dart';
 /// Providers are disposed if they spent at least one full frame without any listener.
 class _ProviderScheduler {
   bool _scheduledTask = false;
-  final _stateToDispose = <AutoDisposeProviderElement>[];
-  final _stateToRefresh = <ProviderElement>[];
+  final _stateToDispose = <AutoDisposeProviderElementBase>[];
+  final _stateToRefresh = <ProviderElementBase>[];
 
   Future<void>? _pendingFuture;
 
-  void scheduleProviderRefresh(ProviderElement element) {
+  void scheduleProviderRefresh(ProviderElementBase element) {
     _stateToRefresh.add(element);
 
     _scheduleTask();
@@ -43,7 +43,7 @@ class _ProviderScheduler {
     }
   }
 
-  void scheduleProviderDispose(AutoDisposeProviderElement element) {
+  void scheduleProviderDispose(AutoDisposeProviderElementBase element) {
     assert(
       !element.hasListeners,
       'Tried to dispose ${element._provider} , but still has listeners',
@@ -62,7 +62,7 @@ class _ProviderScheduler {
     for (var i = 0; i < _stateToDispose.length; i++) {
       final element = _stateToDispose[i];
 
-      if (element.maintainState || element.hasListeners || !element.mounted) {
+      if (element.maintainState || element.hasListeners || !element._mounted) {
         continue;
       }
       element._container._disposeProvider(element._origin);

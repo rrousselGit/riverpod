@@ -116,7 +116,7 @@ class ProviderContainer {
 
   final _overrideForProvider = HashMap<ProviderBase, ProviderBase>();
   final _overrideForFamily = HashMap<Family, FamilyOverride>();
-  final _stateReaders = HashMap<ProviderBase, ProviderElement>();
+  final _stateReaders = HashMap<ProviderBase, ProviderElementBase>();
 
   final List<ProviderObserver>? _localObservers;
 
@@ -157,7 +157,7 @@ class ProviderContainer {
   /// }
   /// ```
   Result read<Result>(
-    ProviderBase<Object?, Result> provider,
+    ProviderBase<Result> provider,
   ) {
     final element = readProviderElement(provider);
     element.flush();
@@ -174,14 +174,14 @@ class ProviderContainer {
   ///
   /// - [ProviderSubscription], which allows reading the current value and
   ///   closing the subscription.
-  /// - [ProviderReference.watch], which is an easier way for providers to listen
+  /// - [ProviderRefBase.watch], which is an easier way for providers to listen
   ///   to another provider.
-  ProviderSubscription<Listened> listen<Listened>(
-    ProviderListenable<Listened> provider,
-    void Function(Listened value) listener, {
+  ProviderSubscription<State> listen<State>(
+    ProviderListenable<State> provider,
+    void Function(State value) listener, {
     bool fireImmediately = true,
   }) {
-    if (provider is ProviderBase<Object?, Listened>) {
+    if (provider is ProviderBase<State>) {
       return _listenProvider(
         provider,
         listener,
@@ -194,9 +194,9 @@ class ProviderContainer {
     }
   }
 
-  ProviderSubscription<Listened> _listenProvider<Listened>(
-    ProviderBase<Object?, Listened> provider,
-    void Function(Listened value) listener, {
+  ProviderSubscription<State> _listenProvider<State>(
+    ProviderBase<State> provider,
+    void Function(State value) listener, {
     required bool fireImmediately,
   }) {
     final element = readProviderElement(provider);
@@ -217,7 +217,7 @@ class ProviderContainer {
   ///
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
-  Created refresh<Created>(RootProvider<Created, Object?> provider) {
+  Created refresh<Created>(RootProvider<Object?> provider) {
     final element = (_root ?? this)._stateReaders[provider];
 
     if (element == null) {
@@ -228,7 +228,7 @@ class ProviderContainer {
     }
   }
 
-  void _disposeProvider(ProviderBase<Object?, Object?> provider) {
+  void _disposeProvider(ProviderBase<Object?> provider) {
     final element = readProviderElement(provider);
     assert(
       _stateReaders.containsKey(element._origin),
@@ -319,8 +319,8 @@ class ProviderContainer {
   ///
   /// Do not use this in production code. This is exposed only for testing
   /// and devtools, to be able to test if a provider has listeners or similar.
-  ProviderElement<Created, Listened> readProviderElement<Created, Listened>(
-    ProviderBase<Created, Listened> provider,
+  ProviderElementBase<State> readProviderElement<State>(
+    ProviderBase<State> provider,
   ) {
     if (_disposed) {
       throw StateError(
@@ -344,7 +344,7 @@ class ProviderContainer {
             _overrideForFamily[provider.from] != null) {
           final familyOverride = _overrideForFamily[provider.from]!;
           override = familyOverride._createOverride(provider._argument)
-              as ProviderBase<Created, Listened>;
+              as ProviderBase<State>;
         }
 
         override ??= provider;
@@ -358,7 +358,7 @@ class ProviderContainer {
           _runBinaryGuarded<ProviderBase, Object?>(
             observer.didAddProvider,
             provider,
-            element.state._exposedValue,
+            element._exposedValue,
           );
         }
         return element;
@@ -367,7 +367,7 @@ class ProviderContainer {
           _circularDependencyLock = null;
         }
       }
-    }) as ProviderElement<Created, Listened>;
+    }) as ProviderElementBase<State>;
 
     return element;
   }
@@ -375,7 +375,7 @@ class ProviderContainer {
   /// Release all the resources associated with this [ProviderContainer].
   ///
   /// This will destroy the state of all providers associated to this
-  /// [ProviderContainer] and call [ProviderReference.onDispose] listeners.
+  /// [ProviderContainer] and call [ProviderRefBase.onDispose] listeners.
   void dispose() {
     if (_disposed) {
       return;
@@ -398,7 +398,7 @@ class ProviderContainer {
     _disposed = true;
 
     // Using a set to deduplicate elements
-    final allElementsInOrder = <ProviderElement>{};
+    final allElementsInOrder = <ProviderElementBase>{};
     _visitStatesInOrder(allElementsInOrder.add);
 
     for (final element in allElementsInOrder.toList(growable: false).reversed) {
@@ -414,9 +414,9 @@ class ProviderContainer {
   /// The visitor can return `true` if it wants to visit the dependents of that
   /// element too. Otherwise it can return false.
   void _visitStatesInOrder(
-    bool Function(ProviderElement element) visitor,
+    bool Function(ProviderElementBase element) visitor,
   ) {
-    void visitElement(ProviderElement element) {
+    void visitElement(ProviderElementBase element) {
       if (visitor(element)) {
         element._dependencies.keys.forEach(visitElement);
       }
@@ -507,7 +507,7 @@ class ProviderOverride implements Override {
 /// Do not extend or implement.
 class Override {}
 
-/// An error thrown when a call to [ProviderReference.read]/[ProviderReference.watch]
+/// An error thrown when a call to [ProviderRefBase.read]/[ProviderRefBase.watch]
 /// leads to a provider depending on itself.
 ///
 /// Circular dependencies are both not supported for performance reasons

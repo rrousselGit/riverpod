@@ -1,12 +1,12 @@
 part of '../framework.dart';
 
-/// A [ProviderReference] for providers that are automatically destroyed when
+/// A [ProviderRefBase] for providers that are automatically destroyed when
 /// no-longer used.
 ///
-/// The difference with [ProviderReference] is that it has an extra
+/// The difference with [ProviderRefBase] is that it has an extra
 /// [maintainState] property, to help determine if the state can be destroyed
 ///  or not.
-abstract class AutoDisposeProviderReference extends ProviderReference {
+abstract class AutoDisposeProviderRefBase extends ProviderRefBase {
   /// Whether to destroy the state of the provider when all listeners are removed or not.
   ///
   /// Can be changed at any time, in which case when setting it to `false`,
@@ -17,12 +17,12 @@ abstract class AutoDisposeProviderReference extends ProviderReference {
   set maintainState(bool value);
 
   @override
-  T watch<T>(RootProvider<Object?, T> provider);
+  T watch<T>(RootProvider<T> provider);
 
   @override
   void Function() listen<T>(
     // Overriden to allow AutoDisposeProviderBase
-    ProviderBase<Object?, T> provider,
+    ProviderBase<T> provider,
     void Function(T value) listener, {
     bool fireImmediately,
   });
@@ -35,28 +35,23 @@ abstract class AutoDisposeProviderReference extends ProviderReference {
 ///
 /// - [Provider.autoDispose], a variant of [Provider] that auto-dispose its state.
 /// {@endtemplate}
-abstract class AutoDisposeProviderBase<Created, Listened>
-    extends RootProvider<Created, Listened> {
+abstract class AutoDisposeProviderBase<State> extends RootProvider<State> {
   /// {@macro riverpod.AutoDisposeProviderBase}
   AutoDisposeProviderBase(String? name) : super(name);
 
   @override
-  Created create(covariant AutoDisposeProviderReference ref);
+  State create(AutoDisposeProviderRefBase ref);
 
   @override
-  AutoDisposeProviderElement<Created, Listened> createElement() {
-    return AutoDisposeProviderElement(this);
-  }
+  AutoDisposeProviderElementBase<State> createElement();
 }
 
-/// The [ProviderElement] of an [AutoDisposeProviderBase].
-class AutoDisposeProviderElement<Created, Listened>
-    extends ProviderElement<Created, Listened>
-    implements AutoDisposeProviderReference {
-  /// The [ProviderElement] of an [AutoDisposeProviderBase].
-  AutoDisposeProviderElement(
-    ProviderBase<Created, Listened> provider,
-  ) : super(provider);
+/// The [ProviderElementBase] of an [AutoDisposeProviderBase].
+abstract class AutoDisposeProviderElementBase<State>
+    extends ProviderElementBase<State> implements AutoDisposeProviderRefBase {
+  /// The [ProviderElementBase] of an [AutoDisposeProviderBase].
+  AutoDisposeProviderElementBase(ProviderBase<State> provider)
+      : super(provider);
 
   bool _maintainState = false;
   @override
@@ -74,5 +69,29 @@ class AutoDisposeProviderElement<Created, Listened>
     if (!maintainState && !hasListeners) {
       _container._scheduler.scheduleProviderDispose(this);
     }
+  }
+}
+
+///
+@protected
+mixin AutoDisposeProviderOverridesMixin<State>
+    on AutoDisposeProviderBase<State> {
+  /// Overrides the behavior of a provider with a value.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithValue(State value) {
+    return ProviderOverride(
+      ValueProvider<State>((ref) => value, value),
+      this,
+    );
+  }
+
+  /// Overrides the behavior of this provider with another provider.
+  ///
+  /// {@macro riverpod.overideWith}
+  ProviderOverride overrideWithProvider(
+    AutoDisposeProviderBase<State> provider,
+  ) {
+    return ProviderOverride(provider, this);
   }
 }

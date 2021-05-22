@@ -21,8 +21,8 @@ export 'src/framework.dart'
         RootProvider,
         ProviderBase,
         Override,
-        AutoDisposeProviderReference,
-        ProviderReference,
+        AutoDisposeProviderRefBase,
+        ProviderRefBase,
         ProviderListenable,
         ProviderContainer,
         ProviderObserver,
@@ -30,8 +30,8 @@ export 'src/framework.dart'
         FamilyX,
         ProviderException,
         AutoDisposeProviderBase,
-        AutoDisposeProviderElement,
-        ProviderElement,
+        AutoDisposeProviderElementBase,
+        ProviderElementBase,
         ScopedCreate;
 
 export 'src/future_provider.dart'

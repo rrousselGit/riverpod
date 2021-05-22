@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
+import 'async_value_converters.dart';
 import 'builders.dart';
-import 'common.dart' show AsyncLoading, AsyncValue;
+import 'common.dart';
 import 'framework.dart';
 import 'future_provider.dart';
 import 'provider.dart';
@@ -11,7 +12,7 @@ import 'provider.dart';
 part 'stream_provider/auto_dispose.dart';
 part 'stream_provider/base.dart';
 
-mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
+mixin _StreamProviderMixin<T> on RootProvider<AsyncValue<T>> {
   // Override overrideWithValue(AsyncValue<T> value) {
   //   return ProviderOverride(
   //     ValueProvider<Stream<T>, AsyncValue<T>>((ref) {
@@ -46,12 +47,12 @@ mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
   /// Instead, this stream is always a broadcast stream.
   ///
   /// The stream obtained may change over time, if the [StreamProvider] is
-  /// re-evaluated, such as when it is using [ProviderReference.watch] and the
+  /// re-evaluated, such as when it is using [ProviderRefBase.watch] and the
   /// provider listened changes, or on [ProviderContainer.refresh].
   ///
   /// If the [StreamProvider] was overridden using `overrideWithValue`,
   /// a stream will be generated and manipulated based on the [AsyncValue] used.
-  RootProvider<Object?, Stream<T>> get stream;
+  RootProvider<Stream<T>> get stream;
 
   /// Exposes a [Future] which resolves with the last value or error emitted.
   ///
@@ -150,7 +151,7 @@ mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
   /// ```
   ///
   /// which is the expected behavior.
-  RootProvider<Object?, Future<T>> get last;
+  RootProvider<Future<T>> get last;
 }
 
 /// {@template riverpod.streamprovider}
@@ -210,17 +211,16 @@ mixin _StreamProviderMixin<T> on RootProvider<Stream<T>, AsyncValue<T>> {
 /// - [StreamProvider.family], to create a [StreamProvider] from external parameters
 /// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no-longer needed.
 /// {@endtemplate}
-AsyncValue<T> _listenStream<T>(
-  Stream<T> Function() stream,
-  ProviderReference ref,
-  NotifyListeners<AsyncValue<T>> notifyListeners,
+AsyncValue<State> _listenStream<State>(
+  Stream<State> Function() stream,
+  ProviderRef<AsyncValue<State>> ref,
 ) {
   try {
     final sub = stream().listen(
-      (event) => notifyListeners(newValue: AsyncValue.data(event)),
+      (event) => ref.state = AsyncValue.data(event),
       // ignore: avoid_types_on_closure_parameters
       onError: (Object err, StackTrace stack) {
-        notifyListeners(newValue: AsyncValue.error(err, stack));
+        ref.state = AsyncValue.error(err, stack);
       },
     );
 
@@ -229,86 +229,5 @@ AsyncValue<T> _listenStream<T>(
     return const AsyncValue.loading();
   } catch (err, stack) {
     return AsyncValue.error(err, stack);
-  }
-}
-
-Stream<T> _createStream<T>(
-  ProviderReference ref,
-  Stream<T> Function() create,
-) {
-  return create().asBroadcastStream();
-}
-
-class _LastStreamValueProvider<T>
-    extends AutoDisposeProviderBase<_LastStreamValueProvider<T>, Future<T>> {
-  _LastStreamValueProvider(this._provider)
-      : super(
-          _provider.name == null ? null : '${_provider.name}.last',
-        );
-
-  final RootProvider<Object?, AsyncValue<T>> _provider;
-
-  @override
-  _LastStreamValueProvider<T> create(
-    AutoDisposeProviderReference ref,
-  ) {
-    return this;
-  }
-
-  @override
-  _LastStreamValueProviderState<T> createState() {
-    return _LastStreamValueProviderState<T>();
-  }
-}
-
-class _LastStreamValueProviderState<T>
-    extends ProviderStateBase<_LastStreamValueProvider<T>, Future<T>> {
-  @override
-  void valueChanged({_LastStreamValueProvider<T>? previous}) {
-    final provider = createdValue._provider;
-    final ref = this.ref as AutoDisposeProviderReference;
-
-    if (provider is AlwaysAliveProviderBase) ref.maintainState = true;
-
-    Completer<T>? loadingCompleter;
-
-    ref.onDispose(() {
-      if (loadingCompleter != null) {
-        loadingCompleter!.completeError(
-          StateError('The provider was disposed the stream could emit a value'),
-        );
-      }
-    });
-
-    void listener(AsyncValue<T> value) {
-      value.when(
-        loading: () {
-          if (loadingCompleter == null) {
-            loadingCompleter = Completer<T>();
-            exposedValue = loadingCompleter!.future;
-          }
-        },
-        data: (data) {
-          if (loadingCompleter != null) {
-            loadingCompleter!.complete(data);
-            // allow follow-up data calls to go on the 'else' branch
-            loadingCompleter = null;
-          } else {
-            exposedValue = Future.value(data);
-          }
-        },
-        error: (err, stack) {
-          if (loadingCompleter != null) {
-            loadingCompleter!.completeError(err, stack);
-            // allow follow-up error calls to go on the 'else' branch
-            loadingCompleter = null;
-          } else {
-            exposedValue = Future.error(err, stack);
-          }
-        },
-      );
-    }
-
-    ref.listen(provider, listener, fireImmediately: true);
   }
 }

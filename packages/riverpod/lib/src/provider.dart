@@ -41,7 +41,7 @@ part 'provider/base.dart';
 /// The most common usage is to declare them as global variables like so:
 ///
 /// ```dart
-/// final myProvider = Provider((ref) {
+/// final myProvider = Provider((ref, state, setState) {
 ///   return MyValue();
 /// });
 /// ```
@@ -79,8 +79,8 @@ part 'provider/base.dart';
 /// providers expose a state of the same "type":
 ///
 /// ```dart
-/// final cityProvider = Provider((ref) => 'London');
-/// final countryProvider = Provider((ref) => 'England');
+/// final cityProvider = Provider((ref, state, setState) => 'London');
+/// final countryProvider = Provider((ref, state, setState) => 'England');
 /// ```
 ///
 /// The fact that both providers creates a `String` does not cause conflicts.
@@ -107,13 +107,13 @@ part 'provider/base.dart';
 /// As an example, consider the following provider:
 ///
 /// ```dart
-/// final cityProvider = Provider((ref) => 'London');
+/// final cityProvider = Provider((ref, state, setState) => 'London');
 /// ```
 ///
 /// We can now create another provider that will consume our `cityProvider`:
 ///
 /// ```dart
-/// final weatherProvider = FutureProvider((ref) async {
+/// final weatherProvider = FutureProvider((ref, state, setState) async {
 ///   // We use `ref.watch` to watch another provider, and we pass it the provider
 ///   // that we want to consume. Here: cityProvider
 ///   final city = ref.watch(cityProvider);
@@ -134,10 +134,10 @@ part 'provider/base.dart';
 /// like so:
 ///
 /// ```dart
-/// final cityProvider = Provider((ref) => 'London');
-/// final countryProvider = Provider((ref) => 'England');
+/// final cityProvider = Provider((ref, state, setState) => 'London');
+/// final countryProvider = Provider((ref, state, setState) => 'England');
 ///
-/// final weatherProvider = Provider((ref) {
+/// final weatherProvider = Provider((ref, state, setState) {
 ///   final city = ref.read(cityProvider);
 ///   final country = ref.read(countryProvider);
 ///
@@ -160,10 +160,10 @@ part 'provider/base.dart';
 /// object directly:
 ///
 /// ```dart
-/// final cityProvider = Provider((ref) => 'London');
-/// final countryProvider = Provider((ref) => 'England');
+/// final cityProvider = Provider((ref, state, setState) => 'London');
+/// final countryProvider = Provider((ref, state, setState) => 'England');
 ///
-/// final weatherProvider = Provider((ref) {
+/// final weatherProvider = Provider((ref, state, setState) {
 ///   // Pass the `ref` object to our `Location` class.
 ///   // `Location` will then be able to call `ref.read` to read the providers.
 ///   return Location(ref);
@@ -172,7 +172,7 @@ part 'provider/base.dart';
 /// class Location {
 ///   Location(this._ref);
 ///
-///   final ProviderReference _ref;
+///   final ProviderRefBase _ref;
 ///
 ///   String get label {
 ///     final city = _ref.read(cityProvider);
@@ -221,11 +221,5 @@ part 'provider/base.dart';
 ///   when that provider is no-longer listened.
 /// - [Provider.family], to allow providers to create a value from external parameters.
 /// {@endtemplate}
-mixin _ProviderStateMixin<T> on ProviderStateBase<T, T> {
-  @override
-  void valueChanged({T? previous}) {
-    if (createdValue != exposedValue) {
-      exposedValue = createdValue;
-    }
-  }
-}
+// TODO(rrousselGit) remove
+void _opoofn() {}

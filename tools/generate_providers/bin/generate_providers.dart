@@ -476,10 +476,10 @@ extension on Tuple3<DisposeType, StateDetails, ProviderType> {
   String get ref {
     switch (item1) {
       case DisposeType.autoDispose:
-        return 'AutoDisposeProviderReference';
+        return 'AutoDisposeProviderRefBase';
       case DisposeType.none:
       default:
-        return 'ProviderReference';
+        return 'ProviderRefBase';
     }
   }
 

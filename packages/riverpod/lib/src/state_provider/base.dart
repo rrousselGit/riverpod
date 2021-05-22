@@ -1,15 +1,49 @@
 part of '../state_provider.dart';
 
+/// {@macro riverpod.providerrefbase}
+/// - [controller], the [StateController] currently exposed by this providers.
+abstract class StateProviderRef<State> implements ProviderRefBase {
+  /// The [StateController] currently exposed by this provider.
+  ///
+  /// Cannot be accessed while creating the provider.
+  StateController<State> get controller;
+}
+
+/// The [ProviderElementBase] for [StateProvider]
+class StateProviderElement<State>
+    extends ProviderElementBase<StateController<State>>
+    implements StateProviderRef<State> {
+  /// The [ProviderElementBase] for [StateProvider]
+  StateProviderElement(ProviderBase<StateController<State>> provider)
+      : super(provider);
+
+  @override
+  StateController<State> get controller => state;
+}
+
 /// {@macro riverpod.stateprovider}
 @sealed
-class StateProvider<T>
-    extends AlwaysAliveProviderBase<StateController<T>, StateController<T>>
-    with ProviderOverridesMixin<StateController<T>, StateController<T>> {
+class StateProvider<State>
+    extends AlwaysAliveProviderBase<StateController<State>>
+    with ProviderOverridesMixin<StateController<State>> {
   /// {@macro riverpod.stateprovider}
-  StateProvider(
-    this._create, {
-    String? name,
-  }) : super(name);
+  StateProvider(this._create, {String? name}) : super(name);
+
+  /// {@macro riverpod.family}
+  static const family = StateProviderFamilyBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  static const autoDispose = AutoDisposeStateProviderBuilder();
+
+  final Create<State, StateProviderRef> _create;
+
+  @override
+  StateController<State> create(StateProviderRef<State> ref) {
+    return _createStateProvider(
+      ref as ProviderElementBase<StateController<State>>,
+      _create(ref),
+    );
+  }
 
   /// {@template riverpod.stateprovider.notifier}
   /// Obtains the [StateController] associated with this provider, but without
@@ -32,68 +66,29 @@ class StateProvider<T>
   /// The reasoning is, using `read` could cause hard to catch bugs, such as
   /// not rebuilding dependent providers/widgets after using `context.refresh` on this provider.
   /// {@endtemplate}
-  late final AlwaysAliveProviderBase<StateController<T>, StateController<T>>
-      notifier = Provider((ref) => ref.watch(this));
-
-  final Create<T, ProviderReference> _create;
+  late final AlwaysAliveProviderBase<StateController<State>> notifier =
+      Provider((ref) => ref.watch(this));
 
   @override
-  StateController<T> create(ProviderReference ref) {
-    return StateController(_create(ref));
-  }
-
-  /// {@macro riverpod.family}
-  static const family = StateProviderFamilyBuilder();
-
-  /// {@macro riverpod.autoDispose}
-  static const autoDispose = AutoDisposeStateProviderBuilder();
-
-  @override
-  _StateProviderState<T> createState() {
-    return _StateProviderState<T>();
-  }
+  StateProviderElement<State> createElement() => StateProviderElement(this);
 }
-
-@sealed
-class _StateProviderState<T> = ProviderStateBase<StateController<T>,
-    StateController<T>> with _StateProviderStateMixin<T>;
 
 /// {@macro riverpod.stateprovider.family}
 @sealed
-class StateProviderFamily<T, A> extends Family<StateController<T>,
-    StateController<T>, A, ProviderReference, StateProvider<T>> {
+class StateProviderFamily<State, Arg>
+    extends Family<StateController<State>, Arg, StateProvider<State>> {
   /// {@macro riverpod.stateprovider.family}
-  StateProviderFamily(
-    T Function(ProviderReference ref, A a) create, {
-    String? name,
-  }) : super((ref, a) => StateController(create(ref, a)), name);
+  StateProviderFamily(this._create, {String? name}) : super(name);
+
+  final FamilyCreate<State, StateProviderRef, Arg> _create;
 
   @override
-  StateProvider<T> create(
-    A value,
-    StateController<T> Function(ProviderReference ref, A param) builder,
-    String? name,
+  StateProvider<State> create(
+    Arg argument,
   ) {
-    return StateProvider((ref) => builder(ref, value).state, name: name);
-  }
-}
-
-/// Overrides [overrideWithProvider] for [StateProvider.family].
-extension StateFamilyX<T, Param> on Family<StateController<T>,
-    StateController<T>, Param, ProviderReference, StateProvider<T>> {
-  /// Overrides the behavior of a family for a part of the application.
-  Override overrideWithProvider(
-    T Function(ProviderReference ref, Param param) builderOverride,
-  ) {
-    return FamilyOverride(
-      this,
-      (param) {
-        return create(
-          param as Param,
-          (ref, a) => StateController(builderOverride(ref, a)),
-          null,
-        );
-      },
+    return StateProvider(
+      (ref) => _create(ref, argument),
+      name: name,
     );
   }
 }

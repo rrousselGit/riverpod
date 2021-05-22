@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
-  group('ProviderReference', () {
+  group('ProviderRefBase', () {
     group('.watch', () {
       test('can listen multiple providers at once', () {
         final container = createContainer();

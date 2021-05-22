@@ -32,7 +32,7 @@ void main() {
   });
 
   testWidgets('mounted', (tester) async {
-    late ProviderReference providerState;
+    late ProviderRefBase providerState;
     bool? mountedOnDispose;
     final provider = Provider<int>((ref) {
       providerState = ref;
@@ -332,7 +332,7 @@ void main() {
     final provider = Provider((_) => 42);
 
     // These check the type safety
-    ProviderReference? ref;
+    ProviderRefBase? ref;
 
     // ignore: omit_local_variable_types
     final Provider<int> provider1 = Provider<int>((r) {

@@ -91,7 +91,7 @@ Migrated to null-safety
 
 # 0.12.2
 
-- Exported `AutoDisposeProviderReference`
+- Exported `AutoDisposeProviderRefBase`
 
 # 0.12.1
 
@@ -136,7 +136,7 @@ Migrated to null-safety
   ```dart
   import 'package:flutter_riverpod/all.dart';
 
-  final AutoDisposeStateProvider<int> counter = StateProvider.autoDispose<int>((ProviderReference ref) {
+  final AutoDisposeStateProvider<int> counter = StateProvider.autoDispose<int>((ProviderRefBase ref) {
     return 0;
   });
   ```

@@ -68,7 +68,7 @@ class StateProviderBuilder {
   /// ```
   /// {@endtemplate}
   StateProvider<T> call<T>(
-    T Function(ProviderReference ref) create, {
+    T Function(ProviderRefBase ref) create, {
     String? name,
   }) {
     return StateProvider(create, name: name);
@@ -300,7 +300,7 @@ class StateProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   StateProviderFamily<T, Param> call<T, Param>(
-    T Function(ProviderReference ref, Param param) create, {
+    T Function(ProviderRefBase ref, Param param) create, {
     String? name,
   }) {
     return StateProviderFamily(create, name: name);
@@ -320,7 +320,7 @@ class StateNotifierProviderBuilder {
   /// {@macro riverpod.autoDispose}
   StateNotifierProvider<Notifier, Value>
       call<Notifier extends StateNotifier<Value>, Value>(
-    Notifier Function(ProviderReference ref) create, {
+    Notifier Function(ProviderRefBase ref) create, {
     String? name,
   }) {
     return StateNotifierProvider(create, name: name);
@@ -345,7 +345,7 @@ class StateNotifierProviderFamilyBuilder {
   /// {@macro riverpod.family}
   StateNotifierProviderFamily<Notifier, Value, Param>
       call<Notifier extends StateNotifier<Value>, Value, Param>(
-    Notifier Function(ProviderReference ref, Param param) create, {
+    Notifier Function(ProviderRefBase ref, Param param) create, {
     String? name,
   }) {
     return StateNotifierProviderFamily(create, name: name);
@@ -364,7 +364,7 @@ class ProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   Provider<T> call<T>(
-    T Function(ProviderReference ref) create, {
+    T Function(ProviderRefBase ref) create, {
     String? name,
   }) {
     return Provider(create, name: name);
@@ -388,7 +388,7 @@ class ProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   ProviderFamily<T, Param> call<T, Param>(
-    T Function(ProviderReference ref, Param param) create, {
+    T Function(ProviderRefBase ref, Param param) create, {
     String? name,
   }) {
     return ProviderFamily(create, name: name);
@@ -407,7 +407,7 @@ class FutureProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   FutureProvider<T> call<T>(
-    Future<T> Function(ProviderReference ref) create, {
+    Future<T> Function(ProviderRefBase ref) create, {
     String? name,
   }) {
     return FutureProvider(create, name: name);
@@ -431,7 +431,7 @@ class FutureProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   FutureProviderFamily<T, Param> call<T, Param>(
-    Future<T> Function(ProviderReference ref, Param param) create, {
+    Future<T> Function(ProviderRefBase ref, Param param) create, {
     String? name,
   }) {
     return FutureProviderFamily(create, name: name);
@@ -450,7 +450,7 @@ class StreamProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   StreamProvider<T> call<T>(
-    Stream<T> Function(ProviderReference ref) create, {
+    Stream<T> Function(ProviderRefBase ref) create, {
     String? name,
   }) {
     return StreamProvider(create, name: name);
@@ -474,7 +474,7 @@ class StreamProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   StreamProviderFamily<T, Param> call<T, Param>(
-    Stream<T> Function(ProviderReference ref, Param param) create, {
+    Stream<T> Function(ProviderRefBase ref, Param param) create, {
     String? name,
   }) {
     return StreamProviderFamily(create, name: name);
@@ -493,7 +493,7 @@ class AutoDisposeStateProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   AutoDisposeStateProvider<T> call<T>(
-    T Function(AutoDisposeProviderReference ref) create, {
+    T Function(AutoDisposeProviderRefBase ref) create, {
     String? name,
   }) {
     return AutoDisposeStateProvider(create, name: name);
@@ -512,7 +512,7 @@ class AutoDisposeStateProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   AutoDisposeStateProviderFamily<T, Param> call<T, Param>(
-    T Function(AutoDisposeProviderReference ref, Param param) create, {
+    T Function(AutoDisposeProviderRefBase ref, Param param) create, {
     String? name,
   }) {
     return AutoDisposeStateProviderFamily(create, name: name);
@@ -527,7 +527,7 @@ class AutoDisposeStateNotifierProviderBuilder {
   /// {@macro riverpod.autoDispose}
   AutoDisposeStateNotifierProvider<Notifier, Value>
       call<Notifier extends StateNotifier<Value>, Value>(
-    Notifier Function(AutoDisposeProviderReference ref) create, {
+    Notifier Function(AutoDisposeProviderRefBase ref) create, {
     String? name,
   }) {
     return AutoDisposeStateNotifierProvider(create, name: name);
@@ -547,7 +547,7 @@ class AutoDisposeStateNotifierProviderFamilyBuilder {
   /// {@macro riverpod.family}
   AutoDisposeStateNotifierProviderFamily<Notifier, Value, Param>
       call<Notifier extends StateNotifier<Value>, Value, Param>(
-    Notifier Function(AutoDisposeProviderReference ref, Param param) create, {
+    Notifier Function(AutoDisposeProviderRefBase ref, Param param) create, {
     String? name,
   }) {
     return AutoDisposeStateNotifierProviderFamily(create, name: name);
@@ -561,7 +561,7 @@ class AutoDisposeProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   AutoDisposeProvider<T> call<T>(
-    T Function(AutoDisposeProviderReference ref) create, {
+    T Function(AutoDisposeProviderRefBase ref) create, {
     String? name,
   }) {
     return AutoDisposeProvider(create, name: name);
@@ -580,7 +580,7 @@ class AutoDisposeProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   AutoDisposeProviderFamily<T, Param> call<T, Param>(
-    T Function(AutoDisposeProviderReference ref, Param param) create, {
+    T Function(AutoDisposeProviderRefBase ref, Param param) create, {
     String? name,
   }) {
     return AutoDisposeProviderFamily(create, name: name);
@@ -594,7 +594,7 @@ class AutoDisposeFutureProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   AutoDisposeFutureProvider<T> call<T>(
-    Future<T> Function(AutoDisposeProviderReference ref) create, {
+    Future<T> Function(AutoDisposeProviderRefBase ref) create, {
     String? name,
   }) {
     return AutoDisposeFutureProvider(create, name: name);
@@ -613,7 +613,7 @@ class AutoDisposeFutureProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   AutoDisposeFutureProviderFamily<T, Param> call<T, Param>(
-    Future<T> Function(AutoDisposeProviderReference ref, Param param) create, {
+    Future<T> Function(AutoDisposeProviderRefBase ref, Param param) create, {
     String? name,
   }) {
     return AutoDisposeFutureProviderFamily(create, name: name);
@@ -627,7 +627,7 @@ class AutoDisposeStreamProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   AutoDisposeStreamProvider<T> call<T>(
-    Stream<T> Function(AutoDisposeProviderReference ref) create, {
+    Stream<T> Function(AutoDisposeProviderRefBase ref) create, {
     String? name,
   }) {
     return AutoDisposeStreamProvider(create, name: name);
@@ -646,7 +646,7 @@ class AutoDisposeStreamProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   AutoDisposeStreamProviderFamily<T, Param> call<T, Param>(
-    Stream<T> Function(AutoDisposeProviderReference ref, Param param) create, {
+    Stream<T> Function(AutoDisposeProviderRefBase ref, Param param) create, {
     String? name,
   }) {
     return AutoDisposeStreamProviderFamily(create, name: name);

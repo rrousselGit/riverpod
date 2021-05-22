@@ -1,8 +1,6 @@
 // ignore_for_file: public_member_api_docs
 part of '../framework.dart';
 
-typedef NotifyListeners<T> = void Function({T newValue});
-
 /// A callback used by providers to create the value exposed.
 ///
 /// If an exception is thrown within that callback, all attempts at reading
@@ -13,12 +11,18 @@ typedef NotifyListeners<T> = void Function({T newValue});
 ///
 /// See also:
 ///
-/// - [ProviderReference], which exposes the methods to read other providers.
+/// - [ProviderRefBase], which exposes the methods to read other providers.
 /// - [Provider], a provider that uses [Create] to expose an immutable value.
-typedef Create<T, Ref extends ProviderReference> = T Function(Ref ref);
+typedef Create<T, Ref extends ProviderRefBase> = T Function(Ref ref);
+
+/// A [Create] equivalent used by [Family].
+typedef FamilyCreate<T, Ref extends ProviderRefBase, Arg> = T Function(
+  Ref ref,
+  Arg arg,
+);
 
 /// A function that reads the state of a provider.
-typedef Reader = T Function<T>(RootProvider<Object?, T> provider);
+typedef Reader = T Function<T>(RootProvider<T> provider);
 
 // Copied from Flutter
 /// Returns a summary of the runtime type and hash code of `object`.
@@ -42,30 +46,26 @@ String shortHash(Object? object) {
 
 /// A base class for all providers, used to consume a provider.
 ///
-/// It is used by [ProviderContainer.listen] and `ref.watch(` to listen to
+/// It is used by [ProviderContainer.listen] and `ref.watch` to listen to
 /// both a provider and `provider.select`.
 ///
 /// Do not implement or extend.
-abstract class ProviderListenable<Listened> {}
+abstract class ProviderListenable<State> {}
 
 /// A base class for providers that never disposes themselves.
 ///
 /// This is the default base class for providers, unless a provider was marked
 /// with the `.autoDispose` modifier, like: `Provider.autoDispose(...)`
-abstract class AlwaysAliveProviderBase<Created, Listened>
-    extends RootProvider<Created, Listened> {
+abstract class AlwaysAliveProviderBase<State> extends RootProvider<State> {
   /// Creates an [AlwaysAliveProviderBase].
   AlwaysAliveProviderBase(String? name) : super(name);
 
   @override
-  ProviderElement<Created, Listened> createElement() {
-    return ProviderElement(this);
-  }
+  ProviderElementBase<State> createElement();
 }
 
 /// A base class for _all_ providers.
-abstract class ProviderBase<Created, Listened>
-    implements ProviderListenable<Listened> {
+abstract class ProviderBase<State> implements ProviderListenable<State> {
   /// A base class for _all_ providers.
   ProviderBase(this.name) {
     assert(() {
@@ -74,7 +74,7 @@ abstract class ProviderBase<Created, Listened>
     }(), '');
   }
 
-  Created create(ProviderReference ref);
+  State create(covariant ProviderRefBase ref);
 
   /// {@template riverpod.name}
   /// A custom label for providers.
@@ -83,10 +83,10 @@ abstract class ProviderBase<Created, Listened>
   /// {@endtemplate}
   final String? name;
 
-  Family? _from;
+  Family<Object?, State, ProviderBase<State>>? _from;
 
   /// If this provider was created with the `.family` modifier, [from] is the `.family` instance.
-  Family? get from => _from;
+  Family<Object?, State, ProviderBase<State>>? get from => _from;
 
   Object? _argument;
 
@@ -94,11 +94,8 @@ abstract class ProviderBase<Created, Listened>
   /// variable used.
   Object? get argument => _argument;
 
-  /// An internal method that creates the state of a provider.
-  ProviderStateBase<Created, Listened> createState();
-
   /// An internal method that defines how a provider behaves.
-  ProviderElement<Created, Listened> createElement();
+  ProviderElementBase<State> createElement();
 
   /// A unique identifier for this provider, used by devtools to differentiate providers
   ///
@@ -141,8 +138,7 @@ abstract class ProviderBase<Created, Listened>
 /// this excludes [ScopedProvider] – which may not be supported by your code
 /// due to its particular behavior.
 /// {@endtemplate}
-abstract class RootProvider<Created, Listened>
-    extends ProviderBase<Created, Listened> {
+abstract class RootProvider<State> extends ProviderBase<State> {
   /// {@macro riverpod.rootprovider}
   RootProvider(String? name) : super(name);
 
@@ -162,14 +158,14 @@ abstract class RootProvider<Created, Listened>
   ///   int get age => _age;
   ///   set age(int age) {
   ///     _age = age;
-  ///     _notifyListeners();
+  ///     notifyListeners();
   ///   }
   ///
   ///   String _name = '';
   ///   String get name => _name;
   ///   set name(String name) {
   ///     _name = name;
-  ///     _notifyListeners();
+  ///     notifyListeners();
   ///   }
   /// }
   ///
@@ -215,9 +211,9 @@ abstract class RootProvider<Created, Listened>
   /// This will further optimise our widget by rebuilding it only when "isAdult"
   /// changed instead of whenever the age changes.
   ProviderListenable<Selected> select<Selected>(
-    Selected Function(Listened value) selector,
+    Selected Function(State value) selector,
   ) {
-    return ProviderSelector<Listened, Selected>(
+    return ProviderSelector<State, Selected>(
       provider: this,
       selector: selector,
     );
@@ -234,7 +230,7 @@ class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
   });
 
   /// The provider that was selected
-  final RootProvider<Object?, Input> provider;
+  final RootProvider<Input> provider;
 
   /// The selector applied
   final Output Function(Input) selector;
@@ -249,7 +245,7 @@ class ProviderSubscription<T> {
   bool _debugDisposed = false;
 
   final void Function(T) _listener;
-  final ProviderElement<Object?, T> _element;
+  final ProviderElementBase<T> _element;
 
   void close() {
     assert(!_debugDisposed, 'called `close` on an already closed subscription');
@@ -265,26 +261,19 @@ class ProviderSubscription<T> {
   T read() => _element.getExposedValue();
 }
 
+@Deprecated('Use ProviderRefBase instead.')
+typedef ProviderReference = ProviderRefBase;
+
+/// {@template riverpod.providerrefbase}
 /// An object used by providers to interact with other providers and the life-cycles
 /// of the application.
 ///
 /// See also:
 ///
 /// - [read] and [watch], two methods that allows a provider to consume other providers.
-/// - [mounted], an utility to know whether the provider is still "alive" or not.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
-@sealed
-abstract class ProviderReference {
-  /// An utility to know if a provider was destroyed or not.
-  ///
-  /// This is useful when dealing with asynchronous operations, as the provider
-  /// may have potentially be destroyed before the end of the asynchronous operation.
-  /// In that case, we may want to stop performing further tasks.
-  ///
-  /// Most providers are never disposed, so in most situations you do not have to
-  /// care about this.
-  bool get mounted;
-
+/// {@endtemplate}
+abstract class ProviderRefBase {
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
 
@@ -311,7 +300,7 @@ abstract class ProviderReference {
   ///
   /// ```dart
   /// final configsProvider = FutureProvider(...);
-  /// final myServiceProvider = Provider((ref) {
+  /// final myServiceProvider = Provider((ref, state, setState) {
   ///   return MyService(ref.read);
   /// });
   ///
@@ -337,7 +326,7 @@ abstract class ProviderReference {
   ///
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
-  T read<T>(RootProvider<Object?, T> provider);
+  T read<T>(RootProvider<T> provider);
 
   /// Obtains the state of a provider and cause the state to be re-evaluated
   /// when that provider emits a new value.
@@ -371,7 +360,7 @@ abstract class ProviderReference {
   /// final sortProvider = StateProvider((_) => Sort.byName);
   /// final unsortedTodosProvider = StateProvider((_) => <Todo>[]);
   ///
-  /// final sortedTodosProvider = Provider((ref) {
+  /// final sortedTodosProvider = Provider((ref, state, setState) {
   ///   // listen to both the sort enum and the unfiltered list of todos
   ///   final sort = ref.watch(sortProvider);
   ///   final todos = ref.watch(unsortedTodosProvider);
@@ -389,7 +378,7 @@ abstract class ProviderReference {
   /// - if multiple widgets depends on `sortedTodosProvider` the list will be
   ///   sorted only once.
   /// - if nothing is listening to `sortedTodosProvider`, then no sort if performed.
-  T watch<T>(AlwaysAliveProviderBase<Object?, T> provider);
+  T watch<T>(AlwaysAliveProviderBase<T> provider);
 
   /// Listen to a provider and call `listener` whenever its value changes.
   ///
@@ -402,7 +391,7 @@ abstract class ProviderReference {
   ///    call the listener with the current value.
   ///    Defaults to false.
   void Function() listen<T>(
-    RootProvider<Object?, T> provider,
+    RootProvider<T> provider,
     void Function(T value) listener, {
     bool fireImmediately,
   });
@@ -411,28 +400,26 @@ abstract class ProviderReference {
 /// An internal class that handles the state of a provider.
 ///
 /// Do not use.
-class ProviderElement<Created, Listened> implements ProviderReference {
+abstract class ProviderElementBase<State> implements ProviderRefBase {
   /// Do not use.
-  ProviderElement(this._provider) : state = _provider.createState();
+  ProviderElementBase(this._provider);
 
-  static ProviderElement? _debugCurrentlyBuildingElement;
+  static ProviderElementBase? _debugCurrentlyBuildingElement;
 
-  /// The provider associated to this [ProviderElement], before applying overrides.
-  ProviderBase<Created, Listened> get origin => _origin;
-  late ProviderBase<Created, Listened> _origin;
+  /// The provider associated to this [ProviderElementBase], before applying overrides.
+  ProviderBase<State> get origin => _origin;
+  late ProviderBase<State> _origin;
 
-  /// The provider associated to this [ProviderElement], after applying overrides.
-  ProviderBase<Created, Listened> get provider => _provider;
-  ProviderBase<Created, Listened> _provider;
+  /// The provider associated to this [ProviderElementBase], after applying overrides.
+  ProviderBase<State> get provider => _provider;
+  ProviderBase<State> _provider;
 
-  final ProviderStateBase<Created, Listened> state;
-
-  /// The [ProviderContainer] that owns this [ProviderElement].
+  /// The [ProviderContainer] that owns this [ProviderElementBase].
   @override
   ProviderContainer get container => _container;
   late ProviderContainer _container;
 
-  /// Whether this [ProviderElement] is currently listened or not.
+  /// Whether this [ProviderElementBase] is currently listened or not.
   ///
   /// This maps to listeners added with [listen].
   /// See also [mayNeedDispose], called when [hasListeners] may have changed.
@@ -440,35 +427,48 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   bool get hasListeners => _listeners.isNotEmpty || _dependents.isNotEmpty;
 
   // TODO(rrousselGit) refactor to match ChangeNotifier
-  List<void Function(Listened value)> _listeners = [];
-  List<ProviderElement> _dependents = [];
+  List<void Function(State value)> _listeners = [];
+  List<ProviderElementBase> _dependents = [];
   List<ProviderSubscription> _subscriptions = <ProviderSubscription>[];
 
   // TODO(rrousselGit) remove
-  List<void Function(Listened value)> get listeners => _listeners;
+  List<void Function(State value)> get listeners => _listeners;
   // TODO(rrousselGit) remove
-  List<ProviderElement> get dependents => _dependents;
+  List<ProviderElementBase> get dependents => _dependents;
 
-  HashMap<ProviderElement, Object> _dependencies =
-      HashMap<ProviderElement, Object>();
-  HashMap<ProviderElement, Object>? _previousDependencies;
+  HashMap<ProviderElementBase, Object> _dependencies =
+      HashMap<ProviderElementBase, Object>();
+  HashMap<ProviderElementBase, Object>? _previousDependencies;
   DoubleLinkedQueue<void Function()>? _onDisposeListeners;
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
 
-  @override
-  bool get mounted => _mounted;
   bool _mounted = false;
 
   ProviderException? _exception;
+
+  /* STATE */
+  late State _exposedValue;
+
+  // Using default values to differentiate between `notifyListeners()` and `notifyListeners(newValue: null)`
+  // It is safe to type `newValue` as Object? because the method is hidden
+  // under a type-safe interface that types it as `State newValue` instead.
+  set state(State newState) {
+    _exposedValue = newState;
+    // TODO(rrousselGit) do nothing if called within `create` for performance
+    notifyListeners();
+  }
+
+  State get state => _exposedValue;
+
+  /* /STATE */
 
   /// Called the first time a provider is obtained.
   @protected
   @mustCallSuper
   void mount() {
     _mounted = true;
-    state._element = this;
     assert(() {
       RiverpodBinding.debugInstance
           .providerListChangedFor(containerId: container._debugId);
@@ -486,7 +486,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   ///   the scenario where the value changed.
   @protected
   @mustCallSuper
-  void update(ProviderBase<Created, Listened> newProvider) {
+  void update(ProviderBase<State> newProvider) {
     _provider = newProvider;
   }
 
@@ -526,8 +526,9 @@ class ProviderElement<Created, Listened> implements ProviderReference {
     }
   }
 
-  void _notifyListeners() {
-    final newValue = state._exposedValue as Listened;
+  void notifyListeners() {
+    // TODO(rrousselGit) fuse with the public variant?
+    final newValue = _exposedValue;
     for (final listener in _listeners) {
       listener(newValue);
     }
@@ -558,7 +559,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
 
   bool _debugAssertCanDependOn(ProviderBase provider) {
     assert(() {
-      final queue = Queue<ProviderElement>.from(_dependents);
+      final queue = Queue<ProviderElementBase>.from(_dependents);
 
       while (queue.isNotEmpty) {
         final current = queue.removeFirst();
@@ -575,13 +576,13 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   }
 
   @override
-  T read<T>(RootProvider<Object?, T> provider) {
+  T read<T>(RootProvider<T> provider) {
     assert(_debugAssertCanDependOn(provider), '');
     return _container.read(provider);
   }
 
   @override
-  T watch<T>(ProviderBase<Object?, T> provider) {
+  T watch<T>(ProviderBase<T> provider) {
     assert(_debugAssertCanDependOn(provider), '');
 
     final element = _container.readProviderElement(provider);
@@ -602,19 +603,18 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   /// Returns the currently exposed by a provider
   ///
   /// May throw if the provider threw when creating the exposed value.
-  Listened getExposedValue() {
+  State getExposedValue() {
     flush();
 
     if (_exception != null) {
       throw _exception!;
     }
-    return state._exposedValue as Listened;
+    return _exposedValue;
   }
 
   @protected
   void _buildState() {
-    final previous = state._createdValue;
-    ProviderElement? debugPreviouslyBuildingElement;
+    ProviderElementBase? debugPreviouslyBuildingElement;
     assert(() {
       debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
       _debugCurrentlyBuildingElement = this;
@@ -622,12 +622,9 @@ class ProviderElement<Created, Listened> implements ProviderReference {
     }(), '');
 
     try {
-      state._createdValue = _provider.create(this);
-      state.valueChanged(previous: previous);
+      _exposedValue = _provider.create(this);
     } catch (err, stack) {
-      if (!state.handleError(err, stack)) {
-        _exception = ProviderException._(err, stack, _provider);
-      }
+      _exception = ProviderException._(err, stack, _provider);
     } finally {
       assert(() {
         _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
@@ -649,7 +646,6 @@ class ProviderElement<Created, Listened> implements ProviderReference {
 
     _mounted = false;
     _runOnDispose();
-    state.dispose();
 
     for (final sub in _dependencies.entries) {
       sub.key._dependents.remove(this);
@@ -671,7 +667,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   ///
   /// See also:
   ///
-  /// - [AutoDisposeProviderElement], which overrides this method to destroy the
+  /// - [AutoDisposeProviderElementBase], which overrides this method to destroy the
   ///   state of a provider when no-longer used.
   @protected
   @visibleForOverriding
@@ -700,7 +696,7 @@ class ProviderElement<Created, Listened> implements ProviderReference {
 
   @override
   void Function() listen<T>(
-    ProviderBase<Object?, T> provider,
+    ProviderBase<T> provider,
     void Function(T value) listener, {
     bool fireImmediately = false,
   }) {
@@ -721,68 +717,11 @@ class ProviderElement<Created, Listened> implements ProviderReference {
   }
 }
 
-/// The internal state of a provider
-abstract class ProviderStateBase<Created, Listened> {
-  /// The [ProviderReference] associated with this provider.
-  ProviderReference get ref => _element;
-  late ProviderElement<Created, Listened> _element;
-
-  /// The last value that was created by a provider.
-  ///
-  /// May change over time, in which case [valueChanged] will be called with the
-  /// previous value.
-  Created get createdValue => _createdValue as Created;
-  Created? _createdValue;
-
-  /// The value currently exposed by the provider.
-  ///
-  /// Modifying this value after the first time will notify listeners
-  /// that the exposed value changed.
-  ///
-  /// Must be set during [valueChanged].
-  Listened? get exposedValue => _exposedValue;
-  Listened? _exposedValue;
-
-  set exposedValue(Listened? exposedValue) {
-    // TODO(rrousselGit) remove this assert
-    assert(
-      exposedValue is Listened,
-      'A provider tried to assign `null` to a non-nullable `exposedValue`',
-    );
-    _exposedValue = exposedValue;
-    _element._notifyListeners();
-  }
-
-  /// Creates the value exposed by a provider from the value created.
-  ///
-  /// May be called again when one of the dependency listened by the provider
-  /// changed, in which case the previous [createdValue] is passed as `previous`.
-  ///
-  /// On first call, **must** set [exposedValue].
-  @protected
-  void valueChanged({Created? previous});
-
-  /// Optionally handles errors inside the `create` callback.
-  ///
-  /// This method should return `true` if it handled the error successfully,
-  /// otherwise `false`.
-  ///
-  /// Always returns `false` by default.
-  @protected
-  bool handleError(Object error, StackTrace stackTrace) {
-    return false;
-  }
-
-  /// Release the resources associated with this state.
-  @protected
-  void dispose() {}
-}
-
 /// Encapulates an exception thrown while building a provider.
 ///
 /// This exception can be thrown if a provider fails to return a valid value:
 /// ```dart
-/// final example = Provider((ref) => throw Error());
+/// final example = Provider((ref, state, setState) => throw Error());
 /// ```
 ///
 /// in which case, any attempt at listening to `example` with result in a [ProviderException].
@@ -813,14 +752,13 @@ $stackTrace
 }
 
 @protected
-mixin ProviderOverridesMixin<Created, Listened>
-    on AlwaysAliveProviderBase<Created, Listened> {
+mixin ProviderOverridesMixin<State> on AlwaysAliveProviderBase<State> {
   /// Overrides the behavior of a provider with a value.
   ///
   /// {@macro riverpod.overideWith}
-  Override overrideWithValue(Listened value) {
+  Override overrideWithValue(State value) {
     return ProviderOverride(
-      ValueProvider<Object?, Listened>((ref) => value, value),
+      ValueProvider<State>((ref) => value, value),
       this,
     );
   }
@@ -838,14 +776,14 @@ mixin ProviderOverridesMixin<Created, Listened>
   /// or `ProviderContainer.overrides`:
   ///
   /// ```dart
-  /// final myService = Provider((ref) => MyService());
+  /// final myService = Provider((ref, state, setState) => MyService());
   ///
   /// runApp(
   ///   ProviderScope(
   ///     overrides: [
   ///       myService.overrideWithProvider(
   ///         // Replace the implementation of MyService with a fake implementation
-  ///         Provider((ref) => MyFakeService())
+  ///         Provider((ref, state, setState) => MyFakeService())
   ///       ),
   ///     ],
   ///     child: MyApp(),
@@ -855,30 +793,7 @@ mixin ProviderOverridesMixin<Created, Listened>
   /// {@endtemplate}
   // Cannot be overridden by AutoDisposeProviders
   ProviderOverride overrideWithProvider(
-    AlwaysAliveProviderBase<Object?, Listened> provider,
-  ) {
-    return ProviderOverride(provider, this);
-  }
-}
-
-@protected
-mixin AutoDisposeProviderOverridesMixin<Created, Listened>
-    on AutoDisposeProviderBase<Created, Listened> {
-  /// Overrides the behavior of a provider with a value.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithValue(Listened value) {
-    return ProviderOverride(
-      ValueProvider<Object?, Listened>((ref) => value, value),
-      this,
-    );
-  }
-
-  /// Overrides the behavior of this provider with another provider.
-  ///
-  /// {@macro riverpod.overideWith}
-  ProviderOverride overrideWithProvider(
-    AutoDisposeProviderBase<Object?, Listened> provider,
+    AlwaysAliveProviderBase<State> provider,
   ) {
     return ProviderOverride(provider, this);
   }

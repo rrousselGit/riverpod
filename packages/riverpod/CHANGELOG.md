@@ -1,5 +1,50 @@
 # [Unreleased]
 
+- Added `ref.listen`, used to listen to another provider without recreating the provider state:
+
+  ```dart
+  final counter = StateNotifierProvider<Counter, int>(...);
+
+  final anotherProvider = Provider<T>((ref) {
+    ref.listen<int>(counter, (count) {
+      print('counter change: $count');
+    });
+  });
+  ```
+
+- `ProviderReference` is deprecated in favor of `ProviderRefBase`.
+- All providers now receive a custom subclass of `ProviderRefBase` as parameter:
+
+  ```dart
+  Provider<T>((ProviderRef<T> ref) {...});
+  FutureProvider<T>((FutureProviderRef<T> ref) {...});
+  StateProvider<T>((StateProviderRef<T> ref) {...});
+  ```
+
+  That allows providers to implement features that is not shared with other providers.
+
+  - `Provider`, `FutureProvider` and `StreamProvider`'s `ref` now have a `state` property,
+    which represents the currently exposed value. Modifying it will notify the listeners:
+
+    ```dart
+    Provider<int>((ref) {
+      ref.listen(onIncrementProvider, (_) {
+        ref.state++;
+      });
+
+      return 0;
+    });
+    ```
+  - `StateProvider`'s `ref` now has a `controller` property, which allows the
+    provider to access the `StateController` exposed.
+
+- **Breaking**: `ProviderReference.mounted` is removed. You can implement something similar using `onDispose`:
+  ```dart
+  Provider<T>((ref) {
+    var mounted = true;
+    ref.onDispose(() => mounted = false);
+  });
+  ```
 - `ref.onDispose` now calls the dispose function as soon as one of the provider's dependency
   is known to have changed
 - Providers no-longer wait until their next read to recompute their state if one of their dependency changed and they have listeners.
@@ -79,7 +124,7 @@ Migrated to null-safety
 
 # 0.12.2
 
-- Exported `AutoDisposeProviderReference`
+- Exported `AutoDisposeProviderRefBase`
 
 # 0.12.1
 
@@ -115,7 +160,7 @@ Migrated to null-safety
   ```dart
   import 'package:riverpod/all.dart';
 
-  final AutoDisposeStateProvider<int> counter = StateProvider.autoDispose<int>((ProviderReference ref) {
+  final AutoDisposeStateProvider<int> counter = StateProvider.autoDispose<int>((ProviderRefBase ref) {
     return 0;
   });
   ```
@@ -176,7 +221,7 @@ Migrated to null-safety
 
   ```dart
   final provider = Provider(...);
-  final example = Provider((ref) {
+  final example = Provider((ref, state, setState) {
     final value = ref.watch(provider);
     return value;
   });
@@ -208,7 +253,7 @@ Migrated to null-safety
 
   ```dart
   final streamProvider = StreamProvider<T>(...);
-  final example = Provider((ref) {
+  final example = Provider((ref, state, setState) {
     Stream<T> stream = ref.read(streamProvider);
   });
   ```
@@ -217,7 +262,7 @@ Migrated to null-safety
 
   ```dart
   final streamProvider = StreamProvider<T>(...);
-  final example = Provider((ref) {
+  final example = Provider((ref, state, setState) {
     Stream<T> stream = ref.watch(streamProvider.steam);
   });
   ```
@@ -228,7 +273,7 @@ Migrated to null-safety
 
   ```dart
   final futureProvider = FutureProvider<T>(...);
-  final example = Provider((ref) {
+  final example = Provider((ref, state, setState) {
     Future<T> future = ref.read(futureProvider);
   });
   ```
@@ -237,7 +282,7 @@ Migrated to null-safety
 
   ```dart
   final futureProvider = FutureProvider<T>(...);
-  final example = Provider((ref) {
+  final example = Provider((ref, state, setState) {
     Future<T> future = ref.watch(futureProvider.future);
   });
   ```
@@ -249,7 +294,7 @@ Migrated to null-safety
 
   ```dart
   final streamProvider = StreamProvider<T>(...);
-  final example = Provider((ref) {
+  final example = Provider((ref, state, setState) {
     Future<T> last = ref.dependOn(streamProvider).last;
   });
   ```
@@ -258,7 +303,7 @@ Migrated to null-safety
 
   ```dart
   final streamProvider = StreamProvider<T>(...);
-  final example = Provider((ref) {
+  final example = Provider((ref, state, setState) {
     Future<T> last = ref.watch(streamProvider.last);
   });
   ```
@@ -269,7 +314,7 @@ Migrated to null-safety
 
   ```dart
   ProviderContainer container;
-  final provider = Provider((ref) => 0);
+  final provider = Provider((ref, state, setState) => 0);
 
   final subscription = container.listen(
     provider,

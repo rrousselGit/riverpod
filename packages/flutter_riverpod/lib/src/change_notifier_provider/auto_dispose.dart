@@ -21,10 +21,10 @@ class AutoDisposeChangeNotifierProvider<T extends ChangeNotifier>
   @override
   Override overrideWithValue(T value) => _overrideWithValue(this, value);
 
-  final Create<T, AutoDisposeProviderReference> _create;
+  final Create<T, AutoDisposeProviderRefBase> _create;
 
   @override
-  T create(covariant AutoDisposeProviderReference ref) {
+  T create(covariant AutoDisposeProviderRefBase ref) {
     return _create(ref);
   }
 
@@ -41,18 +41,18 @@ class _AutoDisposeChangeNotifierProviderState<
 /// {@macro riverpod.changenotifierprovider.family}
 @sealed
 class AutoDisposeChangeNotifierProviderFamily<T extends ChangeNotifier, A>
-    extends Family<T, T, A, AutoDisposeProviderReference,
+    extends Family<T, T, A, AutoDisposeProviderRefBase,
         AutoDisposeChangeNotifierProvider<T>> {
   /// {@macro riverpod.changenotifierprovider.family}
   AutoDisposeChangeNotifierProviderFamily(
-    T Function(AutoDisposeProviderReference ref, A a) create, {
+    T Function(AutoDisposeProviderRefBase ref, A a) create, {
     String? name,
   }) : super(create, name);
 
   @override
   AutoDisposeChangeNotifierProvider<T> create(
     A value,
-    T Function(AutoDisposeProviderReference ref, A param) builder,
+    T Function(AutoDisposeProviderRefBase ref, A param) builder,
     String? name,
   ) {
     return AutoDisposeChangeNotifierProvider(

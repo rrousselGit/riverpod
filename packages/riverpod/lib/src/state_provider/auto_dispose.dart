@@ -1,88 +1,72 @@
 part of '../state_provider.dart';
 
+/// {@macro riverpod.providerrefbase}
+/// - [controller], the [StateController] currently exposed by this providers.
+abstract class AutoDisposeStateProviderRef<State>
+    implements AutoDisposeProviderRefBase, StateProviderRef<State> {}
+
+/// The [ProviderElementBase] for [StateProvider]
+class AutoDisposeStateProviderElement<State>
+    extends AutoDisposeProviderElementBase<StateController<State>>
+    implements StateProviderRef<State> {
+  /// The [ProviderElementBase] for [StateProvider]
+  AutoDisposeStateProviderElement(ProviderBase<StateController<State>> provider)
+      : super(provider);
+
+  @override
+  StateController<State> get controller => state;
+}
+
 /// {@macro riverpod.stateprovider}
 @sealed
-class AutoDisposeStateProvider<T>
-    extends AutoDisposeProviderBase<StateController<T>, StateController<T>>
-    with
-        AutoDisposeProviderOverridesMixin<StateController<T>,
-            StateController<T>> {
+class AutoDisposeStateProvider<State>
+    extends AutoDisposeProviderBase<StateController<State>>
+    with AutoDisposeProviderOverridesMixin<StateController<State>> {
   /// {@macro riverpod.stateprovider}
-  AutoDisposeStateProvider(
-    this._create, {
-    String? name,
-  }) : super(name);
+  AutoDisposeStateProvider(this._create, {String? name}) : super(name);
+
+  /// {@macro riverpod.family}
+  static const family = AutoDisposeStateProviderFamilyBuilder();
+
+  final Create<State, AutoDisposeStateProviderRef<State>> _create;
+
+  @override
+  StateController<State> create(AutoDisposeStateProviderRef<State> ref) {
+    return _createStateProvider(
+      ref as ProviderElementBase<StateController<State>>,
+      _create(ref),
+    );
+  }
 
   /// {@macro riverpod.stateprovider.notifier}
-  late final AutoDisposeProviderBase<StateController<T>, StateController<T>>
-      notifier = AutoDisposeProvider((ref) => ref.watch(this));
-
-  final Create<T, AutoDisposeProviderReference> _create;
+  late final AutoDisposeProviderBase<StateController<State>> notifier =
+      AutoDisposeProvider((ref) => ref.watch(this));
 
   @override
-  StateController<T> create(AutoDisposeProviderReference ref) {
-    return StateController(_create(ref));
-  }
-
-  @override
-  _AutoDisposeStateProviderState<T> createState() {
-    return _AutoDisposeStateProviderState<T>();
+  AutoDisposeStateProviderElement<State> createElement() {
+    return AutoDisposeStateProviderElement(this);
   }
 }
 
+/// {@macro riverpod.stateprovider.family}
 @sealed
-class _AutoDisposeStateProviderState<T> = ProviderStateBase<StateController<T>,
-    StateController<T>> with _StateProviderStateMixin<T>;
-
-/// {@template riverpod.stateprovider.family}
-/// A class that allows building a [StateProvider] from an external parameter.
-/// {@endtemplate}
-@sealed
-class AutoDisposeStateProviderFamily<T, A> extends Family<
-    StateController<T>,
-    StateController<T>,
-    A,
-    AutoDisposeProviderReference,
-    AutoDisposeStateProvider<T>> {
+class AutoDisposeStateProviderFamily<State, Arg> extends Family<
+    StateController<State>, Arg, AutoDisposeStateProvider<State>> {
   /// {@macro riverpod.stateprovider.family}
-  AutoDisposeStateProviderFamily(
-    T Function(AutoDisposeProviderReference ref, A a) create, {
-    String? name,
-  }) : super((ref, a) => StateController(create(ref, a)), name);
+  AutoDisposeStateProviderFamily(this._create, {String? name}) : super(name);
+
+  final State Function(
+    AutoDisposeProviderRefBase ref,
+    Arg argument,
+  ) _create;
 
   @override
-  AutoDisposeStateProvider<T> create(
-    A value,
-    StateController<T> Function(AutoDisposeProviderReference ref, A param)
-        builder,
-    String? name,
+  AutoDisposeStateProvider<State> create(
+    Arg argument,
   ) {
-    return AutoDisposeStateProvider((ref) {
-      return builder(ref, value).state;
-    }, name: name);
-  }
-}
-
-/// Overrides [overrideWithProvider] for [StateProvider.autoDispose.family].
-extension AutoDisposeStateFamilyX<T, Param> on Family<
-    StateController<T>,
-    StateController<T>,
-    Param,
-    AutoDisposeProviderReference,
-    AutoDisposeStateProvider<T>> {
-  /// Overrides the behavior of a family for a part of the application.
-  Override overrideWithProvider(
-    T Function(AutoDisposeProviderReference ref, Param param) builderOverride,
-  ) {
-    return FamilyOverride(
-      this,
-      (param) {
-        return create(
-          param as Param,
-          (ref, a) => StateController(builderOverride(ref, a)),
-          null,
-        );
-      },
+    return AutoDisposeStateProvider(
+      (ref) => _create(ref, argument),
+      name: name,
     );
   }
 }

@@ -22,7 +22,7 @@ void main() {
   test('setting maintainState to false destroys the state when not listener',
       () async {
     final onDispose = OnDisposeMock();
-    late AutoDisposeProviderReference ref;
+    late AutoDisposeProviderRefBase ref;
     final provider = Provider.autoDispose((_ref) {
       ref = _ref;
       ref.onDispose(onDispose);

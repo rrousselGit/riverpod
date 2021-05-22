@@ -40,10 +40,10 @@ class ChangeNotifierProvider<T extends ChangeNotifier>
   @override
   Override overrideWithValue(T value) => _overrideWithValue(this, value);
 
-  final Create<T, ProviderReference> _create;
+  final Create<T, ProviderRefBase> _create;
 
   @override
-  T create(ProviderReference ref) => _create(ref);
+  T create(ProviderRefBase ref) => _create(ref);
 
   @override
   _ChangeNotifierProviderState<T> createState() =>
@@ -60,17 +60,17 @@ class _ChangeNotifierProviderState<
 /// {@endtemplate}
 @sealed
 class ChangeNotifierProviderFamily<T extends ChangeNotifier, A>
-    extends Family<T, T, A, ProviderReference, ChangeNotifierProvider<T>> {
+    extends Family<T, T, A, ProviderRefBase, ChangeNotifierProvider<T>> {
   /// {@macro riverpod.changenotifierprovider.family}
   ChangeNotifierProviderFamily(
-    T Function(ProviderReference ref, A a) create, {
+    T Function(ProviderRefBase ref, A a) create, {
     String? name,
   }) : super(create, name);
 
   @override
   ChangeNotifierProvider<T> create(
     A value,
-    T Function(ProviderReference ref, A param) builder,
+    T Function(ProviderRefBase ref, A param) builder,
     String? name,
   ) {
     return ChangeNotifierProvider((ref) => builder(ref, value), name: name);

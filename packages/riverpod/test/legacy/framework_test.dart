@@ -8,7 +8,7 @@ import 'package:riverpod/riverpod.dart';
 import '../utils.dart';
 
 Matcher isProvider(RootProvider provider) {
-  return isA<ProviderElement>().having(
+  return isA<ProviderElementBase>().having(
     (e) => e.origin,
     'provider',
     provider,
@@ -524,9 +524,9 @@ void main() {
     verifyNoMoreInteractions(onDispose3);
   });
 
-  test('ProviderReference is unusable after dispose (read/onDispose)', () {
+  test('ProviderRefBase is unusable after dispose (read/onDispose)', () {
     final container = ProviderContainer();
-    late ProviderReference ref;
+    late ProviderRefBase ref;
     final provider = Provider((s) {
       ref = s;
       return 42;
@@ -545,7 +545,7 @@ void main() {
     var callCount = 0;
     final onDispose = OnDisposeMock();
     final error = Error();
-    late ProviderReference reference;
+    late ProviderRefBase reference;
     final provider = Provider((ref) {
       reference = ref;
       callCount++;

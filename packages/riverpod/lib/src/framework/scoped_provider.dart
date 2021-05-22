@@ -1,7 +1,7 @@
 part of '../framework.dart';
 
 /// A function that can both read a [ScopedProvider], normal providers and a `myProvider.select(..)`
-typedef ScopedReader = T Function<T>(ProviderBase<Object?, T> provider);
+typedef ScopedReader = T Function<T>(ProviderBase<T> provider);
 
 /// The function that [ScopedProvider]s uses to create their state.
 typedef ScopedCreate<T> = T Function(ScopedReader watch);
@@ -92,7 +92,7 @@ typedef ScopedCreate<T> = T Function(ScopedReader watch);
 /// ```
 /// {@endtemplate}
 @sealed
-class ScopedProvider<Listened> extends ProviderBase<Listened, Listened> {
+class ScopedProvider<State> extends ProviderBase<State> {
   /// {@macro riverpod.scopedprovider}
   ScopedProvider(
     this._create, {
@@ -101,13 +101,15 @@ class ScopedProvider<Listened> extends ProviderBase<Listened, Listened> {
           name,
         );
 
-  final Listened Function(ScopedReader watch)? _create;
+  final State Function(ScopedReader watch)? _create;
 
   @override
-  Listened create(covariant _ScopedProviderElement ref) {
+  State create(
+    covariant _ScopedProviderElement<State> ref,
+  ) {
     if (_create == null) {
       throw UnsupportedError(
-        'No default behavior specified for ScopedProvider<$Listened>',
+        'No default behavior specified for ScopedProvider<$State>',
       );
     }
 
@@ -115,21 +117,16 @@ class ScopedProvider<Listened> extends ProviderBase<Listened, Listened> {
   }
 
   @override
-  _ScopedProviderElement<Listened> createElement() {
-    return _ScopedProviderElement<Listened>(this);
-  }
-
-  @override
-  _ScopedProviderState<Listened> createState() {
-    return _ScopedProviderState<Listened>();
+  _ScopedProviderElement<State> createElement() {
+    return _ScopedProviderElement<State>(this);
   }
 
   /// Overrides the behavior of a provider with a value.
   ///
   /// {@macro riverpod.overideWith}
-  Override overrideWithValue(Listened value) {
+  Override overrideWithValue(State value) {
     return ProviderOverride(
-      ValueProvider<Listened, Listened>((ref) => value, value),
+      ValueProvider<State>((ref) => value, value),
       this,
     );
   }
@@ -137,32 +134,22 @@ class ScopedProvider<Listened> extends ProviderBase<Listened, Listened> {
   /// Overrides a [ScopedProvider] with a different behavior
   ///
   ///
-  Override overrideAs(ScopedCreate<Listened> create) {
+  Override overrideAs(ScopedCreate<State> create) {
     return ProviderOverride(
-      ScopedProvider<Listened>(create),
+      ScopedProvider<State>(create),
       this,
     );
   }
 }
 
 @sealed
-class _ScopedProviderElement<T> extends AutoDisposeProviderElement<T, T> {
+class _ScopedProviderElement<T> extends AutoDisposeProviderElementBase<T> {
   _ScopedProviderElement(ScopedProvider<T> provider) : super(provider);
 
   @override
-  void update(ProviderBase<T, T> newProvider) {
+  void update(ProviderBase<T> newProvider) {
     super.update(newProvider);
     // TODO(rrousselGit) compare previous and new state
     // markMustRecomputeState();
-  }
-}
-
-@sealed
-class _ScopedProviderState<T> extends ProviderStateBase<T, T> {
-  @override
-  void valueChanged({T? previous}) {
-    if (createdValue != exposedValue) {
-      exposedValue = createdValue;
-    }
   }
 }
