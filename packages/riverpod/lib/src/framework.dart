@@ -7,6 +7,7 @@ import 'package:meta/meta.dart';
 
 import 'framework/select.dart';
 import 'provider.dart';
+import 'state_notifier_provider.dart';
 
 part 'framework/auto_dispose.dart';
 part 'framework/base_provider.dart';
