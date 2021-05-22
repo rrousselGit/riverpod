@@ -1,0 +1,13 @@
+include: ../../../analysis_options.yaml
+linter:
+  rules:
+    # Useful for packages but not for apps
+    type_annotate_public_apis: false
+
+    # generates false positives
+    close_sinks: false
+
+    # Our example actually wants to print to the console
+    avoid_print: false
+
+    public_member_api_docs: false
