@@ -215,11 +215,11 @@ class ProviderContainer {
       'Removed a key that does not exist',
     );
     _stateReaders.remove(element._origin);
-    if (element._origin.from != null) {
-      final origin = element._origin;
-      if (origin is! AutoDisposeStateNotifierProvider || !element.container
-          .read(origin.notifier)
-          .hasListeners) {
+    final origin = element._origin;
+    if (origin.from != null) {
+      if (origin is! AutoDisposeStateNotifierProvider ||
+          _stateReaders[origin.notifier] == null ||
+          !_stateReaders[origin.notifier]!.hasListeners) {
         origin.from!._cache.remove(origin.argument);
       }
     }
