@@ -8,7 +8,7 @@ abstract class AutoDisposeProviderRef<State>
 /// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
 class AutoDisposeProviderElement<State>
     extends AutoDisposeProviderElementBase<State>
-    implements ProviderRef<State> {
+    implements AutoDisposeProviderRef<State> {
   /// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
   AutoDisposeProviderElement(ProviderBase<State> provider) : super(provider);
 }
@@ -27,6 +27,11 @@ class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
 
   @override
   State create(AutoDisposeProviderRef<State> ref) => _create(ref);
+
+  @override
+  bool recreateShouldNotify(State previousState, State newState) {
+    return previousState != newState;
+  }
 
   @override
   AutoDisposeProviderElement<State> createElement() {

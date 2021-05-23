@@ -28,11 +28,7 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
   /// {@endtemplate}
   @override
   late final AutoDisposeProviderBase<Notifier> notifier =
-      _AutoDisposeNotifierProvider(
-    _create,
-    name: name,
-    isAutoDispose: true,
-  );
+      _AutoDisposeNotifierProvider(_create, name: name);
 
   /// Overrides the behavior of a provider with a another provider.
   ///
@@ -55,6 +51,11 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
     ref.onDispose(removeListener);
 
     return ref.state;
+  }
+
+  @override
+  bool recreateShouldNotify(State previousState, State newState) {
+    return true;
   }
 
   @override
@@ -102,9 +103,9 @@ extension XAutoDisposeStateNotifierFamily<
   Override overrideWithProvider(
     AutoDisposeProviderBase<Notifier> Function(Arg argument) override,
   ) {
-    return FamilyOverride<Notifier, Arg, AutoDisposeProviderBase<Notifier>>(
+    return FamilyOverride(
       this,
-      override,
+      (arg) => override(arg as Arg),
     );
   }
 }

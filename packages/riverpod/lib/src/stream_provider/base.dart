@@ -22,11 +22,6 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   final Create<Stream<State>, StreamProviderRef<State>> _create;
 
   @override
-  AsyncValue<State> create(StreamProviderRef<State> ref) {
-    return _listenStream(() => _create(ref), ref);
-  }
-
-  @override
   late final AlwaysAliveProviderBase<Stream<State>> stream = Provider((ref) {
     return asyncValueToStream(this, ref as ProviderElementBase<Stream<State>>);
   });
@@ -34,6 +29,19 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   @override
   late final RootProvider<Future<State>> last =
       AsyncValueAsFutureProvider(this);
+
+  @override
+  AsyncValue<State> create(StreamProviderRef<State> ref) {
+    return _listenStream(() => _create(ref), ref);
+  }
+
+  @override
+  bool recreateShouldNotify(
+    AsyncValue<State> previousState,
+    AsyncValue<State> newState,
+  ) {
+    return true;
+  }
 
   @override
   ProviderElement<AsyncValue<State>> createElement() => ProviderElement(this);

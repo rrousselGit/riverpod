@@ -11,28 +11,50 @@ part 'state_notifier_provider/base.dart';
 
 class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
     extends AutoDisposeProviderBase<Notifier> {
-  _AutoDisposeNotifierProvider(
-    this._create, {
-    required String? name,
-    required this.isAutoDispose,
-  }) : super(name == null ? null : '$name.notifier');
+  _AutoDisposeNotifierProvider(this._create, {required String? name})
+      : super(name == null ? null : '$name.notifier');
 
-  final bool isAutoDispose;
   final Create<Notifier, AutoDisposeProviderRefBase> _create;
 
   @override
   Notifier create(AutoDisposeProviderRefBase ref) {
-    if (!isAutoDispose) ref.maintainState = true;
-
     final notifier = _create(ref);
     ref.onDispose(notifier.dispose);
     return notifier;
   }
 
   @override
+  bool recreateShouldNotify(Notifier previousState, Notifier newState) {
+    return true;
+  }
+
+  @override
   AutoDisposeProviderElement<Notifier> createElement() {
     return AutoDisposeProviderElement(this);
   }
+}
+
+class _NotifierProvider<Notifier extends StateNotifier<Object?>>
+    extends AlwaysAliveProviderBase<Notifier> {
+  _NotifierProvider(this._create, {required String? name})
+      : super(name == null ? null : '$name.notifier');
+
+  final Create<Notifier, ProviderRefBase> _create;
+
+  @override
+  Notifier create(ProviderRefBase ref) {
+    final notifier = _create(ref);
+    ref.onDispose(notifier.dispose);
+    return notifier;
+  }
+
+  @override
+  bool recreateShouldNotify(Notifier previousState, Notifier newState) {
+    return true;
+  }
+
+  @override
+  ProviderElement<Notifier> createElement() => ProviderElement(this);
 }
 
 /// {@template riverpod.statenotifierprovider}

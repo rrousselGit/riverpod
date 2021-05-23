@@ -74,8 +74,6 @@ abstract class ProviderBase<State> implements ProviderListenable<State> {
     }(), '');
   }
 
-  State create(covariant ProviderRefBase ref);
-
   /// {@template riverpod.name}
   /// A custom label for providers.
   ///
@@ -83,10 +81,15 @@ abstract class ProviderBase<State> implements ProviderListenable<State> {
   /// {@endtemplate}
   final String? name;
 
-  Family<Object?, State, ProviderBase<State>>? _from;
+  /// A unique identifier for this provider, used by devtools to differentiate providers
+  ///
+  /// Available only during development.
+  late final String debugId;
+
+  Family? _from;
 
   /// If this provider was created with the `.family` modifier, [from] is the `.family` instance.
-  Family<Object?, State, ProviderBase<State>>? get from => _from;
+  Family? get from => _from;
 
   Object? _argument;
 
@@ -94,24 +97,14 @@ abstract class ProviderBase<State> implements ProviderListenable<State> {
   /// variable used.
   Object? get argument => _argument;
 
+  State create(covariant ProviderRefBase ref);
+
+  /// Called when a provider is rebuilt. Used for providers to not notify their
+  /// listeners if the exposed value did not change.
+  bool recreateShouldNotify(State previousState, State newState);
+
   /// An internal method that defines how a provider behaves.
   ProviderElementBase<State> createElement();
-
-  /// A unique identifier for this provider, used by devtools to differentiate providers
-  ///
-  /// Available only during development.
-  late final String debugId;
-
-  @override
-  String toString() {
-    final content = {
-      'name': name,
-      'from': from,
-      'argument': argument,
-    }.entries.where((e) => e.value != null).map((e) => '${e.key}: ${e.value}');
-
-    return '${describeIdentity(this)}$content';
-  }
 
   // Custom implementation of hash code optimized for reading providers.
   //
@@ -129,6 +122,17 @@ abstract class ProviderBase<State> implements ProviderListenable<State> {
   int get hashCode => _cachedHash;
   final int _cachedHash = _nextHashCode = (_nextHashCode + 1) % 0xffffff;
   static int _nextHashCode = 1;
+
+  @override
+  String toString() {
+    final content = {
+      'name': name,
+      'from': from,
+      'argument': argument,
+    }.entries.where((e) => e.value != null).map((e) => '${e.key}: ${e.value}');
+
+    return '${describeIdentity(this)}$content';
+  }
 }
 
 /// {@template riverpod.rootprovider}
@@ -445,22 +449,24 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   bool _dependencyMayHaveChanged = false;
 
   bool _mounted = false;
+  @visibleForTesting
+  bool get mounted => _mounted;
 
   ProviderException? _exception;
 
   /* STATE */
-  late State _exposedValue;
+  late State _state;
 
   // Using default values to differentiate between `notifyListeners()` and `notifyListeners(newValue: null)`
   // It is safe to type `newValue` as Object? because the method is hidden
   // under a type-safe interface that types it as `State newValue` instead.
   set state(State newState) {
-    _exposedValue = newState;
+    _state = newState;
     // TODO(rrousselGit) do nothing if called within `create` for performance
     notifyListeners();
   }
 
-  State get state => _exposedValue;
+  State get state => _state;
 
   /* /STATE */
 
@@ -514,7 +520,13 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
       _previousDependencies = _dependencies;
       _dependencies = HashMap();
 
+      final previousState = state;
+
       _buildState();
+
+      if (provider.recreateShouldNotify(previousState, _state)) {
+        notifyListeners();
+      }
 
       // Unsubscribe to everything that a provider no-longer depends on.
       for (final sub in _previousDependencies!.entries) {
@@ -528,7 +540,7 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
 
   void notifyListeners() {
     // TODO(rrousselGit) fuse with the public variant?
-    final newValue = _exposedValue;
+    final newValue = _state;
     for (final listener in _listeners) {
       listener(newValue);
     }
@@ -609,7 +621,7 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     if (_exception != null) {
       throw _exception!;
     }
-    return _exposedValue;
+    return _state;
   }
 
   @protected
@@ -622,7 +634,7 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     }(), '');
 
     try {
-      _exposedValue = _provider.create(this);
+      _state = _provider.create(this);
     } catch (err, stack) {
       _exception = ProviderException._(err, stack, _provider);
     } finally {

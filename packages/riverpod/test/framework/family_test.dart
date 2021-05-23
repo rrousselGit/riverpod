@@ -95,7 +95,9 @@ void main() {
     final container = createContainer(overrides: [
       // Provider overrides always takes over family overrides
       family(84).overrideWithProvider(Provider((_) => 'Bonjour 84')),
-      family.overrideWithProvider((ref, a) => 'Hello $a'),
+      family.overrideWithProvider((a) {
+        return Provider((ref) => 'Hello $a');
+      }),
       family(21).overrideWithProvider(Provider((_) => 'Hi 21')),
     ]);
 

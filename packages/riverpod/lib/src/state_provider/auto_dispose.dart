@@ -8,7 +8,7 @@ abstract class AutoDisposeStateProviderRef<State>
 /// The [ProviderElementBase] for [StateProvider]
 class AutoDisposeStateProviderElement<State>
     extends AutoDisposeProviderElementBase<StateController<State>>
-    implements StateProviderRef<State> {
+    implements AutoDisposeStateProviderRef<State> {
   /// The [ProviderElementBase] for [StateProvider]
   AutoDisposeStateProviderElement(ProviderBase<StateController<State>> provider)
       : super(provider);
@@ -36,6 +36,14 @@ class AutoDisposeStateProvider<State>
       ref as ProviderElementBase<StateController<State>>,
       _create(ref),
     );
+  }
+
+  @override
+  bool recreateShouldNotify(
+    StateController<State> previousState,
+    StateController<State> newState,
+  ) {
+    return true;
   }
 
   /// {@macro riverpod.stateprovider.notifier}

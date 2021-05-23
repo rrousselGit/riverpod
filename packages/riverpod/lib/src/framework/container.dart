@@ -358,7 +358,7 @@ class ProviderContainer {
           _runBinaryGuarded<ProviderBase, Object?>(
             observer.didAddProvider,
             provider,
-            element._exposedValue,
+            element._state,
           );
         }
         return element;
@@ -468,16 +468,12 @@ abstract class ProviderObserver {
   /// A provider was initialized, and the value exposed is [value].
   void didAddProvider(ProviderBase provider, Object? value) {}
 
-  /// Called when the dependency of a provider changed, but it is not yet
-  /// sure if the computed value changes.
-  ///
-  /// It is possible that [mayHaveChanged] will be called, without [didUpdateProvider]
-  /// being called, such as when a [Provider] is re-computed but returns
-  /// a value == to the previous one.
-  void mayHaveChanged(ProviderBase provider) {}
-
   /// Called my providers when they emit a notification.
-  void didUpdateProvider(ProviderBase provider, Object? newValue) {}
+  void didUpdateProvider(
+    ProviderBase provider,
+    Object? previousValue,
+    Object? newValue,
+  ) {}
 
   /// A provider was disposed
   void didDisposeProvider(ProviderBase provider) {}

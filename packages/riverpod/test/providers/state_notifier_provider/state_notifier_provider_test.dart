@@ -13,7 +13,11 @@ void main() {
     final notifier2 = TestNotifier(42);
     final container = ProviderContainer(
       overrides: [
-        provider.overrideWithProvider((ref, a) => notifier2),
+        provider.overrideWithProvider((a) {
+          return StateNotifierProvider<TestNotifier, int>(
+            (ref) => notifier2,
+          ).notifier;
+        }),
       ],
     );
     addTearDown(container.dispose);

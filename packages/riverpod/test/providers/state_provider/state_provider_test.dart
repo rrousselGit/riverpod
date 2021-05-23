@@ -52,7 +52,9 @@ void main() {
       return '$a';
     });
     final container = createContainer(overrides: [
-      provider.overrideWithProvider((ref, a) => 'override $a'),
+      provider.overrideWithProvider((a) {
+        return StateProvider((ref) => 'override $a');
+      }),
     ]);
 
     expect(

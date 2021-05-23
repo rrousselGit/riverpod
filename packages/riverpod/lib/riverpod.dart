@@ -31,28 +31,40 @@ export 'src/framework.dart'
         AutoDisposeProviderBase,
         AutoDisposeProviderElementBase,
         ProviderElementBase,
-        ScopedCreate;
+        ScopedCreate,
+        XFamily,
+        XAutoDisposeFamily,
+        // ignore: deprecated_member_use_from_same_package
+        ProviderReference;
 
 export 'src/future_provider.dart'
     show
         AutoDisposeFutureProvider,
         AutoDisposeFutureProviderFamily,
         FutureProvider,
-        FutureProviderFamily;
+        FutureProviderFamily,
+        AutoDisposeFutureProviderRef,
+        FutureProviderRef;
 
 export 'src/provider.dart'
     show
         AutoDisposeProvider,
         AutoDisposeProviderFamily,
         Provider,
-        ProviderFamily;
+        ProviderFamily,
+        AutoDisposeProviderRef,
+        ProviderRef;
 
 export 'src/state_notifier_provider.dart'
     show
         AutoDisposeStateNotifierProvider,
         AutoDisposeStateNotifierProviderFamily,
         StateNotifierProvider,
-        StateNotifierProviderFamily;
+        StateNotifierProviderFamily,
+        AutoDisposeStateNotifierProviderRef,
+        StateNotifierProviderRef,
+        XAutoDisposeStateNotifierFamily,
+        XStateNotifierFamily;
 
 export 'src/state_provider.dart'
     show
@@ -60,11 +72,15 @@ export 'src/state_provider.dart'
         StateProvider,
         AutoDisposeStateProvider,
         AutoDisposeStateProviderFamily,
-        StateProviderFamily;
+        StateProviderFamily,
+        AutoDisposeStateProviderRef,
+        StateProviderRef;
 
 export 'src/stream_provider.dart'
     show
         AutoDisposeStreamProvider,
         AutoDisposeStreamProviderFamily,
         StreamProvider,
-        StreamProviderFamily;
+        StreamProviderFamily,
+        AutoDisposeStreamProviderRef,
+        StreamProviderRef;

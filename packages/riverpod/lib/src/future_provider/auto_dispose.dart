@@ -18,6 +18,10 @@ class AutoDisposeFutureProvider<State>
 
   final Create<Future<State>, AutoDisposeFutureProviderRef<State>> _create;
 
+  /// {@macro riverpod.futureprovider.future}
+  late final AutoDisposeProviderBase<Future<State>> future =
+      AutoDisposeAsyncValueAsFutureProvider(this);
+
   @override
   AsyncValue<State> create(
     AutoDisposeFutureProviderRef<State> ref,
@@ -25,9 +29,13 @@ class AutoDisposeFutureProvider<State>
     return _listenFuture(() => _create(ref), ref);
   }
 
-  /// {@macro riverpod.futureprovider.future}
-  late final AutoDisposeProviderBase<Future<State>> future =
-      AsyncValueAsFutureProvider(this);
+  @override
+  bool recreateShouldNotify(
+    AsyncValue<State> previousState,
+    AsyncValue<State> newState,
+  ) {
+    return true;
+  }
 
   @override
   AutoDisposeProviderElement<AsyncValue<State>> createElement() {

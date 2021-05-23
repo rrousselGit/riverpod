@@ -19,11 +19,6 @@ class FutureProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
 
   final Create<Future<State>, FutureProviderRef<State>> _create;
 
-  @override
-  AsyncValue<State> create(FutureProviderRef<State> ref) {
-    return _listenFuture(() => _create(ref), ref);
-  }
-
   /// {@template riverpod.futureprovider.future}
   /// A provider that exposes the [Future] created by a [FutureProvider].
   ///
@@ -45,8 +40,21 @@ class FutureProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   /// });
   /// ```
   /// {@endtemplate}
-  late final RootProvider<Future<State>> future =
+  late final AlwaysAliveProviderBase<Future<State>> future =
       AsyncValueAsFutureProvider(this);
+
+  @override
+  AsyncValue<State> create(FutureProviderRef<State> ref) {
+    return _listenFuture(() => _create(ref), ref);
+  }
+
+  @override
+  bool recreateShouldNotify(
+    AsyncValue<State> previousState,
+    AsyncValue<State> newState,
+  ) {
+    return true;
+  }
 
   @override
   ProviderElement<AsyncValue<State>> createElement() => ProviderElement(this);

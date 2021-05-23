@@ -36,66 +36,105 @@ Stream<State> asyncValueToStream<State>(
 ///
 @protected
 class AsyncValueAsFutureProvider<State>
-    extends AutoDisposeProviderBase<Future<State>> {
+    extends AlwaysAliveProviderBase<Future<State>> {
   ///
   AsyncValueAsFutureProvider(this._provider)
       : super(_provider.name == null ? null : '${_provider.name}.last');
 
-  final RootProvider<AsyncValue<State>> _provider;
+  final AlwaysAliveProviderBase<AsyncValue<State>> _provider;
 
   @override
   Future<State> create(AutoDisposeProviderElementBase<Future<State>> ref) {
-    if (_provider is AlwaysAliveProviderBase) {
-      // TODO(rrousselGit) refactor
-      ref.maintainState = true;
-    }
+    return _asyncValueAsFuture(_provider, ref);
+  }
 
-    Completer<State>? loadingCompleter;
+  @override
+  bool recreateShouldNotify(
+    Future<State> previousState,
+    Future<State> newState,
+  ) {
+    return true;
+  }
 
-    ref.onDispose(() {
-      if (loadingCompleter != null) {
-        loadingCompleter!.completeError(
-          StateError('The provider was disposed the stream could emit a value'),
-        );
-      }
-    });
+  @override
+  ProviderElement<Future<State>> createElement() {
+    return ProviderElement(this);
+  }
+}
 
-    void listener(AsyncValue<State> value) {
-      value.when(
-        loading: () {
-          if (loadingCompleter == null) {
-            loadingCompleter = Completer<State>();
-            ref.state = loadingCompleter!.future;
-          }
-        },
-        data: (data) {
-          if (loadingCompleter != null) {
-            loadingCompleter!.complete(data);
-            // allow follow-up data calls to go on the 'else' branch
-            loadingCompleter = null;
-          } else {
-            ref.state = Future<State>.value(data);
-          }
-        },
-        error: (err, stack) {
-          if (loadingCompleter != null) {
-            loadingCompleter!.completeError(err, stack);
-            // allow follow-up error calls to go on the 'else' branch
-            loadingCompleter = null;
-          } else {
-            ref.state = Future<State>.error(err, stack);
-          }
-        },
-      );
-    }
+///
+@protected
+class AutoDisposeAsyncValueAsFutureProvider<State>
+    extends AutoDisposeProviderBase<Future<State>> {
+  ///
+  AutoDisposeAsyncValueAsFutureProvider(this._provider)
+      : super(_provider.name == null ? null : '${_provider.name}.last');
 
-    ref.listen<AsyncValue<State>>(_provider, listener, fireImmediately: true);
+  final AutoDisposeProviderBase<AsyncValue<State>> _provider;
 
-    return ref.state;
+  @override
+  Future<State> create(AutoDisposeProviderElementBase<Future<State>> ref) {
+    return _asyncValueAsFuture(_provider, ref);
+  }
+
+  @override
+  bool recreateShouldNotify(
+    Future<State> previousState,
+    Future<State> newState,
+  ) {
+    return true;
   }
 
   @override
   AutoDisposeProviderElement<Future<State>> createElement() {
     return AutoDisposeProviderElement(this);
   }
+}
+
+Future<State> _asyncValueAsFuture<State>(
+  ProviderBase<AsyncValue<State>> provider,
+  ProviderElementBase<Future<State>> ref,
+) {
+  Completer<State>? loadingCompleter;
+
+  ref.onDispose(() {
+    if (loadingCompleter != null) {
+      loadingCompleter!.completeError(
+        StateError('The provider was disposed the stream could emit a value'),
+      );
+    }
+  });
+
+  void listener(AsyncValue<State> value) {
+    value.when(
+      loading: () {
+        if (loadingCompleter == null) {
+          loadingCompleter = Completer<State>();
+          ref.state = loadingCompleter!.future;
+        }
+      },
+      data: (data) {
+        if (loadingCompleter != null) {
+          loadingCompleter!.complete(data);
+          // allow follow-up data calls to go on the 'else' branch
+          loadingCompleter = null;
+        } else {
+          ref.state = Future<State>.value(data);
+        }
+      },
+      error: (err, stack) {
+        if (loadingCompleter != null) {
+          loadingCompleter!.completeError(err, stack);
+          // allow follow-up error calls to go on the 'else' branch
+          loadingCompleter = null;
+        } else {
+          ref.state = Future<State>.error(err, stack);
+        }
+      },
+    );
+  }
+
+  ref.listen<AsyncValue<State>>(provider, listener, fireImmediately: true);
+
+  return ref.state;
 }

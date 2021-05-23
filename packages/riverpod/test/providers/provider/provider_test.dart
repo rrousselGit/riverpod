@@ -63,7 +63,7 @@ void main() {
 
   test('Provider can be overriden by anything', () {
     final provider = Provider((_) => 42);
-    final AlwaysAliveProviderBase<Object?, int> override = Provider((_) {
+    final AlwaysAliveProviderBase<int> override = Provider((_) {
       return 21;
     });
     final container = createContainer(overrides: [

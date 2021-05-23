@@ -162,8 +162,7 @@ void main() {
 
   test('Provider.family', () async {
     final computed =
-        Provider.family<String, AlwaysAliveProviderBase<Object?, int>>(
-            (ref, provider) {
+        Provider.family<String, AlwaysAliveProviderBase<int>>((ref, provider) {
       return ref.watch(provider).toString();
     });
     final notifier = Counter();

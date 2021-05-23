@@ -132,7 +132,9 @@ void main() {
       return Future.value('$a');
     });
     final container = ProviderContainer(overrides: [
-      provider.overrideWithProvider((ref, a) => Future.value('override $a')),
+      provider.overrideWithProvider(
+        (a) => FutureProvider<String>((ref) => Future.value('override $a')),
+      ),
     ]);
 
     expect(container.read(provider(0)), const AsyncValue<String>.loading());
@@ -210,7 +212,7 @@ void main() {
       final provider = FutureProvider((_) => completer.future);
       final container = ProviderContainer();
       var callCount = 0;
-      final dependent = Provider((ref) {
+      final dependent = Provider<Future<int>>((ref) {
         callCount++;
         return ref.watch(provider.future);
       });
@@ -231,9 +233,10 @@ void main() {
     test('update dependents when the future changes', () async {
       final futureProvider = StateProvider((ref) => Future.value(42));
       // a FutureProvider that can rebuild with a new future
-      final provider = FutureProvider((ref) => ref.watch(futureProvider).state);
+      final provider =
+          FutureProvider<int>((ref) => ref.watch(futureProvider).state);
       var callCount = 0;
-      final dependent = Provider((ref) {
+      final dependent = Provider<Future<int>>((ref) {
         callCount++;
         return ref.watch(provider.future);
       });

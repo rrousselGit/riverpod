@@ -63,7 +63,7 @@ extension XFamily<State, Arg,
   Override overrideWithProvider(
     AlwaysAliveProviderBase<State> Function(Arg argument) override,
   ) {
-    return FamilyOverride<State, Arg, FamilyProvider>(this, override);
+    return FamilyOverride(this, (arg) => override(arg as Arg));
   }
 }
 
@@ -77,17 +77,16 @@ extension XAutoDisposeFamily<State, Arg,
   Override overrideWithProvider(
     AutoDisposeProviderBase<State> Function(Arg argument) override,
   ) {
-    return FamilyOverride<State, Arg, FamilyProvider>(this, override);
+    return FamilyOverride(this, (arg) => override(arg as Arg));
   }
 }
 
 /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
 /// to override the behavior of a "family" for part of the application.
-class FamilyOverride<State, Arg, FamilyProvider extends ProviderBase<State>>
-    implements Override {
+class FamilyOverride implements Override {
   /// Do not use
   FamilyOverride(this._family, this._createOverride);
 
-  final ProviderBase<State> Function(Arg argument) _createOverride;
+  final ProviderBase Function(Object? argument) _createOverride;
   final Family _family;
 }

@@ -21,11 +21,6 @@ class AutoDisposeStreamProvider<State>
   final Create<Stream<State>, AutoDisposeStreamProviderRef<State>> _create;
 
   @override
-  AsyncValue<State> create(AutoDisposeStreamProviderRef<State> ref) {
-    return _listenStream(() => _create(ref), ref);
-  }
-
-  @override
   late final AutoDisposeProviderBase<Stream<State>> stream =
       AutoDisposeProvider((ref) {
     return asyncValueToStream(this, ref as ProviderElementBase<Stream<State>>);
@@ -33,7 +28,20 @@ class AutoDisposeStreamProvider<State>
 
   @override
   late final AutoDisposeProviderBase<Future<State>> last =
-      AsyncValueAsFutureProvider(this);
+      AutoDisposeAsyncValueAsFutureProvider(this);
+
+  @override
+  AsyncValue<State> create(AutoDisposeStreamProviderRef<State> ref) {
+    return _listenStream(() => _create(ref), ref);
+  }
+
+  @override
+  bool recreateShouldNotify(
+    AsyncValue<State> previousState,
+    AsyncValue<State> newState,
+  ) {
+    return true;
+  }
 
   @override
   AutoDisposeProviderElement<AsyncValue<State>> createElement() {

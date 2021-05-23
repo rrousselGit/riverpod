@@ -1,5 +1,17 @@
 # [Unreleased]
 
+- **Breaking**: `Family.overrideWithProvider` now must create a provider:
+
+  ```dart
+  final family = Provider.family<State, Arg>(...);
+
+  family.overrideWithProvider(
+    (Arg arg) => Provider<State>((ref) => ...)
+  );
+  ```
+
+- **Breaking**: `ProviderObserver.didUpdateProvider` now receives both the previous and new value.
+- **Breaking**: `ProviderObserver.mayHaveChanged` is removed.
 - Added `ref.listen`, used to listen to another provider without recreating the provider state:
 
   ```dart
@@ -35,6 +47,7 @@
       return 0;
     });
     ```
+
   - `StateProvider`'s `ref` now has a `controller` property, which allows the
     provider to access the `StateController` exposed.
 

@@ -13,10 +13,12 @@ class ValueProvider<State> extends AlwaysAliveProviderBase<State> {
   final State _value;
 
   @override
-  State create(
-    covariant ValueProviderElement<State> ref,
-  ) =>
-      _create(ref);
+  State create(ValueProviderElement<State> ref) => _create(ref);
+
+  @override
+  bool recreateShouldNotify(State previousState, State newState) {
+    return true;
+  }
 
   @override
   ValueProviderElement<State> createElement() {
@@ -40,7 +42,7 @@ class ValueProviderElement<State> extends ProviderElementBase<State> {
   void update(ProviderBase<State> newProvider) {
     super.update(newProvider);
     final newValue = (provider as ValueProvider<State>)._value;
-    if (newValue != _exposedValue) {
+    if (newValue != _state) {
       state = newValue;
       onChange?.call(newValue);
     }

@@ -28,11 +28,8 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
   /// event that the [StateNotifier] it recreated.
   /// {@endtemplate}
   @override
-  late final ProviderBase<Notifier> notifier = _AutoDisposeNotifierProvider(
-    _create,
-    name: name,
-    isAutoDispose: false,
-  );
+  late final AlwaysAliveProviderBase<Notifier> notifier =
+      _NotifierProvider(_create, name: name);
 
   /// Overrides the behavior of a provider with a another provider.
   ///
@@ -55,6 +52,11 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
     ref.onDispose(removeListener);
 
     return ref.state;
+  }
+
+  @override
+  bool recreateShouldNotify(State previousState, State newState) {
+    return true;
   }
 
   @override
@@ -97,9 +99,9 @@ extension XStateNotifierFamily<Notifier extends StateNotifier<State>, State,
   Override overrideWithProvider(
     AlwaysAliveProviderBase<Notifier> Function(Arg argument) override,
   ) {
-    return FamilyOverride<Notifier, Arg, AlwaysAliveProviderBase<Notifier>>(
+    return FamilyOverride(
       this,
-      override,
+      (arg) => override(arg as Arg),
     );
   }
 }

@@ -131,14 +131,14 @@ class _EqualsIgnoringHashCodes extends Matcher {
 
 class ObserverMock extends Mock implements ProviderObserver {
   @override
-  void didDisposeProvider(ProviderBase<Object?, Object?>? provider) {
+  void didDisposeProvider(ProviderBase<Object?>? provider) {
     super.noSuchMethod(
       Invocation.method(#didDisposeProvider, [provider]),
     );
   }
 
   @override
-  void didAddProvider(ProviderBase<Object?, Object?>? provider, Object? value) {
+  void didAddProvider(ProviderBase<Object?>? provider, Object? value) {
     super.noSuchMethod(
       Invocation.method(#didAddProvider, [provider, value]),
     );
@@ -146,16 +146,12 @@ class ObserverMock extends Mock implements ProviderObserver {
 
   @override
   void didUpdateProvider(
-      ProviderBase<Object?, Object?>? provider, Object? newValue) {
+    ProviderBase<Object?>? provider,
+    Object? previousValue,
+    Object? newValue,
+  ) {
     super.noSuchMethod(
       Invocation.method(#didUpdateProvider, [provider, newValue]),
-    );
-  }
-
-  @override
-  void mayHaveChanged(ProviderBase<Object?, Object?>? provider) {
-    super.noSuchMethod(
-      Invocation.method(#mayHaveChanged, [provider]),
     );
   }
 }

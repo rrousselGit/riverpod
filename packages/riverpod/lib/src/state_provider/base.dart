@@ -37,14 +37,6 @@ class StateProvider<State>
 
   final Create<State, StateProviderRef<State>> _create;
 
-  @override
-  StateController<State> create(StateProviderRef<State> ref) {
-    return _createStateProvider(
-      ref as ProviderElementBase<StateController<State>>,
-      _create(ref),
-    );
-  }
-
   /// {@template riverpod.stateprovider.notifier}
   /// Obtains the [StateController] associated with this provider, but without
   /// listening to it.
@@ -68,6 +60,22 @@ class StateProvider<State>
   /// {@endtemplate}
   late final AlwaysAliveProviderBase<StateController<State>> notifier =
       Provider((ref) => ref.watch(this));
+
+  @override
+  StateController<State> create(StateProviderRef<State> ref) {
+    return _createStateProvider(
+      ref as ProviderElementBase<StateController<State>>,
+      _create(ref),
+    );
+  }
+
+  @override
+  bool recreateShouldNotify(
+    StateController<State> previousState,
+    StateController<State> newState,
+  ) {
+    return true;
+  }
 
   @override
   StateProviderElement<State> createElement() => StateProviderElement(this);

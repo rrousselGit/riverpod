@@ -35,9 +35,11 @@ void main() {
     });
     final listener = Listener<String>();
     final container = ProviderContainer(overrides: [
-      provider.overrideWithProvider((ref, value) {
-        ref.onDispose(onDispose);
-        return '$value override';
+      provider.overrideWithProvider((value) {
+        return Provider.autoDispose<String>((ref) {
+          ref.onDispose(onDispose);
+          return '$value override';
+        });
       })
     ]);
     addTearDown(container.dispose);
