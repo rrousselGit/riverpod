@@ -215,9 +215,6 @@ class ProviderContainer {
       'Removed a key that does not exist',
     );
     _stateReaders.remove(element._origin);
-    if (element._origin.from != null) {
-      element._origin.from!._cache.remove(element._origin.argument);
-    }
     element.dispose();
   }
 
