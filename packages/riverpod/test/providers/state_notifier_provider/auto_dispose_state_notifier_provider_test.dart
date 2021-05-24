@@ -24,7 +24,11 @@ void main() {
 
     // access in the child container
     // try to read provider.state before provider and see if it points to the override
-    final stateSub = container.listen(provider(0), ownerStateListener);
+    final stateSub = container.listen(
+      provider(0),
+      ownerStateListener,
+      fireImmediately: true,
+    );
 
     verify(ownerStateListener(42)).called(1);
     verifyNoMoreInteractions(ownerStateListener);
@@ -32,9 +36,9 @@ void main() {
     final notifierSub = container.listen(
       provider(0).notifier,
       ownerNotifierListener,
+      fireImmediately: true,
     );
-    verify(ownerNotifierListener(notifier2)).called(1);
-    verifyNoMoreInteractions(ownerNotifierListener);
+    verifyOnly(ownerNotifierListener, ownerNotifierListener(notifier2));
 
     notifierSub.close();
 
@@ -72,11 +76,12 @@ void main() {
       provider.overrideWithValue(notifier),
     ]);
 
-    container.listen(provider.notifier, notifierListener);
+    container.listen(provider.notifier, notifierListener,
+        fireImmediately: true);
     verify(notifierListener(notifier)).called(1);
     verifyNoMoreInteractions(notifierListener);
 
-    container.listen(provider, stateListener);
+    container.listen(provider, stateListener, fireImmediately: true);
     verify(stateListener(42)).called(1);
     verifyNoMoreInteractions(stateListener);
 
@@ -127,7 +132,7 @@ void main() {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
-    container.listen(provider.notifier, listener);
+    container.listen(provider.notifier, listener, fireImmediately: true);
 
     verifyOnly(listener, listener(argThat(isA<TestNotifier>())));
 
@@ -151,7 +156,7 @@ void main() {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
-    container.listen(provider, listener);
+    container.listen(provider, listener, fireImmediately: true);
 
     verifyOnly(listener, listener(argThat(equals(0))));
 
@@ -179,11 +184,11 @@ void main() {
     final sub = container.listen(provider.notifier, (_) => callCount++);
 
     expect(sub.read(), notifier);
-    expect(callCount, 1);
+    expect(callCount, 0);
 
     notifier.increment();
 
-    expect(callCount, 1);
+    expect(callCount, 0);
 
     container.read(dep).state++;
 
@@ -192,7 +197,7 @@ void main() {
     await container.pump();
 
     expect(sub.read(), notifier2);
-    expect(callCount, 2);
+    expect(callCount, 1);
   });
 
   test('overrideWithProvider preserves the state accross update', () async {
@@ -211,7 +216,7 @@ void main() {
     addTearDown(container.dispose);
     final listener = Listener<int>();
 
-    container.listen<int>(provider, listener);
+    container.listen<int>(provider, listener, fireImmediately: true);
 
     verifyOnly(listener, listener(42));
     expect(container.read(provider.notifier), notifier);

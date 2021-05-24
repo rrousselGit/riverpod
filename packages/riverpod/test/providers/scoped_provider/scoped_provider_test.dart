@@ -63,7 +63,7 @@ void main() {
       ]);
       final listener = Listener<int>();
 
-      container.listen(provider, listener);
+      container.listen(provider, listener, fireImmediately: true);
 
       verifyOnly(listener, listener(42));
 
@@ -148,8 +148,8 @@ void main() {
       final listener = Listener<int>();
       final listener2 = Listener<int>();
 
-      container.listen(provider, listener);
-      container.listen(provider2, listener2);
+      container.listen(provider, listener, fireImmediately: true);
+      container.listen(provider2, listener2, fireImmediately: true);
 
       verifyOnly(listener, listener(21));
       verifyOnly(listener2, listener2(42));
@@ -181,7 +181,7 @@ void main() {
       final container = ProviderContainer(parent: mid);
       final listener = Listener<int>();
 
-      container.listen(provider, listener);
+      container.listen(provider, listener, fireImmediately: true);
 
       verifyOnly(listener, listener(42));
 
@@ -224,7 +224,7 @@ void main() {
         provider.overrideWithValue(1),
       ]);
 
-      container.listen(provider2, listener);
+      container.listen(provider2, listener, fireImmediately: true);
 
       verifyOnly(listener, listener(2));
 
@@ -246,7 +246,7 @@ void main() {
       final root = ProviderContainer();
       final container = ProviderContainer(parent: root);
 
-      container.listen(provider2, listener);
+      container.listen(provider2, listener, fireImmediately: true);
 
       verifyOnly(listener, listener(2));
 
@@ -266,7 +266,7 @@ void main() {
       final root = ProviderContainer();
       final container = ProviderContainer(parent: root);
 
-      container.listen(provider2, listener);
+      container.listen(provider2, listener, fireImmediately: true);
 
       verifyOnly(listener, listener(2));
 
@@ -284,7 +284,7 @@ void main() {
         provider.overrideAs((watch) => 2),
       ]);
 
-      container.listen(provider, listener);
+      container.listen(provider, listener, fireImmediately: true);
 
       verifyOnly(listener, listener(2));
 

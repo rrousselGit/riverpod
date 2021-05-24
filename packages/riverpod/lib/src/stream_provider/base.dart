@@ -27,7 +27,7 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   });
 
   @override
-  late final RootProvider<Future<State>> last =
+  late final AlwaysAliveProviderBase<Future<State>> last =
       AsyncValueAsFutureProvider(this);
 
   @override

@@ -41,7 +41,7 @@ void main() {
 
         final container = createContainer();
 
-        container.listen(provider, listener);
+        container.listen(provider, listener, fireImmediately: true);
 
         verifyOnly(listener, listener(0));
       });
@@ -69,7 +69,7 @@ void main() {
         final count = StateProvider((ref) => 0);
         final provider = Provider((ref) => ref.watch(count).state);
 
-        container.listen(provider, controller.add);
+        container.listen(provider, controller.add, fireImmediately: true);
 
         container.read(count).state++;
 

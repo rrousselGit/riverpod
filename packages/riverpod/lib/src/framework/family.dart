@@ -3,11 +3,16 @@ part of '../framework.dart';
 /// A base class for all families
 abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>> {
   /// A base class for all families
-  Family(this.name);
+  Family(
+    this.name, {
+    bool autoRegisterProvider = true,
+  }) : _autoRegisterProvider = autoRegisterProvider;
 
   /// The family name.
   @protected
   final String? name;
+
+  final bool _autoRegisterProvider;
 
   final _cache = <Arg, FamilyProvider>{};
 
@@ -19,7 +24,7 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>> {
     return _cache.putIfAbsent(argument, () {
       final provider = create(argument);
 
-      registerProvider(provider, argument);
+      if (_autoRegisterProvider) registerProvider(provider, argument);
 
       return provider;
     });

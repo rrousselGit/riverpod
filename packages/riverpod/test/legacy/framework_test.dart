@@ -80,7 +80,7 @@ void main() {
 
   //   expect(state.hasListeners, false);
 
-  //   final sub = container.listen(provider);
+  //   final sub = container.listen(provider, (_) {});
 
   //   expect(state.hasListeners, true);
 

@@ -70,7 +70,8 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
 class StateNotifierProviderFamily<Notifier extends StateNotifier<State>, State,
     Arg> extends Family<State, Arg, StateNotifierProvider<Notifier, State>> {
   /// {@macro riverpod.statenotifierprovider.family}
-  StateNotifierProviderFamily(this._create, {String? name}) : super(name);
+  StateNotifierProviderFamily(this._create, {String? name})
+      : super(name, autoRegisterProvider: false);
 
   final FamilyCreate<Notifier, StateNotifierProviderRef<Notifier, State>, Arg>
       _create;

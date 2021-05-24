@@ -179,7 +179,7 @@ class ProviderContainer {
   ProviderSubscription<State> listen<State>(
     ProviderListenable<State> provider,
     void Function(State value) listener, {
-    bool fireImmediately = true,
+    bool fireImmediately = false,
   }) {
     if (provider is ProviderBase<State>) {
       return _listenProvider(
@@ -217,11 +217,11 @@ class ProviderContainer {
   ///
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
-  Created refresh<Created>(RootProvider<Object?> provider) {
+  Created refresh<Created>(RootProvider<Created> provider) {
     final element = (_root ?? this)._stateReaders[provider];
 
     if (element == null) {
-      return readProviderElement(provider).getExposedValue() as Created;
+      return readProviderElement(provider).getExposedValue();
     } else {
       element.markMustRecomputeState();
       return element.getExposedValue() as Created;

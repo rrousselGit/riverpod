@@ -14,17 +14,32 @@ Stream<State> asyncValueToStream<State>(
 ) {
   StreamController<State>? controller;
 
+  StreamController<State> getController() {
+    if (controller == null) {
+      // Using a non-broadcast controller followed by asBroadcastStream instead
+      // of directly creating a broadcast controller so that `add`/`addError` calls
+      // are queued. This ensures that listeners will properly receive the first value.
+      controller = StreamController<State>();
+      ref.state = controller!.stream.asBroadcastStream(
+        onListen: (sub) => sub.resume(),
+        onCancel: (sub) => sub.pause(),
+      );
+    }
+    return controller!;
+  }
+
   ref.onDispose(() => controller?.close());
 
   void listener(AsyncValue<State> value) {
     value.when(
       loading: () {
         controller?.close();
-        controller = StreamController();
-        ref.state = controller!.stream;
+        controller = null;
+        // will call ref.state =
+        getController();
       },
-      data: (data) => controller!.add(data),
-      error: (err, stack) => controller!.addError(err, stack),
+      data: (data) => getController().add(data),
+      error: (err, stack) => getController().addError(err, stack),
     );
   }
 
@@ -44,7 +59,7 @@ class AsyncValueAsFutureProvider<State>
   final AlwaysAliveProviderBase<AsyncValue<State>> _provider;
 
   @override
-  Future<State> create(AutoDisposeProviderElementBase<Future<State>> ref) {
+  Future<State> create(ProviderElementBase<Future<State>> ref) {
     return _asyncValueAsFuture(_provider, ref);
   }
 

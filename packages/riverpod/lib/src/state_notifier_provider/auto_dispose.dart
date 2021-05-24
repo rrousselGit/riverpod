@@ -74,7 +74,7 @@ class AutoDisposeStateNotifierProviderFamily<
         AutoDisposeStateNotifierProvider<Notifier, State>> {
   /// {@macro riverpod.statenotifierprovider.family}
   AutoDisposeStateNotifierProviderFamily(this._create, {String? name})
-      : super(name);
+      : super(name, autoRegisterProvider: false);
 
   final FamilyCreate<Notifier,
       AutoDisposeStateNotifierProviderRef<Notifier, State>, Arg> _create;

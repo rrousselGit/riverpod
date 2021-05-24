@@ -15,7 +15,7 @@ void main() {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
-    final sub = container.listen(provider(0), listener);
+    final sub = container.listen(provider(0), listener, fireImmediately: true);
 
     verifyOnly(listener, listener('0'));
 
@@ -44,7 +44,7 @@ void main() {
     ]);
     addTearDown(container.dispose);
 
-    final sub = container.listen(provider(0), listener);
+    final sub = container.listen(provider(0), listener, fireImmediately: true);
 
     verifyOnly(listener, listener('0 override'));
 

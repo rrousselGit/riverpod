@@ -118,7 +118,7 @@ class ScopedProvider<State> extends ProviderBase<State> {
 
   @override
   bool recreateShouldNotify(State previousState, State newState) {
-    return true;
+    return previousState != newState;
   }
 
   @override

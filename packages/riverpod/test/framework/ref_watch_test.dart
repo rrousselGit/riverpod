@@ -172,7 +172,7 @@ void main() {
     final container = ProviderContainer();
     final listener = Listener<String>();
 
-    container.listen(computed(provider), listener);
+    container.listen(computed(provider), listener, fireImmediately: true);
 
     verify(listener('0')).called(1);
     verifyNoMoreInteractions(listener);
@@ -205,7 +205,7 @@ void main() {
     });
     final listener = Listener<String>();
 
-    final sub = container.listen(tested, listener);
+    final sub = container.listen(tested, listener, fireImmediately: true);
 
     verify(listener('0 0')).called(1);
     verifyNoMoreInteractions(listener);
@@ -321,14 +321,14 @@ void main() {
     container.listen<List<int>>(computed, (value) {
       first = value;
       firstListener(value);
-    });
+    }, fireImmediately: true);
 
     late List<int> second;
     final secondListener = Listener<List<int>>();
     container.listen<List<int>>(computed, (value) {
       second = value;
       secondListener(value);
-    });
+    }, fireImmediately: true);
 
     expect(first, [0]);
     expect(callCount, 1);
@@ -354,7 +354,7 @@ void main() {
       return !ref.watch(provider).isNegative;
     });
 
-    container.listen(isPositiveComputed, listener);
+    container.listen(isPositiveComputed, listener, fireImmediately: true);
 
     expect(notifier.hasListeners, true);
     verifyOnly(listener, listener(true));

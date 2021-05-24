@@ -270,7 +270,7 @@ void main() {
 
       addTearDown(container.dispose);
 
-      final sub = container.listen(provider);
+      final sub = container.listen(provider, (_) {});
 
       expect(callCount, 0);
       expect(sub.read(), const AsyncValue.data(42));
@@ -467,7 +467,7 @@ void main() {
             StateNotifierProvider<Counter, int>((ref) => counter);
         final provider = Provider((ref) => ref.watch(counterProvider));
 
-        container.listen(provider);
+        container.listen(provider, (_) {});
 
         // Does not crash
         counter.increment();
@@ -536,7 +536,7 @@ void main() {
         throw Error();
       });
 
-      final sub = container.listen(provider);
+      final sub = container.listen(provider, (_) {});
 
       expect(sub, isA<ProviderSubscription>());
     });
@@ -596,7 +596,7 @@ void main() {
         final error = Error();
         final provider = Provider<int>((ref) => throw error, name: 'hello');
 
-        final sub = container.listen(provider);
+        final sub = container.listen(provider, (_) {});
 
         expect(
           sub.read,
@@ -621,7 +621,7 @@ void main() {
         final first = StateNotifierProvider<Counter, int>((ref) => counter);
         final provider = Provider((ref) => ref.watch(first));
 
-        final sub = container.listen(provider);
+        final sub = container.listen(provider, (_) {});
 
         expect(sub.read(), 0);
 
@@ -634,14 +634,14 @@ void main() {
     group('.flush', () {
       // test('initialized to true', () {
       //   final provider = Provider((ref) => 0);
-      //   final sub = container.listen(provider);
+      //   final sub = container.listen(provider, (_) {});
 
       //   expect(sub.flush(), true);
       // });
 
       // test('updates to false after a read', () {
       //   final provider = Provider((ref) => 0);
-      //   final sub = container.listen(provider);
+      //   final sub = container.listen(provider, (_) {});
 
       //   sub.read();
 
@@ -652,7 +652,7 @@ void main() {
       //   final counter = Counter();
       //   final provider = StateNotifierProvider<Counter, int>((ref) => counter);
 
-      //   final sub = container.listen(provider);
+      //   final sub = container.listen(provider, (_) {});
 
       //   sub.read();
 
@@ -671,7 +671,7 @@ void main() {
       //   });
 
       //   expect(callCount, 0);
-      //   final sub = container.listen(provider);
+      //   final sub = container.listen(provider, (_) {});
       //   expect(sub.read(), 0);
       //   expect(callCount, 1);
       //   expect(sub.flush(), false);

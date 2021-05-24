@@ -58,11 +58,21 @@
     ref.onDispose(() => mounted = false);
   });
   ```
-- `ref.onDispose` now calls the dispose function as soon as one of the provider's dependency
-  is known to have changed
-- Providers no-longer wait until their next read to recompute their state if one of their dependency changed and they have listeners.
-- Added `ProviderContainer.pump`, an utility to easily "await" until providers notify their
-  listeners or are disposed.
+- `StreamProvider.last`, `StreamProvider.stream` and `FutureProvider.future` now
+  expose a future/stream that is independent from how many times the associated provider "rebuilt":
+  - if a `StreamProvider` rebuild before its stream emitted any value,
+    `StreamProvider.last` will resolve with the first value of the new stream instead.
+  - if a `FutureProvider` rebuild before its future completes,
+    `FutureProvider.future` will resolve with the result of the new future instead.
+- You can now override any provider with any other provider, as long as the value
+  that they expose matches. For example, it is possible to override a `StreamProvider<Model>`
+  with a `Provider<AsyncValue<Model>>`.
+- `ref.onDispose` now calls the dispose function as soon as one of the provider's
+  dependency is known to have changed
+- Providers no longer wait until their next read to recompute their state if one
+  of their dependency changed and they have listeners.
+- Added `ProviderContainer.pump`, an utility to easily "await" until providers
+  notify their listeners or are disposed.
 
 # 0.14.0+1
 

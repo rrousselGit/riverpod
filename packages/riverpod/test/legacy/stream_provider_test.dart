@@ -755,7 +755,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider);
+      final sub = container.listen(provider, (_) {});
 
       expect(sub.read(), const AsyncValue.data(42));
       await expectLater(stream, emits(42));
@@ -779,7 +779,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider);
+      final sub = container.listen(provider, (_) {});
 
       expect(sub.read(), const AsyncValue.data(42));
       await expectLater(stream, emits(42));
@@ -804,7 +804,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider);
+      final sub = container.listen(provider, (_) {});
 
       expect(sub.read(), const AsyncValue.data(42));
       await expectLater(stream, emits(42));
@@ -827,7 +827,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider);
+      final sub = container.listen(provider, (_) {});
 
       expect(sub.read(), const AsyncValue<int>.loading());
 
@@ -850,7 +850,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider);
+      final sub = container.listen(provider, (_) {});
 
       expect(sub.read(), const AsyncValue<int>.loading());
 
@@ -876,7 +876,7 @@ void main() {
     //   ]);
     //   final stream = container.read(provider.stream);
 
-    //   final sub = container.listen(provider);
+    //   final sub = container.listen(provider, (_) {});
 
     //   expect(sub.read(), const AsyncValue<int>.loading());
 
@@ -907,7 +907,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider);
+      final sub = container.listen(provider, (_) {});
 
       expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
       await expectLater(stream, emitsError(42));
@@ -932,7 +932,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider);
+      final sub = container.listen(provider, (_) {});
 
       expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
       await expectLater(stream, emitsError(42));
@@ -960,7 +960,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider);
+      final sub = container.listen(provider, (_) {});
 
       expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
       await expectLater(stream, emitsError(42));
@@ -985,7 +985,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider);
+      final sub = container.listen(provider, (_) {});
 
       expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
       await expectLater(stream, emitsError(42));

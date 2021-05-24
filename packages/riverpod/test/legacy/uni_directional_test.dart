@@ -50,7 +50,7 @@ void main() {
     //   final container = ProviderContainer();
     //   final vsync = VsyncMock();
 
-    //   final sub = container.listen(provider);
+    //   final sub = container.listen(provider, (_) {});
     //   container.read(dep).state++;
 
     //   container.debugVsyncs.add(vsync);
@@ -65,7 +65,7 @@ void main() {
     //   final container = ProviderContainer();
     //   final vsync = VsyncMock();
 
-    //   final sub = container.listen(provider);
+    //   final sub = container.listen(provider, (_) {});
     //   container.refresh(provider);
 
     //   container.debugVsyncs.add(vsync);

@@ -75,7 +75,7 @@ void main() {
     final controller = container.read(provider);
     expect(controller.state, 0);
 
-    container.listen(provider, listener);
+    container.listen(provider, listener, fireImmediately: true);
     verifyOnly(listener, listener(controller));
 
     controller.state = 42;
@@ -136,12 +136,12 @@ void main() {
       final controller = container.read(provider);
 
       expect(sub.read(), controller);
-      expect(callCount, 1);
+      expect(callCount, 0);
 
       controller.state++;
 
       await container.pump();
-      expect(callCount, 1);
+      expect(callCount, 0);
 
       container.read(dep).state++;
 
@@ -150,7 +150,7 @@ void main() {
 
       await container.pump();
       expect(sub.read(), controller2);
-      expect(callCount, 2);
+      expect(callCount, 1);
     });
   });
 
@@ -172,12 +172,12 @@ void main() {
       final controller = container.read(provider);
 
       expect(sub.read(), controller);
-      expect(callCount, 1);
+      expect(callCount, 0);
 
       controller.state++;
 
       await container.pump();
-      expect(callCount, 1);
+      expect(callCount, 0);
 
       container.read(dep).state++;
 
@@ -186,7 +186,7 @@ void main() {
 
       await container.pump();
       expect(sub.read(), controller2);
-      expect(callCount, 2);
+      expect(callCount, 1);
     });
 
     test('creates a new controller when no-longer listened', () async {

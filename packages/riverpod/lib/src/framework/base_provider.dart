@@ -452,6 +452,8 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   @visibleForTesting
   bool get mounted => _mounted;
 
+  bool _didBuild = false;
+
   ProviderException? _exception;
 
   /* STATE */
@@ -462,8 +464,8 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   // under a type-safe interface that types it as `State newValue` instead.
   set state(State newState) {
     _state = newState;
-    // TODO(rrousselGit) do nothing if called within `create` for performance
-    notifyListeners();
+
+    if (_didBuild) notifyListeners();
   }
 
   State get state => _state;
@@ -634,10 +636,12 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     }(), '');
 
     try {
+      _didBuild = false;
       _state = _provider.create(this);
     } catch (err, stack) {
       _exception = ProviderException._(err, stack, _provider);
     } finally {
+      _didBuild = true;
       assert(() {
         _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
         return true;

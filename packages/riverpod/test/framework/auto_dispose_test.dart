@@ -11,7 +11,7 @@ void main() {
   //   final provider = Provider.autoDispose((ref) {});
   //   final container = ProviderContainer();
 
-  //   final sub = container.listen(provider);
+  //   final sub = container.listen(provider, (_) {});
   //   sub.close();
 
   //   await idle();
@@ -58,7 +58,7 @@ void main() {
     final container = ProviderContainer();
     final listener = Listener();
 
-    final sub = container.listen(provider, listener);
+    final sub = container.listen(provider, listener, fireImmediately: true);
     verify(listener(42)).called(1);
     verifyNoMoreInteractions(listener);
     sub.close();
@@ -67,7 +67,7 @@ void main() {
     verifyZeroInteractions(onDispose);
 
     value = 21;
-    container.listen(provider, listener);
+    container.listen(provider, listener, fireImmediately: true);
 
     verify(listener(42)).called(1);
     verifyNoMoreInteractions(listener);
@@ -135,7 +135,7 @@ void main() {
     });
     final listener = Listener();
 
-    var sub = container.listen(provider2, listener);
+    var sub = container.listen(provider2, listener, fireImmediately: true);
 
     verify(listener(42)).called(1);
     verifyNoMoreInteractions(listener);
@@ -159,7 +159,7 @@ void main() {
     verifyNoMoreInteractions(onDispose2);
 
     value = 21;
-    sub = container.listen(provider2, listener);
+    sub = container.listen(provider2, listener, fireImmediately: true);
 
     verify(listener(21)).called(1);
     verifyNoMoreInteractions(listener);

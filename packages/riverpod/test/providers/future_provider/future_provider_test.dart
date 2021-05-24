@@ -199,14 +199,6 @@ void main() {
   });
 
   group('FutureProvider().future', () {
-    test('returns a future identical to the one created', () {
-      final completer = Completer<int>.sync();
-      final provider = FutureProvider((_) => completer.future);
-      final container = ProviderContainer();
-
-      expect(container.read(provider.future), completer.future);
-    });
-
     test('does not update dependents when the future completes', () async {
       final completer = Completer<int>.sync();
       final provider = FutureProvider((_) => completer.future);
@@ -567,7 +559,7 @@ void main() {
 
     //   final future = container.read(provider.future);
 
-    //   final sub = container.listen(provider);
+    //   final sub = container.listen(provider, (_) {});
 
     //   expect(sub.read(), const AsyncValue<int>.loading());
 

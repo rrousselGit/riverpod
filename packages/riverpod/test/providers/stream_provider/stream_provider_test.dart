@@ -180,44 +180,67 @@ void main() {
 
   test('can be refreshed', () {}, skip: true);
 
-  test('myProvider.stream receives all values, errors and done events',
+  test('myProvider.stream emits done on dispose', () async {
+    final stream = container.read(provider.stream);
+
+    container.dispose();
+
+    await expectLater(stream, emitsDone);
+  });
+
+  test('myProvider.stream re-create a new stream when re-entering loading',
       () async {
-    int? lastValue;
-    Object? lastError;
-    StackTrace? lastStack;
-    var isClosed = false;
+    final container = createContainer(overrides: [
+      provider.overrideWithValue(const AsyncValue.data(42)),
+    ]);
 
-    final sub = container.read(provider.stream).listen(
-          (value) => lastValue = value,
-          // ignore: avoid_types_on_closure_parameters
-          onError: (Object err, StackTrace stack) {
-            lastError = err;
-            lastStack = stack;
-          },
-          onDone: () => isClosed = true,
-        );
-    addTearDown(sub.cancel);
+    final stream = container.read(provider.stream);
 
-    controller.add(42);
-    await Future(() {});
+    await expectLater(stream, emits(42));
 
-    expect(lastValue, 42);
+    container.updateOverrides([
+      provider.overrideWithValue(const AsyncValue.loading()),
+    ]);
 
-    final stack = StackTrace.current;
+    final stream2 = container.read(provider.stream);
 
-    controller.addError(21, stack);
-    await Future(() {});
+    expect(stream2, isNot(stream));
+    await expectLater(stream, emitsDone);
 
-    expect(lastError, 21);
-    expect(lastStack, stack);
+    container.updateOverrides([
+      provider.overrideWithValue(const AsyncValue.data(21)),
+    ]);
 
-    await controller.close();
+    await expectLater(stream2, emits(21));
 
-    expect(isClosed, isTrue);
+    container.dispose();
+
+    await expectLater(stream2, emitsDone);
+  });
+
+  test('myProvider.stream works across provider rebuild', () async {
+    final another = StateProvider((ref) => const AsyncValue<int>.data(42));
+
+    final container = createContainer(overrides: [
+      provider.overrideWithProvider(
+        Provider((ref) {
+          return ref.watch(another).state;
+        }),
+      ),
+    ]);
+
+    final stream = container.read(provider.stream);
+    final controller = container.read(another);
+
+    await expectLater(stream, emits(42));
+
+    controller.state = const AsyncValue.data(21);
+
+    await expectLater(stream, emits(21));
   });
 
   // test('does not filter identical values', () {
-  //   final sub = container.listen(provider);
+  //   final sub = container.listen(provider, (_) {});
 
   //   expect(sub.read(), const AsyncValue<int>.loading());
 
@@ -261,7 +284,7 @@ void main() {
   //     return const Stream<int>.empty();
   //   });
 
-  //   final sub = container.listen(provider);
+  //   final sub = container.listen(provider, (_) {});
   //   sub.read();
 
   //   container.read(dep).state++;
@@ -278,7 +301,7 @@ void main() {
   //     return const Stream<int>.empty();
   //   });
 
-  //   final sub = container.listen(provider);
+  //   final sub = container.listen(provider, (_) {});
   //   sub.read();
 
   //   container.read(dep).state++;
@@ -287,7 +310,7 @@ void main() {
   // });
 
   group('overrideWithValue(T)', () {
-    test('.stream is a broadcast stream a', () async {
+    test('.stream is a broadcast stream', () async {
       final provider = StreamProvider((ref) => controller.stream);
       final container = createContainer(overrides: [
         provider.overrideWithValue(const AsyncValue<int>.data(42)),
@@ -302,6 +325,33 @@ void main() {
       ]);
 
       await expectLater(sub.read(), emits(21));
+    });
+
+    test('.stream queues events when there are no listeners', () async {
+      final provider = StreamProvider((ref) => controller.stream);
+      final container = createContainer(overrides: [
+        provider.overrideWithValue(const AsyncValue<int>.data(42)),
+      ]);
+
+      final sub = container.listen(provider.stream, (_) {});
+
+      await expectLater(sub.read(), emits(42));
+
+      container.updateOverrides([
+        provider.overrideWithValue(const AsyncValue<int>.data(21)),
+      ]);
+      container.updateOverrides([
+        provider.overrideWithValue(const AsyncValue<int>.data(22)),
+      ]);
+
+      // This await would normally prevent the test from reading the "21" event
+      // unless the event is queued
+      await container.pump();
+
+      await expectLater(
+        sub.read(),
+        emitsInOrder(<Object?>[21, 22]),
+      );
     });
 
     test('.stream emits done when the container is disposed', () async {

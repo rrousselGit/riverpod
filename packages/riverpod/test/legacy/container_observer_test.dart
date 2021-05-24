@@ -24,13 +24,13 @@ void main() {
   //   final notifier = Counter();
   //   final provider = StateNotifierProvider<Counter, int>((_) => notifier);
 
-  //   final sub = container.listen(provider);
+  //   final sub = container.listen(provider, (_) {});
 
   //   verify(observer.didAddProvider(provider.notifier, notifier));
   //   verify(observer.didAddProvider(provider, 0));
   //   verifyNoMoreInteractions(observer);
 
-  //   container.listen(provider);
+  //   container.listen(provider, (_) {});
 
   //   verifyNoMoreInteractions(observer);
 

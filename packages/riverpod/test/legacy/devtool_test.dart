@@ -103,7 +103,7 @@ void main() {
 
     expect(spy.logs, isEmpty);
 
-    var sub = container.listen(provider);
+    var sub = container.listen(provider, (_) {});
 
     expect(
       spy.logs,
@@ -154,7 +154,7 @@ void main() {
     expect(spy.logs, isEmpty, reason: 'provider2 is not autoDispose');
 
     // re-subscribe to the provider that was unmounted
-    sub = container.listen(provider);
+    sub = container.listen(provider, (_) {});
 
     expect(
       spy.logs,

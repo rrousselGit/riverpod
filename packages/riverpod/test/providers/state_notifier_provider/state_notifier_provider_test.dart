@@ -22,11 +22,16 @@ void main() {
     );
     addTearDown(container.dispose);
 
-    expect(container.read(provider(0).notifier), notifier2);
-    // access in the child container
     // try to read provider.state before provider and see if it points to the override
     expect(container.read(provider(0)), 42);
+    expect(container.read(provider(0).notifier), notifier2);
   });
+
+  test(
+    'StateNotifierProviderFamily.toString includes argument & name',
+    () {},
+    skip: true,
+  );
 
   test('overriding the provider overrides provider.state too', () {
     final notifier = TestNotifier(42);
@@ -92,7 +97,7 @@ void main() {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
-    container.listen(provider.notifier, listener);
+    container.listen(provider.notifier, listener, fireImmediately: true);
 
     verifyOnly(listener, listener(argThat(isA<TestNotifier>())));
 
@@ -115,7 +120,7 @@ void main() {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
-    container.listen(provider, listener);
+    container.listen(provider, listener, fireImmediately: true);
 
     verifyOnly(listener, listener(0));
 
@@ -145,13 +150,13 @@ void main() {
     );
 
     expect(sub.read(), notifier);
-    expect(callCount, 1);
+    expect(callCount, 0);
 
     notifier.increment();
 
     await container.pump();
 
-    expect(callCount, 1);
+    expect(callCount, 0);
 
     container.read(dep).state++;
 
@@ -160,7 +165,7 @@ void main() {
     await container.pump();
 
     expect(sub.read(), notifier2);
-    expect(callCount, 2);
+    expect(callCount, 1);
   });
 
   test(
@@ -177,7 +182,7 @@ void main() {
     addTearDown(container.dispose);
     final listener = ListenerMock();
 
-    container.listen<int>(provider, listener);
+    container.listen<int>(provider, listener, fireImmediately: true);
 
     verifyOnly(listener, listener(42));
     expect(container.read(provider.notifier), notifier);
@@ -186,6 +191,7 @@ void main() {
     notifier.increment();
 
     await container.pump();
+
     verifyOnly(listener, listener(43));
 
     container.updateOverrides([
@@ -193,7 +199,9 @@ void main() {
     ]);
 
     await container.pump();
+
     verifyOnly(listener, listener(21));
+
     expect(notifier.hasListeners, false);
     expect(notifier.mounted, true);
     expect(container.read(provider.notifier), notifier2);
@@ -201,6 +209,7 @@ void main() {
     notifier2.increment();
 
     await container.pump();
+
     verifyOnly(listener, listener(22));
   });
 
@@ -220,7 +229,7 @@ void main() {
     addTearDown(container.dispose);
     final listener = ListenerMock();
 
-    container.listen<int>(provider, listener);
+    container.listen<int>(provider, listener, fireImmediately: true);
 
     verifyOnly(listener, listener(42));
     expect(container.read(provider.notifier), notifier);
