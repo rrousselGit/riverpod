@@ -306,7 +306,7 @@ class _ConsumerState extends State<ConsumerWidget> implements WidgetReference {
   }
 
   @override
-  Res watch<Res>(ProviderBase<Object?, Res> target) {
+  Res watch<Res>(ProviderBase<Res> target) {
     return _dependencies.putIfAbsent(target, () {
       final oldDependency = _oldDependencies?.remove(target);
 

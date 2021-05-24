@@ -15,7 +15,7 @@ part 'change_notifier_provider/auto_dispose.dart';
 /// dispatching notifications, but instead O(N)
 /// {@endtemplate}
 mixin _ChangeNotifierProviderStateMixin<T extends ChangeNotifier?>
-    on ProviderStateBase<T, T> {
+    on ProviderStateBase<T> {
   @override
   void valueChanged({T? previous}) {
     if (createdValue == previous) {
@@ -44,7 +44,7 @@ Override _overrideWithValue<T extends ChangeNotifier>(
   T value,
 ) {
   return ProviderOverride(
-    ValueProvider<T, T>((ref) {
+    ValueProvider<T>((ref) {
       VoidCallback? removeListener;
 
       void listen(T value) {

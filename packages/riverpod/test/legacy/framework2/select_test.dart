@@ -1,15 +1,11 @@
-import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show SelectorSubscription;
 import 'package:test/test.dart';
-
-import '../../utils.dart';
 
 void main() {
   // final mayHaveChanged = MayHaveChangedMock<String>();
   // final didChange = DidChangedMock<String>();
   late ProviderContainer container;
-  final provider = StateProvider((_) => 0);
+  // final provider = StateProvider((_) => 0);
   setUp(() {
     container = ProviderContainer();
   });

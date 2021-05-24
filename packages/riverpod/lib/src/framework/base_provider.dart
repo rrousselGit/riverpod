@@ -446,7 +446,6 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   DoubleLinkedQueue<void Function()>? _onDisposeListeners;
 
   bool _mustRecomputeState = false;
-  bool _dependencyMayHaveChanged = false;
 
   bool _mounted = false;
   @visibleForTesting

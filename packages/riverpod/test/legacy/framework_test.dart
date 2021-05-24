@@ -5,8 +5,6 @@ import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 import 'package:riverpod/riverpod.dart';
 
-import '../utils.dart';
-
 Matcher isProvider(RootProvider provider) {
   return isA<ProviderElementBase>().having(
     (e) => e.origin,
@@ -56,7 +54,7 @@ void main() {
   test('throw if locally overriding a family', () {
     final provider = Provider.family<int, int>((_, id) => id * 2);
     final root = ProviderContainer(overrides: [
-      provider.overrideWithProvider((ref, id) => id),
+      provider.overrideWithProvider((id) => Provider((ref) => id)),
     ]);
 
     expect(root.read(provider(21)), 21);
@@ -64,7 +62,9 @@ void main() {
     expect(
       () => ProviderContainer(
         parent: root,
-        overrides: [provider.overrideWithProvider((ref, id) => id * 3)],
+        overrides: [
+          provider.overrideWithProvider((id) => Provider((ref) => id * 3)),
+        ],
       ),
       throwsUnsupportedError,
     );
@@ -101,7 +101,9 @@ void main() {
       return '$value 2';
     });
     final container = ProviderContainer(overrides: [
-      family.overrideWithProvider((ref, value) => 'override $value'),
+      family.overrideWithProvider(
+        (value) => Provider((ref) => 'override $value'),
+      ),
     ]);
 
     expect(container.read(family(0)), 'override 0');
@@ -117,7 +119,7 @@ void main() {
     final provider = Provider((ref) => 0);
     final family = Provider.family<int, int>((ref, value) => 0);
     final container = ProviderContainer(overrides: [
-      family.overrideWithProvider((ref, value) => 0),
+      family.overrideWithProvider((value) => Provider((ref) => 0)),
     ]);
 
     expect(
@@ -131,13 +133,13 @@ void main() {
   test('last family override is applied', () {
     final family = Provider.family<int, int>((ref, value) => 0);
     final container = ProviderContainer(overrides: [
-      family.overrideWithProvider((ref, value) => 1),
+      family.overrideWithProvider((value) => Provider((ref) => 1)),
     ]);
 
     expect(container.read(family(0)), 1);
 
     container.updateOverrides([
-      family.overrideWithProvider((ref, value) => 2),
+      family.overrideWithProvider((value) => Provider((ref) => 2)),
     ]);
 
     expect(container.read(family(0)), 1);
@@ -526,9 +528,9 @@ void main() {
 
   test('ProviderRefBase is unusable after dispose (read/onDispose)', () {
     final container = ProviderContainer();
-    late ProviderRefBase ref;
+    late ProviderElement ref;
     final provider = Provider((s) {
-      ref = s;
+      ref = s as ProviderElement;
       return 42;
     });
     final other = Provider((_) => 42);
