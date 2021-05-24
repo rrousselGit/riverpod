@@ -6,6 +6,7 @@ import 'internals.dart';
 
 /// A function that can react to changes on a provider
 ///
+// ignore: deprecated_member_use_from_same_package
 /// See also [ProviderListener]
 typedef OnProviderChange<T> = void Function(BuildContext context, T value);
 
@@ -18,6 +19,7 @@ typedef OnProviderChange<T> = void Function(BuildContext context, T value);
 /// Even if a provider changes many times in a quick succession, [onChange] will
 /// be called only once, at the end of the frame.
 /// {@endtemplate}
+@Deprecated('Use WidgetReference.listen instead')
 @sealed
 class ProviderListener<T> extends StatefulWidget {
   /// {@macro riverpod.providerlistener}
@@ -57,6 +59,7 @@ class ProviderListener<T> extends StatefulWidget {
 }
 
 @sealed
+// ignore: deprecated_member_use_from_same_package
 class _ProviderListenerState<T> extends State<ProviderListener<T>> {
   ProviderSubscription<T>? _subscription;
   ProviderContainer? _container;
@@ -73,6 +76,7 @@ class _ProviderListenerState<T> extends State<ProviderListener<T>> {
   }
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   void didUpdateWidget(ProviderListener<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.provider != widget.provider) {
@@ -86,17 +90,9 @@ class _ProviderListenerState<T> extends State<ProviderListener<T>> {
     if (widget.provider != null) {
       _subscription = _container!.listen<T>(
         widget.provider!,
-        mayHaveChanged: _mayHaveChanged,
+        (value) => widget.onChange(context, value),
       );
     }
-  }
-
-  void _mayHaveChanged(ProviderSubscription<T> subscription) {
-    Future.microtask(() {
-      if (subscription.flush()) {
-        widget.onChange(context, subscription.read());
-      }
-    });
   }
 
   @override

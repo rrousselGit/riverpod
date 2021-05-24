@@ -107,7 +107,7 @@ extension BuildContextX on BuildContext {
   ///   }
   /// }
   /// ```
-  State refresh<State>(RootProvider<State> provider) {
+  State refresh<State>(ProviderBase<State> provider) {
     return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
 }

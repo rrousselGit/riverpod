@@ -6,7 +6,7 @@ import 'internals.dart';
 
 // ignore: one_member_abstracts
 abstract class WidgetReference {
-  T watch<T>(ProviderBase<Object?, T> provider);
+  T watch<T>(ProviderBase<T> provider);
 }
 
 /// A function that can also listen to providers
@@ -316,13 +316,9 @@ class _ConsumerState extends State<ConsumerWidget> implements WidgetReference {
 
       return _container!.listen<Res>(
         target,
-        mayHaveChanged: _mayHaveChanged,
+        (_) => setState(() {}),
       );
     }).read() as Res;
-  }
-
-  void _mayHaveChanged(ProviderSubscription sub) {
-    (context as Element).markNeedsBuild();
   }
 
   @override

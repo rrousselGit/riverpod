@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('overriding listens to the ChangeNotifier', () {});
+
   test('family', () {
     final container = ProviderContainer();
     final provider =

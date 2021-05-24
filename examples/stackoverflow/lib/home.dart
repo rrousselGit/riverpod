@@ -132,7 +132,8 @@ class MyHomePage extends HookConsumerWidget {
           data: (count) {
             return RefreshIndicator(
               onRefresh: () {
-                return context.refresh(paginatedQuestionsProvider(0));
+                context.refresh(paginatedQuestionsProvider(0));
+                return context.read(paginatedQuestionsProvider(0).future);
               },
               child: ListView.separated(
                 itemCount: count,
