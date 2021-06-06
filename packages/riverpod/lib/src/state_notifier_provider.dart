@@ -113,7 +113,7 @@ class _NotifierProvider<Notifier extends StateNotifier<Object?>>
 ///         CheckboxListTile(
 ///            value: todo.completed,
 ///            // When tapping on the todo, change its completed status
-///            onChanged: (value) => context.read(todosProvider).toggle(todo.id),
+///            onChanged: (value) => context.read(todosProvider.notifier).toggle(todo.id),
 ///            title: Text(todo.description),
 ///         ),
 ///     ],

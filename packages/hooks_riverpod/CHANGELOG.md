@@ -1,3 +1,11 @@
+# 0.14.0+4
+
+Upgraded dependencies to latest
+
+# 0.14.0+3
+
+Removed an assert that could cause issues when an application is partially migrated to null safety.
+
 # 0.14.0+2
 
 - Fix `context.refresh` not compiling when using nullable providers

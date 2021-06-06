@@ -75,6 +75,10 @@
   notify their listeners or are disposed.
 - fixed an issue when using both `family` and `autoDispose` that could lead to an inconsistent state
 
+# 0.14.0+3
+
+Removed an assert that could cause issues when an application is partially migrated to null safety.
+
 # 0.14.0+1
 
 - Re-added `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that were unvoluntarily removed.

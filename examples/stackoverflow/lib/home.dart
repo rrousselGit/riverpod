@@ -8,8 +8,8 @@ import 'package:html/parser.dart';
 
 import 'common.dart';
 
-part 'home.g.dart';
 part 'home.freezed.dart';
+part 'home.g.dart';
 
 @freezed
 abstract class QuestionsResponse with _$QuestionsResponse {
@@ -18,7 +18,7 @@ abstract class QuestionsResponse with _$QuestionsResponse {
     required int total,
   }) = _QuestionsResponse;
 
-  factory QuestionsResponse.fromJson(Map<String, Object> json) =>
+  factory QuestionsResponse.fromJson(Map<String, Object?> json) =>
       _$QuestionsResponseFromJson(json);
 }
 
@@ -74,9 +74,9 @@ final paginatedQuestionsProvider = FutureProvider.autoDispose
 
   final response = await ref
       .watch(client)
-      .getUri<Map<String, Object>>(uri, cancelToken: cancelToken);
+      .getUri<Map<String, Object?>>(uri, cancelToken: cancelToken);
 
-  final parsed = QuestionsResponse.fromJson(response.data);
+  final parsed = QuestionsResponse.fromJson(response.data!);
   final page = parsed.copyWith(
     items: parsed.items.map((e) {
       final document = parse(e.body);
@@ -124,7 +124,7 @@ class MyHomePage extends HookConsumerWidget {
           error: (err, stack) {
             if (err is DioError) {
               return Text(
-                err.response.data.toString(),
+                err.response!.data.toString(),
               );
             }
             return Text('Error $err\n$stack');
