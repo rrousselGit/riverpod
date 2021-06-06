@@ -4,7 +4,12 @@ import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
+import 'utils.dart';
+
 void main() {
+  test('throws if watch/listen are used outside of `build`', () {}, skip: true);
+  test('ref.read should keep providers alive', () {}, skip: true);
+
   testWidgets('works with providers that returns null', (tester) async {
     final nullProvider = Provider((ref) => null);
 
@@ -101,10 +106,10 @@ void main() {
 
     container.read(provider0);
     container.read(provider1);
-    final familyState0 = container.debugProviderElements.firstWhere((p) {
+    final familyState0 = container.getAllProviderElements().firstWhere((p) {
       return p.provider == provider0;
     });
-    final familyState1 = container.debugProviderElements.firstWhere((p) {
+    final familyState1 = container.getAllProviderElements().firstWhere((p) {
       return p.provider == provider1;
     });
 
@@ -178,10 +183,10 @@ void main() {
 
     container.read(provider0);
     container.read(provider1);
-    final familyState0 = container.debugProviderElements.firstWhere((p) {
+    final familyState0 = container.getAllProviderElements().firstWhere((p) {
       return p.provider == provider0;
     });
-    final familyState1 = container.debugProviderElements.firstWhere((p) {
+    final familyState1 = container.getAllProviderElements().firstWhere((p) {
       return p.provider == provider1;
     });
 
@@ -308,9 +313,11 @@ void main() {
     final provider = StateNotifierProvider<TestNotifier, int>((_) => notifier);
     final computed = Provider((ref) => !ref.watch(provider).isNegative);
     var buildCount = 0;
+    final container = createContainer();
 
     await tester.pumpWidget(
-      ProviderScope(
+      UncontrolledProviderScope(
+        container: container,
         child: Consumer(builder: (c, ref, _) {
           buildCount++;
           return Text(
@@ -382,8 +389,9 @@ void main() {
         .firstState<ProviderScopeState>(find.byKey(firstOwnerKey))
         .container;
 
-    final state1 =
-        owner1.debugProviderElements.firstWhere((s) => s.provider == provider);
+    final state1 = owner1
+        .getAllProviderElements()
+        .firstWhere((s) => s.provider == provider);
 
     expect(state1.hasListeners, true);
     expect(find.text('0'), findsOneWidget);
@@ -410,7 +418,8 @@ void main() {
         .firstState<ProviderScopeState>(find.byKey(secondOwnerKey))
         .container;
 
-    final state2 = container2.debugProviderElements
+    final state2 = container2
+        .getAllProviderElements()
         .firstWhere((s) => s.provider is StateNotifierProvider);
 
     expect(find.text('0'), findsNothing);
@@ -444,7 +453,8 @@ void main() {
         .firstState<ProviderScopeState>(find.byType(ProviderScope))
         .container;
 
-    final state = container.debugProviderElements
+    final state = container
+        .getAllProviderElements()
         .firstWhere((s) => s.provider == provider);
 
     expect(state.hasListeners, true);

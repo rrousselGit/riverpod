@@ -78,8 +78,17 @@ void main() {
 
       final family2 = Provider.family<int, int>((ref, _) => 0, name: 'name');
 
-      expect(family2(0).name, 'name (0)');
-      expect(family2(1).name, 'name (1)');
+      expect(family2(0).name, 'name');
+      expect(
+        family2(0).toString(),
+        equalsIgnoringHashCodes('name:Provider<int>#00000(0)'),
+      );
+
+      expect(family2(1).name, 'name');
+      expect(
+        family2(1).toString(),
+        equalsIgnoringHashCodes('name:Provider<int>#00000(1)'),
+      );
     });
   });
 
@@ -362,7 +371,7 @@ void main() {
 
     expect(state.mounted, true);
 
-    await Future<void>.value();
+    await container.pump();
 
     expect(state.mounted, false);
   });
@@ -608,7 +617,7 @@ void main() {
                   (s) => s.toString().split('\n').first,
                   'toString',
                   equalsIgnoringHashCodes(
-                    'An exception was thrown while building Provider<int>#00000(name: hello).',
+                    'An exception was thrown while building hello:Provider<int>#00000.',
                   ),
                 ),
           ),
@@ -720,12 +729,22 @@ void main() {
       final container = ProviderContainer();
 
       await expectLater(container.read(provider.future), completion(42));
+
       expect(callCount, 1);
+      await expectLater(
+        container.read(provider),
+        const AsyncValue<int>.data(42),
+      );
 
       future = Future.value(21);
 
-      await expectLater(container.refresh(provider), completion(21));
+      expect(container.refresh(provider), const AsyncValue<int>.loading());
+      await expectLater(
+        container.read(provider),
+        const AsyncValue<int>.loading(),
+      );
       expect(callCount, 2);
+
       await expectLater(container.read(provider.future), completion(21));
       expect(callCount, 2);
     });
@@ -739,7 +758,14 @@ void main() {
       final container = ProviderContainer();
 
       expect(callCount, 0);
-      await expectLater(container.refresh(provider), completion(42));
+      expect(
+        container.refresh(provider),
+        const AsyncValue<int>.loading(),
+      );
+      expect(
+        container.read(provider),
+        const AsyncValue<int>.loading(),
+      );
       expect(callCount, 1);
       await expectLater(container.read(provider.future), completion(42));
       expect(callCount, 1);
@@ -758,14 +784,14 @@ void main() {
       });
       final container = ProviderContainer();
 
-      await expectLater(container.refresh(provider), completion(42));
+      container.refresh(provider);
       expect(callCount, 1);
 
       container.read(dep).state++;
       future = Future.value(21);
 
       expect(callCount, 1);
-      await expectLater(container.refresh(provider), completion(21));
+      container.refresh(provider);
       expect(callCount, 2);
       await expectLater(container.read(provider.future), completion(21));
       expect(callCount, 2);

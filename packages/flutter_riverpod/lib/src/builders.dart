@@ -67,7 +67,7 @@ class ChangeNotifierProviderBuilder {
   /// ```
   /// {@endtemplate}
   ChangeNotifierProvider<Notifier> call<Notifier extends ChangeNotifier>(
-    Notifier Function(ProviderRefBase ref) create, {
+    Create<Notifier, ChangeNotifierProviderRef<Notifier>> create, {
     String? name,
   }) {
     return ChangeNotifierProvider(create, name: name);
@@ -298,9 +298,9 @@ class ChangeNotifierProviderFamilyBuilder {
   const ChangeNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  ChangeNotifierProviderFamily<Notifier, Param>
-      call<Notifier extends ChangeNotifier, Param>(
-    Notifier Function(ProviderRefBase ref, Param param) create, {
+  ChangeNotifierProviderFamily<Notifier, Arg>
+      call<Notifier extends ChangeNotifier, Arg>(
+    FamilyCreate<Notifier, ChangeNotifierProviderRef<Notifier>, Arg> create, {
     String? name,
   }) {
     return ChangeNotifierProviderFamily(create, name: name);
@@ -320,7 +320,7 @@ class AutoDisposeChangeNotifierProviderBuilder {
   /// {@macro riverpod.autoDispose}
   AutoDisposeChangeNotifierProvider<Notifier>
       call<Notifier extends ChangeNotifier>(
-    Notifier Function(AutoDisposeProviderRefBase ref) create, {
+    Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>> create, {
     String? name,
   }) {
     return AutoDisposeChangeNotifierProvider(create, name: name);
@@ -338,9 +338,10 @@ class AutoDisposeChangeNotifierProviderFamilyBuilder {
   const AutoDisposeChangeNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  AutoDisposeChangeNotifierProviderFamily<Notifier, Param>
-      call<Notifier extends ChangeNotifier, Param>(
-    Notifier Function(AutoDisposeProviderRefBase ref, Param param) create, {
+  AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>
+      call<Notifier extends ChangeNotifier, Arg>(
+    FamilyCreate<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>, Arg>
+        create, {
     String? name,
   }) {
     return AutoDisposeChangeNotifierProviderFamily(create, name: name);

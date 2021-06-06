@@ -1,9 +1,8 @@
 import 'package:flutter/foundation.dart' hide describeIdentity;
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:meta/meta.dart';
-
-import 'internals.dart' show describeIdentity;
 
 /// {@template riverpod.providerscope}
 /// A widget that stores the state of providers.
@@ -120,36 +119,6 @@ class ProviderScope extends StatefulWidget {
 
   @override
   ProviderScopeState createState() => ProviderScopeState();
-
-  @override
-  _ProviderScopeElement createElement() {
-    return _ProviderScopeElement(this);
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(IterableProperty<ProviderObserver>('observers', observers));
-    properties.add(IterableProperty<Override>('overrides', overrides));
-  }
-}
-
-@sealed
-class _ProviderScopeElement extends StatefulElement {
-  _ProviderScopeElement(ProviderScope widget) : super(widget);
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    final container = (state as ProviderScopeState).container;
-
-    // filling the state properties here instead of inside State
-    // so that it is more readable in the devtool (one less indentation)
-    for (final entry in container.debugProviderValues.entries) {
-      final name = entry.key.name ?? describeIdentity(entry.key);
-      properties.add(DiagnosticsProperty(name, entry.value));
-    }
-  }
 }
 
 /// Do not use: The [State] of [ProviderScope]
@@ -253,15 +222,6 @@ class UncontrolledProviderScope extends InheritedWidget {
   }
 
   @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    for (final entry in container.debugProviderValues.entries) {
-      final name = entry.key.name ?? describeIdentity(entry.key);
-      properties.add(DiagnosticsProperty(name, entry.value));
-    }
-  }
-
-  @override
   _UncontrolledProviderScopeElement createElement() {
     return _UncontrolledProviderScopeElement(this);
   }
@@ -272,43 +232,71 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
   _UncontrolledProviderScopeElement(UncontrolledProviderScope widget)
       : super(widget);
 
+  void Function()? _task;
+  bool _mounted = true;
+
+  ProviderContainer _containerOf(Widget widget) =>
+      (widget as UncontrolledProviderScope).container;
+
   @override
   void mount(Element? parent, Object? newSlot) {
-    assert(() {
-      (widget as UncontrolledProviderScope)
-          .container
-          .debugVsyncs
-          .add(markNeedsBuild);
-      return true;
-    }(), '');
+    if (kDebugMode) {
+      _containerOf(widget).debugCanModifyProviders = _debugCanModifyProviders;
+    }
+    assert(
+      _containerOf(widget).vsyncOverride == null,
+      'The ProviderContainer was already associated with a different widget',
+    );
+    _containerOf(widget).vsyncOverride = _flutterVsync;
+
     super.mount(parent, newSlot);
   }
 
   @override
   void update(ProxyWidget newWidget) {
-    assert(() {
-      (widget as UncontrolledProviderScope)
-          .container
-          .debugVsyncs
-          .remove(markNeedsBuild);
-      (newWidget as UncontrolledProviderScope)
-          .container
-          .debugVsyncs
-          .add(markNeedsBuild);
-      return true;
-    }(), '');
+    if (kDebugMode) {
+      _containerOf(widget).debugCanModifyProviders = null;
+      _containerOf(newWidget).debugCanModifyProviders =
+          _debugCanModifyProviders;
+    }
+
+    _containerOf(widget).vsyncOverride = null;
+    assert(
+      _containerOf(newWidget).vsyncOverride == null,
+      'The ProviderContainer was already associated with a different widget',
+    );
+    _containerOf(newWidget).vsyncOverride = _flutterVsync;
+
     super.update(newWidget);
+  }
+
+  void _flutterVsync(void Function() task) {
+    assert(_task == null, 'Only one task can be scheduled at a time');
+    _task = task;
+    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+      if (_mounted) markNeedsBuild();
+    });
+  }
+
+  void _debugCanModifyProviders() {
+    markNeedsBuild();
   }
 
   @override
   void unmount() {
-    assert(() {
-      (widget as UncontrolledProviderScope)
-          .container
-          .debugVsyncs
-          .remove(markNeedsBuild);
-      return true;
-    }(), '');
+    _mounted = false;
+    if (kDebugMode) {
+      _containerOf(widget).debugCanModifyProviders = null;
+    }
+
+    _containerOf(widget).vsyncOverride = null;
     super.unmount();
+  }
+
+  @override
+  Widget build() {
+    _task?.call();
+    _task = null;
+    return super.build();
   }
 }

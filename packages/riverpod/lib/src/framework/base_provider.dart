@@ -67,12 +67,7 @@ abstract class AlwaysAliveProviderBase<State> extends RootProvider<State> {
 /// A base class for _all_ providers.
 abstract class ProviderBase<State> implements ProviderListenable<State> {
   /// A base class for _all_ providers.
-  ProviderBase(this.name) {
-    assert(() {
-      debugId = '${_debugNextId++}';
-      return true;
-    }(), '');
-  }
+  ProviderBase(this.name);
 
   /// {@template riverpod.name}
   /// A custom label for providers.
@@ -80,11 +75,6 @@ abstract class ProviderBase<State> implements ProviderListenable<State> {
   /// This is picked-up by devtools and [toString] to show better messages.
   /// {@endtemplate}
   final String? name;
-
-  /// A unique identifier for this provider, used by devtools to differentiate providers
-  ///
-  /// Available only during development.
-  late final String debugId;
 
   Family? _from;
 
@@ -106,32 +96,38 @@ abstract class ProviderBase<State> implements ProviderListenable<State> {
   /// An internal method that defines how a provider behaves.
   ProviderElementBase<State> createElement();
 
-  // Custom implementation of hash code optimized for reading providers.
-  //
-  // The value is designed to fit within the SMI representation. This makes
-  // the cached value use less memory (one field and no extra heap objects) and
-  // cheap to compare (no indirection).
-  //
-  // See also:
-  //
-  //  * https://dart.dev/articles/dart-vm/numeric-computation, which
-  //    explains how numbers are represented in Dart.
-  @nonVirtual
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes, hash_and_equals
-  int get hashCode => _cachedHash;
-  final int _cachedHash = _nextHashCode = (_nextHashCode + 1) % 0xffffff;
-  static int _nextHashCode = 1;
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode {
+    if (_from == null) return super.hashCode;
+
+    return _from.hashCode ^ _argument.hashCode;
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (_from == null) return identical(other, this);
+
+    return other.runtimeType == runtimeType &&
+        other is ProviderBase<State> &&
+        other._from == _from &&
+        other._argument == _argument;
+  }
 
   @override
   String toString() {
-    final content = {
-      'name': name,
-      'from': from,
-      'argument': argument,
-    }.entries.where((e) => e.value != null).map((e) => '${e.key}: ${e.value}');
+    var leading = '';
+    if (from != null) {
+      leading = '($argument)';
+    }
 
-    return '${describeIdentity(this)}$content';
+    var trailing = '';
+    if (name != null) {
+      trailing = '$name:';
+    }
+
+    return '$trailing${describeIdentity(this)}$leading';
   }
 }
 
@@ -240,29 +236,41 @@ class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
   final Output Function(Input) selector;
 }
 
-class ProviderSubscription<T> {
+///
+class ProviderSubscription<State> {
   ProviderSubscription._(
-    this._element,
+    this._listenedElement,
     this._listener,
   );
 
-  bool _debugDisposed = false;
-
-  final void Function(T) _listener;
-  final ProviderElementBase<T> _element;
+  final void Function(State) _listener;
+  final ProviderElementBase<State> _listenedElement;
 
   void close() {
-    assert(!_debugDisposed, 'called `close` on an already closed subscription');
-    assert(() {
-      _debugDisposed = true;
-      return true;
-    }(), '');
-
-    _element._listeners.remove(_listener);
-    _element.mayNeedDispose();
+    _listenedElement._listeners.remove(this);
+    _listenedElement.mayNeedDispose();
   }
 
-  T read() => _element.getExposedValue();
+  State read() => _listenedElement.getExposedValue();
+}
+
+/// When a provider listens to another provider using `listen`
+class _ProviderListener<T> {
+  _ProviderListener._({
+    required this.listenedElement,
+    required this.dependentElement,
+    required this.listener,
+  });
+
+  final void Function(T state) listener;
+  final ProviderElementBase dependentElement;
+  final ProviderElementBase<T> listenedElement;
+
+  void close() {
+    listenedElement
+      .._subscribers.remove(this)
+      ..mayNeedDispose();
+  }
 }
 
 @Deprecated('Use ProviderRefBase instead.')
@@ -428,24 +436,35 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   /// This maps to listeners added with [listen].
   /// See also [mayNeedDispose], called when [hasListeners] may have changed.
   // TODO(rrousselGit) test _dependents case
-  bool get hasListeners => _listeners.isNotEmpty || _dependents.isNotEmpty;
+  // TODO(rrousselGit) test _subscribers case
+  bool get hasListeners =>
+      _listeners.isNotEmpty ||
+      _subscribers.isNotEmpty ||
+      _dependents.isNotEmpty;
 
   // TODO(rrousselGit) refactor to match ChangeNotifier
-  List<void Function(State value)> _listeners = [];
-  List<ProviderElementBase> _dependents = [];
-  List<ProviderSubscription> _subscriptions = <ProviderSubscription>[];
+  /// Accepts only ProviderSubscription<State>, but not typed so that
+  /// ProviderSubscription<void> is valid
+  final _listeners = <ProviderSubscription<State>>[];
+  final _dependents = <ProviderElementBase>[];
 
-  // TODO(rrousselGit) remove
-  List<void Function(State value)> get listeners => _listeners;
-  // TODO(rrousselGit) remove
-  List<ProviderElementBase> get dependents => _dependents;
+  /// The listeners that were added using [listen].
+  ///
+  /// This list allows us to traverse up in the provider graph.
+  final _subscriptions = <_ProviderListener<Object?>>[];
 
-  HashMap<ProviderElementBase, Object> _dependencies =
-      HashMap<ProviderElementBase, Object>();
+  /// The list of listeners added using [listen] from another provider.
+  ///
+  /// Storing ProviderListener instead of the provider Element as a provider
+  /// can listen another provider multiple times with different listeners.
+  final _subscribers = <_ProviderListener<State>>[];
+
+  var _dependencies = HashMap<ProviderElementBase, Object>();
   HashMap<ProviderElementBase, Object>? _previousDependencies;
   DoubleLinkedQueue<void Function()>? _onDisposeListeners;
 
   bool _mustRecomputeState = false;
+  bool _dependencyMayHaveChanged = false;
 
   bool _mounted = false;
   @visibleForTesting
@@ -511,9 +530,12 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   }
 
   void _maybeRebuildDependencies() {
-    for (final dependency in _dependencies.keys) {
-      dependency.flush();
+    if (!_dependencyMayHaveChanged) {
+      return;
     }
+    _dependencyMayHaveChanged = false;
+
+    visitAncestors((element) => element.flush());
   }
 
   void _maybeRebuildState() {
@@ -540,13 +562,22 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   }
 
   void notifyListeners() {
+    assert(() {
+      container.debugCanModifyProviders?.call();
+      return true;
+    }(), '');
+
     // TODO(rrousselGit) fuse with the public variant?
     final newValue = _state;
-    for (final listener in _listeners) {
-      listener(newValue);
+    for (var i = 0; i < _listeners.length; i++) {
+      _listeners[i]._listener(newValue);
     }
-    for (final dependent in _dependents) {
-      dependent._didChangeDependency();
+    for (var i = 0; i < _subscribers.length; i++) {
+      _subscribers[i].listener(newValue);
+    }
+
+    for (var i = 0; i < _dependents.length; i++) {
+      _dependents[i]._didChangeDependency();
     }
   }
 
@@ -558,16 +589,16 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     // We don't call this._markDependencyMayHaveChanged here because we voluntarily
     // do not want to set the _dependencyMayHaveChanged flag to true.
     // Since the dependency is known to have changed, there is no reason to try
-    // and rebuild it, as it will already get rebuilt.
-    for (var i = 0; i < dependents.length; i++) {
-      dependents[i]._markDependencyMayHaveChanged();
-    }
+    // and "flush" it, as it will already get rebuilt.
+    visitChildren((element) => element._markDependencyMayHaveChanged());
   }
 
   void _markDependencyMayHaveChanged() {
-    for (var i = 0; i < dependents.length; i++) {
-      dependents[i]._markDependencyMayHaveChanged();
-    }
+    if (_dependencyMayHaveChanged) return;
+
+    _dependencyMayHaveChanged = true;
+
+    visitChildren((element) => element._markDependencyMayHaveChanged());
   }
 
   bool _debugAssertCanDependOn(ProviderBase provider) {
@@ -592,6 +623,25 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   T read<T>(RootProvider<T> provider) {
     assert(_debugAssertCanDependOn(provider), '');
     return _container.read(provider);
+  }
+
+  ProviderSubscription<State> addListener(
+    ProviderBase<State> provider,
+    void Function(State value) listener, {
+    required bool fireImmediately,
+  }) {
+    // TODO(rrousselGit) add fireImmediately parameter
+    // TODO(rrousselGit) add onError parameter
+    // TODO(rrousselGit) test that if the provider threw immediately, the listen call completes corretly
+    if (fireImmediately) {
+      listener(getExposedValue());
+    }
+
+    final sub = ProviderSubscription<State>._(this, listener);
+
+    _listeners.add(sub);
+
+    return sub;
   }
 
   @override
@@ -648,6 +698,42 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     }
   }
 
+  /// Visit the [ProviderElement]s of providers that are listening to this element.
+  ///
+  /// A provider is considered as listening to this element if it either [watch]
+  /// or [listen] this element.
+  ///
+  /// This method does not guarantee that a dependency is visited only once.
+  /// If a provider both [watch] and [listen] an element, or if a provider
+  /// [listen] multiple times to an element, it may be visited multiple times.
+  void visitChildren(void Function(ProviderElementBase element) visitor) {
+    // TODO test
+
+    for (var i = 0; i < _dependents.length; i++) {
+      visitor(_dependents[i]);
+    }
+
+    for (var i = 0; i < _subscribers.length; i++) {
+      visitor(_subscribers[i].dependentElement);
+    }
+  }
+
+  /// Visit the [ProviderElementBase]s that this provider is listening to.
+  ///
+  /// A provider is considered as listening to this element if it either [watch]
+  /// or [listen] this element.
+  ///
+  /// This method does not guarantee that a provider is visited only once.
+  /// If this provider both [watch] and [listen] an element, or if it
+  /// [listen] multiple times to an element, that element may be visited multiple times.
+  void visitAncestors(void Function(ProviderElementBase element) visitor) {
+    _dependencies.keys.forEach(visitor);
+
+    for (var i = 0; i < _subscriptions.length; i++) {
+      visitor(_subscriptions[i].listenedElement);
+    }
+  }
+
   /// Called on [ProviderContainer.dispose].
   @protected
   @mustCallSuper
@@ -661,6 +747,8 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
 
     _mounted = false;
     _runOnDispose();
+
+    // TODO test [listen] calls are cleared
 
     for (final sub in _dependencies.entries) {
       sub.key._dependents.remove(this);
@@ -715,14 +803,25 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     void Function(T value) listener, {
     bool fireImmediately = false,
   }) {
+    // TODO remove by passing the a debug flag to `listen`
+    final element = container.readProviderElement(provider);
+    // TODO test flush
+    element.flush();
+
+    if (fireImmediately) {
+      listener(element.getExposedValue());
+    }
+
     // TODO(rrousselGit) test
     // TODO(rrousselGit) onError
-    final sub = container.listen(
-      provider,
-      listener,
-      fireImmediately: fireImmediately,
+
+    final sub = _ProviderListener._(
+      listenedElement: element,
+      dependentElement: this,
+      listener: listener,
     );
 
+    element._subscribers.add(sub);
     _subscriptions.add(sub);
 
     return () {
@@ -807,7 +906,7 @@ mixin ProviderOverridesMixin<State> on AlwaysAliveProviderBase<State> {
   /// ```
   /// {@endtemplate}
   // Cannot be overridden by AutoDisposeProviders
-  ProviderOverride overrideWithProvider(
+  Override overrideWithProvider(
     AlwaysAliveProviderBase<State> provider,
   ) {
     return ProviderOverride(provider, this);

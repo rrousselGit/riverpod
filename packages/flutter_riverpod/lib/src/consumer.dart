@@ -6,7 +6,12 @@ import 'internals.dart';
 
 // ignore: one_member_abstracts
 abstract class WidgetReference {
-  T watch<T>(ProviderBase<T> provider);
+  T watch<T>(ProviderListenable<T> provider);
+
+  void listen<T>(
+    ProviderListenable<T> provider,
+    void Function(T value) listener,
+  );
 }
 
 /// A function that can also listen to providers
@@ -196,7 +201,7 @@ class Consumer extends ConsumerWidget {
 /// For reading providers inside a [StatefulWidget] or for performance
 /// optimizations, see [Consumer].
 /// {@endtemplate}
-abstract class ConsumerWidget extends StatefulWidget {
+abstract class ConsumerWidget extends ConsumerStatefulWidget {
   /// {@macro riverpod.consumerwidget}
   const ConsumerWidget({Key? key}) : super(key: key);
 
@@ -244,32 +249,51 @@ abstract class ConsumerWidget extends StatefulWidget {
   _ConsumerState createState() => _ConsumerState();
 }
 
-@sealed
-class _ConsumerState extends State<ConsumerWidget> implements WidgetReference {
-  ProviderContainer? _container;
-  var _dependencies = <ProviderBase, ProviderSubscription>{};
-  Map<ProviderBase, ProviderSubscription>? _oldDependencies;
-  late Widget _buildCache;
-  // initialized at true for the first build
-  bool _isExternalBuild = true;
+class _ConsumerState extends ConsumerState<ConsumerWidget> {
+  WidgetReference get ref => context as WidgetReference;
 
   @override
-  void didUpdateWidget(ConsumerWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _isExternalBuild = true;
+  Widget build(BuildContext context) {
+    return widget.build(context, ref);
   }
+}
+
+/// A [StatefulWidget] that can read providers.
+abstract class ConsumerStatefulWidget extends StatefulWidget {
+  const ConsumerStatefulWidget({Key? key}) : super(key: key);
 
   @override
-  void reassemble() {
-    super.reassemble();
-    _isExternalBuild = true;
+  // ignore: no_logic_in_create_state
+  ConsumerState createState();
+
+  @override
+  ConsumerStatefulElement createElement() {
+    return ConsumerStatefulElement(this);
   }
+}
+
+/// A [State] that has access to a [WidgetReference] through [ref], allowing
+/// it to read providers.
+abstract class ConsumerState<T extends ConsumerStatefulWidget>
+    extends State<T> {
+  late final WidgetReference ref = context as WidgetReference;
+}
+
+/// The [Element] for a [ConsumerStatefulWidget]
+class ConsumerStatefulElement extends StatefulElement
+    implements WidgetReference {
+  /// The [Element] for a [ConsumerStatefulWidget]
+  ConsumerStatefulElement(ConsumerStatefulWidget widget) : super(widget);
+
+  late ProviderContainer _container = ProviderScope.containerOf(this);
+  var _dependencies = <ProviderListenable, ProviderSubscription>{};
+  Map<ProviderListenable, ProviderSubscription>? _oldDependencies;
+  final _listeners = <ProviderSubscription>[];
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _isExternalBuild = true;
-    final newContainer = ProviderScope.containerOf(context);
+    final newContainer = ProviderScope.containerOf(this);
     if (_container != newContainer) {
       _container = newContainer;
       for (final dependency in _dependencies.values) {
@@ -280,23 +304,15 @@ class _ConsumerState extends State<ConsumerWidget> implements WidgetReference {
   }
 
   @override
-  Widget build(BuildContext context) {
-    var didFlush = false;
-    for (final dep in _dependencies.values) {
-      if (dep.flush()) {
-        didFlush = true;
-      }
-    }
-    final shouldRecompute = _isExternalBuild || didFlush;
-    _isExternalBuild = false;
-    if (!shouldRecompute) {
-      return _buildCache;
-    }
-
+  Widget build() {
+    // TODO disallow didChangeDependencies
     try {
       _oldDependencies = _dependencies;
+      for (var i = 0; i < _listeners.length; i++) {
+        _listeners[i].close();
+      }
       _dependencies = {};
-      return _buildCache = widget.build(context, this);
+      return super.build();
     } finally {
       for (final dep in _oldDependencies!.values) {
         dep.close();
@@ -306,7 +322,7 @@ class _ConsumerState extends State<ConsumerWidget> implements WidgetReference {
   }
 
   @override
-  Res watch<Res>(ProviderBase<Res> target) {
+  Res watch<Res>(ProviderListenable<Res> target) {
     return _dependencies.putIfAbsent(target, () {
       final oldDependency = _oldDependencies?.remove(target);
 
@@ -314,18 +330,34 @@ class _ConsumerState extends State<ConsumerWidget> implements WidgetReference {
         return oldDependency;
       }
 
-      return _container!.listen<Res>(
+      return _container.listen<Res>(
         target,
-        (_) => setState(() {}),
+        (_) => markNeedsBuild(),
       );
     }).read() as Res;
   }
 
   @override
-  void dispose() {
+  void unmount() {
     for (final dependency in _dependencies.values) {
       dependency.close();
     }
-    super.dispose();
+    for (var i = 0; i < _listeners.length; i++) {
+      _listeners[i].close();
+    }
+    super.unmount();
+  }
+
+  @override
+  void listen<T>(
+    ProviderListenable<T> provider,
+    void Function(T value) listener,
+  ) {
+    // We can't implement a fireImmediately flag because we wouldn't know
+    // which listen call was preserved between widget rebuild, and we wouldn't
+    // want to call the listener on every rebuild.
+    // TODO onError
+    final sub = _container.listen<T>(provider, listener);
+    _listeners.add(sub);
   }
 }

@@ -26,6 +26,10 @@ void _runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
 
 ProviderBase? _circularDependencyLock;
 
+void _defaultVsync(void Function() task) {
+  Future(task);
+}
+
 int _debugNextId = 0;
 
 /// {@template riverpod.providercontainer}
@@ -44,8 +48,7 @@ class ProviderContainer {
     List<ProviderObserver>? observers,
   })  : _parent = parent,
         _localObservers = observers,
-        _root = parent?._root ?? parent,
-        _scheduler = parent?._root?._scheduler ?? _ProviderScheduler() {
+        _root = parent?._root ?? parent {
     assert(() {
       _debugId = '${_debugNextId++}';
       RiverpodBinding.debugInstance.containers = {
@@ -85,8 +88,20 @@ class ProviderContainer {
     }
   }
 
+  /// A function that controls the refresh rate of providers.
+  ///
+  /// Defaults to refreshing providers at the end of the next event-loop.
+  void Function(void Function() task) get vsync {
+    return vsyncOverride ?? _defaultVsync;
+  }
+
+  /// A way to override [vsync], used by Flutter to synchronize a container
+  /// with the widget tree.
+  void Function(void Function() task)? vsyncOverride;
+
   /// The object that handles when providers are refreshed and disposed.
-  final _ProviderScheduler _scheduler;
+  late final _ProviderScheduler _scheduler =
+      _parent?._root?._scheduler ?? _ProviderScheduler(vsync);
 
   late final String _debugId;
 
@@ -118,11 +133,18 @@ class ProviderContainer {
   final _overrideForFamily = HashMap<Family, FamilyOverride>();
   final _stateReaders = HashMap<ProviderBase, ProviderElementBase>();
 
+  // /// A function that calls its callback at the end of the current "frame".
+  // ///
+  // /// This is exposed so that
+  // ///
+  // /// Defaults to wraping the callback in a [Future].
+  // void Function(void Function()) addPostFrameCallback = (cb) => Future(cb);
+
   final List<ProviderObserver>? _localObservers;
 
   /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
   Future<void> pump() async {
-    return _scheduler._pendingFuture;
+    return _scheduler.pendingFuture;
   }
 
   Iterable<ProviderObserver> get _observers sync* {
@@ -136,7 +158,7 @@ class ProviderContainer {
   /// if it is safe to modify a provider.
   ///
   /// This corresponds to all the widgets that a [Provider] is associated with.
-  final DoubleLinkedQueue<void Function()> debugVsyncs = DoubleLinkedQueue();
+  void Function()? debugCanModifyProviders;
 
   /// Whether [dispose] was called or not.
   ///
@@ -182,7 +204,10 @@ class ProviderContainer {
     bool fireImmediately = false,
   }) {
     if (provider is ProviderBase<State>) {
-      return _listenProvider(
+      // TODO move to the Element
+      final element = readProviderElement(provider);
+
+      return element.addListener(
         provider,
         listener,
         fireImmediately: fireImmediately,
@@ -192,25 +217,6 @@ class ProviderContainer {
     else {
       throw UnsupportedError('Unknown ProviderListenable $provider');
     }
-  }
-
-  ProviderSubscription<State> _listenProvider<State>(
-    ProviderBase<State> provider,
-    void Function(State value) listener, {
-    required bool fireImmediately,
-  }) {
-    final element = readProviderElement(provider);
-
-    // TODO(rrousselGit) add fireImmediately parameter
-    // TODO(rrousselGit) add onError parameter
-    // TODO(rrousselGit) test that if the provider threw immediately, the listen call completes corretly
-    if (fireImmediately) {
-      listener(element.getExposedValue());
-    }
-
-    element._listeners.add(listener);
-
-    return ProviderSubscription._(element, listener);
   }
 
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
@@ -235,9 +241,6 @@ class ProviderContainer {
       'Removed a key that does not exist',
     );
     _stateReaders.remove(element._origin);
-    if (element._origin.from != null) {
-      element._origin.from!._cache.remove(element._origin.argument);
-    }
     element.dispose();
   }
 
@@ -343,8 +346,8 @@ class ProviderContainer {
             provider.from != null &&
             _overrideForFamily[provider.from] != null) {
           final familyOverride = _overrideForFamily[provider.from]!;
-          override = familyOverride._createOverride(provider._argument)
-              as ProviderBase<State>;
+          override = familyOverride._createOverride(
+              provider._argument, provider) as ProviderBase<State>;
         }
 
         override ??= provider;
@@ -392,68 +395,95 @@ class ProviderContainer {
       return true;
     }(), '');
 
-    debugVsyncs.clear();
     _parent?._children.remove(this);
 
     _disposed = true;
 
-    // Using a set to deduplicate elements
-    final allElementsInOrder = <ProviderElementBase>{};
-    _visitStatesInOrder(allElementsInOrder.add);
-
-    for (final element in allElementsInOrder.toList(growable: false).reversed) {
+    for (final element in getAllProviderElementsInOrder().toList().reversed) {
       element.dispose();
     }
   }
 
-  /// Visit all nodes of the graph at most once, from roots to leaves.
-  ///
-  /// This is a breadth-first traversal algorithm, that does **not** remove duplicates,
-  /// so it is possible for the same element to be visited multiple times.
-  ///
-  /// The visitor can return `true` if it wants to visit the dependents of that
-  /// element too. Otherwise it can return false.
-  void _visitStatesInOrder(
-    bool Function(ProviderElementBase element) visitor,
-  ) {
-    void visitElement(ProviderElementBase element) {
-      if (visitor(element)) {
-        element._dependencies.keys.forEach(visitElement);
-      }
-    }
-
-    // visit roots first
-    for (final element in _stateReaders.values) {
-      if (element._dependencies.isEmpty) {
-        visitElement(element);
-      }
-    }
+  /// Traverse the [ProviderElementBase]s associated with this [ProviderContainer].
+  Iterable<ProviderElementBase> getAllProviderElements() {
+    return _stateReaders.values;
   }
 
-  // /// The states of the providers associated to this [ProviderContainer], sorted
-  // /// in order of dependency.
-  // List<ProviderElement> get debugProviderElements {
-  //   late List<ProviderElement> result;
-  //   assert(() {
-  //     result = _visitStatesInOrder().toList();
-  //     return true;
-  //   }(), '');
-  //   return result;
+  // /// Visit all nodes of the graph at least once, from leaves to roots.
+  // ///
+  // /// This is a breadth-first traversal algorithm that does **not** remove duplicates,
+  // /// so it is possible for the same element to be visited multiple times.
+  // ///
+  // /// The visitor can return `true` if it wants to visit the ancestors of that
+  // /// element too. Otherwise it can return false.
+  // void _visitAllElementsInOrder(
+  //   bool Function(ProviderElementBase element) visitor,
+  // ) {
+  //   // TODO test that `listen` is handled
+  //   void visitAncestors(ProviderElementBase element) {
+  //     if (visitor(element)) {
+  //       element.visitAncestors(visitAncestors);
+  //     }
+  //   }
+
+  //   // visit leaves first
+  //   for (final element in _stateReaders.values) {
+  //     if (!element.hasChildren) {
+  //       visitAncestors(element);
+  //     }
+  //   }
   // }
 
-  // /// The value exposed by all providers currently alive.
-  // Map<ProviderBase, Object?> get debugProviderValues {
-  //   late Map<ProviderBase, Object?> res;
-  //   assert(() {
-  //     res = {
-  //       for (final entry in _stateReaders.entries)
-  //         entry.key: entry.value.state.exposedValue,
-  //     };
+  /// Visit all nodes of the graph at most once, from roots to leaves.
+  ///
+  /// This is fairly expensive and should be avoided as much as possible.
+  /// If you do not need for providers to be sorted, consider using [getAllProviderElements]
+  /// instead, which returns an unsorted list and is significantly faster.
+  Iterable<ProviderElementBase> getAllProviderElementsInOrder() sync* {
+    final visitedNodes = HashSet<ProviderElementBase>();
+    final queue = DoubleLinkedQueue<ProviderElementBase>();
 
-  //     return true;
-  //   }(), '');
-  //   return res;
-  // }
+    // get roots of the provider graph
+    for (final element in _stateReaders.values) {
+      var hasAncestors = false;
+      element.visitAncestors((element) {
+        hasAncestors = true;
+      });
+
+      if (!hasAncestors) {
+        queue.add(element);
+      }
+    }
+
+    while (queue.isNotEmpty) {
+      final element = queue.removeFirst();
+
+      if (!visitedNodes.add(element)) {
+        // Already visited
+        continue;
+      }
+
+      yield element;
+
+      // Queue the children of this element, but only if all of its ancestors
+      // were already visited before.
+      // If a child does not have all of its ancestors visited, when those
+      // ancestors will be visited, they will retry visiting this child.
+      element.visitChildren((dependent) {
+        if (dependent.container == this) {
+          // All the parents of a node must have been visited before a node is visited
+          var areAllAncestorsAlreadyVisited = true;
+          dependent.visitAncestors((e) {
+            if (e._container == this && !visitedNodes.contains(e)) {
+              areAllAncestorsAlreadyVisited = false;
+            }
+          });
+
+          if (areAllAncestorsAlreadyVisited) queue.add(dependent);
+        }
+      });
+    }
+  }
 }
 
 /// An object that listens to the changes of a [ProviderContainer].

@@ -5,6 +5,13 @@ packages:
   - examples/**
 
 scripts:
+  # we voluntarily do not use melos inside goldens
+  postbootstrap: |
+    cd MELOS_ROOT_PATH/packages/riverpod_cli/fixtures/notifiers/input && 
+    flutter pub get && 
+    cd MELOS_ROOT_PATH/packages/riverpod_cli/fixtures/notifiers/golden && 
+    flutter pub get
+
   analyze:
     run: |
       melos exec -c 1 -- \

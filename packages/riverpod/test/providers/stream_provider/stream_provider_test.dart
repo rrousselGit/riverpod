@@ -52,8 +52,13 @@ void main() {
       await expectLater(
         last,
         throwsA(
-          isA<StateError>().having((e) => e.message, 'message',
-              'The provider was disposed the stream could emit a value'),
+          isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            equalsIgnoringHashCodes(
+              'The provider StreamProvider<int>#00000 was disposed before a value was emitted.',
+            ),
+          ),
         ),
       );
     });
@@ -395,7 +400,7 @@ void main() {
   //     ref.onDispose(onDispose);
   //     return stream;
   //   });
-  //   final container = ProviderContainer();
+  //   final container = createContainer();
   //   final listener = ListenerMock();
 
   //   final removeListener = provider.watchOwner(container, listener);
@@ -405,7 +410,7 @@ void main() {
 
   //   removeListener();
 
-  //   await Future<void>.value();
+  //   await container.pump();
 
   //   verify(onDispose()).called(1);
   //   verifyNoMoreInteractions(onDispose);
@@ -416,7 +421,7 @@ void main() {
 
   //   verify(listener(const AsyncValue.loading())).called(1);
 
-  //   await Future<void>.value();
+  //   await container.pump();
 
   //   verify(listener(const AsyncValue.data(21))).called(1);
   //   verifyNoMoreInteractions(listener);
@@ -426,7 +431,7 @@ void main() {
   //   final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
   //     return Stream.value(a * 2);
   //   });
-  //   final container = ProviderContainer();
+  //   final container = createContainer();
   //   final listener = ListenerMock();
 
   //   provider(21).watchOwner(container, listener);
@@ -434,7 +439,7 @@ void main() {
   //   verify(listener(const AsyncValue.loading())).called(1);
   //   verifyNoMoreInteractions(listener);
 
-  //   await Future<void>.value();
+  //   await container.pump();
 
   //   verify(listener(const AsyncValue.data(42))).called(1);
   //   verifyNoMoreInteractions(listener);
@@ -454,7 +459,7 @@ void main() {
   //   verify(listener(const AsyncValue.loading())).called(1);
   //   verifyNoMoreInteractions(listener);
 
-  //   await Future<void>.value();
+  //   await container.pump();
 
   //   verify(listener(const AsyncValue.data(84))).called(1);
   //   verifyNoMoreInteractions(listener);
@@ -464,11 +469,11 @@ void main() {
     final provider = StreamProvider.family<String, int>((ref, a) {
       return Stream.value('$a');
     });
-    final container = ProviderContainer();
+    final container = createContainer();
 
     expect(container.read(provider(0)), const AsyncValue<String>.loading());
 
-    await Future<void>.value();
+    await container.pump();
 
     expect(
       container.read(provider(0)),
@@ -488,7 +493,7 @@ void main() {
 
     expect(container.read(provider(0)), const AsyncValue<String>.loading());
 
-    await Future<void>.value();
+    await container.pump();
 
     expect(
       container.read(provider(0)),
@@ -517,7 +522,7 @@ void main() {
 
   // test('subscribe exposes loading synchronously then value on change',
   //     () async {
-  //   final container = ProviderContainer();
+  //   final container = createContainer();
   //   final controller = StreamController<int>(sync: true);
   //   final provider = StreamProvider((_) => controller.stream);
   //   final listener = ListenerMock();
@@ -550,7 +555,7 @@ void main() {
   // });
 
   // test('errors', () async {
-  //   final container = ProviderContainer();
+  //   final container = createContainer();
   //   final controller = StreamController<int>(sync: true);
   //   final provider = StreamProvider((_) => controller.stream);
   //   final listener = ListenerMock();
@@ -585,7 +590,7 @@ void main() {
   // });
 
   // test('stops subscription', () async {
-  //   final container = ProviderContainer();
+  //   final container = createContainer();
   //   final controller = StreamController<int>(sync: true);
   //   final dispose = DisposeMock();
   //   final provider = StreamProvider((ref) {
@@ -628,7 +633,7 @@ void main() {
       final controller = StreamController<int>(sync: true);
       addTearDown(controller.close);
       final provider = StreamProvider((_) => controller.stream);
-      final container = ProviderContainer();
+      final container = createContainer();
       var callCount = 0;
       final dependent = Provider((ref) {
         callCount++;
@@ -641,7 +646,7 @@ void main() {
 
       controller.add(42);
       // just making sure the dependent isn't updated asynchronously
-      await Future<void>.value();
+      await container.pump();
 
       expect(callCount, 1);
     });
@@ -655,7 +660,7 @@ void main() {
     //     callCount++;
     //     return ref.watch(provider.stream);
     //   });
-    //   final container = ProviderContainer();
+    //   final container = createContainer();
     //   final streamController = container.read(streamProvider);
 
     //   await expectLater(container.read(dependent), emits(42));
@@ -667,7 +672,7 @@ void main() {
     //   expect(callCount, 2);
     // });
 
-    test('.name is the listened name.future', () {
+    test('.name is the listened name.stream', () {
       expect(
         StreamProvider<int>((ref) async* {}, name: 'hey').stream.name,
         'hey.stream',
@@ -677,10 +682,21 @@ void main() {
         null,
       );
     });
+
+    test('.name is the listened name.last', () {
+      expect(
+        StreamProvider<int>((ref) async* {}, name: 'hey').last.name,
+        'hey.last',
+      );
+      expect(
+        StreamProvider<int>((ref) async* {}).stream.name,
+        null,
+      );
+    });
   });
 
-  group('StreamProvider.autoDispose().future', () {
-    test('.name is the listened name.future', () {
+  group('StreamProvider.autoDispose().stream', () {
+    test('.name is the listened name.stream', () {
       expect(
         StreamProvider.autoDispose<int>((ref) async* {}, name: 'hey')
             .stream
@@ -693,19 +709,33 @@ void main() {
       );
     });
 
-    test('update dependents when the future changes', () async {
-      final streamProvider = StateProvider((ref) => Stream.value(42));
+    test('.name is the listened name.last', () {
+      expect(
+        StreamProvider.autoDispose<int>((ref) async* {}, name: 'hey').last.name,
+        'hey.last',
+      );
+      expect(
+        StreamProvider.autoDispose<int>((ref) async* {}).stream.name,
+        null,
+      );
+    });
+
+    test('update dependents when the stream changes', () async {
+      final streamStateProvider =
+          StateProvider((ref) => Stream.value(42), name: 'stateProvider');
       // a StreamProvider that can rebuild with a new future
-      final provider =
-          StreamProvider.autoDispose((ref) => ref.watch(streamProvider).state);
+      final streamProvider = StreamProvider.autoDispose((ref) {
+        return ref.watch(streamStateProvider).state;
+      }, name: 'streamProvider');
       var callCount = 0;
       final dependent = Provider.autoDispose((ref) {
         callCount++;
-        return ref.watch(provider.stream);
-      });
-      final container = ProviderContainer();
-      final streamController = container.read(streamProvider);
+        return ref.watch(streamProvider.stream);
+      }, name: 'dependent');
+      final container = createContainer();
 
+      final streamController = container.read(streamStateProvider);
+      container.read(streamProvider.stream);
       final sub = container.listen(dependent, (_) {});
 
       await expectLater(sub.read(), emits(42));
@@ -713,15 +743,18 @@ void main() {
 
       streamController.state = Stream.value(21);
 
-      await expectLater(sub.read(), emits(21));
+      final stream = sub.read();
+      container.read(streamProvider.stream);
+
       expect(callCount, 2);
+      await expectLater(stream, emits(21));
     });
 
     test('does not update dependents when the future completes', () async {
       final controller = StreamController<int>(sync: true);
       addTearDown(controller.close);
       final provider = StreamProvider.autoDispose((_) => controller.stream);
-      final container = ProviderContainer();
+      final container = createContainer();
       var callCount = 0;
       final dependent = Provider.autoDispose((ref) {
         callCount++;
@@ -733,8 +766,9 @@ void main() {
       expect(callCount, 1);
 
       controller.add(42);
+
       // just making sure the dependent isn't updated asynchronously
-      await Future<void>.value();
+      await container.pump();
 
       expect(callCount, 1);
     });
@@ -747,17 +781,17 @@ void main() {
         ref.onDispose(() => didDispose = true);
         return controller.stream;
       });
-      final container = ProviderContainer();
+      final container = createContainer();
       final sub = container.listen(provider.stream, (_) {});
 
       expect(didDispose, false);
 
-      await Future<void>.value();
+      await container.pump();
       expect(didDispose, false);
 
       sub.close();
 
-      await Future<void>.value();
+      await container.pump();
       expect(didDispose, true);
     });
   });
@@ -765,7 +799,7 @@ void main() {
   group('StreamProvider.last', () {
     group('from StreamProvider', () {
       test('read currentValue before first value', () async {
-        final container = ProviderContainer();
+        final container = createContainer();
         final controller = StreamController<int>();
         final provider = StreamProvider<int>((_) => controller.stream);
 
@@ -779,7 +813,7 @@ void main() {
       });
 
       test('read currentValue before after value', () async {
-        final container = ProviderContainer();
+        final container = createContainer();
         final controller = StreamController<int>();
         final provider = StreamProvider<int>((_) => controller.stream);
 
@@ -793,7 +827,7 @@ void main() {
       });
 
       test('read currentValue before first error', () async {
-        final container = ProviderContainer();
+        final container = createContainer();
         final controller = StreamController<int>();
         final provider = StreamProvider<int>((_) => controller.stream);
 
@@ -807,7 +841,7 @@ void main() {
       });
 
       test('read currentValue before after error', () async {
-        final container = ProviderContainer();
+        final container = createContainer();
         final controller = StreamController<int>();
         final provider = StreamProvider<int>((_) => controller.stream);
 
@@ -898,7 +932,7 @@ void main() {
   group('StreamProvider.stream', () {
     group('from StreamProvider', () {
       test('read currentValue before first value', () async {
-        final container = ProviderContainer();
+        final container = createContainer();
         final controller = StreamController<int>();
         final provider = StreamProvider<int>((_) => controller.stream);
 
@@ -912,7 +946,7 @@ void main() {
       });
 
       test('read currentValue before after value', () async {
-        final container = ProviderContainer();
+        final container = createContainer();
         final controller = StreamController<int>();
         final provider = StreamProvider<int>((_) => controller.stream);
 
@@ -926,7 +960,7 @@ void main() {
       });
 
       test('read currentValue before first error', () async {
-        final container = ProviderContainer();
+        final container = createContainer();
         final controller = StreamController<int>();
         final provider = StreamProvider<int>((_) => controller.stream);
 
@@ -940,7 +974,7 @@ void main() {
       });
 
       test('read currentValue before after error', () async {
-        final container = ProviderContainer();
+        final container = createContainer();
         final controller = StreamController<int>();
         final provider = StreamProvider<int>((_) => controller.stream);
 

@@ -174,19 +174,17 @@ void main() {
 
     container.listen(computed(provider), listener, fireImmediately: true);
 
-    verify(listener('0')).called(1);
-    verifyNoMoreInteractions(listener);
+    verifyOnly(listener, listener('0'));
 
     notifier.state = 42;
     await container.pump();
 
-    verify(listener('42')).called(1);
-    verifyNoMoreInteractions(listener);
+    verifyOnly(listener, listener('42'));
   });
 
   test(
       'mutliple ref.watch, when one of them forces re-evaluate, all dependencies are still flushed',
-      () {
+      () async {
     final container = ProviderContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>, int>((_) {
@@ -205,17 +203,15 @@ void main() {
     });
     final listener = Listener<String>();
 
-    final sub = container.listen(tested, listener, fireImmediately: true);
+    container.listen(tested, listener, fireImmediately: true);
 
-    verify(listener('0 0')).called(1);
-    verifyNoMoreInteractions(listener);
+    verifyOnly(listener, listener('0 0'));
     expect(callCount, 1);
 
     notifier.setState(1);
-    sub.read();
+    await container.pump();
 
-    verify(listener('1 1')).called(1);
-    verifyNoMoreInteractions(listener);
+    verifyOnly(listener, listener('1 1'));
     expect(callCount, 2);
   });
 
@@ -243,8 +239,6 @@ void main() {
     expect(secondCallCount, 1);
 
     controller.state = 42;
-
-    // TODO(rrousselGit) breaking change. Can this be removed? If not, should be documented in the changelog
     await container.pump();
 
     expect(container.read(second), '0');
@@ -296,6 +290,7 @@ void main() {
     expect(callCount, 1);
 
     notifier.setState(42);
+    await container.pump();
 
     expect(sub.read(), const AsyncValue<int>.loading());
     expect(callCount, 1);
@@ -361,14 +356,12 @@ void main() {
     expect(callCount, 1);
 
     notifier.setState(-1);
-
     await container.pump();
 
     expect(callCount, 2);
     verifyOnly(listener, listener(false));
 
     notifier.setState(-42);
-
     await container.pump();
 
     expect(callCount, 3);

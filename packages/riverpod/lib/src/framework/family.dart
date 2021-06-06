@@ -3,31 +3,22 @@ part of '../framework.dart';
 /// A base class for all families
 abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>> {
   /// A base class for all families
-  Family(
-    this.name, {
-    bool autoRegisterProvider = true,
-  }) : _autoRegisterProvider = autoRegisterProvider;
+  Family(this.name);
 
   /// The family name.
   @protected
   final String? name;
-
-  final bool _autoRegisterProvider;
-
-  final _cache = <Arg, FamilyProvider>{};
 
   /// Create a provider from an external value.
   ///
   /// That external value should be immutable and preferably override `==`/`hashCode`.
   /// See the documentation of [Provider.family] for more informations.
   FamilyProvider call(Arg argument) {
-    return _cache.putIfAbsent(argument, () {
-      final provider = create(argument);
+    final provider = create(argument);
 
-      if (_autoRegisterProvider) registerProvider(provider, argument);
+    registerProvider(provider, argument);
 
-      return provider;
-    });
+    return provider;
   }
 
   /// Register a provider as part of this family.
@@ -46,16 +37,6 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>> {
   /// Creates the provider for a given parameter.
   @protected
   FamilyProvider create(Arg argument);
-
-  /// A debug-only list of all the parameters passed to this family.
-  List<Arg>? get debugKeys {
-    List<Arg>? result;
-    assert(() {
-      result = _cache.keys.toList(growable: false);
-      return true;
-    }(), '');
-    return result;
-  }
 }
 
 /// An extension that adds [overrideWithProvider] to [Family].
@@ -68,7 +49,7 @@ extension XFamily<State, Arg,
   Override overrideWithProvider(
     AlwaysAliveProviderBase<State> Function(Arg argument) override,
   ) {
-    return FamilyOverride(this, (arg) => override(arg as Arg));
+    return FamilyOverride(this, (arg, _) => override(arg as Arg));
   }
 }
 
@@ -82,7 +63,7 @@ extension XAutoDisposeFamily<State, Arg,
   Override overrideWithProvider(
     AutoDisposeProviderBase<State> Function(Arg argument) override,
   ) {
-    return FamilyOverride(this, (arg) => override(arg as Arg));
+    return FamilyOverride(this, (arg, _) => override(arg as Arg));
   }
 }
 
@@ -92,6 +73,9 @@ class FamilyOverride implements Override {
   /// Do not use
   FamilyOverride(this._family, this._createOverride);
 
-  final ProviderBase Function(Object? argument) _createOverride;
+  final ProviderBase Function(
+    Object? argument,
+    ProviderBase provider,
+  ) _createOverride;
   final Family _family;
 }

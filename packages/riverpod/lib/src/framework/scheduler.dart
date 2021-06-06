@@ -7,11 +7,16 @@ part of '../framework.dart';
 ///
 /// Providers are disposed if they spent at least one full frame without any listener.
 class _ProviderScheduler {
+  _ProviderScheduler(this.vsync);
+
+  final void Function(void Function() onDone) vsync;
+
   bool _scheduledTask = false;
   final _stateToDispose = <AutoDisposeProviderElementBase>[];
   final _stateToRefresh = <ProviderElementBase>[];
 
-  Future<void>? _pendingFuture;
+  Completer<void>? _pendingTaskCompleter;
+  Future<void>? get pendingFuture => _pendingTaskCompleter?.future;
 
   void scheduleProviderRefresh(ProviderElementBase element) {
     _stateToRefresh.add(element);
@@ -23,15 +28,20 @@ class _ProviderScheduler {
     if (_scheduledTask) return;
 
     _scheduledTask = true;
-    _pendingFuture = Future(() {
-      _performRefresh();
-      _performDispose();
+    assert(_pendingTaskCompleter == null, 'bad state');
+    _pendingTaskCompleter = Completer<void>();
+    vsync(_task);
+  }
 
-      _scheduledTask = false;
-      _stateToRefresh.clear();
-      _stateToDispose.clear();
-      _pendingFuture = null;
-    });
+  void _task() {
+    _pendingTaskCompleter!.complete();
+    _performRefresh();
+    _performDispose();
+
+    _scheduledTask = false;
+    _stateToRefresh.clear();
+    _stateToDispose.clear();
+    _pendingTaskCompleter = null;
   }
 
   void _performRefresh() {

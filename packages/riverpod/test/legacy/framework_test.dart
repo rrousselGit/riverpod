@@ -491,9 +491,9 @@ void main() {
 
   test('dispose providers in dependency order (simple)', () {
     final container = ProviderContainer();
-    final onDispose1 = OnDisposeMock();
-    final onDispose2 = OnDisposeMock();
-    final onDispose3 = OnDisposeMock();
+    final onDispose1 = OnDisposeMock('1');
+    final onDispose2 = OnDisposeMock('2');
+    final onDispose3 = OnDisposeMock('3');
 
     final provider1 = Provider((ref) {
       ref.onDispose(onDispose1);
@@ -794,7 +794,16 @@ class Counter extends StateNotifier<int> {
 }
 
 class OnDisposeMock extends Mock {
+  OnDisposeMock([this.debugLabel = '']);
+
+  final String debugLabel;
+
   void call();
+
+  @override
+  String toString() {
+    return 'OnDisposeMock($debugLabel)';
+  }
 }
 
 class MockMarkMayHaveChanged extends Mock {

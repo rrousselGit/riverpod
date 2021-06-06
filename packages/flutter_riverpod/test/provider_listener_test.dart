@@ -6,6 +6,8 @@ import 'package:mockito/mockito.dart';
 import 'utils.dart';
 
 void main() {
+  testWidgets('can downcast the value', (tester) async {}, skip: true);
+
   group('ProviderListener', () {
     testWidgets('works with providers that returns null', (tester) async {
       final nullProvider = Provider((ref) => null);
@@ -26,7 +28,7 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
-          child: ProviderListener<void>(
+          child: ProviderListener<StateController<int>>(
             key: key,
             provider: provider,
             onChange: (c, _) => context = c,
@@ -36,8 +38,6 @@ void main() {
       );
 
       key.currentContext!.read(provider).state++;
-
-      await Future<void>.value();
 
       expect(context, key.currentContext);
     });
@@ -60,7 +60,7 @@ void main() {
 
     testWidgets('calls onChange at the end of frame after a mayHaveChanged',
         (tester) async {
-      final container = ProviderContainer();
+      final container = createContainer();
       final provider = StateProvider((ref) => 0);
       final onChange = ListenerMock<int>();
 
@@ -79,13 +79,11 @@ void main() {
 
       container.read(provider).state++;
 
-      await Future<void>.value();
-
       verifyOnly(onChange, onChange(1));
     });
 
     testWidgets('can mark parents as dirty during onChange', (tester) async {
-      final container = ProviderContainer();
+      final container = createContainer();
       final provider = StateProvider((ref) => 0);
       final onChange = ListenerMock<int>();
 
@@ -106,14 +104,14 @@ void main() {
 
       verifyZeroInteractions(onChange);
 
+      // This would fail if the setState was not allowed
       container.read(provider).state++;
-      await Future<void>.value();
     });
 
-    testWidgets('calls onChange at most once per frame', (tester) async {
+    testWidgets('calls onChange synchronously if possible', (tester) async {
       final provider = StateProvider((ref) => 0);
       final onChange = ListenerMock<int>();
-      final container = ProviderContainer();
+      final container = createContainer();
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
@@ -130,9 +128,43 @@ void main() {
       container.read(provider).state++;
       container.read(provider).state++;
       container.read(provider).state++;
-      await Future<void>.value();
 
-      verifyOnly(onChange, onChange(3));
+      verifyInOrder([
+        onChange(1),
+        onChange(2),
+        onChange(3),
+      ]);
+      verifyNoMoreInteractions(onChange);
+    });
+
+    testWidgets('calls onChange asynchronously if the change is indirect',
+        (tester) async {
+      final provider = StateProvider((ref) => 0);
+      final isEven = Provider((ref) => ref.watch(provider).state.isEven);
+      final onChange = ListenerMock<bool>();
+      final container = createContainer();
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: ProviderListener<bool>(
+            provider: isEven,
+            onChange: (_, value) => onChange(value),
+            child: Container(),
+          ),
+        ),
+      );
+      verifyZeroInteractions(onChange);
+
+      container.read(provider).state++;
+      container.read(provider).state++;
+      container.read(provider).state++;
+
+      verifyZeroInteractions(onChange);
+
+      await tester.pump();
+
+      verifyOnly(onChange, onChange(false));
     });
 
     group('supports null', () {
@@ -166,7 +198,7 @@ void main() {
     testWidgets('closes the subscription on dispose', (tester) async {
       final provider = StateProvider((ref) => 0);
       final onChange = ListenerMock<int>();
-      final container = ProviderContainer();
+      final container = createContainer();
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
@@ -188,7 +220,7 @@ void main() {
 
     testWidgets('closes the subscription on provider change', (tester) async {
       final provider = StateProvider.family<int, int>((ref, _) => 0);
-      final container = ProviderContainer();
+      final container = createContainer();
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
@@ -222,7 +254,7 @@ void main() {
     testWidgets('listen to the new provider on provider change',
         (tester) async {
       final provider = StateProvider.family<int, int>((ref, _) => 0);
-      final container = ProviderContainer();
+      final container = createContainer();
       final onChange = ListenerMock<int>();
 
       await tester.pumpWidget(
@@ -260,10 +292,10 @@ void main() {
     testWidgets('supports Changing the ProviderContainer', (tester) async {
       final provider = Provider((ref) => 0);
       final onChange = ListenerMock<int>();
-      final container = ProviderContainer(overrides: [
+      final container = createContainer(overrides: [
         provider.overrideWithValue(0),
       ]);
-      final container2 = ProviderContainer(overrides: [
+      final container2 = createContainer(overrides: [
         provider.overrideWithValue(0),
       ]);
 
@@ -304,7 +336,7 @@ void main() {
     testWidgets('supports ScopedProvider', (tester) async {
       final provider = ScopedProvider((ref) => 0);
       final onChange = ListenerMock<int>();
-      final container = ProviderContainer(overrides: [
+      final container = createContainer(overrides: [
         provider.overrideWithValue(42),
       ]);
 

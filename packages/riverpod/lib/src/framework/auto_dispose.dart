@@ -89,7 +89,7 @@ mixin AutoDisposeProviderOverridesMixin<State>
   /// Overrides the behavior of this provider with another provider.
   ///
   /// {@macro riverpod.overideWith}
-  ProviderOverride overrideWithProvider(
+  Override overrideWithProvider(
     AutoDisposeProviderBase<State> provider,
   ) {
     return ProviderOverride(provider, this);

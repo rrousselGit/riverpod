@@ -6,10 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
+import 'utils.dart';
+
 void main() {
   test('SynchronousFuture', () {
     final futureProvider = FutureProvider((_) => SynchronousFuture(42));
-    final container = ProviderContainer();
+    final container = createContainer();
 
     expect(container.read(futureProvider), const AsyncValue.data(42));
   });

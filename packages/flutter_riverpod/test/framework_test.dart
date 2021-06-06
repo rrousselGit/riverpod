@@ -1,9 +1,20 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
+import 'utils.dart';
+
 void main() {
+  testWidgets(
+      'cannot attach a ProviderContainer to an ProviderScope if the container has pending tasks',
+      (tester) async {},
+      skip: true);
+
   testWidgets('context.read works with providers that returns null',
       (tester) async {
     final nullProvider = Provider((ref) => null);
@@ -52,7 +63,7 @@ void main() {
     };
 
     final provider = StateProvider((ref) => 0);
-    final container = ProviderContainer();
+    final container = createContainer();
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -71,18 +82,10 @@ void main() {
   testWidgets(
       'UncontrolledProviderScope gracefully handles ProviderContainer.vsync',
       (tester) async {
-    final container = ProviderContainer();
+    final container = createContainer();
+    final container2 = createContainer();
 
-    expect(container.debugVsyncs.length, 0);
-
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: Container(),
-      ),
-    );
-
-    expect(container.debugVsyncs.length, 1);
+    expect(container.vsyncOverride, null);
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -91,11 +94,55 @@ void main() {
       ),
     );
 
-    expect(container.debugVsyncs.length, 1);
+    expect(container.vsyncOverride, isNotNull);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container2,
+        child: Container(),
+      ),
+    );
+
+    expect(container.vsyncOverride, null);
+    expect(container2.vsyncOverride, isNotNull);
 
     await tester.pumpWidget(Container());
 
-    expect(container.debugVsyncs.length, 0);
+    expect(container.vsyncOverride, null);
+    expect(container2.vsyncOverride, null);
+  });
+
+  testWidgets(
+      'UncontrolledProviderScope gracefully handles ProviderContainer.debugCanModifyProviders',
+      (tester) async {
+    final container = createContainer();
+    final container2 = createContainer();
+
+    expect(container.debugCanModifyProviders, null);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: Container(),
+      ),
+    );
+
+    expect(container.debugCanModifyProviders, isNotNull);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container2,
+        child: Container(),
+      ),
+    );
+
+    expect(container.debugCanModifyProviders, null);
+    expect(container2.debugCanModifyProviders, isNotNull);
+
+    await tester.pumpWidget(Container());
+
+    expect(container.debugCanModifyProviders, null);
+    expect(container2.debugCanModifyProviders, null);
   });
 
   testWidgets('context.refresh forces a provider to refresh', (tester) async {
@@ -110,7 +157,8 @@ void main() {
 
     future = Future<int>.value(42);
 
-    await expectLater(context.refresh(provider), completion(42));
+    context.refresh(provider);
+    await expectLater(context.read(provider.future), completion(42));
   });
 
   testWidgets('context.refresh forces a provider of nullable type to refresh',
@@ -132,7 +180,7 @@ void main() {
   testWidgets('ProviderScope allows specifying a ProviderContainer',
       (tester) async {
     final provider = FutureProvider((ref) async => 42);
-    final container = ProviderContainer(overrides: [
+    final container = createContainer(overrides: [
       provider.overrideWithValue(const AsyncValue.data(42)),
     ]);
 
@@ -339,93 +387,6 @@ void main() {
     expect(find.text('rootoverride root2'), findsOneWidget);
   });
 
-  testWidgets('ProviderScope debugFillProperties', (tester) async {
-    final unnamed = Provider((_) => 0);
-    final named = StateNotifierProvider<Counter, int>((_) {
-      return Counter();
-    }, name: 'counter');
-    final scopeKey = GlobalKey();
-
-    await tester.pumpWidget(
-      ProviderScope(
-        key: scopeKey,
-        child: Consumer(builder: (c, ref, _) {
-          final value = ref.watch(unnamed);
-          final count = ref.watch(named);
-          return Text(
-            'value: $value count: $count',
-            textDirection: TextDirection.ltr,
-          );
-        }),
-      ),
-    );
-
-    expect(find.text('value: 0 count: 0'), findsOneWidget);
-
-    expect(
-      scopeKey.currentContext.toString(),
-      equalsIgnoringHashCodes(
-        'ProviderScope-[GlobalKey#00000]('
-        'observers: null, '
-        'overrides: [], '
-        'state: ProviderScopeState#00000, '
-        'Provider<int>#00000: 0, '
-        'counter: 0, '
-        "counter.notifier: Instance of 'Counter')",
-      ),
-    );
-  });
-
-  testWidgets('UncontrolledProviderScope debugFillProperties', (tester) async {
-    final unnamed = Provider((_) => 0);
-    final named = StateNotifierProvider<Counter, int>((_) {
-      return Counter();
-    }, name: 'counter');
-    final container = ProviderContainer();
-    final scopeKey = GlobalKey();
-
-    container.read(unnamed);
-    container.read(named);
-
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        key: scopeKey,
-        container: container,
-        child: Container(),
-      ),
-    );
-
-    expect(
-      scopeKey.currentContext.toString(),
-      anyOf([
-        equalsIgnoringHashCodes(
-          'UncontrolledProviderScope-[GlobalKey#00000]('
-          'Provider<int>#00000: 0, '
-          'counter: 0, '
-          "counter.notifier: Instance of 'Counter')",
-        ),
-        equalsIgnoringHashCodes(
-          'UncontrolledProviderScope-[GlobalKey#00000]('
-          'counter: 0, '
-          'Provider<int>#00000: 0, '
-          "counter.notifier: Instance of 'Counter')",
-        ),
-        equalsIgnoringHashCodes(
-          'UncontrolledProviderScope-[GlobalKey#00000]('
-          "counter.notifier: Instance of 'Counter', "
-          'Provider<int>#00000: 0, '
-          "counter: Instance of 'Counter')",
-        ),
-        equalsIgnoringHashCodes(
-          'UncontrolledProviderScope-[GlobalKey#00000]('
-          'counter: 0, '
-          "counter.notifier: Instance of 'Counter', "
-          'Provider<int>#00000: 0)',
-        ),
-      ]),
-    );
-  });
-
   testWidgets('ProviderScope throws if ancestorOwner changed', (tester) async {
     final key = GlobalKey();
 
@@ -510,7 +471,7 @@ void main() {
   });
 
   testWidgets(
-      'autoDispose initState+ProviderListener does not destroy the state',
+      'autoDispose initState and ProviderListener does not destroy the state',
       (tester) async {
     var disposeCount = 0;
     final counterProvider = StateProvider.autoDispose((ref) {
@@ -536,6 +497,58 @@ void main() {
     );
 
     expect(disposeCount, 0);
+  });
+
+  testWidgets('autoDispose states are kept alive during pushReplacement',
+      (tester) async {
+    var disposeCount = 0;
+    final counterProvider = StateProvider.autoDispose((ref) {
+      ref.onDispose(() => disposeCount++);
+      return 0;
+    });
+
+    final container = createContainer();
+    final key = GlobalKey<NavigatorState>();
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          navigatorKey: key,
+          home: Consumer(
+            builder: (context, ref, _) {
+              final count = ref.watch(counterProvider).state;
+              return Text('$count');
+            },
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('0'), findsOneWidget);
+
+    container.read(counterProvider).state++;
+    await tester.pump();
+
+    expect(find.text('1'), findsOneWidget);
+
+    // ignore: unawaited_futures
+    key.currentState!.pushReplacement<void, void>(
+      PageRouteBuilder<void>(pageBuilder: (_, __, ___) {
+        return Consumer(
+          builder: (context, ref, _) {
+            final count = ref.watch(counterProvider).state;
+            return Text('new $count');
+          },
+        );
+      }),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('1'), findsNothing);
+    expect(find.text('new 0'), findsNothing);
+    expect(find.text('new 1'), findsOneWidget);
   });
 }
 

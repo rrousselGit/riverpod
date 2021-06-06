@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'internals.dart';
 
 abstract class HookConsumerWidget extends ConsumerWidget {
   const HookConsumerWidget({Key? key}) : super(key: key);
@@ -10,16 +10,13 @@ abstract class HookConsumerWidget extends ConsumerWidget {
 }
 
 // ignore: invalid_use_of_visible_for_testing_member
-class _HookConsumerElement extends StatefulElement with HookElement {
+class _HookConsumerElement extends ConsumerStatefulElement with HookElement {
   _HookConsumerElement(HookConsumerWidget widget) : super(widget);
 }
 
 class HookConsumer extends HookConsumerWidget {
-  const HookConsumer({
-    Key? key,
-    required this.builder,
-    this.child,
-  }) : super(key: key);
+  const HookConsumer({Key? key, required this.builder, this.child})
+      : super(key: key);
 
   final ConsumerBuilder builder;
   final Widget? child;

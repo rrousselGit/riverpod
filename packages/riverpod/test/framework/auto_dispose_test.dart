@@ -19,7 +19,7 @@ void main() {
   //   expect(container.debugProviderElements, <ProviderElement>[]);
   // });
 
-  test('setting maintainState to false destroys the state when not listener',
+  test('setting maintainState to false destroys the state when not listened',
       () async {
     final onDispose = OnDisposeMock();
     late AutoDisposeProviderRefBase ref;
@@ -32,6 +32,7 @@ void main() {
 
     final sub = container.listen(provider, (value) {});
     sub.close();
+
     await container.pump();
 
     verifyZeroInteractions(onDispose);
@@ -62,6 +63,7 @@ void main() {
     verify(listener(42)).called(1);
     verifyNoMoreInteractions(listener);
     sub.close();
+
     await container.pump();
 
     verifyZeroInteractions(onDispose);
@@ -357,6 +359,8 @@ void main() {
 
     verifyNoMoreInteractions(onDispose);
   });
+
+  // TODO providers with onky a "listen" as subscribers are kept alive
 }
 
 class Listener extends Mock {

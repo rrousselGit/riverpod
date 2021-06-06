@@ -6,6 +6,11 @@ import 'stream_provider.dart' show StreamProvider;
 
 part 'common.freezed.dart';
 
+/// Utility for `.name` of provider modifiers.
+String? modifierName(String? from, String modifier) {
+  return from == null ? null : '$from.$modifier';
+}
+
 /// An utility for safely manipulating asynchronous data.
 ///
 /// By using [AsyncValue], you are guaranteed that you cannot forget to

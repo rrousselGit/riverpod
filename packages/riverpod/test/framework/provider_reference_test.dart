@@ -6,8 +6,10 @@ import '../utils.dart';
 
 void main() {
   group('ProviderRefBase', () {
+    test('ref.read should keep providers alive', () {}, skip: true);
+
     group('.watch', () {
-      test('can listen multiple providers at once', () {
+      test('can listen multiple providers at once', () async {
         final container = createContainer();
         final count = StateProvider((ref) => 0);
         final count2 = StateProvider((ref) => 0);
@@ -22,17 +24,19 @@ void main() {
         expect(container.read(provider), '0 0');
 
         container.read(count).state++;
+        await container.pump();
 
         expect(container.read(provider), '1 0');
 
         container.read(count2).state++;
+        await container.pump();
 
         expect(container.read(provider), '1 1');
       });
 
       test(
           'listens to the parameter and rebuild the state whenever this provider changed',
-          () {
+          () async {
         final count = StateProvider((ref) => 0);
         var buildCount = 0;
         final provider = Provider((ref) {
@@ -49,6 +53,7 @@ void main() {
         expect(buildCount, 1);
 
         container.read(count).state++;
+        await container.pump();
 
         expect(container.read(provider), false);
         // reading twice to make sure the provider isn't rebuilt on every read
@@ -87,7 +92,7 @@ void main() {
       });
 
       test('calls all listeners in order when one of its dependency changed',
-          () {
+          () async {
         final onDispose = OnDisposeMock();
         final onDispose2 = OnDisposeMock();
 
@@ -107,6 +112,7 @@ void main() {
         verifyZeroInteractions(onDispose2);
 
         container.read(count).state++;
+        await container.pump();
 
         verifyInOrder([
           onDispose(),
@@ -138,16 +144,18 @@ void main() {
         container.read(count).state++;
         container.read(count2).state++;
 
-        verify(onDispose()).called(1);
+        verifyOnly(onDispose, onDispose());
       });
 
       test(
-          'does not call listeners again a dependency changed then ProviderContainer was disposed',
-          () {
+          'does not call listeners again if a dependency changed then ProviderContainer was disposed',
+          () async {
         final onDispose = OnDisposeMock();
+        var buildCount = 0;
 
         final count = StateProvider((ref) => 0);
         final provider = Provider((ref) {
+          buildCount++;
           ref.watch(count);
           ref.onDispose(onDispose);
         });
@@ -156,13 +164,20 @@ void main() {
         addTearDown(container.dispose);
 
         container.read(provider); // register the onDispose hooks
+        expect(buildCount, 1);
 
         verifyZeroInteractions(onDispose);
 
         container.read(count).state++;
+        // no pump() because that would rebuild the provider, which means it would
+        // need to be disposed once again.
+
+        verifyOnly(onDispose, onDispose());
+
         container.dispose();
 
-        verify(onDispose()).called(1);
+        expect(buildCount, 1);
+        verifyNoMoreInteractions(onDispose);
       });
 
       test(
@@ -174,5 +189,8 @@ void main() {
       test('is true during onDispose', () {}, skip: true);
       test('is false in between rebuilds', () {}, skip: true);
     });
+
+    test('ref.listen on outdated provider causes it to rebuild', () {},
+        skip: true);
   });
 }

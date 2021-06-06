@@ -21,7 +21,7 @@ typedef OnProviderChange<T> = void Function(BuildContext context, T value);
 /// {@endtemplate}
 @Deprecated('Use WidgetReference.listen instead')
 @sealed
-class ProviderListener<T> extends StatefulWidget {
+class ProviderListener<T> extends ConsumerWidget {
   /// {@macro riverpod.providerlistener}
   const ProviderListener({
     Key? key,
@@ -33,7 +33,7 @@ class ProviderListener<T> extends StatefulWidget {
   /// The provider listened.
   ///
   /// Can be `null`.
-  final ProviderBase<T>? provider;
+  final ProviderListenable<T>? provider;
 
   /// A function called with the new value of [provider] when it changes.
   ///
@@ -44,65 +44,10 @@ class ProviderListener<T> extends StatefulWidget {
   final Widget child;
 
   @override
-  _ProviderListenerState<T> createState() => _ProviderListenerState<T>();
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty<OnProviderChange<T>>('onChange', onChange),
-    );
-    properties.add(
-      DiagnosticsProperty<ProviderBase<T>>('provider', provider),
-    );
-  }
-}
-
-@sealed
-// ignore: deprecated_member_use_from_same_package
-class _ProviderListenerState<T> extends State<ProviderListener<T>> {
-  ProviderSubscription<T>? _subscription;
-  ProviderContainer? _container;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final container = ProviderScope.containerOf(context);
-
-    if (container != _container) {
-      _container = container;
-      _listen();
+  Widget build(BuildContext context, WidgetReference ref) {
+    if (provider != null) {
+      ref.listen<T>(provider!, (value) => onChange(context, value));
     }
-  }
-
-  @override
-  // ignore: deprecated_member_use_from_same_package
-  void didUpdateWidget(ProviderListener<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.provider != widget.provider) {
-      _listen();
-    }
-  }
-
-  void _listen() {
-    _subscription?.close();
-    _subscription = null;
-    if (widget.provider != null) {
-      _subscription = _container!.listen<T>(
-        widget.provider!,
-        (value) => widget.onChange(context, value),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return widget.child;
-  }
-
-  @override
-  void dispose() {
-    _subscription?.close();
-    super.dispose();
+    return child;
   }
 }

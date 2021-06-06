@@ -31,35 +31,6 @@ void main() {
     });
   });
 
-  testWidgets('mounted', (tester) async {
-    late ProviderRefBase providerState;
-    bool? mountedOnDispose;
-    final provider = Provider<int>((ref) {
-      providerState = ref;
-      ref.onDispose(() => mountedOnDispose = ref.mounted);
-      return 42;
-    });
-
-    await tester.pumpWidget(
-      ProviderScope(
-        child: Consumer(builder: (c, ref, _) {
-          return Text(
-            ref.watch(provider).toString(),
-            textDirection: TextDirection.ltr,
-          );
-        }),
-      ),
-    );
-
-    expect(find.text('42'), findsOneWidget);
-    expect(providerState.mounted, isTrue);
-
-    await tester.pumpWidget(Container());
-
-    expect(mountedOnDispose, isFalse);
-    expect(providerState.mounted, isFalse);
-  });
-
   testWidgets('no onDispose does not crash', (tester) async {
     final provider = Provider<int>((ref) => 42);
 

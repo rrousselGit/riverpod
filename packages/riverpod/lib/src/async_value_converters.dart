@@ -53,8 +53,7 @@ Stream<State> asyncValueToStream<State>(
 class AsyncValueAsFutureProvider<State>
     extends AlwaysAliveProviderBase<Future<State>> {
   ///
-  AsyncValueAsFutureProvider(this._provider)
-      : super(_provider.name == null ? null : '${_provider.name}.last');
+  AsyncValueAsFutureProvider(this._provider, String? name) : super(name);
 
   final AlwaysAliveProviderBase<AsyncValue<State>> _provider;
 
@@ -82,8 +81,8 @@ class AsyncValueAsFutureProvider<State>
 class AutoDisposeAsyncValueAsFutureProvider<State>
     extends AutoDisposeProviderBase<Future<State>> {
   ///
-  AutoDisposeAsyncValueAsFutureProvider(this._provider)
-      : super(_provider.name == null ? null : '${_provider.name}.last');
+  AutoDisposeAsyncValueAsFutureProvider(this._provider, String? name)
+      : super(name);
 
   final AutoDisposeProviderBase<AsyncValue<State>> _provider;
 
@@ -115,7 +114,9 @@ Future<State> _asyncValueAsFuture<State>(
   ref.onDispose(() {
     if (loadingCompleter != null) {
       loadingCompleter!.completeError(
-        StateError('The provider was disposed the stream could emit a value'),
+        StateError(
+          'The provider $provider was disposed before a value was emitted.',
+        ),
       );
     }
   });

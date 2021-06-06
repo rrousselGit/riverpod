@@ -8,6 +8,72 @@ import '../utils.dart';
 
 void main() {
   group('ProviderContainer', () {
+    test('can downcast the listener value', () {
+      final container = createContainer();
+      final provider = StateProvider<int>((ref) => 0);
+      final listener = Listener<void>();
+
+      container.listen<void>(provider, listener);
+
+      verifyZeroInteractions(listener);
+
+      container.read(provider).state++;
+
+      verifyOnly(listener, listener(any));
+    });
+
+    test(
+      'can close a ProviderSubscription multiple times with no effect',
+      () {
+        final container = createContainer();
+        final provider =
+            StateNotifierProvider<StateController<int>, int>((ref) {
+          return StateController(0);
+        });
+        final listener = Listener<int>();
+
+        final controller = container.read(provider.notifier);
+
+        final sub = container.listen(provider, listener);
+
+        sub.close();
+        sub.close();
+
+        controller.state++;
+
+        verifyZeroInteractions(listener);
+      },
+    );
+
+    test(
+      'closing an already closed ProviderSubscription does not remove subscriptions with the same listener',
+      () {
+        final container = createContainer();
+        final provider =
+            StateNotifierProvider<StateController<int>, int>((ref) {
+          return StateController(0);
+        });
+        final listener = Listener<int>();
+
+        final controller = container.read(provider.notifier);
+
+        final sub = container.listen(provider, listener);
+        container.listen(provider, listener);
+
+        controller.state++;
+
+        verify(listener(1)).called(2);
+        verifyNoMoreInteractions(listener);
+
+        sub.close();
+        sub.close();
+
+        controller.state++;
+
+        verifyOnly(listener, listener(2));
+      },
+    );
+
     test('builds providers at most once per container', () {
       var result = 42;
       final container = createContainer();

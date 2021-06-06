@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 import 'async_value_converters.dart';
 
 import 'builders.dart';
-import 'common.dart' show AsyncValue;
+import 'common.dart' show AsyncValue, modifierName;
 import 'framework.dart';
 import 'provider.dart';
 import 'stream_provider.dart';
@@ -85,6 +85,7 @@ AsyncValue<State> _listenFuture<State>(
   var running = true;
   ref.onDispose(() => running = false);
   try {
+    ref.state = const AsyncValue.loading();
     future().then(
       (event) {
         if (running) ref.state = AsyncValue.data(event);
@@ -95,7 +96,7 @@ AsyncValue<State> _listenFuture<State>(
       },
     );
 
-    return const AsyncValue.loading();
+    return ref.state;
   } catch (err, stack) {
     return AsyncValue.error(err, stack);
   }

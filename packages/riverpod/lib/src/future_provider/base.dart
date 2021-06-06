@@ -41,7 +41,7 @@ class FutureProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   /// ```
   /// {@endtemplate}
   late final AlwaysAliveProviderBase<Future<State>> future =
-      AsyncValueAsFutureProvider(this);
+      AsyncValueAsFutureProvider(this, modifierName(name, 'future'));
 
   @override
   AsyncValue<State> create(FutureProviderRef<State> ref) {

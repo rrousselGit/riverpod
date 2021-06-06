@@ -14,6 +14,9 @@ analyzer:
 
 linter:
   rules:
+    # Too verbose with little value, and this is taken care of by the Flutter devtool anyway.
+    diagnostic_describe_all_properties: false
+
     # Personal preference. I prefer "if (bool) return;" over having it in multiple lines
     always_put_control_body_on_new_line: false
 

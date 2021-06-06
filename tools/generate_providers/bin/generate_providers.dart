@@ -429,6 +429,7 @@ import 'internals.dart';
           StateDetails(
             kind: StateType.changeNotifier,
             className: 'ChangeNotifierProvider',
+            ref: 'ChangeNotifierProviderRef<Notifier>',
             constraints: 'Notifier extends ChangeNotifier',
             generics: 'Notifier',
             createType: 'Notifier',

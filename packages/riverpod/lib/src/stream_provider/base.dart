@@ -24,11 +24,11 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   @override
   late final AlwaysAliveProviderBase<Stream<State>> stream = Provider((ref) {
     return asyncValueToStream(this, ref as ProviderElementBase<Stream<State>>);
-  });
+  }, name: modifierName(name, 'stream'));
 
   @override
   late final AlwaysAliveProviderBase<Future<State>> last =
-      AsyncValueAsFutureProvider(this);
+      AsyncValueAsFutureProvider(this, modifierName(name, 'last'));
 
   @override
   AsyncValue<State> create(StreamProviderRef<State> ref) {

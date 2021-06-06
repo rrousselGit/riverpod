@@ -24,11 +24,11 @@ class AutoDisposeStreamProvider<State>
   late final AutoDisposeProviderBase<Stream<State>> stream =
       AutoDisposeProvider((ref) {
     return asyncValueToStream(this, ref as ProviderElementBase<Stream<State>>);
-  });
+  }, name: modifierName(name, 'stream'));
 
   @override
   late final AutoDisposeProviderBase<Future<State>> last =
-      AutoDisposeAsyncValueAsFutureProvider(this);
+      AutoDisposeAsyncValueAsFutureProvider(this, modifierName(name, 'last'));
 
   @override
   AsyncValue<State> create(AutoDisposeStreamProviderRef<State> ref) {

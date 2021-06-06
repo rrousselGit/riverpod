@@ -73,6 +73,7 @@
   of their dependency changed and they have listeners.
 - Added `ProviderContainer.pump`, an utility to easily "await" until providers
   notify their listeners or are disposed.
+- fixed an issue when using both `family` and `autoDispose` that could lead to an inconsistent state
 
 # 0.14.0+1
 
