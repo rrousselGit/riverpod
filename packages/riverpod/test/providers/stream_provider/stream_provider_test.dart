@@ -280,39 +280,43 @@ void main() {
     );
   });
 
-  // test(
-  //     'StreamProvider does not update dependents if the created stream did not change',
-  //     () {
-  //   final dep = StateProvider((ref) => 0);
-  //   final provider = StreamProvider((ref) {
-  //     ref.watch(dep);
-  //     return const Stream<int>.empty();
-  //   });
+  test(
+      'StreamProvider does not update dependents if the created stream did not change',
+      () async {
+    // TODO should fix itself one streamprovider filters values with ==
+    final dep = StateProvider((ref) => 0);
+    final provider = StreamProvider((ref) {
+      ref.watch(dep);
+      return const Stream<int>.empty();
+    });
+    final listener = Listener<AsyncValue<int>>();
 
-  //   final sub = container.listen(provider, (_) {});
-  //   sub.read();
+    container.listen(provider, listener);
 
-  //   container.read(dep).state++;
+    container.read(dep).state++;
+    await container.pump();
 
-  //   expect(sub.flush(), false);
-  // });
+    verifyZeroInteractions(listener);
+  }, skip: true);
 
-  // test(
-  //     'StreamProvider.stream does not update dependents if the created stream did not change',
-  //     () {
-  //   final dep = StateProvider((ref) => 0);
-  //   final provider = StreamProvider((ref) {
-  //     ref.watch(dep);
-  //     return const Stream<int>.empty();
-  //   });
+  test(
+      'StreamProvider.stream does not update dependents if the created stream did not change',
+      () async {
+    // TODO should fix itself one streamprovider filters values with ==
+    final dep = StateProvider((ref) => 0);
+    final provider = StreamProvider((ref) {
+      ref.watch(dep);
+      return const Stream<int>.empty();
+    });
+    final listener = Listener<Stream<int>>();
 
-  //   final sub = container.listen(provider, (_) {});
-  //   sub.read();
+    container.listen(provider.stream, listener);
 
-  //   container.read(dep).state++;
+    container.read(dep).state++;
+    await container.pump();
 
-  //   expect(sub.flush(), false);
-  // });
+    verifyZeroInteractions(listener);
+  }, skip: true);
 
   group('overrideWithValue(T)', () {
     test('.stream is a broadcast stream', () async {
@@ -393,78 +397,6 @@ void main() {
     );
   });
 
-  // test('StreamProvider.autoDispose', () async {
-  //   var stream = Stream.value(42);
-  //   final onDispose = DisposeMock();
-  //   final provider = StreamProvider.autoDispose((ref) {
-  //     ref.onDispose(onDispose);
-  //     return stream;
-  //   });
-  //   final container = createContainer();
-  //   final listener = ListenerMock();
-
-  //   final removeListener = provider.watchOwner(container, listener);
-
-  //   verify(listener(const AsyncValue.loading())).called(1);
-  //   verifyNoMoreInteractions(listener);
-
-  //   removeListener();
-
-  //   await container.pump();
-
-  //   verify(onDispose()).called(1);
-  //   verifyNoMoreInteractions(onDispose);
-
-  //   stream = Stream.value(21);
-
-  //   provider.watchOwner(container, listener);
-
-  //   verify(listener(const AsyncValue.loading())).called(1);
-
-  //   await container.pump();
-
-  //   verify(listener(const AsyncValue.data(21))).called(1);
-  //   verifyNoMoreInteractions(listener);
-  // });
-
-  // test('StreamProvider.autoDispose.family override', () async {
-  //   final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
-  //     return Stream.value(a * 2);
-  //   });
-  //   final container = createContainer();
-  //   final listener = ListenerMock();
-
-  //   provider(21).watchOwner(container, listener);
-
-  //   verify(listener(const AsyncValue.loading())).called(1);
-  //   verifyNoMoreInteractions(listener);
-
-  //   await container.pump();
-
-  //   verify(listener(const AsyncValue.data(42))).called(1);
-  //   verifyNoMoreInteractions(listener);
-  // });
-
-  // test('StreamProvider.autoDispose.family override', () async {
-  //   final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
-  //     return Stream.value(a * 2);
-  //   });
-  //   final container = ProviderContainer(overrides: [
-  //     provider.overrideWithProvider((ref, a) => Stream.value(a * 4)),
-  //   ]);
-  //   final listener = ListenerMock();
-
-  //   provider(21).watchOwner(container, listener);
-
-  //   verify(listener(const AsyncValue.loading())).called(1);
-  //   verifyNoMoreInteractions(listener);
-
-  //   await container.pump();
-
-  //   verify(listener(const AsyncValue.data(84))).called(1);
-  //   verifyNoMoreInteractions(listener);
-  // });
-
   test('StreamProvider.family', () async {
     final provider = StreamProvider.family<String, int>((ref, a) {
       return Stream.value('$a');
@@ -520,113 +452,81 @@ void main() {
     expect(provider, isA<AlwaysAliveProviderBase>());
   });
 
-  // test('subscribe exposes loading synchronously then value on change',
-  //     () async {
-  //   final container = createContainer();
-  //   final controller = StreamController<int>(sync: true);
-  //   final provider = StreamProvider((_) => controller.stream);
-  //   final listener = ListenerMock();
+  test('subscribe exposes loading synchronously then value on change',
+      () async {
+    final container = createContainer();
+    final controller = StreamController<int>(sync: true);
+    final provider = StreamProvider((_) => controller.stream);
+    final listener = Listener<AsyncValue<int>>();
 
-  //   final sub = provider.addLazyListener(
-  //     container,
-  //     mayHaveChanged: () {},
-  //     onChange: listener,
-  //   );
+    container.listen(provider, listener, fireImmediately: true);
 
-  //   verify(listener(const AsyncValue<int>.loading())).called(1);
-  //   verifyNoMoreInteractions(listener);
+    verifyOnly(listener, listener(const AsyncValue<int>.loading()));
 
-  //   controller.add(42);
+    controller.add(42);
 
-  //   verifyNoMoreInteractions(listener);
-  //   sub.flush();
-  //   verify(listener(const AsyncValue.data(42))).called(1);
-  //   verifyNoMoreInteractions(listener);
+    verifyOnly(listener, listener(const AsyncValue<int>.data(42)));
 
-  //   controller.add(21);
+    controller.add(21);
 
-  //   verifyNoMoreInteractions(listener);
-  //   sub.flush();
-  //   verify(listener(const AsyncValue.data(21))).called(1);
-  //   verifyNoMoreInteractions(listener);
+    verifyOnly(listener, listener(const AsyncValue<int>.data(21)));
 
-  //   await controller.close();
-  //   container.dispose();
-  // });
+    await controller.close();
+  });
 
-  // test('errors', () async {
-  //   final container = createContainer();
-  //   final controller = StreamController<int>(sync: true);
-  //   final provider = StreamProvider((_) => controller.stream);
-  //   final listener = ListenerMock();
-  //   final error = Error();
-  //   final stack = StackTrace.current;
+  test('errors', () async {
+    final container = createContainer();
+    final controller = StreamController<int>(sync: true);
+    final provider = StreamProvider((_) => controller.stream);
+    final listener = Listener<AsyncValue<int>>();
+    final error = Error();
+    final stack = StackTrace.current;
 
-  //   final sub = provider.addLazyListener(
-  //     container,
-  //     mayHaveChanged: () {},
-  //     onChange: listener,
-  //   );
+    container.listen(provider, listener, fireImmediately: true);
 
-  //   verify(listener(const AsyncValue<int>.loading())).called(1);
-  //   verifyNoMoreInteractions(listener);
+    verifyOnly(listener, listener(const AsyncValue<int>.loading()));
 
-  //   controller.addError(error, stack);
+    controller.addError(error, stack);
 
-  //   verifyNoMoreInteractions(listener);
-  //   sub.flush();
-  //   verify(listener(AsyncValue.error(error, stack)));
-  //   verifyNoMoreInteractions(listener);
+    verifyOnly(listener, listener(AsyncValue<int>.error(error, stack)));
 
-  //   controller.add(21);
+    controller.add(21);
 
-  //   verifyNoMoreInteractions(listener);
-  //   sub.flush();
-  //   verify(listener(const AsyncValue.data(21))).called(1);
-  //   verifyNoMoreInteractions(listener);
+    verifyOnly(listener, listener(const AsyncValue.data(21)));
 
-  //   await controller.close();
-  //   container.dispose();
-  // });
+    await controller.close();
+  });
 
-  // test('stops subscription', () async {
-  //   final container = createContainer();
-  //   final controller = StreamController<int>(sync: true);
-  //   final dispose = DisposeMock();
-  //   final provider = StreamProvider((ref) {
-  //     ref.onDispose(dispose);
-  //     return controller.stream;
-  //   });
-  //   final listener = ListenerMock();
+  test('stops subscription', () async {
+    final container = createContainer();
+    final controller = StreamController<int>(sync: true);
+    final dispose = OnDisposeMock();
+    final provider = StreamProvider((ref) {
+      ref.onDispose(dispose);
+      return controller.stream;
+    });
+    final listener = Listener<AsyncValue<int>>();
 
-  //   final sub = provider.addLazyListener(
-  //     container,
-  //     mayHaveChanged: () {},
-  //     onChange: listener,
-  //   );
+    container.listen(provider, listener, fireImmediately: true);
 
-  //   verify(listener(const AsyncValue<int>.loading())).called(1);
-  //   verifyNoMoreInteractions(listener);
+    verifyOnly(listener, listener(const AsyncValue<int>.loading()));
 
-  //   controller.add(42);
+    controller.add(42);
 
-  //   verifyNoMoreInteractions(listener);
-  //   sub.flush();
-  //   verify(listener(const AsyncValue.data(42))).called(1);
-  //   verifyNoMoreInteractions(listener);
-  //   verifyNoMoreInteractions(dispose);
+    verifyOnly(listener, listener(const AsyncValue<int>.data(42)));
+    verifyNoMoreInteractions(dispose);
 
-  //   container.dispose();
+    container.dispose();
 
-  //   verify(dispose()).called(1);
-  //   verifyNoMoreInteractions(dispose);
+    verify(dispose()).called(1);
+    verifyNoMoreInteractions(dispose);
 
-  //   // if the listener wasn't removed, this would throw because markNeedsNotifyListeners
-  //   // cannot be called once the provider was disposed.
-  //   controller.add(21);
+    // if the listener wasn't removed, this would throw because markNeedsNotifyListeners
+    // cannot be called once the provider was disposed.
+    controller.add(21);
 
-  //   await controller.close();
-  // });
+    await controller.close();
+  });
 
   group('StreamProvider().future', () {
     test('does not update dependents when the future completes', () async {
@@ -651,26 +551,26 @@ void main() {
       expect(callCount, 1);
     });
 
-    // test('update dependents when the future changes', () async {
-    //   final streamProvider = StateProvider((ref) => Stream.value(42));
-    //   // a StreamProvider that can rebuild with a new future
-    //   final provider = StreamProvider((ref) => ref.watch(streamProvider).state);
-    //   var callCount = 0;
-    //   final dependent = Provider((ref) {
-    //     callCount++;
-    //     return ref.watch(provider.stream);
-    //   });
-    //   final container = createContainer();
-    //   final streamController = container.read(streamProvider);
+    test('update dependents when the future changes', () async {
+      final streamProvider = StateProvider((ref) => Stream.value(42));
+      // a StreamProvider that can rebuild with a new future
+      final provider = StreamProvider((ref) => ref.watch(streamProvider).state);
+      var callCount = 0;
+      final dependent = Provider((ref) {
+        callCount++;
+        return ref.watch(provider.stream);
+      });
+      final container = createContainer();
+      final streamController = container.read(streamProvider);
 
-    //   await expectLater(container.read(dependent), emits(42));
-    //   expect(callCount, 1);
+      await expectLater(container.read(dependent), emits(42));
+      expect(callCount, 1);
 
-    //   streamController.state = Stream.value(21);
+      streamController.state = Stream.value(21);
 
-    //   await expectLater(container.read(dependent), emits(21));
-    //   expect(callCount, 2);
-    // });
+      await expectLater(container.read(dependent), emits(21));
+      expect(callCount, 2);
+    });
 
     test('.name is the listened name.stream', () {
       expect(
@@ -1269,35 +1169,36 @@ void main() {
       await expectLater(stream, emitsDone);
     });
 
-    // test('loading immediatly then loading', () async {
-    //   final provider = StreamProvider<int>((_) async* {});
-    //   final container = ProviderContainer(overrides: [
-    //     provider.overrideWithValue(const AsyncValue<int>.loading()),
-    //   ]);
-    //   final stream = container.read(provider.stream);
+    test('loading immediatly then loading', () async {
+      final provider = StreamProvider<int>((_) async* {});
+      final container = ProviderContainer(overrides: [
+        provider.overrideWithValue(const AsyncValue<int>.loading()),
+      ]);
+      final stream = container.read(provider.stream);
+      final listener = Listener<AsyncValue<int>>();
 
-    //   final sub = container.listen(provider, (_) {});
+      container.listen(provider, listener, fireImmediately: true);
 
-    //   expect(sub.read(), const AsyncValue<int>.loading());
+      verifyOnly(listener, listener(const AsyncValue<int>.loading()));
 
-    //   container.updateOverrides([
-    //     provider.overrideWithValue(const AsyncValue<int>.loading()),
-    //   ]);
+      container.updateOverrides([
+        provider.overrideWithValue(const AsyncValue<int>.loading()),
+      ]);
 
-    //   expect(sub.flush(), false);
+      verifyNoMoreInteractions(listener);
 
-    //   container.updateOverrides([
-    //     provider.overrideWithValue(const AsyncValue.data(42)),
-    //   ]);
+      container.updateOverrides([
+        provider.overrideWithValue(const AsyncValue.data(42)),
+      ]);
 
-    //   expect(sub.read(), const AsyncValue.data(42));
+      verifyOnly(listener, listener(const AsyncValue<int>.data(42)));
 
-    //   await expectLater(stream, emits(42));
+      await expectLater(stream, emits(42));
 
-    //   container.dispose();
+      container.dispose();
 
-    //   await expectLater(stream, emitsDone);
-    // });
+      await expectLater(stream, emitsDone);
+    });
 
     test('error immediatly then different error', () async {
       final stackTrace = StackTrace.current;
