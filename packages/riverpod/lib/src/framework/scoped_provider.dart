@@ -155,6 +155,9 @@ class _ScopedProviderElement<T> extends AutoDisposeProviderElementBase<T> {
   void update(ProviderBase<T> newProvider) {
     super.update(newProvider);
     // TODO(rrousselGit) compare previous and new state
-    // markMustRecomputeState();
+    markMustRecomputeState();
+
+    // this forces the provider to re-execute
+    getExposedValue();
   }
 }

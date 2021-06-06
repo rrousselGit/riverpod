@@ -25,25 +25,6 @@ void main() {
     });
   });
 
-  // test('subscribe', () {
-  //   final container = ProviderContainer();
-  //   final provider = Provider((_) => 42);
-
-  //   int? value;
-  //   var callCount = 0;
-
-  //   final sub = container.listen<int>(provider, (v) {
-  //     value = v;
-  //     callCount++;
-  //   });
-
-  //   expect(callCount, 1);
-  //   expect(value, 42);
-
-  //   sub.close();
-  //   expect(callCount, 1);
-  // });
-
   test('dispose', () {
     final container = createContainer();
     final onDispose = OnDisposeMock();
