@@ -8,6 +8,43 @@ import '../utils.dart';
 
 void main() {
   group('ProviderContainer', () {
+    group('getAllProviderElements', () {
+      test('list the currently mounted providers', () async {
+        final container = ProviderContainer();
+        final unrelated = Provider((_) => 42);
+        final provider = Provider.autoDispose((ref) => 0);
+
+        expect(container.read(unrelated), 42);
+        var sub = container.listen(provider, (_) {});
+
+        expect(
+          container.getAllProviderElements(),
+          unorderedMatches(<Matcher>[
+            isA<ProviderElementBase<int>>(),
+            isA<AutoDisposeProviderElementBase<int>>(),
+          ]),
+        );
+
+        sub.close();
+        await container.pump();
+
+        expect(
+          container.getAllProviderElements(),
+          [isA<ProviderElementBase<int>>()],
+        );
+
+        sub = container.listen(provider, (_) {});
+
+        expect(
+          container.getAllProviderElements(),
+          unorderedMatches(<Matcher>[
+            isA<ProviderElementBase<int>>(),
+            isA<AutoDisposeProviderElementBase<int>>(),
+          ]),
+        );
+      });
+    });
+
     test('can downcast the listener value', () {
       final container = createContainer();
       final provider = StateProvider<int>((ref) => 0);

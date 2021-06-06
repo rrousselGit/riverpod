@@ -87,16 +87,3 @@ void main() {
     expect(container.read(family(42)), 'Hello 42');
   });
 }
-
-class Listener<T> extends Mock {
-  void call(T value);
-}
-
-class Counter extends StateNotifier<int> {
-  Counter([int initialValue = 0]) : super(initialValue);
-
-  @override
-  int get state => super.state;
-  @override
-  set state(int value) => super.state = value;
-}

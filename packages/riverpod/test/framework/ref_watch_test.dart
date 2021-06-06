@@ -17,148 +17,146 @@ class Counter extends StateNotifier<int> {
 }
 
 void main() {
-  // test(
-  //     'Provider removing one of multiple listeners on a provider still listen to the provider',
-  //     () {
-  //   final stateProvider = StateProvider((ref) => 0, name: 'state');
-  //   final notifier0 = Counter();
-  //   final notifier1 = Counter(42);
-  //   final provider0 = StateNotifierProvider<Counter, int>((_) {
-  //     return notifier0;
-  //   }, name: '0');
-  //   final provider1 = StateNotifierProvider<Counter, int>((_) {
-  //     return notifier1;
-  //   }, name: '1');
-  //   var buildCount = 0;
-  //   final computed = Provider((ref) {
-  //     buildCount++;
+  test(
+      'Provider removing one of multiple listeners on a provider still listen to the provider',
+      () async {
+    final stateProvider = StateProvider((ref) => 0, name: 'state');
+    final notifier0 = Counter();
+    final provider0 = StateNotifierProvider<Counter, int>(
+      (_) => notifier0,
+      name: '0',
+    );
 
-  //     final state = ref.watch(stateProvider).state;
-  //     final value = state == 0 ? ref.watch(provider0) : ref.watch(provider1);
+    final notifier1 = Counter(42);
+    final provider1 = StateNotifierProvider<Counter, int>(
+      (_) => notifier1,
+      name: '1',
+    );
 
-  //     return '${ref.watch(provider0)} $value';
-  //   });
-  //   final listener = Listener<String>();
-  //   final container = ProviderContainer();
+    var computedBuildCount = 0;
+    final computed = Provider((ref) {
+      computedBuildCount++;
+      final state = ref.watch(stateProvider).state;
+      final value = state == 0 ? ref.watch(provider0) : ref.watch(provider1);
+      return '${ref.watch(provider0)} $value';
+    });
 
-  //   container.read(provider0);
-  //   container.read(provider1);
-  //   final familyState0 = container.debugProviderElements.firstWhere((p) {
-  //     return p.provider == provider0;
-  //   });
-  //   final familyState1 = container.debugProviderElements.firstWhere((p) {
-  //     return p.provider == provider1;
-  //   });
+    final computedListener = Listener<String>();
+    final container = createContainer();
 
-  //   computed.watchOwner(container, listener);
+    container.read(provider0);
+    container.read(provider1);
+    final provider0Element = container.readProviderElement(provider0);
+    final provider1Element = container.readProviderElement(provider1);
 
-  //   expect(buildCount, 1);
-  //   expect(familyState0.hasListeners, true);
-  //   expect(familyState1.hasListeners, false);
-  //   verify(listener('0 0')).called(1);
-  //   verifyNoMoreInteractions(listener);
+    container.listen(computed, computedListener, fireImmediately: true);
 
-  //   notifier0.increment();
+    verifyOnly(computedListener, computedListener('0 0'));
+    expect(computedBuildCount, 1);
+    expect(provider0Element.hasListeners, true);
+    expect(provider1Element.hasListeners, false);
 
-  //   expect(buildCount, 2);
-  //   verify(listener('1 1')).called(1);
-  //   verifyNoMoreInteractions(listener);
+    notifier0.increment();
+    await container.pump();
 
-  //   notifier1.increment();
+    verifyOnly(computedListener, computedListener('1 1'));
+    expect(computedBuildCount, 2);
 
-  //   expect(buildCount, 2);
-  //   verifyNoMoreInteractions(listener);
+    notifier1.increment();
+    await container.pump();
 
-  //   // changing the provider that computed is subscribed to
-  //   container.read(stateProvider).state = 1;
+    expect(computedBuildCount, 2);
+    verifyNoMoreInteractions(computedListener);
 
-  //   expect(buildCount, 3);
-  //   verify(listener('1 43')).called(1);
-  //   verifyNoMoreInteractions(listener);
-  //   expect(familyState1.hasListeners, true);
-  //   expect(familyState0.hasListeners, true);
+    // changing the provider that computed is subscribed to
+    container.read(stateProvider).state = 1;
+    await container.pump();
 
-  //   notifier1.increment();
+    verifyOnly(computedListener, computedListener('1 43'));
+    expect(computedBuildCount, 3);
+    expect(provider1Element.hasListeners, true);
+    expect(provider0Element.hasListeners, true);
 
-  //   expect(buildCount, 4);
-  //   verify(listener('1 44')).called(1);
-  //   verifyNoMoreInteractions(listener);
+    notifier1.increment();
+    await container.pump();
 
-  //   notifier0.increment();
+    verifyOnly(computedListener, computedListener('1 44'));
+    expect(computedBuildCount, 4);
 
-  //   expect(buildCount, 5);
-  //   verify(listener('2 44')).called(1);
-  //   verifyNoMoreInteractions(listener);
-  // });
+    notifier0.increment();
+    await container.pump();
 
-  // test('Stops listening to a provider when recomputed but no longer using it',
-  //     () {
-  //   final stateProvider = StateProvider((ref) => 0, name: 'state');
-  //   final notifier0 = Counter();
-  //   final notifier1 = Counter(42);
-  //   final provider0 = StateNotifierProvider<Counter, int>((_) {
-  //     return notifier0;
-  //   }, name: '0');
-  //   final provider1 = StateNotifierProvider<Counter, int>((_) {
-  //     return notifier1;
-  //   }, name: '1');
-  //   var buildCount = 0;
-  //   final computed = Provider((ref) {
-  //     buildCount++;
-  //     final state = ref.watch(stateProvider).state;
-  //     return state == 0 ? ref.watch(provider0) : ref.watch(provider1);
-  //   });
-  //   final listener = Listener<int>();
-  //   final container = ProviderContainer();
+    verifyOnly(computedListener, computedListener('2 44'));
+    expect(computedBuildCount, 5);
+  });
 
-  //   container.read(provider0);
-  //   container.read(provider1);
-  //   final familyState0 = container.debugProviderElements.firstWhere((p) {
-  //     return p.provider == provider0;
-  //   });
-  //   final familyState1 = container.debugProviderElements.firstWhere((p) {
-  //     return p.provider == provider1;
-  //   });
+  test('Stops listening to a provider when recomputed but no longer using it',
+      () async {
+    final stateProvider = StateProvider((ref) => 0, name: 'state');
+    final notifier0 = Counter();
+    final provider0 = StateNotifierProvider<Counter, int>(
+      (_) => notifier0,
+      name: '0',
+    );
+    final notifier1 = Counter(42);
+    final provider1 = StateNotifierProvider<Counter, int>(
+      (_) => notifier1,
+      name: '1',
+    );
 
-  //   computed.watchOwner(container, listener);
+    var computedBuildCount = 0;
+    final computed = Provider((ref) {
+      computedBuildCount++;
+      final state = ref.watch(stateProvider).state;
+      return state == 0 ? ref.watch(provider0) : ref.watch(provider1);
+    });
 
-  //   expect(buildCount, 1);
-  //   expect(familyState0.hasListeners, true);
-  //   expect(familyState1.hasListeners, false);
-  //   verify(listener(0)).called(1);
-  //   verifyNoMoreInteractions(listener);
+    final computedListener = Listener<int>();
+    final container = createContainer();
 
-  //   notifier0.increment();
+    final provider0Element = container.readProviderElement(provider0);
+    final provider1Element = container.readProviderElement(provider1);
 
-  //   expect(buildCount, 2);
-  //   verify(listener(1)).called(1);
-  //   verifyNoMoreInteractions(listener);
+    container.listen(computed, computedListener, fireImmediately: true);
 
-  //   notifier1.increment();
+    verifyOnly(computedListener, computedListener(0));
+    expect(computedBuildCount, 1);
+    expect(provider0Element.hasListeners, true);
+    expect(provider1Element.hasListeners, false);
 
-  //   expect(buildCount, 2);
-  //   verifyNoMoreInteractions(listener);
+    notifier0.increment();
+    await container.pump();
 
-  //   // changing the provider that computed is subscribed to
-  //   container.read(stateProvider).state = 1;
+    verifyOnly(computedListener, computedListener(1));
+    expect(computedBuildCount, 2);
 
-  //   expect(buildCount, 3);
-  //   verify(listener(43)).called(1);
-  //   verifyNoMoreInteractions(listener);
-  //   expect(familyState1.hasListeners, true);
-  //   expect(familyState0.hasListeners, false);
+    notifier1.increment();
+    await container.pump();
 
-  //   notifier1.increment();
+    expect(computedBuildCount, 2);
+    verifyNoMoreInteractions(computedListener);
 
-  //   expect(buildCount, 4);
-  //   verify(listener(44)).called(1);
-  //   verifyNoMoreInteractions(listener);
+    // changing the provider that computed is subscribed to
+    container.read(stateProvider).state = 1;
+    await container.pump();
 
-  //   notifier0.increment();
+    expect(computedBuildCount, 3);
+    verifyOnly(computedListener, computedListener(43));
+    expect(provider1Element.hasListeners, true);
+    expect(provider0Element.hasListeners, false);
 
-  //   expect(buildCount, 4);
-  //   verifyNoMoreInteractions(listener);
-  // });
+    notifier1.increment();
+    await container.pump();
+
+    expect(computedBuildCount, 4);
+    verifyOnly(computedListener, computedListener(44));
+
+    notifier0.increment();
+    await container.pump();
+
+    expect(computedBuildCount, 4);
+    verifyNoMoreInteractions(computedListener);
+  });
 
   test('Provider.family', () async {
     final computed =
@@ -169,7 +167,7 @@ void main() {
     final provider = StateNotifierProvider<Counter, int>((_) {
       return notifier;
     });
-    final container = ProviderContainer();
+    final container = createContainer();
     final listener = Listener<String>();
 
     container.listen(computed(provider), listener, fireImmediately: true);
@@ -185,7 +183,7 @@ void main() {
   test(
       'mutliple ref.watch, when one of them forces re-evaluate, all dependencies are still flushed',
       () async {
-    final container = ProviderContainer();
+    final container = createContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>, int>((_) {
       return notifier;
@@ -230,7 +228,7 @@ void main() {
       secondCallCount++;
       return ref.watch(first).toString();
     });
-    final container = ProviderContainer();
+    final container = createContainer();
 
     final controller = container.read(state);
 
@@ -246,31 +244,12 @@ void main() {
     expect(secondCallCount, 1);
   });
 
-  // test('Computeds are added to the overall list of providers', () {
-  //   final container = ProviderContainer();
-  //   final provider = Provider((_) => 42);
-  //   final computed = Provider((ref) => ref.watch(provider) * 2);
-  //   final provider2 = Provider((ref) => ref.watch(computed));
-  //   final listener = Listener<int>();
-
-  //   container.read(provider2);
-  //   computed.watchOwner(container, listener);
-
-  //   verify(listener(84)).called(1);
-  //   verifyNoMoreInteractions(listener);
-
-  //   expect(
-  //     container.debugProviderElements.map((e) => e.provider),
-  //     [provider, computed, provider2],
-  //   );
-  // });
-
   test('Provider are not overrides', () {
     expect(Provider((_) {}), isNot(isA<Override>()));
   });
 
   test('can call ref.watch outside of the Provider', () async {
-    final container = ProviderContainer();
+    final container = createContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>, int>((_) {
       return notifier;
@@ -300,7 +279,7 @@ void main() {
   });
 
   test('the value is cached between multiple listeners', () {
-    final container = ProviderContainer();
+    final container = createContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>, int>((_) {
       return notifier;
@@ -337,7 +316,7 @@ void main() {
   });
 
   test('Simple Provider flow', () async {
-    final container = ProviderContainer();
+    final container = createContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>, int>((_) {
       return notifier;
@@ -374,12 +353,4 @@ class Notifier<T> extends StateNotifier<T> {
 
   // ignore: use_setters_to_change_properties
   void setState(T value) => state = value;
-}
-
-class Listener<T> extends Mock {
-  void call(T value);
-}
-
-class OnDisposeMock extends Mock {
-  void call();
 }

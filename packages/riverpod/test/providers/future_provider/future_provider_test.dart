@@ -9,58 +9,24 @@ import '../../utils.dart';
 void main() {
   test('can be refreshed', () {}, skip: true);
 
-  // test(
-  //     'when overriden with an error but provider.future is not listened, it should not emit an error to the zone',
-  //     () async {
-  //   final error = Error();
-  //   final future = FutureProvider<int>((ref) async => 0);
+  test(
+      'when overriden with an error but provider.future is not listened, it should not emit an error to the zone',
+      () async {
+    final error = Error();
+    final future = FutureProvider<int>((ref) async => 0);
 
-  //   final container = createContainer(overrides: [
-  //     future.overrideWithValue(AsyncValue.error(error)),
-  //   ]);
-  //   addTearDown(container.dispose);
+    final container = createContainer(overrides: [
+      future.overrideWithValue(AsyncValue.error(error)),
+    ]);
+    addTearDown(container.dispose);
 
-  //   expect(
-  //     container.read(future),
-  //     AsyncValue<int>.error(error),
-  //   );
+    expect(
+      container.read(future),
+      AsyncValue<int>.error(error),
+    );
 
-  //   // the test will naturally fail if a non-caught future is created
-  // });
-
-  // test('FutureProvider.autoDispose', () async {
-  //   var future = Future.value(42);
-  //   final onDispose = OnDisposeMock();
-  //   final provider = FutureProvider.autoDispose((ref) {
-  //     ref.onDispose(onDispose);
-  //     return future;
-  //   });
-  //   final container = createContainer();
-  //   final listener = ListenerMock();
-
-  //   final removeListener = provider.watchOwner(container, listener);
-
-  //   verify(listener(const AsyncValue.loading())).called(1);
-  //   verifyNoMoreInteractions(listener);
-
-  //   removeListener();
-
-  //   await Future<void>.value();
-
-  //   verify(onDispose()).called(1);
-  //   verifyNoMoreInteractions(onDispose);
-
-  //   future = Future.value(21);
-
-  //   provider.watchOwner(container, listener);
-
-  //   verify(listener(const AsyncValue.loading())).called(1);
-
-  //   await Future<void>.value();
-
-  //   verify(listener(const AsyncValue.data(21))).called(1);
-  //   verifyNoMoreInteractions(listener);
-  // });
+    // the test will naturally fail if a non-caught future is created
+  });
 
   test('throwing inside "create" result in an AsyncValue.error', () {
     // ignore: only_throw_errors
@@ -70,80 +36,6 @@ void main() {
     expect(
       container.read(provider),
       isA<AsyncError>().having((s) => s.error, 'error', 42),
-    );
-  });
-
-  // test('FutureProvider.autoDispose.family override', () async {
-  //   final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
-  //     return Future.value(a * 2);
-  //   });
-  //   final container = createContainer();
-  //   final listener = ListenerMock();
-
-  //   provider(21).watchOwner(container, listener);
-
-  //   verify(listener(const AsyncValue.loading())).called(1);
-  //   verifyNoMoreInteractions(listener);
-
-  //   await Future<void>.value();
-
-  //   verify(listener(const AsyncValue.data(42))).called(1);
-  //   verifyNoMoreInteractions(listener);
-  // });
-
-  // test('FutureProvider.autoDispose.family override', () async {
-  //   final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
-  //     return Future.value(a * 2);
-  //   });
-  //   final container = createContainer(overrides: [
-  //     provider.overrideWithProvider((ref, a) => Future.value(a * 4)),
-  //   ]);
-  //   final listener = ListenerMock();
-
-  //   provider(21).watchOwner(container, listener);
-
-  //   verify(listener(const AsyncValue.loading())).called(1);
-  //   verifyNoMoreInteractions(listener);
-
-  //   await Future<void>.value();
-
-  //   verify(listener(const AsyncValue.data(84))).called(1);
-  //   verifyNoMoreInteractions(listener);
-  // });
-
-  test('FutureProvider.family override', () async {
-    final provider = FutureProvider.family<String, int>((ref, a) {
-      return Future.value('$a');
-    });
-    final container = createContainer();
-
-    expect(container.read(provider(0)), const AsyncValue<String>.loading());
-
-    await container.pump();
-
-    expect(
-      container.read(provider(0)),
-      const AsyncValue<String>.data('0'),
-    );
-  });
-
-  test('FutureProvider.family override', () async {
-    final provider = FutureProvider.family<String, int>((ref, a) {
-      return Future.value('$a');
-    });
-    final container = createContainer(overrides: [
-      provider.overrideWithProvider(
-        (a) => FutureProvider<String>((ref) => Future.value('override $a')),
-      ),
-    ]);
-
-    expect(container.read(provider(0)), const AsyncValue<String>.loading());
-
-    await container.pump();
-
-    expect(
-      container.read(provider(0)),
-      const AsyncValue<String>.data('override 0'),
     );
   });
 
@@ -340,84 +232,50 @@ void main() {
     });
   });
 
-  // test('read', () {
-  //   final container = createContainer();
-  //   final completer = Completer<int>.sync();
-  //   final other = FutureProvider((_) => completer.future);
-  //   final simple = Provider((_) => 21);
+  test('read', () async {
+    final container = createContainer();
+    final completer = Completer<int>.sync();
+    final other = FutureProvider((_) => completer.future);
+    final simple = Provider((_) => 21);
 
-  //   final example = FutureProvider((ref) async {
-  //     final otherValue = await ref.watch(other.future);
+    final example = FutureProvider((ref) async {
+      final otherValue = await ref.watch(other.future);
 
-  //     return '${ref.watch(simple)} $otherValue';
-  //   });
+      return '${ref.watch(simple)} $otherValue';
+    });
 
-  //   final listener = StringListenerMock();
+    final listener = Listener<AsyncValue<String>>();
 
-  //   final sub = example.addLazyListener(
-  //     container,
-  //     mayHaveChanged: () {},
-  //     onChange: listener,
-  //   );
+    container.listen(example, listener, fireImmediately: true);
 
-  //   verify(listener(const AsyncValue<String>.loading())).called(1);
-  //   verifyNoMoreInteractions(listener);
-  //   completer.complete(42);
+    verifyOnly(listener, listener(const AsyncValue<String>.loading()));
+    completer.complete(42);
 
-  //   verifyNoMoreInteractions(listener);
-  //   sub.flush();
+    verifyNoMoreInteractions(listener);
 
-  //   verify(listener(const AsyncValue.data('21 42'))).called(1);
-  //   verifyNoMoreInteractions(listener);
+    await container.pump();
 
-  //   container.dispose();
-  // });
+    verifyOnly(listener, listener(const AsyncValue.data('21 42')));
+  });
 
-  // test('exposes data', () {
-  //   final container = createContainer();
-  //   final listener = ListenerMock();
-  //   final completer = Completer<int>.sync();
-  //   final provider = FutureProvider((_) => completer.future);
+  test('exposes data', () async {
+    final container = createContainer();
+    final listener = Listener<AsyncValue<int>>();
+    final completer = Completer<int>.sync();
+    final provider = FutureProvider((_) => completer.future);
 
-  //   final sub = provider.addLazyListener(
-  //     container,
-  //     mayHaveChanged: () {},
-  //     onChange: listener,
-  //   );
+    container.listen(provider, listener, fireImmediately: true);
 
-  //   verify(listener(const AsyncValue<int>.loading())).called(1);
-  //   verifyNoMoreInteractions(listener);
+    verifyOnly(listener, listener(const AsyncValue.loading()));
 
-  //   completer.complete(42);
+    completer.complete(42);
 
-  //   verifyNoMoreInteractions(listener);
-  //   sub.flush();
+    verifyOnly(listener, listener(const AsyncValue.data(42)));
 
-  //   verify(listener(const AsyncValue.data(42))).called(1);
-  //   verifyNoMoreInteractions(listener);
-  //   container.dispose();
-  // });
+    await container.pump();
 
-  // test('listener not called anymore if subscription is closed', () {
-  //   final container = createContainer();
-  //   final mayHaveChanged = MayHaveChangedMock<AsyncValue<int>>();
-  //   final didChange = DidChangedMock<AsyncValue<int>>();
-  //   final completer = Completer<int>.sync();
-  //   final provider = FutureProvider((_) => completer.future);
-
-  //   final sub = container.listen(
-  //     provider,
-  //     mayHaveChanged: mayHaveChanged,
-  //     didChange: didChange,
-  //   );
-
-  //   sub.close();
-
-  //   completer.complete(42);
-
-  //   verifyZeroInteractions(mayHaveChanged);
-  //   verifyZeroInteractions(didChange);
-  // });
+    verifyNoMoreInteractions(listener);
+  });
 
   group('mock as value', () {
     test('value immediatly then other value', () async {
@@ -547,32 +405,32 @@ void main() {
       await expectLater(future, throwsA(42));
     });
 
-    // test('loading immediatly then loading', () async {
-    //   final provider = FutureProvider((_) async => 0);
-    //   final container = createContainer(overrides: [
-    //     provider.overrideWithValue(const AsyncValue.loading()),
-    //   ]);
+    test('loading immediatly then loading', () async {
+      final provider = FutureProvider((_) async => 0);
+      final container = createContainer(overrides: [
+        provider.overrideWithValue(const AsyncValue.loading()),
+      ]);
+      final listener = Listener<AsyncValue<int>>();
 
-    //   final future = container.read(provider.future);
+      final future = container.read(provider.future);
 
-    //   final sub = container.listen(provider, (_) {});
+      container.listen(provider, listener, fireImmediately: true);
 
-    //   expect(sub.read(), const AsyncValue<int>.loading());
+      verifyOnly(listener, listener(const AsyncValue<int>.loading()));
 
-    //   container.updateOverrides([
-    //     provider.overrideWithValue(const AsyncValue.loading()),
-    //   ]);
+      container.updateOverrides([
+        provider.overrideWithValue(const AsyncValue.loading()),
+      ]);
 
-    //   expect(sub.flush(), false);
+      verifyNoMoreInteractions(listener);
 
-    //   container.updateOverrides([
-    //     provider.overrideWithValue(const AsyncValue.data(42)),
-    //   ]);
+      container.updateOverrides([
+        provider.overrideWithValue(const AsyncValue.data(42)),
+      ]);
 
-    //   expect(sub.read(), const AsyncValue<int>.data(42));
-
-    //   await expectLater(future, completion(42));
-    // });
+      verifyOnly(listener, listener(const AsyncValue.data(42)));
+      await expectLater(future, completion(42));
+    });
 
     test('error immediatly then different error', () async {
       final stackTrace = StackTrace.current;
@@ -688,16 +546,4 @@ void main() {
       ]);
     });
   });
-}
-
-class ListenerMock extends Mock {
-  void call(AsyncValue<int> value);
-}
-
-class OnDisposeMock extends Mock {
-  void call();
-}
-
-class StringListenerMock extends Mock {
-  void call(AsyncValue<String> value);
 }
