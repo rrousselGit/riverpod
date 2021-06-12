@@ -8,6 +8,91 @@ void main() {
   group('ProviderRefBase', () {
     test('ref.read should keep providers alive', () {}, skip: true);
 
+    group('listen', () {
+      test('can listen selectors', () async {
+        final container = createContainer();
+        final provider =
+            StateNotifierProvider<StateController<int>, int>((ref) {
+          return StateController(0);
+        });
+        final isEvenSelector = Selector<int, bool>(false, (c) => c.isEven);
+        final isEvenListener = Listener<bool>();
+        var buildCount = 0;
+
+        final another = Provider<int>((ref) {
+          buildCount++;
+          ref.listen<bool>(provider.select(isEvenSelector), isEvenListener);
+          return 0;
+        });
+
+        container.read(another);
+
+        expect(buildCount, 1);
+        verifyZeroInteractions(isEvenListener);
+        verifyOnly(isEvenSelector, isEvenSelector(0));
+
+        container.read(provider.notifier).state = 2;
+
+        verifyOnly(isEvenSelector, isEvenSelector(2));
+        verifyZeroInteractions(isEvenListener);
+
+        container.read(provider.notifier).state = 3;
+
+        verifyOnly(isEvenSelector, isEvenSelector(3));
+        verifyOnly(isEvenListener, isEvenListener(false));
+
+        container.read(provider.notifier).state = 4;
+
+        verifyOnly(isEvenSelector, isEvenSelector(4));
+        verifyOnly(isEvenListener, isEvenListener(true));
+
+        await container.pump();
+
+        expect(buildCount, 1);
+      });
+
+      test('listen on selectors supports fireImmediately', () async {
+        final container = createContainer();
+        final provider =
+            StateNotifierProvider<StateController<int>, int>((ref) {
+          return StateController(0);
+        });
+        final isEvenSelector = Selector<int, bool>(false, (c) => c.isEven);
+        final isEvenListener = Listener<bool>();
+        var buildCount = 0;
+
+        final another = Provider<int>((ref) {
+          buildCount++;
+          ref.listen<bool>(
+            provider.select(isEvenSelector),
+            isEvenListener,
+            fireImmediately: true,
+          );
+          return 0;
+        });
+
+        container.read(another);
+
+        expect(buildCount, 1);
+        verifyOnly(isEvenListener, isEvenListener(true));
+        verifyOnly(isEvenSelector, isEvenSelector(0));
+
+        container.read(provider.notifier).state = 2;
+
+        verifyOnly(isEvenSelector, isEvenSelector(2));
+        verifyNoMoreInteractions(isEvenListener);
+
+        container.read(provider.notifier).state = 3;
+
+        verifyOnly(isEvenSelector, isEvenSelector(3));
+        verifyOnly(isEvenListener, isEvenListener(false));
+
+        await container.pump();
+
+        expect(buildCount, 1);
+      });
+    });
+
     group('.watch', () {
       test('can listen multiple providers at once', () async {
         final container = createContainer();

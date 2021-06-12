@@ -203,20 +203,17 @@ class ProviderContainer {
     void Function(State value) listener, {
     bool fireImmediately = false,
   }) {
-    if (provider is ProviderBase<State>) {
-      // TODO move to the Element
-      final element = readProviderElement(provider);
+    if (provider is _ProviderSelector<Object?, State>) {
+      return provider.listen(this, listener, fireImmediately: fireImmediately);
+    }
 
-      return element.addListener(
-        provider,
-        listener,
-        fireImmediately: fireImmediately,
-      );
-    }
-    // TODO implement selectors
-    else {
-      throw UnsupportedError('Unknown ProviderListenable $provider');
-    }
+    final element = readProviderElement(provider as ProviderBase<State>);
+
+    return element.addListener(
+      provider,
+      listener,
+      fireImmediately: fireImmediately,
+    );
   }
 
   /// Forces a provider to re-evaluate its state immediately, and return the created value.

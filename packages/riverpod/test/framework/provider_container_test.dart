@@ -138,6 +138,81 @@ void main() {
     });
 
     group('.listen', () {
+      test('selectors fireImmediately', () {
+        final container = createContainer();
+        final provider =
+            StateNotifierProvider<Counter, int>((ref) => Counter());
+        final listener = Listener<bool>();
+        final listener2 = Listener<bool>();
+
+        container.listen(
+          provider.select((v) => v.isEven),
+          listener,
+          fireImmediately: true,
+        );
+        container.listen(provider.select((v) => v.isEven), listener2);
+
+        verifyOnly(listener, listener(true));
+        verifyZeroInteractions(listener2);
+
+        container.read(provider.notifier).state = 21;
+
+        verifyOnly(listener, listener(false));
+        verifyOnly(listener2, listener2(false));
+      });
+
+      test('selectors can close listeners', () {
+        final container = createContainer();
+        final provider =
+            StateNotifierProvider<Counter, int>((ref) => Counter());
+
+        expect(container.readProviderElement(provider).hasListeners, false);
+
+        final sub = container.listen<bool>(
+          provider.select((count) => count.isEven),
+          (isEven) {},
+        );
+
+        expect(container.readProviderElement(provider).hasListeners, true);
+
+        sub.close();
+
+        expect(container.readProviderElement(provider).hasListeners, false);
+      });
+
+      test('can watch selectors', () async {
+        final container = createContainer();
+        final provider =
+            StateNotifierProvider<Counter, int>((ref) => Counter());
+        final isAdultSelector = Selector<int, bool>(false, (c) => c >= 18);
+        final isAdultListener = Listener<bool>();
+
+        final controller = container.read(provider.notifier);
+        container.listen<bool>(
+          provider.select(isAdultSelector),
+          isAdultListener,
+          fireImmediately: true,
+        );
+
+        verifyOnly(isAdultSelector, isAdultSelector(0));
+        verifyOnly(isAdultListener, isAdultListener(false));
+
+        controller.state += 10;
+
+        verifyOnly(isAdultSelector, isAdultSelector(10));
+        verifyNoMoreInteractions(isAdultListener);
+
+        controller.state += 10;
+
+        verifyOnly(isAdultSelector, isAdultSelector(20));
+        verifyOnly(isAdultListener, isAdultListener(true));
+
+        controller.state += 10;
+
+        verifyOnly(isAdultSelector, isAdultSelector(30));
+        verifyNoMoreInteractions(isAdultListener);
+      });
+
       test('calls immediately the listener with the current value', () {
         final provider = Provider((ref) => 0);
         final listener = Listener<int>();

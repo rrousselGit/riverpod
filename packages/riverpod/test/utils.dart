@@ -8,6 +8,11 @@ class Counter extends StateNotifier<int> {
   Counter() : super(0);
 
   void increment() => state++;
+
+  @override
+  int get state => super.state;
+  @override
+  set state(int value) => super.state = value;
 }
 
 ProviderContainer createContainer({
@@ -30,14 +35,6 @@ List<Object> errorsOf(void Function() cb) {
   return [...errors];
 }
 
-// class MayHaveChangedMock<T> extends Mock {
-//   void call(ProviderSubscription<T>? sub);
-// }
-
-// class DidChangedMock<T> extends Mock {
-//   void call(ProviderSubscription<T>? sub);
-// }
-
 class OnBuildMock extends Mock {
   void call();
 }
@@ -48,6 +45,26 @@ class OnDisposeMock extends Mock {
 
 class Listener<T> extends Mock {
   void call(T? value);
+}
+
+class Selector<Input, Output> extends Mock {
+  Selector(this.fake, Output Function(Input) selector) {
+    when(call(any)).thenAnswer((i) {
+      return selector(
+        i.positionalArguments.first as Input,
+      );
+    });
+  }
+
+  final Output fake;
+
+  Output call(Input? value) {
+    return super.noSuchMethod(
+      Invocation.method(#call, [value]),
+      returnValue: fake,
+      returnValueForMissingStub: fake,
+    ) as Output;
+  }
 }
 
 typedef VerifyOnly = VerificationResult Function<T>(

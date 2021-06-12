@@ -15,6 +15,8 @@ part of '../framework.dart';
 /// - [Provider], a provider that uses [Create] to expose an immutable value.
 typedef Create<T, Ref extends ProviderRefBase> = T Function(Ref ref);
 
+typedef RemoveListener = void Function();
+
 /// A [Create] equivalent used by [Family].
 typedef FamilyCreate<T, Ref extends ProviderRefBase, Arg> = T Function(
   Ref ref,
@@ -52,16 +54,36 @@ String shortHash(Object? object) {
 /// Do not implement or extend.
 abstract class ProviderListenable<State> {}
 
+/// A base class for all providers, used to consume a provider.
+///
+/// It is used by [ProviderContainer.listen] and `ref.watch` to listen to
+/// both a provider and `provider.select`.
+///
+/// Do not implement or extend.
+mixin AlwaysAliveProviderListenable<State>
+    implements ProviderListenable<State> {}
+
 /// A base class for providers that never disposes themselves.
 ///
 /// This is the default base class for providers, unless a provider was marked
 /// with the `.autoDispose` modifier, like: `Provider.autoDispose(...)`
-abstract class AlwaysAliveProviderBase<State> extends RootProvider<State> {
+abstract class AlwaysAliveProviderBase<State> extends RootProvider<State>
+    implements AlwaysAliveProviderListenable<State> {
   /// Creates an [AlwaysAliveProviderBase].
   AlwaysAliveProviderBase(String? name) : super(name);
 
   @override
   ProviderElementBase<State> createElement();
+
+  @override
+  AlwaysAliveProviderListenable<Selected> select<Selected>(
+    Selected Function(State value) selector,
+  ) {
+    return _AlwaysAliveProviderSelector<State, Selected>(
+      provider: this,
+      selector: selector,
+    );
+  }
 }
 
 /// A base class for _all_ providers.
@@ -213,7 +235,7 @@ abstract class RootProvider<State> extends ProviderBase<State> {
   ProviderListenable<Selected> select<Selected>(
     Selected Function(State value) selector,
   ) {
-    return ProviderSelector<State, Selected>(
+    return _ProviderSelector<State, Selected>(
       provider: this,
       selector: selector,
     );
@@ -222,9 +244,9 @@ abstract class RootProvider<State> extends ProviderBase<State> {
 
 /// An internal class for `RootProvider.select`.
 @sealed
-class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
+class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
   /// An internal class for `RootProvider.select`.
-  ProviderSelector({
+  _ProviderSelector({
     required this.provider,
     required this.selector,
   });
@@ -234,11 +256,59 @@ class ProviderSelector<Input, Output> implements ProviderListenable<Output> {
 
   /// The selector applied
   final Output Function(Input) selector;
+
+  _SelectorSubscription<Input, Output> listen(
+    ProviderContainer container,
+    void Function(Output) listener, {
+    required bool fireImmediately,
+  }) {
+    var lastSelectedValue = selector(container.read(provider));
+
+    if (fireImmediately) {
+      listener(lastSelectedValue);
+    }
+
+    final sub = container.listen<Input>(provider, (value) {
+      final newSelectedValue = selector(value);
+      if (newSelectedValue != lastSelectedValue) {
+        lastSelectedValue = newSelectedValue;
+        listener(lastSelectedValue);
+      }
+    });
+
+    return _SelectorSubscription(sub, () => lastSelectedValue);
+  }
+
+  void Function() _elementListen(
+    ProviderElementBase element,
+    void Function(Output) listener, {
+    required bool fireImmediately,
+  }) {
+    var lastValue = selector(element._container.read(provider));
+    if (fireImmediately) listener(lastValue);
+
+    return element.listen<Input>(provider, (input) {
+      final newValue = selector(input);
+      if (lastValue != newValue) {
+        lastValue = newValue;
+        listener(newValue);
+      }
+    });
+  }
 }
 
+class _AlwaysAliveProviderSelector<Input, Output> = _ProviderSelector<Input,
+    Output> with AlwaysAliveProviderListenable<Output>;
+
 ///
-class ProviderSubscription<State> {
-  ProviderSubscription._(
+abstract class ProviderSubscription<State> {
+  void close();
+
+  State read();
+}
+
+class _ProviderSubscription<State> implements ProviderSubscription<State> {
+  _ProviderSubscription._(
     this._listenedElement,
     this._listener,
   );
@@ -246,12 +316,30 @@ class ProviderSubscription<State> {
   final void Function(State) _listener;
   final ProviderElementBase<State> _listenedElement;
 
+  @override
   void close() {
     _listenedElement._listeners.remove(this);
     _listenedElement.mayNeedDispose();
   }
 
+  @override
   State read() => _listenedElement.getExposedValue();
+}
+
+class _SelectorSubscription<Input, Output>
+    implements ProviderSubscription<Output> {
+  _SelectorSubscription(this._internalSub, this._read);
+
+  final ProviderSubscription<Input> _internalSub;
+  final Output Function() _read;
+
+  @override
+  void close() {
+    _internalSub.close();
+  }
+
+  @override
+  Output read() => _read();
 }
 
 /// When a provider listens to another provider using `listen`
@@ -390,7 +478,7 @@ abstract class ProviderRefBase {
   /// - if multiple widgets depends on `sortedTodosProvider` the list will be
   ///   sorted only once.
   /// - if nothing is listening to `sortedTodosProvider`, then no sort if performed.
-  T watch<T>(AlwaysAliveProviderBase<T> provider);
+  T watch<T>(AlwaysAliveProviderListenable<T> provider);
 
   /// Listen to a provider and call `listener` whenever its value changes.
   ///
@@ -403,7 +491,7 @@ abstract class ProviderRefBase {
   ///    call the listener with the current value.
   ///    Defaults to false.
   void Function() listen<T>(
-    RootProvider<T> provider,
+    AlwaysAliveProviderListenable<T> provider,
     void Function(T value) listener, {
     bool fireImmediately,
   });
@@ -443,9 +531,9 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
       _dependents.isNotEmpty;
 
   // TODO(rrousselGit) refactor to match ChangeNotifier
-  /// Accepts only ProviderSubscription<State>, but not typed so that
-  /// ProviderSubscription<void> is valid
-  final _listeners = <ProviderSubscription<State>>[];
+  /// Accepts only _ProviderSubscription<State>, but not typed so that
+  /// _ProviderSubscription<void> is valid
+  final _listeners = <_ProviderSubscription<State>>[];
   final _dependents = <ProviderElementBase>[];
 
   /// The listeners that were added using [listen].
@@ -637,7 +725,7 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
       listener(getExposedValue());
     }
 
-    final sub = ProviderSubscription<State>._(this, listener);
+    final sub = _ProviderSubscription<State>._(this, listener);
 
     _listeners.add(sub);
 
@@ -645,7 +733,28 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   }
 
   @override
-  T watch<T>(ProviderBase<T> provider) {
+  T watch<T>(ProviderListenable<T> listenable) {
+    if (listenable is _ProviderSelector) {
+      var initialized = false;
+      late T firstValue;
+
+      listen<T>(
+        listenable,
+        (value) {
+          if (initialized) {
+            _didChangeDependency();
+          } else {
+            firstValue = value;
+            initialized = true;
+          }
+        },
+        fireImmediately: true,
+      );
+
+      return firstValue;
+    }
+
+    final provider = listenable as ProviderBase<T>;
     assert(_debugAssertCanDependOn(provider), '');
 
     final element = _container.readProviderElement(provider);
@@ -799,10 +908,19 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
 
   @override
   void Function() listen<T>(
-    ProviderBase<T> provider,
+    ProviderListenable<T> listenable,
     void Function(T value) listener, {
     bool fireImmediately = false,
   }) {
+    if (listenable is _ProviderSelector<Object?, T>) {
+      return listenable._elementListen(
+        this,
+        listener,
+        fireImmediately: fireImmediately,
+      );
+    }
+
+    final provider = listenable as ProviderBase<T>;
     // TODO remove by passing the a debug flag to `listen`
     final element = container.readProviderElement(provider);
     // TODO test flush

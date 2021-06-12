@@ -17,12 +17,15 @@ abstract class AutoDisposeProviderRefBase extends ProviderRefBase {
   set maintainState(bool value);
 
   @override
-  T watch<T>(RootProvider<T> provider);
+  T watch<T>(
+    // can watch both auto-dispose and non-auto-dispose providers
+    ProviderListenable<T> provider,
+  );
 
   @override
   void Function() listen<T>(
     // Overriden to allow AutoDisposeProviderBase
-    ProviderBase<T> provider,
+    ProviderListenable<T> provider,
     void Function(T value) listener, {
     bool fireImmediately,
   });

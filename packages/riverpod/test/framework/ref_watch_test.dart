@@ -18,6 +18,61 @@ class Counter extends StateNotifier<int> {
 
 void main() {
   test(
+      'when selecting a provider, element.visitChildren visits the selected provider',
+      () {
+    final container = createContainer();
+    final selected = StateNotifierProvider<StateController<int>, int>((ref) {
+      return StateController(0);
+    });
+    final provider = Provider((ref) {
+      ref.watch(selected.select((value) => null));
+    });
+
+    final element = container.readProviderElement(provider);
+    final selectedElement = container.readProviderElement(selected);
+
+    final ancestors = <ProviderElementBase>[];
+    element.visitAncestors(ancestors.add);
+
+    expect(ancestors, [selectedElement]);
+  });
+
+  test('can watch selectors', () {
+    final container = createContainer();
+    final provider = StateNotifierProvider<StateController<int>, int>((ref) {
+      return StateController(0);
+    });
+    final isEvenSelector = Selector<int, bool>(false, (c) => c.isEven);
+    final isEvenListener = Listener<bool>();
+    var buildCount = 0;
+
+    final another = Provider<bool>((ref) {
+      buildCount++;
+      return ref.watch(provider.select(isEvenSelector));
+    });
+
+    container.listen(another, isEvenListener, fireImmediately: true);
+
+    expect(buildCount, 1);
+    verifyOnly(isEvenListener, isEvenListener(true));
+    verifyOnly(isEvenSelector, isEvenSelector(0));
+
+    container.read(provider.notifier).state = 2;
+
+    expect(container.read(another), true);
+    expect(buildCount, 1);
+    verifyOnly(isEvenSelector, isEvenSelector(2));
+    verifyNoMoreInteractions(isEvenListener);
+
+    container.read(provider.notifier).state = 3;
+
+    expect(container.read(another), false);
+    expect(buildCount, 2);
+    verify(isEvenSelector(3)).called(2);
+    verifyOnly(isEvenListener, isEvenListener(false));
+  });
+
+  test(
       'Provider removing one of multiple listeners on a provider still listen to the provider',
       () async {
     final stateProvider = StateProvider((ref) => 0, name: 'state');

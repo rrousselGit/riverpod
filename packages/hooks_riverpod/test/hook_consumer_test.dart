@@ -25,4 +25,7 @@ void main() {
       expect(find.text('42 21'), findsOneWidget);
     });
   });
+
+  test('HookConsumerStatefulWidget', () {}, skip: true);
+  test('HookConsumerWidget', () {}, skip: true);
 }

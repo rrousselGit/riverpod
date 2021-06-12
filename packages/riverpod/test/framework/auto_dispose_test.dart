@@ -5,6 +5,18 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
+  test(
+      'can select auto-dispose providers if the selecting provider is auto-dispose too',
+      () {
+    final container = createContainer();
+    final selected = Provider.autoDispose((ref) => 0);
+    final isEven = Provider.autoDispose((ref) {
+      return ref.watch(selected.select((c) => c.isEven));
+    });
+
+    expect(container.read(isEven), true);
+  });
+
   test('setting maintainState to false destroys the state when not listened',
       () async {
     final onDispose = OnDisposeMock();
@@ -293,6 +305,26 @@ void main() {
     verifyNoMoreInteractions(onDispose);
   });
 
-  test('providers with only a "listen" as subscribers are kept alive', () {},
-      skip: true);
+  test('providers with only a "listen" as subscribers are kept alive',
+      () async {
+    final container = createContainer();
+    var mounted = true;
+    final listened = Provider.autoDispose((ref) {
+      ref.onDispose(() => mounted = false);
+      return 0;
+    });
+    final provider = Provider.autoDispose((ref) {
+      ref.listen(listened, (value) {});
+      return 0;
+    });
+
+    container.listen(provider, (value) {});
+    final sub = container.listen(listened, (value) {});
+
+    sub.close();
+
+    await container.pump();
+
+    expect(mounted, true);
+  });
 }
