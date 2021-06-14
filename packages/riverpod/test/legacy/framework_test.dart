@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
-import 'package:riverpod/riverpod.dart';
 
 Matcher isProvider(RootProvider provider) {
   return isA<ProviderElementBase>().having(

@@ -1,7 +1,7 @@
 // ignore: deprecated_member_use
 import 'package:analyzer/analyzer.dart';
-import 'package:codemod/codemod.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:codemod/codemod.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 /// A suggestor that yields changes to notifier changes

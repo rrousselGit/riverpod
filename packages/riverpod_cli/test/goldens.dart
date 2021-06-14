@@ -1,9 +1,9 @@
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:codemod/codemod.dart';
 import 'package:codemod/test.dart';
+import 'package:dart_style/dart_style.dart';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
-import 'package:dart_style/dart_style.dart';
 
 final _formatter = DartFormatter();
 final _root = p.canonicalize('./fixtures');

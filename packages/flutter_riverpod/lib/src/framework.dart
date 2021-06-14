@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart' hide describeIdentity;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:meta/meta.dart';
+import 'package:riverpod/riverpod.dart';
 
 /// {@template riverpod.providerscope}
 /// A widget that stores the state of providers.
