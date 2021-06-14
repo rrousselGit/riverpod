@@ -65,14 +65,19 @@ void main() {
     final provider = StateProvider((ref) => 0);
     final container = createContainer();
 
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: Consumer(builder: (context, ref, _) {
-          ref.watch(provider).state++;
-          return Container();
-        }),
+    // using runZonedGuarded as StateNotifier will emit an handleUncaughtError
+    // if a listener threw
+    await runZonedGuarded(
+      () => tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: Consumer(builder: (context, ref, _) {
+            ref.watch(provider).state++;
+            return Container();
+          }),
+        ),
       ),
+      (error, stack) {},
     );
 
     FlutterError.onError = onError;
