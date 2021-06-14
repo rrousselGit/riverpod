@@ -1,5 +1,6 @@
 part of '../change_notifier_provider.dart';
 
+/// {@macro riverpod.providerrefbase}
 typedef AutoDisposeChangeNotifierProviderRef<Notifier>
     = AutoDisposeProviderRefBase;
 

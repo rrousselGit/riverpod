@@ -486,6 +486,7 @@ void main() {
             context.read(counterProvider).addListener((state) {});
           },
           builder: (context) {
+            // ignore: deprecated_member_use_from_same_package
             return ProviderListener(
               onChange: (_, __) {},
               provider: counterProvider,

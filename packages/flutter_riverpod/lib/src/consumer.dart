@@ -4,10 +4,21 @@ import 'package:meta/meta.dart';
 import 'framework.dart';
 import 'internals.dart';
 
-// ignore: one_member_abstracts
+/// An object that allows widgets to interact with providers.
 abstract class WidgetReference {
+  /// Returns the value exposed by a provider and rebuild the widget when that
+  /// value changes.
+  ///
+  /// See also:
+  ///
+  /// - [RootProvider.select], which allows a widget to filter rebuilds by
+  ///   observing only the properties.
+  /// - [listen], to react to changes on a provider, such as for showing modals.
   T watch<T>(ProviderListenable<T> provider);
 
+  /// Listen to a provider and call `listener` whenever its value changes.
+  ///
+  /// This is useful for showing modals or other imperative logic.
   void listen<T>(
     ProviderListenable<T> provider,
     void Function(T value) listener,
@@ -250,6 +261,7 @@ abstract class ConsumerWidget extends ConsumerStatefulWidget {
 }
 
 class _ConsumerState extends ConsumerState<ConsumerWidget> {
+  @override
   WidgetReference get ref => context as WidgetReference;
 
   @override
@@ -260,6 +272,7 @@ class _ConsumerState extends ConsumerState<ConsumerWidget> {
 
 /// A [StatefulWidget] that can read providers.
 abstract class ConsumerStatefulWidget extends StatefulWidget {
+  /// A [StatefulWidget] that can read providers.
   const ConsumerStatefulWidget({Key? key}) : super(key: key);
 
   @override
@@ -276,6 +289,7 @@ abstract class ConsumerStatefulWidget extends StatefulWidget {
 /// it to read providers.
 abstract class ConsumerState<T extends ConsumerStatefulWidget>
     extends State<T> {
+  /// An object that allows widgets to interact with providers.
   late final WidgetReference ref = context as WidgetReference;
 }
 

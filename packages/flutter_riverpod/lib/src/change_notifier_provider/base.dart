@@ -1,6 +1,8 @@
 part of '../change_notifier_provider.dart';
 
-typedef ChangeNotifierProviderRef<Notifier> = ProviderRefBase;
+/// {@macro riverpod.providerrefbase}
+typedef ChangeNotifierProviderRef<Notifier extends ChangeNotifier>
+    = ProviderRefBase;
 
 /// {@macro riverpod.changenotifierprovider}
 @sealed
@@ -16,7 +18,7 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeChangeNotifierProviderBuilder();
 
-  final Create<Notifier, ProviderRefBase> _create;
+  final Create<Notifier, ChangeNotifierProviderRef<Notifier>> _create;
 
   /// {@template flutter_riverpod.changenotifierprovider.notifier}
   /// Obtains the [ChangeNotifier] associated with this provider, but without
@@ -69,7 +71,9 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
   }
 
   @override
-  ProviderElement<Notifier> createElement() => ProviderElement(this);
+  ProviderElement<Notifier> createElement() {
+    return ProviderElement(this);
+  }
 
   @override
   bool recreateShouldNotify(Notifier previousState, Notifier newState) => true;
