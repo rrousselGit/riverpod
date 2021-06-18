@@ -375,7 +375,7 @@ abstract class ProviderReference {
   ///   `sortedTodosProvider` will automatically be recomputed.
   /// - if multiple widgets depends on `sortedTodosProvider` the list will be
   ///   sorted only once.
-  /// - if nothing is listening to `sortedTodosProvider`, then no sort if performed.
+  /// - if nothing is listening to `sortedTodosProvider`, then no sort is performed.
   T watch<T>(AlwaysAliveProviderBase<Object?, T> provider);
 }
 
