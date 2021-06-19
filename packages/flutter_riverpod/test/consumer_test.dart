@@ -621,7 +621,7 @@ class MyWidget extends ConsumerWidget {
   const MyWidget({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Text(ref.watch(_provider), textDirection: TextDirection.rtl);
   }
 }

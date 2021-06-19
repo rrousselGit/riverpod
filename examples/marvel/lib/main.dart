@@ -28,7 +28,7 @@ class MyApp extends HookConsumerWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       theme: ThemeData(primarySwatch: Colors.red),
       builder: (context, child) {
@@ -77,7 +77,7 @@ class _Unfocus extends HookConsumerWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {

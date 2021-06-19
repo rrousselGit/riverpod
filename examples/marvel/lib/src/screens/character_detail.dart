@@ -59,7 +59,7 @@ class CharacterView extends HookConsumerWidget {
   const CharacterView({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final id = ref.watch(selectedCharacterId);
 
     return ref.watch(character(id)).when(

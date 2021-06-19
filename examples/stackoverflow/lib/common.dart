@@ -149,7 +149,7 @@ class PostInfo extends HookConsumerWidget {
   final DateTime creationDate;
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final label = _useCreatedSince(creationDate);
 
     return Column(
@@ -289,7 +289,7 @@ class Tag extends HookConsumerWidget {
   final String tag;
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final tagTheme = ref.watch(tagThemeProvider);
 
     return Container(

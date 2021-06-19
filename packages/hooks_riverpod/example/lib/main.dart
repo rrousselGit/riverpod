@@ -46,7 +46,7 @@ class MyHomePage extends HookConsumerWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final count = ref.watch(counterProvider);
 
     return Scaffold(

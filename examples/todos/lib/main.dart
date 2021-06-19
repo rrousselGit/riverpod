@@ -86,7 +86,7 @@ class Home extends HookConsumerWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final todos = ref.watch(filteredTodos);
     final newTodoController = useTextEditingController();
 
@@ -139,7 +139,7 @@ class Toolbar extends HookConsumerWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final filter = ref.watch(todoListFilter);
 
     Color? textColorFor(TodoListFilter value) {
@@ -226,7 +226,7 @@ class TodoItem extends HookConsumerWidget {
   const TodoItem({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final todo = ref.watch(_currentTodo);
     final itemFocusNode = useFocusNode();
     // listen to focus chances

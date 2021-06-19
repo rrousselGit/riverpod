@@ -109,7 +109,7 @@ class MyHomePage extends HookConsumerWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('StackOverflow'),
@@ -169,7 +169,7 @@ class QuestionItem extends HookConsumerWidget {
   const QuestionItem({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final question = ref.watch(currentQuestion);
     final questionTheme = ref.watch(questionThemeProvider);
 

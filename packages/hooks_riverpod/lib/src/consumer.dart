@@ -39,7 +39,7 @@ class HookConsumer extends HookConsumerWidget {
   final Widget? child;
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return builder(context, ref, child);
   }
 }

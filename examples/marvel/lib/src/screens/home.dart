@@ -80,7 +80,7 @@ class Home extends HookConsumerWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ref.watch(charactersCount('')).when(
           loading: () => Container(
             color: Colors.white,
@@ -157,7 +157,7 @@ class CharacterItem extends HookConsumerWidget {
   const CharacterItem({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final index = ref.watch(_characterIndex);
 
     final character = ref.watch(

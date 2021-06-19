@@ -48,7 +48,7 @@ class SearchBar extends HookConsumerWidget {
   const SearchBar({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     /// Whether the widget is focused or not determines if the widget
     /// is currently "searching" or in idle state.
     final searchFocusNode = useFocusNode();
@@ -140,7 +140,7 @@ class _SearchHints extends HookConsumerWidget {
   final TextEditingController textEditingController;
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final search = _useDecouncedSearch(textEditingController);
 
     return ref.watch(charactersCount(search)).when(

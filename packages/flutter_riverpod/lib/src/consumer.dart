@@ -5,7 +5,7 @@ import 'framework.dart';
 import 'internals.dart';
 
 /// An object that allows widgets to interact with providers.
-abstract class WidgetReference {
+abstract class WidgetRef {
   /// Returns the value exposed by a provider and rebuild the widget when that
   /// value changes.
   ///
@@ -15,6 +15,18 @@ abstract class WidgetReference {
   ///   observing only the properties.
   /// - [listen], to react to changes on a provider, such as for showing modals.
   T watch<T>(ProviderListenable<T> provider);
+
+  /// Read a provider, without causing the widget to rebuild when the provider
+  /// state changes.
+  ///
+  /// A typical use-case for this method is for event handlers like buttons.
+  ///
+  /// ```dart
+  /// ElevatedButton(
+  ///   onPressed: () => ref.read(provider).doSomething(),
+  /// )
+  /// ```
+  T read<T>(ProviderBase<T> provider);
 
   /// Listen to a provider and call `listener` whenever its value changes.
   ///
@@ -30,7 +42,7 @@ abstract class WidgetReference {
 /// See also [Consumer]
 typedef ConsumerBuilder = Widget Function(
   BuildContext context,
-  WidgetReference ref,
+  WidgetRef ref,
   Widget? child,
 );
 
@@ -164,7 +176,7 @@ class Consumer extends ConsumerWidget {
   final Widget? _child;
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return _builder(context, ref, _child);
   }
 }
@@ -254,7 +266,7 @@ abstract class ConsumerWidget extends ConsumerStatefulWidget {
   /// See also:
   ///
   ///  * [StatelessWidget], which contains the discussion on performance considerations.
-  Widget build(BuildContext context, WidgetReference ref);
+  Widget build(BuildContext context, WidgetRef ref);
 
   @override
   _ConsumerState createState() => _ConsumerState();
@@ -262,7 +274,7 @@ abstract class ConsumerWidget extends ConsumerStatefulWidget {
 
 class _ConsumerState extends ConsumerState<ConsumerWidget> {
   @override
-  WidgetReference get ref => context as WidgetReference;
+  WidgetRef get ref => context as WidgetRef;
 
   @override
   Widget build(BuildContext context) {
@@ -285,17 +297,16 @@ abstract class ConsumerStatefulWidget extends StatefulWidget {
   }
 }
 
-/// A [State] that has access to a [WidgetReference] through [ref], allowing
+/// A [State] that has access to a [WidgetRef] through [ref], allowing
 /// it to read providers.
 abstract class ConsumerState<T extends ConsumerStatefulWidget>
     extends State<T> {
   /// An object that allows widgets to interact with providers.
-  late final WidgetReference ref = context as WidgetReference;
+  late final WidgetRef ref = context as WidgetRef;
 }
 
 /// The [Element] for a [ConsumerStatefulWidget]
-class ConsumerStatefulElement extends StatefulElement
-    implements WidgetReference {
+class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   /// The [Element] for a [ConsumerStatefulWidget]
   ConsumerStatefulElement(ConsumerStatefulWidget widget) : super(widget);
 

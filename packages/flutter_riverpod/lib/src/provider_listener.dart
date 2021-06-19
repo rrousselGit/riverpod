@@ -44,7 +44,7 @@ class ProviderListener<T> extends ConsumerWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (provider != null) {
       ref.listen<T>(provider!, (value) => onChange(context, value));
     }
