@@ -22,9 +22,9 @@ class MyApp extends StatelessWidget {
 /// Providers are declared globally and specifies how to create a state
 final counterProvider = StateProvider((ref) => 0);
 
-class Home extends StatelessWidget {
+class Home extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: const Text('Counter example')),
       body: Center(
@@ -37,7 +37,7 @@ class Home extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         // The read method is an utility to read a provider without listening to it
-        onPressed: () => context.read(counterProvider).state++,
+        onPressed: () => ref.read(counterProvider).state++,
         child: const Icon(Icons.add),
       ),
     );

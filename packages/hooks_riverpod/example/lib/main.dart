@@ -60,7 +60,7 @@ class MyHomePage extends HookConsumerWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.read(counterProvider.notifier).increment(),
+        onPressed: () => ref.read(counterProvider.notifier).increment(),
         child: const Icon(Icons.add),
       ),
     );

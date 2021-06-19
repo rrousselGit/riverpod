@@ -16,16 +16,16 @@ void main() {
       return ValueNotifier(0);
     });
 
-    Builder(builder: (context) {
+    Consumer(builder: (context, ref, _) {
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      int providerValue = context.read(provider);
+      int providerValue = ref.read(provider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      AsyncValue<int> futureProviderValue = context.read(futureProvider);
+      AsyncValue<int> futureProviderValue = ref.read(futureProvider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      AsyncValue<int> streamProviderValue = context.read(streamProvider);
+      AsyncValue<int> streamProviderValue = ref.read(streamProvider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
       ValueNotifier<int> changeNotifierProviderValue =
-          context.read(changeNotifierProvider);
+          ref.read(changeNotifierProvider);
 
       return Container();
     });

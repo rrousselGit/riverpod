@@ -15,43 +15,59 @@ void main() {
       (tester) async {},
       skip: true);
 
-  testWidgets('context.read works with providers that returns null',
+  testWidgets('ref.read works with providers that returns null',
       (tester) async {
     final nullProvider = Provider((ref) => null);
+    late WidgetRef ref;
 
-    await tester.pumpWidget(ProviderScope(child: Container()));
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(builder: (context, r, _) {
+          ref = r;
+          return Container();
+        }),
+      ),
+    );
 
-    final context = tester.element(find.byType(Container));
-
-    expect(context.read(nullProvider), null);
+    expect(ref.read(nullProvider), null);
   });
 
-  testWidgets('context.read can read ScopedProviders', (tester) async {
+  testWidgets('ref.read can read ScopedProviders', (tester) async {
     final provider = ScopedProvider((watch) => 42);
+    late WidgetRef ref;
 
-    await tester.pumpWidget(ProviderScope(child: Container()));
+    await tester.pumpWidget(ProviderScope(
+      child: Consumer(
+        builder: (context, r, _) {
+          ref = r;
+          return Container();
+        },
+      ),
+    ));
 
-    final context = tester.element(find.byType(Container));
-
-    expect(context.read(provider), 42);
+    expect(ref.read(provider), 42);
   });
 
-  testWidgets('context.read obtains the nearest ScopedProvider possible',
+  testWidgets('ref.read obtains the nearest ScopedProvider possible',
       (tester) async {
+    late WidgetRef ref;
     final provider = ScopedProvider((watch) => 42);
 
     await tester.pumpWidget(
       ProviderScope(
         child: ProviderScope(
           overrides: [provider.overrideWithValue(21)],
-          child: Container(),
+          child: Consumer(
+            builder: (context, r, _) {
+              ref = r;
+              return Container();
+            },
+          ),
         ),
       ),
     );
 
-    final context = tester.element(find.byType(Container));
-
-    expect(context.read(provider), 21);
+    expect(ref.read(provider), 21);
   });
 
   testWidgets('widgets cannot modify providers in their build method',
@@ -153,38 +169,51 @@ void main() {
   testWidgets('context.refresh forces a provider to refresh', (tester) async {
     var future = Future<int>.value(21);
     final provider = FutureProvider<int>((ref) => future);
+    late WidgetRef ref;
 
-    await tester.pumpWidget(ProviderScope(child: Container()));
+    await tester.pumpWidget(ProviderScope(
+      child: Consumer(
+        builder: (context, r, _) {
+          ref = r;
+          return Container();
+        },
+      ),
+    ));
 
-    final context = tester.element(find.byType(Container));
-
-    await expectLater(context.read(provider.future), completion(21));
+    await expectLater(ref.read(provider.future), completion(21));
 
     future = Future<int>.value(42);
 
-    context.refresh(provider);
-    await expectLater(context.read(provider.future), completion(42));
+    ref.refresh(provider);
+    await expectLater(ref.read(provider.future), completion(42));
   });
 
   testWidgets('context.refresh forces a provider of nullable type to refresh',
       (tester) async {
     int? value = 42;
     final provider = Provider<int?>((ref) => value);
+    late WidgetRef ref;
 
-    await tester.pumpWidget(ProviderScope(child: Container()));
+    await tester.pumpWidget(ProviderScope(
+      child: Consumer(
+        builder: (context, r, _) {
+          ref = r;
+          return Container();
+        },
+      ),
+    ));
 
-    final context = tester.element(find.byType(Container));
-
-    expect(context.read(provider), 42);
+    expect(ref.read(provider), 42);
 
     value = null;
 
-    expect(context.refresh(provider), null);
+    expect(ref.refresh(provider), null);
   });
 
   testWidgets('ProviderScope allows specifying a ProviderContainer',
       (tester) async {
     final provider = FutureProvider((ref) async => 42);
+    late WidgetRef ref;
     final container = createContainer(overrides: [
       provider.overrideWithValue(const AsyncValue.data(42)),
     ]);
@@ -192,13 +221,16 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: Container(),
+        child: Consumer(
+          builder: (context, r, _) {
+            ref = r;
+            return Container();
+          },
+        ),
       ),
     );
 
-    final context = tester.element(find.byType(Container));
-
-    expect(context.read(provider), const AsyncValue.data(42));
+    expect(ref.read(provider), const AsyncValue.data(42));
   });
 
   testWidgets('AlwaysAliveProviderBase.read(context) inside initState',
@@ -209,7 +241,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: InitState(
-          initState: (context) => result = context.read(provider),
+          initState: (context, ref) => result = ref.read(provider),
         ),
       ),
     );
@@ -223,10 +255,10 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Builder(
-          builder: (context) {
+        child: Consumer(
+          builder: (context, ref, _) {
             // Allowed even if not a good practice. Will have a lint instead
-            final value = context.read(provider);
+            final value = ref.read(provider);
             return Text(
               '$value',
               textDirection: TextDirection.ltr,
@@ -487,10 +519,10 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: Demo(
-          initState: (context) {
-            context.read(counterProvider).addListener((state) {});
+          initState: (context, ref) {
+            ref.read(counterProvider).addListener((state) {});
           },
-          builder: (context) {
+          builder: (context, ref) {
             // ignore: deprecated_member_use_from_same_package
             return ProviderListener(
               onChange: (_, __) {},
@@ -566,24 +598,24 @@ class MockCreateState extends Mock {
   void call();
 }
 
-class InitState extends StatefulWidget {
+class InitState extends ConsumerStatefulWidget {
   const InitState({
     Key? key,
     required this.initState,
   }) : super(key: key);
 
   // ignore: diagnostic_describe_all_properties
-  final void Function(BuildContext context) initState;
+  final void Function(BuildContext context, WidgetRef ref) initState;
 
   @override
   _InitStateState createState() => _InitStateState();
 }
 
-class _InitStateState extends State<InitState> {
+class _InitStateState extends ConsumerState<InitState> {
   @override
   void initState() {
     super.initState();
-    widget.initState(context);
+    widget.initState(context, ref);
   }
 
   @override
@@ -592,7 +624,7 @@ class _InitStateState extends State<InitState> {
   }
 }
 
-class Demo extends StatefulWidget {
+class Demo extends ConsumerStatefulWidget {
   const Demo({
     Key? key,
     required this.initState,
@@ -600,23 +632,23 @@ class Demo extends StatefulWidget {
   }) : super(key: key);
 
   // ignore: diagnostic_describe_all_properties
-  final void Function(BuildContext context) initState;
+  final void Function(BuildContext context, WidgetRef ref) initState;
   // ignore: diagnostic_describe_all_properties
-  final Widget Function(BuildContext context) builder;
+  final Widget Function(BuildContext context, WidgetRef ref) builder;
 
   @override
   _DemoState createState() => _DemoState();
 }
 
-class _DemoState extends State<Demo> {
+class _DemoState extends ConsumerState<Demo> {
   @override
   void initState() {
     super.initState();
-    widget.initState(context);
+    widget.initState(context, ref);
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.builder(context);
+    return widget.builder(context, ref);
   }
 }

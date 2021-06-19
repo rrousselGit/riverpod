@@ -38,8 +38,6 @@ void main() {
         ),
       );
 
-      key.currentContext!.read(provider).state++;
-
       expect(context, key.currentContext);
     });
 

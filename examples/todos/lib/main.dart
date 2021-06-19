@@ -104,7 +104,7 @@ class Home extends HookConsumerWidget {
                 labelText: 'What needs to be done?',
               ),
               onSubmitted: (value) {
-                context.read(todoListProvider.notifier).add(value);
+                ref.read(todoListProvider.notifier).add(value);
                 newTodoController.clear();
               },
             ),
@@ -116,7 +116,7 @@ class Home extends HookConsumerWidget {
               Dismissible(
                 key: ValueKey(todos[i].id),
                 onDismissed: (_) {
-                  context.read(todoListProvider.notifier).remove(todos[i]);
+                  ref.read(todoListProvider.notifier).remove(todos[i]);
                 },
                 child: ProviderScope(
                   overrides: [
@@ -246,7 +246,7 @@ class TodoItem extends HookConsumerWidget {
             textEditingController.text = todo.description;
           } else {
             // Commit changes only when the textfield is unfocused, for performance
-            context
+            ref
                 .read(todoListProvider.notifier)
                 .edit(id: todo.id, description: textEditingController.text);
           }
@@ -259,7 +259,7 @@ class TodoItem extends HookConsumerWidget {
           leading: Checkbox(
             value: todo.completed,
             onChanged: (value) =>
-                context.read(todoListProvider.notifier).toggle(todo.id),
+                ref.read(todoListProvider.notifier).toggle(todo.id),
           ),
           title: isFocused
               ? TextField(
