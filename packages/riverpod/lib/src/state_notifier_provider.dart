@@ -97,7 +97,7 @@ class _NotifierProvider<Notifier extends StateNotifier<Object?>>
 /// Which you can then pass to a [StateNotifierProvider] like so:
 ///
 /// ```dart
-/// final todosProvider = StateNotifierProvider((ref) => TodosNotifier());
+/// final todosProvider = StateNotifierProvider<TodosNotifier, List<Todo>>((ref) => TodosNotifier());
 /// ```
 ///
 /// And finally, you can interact with it inside your UI:
