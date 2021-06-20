@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:codemod/codemod.dart';
 import 'package:codemod/test.dart';
@@ -31,6 +33,30 @@ Future<void> expectSuggestorGeneratesFormattedPatches(
   await expectLater(
     Future(() async {
       final patches = await suggestor(context).toList();
+      return _formatter.format(applyPatches(context.sourceFile, patches));
+    }),
+    completion(resultMatcher),
+  );
+}
+
+/// Uses [suggestors] to generate a stream of patches for [context] and returns
+/// what the resulting file contents would be after applying all of them.
+///
+/// Like [expectSuggestorGeneratesPatches] (from codemod/test) except this
+/// also formats the file with the patches to make it match the golden
+/// expected output after formatting applied. Note this is only for tests, and
+/// formatting doesn't actually occur during the generation of the patches.
+Future<void> expectSuggestorSequenceGeneratesFormattedPatches(
+  List<Suggestor> suggestors,
+  FileContext context,
+  Object resultMatcher,
+) async {
+  await expectLater(
+    Future(() async {
+      final patches = <Patch>[];
+      for (final suggestor in suggestors) {
+        patches.addAll(await suggestor(context).toList());
+      }
       return _formatter.format(applyPatches(context.sourceFile, patches));
     }),
     completion(resultMatcher),

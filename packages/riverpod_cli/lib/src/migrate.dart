@@ -5,6 +5,7 @@ import 'package:codemod/codemod.dart';
 import 'package:glob/glob.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
+import 'package:riverpod_cli/src/migrate/unified_syntax.dart';
 
 import 'migrate/imports.dart';
 import 'migrate/notifiers.dart';
@@ -35,23 +36,30 @@ class MigrateCommand extends Command<void> {
     VersionConstraint version;
     if (dep is HostedDependency) {
       version = dep.version;
+    } else {
+      throw UnimplementedError(
+          'Migrating git and path dependencies can cause issues because of trying to understand riverpod versioning, please depend on an official package');
     }
 
-    await runInteractiveCodemod(
+    await runInteractiveCodemodSequence(
       filePathsFromGlob(Glob('**.dart', recursive: true)),
-      aggregate(
-        [
-          RiverpodImportAllMigrationSuggestor(),
-          RiverpodNotifierChangesMigrationSuggestor(version),
-        ],
-      ),
-      args: argResults.arguments,
+      [
+        aggregate(
+          [
+            RiverpodImportAllMigrationSuggestor(),
+            RiverpodNotifierChangesMigrationSuggestor(version),
+          ],
+        ),
+        RiverpodHooksProviderInfo(version),
+        RiverpodUnifiedSyntaxChangesMigrationSuggestor(version),
+      ],
+      args: argResults?.arguments ?? [],
     );
 
     await runInteractiveCodemod(
       filePathsFromGlob(Glob('pubspec.yaml', recursive: true)),
       versionMigrationSuggestor,
-      args: argResults.arguments,
+      args: argResults?.arguments ?? [],
     );
   }
 }

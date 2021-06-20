@@ -7,6 +7,9 @@ import 'package:riverpod/riverpod.dart';
 
 final counterProvider = StateProvider((ref) => 1);
 final counterFamilyProvider = StateProvider.family<int, String>((ref, _) => 1);
+final counterNullProvider = StateProvider((ref) => null);
+final counterNullFamilyProvider =
+    StateProvider.family<int?, String?>((ref, _) => null);
 
 final otherProvider = Provider<int>((ref) {
   ref.read(counterProvider);
