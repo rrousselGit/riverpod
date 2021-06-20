@@ -4,12 +4,134 @@ import 'package:meta/meta.dart';
 import 'framework.dart';
 import 'internals.dart';
 
+/// An object that allows widgets to interact with providers.
+abstract class WidgetRef {
+  /// Returns the value exposed by a provider and rebuild the widget when that
+  /// value changes.
+  ///
+  /// See also:
+  ///
+  /// - [RootProvider.select], which allows a widget to filter rebuilds by
+  ///   observing only the properties.
+  /// - [listen], to react to changes on a provider, such as for showing modals.
+  T watch<T>(ProviderListenable<T> provider);
+
+  /// Listen to a provider and call `listener` whenever its value changes.
+  ///
+  /// This is useful for showing modals or other imperative logic.
+  void listen<T>(
+    ProviderListenable<T> provider,
+    void Function(T value) listener,
+  );
+
+  /// Reads a provider without listening to it.
+  ///
+  /// **AVOID** calling [read] inside build if the value is used only for events:
+  ///
+  /// ```dart
+  /// Widget build(BuildContext context) {
+  ///   // counter is used only for the onPressed of RaisedButton
+  ///   final counter = context.read(counterProvider);
+  ///
+  ///   return RaisedButton(
+  ///     onPressed: () => counter.increment(),
+  ///   );
+  /// }
+  /// ```
+  ///
+  /// While this code is not bugged in itself, this is an anti-pattern.
+  /// It could easily lead to bugs in the future after refactoring the widget
+  /// to use `counter` for other things, but forget to change [read] into [Consumer]/`ref.watch(`.
+  ///
+  /// **CONSIDER** calling [read] inside event handlers:
+  ///
+  /// ```dart
+  /// Widget build(BuildContext context) {
+  ///   return RaisedButton(
+  ///     onPressed: () {
+  ///       // as performant as the previous solution, but resilient to refactoring
+  ///       context.read(counterProvider).increment(),
+  ///     },
+  ///   );
+  /// }
+  /// ```
+  ///
+  /// This has the same efficiency as the previous anti-pattern, but does not
+  /// suffer from the drawback of being brittle.
+  ///
+  /// **AVOID** using [read] for creating widgets with a value that never changes
+  ///
+  /// ```dart
+  /// Widget build(BuildContext context) {
+  ///   // using read because we only use a value that never changes.
+  ///   final model = context.read(modelProvider);
+  ///
+  ///   return Text('${model.valueThatNeverChanges}');
+  /// }
+  /// ```
+  ///
+  /// While the idea of not rebuilding the widget if unnecessary is good,
+  /// this should not be done with [read].
+  /// Relying on [read] for optimisations is very brittle and dependent
+  /// on an implementation detail.
+  ///
+  /// **CONSIDER** using [Provider] or `select` for filtering unwanted rebuilds:
+  ///
+  /// ```dart
+  /// Widget build(BuildContext context) {
+  ///   // Using select to listen only to the value that used
+  ///   final valueThatNeverChanges = ref.watch(modelProvider.select((model) {
+  ///     return model.valueThatNeverChanges;
+  ///   }));
+  ///
+  ///   return Text('$valueThatNeverChanges');
+  /// }
+  /// ```
+  ///
+  /// While more verbose than [read], using [Provider]/`select` is a lot safer.
+  /// It does not rely on implementation details on `Model`, and it makes
+  /// impossible to have a bug where our UI does not refresh.
+  T read<T>(ProviderBase<T> provider);
+
+  /// Forces a provider to re-evaluate its state immediately, and return the created value.
+  ///
+  /// This method is useful for features like "pull to refresh" or "retry on error",
+  /// to restart a specific provider.
+  ///
+  /// For example, a pull-to-refresh may be implemented by combining
+  /// [FutureProvider] and a [RefreshIndicator]:
+  ///
+  /// ```dart
+  /// final productsProvider = FutureProvider((ref) async {
+  ///   final response = await httpClient.get('https://host.com/products');
+  ///   return Products.fromJson(response.data);
+  /// });
+  ///
+  /// class Example extends ConsumerWidget {
+  ///   @override
+  ///   Widget build(BuildContext context, WidgetRef ref) {
+  ///     final Products products = ref.watch(productsProvider);
+  ///
+  ///     return RefreshIndicator(
+  ///       onRefresh: () => context.refresh(productsProvider),
+  ///       child: ListView(
+  ///         children: [
+  ///           for (final product in products.items) ProductItem(product: product),
+  ///         ],
+  ///       ),
+  ///     );
+  ///   }
+  /// }
+  /// ```
+  State refresh<State>(ProviderBase<State> provider);
+}
+
 /// A function that can also listen to providers
 ///
 /// See also [Consumer]
 typedef ConsumerBuilder = Widget Function(
   BuildContext context,
-  ScopedReader watch,
+  WidgetRef ref,
   Widget? child,
 );
 
@@ -38,8 +160,8 @@ typedef ConsumerBuilder = Widget Function(
 ///   @override
 ///   Widget build(BuildContext context) {
 ///     return Consumer(
-///       builder: (context, watch, child) {
-///         final value = watch(helloWorldProvider);
+///       builder: (context, ref, child) {
+///         final value = ref.watch(helloWorldProvider);
 ///         return Text(value); // Hello world
 ///       },
 ///     );
@@ -52,9 +174,9 @@ typedef ConsumerBuilder = Widget Function(
 ///
 /// ```dart
 /// Consumer(
-///   builder: (context, watch, child) {
-///     final value = watch(someProvider);
-///     final another = watch(anotherProvider);
+///   builder: (context, ref, child) {
+///     final value = ref.watch(someProvider);
+///     final another = ref.watch(anotherProvider);
 ///     ...
 ///   },
 /// );
@@ -94,10 +216,10 @@ typedef ConsumerBuilder = Widget Function(
 ///           children: <Widget>[
 ///             Text('You have pushed the button this many times:'),
 ///             Consumer(
-///               builder: (BuildContext context, ScopedReader watch, Widget? child) {
+///               builder: (BuildContext context, WidgetRef ref, Widget? child) {
 ///                 // This builder will only get called when the counterProvider
 ///                 // is updated.
-///                 final count = watch(counterProvider).state;
+///                 final count = ref.watch(counterProvider).state;
 ///
 ///                 return Row(
 ///                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -143,8 +265,8 @@ class Consumer extends ConsumerWidget {
   final Widget? _child;
 
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    return _builder(context, watch, _child);
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _builder(context, ref, _child);
   }
 }
 
@@ -169,8 +291,8 @@ class Consumer extends ConsumerWidget {
 ///   const Example({Key? key}): super(key: key);
 ///
 ///   @override
-///   Widget build(BuildContext context, ScopedReader watch) {
-///     final value = watch(helloWorldProvider);
+///   Widget build(BuildContext context, WidgetRef ref) {
+///     final value = ref.watch(helloWorldProvider);
 ///     return Text(value); // Hello world
 ///   }
 /// }
@@ -181,9 +303,9 @@ class Consumer extends ConsumerWidget {
 ///
 /// ```dart
 /// @override
-/// Widget build(BuildContext context, ScopedReader watch) {
-///   final value = watch(someProvider);
-///   final another = watch(anotherProvider);
+/// Widget build(BuildContext context, WidgetRef ref) {
+///   final value = ref.watch(someProvider);
+///   final another = ref.watch(anotherProvider);
 ///   return Text(value); // Hello world
 /// }
 /// ```
@@ -191,7 +313,7 @@ class Consumer extends ConsumerWidget {
 /// For reading providers inside a [StatefulWidget] or for performance
 /// optimizations, see [Consumer].
 /// {@endtemplate}
-abstract class ConsumerWidget extends StatefulWidget {
+abstract class ConsumerWidget extends ConsumerStatefulWidget {
   /// {@macro riverpod.consumerwidget}
   const ConsumerWidget({Key? key}) : super(key: key);
 
@@ -233,38 +355,59 @@ abstract class ConsumerWidget extends StatefulWidget {
   /// See also:
   ///
   ///  * [StatelessWidget], which contains the discussion on performance considerations.
-  Widget build(BuildContext context, ScopedReader watch);
+  Widget build(BuildContext context, WidgetRef ref);
 
   @override
   _ConsumerState createState() => _ConsumerState();
 }
 
-@sealed
-class _ConsumerState extends State<ConsumerWidget> {
-  ProviderContainer? _container;
-  var _dependencies = <ProviderBase, ProviderSubscription>{};
-  Map<ProviderBase, ProviderSubscription>? _oldDependencies;
-  late Widget _buildCache;
-  // initialized at true for the first build
-  bool _isExternalBuild = true;
+class _ConsumerState extends ConsumerState<ConsumerWidget> {
+  @override
+  WidgetRef get ref => context as WidgetRef;
 
   @override
-  void didUpdateWidget(ConsumerWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _isExternalBuild = true;
+  Widget build(BuildContext context) {
+    return widget.build(context, ref);
   }
+}
+
+/// A [StatefulWidget] that can read providers.
+abstract class ConsumerStatefulWidget extends StatefulWidget {
+  /// A [StatefulWidget] that can read providers.
+  const ConsumerStatefulWidget({Key? key}) : super(key: key);
 
   @override
-  void reassemble() {
-    super.reassemble();
-    _isExternalBuild = true;
+  // ignore: no_logic_in_create_state
+  ConsumerState createState();
+
+  @override
+  ConsumerStatefulElement createElement() {
+    return ConsumerStatefulElement(this);
   }
+}
+
+/// A [State] that has access to a [WidgetRef] through [ref], allowing
+/// it to read providers.
+abstract class ConsumerState<T extends ConsumerStatefulWidget>
+    extends State<T> {
+  /// An object that allows widgets to interact with providers.
+  late final WidgetRef ref = context as WidgetRef;
+}
+
+/// The [Element] for a [ConsumerStatefulWidget]
+class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
+  /// The [Element] for a [ConsumerStatefulWidget]
+  ConsumerStatefulElement(ConsumerStatefulWidget widget) : super(widget);
+
+  late ProviderContainer _container = ProviderScope.containerOf(this);
+  var _dependencies = <ProviderListenable, ProviderSubscription>{};
+  Map<ProviderListenable, ProviderSubscription>? _oldDependencies;
+  final _listeners = <ProviderSubscription>[];
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _isExternalBuild = true;
-    final newContainer = ProviderScope.containerOf(context);
+    final newContainer = ProviderScope.containerOf(this);
     if (_container != newContainer) {
       _container = newContainer;
       for (final dependency in _dependencies.values) {
@@ -275,23 +418,15 @@ class _ConsumerState extends State<ConsumerWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    var didFlush = false;
-    for (final dep in _dependencies.values) {
-      if (dep.flush()) {
-        didFlush = true;
-      }
-    }
-    final shouldRecompute = _isExternalBuild || didFlush;
-    _isExternalBuild = false;
-    if (!shouldRecompute) {
-      return _buildCache;
-    }
-
+  Widget build() {
+    // TODO disallow didChangeDependencies
     try {
       _oldDependencies = _dependencies;
+      for (var i = 0; i < _listeners.length; i++) {
+        _listeners[i].close();
+      }
       _dependencies = {};
-      return _buildCache = widget.build(context, _reader);
+      return super.build();
     } finally {
       for (final dep in _oldDependencies!.values) {
         dep.close();
@@ -300,7 +435,8 @@ class _ConsumerState extends State<ConsumerWidget> {
     }
   }
 
-  Res _reader<Res>(ProviderBase<Object?, Res> target) {
+  @override
+  Res watch<Res>(ProviderListenable<Res> target) {
     return _dependencies.putIfAbsent(target, () {
       final oldDependency = _oldDependencies?.remove(target);
 
@@ -308,22 +444,44 @@ class _ConsumerState extends State<ConsumerWidget> {
         return oldDependency;
       }
 
-      return _container!.listen<Res>(
+      return _container.listen<Res>(
         target,
-        mayHaveChanged: _mayHaveChanged,
+        (_) => markNeedsBuild(),
       );
     }).read() as Res;
   }
 
-  void _mayHaveChanged(ProviderSubscription sub) {
-    (context as Element).markNeedsBuild();
-  }
-
   @override
-  void dispose() {
+  void unmount() {
     for (final dependency in _dependencies.values) {
       dependency.close();
     }
-    super.dispose();
+    for (var i = 0; i < _listeners.length; i++) {
+      _listeners[i].close();
+    }
+    super.unmount();
+  }
+
+  @override
+  void listen<T>(
+    ProviderListenable<T> provider,
+    void Function(T value) listener,
+  ) {
+    // We can't implement a fireImmediately flag because we wouldn't know
+    // which listen call was preserved between widget rebuild, and we wouldn't
+    // want to call the listener on every rebuild.
+    // TODO onError
+    final sub = _container.listen<T>(provider, listener);
+    _listeners.add(sub);
+  }
+
+  @override
+  T read<T>(ProviderBase<T> provider) {
+    return ProviderScope.containerOf(this, listen: false).read(provider);
+  }
+
+  @override
+  State refresh<State>(ProviderBase<State> provider) {
+    return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
 }

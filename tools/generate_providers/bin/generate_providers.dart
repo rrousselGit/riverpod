@@ -28,6 +28,7 @@ class StateDetails {
   StateDetails({
     this.kind,
     this.className,
+    this.ref,
     this.constraints,
     this.generics,
     this.createType,
@@ -35,6 +36,7 @@ class StateDetails {
 
   final StateType kind;
   final String className;
+  final String ref;
   final String constraints;
   final String generics;
   final String createType;
@@ -133,12 +135,12 @@ const _familyDoc = r'''
 ///   // ...
 ///
 ///   @override
-///   Widget build(BuildContext context, ScopedReader watch) {
+///   Widget build(BuildContext context, WidgetRef ref) {
 ///     final locale = Localizations.localeOf(context);
 ///
 ///     // Obtains the title based on the current Locale.
 ///     // Will automatically update the title when the Locale changes.
-///     final title = watch(titleFamily(locale));
+///     final title = ref.watch(titleFamily(locale));
 ///
 ///     return Text(title);
 ///   }
@@ -155,14 +157,14 @@ const _familyDoc = r'''
 ///   // ...
 ///
 ///   @override
-///   Widget build(BuildContext context, ScopedReader watch) {
+///   Widget build(BuildContext context, WidgetRef ref) {
 ///     int userId; // Read the user ID from somewhere
 ///
 ///     // Read and potentially fetch the user with id `userId`.
 ///     // When `userId` changes, this will automatically update the UI
 ///     // Similarly, if two widgets tries to read `userFamily` with the same `userId`
 ///     // then the user will be fetched only once.
-///     final user = watch(userFamily(userId));
+///     final user = ref.watch(userFamily(userId));
 ///
 ///     return user.when(
 ///       data: (user) => Text(user.name),
@@ -200,9 +202,9 @@ const _familyDoc = r'''
 /// The usual:
 /// 
 /// ```dart
-/// Widget build(BuildContext, ScopedReader watch) {
+/// Widget build(BuildContext context, WidgetRef ref) {
 ///   // Error – messagesFamily is not a provider
-///   final response = watch(messagesFamily);
+///   final response = ref.watch(messagesFamily);
 /// }
 /// ```
 ///
@@ -210,8 +212,8 @@ const _familyDoc = r'''
 /// Instead, we need to pass a parameter to `messagesFamily`:
 ///
 /// ```dart
-/// Widget build(BuildContext, ScopedReader watch) {
-///   final response = watch(messagesFamily('id'));
+/// Widget build(BuildContext context, WidgetRef ref) {
+///   final response = ref.watch(messagesFamily('id'));
 /// }
 /// ```
 ///
@@ -221,9 +223,9 @@ const _familyDoc = r'''
 ///
 /// ```dart
 /// @override
-/// Widget build(BuildContext context, ScopedReader watch) {
-///   final frenchTitle = watch(titleFamily(const Locale('fr')));
-///   final englishTitle = watch(titleFamily(const Locale('en')));
+/// Widget build(BuildContext context, WidgetRef ref) {
+///   final frenchTitle = ref.watch(titleFamily(const Locale('fr')));
+///   final englishTitle = ref.watch(titleFamily(const Locale('en')));
 ///
 ///   return Text('fr: $frenchTitle en: $englishTitle');
 /// }
@@ -280,11 +282,11 @@ const _familyDoc = r'''
 ///   });
 ///
 ///   @override
-///   Widget build(BuildContext context, ScopedReader watch) {
+///   Widget build(BuildContext context, WidgetRef ref) {
 ///     int userId; // Read the user ID from somewhere
 ///     final locale = Localizations.localeOf(context);
 ///
-///     final something = watch(
+///     final something = ref.watch(
 ///       exampleProvider(MyParameter(userId: userId, locale: locale)),
 ///     );
 ///   }
@@ -312,11 +314,11 @@ const _familyDoc = r'''
 ///   });
 ///
 ///   @override
-///   Widget build(BuildContext context, ScopedReader watch) {
+///   Widget build(BuildContext context, WidgetRef ref) {
 ///     int userId; // Read the user ID from somewhere
 ///     final locale = Localizations.localeOf(context);
 ///
-///     final something = watch(
+///     final something = ref.watch(
 ///       exampleProvider(MyParameter(userId: userId, locale: locale)),
 ///     );
 ///   }
@@ -372,37 +374,42 @@ Future<void> main(List<String> args) async {
           StateDetails(
             kind: StateType.state,
             className: 'StateProvider',
-            constraints: 'T',
-            generics: 'T',
-            createType: 'T',
+            ref: 'StateProviderRef<State>',
+            constraints: 'State',
+            generics: 'State',
+            createType: 'State',
           ),
           StateDetails(
             kind: StateType.stateNotifier,
             className: 'StateNotifierProvider',
-            constraints: 'Notifier extends StateNotifier<Value>, Value',
-            generics: 'Notifier, Value',
+            ref: 'StateNotifierProviderRef<Notifier, State>',
+            constraints: 'Notifier extends StateNotifier<State>, State',
+            generics: 'Notifier, State',
             createType: 'Notifier',
           ),
           StateDetails(
             kind: StateType.none,
             className: 'Provider',
-            constraints: 'T',
-            generics: 'T',
-            createType: 'T',
+            ref: 'ProviderRef<State>',
+            constraints: 'State',
+            generics: 'State',
+            createType: 'State',
           ),
           StateDetails(
             kind: StateType.future,
             className: 'FutureProvider',
-            constraints: 'T',
-            generics: 'T',
-            createType: 'Future<T>',
+            ref: 'FutureProviderRef<State>',
+            constraints: 'State',
+            generics: 'State',
+            createType: 'Future<State>',
           ),
           StateDetails(
             kind: StateType.stream,
             className: 'StreamProvider',
-            constraints: 'T',
-            generics: 'T',
-            createType: 'Stream<T>',
+            ref: 'StreamProviderRef<State>',
+            constraints: 'State',
+            generics: 'State',
+            createType: 'Stream<State>',
           ),
         ],
         ProviderType.values,
@@ -422,6 +429,7 @@ import 'internals.dart';
           StateDetails(
             kind: StateType.changeNotifier,
             className: 'ChangeNotifierProvider',
+            ref: 'ChangeNotifierProviderRef<Notifier>',
             constraints: 'Notifier extends ChangeNotifier',
             generics: 'Notifier',
             createType: 'Notifier',
@@ -476,10 +484,10 @@ extension on Tuple3<DisposeType, StateDetails, ProviderType> {
   String get ref {
     switch (item1) {
       case DisposeType.autoDispose:
-        return 'AutoDisposeProviderReference';
+        return 'AutoDispose${item2.ref}';
       case DisposeType.none:
       default:
-        return 'ProviderReference';
+        return item2.ref;
     }
   }
 
@@ -540,8 +548,8 @@ class ${configs.providerName}Builder {
   const ${configs.providerName}Builder();
 
 ${familyDoc().replaceAll('///', '  ///')}
-  ${configs.providerName}<${configs.item2.generics}, Param> call<${configs.constraint}, Param>(
-    ${configs.createType} Function(${configs.ref} ref, Param param) create, {
+  ${configs.providerName}<${configs.item2.generics}, Arg> call<${configs.constraint}, Arg>(
+    FamilyCreate<${configs.createType}, ${configs.ref}, Arg> create, {
     String? name,
   }) {
     return ${configs.providerName}(create, name: name);
@@ -568,7 +576,7 @@ class ${configs.providerName}Builder {
 
 ${autoDisposeDoc().replaceAll('///', '  ///')}
   ${configs.providerName}<${configs.item2.generics}> call<${configs.constraint}>(
-    ${configs.createType} Function(${configs.ref} ref) create, {
+    Create<${configs.createType}, ${configs.ref}> create, {
     String? name,
   }) {
     return ${configs.providerName}(create, name: name);

@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:meta/meta.dart';
+import 'async_value_converters.dart';
 
 import 'builders.dart';
-import 'common.dart' show AsyncValue;
-import 'created_provider.dart';
+import 'common.dart' show AsyncValue, modifierName;
 import 'framework.dart';
 import 'provider.dart';
 import 'stream_provider.dart';
@@ -52,8 +52,8 @@ part 'future_provider/base.dart';
 /// Then, the UI can listen to configurations like so:
 ///
 /// ```dart
-/// Widget build(BuildContext, ScopedReader watch) {
-///   AsyncValue<Configuration> config = watch(configProvider);
+/// Widget build(BuildContext context, WidgetRef ref) {
+///   AsyncValue<Configuration> config = ref.watch(configProvider);
 ///
 ///   return config.when(
 ///     loading: () => const CircularProgressIndicator(),
@@ -78,74 +78,26 @@ part 'future_provider/base.dart';
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no-longer needed.
 /// {@endtemplate}
-mixin _FutureProviderMixin<T> on RootProvider<Future<T>, AsyncValue<T>> {
-  Override overrideWithValue(AsyncValue<T> value) {
-    return ProviderOverride(
-      ValueProvider<Future<T>, AsyncValue<T>>((ref) {
-        final completer = Completer<T>()
-          // Catch the error so that it isn't pushed to the zone. This is safe since FutureProvider catches errors for us
-          // ignore: avoid_types_on_closure_parameters
-          ..future.then((_) {}, onError: (Object _) {});
-        ref.onChange = (newValue) {
-          if (completer.isCompleted) {
-            ref.markMustRecomputeState();
-          } else {
-            newValue.when(
-              data: completer.complete,
-              loading: () {},
-              error: completer.completeError,
-            );
-          }
-        };
-        ref.onChange!(value);
-        return completer.future;
-      }, value),
-      this,
-    );
-  }
-}
-
-mixin _FutureProviderStateMixin<T>
-    on ProviderStateBase<Future<T>, AsyncValue<T>> {
-  // Used to determine if we are still listening to a future or not inside its `then`
-  Future<T>? listenedFuture;
-
-  @override
-  void valueChanged({Future<T>? previous}) {
-    if (createdValue == previous) {
-      return;
-    }
-    // de-reference listenedFuture so that it is not changed by the time `then` completes.
-    final listenedFuture = this.listenedFuture = createdValue;
-
-    // TODO transition between state ??= vs =
-    // TODO don't notify if already loading
-    exposedValue = const AsyncValue.loading();
-    listenedFuture.then(
-      (value) {
-        if (this.listenedFuture == listenedFuture) {
-          exposedValue = AsyncValue.data(value);
-        }
+AsyncValue<State> _listenFuture<State>(
+  Future<State> Function() future,
+  ProviderRef<AsyncValue<State>> ref,
+) {
+  var running = true;
+  ref.onDispose(() => running = false);
+  try {
+    ref.state = const AsyncValue.loading();
+    future().then(
+      (event) {
+        if (running) ref.state = AsyncValue.data(event);
       },
       // ignore: avoid_types_on_closure_parameters
-      onError: (Object error, StackTrace stack) {
-        if (this.listenedFuture == listenedFuture) {
-          exposedValue = AsyncValue.error(error, stack);
-        }
+      onError: (Object err, StackTrace stack) {
+        if (running) ref.state = AsyncValue.error(err, stack);
       },
     );
-  }
 
-  @override
-  bool handleError(Object error, StackTrace stackTrace) {
-    exposedValue = AsyncValue.error(error, stackTrace);
-    return true;
-  }
-
-  @override
-  void dispose() {
-    // Equivalent to StreamSubscription.cancel()
-    listenedFuture = null;
-    super.dispose();
+    return ref.state;
+  } catch (err, stack) {
+    return AsyncValue.error(err, stack);
   }
 }

@@ -1,129 +1,116 @@
 part of '../state_notifier_provider.dart';
 
-class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
-    extends AutoDisposeProvider<Notifier> {
-  _AutoDisposeNotifierProvider(
-    Create<Notifier, AutoDisposeProviderReference> create, {
-    required String? name,
-  }) : super(
-          (ref) {
-            final notifier = create(ref);
-            ref.onDispose(notifier.dispose);
-            return notifier;
-          },
-          name: name == null ? null : '$name.notifier',
-        );
-}
+/// {@macro riverpod.providerrefbase}
+typedef AutoDisposeStateNotifierProviderRef<
+        Notifier extends StateNotifier<State>, State>
+    = AutoDisposeProviderRefBase;
 
 /// {@macro riverpod.statenotifierprovider}
 @sealed
-class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<Value>,
-        Value> extends AutoDisposeProviderBase<Notifier, Value>
-    with _StateNotifierProviderMixin<Notifier, Value> {
+class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
+        State> extends AutoDisposeProviderBase<State>
+    with _StateNotifierProviderMixin<Notifier, State> {
   /// {@macro riverpod.statenotifierprovider}
   AutoDisposeStateNotifierProvider(this._create, {String? name}) : super(name);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStateNotifierProviderFamilyBuilder();
 
-  /// {@macro riverpod.autoDispose}
-  static const autoDispose = AutoDisposeStateNotifierProviderBuilder();
+  final Create<Notifier, AutoDisposeStateNotifierProviderRef<Notifier, State>>
+      _create;
 
-  final Create<Notifier, AutoDisposeProviderReference> _create;
-
+  /// {@template riverpod.statenotifierprovider.notifier}
+  /// Obtains the [StateNotifier] associated with this [AutoDisposeStateNotifierProvider],
+  /// without listening to it.
+  ///
+  /// Listening to this provider may cause providers/widgets to rebuild in the
+  /// event that the [StateNotifier] it recreated.
+  /// {@endtemplate}
   @override
-  AutoDisposeStateNotifierProviderFamily<Notifier, Value, Object?>? get from =>
-      super.from
-          as AutoDisposeStateNotifierProviderFamily<Notifier, Value, Object?>?;
-
-  /// {@macro riverpod.statenotifierprovider.notifier}
-  @override
-  late final AutoDisposeProviderBase<Notifier, Notifier> notifier = from != null
-      ? from!._notifierFamily(argument)
-      : _AutoDisposeNotifierProvider(_create, name: name);
+  late final AutoDisposeProviderBase<Notifier> notifier =
+      _AutoDisposeNotifierProvider(_create, name: name);
 
   /// Overrides the behavior of a provider with a another provider.
   ///
   /// {@macro riverpod.overideWith}
   Override overrideWithProvider(
-    AutoDisposeStateNotifierProvider<Notifier, Value> provider,
+    AutoDisposeStateNotifierProvider<Notifier, State> provider,
   ) {
     return ProviderOverride(provider.notifier, notifier);
   }
 
   @override
-  Notifier create(covariant AutoDisposeProviderReference ref) {
-    return ref.watch(notifier);
+  State create(AutoDisposeProviderElementBase<State> ref) {
+    final notifier = ref.watch(this.notifier);
+
+    void listener(State newState) {
+      ref.state = newState;
+    }
+
+    final removeListener = notifier.addListener(listener);
+    ref.onDispose(removeListener);
+
+    return ref.state;
   }
 
   @override
-  _StateNotifierProviderState<Notifier, Value> createState() {
-    return _StateNotifierProviderState<Notifier, Value>();
+  bool recreateShouldNotify(State previousState, State newState) {
+    return true;
+  }
+
+  @override
+  AutoDisposeProviderElementBase<State> createElement() {
+    return AutoDisposeProviderElement(this);
   }
 }
 
 /// {@template riverpod.statenotifierprovider.family}
-/// A class that allows building a [StateNotifierProvider] from an external parameter.
+/// A class that allows building a [AutoDisposeStateNotifierProvider] from an external parameter.
 /// {@endtemplate}
 @sealed
 class AutoDisposeStateNotifierProviderFamily<
-        Notifier extends StateNotifier<Value>, Value, Param>
-    extends Family<Notifier, Value, Param, AutoDisposeProviderReference,
-        AutoDisposeStateNotifierProvider<Notifier, Value>> {
+        Notifier extends StateNotifier<State>, State, Arg>
+    extends Family<State, Arg,
+        AutoDisposeStateNotifierProvider<Notifier, State>> {
   /// {@macro riverpod.statenotifierprovider.family}
-  AutoDisposeStateNotifierProviderFamily(
-    Notifier Function(AutoDisposeProviderReference ref, Param a) create, {
-    String? name,
-  }) : super(create, name);
+  AutoDisposeStateNotifierProviderFamily(this._create, {String? name})
+      : super(name);
+
+  final FamilyCreate<Notifier,
+      AutoDisposeStateNotifierProviderRef<Notifier, State>, Arg> _create;
 
   @override
-  AutoDisposeStateNotifierProvider<Notifier, Value> create(
-    Param value,
-    Notifier Function(AutoDisposeProviderReference ref, Param param) builder,
-    String? name,
-  ) {
-    return AutoDisposeStateNotifierProvider(
-      (ref) => builder(ref, value),
+  AutoDisposeStateNotifierProvider<Notifier, State> create(Arg argument) {
+    final provider = AutoDisposeStateNotifierProvider<Notifier, State>(
+      (ref) => _create(ref, argument),
       name: name,
     );
+
+    registerProvider(provider.notifier, argument);
+
+    return provider;
   }
+}
 
-  late final _notifierFamily =
-      _AutoDisposeNotifierFamily<Notifier, Param>(builder, name);
-
+/// An extension that adds [overrideWithProvider] to [Family].
+extension XAutoDisposeStateNotifierFamily<
+    Notifier extends StateNotifier<State>,
+    State,
+    Arg> on AutoDisposeStateNotifierProviderFamily<Notifier, State, Arg> {
   /// Overrides the behavior of a family for a part of the application.
   ///
   /// {@macro riverpod.overideWith}
   Override overrideWithProvider(
-    Notifier Function(ProviderReference ref, Param param) builderOverride,
+    AutoDisposeProviderBase<Notifier> Function(Arg argument) override,
   ) {
     return FamilyOverride(
-      _notifierFamily,
-      (param) {
-        return _notifierFamily.create(param as Param, builderOverride, null);
+      this,
+      (arg, provider) {
+        if (provider is _AutoDisposeNotifierProvider<Notifier>) {
+          return override(arg as Arg);
+        }
+        return provider;
       },
-    );
-  }
-}
-
-@sealed
-class _AutoDisposeNotifierFamily<Notifier extends StateNotifier<Object?>, Param>
-    extends Family<Notifier, Notifier, Param, AutoDisposeProviderReference,
-        _AutoDisposeNotifierProvider<Notifier>> {
-  _AutoDisposeNotifierFamily(
-    Notifier Function(AutoDisposeProviderReference ref, Param param) builder,
-    String? name,
-  ) : super(builder, name);
-
-  @override
-  _AutoDisposeNotifierProvider<Notifier> create(
-    Param value,
-    Notifier Function(AutoDisposeProviderReference ref, Param param) builder,
-    String? name,
-  ) {
-    return _AutoDisposeNotifierProvider(
-      (ref) => builder(ref, value),
-      name: name,
     );
   }
 }

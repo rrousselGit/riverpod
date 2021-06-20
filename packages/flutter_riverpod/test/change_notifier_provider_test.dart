@@ -2,9 +2,15 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'utils.dart';
+
 void main() {
+  test('overriding listens to the ChangeNotifier', () {}, skip: true);
+  test('overriding family listens to the ChangeNotifier', () {}, skip: true);
+  test('refresh recreates the ChangeNotifier', () {}, skip: true);
+
   test('family', () {
-    final container = ProviderContainer();
+    final container = createContainer();
     final provider =
         ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
@@ -25,8 +31,10 @@ void main() {
         ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
     });
-    final container = ProviderContainer(overrides: [
-      provider.overrideWithProvider((ref, value) => ValueNotifier(value * 2))
+    final container = createContainer(overrides: [
+      provider.overrideWithProvider(
+        (value) => ChangeNotifierProvider((ref) => ValueNotifier(value * 2)),
+      ),
     ]);
 
     expect(
@@ -58,9 +66,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(provider).count.toString(),
+            ref.watch(provider).count.toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -79,20 +87,20 @@ void main() {
     expect(notifier.mounted, isFalse);
   });
 
-  test('.notifier obtains the controller without listening to it', () {
+  test('.notifier obtains the controller without listening to it', () async {
     final dep = StateProvider((ref) => 0);
     final notifier = TestNotifier();
     final notifier2 = TestNotifier();
     final provider = ChangeNotifierProvider((ref) {
       return ref.watch(dep).state == 0 ? notifier : notifier2;
     });
-    final container = ProviderContainer();
+    final container = createContainer();
     addTearDown(container.dispose);
 
     var callCount = 0;
     final sub = container.listen(
       provider.notifier,
-      didChange: (_) => callCount++,
+      (_) => callCount++,
     );
 
     expect(sub.read(), notifier);
@@ -100,14 +108,14 @@ void main() {
 
     notifier.count++;
 
-    sub.flush();
+    await container.pump();
     expect(callCount, 0);
 
     container.read(dep).state++;
 
     expect(sub.read(), notifier2);
 
-    sub.flush();
+    await container.pump();
     expect(sub.read(), notifier2);
     expect(callCount, 1);
   });
@@ -115,17 +123,19 @@ void main() {
   test(
       'overrideWithValue listens to the notifier, support notifier change, and does not dispose of the notifier',
       () async {
-    final provider = ChangeNotifierProvider((_) => TestNotifier());
-    final notifier = TestNotifier();
-    final notifier2 = TestNotifier();
-    final container = ProviderContainer(overrides: [
+    final provider = ChangeNotifierProvider((_) {
+      return TestNotifier('a');
+    });
+    final notifier = TestNotifier('b');
+    final notifier2 = TestNotifier('c');
+    final container = createContainer(overrides: [
       provider.overrideWithValue(notifier),
     ]);
     addTearDown(container.dispose);
 
     var callCount = 0;
-    final sub = container.listen(provider, didChange: (_) => callCount++);
-    final notifierSub = container.listen(provider.notifier);
+    final sub = container.listen(provider, (_) => callCount++);
+    final notifierSub = container.listen(provider.notifier, (_) {});
 
     expect(sub.read(), notifier);
     expect(callCount, 0);
@@ -134,14 +144,14 @@ void main() {
 
     notifier.count++;
 
-    sub.flush();
+    await container.pump();
     expect(callCount, 1);
 
     container.updateOverrides([
       provider.overrideWithValue(notifier2),
     ]);
 
-    sub.flush();
+    await container.pump();
     expect(callCount, 2);
     expect(notifier.hasListeners, false);
     expect(notifier2.hasListeners, true);
@@ -150,7 +160,7 @@ void main() {
 
     notifier2.count++;
 
-    sub.flush();
+    await container.pump();
     expect(callCount, 3);
 
     container.dispose();
@@ -161,19 +171,19 @@ void main() {
     expect(notifier.mounted, true);
   });
 
-  test('overrideWithProvider preserves the state accross update', () {
+  test('overrideWithProvider preserves the state accross update', () async {
     final provider = ChangeNotifierProvider((_) {
       return TestNotifier();
     });
     final notifier = TestNotifier();
     final notifier2 = TestNotifier();
-    final container = ProviderContainer(overrides: [
+    final container = createContainer(overrides: [
       provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier)),
     ]);
     addTearDown(container.dispose);
 
     var callCount = 0;
-    final sub = container.listen(provider, didChange: (_) => callCount++);
+    final sub = container.listen(provider, (_) => callCount++);
 
     expect(sub.read(), notifier);
     expect(container.read(provider.notifier), notifier);
@@ -182,21 +192,21 @@ void main() {
 
     notifier.count++;
 
-    sub.flush();
+    await container.pump();
     expect(callCount, 1);
 
     container.updateOverrides([
       provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier2)),
     ]);
 
-    sub.flush();
+    await container.pump();
     expect(callCount, 1);
     expect(container.read(provider.notifier), notifier);
     expect(notifier2.hasListeners, false);
 
     notifier.count++;
 
-    sub.flush();
+    await container.pump();
     expect(callCount, 2);
     expect(container.read(provider.notifier), notifier);
     expect(notifier.mounted, true);
@@ -209,6 +219,10 @@ void main() {
 }
 
 class TestNotifier extends ChangeNotifier {
+  TestNotifier([this.debugLabel]);
+
+  final String? debugLabel;
+
   bool mounted = true;
 
   @override
@@ -226,5 +240,10 @@ class TestNotifier extends ChangeNotifier {
   void dispose() {
     mounted = false;
     super.dispose();
+  }
+
+  @override
+  String toString() {
+    return 'TestNotifier($debugLabel)';
   }
 }

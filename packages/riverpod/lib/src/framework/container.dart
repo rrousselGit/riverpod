@@ -26,6 +26,10 @@ void _runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
 
 ProviderBase? _circularDependencyLock;
 
+void _defaultVsync(void Function() task) {
+  Future(task);
+}
+
 int _debugNextId = 0;
 
 /// {@template riverpod.providercontainer}
@@ -84,6 +88,21 @@ class ProviderContainer {
     }
   }
 
+  /// A function that controls the refresh rate of providers.
+  ///
+  /// Defaults to refreshing providers at the end of the next event-loop.
+  void Function(void Function() task) get vsync {
+    return vsyncOverride ?? _defaultVsync;
+  }
+
+  /// A way to override [vsync], used by Flutter to synchronize a container
+  /// with the widget tree.
+  void Function(void Function() task)? vsyncOverride;
+
+  /// The object that handles when providers are refreshed and disposed.
+  late final _ProviderScheduler _scheduler =
+      _parent?._root?._scheduler ?? _ProviderScheduler(vsync);
+
   late final String _debugId;
 
   /// A unique ID for this object, used by the devtool to differentiate two [ProviderContainer].
@@ -112,9 +131,21 @@ class ProviderContainer {
 
   final _overrideForProvider = HashMap<ProviderBase, ProviderBase>();
   final _overrideForFamily = HashMap<Family, FamilyOverride>();
-  final _stateReaders = HashMap<ProviderBase, ProviderElement>();
+  final _stateReaders = HashMap<ProviderBase, ProviderElementBase>();
+
+  // /// A function that calls its callback at the end of the current "frame".
+  // ///
+  // /// This is exposed so that
+  // ///
+  // /// Defaults to wraping the callback in a [Future].
+  // void Function(void Function()) addPostFrameCallback = (cb) => Future(cb);
 
   final List<ProviderObserver>? _localObservers;
+
+  /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
+  Future<void> pump() async {
+    return _scheduler.pendingFuture;
+  }
 
   Iterable<ProviderObserver> get _observers sync* {
     final iterable = _root == null ? _localObservers : _root!._localObservers;
@@ -127,7 +158,7 @@ class ProviderContainer {
   /// if it is safe to modify a provider.
   ///
   /// This corresponds to all the widgets that a [Provider] is associated with.
-  final DoubleLinkedQueue<void Function()> debugVsyncs = DoubleLinkedQueue();
+  void Function()? debugCanModifyProviders;
 
   /// Whether [dispose] was called or not.
   ///
@@ -148,76 +179,65 @@ class ProviderContainer {
   /// }
   /// ```
   Result read<Result>(
-    ProviderBase<Object?, Result> provider,
+    ProviderBase<Result> provider,
   ) {
     final element = readProviderElement(provider);
     element.flush();
+
+    // In case `read` was called on a provider that has no listener
     element.mayNeedDispose();
+
     return element.getExposedValue();
   }
 
   /// Subscribe to this provider.
   ///
-  /// * [mayHaveChanged] will be called the first time that any of the dependencies
-  ///   of a provider changed.
-  ///
-  /// * [didChange] will be called after the first [ProviderSubscription.flush]
-  ///   or [ProviderSubscription.read], only when it is confirmed that the
-  ///   value exposed has changed.
-  ///
   /// See also:
   ///
   /// - [ProviderSubscription], which allows reading the current value and
   ///   closing the subscription.
-  /// - [ProviderReference.watch], which is an easier way for providers to listen
+  /// - [ProviderRefBase.watch], which is an easier way for providers to listen
   ///   to another provider.
-  ProviderSubscription<Result> listen<Result>(
-    ProviderListenable<Result> provider, {
-    void Function(ProviderSubscription<Result> sub)? mayHaveChanged,
-    void Function(ProviderSubscription<Result> sub)? didChange,
+  ProviderSubscription<State> listen<State>(
+    ProviderListenable<State> provider,
+    void Function(State value) listener, {
+    bool fireImmediately = false,
   }) {
-    if (provider is ProviderBase<Object?, Result>) {
-      return readProviderElement(provider).listen(
-        mayHaveChanged: mayHaveChanged,
-        didChange: didChange,
-      );
-    } else if (provider is ProviderSelector<Object?, Result>) {
-      return provider._listen(
-        this,
-        mayHaveChanged: mayHaveChanged,
-        didChange: didChange,
-      );
-    } else {
-      throw UnsupportedError('Unknown ProviderListenable $provider');
+    if (provider is _ProviderSelector<Object?, State>) {
+      return provider.listen(this, listener, fireImmediately: fireImmediately);
     }
+
+    final element = readProviderElement(provider as ProviderBase<State>);
+
+    return element.addListener(
+      provider,
+      listener,
+      fireImmediately: fireImmediately,
+    );
   }
 
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
-  Created refresh<Created>(RootProvider<Created, Object?> provider) {
+  Created refresh<Created>(ProviderBase<Created> provider) {
     final element = (_root ?? this)._stateReaders[provider];
 
     if (element == null) {
-      return readProviderElement(provider).state.createdValue;
+      return readProviderElement(provider).getExposedValue();
     } else {
       element.markMustRecomputeState();
-      element.flush();
-      return element.state.createdValue as Created;
+      return element.getExposedValue() as Created;
     }
   }
 
-  void _disposeProvider(ProviderBase<Object?, Object?> provider) {
+  void _disposeProvider(ProviderBase<Object?> provider) {
     final element = readProviderElement(provider);
     assert(
       _stateReaders.containsKey(element._origin),
       'Removed a key that does not exist',
     );
     _stateReaders.remove(element._origin);
-    if (element._origin.from != null) {
-      element._origin.from!._cache.remove(element._origin.argument);
-    }
     element.dispose();
   }
 
@@ -299,8 +319,8 @@ class ProviderContainer {
   ///
   /// Do not use this in production code. This is exposed only for testing
   /// and devtools, to be able to test if a provider has listeners or similar.
-  ProviderElement<Created, Listened> readProviderElement<Created, Listened>(
-    ProviderBase<Created, Listened> provider,
+  ProviderElementBase<State> readProviderElement<State>(
+    ProviderBase<State> provider,
   ) {
     if (_disposed) {
       throw StateError(
@@ -323,8 +343,8 @@ class ProviderContainer {
             provider.from != null &&
             _overrideForFamily[provider.from] != null) {
           final familyOverride = _overrideForFamily[provider.from]!;
-          override = familyOverride._createOverride(provider._argument)
-              as ProviderBase<Created, Listened>;
+          override = familyOverride._createOverride(
+              provider._argument, provider) as ProviderBase<State>;
         }
 
         override ??= provider;
@@ -338,7 +358,7 @@ class ProviderContainer {
           _runBinaryGuarded<ProviderBase, Object?>(
             observer.didAddProvider,
             provider,
-            element.state._exposedValue,
+            element._state,
           );
         }
         return element;
@@ -347,15 +367,15 @@ class ProviderContainer {
           _circularDependencyLock = null;
         }
       }
-    }) as ProviderElement<Created, Listened>;
+    }) as ProviderElementBase<State>;
 
-    return element..flush();
+    return element;
   }
 
   /// Release all the resources associated with this [ProviderContainer].
   ///
   /// This will destroy the state of all providers associated to this
-  /// [ProviderContainer] and call [ProviderReference.onDispose] listeners.
+  /// [ProviderContainer] and call [ProviderRefBase.onDispose] listeners.
   void dispose() {
     if (_disposed) {
       return;
@@ -372,29 +392,37 @@ class ProviderContainer {
       return true;
     }(), '');
 
-    debugVsyncs.clear();
     _parent?._children.remove(this);
 
     _disposed = true;
 
-    for (final state in _visitStatesInOrder().toList().reversed) {
-      state.dispose();
+    for (final element in getAllProviderElementsInOrder().toList().reversed) {
+      element.dispose();
     }
+  }
+
+  /// Traverse the [ProviderElementBase]s associated with this [ProviderContainer].
+  Iterable<ProviderElementBase> getAllProviderElements() {
+    return _stateReaders.values;
   }
 
   /// Visit all nodes of the graph at most once, from roots to leaves.
   ///
-  /// This is a breadth-first traversal algorithm, that removes duplicate branches.
-  ///
-  /// It is O(N log N) with N the number of providers currently alive.
-  Iterable<ProviderElement> _visitStatesInOrder() sync* {
-    final visitedNodes = HashSet<ProviderElement>();
-    final queue = DoubleLinkedQueue<ProviderElement>();
+  /// This is fairly expensive and should be avoided as much as possible.
+  /// If you do not need for providers to be sorted, consider using [getAllProviderElements]
+  /// instead, which returns an unsorted list and is significantly faster.
+  Iterable<ProviderElementBase> getAllProviderElementsInOrder() sync* {
+    final visitedNodes = HashSet<ProviderElementBase>();
+    final queue = DoubleLinkedQueue<ProviderElementBase>();
 
+    // get roots of the provider graph
     for (final element in _stateReaders.values) {
-      if (element._subscriptions.keys
-          .where((e) => e._container == this)
-          .isEmpty) {
+      var hasAncestors = false;
+      element.visitAncestors((element) {
+        hasAncestors = true;
+      });
+
+      if (!hasAncestors) {
         queue.add(element);
       }
     }
@@ -409,43 +437,24 @@ class ProviderContainer {
 
       yield element;
 
-      if (element._dependents != null) {
-        for (final dependent in element._dependents!) {
-          if (dependent._container == this &&
-              // All the parents of a node must have been visited before a node is visited
-              dependent._subscriptions.keys.every((e) {
-                return e._container != this || visitedNodes.contains(e);
-              })) {
-            queue.add(dependent);
-          }
+      // Queue the children of this element, but only if all of its ancestors
+      // were already visited before.
+      // If a child does not have all of its ancestors visited, when those
+      // ancestors will be visited, they will retry visiting this child.
+      element.visitChildren((dependent) {
+        if (dependent.container == this) {
+          // All the parents of a node must have been visited before a node is visited
+          var areAllAncestorsAlreadyVisited = true;
+          dependent.visitAncestors((e) {
+            if (e._container == this && !visitedNodes.contains(e)) {
+              areAllAncestorsAlreadyVisited = false;
+            }
+          });
+
+          if (areAllAncestorsAlreadyVisited) queue.add(dependent);
         }
-      }
+      });
     }
-  }
-
-  /// The states of the providers associated to this [ProviderContainer], sorted
-  /// in order of dependency.
-  List<ProviderElement> get debugProviderElements {
-    late List<ProviderElement> result;
-    assert(() {
-      result = _visitStatesInOrder().toList();
-      return true;
-    }(), '');
-    return result;
-  }
-
-  /// The value exposed by all providers currently alive.
-  Map<ProviderBase, Object?> get debugProviderValues {
-    late Map<ProviderBase, Object?> res;
-    assert(() {
-      res = {
-        for (final entry in _stateReaders.entries)
-          entry.key: entry.value.state.exposedValue,
-      };
-
-      return true;
-    }(), '');
-    return res;
   }
 }
 
@@ -461,16 +470,12 @@ abstract class ProviderObserver {
   /// A provider was initialized, and the value exposed is [value].
   void didAddProvider(ProviderBase provider, Object? value) {}
 
-  /// Called when the dependency of a provider changed, but it is not yet
-  /// sure if the computed value changes.
-  ///
-  /// It is possible that [mayHaveChanged] will be called, without [didUpdateProvider]
-  /// being called, such as when a [Provider] is re-computed but returns
-  /// a value == to the previous one.
-  void mayHaveChanged(ProviderBase provider) {}
-
   /// Called my providers when they emit a notification.
-  void didUpdateProvider(ProviderBase provider, Object? newValue) {}
+  void didUpdateProvider(
+    ProviderBase provider,
+    Object? previousValue,
+    Object? newValue,
+  ) {}
 
   /// A provider was disposed
   void didDisposeProvider(ProviderBase provider) {}
@@ -500,7 +505,7 @@ class ProviderOverride implements Override {
 /// Do not extend or implement.
 class Override {}
 
-/// An error thrown when a call to [ProviderReference.read]/[ProviderReference.watch]
+/// An error thrown when a call to [ProviderRefBase.read]/[ProviderRefBase.watch]
 /// leads to a provider depending on itself.
 ///
 /// Circular dependencies are both not supported for performance reasons

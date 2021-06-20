@@ -6,10 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
+import 'utils.dart';
+
 void main() {
   test('SynchronousFuture', () {
     final futureProvider = FutureProvider((_) => SynchronousFuture(42));
-    final container = ProviderContainer();
+    final container = createContainer();
 
     expect(container.read(futureProvider), const AsyncValue.data(42));
   });
@@ -21,12 +23,12 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: ProviderScope(
-          child: Consumer(builder: (c, watch, _) {
-            return watch(futureProvider).when(
-              data: (data) => Text(data.toString()),
-              loading: () => const Text('loading'),
-              error: (dynamic err, stack) => Text('$err'),
-            );
+          child: Consumer(builder: (c, ref, _) {
+            return ref.watch(futureProvider).when(
+                  data: (data) => Text(data.toString()),
+                  loading: () => const Text('loading'),
+                  error: (dynamic err, stack) => Text('$err'),
+                );
           }),
         ),
       ),
@@ -50,17 +52,17 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: ProviderScope(
-          child: Consumer(builder: (c, watch, _) {
-            return watch(futureProvider).when(
-              data: (data) => Text(data.toString()),
-              loading: () => const Text('loading'),
-              // ignore: avoid_types_on_closure_parameters
-              error: (Object err, stack) {
-                whenError = err;
-                whenStack = stack;
-                return const Text('error');
-              },
-            );
+          child: Consumer(builder: (c, ref, _) {
+            return ref.watch(futureProvider).when(
+                  data: (data) => Text(data.toString()),
+                  loading: () => const Text('loading'),
+                  // ignore: avoid_types_on_closure_parameters
+                  error: (Object err, stack) {
+                    whenError = err;
+                    whenStack = stack;
+                    return const Text('error');
+                  },
+                );
           }),
         ),
       ),
@@ -81,8 +83,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
-          watch(futureProvider);
+        child: Consumer(builder: (c, ref, _) {
+          ref.watch(futureProvider);
           return Container();
         }),
       ),
@@ -103,8 +105,8 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
-          watch(futureProvider);
+        child: Consumer(builder: (c, ref, _) {
+          ref.watch(futureProvider);
           return Container();
         }),
       ),
@@ -134,11 +136,11 @@ void main() {
         ],
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer(builder: (c, watch, _) {
-            return watch(futureProvider).maybeWhen(
-              data: (data) => Text(data.toString()),
-              orElse: () => const Text('else'),
-            );
+          child: Consumer(builder: (c, ref, _) {
+            return ref.watch(futureProvider).maybeWhen(
+                  data: (data) => Text(data.toString()),
+                  orElse: () => const Text('else'),
+                );
           }),
         ),
       ),
@@ -181,15 +183,15 @@ void main() {
 
     final child = Directionality(
       textDirection: TextDirection.ltr,
-      child: Consumer(builder: (c, watch, _) {
-        watch(proxy);
-        return watch(futureProvider).when(
-          data: (data) => Text(data.toString()),
-          loading: () => const Text('loading'),
-          error: (dynamic err, stack) {
-            return const Text('error');
-          },
-        );
+      child: Consumer(builder: (c, ref, _) {
+        ref.watch(proxy);
+        return ref.watch(futureProvider).when(
+              data: (data) => Text(data.toString()),
+              loading: () => const Text('loading'),
+              error: (dynamic err, stack) {
+                return const Text('error');
+              },
+            );
       }),
     );
 
@@ -376,12 +378,12 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer(builder: (c, watch, _) {
-            return watch(futureProviderFamily).when(
-              data: (value) => Text(value.toString()),
-              loading: () => const Text('loading'),
-              error: (dynamic err, stack) => const Text('error'),
-            );
+          child: Consumer(builder: (c, ref, _) {
+            return ref.watch(futureProviderFamily).when(
+                  data: (value) => Text(value.toString()),
+                  loading: () => const Text('loading'),
+                  error: (dynamic err, stack) => const Text('error'),
+                );
           }),
         ),
       ),
@@ -406,12 +408,12 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer(builder: (c, watch, _) {
-            return watch(futureProviderFamily).when(
-              data: (value) => Text(value.toString()),
-              loading: () => const Text('loading'),
-              error: (dynamic err, stack) => const Text('error'),
-            );
+          child: Consumer(builder: (c, ref, _) {
+            return ref.watch(futureProviderFamily).when(
+                  data: (value) => Text(value.toString()),
+                  loading: () => const Text('loading'),
+                  error: (dynamic err, stack) => const Text('error'),
+                );
           }),
         ),
       ),
@@ -436,12 +438,12 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer(builder: (c, watch, _) {
-            return watch(futureProviderFamily).when(
-              data: (value) => Text(value.toString()),
-              loading: () => const Text('loading'),
-              error: (dynamic err, stack) => const Text('error'),
-            );
+          child: Consumer(builder: (c, ref, _) {
+            return ref.watch(futureProviderFamily).when(
+                  data: (value) => Text(value.toString()),
+                  loading: () => const Text('loading'),
+                  error: (dynamic err, stack) => const Text('error'),
+                );
           }),
         ),
       ),

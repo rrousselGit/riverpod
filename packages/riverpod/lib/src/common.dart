@@ -6,6 +6,11 @@ import 'stream_provider.dart' show StreamProvider;
 
 part 'common.freezed.dart';
 
+/// Utility for `.name` of provider modifiers.
+String? modifierName(String? from, String modifier) {
+  return from == null ? null : '$from.$modifier';
+}
+
 /// An utility for safely manipulating asynchronous data.
 ///
 /// By using [AsyncValue], you are guaranteed that you cannot forget to
@@ -24,8 +29,8 @@ part 'common.freezed.dart';
 ///
 /// class Example extends ConsumerWidget {
 ///   @override
-///   Widget build(BuildContext context, ScopedReader watch) {
-///     final AsyncValue<User> user = watch(userProvider);
+///   Widget build(BuildContext context, WidgetRef ref) {
+///     final AsyncValue<User> user = ref.watch(userProvider);
 ///
 ///     return user.when(
 ///       loading: () => CircularProgressIndicator(),
@@ -40,9 +45,9 @@ part 'common.freezed.dart';
 /// state, consider using [data] to read the state:
 ///
 /// ```dart
-/// Widget build(BuildContext context, ScopedReader watch) {
+/// Widget build(BuildContext context, WidgetRef ref) {
 ///   // reads the data state directly – will be null during loading/error states
-///   final User user = watch(userProvider).data?.value;
+///   final User user = ref.watch(userProvider).data?.value;
 ///
 ///   return Text('Hello ${user?.name}');
 /// }

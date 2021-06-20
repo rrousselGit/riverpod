@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:crypto/crypto.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'models.freezed.dart';
 part 'models.g.dart';

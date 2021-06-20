@@ -60,8 +60,8 @@ class Home extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Counter example')),
       body: Center(
-        child: Consumer(builder: (context, watch, _) {
-          final count = watch(counterProvider).state;
+        child: Consumer(builder: (context, ref, _) {
+          final count = ref.watch(counterProvider).state;
           return Text('$count');
         }),
       ),

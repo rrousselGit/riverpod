@@ -8,6 +8,25 @@ class Counter extends StateNotifier<int> {
   Counter() : super(0);
 
   void increment() => state++;
+
+  @override
+  int get state => super.state;
+  @override
+  set state(int value) => super.state = value;
+}
+
+ProviderContainer createContainer({
+  ProviderContainer? parent,
+  List<Override> overrides = const [],
+  List<ProviderObserver>? observers,
+}) {
+  final container = ProviderContainer(
+    parent: parent,
+    overrides: overrides,
+    observers: observers,
+  );
+  addTearDown(container.dispose);
+  return container;
 }
 
 List<Object> errorsOf(void Function() cb) {
@@ -16,12 +35,36 @@ List<Object> errorsOf(void Function() cb) {
   return [...errors];
 }
 
-class MayHaveChangedMock<T> extends Mock {
-  void call(ProviderSubscription<T>? sub);
+class OnBuildMock extends Mock {
+  void call();
 }
 
-class DidChangedMock<T> extends Mock {
-  void call(ProviderSubscription<T>? sub);
+class OnDisposeMock extends Mock {
+  void call();
+}
+
+class Listener<T> extends Mock {
+  void call(T? value);
+}
+
+class Selector<Input, Output> extends Mock {
+  Selector(this.fake, Output Function(Input) selector) {
+    when(call(any)).thenAnswer((i) {
+      return selector(
+        i.positionalArguments.first as Input,
+      );
+    });
+  }
+
+  final Output fake;
+
+  Output call(Input? value) {
+    return super.noSuchMethod(
+      Invocation.method(#call, [value]),
+      returnValue: fake,
+      returnValueForMissingStub: fake,
+    ) as Output;
+  }
 }
 
 typedef VerifyOnly = VerificationResult Function<T>(
@@ -44,34 +87,6 @@ VerifyOnly get verifyOnly {
     verifyNoMoreInteractions(mock);
     return result;
   };
-}
-
-extension Legacy<T> on RootProvider<Object?, T> {
-  void Function() watchOwner(
-    ProviderContainer container,
-    void Function(T value) listener,
-  ) {
-    final sub = container.listen<T>(
-      this,
-      mayHaveChanged: (sub) => listener(sub.read()),
-    );
-    listener(sub.read());
-    return sub.close;
-  }
-
-  ProviderSubscription<T> addLazyListener(
-    ProviderContainer container, {
-    required void Function() mayHaveChanged,
-    required void Function(T value) onChange,
-  }) {
-    final sub = container.listen<T>(
-      this,
-      mayHaveChanged: (sub) => mayHaveChanged(),
-      didChange: (sub) => onChange(sub.read()),
-    );
-    onChange(sub.read());
-    return sub;
-  }
 }
 
 // Copied from Flutter
@@ -133,14 +148,14 @@ class _EqualsIgnoringHashCodes extends Matcher {
 
 class ObserverMock extends Mock implements ProviderObserver {
   @override
-  void didDisposeProvider(ProviderBase<Object?, Object?>? provider) {
+  void didDisposeProvider(ProviderBase<Object?>? provider) {
     super.noSuchMethod(
       Invocation.method(#didDisposeProvider, [provider]),
     );
   }
 
   @override
-  void didAddProvider(ProviderBase<Object?, Object?>? provider, Object? value) {
+  void didAddProvider(ProviderBase<Object?>? provider, Object? value) {
     super.noSuchMethod(
       Invocation.method(#didAddProvider, [provider, value]),
     );
@@ -148,16 +163,15 @@ class ObserverMock extends Mock implements ProviderObserver {
 
   @override
   void didUpdateProvider(
-      ProviderBase<Object?, Object?>? provider, Object? newValue) {
+    ProviderBase<Object?>? provider,
+    Object? previousValue,
+    Object? newValue,
+  ) {
     super.noSuchMethod(
-      Invocation.method(#didUpdateProvider, [provider, newValue]),
-    );
-  }
-
-  @override
-  void mayHaveChanged(ProviderBase<Object?, Object?>? provider) {
-    super.noSuchMethod(
-      Invocation.method(#mayHaveChanged, [provider]),
+      Invocation.method(
+        #didUpdateProvider,
+        [provider, previousValue, newValue],
+      ),
     );
   }
 }

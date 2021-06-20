@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+// ignore: unused_import
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Counter extends StateNotifier<int> {
   Counter() : super(1);

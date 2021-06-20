@@ -21,53 +21,66 @@ export 'src/framework.dart'
         RootProvider,
         ProviderBase,
         Override,
-        AutoDisposeProviderReference,
-        ProviderReference,
+        AutoDisposeProviderRefBase,
+        ProviderRefBase,
         ProviderListenable,
         ProviderContainer,
         ProviderObserver,
         ProviderSubscription,
-        FamilyX,
         ProviderException,
         AutoDisposeProviderBase,
-        AutoDisposeProviderElement,
-        ProviderElement,
-        ScopedCreate;
+        AutoDisposeProviderElementBase,
+        ProviderElementBase,
+        ScopedCreate,
+        XFamily,
+        XAutoDisposeFamily,
+        // ignore: deprecated_member_use_from_same_package
+        ProviderReference;
 
 export 'src/future_provider.dart'
     show
         AutoDisposeFutureProvider,
         AutoDisposeFutureProviderFamily,
         FutureProvider,
-        FutureProviderFamily;
+        FutureProviderFamily,
+        AutoDisposeFutureProviderRef,
+        FutureProviderRef;
 
 export 'src/provider.dart'
     show
         AutoDisposeProvider,
         AutoDisposeProviderFamily,
         Provider,
-        ProviderFamily;
+        ProviderFamily,
+        AutoDisposeProviderRef,
+        ProviderRef;
 
 export 'src/state_notifier_provider.dart'
     show
         AutoDisposeStateNotifierProvider,
         AutoDisposeStateNotifierProviderFamily,
         StateNotifierProvider,
-        StateNotifierProviderFamily;
+        StateNotifierProviderFamily,
+        AutoDisposeStateNotifierProviderRef,
+        StateNotifierProviderRef,
+        XAutoDisposeStateNotifierFamily,
+        XStateNotifierFamily;
 
 export 'src/state_provider.dart'
     show
         StateController,
         StateProvider,
-        StateFamilyX,
-        AutoDisposeStateFamilyX,
         AutoDisposeStateProvider,
         AutoDisposeStateProviderFamily,
-        StateProviderFamily;
+        StateProviderFamily,
+        AutoDisposeStateProviderRef,
+        StateProviderRef;
 
 export 'src/stream_provider.dart'
     show
         AutoDisposeStreamProvider,
         AutoDisposeStreamProviderFamily,
         StreamProvider,
-        StreamProviderFamily;
+        StreamProviderFamily,
+        AutoDisposeStreamProviderRef,
+        StreamProviderRef;

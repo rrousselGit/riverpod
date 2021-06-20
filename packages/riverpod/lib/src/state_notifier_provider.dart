@@ -9,6 +9,54 @@ import 'provider.dart';
 part 'state_notifier_provider/auto_dispose.dart';
 part 'state_notifier_provider/base.dart';
 
+class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
+    extends AutoDisposeProviderBase<Notifier> {
+  _AutoDisposeNotifierProvider(this._create, {required String? name})
+      : super(name == null ? null : '$name.notifier');
+
+  final Create<Notifier, AutoDisposeProviderRefBase> _create;
+
+  @override
+  Notifier create(AutoDisposeProviderRefBase ref) {
+    final notifier = _create(ref);
+    ref.onDispose(notifier.dispose);
+    return notifier;
+  }
+
+  @override
+  bool recreateShouldNotify(Notifier previousState, Notifier newState) {
+    return true;
+  }
+
+  @override
+  AutoDisposeProviderElement<Notifier> createElement() {
+    return AutoDisposeProviderElement(this);
+  }
+}
+
+class _NotifierProvider<Notifier extends StateNotifier<Object?>>
+    extends AlwaysAliveProviderBase<Notifier> {
+  _NotifierProvider(this._create, {required String? name})
+      : super(name == null ? null : '$name.notifier');
+
+  final Create<Notifier, ProviderRefBase> _create;
+
+  @override
+  Notifier create(ProviderRefBase ref) {
+    final notifier = _create(ref);
+    ref.onDispose(notifier.dispose);
+    return notifier;
+  }
+
+  @override
+  bool recreateShouldNotify(Notifier previousState, Notifier newState) {
+    return true;
+  }
+
+  @override
+  ProviderElement<Notifier> createElement() => ProviderElement(this);
+}
+
 /// {@template riverpod.statenotifierprovider}
 /// Creates a [StateNotifier] and expose its current state.
 ///
@@ -55,9 +103,9 @@ part 'state_notifier_provider/base.dart';
 /// And finally, you can interact with it inside your UI:
 ///
 /// ```dart
-/// Widget build(BuildContext context, ScopedReader watch) {
+/// Widget build(BuildContext context, WidgetRef ref) {
 ///   // rebuild the widget when the todo list changes
-///   List<Todo> todos = watch(todosProvider);
+///   List<Todo> todos = ref.watch(todosProvider);
 ///
 ///   return ListView(
 ///     children: [
@@ -73,42 +121,16 @@ part 'state_notifier_provider/base.dart';
 /// }
 /// ```
 /// {@endtemplate}
-
-class _StateNotifierProviderState<Notifier extends StateNotifier<Value>, Value>
-    extends ProviderStateBase<Notifier, Value> {
-  void Function()? removeListener;
-
-  @override
-  void valueChanged({Notifier? previous}) {
-    if (createdValue == previous) {
-      return;
-    }
-    removeListener?.call();
-    removeListener = createdValue.addListener(_listener);
-  }
-
-  // ignore: use_setters_to_change_properties
-  void _listener(Value value) {
-    exposedValue = value;
-  }
-
-  @override
-  void dispose() {
-    removeListener?.call();
-    super.dispose();
-  }
-}
-
 mixin _StateNotifierProviderMixin<Notifier extends StateNotifier<Value>, Value>
-    on RootProvider<Notifier, Value> {
-  ProviderBase<Notifier, Notifier> get notifier;
+    on RootProvider<Value> {
+  ProviderBase<Notifier> get notifier;
 
   /// Overrides the behavior of a provider with a value.
   ///
   /// {@macro riverpod.overideWith}
   Override overrideWithValue(Notifier value) {
     return ProviderOverride(
-      ValueProvider<Object?, Notifier>((ref) => value, value),
+      ValueProvider<Notifier>((ref) => value, value),
       notifier,
     );
   }

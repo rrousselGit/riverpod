@@ -1,7 +1,6 @@
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../marvel.dart';
@@ -56,14 +55,14 @@ final character = $family<Character, String>((ref, id) async {
   return character;
 });
 
-class CharacterView extends HookWidget {
+class CharacterView extends HookConsumerWidget {
   const CharacterView({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final id = useProvider(selectedCharacterId);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final id = ref.watch(selectedCharacterId);
 
-    return useProvider(character(id)).when(
+    return ref.watch(character(id)).when(
       loading: () {
         return const Scaffold(
           body: Center(child: CircularProgressIndicator()),

@@ -37,9 +37,9 @@ class StateController<T> extends StateNotifier<T> {
 /// final selectedProductIdProvider = StateProvider<String?>((ref) => null);
 /// final productsProvider = StateNotifierProvider<ProductsNotifier>((ref) => ProductsNotifier());
 ///
-/// Widget build(BuildContext context, ScopedReader watch) {
-///   final List<Product> products = watch(productsProvider);
-///   final selectedProductId = watch(selectedProductIdProvider);
+/// Widget build(BuildContext context, WidgetRef ref) {
+///   final List<Product> products = ref.watch(productsProvider);
+///   final selectedProductId = ref.watch(selectedProductIdProvider);
 ///
 ///   return ListView(
 ///     children: [
@@ -56,27 +56,19 @@ class StateController<T> extends StateNotifier<T> {
 /// }
 /// ```
 /// {@endtemplate}
-mixin _StateProviderStateMixin<T>
-    on ProviderStateBase<StateController<T>, StateController<T>> {
-  void Function()? removeListener;
+StateController<State> _createStateProvider<State>(
+  ProviderElementBase<StateController<State>> ref,
+  State initialState,
+) {
+  final controller = StateController(initialState);
+  ref.onDispose(controller.dispose);
 
-  @override
-  void valueChanged({StateController? previous}) {
-    if (createdValue == previous) {
-      return;
-    }
-
-    removeListener?.call();
-    exposedValue?.dispose();
-    removeListener = createdValue.addListener((state) {
-      exposedValue = createdValue;
-    });
+  void listener(State newState) {
+    ref.notifyListeners();
   }
 
-  @override
-  void dispose() {
-    removeListener?.call();
-    exposedValue!.dispose();
-    super.dispose();
-  }
+  // No need to remove the listener on dispose, since we are disposing the controller
+  controller.addListener(listener, fireImmediately: false);
+
+  return controller;
 }

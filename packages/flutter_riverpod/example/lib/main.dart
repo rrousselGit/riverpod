@@ -22,22 +22,22 @@ class MyApp extends StatelessWidget {
 /// Providers are declared globally and specifies how to create a state
 final counterProvider = StateProvider((ref) => 0);
 
-class Home extends StatelessWidget {
+class Home extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: const Text('Counter example')),
       body: Center(
         // Consumer is a widget that allows you reading providers.
-        // You could also use the hook "useProvider" if you uses flutter_hooks
-        child: Consumer(builder: (context, watch, _) {
-          final count = watch(counterProvider).state;
+        // You could also use the hook "ref.watch(" if you uses flutter_hooks
+        child: Consumer(builder: (context, ref, _) {
+          final count = ref.watch(counterProvider).state;
           return Text('$count');
         }),
       ),
       floatingActionButton: FloatingActionButton(
         // The read method is an utility to read a provider without listening to it
-        onPressed: () => context.read(counterProvider).state++,
+        onPressed: () => ref.read(counterProvider).state++,
         child: const Icon(Icons.add),
       ),
     );

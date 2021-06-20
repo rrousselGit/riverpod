@@ -64,7 +64,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.17.0
-  hooks_riverpod: ^0.14.0+4
+  hooks_riverpod: ^1.0.0-dev.0
 ```
 
 Then run `flutter pub get`.
@@ -80,7 +80,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^0.14.0+3
+  flutter_riverpod: ^1.0.0-dev.0
 ```
 
 Then run `flutter pub get`.
@@ -93,7 +93,7 @@ environment:
   sdk: ">=2.12.0-0 <3.0.0"
 
 dependencies:
-  riverpod: ^0.14.0+3
+  riverpod: ^1.0.0-dev.0
 ```
 
 Then run `pub get`.
@@ -140,13 +140,13 @@ void main() {
   );
 }
 
-// Note: MyApp is a HookWidget, from flutter_hooks.
-class MyApp extends HookWidget {
+// Note: MyApp is a HookConsumerWidget, from flutter_hooks.
+class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context) {
-    // To read our provider, we can use the hook "useProvider".
-    // This is only possible because MyApp is a HookWidget.
-    final String value = useProvider(helloWorldProvider);
+    // To read our provider, we can use the hook "ref.watch(".
+    // This is only possible because MyApp is a HookConsumerWidget.
+    final String value = ref.watch(helloWorldProvider);
 
     return MaterialApp(
       home: Scaffold(
@@ -188,8 +188,8 @@ void main() {
 // Extend ConsumerWidget instead of StatelessWidget, which is exposed by Riverpod
 class MyApp extends ConsumerWidget {
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    final String value = watch(helloWorldProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final String value = ref.watch(helloWorldProvider);
 
     return MaterialApp(
       home: Scaffold(

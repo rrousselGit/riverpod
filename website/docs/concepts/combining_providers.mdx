@@ -174,7 +174,7 @@ final repositoryProvider = Provider((ref) => Repository(ref));
 class Repository {
   Repository(this.ref);
 
-  final ProviderReference ref;
+  final ProviderRefBase ref;
 }
 ```
 
@@ -270,8 +270,8 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 [stateprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider-class.html
 [futureprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/FutureProvider-class.html
 [statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
-[ref]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference-class.html
-[watch]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference/watch.html
-[read]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference/read.html
+[ref]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderRefBase-class.html
+[watch]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderRefBase/watch.html
+[read]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderRefBase/read.html
 [providercontainer.refresh]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer/refresh.html
 [context.refresh]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/BuildContextX/refresh.html

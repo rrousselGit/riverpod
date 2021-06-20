@@ -4,61 +4,47 @@ part of '../framework.dart';
 ///
 /// This is an implementation detail of `overrideWithValue`.
 @sealed
-class ValueProvider<Created, Listened>
-    extends AlwaysAliveProviderBase<Created, Listened> {
+class ValueProvider<State> extends AlwaysAliveProviderBase<State> {
   /// Creates a [ValueProvider].
   ValueProvider(this._create, this._value) : super(null);
 
-  final Created Function(ValueProviderElement<Created, Listened> ref) _create;
+  final State Function(ValueProviderElement<State> ref) _create;
+
+  final State _value;
 
   @override
-  Created create(covariant ValueProviderElement<Created, Listened> ref) =>
-      _create(ref);
-
-  final Listened _value;
+  State create(ValueProviderElement<State> ref) => _create(ref);
 
   @override
-  _ValueProviderState<Created, Listened> createState() {
-    return _ValueProviderState();
+  bool recreateShouldNotify(State previousState, State newState) {
+    return true;
   }
 
   @override
-  ValueProviderElement<Created, Listened> createElement() {
+  ValueProviderElement<State> createElement() {
     return ValueProviderElement(this);
   }
 }
 
-/// The [ProviderElement] of a [ValueProvider]
+/// The [ProviderElementBase] of a [ValueProvider]
 @sealed
-class ValueProviderElement<Created, Listened>
-    extends ProviderElement<Created, Listened> {
-  /// The [ProviderElement] of a [ValueProvider]
+class ValueProviderElement<State> extends ProviderElementBase<State> {
+  /// The [ProviderElementBase] of a [ValueProvider]
   ValueProviderElement(
-    ValueProvider<Created, Listened> provider,
+    ValueProvider<State> provider,
   ) : super(provider);
 
   /// A custom listener called when `overrideWithValue` changes
   /// with a different value.
-  void Function(Listened value)? onChange;
+  void Function(State value)? onChange;
 
   @override
-  void update(ProviderBase<Created, Listened> newProvider) {
+  void update(ProviderBase<State> newProvider) {
     super.update(newProvider);
-    final newValue = (provider as ValueProvider<Created, Listened>)._value;
-    if (newValue != state._exposedValue) {
-      state.exposedValue = newValue;
+    final newValue = (provider as ValueProvider<State>)._value;
+    if (newValue != _state) {
+      state = newValue;
       onChange?.call(newValue);
     }
-  }
-}
-
-@sealed
-class _ValueProviderState<Created, Listened>
-    extends ProviderStateBase<Created, Listened> {
-  @override
-  void valueChanged({Object? previous}) {
-    exposedValue =
-        ((ref as ProviderElement).provider as ValueProvider<Created, Listened>)
-            ._value;
   }
 }

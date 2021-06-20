@@ -1,19 +1,17 @@
 part of '../stream_provider.dart';
 
+/// {@macro riverpod.providerrefbase}
+/// - [ProviderRef.state], the value currently exposed by this providers.
+typedef StreamProviderRef<State> = ProviderRef<AsyncValue<State>>;
+
 /// {@macro riverpod.streamprovider}
 @sealed
-class StreamProvider<T>
-    extends AlwaysAliveProviderBase<Stream<T>, AsyncValue<T>>
+class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
     with
-        ProviderOverridesMixin<Stream<T>, AsyncValue<T>>,
-        _StreamProviderMixin<T> {
+        ProviderOverridesMixin<AsyncValue<State>>,
+        _StreamProviderMixin<State> {
   /// {@macro riverpod.streamprovider}
   StreamProvider(this._create, {String? name}) : super(name);
-
-  final Create<Stream<T>, ProviderReference> _create;
-
-  @override
-  Stream<T> create(ProviderReference ref) => _create(ref);
 
   /// {@macro riverpod.family}
   static const family = StreamProviderFamilyBuilder();
@@ -21,50 +19,50 @@ class StreamProvider<T>
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStreamProviderBuilder();
 
-  AlwaysAliveProviderBase<Stream<T>, Stream<T>>? _stream;
-  @override
-  AlwaysAliveProviderBase<Stream<T>, Stream<T>> get stream {
-    return _stream ??= _CreatedStreamProvider(
-      this,
-      name: name == null ? null : '$name.stream',
-    );
-  }
-
-  AlwaysAliveProviderBase<Object?, Future<T>>? _last;
-  @override
-  AlwaysAliveProviderBase<Object?, Future<T>> get last {
-    return _last ??= Provider(
-      (ref) => _readLast(ref as ProviderElement, this),
-      name: name == null ? null : '$name.last',
-    );
-  }
+  final Create<Stream<State>, StreamProviderRef<State>> _create;
 
   @override
-  _StreamProviderState<T> createState() => _StreamProviderState();
+  late final AlwaysAliveProviderBase<Stream<State>> stream = Provider((ref) {
+    return asyncValueToStream(this, ref as ProviderElementBase<Stream<State>>);
+  }, name: modifierName(name, 'stream'));
+
+  @override
+  late final AlwaysAliveProviderBase<Future<State>> last =
+      AsyncValueAsFutureProvider(this, modifierName(name, 'last'));
+
+  @override
+  AsyncValue<State> create(StreamProviderRef<State> ref) {
+    return _listenStream(() => _create(ref), ref);
+  }
+
+  @override
+  bool recreateShouldNotify(
+    AsyncValue<State> previousState,
+    AsyncValue<State> newState,
+  ) {
+    return true;
+  }
+
+  @override
+  ProviderElement<AsyncValue<State>> createElement() => ProviderElement(this);
 }
-
-@sealed
-class _StreamProviderState<T> = ProviderStateBase<Stream<T>, AsyncValue<T>>
-    with _StreamProviderStateMixin<T>;
 
 /// {@template riverpod.streamprovider.family}
 /// A class that allows building a [StreamProvider] from an external parameter.
 /// {@endtemplate}
 @sealed
-class StreamProviderFamily<T, A> extends Family<Stream<T>, AsyncValue<T>, A,
-    ProviderReference, StreamProvider<T>> {
+class StreamProviderFamily<State, Arg>
+    extends Family<AsyncValue<State>, Arg, StreamProvider<State>> {
   /// {@macro riverpod.streamprovider.family}
-  StreamProviderFamily(
-    Stream<T> Function(ProviderReference ref, A a) create, {
-    String? name,
-  }) : super(create, name);
+  StreamProviderFamily(this._create, {String? name}) : super(name);
+
+  final FamilyCreate<Stream<State>, StreamProviderRef<State>, Arg> _create;
 
   @override
-  StreamProvider<T> create(
-    A value,
-    Stream<T> Function(ProviderReference ref, A param) builder,
-    String? name,
-  ) {
-    return StreamProvider((ref) => builder(ref, value), name: name);
+  StreamProvider<State> create(Arg argument) {
+    return StreamProvider<State>(
+      (ref) => _create(ref, argument),
+      name: name,
+    );
   }
 }
