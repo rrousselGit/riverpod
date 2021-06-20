@@ -19,7 +19,7 @@ typedef OnProviderChange<T> = void Function(BuildContext context, T value);
 /// Even if a provider changes many times in a quick succession, [onChange] will
 /// be called only once, at the end of the frame.
 /// {@endtemplate}
-@Deprecated('Use WidgetReference.listen instead')
+@Deprecated('Use WidgetRef.listen instead')
 @sealed
 class ProviderListener<T> extends ConsumerWidget {
   /// {@macro riverpod.providerlistener}

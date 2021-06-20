@@ -26,9 +26,11 @@ void main() {
       final provider = StateProvider((ref) => 0);
       final key = GlobalKey();
       BuildContext? context;
+      final container = createContainer();
 
       await tester.pumpWidget(
-        ProviderScope(
+        UncontrolledProviderScope(
+          container: container,
           child: ProviderListener<StateController<int>>(
             key: key,
             provider: provider,
@@ -37,6 +39,8 @@ void main() {
           ),
         ),
       );
+
+      container.read(provider).state++;
 
       expect(context, key.currentContext);
     });

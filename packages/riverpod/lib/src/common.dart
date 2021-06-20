@@ -29,7 +29,7 @@ String? modifierName(String? from, String modifier) {
 ///
 /// class Example extends ConsumerWidget {
 ///   @override
-///   Widget build(BuildContext context, WidgetReference ref) {
+///   Widget build(BuildContext context, WidgetRef ref) {
 ///     final AsyncValue<User> user = ref.watch(userProvider);
 ///
 ///     return user.when(
@@ -45,7 +45,7 @@ String? modifierName(String? from, String modifier) {
 /// state, consider using [data] to read the state:
 ///
 /// ```dart
-/// Widget build(BuildContext context, WidgetReference ref) {
+/// Widget build(BuildContext context, WidgetRef ref) {
 ///   // reads the data state directly – will be null during loading/error states
 ///   final User user = ref.watch(userProvider).data?.value;
 ///

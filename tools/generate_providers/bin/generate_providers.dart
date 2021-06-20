@@ -135,7 +135,7 @@ const _familyDoc = r'''
 ///   // ...
 ///
 ///   @override
-///   Widget build(BuildContext context, WidgetReference ref) {
+///   Widget build(BuildContext context, WidgetRef ref) {
 ///     final locale = Localizations.localeOf(context);
 ///
 ///     // Obtains the title based on the current Locale.
@@ -157,7 +157,7 @@ const _familyDoc = r'''
 ///   // ...
 ///
 ///   @override
-///   Widget build(BuildContext context, WidgetReference ref) {
+///   Widget build(BuildContext context, WidgetRef ref) {
 ///     int userId; // Read the user ID from somewhere
 ///
 ///     // Read and potentially fetch the user with id `userId`.
@@ -202,7 +202,7 @@ const _familyDoc = r'''
 /// The usual:
 /// 
 /// ```dart
-/// Widget build(BuildContext, WidgetReference ref) {
+/// Widget build(BuildContext context, WidgetRef ref) {
 ///   // Error – messagesFamily is not a provider
 ///   final response = ref.watch(messagesFamily);
 /// }
@@ -212,7 +212,7 @@ const _familyDoc = r'''
 /// Instead, we need to pass a parameter to `messagesFamily`:
 ///
 /// ```dart
-/// Widget build(BuildContext, WidgetReference ref) {
+/// Widget build(BuildContext context, WidgetRef ref) {
 ///   final response = ref.watch(messagesFamily('id'));
 /// }
 /// ```
@@ -223,7 +223,7 @@ const _familyDoc = r'''
 ///
 /// ```dart
 /// @override
-/// Widget build(BuildContext context, WidgetReference ref) {
+/// Widget build(BuildContext context, WidgetRef ref) {
 ///   final frenchTitle = ref.watch(titleFamily(const Locale('fr')));
 ///   final englishTitle = ref.watch(titleFamily(const Locale('en')));
 ///
@@ -282,7 +282,7 @@ const _familyDoc = r'''
 ///   });
 ///
 ///   @override
-///   Widget build(BuildContext context, WidgetReference ref) {
+///   Widget build(BuildContext context, WidgetRef ref) {
 ///     int userId; // Read the user ID from somewhere
 ///     final locale = Localizations.localeOf(context);
 ///
@@ -314,7 +314,7 @@ const _familyDoc = r'''
 ///   });
 ///
 ///   @override
-///   Widget build(BuildContext context, WidgetReference ref) {
+///   Widget build(BuildContext context, WidgetRef ref) {
 ///     int userId; // Read the user ID from somewhere
 ///     final locale = Localizations.localeOf(context);
 ///

@@ -138,6 +138,58 @@ void main() {
     });
 
     group('.listen', () {
+      test('.read on closed subscription throws', () {
+        final notifier = Counter();
+        final provider = StateNotifierProvider<Counter, int>((_) => notifier);
+        final container = createContainer();
+        final listener = Listener<int>();
+
+        final sub = container.listen(provider, listener, fireImmediately: true);
+
+        verify(listener(0)).called(1);
+        verifyNoMoreInteractions(listener);
+
+        sub.close();
+        notifier.increment();
+
+        expect(sub.read, throwsStateError);
+
+        verifyNoMoreInteractions(listener);
+      });
+
+      test('.read on closed selector subscription throws', () {
+        final notifier = Counter();
+        final provider = StateNotifierProvider<Counter, int>((_) => notifier);
+        final container = createContainer();
+        final listener = Listener<int>();
+
+        final sub = container.listen(
+          provider.select((value) => value * 2),
+          listener,
+          fireImmediately: true,
+        );
+
+        verify(listener(0)).called(1);
+        verifyNoMoreInteractions(listener);
+
+        sub.close();
+        notifier.increment();
+
+        expect(sub.read, throwsStateError);
+        verifyNoMoreInteractions(listener);
+      });
+
+      test("doesn't trow when creating a provider that failed", () {
+        final container = createContainer();
+        final provider = Provider((ref) {
+          throw Error();
+        });
+
+        final sub = container.listen(provider, (_) {});
+
+        expect(sub, isA<ProviderSubscription>());
+      });
+
       test('selectors fireImmediately', () {
         final container = createContainer();
         final provider =

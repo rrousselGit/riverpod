@@ -37,7 +37,7 @@ class StateController<T> extends StateNotifier<T> {
 /// final selectedProductIdProvider = StateProvider<String?>((ref) => null);
 /// final productsProvider = StateNotifierProvider<ProductsNotifier>((ref) => ProductsNotifier());
 ///
-/// Widget build(BuildContext context, WidgetReference ref) {
+/// Widget build(BuildContext context, WidgetRef ref) {
 ///   final List<Product> products = ref.watch(productsProvider);
 ///   final selectedProductId = ref.watch(selectedProductIdProvider);
 ///

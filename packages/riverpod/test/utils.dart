@@ -168,7 +168,10 @@ class ObserverMock extends Mock implements ProviderObserver {
     Object? newValue,
   ) {
     super.noSuchMethod(
-      Invocation.method(#didUpdateProvider, [provider, newValue]),
+      Invocation.method(
+        #didUpdateProvider,
+        [provider, previousValue, newValue],
+      ),
     );
   }
 }

@@ -5,6 +5,8 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
+import '../utils.dart';
+
 Matcher isProvider(RootProvider provider) {
   return isA<ProviderElementBase>().having(
     (e) => e.origin,
@@ -16,34 +18,24 @@ Matcher isProvider(RootProvider provider) {
 void main() {
   // TODO flushing inside mayHaveChanged calls onChanged only after all mayHaveChanged were executed
 
-  test('ProviderObservers can have const constructors', () {
-    final root = ProviderContainer(
-      observers: [
-        const ConstObserver(),
-      ],
-    );
-
-    root.dispose();
-  });
-
   test('disposing parent container when child container is not dispose throws',
       () {
-    final root = ProviderContainer();
-    ProviderContainer(parent: root);
+    final root = createContainer();
+    createContainer(parent: root);
 
     expect(root.dispose, throwsStateError);
   });
 
   test('throw if locally overriding a provider', () {
     final provider = Provider((_) => 42);
-    final root = ProviderContainer(overrides: [
+    final root = createContainer(overrides: [
       provider.overrideWithProvider(Provider((_) => 21)),
     ]);
 
     expect(root.read(provider), 21);
 
     expect(
-      () => ProviderContainer(
+      () => createContainer(
         parent: root,
         overrides: [provider.overrideWithProvider(Provider((_) => 84))],
       ),
@@ -53,14 +45,14 @@ void main() {
 
   test('throw if locally overriding a family', () {
     final provider = Provider.family<int, int>((_, id) => id * 2);
-    final root = ProviderContainer(overrides: [
+    final root = createContainer(overrides: [
       provider.overrideWithProvider((id) => Provider((ref) => id)),
     ]);
 
     expect(root.read(provider(21)), 21);
 
     expect(
-      () => ProviderContainer(
+      () => createContainer(
         parent: root,
         overrides: [
           provider.overrideWithProvider((id) => Provider((ref) => id * 3)),
@@ -70,24 +62,24 @@ void main() {
     );
   });
 
-  // test('hasListeners', () {
-  //   final container = ProviderContainer();
-  //   final provider = Provider((_) => 42);
+  test('hasListeners', () {
+    final container = createContainer();
+    final provider = Provider((_) => 42);
 
-  //   expect(container.read(provider), 42);
+    expect(container.read(provider), 42);
 
-  //   final state = container.debugProviderElements.single;
+    final state = container.getAllProviderElements().single;
 
-  //   expect(state.hasListeners, false);
+    expect(state.hasListeners, false);
 
-  //   final sub = container.listen(provider, (_) {});
+    final sub = container.listen(provider, (_) {});
 
-  //   expect(state.hasListeners, true);
+    expect(state.hasListeners, true);
 
-  //   sub.close();
+    sub.close();
 
-  //   expect(state.hasListeners, false);
-  // });
+    expect(state.hasListeners, false);
+  });
 
   test('test two families one overriden the other not', () {
     var callCount = 0;
@@ -100,7 +92,7 @@ void main() {
       callCount2++;
       return '$value 2';
     });
-    final container = ProviderContainer(overrides: [
+    final container = createContainer(overrides: [
       family.overrideWithProvider(
         (value) => Provider((ref) => 'override $value'),
       ),
@@ -118,7 +110,7 @@ void main() {
   test('changing the override type at a given index throws', () {
     final provider = Provider((ref) => 0);
     final family = Provider.family<int, int>((ref, value) => 0);
-    final container = ProviderContainer(overrides: [
+    final container = createContainer(overrides: [
       family.overrideWithProvider((value) => Provider((ref) => 0)),
     ]);
 
@@ -132,7 +124,7 @@ void main() {
 
   test('last family override is applied', () {
     final family = Provider.family<int, int>((ref, value) => 0);
-    final container = ProviderContainer(overrides: [
+    final container = createContainer(overrides: [
       family.overrideWithProvider((value) => Provider((ref) => 1)),
     ]);
 
@@ -146,145 +138,6 @@ void main() {
     expect(container.read(family(1)), 2);
   });
 
-  // test('guard listeners', () {
-  //   final notifier = Counter();
-  //   final provider = StateNotifierProvider<Counter, int>((_) => notifier);
-  //   final container = ProviderContainer();
-  //   final listener = ListenerMock();
-  //   final listener2 = ListenerMock();
-
-  //   final firstErrors = <Object>[];
-  //   runZonedGuarded(
-  //     () => provider.watchOwner(container, (value) {
-  //       listener(value);
-  //       // ignore: only_throw_errors
-  //       throw value;
-  //     }),
-  //     (err, _) => firstErrors.add(err),
-  //   );
-
-  //   verify(listener(0)).called(1);
-  //   verifyNoMoreInteractions(listener);
-  //   expect(firstErrors, [0]);
-
-  //   provider.watchOwner(container, listener2);
-
-  //   verify(listener2(0)).called(1);
-  //   verifyNoMoreInteractions(listener2);
-
-  //   final secondErrors = <Object>[];
-  //   runZonedGuarded(
-  //     notifier.increment,
-  //     (err, _) => secondErrors.add(err),
-  //   );
-
-  //   expect(secondErrors, [1]);
-  //   expect(firstErrors, [0]);
-  //   verifyInOrder([
-  //     listener(1),
-  //     listener2(1),
-  //   ]);
-  //   verifyNoMoreInteractions(listener);
-  //   verifyNoMoreInteractions(listener2);
-  // });
-
-  // test('reading unflushed triggers flush', () {
-  //   final notifier = Counter();
-  //   final provider = StateNotifierProvider<Counter, int>((_) => notifier);
-  //   final container = ProviderContainer();
-  //   var callCount = 0;
-  //   final computed = Provider((ref) {
-  //     callCount++;
-  //     return ref.watch(provider);
-  //   });
-  //   final listener = ListenerMock();
-  //   final listener2 = ListenerMock();
-
-  //   final sub = computed.addLazyListener(
-  //     container,
-  //     mayHaveChanged: () {},
-  //     onChange: listener,
-  //   );
-
-  //   verify(listener(0)).called(1);
-  //   verifyNoMoreInteractions(listener);
-  //   expect(callCount, 1);
-
-  //   notifier.increment();
-
-  //   verifyNoMoreInteractions(listener);
-
-  //   final sub2 = computed.addLazyListener(
-  //     container,
-  //     mayHaveChanged: () {},
-  //     onChange: listener2,
-  //   );
-
-  //   expect(callCount, 2);
-  //   verifyOnly(listener, listener(1));
-  //   verifyOnly(listener2, listener2(1));
-
-  //   expect(sub.flush(), false);
-
-  //   verifyNoMoreInteractions(listener);
-  //   verifyNoMoreInteractions(listener2);
-  //   expect(callCount, 2);
-
-  //   expect(sub2.flush(), isFalse);
-  //   verifyNoMoreInteractions(listener);
-  //   verifyNoMoreInteractions(listener2);
-  // });
-
-  // test('flusing closed subscription throws', () {
-  //   final notifier = Counter();
-  //   final provider = StateNotifierProvider<Counter, int>((_) => notifier);
-  //   final container = ProviderContainer();
-  //   final listener = ListenerMock();
-  //   final mayHaveChanged = MockMarkMayHaveChanged();
-
-  //   final sub = provider.addLazyListener(
-  //     container,
-  //     mayHaveChanged: mayHaveChanged,
-  //     onChange: listener,
-  //   );
-
-  //   verify(listener(0)).called(1);
-  //   verifyNoMoreInteractions(listener);
-  //   verifyNoMoreInteractions(mayHaveChanged);
-
-  //   sub.close();
-  //   notifier.increment();
-
-  //   expect(sub.flush, throwsStateError);
-
-  //   verifyNoMoreInteractions(listener);
-  // });
-
-  // test('reading closed subscription is throws', () {
-  //   final notifier = Counter();
-  //   final provider = StateNotifierProvider<Counter, int>((_) => notifier);
-  //   final container = ProviderContainer();
-  //   final listener = ListenerMock();
-  //   final mayHaveChanged = MockMarkMayHaveChanged();
-
-  //   final sub = provider.addLazyListener(
-  //     container,
-  //     mayHaveChanged: mayHaveChanged,
-  //     onChange: listener,
-  //   );
-
-  //   verify(listener(0)).called(1);
-  //   verifyNoMoreInteractions(listener);
-  //   verifyNoMoreInteractions(mayHaveChanged);
-
-  //   sub.close();
-  //   notifier.increment();
-
-  //   expect(sub.read, throwsStateError);
-
-  //   verifyNoMoreInteractions(listener);
-  // });
-
   test("can't call onDispose inside onDispose", () {
     final provider = Provider((ref) {
       ref.onDispose(() {
@@ -292,7 +145,7 @@ void main() {
       });
       return ref;
     });
-    final container = ProviderContainer();
+    final container = createContainer();
 
     container.read(provider);
 
@@ -310,7 +163,7 @@ void main() {
       });
       return ref;
     });
-    final container = ProviderContainer();
+    final container = createContainer();
 
     container.read(provider);
 
@@ -328,7 +181,7 @@ void main() {
       });
       return ref;
     });
-    final container = ProviderContainer();
+    final container = createContainer();
 
     container.read(provider);
 
@@ -338,64 +191,17 @@ void main() {
     expect(errors, [isStateError]);
   });
 
-  // test('container.debugProviderValues', () {
-  //   final unnamed = Provider((_) => 0);
-  //   final counter = Counter();
-  //   final named = StateNotifierProvider<Counter, int>((_) {
-  //     return counter;
-  //   }, name: 'named');
-  //   final container = ProviderContainer();
-
-  //   expect(container.debugProviderValues, <RootProvider, Object>{});
-
-  //   expect(container.read(unnamed), 0);
-
-  //   expect(container.debugProviderValues, {
-  //     unnamed: 0,
-  //   });
-
-  //   expect(container.read(named.notifier), counter);
-
-  //   expect(container.debugProviderValues, {
-  //     unnamed: 0,
-  //     named.notifier: counter,
-  //   });
-
-  //   expect(container.read(named), 0);
-
-  //   expect(container.debugProviderValues, {
-  //     unnamed: 0,
-  //     named.notifier: counter,
-  //     named: 0,
-  //   });
-  // });
-
   test('disposing an already disposed container is no-op', () {
-    final container = ProviderContainer();
+    final container = createContainer();
 
     container.dispose();
     container.dispose();
   });
 
-  // test('cannot call markMayHaveChanged after dispose', () {
-  //   final container = ProviderContainer();
-  //   final provider = Provider((ref) {});
-
-  //   final element = container.readProviderElement(provider);
-
-  //   container.dispose();
-
-  //   expect(
-  //     // ignore: invalid_use_of_protected_member
-  //     element.notifyMayHaveChanged,
-  //     throwsStateError,
-  //   );
-  // });
-
   test('Owner.read', () {
     final provider = Provider((ref) => 0);
     final provider2 = Provider((ref) => 1);
-    final container = ProviderContainer();
+    final container = createContainer();
 
     final value1 = container.read(provider);
     final value2 = container.read(provider);
@@ -415,7 +221,7 @@ void main() {
     var callCount = 0;
     final provider = Provider((_) => callCount++);
 
-    final container = ProviderContainer(
+    final container = createContainer(
       overrides: [provider.overrideWithProvider(provider)],
     );
 
@@ -445,7 +251,7 @@ void main() {
       return ref.watch(provider2) + 1;
     });
 
-    final container = ProviderContainer();
+    final container = createContainer();
     expect(
       () => container.read(provider),
       throwsA(isA<ProviderException>()),
@@ -465,7 +271,7 @@ void main() {
       return () => ref.watch(provider2) + 1;
     });
 
-    final container = ProviderContainer();
+    final container = createContainer();
     expect(
       () => container.read(provider)(),
       throwsA(isA<ProviderException>()),
@@ -473,7 +279,7 @@ void main() {
   });
 
   test('circular dependencies #2', () {
-    final container = ProviderContainer();
+    final container = createContainer();
 
     final provider = Provider((ref) => ref);
     final provider1 = Provider((ref) => ref);
@@ -490,27 +296,27 @@ void main() {
   });
 
   test('dispose providers in dependency order (simple)', () {
-    final container = ProviderContainer();
-    final onDispose1 = OnDisposeMock('1');
-    final onDispose2 = OnDisposeMock('2');
-    final onDispose3 = OnDisposeMock('3');
+    final container = createContainer();
+    final onDispose1 = OnDisposeMock();
+    final onDispose2 = OnDisposeMock();
+    final onDispose3 = OnDisposeMock();
 
     final provider1 = Provider((ref) {
       ref.onDispose(onDispose1);
       return 1;
-    }, name: '1');
+    });
 
     final provider2 = Provider((ref) {
       final value = ref.watch(provider1);
       ref.onDispose(onDispose2);
       return value + 1;
-    }, name: '2');
+    });
 
     final provider3 = Provider((ref) {
       final value = ref.watch(provider2);
       ref.onDispose(onDispose3);
       return value + 1;
-    }, name: '3');
+    });
 
     expect(container.read(provider3), 3);
 
@@ -527,7 +333,7 @@ void main() {
   });
 
   test('ProviderRefBase is unusable after dispose (read/onDispose)', () {
-    final container = ProviderContainer();
+    final container = createContainer();
     late ProviderElement ref;
     final provider = Provider((s) {
       ref = s as ProviderElement;
@@ -554,7 +360,7 @@ void main() {
       ref.onDispose(onDispose);
       throw error;
     });
-    final container = ProviderContainer();
+    final container = createContainer();
 
     expect(() => container.read(provider), throwsA(isA<ProviderException>()));
     expect(callCount, 1);
@@ -580,7 +386,7 @@ void main() {
     // test('calls onChange at most once per flush', () {
     //   final counter = Counter();
     //   final provider = StateNotifierProvider<Counter, int>((_) => counter);
-    //   final container = ProviderContainer();
+    //   final container = createContainer();
     //   final mayHaveChanged = MockMarkMayHaveChanged();
     //   final listener = ListenerMock();
 
@@ -626,7 +432,7 @@ void main() {
     // test('noop if no provider was "dirty"', () {
     //   final counter = Counter();
     //   final provider = StateNotifierProvider<Counter, int>((_) => counter);
-    //   final container = ProviderContainer();
+    //   final container = createContainer();
     //   final mayHaveChanged = MockMarkMayHaveChanged();
     //   final listener = ListenerMock();
 
@@ -657,7 +463,7 @@ void main() {
     // });
 
     // test('on update`', () async {
-    //   final container = ProviderContainer();
+    //   final container = createContainer();
     //   final counter = Counter();
     //   final provider = StateNotifierProvider<Counter, int>((_) => counter);
     //   final mayHaveChanged = MockMarkMayHaveChanged();
@@ -685,7 +491,7 @@ void main() {
     // });
 
     // test('in dependency order', () async {
-    //   final container = ProviderContainer();
+    //   final container = createContainer();
     //   final counter = Counter();
     //   final counter2 = Counter();
     //   final counter3 = Counter();
@@ -787,33 +593,10 @@ class ListenerMock extends Mock {
   }
 }
 
-class Counter extends StateNotifier<int> {
-  Counter([int initialValue = 0]) : super(initialValue);
-
-  void increment() => state++;
-}
-
-class OnDisposeMock extends Mock {
-  OnDisposeMock([this.debugLabel = '']);
-
-  final String debugLabel;
-
-  void call();
-
-  @override
-  String toString() {
-    return 'OnDisposeMock($debugLabel)';
-  }
-}
-
 class MockMarkMayHaveChanged extends Mock {
   void call();
 }
 
 class MockDidUpdateProvider extends Mock {
   void call();
-}
-
-class ConstObserver extends ProviderObserver {
-  const ConstObserver();
 }

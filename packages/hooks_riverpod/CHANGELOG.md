@@ -205,7 +205,7 @@ Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstance
     const MyWidget({Key? key}) : super(key: key);
 
     @override
-    Widget build(BuildContext context, WidgetReference ref) {
+    Widget build(BuildContext context, WidgetRef ref) {
       final value = watch(myProvider);
       return Text('$value');
     }

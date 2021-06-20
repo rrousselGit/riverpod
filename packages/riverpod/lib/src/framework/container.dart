@@ -406,31 +406,6 @@ class ProviderContainer {
     return _stateReaders.values;
   }
 
-  // /// Visit all nodes of the graph at least once, from leaves to roots.
-  // ///
-  // /// This is a breadth-first traversal algorithm that does **not** remove duplicates,
-  // /// so it is possible for the same element to be visited multiple times.
-  // ///
-  // /// The visitor can return `true` if it wants to visit the ancestors of that
-  // /// element too. Otherwise it can return false.
-  // void _visitAllElementsInOrder(
-  //   bool Function(ProviderElementBase element) visitor,
-  // ) {
-  //   // TODO test that `listen` is handled
-  //   void visitAncestors(ProviderElementBase element) {
-  //     if (visitor(element)) {
-  //       element.visitAncestors(visitAncestors);
-  //     }
-  //   }
-
-  //   // visit leaves first
-  //   for (final element in _stateReaders.values) {
-  //     if (!element.hasChildren) {
-  //       visitAncestors(element);
-  //     }
-  //   }
-  // }
-
   /// Visit all nodes of the graph at most once, from roots to leaves.
   ///
   /// This is fairly expensive and should be avoided as much as possible.

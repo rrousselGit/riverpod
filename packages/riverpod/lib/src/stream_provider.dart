@@ -13,34 +13,6 @@ part 'stream_provider/auto_dispose.dart';
 part 'stream_provider/base.dart';
 
 mixin _StreamProviderMixin<T> on RootProvider<AsyncValue<T>> {
-  // Override overrideWithValue(AsyncValue<T> value) {
-  //   return ProviderOverride(
-  //     ValueProvider<Stream<T>, AsyncValue<T>>((ref) {
-  //       AsyncValue<T>? lastValue;
-  //       final controller = StreamController<T>();
-  //       ref.onDispose(controller.close);
-
-  //       ref.onChange = (newValue) {
-  //         newValue.when(
-  //           data: controller.add,
-  //           loading: () {
-  //             if (lastValue != null && lastValue is! AsyncLoading) {
-  //               // ref.markMustRecomputeState();
-  //             }
-  //           },
-  //           error: controller.addError,
-  //         );
-  //         lastValue = newValue;
-  //       };
-
-  //       ref.onChange!(value);
-
-  //       return controller.stream.asBroadcastStream();
-  //     }, value),
-  //     this,
-  //   );
-  // }
-
   /// Exposes the [Stream] created by a [StreamProvider].
   ///
   /// The stream obtained is not strictly identical to the stream created.
@@ -181,7 +153,7 @@ mixin _StreamProviderMixin<T> on RootProvider<AsyncValue<T>> {
 /// Which the UI can then listen:
 ///
 /// ```dart
-/// Widget build(BuildContext, WidgetReference ref) {
+/// Widget build(BuildContext context, WidgetRef ref) {
 ///   AsyncValue<String> message = ref.watch(messageProvider);
 ///
 ///   return message.when(

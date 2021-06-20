@@ -188,7 +188,7 @@ void main() {
 // Extend ConsumerWidget instead of StatelessWidget, which is exposed by Riverpod
 class MyApp extends ConsumerWidget {
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final String value = ref.watch(helloWorldProvider);
 
     return MaterialApp(

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
@@ -8,36 +9,34 @@ import '../../utils.dart';
 
 void main() {
   late ProviderContainer container;
-  // final mayHaveChanged = MayHaveChangedMock<int>();
-  // final didChange = DidChangedMock<int>();
+  final didChange = Listener<int>();
 
   setUp(() {
-    container = ProviderContainer();
+    container = createContainer();
   });
 
   tearDown(() {
-    // reset(mayHaveChanged);
-    // reset(didChange);
+    reset(didChange);
     container.dispose();
   });
 
   test('ProviderContainer.children', () {
-    final root = ProviderContainer();
+    final root = createContainer();
 
     expect(root.debugChildren, isEmpty);
 
-    final mid = ProviderContainer(parent: root);
+    final mid = createContainer(parent: root);
 
     expect(root.debugChildren, containsAll(<ProviderContainer>[mid]));
     expect(mid.debugChildren, isEmpty);
 
-    final mid2 = ProviderContainer(parent: root);
+    final mid2 = createContainer(parent: root);
 
     expect(root.debugChildren, containsAll(<ProviderContainer>[mid, mid2]));
     expect(mid.debugChildren, isEmpty);
     expect(mid2.debugChildren, isEmpty);
 
-    final leaf = ProviderContainer(parent: mid);
+    final leaf = createContainer(parent: mid);
 
     expect(root.debugChildren, containsAll(<ProviderContainer>[mid, mid2]));
     expect(mid.debugChildren, containsAll(<ProviderContainer>[leaf]));
@@ -63,8 +62,8 @@ void main() {
   });
 
   test('ProviderRefBase.container exposes the root container', () {
-    final root = ProviderContainer();
-    final container = ProviderContainer(parent: root);
+    final root = createContainer();
+    final container = createContainer(parent: root);
     final provider = Provider((ref) => ref);
 
     expect(container.read(provider).container, root);
@@ -155,37 +154,37 @@ void main() {
       expect(callCount, 1);
     });
 
-    //   test(
-    //       'recomputing a provider calls onDispose and clear the dispose listeners',
-    //       () {
-    //     final onDispose = OnDisposeMock();
-    //     final build = BuildMock();
-    //     final provider = Provider((ref) {
-    //       build();
-    //       ref.onDispose(onDispose);
-    //     });
-    //     final container = ProviderContainer();
+    test(
+        'recomputing a provider calls onDispose and clear the dispose listeners',
+        () {
+      final onDispose = OnDisposeMock();
+      var buildCount = 0;
+      final provider = Provider((ref) {
+        buildCount++;
+        ref.onDispose(onDispose);
+      });
+      final container = createContainer();
 
-    //     container.read(provider);
+      container.read(provider);
 
-    //     verifyOnly(build, build());
-    //     verifyZeroInteractions(onDispose);
+      expect(buildCount, 1);
+      verifyZeroInteractions(onDispose);
 
-    //     container.refresh(provider);
+      container.refresh(provider);
 
-    //     verifyOnly(build, build());
-    //     verifyOnly(onDispose, onDispose());
+      expect(buildCount, 2);
+      verifyOnly(onDispose, onDispose());
 
-    //     container.refresh(provider);
+      container.refresh(provider);
 
-    //     verifyOnly(build, build());
-    //     verifyOnly(onDispose, onDispose());
-    //   });
+      expect(buildCount, 3);
+      verifyOnly(onDispose, onDispose());
+    });
   });
 
   test('disposing child container does not dispose the providers', () {
-    final container = ProviderContainer();
-    final child = ProviderContainer(parent: container);
+    final container = createContainer();
+    final child = createContainer(parent: container);
     var disposed = false;
     final provider = Provider((ref) {
       ref.onDispose(() => disposed = true);
@@ -205,10 +204,10 @@ void main() {
 
   test('child container uses root overrides', () {
     final provider = Provider((ref) => 0);
-    final container = ProviderContainer(
+    final container = createContainer(
       overrides: [provider.overrideWithValue(42)],
     );
-    final child = ProviderContainer(parent: container);
+    final child = createContainer(parent: container);
 
     expect(child.read(provider), 42);
   });
@@ -236,34 +235,43 @@ void main() {
     expect(callCount, 1);
   });
 
-  // test('re-evaluating a provider can stop listening to a dependency', () {
-  //   final first = StateProvider((ref) => 0);
-  //   final second = StateProvider((ref) => 0);
-  //   final computed = Provider<String>((ref) {
-  //     if (ref.watch(first).state == 0) {
-  //       return ref.watch(second).state.toString();
-  //     }
-  //     return 'fallback';
-  //   });
-  //   final firstElement = container.readProviderElement(first);
-  //   final secondElement = container.readProviderElement(second);
-  //   final computedElement = container.readProviderElement(computed);
-  //   final sub = container.listen(computed);
+  test('re-evaluating a provider can stop listening to a dependency', () {
+    final first = StateProvider((ref) => 0);
+    final second = StateProvider((ref) => 0);
+    final computed = Provider<String>((ref) {
+      if (ref.watch(first).state == 0) {
+        return ref.watch(second).state.toString();
+      }
+      return 'fallback';
+    });
+    final firstElement = container.readProviderElement(first);
+    final secondElement = container.readProviderElement(second);
+    final computedElement = container.readProviderElement(computed);
+    final sub = container.listen(computed, (_) {});
 
-  //   expect(sub.read(), '0');
-  //   expect(firstElement.dependents, {computedElement});
-  //   expect(firstElement.hasListeners, true);
-  //   expect(secondElement.dependents, {computedElement});
-  //   expect(secondElement.hasListeners, true);
+    expect(sub.read(), '0');
+    var firstDependents = <ProviderElementBase>[];
+    firstElement.visitChildren(firstDependents.add);
+    var secondDependents = <ProviderElementBase>[];
+    secondElement.visitChildren(secondDependents.add);
 
-  //   container.read(first).state++;
-  //   expect(sub.read(), 'fallback');
+    expect(firstDependents, [computedElement]);
+    expect(firstElement.hasListeners, true);
+    expect(secondDependents, [computedElement]);
+    expect(secondElement.hasListeners, true);
 
-  //   expect(firstElement.dependents, {computedElement});
-  //   expect(firstElement.hasListeners, true);
-  //   expect(secondElement.dependents, <ProviderElement>{});
-  //   expect(secondElement.hasListeners, false);
-  // });
+    container.read(first).state++;
+    expect(sub.read(), 'fallback');
+
+    firstDependents = <ProviderElementBase>[];
+    firstElement.visitChildren(firstDependents.add);
+    secondDependents = <ProviderElementBase>[];
+    secondElement.visitChildren(secondDependents.add);
+    expect(firstDependents, [computedElement]);
+    expect(firstElement.hasListeners, true);
+    expect(secondDependents, <ProviderElement>[]);
+    expect(secondElement.hasListeners, false);
+  });
 
   group('overrideWithValue', () {
     test('synchronously overrides the value', () {
@@ -272,7 +280,7 @@ void main() {
         callCount++;
         return 0;
       });
-      final container = ProviderContainer(overrides: [
+      final container = createContainer(overrides: [
         provider.overrideWithValue(const AsyncValue.data(42)),
       ]);
 
@@ -283,84 +291,31 @@ void main() {
       expect(callCount, 0);
       expect(sub.read(), const AsyncValue.data(42));
     });
-
-    //   test('notify listeners when value changes', () {
-    //     final provider = Provider((ref) => 0);
-    //     final container = ProviderContainer(overrides: [
-    //       provider.overrideWithValue(42),
-    //     ]);
-
-    //     addTearDown(container.dispose);
-
-    //     final sub = container.listen(
-    //       provider,
-    //       mayHaveChanged: mayHaveChanged,
-    //       didChange: didChange,
-    //     );
-
-    //     verifyZeroInteractions(mayHaveChanged);
-    //     verifyZeroInteractions(didChange);
-
-    //     container.updateOverrides([
-    //       provider.overrideWithValue(21),
-    //     ]);
-
-    //     verifyOnly(mayHaveChanged, mayHaveChanged(sub));
-    //     verifyZeroInteractions(didChange);
-
-    //     expect(sub.read(), 21);
-
-    //     verifyOnly(didChange, didChange(sub));
-    //     verifyNoMoreInteractions(mayHaveChanged);
-    //   });
-
-    //   test('does not notify listeners if updated with the same value', () {
-    //     final provider = Provider((ref) => 0);
-    //     final container = ProviderContainer(overrides: [
-    //       provider.overrideWithValue(42),
-    //     ]);
-
-    //     addTearDown(container.dispose);
-
-    //     final sub = container.listen(
-    //       provider,
-    //       mayHaveChanged: mayHaveChanged,
-    //       didChange: didChange,
-    //     );
-
-    //     verifyZeroInteractions(mayHaveChanged);
-    //     verifyZeroInteractions(didChange);
-
-    //     container.updateOverrides([
-    //       provider.overrideWithValue(42),
-    //     ]);
-
-    //     verifyZeroInteractions(didChange);
-    //     verifyZeroInteractions(mayHaveChanged);
-
-    //     expect(sub.read(), 42);
-    //   });
   });
 
-  // test('remove dependencies on dispose', () async {
-  //   final first = StateProvider((ref) => 0);
-  //   final computed = Provider.autoDispose((ref) {
-  //     return ref.watch(first).state;
-  //   });
-  //   final firstElement = container.readProviderElement(first);
-  //   final computedElement = container.readProviderElement(computed);
-  //   final sub = container.listen(computed);
+  test('remove dependencies on dispose', () async {
+    final first = StateProvider((ref) => 0);
+    final computed = Provider.autoDispose((ref) {
+      return ref.watch(first).state;
+    });
+    final firstElement = container.readProviderElement(first);
+    final computedElement = container.readProviderElement(computed);
+    final sub = container.listen(computed, (_) {});
 
-  //   expect(sub.read(), 0);
-  //   expect(firstElement.dependents, {computedElement});
-  //   expect(firstElement.hasListeners, true);
+    expect(sub.read(), 0);
+    var firstDependents = <ProviderElementBase>[];
+    firstElement.visitChildren(firstDependents.add);
+    expect(firstDependents, {computedElement});
+    expect(firstElement.hasListeners, true);
 
-  //   sub.close();
-  //   await Future<void>.value();
+    sub.close();
+    await container.pump();
 
-  //   expect(firstElement.dependents, <ProviderElement>{});
-  //   expect(firstElement.hasListeners, false);
-  // });
+    firstDependents = <ProviderElementBase>[];
+    firstElement.visitChildren(firstDependents.add);
+    expect(firstDependents, <ProviderElement>{});
+    expect(firstElement.hasListeners, false);
+  });
 
   test(
       'ProviderContainer.read(MyProvider.autoDispose) disposes the provider if not listened',
@@ -378,226 +333,89 @@ void main() {
 
   group('Element.listen', () {
     group('didChange', () {
-      // test('is called next sub.read', () {
-      //   final counter = Counter();
-      //   final provider = StateNotifierProvider<Counter, int>((ref) => counter);
-
-      //   final sub = container.listen(
-      //     provider,
-      //     didChange: didChange,
-      //   );
-
-      //   verifyZeroInteractions(didChange);
-
-      //   counter.increment();
-
-      //   verifyZeroInteractions(didChange);
-      //   expect(sub.read(), 1);
-      //   verifyOnly(didChange, didChange(sub));
-      // });
-
-      // test('is called at most once per read', () {
-      //   final counter = Counter();
-      //   final provider = StateNotifierProvider<Counter, int>((ref) => counter);
-
-      //   final sub = container.listen(
-      //     provider,
-      //     didChange: didChange,
-      //   );
-
-      //   verifyZeroInteractions(didChange);
-
-      //   counter.increment();
-      //   counter.increment();
-      //   counter.increment();
-
-      //   verifyZeroInteractions(didChange);
-      //   expect(sub.read(), 3);
-      //   verifyOnly(didChange, didChange(sub));
-      // });
-
-      // test('are all executed after one read call', () {
-      //   final counter = Counter();
-      //   final provider = StateNotifierProvider<Counter, int>((ref) => counter);
-      //   final didChange2 = DidChangedMock<int>();
-
-      //   final sub = container.listen(
-      //     provider,
-      //     didChange: didChange,
-      //   );
-      //   final sub2 = container.listen(
-      //     provider,
-      //     didChange: didChange2,
-      //   );
-
-      //   counter.increment();
-
-      //   verifyZeroInteractions(didChange);
-      //   verifyZeroInteractions(didChange2);
-
-      //   expect(sub.read(), 1);
-
-      //   verifyOnly(didChange, didChange(sub));
-      //   verifyOnly(didChange2, didChange2(sub2));
-      // });
-
-      // test('is guarded', () {
-      //   final counter = Counter();
-      //   final provider = StateNotifierProvider<Counter, int>((ref) => counter);
-      //   final didChange2 = DidChangedMock<int>();
-      //   when(didChange(any)).thenThrow(42);
-      //   when(didChange2(any)).thenThrow(21);
-
-      //   final sub = container.listen(
-      //     provider,
-      //     didChange: didChange,
-      //   );
-      //   final sub2 = container.listen(
-      //     provider,
-      //     didChange: didChange2,
-      //   );
-
-      //   counter.increment();
-
-      //   final errors = errorsOf(sub.read);
-
-      //   verifyOnly(didChange, didChange(sub));
-      //   verifyOnly(didChange2, didChange2(sub2));
-
-      //   expect(errors, unorderedEquals(<Object>[42, 21]));
-      // });
-    });
-
-    group('mayHaveChanged', () {
-      test('is optional', () {
+      test('is called synchronsouly on direct provider change', () {
         final counter = Counter();
-        final counterProvider =
-            StateNotifierProvider<Counter, int>((ref) => counter);
-        final provider = Provider((ref) => ref.watch(counterProvider));
+        final provider = StateNotifierProvider<Counter, int>((ref) => counter);
 
-        container.listen(provider, (_) {});
+        container.listen(provider, didChange);
 
-        // Does not crash
+        verifyZeroInteractions(didChange);
+
         counter.increment();
+
+        verifyOnly(didChange, didChange(1));
       });
 
-      // test(
-      //     'is synchronously after a change'
-      //     ' without re-evaluating the provider', () {
-      //   final counter = Counter();
-      //   final counterProvider =
-      //       StateNotifierProvider<Counter, int>((ref) => counter);
-      //   var callCount = 0;
-      //   final provider = Provider((ref) {
-      //     callCount++;
-      //     return ref.watch(counterProvider);
-      //   });
+      test('is called at most once per read for computed providers', () {
+        final counter = Counter();
+        final provider = StateNotifierProvider<Counter, int>((ref) => counter);
+        final computed = Provider((ref) => ref.watch(provider));
 
-      //   final sub = container.listen(provider, mayHaveChanged: mayHaveChanged);
+        container.listen(computed, didChange);
 
-      //   expect(callCount, 1);
-      //   verifyNoMoreInteractions(mayHaveChanged);
+        verifyZeroInteractions(didChange);
 
-      //   counter.increment();
+        counter.increment();
+        counter.increment();
+        counter.increment();
 
-      //   expect(callCount, 1);
-      //   verifyOnly(mayHaveChanged, mayHaveChanged(sub));
-      // });
+        container.read(computed);
 
-      // test(
-      //     're-evaluating the provider with a new value calls mayHaveChanged only once',
-      //     () {
-      //   final counter = Counter();
-      //   final counterProvider =
-      //       StateNotifierProvider<Counter, int>((ref) => counter);
-      //   final provider = Provider((ref) {
-      //     return ref.watch(counterProvider);
-      //   });
-
-      //   final sub = container.listen(provider, mayHaveChanged: mayHaveChanged);
-
-      //   counter.increment();
-      //   sub.read();
-
-      //   verifyOnly(mayHaveChanged, mayHaveChanged(sub));
-      // });
-
-      // test('is called only onces after multiple changes', () {
-      //   final counter = Counter();
-      //   final counterProvider =
-      //       StateNotifierProvider<Counter, int>((ref) => counter);
-      //   final provider = Provider((ref) {
-      //     return ref.watch(counterProvider);
-      //   });
-
-      //   final sub = container.listen(provider, mayHaveChanged: mayHaveChanged);
-
-      //   counter.increment();
-      //   counter.increment();
-
-      //   verifyOnly(mayHaveChanged, mayHaveChanged(sub));
-      // });
-    });
-
-    test("doesn't trow when creating a provider that failed", () {
-      final provider = Provider((ref) {
-        throw Error();
+        verifyOnly(didChange, didChange(3));
       });
 
-      final sub = container.listen(provider, (_) {});
+      test('are all executed after one read call', () {
+        final counter = Counter();
+        final provider = StateNotifierProvider<Counter, int>((ref) => counter);
+        final didChange2 = Listener<int>();
 
-      expect(sub, isA<ProviderSubscription>());
+        container.listen(provider, didChange);
+        container.listen(provider, didChange2);
+
+        counter.increment();
+
+        verifyOnly(didChange, didChange(1));
+        verifyOnly(didChange2, didChange2(1));
+      });
+
+      test('is guarded', () {
+        final counter = Counter();
+        final provider = StateNotifierProvider<Counter, int>((ref) => counter);
+        final didChange2 = Listener<int>();
+        when(didChange(any)).thenThrow(42);
+        when(didChange2(any)).thenThrow(21);
+
+        container.listen(provider, didChange);
+        container.listen(provider, didChange2);
+
+        final errors = errorsOf(counter.increment);
+
+        expect(errors, unorderedEquals(<Object>[42, 21]));
+        verifyOnly(didChange, didChange(1));
+        verifyOnly(didChange2, didChange2(1));
+      });
     });
-
-    // test('is guarded', () {
-    //   final counter = Counter();
-    //   final provider = StateNotifierProvider<Counter, int>((ref) => counter);
-    //   final mayHaveChanged2 = MayHaveChangedMock<int>();
-    //   when(mayHaveChanged(any)).thenThrow(42);
-    //   when(mayHaveChanged2(any)).thenThrow(21);
-
-    //   final sub = container.listen(
-    //     provider,
-    //     mayHaveChanged: mayHaveChanged,
-    //   );
-    //   final sub2 = container.listen(
-    //     provider,
-    //     mayHaveChanged: mayHaveChanged2,
-    //   );
-
-    //   final errors = errorsOf(counter.increment);
-
-    //   verifyOnly(mayHaveChanged, mayHaveChanged(sub));
-    //   verifyOnly(mayHaveChanged2, mayHaveChanged2(sub2));
-
-    //   expect(errors, unorderedEquals(<Object>[42, 21]));
-    // });
   });
 
   group('ProviderSubscription', () {
-    // test('no-longer call listeners anymore after close', () {
-    //   final counter = Counter();
-    //   final first = StateNotifierProvider<Counter, int>((ref) => counter);
-    //   final provider = Provider((ref) => ref.watch(first));
-    //   final element = container.readProviderElement(provider);
+    test('no-longer call listeners anymore after close', () {
+      final counter = Counter();
+      final first = StateNotifierProvider<Counter, int>((ref) => counter);
+      final provider = Provider((ref) => ref.watch(first));
+      final element = container.readProviderElement(provider);
 
-    //   expect(element.hasListeners, false);
+      expect(element.hasListeners, false);
 
-    //   final sub = container.listen(
-    //     provider,
-    //     mayHaveChanged: mayHaveChanged,
-    //     didChange: didChange,
-    //   );
+      final sub = container.listen(provider, didChange);
 
-    //   expect(element.hasListeners, true);
+      expect(element.hasListeners, true);
 
-    //   sub.close();
-    //   counter.increment();
+      sub.close();
+      counter.increment();
 
-    //   expect(element.hasListeners, false);
-    //   verifyZeroInteractions(mayHaveChanged);
-    //   verifyZeroInteractions(didChange);
-    // });
+      expect(element.hasListeners, false);
+      verifyZeroInteractions(didChange);
+    });
 
     group('.read', () {
       test('rethrows the exception thrown when building a provider', () {
@@ -638,65 +456,12 @@ void main() {
         expect(sub.read(), 1);
       });
     });
-
-    group('.flush', () {
-      // test('initialized to true', () {
-      //   final provider = Provider((ref) => 0);
-      //   final sub = container.listen(provider, (_) {});
-
-      //   expect(sub.flush(), true);
-      // });
-
-      // test('updates to false after a read', () {
-      //   final provider = Provider((ref) => 0);
-      //   final sub = container.listen(provider, (_) {});
-
-      //   sub.read();
-
-      //   expect(sub.flush(), false);
-      // });
-
-      // test('updates to true after a change', () {
-      //   final counter = Counter();
-      //   final provider = StateNotifierProvider<Counter, int>((ref) => counter);
-
-      //   final sub = container.listen(provider, (_) {});
-
-      //   sub.read();
-
-      //   counter.increment();
-
-      //   expect(sub.flush(), true);
-      // });
-
-      // test('flushes providers', () {
-      //   final counter = Counter();
-      //   final first = StateNotifierProvider<Counter, int>((ref) => counter);
-      //   var callCount = 0;
-      //   final provider = Provider((ref) {
-      //     callCount++;
-      //     return ref.watch(first);
-      //   });
-
-      //   expect(callCount, 0);
-      //   final sub = container.listen(provider, (_) {});
-      //   expect(sub.read(), 0);
-      //   expect(callCount, 1);
-      //   expect(sub.flush(), false);
-
-      //   counter.increment();
-
-      //   expect(callCount, 1);
-      //   expect(sub.flush(), true);
-      //   expect(callCount, 2);
-      // });
-    });
   });
 
   group('container.refresh', () {
     test('still refresh providers on non-root containers', () {
-      final root = ProviderContainer();
-      final container = ProviderContainer(parent: root);
+      final root = createContainer();
+      final container = createContainer(parent: root);
       var callCount = 0;
       late ProviderRefBase providerReference;
       var result = 0;
@@ -726,7 +491,7 @@ void main() {
         callCount++;
         return future;
       });
-      final container = ProviderContainer();
+      final container = createContainer();
 
       await expectLater(container.read(provider.future), completion(42));
 
@@ -755,7 +520,7 @@ void main() {
         callCount++;
         return Future.value(42);
       });
-      final container = ProviderContainer();
+      final container = createContainer();
 
       expect(callCount, 0);
       expect(
@@ -782,7 +547,7 @@ void main() {
         ref.watch(dep);
         return future;
       });
-      final container = ProviderContainer();
+      final container = createContainer();
 
       container.refresh(provider);
       expect(callCount, 1);
@@ -798,11 +563,3 @@ void main() {
     });
   });
 }
-
-// class OnDisposeMock extends Mock {
-//   void call();
-// }
-
-// class BuildMock extends Mock {
-//   void call();
-// }

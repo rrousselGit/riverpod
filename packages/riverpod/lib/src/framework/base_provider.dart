@@ -23,6 +23,10 @@ typedef FamilyCreate<T, Ref extends ProviderRefBase, Arg> = T Function(
   Arg arg,
 );
 
+class _Default {
+  const _Default();
+}
+
 /// A function that reads the state of a provider.
 typedef Reader = T Function<T>(RootProvider<T> provider);
 
@@ -208,7 +212,7 @@ abstract class RootProvider<State> extends ProviderBase<State> {
   ///
   /// ```dart
   /// @override
-  /// Widget build(BuildContext context, WidgetReference ref) {
+  /// Widget build(BuildContext context, WidgetRef ref) {
   ///   final age = ref.watch(personProvider.select((p) => p.age));
   ///   return Text('$age');
   /// }
@@ -224,7 +228,7 @@ abstract class RootProvider<State> extends ProviderBase<State> {
   ///
   /// ```dart
   /// @override
-  /// Widget build(BuildContext context, WidgetReference ref) {
+  /// Widget build(BuildContext context, WidgetRef ref) {
   ///   final isAdult = ref.watch(personProvider.select((p) => p.age >= 18));
   ///   return Text('$isAdult');
   /// }
@@ -315,15 +319,24 @@ class _ProviderSubscription<State> implements ProviderSubscription<State> {
 
   final void Function(State) _listener;
   final ProviderElementBase<State> _listenedElement;
+  var _closed = false;
 
   @override
   void close() {
+    _closed = true;
     _listenedElement._listeners.remove(this);
     _listenedElement.mayNeedDispose();
   }
 
   @override
-  State read() => _listenedElement.getExposedValue();
+  State read() {
+    if (_closed) {
+      throw StateError(
+        'called ProviderSubscription.read on a subscription that was closed',
+      );
+    }
+    return _listenedElement.getExposedValue();
+  }
 }
 
 class _SelectorSubscription<Input, Output>
@@ -332,14 +345,23 @@ class _SelectorSubscription<Input, Output>
 
   final ProviderSubscription<Input> _internalSub;
   final Output Function() _read;
+  var _closed = false;
 
   @override
   void close() {
+    _closed = true;
     _internalSub.close();
   }
 
   @override
-  Output read() => _read();
+  Output read() {
+    if (_closed) {
+      throw StateError(
+        'called ProviderSubscription.read on a subscription that was closed',
+      );
+    }
+    return _read();
+  }
 }
 
 /// When a provider listens to another provider using `listen`
@@ -400,7 +422,7 @@ abstract class ProviderRefBase {
   ///
   /// ```dart
   /// final configsProvider = FutureProvider(...);
-  /// final myServiceProvider = Provider((ref, state, setState) {
+  /// final myServiceProvider = Provider((ref) {
   ///   return MyService(ref.read);
   /// });
   ///
@@ -460,7 +482,7 @@ abstract class ProviderRefBase {
   /// final sortProvider = StateProvider((_) => Sort.byName);
   /// final unsortedTodosProvider = StateProvider((_) => <Todo>[]);
   ///
-  /// final sortedTodosProvider = Provider((ref, state, setState) {
+  /// final sortedTodosProvider = Provider((ref) {
   ///   // listen to both the sort enum and the unfiltered list of todos
   ///   final sort = ref.watch(sortProvider);
   ///   final todos = ref.watch(unsortedTodosProvider);
@@ -569,9 +591,11 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   // It is safe to type `newValue` as Object? because the method is hidden
   // under a type-safe interface that types it as `State newValue` instead.
   set state(State newState) {
-    _state = newState;
+    late State previousState;
+    if (_didBuild) previousState = _state;
 
-    if (_didBuild) notifyListeners();
+    _state = newState;
+    if (_didBuild) notifyListeners(previousState: previousState);
   }
 
   State get state => _state;
@@ -636,7 +660,7 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
       _buildState();
 
       if (provider.recreateShouldNotify(previousState, _state)) {
-        notifyListeners();
+        notifyListeners(previousState: previousState);
       }
 
       // Unsubscribe to everything that a provider no-longer depends on.
@@ -649,23 +673,30 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     }
   }
 
-  void notifyListeners() {
+  void notifyListeners({Object? previousState = const _Default()}) {
     assert(() {
       container.debugCanModifyProviders?.call();
       return true;
     }(), '');
 
-    // TODO(rrousselGit) fuse with the public variant?
     final newValue = _state;
     for (var i = 0; i < _listeners.length; i++) {
-      _listeners[i]._listener(newValue);
+      Zone.current.runUnaryGuarded(_listeners[i]._listener, newValue);
     }
     for (var i = 0; i < _subscribers.length; i++) {
-      _subscribers[i].listener(newValue);
+      Zone.current.runUnaryGuarded(_subscribers[i].listener, newValue);
     }
 
     for (var i = 0; i < _dependents.length; i++) {
       _dependents[i]._didChangeDependency();
+    }
+
+    if (previousState != const _Default()) {
+      for (final observer in _container._observers) {
+        Zone.current.runGuarded(
+          () => observer.didUpdateProvider(provider, previousState, state),
+        );
+      }
     }
   }
 
@@ -953,7 +984,7 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
 ///
 /// This exception can be thrown if a provider fails to return a valid value:
 /// ```dart
-/// final example = Provider((ref, state, setState) => throw Error());
+/// final example = Provider((ref) => throw Error());
 /// ```
 ///
 /// in which case, any attempt at listening to `example` with result in a [ProviderException].
@@ -1008,14 +1039,14 @@ mixin ProviderOverridesMixin<State> on AlwaysAliveProviderBase<State> {
   /// or `ProviderContainer.overrides`:
   ///
   /// ```dart
-  /// final myService = Provider((ref, state, setState) => MyService());
+  /// final myService = Provider((ref) => MyService());
   ///
   /// runApp(
   ///   ProviderScope(
   ///     overrides: [
   ///       myService.overrideWithProvider(
   ///         // Replace the implementation of MyService with a fake implementation
-  ///         Provider((ref, state, setState) => MyFakeService())
+  ///         Provider((ref) => MyFakeService())
   ///       ),
   ///     ],
   ///     child: MyApp(),

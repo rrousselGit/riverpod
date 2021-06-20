@@ -103,7 +103,7 @@ class _NotifierProvider<Notifier extends StateNotifier<Object?>>
 /// And finally, you can interact with it inside your UI:
 ///
 /// ```dart
-/// Widget build(BuildContext context, WidgetReference ref) {
+/// Widget build(BuildContext context, WidgetRef ref) {
 ///   // rebuild the widget when the todo list changes
 ///   List<Todo> todos = ref.watch(todosProvider);
 ///

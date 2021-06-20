@@ -29,9 +29,9 @@ class FutureProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   /// [FutureProvider] together:
   ///
   /// ```dart
-  /// final configsProvider = FutureProvider((ref, state, setState) async => Configs());
+  /// final configsProvider = FutureProvider((ref) async => Configs());
   ///
-  /// final productsProvider = FutureProvider((ref, state, setState) async {
+  /// final productsProvider = FutureProvider((ref) async {
   ///   // Wait for the configurations to resolve
   ///   final configs = await ref.watch(configsProvider.future);
   ///

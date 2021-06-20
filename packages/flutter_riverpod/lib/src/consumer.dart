@@ -109,7 +109,7 @@ abstract class WidgetRef {
   ///
   /// class Example extends ConsumerWidget {
   ///   @override
-  ///   Widget build(BuildContext context, WidgetReference ref) {
+  ///   Widget build(BuildContext context, WidgetRef ref) {
   ///     final Products products = ref.watch(productsProvider);
   ///
   ///     return RefreshIndicator(
@@ -216,7 +216,7 @@ typedef ConsumerBuilder = Widget Function(
 ///           children: <Widget>[
 ///             Text('You have pushed the button this many times:'),
 ///             Consumer(
-///               builder: (BuildContext context, ScopedReader watch, Widget? child) {
+///               builder: (BuildContext context, WidgetRef ref, Widget? child) {
 ///                 // This builder will only get called when the counterProvider
 ///                 // is updated.
 ///                 final count = ref.watch(counterProvider).state;
@@ -291,7 +291,7 @@ class Consumer extends ConsumerWidget {
 ///   const Example({Key? key}): super(key: key);
 ///
 ///   @override
-///   Widget build(BuildContext context, WidgetReference ref) {
+///   Widget build(BuildContext context, WidgetRef ref) {
 ///     final value = ref.watch(helloWorldProvider);
 ///     return Text(value); // Hello world
 ///   }
@@ -303,7 +303,7 @@ class Consumer extends ConsumerWidget {
 ///
 /// ```dart
 /// @override
-/// Widget build(BuildContext context, WidgetReference ref) {
+/// Widget build(BuildContext context, WidgetRef ref) {
 ///   final value = ref.watch(someProvider);
 ///   final another = ref.watch(anotherProvider);
 ///   return Text(value); // Hello world
@@ -476,10 +476,12 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   }
 
   @override
-  T read<T>(ProviderBase<T> provider) => _container.read(provider);
+  T read<T>(ProviderBase<T> provider) {
+    return ProviderScope.containerOf(this, listen: false).read(provider);
+  }
 
   @override
   State refresh<State>(ProviderBase<State> provider) {
-    return _container.refresh(provider);
+    return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
 }

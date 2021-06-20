@@ -52,7 +52,7 @@ part 'future_provider/base.dart';
 /// Then, the UI can listen to configurations like so:
 ///
 /// ```dart
-/// Widget build(BuildContext, WidgetReference ref) {
+/// Widget build(BuildContext context, WidgetRef ref) {
 ///   AsyncValue<Configuration> config = ref.watch(configProvider);
 ///
 ///   return config.when(

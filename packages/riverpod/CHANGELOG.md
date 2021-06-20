@@ -58,6 +58,8 @@
     ref.onDispose(() => mounted = false);
   });
   ```
+- **Breaking**: `ProviderContainer.debugProviderValues` and `ProviderContainer.debugProviderElements` are removed.
+  You can now instead use `ProviderContainer.getAllProviderElements`.
 - `StreamProvider.last`, `StreamProvider.stream` and `FutureProvider.future` now
   expose a future/stream that is independent from how many times the associated provider "rebuilt":
   - if a `StreamProvider` rebuild before its stream emitted any value,
@@ -249,7 +251,7 @@ Migrated to null-safety
 
   ```dart
   final provider = Provider(...);
-  final example = Provider((ref, state, setState) {
+  final example = Provider((ref) {
     final value = ref.watch(provider);
     return value;
   });
@@ -281,7 +283,7 @@ Migrated to null-safety
 
   ```dart
   final streamProvider = StreamProvider<T>(...);
-  final example = Provider((ref, state, setState) {
+  final example = Provider((ref) {
     Stream<T> stream = ref.read(streamProvider);
   });
   ```
@@ -290,7 +292,7 @@ Migrated to null-safety
 
   ```dart
   final streamProvider = StreamProvider<T>(...);
-  final example = Provider((ref, state, setState) {
+  final example = Provider((ref) {
     Stream<T> stream = ref.watch(streamProvider.steam);
   });
   ```
@@ -301,7 +303,7 @@ Migrated to null-safety
 
   ```dart
   final futureProvider = FutureProvider<T>(...);
-  final example = Provider((ref, state, setState) {
+  final example = Provider((ref) {
     Future<T> future = ref.read(futureProvider);
   });
   ```
@@ -310,7 +312,7 @@ Migrated to null-safety
 
   ```dart
   final futureProvider = FutureProvider<T>(...);
-  final example = Provider((ref, state, setState) {
+  final example = Provider((ref) {
     Future<T> future = ref.watch(futureProvider.future);
   });
   ```
@@ -322,7 +324,7 @@ Migrated to null-safety
 
   ```dart
   final streamProvider = StreamProvider<T>(...);
-  final example = Provider((ref, state, setState) {
+  final example = Provider((ref) {
     Future<T> last = ref.dependOn(streamProvider).last;
   });
   ```
@@ -331,7 +333,7 @@ Migrated to null-safety
 
   ```dart
   final streamProvider = StreamProvider<T>(...);
-  final example = Provider((ref, state, setState) {
+  final example = Provider((ref) {
     Future<T> last = ref.watch(streamProvider.last);
   });
   ```
@@ -342,7 +344,7 @@ Migrated to null-safety
 
   ```dart
   ProviderContainer container;
-  final provider = Provider((ref, state, setState) => 0);
+  final provider = Provider((ref) => 0);
 
   final subscription = container.listen(
     provider,

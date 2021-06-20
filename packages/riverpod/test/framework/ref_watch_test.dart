@@ -18,6 +18,35 @@ class Counter extends StateNotifier<int> {
 
 void main() {
   test(
+      'cannot call ref.watch/ref.read/ref.listen/ref.onDispose after a dependency changed',
+      () {},
+      skip: true);
+
+  test('disposes providers synchronously when their dependency changes',
+      () async {
+    final onDispose = OnDisposeMock();
+    final dep = StateProvider((ref) => 0);
+    final dep2 = StateProvider((ref) => 0);
+    final container = createContainer();
+    final provider = Provider((ref) {
+      ref.onDispose(onDispose);
+      ref.watch(dep);
+      ref.watch(dep2);
+    });
+
+    container.read(provider);
+
+    container.read(dep).state++;
+
+    verifyOnly(onDispose, onDispose());
+
+    container.read(dep).state++;
+    container.read(dep2).state++;
+
+    verifyNoMoreInteractions(onDispose);
+  });
+
+  test(
       'when selecting a provider, element.visitChildren visits the selected provider',
       () {
     final container = createContainer();

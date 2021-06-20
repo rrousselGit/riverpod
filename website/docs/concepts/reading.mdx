@@ -39,7 +39,7 @@ When reading this `userProvider`, you can:
 - synchronously read the current state by listening to `userProvider` itself:
 
   ```dart
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     AsyncValue<User> user = ref.watch(userProvider);
 
     return user.when(
@@ -53,7 +53,7 @@ When reading this `userProvider`, you can:
 - obtain the associated [Stream], by listening to `userProvider.stream`:
 
   ```dart
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     Stream<User> user = ref.watch(userProvider.stream);
   }
   ```
@@ -61,7 +61,7 @@ When reading this `userProvider`, you can:
 - obtain a [Future] that resolves with the latest value emitted, by listening to `userProvider.last`:
 
   ```dart
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     Future<User> user = ref.watch(userProvider.last);
   }
   ```
@@ -81,7 +81,7 @@ that allows you to listen to providers.
 ```dart {5}
 class Home extends ConsumerWidget {
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // Listens to the value exposed by counterProvider
     int count = ref.watch(counterProvider).state;
 
@@ -233,7 +233,7 @@ final counterProvider = StateNotifierProvider((ref) => Counter());
 // ...
 
 @override
-Widget build(BuildContext context, WidgetReference ref) {
+Widget build(BuildContext context, WidgetRef ref) {
   // Obtains Counter without listening to Counter.state.
   // Will not cause the button to rebuild when the counter changes.
   final Counter counter = ref.watch(counterProvider);

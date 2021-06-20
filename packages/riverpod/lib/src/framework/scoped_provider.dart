@@ -58,7 +58,7 @@ typedef ScopedCreate<T> = T Function(ScopedReader watch);
 ///   const ProductItem({Key? key}): super(key: key);
 ///
 ///   @override
-///   Widget build(BuildContext context, WidgetReference ref) {
+///   Widget build(BuildContext context, WidgetRef ref) {
 ///     final index = ref.watch(currentProductIndex);
 ///     // do something with the index
 ///
