@@ -1,4 +1,17 @@
-# [Unreleased]
+# 1.0.0-dev.0
+
+- `ref.watch` now support `myProvider.select((value) => ...)`.
+  This allows filtering rebuilds:
+
+  ```dart
+  final userProvider = StateNotifierProvider<UserController, User>(...);
+
+  final anotherProvider = Provider((ref) {
+    // With this syntax, the Consumer will not rebuild if `userProvider`
+    // emits a new User but its "name" didn't change.
+    bool userName = ref.watch(userProvider.select((user) => user.name));
+  });
+  ```
 
 - **Breaking**: `Family.overrideWithProvider` now must create a provider:
 
