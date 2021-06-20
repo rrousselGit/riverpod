@@ -396,6 +396,9 @@ typedef ProviderReference = ProviderRefBase;
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
 abstract class ProviderRefBase {
+  /// Re-create the state of a provider and return the new state.
+  State refresh<State>(ProviderBase<State> provider);
+
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
 
@@ -736,6 +739,11 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
       return true;
     }(), '');
     return true;
+  }
+
+  @override
+  T refresh<T>(ProviderBase<T> provider) {
+    return _container.refresh(provider);
   }
 
   @override

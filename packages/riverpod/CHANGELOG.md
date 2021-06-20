@@ -84,6 +84,8 @@
   with a `Provider<AsyncValue<Model>>`.
 - `ref.onDispose` now calls the dispose function as soon as one of the provider's
   dependency is known to have changed
+- Providers can now call `ref.refresh` to refresh a provider, instead of having
+  to do `ref.container.refresh`.
 - Providers no longer wait until their next read to recompute their state if one
   of their dependency changed and they have listeners.
 - Added `ProviderContainer.pump`, an utility to easily "await" until providers

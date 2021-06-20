@@ -152,6 +152,8 @@
 - You can now override any provider with any other provider, as long as the value
   that they expose matches. For example, it is possible to override a `StreamProvider<Model>`
   with a `Provider<AsyncValue<Model>>`.
+- Providers can now call `ref.refresh` to refresh a provider, instead of having
+  to do `ref.container.refresh`.
 - `ref.onDispose` now calls the dispose function as soon as one of the provider's
   dependency is known to have changed
 - Providers no longer wait until their next read to recompute their state if one

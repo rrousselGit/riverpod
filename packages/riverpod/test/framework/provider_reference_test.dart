@@ -6,6 +6,26 @@ import '../utils.dart';
 
 void main() {
   group('ProviderRefBase', () {
+    group('refresh', () {
+      test('refreshes a provider and return the new state', () {
+        var value = 0;
+        final state = Provider((ref) => value);
+        late ProviderRefBase ref;
+        final provider = Provider((r) {
+          ref = r;
+        });
+        final container = createContainer();
+
+        container.read(provider);
+
+        expect(container.read(state), 0);
+
+        value = 42;
+        expect(ref.refresh(state), 42);
+        expect(container.read(state), 42);
+      });
+    });
+
     test('ref.read should keep providers alive', () {}, skip: true);
 
     group('listen', () {
