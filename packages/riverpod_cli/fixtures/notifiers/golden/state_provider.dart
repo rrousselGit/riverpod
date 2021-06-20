@@ -18,30 +18,30 @@ class ConsumerWatch extends ConsumerWidget {
   const ConsumerWatch({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context, ScopedReader watch) {
     // ignore: unused_local_variable
-    final countNotifier = ref.watch(counterProvider);
-    final count = ref.watch(counterProvider).state;
+    final countNotifier = watch(counterProvider);
+    final count = watch(counterProvider).state;
     return Center(
       child: Text('$count'),
     );
   }
 }
 
-class HooksWatch extends HookConsumerWidget {
+class HooksWatch extends HookWidget {
   const HooksWatch({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     // ignore: unused_local_variable
-    final countNotifier = ref.watch(counterProvider);
+    final countNotifier = useProvider(counterProvider);
     // ignore: unused_local_variable
-    final count = ref.watch(counterProvider).state;
+    final count = useProvider(counterProvider).state;
     return Center(
       child: ElevatedButton(
         onPressed: () {
-          ref.read(counterProvider);
-          ref.read(counterProvider).state;
+          context.read(counterProvider);
+          context.read(counterProvider).state;
         },
         child: const Text('Press Me'),
       ),
