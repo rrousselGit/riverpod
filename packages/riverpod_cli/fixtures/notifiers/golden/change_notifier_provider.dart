@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// ignore: unused_import
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -30,25 +31,25 @@ class ConsumerWatch extends ConsumerWidget {
   const ConsumerWatch({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    final count = watch(counterProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterProvider);
     return Center(
       child: Text('$count'),
     );
   }
 }
 
-class HooksWatch extends HookWidget {
+class HooksWatch extends HookConsumerWidget {
   const HooksWatch({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // ignore: unused_local_variable
-    final countNotifier = useProvider(counterProvider);
+    final countNotifier = ref.watch(counterProvider);
     return Center(
       child: ElevatedButton(
         onPressed: () {
-          context.read(counterProvider);
+          ref.read(counterProvider);
         },
         child: const Text('Press Me'),
       ),

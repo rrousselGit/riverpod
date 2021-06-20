@@ -24,6 +24,9 @@ jobs:
         with:
           channel: ${{ matrix.channel }}
 
+      - name: 'skip riverpod_cli'
+        run: rm -rf packages/riverpod_cli
+
       - name: Add pub cache bin to PATH
         run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
 
