@@ -1,3 +1,7 @@
+# 1.0.0-dev.1
+
+- Add missing exports (see #532)
+
 # 1.0.0-dev.0
 
 - `ref.watch` now support `myProvider.select((value) => ...)`.

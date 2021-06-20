@@ -1,3 +1,7 @@
+# 1.0.0-dev.1
+
+- Add missing exports (see #532)
+
 # 1.0.0-dev.0
 
 - `useProvider` is removed in favor of `HookConsumerWidget`.

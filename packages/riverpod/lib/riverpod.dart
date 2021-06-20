@@ -35,7 +35,9 @@ export 'src/framework.dart'
         XFamily,
         XAutoDisposeFamily,
         // ignore: deprecated_member_use_from_same_package
-        ProviderReference;
+        ProviderReference,
+        AlwaysAliveProviderListenable,
+        FamilyCreate;
 
 export 'src/future_provider.dart'
     show
@@ -53,7 +55,9 @@ export 'src/provider.dart'
         Provider,
         ProviderFamily,
         AutoDisposeProviderRef,
-        ProviderRef;
+        ProviderRef,
+        AutoDisposeProviderElement,
+        ProviderElement;
 
 export 'src/state_notifier_provider.dart'
     show
@@ -74,7 +78,9 @@ export 'src/state_provider.dart'
         AutoDisposeStateProviderFamily,
         StateProviderFamily,
         AutoDisposeStateProviderRef,
-        StateProviderRef;
+        StateProviderRef,
+        AutoDisposeStateProviderElement,
+        StateProviderElement;
 
 export 'src/stream_provider.dart'
     show

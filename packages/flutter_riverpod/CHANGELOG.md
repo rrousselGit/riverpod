@@ -1,3 +1,7 @@
+# 1.0.0-dev.1
+
+- Add missing exports (see #532)
+
 # 1.0.0-dev.0
 
 - **Breaking**: The prototype of `ConsumerWidget`'s `build` and `Consumer`'s `builder` changed.
