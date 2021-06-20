@@ -75,7 +75,7 @@ class RiverpodNotifierChangesMigrationSuggestor
     // ref.watch(provider.state) => ref.watch(provider)
     // ref.read(provider.state) => ref.read(provider)
     // context.read(provider.state) => context.read(provider)
-    // ref.watch(provider.state) => ref.watch(provider)
+    // useProvider(provider.state) => useProvider(provider)
     if (node.identifier.name == 'state') {
       if (node.prefix.staticType
           .getDisplayString()
@@ -103,13 +103,13 @@ class RiverpodNotifierChangesMigrationSuggestor
   void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
     if (node.function.toSource() == 'read' ||
         node.function.toSource() == 'watch' ||
-        node.function.toSource() == 'ref.watch(') {
+        node.function.toSource() == 'useProvider') {
       final firstArgStaticType =
           node.argumentList.arguments.first.staticType.getDisplayString();
       if (firstArgStaticType.contains('StateNotifierProvider')) {
         // StateNotifierProvider
         // watch(provider) => watch(provider.notifier)
-        // ref.watch(provider) => ref.watch(provider.notifier)
+        // useProvider(provider) => ref.watch(provider.notifier)
         yieldPatch('.notifier', node.argumentList.arguments.first.end,
             node.argumentList.arguments.first.end);
       }
@@ -119,10 +119,10 @@ class RiverpodNotifierChangesMigrationSuggestor
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    // ref.read / ref.watch / context.read / context.watch, ref.watch(
+    // ref.read / ref.watch / context.read / context.watch, useProvider
     if (node.methodName.toSource() == 'read' ||
         node.methodName.toSource() == 'watch' ||
-        node.methodName.toSource() == 'ref.watch(') {
+        node.methodName.toSource() == 'useProvider') {
       final firstArgStaticType =
           node.argumentList.arguments.first.staticType.getDisplayString();
       // StateNotifierProvider
