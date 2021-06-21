@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:codemod/codemod.dart';
 import 'package:codemod/test.dart';
