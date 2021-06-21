@@ -206,3 +206,12 @@ Object useMyHook(WidgetRef ref) {
 void useAnotherHook(WidgetRef ref) {
   useMyHook(ref);
 }
+
+class NoMigrateHook extends HookWidget {
+  const NoMigrateHook({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final state = useState('');
+    return Container();
+  }
+}

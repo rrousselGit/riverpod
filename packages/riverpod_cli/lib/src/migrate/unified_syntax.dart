@@ -30,7 +30,7 @@ class RiverpodHooksProviderInfo extends GeneralizingAstVisitor<void>
 
   static bool shouldMigrate(String functionName) {
     _propagateDependencies();
-    return isConsumerHookFunction[functionName]!;
+    return isConsumerHookFunction[functionName] ?? false;
   }
 
   static void _propagateDependencies() {
@@ -135,6 +135,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
+    methodDecls.clear();
     final name = node.extendsClause?.superclass.name.name;
     classDeclaration = node;
     if (name == 'StatelessWidget') {
