@@ -1,8 +1,6 @@
 // ignore: deprecated_member_use
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-
-import 'package:analyzer/analyzer.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:codemod/codemod.dart';
 import 'package:pub_semver/pub_semver.dart';

@@ -1,9 +1,9 @@
+// ignore_for_file: avoid_types_on_closure_parameters, type_init_formals, unused_local_variable, avoid_print, unnecessary_lambdas, unused_import
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-// ignore_for_file: avoid_types_on_closure_parameters, type_init_formals, unused_local_variable, avoid_print
 
 class Counter extends StateNotifier<int> {
   Counter(ProviderRefBase this.ref) : super(1);
@@ -49,7 +49,7 @@ class ConsumerWatch extends ConsumerWidget {
   const ConsumerWatch({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final countNotifier = ref.watch(counterProvider.notifier);
     final count = ref.watch(counterProvider);
     return Center(
@@ -62,7 +62,7 @@ class StatelessRead extends ConsumerWidget {
   const StatelessRead({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Center(
       child: ElevatedButton(
         onPressed: () {
@@ -79,8 +79,8 @@ class StatelessListen extends ConsumerWidget {
   const StatelessListen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
-    ref.listen(counterProvider, (context, i) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(counterProvider, (i) {
       print(i);
     });
     return const Text('Counter');
@@ -91,11 +91,13 @@ class StatelessExpressionListen extends ConsumerWidget {
   const StatelessExpressionListen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
-    ref.listen(counterProvider, (context, i) {
-      print(i);
-    });
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(counterProvider, onChange);
     return const Text('Counter');
+  }
+
+  void onChange(int i) {
+    print(i);
   }
 }
 
@@ -106,8 +108,7 @@ class StatefulConsumer extends ConsumerStatefulWidget {
   _StatefulConsumerState createState() => _StatefulConsumerState();
 }
 
-class _StatefulConsumerState extends State<StatefulConsumer>
-    with ConsumerStateMixin {
+class _StatefulConsumerState extends ConsumerState<StatefulConsumer> {
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -115,7 +116,7 @@ class _StatefulConsumerState extends State<StatefulConsumer>
         onTap: () {
           ref.refresh(counterProvider.notifier);
           ref.refresh(futureProvider.future);
-          ref.refresh(streamProvider.future);
+          ref.refresh(streamProvider);
         },
         child: Consumer(
           builder: (context, ref, child) {
@@ -127,8 +128,7 @@ class _StatefulConsumerState extends State<StatefulConsumer>
   }
 }
 
-class _StatefulConsumerState2 extends State<StatefulConsumer2>
-    with ConsumerStateMixin {
+class _StatefulConsumerState2 extends ConsumerState<StatefulConsumer2> {
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -153,7 +153,7 @@ class HooksWatch extends HookConsumerWidget {
   const HooksWatch({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final countNotifier = ref.watch(counterProvider.notifier);
     final count = ref.watch(counterProvider);
     return Center(
@@ -193,16 +193,16 @@ class HooksConsumerWatch extends StatelessWidget {
 class BasicUseOfCustomHook extends HookConsumerWidget {
   const BasicUseOfCustomHook({Key? key}) : super(key: key);
   @override
-  Widget build(BuildContext context, WidgetReference ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     useAnotherHook(ref);
     return Container();
   }
 }
 
-Object useMyHook(WidgetReference ref) {
+Object useMyHook(WidgetRef ref) {
   return ref.watch(counterProvider);
 }
 
-void useAnotherHook(WidgetReference ref) {
+void useAnotherHook(WidgetRef ref) {
   useMyHook(ref);
 }

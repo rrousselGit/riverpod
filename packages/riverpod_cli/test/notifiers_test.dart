@@ -24,7 +24,7 @@ void main() {
       );
     }
 
-    Future<void> testNotifierNoOp(
+    Future<void> testAlreadyMigrated(
       String type,
       VersionConstraint versionConstraint,
     ) async {
@@ -63,21 +63,21 @@ void main() {
 
     group('Already Migrated', () {
       test('ChangeNotifier', () async {
-        await testNotifierNoOp(
+        await testAlreadyMigrated(
           'change_notifier_provider',
           VersionConstraint.parse('^0.14.0'),
         );
       });
 
       test('StateNotifier', () async {
-        await testNotifierNoOp(
+        await testAlreadyMigrated(
           'state_notifier_provider',
           VersionConstraint.parse('^0.14.0'),
         );
       });
 
       test('StateProvider', () async {
-        await testNotifierNoOp(
+        await testAlreadyMigrated(
           'state_provider',
           VersionConstraint.parse('^0.14.0'),
         );
