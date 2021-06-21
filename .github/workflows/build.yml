@@ -36,7 +36,9 @@ jobs:
         run: melos bootstrap
 
       - name: Install cli fixtures
-        run: cd packages/riverpod_cli/fixtures/notifiers/input && flutter pub get && cd -
+        run: |
+          cd packages/riverpod_cli/fixtures/notifiers/input && flutter pub get && cd -
+          cd packages/riverpod_cli/fixtures/unified_syntax/input && flutter pub get && cd -
 
       - name: Check format
         run: flutter format --set-exit-if-changed .
