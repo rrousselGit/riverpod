@@ -5,6 +5,20 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('can be refreshed', () {}, skip: true);
+
+  test(
+    'scoping an override overrides all the associated subproviders',
+    () {},
+    skip: true,
+  );
+
+  test(
+    'overrideWithValue listens to the new StateController and support controller changes',
+    () {},
+    skip: true,
+  );
+
   test('overrideWithProvider', () {
     final override = StateController(42);
     final provider = StateProvider((ref) => 0);

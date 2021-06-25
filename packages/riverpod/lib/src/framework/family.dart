@@ -1,13 +1,19 @@
 part of '../framework.dart';
 
 /// A base class for all families
-abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>> {
+abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
+    implements FamilyOverride {
   /// A base class for all families
   Family(this.name);
 
   /// The family name.
   @protected
   final String? name;
+
+  ProviderBase Function(Object? argument, ProviderBase provider)
+      get _createOverride => (arg, _) => call(arg as Arg);
+
+  Family get _family => this;
 
   /// Create a provider from an external value.
   ///

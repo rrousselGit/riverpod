@@ -122,7 +122,7 @@ class _NotifierProvider<Notifier extends StateNotifier<Object?>>
 /// ```
 /// {@endtemplate}
 mixin _StateNotifierProviderMixin<Notifier extends StateNotifier<Value>, Value>
-    on RootProvider<Value> {
+    on ProviderBase<Value> {
   ProviderBase<Notifier> get notifier;
 
   /// Overrides the behavior of a provider with a value.

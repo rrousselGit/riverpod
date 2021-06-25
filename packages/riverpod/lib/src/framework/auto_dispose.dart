@@ -38,7 +38,7 @@ abstract class AutoDisposeProviderRefBase extends ProviderRefBase {
 ///
 /// - [Provider.autoDispose], a variant of [Provider] that auto-dispose its state.
 /// {@endtemplate}
-abstract class AutoDisposeProviderBase<State> extends RootProvider<State> {
+abstract class AutoDisposeProviderBase<State> extends ProviderBase<State> {
   /// {@macro riverpod.AutoDisposeProviderBase}
   AutoDisposeProviderBase(String? name) : super(name);
 

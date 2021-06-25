@@ -9,7 +9,7 @@ import 'internals.dart';
 ///
 @protected
 Stream<State> asyncValueToStream<State>(
-  RootProvider<AsyncValue<State>> provider,
+  ProviderBase<AsyncValue<State>> provider,
   ProviderElementBase<Stream<State>> ref,
 ) {
   StreamController<State>? controller;

@@ -78,8 +78,8 @@ void main() {
   test('linear across two containers', () {
     final a = Provider<A>((ref) => A());
 
-    final b = ScopedProvider<B>((watch) {
-      watch(a);
+    final b = Provider<B>((ref) {
+      ref.watch(a);
       return B();
     });
 
@@ -96,13 +96,13 @@ void main() {
   test('branching across two containers', () {
     final a = Provider<A>((ref) => A());
 
-    final b = ScopedProvider<B>((watch) {
+    final b = Provider<B>((ref) {
       return B();
     });
 
-    final c = ScopedProvider<C>((watch) {
-      watch(a);
-      watch(b);
+    final c = Provider<C>((ref) {
+      ref.watch(a);
+      ref.watch(b);
       return C();
     });
 
@@ -110,7 +110,10 @@ void main() {
 
     final perm = Permutations(2, [b, c]);
     for (final permutation in perm()) {
-      final container = createContainer(parent: parent);
+      final container = createContainer(
+        parent: parent,
+        overrides: permutation,
+      );
       permutation.forEach(container.read);
 
       expect(compute(container), [b, c]);

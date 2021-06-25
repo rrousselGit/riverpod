@@ -13,12 +13,10 @@ export 'src/framework.dart'
     show
         Create,
         Reader,
-        ScopedProvider,
-        ScopedReader,
         AlwaysAliveProviderBase,
         Family,
         CircularDependencyError,
-        RootProvider,
+        ProviderBase,
         ProviderBase,
         Override,
         AutoDisposeProviderRefBase,
@@ -31,7 +29,6 @@ export 'src/framework.dart'
         AutoDisposeProviderBase,
         AutoDisposeProviderElementBase,
         ProviderElementBase,
-        ScopedCreate,
         XFamily,
         XAutoDisposeFamily,
         // ignore: deprecated_member_use_from_same_package

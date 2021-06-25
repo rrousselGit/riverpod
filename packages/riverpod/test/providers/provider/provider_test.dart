@@ -6,6 +6,14 @@ import '../../utils.dart';
 
 void main() {
   group('Provider', () {
+    test(
+      'scoping an override overrides all the associated subproviders',
+      () {},
+      skip: true,
+    );
+
+    test('can be refreshed', () {}, skip: true);
+
     group('override', () {
       test('does not notify listeners if updated with the same value', () {
         final provider = Provider((ref) => 0);

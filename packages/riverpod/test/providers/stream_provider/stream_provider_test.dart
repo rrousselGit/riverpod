@@ -20,6 +20,14 @@ void main() {
     controller.close();
   });
 
+  test('can be refreshed', () {}, skip: true);
+
+  test(
+    'scoping an override overrides all the associated subproviders',
+    () {},
+    skip: true,
+  );
+
   test('Loading to data', () {
     expect(container.read(provider), const AsyncValue<int>.loading());
 

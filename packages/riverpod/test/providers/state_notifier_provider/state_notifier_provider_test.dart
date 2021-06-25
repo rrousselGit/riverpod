@@ -5,6 +5,14 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('can be refreshed', () {}, skip: true);
+
+  test(
+    'scoping an override overrides all the associated subproviders',
+    () {},
+    skip: true,
+  );
+
   test('StateNotifierFamily override', () {
     final provider =
         StateNotifierProvider.family<TestNotifier, int, int>((ref, a) {
@@ -26,12 +34,6 @@ void main() {
     expect(container.read(provider(0)), 42);
     expect(container.read(provider(0).notifier), notifier2);
   });
-
-  test(
-    'StateNotifierProviderFamily.toString includes argument & name',
-    () {},
-    skip: true,
-  );
 
   test('overriding the provider overrides provider.state too', () {
     final notifier = TestNotifier(42);

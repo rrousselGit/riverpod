@@ -18,18 +18,51 @@ void main() {
       root.dispose();
     });
 
-    test('can add observers only on the root container', () {
-      final observer = ObserverMock();
-      final observer2 = ObserverMock();
-      final container = createContainer(observers: [observer]);
-
-      expect(
-        () => createContainer(parent: container, observers: [observer2]),
-        throwsUnsupportedError,
-      );
-    });
-
     group('didUpdateProvider', () {
+      test(
+          'on scoped ProviderContainer, applies both child and ancestors observers',
+          () {
+        final provider = StateNotifierProvider<StateController<int>, int>(
+          (ref) => StateController(0),
+        );
+        final observer = ObserverMock();
+        final observer2 = ObserverMock();
+        final observer3 = ObserverMock();
+        final root = createContainer(observers: [observer]);
+        final mid = createContainer(
+          parent: root,
+          observers: [observer2],
+        );
+        final child = createContainer(
+          parent: mid,
+          overrides: [provider.overrideWithValue(StateController(42))],
+          observers: [observer3],
+        );
+
+        expect(child.read(provider), 42);
+        expect(mid.read(provider), 0);
+
+        clearInteractions(observer3);
+        clearInteractions(observer2);
+        clearInteractions(observer);
+
+        child.read(provider.notifier).state++;
+
+        verifyInOrder([
+          observer3.didUpdateProvider(provider, 42, 43, child),
+          observer2.didUpdateProvider(provider, 42, 43, child),
+          observer.didUpdateProvider(provider, 42, 43, child),
+        ]);
+
+        mid.read(provider.notifier).state++;
+
+        verify(observer.didUpdateProvider(provider, 0, 1, root)).called(1);
+
+        verifyNoMoreInteractions(observer3);
+        verifyNoMoreInteractions(observer2);
+        verifyNoMoreInteractions(observer);
+      });
+
       test('handles computed provider update', () async {
         final observer = ObserverMock();
         final container = createContainer(observers: [observer]);
@@ -44,8 +77,10 @@ void main() {
 
         await container.pump();
 
-        verifyOnly(observer, observer.didUpdateProvider(computed, 0, 1))
-            .called(1);
+        verifyOnly(
+          observer,
+          observer.didUpdateProvider(computed, 0, 1, container),
+        ).called(1);
       });
 
       test('handles direct provider update', () {
@@ -59,8 +94,10 @@ void main() {
 
         notifier.increment();
 
-        verifyOnly(observer, observer.didUpdateProvider(provider, 0, 1))
-            .called(1);
+        verifyOnly(
+          observer,
+          observer.didUpdateProvider(provider, 0, 1, container),
+        ).called(1);
       });
 
       test('didUpdateProviders', () {
@@ -81,10 +118,14 @@ void main() {
         verify(listener(0)).called(1);
         verifyNoMoreInteractions(listener);
         verifyInOrder([
-          observer.didAddProvider(provider.notifier, counter),
-          observer2.didAddProvider(provider.notifier, counter),
-          observer.didAddProvider(provider, 0),
-          observer2.didAddProvider(provider, 0),
+          observer.didAddProvider(
+            provider.notifier,
+            counter,
+            container,
+          ),
+          observer2.didAddProvider(provider.notifier, counter, container),
+          observer.didAddProvider(provider, 0, container),
+          observer2.didAddProvider(provider, 0, container),
         ]);
         verifyNoMoreInteractions(observer);
         verifyNoMoreInteractions(observer2);
@@ -93,8 +134,8 @@ void main() {
 
         verifyInOrder([
           listener(1),
-          observer.didUpdateProvider(provider, 0, 1),
-          observer2.didUpdateProvider(provider, 0, 1),
+          observer.didUpdateProvider(provider, 0, 1, container),
+          observer2.didUpdateProvider(provider, 0, 1, container),
         ]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(observer);
@@ -103,9 +144,11 @@ void main() {
 
       test('guards didUpdateProviders', () {
         final observer = ObserverMock();
-        when(observer.didUpdateProvider(any, any, any)).thenThrow('error1');
+        when(observer.didUpdateProvider(any, any, any, any))
+            .thenThrow('error1');
         final observer2 = ObserverMock();
-        when(observer2.didUpdateProvider(any, any, any)).thenThrow('error2');
+        when(observer2.didUpdateProvider(any, any, any, any))
+            .thenThrow('error2');
         final observer3 = ObserverMock();
         final provider = StateNotifierProvider<Counter, int>((_) => Counter());
         final counter = Counter();
@@ -127,9 +170,9 @@ void main() {
 
         expect(errors, ['error1', 'error2']);
         verifyInOrder([
-          observer.didUpdateProvider(provider, 0, 1),
-          observer2.didUpdateProvider(provider, 0, 1),
-          observer3.didUpdateProvider(provider, 0, 1),
+          observer.didUpdateProvider(provider, 0, 1, container),
+          observer2.didUpdateProvider(provider, 0, 1, container),
+          observer3.didUpdateProvider(provider, 0, 1, container),
         ]);
         verifyNoMoreInteractions(observer);
         verifyNoMoreInteractions(observer2);
@@ -156,7 +199,12 @@ void main() {
         await container.pump();
 
         verifyInOrder([
-          observer.didUpdateProvider(provider, 0, 1),
+          observer.didUpdateProvider(
+            provider,
+            0,
+            1,
+            container,
+          ),
         ]);
         verifyNoMoreInteractions(observer);
 
@@ -164,9 +212,19 @@ void main() {
         await container.pump();
 
         verifyInOrder([
-          observer.didUpdateProvider(provider, 1, -10),
+          observer.didUpdateProvider(
+            provider,
+            1,
+            -10,
+            container,
+          ),
           isNegativeListener(true),
-          observer.didUpdateProvider(isNegative, false, true),
+          observer.didUpdateProvider(
+            isNegative,
+            false,
+            true,
+            container,
+          ),
         ]);
         verifyNoMoreInteractions(isNegativeListener);
         verifyNoMoreInteractions(observer);
@@ -174,6 +232,41 @@ void main() {
     });
 
     group('didAddProvider', () {
+      test(
+          'on scoped ProviderContainer, applies both child and ancestors observers',
+          () {
+        final provider = Provider((ref) => 0);
+        final observer = ObserverMock();
+        final observer2 = ObserverMock();
+        final observer3 = ObserverMock();
+        final root = createContainer(observers: [observer]);
+        final mid = createContainer(
+          parent: root,
+          observers: [observer2],
+        );
+        final child = createContainer(
+          parent: mid,
+          overrides: [provider.overrideWithValue(42)],
+          observers: [observer3],
+        );
+
+        expect(child.read(provider), 42);
+
+        verifyInOrder([
+          observer3.didAddProvider(provider, 42, child),
+          observer2.didAddProvider(provider, 42, child),
+          observer.didAddProvider(provider, 42, child),
+        ]);
+
+        expect(mid.read(provider), 0);
+
+        verify(observer.didAddProvider(provider, 0, root)).called(1);
+
+        verifyNoMoreInteractions(observer3);
+        verifyNoMoreInteractions(observer2);
+        verifyNoMoreInteractions(observer);
+      });
+
       test('works', () {
         final observer = ObserverMock();
         final observer2 = ObserverMock();
@@ -187,8 +280,16 @@ void main() {
 
         expect(container.read(provider), 42);
         verifyInOrder([
-          observer.didAddProvider(provider, 42),
-          observer2.didAddProvider(provider, 42)
+          observer.didAddProvider(
+            provider,
+            42,
+            container,
+          ),
+          observer2.didAddProvider(
+            provider,
+            42,
+            container,
+          )
         ]);
         verifyNoMoreInteractions(observer);
         verifyNoMoreInteractions(observer2);
@@ -196,9 +297,9 @@ void main() {
 
       test('guards against exceptions', () {
         final observer = ObserverMock();
-        when(observer.didAddProvider(any, any)).thenThrow('error1');
+        when(observer.didAddProvider(any, any, any)).thenThrow('error1');
         final observer2 = ObserverMock();
-        when(observer2.didAddProvider(any, any)).thenThrow('error2');
+        when(observer2.didAddProvider(any, any, any)).thenThrow('error2');
         final observer3 = ObserverMock();
         final provider = Provider((_) => 0);
         final container = createContainer(
@@ -219,9 +320,9 @@ void main() {
         expect(result, 42);
         expect(errors, ['error1', 'error2']);
         verifyInOrder([
-          observer.didAddProvider(provider, 42),
-          observer2.didAddProvider(provider, 42),
-          observer3.didAddProvider(provider, 42),
+          observer.didAddProvider(provider, 42, container),
+          observer2.didAddProvider(provider, 42, container),
+          observer3.didAddProvider(provider, 42, container),
         ]);
         verifyNoMoreInteractions(observer);
       });
@@ -241,8 +342,8 @@ void main() {
       container.dispose();
 
       verifyInOrder([
-        observer.didDisposeProvider(provider),
-        observer.didDisposeProvider(provider.notifier),
+        observer.didDisposeProvider(provider, container),
+        observer.didDisposeProvider(provider.notifier, container),
       ]);
       verifyNoMoreInteractions(observer);
     });
@@ -262,17 +363,17 @@ void main() {
       await container.pump();
 
       verifyInOrder([
-        observer.didDisposeProvider(provider),
-        observer.didDisposeProvider(provider.notifier),
+        observer.didDisposeProvider(provider, container),
+        observer.didDisposeProvider(provider.notifier, container),
       ]);
       verifyNoMoreInteractions(observer);
     });
 
     test('is guarded', () {
       final observer = ObserverMock();
-      when(observer.didDisposeProvider(any)).thenThrow('error1');
+      when(observer.didDisposeProvider(any, any)).thenThrow('error1');
       final observer2 = ObserverMock();
-      when(observer2.didDisposeProvider(any)).thenThrow('error2');
+      when(observer2.didDisposeProvider(any, any)).thenThrow('error2');
       final observer3 = ObserverMock();
       final provider = Provider((_) => 0);
       final provider2 = Provider((ref) => ref.watch(provider));
@@ -299,13 +400,13 @@ void main() {
 
       expect(errors, ['error1', 'error2', 'error1', 'error2']);
       verifyInOrder([
-        observer.didDisposeProvider(provider2),
-        observer2.didDisposeProvider(provider2),
-        observer3.didDisposeProvider(provider2),
+        observer.didDisposeProvider(provider2, container),
+        observer2.didDisposeProvider(provider2, container),
+        observer3.didDisposeProvider(provider2, container),
         onDispose(),
-        observer.didDisposeProvider(provider),
-        observer2.didDisposeProvider(provider),
-        observer3.didDisposeProvider(provider),
+        observer.didDisposeProvider(provider, container),
+        observer2.didDisposeProvider(provider, container),
+        observer3.didDisposeProvider(provider, container),
       ]);
       verifyNoMoreInteractions(onDispose);
       verifyNoMoreInteractions(observer);

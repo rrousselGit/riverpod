@@ -10,6 +10,12 @@ void main() {
   test('can be refreshed', () {}, skip: true);
 
   test(
+    'scoping an override overrides all the associated subproviders',
+    () {},
+    skip: true,
+  );
+
+  test(
       'when overriden with an error but provider.future is not listened, it should not emit an error to the zone',
       () async {
     final error = Error();

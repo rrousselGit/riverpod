@@ -5,6 +5,12 @@ import '../../utils.dart';
 
 void main() {
   group('StateNotifier.family', () {
+    test(
+      'StateNotifierProviderFamily.toString includes argument & name',
+      () {},
+      skip: true,
+    );
+
     test('properly overrides ==', () {
       final family = StateNotifierProvider.family<Counter, int, int>(
           (ref, _) => Counter());
