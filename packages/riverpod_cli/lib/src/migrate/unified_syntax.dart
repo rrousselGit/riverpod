@@ -168,6 +168,10 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         migrateParams();
       }
     } else if (node.name.name == 'didUpdateProvider') {
+      yieldPatch(
+          'ProviderContainer container, ',
+          node.parameters!.parameters.first.offset,
+          node.parameters!.parameters.first.offset);
       yieldPatch(', Object? oldValue, ', node.parameters!.parameters.first.end,
           node.parameters!.parameters.last.offset);
     }
