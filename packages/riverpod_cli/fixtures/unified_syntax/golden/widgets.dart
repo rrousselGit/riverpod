@@ -39,8 +39,8 @@ final stateNotifierProvider = StateNotifierProvider<Counter, int>(
 
 class Logger extends ProviderObserver {
   @override
-  void didUpdateProvider(ProviderContainer container, ProviderBase provider,
-      Object? oldValue, Object? newValue) {
+  void didUpdateProvider(ProviderBase provider, Object? oldValue,
+      Object? newValue, ProviderContainer container) {
     print('$provider $newValue');
   }
 }
