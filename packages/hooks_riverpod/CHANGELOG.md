@@ -1,3 +1,8 @@
+# 1.0.0-dev.2
+
+- All providers can now be scoped.
+- **breaking**: `ScopedProvider` is removed. To migrate, change `ScopedProvider`s to `Provider`s.
+
 # 1.0.0-dev.1
 
 - Add missing exports (see #532)
