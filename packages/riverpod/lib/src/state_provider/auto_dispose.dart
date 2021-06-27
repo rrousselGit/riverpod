@@ -1,5 +1,38 @@
 part of '../state_provider.dart';
 
+class _AutoDisposeNotifierProvider<State>
+    extends AutoDisposeProviderBase<StateController<State>> {
+  _AutoDisposeNotifierProvider(this._create, {required String? name})
+      : super(name);
+
+  final Create<State, AutoDisposeStateProviderRef<State>> _create;
+
+  @override
+  StateController<State> create(AutoDisposeStateProviderRef<State> ref) {
+    final initialState = _create(ref);
+    final notifier = StateController(initialState);
+    ref.onDispose(notifier.dispose);
+    return notifier;
+  }
+
+  @override
+  bool recreateShouldNotify(
+    StateController<State> previousState,
+    StateController<State> newState,
+  ) {
+    return true;
+  }
+
+  @override
+  SetupOverride get setupOverride =>
+      throw UnsupportedError('Cannot override StateProvider.notifier');
+
+  @override
+  AutoDisposeStateProviderElement<State> createElement() {
+    return AutoDisposeStateProviderElement(this);
+  }
+}
+
 /// {@macro riverpod.providerrefbase}
 /// - [controller], the [StateController] currently exposed by this providers.
 abstract class AutoDisposeStateProviderRef<State>
@@ -30,11 +63,18 @@ class AutoDisposeStateProvider<State>
 
   final Create<State, AutoDisposeStateProviderRef<State>> _create;
 
+  /// {@macro riverpod.stateprovider.notifier}
+  late final AutoDisposeProviderBase<StateController<State>> notifier =
+      _AutoDisposeNotifierProvider(
+    _create,
+    name: modifierName(name, 'notifier'),
+  );
+
   @override
   StateController<State> create(AutoDisposeStateProviderRef<State> ref) {
-    return _createStateProvider(
+    return _listenStateProvider(
       ref as ProviderElementBase<StateController<State>>,
-      _create(ref),
+      ref.watch(notifier),
     );
   }
 
@@ -46,9 +86,32 @@ class AutoDisposeStateProvider<State>
     return true;
   }
 
-  /// {@macro riverpod.stateprovider.notifier}
-  late final AutoDisposeProviderBase<StateController<State>> notifier =
-      AutoDisposeProvider((ref) => ref.watch(this));
+  @override
+  Override overrideWithProvider(
+    AutoDisposeProviderBase<StateController<State>> provider,
+  ) {
+    return ProviderOverride((setup) {
+      setup(origin: this, override: this);
+      setup(origin: notifier, override: provider);
+    });
+  }
+
+  @override
+  Override overrideWithValue(StateController<State> value) {
+    return ProviderOverride((setup) {
+      setup(origin: this, override: this);
+      setup(
+        origin: notifier,
+        override: ValueProvider<StateController<State>>(value),
+      );
+    });
+  }
+
+  @override
+  SetupOverride get setupOverride => (setup) {
+        setup(origin: this, override: this);
+        setup(origin: notifier, override: notifier);
+      };
 
   @override
   AutoDisposeStateProviderElement<State> createElement() {

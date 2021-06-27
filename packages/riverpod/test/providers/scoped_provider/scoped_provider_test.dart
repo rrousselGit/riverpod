@@ -2,23 +2,12 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import '../../legacy/uni_directional_test.dart';
 import '../../utils.dart';
 
 void main() {
-  group('ScopedProvider', () {
-    test('create is nullable and default to throw UnsupportedError', () {
-      final provider = ScopedProvider<int>(null);
-      final container = createContainer();
-
-      expect(
-        () => container.read(provider),
-        throwsA(isProviderException(isUnsupportedError)),
-      );
-    });
-
+  group('scoping mechanism', () {
     test('use the deepest override', () {
-      final provider = ScopedProvider((watch) => 0);
+      final provider = Provider((ref) => 0);
       final root = createContainer(overrides: [
         provider.overrideWithValue(1),
       ]);
@@ -32,32 +21,17 @@ void main() {
 
       expect(container.read(provider), 42);
 
-      expect(container.getAllProviderElements(), [
+      expect(container.getAllProviderElements(), isEmpty);
+      expect(mid.getAllProviderElements(), [
         isA<ProviderElementBase<int>>()
             .having((e) => e.origin, 'origin', provider)
             .having((e) => e.getExposedValue(), 'getExposedValue()', 42)
-      ]);
-      expect(mid.getAllProviderElements(), isEmpty);
-      expect(root.getAllProviderElements(), isEmpty);
-    });
-
-    test('are mounted on the closest container', () {
-      final root = createContainer();
-      final container = createContainer(parent: root);
-      final provider = ScopedProvider((watch) => 0);
-
-      expect(container.read(provider), 0);
-
-      expect(container.getAllProviderElements(), [
-        isA<ProviderElementBase<int>>()
-            .having((e) => e.origin, 'origin', provider)
-            .having((e) => e.getExposedValue(), 'getExposedValue()', 0)
       ]);
       expect(root.getAllProviderElements(), isEmpty);
     });
 
     test('can read both parent and child simultaneously', () async {
-      final provider = ScopedProvider((watch) => 0);
+      final provider = Provider((ref) => 0);
       final root = createContainer(overrides: [
         provider.overrideWithValue(21),
       ]);
@@ -73,7 +47,7 @@ void main() {
 
     test('updating parent override when there is a child override is no-op',
         () async {
-      final provider = ScopedProvider((watch) => 0);
+      final provider = Provider((ref) => 0);
       final root = createContainer(overrides: [
         provider.overrideWithValue(21),
       ]);
@@ -95,8 +69,8 @@ void main() {
       verifyNoMoreInteractions(listener);
     });
 
-    test('are auto disposed', () async {
-      final provider = ScopedProvider((watch) => 0);
+    test('supports auto-dispose', () async {
+      final provider = Provider.autoDispose((ref) => 0);
       final container = createContainer();
 
       final sub = container.listen(provider, (_) {});
@@ -115,36 +89,17 @@ void main() {
       expect(element.mounted, false);
     });
 
-    test('overridesAs are auto disposed', () async {
-      final provider = ScopedProvider((watch) => 0);
-      final container = createContainer(overrides: [
-        provider.overrideAs((ref) => 42),
-      ]);
-
-      final sub = container.listen(provider, (_) {});
-      final element = container.readProviderElement(provider);
-
-      expect(element.mounted, true);
-      expect(sub.read(), 42);
-
-      sub.close();
-      await container.pump();
-
-      expect(element.mounted, false);
-    });
-
     test('are disposed on nested containers', () {
-      final provider = ScopedProvider((watch) => 0);
+      final provider = Provider((ref) => 0);
       final root = createContainer(overrides: [
         provider.overrideWithValue(1),
       ]);
-      final mid = createContainer(
+      final container = createContainer(
         parent: root,
         overrides: [
           provider.overrideWithValue(42),
         ],
       );
-      final container = createContainer(parent: mid);
 
       final element = container.readProviderElement(provider);
 
@@ -155,9 +110,9 @@ void main() {
       expect(element.mounted, false);
     });
 
-    test('can update multiple ScopeProviders at one', () {
-      final provider = ScopedProvider<int>(null);
-      final provider2 = ScopedProvider<int>(null);
+    test('can update multiple ScopeProviders at once', () {
+      final provider = Provider<int>((ref) => -1);
+      final provider2 = Provider<int>((ref) => -1);
 
       final container = createContainer(overrides: [
         provider.overrideWithValue(21),
@@ -187,7 +142,7 @@ void main() {
     });
 
     test('handles parent override update', () {
-      final provider = ScopedProvider((watch) => 0);
+      final provider = Provider((ref) => 0);
       final root = createContainer(overrides: [
         provider.overrideWithValue(1),
       ]);
@@ -212,7 +167,7 @@ void main() {
     });
 
     test('can be overriden on non-root container', () {
-      final provider = ScopedProvider((watch) => 0);
+      final provider = Provider((ref) => 0);
       final root = createContainer();
       final container = createContainer(parent: root, overrides: [
         provider.overrideWithValue(42),
@@ -223,13 +178,14 @@ void main() {
 
     test('can listen to other scoped providers', () async {
       final listener = Listener<int>();
-      final provider = ScopedProvider((watch) => 0);
-      final provider2 = ScopedProvider((watch) {
-        return watch(provider) * 2;
+      final provider = Provider((ref) => 0);
+      final provider2 = Provider((ref) {
+        return ref.watch(provider) * 2;
       });
       final root = createContainer();
       final container = createContainer(parent: root, overrides: [
         provider.overrideWithValue(1),
+        provider2,
       ]);
 
       container.listen(provider2, listener, fireImmediately: true);
@@ -238,6 +194,7 @@ void main() {
 
       container.updateOverrides([
         provider.overrideWithValue(2),
+        provider2,
       ]);
 
       await container.pump();
@@ -248,11 +205,11 @@ void main() {
     test('can listen to other normal providers', () async {
       final listener = Listener<int>();
       final provider = StateProvider((ref) => 1);
-      final provider2 = ScopedProvider((watch) {
-        return watch(provider).state * 2;
+      final provider2 = Provider((ref) {
+        return ref.watch(provider).state * 2;
       });
       final root = createContainer();
-      final container = createContainer(parent: root);
+      final container = createContainer(parent: root, overrides: [provider2]);
 
       container.listen(provider2, listener, fireImmediately: true);
 
@@ -263,85 +220,6 @@ void main() {
       await container.pump();
 
       verifyOnly(listener, listener(4));
-    });
-
-    test('compare result with ==', () async {
-      final listener = Listener<int>();
-      final provider = StateProvider((ref) => 1);
-      final provider2 = ScopedProvider((watch) {
-        return watch(provider).state * 2;
-      });
-      final root = createContainer();
-      final container = createContainer(parent: root);
-
-      container.listen(provider2, listener, fireImmediately: true);
-
-      verifyOnly(listener, listener(2));
-
-      root.read(provider).state = 1;
-
-      await container.pump();
-
-      verifyNoMoreInteractions(listener);
-    });
-
-    test('compare result with == cross override', () async {
-      final listener = Listener<int>();
-      final provider = ScopedProvider((watch) => 0);
-      final container = createContainer(overrides: [
-        provider.overrideAs((watch) => 2),
-      ]);
-
-      container.listen(provider, listener, fireImmediately: true);
-
-      verifyOnly(listener, listener(2));
-
-      container.updateOverrides([
-        provider.overrideAs((watch) => 2),
-      ]);
-
-      await container.pump();
-
-      verifyNoMoreInteractions(listener);
-    });
-
-    group('overrideAs', () {
-      test('is re-evaluated on override change', () {
-        final provider = ScopedProvider((watch) => 0);
-        final listener = Listener<int>();
-        final container = createContainer(overrides: [
-          provider.overrideAs((watch) => 2),
-        ]);
-
-        container.listen(provider, listener, fireImmediately: true);
-
-        verifyOnly(listener, listener(2));
-
-        container.updateOverrides([
-          provider.overrideAs((watch) => 4),
-        ]);
-
-        verifyOnly(listener, listener(4));
-      });
-
-      test('does not call listeners if the new override is the same as before',
-          () {
-        final provider = ScopedProvider((watch) => 0);
-        final listener = Listener<int>();
-        final container = createContainer(overrides: [
-          provider.overrideAs((watch) => 2),
-        ]);
-
-        container.listen(provider, listener, fireImmediately: true);
-
-        verifyOnly(listener, listener(2));
-
-        container.updateOverrides([
-          provider.overrideAs((watch) => 2),
-        ]);
-
-        verifyNoMoreInteractions(listener);
-      });
     });
   });
 }

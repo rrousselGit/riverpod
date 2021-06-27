@@ -568,7 +568,7 @@ void main() {
   });
 
   testWidgets('can read scoped providers', (tester) async {
-    final provider = ScopedProvider((_) => 0);
+    final provider = Provider((_) => 0);
 
     final child = Consumer(builder: (context, ref, _) {
       final value = ref.watch(provider);

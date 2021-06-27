@@ -9,7 +9,7 @@ import 'internals.dart';
 ///
 @protected
 Stream<State> asyncValueToStream<State>(
-  RootProvider<AsyncValue<State>> provider,
+  ProviderBase<AsyncValue<State>> provider,
   ProviderElementBase<Stream<State>> ref,
 ) {
   StreamController<State>? controller;
@@ -71,6 +71,10 @@ class AsyncValueAsFutureProvider<State>
   }
 
   @override
+  SetupOverride get setupOverride =>
+      throw UnsupportedError('Cannot override $_provider.$name');
+
+  @override
   ProviderElement<Future<State>> createElement() {
     return ProviderElement(this);
   }
@@ -103,6 +107,10 @@ class AutoDisposeAsyncValueAsFutureProvider<State>
   AutoDisposeProviderElement<Future<State>> createElement() {
     return AutoDisposeProviderElement(this);
   }
+
+  @override
+  SetupOverride get setupOverride =>
+      throw UnsupportedError('Cannot override $_provider.$name');
 }
 
 Future<State> _asyncValueAsFuture<State>(

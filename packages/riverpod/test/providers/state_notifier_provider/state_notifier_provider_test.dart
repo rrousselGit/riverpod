@@ -5,6 +5,51 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('can be refreshed', () {}, skip: true);
+
+  group('scope', () {
+    group('scoping an override overrides all the associated subproviders', () {
+      test(
+        'when passing the provider itself',
+        () {
+          final notifier = StateController(0);
+          final provider = StateNotifierProvider<StateController<int>, int>(
+              (ref) => notifier);
+
+          final root = createContainer();
+          final child = createContainer(
+            parent: root,
+            overrides: [provider],
+          );
+
+          child.read(provider);
+          child.read(provider.notifier);
+
+          expect(root.getAllProviderElements(), isEmpty);
+          expect(child.getAllProviderElementsInOrder(), [
+            isA<ProviderElementBase>()
+                .having((e) => e.provider, 'provider', provider.notifier),
+            isA<ProviderElementBase>()
+                .having((e) => e.provider, 'provider', provider)
+          ]);
+        },
+        skip: true,
+      );
+
+      test(
+        'when using provider.overrideWithValue',
+        () {},
+        skip: true,
+      );
+
+      test(
+        'when using provider.overrideWithProvider',
+        () {},
+        skip: true,
+      );
+    });
+  });
+
   test('StateNotifierFamily override', () {
     final provider =
         StateNotifierProvider.family<TestNotifier, int, int>((ref, a) {
@@ -26,12 +71,6 @@ void main() {
     expect(container.read(provider(0)), 42);
     expect(container.read(provider(0).notifier), notifier2);
   });
-
-  test(
-    'StateNotifierProviderFamily.toString includes argument & name',
-    () {},
-    skip: true,
-  );
 
   test('overriding the provider overrides provider.state too', () {
     final notifier = TestNotifier(42);

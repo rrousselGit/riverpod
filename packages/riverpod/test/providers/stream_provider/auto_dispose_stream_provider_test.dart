@@ -4,38 +4,60 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
-  test('StreamProvider.autoDispose', () async {
-    var stream = Stream.value(42);
-    final onDispose = OnDisposeMock();
-    final provider = StreamProvider.autoDispose((ref) {
-      ref.onDispose(onDispose);
-      return stream;
+  group('StreamProvider.autoDispose', () {
+    group('scoping an override overrides all the associated subproviders', () {
+      test(
+        'when passing the provider itself',
+        () {},
+        skip: true,
+      );
+
+      test(
+        'when using provider.overrideWithValue',
+        () {},
+        skip: true,
+      );
+
+      test(
+        'when using provider.overrideWithProvider',
+        () {},
+        skip: true,
+      );
     });
-    final container = createContainer();
-    final listener = Listener<AsyncValue<int>>();
 
-    final sub = container.listen(provider, listener, fireImmediately: true);
+    test('works', () async {
+      var stream = Stream.value(42);
+      final onDispose = OnDisposeMock();
+      final provider = StreamProvider.autoDispose((ref) {
+        ref.onDispose(onDispose);
+        return stream;
+      });
+      final container = createContainer();
+      final listener = Listener<AsyncValue<int>>();
 
-    verifyOnly(listener, listener(const AsyncValue.loading()));
+      final sub = container.listen(provider, listener, fireImmediately: true);
 
-    sub.close();
+      verifyOnly(listener, listener(const AsyncValue.loading()));
 
-    await container.pump();
+      sub.close();
 
-    verifyOnly(onDispose, onDispose());
+      await container.pump();
 
-    stream = Stream.value(21);
+      verifyOnly(onDispose, onDispose());
 
-    container.listen(
-      provider,
-      listener,
-      fireImmediately: true,
-    );
+      stream = Stream.value(21);
 
-    verifyOnly(listener, listener(const AsyncValue.loading()));
+      container.listen(
+        provider,
+        listener,
+        fireImmediately: true,
+      );
 
-    await container.pump();
+      verifyOnly(listener, listener(const AsyncValue.loading()));
 
-    verifyOnly(listener, listener(const AsyncValue.data(21)));
+      await container.pump();
+
+      verifyOnly(listener, listener(const AsyncValue.data(21)));
+    });
   });
 }

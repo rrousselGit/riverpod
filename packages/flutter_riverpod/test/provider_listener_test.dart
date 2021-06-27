@@ -336,8 +336,8 @@ void main() {
       verifyOnly(onChange, onChange(42));
     });
 
-    testWidgets('supports ScopedProvider', (tester) async {
-      final provider = ScopedProvider((ref) => 0);
+    testWidgets('supports scoping Providers', (tester) async {
+      final provider = Provider((ref) => 0);
       final onChange = ListenerMock<int>();
       final container = createContainer(overrides: [
         provider.overrideWithValue(42),

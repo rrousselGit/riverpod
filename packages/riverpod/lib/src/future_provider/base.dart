@@ -49,6 +49,30 @@ class FutureProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   }
 
   @override
+  SetupOverride get setupOverride => (setup) {
+        setup(origin: this, override: this);
+        setup(origin: future, override: future);
+      };
+
+  @override
+  Override overrideWithProvider(
+    AlwaysAliveProviderBase<AsyncValue<State>> provider,
+  ) {
+    return ProviderOverride((setup) {
+      setup(origin: future, override: this);
+      setup(origin: this, override: provider);
+    });
+  }
+
+  @override
+  Override overrideWithValue(AsyncValue<State> value) {
+    return ProviderOverride((setup) {
+      setup(origin: future, override: future);
+      setup(origin: this, override: ValueProvider<AsyncValue<State>>(value));
+    });
+  }
+
+  @override
   bool recreateShouldNotify(
     AsyncValue<State> previousState,
     AsyncValue<State> newState,

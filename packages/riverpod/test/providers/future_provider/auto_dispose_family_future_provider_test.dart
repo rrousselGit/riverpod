@@ -5,6 +5,26 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  group('scoping an override overrides all the associated subproviders', () {
+    test(
+      'when passing the provider itself',
+      () {},
+      skip: true,
+    );
+
+    test(
+      'when using provider.overrideWithValue',
+      () {},
+      skip: true,
+    );
+
+    test(
+      'when using provider.overrideWithProvider',
+      () {},
+      skip: true,
+    );
+  });
+
   test('FutureProvider.autoDispose.family override', () async {
     final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
       return Future.value(a * 2);

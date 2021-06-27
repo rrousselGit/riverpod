@@ -7,6 +7,61 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
+  test(
+      'does not re-initialize a family if read by a child container after the provider was initialized',
+      () {
+    final root = createContainer();
+    // the child must be created before the provider is initialized
+    final child = createContainer(parent: root);
+
+    var buildCount = 0;
+    final provider = Provider.family<int, int>((ref, param) {
+      buildCount++;
+      return 0;
+    });
+
+    expect(root.read(provider(0)), 0);
+
+    expect(buildCount, 1);
+
+    expect(child.read(provider(0)), 0);
+
+    expect(buildCount, 1);
+  });
+
+  test(
+      'does not re-initialize a scoped family if read by a child container after the provider was initialized',
+      () {
+    var buildCount = 0;
+    final provider = Provider.family<int, int>((ref, param) {
+      buildCount++;
+      return 0;
+    });
+    var buildCount2 = 0;
+
+    final root = createContainer();
+    final scope = createContainer(parent: root, overrides: [
+      provider.overrideWithProvider((argument) {
+        return Provider((ref) {
+          buildCount2++;
+          return 42;
+        });
+      }),
+    ]);
+    // the child must be created before the provider is initialized
+    final child = createContainer(parent: scope);
+
+    expect(scope.read(provider(0)), 42);
+
+    expect(buildCount, 0);
+    expect(buildCount2, 1);
+
+    expect(child.read(provider(0)), 42);
+
+    expect(buildCount, 0);
+    expect(buildCount2, 1);
+  });
+
   test('caches the provider per value', () {
     final family = Provider.family<String, int>((ref, a) => '$a');
     final container = createContainer();

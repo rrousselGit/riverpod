@@ -252,6 +252,28 @@ class Provider<State> extends AlwaysAliveProviderBase<State>
   }
 
   @override
+  SetupOverride get setupOverride => (setup) {
+        setup(origin: this, override: this);
+      };
+
+  @override
+  Override overrideWithProvider(AlwaysAliveProviderBase<State> provider) {
+    return ProviderOverride((setup) {
+      setup(origin: this, override: provider);
+    });
+  }
+
+  @override
+  Override overrideWithValue(State value) {
+    return ProviderOverride((setup) {
+      setup(
+        origin: this,
+        override: ValueProvider<State>(value),
+      );
+    });
+  }
+
+  @override
   ProviderElement<State> createElement() => ProviderElement(this);
 }
 

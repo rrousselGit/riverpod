@@ -6,14 +6,17 @@ part of '../framework.dart';
 @sealed
 class ValueProvider<State> extends AlwaysAliveProviderBase<State> {
   /// Creates a [ValueProvider].
-  ValueProvider(this._create, this._value) : super(null);
+  ValueProvider(this._value, [this._create]) : super(null);
 
-  final State Function(ValueProviderElement<State> ref) _create;
+  final State Function(ValueProviderElement<State> ref)? _create;
 
   final State _value;
 
   @override
-  State create(ValueProviderElement<State> ref) => _create(ref);
+  State create(ValueProviderElement<State> ref) {
+    if (_create == null) return _value;
+    return _create!(ref);
+  }
 
   @override
   bool recreateShouldNotify(State previousState, State newState) {
@@ -24,6 +27,9 @@ class ValueProvider<State> extends AlwaysAliveProviderBase<State> {
   ValueProviderElement<State> createElement() {
     return ValueProviderElement(this);
   }
+
+  @override
+  SetupOverride get setupOverride => (_) {};
 }
 
 /// The [ProviderElementBase] of a [ValueProvider]

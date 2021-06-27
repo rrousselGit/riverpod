@@ -1,5 +1,37 @@
 part of '../state_provider.dart';
 
+class _NotifierProvider<State>
+    extends AlwaysAliveProviderBase<StateController<State>> {
+  _NotifierProvider(this._create, {required String? name}) : super(name);
+
+  final Create<State, StateProviderRef<State>> _create;
+
+  @override
+  StateController<State> create(StateProviderRef<State> ref) {
+    final initialState = _create(ref);
+    final notifier = StateController(initialState);
+    ref.onDispose(notifier.dispose);
+    return notifier;
+  }
+
+  @override
+  bool recreateShouldNotify(
+    StateController<State> previousState,
+    StateController<State> newState,
+  ) {
+    return true;
+  }
+
+  @override
+  SetupOverride get setupOverride =>
+      throw UnsupportedError('Cannot override StateProvider.notifier');
+
+  @override
+  StateProviderElement<State> createElement() {
+    return StateProviderElement(this);
+  }
+}
+
 /// {@macro riverpod.providerrefbase}
 /// - [controller], the [StateController] currently exposed by this providers.
 abstract class StateProviderRef<State> implements ProviderRefBase {
@@ -59,13 +91,13 @@ class StateProvider<State>
   /// not rebuilding dependent providers/widgets after using `context.refresh` on this provider.
   /// {@endtemplate}
   late final AlwaysAliveProviderBase<StateController<State>> notifier =
-      Provider((ref) => ref.watch(this));
+      _NotifierProvider(_create, name: modifierName(name, 'notifier'));
 
   @override
   StateController<State> create(StateProviderRef<State> ref) {
-    return _createStateProvider(
+    return _listenStateProvider(
       ref as ProviderElementBase<StateController<State>>,
-      _create(ref),
+      ref.watch(notifier),
     );
   }
 
@@ -76,6 +108,33 @@ class StateProvider<State>
   ) {
     return true;
   }
+
+  @override
+  Override overrideWithProvider(
+    AlwaysAliveProviderBase<StateController<State>> provider,
+  ) {
+    return ProviderOverride((setup) {
+      setup(origin: this, override: this);
+      setup(origin: notifier, override: provider);
+    });
+  }
+
+  @override
+  Override overrideWithValue(StateController<State> value) {
+    return ProviderOverride((setup) {
+      setup(origin: this, override: this);
+      setup(
+        origin: notifier,
+        override: ValueProvider<StateController<State>>(value),
+      );
+    });
+  }
+
+  @override
+  SetupOverride get setupOverride => (setup) {
+        setup(origin: this, override: this);
+        setup(origin: notifier, override: notifier);
+      };
 
   @override
   StateProviderElement<State> createElement() => StateProviderElement(this);

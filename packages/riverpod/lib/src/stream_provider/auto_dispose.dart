@@ -44,6 +44,33 @@ class AutoDisposeStreamProvider<State>
   }
 
   @override
+  Override overrideWithProvider(
+    AutoDisposeProviderBase<AsyncValue<State>> provider,
+  ) {
+    return ProviderOverride((setup) {
+      setup(origin: this, override: provider);
+      setup(origin: stream, override: stream);
+      setup(origin: last, override: last);
+    });
+  }
+
+  @override
+  Override overrideWithValue(AsyncValue<State> value) {
+    return ProviderOverride((setup) {
+      setup(origin: this, override: ValueProvider<AsyncValue<State>>(value));
+      setup(origin: stream, override: stream);
+      setup(origin: last, override: last);
+    });
+  }
+
+  @override
+  SetupOverride get setupOverride => (setup) {
+        setup(origin: this, override: this);
+        setup(origin: stream, override: stream);
+        setup(origin: last, override: last);
+      };
+
+  @override
   AutoDisposeProviderElement<AsyncValue<State>> createElement() {
     return AutoDisposeProviderElement(this);
   }

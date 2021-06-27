@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 
 import '../utils.dart';
 
-Matcher isProvider(RootProvider provider) {
+Matcher isProvider(ProviderBase provider) {
   return isA<ProviderElementBase>().having(
     (e) => e.origin,
     'provider',
@@ -24,42 +24,6 @@ void main() {
     createContainer(parent: root);
 
     expect(root.dispose, throwsStateError);
-  });
-
-  test('throw if locally overriding a provider', () {
-    final provider = Provider((_) => 42);
-    final root = createContainer(overrides: [
-      provider.overrideWithProvider(Provider((_) => 21)),
-    ]);
-
-    expect(root.read(provider), 21);
-
-    expect(
-      () => createContainer(
-        parent: root,
-        overrides: [provider.overrideWithProvider(Provider((_) => 84))],
-      ),
-      throwsUnsupportedError,
-    );
-  });
-
-  test('throw if locally overriding a family', () {
-    final provider = Provider.family<int, int>((_, id) => id * 2);
-    final root = createContainer(overrides: [
-      provider.overrideWithProvider((id) => Provider((ref) => id)),
-    ]);
-
-    expect(root.read(provider(21)), 21);
-
-    expect(
-      () => createContainer(
-        parent: root,
-        overrides: [
-          provider.overrideWithProvider((id) => Provider((ref) => id * 3)),
-        ],
-      ),
-      throwsUnsupportedError,
-    );
   });
 
   test('hasListeners', () {

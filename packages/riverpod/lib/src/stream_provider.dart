@@ -12,7 +12,7 @@ import 'provider.dart';
 part 'stream_provider/auto_dispose.dart';
 part 'stream_provider/base.dart';
 
-mixin _StreamProviderMixin<T> on RootProvider<AsyncValue<T>> {
+mixin _StreamProviderMixin<T> on ProviderBase<AsyncValue<T>> {
   /// Exposes the [Stream] created by a [StreamProvider].
   ///
   /// The stream obtained is not strictly identical to the stream created.
@@ -24,7 +24,7 @@ mixin _StreamProviderMixin<T> on RootProvider<AsyncValue<T>> {
   ///
   /// If the [StreamProvider] was overridden using `overrideWithValue`,
   /// a stream will be generated and manipulated based on the [AsyncValue] used.
-  RootProvider<Stream<T>> get stream;
+  ProviderBase<Stream<T>> get stream;
 
   /// Exposes a [Future] which resolves with the last value or error emitted.
   ///
@@ -123,7 +123,7 @@ mixin _StreamProviderMixin<T> on RootProvider<AsyncValue<T>> {
   /// ```
   ///
   /// which is the expected behavior.
-  RootProvider<Future<T>> get last;
+  ProviderBase<Future<T>> get last;
 }
 
 /// {@template riverpod.streamprovider}

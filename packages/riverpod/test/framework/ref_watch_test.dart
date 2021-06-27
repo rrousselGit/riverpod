@@ -328,10 +328,6 @@ void main() {
     expect(secondCallCount, 1);
   });
 
-  test('Provider are not overrides', () {
-    expect(Provider((_) {}), isNot(isA<Override>()));
-  });
-
   test('can call ref.watch outside of the Provider', () async {
     final container = createContainer();
     final notifier = Notifier(0);

@@ -8,7 +8,24 @@ import '../utils.dart';
 
 void main() {
   group('ProviderContainer', () {
+    test('depth', () {
+      final root = createContainer();
+      final a = createContainer(parent: root);
+      final b = createContainer(parent: a);
+      final c = createContainer(parent: a);
+
+      final root2 = createContainer();
+
+      expect(root.depth, 0);
+      expect(root2.depth, 0);
+      expect(a.depth, 1);
+      expect(b.depth, 2);
+      expect(c.depth, 2);
+    });
+
     group('getAllProviderElements', () {
+      // TODO list only elements associated with this container (ingoring inherited elements)
+
       test('list the currently mounted providers', () async {
         final container = ProviderContainer();
         final unrelated = Provider((_) => 42);
@@ -43,6 +60,28 @@ void main() {
           ]),
         );
       });
+    });
+
+    test(
+        'does not re-initialize a provider if read by a child container after the provider was initialized',
+        () {
+      final root = createContainer();
+      // the child must be created before the provider is initialized
+      final child = createContainer(parent: root);
+
+      var buildCount = 0;
+      final provider = Provider((ref) {
+        buildCount++;
+        return 0;
+      });
+
+      expect(root.read(provider), 0);
+
+      expect(buildCount, 1);
+
+      expect(child.read(provider), 0);
+
+      expect(buildCount, 1);
     });
 
     test('can downcast the listener value', () {

@@ -1,10 +1,54 @@
-import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 import '../../utils.dart';
 
 void main() {
+  test('can be refreshed', () {}, skip: true);
+
+  group('scoping an override overrides all the associated subproviders', () {
+    test(
+      'when passing the provider itself',
+      () {},
+      skip: true,
+    );
+
+    test(
+      'when using provider.overrideWithValue',
+      () {},
+      skip: true,
+    );
+
+    test(
+      'when using provider.overrideWithProvider',
+      () {},
+      skip: true,
+    );
+  });
+
+  test(
+    'overrideWithValue listens to the new StateController and support controller changes',
+    () {
+      final provider = StateProvider((ref) => 0);
+      final container = createContainer(overrides: [
+        provider.overrideWithValue(StateController(42)),
+      ]);
+      final listener = Listener<int>();
+
+      container.listen<StateController<int>>(
+        provider,
+        (controller) => listener(controller.state),
+        fireImmediately: true,
+      );
+
+      verifyOnly(listener, listener(42));
+
+      container.read(provider).state++;
+
+      verifyOnly(listener, listener(43));
+    },
+  );
+
   test('overrideWithProvider', () {
     final override = StateController(42);
     final provider = StateProvider((ref) => 0);
@@ -70,7 +114,7 @@ void main() {
   test('Expose a state and allows modifying it', () {
     final container = createContainer();
     final provider = StateProvider((ref) => 0);
-    final listener = Listener();
+    final listener = Listener<StateController<int>>();
 
     final controller = container.read(provider);
     expect(controller.state, 0);
@@ -243,8 +287,4 @@ void main() {
       expect(second.mounted, true);
     });
   });
-}
-
-class Listener extends Mock {
-  void call(StateController<int> value);
 }

@@ -5,6 +5,35 @@ typedef AutoDisposeStateNotifierProviderRef<
         Notifier extends StateNotifier<State>, State>
     = AutoDisposeProviderRefBase;
 
+class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
+    extends AutoDisposeProviderBase<Notifier> {
+  _AutoDisposeNotifierProvider(this._create, {required String? name})
+      : super(name == null ? null : '$name.notifier');
+
+  final Create<Notifier, AutoDisposeProviderRefBase> _create;
+
+  @override
+  Notifier create(AutoDisposeProviderRefBase ref) {
+    final notifier = _create(ref);
+    ref.onDispose(notifier.dispose);
+    return notifier;
+  }
+
+  @override
+  bool recreateShouldNotify(Notifier previousState, Notifier newState) {
+    return true;
+  }
+
+  @override
+  AutoDisposeProviderElement<Notifier> createElement() {
+    return AutoDisposeProviderElement(this);
+  }
+
+  @override
+  SetupOverride get setupOverride =>
+      throw UnsupportedError('Cannot override StateNotifierProvider.notifier');
+}
+
 /// {@macro riverpod.statenotifierprovider}
 @sealed
 class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
@@ -30,15 +59,6 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
   late final AutoDisposeProviderBase<Notifier> notifier =
       _AutoDisposeNotifierProvider(_create, name: name);
 
-  /// Overrides the behavior of a provider with a another provider.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    AutoDisposeStateNotifierProvider<Notifier, State> provider,
-  ) {
-    return ProviderOverride(provider.notifier, notifier);
-  }
-
   @override
   State create(AutoDisposeProviderElementBase<State> ref) {
     final notifier = ref.watch(this.notifier);
@@ -56,6 +76,18 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
   @override
   bool recreateShouldNotify(State previousState, State newState) {
     return true;
+  }
+
+  /// Overrides the behavior of a provider with a another provider.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    AutoDisposeStateNotifierProvider<Notifier, State> provider,
+  ) {
+    return ProviderOverride((setup) {
+      setup(origin: notifier, override: provider.notifier);
+      setup(origin: this, override: this);
+    });
   }
 
   @override

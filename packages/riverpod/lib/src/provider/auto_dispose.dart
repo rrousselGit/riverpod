@@ -37,6 +37,28 @@ class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
   AutoDisposeProviderElement<State> createElement() {
     return AutoDisposeProviderElement(this);
   }
+
+  @override
+  SetupOverride get setupOverride => (setup) {
+        setup(origin: this, override: this);
+      };
+
+  @override
+  Override overrideWithProvider(AutoDisposeProviderBase<State> provider) {
+    return ProviderOverride((setup) {
+      setup(origin: this, override: provider);
+    });
+  }
+
+  @override
+  Override overrideWithValue(State value) {
+    return ProviderOverride((setup) {
+      setup(
+        origin: this,
+        override: ValueProvider<State>(value),
+      );
+    });
+  }
 }
 
 /// {@macro riverpod.provider.family}

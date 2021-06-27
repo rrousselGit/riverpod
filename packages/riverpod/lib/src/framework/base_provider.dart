@@ -28,7 +28,7 @@ class _Default {
 }
 
 /// A function that reads the state of a provider.
-typedef Reader = T Function<T>(RootProvider<T> provider);
+typedef Reader = T Function<T>(ProviderBase<T> provider);
 
 // Copied from Flutter
 /// Returns a summary of the runtime type and hash code of `object`.
@@ -71,7 +71,7 @@ mixin AlwaysAliveProviderListenable<State>
 ///
 /// This is the default base class for providers, unless a provider was marked
 /// with the `.autoDispose` modifier, like: `Provider.autoDispose(...)`
-abstract class AlwaysAliveProviderBase<State> extends RootProvider<State>
+abstract class AlwaysAliveProviderBase<State> extends ProviderBase<State>
     implements AlwaysAliveProviderListenable<State> {
   /// Creates an [AlwaysAliveProviderBase].
   AlwaysAliveProviderBase(String? name) : super(name);
@@ -91,7 +91,8 @@ abstract class AlwaysAliveProviderBase<State> extends RootProvider<State>
 }
 
 /// A base class for _all_ providers.
-abstract class ProviderBase<State> implements ProviderListenable<State> {
+abstract class ProviderBase<State>
+    implements ProviderListenable<State>, ProviderOverride {
   /// A base class for _all_ providers.
   ProviderBase(this.name);
 
@@ -121,52 +122,6 @@ abstract class ProviderBase<State> implements ProviderListenable<State> {
 
   /// An internal method that defines how a provider behaves.
   ProviderElementBase<State> createElement();
-
-  @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
-  int get hashCode {
-    if (_from == null) return super.hashCode;
-
-    return _from.hashCode ^ _argument.hashCode;
-  }
-
-  @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
-  bool operator ==(Object other) {
-    if (_from == null) return identical(other, this);
-
-    return other.runtimeType == runtimeType &&
-        other is ProviderBase<State> &&
-        other._from == _from &&
-        other._argument == _argument;
-  }
-
-  @override
-  String toString() {
-    var leading = '';
-    if (from != null) {
-      leading = '($argument)';
-    }
-
-    var trailing = '';
-    if (name != null) {
-      trailing = '$name:';
-    }
-
-    return '$trailing${describeIdentity(this)}$leading';
-  }
-}
-
-/// {@template riverpod.rootprovider}
-/// A base class for non-scoped providers.
-///
-/// By making typing a parameter as [RootProvider] instead of [ProviderBase],
-/// this excludes [ScopedProvider] – which may not be supported by your code
-/// due to its particular behavior.
-/// {@endtemplate}
-abstract class RootProvider<State> extends ProviderBase<State> {
-  /// {@macro riverpod.rootprovider}
-  RootProvider(String? name) : super(name);
 
   /// Partially listen to a provider.
   ///
@@ -244,19 +199,53 @@ abstract class RootProvider<State> extends ProviderBase<State> {
       selector: selector,
     );
   }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode {
+    if (_from == null) return super.hashCode;
+
+    return _from.hashCode ^ _argument.hashCode;
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (_from == null) return identical(other, this);
+
+    return other.runtimeType == runtimeType &&
+        other is ProviderBase<State> &&
+        other._from == _from &&
+        other._argument == _argument;
+  }
+
+  @override
+  String toString() {
+    var leading = '';
+    if (from != null) {
+      leading = '($argument)';
+    }
+
+    var trailing = '';
+    if (name != null) {
+      trailing = '$name:';
+    }
+
+    return '$trailing${describeIdentity(this)}$leading';
+  }
 }
 
-/// An internal class for `RootProvider.select`.
+/// An internal class for `ProviderBase.select`.
 @sealed
 class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
-  /// An internal class for `RootProvider.select`.
+  /// An internal class for `ProviderBase.select`.
   _ProviderSelector({
     required this.provider,
     required this.selector,
   });
 
   /// The provider that was selected
-  final RootProvider<Input> provider;
+  final ProviderBase<Input> provider;
 
   /// The selector applied
   final Output Function(Input) selector;
@@ -451,7 +440,7 @@ abstract class ProviderRefBase {
   ///
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
-  T read<T>(RootProvider<T> provider);
+  T read<T>(ProviderBase<T> provider);
 
   /// Obtains the state of a provider and cause the state to be re-evaluated
   /// when that provider emits a new value.
@@ -697,7 +686,12 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     if (previousState != const _Default()) {
       for (final observer in _container._observers) {
         Zone.current.runGuarded(
-          () => observer.didUpdateProvider(provider, previousState, state),
+          () => observer.didUpdateProvider(
+            provider,
+            previousState,
+            state,
+            _container,
+          ),
         );
       }
     }
@@ -747,7 +741,7 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   }
 
   @override
-  T read<T>(RootProvider<T> provider) {
+  T read<T>(ProviderBase<T> provider) {
     assert(_debugAssertCanDependOn(provider), '');
     return _container.read(provider);
   }
@@ -905,9 +899,10 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     _dependencies.clear();
 
     for (final observer in _container._observers) {
-      _runUnaryGuarded(
+      _runBinaryGuarded(
         observer.didDisposeProvider,
         _origin,
+        _container,
       );
     }
 
@@ -1027,12 +1022,7 @@ mixin ProviderOverridesMixin<State> on AlwaysAliveProviderBase<State> {
   /// Overrides the behavior of a provider with a value.
   ///
   /// {@macro riverpod.overideWith}
-  Override overrideWithValue(State value) {
-    return ProviderOverride(
-      ValueProvider<State>((ref) => value, value),
-      this,
-    );
-  }
+  Override overrideWithValue(State value);
 
   /// Overrides the behavior of this provider with another provider.
   ///
@@ -1065,7 +1055,5 @@ mixin ProviderOverridesMixin<State> on AlwaysAliveProviderBase<State> {
   // Cannot be overridden by AutoDisposeProviders
   Override overrideWithProvider(
     AlwaysAliveProviderBase<State> provider,
-  ) {
-    return ProviderOverride(provider, this);
-  }
+  );
 }

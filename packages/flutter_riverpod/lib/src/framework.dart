@@ -43,11 +43,11 @@ import 'package:riverpod/riverpod.dart';
 ///
 ///
 /// Similarly, it is possible to insert other [ProviderScope] anywhere inside
-/// the widget tree to override the behavior of a [ScopedProvider] for only a part of the
+/// the widget tree to override the behavior of a provider for only a part of the
 /// application:
 ///
 /// ```dart
-/// final themeProvider = ScopedProvider((ref) => MyTheme.light());
+/// final themeProvider = Provider((ref) => MyTheme.light());
 ///
 /// void main() {
 ///   runApp(
