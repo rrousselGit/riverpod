@@ -17,7 +17,6 @@ export 'src/framework.dart'
         Family,
         CircularDependencyError,
         ProviderBase,
-        ProviderBase,
         Override,
         AutoDisposeProviderRefBase,
         ProviderRefBase,

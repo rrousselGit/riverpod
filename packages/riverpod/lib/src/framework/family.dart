@@ -10,9 +10,11 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   @protected
   final String? name;
 
+  @override
   ProviderBase Function(Object? argument, ProviderBase provider)
       get _createOverride => (arg, _) => call(arg as Arg);
 
+  @override
   Family get _family => this;
 
   /// Create a provider from an external value.

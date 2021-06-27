@@ -4,6 +4,7 @@ part of '../change_notifier_provider.dart';
 typedef AutoDisposeChangeNotifierProviderRef<Notifier>
     = AutoDisposeProviderRefBase;
 
+// ignore: subtype_of_sealed_class
 /// {@macro riverpod.changenotifierprovider}
 @sealed
 class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
@@ -55,26 +56,35 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
   }
 
   @override
+  bool recreateShouldNotify(Notifier previousState, Notifier newState) => true;
+
+  @override
   Override overrideWithValue(Notifier value) {
-    return ProviderOverride(
-      ValueProvider<Notifier>((_) => value, value),
-      notifier,
-    );
+    return ProviderOverride((setup) {
+      setup(origin: this, override: this);
+      setup(origin: notifier, override: ValueProvider<Notifier>(value));
+    });
   }
 
   @override
   Override overrideWithProvider(
     AutoDisposeProviderBase<Notifier> provider,
   ) {
-    return ProviderOverride(provider, notifier);
+    return ProviderOverride((setup) {
+      setup(origin: this, override: this);
+      setup(origin: notifier, override: provider);
+    });
   }
+
+  @override
+  SetupOverride get setupOverride => (setup) {
+        setup(origin: this, override: this);
+        setup(origin: notifier, override: notifier);
+      };
 
   @override
   AutoDisposeProviderElement<Notifier> createElement() =>
       AutoDisposeProviderElement(this);
-
-  @override
-  bool recreateShouldNotify(Notifier previousState, Notifier newState) => true;
 }
 
 /// {@template riverpod.changenotifierprovider.family}

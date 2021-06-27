@@ -103,7 +103,9 @@ abstract class QuestionTheme with _$QuestionTheme {
   }) = _QuestionTheme;
 }
 
-final questionThemeProvider = ScopedProvider<QuestionTheme>(null);
+final questionThemeProvider = Provider<QuestionTheme>((ref) {
+  throw UnimplementedError();
+});
 
 class MyHomePage extends HookConsumerWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -140,10 +142,11 @@ class MyHomePage extends HookConsumerWidget {
                 itemBuilder: (context, index) {
                   return ProviderScope(
                     overrides: [
-                      currentQuestion.overrideAs((watch) {
-                        return watch(paginatedQuestionsProvider(index ~/ 50))
-                            .whenData((page) => page.items[index % 50]);
-                      }),
+                      currentQuestion.overrideWithValue(
+                        ref
+                            .watch(paginatedQuestionsProvider(index ~/ 50))
+                            .whenData((page) => page.items[index % 50]),
+                      ),
                     ],
                     child: const QuestionItem(),
                   );
@@ -163,7 +166,9 @@ class MyHomePage extends HookConsumerWidget {
   }
 }
 
-final currentQuestion = ScopedProvider<AsyncValue<Question>>(null);
+final currentQuestion = Provider<AsyncValue<Question>>((ref) {
+  throw UnimplementedError();
+});
 
 class QuestionItem extends HookConsumerWidget {
   const QuestionItem({Key? key}) : super(key: key);

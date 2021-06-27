@@ -278,7 +278,9 @@ abstract class TagTheme with _$TagTheme {
   }) = _TagTheme;
 }
 
-final tagThemeProvider = ScopedProvider<TagTheme>(null);
+final tagThemeProvider = Provider<TagTheme>((ref) {
+  throw UnimplementedError();
+});
 
 class Tag extends HookConsumerWidget {
   const Tag({

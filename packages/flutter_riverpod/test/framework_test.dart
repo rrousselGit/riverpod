@@ -33,7 +33,7 @@ void main() {
   });
 
   testWidgets('ref.read can read ScopedProviders', (tester) async {
-    final provider = ScopedProvider((watch) => 42);
+    final provider = Provider((watch) => 42);
     late WidgetRef ref;
 
     await tester.pumpWidget(ProviderScope(
@@ -48,10 +48,9 @@ void main() {
     expect(ref.read(provider), 42);
   });
 
-  testWidgets('ref.read obtains the nearest ScopedProvider possible',
-      (tester) async {
+  testWidgets('ref.read obtains the nearest Provider possible', (tester) async {
     late WidgetRef ref;
-    final provider = ScopedProvider((watch) => 42);
+    final provider = Provider((watch) => 42);
 
     await tester.pumpWidget(
       ProviderScope(

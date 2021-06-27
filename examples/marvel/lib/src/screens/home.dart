@@ -151,7 +151,7 @@ class Home extends HookConsumerWidget {
   }
 }
 
-final _characterIndex = ScopedProvider<int>(null);
+final _characterIndex = Provider<int>((ref) => throw UnimplementedError());
 
 class CharacterItem extends HookConsumerWidget {
   const CharacterItem({Key? key}) : super(key: key);
