@@ -9,11 +9,25 @@ import '../../utils.dart';
 void main() {
   test('can be refreshed', () {}, skip: true);
 
-  test(
-    'scoping an override overrides all the associated subproviders',
-    () {},
-    skip: true,
-  );
+  group('scoping an override overrides all the associated subproviders', () {
+    test(
+      'when passing the provider itself',
+      () {},
+      skip: true,
+    );
+
+    test(
+      'when using provider.overrideWithValue',
+      () {},
+      skip: true,
+    );
+
+    test(
+      'when using provider.overrideWithProvider',
+      () {},
+      skip: true,
+    );
+  });
 
   test(
       'when overriden with an error but provider.future is not listened, it should not emit an error to the zone',

@@ -3,6 +3,7 @@ import 'package:state_notifier/state_notifier.dart';
 
 import '../riverpod.dart';
 import 'builders.dart';
+import 'common.dart';
 import 'framework.dart';
 
 part 'state_provider/auto_dispose.dart';
@@ -56,13 +57,10 @@ class StateController<T> extends StateNotifier<T> {
 /// }
 /// ```
 /// {@endtemplate}
-StateController<State> _createStateProvider<State>(
+StateController<State> _listenStateProvider<State>(
   ProviderElementBase<StateController<State>> ref,
-  State initialState,
+  StateController<State> controller,
 ) {
-  final controller = StateController(initialState);
-  ref.onDispose(controller.dispose);
-
   void listener(State newState) {
     ref.notifyListeners();
   }

@@ -38,6 +38,30 @@ class AutoDisposeFutureProvider<State>
   }
 
   @override
+  SetupOverride get setupOverride => (setup) {
+        setup(origin: this, override: this);
+        setup(origin: future, override: future);
+      };
+
+  @override
+  Override overrideWithProvider(
+    AutoDisposeProviderBase<AsyncValue<State>> provider,
+  ) {
+    return ProviderOverride((setup) {
+      setup(origin: future, override: provider);
+      setup(origin: this, override: this);
+    });
+  }
+
+  @override
+  Override overrideWithValue(AsyncValue<State> value) {
+    return ProviderOverride((setup) {
+      setup(origin: future, override: future);
+      setup(origin: this, override: ValueProvider<AsyncValue<State>>(value));
+    });
+  }
+
+  @override
   AutoDisposeProviderElement<AsyncValue<State>> createElement() {
     return AutoDisposeProviderElement(this);
   }

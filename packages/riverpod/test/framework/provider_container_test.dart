@@ -8,6 +8,21 @@ import '../utils.dart';
 
 void main() {
   group('ProviderContainer', () {
+    test('depth', () {
+      final root = createContainer();
+      final a = createContainer(parent: root);
+      final b = createContainer(parent: a);
+      final c = createContainer(parent: a);
+
+      final root2 = createContainer();
+
+      expect(root.depth, 0);
+      expect(root2.depth, 0);
+      expect(a.depth, 1);
+      expect(b.depth, 2);
+      expect(c.depth, 2);
+    });
+
     group('getAllProviderElements', () {
       // TODO list only elements associated with this container (ingoring inherited elements)
 

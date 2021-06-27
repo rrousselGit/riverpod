@@ -7,11 +7,48 @@ import '../../utils.dart';
 void main() {
   test('can be refreshed', () {}, skip: true);
 
-  test(
-    'scoping an override overrides all the associated subproviders',
-    () {},
-    skip: true,
-  );
+  group('scope', () {
+    group('scoping an override overrides all the associated subproviders', () {
+      test(
+        'when passing the provider itself',
+        () {
+          final notifier = StateController(0);
+          final provider = StateNotifierProvider<StateController<int>, int>(
+              (ref) => notifier);
+
+          final root = createContainer();
+          final child = createContainer(
+            parent: root,
+            overrides: [provider],
+          );
+
+          child.read(provider);
+          child.read(provider.notifier);
+
+          expect(root.getAllProviderElements(), isEmpty);
+          expect(child.getAllProviderElementsInOrder(), [
+            isA<ProviderElementBase>()
+                .having((e) => e.provider, 'provider', provider.notifier),
+            isA<ProviderElementBase>()
+                .having((e) => e.provider, 'provider', provider)
+          ]);
+        },
+        skip: true,
+      );
+
+      test(
+        'when using provider.overrideWithValue',
+        () {},
+        skip: true,
+      );
+
+      test(
+        'when using provider.overrideWithProvider',
+        () {},
+        skip: true,
+      );
+    });
+  });
 
   test('StateNotifierFamily override', () {
     final provider =

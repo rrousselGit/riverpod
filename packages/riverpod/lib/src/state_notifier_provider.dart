@@ -9,54 +9,6 @@ import 'provider.dart';
 part 'state_notifier_provider/auto_dispose.dart';
 part 'state_notifier_provider/base.dart';
 
-class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
-    extends AutoDisposeProviderBase<Notifier> {
-  _AutoDisposeNotifierProvider(this._create, {required String? name})
-      : super(name == null ? null : '$name.notifier');
-
-  final Create<Notifier, AutoDisposeProviderRefBase> _create;
-
-  @override
-  Notifier create(AutoDisposeProviderRefBase ref) {
-    final notifier = _create(ref);
-    ref.onDispose(notifier.dispose);
-    return notifier;
-  }
-
-  @override
-  bool recreateShouldNotify(Notifier previousState, Notifier newState) {
-    return true;
-  }
-
-  @override
-  AutoDisposeProviderElement<Notifier> createElement() {
-    return AutoDisposeProviderElement(this);
-  }
-}
-
-class _NotifierProvider<Notifier extends StateNotifier<Object?>>
-    extends AlwaysAliveProviderBase<Notifier> {
-  _NotifierProvider(this._create, {required String? name})
-      : super(name == null ? null : '$name.notifier');
-
-  final Create<Notifier, ProviderRefBase> _create;
-
-  @override
-  Notifier create(ProviderRefBase ref) {
-    final notifier = _create(ref);
-    ref.onDispose(notifier.dispose);
-    return notifier;
-  }
-
-  @override
-  bool recreateShouldNotify(Notifier previousState, Notifier newState) {
-    return true;
-  }
-
-  @override
-  ProviderElement<Notifier> createElement() => ProviderElement(this);
-}
-
 /// {@template riverpod.statenotifierprovider}
 /// Creates a [StateNotifier] and expose its current state.
 ///
@@ -125,13 +77,22 @@ mixin _StateNotifierProviderMixin<Notifier extends StateNotifier<Value>, Value>
     on ProviderBase<Value> {
   ProviderBase<Notifier> get notifier;
 
+  @override
+  SetupOverride get setupOverride => (setup) {
+        setup(origin: this, override: this);
+        setup(origin: notifier, override: notifier);
+      };
+
   /// Overrides the behavior of a provider with a value.
   ///
   /// {@macro riverpod.overideWith}
   Override overrideWithValue(Notifier value) {
-    return ProviderOverride(
-      ValueProvider<Notifier>((ref) => value, value),
-      notifier,
-    );
+    return ProviderOverride((setup) {
+      setup(
+        origin: notifier,
+        override: ValueProvider<Notifier>(value),
+      );
+      setup(origin: this, override: this);
+    });
   }
 }

@@ -96,9 +96,6 @@ abstract class ProviderBase<State>
   /// A base class for _all_ providers.
   ProviderBase(this.name);
 
-  ProviderBase get _origin => this;
-  ProviderBase get _provider => this;
-
   /// {@template riverpod.name}
   /// A custom label for providers.
   ///
@@ -1025,12 +1022,7 @@ mixin ProviderOverridesMixin<State> on AlwaysAliveProviderBase<State> {
   /// Overrides the behavior of a provider with a value.
   ///
   /// {@macro riverpod.overideWith}
-  Override overrideWithValue(State value) {
-    return ProviderOverride(
-      ValueProvider<State>((ref) => value, value),
-      this,
-    );
-  }
+  Override overrideWithValue(State value);
 
   /// Overrides the behavior of this provider with another provider.
   ///
@@ -1063,7 +1055,5 @@ mixin ProviderOverridesMixin<State> on AlwaysAliveProviderBase<State> {
   // Cannot be overridden by AutoDisposeProviders
   Override overrideWithProvider(
     AlwaysAliveProviderBase<State> provider,
-  ) {
-    return ProviderOverride(provider, this);
-  }
+  );
 }

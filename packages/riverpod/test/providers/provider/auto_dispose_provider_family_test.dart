@@ -5,6 +5,28 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  group('Provider.autoDispose.family', () {
+    group('scoping an override overrides all the associated subproviders', () {
+      test(
+        'when passing the provider itself',
+        () {},
+        skip: true,
+      );
+
+      test(
+        'when using provider.overrideWithValue',
+        () {},
+        skip: true,
+      );
+
+      test(
+        'when using provider.overrideWithProvider',
+        () {},
+        skip: true,
+      );
+    });
+  });
+
   test('Provider.autoDispose.family', () async {
     final onDispose = OnDisposeMock();
     final provider = Provider.autoDispose.family<String, int>((ref, value) {

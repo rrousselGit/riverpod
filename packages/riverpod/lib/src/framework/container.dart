@@ -99,7 +99,8 @@ class ProviderContainer {
     ProviderContainer? parent,
     List<Override> overrides = const [],
     List<ProviderObserver>? observers,
-  })  : _parent = parent,
+  })  : depth = parent == null ? 0 : parent.depth + 1,
+        _parent = parent,
         _observers = [
           ...?observers,
           if (parent != null) ...parent._observers,
@@ -123,12 +124,23 @@ class ProviderContainer {
 
     for (final override in overrides) {
       if (override is ProviderOverride) {
-        _overrideForProvider[override._origin] = override._provider;
-        _stateReaders[override._origin] = _StateReader(
-          origin: override._origin,
-          override: override._provider,
-          container: this,
-        );
+        void setupOverride({
+          required ProviderBase override,
+          required ProviderBase origin,
+        }) {
+          assert(
+            !_overrideForProvider.containsKey(origin),
+            'The provider $origin is already overriden',
+          );
+          _overrideForProvider[origin] = override;
+          _stateReaders[origin] = _StateReader(
+            origin: origin,
+            override: override,
+            container: this,
+          );
+        }
+
+        override.setupOverride(setupOverride);
       } else if (override is FamilyOverride) {
         _overrideForFamily[override._family] = _FamilyOverrideRef(
           override,
@@ -154,6 +166,11 @@ class ProviderContainer {
       _parent?._root?._scheduler ?? _ProviderScheduler(vsync);
 
   late final String _debugId;
+
+  /// How deep this [ProviderContainer] is in the graph of containers.
+  ///
+  /// Starts at 0.
+  final int depth;
 
   /// A unique ID for this object, used by the devtool to differentiate two [ProviderContainer].
   ///
@@ -308,29 +325,34 @@ class ProviderContainer {
 
     for (final override in overrides) {
       if (override is ProviderOverride) {
-        assert(
-          _overrideForProvider[override._origin].runtimeType ==
-              override._provider.runtimeType,
-          'Replaced the override of type ${_overrideForProvider[override._origin].runtimeType} '
-          'with an override of type ${override._provider.runtimeType}, which is different.\n'
-          'Changing the kind of override or reordering overrides is not supported.',
-        );
-
         assert(() {
           unusedOverrides!.remove(override);
           return true;
         }(), '');
 
-        // _stateReaders[override._origin] cannot be null for overridden providers.
-        final reader = _stateReaders[override._origin]!;
+        void setupOverride({
+          required ProviderBase override,
+          required ProviderBase origin,
+        }) {
+          assert(
+            _overrideForProvider[origin].runtimeType == override.runtimeType,
+            'Replaced the override of type ${_overrideForProvider[origin].runtimeType} '
+            'with an override of type ${override.runtimeType}, which is different.\n'
+            'Changing the kind of override or reordering overrides is not supported.',
+          );
 
-        reader.override =
-            _overrideForProvider[override._origin] = override._provider;
+          // _stateReaders[origin] cannot be null for overridden providers.
+          final reader = _stateReaders[origin]!;
 
-        final element = reader._element;
-        if (element == null) continue;
+          reader.override = _overrideForProvider[origin] = override;
 
-        _runUnaryGuarded(element.update, override._provider);
+          final element = reader._element;
+          if (element == null) return;
+
+          _runUnaryGuarded(element.update, override);
+        }
+
+        override.setupOverride(setupOverride);
       } else if (override is FamilyOverride) {
         assert(() {
           unusedOverrides!.remove(override);
@@ -532,8 +554,19 @@ abstract class ProviderObserver {
 
   /// A provider was disposed
   void didDisposeProvider(
-      ProviderBase provider, ProviderContainer containers) {}
+    ProviderBase provider,
+    ProviderContainer containers,
+  ) {}
 }
+
+/// An implementation detail for the override mechanism of providers
+typedef SetupOverride = void Function(
+  void Function({
+    required ProviderBase origin,
+    required ProviderBase override,
+  })
+      setup,
+);
 
 /// An object used by [ProviderContainer] to override the behavior of a provider
 /// for a part of the application.
@@ -546,18 +579,18 @@ abstract class ProviderObserver {
 /// - `overrideWithProvider`/`overrideWithValue`, which creates a [ProviderOverride].
 @sealed
 class ProviderOverride implements Override {
-  /// Internal use only
-  ProviderOverride(this._provider, this._origin);
+  /// Override a provider
+  ProviderOverride(this.setupOverride);
 
-  final ProviderBase _origin;
-  final ProviderBase _provider;
+  /// Defines how a provider should be overriden.
+  final SetupOverride setupOverride;
 }
 
 /// An object used by [ProviderContainer]/`ProviderScope` to override the behavior
 /// of a provider/family for part of the application.
 ///
 /// Do not extend or implement.
-class Override {}
+abstract class Override {}
 
 /// An error thrown when a call to [ProviderRefBase.read]/[ProviderRefBase.watch]
 /// leads to a provider depending on itself.

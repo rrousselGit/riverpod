@@ -4,39 +4,61 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
-  test('StreamProvider.autoDispose.family override', () async {
-    final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
-      return Stream.value(a * 2);
+  group('StreamProvider.autoDispose.family', () {
+    group('scoping an override overrides all the associated subproviders', () {
+      test(
+        'when passing the provider itself',
+        () {},
+        skip: true,
+      );
+
+      test(
+        'when using provider.overrideWithValue',
+        () {},
+        skip: true,
+      );
+
+      test(
+        'when using provider.overrideWithProvider',
+        () {},
+        skip: true,
+      );
     });
-    final container = createContainer();
-    final listener = Listener<AsyncValue<int>>();
 
-    container.listen(provider(21), listener, fireImmediately: true);
+    test('override', () async {
+      final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
+        return Stream.value(a * 2);
+      });
+      final container = createContainer();
+      final listener = Listener<AsyncValue<int>>();
 
-    verifyOnly(listener, listener(const AsyncValue.loading()));
+      container.listen(provider(21), listener, fireImmediately: true);
 
-    await container.pump();
+      verifyOnly(listener, listener(const AsyncValue.loading()));
 
-    verifyOnly(listener, listener(const AsyncValue.data(42)));
-  });
+      await container.pump();
 
-  test('StreamProvider.autoDispose.family override', () async {
-    final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
-      return Stream.value(a * 2);
+      verifyOnly(listener, listener(const AsyncValue.data(42)));
     });
-    final container = ProviderContainer(overrides: [
-      provider.overrideWithProvider((a) {
-        return StreamProvider.autoDispose((ref) => Stream.value(a * 4));
-      }),
-    ]);
-    final listener = Listener<AsyncValue<int>>();
 
-    container.listen(provider(21), listener, fireImmediately: true);
+    test('override', () async {
+      final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
+        return Stream.value(a * 2);
+      });
+      final container = ProviderContainer(overrides: [
+        provider.overrideWithProvider((a) {
+          return StreamProvider.autoDispose((ref) => Stream.value(a * 4));
+        }),
+      ]);
+      final listener = Listener<AsyncValue<int>>();
 
-    verifyOnly(listener, listener(const AsyncValue.loading()));
+      container.listen(provider(21), listener, fireImmediately: true);
 
-    await container.pump();
+      verifyOnly(listener, listener(const AsyncValue.loading()));
 
-    verifyOnly(listener, listener(const AsyncValue.data(84)));
+      await container.pump();
+
+      verifyOnly(listener, listener(const AsyncValue.data(84)));
+    });
   });
 }

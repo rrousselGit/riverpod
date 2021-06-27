@@ -1,5 +1,32 @@
 part of '../state_notifier_provider.dart';
 
+class _NotifierProvider<Notifier extends StateNotifier<Object?>>
+    extends AlwaysAliveProviderBase<Notifier> {
+  _NotifierProvider(this._create, {required String? name})
+      : super(name == null ? null : '$name.notifier');
+
+  final Create<Notifier, ProviderRefBase> _create;
+
+  @override
+  Notifier create(ProviderRefBase ref) {
+    final notifier = _create(ref);
+    ref.onDispose(notifier.dispose);
+    return notifier;
+  }
+
+  @override
+  bool recreateShouldNotify(Notifier previousState, Notifier newState) {
+    return true;
+  }
+
+  @override
+  ProviderElement<Notifier> createElement() => ProviderElement(this);
+
+  @override
+  SetupOverride get setupOverride =>
+      throw UnsupportedError('Cannot override StateNotifierProvider.notifier');
+}
+
 /// {@macro riverpod.providerrefbase}
 typedef StateNotifierProviderRef<Notifier extends StateNotifier<State>, State>
     = ProviderRefBase;
@@ -31,15 +58,6 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
   late final AlwaysAliveProviderBase<Notifier> notifier =
       _NotifierProvider(_create, name: name);
 
-  /// Overrides the behavior of a provider with a another provider.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    StateNotifierProvider<Notifier, State> provider,
-  ) {
-    return ProviderOverride(provider.notifier, notifier);
-  }
-
   @override
   State create(ProviderElementBase<State> ref) {
     final notifier = ref.watch(this.notifier);
@@ -57,6 +75,17 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
   @override
   bool recreateShouldNotify(State previousState, State newState) {
     return true;
+  }
+
+  /// Overrides the behavior of a provider with a another provider.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    StateNotifierProvider<Notifier, State> provider,
+  ) {
+    return ProviderOverride((setup) {
+      setup(origin: notifier, override: provider.notifier);
+    });
   }
 
   @override
