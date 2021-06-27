@@ -1,3 +1,8 @@
+# 1.0.0-dev.1
+
+- The migration now updates ProviderObserver methods to add the
+ `ProviderContainer` parameter.
+
 # 1.0.0-dev.0
 
 - Migration for unifying syntax (riverpod 1.0.0) [RFC](https://github.com/rrousselGit/river_pod/issues/335)
