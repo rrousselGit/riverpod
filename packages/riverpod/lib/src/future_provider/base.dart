@@ -59,8 +59,8 @@ class FutureProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
     AlwaysAliveProviderBase<AsyncValue<State>> provider,
   ) {
     return ProviderOverride((setup) {
-      setup(origin: future, override: provider);
-      setup(origin: this, override: this);
+      setup(origin: future, override: this);
+      setup(origin: this, override: provider);
     });
   }
 
