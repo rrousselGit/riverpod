@@ -139,8 +139,8 @@ abstract class ProviderRef<State> implements ProviderRefBase {
 /// final countryProvider = Provider((ref) => 'England');
 ///
 /// final weatherProvider = Provider((ref) {
-///   final city = ref.read(cityProvider);
-///   final country = ref.read(countryProvider);
+///   final city = ref.watch(cityProvider);
+///   final country = ref.watch(countryProvider);
 ///
 ///   return Location(city: city, country: country);
 /// });
