@@ -374,6 +374,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           break;
       }
     }
+
     super.visitTypeName(node);
   }
 
@@ -396,6 +397,10 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
     } else if (type.contains('StateProvider')) {
       inProvider = ProviderType.state;
+      providerTypeArgs =
+          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
+    } else if (type.contains('ScopedProvider')) {
+      inProvider = ProviderType.plain;
       providerTypeArgs =
           type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
     } else if (type.contains('Provider')) {
@@ -432,7 +437,8 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       migrateParams();
       migrateClass();
     } else if (!type.contains('Family') && type.contains('Provider')) {
-      yieldPatch(type, node.constructorName.offset, node.constructorName.end);
+      yieldPatch(type.replaceAll('Scoped', ''), node.constructorName.offset,
+          node.constructorName.end);
     }
 
     updateProviderType(type);
