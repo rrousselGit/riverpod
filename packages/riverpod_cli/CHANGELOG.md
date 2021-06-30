@@ -1,3 +1,7 @@
+# 1.0.0-dev.2
+
+- The migration now updates ScopedProvider => Provider
+
 # 1.0.0-dev.1
 
 - The migration now updates ProviderObserver methods to add the

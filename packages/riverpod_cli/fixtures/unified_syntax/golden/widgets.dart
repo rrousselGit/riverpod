@@ -36,6 +36,7 @@ final streamProviderAD = StreamProvider.autoDispose<String>(
         Stream.fromIterable(['1', '2', '3']));
 final stateNotifierProvider = StateNotifierProvider<Counter, int>(
     (StateNotifierProviderRef<Counter, int> ref) => Counter(ref));
+final scopedProvider = Provider<int>((ref) => 0);
 
 class Logger extends ProviderObserver {
   @override
