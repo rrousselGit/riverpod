@@ -1,3 +1,7 @@
+# 1.0.0-dev.3
+
+Fixed various issues related to scoped providers.
+
 # 1.0.0-dev.2
 
 - All providers can now be scoped.

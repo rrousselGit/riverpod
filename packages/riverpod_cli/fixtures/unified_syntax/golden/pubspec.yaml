@@ -9,6 +9,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter  
-  flutter_riverpod: ^1.0.0-dev.2
-  hooks_riverpod: ^1.0.0-dev.2
-  riverpod: ^1.0.0-dev.2
+  flutter_riverpod: ^1.0.0-dev.3
+  hooks_riverpod: ^1.0.0-dev.3
+  riverpod: ^1.0.0-dev.3
