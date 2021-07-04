@@ -8,8 +8,7 @@ typedef AutoDisposeChangeNotifierProviderRef<Notifier>
 /// {@macro riverpod.changenotifierprovider}
 @sealed
 class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
-    extends AutoDisposeProviderBase<Notifier>
-    implements AutoDisposeProviderOverridesMixin<Notifier> {
+    extends AutoDisposeProviderBase<Notifier> {
   /// {@macro riverpod.changenotifierprovider}
   AutoDisposeChangeNotifierProvider(this._create, {String? name}) : super(name);
 
@@ -58,7 +57,9 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
   @override
   bool recreateShouldNotify(Notifier previousState, Notifier newState) => true;
 
-  @override
+  /// Overrides the behavior of a provider with a value.
+  ///
+  /// {@macro riverpod.overideWith}
   Override overrideWithValue(Notifier value) {
     return ProviderOverride((setup) {
       setup(origin: this, override: this);
@@ -66,13 +67,15 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
     });
   }
 
-  @override
+  /// Overrides the behavior of a provider with a another provider.
+  ///
+  /// {@macro riverpod.overideWith}
   Override overrideWithProvider(
-    AutoDisposeProviderBase<Notifier> provider,
+    AutoDisposeChangeNotifierProvider<Notifier> provider,
   ) {
     return ProviderOverride((setup) {
       setup(origin: this, override: this);
-      setup(origin: notifier, override: provider);
+      setup(origin: notifier, override: provider.notifier);
     });
   }
 
@@ -103,30 +106,38 @@ class AutoDisposeChangeNotifierProviderFamily<Notifier extends ChangeNotifier,
 
   @override
   AutoDisposeChangeNotifierProvider<Notifier> create(Arg argument) {
-    return AutoDisposeChangeNotifierProvider(
+    final provider = AutoDisposeChangeNotifierProvider(
       (ref) => _create(ref, argument),
       name: name,
     );
-  }
-}
 
-/// An extension that adds [overrideWithProvider] to [Family].
-extension XAutoDisposeChangeNotifierFamily<Notifier extends ChangeNotifier, Arg>
-    on Family<Notifier, Arg, AutoDisposeChangeNotifierProvider<Notifier>> {
+    registerProvider(provider.notifier, argument);
+
+    return provider;
+  }
+
   /// Overrides the behavior of a family for a part of the application.
   ///
   /// {@macro riverpod.overideWith}
   Override overrideWithProvider(
-    AutoDisposeProviderBase<Notifier> Function(Arg argument) override,
+    AutoDisposeChangeNotifierProvider<Notifier> Function(Arg argument) override,
   ) {
     return FamilyOverride<Arg>(
       this,
       (arg, setup) {
         final provider = call(arg);
 
-        setup(origin: provider.notifier, override: override(arg));
+        setup(origin: provider.notifier, override: override(arg).notifier);
         setup(origin: provider, override: provider);
       },
     );
+  }
+
+  @override
+  void setupOverride(Arg argument, SetupOverride setup) {
+    final provider = call(argument);
+
+    setup(origin: provider, override: provider);
+    setup(origin: provider.notifier, override: provider.notifier);
   }
 }

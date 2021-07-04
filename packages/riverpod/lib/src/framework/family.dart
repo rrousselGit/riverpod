@@ -98,8 +98,11 @@ abstract class FamilyOverride<Arg> implements Override {
     _SetupFamilyOverride<Arg> createOverride,
   ) = _FamilyOverride;
 
+  /// The family that was overriden.
   Family<Object?, Arg, ProviderBase<Object?>> get overridenFamily;
 
+  /// Allows a family to override all the different providers associated with
+  /// an argument.
   void setupOverride(Arg argument, SetupOverride setup);
 }
 

@@ -445,7 +445,7 @@ class ProviderContainer {
         }
       }
 
-      if (_root != null && _root!._stateReaders.containsKey(provider)) {
+      if (_root?._stateReaders.containsKey(provider) ?? false) {
         return _root!._stateReaders[provider]!;
       }
 

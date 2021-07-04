@@ -47,17 +47,11 @@ void main() {
     });
 
     test('when using provider.overrideWithProvider', () {
-      final provider = ChangeNotifierProvider((ref) {
-        print('root');
-        return ValueNotifier(0);
-      });
+      final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
       final root = createContainer();
       final container = createContainer(parent: root, overrides: [
         provider.overrideWithProvider(
-          ChangeNotifierProvider((ref) {
-            print('scope');
-            return ValueNotifier(42);
-          }),
+          ChangeNotifierProvider((ref) => ValueNotifier(42)),
         ),
       ]);
 

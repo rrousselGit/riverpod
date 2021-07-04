@@ -7,9 +7,8 @@ export 'src/change_notifier_provider.dart'
         AutoDisposeChangeNotifierProviderFamily,
         ChangeNotifierProviderFamily,
         AutoDisposeChangeNotifierProviderRef,
-        ChangeNotifierProviderRef,
-        XAutoDisposeChangeNotifierFamily,
-        XChangeNotifierFamily;
+        ChangeNotifierProviderRef;
+
 export 'src/consumer.dart'
     show
         Consumer,

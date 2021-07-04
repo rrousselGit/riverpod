@@ -8,8 +8,7 @@ typedef ChangeNotifierProviderRef<Notifier extends ChangeNotifier>
 /// {@macro riverpod.changenotifierprovider}
 @sealed
 class ChangeNotifierProvider<Notifier extends ChangeNotifier>
-    extends AlwaysAliveProviderBase<Notifier>
-    implements ProviderOverridesMixin<Notifier> {
+    extends AlwaysAliveProviderBase<Notifier> {
   /// {@macro riverpod.changenotifierprovider}
   ChangeNotifierProvider(this._create, {String? name}) : super(name);
 
@@ -56,7 +55,9 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
     return notifier;
   }
 
-  @override
+  /// Overrides the behavior of a provider with a value.
+  ///
+  /// {@macro riverpod.overideWith}
   Override overrideWithValue(Notifier value) {
     return ProviderOverride((setup) {
       setup(origin: this, override: this);
@@ -64,13 +65,15 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
     });
   }
 
-  @override
+  /// Overrides the behavior of a provider with a another provider.
+  ///
+  /// {@macro riverpod.overideWith}
   Override overrideWithProvider(
-    AlwaysAliveProviderBase<Notifier> provider,
+    ChangeNotifierProvider<Notifier> provider,
   ) {
     return ProviderOverride((setup) {
       setup(origin: this, override: this);
-      setup(origin: notifier, override: provider);
+      setup(origin: notifier, override: provider.notifier);
     });
   }
 
@@ -103,27 +106,38 @@ class ChangeNotifierProviderFamily<Notifier extends ChangeNotifier, Arg>
 
   @override
   ChangeNotifierProvider<Notifier> create(Arg argument) {
-    return ChangeNotifierProvider((ref) => _create(ref, argument), name: name);
-  }
-}
+    final provider = ChangeNotifierProvider(
+      (ref) => _create(ref, argument),
+      name: name,
+    );
 
-/// An extension that adds [overrideWithProvider] to [Family].
-extension XChangeNotifierFamily<Notifier extends ChangeNotifier, Arg>
-    on Family<Notifier, Arg, ChangeNotifierProvider<Notifier>> {
+    registerProvider(provider.notifier, argument);
+
+    return provider;
+  }
+
   /// Overrides the behavior of a family for a part of the application.
   ///
   /// {@macro riverpod.overideWith}
   Override overrideWithProvider(
-    AlwaysAliveProviderBase<Notifier> Function(Arg argument) override,
+    ChangeNotifierProvider<Notifier> Function(Arg argument) override,
   ) {
     return FamilyOverride<Arg>(
       this,
       (arg, setup) {
         final provider = call(arg);
 
-        setup(origin: provider.notifier, override: override(arg));
+        setup(origin: provider.notifier, override: override(arg).notifier);
         setup(origin: provider, override: provider);
       },
     );
+  }
+
+  @override
+  void setupOverride(Arg argument, SetupOverride setup) {
+    final provider = call(argument);
+
+    setup(origin: provider, override: provider);
+    setup(origin: provider.notifier, override: provider.notifier);
   }
 }
