@@ -9,44 +9,76 @@ void main() {
 
   group('scope', () {
     group('scoping an override overrides all the associated subproviders', () {
-      test(
-        'when passing the provider itself',
-        () {
-          final notifier = StateController(0);
-          final provider = StateNotifierProvider<StateController<int>, int>(
-              (ref) => notifier);
+      test('when passing the provider itself', () async {
+        final controller = StateController(0);
+        final provider = StateNotifierProvider<StateController<int>, int>(
+            (ref) => controller);
+        final root = createContainer();
+        final container = createContainer(parent: root, overrides: [provider]);
 
-          final root = createContainer();
-          final child = createContainer(
-            parent: root,
-            overrides: [provider],
-          );
-
-          child.read(provider);
-          child.read(provider.notifier);
-
-          expect(root.getAllProviderElements(), isEmpty);
-          expect(child.getAllProviderElementsInOrder(), [
+        expect(container.read(provider.notifier), controller);
+        expect(container.read(provider), 0);
+        expect(root.getAllProviderElements(), isEmpty);
+        expect(
+          container.getAllProviderElements(),
+          unorderedEquals(<Object?>[
             isA<ProviderElementBase>()
-                .having((e) => e.provider, 'provider', provider.notifier),
+                .having((e) => e.origin, 'origin', provider),
             isA<ProviderElementBase>()
-                .having((e) => e.provider, 'provider', provider)
-          ]);
-        },
-        skip: true,
-      );
+                .having((e) => e.origin, 'origin', provider.notifier),
+          ]),
+        );
+      });
 
-      test(
-        'when using provider.overrideWithValue',
-        () {},
-        skip: true,
-      );
+      test('when using provider.overrideWithValue', () async {
+        final controller = StateController(0);
+        final provider = StateNotifierProvider<StateController<int>, int>(
+            (ref) => controller);
+        final root = createContainer();
+        final controllerOverride = StateController(42);
+        final container = createContainer(parent: root, overrides: [
+          provider.overrideWithValue(controllerOverride),
+        ]);
 
-      test(
-        'when using provider.overrideWithProvider',
-        () {},
-        skip: true,
-      );
+        expect(container.read(provider.notifier), controllerOverride);
+        expect(container.read(provider), 42);
+        expect(root.getAllProviderElements(), isEmpty);
+        expect(
+          container.getAllProviderElements(),
+          unorderedEquals(<Object?>[
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider),
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider.notifier),
+          ]),
+        );
+      });
+
+      test('when using provider.overrideWithProvider', () async {
+        final controller = StateController(0);
+        final provider = StateNotifierProvider<StateController<int>, int>(
+            (ref) => controller);
+        final root = createContainer();
+        final controllerOverride = StateController(42);
+        final container = createContainer(parent: root, overrides: [
+          provider.overrideWithProvider(
+            StateNotifierProvider((ref) => controllerOverride),
+          ),
+        ]);
+
+        expect(container.read(provider.notifier), controllerOverride);
+        expect(container.read(provider), 42);
+        expect(root.getAllProviderElements(), isEmpty);
+        expect(
+          container.getAllProviderElements(),
+          unorderedEquals(<Object?>[
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider),
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider.notifier),
+          ]),
+        );
+      });
     });
   });
 
@@ -56,12 +88,12 @@ void main() {
       return TestNotifier();
     });
     final notifier2 = TestNotifier(42);
-    final container = ProviderContainer(
+    final container = createContainer(
       overrides: [
         provider.overrideWithProvider((a) {
           return StateNotifierProvider<TestNotifier, int>(
             (ref) => notifier2,
-          ).notifier;
+          );
         }),
       ],
     );
@@ -76,7 +108,7 @@ void main() {
     final notifier = TestNotifier(42);
     final provider =
         StateNotifierProvider<TestNotifier, int>((_) => TestNotifier());
-    final container = ProviderContainer(
+    final container = createContainer(
       overrides: [
         provider.overrideWithValue(TestNotifier(10)),
       ],
@@ -116,7 +148,7 @@ void main() {
     final provider = StateNotifierProvider<TestNotifier, int>((_) {
       return notifier;
     });
-    final container = ProviderContainer();
+    final container = createContainer();
     addTearDown(container.dispose);
 
     expect(container.read(provider.notifier), notifier);
@@ -133,7 +165,7 @@ void main() {
       return notifier;
     });
     final listener = ControllerListenerMock();
-    final container = ProviderContainer();
+    final container = createContainer();
     addTearDown(container.dispose);
 
     container.listen(provider.notifier, listener, fireImmediately: true);
@@ -156,7 +188,7 @@ void main() {
       return TestNotifier();
     });
     final listener = ListenerMock();
-    final container = ProviderContainer();
+    final container = createContainer();
     addTearDown(container.dispose);
 
     container.listen(provider, listener, fireImmediately: true);
@@ -179,7 +211,7 @@ void main() {
     final provider = StateNotifierProvider<TestNotifier, int>((ref) {
       return ref.watch(dep).state == 0 ? notifier : notifier2;
     });
-    final container = ProviderContainer();
+    final container = createContainer();
     addTearDown(container.dispose);
 
     var callCount = 0;
@@ -215,7 +247,7 @@ void main() {
     });
     final notifier = TestNotifier(42);
     final notifier2 = TestNotifier(21);
-    final container = ProviderContainer(overrides: [
+    final container = createContainer(overrides: [
       provider.overrideWithValue(notifier),
     ]);
     addTearDown(container.dispose);
@@ -258,7 +290,7 @@ void main() {
     });
     final notifier = TestNotifier(42);
     final notifier2 = TestNotifier(21);
-    final container = ProviderContainer(overrides: [
+    final container = createContainer(overrides: [
       provider.overrideWithProvider(
         StateNotifierProvider<TestNotifier, int>((_) {
           return notifier;

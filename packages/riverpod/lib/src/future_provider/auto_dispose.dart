@@ -38,17 +38,17 @@ class AutoDisposeFutureProvider<State>
   }
 
   @override
-  SetupOverride get setupOverride => (setup) {
-        setup(origin: this, override: this);
-        setup(origin: future, override: future);
-      };
+  void setupOverride(SetupOverride setup) {
+    setup(origin: this, override: this);
+    setup(origin: future, override: future);
+  }
 
   @override
   Override overrideWithProvider(
     AutoDisposeProviderBase<AsyncValue<State>> provider,
   ) {
     return ProviderOverride((setup) {
-      setup(origin: future, override: this);
+      setup(origin: future, override: future);
       setup(origin: this, override: provider);
     });
   }
@@ -81,9 +81,33 @@ class AutoDisposeFutureProviderFamily<State, Arg>
 
   @override
   AutoDisposeFutureProvider<State> create(Arg argument) {
-    return AutoDisposeFutureProvider(
+    final provider = AutoDisposeFutureProvider<State>(
       (ref) => _create(ref, argument),
       name: name,
     );
+
+    registerProvider(provider.future, argument);
+
+    return provider;
+  }
+
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    AutoDisposeProviderBase<AsyncValue<State>> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(this, (arg, setup) {
+      final futureProvider = call(arg);
+      setup(origin: futureProvider, override: override(arg));
+      setup(origin: futureProvider.future, override: futureProvider.future);
+    });
+  }
+
+  @override
+  void setupOverride(Arg argument, SetupOverride setup) {
+    final futureProvider = call(argument);
+    setup(origin: futureProvider, override: futureProvider);
+    setup(origin: futureProvider.future, override: futureProvider.future);
   }
 }

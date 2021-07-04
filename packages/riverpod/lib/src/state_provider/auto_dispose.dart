@@ -24,7 +24,7 @@ class _AutoDisposeNotifierProvider<State>
   }
 
   @override
-  SetupOverride get setupOverride =>
+  void setupOverride(SetupOverride setup) =>
       throw UnsupportedError('Cannot override StateProvider.notifier');
 
   @override
@@ -108,10 +108,10 @@ class AutoDisposeStateProvider<State>
   }
 
   @override
-  SetupOverride get setupOverride => (setup) {
-        setup(origin: this, override: this);
-        setup(origin: notifier, override: notifier);
-      };
+  void setupOverride(SetupOverride setup) {
+    setup(origin: this, override: this);
+    setup(origin: notifier, override: notifier);
+  }
 
   @override
   AutoDisposeStateProviderElement<State> createElement() {

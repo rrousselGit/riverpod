@@ -23,7 +23,7 @@ class _NotifierProvider<State>
   }
 
   @override
-  SetupOverride get setupOverride =>
+  void setupOverride(SetupOverride setup) =>
       throw UnsupportedError('Cannot override StateProvider.notifier');
 
   @override
@@ -131,10 +131,10 @@ class StateProvider<State>
   }
 
   @override
-  SetupOverride get setupOverride => (setup) {
-        setup(origin: this, override: this);
-        setup(origin: notifier, override: notifier);
-      };
+  void setupOverride(SetupOverride setup) {
+    setup(origin: this, override: this);
+    setup(origin: notifier, override: notifier);
+  }
 
   @override
   StateProviderElement<State> createElement() => StateProviderElement(this);

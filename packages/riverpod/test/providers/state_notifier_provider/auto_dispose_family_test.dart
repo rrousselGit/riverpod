@@ -6,23 +6,55 @@ import '../../utils.dart';
 void main() {
   group('StateNotifier.family', () {
     group('scoping an override overrides all the associated subproviders', () {
-      test(
-        'when passing the provider itself',
-        () {},
-        skip: true,
-      );
+      test('when passing the provider itself', () async {
+        final controller = StateController(0);
+        final provider = StateNotifierProvider.autoDispose
+            .family<StateController<int>, int, int>(
+          (ref, _) => controller,
+        );
+        final root = createContainer();
+        final container = createContainer(parent: root, overrides: [provider]);
 
-      test(
-        'when using provider.overrideWithValue',
-        () {},
-        skip: true,
-      );
+        expect(container.read(provider(0).notifier), controller);
+        expect(container.read(provider(0)), 0);
+        expect(
+          container.getAllProviderElementsInOrder(),
+          unorderedEquals(<Object?>[
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider(0)),
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider(0).notifier),
+          ]),
+        );
+        expect(root.getAllProviderElementsInOrder(), isEmpty);
+      });
 
-      test(
-        'when using provider.overrideWithProvider',
-        () {},
-        skip: true,
-      );
+      test('when using provider.overrideWithProvider', () async {
+        final controller = StateController(0);
+        final provider = StateNotifierProvider.autoDispose
+            .family<StateController<int>, int, int>((ref, _) => controller);
+        final root = createContainer();
+        final controllerOverride = StateController(42);
+        final container = createContainer(parent: root, overrides: [
+          provider.overrideWithProvider(
+            (value) =>
+                StateNotifierProvider.autoDispose((ref) => controllerOverride),
+          ),
+        ]);
+
+        expect(container.read(provider(0).notifier), controllerOverride);
+        expect(container.read(provider(0)), 42);
+        expect(root.getAllProviderElementsInOrder(), isEmpty);
+        expect(
+          container.getAllProviderElementsInOrder(),
+          unorderedEquals(<Object?>[
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider(0)),
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider(0).notifier),
+          ]),
+        );
+      });
     });
 
     test('properly overrides ==', () {

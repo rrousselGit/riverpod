@@ -5,6 +5,7 @@ import 'builders.dart';
 import 'framework.dart';
 import 'future_provider.dart';
 import 'provider.dart';
+import 'value_provider.dart';
 
 part 'state_notifier_provider/auto_dispose.dart';
 part 'state_notifier_provider/base.dart';
@@ -78,10 +79,10 @@ mixin _StateNotifierProviderMixin<Notifier extends StateNotifier<Value>, Value>
   ProviderBase<Notifier> get notifier;
 
   @override
-  SetupOverride get setupOverride => (setup) {
-        setup(origin: this, override: this);
-        setup(origin: notifier, override: notifier);
-      };
+  void setupOverride(SetupOverride setup) {
+    setup(origin: this, override: this);
+    setup(origin: notifier, override: notifier);
+  }
 
   /// Overrides the behavior of a provider with a value.
   ///

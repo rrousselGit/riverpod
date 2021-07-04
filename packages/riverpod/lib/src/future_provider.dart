@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:meta/meta.dart';
-import 'async_value_converters.dart';
 
+import 'async_value_converters.dart';
 import 'builders.dart';
 import 'common.dart' show AsyncValue, modifierName;
 import 'framework.dart';
 import 'provider.dart';
 import 'stream_provider.dart';
+import 'value_provider.dart';
 
 part 'future_provider/auto_dispose.dart';
 part 'future_provider/base.dart';
