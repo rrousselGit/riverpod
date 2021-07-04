@@ -8,6 +8,20 @@ import '../utils.dart';
 
 void main() {
   group('ProviderContainer', () {
+    group('.pump', () {
+      test(
+        'on scoped container correctly awaits disposal',
+        () {},
+        skip: true,
+      );
+
+      test(
+        'on scoped container through another scoped container correctly awaits disposal',
+        () {},
+        skip: true,
+      );
+    });
+
     test('depth', () {
       final root = createContainer();
       final a = createContainer(parent: root);
