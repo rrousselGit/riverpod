@@ -46,7 +46,7 @@ final character = $family<Character, String>((ref, id) async {
   final cancelToken = CancelToken();
   ref.onDispose(cancelToken.cancel);
 
-  final repository = ref.read(repositoryProvider);
+  final repository = ref.watch(repositoryProvider);
   final character = await repository.fetchCharacter(
     id,
     cancelToken: cancelToken,

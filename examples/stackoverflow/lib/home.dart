@@ -50,7 +50,7 @@ final _fetchedPages = StateProvider((ref) => <int>[]);
 
 final paginatedQuestionsProvider = FutureProvider.autoDispose
     .family<QuestionsResponse, int>((ref, pageIndex) async {
-  final fetchedPages = ref.read(_fetchedPages).state;
+  final fetchedPages = ref.watch(_fetchedPages).state;
   fetchedPages.add(pageIndex);
   ref.onDispose(() => fetchedPages.remove(pageIndex));
 

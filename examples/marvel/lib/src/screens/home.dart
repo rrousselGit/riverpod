@@ -33,7 +33,7 @@ final characterPages =
     final cancelToken = CancelToken();
     ref.onDispose(cancelToken.cancel);
 
-    final repository = ref.read(repositoryProvider);
+    final repository = ref.watch(repositoryProvider);
     final charactersResponse = await repository.fetchCharacters(
       offset: meta.page * kCharactersPageLimit,
       limit: kCharactersPageLimit,
