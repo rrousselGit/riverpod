@@ -1,3 +1,7 @@
+# 1.0.0-dev.4
+
+Fixed invalid flutter_hooks version
+
 # 1.0.0-dev.3
 
 Fixed various issues related to scoped providers.
