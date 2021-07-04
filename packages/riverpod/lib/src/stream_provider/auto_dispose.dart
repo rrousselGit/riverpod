@@ -22,9 +22,7 @@ class AutoDisposeStreamProvider<State>
 
   @override
   late final AutoDisposeProviderBase<Stream<State>> stream =
-      AutoDisposeProvider((ref) {
-    return asyncValueToStream(this, ref as ProviderElementBase<Stream<State>>);
-  }, name: modifierName(name, 'stream'));
+      AutoDisposeAsyncValueAsStreamProvider(this, modifierName(name, 'stream'));
 
   @override
   late final AutoDisposeProviderBase<Future<State>> last =
@@ -64,11 +62,11 @@ class AutoDisposeStreamProvider<State>
   }
 
   @override
-  SetupOverride get setupOverride => (setup) {
-        setup(origin: this, override: this);
-        setup(origin: stream, override: stream);
-        setup(origin: last, override: last);
-      };
+  void setupOverride(SetupOverride setup) {
+    setup(origin: this, override: this);
+    setup(origin: stream, override: stream);
+    setup(origin: last, override: last);
+  }
 
   @override
   AutoDisposeProviderElement<AsyncValue<State>> createElement() {
@@ -88,9 +86,36 @@ class AutoDisposeStreamProviderFamily<State, Arg>
 
   @override
   AutoDisposeStreamProvider<State> create(Arg argument) {
-    return AutoDisposeStreamProvider(
+    final provider = AutoDisposeStreamProvider<State>(
       (ref) => _create(ref, argument),
       name: name,
     );
+
+    registerProvider(provider.stream, argument);
+    registerProvider(provider.last, argument);
+
+    return provider;
+  }
+
+  @override
+  void setupOverride(Arg argument, SetupOverride setup) {
+    final provider = call(argument);
+    setup(origin: provider, override: provider);
+    setup(origin: provider.stream, override: provider.stream);
+    setup(origin: provider.last, override: provider.last);
+  }
+
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    AutoDisposeProviderBase<AsyncValue<State>> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(this, (arg, setup) {
+      final provider = call(arg);
+      setup(origin: provider, override: override(arg));
+      setup(origin: provider.stream, override: provider.stream);
+      setup(origin: provider.last, override: provider.last);
+    });
   }
 }

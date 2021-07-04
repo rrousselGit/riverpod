@@ -30,7 +30,7 @@ class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
   }
 
   @override
-  SetupOverride get setupOverride =>
+  void setupOverride(SetupOverride setup) =>
       throw UnsupportedError('Cannot override StateNotifierProvider.notifier');
 }
 
@@ -122,27 +122,28 @@ class AutoDisposeStateNotifierProviderFamily<
 
     return provider;
   }
-}
 
-/// An extension that adds [overrideWithProvider] to [Family].
-extension XAutoDisposeStateNotifierFamily<
-    Notifier extends StateNotifier<State>,
-    State,
-    Arg> on AutoDisposeStateNotifierProviderFamily<Notifier, State, Arg> {
   /// Overrides the behavior of a family for a part of the application.
   ///
   /// {@macro riverpod.overideWith}
   Override overrideWithProvider(
-    AutoDisposeProviderBase<Notifier> Function(Arg argument) override,
+    AutoDisposeStateNotifierProvider<Notifier, State> Function(Arg argument)
+        override,
   ) {
-    return FamilyOverride(
+    return FamilyOverride<Arg>(
       this,
-      (arg, provider) {
-        if (provider is _AutoDisposeNotifierProvider<Notifier>) {
-          return override(arg as Arg);
-        }
-        return provider;
+      (arg, setup) {
+        final provider = call(arg);
+        setup(origin: provider.notifier, override: override(arg).notifier);
+        setup(origin: provider, override: provider);
       },
     );
+  }
+
+  @override
+  void setupOverride(Arg argument, SetupOverride setup) {
+    final provider = call(argument);
+    setup(origin: provider, override: provider);
+    setup(origin: provider.notifier, override: provider.notifier);
   }
 }

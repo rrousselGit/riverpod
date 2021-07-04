@@ -5,6 +5,140 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
+  test('works if used accross a ProviderContainer', () async {
+    var value = 0;
+    var buildCount = 0;
+    var disposeCount = 0;
+    final listener = Listener<int>();
+    final provider = Provider.autoDispose((ref) {
+      buildCount++;
+      ref.onDispose(() => disposeCount++);
+      return value;
+    });
+
+    final root = createContainer();
+    final container = createContainer(parent: root);
+
+    final sub = container.listen(provider, listener, fireImmediately: true);
+
+    verifyOnly(listener, listener(0));
+    expect(buildCount, 1);
+    expect(disposeCount, 0);
+
+    sub.close();
+    await container.pump();
+
+    expect(buildCount, 1);
+    expect(disposeCount, 1);
+    verifyNoMoreInteractions(listener);
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
+
+    value = 42;
+    container.listen(provider, listener, fireImmediately: true);
+
+    expect(buildCount, 2);
+    expect(disposeCount, 1);
+    verifyOnly(listener, listener(42));
+  });
+
+  test('scoped autoDispose override preserve the override after one disposal',
+      () async {
+    final provider = Provider.autoDispose((ref) => 0);
+
+    final root = createContainer();
+    final container = createContainer(parent: root, overrides: [
+      provider.overrideWithProvider(
+        Provider.autoDispose((ref) => 42),
+      ),
+    ]);
+
+    expect(container.read(provider), 42);
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isNotEmpty);
+
+    await container.pump();
+
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
+    expect(container.read(provider), 42);
+  });
+
+  test(
+      'scoped autoDispose override  through intermediary unused container preserve the override after one disposal',
+      () async {
+    final provider = Provider.autoDispose((ref) => 0);
+
+    final root = createContainer();
+    final mid = createContainer(parent: root, overrides: [
+      provider.overrideWithProvider(
+        Provider.autoDispose((ref) => 42),
+      ),
+    ]);
+    final container = createContainer(parent: mid);
+
+    expect(container.read(provider), 42);
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(mid.getAllProviderElements(), isNotEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
+
+    await container.pump();
+
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(mid.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
+    expect(container.read(provider), 42);
+  });
+
+  test(
+      'scoped autoDispose override preserve family override after one disposal',
+      () async {
+    final provider = Provider.autoDispose.family<int, int>((ref, _) => 0);
+
+    final root = createContainer();
+    final container = createContainer(parent: root, overrides: [
+      provider.overrideWithProvider(
+        (value) => Provider.autoDispose((ref) => 42),
+      ),
+    ]);
+
+    expect(container.read(provider(0)), 42);
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isNotEmpty);
+
+    await container.pump();
+
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
+    expect(container.read(provider(0)), 42);
+  });
+
+  test(
+      'scoped autoDispose override through intermediary unused container preserve family  override after one disposal',
+      () async {
+    final provider = Provider.autoDispose.family<int, int>((ref, _) => 0);
+
+    final root = createContainer();
+    final mid = createContainer(parent: root, overrides: [
+      provider.overrideWithProvider(
+        (value) => Provider.autoDispose((ref) => 42),
+      ),
+    ]);
+    final container = createContainer(parent: mid);
+
+    expect(container.read(provider(0)), 42);
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(mid.getAllProviderElements(), isNotEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
+
+    await container.pump();
+
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(mid.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
+    expect(container.read(provider(0)), 42);
+  });
+
   test(
       'can select auto-dispose providers if the selecting provider is auto-dispose too',
       () {

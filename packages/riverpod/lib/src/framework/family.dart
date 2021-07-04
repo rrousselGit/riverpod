@@ -2,7 +2,7 @@ part of '../framework.dart';
 
 /// A base class for all families
 abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
-    implements FamilyOverride {
+    implements FamilyOverride<Arg> {
   /// A base class for all families
   Family(this.name);
 
@@ -11,11 +11,12 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   final String? name;
 
   @override
-  ProviderBase Function(Object? argument, ProviderBase provider)
-      get _createOverride => (arg, _) => call(arg as Arg);
+  Family<Object?, Arg, ProviderBase<Object?>> get overridenFamily => this;
 
   @override
-  Family get _family => this;
+  void setupOverride(Arg argument, SetupOverride setup) {
+    setup(origin: call(argument), override: call(argument));
+  }
 
   /// Create a provider from an external value.
   ///
@@ -57,7 +58,9 @@ extension XFamily<State, Arg,
   Override overrideWithProvider(
     AlwaysAliveProviderBase<State> Function(Arg argument) override,
   ) {
-    return FamilyOverride(this, (arg, _) => override(arg as Arg));
+    return FamilyOverride<Arg>(this, (arg, setup) {
+      setup(origin: call(arg), override: override(arg));
+    });
   }
 }
 
@@ -71,19 +74,47 @@ extension XAutoDisposeFamily<State, Arg,
   Override overrideWithProvider(
     AutoDisposeProviderBase<State> Function(Arg argument) override,
   ) {
-    return FamilyOverride(this, (arg, _) => override(arg as Arg));
+    return FamilyOverride<Arg>(this, (arg, setup) {
+      setup(origin: call(arg), override: override(arg));
+    });
   }
 }
 
+// ignore: avoid_private_typedef_functions
+typedef _SetupFamilyOverride<Arg> = void Function(
+  Arg argument,
+  void Function({
+    required ProviderBase origin,
+    required ProviderBase override,
+  }),
+);
+
 /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
 /// to override the behavior of a "family" for part of the application.
-class FamilyOverride implements Override {
+abstract class FamilyOverride<Arg> implements Override {
   /// Do not use
-  FamilyOverride(this._family, this._createOverride);
+  factory FamilyOverride(
+    Family<Object?, Arg, ProviderBase<Object?>> family,
+    _SetupFamilyOverride<Arg> createOverride,
+  ) = _FamilyOverride;
 
-  final ProviderBase Function(
-    Object? argument,
-    ProviderBase provider,
-  ) _createOverride;
-  final Family _family;
+  /// The family that was overriden.
+  Family<Object?, Arg, ProviderBase<Object?>> get overridenFamily;
+
+  /// Allows a family to override all the different providers associated with
+  /// an argument.
+  void setupOverride(Arg argument, SetupOverride setup);
+}
+
+class _FamilyOverride<Arg> implements FamilyOverride<Arg> {
+  _FamilyOverride(this.overridenFamily, this._createOverride);
+
+  @override
+  final Family<Object?, Arg, ProviderBase<Object?>> overridenFamily;
+  final _SetupFamilyOverride<Arg> _createOverride;
+
+  @override
+  void setupOverride(Arg argument, SetupOverride setup) {
+    _createOverride(argument, setup);
+  }
 }

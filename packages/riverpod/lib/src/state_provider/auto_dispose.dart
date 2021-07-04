@@ -24,7 +24,7 @@ class _AutoDisposeNotifierProvider<State>
   }
 
   @override
-  SetupOverride get setupOverride =>
+  void setupOverride(SetupOverride setup) =>
       throw UnsupportedError('Cannot override StateProvider.notifier');
 
   @override
@@ -53,8 +53,7 @@ class AutoDisposeStateProviderElement<State>
 /// {@macro riverpod.stateprovider}
 @sealed
 class AutoDisposeStateProvider<State>
-    extends AutoDisposeProviderBase<StateController<State>>
-    with AutoDisposeProviderOverridesMixin<StateController<State>> {
+    extends AutoDisposeProviderBase<StateController<State>> {
   /// {@macro riverpod.stateprovider}
   AutoDisposeStateProvider(this._create, {String? name}) : super(name);
 
@@ -86,17 +85,21 @@ class AutoDisposeStateProvider<State>
     return true;
   }
 
-  @override
+  /// Overrides the behavior of a provider with a value.
+  ///
+  /// {@macro riverpod.overideWith}
   Override overrideWithProvider(
-    AutoDisposeProviderBase<StateController<State>> provider,
+    AutoDisposeStateProvider<State> provider,
   ) {
     return ProviderOverride((setup) {
       setup(origin: this, override: this);
-      setup(origin: notifier, override: provider);
+      setup(origin: notifier, override: provider.notifier);
     });
   }
 
-  @override
+  /// Overrides the behavior of a provider with a another provider.
+  ///
+  /// {@macro riverpod.overideWith}
   Override overrideWithValue(StateController<State> value) {
     return ProviderOverride((setup) {
       setup(origin: this, override: this);
@@ -108,10 +111,10 @@ class AutoDisposeStateProvider<State>
   }
 
   @override
-  SetupOverride get setupOverride => (setup) {
-        setup(origin: this, override: this);
-        setup(origin: notifier, override: notifier);
-      };
+  void setupOverride(SetupOverride setup) {
+    setup(origin: this, override: this);
+    setup(origin: notifier, override: notifier);
+  }
 
   @override
   AutoDisposeStateProviderElement<State> createElement() {
@@ -132,9 +135,36 @@ class AutoDisposeStateProviderFamily<State, Arg> extends Family<
   AutoDisposeStateProvider<State> create(
     Arg argument,
   ) {
-    return AutoDisposeStateProvider(
+    final provider = AutoDisposeStateProvider<State>(
       (ref) => _create(ref, argument),
       name: name,
     );
+
+    registerProvider(provider.notifier, argument);
+
+    return provider;
+  }
+
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    AutoDisposeStateProvider<State> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(
+      this,
+      (arg, setup) {
+        final provider = call(arg);
+        setup(origin: provider.notifier, override: override(arg).notifier);
+        setup(origin: provider, override: provider);
+      },
+    );
+  }
+
+  @override
+  void setupOverride(Arg argument, SetupOverride setup) {
+    final provider = call(argument);
+    setup(origin: provider, override: provider);
+    setup(origin: provider.notifier, override: provider.notifier);
   }
 }

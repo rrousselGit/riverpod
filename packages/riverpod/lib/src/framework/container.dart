@@ -49,11 +49,13 @@ class _StateReader {
     required this.origin,
     required this.override,
     required this.container,
+    required this.isOverride,
   });
 
   final ProviderBase origin;
   ProviderBase override;
   final ProviderContainer container;
+  final bool isOverride;
 
   ProviderElementBase? _element;
 
@@ -137,12 +139,13 @@ class ProviderContainer {
             origin: origin,
             override: override,
             container: this,
+            isOverride: true,
           );
         }
 
         override.setupOverride(setupOverride);
       } else if (override is FamilyOverride) {
-        _overrideForFamily[override._family] = _FamilyOverrideRef(
+        _overrideForFamily[override.overridenFamily] = _FamilyOverrideRef(
           override,
           this,
         );
@@ -163,7 +166,7 @@ class ProviderContainer {
 
   /// The object that handles when providers are refreshed and disposed.
   late final _ProviderScheduler _scheduler =
-      _parent?._root?._scheduler ?? _ProviderScheduler(vsync);
+      _parent?._scheduler ?? _ProviderScheduler(vsync);
 
   late final String _debugId;
 
@@ -189,12 +192,12 @@ class ProviderContainer {
   final ProviderContainer? _root;
   final ProviderContainer? _parent;
 
-  final _children = HashSet<ProviderContainer>();
+  final _children = <ProviderContainer>[];
 
   /// All the containers that have this container as `parent`.
   ///
   /// Do not use in production
-  Set<ProviderContainer> get debugChildren => {..._children};
+  List<ProviderContainer> get debugChildren => UnmodifiableListView(_children);
 
   final _overrideForProvider = HashMap<ProviderBase, ProviderBase>();
   final _overrideForFamily = HashMap<Family, _FamilyOverrideRef>();
@@ -294,12 +297,23 @@ class ProviderContainer {
 
   void _disposeProvider(ProviderBase<Object?> provider) {
     final element = readProviderElement(provider);
-    assert(
-      _stateReaders.containsKey(element._origin),
-      'Removed a key that does not exist',
-    );
-    _stateReaders.remove(element._origin);
     element.dispose();
+
+    final reader = _stateReaders[element._origin]!;
+
+    if (reader.isOverride) {
+      reader._element = null;
+    } else {
+      void removeStateReaderFrom(ProviderContainer container) {
+        container._stateReaders.remove(element._origin);
+
+        for (var i = 0; i < container._children.length; i++) {
+          removeStateReaderFrom(container._children[i]);
+        }
+      }
+
+      removeStateReaderFrom(this);
+    }
   }
 
   /// Updates the list of provider overrides.
@@ -360,7 +374,7 @@ class ProviderContainer {
         }(), '');
         // TODO assert family override did not change
 
-        _overrideForFamily[override._family]!.override = override;
+        _overrideForFamily[override.overridenFamily]!.override = override;
       }
     }
 
@@ -392,7 +406,7 @@ class ProviderContainer {
 
   _StateReader _getStateReader(ProviderBase provider) {
     return _stateReaders.putIfAbsent(provider, () {
-      if (provider._from != null) {
+      if (provider.from != null) {
         final familyOverrideRef = _overrideForFamily[provider.from];
 
         if (familyOverrideRef != null) {
@@ -400,23 +414,38 @@ class ProviderContainer {
             return familyOverrideRef.container._stateReaders[provider]!;
           }
 
-          final override = familyOverrideRef.override._createOverride(
-            provider._argument,
-            provider,
+          void setupOverride({
+            required ProviderBase origin,
+            required ProviderBase override,
+          }) {
+            assert(
+              !familyOverrideRef.container._stateReaders.containsKey(origin),
+              'A family override tried to override a provider that was already overriden',
+            );
+
+            familyOverrideRef.container._stateReaders[origin] = _StateReader(
+              origin: origin,
+              override: override,
+              container: familyOverrideRef.container,
+              isOverride: true,
+            );
+          }
+
+          familyOverrideRef.override.setupOverride(
+            provider.argument,
+            setupOverride,
           );
 
-          final reader = _StateReader(
-            origin: provider,
-            override: override,
-            container: familyOverrideRef.container,
+          assert(
+            familyOverrideRef.container._stateReaders.containsKey(provider),
+            'Overrode a family, but the family override did not override anything',
           );
-          familyOverrideRef.container._stateReaders[provider] = reader;
 
-          return reader;
+          return familyOverrideRef.container._stateReaders[provider]!;
         }
       }
 
-      if (_root != null && _root!._stateReaders.containsKey(provider)) {
+      if (_root?._stateReaders.containsKey(provider) ?? false) {
         return _root!._stateReaders[provider]!;
       }
 
@@ -426,6 +455,7 @@ class ProviderContainer {
         // guaranteed to not be overriden
         override: provider,
         container: _root ?? this,
+        isOverride: false,
       );
 
       if (_root != null) _root!._stateReaders[provider] = reader;
@@ -560,13 +590,10 @@ abstract class ProviderObserver {
 }
 
 /// An implementation detail for the override mechanism of providers
-typedef SetupOverride = void Function(
-  void Function({
-    required ProviderBase origin,
-    required ProviderBase override,
-  })
-      setup,
-);
+typedef SetupOverride = void Function({
+  required ProviderBase origin,
+  required ProviderBase override,
+});
 
 /// An object used by [ProviderContainer] to override the behavior of a provider
 /// for a part of the application.
@@ -577,13 +604,22 @@ typedef SetupOverride = void Function(
 ///
 /// - [ProviderContainer], which uses this object.
 /// - `overrideWithProvider`/`overrideWithValue`, which creates a [ProviderOverride].
-@sealed
 class ProviderOverride implements Override {
   /// Override a provider
-  ProviderOverride(this.setupOverride);
+  ProviderOverride(this._setupOverride);
+
+  final void Function(SetupOverride setup) _setupOverride;
 
   /// Defines how a provider should be overriden.
-  final SetupOverride setupOverride;
+  void setupOverride(
+    void Function({
+      required ProviderBase origin,
+      required ProviderBase override,
+    })
+        setup,
+  ) {
+    _setupOverride(setup);
+  }
 }
 
 /// An object used by [ProviderContainer]/`ProviderScope` to override the behavior

@@ -39,9 +39,9 @@ class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
   }
 
   @override
-  SetupOverride get setupOverride => (setup) {
-        setup(origin: this, override: this);
-      };
+  void setupOverride(SetupOverride setup) {
+    setup(origin: this, override: this);
+  }
 
   @override
   Override overrideWithProvider(AutoDisposeProviderBase<State> provider) {

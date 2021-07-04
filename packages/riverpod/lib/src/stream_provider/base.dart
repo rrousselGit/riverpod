@@ -22,9 +22,8 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   final Create<Stream<State>, StreamProviderRef<State>> _create;
 
   @override
-  late final AlwaysAliveProviderBase<Stream<State>> stream = Provider((ref) {
-    return asyncValueToStream(this, ref as ProviderElementBase<Stream<State>>);
-  }, name: modifierName(name, 'stream'));
+  late final AlwaysAliveProviderBase<Stream<State>> stream =
+      AsyncValueAsStreamProvider(this, modifierName(name, 'stream'));
 
   @override
   late final AlwaysAliveProviderBase<Future<State>> last =
@@ -64,11 +63,11 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   }
 
   @override
-  SetupOverride get setupOverride => (setup) {
-        setup(origin: this, override: this);
-        setup(origin: stream, override: stream);
-        setup(origin: last, override: last);
-      };
+  void setupOverride(SetupOverride setup) {
+    setup(origin: this, override: this);
+    setup(origin: stream, override: stream);
+    setup(origin: last, override: last);
+  }
 
   @override
   ProviderElement<AsyncValue<State>> createElement() => ProviderElement(this);
@@ -87,9 +86,36 @@ class StreamProviderFamily<State, Arg>
 
   @override
   StreamProvider<State> create(Arg argument) {
-    return StreamProvider<State>(
+    final provider = StreamProvider<State>(
       (ref) => _create(ref, argument),
       name: name,
     );
+
+    registerProvider(provider.stream, argument);
+    registerProvider(provider.last, argument);
+
+    return provider;
+  }
+
+  @override
+  void setupOverride(Arg argument, SetupOverride setup) {
+    final provider = call(argument);
+    setup(origin: provider, override: provider);
+    setup(origin: provider.stream, override: provider.stream);
+    setup(origin: provider.last, override: provider.last);
+  }
+
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    ProviderBase<AsyncValue<State>> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(this, (arg, setup) {
+      final provider = call(arg);
+      setup(origin: provider, override: override(arg));
+      setup(origin: provider.stream, override: provider.stream);
+      setup(origin: provider.last, override: provider.last);
+    });
   }
 }

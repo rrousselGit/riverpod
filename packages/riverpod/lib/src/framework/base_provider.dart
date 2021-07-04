@@ -203,20 +203,20 @@ abstract class ProviderBase<State>
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode {
-    if (_from == null) return super.hashCode;
+    if (from == null) return super.hashCode;
 
-    return _from.hashCode ^ _argument.hashCode;
+    return from.hashCode ^ argument.hashCode;
   }
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
-    if (_from == null) return identical(other, this);
+    if (from == null) return identical(other, this);
 
     return other.runtimeType == runtimeType &&
         other is ProviderBase<State> &&
-        other._from == _from &&
-        other._argument == _argument;
+        other.from == from &&
+        other.argument == argument;
   }
 
   @override

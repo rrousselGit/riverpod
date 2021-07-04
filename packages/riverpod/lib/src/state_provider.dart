@@ -5,6 +5,7 @@ import '../riverpod.dart';
 import 'builders.dart';
 import 'common.dart';
 import 'framework.dart';
+import 'value_provider.dart';
 
 part 'state_provider/auto_dispose.dart';
 part 'state_provider/base.dart';

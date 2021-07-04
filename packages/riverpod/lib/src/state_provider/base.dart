@@ -23,7 +23,7 @@ class _NotifierProvider<State>
   }
 
   @override
-  SetupOverride get setupOverride =>
+  void setupOverride(SetupOverride setup) =>
       throw UnsupportedError('Cannot override StateProvider.notifier');
 
   @override
@@ -56,8 +56,7 @@ class StateProviderElement<State>
 /// {@macro riverpod.stateprovider}
 @sealed
 class StateProvider<State>
-    extends AlwaysAliveProviderBase<StateController<State>>
-    with ProviderOverridesMixin<StateController<State>> {
+    extends AlwaysAliveProviderBase<StateController<State>> {
   /// {@macro riverpod.stateprovider}
   StateProvider(this._create, {String? name}) : super(name);
 
@@ -94,11 +93,10 @@ class StateProvider<State>
       _NotifierProvider(_create, name: modifierName(name, 'notifier'));
 
   @override
-  StateController<State> create(StateProviderRef<State> ref) {
-    return _listenStateProvider(
-      ref as ProviderElementBase<StateController<State>>,
-      ref.watch(notifier),
-    );
+  StateController<State> create(
+    ProviderElementBase<StateController<State>> ref,
+  ) {
+    return _listenStateProvider(ref, ref.watch(notifier));
   }
 
   @override
@@ -109,17 +107,21 @@ class StateProvider<State>
     return true;
   }
 
-  @override
+  /// Overrides the behavior of a provider with a value.
+  ///
+  /// {@macro riverpod.overideWith}
   Override overrideWithProvider(
-    AlwaysAliveProviderBase<StateController<State>> provider,
+    StateProvider<State> provider,
   ) {
     return ProviderOverride((setup) {
       setup(origin: this, override: this);
-      setup(origin: notifier, override: provider);
+      setup(origin: notifier, override: provider.notifier);
     });
   }
 
-  @override
+  /// Overrides the behavior of a provider with a another provider.
+  ///
+  /// {@macro riverpod.overideWith}
   Override overrideWithValue(StateController<State> value) {
     return ProviderOverride((setup) {
       setup(origin: this, override: this);
@@ -131,10 +133,10 @@ class StateProvider<State>
   }
 
   @override
-  SetupOverride get setupOverride => (setup) {
-        setup(origin: this, override: this);
-        setup(origin: notifier, override: notifier);
-      };
+  void setupOverride(SetupOverride setup) {
+    setup(origin: this, override: this);
+    setup(origin: notifier, override: notifier);
+  }
 
   @override
   StateProviderElement<State> createElement() => StateProviderElement(this);
@@ -153,9 +155,36 @@ class StateProviderFamily<State, Arg>
   StateProvider<State> create(
     Arg argument,
   ) {
-    return StateProvider(
+    final provider = StateProvider<State>(
       (ref) => _create(ref, argument),
       name: name,
     );
+
+    registerProvider(provider.notifier, argument);
+
+    return provider;
+  }
+
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    StateProvider<State> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(
+      this,
+      (arg, setup) {
+        final provider = call(arg);
+        setup(origin: provider.notifier, override: override(arg).notifier);
+        setup(origin: provider, override: provider);
+      },
+    );
+  }
+
+  @override
+  void setupOverride(Arg argument, SetupOverride setup) {
+    final provider = call(argument);
+    setup(origin: provider, override: provider);
+    setup(origin: provider.notifier, override: provider.notifier);
   }
 }

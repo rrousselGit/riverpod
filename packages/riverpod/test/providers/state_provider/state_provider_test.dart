@@ -7,23 +7,68 @@ void main() {
   test('can be refreshed', () {}, skip: true);
 
   group('scoping an override overrides all the associated subproviders', () {
-    test(
-      'when passing the provider itself',
-      () {},
-      skip: true,
-    );
+    test('when passing the provider itself', () async {
+      final provider = StateProvider<int>((ref) => 0);
+      final root = createContainer();
+      final container = createContainer(parent: root, overrides: [provider]);
 
-    test(
-      'when using provider.overrideWithValue',
-      () {},
-      skip: true,
-    );
+      expect(container.read(provider.notifier).state, 0);
+      expect(container.read(provider).state, 0);
+      expect(root.getAllProviderElements(), isEmpty);
+      expect(
+        container.getAllProviderElements(),
+        unorderedEquals(<Object?>[
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider),
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider.notifier),
+        ]),
+      );
+    });
 
-    test(
-      'when using provider.overrideWithProvider',
-      () {},
-      skip: true,
-    );
+    test('when using provider.overrideWithValue', () async {
+      final provider = StateProvider<int>((ref) => 0);
+      final root = createContainer();
+      final container = createContainer(parent: root, overrides: [
+        provider.overrideWithValue(StateController(42)),
+      ]);
+
+      expect(container.read(provider.notifier).state, 42);
+      expect(container.read(provider).state, 42);
+      expect(root.getAllProviderElements(), isEmpty);
+      expect(
+        container.getAllProviderElements(),
+        unorderedEquals(<Object?>[
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider),
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider.notifier),
+        ]),
+      );
+    });
+
+    test('when using provider.overrideWithProvider', () async {
+      final provider = StateProvider<int>((ref) => 0);
+      final root = createContainer();
+      final container = createContainer(parent: root, overrides: [
+        provider.overrideWithProvider(
+          StateProvider((ref) => 42),
+        ),
+      ]);
+
+      expect(container.read(provider.notifier).state, 42);
+      expect(container.read(provider).state, 42);
+      expect(root.getAllProviderElements(), isEmpty);
+      expect(
+        container.getAllProviderElements(),
+        unorderedEquals(<Object?>[
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider),
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider.notifier),
+        ]),
+      );
+    });
   });
 
   test(
@@ -49,30 +94,30 @@ void main() {
     },
   );
 
-  test('overrideWithProvider', () {
-    final override = StateController(42);
-    final provider = StateProvider((ref) => 0);
-    final provider2 = StateProvider.autoDispose((ref) => 0);
-    final container = createContainer(overrides: [
-      provider.overrideWithValue(override),
-      provider2.overrideWithValue(override),
-    ]);
-    addTearDown(container.dispose);
-    final container2 = ProviderContainer(overrides: [
-      provider.overrideWithProvider(
-        StateProvider((ref) => 42),
-      ),
-      provider2.overrideWithProvider(
-        StateProvider.autoDispose((ref) => 42),
-      ),
-    ]);
-    addTearDown(container.dispose);
+  group('overrideWithProvider', () {
+    test('listens to state changes', () {
+      final override = StateController(42);
+      final provider = StateProvider((ref) => 0);
+      final container = createContainer(overrides: [
+        provider.overrideWithValue(override),
+      ]);
+      addTearDown(container.dispose);
+      final container2 = ProviderContainer(overrides: [
+        provider.overrideWithProvider(
+          StateProvider((ref) => 42),
+        ),
+      ]);
+      addTearDown(container.dispose);
 
-    expect(container.read(provider), override);
-    expect(container.read(provider2), override);
+      expect(container.read(provider), override);
+      expect(container2.read(provider).state, 42);
+    });
 
-    expect(container2.read(provider).state, 42);
-    expect(container2.read(provider2).state, 42);
+    test(
+      'properly disposes of the StateController when the provider is disposed',
+      () {},
+      skip: true,
+    );
   });
 
   test('StateProvideyFamily', () async {

@@ -8,7 +8,73 @@ import 'internals.dart';
 
 ///
 @protected
-Stream<State> asyncValueToStream<State>(
+class AsyncValueAsStreamProvider<State>
+    extends AlwaysAliveProviderBase<Stream<State>> {
+  ///
+  AsyncValueAsStreamProvider(this._provider, String? name) : super(name);
+
+  final AlwaysAliveProviderBase<AsyncValue<State>> _provider;
+
+  @override
+  Stream<State> create(covariant ProviderElementBase<Stream<State>> ref) {
+    return _asyncValueToStream(_provider, ref);
+  }
+
+  @override
+  ProviderElement<Stream<State>> createElement() {
+    return ProviderElement(this);
+  }
+
+  @override
+  bool recreateShouldNotify(
+    Stream<State> previousState,
+    Stream<State> newState,
+  ) {
+    return true;
+  }
+
+  @override
+  void setupOverride(SetupOverride setup) {
+    throw UnsupportedError('Cannot override $_provider.$name');
+  }
+}
+
+///
+@protected
+class AutoDisposeAsyncValueAsStreamProvider<State>
+    extends AutoDisposeProviderBase<Stream<State>> {
+  ///
+  AutoDisposeAsyncValueAsStreamProvider(this._provider, String? name)
+      : super(name);
+
+  final AutoDisposeProviderBase<AsyncValue<State>> _provider;
+
+  @override
+  Stream<State> create(
+      covariant AutoDisposeProviderElementBase<Stream<State>> ref) {
+    return _asyncValueToStream(_provider, ref);
+  }
+
+  @override
+  AutoDisposeProviderElement<Stream<State>> createElement() {
+    return AutoDisposeProviderElement(this);
+  }
+
+  @override
+  bool recreateShouldNotify(
+    Stream<State> previousState,
+    Stream<State> newState,
+  ) {
+    return true;
+  }
+
+  @override
+  void setupOverride(SetupOverride setup) {
+    throw UnsupportedError('Cannot override $_provider.$name');
+  }
+}
+
+Stream<State> _asyncValueToStream<State>(
   ProviderBase<AsyncValue<State>> provider,
   ProviderElementBase<Stream<State>> ref,
 ) {
@@ -71,8 +137,9 @@ class AsyncValueAsFutureProvider<State>
   }
 
   @override
-  SetupOverride get setupOverride =>
-      throw UnsupportedError('Cannot override $_provider.$name');
+  void setupOverride(SetupOverride setup) {
+    throw UnsupportedError('Cannot override $_provider.$name');
+  }
 
   @override
   ProviderElement<Future<State>> createElement() {
@@ -104,13 +171,14 @@ class AutoDisposeAsyncValueAsFutureProvider<State>
   }
 
   @override
-  AutoDisposeProviderElement<Future<State>> createElement() {
-    return AutoDisposeProviderElement(this);
+  void setupOverride(SetupOverride setup) {
+    throw UnsupportedError('Cannot override $_provider.$name');
   }
 
   @override
-  SetupOverride get setupOverride =>
-      throw UnsupportedError('Cannot override $_provider.$name');
+  AutoDisposeProviderElement<Future<State>> createElement() {
+    return AutoDisposeProviderElement(this);
+  }
 }
 
 Future<State> _asyncValueAsFuture<State>(
