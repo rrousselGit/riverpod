@@ -106,6 +106,11 @@ module.exports = {
           label: "Blood Pressure Tracker App",
           href: "https://github.com/UrosTodosijevic/blood_pressure_tracker",
         },
+        {
+          type: "link",
+          label: "Firebase Authentication with Riverpod Following Flutter DDD Architecture Pattern",
+          href: "https://github.com/pythonhubpy/firebase_authentication_flutter_DDD",
+        },
       ],
     },
     {
