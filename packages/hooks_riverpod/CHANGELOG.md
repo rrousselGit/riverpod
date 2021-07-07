@@ -1,3 +1,7 @@
+# 1.0.0-dev.5
+
+Fixed an issue where provider listeners could not be called properly.
+
 # 1.0.0-dev.4
 
 Fixed invalid flutter_hooks version

@@ -191,6 +191,136 @@ void main() {
     });
 
     group('.listen', () {
+      test(
+          'if a listener adds a container.listen, the new listener is not called immediately',
+          () {
+        final provider = StateProvider((ref) => 0);
+        final container = createContainer();
+
+        final listener = Listener<int>();
+
+        container.listen<StateController<int>>(provider, (value) {
+          listener(value.state);
+          container.listen<StateController<int>>(provider, (value) {
+            listener(value.state);
+          });
+        });
+
+        verifyZeroInteractions(listener);
+
+        container.read(provider).state++;
+
+        verify(listener(1)).called(1);
+
+        container.read(provider).state++;
+
+        verify(listener(2)).called(2);
+      });
+
+      test(
+          'if a listener removes another provider.listen, the removed listener is still called',
+          () {
+        final provider = StateProvider((ref) => 0);
+        final container = createContainer();
+
+        final listener = Listener<int>();
+        final listener2 = Listener<int>();
+
+        final p = Provider((ref) {
+          void Function()? a;
+          ref.listen<StateController<int>>(provider, (value) {
+            listener(value.state);
+            a?.call();
+            a = null;
+          });
+
+          a = ref.listen<StateController<int>>(provider, (value) {
+            listener2(value.state);
+          });
+        });
+        container.read(p);
+
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
+
+        container.read(provider).state++;
+
+        verifyInOrder([
+          listener(1),
+          listener2(1),
+        ]);
+
+        container.read(provider).state++;
+
+        verify(listener(2)).called(1);
+        verifyNoMoreInteractions(listener2);
+      });
+
+      test(
+          'if a listener adds a provider.listen, the new listener is not called immediately',
+          () {
+        final provider = StateProvider((ref) => 0);
+        final container = createContainer();
+
+        final listener = Listener<int>();
+
+        final p = Provider((ref) {
+          ref.listen<StateController<int>>(provider, (value) {
+            listener(value.state);
+            ref.listen<StateController<int>>(provider, (value) {
+              listener(value.state);
+            });
+          });
+        });
+        container.read(p);
+
+        verifyZeroInteractions(listener);
+
+        container.read(provider).state++;
+
+        verify(listener(1)).called(1);
+
+        container.read(provider).state++;
+
+        verify(listener(2)).called(2);
+      });
+
+      test(
+          'if a listener removes another container.listen, the removed listener is still called',
+          () {
+        final provider = StateProvider((ref) => 0);
+        final container = createContainer();
+
+        final listener = Listener<int>();
+        final listener2 = Listener<int>();
+
+        ProviderSubscription? a;
+        container.listen<StateController<int>>(provider, (value) {
+          listener(value.state);
+          a?.close();
+          a = null;
+        });
+
+        a = container.listen<StateController<int>>(provider, (value) {
+          listener2(value.state);
+        });
+
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
+
+        container.read(provider).state++;
+
+        verifyInOrder([
+          listener(1),
+          listener2(1),
+        ]);
+
+        container.read(provider).state++;
+
+        verify(listener(2)).called(1);
+        verifyNoMoreInteractions(listener2);
+      });
+
       test('.read on closed subscription throws', () {
         final notifier = Counter();
         final provider = StateNotifierProvider<Counter, int>((_) => notifier);

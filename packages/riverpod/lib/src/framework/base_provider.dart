@@ -616,6 +616,7 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   ///   the scenario where the value changed.
   @protected
   @mustCallSuper
+  // ignore: use_setters_to_change_properties
   void update(ProviderBase<State> newProvider) {
     _provider = newProvider;
   }
@@ -672,11 +673,13 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     }(), '');
 
     final newValue = _state;
-    for (var i = 0; i < _listeners.length; i++) {
-      Zone.current.runUnaryGuarded(_listeners[i]._listener, newValue);
+    final listeners = _listeners.toList(growable: false);
+    final subscribers = _subscribers.toList(growable: false);
+    for (var i = 0; i < listeners.length; i++) {
+      Zone.current.runUnaryGuarded(listeners[i]._listener, newValue);
     }
-    for (var i = 0; i < _subscribers.length; i++) {
-      Zone.current.runUnaryGuarded(_subscribers[i].listener, newValue);
+    for (var i = 0; i < subscribers.length; i++) {
+      Zone.current.runUnaryGuarded(subscribers[i].listener, newValue);
     }
 
     for (var i = 0; i < _dependents.length; i++) {
@@ -978,6 +981,7 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
 
     return () {
       _subscriptions.remove(sub);
+      // this will remove element._subscribers
       sub.close();
     };
   }
