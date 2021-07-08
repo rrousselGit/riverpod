@@ -22,10 +22,8 @@ class CharacterPagination with _$CharacterPagination {
   }) = _CharacterPagination;
 }
 
-// workaround to https://github.com/dart-lang/sdk/issues/41449
-final $family = FutureProvider.autoDispose.family;
-final characterPages =
-    $family<MarvelListCharactersReponse, CharacterPagination>(
+final characterPages = FutureProvider.autoDispose
+    .family<MarvelListCharactersReponse, CharacterPagination>(
   (ref, meta) async {
     // Cancel the page request if the UI no-longer needs it before the request
     // is finished.
