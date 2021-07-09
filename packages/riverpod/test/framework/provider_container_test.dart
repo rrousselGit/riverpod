@@ -38,7 +38,36 @@ void main() {
     });
 
     group('getAllProviderElements', () {
-      // TODO list only elements associated with this container (ingoring inherited elements)
+      test(
+          'list only elements associated with the container (ingoring inherited and descendent elements)',
+          () {
+        final provider = Provider((ref) => 0);
+        final provider2 = Provider((ref) => 0);
+        final provider3 = Provider((ref) => 0);
+        final root = createContainer();
+        final mid = createContainer(parent: root, overrides: [provider2]);
+        final leaf = createContainer(parent: mid, overrides: [provider3]);
+
+        leaf.read(provider);
+        leaf.read(provider2);
+        leaf.read(provider3);
+
+        expect(
+          root.getAllProviderElements().single,
+          isA<ProviderElement>()
+              .having((e) => e.provider, 'provider', provider),
+        );
+        expect(
+          mid.getAllProviderElements().single,
+          isA<ProviderElement>()
+              .having((e) => e.provider, 'provider', provider2),
+        );
+        expect(
+          leaf.getAllProviderElements().single,
+          isA<ProviderElement>()
+              .having((e) => e.provider, 'provider', provider3),
+        );
+      });
 
       test('list the currently mounted providers', () async {
         final container = ProviderContainer();
