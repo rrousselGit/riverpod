@@ -667,6 +667,14 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   }
 
   void notifyListeners({Object? previousState = const _Default()}) {
+    assert(
+        _debugCurrentlyBuildingElement == null ||
+            _debugCurrentlyBuildingElement == this,
+        '''
+Providers are not allowed to modify other providers during their initialization.
+
+The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider while building.
+''');
     assert(() {
       container.debugCanModifyProviders?.call();
       return true;
