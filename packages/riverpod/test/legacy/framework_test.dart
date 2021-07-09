@@ -16,8 +16,6 @@ Matcher isProvider(ProviderBase provider) {
 }
 
 void main() {
-  // TODO flushing inside mayHaveChanged calls onChanged only after all mayHaveChanged were executed
-
   test('disposing parent container when child container is not dispose throws',
       () {
     final root = createContainer();
