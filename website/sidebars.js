@@ -92,6 +92,11 @@ module.exports = {
         },
         {
           type: "link",
+          label: "Firebase Phone Authentication with Riverpod",
+          href: "https://github.com/julienlebren/flutter_firebase_phone_auth_riverpod",
+        },
+        {
+          type: "link",
           label: "ListView paging with search",
           href: "https://github.com/tbm98/flutter_loadmore_search",
         },
