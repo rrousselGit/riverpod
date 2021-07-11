@@ -1,3 +1,4 @@
+import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
@@ -103,6 +104,23 @@ void main() {
     });
   });
 
-  test('does not notify listeners when rebuilding the state', () {},
-      skip: true);
+  test('does not notify listeners when rebuilding the state', () async {
+    final container = createContainer();
+    final listener = Listener<int>();
+
+    final dep = StateProvider((ref) => 0);
+    final provider = Provider((ref) {
+      ref.watch(dep).state;
+      return ref.state = 0;
+    });
+
+    container.listen(provider, listener, fireImmediately: true);
+
+    verifyOnly(listener, listener(0));
+
+    container.read(dep).state++;
+    await container.pump();
+
+    verifyNoMoreInteractions(listener);
+  });
 }

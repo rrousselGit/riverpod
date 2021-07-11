@@ -89,7 +89,7 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
   }
 
   @override
-  bool recreateShouldNotify(Notifier previousState, Notifier newState) => true;
+  bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
 }
 
 /// {@template riverpod.changenotifierprovider.family}

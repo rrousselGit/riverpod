@@ -118,7 +118,7 @@ abstract class ProviderBase<State>
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
   /// listeners if the exposed value did not change.
-  bool recreateShouldNotify(State previousState, State newState);
+  bool updateShouldNotify(State previousState, State newState);
 
   /// An internal method that defines how a provider behaves.
   ProviderElementBase<State> createElement();
@@ -584,10 +584,12 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   // under a type-safe interface that types it as `State newValue` instead.
   set state(State newState) {
     late State previousState;
-    if (_didBuild) previousState = _state;
+    if (_didBuild) previousState = state;
 
     _state = newState;
-    if (_didBuild) notifyListeners(previousState: previousState);
+    if (_didBuild && provider.updateShouldNotify(previousState, newState)) {
+      notifyListeners(previousState: previousState);
+    }
   }
 
   State get state => _state;
@@ -652,7 +654,7 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
 
       _buildState();
 
-      if (provider.recreateShouldNotify(previousState, _state)) {
+      if (provider.updateShouldNotify(previousState, state)) {
         ProviderElementBase? debugPreviouslyBuildingElement;
         assert(() {
           debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
@@ -695,7 +697,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
       return true;
     }(), '');
 
-    final newValue = _state;
+    final newValue = state;
     final listeners = _listeners.toList(growable: false);
     final subscribers = _subscribers.toList(growable: false);
     for (var i = 0; i < listeners.length; i++) {
@@ -840,7 +842,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     if (_exception != null) {
       throw _exception!;
     }
-    return _state;
+    return state;
   }
 
   @protected
@@ -854,7 +856,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
 
     try {
       _didBuild = false;
-      _state = _provider.create(this);
+      state = _provider.create(this);
     } catch (err, stack) {
       _exception = ProviderException._(err, stack, _provider);
     } finally {

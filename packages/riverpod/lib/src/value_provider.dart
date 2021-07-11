@@ -21,7 +21,7 @@ class ValueProvider<State> extends AlwaysAliveProviderBase<State> {
   }
 
   @override
-  bool recreateShouldNotify(State previousState, State newState) {
+  bool updateShouldNotify(State previousState, State newState) {
     return true;
   }
 

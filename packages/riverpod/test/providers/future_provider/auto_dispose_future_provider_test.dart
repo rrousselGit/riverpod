@@ -1,9 +1,60 @@
+import 'dart:async';
+
+import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 import '../../utils.dart';
 
 void main() {
+  test('does not update dependents if the created stream did not change',
+      () async {
+    final container = createContainer();
+    final dep = StateProvider((ref) => 0);
+    final completer = Completer<int>();
+    final provider = FutureProvider.autoDispose((ref) {
+      ref.watch(dep);
+      return completer.future;
+    });
+    final listener = Listener<AsyncValue<int>>();
+
+    container.listen(provider, listener, fireImmediately: true);
+
+    verifyOnly(listener, listener(const AsyncValue.loading()));
+
+    container.read(dep).state++;
+    await container.pump();
+
+    verifyNoMoreInteractions(listener);
+  });
+
+  test(
+      '.stream does not update dependents if the created stream did not change',
+      () async {
+    final container = createContainer();
+    final dep = StateProvider((ref) => 0);
+    final completer = Completer<int>();
+    final provider = FutureProvider.autoDispose((ref) {
+      ref.watch(dep);
+      return completer.future;
+    });
+    final listener = Listener<Future<int>>();
+
+    container.listen(provider.future, listener, fireImmediately: true);
+
+    verifyOnly(listener, listener(any));
+
+    container.read(dep).state++;
+    await container.pump();
+
+    verifyNoMoreInteractions(listener);
+
+    // No value were emitted, so the future will fail. Catching the error to
+    // avoid false positive.
+    // ignore: unawaited_futures, avoid_types_on_closure_parameters
+    container.read(provider.future).catchError((Object _) => 0);
+  });
+
   group('scoping an override overrides all the associated subproviders', () {
     test('when passing the provider itself', () async {
       final provider = FutureProvider.autoDispose((ref) async => 0);

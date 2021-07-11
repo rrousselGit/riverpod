@@ -6,6 +6,26 @@ import '../../utils.dart';
 
 void main() {
   group('Provider', () {
+    test('does not notify listeners when called ref.state= with == new value',
+        () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      late ProviderRef<int> ref;
+      final provider = Provider<int>((r) {
+        ref = r;
+        return 0;
+      });
+
+      container.listen(provider, listener, fireImmediately: true);
+
+      verifyOnly(listener, listener(0));
+
+      ref.state = 0;
+      await container.pump();
+
+      verifyNoMoreInteractions(listener);
+    });
+
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () {
         final provider = Provider((ref) => 0);

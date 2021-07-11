@@ -15,7 +15,7 @@ class _NotifierProvider<State>
   }
 
   @override
-  bool recreateShouldNotify(
+  bool updateShouldNotify(
     StateController<State> previousState,
     StateController<State> newState,
   ) {
@@ -100,7 +100,7 @@ class StateProvider<State>
   }
 
   @override
-  bool recreateShouldNotify(
+  bool updateShouldNotify(
     StateController<State> previousState,
     StateController<State> newState,
   ) {

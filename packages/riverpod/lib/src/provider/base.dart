@@ -247,7 +247,7 @@ class Provider<State> extends AlwaysAliveProviderBase<State>
   State create(ProviderRef<State> ref) => _create(ref);
 
   @override
-  bool recreateShouldNotify(State previousState, State newState) {
+  bool updateShouldNotify(State previousState, State newState) {
     return previousState != newState;
   }
 

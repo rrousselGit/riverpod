@@ -55,7 +55,7 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
   }
 
   @override
-  bool recreateShouldNotify(Notifier previousState, Notifier newState) => true;
+  bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
 
   /// Overrides the behavior of a provider with a value.
   ///
