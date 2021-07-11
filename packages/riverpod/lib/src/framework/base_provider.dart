@@ -653,7 +653,22 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
       _buildState();
 
       if (provider.recreateShouldNotify(previousState, _state)) {
-        notifyListeners(previousState: previousState);
+        ProviderElementBase? debugPreviouslyBuildingElement;
+        assert(() {
+          debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
+          // Disable the assertion that prevents updating providers when
+          // rebuilding a provider.
+          _debugCurrentlyBuildingElement = null;
+          return true;
+        }(), '');
+        try {
+          notifyListeners(previousState: previousState);
+        } finally {
+          assert(() {
+            _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
+            return true;
+          }(), '');
+        }
       }
 
       // Unsubscribe to everything that a provider no-longer depends on.
@@ -860,8 +875,6 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
   /// If a provider both [watch] and [listen] an element, or if a provider
   /// [listen] multiple times to an element, it may be visited multiple times.
   void visitChildren(void Function(ProviderElementBase element) visitor) {
-    // TODO test
-
     for (var i = 0; i < _dependents.length; i++) {
       visitor(_dependents[i]);
     }

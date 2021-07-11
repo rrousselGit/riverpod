@@ -74,6 +74,22 @@ void main() {
     // });
   });
 
+  test('rebuilding a provider can modify other providers', () async {
+    final dep = StateProvider((ref) => 0);
+    final provider = Provider((ref) => ref.watch(dep).state);
+    final another = StateProvider<int>((ref) {
+      ref.listen(provider, (value) => ref.controller.state++);
+      return 0;
+    });
+    final container = createContainer();
+
+    expect(container.read(another).state, 0);
+
+    container.read(dep).state = 42;
+
+    expect(container.read(another).state, 1);
+  });
+
   group('ref.watch cannot end-up in a circular dependency', () {
     test('direct dependency', () {
       final provider = Provider((ref) => ref);
