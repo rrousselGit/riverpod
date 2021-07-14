@@ -60,7 +60,10 @@ void main() {
     final dispose3 = OnDisposeMock();
 
     final provider = Provider<int>((ref) {
-      ref..onDispose(dispose1)..onDispose(dispose2)..onDispose(dispose3);
+      ref
+        ..onDispose(dispose1)
+        ..onDispose(dispose2)
+        ..onDispose(dispose3);
       return 42;
     });
 
