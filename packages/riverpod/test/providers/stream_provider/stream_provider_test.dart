@@ -20,7 +20,22 @@ void main() {
     controller.close();
   });
 
-  test('can be refreshed', () {}, skip: true);
+  test('can be refreshed', () async {
+    var result = 0;
+    final container = createContainer();
+    final provider = StreamProvider((ref) => Stream.value(result));
+
+    expect(container.read(provider.stream), emits(0));
+    expect(await container.read(provider.last), 0);
+    expect(container.read(provider), const AsyncValue.data(0));
+
+    result = 1;
+    expect(container.refresh(provider), const AsyncValue<int>.loading());
+
+    expect(container.read(provider.stream), emits(1));
+    expect(await container.read(provider.last), 1);
+    expect(container.read(provider), const AsyncValue.data(1));
+  });
 
   group('scoping an override overrides all the associated subproviders', () {
     test('when passing the provider itself', () async {

@@ -79,6 +79,9 @@ mixin _StateNotifierProviderMixin<Notifier extends StateNotifier<Value>, Value>
   ProviderBase<Notifier> get notifier;
 
   @override
+  ProviderBase<Object?> get providerToRefresh => notifier;
+
+  @override
   void setupOverride(SetupOverride setup) {
     setup(origin: this, override: this);
     setup(origin: notifier, override: notifier);

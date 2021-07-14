@@ -6,6 +6,19 @@ import '../../utils.dart';
 
 void main() {
   group('Provider.autoDispose', () {
+    test('can be refreshed', () async {
+      var result = 0;
+      final container = createContainer();
+      final provider = Provider.autoDispose((ref) => result);
+
+      expect(container.read(provider), 0);
+
+      result = 1;
+      expect(container.refresh(provider), 1);
+
+      expect(container.read(provider), 1);
+    });
+
     test('does not notify listeners when called ref.state= with == new value',
         () async {
       final container = createContainer();

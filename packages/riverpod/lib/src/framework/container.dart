@@ -284,15 +284,14 @@ class ProviderContainer {
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
   Created refresh<Created>(ProviderBase<Created> provider) {
-    final reader = _getStateReader(provider);
+    final reader = _getStateReader(provider.providerToRefresh);
 
-    if (reader._element == null) {
-      return reader.getElement().getExposedValue() as Created;
-    } else {
+    if (reader._element != null) {
       final element = reader._element!;
       element.markMustRecomputeState();
-      return element.getExposedValue() as Created;
     }
+
+    return read(provider);
   }
 
   void _disposeProvider(ProviderBase<Object?> provider) {

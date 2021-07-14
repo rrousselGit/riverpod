@@ -20,7 +20,9 @@ T _listenNotifier<T extends ChangeNotifier?>(
 ) {
   if (notifier != null) {
     notifier.addListener(ref.notifyListeners);
-    ref.onDispose(() => notifier.removeListener(ref.notifyListeners));
+    ref.onDispose(() {
+      notifier.removeListener(ref.notifyListeners);
+    });
   }
 
   return notifier;

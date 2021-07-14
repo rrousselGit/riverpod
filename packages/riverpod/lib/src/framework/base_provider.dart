@@ -114,6 +114,12 @@ abstract class ProviderBase<State>
   /// variable used.
   Object? get argument => _argument;
 
+  /// The provider that will be refreshed when calling [ProviderContainer.refresh].
+  ///
+  /// Defaults to `this`.
+  // ignore: avoid_returning_this
+  ProviderBase<Object?> get providerToRefresh => this;
+
   State create(covariant ProviderRefBase ref);
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
@@ -629,6 +635,12 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     _mustRecomputeState = true;
     _runOnDispose();
     _container._scheduler.scheduleProviderRefresh(this);
+
+    // We don't call this._markDependencyMayHaveChanged here because we voluntarily
+    // do not want to set the _dependencyMayHaveChanged flag to true.
+    // Since the dependency is known to have changed, there is no reason to try
+    // and "flush" it, as it will already get rebuilt.
+    visitChildren((element) => element._markDependencyMayHaveChanged());
   }
 
   void flush() {
@@ -728,13 +740,8 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
   void _didChangeDependency() {
     if (_mustRecomputeState) return;
 
+    // will notify children that their dependency may have changed
     markMustRecomputeState();
-
-    // We don't call this._markDependencyMayHaveChanged here because we voluntarily
-    // do not want to set the _dependencyMayHaveChanged flag to true.
-    // Since the dependency is known to have changed, there is no reason to try
-    // and "flush" it, as it will already get rebuilt.
-    visitChildren((element) => element._markDependencyMayHaveChanged());
   }
 
   void _markDependencyMayHaveChanged() {

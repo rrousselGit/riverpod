@@ -6,6 +6,24 @@ import '../../utils.dart';
 
 void main() {
   group('StreamProvider.autoDispose', () {
+    test('can be refreshed', () async {
+      var result = 0;
+      final container = createContainer();
+      final provider =
+          StreamProvider.autoDispose((ref) => Stream.value(result));
+
+      expect(container.read(provider.stream), emits(0));
+      expect(await container.read(provider.last), 0);
+      expect(container.read(provider), const AsyncValue.data(0));
+
+      result = 1;
+      expect(container.refresh(provider), const AsyncValue<int>.loading());
+
+      expect(container.read(provider.stream), emits(1));
+      expect(await container.read(provider.last), 1);
+      expect(container.read(provider), const AsyncValue.data(1));
+    });
+
     test('does not update dependents if the created stream did not change',
         () async {
       final container = createContainer();

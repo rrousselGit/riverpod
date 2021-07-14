@@ -7,7 +7,20 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
-  test('can be refreshed', () {}, skip: true);
+  test('can be refreshed', () async {
+    var result = 0;
+    final container = createContainer();
+    final provider = FutureProvider((ref) => Future.value(result));
+
+    expect(await container.read(provider.future), 0);
+    expect(container.read(provider), const AsyncValue.data(0));
+
+    result = 1;
+    expect(container.refresh(provider), const AsyncValue<int>.loading());
+
+    expect(await container.read(provider.future), 1);
+    expect(container.read(provider), const AsyncValue.data(1));
+  });
 
   test('does not update dependents if the created stream did not change',
       () async {
