@@ -12,6 +12,32 @@ import 'migrate/unified_syntax.dart';
 import 'migrate/version.dart';
 
 class MigrateCommand extends Command<void> {
+  MigrateCommand() {
+    argParser
+      ..addFlag(
+        'verbose',
+        abbr: 'v',
+        negatable: false,
+        help: 'Outputs all logging to stdout/stderr.',
+      )
+      ..addFlag(
+        'yes-to-all',
+        negatable: false,
+        help: 'Forces all patches accepted without prompting the user. '
+            'Useful for scripts.',
+      )
+      ..addFlag(
+        'fail-on-changes',
+        negatable: false,
+        help: 'Returns a non-zero exit code if there are changes to be made. '
+            'Will not make any changes (i.e. this is a dry-run).',
+      )
+      ..addFlag(
+        'stderr-assume-tty',
+        negatable: false,
+        help: 'Forces ansi color highlighting of stderr. Useful for debugging.',
+      );
+  }
   @override
   String get name => 'migrate';
 
