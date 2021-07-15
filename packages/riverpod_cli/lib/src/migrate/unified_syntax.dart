@@ -445,11 +445,18 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       migrateListener(node);
       migrateParams();
       migrateClass();
-    } else if (!type.contains('Family') && type.contains('Provider')) {
+    } else if (!type.contains('Family') &&
+        type.contains('Provider') &&
+        type.contains('Scoped')) {
       yieldPatch(type.replaceAll('Scoped', ''), node.constructorName.offset,
           node.constructorName.end);
+    } else if (type.contains('Provider') &&
+        !type.contains('Container') &&
+        node.constructorName.type.typeArguments == null) {
+      updateProviderType(type);
+      yieldPatch('<$providerTypeArgs>', node.constructorName.type.end,
+          node.constructorName.type.end);
     }
-
     updateProviderType(type);
 
     super.visitInstanceCreationExpression(node);

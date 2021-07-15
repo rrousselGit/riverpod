@@ -238,4 +238,5 @@ void main() {
   ProviderContainer(overrides: [
     stateNotifierProvider.overrideWithValue(CounterTest()),
   ]).listen<Counter>(stateNotifierProvider.notifier, (value) {}).read();
+  ProviderContainer().read(testProvider);
 }
