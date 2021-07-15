@@ -12,6 +12,7 @@ class Counter extends StateNotifier<int> {
   void decrement() => state--;
 }
 
+final testProvider = Provider<int>((ref) => 0);
 final counterProvider =
     StateNotifierProvider<Counter, int>((ref) => Counter(ref));
 final futureProvider = FutureProvider<int>((FutureProviderRef<int> ref) async {
@@ -217,4 +218,9 @@ class NoMigrateHook extends HookWidget {
     final state = useState('');
     return Container();
   }
+}
+
+void main() {
+  final container = ProviderContainer();
+  final count = container.read(testProvider);
 }

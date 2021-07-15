@@ -156,6 +156,8 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       }
     }
     super.visitClassDeclaration(node);
+    withinClass = ClassType.none;
+    classDeclaration = null;
   }
 
   @override
@@ -379,6 +381,10 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   }
 
   void updateProviderType(String type) {
+    if (type.contains('ProviderContainer')) {
+      inProvider = ProviderType.none;
+      return;
+    }
     if (type.contains('FutureProvider')) {
       inProvider = ProviderType.future;
       providerTypeArgs =
@@ -506,6 +512,27 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   @override
   void visitMethodInvocation(MethodInvocation node) {
     final functionName = node.methodName.toSource();
+
+    if (node.realTarget?.staticType
+            ?.getDisplayString(withNullability: true)
+            .contains('ProviderContainer') ??
+        false) {
+      // No need to migrate container methods unless refreshing FutureProvider
+      if (functionName == 'refresh') {
+        final firstArgStaticType = node.argumentList.arguments.first.staticType!
+            .getDisplayString(withNullability: true);
+        if (firstArgStaticType.contains('FutureProvider')
+            // || firstArgStaticType.contains('StreamProvider')
+            ) {
+          yieldPatch('.future', node.argumentList.arguments.first.end,
+              node.argumentList.arguments.first.end);
+        } else if (firstArgStaticType.contains('StateNotifier')) {
+          yieldPatch('.notifier', node.argumentList.arguments.first.end,
+              node.argumentList.arguments.first.end);
+        }
+      }
+      return;
+    }
     // ref.read / ref.watch / context.read / context.watch, useProvider
     if (functionName == 'watch' || functionName == 'useProvider') {
       migrateParams();
@@ -524,9 +551,6 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       if (firstArgStaticType.contains('FutureProvider')
           // || firstArgStaticType.contains('StreamProvider')
           ) {
-        // StateNotifierProvider
-        // watch(provider) => watch(provider.notifier)
-        // useProvider(provider) => useProvider(provider.notifier)
         yieldPatch('.future', node.argumentList.arguments.first.end,
             node.argumentList.arguments.first.end);
       } else if (firstArgStaticType.contains('StateNotifier')) {
