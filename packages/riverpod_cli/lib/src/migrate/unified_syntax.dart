@@ -183,6 +183,9 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   }
 
   void migrateParams() {
+    if (withinClass == ClassType.none) {
+      return;
+    }
     final params = this.params;
     if (params != null) {
       if (inConsumerBuilder) {
@@ -463,8 +466,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     updateProviderType(type);
 
     // Add type parameters if not already there
-    if (!type.contains('Family') &&
-        type.contains('Provider') &&
+    if (type.contains('Provider') &&
         !type.contains('ProviderScope') &&
         !type.contains('ProviderListener')) {
       if (node.typeArguments == null) {
@@ -480,6 +482,10 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   @override
   void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
     final functionName = node.function.toSource();
+    if (withinClass == ClassType.none && !functionName.startsWith('use')) {
+      super.visitFunctionExpressionInvocation(node);
+      return;
+    }
     if (functionName == 'watch' || functionName == 'useProvider') {
       migrateParams();
       migrateClass();
@@ -491,6 +497,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       if (RiverpodHooksProviderInfo.shouldMigrate(functionName)) {
         migrateConsumerHookFunctionCall(node.argumentList);
         migrateClass();
+        migrateParams();
       }
     }
 
@@ -512,11 +519,9 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   @override
   void visitMethodInvocation(MethodInvocation node) {
     final functionName = node.methodName.toSource();
-
-    if (node.realTarget?.staticType
-            ?.getDisplayString(withNullability: true)
-            .contains('ProviderContainer') ??
-        false) {
+    final target =
+        node.realTarget?.staticType?.getDisplayString(withNullability: true);
+    if (target?.contains('ProviderContainer') ?? false) {
       // No need to migrate container methods unless refreshing FutureProvider
       if (functionName == 'refresh') {
         final firstArgStaticType = node.argumentList.arguments.first.staticType!
@@ -531,6 +536,16 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
               node.argumentList.arguments.first.end);
         }
       }
+      if (functionName == 'listen') {
+        yieldPatch(',(value) {}', node.argumentList.arguments.first.end,
+            node.argumentList.arguments.first.end);
+      }
+      super.visitMethodInvocation(node);
+      return;
+    }
+
+    if (withinClass == ClassType.none && !functionName.startsWith('use')) {
+      super.visitMethodInvocation(node);
       return;
     }
     // ref.read / ref.watch / context.read / context.watch, useProvider
@@ -561,6 +576,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       if (RiverpodHooksProviderInfo.shouldMigrate(functionName)) {
         migrateConsumerHookFunctionCall(node.argumentList);
         migrateClass();
+        migrateParams();
       }
     }
     super.visitMethodInvocation(node);

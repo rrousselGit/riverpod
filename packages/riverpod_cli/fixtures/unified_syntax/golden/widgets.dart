@@ -12,6 +12,18 @@ class Counter extends StateNotifier<int> {
   void decrement() => state--;
 }
 
+class CounterTest extends StateNotifier<int> implements Counter {
+  CounterTest() : super(1);
+
+  @override
+  void increment() => state++;
+  @override
+  void decrement() => state--;
+
+  @override
+  ProviderRefBase get ref => throw UnimplementedError();
+}
+
 final testProvider = Provider<int>((ref) => 0);
 final counterProvider =
     StateNotifierProvider<Counter, int>((ref) => Counter(ref));
@@ -223,4 +235,7 @@ class NoMigrateHook extends HookWidget {
 void main() {
   final container = ProviderContainer();
   final count = container.read(testProvider);
+  ProviderContainer(overrides: [
+    stateNotifierProvider.overrideWithValue(CounterTest()),
+  ]).listen<Counter>(stateNotifierProvider.notifier, (value) {}).read();
 }
