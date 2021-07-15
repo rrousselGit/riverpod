@@ -294,4 +294,16 @@ class ProviderFamily<State, Arg> extends Family<State, Arg, Provider<State>> {
       name: name,
     );
   }
+
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    ProviderBase<State> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(this, (arg, setup) {
+      final provider = call(arg);
+      setup(origin: provider, override: override(arg));
+    });
+  }
 }
