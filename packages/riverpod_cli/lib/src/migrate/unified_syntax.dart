@@ -425,11 +425,15 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         inAutoDisposeProvider = true;
       }
       if (type.contains('Family')) {
-        // Too many type args for ProviderRef
+        // Too many type args for ProviderRef, so we get all but the last type argument which is the family parameter
         providerTypeArgs =
             providerTypeArgs.substring(0, providerTypeArgs.lastIndexOf(','));
       }
     } catch (e) {
+      // Can't know anything if we ran into an exception
+      providerTypeArgs = '';
+      inAutoDisposeProvider = false;
+      inProvider = ProviderType.none;
       print(
           'Error in migration tool while trying to get type arguments from $type\n');
     }
@@ -552,7 +556,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         }
       }
       if (functionName == 'listen') {
-        yieldPatch(',(value) {}', node.argumentList.arguments.first.end,
+        yieldPatch(', (value) {}', node.argumentList.arguments.first.end,
             node.argumentList.arguments.first.end);
       }
       super.visitMethodInvocation(node);
