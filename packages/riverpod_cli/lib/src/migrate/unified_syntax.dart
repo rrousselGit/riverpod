@@ -3,6 +3,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:codemod/codemod.dart';
 import 'package:pub_semver/pub_semver.dart';
+// ignore_for_file: avoid_print
 
 enum ClassType { consumer, hook, stateless, stateful, none }
 enum ProviderType {
