@@ -384,48 +384,54 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   }
 
   void updateProviderType(String type) {
-    if (type.contains('ProviderContainer')) {
-      inProvider = ProviderType.none;
-      return;
-    }
-    if (type.contains('FutureProvider')) {
-      inProvider = ProviderType.future;
-      providerTypeArgs =
-          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
-    } else if (type.contains('StreamProvider')) {
-      inProvider = ProviderType.stream;
-      providerTypeArgs =
-          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
-    } else if (type.contains('StateNotifierProvider')) {
-      inProvider = ProviderType.statenotifier;
-      providerTypeArgs =
-          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
-    } else if (type.contains('ChangeNotifierProvider')) {
-      inProvider = ProviderType.changenotifier;
-      providerTypeArgs =
-          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
-    } else if (type.contains('StateProvider')) {
-      inProvider = ProviderType.state;
-      providerTypeArgs =
-          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
-    } else if (type.contains('ScopedProvider')) {
-      inProvider = ProviderType.plain;
-      providerTypeArgs =
-          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
-    } else if (type.contains('Provider')) {
-      inProvider = ProviderType.plain;
-      providerTypeArgs =
-          type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
-    } else {
-      inProvider = ProviderType.none;
-    }
-    if (type.contains('AutoDispose')) {
-      inAutoDisposeProvider = true;
-    }
-    if (type.contains('Family')) {
-      // Too many type args for ProviderRef
-      providerTypeArgs =
-          providerTypeArgs.substring(0, providerTypeArgs.lastIndexOf(','));
+    try {
+      if (type.contains('ProviderContainer') ||
+          type.contains('ProviderOverride')) {
+        inProvider = ProviderType.none;
+        return;
+      }
+      if (type.contains('FutureProvider')) {
+        inProvider = ProviderType.future;
+        providerTypeArgs =
+            type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
+      } else if (type.contains('StreamProvider')) {
+        inProvider = ProviderType.stream;
+        providerTypeArgs =
+            type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
+      } else if (type.contains('StateNotifierProvider')) {
+        inProvider = ProviderType.statenotifier;
+        providerTypeArgs =
+            type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
+      } else if (type.contains('ChangeNotifierProvider')) {
+        inProvider = ProviderType.changenotifier;
+        providerTypeArgs =
+            type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
+      } else if (type.contains('StateProvider')) {
+        inProvider = ProviderType.state;
+        providerTypeArgs =
+            type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
+      } else if (type.contains('ScopedProvider')) {
+        inProvider = ProviderType.plain;
+        providerTypeArgs =
+            type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
+      } else if (type.contains('Provider')) {
+        inProvider = ProviderType.plain;
+        providerTypeArgs =
+            type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
+      } else {
+        inProvider = ProviderType.none;
+      }
+      if (type.contains('AutoDispose')) {
+        inAutoDisposeProvider = true;
+      }
+      if (type.contains('Family')) {
+        // Too many type args for ProviderRef
+        providerTypeArgs =
+            providerTypeArgs.substring(0, providerTypeArgs.lastIndexOf(','));
+      }
+    } catch (e) {
+      print(
+          'Error in migration tool while trying to get type arguments from $type\n');
     }
   }
 
@@ -451,6 +457,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       yieldPatch(type.replaceAll('Scoped', ''), node.constructorName.offset,
           node.constructorName.end);
     } else if (type.contains('Provider') &&
+        !type.contains('Override') &&
         !type.contains('Container') &&
         node.constructorName.type.typeArguments == null) {
       updateProviderType(type);
@@ -475,6 +482,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     // Add type parameters if not already there
     if (type.contains('Provider') &&
         !type.contains('ProviderScope') &&
+        !type.contains('Override') &&
         !type.contains('ProviderListener')) {
       if (node.typeArguments == null) {
         yieldPatch('<$providerTypeArgs>', node.argumentList.offset,
