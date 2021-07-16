@@ -422,10 +422,20 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     super.visitTypeName(node);
   }
 
-  void updateProviderType(String type) {
+  void updateProviderType(String type, DartType staticType) {
     try {
+      final isInRiverpod = staticType.element?.declaration?.source?.uri.path
+              .startsWith('riverpod') ??
+          false;
+      final isInFlutterRiverpod = staticType
+              .element?.declaration?.source?.uri.path
+              .startsWith('flutter_riverpod') ??
+          false;
       if (type.contains('ProviderContainer') ||
-          type.contains('ProviderOverride')) {
+          type.contains('ProviderOverride') ||
+          type.contains('ProviderScope') ||
+          (!isInRiverpod && !isInFlutterRiverpod)) {
+        providerTypeArgs = '';
         inProvider = ProviderType.none;
         return;
       }
@@ -458,6 +468,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         providerTypeArgs =
             type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
       } else {
+        providerTypeArgs = '';
         inProvider = ProviderType.none;
       }
       if (type.contains('AutoDispose')) {
@@ -473,6 +484,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       providerTypeArgs = '';
       inAutoDisposeProvider = false;
       inProvider = ProviderType.none;
+
       print(
           'Error in migration tool while trying to get type arguments from $type\n$e\n$st');
     }
@@ -503,14 +515,18 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           yieldPatch(type.replaceAll('Scoped', ''), node.constructorName.offset,
               node.constructorName.end);
         } else if (type.contains('Provider') &&
-            !type.contains('Override') &&
-            !type.contains('Container') &&
+            !type.contains('ProviderOverride') &&
+            !type.contains('ProviderScope') &&
+            !type.contains('ProviderContainer') &&
+            !type.contains('Family') &&
             node.constructorName.type.typeArguments == null) {
-          updateProviderType(type);
-          yieldPatch('<$providerTypeArgs>', node.constructorName.type.end,
-              node.constructorName.type.end);
+          updateProviderType(type, node.staticType!);
+          if (inProvider != ProviderType.none) {
+            yieldPatch('<$providerTypeArgs>', node.constructorName.type.end,
+                node.constructorName.type.end);
+          }
         }
-        updateProviderType(type);
+        updateProviderType(type, node.staticType!);
       }
     } catch (e, st) {
       print(
@@ -528,16 +544,22 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     final type = node.staticType!.getDisplayString(withNullability: true);
 
     try {
-      updateProviderType(type);
+      updateProviderType(type, node.staticType!);
 
       // Add type parameters if not already there
       if (type.contains('Provider') &&
           !type.contains('ProviderScope') &&
           !type.contains('Override') &&
           !type.contains('ProviderListener')) {
-        if (node.typeArguments == null) {
-          yieldPatch('<$providerTypeArgs>', node.argumentList.offset,
-              node.argumentList.offset);
+        final constructor =
+            node.function.staticType?.getDisplayString(withNullability: true) ??
+                '';
+
+        if (!constructor.contains('Family')) {
+          if (node.typeArguments == null) {
+            yieldPatch('<$providerTypeArgs>', node.argumentList.offset,
+                node.argumentList.offset);
+          }
         }
       }
     } catch (e, st) {
@@ -625,7 +647,10 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         migrateParams();
         migrateClass();
         yieldPatch('ref.watch', node.offset, node.methodName.end);
-      } else if (functionName == 'read') {
+      } else if (functionName == 'read' &&
+          node.methodName.staticType!
+              .getDisplayString(withNullability: true)
+              .contains('Function<T>(ProviderBase')) {
         migrateParams();
         migrateClass();
         yieldPatch('ref.read', node.offset, node.methodName.end);

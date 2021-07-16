@@ -56,6 +56,15 @@ class Logger extends ProviderObserver {
   }
 }
 
+class ImageProvider extends StatelessWidget {
+  const ImageProvider({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Icon(Icons.plus_one);
+  }
+}
+
 class ConsumerWatch extends ConsumerWidget {
   const ConsumerWatch({Key? key}) : super(key: key);
 
@@ -63,8 +72,12 @@ class ConsumerWatch extends ConsumerWidget {
   Widget build(BuildContext context, ScopedReader watch) {
     final countNotifier = watch(counterProvider.notifier);
     final count = watch(counterProvider);
-    return Center(
-      child: Text('$count'),
+    final fam = watch(plainProviderFamilyAD(''));
+    return Column(
+      children: [
+        const ImageProvider(),
+        Text('$count'),
+      ],
     );
   }
 }
@@ -245,4 +258,5 @@ void main() {
       testProvider.overrideWithProvider(Provider((ref) => 100)),
     ],
   );
+  runApp(const ProviderScope(child: MaterialApp()));
 }
