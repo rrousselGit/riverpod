@@ -172,12 +172,12 @@ cause our widget to rebuild.
 
 ### context.read(myProvider)
 
-With [Consumer] and [ref.watch(], we've seen how to _listen_ to a provider.
+With [Consumer] and [ref.watch()], we've seen how to _listen_ to a provider.
 
 But in some situations, there's no value in listening to the object. For example,
 we may need the object only for the `onPressed` of a [RaisedButton].
 
-We _could_ use [ref.watch(]/[Consumer]:
+We _could_ use [ref.watch()]/[Consumer]:
 
 ```dart {2,4}
 Consumer(builder: (context, ref, _) {
