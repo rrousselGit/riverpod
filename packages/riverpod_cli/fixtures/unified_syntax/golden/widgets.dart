@@ -119,6 +119,20 @@ class StatelessListen extends ConsumerWidget {
   }
 }
 
+class StatelessListen2 extends ConsumerWidget {
+  const StatelessListen2({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(counterProvider, _onChange);
+    return const Text('Counter');
+  }
+}
+
+void _onChange(int i) {
+  print(i);
+}
+
 class StatelessExpressionListen extends ConsumerWidget {
   const StatelessExpressionListen({Key? key}) : super(key: key);
 
@@ -280,5 +294,7 @@ void main() {
       testProvider.overrideWithProvider(Provider<int>((ref) => 100)),
     ],
   );
+  final fut = container.refresh(futureProvider.future);
+  final val = container.refresh(stateNotifierProvider.notifier);
   runApp(const ProviderScope(child: MaterialApp()));
 }
