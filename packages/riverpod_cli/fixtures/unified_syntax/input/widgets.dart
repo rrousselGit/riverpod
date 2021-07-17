@@ -107,6 +107,7 @@ class StatefulConsumer extends StatefulWidget {
   const StatefulConsumer({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _StatefulConsumerState createState() => _StatefulConsumerState();
 }
 
@@ -148,6 +149,7 @@ class StatefulConsumer2 extends StatefulWidget {
   const StatefulConsumer2({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _StatefulConsumerState2 createState() => _StatefulConsumerState2();
 }
 

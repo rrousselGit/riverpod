@@ -23,6 +23,7 @@ typedef OnProviderChange<T> = void Function(BuildContext context, T value);
 @sealed
 class ProviderListener<T> extends ConsumerWidget {
   /// {@macro riverpod.providerlistener}
+  @Deprecated('Use WidgetRef.listen instead')
   const ProviderListener({
     Key? key,
     required this.onChange,

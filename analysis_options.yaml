@@ -16,6 +16,12 @@ analyzer:
 
 linter:
   rules:
+    # temporarily disabled 
+    require_trailing_commas: false
+
+    # too verbose
+    prefer_final_parameters: false
+    
     # Too verbose with little value, and this is taken care of by the Flutter devtool anyway.
     diagnostic_describe_all_properties: false
 

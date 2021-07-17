@@ -80,8 +80,8 @@ extension XAutoDisposeFamily<State, Arg,
   }
 }
 
-// ignore: avoid_private_typedef_functions
-typedef _SetupFamilyOverride<Arg> = void Function(
+/// Setup how a family is overriden
+typedef SetupFamilyOverride<Arg> = void Function(
   Arg argument,
   void Function({
     required ProviderBase origin,
@@ -95,7 +95,7 @@ abstract class FamilyOverride<Arg> implements Override {
   /// Do not use
   factory FamilyOverride(
     Family<Object?, Arg, ProviderBase<Object?>> family,
-    _SetupFamilyOverride<Arg> createOverride,
+    SetupFamilyOverride<Arg> createOverride,
   ) = _FamilyOverride;
 
   /// The family that was overriden.
@@ -111,7 +111,7 @@ class _FamilyOverride<Arg> implements FamilyOverride<Arg> {
 
   @override
   final Family<Object?, Arg, ProviderBase<Object?>> overridenFamily;
-  final _SetupFamilyOverride<Arg> _createOverride;
+  final SetupFamilyOverride<Arg> _createOverride;
 
   @override
   void setupOverride(Arg argument, SetupOverride setup) {
