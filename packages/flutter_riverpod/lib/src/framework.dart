@@ -222,6 +222,7 @@ class UncontrolledProviderScope extends InheritedWidget {
   }
 
   @override
+  // ignore: library_private_types_in_public_api
   _UncontrolledProviderScopeElement createElement() {
     return _UncontrolledProviderScopeElement(this);
   }

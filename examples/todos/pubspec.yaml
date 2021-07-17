@@ -13,6 +13,8 @@ dependencies:
   flutter_hooks: ">=0.16.0-nullsafety.0 <2.0.0"
   hooks_riverpod:
     path: ../../packages/hooks_riverpod
+  riverpod:
+    path: ../../packages/riverpod
   uuid: ^3.0.4
 
 dev_dependencies:

@@ -12,6 +12,7 @@ abstract class HookConsumerWidget extends ConsumerWidget {
   const HookConsumerWidget({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _HookConsumerElement createElement() => _HookConsumerElement(this);
 }
 

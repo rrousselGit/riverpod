@@ -607,6 +607,7 @@ class InitState extends ConsumerStatefulWidget {
   final void Function(BuildContext context, WidgetRef ref) initState;
 
   @override
+  // ignore: library_private_types_in_public_api
   _InitStateState createState() => _InitStateState();
 }
 
@@ -636,6 +637,7 @@ class Demo extends ConsumerStatefulWidget {
   final Widget Function(BuildContext context, WidgetRef ref) builder;
 
   @override
+  // ignore: library_private_types_in_public_api
   _DemoState createState() => _DemoState();
 }
 

@@ -1,3 +1,11 @@
+# 1.0.0-dev.5
+
+Enable debugging the command line.
+
+# 1.0.0-dev.4
+
+- Add codemod flags for migrate command
+
 # 1.0.0-dev.2
 
 - The migration now updates ScopedProvider => Provider
