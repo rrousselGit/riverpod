@@ -1,3 +1,7 @@
+## 1.0.0-dev.6
+
+ - **FIX**: StreamProvider.last no-longer throws a StateError when no value were emitted (#296).
+
 # [Unreleased]
 
 - Re-enabled debug assertions that were temporarily disabled by previous dev versions.
