@@ -39,6 +39,9 @@ final streamProvider = StreamProvider((ProviderReference ref) async* {
 final plainProvider = Provider((ProviderReference ref) => '');
 final plainNullProvider = Provider<String?>((ProviderReference ref) => null);
 final plainProviderAD = Provider.autoDispose((ProviderReference ref) => '');
+final stateProvider = StateProvider((ProviderReference ref) => '');
+final changeNotifier =
+    ChangeNotifierProvider((ProviderReference ref) => ChangeNotifier());
 final plainProviderFamilyAD = Provider.family
     .autoDispose<String, String>((ProviderReference ref, _) => '');
 final futureProviderAD =
@@ -230,6 +233,7 @@ class HooksConsumerSimple extends StatelessWidget {
   Widget _build() => HookBuilder(
         builder: (context) {
           useProvider(counterProvider);
+          final value = useAHook('');
           return const Text('Press Me');
         },
       );
@@ -242,6 +246,10 @@ class BasicUseOfCustomHook extends HookWidget {
     useAnotherHook();
     return Container();
   }
+}
+
+Object useAHook(String value) {
+  return useProvider(plainProviderFamilyAD(value));
 }
 
 Object useMyHook() {

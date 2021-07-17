@@ -40,6 +40,10 @@ final plainProvider = Provider<String>((ProviderRef<String> ref) => '');
 final plainNullProvider = Provider<String?>((ProviderRef<String?> ref) => null);
 final plainProviderAD =
     Provider.autoDispose<String>((AutoDisposeProviderRef<String> ref) => '');
+final stateProvider =
+    StateProvider<String>((StateProviderRef<String> ref) => '');
+final changeNotifier = ChangeNotifierProvider<ChangeNotifier>(
+    (ChangeNotifierProviderRef<ChangeNotifier> ref) => ChangeNotifier());
 final plainProviderFamilyAD = Provider.family
     .autoDispose<String, String>((AutoDisposeProviderRef<String> ref, _) => '');
 final futureProviderAD = FutureProvider.autoDispose<String>(
@@ -228,6 +232,7 @@ class HooksConsumerSimple extends StatelessWidget {
   Widget _build() => HookConsumer(
         builder: (context, ref, child) {
           ref.watch(counterProvider);
+          final value = useAHook(ref, '');
           return const Text('Press Me');
         },
       );
@@ -240,6 +245,10 @@ class BasicUseOfCustomHook extends HookConsumerWidget {
     useAnotherHook(ref);
     return Container();
   }
+}
+
+Object useAHook(WidgetRef ref, String value) {
+  return ref.watch(plainProviderFamilyAD(value));
 }
 
 Object useMyHook(WidgetRef ref) {
