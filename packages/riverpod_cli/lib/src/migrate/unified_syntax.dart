@@ -431,6 +431,8 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
               .element?.declaration?.source?.uri.path
               .startsWith('flutter_riverpod') ??
           false;
+
+      withinScopedProvider = false;
       if (type.contains('ProviderContainer') ||
           type.contains('ProviderOverride') ||
           type.contains('ProviderScope') ||
@@ -461,6 +463,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
             type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
       } else if (type.contains('ScopedProvider')) {
         inProvider = ProviderType.plain;
+        withinScopedProvider = true;
         providerTypeArgs =
             type.substring(type.indexOf('<') + 1, type.lastIndexOf('>'));
       } else if (type.contains('Provider')) {
@@ -490,6 +493,8 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     }
   }
 
+  bool withinScopedProvider = false;
+
   @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
     final type = node.staticType?.getDisplayString(withNullability: true);
@@ -514,6 +519,12 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
             type.contains('Scoped')) {
           yieldPatch(type.replaceAll('Scoped', ''), node.constructorName.offset,
               node.constructorName.end);
+          final functionExpression =
+              node.argumentList.arguments.first as FunctionExpression;
+          yieldPatch(
+              'ref',
+              functionExpression.parameters!.parameters.first.offset,
+              functionExpression.parameters!.parameters.first.end);
         } else if (type.contains('Provider') &&
             !type.contains('ProviderOverride') &&
             !type.contains('ProviderScope') &&
@@ -576,6 +587,9 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
     final functionName = node.function.toSource();
     if (withinClass == ClassType.none && !functionName.startsWith('use')) {
+      if (functionName == 'watch' && withinScopedProvider) {
+        yieldPatch('ref.watch', node.function.offset, node.function.end);
+      }
       super.visitFunctionExpressionInvocation(node);
       return;
     }

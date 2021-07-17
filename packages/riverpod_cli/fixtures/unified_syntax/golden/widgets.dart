@@ -50,6 +50,7 @@ final streamProviderAD = StreamProvider.autoDispose<String>(
 final stateNotifierProvider = StateNotifierProvider<Counter, int>(
     (StateNotifierProviderRef<Counter, int> ref) => Counter(ref));
 final scopedProvider = Provider<int>((ref) => 0);
+final otherScopedProvider = Provider<int>((ref) => ref.watch(scopedProvider));
 
 class Logger extends ProviderObserver {
   @override
