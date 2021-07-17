@@ -1,3 +1,10 @@
+# [Unreleased]
+
+- Re-enabled debug assertions that were temporarily disabled by previous dev versions.
+- Allows families to be scoped/overriden
+- Fixed bugs with `ref.refresh` not working on some providers
+- renamed `ProviderBase.recreateShouldNotify` to `updateShouldNotify`
+
 # 1.0.0-dev.5
 
 Fixed an issue where provider listeners could not be called properly.
