@@ -220,6 +220,19 @@ class HooksConsumerWatch extends StatelessWidget {
   }
 }
 
+class HooksConsumerSimple extends StatelessWidget {
+  const HooksConsumerSimple({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => _build();
+  Widget _build() => HookBuilder(
+        builder: (context) {
+          useProvider(counterProvider);
+          return const Text('Press Me');
+        },
+      );
+}
+
 class BasicUseOfCustomHook extends HookWidget {
   const BasicUseOfCustomHook({Key? key}) : super(key: key);
   @override

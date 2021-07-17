@@ -550,7 +550,8 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       if (type.contains('Provider') &&
           !type.contains('ProviderScope') &&
           !type.contains('Override') &&
-          !type.contains('ProviderListener')) {
+          !type.contains('ProviderListener') &&
+          inProvider != ProviderType.none) {
         final constructor =
             node.function.staticType?.getDisplayString(withNullability: true) ??
                 '';
@@ -650,7 +651,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       } else if (functionName == 'read' &&
           node.methodName.staticType!
               .getDisplayString(withNullability: true)
-              .contains('Function<T>(ProviderBase')) {
+              .contains('Function<T>(Provider')) {
         migrateParams();
         migrateClass();
         yieldPatch('ref.read', node.offset, node.methodName.end);
