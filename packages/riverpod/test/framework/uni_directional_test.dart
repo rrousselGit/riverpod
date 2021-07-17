@@ -2,6 +2,8 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
+import '../utils.dart';
+
 final isAssertionError = isA<AssertionError>();
 
 TypeMatcher isProviderException([Object? exceptionMatcher]) {
@@ -72,6 +74,22 @@ void main() {
     // });
   });
 
+  test('rebuilding a provider can modify other providers', () async {
+    final dep = StateProvider((ref) => 0);
+    final provider = Provider((ref) => ref.watch(dep).state);
+    final another = StateProvider<int>((ref) {
+      ref.listen(provider, (value) => ref.controller.state++);
+      return 0;
+    });
+    final container = createContainer();
+
+    expect(container.read(another).state, 0);
+
+    container.read(dep).state = 42;
+
+    expect(container.read(another).state, 1);
+  });
+
   group('ref.watch cannot end-up in a circular dependency', () {
     test('direct dependency', () {
       final provider = Provider((ref) => ref);
@@ -109,6 +127,8 @@ void main() {
       );
     });
   });
+
+  // TODO ref.read cannot end-up in circular dependency
 
   group('ref.read cannot end-up in a circular dependency', () {
     test('direct dependency', () {
@@ -148,126 +168,104 @@ void main() {
     });
   });
 
-  // test("initState can't dirty ancestors", () {
-  //   final ancestor = StateProvider((_) => 0);
-  //   final child = Provider((ref) {
-  //     return ref.watch(ancestor).state++;
-  //   });
+  test("initState can't dirty ancestors", () {
+    final ancestor = StateProvider((_) => 0);
+    final child = Provider((ref) {
+      return ref.watch(ancestor).state++;
+    });
 
-  //   expect(errorsOf(() => container.read(child)), isNotEmpty);
-  // });
+    expect(errorsOf(() => container.read(child)), isNotEmpty);
+  });
 
-  // test('initState can dirty descendants', () {
-  //   late StateController<int> counter;
-  //   final rebuildToken = StateProvider((ref) => 0);
-  //   final ancestor = Provider((ref) {
-  //     if (ref.watch(rebuildToken).state > 0) {
-  //       counter.state++;
-  //     }
-  //   });
-  //   final child = StateProvider((ref) {
-  //     ref.watch(ancestor);
-  //     return 0;
-  //   });
+  test("initState can't dirty siblings", () {
+    final ancestor = StateProvider((_) => 0, name: 'ancestor');
+    final counter = Counter();
+    final sibling = StateNotifierProvider<Counter, int>((ref) {
+      ref.watch(ancestor).state;
+      return counter;
+    }, name: 'sibling');
+    var didWatchAncestor = false;
+    final child = Provider((ref) {
+      ref.watch(ancestor);
+      didWatchAncestor = true;
+      counter.increment();
+    }, name: 'child');
 
-  //   counter = container.read(child);
-  //   container.read(ancestor);
+    container.read(sibling);
 
-  //   container.read(rebuildToken).state++;
+    expect(errorsOf(() => container.read(child)), isNotEmpty);
+    expect(didWatchAncestor, true);
+  });
 
-  //   container.read(ancestor);
-  //   expect(counter.state, 1);
-  // });
+  test("initState can't mark dirty other provider", () {
+    final provider = StateProvider((ref) => 0);
+    final provider2 = Provider((ref) {
+      ref.watch(provider).state = 42;
+      return 0;
+    });
 
-  // test("initState can't dirty siblings", () {
-  //   final ancestor = StateProvider((_) => 0, name: 'ancestor');
-  //   final counter = Counter();
-  //   final sibling = StateNotifierProvider<Counter, int>((ref) {
-  //     ref.watch(ancestor).state;
-  //     return counter;
-  //   }, name: 'sibling');
-  //   var didWatchAncestor = false;
-  //   final child = Provider((ref) {
-  //     ref.watch(ancestor);
-  //     didWatchAncestor = true;
-  //     counter.increment();
-  //   }, name: 'child');
+    expect(container.read(provider).state, 0);
 
-  //   container.read(sibling);
+    expect(errorsOf(() => container.read(provider2)), isNotEmpty);
+  });
 
-  //   expect(errorsOf(() => container.read(child)), isNotEmpty);
-  //   expect(didWatchAncestor, true);
-  // });
+  test("nested initState can't mark dirty other providers", () {
+    final counter = Counter();
+    final provider = StateNotifierProvider<Counter, int>((_) => counter);
+    final nested = Provider((_) => 0);
+    final provider2 = Provider((ref) {
+      ref.watch(nested);
+      counter.increment();
+      return 0;
+    });
 
-  // test("initState can't mark dirty other provider", () {
-  //   final provider = StateProvider((ref) => 0);
-  //   final provider2 = Provider((ref) {
-  //     ref.watch(provider).state = 42;
-  //     return 0;
-  //   });
+    expect(container.read(provider), 0);
 
-  //   expect(container.read(provider).state, 0);
+    expect(errorsOf(() => container.read(provider2)), isNotEmpty);
+  });
 
-  //   expect(errorsOf(() => container.read(provider2)), isNotEmpty);
-  // });
+  test('auto dispose can dirty providers', () async {
+    final counter = Counter();
+    final provider = StateNotifierProvider<Counter, int>((_) => counter);
+    var didDispose = false;
+    final provider2 = Provider.autoDispose((ref) {
+      ref.onDispose(() {
+        didDispose = true;
+        counter.increment();
+      });
+    });
 
-  // test("nested initState can't mark dirty other providers", () {
-  //   final counter = Counter();
-  //   final provider = StateNotifierProvider<Counter, int>((_) => counter);
-  //   final nested = Provider((_) => 0);
-  //   final provider2 = Provider((ref) {
-  //     ref.watch(nested);
-  //     counter.increment();
-  //     return 0;
-  //   });
+    container.read(provider);
 
-  //   expect(container.read(provider), 0);
+    final sub = container.listen(provider2, (_) {});
+    sub.close();
 
-  //   expect(errorsOf(() => container.read(provider2)), isNotEmpty);
-  // });
+    expect(counter.debugState, 0);
 
-  // test('auto dispose can dirty providers', () async {
-  //   final counter = Counter();
-  //   final provider = StateNotifierProvider<Counter, int>((_) => counter);
-  //   var didDispose = false;
-  //   final provider2 = Provider.autoDispose((ref) {
-  //     ref.onDispose(() {
-  //       didDispose = true;
-  //       counter.increment();
-  //     });
-  //   });
+    await container.pump();
 
-  //   container.read(provider);
+    expect(didDispose, true);
+    expect(counter.debugState, 1);
+  });
 
-  //   final sub = container.listen(provider2);
-  //   sub.close();
+  test("Provider can't dirty anything on create", () {
+    final counter = Counter();
+    final provider = StateNotifierProvider<Counter, int>((_) => counter);
+    late List<Object> errors;
+    final computed = Provider((ref) {
+      errors = errorsOf(counter.increment);
+      return 0;
+    });
+    final listener = Listener<int>();
 
-  //   expect(counter.debugState, 0);
+    expect(container.read(provider), 0);
 
-  //   await Future<void>.value();
+    container.listen(computed, listener, fireImmediately: true);
 
-  //   expect(didDispose, true);
-  //   expect(counter.debugState, 1);
-  // });
-
-  // test("Provider can't dirty anything on create", () {
-  //   final counter = Counter();
-  //   final provider = StateNotifierProvider<Counter, int>((_) => counter);
-  //   late List<Object> errors;
-  //   final computed = Provider((ref) {
-  //     errors = errorsOf(counter.increment);
-  //     return 0;
-  //   });
-  //   final listener = Listener();
-
-  //   expect(container.read(provider), 0);
-
-  //   computed.watchOwner(container, listener);
-
-  //   verify(listener(0)).called(1);
-  //   verifyNoMoreInteractions(listener);
-  //   expect(errors, isNotEmpty);
-  // });
+    verify(listener(0)).called(1);
+    verifyNoMoreInteractions(listener);
+    expect(errors, isNotEmpty);
+  });
 }
 
 class VsyncMock extends Mock {

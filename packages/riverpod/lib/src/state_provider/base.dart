@@ -15,7 +15,7 @@ class _NotifierProvider<State>
   }
 
   @override
-  bool recreateShouldNotify(
+  bool updateShouldNotify(
     StateController<State> previousState,
     StateController<State> newState,
   ) {
@@ -68,6 +68,9 @@ class StateProvider<State>
 
   final Create<State, StateProviderRef<State>> _create;
 
+  @override
+  ProviderBase<Object?> get providerToRefresh => notifier;
+
   /// {@template riverpod.stateprovider.notifier}
   /// Obtains the [StateController] associated with this provider, but without
   /// listening to it.
@@ -100,7 +103,7 @@ class StateProvider<State>
   }
 
   @override
-  bool recreateShouldNotify(
+  bool updateShouldNotify(
     StateController<State> previousState,
     StateController<State> newState,
   ) {

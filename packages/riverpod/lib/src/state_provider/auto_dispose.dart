@@ -16,7 +16,7 @@ class _AutoDisposeNotifierProvider<State>
   }
 
   @override
-  bool recreateShouldNotify(
+  bool updateShouldNotify(
     StateController<State> previousState,
     StateController<State> newState,
   ) {
@@ -62,6 +62,9 @@ class AutoDisposeStateProvider<State>
 
   final Create<State, AutoDisposeStateProviderRef<State>> _create;
 
+  @override
+  ProviderBase<Object?> get providerToRefresh => notifier;
+
   /// {@macro riverpod.stateprovider.notifier}
   late final AutoDisposeProviderBase<StateController<State>> notifier =
       _AutoDisposeNotifierProvider(
@@ -78,7 +81,7 @@ class AutoDisposeStateProvider<State>
   }
 
   @override
-  bool recreateShouldNotify(
+  bool updateShouldNotify(
     StateController<State> previousState,
     StateController<State> newState,
   ) {

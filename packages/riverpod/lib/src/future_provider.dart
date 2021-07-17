@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 
 import 'async_value_converters.dart';
 import 'builders.dart';
-import 'common.dart' show AsyncValue, modifierName;
+import 'common.dart' show AsyncValue, AsyncLoading, modifierName;
 import 'framework.dart';
 import 'provider.dart';
 import 'stream_provider.dart';

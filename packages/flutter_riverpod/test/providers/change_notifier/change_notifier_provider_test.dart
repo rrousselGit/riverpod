@@ -5,6 +5,21 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('can be refreshed', () async {
+    var result = ValueNotifier(0);
+    final container = createContainer();
+    final provider = ChangeNotifierProvider((ref) => result);
+
+    expect(container.read(provider), result);
+    expect(container.read(provider.notifier), result);
+
+    result = ValueNotifier(42);
+    expect(container.refresh(provider), result);
+
+    expect(container.read(provider), result);
+    expect(container.read(provider.notifier), result);
+  });
+
   group('scoping an override overrides all the associated subproviders', () {
     test('when passing the provider itself', () {
       final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));

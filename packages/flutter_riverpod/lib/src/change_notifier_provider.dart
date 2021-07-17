@@ -20,7 +20,12 @@ T _listenNotifier<T extends ChangeNotifier?>(
 ) {
   if (notifier != null) {
     notifier.addListener(ref.notifyListeners);
-    ref.onDispose(() => notifier.removeListener(ref.notifyListeners));
+    ref.onDispose(() {
+      try {
+        notifier.removeListener(ref.notifyListeners);
+        // ignore: empty_catches, may throw if called after the notifier is dispose, but this is safe to ignore.
+      } catch (err) {}
+    });
   }
 
   return notifier;

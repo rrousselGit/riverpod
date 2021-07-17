@@ -35,10 +35,15 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   }
 
   @override
-  bool recreateShouldNotify(
+  bool updateShouldNotify(
     AsyncValue<State> previousState,
     AsyncValue<State> newState,
   ) {
+    final wasLoading = previousState is AsyncLoading;
+    final isLoading = newState is AsyncLoading;
+
+    if (wasLoading || isLoading) return wasLoading != isLoading;
+
     return true;
   }
 

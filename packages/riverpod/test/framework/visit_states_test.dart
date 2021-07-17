@@ -9,8 +9,6 @@ import 'package:trotter/trotter.dart';
 import '../utils.dart';
 
 void main() {
-  // TODO(rrousselGit) consider listeners too (if A listens to B, B should always be visited before A)
-
   //  A
   //  |
   //  B

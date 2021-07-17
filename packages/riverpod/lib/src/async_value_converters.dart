@@ -26,7 +26,7 @@ class AsyncValueAsStreamProvider<State>
   }
 
   @override
-  bool recreateShouldNotify(
+  bool updateShouldNotify(
     Stream<State> previousState,
     Stream<State> newState,
   ) {
@@ -61,7 +61,7 @@ class AutoDisposeAsyncValueAsStreamProvider<State>
   }
 
   @override
-  bool recreateShouldNotify(
+  bool updateShouldNotify(
     Stream<State> previousState,
     Stream<State> newState,
   ) {
@@ -129,7 +129,7 @@ class AsyncValueAsFutureProvider<State>
   }
 
   @override
-  bool recreateShouldNotify(
+  bool updateShouldNotify(
     Future<State> previousState,
     Future<State> newState,
   ) {
@@ -163,7 +163,7 @@ class AutoDisposeAsyncValueAsFutureProvider<State>
   }
 
   @override
-  bool recreateShouldNotify(
+  bool updateShouldNotify(
     Future<State> previousState,
     Future<State> newState,
   ) {

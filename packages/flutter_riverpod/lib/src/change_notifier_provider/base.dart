@@ -20,6 +20,9 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
 
   final Create<Notifier, ChangeNotifierProviderRef<Notifier>> _create;
 
+  @override
+  ProviderBase<Object?> get providerToRefresh => notifier;
+
   /// {@template flutter_riverpod.changenotifierprovider.notifier}
   /// Obtains the [ChangeNotifier] associated with this provider, but without
   /// listening to it.
@@ -89,7 +92,7 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
   }
 
   @override
-  bool recreateShouldNotify(Notifier previousState, Notifier newState) => true;
+  bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
 }
 
 /// {@template riverpod.changenotifierprovider.family}

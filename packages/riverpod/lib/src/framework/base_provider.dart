@@ -114,11 +114,17 @@ abstract class ProviderBase<State>
   /// variable used.
   Object? get argument => _argument;
 
+  /// The provider that will be refreshed when calling [ProviderContainer.refresh].
+  ///
+  /// Defaults to `this`.
+  // ignore: avoid_returning_this
+  ProviderBase<Object?> get providerToRefresh => this;
+
   State create(covariant ProviderRefBase ref);
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
   /// listeners if the exposed value did not change.
-  bool recreateShouldNotify(State previousState, State newState);
+  bool updateShouldNotify(State previousState, State newState);
 
   /// An internal method that defines how a provider behaves.
   ProviderElementBase<State> createElement();
@@ -584,10 +590,12 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   // under a type-safe interface that types it as `State newValue` instead.
   set state(State newState) {
     late State previousState;
-    if (_didBuild) previousState = _state;
+    if (_didBuild) previousState = state;
 
     _state = newState;
-    if (_didBuild) notifyListeners(previousState: previousState);
+    if (_didBuild && provider.updateShouldNotify(previousState, newState)) {
+      notifyListeners(previousState: previousState);
+    }
   }
 
   State get state => _state;
@@ -627,6 +635,12 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     _mustRecomputeState = true;
     _runOnDispose();
     _container._scheduler.scheduleProviderRefresh(this);
+
+    // We don't call this._markDependencyMayHaveChanged here because we voluntarily
+    // do not want to set the _dependencyMayHaveChanged flag to true.
+    // Since the dependency is known to have changed, there is no reason to try
+    // and "flush" it, as it will already get rebuilt.
+    visitChildren((element) => element._markDependencyMayHaveChanged());
   }
 
   void flush() {
@@ -652,8 +666,23 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
 
       _buildState();
 
-      if (provider.recreateShouldNotify(previousState, _state)) {
-        notifyListeners(previousState: previousState);
+      if (provider.updateShouldNotify(previousState, state)) {
+        ProviderElementBase? debugPreviouslyBuildingElement;
+        assert(() {
+          debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
+          // Disable the assertion that prevents updating providers when
+          // rebuilding a provider.
+          _debugCurrentlyBuildingElement = null;
+          return true;
+        }(), '');
+        try {
+          notifyListeners(previousState: previousState);
+        } finally {
+          assert(() {
+            _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
+            return true;
+          }(), '');
+        }
       }
 
       // Unsubscribe to everything that a provider no-longer depends on.
@@ -667,12 +696,20 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   }
 
   void notifyListeners({Object? previousState = const _Default()}) {
+    assert(
+        _debugCurrentlyBuildingElement == null ||
+            _debugCurrentlyBuildingElement == this,
+        '''
+Providers are not allowed to modify other providers during their initialization.
+
+The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider while building.
+''');
     assert(() {
       container.debugCanModifyProviders?.call();
       return true;
     }(), '');
 
-    final newValue = _state;
+    final newValue = state;
     final listeners = _listeners.toList(growable: false);
     final subscribers = _subscribers.toList(growable: false);
     for (var i = 0; i < listeners.length; i++) {
@@ -703,13 +740,8 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   void _didChangeDependency() {
     if (_mustRecomputeState) return;
 
+    // will notify children that their dependency may have changed
     markMustRecomputeState();
-
-    // We don't call this._markDependencyMayHaveChanged here because we voluntarily
-    // do not want to set the _dependencyMayHaveChanged flag to true.
-    // Since the dependency is known to have changed, there is no reason to try
-    // and "flush" it, as it will already get rebuilt.
-    visitChildren((element) => element._markDependencyMayHaveChanged());
   }
 
   void _markDependencyMayHaveChanged() {
@@ -817,7 +849,7 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     if (_exception != null) {
       throw _exception!;
     }
-    return _state;
+    return state;
   }
 
   @protected
@@ -831,7 +863,7 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
 
     try {
       _didBuild = false;
-      _state = _provider.create(this);
+      state = _provider.create(this);
     } catch (err, stack) {
       _exception = ProviderException._(err, stack, _provider);
     } finally {
@@ -852,8 +884,6 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   /// If a provider both [watch] and [listen] an element, or if a provider
   /// [listen] multiple times to an element, it may be visited multiple times.
   void visitChildren(void Function(ProviderElementBase element) visitor) {
-    // TODO test
-
     for (var i = 0; i < _dependents.length; i++) {
       visitor(_dependents[i]);
     }

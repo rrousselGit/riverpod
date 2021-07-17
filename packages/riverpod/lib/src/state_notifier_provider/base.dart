@@ -15,7 +15,7 @@ class _NotifierProvider<Notifier extends StateNotifier<Object?>>
   }
 
   @override
-  bool recreateShouldNotify(Notifier previousState, Notifier newState) {
+  bool updateShouldNotify(Notifier previousState, Notifier newState) {
     return true;
   }
 
@@ -73,7 +73,7 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
   }
 
   @override
-  bool recreateShouldNotify(State previousState, State newState) {
+  bool updateShouldNotify(State previousState, State newState) {
     return true;
   }
 

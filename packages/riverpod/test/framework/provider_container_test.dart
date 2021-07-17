@@ -8,6 +8,23 @@ import '../utils.dart';
 
 void main() {
   group('ProviderContainer', () {
+    test('flushes listened providers even if they have no external listeners',
+        () async {
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider((ref) => ref.watch(dep).state);
+      final another = StateProvider<int>((ref) {
+        ref.listen(provider, (value) => ref.controller.state++);
+        return 0;
+      });
+      final container = createContainer();
+
+      expect(container.read(another).state, 0);
+
+      container.read(dep).state = 42;
+
+      expect(container.read(another).state, 1);
+    });
+
     group('.pump', () {
       test(
         'on scoped container correctly awaits disposal',
@@ -38,7 +55,36 @@ void main() {
     });
 
     group('getAllProviderElements', () {
-      // TODO list only elements associated with this container (ingoring inherited elements)
+      test(
+          'list only elements associated with the container (ingoring inherited and descendent elements)',
+          () {
+        final provider = Provider((ref) => 0);
+        final provider2 = Provider((ref) => 0);
+        final provider3 = Provider((ref) => 0);
+        final root = createContainer();
+        final mid = createContainer(parent: root, overrides: [provider2]);
+        final leaf = createContainer(parent: mid, overrides: [provider3]);
+
+        leaf.read(provider);
+        leaf.read(provider2);
+        leaf.read(provider3);
+
+        expect(
+          root.getAllProviderElements().single,
+          isA<ProviderElement>()
+              .having((e) => e.provider, 'provider', provider),
+        );
+        expect(
+          mid.getAllProviderElements().single,
+          isA<ProviderElement>()
+              .having((e) => e.provider, 'provider', provider2),
+        );
+        expect(
+          leaf.getAllProviderElements().single,
+          isA<ProviderElement>()
+              .having((e) => e.provider, 'provider', provider3),
+        );
+      });
 
       test('list the currently mounted providers', () async {
         final container = ProviderContainer();

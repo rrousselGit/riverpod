@@ -20,7 +20,7 @@ class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
   }
 
   @override
-  bool recreateShouldNotify(Notifier previousState, Notifier newState) {
+  bool updateShouldNotify(Notifier previousState, Notifier newState) {
     return true;
   }
 
@@ -74,7 +74,7 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
   }
 
   @override
-  bool recreateShouldNotify(State previousState, State newState) {
+  bool updateShouldNotify(State previousState, State newState) {
     return true;
   }
 

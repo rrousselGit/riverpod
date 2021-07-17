@@ -18,6 +18,9 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
   final Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>>
       _create;
 
+  @override
+  ProviderBase<Object?> get providerToRefresh => notifier;
+
   /// {@template flutter_riverpod.changenotifierprovider.notifier}
   /// Obtains the [ChangeNotifier] associated with this provider, but without
   /// listening to it.
@@ -55,7 +58,7 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
   }
 
   @override
-  bool recreateShouldNotify(Notifier previousState, Notifier newState) => true;
+  bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
 
   /// Overrides the behavior of a provider with a value.
   ///

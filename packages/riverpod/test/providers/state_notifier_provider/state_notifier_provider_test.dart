@@ -5,7 +5,21 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
-  test('can be refreshed', () {}, skip: true);
+  test('can be refreshed', () async {
+    var result = StateController(0);
+    final container = createContainer();
+    final provider =
+        StateNotifierProvider<StateController<int>, int>((ref) => result);
+
+    expect(container.read(provider), 0);
+    expect(container.read(provider.notifier), result);
+
+    result = StateController(42);
+    expect(container.refresh(provider), 42);
+
+    expect(container.read(provider), 42);
+    expect(container.read(provider.notifier), result);
+  });
 
   group('scope', () {
     group('scoping an override overrides all the associated subproviders', () {
