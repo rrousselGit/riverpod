@@ -101,7 +101,7 @@ when the value exposed changed.
 
 :::caution
 The `watch` method passed as an argument of [ConsumerWidget] should not be called
-asynchronously, like inside `onPressed` or a [RaisedButton].
+asynchronously, like inside `onPressed` or a [ElevatedButton].
 
 If you need to read a provider in response to a user event, see [context.read(myProvider)](#contextreadmyprovider)
 :::
@@ -175,14 +175,14 @@ cause our widget to rebuild.
 With [Consumer] and [ref.watch], we've seen how to _listen_ to a provider.
 
 But in some situations, there's no value in listening to the object. For example,
-we may need the object only for the `onPressed` of a [RaisedButton].
+we may need the object only for the `onPressed` of a [ElevatedButton].
 
 We _could_ use [ref.watch]/[Consumer]:
 
 ```dart {2,4}
 Consumer(builder: (context, ref, _) {
   StateController<int> counter = ref.watch(counterProvider);
-  return RaisedButton(
+  return ElevatedButton(
     onPressed: () => counter.state++,
     child: Text('increment'),
   )
@@ -190,8 +190,8 @@ Consumer(builder: (context, ref, _) {
 ```
 
 But that is not efficient. Depending on the provider listened, this
-could cause the [RaisedButton] to rebuild when the counter changes,
-even when the counter isn't actually used to _build_ the [RaisedButton].
+could cause the [ElevatedButton] to rebuild when the counter changes,
+even when the counter isn't actually used to _build_ the [ElevatedButton].
 
 That's where `context.read(myProvider)` is a solution.
 
@@ -200,7 +200,7 @@ Using it, we could refactor our previous code to:
 ```dart {4}
 @override
 Widget build(BuildContext context) {
-  return RaisedButton(
+  return ElevatedButton(
     onPressed: () => context.read(counterProvider).state++,
     child: Text('increment'),
   );
@@ -238,7 +238,7 @@ Widget build(BuildContext context, WidgetRef ref) {
   // Will not cause the button to rebuild when the counter changes.
   final Counter counter = ref.watch(counterProvider);
 
-  return RaisedButton(
+  return ElevatedButton(
     onPressed: counter.increment,
     child: Text('increment'),
   );
@@ -335,7 +335,7 @@ This ensures that the state of your providers properly resets between test cases
 [consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
 [consumerwidget]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ConsumerWidget-class.html
 [useprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ref.watch(.html
-[raisedbutton]: https://api.flutter.dev/flutter/material/RaisedButton-class.html
+[elevatedbutton]: https://api.flutter.dev/flutter/material/ElevatedButton-class.html
 [streambuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
 [riverpod]: https://github.com/rrousselgit/river_pod
 [text]: https://api.flutter.dev/flutter/widgets/Text-class.html
