@@ -146,7 +146,7 @@ is to use [ref.watch(].
 ```dart
 class Count extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     int count = ref.watch(counterProvider).state;
     return Text('$count');
   }
@@ -159,7 +159,7 @@ This syntax also supports a feature that are not supported by [ConsumerWidget]: 
 ```dart
 class Example extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     bool isAbove5 = ref.watch(counterProvider.select((s) => s.state > 5));
     return Text('Is counter > 5 ? $isAbove5');
   }
