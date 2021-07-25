@@ -1,3 +1,7 @@
+# 1.0.0-dev.6
+
+Fix issues with the automatic migration of `ProviderContainer`.
+
 # 1.0.0-dev.5
 
 Enable debugging the command line.
