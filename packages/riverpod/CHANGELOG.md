@@ -1,3 +1,7 @@
+## [Unreleased]
+
+- Fixed `ProviderObserver` not working when modifying a `StateProvider`.
+
 ## 1.0.0-dev.6
 
  - **FIX**: StreamProvider.last no-longer throws a StateError when no value were emitted (#296).

@@ -1,9 +1,29 @@
+import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 import '../../utils.dart';
 
 void main() {
+  test('is compatible with ProviderObserver', () {
+    // regression test for https://github.com/rrousselGit/river_pod/issues/623
+
+    final observer = ObserverMock();
+    final container = createContainer(observers: [observer]);
+    final provider = StateProvider.autoDispose<int>((_) => 0);
+
+    final notifier = container.read(provider);
+
+    clearInteractions(observer);
+
+    notifier.state++;
+
+    verifyOnly(
+      observer,
+      observer.didUpdateProvider(provider, notifier, notifier, container),
+    );
+  });
+
   test('can be refreshed', () async {
     var result = 0;
     final container = createContainer();
