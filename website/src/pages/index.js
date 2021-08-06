@@ -33,8 +33,7 @@ const features = [
     description: (
       <>
         Create/share/tests providers, with no dependency on Flutter. This
-        includes being able to listen to providers without a
-        <code>BuildContext</code>.
+        includes being able to listen to providers without a <code>BuildContext</code>.
       </>
     ),
   },
