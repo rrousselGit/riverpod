@@ -178,11 +178,11 @@ class QuestionItem extends HookConsumerWidget {
     final question = ref.watch(currentQuestion);
     final questionTheme = ref.watch(questionThemeProvider);
 
-    if (question.data == null) {
+    if (question is AsyncLoading) {
       return const Center(child: Text('loading'));
     }
 
-    final data = question.data!.value;
+    final data = question.value;
 
     return ListTile(
       title: Text(

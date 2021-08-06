@@ -432,14 +432,14 @@ void main() {
       expect(sub.read(), const AsyncValue.data(42));
 
       container.updateOverrides([
-        provider.overrideWithValue(AsyncValue.error(21)),
+        provider.overrideWithValue(const AsyncValue.error(21)),
       ]);
 
       await expectLater(
         container.read(provider.future),
         throwsA(21),
       );
-      expect(sub.read(), AsyncValue<int>.error(21));
+      expect(sub.read(), const AsyncValue<int>.error(21));
     });
 
     test('value immediatly then loading', () async {

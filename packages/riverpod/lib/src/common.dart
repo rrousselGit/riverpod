@@ -1,10 +1,7 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:meta/meta.dart';
 
 import 'future_provider.dart' show FutureProvider;
 import 'stream_provider.dart' show StreamProvider;
-
-part 'common.freezed.dart';
 
 /// Utility for `.name` of provider modifiers.
 String? modifierName(String? from, String modifier) {
@@ -42,14 +39,14 @@ String? modifierName(String? from, String modifier) {
 /// ```
 ///
 /// If a consumer of an [AsyncValue] does not care about the loading/error
-/// state, consider using [data] to read the state:
+/// state, consider using [value] to read the state:
 ///
 /// ```dart
 /// Widget build(BuildContext context, WidgetRef ref) {
-///   // reads the data state directly – will be null during loading/error states
-///   final User user = ref.watch(userProvider).data?.value;
+///   // reads the data state directly – will be throw during loading/error states
+///   final User user = ref.watch(userProvider).value;
 ///
-///   return Text('Hello ${user?.name}');
+///   return Text('Hello ${user.name}');
 /// }
 /// ```
 ///
@@ -58,13 +55,9 @@ String? modifierName(String? from, String modifier) {
 /// - [FutureProvider] and [StreamProvider], which transforms a [Future] into
 ///   an [AsyncValue].
 /// - [AsyncValue.guard], to simplify transforming a [Future] into an [AsyncValue].
-/// - The package Freezed (https://github.com/rrousselgit/freezed), which have
-///   generated this [AsyncValue] class and explains how [map]/[when] works.
-@freezed
 @sealed
-abstract class AsyncValue<T> with _$AsyncValue<T> {
-  const AsyncValue._();
-
+@immutable
+abstract class AsyncValue<T> {
   /// Creates an [AsyncValue] with a data.
   ///
   /// The data can be `null`.
@@ -78,7 +71,7 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
   /// Creates an [AsyncValue] in error state.
   ///
   /// The parameter [error] cannot be `null`.
-  factory AsyncValue.error(Object error, [StackTrace? stackTrace]) =
+  const factory AsyncValue.error(Object error, [StackTrace? stackTrace]) =
       AsyncError<T>;
 
   /// Transforms a [Future] that may fail into something that is safe to read.
@@ -132,55 +125,234 @@ abstract class AsyncValue<T> with _$AsyncValue<T> {
     }
   }
 
-  /// The current data, or null if in loading/error.
+  R _map<R>({
+    required R Function(AsyncData<T> data) data,
+    required R Function(AsyncError<T> error) error,
+    required R Function(AsyncLoading<T> loading) loading,
+  });
+}
+
+/// Creates an [AsyncValue] with a data.
+///
+/// The data can be `null`.
+class AsyncData<T> implements AsyncValue<T> {
+  /// Creates an [AsyncValue] with a data.
   ///
-  /// This is safe to use, as Dart (will) have non-nullable types.
-  /// As such reading [data] still forces to handle the loading/error cases
-  /// by having to check `data != null`.
-  ///
-  /// ## Why does [AsyncValue<T>.data] return [AsyncData<T>] instead of [T]?
-  ///
-  /// The motivation behind this decision is to allow differentiating between:
-  ///
-  /// - There is a data, and it is `null`.
-  ///   ```dart
-  ///   // There is a data, and it is "null"
-  ///   AsyncValue<Configuration> configs = AsyncValue.data(null);
-  ///
-  ///   print(configs.data); // AsyncValue(value: null)
-  ///   print(configs.data.value); // null
-  ///   ```
-  ///
-  /// - There is no data. [AsyncValue] is currently in loading/error state.
-  ///   ```dart
-  ///   // No data, currently loading
-  ///   AsyncValue<Configuration> configs = AsyncValue.loading();
-  ///
-  ///   print(configs.data); // null, currently loading
-  ///   print(configs.data.value); // throws null exception
-  ///   ```
-  AsyncData<T>? get data {
-    return map(
-      data: (data) => data,
-      loading: (_) => null,
-      error: (_) => null,
+  /// The data can be `null`.
+  const AsyncData(this.value);
+
+  /// The value currently exposed.
+  final T value;
+
+  @override
+  R _map<R>({
+    required R Function(AsyncData<T> data) data,
+    required R Function(AsyncError<T> error) error,
+    required R Function(AsyncLoading<T> loading) loading,
+  }) {
+    return data(this);
+  }
+
+  @override
+  String toString() {
+    return 'AsyncData<$T>(value: $value)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return runtimeType == other.runtimeType &&
+        other is AsyncData<T> &&
+        other.value == value;
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, value);
+}
+
+/// An extension that adds methods like [when] to an [AsyncValue].
+extension AsyncValueX<T> on AsyncValue<T> {
+  /// Upcast [AsyncValue] into an [AsyncData], or return null if the [AsyncValue]
+  /// is in loading/error state.
+  @Deprecated('use `asData` instead')
+  AsyncData<T>? get data => asData;
+
+  /// Upcast [AsyncValue] into an [AsyncData], or return null if the [AsyncValue]
+  /// is in loading/error state.
+  AsyncData<T>? get asData {
+    return _map(
+      data: (d) => d,
+      error: (e) => null,
+      loading: (l) => null,
     );
   }
 
-  // TODO: Add a `value` extension on non-nullable AsyncValue
+  /// Attempts to synchronously read the value while ignoring error/loading cases.
+  ///
+  /// This should be used only when you are certain that error/loading states
+  /// are already taken care of.
+  /// Otherwise, prefer using [when].
+  ///
+  /// If the value was an error, will throw the error instead.
+  /// If the value is still loading, will throw an [AsyncValueLoadingException].
+  T get value {
+    return _map(
+      data: (d) => d.value,
+      // ignore: only_throw_errors
+      error: (e) => throw e.error,
+      loading: (l) => throw AsyncValueLoadingException(),
+    );
+  }
 
   /// Shorthand for [when] to handle only the `data` case.
+  ///
+  /// For loading/error cases, creates a new [AsyncValue] with the corresponding
+  /// generic type while preserving the error/stacktrace.
   AsyncValue<R> whenData<R>(R Function(T value) cb) {
-    return when(
-      data: (value) {
+    return _map(
+      data: (d) {
         try {
-          return AsyncValue.data(cb(value));
+          return AsyncValue.data(cb(d.value));
         } catch (err, stack) {
           return AsyncValue.error(err, stack);
         }
       },
-      loading: () => const AsyncValue.loading(),
-      error: (err, stack) => AsyncValue.error(err, stack),
+      error: (e) => AsyncError(e.error, e.stackTrace),
+      loading: (l) => AsyncLoading<R>(),
+    );
+  }
+
+  /// Switch-case over the state of the [AsyncValue] while purposefully not handling
+  /// some cases.
+  ///
+  /// If [AsyncValue] was in a case that is not handled, will return [orElse].
+  R maybeWhen<R>({
+    R Function(T data)? data,
+    R Function(Object error, StackTrace? stackTrace)? error,
+    R Function()? loading,
+    required R Function() orElse,
+  }) {
+    return _map(
+      data: (d) {
+        if (data != null) return data(d.value);
+        return orElse();
+      },
+      error: (e) {
+        if (error != null) return error(e.error, e.stackTrace);
+        return orElse();
+      },
+      loading: (l) {
+        if (loading != null) return loading();
+        return orElse();
+      },
+    );
+  }
+
+  /// Performs an action based on the state of the [AsyncValue].
+  ///
+  /// All cases are required, which allows returning a non-nullable value.
+  R when<R>({
+    required R Function(T data) data,
+    required R Function(Object error, StackTrace? stackTrace) error,
+    required R Function() loading,
+  }) {
+    return _map(
+      data: (d) => data(d.value),
+      error: (e) => error(e.error, e.stackTrace),
+      loading: (l) => loading(),
+    );
+  }
+
+  /// Perform actions conditionally based on the state of the [AsyncValue].
+  ///
+  /// Returns null if [AsyncValue] was in a state that was not handled.
+  ///
+  /// This is similar to [maybeWhen] where `orElse` returns null.
+  R? whenOrNull<R>({
+    R Function(T data)? data,
+    R Function(Object error, StackTrace? stackTrace)? error,
+    R Function()? loading,
+  }) {
+    return _map(
+      data: (d) => data?.call(d.value),
+      error: (e) => error?.call(e.error, e.stackTrace),
+      loading: (l) => loading?.call(),
     );
   }
 }
+
+/// Creates an [AsyncValue] in loading state.
+///
+/// Prefer always using this constructor with the `const` keyword.
+class AsyncLoading<T> implements AsyncValue<T> {
+  /// Creates an [AsyncValue] in loading state.
+  ///
+  /// Prefer always using this constructor with the `const` keyword.
+  const AsyncLoading();
+
+  @override
+  R _map<R>({
+    required R Function(AsyncData<T> data) data,
+    required R Function(AsyncError<T> error) error,
+    required R Function(AsyncLoading<T> loading) loading,
+  }) {
+    return loading(this);
+  }
+
+  @override
+  String toString() {
+    return 'AsyncLoading<$T>()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return runtimeType == other.runtimeType;
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+}
+
+/// Creates an [AsyncValue] in error state.
+///
+/// The parameter [error] cannot be `null`.
+class AsyncError<T> implements AsyncValue<T> {
+  /// Creates an [AsyncValue] in error state.
+  ///
+  /// The parameter [error] cannot be `null`.
+  const AsyncError(this.error, [this.stackTrace]);
+
+  /// The error.
+  final Object error;
+
+  /// The stacktrace of [error].
+  final StackTrace? stackTrace;
+
+  @override
+  R _map<R>({
+    required R Function(AsyncData<T> data) data,
+    required R Function(AsyncError<T> error) error,
+    required R Function(AsyncLoading<T> loading) loading,
+  }) {
+    return error(this);
+  }
+
+  @override
+  String toString() {
+    return 'AsyncError<$T>(error: $error, stackTrace: $stackTrace)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return runtimeType == other.runtimeType &&
+        other is AsyncError<T> &&
+        other.error == error &&
+        other.stackTrace == stackTrace;
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, error, stackTrace);
+}
+
+/// An exception thrown when trying to read [AsyncValueX.value] before the value
+/// was loaded.
+class AsyncValueLoadingException implements Exception {}

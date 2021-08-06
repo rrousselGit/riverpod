@@ -1,10 +1,22 @@
 ## [Unreleased]
 
+### ProviderObserver
+
 - Fixed `ProviderObserver` not working when modifying a `StateProvider`.
+
+### AsyncValue
+
+- **Breaking** `AsyncValue.copyWith` , `AsyncValue.map` and `AsyncValue.mapOrElse` methods are removed
+- Deprecated `AsyncValue.data` in favor of `AsyncValue.value`
+- Allowed `AsyncData`, `AsyncError` and `AsyncLoading` to be extended
+- Added `AsyncValue.whenOrNull`, similar to `whenOrElse` but instead of an
+  "orElse" parameter, returns `null`.
+- Added `AsyncValue.value`, which allows reading the value without handling
+  loading/error states.
 
 ## 1.0.0-dev.6
 
- - **FIX**: StreamProvider.last no-longer throws a StateError when no value were emitted (#296).
+- **FIX**: StreamProvider.last no-longer throws a StateError when no value were emitted (#296).
 
 # [Unreleased]
 

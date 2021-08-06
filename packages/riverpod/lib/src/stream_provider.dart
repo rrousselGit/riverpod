@@ -199,8 +199,8 @@ AsyncValue<State> _listenStream<State>(
 
     ref.onDispose(sub.cancel);
 
-    return const AsyncValue.loading();
+    return AsyncValue<State>.loading();
   } catch (err, stack) {
-    return AsyncValue.error(err, stack);
+    return AsyncValue<State>.error(err, stack);
   }
 }

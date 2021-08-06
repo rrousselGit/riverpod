@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:meta/meta.dart';
 
 import 'common.dart';
 import 'framework.dart';

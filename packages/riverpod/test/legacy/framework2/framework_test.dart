@@ -106,7 +106,9 @@ void main() {
       var callCount = 0;
       final provider = Provider((ref) {
         callCount++;
-        return ref.read(streamProvider).data?.value;
+        return ref
+            .read(streamProvider)
+            .maybeWhen(data: (d) => d, orElse: () => null);
       });
 
       expect(callCount, 0);
@@ -124,7 +126,9 @@ void main() {
       var callCount = 0;
       final provider = Provider((ref) {
         callCount++;
-        return ref.watch(streamProvider).data?.value;
+        return ref
+            .watch(streamProvider)
+            .maybeWhen(data: (d) => d, orElse: () => null);
       });
 
       expect(callCount, 0);
@@ -142,7 +146,9 @@ void main() {
       var callCount = 0;
       final provider = Provider((ref) {
         callCount++;
-        return ref.watch(streamProvider).data?.value;
+        return ref
+            .watch(streamProvider)
+            .maybeWhen(data: (d) => d, orElse: () => null);
       });
 
       expect(callCount, 0);

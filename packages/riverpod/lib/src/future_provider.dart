@@ -86,14 +86,14 @@ AsyncValue<State> _listenFuture<State>(
   var running = true;
   ref.onDispose(() => running = false);
   try {
-    ref.state = const AsyncValue.loading();
+    ref.state = AsyncValue<State>.loading();
     future().then(
       (event) {
-        if (running) ref.state = AsyncValue.data(event);
+        if (running) ref.state = AsyncValue<State>.data(event);
       },
       // ignore: avoid_types_on_closure_parameters
       onError: (Object err, StackTrace stack) {
-        if (running) ref.state = AsyncValue.error(err, stack);
+        if (running) ref.state = AsyncValue<State>.error(err, stack);
       },
     );
 

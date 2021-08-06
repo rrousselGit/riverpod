@@ -910,7 +910,7 @@ void main() {
         final future = container.read(provider.last);
 
         container.updateOverrides([
-          provider.overrideWithValue(AsyncValue.error(42)),
+          provider.overrideWithValue(const AsyncValue.error(42)),
         ]);
 
         await expectLater(future, throwsA(42));
@@ -923,7 +923,7 @@ void main() {
         ]);
 
         container.updateOverrides([
-          provider.overrideWithValue(AsyncValue.error(42)),
+          provider.overrideWithValue(const AsyncValue.error(42)),
         ]);
 
         final future = container.read(provider.last);
@@ -1066,7 +1066,7 @@ void main() {
       test('error to loading creates a new stream', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
-          provider.overrideWithValue(AsyncValue.error(42)),
+          provider.overrideWithValue(const AsyncValue.error(42)),
         ]);
 
         final stream1 = container.read(provider.stream);
@@ -1128,7 +1128,7 @@ void main() {
         final stream = container.read(provider.stream);
 
         container.updateOverrides([
-          provider.overrideWithValue(AsyncValue.error(42)),
+          provider.overrideWithValue(const AsyncValue.error(42)),
         ]);
 
         await expectLater(stream, emitsError(42));
@@ -1141,7 +1141,7 @@ void main() {
         ]);
 
         container.updateOverrides([
-          provider.overrideWithValue(AsyncValue.error(42)),
+          provider.overrideWithValue(const AsyncValue.error(42)),
         ]);
 
         final stream = container.read(provider.stream);
@@ -1200,11 +1200,11 @@ void main() {
       await expectLater(stream, emits(42));
 
       container.updateOverrides([
-        provider.overrideWithValue(AsyncValue.error(21)),
+        provider.overrideWithValue(const AsyncValue.error(21)),
       ]);
 
-      expect(sub.read(), AsyncValue<int>.error(21));
-      expect(sub.read(), AsyncValue<int>.error(21));
+      expect(sub.read(), const AsyncValue<int>.error(21));
+      expect(sub.read(), const AsyncValue<int>.error(21));
       await expectLater(stream, emitsError(21));
 
       container.dispose();
