@@ -208,6 +208,10 @@ class HooksWatch extends HookWidget {
   Widget build(BuildContext context) {
     final countNotifier = useProvider(counterProvider.notifier);
     final count = useProvider(counterProvider);
+    final asyncValue = useProvider(futureProvider);
+    asyncValue.when(loading: () {}, data: (_) {}, error: (_, __) {});
+    asyncValue.maybeWhen(
+        loading: () {}, data: (_) {}, error: (_, __) {}, orElse: () {});
     return Center(
       child: ElevatedButton(
         onPressed: () {

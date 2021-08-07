@@ -629,6 +629,19 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       final functionName = node.methodName.toSource();
       final target =
           node.realTarget?.staticType?.getDisplayString(withNullability: true);
+      if (functionName == 'when' ||
+          functionName == 'maybeWhen' &&
+              (target?.contains('AsyncValue') ?? false)) {
+        final args = node.argumentList.arguments.where(
+            (a) => (a is NamedExpression) && a.name.label.name == 'loading');
+        if (args.isNotEmpty) {
+          final loading =
+              (args.first as NamedExpression).expression as FunctionExpression;
+          yieldPatch('last', loading.parameters!.leftParenthesis.offset + 1,
+              loading.parameters!.leftParenthesis.offset + 1);
+        }
+      }
+
       if (target?.contains('ProviderContainer') ?? false) {
         // No need to migrate container methods unless refreshing FutureProvider
         if (functionName == 'refresh') {
@@ -657,6 +670,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         super.visitMethodInvocation(node);
         return;
       }
+
       // ref.read / ref.watch / context.read / context.watch, useProvider
       if (functionName == 'watch' || functionName == 'useProvider') {
         migrateParams();

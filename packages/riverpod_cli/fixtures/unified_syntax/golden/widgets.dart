@@ -204,6 +204,10 @@ class HooksWatch extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final countNotifier = ref.watch(counterProvider.notifier);
     final count = ref.watch(counterProvider);
+    final asyncValue = ref.watch(futureProvider);
+    asyncValue.when(loading: (last) {}, data: (_) {}, error: (_, __) {});
+    asyncValue.maybeWhen(
+        loading: (last) {}, data: (_) {}, error: (_, __) {}, orElse: () {});
     return Center(
       child: ElevatedButton(
         onPressed: () {
