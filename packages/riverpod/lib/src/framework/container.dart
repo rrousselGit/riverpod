@@ -518,7 +518,9 @@ class ProviderContainer {
 
       var hasAncestors = false;
       element.visitAncestors((element) {
-        hasAncestors = true;
+        if(element._container == this) {
+          hasAncestors = true;
+        }
       });
 
       if (!hasAncestors) {
