@@ -121,6 +121,35 @@ void main() {
         );
       });
     });
+    
+    group('getAllProviderElementsInOrder', () {
+      test(
+          'list elements of scoped provider override with provider that depends on other container',
+          () {
+        final provider = StateNotifierProvider<Counter, int>((ref) {
+          return Counter();
+        });
+        final scopedProvider = Provider<int>((ref) {
+          throw UnimplementedError();
+        });
+        final parent = createContainer();
+        final child = createContainer(
+          parent: parent,
+          overrides: [
+            scopedProvider.overrideWithProvider(provider),
+          ],
+        );
+
+        child.read(scopedProvider);
+
+        expect(
+          child.getAllProviderElementsInOrder().single,
+          isA<ProviderElement>()
+              .having((e) => e.origin, 'origin', scopedProvider)
+              .having((e) => e.provider, 'provider', provider),
+        );
+      });
+    });
 
     test(
         'does not re-initialize a provider if read by a child container after the provider was initialized',
