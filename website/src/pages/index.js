@@ -157,13 +157,13 @@ function Home() {
                     method or have to resort to advanced cache mechanism.
                     <br></br>
                     <br></br>
-                    With
+                    With{" "}
                     <code>
                       <a href={useBaseUrl("docs/concepts/combining_providers")}>
                         Provider
                       </a>
                     </code>
-                    and
+                    {" "}and{" "}
                     <a href={useBaseUrl("docs/concepts/modifiers/family")}>
                       "families"
                     </a>
