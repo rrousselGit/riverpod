@@ -144,7 +144,7 @@ class _SearchHints extends HookConsumerWidget {
     final search = _useDecouncedSearch(textEditingController);
 
     return ref.watch(charactersCount(search)).when(
-          loading: () => const Center(
+          loading: (_) => const Center(
             heightFactor: 1,
             child: Padding(
               padding: EdgeInsets.all(8),
@@ -171,7 +171,7 @@ class _SearchHints extends HookConsumerWidget {
                     ));
 
                     return character.when(
-                      loading: () {
+                      loading: (_) {
                         return const Center(child: CircularProgressIndicator());
                       },
                       error: (err, stack) => const Center(child: Text('Error')),

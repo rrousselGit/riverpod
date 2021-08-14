@@ -98,7 +98,7 @@ Stream<State> _asyncValueToStream<State>(
 
   void listener(AsyncValue<State> value) {
     value.when(
-      loading: () {
+      loading: (_) {
         controller?.close();
         controller = null;
         // will call ref.state =
@@ -199,7 +199,7 @@ Future<State> _asyncValueAsFuture<State>(
 
   void listener(AsyncValue<State> value) {
     value.when(
-      loading: () {
+      loading: (_) {
         if (loadingCompleter == null) {
           loadingCompleter = Completer<State>();
           ref.state = loadingCompleter!.future;

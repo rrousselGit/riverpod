@@ -13,6 +13,8 @@
   "orElse" parameter, returns `null`.
 - Added `AsyncValue.value`, which allows reading the value without handling
   loading/error states.
+- `AsyncError` can now be instantiated with `const`.
+- `AsyncLoading` now optionally includes the previous "state".
 
 ## 1.0.0-dev.6
 

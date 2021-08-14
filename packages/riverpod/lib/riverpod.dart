@@ -7,7 +7,7 @@ export 'src/common.dart'
         AsyncLoading,
         AsyncError,
         AsyncValueX,
-        AsyncValueLoadingException;
+        AsyncValueLoadingError;
 
 export 'src/framework.dart'
     show

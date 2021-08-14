@@ -120,7 +120,7 @@ class MyHomePage extends HookConsumerWidget {
         final count = ref.watch(questionsCountProvider);
 
         return count.when(
-          loading: () => const Center(
+          loading: (_) => const Center(
             child: CircularProgressIndicator(),
           ),
           error: (err, stack) {

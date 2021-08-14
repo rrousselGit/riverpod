@@ -66,7 +66,7 @@ abstract class AsyncValue<T> {
   /// Creates an [AsyncValue] in loading state.
   ///
   /// Prefer always using this constructor with the `const` keyword.
-  const factory AsyncValue.loading() = AsyncLoading<T>;
+  const factory AsyncValue.loading({AsyncValue<T>? previous}) = AsyncLoading<T>;
 
   /// Creates an [AsyncValue] in error state.
   ///
@@ -125,6 +125,8 @@ abstract class AsyncValue<T> {
     }
   }
 
+  // private mapper, so thast classes inheriting AsyncValue can specify their own
+  // `map` method with different parameters.
   R _map<R>({
     required R Function(AsyncData<T> data) data,
     required R Function(AsyncError<T> error) error,
@@ -193,13 +195,13 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// Otherwise, prefer using [when].
   ///
   /// If the value was an error, will throw the error instead.
-  /// If the value is still loading, will throw an [AsyncValueLoadingException].
+  /// If the value is still loading, will throw an [AsyncValueLoadingError].
   T get value {
     return _map(
       data: (d) => d.value,
       // ignore: only_throw_errors
       error: (e) => throw e.error,
-      loading: (l) => throw AsyncValueLoadingException(),
+      loading: (l) => throw AsyncValueLoadingError(),
     );
   }
 
@@ -228,7 +230,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
   R maybeWhen<R>({
     R Function(T data)? data,
     R Function(Object error, StackTrace? stackTrace)? error,
-    R Function()? loading,
+    R Function(AsyncValue<T>? previous)? loading,
     required R Function() orElse,
   }) {
     return _map(
@@ -241,7 +243,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
         return orElse();
       },
       loading: (l) {
-        if (loading != null) return loading();
+        if (loading != null) return loading(l.previous);
         return orElse();
       },
     );
@@ -253,12 +255,12 @@ extension AsyncValueX<T> on AsyncValue<T> {
   R when<R>({
     required R Function(T data) data,
     required R Function(Object error, StackTrace? stackTrace) error,
-    required R Function() loading,
+    required R Function(AsyncValue<T>? previous) loading,
   }) {
     return _map(
       data: (d) => data(d.value),
       error: (e) => error(e.error, e.stackTrace),
-      loading: (l) => loading(),
+      loading: (l) => loading(l.previous),
     );
   }
 
@@ -270,12 +272,12 @@ extension AsyncValueX<T> on AsyncValue<T> {
   R? whenOrNull<R>({
     R Function(T data)? data,
     R Function(Object error, StackTrace? stackTrace)? error,
-    R Function()? loading,
+    R Function(AsyncValue<T>? previous)? loading,
   }) {
     return _map(
       data: (d) => data?.call(d.value),
       error: (e) => error?.call(e.error, e.stackTrace),
-      loading: (l) => loading?.call(),
+      loading: (l) => loading?.call(l.previous),
     );
   }
 }
@@ -287,7 +289,13 @@ class AsyncLoading<T> implements AsyncValue<T> {
   /// Creates an [AsyncValue] in loading state.
   ///
   /// Prefer always using this constructor with the `const` keyword.
-  const AsyncLoading();
+  const AsyncLoading({this.previous});
+
+  /// The previous error or loading valid state, if any.
+  ///
+  /// This is useful when a value is refreshing, to keep showing the value
+  /// before refresh while the request is pending.
+  final AsyncValue<T>? previous;
 
   @override
   R _map<R>({
@@ -300,16 +308,18 @@ class AsyncLoading<T> implements AsyncValue<T> {
 
   @override
   String toString() {
-    return 'AsyncLoading<$T>()';
+    return 'AsyncLoading<$T>(previous: $previous)';
   }
 
   @override
   bool operator ==(Object other) {
-    return runtimeType == other.runtimeType;
+    return runtimeType == other.runtimeType &&
+        other is AsyncLoading<T> &&
+        other.previous == previous;
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, previous);
 }
 
 /// Creates an [AsyncValue] in error state.
@@ -355,4 +365,4 @@ class AsyncError<T> implements AsyncValue<T> {
 
 /// An exception thrown when trying to read [AsyncValueX.value] before the value
 /// was loaded.
-class AsyncValueLoadingException implements Exception {}
+class AsyncValueLoadingError extends Error {}

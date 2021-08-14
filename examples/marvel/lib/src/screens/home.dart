@@ -80,7 +80,7 @@ class Home extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ref.watch(charactersCount('')).when(
-          loading: () => Container(
+          loading: (_) => Container(
             color: Colors.white,
             child: const Center(child: CircularProgressIndicator()),
           ),
@@ -163,7 +163,7 @@ class CharacterItem extends HookConsumerWidget {
     );
 
     return character.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: (_) => const Center(child: CircularProgressIndicator()),
       error: (err, stack) => Text('Error $err'),
       data: (character) {
         return GestureDetector(
