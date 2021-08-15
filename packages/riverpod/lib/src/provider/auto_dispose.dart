@@ -11,6 +11,12 @@ class AutoDisposeProviderElement<State>
     implements AutoDisposeProviderRef<State> {
   /// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
   AutoDisposeProviderElement(ProviderBase<State> provider) : super(provider);
+
+  @override
+  State get state => getState() as State;
+
+  @override
+  set state(State newState) => setState(newState);
 }
 
 /// {@macro riverpod.provider}

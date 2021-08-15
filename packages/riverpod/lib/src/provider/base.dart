@@ -226,6 +226,12 @@ class ProviderElement<State> extends ProviderElementBase<State>
     implements ProviderRef<State> {
   /// A [ProviderElementBase] for [Provider]
   ProviderElement(ProviderBase<State> provider) : super(provider);
+
+  @override
+  State get state => getState() as State;
+
+  @override
+  set state(State newState) => setState(newState);
 }
 
 /// {@macro riverpod.provider}

@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
+import 'async_provider/auto_dispose.dart';
+import 'async_provider/base.dart';
 import 'async_value_converters.dart';
 import 'builders.dart';
-import 'common.dart' show AsyncValue, AsyncLoading, modifierName;
+import 'common.dart' show AsyncValue, AsyncLoading, modifierName, AsyncValueX;
 import 'framework.dart';
 import 'provider.dart';
 import 'stream_provider.dart';
@@ -81,23 +83,23 @@ part 'future_provider/base.dart';
 /// {@endtemplate}
 AsyncValue<State> _listenFuture<State>(
   Future<State> Function() future,
-  ProviderRef<AsyncValue<State>> ref,
+  ProviderElementBase<AsyncValue<State>> ref,
 ) {
   var running = true;
   ref.onDispose(() => running = false);
   try {
-    ref.state = AsyncValue<State>.loading();
+    ref.setState(AsyncValue<State>.loading());
     future().then(
       (event) {
-        if (running) ref.state = AsyncValue<State>.data(event);
+        if (running) ref.setState(AsyncValue<State>.data(event));
       },
       // ignore: avoid_types_on_closure_parameters
       onError: (Object err, StackTrace stack) {
-        if (running) ref.state = AsyncValue<State>.error(err, stack);
+        if (running) ref.setState(AsyncValue<State>.error(err, stack));
       },
     );
 
-    return ref.state;
+    return ref.getState()!;
   } catch (err, stack) {
     return AsyncValue.error(err, stack);
   }

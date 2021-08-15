@@ -7,6 +7,105 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test(
+      'when going from AsyncLoading to AsyncLoading, does not notify listeners',
+      () async {
+    final dep = StateProvider((ref) => Future.value(42));
+    final provider = FutureProvider((ref) => ref.watch(dep).state);
+    final container = createContainer();
+    final listener = Listener<AsyncValue<int>>();
+
+    await expectLater(
+      container.read(provider.future),
+      completion(42),
+    );
+    expect(
+      container.read(provider),
+      const AsyncData<int>(42),
+    );
+
+    final completer = Completer<int>();
+    container.read(dep).state = completer.future;
+
+    container.listen(provider, listener, fireImmediately: true);
+
+    verifyOnly(
+      listener,
+      listener(const AsyncLoading<int>(previous: AsyncData(42))),
+    );
+
+    container.read(dep).state = Future.value(21);
+
+    verifyNoMoreInteractions(listener);
+
+    await expectLater(
+      container.read(provider.future),
+      completion(21),
+    );
+    expect(
+      container.read(provider),
+      const AsyncData<int>(21),
+    );
+  });
+
+  test(
+      'when recreating the future, AsyncLoading contains the previous data if any',
+      () async {
+    final dep = StateProvider((ref) => Future.value(42));
+    final provider = FutureProvider((ref) => ref.watch(dep).state);
+    final container = createContainer();
+
+    expect(
+      container.read(provider),
+      const AsyncLoading<int>(),
+    );
+
+    await expectLater(
+      container.read(provider.future),
+      completion(42),
+    );
+    expect(
+      container.read(provider),
+      const AsyncData<int>(42),
+    );
+
+    container.read(dep).state = Future.value(21);
+
+    expect(
+      container.read(provider),
+      const AsyncLoading<int>(previous: AsyncData(42)),
+    );
+  });
+
+  test(
+      'when recreating the future, AsyncLoading contains the previous error if any',
+      () async {
+    final dep = StateProvider((ref) => Future<int>.error(42, StackTrace.empty));
+    final provider = FutureProvider((ref) => ref.watch(dep).state);
+    final container = createContainer();
+
+    expect(
+      container.read(provider),
+      const AsyncLoading<int>(),
+    );
+
+    await expectLater(
+      container.read(provider.future),
+      throwsA(42),
+    );
+    expect(
+      container.read(provider),
+      const AsyncError<int>(42, StackTrace.empty),
+    );
+
+    container.read(dep).state = Future.value(21);
+
+    expect(
+      container.read(provider),
+      const AsyncLoading<int>(previous: AsyncError<int>(42, StackTrace.empty)),
+    );
+  });
+
   test('can be refreshed', () async {
     var result = 0;
     final container = createContainer();
@@ -16,7 +115,12 @@ void main() {
     expect(container.read(provider), const AsyncValue.data(0));
 
     result = 1;
-    expect(container.refresh(provider), const AsyncValue<int>.loading());
+    expect(
+      container.refresh(provider),
+      const AsyncValue<int>.loading(
+        previous: AsyncData(0),
+      ),
+    );
 
     expect(await container.read(provider.future), 1);
     expect(container.read(provider), const AsyncValue.data(1));

@@ -509,10 +509,17 @@ void main() {
 
       future = Future.value(21);
 
-      expect(container.refresh(provider), const AsyncValue<int>.loading());
-      await expectLater(
+      expect(
+        container.refresh(provider),
+        const AsyncValue<int>.loading(
+          previous: AsyncData(42),
+        ),
+      );
+      expect(
         container.read(provider),
-        const AsyncValue<int>.loading(),
+        const AsyncValue<int>.loading(
+          previous: AsyncData(42),
+        ),
       );
       expect(callCount, 2);
 

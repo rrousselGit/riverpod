@@ -280,6 +280,48 @@ extension AsyncValueX<T> on AsyncValue<T> {
       loading: (l) => loading?.call(l.previous),
     );
   }
+
+  R map<R>({
+    required R Function(AsyncData<T> data) data,
+    required R Function(AsyncError<T> error) error,
+    required R Function(AsyncLoading<T> loading) loading,
+  }) {
+    return _map(data: data, error: error, loading: loading);
+  }
+
+  R maybeMap<R>({
+    R Function(AsyncData<T> data)? data,
+    R Function(AsyncError<T> error)? error,
+    R Function(AsyncLoading<T> loading)? loading,
+    required R Function() orElse,
+  }) {
+    return _map(
+      data: (d) {
+        if (data != null) return data(d);
+        return orElse();
+      },
+      error: (d) {
+        if (error != null) return error(d);
+        return orElse();
+      },
+      loading: (d) {
+        if (loading != null) return loading(d);
+        return orElse();
+      },
+    );
+  }
+
+  R? mapOrNull<R>({
+    R Function(AsyncData<T> data)? data,
+    R Function(AsyncError<T> error)? error,
+    R Function(AsyncLoading<T> loading)? loading,
+  }) {
+    return _map(
+      data: (d) => data?.call(d),
+      error: (d) => error?.call(d),
+      loading: (d) => loading?.call(d),
+    );
+  }
 }
 
 /// Creates an [AsyncValue] in loading state.

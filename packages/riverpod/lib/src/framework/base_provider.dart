@@ -583,14 +583,14 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   ProviderException? _exception;
 
   /* STATE */
-  late State _state;
+  State? _state;
 
   // Using default values to differentiate between `notifyListeners()` and `notifyListeners(newValue: null)`
   // It is safe to type `newValue` as Object? because the method is hidden
   // under a type-safe interface that types it as `State newValue` instead.
-  set state(State newState) {
+  void setState(State newState) {
     late State previousState;
-    if (_didBuild) previousState = state;
+    if (_didBuild) previousState = getState() as State;
 
     _state = newState;
     if (_didBuild && provider.updateShouldNotify(previousState, newState)) {
@@ -598,7 +598,7 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     }
   }
 
-  State get state => _state;
+  State? getState() => _state;
 
   /* /STATE */
 
@@ -662,11 +662,11 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
       _previousDependencies = _dependencies;
       _dependencies = HashMap();
 
-      final previousState = state;
+      final previousState = getState() as State;
 
       _buildState();
 
-      if (provider.updateShouldNotify(previousState, state)) {
+      if (provider.updateShouldNotify(previousState, getState() as State)) {
         ProviderElementBase? debugPreviouslyBuildingElement;
         assert(() {
           debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
@@ -709,7 +709,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
       return true;
     }(), '');
 
-    final newValue = state;
+    final newValue = getState() as State;
     final listeners = _listeners.toList(growable: false);
     final subscribers = _subscribers.toList(growable: false);
     for (var i = 0; i < listeners.length; i++) {
@@ -729,7 +729,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
           () => observer.didUpdateProvider(
             provider,
             previousState,
-            state,
+            getState(),
             _container,
           ),
         );
@@ -849,7 +849,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     if (_exception != null) {
       throw _exception!;
     }
-    return state;
+    return getState() as State;
   }
 
   @protected
@@ -863,7 +863,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
 
     try {
       _didBuild = false;
-      state = _provider.create(this);
+      setState(_provider.create(this));
     } catch (err, stack) {
       _exception = ProviderException._(err, stack, _provider);
     } finally {

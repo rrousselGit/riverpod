@@ -50,7 +50,7 @@ class StateProviderElement<State>
       : super(provider);
 
   @override
-  StateController<State> get controller => state;
+  StateController<State> get controller => getState()!;
 }
 
 /// {@macro riverpod.stateprovider}

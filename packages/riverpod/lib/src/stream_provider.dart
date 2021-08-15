@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:meta/meta.dart';
+import 'package:riverpod/src/async_provider/base.dart';
+import 'async_provider/auto_dispose.dart';
 
 import 'async_value_converters.dart';
 import 'builders.dart';
@@ -186,14 +188,14 @@ mixin _StreamProviderMixin<T> on ProviderBase<AsyncValue<T>> {
 /// {@endtemplate}
 AsyncValue<State> _listenStream<State>(
   Stream<State> Function() stream,
-  ProviderRef<AsyncValue<State>> ref,
+  ProviderElementBase<AsyncValue<State>> ref,
 ) {
   try {
     final sub = stream().listen(
-      (event) => ref.state = AsyncValue.data(event),
+      (event) => ref.setState(AsyncValue.data(event)),
       // ignore: avoid_types_on_closure_parameters
       onError: (Object err, StackTrace stack) {
-        ref.state = AsyncValue.error(err, stack);
+        ref.setState(AsyncValue.error(err, stack));
       },
     );
 
