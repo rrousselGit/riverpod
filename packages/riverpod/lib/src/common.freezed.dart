@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides
 
 part of 'common.dart';
 
@@ -8,6 +8,9 @@ part of 'common.dart';
 // **************************************************************************
 
 T _$identity<T>(T value) => value;
+
+final _privateConstructorUsedError = UnsupportedError(
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
 class _$AsyncValueTearOff {
@@ -41,27 +44,31 @@ mixin _$AsyncValue<T> {
     required TResult Function(T value) data,
     required TResult Function() loading,
     required TResult Function(Object error, StackTrace? stackTrace) error,
-  });
+  }) =>
+      throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(T value)? data,
     TResult Function()? loading,
     TResult Function(Object error, StackTrace? stackTrace)? error,
     required TResult orElse(),
-  });
+  }) =>
+      throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(AsyncData<T> value) data,
     required TResult Function(AsyncLoading<T> value) loading,
     required TResult Function(AsyncError<T> value) error,
-  });
+  }) =>
+      throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AsyncData<T> value)? data,
     TResult Function(AsyncLoading<T> value)? loading,
     TResult Function(AsyncError<T> value)? error,
     required TResult orElse(),
-  });
+  }) =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -104,7 +111,10 @@ class _$AsyncDataCopyWithImpl<T, $Res> extends _$AsyncValueCopyWithImpl<T, $Res>
     Object? value = freezed,
   }) {
     return _then(AsyncData<T>(
-      value == freezed ? _value.value : value as T,
+      value == freezed
+          ? _value.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as T,
     ));
   }
 }
@@ -188,12 +198,13 @@ class _$AsyncData<T> extends AsyncData<T> {
 }
 
 abstract class AsyncData<T> extends AsyncValue<T> {
-  const AsyncData._() : super._();
   const factory AsyncData(T value) = _$AsyncData<T>;
+  const AsyncData._() : super._();
 
-  T get value;
+  T get value => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $AsyncDataCopyWith<T, AsyncData<T>> get copyWith;
+  $AsyncDataCopyWith<T, AsyncData<T>> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -282,8 +293,8 @@ class _$AsyncLoading<T> extends AsyncLoading<T> {
 }
 
 abstract class AsyncLoading<T> extends AsyncValue<T> {
-  const AsyncLoading._() : super._();
   const factory AsyncLoading() = _$AsyncLoading<T>;
+  const AsyncLoading._() : super._();
 }
 
 /// @nodoc
@@ -311,8 +322,14 @@ class _$AsyncErrorCopyWithImpl<T, $Res>
     Object? stackTrace = freezed,
   }) {
     return _then(AsyncError<T>(
-      error == freezed ? _value.error : error as Object,
-      stackTrace == freezed ? _value.stackTrace : stackTrace as StackTrace?,
+      error == freezed
+          ? _value.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as Object,
+      stackTrace == freezed
+          ? _value.stackTrace
+          : stackTrace // ignore: cast_nullable_to_non_nullable
+              as StackTrace?,
     ));
   }
 }
@@ -403,11 +420,12 @@ class _$AsyncError<T> extends AsyncError<T> {
 }
 
 abstract class AsyncError<T> extends AsyncValue<T> {
-  AsyncError._() : super._();
   factory AsyncError(Object error, [StackTrace? stackTrace]) = _$AsyncError<T>;
+  AsyncError._() : super._();
 
-  Object get error;
-  StackTrace? get stackTrace;
+  Object get error => throw _privateConstructorUsedError;
+  StackTrace? get stackTrace => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $AsyncErrorCopyWith<T, AsyncError<T>> get copyWith;
+  $AsyncErrorCopyWith<T, AsyncError<T>> get copyWith =>
+      throw _privateConstructorUsedError;
 }
