@@ -43,7 +43,7 @@ When reading this `userProvider`, you can:
     AsyncValue<User> user = ref.watch(userProvider);
 
     return user.when(
-      loading: () => const CircularProgressIndicator(),
+      loading: (_) => const CircularProgressIndicator(),
       error: (error, stack) => const Text('Oops'),
       data: (user) => Text(user.name),
     );

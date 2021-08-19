@@ -168,7 +168,7 @@ const _familyDoc = r'''
 ///
 ///     return user.when(
 ///       data: (user) => Text(user.name),
-///       loading: () => const CircularProgressIndicator(),
+///       loading: (_) => const CircularProgressIndicator(),
 ///       error: (err, stack) => const Text('error'),
 ///     );
 ///   }

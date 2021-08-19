@@ -59,7 +59,7 @@ part 'future_provider/base.dart';
 ///   AsyncValue<Configuration> config = ref.watch(configProvider);
 ///
 ///   return config.when(
-///     loading: () => const CircularProgressIndicator(),
+///     loading: (_) => const CircularProgressIndicator(),
 ///     error: (err, stack) => Text('Error: $err'),
 ///     data: (config) {
 ///       return Text(config.host);

@@ -30,7 +30,7 @@ String? modifierName(String? from, String modifier) {
 ///     final AsyncValue<User> user = ref.watch(userProvider);
 ///
 ///     return user.when(
-///       loading: () => CircularProgressIndicator(),
+///       loading: (_) => CircularProgressIndicator(),
 ///       error: (error, stack) => Text('Oops, something unexpected happened'),
 ///       data: (value) => Text('Hello ${user.name}'),
 ///     );

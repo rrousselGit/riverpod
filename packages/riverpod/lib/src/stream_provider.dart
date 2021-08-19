@@ -160,7 +160,7 @@ mixin _StreamProviderMixin<T> on ProviderBase<AsyncValue<T>> {
 ///   AsyncValue<String> message = ref.watch(messageProvider);
 ///
 ///   return message.when(
-///     loading: () => const CircularProgressIndicator(),
+///     loading: (_) => const CircularProgressIndicator(),
 ///     error: (err, stack) => Text('Error: $err'),
 ///     data: (message) {
 ///       return Text(message);
