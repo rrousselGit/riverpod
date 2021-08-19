@@ -62,7 +62,6 @@ final filteredTodos = Provider<List<Todo>>((ref) {
     case TodoListFilter.active:
       return todos.where((todo) => !todo.completed).toList();
     case TodoListFilter.all:
-    default:
       return todos;
   }
 });
