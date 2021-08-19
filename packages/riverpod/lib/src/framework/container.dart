@@ -510,18 +510,22 @@ class ProviderContainer {
     final visitedNodes = HashSet<ProviderElementBase>();
     final queue = DoubleLinkedQueue<ProviderElementBase>();
 
-    // get roots of the provider graph
+    // get providers that don't depend on other providers from this container
     for (final reader in _stateReaders.values) {
       if (reader.container != this) continue;
       final element = reader._element;
       if (element == null) continue;
 
-      var hasAncestors = false;
+      var hasAncestorsInContainer = false;
       element.visitAncestors((element) {
-        hasAncestors = true;
+        // We ignore dependencies that are defined in another container, as
+        // they are in a separate graph
+        if (element._container == this) {
+          hasAncestorsInContainer = true;
+        }
       });
 
-      if (!hasAncestors) {
+      if (!hasAncestorsInContainer) {
         queue.add(element);
       }
     }
