@@ -5,15 +5,15 @@ title: Testing
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-For any medium to large-scaled applications, it is critical to test the application.
+For any medium to large-scale applications, it is critical to test the application.
 
-To be able to successfully test our application, we will want the following things:
+To successfully test our application, we will want the following things:
 
 - No state should be preserved between `test`/`testWidgets`.  
-  This means no global state, or all global-states should be reset after each test.
+  That means no global state in the application, or all global states should reset after each test.
 
 - Being able to force our providers to have a specific state, either through
-  mocking or through manipulating them until we reach the desired state.
+  mocking or by manipulating them until we reach the desired state.
 
 Let's see one by one how [Riverpod] helps you with these.
 
@@ -123,7 +123,7 @@ void main() {
     // Observe a provider and spy the changes.
     container.listen<StateController<int>>(
       counterProvider,
-      didChange: (sub) => listener(sub.read().state),
+      (StateController<int> controller) => listener(controller.state),
     );
 
     // the listener is called immediatly with 0, the default value
@@ -147,7 +147,7 @@ void main() {
 
     container.listen<StateController<int>>(
       counterProvider,
-      didChange: (sub) => listener(sub.read().state),
+      (StateController<int> controller) => listener(controller.state),
     );
 
     // The new test correcly uses the default value: 0
