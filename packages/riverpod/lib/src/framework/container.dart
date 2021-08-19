@@ -203,13 +203,6 @@ class ProviderContainer {
   final _overrideForFamily = HashMap<Family, _FamilyOverrideRef>();
   final _stateReaders = HashMap<ProviderBase, _StateReader>();
 
-  // /// A function that calls its callback at the end of the current "frame".
-  // ///
-  // /// This is exposed so that
-  // ///
-  // /// Defaults to wraping the callback in a [Future].
-  // void Function(void Function()) addPostFrameCallback = (cb) => Future(cb);
-
   /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
   Future<void> pump() async {
     return _scheduler.pendingFuture;

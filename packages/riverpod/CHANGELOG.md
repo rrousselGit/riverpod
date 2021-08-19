@@ -1,10 +1,12 @@
 ## [Unreleased]
 
 - Fixed `ProviderObserver` not working when modifying a `StateProvider`.
+- Fixed a bug where scoped provider were potentially not disposed
+- Fixed a bug where widgets were not rebuilding in release mode under certain conditions
 
 ## 1.0.0-dev.6
 
- - **FIX**: StreamProvider.last no-longer throws a StateError when no value were emitted (#296).
+- **FIX**: StreamProvider.last no-longer throws a StateError when no value were emitted (#296).
 
 # [Unreleased]
 
