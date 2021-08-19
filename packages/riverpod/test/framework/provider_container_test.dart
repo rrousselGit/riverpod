@@ -55,6 +55,43 @@ void main() {
     });
 
     group('getAllProviderElements', () {
+      test('list scoped providers that depends on nothing', () {
+        final scopedProvider = Provider<int>((ref) => 0);
+        final parent = createContainer();
+        final child = createContainer(
+          parent: parent,
+          overrides: [scopedProvider],
+        );
+
+        child.read(scopedProvider);
+
+        expect(
+          child.getAllProviderElements().single,
+          isA<ProviderElement>()
+              .having((e) => e.origin, 'origin', scopedProvider),
+        );
+      });
+
+      test(
+          'list scoped providers that depends on providers from another container',
+          () {
+        final dependency = Provider((ref) => 0);
+        final scopedProvider = Provider<int>((ref) => ref.watch(dependency));
+        final parent = createContainer();
+        final child = createContainer(
+          parent: parent,
+          overrides: [scopedProvider],
+        );
+
+        child.read(scopedProvider);
+
+        expect(
+          child.getAllProviderElements().single,
+          isA<ProviderElement>()
+              .having((e) => e.origin, 'origin', scopedProvider),
+        );
+      });
+
       test(
           'list only elements associated with the container (ingoring inherited and descendent elements)',
           () {
@@ -121,23 +158,14 @@ void main() {
         );
       });
     });
-    
+
     group('getAllProviderElementsInOrder', () {
-      test(
-          'list elements of scoped provider override with provider that depends on other container',
-          () {
-        final provider = StateNotifierProvider<Counter, int>((ref) {
-          return Counter();
-        });
-        final scopedProvider = Provider<int>((ref) {
-          throw UnimplementedError();
-        });
+      test('list scoped providers that depends on nothing', () {
+        final scopedProvider = Provider<int>((ref) => 0);
         final parent = createContainer();
         final child = createContainer(
           parent: parent,
-          overrides: [
-            scopedProvider.overrideWithProvider(provider),
-          ],
+          overrides: [scopedProvider],
         );
 
         child.read(scopedProvider);
@@ -145,8 +173,27 @@ void main() {
         expect(
           child.getAllProviderElementsInOrder().single,
           isA<ProviderElement>()
-              .having((e) => e.origin, 'origin', scopedProvider)
-              .having((e) => e.provider, 'provider', provider),
+              .having((e) => e.origin, 'origin', scopedProvider),
+        );
+      });
+
+      test(
+          'list scoped providers that depends on providers from another container',
+          () {
+        final dependency = Provider((ref) => 0);
+        final scopedProvider = Provider<int>((ref) => ref.watch(dependency));
+        final parent = createContainer();
+        final child = createContainer(
+          parent: parent,
+          overrides: [scopedProvider],
+        );
+
+        child.read(scopedProvider);
+
+        expect(
+          child.getAllProviderElementsInOrder().single,
+          isA<ProviderElement>()
+              .having((e) => e.origin, 'origin', scopedProvider),
         );
       });
     });
