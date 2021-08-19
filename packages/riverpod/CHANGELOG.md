@@ -1,4 +1,4 @@
-## [Unreleased]
+## 1.0.0-dev.7
 
 - Fixed `ProviderObserver` not working when modifying a `StateProvider`.
 - Fixed a bug where scoped provider were potentially not disposed
