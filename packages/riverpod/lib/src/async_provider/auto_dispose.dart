@@ -1,16 +1,20 @@
 import '../common.dart';
 import '../framework.dart';
 
+/// An internal provider extended by both StreamProvider and FutureProvider
 abstract class AutoDisposeAsyncProvider<T>
     extends AutoDisposeProviderBase<AsyncValue<T>> {
+  /// An internal provider extended by both StreamProvider and FutureProvider
   AutoDisposeAsyncProvider(String? name) : super(name);
 
   @override
   AutoDisposeAsyncProviderElement<T> createElement();
 }
 
+/// The Element of [AutoDisposeAsyncProvider]
 class AutoDisposeAsyncProviderElement<T>
     extends AutoDisposeProviderElementBase<AsyncValue<T>> {
+  /// The Element of [AutoDisposeAsyncProvider]
   AutoDisposeAsyncProviderElement(AutoDisposeAsyncProvider<T> provider)
       : super(provider);
 

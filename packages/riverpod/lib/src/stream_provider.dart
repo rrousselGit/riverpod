@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:meta/meta.dart';
-import 'package:riverpod/src/async_provider/base.dart';
 import 'async_provider/auto_dispose.dart';
+import 'async_provider/base.dart';
 
 import 'async_value_converters.dart';
 import 'builders.dart';

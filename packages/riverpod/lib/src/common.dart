@@ -281,6 +281,10 @@ extension AsyncValueX<T> on AsyncValue<T> {
     );
   }
 
+  /// Perform some action based on the current state of the [AsyncValue].
+  ///
+  /// This allows reading the content of an [AsyncValue] in a type-safe way,
+  /// without potentially ignoring to handle a case.
   R map<R>({
     required R Function(AsyncData<T> data) data,
     required R Function(AsyncError<T> error) error,
@@ -289,6 +293,8 @@ extension AsyncValueX<T> on AsyncValue<T> {
     return _map(data: data, error: error, loading: loading);
   }
 
+  /// Perform some actions based on the state of the [AsyncValue], or call orElse
+  /// if the current state was not tested.
   R maybeMap<R>({
     R Function(AsyncData<T> data)? data,
     R Function(AsyncError<T> error)? error,
@@ -311,6 +317,8 @@ extension AsyncValueX<T> on AsyncValue<T> {
     );
   }
 
+  /// Perform some actions based on the state of the [AsyncValue], or return null
+  /// if the current state wasn't tested.
   R? mapOrNull<R>({
     R Function(AsyncData<T> data)? data,
     R Function(AsyncError<T> error)? error,
