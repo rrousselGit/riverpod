@@ -402,6 +402,73 @@ void main() {
     );
   });
 
+  test('hashCode', () {
+    // ignore: prefer_const_declarations
+    final value = 42;
+    // ignore: prefer_const_declarations
+    final value2 = 21;
+
+    final stack = StackTrace.current;
+    final stack2 = StackTrace.current;
+
+    expect(
+      AsyncValue<int>.data(value).hashCode,
+      AsyncValue<int>.data(value).hashCode,
+    );
+    expect(
+      AsyncValue<int>.data(value).hashCode,
+      isNot(AsyncValue<int>.data(value2).hashCode),
+    );
+    expect(
+      AsyncValue<int>.data(value).hashCode,
+      isNot(AsyncValue<num>.data(value).hashCode),
+    );
+    expect(
+      AsyncValue<num>.data(value).hashCode,
+      isNot(AsyncValue<int>.data(value).hashCode),
+    );
+
+    expect(
+      AsyncValue<int>.error(value, stack).hashCode,
+      AsyncValue<int>.error(value, stack).hashCode,
+    );
+    expect(
+      AsyncValue<int>.error(value, stack).hashCode,
+      isNot(AsyncValue<num>.error(value, stack).hashCode),
+    );
+    expect(
+      AsyncValue<num>.error(value, stack).hashCode,
+      isNot(AsyncValue<int>.error(value, stack).hashCode),
+    );
+    expect(
+      AsyncValue<int>.error(value, stack).hashCode,
+      isNot(AsyncValue<int>.error(value, stack2).hashCode),
+    );
+    expect(
+      AsyncValue<int>.error(value, stack).hashCode,
+      isNot(AsyncValue<int>.error(value2, stack).hashCode),
+    );
+
+    expect(
+      // ignore: prefer_const_constructors
+      AsyncValue<int>.loading().hashCode,
+      // ignore: prefer_const_constructors
+      AsyncValue<int>.loading().hashCode,
+    );
+    expect(
+      // ignore: prefer_const_constructors
+      AsyncValue<int>.loading().hashCode,
+      // ignore: prefer_const_constructors
+      isNot(AsyncValue<num>.loading().hashCode),
+    );
+    expect(
+      // ignore: prefer_const_constructors
+      AsyncValue<num>.loading().hashCode,
+      // ignore: prefer_const_constructors
+      isNot(AsyncValue<int>.loading().hashCode),
+    );
+  });
+
   test('toString', () {
     expect(
       const AsyncValue.data(42).toString(),
