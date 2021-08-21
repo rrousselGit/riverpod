@@ -5,6 +5,73 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  group('ref.state', () {
+    test('can read and change current value', () {
+      final container = createContainer();
+      final listener = Listener<int>();
+      late StateProviderRef<int> ref;
+      final provider = StateProvider.autoDispose<int>((r) {
+        ref = r;
+        return 0;
+      });
+
+      container.listen<StateController<int>>(
+        provider,
+        (s) => listener(s.state),
+      );
+      verifyZeroInteractions(listener);
+
+      expect(ref.controller, container.read(provider));
+
+      ref.controller.state = 42;
+
+      verifyOnly(listener, listener(42));
+
+      expect(ref.controller.state, 42);
+    });
+
+    test('fails if trying to read the state before it was set', () {
+      final container = createContainer();
+      Object? err;
+      final provider = StateProvider.autoDispose<int>((ref) {
+        try {
+          ref.controller;
+        } catch (e) {
+          err = e;
+        }
+        return 0;
+      });
+
+      container.read(provider);
+      expect(err, isStateError);
+    });
+
+    test('on rebuild, still fails if trying to read the state before was built',
+        () {
+      final dep = StateProvider((ref) => false);
+      final container = createContainer();
+      Object? err;
+      final provider = StateProvider.autoDispose<int>((ref) {
+        if (ref.watch(dep).state) {
+          try {
+            ref.controller;
+          } catch (e) {
+            err = e;
+          }
+        }
+        return 0;
+      });
+
+      container.read(provider);
+      expect(err, isNull);
+
+      container.read(dep).state = true;
+      container.read(provider);
+
+      expect(err, isStateError);
+    });
+  });
+
   test('is compatible with ProviderObserver', () {
     // regression test for https://github.com/rrousselGit/river_pod/issues/623
 
