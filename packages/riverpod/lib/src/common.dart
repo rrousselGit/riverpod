@@ -71,8 +71,10 @@ abstract class AsyncValue<T> {
   /// Creates an [AsyncValue] in error state.
   ///
   /// The parameter [error] cannot be `null`.
-  const factory AsyncValue.error(Object error, [StackTrace? stackTrace]) =
-      AsyncError<T>;
+  const factory AsyncValue.error(
+    Object error, [
+    StackTrace? stackTrace,
+  ]) = AsyncError<T>;
 
   /// Transforms a [Future] that may fail into something that is safe to read.
   ///

@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, avoid_types_on_closure_parameters
 
 import 'dart:async';
 
@@ -21,6 +21,162 @@ void main() {
 
       expect(
         const CustomLoading<int>().whenOrNull(data: (v) => v * 2),
+        null,
+      );
+    });
+  });
+
+  test('map', () {
+    expect(
+      const AsyncValue.data(42).map(
+        data: (AsyncData<int> value) => [value.value],
+        error: (value) => throw Error(),
+        loading: (_) => throw Error(),
+      ),
+      [42],
+    );
+
+    final stack = StackTrace.current;
+
+    expect(
+      AsyncValue<int>.error(42, stack).map(
+        data: (value) => throw Error(),
+        error: (AsyncError<int> error) => [error.error, error.stackTrace],
+        loading: (_) => throw Error(),
+      ),
+      [42, stack],
+    );
+
+    expect(
+      const AsyncValue<int>.loading(
+        previous: AsyncData(42),
+      ).map(
+        data: (value) => throw Error(),
+        error: (_) => throw Error(),
+        loading: (AsyncLoading<int> loading) =>
+            'loading ${loading.previous?.value}',
+      ),
+      'loading 42',
+    );
+  });
+
+  group('maybeMap', () {
+    test('matching case', () {
+      expect(
+        const AsyncValue.data(42).maybeMap(
+          data: (AsyncData<int> value) => [value.value],
+          orElse: () => throw Error(),
+        ),
+        [42],
+      );
+
+      final stack = StackTrace.current;
+
+      expect(
+        AsyncValue<int>.error(42, stack).maybeMap(
+          error: (AsyncError<int> error) => [error.error, error.stackTrace],
+          orElse: () => throw Error(),
+        ),
+        [42, stack],
+      );
+
+      expect(
+        const AsyncValue<int>.loading(
+          previous: AsyncData(42),
+        ).maybeMap(
+          loading: (AsyncLoading<int> loading) =>
+              'loading ${loading.previous?.value}',
+          orElse: () => throw Error(),
+        ),
+        'loading 42',
+      );
+    });
+
+    test('orElse', () {
+      expect(
+        const AsyncValue.data(42).maybeMap(
+          error: (_) => throw Error(),
+          loading: (_) => throw Error(),
+          orElse: () => 'orElse',
+        ),
+        'orElse',
+      );
+
+      final stack = StackTrace.current;
+
+      expect(
+        AsyncValue<int>.error(42, stack).maybeMap(
+          data: (value) => throw Error(),
+          loading: (_) => throw Error(),
+          orElse: () => 'orElse',
+        ),
+        'orElse',
+      );
+
+      expect(
+        const AsyncValue<int>.loading().maybeMap(
+          data: (value) => throw Error(),
+          error: (_) => throw Error(),
+          orElse: () => 'orElse',
+        ),
+        'orElse',
+      );
+    });
+  });
+
+  group('mapOrNull', () {
+    test('matching case', () {
+      expect(
+        const AsyncValue.data(42).mapOrNull(
+          data: (AsyncData<int> value) => [value.value],
+        ),
+        [42],
+      );
+
+      final stack = StackTrace.current;
+
+      expect(
+        AsyncValue<int>.error(42, stack).mapOrNull(
+          error: (AsyncError<int> error) => [error.error, error.stackTrace],
+        ),
+        [42, stack],
+      );
+
+      expect(
+        const AsyncValue<int>.loading(
+          previous: AsyncData(42),
+        ).mapOrNull(
+          loading: (AsyncLoading<int> loading) =>
+              'loading ${loading.previous?.value}',
+        ),
+        'loading 42',
+      );
+    });
+
+    test('orElse', () {
+      expect(
+        const AsyncValue.data(42).mapOrNull(
+          error: (_) => throw Error(),
+          loading: (_) => throw Error(),
+        ),
+        null,
+      );
+
+      final stack = StackTrace.current;
+
+      expect(
+        AsyncValue<int>.error(42, stack).mapOrNull(
+          data: (value) => throw Error(),
+          loading: (_) => throw Error(),
+        ),
+        null,
+      );
+
+      expect(
+        const AsyncValue<int>.loading().mapOrNull(
+          data: (value) => throw Error(),
+          error: (_) => throw Error(),
+        ),
         null,
       );
     });
@@ -263,19 +419,33 @@ void main() {
     );
   });
 
-  test('AsyncValue.whenData', () {
-    expect(
-      const AsyncValue.data(42).whenData((value) => '$value'),
-      const AsyncData<String>('42'),
-    );
-    expect(
-      const AsyncValue<int>.loading().whenData((value) => '$value'),
-      const AsyncLoading<String>(),
-    );
-    expect(
-      const AsyncValue<int>.error(21).whenData((value) => '$value'),
-      const AsyncError<String>(21),
-    );
+  group('whenData', () {
+    test('transforms data if any', () {
+      expect(
+        const AsyncValue.data(42).whenData((value) => '$value'),
+        const AsyncData<String>('42'),
+      );
+      expect(
+        const AsyncValue<int>.loading().whenData((value) => '$value'),
+        const AsyncLoading<String>(),
+      );
+      expect(
+        const AsyncValue<int>.error(21).whenData((value) => '$value'),
+        const AsyncError<String>(21),
+      );
+    });
+
+    test('catches errors in data transformer and return AsyncError', () {
+      expect(
+        const AsyncValue.data(42).whenData<int>(
+          // ignore: only_throw_errors
+          (value) => throw '42',
+        ),
+        isA<AsyncError<int>>()
+            .having((e) => e.error, 'error', '42')
+            .having((e) => e.stackTrace, 'stackTrace', isNotNull),
+      );
+    });
   });
 
   test('AsyncValue.asData', () {
