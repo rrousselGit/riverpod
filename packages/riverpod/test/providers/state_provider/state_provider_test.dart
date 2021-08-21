@@ -94,7 +94,7 @@ void main() {
   test('can be refreshed', () async {
     var result = 0;
     final container = createContainer();
-    final provider = StateProvider.autoDispose<int>((ref) => result);
+    final provider = StateProvider<int>((ref) => result);
 
     final notifier = container.read(provider.notifier);
     expect(container.read(provider).state, 0);
