@@ -8,21 +8,6 @@ import TabItem from "@theme/TabItem";
 Before diving into the inner mechanisms of [Riverpod], let's start with the basics:
 Installing up [Riverpod], then writing a "Hello world".
 
-You can also watch this video which explains the problems that [Riverpod] tries
-to solve.
-
-<div class="player">
-  <iframe
-    src="https://www.youtube.com/embed/zjBulEwjzeI"
-    frameborder="0"
-    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen
-  ></iframe>
-</div>
-
-(Note: this video does not explain how [Riverpod] works. It only explains the
-problems)
-
 ## What package to install
 
 Before anything, you need to be aware that [Riverpod] is spread across multiple packages, with slightly different usage.  
@@ -30,15 +15,11 @@ The variant of [Riverpod] that you will want to install depends on the app you a
 
 You can refer to the following table to help you decide which package to use:
 
-| app type                  | package name                                                                       | description                                                                          |
-| ------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                   | A way to use both [flutter_hooks] and [Riverpod] together, while offering small extras. |
-| Flutter only              | [flutter_riverpod]                                                                 | A basic way of using [Riverpod], which does not depend on [flutter_hooks].           |
-| Dart only (No Flutter)    | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | A version of [Riverpod] with all the classes related to Flutter stripped out.            |
-
-And if it's not clear enough, you can refer to this decision graph:
-
-![package decision graph](/img/package_decision_graph.svg)
+| app type                  | package name                                                                       | description                                                                   |
+| ------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                   | Allows using both [flutter_hooks] and [Riverpod] together.                    |
+| Flutter only              | [flutter_riverpod]                                                                 | A basic way of using [Riverpod] for Flutter applications                      |
+| Dart only (No Flutter)    | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | A version of [Riverpod] with all the classes related to Flutter stripped out. |
 
 ## Installing the package
 
@@ -57,13 +38,13 @@ Once you know what package you want to install, proceed to add the following to 
 
 ```yaml title="pubspec.yaml"
 environment:
-  sdk: ">=2.12.0-0 <3.0.0"
-  flutter: ">=1.17.0"
+  sdk: ">=2.12.0 <3.0.0"
+  flutter: ">=2.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  flutter_hooks: ^0.17.0
+  flutter_hooks: ^0.18.0
   hooks_riverpod: ^1.0.0-dev.7
 ```
 
@@ -74,8 +55,8 @@ Then run `flutter pub get`.
 
 ```yaml title="pubspec.yaml"
 environment:
-  sdk: ">=2.12.0-0 <3.0.0"
-  flutter: ">=1.17.0"
+  sdk: ">=2.12.0 <3.0.0"
+  flutter: ">=2.0.0"
 
 dependencies:
   flutter:
