@@ -108,21 +108,27 @@ function Home() {
               )}
               to={useBaseUrl("docs/getting_started")}
             >
-              <Translate id="home.get_started">
-                Get Started
-              </Translate>
+              <Translate id="home.get_started">Get Started</Translate>
             </Link>
           </div>
           <div className="row">
             <Preview
               // https://carbon.now.sh/?bg=rgba%28171%2C184%2C195%2C0%29&t=material&wt=none&l=dart&ds=true&dsyoff=20px&dsblur=68px&wc=false&wa=true&pv=0px&ph=0px&ln=false&fl=1&fm=Hack&fs=14px&lh=133%25&si=false&es=2x&wm=false&code=final%2520counterProvider%2520%253D%2520StateNotifierProvider%253CCounter%252C%2520int%253E%28%28ref%29%2520%257B%250A%2520%2520return%2520Counter%28%29%253B%250A%257D%29%253B%250A%250Aclass%2520Counter%2520extends%2520StateNotifier%253Cint%253E%2520%257B%250A%2520%2520Counter%28%29%253A%2520super%280%29%253B%250A%2520%2520%250A%2520%2520void%2520increment%28%29%2520%253D%253E%2520state%252B%252B%253B%250A%257D
               imageUrl="img/intro/create_provider.png"
-              title="Create a provider"
+              title={
+                <Translate id="home.create_provider">
+                  Create a provider
+                </Translate>
+              }
             ></Preview>
             <Preview
               // https://carbon.now.sh/?bg=rgba%28171%2C184%2C195%2C0%29&t=material&wt=none&l=dart&ds=true&dsyoff=20px&dsblur=68px&wc=false&wa=true&pv=0px&ph=0px&ln=false&fl=1&fm=Hack&fs=14px&lh=133%25&si=false&es=2x&wm=false&code=class%2520Home%2520extends%2520ConsumerWidget%2520%257B%250A%2520%2520%2540override%250A%2520%2520Widget%2520build%28BuildContext%2520context%252C%2520WidgetRef%2520ref%29%2520%257B%250A%2520%2520%2520%2520final%2520count%2520%253D%2520ref.watch%28counterProvider%29%253B%250A%2520%2520%2520%2520%250A%2520%2520%2520%2520return%2520Text%28%27%2524count%27%29%253B%250A%2520%2520%257D%250A%257D
               imageUrl="img/intro/read_provider.png"
-              title="Consume the provider"
+              title={
+                <Translate id="home.consume_provider">
+                  Consume the provider
+                </Translate>
+              }
             ></Preview>
           </div>
         </div>
@@ -145,16 +151,26 @@ function Home() {
             <div className="container">
               <div className="row">
                 <div className="col">
-                  <h2>Declare shared state from anywhere</h2>
-                  <p>
-                    No need to jump between your <code>main.dart</code> and your
-                    UI files anymore.<br></br>
-                    <br></br>
-                    Place the code of your shared state where it belongs, be it
-                    in a separate package or right next to the Widget that needs
-                    it,
-                    <strong> without losing testability</strong>.
-                  </p>
+                  <h2>
+                    <Translate id="home.shared_state_title">
+                      Declare shared state from anywhere
+                    </Translate>
+                  </h2>
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: translate({
+                        id: "home.shared_state_body",
+                        message: `No need to jump between your <code>main.dart</code> and your UI files
+                          anymore.<br>
+                          <br>
+                          Place the code of your shared state where it belongs, be
+                          it in a separate package or right next to the Widget that
+                          needs it,
+                          <strong> without losing testability</strong>.`,
+                        description: "The homepage input placeholder",
+                      }),
+                    }}
+                  ></p>
                 </div>
                 <div className="col">
                   <img
@@ -176,25 +192,44 @@ function Home() {
                   ></img>
                 </div>
                 <div className="col">
-                  <h2>Recompute states/rebuild UI only when needed</h2>
+                  <h2>
+                    <Translate id="home.recompute_title">
+                      Recompute states/rebuild UI only when needed
+                    </Translate>
+                  </h2>
                   <p>
-                    We no-longer have to sort/filter lists inside the{" "}
-                    <code>build</code>
-                    method or have to resort to advanced cache mechanism.
-                    <br></br>
-                    <br></br>
-                    With{" "}
-                    <code>
-                      <a href={useBaseUrl("docs/concepts/combining_providers")}>
-                        Provider
-                      </a>
-                    </code>{" "}
-                    and{" "}
-                    <a href={useBaseUrl("docs/concepts/modifiers/family")}>
-                      "families"
-                    </a>
-                    , sort your lists or do HTTP requests only when you{" "}
-                    <strong>truly</strong> need it.
+                    <Translate
+                      id="home.recompute_body"
+                      values={{
+                        br: <br></br>,
+                        Provider: (
+                          <code>
+                            <a
+                              href={useBaseUrl(
+                                "docs/concepts/combining_providers"
+                              )}
+                            >
+                              Provider
+                            </a>
+                          </code>
+                        ),
+                        families: (
+                          <a
+                            href={useBaseUrl("docs/concepts/modifiers/family")}
+                          >
+                            "families"
+                          </a>
+                        ),
+                        build: <code>build</code>,
+                      }}
+                    >
+                      {`We no-longer have to sort/filter lists inside the {build}
+                      method or have to resort to advanced cache mechanism.
+                      \n
+                      \n
+                      With {Provider} and {families}, sort your lists or do HTTP
+                      requests only when you <strong>truly</strong> need it.`}
+                    </Translate>
                   </p>
                 </div>
               </div>
@@ -204,15 +239,26 @@ function Home() {
             <div className="container">
               <div className="row">
                 <div className="col">
-                  <h2>Safely read providers</h2>
-                  Reading a provider will never result in a bad state. If you
+                  <h2>
+                    <Translate id="home.safe_read_title">
+                      Safely read providers
+                    </Translate>
+                  </h2>
+                  <Translate
+                    id="home.safe_read_body"
+                    values={{
+                      br: <br></br>,
+                    }}
+                  >
+                    {`Reading a provider will never result in a bad state. If you
                   can write the code needed to read a provider, you will obtain
                   a valid value.
-                  <br></br>
-                  <br></br>
+                  {br}
+                  {br}
                   This even applies to asynchronously loaded values. As opposed
                   to with provider, Riverpod allows cleanly handling
-                  loading/error cases.
+                  loading/error cases.`}
+                  </Translate>
                 </div>
                 <div className="col">
                   <img
@@ -231,12 +277,23 @@ function Home() {
                   <img src="img/intro/devtool.png" alt="Devtool support"></img>
                 </div>
                 <div className="col">
-                  <h2>Inspect your state in the devtool</h2>
-                  <p>
-                    Using Riverpod, your state is visible out of the box inside
-                    Flutter's devtool. <br></br> Futhermore, a full-blown
-                    state-inspector is in progress.
-                  </p>
+                  <h2>
+                    <Translate id="home.devtool_title">
+                      Inspect your state in the devtool
+                    </Translate>
+                  </h2>
+                  <Translate
+                    id="home.devtool_body"
+                    values={{
+                      br: <br></br>,
+                    }}
+                  >
+                    {`Using Riverpod, your state is visible out of the box inside
+                    Flutter's devtool. {br} Futhermore, a full-blown
+                    state-inspector is in progress.`}
+                  </Translate>
+                  <h2></h2>
+                  <p></p>
                 </div>
               </div>
             </div>
