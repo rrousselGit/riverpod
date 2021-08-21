@@ -5,38 +5,53 @@ import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
+import Translate, { translate } from "@docusaurus/Translate";
 
 const features = [
   {
-    title: <>Compile safe</>,
+    title: <Translate id="homepage.compile_safe_title">Compile safe</Translate>,
     imageUrl: "img/undraw_security.svg",
     description: (
-      <>
-        No more <code>ProviderNotFoundException</code> or forgetting to handle
-        loading states. Using Riverpod, if your code compiles, it works.
-      </>
+      <Translate
+        id="homepage.compile_safe_body"
+        values={{ ProviderNotFound: <code>ProviderNotFoundException</code> }}
+      >
+        {`No more {ProviderNotFound} or forgetting to handle loading
+        states. Using Riverpod, if your code compiles, it works.`}
+      </Translate>
     ),
   },
   {
-    title: <>Provider, without its limitations</>,
+    title: (
+      <Translate id="homepage.unlimited_provider_title">
+        Provider, without its limitations
+      </Translate>
+    ),
     imageUrl: "img/undraw_friendship.svg",
     description: (
-      <>
+      <Translate id="homepage.unlimited_provider_body">
         Riverpod is inspired from Provider but solve key issues such as
         supporting multiple providers of the same type; awaiting asyncrhonous
         providers; adding providers from anywhere, ...
-      </>
+      </Translate>
     ),
   },
   {
-    title: <>Doesn't depend on Flutter</>,
+    title: (
+      <Translate id="homepage.no_flutter_dependency_title">
+        Doesn't depend on Flutter
+      </Translate>
+    ),
     imageUrl: "img/undraw_programming.svg",
     description: (
-      <>
-        Create/share/tests providers, with no dependency on Flutter. This
+      <Translate
+        id="homepage.no_flutter_dependency_body"
+        values={{ BuildContext: <code>BuildContext</code> }}
+      >
+        {`Create/share/tests providers, with no dependency on Flutter. This
         includes being able to listen to providers without a{" "}
-        <code>BuildContext</code>.
-      </>
+        {BuildContext}.`}
+      </Translate>
     ),
   },
 ];
@@ -77,10 +92,14 @@ function Home() {
       <header className={classnames("hero hero--primary", styles.heroBanner)}>
         <div className="container">
           <h1 className={classnames("hero__title", styles.mainTitle)}>
-            <img src="/img/logo.svg" alt="Riverpod logo"></img>
+            <img src="img/logo.svg" alt="Riverpod logo"></img>
             {siteConfig.title}
           </h1>
-          <p className="hero__subtitle">{siteConfig.tagline}</p>
+          <p className="hero__subtitle">
+            <Translate id="home.tagline">
+              A Reactive State-Management and Dependency Injection framework
+            </Translate>
+          </p>
           <div className={styles.buttons}>
             <Link
               className={classnames(
@@ -89,7 +108,9 @@ function Home() {
               )}
               to={useBaseUrl("docs/getting_started")}
             >
-              Get Started
+              <Translate id="home.get_started">
+                Get Started
+              </Translate>
             </Link>
           </div>
           <div className="row">
