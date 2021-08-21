@@ -33,8 +33,7 @@ const features = [
     description: (
       <>
         Create/share/tests providers, with no dependency on Flutter. This
-        includes being able to listen to providers without a
-        <code>BuildContext</code>.
+        includes being able to listen to providers without a <code>BuildContext</code>.
       </>
     ),
   },
@@ -158,13 +157,13 @@ function Home() {
                     method or have to resort to advanced cache mechanism.
                     <br></br>
                     <br></br>
-                    With
+                    With{" "}
                     <code>
                       <a href={useBaseUrl("docs/concepts/combining_providers")}>
                         Provider
                       </a>
                     </code>
-                    and
+                    {" "}and{" "}
                     <a href={useBaseUrl("docs/concepts/modifiers/family")}>
                       "families"
                     </a>

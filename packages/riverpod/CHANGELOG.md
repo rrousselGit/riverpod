@@ -1,8 +1,10 @@
-## [Unreleased]
+## 1.0.0-dev.7
 
 ### ProviderObserver
 
 - Fixed `ProviderObserver` not working when modifying a `StateProvider`.
+- Fixed a bug where scoped provider were potentially not disposed
+- Fixed a bug where widgets were not rebuilding in release mode under certain conditions
 
 ### AsyncValue
 

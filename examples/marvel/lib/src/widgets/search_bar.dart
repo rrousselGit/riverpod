@@ -109,7 +109,7 @@ class SearchBar extends HookConsumerWidget {
 
 /// Listens to the keyboard inputs, but debounce updates to avoid triggering
 /// too many HTTP requests.
-String _useDecouncedSearch(TextEditingController textEditingController) {
+String _useDebouncedSearch(TextEditingController textEditingController) {
   final search = useState(textEditingController.text);
   useEffect(() {
     Timer? timer;
@@ -141,7 +141,7 @@ class _SearchHints extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final search = _useDecouncedSearch(textEditingController);
+    final search = _useDebouncedSearch(textEditingController);
 
     return ref.watch(charactersCount(search)).when(
           loading: (_) => const Center(

@@ -203,13 +203,6 @@ class ProviderContainer {
   final _overrideForFamily = HashMap<Family, _FamilyOverrideRef>();
   final _stateReaders = HashMap<ProviderBase, _StateReader>();
 
-  // /// A function that calls its callback at the end of the current "frame".
-  // ///
-  // /// This is exposed so that
-  // ///
-  // /// Defaults to wraping the callback in a [Future].
-  // void Function(void Function()) addPostFrameCallback = (cb) => Future(cb);
-
   /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
   Future<void> pump() async {
     return _scheduler.pendingFuture;
@@ -510,18 +503,22 @@ class ProviderContainer {
     final visitedNodes = HashSet<ProviderElementBase>();
     final queue = DoubleLinkedQueue<ProviderElementBase>();
 
-    // get roots of the provider graph
+    // get providers that don't depend on other providers from this container
     for (final reader in _stateReaders.values) {
       if (reader.container != this) continue;
       final element = reader._element;
       if (element == null) continue;
 
-      var hasAncestors = false;
+      var hasAncestorsInContainer = false;
       element.visitAncestors((element) {
-        hasAncestors = true;
+        // We ignore dependencies that are defined in another container, as
+        // they are in a separate graph
+        if (element._container == this) {
+          hasAncestorsInContainer = true;
+        }
       });
 
-      if (!hasAncestors) {
+      if (!hasAncestorsInContainer) {
         queue.add(element);
       }
     }
