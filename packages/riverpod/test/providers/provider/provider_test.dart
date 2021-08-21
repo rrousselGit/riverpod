@@ -19,6 +19,82 @@ void main() {
       expect(container.read(provider), 1);
     });
 
+    group('ref.state', () {
+      test('can read and change current value', () {
+        final container = createContainer();
+        final listener = Listener<int>();
+        late ProviderRef<int> ref;
+        final provider = Provider<int>((r) {
+          ref = r;
+          return 0;
+        });
+
+        container.listen(provider, listener);
+        verifyZeroInteractions(listener);
+
+        expect(ref.state, 0);
+
+        ref.state = 42;
+
+        verifyOnly(listener, listener(42));
+        expect(ref.state, 42);
+      });
+
+      test('fails if trying to read the state before it was set', () {
+        final container = createContainer();
+        Object? err;
+        final provider = Provider<int>((ref) {
+          try {
+            ref.state;
+          } catch (e) {
+            err = e;
+          }
+          return 0;
+        });
+
+        container.read(provider);
+        expect(err, isStateError);
+      });
+
+      test(
+          'on rebuild, still fails if trying to read the state before was built',
+          () {
+        final dep = StateProvider((ref) => false);
+        final container = createContainer();
+        Object? err;
+        final provider = Provider<int>((ref) {
+          if (ref.watch(dep).state) {
+            try {
+              ref.state;
+            } catch (e) {
+              err = e;
+            }
+          }
+          return 0;
+        });
+
+        container.read(provider);
+        expect(err, isNull);
+
+        container.read(dep).state = true;
+        container.read(provider);
+
+        expect(err, isStateError);
+      });
+
+      test('can read the state if the setter was called before', () {
+        final container = createContainer();
+        final provider = Provider<int>((ref) {
+          // ignore: join_return_with_assignment
+          ref.state = 42;
+
+          return ref.state;
+        });
+
+        expect(container.read(provider), 42);
+      });
+    });
+
     test('does not notify listeners when called ref.state= with == new value',
         () async {
       final container = createContainer();

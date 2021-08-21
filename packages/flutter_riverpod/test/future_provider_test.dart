@@ -26,7 +26,7 @@ void main() {
           child: Consumer(builder: (c, ref, _) {
             return ref.watch(futureProvider).when(
                   data: (data) => Text(data.toString()),
-                  loading: () => const Text('loading'),
+                  loading: (_) => const Text('loading'),
                   error: (dynamic err, stack) => Text('$err'),
                 );
           }),
@@ -55,7 +55,7 @@ void main() {
           child: Consumer(builder: (c, ref, _) {
             return ref.watch(futureProvider).when(
                   data: (data) => Text(data.toString()),
-                  loading: () => const Text('loading'),
+                  loading: (_) => const Text('loading'),
                   // ignore: avoid_types_on_closure_parameters
                   error: (Object err, stack) {
                     whenError = err;
@@ -187,7 +187,7 @@ void main() {
         ref.watch(proxy);
         return ref.watch(futureProvider).when(
               data: (data) => Text(data.toString()),
-              loading: () => const Text('loading'),
+              loading: (_) => const Text('loading'),
               error: (dynamic err, stack) {
                 return const Text('error');
               },
@@ -381,7 +381,7 @@ void main() {
           child: Consumer(builder: (c, ref, _) {
             return ref.watch(futureProviderFamily).when(
                   data: (value) => Text(value.toString()),
-                  loading: () => const Text('loading'),
+                  loading: (_) => const Text('loading'),
                   error: (dynamic err, stack) => const Text('error'),
                 );
           }),
@@ -411,7 +411,7 @@ void main() {
           child: Consumer(builder: (c, ref, _) {
             return ref.watch(futureProviderFamily).when(
                   data: (value) => Text(value.toString()),
-                  loading: () => const Text('loading'),
+                  loading: (_) => const Text('loading'),
                   error: (dynamic err, stack) => const Text('error'),
                 );
           }),
@@ -441,7 +441,7 @@ void main() {
           child: Consumer(builder: (c, ref, _) {
             return ref.watch(futureProviderFamily).when(
                   data: (value) => Text(value.toString()),
-                  loading: () => const Text('loading'),
+                  loading: (_) => const Text('loading'),
                   error: (dynamic err, stack) => const Text('error'),
                 );
           }),

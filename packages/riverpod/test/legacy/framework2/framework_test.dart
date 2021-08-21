@@ -106,7 +106,9 @@ void main() {
       var callCount = 0;
       final provider = Provider((ref) {
         callCount++;
-        return ref.read(streamProvider).data?.value;
+        return ref
+            .read(streamProvider)
+            .maybeWhen(data: (d) => d, orElse: () => null);
       });
 
       expect(callCount, 0);
@@ -124,7 +126,9 @@ void main() {
       var callCount = 0;
       final provider = Provider((ref) {
         callCount++;
-        return ref.watch(streamProvider).data?.value;
+        return ref
+            .watch(streamProvider)
+            .maybeWhen(data: (d) => d, orElse: () => null);
       });
 
       expect(callCount, 0);
@@ -142,7 +146,9 @@ void main() {
       var callCount = 0;
       final provider = Provider((ref) {
         callCount++;
-        return ref.watch(streamProvider).data?.value;
+        return ref
+            .watch(streamProvider)
+            .maybeWhen(data: (d) => d, orElse: () => null);
       });
 
       expect(callCount, 0);
@@ -503,10 +509,17 @@ void main() {
 
       future = Future.value(21);
 
-      expect(container.refresh(provider), const AsyncValue<int>.loading());
-      await expectLater(
+      expect(
+        container.refresh(provider),
+        const AsyncValue<int>.loading(
+          previous: AsyncData(42),
+        ),
+      );
+      expect(
         container.read(provider),
-        const AsyncValue<int>.loading(),
+        const AsyncValue<int>.loading(
+          previous: AsyncData(42),
+        ),
       );
       expect(callCount, 2);
 

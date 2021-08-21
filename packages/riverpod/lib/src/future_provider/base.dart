@@ -2,11 +2,11 @@ part of '../future_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [ProviderRef.state], the value currently exposed by this providers.
-typedef FutureProviderRef<State> = ProviderRef<AsyncValue<State>>;
+typedef FutureProviderRef<State> = ProviderRefBase;
 
 /// {@macro riverpod.futureprovider}
 @sealed
-class FutureProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
+class FutureProvider<State> extends AsyncProvider<State>
     with ProviderOverridesMixin<AsyncValue<State>> {
   /// {@macro riverpod.futureprovider}
   FutureProvider(this._create, {String? name}) : super(name);
@@ -44,7 +44,9 @@ class FutureProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
       AsyncValueAsFutureProvider(this, modifierName(name, 'future'));
 
   @override
-  AsyncValue<State> create(FutureProviderRef<State> ref) {
+  AsyncValue<State> create(
+    ProviderElementBase<AsyncValue<State>> ref,
+  ) {
     return _listenFuture(() => _create(ref), ref);
   }
 
@@ -86,7 +88,7 @@ class FutureProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   }
 
   @override
-  ProviderElement<AsyncValue<State>> createElement() => ProviderElement(this);
+  AsyncProviderElement<State> createElement() => AsyncProviderElement(this);
 }
 
 /// {@template riverpod.futureprovider.family}

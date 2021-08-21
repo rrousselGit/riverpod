@@ -4,10 +4,11 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
-  group('StateProvider.family.autoDispose', () {
+  group('StateProvider.autoDispose.family.autoDispose', () {
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () async {
-        final provider = StateProvider.family<int, int>((ref, _) => 0);
+        final provider =
+            StateProvider.autoDispose.family<int, int>((ref, _) => 0);
         final root = createContainer();
         final container = createContainer(parent: root, overrides: [provider]);
 
@@ -26,11 +27,12 @@ void main() {
       });
 
       test('when using provider.overrideWithProvider', () async {
-        final provider = StateProvider.family<int, int>((ref, _) => 0);
+        final provider =
+            StateProvider.autoDispose.family<int, int>((ref, _) => 0);
         final root = createContainer();
         final container = createContainer(parent: root, overrides: [
           provider.overrideWithProvider(
-            (value) => StateProvider((ref) => 42),
+            (value) => StateProvider.autoDispose((ref) => 42),
           ),
         ]);
 

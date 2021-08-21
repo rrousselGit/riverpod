@@ -50,8 +50,8 @@ class ValueProviderElement<State> extends ProviderElementBase<State> {
   void update(ProviderBase<State> newProvider) {
     super.update(newProvider);
     final newValue = (provider as ValueProvider<State>)._value;
-    if (newValue != state) {
-      state = newValue;
+    if (newValue != getState()) {
+      setState(newValue);
       onChange?.call(newValue);
     }
   }

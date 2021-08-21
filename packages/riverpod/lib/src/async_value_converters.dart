@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:meta/meta.dart';
 
 import 'common.dart';
 import 'framework.dart';
@@ -86,9 +86,11 @@ Stream<State> _asyncValueToStream<State>(
       // of directly creating a broadcast controller so that `add`/`addError` calls
       // are queued. This ensures that listeners will properly receive the first value.
       controller = StreamController<State>();
-      ref.state = controller!.stream.asBroadcastStream(
-        onListen: (sub) => sub.resume(),
-        onCancel: (sub) => sub.pause(),
+      ref.setState(
+        controller!.stream.asBroadcastStream(
+          onListen: (sub) => sub.resume(),
+          onCancel: (sub) => sub.pause(),
+        ),
       );
     }
     return controller!;
@@ -98,7 +100,7 @@ Stream<State> _asyncValueToStream<State>(
 
   void listener(AsyncValue<State> value) {
     value.when(
-      loading: () {
+      loading: (_) {
         controller?.close();
         controller = null;
         // will call ref.state =
@@ -111,7 +113,7 @@ Stream<State> _asyncValueToStream<State>(
 
   ref.listen<AsyncValue<State>>(provider, listener, fireImmediately: true);
 
-  return ref.state;
+  return ref.getState()!;
 }
 
 ///
@@ -199,10 +201,10 @@ Future<State> _asyncValueAsFuture<State>(
 
   void listener(AsyncValue<State> value) {
     value.when(
-      loading: () {
+      loading: (_) {
         if (loadingCompleter == null) {
           loadingCompleter = Completer<State>();
-          ref.state = loadingCompleter!.future;
+          ref.setState(loadingCompleter!.future);
         }
       },
       data: (data) {
@@ -211,7 +213,7 @@ Future<State> _asyncValueAsFuture<State>(
           // allow follow-up data calls to go on the 'else' branch
           loadingCompleter = null;
         } else {
-          ref.state = Future<State>.value(data);
+          ref.setState(Future<State>.value(data));
         }
       },
       error: (err, stack) {
@@ -220,7 +222,7 @@ Future<State> _asyncValueAsFuture<State>(
           // allow follow-up error calls to go on the 'else' branch
           loadingCompleter = null;
         } else {
-          ref.state = Future<State>.error(err, stack);
+          ref.setState(Future<State>.error(err, stack));
         }
       },
     );
@@ -228,5 +230,5 @@ Future<State> _asyncValueAsFuture<State>(
 
   ref.listen<AsyncValue<State>>(provider, listener, fireImmediately: true);
 
-  return ref.state;
+  return ref.getState()!;
 }

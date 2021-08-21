@@ -2,11 +2,11 @@ part of '../stream_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [ProviderRef.state], the value currently exposed by this providers.
-typedef StreamProviderRef<State> = ProviderRef<AsyncValue<State>>;
+typedef StreamProviderRef<State> = ProviderRefBase;
 
 /// {@macro riverpod.streamprovider}
 @sealed
-class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
+class StreamProvider<State> extends AsyncProvider<State>
     with
         ProviderOverridesMixin<AsyncValue<State>>,
         _StreamProviderMixin<State> {
@@ -30,7 +30,7 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
       AsyncValueAsFutureProvider(this, modifierName(name, 'last'));
 
   @override
-  AsyncValue<State> create(StreamProviderRef<State> ref) {
+  AsyncValue<State> create(ProviderElementBase<AsyncValue<State>> ref) {
     return _listenStream(() => _create(ref), ref);
   }
 
@@ -75,7 +75,7 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   }
 
   @override
-  ProviderElement<AsyncValue<State>> createElement() => ProviderElement(this);
+  AsyncProviderElement<State> createElement() => AsyncProviderElement(this);
 }
 
 /// {@template riverpod.streamprovider.family}

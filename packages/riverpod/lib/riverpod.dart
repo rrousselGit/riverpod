@@ -6,8 +6,8 @@ export 'src/common.dart'
         AsyncData,
         AsyncLoading,
         AsyncError,
-        $AsyncValueCopyWith,
-        $AsyncValue;
+        AsyncValueX,
+        AsyncValueLoadingError;
 
 export 'src/framework.dart'
     show

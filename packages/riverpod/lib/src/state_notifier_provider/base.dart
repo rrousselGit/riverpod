@@ -63,13 +63,13 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
     final notifier = ref.watch(this.notifier);
 
     void listener(State newState) {
-      ref.state = newState;
+      ref.setState(newState);
     }
 
     final removeListener = notifier.addListener(listener);
     ref.onDispose(removeListener);
 
-    return ref.state;
+    return ref.getState() as State;
   }
 
   @override

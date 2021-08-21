@@ -2,13 +2,11 @@ part of '../stream_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [ProviderRef.state], the value currently exposed by this providers.
-typedef AutoDisposeStreamProviderRef<State>
-    = AutoDisposeProviderRef<AsyncValue<State>>;
+typedef AutoDisposeStreamProviderRef<State> = AutoDisposeProviderRefBase;
 
 /// {@macro riverpod.streamprovider}
 @sealed
-class AutoDisposeStreamProvider<State>
-    extends AutoDisposeProviderBase<AsyncValue<State>>
+class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
     with
         AutoDisposeProviderOverridesMixin<AsyncValue<State>>,
         _StreamProviderMixin<State> {
@@ -29,7 +27,9 @@ class AutoDisposeStreamProvider<State>
       AutoDisposeAsyncValueAsFutureProvider(this, modifierName(name, 'last'));
 
   @override
-  AsyncValue<State> create(AutoDisposeStreamProviderRef<State> ref) {
+  AsyncValue<State> create(
+    AutoDisposeProviderElementBase<AsyncValue<State>> ref,
+  ) {
     return _listenStream(() => _create(ref), ref);
   }
 
@@ -74,8 +74,8 @@ class AutoDisposeStreamProvider<State>
   }
 
   @override
-  AutoDisposeProviderElement<AsyncValue<State>> createElement() {
-    return AutoDisposeProviderElement(this);
+  AutoDisposeAsyncProviderElement<State> createElement() {
+    return AutoDisposeAsyncProviderElement(this);
   }
 }
 

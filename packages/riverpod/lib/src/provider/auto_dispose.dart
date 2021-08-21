@@ -11,6 +11,42 @@ class AutoDisposeProviderElement<State>
     implements AutoDisposeProviderRef<State> {
   /// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
   AutoDisposeProviderElement(ProviderBase<State> provider) : super(provider);
+
+  bool _debugDidSetValue = false;
+
+  @override
+  State get state {
+    assert(() {
+      if (!_debugDidSetValue) {
+        throw StateError(
+          'Cannot read the state exposed by a provider within '
+          'before it was set',
+        );
+      }
+      return true;
+    }(), '');
+
+    return getState() as State;
+  }
+
+  @override
+  set state(State newState) {
+    setState(newState);
+  }
+
+  @override
+  void setState(State newState) {
+    assert(() {
+      _debugDidSetValue = true;
+      return true;
+    }(), '');
+    super.setState(newState);
+  }
+
+  @override
+  void debugWillRebuildState() {
+    _debugDidSetValue = false;
+  }
 }
 
 /// {@macro riverpod.provider}

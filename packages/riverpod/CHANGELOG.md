@@ -1,3 +1,49 @@
+## [Unreleased]
+
+### Future/StreamProvider
+
+During loading states, `FutureProvider` and `StreamProvider` now expose the
+latest value through `AsyncValue`.
+
+This allows UI to show the previous data while some new data is loading,
+inatead of showing a spinner:
+
+```dart
+final provider = FutureProvider<User>((ref) async {
+  ref.watch(anotherProvider); // may cause `provider` to rebuild
+
+  return fetchSomething();
+})
+...
+
+Widget build(context, ref) {
+  return ref.watch(provider).when(
+    error: (err, stack) => Text('error'),
+    data: (user) => Text('Hello ${user.name}'),
+    loading: (previous) {
+      if (previous is AsyncData<User>) {
+        return Text('loading ... (previous: ${previous.value.name})'});
+      }
+
+      return CircularProgressIndicator();
+    }
+  );
+
+}
+```
+
+### AsyncValue
+
+- **Breaking** `AsyncValue.copyWith` , `AsyncValue.map` and `AsyncValue.mapOrElse` methods are removed
+- Deprecated `AsyncValue.data` in favor of `AsyncValue.value`
+- Allowed `AsyncData`, `AsyncError` and `AsyncLoading` to be extended
+- Added `AsyncValue.whenOrNull`, similar to `whenOrElse` but instead of an
+  "orElse" parameter, returns `null`.
+- Added `AsyncValue.value`, which allows reading the value without handling
+  loading/error states.
+- `AsyncError` can now be instantiated with `const`.
+- `AsyncLoading` now optionally includes the previous "state".
+
 ## 1.0.0-dev.7
 
 - Fixed `ProviderObserver` not working when modifying a `StateProvider`.
