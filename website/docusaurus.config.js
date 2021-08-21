@@ -1,6 +1,6 @@
 module.exports = {
   title: "Riverpod",
-  tagline: "Provider, but different",
+  tagline: "A Reactive State-Management and Dependency Injection framework",
   url: "https://riverpod.dev",
   baseUrl: "/",
   favicon: "img/logo.svg",
