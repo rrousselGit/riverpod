@@ -249,5 +249,11 @@
   },
   "home.consume_provider": {
     "message": "Consommer le provider"
+  },
+  "declare_anywhere_img": {
+    "message": "img/intro/fr/declare_anywhere.png"
+  },
+  "home.async_img": {
+    "message": "img/intro/fr/async.png"
   }
 }

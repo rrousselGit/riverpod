@@ -174,8 +174,11 @@ function Home() {
                 </div>
                 <div className="col">
                   <img
-                    // https://carbon.now.sh/?bg=rgba%28171%2C184%2C195%2C0%29&t=material&wt=none&l=dart&ds=true&dsyoff=20px&dsblur=68px&wc=false&wa=true&pv=0px&ph=0px&ln=false&fl=1&fm=Hack&fs=14px&lh=133%25&si=false&es=2x&wm=false&code=%252F%252F%2520A%2520shared%2520state%2520that%2520can%2520be%2520accessed%2520by%2520multiple%250A%252F%252F%2520objects%2520at%2520the%2520same%2520time%250Afinal%2520countProvider%2520%253D%2520StateProvider%28%28ref%29%2520%253D%253E%25200%29%253B%250A%250A%252F%252F%2520Comsumes%2520the%2520shared%2520state%2520and%2520rebuild%2520when%2520it%2520changes%250Aclass%2520Title%2520extends%2520ConsumerWidget%2520%257B%250A%2520%2520%2540override%250A%2520%2520Widget%2520build%28BuildContext%2520context%252C%2520WidgetRef%2520ref%29%2520%257B%250A%2520%2520%2520%2520final%2520count%2520%253D%2520ref.watch%28countProvider%29.state%253B%250A%2520%2520%2520%2520return%2520Text%28%27%2524count%27%29%253B%250A%2520%2520%257D%250A%257D
-                    src="img/intro/declare_anywhere.png"
+                    src={translate({
+                      id: "declare_anywhere_img",
+                      // https://carbon.now.sh/?bg=rgba%28171%2C184%2C195%2C0%29&t=material&wt=none&l=dart&ds=true&dsyoff=20px&dsblur=68px&wc=false&wa=true&pv=0px&ph=0px&ln=false&fl=1&fm=Hack&fs=14px&lh=133%25&si=false&es=2x&wm=false&code=%252F%252F%2520A%2520shared%2520state%2520that%2520can%2520be%2520accessed%2520by%2520multiple%250A%252F%252F%2520objects%2520at%2520the%2520same%2520time%250Afinal%2520countProvider%2520%253D%2520StateProvider%28%28ref%29%2520%253D%253E%25200%29%253B%250A%250A%252F%252F%2520Comsumes%2520the%2520shared%2520state%2520and%2520rebuild%2520when%2520it%2520changes%250Aclass%2520Title%2520extends%2520ConsumerWidget%2520%257B%250A%2520%2520%2540override%250A%2520%2520Widget%2520build%28BuildContext%2520context%252C%2520WidgetRef%2520ref%29%2520%257B%250A%2520%2520%2520%2520final%2520count%2520%253D%2520ref.watch%28countProvider%29.state%253B%250A%2520%2520%2520%2520return%2520Text%28%27%2524count%27%29%253B%250A%2520%2520%257D%250A%257D
+                      message: "img/intro/declare_anywhere.png",
+                    })}
                     alt="Declare your providers anywhere"
                   ></img>
                 </div>
@@ -263,7 +266,10 @@ function Home() {
                 <div className="col">
                   <img
                     // https://carbon.now.sh/?bg=rgba%28171%2C184%2C195%2C0%29&t=material&wt=none&l=dart&ds=true&dsyoff=20px&dsblur=68px&wc=false&wa=true&pv=0px&ph=0px&ln=false&fl=1&fm=Hack&fs=14px&lh=133%25&si=false&es=2x&wm=false&code=%252F%252F%2520Parse%2520a%2520file%2520without%2520having%2520to%2520deal%2520with%2520errors%250Afinal%2520configurationsProvider%2520%253D%2520FutureProvider%28%28ref%29%2520async%2520%257B%250A%2520%2520final%2520json%2520%253D%2520await%2520File.fromUri%28Uri.parse%28%27configs.json%27%29%29%250A%2520%2520%2520%2520.readAsString%28%29%253B%250A%2520%250A%2520%2520return%2520Configurations.fromJson%28json%29%253B%250A%257D%29%253B%250A%250Aclass%2520Example%2520extends%2520ConsumerWidget%2520%257B%250A%2520%2520%2540override%250A%2520%2520Widget%2520build%28BuildContext%2520context%252C%2520WidgetRef%2520ref%29%2520%257B%250A%2520%2520%2520%2520final%2520configs%2520%253D%2520ref.watch%28configurationsProvider%29%253B%250A%2520%2520%2520%2520%250A%2520%2520%2520%2520%252F%252F%2520Use%2520Riverpod%27s%2520built-in%2520support%250A%2520%2520%2520%2520%252F%252F%2520for%2520error%252Floading%2520states%2520using%2520%2522when%2522%253A%250A%2520%2520%2520%2520return%2520configs.when%28%250A%2520%2520%2520%2520%2520%2520%252F%252F%2520Currently%2520reading%2520the%2520file%250A%2520%2520%2520%2520%2520%2520loading%253A%2520%28_%29%2520%253D%253E%2520const%2520CircularProgressIndicator%28%29%252C%250A%2520%2520%2520%2520%2520%2520%252F%252F%2520If%2520the%2520configurations%2520failed%2520to%2520parse%250A%2520%2520%2520%2520%2520%2520error%253A%2520%28err%252C%2520stack%252C%2520_%29%2520%253D%253E%2520Text%28%27Error%2520%2524err%27%29%252C%250A%2520%2520%2520%2520%2520%2520data%253A%2520%28configs%29%2520%253D%253E%2520Text%28%27data%253A%2520%2524%257Bconfigs.host%257D%27%29%252C%250A%2520%2520%2520%2520%29%253B%250A%2520%2520%257D%250A%257D
-                    src="img/intro/async.png"
+                    src={translate({
+                      id: "home.async_img",
+                      message: "img/intro/async.png",
+                    })}
                     alt="Asynchronously loaded providers"
                   ></img>
                 </div>
