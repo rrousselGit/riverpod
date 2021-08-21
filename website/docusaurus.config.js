@@ -6,6 +6,12 @@ module.exports = {
   favicon: "img/logo.svg",
   organizationName: "rrousselgit", // Usually your GitHub org/user name.
   projectName: "riverpod", // Usually your repo name.
+
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en", "fr"],
+  },
+
   themeConfig: {
     googleAnalytics: {
       trackingID: "UA-138675999-4",
@@ -20,7 +26,7 @@ module.exports = {
     prism: {
       additionalLanguages: ["dart", "yaml"],
     },
-    image: '/img/cover.png',
+    image: "/img/cover.png",
 
     navbar: {
       title: "Riverpod",
@@ -29,6 +35,10 @@ module.exports = {
         src: "img/logo.png",
       },
       items: [
+        {
+          type: "localeDropdown",
+          position: "right",
+        },
         {
           to: "docs/getting_started",
           activeBasePath: "docs",
@@ -87,7 +97,8 @@ module.exports = {
           // It is recommended to set document id as docs home page (`docs/` path).
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
-          editUrl: "https://github.com/rrousselGit/river_pod/edit/master/website/",
+          editUrl:
+            "https://github.com/rrousselGit/river_pod/edit/master/website/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
