@@ -657,12 +657,23 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     visitAncestors((element) => element.flush());
   }
 
+  /// A debug-only life-cycle called before a provider rebuilds.
+  ///
+  /// Useful to reset debug state before a provider rebuilds, such as variables
+  /// for asserts.
+  void debugWillRebuildState() {}
+
   void _maybeRebuildState() {
     if (_mustRecomputeState) {
       _previousDependencies = _dependencies;
       _dependencies = HashMap();
 
       final previousState = getState() as State;
+
+      assert(() {
+        debugWillRebuildState();
+        return true;
+      }(), '');
 
       _buildState();
 
