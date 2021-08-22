@@ -401,7 +401,7 @@ Future<void> main(List<String> args) async {
             ref: 'FutureProviderRef<State>',
             constraints: 'State',
             generics: 'State',
-            createType: 'Future<State>',
+            createType: 'FutureOr<State>',
           ),
           StateDetails(
             kind: StateType.stream,
@@ -416,6 +416,7 @@ Future<void> main(List<String> args) async {
       );
       builder.writeln(
         """
+import 'dart:async';
 import 'package:state_notifier/state_notifier.dart';
 
 import 'internals.dart';

@@ -6,10 +6,6 @@ export 'src/common.dart'
         AsyncData,
         AsyncLoading,
         AsyncError,
-        Result,
-        ResultX,
-        ResultData,
-        ResultError,
         AsyncValueX,
         AsyncValueLoadingError;
 

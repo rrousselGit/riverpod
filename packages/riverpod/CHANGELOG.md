@@ -2,35 +2,37 @@
 
 ### Future/StreamProvider
 
-During loading states, `FutureProvider` and `StreamProvider` now expose the
-latest value through `AsyncValue`.
+- FutureProvider now creates a `FutureOr<T>` instead of a `Future<T>`
+  This allows bypassing the loading state in the event where a value was synchronously available.
 
-This allows UI to show the previous data while some new data is loading,
-inatead of showing a spinner:
+- During loading states, `FutureProvider` and `StreamProvider` now expose the
+  latest value through `AsyncValue`.  
+  This allows UI to show the previous data while some new data is loading,
+  inatead of showing a spinner:
 
-```dart
-final provider = FutureProvider<User>((ref) async {
-  ref.watch(anotherProvider); // may cause `provider` to rebuild
+  ```dart
+  final provider = FutureProvider<User>((ref) async {
+    ref.watch(anotherProvider); // may cause `provider` to rebuild
 
-  return fetchSomething();
-})
-...
+    return fetchSomething();
+  })
+  ...
 
-Widget build(context, ref) {
-  return ref.watch(provider).when(
-    error: (err, stack) => Text('error'),
-    data: (user) => Text('Hello ${user.name}'),
-    loading: (previous) {
-      if (previous is AsyncData<User>) {
-        return Text('loading ... (previous: ${previous.value.name})'});
+  Widget build(context, ref) {
+    return ref.watch(provider).when(
+      error: (err, stack) => Text('error'),
+      data: (user) => Text('Hello ${user.name}'),
+      loading: (previous) {
+        if (previous is AsyncData<User>) {
+          return Text('loading ... (previous: ${previous.value.name})'});
+        }
+
+        return CircularProgressIndicator();
       }
+    );
 
-      return CircularProgressIndicator();
-    }
-  );
-
-}
-```
+  }
+  ```
 
 ### AsyncValue
 

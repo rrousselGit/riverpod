@@ -476,8 +476,8 @@ void main() {
     );
 
     expect(
-      const AsyncValue<int>.error(42).toString(),
-      'AsyncError<int>(error: 42, stackTrace: null)',
+      const AsyncValue<int>.error(42, previous: AsyncData(42)).toString(),
+      'AsyncError<int>(error: 42, stackTrace: null, previous: AsyncData<int>(value: 42))',
     );
 
     expect(

@@ -8,6 +8,7 @@
 // You can then use it in your terminal by executing:
 // generate_providers <riverpod/flutter_riverpod/hooks_riverpod> <path to builder file to update>
 
+import 'dart:async';
 import 'package:state_notifier/state_notifier.dart';
 
 import 'internals.dart';
@@ -408,7 +409,7 @@ class FutureProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   FutureProvider<State> call<State>(
-    Create<Future<State>, FutureProviderRef<State>> create, {
+    Create<FutureOr<State>, FutureProviderRef<State>> create, {
     String? name,
   }) {
     return FutureProvider(create, name: name);
@@ -432,7 +433,7 @@ class FutureProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   FutureProviderFamily<State, Arg> call<State, Arg>(
-    FamilyCreate<Future<State>, FutureProviderRef<State>, Arg> create, {
+    FamilyCreate<FutureOr<State>, FutureProviderRef<State>, Arg> create, {
     String? name,
   }) {
     return FutureProviderFamily(create, name: name);
@@ -598,7 +599,7 @@ class AutoDisposeFutureProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   AutoDisposeFutureProvider<State> call<State>(
-    Create<Future<State>, AutoDisposeFutureProviderRef<State>> create, {
+    Create<FutureOr<State>, AutoDisposeFutureProviderRef<State>> create, {
     String? name,
   }) {
     return AutoDisposeFutureProvider(create, name: name);
@@ -617,7 +618,7 @@ class AutoDisposeFutureProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   AutoDisposeFutureProviderFamily<State, Arg> call<State, Arg>(
-    FamilyCreate<Future<State>, AutoDisposeFutureProviderRef<State>, Arg>
+    FamilyCreate<FutureOr<State>, AutoDisposeFutureProviderRef<State>, Arg>
         create, {
     String? name,
   }) {

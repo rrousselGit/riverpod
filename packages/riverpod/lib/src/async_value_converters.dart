@@ -204,7 +204,10 @@ Future<State> _asyncValueAsFuture<State>(
       loading: (_) {
         if (loadingCompleter == null) {
           loadingCompleter = Completer<State>();
-          ref.setState(loadingCompleter!.future);
+          ref.setState(
+            // TODO test ignore
+            loadingCompleter!.future..ignore(),
+          );
         }
       },
       data: (data) {

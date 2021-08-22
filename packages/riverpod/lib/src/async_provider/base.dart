@@ -26,14 +26,9 @@ class AsyncProviderElement<T> extends ProviderElementBase<AsyncValue<T>> {
           return;
         }
 
-        previous.when(
-          data: (value) {
-            super.setState(AsyncLoading(previous: AsyncValue<T>.data(value)));
-          },
-          error: (err, stack) {
-            super.setState(
-              AsyncLoading(previous: AsyncError<T>(err, stackTrace: stack)),
-            );
+        previous.maybeMap(
+          orElse: () {
+            super.setState(AsyncLoading<T>(previous: previous));
           },
           loading: (_) {
             // TODO test does not notify listeners
@@ -45,12 +40,14 @@ class AsyncProviderElement<T> extends ProviderElementBase<AsyncValue<T>> {
         final previous = getState();
 
         if (previous == null) {
+          // Reached when FutureOr<T> throws, bypassing AsyncLoading
           super.setState(AsyncError<T>(e.error, stackTrace: e.stackTrace));
           return;
         }
 
         previous.map(
           data: (data) {
+            // Reached when FutureOr<T> returns T, bypassing AsyncLoading
             super.setState(
               AsyncError(
                 e.error,
@@ -60,6 +57,7 @@ class AsyncProviderElement<T> extends ProviderElementBase<AsyncValue<T>> {
             );
           },
           error: (previousErr) {
+            // Reached when FutureOr<T> throws, bypassing AsyncLoading
             super.setState(
               AsyncError(
                 e.error,
@@ -93,12 +91,14 @@ class AsyncProviderElement<T> extends ProviderElementBase<AsyncValue<T>> {
                   ),
                 );
               },
+              // coverage:ignore-start
               loading: (l) {
                 assert(
                   false,
                   'AyncLoading cannot have an AsyncLoading as previous value',
                 );
               },
+              // coverage:ignore-end
             );
           },
         );
