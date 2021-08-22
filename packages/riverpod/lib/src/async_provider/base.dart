@@ -17,7 +17,7 @@ class AsyncProviderElement<T> extends ProviderElementBase<AsyncValue<T>> {
 
   @override
   void setState(AsyncValue<T> newState) {
-    newState.maybeWhen(
+    newState.map(
       loading: (_) {
         final previous = getState();
 
@@ -26,19 +26,84 @@ class AsyncProviderElement<T> extends ProviderElementBase<AsyncValue<T>> {
           return;
         }
 
-        previous.maybeMap(
+        previous.when(
+          data: (value) {
+            super.setState(AsyncLoading(previous: AsyncValue<T>.data(value)));
+          },
+          error: (err, stack) {
+            super.setState(
+              AsyncLoading(previous: AsyncError<T>(err, stackTrace: stack)),
+            );
+          },
           loading: (_) {
             // TODO test does not notify listeners
             // preserve the previous value, nothing to do
           },
-          orElse: () {
-            super.setState(AsyncLoading(previous: previous));
+        );
+      },
+      error: (e) {
+        final previous = getState();
+
+        if (previous == null) {
+          super.setState(AsyncError<T>(e.error, stackTrace: e.stackTrace));
+          return;
+        }
+
+        previous.map(
+          data: (data) {
+            super.setState(
+              AsyncError(
+                e.error,
+                stackTrace: e.stackTrace,
+                previous: data,
+              ),
+            );
+          },
+          error: (previousErr) {
+            super.setState(
+              AsyncError(
+                e.error,
+                stackTrace: e.stackTrace,
+                previous: previousErr.previous,
+              ),
+            );
+          },
+          loading: (l) {
+            if (l.previous == null) {
+              super.setState(AsyncError<T>(e.error, stackTrace: e.stackTrace));
+              return;
+            }
+
+            l.previous!.map(
+              data: (l) {
+                super.setState(
+                  AsyncError<T>(
+                    e.error,
+                    stackTrace: e.stackTrace,
+                    previous: l,
+                  ),
+                );
+              },
+              error: (l) {
+                super.setState(
+                  AsyncError<T>(
+                    e.error,
+                    stackTrace: e.stackTrace,
+                    previous: l.previous,
+                  ),
+                );
+              },
+              loading: (l) {
+                assert(
+                  false,
+                  'AyncLoading cannot have an AsyncLoading as previous value',
+                );
+              },
+            );
           },
         );
       },
-      orElse: () {
-        super.setState(newState);
-      },
+      data: super.setState,
     );
   }
 }

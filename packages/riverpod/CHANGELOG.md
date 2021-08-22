@@ -34,7 +34,8 @@ Widget build(context, ref) {
 
 ### AsyncValue
 
-- **Breaking** `AsyncValue.copyWith` , `AsyncValue.map` and `AsyncValue.mapOrElse` methods are removed
+- **Breaking** `AsyncValue.copyWith` is removed
+- **Breaking** `AsyncValue.error(..., stacktrace)` is now a named parameter instead of postional parameter.
 - Deprecated `AsyncValue.data` in favor of `AsyncValue.value`
 - Allowed `AsyncData`, `AsyncError` and `AsyncLoading` to be extended
 - Added `AsyncValue.whenOrNull`, similar to `whenOrElse` but instead of an
@@ -42,7 +43,8 @@ Widget build(context, ref) {
 - Added `AsyncValue.value`, which allows reading the value without handling
   loading/error states.
 - `AsyncError` can now be instantiated with `const`.
-- `AsyncLoading` now optionally includes the previous "state".
+- `AsyncLoading` and `AsyncError` now optionally includes the previous state.
+- Added a `Result` class, similar to `AsyncValue` but with no loading state.
 
 ## 1.0.0-dev.7
 

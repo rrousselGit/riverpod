@@ -95,12 +95,16 @@ AsyncValue<State> _listenFuture<State>(
       },
       // ignore: avoid_types_on_closure_parameters
       onError: (Object err, StackTrace stack) {
-        if (running) ref.setState(AsyncValue<State>.error(err, stack));
+        if (running) {
+          ref.setState(
+            AsyncValue<State>.error(err, stackTrace: stack),
+          );
+        }
       },
     );
 
     return ref.getState()!;
   } catch (err, stack) {
-    return AsyncValue.error(err, stack);
+    return AsyncValue.error(err, stackTrace: stack);
   }
 }

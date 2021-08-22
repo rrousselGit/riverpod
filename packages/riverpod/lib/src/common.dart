@@ -72,9 +72,10 @@ abstract class AsyncValue<T> {
   ///
   /// The parameter [error] cannot be `null`.
   const factory AsyncValue.error(
-    Object error, [
+    Object error, {
     StackTrace? stackTrace,
-  ]) = AsyncError<T>;
+    AsyncData<T>? previous,
+  }) = AsyncError<T>;
 
   /// Transforms a [Future] that may fail into something that is safe to read.
   ///
@@ -123,7 +124,7 @@ abstract class AsyncValue<T> {
     try {
       return AsyncValue.data(await future());
     } catch (err, stack) {
-      return AsyncValue.error(err, stack);
+      return AsyncValue.error(err, stackTrace: stack);
     }
   }
 
@@ -217,10 +218,10 @@ extension AsyncValueX<T> on AsyncValue<T> {
         try {
           return AsyncValue.data(cb(d.value));
         } catch (err, stack) {
-          return AsyncValue.error(err, stack);
+          return AsyncValue.error(err, stackTrace: stack);
         }
       },
-      error: (e) => AsyncError(e.error, e.stackTrace),
+      error: (e) => AsyncError(e.error, stackTrace: e.stackTrace),
       loading: (l) => AsyncLoading<R>(),
     );
   }
@@ -341,7 +342,11 @@ class AsyncLoading<T> implements AsyncValue<T> {
   /// Creates an [AsyncValue] in loading state.
   ///
   /// Prefer always using this constructor with the `const` keyword.
-  const AsyncLoading({this.previous});
+  const AsyncLoading({this.previous})
+      : assert(
+          previous is! AsyncLoading,
+          'The previous value can only be null or an instance of AsyncData/AsyncError',
+        );
 
   /// The previous error or loading valid state, if any.
   ///
@@ -381,13 +386,16 @@ class AsyncError<T> implements AsyncValue<T> {
   /// Creates an [AsyncValue] in error state.
   ///
   /// The parameter [error] cannot be `null`.
-  const AsyncError(this.error, [this.stackTrace]);
+  const AsyncError(this.error, {this.stackTrace, this.previous});
 
   /// The error.
   final Object error;
 
   /// The stacktrace of [error].
   final StackTrace? stackTrace;
+
+  /// The last valid data before this error, or null is none.
+  final AsyncData<T>? previous;
 
   @override
   R _map<R>({
@@ -400,7 +408,7 @@ class AsyncError<T> implements AsyncValue<T> {
 
   @override
   String toString() {
-    return 'AsyncError<$T>(error: $error, stackTrace: $stackTrace)';
+    return 'AsyncError<$T>(error: $error, stackTrace: $stackTrace, previous: $previous)';
   }
 
   @override
@@ -408,13 +416,99 @@ class AsyncError<T> implements AsyncValue<T> {
     return runtimeType == other.runtimeType &&
         other is AsyncError<T> &&
         other.error == error &&
+        other.previous == previous &&
         other.stackTrace == stackTrace;
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, error, stackTrace);
+  int get hashCode => Object.hash(runtimeType, error, stackTrace, previous);
 }
 
 /// An exception thrown when trying to read [AsyncValueX.value] before the value
 /// was loaded.
 class AsyncValueLoadingError extends Error {}
+
+// /// A class that allows to safely represent a state which can potentially fail.
+// ///
+// /// This is similar to [AsyncValue], but with no "loading" state.
+// @immutable
+// abstract class Result<T> {
+//   const Result._();
+
+//   const factory Result.data(T value) = ResultData<T>;
+//   const factory Result.error(Object error, {StackTrace? stackTrace}) =
+//       ResultError<T>;
+
+//   T get value;
+
+//   @override
+//   R _map<R>({
+//     required R Function(ResultData<T> data) data,
+//     required R Function(ResultError<T> error) error,
+//   });
+// }
+
+// class ResultData<T> extends Result<T> {
+//   const ResultData(this.value) : super._();
+
+//   @override
+//   final T value;
+
+//   @override
+//   R _map<R>({
+//     required R Function(ResultData<T> data) data,
+//     required R Function(ResultError<T> error) error,
+//   }) {
+//     return data(this);
+//   }
+
+//   @override
+//   bool operator ==(Object other) {
+//     return runtimeType == other.runtimeType &&
+//         other is ResultData<T> &&
+//         other.value == value;
+//   }
+
+//   @override
+//   int get hashCode => Object.hash(runtimeType, value);
+
+//   @override
+//   String toString() {
+//     return 'ResultData<$T>(value: $value)';
+//   }
+// }
+
+// class ResultError<T> extends Result<T> {
+//   const ResultError(this.error, {this.stackTrace}) : super._();
+
+//   final Object error;
+//   final StackTrace? stackTrace;
+
+//   @override
+//   // ignore: only_throw_errors
+//   T get value => throw error;
+
+//   @override
+//   R _map<R>({
+//     required R Function(ResultData<T> data) data,
+//     required R Function(ResultError<T> error) error,
+//   }) {
+//     return error(this);
+//   }
+
+//   @override
+//   bool operator ==(Object other) {
+//     return runtimeType == other.runtimeType &&
+//         other is ResultError<T> &&
+//         other.error == error &&
+//         other.stackTrace == stackTrace;
+//   }
+
+//   @override
+//   int get hashCode => Object.hash(runtimeType, error, stackTrace);
+
+//   @override
+//   String toString() {
+//     return 'ResultError<$T>(error: $error, stackTrace: $stackTrace)';
+//   }
+// }

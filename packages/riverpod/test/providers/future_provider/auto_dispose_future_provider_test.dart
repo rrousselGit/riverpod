@@ -101,14 +101,16 @@ void main() {
     );
     expect(
       container.read(provider),
-      const AsyncError<int>(42, StackTrace.empty),
+      const AsyncError<int>(42, stackTrace: StackTrace.empty),
     );
 
     container.read(dep).state = Future.value(21);
 
     expect(
       container.read(provider),
-      const AsyncLoading<int>(previous: AsyncError<int>(42, StackTrace.empty)),
+      const AsyncLoading<int>(
+        previous: AsyncError(42, stackTrace: StackTrace.empty),
+      ),
     );
   });
 
@@ -125,7 +127,7 @@ void main() {
     result = 1;
     expect(
       container.refresh(provider),
-      const AsyncValue<int>.loading(previous: AsyncValue.data(0)),
+      const AsyncValue<int>.loading(previous: AsyncData(0)),
     );
 
     expect(await container.read(provider.future), 1);

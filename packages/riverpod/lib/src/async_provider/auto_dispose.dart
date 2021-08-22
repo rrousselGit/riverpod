@@ -29,13 +29,18 @@ class AutoDisposeAsyncProviderElement<T>
           return;
         }
 
-        previous.maybeMap(
+        previous.when(
+          data: (value) {
+            super.setState(AsyncLoading(previous: AsyncData(value)));
+          },
+          error: (err, stack) {
+            super.setState(
+              AsyncLoading(previous: AsyncError<T>(err, stackTrace: stack)),
+            );
+          },
           loading: (_) {
             // TODO test does not notify listeners
             // preserve the previous value, nothing to do
-          },
-          orElse: () {
-            super.setState(AsyncLoading(previous: previous));
           },
         );
       },

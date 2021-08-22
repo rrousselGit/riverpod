@@ -107,7 +107,7 @@ void main() {
       );
       expect(
         container.read(provider),
-        const AsyncError<int>(42, StackTrace.empty),
+        const AsyncError<int>(42, stackTrace: StackTrace.empty),
       );
 
       container.read(dep).state = Stream.value(21);
@@ -115,7 +115,7 @@ void main() {
       expect(
         container.read(provider),
         const AsyncLoading<int>(
-          previous: AsyncError<int>(42, StackTrace.empty),
+          previous: AsyncError<int>(42, stackTrace: StackTrace.empty),
         ),
       );
     });

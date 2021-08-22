@@ -70,7 +70,7 @@ class FutureProvider<State> extends AsyncProvider<State>
   Override overrideWithValue(AsyncValue<State> value) {
     return ProviderOverride((setup) {
       setup(origin: future, override: future);
-      setup(origin: this, override: ValueProvider<AsyncValue<State>>(value));
+      setup(origin: this, override: _AsyncValueProvider<State>(value));
     });
   }
 
@@ -132,5 +132,51 @@ class FutureProviderFamily<State, Arg>
       setup(origin: futureProvider, override: override(arg));
       setup(origin: futureProvider.future, override: futureProvider.future);
     });
+  }
+}
+
+class _AsyncValueProvider<T> extends AsyncProvider<T> {
+  _AsyncValueProvider(this.value) : super(null);
+
+  final AsyncValue<T> value;
+
+  @override
+  AsyncValue<T> create(covariant ProviderRefBase ref) {
+    return value;
+  }
+
+  @override
+  _AsyncValueElement<T> createElement() {
+    return _AsyncValueElement(this);
+  }
+
+  @override
+  void setupOverride(
+    void Function({
+      required ProviderBase origin,
+      required ProviderBase override,
+    })
+        setup,
+  ) {
+    throw UnimplementedError();
+  }
+
+  @override
+  bool updateShouldNotify(AsyncValue<T> previousState, AsyncValue<T> newState) {
+    return true;
+  }
+}
+
+class _AsyncValueElement<T> extends AsyncProviderElement<T> {
+  _AsyncValueElement(_AsyncValueProvider<T> provider) : super(provider);
+
+  @override
+  void update(covariant _AsyncValueProvider<T> newProvider) {
+    super.update(newProvider);
+
+    final newValue = (provider as _AsyncValueProvider<T>).value;
+    if (newValue != getState()) {
+      setState(newValue);
+    }
   }
 }
