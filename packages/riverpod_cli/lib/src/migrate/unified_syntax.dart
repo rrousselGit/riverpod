@@ -632,13 +632,21 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       if (functionName == 'when' ||
           functionName == 'maybeWhen' &&
               (target?.contains('AsyncValue') ?? false)) {
-        final args = node.argumentList.arguments.where(
+        final loadingArgs = node.argumentList.arguments.where(
             (a) => (a is NamedExpression) && a.name.label.name == 'loading');
-        if (args.isNotEmpty) {
-          final loading =
-              (args.first as NamedExpression).expression as FunctionExpression;
+        if (loadingArgs.isNotEmpty) {
+          final loading = (loadingArgs.first as NamedExpression).expression
+              as FunctionExpression;
           yieldPatch('last', loading.parameters!.leftParenthesis.offset + 1,
               loading.parameters!.leftParenthesis.offset + 1);
+        }
+        final errorArgs = node.argumentList.arguments.where(
+            (a) => (a is NamedExpression) && a.name.label.name == 'error');
+        if (errorArgs.isNotEmpty) {
+          final error = (errorArgs.first as NamedExpression).expression
+              as FunctionExpression;
+          yieldPatch('last, ', error.parameters!.leftParenthesis.offset + 1,
+              error.parameters!.leftParenthesis.offset + 1);
         }
       }
 
