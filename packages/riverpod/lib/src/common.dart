@@ -232,7 +232,12 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// If [AsyncValue] was in a case that is not handled, will return [orElse].
   R maybeWhen<R>({
     R Function(T data)? data,
-    R Function(Object error, StackTrace? stackTrace)? error,
+    R Function(
+      Object error,
+      StackTrace? stackTrace,
+      AsyncData<T>? previous,
+    )?
+        error,
     R Function(AsyncValue<T>? previous)? loading,
     required R Function() orElse,
   }) {
@@ -242,7 +247,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
         return orElse();
       },
       error: (e) {
-        if (error != null) return error(e.error, e.stackTrace);
+        if (error != null) return error(e.error, e.stackTrace, e.previous);
         return orElse();
       },
       loading: (l) {
@@ -257,12 +262,17 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// All cases are required, which allows returning a non-nullable value.
   R when<R>({
     required R Function(T data) data,
-    required R Function(Object error, StackTrace? stackTrace) error,
+    required R Function(
+      Object error,
+      StackTrace? stackTrace,
+      AsyncData<T>? previous,
+    )
+        error,
     required R Function(AsyncValue<T>? previous) loading,
   }) {
     return _map(
       data: (d) => data(d.value),
-      error: (e) => error(e.error, e.stackTrace),
+      error: (e) => error(e.error, e.stackTrace, e.previous),
       loading: (l) => loading(l.previous),
     );
   }
@@ -274,12 +284,17 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// This is similar to [maybeWhen] where `orElse` returns null.
   R? whenOrNull<R>({
     R Function(T data)? data,
-    R Function(Object error, StackTrace? stackTrace)? error,
+    R Function(
+      Object error,
+      StackTrace? stackTrace,
+      AsyncData<T>? previous,
+    )?
+        error,
     R Function(AsyncValue<T>? previous)? loading,
   }) {
     return _map(
       data: (d) => data?.call(d.value),
-      error: (e) => error?.call(e.error, e.stackTrace),
+      error: (e) => error?.call(e.error, e.stackTrace, e.previous),
       loading: (l) => loading?.call(l.previous),
     );
   }
@@ -427,88 +442,3 @@ class AsyncError<T> implements AsyncValue<T> {
 /// An exception thrown when trying to read [AsyncValueX.value] before the value
 /// was loaded.
 class AsyncValueLoadingError extends Error {}
-
-// /// A class that allows to safely represent a state which can potentially fail.
-// ///
-// /// This is similar to [AsyncValue], but with no "loading" state.
-// @immutable
-// abstract class Result<T> {
-//   const Result._();
-
-//   const factory Result.data(T value) = ResultData<T>;
-//   const factory Result.error(Object error, {StackTrace? stackTrace}) =
-//       ResultError<T>;
-
-//   T get value;
-
-//   @override
-//   R _map<R>({
-//     required R Function(ResultData<T> data) data,
-//     required R Function(ResultError<T> error) error,
-//   });
-// }
-
-// class ResultData<T> extends Result<T> {
-//   const ResultData(this.value) : super._();
-
-//   @override
-//   final T value;
-
-//   @override
-//   R _map<R>({
-//     required R Function(ResultData<T> data) data,
-//     required R Function(ResultError<T> error) error,
-//   }) {
-//     return data(this);
-//   }
-
-//   @override
-//   bool operator ==(Object other) {
-//     return runtimeType == other.runtimeType &&
-//         other is ResultData<T> &&
-//         other.value == value;
-//   }
-
-//   @override
-//   int get hashCode => Object.hash(runtimeType, value);
-
-//   @override
-//   String toString() {
-//     return 'ResultData<$T>(value: $value)';
-//   }
-// }
-
-// class ResultError<T> extends Result<T> {
-//   const ResultError(this.error, {this.stackTrace}) : super._();
-
-//   final Object error;
-//   final StackTrace? stackTrace;
-
-//   @override
-//   // ignore: only_throw_errors
-//   T get value => throw error;
-
-//   @override
-//   R _map<R>({
-//     required R Function(ResultData<T> data) data,
-//     required R Function(ResultError<T> error) error,
-//   }) {
-//     return error(this);
-//   }
-
-//   @override
-//   bool operator ==(Object other) {
-//     return runtimeType == other.runtimeType &&
-//         other is ResultError<T> &&
-//         other.error == error &&
-//         other.stackTrace == stackTrace;
-//   }
-
-//   @override
-//   int get hashCode => Object.hash(runtimeType, error, stackTrace);
-
-//   @override
-//   String toString() {
-//     return 'ResultError<$T>(error: $error, stackTrace: $stackTrace)';
-//   }
-// }

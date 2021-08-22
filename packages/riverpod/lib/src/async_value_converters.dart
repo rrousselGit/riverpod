@@ -219,7 +219,7 @@ Future<State> _asyncValueAsFuture<State>(
           ref.setState(Future<State>.value(data));
         }
       },
-      error: (err, stack) {
+      error: (err, stack, _) {
         if (loadingCompleter != null) {
           loadingCompleter!.completeError(err, stack);
           // allow follow-up error calls to go on the 'else' branch
