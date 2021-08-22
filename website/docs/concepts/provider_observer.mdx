@@ -26,7 +26,12 @@ A simple use case for [ProviderObserver], is to log the changes in providers by 
 
 class Logger extends ProviderObserver {
   @override
-  void didUpdateProvider(ProviderBase provider, Object? newValue) {
+  void didUpdateProvider(
+    ProviderBase provider,
+    Object? previousValue,
+    Object? newValue,
+    ProviderContainer container,
+  ) {
     print('''
 {
   "provider": "${provider.name ?? provider.runtimeType}",

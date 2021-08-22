@@ -209,6 +209,8 @@ final repositoryProvider = Provider((ref) => Repository(ref.read));
 
 test('fetches catalog', () async {
   final container = ProviderContainer();
+  addTearOff(container.dispose);
+
   Repository repository = container.read(repositoryProvider);
 
   await expectLater(
