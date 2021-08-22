@@ -367,6 +367,42 @@ void main() {
     );
     expect(
       AsyncValue<int>.error(value, stackTrace: stack),
+      isNot(
+        AsyncValue<int>.error(
+          value,
+          stackTrace: stack,
+          previous: const AsyncData(42),
+        ),
+      ),
+    );
+    expect(
+      AsyncValue<int>.error(
+        value,
+        stackTrace: stack,
+        previous: const AsyncData(42),
+      ),
+      AsyncValue<int>.error(
+        value,
+        stackTrace: stack,
+        previous: const AsyncData(42),
+      ),
+    );
+    expect(
+      AsyncValue<int>.error(
+        value,
+        stackTrace: stack,
+        previous: const AsyncData(42),
+      ),
+      isNot(
+        AsyncValue<int>.error(
+          value,
+          stackTrace: stack,
+          previous: const AsyncData(21),
+        ),
+      ),
+    );
+    expect(
+      AsyncValue<int>.error(value, stackTrace: stack),
       isNot(AsyncValue<num>.error(value, stackTrace: stack)),
     );
     expect(
@@ -431,6 +467,28 @@ void main() {
     expect(
       AsyncValue<int>.error(value, stackTrace: stack).hashCode,
       AsyncValue<int>.error(value, stackTrace: stack).hashCode,
+    );
+    expect(
+      AsyncValue<int>.error(value, stackTrace: stack).hashCode,
+      isNot(
+        AsyncValue<int>.error(
+          value,
+          stackTrace: stack,
+          previous: const AsyncData(42),
+        ).hashCode,
+      ),
+    );
+    expect(
+      AsyncValue<int>.error(
+        value,
+        stackTrace: stack,
+        previous: const AsyncData(42),
+      ).hashCode,
+      AsyncValue<int>.error(
+        value,
+        stackTrace: stack,
+        previous: const AsyncData(42),
+      ).hashCode,
     );
     expect(
       AsyncValue<int>.error(value, stackTrace: stack).hashCode,
