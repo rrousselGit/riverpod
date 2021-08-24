@@ -6,6 +6,7 @@ import 'package:glob/glob.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
 
+import 'migrate/errors.dart';
 import 'migrate/imports.dart';
 import 'migrate/notifiers.dart';
 import 'migrate/unified_syntax.dart';
@@ -87,5 +88,11 @@ class MigrateCommand extends Command<void> {
       versionMigrationSuggestor,
       args: argResults?.arguments ?? [],
     );
+    if (errorOccuredDuringMigration) {
+      printErrorLogs();
+    } else {
+      stdout.writeln(
+          'Migration finished successfully please run `flutter pub upgrade`');
+    }
   }
 }
