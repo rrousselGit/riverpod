@@ -224,14 +224,15 @@ function Home() {
                           </a>
                         ),
                         build: <code>build</code>,
+                        truly: <strong>truly</strong>,
                       }}
                     >
                       {`We no-longer have to sort/filter lists inside the {build}
                       method or have to resort to advanced cache mechanism.
-                      \n
-                      \n
+                      {br}
+                      {br}
                       With {Provider} and {families}, sort your lists or do HTTP
-                      requests only when you <strong>truly</strong> need it.`}
+                      requests only when you {truly} need it.`}
                     </Translate>
                   </p>
                 </div>
