@@ -31,7 +31,7 @@ const features = [
     description: (
       <Translate id="homepage.unlimited_provider_body">
         Riverpod is inspired from Provider but solve key issues such as
-        supporting multiple providers of the same type; awaiting asyncrhonous
+        supporting multiple providers of the same type; awaiting asynchronous
         providers; adding providers from anywhere, ...
       </Translate>
     ),
