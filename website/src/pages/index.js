@@ -49,7 +49,7 @@ const features = [
         values={{ BuildContext: <code>BuildContext</code> }}
       >
         {`Create/share/tests providers, with no dependency on Flutter. This
-        includes being able to listen to providers without a{" "}
+        includes being able to listen to providers without a
         {BuildContext}.`}
       </Translate>
     ),
