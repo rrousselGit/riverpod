@@ -31,7 +31,7 @@ const features = [
     description: (
       <Translate id="homepage.unlimited_provider_body">
         Riverpod is inspired from Provider but solve key issues such as
-        supporting multiple providers of the same type; awaiting asyncrhonous
+        supporting multiple providers of the same type; awaiting asynchronous
         providers; adding providers from anywhere, ...
       </Translate>
     ),
@@ -49,7 +49,7 @@ const features = [
         values={{ BuildContext: <code>BuildContext</code> }}
       >
         {`Create/share/tests providers, with no dependency on Flutter. This
-        includes being able to listen to providers without a{" "}
+        includes being able to listen to providers without a
         {BuildContext}.`}
       </Translate>
     ),
@@ -224,14 +224,15 @@ function Home() {
                           </a>
                         ),
                         build: <code>build</code>,
+                        truly: <strong>truly</strong>,
                       }}
                     >
                       {`We no-longer have to sort/filter lists inside the {build}
                       method or have to resort to advanced cache mechanism.
-                      \n
-                      \n
+                      {br}
+                      {br}
                       With {Provider} and {families}, sort your lists or do HTTP
-                      requests only when you <strong>truly</strong> need it.`}
+                      requests only when you {truly} need it.`}
                     </Translate>
                   </p>
                 </div>
