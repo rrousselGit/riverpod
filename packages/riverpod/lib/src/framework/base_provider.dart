@@ -598,7 +598,12 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     }
   }
 
-  State? getState() => _state;
+  State? getState() {
+    if (_exception != null) {
+      throw _exception!;
+    }
+    return _state;
+  }
 
   /* /STATE */
 
@@ -855,9 +860,6 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
   State getExposedValue() {
     flush();
 
-    if (_exception != null) {
-      throw _exception!;
-    }
     return getState() as State;
   }
 
