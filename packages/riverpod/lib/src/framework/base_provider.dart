@@ -695,8 +695,9 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
 
       // Unsubscribe to everything that a provider no-longer depends on.
       for (final sub in _previousDependencies!.entries) {
-        // TODO(rrousselGit) refactor
-        sub.key._dependents.remove(this);
+        sub.key
+          .._dependents.remove(this)
+          ..mayNeedDispose();
       }
       _previousDependencies = null;
       _mustRecomputeState = false;

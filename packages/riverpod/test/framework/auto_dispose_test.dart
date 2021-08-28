@@ -5,6 +5,57 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
+  test(
+      'when a provider conditionally depends on another provider, rebuilding without the dependency can dispose the dependency',
+      () async {
+    final container = createContainer();
+    var dependencyDisposeCount = 0;
+    final dependency = Provider.autoDispose((ref) {
+      ref.onDispose(() => dependencyDisposeCount++);
+      return 0;
+    });
+    final isDependendingOnDependency = StateProvider((ref) => true);
+    final provider = Provider.autoDispose((ref) {
+      ref.maintainState = true;
+      if (ref.watch(isDependendingOnDependency).state) {
+        ref.watch(dependency);
+      }
+    });
+
+    container.read(provider);
+
+    expect(dependencyDisposeCount, 0);
+    expect(
+      container.getAllProviderElements(),
+      unorderedEquals(<Matcher>[
+        isA<ProviderElementBase>()
+            .having((e) => e.provider, 'provider', dependency),
+        isA<ProviderElementBase>()
+            .having((e) => e.provider, 'provider', provider),
+        isA<ProviderElementBase>()
+            .having((e) => e.provider, 'provider', isDependendingOnDependency),
+        isA<ProviderElementBase>().having(
+            (e) => e.provider, 'provider', isDependendingOnDependency.notifier),
+      ]),
+    );
+
+    container.read(isDependendingOnDependency).state = false;
+    await container.pump();
+
+    expect(dependencyDisposeCount, 1);
+    expect(
+      container.getAllProviderElements(),
+      unorderedEquals(<Matcher>[
+        isA<ProviderElementBase>()
+            .having((e) => e.provider, 'provider', provider),
+        isA<ProviderElementBase>()
+            .having((e) => e.provider, 'provider', isDependendingOnDependency),
+        isA<ProviderElementBase>().having(
+            (e) => e.provider, 'provider', isDependendingOnDependency.notifier),
+      ]),
+    );
+  });
+
   test('works if used accross a ProviderContainer', () async {
     var value = 0;
     var buildCount = 0;

@@ -44,6 +44,11 @@ Widget build(context, ref) {
 - `AsyncError` can now be instantiated with `const`.
 - `AsyncLoading` now optionally includes the previous "state".
 
+### Bug-fixes
+
+- fixed an issue where conditionally depending on an "autoDispose" provider
+  may not properly dispose of it (see #712)
+
 ## 1.0.0-dev.7
 
 - Fixed `ProviderObserver` not working when modifying a `StateProvider`.
