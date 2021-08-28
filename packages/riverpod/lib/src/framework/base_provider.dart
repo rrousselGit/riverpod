@@ -686,14 +686,11 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
           _debugCurrentlyBuildingElement = null;
           return true;
         }(), '');
-        try {
-          notifyListeners(previousState: previousState);
-        } finally {
-          assert(() {
-            _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
-            return true;
-          }(), '');
-        }
+        notifyListeners(previousState: previousState);
+        assert(() {
+          _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
+          return true;
+        }(), '');
       }
 
       // Unsubscribe to everything that a provider no-longer depends on.
