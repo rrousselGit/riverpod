@@ -48,6 +48,8 @@ Widget build(context, ref) {
 
 - fixed an issue where conditionally depending on an "autoDispose" provider
   may not properly dispose of it (see #712)
+- fixed an issue where when chaining providers, widgets may re-render
+  a frame late, potentially causing a flicker. (see #648)
 
 ## 1.0.0-dev.7
 
