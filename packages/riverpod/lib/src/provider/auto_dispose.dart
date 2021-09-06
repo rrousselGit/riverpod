@@ -26,7 +26,7 @@ class AutoDisposeProviderElement<State>
       return true;
     }(), '');
 
-    return getState() as State;
+    return getState().value;
   }
 
   @override

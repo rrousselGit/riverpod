@@ -99,7 +99,7 @@ AsyncValue<State> _listenFuture<State>(
       },
     );
 
-    return ref.getState()!;
+    return ref.getState().value;
   } catch (err, stack) {
     return AsyncValue.error(err, stack);
   }

@@ -69,7 +69,7 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
     final removeListener = notifier.addListener(listener);
     ref.onDispose(removeListener);
 
-    return ref.getState() as State;
+    return ref.getState().value;
   }
 
   @override

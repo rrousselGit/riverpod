@@ -233,7 +233,7 @@ class ProviderElement<State> extends ProviderElementBase<State>
 
   @override
   State get state {
-    final state = getState();
+    final state = getState().value;
 
     assert(() {
       if (!_debugDidSetValue) {
@@ -245,7 +245,7 @@ class ProviderElement<State> extends ProviderElementBase<State>
       return true;
     }(), '');
 
-    return state as State;
+    return state;
   }
 
   @override

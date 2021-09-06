@@ -62,7 +62,7 @@ class StateProviderElement<State>
       }
       return true;
     }(), '');
-    return getState()!;
+    return getState().value;
   }
 
   @override

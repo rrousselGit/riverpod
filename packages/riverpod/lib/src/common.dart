@@ -199,7 +199,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// If the value was an error, will throw the error instead.
   /// If the value is still loading, will throw an [AsyncValueLoadingError].
   T get value {
-    return _map(
+    return _map<T>(
       data: (d) => d.value,
       // ignore: only_throw_errors
       error: (e) => throw e.error,

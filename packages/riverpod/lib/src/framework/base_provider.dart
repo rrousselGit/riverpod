@@ -23,10 +23,6 @@ typedef FamilyCreate<T, Ref extends ProviderRefBase, Arg> = T Function(
   Arg arg,
 );
 
-class _Default {
-  const _Default();
-}
-
 /// A function that reads the state of a provider.
 typedef Reader = T Function<T>(ProviderBase<T> provider);
 
@@ -580,30 +576,36 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
 
   bool _didBuild = false;
 
-  ProviderException? _exception;
-
   /* STATE */
-  State? _state;
+  var _state = AsyncValue<State>.loading();
 
   // Using default values to differentiate between `notifyListeners()` and `notifyListeners(newValue: null)`
   // It is safe to type `newValue` as Object? because the method is hidden
   // under a type-safe interface that types it as `State newValue` instead.
   void setState(State newState) {
-    late State previousState;
-    if (_didBuild) previousState = getState() as State;
+    final previousState = getState();
 
-    _state = newState;
-    if (_didBuild && provider.updateShouldNotify(previousState, newState)) {
+    _state = AsyncData<State>(newState);
+
+    if (_didBuild &&
+        provider.updateShouldNotify(previousState.value, newState)) {
       notifyListeners(previousState: previousState);
     }
   }
 
-  State? getState() {
-    if (_exception != null) {
-      throw _exception!;
-    }
-    return _state;
+  void setError(Object error, StackTrace? stackTrace) {
+    _state = AsyncError<State>(
+      ProviderException._(error, stackTrace, provider),
+      stackTrace,
+    );
+
+    notifyListeners(
+// TODO previous
+
+        );
   }
+
+  AsyncValue<State> getState() => _state;
 
   /* /STATE */
 
@@ -673,16 +675,16 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
       _previousDependencies = _dependencies;
       _dependencies = HashMap();
 
-      final previousState = getState() as State;
-
       assert(() {
         debugWillRebuildState();
         return true;
       }(), '');
 
+      final previousState = getState();
+
       _buildState();
 
-      if (provider.updateShouldNotify(previousState, getState() as State)) {
+      if (provider.updateShouldNotify(previousState.value, getState().value)) {
         ProviderElementBase? debugPreviouslyBuildingElement;
         assert(() {
           debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
@@ -709,7 +711,7 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     }
   }
 
-  void notifyListeners({Object? previousState = const _Default()}) {
+  void notifyListeners({AsyncValue<State>? previousState}) {
     assert(
         _debugCurrentlyBuildingElement == null ||
             _debugCurrentlyBuildingElement == this,
@@ -723,32 +725,46 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
       return true;
     }(), '');
 
-    final newValue = getState() as State;
     final listeners = _listeners.toList(growable: false);
     final subscribers = _subscribers.toList(growable: false);
-    for (var i = 0; i < listeners.length; i++) {
-      Zone.current.runUnaryGuarded(listeners[i]._listener, newValue);
-    }
-    for (var i = 0; i < subscribers.length; i++) {
-      Zone.current.runUnaryGuarded(subscribers[i].listener, newValue);
-    }
+
+    final state = getState();
+
+    state.whenOrNull(
+      // TODO error
+      data: (state) {
+        for (var i = 0; i < listeners.length; i++) {
+          Zone.current.runUnaryGuarded(listeners[i]._listener, state);
+        }
+        for (var i = 0; i < subscribers.length; i++) {
+          Zone.current.runUnaryGuarded(subscribers[i].listener, state);
+        }
+      },
+    );
 
     for (var i = 0; i < _dependents.length; i++) {
       _dependents[i]._didChangeDependency();
     }
 
-    if (previousState != const _Default()) {
-      for (final observer in _container._observers) {
-        Zone.current.runGuarded(
-          () => observer.didUpdateProvider(
-            provider,
-            previousState,
-            getState(),
-            _container,
-          ),
-        );
-      }
-    }
+    state.whenOrNull(
+      // TODO error
+      data: (state) {
+        if (previousState != null && previousState is! AsyncLoading) {
+          // TODO "loading" handling
+          for (final observer in _container._observers) {
+            // TODO error handling
+            Zone.current.runGuarded(
+              () => observer.didUpdateProvider(
+                provider,
+                previousState,
+                getState(),
+                _container,
+              ),
+            );
+          }
+        }
+      },
+    );
   }
 
   void _didChangeDependency() {
@@ -860,7 +876,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
   State getExposedValue() {
     flush();
 
-    return getState() as State;
+    return getState().value;
   }
 
   @protected
@@ -876,7 +892,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
       _didBuild = false;
       setState(_provider.create(this));
     } catch (err, stack) {
-      _exception = ProviderException._(err, stack, _provider);
+      setError(err, stack);
     } finally {
       _didBuild = true;
       assert(() {
@@ -1043,7 +1059,7 @@ class ProviderException implements Exception {
   final Object exception;
 
   /// The [StackTrace] associated with [exception].
-  final StackTrace stackTrace;
+  final StackTrace? stackTrace;
 
   /// The provider that threw this exception.
   final ProviderBase provider;

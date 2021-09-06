@@ -114,6 +114,39 @@ void main() {
     });
 
     group('.watch', () {
+      test('when selector throws, rebuild providers', () {
+        throw UnimplementedError();
+      });
+
+      test(
+          'when rebuilding a provider after an uncaught exception, correctly updates dependents',
+          () {
+        final container = createContainer();
+        final throws = StateProvider((ref) => true);
+        final provider = Provider((ref) {
+          print('build provider');
+          if (ref.watch(throws).state) {
+            throw UnimplementedError();
+          }
+
+          return 0;
+        });
+
+        final dep = Provider((ref) {
+          print('build dep');
+          return ref.watch(provider);
+        });
+
+        expect(
+          () => container.read(dep),
+          throwsA(isA<ProviderException>()),
+        );
+
+        container.read(throws).state = false;
+
+        expect(container.read(dep), 0);
+      });
+
       test('can listen multiple providers at once', () async {
         final container = createContainer();
         final count = StateProvider((ref) => 0);

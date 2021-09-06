@@ -59,7 +59,7 @@ class AutoDisposeStateProviderElement<State>
       }
       return true;
     }(), '');
-    return getState()!;
+    return getState().value;
   }
 
   @override

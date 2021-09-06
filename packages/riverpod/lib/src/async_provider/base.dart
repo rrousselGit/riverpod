@@ -19,20 +19,23 @@ class AsyncProviderElement<T> extends ProviderElementBase<AsyncValue<T>> {
   void setState(AsyncValue<T> newState) {
     newState.maybeWhen(
       loading: (_) {
-        final previous = getState();
-
-        if (previous == null) {
-          super.setState(AsyncLoading<T>());
-          return;
-        }
-
-        previous.maybeMap(
+        getState().when(
           loading: (_) {
-            // TODO test does not notify listeners
-            // preserve the previous value, nothing to do
+            super.setState(AsyncLoading<T>());
           },
-          orElse: () {
-            super.setState(AsyncLoading(previous: previous));
+          error: (_, __) {
+            // TODO
+          },
+          data: (previous) {
+            previous.maybeMap(
+              loading: (_) {
+                // TODO test does not notify listeners
+                // preserve the previous value, nothing to do
+              },
+              orElse: () {
+                super.setState(AsyncLoading(previous: previous));
+              },
+            );
           },
         );
       },

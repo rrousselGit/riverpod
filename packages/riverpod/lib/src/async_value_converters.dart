@@ -113,7 +113,7 @@ Stream<State> _asyncValueToStream<State>(
 
   ref.listen<AsyncValue<State>>(provider, listener, fireImmediately: true);
 
-  return ref.getState()!;
+  return ref.getState().value;
 }
 
 ///
@@ -230,5 +230,5 @@ Future<State> _asyncValueAsFuture<State>(
 
   ref.listen<AsyncValue<State>>(provider, listener, fireImmediately: true);
 
-  return ref.getState()!;
+  return ref.getState().value;
 }
