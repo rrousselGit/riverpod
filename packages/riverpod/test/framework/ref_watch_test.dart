@@ -46,6 +46,52 @@ void main() {
     verifyNoMoreInteractions(onDispose);
   });
 
+  test('throw when trying to use ref.read inside selectors during initial call',
+      () {
+    final dep = Provider((ref) => 0);
+    final provider = Provider((ref) {
+      ref.watch(dep.select((value) => ref.read(dep)));
+    });
+    final container = createContainer();
+
+    expect(
+      () => container.read(provider),
+      throwsA(isA<ProviderException>()),
+    );
+  });
+
+  test(
+      'throw when trying to use ref.watch inside selectors during initial call',
+      () {
+    final dep = Provider((ref) => 0);
+    final provider = Provider((ref) {
+      ref.watch(dep.select((value) => ref.watch(dep)));
+    });
+    final container = createContainer();
+
+    expect(
+      () => container.read(provider),
+      throwsA(isA<ProviderException>()),
+    );
+  });
+  test(
+      'throw when trying to use ref.listen inside selectors during initial call',
+      () {
+    final dep = Provider((ref) => 0);
+    final provider = Provider((ref) {
+      ref.watch(dep.select((value) {
+        ref.listen(dep, (value) {});
+        return 0;
+      }));
+    });
+    final container = createContainer();
+
+    expect(
+      () => container.read(provider),
+      throwsA(isA<ProviderException>()),
+    );
+  });
+
   test(
       'when selecting a provider, element.visitChildren visits the selected provider',
       () {

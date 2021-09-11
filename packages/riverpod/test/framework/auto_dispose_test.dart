@@ -1,10 +1,146 @@
+import 'package:expect_error/expect_error.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
 
-void main() {
+Future<void> main() async {
+  final library = await Library.parseFromStacktrace();
+
+  group(
+      'emits compilation error when passing an autoDispose provider to a non-autoDispose provider',
+      () {
+    test('to ref.watch', () {
+      expect(library.withCode('''
+import 'package:riverpod/riverpod.dart';
+
+final autoDispose = Provider.autoDispose<int>((ref) => 0);
+
+final alwaysAlive = Provider((ref) {
+  // expect-error: ARGUMENT_TYPE_NOT_ASSIGNABLE
+  ref.watch(autoDispose);
+});
+'''), compiles);
+    });
+
+    test('to ref.watch when using selectors', () {
+      expect(library.withCode('''
+import 'package:riverpod/riverpod.dart';
+
+final autoDispose = Provider.autoDispose<int>((ref) => 0);
+
+final alwaysAlive = Provider((ref) {
+  ref.watch(
+    // expect-error: ARGUMENT_TYPE_NOT_ASSIGNABLE
+    autoDispose
+      .select((value) => value),
+  );
+});
+'''), compiles);
+    });
+
+    test('to ref.read when using selectors', () {
+      expect(library.withCode('''
+import 'package:riverpod/riverpod.dart';
+
+final autoDispose = Provider.autoDispose<int>((ref) => 0);
+
+final alwaysAlive = Provider((ref) {
+  ref.read(
+    // expect-error: ARGUMENT_TYPE_NOT_ASSIGNABLE
+    autoDispose
+      .select((value) => value),
+  );
+});
+'''), compiles);
+    });
+
+    test('to ref.listen', () {
+      expect(library.withCode('''
+import 'package:riverpod/riverpod.dart';
+
+final autoDispose = Provider.autoDispose<int>((ref) => 0);
+
+final alwaysAlive = Provider((ref) {
+  ref.listen<int>(
+    // expect-error: ARGUMENT_TYPE_NOT_ASSIGNABLE
+    autoDispose,
+    (value) {},
+  );
+});
+'''), compiles);
+    });
+
+    test('to ref.listen when using selectors', () {
+      expect(library.withCode('''
+import 'package:riverpod/riverpod.dart';
+
+final autoDispose = Provider.autoDispose<int>((ref) => 0);
+
+final alwaysAlive = Provider((ref) {
+  ref.listen<int>(
+    // expect-error: ARGUMENT_TYPE_NOT_ASSIGNABLE
+    autoDispose
+      .select((value) => value),
+    (value) {},
+  );
+});
+'''), compiles);
+    });
+  });
+
+  test(
+      'when a provider conditionally depends on another provider, rebuilding without the dependency can dispose the dependency',
+      () async {
+    final container = createContainer();
+    var dependencyDisposeCount = 0;
+    final dependency = Provider.autoDispose((ref) {
+      ref.onDispose(() => dependencyDisposeCount++);
+      return 0;
+    });
+    final isDependendingOnDependency = StateProvider((ref) => true);
+    final provider = Provider.autoDispose((ref) {
+      ref.maintainState = true;
+      if (ref.watch(isDependendingOnDependency).state) {
+        ref.watch(dependency);
+      }
+    });
+
+    container.read(provider);
+
+    expect(dependencyDisposeCount, 0);
+    expect(
+      container.getAllProviderElements(),
+      unorderedEquals(<Matcher>[
+        isA<ProviderElementBase>()
+            .having((e) => e.provider, 'provider', dependency),
+        isA<ProviderElementBase>()
+            .having((e) => e.provider, 'provider', provider),
+        isA<ProviderElementBase>()
+            .having((e) => e.provider, 'provider', isDependendingOnDependency),
+        isA<ProviderElementBase>().having(
+            (e) => e.provider, 'provider', isDependendingOnDependency.notifier),
+      ]),
+    );
+
+    container.read(isDependendingOnDependency).state = false;
+    await container.pump();
+
+    expect(dependencyDisposeCount, 1);
+    expect(
+      container.getAllProviderElements(),
+      unorderedEquals(<Matcher>[
+        isA<ProviderElementBase>()
+            .having((e) => e.provider, 'provider', provider),
+        isA<ProviderElementBase>()
+            .having((e) => e.provider, 'provider', isDependendingOnDependency),
+        isA<ProviderElementBase>().having(
+            (e) => e.provider, 'provider', isDependendingOnDependency.notifier),
+      ]),
+    );
+  });
+
   test('works if used accross a ProviderContainer', () async {
     var value = 0;
     var buildCount = 0;

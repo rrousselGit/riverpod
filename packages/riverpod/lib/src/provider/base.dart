@@ -8,6 +8,8 @@ abstract class ProviderRef<State> implements ProviderRefBase {
   /// Mutating this property will notify the provider listeners.
   ///
   /// Cannot be called while a provider is creating, unless the setter was called first.
+  ///
+  /// Will throw a [ProviderException] if the provider threw during creation.
   State get state;
   set state(State newState);
 }
@@ -231,6 +233,8 @@ class ProviderElement<State> extends ProviderElementBase<State>
 
   @override
   State get state {
+    final state = getState();
+
     assert(() {
       if (!_debugDidSetValue) {
         throw StateError(
@@ -241,7 +245,7 @@ class ProviderElement<State> extends ProviderElementBase<State>
       return true;
     }(), '');
 
-    return getState() as State;
+    return state as State;
   }
 
   @override

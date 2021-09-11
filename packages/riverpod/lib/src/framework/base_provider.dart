@@ -241,6 +241,8 @@ abstract class ProviderBase<State>
   }
 }
 
+var _debugIsRunningSelector = false;
+
 /// An internal class for `ProviderBase.select`.
 @sealed
 class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
@@ -261,14 +263,14 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
     void Function(Output) listener, {
     required bool fireImmediately,
   }) {
-    var lastSelectedValue = selector(container.read(provider));
+    var lastSelectedValue = _select(container.read(provider));
 
     if (fireImmediately) {
       listener(lastSelectedValue);
     }
 
     final sub = container.listen<Input>(provider, (value) {
-      final newSelectedValue = selector(value);
+      final newSelectedValue = _select(value);
       if (newSelectedValue != lastSelectedValue) {
         lastSelectedValue = newSelectedValue;
         listener(lastSelectedValue);
@@ -278,16 +280,32 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
     return _SelectorSubscription(sub, () => lastSelectedValue);
   }
 
+  Output _select(Input value) {
+    assert(() {
+      _debugIsRunningSelector = true;
+      return true;
+    }(), '');
+
+    try {
+      return selector(value);
+    } finally {
+      assert(() {
+        _debugIsRunningSelector = false;
+        return true;
+      }(), '');
+    }
+  }
+
   void Function() _elementListen(
     ProviderElementBase element,
     void Function(Output) listener, {
     required bool fireImmediately,
   }) {
-    var lastValue = selector(element._container.read(provider));
+    var lastValue = _select(element._container.read(provider));
     if (fireImmediately) listener(lastValue);
 
     return element.listen<Input>(provider, (input) {
-      final newValue = selector(input);
+      final newValue = _select(input);
       if (lastValue != newValue) {
         lastValue = newValue;
         listener(newValue);
@@ -598,7 +616,12 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     }
   }
 
-  State? getState() => _state;
+  State? getState() {
+    if (_exception != null) {
+      throw _exception!;
+    }
+    return _state;
+  }
 
   /* /STATE */
 
@@ -686,20 +709,18 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
           _debugCurrentlyBuildingElement = null;
           return true;
         }(), '');
-        try {
-          notifyListeners(previousState: previousState);
-        } finally {
-          assert(() {
-            _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
-            return true;
-          }(), '');
-        }
+        notifyListeners(previousState: previousState);
+        assert(() {
+          _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
+          return true;
+        }(), '');
       }
 
       // Unsubscribe to everything that a provider no-longer depends on.
       for (final sub in _previousDependencies!.entries) {
-        // TODO(rrousselGit) refactor
-        sub.key._dependents.remove(this);
+        sub.key
+          .._dependents.remove(this)
+          ..mayNeedDispose();
       }
       _previousDependencies = null;
       _mustRecomputeState = false;
@@ -788,6 +809,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
 
   @override
   T read<T>(ProviderBase<T> provider) {
+    assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
     assert(_debugAssertCanDependOn(provider), '');
     return _container.read(provider);
   }
@@ -813,6 +835,8 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
 
   @override
   T watch<T>(ProviderListenable<T> listenable) {
+    assert(!_debugIsRunningSelector, 'Cannot call ref.watch inside a selector');
+
     if (listenable is _ProviderSelector) {
       var initialized = false;
       late T firstValue;
@@ -851,15 +875,57 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     return element.getExposedValue();
   }
 
+  @override
+  void Function() listen<T>(
+    ProviderListenable<T> listenable,
+    void Function(T value) listener, {
+    bool fireImmediately = false,
+  }) {
+    assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
+
+    if (listenable is _ProviderSelector<Object?, T>) {
+      return listenable._elementListen(
+        this,
+        listener,
+        fireImmediately: fireImmediately,
+      );
+    }
+
+    final provider = listenable as ProviderBase<T>;
+    // TODO remove by passing the a debug flag to `listen`
+    final element = container.readProviderElement(provider);
+    // TODO test flush
+    element.flush();
+
+    if (fireImmediately) {
+      listener(element.getExposedValue());
+    }
+
+    // TODO(rrousselGit) test
+    // TODO(rrousselGit) onError
+
+    final sub = _ProviderListener._(
+      listenedElement: element,
+      dependentElement: this,
+      listener: listener,
+    );
+
+    element._subscribers.add(sub);
+    _subscriptions.add(sub);
+
+    return () {
+      _subscriptions.remove(sub);
+      // this will remove element._subscribers
+      sub.close();
+    };
+  }
+
   /// Returns the currently exposed by a provider
   ///
   /// May throw if the provider threw when creating the exposed value.
   State getExposedValue() {
     flush();
 
-    if (_exception != null) {
-      throw _exception!;
-    }
     return getState() as State;
   }
 
@@ -982,49 +1048,6 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
 
     _onDisposeListeners?.forEach(_runGuarded);
     _onDisposeListeners = null;
-  }
-
-  @override
-  void Function() listen<T>(
-    ProviderListenable<T> listenable,
-    void Function(T value) listener, {
-    bool fireImmediately = false,
-  }) {
-    if (listenable is _ProviderSelector<Object?, T>) {
-      return listenable._elementListen(
-        this,
-        listener,
-        fireImmediately: fireImmediately,
-      );
-    }
-
-    final provider = listenable as ProviderBase<T>;
-    // TODO remove by passing the a debug flag to `listen`
-    final element = container.readProviderElement(provider);
-    // TODO test flush
-    element.flush();
-
-    if (fireImmediately) {
-      listener(element.getExposedValue());
-    }
-
-    // TODO(rrousselGit) test
-    // TODO(rrousselGit) onError
-
-    final sub = _ProviderListener._(
-      listenedElement: element,
-      dependentElement: this,
-      listener: listener,
-    );
-
-    element._subscribers.add(sub);
-    _subscriptions.add(sub);
-
-    return () {
-      _subscriptions.remove(sub);
-      // this will remove element._subscribers
-      sub.close();
-    };
   }
 }
 

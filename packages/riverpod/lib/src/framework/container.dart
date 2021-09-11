@@ -483,6 +483,8 @@ class ProviderContainer {
     for (final element in getAllProviderElementsInOrder().toList().reversed) {
       element.dispose();
     }
+
+    if (_root == null) _scheduler.dispose();
   }
 
   /// Traverse the [ProviderElementBase]s associated with this [ProviderContainer].

@@ -20,6 +20,24 @@ void main() {
     });
 
     group('ref.state', () {
+      test('throws on providers that threw', () {
+        final container = createContainer();
+        final provider = Provider((ref) => throw UnimplementedError());
+
+        expect(
+          () => container.read(provider),
+          throwsA(isA<ProviderException>()),
+        );
+
+        final element =
+            container.readProviderElement(provider) as ProviderElement;
+
+        expect(
+          () => element.state,
+          throwsA(isA<ProviderException>()),
+        );
+      });
+
       test('can read and change current value', () {
         final container = createContainer();
         final listener = Listener<int>();

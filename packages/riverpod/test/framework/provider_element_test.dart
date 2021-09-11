@@ -5,6 +5,20 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
+  group('getState', () {
+    test('throws on providers that threw', () {
+      final container = createContainer();
+      final provider = Provider((ref) => throw UnimplementedError());
+
+      final element = container.readProviderElement(provider);
+
+      expect(
+        element.getState,
+        throwsA(isA<ProviderException>()),
+      );
+    });
+  });
+
   group('visitChildren', () {
     test('includes ref.watch dependents', () {
       final container = createContainer();

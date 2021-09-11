@@ -11,6 +11,7 @@ class _ProviderScheduler {
 
   final void Function(void Function() onDone) vsync;
 
+  bool _disposed = false;
   bool _scheduledTask = false;
   final _stateToDispose = <AutoDisposeProviderElementBase>[];
   final _stateToRefresh = <ProviderElementBase>[];
@@ -25,6 +26,7 @@ class _ProviderScheduler {
   }
 
   void _scheduleTask() {
+    assert(!_disposed, 'tried to emit updates with a disposed Scheduler');
     if (_scheduledTask) return;
 
     _scheduledTask = true;
@@ -35,6 +37,7 @@ class _ProviderScheduler {
 
   void _task() {
     _pendingTaskCompleter!.complete();
+    if (_disposed) return;
     _performRefresh();
     _performDispose();
 
@@ -77,5 +80,9 @@ class _ProviderScheduler {
       }
       element._container._disposeProvider(element._origin);
     }
+  }
+
+  void dispose() {
+    _disposed = true;
   }
 }

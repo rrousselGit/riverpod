@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart' hide describeIdentity;
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod/riverpod.dart';
@@ -274,10 +275,15 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
     assert(_task == null, 'Only one task can be scheduled at a time');
     _task = task;
 
-    // Using microtask as Flutter otherwise Flutter tests omplains about pending timers
-    Future.microtask(() {
-      if (_mounted) markNeedsBuild();
-    });
+    if (SchedulerBinding.instance!.schedulerPhase ==
+        SchedulerPhase.transientCallbacks) {
+      markNeedsBuild();
+    } else {
+      // Using microtask as Flutter otherwise Flutter tests omplains about pending timers
+      Future.microtask(() {
+        if (_mounted) markNeedsBuild();
+      });
+    }
   }
 
   void _debugCanModifyProviders() {

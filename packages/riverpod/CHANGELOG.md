@@ -48,6 +48,22 @@
 - `AsyncLoading` and `AsyncError` now optionally includes the previous state.
 - Added a `Result` class, similar to `AsyncValue` but with no loading state.
 
+### General
+
+- It is no-longer allowed to use `ref.watch` or `ref.read` inside a selector:
+  ```dart
+  provider.select((value) => ref.watch(something)); // KO, cannot user ref.watch inside selectors
+  ```
+
+### Bug-fixes
+
+- fixed a bug where disposing a scoped `ProviderContainer` could cause other
+  `ProviderContainer`s to stop working.
+- fixed an issue where conditionally depending on an "autoDispose" provider
+  may not properly dispose of it (see #712)
+- fixed an issue where when chaining providers, widgets may re-render
+  a frame late, potentially causing a flicker. (see #648)
+
 ## 1.0.0-dev.7
 
 - Fixed `ProviderObserver` not working when modifying a `StateProvider`.

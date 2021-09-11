@@ -142,7 +142,7 @@ class Toolbar extends HookConsumerWidget {
     final filter = ref.watch(todoListFilter);
 
     Color? textColorFor(TodoListFilter value) {
-      return filter.state == value ? Colors.blue : null;
+      return filter.state == value ? Colors.blue : Colors.black;
     }
 
     return Material(
@@ -158,33 +158,41 @@ class Toolbar extends HookConsumerWidget {
           Tooltip(
             key: allFilterKey,
             message: 'All todos',
-            // ignore: deprecated_member_use, TextButton is not available in stable yet
-            child: FlatButton(
+            child: TextButton(
               onPressed: () => filter.state = TodoListFilter.all,
-              visualDensity: VisualDensity.compact,
-              textColor: textColorFor(TodoListFilter.all),
+              style: ButtonStyle(
+                visualDensity: VisualDensity.compact,
+                foregroundColor:
+                    MaterialStateProperty.all(textColorFor(TodoListFilter.all)),
+              ),
               child: const Text('All'),
             ),
           ),
           Tooltip(
             key: activeFilterKey,
             message: 'Only uncompleted todos',
-            // ignore: deprecated_member_use, TextButton is not available in stable yet
-            child: FlatButton(
+            child: TextButton(
               onPressed: () => filter.state = TodoListFilter.active,
-              visualDensity: VisualDensity.compact,
-              textColor: textColorFor(TodoListFilter.active),
+              style: ButtonStyle(
+                visualDensity: VisualDensity.compact,
+                foregroundColor: MaterialStateProperty.all(
+                  textColorFor(TodoListFilter.active),
+                ),
+              ),
               child: const Text('Active'),
             ),
           ),
           Tooltip(
             key: completedFilterKey,
             message: 'Only completed todos',
-            // ignore: deprecated_member_use, TextButton is not available in stable yet
-            child: FlatButton(
+            child: TextButton(
               onPressed: () => filter.state = TodoListFilter.completed,
-              visualDensity: VisualDensity.compact,
-              textColor: textColorFor(TodoListFilter.completed),
+              style: ButtonStyle(
+                visualDensity: VisualDensity.compact,
+                foregroundColor: MaterialStateProperty.all(
+                  textColorFor(TodoListFilter.completed),
+                ),
+              ),
               child: const Text('Completed'),
             ),
           ),
