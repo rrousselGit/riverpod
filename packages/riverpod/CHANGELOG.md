@@ -44,6 +44,13 @@ Widget build(context, ref) {
 - `AsyncError` can now be instantiated with `const`.
 - `AsyncLoading` now optionally includes the previous "state".
 
+### General
+
+- It is no-longer allowed to use `ref.watch` or `ref.read` inside a selector:
+  ```dart
+  provider.select((value) => ref.watch(something)); // KO, cannot user ref.watch inside selectors
+  ```
+
 ### Bug-fixes
 
 - fixed a bug where disposing a scoped `ProviderContainer` could cause other
