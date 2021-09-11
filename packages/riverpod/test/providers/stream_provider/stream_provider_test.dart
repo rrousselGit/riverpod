@@ -109,7 +109,7 @@ void main() {
     );
     expect(
       container.read(provider),
-      const AsyncError<int>(42, StackTrace.empty),
+      const AsyncError<int>(42, stackTrace: StackTrace.empty),
     );
 
     container.read(dep).state = Stream.value(21);
@@ -117,7 +117,7 @@ void main() {
     expect(
       container.read(provider),
       const AsyncLoading<int>(
-        previous: AsyncError<int>(42, StackTrace.empty),
+        previous: AsyncError(42, stackTrace: StackTrace.empty),
       ),
     );
   });
@@ -228,7 +228,8 @@ void main() {
     final stack = StackTrace.current;
     controller.addError(42, stack);
 
-    expect(container.read(provider), AsyncValue<int>.error(42, stack));
+    expect(
+        container.read(provider), AsyncValue<int>.error(42, stackTrace: stack));
   });
 
   group('.last', () {
@@ -708,7 +709,10 @@ void main() {
 
     controller.addError(error, stack);
 
-    verifyOnly(listener, listener(AsyncValue<int>.error(error, stack)));
+    verifyOnly(
+      listener,
+      listener(AsyncValue<int>.error(error, stackTrace: stack)),
+    );
 
     controller.add(21);
 
@@ -1377,10 +1381,11 @@ void main() {
       final stackTrace = StackTrace.current;
 
       container.updateOverrides([
-        provider.overrideWithValue(AsyncValue<int>.error(42, stackTrace)),
+        provider.overrideWithValue(
+            AsyncValue<int>.error(42, stackTrace: stackTrace)),
       ]);
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
 
       await expectLater(stream, emitsError(42));
 
@@ -1424,20 +1429,22 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideWithValue(AsyncValue<int>.error(42, stackTrace)),
+        provider.overrideWithValue(
+            AsyncValue<int>.error(42, stackTrace: stackTrace)),
       ]);
       final stream = container.read(provider.stream);
 
       final sub = container.listen(provider, (_) {});
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
       await expectLater(stream, emitsError(42));
 
       container.updateOverrides([
-        provider.overrideWithValue(AsyncValue<int>.error(21, stackTrace)),
+        provider.overrideWithValue(
+            AsyncValue<int>.error(21, stackTrace: stackTrace)),
       ]);
 
-      expect(sub.read(), AsyncValue<int>.error(21, stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(21, stackTrace: stackTrace));
       await expectLater(stream, emitsError(21));
 
       container.dispose();
@@ -1449,23 +1456,24 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideWithValue(AsyncValue<int>.error(42, stackTrace)),
+        provider.overrideWithValue(
+            AsyncValue<int>.error(42, stackTrace: stackTrace)),
       ]);
       final stream = container.read(provider.stream);
 
       final sub = container.listen(provider, (_) {});
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
       await expectLater(stream, emitsError(42));
 
       final stackTrace2 = StackTrace.current;
       container.updateOverrides([
         provider.overrideWithValue(
-          AsyncValue<int>.error(42, stackTrace2),
+          AsyncValue<int>.error(42, stackTrace: stackTrace2),
         ),
       ]);
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace2));
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace2));
       await expectLater(stream, emitsError(42));
 
       container.dispose();
@@ -1477,13 +1485,14 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideWithValue(AsyncValue<int>.error(42, stackTrace)),
+        provider.overrideWithValue(
+            AsyncValue<int>.error(42, stackTrace: stackTrace)),
       ]);
       final stream = container.read(provider.stream);
 
       final sub = container.listen(provider, (_) {});
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
       await expectLater(stream, emitsError(42));
 
       container.updateOverrides([
@@ -1502,13 +1511,14 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideWithValue(AsyncValue<int>.error(42, stackTrace)),
+        provider.overrideWithValue(
+            AsyncValue<int>.error(42, stackTrace: stackTrace)),
       ]);
       final stream = container.read(provider.stream);
 
       final sub = container.listen(provider, (_) {});
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
       await expectLater(stream, emitsError(42));
 
       container.updateOverrides([

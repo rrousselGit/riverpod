@@ -72,9 +72,10 @@ abstract class AsyncValue<T> {
   ///
   /// The parameter [error] cannot be `null`.
   const factory AsyncValue.error(
-    Object error, [
+    Object error, {
     StackTrace? stackTrace,
-  ]) = AsyncError<T>;
+    AsyncData<T>? previous,
+  }) = AsyncError<T>;
 
   /// Transforms a [Future] that may fail into something that is safe to read.
   ///
@@ -123,7 +124,7 @@ abstract class AsyncValue<T> {
     try {
       return AsyncValue.data(await future());
     } catch (err, stack) {
-      return AsyncValue.error(err, stack);
+      return AsyncValue.error(err, stackTrace: stack);
     }
   }
 
@@ -217,10 +218,10 @@ extension AsyncValueX<T> on AsyncValue<T> {
         try {
           return AsyncValue.data(cb(d.value));
         } catch (err, stack) {
-          return AsyncValue.error(err, stack);
+          return AsyncValue.error(err, stackTrace: stack);
         }
       },
-      error: (e) => AsyncError(e.error, e.stackTrace),
+      error: (e) => AsyncError(e.error, stackTrace: e.stackTrace),
       loading: (l) => AsyncLoading<R>(),
     );
   }
@@ -231,7 +232,12 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// If [AsyncValue] was in a case that is not handled, will return [orElse].
   R maybeWhen<R>({
     R Function(T data)? data,
-    R Function(Object error, StackTrace? stackTrace)? error,
+    R Function(
+      Object error,
+      StackTrace? stackTrace,
+      AsyncData<T>? previous,
+    )?
+        error,
     R Function(AsyncValue<T>? previous)? loading,
     required R Function() orElse,
   }) {
@@ -241,7 +247,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
         return orElse();
       },
       error: (e) {
-        if (error != null) return error(e.error, e.stackTrace);
+        if (error != null) return error(e.error, e.stackTrace, e.previous);
         return orElse();
       },
       loading: (l) {
@@ -256,12 +262,17 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// All cases are required, which allows returning a non-nullable value.
   R when<R>({
     required R Function(T data) data,
-    required R Function(Object error, StackTrace? stackTrace) error,
+    required R Function(
+      Object error,
+      StackTrace? stackTrace,
+      AsyncData<T>? previous,
+    )
+        error,
     required R Function(AsyncValue<T>? previous) loading,
   }) {
     return _map(
       data: (d) => data(d.value),
-      error: (e) => error(e.error, e.stackTrace),
+      error: (e) => error(e.error, e.stackTrace, e.previous),
       loading: (l) => loading(l.previous),
     );
   }
@@ -273,12 +284,17 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// This is similar to [maybeWhen] where `orElse` returns null.
   R? whenOrNull<R>({
     R Function(T data)? data,
-    R Function(Object error, StackTrace? stackTrace)? error,
+    R Function(
+      Object error,
+      StackTrace? stackTrace,
+      AsyncData<T>? previous,
+    )?
+        error,
     R Function(AsyncValue<T>? previous)? loading,
   }) {
     return _map(
       data: (d) => data?.call(d.value),
-      error: (e) => error?.call(e.error, e.stackTrace),
+      error: (e) => error?.call(e.error, e.stackTrace, e.previous),
       loading: (l) => loading?.call(l.previous),
     );
   }
@@ -341,7 +357,11 @@ class AsyncLoading<T> implements AsyncValue<T> {
   /// Creates an [AsyncValue] in loading state.
   ///
   /// Prefer always using this constructor with the `const` keyword.
-  const AsyncLoading({this.previous});
+  const AsyncLoading({this.previous})
+      : assert(
+          previous is! AsyncLoading,
+          'The previous value can only be null or an instance of AsyncData/AsyncError',
+        );
 
   /// The previous error or loading valid state, if any.
   ///
@@ -381,13 +401,16 @@ class AsyncError<T> implements AsyncValue<T> {
   /// Creates an [AsyncValue] in error state.
   ///
   /// The parameter [error] cannot be `null`.
-  const AsyncError(this.error, [this.stackTrace]);
+  const AsyncError(this.error, {this.stackTrace, this.previous});
 
   /// The error.
   final Object error;
 
   /// The stacktrace of [error].
   final StackTrace? stackTrace;
+
+  /// The last valid data before this error, or null is none.
+  final AsyncData<T>? previous;
 
   @override
   R _map<R>({
@@ -400,7 +423,7 @@ class AsyncError<T> implements AsyncValue<T> {
 
   @override
   String toString() {
-    return 'AsyncError<$T>(error: $error, stackTrace: $stackTrace)';
+    return 'AsyncError<$T>(error: $error, stackTrace: $stackTrace, previous: $previous)';
   }
 
   @override
@@ -408,11 +431,12 @@ class AsyncError<T> implements AsyncValue<T> {
     return runtimeType == other.runtimeType &&
         other is AsyncError<T> &&
         other.error == error &&
+        other.previous == previous &&
         other.stackTrace == stackTrace;
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, error, stackTrace);
+  int get hashCode => Object.hash(runtimeType, error, stackTrace, previous);
 }
 
 /// An exception thrown when trying to read [AsyncValueX.value] before the value

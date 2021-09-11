@@ -161,7 +161,7 @@ mixin _StreamProviderMixin<T> on ProviderBase<AsyncValue<T>> {
 ///
 ///   return message.when(
 ///     loading: (_) => const CircularProgressIndicator(),
-///     error: (err, stack) => Text('Error: $err'),
+///     error: (err, stack, _) => Text('Error: $err'),
 ///     data: (message) {
 ///       return Text(message);
 ///     },
@@ -195,7 +195,7 @@ AsyncValue<State> _listenStream<State>(
       (event) => ref.setState(AsyncValue.data(event)),
       // ignore: avoid_types_on_closure_parameters
       onError: (Object err, StackTrace stack) {
-        ref.setState(AsyncValue.error(err, stack));
+        ref.setState(AsyncValue.error(err, stackTrace: stack));
       },
     );
 
@@ -203,6 +203,6 @@ AsyncValue<State> _listenStream<State>(
 
     return AsyncValue<State>.loading();
   } catch (err, stack) {
-    return AsyncValue<State>.error(err, stack);
+    return AsyncValue<State>.error(err, stackTrace: stack);
   }
 }

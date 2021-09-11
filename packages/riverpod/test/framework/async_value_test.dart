@@ -7,6 +7,14 @@ import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('AsyncLoading rejects AsyncLoading as previous value', () {
+    expect(
+      // ignore: prefer_const_constructors
+      () => AsyncLoading<int>(previous: AsyncLoading<int>()),
+      throwsA(isA<AssertionError>()),
+    );
+  });
+
   group('custom AsyncValue', () {
     test('supports when', () {
       expect(
@@ -39,7 +47,7 @@ void main() {
     final stack = StackTrace.current;
 
     expect(
-      AsyncValue<int>.error(42, stack).map(
+      AsyncValue<int>.error(42, stackTrace: stack).map(
         data: (value) => throw Error(),
         error: (AsyncError<int> error) => [error.error, error.stackTrace],
         loading: (_) => throw Error(),
@@ -49,7 +57,7 @@ void main() {
 
     expect(
       const AsyncValue<int>.loading(
-        previous: AsyncData(42),
+        previous: AsyncValue.data(42),
       ).map(
         data: (value) => throw Error(),
         error: (_) => throw Error(),
@@ -73,7 +81,7 @@ void main() {
       final stack = StackTrace.current;
 
       expect(
-        AsyncValue<int>.error(42, stack).maybeMap(
+        AsyncValue<int>.error(42, stackTrace: stack).maybeMap(
           error: (AsyncError<int> error) => [error.error, error.stackTrace],
           orElse: () => throw Error(),
         ),
@@ -82,7 +90,7 @@ void main() {
 
       expect(
         const AsyncValue<int>.loading(
-          previous: AsyncData(42),
+          previous: AsyncValue.data(42),
         ).maybeMap(
           loading: (AsyncLoading<int> loading) =>
               'loading ${loading.previous?.value}',
@@ -105,7 +113,7 @@ void main() {
       final stack = StackTrace.current;
 
       expect(
-        AsyncValue<int>.error(42, stack).maybeMap(
+        AsyncValue<int>.error(42, stackTrace: stack).maybeMap(
           data: (value) => throw Error(),
           loading: (_) => throw Error(),
           orElse: () => 'orElse',
@@ -136,7 +144,7 @@ void main() {
       final stack = StackTrace.current;
 
       expect(
-        AsyncValue<int>.error(42, stack).mapOrNull(
+        AsyncValue<int>.error(42, stackTrace: stack).mapOrNull(
           error: (AsyncError<int> error) => [error.error, error.stackTrace],
         ),
         [42, stack],
@@ -144,7 +152,7 @@ void main() {
 
       expect(
         const AsyncValue<int>.loading(
-          previous: AsyncData(42),
+          previous: AsyncValue.data(42),
         ).mapOrNull(
           loading: (AsyncLoading<int> loading) =>
               'loading ${loading.previous?.value}',
@@ -165,7 +173,7 @@ void main() {
       final stack = StackTrace.current;
 
       expect(
-        AsyncValue<int>.error(42, stack).mapOrNull(
+        AsyncValue<int>.error(42, stackTrace: stack).mapOrNull(
           data: (value) => throw Error(),
           loading: (_) => throw Error(),
         ),
@@ -186,7 +194,7 @@ void main() {
     expect(
       const AsyncValue.data(42).when(
         data: (value) => [value],
-        error: (a, b) => throw Error(),
+        error: (a, b, p) => throw Error(),
         loading: (_) => throw Error(),
       ),
       [42],
@@ -195,20 +203,24 @@ void main() {
     final stack = StackTrace.current;
 
     expect(
-      AsyncValue<int>.error(42, stack).when(
+      AsyncValue<int>.error(
+        42,
+        stackTrace: stack,
+        previous: const AsyncData(21),
+      ).when(
         data: (value) => throw Error(),
-        error: (a, b) => [a, b],
+        error: (a, b, p) => [a, b, p?.value],
         loading: (_) => throw Error(),
       ),
-      [42, stack],
+      [42, stack, 21],
     );
 
     expect(
       const AsyncValue<int>.loading(
-        previous: AsyncData(42),
+        previous: AsyncValue.data(42),
       ).when(
         data: (value) => throw Error(),
-        error: (a, b) => throw Error(),
+        error: (a, b, p) => throw Error(),
         loading: (previous) => 'loading ${previous?.value}',
       ),
       'loading 42',
@@ -228,16 +240,20 @@ void main() {
       final stack = StackTrace.current;
 
       expect(
-        AsyncValue<int>.error(42, stack).maybeWhen(
-          error: (a, b) => [a, b],
+        AsyncValue<int>.error(
+          42,
+          stackTrace: stack,
+          previous: const AsyncData(21),
+        ).maybeWhen(
+          error: (a, b, p) => [a, b, p?.value],
           orElse: () => throw Error(),
         ),
-        [42, stack],
+        [42, stack, 21],
       );
 
       expect(
         const AsyncValue<int>.loading(
-          previous: AsyncData(42),
+          previous: AsyncValue.data(42),
         ).maybeWhen(
           loading: (previous) => 'loading ${previous?.value}',
           orElse: () => throw Error(),
@@ -249,7 +265,7 @@ void main() {
     test('orElse', () {
       expect(
         const AsyncValue.data(42).maybeWhen(
-          error: (a, b) => throw Error(),
+          error: (a, b, p) => throw Error(),
           loading: (_) => throw Error(),
           orElse: () => 'orElse',
         ),
@@ -259,7 +275,7 @@ void main() {
       final stack = StackTrace.current;
 
       expect(
-        AsyncValue<int>.error(42, stack).maybeWhen(
+        AsyncValue<int>.error(42, stackTrace: stack).maybeWhen(
           data: (value) => throw Error(),
           loading: (_) => throw Error(),
           orElse: () => 'orElse',
@@ -270,7 +286,7 @@ void main() {
       expect(
         const AsyncValue<int>.loading().maybeWhen(
           data: (value) => throw Error(),
-          error: (a, b) => throw Error(),
+          error: (a, b, p) => throw Error(),
           orElse: () => 'orElse',
         ),
         'orElse',
@@ -290,15 +306,19 @@ void main() {
       final stack = StackTrace.current;
 
       expect(
-        AsyncValue<int>.error(42, stack).whenOrNull(
-          error: (a, b) => [a, b],
+        AsyncValue<int>.error(
+          42,
+          stackTrace: stack,
+          previous: const AsyncData(21),
+        ).whenOrNull(
+          error: (a, b, p) => [a, b, p?.value],
         ),
-        [42, stack],
+        [42, stack, 21],
       );
 
       expect(
         const AsyncValue<int>.loading(
-          previous: AsyncData(42),
+          previous: AsyncValue.data(42),
         ).whenOrNull(
           loading: (previous) => 'loading ${previous?.value}',
         ),
@@ -309,7 +329,7 @@ void main() {
     test('orElse', () {
       expect(
         const AsyncValue.data(42).whenOrNull(
-          error: (a, b) => throw Error(),
+          error: (a, b, p) => throw Error(),
           loading: (_) => throw Error(),
         ),
         null,
@@ -318,7 +338,7 @@ void main() {
       final stack = StackTrace.current;
 
       expect(
-        AsyncValue<int>.error(42, stack).whenOrNull(
+        AsyncValue<int>.error(42, stackTrace: stack).whenOrNull(
           data: (value) => throw Error(),
           loading: (_) => throw Error(),
         ),
@@ -328,7 +348,7 @@ void main() {
       expect(
         const AsyncValue<int>.loading().whenOrNull(
           data: (value) => throw Error(),
-          error: (a, b) => throw Error(),
+          error: (a, b, p) => throw Error(),
         ),
         null,
       );
@@ -362,24 +382,60 @@ void main() {
     );
 
     expect(
-      AsyncValue<int>.error(value, stack),
-      AsyncValue<int>.error(value, stack),
+      AsyncValue<int>.error(value, stackTrace: stack),
+      AsyncValue<int>.error(value, stackTrace: stack),
     );
     expect(
-      AsyncValue<int>.error(value, stack),
-      isNot(AsyncValue<num>.error(value, stack)),
+      AsyncValue<int>.error(value, stackTrace: stack),
+      isNot(
+        AsyncValue<int>.error(
+          value,
+          stackTrace: stack,
+          previous: const AsyncData(42),
+        ),
+      ),
     );
     expect(
-      AsyncValue<num>.error(value, stack),
-      isNot(AsyncValue<int>.error(value, stack)),
+      AsyncValue<int>.error(
+        value,
+        stackTrace: stack,
+        previous: const AsyncData(42),
+      ),
+      AsyncValue<int>.error(
+        value,
+        stackTrace: stack,
+        previous: const AsyncData(42),
+      ),
     );
     expect(
-      AsyncValue<int>.error(value, stack),
-      isNot(AsyncValue<int>.error(value, stack2)),
+      AsyncValue<int>.error(
+        value,
+        stackTrace: stack,
+        previous: const AsyncData(42),
+      ),
+      isNot(
+        AsyncValue<int>.error(
+          value,
+          stackTrace: stack,
+          previous: const AsyncData(21),
+        ),
+      ),
     );
     expect(
-      AsyncValue<int>.error(value, stack),
-      isNot(AsyncValue<int>.error(value2, stack)),
+      AsyncValue<int>.error(value, stackTrace: stack),
+      isNot(AsyncValue<num>.error(value, stackTrace: stack)),
+    );
+    expect(
+      AsyncValue<num>.error(value, stackTrace: stack),
+      isNot(AsyncValue<int>.error(value, stackTrace: stack)),
+    );
+    expect(
+      AsyncValue<int>.error(value, stackTrace: stack),
+      isNot(AsyncValue<int>.error(value, stackTrace: stack2)),
+    );
+    expect(
+      AsyncValue<int>.error(value, stackTrace: stack),
+      isNot(AsyncValue<int>.error(value2, stackTrace: stack)),
     );
 
     expect(
@@ -429,24 +485,46 @@ void main() {
     );
 
     expect(
-      AsyncValue<int>.error(value, stack).hashCode,
-      AsyncValue<int>.error(value, stack).hashCode,
+      AsyncValue<int>.error(value, stackTrace: stack).hashCode,
+      AsyncValue<int>.error(value, stackTrace: stack).hashCode,
     );
     expect(
-      AsyncValue<int>.error(value, stack).hashCode,
-      isNot(AsyncValue<num>.error(value, stack).hashCode),
+      AsyncValue<int>.error(value, stackTrace: stack).hashCode,
+      isNot(
+        AsyncValue<int>.error(
+          value,
+          stackTrace: stack,
+          previous: const AsyncData(42),
+        ).hashCode,
+      ),
     );
     expect(
-      AsyncValue<num>.error(value, stack).hashCode,
-      isNot(AsyncValue<int>.error(value, stack).hashCode),
+      AsyncValue<int>.error(
+        value,
+        stackTrace: stack,
+        previous: const AsyncData(42),
+      ).hashCode,
+      AsyncValue<int>.error(
+        value,
+        stackTrace: stack,
+        previous: const AsyncData(42),
+      ).hashCode,
     );
     expect(
-      AsyncValue<int>.error(value, stack).hashCode,
-      isNot(AsyncValue<int>.error(value, stack2).hashCode),
+      AsyncValue<int>.error(value, stackTrace: stack).hashCode,
+      isNot(AsyncValue<num>.error(value, stackTrace: stack).hashCode),
     );
     expect(
-      AsyncValue<int>.error(value, stack).hashCode,
-      isNot(AsyncValue<int>.error(value2, stack).hashCode),
+      AsyncValue<num>.error(value, stackTrace: stack).hashCode,
+      isNot(AsyncValue<int>.error(value, stackTrace: stack).hashCode),
+    );
+    expect(
+      AsyncValue<int>.error(value, stackTrace: stack).hashCode,
+      isNot(AsyncValue<int>.error(value, stackTrace: stack2).hashCode),
+    );
+    expect(
+      AsyncValue<int>.error(value, stackTrace: stack).hashCode,
+      isNot(AsyncValue<int>.error(value2, stackTrace: stack).hashCode),
     );
 
     expect(
@@ -476,12 +554,12 @@ void main() {
     );
 
     expect(
-      const AsyncValue<int>.error(42).toString(),
-      'AsyncError<int>(error: 42, stackTrace: null)',
+      const AsyncValue<int>.error(42, previous: AsyncData(42)).toString(),
+      'AsyncError<int>(error: 42, stackTrace: null, previous: AsyncData<int>(value: 42))',
     );
 
     expect(
-      const AsyncValue<int>.loading(previous: AsyncData(42)).toString(),
+      const AsyncValue<int>.loading(previous: AsyncValue.data(42)).toString(),
       'AsyncLoading<int>(previous: AsyncData<int>(value: 42))',
     );
   });
@@ -559,7 +637,7 @@ void main() {
 
     await expectLater(
       AsyncValue.guard(() => Future<int>.error(42, stack)),
-      completion(AsyncValue<int>.error(42, stack)),
+      completion(AsyncValue<int>.error(42, stackTrace: stack)),
     );
   });
 }
@@ -573,6 +651,13 @@ class CustomData<T> extends AsyncData<T> {
 }
 
 class CustomError<T> extends AsyncError<T> {
-  CustomError(Object error, [StackTrace? stackTrace])
-      : super(error, stackTrace);
+  CustomError(
+    Object error, {
+    StackTrace? stackTrace,
+    AsyncData<T>? previous,
+  }) : super(
+          error,
+          stackTrace: stackTrace,
+          previous: previous,
+        );
 }

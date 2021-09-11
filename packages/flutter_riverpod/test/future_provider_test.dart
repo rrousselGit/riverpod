@@ -27,7 +27,7 @@ void main() {
             return ref.watch(futureProvider).when(
                   data: (data) => Text(data.toString()),
                   loading: (_) => const Text('loading'),
-                  error: (dynamic err, stack) => Text('$err'),
+                  error: (err, stack, _) => Text('$err'),
                 );
           }),
         ),
@@ -56,8 +56,7 @@ void main() {
             return ref.watch(futureProvider).when(
                   data: (data) => Text(data.toString()),
                   loading: (_) => const Text('loading'),
-                  // ignore: avoid_types_on_closure_parameters
-                  error: (Object err, stack) {
+                  error: (err, stack, _) {
                     whenError = err;
                     whenStack = stack;
                     return const Text('error');
@@ -188,7 +187,7 @@ void main() {
         return ref.watch(futureProvider).when(
               data: (data) => Text(data.toString()),
               loading: (_) => const Text('loading'),
-              error: (dynamic err, stack) {
+              error: (err, stack, _) {
                 return const Text('error');
               },
             );
@@ -382,7 +381,7 @@ void main() {
             return ref.watch(futureProviderFamily).when(
                   data: (value) => Text(value.toString()),
                   loading: (_) => const Text('loading'),
-                  error: (dynamic err, stack) => const Text('error'),
+                  error: (err, stack, _) => const Text('error'),
                 );
           }),
         ),
@@ -412,7 +411,7 @@ void main() {
             return ref.watch(futureProviderFamily).when(
                   data: (value) => Text(value.toString()),
                   loading: (_) => const Text('loading'),
-                  error: (dynamic err, stack) => const Text('error'),
+                  error: (err, stack, _) => const Text('error'),
                 );
           }),
         ),
@@ -442,7 +441,7 @@ void main() {
             return ref.watch(futureProviderFamily).when(
                   data: (value) => Text(value.toString()),
                   loading: (_) => const Text('loading'),
-                  error: (dynamic err, stack) => const Text('error'),
+                  error: (err, stack, _) => const Text('error'),
                 );
           }),
         ),

@@ -151,7 +151,7 @@ class _SearchHints extends HookConsumerWidget {
               child: CircularProgressIndicator(),
             ),
           ),
-          error: (err, stack) => const Center(
+          error: (err, stack, _) => const Center(
             heightFactor: 1,
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 8),
@@ -174,7 +174,8 @@ class _SearchHints extends HookConsumerWidget {
                       loading: (_) {
                         return const Center(child: CircularProgressIndicator());
                       },
-                      error: (err, stack) => const Center(child: Text('Error')),
+                      error: (err, stack, _) =>
+                          const Center(child: Text('Error')),
                       data: (character) {
                         return ListTile(
                           visualDensity: VisualDensity.compact,
