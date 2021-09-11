@@ -60,7 +60,7 @@ part 'future_provider/base.dart';
 ///
 ///   return config.when(
 ///     loading: (_) => const CircularProgressIndicator(),
-///     error: (err, stack) => Text('Error: $err'),
+///     error: (err, stack, _) => Text('Error: $err'),
 ///     data: (config) {
 ///       return Text(config.host);
 ///     },

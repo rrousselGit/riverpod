@@ -20,7 +20,7 @@
 
   Widget build(context, ref) {
     return ref.watch(provider).when(
-      error: (err, stack) => Text('error'),
+      error: (err, stack, _) => Text('error'),
       data: (user) => Text('Hello ${user.name}'),
       loading: (previous) {
         if (previous is AsyncData<User>) {

@@ -461,7 +461,7 @@ void main() {
     expect(
       container.read(provider),
       isA<AsyncValue>().having(
-        (s) => s.maybeWhen(error: (err, _) => err, orElse: () => null),
+        (s) => s.maybeWhen(error: (err, _, __) => err, orElse: () => null),
         'error',
         42,
       ),

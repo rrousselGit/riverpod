@@ -107,7 +107,7 @@ Stream<State> _asyncValueToStream<State>(
         getController();
       },
       data: (data) => getController().add(data),
-      error: (err, stack) => getController().addError(err, stack),
+      error: (err, stack, _) => getController().addError(err, stack),
     );
   }
 

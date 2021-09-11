@@ -186,7 +186,7 @@ void main() {
     expect(
       const AsyncValue.data(42).when(
         data: (value) => [value],
-        error: (a, b) => throw Error(),
+        error: (a, b, p) => throw Error(),
         loading: (_) => throw Error(),
       ),
       [42],
@@ -195,12 +195,16 @@ void main() {
     final stack = StackTrace.current;
 
     expect(
-      AsyncValue<int>.error(42, stackTrace: stack).when(
+      AsyncValue<int>.error(
+        42,
+        stackTrace: stack,
+        previous: const AsyncData(21),
+      ).when(
         data: (value) => throw Error(),
-        error: (a, b) => [a, b],
+        error: (a, b, p) => [a, b, p?.value],
         loading: (_) => throw Error(),
       ),
-      [42, stack],
+      [42, stack, 21],
     );
 
     expect(
@@ -208,7 +212,7 @@ void main() {
         previous: AsyncValue.data(42),
       ).when(
         data: (value) => throw Error(),
-        error: (a, b) => throw Error(),
+        error: (a, b, p) => throw Error(),
         loading: (previous) => 'loading ${previous?.value}',
       ),
       'loading 42',
@@ -228,11 +232,15 @@ void main() {
       final stack = StackTrace.current;
 
       expect(
-        AsyncValue<int>.error(42, stackTrace: stack).maybeWhen(
-          error: (a, b) => [a, b],
+        AsyncValue<int>.error(
+          42,
+          stackTrace: stack,
+          previous: const AsyncData(21),
+        ).maybeWhen(
+          error: (a, b, p) => [a, b, p?.value],
           orElse: () => throw Error(),
         ),
-        [42, stack],
+        [42, stack, 21],
       );
 
       expect(
@@ -249,7 +257,7 @@ void main() {
     test('orElse', () {
       expect(
         const AsyncValue.data(42).maybeWhen(
-          error: (a, b) => throw Error(),
+          error: (a, b, p) => throw Error(),
           loading: (_) => throw Error(),
           orElse: () => 'orElse',
         ),
@@ -270,7 +278,7 @@ void main() {
       expect(
         const AsyncValue<int>.loading().maybeWhen(
           data: (value) => throw Error(),
-          error: (a, b) => throw Error(),
+          error: (a, b, p) => throw Error(),
           orElse: () => 'orElse',
         ),
         'orElse',
@@ -290,10 +298,14 @@ void main() {
       final stack = StackTrace.current;
 
       expect(
-        AsyncValue<int>.error(42, stackTrace: stack).whenOrNull(
-          error: (a, b) => [a, b],
+        AsyncValue<int>.error(
+          42,
+          stackTrace: stack,
+          previous: const AsyncData(21),
+        ).whenOrNull(
+          error: (a, b, p) => [a, b, p?.value],
         ),
-        [42, stack],
+        [42, stack, 21],
       );
 
       expect(
@@ -309,7 +321,7 @@ void main() {
     test('orElse', () {
       expect(
         const AsyncValue.data(42).whenOrNull(
-          error: (a, b) => throw Error(),
+          error: (a, b, p) => throw Error(),
           loading: (_) => throw Error(),
         ),
         null,
@@ -328,7 +340,7 @@ void main() {
       expect(
         const AsyncValue<int>.loading().whenOrNull(
           data: (value) => throw Error(),
-          error: (a, b) => throw Error(),
+          error: (a, b, p) => throw Error(),
         ),
         null,
       );

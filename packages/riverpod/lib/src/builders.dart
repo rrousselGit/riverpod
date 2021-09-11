@@ -134,7 +134,7 @@ class StateProviderBuilder {
   ///     return user.when(
   ///       data: (user) => Text(user.name),
   ///       loading: (_) => const CircularProgressIndicator(),
-  ///       error: (err, stack) => const Text('error'),
+  ///       error: (err, stack, _) => const Text('error'),
   ///     );
   ///   }
   ///   ```

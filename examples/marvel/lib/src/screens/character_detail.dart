@@ -69,7 +69,7 @@ class CharacterView extends HookConsumerWidget {
           body: Center(child: CircularProgressIndicator()),
         );
       },
-      error: (err, stack) {
+      error: (err, stack, _) {
         return Scaffold(
           appBar: AppBar(
             title: const Text('Error'),

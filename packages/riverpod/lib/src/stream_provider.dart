@@ -161,7 +161,7 @@ mixin _StreamProviderMixin<T> on ProviderBase<AsyncValue<T>> {
 ///
 ///   return message.when(
 ///     loading: (_) => const CircularProgressIndicator(),
-///     error: (err, stack) => Text('Error: $err'),
+///     error: (err, stack, _) => Text('Error: $err'),
 ///     data: (message) {
 ///       return Text(message);
 ///     },
