@@ -46,6 +46,8 @@ Widget build(context, ref) {
 
 ### Bug-fixes
 
+- fixed a bug where disposing a scoped `ProviderContainer` could cause other
+  `ProviderContainer`s to stop working.
 - fixed an issue where conditionally depending on an "autoDispose" provider
   may not properly dispose of it (see #712)
 - fixed an issue where when chaining providers, widgets may re-render
