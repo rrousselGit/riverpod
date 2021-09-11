@@ -5,7 +5,7 @@
 - FutureProvider now creates a `FutureOr<T>` instead of a `Future<T>`
   This allows bypassing the loading state in the event where a value was synchronously available.
 
-- During loading states, `FutureProvider` and `StreamProvider` now expose the
+- During loading and error states, `FutureProvider` and `StreamProvider` now expose the
   latest value through `AsyncValue`.  
   This allows UI to show the previous data while some new data is loading,
   inatead of showing a spinner:
@@ -38,6 +38,8 @@
 
 - **Breaking** `AsyncValue.copyWith` is removed
 - **Breaking** `AsyncValue.error(..., stacktrace)` is now a named parameter instead of postional parameter.
+- **Breaking** `AsyncValue.when(loading: )` and ``AsyncValue.when(error: )` (and `when` variants)
+  now receive an extra "previous" parameter.
 - Deprecated `AsyncValue.data` in favor of `AsyncValue.value`
 - Allowed `AsyncData`, `AsyncError` and `AsyncLoading` to be extended
 - Added `AsyncValue.whenOrNull`, similar to `whenOrElse` but instead of an
@@ -46,7 +48,6 @@
   loading/error states.
 - `AsyncError` can now be instantiated with `const`.
 - `AsyncLoading` and `AsyncError` now optionally includes the previous state.
-- Added a `Result` class, similar to `AsyncValue` but with no loading state.
 
 ### General
 

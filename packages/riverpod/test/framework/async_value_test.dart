@@ -7,6 +7,14 @@ import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('AsyncLoading rejects AsyncLoading as previous value', () {
+    expect(
+      // ignore: prefer_const_constructors
+      () => AsyncLoading<int>(previous: AsyncLoading<int>()),
+      throwsA(isA<AssertionError>()),
+    );
+  });
+
   group('custom AsyncValue', () {
     test('supports when', () {
       expect(
