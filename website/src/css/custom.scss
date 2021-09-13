@@ -7,11 +7,11 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary-lightest: #6DD0F6;
-  --ifm-color-primary-lighter: #5DBDEA;
-  --ifm-color-primary-light: #4EABDD;
-  --ifm-color-primary: #3889C4;
-  --ifm-color-primary-dark: #256AAC;
+  --ifm-color-primary-lightest: #6dd0f6;
+  --ifm-color-primary-lighter: #5dbdea;
+  --ifm-color-primary-light: #4eabdd;
+  --ifm-color-primary: #3889c4;
+  --ifm-color-primary-dark: #256aac;
   --ifm-color-primary-darker: #2855a3ff;
   --ifm-color-primary-darkest: #22427aff;
   --ifm-code-font-size: 95%;
@@ -24,17 +24,19 @@
   padding: 0 var(--ifm-pre-padding);
 }
 
-.markdown > .player {
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%;
-  margin-bottom: var(--ifm-paragraph-margin-bottom);
-}
+.markdown {
+  > .player {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    margin-bottom: var(--ifm-paragraph-margin-bottom);
 
-.markdown > .player > iframe {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0px;
-  top: 0px;
+    > iframe {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+    }
+  }
 }
