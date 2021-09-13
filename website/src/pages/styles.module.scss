@@ -1,6 +1,5 @@
 .heroBanner {
   padding: 4rem 0;
-  text-align: center;
   position: relative;
   overflow: hidden;
 }
@@ -21,6 +20,7 @@
 }
 
 .buttons {
+  margin: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
