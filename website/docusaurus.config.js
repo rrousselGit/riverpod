@@ -5,12 +5,11 @@ module.exports = {
   favicon: "img/logo.svg",
   organizationName: "rrousselgit", // Usually your GitHub org/user name.
   projectName: "riverpod", // Usually your repo name.
-
+  plugins: ['docusaurus-plugin-sass'],
   i18n: {
     defaultLocale: "en",
     locales: ["en", "fr"],
   },
-
   themeConfig: {
     googleAnalytics: {
       trackingID: "UA-138675999-4",
@@ -102,7 +101,7 @@ module.exports = {
             "https://github.com/rrousselGit/river_pod/edit/master/website/",
         },
         theme: {
-          customCss: require.resolve("./src/css/custom.css"),
+          customCss: require.resolve("./src/css/custom.scss"),
         },
       },
     ],

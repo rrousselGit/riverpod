@@ -20,12 +20,11 @@
 
 .mainTitle {
   display: inline-flex;
-}
-
-.mainTitle > img {
-  width: 56px;
-  height: 56px;
-  margin-right: 10px;
+  > img {
+    width: 56px;
+    height: 56px;
+    margin-right: 10px;
+  }
 }
 
 .buttons {
@@ -49,7 +48,6 @@
   padding: 40px 0;
 }
 
-.detailedFeatures:nth-child(2n+1) {
+.detailedFeatures:nth-child(2n + 1) {
   background-color: var(--ifm-color-emphasis-100);
 }
-
