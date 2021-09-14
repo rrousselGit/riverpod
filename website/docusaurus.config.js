@@ -5,7 +5,7 @@ module.exports = {
   favicon: "img/logo.svg",
   organizationName: "rrousselgit", // Usually your GitHub org/user name.
   projectName: "riverpod", // Usually your repo name.
-  plugins: ['docusaurus-plugin-sass'],
+  plugins: ["docusaurus-plugin-sass"],
   i18n: {
     defaultLocale: "en",
     locales: ["en", "fr"],
@@ -22,7 +22,10 @@ module.exports = {
       defaultMode: "dark",
     },
     prism: {
+      defaultLanguage: "dart",
       additionalLanguages: ["dart", "yaml"],
+      theme: require("prism-react-renderer/themes/github"),
+      darkTheme: require("prism-react-renderer/themes/dracula"),
     },
     image: "/img/cover.png",
 

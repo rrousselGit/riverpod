@@ -10,7 +10,6 @@ import SnippetCreate from "!!raw-loader!/static/snippets/create.dart";
 import SnippetRead from "!!raw-loader!/static/snippets/read.dart";
 import styles from "./styles.module.scss";
 
-
 export const Banner: React.FC = () => {
   return (
     <header className="hero">
@@ -41,7 +40,7 @@ export const Banner: React.FC = () => {
                   message: "Create a Provider",
                 })}
               >
-                <CodeBlock className="language-dart">{SnippetCreate}</CodeBlock>{" "}
+                <CodeBlock>{SnippetCreate}</CodeBlock>
               </TabItem>
               <TabItem
                 value="consume"
@@ -50,7 +49,7 @@ export const Banner: React.FC = () => {
                   message: "Consume the Provider",
                 })}
               >
-                <CodeBlock className="language-dart">{SnippetRead}</CodeBlock>
+                <CodeBlock>{SnippetRead}</CodeBlock>
               </TabItem>
             </Tabs>
           </div>

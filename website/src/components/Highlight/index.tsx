@@ -27,7 +27,7 @@ export const Highlight: React.FC<IHighlightProps> = ({
       {!!imageUrl ? (
         <img src={imageUrl} alt={title} />
       ) : (
-        <CodeBlock className="language-dart">{snippet}</CodeBlock>
+        <CodeBlock>{snippet}</CodeBlock>
       )}
     </div>,
   ];
