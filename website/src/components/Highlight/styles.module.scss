@@ -1,0 +1,7 @@
+.detailedFeatures {
+  padding: 40px 0;
+}
+
+.detailedFeatures:nth-child(2n + 1) {
+  background-color: var(--ifm-color-emphasis-100);
+}
