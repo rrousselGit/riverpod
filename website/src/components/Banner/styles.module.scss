@@ -1,27 +1,9 @@
-.heroBanner {
-  padding: 4rem 0;
-  position: relative;
-  overflow: hidden;
+header {
+  min-height: calc(100vh - 60px); // Exclude navbar height
 }
 
-@media screen and (max-width: 966px) {
-  .heroBanner {
-    padding: 2rem;
-  }
-}
-
-.mainTitle {
-  display: inline-flex;
-  > img {
-    width: 56px;
-    height: 56px;
-    margin-right: 10px;
-  }
-}
-
-.buttons {
-  margin: 32px;
+.center {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
 }
