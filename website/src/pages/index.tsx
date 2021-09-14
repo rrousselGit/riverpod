@@ -20,19 +20,19 @@ export default function Home() {
         <section>
           <div className="container">
             <div className="row">
-              {features.map((props, idx) => (
-                <Feature key={idx} {...props} />
+              {features.map((props, index) => (
+                <Feature key={`feature-${index}`} {...props} />
               ))}
             </div>
           </div>
         </section>
 
         <section>
-          {highlights.map((props, idx) => (
+          {highlights.map((props, index) => (
             <Highlight
-              key={idx}
+              key={`highlight-${index}`}
+              direction={index % 2 === 0 ? "regular" : "reverse"}
               {...props}
-              direction={idx % 2 === 0 ? "regular" : "reverse"}
             />
           ))}
         </section>

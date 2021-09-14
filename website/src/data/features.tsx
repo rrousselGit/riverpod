@@ -1,10 +1,14 @@
 import React from "react";
-import Translate from "@docusaurus/Translate";
+import Translate, { translate } from "@docusaurus/Translate";
+import { IFeatureProps } from "../components/Feature";
 
-export const features = [
+export const features: IFeatureProps[] = [
   {
-    title: <Translate id="homepage.compile_safe_title">Compile safe</Translate>,
     imageUrl: "img/undraw_security.svg",
+    title: translate({
+      id: "homepage.compile_safe_title",
+      message: "Compile safe",
+    }),
     description: (
       <Translate
         id="homepage.compile_safe_body"
@@ -16,12 +20,11 @@ export const features = [
     ),
   },
   {
-    title: (
-      <Translate id="homepage.unlimited_provider_title">
-        Provider, without its limitations
-      </Translate>
-    ),
     imageUrl: "img/undraw_friendship.svg",
+    title: translate({
+      id: "homepage.unlimited_provider_title",
+      message: "Provider, without its limitations",
+    }),
     description: (
       <Translate id="homepage.unlimited_provider_body">
         Riverpod is inspired by Provider but solves some of it's key issues such as
@@ -31,12 +34,11 @@ export const features = [
     ),
   },
   {
-    title: (
-      <Translate id="homepage.no_flutter_dependency_title">
-        Doesn't depend on Flutter
-      </Translate>
-    ),
     imageUrl: "img/undraw_programming.svg",
+    title: translate({
+      id: "homepage.no_flutter_dependency_title",
+      message: "Doesn't depend on Flutter",
+    }),
     description: (
       <Translate
         id="homepage.no_flutter_dependency_body"

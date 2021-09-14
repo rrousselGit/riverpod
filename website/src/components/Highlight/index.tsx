@@ -1,14 +1,14 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import styles from "./styles.module.scss";
 import CodeBlock from "@theme/CodeBlock";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 
-interface IHighlightProps {
+export interface IHighlightProps {
   title: string;
-  description: string;
+  description: ReactNode;
   snippet?: string;
   imageUrl?: string;
-  direction: "regular" | "reverse";
+  direction?: "regular" | "reverse";
 }
 
 export const Highlight: React.FC<IHighlightProps> = ({
@@ -18,8 +18,6 @@ export const Highlight: React.FC<IHighlightProps> = ({
   imageUrl,
   direction = "regular",
 }) => {
-  const imgUrl = useBaseUrl(imageUrl);
-
   const children = [
     <div className="col">
       <h2>{title}</h2>
@@ -27,7 +25,7 @@ export const Highlight: React.FC<IHighlightProps> = ({
     </div>,
     <div className="col">
       {!!imageUrl ? (
-        <img src={imgUrl} alt={title} />
+        <img src={imageUrl} alt={title} />
       ) : (
         <CodeBlock className="language-dart">{snippet}</CodeBlock>
       )}
