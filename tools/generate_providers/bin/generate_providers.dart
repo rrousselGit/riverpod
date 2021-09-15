@@ -169,7 +169,7 @@ const _familyDoc = r'''
 ///     return user.when(
 ///       data: (user) => Text(user.name),
 ///       loading: (_) => const CircularProgressIndicator(),
-///       error: (err, stack) => const Text('error'),
+///       error: (err, stack, _) => const Text('error'),
 ///     );
 ///   }
 ///   ```
@@ -401,7 +401,7 @@ Future<void> main(List<String> args) async {
             ref: 'FutureProviderRef<State>',
             constraints: 'State',
             generics: 'State',
-            createType: 'Future<State>',
+            createType: 'FutureOr<State>',
           ),
           StateDetails(
             kind: StateType.stream,
@@ -416,6 +416,7 @@ Future<void> main(List<String> args) async {
       );
       builder.writeln(
         """
+import 'dart:async';
 import 'package:state_notifier/state_notifier.dart';
 
 import 'internals.dart';

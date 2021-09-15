@@ -2,39 +2,44 @@
 
 ### Future/StreamProvider
 
-During loading states, `FutureProvider` and `StreamProvider` now expose the
-latest value through `AsyncValue`.
+- FutureProvider now creates a `FutureOr<T>` instead of a `Future<T>`
+  This allows bypassing the loading state in the event where a value was synchronously available.
 
-This allows UI to show the previous data while some new data is loading,
-inatead of showing a spinner:
+- During loading and error states, `FutureProvider` and `StreamProvider` now expose the
+  latest value through `AsyncValue`.  
+  This allows UI to show the previous data while some new data is loading,
+  inatead of showing a spinner:
 
-```dart
-final provider = FutureProvider<User>((ref) async {
-  ref.watch(anotherProvider); // may cause `provider` to rebuild
+  ```dart
+  final provider = FutureProvider<User>((ref) async {
+    ref.watch(anotherProvider); // may cause `provider` to rebuild
 
-  return fetchSomething();
-})
-...
+    return fetchSomething();
+  })
+  ...
 
-Widget build(context, ref) {
-  return ref.watch(provider).when(
-    error: (err, stack) => Text('error'),
-    data: (user) => Text('Hello ${user.name}'),
-    loading: (previous) {
-      if (previous is AsyncData<User>) {
-        return Text('loading ... (previous: ${previous.value.name})'});
+  Widget build(context, ref) {
+    return ref.watch(provider).when(
+      error: (err, stack, _) => Text('error'),
+      data: (user) => Text('Hello ${user.name}'),
+      loading: (previous) {
+        if (previous is AsyncData<User>) {
+          return Text('loading ... (previous: ${previous.value.name})'});
+        }
+
+        return CircularProgressIndicator();
       }
+    );
 
-      return CircularProgressIndicator();
-    }
-  );
-
-}
-```
+  }
+  ```
 
 ### AsyncValue
 
-- **Breaking** `AsyncValue.copyWith` , `AsyncValue.map` and `AsyncValue.mapOrElse` methods are removed
+- **Breaking** `AsyncValue.copyWith` is removed
+- **Breaking** `AsyncValue.error(..., stacktrace)` is now a named parameter instead of postional parameter.
+- **Breaking** `AsyncValue.when(loading: )` and ``AsyncValue.when(error: )` (and `when` variants)
+  now receive an extra "previous" parameter.
 - Deprecated `AsyncValue.data` in favor of `AsyncValue.value`
 - Allowed `AsyncData`, `AsyncError` and `AsyncLoading` to be extended
 - Added `AsyncValue.whenOrNull`, similar to `whenOrElse` but instead of an
@@ -42,10 +47,19 @@ Widget build(context, ref) {
 - Added `AsyncValue.value`, which allows reading the value without handling
   loading/error states.
 - `AsyncError` can now be instantiated with `const`.
-- `AsyncLoading` now optionally includes the previous "state".
+- `AsyncLoading` and `AsyncError` now optionally includes the previous state.
+
+### General
+
+- It is no-longer allowed to use `ref.watch` or `ref.read` inside a selector:
+  ```dart
+  provider.select((value) => ref.watch(something)); // KO, cannot user ref.watch inside selectors
+  ```
 
 ### Bug-fixes
 
+- fixed a bug where disposing a scoped `ProviderContainer` could cause other
+  `ProviderContainer`s to stop working.
 - fixed an issue where conditionally depending on an "autoDispose" provider
   may not properly dispose of it (see #712)
 - fixed an issue where when chaining providers, widgets may re-render

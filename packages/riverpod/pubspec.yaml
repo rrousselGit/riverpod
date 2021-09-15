@@ -15,7 +15,8 @@ dependencies:
   state_notifier: ^0.7.0
 
 dev_dependencies:
-  build_runner: ^1.11.0
+  build_runner: ^2.0.0
+  expect_error: ^1.0.0
   freezed: ^0.14.0
   mockito: ^5.0.0
   test: ^1.16.0

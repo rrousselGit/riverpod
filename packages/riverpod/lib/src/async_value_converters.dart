@@ -107,7 +107,7 @@ Stream<State> _asyncValueToStream<State>(
         getController();
       },
       data: (data) => getController().add(data),
-      error: (err, stack) => getController().addError(err, stack),
+      error: (err, stack, _) => getController().addError(err, stack),
     );
   }
 
@@ -204,7 +204,10 @@ Future<State> _asyncValueAsFuture<State>(
       loading: (_) {
         if (loadingCompleter == null) {
           loadingCompleter = Completer<State>();
-          ref.setState(loadingCompleter!.future);
+          ref.setState(
+            // TODO test ignore
+            loadingCompleter!.future..ignore(),
+          );
         }
       },
       data: (data) {
@@ -216,7 +219,7 @@ Future<State> _asyncValueAsFuture<State>(
           ref.setState(Future<State>.value(data));
         }
       },
-      error: (err, stack) {
+      error: (err, stack, _) {
         if (loadingCompleter != null) {
           loadingCompleter!.completeError(err, stack);
           // allow follow-up error calls to go on the 'else' branch

@@ -17,7 +17,7 @@ class FutureProvider<State> extends AsyncProvider<State>
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeFutureProviderBuilder();
 
-  final Create<Future<State>, FutureProviderRef<State>> _create;
+  final Create<FutureOr<State>, FutureProviderRef<State>> _create;
 
   /// {@template riverpod.futureprovider.future}
   /// A provider that exposes the [Future] created by a [FutureProvider].
@@ -100,7 +100,7 @@ class FutureProviderFamily<State, Arg>
   /// {@macro riverpod.futureprovider.family}
   FutureProviderFamily(this._create, {String? name}) : super(name);
 
-  final FamilyCreate<Future<State>, FutureProviderRef<State>, Arg> _create;
+  final FamilyCreate<FutureOr<State>, FutureProviderRef<State>, Arg> _create;
 
   @override
   FutureProvider<State> create(Arg argument) {

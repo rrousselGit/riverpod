@@ -60,7 +60,7 @@ part 'future_provider/base.dart';
 ///
 ///   return config.when(
 ///     loading: (_) => const CircularProgressIndicator(),
-///     error: (err, stack) => Text('Error: $err'),
+///     error: (err, stack, _) => Text('Error: $err'),
 ///     data: (config) {
 ///       return Text(config.host);
 ///     },
@@ -82,25 +82,36 @@ part 'future_provider/base.dart';
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no-longer needed.
 /// {@endtemplate}
 AsyncValue<State> _listenFuture<State>(
-  Future<State> Function() future,
+  FutureOr<State> Function() future,
   ProviderElementBase<AsyncValue<State>> ref,
 ) {
   var running = true;
   ref.onDispose(() => running = false);
   try {
-    ref.setState(AsyncValue<State>.loading());
-    future().then(
-      (event) {
-        if (running) ref.setState(AsyncValue<State>.data(event));
-      },
-      // ignore: avoid_types_on_closure_parameters
-      onError: (Object err, StackTrace stack) {
-        if (running) ref.setState(AsyncValue<State>.error(err, stack));
-      },
-    );
+    final Object? value = future();
+
+    if (value is Future<State>) {
+      ref.setState(AsyncValue<State>.loading());
+
+      value.then(
+        (event) {
+          if (running) ref.setState(AsyncValue<State>.data(event));
+        },
+        // ignore: avoid_types_on_closure_parameters
+        onError: (Object err, StackTrace stack) {
+          if (running) {
+            ref.setState(
+              AsyncValue<State>.error(err, stackTrace: stack),
+            );
+          }
+        },
+      );
+    } else {
+      return AsyncData(value as State);
+    }
 
     return ref.getState().value;
   } catch (err, stack) {
-    return AsyncValue.error(err, stack);
+    return AsyncValue.error(err, stackTrace: stack);
   }
 }

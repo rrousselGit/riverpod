@@ -123,7 +123,7 @@ class MyHomePage extends HookConsumerWidget {
           loading: (_) => const Center(
             child: CircularProgressIndicator(),
           ),
-          error: (err, stack) {
+          error: (err, stack, _) {
             if (err is DioError) {
               return Text(
                 err.response!.data.toString(),

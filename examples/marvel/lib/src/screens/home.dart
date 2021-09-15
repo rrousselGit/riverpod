@@ -84,7 +84,7 @@ class Home extends HookConsumerWidget {
             color: Colors.white,
             child: const Center(child: CircularProgressIndicator()),
           ),
-          error: (err, stack) {
+          error: (err, stack, _) {
             return Scaffold(
               appBar: AppBar(title: const Text('Error')),
               body: Center(
@@ -164,7 +164,7 @@ class CharacterItem extends HookConsumerWidget {
 
     return character.when(
       loading: (_) => const Center(child: CircularProgressIndicator()),
-      error: (err, stack) => Text('Error $err'),
+      error: (err, stack, _) => Text('Error $err'),
       data: (character) {
         return GestureDetector(
           onTap: () {
