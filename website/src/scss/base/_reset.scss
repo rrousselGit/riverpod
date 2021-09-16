@@ -1,0 +1,33 @@
+:root {
+  --ifm-color-primary-lightest: map.get($primary, 100);
+  --ifm-color-primary-lighter: map.get($primary, 200);
+  --ifm-color-primary-light: map.get($primary, 300);
+  --ifm-color-primary: map.get($primary, 400);
+  --ifm-color-primary-dark: map.get($primary, 500);
+  --ifm-color-primary-darker: map.get($primary, 600);
+  --ifm-color-primary-darkest: map.get($primary, 700);
+}
+
+.docusaurus-highlight-code-line {
+  background-color: rgb(72, 77, 91);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+.markdown {
+  > .player {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    margin-bottom: var(--ifm-paragraph-margin-bottom);
+
+    > iframe {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+    }
+  }
+}

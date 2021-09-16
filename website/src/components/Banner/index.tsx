@@ -4,20 +4,18 @@ import Translate, { translate } from "@docusaurus/Translate";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import CodeBlock from "@theme/CodeBlock";
-import classnames from "classnames";
 import SnippetCreate from "!!raw-loader!/static/snippets/create.dart";
 import SnippetRead from "!!raw-loader!/static/snippets/read.dart";
-import styles from "./styles.module.scss";
 
 export const Banner: React.FC = () => {
   const { siteConfig } = useDocusaurusContext();
 
   return (
-    <header className={classnames("hero", styles.banner)}>
+    <header className="hero banner">
       <div className="container">
         <div className="row">
-          <div className={classnames("col", styles.center)}>
-            <h1 className={styles.logo}>
+          <div className="col center">
+            <h1 className="logo">
               <img src="img/logo.svg" alt="Riverpod logo"></img>
               {siteConfig.title}
             </h1>

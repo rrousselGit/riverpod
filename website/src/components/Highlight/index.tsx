@@ -1,7 +1,5 @@
 import React, { ReactNode } from "react";
-import styles from "./styles.module.scss";
 import CodeBlock from "@theme/CodeBlock";
-import useBaseUrl from "@docusaurus/useBaseUrl";
 
 export interface IHighlightProps {
   title: string;
@@ -33,7 +31,7 @@ export const Highlight: React.FC<IHighlightProps> = ({
   ];
 
   return (
-    <div className={styles.detailedFeatures}>
+    <div className="detailedFeatures">
       <div className="container">
         <div className="row">
           {direction === "regular" ? children : children.reverse()}

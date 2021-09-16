@@ -17,12 +17,19 @@
   "dependencies": {
     "@docusaurus/core": "^2.0.0-beta.6",
     "@docusaurus/preset-classic": "^2.0.0-beta.6",
-    "classnames": "^2.3.0",
     "docusaurus-plugin-sass": "^0.2.1",
     "raw-loader": "^4.0.2",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "sass": "^1.39.2"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "^2.0.0-beta.6",
+    "@tsconfig/docusaurus": "^1.0.4",
+    "@types/react": "^17.0.20",
+    "@types/react-helmet": "^6.1.2",
+    "@types/react-router-dom": "^5.1.8",
+    "typescript": "^4.4.3"
   },
   "browserslist": {
     "production": [
@@ -35,13 +42,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@docusaurus/module-type-aliases": "^2.0.0-beta.6",
-    "@tsconfig/docusaurus": "^1.0.4",
-    "@types/react": "^17.0.20",
-    "@types/react-helmet": "^6.1.2",
-    "@types/react-router-dom": "^5.1.8",
-    "typescript": "^4.4.3"
   }
 }
