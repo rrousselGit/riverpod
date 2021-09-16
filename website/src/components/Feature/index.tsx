@@ -12,11 +12,8 @@ export const Feature: React.FC<IFeatureProps> = ({
   description,
 }) => {
   return (
-    <div className="col col--4">
-      <div className="text--center">
-        <img className="featureImage" src={imageUrl} alt={title} />
-      </div>
-      <h3>{title}</h3>
+    <div className="col col--6">
+      <h1>{title}</h1>
       <p>{description}</p>
     </div>
   );
