@@ -1,26 +1,33 @@
 import React from "react";
 import Link from "@docusaurus/Link";
 import Translate, { translate } from "@docusaurus/Translate";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import CodeBlock from "@theme/CodeBlock";
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import classnames from "classnames";
 import SnippetCreate from "!!raw-loader!/static/snippets/create.dart";
 import SnippetRead from "!!raw-loader!/static/snippets/read.dart";
 import styles from "./styles.module.scss";
 
 export const Banner: React.FC = () => {
+  const { siteConfig } = useDocusaurusContext();
+
   return (
-    <header className="hero">
+    <header className={classnames("hero", styles.banner)}>
       <div className="container">
         <div className="row">
           <div className={classnames("col", styles.center)}>
+            <h1 className={styles.logo}>
+              <img src="img/logo.svg" alt="Riverpod logo"></img>
+              {siteConfig.title}
+            </h1>
+
             <h1 className="hero__title">
               <Translate id="home.tagline">
-                Reactive State-Management and Dependency Injection
+                A Reactive State-Management and Dependency Injection Framework
               </Translate>
             </h1>
+
             <div>
               <Link
                 className="button button--secondary button--lg margin-vert-xl"
@@ -31,27 +38,22 @@ export const Banner: React.FC = () => {
             </div>
           </div>
           <div className="col">
-            <Tabs>
-              <TabItem
-                default
-                value="read"
-                label={translate({
-                  id: "home.create_provider",
-                  message: "Create a Provider",
-                })}
-              >
-                <CodeBlock>{SnippetCreate}</CodeBlock>
-              </TabItem>
-              <TabItem
-                value="consume"
-                label={translate({
-                  id: "home.consume_provider",
-                  message: "Consume the Provider",
-                })}
-              >
-                <CodeBlock>{SnippetRead}</CodeBlock>
-              </TabItem>
-            </Tabs>
+            <CodeBlock
+              title={translate({
+                id: "home.create_provider",
+                message: "Create a Provider",
+              })}
+            >
+              {SnippetCreate}
+            </CodeBlock>
+            <CodeBlock
+              title={translate({
+                id: "home.consume_provider",
+                message: "Consume the Provider",
+              })}
+            >
+              {SnippetRead}
+            </CodeBlock>
           </div>
         </div>
       </div>

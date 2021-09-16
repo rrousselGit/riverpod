@@ -1,5 +1,14 @@
-header {
+
+.banner {
   min-height: calc(100vh - 60px); // Exclude navbar height
+}
+
+.logo {
+  display: inline;
+  > img {
+    width: 26px;
+    margin-right: 16px;
+  }
 }
 
 .center {
