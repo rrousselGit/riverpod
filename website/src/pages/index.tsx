@@ -29,11 +29,7 @@ export default function Home() {
 
         <section>
           {highlights.map((props, index) => (
-            <Highlight
-              key={`highlight-${index}`}
-              direction={index % 2 === 0 ? "regular" : "reverse"}
-              {...props}
-            />
+            <Highlight key={`highlight-${index}`} {...props} />
           ))}
         </section>
       </main>

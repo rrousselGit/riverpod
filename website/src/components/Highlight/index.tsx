@@ -6,7 +6,6 @@ export interface IHighlightProps {
   description: ReactNode;
   snippet?: string;
   imageUrl?: string;
-  direction?: "regular" | "reverse";
 }
 
 export const Highlight: React.FC<IHighlightProps> = ({
@@ -14,27 +13,23 @@ export const Highlight: React.FC<IHighlightProps> = ({
   description,
   snippet,
   imageUrl,
-  direction = "regular",
 }) => {
-  const children = [
-    <div className="col">
-      <h2>{title}</h2>
-      <p>{description}</p>
-    </div>,
-    <div className="col">
-      {!!imageUrl ? (
-        <img src={imageUrl} alt={title} />
-      ) : (
-        <CodeBlock>{snippet}</CodeBlock>
-      )}
-    </div>,
-  ];
-
   return (
-    <div className="detailedFeatures">
+    <div className="highlight--card padding--xl">
       <div className="container">
         <div className="row">
-          {direction === "regular" ? children : children.reverse()}
+          <div className="col col--4 center">
+            <h1>{title}</h1>
+            <p>{description}</p>
+          </div>
+          <div className="col col--1"></div>
+          <div className="col col--7">
+            {!!imageUrl ? (
+              <img src={imageUrl} alt={title} />
+            ) : (
+              <CodeBlock>{snippet}</CodeBlock>
+            )}
+          </div>
         </div>
       </div>
     </div>

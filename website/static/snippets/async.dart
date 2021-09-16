@@ -1,6 +1,7 @@
 // Parse a file without having to deal with errors
 final configurationsProvider = FutureProvider((ref) async {
-  final json = await File.fromUri(Uri.parse('configs.json')).readAsString();
+  final uri = Uri.parse('configs.json');
+  final json = await File.fromUri(uri).readAsString();
   return Configurations.fromJson(json);
 });
 

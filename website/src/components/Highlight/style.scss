@@ -1,7 +1,7 @@
-.detailedFeatures {
-  padding: 40px 0;
-}
-
-.detailedFeatures:nth-child(2n + 1) {
-  background-color: var(--ifm-color-emphasis-100);
+.highlight {
+  &--card {
+    background-color: var(--ifm-color-emphasis-100);
+    margin: 0 64px 64px 64px;
+    border-radius: 24px;
+  }
 }
