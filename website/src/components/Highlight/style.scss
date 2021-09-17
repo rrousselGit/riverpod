@@ -10,6 +10,7 @@
 
     @include min-width(lg) {
       flex-direction: row;
+      align-items: center;
       margin: 6rem;
       margin-top: 0;
       padding: 6rem;
@@ -19,7 +20,6 @@
   &__content {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     flex: 2;
     margin-bottom: 2rem;
 
@@ -30,7 +30,6 @@
   }
 
   &__preview {
-    margin: auto;
     flex: 3;
   }
 }

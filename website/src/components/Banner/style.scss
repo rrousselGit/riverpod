@@ -7,13 +7,13 @@
 
   @include min-width(lg) {
     flex-direction: row;
+    align-items: center;
     padding: 4rem 6rem;
   }
 
   &__content {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     flex: 1;
     padding: 1rem;
   }
