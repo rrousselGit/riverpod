@@ -1,18 +1,39 @@
-
 .banner {
-  min-height: calc(100vh - 60px); // Exclude navbar height
-}
-
-.logo {
-  display: inline;
-  > img {
-    width: 26px;
-    margin-right: 16px;
-  }
-}
-
-.center {
+  min-height: calc(100vh - 60px);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  padding: 2rem;
+  background-color: var(--ifm-hero-background-color);
+
+  @include min-width(lg) {
+    flex-direction: row;
+    padding: 4rem 6rem;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    padding: 1rem;
+  }
+
+  &__logo {
+    display: inline;
+    font-size: 28px;
+    font-weight: 600;
+
+    @include min-width(lg) {
+      margin-top: -64px;
+    }
+
+    > img {
+      width: 26px;
+      margin-right: 16px;
+    }
+  }
+
+  &__headline {
+    font-size: 48px;
+  }
 }

@@ -24,7 +24,7 @@ module.exports = {
     prism: {
       defaultLanguage: "dart",
       additionalLanguages: ["dart", "yaml"],
-      theme: require("prism-react-renderer/themes/github"),
+      theme: require("prism-react-renderer/themes/vsLight"),
       darkTheme: require("prism-react-renderer/themes/dracula"),
     },
     image: "/img/cover.png",

@@ -11,49 +11,45 @@ export const Banner: React.FC = () => {
   const { siteConfig } = useDocusaurusContext();
 
   return (
-    <header className="hero banner">
-      <div className="container">
-        <div className="row">
-          <div className="col center">
-            <h1 className="logo">
-              <img src="img/logo.svg" alt="Riverpod logo"></img>
-              {siteConfig.title}
-            </h1>
+    <header className="banner">
+      <div className="banner__content">
+        <h1 className="banner__logo">
+          <img src="img/logo.svg" alt="Riverpod logo" />
+          {siteConfig.title}
+        </h1>
 
-            <h1 className="hero__title">
-              <Translate id="home.tagline">
-                A Reactive State-Management and Dependency Injection Framework
-              </Translate>
-            </h1>
+        <h1 className="banner__headline">
+          <Translate id="home.tagline">
+            A Reactive State-Management and Dependency Injection Framework
+          </Translate>
+        </h1>
 
-            <div>
-              <Link
-                className="button button--secondary button--lg margin-vert-xl"
-                to={useBaseUrl("docs/getting_started")}
-              >
-                <Translate id="home.get_started">Get Started</Translate>
-              </Link>
-            </div>
-          </div>
-          <div className="col">
-            <CodeBlock
-              title={translate({
-                id: "home.create_provider",
-                message: "Create a Provider",
-              })}
-            >
-              {SnippetCreate}
-            </CodeBlock>
-            <CodeBlock
-              title={translate({
-                id: "home.consume_provider",
-                message: "Consume the Provider",
-              })}
-            >
-              {SnippetRead}
-            </CodeBlock>
-          </div>
+        <div>
+          <Link
+            className="button button--secondary button--lg margin-vert-xl"
+            to={useBaseUrl("docs/getting_started")}
+          >
+            <Translate id="home.get_started">Get Started</Translate>
+          </Link>
         </div>
+      </div>
+      <div className="banner__content">
+        <CodeBlock
+          title={translate({
+            id: "home.create_provider",
+            message: "Create a Provider",
+          })}
+        >
+          {SnippetCreate}
+        </CodeBlock>
+        <CodeBlock
+          title={translate({
+            id: "home.consume_provider",
+            message: "Consume the Provider",
+          })}
+        >
+          {SnippetRead}
+        </CodeBlock>
       </div>
     </header>
   );

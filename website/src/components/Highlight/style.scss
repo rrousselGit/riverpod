@@ -1,7 +1,36 @@
 .highlight {
-  &--card {
-    background-color: var(--ifm-color-emphasis-100);
-    margin: 0 64px 64px 64px;
+  &__card {
+    display: flex;
+    flex-direction: column;
+    margin: 1.5rem;
+    margin-top: 0;
+    padding: 2rem;
     border-radius: 24px;
+    background-color: var(--ifm-color-emphasis-100);
+
+    @include min-width(lg) {
+      flex-direction: row;
+      margin: 6rem;
+      margin-top: 0;
+      padding: 6rem;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 2;
+    margin-bottom: 2rem;
+
+    @include min-width(lg) {
+      margin-right: 4rem;
+      margin-bottom: 0;
+    }
+  }
+
+  &__preview {
+    margin: auto;
+    flex: 3;
   }
 }

@@ -1,10 +1,21 @@
-.features {
-  align-items: center;
-  padding: 2rem 0;
-  width: 100%;
-}
+.feature {
+  &__container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 32px;
 
-.featureImage {
-  height: 200px;
-  width: 200px;
+    padding: 2rem;
+
+    @include min-width(lg) {
+      padding: 11rem;
+    }
+  }
+
+  &__title {
+    font-size: 36px;
+  }
+
+  &__description {
+    font-size: 18px;
+  }
 }

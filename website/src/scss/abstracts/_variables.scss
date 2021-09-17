@@ -7,3 +7,11 @@ $primary: (
   600: "#2855a3ff",
   700: "#22427aff",
 );
+
+$breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+);

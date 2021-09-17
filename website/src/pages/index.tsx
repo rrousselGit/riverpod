@@ -18,12 +18,10 @@ export default function Home() {
 
       <main>
         <section>
-          <div className="container padding--xl">
-            <div className="row">
-              {features.map((props, index) => (
-                <Feature key={`feature-${index}`} {...props} />
-              ))}
-            </div>
+          <div className="feature__container">
+            {features.map((props, index) => (
+              <Feature key={`feature-${index}`} {...props} />
+            ))}
           </div>
         </section>
 

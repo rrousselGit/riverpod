@@ -4,7 +4,6 @@ import { IFeatureProps } from "../components/Feature";
 
 export const features: IFeatureProps[] = [
   {
-    imageUrl: "img/undraw_security.svg",
     title: translate({
       id: "homepage.compile_safe_title",
       message: "Compile safe",
@@ -20,7 +19,6 @@ export const features: IFeatureProps[] = [
     ),
   },
   {
-    imageUrl: "img/undraw_friendship.svg",
     title: translate({
       id: "homepage.unlimited_provider_title",
       message: "Provider, without its limitations",
@@ -34,7 +32,6 @@ export const features: IFeatureProps[] = [
     ),
   },
   {
-    imageUrl: "img/undraw_programming.svg",
     title: translate({
       id: "homepage.no_flutter_dependency_title",
       message: "Doesn't depend on Flutter",
