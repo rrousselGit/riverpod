@@ -1,0 +1,46 @@
+.snippet {
+  position: relative;
+
+  &__dots {
+    z-index: 10;
+    position: absolute;
+    display: flex;
+    top: 14px;
+    left: 14px;
+  }
+
+  &__dot {
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    margin-left: 6px;
+
+    @include themed(background-color, #00000013, #ffffff25);
+  }
+
+  &__title {
+    z-index: 10;
+    position: absolute;
+    right: 0;
+    left: 0;
+    text-align: center;
+    margin-top: 12px;
+    opacity: 0.68;
+    font-size: 14px;
+  }
+
+  .prism-code {
+    counter-reset: line-number;
+    padding-top: 32px;
+
+    &.language-dart .token-line::before {
+      counter-increment: line-number;
+      content: counter(line-number);
+      margin-right: calc(var(--ifm-pre-padding) * 1.5);
+      min-width: 1rem;
+      display: inline-block;
+      opacity: 0.3;
+      position: sticky;
+    }
+  }
+}

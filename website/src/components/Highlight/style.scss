@@ -31,5 +31,10 @@
 
   &__preview {
     flex: 3;
+    
+    > * {
+      border-radius: 8px;
+      box-shadow: 0px 14px 50px -34px rgba(0, 0, 0, 0.64);
+    }
   }
 }

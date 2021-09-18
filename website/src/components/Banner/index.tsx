@@ -3,7 +3,7 @@ import Link from "@docusaurus/Link";
 import Translate, { translate } from "@docusaurus/Translate";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
-import CodeBlock from "@theme/CodeBlock";
+import { CodeSnippet } from "../CodeSnippet";
 import SnippetCreate from "!!raw-loader!/static/snippets/create.dart";
 import SnippetRead from "!!raw-loader!/static/snippets/read.dart";
 
@@ -34,22 +34,22 @@ export const Banner: React.FC = () => {
         </div>
       </div>
       <div className="banner__content">
-        <CodeBlock
+        <CodeSnippet
           title={translate({
             id: "home.create_provider",
             message: "Create a Provider",
           })}
         >
           {SnippetCreate}
-        </CodeBlock>
-        <CodeBlock
+        </CodeSnippet>
+        <CodeSnippet
           title={translate({
             id: "home.consume_provider",
             message: "Consume the Provider",
           })}
         >
           {SnippetRead}
-        </CodeBlock>
+        </CodeSnippet>
       </div>
     </header>
   );

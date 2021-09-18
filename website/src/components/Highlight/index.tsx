@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import CodeBlock from "@theme/CodeBlock";
+import { CodeSnippet } from "../CodeSnippet";
 
 export interface IHighlightProps {
   title: string;
@@ -16,16 +16,16 @@ export const Highlight: React.FC<IHighlightProps> = ({
 }) => {
   return (
     <div className="highlight__card">
-          <div className="highlight__content">
-            <h1>{title}</h1>
-            <p>{description}</p>
-          </div>
-          <div className="highlight__preview">
-            {!!imageUrl ? (
-              <img src={imageUrl} alt={title} />
-            ) : (
-              <CodeBlock>{snippet}</CodeBlock>
-            )}
+      <div className="highlight__content">
+        <h1>{title}</h1>
+        <p>{description}</p>
+      </div>
+      <div className="highlight__preview">
+        {!!imageUrl ? (
+          <img src={imageUrl} alt={title} />
+        ) : (
+          <CodeSnippet>{snippet}</CodeSnippet>
+        )}
       </div>
     </div>
   );
