@@ -138,11 +138,6 @@ extension<T> on AsyncValue<T> {
     return nextState.map(
       data: (data) => data,
       error: (error) {
-        assert(
-          error.previous == null,
-          'Bad state, expected AsyncError to have no previous state',
-        );
-
         return AsyncError(
           error.error,
           stackTrace: error.stackTrace,
@@ -150,11 +145,6 @@ extension<T> on AsyncValue<T> {
         );
       },
       loading: (loading) {
-        assert(
-          loading.previous == null,
-          'Bad state, expected AsyncLoading to have no previous state',
-        );
-
         return AsyncLoading(previous: lastNonLoadingState);
       },
     );

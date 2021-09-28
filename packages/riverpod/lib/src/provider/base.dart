@@ -233,7 +233,14 @@ class ProviderElement<State> extends ProviderElementBase<State>
 
   @override
   State get state {
-    final state = getState().value;
+    final state = getState().when(
+      data: (d) => d,
+      // ignore: only_throw_errors
+      error: (err, stack, _) => throw err,
+      loading: (_) => throw StateError(
+        'Tried to read the state of a provider before it was initialized',
+      ),
+    );
 
     assert(() {
       if (!_debugDidSetValue) {
