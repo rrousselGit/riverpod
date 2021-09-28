@@ -235,3 +235,46 @@ Future<State> _asyncValueAsFuture<State>(
 
   return ref.getState().value;
 }
+
+/// Implementation details for `AsyncProvider`
+extension AsyncValueInternalX<T> on AsyncValue<T> {
+  /// Update [nextState] to have "this" as previous state.
+  ///
+  /// This ensures that [AsyncLoading.previous] and [AsyncError.previous] are
+  /// properly set.
+  AsyncValue<T> next(AsyncValue<T> nextState) {
+    return nextState.map(
+      data: (data) => data,
+      error: (error) {
+        return AsyncError(
+          error.error,
+          stackTrace: error.stackTrace,
+          previous: latestData,
+        );
+      },
+      loading: (loading) {
+        return AsyncLoading(previous: lastestDataOrError);
+      },
+    );
+  }
+
+  /// Obtains the latest error or data state
+  AsyncValue<T>? get lastestDataOrError {
+    return map(
+      data: (data) => data,
+      error: (error) => error,
+      loading: (loading) => loading.previous,
+    );
+  }
+
+  /// Obtains the latest data state, or null if none.
+  AsyncData<T>? get latestData {
+    return map(
+      data: (data) => data,
+      error: (error) => error.previous,
+      loading: (loading) {
+        return loading.previous?.latestData;
+      },
+    );
+  }
+}
