@@ -73,11 +73,23 @@ class _StateReader {
         .._container = container
         ..mount();
 
-      for (final observer in container._observers) {
-        _runGuarded(
-          () => observer.didAddProvider(origin, element._state, container),
-        );
-      }
+      element.getState().when(
+        // ignore: avoid_types_on_closure_parameters
+        data: (Object? state) {
+          for (final observer in container._observers) {
+            _runGuarded(
+              () => observer.didAddProvider(origin, state, container),
+            );
+          }
+        },
+        error: (err, stack, _) {
+          // TODO create observer life-cycle for error reporting
+        },
+        loading: (_) {
+          // never reached
+        },
+      );
+
       return element;
     } finally {
       if (_circularDependencyLock == origin) {

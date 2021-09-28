@@ -1394,7 +1394,7 @@ void main() {
       await expectLater(stream, emitsDone);
     });
 
-    test('loading immediatly then loading', () async {
+    test('loading immediately then loading', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
         provider.overrideWithValue(const AsyncValue<int>.loading()),

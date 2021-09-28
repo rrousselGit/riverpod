@@ -774,8 +774,8 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
             Zone.current.runGuarded(
               () => observer.didUpdateProvider(
                 provider,
-                previousState,
-                getState(),
+                previousState.value,
+                getState().value,
                 _container,
               ),
             );

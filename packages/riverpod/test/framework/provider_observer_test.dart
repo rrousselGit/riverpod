@@ -9,7 +9,7 @@ import '../utils.dart';
 void main() {
   group('ProviderObserver', () {
     test('ProviderObservers can have const constructors', () {
-      final root = ProviderContainer(
+      final root = createContainer(
         observers: [
           const ConstObserver(),
         ],
