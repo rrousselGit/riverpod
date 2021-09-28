@@ -122,18 +122,13 @@ void main() {
         final container = createContainer();
         final throws = StateProvider((ref) => true);
         final provider = Provider((ref) {
-          print('build provider');
           if (ref.watch(throws).state) {
-            print('throw');
             throw UnimplementedError();
           }
-          print('fixed');
-
           return 0;
         });
 
         final dep = Provider((ref) {
-          print('build dep');
           return ref.watch(provider);
         });
 
