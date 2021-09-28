@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
-  group('getState', () {
+  group('getExposedValue', () {
     test('throws on providers that threw', () {
       final container = createContainer();
       final provider = Provider((ref) => throw UnimplementedError());
@@ -13,8 +13,28 @@ void main() {
       final element = container.readProviderElement(provider);
 
       expect(
-        element.getState,
+        element.getExposedValue,
         throwsA(isA<ProviderException>()),
+      );
+    });
+  });
+
+  group('getState', () {
+    test('returns AsyncError on providers that threw', () {
+      final container = createContainer();
+      final provider = Provider((ref) => throw UnimplementedError());
+
+      final element = container.readProviderElement(provider);
+
+      expect(
+        element.getState(),
+        isA<AsyncError>().having(
+          (e) => e.error,
+          'error',
+          isA<ProviderException>()
+              .having((e) => e.exception, 'exception', isUnimplementedError)
+              .having((e) => e.provider, 'provider', provider),
+        ),
       );
     });
   });
@@ -74,7 +94,7 @@ void main() {
       );
     });
 
-    test('include ref.read dependents', () {}, skip: true);
+    test('includes ref.read dependents', () {}, skip: true);
   });
 
   group('hasListeners', () {
