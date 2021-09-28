@@ -253,13 +253,13 @@ extension AsyncValueInternalX<T> on AsyncValue<T> {
         );
       },
       loading: (loading) {
-        return AsyncLoading(previous: lastestDataOrError);
+        return AsyncLoading(previous: latestDataOrError);
       },
     );
   }
 
   /// Obtains the latest error or data state
-  AsyncValue<T>? get lastestDataOrError {
+  AsyncValue<T>? get latestDataOrError {
     return map(
       data: (data) => data,
       error: (error) => error,
