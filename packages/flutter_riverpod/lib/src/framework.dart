@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart' hide describeIdentity;
 import 'package:flutter/widgets.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:meta/meta.dart';
+import 'package:riverpod/riverpod.dart';
 
 import 'internals.dart' show describeIdentity;
 

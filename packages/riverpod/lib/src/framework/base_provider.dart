@@ -792,6 +792,7 @@ but $provider does not depend on ${_debugCurrentlyBuildingElement!.provider}.
   ///   the scenario where the value changed.
   @protected
   @mustCallSuper
+  // ignore: use_setters_to_change_properties
   void update(ProviderBase<Created, Listened> newProvider) {
     _provider = newProvider;
   }

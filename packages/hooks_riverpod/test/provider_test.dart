@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:mockito/mockito.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mockito/mockito.dart';
 
 void main() {
   testWidgets('.read(context)', (tester) async {
@@ -90,7 +90,10 @@ void main() {
     final dispose3 = OnDisposeMock();
 
     final provider = Provider<int>((ref) {
-      ref..onDispose(dispose1)..onDispose(dispose2)..onDispose(dispose3);
+      ref
+        ..onDispose(dispose1)
+        ..onDispose(dispose2)
+        ..onDispose(dispose3);
       return 42;
     });
 
