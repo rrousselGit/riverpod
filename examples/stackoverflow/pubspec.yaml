@@ -11,7 +11,7 @@ dependencies:
   dio: ^4.0.0
   flutter:
     sdk: flutter
-  flutter_hooks: ^0.16.0
+  flutter_hooks: ^0.18.0
   freezed_annotation: ^0.14.0
   hooks_riverpod:
     path: ../../packages/hooks_riverpod
