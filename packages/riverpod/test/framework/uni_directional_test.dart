@@ -128,8 +128,6 @@ void main() {
     });
   });
 
-  // TODO ref.read cannot end-up in circular dependency
-
   group('ref.read cannot end-up in a circular dependency', () {
     test('direct dependency', () {
       final provider = Provider((ref) => ref);

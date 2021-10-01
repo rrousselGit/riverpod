@@ -3,11 +3,11 @@
 ### Future/StreamProvider
 
 - FutureProvider now creates a `FutureOr<T>` instead of a `Future<T>`
-  This allows bypassing the loading state in the event where a value was synchronously available.
+  That allows bypassing the loading state in the event where a value was synchronously available.
 
 - During loading and error states, `FutureProvider` and `StreamProvider` now expose the
   latest value through `AsyncValue`.  
-  This allows UI to show the previous data while some new data is loading,
+  That allows UI to show the previous data while some new data is loading,
   inatead of showing a spinner:
 
   ```dart
