@@ -591,6 +591,7 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
+  bool _debugDidChangeDependency = false;
 
   bool _mounted = false;
   @visibleForTesting
@@ -656,6 +657,7 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
     if (_mustRecomputeState) return;
 
     _mustRecomputeState = true;
+    _mounted = false;
     _runOnDispose();
     _container._scheduler.scheduleProviderRefresh(this);
 
@@ -770,6 +772,10 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
   }
 
   void _didChangeDependency() {
+    assert(() {
+      _debugDidChangeDependency = true;
+      return true;
+    }(), '');
     if (_mustRecomputeState) return;
 
     // will notify children that their dependency may have changed
@@ -802,13 +808,22 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     return true;
   }
 
+  void _assertNotOutdated() {
+    assert(
+      _debugDidChangeDependency == false,
+      'Cannot use ref functions after the dependency of a provider changed but before the provider rebuilt',
+    );
+  }
+
   @override
   T refresh<T>(ProviderBase<T> provider) {
+    _assertNotOutdated();
     return _container.refresh(provider);
   }
 
   @override
   T read<T>(ProviderBase<T> provider) {
+    _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
     assert(_debugAssertCanDependOn(provider), '');
     return _container.read(provider);
@@ -835,6 +850,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
 
   @override
   T watch<T>(ProviderListenable<T> listenable) {
+    _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.watch inside a selector');
 
     if (listenable is _ProviderSelector) {
@@ -881,6 +897,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     void Function(T value) listener, {
     bool fireImmediately = false,
   }) {
+    _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
 
     if (listenable is _ProviderSelector<Object?, T>) {
@@ -933,12 +950,14 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
   void _buildState() {
     ProviderElementBase? debugPreviouslyBuildingElement;
     assert(() {
+      _debugDidChangeDependency = false;
       debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
       _debugCurrentlyBuildingElement = this;
       return true;
     }(), '');
 
     try {
+      _mounted = true;
       _didBuild = false;
       setState(_provider.create(this));
     } catch (err, stack) {
@@ -990,7 +1009,10 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
   @protected
   @mustCallSuper
   void dispose() {
-    assert(_mounted, '$provider was disposed twice');
+    assert(
+      _mounted || _debugDidChangeDependency,
+      '$provider was disposed twice',
+    );
     assert(() {
       RiverpodBinding.debugInstance
           .providerListChangedFor(containerId: container._debugId);
@@ -1031,6 +1053,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
 
   @override
   void onDispose(void Function() listener) {
+    _assertNotOutdated();
     if (!_mounted) {
       throw StateError('Cannot call onDispose after a provider was dispose');
     }

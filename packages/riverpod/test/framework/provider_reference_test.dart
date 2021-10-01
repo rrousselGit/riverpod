@@ -8,8 +8,42 @@ void main() {
   group('ProviderRefBase', () {
     test(
       'cannot call ref.watch/ref.read/ref.listen/ref.onDispose after a dependency changed',
-      () {},
-      skip: true,
+      () {
+        late ProviderRefBase ref;
+        final container = createContainer();
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider((r) {
+          r.watch(dep);
+          ref = r;
+        });
+
+        container.read(provider);
+
+        container.read(dep).state++;
+
+        final another = Provider((ref) => 0);
+
+        expect(
+          () => ref.watch(another),
+          throwsA(isA<AssertionError>()),
+        );
+        expect(
+          () => ref.refresh(another),
+          throwsA(isA<AssertionError>()),
+        );
+        expect(
+          () => ref.read(another),
+          throwsA(isA<AssertionError>()),
+        );
+        expect(
+          () => ref.onDispose(() {}),
+          throwsA(isA<AssertionError>()),
+        );
+        expect(
+          () => ref.listen(another, (_) {}),
+          throwsA(isA<AssertionError>()),
+        );
+      },
     );
 
     group('refresh', () {
@@ -318,11 +352,86 @@ void main() {
     });
 
     group('mounted', () {
-      test('is true during onDispose', () {}, skip: true);
-      test('is false in between rebuilds', () {}, skip: true);
+      test('is false during onDispose caused by ref.watch', () {
+        final container = createContainer();
+        bool? mounted;
+        late ProviderElementBase element;
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider((ref) {
+          ref.watch(dep);
+          element = ref as ProviderElementBase;
+          ref.onDispose(() => mounted = element.mounted);
+        });
+
+        container.read(provider);
+        expect(mounted, null);
+
+        container.read(dep).state++;
+
+        expect(mounted, false);
+      });
+
+      test('is false during onDispose caused by container dispose', () {
+        final container = createContainer();
+        bool? mounted;
+        late ProviderElementBase element;
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider((ref) {
+          ref.watch(dep);
+          element = ref as ProviderElementBase;
+          ref.onDispose(() => mounted = element.mounted);
+        });
+
+        container.read(provider);
+        expect(mounted, null);
+
+        container.dispose();
+
+        expect(mounted, false);
+      });
+
+      test('is false in between rebuilds', () {
+        final container = createContainer();
+        final dep = StateProvider((ref) => 0);
+        late ProviderElementBase element;
+        final provider = Provider((ref) {
+          ref.watch(dep);
+          element = ref as ProviderElementBase;
+        });
+
+        container.read(provider);
+        expect(element.mounted, true);
+
+        container.read(dep).state++;
+
+        expect(element.mounted, false);
+      });
     });
 
-    test('ref.listen on outdated provider causes it to rebuild', () {},
-        skip: true);
+    test('ref.listen on outdated provider causes it to rebuild', () {
+      final dep = StateProvider((ref) => 0);
+      var buildCount = 0;
+      final provider = Provider((ref) {
+        buildCount++;
+        return ref.watch(dep).state;
+      });
+      final listener = Listener<int>();
+      final another = Provider((ref) {
+        ref.listen<int>(provider, listener, fireImmediately: true);
+      });
+      final container = createContainer();
+
+      expect(container.read(provider), 0);
+      expect(buildCount, 1);
+
+      container.read(dep).state = 42;
+
+      expect(buildCount, 1);
+
+      container.read(another);
+
+      expect(buildCount, 2);
+      verifyOnly(listener, listener(42));
+    });
   });
 }
