@@ -6,6 +6,12 @@ import '../utils.dart';
 
 void main() {
   group('ProviderRefBase', () {
+    test(
+      'cannot call ref.watch/ref.read/ref.listen/ref.onDispose after a dependency changed',
+      () {},
+      skip: true,
+    );
+
     group('refresh', () {
       test('refreshes a provider and return the new state', () {
         var value = 0;
@@ -29,6 +35,27 @@ void main() {
     test('ref.read should keep providers alive', () {}, skip: true);
 
     group('listen', () {
+      test('can downcast the value', () async {
+        final listener = Listener<num>();
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider((ref) {
+          ref.listen<StateController<num>>(
+            dep,
+            (value) => listener(value.state),
+          );
+        });
+
+        final container = createContainer();
+        container.read(provider);
+
+        verifyZeroInteractions(listener);
+
+        container.read(dep).state++;
+        await container.pump();
+
+        verifyOnly(listener, listener(1));
+      });
+
       test('can listen selectors', () async {
         final container = createContainer();
         final provider =

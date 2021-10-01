@@ -378,16 +378,16 @@ class _SelectorSubscription<Input, Output>
 }
 
 /// When a provider listens to another provider using `listen`
-class _ProviderListener<T> {
+class _ProviderListener {
   _ProviderListener._({
     required this.listenedElement,
     required this.dependentElement,
     required this.listener,
   });
 
-  final void Function(T state) listener;
+  final void Function(Object? state) listener;
   final ProviderElementBase dependentElement;
-  final ProviderElementBase<T> listenedElement;
+  final ProviderElementBase listenedElement;
 
   void close() {
     listenedElement
@@ -577,13 +577,13 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   /// The listeners that were added using [listen].
   ///
   /// This list allows us to traverse up in the provider graph.
-  final _subscriptions = <_ProviderListener<Object?>>[];
+  final _subscriptions = <_ProviderListener>[];
 
   /// The list of listeners added using [listen] from another provider.
   ///
   /// Storing ProviderListener instead of the provider Element as a provider
   /// can listen another provider multiple times with different listeners.
-  final _subscribers = <_ProviderListener<State>>[];
+  final _subscribers = <_ProviderListener>[];
 
   var _dependencies = HashMap<ProviderElementBase, Object>();
   HashMap<ProviderElementBase, Object>? _previousDependencies;
@@ -907,7 +907,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     final sub = _ProviderListener._(
       listenedElement: element,
       dependentElement: this,
-      listener: listener,
+      listener: (value) => listener(value as T),
     );
 
     element._subscribers.add(sub);

@@ -58,6 +58,7 @@
 
 ### Bug-fixes
 
+- fixed `ref.listen` now working when downcasting the value of a provider.
 - fixed a bug where disposing a scoped `ProviderContainer` could cause other
   `ProviderContainer`s to stop working.
 - fixed an issue where conditionally depending on an "autoDispose" provider

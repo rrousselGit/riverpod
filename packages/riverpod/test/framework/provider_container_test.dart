@@ -334,6 +334,25 @@ void main() {
     });
 
     group('.listen', () {
+      test('can downcast the value', () async {
+        final listener = Listener<num>();
+        final dep = StateProvider((ref) => 0);
+
+        final container = createContainer();
+
+        container.listen<StateController<num>>(
+          dep,
+          (value) => listener(value.state),
+        );
+
+        verifyZeroInteractions(listener);
+
+        container.read(dep).state++;
+        await container.pump();
+
+        verifyOnly(listener, listener(1));
+      });
+
       test(
           'if a listener adds a container.listen, the new listener is not called immediately',
           () {
