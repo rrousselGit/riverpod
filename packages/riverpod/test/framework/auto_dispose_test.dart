@@ -107,7 +107,7 @@ final alwaysAlive = Provider((ref) {
       }
     });
 
-    container.read(provider);
+    container.listen(provider, (_) {});
 
     expect(dependencyDisposeCount, 0);
     expect(

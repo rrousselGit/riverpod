@@ -48,16 +48,35 @@ void main() {
 
     group('.pump', () {
       test(
-        'on scoped container correctly awaits disposal',
-        () {},
-        skip: true,
-      );
+          'waits for providers to rebuild or get disposed, no matter from which container they are associated in the graph',
+          () async {
+        final dep = StateProvider((ref) => 0);
+        final a = Provider((ref) => ref.watch(dep).state);
+        final b = Provider((ref) => ref.watch(dep).state);
+        final aListener = Listener<int>();
+        final bListener = Listener<int>();
 
-      test(
-        'on scoped container through another scoped container correctly awaits disposal',
-        () {},
-        skip: true,
-      );
+        final root = createContainer();
+        final scoped = createContainer(parent: root, overrides: [b]);
+
+        scoped.listen(a, aListener, fireImmediately: true);
+        scoped.listen(b, bListener, fireImmediately: true);
+
+        verifyOnly(aListener, aListener(0));
+        verifyOnly(bListener, bListener(0));
+
+        root.read(dep).state++;
+        await root.pump();
+
+        verifyOnly(aListener, aListener(1));
+        verifyOnly(bListener, bListener(1));
+
+        scoped.read(dep).state++;
+        await scoped.pump();
+
+        verifyOnly(aListener, aListener(2));
+        verifyOnly(bListener, bListener(2));
+      });
     });
 
     test('depth', () {
@@ -675,12 +694,51 @@ void main() {
         verifyOnly(listener, listener(2));
       });
 
-      test('supports selectors', () {}, skip: true);
+      test('supports selectors', () {
+        final container = createContainer();
+
+        final count = StateProvider((ref) => 0);
+        final listener = Listener<bool>();
+
+        container.listen<bool>(
+          count.select((value) => value.state.isEven),
+          listener,
+          fireImmediately: true,
+        );
+
+        verifyOnly(listener, listener(true));
+
+        container.read(count).state = 2;
+
+        verifyNoMoreInteractions(listener);
+
+        container.read(count).state = 3;
+
+        verifyOnly(listener, listener(false));
+      });
     });
 
     test(
-        'does not refresh providers if their dependencies changes but they have no active listeners',
-        () {},
-        skip: true);
+      'does not refresh providers if their dependencies changes but they have no active listeners',
+      () async {
+        final container = createContainer();
+
+        var buildCount = 0;
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider((ref) {
+          buildCount++;
+          return ref.watch(dep).state;
+        });
+
+        container.read(provider);
+
+        expect(buildCount, 1);
+
+        container.read(dep).state++;
+        await container.pump();
+
+        expect(buildCount, 1);
+      },
+    );
   });
 }
