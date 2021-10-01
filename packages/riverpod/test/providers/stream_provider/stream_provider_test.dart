@@ -378,8 +378,6 @@ void main() {
     });
   });
 
-  test('can be refreshed', () {}, skip: true);
-
   test('myProvider.stream emits done on dispose', () async {
     final stream = container.read(provider.stream);
 

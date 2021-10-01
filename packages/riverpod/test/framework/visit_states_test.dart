@@ -82,11 +82,12 @@ void main() {
     });
 
     final parent = createContainer();
-    final container = createContainer(parent: parent);
+    final container = createContainer(parent: parent, overrides: [b]);
     container.read(b);
 
     expect(compute(container), [b]);
-  }, skip: true);
+    expect(compute(parent), [a]);
+  });
 
   //  A#1  B#2
   //    \  /
