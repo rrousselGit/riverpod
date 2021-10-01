@@ -194,8 +194,20 @@ void main() {
 
     test(
       'properly disposes of the StateController when the provider is disposed',
-      () {},
-      skip: true,
+      () async {
+        final container = createContainer();
+        final provider = StateProvider.autoDispose((ref) => 0);
+
+        final notifier = container.read(provider.notifier);
+        final sub = container.listen(provider, (value) {});
+
+        expect(notifier.hasListeners, true);
+
+        sub.close();
+        await container.pump();
+
+        expect(() => notifier.hasListeners, throwsStateError);
+      },
     );
   });
 }

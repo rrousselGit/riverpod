@@ -125,7 +125,7 @@ void main() {
       container.read(provider(42)),
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 84),
     );
-  }, skip: true);
+  });
 
   test('can specify name', () {
     final provider = ChangeNotifierProvider(
