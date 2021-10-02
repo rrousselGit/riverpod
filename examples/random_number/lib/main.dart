@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(ProviderScope(child: RandomNumberApp()));
+  runApp(const ProviderScope(child: RandomNumberApp()));
 }
 
 // State notifier for generate a random number exposed by a state notifier
@@ -24,6 +24,8 @@ final randomNumberProvider = StateNotifierProvider(
 );
 
 class RandomNumberApp extends StatelessWidget {
+  const RandomNumberApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -35,7 +37,7 @@ class RandomNumberApp extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              RandomConsumer(),
+              const RandomConsumer(),
               // Consumer to call a method inside StateNotifier just to change
               // the state
               Consumer(
@@ -57,6 +59,8 @@ class RandomNumberApp extends StatelessWidget {
 
 //Custom consumer using the provider
 class RandomConsumer extends ConsumerWidget {
+  const RandomConsumer({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Text(ref.watch(randomNumberProvider).toString());
