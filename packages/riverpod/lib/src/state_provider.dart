@@ -23,6 +23,22 @@ class StateController<T> extends StateNotifier<T> {
 
   @override
   set state(T value) => super.state = value;
+
+  /// Calls a function with the current [state] and assign the result as new state
+  ///
+  /// This allows simplifying the syntax for updating the state when the update
+  /// depends on the previous state, such that rather than:
+  ///
+  /// ```dart
+  /// ref.read(provider).state = ref.read(provider).state + 1;
+  /// ```
+  ///
+  /// we can do:
+  ///
+  /// ```dart
+  /// ref.read(provider).update((state) => state + 1);
+  /// ```
+  T update(T Function(T state) cb) => state = cb(state);
 }
 
 /// {@template riverpod.stateprovider}

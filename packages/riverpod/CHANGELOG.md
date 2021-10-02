@@ -51,6 +51,12 @@
 
 ### General
 
+- Added `StateController.update`, to simplify updating the state from the previous state:
+  ```dart
+  final provider = StateController((ref) => 0);
+  ...
+  ref.read(provider).update((state) => state + 1);
+  ```
 - It is no-longer allowed to use `ref.watch` or `ref.read` inside a selector:
   ```dart
   provider.select((value) => ref.watch(something)); // KO, cannot user ref.watch inside selectors
