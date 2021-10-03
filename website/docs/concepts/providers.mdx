@@ -117,24 +117,6 @@ While all providers have their purpose, `ChangeNotifierProviders` are not recomm
 general [issues with mutable state](/docs/concepts/why_immutability). It exists in the `flutter_riverpod` package to provide an easy migration path from `package:provider`.
 :::
 
-```dart
-final example = StreamProvider.autoDispose((ref) {
-  final streamController = StreamController<int>();
-
-  ref.onDispose(() {
-    // Closes the StreamController when the state of this provider is destroyed.
-    streamController.close();
-  });
-
-  return streamController.stream;
-});
-```
-
-:::note
-Depending on the provider used, it may already take care of the clean-up process.
-For example, [StateNotifierProvider] will call the `dispose` method of a `StateNotifier`.
-:::
-
 To learn more about the different types of providers and how to use them most effectively see [Provider Types](/docs//concepts/provider_types)
 
 ## Provider Modifiers
