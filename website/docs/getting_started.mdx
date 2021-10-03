@@ -16,11 +16,11 @@ The variant of [Riverpod] that you will want to install depends on the app you a
 
 You can refer to the following table to help you decide which package to use:
 
-| app type                  | package name                                                                       | description                                                                             |
-| ------------------------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                   | A way to use both [flutter_hooks] and [Riverpod] together, while offering small extras. |
-| Flutter only              | [flutter_riverpod]                                                                 | A basic way of using [Riverpod], which does not depend on [flutter_hooks].              |
-| Dart only (No Flutter)    | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | A version of [Riverpod] with all the classes related to Flutter stripped out.           |
+| app type                  | package name                                                                       | description                                                                   |
+| ------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                   | A way to use both [flutter_hooks] and [Riverpod] together.                    |
+| Flutter only              | [flutter_riverpod]                                                                 | A basic way of using [Riverpod], which does not depend on [flutter_hooks].    |
+| Dart only (No Flutter)    | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | A version of [Riverpod] with all the classes related to Flutter stripped out. |
 
 And if it's not clear enough, you can refer to this decision graph:
 
@@ -47,14 +47,14 @@ Once you know what package you want to install, proceed to add the following to 
 
 ```yaml title="pubspec.yaml"
 environment:
-  sdk: ">=2.12.0-0 <3.0.0"
-  flutter: ">=1.17.0"
+  sdk: ">=2.12.0 <3.0.0"
+  flutter: ">=2.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  flutter_hooks: ^0.16.0-nullsafety.0
-  hooks_riverpod: ^0.13.0-nullsafety.3
+  flutter_hooks: ^0.18.0
+  hooks_riverpod: ^1.0.0-dev.7
 ```
 
 Then run `flutter pub get`.
@@ -64,13 +64,13 @@ Then run `flutter pub get`.
 
 ```yaml title="pubspec.yaml"
 environment:
-  sdk: ">=2.12.0-0 <3.0.0"
-  flutter: ">=1.17.0"
+  sdk: ">=2.12.0 <3.0.0"
+  flutter: ">=2.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^0.13.0-nullsafety.3
+  flutter_riverpod: ^1.0.0-dev.7
 ```
 
 Then run `flutter pub get`.
@@ -83,7 +83,7 @@ environment:
   sdk: ">=2.12.0-0 <3.0.0"
 
 dependencies:
-  riverpod: ^0.13.0-nullsafety.3
+  riverpod: ^1.0.0-dev.7
 ```
 
 Then run `dart pub get`.
@@ -129,13 +129,13 @@ void main() {
   );
 }
 
-// Note: MyApp is a HookWidget, from flutter_hooks.
-class MyApp extends HookWidget {
+// Note: MyApp is a HookConsumerWidget, from flutter_hooks.
+class MyApp extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    // To read our provider, we can use the hook "useProvider".
-    // This is only possible because MyApp is a HookWidget.
-    final String value = useProvider(helloWorldProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    // To read our provider, we can use the hook "ref.watch(".
+    // This is only possible because MyApp is a HookConsumerWidget.
+    final String value = ref.watch(helloWorldProvider);
 
     return MaterialApp(
       home: Scaffold(
@@ -176,8 +176,8 @@ void main() {
 // Extend ConsumerWidget instead of StatelessWidget, which is exposed by Riverpod
 class MyApp extends ConsumerWidget {
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    final String value = watch(helloWorldProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final String value = ref.watch(helloWorldProvider);
 
     return MaterialApp(
       home: Scaffold(

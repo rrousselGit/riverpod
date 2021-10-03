@@ -27,13 +27,13 @@ class FakeDio implements Dio {
   @override
   Future<Response<T>> get<T>(
     String path, {
-    required Map<String, dynamic> queryParameters,
+    Map<String, dynamic>? queryParameters,
     Options? options,
     CancelToken? cancelToken,
     ProgressCallback? onReceiveProgress,
   }) async {
     print('hello $_apiKey $queryParameters');
-    if (_apiKey != null && queryParameters['apikey'] != _apiKey) {
+    if (_apiKey != null && queryParameters?['apikey'] != _apiKey) {
       throw StateError('Missing api key');
     }
 
@@ -41,16 +41,16 @@ class FakeDio implements Dio {
       case 'https://gateway.marvel.com/v1/public/characters/1009368':
         return FakeResponse(_character1009368) as Response<T>;
       case 'https://gateway.marvel.com/v1/public/characters':
-        if (queryParameters['nameStartsWith'] == 'Iron man') {
+        if (queryParameters?['nameStartsWith'] == 'Iron man') {
           return FakeResponse(_charactersIronMan) as Response<T>;
         }
-        if (queryParameters['nameStartsWith'] == 'Iron man (') {
+        if (queryParameters?['nameStartsWith'] == 'Iron man (') {
           return FakeResponse(_charactersIronMan2) as Response<T>;
         }
-        if (queryParameters['offset'] == 0) {
+        if (queryParameters?['offset'] == 0) {
           return FakeResponse(_characters) as Response<T>;
         }
-        if (queryParameters['offset'] == 20) {
+        if (queryParameters?['offset'] == 20) {
           return FakeResponse(_characters20) as Response<T>;
         }
         break;
@@ -65,11 +65,11 @@ class FakeDio implements Dio {
   }
 }
 
-class FakeResponse implements Response<Map<String, dynamic>> {
+class FakeResponse implements Response<Map<String, Object?>> {
   FakeResponse(this.data);
 
   @override
-  final Map<String, dynamic> data;
+  final Map<String, Object?> data;
 
   @override
   void noSuchMethod(Invocation invocation) {

@@ -80,7 +80,7 @@ An easy way to implement such scenario would be to:
   ```dart
   final filteredTodoListProvider = Provider<List<Todo>>((ref) {
     final filter = ref.watch(filterProvider);
-    final todos = ref.watch(todoListProvider.state);
+    final todos = ref.watch(todoListProvider);
 
     switch (filter.state) {
       case Filter.none:
@@ -174,7 +174,7 @@ final repositoryProvider = Provider((ref) => Repository(ref));
 class Repository {
   Repository(this.ref);
 
-  final ProviderReference ref;
+  final ProviderRefBase ref;
 }
 ```
 
@@ -209,6 +209,8 @@ final repositoryProvider = Provider((ref) => Repository(ref.read));
 
 test('fetches catalog', () async {
   final container = ProviderContainer();
+  addTearOff(container.dispose);
+
   Repository repository = container.read(repositoryProvider);
 
   await expectLater(
@@ -252,14 +254,15 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 final configsProvider = StreamProvider<Configuration>(...);
 
 /// A provider that exposes only the current host
-final _hostProvider = Provider<AsyncValue<String>>((ref) {
-  return ref.watch(configsProvider).whenData((configs) => configs.host);
+final _hostProvider = FutureProvider<String>((ref) async {
+  final config = await ref.watch(configsProvider.last);
+  return config.host;
 });
 
 final productsProvider = FutureProvider<List<Product>>((ref) async {
   // Listens only to the host. If something else in the configurations
   // changes, this will not pointlessly re-evaluate our provider.
-  final host = await ref.watch(_hostProvider);
+  final host = await ref.watch(_hostProvider.future);
 
   return dio.get('$host/products');
 });
@@ -269,8 +272,8 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 [stateprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider-class.html
 [futureprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/FutureProvider-class.html
 [statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
-[ref]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference-class.html
-[watch]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference/watch.html
-[read]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference/read.html
+[ref]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderRefBase-class.html
+[watch]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderRefBase/watch.html
+[read]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderRefBase/read.html
 [providercontainer.refresh]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer/refresh.html
 [context.refresh]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/BuildContextX/refresh.html

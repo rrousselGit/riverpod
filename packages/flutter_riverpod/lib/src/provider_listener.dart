@@ -6,6 +6,7 @@ import 'internals.dart';
 
 /// A function that can react to changes on a provider
 ///
+// ignore: deprecated_member_use_from_same_package
 /// See also [ProviderListener]
 typedef OnProviderChange<T> = void Function(BuildContext context, T value);
 
@@ -18,9 +19,11 @@ typedef OnProviderChange<T> = void Function(BuildContext context, T value);
 /// Even if a provider changes many times in a quick succession, [onChange] will
 /// be called only once, at the end of the frame.
 /// {@endtemplate}
+@Deprecated('Use WidgetRef.listen instead')
 @sealed
-class ProviderListener<T> extends StatefulWidget {
+class ProviderListener<T> extends ConsumerWidget {
   /// {@macro riverpod.providerlistener}
+  @Deprecated('Use WidgetRef.listen instead')
   const ProviderListener({
     Key? key,
     required this.onChange,
@@ -31,7 +34,7 @@ class ProviderListener<T> extends StatefulWidget {
   /// The provider listened.
   ///
   /// Can be `null`.
-  final ProviderBase<Object, T>? provider;
+  final ProviderListenable<T>? provider;
 
   /// A function called with the new value of [provider] when it changes.
   ///
@@ -42,71 +45,10 @@ class ProviderListener<T> extends StatefulWidget {
   final Widget child;
 
   @override
-  _ProviderListenerState<T> createState() => _ProviderListenerState<T>();
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty<OnProviderChange<T>>('onChange', onChange),
-    );
-    properties.add(
-      DiagnosticsProperty<ProviderBase<Object, T>>('provider', provider),
-    );
-  }
-}
-
-@sealed
-class _ProviderListenerState<T> extends State<ProviderListener<T>> {
-  ProviderSubscription<T>? _subscription;
-  ProviderContainer? _container;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final container = ProviderScope.containerOf(context);
-
-    if (container != _container) {
-      _container = container;
-      _listen();
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (provider != null) {
+      ref.listen<T>(provider!, (value) => onChange(context, value));
     }
-  }
-
-  @override
-  void didUpdateWidget(ProviderListener<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.provider != widget.provider) {
-      _listen();
-    }
-  }
-
-  void _listen() {
-    _subscription?.close();
-    _subscription = null;
-    if (widget.provider != null) {
-      _subscription = _container!.listen<T>(
-        widget.provider!,
-        mayHaveChanged: _mayHaveChanged,
-      );
-    }
-  }
-
-  void _mayHaveChanged(ProviderSubscription<T> subscription) {
-    Future.microtask(() {
-      if (subscription.flush()) {
-        widget.onChange(context, subscription.read());
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return widget.child;
-  }
-
-  @override
-  void dispose() {
-    _subscription?.close();
-    super.dispose();
+    return child;
   }
 }

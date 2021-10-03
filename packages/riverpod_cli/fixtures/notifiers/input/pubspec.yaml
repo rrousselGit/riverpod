@@ -1,0 +1,15 @@
+name: codemod_riverpod_test_notifiers
+description: Test riverpod codemods
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: '>=2.12.0-0 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter  
+  flutter_hooks: any
+  flutter_riverpod: ^0.13.0
+  hooks_riverpod: ^0.13.0
+  riverpod: ^0.13.0

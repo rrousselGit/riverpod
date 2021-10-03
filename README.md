@@ -54,8 +54,8 @@ Long story short:
   ```dart
   class Example extends ConsumerWidget {
     @override
-    Widget build(BuildContext context, ScopedReader watch) {
-      final count = watch(counterProvider.state);
+    Widget build(BuildContext context, WidgetRef ref) {
+      final count = ref.watch(counterProvider);
       return Text(count.toString());
     }
   }
@@ -63,16 +63,23 @@ Long story short:
 
 See the [FAQ](#FAQ) if you have questions about what this means for [provider].
 
+## Migration
+
+With the release of the version 0.14.0, the syntax for using `StateNotifierProvider` changed.
+
+See [the migration guide](https://riverpod.dev/docs/migration/0.13.0_to_0.14.0/) for more informations
+
 ## Index
 
+- [Migration](#migration)
 - [Index](#index)
 - [Motivation](#motivation)
 - [Contributing](#contributing)
 - [FAQ](#faq)
-  - [Why another project when [provider] already exists?](#why-another-project-when-provider-already-exists)
+  - [Why another project when provider already exists?](#why-another-project-when-provider-already-exists)
   - [Is it safe to use in production?](#is-it-safe-to-use-in-production)
-  - [Will this get merged with [provider] at some point?](#will-this-get-merged-with-provider-at-some-point)
-  - [Will [provider] be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
+  - [Will this get merged with provider at some point?](#will-this-get-merged-with-provider-at-some-point)
+  - [Will provider be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
 
 ## Motivation
 

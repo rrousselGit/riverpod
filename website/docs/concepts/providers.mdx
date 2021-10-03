@@ -4,27 +4,27 @@ title: Providers
 
 Now that we have installed [Riverpod], let's talk about "providers".
 
-Providers are the most important part of a [Riverpod] application.  
-A provider is an object that encapsulate a piece of state and allows listening
+Providers are the most important part of a [Riverpod] application.
+A provider is an object that encapsulates a piece of state and allows listening
 to that state.
 
 ## Why use providers?
 
 By wrapping a piece of state in a provider, this:
 
-- Allows easily accessing that state in multiple locations.  
+- Allows easily accessing that state in multiple locations.
   Providers are a complete replacement for patterns like Singletons,
   Service Locators, Dependency Injection or InheritedWidgets.
 
-- Simplifies combining this state with others.  
-  Ever struggled merging multiple objects into one? This scenario is built
+- Simplifies combining this state with others.
+  Ever struggled to merge multiple objects into one? This scenario is built
   directly inside providers, with a simple syntax.
 
-- Enables performance optimisations.  
+- Enables performance optimizations.
   Whether for filtering widget rebuilds or for caching expensive state computations;
   providers ensure that only what is impacted by a state change is recomputed.
 
-- Increases the testability of your application.  
+- Increases the testability of your application.
   With providers, you do not need complex `setUp`/`tearDown` steps. Furthermore,
   any provider can be overridden to behave differently during test, which
   allows easily testing a very specific behavior.
@@ -44,18 +44,18 @@ final myProvider = Provider((ref) {
 ```
 
 :::note
-Do not be afraid by the global aspect of providers.  
+Do not be afraid by the global aspect of providers.
 Providers are fully immutable. Declaring a provider is no different from declaring
 a function, and is testable and maintainable.
 :::
 
 This snippet consists of three components:
 
-- `final myProvider`, the declaration of a variable.  
+- `final myProvider`, the declaration of a variable.
   This variable is what we will use in the future to read the state of our provider.
   It should always be immutable.
 
-- `Provider`, the provider that we decided to use.  
+- `Provider`, the provider that we decided to use.
   [Provider] is the most basic of all providers. It exposes an object that never
   changes.
   We could replace [Provider] with other providers like [StreamProvider] or
@@ -67,12 +67,12 @@ This snippet consists of three components:
   of our provider will be destroyed.
 
 The type of the object created by the function passed to a provider depends on
-the provider used.  
+the provider used.
 For example, the function of a [Provider] can create any object.
 On the other hand, [StreamProvider]'s callback will be expected to return a [Stream].
 
 :::info
-You can declare as many providers as you want without limitations.  
+You can declare as many providers as you want without limitations.
 As opposed to when using `package:provider`, in [Riverpod] we can have two
 providers expose a state of the same "type":
 
@@ -117,6 +117,24 @@ While all providers have their purpose, `ChangeNotifierProviders` are not recomm
 general [issues with mutable state](/docs/concepts/why_immutability). It exists in the `flutter_riverpod` package to provide an easy migration path from `package:provider`.
 :::
 
+```dart
+final example = StreamProvider.autoDispose((ref) {
+  final streamController = StreamController<int>();
+
+  ref.onDispose(() {
+    // Closes the StreamController when the state of this provider is destroyed.
+    streamController.close();
+  });
+
+  return streamController.stream;
+});
+```
+
+:::note
+Depending on the provider used, it may already take care of the clean-up process.
+For example, [StateNotifierProvider] will call the `dispose` method of a `StateNotifier`.
+:::
+
 To learn more about the different types of providers and how to use them most effectively see [Provider Types](/docs//concepts/provider_types)
 
 ## Provider Modifiers
@@ -124,7 +142,7 @@ To learn more about the different types of providers and how to use them most ef
 All Providers have a built-in way to add extra functionalities to your different providers.
 
 They may add new features to the `ref` object or change slightly how the provider
-is consumed.  
+is consumed.
 Modifiers can be used on all providers, with a syntax similar to named constructor:
 
 ```dart
@@ -157,7 +175,7 @@ Alternatively, you can see [How to combine providers](/docs/concepts/combining_p
 [get_it]: http://pub.dev/packages/get_it
 [inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
 [stream]: https://api.dart.dev/stable/2.8.4/dart-async/Stream-class.html
-[ondispose]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderReference/onDispose.html
+[ondispose]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderRefBase/onDispose.html
 [riverpod]: https://github.com/rrousselgit/river_pod
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
 [flutter_riverpod]: https://pub.dev/packages/flutter_riverpod

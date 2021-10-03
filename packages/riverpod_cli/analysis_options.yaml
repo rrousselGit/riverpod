@@ -1,0 +1,6 @@
+include: ../../analysis_options.yaml
+
+linter:
+  rules:
+    # Not useful for command lines
+    public_member_api_docs: false

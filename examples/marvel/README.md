@@ -42,4 +42,10 @@ Where `public_key` and `private_key` are obtained from https://developer.marvel.
 
 ![marvel_account](https://github.com/rrousselGit/river_pod/blob/master/examples/marvel/resources/marvel_portal.png)
 
+Since this project uses [freezed](https://pub.dev/packages/freezed) for code generation, be sure to run the generator with the following command before attempting to build/run the application:
+
+```sh
+flutter pub run build_runner build
+```
+
 [riverpod]: https://github.com/rrousselGit/river_pod

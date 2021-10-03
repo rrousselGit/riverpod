@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 void main() {
   runApp(
@@ -18,7 +17,7 @@ void main() {
 /// Providers are declared as global variables.
 /// This does not hinder testability, as the state of a provider is instead
 /// stored inside a [ProviderScope].
-final counterProvider = StateNotifierProvider<Counter>((_) => Counter());
+final counterProvider = StateNotifierProvider<Counter, int>((_) => Counter());
 
 /// A simple [StateNotifier] that implements a counter.
 ///
@@ -43,12 +42,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends HookWidget {
+class MyHomePage extends HookConsumerWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final count = useProvider(counterProvider.state);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -61,7 +60,7 @@ class MyHomePage extends HookWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.read(counterProvider).increment(),
+        onPressed: () => ref.read(counterProvider.notifier).increment(),
         child: const Icon(Icons.add),
       ),
     );

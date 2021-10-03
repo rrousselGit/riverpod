@@ -94,7 +94,7 @@ void main() {
   printer.printToStdout();
 }
 
-int create(ProviderReference ref) {
+int create(ProviderRefBase ref) {
   return 0;
 }
 

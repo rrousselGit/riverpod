@@ -21,10 +21,10 @@ import 'package:riverpod/riverpod.dart';
 import 'models.dart';
 
 /// A Provider that reads a json file and decodes it into a [Configuration].
-final configurationProvider = FutureProvider((_) async {
+final configurationProvider = FutureProvider<Configuration>((_) async {
   final file = await File.fromUri(Uri.file('configuration.json')) //
       .readAsString();
-  final map = json.decode(file) as Map<String, dynamic>;
+  final map = json.decode(file) as Map<String, Object?>;
 
   return Configuration.fromJson(map);
 });
@@ -32,7 +32,7 @@ final configurationProvider = FutureProvider((_) async {
 /// Creates a [Repository] from [configurationProvider].
 ///
 /// This will correctly wait until the configurations are available.
-final repositoryProvider = FutureProvider((ref) async {
+final repositoryProvider = FutureProvider<Repository>((ref) async {
   /// Reads the configurations from [configurationProvider]. This is type-safe.
   final configs = await ref.watch(configurationProvider.future);
 

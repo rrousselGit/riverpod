@@ -15,7 +15,7 @@ final allFilterKey = UniqueKey();
 ///
 /// We are using [StateNotifierProvider] here as a `List<Todo>` is a complex
 /// object, with advanced business logic like how to edit a todo.
-final todoListProvider = StateNotifierProvider((ref) {
+final todoListProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) {
   return TodoList([
     Todo(id: 'todo-0', description: 'hi'),
     Todo(id: 'todo-1', description: 'hello'),
@@ -44,20 +44,17 @@ final todoListFilter = StateProvider((_) => TodoListFilter.all);
 ///
 /// This will also optimise unneeded rebuilds if the todo-list changes, but the
 /// number of uncompleted todos doesn't (such as when editing a todo).
-final uncompletedTodosCount = Provider((ref) {
-  return ref
-      .watch(todoListProvider.state)
-      .where((todo) => !todo.completed)
-      .length;
+final uncompletedTodosCount = Provider<int>((ref) {
+  return ref.watch(todoListProvider).where((todo) => !todo.completed).length;
 });
 
 /// The list of todos after applying of [todoListFilter].
 ///
 /// This too uses [Provider], to avoid recomputing the filtered list unless either
 /// the filter of or the todo-list updates.
-final filteredTodos = Provider((ref) {
+final filteredTodos = Provider<List<Todo>>((ref) {
   final filter = ref.watch(todoListFilter);
-  final todos = ref.watch(todoListProvider.state);
+  final todos = ref.watch(todoListProvider);
 
   switch (filter.state) {
     case TodoListFilter.completed:
@@ -65,7 +62,6 @@ final filteredTodos = Provider((ref) {
     case TodoListFilter.active:
       return todos.where((todo) => !todo.completed).toList();
     case TodoListFilter.all:
-    default:
       return todos;
   }
 });
@@ -85,12 +81,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Home extends HookWidget {
+class Home extends HookConsumerWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final todos = useProvider(filteredTodos);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final todos = ref.watch(filteredTodos);
     final newTodoController = useTextEditingController();
 
     return GestureDetector(
@@ -107,7 +103,7 @@ class Home extends HookWidget {
                 labelText: 'What needs to be done?',
               ),
               onSubmitted: (value) {
-                context.read(todoListProvider).add(value);
+                ref.read(todoListProvider.notifier).add(value);
                 newTodoController.clear();
               },
             ),
@@ -119,7 +115,7 @@ class Home extends HookWidget {
               Dismissible(
                 key: ValueKey(todos[i].id),
                 onDismissed: (_) {
-                  context.read(todoListProvider).remove(todos[i]);
+                  ref.read(todoListProvider.notifier).remove(todos[i]);
                 },
                 child: ProviderScope(
                   overrides: [
@@ -136,17 +132,17 @@ class Home extends HookWidget {
   }
 }
 
-class Toolbar extends HookWidget {
+class Toolbar extends HookConsumerWidget {
   const Toolbar({
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final filter = useProvider(todoListFilter);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final filter = ref.watch(todoListFilter);
 
     Color? textColorFor(TodoListFilter value) {
-      return filter.state == value ? Colors.blue : null;
+      return filter.state == value ? Colors.blue : Colors.black;
     }
 
     return Material(
@@ -155,40 +151,48 @@ class Toolbar extends HookWidget {
         children: [
           Expanded(
             child: Text(
-              '${useProvider(uncompletedTodosCount).toString()} items left',
+              '${ref.watch(uncompletedTodosCount).toString()} items left',
               overflow: TextOverflow.ellipsis,
             ),
           ),
           Tooltip(
             key: allFilterKey,
             message: 'All todos',
-            // ignore: deprecated_member_use, TextButton is not available in stable yet
-            child: FlatButton(
+            child: TextButton(
               onPressed: () => filter.state = TodoListFilter.all,
-              visualDensity: VisualDensity.compact,
-              textColor: textColorFor(TodoListFilter.all),
+              style: ButtonStyle(
+                visualDensity: VisualDensity.compact,
+                foregroundColor:
+                    MaterialStateProperty.all(textColorFor(TodoListFilter.all)),
+              ),
               child: const Text('All'),
             ),
           ),
           Tooltip(
             key: activeFilterKey,
             message: 'Only uncompleted todos',
-            // ignore: deprecated_member_use, TextButton is not available in stable yet
-            child: FlatButton(
+            child: TextButton(
               onPressed: () => filter.state = TodoListFilter.active,
-              visualDensity: VisualDensity.compact,
-              textColor: textColorFor(TodoListFilter.active),
+              style: ButtonStyle(
+                visualDensity: VisualDensity.compact,
+                foregroundColor: MaterialStateProperty.all(
+                  textColorFor(TodoListFilter.active),
+                ),
+              ),
               child: const Text('Active'),
             ),
           ),
           Tooltip(
             key: completedFilterKey,
             message: 'Only completed todos',
-            // ignore: deprecated_member_use, TextButton is not available in stable yet
-            child: FlatButton(
+            child: TextButton(
               onPressed: () => filter.state = TodoListFilter.completed,
-              visualDensity: VisualDensity.compact,
-              textColor: textColorFor(TodoListFilter.completed),
+              style: ButtonStyle(
+                visualDensity: VisualDensity.compact,
+                foregroundColor: MaterialStateProperty.all(
+                  textColorFor(TodoListFilter.completed),
+                ),
+              ),
               child: const Text('Completed'),
             ),
           ),
@@ -223,14 +227,14 @@ class Title extends StatelessWidget {
 ///
 /// This ensures that when we add/remove/edit todos, only what the
 /// impacted widgets rebuilds, instead of the entire list of items.
-final _currentTodo = ScopedProvider<Todo>(null);
+final _currentTodo = Provider<Todo>((ref) => throw UnimplementedError());
 
-class TodoItem extends HookWidget {
+class TodoItem extends HookConsumerWidget {
   const TodoItem({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final todo = useProvider(_currentTodo);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final todo = ref.watch(_currentTodo);
     final itemFocusNode = useFocusNode();
     // listen to focus chances
     useListenable(itemFocusNode);
@@ -249,8 +253,8 @@ class TodoItem extends HookWidget {
             textEditingController.text = todo.description;
           } else {
             // Commit changes only when the textfield is unfocused, for performance
-            context
-                .read(todoListProvider)
+            ref
+                .read(todoListProvider.notifier)
                 .edit(id: todo.id, description: textEditingController.text);
           }
         },
@@ -262,7 +266,7 @@ class TodoItem extends HookWidget {
           leading: Checkbox(
             value: todo.completed,
             onChanged: (value) =>
-                context.read(todoListProvider).toggle(todo.id),
+                ref.read(todoListProvider.notifier).toggle(todo.id),
           ),
           title: isFocused
               ? TextField(

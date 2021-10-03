@@ -35,6 +35,11 @@ jobs:
       - name: Install dependencies
         run: melos bootstrap
 
+      - name: Install cli fixtures
+        run: |
+          cd packages/riverpod_cli/fixtures/notifiers/input && flutter pub get && cd -
+          cd packages/riverpod_cli/fixtures/unified_syntax/input && flutter pub get && cd -
+
       - name: Check format
         run: flutter format --set-exit-if-changed .
 
@@ -48,7 +53,7 @@ jobs:
           cd examples/todos && flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Analyze
-        run: melos exec --ignore="marvel" -- "flutter analyze"
+        run: melos exec --ignore="marvel" --ignore="codemod_riverpod_test*" -- "flutter analyze"
 
       - name: Run tests
         run: melos run test

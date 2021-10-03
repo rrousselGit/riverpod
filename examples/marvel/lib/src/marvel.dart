@@ -9,7 +9,6 @@ library marvel;
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -42,7 +41,8 @@ class MarvelRepository {
   }) async {
     final cleanNameFilter = nameStartsWith?.trim();
 
-    final response = await _get('characters', queryParameters: <String, Object>{
+    final response =
+        await _get('characters', queryParameters: <String, Object?>{
       'offset': offset,
       if (limit != null) 'limit': limit,
       if (cleanNameFilter != null && cleanNameFilter.isNotEmpty)
@@ -79,7 +79,7 @@ class MarvelRepository {
 
   Future<MarvelResponse> _get(
     String path, {
-    Map<String, Object>? queryParameters,
+    Map<String, Object?>? queryParameters,
     CancelToken? cancelToken,
   }) async {
     final configs = await _read(configurationsProvider.future);
@@ -91,10 +91,10 @@ class MarvelRepository {
         )
         .toString();
 
-    final result = await _read(dioProvider).get<Map<String, Object>>(
+    final result = await _read(dioProvider).get<Map<String, Object?>>(
       'https://gateway.marvel.com/v1/public/$path',
       cancelToken: cancelToken,
-      queryParameters: <String, Object>{
+      queryParameters: <String, Object?>{
         'apikey': configs.publicKey,
         'ts': timestamp,
         'hash': hash,
@@ -102,12 +102,12 @@ class MarvelRepository {
       },
       // TODO deserialize error message
     );
-    return MarvelResponse.fromJson(result.data);
+    return MarvelResponse.fromJson(Map<String, Object>.from(result.data!));
   }
 }
 
 @freezed
-abstract class MarvelListCharactersReponse with _$MarvelListCharactersReponse {
+class MarvelListCharactersReponse with _$MarvelListCharactersReponse {
   factory MarvelListCharactersReponse({
     required int totalCount,
     required List<Character> characters,
@@ -115,26 +115,26 @@ abstract class MarvelListCharactersReponse with _$MarvelListCharactersReponse {
 }
 
 @freezed
-abstract class Character with _$Character {
+class Character with _$Character {
   factory Character({
     required int id,
     required String name,
     required Thumbnail thumbnail,
   }) = _Character;
 
-  factory Character.fromJson(Map<String, dynamic> json) =>
+  factory Character.fromJson(Map<String, Object?> json) =>
       _$CharacterFromJson(json);
 }
 
 @freezed
-abstract class Thumbnail with _$Thumbnail {
+class Thumbnail with _$Thumbnail {
   factory Thumbnail({
     required String path,
     required String extension,
   }) = _Thumbnail;
   Thumbnail._();
 
-  factory Thumbnail.fromJson(Map<String, dynamic> json) =>
+  factory Thumbnail.fromJson(Map<String, Object?> json) =>
       _$ThumbnailFromJson(json);
 
   late final String url =
@@ -142,20 +142,20 @@ abstract class Thumbnail with _$Thumbnail {
 }
 
 @freezed
-abstract class MarvelResponse with _$MarvelResponse {
+class MarvelResponse with _$MarvelResponse {
   factory MarvelResponse(MarvelData data) = _MarvelResponse;
 
-  factory MarvelResponse.fromJson(Map<String, dynamic> json) =>
+  factory MarvelResponse.fromJson(Map<String, Object?> json) =>
       _$MarvelResponseFromJson(json);
 }
 
 @freezed
-abstract class MarvelData with _$MarvelData {
+class MarvelData with _$MarvelData {
   factory MarvelData(
-    List<Map<String, dynamic>> results,
+    List<Map<String, Object?>> results,
     int total,
   ) = _MarvelData;
 
-  factory MarvelData.fromJson(Map<String, dynamic> json) =>
+  factory MarvelData.fromJson(Map<String, Object?> json) =>
       _$MarvelDataFromJson(json);
 }

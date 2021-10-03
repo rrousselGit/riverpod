@@ -1,3 +1,14 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+//
+// If you need to modify this file, instead update /tools/generate_providers/bin/generate_providers.dart
+//
+// You can install this utility by executing:
+// dart pub global activate -s path <repository_path>/tools/generate_providers
+//
+// You can then use it in your terminal by executing:
+// generate_providers <riverpod/flutter_riverpod/hooks_riverpod> <path to builder file to update>
+
+import 'dart:async';
 import 'package:state_notifier/state_notifier.dart';
 
 import 'internals.dart';
@@ -57,8 +68,8 @@ class StateProviderBuilder {
   /// });
   /// ```
   /// {@endtemplate}
-  StateProvider<T> call<T>(
-    T Function(ProviderReference ref) create, {
+  StateProvider<State> call<State>(
+    Create<State, StateProviderRef<State>> create, {
     String? name,
   }) {
     return StateProvider(create, name: name);
@@ -89,12 +100,12 @@ class StateProviderBuilder {
   ///   // ...
   ///
   ///   @override
-  ///   Widget build(BuildContext context, ScopedReader watch) {
+  ///   Widget build(BuildContext context, WidgetRef ref) {
   ///     final locale = Localizations.localeOf(context);
   ///
   ///     // Obtains the title based on the current Locale.
   ///     // Will automatically update the title when the Locale changes.
-  ///     final title = watch(titleFamily(locale));
+  ///     final title = ref.watch(titleFamily(locale));
   ///
   ///     return Text(title);
   ///   }
@@ -111,19 +122,19 @@ class StateProviderBuilder {
   ///   // ...
   ///
   ///   @override
-  ///   Widget build(BuildContext context, ScopedReader watch) {
+  ///   Widget build(BuildContext context, WidgetRef ref) {
   ///     int userId; // Read the user ID from somewhere
   ///
   ///     // Read and potentially fetch the user with id `userId`.
   ///     // When `userId` changes, this will automatically update the UI
   ///     // Similarly, if two widgets tries to read `userFamily` with the same `userId`
   ///     // then the user will be fetched only once.
-  ///     final user = watch(userFamily(userId));
+  ///     final user = ref.watch(userFamily(userId));
   ///
   ///     return user.when(
   ///       data: (user) => Text(user.name),
-  ///       loading: () => const CircularProgressIndicator(),
-  ///       error: (err, stack) => const Text('error'),
+  ///       loading: (_) => const CircularProgressIndicator(),
+  ///       error: (err, stack, _) => const Text('error'),
   ///     );
   ///   }
   ///   ```
@@ -156,9 +167,9 @@ class StateProviderBuilder {
   /// The usual:
   ///
   /// ```dart
-  /// Widget build(BuildContext, ScopedReader watch) {
+  /// Widget build(BuildContext context, WidgetRef ref) {
   ///   // Error – messagesFamily is not a provider
-  ///   final response = watch(messagesFamily);
+  ///   final response = ref.watch(messagesFamily);
   /// }
   /// ```
   ///
@@ -166,8 +177,8 @@ class StateProviderBuilder {
   /// Instead, we need to pass a parameter to `messagesFamily`:
   ///
   /// ```dart
-  /// Widget build(BuildContext, ScopedReader watch) {
-  ///   final response = watch(messagesFamily('id'));
+  /// Widget build(BuildContext context, WidgetRef ref) {
+  ///   final response = ref.watch(messagesFamily('id'));
   /// }
   /// ```
   ///
@@ -177,9 +188,9 @@ class StateProviderBuilder {
   ///
   /// ```dart
   /// @override
-  /// Widget build(BuildContext context, ScopedReader watch) {
-  ///   final frenchTitle = watch(titleFamily(const Locale('fr')));
-  ///   final englishTitle = watch(titleFamily(const Locale('en')));
+  /// Widget build(BuildContext context, WidgetRef ref) {
+  ///   final frenchTitle = ref.watch(titleFamily(const Locale('fr')));
+  ///   final englishTitle = ref.watch(titleFamily(const Locale('en')));
   ///
   ///   return Text('fr: $frenchTitle en: $englishTitle');
   /// }
@@ -236,11 +247,11 @@ class StateProviderBuilder {
   ///   });
   ///
   ///   @override
-  ///   Widget build(BuildContext context, ScopedReader watch) {
+  ///   Widget build(BuildContext context, WidgetRef ref) {
   ///     int userId; // Read the user ID from somewhere
   ///     final locale = Localizations.localeOf(context);
   ///
-  ///     final something = watch(
+  ///     final something = ref.watch(
   ///       exampleProvider(MyParameter(userId: userId, locale: locale)),
   ///     );
   ///   }
@@ -268,11 +279,11 @@ class StateProviderBuilder {
   ///   });
   ///
   ///   @override
-  ///   Widget build(BuildContext context, ScopedReader watch) {
+  ///   Widget build(BuildContext context, WidgetRef ref) {
   ///     int userId; // Read the user ID from somewhere
   ///     final locale = Localizations.localeOf(context);
   ///
-  ///     final something = watch(
+  ///     final something = ref.watch(
   ///       exampleProvider(MyParameter(userId: userId, locale: locale)),
   ///     );
   ///   }
@@ -289,8 +300,8 @@ class StateProviderFamilyBuilder {
   const StateProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  StateProviderFamily<T, Value> call<T, Value>(
-    T Function(ProviderReference ref, Value value) create, {
+  StateProviderFamily<State, Arg> call<State, Arg>(
+    FamilyCreate<State, StateProviderRef<State>, Arg> create, {
     String? name,
   }) {
     return StateProviderFamily(create, name: name);
@@ -308,8 +319,9 @@ class StateNotifierProviderBuilder {
   const StateNotifierProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
-  StateNotifierProvider<T> call<T extends StateNotifier<Object?>>(
-    T Function(ProviderReference ref) create, {
+  StateNotifierProvider<Notifier, State>
+      call<Notifier extends StateNotifier<State>, State>(
+    Create<Notifier, StateNotifierProviderRef<Notifier, State>> create, {
     String? name,
   }) {
     return StateNotifierProvider(create, name: name);
@@ -332,9 +344,10 @@ class StateNotifierProviderFamilyBuilder {
   const StateNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  StateNotifierProviderFamily<T, Value>
-      call<T extends StateNotifier<Object?>, Value>(
-    T Function(ProviderReference ref, Value value) create, {
+  StateNotifierProviderFamily<Notifier, State, Arg>
+      call<Notifier extends StateNotifier<State>, State, Arg>(
+    FamilyCreate<Notifier, StateNotifierProviderRef<Notifier, State>, Arg>
+        create, {
     String? name,
   }) {
     return StateNotifierProviderFamily(create, name: name);
@@ -352,8 +365,8 @@ class ProviderBuilder {
   const ProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
-  Provider<T> call<T>(
-    T Function(ProviderReference ref) create, {
+  Provider<State> call<State>(
+    Create<State, ProviderRef<State>> create, {
     String? name,
   }) {
     return Provider(create, name: name);
@@ -376,8 +389,8 @@ class ProviderFamilyBuilder {
   const ProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  ProviderFamily<T, Value> call<T, Value>(
-    T Function(ProviderReference ref, Value value) create, {
+  ProviderFamily<State, Arg> call<State, Arg>(
+    FamilyCreate<State, ProviderRef<State>, Arg> create, {
     String? name,
   }) {
     return ProviderFamily(create, name: name);
@@ -395,8 +408,8 @@ class FutureProviderBuilder {
   const FutureProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
-  FutureProvider<T> call<T>(
-    Future<T> Function(ProviderReference ref) create, {
+  FutureProvider<State> call<State>(
+    Create<FutureOr<State>, FutureProviderRef<State>> create, {
     String? name,
   }) {
     return FutureProvider(create, name: name);
@@ -419,8 +432,8 @@ class FutureProviderFamilyBuilder {
   const FutureProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  FutureProviderFamily<T, Value> call<T, Value>(
-    Future<T> Function(ProviderReference ref, Value value) create, {
+  FutureProviderFamily<State, Arg> call<State, Arg>(
+    FamilyCreate<FutureOr<State>, FutureProviderRef<State>, Arg> create, {
     String? name,
   }) {
     return FutureProviderFamily(create, name: name);
@@ -438,8 +451,8 @@ class StreamProviderBuilder {
   const StreamProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
-  StreamProvider<T> call<T>(
-    Stream<T> Function(ProviderReference ref) create, {
+  StreamProvider<State> call<State>(
+    Create<Stream<State>, StreamProviderRef<State>> create, {
     String? name,
   }) {
     return StreamProvider(create, name: name);
@@ -462,8 +475,8 @@ class StreamProviderFamilyBuilder {
   const StreamProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  StreamProviderFamily<T, Value> call<T, Value>(
-    Stream<T> Function(ProviderReference ref, Value value) create, {
+  StreamProviderFamily<State, Arg> call<State, Arg>(
+    FamilyCreate<Stream<State>, StreamProviderRef<State>, Arg> create, {
     String? name,
   }) {
     return StreamProviderFamily(create, name: name);
@@ -481,8 +494,8 @@ class AutoDisposeStateProviderBuilder {
   const AutoDisposeStateProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
-  AutoDisposeStateProvider<T> call<T>(
-    T Function(AutoDisposeProviderReference ref) create, {
+  AutoDisposeStateProvider<State> call<State>(
+    Create<State, AutoDisposeStateProviderRef<State>> create, {
     String? name,
   }) {
     return AutoDisposeStateProvider(create, name: name);
@@ -500,8 +513,8 @@ class AutoDisposeStateProviderFamilyBuilder {
   const AutoDisposeStateProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  AutoDisposeStateProviderFamily<T, Value> call<T, Value>(
-    T Function(AutoDisposeProviderReference ref, Value value) create, {
+  AutoDisposeStateProviderFamily<State, Arg> call<State, Arg>(
+    FamilyCreate<State, AutoDisposeStateProviderRef<State>, Arg> create, {
     String? name,
   }) {
     return AutoDisposeStateProviderFamily(create, name: name);
@@ -514,8 +527,10 @@ class AutoDisposeStateNotifierProviderBuilder {
   const AutoDisposeStateNotifierProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
-  AutoDisposeStateNotifierProvider<T> call<T extends StateNotifier<Object?>>(
-    T Function(AutoDisposeProviderReference ref) create, {
+  AutoDisposeStateNotifierProvider<Notifier, State>
+      call<Notifier extends StateNotifier<State>, State>(
+    Create<Notifier, AutoDisposeStateNotifierProviderRef<Notifier, State>>
+        create, {
     String? name,
   }) {
     return AutoDisposeStateNotifierProvider(create, name: name);
@@ -533,9 +548,11 @@ class AutoDisposeStateNotifierProviderFamilyBuilder {
   const AutoDisposeStateNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  AutoDisposeStateNotifierProviderFamily<T, Value>
-      call<T extends StateNotifier<Object?>, Value>(
-    T Function(AutoDisposeProviderReference ref, Value value) create, {
+  AutoDisposeStateNotifierProviderFamily<Notifier, State, Arg>
+      call<Notifier extends StateNotifier<State>, State, Arg>(
+    FamilyCreate<Notifier, AutoDisposeStateNotifierProviderRef<Notifier, State>,
+            Arg>
+        create, {
     String? name,
   }) {
     return AutoDisposeStateNotifierProviderFamily(create, name: name);
@@ -548,8 +565,8 @@ class AutoDisposeProviderBuilder {
   const AutoDisposeProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
-  AutoDisposeProvider<T> call<T>(
-    T Function(AutoDisposeProviderReference ref) create, {
+  AutoDisposeProvider<State> call<State>(
+    Create<State, AutoDisposeProviderRef<State>> create, {
     String? name,
   }) {
     return AutoDisposeProvider(create, name: name);
@@ -567,8 +584,8 @@ class AutoDisposeProviderFamilyBuilder {
   const AutoDisposeProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  AutoDisposeProviderFamily<T, Value> call<T, Value>(
-    T Function(AutoDisposeProviderReference ref, Value value) create, {
+  AutoDisposeProviderFamily<State, Arg> call<State, Arg>(
+    FamilyCreate<State, AutoDisposeProviderRef<State>, Arg> create, {
     String? name,
   }) {
     return AutoDisposeProviderFamily(create, name: name);
@@ -581,8 +598,8 @@ class AutoDisposeFutureProviderBuilder {
   const AutoDisposeFutureProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
-  AutoDisposeFutureProvider<T> call<T>(
-    Future<T> Function(AutoDisposeProviderReference ref) create, {
+  AutoDisposeFutureProvider<State> call<State>(
+    Create<FutureOr<State>, AutoDisposeFutureProviderRef<State>> create, {
     String? name,
   }) {
     return AutoDisposeFutureProvider(create, name: name);
@@ -600,8 +617,9 @@ class AutoDisposeFutureProviderFamilyBuilder {
   const AutoDisposeFutureProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  AutoDisposeFutureProviderFamily<T, Value> call<T, Value>(
-    Future<T> Function(AutoDisposeProviderReference ref, Value value) create, {
+  AutoDisposeFutureProviderFamily<State, Arg> call<State, Arg>(
+    FamilyCreate<FutureOr<State>, AutoDisposeFutureProviderRef<State>, Arg>
+        create, {
     String? name,
   }) {
     return AutoDisposeFutureProviderFamily(create, name: name);
@@ -614,8 +632,8 @@ class AutoDisposeStreamProviderBuilder {
   const AutoDisposeStreamProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
-  AutoDisposeStreamProvider<T> call<T>(
-    Stream<T> Function(AutoDisposeProviderReference ref) create, {
+  AutoDisposeStreamProvider<State> call<State>(
+    Create<Stream<State>, AutoDisposeStreamProviderRef<State>> create, {
     String? name,
   }) {
     return AutoDisposeStreamProvider(create, name: name);
@@ -633,8 +651,9 @@ class AutoDisposeStreamProviderFamilyBuilder {
   const AutoDisposeStreamProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  AutoDisposeStreamProviderFamily<T, Value> call<T, Value>(
-    Stream<T> Function(AutoDisposeProviderReference ref, Value value) create, {
+  AutoDisposeStreamProviderFamily<State, Arg> call<State, Arg>(
+    FamilyCreate<Stream<State>, AutoDisposeStreamProviderRef<State>, Arg>
+        create, {
     String? name,
   }) {
     return AutoDisposeStreamProviderFamily(create, name: name);

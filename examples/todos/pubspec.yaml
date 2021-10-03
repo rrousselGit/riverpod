@@ -4,7 +4,7 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.12.0-0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
   flutter: ">=1.17.0"
   
 dependencies:
@@ -13,13 +13,15 @@ dependencies:
   flutter_hooks: ">=0.16.0-nullsafety.0 <2.0.0"
   hooks_riverpod:
     path: ../../packages/hooks_riverpod
-  uuid: ^3.0.0-nullsafety.0
+  riverpod:
+    path: ../../packages/riverpod
+  uuid: ^3.0.4
 
 dev_dependencies:
   build_runner: ^1.9.0
   flutter_test:
     sdk: flutter
-  mockito: ^5.0.0-nullsafety.5
+  # mockito: ^5.0.5
 
 dependency_overrides:
   flutter_riverpod:

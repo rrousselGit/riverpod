@@ -1,3 +1,250 @@
+## 1.0.0-dev.7
+
+- Fixed `ProviderObserver` not working when modifying a `StateProvider`.
+- Fixed a bug where scoped provider were potentially not disposed
+- Fixed a bug where widgets were not rebuilding in release mode under certain conditions
+
+## 1.0.0-dev.6
+
+- **FIX**: StreamProvider.last no-longer throws a StateError when no value were emitted (#296).
+
+# [Unreleased]
+
+- Re-enabled debug assertions that were temporarily disabled by previous dev versions.
+- Allows families to be scoped/overriden
+- Fixed bugs with `ref.refresh` not working on some providers
+- renamed `ProviderBase.recreateShouldNotify` to `updateShouldNotify`
+
+# 1.0.0-dev.5
+
+Fixed an issue where provider listeners could not be called properly.
+
+# 1.0.0-dev.3
+
+Fixed various issues related to scoped providers.
+
+# 1.0.0-dev.2
+
+- All providers can now be scoped.
+- **breaking**: `ScopedProvider` is removed. To migrate, change `ScopedProvider`s to `Provider`s.
+
+# 1.0.0-dev.1
+
+- Add missing exports (see #532)
+
+# 1.0.0-dev.0
+
+- **Breaking**: The prototype of `ConsumerWidget`'s `build` and `Consumer`'s `builder` changed.
+  Before:
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, ScopedReader watch) {
+      int count = watch(counterProvider);
+      ...
+    }
+  }
+  ```
+
+  After:
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      int count = ref.watch(counterProvider);
+      ...
+    }
+  }
+  ```
+
+- `ProviderListener` is deprecated. Instead, use `ref.listen`:
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      ref.listen<int>(counter, (count) {
+        print('count changed $count');
+      });
+    }
+  }
+  ```
+
+- Added `ConsumerStatefulWidget` + `ConsumerState`, a variant of
+  `StatefulWidget`s that have access to a `WidgetRef`.
+
+- All "watch" functions now support `myProvider.select((value) => ...)`.
+  This allows filtering rebuilds:
+
+  ```dart
+  final userProvider = StateNotifierProvider<UserController, User>(...);
+
+  Consumer(
+    builder: (context, ref, _) {
+      // With this syntax, the Consumer will not rebuild if `userProvider`
+      // emits a new User but its "name" didn't change.
+      bool userName = ref.watch(userProvider.select((user) => user.name));
+    },
+  )
+  ```
+
+- **Breaking**: `Family.overrideWithProvider` now must create a provider:
+
+  ```dart
+  final family = Provider.family<State, Arg>(...);
+
+  family.overrideWithProvider(
+    (Arg arg) => Provider<State>((ref) => ...)
+  );
+  ```
+
+- **Breaking**: `ProviderObserver.didUpdateProvider` now receives both the previous and new value.
+- **Breaking**: `ProviderObserver.mayHaveChanged` is removed.
+- Added `ref.listen`, used to listen to another provider without recreating the provider state:
+
+  ```dart
+  final counter = StateNotifierProvider<Counter, int>(...);
+
+  final anotherProvider = Provider<T>((ref) {
+    ref.listen<int>(counter, (count) {
+      print('counter change: $count');
+    });
+  });
+  ```
+
+- `ProviderReference` is deprecated in favor of `ProviderRefBase`.
+- All providers now receive a custom subclass of `ProviderRefBase` as parameter:
+
+  ```dart
+  Provider<T>((ProviderRef<T> ref) {...});
+  FutureProvider<T>((FutureProviderRef<T> ref) {...});
+  StateProvider<T>((StateProviderRef<T> ref) {...});
+  ```
+
+  That allows providers to implement features that is not shared with other providers.
+
+  - `Provider`, `FutureProvider` and `StreamProvider`'s `ref` now have a `state` property,
+    which represents the currently exposed value. Modifying it will notify the listeners:
+
+    ```dart
+    Provider<int>((ref) {
+      ref.listen(onIncrementProvider, (_) {
+        ref.state++;
+      });
+
+      return 0;
+    });
+    ```
+
+  - `StateProvider`'s `ref` now has a `controller` property, which allows the
+    provider to access the `StateController` exposed.
+
+- **Breaking**: `ProviderReference.mounted` is removed. You can implement something similar using `onDispose`:
+  ```dart
+  Provider<T>((ref) {
+    var mounted = true;
+    ref.onDispose(() => mounted = false);
+  });
+  ```
+- **Breaking**: `ProviderContainer.debugProviderValues` and `ProviderContainer.debugProviderElements` are removed.
+  You can now instead use `ProviderContainer.getAllProviderElements`.
+- `StreamProvider.last`, `StreamProvider.stream` and `FutureProvider.future` now
+  expose a future/stream that is independent from how many times the associated provider "rebuilt":
+  - if a `StreamProvider` rebuild before its stream emitted any value,
+    `StreamProvider.last` will resolve with the first value of the new stream instead.
+  - if a `FutureProvider` rebuild before its future completes,
+    `FutureProvider.future` will resolve with the result of the new future instead.
+- You can now override any provider with any other provider, as long as the value
+  that they expose matches. For example, it is possible to override a `StreamProvider<Model>`
+  with a `Provider<AsyncValue<Model>>`.
+- Providers can now call `ref.refresh` to refresh a provider, instead of having
+  to do `ref.container.refresh`.
+- `ref.onDispose` now calls the dispose function as soon as one of the provider's
+  dependency is known to have changed
+- Providers no longer wait until their next read to recompute their state if one
+  of their dependency changed and they have listeners.
+- Added `ProviderContainer.pump`, an utility to easily "await" until providers
+  notify their listeners or are disposed.
+- fixed an issue when using both `family` and `autoDispose` that could lead to an inconsistent state
+
+# 0.14.0+3
+
+Removed an assert that could cause issues when an application is partially migrated to null safety.
+
+# 0.14.0+2
+
+- Fix `context.refresh` not compiling when using nullable providers
+
+# 0.14.0+1
+
+- Re-added `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that were unvoluntarily removed.
+
+# 0.14.0
+
+- **BREAKING CHANGE** The `Listener`/`LocatorMixin` typedefs are removed as the former could cause a name
+  conflict with the widget named `Listener` and the latter is not supported when using Riverpod.
+- **BREAKING CHANGE** The syntax for using `StateNotifierProvider` was updated.
+  Before:
+
+  ```dart
+  class MyStateNotifier extends StateNotifier<MyModel> {...}
+
+  final provider = StateNotifierProvider<MyStateNotifier>((ref) => MyStateNotifier());
+
+  ...
+  Widget build(context, watch) {
+    MyStateNotifier notifier = watch(provider);
+    MyModel model = watch(provider.state);
+  }
+  ```
+
+  After:
+
+  ```dart
+  class MyStateNotifier extends StateNotifier<MyModel> {...}
+
+  final provider = StateNotifierProvider<MyStateNotifier, MyModel>>((ref) => MyStateNotifier());
+
+  ...
+  Widget build(context, watch) {
+    MyStateNotifier notifier = watch(provider.notifier);
+    MyModel model = watch(provider);
+  }
+  ```
+
+  See also https://github.com/rrousselGit/river_pod/issues/341 for more information.
+
+- **BREAKING CHANGE** It is no-longer possible to override `StreamProvider.stream/last` and `FutureProvider.future`.
+- feat: Calling `ProviderContainer.dispose` multiple time no-longer throws.
+  This simplifies the tear-off logic of tests.
+- feat: Added `ChangeNotifierProvider.notifier` and `StateProvider.notifier`
+  They allow obtaining the notifier associated to the provider, without causing widgets/providers to rebuild when the state updates.
+- fix: overriding a `StateNotifierProvider`/`ChangeNotifierProvider` with `overrideWithValue` now correctly listens to the notifier.
+
+# 0.1
+
+# 0.13.1+1
+
+Fixed an issue where `context.read` and `ProviderListener` were unable to read providers that return a nullable value
+
+# 0.13.1
+
+- Fixed a bug where overriding a `FutureProvider` with an error value could cause tests to fail (see https://github.com/rrousselGit/river_pod/issues/355)
+
+# 0.13.0
+
+- stable null-safety release
+- `ProviderObserver` can now have a const constructor
+- Added the mechanism for state-inspection using the Flutter devtool
+- loosened the version constraints of `freezed_annotation`
+- deprecated `import 'flutter_riverpod/all.dart'`. Now everything is available with `flutter_riverpod/flutter_riverpod.dart`.
+- Fixed a but where listening to `StreamProvider.last` could result in a `StateError` (#217)
+- removed the assert preventing ConsumerWidget's "watch" from being used after the `build` method completed.
+  This allows "watch" to be used inside `ListView.builder`.
+- `context.read(myProvider)` now accepts `ScopeProviders`
+
 # 0.13.0-nullsafety.3
 
 - deprecated `import 'flutter_riverpod/all.dart'`. Now everything is available with `flutter_riverpod/flutter_riverpod.dart`.
@@ -19,7 +266,7 @@ Migrated to null-safety
 
 # 0.12.2
 
-- Exported `AutoDisposeProviderReference`
+- Exported `AutoDisposeProviderRefBase`
 
 # 0.12.1
 
@@ -64,7 +311,7 @@ Migrated to null-safety
   ```dart
   import 'package:flutter_riverpod/all.dart';
 
-  final AutoDisposeStateProvider<int> counter = StateProvider.autoDispose<int>((ProviderReference ref) {
+  final AutoDisposeStateProvider<int> counter = StateProvider.autoDispose<int>((ProviderRefBase ref) {
     return 0;
   });
   ```

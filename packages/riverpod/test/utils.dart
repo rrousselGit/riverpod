@@ -8,6 +8,25 @@ class Counter extends StateNotifier<int> {
   Counter() : super(0);
 
   void increment() => state++;
+
+  @override
+  int get state => super.state;
+  @override
+  set state(int value) => super.state = value;
+}
+
+ProviderContainer createContainer({
+  ProviderContainer? parent,
+  List<Override> overrides = const [],
+  List<ProviderObserver>? observers,
+}) {
+  final container = ProviderContainer(
+    parent: parent,
+    overrides: overrides,
+    observers: observers,
+  );
+  addTearDown(container.dispose);
+  return container;
 }
 
 List<Object> errorsOf(void Function() cb) {
@@ -16,12 +35,36 @@ List<Object> errorsOf(void Function() cb) {
   return [...errors];
 }
 
-class MayHaveChangedMock<T> extends Mock {
-  void call(ProviderSubscription<T>? sub);
+class OnBuildMock extends Mock {
+  void call();
 }
 
-class DidChangedMock<T> extends Mock {
-  void call(ProviderSubscription<T>? sub);
+class OnDisposeMock extends Mock {
+  void call();
+}
+
+class Listener<T> extends Mock {
+  void call(T? value);
+}
+
+class Selector<Input, Output> extends Mock {
+  Selector(this.fake, Output Function(Input) selector) {
+    when(call(any)).thenAnswer((i) {
+      return selector(
+        i.positionalArguments.first as Input,
+      );
+    });
+  }
+
+  final Output fake;
+
+  Output call(Input? value) {
+    return super.noSuchMethod(
+      Invocation.method(#call, [value]),
+      returnValue: fake,
+      returnValueForMissingStub: fake,
+    ) as Output;
+  }
 }
 
 typedef VerifyOnly = VerificationResult Function<T>(
@@ -46,34 +89,6 @@ VerifyOnly get verifyOnly {
   };
 }
 
-extension Legacy<T> on RootProvider<Object?, T> {
-  void Function() watchOwner(
-    ProviderContainer container,
-    void Function(T value) listener,
-  ) {
-    final sub = container.listen<T>(
-      this,
-      mayHaveChanged: (sub) => listener(sub.read()),
-    );
-    listener(sub.read());
-    return sub.close;
-  }
-
-  ProviderSubscription<T> addLazyListener(
-    ProviderContainer container, {
-    required void Function() mayHaveChanged,
-    required void Function(T value) onChange,
-  }) {
-    final sub = container.listen<T>(
-      this,
-      mayHaveChanged: (sub) => mayHaveChanged(),
-      didChange: (sub) => onChange(sub.read()),
-    );
-    onChange(sub.read());
-    return sub;
-  }
-}
-
 // Copied from Flutter
 /// Asserts that two [String]s are equal after normalizing likely hash codes.
 ///
@@ -95,8 +110,8 @@ class _EqualsIgnoringHashCodes extends Matcher {
   }
 
   @override
-  bool matches(dynamic object, Map<dynamic, dynamic> matchState) {
-    final description = _normalize(object as String);
+  bool matches(Object? object, Map<Object?, Object?> matchState) {
+    final description = _normalize(object! as String);
     if (_value != description) {
       matchState[_mismatchedValueKey] = description;
       return false;
@@ -111,13 +126,13 @@ class _EqualsIgnoringHashCodes extends Matcher {
 
   @override
   Description describeMismatch(
-    dynamic item,
+    Object? item,
     Description mismatchDescription,
-    Map<dynamic, dynamic> matchState,
+    Map<Object?, Object?> matchState,
     bool verbose,
   ) {
     if (matchState.containsKey(_mismatchedValueKey)) {
-      final actualValue = matchState[_mismatchedValueKey] as String;
+      final actualValue = matchState[_mismatchedValueKey]! as String;
       // Leading whitespace is added so that lines in the multiline
       // description returned by addDescriptionOf are all indented equally
       // which makes the output easier to read for this case.
@@ -133,30 +148,38 @@ class _EqualsIgnoringHashCodes extends Matcher {
 
 class ObserverMock extends Mock implements ProviderObserver {
   @override
-  void didDisposeProvider(ProviderBase? provider) {
+  void didDisposeProvider(
+    ProviderBase<Object?>? provider,
+    ProviderContainer? container,
+  ) {
     super.noSuchMethod(
-      Invocation.method(#didDisposeProvider, [provider]),
+      Invocation.method(#didDisposeProvider, [provider, container]),
     );
   }
 
   @override
-  void didAddProvider(ProviderBase? provider, Object? value) {
+  void didAddProvider(
+    ProviderBase<Object?>? provider,
+    Object? value,
+    ProviderContainer? container,
+  ) {
     super.noSuchMethod(
-      Invocation.method(#didAddProvider, [provider, value]),
+      Invocation.method(#didAddProvider, [provider, value, container]),
     );
   }
 
   @override
-  void didUpdateProvider(ProviderBase? provider, Object? newValue) {
+  void didUpdateProvider(
+    ProviderBase<Object?>? provider,
+    Object? previousValue,
+    Object? newValue,
+    ProviderContainer? container,
+  ) {
     super.noSuchMethod(
-      Invocation.method(#didUpdateProvider, [provider, newValue]),
-    );
-  }
-
-  @override
-  void mayHaveChanged(ProviderBase? provider) {
-    super.noSuchMethod(
-      Invocation.method(#mayHaveChanged, [provider]),
+      Invocation.method(
+        #didUpdateProvider,
+        [provider, previousValue, newValue, container],
+      ),
     );
   }
 }

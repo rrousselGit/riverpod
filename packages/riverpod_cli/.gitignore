@@ -1,0 +1,55 @@
+pubspec.lock
+
+# Ignoring generated files, as they pollute pull requests and can create merge conflicts
+*.g.dart
+*.freezed.dart
+!packages/*/lib/**/*.freezed.dart
+
+# Ignoring native folders of the example as they can be re-generated easily
+**/example/android/
+**/example/ios/
+**/example/web/
+examples/**/android/
+examples/**/ios/
+examples/**/web/
+examples/**/macos/
+
+# Miscellaneous
+coverage/
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+coverage.lcov
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# Web related
+lib/generated_plugin_registrant.dart
+
+# Exceptions to above rules.
+!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages

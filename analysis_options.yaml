@@ -11,12 +11,23 @@ analyzer:
     # We explicitly enabled even conflicting rules and are fixing the conflict
     # in this file
     included_file_warning: ignore
-
-    # Causes false positives (https://github.com/dart-lang/sdk/issues/41571
-    top_level_function_literal_block: ignore
+    # false positive when using Freezed
+    invalid_annotation_target: ignore
 
 linter:
   rules:
+    # temporarily disabled 
+    require_trailing_commas: false
+
+    # too verbose
+    prefer_final_parameters: false
+    
+    # Too verbose with little value, and this is taken care of by the Flutter devtool anyway.
+    diagnostic_describe_all_properties: false
+
+    # Personal preference. I prefer "if (bool) return;" over having it in multiple lines
+    always_put_control_body_on_new_line: false
+
     # Personal preference. I don't find it more readable
     cascade_invocations: false
 

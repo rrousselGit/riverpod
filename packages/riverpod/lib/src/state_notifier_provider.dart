@@ -5,9 +5,10 @@ import 'builders.dart';
 import 'framework.dart';
 import 'future_provider.dart';
 import 'provider.dart';
+import 'value_provider.dart';
 
-part 'state_notifier_provider/base.dart';
 part 'state_notifier_provider/auto_dispose.dart';
+part 'state_notifier_provider/base.dart';
 
 /// {@template riverpod.statenotifierprovider}
 /// Creates a [StateNotifier] and expose its current state.
@@ -49,15 +50,15 @@ part 'state_notifier_provider/auto_dispose.dart';
 /// Which you can then pass to a [StateNotifierProvider] like so:
 ///
 /// ```dart
-/// final todosProvider = StateNotifierProvider((ref) => TodosNotifier());
+/// final todosProvider = StateNotifierProvider<TodosNotifier, List<Todo>>((ref) => TodosNotifier());
 /// ```
 ///
 /// And finally, you can interact with it inside your UI:
 ///
 /// ```dart
-/// Widget build(BuildContext context, ScopedReader watch) {
+/// Widget build(BuildContext context, WidgetRef ref) {
 ///   // rebuild the widget when the todo list changes
-///   List<Todo> todos = watch(todosProvider.state);
+///   List<Todo> todos = ref.watch(todosProvider);
 ///
 ///   return ListView(
 ///     children: [
@@ -65,7 +66,7 @@ part 'state_notifier_provider/auto_dispose.dart';
 ///         CheckboxListTile(
 ///            value: todo.completed,
 ///            // When tapping on the todo, change its completed status
-///            onChanged: (value) => context.read(todosProvider).toggle(todo.id),
+///            onChanged: (value) => context.read(todosProvider.notifier).toggle(todo.id),
 ///            title: Text(todo.description),
 ///         ),
 ///     ],
@@ -73,27 +74,29 @@ part 'state_notifier_provider/auto_dispose.dart';
 /// }
 /// ```
 /// {@endtemplate}
-mixin _StateNotifierStateProviderStateMixin<T>
-    on ProviderStateBase<StateNotifier<T>, T> {
-  void Function()? removeListener;
+mixin _StateNotifierProviderMixin<Notifier extends StateNotifier<Value>, Value>
+    on ProviderBase<Value> {
+  ProviderBase<Notifier> get notifier;
 
   @override
-  void valueChanged({StateNotifier<T>? previous}) {
-    if (createdValue == previous) {
-      return;
-    }
-    removeListener?.call();
-    removeListener = createdValue.addListener(_listener);
-  }
-
-  // ignore: use_setters_to_change_properties
-  void _listener(T value) {
-    exposedValue = value;
-  }
+  ProviderBase<Object?> get providerToRefresh => notifier;
 
   @override
-  void dispose() {
-    removeListener?.call();
-    super.dispose();
+  void setupOverride(SetupOverride setup) {
+    setup(origin: this, override: this);
+    setup(origin: notifier, override: notifier);
+  }
+
+  /// Overrides the behavior of a provider with a value.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithValue(Notifier value) {
+    return ProviderOverride((setup) {
+      setup(
+        origin: notifier,
+        override: ValueProvider<Notifier>(value),
+      );
+      setup(origin: this, override: this);
+    });
   }
 }

@@ -5,15 +5,15 @@ title: Testing
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-For any medium to large-scaled applications, it is critical to test the application.
+For any medium to large-scale applications, it is critical to test the application.
 
-To be able to successfully test our application, we will want the following things:
+To successfully test our application, we will want the following things:
 
 - No state should be preserved between `test`/`testWidgets`.  
-  This means no global state, or all global-states should be reset after each test.
+  That means no global state in the application, or all global states should reset after each test.
 
 - Being able to force our providers to have a specific state, either through
-  mocking or through manipulating them until we reach the desired state.
+  mocking or by manipulating them until we reach the desired state.
 
 Let's see one by one how [Riverpod] helps you with these.
 
@@ -28,7 +28,7 @@ But the reality is: While providers are declared as globals, the state of a prov
 is **not** global.
 
 Instead, it is stored in an object named [ProviderContainer], that you may have
-seen if you've read the dart-only examples.  
+seen if you looked at the dart-only examples.  
 If you haven't, know that this [ProviderContainer] object is implicitly created
 by [ProviderScope], the widget that enables [Riverpod] on our project.
 
@@ -59,8 +59,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Consumer(builder: (context, watch, _) {
-        final counter = watch(counterProvider);
+      home: Consumer(builder: (context, ref, _) {
+        final counter = ref.watch(counterProvider);
         return RaisedButton(
           onPressed: () => counter.state++,
           child: Text('${counter.state}'),
@@ -123,7 +123,8 @@ void main() {
     // Observe a provider and spy the changes.
     container.listen<StateController<int>>(
       counterProvider,
-      didChange: (sub) => listener(sub.read().state),
+      (StateController<int> controller) => listener(controller.state),
+      fireImmediately: true,
     );
 
     // the listener is called immediatly with 0, the default value
@@ -147,7 +148,8 @@ void main() {
 
     container.listen<StateController<int>>(
       counterProvider,
-      didChange: (sub) => listener(sub.read().state),
+      (StateController<int> controller) => listener(controller.state),
+      fireImmediately: true,
     );
 
     // The new test correcly uses the default value: 0
@@ -190,7 +192,7 @@ final repositoryProvider = Provider((ref) => Repository());
 /// [Repository] and doing nothing else.
 final todoListProvider = FutureProvider((ref) async {
   // Obtains the Repository instance
-  final repository = ref.read(repositoryProvider);
+  final repository = ref.watch(repositoryProvider);
 
   // Fetch the todos and expose them to the UI.
   return repository.fetchTodos();
@@ -255,10 +257,10 @@ test('override repositoryProvider', () async {
   );
 
   /// Wait for the request to finish
-  await Future<void>.value();
+  await container.read(todoListProvider.future);
 
   // Exposes the data fetched
-  expect(container.read(todoListProvider).data.value, [
+  expect(container.read(todoListProvider).value, [
     isA<Todo>()
         .having((s) => s.id, 'id', '42')
         .having((s) => s.label, 'label', 'Hello world')
@@ -277,7 +279,7 @@ allows replacing the implementation of a provider with a different behavior.
 Some providers expose simplified ways to override their behavior.  
 For example, [FutureProvider] allows overriding the provider with an `AsyncValue`:
 
-````dart
+```dart
 final todoListProvider = FutureProvider((ref) async => <Todo>[]);
 // ...
 ProviderScope(
@@ -289,9 +291,9 @@ ProviderScope(
   ],
   child: MyApp(),
 );
+```
+
 :::
-
-
 
 ## Full widget test example
 
@@ -361,8 +363,8 @@ void main() {
         // You may extract this into a MyApp widget
         child: MaterialApp(
           home: Scaffold(
-            body: Consumer(builder: (context, watch, _) {
-              final todos = watch(todoListProvider);
+            body: Consumer(builder: (context, ref, _) {
+              final todos = ref.watch(todoListProvider);
               // The list of todos is loading or in error
               if (todos.data == null) {
                 return const CircularProgressIndicator();
@@ -396,7 +398,7 @@ void main() {
     ]);
   });
 }
-````
+```
 
 [riverpod]: https://github.com/rrousselgit/river_pod
 [providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html

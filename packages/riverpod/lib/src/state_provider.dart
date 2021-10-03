@@ -1,11 +1,14 @@
 import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
 
+import '../riverpod.dart';
 import 'builders.dart';
+import 'common.dart';
 import 'framework.dart';
+import 'value_provider.dart';
 
-part 'state_provider/base.dart';
 part 'state_provider/auto_dispose.dart';
+part 'state_provider/base.dart';
 
 /// A [StateNotifier] that allows modifying its [state] from outside.
 ///
@@ -20,6 +23,22 @@ class StateController<T> extends StateNotifier<T> {
 
   @override
   set state(T value) => super.state = value;
+
+  /// Calls a function with the current [state] and assign the result as new state
+  ///
+  /// This allows simplifying the syntax for updating the state when the update
+  /// depends on the previous state, such that rather than:
+  ///
+  /// ```dart
+  /// ref.read(provider).state = ref.read(provider).state + 1;
+  /// ```
+  ///
+  /// we can do:
+  ///
+  /// ```dart
+  /// ref.read(provider).update((state) => state + 1);
+  /// ```
+  T update(T Function(T state) cb) => state = cb(state);
 }
 
 /// {@template riverpod.stateprovider}
@@ -36,9 +55,9 @@ class StateController<T> extends StateNotifier<T> {
 /// final selectedProductIdProvider = StateProvider<String?>((ref) => null);
 /// final productsProvider = StateNotifierProvider<ProductsNotifier>((ref) => ProductsNotifier());
 ///
-/// Widget build(BuildContext context, ScopedReader watch) {
-///   final List<Product> products = watch(productsProvider.state);
-///   final selectedProductId = watch(selectedProductIdProvider);
+/// Widget build(BuildContext context, WidgetRef ref) {
+///   final List<Product> products = ref.watch(productsProvider);
+///   final selectedProductId = ref.watch(selectedProductIdProvider);
 ///
 ///   return ListView(
 ///     children: [
@@ -55,27 +74,16 @@ class StateController<T> extends StateNotifier<T> {
 /// }
 /// ```
 /// {@endtemplate}
-mixin _StateProviderStateMixin<T>
-    on ProviderStateBase<StateController<T>, StateController<T>> {
-  void Function()? removeListener;
-
-  @override
-  void valueChanged({StateController? previous}) {
-    if (createdValue == previous) {
-      return;
-    }
-
-    removeListener?.call();
-    exposedValue?.dispose();
-    removeListener = createdValue.addListener((state) {
-      exposedValue = createdValue;
-    });
+StateController<State> _listenStateProvider<State>(
+  ProviderElementBase<StateController<State>> ref,
+  StateController<State> controller,
+) {
+  void listener(State newState) {
+    ref.notifyListeners(previousState: controller);
   }
 
-  @override
-  void dispose() {
-    removeListener?.call();
-    exposedValue!.dispose();
-    super.dispose();
-  }
+  // No need to remove the listener on dispose, since we are disposing the controller
+  controller.addListener(listener, fireImmediately: false);
+
+  return controller;
 }

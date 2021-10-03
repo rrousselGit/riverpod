@@ -44,11 +44,11 @@ const _kUnfocusedTheme = _SearchTheme(
   searchMargin: EdgeInsets.only(right: 10),
 );
 
-class SearchBar extends HookWidget {
+class SearchBar extends HookConsumerWidget {
   const SearchBar({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     /// Whether the widget is focused or not determines if the widget
     /// is currently "searching" or in idle state.
     final searchFocusNode = useFocusNode();
@@ -109,7 +109,7 @@ class SearchBar extends HookWidget {
 
 /// Listens to the keyboard inputs, but debounce updates to avoid triggering
 /// too many HTTP requests.
-String _useDecouncedSearch(TextEditingController textEditingController) {
+String _useDebouncedSearch(TextEditingController textEditingController) {
   final search = useState(textEditingController.text);
   useEffect(() {
     Timer? timer;
@@ -131,7 +131,7 @@ String _useDecouncedSearch(TextEditingController textEditingController) {
   return search.value;
 }
 
-class _SearchHints extends HookWidget {
+class _SearchHints extends HookConsumerWidget {
   const _SearchHints({
     Key? key,
     required this.textEditingController,
@@ -140,52 +140,55 @@ class _SearchHints extends HookWidget {
   final TextEditingController textEditingController;
 
   @override
-  Widget build(BuildContext context) {
-    final search = _useDecouncedSearch(textEditingController);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final search = _useDebouncedSearch(textEditingController);
 
-    return useProvider(charactersCount(search)).when(
-      loading: () => const Center(
-        heightFactor: 1,
-        child: Padding(
-          padding: EdgeInsets.all(8),
-          child: CircularProgressIndicator(),
-        ),
-      ),
-      error: (err, stack) => const Center(
-        heightFactor: 1,
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 8),
-          child: Text('Error'),
-        ),
-      ),
-      data: (count) {
-        return ListView.separated(
-          shrinkWrap: true,
-          itemCount: count,
-          separatorBuilder: (context, _) => const Divider(height: 0),
-          itemBuilder: (context, index) {
-            return HookBuilder(
-              builder: (context) {
-                final character = useProvider(characterAtIndex(
-                  CharacterOffset(offset: index, name: search),
-                ));
+    return ref.watch(charactersCount(search)).when(
+          loading: (_) => const Center(
+            heightFactor: 1,
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: CircularProgressIndicator(),
+            ),
+          ),
+          error: (err, stack, _) => const Center(
+            heightFactor: 1,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: Text('Error'),
+            ),
+          ),
+          data: (count) {
+            return ListView.separated(
+              shrinkWrap: true,
+              itemCount: count,
+              separatorBuilder: (context, _) => const Divider(height: 0),
+              itemBuilder: (context, index) {
+                return HookConsumer(
+                  builder: (context, ref, child) {
+                    final character = ref.watch(characterAtIndex(
+                      CharacterOffset(offset: index, name: search),
+                    ));
 
-                return character.when(
-                  loading: () {
-                    return const Center(child: CircularProgressIndicator());
-                  },
-                  error: (err, stack) => const Center(child: Text('Error')),
-                  data: (character) {
-                    return ListTile(
-                      visualDensity: VisualDensity.compact,
-                      onTap: () {
-                        Navigator.pushNamed(
-                            context, '/characters/${character.id}');
+                    return character.when(
+                      loading: (_) {
+                        return const Center(child: CircularProgressIndicator());
                       },
-                      title: Text(
-                        character.name,
-                        style: Theme.of(context).textTheme.bodyText2,
-                      ),
+                      error: (err, stack, _) =>
+                          const Center(child: Text('Error')),
+                      data: (character) {
+                        return ListTile(
+                          visualDensity: VisualDensity.compact,
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, '/characters/${character.id}');
+                          },
+                          title: Text(
+                            character.name,
+                            style: Theme.of(context).textTheme.bodyText2,
+                          ),
+                        );
+                      },
                     );
                   },
                 );
@@ -193,8 +196,6 @@ class _SearchHints extends HookWidget {
             );
           },
         );
-      },
-    );
   }
 }
 

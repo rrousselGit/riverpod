@@ -1,7 +1,6 @@
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: import_of_legacy_library_into_null_safe
@@ -9,8 +8,8 @@ import 'package:html/parser.dart';
 
 import 'common.dart';
 
-part 'home.g.dart';
 part 'home.freezed.dart';
+part 'home.g.dart';
 
 @freezed
 abstract class QuestionsResponse with _$QuestionsResponse {
@@ -19,7 +18,7 @@ abstract class QuestionsResponse with _$QuestionsResponse {
     required int total,
   }) = _QuestionsResponse;
 
-  factory QuestionsResponse.fromJson(Map<String, Object> json) =>
+  factory QuestionsResponse.fromJson(Map<String, Object?> json) =>
       _$QuestionsResponseFromJson(json);
 }
 
@@ -51,7 +50,7 @@ final _fetchedPages = StateProvider((ref) => <int>[]);
 
 final paginatedQuestionsProvider = FutureProvider.autoDispose
     .family<QuestionsResponse, int>((ref, pageIndex) async {
-  final fetchedPages = ref.read(_fetchedPages).state;
+  final fetchedPages = ref.watch(_fetchedPages).state;
   fetchedPages.add(pageIndex);
   ref.onDispose(() => fetchedPages.remove(pageIndex));
 
@@ -75,13 +74,13 @@ final paginatedQuestionsProvider = FutureProvider.autoDispose
 
   final response = await ref
       .watch(client)
-      .getUri<Map<String, Object>>(uri, cancelToken: cancelToken);
+      .getUri<Map<String, Object?>>(uri, cancelToken: cancelToken);
 
-  final parsed = QuestionsResponse.fromJson(response.data);
+  final parsed = QuestionsResponse.fromJson(response.data!);
   final page = parsed.copyWith(
     items: parsed.items.map((e) {
       final document = parse(e.body);
-      return e.copyWith(body: document.body.text.replaceAll('\n', ' '));
+      return e.copyWith(body: document.body!.text.replaceAll('\n', ' '));
     }).toList(),
   );
 
@@ -104,26 +103,30 @@ abstract class QuestionTheme with _$QuestionTheme {
   }) = _QuestionTheme;
 }
 
-final questionThemeProvider = ScopedProvider<QuestionTheme>(null);
+final questionThemeProvider = Provider<QuestionTheme>((ref) {
+  throw UnimplementedError();
+});
 
-class MyHomePage extends HookWidget {
+class MyHomePage extends HookConsumerWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('StackOverflow'),
       ),
-      body: HookBuilder(builder: (context) {
-        final count = useProvider(questionsCountProvider);
+      body: HookConsumer(builder: (context, ref, child) {
+        final count = ref.watch(questionsCountProvider);
 
         return count.when(
-          loading: () => const CircularProgressIndicator(),
-          error: (err, stack) {
+          loading: (_) => const Center(
+            child: CircularProgressIndicator(),
+          ),
+          error: (err, stack, _) {
             if (err is DioError) {
               return Text(
-                err.response.data.toString(),
+                err.response!.data.toString(),
               );
             }
             return Text('Error $err\n$stack');
@@ -131,17 +134,19 @@ class MyHomePage extends HookWidget {
           data: (count) {
             return RefreshIndicator(
               onRefresh: () {
-                return context.refresh(paginatedQuestionsProvider(0));
+                ref.refresh(paginatedQuestionsProvider(0));
+                return ref.read(paginatedQuestionsProvider(0).future);
               },
               child: ListView.separated(
                 itemCount: count,
                 itemBuilder: (context, index) {
                   return ProviderScope(
                     overrides: [
-                      currentQuestion.overrideAs((watch) {
-                        return watch(paginatedQuestionsProvider(index ~/ 50))
-                            .whenData((page) => page.items[index % 50]);
-                      }),
+                      currentQuestion.overrideWithValue(
+                        ref
+                            .watch(paginatedQuestionsProvider(index ~/ 50))
+                            .whenData((page) => page.items[index % 50]),
+                      ),
                     ],
                     child: const QuestionItem(),
                   );
@@ -161,21 +166,23 @@ class MyHomePage extends HookWidget {
   }
 }
 
-final currentQuestion = ScopedProvider<AsyncValue<Question>>(null);
+final currentQuestion = Provider<AsyncValue<Question>>((ref) {
+  throw UnimplementedError();
+});
 
-class QuestionItem extends HookWidget {
+class QuestionItem extends HookConsumerWidget {
   const QuestionItem({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final question = useProvider(currentQuestion);
-    final questionTheme = useProvider(questionThemeProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final question = ref.watch(currentQuestion);
+    final questionTheme = ref.watch(questionThemeProvider);
 
-    if (question.data == null) {
+    if (question is AsyncLoading) {
       return const Center(child: Text('loading'));
     }
 
-    final data = question.data!.value;
+    final data = question.value;
 
     return ListTile(
       title: Text(

@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:mockito/mockito.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 
 void main() {
   testWidgets('.read(context)', (tester) async {
@@ -16,48 +16,19 @@ void main() {
       return ValueNotifier(0);
     });
 
-    Builder(builder: (context) {
+    Consumer(builder: (context, ref, _) {
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      int providerValue = context.read(provider);
+      int providerValue = ref.read(provider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      AsyncValue<int> futureProviderValue = context.read(futureProvider);
+      AsyncValue<int> futureProviderValue = ref.read(futureProvider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-      AsyncValue<int> streamProviderValue = context.read(streamProvider);
+      AsyncValue<int> streamProviderValue = ref.read(streamProvider);
       // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
       ValueNotifier<int> changeNotifierProviderValue =
-          context.read(changeNotifierProvider);
+          ref.read(changeNotifierProvider);
 
       return Container();
     });
-  });
-
-  testWidgets('mounted', (tester) async {
-    late ProviderReference providerState;
-    bool? mountedOnDispose;
-    final provider = Provider<int>((ref) {
-      providerState = ref;
-      ref.onDispose(() => mountedOnDispose = ref.mounted);
-      return 42;
-    });
-
-    await tester.pumpWidget(
-      ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
-          return Text(
-            watch(provider).toString(),
-            textDirection: TextDirection.ltr,
-          );
-        }),
-      ),
-    );
-
-    expect(find.text('42'), findsOneWidget);
-    expect(providerState.mounted, isTrue);
-
-    await tester.pumpWidget(Container());
-
-    expect(mountedOnDispose, isFalse);
-    expect(providerState.mounted, isFalse);
   });
 
   testWidgets('no onDispose does not crash', (tester) async {
@@ -65,9 +36,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(provider).toString(),
+            ref.watch(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -89,15 +60,18 @@ void main() {
     final dispose3 = OnDisposeMock();
 
     final provider = Provider<int>((ref) {
-      ref..onDispose(dispose1)..onDispose(dispose2)..onDispose(dispose3);
+      ref
+        ..onDispose(dispose1)
+        ..onDispose(dispose2)
+        ..onDispose(dispose3);
       return 42;
     });
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(provider).toString(),
+            ref.watch(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -136,9 +110,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(provider).toString(),
+            ref.watch(provider).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -152,9 +126,9 @@ void main() {
   testWidgets('override updates rebuild dependents with new value',
       (tester) async {
     final provider = Provider((_) => 0);
-    final child = Consumer(builder: (c, watch, _) {
+    final child = Consumer(builder: (c, ref, _) {
       return Text(
-        watch(provider).toString(),
+        ref.watch(provider).toString(),
         textDirection: TextDirection.ltr,
       );
     });
@@ -209,9 +183,9 @@ void main() {
             }),
           ),
         ],
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(provider2).toString(),
+            ref.watch(provider2).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -234,8 +208,8 @@ void main() {
         overrides: [
           provider.overrideWithProvider(Provider((_) => 1)),
         ],
-        child: Consumer(builder: (c, watch, _) {
-          return Text(watch(provider1), textDirection: TextDirection.ltr);
+        child: Consumer(builder: (c, ref, _) {
+          return Text(ref.watch(provider1), textDirection: TextDirection.ltr);
         }),
       ),
     );
@@ -258,9 +232,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(forth).toString(),
+            ref.watch(forth).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -287,9 +261,9 @@ void main() {
         overrides: [
           first.overrideWithProvider(Provider((_) => 42)),
         ],
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(forth).toString(),
+            ref.watch(forth).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -316,9 +290,9 @@ void main() {
         overrides: [
           second.overrideWithProvider(Provider((_) => 0)),
         ],
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(forth).toString(),
+            ref.watch(forth).toString(),
             textDirection: TextDirection.ltr,
           );
         }),
@@ -332,7 +306,7 @@ void main() {
     final provider = Provider((_) => 42);
 
     // These check the type safety
-    ProviderReference? ref;
+    ProviderRefBase? ref;
 
     // ignore: omit_local_variable_types
     final Provider<int> provider1 = Provider<int>((r) {
@@ -343,9 +317,9 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, watch, _) {
+        child: Consumer(builder: (c, ref, _) {
           return Text(
-            watch(provider1).toString(),
+            ref.watch(provider1).toString(),
             textDirection: TextDirection.ltr,
           );
         }),

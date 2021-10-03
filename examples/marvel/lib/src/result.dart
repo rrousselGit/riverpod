@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'result.freezed.dart';
 
 @freezed
-abstract class Result<T> with _$Result<T> {
+class Result<T> with _$Result<T> {
   Result._();
   factory Result.data(T value) = _ResultData<T>;
   factory Result.error(Object error, [StackTrace? stackTrace]) =

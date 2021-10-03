@@ -1,80 +1,120 @@
 part of '../framework.dart';
 
-/// A base class for all *Family variants of providers.
-abstract class Family<Created, Listened, Param, Ref extends ProviderReference,
-    P extends RootProvider<Created, Listened>> {
-  /// A base class for all *Family variants of providers.
-  Family(this._builder, this._name);
+/// A base class for all families
+abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
+    implements FamilyOverride<Arg> {
+  /// A base class for all families
+  Family(this.name);
 
-  final Created Function(Ref ref, Param param) _builder;
-  final String? _name;
+  /// The family name.
+  @protected
+  final String? name;
 
-  final _cache = <Param, P>{};
+  @override
+  Family<Object?, Arg, ProviderBase<Object?>> get overridenFamily => this;
+
+  @override
+  void setupOverride(Arg argument, SetupOverride setup) {
+    setup(origin: call(argument), override: call(argument));
+  }
 
   /// Create a provider from an external value.
   ///
   /// That external value should be immutable and preferably override `==`/`hashCode`.
   /// See the documentation of [Provider.family] for more informations.
-  P call(Param value) {
-    return _cache.putIfAbsent(value, () {
-      final provider =
-          create(value, _builder, _name == null ? null : '$_name ($value)');
-      assert(
-        provider._from == null,
-        'The provider created already belongs to a Family',
-      );
-      return provider
-        .._from = this
-        .._argument = value;
-    });
+  FamilyProvider call(Arg argument) {
+    final provider = create(argument);
+
+    registerProvider(provider, argument);
+
+    return provider;
+  }
+
+  /// Register a provider as part of this family.
+  @protected
+  void registerProvider(ProviderBase provider, Arg argument) {
+    assert(
+      provider._from == null,
+      'The provider created already belongs to a Family',
+    );
+
+    provider
+      .._from = this
+      .._argument = argument;
   }
 
   /// Creates the provider for a given parameter.
-  P create(
-    Param value,
-    Created Function(Ref ref, Param param) builder,
-    String? name,
-  );
-
-  /// A debug-only list of all the parameters passed to this family.
-  List<Param>? get debugKeys {
-    List<Param>? result;
-    assert(() {
-      result = _cache.keys.toList(growable: false);
-      return true;
-    }(), '');
-    return result;
-  }
+  @protected
+  FamilyProvider create(Arg argument);
 }
 
-/// Implements [overrideWithProvider] for families.
-///
-/// This is implemented as an extension so that providers can override the
-/// behavior of [overrideWithProvider] with a function that has a different prototype.
-extension FamilyX<Created, Listened, Param, Ref extends ProviderReference,
-        P extends RootProvider<Created, Listened>>
-    on Family<Created, Listened, Param, Ref, P> {
+/// An extension that adds [overrideWithProvider] to [Family].
+extension XFamily<State, Arg,
+        FamilyProvider extends AlwaysAliveProviderBase<State>>
+    on Family<State, Arg, FamilyProvider> {
   /// Overrides the behavior of a family for a part of the application.
   ///
   /// {@macro riverpod.overideWith}
   Override overrideWithProvider(
-    Created Function(Ref ref, Param param) builderOverride,
+    AlwaysAliveProviderBase<State> Function(Arg argument) override,
   ) {
-    return FamilyOverride(
-      this,
-      (dynamic param) {
-        return create(param as Param, builderOverride, null);
-      },
-    );
+    return FamilyOverride<Arg>(this, (arg, setup) {
+      setup(origin: call(arg), override: override(arg));
+    });
   }
 }
 
+/// An extension that adds [overrideWithProvider] to [Family].
+extension XAutoDisposeFamily<State, Arg,
+        FamilyProvider extends AutoDisposeProviderBase<State>>
+    on Family<State, Arg, FamilyProvider> {
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    AutoDisposeProviderBase<State> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(this, (arg, setup) {
+      setup(origin: call(arg), override: override(arg));
+    });
+  }
+}
+
+/// Setup how a family is overriden
+typedef SetupFamilyOverride<Arg> = void Function(
+  Arg argument,
+  void Function({
+    required ProviderBase origin,
+    required ProviderBase override,
+  }),
+);
+
 /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
 /// to override the behavior of a "family" for part of the application.
-class FamilyOverride implements Override {
+abstract class FamilyOverride<Arg> implements Override {
   /// Do not use
-  FamilyOverride(this._family, this._createOverride);
+  factory FamilyOverride(
+    Family<Object?, Arg, ProviderBase<Object?>> family,
+    SetupFamilyOverride<Arg> createOverride,
+  ) = _FamilyOverride;
 
-  final RootProvider Function(dynamic param) _createOverride;
-  final Family _family;
+  /// The family that was overriden.
+  Family<Object?, Arg, ProviderBase<Object?>> get overridenFamily;
+
+  /// Allows a family to override all the different providers associated with
+  /// an argument.
+  void setupOverride(Arg argument, SetupOverride setup);
+}
+
+class _FamilyOverride<Arg> implements FamilyOverride<Arg> {
+  _FamilyOverride(this.overridenFamily, this._createOverride);
+
+  @override
+  final Family<Object?, Arg, ProviderBase<Object?>> overridenFamily;
+  final SetupFamilyOverride<Arg> _createOverride;
+
+  @override
+  void setupOverride(Arg argument, SetupOverride setup) {
+    _createOverride(argument, setup);
+  }
 }

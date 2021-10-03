@@ -31,6 +31,11 @@ module.exports = {
         "cookbooks/testing",
         //"cookbooks/refresh",
       ],
+    }, 
+    { type: "category",
+      label: "Migration",
+      collapsed: false,
+      items: ["migration/0.13.0_to_0.14.0"],
     },
     {
       type: "category",
@@ -89,18 +94,29 @@ module.exports = {
         },
         {
           type: "link",
+          label: "Firebase Phone Authentication with Riverpod",
+          href: "https://github.com/julienlebren/flutter_firebase_phone_auth_riverpod",
+        },
+        {
+          type: "link",
           label: "ListView paging with search",
           href: "https://github.com/tbm98/flutter_loadmore_search",
         },
         {
           type: "link",
           label: "Resocoder's Weather Bloc to Weather Riverpod",
-          href: "https://github.com/campanagerald/flutter-bloc-library-v1-tutorial",
+          href:
+            "https://github.com/campanagerald/flutter-bloc-library-v1-tutorial",
         },
         {
           type: "link",
           label: "Blood Pressure Tracker App",
           href: "https://github.com/UrosTodosijevic/blood_pressure_tracker",
+        },
+        {
+          type: "link",
+          label: "Firebase Authentication with Riverpod Following Flutter DDD Architecture Pattern",
+          href: "https://github.com/pythonhubpy/firebase_authentication_flutter_DDD",
         },
       ],
     },

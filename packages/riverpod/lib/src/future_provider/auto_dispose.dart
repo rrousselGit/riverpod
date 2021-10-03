@@ -1,58 +1,116 @@
 part of '../future_provider.dart';
 
+/// {@macro riverpod.providerrefbase}
+/// - [ProviderRef.state], the value currently exposed by this providers.
+typedef AutoDisposeFutureProviderRef<State> = AutoDisposeProviderRefBase;
+
 /// {@macro riverpod.futureprovider}
 @sealed
-class AutoDisposeFutureProvider<T>
-    extends AutoDisposeProviderBase<Future<T>, AsyncValue<T>>
-    with _FutureProviderMixin<T> {
+class AutoDisposeFutureProvider<State> extends AutoDisposeAsyncProvider<State>
+    with AutoDisposeProviderOverridesMixin<AsyncValue<State>> {
   /// {@macro riverpod.futureprovider}
-  AutoDisposeFutureProvider(
-    Create<Future<T>, AutoDisposeProviderReference> create, {
-    String? name,
-  }) : super(create, name);
+  AutoDisposeFutureProvider(this._create, {String? name}) : super(name);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeFutureProviderFamilyBuilder();
 
-  RootProvider<Future<T>, Future<T>>? _future;
+  final Create<FutureOr<State>, AutoDisposeFutureProviderRef<State>> _create;
 
   /// {@macro riverpod.futureprovider.future}
-  RootProvider<Future<T>, Future<T>> get future {
-    return _future ??= AutoDisposeCreatedProvider(
-      this,
-      name: name == null ? null : '$name.future',
-    );
+  late final AutoDisposeProviderBase<Future<State>> future =
+      AutoDisposeAsyncValueAsFutureProvider(this, modifierName(name, 'future'));
+
+  @override
+  AsyncValue<State> create(
+    AutoDisposeProviderElementBase<AsyncValue<State>> ref,
+  ) {
+    return _listenFuture(() => _create(ref), ref);
   }
 
   @override
-  _AutoDisposeFutureProviderState<T> createState() =>
-      _AutoDisposeFutureProviderState();
-}
+  bool updateShouldNotify(
+    AsyncValue<State> previousState,
+    AsyncValue<State> newState,
+  ) {
+    final wasLoading = previousState is AsyncLoading;
+    final isLoading = newState is AsyncLoading;
 
-@sealed
-class _AutoDisposeFutureProviderState<T> = ProviderStateBase<Future<T>,
-    AsyncValue<T>> with _FutureProviderStateMixin<T>;
+    if (wasLoading || isLoading) return wasLoading != isLoading;
 
-/// {@macro riverpod.futureprovider.family}
-@sealed
-class AutoDisposeFutureProviderFamily<T, A> extends Family<
-    Future<T>,
-    AsyncValue<T>,
-    A,
-    AutoDisposeProviderReference,
-    AutoDisposeFutureProvider<T>> {
-  /// {@macro riverpod.futureprovider.family}
-  AutoDisposeFutureProviderFamily(
-    Future<T> Function(AutoDisposeProviderReference ref, A a) create, {
-    String? name,
-  }) : super(create, name);
+    return true;
+  }
 
   @override
-  AutoDisposeFutureProvider<T> create(
-    A value,
-    Future<T> Function(AutoDisposeProviderReference ref, A param) builder,
-    String? name,
+  void setupOverride(SetupOverride setup) {
+    setup(origin: this, override: this);
+    setup(origin: future, override: future);
+  }
+
+  @override
+  Override overrideWithProvider(
+    AutoDisposeProviderBase<AsyncValue<State>> provider,
   ) {
-    return AutoDisposeFutureProvider((ref) => builder(ref, value), name: name);
+    return ProviderOverride((setup) {
+      setup(origin: future, override: future);
+      setup(origin: this, override: provider);
+    });
+  }
+
+  @override
+  Override overrideWithValue(AsyncValue<State> value) {
+    return ProviderOverride((setup) {
+      setup(origin: future, override: future);
+      setup(origin: this, override: ValueProvider<AsyncValue<State>>(value));
+    });
+  }
+
+  @override
+  AutoDisposeAsyncProviderElement<State> createElement() {
+    return AutoDisposeAsyncProviderElement(this);
+  }
+}
+
+/// {@template riverpod.futureprovider.family}
+/// A class that allows building a [AutoDisposeFutureProvider] from an external parameter.
+/// {@endtemplate}
+@sealed
+class AutoDisposeFutureProviderFamily<State, Arg>
+    extends Family<AsyncValue<State>, Arg, AutoDisposeFutureProvider<State>> {
+  /// {@macro riverpod.futureprovider.family}
+  AutoDisposeFutureProviderFamily(this._create, {String? name}) : super(name);
+
+  final FamilyCreate<FutureOr<State>, AutoDisposeFutureProviderRef<State>, Arg>
+      _create;
+
+  @override
+  AutoDisposeFutureProvider<State> create(Arg argument) {
+    final provider = AutoDisposeFutureProvider<State>(
+      (ref) => _create(ref, argument),
+      name: name,
+    );
+
+    registerProvider(provider.future, argument);
+
+    return provider;
+  }
+
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    AutoDisposeProviderBase<AsyncValue<State>> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(this, (arg, setup) {
+      final futureProvider = call(arg);
+      setup(origin: futureProvider, override: override(arg));
+      setup(origin: futureProvider.future, override: futureProvider.future);
+    });
+  }
+
+  @override
+  void setupOverride(Arg argument, SetupOverride setup) {
+    final futureProvider = call(argument);
+    setup(origin: futureProvider, override: futureProvider);
+    setup(origin: futureProvider.future, override: futureProvider.future);
   }
 }

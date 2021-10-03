@@ -1,4 +1,4 @@
-export 'package:state_notifier/state_notifier.dart';
+export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
 
 export 'src/common.dart'
     show
@@ -6,72 +6,84 @@ export 'src/common.dart'
         AsyncData,
         AsyncLoading,
         AsyncError,
-        $AsyncValueCopyWith,
-        $AsyncValue;
+        AsyncValueX,
+        AsyncValueLoadingError;
 
 export 'src/framework.dart'
     show
         Create,
         Reader,
-        ScopedProvider,
-        ScopedReader,
         AlwaysAliveProviderBase,
         Family,
         CircularDependencyError,
-        RootProvider,
         ProviderBase,
         Override,
-        AutoDisposeProviderReference,
-        ProviderReference,
+        AutoDisposeProviderRefBase,
+        ProviderRefBase,
         ProviderListenable,
         ProviderContainer,
         ProviderObserver,
         ProviderSubscription,
-        FamilyX,
         ProviderException,
         AutoDisposeProviderBase,
-        AutoDisposeProviderElement,
-        ProviderElement,
-        ScopedCreate;
+        AutoDisposeProviderElementBase,
+        ProviderElementBase,
+        XFamily,
+        ProviderOverride,
+        FamilyOverride,
+        SetupOverride,
+        XAutoDisposeFamily,
+        // ignore: deprecated_member_use_from_same_package
+        ProviderReference,
+        AlwaysAliveProviderListenable,
+        FamilyCreate;
 
 export 'src/future_provider.dart'
     show
         AutoDisposeFutureProvider,
         AutoDisposeFutureProviderFamily,
         FutureProvider,
-        FutureProviderFamily;
+        FutureProviderFamily,
+        AutoDisposeFutureProviderRef,
+        FutureProviderRef;
 
 export 'src/provider.dart'
     show
         AutoDisposeProvider,
         AutoDisposeProviderFamily,
         Provider,
-        ProviderFamily;
+        ProviderFamily,
+        AutoDisposeProviderRef,
+        ProviderRef,
+        AutoDisposeProviderElement,
+        ProviderElement;
 
 export 'src/state_notifier_provider.dart'
     show
         AutoDisposeStateNotifierProvider,
         AutoDisposeStateNotifierProviderFamily,
-        AutoDisposeStateNotifierStateProvider,
         StateNotifierProvider,
         StateNotifierProviderFamily,
-        StateNotifierStateProvider,
-        AutoDisposeStateNotifierStateProviderX,
-        StateNotifierStateProviderX;
+        AutoDisposeStateNotifierProviderRef,
+        StateNotifierProviderRef;
 
 export 'src/state_provider.dart'
     show
         StateController,
         StateProvider,
-        StateFamilyX,
-        AutoDisposeStateFamilyX,
         AutoDisposeStateProvider,
         AutoDisposeStateProviderFamily,
-        StateProviderFamily;
+        StateProviderFamily,
+        AutoDisposeStateProviderRef,
+        StateProviderRef,
+        AutoDisposeStateProviderElement,
+        StateProviderElement;
 
 export 'src/stream_provider.dart'
     show
         AutoDisposeStreamProvider,
         AutoDisposeStreamProviderFamily,
         StreamProvider,
-        StreamProviderFamily;
+        StreamProviderFamily,
+        AutoDisposeStreamProviderRef,
+        StreamProviderRef;

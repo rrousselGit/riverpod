@@ -138,7 +138,7 @@ String _useCreatedSince(DateTime creationDate) {
   return label.value;
 }
 
-class PostInfo extends HookWidget {
+class PostInfo extends HookConsumerWidget {
   const PostInfo({
     Key? key,
     required this.owner,
@@ -149,7 +149,7 @@ class PostInfo extends HookWidget {
   final DateTime creationDate;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final label = _useCreatedSince(creationDate);
 
     return Column(
@@ -278,9 +278,11 @@ abstract class TagTheme with _$TagTheme {
   }) = _TagTheme;
 }
 
-final tagThemeProvider = ScopedProvider<TagTheme>(null);
+final tagThemeProvider = Provider<TagTheme>((ref) {
+  throw UnimplementedError();
+});
 
-class Tag extends HookWidget {
+class Tag extends HookConsumerWidget {
   const Tag({
     Key? key,
     required this.tag,
@@ -289,8 +291,8 @@ class Tag extends HookWidget {
   final String tag;
 
   @override
-  Widget build(BuildContext context) {
-    final tagTheme = useProvider(tagThemeProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tagTheme = ref.watch(tagThemeProvider);
 
     return Container(
       decoration: BoxDecoration(

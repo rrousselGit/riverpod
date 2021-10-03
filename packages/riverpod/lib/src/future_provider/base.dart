@@ -1,15 +1,15 @@
 part of '../future_provider.dart';
 
+/// {@macro riverpod.providerrefbase}
+/// - [ProviderRef.state], the value currently exposed by this providers.
+typedef FutureProviderRef<State> = ProviderRefBase;
+
 /// {@macro riverpod.futureprovider}
 @sealed
-class FutureProvider<T>
-    extends AlwaysAliveProviderBase<Future<T>, AsyncValue<T>>
-    with _FutureProviderMixin<T> {
+class FutureProvider<State> extends AsyncProvider<State>
+    with ProviderOverridesMixin<AsyncValue<State>> {
   /// {@macro riverpod.futureprovider}
-  FutureProvider(
-    Create<Future<T>, ProviderReference> create, {
-    String? name,
-  }) : super(create, name);
+  FutureProvider(this._create, {String? name}) : super(name);
 
   /// {@macro riverpod.family}
   static const family = FutureProviderFamilyBuilder();
@@ -17,13 +17,13 @@ class FutureProvider<T>
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeFutureProviderBuilder();
 
-  AlwaysAliveProviderBase<Future<T>, Future<T>>? _future;
+  final Create<FutureOr<State>, FutureProviderRef<State>> _create;
 
   /// {@template riverpod.futureprovider.future}
   /// A provider that exposes the [Future] created by a [FutureProvider].
   ///
   /// The instance of [Future] obtained may change over time, if the provider
-  /// was recreated (such as when using [ProviderReference.watch]).
+  /// was recreated (such as when using [ProviderRefBase.watch]).
   ///
   /// This provider allows using `async`/`await` to easily combine
   /// [FutureProvider] together:
@@ -40,39 +40,97 @@ class FutureProvider<T>
   /// });
   /// ```
   /// {@endtemplate}
-  AlwaysAliveProviderBase<Future<T>, Future<T>> get future {
-    return _future ??= CreatedProvider(
-      this,
-      name: name == null ? null : '$name.future',
-    );
+  late final AlwaysAliveProviderBase<Future<State>> future =
+      AsyncValueAsFutureProvider(this, modifierName(name, 'future'));
+
+  @override
+  AsyncValue<State> create(
+    ProviderElementBase<AsyncValue<State>> ref,
+  ) {
+    return _listenFuture(() => _create(ref), ref);
   }
 
   @override
-  _FutureProviderState<T> createState() => _FutureProviderState();
-}
+  void setupOverride(SetupOverride setup) {
+    setup(origin: this, override: this);
+    setup(origin: future, override: future);
+  }
 
-@sealed
-class _FutureProviderState<T> = ProviderStateBase<Future<T>, AsyncValue<T>>
-    with _FutureProviderStateMixin<T>;
+  @override
+  Override overrideWithProvider(
+    AlwaysAliveProviderBase<AsyncValue<State>> provider,
+  ) {
+    return ProviderOverride((setup) {
+      setup(origin: future, override: future);
+      setup(origin: this, override: provider);
+    });
+  }
+
+  @override
+  Override overrideWithValue(AsyncValue<State> value) {
+    return ProviderOverride((setup) {
+      setup(origin: future, override: future);
+      setup(origin: this, override: ValueProvider<AsyncValue<State>>(value));
+    });
+  }
+
+  @override
+  bool updateShouldNotify(
+    AsyncValue<State> previousState,
+    AsyncValue<State> newState,
+  ) {
+    final wasLoading = previousState is AsyncLoading;
+    final isLoading = newState is AsyncLoading;
+
+    if (wasLoading || isLoading) return wasLoading != isLoading;
+
+    return true;
+  }
+
+  @override
+  AsyncProviderElement<State> createElement() => AsyncProviderElement(this);
+}
 
 /// {@template riverpod.futureprovider.family}
 /// A class that allows building a [FutureProvider] from an external parameter.
 /// {@endtemplate}
 @sealed
-class FutureProviderFamily<T, A> extends Family<Future<T>, AsyncValue<T>, A,
-    ProviderReference, FutureProvider<T>> {
+class FutureProviderFamily<State, Arg>
+    extends Family<AsyncValue<State>, Arg, FutureProvider<State>> {
   /// {@macro riverpod.futureprovider.family}
-  FutureProviderFamily(
-    Future<T> Function(ProviderReference ref, A a) create, {
-    String? name,
-  }) : super(create, name);
+  FutureProviderFamily(this._create, {String? name}) : super(name);
+
+  final FamilyCreate<FutureOr<State>, FutureProviderRef<State>, Arg> _create;
 
   @override
-  FutureProvider<T> create(
-    A value,
-    Future<T> Function(ProviderReference ref, A param) builder,
-    String? name,
+  FutureProvider<State> create(Arg argument) {
+    final provider = FutureProvider<State>(
+      (ref) => _create(ref, argument),
+      name: name,
+    );
+
+    registerProvider(provider.future, argument);
+
+    return provider;
+  }
+
+  @override
+  void setupOverride(Arg argument, SetupOverride setup) {
+    final futureProvider = call(argument);
+    setup(origin: futureProvider, override: futureProvider);
+    setup(origin: futureProvider.future, override: futureProvider.future);
+  }
+
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    ProviderBase<AsyncValue<State>> Function(Arg argument) override,
   ) {
-    return FutureProvider((ref) => builder(ref, value), name: name);
+    return FamilyOverride<Arg>(this, (arg, setup) {
+      final futureProvider = call(arg);
+      setup(origin: futureProvider, override: override(arg));
+      setup(origin: futureProvider.future, override: futureProvider.future);
+    });
   }
 }

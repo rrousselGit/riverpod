@@ -1,7 +1,6 @@
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../marvel.dart';
@@ -19,7 +18,9 @@ import '../widgets/loading_image.dart';
 ///
 /// - [CharacterView], which consumes this provider and [character] to
 ///   show the informations of one specific [Character].
-final selectedCharacterId = ScopedProvider<String>(null);
+final selectedCharacterId = Provider<String>((ref) {
+  throw UnimplementedError();
+});
 
 /// A provider that individually fetches a [Character] based on its ID.
 ///
@@ -34,9 +35,8 @@ final selectedCharacterId = ScopedProvider<String>(null);
 ///
 /// If the user leaves the detail page before the HTTP request completes,
 /// the request is cancelled.
-// workaround to https://github.com/dart-lang/sdk/issues/41449
-final $family = FutureProvider.autoDispose.family;
-final character = $family<Character, String>((ref, id) async {
+final character =
+    FutureProvider.autoDispose.family<Character, String>((ref, id) async {
   // The user used a deep-link to land in the Character page, so we fetch
   // the Character individually.
 
@@ -45,7 +45,7 @@ final character = $family<Character, String>((ref, id) async {
   final cancelToken = CancelToken();
   ref.onDispose(cancelToken.cancel);
 
-  final repository = ref.read(repositoryProvider);
+  final repository = ref.watch(repositoryProvider);
   final character = await repository.fetchCharacter(
     id,
     cancelToken: cancelToken,
@@ -56,20 +56,20 @@ final character = $family<Character, String>((ref, id) async {
   return character;
 });
 
-class CharacterView extends HookWidget {
+class CharacterView extends HookConsumerWidget {
   const CharacterView({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final id = useProvider(selectedCharacterId);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final id = ref.watch(selectedCharacterId);
 
-    return useProvider(character(id)).when(
-      loading: () {
+    return ref.watch(character(id)).when(
+      loading: (_) {
         return const Scaffold(
           body: Center(child: CircularProgressIndicator()),
         );
       },
-      error: (err, stack) {
+      error: (err, stack, _) {
         return Scaffold(
           appBar: AppBar(
             title: const Text('Error'),

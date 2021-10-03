@@ -24,14 +24,23 @@ enum StateType {
   stream,
 }
 
-const stateLabel = {
-  StateType.none: '',
-  StateType.state: 'State',
-  StateType.stateNotifier: 'StateNotifier',
-  StateType.changeNotifier: 'ChangeNotifier',
-  StateType.future: 'Future',
-  StateType.stream: 'Stream',
-};
+class StateDetails {
+  StateDetails({
+    this.kind,
+    this.className,
+    this.ref,
+    this.constraints,
+    this.generics,
+    this.createType,
+  });
+
+  final StateType kind;
+  final String className;
+  final String ref;
+  final String constraints;
+  final String generics;
+  final String createType;
+}
 
 enum ProviderType {
   single,
@@ -39,8 +48,8 @@ enum ProviderType {
 }
 
 const providerLabel = {
-  ProviderType.single: 'Provider',
-  ProviderType.family: 'ProviderFamily',
+  ProviderType.single: '',
+  ProviderType.family: 'Family',
 };
 
 const _autoDisposeDoc = '''
@@ -126,12 +135,12 @@ const _familyDoc = r'''
 ///   // ...
 ///
 ///   @override
-///   Widget build(BuildContext context, ScopedReader watch) {
+///   Widget build(BuildContext context, WidgetRef ref) {
 ///     final locale = Localizations.localeOf(context);
 ///
 ///     // Obtains the title based on the current Locale.
 ///     // Will automatically update the title when the Locale changes.
-///     final title = watch(titleFamily(locale));
+///     final title = ref.watch(titleFamily(locale));
 ///
 ///     return Text(title);
 ///   }
@@ -148,19 +157,19 @@ const _familyDoc = r'''
 ///   // ...
 ///
 ///   @override
-///   Widget build(BuildContext context, ScopedReader watch) {
+///   Widget build(BuildContext context, WidgetRef ref) {
 ///     int userId; // Read the user ID from somewhere
 ///
 ///     // Read and potentially fetch the user with id `userId`.
 ///     // When `userId` changes, this will automatically update the UI
 ///     // Similarly, if two widgets tries to read `userFamily` with the same `userId`
 ///     // then the user will be fetched only once.
-///     final user = watch(userFamily(userId));
+///     final user = ref.watch(userFamily(userId));
 ///
 ///     return user.when(
 ///       data: (user) => Text(user.name),
-///       loading: () => const CircularProgressIndicator(),
-///       error: (err, stack) => const Text('error'),
+///       loading: (_) => const CircularProgressIndicator(),
+///       error: (err, stack, _) => const Text('error'),
 ///     );
 ///   }
 ///   ```
@@ -193,9 +202,9 @@ const _familyDoc = r'''
 /// The usual:
 /// 
 /// ```dart
-/// Widget build(BuildContext, ScopedReader watch) {
+/// Widget build(BuildContext context, WidgetRef ref) {
 ///   // Error – messagesFamily is not a provider
-///   final response = watch(messagesFamily);
+///   final response = ref.watch(messagesFamily);
 /// }
 /// ```
 ///
@@ -203,8 +212,8 @@ const _familyDoc = r'''
 /// Instead, we need to pass a parameter to `messagesFamily`:
 ///
 /// ```dart
-/// Widget build(BuildContext, ScopedReader watch) {
-///   final response = watch(messagesFamily('id'));
+/// Widget build(BuildContext context, WidgetRef ref) {
+///   final response = ref.watch(messagesFamily('id'));
 /// }
 /// ```
 ///
@@ -214,9 +223,9 @@ const _familyDoc = r'''
 ///
 /// ```dart
 /// @override
-/// Widget build(BuildContext context, ScopedReader watch) {
-///   final frenchTitle = watch(titleFamily(const Locale('fr')));
-///   final englishTitle = watch(titleFamily(const Locale('en')));
+/// Widget build(BuildContext context, WidgetRef ref) {
+///   final frenchTitle = ref.watch(titleFamily(const Locale('fr')));
+///   final englishTitle = ref.watch(titleFamily(const Locale('en')));
 ///
 ///   return Text('fr: $frenchTitle en: $englishTitle');
 /// }
@@ -273,11 +282,11 @@ const _familyDoc = r'''
 ///   });
 ///
 ///   @override
-///   Widget build(BuildContext context, ScopedReader watch) {
+///   Widget build(BuildContext context, WidgetRef ref) {
 ///     int userId; // Read the user ID from somewhere
 ///     final locale = Localizations.localeOf(context);
 ///
-///     final something = watch(
+///     final something = ref.watch(
 ///       exampleProvider(MyParameter(userId: userId, locale: locale)),
 ///     );
 ///   }
@@ -305,11 +314,11 @@ const _familyDoc = r'''
 ///   });
 ///
 ///   @override
-///   Widget build(BuildContext context, ScopedReader watch) {
+///   Widget build(BuildContext context, WidgetRef ref) {
 ///     int userId; // Read the user ID from somewhere
 ///     final locale = Localizations.localeOf(context);
 ///
-///     final something = watch(
+///     final something = ref.watch(
 ///       exampleProvider(MyParameter(userId: userId, locale: locale)),
 ///     );
 ///   }
@@ -342,25 +351,72 @@ Future<void> main(List<String> args) async {
     return;
   }
 
-  Tuple3<List<DisposeType>, List<StateType>, List<ProviderType>> matrix;
+  Tuple3<List<DisposeType>, List<StateDetails>, List<ProviderType>> matrix;
 
-  final builder = StringBuffer();
+  final builder = StringBuffer('''
+// GENERATED CODE - DO NOT MODIFY BY HAND
+//
+// If you need to modify this file, instead update /tools/generate_providers/bin/generate_providers.dart
+//
+// You can install this utility by executing:
+// dart pub global activate -s path <repository_path>/tools/generate_providers
+//
+// You can then use it in your terminal by executing:
+// generate_providers <riverpod/flutter_riverpod/hooks_riverpod> <path to builder file to update>
+
+''');
 
   switch (args.first) {
     case 'riverpod':
-      matrix = const Tuple3(
+      matrix = Tuple3(
         DisposeType.values,
         [
-          StateType.state,
-          StateType.stateNotifier,
-          StateType.none,
-          StateType.future,
-          StateType.stream,
+          StateDetails(
+            kind: StateType.state,
+            className: 'StateProvider',
+            ref: 'StateProviderRef<State>',
+            constraints: 'State',
+            generics: 'State',
+            createType: 'State',
+          ),
+          StateDetails(
+            kind: StateType.stateNotifier,
+            className: 'StateNotifierProvider',
+            ref: 'StateNotifierProviderRef<Notifier, State>',
+            constraints: 'Notifier extends StateNotifier<State>, State',
+            generics: 'Notifier, State',
+            createType: 'Notifier',
+          ),
+          StateDetails(
+            kind: StateType.none,
+            className: 'Provider',
+            ref: 'ProviderRef<State>',
+            constraints: 'State',
+            generics: 'State',
+            createType: 'State',
+          ),
+          StateDetails(
+            kind: StateType.future,
+            className: 'FutureProvider',
+            ref: 'FutureProviderRef<State>',
+            constraints: 'State',
+            generics: 'State',
+            createType: 'FutureOr<State>',
+          ),
+          StateDetails(
+            kind: StateType.stream,
+            className: 'StreamProvider',
+            ref: 'StreamProviderRef<State>',
+            constraints: 'State',
+            generics: 'State',
+            createType: 'Stream<State>',
+          ),
         ],
         ProviderType.values,
       );
       builder.writeln(
         """
+import 'dart:async';
 import 'package:state_notifier/state_notifier.dart';
 
 import 'internals.dart';
@@ -368,9 +424,18 @@ import 'internals.dart';
       );
       break;
     case 'flutter_riverpod':
-      matrix = const Tuple3(
+      matrix = Tuple3(
         DisposeType.values,
-        [StateType.changeNotifier],
+        [
+          StateDetails(
+            kind: StateType.changeNotifier,
+            className: 'ChangeNotifierProvider',
+            ref: 'ChangeNotifierProviderRef<Notifier>',
+            constraints: 'Notifier extends ChangeNotifier',
+            generics: 'Notifier',
+            createType: 'Notifier',
+          ),
+        ],
         ProviderType.values,
       );
       builder.writeln(
@@ -392,7 +457,7 @@ import 'internals.dart';
 }
 
 Iterable<Object> generateAll(
-  Tuple3<List<DisposeType>, List<StateType>, List<ProviderType>> matrix,
+  Tuple3<List<DisposeType>, List<StateDetails>, List<ProviderType>> matrix,
 ) sync* {
   final combos = Combinations(3, <Object>[
     ...matrix.item1,
@@ -404,51 +469,35 @@ Iterable<Object> generateAll(
     final second = permutation[1];
     final third = permutation[2];
 
-    if (first is DisposeType && second is StateType && third is ProviderType) {
+    if (first is DisposeType &&
+        second is StateDetails &&
+        third is ProviderType) {
       yield* generate(Tuple3(first, second, third), matrix);
     }
   }
 }
 
-extension on Tuple3<DisposeType, StateType, ProviderType> {
+extension on Tuple3<DisposeType, StateDetails, ProviderType> {
   String get providerName {
-    return '${disposeLabel[item1]}${stateLabel[item2]}${providerLabel[item3]}';
+    return '${disposeLabel[item1]}${item2.className}${providerLabel[item3]}';
   }
 
   String get ref {
     switch (item1) {
       case DisposeType.autoDispose:
-        return 'AutoDisposeProviderReference';
+        return 'AutoDispose${item2.ref}';
       case DisposeType.none:
       default:
-        return 'ProviderReference';
+        return item2.ref;
     }
   }
 
-  String get constraint {
-    switch (item2) {
-      case StateType.stateNotifier:
-        return ' extends StateNotifier<Object?>';
-      case StateType.changeNotifier:
-        return ' extends ChangeNotifier';
-      default:
-        return '';
-    }
-  }
+  String get constraint => item2.constraints;
 
-  String get createType {
-    switch (item2) {
-      case StateType.future:
-        return 'Future<T>';
-      case StateType.stream:
-        return 'Stream<T>';
-      default:
-        return 'T';
-    }
-  }
+  String get createType => item2.createType;
 
   String links(
-    Tuple3<List<DisposeType>, List<StateType>, List<ProviderType>> matrix,
+    Tuple3<List<DisposeType>, List<StateDetails>, List<ProviderType>> matrix,
   ) {
     Iterable<String> other() sync* {
       if (item1 == DisposeType.none) {
@@ -475,8 +524,8 @@ ${familyDoc().replaceAll('///', '  ///')}
 }
 
 Iterable<Object> generate(
-  Tuple3<DisposeType, StateType, ProviderType> configs,
-  Tuple3<List<DisposeType>, List<StateType>, List<ProviderType>> matrix,
+  Tuple3<DisposeType, StateDetails, ProviderType> configs,
+  Tuple3<List<DisposeType>, List<StateDetails>, List<ProviderType>> matrix,
 ) sync* {
   if (configs.item3 == ProviderType.family) {
     yield FamilyBuilder(configs, matrix);
@@ -487,8 +536,9 @@ Iterable<Object> generate(
 
 class FamilyBuilder {
   FamilyBuilder(this.configs, this.matrix);
-  final Tuple3<DisposeType, StateType, ProviderType> configs;
-  final Tuple3<List<DisposeType>, List<StateType>, List<ProviderType>> matrix;
+  final Tuple3<DisposeType, StateDetails, ProviderType> configs;
+  final Tuple3<List<DisposeType>, List<StateDetails>, List<ProviderType>>
+      matrix;
 
   @override
   String toString() {
@@ -499,8 +549,8 @@ class ${configs.providerName}Builder {
   const ${configs.providerName}Builder();
 
 ${familyDoc().replaceAll('///', '  ///')}
-  ${configs.providerName}<T, Value> call<T${configs.constraint}, Value>(
-    ${configs.createType} Function(${configs.ref} ref, Value value) create, {
+  ${configs.providerName}<${configs.item2.generics}, Arg> call<${configs.constraint}, Arg>(
+    FamilyCreate<${configs.createType}, ${configs.ref}, Arg> create, {
     String? name,
   }) {
     return ${configs.providerName}(create, name: name);
@@ -513,8 +563,9 @@ ${configs.links(matrix)}
 
 class ProviderBuilder {
   ProviderBuilder(this.configs, this.matrix);
-  final Tuple3<DisposeType, StateType, ProviderType> configs;
-  final Tuple3<List<DisposeType>, List<StateType>, List<ProviderType>> matrix;
+  final Tuple3<DisposeType, StateDetails, ProviderType> configs;
+  final Tuple3<List<DisposeType>, List<StateDetails>, List<ProviderType>>
+      matrix;
 
   @override
   String toString() {
@@ -525,8 +576,8 @@ class ${configs.providerName}Builder {
   const ${configs.providerName}Builder();
 
 ${autoDisposeDoc().replaceAll('///', '  ///')}
-  ${configs.providerName}<T> call<T${configs.constraint}>(
-    ${configs.createType} Function(${configs.ref} ref) create, {
+  ${configs.providerName}<${configs.item2.generics}> call<${configs.constraint}>(
+    Create<${configs.createType}, ${configs.ref}> create, {
     String? name,
   }) {
     return ${configs.providerName}(create, name: name);

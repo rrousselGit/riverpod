@@ -2,6 +2,13 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
+extension on String {
+  String escapeRegexp() {
+    return replaceAllMapped(
+        RegExp(r'[\.\+]'), (match) => '\\${match.group(0)}');
+  }
+}
+
 void main() {
   final packageOffsetInPath =
       Directory.current.path.lastIndexOf('/hooks_riverpod');
@@ -22,19 +29,19 @@ void main() {
       return RegExp(
         r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+.*)$',
         multiLine: true,
-      ).firstMatch(pub)!.group(1);
+      ).firstMatch(pub)!.group(1)!.escapeRegexp();
     });
     final hooksVersion = await hooksPubspec.readAsString().then((pub) {
       return RegExp(
         r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+.*)$',
         multiLine: true,
-      ).firstMatch(pub)!.group(1);
+      ).firstMatch(pub)!.group(1)!.escapeRegexp();
     });
     final flutterVersion = await flutterPubspec.readAsString().then((pub) {
       return RegExp(
         r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+.*)$',
         multiLine: true,
-      ).firstMatch(pub)!.group(1);
+      ).firstMatch(pub)!.group(1)!.escapeRegexp();
     });
 
     expect(
