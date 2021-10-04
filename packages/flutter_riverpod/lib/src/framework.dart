@@ -31,9 +31,7 @@ import 'package:riverpod/riverpod.dart';
 ///       overrides: [
 ///         // override the behavior of repositoryProvider to provide a fake
 ///         // implementation for test purposes.
-///         repositoryProvider.overrideWithProvider(
-///           Provider((_) => FakeRepository()),
-///         ),
+///         repositoryProvider.overrideWithValue(FakeRepository()),
 ///       ],
 ///       child: MyApp(),
 ///     ),
