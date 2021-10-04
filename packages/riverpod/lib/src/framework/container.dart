@@ -497,9 +497,14 @@ class ProviderContainer {
       }
 
       if (_root?._stateReaders.containsKey(provider) ?? false) {
+        // For unoverriden providers, it is possible that the provider was
+        // read in the root ProviderContainer before this container. In which case
+        // we reuse the existing state instead of creating a new one.
         return _root!._stateReaders[provider]!;
       }
 
+      // The provider had no existing state and no override, so we're
+      // mounting it on the root container.
       final reader = _StateReader(
         origin: provider,
         // If a provider did not have an associated StateReader then it is
