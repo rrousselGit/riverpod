@@ -9,7 +9,11 @@ typedef FutureProviderRef<State> = ProviderRefBase;
 class FutureProvider<State> extends AsyncProvider<State>
     with ProviderOverridesMixin<AsyncValue<State>> {
   /// {@macro riverpod.futureprovider}
-  FutureProvider(this._create, {String? name}) : super(name);
+  FutureProvider(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   /// {@macro riverpod.family}
   static const family = FutureProviderFamilyBuilder();
@@ -41,7 +45,11 @@ class FutureProvider<State> extends AsyncProvider<State>
   /// ```
   /// {@endtemplate}
   late final AlwaysAliveProviderBase<Future<State>> future =
-      AsyncValueAsFutureProvider(this, modifierName(name, 'future'));
+      AsyncValueAsFutureProvider(
+    this,
+    name: modifierName(name, 'future'),
+    dependencies: dependencies,
+  );
 
   @override
   AsyncValue<State> create(
@@ -98,7 +106,11 @@ class FutureProvider<State> extends AsyncProvider<State>
 class FutureProviderFamily<State, Arg>
     extends Family<AsyncValue<State>, Arg, FutureProvider<State>> {
   /// {@macro riverpod.futureprovider.family}
-  FutureProviderFamily(this._create, {String? name}) : super(name);
+  FutureProviderFamily(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final FamilyCreate<FutureOr<State>, FutureProviderRef<State>, Arg> _create;
 

@@ -9,7 +9,11 @@ typedef AutoDisposeFutureProviderRef<State> = AutoDisposeProviderRefBase;
 class AutoDisposeFutureProvider<State> extends AutoDisposeAsyncProvider<State>
     with AutoDisposeProviderOverridesMixin<AsyncValue<State>> {
   /// {@macro riverpod.futureprovider}
-  AutoDisposeFutureProvider(this._create, {String? name}) : super(name);
+  AutoDisposeFutureProvider(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeFutureProviderFamilyBuilder();
@@ -18,7 +22,11 @@ class AutoDisposeFutureProvider<State> extends AutoDisposeAsyncProvider<State>
 
   /// {@macro riverpod.futureprovider.future}
   late final AutoDisposeProviderBase<Future<State>> future =
-      AutoDisposeAsyncValueAsFutureProvider(this, modifierName(name, 'future'));
+      AutoDisposeAsyncValueAsFutureProvider(
+    this,
+    name: modifierName(name, 'future'),
+    dependencies: dependencies,
+  );
 
   @override
   AsyncValue<State> create(
@@ -77,7 +85,11 @@ class AutoDisposeFutureProvider<State> extends AutoDisposeAsyncProvider<State>
 class AutoDisposeFutureProviderFamily<State, Arg>
     extends Family<AsyncValue<State>, Arg, AutoDisposeFutureProvider<State>> {
   /// {@macro riverpod.futureprovider.family}
-  AutoDisposeFutureProviderFamily(this._create, {String? name}) : super(name);
+  AutoDisposeFutureProviderFamily(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final FamilyCreate<FutureOr<State>, AutoDisposeFutureProviderRef<State>, Arg>
       _create;

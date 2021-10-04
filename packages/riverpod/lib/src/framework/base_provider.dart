@@ -74,7 +74,10 @@ mixin AlwaysAliveProviderListenable<State>
 abstract class AlwaysAliveProviderBase<State> extends ProviderBase<State>
     implements AlwaysAliveProviderListenable<State> {
   /// Creates an [AlwaysAliveProviderBase].
-  AlwaysAliveProviderBase(String? name) : super(name);
+  AlwaysAliveProviderBase({
+    required String? name,
+    required List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   @override
   ProviderElementBase<State> createElement();
@@ -90,11 +93,47 @@ abstract class AlwaysAliveProviderBase<State> extends ProviderBase<State>
   }
 }
 
+/// A common interface shared by [ProviderBase] and [Family]
+@sealed
+abstract class ProviderOrFamily {
+  /// A common interface shared by [ProviderBase] and [Family]
+  ProviderOrFamily({required List<ProviderOrFamily>? dependencies})
+      : dependencies = dependencies == null
+            ? null
+            : _allTransitiveDependencies(dependencies);
+
+  /// The list of providers that this provider potentially depends on.
+  ///
+  /// Specifying this list will tell Riverpod to automatically scope this provider
+  /// if one of its dependency is overriden.
+  /// The downside is that it prevents `ref.watch` & co to be used with a provider
+  /// that isn't listed in [dependencies].
+  final List<ProviderOrFamily>? dependencies;
+}
+
+List<ProviderOrFamily> _allTransitiveDependencies(
+    List<ProviderOrFamily> dependencies) {
+  final result = <ProviderOrFamily>{};
+
+  void visitDependency(ProviderOrFamily dep) {
+    if (result.add(dep) && dep.dependencies != null) {
+      dep.dependencies!.forEach(visitDependency);
+    }
+  }
+
+  dependencies.forEach(visitDependency);
+
+  return List.unmodifiable(result);
+}
+
 /// A base class for _all_ providers.
-abstract class ProviderBase<State>
+abstract class ProviderBase<State> extends ProviderOrFamily
     implements ProviderListenable<State>, ProviderOverride {
   /// A base class for _all_ providers.
-  ProviderBase(this.name);
+  ProviderBase({
+    required this.name,
+    required List<ProviderOrFamily>? dependencies,
+  }) : super(dependencies: dependencies);
 
   /// {@template riverpod.name}
   /// A custom label for providers.

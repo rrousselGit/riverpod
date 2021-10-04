@@ -2,9 +2,10 @@ part of '../framework.dart';
 
 /// A base class for all families
 abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
-    implements FamilyOverride<Arg> {
+    extends ProviderOrFamily implements FamilyOverride<Arg> {
   /// A base class for all families
-  Family(this.name);
+  Family({required this.name, required List<ProviderOrFamily>? dependencies})
+      : super(dependencies: dependencies);
 
   /// The family name.
   @protected

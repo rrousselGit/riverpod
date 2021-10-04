@@ -8,7 +8,8 @@ import '../riverpod.dart';
 @sealed
 class ValueProvider<State> extends AlwaysAliveProviderBase<State> {
   /// Creates a [ValueProvider].
-  ValueProvider(this._value, [this._create]) : super(null);
+  ValueProvider(this._value, [this._create])
+      : super(name: null, dependencies: null);
 
   final State Function(ValueProviderElement<State> ref)? _create;
 

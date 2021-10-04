@@ -10,7 +10,11 @@ typedef AutoDisposeChangeNotifierProviderRef<Notifier>
 class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
     extends AutoDisposeProviderBase<Notifier> {
   /// {@macro riverpod.changenotifierprovider}
-  AutoDisposeChangeNotifierProvider(this._create, {String? name}) : super(name);
+  AutoDisposeChangeNotifierProvider(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeChangeNotifierProviderFamilyBuilder();
@@ -93,6 +97,7 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
       AutoDisposeProviderElement(this);
 }
 
+// ignore: subtype_of_sealed_class
 /// {@template riverpod.changenotifierprovider.family}
 /// A class that allows building a [ChangeNotifierProvider] from an external parameter.
 /// {@endtemplate}
@@ -101,8 +106,11 @@ class AutoDisposeChangeNotifierProviderFamily<Notifier extends ChangeNotifier,
         Arg>
     extends Family<Notifier, Arg, AutoDisposeChangeNotifierProvider<Notifier>> {
   /// {@macro riverpod.changenotifierprovider.family}
-  AutoDisposeChangeNotifierProviderFamily(this._create, {String? name})
-      : super(name);
+  AutoDisposeChangeNotifierProviderFamily(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final FamilyCreate<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>,
       Arg> _create;

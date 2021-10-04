@@ -11,7 +11,11 @@ class StreamProvider<State> extends AsyncProvider<State>
         ProviderOverridesMixin<AsyncValue<State>>,
         _StreamProviderMixin<State> {
   /// {@macro riverpod.streamprovider}
-  StreamProvider(this._create, {String? name}) : super(name);
+  StreamProvider(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   /// {@macro riverpod.family}
   static const family = StreamProviderFamilyBuilder();
@@ -23,11 +27,19 @@ class StreamProvider<State> extends AsyncProvider<State>
 
   @override
   late final AlwaysAliveProviderBase<Stream<State>> stream =
-      AsyncValueAsStreamProvider(this, modifierName(name, 'stream'));
+      AsyncValueAsStreamProvider(
+    this,
+    name: modifierName(name, 'stream'),
+    dependencies: dependencies,
+  );
 
   @override
   late final AlwaysAliveProviderBase<Future<State>> last =
-      AsyncValueAsFutureProvider(this, modifierName(name, 'last'));
+      AsyncValueAsFutureProvider(
+    this,
+    name: modifierName(name, 'last'),
+    dependencies: dependencies,
+  );
 
   @override
   AsyncValue<State> create(ProviderElementBase<AsyncValue<State>> ref) {
@@ -85,7 +97,11 @@ class StreamProvider<State> extends AsyncProvider<State>
 class StreamProviderFamily<State, Arg>
     extends Family<AsyncValue<State>, Arg, StreamProvider<State>> {
   /// {@macro riverpod.streamprovider.family}
-  StreamProviderFamily(this._create, {String? name}) : super(name);
+  StreamProviderFamily(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final FamilyCreate<Stream<State>, StreamProviderRef<State>, Arg> _create;
 

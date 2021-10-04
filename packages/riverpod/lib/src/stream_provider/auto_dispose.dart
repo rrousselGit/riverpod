@@ -11,7 +11,11 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
         AutoDisposeProviderOverridesMixin<AsyncValue<State>>,
         _StreamProviderMixin<State> {
   /// {@macro riverpod.streamprovider}
-  AutoDisposeStreamProvider(this._create, {String? name}) : super(name);
+  AutoDisposeStreamProvider(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStreamProviderFamilyBuilder();
@@ -20,11 +24,19 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
 
   @override
   late final AutoDisposeProviderBase<Stream<State>> stream =
-      AutoDisposeAsyncValueAsStreamProvider(this, modifierName(name, 'stream'));
+      AutoDisposeAsyncValueAsStreamProvider(
+    this,
+    name: modifierName(name, 'stream'),
+    dependencies: dependencies,
+  );
 
   @override
   late final AutoDisposeProviderBase<Future<State>> last =
-      AutoDisposeAsyncValueAsFutureProvider(this, modifierName(name, 'last'));
+      AutoDisposeAsyncValueAsFutureProvider(
+    this,
+    name: modifierName(name, 'last'),
+    dependencies: dependencies,
+  );
 
   @override
   AsyncValue<State> create(
@@ -84,7 +96,11 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
 class AutoDisposeStreamProviderFamily<State, Arg>
     extends Family<AsyncValue<State>, Arg, AutoDisposeStreamProvider<State>> {
   /// {@macro riverpod.streamprovider.family}
-  AutoDisposeStreamProviderFamily(this._create, {String? name}) : super(name);
+  AutoDisposeStreamProviderFamily(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final FamilyCreate<Stream<State>, AutoDisposeStreamProviderRef<State>, Arg>
       _create;

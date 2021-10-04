@@ -2,7 +2,11 @@ part of '../state_provider.dart';
 
 class _NotifierProvider<State>
     extends AlwaysAliveProviderBase<StateController<State>> {
-  _NotifierProvider(this._create, {required String? name}) : super(name);
+  _NotifierProvider(
+    this._create, {
+    required String? name,
+    required List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final Create<State, StateProviderRef<State>> _create;
 
@@ -85,7 +89,11 @@ class StateProviderElement<State>
 class StateProvider<State>
     extends AlwaysAliveProviderBase<StateController<State>> {
   /// {@macro riverpod.stateprovider}
-  StateProvider(this._create, {String? name}) : super(name);
+  StateProvider(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   /// {@macro riverpod.family}
   static const family = StateProviderFamilyBuilder();
@@ -120,7 +128,11 @@ class StateProvider<State>
   /// not rebuilding dependent providers/widgets after using `context.refresh` on this provider.
   /// {@endtemplate}
   late final AlwaysAliveProviderBase<StateController<State>> notifier =
-      _NotifierProvider(_create, name: modifierName(name, 'notifier'));
+      _NotifierProvider(
+    _create,
+    name: modifierName(name, 'notifier'),
+    dependencies: dependencies,
+  );
 
   @override
   StateController<State> create(
@@ -177,7 +189,11 @@ class StateProvider<State>
 class StateProviderFamily<State, Arg>
     extends Family<StateController<State>, Arg, StateProvider<State>> {
   /// {@macro riverpod.stateprovider.family}
-  StateProviderFamily(this._create, {String? name}) : super(name);
+  StateProviderFamily(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final FamilyCreate<State, StateProviderRef<State>, Arg> _create;
 
