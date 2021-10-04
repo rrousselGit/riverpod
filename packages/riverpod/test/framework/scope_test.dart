@@ -1,11 +1,14 @@
 // Tests related to scoping providers
 
+import 'package:expect_error/expect_error.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
 
-void main() {
+Future<void> main() async {
+  final library = await Library.parseFromStacktrace();
+
   group('Scoping non-family providers', () {
     test('can override a provider with a reference to the provider directly',
         () {
@@ -374,20 +377,118 @@ void main() {
       expect(root.getAllProviderElements(), isEmpty);
     });
 
-    test('auto scope direct family dependencies', () {}, skip: true);
-
-    test('auto scope transitive family dependencies', () {}, skip: true);
-
     test(
-        'ProviderRef methods throw if trying to read a provider that is not in the dependencies list',
-        () {},
-        skip: true);
+        'when a provider with dependencies is overridden with a value, '
+        'it is no-longer automatically overridden if a lower container overrides a dependency',
+        () {
+      final dep = Provider((ref) => 0);
+      final provider = Provider((ref) => ref.watch(dep), dependencies: [dep]);
+      final root = createContainer();
+      final mid = createContainer(
+        parent: root,
+        overrides: [provider.overrideWithValue(42)],
+      );
+      final container = createContainer(
+        parent: mid,
+        overrides: [dep.overrideWithValue(84)],
+      );
 
-    test(
-        'WidgetRef asserts that all providers in the graph are respecting "dependencies"',
-        () {},
-        skip: true);
+      expect(container.read(provider), 42);
+      expect(mid.read(provider), 42);
 
-    test('accepts only providers or families', () {}, skip: true);
+      expect(container.getAllProviderElements(), isEmpty);
+      expect(
+        mid.getAllProviderElements(),
+        [
+          isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider)
+        ],
+      );
+    });
+
+    test('auto scope direct family dependencies', () {
+      final family = Provider.family<int, int>((ref, id) => id * 2);
+      final provider = Provider(
+        (ref) => ref.watch(family(21)),
+        dependencies: [family],
+      );
+      final root = createContainer();
+      final mid = createContainer(
+        parent: root,
+        overrides: [family],
+      );
+      final container = createContainer(parent: mid);
+
+      expect(container.read(provider), 42);
+      expect(mid.read(provider), 42);
+
+      expect(container.getAllProviderElements(), isEmpty);
+      expect(
+        mid.getAllProviderElements(),
+        unorderedEquals(<Object>[
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider),
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', family(21))
+        ]),
+      );
+    });
+
+    test('auto scope transitive family dependencies', () {
+      final family = Provider.family<int, int>((ref, id) => id * 2);
+      final dep = Provider(
+        (ref) => ref.watch(family(21)),
+        dependencies: [family],
+      );
+      final provider = Provider((ref) => ref.watch(dep), dependencies: [dep]);
+      final root = createContainer();
+      final mid = createContainer(
+        parent: root,
+        overrides: [family],
+      );
+      final container = createContainer(parent: mid);
+
+      expect(container.read(provider), 42);
+      expect(mid.read(provider), 42);
+
+      expect(container.getAllProviderElements(), isEmpty);
+      expect(
+        mid.getAllProviderElements(),
+        unorderedEquals(<Object>[
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider),
+          isA<ProviderElementBase>().having((e) => e.origin, 'origin', dep),
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', family(21))
+        ]),
+      );
+    });
+
+    test('accepts only providers or families', () async {
+      expect(library.withCode('''
+import 'package:riverpod/riverpod.dart';
+
+final a = Provider((ref) => 0);
+
+final b = Provider(
+  (ref) => 0,
+  dependencies: [
+    // expect-error: LIST_ELEMENT_TYPE_NOT_ASSIGNABLE
+    42,
+    // expect-error: LIST_ELEMENT_TYPE_NOT_ASSIGNABLE
+    a.select((value) => 42),
+  ],
+);
+'''), compiles);
+
+      test(
+          'ProviderRef methods throw if trying to read a provider that is not in the dependencies list',
+          () {},
+          skip: true);
+
+      test(
+          'WidgetRef asserts that all providers in the graph are respecting "dependencies"',
+          () {},
+          skip: true);
+    });
   });
 }
