@@ -254,7 +254,7 @@ void main() {
     verify(onDispose()).called(1);
   });
 
-  test('Provider can be overriden by anything', () {
+  test('Provider can be overridden by anything', () {
     final provider = Provider((_) => 42);
     final AlwaysAliveProviderBase<int> override = Provider((_) {
       return 21;

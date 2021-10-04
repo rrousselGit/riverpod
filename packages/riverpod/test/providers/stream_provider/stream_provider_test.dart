@@ -600,7 +600,7 @@ void main() {
   });
 
   test(
-      'when overriden with an error but provider.stream is not listened, it should not emit an error to the zone',
+      'when overridden with an error but provider.stream is not listened, it should not emit an error to the zone',
       () async {
     final error = Error();
     final stream = StreamProvider<int>((ref) => const Stream.empty());

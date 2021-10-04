@@ -105,7 +105,7 @@ abstract class ProviderOrFamily {
   /// The list of providers that this provider potentially depends on.
   ///
   /// Specifying this list will tell Riverpod to automatically scope this provider
-  /// if one of its dependency is overriden.
+  /// if one of its dependency is overridden.
   /// The downside is that it prevents `ref.watch` & co to be used with a provider
   /// that isn't listed in [dependencies].
   final List<ProviderOrFamily>? dependencies;

@@ -353,7 +353,7 @@ void main() {
     );
   });
 
-  testWidgets('providers can be overriden', (tester) async {
+  testWidgets('providers can be overridden', (tester) async {
     final provider = Provider((_) => 'root');
     final provider2 = Provider((_) => 'root2');
 

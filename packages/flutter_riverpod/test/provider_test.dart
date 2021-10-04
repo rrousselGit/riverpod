@@ -244,7 +244,7 @@ void main() {
     expect(find.text('4'), findsOneWidget);
   });
 
-  testWidgets('overriden provider1 chain', (tester) async {
+  testWidgets('overridden provider1 chain', (tester) async {
     final first = Provider((_) => 1);
     final second = Provider<int>((ref) {
       return ref.watch(first) + 1;

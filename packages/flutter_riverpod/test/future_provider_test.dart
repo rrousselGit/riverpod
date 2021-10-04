@@ -121,7 +121,7 @@ void main() {
     await Future.value(null);
   });
 
-  testWidgets('FutureProvider can be overriden with Future', (tester) async {
+  testWidgets('FutureProvider can be overridden with Future', (tester) async {
     var callCount = 0;
     final futureProvider = FutureProvider((s) async {
       callCount++;

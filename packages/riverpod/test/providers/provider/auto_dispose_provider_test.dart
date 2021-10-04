@@ -158,7 +158,7 @@ void main() {
     });
   });
 
-  test('Provider.autoDispose can be overriden by auto-dispose providers', () {
+  test('Provider.autoDispose can be overridden by auto-dispose providers', () {
     final provider = Provider.autoDispose((_) => 42);
     final AutoDisposeProviderBase<int> override =
         Provider.autoDispose((_) => 21);

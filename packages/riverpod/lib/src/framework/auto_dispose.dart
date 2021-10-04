@@ -24,7 +24,7 @@ abstract class AutoDisposeProviderRefBase extends ProviderRefBase {
 
   @override
   void Function() listen<T>(
-    // Overriden to allow AutoDisposeProviderBase
+    // overridden to allow AutoDisposeProviderBase
     ProviderListenable<T> provider,
     void Function(T value) listener, {
     bool fireImmediately,

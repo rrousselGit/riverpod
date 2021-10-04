@@ -43,7 +43,7 @@ void main() {
     expect(state.hasListeners, false);
   });
 
-  test('test two families one overriden the other not', () {
+  test('test two families one overridden the other not', () {
     var callCount = 0;
     final family = Provider.family<String, int>((ref, value) {
       callCount++;

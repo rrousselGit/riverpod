@@ -132,7 +132,7 @@ class ProviderContainer {
         }) {
           assert(
             !_overrideForProvider.containsKey(origin),
-            'The provider $origin is already overriden',
+            'The provider $origin is already overridden',
           );
           _overrideForProvider[origin] = override;
           _stateReaders[origin] = _StateReader(
@@ -145,7 +145,7 @@ class ProviderContainer {
 
         override.setupOverride(setupOverride);
       } else if (override is FamilyOverride) {
-        _overrideForFamily[override.overridenFamily] = _FamilyOverrideRef(
+        _overrideForFamily[override.overriddenFamily] = _FamilyOverrideRef(
           override,
           this,
         );
@@ -366,13 +366,13 @@ class ProviderContainer {
         }(), '');
         // TODO assert family override did not change
 
-        _overrideForFamily[override.overridenFamily]!.override = override;
+        _overrideForFamily[override.overriddenFamily]!.override = override;
       }
     }
 
     assert(
       unusedOverrides!.isEmpty,
-      'Updated the list of overrides with providers that were not overriden before',
+      'Updated the list of overrides with providers that were not overridden before',
     );
   }
 
@@ -415,7 +415,7 @@ class ProviderContainer {
           }) {
             assert(
               !familyOverrideRef.container._stateReaders.containsKey(origin),
-              'A family override tried to override a provider that was already overriden',
+              'A family override tried to override a provider that was already overridden',
             );
 
             familyOverrideRef.container._stateReaders[origin] = _StateReader(
@@ -470,7 +470,7 @@ class ProviderContainer {
             return previous;
           });
 
-          // a dependency of the provider was overriden, so the provider is overriden too
+          // a dependency of the provider was overridden, so the provider is overridden too
 
           final reader = _StateReader(
             origin: provider,
@@ -503,7 +503,7 @@ class ProviderContainer {
       final reader = _StateReader(
         origin: provider,
         // If a provider did not have an associated StateReader then it is
-        // guaranteed to not be overriden
+        // guaranteed to not be overridden
         override: provider,
         container: _root ?? this,
         shouldPreserveStateReaderOnProviderDispose: false,
@@ -669,7 +669,7 @@ class ProviderOverride implements Override {
 
   final void Function(SetupOverride setup) _setupOverride;
 
-  /// Defines how a provider should be overriden.
+  /// Defines how a provider should be overridden.
   void setupOverride(
     void Function({
       required ProviderBase origin,

@@ -86,7 +86,7 @@
 # [Unreleased]
 
 - Re-enabled debug assertions that were temporarily disabled by previous dev versions.
-- Allows families to be scoped/overriden
+- Allows families to be scoped/overridden
 - Fixed bugs with `ref.refresh` not working on some providers
 - renamed `ProviderBase.recreateShouldNotify` to `updateShouldNotify`
 
@@ -389,7 +389,7 @@ Migrated to null-safety
 - Renamed `ProviderStateOwnerObserver` to `ProviderObserver`
 
 - It is no-longer possible to override a provider anywhere in the widget tree.
-  Providers can only be overriden in the top-most `ProviderContainer`.
+  Providers can only be overridden in the top-most `ProviderContainer`.
 
 - Providers can now read values which may change over time using `ref.read` and `ref.watch`.
   When using `ref.watch`, if the value obtained changes, this will cause the provider
@@ -482,7 +482,7 @@ Migrated to null-safety
 * `MyProvider.family.autoDispose` now correctly free both the arguments and the associated
   providers from memory when the provider is no-longer listened.
 
-- Added `ScopedProvider`, a new kind of provider that can be overriden anywhere
+- Added `ScopedProvider`, a new kind of provider that can be overridden anywhere
   in the widget tree.
   Normal providers cannot read a `ScopedProvider`.
 

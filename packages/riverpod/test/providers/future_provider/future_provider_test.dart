@@ -407,7 +407,7 @@ void main() {
   });
 
   test(
-      'when overriden with an error but provider.future is not listened, it should not emit an error to the zone',
+      'when overridden with an error but provider.future is not listened, it should not emit an error to the zone',
       () async {
     final error = Error();
     final future = FutureProvider<int>((ref) async => 0);

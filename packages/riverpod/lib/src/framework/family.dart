@@ -12,7 +12,7 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   final String? name;
 
   @override
-  Family<Object?, Arg, ProviderBase<Object?>> get overridenFamily => this;
+  Family<Object?, Arg, ProviderBase<Object?>> get overriddenFamily => this;
 
   @override
   void setupOverride(Arg argument, SetupOverride setup) {
@@ -81,7 +81,7 @@ extension XAutoDisposeFamily<State, Arg,
   }
 }
 
-/// Setup how a family is overriden
+/// Setup how a family is overridden
 typedef SetupFamilyOverride<Arg> = void Function(
   Arg argument,
   void Function({
@@ -99,8 +99,8 @@ abstract class FamilyOverride<Arg> implements Override {
     SetupFamilyOverride<Arg> createOverride,
   ) = _FamilyOverride;
 
-  /// The family that was overriden.
-  Family<Object?, Arg, ProviderBase<Object?>> get overridenFamily;
+  /// The family that was overridden.
+  Family<Object?, Arg, ProviderBase<Object?>> get overriddenFamily;
 
   /// Allows a family to override all the different providers associated with
   /// an argument.
@@ -108,10 +108,10 @@ abstract class FamilyOverride<Arg> implements Override {
 }
 
 class _FamilyOverride<Arg> implements FamilyOverride<Arg> {
-  _FamilyOverride(this.overridenFamily, this._createOverride);
+  _FamilyOverride(this.overriddenFamily, this._createOverride);
 
   @override
-  final Family<Object?, Arg, ProviderBase<Object?>> overridenFamily;
+  final Family<Object?, Arg, ProviderBase<Object?>> overriddenFamily;
   final SetupFamilyOverride<Arg> _createOverride;
 
   @override
