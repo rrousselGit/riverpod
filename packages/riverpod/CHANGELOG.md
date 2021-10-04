@@ -51,6 +51,18 @@
 
 ### General
 
+- All providers now come with an extra named parameter called `dependencies`.
+  This parameter optionally allows defining the list of providers/families that this
+  new provider depends on:
+
+  ```dart
+  final a = Provider(...);
+
+  final b = Provider((ref) => ref.watch(a), dependencies: [a]);
+  ```
+
+  By doing so, this will tel Riverpod to automatically override `b` if `a` gets overridden.
+
 - Added `StateController.update`, to simplify updating the state from the previous state:
   ```dart
   final provider = StateController((ref) => 0);
