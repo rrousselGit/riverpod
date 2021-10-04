@@ -183,13 +183,9 @@ final alwaysAlive = Provider((ref) {
     final provider = Provider.autoDispose((ref) => 0);
 
     final root = createContainer();
-    final container = createContainer(parent: root, overrides: [
-      provider.overrideWithProvider(
-        Provider.autoDispose((ref) => 42),
-      ),
-    ]);
+    final container = createContainer(parent: root, overrides: [provider]);
 
-    expect(container.read(provider), 42);
+    container.read(provider);
     expect(root.getAllProviderElements(), isEmpty);
     expect(container.getAllProviderElements(), isNotEmpty);
 
@@ -197,7 +193,11 @@ final alwaysAlive = Provider((ref) {
 
     expect(root.getAllProviderElements(), isEmpty);
     expect(container.getAllProviderElements(), isEmpty);
-    expect(container.read(provider), 42);
+
+    container.read(provider);
+
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isNotEmpty);
   });
 
   test(
@@ -206,14 +206,10 @@ final alwaysAlive = Provider((ref) {
     final provider = Provider.autoDispose((ref) => 0);
 
     final root = createContainer();
-    final mid = createContainer(parent: root, overrides: [
-      provider.overrideWithProvider(
-        Provider.autoDispose((ref) => 42),
-      ),
-    ]);
+    final mid = createContainer(parent: root, overrides: [provider]);
     final container = createContainer(parent: mid);
 
-    expect(container.read(provider), 42);
+    container.read(provider);
     expect(root.getAllProviderElements(), isEmpty);
     expect(mid.getAllProviderElements(), isNotEmpty);
     expect(container.getAllProviderElements(), isEmpty);
@@ -223,7 +219,12 @@ final alwaysAlive = Provider((ref) {
     expect(root.getAllProviderElements(), isEmpty);
     expect(mid.getAllProviderElements(), isEmpty);
     expect(container.getAllProviderElements(), isEmpty);
-    expect(container.read(provider), 42);
+
+    container.read(provider);
+
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(mid.getAllProviderElements(), isNotEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
   });
 
   test(
@@ -232,13 +233,9 @@ final alwaysAlive = Provider((ref) {
     final provider = Provider.autoDispose.family<int, int>((ref, _) => 0);
 
     final root = createContainer();
-    final container = createContainer(parent: root, overrides: [
-      provider.overrideWithProvider(
-        (value) => Provider.autoDispose((ref) => 42),
-      ),
-    ]);
+    final container = createContainer(parent: root, overrides: [provider]);
 
-    expect(container.read(provider(0)), 42);
+    container.read(provider(0));
     expect(root.getAllProviderElements(), isEmpty);
     expect(container.getAllProviderElements(), isNotEmpty);
 
@@ -246,7 +243,11 @@ final alwaysAlive = Provider((ref) {
 
     expect(root.getAllProviderElements(), isEmpty);
     expect(container.getAllProviderElements(), isEmpty);
-    expect(container.read(provider(0)), 42);
+
+    container.read(provider(0));
+
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(container.getAllProviderElements(), isNotEmpty);
   });
 
   test(
@@ -255,14 +256,10 @@ final alwaysAlive = Provider((ref) {
     final provider = Provider.autoDispose.family<int, int>((ref, _) => 0);
 
     final root = createContainer();
-    final mid = createContainer(parent: root, overrides: [
-      provider.overrideWithProvider(
-        (value) => Provider.autoDispose((ref) => 42),
-      ),
-    ]);
+    final mid = createContainer(parent: root, overrides: [provider]);
     final container = createContainer(parent: mid);
 
-    expect(container.read(provider(0)), 42);
+    container.read(provider(0));
     expect(root.getAllProviderElements(), isEmpty);
     expect(mid.getAllProviderElements(), isNotEmpty);
     expect(container.getAllProviderElements(), isEmpty);
@@ -272,7 +269,12 @@ final alwaysAlive = Provider((ref) {
     expect(root.getAllProviderElements(), isEmpty);
     expect(mid.getAllProviderElements(), isEmpty);
     expect(container.getAllProviderElements(), isEmpty);
-    expect(container.read(provider(0)), 42);
+
+    container.read(provider(0));
+
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(mid.getAllProviderElements(), isNotEmpty);
+    expect(container.getAllProviderElements(), isEmpty);
   });
 
   test(

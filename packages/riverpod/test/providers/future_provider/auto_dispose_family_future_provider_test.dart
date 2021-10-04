@@ -22,27 +22,6 @@ void main() {
       ]);
       expect(root.getAllProviderElementsInOrder(), isEmpty);
     });
-
-    test('when using provider.overrideWithProvider', () async {
-      final provider =
-          FutureProvider.autoDispose.family<int, int>((ref, _) async => 0);
-      final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(
-          (value) => FutureProvider.autoDispose((ref) async => 42),
-        ),
-      ]);
-
-      expect(await container.read(provider(0).future), 42);
-      expect(container.read(provider(0)), const AsyncData(42));
-      expect(root.getAllProviderElementsInOrder(), isEmpty);
-      expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase>()
-            .having((e) => e.origin, 'origin', provider(0)),
-        isA<ProviderElementBase>()
-            .having((e) => e.origin, 'origin', provider(0).future),
-      ]);
-    });
   });
 
   test('FutureProvider.autoDispose.family override', () async {

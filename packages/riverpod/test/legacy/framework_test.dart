@@ -72,14 +72,10 @@ void main() {
   test('changing the override type at a given index throws', () {
     final provider = Provider((ref) => 0);
     final family = Provider.family<int, int>((ref, value) => 0);
-    final container = createContainer(overrides: [
-      family.overrideWithProvider((value) => Provider((ref) => 0)),
-    ]);
+    final container = createContainer(overrides: [family]);
 
     expect(
-      () => container.updateOverrides(
-        [provider.overrideWithProvider(Provider((_) => 42))],
-      ),
+      () => container.updateOverrides([provider]),
       throwsA(isA<AssertionError>()),
     );
   });
@@ -184,14 +180,12 @@ void main() {
     final provider = Provider((_) => callCount++);
 
     final container = createContainer(
-      overrides: [provider.overrideWithProvider(provider)],
+      overrides: [provider],
     );
 
     expect(callCount, 0);
 
-    container.updateOverrides([
-      provider.overrideWithProvider(provider),
-    ]);
+    container.updateOverrides([provider]);
 
     expect(callCount, 0);
 

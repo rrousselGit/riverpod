@@ -57,16 +57,12 @@ Future<void> main() async {
         'does not re-initialize a provider if read by an intermediary container',
         () {
       var callCount = 0;
-      final provider = Provider((ref) => 0);
+      final provider = Provider((ref) {
+        callCount++;
+        return 42;
+      });
       final root = createContainer();
-      final mid = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(
-          Provider((ref) {
-            callCount++;
-            return 42;
-          }),
-        ),
-      ]);
+      final mid = createContainer(parent: root, overrides: [provider]);
       final container = createContainer(parent: mid);
 
       expect(mid.read(provider), 42);
@@ -74,6 +70,8 @@ Future<void> main() async {
 
       expect(container.read(provider), 42);
       expect(callCount, 1);
+
+      expect(root.getAllProviderElements(), isEmpty);
     });
   });
 

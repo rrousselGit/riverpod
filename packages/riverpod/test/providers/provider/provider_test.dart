@@ -159,20 +159,6 @@ void main() {
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });
-
-      test('when using provider.overrideWithProvider', () {
-        final provider = Provider((ref) => 0);
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithProvider(Provider((ref) => 42)),
-        ]);
-
-        expect(container.read(provider), 42);
-        expect(container.getAllProviderElements(), [
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider)
-        ]);
-        expect(root.getAllProviderElements(), isEmpty);
-      });
     });
 
     group('override', () {
@@ -252,18 +238,6 @@ void main() {
     container.dispose();
 
     verify(onDispose()).called(1);
-  });
-
-  test('Provider can be overridden by anything', () {
-    final provider = Provider((_) => 42);
-    final AlwaysAliveProviderBase<int> override = Provider((_) {
-      return 21;
-    });
-    final container = createContainer(overrides: [
-      provider.overrideWithProvider(override),
-    ]);
-
-    expect(container.read(provider), 21);
   });
 
   test('Read creates the value only once', () {
