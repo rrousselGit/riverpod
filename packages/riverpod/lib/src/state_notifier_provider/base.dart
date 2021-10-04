@@ -90,18 +90,6 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
     return true;
   }
 
-  /// Overrides the behavior of a provider with a another provider.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    StateNotifierProvider<Notifier, State> provider,
-  ) {
-    return ProviderOverride((setup) {
-      setup(origin: notifier, override: provider.notifier);
-      setup(origin: this, override: this);
-    });
-  }
-
   @override
   ProviderElementBase<State> createElement() => ProviderElement(this);
 }
@@ -134,22 +122,6 @@ class StateNotifierProviderFamily<Notifier extends StateNotifier<State>, State,
     registerProvider(provider.notifier, argument);
 
     return provider;
-  }
-
-  /// Overrides the behavior of a family for a part of the application.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    StateNotifierProvider<Notifier, State> Function(Arg argument) override,
-  ) {
-    return FamilyOverride<Arg>(
-      this,
-      (arg, setup) {
-        final provider = call(arg);
-        setup(origin: provider.notifier, override: override(arg).notifier);
-        setup(origin: provider, override: provider);
-      },
-    );
   }
 
   @override

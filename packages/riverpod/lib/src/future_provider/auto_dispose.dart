@@ -55,16 +55,6 @@ class AutoDisposeFutureProvider<State> extends AutoDisposeAsyncProvider<State>
   }
 
   @override
-  Override overrideWithProvider(
-    AutoDisposeProviderBase<AsyncValue<State>> provider,
-  ) {
-    return ProviderOverride((setup) {
-      setup(origin: future, override: future);
-      setup(origin: this, override: provider);
-    });
-  }
-
-  @override
   Override overrideWithValue(AsyncValue<State> value) {
     return ProviderOverride((setup) {
       setup(origin: future, override: future);
@@ -104,19 +94,6 @@ class AutoDisposeFutureProviderFamily<State, Arg>
     registerProvider(provider.future, argument);
 
     return provider;
-  }
-
-  /// Overrides the behavior of a family for a part of the application.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    AutoDisposeProviderBase<AsyncValue<State>> Function(Arg argument) override,
-  ) {
-    return FamilyOverride<Arg>(this, (arg, setup) {
-      final futureProvider = call(arg);
-      setup(origin: futureProvider, override: override(arg));
-      setup(origin: futureProvider.future, override: futureProvider.future);
-    });
   }
 
   @override

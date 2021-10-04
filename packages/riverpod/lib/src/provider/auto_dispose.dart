@@ -84,13 +84,6 @@ class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
   }
 
   @override
-  Override overrideWithProvider(AutoDisposeProviderBase<State> provider) {
-    return ProviderOverride((setup) {
-      setup(origin: this, override: provider);
-    });
-  }
-
-  @override
   Override overrideWithValue(State value) {
     return ProviderOverride((setup) {
       setup(

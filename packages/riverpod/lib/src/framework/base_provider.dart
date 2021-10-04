@@ -1151,11 +1151,6 @@ $stackTrace
 mixin ProviderOverridesMixin<State> on AlwaysAliveProviderBase<State> {
   /// Overrides the behavior of a provider with a value.
   ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithValue(State value);
-
-  /// Overrides the behavior of this provider with another provider.
-  ///
   /// {@template riverpod.overideWith}
   /// Some common use-cases are:
   /// - testing, by replacing a service with a fake implementation, or to reach
@@ -1172,9 +1167,9 @@ mixin ProviderOverridesMixin<State> on AlwaysAliveProviderBase<State> {
   /// runApp(
   ///   ProviderScope(
   ///     overrides: [
-  ///       myService.overrideWithProvider(
+  ///       myService.overrideWithValue(
   ///         // Replace the implementation of MyService with a fake implementation
-  ///         Provider((ref) => MyFakeService())
+  ///         MyFakeService(),
   ///       ),
   ///     ],
   ///     child: MyApp(),
@@ -1182,8 +1177,5 @@ mixin ProviderOverridesMixin<State> on AlwaysAliveProviderBase<State> {
   /// );
   /// ```
   /// {@endtemplate}
-  // Cannot be overridden by AutoDisposeProviders
-  Override overrideWithProvider(
-    AlwaysAliveProviderBase<State> provider,
-  );
+  Override overrideWithValue(State value);
 }

@@ -400,8 +400,6 @@ class ProviderContainer {
     return _stateReaders.putIfAbsent(provider, () {
       if (provider.from != null) {
         // If from a family, apply family overrides
-        // TODO remove once overrideWithProvider is removed
-        // TODO prevent overrides: [family]
         final familyOverrideRef = _overrideForFamily[provider.from];
 
         if (familyOverrideRef != null) {
@@ -667,7 +665,7 @@ typedef SetupOverride = void Function({
 /// See also:
 ///
 /// - [ProviderContainer], which uses this object.
-/// - `overrideWithProvider`/`overrideWithValue`, which creates a [ProviderOverride].
+/// - `overrideWithValue`, which creates a [ProviderOverride].
 class ProviderOverride implements Override {
   /// Override a provider
   ProviderOverride(this._setupOverride);
