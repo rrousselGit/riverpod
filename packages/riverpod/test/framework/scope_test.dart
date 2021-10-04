@@ -479,16 +479,16 @@ final b = Provider(
   ],
 );
 '''), compiles);
-
-      test(
-          'ProviderRef methods throw if trying to read a provider that is not in the dependencies list',
-          () {},
-          skip: true);
-
-      test(
-          'WidgetRef asserts that all providers in the graph are respecting "dependencies"',
-          () {},
-          skip: true);
     });
+
+    test(
+        'ProviderRef methods throw if trying to read a provider that is not in the dependencies list',
+        () {},
+        skip: true);
+
+    test(
+        'WidgetRef asserts that all providers in the graph are respecting "dependencies"',
+        () {},
+        skip: true);
   });
 }
