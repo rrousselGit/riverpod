@@ -88,4 +88,7 @@ I/flutter (16783):   "newValue": "Instance of 'StateController<int>'"
 I/flutter (16783): }
 ```
 
+For states that are mutable such as `StateController` and `ChangeNotifier` the previousValue and newValue will be the same
+since they reference the same `StateController` or `ChangeNotifier`.
+
 [providerobserver]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderObserver-class.html
