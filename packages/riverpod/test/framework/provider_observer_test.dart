@@ -270,13 +270,8 @@ void main() {
       test('works', () {
         final observer = ObserverMock();
         final observer2 = ObserverMock();
-        final provider = Provider((_) => 0);
-        final container = createContainer(
-          overrides: [
-            provider.overrideWithProvider(Provider((_) => 42)),
-          ],
-          observers: [observer, observer2],
-        );
+        final provider = Provider((_) => 42);
+        final container = createContainer(observers: [observer, observer2]);
 
         expect(container.read(provider), 42);
         verifyInOrder([
@@ -301,11 +296,8 @@ void main() {
         final observer2 = ObserverMock();
         when(observer2.didAddProvider(any, any, any)).thenThrow('error2');
         final observer3 = ObserverMock();
-        final provider = Provider((_) => 0);
+        final provider = Provider((_) => 42);
         final container = createContainer(
-          overrides: [
-            provider.overrideWithProvider(Provider((_) => 42)),
-          ],
           observers: [observer, observer2, observer3],
         );
 
@@ -375,16 +367,13 @@ void main() {
       final observer2 = ObserverMock();
       when(observer2.didDisposeProvider(any, any)).thenThrow('error2');
       final observer3 = ObserverMock();
-      final provider = Provider((_) => 0);
-      final provider2 = Provider((ref) => ref.watch(provider));
       final onDispose = OnDisposeMock();
+      final provider = Provider((ref) {
+        ref.onDispose(onDispose);
+        return 0;
+      });
+      final provider2 = Provider((ref) => ref.watch(provider));
       final container = createContainer(
-        overrides: [
-          provider.overrideWithProvider(Provider((ref) {
-            ref.onDispose(onDispose);
-            return 0;
-          })),
-        ],
         observers: [observer, observer2, observer3],
       );
 

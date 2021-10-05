@@ -77,36 +77,41 @@ Future<void> main() async {
 
   group('Scoping family', () {
     test('use latest override on mount', () {
-      final provider = Provider.family<String, int>((ref, value) => '$value 0');
+      final dep = Provider((ref) => 0);
+      final provider = Provider.family<String, int>(
+        (ref, value) => '$value ${ref.watch(dep)}',
+      );
       final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider((value) {
-          return Provider((ref) => '$value 1');
-        }),
-      ]);
+      final container = createContainer(
+        parent: root,
+        overrides: [
+          dep.overrideWithValue(1),
+          provider,
+        ],
+      );
 
       container.updateOverrides([
-        provider.overrideWithProvider((value) {
-          return Provider((ref) => '$value 2');
-        }),
+        dep.overrideWithValue(2),
+        provider,
       ]);
 
       expect(container.read(provider(0)), '0 2');
     });
 
     test('updating scoped override does not mount the provider', () {
-      final provider = Provider.family<String, int>((ref, value) => '$value 0');
+      final dep = Provider((ref) => 0);
+      final provider = Provider.family<String, int>(
+        (ref, value) => '$value ${ref.watch(dep)}',
+      );
       final root = createContainer();
       final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider((value) {
-          return Provider((ref) => '$value 1');
-        }),
+        dep.overrideWithValue(1),
+        provider,
       ]);
 
       container.updateOverrides([
-        provider.overrideWithProvider((value) {
-          return Provider((ref) => '$value 2');
-        }),
+        dep.overrideWithValue(2),
+        provider,
       ]);
 
       expect(container.getAllProviderElements(), isEmpty);
@@ -130,16 +135,16 @@ Future<void> main() async {
     test(
         'does not re-initialize a provider if read by an intermediary container',
         () {
+      final dep = Provider((ref) => 0);
       var callCount = 0;
-      final provider = Provider.family<String, int>((ref, value) => '$value 0');
+      final provider = Provider.family<String, int>((ref, value) {
+        callCount++;
+        return '$value ${ref.watch(dep)}';
+      });
       final root = createContainer();
       final mid = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(
-          (value) => Provider((ref) {
-            callCount++;
-            return '$value 1';
-          }),
-        ),
+        dep.overrideWithValue(1),
+        provider,
       ]);
       final container = createContainer(parent: mid);
 
