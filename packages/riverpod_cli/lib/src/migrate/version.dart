@@ -1,7 +1,7 @@
 import 'package:codemod/codemod.dart';
 
-/// The lateste version of riverpod that migrated code should be updated to
-const latestVersion = '1.0.0-dev.4';
+/// The latest version of riverpod that migrated code should be updated to
+const latestVersion = '1.0.0-dev.8';
 
 /// Migrates the pubspec to the [latestVersion]
 Stream<Patch> versionMigrationSuggestor(FileContext context) async* {

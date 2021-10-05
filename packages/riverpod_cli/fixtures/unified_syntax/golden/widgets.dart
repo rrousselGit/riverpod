@@ -291,7 +291,7 @@ void main() {
   ProviderContainer().read(testProvider);
   final _ = ProviderContainer(
     overrides: [
-      testProvider.overrideWithProvider(Provider<int>((ref) => 100)),
+      testProvider.overrideWithValue(100),
     ],
   );
   final fut = container.refresh(futureProvider.future);

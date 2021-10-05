@@ -4,12 +4,12 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: '>=2.12.0-0 <3.0.0'
+  sdk: ">=2.12.0-0 <3.0.0"
 
 dependencies:
   flutter:
-    sdk: flutter  
+    sdk: flutter
   flutter_hooks:
-  flutter_riverpod: ^1.0.0-dev.6
-  hooks_riverpod: ^1.0.0-dev.6
-  riverpod: ^1.0.0-dev.6
+  flutter_riverpod: ^1.0.0-dev.8
+  hooks_riverpod: ^1.0.0-dev.8
+  riverpod: ^1.0.0-dev.8
