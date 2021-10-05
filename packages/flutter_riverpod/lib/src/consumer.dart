@@ -468,6 +468,11 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     ProviderListenable<T> provider,
     void Function(T value) listener,
   ) {
+    assert(
+      debugDoingBuild,
+      'ref.listen can only be used within the build method of a ConsumerWidget',
+    );
+
     // We can't implement a fireImmediately flag because we wouldn't know
     // which listen call was preserved between widget rebuild, and we wouldn't
     // want to call the listener on every rebuild.

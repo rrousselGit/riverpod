@@ -44,3 +44,22 @@ class HookConsumer extends HookConsumerWidget {
     return builder(context, ref, child);
   }
 }
+
+/// A [StatefulWidget] that is both a [ConsumerWidget] and a [HookWidget].
+abstract class StatefulHookConsumerWidget extends ConsumerStatefulWidget {
+  /// A [StatefulWidget] that is both a [ConsumerWidget] and a [HookWidget].
+  const StatefulHookConsumerWidget({Key? key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _StatefulHookConsumerElement createElement() =>
+      _StatefulHookConsumerElement(this);
+}
+
+class _StatefulHookConsumerElement extends ConsumerStatefulElement
+    with
+// ignore: invalid_use_of_visible_for_testing_member
+        HookElement {
+  _StatefulHookConsumerElement(StatefulHookConsumerWidget widget)
+      : super(widget);
+}

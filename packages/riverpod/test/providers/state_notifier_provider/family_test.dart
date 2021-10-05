@@ -59,8 +59,19 @@ void main() {
 
     test(
       'StateNotifierProviderFamily.toString includes argument & name',
-      () {},
-      skip: true,
+      () {
+        final family = StateNotifierProvider.family<Counter, int, String>(
+          (ref, id) => Counter(),
+          name: 'Example',
+        );
+
+        expect(
+          family('foo').toString(),
+          equalsIgnoringHashCodes(
+            'Example:StateNotifierProvider<Counter, int>#05480(foo)',
+          ),
+        );
+      },
     );
 
     test('properly overrides ==', () {
@@ -74,8 +85,26 @@ void main() {
 
     test(
       'scoping a provider overrides all the associated subproviders',
-      () {},
-      skip: true,
+      () {
+        final family = StateNotifierProvider.family<Counter, int, String>(
+          (ref, id) => Counter(),
+        );
+        final root = createContainer();
+        final container = createContainer(parent: root, overrides: [family]);
+
+        expect(container.read(family('0')), 0);
+        expect(container.read(family('0').notifier), isA<Counter>());
+
+        expect(
+          container.getAllProviderElementsInOrder(),
+          [
+            isA<ProviderElementBase>()
+                .having((e) => e.provider, 'provider', family('0').notifier),
+            isA<ProviderElementBase>()
+                .having((e) => e.provider, 'provider', family('0')),
+          ],
+        );
+      },
     );
   });
 }

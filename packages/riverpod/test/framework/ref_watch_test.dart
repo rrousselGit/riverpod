@@ -17,11 +17,6 @@ class Counter extends StateNotifier<int> {
 }
 
 void main() {
-  test(
-      'cannot call ref.watch/ref.read/ref.listen/ref.onDispose after a dependency changed',
-      () {},
-      skip: true);
-
   test('disposes providers synchronously when their dependency changes',
       () async {
     final onDispose = OnDisposeMock();

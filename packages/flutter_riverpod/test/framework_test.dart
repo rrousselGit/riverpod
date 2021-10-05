@@ -10,11 +10,6 @@ import 'package:mockito/mockito.dart';
 import 'utils.dart';
 
 void main() {
-  testWidgets(
-      'cannot attach a ProviderContainer to an ProviderScope if the container has pending tasks',
-      (tester) async {},
-      skip: true);
-
   testWidgets('ref.read works with providers that returns null',
       (tester) async {
     final nullProvider = Provider((ref) => null);

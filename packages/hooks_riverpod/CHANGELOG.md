@@ -1,3 +1,7 @@
+## [Unreleased]
+
+- Added `StatefulHookConsumerWidget`, the combination of `StatefulWidget` + `ConsumerWidget` + `HookWidget`
+
 ## 1.0.0-dev.7
 
 - Fixed `ProviderObserver` not working when modifying a `StateProvider`.
@@ -6,7 +10,7 @@
 
 ## 1.0.0-dev.6
 
- - **FIX**: StreamProvider.last no-longer throws a StateError when no value were emitted (#296).
+- **FIX**: StreamProvider.last no-longer throws a StateError when no value were emitted (#296).
 
 # [Unreleased]
 
@@ -199,7 +203,6 @@ Fixed various issues related to scoped providers.
 - Added `ProviderContainer.pump`, an utility to easily "await" until providers
   notify their listeners or are disposed.
 - fixed an issue when using both `family` and `autoDispose` that could lead to an inconsistent state
-
 
 # 0.14.0+4
 

@@ -70,7 +70,7 @@ void main() {
         final provider = StateNotifierProvider<Counter, int>((_) => notifier);
         final computed = Provider((ref) => ref.watch(provider));
 
-        container.read(computed);
+        container.listen(computed, (_) {});
         notifier.increment();
 
         clearInteractions(observer);

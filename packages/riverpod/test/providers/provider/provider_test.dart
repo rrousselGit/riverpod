@@ -175,8 +175,6 @@ void main() {
       });
     });
 
-    test('can be refreshed', () {}, skip: true);
-
     group('override', () {
       test('does not notify listeners if updated with the same value', () {
         final provider = Provider((ref) => 0);

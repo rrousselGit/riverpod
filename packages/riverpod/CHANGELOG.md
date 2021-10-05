@@ -3,11 +3,11 @@
 ### Future/StreamProvider
 
 - FutureProvider now creates a `FutureOr<T>` instead of a `Future<T>`
-  This allows bypassing the loading state in the event where a value was synchronously available.
+  That allows bypassing the loading state in the event where a value was synchronously available.
 
 - During loading and error states, `FutureProvider` and `StreamProvider` now expose the
   latest value through `AsyncValue`.  
-  This allows UI to show the previous data while some new data is loading,
+  That allows UI to show the previous data while some new data is loading,
   inatead of showing a spinner:
 
   ```dart
@@ -51,6 +51,12 @@
 
 ### General
 
+- Added `StateController.update`, to simplify updating the state from the previous state:
+  ```dart
+  final provider = StateController((ref) => 0);
+  ...
+  ref.read(provider).update((state) => state + 1);
+  ```
 - It is no-longer allowed to use `ref.watch` or `ref.read` inside a selector:
   ```dart
   provider.select((value) => ref.watch(something)); // KO, cannot user ref.watch inside selectors
@@ -58,6 +64,8 @@
 
 ### Bug-fixes
 
+- fixed a bug where providers were rebuilding even when not listened
+- fixed `ref.listen` now working when downcasting the value of a provider.
 - fixed a bug where disposing a scoped `ProviderContainer` could cause other
   `ProviderContainer`s to stop working.
 - fixed an issue where conditionally depending on an "autoDispose" provider

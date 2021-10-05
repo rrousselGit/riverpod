@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../provider_listener_test.dart';
 import '../../utils.dart';
 
 void main() {
@@ -85,9 +86,36 @@ void main() {
     });
   });
 
-  test('overriding listens to the ChangeNotifier', () {}, skip: true);
-  test('overriding family listens to the ChangeNotifier', () {}, skip: true);
-  test('refresh recreates the ChangeNotifier', () {}, skip: true);
+  test('overriding with value listens to the ChangeNotifier', () {
+    final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
+    final notifier = ValueNotifier(42);
+    final listener = ListenerMock<int>();
+
+    final container = createContainer(
+      overrides: [provider.overrideWithValue(notifier)],
+    );
+
+    container.listen<ValueNotifier<int>>(provider, (c) => listener(c.value));
+
+    expect(container.read(provider).value, 42);
+    expect(container.read(provider.notifier).value, 42);
+
+    notifier.value = 21;
+
+    verifyOnly(listener, listener(21));
+  });
+
+  test('refresh recreates the ChangeNotifier', () {
+    final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
+    final container = createContainer();
+
+    container.read(provider).value = 42;
+
+    container.refresh(provider);
+
+    expect(container.read(provider).value, 0);
+    expect(container.read(provider.notifier).value, 0);
+  });
 
   test('family', () {
     final container = createContainer();
@@ -125,7 +153,7 @@ void main() {
       container.read(provider(42)),
       isA<ValueNotifier<int>>().having((source) => source.value, 'value', 84),
     );
-  }, skip: true);
+  });
 
   test('can specify name', () {
     final provider = ChangeNotifierProvider(
