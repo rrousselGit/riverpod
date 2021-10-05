@@ -1,3 +1,8 @@
+## 1.0.0-dev.9
+
+Fix an issue where `*Provider.autoDispose` were not able to specify the
+`dependencies` parameter.
+
 ## 1.0.0-dev.8
 
 ### Future/StreamProvider
@@ -88,7 +93,7 @@
 - fixed an issue where when chaining providers, widgets may re-render
   a frame late, potentially causing a flicker. (see #648)
 
-## 1.0.0-dev.8
+## 1.0.0-dev.7
 
 - Fixed `ProviderObserver` not working when modifying a `StateProvider`.
 - Fixed a bug where scoped provider were potentially not disposed
