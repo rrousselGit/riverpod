@@ -76,10 +76,10 @@ See [the migration guide](https://riverpod.dev/docs/migration/0.13.0_to_0.14.0/)
 - [Motivation](#motivation)
 - [Contributing](#contributing)
 - [FAQ](#faq)
-  - [Why another project when provider already exists?](#why-another-project-when-provider-already-exists)
+  - [Why another project when [provider] already exists?](#why-another-project-when-provider-already-exists)
   - [Is it safe to use in production?](#is-it-safe-to-use-in-production)
-  - [Will this get merged with provider at some point?](#will-this-get-merged-with-provider-at-some-point)
-  - [Will provider be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
+  - [Will this get merged with [provider] at some point?](#will-this-get-merged-with-provider-at-some-point)
+  - [Will [provider] be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
 
 ## Motivation
 
@@ -176,11 +176,8 @@ compromise.
 
 Not in the short term, no.
 
-This project is still experimental and unpopular. While it is, in a way,
-a [provider] 2.0, its worth has yet to be proven.
-
-Until it is certain that [Riverpod] is a better way of doing things
-and that the community likes it, [provider] will still be maintained.
+However, a migration tool is planned to help assist migration from provider
+to [Riverpod].
 
 [provider]: https://github.com/rrousselGit/provider
 [riverpod]: https://github.com/rrousselGit/river_pod
