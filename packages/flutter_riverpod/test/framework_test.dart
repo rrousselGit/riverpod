@@ -286,7 +286,7 @@ void main() {
     expect(tester.takeException(), isAssertionError);
   });
 
-  testWidgets('removing overrides is no-op', (tester) async {
+  testWidgets('removing overrides throws', (tester) async {
     final provider = Provider((_) => 0);
 
     final consumer = Consumer(builder: (context, ref, _) {
@@ -302,11 +302,11 @@ void main() {
       ),
     );
 
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('0'), findsOneWidget);
 
     await tester.pumpWidget(ProviderScope(child: consumer));
 
-    expect(find.text('1'), findsOneWidget);
+    expect(tester.takeException(), isAssertionError);
   });
 
   testWidgets('overrive origin mismatch throws', (tester) async {

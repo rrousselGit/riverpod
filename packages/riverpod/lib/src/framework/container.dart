@@ -101,7 +101,8 @@ class ProviderContainer {
     ProviderContainer? parent,
     List<Override> overrides = const [],
     List<ProviderObserver>? observers,
-  })  : depth = parent == null ? 0 : parent.depth + 1,
+  })  : _debugOverridesLength = overrides.length,
+        depth = parent == null ? 0 : parent.depth + 1,
         _parent = parent,
         _observers = [
           ...?observers,
@@ -152,6 +153,8 @@ class ProviderContainer {
       }
     }
   }
+
+  final int _debugOverridesLength;
 
   /// A function that controls the refresh rate of providers.
   ///
@@ -322,6 +325,12 @@ class ProviderContainer {
         'Called updateOverrides on a ProviderContainer that was already disposed',
       );
     }
+
+    assert(
+      _debugOverridesLength == overrides.length,
+      'Tried to change the number of overrides. This is not allowed – '
+      'overrides cannot be removed/added, they can only be updated.',
+    );
 
     List<Override>? unusedOverrides;
     assert(() {
