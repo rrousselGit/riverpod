@@ -189,26 +189,6 @@ void main() {
     );
   });
 
-  test('StateProviderFamily override', () async {
-    final provider = StateProvider.family<String, int>((ref, a) {
-      return '$a';
-    });
-    final container = createContainer(overrides: [
-      provider.overrideWithProvider((a) {
-        return StateProvider((ref) => 'override $a');
-      }),
-    ]);
-
-    expect(
-      container.read(provider(0)),
-      isA<StateController>().having((s) => s.state, 'state', 'override 0'),
-    );
-    expect(
-      container.read(provider(1)),
-      isA<StateController>().having((s) => s.state, 'state', 'override 1'),
-    );
-  });
-
   test('Expose a state and allows modifying it', () {
     final container = createContainer();
     final provider = StateProvider((ref) => 0);

@@ -70,28 +70,6 @@ void main() {
     });
   });
 
-  test('StateNotifierFamily override', () {
-    final provider =
-        StateNotifierProvider.family<TestNotifier, int, int>((ref, a) {
-      return TestNotifier();
-    });
-    final notifier2 = TestNotifier(42);
-    final container = createContainer(
-      overrides: [
-        provider.overrideWithProvider((a) {
-          return StateNotifierProvider<TestNotifier, int>(
-            (ref) => notifier2,
-          );
-        }),
-      ],
-    );
-    addTearDown(container.dispose);
-
-    // try to read provider.state before provider and see if it points to the override
-    expect(container.read(provider(0)), 42);
-    expect(container.read(provider(0).notifier), notifier2);
-  });
-
   test('overriding the provider overrides provider.state too', () {
     final notifier = TestNotifier(42);
     final provider =

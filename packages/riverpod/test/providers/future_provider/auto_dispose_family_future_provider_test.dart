@@ -24,7 +24,7 @@ void main() {
     });
   });
 
-  test('FutureProvider.autoDispose.family override', () async {
+  test('FutureProvider.autoDispose.family', () async {
     final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
       return Future.value(a * 2);
     });
@@ -38,27 +38,5 @@ void main() {
     await container.pump();
 
     verifyOnly(listener, listener(const AsyncValue.data(42)));
-  });
-
-  test('FutureProvider.autoDispose.family override', () async {
-    final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
-      return Future.value(a * 2);
-    });
-    final container = createContainer(overrides: [
-      provider.overrideWithProvider((a) {
-        return FutureProvider.autoDispose<int>((ref) async => a * 4);
-      }),
-    ]);
-    final listener = Listener<AsyncValue<int>>();
-
-    container.listen(provider(21), listener, fireImmediately: true);
-
-    verify(listener(const AsyncValue.loading())).called(1);
-    verifyNoMoreInteractions(listener);
-
-    await container.pump();
-
-    verify(listener(const AsyncValue.data(84))).called(1);
-    verifyNoMoreInteractions(listener);
   });
 }

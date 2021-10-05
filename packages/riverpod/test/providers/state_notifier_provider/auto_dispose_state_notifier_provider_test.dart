@@ -71,58 +71,6 @@ void main() {
     });
   });
 
-  test('StateNotifierFamily override', () async {
-    final notifier2 = TestNotifier(42);
-    final provider = StateNotifierProvider.autoDispose
-        .family<TestNotifier, int, int>((ref, a) => TestNotifier());
-    final container = createContainer(
-      overrides: [
-        provider.overrideWithProvider((a) {
-          return StateNotifierProvider.autoDispose<TestNotifier, int>(
-            (ref) => notifier2,
-          );
-        }),
-      ],
-    );
-    addTearDown(container.dispose);
-    final ownerStateListener = Listener<int>();
-    final ownerNotifierListener = Listener<TestNotifier>();
-
-    // access in the child container
-    // try to read provider.state before provider and see if it points to the override
-    final stateSub = container.listen(
-      provider(0),
-      ownerStateListener,
-      fireImmediately: true,
-    );
-
-    verify(ownerStateListener(42)).called(1);
-    verifyNoMoreInteractions(ownerStateListener);
-
-    final notifierSub = container.listen(
-      provider(0).notifier,
-      ownerNotifierListener,
-      fireImmediately: true,
-    );
-    verifyOnly(ownerNotifierListener, ownerNotifierListener(notifier2));
-
-    notifierSub.close();
-
-    await container.pump();
-
-    expect(notifier2.mounted, true);
-
-    stateSub.close();
-
-    expect(notifier2.mounted, true);
-
-    await container.pump();
-
-    await container.pump();
-
-    expect(notifier2.mounted, false);
-  });
-
   test('overriding the provider overrides provider.state too', () {
     final provider = StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
       return TestNotifier();

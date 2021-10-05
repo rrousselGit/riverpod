@@ -393,22 +393,17 @@ void main() {
   });
 
   test('myProvider.stream works across provider rebuild', () async {
-    final another = StateProvider((ref) => const AsyncValue<int>.data(42));
-
     final container = createContainer(overrides: [
-      provider.overrideWithProvider(
-        Provider((ref) {
-          return ref.watch(another).state;
-        }),
-      ),
+      provider.overrideWithValue(const AsyncValue.data(42)),
     ]);
 
     final stream = container.read(provider.stream);
-    final controller = container.read(another);
 
     await expectLater(stream, emits(42));
 
-    controller.state = const AsyncValue.data(21);
+    container.updateOverrides(
+      [provider.overrideWithValue(const AsyncValue.data(21))],
+    );
 
     await expectLater(stream, emits(21));
   });
@@ -605,26 +600,6 @@ void main() {
     expect(
       container.read(provider(0)),
       const AsyncValue<String>.data('0'),
-    );
-  });
-
-  test('StreamProvider.family override', () async {
-    final provider = StreamProvider.family<String, int>((ref, a) {
-      return Stream.value('$a');
-    });
-    final container = ProviderContainer(overrides: [
-      provider.overrideWithProvider(
-        (a) => StreamProvider((ref) => Stream.value('override $a')),
-      ),
-    ]);
-
-    expect(container.read(provider(0)), const AsyncValue<String>.loading());
-
-    await container.pump();
-
-    expect(
-      container.read(provider(0)),
-      const AsyncValue<String>.data('override 0'),
     );
   });
 
