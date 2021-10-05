@@ -8,7 +8,7 @@ import TabItem from "@theme/TabItem";
 Before reading this, consider reading about [providers](/docs/concepts/providers) and [how to read them](/docs/concepts/reading).
 In this part, we will talk in detail about the `.family` provider modifier.
 
-The `.family` modifier has one purpose: Creating a provider from external values.
+The `.family` modifier has one purpose: Creating a provider from multiple different external values.
 
 Some common use-cases for `family` would be:
 
@@ -21,7 +21,7 @@ Some common use-cases for `family` would be:
 The way families works is by adding an extra parameter to the provider.
 This parameter can then be freely used in our provider to create some state.
 
-For example, we could combine `family` with [FutureProvider] to fetch
+For example, we can combine `family` with [FutureProvider] to fetch
 a `Message` from its ID:
 
 ```dart
@@ -30,7 +30,7 @@ final messagesFamily = FutureProvider.family<Message, String>((ref, id) async {
 });
 ```
 
-Then, when using our `messagesFamily` provider, the syntax is slightly modified.  
+When using our `messagesFamily` provider, the syntax is slightly different.  
 The usual syntax will not work anymore:
 
 ```dart
@@ -88,6 +88,9 @@ final characters = FutureProvider.autoDispose.family<List<Character>, String>((r
 });
 ```
 
+In this case however you can also achieve the same effect by using a single [StateNotifier] with a method that is called every time
+the filter is called, allowing you to debounce the filter if it changes frequently. See the [Asynchrony Cookbook](/docs/cookbooks/asynchrony) for an example of this.
+
 ## Passing multiple parameters to a family
 
 Families have no built-in support for passing multiple values to a provider.
@@ -101,7 +104,7 @@ This includes:
 - Objects generated with [Freezed] or [built_value](https://pub.dev/packages/built_value)
 - Objects using [equatable](https://pub.dev/packages/equatable)
 
-Here's an example using [Freezed] and [equatable]:
+Here's two examples using [Freezed] and [equatable]:
 
 <Tabs
   groupId="family"

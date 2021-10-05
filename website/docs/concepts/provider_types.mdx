@@ -3,7 +3,7 @@
 There are multiple types of providers for multiple different use cases.
 
 With all of these providers available, it is sometimes difficult to understand when to use one provider type over another.
-A general rule of thumb is to use the table below to choose a provider that fits what you want to provide to the widget tree.
+Use the table below to choose a provider that fits what you want to provide to the widget tree.
 
 | Provider Type          | Provider Create Function             | Example Use Case                                                     |
 | ---------------------- | ------------------------------------ | -------------------------------------------------------------------- |
@@ -20,7 +20,7 @@ As such, following a few tutorials will be most beneficial to seeing how to use 
 
 ```dart
 // Regular Provider
-final apiUrlProvider = Provider<String>((ref) => 'https://mywebsite.com');
+final apiUrlProvider = Provider<String>((ref) => 'https://example.com');
 
 // State Providers
 enum Filter {completed, uncompleted, all}
@@ -45,7 +45,7 @@ final counterProvider = StreamProvider<int>((ref) async* {
 // StateNotifier Provider
 final configProvider = StateNotifierProvider<Config>((ref) => Config(ref.read));
 
-class Config extends StateNotifierProvider<ConfigState>{
+class Config extends StateNotifierProvider<ConfigState> {
   Config(this.read): super(const ConfigState.initial());
   Reader read;
 
@@ -53,8 +53,8 @@ class Config extends StateNotifierProvider<ConfigState>{
     state = state.copyWith(darkMode: value);
   }
 
-  Future<void> setBackUpOverData(bool overData) async {
-    state = state.copyWith(backUpOverData: overData);
+  Future<void> setBackUpOverCellData(bool overData) async {
+    state = state.copyWith(backUpOverCellData: overData);
     if (overData){
       if (read(connectivityProvider).connectivity == ConnectivityResult.mobile){
         // Need to initiate a sync now that backing up is enabled on mobile network
@@ -71,8 +71,8 @@ class Config extends StateNotifierProvider<ConfigState>{
 
 @freezed
 abstract class ConfigState with _$ConfigState {
-  const factory ConfigState.initial() => ConfigState(darkMode: false, backUpOverData: false);
-  const factory ConfigState({bool darkMode, bool backUpOverData}) = _ConfigState;
+  const factory ConfigState.initial() => ConfigState(darkMode: false, backUpOverCellData: false);
+  const factory ConfigState({bool darkMode, bool backUpOverCellData}) = _ConfigState;
 }
 
 // ChangeNotifier Provider
@@ -80,7 +80,7 @@ final connectivityProvider = ChangeNotifierProvider((ref) => ConnectivityProvide
 
 final ConnectivityProvider extends ChangeNotifier {
   ConnectivityProvider(){
-    _subscription = Connectivity().onConnectivityChanged((status){
+    _subscription = Connectivity().onConnectivityChanged((status) {
       connectivity = status;
       notifyListeners();
     });
@@ -105,57 +105,69 @@ Provides a simple dart object.
 
 ### StateProvider
 
-Provides a dart object that can be changed and accessed externally.
+Provides a dart object that can be changed and accessed externally, such as in the widget tree.
 
 Reading or watching this provider will give you access to a `StateController`
 which has a `.state` getter and setter that you can use to read the current state of the
-provider or set the new state, which will notify all watchers of the `StateProvider` instance.
+provider or set the new state and notify all the Provider's watchers.
+
+Reading or watching the `.notifier` property will only cause the watcher to rebuild when the
+provider's creation function reruns as a result of one of it's dependent providers changing.
 
 ### FutureProvider
 
-Provides the ability to run async functions that should be separate from general state of the application.
+Has the ability to run async functions.
 
 Helpful for temporarily storing results from an API that will be discarded when no longer needed.
 
-Reading or watching this provider will return you an `AsyncValue` which is a freezed union class
+Reading or watching this provider will return you an `AsyncValue` which is a union class
 that has three states: `AsyncValue.data`, `AsyncValue.error`, and AsyncValue.loading`.
 
-`AyncValue.data` is an instance of `AsyncData` which contains a `.data` getter that is the current data, or null if the union is in the loading or error states.
+`AyncValue.data` is an instance of `AsyncData` which contains a `.data` property that is the current data, or null if the union is in the loading or error states.
 
 Learn more about AsyncValue and general considerations of asynchronous operations in riverpod [here](/docs/cookbooks/asynchrony).
 
-A `FutureProvider` instance has a getter `.future` that you can use to use to get a `Future` if you prefer to use a `FutureBuilder`
+A `FutureProvider` instance has a `.future` property that you can use to use to get a `Future` if you prefer to use a `FutureBuilder`
 or need access to the future in some other repository or data store provider class.
+For example this snippet obtains a Future that resolves to future provided by myFutureProvider:
+
+```dart
+final result = await ref.read(myFutureProvider.future);
+```
 
 ### StreamProvider
 
 Provides the ability to provide streams of data to the UI.
 
-Useful for various data APIs that are asynchronous or push based.
+Useful for various data APIs that are asynchronous, socket based or push based.
 
 Reading or watching this provider will return an `AsyncValue` just as the `FutureProvider`.
 
-Additionally an instance of `StreamProvider` has a getter `.last` that you can read or watch
+Additionally an instance of `StreamProvider` has a property `.last` that you can read or watch
 to get a future that resolves to the last element emitted from the stream.
 The reason it is a future, is because the stream might not have emitted anything yet.
 
-You can get a reference to the stream itself by reading or watching the `.stream` getter. This is a
+You can get a reference to the stream itself by reading or watching the `.stream` property. This is a
 broadcast stream, so it can be listened to multiple times.
 
 ### StateNotifierProvider
 
-Provides a subclass of `StateNotifier`.
+Provides a subclass of [StateNotifier].
 
-Reading or watching this provider will return the subclass of `StateNotifier`.
+Reading or watching the provider will return the state of the [StateNotifier], and updates anytime the state is set.
+Reading or watching the `.notifier` property will return the subclass of [StateNotifier], which only updates if the instance of the [StateNotifier] has changed.
 
-Reading or watching the `.state` getter will return the state of the `StateNotifier`.
+Setting the state of the [StateNotifier] will notify all watchers of the [StateNotifier]'s state.
 
-Setting the state of the `StateNotifier` will notify all watchers of the `StateNotifier`'s state.
+State notifier classes should have methods defined to set the new state.
+The state is not assignable outside the class to encourage good encapsulation principles. If you
+want a simple state that is settable outside of the class use [StateProvider] instead.
 
 ### ChangeNotifierProvider
 
 Provides a subclass or implementer of `ChangeNotifier`.
 
-Reading or watching this provider will return the subclass of `ChangeNotifier`.
+Reading or watching this provider will return the subclass of [ChangeNotifier] which updates anytime `notifyListeners()` is called.
+Reading or watching the `.notifier` property will return the subclass of [ChangeNotifier] but only update if the [ChangeNotifier] instance has changed.
 
 Calling `notifyListeners()` inside of the `ChangeNotifier` will notify all watchers of the `ChangeNotifier`'s state.

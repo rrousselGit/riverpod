@@ -15,7 +15,7 @@ Immutability is desireable for many different reasons
 - Value equality rather than reference equality
   - A copyWith method helps with reducing verbosity when creating a new object with just a few things changed
 - Local reasoning about a piece of code
-  - A far distant piece of code can't have a reference and change the object from underneath you
+  - A far distant piece of code can't obtain a reference and change the object from underneath you
 - Easier to reason about for asynchronous and parallel tasks
   - Other code can't mutate your object in between operations
 - Safety of APIs

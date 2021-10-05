@@ -133,7 +133,7 @@ void main() {
 class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // To read our provider, we can use the hook "ref.watch(".
+    // To read our provider, we can use
     // This is only possible because MyApp is a HookConsumerWidget.
     final String value = ref.watch(helloWorldProvider);
 
@@ -192,7 +192,7 @@ class MyApp extends ConsumerWidget {
 ```
 
 Which you can then execute with `flutter run`.  
-This will render "Hello world" in on your device.
+This will render "Hello world" on your device.
 
 </TabItem>
 <TabItem value="riverpod">
@@ -222,9 +222,9 @@ This will print "Hello world" in the console.
 
 ## Going further: Installing code snippets
 
-If you are using `Flutter` and `Vscode` , consider using [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
+If you are using `Vscode` , consider using [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
 
-If you are using `Flutter` and `Android Studio` or `IntelliJ`, consider using [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
+If you are using `Android Studio` or `IntelliJ`, consider using [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
 
 ![img](/img/snippets/greetingProvider.gif)
 
