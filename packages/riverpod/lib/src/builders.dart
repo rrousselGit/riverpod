@@ -303,8 +303,13 @@ class StateProviderFamilyBuilder {
   StateProviderFamily<State, Arg> call<State, Arg>(
     FamilyCreate<State, StateProviderRef<State>, Arg> create, {
     String? name,
+    List<ProviderOrFamily>? dependencies,
   }) {
-    return StateProviderFamily(create, name: name);
+    return StateProviderFamily(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
   }
 
   /// {@macro riverpod.autoDispose}
@@ -349,8 +354,13 @@ class StateNotifierProviderFamilyBuilder {
     FamilyCreate<Notifier, StateNotifierProviderRef<Notifier, State>, Arg>
         create, {
     String? name,
+    List<ProviderOrFamily>? dependencies,
   }) {
-    return StateNotifierProviderFamily(create, name: name);
+    return StateNotifierProviderFamily(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
   }
 
   /// {@macro riverpod.autoDispose}
@@ -392,8 +402,13 @@ class ProviderFamilyBuilder {
   ProviderFamily<State, Arg> call<State, Arg>(
     FamilyCreate<State, ProviderRef<State>, Arg> create, {
     String? name,
+    List<ProviderOrFamily>? dependencies,
   }) {
-    return ProviderFamily(create, name: name);
+    return ProviderFamily(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
   }
 
   /// {@macro riverpod.autoDispose}
@@ -435,8 +450,13 @@ class FutureProviderFamilyBuilder {
   FutureProviderFamily<State, Arg> call<State, Arg>(
     FamilyCreate<FutureOr<State>, FutureProviderRef<State>, Arg> create, {
     String? name,
+    List<ProviderOrFamily>? dependencies,
   }) {
-    return FutureProviderFamily(create, name: name);
+    return FutureProviderFamily(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
   }
 
   /// {@macro riverpod.autoDispose}
@@ -478,8 +498,13 @@ class StreamProviderFamilyBuilder {
   StreamProviderFamily<State, Arg> call<State, Arg>(
     FamilyCreate<Stream<State>, StreamProviderRef<State>, Arg> create, {
     String? name,
+    List<ProviderOrFamily>? dependencies,
   }) {
-    return StreamProviderFamily(create, name: name);
+    return StreamProviderFamily(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
   }
 
   /// {@macro riverpod.autoDispose}
@@ -516,8 +541,13 @@ class AutoDisposeStateProviderFamilyBuilder {
   AutoDisposeStateProviderFamily<State, Arg> call<State, Arg>(
     FamilyCreate<State, AutoDisposeStateProviderRef<State>, Arg> create, {
     String? name,
+    List<ProviderOrFamily>? dependencies,
   }) {
-    return AutoDisposeStateProviderFamily(create, name: name);
+    return AutoDisposeStateProviderFamily(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
   }
 }
 
@@ -554,8 +584,13 @@ class AutoDisposeStateNotifierProviderFamilyBuilder {
             Arg>
         create, {
     String? name,
+    List<ProviderOrFamily>? dependencies,
   }) {
-    return AutoDisposeStateNotifierProviderFamily(create, name: name);
+    return AutoDisposeStateNotifierProviderFamily(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
   }
 }
 
@@ -587,8 +622,13 @@ class AutoDisposeProviderFamilyBuilder {
   AutoDisposeProviderFamily<State, Arg> call<State, Arg>(
     FamilyCreate<State, AutoDisposeProviderRef<State>, Arg> create, {
     String? name,
+    List<ProviderOrFamily>? dependencies,
   }) {
-    return AutoDisposeProviderFamily(create, name: name);
+    return AutoDisposeProviderFamily(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
   }
 }
 
@@ -621,8 +661,13 @@ class AutoDisposeFutureProviderFamilyBuilder {
     FamilyCreate<FutureOr<State>, AutoDisposeFutureProviderRef<State>, Arg>
         create, {
     String? name,
+    List<ProviderOrFamily>? dependencies,
   }) {
-    return AutoDisposeFutureProviderFamily(create, name: name);
+    return AutoDisposeFutureProviderFamily(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
   }
 }
 
@@ -655,7 +700,12 @@ class AutoDisposeStreamProviderFamilyBuilder {
     FamilyCreate<Stream<State>, AutoDisposeStreamProviderRef<State>, Arg>
         create, {
     String? name,
+    List<ProviderOrFamily>? dependencies,
   }) {
-    return AutoDisposeStreamProviderFamily(create, name: name);
+    return AutoDisposeStreamProviderFamily(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
   }
 }

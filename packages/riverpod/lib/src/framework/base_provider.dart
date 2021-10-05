@@ -74,7 +74,10 @@ mixin AlwaysAliveProviderListenable<State>
 abstract class AlwaysAliveProviderBase<State> extends ProviderBase<State>
     implements AlwaysAliveProviderListenable<State> {
   /// Creates an [AlwaysAliveProviderBase].
-  AlwaysAliveProviderBase(String? name) : super(name);
+  AlwaysAliveProviderBase({
+    required String? name,
+    required List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   @override
   ProviderElementBase<State> createElement();
@@ -90,11 +93,47 @@ abstract class AlwaysAliveProviderBase<State> extends ProviderBase<State>
   }
 }
 
+/// A common interface shared by [ProviderBase] and [Family]
+@sealed
+abstract class ProviderOrFamily {
+  /// A common interface shared by [ProviderBase] and [Family]
+  ProviderOrFamily({required List<ProviderOrFamily>? dependencies})
+      : dependencies = dependencies == null
+            ? null
+            : _allTransitiveDependencies(dependencies);
+
+  /// The list of providers that this provider potentially depends on.
+  ///
+  /// Specifying this list will tell Riverpod to automatically scope this provider
+  /// if one of its dependency is overridden.
+  /// The downside is that it prevents `ref.watch` & co to be used with a provider
+  /// that isn't listed in [dependencies].
+  final List<ProviderOrFamily>? dependencies;
+}
+
+List<ProviderOrFamily> _allTransitiveDependencies(
+    List<ProviderOrFamily> dependencies) {
+  final result = <ProviderOrFamily>{};
+
+  void visitDependency(ProviderOrFamily dep) {
+    if (result.add(dep) && dep.dependencies != null) {
+      dep.dependencies!.forEach(visitDependency);
+    }
+  }
+
+  dependencies.forEach(visitDependency);
+
+  return List.unmodifiable(result);
+}
+
 /// A base class for _all_ providers.
-abstract class ProviderBase<State>
+abstract class ProviderBase<State> extends ProviderOrFamily
     implements ProviderListenable<State>, ProviderOverride {
   /// A base class for _all_ providers.
-  ProviderBase(this.name);
+  ProviderBase({
+    required this.name,
+    required List<ProviderOrFamily>? dependencies,
+  }) : super(dependencies: dependencies);
 
   /// {@template riverpod.name}
   /// A custom label for providers.
@@ -1112,11 +1151,6 @@ $stackTrace
 mixin ProviderOverridesMixin<State> on AlwaysAliveProviderBase<State> {
   /// Overrides the behavior of a provider with a value.
   ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithValue(State value);
-
-  /// Overrides the behavior of this provider with another provider.
-  ///
   /// {@template riverpod.overideWith}
   /// Some common use-cases are:
   /// - testing, by replacing a service with a fake implementation, or to reach
@@ -1133,9 +1167,9 @@ mixin ProviderOverridesMixin<State> on AlwaysAliveProviderBase<State> {
   /// runApp(
   ///   ProviderScope(
   ///     overrides: [
-  ///       myService.overrideWithProvider(
+  ///       myService.overrideWithValue(
   ///         // Replace the implementation of MyService with a fake implementation
-  ///         Provider((ref) => MyFakeService())
+  ///         MyFakeService(),
   ///       ),
   ///     ],
   ///     child: MyApp(),
@@ -1143,8 +1177,5 @@ mixin ProviderOverridesMixin<State> on AlwaysAliveProviderBase<State> {
   /// );
   /// ```
   /// {@endtemplate}
-  // Cannot be overridden by AutoDisposeProviders
-  Override overrideWithProvider(
-    AlwaysAliveProviderBase<State> provider,
-  );
+  Override overrideWithValue(State value);
 }

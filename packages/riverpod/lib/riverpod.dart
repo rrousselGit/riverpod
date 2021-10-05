@@ -28,11 +28,9 @@ export 'src/framework.dart'
         AutoDisposeProviderBase,
         AutoDisposeProviderElementBase,
         ProviderElementBase,
-        XFamily,
         ProviderOverride,
         FamilyOverride,
         SetupOverride,
-        XAutoDisposeFamily,
         // ignore: deprecated_member_use_from_same_package
         ProviderReference,
         AlwaysAliveProviderListenable,

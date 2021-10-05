@@ -1,4 +1,3 @@
-import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
@@ -22,30 +21,9 @@ void main() {
       ]);
       expect(root.getAllProviderElementsInOrder(), isEmpty);
     });
-
-    test('when using provider.overrideWithProvider', () async {
-      final provider =
-          FutureProvider.autoDispose.family<int, int>((ref, _) async => 0);
-      final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(
-          (value) => FutureProvider.autoDispose((ref) async => 42),
-        ),
-      ]);
-
-      expect(await container.read(provider(0).future), 42);
-      expect(container.read(provider(0)), const AsyncData(42));
-      expect(root.getAllProviderElementsInOrder(), isEmpty);
-      expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase>()
-            .having((e) => e.origin, 'origin', provider(0)),
-        isA<ProviderElementBase>()
-            .having((e) => e.origin, 'origin', provider(0).future),
-      ]);
-    });
   });
 
-  test('FutureProvider.autoDispose.family override', () async {
+  test('FutureProvider.autoDispose.family', () async {
     final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
       return Future.value(a * 2);
     });
@@ -59,27 +37,5 @@ void main() {
     await container.pump();
 
     verifyOnly(listener, listener(const AsyncValue.data(42)));
-  });
-
-  test('FutureProvider.autoDispose.family override', () async {
-    final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
-      return Future.value(a * 2);
-    });
-    final container = createContainer(overrides: [
-      provider.overrideWithProvider((a) {
-        return FutureProvider.autoDispose<int>((ref) async => a * 4);
-      }),
-    ]);
-    final listener = Listener<AsyncValue<int>>();
-
-    container.listen(provider(21), listener, fireImmediately: true);
-
-    verify(listener(const AsyncValue.loading())).called(1);
-    verifyNoMoreInteractions(listener);
-
-    await container.pump();
-
-    verify(listener(const AsyncValue.data(84))).called(1);
-    verifyNoMoreInteractions(listener);
   });
 }

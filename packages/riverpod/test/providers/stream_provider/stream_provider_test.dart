@@ -188,30 +188,6 @@ void main() {
         ]),
       );
     });
-
-    test('when using provider.overrideWithProvider', () async {
-      final provider = StreamProvider((ref) => Stream.value(0));
-      final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(FutureProvider((ref) async => 42)),
-      ]);
-
-      expect(await container.read(provider.stream).first, 42);
-      expect(await container.read(provider.last), 42);
-      expect(container.read(provider), const AsyncValue.data(42));
-      expect(root.getAllProviderElements(), isEmpty);
-      expect(
-        container.getAllProviderElements(),
-        unorderedEquals(<Object?>[
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider),
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider.last),
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider.stream),
-        ]),
-      );
-    });
   });
 
   test('Loading to data', () {
@@ -417,22 +393,17 @@ void main() {
   });
 
   test('myProvider.stream works across provider rebuild', () async {
-    final another = StateProvider((ref) => const AsyncValue<int>.data(42));
-
     final container = createContainer(overrides: [
-      provider.overrideWithProvider(
-        Provider((ref) {
-          return ref.watch(another).state;
-        }),
-      ),
+      provider.overrideWithValue(const AsyncValue.data(42)),
     ]);
 
     final stream = container.read(provider.stream);
-    final controller = container.read(another);
 
     await expectLater(stream, emits(42));
 
-    controller.state = const AsyncValue.data(21);
+    container.updateOverrides(
+      [provider.overrideWithValue(const AsyncValue.data(21))],
+    );
 
     await expectLater(stream, emits(21));
   });
@@ -600,7 +571,7 @@ void main() {
   });
 
   test(
-      'when overriden with an error but provider.stream is not listened, it should not emit an error to the zone',
+      'when overridden with an error but provider.stream is not listened, it should not emit an error to the zone',
       () async {
     final error = Error();
     final stream = StreamProvider<int>((ref) => const Stream.empty());
@@ -629,26 +600,6 @@ void main() {
     expect(
       container.read(provider(0)),
       const AsyncValue<String>.data('0'),
-    );
-  });
-
-  test('StreamProvider.family override', () async {
-    final provider = StreamProvider.family<String, int>((ref, a) {
-      return Stream.value('$a');
-    });
-    final container = ProviderContainer(overrides: [
-      provider.overrideWithProvider(
-        (a) => StreamProvider((ref) => Stream.value('override $a')),
-      ),
-    ]);
-
-    expect(container.read(provider(0)), const AsyncValue<String>.loading());
-
-    await container.pump();
-
-    expect(
-      container.read(provider(0)),
-      const AsyncValue<String>.data('override 0'),
     );
   });
 

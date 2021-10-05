@@ -11,7 +11,11 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
         AutoDisposeProviderOverridesMixin<AsyncValue<State>>,
         _StreamProviderMixin<State> {
   /// {@macro riverpod.streamprovider}
-  AutoDisposeStreamProvider(this._create, {String? name}) : super(name);
+  AutoDisposeStreamProvider(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStreamProviderFamilyBuilder();
@@ -20,11 +24,19 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
 
   @override
   late final AutoDisposeProviderBase<Stream<State>> stream =
-      AutoDisposeAsyncValueAsStreamProvider(this, modifierName(name, 'stream'));
+      AutoDisposeAsyncValueAsStreamProvider(
+    this,
+    name: modifierName(name, 'stream'),
+    dependencies: dependencies,
+  );
 
   @override
   late final AutoDisposeProviderBase<Future<State>> last =
-      AutoDisposeAsyncValueAsFutureProvider(this, modifierName(name, 'last'));
+      AutoDisposeAsyncValueAsFutureProvider(
+    this,
+    name: modifierName(name, 'last'),
+    dependencies: dependencies,
+  );
 
   @override
   AsyncValue<State> create(
@@ -44,17 +56,6 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
     if (wasLoading || isLoading) return wasLoading != isLoading;
 
     return true;
-  }
-
-  @override
-  Override overrideWithProvider(
-    AutoDisposeProviderBase<AsyncValue<State>> provider,
-  ) {
-    return ProviderOverride((setup) {
-      setup(origin: this, override: provider);
-      setup(origin: stream, override: stream);
-      setup(origin: last, override: last);
-    });
   }
 
   @override
@@ -84,7 +85,11 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
 class AutoDisposeStreamProviderFamily<State, Arg>
     extends Family<AsyncValue<State>, Arg, AutoDisposeStreamProvider<State>> {
   /// {@macro riverpod.streamprovider.family}
-  AutoDisposeStreamProviderFamily(this._create, {String? name}) : super(name);
+  AutoDisposeStreamProviderFamily(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final FamilyCreate<Stream<State>, AutoDisposeStreamProviderRef<State>, Arg>
       _create;
@@ -108,19 +113,5 @@ class AutoDisposeStreamProviderFamily<State, Arg>
     setup(origin: provider, override: provider);
     setup(origin: provider.stream, override: provider.stream);
     setup(origin: provider.last, override: provider.last);
-  }
-
-  /// Overrides the behavior of a family for a part of the application.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    AutoDisposeProviderBase<AsyncValue<State>> Function(Arg argument) override,
-  ) {
-    return FamilyOverride<Arg>(this, (arg, setup) {
-      final provider = call(arg);
-      setup(origin: provider, override: override(arg));
-      setup(origin: provider.stream, override: provider.stream);
-      setup(origin: provider.last, override: provider.last);
-    });
   }
 }

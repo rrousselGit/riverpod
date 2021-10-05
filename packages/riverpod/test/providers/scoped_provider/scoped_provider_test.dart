@@ -166,7 +166,7 @@ void main() {
       verifyOnly(listener, listener(21));
     });
 
-    test('can be overriden on non-root container', () {
+    test('can be overridden on non-root container', () {
       final provider = Provider((ref) => 0);
       final root = createContainer();
       final container = createContainer(parent: root, overrides: [

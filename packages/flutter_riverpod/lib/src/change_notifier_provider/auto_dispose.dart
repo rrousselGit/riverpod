@@ -10,7 +10,11 @@ typedef AutoDisposeChangeNotifierProviderRef<Notifier>
 class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
     extends AutoDisposeProviderBase<Notifier> {
   /// {@macro riverpod.changenotifierprovider}
-  AutoDisposeChangeNotifierProvider(this._create, {String? name}) : super(name);
+  AutoDisposeChangeNotifierProvider(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeChangeNotifierProviderFamilyBuilder();
@@ -70,18 +74,6 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
     });
   }
 
-  /// Overrides the behavior of a provider with a another provider.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    AutoDisposeChangeNotifierProvider<Notifier> provider,
-  ) {
-    return ProviderOverride((setup) {
-      setup(origin: this, override: this);
-      setup(origin: notifier, override: provider.notifier);
-    });
-  }
-
   @override
   void setupOverride(SetupOverride setup) {
     setup(origin: this, override: this);
@@ -93,6 +85,7 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
       AutoDisposeProviderElement(this);
 }
 
+// ignore: subtype_of_sealed_class
 /// {@template riverpod.changenotifierprovider.family}
 /// A class that allows building a [ChangeNotifierProvider] from an external parameter.
 /// {@endtemplate}
@@ -101,8 +94,11 @@ class AutoDisposeChangeNotifierProviderFamily<Notifier extends ChangeNotifier,
         Arg>
     extends Family<Notifier, Arg, AutoDisposeChangeNotifierProvider<Notifier>> {
   /// {@macro riverpod.changenotifierprovider.family}
-  AutoDisposeChangeNotifierProviderFamily(this._create, {String? name})
-      : super(name);
+  AutoDisposeChangeNotifierProviderFamily(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final FamilyCreate<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>,
       Arg> _create;
@@ -117,23 +113,6 @@ class AutoDisposeChangeNotifierProviderFamily<Notifier extends ChangeNotifier,
     registerProvider(provider.notifier, argument);
 
     return provider;
-  }
-
-  /// Overrides the behavior of a family for a part of the application.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    AutoDisposeChangeNotifierProvider<Notifier> Function(Arg argument) override,
-  ) {
-    return FamilyOverride<Arg>(
-      this,
-      (arg, setup) {
-        final provider = call(arg);
-
-        setup(origin: provider.notifier, override: override(arg).notifier);
-        setup(origin: provider, override: provider);
-      },
-    );
   }
 
   @override

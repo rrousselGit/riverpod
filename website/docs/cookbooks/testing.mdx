@@ -227,7 +227,7 @@ testWidgets('override repositoryProvider', (tester) async {
         // FakeRepository instead of Repository.
         repositoryProvider.overrideWithProvider(Provider((ref) => FakeRepository()))
         // We do not have to override `todoListProvider`, it will automatically
-        // use the overriden repositoryProvider
+        // use the overridden repositoryProvider
       ],
       child: MyApp(),
     ),
@@ -246,7 +246,7 @@ test('override repositoryProvider', () async {
       // FakeRepository instead of Repository.
       repositoryProvider.overrideWithProvider(Provider((ref) => FakeRepository()))
       // We do not have to override `todoListProvider`, it will automatically
-      // use the overriden repositoryProvider
+      // use the overridden repositoryProvider
     ],
   );
 

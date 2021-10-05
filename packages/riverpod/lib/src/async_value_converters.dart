@@ -11,7 +11,11 @@ import 'internals.dart';
 class AsyncValueAsStreamProvider<State>
     extends AlwaysAliveProviderBase<Stream<State>> {
   ///
-  AsyncValueAsStreamProvider(this._provider, String? name) : super(name);
+  AsyncValueAsStreamProvider(
+    this._provider, {
+    required String? name,
+    required List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final AlwaysAliveProviderBase<AsyncValue<State>> _provider;
 
@@ -44,8 +48,11 @@ class AsyncValueAsStreamProvider<State>
 class AutoDisposeAsyncValueAsStreamProvider<State>
     extends AutoDisposeProviderBase<Stream<State>> {
   ///
-  AutoDisposeAsyncValueAsStreamProvider(this._provider, String? name)
-      : super(name);
+  AutoDisposeAsyncValueAsStreamProvider(
+    this._provider, {
+    required String? name,
+    required List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final AutoDisposeProviderBase<AsyncValue<State>> _provider;
 
@@ -121,7 +128,11 @@ Stream<State> _asyncValueToStream<State>(
 class AsyncValueAsFutureProvider<State>
     extends AlwaysAliveProviderBase<Future<State>> {
   ///
-  AsyncValueAsFutureProvider(this._provider, String? name) : super(name);
+  AsyncValueAsFutureProvider(
+    this._provider, {
+    required String? name,
+    required List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final AlwaysAliveProviderBase<AsyncValue<State>> _provider;
 
@@ -154,8 +165,11 @@ class AsyncValueAsFutureProvider<State>
 class AutoDisposeAsyncValueAsFutureProvider<State>
     extends AutoDisposeProviderBase<Future<State>> {
   ///
-  AutoDisposeAsyncValueAsFutureProvider(this._provider, String? name)
-      : super(name);
+  AutoDisposeAsyncValueAsFutureProvider(
+    this._provider, {
+    required String? name,
+    required List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final AutoDisposeProviderBase<AsyncValue<State>> _provider;
 

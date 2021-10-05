@@ -4,7 +4,10 @@ import '../framework.dart';
 /// An internal provider extended by both StreamProvider and FutureProvider
 abstract class AsyncProvider<T> extends AlwaysAliveProviderBase<AsyncValue<T>> {
   /// An internal provider extended by both StreamProvider and FutureProvider
-  AsyncProvider(String? name) : super(name);
+  AsyncProvider({
+    required String? name,
+    required List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   @override
   AsyncProviderElement<T> createElement();

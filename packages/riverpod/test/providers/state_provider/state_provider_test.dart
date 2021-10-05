@@ -148,29 +148,6 @@ void main() {
         ]),
       );
     });
-
-    test('when using provider.overrideWithProvider', () async {
-      final provider = StateProvider<int>((ref) => 0);
-      final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(
-          StateProvider((ref) => 42),
-        ),
-      ]);
-
-      expect(container.read(provider.notifier).state, 42);
-      expect(container.read(provider).state, 42);
-      expect(root.getAllProviderElements(), isEmpty);
-      expect(
-        container.getAllProviderElements(),
-        unorderedEquals(<Object?>[
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider),
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider.notifier),
-        ]),
-      );
-    });
   });
 
   test(
@@ -196,45 +173,7 @@ void main() {
     },
   );
 
-  group('overrideWithProvider', () {
-    test('listens to state changes', () {
-      final override = StateController(42);
-      final provider = StateProvider((ref) => 0);
-      final container = createContainer(overrides: [
-        provider.overrideWithValue(override),
-      ]);
-      addTearDown(container.dispose);
-      final container2 = ProviderContainer(overrides: [
-        provider.overrideWithProvider(
-          StateProvider((ref) => 42),
-        ),
-      ]);
-      addTearDown(container.dispose);
-
-      expect(container.read(provider), override);
-      expect(container2.read(provider).state, 42);
-    });
-
-    test(
-      'properly disposes of the StateController when the provider is disposed',
-      () async {
-        final container = createContainer();
-        final provider = StateProvider.autoDispose((ref) => 0);
-
-        final notifier = container.read(provider.notifier);
-        final sub = container.listen(provider, (value) {});
-
-        expect(notifier.hasListeners, true);
-
-        sub.close();
-        await container.pump();
-
-        expect(() => notifier.hasListeners, throwsStateError);
-      },
-    );
-  });
-
-  test('StateProvideyFamily', () async {
+  test('StateProviderFamily', () async {
     final provider = StateProvider.family<String, int>((ref, a) {
       return '$a';
     });
@@ -247,26 +186,6 @@ void main() {
     expect(
       container.read(provider(1)),
       isA<StateController>().having((s) => s.state, 'state', '1'),
-    );
-  });
-
-  test('StateProvideyFamily override', () async {
-    final provider = StateProvider.family<String, int>((ref, a) {
-      return '$a';
-    });
-    final container = createContainer(overrides: [
-      provider.overrideWithProvider((a) {
-        return StateProvider((ref) => 'override $a');
-      }),
-    ]);
-
-    expect(
-      container.read(provider(0)),
-      isA<StateController>().having((s) => s.state, 'state', 'override 0'),
-    );
-    expect(
-      container.read(provider(1)),
-      isA<StateController>().having((s) => s.state, 'state', 'override 1'),
     );
   });
 

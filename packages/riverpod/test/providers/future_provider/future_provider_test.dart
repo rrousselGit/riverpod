@@ -387,27 +387,10 @@ void main() {
             .having((e) => e.origin, 'origin', provider.future)
       ]);
     });
-
-    test('when using provider.overrideWithProvider', () async {
-      final provider = FutureProvider((ref) async => 0);
-      final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(FutureProvider((ref) async => 42)),
-      ]);
-
-      expect(await container.read(provider.future), 42);
-      expect(container.read(provider), const AsyncValue.data(42));
-      expect(root.getAllProviderElementsInOrder(), isEmpty);
-      expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
-        isA<ProviderElementBase>()
-            .having((e) => e.origin, 'origin', provider.future)
-      ]);
-    });
   });
 
   test(
-      'when overriden with an error but provider.future is not listened, it should not emit an error to the zone',
+      'when overridden with an error but provider.future is not listened, it should not emit an error to the zone',
       () async {
     final error = Error();
     final future = FutureProvider<int>((ref) async => 0);

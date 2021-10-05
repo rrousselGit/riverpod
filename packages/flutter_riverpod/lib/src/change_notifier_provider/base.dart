@@ -10,7 +10,11 @@ typedef ChangeNotifierProviderRef<Notifier extends ChangeNotifier>
 class ChangeNotifierProvider<Notifier extends ChangeNotifier>
     extends AlwaysAliveProviderBase<Notifier> {
   /// {@macro riverpod.changenotifierprovider}
-  ChangeNotifierProvider(this._create, {String? name}) : super(name);
+  ChangeNotifierProvider(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   /// {@macro riverpod.family}
   static const family = ChangeNotifierProviderFamilyBuilder();
@@ -68,18 +72,6 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
     });
   }
 
-  /// Overrides the behavior of a provider with a another provider.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    ChangeNotifierProvider<Notifier> provider,
-  ) {
-    return ProviderOverride((setup) {
-      setup(origin: this, override: this);
-      setup(origin: notifier, override: provider.notifier);
-    });
-  }
-
   @override
   void setupOverride(SetupOverride setup) {
     setup(origin: this, override: this);
@@ -95,6 +87,7 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
   bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
 }
 
+// ignore: subtype_of_sealed_class
 /// {@template riverpod.changenotifierprovider.family}
 /// A class that allows building a [ChangeNotifierProvider] from an external parameter.
 /// {@endtemplate}
@@ -102,7 +95,11 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
 class ChangeNotifierProviderFamily<Notifier extends ChangeNotifier, Arg>
     extends Family<Notifier, Arg, ChangeNotifierProvider<Notifier>> {
   /// {@macro riverpod.changenotifierprovider.family}
-  ChangeNotifierProviderFamily(this._create, {String? name}) : super(name);
+  ChangeNotifierProviderFamily(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final FamilyCreate<Notifier, ChangeNotifierProviderRef<Notifier>, Arg>
       _create;
@@ -117,23 +114,6 @@ class ChangeNotifierProviderFamily<Notifier extends ChangeNotifier, Arg>
     registerProvider(provider.notifier, argument);
 
     return provider;
-  }
-
-  /// Overrides the behavior of a family for a part of the application.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    ChangeNotifierProvider<Notifier> Function(Arg argument) override,
-  ) {
-    return FamilyOverride<Arg>(
-      this,
-      (arg, setup) {
-        final provider = call(arg);
-
-        setup(origin: provider.notifier, override: override(arg).notifier);
-        setup(origin: provider, override: provider);
-      },
-    );
   }
 
   @override

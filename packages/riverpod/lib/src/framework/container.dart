@@ -49,13 +49,13 @@ class _StateReader {
     required this.origin,
     required this.override,
     required this.container,
-    required this.isOverride,
+    required this.shouldPreserveStateReaderOnProviderDispose,
   });
 
   final ProviderBase origin;
   ProviderBase override;
   final ProviderContainer container;
-  final bool isOverride;
+  final bool shouldPreserveStateReaderOnProviderDispose;
 
   ProviderElementBase? _element;
 
@@ -101,7 +101,8 @@ class ProviderContainer {
     ProviderContainer? parent,
     List<Override> overrides = const [],
     List<ProviderObserver>? observers,
-  })  : depth = parent == null ? 0 : parent.depth + 1,
+  })  : _debugOverridesLength = overrides.length,
+        depth = parent == null ? 0 : parent.depth + 1,
         _parent = parent,
         _observers = [
           ...?observers,
@@ -132,26 +133,28 @@ class ProviderContainer {
         }) {
           assert(
             !_overrideForProvider.containsKey(origin),
-            'The provider $origin is already overriden',
+            'The provider $origin is already overridden',
           );
           _overrideForProvider[origin] = override;
           _stateReaders[origin] = _StateReader(
             origin: origin,
             override: override,
             container: this,
-            isOverride: true,
+            shouldPreserveStateReaderOnProviderDispose: true,
           );
         }
 
         override.setupOverride(setupOverride);
       } else if (override is FamilyOverride) {
-        _overrideForFamily[override.overridenFamily] = _FamilyOverrideRef(
+        _overrideForFamily[override.overriddenFamily] = _FamilyOverrideRef(
           override,
           this,
         );
       }
     }
   }
+
+  final int _debugOverridesLength;
 
   /// A function that controls the refresh rate of providers.
   ///
@@ -293,7 +296,7 @@ class ProviderContainer {
 
     final reader = _stateReaders[element._origin]!;
 
-    if (reader.isOverride) {
+    if (reader.shouldPreserveStateReaderOnProviderDispose) {
       reader._element = null;
     } else {
       void removeStateReaderFrom(ProviderContainer container) {
@@ -322,6 +325,12 @@ class ProviderContainer {
         'Called updateOverrides on a ProviderContainer that was already disposed',
       );
     }
+
+    assert(
+      _debugOverridesLength == overrides.length,
+      'Tried to change the number of overrides. This is not allowed – '
+      'overrides cannot be removed/added, they can only be updated.',
+    );
 
     List<Override>? unusedOverrides;
     assert(() {
@@ -366,13 +375,13 @@ class ProviderContainer {
         }(), '');
         // TODO assert family override did not change
 
-        _overrideForFamily[override.overridenFamily]!.override = override;
+        _overrideForFamily[override.overriddenFamily]!.override = override;
       }
     }
 
     assert(
       unusedOverrides!.isEmpty,
-      'Updated the list of overrides with providers that were not overriden before',
+      'Updated the list of overrides with providers that were not overridden before',
     );
   }
 
@@ -399,6 +408,7 @@ class ProviderContainer {
   _StateReader _getStateReader(ProviderBase provider) {
     return _stateReaders.putIfAbsent(provider, () {
       if (provider.from != null) {
+        // If from a family, apply family overrides
         final familyOverrideRef = _overrideForFamily[provider.from];
 
         if (familyOverrideRef != null) {
@@ -412,14 +422,14 @@ class ProviderContainer {
           }) {
             assert(
               !familyOverrideRef.container._stateReaders.containsKey(origin),
-              'A family override tried to override a provider that was already overriden',
+              'A family override tried to override a provider that was already overridden',
             );
 
             familyOverrideRef.container._stateReaders[origin] = _StateReader(
               origin: origin,
               override: override,
               container: familyOverrideRef.container,
-              isOverride: true,
+              shouldPreserveStateReaderOnProviderDispose: true,
             );
           }
 
@@ -437,20 +447,83 @@ class ProviderContainer {
         }
       }
 
+      final root = _root;
+      if (root != null) {
+        // On scoped containers, check for implicit override.
+
+        final dependencies =
+            provider.from?.dependencies ?? provider.dependencies;
+
+        final containerForDependencyOverride = dependencies
+            ?.map((dep) {
+              final reader = _stateReaders[dep];
+              if (reader != null &&
+                  reader.shouldPreserveStateReaderOnProviderDispose) {
+                return reader.container;
+              }
+              final familyOverride = _overrideForFamily[dep];
+              return familyOverride?.container;
+            })
+            .where((container) => container != null)
+            .toList();
+
+        if (containerForDependencyOverride != null &&
+            containerForDependencyOverride.isNotEmpty) {
+          final deepestOverrideContainer = containerForDependencyOverride
+              .fold<ProviderContainer>(root, (previous, container) {
+            if (container!.depth > previous.depth) {
+              return container;
+            }
+            return previous;
+          });
+
+          // a dependency of the provider was overridden, so the provider is overridden too
+
+          final reader = _StateReader(
+            origin: provider,
+            override: provider,
+            container: deepestOverrideContainer,
+            // Since it's an implicit override, we don't preserve the StateReader
+            // to avoid memory leak
+            shouldPreserveStateReaderOnProviderDispose: false,
+          );
+
+          /// Since we are dynamically adding an override, it needs to be propagated
+          /// to all the children ProviderContainers
+          void visitChildContainer(ProviderContainer container) {
+            container._stateReaders.putIfAbsent(provider, () {
+              container._children.forEach(visitChildContainer);
+              return reader;
+            });
+          }
+
+          visitChildContainer(deepestOverrideContainer);
+
+          return reader;
+        }
+      }
+
       if (_root?._stateReaders.containsKey(provider) ?? false) {
+        // For unoverriden providers, it is possible that the provider was
+        // read in the root ProviderContainer before this container. In which case
+        // we reuse the existing state instead of creating a new one.
         return _root!._stateReaders[provider]!;
       }
 
+      // The provider had no existing state and no override, so we're
+      // mounting it on the root container.
       final reader = _StateReader(
         origin: provider,
         // If a provider did not have an associated StateReader then it is
-        // guaranteed to not be overriden
+        // guaranteed to not be overridden
         override: provider,
         container: _root ?? this,
-        isOverride: false,
+        shouldPreserveStateReaderOnProviderDispose: false,
       );
 
-      if (_root != null) _root!._stateReaders[provider] = reader;
+      if (_root != null) {
+        _root!._stateReaders[provider] = reader;
+      }
 
       return reader;
     });
@@ -601,14 +674,14 @@ typedef SetupOverride = void Function({
 /// See also:
 ///
 /// - [ProviderContainer], which uses this object.
-/// - `overrideWithProvider`/`overrideWithValue`, which creates a [ProviderOverride].
+/// - `overrideWithValue`, which creates a [ProviderOverride].
 class ProviderOverride implements Override {
   /// Override a provider
   ProviderOverride(this._setupOverride);
 
   final void Function(SetupOverride setup) _setupOverride;
 
-  /// Defines how a provider should be overriden.
+  /// Defines how a provider should be overridden.
   void setupOverride(
     void Function({
       required ProviderBase origin,

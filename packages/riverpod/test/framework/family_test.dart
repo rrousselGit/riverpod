@@ -35,31 +35,23 @@ void main() {
     var buildCount = 0;
     final provider = Provider.family<int, int>((ref, param) {
       buildCount++;
-      return 0;
+      return 42;
     });
-    var buildCount2 = 0;
 
     final root = createContainer();
-    final scope = createContainer(parent: root, overrides: [
-      provider.overrideWithProvider((argument) {
-        return Provider((ref) {
-          buildCount2++;
-          return 42;
-        });
-      }),
-    ]);
+    final scope = createContainer(parent: root, overrides: [provider]);
     // the child must be created before the provider is initialized
     final child = createContainer(parent: scope);
 
     expect(scope.read(provider(0)), 42);
 
-    expect(buildCount, 0);
-    expect(buildCount2, 1);
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(buildCount, 1);
 
     expect(child.read(provider(0)), 42);
 
-    expect(buildCount, 0);
-    expect(buildCount2, 1);
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(buildCount, 1);
   });
 
   test('caches the provider per value', () {
@@ -127,14 +119,12 @@ void main() {
   });
 
   test('family override', () {
-    final family = Provider.family<String, int>((ref, a) => '$a');
+    final family = Provider.family<String, int>((ref, a) => 'Hello $a');
     final container = createContainer(overrides: [
       // Provider overrides always takes over family overrides
-      family(84).overrideWithProvider(Provider((_) => 'Bonjour 84')),
-      family.overrideWithProvider((a) {
-        return Provider((ref) => 'Hello $a');
-      }),
-      family(21).overrideWithProvider(Provider((_) => 'Hi 21')),
+      family(84).overrideWithValue('Bonjour 84'),
+      family,
+      family(21).overrideWithValue('Hi 21'),
     ]);
 
     expect(container.read(family(21)), 'Hi 21');

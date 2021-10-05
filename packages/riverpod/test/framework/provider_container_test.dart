@@ -5,9 +5,26 @@ import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
+import 'uni_directional_test.dart';
 
 void main() {
   group('ProviderContainer', () {
+    group('updateOverrides', () {
+      test('is not allowed to remove overrides ', () {
+        final provider = Provider((_) => 0);
+
+        final container =
+            createContainer(overrides: [provider.overrideWithValue(42)]);
+
+        expect(container.read(provider), 42);
+
+        expect(
+          () => container.updateOverrides([]),
+          throwsA(isAssertionError),
+        );
+      });
+    });
+
     test(
         'after a child container is disposed, ref.watch keeps working on providers associated with the ancestor container',
         () async {

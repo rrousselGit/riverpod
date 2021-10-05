@@ -18,21 +18,6 @@ void main() {
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });
-
-      test('when using provider.overrideWithProvider', () {
-        final provider = Provider.family<int, int>((ref, _) => 0);
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithProvider((value) => Provider((ref) => 42)),
-        ]);
-
-        expect(root.getAllProviderElements(), isEmpty);
-        expect(container.read(provider(0)), 42);
-        expect(container.getAllProviderElements(), [
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider(0))
-        ]);
-      });
     });
   });
 }

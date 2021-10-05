@@ -7,8 +7,14 @@ typedef AutoDisposeStateNotifierProviderRef<
 
 class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
     extends AutoDisposeProviderBase<Notifier> {
-  _AutoDisposeNotifierProvider(this._create, {required String? name})
-      : super(name == null ? null : '$name.notifier');
+  _AutoDisposeNotifierProvider(
+    this._create, {
+    required String? name,
+    required List<ProviderOrFamily>? dependencies,
+  }) : super(
+          name: name == null ? null : '$name.notifier',
+          dependencies: dependencies,
+        );
 
   final Create<Notifier, AutoDisposeProviderRefBase> _create;
 
@@ -40,7 +46,11 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
         State> extends AutoDisposeProviderBase<State>
     with _StateNotifierProviderMixin<Notifier, State> {
   /// {@macro riverpod.statenotifierprovider}
-  AutoDisposeStateNotifierProvider(this._create, {String? name}) : super(name);
+  AutoDisposeStateNotifierProvider(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStateNotifierProviderFamilyBuilder();
@@ -57,7 +67,11 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
   /// {@endtemplate}
   @override
   late final AutoDisposeProviderBase<Notifier> notifier =
-      _AutoDisposeNotifierProvider(_create, name: name);
+      _AutoDisposeNotifierProvider(
+    _create,
+    name: name,
+    dependencies: dependencies,
+  );
 
   @override
   State create(AutoDisposeProviderElementBase<State> ref) {
@@ -78,18 +92,6 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
     return true;
   }
 
-  /// Overrides the behavior of a provider with a another provider.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    AutoDisposeStateNotifierProvider<Notifier, State> provider,
-  ) {
-    return ProviderOverride((setup) {
-      setup(origin: notifier, override: provider.notifier);
-      setup(origin: this, override: this);
-    });
-  }
-
   @override
   AutoDisposeProviderElementBase<State> createElement() {
     return AutoDisposeProviderElement(this);
@@ -105,8 +107,11 @@ class AutoDisposeStateNotifierProviderFamily<
     extends Family<State, Arg,
         AutoDisposeStateNotifierProvider<Notifier, State>> {
   /// {@macro riverpod.statenotifierprovider.family}
-  AutoDisposeStateNotifierProviderFamily(this._create, {String? name})
-      : super(name);
+  AutoDisposeStateNotifierProviderFamily(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final FamilyCreate<Notifier,
       AutoDisposeStateNotifierProviderRef<Notifier, State>, Arg> _create;
@@ -121,23 +126,6 @@ class AutoDisposeStateNotifierProviderFamily<
     registerProvider(provider.notifier, argument);
 
     return provider;
-  }
-
-  /// Overrides the behavior of a family for a part of the application.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    AutoDisposeStateNotifierProvider<Notifier, State> Function(Arg argument)
-        override,
-  ) {
-    return FamilyOverride<Arg>(
-      this,
-      (arg, setup) {
-        final provider = call(arg);
-        setup(origin: provider.notifier, override: override(arg).notifier);
-        setup(origin: provider, override: provider);
-      },
-    );
   }
 
   @override

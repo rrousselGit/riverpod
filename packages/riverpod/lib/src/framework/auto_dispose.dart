@@ -24,7 +24,7 @@ abstract class AutoDisposeProviderRefBase extends ProviderRefBase {
 
   @override
   void Function() listen<T>(
-    // Overriden to allow AutoDisposeProviderBase
+    // overridden to allow AutoDisposeProviderBase
     ProviderListenable<T> provider,
     void Function(T value) listener, {
     bool fireImmediately,
@@ -40,7 +40,10 @@ abstract class AutoDisposeProviderRefBase extends ProviderRefBase {
 /// {@endtemplate}
 abstract class AutoDisposeProviderBase<State> extends ProviderBase<State> {
   /// {@macro riverpod.AutoDisposeProviderBase}
-  AutoDisposeProviderBase(String? name) : super(name);
+  AutoDisposeProviderBase({
+    required String? name,
+    required List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   @override
   State create(AutoDisposeProviderRefBase ref);
@@ -83,11 +86,4 @@ mixin AutoDisposeProviderOverridesMixin<State>
   ///
   /// {@macro riverpod.overideWith}
   Override overrideWithValue(State value);
-
-  /// Overrides the behavior of this provider with another provider.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    AutoDisposeProviderBase<State> provider,
-  );
 }
