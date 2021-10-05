@@ -69,8 +69,13 @@ class ChangeNotifierProviderBuilder {
   ChangeNotifierProvider<Notifier> call<Notifier extends ChangeNotifier>(
     Create<Notifier, ChangeNotifierProviderRef<Notifier>> create, {
     String? name,
+    List<ProviderOrFamily>? dependencies,
   }) {
-    return ChangeNotifierProvider(create, name: name);
+    return ChangeNotifierProvider(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
   }
 
   /// {@macro riverpod.autoDispose}
@@ -327,8 +332,13 @@ class AutoDisposeChangeNotifierProviderBuilder {
       call<Notifier extends ChangeNotifier>(
     Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>> create, {
     String? name,
+    List<ProviderOrFamily>? dependencies,
   }) {
-    return AutoDisposeChangeNotifierProvider(create, name: name);
+    return AutoDisposeChangeNotifierProvider(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
   }
 
   /// {@macro riverpod.family}

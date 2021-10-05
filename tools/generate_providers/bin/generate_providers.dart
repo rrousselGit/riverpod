@@ -580,8 +580,9 @@ ${autoDisposeDoc().replaceAll('///', '  ///')}
   ${configs.providerName}<${configs.item2.generics}> call<${configs.constraint}>(
     Create<${configs.createType}, ${configs.ref}> create, {
     String? name,
+    List<ProviderOrFamily>? dependencies,
   }) {
-    return ${configs.providerName}(create, name: name);
+    return ${configs.providerName}(create, name: name, dependencies: dependencies,);
   }
 ${configs.links(matrix)}
 }

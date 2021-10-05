@@ -466,6 +466,38 @@ Future<void> main() async {
       );
     });
 
+    test('can auto-scope autoDispose providers', () async {
+      final dep = Provider((ref) => 0);
+      final provider = Provider.autoDispose(
+        (ref) => ref.watch(dep),
+        dependencies: [dep],
+      );
+      final root = createContainer();
+      final container = createContainer(
+        parent: root,
+        overrides: [dep.overrideWithValue(42)],
+      );
+
+      expect(container.read(provider), 42);
+      expect(
+        container.getAllProviderElements(),
+        unorderedEquals(<Object>[
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider),
+          isA<ProviderElementBase>().having((e) => e.origin, 'origin', dep),
+        ]),
+      );
+      expect(root.getAllProviderElements(), isEmpty);
+
+      await container.pump();
+
+      expect(
+        container.getAllProviderElements(),
+        [isA<ProviderElementBase>().having((e) => e.origin, 'origin', dep)],
+      );
+      expect(root.getAllProviderElements(), isEmpty);
+    });
+
     test('accepts only providers or families', () async {
       expect(library.withCode('''
 import 'package:riverpod/riverpod.dart';
