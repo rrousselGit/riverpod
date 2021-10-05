@@ -51,6 +51,8 @@
 
 ### General
 
+- **Breaking** All `overrideWithProvider` methods are removed.  
+  To migrate, instead use `overrideWithValue`.
 - All providers now come with an extra named parameter called `dependencies`.
   This parameter optionally allows defining the list of providers/families that this
   new provider depends on:
