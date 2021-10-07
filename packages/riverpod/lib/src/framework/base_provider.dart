@@ -583,6 +583,8 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
 
   static ProviderElementBase? _debugCurrentlyBuildingElement;
 
+  var _debugSkipNotifyListenersAsserts = false;
+
   /// The provider associated to this [ProviderElementBase], before applying overrides.
   ProviderBase<State> get origin => _origin;
   late ProviderBase<State> _origin;
@@ -742,17 +744,15 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
       _buildState();
 
       if (provider.updateShouldNotify(previousState, getState() as State)) {
-        ProviderElementBase? debugPreviouslyBuildingElement;
         assert(() {
-          debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
-          // Disable the assertion that prevents updating providers when
-          // rebuilding a provider.
-          _debugCurrentlyBuildingElement = null;
+          // Asserts would otherwise prevent a provider rebuild from updating
+          // other providers
+          _debugSkipNotifyListenersAsserts = true;
           return true;
         }(), '');
         notifyListeners(previousState: previousState);
         assert(() {
-          _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
+          _debugSkipNotifyListenersAsserts = false;
           return true;
         }(), '');
       }
@@ -769,15 +769,18 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   }
 
   void notifyListeners({Object? previousState = const _Default()}) {
-    assert(
-        _debugCurrentlyBuildingElement == null ||
-            _debugCurrentlyBuildingElement == this,
-        '''
+    assert(() {
+      if (_debugSkipNotifyListenersAsserts) return true;
+
+      assert(
+          _debugCurrentlyBuildingElement == null ||
+              _debugCurrentlyBuildingElement == this,
+          '''
 Providers are not allowed to modify other providers during their initialization.
 
 The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider while building.
 ''');
-    assert(() {
+
       container.debugCanModifyProviders?.call();
       return true;
     }(), '');

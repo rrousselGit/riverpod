@@ -94,6 +94,38 @@ void main() {
     expect(error, isNotNull);
   });
 
+  testWidgets('ref.watch within a build method can flush providers',
+      (tester) async {
+    final container = createContainer();
+    final dep = StateProvider((ref) => 0);
+    final provider = Provider((ref) => ref.watch(dep).state);
+
+    // reading `provider` but not listening to it, so that it is active
+    // but with no listener – causing "ref.watch" inside Consumer to flush it
+    container.read(provider);
+
+    // We need to use runAsync as the container isn't attached to a ProviderScope
+    // yet, so the WidgetTester is preventing the scheduler from start microtasks
+    await tester.runAsync<void>(() async {
+      // marking `provider` as out of date
+      container.read(dep).state++;
+    });
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: Consumer(builder: (context, ref, _) {
+          return Text(
+            ref.watch(provider).toString(),
+            textDirection: TextDirection.ltr,
+          );
+        }),
+      ),
+    );
+
+    expect(find.text('1'), findsOneWidget);
+  });
+
   testWidgets(
       'UncontrolledProviderScope gracefully handles ProviderContainer.vsync',
       (tester) async {
