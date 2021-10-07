@@ -1,3 +1,7 @@
+## 1.0.0-dev.10
+
+Fixed a bug where reading a provider within a consumer could throw (#796)
+
 ## 1.0.0-dev.9
 
 Fix an issue where `*Provider.autoDispose` were not able to specify the
