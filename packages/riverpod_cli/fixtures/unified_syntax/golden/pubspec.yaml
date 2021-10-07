@@ -10,6 +10,6 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks:
-  flutter_riverpod: ^1.0.0-dev.10
-  hooks_riverpod: ^1.0.0-dev.10
-  riverpod: ^1.0.0-dev.10
+  flutter_riverpod: ^1.0.0-dev.9
+  hooks_riverpod: ^1.0.0-dev.9
+  riverpod: ^1.0.0-dev.9
