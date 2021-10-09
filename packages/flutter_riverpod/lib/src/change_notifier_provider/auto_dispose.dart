@@ -52,7 +52,7 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
     ref.onDispose(notifier.dispose);
 
     return notifier;
-  });
+  }, dependencies: dependencies);
 
   @override
   Notifier create(AutoDisposeProviderElementBase<Notifier> ref) {

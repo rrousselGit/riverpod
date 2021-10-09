@@ -64,5 +64,23 @@ void main() {
         expect(root.getAllProviderElements(), isEmpty);
       });
     });
+
+    test('can be auto-scoped', () async {
+      final dep = Provider((ref) => 0);
+      final provider = ChangeNotifierProvider.autoDispose(
+        (ref) => ValueNotifier(ref.watch(dep)),
+        dependencies: [dep],
+      );
+      final root = createContainer();
+      final container = createContainer(
+        parent: root,
+        overrides: [dep.overrideWithValue(42)],
+      );
+
+      expect(container.read(provider).value, 42);
+      expect(container.read(provider.notifier).value, 42);
+
+      expect(root.getAllProviderElements(), isEmpty);
+    });
   });
 }

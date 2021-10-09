@@ -27,5 +27,23 @@ void main() {
         expect(root.getAllProviderElementsInOrder(), isEmpty);
       });
     });
+
+    test('ChangeNotifier can be auto-scoped', () async {
+      final dep = Provider((ref) => 0);
+      final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>(
+        (ref, i) => ValueNotifier(ref.watch(dep) + i),
+        dependencies: [dep],
+      );
+      final root = createContainer();
+      final container = createContainer(
+        parent: root,
+        overrides: [dep.overrideWithValue(42)],
+      );
+
+      expect(container.read(provider(10)).value, 52);
+      expect(container.read(provider(10).notifier).value, 52);
+
+      expect(root.getAllProviderElements(), isEmpty);
+    });
   });
 }
