@@ -1,3 +1,7 @@
+## 1.0.0-dev.11
+
+Fixed an issue where `dependencies` did not work for `ChangeNotifierProvider` (#800)
+
 ## 1.0.0-dev.10
 
 Fixed a bug where reading a provider within a consumer could throw (#796)
