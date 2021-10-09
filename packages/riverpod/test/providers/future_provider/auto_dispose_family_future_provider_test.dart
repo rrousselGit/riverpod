@@ -21,21 +21,39 @@ void main() {
       ]);
       expect(root.getAllProviderElementsInOrder(), isEmpty);
     });
-  });
 
-  test('FutureProvider.autoDispose.family', () async {
-    final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
-      return Future.value(a * 2);
+    test('can be auto-scoped', () async {
+      final dep = Provider((ref) => 0);
+      final provider = FutureProvider.family.autoDispose<int, int>(
+        (ref, i) => ref.watch(dep) + i,
+        dependencies: [dep],
+      );
+      final root = createContainer();
+      final container = createContainer(
+        parent: root,
+        overrides: [dep.overrideWithValue(42)],
+      );
+
+      expect(container.read(provider(10)), const AsyncData(52));
+      expect(container.read(provider(10).future), completion(52));
+
+      expect(root.getAllProviderElements(), isEmpty);
     });
-    final container = createContainer();
-    final listener = Listener<AsyncValue<int>>();
 
-    container.listen(provider(21), listener, fireImmediately: true);
+    test('worls', () async {
+      final provider = FutureProvider.autoDispose.family<int, int>((ref, a) {
+        return Future.value(a * 2);
+      });
+      final container = createContainer();
+      final listener = Listener<AsyncValue<int>>();
 
-    verifyOnly(listener, listener(const AsyncValue.loading()));
+      container.listen(provider(21), listener, fireImmediately: true);
 
-    await container.pump();
+      verifyOnly(listener, listener(const AsyncValue.loading()));
 
-    verifyOnly(listener, listener(const AsyncValue.data(42)));
+      await container.pump();
+
+      verifyOnly(listener, listener(const AsyncValue.data(42)));
+    });
   });
 }

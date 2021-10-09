@@ -8,6 +8,25 @@ import '../../utils.dart';
 
 void main() {
   group('StreamProvider.autoDispose', () {
+    test('can be auto-scoped', () async {
+      final dep = Provider((ref) => 0);
+      final provider = StreamProvider.autoDispose(
+        (ref) => Stream.value(ref.watch(dep)),
+        dependencies: [dep],
+      );
+      final root = createContainer();
+      final container = createContainer(
+        parent: root,
+        overrides: [dep.overrideWithValue(42)],
+      );
+
+      await expectLater(container.read(provider.stream), emits(42));
+      await expectLater(container.read(provider.last), completion(42));
+      expect(container.read(provider), const AsyncData(42));
+
+      expect(root.getAllProviderElements(), isEmpty);
+    });
+
     test(
         'when going from AsyncLoading to AsyncLoading, does not notify listeners',
         () async {

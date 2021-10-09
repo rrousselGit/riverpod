@@ -300,4 +300,21 @@ void main() {
     expect(sub.read(), false);
     verifyOnly(listener, listener(false));
   });
+
+  test('can be auto-scoped', () async {
+    final dep = Provider((ref) => 0);
+    final provider = Provider(
+      (ref) => ref.watch(dep),
+      dependencies: [dep],
+    );
+    final root = createContainer();
+    final container = createContainer(
+      parent: root,
+      overrides: [dep.overrideWithValue(42)],
+    );
+
+    expect(container.read(provider), 42);
+
+    expect(root.getAllProviderElements(), isEmpty);
+  });
 }

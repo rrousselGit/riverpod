@@ -45,5 +45,24 @@ void main() {
 
       verifyOnly(listener, listener(const AsyncValue.data(42)));
     });
+
+    test('can be auto-scoped', () async {
+      final dep = Provider((ref) => 0);
+      final provider = StreamProvider.autoDispose.family<int, int>(
+        (ref, i) => Stream.value(ref.watch(dep) + i),
+        dependencies: [dep],
+      );
+      final root = createContainer();
+      final container = createContainer(
+        parent: root,
+        overrides: [dep.overrideWithValue(42)],
+      );
+
+      await expectLater(container.read(provider(10).stream), emits(52));
+      await expectLater(container.read(provider(10).last), completion(52));
+      expect(container.read(provider(10)), const AsyncData(52));
+
+      expect(root.getAllProviderElements(), isEmpty);
+    });
   });
 }

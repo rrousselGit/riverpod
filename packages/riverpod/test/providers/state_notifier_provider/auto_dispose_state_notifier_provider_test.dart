@@ -5,6 +5,25 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('can be auto-scoped', () async {
+    final dep = Provider((ref) => 0);
+    final provider =
+        StateNotifierProvider.autoDispose<StateController<int>, int>(
+      (ref) => StateController(ref.watch(dep)),
+      dependencies: [dep],
+    );
+    final root = createContainer();
+    final container = createContainer(
+      parent: root,
+      overrides: [dep.overrideWithValue(42)],
+    );
+
+    expect(container.read(provider), 42);
+    expect(container.read(provider.notifier).debugState, 42);
+
+    expect(root.getAllProviderElements(), isEmpty);
+  });
+
   test('can be refreshed', () async {
     var result = StateController(0);
     final container = createContainer();

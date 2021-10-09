@@ -20,21 +20,39 @@ void main() {
       ]);
       expect(root.getAllProviderElementsInOrder(), isEmpty);
     });
-  });
 
-  test('FutureProvider.family', () async {
-    final provider = FutureProvider.family<String, int>((ref, a) {
-      return Future.value('$a');
+    test('can be auto-scoped', () async {
+      final dep = Provider((ref) => 0);
+      final provider = FutureProvider.family<int, int>(
+        (ref, i) => ref.watch(dep) + i,
+        dependencies: [dep],
+      );
+      final root = createContainer();
+      final container = createContainer(
+        parent: root,
+        overrides: [dep.overrideWithValue(42)],
+      );
+
+      expect(container.read(provider(10)), const AsyncData(52));
+      expect(container.read(provider(10).future), completion(52));
+
+      expect(root.getAllProviderElements(), isEmpty);
     });
-    final container = createContainer();
 
-    expect(container.read(provider(0)), const AsyncValue<String>.loading());
+    test('works', () async {
+      final provider = FutureProvider.family<String, int>((ref, a) {
+        return Future.value('$a');
+      });
+      final container = createContainer();
 
-    await container.pump();
+      expect(container.read(provider(0)), const AsyncValue<String>.loading());
 
-    expect(
-      container.read(provider(0)),
-      const AsyncValue<String>.data('0'),
-    );
+      await container.pump();
+
+      expect(
+        container.read(provider(0)),
+        const AsyncValue<String>.data('0'),
+      );
+    });
   });
 }

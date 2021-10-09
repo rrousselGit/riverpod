@@ -5,6 +5,24 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('can be auto-scoped', () async {
+    final dep = Provider((ref) => 0);
+    final provider = StateProvider(
+      (ref) => ref.watch(dep),
+      dependencies: [dep],
+    );
+    final root = createContainer();
+    final container = createContainer(
+      parent: root,
+      overrides: [dep.overrideWithValue(42)],
+    );
+
+    expect(container.read(provider).state, 42);
+    expect(container.read(provider.notifier).state, 42);
+
+    expect(root.getAllProviderElements(), isEmpty);
+  });
+
   test('is compatible with ProviderObserver', () {
     // regression test for https://github.com/rrousselGit/river_pod/issues/623
 

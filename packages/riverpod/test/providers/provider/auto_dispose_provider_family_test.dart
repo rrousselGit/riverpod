@@ -20,27 +20,45 @@ void main() {
         expect(root.getAllProviderElements(), isEmpty);
       });
     });
-  });
 
-  test('Provider.autoDispose.family', () async {
-    final onDispose = OnDisposeMock();
-    final provider = Provider.autoDispose.family<String, int>((ref, value) {
-      ref.onDispose(onDispose);
-      return '$value';
+    test('can be auto-scoped', () async {
+      final dep = Provider((ref) => 0);
+      final provider = Provider.family.autoDispose<int, int>(
+        (ref, i) => ref.watch(dep) + i,
+        dependencies: [dep],
+      );
+      final root = createContainer();
+      final container = createContainer(
+        parent: root,
+        overrides: [dep.overrideWithValue(42)],
+      );
+
+      expect(container.read(provider(10)), 52);
+
+      expect(root.getAllProviderElements(), isEmpty);
     });
-    final listener = Listener<String>();
-    final container = createContainer();
 
-    final sub = container.listen(provider(0), listener, fireImmediately: true);
+    test('works', () async {
+      final onDispose = OnDisposeMock();
+      final provider = Provider.autoDispose.family<String, int>((ref, value) {
+        ref.onDispose(onDispose);
+        return '$value';
+      });
+      final listener = Listener<String>();
+      final container = createContainer();
 
-    verifyOnly(listener, listener('0'));
+      final sub =
+          container.listen(provider(0), listener, fireImmediately: true);
 
-    sub.close();
+      verifyOnly(listener, listener('0'));
 
-    verifyZeroInteractions(onDispose);
+      sub.close();
 
-    await container.pump();
+      verifyZeroInteractions(onDispose);
 
-    verifyOnly(onDispose, onDispose());
+      await container.pump();
+
+      verifyOnly(onDispose, onDispose());
+    });
   });
 }

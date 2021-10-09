@@ -25,5 +25,23 @@ void main() {
         expect(root.getAllProviderElementsInOrder(), isEmpty);
       });
     });
+
+    test('can be auto-scoped', () async {
+      final dep = Provider((ref) => 0);
+      final provider = StateProvider.family<int, int>(
+        (ref, i) => ref.watch(dep) + i,
+        dependencies: [dep],
+      );
+      final root = createContainer();
+      final container = createContainer(
+        parent: root,
+        overrides: [dep.overrideWithValue(42)],
+      );
+
+      expect(container.read(provider(10)).state, 52);
+      expect(container.read(provider(10).notifier).state, 52);
+
+      expect(root.getAllProviderElements(), isEmpty);
+    });
   });
 }
