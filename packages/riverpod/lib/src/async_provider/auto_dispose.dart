@@ -5,10 +5,7 @@ import '../framework.dart';
 abstract class AutoDisposeAsyncProvider<T>
     extends AutoDisposeProviderBase<AsyncValue<T>> {
   /// An internal provider extended by both StreamProvider and FutureProvider
-  AutoDisposeAsyncProvider({
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+  AutoDisposeAsyncProvider({String? name}) : super(name: name);
 
   @override
   AutoDisposeAsyncProviderElement<T> createElement();

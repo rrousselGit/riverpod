@@ -5,13 +5,15 @@ class _NotifierProvider<Notifier extends StateNotifier<Object?>>
   _NotifierProvider(
     this._create, {
     required String? name,
-    required List<ProviderOrFamily>? dependencies,
+    required this.dependencies,
   }) : super(
           name: name == null ? null : '$name.notifier',
-          dependencies: dependencies,
         );
 
   final Create<Notifier, ProviderRefBase> _create;
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
 
   @override
   Notifier create(ProviderRefBase ref) {
@@ -27,10 +29,6 @@ class _NotifierProvider<Notifier extends StateNotifier<Object?>>
 
   @override
   ProviderElement<Notifier> createElement() => ProviderElement(this);
-
-  @override
-  void setupOverride(SetupOverride setup) =>
-      throw UnsupportedError('Cannot override StateNotifierProvider.notifier');
 }
 
 /// {@macro riverpod.providerrefbase}
@@ -41,21 +39,24 @@ typedef StateNotifierProviderRef<Notifier extends StateNotifier<State>, State>
 @sealed
 class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
     extends AlwaysAliveProviderBase<State>
-    with _StateNotifierProviderMixin<Notifier, State> {
+    with StateNotifierProviderOverrideMixin<Notifier, State> {
   /// {@macro riverpod.statenotifierprovider}
   StateNotifierProvider(
-    this._create, {
+    Create<Notifier, StateNotifierProviderRef<Notifier, State>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+  })  : notifier = _NotifierProvider(
+          create,
+          name: name,
+          dependencies: dependencies,
+        ),
+        super(name: name);
 
   /// {@macro riverpod.family}
   static const family = StateNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStateNotifierProviderBuilder();
-
-  final Create<Notifier, StateNotifierProviderRef<Notifier, State>> _create;
 
   /// {@template riverpod.statenotifierprovider.notifier}
   /// Obtains the [StateNotifier] associated with this [StateNotifierProvider],
@@ -65,11 +66,7 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
   /// event that the [StateNotifier] it recreated.
   /// {@endtemplate}
   @override
-  late final AlwaysAliveProviderBase<Notifier> notifier = _NotifierProvider(
-    _create,
-    name: name,
-    dependencies: dependencies,
-  );
+  final AlwaysAliveProviderBase<Notifier> notifier;
 
   @override
   State create(ProviderElementBase<State> ref) {

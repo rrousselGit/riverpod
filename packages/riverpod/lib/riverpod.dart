@@ -63,7 +63,8 @@ export 'src/state_notifier_provider.dart'
         StateNotifierProvider,
         StateNotifierProviderFamily,
         AutoDisposeStateNotifierProviderRef,
-        StateNotifierProviderRef;
+        StateNotifierProviderRef,
+        StateNotifierProviderOverrideMixin;
 
 export 'src/state_provider.dart'
     show

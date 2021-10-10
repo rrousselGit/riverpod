@@ -8,51 +8,30 @@ typedef AutoDisposeChangeNotifierProviderRef<Notifier>
 /// {@macro riverpod.changenotifierprovider}
 @sealed
 class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
-    extends AutoDisposeProviderBase<Notifier> {
+    extends AutoDisposeProviderBase<Notifier>
+    with ChangeNotifierProviderOverrideMixin<Notifier> {
   /// {@macro riverpod.changenotifierprovider}
   AutoDisposeChangeNotifierProvider(
-    this._create, {
+    Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+  })  : notifier = AutoDisposeProvider((ref) {
+          final notifier = create(ref);
+          ref.onDispose(notifier.dispose);
+
+          return notifier;
+        }, dependencies: dependencies),
+        super(name: name);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeChangeNotifierProviderFamilyBuilder();
 
-  final Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>>
-      _create;
-
   @override
-  ProviderBase<Object?> get providerToRefresh => notifier;
+  ProviderBase<Object?> get originProvider => notifier;
 
-  /// {@template flutter_riverpod.changenotifierprovider.notifier}
-  /// Obtains the [ChangeNotifier] associated with this provider, but without
-  /// listening to it.
-  ///
-  /// Listening to this provider may cause providers/widgets to rebuild in the
-  /// event that the [ChangeNotifier] it recreated.
-  ///
-  ///
-  /// It is preferrable to do:
-  /// ```dart
-  /// ref.watch(changeNotifierProvider.notifier)
-  /// ```
-  ///
-  /// instead of:
-  /// ```dart
-  /// ref.read(changeNotifierProvider)
-  /// ```
-  ///
-  /// The reasoning is, using `read` could cause hard to catch bugs, such as
-  /// not rebuilding dependent providers/widgets after using `context.refresh` on this provider.
-  /// {@endtemplate}
-  late final AutoDisposeProviderBase<Notifier> notifier =
-      AutoDisposeProvider((ref) {
-    final notifier = _create(ref);
-    ref.onDispose(notifier.dispose);
-
-    return notifier;
-  }, dependencies: dependencies);
+  /// {@macro flutter_riverpod.changenotifierprovider.notifier}
+  @override
+  final AutoDisposeProviderBase<Notifier> notifier;
 
   @override
   Notifier create(AutoDisposeProviderElementBase<Notifier> ref) {
@@ -64,31 +43,13 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
   @override
   bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
 
-  /// Overrides the behavior of a provider with a value.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithValue(Notifier value) {
-    return ProviderOverride((setup) {
-      setup(origin: this, override: this);
-      setup(origin: notifier, override: ValueProvider<Notifier>(value));
-    });
-  }
-
-  @override
-  void setupOverride(SetupOverride setup) {
-    setup(origin: this, override: this);
-    setup(origin: notifier, override: notifier);
-  }
-
   @override
   AutoDisposeProviderElement<Notifier> createElement() =>
       AutoDisposeProviderElement(this);
 }
 
 // ignore: subtype_of_sealed_class
-/// {@template riverpod.changenotifierprovider.family}
-/// A class that allows building a [ChangeNotifierProvider] from an external parameter.
-/// {@endtemplate}
+/// {@macro riverpod.changenotifierprovider.family}
 @sealed
 class AutoDisposeChangeNotifierProviderFamily<Notifier extends ChangeNotifier,
         Arg>

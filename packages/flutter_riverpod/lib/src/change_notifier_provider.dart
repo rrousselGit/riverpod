@@ -30,3 +30,22 @@ T _listenNotifier<T extends ChangeNotifier?>(
 
   return notifier;
 }
+
+// ignore: subtype_of_sealed_class
+/// Add [overrideWithValue] to [AutoDisposeStateNotifierProvider]
+mixin ChangeNotifierProviderOverrideMixin<Notifier extends ChangeNotifier>
+    on ProviderBase<Notifier> {
+  ///
+  ProviderBase<Notifier> get notifier;
+
+  @override
+  late final List<ProviderOrFamily>? dependencies = [notifier];
+
+  /// {@macro riverpod.overrridewithvalue}
+  Override overrideWithValue(Notifier value) {
+    return ProviderOverride(
+      origin: notifier,
+      override: ValueProvider<Notifier>(value),
+    );
+  }
+}

@@ -40,10 +40,7 @@ abstract class AutoDisposeProviderRefBase extends ProviderRefBase {
 /// {@endtemplate}
 abstract class AutoDisposeProviderBase<State> extends ProviderBase<State> {
   /// {@macro riverpod.AutoDisposeProviderBase}
-  AutoDisposeProviderBase({
-    required String? name,
-    required List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+  AutoDisposeProviderBase({required String? name}) : super(name: name);
 
   @override
   State create(AutoDisposeProviderRefBase ref);
@@ -76,14 +73,4 @@ abstract class AutoDisposeProviderElementBase<State>
       _container._scheduler.scheduleProviderDispose(this);
     }
   }
-}
-
-///
-@protected
-mixin AutoDisposeProviderOverridesMixin<State>
-    on AutoDisposeProviderBase<State> {
-  /// Overrides the behavior of a provider with a value.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithValue(State value);
 }

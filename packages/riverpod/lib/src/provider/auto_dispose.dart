@@ -52,18 +52,21 @@ class AutoDisposeProviderElement<State>
 /// {@macro riverpod.provider}
 @sealed
 class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
-    with AutoDisposeProviderOverridesMixin<State> {
+    with OverrideWithValueMixin<State> {
   /// {@macro riverpod.provider}
   AutoDisposeProvider(
     this._create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+    this.dependencies,
+  }) : super(name: name);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeProviderFamilyBuilder();
 
   final Create<State, AutoDisposeProviderRef<State>> _create;
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
 
   @override
   State create(AutoDisposeProviderRef<State> ref) => _create(ref);
@@ -76,21 +79,6 @@ class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
   @override
   AutoDisposeProviderElement<State> createElement() {
     return AutoDisposeProviderElement(this);
-  }
-
-  @override
-  void setupOverride(SetupOverride setup) {
-    setup(origin: this, override: this);
-  }
-
-  @override
-  Override overrideWithValue(State value) {
-    return ProviderOverride((setup) {
-      setup(
-        origin: this,
-        override: ValueProvider<State>(value),
-      );
-    });
   }
 }
 

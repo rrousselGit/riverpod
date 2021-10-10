@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../riverpod.dart';
+import 'framework.dart';
 
 /// A provider that is driven by a value instead of a function.
 ///
@@ -8,12 +9,14 @@ import '../riverpod.dart';
 @sealed
 class ValueProvider<State> extends AlwaysAliveProviderBase<State> {
   /// Creates a [ValueProvider].
-  ValueProvider(this._value, [this._create])
-      : super(name: null, dependencies: null);
+  ValueProvider(this._value, [this._create]) : super(name: null);
 
   final State Function(ValueProviderElement<State> ref)? _create;
 
   final State _value;
+
+  @override
+  List<ProviderOrFamily>? get dependencies => null;
 
   @override
   State create(ValueProviderElement<State> ref) {
@@ -30,9 +33,6 @@ class ValueProvider<State> extends AlwaysAliveProviderBase<State> {
   ValueProviderElement<State> createElement() {
     return ValueProviderElement(this);
   }
-
-  @override
-  void setupOverride(SetupOverride setup) {}
 }
 
 /// The [ProviderElementBase] of a [ValueProvider]

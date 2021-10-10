@@ -11,13 +11,13 @@ import 'internals.dart';
 class AsyncValueAsStreamProvider<State>
     extends AlwaysAliveProviderBase<Stream<State>> {
   ///
-  AsyncValueAsStreamProvider(
-    this._provider, {
-    required String? name,
-    required List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+  AsyncValueAsStreamProvider(this._provider, {required String? name})
+      : super(name: name);
 
   final AlwaysAliveProviderBase<AsyncValue<State>> _provider;
+
+  @override
+  late final List<ProviderOrFamily>? dependencies = [_provider];
 
   @override
   Stream<State> create(covariant ProviderElementBase<Stream<State>> ref) {
@@ -36,11 +36,6 @@ class AsyncValueAsStreamProvider<State>
   ) {
     return true;
   }
-
-  @override
-  void setupOverride(SetupOverride setup) {
-    throw UnsupportedError('Cannot override $_provider.$name');
-  }
 }
 
 ///
@@ -48,13 +43,13 @@ class AsyncValueAsStreamProvider<State>
 class AutoDisposeAsyncValueAsStreamProvider<State>
     extends AutoDisposeProviderBase<Stream<State>> {
   ///
-  AutoDisposeAsyncValueAsStreamProvider(
-    this._provider, {
-    required String? name,
-    required List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+  AutoDisposeAsyncValueAsStreamProvider(this._provider, {required String? name})
+      : super(name: name);
 
   final AutoDisposeProviderBase<AsyncValue<State>> _provider;
+
+  @override
+  late final List<ProviderOrFamily>? dependencies = [_provider];
 
   @override
   Stream<State> create(
@@ -73,11 +68,6 @@ class AutoDisposeAsyncValueAsStreamProvider<State>
     Stream<State> newState,
   ) {
     return true;
-  }
-
-  @override
-  void setupOverride(SetupOverride setup) {
-    throw UnsupportedError('Cannot override $_provider.$name');
   }
 }
 
@@ -128,13 +118,13 @@ Stream<State> _asyncValueToStream<State>(
 class AsyncValueAsFutureProvider<State>
     extends AlwaysAliveProviderBase<Future<State>> {
   ///
-  AsyncValueAsFutureProvider(
-    this._provider, {
-    required String? name,
-    required List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+  AsyncValueAsFutureProvider(this._provider, {required String? name})
+      : super(name: name);
 
   final AlwaysAliveProviderBase<AsyncValue<State>> _provider;
+
+  @override
+  late final List<ProviderOrFamily>? dependencies = [_provider];
 
   @override
   Future<State> create(ProviderElementBase<Future<State>> ref) {
@@ -150,11 +140,6 @@ class AsyncValueAsFutureProvider<State>
   }
 
   @override
-  void setupOverride(SetupOverride setup) {
-    throw UnsupportedError('Cannot override $_provider.$name');
-  }
-
-  @override
   ProviderElement<Future<State>> createElement() {
     return ProviderElement(this);
   }
@@ -165,13 +150,13 @@ class AsyncValueAsFutureProvider<State>
 class AutoDisposeAsyncValueAsFutureProvider<State>
     extends AutoDisposeProviderBase<Future<State>> {
   ///
-  AutoDisposeAsyncValueAsFutureProvider(
-    this._provider, {
-    required String? name,
-    required List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+  AutoDisposeAsyncValueAsFutureProvider(this._provider, {required String? name})
+      : super(name: name);
 
   final AutoDisposeProviderBase<AsyncValue<State>> _provider;
+
+  @override
+  late final List<ProviderOrFamily>? dependencies = [_provider];
 
   @override
   Future<State> create(AutoDisposeProviderElementBase<Future<State>> ref) {
@@ -184,11 +169,6 @@ class AutoDisposeAsyncValueAsFutureProvider<State>
     Future<State> newState,
   ) {
     return true;
-  }
-
-  @override
-  void setupOverride(SetupOverride setup) {
-    throw UnsupportedError('Cannot override $_provider.$name');
   }
 
   @override
