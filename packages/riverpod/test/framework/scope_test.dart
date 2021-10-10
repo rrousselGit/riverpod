@@ -517,13 +517,53 @@ final b = Provider(
     });
 
     test(
-        'Throw if trying to read aprovider that is not in the dependencies list',
+        'Throw if trying to watch a provider that is not in the dependencies list',
         () {
       final container = createContainer();
       final dep = Provider((ref) => 0);
       final dep2 = Provider((ref) => 0, dependencies: [dep]);
       final provider = Provider((ref) {
         ref.watch(dep2);
+      }, dependencies: [dep]);
+
+      expect(
+        () => container.read(provider),
+        throwsA(
+          isA<ProviderException>()
+              .having((e) => e.provider, 'provider', provider)
+              .having((e) => e.exception, 'exception', isA<AssertionError>()),
+        ),
+      );
+    });
+
+    test(
+        'Throw if trying to listen a provider that is not in the dependencies list',
+        () {
+      final container = createContainer();
+      final dep = Provider((ref) => 0);
+      final dep2 = Provider((ref) => 0, dependencies: [dep]);
+      final provider = Provider((ref) {
+        ref.listen(dep2, (_) {});
+      }, dependencies: [dep]);
+
+      expect(
+        () => container.read(provider),
+        throwsA(
+          isA<ProviderException>()
+              .having((e) => e.provider, 'provider', provider)
+              .having((e) => e.exception, 'exception', isA<AssertionError>()),
+        ),
+      );
+    });
+
+    test(
+        'Throw if trying to read a provider that is not in the dependencies list',
+        () {
+      final container = createContainer();
+      final dep = Provider((ref) => 0);
+      final dep2 = Provider((ref) => 0, dependencies: [dep]);
+      final provider = Provider((ref) {
+        ref.read(dep2);
       }, dependencies: [dep]);
 
       expect(
