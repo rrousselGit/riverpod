@@ -150,7 +150,8 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   /// variable used.
   Object? get argument => _argument;
 
-  /// The provider that will be refreshed when calling [ProviderContainer.refresh].
+  /// The provider that will be refreshed when calling [ProviderContainer.refresh]
+  /// and that will be overridden when passed to `ProviderScope`.
   ///
   /// Defaults to `this`.
   // ignore: avoid_returning_this
