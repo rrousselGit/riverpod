@@ -8,14 +8,14 @@ typedef AutoDisposeStreamProviderRef<State> = AutoDisposeProviderRefBase;
 @sealed
 class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
     with
-        AutoDisposeProviderOverridesMixin<AsyncValue<State>>,
-        _StreamProviderMixin<State> {
+        _StreamProviderMixin<State>,
+        OverrideWithValueMixin<AsyncValue<State>> {
   /// {@macro riverpod.streamprovider}
   AutoDisposeStreamProvider(
     this._create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+    this.dependencies,
+  }) : super(name: name);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStreamProviderFamilyBuilder();
@@ -23,11 +23,13 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
   final Create<Stream<State>, AutoDisposeStreamProviderRef<State>> _create;
 
   @override
+  final List<ProviderOrFamily>? dependencies;
+
+  @override
   late final AutoDisposeProviderBase<Stream<State>> stream =
       AutoDisposeAsyncValueAsStreamProvider(
     this,
     name: modifierName(name, 'stream'),
-    dependencies: dependencies,
   );
 
   @override
@@ -35,7 +37,6 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
       AutoDisposeAsyncValueAsFutureProvider(
     this,
     name: modifierName(name, 'last'),
-    dependencies: dependencies,
   );
 
   @override
@@ -56,22 +57,6 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
     if (wasLoading || isLoading) return wasLoading != isLoading;
 
     return true;
-  }
-
-  @override
-  Override overrideWithValue(AsyncValue<State> value) {
-    return ProviderOverride((setup) {
-      setup(origin: this, override: ValueProvider<AsyncValue<State>>(value));
-      setup(origin: stream, override: stream);
-      setup(origin: last, override: last);
-    });
-  }
-
-  @override
-  void setupOverride(SetupOverride setup) {
-    setup(origin: this, override: this);
-    setup(origin: stream, override: stream);
-    setup(origin: last, override: last);
   }
 
   @override

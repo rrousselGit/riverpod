@@ -10,13 +10,13 @@ class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
   _AutoDisposeNotifierProvider(
     this._create, {
     required String? name,
-    required List<ProviderOrFamily>? dependencies,
-  }) : super(
-          name: name == null ? null : '$name.notifier',
-          dependencies: dependencies,
-        );
+    required this.dependencies,
+  }) : super(name: name == null ? null : '$name.notifier');
 
   final Create<Notifier, AutoDisposeProviderRefBase> _create;
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
 
   @override
   Notifier create(AutoDisposeProviderRefBase ref) {
@@ -34,29 +34,91 @@ class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
   AutoDisposeProviderElement<Notifier> createElement() {
     return AutoDisposeProviderElement(this);
   }
-
-  @override
-  void setupOverride(SetupOverride setup) =>
-      throw UnsupportedError('Cannot override StateNotifierProvider.notifier');
 }
 
-/// {@macro riverpod.statenotifierprovider}
+/// {@template riverpod.statenotifierprovider}
+/// Creates a [StateNotifier] and expose its current state.
+///
+/// This provider is used in combination with `package:state_notifier`.
+///
+/// Combined with [StateNotifier], [StateNotifierProvider] can be used to manipulate
+/// advanced states, that would otherwise be difficult to represent with simpler
+/// providers such as [Provider] or [FutureProvider].
+///
+/// For example, you may have a todo-list, where you can add and remove
+/// and complete a todo.
+/// Using [StateNotifier], you could represent such state as:
+///
+/// ```dart
+/// class TodosNotifier extends StateNotifier<List<Todo>> {
+///   TodosNotifier(): super([]);
+///
+///   void add(Todo todo) {
+///     state = [...state, todo];
+///   }
+///
+///   void remove(String todoId) {
+///     state = [
+///       for (final todo in state)
+///         if (todo.id != todoId) todo,
+///     ];
+///   }
+///
+///   void toggle(String todoId) {
+///     state = [
+///       for (final todo in state)
+///         if (todo.id == todoId) todo.copyWith(completed: !todo.completed),
+///     ];
+///   }
+/// }
+/// ```
+///
+/// Which you can then pass to a [StateNotifierProvider] like so:
+///
+/// ```dart
+/// final todosProvider = StateNotifierProvider<TodosNotifier, List<Todo>>((ref) => TodosNotifier());
+/// ```
+///
+/// And finally, you can interact with it inside your UI:
+///
+/// ```dart
+/// Widget build(BuildContext context, WidgetRef ref) {
+///   // rebuild the widget when the todo list changes
+///   List<Todo> todos = ref.watch(todosProvider);
+///
+///   return ListView(
+///     children: [
+///       for (final todo in todos)
+///         CheckboxListTile(
+///            value: todo.completed,
+///            // When tapping on the todo, change its completed status
+///            onChanged: (value) => context.read(todosProvider.notifier).toggle(todo.id),
+///            title: Text(todo.description),
+///         ),
+///     ],
+///   );
+/// }
+/// ```
+/// {@endtemplate}
 @sealed
 class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
         State> extends AutoDisposeProviderBase<State>
-    with _StateNotifierProviderMixin<Notifier, State> {
+    with StateNotifierProviderOverrideMixin<Notifier, State> {
   /// {@macro riverpod.statenotifierprovider}
   AutoDisposeStateNotifierProvider(
-    this._create, {
+    Create<Notifier, AutoDisposeStateNotifierProviderRef<Notifier, State>>
+        create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+  })  : notifier = _AutoDisposeNotifierProvider(
+          create,
+          name: name,
+          dependencies: dependencies,
+        ),
+        super(name: name);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStateNotifierProviderFamilyBuilder();
-
-  final Create<Notifier, AutoDisposeStateNotifierProviderRef<Notifier, State>>
-      _create;
 
   /// {@template riverpod.statenotifierprovider.notifier}
   /// Obtains the [StateNotifier] associated with this [AutoDisposeStateNotifierProvider],
@@ -66,12 +128,7 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
   /// event that the [StateNotifier] it recreated.
   /// {@endtemplate}
   @override
-  late final AutoDisposeProviderBase<Notifier> notifier =
-      _AutoDisposeNotifierProvider(
-    _create,
-    name: name,
-    dependencies: dependencies,
-  );
+  final AutoDisposeProviderBase<Notifier> notifier;
 
   @override
   State create(AutoDisposeProviderElementBase<State> ref) {

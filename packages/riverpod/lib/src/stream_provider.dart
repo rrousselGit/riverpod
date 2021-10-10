@@ -10,7 +10,6 @@ import 'common.dart';
 import 'framework.dart';
 import 'future_provider.dart';
 import 'provider.dart';
-import 'value_provider.dart';
 
 part 'stream_provider/auto_dispose.dart';
 part 'stream_provider/base.dart';

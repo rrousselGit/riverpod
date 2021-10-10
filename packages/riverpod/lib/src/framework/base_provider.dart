@@ -74,10 +74,7 @@ mixin AlwaysAliveProviderListenable<State>
 abstract class AlwaysAliveProviderBase<State> extends ProviderBase<State>
     implements AlwaysAliveProviderListenable<State> {
   /// Creates an [AlwaysAliveProviderBase].
-  AlwaysAliveProviderBase({
-    required String? name,
-    required List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+  AlwaysAliveProviderBase({required String? name}) : super(name: name);
 
   @override
   ProviderElementBase<State> createElement();
@@ -96,19 +93,17 @@ abstract class AlwaysAliveProviderBase<State> extends ProviderBase<State>
 /// A common interface shared by [ProviderBase] and [Family]
 @sealed
 abstract class ProviderOrFamily {
-  /// A common interface shared by [ProviderBase] and [Family]
-  ProviderOrFamily({required List<ProviderOrFamily>? dependencies})
-      : dependencies = dependencies == null
-            ? null
-            : _allTransitiveDependencies(dependencies);
-
   /// The list of providers that this provider potentially depends on.
   ///
   /// Specifying this list will tell Riverpod to automatically scope this provider
   /// if one of its dependency is overridden.
   /// The downside is that it prevents `ref.watch` & co to be used with a provider
   /// that isn't listed in [dependencies].
-  final List<ProviderOrFamily>? dependencies;
+  List<ProviderOrFamily>? get dependencies;
+
+  /// All the dependencies of a provider and their dependencies too.
+  late final allTransitiveDependencies =
+      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
 }
 
 List<ProviderOrFamily> _allTransitiveDependencies(
@@ -130,10 +125,12 @@ List<ProviderOrFamily> _allTransitiveDependencies(
 abstract class ProviderBase<State> extends ProviderOrFamily
     implements ProviderListenable<State>, ProviderOverride {
   /// A base class for _all_ providers.
-  ProviderBase({
-    required this.name,
-    required List<ProviderOrFamily>? dependencies,
-  }) : super(dependencies: dependencies);
+  ProviderBase({required this.name});
+
+  @override
+  ProviderBase get _origin => originProvider;
+  @override
+  ProviderBase get _override => originProvider;
 
   /// {@template riverpod.name}
   /// A custom label for providers.
@@ -157,7 +154,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   ///
   /// Defaults to `this`.
   // ignore: avoid_returning_this
-  ProviderBase<Object?> get providerToRefresh => this;
+  ProviderBase<Object?> get originProvider => this;
 
   State create(covariant ProviderRefBase ref);
 
@@ -833,6 +830,15 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
   }
 
   bool _debugAssertCanDependOn(ProviderBase provider) {
+    assert(
+      origin.dependencies == null ||
+          origin.dependencies!.contains(provider.from) ||
+          origin.dependencies!.contains(provider),
+      'The provider $origin tried to read $provider, but it specified a '
+      "'dependendencies' list yet that list does not contain $provider.\n\n"
+      "To fix, add $provider to $origin's 'dependencies' parameter",
+    );
+
     assert(() {
       final queue = Queue<ProviderElementBase>.from(_dependents);
 
@@ -951,6 +957,8 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     }
 
     final provider = listenable as ProviderBase<T>;
+    assert(_debugAssertCanDependOn(provider), '');
+
     // TODO remove by passing the a debug flag to `listen`
     final element = container.readProviderElement(provider);
     // TODO test flush
@@ -1150,11 +1158,8 @@ $stackTrace
   }
 }
 
-@protected
-mixin ProviderOverridesMixin<State> on AlwaysAliveProviderBase<State> {
-  /// Overrides the behavior of a provider with a value.
-  ///
-  /// {@template riverpod.overideWith}
+mixin OverrideWithValueMixin<State> on ProviderBase<State> {
+  /// {@template riverpod.overrridewithvalue}
   /// Some common use-cases are:
   /// - testing, by replacing a service with a fake implementation, or to reach
   ///   a very specific state easily.
@@ -1180,5 +1185,10 @@ mixin ProviderOverridesMixin<State> on AlwaysAliveProviderBase<State> {
   /// );
   /// ```
   /// {@endtemplate}
-  Override overrideWithValue(State value);
+  Override overrideWithValue(State value) {
+    return ProviderOverride(
+      origin: this,
+      override: ValueProvider<State>(value),
+    );
+  }
 }

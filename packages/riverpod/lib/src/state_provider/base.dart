@@ -5,10 +5,13 @@ class _NotifierProvider<State>
   _NotifierProvider(
     this._create, {
     required String? name,
-    required List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+    required this.dependencies,
+  }) : super(name: name);
 
   final Create<State, StateProviderRef<State>> _create;
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
 
   @override
   StateController<State> create(StateProviderRef<State> ref) {
@@ -25,10 +28,6 @@ class _NotifierProvider<State>
   ) {
     return true;
   }
-
-  @override
-  void setupOverride(SetupOverride setup) =>
-      throw UnsupportedError('Cannot override StateProvider.notifier');
 
   @override
   StateProviderElement<State> createElement() {
@@ -87,24 +86,25 @@ class StateProviderElement<State>
 /// {@macro riverpod.stateprovider}
 @sealed
 class StateProvider<State>
-    extends AlwaysAliveProviderBase<StateController<State>> {
+    extends AlwaysAliveProviderBase<StateController<State>>
+    with StateProviderOverrideMixin<State> {
   /// {@macro riverpod.stateprovider}
   StateProvider(
-    this._create, {
+    Create<State, StateProviderRef<State>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+  })  : notifier = _NotifierProvider(
+          create,
+          name: modifierName(name, 'notifier'),
+          dependencies: dependencies,
+        ),
+        super(name: name);
 
   /// {@macro riverpod.family}
   static const family = StateProviderFamilyBuilder();
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStateProviderBuilder();
-
-  final Create<State, StateProviderRef<State>> _create;
-
-  @override
-  ProviderBase<Object?> get providerToRefresh => notifier;
 
   /// {@template riverpod.stateprovider.notifier}
   /// Obtains the [StateController] associated with this provider, but without
@@ -127,12 +127,8 @@ class StateProvider<State>
   /// The reasoning is, using `read` could cause hard to catch bugs, such as
   /// not rebuilding dependent providers/widgets after using `context.refresh` on this provider.
   /// {@endtemplate}
-  late final AlwaysAliveProviderBase<StateController<State>> notifier =
-      _NotifierProvider(
-    _create,
-    name: modifierName(name, 'notifier'),
-    dependencies: dependencies,
-  );
+  @override
+  final AlwaysAliveProviderBase<StateController<State>> notifier;
 
   @override
   StateController<State> create(
@@ -147,25 +143,6 @@ class StateProvider<State>
     StateController<State> newState,
   ) {
     return true;
-  }
-
-  /// Overrides the behavior of a provider with a another provider.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithValue(StateController<State> value) {
-    return ProviderOverride((setup) {
-      setup(origin: this, override: this);
-      setup(
-        origin: notifier,
-        override: ValueProvider<StateController<State>>(value),
-      );
-    });
-  }
-
-  @override
-  void setupOverride(SetupOverride setup) {
-    setup(origin: this, override: this);
-    setup(origin: notifier, override: notifier);
   }
 
   @override

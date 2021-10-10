@@ -517,11 +517,11 @@ final b = Provider(
     });
 
     test(
-        'ProviderRef methods throw if trying to read a provider that is not in the dependencies list',
+        'Throw if trying to read aprovider that is not in the dependencies list',
         () {
       final container = createContainer();
       final dep = Provider((ref) => 0);
-      final dep2 = Provider((ref) => 0);
+      final dep2 = Provider((ref) => 0, dependencies: [dep]);
       final provider = Provider((ref) {
         ref.watch(dep2);
       }, dependencies: [dep]);

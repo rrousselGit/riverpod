@@ -271,19 +271,22 @@ class ProviderElement<State> extends ProviderElementBase<State>
 /// {@macro riverpod.provider}
 @sealed
 class Provider<State> extends AlwaysAliveProviderBase<State>
-    with ProviderOverridesMixin<State> {
+    with OverrideWithValueMixin<State> {
   /// {@macro riverpod.provider}
   Provider(
     this._create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+    this.dependencies,
+  }) : super(name: name);
 
   /// {@macro riverpod.family}
   static const family = ProviderFamilyBuilder();
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeProviderBuilder();
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
 
   final Create<State, ProviderRef<State>> _create;
 
@@ -293,21 +296,6 @@ class Provider<State> extends AlwaysAliveProviderBase<State>
   @override
   bool updateShouldNotify(State previousState, State newState) {
     return previousState != newState;
-  }
-
-  @override
-  void setupOverride(SetupOverride setup) {
-    setup(origin: this, override: this);
-  }
-
-  @override
-  Override overrideWithValue(State value) {
-    return ProviderOverride((setup) {
-      setup(
-        origin: this,
-        override: ValueProvider<State>(value),
-      );
-    });
   }
 
   @override

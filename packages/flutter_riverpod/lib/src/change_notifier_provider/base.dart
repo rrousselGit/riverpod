@@ -8,13 +8,20 @@ typedef ChangeNotifierProviderRef<Notifier extends ChangeNotifier>
 /// {@macro riverpod.changenotifierprovider}
 @sealed
 class ChangeNotifierProvider<Notifier extends ChangeNotifier>
-    extends AlwaysAliveProviderBase<Notifier> {
+    extends AlwaysAliveProviderBase<Notifier>
+    with ChangeNotifierProviderOverrideMixin<Notifier> {
   /// {@macro riverpod.changenotifierprovider}
   ChangeNotifierProvider(
-    this._create, {
+    Create<Notifier, ChangeNotifierProviderRef<Notifier>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+  })  : notifier = Provider((ref) {
+          final notifier = create(ref);
+          ref.onDispose(notifier.dispose);
+
+          return notifier;
+        }, dependencies: dependencies),
+        super(name: name);
 
   /// {@macro riverpod.family}
   static const family = ChangeNotifierProviderFamilyBuilder();
@@ -22,10 +29,8 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeChangeNotifierProviderBuilder();
 
-  final Create<Notifier, ChangeNotifierProviderRef<Notifier>> _create;
-
   @override
-  ProviderBase<Object?> get providerToRefresh => notifier;
+  ProviderBase<Object?> get originProvider => notifier;
 
   /// {@template flutter_riverpod.changenotifierprovider.notifier}
   /// Obtains the [ChangeNotifier] associated with this provider, but without
@@ -48,34 +53,14 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
   /// The reasoning is, using `read` could cause hard to catch bugs, such as
   /// not rebuilding dependent providers/widgets after using `context.refresh` on this provider.
   /// {@endtemplate}
-  late final AlwaysAliveProviderBase<Notifier> notifier = Provider((ref) {
-    final notifier = _create(ref);
-    ref.onDispose(notifier.dispose);
-
-    return notifier;
-  }, dependencies: dependencies);
+  @override
+  final AlwaysAliveProviderBase<Notifier> notifier;
 
   @override
   Notifier create(ProviderElementBase<Notifier> ref) {
     final notifier = ref.watch<Notifier>(this.notifier);
     _listenNotifier(notifier, ref);
     return notifier;
-  }
-
-  /// Overrides the behavior of a provider with a value.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithValue(Notifier value) {
-    return ProviderOverride((setup) {
-      setup(origin: this, override: this);
-      setup(origin: notifier, override: ValueProvider<Notifier>(value));
-    });
-  }
-
-  @override
-  void setupOverride(SetupOverride setup) {
-    setup(origin: this, override: this);
-    setup(origin: notifier, override: notifier);
   }
 
   @override

@@ -7,19 +7,22 @@ typedef FutureProviderRef<State> = ProviderRefBase;
 /// {@macro riverpod.futureprovider}
 @sealed
 class FutureProvider<State> extends AsyncProvider<State>
-    with ProviderOverridesMixin<AsyncValue<State>> {
+    with OverrideWithValueMixin<AsyncValue<State>> {
   /// {@macro riverpod.futureprovider}
   FutureProvider(
     this._create, {
     String? name,
-    List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+    this.dependencies,
+  }) : super(name: name);
 
   /// {@macro riverpod.family}
   static const family = FutureProviderFamilyBuilder();
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeFutureProviderBuilder();
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
 
   final Create<FutureOr<State>, FutureProviderRef<State>> _create;
 
@@ -45,31 +48,13 @@ class FutureProvider<State> extends AsyncProvider<State>
   /// ```
   /// {@endtemplate}
   late final AlwaysAliveProviderBase<Future<State>> future =
-      AsyncValueAsFutureProvider(
-    this,
-    name: modifierName(name, 'future'),
-    dependencies: dependencies,
-  );
+      AsyncValueAsFutureProvider(this, name: modifierName(name, 'future'));
 
   @override
   AsyncValue<State> create(
     ProviderElementBase<AsyncValue<State>> ref,
   ) {
     return _listenFuture(() => _create(ref), ref);
-  }
-
-  @override
-  void setupOverride(SetupOverride setup) {
-    setup(origin: this, override: this);
-    setup(origin: future, override: future);
-  }
-
-  @override
-  Override overrideWithValue(AsyncValue<State> value) {
-    return ProviderOverride((setup) {
-      setup(origin: future, override: future);
-      setup(origin: this, override: ValueProvider<AsyncValue<State>>(value));
-    });
   }
 
   @override

@@ -5,10 +5,13 @@ class _AutoDisposeNotifierProvider<State>
   _AutoDisposeNotifierProvider(
     this._create, {
     required String? name,
-    required List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+    required this.dependencies,
+  }) : super(name: name);
 
   final Create<State, AutoDisposeStateProviderRef<State>> _create;
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
 
   @override
   StateController<State> create(AutoDisposeStateProviderRef<State> ref) {
@@ -25,10 +28,6 @@ class _AutoDisposeNotifierProvider<State>
   ) {
     return true;
   }
-
-  @override
-  void setupOverride(SetupOverride setup) =>
-      throw UnsupportedError('Cannot override StateProvider.notifier');
 
   @override
   AutoDisposeStateProviderElement<State> createElement() {
@@ -83,29 +82,26 @@ class AutoDisposeStateProviderElement<State>
 /// {@macro riverpod.stateprovider}
 @sealed
 class AutoDisposeStateProvider<State>
-    extends AutoDisposeProviderBase<StateController<State>> {
+    extends AutoDisposeProviderBase<StateController<State>>
+    with StateProviderOverrideMixin<State> {
   /// {@macro riverpod.stateprovider}
   AutoDisposeStateProvider(
-    this._create, {
+    Create<State, AutoDisposeStateProviderRef<State>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+  })  : notifier = _AutoDisposeNotifierProvider(
+          create,
+          name: modifierName(name, 'notifier'),
+          dependencies: dependencies,
+        ),
+        super(name: name);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStateProviderFamilyBuilder();
 
-  final Create<State, AutoDisposeStateProviderRef<State>> _create;
-
-  @override
-  ProviderBase<Object?> get providerToRefresh => notifier;
-
   /// {@macro riverpod.stateprovider.notifier}
-  late final AutoDisposeProviderBase<StateController<State>> notifier =
-      _AutoDisposeNotifierProvider(
-    _create,
-    name: modifierName(name, 'notifier'),
-    dependencies: dependencies,
-  );
+  @override
+  final AutoDisposeProviderBase<StateController<State>> notifier;
 
   @override
   StateController<State> create(AutoDisposeStateProviderRef<State> ref) {
@@ -121,25 +117,6 @@ class AutoDisposeStateProvider<State>
     StateController<State> newState,
   ) {
     return true;
-  }
-
-  /// Overrides the behavior of a provider with a another provider.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithValue(StateController<State> value) {
-    return ProviderOverride((setup) {
-      setup(origin: this, override: this);
-      setup(
-        origin: notifier,
-        override: ValueProvider<StateController<State>>(value),
-      );
-    });
-  }
-
-  @override
-  void setupOverride(SetupOverride setup) {
-    setup(origin: this, override: this);
-    setup(origin: notifier, override: notifier);
   }
 
   @override
