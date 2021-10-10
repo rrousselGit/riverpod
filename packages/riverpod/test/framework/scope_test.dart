@@ -518,12 +518,22 @@ final b = Provider(
 
     test(
         'ProviderRef methods throw if trying to read a provider that is not in the dependencies list',
-        () {},
-        skip: true);
+        () {
+      final container = createContainer();
+      final dep = Provider((ref) => 0);
+      final dep2 = Provider((ref) => 0);
+      final provider = Provider((ref) {
+        ref.watch(dep2);
+      }, dependencies: [dep]);
 
-    test(
-        'WidgetRef asserts that all providers in the graph are respecting "dependencies"',
-        () {},
-        skip: true);
+      expect(
+        () => container.read(provider),
+        throwsA(
+          isA<ProviderException>()
+              .having((e) => e.provider, 'provider', provider)
+              .having((e) => e.exception, 'exception', isA<AssertionError>()),
+        ),
+      );
+    });
   });
 }

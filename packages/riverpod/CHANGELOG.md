@@ -1,3 +1,9 @@
+## [Unreleased]
+
+- Added an assertion that detects when a provider override is missing.
+- Added an assert for when a provider specified `dependencies` but is
+  depending on a provider that isn't in the list.
+
 ## 1.0.0-dev.10
 
 Fixed a bug where reading a provider within a consumer could throw (#796)

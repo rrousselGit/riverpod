@@ -9,6 +9,44 @@ import 'uni_directional_test.dart';
 
 void main() {
   group('ProviderContainer', () {
+    group('validate that properties respect `dependencies`', () {
+      test('on reading an element, asserts that dependencies are respected',
+          () {
+        final dep = Provider((ref) => 0);
+        final provider = Provider((ref) => ref.watch(dep));
+
+        final root = createContainer();
+        final container = createContainer(
+          parent: root,
+          overrides: [dep.overrideWithValue(42)],
+        );
+
+        expect(
+          () => container.readProviderElement(provider),
+          throwsA(isA<AssertionError>()),
+        );
+      });
+
+      test(
+          'on reading an element, asserts that transitive dependencies are also respected',
+          () {
+        final transitiveDep = Provider((ref) => 0);
+        final dep = Provider((ref) => ref.watch(transitiveDep));
+        final provider = Provider((ref) => ref.watch(dep));
+
+        final root = createContainer();
+        final container = createContainer(
+          parent: root,
+          overrides: [transitiveDep.overrideWithValue(42)],
+        );
+
+        expect(
+          () => container.readProviderElement(provider),
+          throwsA(isA<AssertionError>()),
+        );
+      });
+    });
+
     group('updateOverrides', () {
       test('is not allowed to remove overrides ', () {
         final provider = Provider((_) => 0);
