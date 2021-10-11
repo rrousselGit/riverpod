@@ -191,20 +191,17 @@ extension AsyncValueX<T> on AsyncValue<T> {
     );
   }
 
-  /// Attempts to synchronously read the value while ignoring error/loading cases.
+  /// Attempts to synchronously.
   ///
-  /// This should be used only when you are certain that error/loading states
-  /// are already taken care of.
-  /// Otherwise, prefer using [when].
-  ///
-  /// If the value was an error, will throw the error instead.
-  /// If the value is still loading, will throw an [AsyncValueLoadingError].
-  T get value {
+  /// On error, this will rethrow the error.
+  /// If loading, will return `null`.
+  /// Otherwise will return the data.
+  T? get value {
     return _map(
       data: (d) => d.value,
       // ignore: only_throw_errors
       error: (e) => throw e.error,
-      loading: (l) => throw AsyncValueLoadingError(),
+      loading: (l) => null,
     );
   }
 
@@ -438,7 +435,3 @@ class AsyncError<T> implements AsyncValue<T> {
   @override
   int get hashCode => Object.hash(runtimeType, error, stackTrace, previous);
 }
-
-/// An exception thrown when trying to read [AsyncValueX.value] before the value
-/// was loaded.
-class AsyncValueLoadingError extends Error {}
