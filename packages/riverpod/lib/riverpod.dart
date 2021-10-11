@@ -1,13 +1,7 @@
 export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
 
 export 'src/common.dart'
-    show
-        AsyncValue,
-        AsyncData,
-        AsyncLoading,
-        AsyncError,
-        AsyncValueX,
-        AsyncValueLoadingError;
+    show AsyncValue, AsyncData, AsyncLoading, AsyncError, AsyncValueX;
 
 export 'src/framework.dart'
     show
