@@ -7,7 +7,7 @@ typedef AutoDisposeFutureProviderRef<State> = AutoDisposeProviderRefBase;
 /// {@macro riverpod.futureprovider}
 @sealed
 class AutoDisposeFutureProvider<State> extends AutoDisposeAsyncProvider<State>
-    with OverrideWithValueMixin<AsyncValue<State>> {
+    with AutoDisposeOverrideWithValueMixin<AsyncValue<State>> {
   /// {@macro riverpod.futureprovider}
   AutoDisposeFutureProvider(
     this._create, {
@@ -22,6 +22,9 @@ class AutoDisposeFutureProvider<State> extends AutoDisposeAsyncProvider<State>
 
   @override
   final List<ProviderOrFamily>? dependencies;
+
+  @override
+  ProviderBase<AsyncValue<State>> get originProvider => this;
 
   /// {@macro riverpod.futureprovider.future}
   late final AutoDisposeProviderBase<Future<State>> future =
@@ -82,6 +85,19 @@ class AutoDisposeFutureProviderFamily<State, Arg>
     registerProvider(provider.future, argument);
 
     return provider;
+  }
+
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    AutoDisposeProviderBase<AsyncValue<State>> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(this, (arg, setup) {
+      final futureProvider = call(arg);
+      setup(origin: futureProvider, override: override(arg));
+      setup(origin: futureProvider.future, override: futureProvider.future);
+    });
   }
 
   @override

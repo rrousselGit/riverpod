@@ -63,6 +63,18 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
     return notifier;
   }
 
+  /// Overrides the behavior of a provider with a another provider.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    ChangeNotifierProvider<Notifier> provider,
+  ) {
+    return ProviderOverride(
+      origin: notifier,
+      override: provider.notifier,
+    );
+  }
+
   @override
   ProviderElement<Notifier> createElement() {
     return ProviderElement(this);
@@ -99,6 +111,23 @@ class ChangeNotifierProviderFamily<Notifier extends ChangeNotifier, Arg>
     registerProvider(provider.notifier, argument);
 
     return provider;
+  }
+
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    ChangeNotifierProvider<Notifier> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(
+      this,
+      (arg, setup) {
+        final provider = call(arg);
+
+        setup(origin: provider.notifier, override: override(arg).notifier);
+        setup(origin: provider, override: provider);
+      },
+    );
   }
 
   @override

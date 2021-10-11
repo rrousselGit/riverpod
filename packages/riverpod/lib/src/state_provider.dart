@@ -87,24 +87,3 @@ StateController<State> _listenStateProvider<State>(
 
   return controller;
 }
-
-/// Add [overrideWithValue] to [StateProvider]
-mixin StateProviderOverrideMixin<State>
-    on ProviderBase<StateController<State>> {
-  ///
-  ProviderBase<StateController<State>> get notifier;
-
-  @override
-  late final List<ProviderOrFamily>? dependencies = [notifier];
-
-  @override
-  ProviderBase get originProvider => notifier;
-
-  /// {@macro riverpod.overrridewithvalue}
-  Override overrideWithValue(StateController<State> value) {
-    return ProviderOverride(
-      origin: notifier,
-      override: ValueProvider<StateController<State>>(value),
-    );
-  }
-}

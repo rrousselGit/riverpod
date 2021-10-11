@@ -121,6 +121,38 @@ void main() {
     await Future.value(null);
   });
 
+  testWidgets('FutureProvider can be overridden with Future', (tester) async {
+    var callCount = 0;
+    final futureProvider = FutureProvider((s) async {
+      callCount++;
+      return 42;
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          futureProvider.overrideWithProvider(FutureProvider((_) async => 21)),
+        ],
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Consumer(builder: (c, ref, _) {
+            return ref.watch(futureProvider).maybeWhen(
+                  data: (data) => Text(data.toString()),
+                  orElse: () => const Text('else'),
+                );
+          }),
+        ),
+      ),
+    );
+
+    expect(callCount, 0);
+    expect(find.text('else'), findsOneWidget);
+
+    await tester.pump();
+
+    expect(find.text('21'), findsOneWidget);
+  });
+
   group('overrideWithValue', () {
     var callCount = 0;
     final futureProvider = FutureProvider((s) async {

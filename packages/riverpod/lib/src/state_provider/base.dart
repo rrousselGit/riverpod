@@ -14,6 +14,9 @@ class _NotifierProvider<State>
   final List<ProviderOrFamily>? dependencies;
 
   @override
+  ProviderBase<Object?> get originProvider => this;
+
+  @override
   StateController<State> create(StateProviderRef<State> ref) {
     final initialState = _create(ref);
     final notifier = StateController(initialState);
@@ -86,8 +89,7 @@ class StateProviderElement<State>
 /// {@macro riverpod.stateprovider}
 @sealed
 class StateProvider<State>
-    extends AlwaysAliveProviderBase<StateController<State>>
-    with StateProviderOverrideMixin<State> {
+    extends AlwaysAliveProviderBase<StateController<State>> {
   /// {@macro riverpod.stateprovider}
   StateProvider(
     Create<State, StateProviderRef<State>> create, {
@@ -105,6 +107,30 @@ class StateProvider<State>
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStateProviderBuilder();
+
+  @override
+  late final List<ProviderOrFamily> dependencies = [notifier];
+
+  @override
+  ProviderBase<StateController<State>> get originProvider => notifier;
+
+  /// {@macro riverpod.overrridewithvalue}
+  Override overrideWithValue(StateController<State> value) {
+    return ProviderOverride(
+      origin: notifier,
+      override: ValueProvider<StateController<State>>(value),
+    );
+  }
+
+  /// {@macro riverpod.overrridewithprovider}
+  Override overrideWithProvider(
+    StateProvider<State> provider,
+  ) {
+    return ProviderOverride(
+      origin: notifier,
+      override: provider.notifier,
+    );
+  }
 
   /// {@template riverpod.stateprovider.notifier}
   /// Obtains the [StateController] associated with this provider, but without
@@ -127,7 +153,6 @@ class StateProvider<State>
   /// The reasoning is, using `read` could cause hard to catch bugs, such as
   /// not rebuilding dependent providers/widgets after using `context.refresh` on this provider.
   /// {@endtemplate}
-  @override
   final AlwaysAliveProviderBase<StateController<State>> notifier;
 
   @override
@@ -174,6 +199,22 @@ class StateProviderFamily<State, Arg>
     registerProvider(provider.notifier, argument);
 
     return provider;
+  }
+
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    StateProvider<State> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(
+      this,
+      (arg, setup) {
+        final provider = call(arg);
+        setup(origin: provider.notifier, override: override(arg).notifier);
+        setup(origin: provider, override: provider);
+      },
+    );
   }
 
   @override

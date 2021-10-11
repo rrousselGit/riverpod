@@ -22,9 +22,11 @@ export 'src/framework.dart'
         AutoDisposeProviderBase,
         AutoDisposeProviderElementBase,
         ProviderElementBase,
+        XFamily,
         ProviderOverride,
         FamilyOverride,
         SetupOverride,
+        XAutoDisposeFamily,
         // ignore: deprecated_member_use_from_same_package
         ProviderReference,
         AlwaysAliveProviderListenable,
@@ -57,8 +59,7 @@ export 'src/state_notifier_provider.dart'
         StateNotifierProvider,
         StateNotifierProviderFamily,
         AutoDisposeStateNotifierProviderRef,
-        StateNotifierProviderRef,
-        StateNotifierProviderOverrideMixin;
+        StateNotifierProviderRef;
 
 export 'src/state_provider.dart'
     show

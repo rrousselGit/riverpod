@@ -698,7 +698,7 @@ typedef SetupOverride = void Function({
 /// See also:
 ///
 /// - [ProviderContainer], which uses this object.
-/// - `overrideWithValue`, which creates a [ProviderOverride].
+/// - `overrideWithProvider`/`overrideWithValue`, which creates a [ProviderOverride].
 class ProviderOverride implements Override {
   /// Override a provider
   ProviderOverride({

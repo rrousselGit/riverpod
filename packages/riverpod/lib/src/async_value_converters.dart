@@ -20,6 +20,9 @@ class AsyncValueAsStreamProvider<State>
   late final List<ProviderOrFamily>? dependencies = [_provider];
 
   @override
+  ProviderBase<Object?> get originProvider => this;
+
+  @override
   Stream<State> create(covariant ProviderElementBase<Stream<State>> ref) {
     return _asyncValueToStream(_provider, ref);
   }
@@ -50,6 +53,9 @@ class AutoDisposeAsyncValueAsStreamProvider<State>
 
   @override
   late final List<ProviderOrFamily>? dependencies = [_provider];
+
+  @override
+  ProviderBase<Object?> get originProvider => this;
 
   @override
   Stream<State> create(
@@ -127,6 +133,9 @@ class AsyncValueAsFutureProvider<State>
   late final List<ProviderOrFamily>? dependencies = [_provider];
 
   @override
+  ProviderBase<Object?> get originProvider => this;
+
+  @override
   Future<State> create(ProviderElementBase<Future<State>> ref) {
     return _asyncValueAsFuture(_provider, ref);
   }
@@ -157,6 +166,9 @@ class AutoDisposeAsyncValueAsFutureProvider<State>
 
   @override
   late final List<ProviderOrFamily>? dependencies = [_provider];
+
+  @override
+  ProviderBase<Object?> get originProvider => this;
 
   @override
   Future<State> create(AutoDisposeProviderElementBase<Future<State>> ref) {

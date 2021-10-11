@@ -18,7 +18,6 @@ export 'src/consumer.dart'
         ConsumerState,
         ConsumerStatefulWidget,
         ConsumerStatefulElement;
-
 export 'src/framework.dart' show ProviderScope, UncontrolledProviderScope;
 // ignore: deprecated_member_use_from_same_package
 export 'src/provider_listener.dart' show ProviderListener, OnProviderChange;

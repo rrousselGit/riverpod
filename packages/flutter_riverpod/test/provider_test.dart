@@ -123,13 +123,9 @@ void main() {
     expect(find.text('42'), findsOneWidget);
   });
 
-  testWidgets('override updates preserve state', (tester) async {
-    var callCount = 0;
-    final dep = Provider((ref) => 0);
-    final provider = Provider((ref) {
-      callCount++;
-      return ref.watch(dep);
-    });
+  testWidgets('override updates rebuild dependents with new value',
+      (tester) async {
+    final provider = Provider((_) => 0);
     final child = Consumer(builder: (c, ref, _) {
       return Text(
         ref.watch(provider).toString(),
@@ -137,11 +133,17 @@ void main() {
       );
     });
 
+    var callCount = 0;
+
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          dep.overrideWithValue(42),
-          provider,
+          provider.overrideWithProvider(
+            Provider((ref) {
+              callCount++;
+              return 42;
+            }),
+          ),
         ],
         child: child,
       ),
@@ -153,8 +155,12 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          dep.overrideWithValue(42),
-          provider,
+          provider.overrideWithProvider(
+            Provider((ref) {
+              callCount++;
+              throw Error();
+            }),
+          ),
         ],
         child: child,
       ),
@@ -162,6 +168,31 @@ void main() {
 
     expect(callCount, 1);
     expect(find.text('42'), findsOneWidget);
+  });
+
+  testWidgets('provider1 as override of normal provider', (tester) async {
+    final provider = Provider((_) => 42);
+    final provider2 = Provider((_) => 42);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          provider2.overrideWithProvider(
+            Provider<int>((ref) {
+              return ref.watch(provider) * 2;
+            }),
+          ),
+        ],
+        child: Consumer(builder: (c, ref, _) {
+          return Text(
+            ref.watch(provider2).toString(),
+            textDirection: TextDirection.ltr,
+          );
+        }),
+      ),
+    );
+
+    expect(find.text('84'), findsOneWidget);
   });
 
   testWidgets('provider1 uses override if the override is at root',
@@ -175,7 +206,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideWithValue(1),
+          provider.overrideWithProvider(Provider((_) => 1)),
         ],
         child: Consumer(builder: (c, ref, _) {
           return Text(ref.watch(provider1), textDirection: TextDirection.ltr);
@@ -228,7 +259,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          first.overrideWithValue(42),
+          first.overrideWithProvider(Provider((_) => 42)),
         ],
         child: Consumer(builder: (c, ref, _) {
           return Text(
@@ -257,7 +288,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          second.overrideWithValue(0),
+          second.overrideWithProvider(Provider((_) => 0)),
         ],
         child: Consumer(builder: (c, ref, _) {
           return Text(

@@ -9,7 +9,7 @@ typedef StreamProviderRef<State> = ProviderRefBase;
 class StreamProvider<State> extends AsyncProvider<State>
     with
         _StreamProviderMixin<State>,
-        OverrideWithValueMixin<AsyncValue<State>> {
+        AlwaysAliveOverrideWithValueMixin<AsyncValue<State>> {
   /// {@macro riverpod.streamprovider}
   StreamProvider(
     this._create, {
@@ -27,6 +27,9 @@ class StreamProvider<State> extends AsyncProvider<State>
 
   @override
   final List<ProviderOrFamily>? dependencies;
+
+  @override
+  ProviderBase<AsyncValue<State>> get originProvider => this;
 
   @override
   late final AlwaysAliveProviderBase<Stream<State>> stream =
@@ -92,5 +95,19 @@ class StreamProviderFamily<State, Arg>
     setup(origin: provider, override: provider);
     setup(origin: provider.stream, override: provider.stream);
     setup(origin: provider.last, override: provider.last);
+  }
+
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    ProviderBase<AsyncValue<State>> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(this, (arg, setup) {
+      final provider = call(arg);
+      setup(origin: provider, override: override(arg));
+      setup(origin: provider.stream, override: provider.stream);
+      setup(origin: provider.last, override: provider.last);
+    });
   }
 }

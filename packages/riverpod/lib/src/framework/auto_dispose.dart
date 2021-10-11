@@ -74,3 +74,25 @@ abstract class AutoDisposeProviderElementBase<State>
     }
   }
 }
+
+///
+mixin AutoDisposeOverrideWithValueMixin<State> {
+  ///
+  ProviderBase<State> get originProvider;
+
+  /// {@macro riverpod.overrridewithvalue}
+  Override overrideWithValue(State value) {
+    return ProviderOverride(
+      origin: originProvider,
+      override: ValueProvider<State>(value),
+    );
+  }
+
+  /// {@macro riverpod.overrridewithprovider}
+  Override overrideWithProvider(
+    // Accepts AlwaysAliveProvider
+    ProviderBase<State> provider,
+  ) {
+    return ProviderOverride(origin: originProvider, override: provider);
+  }
+}

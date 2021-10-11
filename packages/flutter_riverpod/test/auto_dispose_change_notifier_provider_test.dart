@@ -90,6 +90,43 @@ void main() {
     expect(callCount, 1);
   });
 
+  test('family override', () {
+    final provider = ChangeNotifierProvider.autoDispose
+        .family<ValueNotifier<int>, int>((ref, value) {
+      return ValueNotifier(value);
+    });
+    final container = ProviderContainer(overrides: [
+      provider.overrideWithProvider(
+        (value) => ChangeNotifierProvider.autoDispose(
+          (ref) => ValueNotifier(value * 2),
+        ),
+      ),
+    ]);
+    final listener1 = Listener<ValueNotifier<int>>();
+    final listener2 = Listener<ValueNotifier<int>>();
+
+    container.listen(provider(0), listener1, fireImmediately: true);
+    container.listen(provider(42), listener2, fireImmediately: true);
+
+    verifyOnly(
+      listener1,
+      listener1(
+        argThat(
+          isA<ValueNotifier<int>>().having((s) => s.value, 'value', 0),
+        ),
+      ),
+    );
+
+    verifyOnly(
+      listener2,
+      listener2(
+        argThat(
+          isA<ValueNotifier<int>>().having((s) => s.value, 'value', 84),
+        ),
+      ),
+    );
+  });
+
   test('can specify name', () {
     final provider = ChangeNotifierProvider.autoDispose(
       (_) => ValueNotifier(0),
@@ -178,6 +215,56 @@ void main() {
     expect(notifier2.hasListeners, false);
     expect(notifier2.mounted, true);
     expect(notifier.mounted, true);
+  });
+
+  test('overrideWithProvider preserves the state accross update', () async {
+    final provider = ChangeNotifierProvider.autoDispose((_) {
+      return TestNotifier();
+    });
+    final notifier = TestNotifier();
+    final notifier2 = TestNotifier();
+    final container = ProviderContainer(overrides: [
+      provider.overrideWithProvider(
+        ChangeNotifierProvider.autoDispose((_) => notifier),
+      ),
+    ]);
+    addTearDown(container.dispose);
+
+    var callCount = 0;
+    final sub = container.listen(provider, (_) => callCount++);
+
+    expect(sub.read(), notifier);
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier.hasListeners, true);
+    expect(callCount, 0);
+
+    notifier.count++;
+
+    await container.pump();
+    expect(callCount, 1);
+
+    container.updateOverrides([
+      provider.overrideWithProvider(
+        ChangeNotifierProvider.autoDispose((_) => notifier2),
+      ),
+    ]);
+
+    await container.pump();
+    expect(callCount, 1);
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier2.hasListeners, false);
+
+    notifier.count++;
+
+    await container.pump();
+    expect(callCount, 2);
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier.mounted, true);
+
+    container.dispose();
+
+    expect(callCount, 2);
+    expect(notifier.mounted, false);
   });
 }
 

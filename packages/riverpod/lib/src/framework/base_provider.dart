@@ -155,7 +155,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   ///
   /// Defaults to `this`.
   // ignore: avoid_returning_this
-  ProviderBase<Object?> get originProvider => this;
+  ProviderBase<Object?> get originProvider;
 
   State create(covariant ProviderRefBase ref);
 
@@ -1159,8 +1159,19 @@ $stackTrace
   }
 }
 
-mixin OverrideWithValueMixin<State> on ProviderBase<State> {
+////
+mixin AlwaysAliveOverrideWithValueMixin<State> {
+  ProviderBase<State> get originProvider;
+
   /// {@template riverpod.overrridewithvalue}
+  /// Overrides a provider with a value.
+  ///
+  /// This will bypass the provider's state creation logic, and the value
+  /// passed will not be disposed by Riverpod.
+  ///
+  /// As opposed to with [overrideWithProvider], when using [overrideWithValue],
+  /// if the value passed changes, this will correctly notify listeners.
+  ///
   /// Some common use-cases are:
   /// - testing, by replacing a service with a fake implementation, or to reach
   ///   a very specific state easily.
@@ -1188,8 +1199,46 @@ mixin OverrideWithValueMixin<State> on ProviderBase<State> {
   /// {@endtemplate}
   Override overrideWithValue(State value) {
     return ProviderOverride(
-      origin: this,
+      origin: originProvider,
       override: ValueProvider<State>(value),
     );
+  }
+
+  /// {@template riverpod.overrridewithprovider}
+  /// Overrides a provider with a different provider.
+  ///
+  /// As opposed to with [overrideWithValue], when using [overrideWithProvider],
+  /// the state is created once and disposed, and it has access to `ref`.
+  ///
+  /// Some common use-cases are:
+  /// - testing, by replacing a service with a fake implementation, or to reach
+  ///   a very specific state easily.
+  /// - multiple environments, by changing the implementation of a class
+  ///   based on the platform or other parameters.
+  ///
+  /// This function should be used in combination with `ProviderScope.overrides`
+  /// or `ProviderContainer.overrides`:
+  ///
+  /// ```dart
+  /// final myService = Provider((ref) => MyService());
+  ///
+  /// runApp(
+  ///   ProviderScope(
+  ///     overrides: [
+  ///       myService.overrideWithProvider(
+  ///         // Replace the implementation of MyService with a fake implementation
+  ///         Provider((ref) => MyFakeService()),
+  ///       ),
+  ///     ],
+  ///     child: MyApp(),
+  ///   ),
+  /// );
+  /// ```
+  /// {@endtemplate}
+  Override overrideWithProvider(
+    // Cannot be overridden by AutoDisposeProviders
+    AlwaysAliveProviderBase<State> provider,
+  ) {
+    return ProviderOverride(origin: originProvider, override: provider);
   }
 }

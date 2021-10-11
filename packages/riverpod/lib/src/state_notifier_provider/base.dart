@@ -16,6 +16,9 @@ class _NotifierProvider<Notifier extends StateNotifier<Object?>>
   final List<ProviderOrFamily>? dependencies;
 
   @override
+  ProviderBase<Notifier> get originProvider => this;
+
+  @override
   Notifier create(ProviderRefBase ref) {
     final notifier = _create(ref);
     ref.onDispose(notifier.dispose);
@@ -38,8 +41,7 @@ typedef StateNotifierProviderRef<Notifier extends StateNotifier<State>, State>
 /// {@macro riverpod.statenotifierprovider}
 @sealed
 class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
-    extends AlwaysAliveProviderBase<State>
-    with StateNotifierProviderOverrideMixin<Notifier, State> {
+    extends AlwaysAliveProviderBase<State> {
   /// {@macro riverpod.statenotifierprovider}
   StateNotifierProvider(
     Create<Notifier, StateNotifierProviderRef<Notifier, State>> create, {
@@ -58,6 +60,12 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStateNotifierProviderBuilder();
 
+  @override
+  late final List<ProviderOrFamily>? dependencies = [notifier];
+
+  @override
+  ProviderBase get originProvider => notifier;
+
   /// {@template riverpod.statenotifierprovider.notifier}
   /// Obtains the [StateNotifier] associated with this [StateNotifierProvider],
   /// without listening to it.
@@ -65,8 +73,25 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
   /// Listening to this provider may cause providers/widgets to rebuild in the
   /// event that the [StateNotifier] it recreated.
   /// {@endtemplate}
-  @override
   final AlwaysAliveProviderBase<Notifier> notifier;
+
+  /// {@macro riverpod.overrridewithvalue}
+  Override overrideWithValue(Notifier value) {
+    return ProviderOverride(
+      origin: notifier,
+      override: ValueProvider<Notifier>(value),
+    );
+  }
+
+  /// {@macro riverpod.overrridewithprovider}
+  Override overrideWithProvider(
+    StateNotifierProvider<Notifier, State> provider,
+  ) {
+    return ProviderOverride(
+      origin: notifier,
+      override: provider.notifier,
+    );
+  }
 
   @override
   State create(ProviderElementBase<State> ref) {
@@ -119,6 +144,22 @@ class StateNotifierProviderFamily<Notifier extends StateNotifier<State>, State,
     registerProvider(provider.notifier, argument);
 
     return provider;
+  }
+
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    StateNotifierProvider<Notifier, State> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(
+      this,
+      (arg, setup) {
+        final provider = call(arg);
+        setup(origin: provider.notifier, override: override(arg).notifier);
+        setup(origin: provider, override: provider);
+      },
+    );
   }
 
   @override

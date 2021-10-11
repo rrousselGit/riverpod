@@ -7,7 +7,7 @@ typedef FutureProviderRef<State> = ProviderRefBase;
 /// {@macro riverpod.futureprovider}
 @sealed
 class FutureProvider<State> extends AsyncProvider<State>
-    with OverrideWithValueMixin<AsyncValue<State>> {
+    with AlwaysAliveOverrideWithValueMixin<AsyncValue<State>> {
   /// {@macro riverpod.futureprovider}
   FutureProvider(
     this._create, {
@@ -23,6 +23,9 @@ class FutureProvider<State> extends AsyncProvider<State>
 
   @override
   final List<ProviderOrFamily>? dependencies;
+
+  @override
+  ProviderBase<AsyncValue<State>> get originProvider => this;
 
   final Create<FutureOr<State>, FutureProviderRef<State>> _create;
 
@@ -106,5 +109,18 @@ class FutureProviderFamily<State, Arg>
     final futureProvider = call(argument);
     setup(origin: futureProvider, override: futureProvider);
     setup(origin: futureProvider.future, override: futureProvider.future);
+  }
+
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    ProviderBase<AsyncValue<State>> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(this, (arg, setup) {
+      final futureProvider = call(arg);
+      setup(origin: futureProvider, override: override(arg));
+      setup(origin: futureProvider.future, override: futureProvider.future);
+    });
   }
 }

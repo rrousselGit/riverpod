@@ -19,6 +19,9 @@ class ValueProvider<State> extends AlwaysAliveProviderBase<State> {
   List<ProviderOrFamily>? get dependencies => null;
 
   @override
+  ProviderBase<Object?> get originProvider => this;
+
+  @override
   State create(ValueProviderElement<State> ref) {
     if (_create == null) return _value;
     return _create!(ref);

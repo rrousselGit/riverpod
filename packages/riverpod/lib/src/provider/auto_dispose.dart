@@ -52,7 +52,7 @@ class AutoDisposeProviderElement<State>
 /// {@macro riverpod.provider}
 @sealed
 class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
-    with OverrideWithValueMixin<State> {
+    with AutoDisposeOverrideWithValueMixin<State> {
   /// {@macro riverpod.provider}
   AutoDisposeProvider(
     this._create, {
@@ -64,6 +64,9 @@ class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
   static const family = AutoDisposeProviderFamilyBuilder();
 
   final Create<State, AutoDisposeProviderRef<State>> _create;
+
+  @override
+  ProviderBase<State> get originProvider => this;
 
   @override
   final List<ProviderOrFamily>? dependencies;
