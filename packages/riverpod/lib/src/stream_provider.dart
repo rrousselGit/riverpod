@@ -21,7 +21,7 @@ mixin _StreamProviderMixin<T> on ProviderBase<AsyncValue<T>> {
   /// Instead, this stream is always a broadcast stream.
   ///
   /// The stream obtained may change over time, if the [StreamProvider] is
-  /// re-evaluated, such as when it is using [ProviderRefBase.watch] and the
+  /// re-evaluated, such as when it is using [Ref.watch] and the
   /// provider listened changes, or on [ProviderContainer.refresh].
   ///
   /// If the [StreamProvider] was overridden using `overrideWithValue`,

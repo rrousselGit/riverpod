@@ -275,7 +275,7 @@ void main() {
     final provider = Provider((_) => 42);
 
     // These check the type safety
-    ProviderRefBase? ref;
+    Ref? ref;
 
     // ignore: omit_local_variable_types
     final Provider<int> provider1 = Provider<int>((r) {

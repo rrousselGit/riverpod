@@ -267,7 +267,7 @@ void main() {
     verifyNoMoreInteractions(onDispose3);
   });
 
-  test('ProviderRefBase is unusable after dispose (read/onDispose)', () {
+  test('Ref is unusable after dispose (read/onDispose)', () {
     final container = createContainer();
     late ProviderElement ref;
     final provider = Provider((s) {
@@ -288,7 +288,7 @@ void main() {
     var callCount = 0;
     final onDispose = OnDisposeMock();
     final error = Error();
-    late ProviderRefBase reference;
+    late Ref reference;
     final provider = Provider((ref) {
       reference = ref;
       callCount++;

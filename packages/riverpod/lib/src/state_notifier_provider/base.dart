@@ -10,13 +10,13 @@ class _NotifierProvider<Notifier extends StateNotifier<Object?>>
           name: name == null ? null : '$name.notifier',
         );
 
-  final Create<Notifier, ProviderRefBase> _create;
+  final Create<Notifier, Ref> _create;
 
   @override
   final List<ProviderOrFamily>? dependencies;
 
   @override
-  Notifier create(ProviderRefBase ref) {
+  Notifier create(Ref ref) {
     final notifier = _create(ref);
     ref.onDispose(notifier.dispose);
     return notifier;
@@ -33,7 +33,7 @@ class _NotifierProvider<Notifier extends StateNotifier<Object?>>
 
 /// {@macro riverpod.providerrefbase}
 typedef StateNotifierProviderRef<Notifier extends StateNotifier<State>, State>
-    = ProviderRefBase;
+    = Ref;
 
 /// {@macro riverpod.statenotifierprovider}
 @sealed

@@ -248,7 +248,7 @@ class ProviderContainer {
   ///
   /// - [ProviderSubscription], which allows reading the current value and
   ///   closing the subscription.
-  /// - [ProviderRefBase.watch], which is an easier way for providers to listen
+  /// - [Ref.watch], which is an easier way for providers to listen
   ///   to another provider.
   ProviderSubscription<State> listen<State>(
     ProviderListenable<State> provider,
@@ -556,7 +556,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
   /// Release all the resources associated with this [ProviderContainer].
   ///
   /// This will destroy the state of all providers associated to this
-  /// [ProviderContainer] and call [ProviderRefBase.onDispose] listeners.
+  /// [ProviderContainer] and call [Ref.onDispose] listeners.
   void dispose() {
     if (_disposed) {
       return;
@@ -720,7 +720,7 @@ class ProviderOverride implements Override {
 /// Do not extend or implement.
 abstract class Override {}
 
-/// An error thrown when a call to [ProviderRefBase.read]/[ProviderRefBase.watch]
+/// An error thrown when a call to [Ref.read]/[Ref.watch]
 /// leads to a provider depending on itself.
 ///
 /// Circular dependencies are both not supported for performance reasons

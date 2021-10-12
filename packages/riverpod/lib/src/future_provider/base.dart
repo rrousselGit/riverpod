@@ -2,7 +2,7 @@ part of '../future_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [ProviderRef.state], the value currently exposed by this providers.
-typedef FutureProviderRef<State> = ProviderRefBase;
+typedef FutureProviderRef<State> = Ref;
 
 /// {@macro riverpod.futureprovider}
 @sealed
@@ -30,7 +30,7 @@ class FutureProvider<State> extends AsyncProvider<State>
   /// A provider that exposes the [Future] created by a [FutureProvider].
   ///
   /// The instance of [Future] obtained may change over time, if the provider
-  /// was recreated (such as when using [ProviderRefBase.watch]).
+  /// was recreated (such as when using [Ref.watch]).
   ///
   /// This provider allows using `async`/`await` to easily combine
   /// [FutureProvider] together:

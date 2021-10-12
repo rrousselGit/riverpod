@@ -5,11 +5,11 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
-  group('ProviderRefBase', () {
+  group('Ref', () {
     test(
       'cannot call ref.watch/ref.read/ref.listen/ref.onDispose after a dependency changed',
       () {
-        late ProviderRefBase ref;
+        late Ref ref;
         final container = createContainer();
         final dep = StateProvider((ref) => 0);
         final provider = Provider((r) {
@@ -50,7 +50,7 @@ void main() {
       test('refreshes a provider and return the new state', () {
         var value = 0;
         final state = Provider((ref) => value);
-        late ProviderRefBase ref;
+        late Ref ref;
         final provider = Provider((r) {
           ref = r;
         });

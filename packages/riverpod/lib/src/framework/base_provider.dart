@@ -11,14 +11,14 @@ part of '../framework.dart';
 ///
 /// See also:
 ///
-/// - [ProviderRefBase], which exposes the methods to read other providers.
+/// - [Ref], which exposes the methods to read other providers.
 /// - [Provider], a provider that uses [Create] to expose an immutable value.
-typedef Create<T, Ref extends ProviderRefBase> = T Function(Ref ref);
+typedef Create<T, Ref extends Ref> = T Function(Ref ref);
 
 typedef RemoveListener = void Function();
 
 /// A [Create] equivalent used by [Family].
-typedef FamilyCreate<T, Ref extends ProviderRefBase, Arg> = T Function(
+typedef FamilyCreate<T, Ref extends Ref, Arg> = T Function(
   Ref ref,
   Arg arg,
 );
@@ -157,7 +157,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   // ignore: avoid_returning_this
   ProviderBase<Object?> get originProvider => this;
 
-  State create(covariant ProviderRefBase ref);
+  State create(covariant Ref ref);
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
   /// listeners if the exposed value did not change.
@@ -433,8 +433,8 @@ class _ProviderListener {
   }
 }
 
-@Deprecated('Use ProviderRefBase instead.')
-typedef ProviderReference = ProviderRefBase;
+@Deprecated('Use Ref instead.')
+typedef ProviderReference = Ref;
 
 /// {@template riverpod.providerrefbase}
 /// An object used by providers to interact with other providers and the life-cycles
@@ -445,7 +445,7 @@ typedef ProviderReference = ProviderRefBase;
 /// - [read] and [watch], two methods that allows a provider to consume other providers.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
-abstract class ProviderRefBase {
+abstract class Ref {
   /// Re-create the state of a provider and return the new state.
   State refresh<State>(ProviderBase<State> provider);
 
@@ -575,7 +575,7 @@ abstract class ProviderRefBase {
 /// An internal class that handles the state of a provider.
 ///
 /// Do not use.
-abstract class ProviderElementBase<State> implements ProviderRefBase {
+abstract class ProviderElementBase<State> implements Ref {
   /// Do not use.
   ProviderElementBase(this._provider);
 

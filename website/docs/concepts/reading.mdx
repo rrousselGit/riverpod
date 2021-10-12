@@ -41,7 +41,7 @@ final counter = StateNotifierProvider<Counter, int>((ref) {
 class Counter extends StateNotifier<int> {
   Counter(this.ref): super(0);
 
-  final ProviderRefBase ref;
+  final Ref ref;
 
   void increment() {
     // Counter can use the "ref" to read other providers

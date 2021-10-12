@@ -411,7 +411,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
                 node.name.end);
             break;
           case ProviderType.none:
-            yieldPatch('ProviderRefBase', node.name.offset, node.name.end);
+            yieldPatch('Ref', node.name.offset, node.name.end);
             break;
         }
       }

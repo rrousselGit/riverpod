@@ -37,7 +37,7 @@ class _NotifierProvider<State>
 
 /// {@macro riverpod.providerrefbase}
 /// - [controller], the [StateController] currently exposed by this providers.
-abstract class StateProviderRef<State> implements ProviderRefBase {
+abstract class StateProviderRef<State> implements Ref {
   /// The [StateController] currently exposed by this provider.
   ///
   /// Cannot be accessed while creating the provider.

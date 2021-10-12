@@ -6,8 +6,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod/riverpod.dart';
 
 class Counter extends StateNotifier<int> {
-  Counter(ProviderRefBase this.ref) : super(1);
-  final ProviderRefBase ref;
+  Counter(Ref this.ref) : super(1);
+  final Ref ref;
   void increment() => state++;
   void decrement() => state--;
 }
@@ -21,7 +21,7 @@ class CounterTest extends StateNotifier<int> implements Counter {
   void decrement() => state--;
 
   @override
-  ProviderRefBase get ref => throw UnimplementedError();
+  Ref get ref => throw UnimplementedError();
 }
 
 final testProvider = Provider<int>((ref) => 0);

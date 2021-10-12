@@ -1,8 +1,7 @@
 part of '../change_notifier_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-typedef ChangeNotifierProviderRef<Notifier extends ChangeNotifier>
-    = ProviderRefBase;
+typedef ChangeNotifierProviderRef<Notifier extends ChangeNotifier> = Ref;
 
 // ignore: subtype_of_sealed_class
 /// {@macro riverpod.changenotifierprovider}

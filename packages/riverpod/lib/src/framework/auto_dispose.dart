@@ -1,12 +1,12 @@
 part of '../framework.dart';
 
-/// A [ProviderRefBase] for providers that are automatically destroyed when
+/// A [Ref] for providers that are automatically destroyed when
 /// no-longer used.
 ///
-/// The difference with [ProviderRefBase] is that it has an extra
+/// The difference with [Ref] is that it has an extra
 /// [maintainState] property, to help determine if the state can be destroyed
 ///  or not.
-abstract class AutoDisposeProviderRefBase extends ProviderRefBase {
+abstract class AutoDisposeProviderRefBase extends Ref {
   /// Whether to destroy the state of the provider when all listeners are removed or not.
   ///
   /// Can be changed at any time, in which case when setting it to `false`,

@@ -61,7 +61,7 @@ void main() {
     root.dispose();
   });
 
-  test('ProviderRefBase.container exposes the root container', () {
+  test('Ref.container exposes the root container', () {
     final root = createContainer();
     final container = createContainer(parent: root);
     final provider = Provider((ref) => ref);
@@ -469,7 +469,7 @@ void main() {
       final root = createContainer();
       final container = createContainer(parent: root);
       var callCount = 0;
-      late ProviderRefBase providerReference;
+      late Ref providerReference;
       var result = 0;
       final provider = Provider((ref) {
         callCount++;

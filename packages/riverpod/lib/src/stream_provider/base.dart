@@ -2,7 +2,7 @@ part of '../stream_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [ProviderRef.state], the value currently exposed by this providers.
-typedef StreamProviderRef<State> = ProviderRefBase;
+typedef StreamProviderRef<State> = Ref;
 
 /// {@macro riverpod.streamprovider}
 @sealed
