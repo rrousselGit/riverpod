@@ -600,8 +600,6 @@ abstract class ProviderElementBase<State> implements ProviderRefBase {
   ///
   /// This maps to listeners added with [listen].
   /// See also [mayNeedDispose], called when [hasListeners] may have changed.
-  // TODO(rrousselGit) test _dependents case
-  // TODO(rrousselGit) test _subscribers case
   bool get hasListeners =>
       _listeners.isNotEmpty ||
       _subscribers.isNotEmpty ||
