@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
-import 'framework.dart';
 import 'internals.dart';
 
 /// An object that allows widgets to interact with providers.

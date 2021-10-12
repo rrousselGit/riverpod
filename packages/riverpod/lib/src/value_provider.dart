@@ -1,6 +1,5 @@
 import 'package:meta/meta.dart';
 
-import '../riverpod.dart';
 import 'framework.dart';
 
 /// A provider that is driven by a value instead of a function.

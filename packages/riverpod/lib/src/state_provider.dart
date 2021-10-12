@@ -1,10 +1,6 @@
 import 'package:meta/meta.dart';
-import 'package:state_notifier/state_notifier.dart';
 
 import '../riverpod.dart';
-import 'builders.dart';
-import 'common.dart';
-import 'framework.dart';
 import 'internals.dart';
 
 part 'state_provider/auto_dispose.dart';
