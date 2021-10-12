@@ -527,6 +527,24 @@ void main() {
     );
   });
 
+  group('ProviderScope.containerOf', () {
+    testWidgets('throws if no container is found independently from `listen`',
+        (tester) async {
+      await tester.pumpWidget(Container());
+
+      final context = tester.element(find.byType(Container));
+
+      expect(
+        () => ProviderScope.containerOf(context, listen: false),
+        throwsStateError,
+      );
+      expect(
+        () => ProviderScope.containerOf(context),
+        throwsStateError,
+      );
+    });
+  });
+
   testWidgets(
       'autoDispose initState and ProviderListener does not destroy the state',
       (tester) async {
