@@ -12,8 +12,6 @@ scripts:
     cd MELOS_ROOT_PATH/packages/riverpod_cli/fixtures/notifiers/golden && 
     flutter pub get &&
     cd MELOS_ROOT_PATH/packages/riverpod_cli/fixtures/unified_syntax/input && 
-    flutter pub get && 
-    cd MELOS_ROOT_PATH/packages/riverpod_cli/fixtures/unified_syntax/golden && 
     flutter pub get
 
   analyze:
