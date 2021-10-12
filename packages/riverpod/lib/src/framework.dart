@@ -14,5 +14,6 @@ part 'framework/provider_base.dart';
 part 'framework/container.dart';
 part 'framework/family.dart';
 part 'framework/foundation.dart';
+part 'framework/ref.dart';
 part 'framework/selector.dart';
 part 'framework/scheduler.dart';
