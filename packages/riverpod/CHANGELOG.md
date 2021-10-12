@@ -6,6 +6,8 @@
 - Added an assert for when a provider specified `dependencies` but is
   depending on a provider that isn't in the list.
 - Increased minimum SDK version (#806)
+- `container.listen`/`ref.listen` now correctly handle cases where `fireImmediately`
+  is specified but the listener threw.
 
 ## 1.0.0-dev.10
 

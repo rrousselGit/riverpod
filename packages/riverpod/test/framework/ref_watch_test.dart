@@ -68,6 +68,7 @@ void main() {
       throwsA(isA<ProviderException>()),
     );
   });
+
   test(
       'throw when trying to use ref.listen inside selectors during initial call',
       () {

@@ -303,7 +303,7 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
     var lastSelectedValue = _select(container.read(provider));
 
     if (fireImmediately) {
-      listener(lastSelectedValue);
+      _runUnaryGuarded(listener, lastSelectedValue);
     }
 
     final sub = container.listen<Input>(provider, (value) {
@@ -881,11 +881,13 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     void Function(State value) listener, {
     required bool fireImmediately,
   }) {
-    // TODO(rrousselGit) add fireImmediately parameter
     // TODO(rrousselGit) add onError parameter
-    // TODO(rrousselGit) test that if the provider threw immediately, the listen call completes corretly
     if (fireImmediately) {
-      listener(getExposedValue());
+      try {
+        listener(getExposedValue());
+      } catch (err, stack) {
+        Zone.current.handleUncaughtError(err, stack);
+      }
     }
 
     final sub = _ProviderSubscription<State>._(this, listener);

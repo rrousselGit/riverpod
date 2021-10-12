@@ -557,6 +557,111 @@ void main() {
         verifyNoMoreInteractions(listener2);
       });
 
+      group('fireImmediately', () {
+        test('supports selectors', () {
+          final container = createContainer();
+          final provider =
+              StateNotifierProvider<Counter, int>((ref) => Counter());
+          final listener = Listener<bool>();
+          final listener2 = Listener<bool>();
+
+          container.listen(
+            provider.select((v) => v.isEven),
+            listener,
+            fireImmediately: true,
+          );
+          container.listen(provider.select((v) => v.isEven), listener2);
+
+          verifyOnly(listener, listener(true));
+          verifyZeroInteractions(listener2);
+
+          container.read(provider.notifier).state = 21;
+
+          verifyOnly(listener, listener(false));
+          verifyOnly(listener2, listener2(false));
+        });
+
+        test('passing fireImmediately: false skips the initial value', () {
+          final provider = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+
+          final container = createContainer();
+
+          container.listen<StateController<int>>(
+            provider,
+            (notifier) => listener(notifier.state),
+            fireImmediately: false,
+          );
+
+          verifyZeroInteractions(listener);
+        });
+
+        test('correctly listens to the provider if selector listener throws',
+            () {
+          final provider = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+          var isFirstCall = true;
+
+          final container = createContainer();
+          final errors = <Object>[];
+
+          final sub = runZonedGuarded(
+            () => container.listen<int>(
+              provider.select((value) => value.state),
+              (value) {
+                listener(value);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
+            ),
+            (err, stack) => errors.add(err),
+          );
+
+          expect(sub, isNotNull);
+          verifyOnly(listener, listener(0));
+          expect(errors, [isStateError]);
+
+          container.read(provider).state++;
+
+          verifyOnly(listener, listener(1));
+        });
+
+        test('correctly listens to the provider if normal listener throws', () {
+          final provider = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+          var isFirstCall = true;
+
+          final container = createContainer();
+          final errors = <Object>[];
+
+          final sub = runZonedGuarded(
+            () => container.listen<StateController<int>>(
+              provider,
+              (notifier) {
+                listener(notifier.state);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
+            ),
+            (err, stack) => errors.add(err),
+          );
+
+          expect(sub, isNotNull);
+          verifyOnly(listener, listener(0));
+          expect(errors, [isStateError]);
+
+          container.read(provider).state++;
+
+          verifyOnly(listener, listener(1));
+        });
+      });
+
       test('.read on closed subscription throws', () {
         final notifier = Counter();
         final provider = StateNotifierProvider<Counter, int>((_) => notifier);
@@ -607,29 +712,6 @@ void main() {
         final sub = container.listen(provider, (_) {});
 
         expect(sub, isA<ProviderSubscription>());
-      });
-
-      test('selectors fireImmediately', () {
-        final container = createContainer();
-        final provider =
-            StateNotifierProvider<Counter, int>((ref) => Counter());
-        final listener = Listener<bool>();
-        final listener2 = Listener<bool>();
-
-        container.listen(
-          provider.select((v) => v.isEven),
-          listener,
-          fireImmediately: true,
-        );
-        container.listen(provider.select((v) => v.isEven), listener2);
-
-        verifyOnly(listener, listener(true));
-        verifyZeroInteractions(listener2);
-
-        container.read(provider.notifier).state = 21;
-
-        verifyOnly(listener, listener(false));
-        verifyOnly(listener2, listener2(false));
       });
 
       test('selectors can close listeners', () {
@@ -693,21 +775,6 @@ void main() {
         container.listen(provider, listener, fireImmediately: true);
 
         verifyOnly(listener, listener(0));
-      });
-
-      test('passing fireImmediately: false skips the initial value', () {
-        final provider = StateProvider((ref) => 0);
-        final listener = Listener<int>();
-
-        final container = createContainer();
-
-        container.listen<StateController<int>>(
-          provider,
-          (notifier) => listener(notifier.state),
-          fireImmediately: false,
-        );
-
-        verifyZeroInteractions(listener);
       });
 
       test('call listener when provider rebuilds', () async {
