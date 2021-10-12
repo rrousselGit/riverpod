@@ -3,7 +3,7 @@ part of '../state_notifier_provider.dart';
 /// {@macro riverpod.providerrefbase}
 typedef AutoDisposeStateNotifierProviderRef<
         Notifier extends StateNotifier<State>, State>
-    = AutoDisposeProviderRefBase;
+    = AutoDisposeRef;
 
 class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
     extends AutoDisposeProviderBase<Notifier> {
@@ -13,13 +13,13 @@ class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
     required this.dependencies,
   }) : super(name: name == null ? null : '$name.notifier');
 
-  final Create<Notifier, AutoDisposeProviderRefBase> _create;
+  final Create<Notifier, AutoDisposeRef> _create;
 
   @override
   final List<ProviderOrFamily>? dependencies;
 
   @override
-  Notifier create(AutoDisposeProviderRefBase ref) {
+  Notifier create(AutoDisposeRef ref) {
     final notifier = _create(ref);
     ref.onDispose(notifier.dispose);
     return notifier;

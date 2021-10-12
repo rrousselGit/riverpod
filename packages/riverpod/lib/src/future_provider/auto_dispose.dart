@@ -2,7 +2,7 @@ part of '../future_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [ProviderRef.state], the value currently exposed by this providers.
-typedef AutoDisposeFutureProviderRef<State> = AutoDisposeProviderRefBase;
+typedef AutoDisposeFutureProviderRef<State> = AutoDisposeRef;
 
 /// {@macro riverpod.futureprovider}
 @sealed

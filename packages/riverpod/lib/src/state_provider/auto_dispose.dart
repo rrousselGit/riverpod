@@ -38,7 +38,7 @@ class _AutoDisposeNotifierProvider<State>
 /// {@macro riverpod.providerrefbase}
 /// - [controller], the [StateController] currently exposed by this providers.
 abstract class AutoDisposeStateProviderRef<State>
-    implements AutoDisposeProviderRefBase, StateProviderRef<State> {}
+    implements AutoDisposeRef, StateProviderRef<State> {}
 
 /// The [ProviderElementBase] for [StateProvider]
 class AutoDisposeStateProviderElement<State>

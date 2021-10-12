@@ -1,8 +1,7 @@
 part of '../change_notifier_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-typedef AutoDisposeChangeNotifierProviderRef<Notifier>
-    = AutoDisposeProviderRefBase;
+typedef AutoDisposeChangeNotifierProviderRef<Notifier> = AutoDisposeRef;
 
 // ignore: subtype_of_sealed_class
 /// {@macro riverpod.changenotifierprovider}

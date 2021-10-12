@@ -2,7 +2,7 @@ part of '../stream_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [ProviderRef.state], the value currently exposed by this providers.
-typedef AutoDisposeStreamProviderRef<State> = AutoDisposeProviderRefBase;
+typedef AutoDisposeStreamProviderRef<State> = AutoDisposeRef;
 
 /// {@macro riverpod.streamprovider}
 @sealed

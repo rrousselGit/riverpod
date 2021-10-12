@@ -292,7 +292,7 @@ final alwaysAlive = Provider((ref) {
   test('setting maintainState to false destroys the state when not listened',
       () async {
     final onDispose = OnDisposeMock();
-    late AutoDisposeProviderRefBase ref;
+    late AutoDisposeRef ref;
     final provider = Provider.autoDispose((_ref) {
       ref = _ref;
       ref.onDispose(onDispose);

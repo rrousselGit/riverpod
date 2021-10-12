@@ -12,7 +12,7 @@ export 'src/framework.dart'
         CircularDependencyError,
         ProviderBase,
         Override,
-        AutoDisposeProviderRefBase,
+        AutoDisposeRef,
         Ref,
         ProviderListenable,
         ProviderContainer,

@@ -3,7 +3,7 @@ part of '../provider.dart';
 /// {@macro riverpod.providerrefbase}
 /// - [state], the value currently exposed by this providers.
 abstract class AutoDisposeProviderRef<State>
-    implements ProviderRef<State>, AutoDisposeProviderRefBase {}
+    implements ProviderRef<State>, AutoDisposeRef {}
 
 /// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
 class AutoDisposeProviderElement<State>
