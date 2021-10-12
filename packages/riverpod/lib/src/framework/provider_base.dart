@@ -1,3 +1,6 @@
+// ignore_for_file: public_member_api_docs
+// TODO remove ignore_doc
+
 part of '../framework.dart';
 
 class _Sentinel {
