@@ -1,11 +1,11 @@
 :root {
-  --ifm-color-primary-lightest: map.get($primary, 100);
-  --ifm-color-primary-lighter: map.get($primary, 200);
-  --ifm-color-primary-light: map.get($primary, 300);
-  --ifm-color-primary: map.get($primary, 400);
-  --ifm-color-primary-dark: map.get($primary, 500);
-  --ifm-color-primary-darker: map.get($primary, 600);
-  --ifm-color-primary-darkest: map.get($primary, 700);
+  --ifm-color-primary-lightest: #6dd0f6;
+  --ifm-color-primary-lighter: #5dbdea;
+  --ifm-color-primary-light: #4eabdd;
+  --ifm-color-primary: #3889c4;
+  --ifm-color-primary-dark: #256aac;
+  --ifm-color-primary-darker: #2855a3;
+  --ifm-color-primary-darkest: #22427a;
 }
 
 .docusaurus-highlight-code-line {
