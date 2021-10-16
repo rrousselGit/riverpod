@@ -26,7 +26,7 @@ export const Banner: React.FC = () => {
 
         <div>
           <Link
-            className="button button--secondary button--lg margin-vert-xl"
+            className="button button--primary button--lg margin-vert-xl"
             to={useBaseUrl("docs/getting_started")}
           >
             <Translate id="home.get_started">Get Started</Translate>
