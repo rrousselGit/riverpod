@@ -4,9 +4,6 @@ packages:
   - packages/**
   - examples/**
 
-exclude:
-  - packages/riverpod_cli
-
 scripts:
   # we voluntarily do not use melos inside goldens
   postbootstrap: |
