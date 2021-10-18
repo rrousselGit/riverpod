@@ -114,7 +114,7 @@ class StatelessListen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(counterProvider, (i) {
+    ref.listen(counterProvider, (previous, i) {
       print(i);
     });
     return const Text('Counter');
@@ -131,7 +131,7 @@ class StatelessListen2 extends ConsumerWidget {
   }
 }
 
-void _onChange(int i) {
+void _onChange(int? previous, int i) {
   print(i);
 }
 
@@ -144,7 +144,7 @@ class StatelessExpressionListen extends ConsumerWidget {
     return const Text('Counter');
   }
 
-  void onChange(int i) {
+  void onChange(int? previous, int i) {
     print(i);
   }
 }
@@ -289,7 +289,9 @@ void main() {
   final count = container.read(testProvider);
   ProviderContainer(overrides: [
     stateNotifierProvider.overrideWithValue(CounterTest()),
-  ]).listen<Counter>(stateNotifierProvider.notifier, (value) {}).read();
+  ])
+      .listen<Counter>(stateNotifierProvider.notifier, (previous, value) {})
+      .read();
   ProviderContainer().read(testProvider);
   final _ = ProviderContainer(
     overrides: [

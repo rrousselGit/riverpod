@@ -29,7 +29,7 @@ void main() {
     final provider = FutureProvider.autoDispose((ref) => 0);
     final container = createContainer();
 
-    container.listen(provider, (_) {});
+    container.listen(provider, (_, __) {});
 
     expect(container.read(provider), const AsyncData(0));
     await expectLater(container.read(provider.future), completion(0));
@@ -57,7 +57,7 @@ void main() {
     final provider = FutureProvider<int>((ref) => ref.watch(dep).state);
     final container = createContainer();
 
-    container.listen(provider, (_) {});
+    container.listen(provider, (_, __) {});
 
     await expectLater(container.read(provider.future), completion(42));
     expect(container.read(provider), const AsyncData(42));
@@ -83,7 +83,7 @@ void main() {
         FutureProvider.autoDispose((ref) => ref.watch(dep).state());
     final container = createContainer();
 
-    container.listen(provider, (_) {});
+    container.listen(provider, (_, __) {});
 
     expect(container.read(provider), const AsyncData(0));
 
@@ -115,7 +115,7 @@ void main() {
         FutureProvider.autoDispose((ref) => ref.watch(dep).state());
     final container = createContainer();
 
-    container.listen(provider, (_) {});
+    container.listen(provider, (_, __) {});
 
     expect(container.read(provider), const AsyncData(0));
 
@@ -136,7 +136,7 @@ void main() {
     final provider = FutureProvider.autoDispose((ref) => ref.watch(dep).state);
     final container = createContainer();
 
-    container.listen(provider, (_) {});
+    container.listen(provider, (_, __) {});
 
     expect(container.read(provider), const AsyncData(42));
 
@@ -163,7 +163,7 @@ void main() {
     final provider = FutureProvider.autoDispose((ref) => ref.watch(dep).state);
     final container = createContainer();
 
-    container.listen(provider, (_) {});
+    container.listen(provider, (_, __) {});
 
     expect(container.read(provider), const AsyncData(42));
 
@@ -212,7 +212,7 @@ void main() {
     );
     final container = createContainer();
 
-    container.listen(provider, (_) {});
+    container.listen(provider, (_, __) {});
 
     await expectLater(container.read(provider.future), throwsA(42));
 
@@ -230,7 +230,7 @@ void main() {
     final container = createContainer();
     final listener = Listener<AsyncValue<int>>();
 
-    container.listen(provider, (value) {});
+    container.listen(provider, (prev, value) {});
 
     await expectLater(
       container.read(provider.future),
@@ -248,7 +248,7 @@ void main() {
 
     verifyOnly(
       listener,
-      listener(const AsyncLoading<int>(previous: AsyncData(42))),
+      listener(null, const AsyncLoading<int>(previous: AsyncData(42))),
     );
 
     container.read(dep).state = Future.value(21);
@@ -272,7 +272,7 @@ void main() {
     final provider = FutureProvider.autoDispose((ref) => ref.watch(dep).state);
     final container = createContainer();
 
-    container.listen(provider, (value) {});
+    container.listen(provider, (prev, value) {});
 
     expect(
       container.read(provider),
@@ -303,7 +303,7 @@ void main() {
     final provider = FutureProvider.autoDispose((ref) => ref.watch(dep).state);
     final container = createContainer();
 
-    container.listen(provider, (value) {});
+    container.listen(provider, (prev, value) {});
 
     expect(
       container.read(provider),
@@ -334,7 +334,7 @@ void main() {
     final container = createContainer();
     final provider = FutureProvider.autoDispose((ref) => Future.value(result));
 
-    container.listen(provider, (e) {});
+    container.listen(provider, (prev, value) {});
 
     expect(await container.read(provider.future), 0);
     expect(container.read(provider), const AsyncValue.data(0));
@@ -362,7 +362,7 @@ void main() {
 
     container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(const AsyncValue.loading()));
+    verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
     container.read(dep).state++;
     await container.pump();
@@ -384,7 +384,7 @@ void main() {
 
     container.listen(provider.future, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(any));
+    verifyOnly(listener, listener(any, any));
 
     container.read(dep).state++;
     await container.pump();
@@ -443,7 +443,7 @@ void main() {
 
     final sub = container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(const AsyncValue.loading()));
+    verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
     sub.close();
     await container.pump();
@@ -454,10 +454,13 @@ void main() {
 
     container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(const AsyncValue.loading()));
+    verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
     await container.pump();
 
-    verifyOnly(listener, listener(const AsyncValue.data(21)));
+    verifyOnly(
+      listener,
+      listener(const AsyncValue.loading(), const AsyncValue.data(21)),
+    );
   });
 }

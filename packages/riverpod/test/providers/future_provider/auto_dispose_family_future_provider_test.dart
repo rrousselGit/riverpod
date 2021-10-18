@@ -49,11 +49,14 @@ void main() {
 
       container.listen(provider(21), listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(const AsyncValue.loading()));
+      verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
       await container.pump();
 
-      verifyOnly(listener, listener(const AsyncValue.data(42)));
+      verifyOnly(
+        listener,
+        listener(const AsyncValue.loading(), const AsyncValue.data(42)),
+      );
     });
   });
 }

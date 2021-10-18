@@ -40,7 +40,7 @@ void main() {
           throwsA(isA<AssertionError>()),
         );
         expect(
-          () => ref.listen(another, (_) {}),
+          () => ref.listen(another, (_, __) {}),
           throwsA(isA<AssertionError>()),
         );
       },
@@ -75,7 +75,7 @@ void main() {
         final provider = Provider((ref) {
           ref.listen<StateController<num>>(
             dep,
-            (value) => listener(value.state),
+            (prev, value) => listener(prev?.state, value.state),
           );
         });
 
@@ -87,7 +87,7 @@ void main() {
         container.read(dep).state++;
         await container.pump();
 
-        verifyOnly(listener, listener(1));
+        verifyOnly(listener, listener(1, 1));
       });
 
       test('can listen selectors', () async {
@@ -120,12 +120,12 @@ void main() {
         container.read(provider.notifier).state = 3;
 
         verifyOnly(isEvenSelector, isEvenSelector(3));
-        verifyOnly(isEvenListener, isEvenListener(false));
+        verifyOnly(isEvenListener, isEvenListener(true, false));
 
         container.read(provider.notifier).state = 4;
 
         verifyOnly(isEvenSelector, isEvenSelector(4));
-        verifyOnly(isEvenListener, isEvenListener(true));
+        verifyOnly(isEvenListener, isEvenListener(false, true));
 
         await container.pump();
 
@@ -155,7 +155,7 @@ void main() {
         container.read(another);
 
         expect(buildCount, 1);
-        verifyOnly(isEvenListener, isEvenListener(true));
+        verifyOnly(isEvenListener, isEvenListener(null, true));
         verifyOnly(isEvenSelector, isEvenSelector(0));
 
         container.read(provider.notifier).state = 2;
@@ -166,7 +166,7 @@ void main() {
         container.read(provider.notifier).state = 3;
 
         verifyOnly(isEvenSelector, isEvenSelector(3));
-        verifyOnly(isEvenListener, isEvenListener(false));
+        verifyOnly(isEvenListener, isEvenListener(true, false));
 
         await container.pump();
 
@@ -431,7 +431,7 @@ void main() {
       container.read(another);
 
       expect(buildCount, 2);
-      verifyOnly(listener, listener(42));
+      verifyOnly(listener, listener(null, 42));
     });
   });
 }

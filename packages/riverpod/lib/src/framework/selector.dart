@@ -17,20 +17,22 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
 
   _SelectorSubscription<Input, Output> listen(
     ProviderContainer container,
-    void Function(Output) listener, {
+    void Function(Output? previous, Output next) listener, {
     required bool fireImmediately,
   }) {
     var lastSelectedValue = _select(container.read(provider));
 
     if (fireImmediately) {
-      _runUnaryGuarded(listener, lastSelectedValue);
+      _runBinaryGuarded(listener, null, lastSelectedValue);
     }
 
-    final sub = container.listen<Input>(provider, (value) {
+    final sub = container.listen<Input>(provider, (previous, value) {
       final newSelectedValue = _select(value);
       if (newSelectedValue != lastSelectedValue) {
+        final previous = lastSelectedValue;
         lastSelectedValue = newSelectedValue;
-        listener(lastSelectedValue);
+        // TODO test events after selector exception correctly send `previous`s
+        listener(previous, newSelectedValue);
       }
     });
 
@@ -55,17 +57,20 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
 
   void Function() _elementListen(
     ProviderElementBase element,
-    void Function(Output) listener, {
+    void Function(Output? prev, Output next) listener, {
     required bool fireImmediately,
   }) {
-    var lastValue = _select(element._container.read(provider));
-    if (fireImmediately) listener(lastValue);
+    var lastSelectedValue = _select(element._container.read(provider));
+    if (fireImmediately) listener(null, lastSelectedValue);
 
-    return element.listen<Input>(provider, (input) {
-      final newValue = _select(input);
-      if (lastValue != newValue) {
-        lastValue = newValue;
-        listener(newValue);
+    return element.listen<Input>(provider, (prev, input) {
+      final newSelectedValue = _select(input);
+      if (lastSelectedValue != newSelectedValue) {
+        final previous = lastSelectedValue;
+        // TODO test events after selector exception correctly send `previous`s
+
+        lastSelectedValue = newSelectedValue;
+        listener(previous, newSelectedValue);
       }
     });
   }

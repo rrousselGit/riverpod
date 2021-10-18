@@ -132,7 +132,7 @@ abstract class Ref {
   // TODO update ProviderContainer.listen to match the return value
   RemoveListener listen<T>(
     AlwaysAliveProviderListenable<T> provider,
-    void Function(T value) listener, {
+    void Function(T? previous, T next) listener, {
     bool fireImmediately,
   });
 }

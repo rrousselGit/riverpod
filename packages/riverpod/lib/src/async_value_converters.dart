@@ -93,7 +93,7 @@ Stream<State> _asyncValueToStream<State>(
 
   ref.onDispose(() => controller?.close());
 
-  void listener(AsyncValue<State> value) {
+  void listener(AsyncValue<State>? previous, AsyncValue<State> value) {
     value.when(
       loading: (_) {
         controller?.close();
@@ -191,7 +191,7 @@ Future<State> _asyncValueAsFuture<State>(
     }
   });
 
-  void listener(AsyncValue<State> value) {
+  void listener(AsyncValue<State>? previous, AsyncValue<State> value) {
     value.when(
       loading: (_) {
         if (loadingCompleter == null) {

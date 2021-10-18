@@ -543,7 +543,7 @@ final b = Provider(
       final dep = Provider((ref) => 0);
       final dep2 = Provider((ref) => 0, dependencies: [dep]);
       final provider = Provider((ref) {
-        ref.listen(dep2, (_) {});
+        ref.listen(dep2, (_, __) {});
       }, dependencies: [dep]);
 
       expect(

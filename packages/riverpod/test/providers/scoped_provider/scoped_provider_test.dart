@@ -58,7 +58,7 @@ void main() {
 
       container.listen(provider, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(42));
+      verifyOnly(listener, listener(null, 42));
 
       root.updateOverrides([
         provider.overrideWithValue(22),
@@ -73,7 +73,7 @@ void main() {
       final provider = Provider.autoDispose((ref) => 0);
       final container = createContainer();
 
-      final sub = container.listen(provider, (_) {});
+      final sub = container.listen(provider, (_, __) {});
       final element = container.readProviderElement(provider);
 
       expect(element.mounted, true);
@@ -125,8 +125,8 @@ void main() {
       container.listen(provider, listener, fireImmediately: true);
       container.listen(provider2, listener2, fireImmediately: true);
 
-      verifyOnly(listener, listener(21));
-      verifyOnly(listener2, listener2(42));
+      verifyOnly(listener, listener(null, 21));
+      verifyOnly(listener2, listener2(null, 42));
 
       container.updateOverrides([
         provider.overrideWithValue(22),
@@ -134,8 +134,8 @@ void main() {
       ]);
 
       verifyInOrder([
-        listener(22),
-        listener2(43),
+        listener(21, 22),
+        listener2(42, 43),
       ]);
       verifyNoMoreInteractions(listener);
       verifyNoMoreInteractions(listener2);
@@ -157,13 +157,13 @@ void main() {
 
       container.listen(provider, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(42));
+      verifyOnly(listener, listener(null, 42));
 
       mid.updateOverrides([
         provider.overrideWithValue(21),
       ]);
 
-      verifyOnly(listener, listener(21));
+      verifyOnly(listener, listener(42, 21));
     });
 
     test('can be overridden on non-root container', () {
@@ -190,7 +190,7 @@ void main() {
 
       container.listen(provider2, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(2));
+      verifyOnly(listener, listener(null, 2));
 
       container.updateOverrides([
         provider.overrideWithValue(2),
@@ -199,7 +199,7 @@ void main() {
 
       await container.pump();
 
-      verifyOnly(listener, listener(4));
+      verifyOnly(listener, listener(2, 4));
     });
 
     test('can listen to other normal providers', () async {
@@ -213,13 +213,13 @@ void main() {
 
       container.listen(provider2, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(2));
+      verifyOnly(listener, listener(null, 2));
 
       root.read(provider).state++;
 
       await container.pump();
 
-      verifyOnly(listener, listener(4));
+      verifyOnly(listener, listener(2, 4));
     });
   });
 }

@@ -563,7 +563,7 @@ void main() {
           builder: (context, ref) {
             // ignore: deprecated_member_use_from_same_package
             return ProviderListener(
-              onChange: (_, __) {},
+              onChange: (ct, prev, value) {},
               provider: counterProvider,
               child: Container(),
             );

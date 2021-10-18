@@ -27,7 +27,7 @@ abstract class AutoDisposeRef extends Ref {
   void Function() listen<T>(
     // overridden to allow AutoDisposeProviderBase
     ProviderListenable<T> provider,
-    void Function(T value) listener, {
+    void Function(T? previous, T next) listener, {
     bool fireImmediately,
   });
 }

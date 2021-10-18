@@ -34,7 +34,7 @@ void main() {
 
     expect(state.hasListeners, false);
 
-    final sub = container.listen(provider, (_) {});
+    final sub = container.listen(provider, (_, __) {});
 
     expect(state.hasListeners, true);
 
