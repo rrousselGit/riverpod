@@ -312,18 +312,18 @@ void main() {
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>, int>((_) {
       return notifier;
-    });
+    }, name: 'provider');
     var callCount = 0;
     final computed = Provider((ref) {
       callCount++;
       return ref.watch(provider);
-    });
+    }, name: 'computed');
 
     final tested = Provider((ref) {
       final first = ref.watch(provider);
       final second = ref.watch(computed);
       return '$first $second';
-    });
+    }, name: 'tested');
     final listener = Listener<String>();
 
     container.listen(tested, listener, fireImmediately: true);

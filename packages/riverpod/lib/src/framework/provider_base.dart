@@ -225,7 +225,9 @@ class _ProviderSubscription<State> implements ProviderSubscription<State> {
         'called ProviderSubscription.read on a subscription that was closed',
       );
     }
-    return _listenedElement.getExposedValue();
+
+    _listenedElement._flush();
+    return _listenedElement.getState() as State;
   }
 }
 
@@ -303,8 +305,34 @@ abstract class ProviderElementBase<State> implements Ref {
   DoubleLinkedQueue<void Function()>? _onDisposeListeners;
 
   bool _mustRecomputeState = false;
-  bool _dependencyMayHaveChanged = false;
   bool _debugDidChangeDependency = false;
+  late final _scheduledRefreshLink = _ElementLink(this);
+  late final _scheduledDisposeLink = _ElementLink(this);
+
+  bool _isScheduledForRedepth = false;
+
+  /// After [approximatedDepth] changed, whether it scheduled extra work to
+  /// reorganise the provider graph.
+  @visibleForTesting
+  bool get isScheduledForRedepth => _isScheduledForRedepth;
+
+  var _approximatedDepth = 0;
+
+  /// An estimate of the depth of this element.
+  ///
+  /// The depth is reliable for comparison between elements to determine the
+  /// execution order of elements, but it cannot be used to know the absolute
+  /// position of the element in the graph.
+  ///
+  /// For example, it is possible that an element has a high depth when it isn't
+  /// depending on any other element.
+  /// On the other hand, the children of this element are guaranteed to have a
+  /// higher depth.
+  ///
+  /// May temporarily be incorrect while one of this element depenendencies
+  /// has [isScheduledForRedepth] to true.
+  @visibleForTesting
+  int get approximatedDepth => _approximatedDepth;
 
   bool _mounted = false;
 
@@ -365,33 +393,29 @@ abstract class ProviderElementBase<State> implements Ref {
     _provider = newProvider;
   }
 
+  void _didChangeDependency() {
+    assert(() {
+      _debugDidChangeDependency = true;
+      return true;
+    }(), '');
+    if (_mustRecomputeState) return;
+
+    // will notify children that their dependency may have changed
+    markMustRecomputeState();
+  }
+
   void markMustRecomputeState() {
+    // TODO remove variable
     if (_mustRecomputeState) return;
 
     _mustRecomputeState = true;
     _mounted = false;
     _runOnDispose();
+    assert(
+      _scheduledRefreshLink.list == null,
+      'State error, already scheduled to refresh',
+    );
     _container._scheduler.scheduleProviderRefresh(this);
-
-    // We don't call this._markDependencyMayHaveChanged here because we voluntarily
-    // do not want to set the _dependencyMayHaveChanged flag to true.
-    // Since the dependency is known to have changed, there is no reason to try
-    // and "flush" it, as it will already get rebuilt.
-    visitChildren((element) => element._markDependencyMayHaveChanged());
-  }
-
-  void flush() {
-    _maybeRebuildDependencies();
-    _maybeRebuildState();
-  }
-
-  void _maybeRebuildDependencies() {
-    if (!_dependencyMayHaveChanged) {
-      return;
-    }
-    _dependencyMayHaveChanged = false;
-
-    visitAncestors((element) => element.flush());
   }
 
   /// A debug-only life-cycle called before a provider rebuilds.
@@ -400,43 +424,59 @@ abstract class ProviderElementBase<State> implements Ref {
   /// for asserts.
   void debugWillRebuildState() {}
 
-  void _maybeRebuildState() {
-    if (_mustRecomputeState) {
-      _previousDependencies = _dependencies;
-      _dependencies = HashMap();
+  void _flush() {
+    _container._scheduler.flush();
+    performRebuild();
+  }
 
-      final previousState = getState() as State;
+  void performRebuild() {
+    if (!_mustRecomputeState) return;
 
+    assert(!isScheduledForRedepth, 'Bad state, this provider is out of date');
+    assert(
+      _dependencies.keys.every((element) => !element.isScheduledForRedepth),
+      'Bad state, a dependency of this provider is out of date',
+    );
+    assert(
+      _dependencies.keys
+          .every((element) => element.approximatedDepth < approximatedDepth),
+      'Bad state, a dependency of is considered as lower in the graph',
+    );
+
+    _previousDependencies = _dependencies;
+    _dependencies = HashMap();
+
+    final previousState = getState() as State;
+
+    assert(() {
+      debugWillRebuildState();
+      return true;
+    }(), '');
+
+    _buildState();
+
+    if (provider.updateShouldNotify(previousState, getState() as State)) {
       assert(() {
-        debugWillRebuildState();
+        // Asserts would otherwise prevent a provider rebuild from updating
+        // other providers
+        _debugSkipNotifyListenersAsserts = true;
         return true;
       }(), '');
-
-      _buildState();
-
-      if (provider.updateShouldNotify(previousState, getState() as State)) {
-        assert(() {
-          // Asserts would otherwise prevent a provider rebuild from updating
-          // other providers
-          _debugSkipNotifyListenersAsserts = true;
-          return true;
-        }(), '');
-        notifyListeners(previousState: previousState);
-        assert(() {
-          _debugSkipNotifyListenersAsserts = false;
-          return true;
-        }(), '');
-      }
-
-      // Unsubscribe to everything that a provider no-longer depends on.
-      for (final sub in _previousDependencies!.entries) {
-        sub.key
-          .._dependents.remove(this)
-          ..mayNeedDispose();
-      }
-      _previousDependencies = null;
-      _mustRecomputeState = false;
+      notifyListeners(previousState: previousState);
+      assert(() {
+        _debugSkipNotifyListenersAsserts = false;
+        return true;
+      }(), '');
     }
+
+    // Unsubscribe to everything that a provider no-longer depends on.
+    for (final sub in _previousDependencies!.entries) {
+      sub.key
+        .._dependents.remove(this)
+        ..mayNeedDispose();
+    }
+    _previousDependencies = null;
+    _mustRecomputeState = false;
   }
 
   void notifyListeners({Object? previousState = const _Sentinel()}) {
@@ -484,25 +524,6 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     }
   }
 
-  void _didChangeDependency() {
-    assert(() {
-      _debugDidChangeDependency = true;
-      return true;
-    }(), '');
-    if (_mustRecomputeState) return;
-
-    // will notify children that their dependency may have changed
-    markMustRecomputeState();
-  }
-
-  void _markDependencyMayHaveChanged() {
-    if (_dependencyMayHaveChanged) return;
-
-    _dependencyMayHaveChanged = true;
-
-    visitChildren((element) => element._markDependencyMayHaveChanged());
-  }
-
   bool _debugAssertCanDependOn(ProviderBase provider) {
     assert(
       origin.dependencies == null ||
@@ -548,6 +569,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
     assert(_debugAssertCanDependOn(provider), '');
+    // TODO should read redepth based on the provider?
     return _container.read(provider);
   }
 
@@ -559,7 +581,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     // TODO(rrousselGit) add onError parameter
     if (fireImmediately) {
       try {
-        listener(getExposedValue());
+        listener(getState() as State);
       } catch (err, stack) {
         Zone.current.handleUncaughtError(err, stack);
       }
@@ -570,6 +592,34 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     _listeners.add(sub);
 
     return sub;
+  }
+
+  void _redepthToDependency(ProviderElementBase dependency) {
+    final depth = _approximatedDepth;
+
+    // Voluntarily don't recompute the depth from 0 but the previous depth.
+    // While this will make the exactitude of the depth unreliable, it is
+    // enough to compare elements with each other.
+    // By doing so, the depth never decreases, but this doesn't matter
+    // because cases where depth would decrease are when a provider stops
+    // depending on another provider. In which case simulating a higher
+    // depth than expected has no consequence.
+    // The benefit of having a depth that never decreases is, it significantly
+    // reduces the number of times where the depth changes. In particular,
+    // refreshing a provider will typically not need to recompute the element
+    // depth unless it depends on new providers.
+    _approximatedDepth = max(depth, dependency._approximatedDepth + 1);
+
+    if (_approximatedDepth != depth &&
+        !_isScheduledForRedepth &&
+        // No need to redepth the graph if a depth change has no impact
+        (_subscribers.isNotEmpty ||
+            _dependents.isNotEmpty ||
+            _scheduledDisposeLink.list != null ||
+            _scheduledRefreshLink.list != null)) {
+      _isScheduledForRedepth = true;
+      container._scheduler.scheduleElementDepthIncreased(this);
+    }
   }
 
   @override
@@ -601,6 +651,8 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     assert(_debugAssertCanDependOn(provider), '');
 
     final element = _container.readProviderElement(provider);
+    // TODO test
+    _redepthToDependency(element);
     _dependencies.putIfAbsent(element, () {
       final previousSub = _previousDependencies?.remove(element);
       if (previousSub != null) {
@@ -612,7 +664,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
       return Object();
     });
 
-    return element.getExposedValue();
+    return element.getState() as T;
   }
 
   @override
@@ -637,8 +689,8 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
 
     // TODO remove by passing the a debug flag to `listen`
     final element = container.readProviderElement(provider);
-    // TODO test flush
-    element.flush();
+    // TODO test
+    _redepthToDependency(element);
 
     if (fireImmediately) {
       listener(element.getExposedValue());
@@ -667,7 +719,8 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
   ///
   /// May throw if the provider threw when creating the exposed value.
   State getExposedValue() {
-    flush();
+    // TODO remove
+    _flush();
 
     return getState() as State;
   }
@@ -745,6 +798,8 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
       return true;
     }(), '');
 
+    if (_scheduledRefreshLink.list != null) _scheduledRefreshLink.unlink();
+
     _mounted = false;
     _runOnDispose();
 
@@ -789,6 +844,8 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
 
   @protected
   void _runOnDispose() {
+    if (_scheduledDisposeLink.list != null) _scheduledDisposeLink.unlink();
+
     // TODO(rrousselGit) test
     for (final subscription in _subscriptions) {
       subscription.close();

@@ -201,6 +201,7 @@ class ProviderContainer {
 
   /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
   Future<void> pump() async {
+    _scheduler._performRedepth();
     return _scheduler.pendingFuture;
   }
 
@@ -233,13 +234,15 @@ class ProviderContainer {
   Result read<Result>(
     ProviderBase<Result> provider,
   ) {
+    _scheduler.flush();
+
     final element = readProviderElement(provider);
-    element.flush();
 
     // In case `read` was called on a provider that has no listener
     element.mayNeedDispose();
+    element._flush();
 
-    return element.getExposedValue();
+    return element.getState() as Result;
   }
 
   /// Subscribe to this provider.
@@ -259,6 +262,8 @@ class ProviderContainer {
       return provider.listen(this, listener, fireImmediately: fireImmediately);
     }
 
+    _scheduler.flush();
+
     final element = readProviderElement(provider as ProviderBase<State>);
 
     return element.addListener(
@@ -273,6 +278,7 @@ class ProviderContainer {
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
   Created refresh<Created>(ProviderBase<Created> provider) {
+    _scheduler.flush();
     final reader = _getStateReader(provider.originProvider);
 
     if (reader._element != null) {

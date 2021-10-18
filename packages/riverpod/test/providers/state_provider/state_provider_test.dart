@@ -297,11 +297,11 @@ void main() {
   group('StateProvider.autoDispose', () {
     test('.notifier obtains the controller without listening to it', () async {
       final container = createContainer();
-      final dep = StateProvider((ref) => 0);
+      final dep = StateProvider((ref) => 0, name: 'dep');
       final provider = StateProvider.autoDispose((ref) {
         ref.watch(dep);
         return 0;
-      });
+      }, name: 'provider');
 
       var callCount = 0;
       final sub = container.listen(

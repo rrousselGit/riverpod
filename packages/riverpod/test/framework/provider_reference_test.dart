@@ -414,11 +414,11 @@ void main() {
       final provider = Provider((ref) {
         buildCount++;
         return ref.watch(dep).state;
-      });
+      }, name: 'provider');
       final listener = Listener<int>();
       final another = Provider((ref) {
         ref.listen<int>(provider, listener, fireImmediately: true);
-      });
+      }, name: 'another');
       final container = createContainer();
 
       expect(container.read(provider), 0);

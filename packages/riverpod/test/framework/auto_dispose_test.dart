@@ -281,10 +281,10 @@ final alwaysAlive = Provider((ref) {
       'can select auto-dispose providers if the selecting provider is auto-dispose too',
       () {
     final container = createContainer();
-    final selected = Provider.autoDispose((ref) => 0);
+    final selected = Provider.autoDispose((ref) => 0, name: 'selected');
     final isEven = Provider.autoDispose((ref) {
       return ref.watch(selected.select((c) => c.isEven));
-    });
+    }, name: 'isEven');
 
     expect(container.read(isEven), true);
   });

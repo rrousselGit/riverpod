@@ -105,9 +105,10 @@ class AutoDisposeStateProvider<State>
 
   @override
   StateController<State> create(AutoDisposeStateProviderRef<State> ref) {
+    final watch = ref.watch(notifier);
     return _listenStateProvider(
       ref as ProviderElementBase<StateController<State>>,
-      ref.watch(notifier),
+      watch,
     );
   }
 
