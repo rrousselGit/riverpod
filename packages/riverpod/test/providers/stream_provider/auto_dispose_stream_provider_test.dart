@@ -36,7 +36,7 @@ void main() {
       final container = createContainer();
       final listener = Listener<AsyncValue<int>>();
 
-      container.listen(provider, (value) {});
+      container.listen(provider, (prev, value) {});
 
       await expectLater(
         container.read(provider.stream),
@@ -55,7 +55,7 @@ void main() {
 
       verifyOnly(
         listener,
-        listener(const AsyncLoading<int>(previous: AsyncData(42))),
+        listener(null, const AsyncLoading<int>(previous: AsyncData(42))),
       );
 
       container.read(dep).state = Stream.value(21);
@@ -80,7 +80,7 @@ void main() {
           StreamProvider.autoDispose((ref) => ref.watch(dep).state);
       final container = createContainer();
 
-      container.listen(provider, (value) {});
+      container.listen(provider, (prev, value) {});
 
       expect(
         container.read(provider),
@@ -113,7 +113,7 @@ void main() {
           StreamProvider.autoDispose((ref) => ref.watch(dep).state);
       final container = createContainer();
 
-      container.listen(provider, (value) {});
+      container.listen(provider, (prev, value) {});
 
       expect(
         container.read(provider),
@@ -145,7 +145,7 @@ void main() {
       final provider =
           StreamProvider.autoDispose((ref) => Stream.value(result));
 
-      container.listen(provider, (_) {});
+      container.listen(provider, (_, __) {});
 
       expect(container.read(provider.stream), emits(0));
       expect(await container.read(provider.last), 0);
@@ -174,7 +174,7 @@ void main() {
 
       container.listen(provider, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(const AsyncValue.loading()));
+      verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
       container.read(dep).state++;
       await container.pump();
@@ -195,7 +195,7 @@ void main() {
 
       container.listen(provider.stream, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(any));
+      verifyOnly(listener, listener(any, any));
 
       container.read(dep).state++;
       await container.pump();
@@ -216,7 +216,7 @@ void main() {
 
       container.listen(provider.last, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(any));
+      verifyOnly(listener, listener(any, any));
 
       container.read(dep).state++;
       await container.pump();
@@ -289,7 +289,7 @@ void main() {
 
       final sub = container.listen(provider, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(const AsyncValue.loading()));
+      verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
       sub.close();
 
@@ -305,11 +305,14 @@ void main() {
         fireImmediately: true,
       );
 
-      verifyOnly(listener, listener(const AsyncValue.loading()));
+      verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
       await container.pump();
 
-      verifyOnly(listener, listener(const AsyncValue.data(21)));
+      verifyOnly(
+        listener,
+        listener(const AsyncValue.loading(), const AsyncValue.data(21)),
+      );
     });
   });
 }

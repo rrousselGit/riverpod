@@ -50,7 +50,7 @@ void main() {
       final sub =
           container.listen(provider(0), listener, fireImmediately: true);
 
-      verifyOnly(listener, listener('0'));
+      verifyOnly(listener, listener(null, '0'));
 
       sub.close();
 

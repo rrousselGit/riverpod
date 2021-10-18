@@ -31,7 +31,7 @@ void main() {
       container.read(dep).state++;
       await tester.pump();
 
-      verifyOnly(listener, listener(1));
+      verifyOnly(listener, listener(0, 1));
     });
 
     testWidgets('works with providers that returns null', (tester) async {
@@ -40,7 +40,7 @@ void main() {
       // should compile
       Consumer(
         builder: (context, ref, _) {
-          ref.listen<Object?>(nullProvider, (_) {});
+          ref.listen<Object?>(nullProvider, (_, __) {});
           return Container();
         },
       );
@@ -59,7 +59,9 @@ void main() {
               child: Consumer(
                 builder: (context, ref, _) {
                   ref.listen<StateController<int>>(
-                      provider, (v) => setState(() {}));
+                    provider,
+                    (prev, v) => setState(() {}),
+                  );
                   return Container();
                 },
               ),
@@ -86,7 +88,7 @@ void main() {
             builder: (context, ref, _) {
               ref.listen<StateController<int>>(
                 provider,
-                (v) => onChange(v.state),
+                (prev, v) => onChange(prev?.state, v.state),
               );
               return Container();
             },
@@ -100,9 +102,9 @@ void main() {
       container.read(provider).state++;
 
       verifyInOrder([
-        onChange(1),
-        onChange(2),
-        onChange(3),
+        onChange(1, 1),
+        onChange(2, 2),
+        onChange(3, 3),
       ]);
       verifyNoMoreInteractions(onChange);
     });
@@ -135,7 +137,7 @@ void main() {
 
       await tester.pump();
 
-      verifyOnly(onChange, onChange(false));
+      verifyOnly(onChange, onChange(true, false));
     });
 
     testWidgets('closes the subscription on dispose', (tester) async {
@@ -149,7 +151,7 @@ void main() {
           child: Consumer(
             builder: (context, ref, _) {
               ref.listen<StateController<int>>(
-                  provider, (v) => onChange(v.state));
+                  provider, (prev, v) => onChange(prev?.state, v.state));
               return Container();
             },
           ),
@@ -172,7 +174,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<StateController<int>>(provider(0), (v) {});
+              ref.listen<StateController<int>>(provider(0), (prev, v) {});
               return Container();
             },
           ),
@@ -187,7 +189,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<StateController<int>>(provider(1), (v) {});
+              ref.listen<StateController<int>>(provider(1), (prev, v) {});
               return Container();
             },
           ),
@@ -211,7 +213,7 @@ void main() {
             builder: (context, ref, _) {
               ref.listen<StateController<int>>(
                 provider(0),
-                (v) => onChange(v.state),
+                (prev, v) => onChange(prev?.state, v.state),
               );
               return Container();
             },
@@ -226,7 +228,7 @@ void main() {
             builder: (context, ref, _) {
               ref.listen<StateController<int>>(
                 provider(1),
-                (v) => onChange(v.state),
+                (prev, v) => onChange(prev?.state, v.state),
               );
               return Container();
             },
@@ -239,9 +241,9 @@ void main() {
       container.read(provider(0)).state++;
       container.read(provider(1)).state = 42;
 
-      await Future<void>.value();
+      await container.pump();
 
-      verifyOnly(onChange, onChange(42));
+      verifyOnly(onChange, onChange(42, 42));
     });
 
     testWidgets('supports Changing the ProviderContainer', (tester) async {
@@ -285,9 +287,9 @@ void main() {
         provider.overrideWithValue(42),
       ]);
 
-      await Future<void>.value();
+      await container.pump();
 
-      verifyOnly(onChange, onChange(42));
+      verifyOnly(onChange, onChange(0, 42));
     });
 
     testWidgets('supports overriding Providers', (tester) async {
@@ -313,9 +315,9 @@ void main() {
         provider.overrideWithValue(21),
       ]);
 
-      await Future<void>.value();
+      await container.pump();
 
-      verifyOnly(onChange, onChange(21));
+      verifyOnly(onChange, onChange(42, 21));
     });
   });
 }

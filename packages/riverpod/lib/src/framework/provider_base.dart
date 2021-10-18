@@ -207,7 +207,7 @@ class _ProviderSubscription<State> implements ProviderSubscription<State> {
     this._listener,
   );
 
-  final void Function(State) _listener;
+  final void Function(State? previous, State next) _listener;
   final ProviderElementBase<State> _listenedElement;
   var _closed = false;
 
@@ -237,7 +237,7 @@ class _ProviderListener {
     required this.listener,
   });
 
-  final void Function(Object? state) listener;
+  final void Function(Object? prev, Object? state) listener;
   final ProviderElementBase dependentElement;
   final ProviderElementBase listenedElement;
 
@@ -456,14 +456,25 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
       return true;
     }(), '');
 
+    final previous =
+        previousState != const _Sentinel() ? previousState as State? : null;
+
     final newValue = getState() as State;
     final listeners = _listeners.toList(growable: false);
     final subscribers = _subscribers.toList(growable: false);
     for (var i = 0; i < listeners.length; i++) {
-      Zone.current.runUnaryGuarded(listeners[i]._listener, newValue);
+      Zone.current.runBinaryGuarded(
+        listeners[i]._listener,
+        previous,
+        newValue,
+      );
     }
     for (var i = 0; i < subscribers.length; i++) {
-      Zone.current.runUnaryGuarded(subscribers[i].listener, newValue);
+      Zone.current.runBinaryGuarded(
+        subscribers[i].listener,
+        previous,
+        newValue,
+      );
     }
 
     for (var i = 0; i < _dependents.length; i++) {
@@ -553,13 +564,13 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
 
   ProviderSubscription<State> addListener(
     ProviderBase<State> provider,
-    void Function(State value) listener, {
+    void Function(State? previous, State next) listener, {
     required bool fireImmediately,
   }) {
     // TODO(rrousselGit) add onError parameter
     if (fireImmediately) {
       try {
-        listener(getExposedValue());
+        listener(null, getExposedValue());
       } catch (err, stack) {
         Zone.current.handleUncaughtError(err, stack);
       }
@@ -583,7 +594,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
 
       listen<T>(
         listenable,
-        (value) {
+        (prev, value) {
           if (initialized) {
             _didChangeDependency();
           } else {
@@ -618,7 +629,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
   @override
   void Function() listen<T>(
     ProviderListenable<T> listenable,
-    void Function(T value) listener, {
+    void Function(T? previous, T value) listener, {
     bool fireImmediately = false,
   }) {
     _assertNotOutdated();
@@ -641,7 +652,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     element.flush();
 
     if (fireImmediately) {
-      listener(element.getExposedValue());
+      listener(null, element.getExposedValue());
     }
 
     // TODO(rrousselGit) test
@@ -650,7 +661,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     final sub = _ProviderListener._(
       listenedElement: element,
       dependentElement: this,
-      listener: (value) => listener(value as T),
+      listener: (prev, value) => listener(prev as T?, value as T),
     );
 
     element._subscribers.add(sub);

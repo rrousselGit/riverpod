@@ -70,7 +70,7 @@ void main() {
         final provider = StateNotifierProvider<Counter, int>((_) => notifier);
         final computed = Provider((ref) => ref.watch(provider));
 
-        container.listen(computed, (_) {});
+        container.listen(computed, (_, __) {});
         notifier.increment();
 
         clearInteractions(observer);
@@ -115,7 +115,7 @@ void main() {
 
         container.listen(provider, listener, fireImmediately: true);
 
-        verify(listener(0)).called(1);
+        verify(listener(null, 0)).called(1);
         verifyNoMoreInteractions(listener);
         verifyInOrder([
           observer.didAddProvider(
@@ -133,7 +133,7 @@ void main() {
         counter.increment();
 
         verifyInOrder([
-          listener(1),
+          listener(0, 1),
           observer.didUpdateProvider(provider, 0, 1, container),
           observer2.didUpdateProvider(provider, 0, 1, container),
         ]);
@@ -193,7 +193,7 @@ void main() {
         container.listen(isNegative, isNegativeListener, fireImmediately: true);
 
         clearInteractions(observer);
-        verifyOnly(isNegativeListener, isNegativeListener(false));
+        verifyOnly(isNegativeListener, isNegativeListener(null, false));
 
         counter.increment();
         await container.pump();
@@ -218,7 +218,7 @@ void main() {
             -10,
             container,
           ),
-          isNegativeListener(true),
+          isNegativeListener(false, true),
           observer.didUpdateProvider(
             isNegative,
             false,
@@ -347,7 +347,7 @@ void main() {
         return Counter();
       });
 
-      final sub = container.listen(provider, (_) {});
+      final sub = container.listen(provider, (_, __) {});
 
       clearInteractions(observer);
 
@@ -407,10 +407,6 @@ void main() {
 
 class OnDisposeMock extends Mock {
   void call();
-}
-
-class Listener<T> extends Mock {
-  void call(T value);
 }
 
 class Counter extends StateNotifier<int> {

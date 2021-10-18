@@ -252,7 +252,7 @@ class ProviderContainer {
   ///   to another provider.
   ProviderSubscription<State> listen<State>(
     ProviderListenable<State> provider,
-    void Function(State value) listener, {
+    void Function(State? previous, State next) listener, {
     bool fireImmediately = false,
   }) {
     if (provider is _ProviderSelector<Object?, State>) {

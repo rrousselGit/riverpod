@@ -23,7 +23,7 @@ void main() {
 
         ref.state = 42;
 
-        verifyOnly(listener, listener(42));
+        verifyOnly(listener, listener(0, 42));
         expect(ref.state, 42);
       });
 
@@ -107,7 +107,7 @@ void main() {
 
       container.listen(provider, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(0));
+      verifyOnly(listener, listener(null, 0));
 
       ref.state = 0;
       await container.pump();

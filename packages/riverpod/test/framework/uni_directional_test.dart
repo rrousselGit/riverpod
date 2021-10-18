@@ -78,7 +78,7 @@ void main() {
     final dep = StateProvider((ref) => 0);
     final provider = Provider((ref) => ref.watch(dep).state);
     final another = StateProvider<int>((ref) {
-      ref.listen(provider, (value) => ref.controller.state++);
+      ref.listen(provider, (prev, value) => ref.controller.state++);
       return 0;
     });
     final container = createContainer();
@@ -235,7 +235,7 @@ void main() {
 
     container.read(provider);
 
-    final sub = container.listen(provider2, (_) {});
+    final sub = container.listen<void>(provider2, (_, __) {});
     sub.close();
 
     expect(counter.debugState, 0);
@@ -260,7 +260,7 @@ void main() {
 
     container.listen(computed, listener, fireImmediately: true);
 
-    verify(listener(0)).called(1);
+    verify(listener(null, 0)).called(1);
     verifyNoMoreInteractions(listener);
     expect(errors, isNotEmpty);
   });

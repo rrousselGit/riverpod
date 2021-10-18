@@ -20,7 +20,7 @@ abstract class WidgetRef {
   /// This is useful for showing modals or other imperative logic.
   void listen<T>(
     ProviderListenable<T> provider,
-    void Function(T value) listener,
+    void Function(T? previous, T next) listener,
   );
 
   /// Reads a provider without listening to it.
@@ -446,7 +446,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 
       return _container.listen<Res>(
         target,
-        (_) => markNeedsBuild(),
+        (_, __) => markNeedsBuild(),
       );
     }).read() as Res;
   }
@@ -465,7 +465,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   @override
   void listen<T>(
     ProviderListenable<T> provider,
-    void Function(T value) listener,
+    void Function(T? previous, T value) listener,
   ) {
     assert(
       debugDoingBuild,

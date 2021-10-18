@@ -44,7 +44,7 @@ class OnDisposeMock extends Mock {
 }
 
 class Listener<T> extends Mock {
-  void call(T? value);
+  void call(T? previous, T? next);
 }
 
 class Selector<Input, Output> extends Mock {

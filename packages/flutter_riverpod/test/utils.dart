@@ -25,7 +25,7 @@ class Counter extends StateNotifier<int> {
 }
 
 class Listener<T> extends Mock {
-  void call(T value);
+  void call(T? prev, T? value);
 }
 
 List<Object> errorsOf(void Function() cb) {

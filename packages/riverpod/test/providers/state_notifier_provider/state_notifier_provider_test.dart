@@ -148,13 +148,16 @@ void main() {
     final provider = StateNotifierProvider<TestNotifier, int>((_) {
       return notifier;
     });
-    final listener = ControllerListenerMock();
+    final listener = Listener<TestNotifier>();
     final container = createContainer();
     addTearDown(container.dispose);
 
     container.listen(provider.notifier, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(argThat(isA<TestNotifier>())));
+    verifyOnly(
+      listener,
+      listener(argThat(isNull), argThat(isA<TestNotifier>())),
+    );
 
     notifier.increment();
 
@@ -171,17 +174,17 @@ void main() {
     final provider = StateNotifierProvider<TestNotifier, int>((_) {
       return TestNotifier();
     });
-    final listener = ListenerMock();
+    final listener = Listener<int>();
     final container = createContainer();
     addTearDown(container.dispose);
 
     container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(0));
+    verifyOnly(listener, listener(null, 0));
 
     container.read(provider.notifier).increment();
 
-    verifyOnly(listener, listener(1));
+    verifyOnly(listener, listener(0, 1));
 
     container.dispose();
 
@@ -201,7 +204,7 @@ void main() {
     var callCount = 0;
     final sub = container.listen(
       provider.notifier,
-      (_) => callCount++,
+      (_, __) => callCount++,
     );
 
     expect(sub.read(), notifier);
@@ -235,11 +238,11 @@ void main() {
       provider.overrideWithValue(notifier),
     ]);
     addTearDown(container.dispose);
-    final listener = ListenerMock();
+    final listener = Listener<int>();
 
     container.listen<int>(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(42));
+    verifyOnly(listener, listener(null, 42));
     expect(container.read(provider.notifier), notifier);
     expect(notifier.hasListeners, true);
 
@@ -247,7 +250,7 @@ void main() {
 
     await container.pump();
 
-    verifyOnly(listener, listener(43));
+    verifyOnly(listener, listener(42, 43));
 
     container.updateOverrides([
       provider.overrideWithValue(notifier2),
@@ -255,7 +258,7 @@ void main() {
 
     await container.pump();
 
-    verifyOnly(listener, listener(21));
+    verifyOnly(listener, listener(43, 21));
 
     expect(notifier.hasListeners, false);
     expect(notifier.mounted, true);
@@ -265,7 +268,7 @@ void main() {
 
     await container.pump();
 
-    verifyOnly(listener, listener(22));
+    verifyOnly(listener, listener(21, 22));
   });
 }
 
@@ -278,12 +281,4 @@ class TestNotifier extends StateNotifier<int> {
   String toString() {
     return 'TestNotifier($state)';
   }
-}
-
-class ListenerMock extends Mock {
-  void call(int value);
-}
-
-class ControllerListenerMock extends Mock {
-  void call(TestNotifier? value);
 }

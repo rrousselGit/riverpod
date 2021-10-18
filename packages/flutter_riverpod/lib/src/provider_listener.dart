@@ -7,7 +7,11 @@ import 'internals.dart';
 ///
 // ignore: deprecated_member_use_from_same_package
 /// See also [ProviderListener]
-typedef OnProviderChange<T> = void Function(BuildContext context, T value);
+typedef OnProviderChange<T> = void Function(
+  BuildContext context,
+  T? previous,
+  T value,
+);
 
 /// {@template riverpod.providerlistener}
 /// A widget that allows listening to a provider.
@@ -46,7 +50,10 @@ class ProviderListener<T> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (provider != null) {
-      ref.listen<T>(provider!, (value) => onChange(context, value));
+      ref.listen<T>(
+        provider!,
+        (previous, value) => onChange(context, previous, value),
+      );
     }
     return child;
   }

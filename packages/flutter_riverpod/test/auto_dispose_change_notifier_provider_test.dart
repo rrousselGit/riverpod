@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart' hide Listener;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -14,7 +14,10 @@ void main() {
       return ValueNotifier(0);
     });
 
-    final sub = container.listen<ValueNotifier<int>>(provider, (value) {});
+    final sub = container.listen<ValueNotifier<int>>(
+      provider,
+      (prev, value) {},
+    );
 
     sub.close();
 
@@ -41,6 +44,7 @@ void main() {
     verifyOnly(
       listener1,
       listener1(
+        argThat(isNull),
         argThat(
           isA<ValueNotifier<int>>().having((s) => s.value, 'value', 0),
         ),
@@ -50,6 +54,7 @@ void main() {
     verifyOnly(
       listener2,
       listener2(
+        argThat(isNull),
         argThat(
           isA<ValueNotifier<int>>().having((s) => s.value, 'value', 42),
         ),
@@ -70,7 +75,7 @@ void main() {
     var callCount = 0;
     final sub = container.listen(
       provider.notifier,
-      (_) => callCount++,
+      (_, __) => callCount++,
     );
 
     expect(sub.read(), notifier);
@@ -143,8 +148,8 @@ void main() {
     addTearDown(container.dispose);
 
     var callCount = 0;
-    final sub = container.listen(provider, (_) => callCount++);
-    final notifierSub = container.listen(provider.notifier, (_) {});
+    final sub = container.listen(provider, (_, __) => callCount++);
+    final notifierSub = container.listen(provider.notifier, (_, __) {});
 
     expect(sub.read(), notifier);
     expect(callCount, 0);
@@ -183,10 +188,6 @@ void main() {
 
 class OnDisposeMock extends Mock {
   void call();
-}
-
-class Listener<T> extends Mock {
-  void call(T? value);
 }
 
 class TestNotifier extends ChangeNotifier {

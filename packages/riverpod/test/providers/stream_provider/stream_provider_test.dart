@@ -64,7 +64,7 @@ void main() {
 
     verifyOnly(
       listener,
-      listener(const AsyncLoading<int>(previous: AsyncData(42))),
+      listener(null, const AsyncLoading<int>(previous: AsyncData(42))),
     );
 
     container.read(dep).state = Stream.value(21);
@@ -428,7 +428,7 @@ void main() {
   });
 
   test('does not filter identical values', () async {
-    final sub = container.listen(provider, (_) {});
+    final sub = container.listen(provider, (_, __) {});
 
     expect(sub.read(), const AsyncValue<int>.loading());
 
@@ -446,7 +446,7 @@ void main() {
   test('provider.stream is a broadcast stream', () async {
     controller = StreamController<int>();
 
-    final sub = container.listen(provider.stream, (_) {});
+    final sub = container.listen(provider.stream, (_, __) {});
 
     controller.add(42);
 
@@ -474,7 +474,7 @@ void main() {
 
     container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(const AsyncValue.loading()));
+    verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
     container.read(dep).state++;
     await container.pump();
@@ -494,7 +494,7 @@ void main() {
 
     container.listen(provider.stream, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(any));
+    verifyOnly(listener, listener(any, any));
 
     container.read(dep).state++;
     await container.pump();
@@ -514,7 +514,7 @@ void main() {
 
     container.listen(provider.last, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(any));
+    verifyOnly(listener, listener(any, any));
 
     container.read(dep).state++;
     await container.pump();
@@ -534,7 +534,7 @@ void main() {
         provider.overrideWithValue(const AsyncValue<int>.data(42)),
       ]);
 
-      final sub = container.listen(provider.stream, (_) {});
+      final sub = container.listen(provider.stream, (_, __) {});
 
       await expectLater(sub.read(), emits(42));
 
@@ -551,7 +551,7 @@ void main() {
         provider.overrideWithValue(const AsyncValue<int>.data(42)),
       ]);
 
-      final sub = container.listen(provider.stream, (_) {});
+      final sub = container.listen(provider.stream, (_, __) {});
 
       await expectLater(sub.read(), emits(42));
 
@@ -578,7 +578,7 @@ void main() {
         provider.overrideWithValue(const AsyncValue<int>.data(42)),
       ]);
 
-      final sub = container.listen(provider.stream, (_) {});
+      final sub = container.listen(provider.stream, (_, __) {});
 
       final stream = sub.read();
 
@@ -650,15 +650,21 @@ void main() {
 
     container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(const AsyncValue<int>.loading()));
+    verifyOnly(listener, listener(null, const AsyncValue<int>.loading()));
 
     controller.add(42);
 
-    verifyOnly(listener, listener(const AsyncValue<int>.data(42)));
+    verifyOnly(
+      listener,
+      listener(const AsyncValue.loading(), const AsyncValue<int>.data(42)),
+    );
 
     controller.add(21);
 
-    verifyOnly(listener, listener(const AsyncValue<int>.data(21)));
+    verifyOnly(
+      listener,
+      listener(const AsyncValue.data(42), const AsyncValue<int>.data(21)),
+    );
 
     await controller.close();
   });
@@ -673,18 +679,27 @@ void main() {
 
     container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(const AsyncValue<int>.loading()));
+    verifyOnly(listener, listener(null, const AsyncValue<int>.loading()));
 
     controller.addError(error, stack);
 
     verifyOnly(
       listener,
-      listener(AsyncValue<int>.error(error, stackTrace: stack)),
+      listener(
+        const AsyncValue.loading(),
+        AsyncValue<int>.error(error, stackTrace: stack),
+      ),
     );
 
     controller.add(21);
 
-    verifyOnly(listener, listener(const AsyncValue.data(21)));
+    verifyOnly(
+      listener,
+      listener(
+        AsyncError<int>(error, stackTrace: stack),
+        const AsyncValue.data(21),
+      ),
+    );
 
     await controller.close();
   });
@@ -701,11 +716,14 @@ void main() {
 
     container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(const AsyncValue<int>.loading()));
+    verifyOnly(listener, listener(null, const AsyncValue<int>.loading()));
 
     controller.add(42);
 
-    verifyOnly(listener, listener(const AsyncValue<int>.data(42)));
+    verifyOnly(
+      listener,
+      listener(const AsyncValue.loading(), const AsyncValue<int>.data(42)),
+    );
     verifyNoMoreInteractions(dispose);
 
     container.dispose();
@@ -732,7 +750,7 @@ void main() {
         return ref.watch(provider.stream);
       });
 
-      container.listen(dependent, (_) {});
+      container.listen(dependent, (_, __) {});
 
       expect(callCount, 1);
 
@@ -828,7 +846,7 @@ void main() {
 
       final streamController = container.read(streamStateProvider);
       container.read(streamProvider.stream);
-      final sub = container.listen(dependent, (_) {});
+      final sub = container.listen(dependent, (_, __) {});
 
       await expectLater(sub.read(), emits(42));
       expect(callCount, 1);
@@ -853,7 +871,7 @@ void main() {
         return ref.watch(provider.stream);
       });
 
-      container.listen(dependent, (_) {});
+      container.listen(dependent, (_, __) {});
 
       expect(callCount, 1);
 
@@ -874,7 +892,7 @@ void main() {
         return controller.stream;
       });
       final container = createContainer();
-      final sub = container.listen(provider.stream, (_) {});
+      final sub = container.listen(provider.stream, (_, __) {});
 
       expect(didDispose, false);
 
@@ -1247,7 +1265,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider, (_) {});
+      final sub = container.listen(provider, (_, __) {});
 
       expect(sub.read(), const AsyncValue.data(42));
       await expectLater(stream, emits(42));
@@ -1271,7 +1289,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider, (_) {});
+      final sub = container.listen(provider, (_, __) {});
 
       expect(sub.read(), const AsyncValue.data(42));
       await expectLater(stream, emits(42));
@@ -1296,7 +1314,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider, (_) {});
+      final sub = container.listen(provider, (_, __) {});
 
       expect(sub.read(), const AsyncValue.data(42));
       await expectLater(stream, emits(42));
@@ -1319,7 +1337,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider, (_) {});
+      final sub = container.listen(provider, (_, __) {});
 
       expect(sub.read(), const AsyncValue<int>.loading());
 
@@ -1342,7 +1360,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider, (_) {});
+      final sub = container.listen(provider, (_, __) {});
 
       expect(sub.read(), const AsyncValue<int>.loading());
 
@@ -1372,7 +1390,7 @@ void main() {
 
       container.listen(provider, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(const AsyncValue<int>.loading()));
+      verifyOnly(listener, listener(null, const AsyncValue<int>.loading()));
 
       container.updateOverrides([
         provider.overrideWithValue(const AsyncValue<int>.loading()),
@@ -1384,7 +1402,10 @@ void main() {
         provider.overrideWithValue(const AsyncValue.data(42)),
       ]);
 
-      verifyOnly(listener, listener(const AsyncValue<int>.data(42)));
+      verifyOnly(
+        listener,
+        listener(const AsyncValue.loading(), const AsyncValue<int>.data(42)),
+      );
 
       await expectLater(stream, emits(42));
 
@@ -1402,7 +1423,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider, (_) {});
+      final sub = container.listen(provider, (_, __) {});
 
       expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
       await expectLater(stream, emitsError(42));
@@ -1429,7 +1450,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider, (_) {});
+      final sub = container.listen(provider, (_, __) {});
 
       expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
       await expectLater(stream, emitsError(42));
@@ -1458,7 +1479,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider, (_) {});
+      final sub = container.listen(provider, (_, __) {});
 
       expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
       await expectLater(stream, emitsError(42));
@@ -1484,7 +1505,7 @@ void main() {
       ]);
       final stream = container.read(provider.stream);
 
-      final sub = container.listen(provider, (_) {});
+      final sub = container.listen(provider, (_, __) {});
 
       expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
       await expectLater(stream, emitsError(42));

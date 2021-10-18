@@ -16,7 +16,7 @@ void main() {
       CallbackConsumerWidget(
         key: const Key('initState'),
         initState: (ctx, ref) {
-          ref.listen(provider, (value) {});
+          ref.listen(provider, (prev, value) {});
         },
       ),
     );
