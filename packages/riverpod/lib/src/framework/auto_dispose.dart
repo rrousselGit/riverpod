@@ -14,6 +14,7 @@ abstract class AutoDisposeRef extends Ref {
   ///
   /// Defaults to `false`.
   bool get maintainState;
+  // TODO deprecate in favour of "keepAlive().cancel()"
   set maintainState(bool value);
 
   @override

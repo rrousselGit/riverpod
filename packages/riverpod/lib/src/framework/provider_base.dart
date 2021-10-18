@@ -1,5 +1,15 @@
 // ignore_for_file: public_member_api_docs
+// TODO remove ignore_doc
+
 part of '../framework.dart';
+
+class _Sentinel {
+  const _Sentinel();
+}
+
+/// Alias for [Ref]
+@Deprecated('Use Ref instead.')
+typedef ProviderReference = Ref;
 
 /// A callback used by providers to create the value exposed.
 ///
@@ -15,6 +25,7 @@ part of '../framework.dart';
 /// - [Provider], a provider that uses [Create] to expose an immutable value.
 typedef Create<T, R extends Ref> = T Function(R ref);
 
+/// A function to stop listenening to a provider
 typedef RemoveListener = void Function();
 
 /// A [Create] equivalent used by [Family].
@@ -23,103 +34,8 @@ typedef FamilyCreate<T, R extends Ref, Arg> = T Function(
   Arg arg,
 );
 
-class _Default {
-  const _Default();
-}
-
 /// A function that reads the state of a provider.
 typedef Reader = T Function<T>(ProviderBase<T> provider);
-
-// Copied from Flutter
-/// Returns a summary of the runtime type and hash code of `object`.
-///
-/// See also:
-///
-///  * [Object.hashCode], a value used when placing an object in a [Map] or
-///    other similar data structure, and which is also used in debug output to
-///    distinguish instances of the same class (hash collisions are
-///    possible, but rare enough that its use in debug output is useful).
-///  * [Object.runtimeType], the [Type] of an object.
-String describeIdentity(Object? object) {
-  return '${object.runtimeType}#${shortHash(object)}';
-}
-
-// Copied from Flutter
-/// [Object.hashCode]'s 20 least-significant bits.
-String shortHash(Object? object) {
-  return object.hashCode.toUnsigned(20).toRadixString(16).padLeft(5, '0');
-}
-
-/// A base class for all providers, used to consume a provider.
-///
-/// It is used by [ProviderContainer.listen] and `ref.watch` to listen to
-/// both a provider and `provider.select`.
-///
-/// Do not implement or extend.
-abstract class ProviderListenable<State> {}
-
-/// A base class for all providers, used to consume a provider.
-///
-/// It is used by [ProviderContainer.listen] and `ref.watch` to listen to
-/// both a provider and `provider.select`.
-///
-/// Do not implement or extend.
-mixin AlwaysAliveProviderListenable<State>
-    implements ProviderListenable<State> {}
-
-/// A base class for providers that never disposes themselves.
-///
-/// This is the default base class for providers, unless a provider was marked
-/// with the `.autoDispose` modifier, like: `Provider.autoDispose(...)`
-abstract class AlwaysAliveProviderBase<State> extends ProviderBase<State>
-    implements AlwaysAliveProviderListenable<State> {
-  /// Creates an [AlwaysAliveProviderBase].
-  AlwaysAliveProviderBase({required String? name}) : super(name: name);
-
-  @override
-  ProviderElementBase<State> createElement();
-
-  @override
-  AlwaysAliveProviderListenable<Selected> select<Selected>(
-    Selected Function(State value) selector,
-  ) {
-    return _AlwaysAliveProviderSelector<State, Selected>(
-      provider: this,
-      selector: selector,
-    );
-  }
-}
-
-/// A common interface shared by [ProviderBase] and [Family]
-@sealed
-abstract class ProviderOrFamily {
-  /// The list of providers that this provider potentially depends on.
-  ///
-  /// Specifying this list will tell Riverpod to automatically scope this provider
-  /// if one of its dependency is overridden.
-  /// The downside is that it prevents `ref.watch` & co to be used with a provider
-  /// that isn't listed in [dependencies].
-  List<ProviderOrFamily>? get dependencies;
-
-  /// All the dependencies of a provider and their dependencies too.
-  late final allTransitiveDependencies =
-      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
-}
-
-List<ProviderOrFamily> _allTransitiveDependencies(
-    List<ProviderOrFamily> dependencies) {
-  final result = <ProviderOrFamily>{};
-
-  void visitDependency(ProviderOrFamily dep) {
-    if (result.add(dep) && dep.dependencies != null) {
-      dep.dependencies!.forEach(visitDependency);
-    }
-  }
-
-  dependencies.forEach(visitDependency);
-
-  return List.unmodifiable(result);
-}
 
 /// A base class for _all_ providers.
 abstract class ProviderBase<State> extends ProviderOrFamily
@@ -154,16 +70,21 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   /// and that will be overridden when passed to `ProviderScope`.
   ///
   /// Defaults to `this`.
+  @visibleForOverriding
   // ignore: avoid_returning_this
   ProviderBase<Object?> get originProvider => this;
 
+  /// Initializes the state of a provider
+  @visibleForOverriding
   State create(covariant Ref ref);
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
   /// listeners if the exposed value did not change.
+  @visibleForOverriding
   bool updateShouldNotify(State previousState, State newState);
 
   /// An internal method that defines how a provider behaves.
+  @visibleForOverriding
   ProviderElementBase<State> createElement();
 
   /// Partially listen to a provider.
@@ -280,87 +201,6 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 
 var _debugIsRunningSelector = false;
 
-/// An internal class for `ProviderBase.select`.
-@sealed
-class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
-  /// An internal class for `ProviderBase.select`.
-  _ProviderSelector({
-    required this.provider,
-    required this.selector,
-  });
-
-  /// The provider that was selected
-  final ProviderBase<Input> provider;
-
-  /// The selector applied
-  final Output Function(Input) selector;
-
-  _SelectorSubscription<Input, Output> listen(
-    ProviderContainer container,
-    void Function(Output) listener, {
-    required bool fireImmediately,
-  }) {
-    var lastSelectedValue = _select(container.read(provider));
-
-    if (fireImmediately) {
-      _runUnaryGuarded(listener, lastSelectedValue);
-    }
-
-    final sub = container.listen<Input>(provider, (value) {
-      final newSelectedValue = _select(value);
-      if (newSelectedValue != lastSelectedValue) {
-        lastSelectedValue = newSelectedValue;
-        listener(lastSelectedValue);
-      }
-    });
-
-    return _SelectorSubscription(sub, () => lastSelectedValue);
-  }
-
-  Output _select(Input value) {
-    assert(() {
-      _debugIsRunningSelector = true;
-      return true;
-    }(), '');
-
-    try {
-      return selector(value);
-    } finally {
-      assert(() {
-        _debugIsRunningSelector = false;
-        return true;
-      }(), '');
-    }
-  }
-
-  void Function() _elementListen(
-    ProviderElementBase element,
-    void Function(Output) listener, {
-    required bool fireImmediately,
-  }) {
-    var lastValue = _select(element._container.read(provider));
-    if (fireImmediately) listener(lastValue);
-
-    return element.listen<Input>(provider, (input) {
-      final newValue = _select(input);
-      if (lastValue != newValue) {
-        lastValue = newValue;
-        listener(newValue);
-      }
-    });
-  }
-}
-
-class _AlwaysAliveProviderSelector<Input, Output> = _ProviderSelector<Input,
-    Output> with AlwaysAliveProviderListenable<Output>;
-
-///
-abstract class ProviderSubscription<State> {
-  void close();
-
-  State read();
-}
-
 class _ProviderSubscription<State> implements ProviderSubscription<State> {
   _ProviderSubscription._(
     this._listenedElement,
@@ -389,31 +229,6 @@ class _ProviderSubscription<State> implements ProviderSubscription<State> {
   }
 }
 
-class _SelectorSubscription<Input, Output>
-    implements ProviderSubscription<Output> {
-  _SelectorSubscription(this._internalSub, this._read);
-
-  final ProviderSubscription<Input> _internalSub;
-  final Output Function() _read;
-  var _closed = false;
-
-  @override
-  void close() {
-    _closed = true;
-    _internalSub.close();
-  }
-
-  @override
-  Output read() {
-    if (_closed) {
-      throw StateError(
-        'called ProviderSubscription.read on a subscription that was closed',
-      );
-    }
-    return _read();
-  }
-}
-
 /// When a provider listens to another provider using `listen`
 class _ProviderListener {
   _ProviderListener._({
@@ -431,145 +246,6 @@ class _ProviderListener {
       .._subscribers.remove(this)
       ..mayNeedDispose();
   }
-}
-
-@Deprecated('Use Ref instead.')
-typedef ProviderReference = Ref;
-
-/// {@template riverpod.providerrefbase}
-/// An object used by providers to interact with other providers and the life-cycles
-/// of the application.
-///
-/// See also:
-///
-/// - [read] and [watch], two methods that allows a provider to consume other providers.
-/// - [onDispose], a method that allows performing a task when the provider is destroyed.
-/// {@endtemplate}
-abstract class Ref {
-  /// Re-create the state of a provider and return the new state.
-  State refresh<State>(ProviderBase<State> provider);
-
-  /// The [ProviderContainer] that this provider is associated with.
-  ProviderContainer get container;
-
-  /// Adds a listener to perform an operation right before the provider is destroyed.
-  ///
-  /// This typically happen when a provider marked with `.autoDispose` is no-longer
-  /// used, or when [ProviderContainer.dispose] is called.
-  ///
-  /// See also:
-  ///
-  /// - [Provider.autoDispose], a modifier which tell a provider that it should
-  ///   destroy its state when no-longer listened.
-  /// - [ProviderContainer.dispose], to destroy all providers associated with
-  ///   a [ProviderContainer] at once.
-  void onDispose(void Function() cb);
-
-  /// Read the state associated with a provider, without listening to that provider.
-  ///
-  /// By calling [read] instead of [watch], this will not cause a provider's
-  /// state to be recreated when the provider obtained changes.
-  ///
-  /// A typical use-case for this method is when passing it to the created
-  /// object like so:
-  ///
-  /// ```dart
-  /// final configsProvider = FutureProvider(...);
-  /// final myServiceProvider = Provider((ref) {
-  ///   return MyService(ref.read);
-  /// });
-  ///
-  /// class MyService {
-  ///   MyService(this.read);
-  ///
-  ///   final Reader read;
-  ///
-  ///   Future<User> fetchUser() {
-  ///     // We read the current configurations, but do not care about
-  ///     // rebuilding MyService when the configurations changes
-  ///     final configs = read(configsProvider.future);
-  ///
-  ///     return dio.get(configs.host);
-  ///   }
-  /// }
-  /// ```
-  ///
-  /// By passing [read] to an object, this allows our object to read other providers.
-  /// But we do not want to re-create our object if any of the provider
-  /// obtained changes. We only want to read their current value without doing
-  /// anything else.
-  ///
-  /// If possible, avoid using [read] and prefer [watch], which is generally
-  /// safer to use.
-  T read<T>(ProviderBase<T> provider);
-
-  /// Obtains the state of a provider and cause the state to be re-evaluated
-  /// when that provider emits a new value.
-  ///
-  /// Using [watch] allows supporting the scenario where we want to re-create
-  /// our state when one of the object we are listening to changed.
-  ///
-  /// This method should be your go-to way to make a provider read another
-  /// provider – even if the value exposed by that other provider never changes.
-  ///
-  /// ## Use-case example: Sorting a todo-list
-  ///
-  /// Consider a todo-list application. We may want to implement a sort feature,
-  /// to see the uncompleted todos first.\
-  /// We will want to create a sorted list of todos based on the
-  /// combination of the unsorted list and a sort method (ascendant, descendant, ...),
-  /// both of which may change over time.
-  ///
-  /// In this situation, what we do not want to do is to sort our list
-  /// directly inside the `build` method of our UI, as sorting a list can be
-  /// expensive.
-  /// But maintaining a cache manually is difficult and error prone.
-  ///
-  /// To solve this problem, we could create a separate [Provider] that will
-  /// expose the sorted list, and use [watch] to automatically re-evaluate
-  /// the list **only** when needed.
-  ///
-  /// In code, this may look like:
-  ///
-  /// ```dart
-  /// final sortProvider = StateProvider((_) => Sort.byName);
-  /// final unsortedTodosProvider = StateProvider((_) => <Todo>[]);
-  ///
-  /// final sortedTodosProvider = Provider((ref) {
-  ///   // listen to both the sort enum and the unfiltered list of todos
-  ///   final sort = ref.watch(sortProvider);
-  ///   final todos = ref.watch(unsortedTodosProvider);
-  ///
-  ///   // Creates a new sorted list from the combination of the unfiltered
-  ///   // list and the filter type.
-  ///   return [...todos].sort((a, b) { ... });
-  /// });
-  /// ```
-  ///
-  /// In this code, by using [Provider] + [watch]:
-  ///
-  /// - if either `sortProvider` or `unsortedTodosProvider` changes, then
-  ///   `sortedTodosProvider` will automatically be recomputed.
-  /// - if multiple widgets depends on `sortedTodosProvider` the list will be
-  ///   sorted only once.
-  /// - if nothing is listening to `sortedTodosProvider`, then no sort is performed.
-  T watch<T>(AlwaysAliveProviderListenable<T> provider);
-
-  /// Listen to a provider and call `listener` whenever its value changes.
-  ///
-  /// Listeners will automatically be removed when the provider rebuilds (such
-  /// as when a provider listeneed with [watch] changes).
-  ///
-  /// Returns a function that allows cancelling the subscription early.
-  ///
-  /// - `fireImmediately` can be optionally passed to tell Riverpod to immediately
-  ///    call the listener with the current value.
-  ///    Defaults to false.
-  void Function() listen<T>(
-    AlwaysAliveProviderListenable<T> provider,
-    void Function(T value) listener, {
-    bool fireImmediately,
-  });
 }
 
 /// An internal class that handles the state of a provider.
@@ -631,6 +307,8 @@ abstract class ProviderElementBase<State> implements Ref {
   bool _debugDidChangeDependency = false;
 
   bool _mounted = false;
+
+  /// Whether the element was disposed or not
   @visibleForTesting
   bool get mounted => _mounted;
 
@@ -641,9 +319,6 @@ abstract class ProviderElementBase<State> implements Ref {
   /* STATE */
   State? _state;
 
-  // Using default values to differentiate between `notifyListeners()` and `notifyListeners(newValue: null)`
-  // It is safe to type `newValue` as Object? because the method is hidden
-  // under a type-safe interface that types it as `State newValue` instead.
   void setState(State newState) {
     late State previousState;
     if (_didBuild) previousState = getState() as State;
@@ -764,7 +439,7 @@ abstract class ProviderElementBase<State> implements Ref {
     }
   }
 
-  void notifyListeners({Object? previousState = const _Default()}) {
+  void notifyListeners({Object? previousState = const _Sentinel()}) {
     assert(() {
       if (_debugSkipNotifyListenersAsserts) return true;
 
@@ -795,7 +470,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
       _dependents[i]._didChangeDependency();
     }
 
-    if (previousState != const _Default()) {
+    if (previousState != const _Sentinel()) {
       for (final observer in _container._observers) {
         Zone.current.runGuarded(
           () => observer.didUpdateProvider(
