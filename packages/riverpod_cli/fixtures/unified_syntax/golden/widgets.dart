@@ -202,10 +202,29 @@ class StatefulConsumer2 extends ConsumerStatefulWidget {
 class HooksWatch extends HookConsumerWidget {
   const HooksWatch({Key? key}) : super(key: key);
 
+  void empty() {}
+  void error(Object err, StackTrace? st) {}
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final countNotifier = ref.watch(counterProvider.notifier);
     final count = ref.watch(counterProvider);
+    final asyncValue = ref.watch(futureProvider);
+    asyncValue.when(loading: (last) {}, data: (_) {}, error: (_, __, last) {});
+    asyncValue.maybeWhen(
+        loading: (last) {},
+        data: (_) {},
+        error: (_, __, last) {},
+        orElse: () {});
+    asyncValue.when(
+        loading: (last) => empty(),
+        data: (_) {},
+        error: (err, stackTrace, last) => error(err, stackTrace));
+    asyncValue.maybeWhen(
+        loading: (last) => empty(),
+        data: (_) {},
+        error: (err, stackTrace, last) => error(err, stackTrace),
+        orElse: () {});
     return Center(
       child: ElevatedButton(
         onPressed: () {

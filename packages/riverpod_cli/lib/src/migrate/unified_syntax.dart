@@ -3,7 +3,8 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:codemod/codemod.dart';
 import 'package:pub_semver/pub_semver.dart';
-// ignore_for_file: avoid_print
+
+import 'errors.dart';
 
 enum ClassType { consumer, hook, stateless, stateful, none }
 enum ProviderType {
@@ -104,7 +105,8 @@ class RiverpodHooksProviderInfo extends GeneralizingAstVisitor<void>
 
 /// A suggestor that yields changes to notifier changes
 class RiverpodUnifiedSyntaxChangesMigrationSuggestor
-    extends GeneralizingAstVisitor<void> with AstVisitingSuggestor {
+    extends GeneralizingAstVisitor<void>
+    with AstVisitingSuggestor, ErrorHandling {
   RiverpodUnifiedSyntaxChangesMigrationSuggestor(this.riverpodVersion);
 
   final VersionConstraint riverpodVersion;
@@ -232,8 +234,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         }
       }
     } catch (e, st) {
-      print(
-          'Error in migration tool while migrating widget build method parameters $params\n$e\n$st');
+      addError('migrating widget build method parameters $params\n$e\n$st');
     }
 
     params = null;
@@ -269,8 +270,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         }
       }
     } catch (e, st) {
-      print(
-          'Error in migration tool while migrating class $classDecl\n$e\n$st');
+      addError('migrating class $classDecl\n$e\n$st');
     }
     classDeclaration = null;
   }
@@ -285,8 +285,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
             argumentList.rightParenthesis.offset);
       }
     } catch (e, st) {
-      print(
-          'Error in migration tool while migrating consumer hook function call $argumentList\n$e\n$st');
+      addError('migrating consumer hook function call $argumentList\n$e\n$st');
     }
   }
 
@@ -305,8 +304,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       }
       functionDecls[node.name.name] = node;
     } catch (e, st) {
-      print(
-          'Error in migration tool while migrating function declaration $node\n$e\n$st');
+      addError('migrating function declaration $node\n$e\n$st');
     }
   }
 
@@ -350,7 +348,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       final childSource = context.sourceText
           .substring(child.expression.offset, child.expression.end);
       if (fn is BlockFunctionBody) {
-        yieldPatch('ref.listen($providerSource, $onChangeSource);',
+        yieldPatch('\nref.listen($providerSource, $onChangeSource);',
             fn.block.leftBracket.end, fn.block.leftBracket.end);
       } else if (fn is ExpressionFunctionBody) {
         yieldPatch('{\nref.listen($providerSource, $onChangeSource);return ',
@@ -360,8 +358,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
 
       yieldPatch(childSource, node.offset, node.end);
     } catch (e, st) {
-      print(
-          'Error in migration tool when attempting to migrate a ProviderListener\n$e\n$st');
+      addError('migrating a ProviderListener\n$e\n$st');
     }
   }
 
@@ -416,7 +413,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         }
       }
     } catch (e, st) {
-      print('Error in migration tool when visiting type $typeName\n$e\n$st');
+      addError('when visiting type $typeName\n$e\n$st');
     }
 
     super.visitTypeName(node);
@@ -483,13 +480,13 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
             providerTypeArgs.substring(0, providerTypeArgs.lastIndexOf(','));
       }
     } catch (e, st) {
+      errorOccuredDuringMigration = true;
       // Can't know anything if we ran into an exception
       providerTypeArgs = '';
       inAutoDisposeProvider = false;
       inProvider = ProviderType.none;
 
-      print(
-          'Error in migration tool while trying to get type arguments from $type\n$e\n$st');
+      print('getting type arguments from $type\n$e\n$st');
     }
   }
 
@@ -540,8 +537,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         updateProviderType(type, node.staticType!);
       }
     } catch (e, st) {
-      print(
-          'Error in migration tool when visiting InstanceCreationExpression $type\n$e\n$st');
+      addError('visiting InstanceCreationExpression $type\n$e\n$st');
     }
     super.visitInstanceCreationExpression(node);
     inProvider = ProviderType.none;
@@ -575,8 +571,8 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         }
       }
     } catch (e, st) {
-      print(
-          'Error in migration tool while visiting invocation expression and migrating provider type params $type\n$e\n$st');
+      addError(
+          'when visiting invocation expression and migrating provider type params $type\n$e\n$st');
     }
     super.visitInvocationExpression(node);
     inProvider = ProviderType.none;
@@ -629,6 +625,38 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       final functionName = node.methodName.toSource();
       final target =
           node.realTarget?.staticType?.getDisplayString(withNullability: true);
+      if (functionName == 'when' ||
+          functionName == 'maybeWhen' &&
+              (target?.contains('AsyncValue') ?? false)) {
+        final loadingArgs = node.argumentList.arguments.where(
+            (a) => (a is NamedExpression) && a.name.label.name == 'loading');
+        if (loadingArgs.isNotEmpty) {
+          final loading = (loadingArgs.first as NamedExpression).expression;
+          if (loading is FunctionExpression) {
+            yieldPatch('last', loading.parameters!.leftParenthesis.offset + 1,
+                loading.parameters!.leftParenthesis.offset + 1);
+          } else if (loading is SimpleIdentifier &&
+              loading.staticType is FunctionType) {
+            yieldPatch('(last) => ', loading.offset, loading.offset);
+            yieldPatch('()', loading.end, loading.end);
+          }
+        }
+        final errorArgs = node.argumentList.arguments.where(
+            (a) => (a is NamedExpression) && a.name.label.name == 'error');
+        if (errorArgs.isNotEmpty) {
+          final error = (errorArgs.first as NamedExpression).expression;
+          if (error is FunctionExpression) {
+            yieldPatch(', last ', error.parameters!.parameters.last.end,
+                error.parameters!.parameters.last.end);
+          } else if (error is SimpleIdentifier &&
+              error.staticType is FunctionType) {
+            yieldPatch(
+                '(err, stackTrace, last) => ', error.offset, error.offset);
+            yieldPatch('(err, stackTrace)', error.end, error.end);
+          }
+        }
+      }
+
       if (target?.contains('ProviderContainer') ?? false) {
         // No need to migrate container methods unless refreshing FutureProvider
         if (functionName == 'refresh') {
@@ -657,6 +685,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         super.visitMethodInvocation(node);
         return;
       }
+
       // ref.read / ref.watch / context.read / context.watch, useProvider
       if (functionName == 'watch' || functionName == 'useProvider') {
         migrateParams();
@@ -692,8 +721,9 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         }
       }
     } catch (e, st) {
-      print(
-          'Error in migration tool while visiting a method declaration $node\n$e\n$st');
+      errorOccuredDuringMigration = true;
+
+      addError('when visiting a method declaration $node\n$e\n$st');
     }
     super.visitMethodInvocation(node);
   }
