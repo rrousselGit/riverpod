@@ -334,7 +334,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       if (onChange.expression is FunctionExpression) {
         final onChangeFunction = onChange.expression as FunctionExpression;
         onChangeSource =
-            '(${context.sourceText.substring(onChangeFunction.parameters!.parameters[1].offset, onChangeFunction.end)}';
+            '(previous, ${context.sourceText.substring(onChangeFunction.parameters!.parameters[1].offset, onChangeFunction.end)}';
       } else if (onChange.expression is SimpleIdentifier &&
           onChange.staticType is FunctionType) {
         final functionName = onChange.expression as SimpleIdentifier;
@@ -674,7 +674,9 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           }
         }
         if (functionName == 'listen') {
-          yieldPatch(', (value) {}', node.argumentList.arguments.first.end,
+          yieldPatch(
+              ', (previous, value) {}',
+              node.argumentList.arguments.first.end,
               node.argumentList.arguments.first.end);
         }
         super.visitMethodInvocation(node);
@@ -743,15 +745,36 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   void migrateOnChangeFunction(String functionName) {
     final methodDecl = methodDecls[functionName];
     if (methodDecl != null && functionNeedsMigration.contains(functionName)) {
-      yieldPatch('', methodDecl.parameters!.parameters.first.offset,
-          methodDecl.parameters!.parameters[1].offset);
+      if (methodDecl.parameters?.parameters[1] is SimpleFormalParameter) {
+        final parameter =
+            methodDecl.parameters!.parameters[1] as SimpleFormalParameter;
+        final type =
+            parameter.type!.type!.getDisplayString(withNullability: false);
+        yieldPatch(
+            '$type? previous,',
+            methodDecl.parameters!.parameters.first.offset,
+            methodDecl.parameters!.parameters[1].offset);
+      } else {
+        addError(
+            'failed to migrate listen function ${methodDecl.parameters?.toSource()}');
+      }
     } else {
       final funcDecl = functionDecls[functionName];
       if (funcDecl != null && functionNeedsMigration.contains(functionName)) {
-        yieldPatch(
-            '',
-            funcDecl.functionExpression.parameters!.parameters.first.offset,
-            funcDecl.functionExpression.parameters!.parameters[1].offset);
+        if (funcDecl.functionExpression.parameters?.parameters[1]
+            is SimpleFormalParameter) {
+          final parameter = funcDecl.functionExpression.parameters!
+              .parameters[1] as SimpleFormalParameter;
+          final type =
+              parameter.type!.type!.getDisplayString(withNullability: false);
+          yieldPatch(
+              '$type? previous,',
+              funcDecl.functionExpression.parameters!.parameters.first.offset,
+              funcDecl.functionExpression.parameters!.parameters[1].offset);
+        } else {
+          addError(
+              'failed to migrate listen function ${funcDecl.functionExpression.parameters?.toSource()}');
+        }
       }
     }
   }
