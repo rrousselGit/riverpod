@@ -177,6 +177,9 @@ void main() {
     group('.watch', () {
       test('when selector throws, rebuild providers', () {}, skip: true);
 
+      test('ProviderObserver.createDidFail', () {}, skip: true);
+      test('listen(onError)', () {}, skip: true);
+
       test(
           'when rebuilding a provider after an uncaught exception, correctly updates dependents',
           () {
@@ -195,14 +198,25 @@ void main() {
 
         expect(
           () => container.read(dep),
-          throwsA(isA<ProviderException>()),
+          throwsA(
+            isA<ProviderException>()
+                .having(
+                  (e) => e.exception,
+                  'exception',
+                  isA<ProviderException>()
+                      .having(
+                          (e) => e.exception, 'exception', isUnimplementedError)
+                      .having((e) => e.provider, 'provider', provider),
+                )
+                .having((e) => e.provider, 'provider', dep),
+          ),
         );
 
         container.read(throws).state = false;
 
         // currently fails because "updateShouldNotify" does not check errors
         expect(container.read(dep), 0);
-      }, skip: true);
+      });
 
       test('can listen multiple providers at once', () async {
         final container = createContainer();
