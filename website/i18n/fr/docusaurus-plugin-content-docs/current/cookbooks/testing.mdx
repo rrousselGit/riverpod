@@ -228,7 +228,7 @@ testWidgets('override repositoryProvider', (tester) async {
       overrides: [
         // Surcharge le comportement de `repositoryProvider` pour renvoyer
         // une instance de FakeRepository plutôt que Repository.
-        repositoryProvider.overrideWithProvider(Provider((ref) => FakeRepository()))
+        repositoryProvider.overrideWithValue(FakeRepository())
         // Il n'est pas utile de surcharger `todoListProvider`, il va automatiquement
         // utiliser le nouveau comportement de `repositoryProvider`
       ],
@@ -247,7 +247,7 @@ test('override repositoryProvider', () async {
     overrides: [
         // Surcharge le comportement de `repositoryProvider` pour renvoyer
         // une instance de FakeRepository plutôt que Repository.
-      repositoryProvider.overrideWithProvider(Provider((ref) => FakeRepository()))
+      repositoryProvider.overrideWithValue(FakeRepository())
         // Il n'est pas utile de surcharger `todoListProvider`, il va automatiquement
         // utiliser le nouveau comportement de `repositoryProvider`
     ],
@@ -360,7 +360,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          repositoryProvider.overrideWithProvider(Provider((ref) => FakeRepository()))
+          repositoryProvider.overrideWithValue(FakeRepository())
         ],
         // Notre application, qui va utiliser todoListProvider pour acchifer une liste de taches.
         // À potentiellement extraire dans un widget "MyApp".

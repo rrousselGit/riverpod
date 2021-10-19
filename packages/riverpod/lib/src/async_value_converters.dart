@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import 'common.dart';
-import 'framework.dart';
 import 'internals.dart';
 
 ///
@@ -11,9 +9,13 @@ import 'internals.dart';
 class AsyncValueAsStreamProvider<State>
     extends AlwaysAliveProviderBase<Stream<State>> {
   ///
-  AsyncValueAsStreamProvider(this._provider, String? name) : super(name);
+  AsyncValueAsStreamProvider(this._provider, {required String? name})
+      : super(name: name);
 
   final AlwaysAliveProviderBase<AsyncValue<State>> _provider;
+
+  @override
+  late final List<ProviderOrFamily>? dependencies = [_provider];
 
   @override
   Stream<State> create(covariant ProviderElementBase<Stream<State>> ref) {
@@ -32,11 +34,6 @@ class AsyncValueAsStreamProvider<State>
   ) {
     return true;
   }
-
-  @override
-  void setupOverride(SetupOverride setup) {
-    throw UnsupportedError('Cannot override $_provider.$name');
-  }
 }
 
 ///
@@ -44,10 +41,13 @@ class AsyncValueAsStreamProvider<State>
 class AutoDisposeAsyncValueAsStreamProvider<State>
     extends AutoDisposeProviderBase<Stream<State>> {
   ///
-  AutoDisposeAsyncValueAsStreamProvider(this._provider, String? name)
-      : super(name);
+  AutoDisposeAsyncValueAsStreamProvider(this._provider, {required String? name})
+      : super(name: name);
 
   final AutoDisposeProviderBase<AsyncValue<State>> _provider;
+
+  @override
+  late final List<ProviderOrFamily>? dependencies = [_provider];
 
   @override
   Stream<State> create(
@@ -66,11 +66,6 @@ class AutoDisposeAsyncValueAsStreamProvider<State>
     Stream<State> newState,
   ) {
     return true;
-  }
-
-  @override
-  void setupOverride(SetupOverride setup) {
-    throw UnsupportedError('Cannot override $_provider.$name');
   }
 }
 
@@ -98,7 +93,7 @@ Stream<State> _asyncValueToStream<State>(
 
   ref.onDispose(() => controller?.close());
 
-  void listener(AsyncValue<State> value) {
+  void listener(AsyncValue<State>? previous, AsyncValue<State> value) {
     value.when(
       loading: (_) {
         controller?.close();
@@ -121,9 +116,13 @@ Stream<State> _asyncValueToStream<State>(
 class AsyncValueAsFutureProvider<State>
     extends AlwaysAliveProviderBase<Future<State>> {
   ///
-  AsyncValueAsFutureProvider(this._provider, String? name) : super(name);
+  AsyncValueAsFutureProvider(this._provider, {required String? name})
+      : super(name: name);
 
   final AlwaysAliveProviderBase<AsyncValue<State>> _provider;
+
+  @override
+  late final List<ProviderOrFamily>? dependencies = [_provider];
 
   @override
   Future<State> create(ProviderElementBase<Future<State>> ref) {
@@ -139,11 +138,6 @@ class AsyncValueAsFutureProvider<State>
   }
 
   @override
-  void setupOverride(SetupOverride setup) {
-    throw UnsupportedError('Cannot override $_provider.$name');
-  }
-
-  @override
   ProviderElement<Future<State>> createElement() {
     return ProviderElement(this);
   }
@@ -154,10 +148,13 @@ class AsyncValueAsFutureProvider<State>
 class AutoDisposeAsyncValueAsFutureProvider<State>
     extends AutoDisposeProviderBase<Future<State>> {
   ///
-  AutoDisposeAsyncValueAsFutureProvider(this._provider, String? name)
-      : super(name);
+  AutoDisposeAsyncValueAsFutureProvider(this._provider, {required String? name})
+      : super(name: name);
 
   final AutoDisposeProviderBase<AsyncValue<State>> _provider;
+
+  @override
+  late final List<ProviderOrFamily>? dependencies = [_provider];
 
   @override
   Future<State> create(AutoDisposeProviderElementBase<Future<State>> ref) {
@@ -170,11 +167,6 @@ class AutoDisposeAsyncValueAsFutureProvider<State>
     Future<State> newState,
   ) {
     return true;
-  }
-
-  @override
-  void setupOverride(SetupOverride setup) {
-    throw UnsupportedError('Cannot override $_provider.$name');
   }
 
   @override
@@ -199,7 +191,7 @@ Future<State> _asyncValueAsFuture<State>(
     }
   });
 
-  void listener(AsyncValue<State> value) {
+  void listener(AsyncValue<State>? previous, AsyncValue<State> value) {
     value.when(
       loading: (_) {
         if (loadingCompleter == null) {

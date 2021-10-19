@@ -2,16 +2,20 @@ part of '../stream_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [ProviderRef.state], the value currently exposed by this providers.
-typedef AutoDisposeStreamProviderRef<State> = AutoDisposeProviderRefBase;
+typedef AutoDisposeStreamProviderRef<State> = AutoDisposeRef;
 
 /// {@macro riverpod.streamprovider}
 @sealed
 class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
     with
-        AutoDisposeProviderOverridesMixin<AsyncValue<State>>,
-        _StreamProviderMixin<State> {
+        _StreamProviderMixin<State>,
+        OverrideWithValueMixin<AsyncValue<State>> {
   /// {@macro riverpod.streamprovider}
-  AutoDisposeStreamProvider(this._create, {String? name}) : super(name);
+  AutoDisposeStreamProvider(
+    this._create, {
+    String? name,
+    this.dependencies,
+  }) : super(name: name);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStreamProviderFamilyBuilder();
@@ -19,12 +23,21 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
   final Create<Stream<State>, AutoDisposeStreamProviderRef<State>> _create;
 
   @override
+  final List<ProviderOrFamily>? dependencies;
+
+  @override
   late final AutoDisposeProviderBase<Stream<State>> stream =
-      AutoDisposeAsyncValueAsStreamProvider(this, modifierName(name, 'stream'));
+      AutoDisposeAsyncValueAsStreamProvider(
+    this,
+    name: modifierName(name, 'stream'),
+  );
 
   @override
   late final AutoDisposeProviderBase<Future<State>> last =
-      AutoDisposeAsyncValueAsFutureProvider(this, modifierName(name, 'last'));
+      AutoDisposeAsyncValueAsFutureProvider(
+    this,
+    name: modifierName(name, 'last'),
+  );
 
   @override
   AsyncValue<State> create(
@@ -47,33 +60,6 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
   }
 
   @override
-  Override overrideWithProvider(
-    AutoDisposeProviderBase<AsyncValue<State>> provider,
-  ) {
-    return ProviderOverride((setup) {
-      setup(origin: this, override: provider);
-      setup(origin: stream, override: stream);
-      setup(origin: last, override: last);
-    });
-  }
-
-  @override
-  Override overrideWithValue(AsyncValue<State> value) {
-    return ProviderOverride((setup) {
-      setup(origin: this, override: ValueProvider<AsyncValue<State>>(value));
-      setup(origin: stream, override: stream);
-      setup(origin: last, override: last);
-    });
-  }
-
-  @override
-  void setupOverride(SetupOverride setup) {
-    setup(origin: this, override: this);
-    setup(origin: stream, override: stream);
-    setup(origin: last, override: last);
-  }
-
-  @override
   AutoDisposeAsyncProviderElement<State> createElement() {
     return AutoDisposeAsyncProviderElement(this);
   }
@@ -84,7 +70,11 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
 class AutoDisposeStreamProviderFamily<State, Arg>
     extends Family<AsyncValue<State>, Arg, AutoDisposeStreamProvider<State>> {
   /// {@macro riverpod.streamprovider.family}
-  AutoDisposeStreamProviderFamily(this._create, {String? name}) : super(name);
+  AutoDisposeStreamProviderFamily(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final FamilyCreate<Stream<State>, AutoDisposeStreamProviderRef<State>, Arg>
       _create;
@@ -108,19 +98,5 @@ class AutoDisposeStreamProviderFamily<State, Arg>
     setup(origin: provider, override: provider);
     setup(origin: provider.stream, override: provider.stream);
     setup(origin: provider.last, override: provider.last);
-  }
-
-  /// Overrides the behavior of a family for a part of the application.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    AutoDisposeProviderBase<AsyncValue<State>> Function(Arg argument) override,
-  ) {
-    return FamilyOverride<Arg>(this, (arg, setup) {
-      final provider = call(arg);
-      setup(origin: provider, override: override(arg));
-      setup(origin: provider.stream, override: provider.stream);
-      setup(origin: provider.last, override: provider.last);
-    });
   }
 }

@@ -605,8 +605,8 @@ void main() {
   test('AsyncValue.value', () {
     expect(const AsyncValue.data(42).value, 42);
     expect(
-      () => const AsyncValue<void>.loading().value,
-      throwsA(isA<AsyncValueLoadingError>()),
+      const AsyncValue<int>.loading().value,
+      null,
     );
 
     final error = Error();

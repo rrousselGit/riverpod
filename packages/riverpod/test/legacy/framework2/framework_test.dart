@@ -61,7 +61,7 @@ void main() {
     root.dispose();
   });
 
-  test('ProviderRefBase.container exposes the root container', () {
+  test('Ref.container exposes the root container', () {
     final root = createContainer();
     final container = createContainer(parent: root);
     final provider = Provider((ref) => ref);
@@ -253,7 +253,7 @@ void main() {
     final firstElement = container.readProviderElement(first);
     final secondElement = container.readProviderElement(second);
     final computedElement = container.readProviderElement(computed);
-    final sub = container.listen(computed, (_) {});
+    final sub = container.listen(computed, (_, __) {});
 
     expect(sub.read(), '0');
     var firstDependents = <ProviderElementBase>[];
@@ -292,7 +292,7 @@ void main() {
 
       addTearDown(container.dispose);
 
-      final sub = container.listen(provider, (_) {});
+      final sub = container.listen(provider, (_, __) {});
 
       expect(callCount, 0);
       expect(sub.read(), const AsyncValue.data(42));
@@ -306,7 +306,7 @@ void main() {
     });
     final firstElement = container.readProviderElement(first);
     final computedElement = container.readProviderElement(computed);
-    final sub = container.listen(computed, (_) {});
+    final sub = container.listen(computed, (_, __) {});
 
     expect(sub.read(), 0);
     var firstDependents = <ProviderElementBase>[];
@@ -349,7 +349,7 @@ void main() {
 
         counter.increment();
 
-        verifyOnly(didChange, didChange(1));
+        verifyOnly(didChange, didChange(0, 1));
       });
 
       test('is called at most once per read for computed providers', () {
@@ -367,7 +367,7 @@ void main() {
 
         container.read(computed);
 
-        verifyOnly(didChange, didChange(3));
+        verifyOnly(didChange, didChange(0, 3));
       });
 
       test('are all executed after one read call', () {
@@ -380,16 +380,16 @@ void main() {
 
         counter.increment();
 
-        verifyOnly(didChange, didChange(1));
-        verifyOnly(didChange2, didChange2(1));
+        verifyOnly(didChange, didChange(0, 1));
+        verifyOnly(didChange2, didChange2(0, 1));
       });
 
       test('is guarded', () {
         final counter = Counter();
         final provider = StateNotifierProvider<Counter, int>((ref) => counter);
         final didChange2 = Listener<int>();
-        when(didChange(any)).thenThrow(42);
-        when(didChange2(any)).thenThrow(21);
+        when(didChange(any, any)).thenThrow(42);
+        when(didChange2(any, any)).thenThrow(21);
 
         container.listen(provider, didChange);
         container.listen(provider, didChange2);
@@ -397,8 +397,8 @@ void main() {
         final errors = errorsOf(counter.increment);
 
         expect(errors, unorderedEquals(<Object>[42, 21]));
-        verifyOnly(didChange, didChange(1));
-        verifyOnly(didChange2, didChange2(1));
+        verifyOnly(didChange, didChange(0, 1));
+        verifyOnly(didChange2, didChange2(0, 1));
       });
     });
   });
@@ -428,7 +428,7 @@ void main() {
         final error = Error();
         final provider = Provider<int>((ref) => throw error, name: 'hello');
 
-        final sub = container.listen(provider, (_) {});
+        final sub = container.listen(provider, (_, __) {});
 
         expect(
           sub.read,
@@ -453,7 +453,7 @@ void main() {
         final first = StateNotifierProvider<Counter, int>((ref) => counter);
         final provider = Provider((ref) => ref.watch(first));
 
-        final sub = container.listen(provider, (_) {});
+        final sub = container.listen(provider, (_, __) {});
 
         expect(sub.read(), 0);
 
@@ -469,7 +469,7 @@ void main() {
       final root = createContainer();
       final container = createContainer(parent: root);
       var callCount = 0;
-      late ProviderRefBase providerReference;
+      late Ref providerReference;
       var result = 0;
       final provider = Provider((ref) {
         callCount++;
@@ -493,7 +493,7 @@ void main() {
         () async {
       var future = Future.value(42);
       var callCount = 0;
-      final provider = FutureProvider((_) {
+      final provider = FutureProvider((ref) {
         callCount++;
         return future;
       });
@@ -529,7 +529,7 @@ void main() {
 
     test('retrying an unmounted provider just mounts it', () async {
       var callCount = 0;
-      final provider = FutureProvider((_) {
+      final provider = FutureProvider((ref) {
         callCount++;
         return Future.value(42);
       });

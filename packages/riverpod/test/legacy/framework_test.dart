@@ -34,7 +34,7 @@ void main() {
 
     expect(state.hasListeners, false);
 
-    final sub = container.listen(provider, (_) {});
+    final sub = container.listen(provider, (_, __) {});
 
     expect(state.hasListeners, true);
 
@@ -43,61 +43,36 @@ void main() {
     expect(state.hasListeners, false);
   });
 
-  test('test two families one overriden the other not', () {
-    var callCount = 0;
+  test('test two families one overridden the other not', () {
     final family = Provider.family<String, int>((ref, value) {
-      callCount++;
       return '$value';
     });
-    var callCount2 = 0;
     final family2 = Provider.family<String, int>((ref, value) {
-      callCount2++;
       return '$value 2';
     });
-    final container = createContainer(overrides: [
-      family.overrideWithProvider(
-        (value) => Provider((ref) => 'override $value'),
-      ),
-    ]);
+    final root = createContainer();
+    final container = createContainer(parent: root, overrides: [family2]);
 
-    expect(container.read(family(0)), 'override 0');
-
-    expect(callCount2, 0);
+    expect(container.read(family(0)), '0');
     expect(container.read(family2(0)), '0 2');
-    expect(callCount2, 1);
 
-    expect(callCount, 0);
+    expect(container.getAllProviderElements(), [
+      isA<ProviderElementBase>().having((e) => e.origin, 'origin', family2(0))
+    ]);
+    expect(root.getAllProviderElements(), [
+      isA<ProviderElementBase>().having((e) => e.origin, 'origin', family(0))
+    ]);
   });
 
   test('changing the override type at a given index throws', () {
     final provider = Provider((ref) => 0);
     final family = Provider.family<int, int>((ref, value) => 0);
-    final container = createContainer(overrides: [
-      family.overrideWithProvider((value) => Provider((ref) => 0)),
-    ]);
+    final container = createContainer(overrides: [family]);
 
     expect(
-      () => container.updateOverrides(
-        [provider.overrideWithProvider(Provider((_) => 42))],
-      ),
+      () => container.updateOverrides([provider]),
       throwsA(isA<AssertionError>()),
     );
-  });
-
-  test('last family override is applied', () {
-    final family = Provider.family<int, int>((ref, value) => 0);
-    final container = createContainer(overrides: [
-      family.overrideWithProvider((value) => Provider((ref) => 1)),
-    ]);
-
-    expect(container.read(family(0)), 1);
-
-    container.updateOverrides([
-      family.overrideWithProvider((value) => Provider((ref) => 2)),
-    ]);
-
-    expect(container.read(family(0)), 1);
-    expect(container.read(family(1)), 2);
   });
 
   test("can't call onDispose inside onDispose", () {
@@ -184,14 +159,12 @@ void main() {
     final provider = Provider((_) => callCount++);
 
     final container = createContainer(
-      overrides: [provider.overrideWithProvider(provider)],
+      overrides: [provider],
     );
 
     expect(callCount, 0);
 
-    container.updateOverrides([
-      provider.overrideWithProvider(provider),
-    ]);
+    container.updateOverrides([provider]);
 
     expect(callCount, 0);
 
@@ -294,7 +267,7 @@ void main() {
     verifyNoMoreInteractions(onDispose3);
   });
 
-  test('ProviderRefBase is unusable after dispose (read/onDispose)', () {
+  test('Ref is unusable after dispose (read/onDispose)', () {
     final container = createContainer();
     late ProviderElement ref;
     final provider = Provider((s) {
@@ -315,7 +288,7 @@ void main() {
     var callCount = 0;
     final onDispose = OnDisposeMock();
     final error = Error();
-    late ProviderRefBase reference;
+    late Ref reference;
     final provider = Provider((ref) {
       reference = ref;
       callCount++;

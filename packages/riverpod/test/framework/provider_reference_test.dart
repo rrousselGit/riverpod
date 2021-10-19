@@ -5,12 +5,52 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
-  group('ProviderRefBase', () {
+  group('Ref', () {
+    test(
+      'cannot call ref.watch/ref.read/ref.listen/ref.onDispose after a dependency changed',
+      () {
+        late Ref ref;
+        final container = createContainer();
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider((r) {
+          r.watch(dep);
+          ref = r;
+        });
+
+        container.read(provider);
+
+        container.read(dep).state++;
+
+        final another = Provider((ref) => 0);
+
+        expect(
+          () => ref.watch(another),
+          throwsA(isA<AssertionError>()),
+        );
+        expect(
+          () => ref.refresh(another),
+          throwsA(isA<AssertionError>()),
+        );
+        expect(
+          () => ref.read(another),
+          throwsA(isA<AssertionError>()),
+        );
+        expect(
+          () => ref.onDispose(() {}),
+          throwsA(isA<AssertionError>()),
+        );
+        expect(
+          () => ref.listen(another, (_, __) {}),
+          throwsA(isA<AssertionError>()),
+        );
+      },
+    );
+
     group('refresh', () {
       test('refreshes a provider and return the new state', () {
         var value = 0;
         final state = Provider((ref) => value);
-        late ProviderRefBase ref;
+        late Ref ref;
         final provider = Provider((r) {
           ref = r;
         });
@@ -29,6 +69,27 @@ void main() {
     test('ref.read should keep providers alive', () {}, skip: true);
 
     group('listen', () {
+      test('can downcast the value', () async {
+        final listener = Listener<num>();
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider((ref) {
+          ref.listen<StateController<num>>(
+            dep,
+            (prev, value) => listener(prev?.state, value.state),
+          );
+        });
+
+        final container = createContainer();
+        container.read(provider);
+
+        verifyZeroInteractions(listener);
+
+        container.read(dep).state++;
+        await container.pump();
+
+        verifyOnly(listener, listener(1, 1));
+      });
+
       test('can listen selectors', () async {
         final container = createContainer();
         final provider =
@@ -59,12 +120,12 @@ void main() {
         container.read(provider.notifier).state = 3;
 
         verifyOnly(isEvenSelector, isEvenSelector(3));
-        verifyOnly(isEvenListener, isEvenListener(false));
+        verifyOnly(isEvenListener, isEvenListener(true, false));
 
         container.read(provider.notifier).state = 4;
 
         verifyOnly(isEvenSelector, isEvenSelector(4));
-        verifyOnly(isEvenListener, isEvenListener(true));
+        verifyOnly(isEvenListener, isEvenListener(false, true));
 
         await container.pump();
 
@@ -94,7 +155,7 @@ void main() {
         container.read(another);
 
         expect(buildCount, 1);
-        verifyOnly(isEvenListener, isEvenListener(true));
+        verifyOnly(isEvenListener, isEvenListener(null, true));
         verifyOnly(isEvenSelector, isEvenSelector(0));
 
         container.read(provider.notifier).state = 2;
@@ -105,7 +166,7 @@ void main() {
         container.read(provider.notifier).state = 3;
 
         verifyOnly(isEvenSelector, isEvenSelector(3));
-        verifyOnly(isEvenListener, isEvenListener(false));
+        verifyOnly(isEvenListener, isEvenListener(true, false));
 
         await container.pump();
 
@@ -320,11 +381,86 @@ void main() {
     });
 
     group('mounted', () {
-      test('is true during onDispose', () {}, skip: true);
-      test('is false in between rebuilds', () {}, skip: true);
+      test('is false during onDispose caused by ref.watch', () {
+        final container = createContainer();
+        bool? mounted;
+        late ProviderElementBase element;
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider((ref) {
+          ref.watch(dep);
+          element = ref as ProviderElementBase;
+          ref.onDispose(() => mounted = element.mounted);
+        });
+
+        container.read(provider);
+        expect(mounted, null);
+
+        container.read(dep).state++;
+
+        expect(mounted, false);
+      });
+
+      test('is false during onDispose caused by container dispose', () {
+        final container = createContainer();
+        bool? mounted;
+        late ProviderElementBase element;
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider((ref) {
+          ref.watch(dep);
+          element = ref as ProviderElementBase;
+          ref.onDispose(() => mounted = element.mounted);
+        });
+
+        container.read(provider);
+        expect(mounted, null);
+
+        container.dispose();
+
+        expect(mounted, false);
+      });
+
+      test('is false in between rebuilds', () {
+        final container = createContainer();
+        final dep = StateProvider((ref) => 0);
+        late ProviderElementBase element;
+        final provider = Provider((ref) {
+          ref.watch(dep);
+          element = ref as ProviderElementBase;
+        });
+
+        container.read(provider);
+        expect(element.mounted, true);
+
+        container.read(dep).state++;
+
+        expect(element.mounted, false);
+      });
     });
 
-    test('ref.listen on outdated provider causes it to rebuild', () {},
-        skip: true);
+    test('ref.listen on outdated provider causes it to rebuild', () {
+      final dep = StateProvider((ref) => 0);
+      var buildCount = 0;
+      final provider = Provider((ref) {
+        buildCount++;
+        return ref.watch(dep).state;
+      });
+      final listener = Listener<int>();
+      final another = Provider((ref) {
+        ref.listen<int>(provider, listener, fireImmediately: true);
+      });
+      final container = createContainer();
+
+      expect(container.read(provider), 0);
+      expect(buildCount, 1);
+
+      container.read(dep).state = 42;
+
+      expect(buildCount, 1);
+
+      container.read(another);
+
+      expect(buildCount, 2);
+      verifyOnly(listener, listener(null, 42));
+    });
   });
 }

@@ -71,10 +71,10 @@ void main() {
       final container = createContainer();
       final provider = Provider((ref) => 0);
       final dependent = Provider((ref) {
-        ref.listen(provider, (_) {});
+        ref.listen(provider, (_, __) {});
       });
       final dependent2 = Provider((ref) {
-        ref.listen(provider, (_) {});
+        ref.listen(provider, (_, __) {});
       });
 
       container.read(dependent);
@@ -101,7 +101,7 @@ void main() {
     test('includes provider listeners', () async {
       final provider = Provider((ref) => 0);
       final dep = Provider((ref) {
-        ref.listen(provider, (value) {});
+        ref.listen(provider, (prev, value) {});
       });
       final container = createContainer();
 
@@ -132,7 +132,7 @@ void main() {
 
       expect(container.readProviderElement(provider).hasListeners, false);
 
-      container.listen(provider, (_) {});
+      container.listen(provider, (_, __) {});
 
       expect(container.readProviderElement(provider).hasListeners, true);
     });
@@ -150,7 +150,7 @@ void main() {
 
     container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(0));
+    verifyOnly(listener, listener(null, 0));
 
     container.read(dep).state++;
     await container.pump();

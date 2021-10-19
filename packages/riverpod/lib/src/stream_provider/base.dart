@@ -2,16 +2,20 @@ part of '../stream_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [ProviderRef.state], the value currently exposed by this providers.
-typedef StreamProviderRef<State> = ProviderRefBase;
+typedef StreamProviderRef<State> = Ref;
 
 /// {@macro riverpod.streamprovider}
 @sealed
 class StreamProvider<State> extends AsyncProvider<State>
     with
-        ProviderOverridesMixin<AsyncValue<State>>,
-        _StreamProviderMixin<State> {
+        _StreamProviderMixin<State>,
+        OverrideWithValueMixin<AsyncValue<State>> {
   /// {@macro riverpod.streamprovider}
-  StreamProvider(this._create, {String? name}) : super(name);
+  StreamProvider(
+    this._create, {
+    String? name,
+    this.dependencies,
+  }) : super(name: name);
 
   /// {@macro riverpod.family}
   static const family = StreamProviderFamilyBuilder();
@@ -22,12 +26,15 @@ class StreamProvider<State> extends AsyncProvider<State>
   final Create<Stream<State>, StreamProviderRef<State>> _create;
 
   @override
+  final List<ProviderOrFamily>? dependencies;
+
+  @override
   late final AlwaysAliveProviderBase<Stream<State>> stream =
-      AsyncValueAsStreamProvider(this, modifierName(name, 'stream'));
+      AsyncValueAsStreamProvider(this, name: modifierName(name, 'stream'));
 
   @override
   late final AlwaysAliveProviderBase<Future<State>> last =
-      AsyncValueAsFutureProvider(this, modifierName(name, 'last'));
+      AsyncValueAsFutureProvider(this, name: modifierName(name, 'last'));
 
   @override
   AsyncValue<State> create(ProviderElementBase<AsyncValue<State>> ref) {
@@ -48,33 +55,6 @@ class StreamProvider<State> extends AsyncProvider<State>
   }
 
   @override
-  Override overrideWithProvider(
-    AlwaysAliveProviderBase<AsyncValue<State>> provider,
-  ) {
-    return ProviderOverride((setup) {
-      setup(origin: this, override: provider);
-      setup(origin: stream, override: stream);
-      setup(origin: last, override: last);
-    });
-  }
-
-  @override
-  Override overrideWithValue(AsyncValue<State> value) {
-    return ProviderOverride((setup) {
-      setup(origin: this, override: ValueProvider<AsyncValue<State>>(value));
-      setup(origin: stream, override: stream);
-      setup(origin: last, override: last);
-    });
-  }
-
-  @override
-  void setupOverride(SetupOverride setup) {
-    setup(origin: this, override: this);
-    setup(origin: stream, override: stream);
-    setup(origin: last, override: last);
-  }
-
-  @override
   AsyncProviderElement<State> createElement() => AsyncProviderElement(this);
 }
 
@@ -85,7 +65,11 @@ class StreamProvider<State> extends AsyncProvider<State>
 class StreamProviderFamily<State, Arg>
     extends Family<AsyncValue<State>, Arg, StreamProvider<State>> {
   /// {@macro riverpod.streamprovider.family}
-  StreamProviderFamily(this._create, {String? name}) : super(name);
+  StreamProviderFamily(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final FamilyCreate<Stream<State>, StreamProviderRef<State>, Arg> _create;
 
@@ -108,19 +92,5 @@ class StreamProviderFamily<State, Arg>
     setup(origin: provider, override: provider);
     setup(origin: provider.stream, override: provider.stream);
     setup(origin: provider.last, override: provider.last);
-  }
-
-  /// Overrides the behavior of a family for a part of the application.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    ProviderBase<AsyncValue<State>> Function(Arg argument) override,
-  ) {
-    return FamilyOverride<Arg>(this, (arg, setup) {
-      final provider = call(arg);
-      setup(origin: provider, override: override(arg));
-      setup(origin: provider.stream, override: provider.stream);
-      setup(origin: provider.last, override: provider.last);
-    });
   }
 }

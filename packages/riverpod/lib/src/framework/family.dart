@@ -2,16 +2,19 @@ part of '../framework.dart';
 
 /// A base class for all families
 abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
-    implements FamilyOverride<Arg> {
+    extends ProviderOrFamily implements FamilyOverride<Arg> {
   /// A base class for all families
-  Family(this.name);
+  Family({required this.name, required this.dependencies});
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
 
   /// The family name.
   @protected
   final String? name;
 
   @override
-  Family<Object?, Arg, ProviderBase<Object?>> get overridenFamily => this;
+  Family<Object?, Arg, ProviderBase<Object?>> get overriddenFamily => this;
 
   @override
   void setupOverride(Arg argument, SetupOverride setup) {
@@ -48,39 +51,7 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   FamilyProvider create(Arg argument);
 }
 
-/// An extension that adds [overrideWithProvider] to [Family].
-extension XFamily<State, Arg,
-        FamilyProvider extends AlwaysAliveProviderBase<State>>
-    on Family<State, Arg, FamilyProvider> {
-  /// Overrides the behavior of a family for a part of the application.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    AlwaysAliveProviderBase<State> Function(Arg argument) override,
-  ) {
-    return FamilyOverride<Arg>(this, (arg, setup) {
-      setup(origin: call(arg), override: override(arg));
-    });
-  }
-}
-
-/// An extension that adds [overrideWithProvider] to [Family].
-extension XAutoDisposeFamily<State, Arg,
-        FamilyProvider extends AutoDisposeProviderBase<State>>
-    on Family<State, Arg, FamilyProvider> {
-  /// Overrides the behavior of a family for a part of the application.
-  ///
-  /// {@macro riverpod.overideWith}
-  Override overrideWithProvider(
-    AutoDisposeProviderBase<State> Function(Arg argument) override,
-  ) {
-    return FamilyOverride<Arg>(this, (arg, setup) {
-      setup(origin: call(arg), override: override(arg));
-    });
-  }
-}
-
-/// Setup how a family is overriden
+/// Setup how a family is overridden
 typedef SetupFamilyOverride<Arg> = void Function(
   Arg argument,
   void Function({
@@ -92,29 +63,10 @@ typedef SetupFamilyOverride<Arg> = void Function(
 /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
 /// to override the behavior of a "family" for part of the application.
 abstract class FamilyOverride<Arg> implements Override {
-  /// Do not use
-  factory FamilyOverride(
-    Family<Object?, Arg, ProviderBase<Object?>> family,
-    SetupFamilyOverride<Arg> createOverride,
-  ) = _FamilyOverride;
-
-  /// The family that was overriden.
-  Family<Object?, Arg, ProviderBase<Object?>> get overridenFamily;
+  /// The family that was overridden.
+  Family<Object?, Arg, ProviderBase<Object?>> get overriddenFamily;
 
   /// Allows a family to override all the different providers associated with
   /// an argument.
   void setupOverride(Arg argument, SetupOverride setup);
-}
-
-class _FamilyOverride<Arg> implements FamilyOverride<Arg> {
-  _FamilyOverride(this.overridenFamily, this._createOverride);
-
-  @override
-  final Family<Object?, Arg, ProviderBase<Object?>> overridenFamily;
-  final SetupFamilyOverride<Arg> _createOverride;
-
-  @override
-  void setupOverride(Arg argument, SetupOverride setup) {
-    _createOverride(argument, setup);
-  }
 }

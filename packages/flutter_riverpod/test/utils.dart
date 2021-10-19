@@ -24,6 +24,10 @@ class Counter extends StateNotifier<int> {
   void increment() => state++;
 }
 
+class Listener<T> extends Mock {
+  void call(T? prev, T? value);
+}
+
 List<Object> errorsOf(void Function() cb) {
   final errors = <Object>[];
   runZonedGuarded(cb, (err, _) => errors.add(err));

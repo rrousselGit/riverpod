@@ -1,3 +1,106 @@
+## 1.0.0-dev.11
+
+Fixed an issue where `dependencies` did not work for `ChangeNotifierProvider` (#800)
+
+## 1.0.0-dev.10
+
+Fixed a bug where reading a provider within a consumer could throw (#796)
+
+## 1.0.0-dev.9
+
+Fix an issue where `*Provider.autoDispose` were not able to specify the
+`dependencies` parameter.
+
+## 1.0.0-dev.8
+
+### Future/StreamProvider
+
+- FutureProvider now creates a `FutureOr<T>` instead of a `Future<T>`
+  That allows bypassing the loading state in the event where a value was synchronously available.
+
+- During loading and error states, `FutureProvider` and `StreamProvider` now expose the
+  latest value through `AsyncValue`.  
+  That allows UI to show the previous data while some new data is loading,
+  inatead of showing a spinner:
+
+  ```dart
+  final provider = FutureProvider<User>((ref) async {
+    ref.watch(anotherProvider); // may cause `provider` to rebuild
+
+    return fetchSomething();
+  })
+  ...
+
+  Widget build(context, ref) {
+    return ref.watch(provider).when(
+      error: (err, stack, _) => Text('error'),
+      data: (user) => Text('Hello ${user.name}'),
+      loading: (previous) {
+        if (previous is AsyncData<User>) {
+          return Text('loading ... (previous: ${previous.value.name})'});
+        }
+
+        return CircularProgressIndicator();
+      }
+    );
+
+  }
+  ```
+
+### AsyncValue
+
+- **Breaking** `AsyncValue.copyWith` is removed
+- **Breaking** `AsyncValue.error(..., stacktrace)` is now a named parameter instead of postional parameter.
+- **Breaking** `AsyncValue.when(loading: )` and ``AsyncValue.when(error: )` (and `when` variants)
+  now receive an extra "previous" parameter.
+- Deprecated `AsyncValue.data` in favor of `AsyncValue.value`
+- Allowed `AsyncData`, `AsyncError` and `AsyncLoading` to be extended
+- Added `AsyncValue.whenOrNull`, similar to `whenOrElse` but instead of an
+  "orElse" parameter, returns `null`.
+- Added `AsyncValue.value`, which allows reading the value without handling
+  loading/error states.
+- `AsyncError` can now be instantiated with `const`.
+- `AsyncLoading` and `AsyncError` now optionally includes the previous state.
+
+### General
+
+- **Breaking** All `overrideWithProvider` methods are removed.  
+  To migrate, instead use `overrideWithValue`.
+- All providers now come with an extra named parameter called `dependencies`.
+  This parameter optionally allows defining the list of providers/families that this
+  new provider depends on:
+
+  ```dart
+  final a = Provider(...);
+
+  final b = Provider((ref) => ref.watch(a), dependencies: [a]);
+  ```
+
+  By doing so, this will tell Riverpod to automatically override `b` if `a` gets overridden.
+
+- Added `StatefulHookConsumerWidget`, the combination of `StatefulWidget` + `ConsumerWidget` + `HookWidget`
+- Added `StateController.update`, to simplify updating the state from the previous state:
+  ```dart
+  final provider = StateController((ref) => 0);
+  ...
+  ref.read(provider).update((state) => state + 1);
+  ```
+- It is no-longer allowed to use `ref.watch` or `ref.read` inside a selector:
+  ```dart
+  provider.select((value) => ref.watch(something)); // KO, cannot user ref.watch inside selectors
+  ```
+
+### Bug-fixes
+
+- fixed a bug where providers were rebuilding even when not listened
+- fixed `ref.listen` now working when downcasting the value of a provider.
+- fixed a bug where disposing a scoped `ProviderContainer` could cause other
+  `ProviderContainer`s to stop working.
+- fixed an issue where conditionally depending on an "autoDispose" provider
+  may not properly dispose of it (see #712)
+- fixed an issue where when chaining providers, widgets may re-render
+  a frame late, potentially causing a flicker. (see #648)
+
 ## 1.0.0-dev.7
 
 - Fixed `ProviderObserver` not working when modifying a `StateProvider`.
@@ -6,37 +109,34 @@
 
 ## 1.0.0-dev.6
 
- - **FIX**: StreamProvider.last no-longer throws a StateError when no value were emitted (#296).
-
-# [Unreleased]
-
+- **FIX**: StreamProvider.last no-longer throws a StateError when no value were emitted (#296).
 - Re-enabled debug assertions that were temporarily disabled by previous dev versions.
-- Allows families to be scoped/overriden
+- Allows families to be scoped/overridden
 - Fixed bugs with `ref.refresh` not working on some providers
 - renamed `ProviderBase.recreateShouldNotify` to `updateShouldNotify`
 
-# 1.0.0-dev.5
+## 1.0.0-dev.5
 
 Fixed an issue where provider listeners could not be called properly.
 
-# 1.0.0-dev.4
+## 1.0.0-dev.4
 
 Fixed invalid flutter_hooks version
 
-# 1.0.0-dev.3
+## 1.0.0-dev.3
 
 Fixed various issues related to scoped providers.
 
-# 1.0.0-dev.2
+## 1.0.0-dev.2
 
 - All providers can now be scoped.
 - **breaking**: `ScopedProvider` is removed. To migrate, change `ScopedProvider`s to `Provider`s.
 
-# 1.0.0-dev.1
+## 1.0.0-dev.1
 
 - Add missing exports (see #532)
 
-# 1.0.0-dev.0
+## 1.0.0-dev.0
 
 - `useProvider` is removed in favor of `HookConsumerWidget`.
   Before:
@@ -200,24 +300,23 @@ Fixed various issues related to scoped providers.
   notify their listeners or are disposed.
 - fixed an issue when using both `family` and `autoDispose` that could lead to an inconsistent state
 
-
-# 0.14.0+4
+## 0.14.0+4
 
 Upgraded dependencies to latest
 
-# 0.14.0+3
+## 0.14.0+3
 
 Removed an assert that could cause issues when an application is partially migrated to null safety.
 
-# 0.14.0+2
+## 0.14.0+2
 
 - Fix `context.refresh` not compiling when using nullable providers
 
-# 0.14.0+1
+## 0.14.0+1
 
 - Re-added `StateProvider.overrideWithValue`/`StateProvider.overrideWithProvider` that were unvoluntarily removed.
 
-# 0.14.0
+## 0.14.0
 
 - **BREAKING CHANGE** The `Listener`/`LocatorMixin` typedefs are removed as the former could cause a name
   conflict with the widget named `Listener` and the latter is not supported when using Riverpod.
@@ -259,15 +358,15 @@ Removed an assert that could cause issues when an application is partially migra
   They allow obtaining the notifier associated to the provider, without causing widgets/providers to rebuild when the state updates.
 - fix: overriding a `StateNotifierProvider`/`ChangeNotifierProvider` with `overrideWithValue` now correctly listens to the notifier.
 
-# 0.13.1+1
+## 0.13.1+1
 
 Fixed an issue where `context.read` and `ProviderListener` were unable to read providers that return a nullable value
 
-# 0.13.1
+## 0.13.1
 
 - Fixed a bug where overriding a `FutureProvider` with an error value could cause tests to fail (see https://github.com/rrousselGit/river_pod/issues/355)
 
-# 0.13.0
+## 0.13.0
 
 - stable null-safety release
 - `ProviderObserver` can now have a const constructor
@@ -279,49 +378,49 @@ Fixed an issue where `context.read` and `ProviderListener` were unable to read p
   This allows "watch" to be used inside `ListView.builder`.
 - `context.read(myProvider)` now accepts `ScopeProviders`
 
-# 0.13.0-nullsafety.3
+## 0.13.0-nullsafety.3
 
 - deprecated `import 'hooks_riverpod/all.dart'`. Now everything is available with `hooks_riverpod/hooks_riverpod.dart`.
 - removed the assert preventing ConsumerWidget's "watch" from being used after the `build` method completed.
   This allows "watch" to be used inside `ListView.builder`.
 - `context.read(myProvider)` now accepts `ScopeProviders`
 
-# 0.13.0-nullsafety.2
+## 0.13.0-nullsafety.2
 
 - Fixed outdated doc
 
-# 0.13.0-nullsafety.1
+## 0.13.0-nullsafety.1
 
 - Fixed a but where listening to `StreamProvider.last` could result in a `StateError` (#217)
 
-# 0.13.0-nullsafety.0
+## 0.13.0-nullsafety.0
 
 Migrated to null-safety
 
-# 0.12.2
+## 0.12.2
 
 - Exported `AutoDisposeProviderRefBase`
 
-# 0.12.1
+## 0.12.1
 
 - Fixed an remaining memory leak related to StreamProvider (see also https://github.com/rrousselGit/river_pod/issues/193)
 
-# 0.12.0
+## 0.12.0
 
 - **Breaking** FutureProvider and StreamProvider no-longer supports `null` as a valid value.
 - Fixed a memory leak with StreamProvider (see also https://github.com/rrousselGit/river_pod/issues/193)
 - Fixed an error message typo related to Consumer
 
-# 0.11.2
+## 0.11.2
 
 - Fixed a bug where providers (usually ScopedProviders) did not dispose correctly
   (see also https://github.com/rrousselGit/river_pod/issues/154).
 
-# 0.11.1
+## 0.11.1
 
 - Fixed a bug where hot-reload did not work for `ConsumerWidget`/`Consumer`
 
-# 0.11.0
+## 0.11.0
 
 - `package:hooks_riverpod/hooks_riverpod.dart` now exports `StateNotifier`
 - Marked the providers with `@sealed` so that the IDE warns against
@@ -329,11 +428,11 @@ Migrated to null-safety
 - Fix mistakes in `AsyncValue.guard`'s documentation (thanks @mono0926)
 - Loosened the version constraints of `freezed_annotation` to support `0.12.0`
 
-# 0.10.1
+## 0.10.1
 
 - Fixed invalid version error
 
-# 0.10.0
+## 0.10.0
 
 - Fixed a bug where the state of a provider may be disposed when it shouldn't be disposed.
 
@@ -353,30 +452,30 @@ Migrated to null-safety
   If you do not use this lint, prefer using the default import instead, to not
   pollute your auto-complete.
 
-# 0.9.2
+## 0.9.2
 
 - Unexported some classes that were not meant to be public
 
-# 0.9.0
+## 0.9.0
 
 - **Breaking** Updating `ProviderListener` so that `onChange` receives the
   `BuildContext` as parameter (thanks to @tbm98)
 
-# 0.8.0
+## 0.8.0
 
 - Renamed `ProviderContainer.debugProviderStates` to `ProviderContainer.debugProviderElements`
 - Fixed a bug where updating `ProviderScope.overrides` may cause an exception
   for no reason (see https://github.com/rrousselGit/river_pod/issues/107)
 
-# 0.7.2
+## 0.7.2
 
 Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstances
 
-# 0.7.1
+## 0.7.1
 
 - Fixed a bug where in release mode, `ScopedProvider` did not update correctly (https://github.com/rrousselGit/river_pod/issues/101)
 
-# 0.7.0
+## 0.7.0
 
 - **Breaking**: `Consumer` is slightly modified to match other Builders like
   `ValueListenableBuilder`.
@@ -435,13 +534,13 @@ Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstance
 * Fixed a bug where `context.refresh` may not work properly if the widget tree
   contains multiple `ProviderScope`.
 
-# 0.6.1
+## 0.6.1
 
 - Fixed a bug where when disposing `ProviderContainer`, providers may be disposed
   in an incorrect order.
 - Improved the performances of reading providers by 25%
 
-# 0.6.0
+## 0.6.0
 
 - Merged `Computed` and `Provider`. Now, all providers have the ability to rebuild
   their state when one of the object they listen changed.
@@ -474,7 +573,7 @@ Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstance
 - Renamed `ProviderStateOwnerObserver` to `ProviderObserver`
 
 - It is no-longer possible to override a provider anywhere in the widget tree.
-  Providers can only be overriden in the top-most `ProviderScope`/`ProviderContainer`.
+  Providers can only be overridden in the top-most `ProviderScope`/`ProviderContainer`.
 
 - Providers can now read values which may change over time using `ref.read` and `ref.watch`.
   When using `ref.watch`, if the value obtained changes, this will cause the provider
@@ -570,7 +669,7 @@ Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstance
 * `MyProvider.family.autoDispose` now correctly free both the arguments and the associated
   providers from memory when the provider is no-longer listened.
 
-- Added `ScopedProvider`, a new kind of provider that can be overriden anywhere
+- Added `ScopedProvider`, a new kind of provider that can be overridden anywhere
   in the widget tree.
   Normal providers cannot read a `ScopedProvider`.
 
@@ -578,19 +677,19 @@ Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstance
   without rebuilding the widget-tree. This can be useful for showing modals
   and pushing routes.
 
-# 0.5.1
+## 0.5.1
 
 - Fixed the documentation of `StateNotifierProvider` incorrectly showing the
   documentation of `StreamProvider`.
 - Improve the documentation of `StateProvider`.
 
-# 0.5.0
+## 0.5.0
 
 - Changed `ComputedFamily` into `Computed.family`
 - Added [AsyncValue.guard](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue/guard.html to simplify transforming a Future into an AsyncValue.
 - Improved the documentation of the different providers
 
-# 0.4.0
+## 0.4.0
 
 Changed the syntax of "AutoDispose*" and "*Family" to use a syntax similar to
 named constructors instead.
@@ -613,11 +712,11 @@ final myProvider = StateNotifierProvider.autoDispose.family<MyStateNotifier, int
 
 The behavior is the same. Only the syntax changed.
 
-# 0.3.1
+## 0.3.1
 
 - Loosen the version constraint of `flutter_hooks` used to support latest versions.
 
-# 0.3.0
+## 0.3.0
 
 - Added `AsyncValue.whenData`, syntax sugar for `AsyncValue.when` to handle
   only the `data` case and do nothing for the error/loading cases.
@@ -625,7 +724,7 @@ The behavior is the same. Only the syntax changed.
 - Fixed a bug that caused [Computed] to crash if it stopped being listened
   then was listened again.
 
-# 0.2.1
+## 0.2.1
 
 - `useProvider` no longer throws an `UnsupportedError` when the provider listened
   changes, and correctly listen to the new provider.
@@ -633,13 +732,13 @@ The behavior is the same. Only the syntax changed.
 - `Computed` and `Consumer` now correctly unsubscribe to a provider when their
   function stops using a provider.
 
-# 0.2.0
+## 0.2.0
 
 - `ref.read` is renamed as `ref.dependOn`
 - Deprecated `ref.dependOn(streamProvider).stream` and `ref.dependOn(futureProvider).future`
   in favor of a universal `ref.dependOn(provider).value`.
 - added `ref.read(provider)`, syntax sugar for `ref.dependOn(provider).value`.
 
-# 0.1.0
+## 0.1.0
 
 Initial release

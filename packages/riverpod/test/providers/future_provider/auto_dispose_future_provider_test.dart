@@ -7,11 +7,29 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('can be auto-scoped', () async {
+    final dep = Provider((ref) => 0);
+    final provider = FutureProvider.autoDispose(
+      (ref) => ref.watch(dep),
+      dependencies: [dep],
+    );
+    final root = createContainer();
+    final container = createContainer(
+      parent: root,
+      overrides: [dep.overrideWithValue(42)],
+    );
+
+    expect(container.read(provider), const AsyncData(42));
+    expect(container.read(provider.future), completion(42));
+
+    expect(root.getAllProviderElements(), isEmpty);
+  });
+
   test('can return a value synchronously, bypassing AsyncLoading', () async {
     final provider = FutureProvider.autoDispose((ref) => 0);
     final container = createContainer();
 
-    container.listen(provider, (_) {});
+    container.listen(provider, (_, __) {});
 
     expect(container.read(provider), const AsyncData(0));
     await expectLater(container.read(provider.future), completion(0));
@@ -39,7 +57,7 @@ void main() {
     final provider = FutureProvider<int>((ref) => ref.watch(dep).state);
     final container = createContainer();
 
-    container.listen(provider, (_) {});
+    container.listen(provider, (_, __) {});
 
     await expectLater(container.read(provider.future), completion(42));
     expect(container.read(provider), const AsyncData(42));
@@ -65,7 +83,7 @@ void main() {
         FutureProvider.autoDispose((ref) => ref.watch(dep).state());
     final container = createContainer();
 
-    container.listen(provider, (_) {});
+    container.listen(provider, (_, __) {});
 
     expect(container.read(provider), const AsyncData(0));
 
@@ -97,7 +115,7 @@ void main() {
         FutureProvider.autoDispose((ref) => ref.watch(dep).state());
     final container = createContainer();
 
-    container.listen(provider, (_) {});
+    container.listen(provider, (_, __) {});
 
     expect(container.read(provider), const AsyncData(0));
 
@@ -118,7 +136,7 @@ void main() {
     final provider = FutureProvider.autoDispose((ref) => ref.watch(dep).state);
     final container = createContainer();
 
-    container.listen(provider, (_) {});
+    container.listen(provider, (_, __) {});
 
     expect(container.read(provider), const AsyncData(42));
 
@@ -145,7 +163,7 @@ void main() {
     final provider = FutureProvider.autoDispose((ref) => ref.watch(dep).state);
     final container = createContainer();
 
-    container.listen(provider, (_) {});
+    container.listen(provider, (_, __) {});
 
     expect(container.read(provider), const AsyncData(42));
 
@@ -194,7 +212,7 @@ void main() {
     );
     final container = createContainer();
 
-    container.listen(provider, (_) {});
+    container.listen(provider, (_, __) {});
 
     await expectLater(container.read(provider.future), throwsA(42));
 
@@ -212,7 +230,7 @@ void main() {
     final container = createContainer();
     final listener = Listener<AsyncValue<int>>();
 
-    container.listen(provider, (value) {});
+    container.listen(provider, (prev, value) {});
 
     await expectLater(
       container.read(provider.future),
@@ -230,7 +248,7 @@ void main() {
 
     verifyOnly(
       listener,
-      listener(const AsyncLoading<int>(previous: AsyncData(42))),
+      listener(null, const AsyncLoading<int>(previous: AsyncData(42))),
     );
 
     container.read(dep).state = Future.value(21);
@@ -254,7 +272,7 @@ void main() {
     final provider = FutureProvider.autoDispose((ref) => ref.watch(dep).state);
     final container = createContainer();
 
-    container.listen(provider, (value) {});
+    container.listen(provider, (prev, value) {});
 
     expect(
       container.read(provider),
@@ -285,7 +303,7 @@ void main() {
     final provider = FutureProvider.autoDispose((ref) => ref.watch(dep).state);
     final container = createContainer();
 
-    container.listen(provider, (value) {});
+    container.listen(provider, (prev, value) {});
 
     expect(
       container.read(provider),
@@ -316,7 +334,7 @@ void main() {
     final container = createContainer();
     final provider = FutureProvider.autoDispose((ref) => Future.value(result));
 
-    container.listen(provider, (e) {});
+    container.listen(provider, (prev, value) {});
 
     expect(await container.read(provider.future), 0);
     expect(container.read(provider), const AsyncValue.data(0));
@@ -344,7 +362,7 @@ void main() {
 
     container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(const AsyncValue.loading()));
+    verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
     container.read(dep).state++;
     await container.pump();
@@ -366,7 +384,7 @@ void main() {
 
     container.listen(provider.future, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(any));
+    verifyOnly(listener, listener(any, any));
 
     container.read(dep).state++;
     await container.pump();
@@ -411,24 +429,6 @@ void main() {
             .having((e) => e.origin, 'origin', provider.future)
       ]);
     });
-
-    test('when using provider.overrideWithProvider', () async {
-      final provider = FutureProvider.autoDispose((ref) async => 0);
-      final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(
-            FutureProvider.autoDispose((ref) async => 42)),
-      ]);
-
-      expect(await container.read(provider.future), 42);
-      expect(container.read(provider), const AsyncValue.data(42));
-      expect(root.getAllProviderElementsInOrder(), isEmpty);
-      expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
-        isA<ProviderElementBase>()
-            .having((e) => e.origin, 'origin', provider.future)
-      ]);
-    });
   });
 
   test('FutureProvider.autoDispose', () async {
@@ -443,7 +443,7 @@ void main() {
 
     final sub = container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(const AsyncValue.loading()));
+    verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
     sub.close();
     await container.pump();
@@ -454,10 +454,13 @@ void main() {
 
     container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(const AsyncValue.loading()));
+    verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
     await container.pump();
 
-    verifyOnly(listener, listener(const AsyncValue.data(21)));
+    verifyOnly(
+      listener,
+      listener(const AsyncValue.loading(), const AsyncValue.data(21)),
+    );
   });
 }

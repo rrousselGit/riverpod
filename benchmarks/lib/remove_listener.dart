@@ -20,13 +20,13 @@ void main() {
   // Warm up lap
   for (var i = 0; i < _kNumWarmUp; i += 1) {
     container = ProviderContainer();
-    final sub = container.listen(provider, (_) {});
+    final sub = container.listen(provider, (_, __) {});
     sub.close();
   }
 
   container = ProviderContainer();
   for (var i = 0; i < _kNumIterations; i += 1) {
-    final sub = container.listen(provider, (_) {});
+    final sub = container.listen(provider, (_, __) {});
     watch.start();
     sub.close();
     watch.stop();
@@ -45,7 +45,7 @@ void main() {
   watch.reset();
   watch.start();
   for (var i = 0; i < _kNumIterations; i += 1) {
-    final sub = container.listen(provider, (_) {});
+    final sub = container.listen(provider, (_, __) {});
     watch.start();
     sub.close();
     watch.stop();
@@ -66,7 +66,7 @@ void main() {
   watch.reset();
   watch.start();
   for (var i = 0; i < _kNumIterations; i += 1) {
-    final sub = container.listen(provider, (_) {});
+    final sub = container.listen(provider, (_, __) {});
     watch.start();
     sub.close();
     watch.stop();
@@ -87,7 +87,7 @@ void main() {
   watch.reset();
   watch.start();
   for (var i = 0; i < _kNumIterations; i += 1) {
-    final sub = container.listen(provider, (_) {});
+    final sub = container.listen(provider, (_, __) {});
     watch.start();
     sub.close();
     watch.stop();
@@ -108,6 +108,6 @@ void main() {
 
 void pushListener(int count, ProviderContainer container, Provider provider) {
   for (var i = 0; i < count; i++) {
-    container.listen<void>(provider, (_) {});
+    container.listen<void>(provider, (_, __) {});
   }
 }

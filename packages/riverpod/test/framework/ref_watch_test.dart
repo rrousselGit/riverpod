@@ -1,6 +1,5 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -17,11 +16,6 @@ class Counter extends StateNotifier<int> {
 }
 
 void main() {
-  test(
-      'cannot call ref.watch/ref.read/ref.listen/ref.onDispose after a dependency changed',
-      () {},
-      skip: true);
-
   test('disposes providers synchronously when their dependency changes',
       () async {
     final onDispose = OnDisposeMock();
@@ -74,13 +68,14 @@ void main() {
       throwsA(isA<ProviderException>()),
     );
   });
+
   test(
       'throw when trying to use ref.listen inside selectors during initial call',
       () {
     final dep = Provider((ref) => 0);
     final provider = Provider((ref) {
       ref.watch(dep.select((value) {
-        ref.listen(dep, (value) {});
+        ref.listen(dep, (prev, value) {});
         return 0;
       }));
     });
@@ -129,7 +124,7 @@ void main() {
     container.listen(another, isEvenListener, fireImmediately: true);
 
     expect(buildCount, 1);
-    verifyOnly(isEvenListener, isEvenListener(true));
+    verifyOnly(isEvenListener, isEvenListener(null, true));
     verifyOnly(isEvenSelector, isEvenSelector(0));
 
     container.read(provider.notifier).state = 2;
@@ -144,7 +139,7 @@ void main() {
     expect(container.read(another), false);
     expect(buildCount, 2);
     verify(isEvenSelector(3)).called(2);
-    verifyOnly(isEvenListener, isEvenListener(false));
+    verifyOnly(isEvenListener, isEvenListener(true, false));
   });
 
   test(
@@ -181,7 +176,7 @@ void main() {
 
     container.listen(computed, computedListener, fireImmediately: true);
 
-    verifyOnly(computedListener, computedListener('0 0'));
+    verifyOnly(computedListener, computedListener(null, '0 0'));
     expect(computedBuildCount, 1);
     expect(provider0Element.hasListeners, true);
     expect(provider1Element.hasListeners, false);
@@ -189,7 +184,7 @@ void main() {
     notifier0.increment();
     await container.pump();
 
-    verifyOnly(computedListener, computedListener('1 1'));
+    verifyOnly(computedListener, computedListener('0 0', '1 1'));
     expect(computedBuildCount, 2);
 
     notifier1.increment();
@@ -202,7 +197,7 @@ void main() {
     container.read(stateProvider).state = 1;
     await container.pump();
 
-    verifyOnly(computedListener, computedListener('1 43'));
+    verifyOnly(computedListener, computedListener('1 1', '1 43'));
     expect(computedBuildCount, 3);
     expect(provider1Element.hasListeners, true);
     expect(provider0Element.hasListeners, true);
@@ -210,13 +205,13 @@ void main() {
     notifier1.increment();
     await container.pump();
 
-    verifyOnly(computedListener, computedListener('1 44'));
+    verifyOnly(computedListener, computedListener('1 43', '1 44'));
     expect(computedBuildCount, 4);
 
     notifier0.increment();
     await container.pump();
 
-    verifyOnly(computedListener, computedListener('2 44'));
+    verifyOnly(computedListener, computedListener('1 44', '2 44'));
     expect(computedBuildCount, 5);
   });
 
@@ -249,7 +244,7 @@ void main() {
 
     container.listen(computed, computedListener, fireImmediately: true);
 
-    verifyOnly(computedListener, computedListener(0));
+    verifyOnly(computedListener, computedListener(null, 0));
     expect(computedBuildCount, 1);
     expect(provider0Element.hasListeners, true);
     expect(provider1Element.hasListeners, false);
@@ -257,7 +252,7 @@ void main() {
     notifier0.increment();
     await container.pump();
 
-    verifyOnly(computedListener, computedListener(1));
+    verifyOnly(computedListener, computedListener(0, 1));
     expect(computedBuildCount, 2);
 
     notifier1.increment();
@@ -271,7 +266,7 @@ void main() {
     await container.pump();
 
     expect(computedBuildCount, 3);
-    verifyOnly(computedListener, computedListener(43));
+    verifyOnly(computedListener, computedListener(1, 43));
     expect(provider1Element.hasListeners, true);
     expect(provider0Element.hasListeners, false);
 
@@ -279,7 +274,7 @@ void main() {
     await container.pump();
 
     expect(computedBuildCount, 4);
-    verifyOnly(computedListener, computedListener(44));
+    verifyOnly(computedListener, computedListener(43, 44));
 
     notifier0.increment();
     await container.pump();
@@ -302,12 +297,12 @@ void main() {
 
     container.listen(computed(provider), listener, fireImmediately: true);
 
-    verifyOnly(listener, listener('0'));
+    verifyOnly(listener, listener(null, '0'));
 
     notifier.state = 42;
     await container.pump();
 
-    verifyOnly(listener, listener('42'));
+    verifyOnly(listener, listener('0', '42'));
   });
 
   test(
@@ -333,13 +328,13 @@ void main() {
 
     container.listen(tested, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener('0 0'));
+    verifyOnly(listener, listener(null, '0 0'));
     expect(callCount, 1);
 
     notifier.setState(1);
     await container.pump();
 
-    verifyOnly(listener, listener('1 1'));
+    verifyOnly(listener, listener('0 0', '1 1'));
     expect(callCount, 2);
   });
 
@@ -386,7 +381,7 @@ void main() {
       yield ref.watch(provider);
     });
 
-    final sub = container.listen(computed, (_) {});
+    final sub = container.listen(computed, (_, __) {});
 
     expect(callCount, 0);
     expect(sub.read(), const AsyncValue<int>.loading());
@@ -418,24 +413,24 @@ void main() {
 
     late List<int> first;
     final firstListener = Listener<List<int>>();
-    container.listen<List<int>>(computed, (value) {
+    container.listen<List<int>>(computed, (prev, value) {
       first = value;
-      firstListener(value);
+      firstListener(prev, value);
     }, fireImmediately: true);
 
     late List<int> second;
     final secondListener = Listener<List<int>>();
-    container.listen<List<int>>(computed, (value) {
+    container.listen<List<int>>(computed, (prev, value) {
       second = value;
-      secondListener(value);
+      secondListener(prev, value);
     }, fireImmediately: true);
 
     expect(first, [0]);
     expect(callCount, 1);
     expect(identical(first, second), isTrue);
     verifyInOrder([
-      firstListener([0]),
-      secondListener([0]),
+      firstListener(null, [0]),
+      secondListener(null, [0]),
     ]);
     verifyNoMoreInteractions(firstListener);
     verifyNoMoreInteractions(secondListener);
@@ -457,14 +452,14 @@ void main() {
     container.listen(isPositiveComputed, listener, fireImmediately: true);
 
     expect(notifier.hasListeners, true);
-    verifyOnly(listener, listener(true));
+    verifyOnly(listener, listener(null, true));
     expect(callCount, 1);
 
     notifier.setState(-1);
     await container.pump();
 
     expect(callCount, 2);
-    verifyOnly(listener, listener(false));
+    verifyOnly(listener, listener(true, false));
 
     notifier.setState(-42);
     await container.pump();

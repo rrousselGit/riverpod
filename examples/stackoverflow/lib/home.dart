@@ -182,7 +182,7 @@ class QuestionItem extends HookConsumerWidget {
       return const Center(child: Text('loading'));
     }
 
-    final data = question.value;
+    final data = question.value!;
 
     return ListTile(
       title: Text(

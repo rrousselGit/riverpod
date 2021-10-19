@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart' hide Listener;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -14,7 +14,10 @@ void main() {
       return ValueNotifier(0);
     });
 
-    final sub = container.listen<ValueNotifier<int>>(provider, (value) {});
+    final sub = container.listen<ValueNotifier<int>>(
+      provider,
+      (prev, value) {},
+    );
 
     sub.close();
 
@@ -41,6 +44,7 @@ void main() {
     verifyOnly(
       listener1,
       listener1(
+        argThat(isNull),
         argThat(
           isA<ValueNotifier<int>>().having((s) => s.value, 'value', 0),
         ),
@@ -50,6 +54,7 @@ void main() {
     verifyOnly(
       listener2,
       listener2(
+        argThat(isNull),
         argThat(
           isA<ValueNotifier<int>>().having((s) => s.value, 'value', 42),
         ),
@@ -70,7 +75,7 @@ void main() {
     var callCount = 0;
     final sub = container.listen(
       provider.notifier,
-      (_) => callCount++,
+      (_, __) => callCount++,
     );
 
     expect(sub.read(), notifier);
@@ -88,43 +93,6 @@ void main() {
     await container.pump();
     expect(sub.read(), notifier2);
     expect(callCount, 1);
-  });
-
-  test('family override', () {
-    final provider = ChangeNotifierProvider.autoDispose
-        .family<ValueNotifier<int>, int>((ref, value) {
-      return ValueNotifier(value);
-    });
-    final container = ProviderContainer(overrides: [
-      provider.overrideWithProvider(
-        (value) => ChangeNotifierProvider.autoDispose(
-          (ref) => ValueNotifier(value * 2),
-        ),
-      ),
-    ]);
-    final listener1 = Listener<ValueNotifier<int>>();
-    final listener2 = Listener<ValueNotifier<int>>();
-
-    container.listen(provider(0), listener1, fireImmediately: true);
-    container.listen(provider(42), listener2, fireImmediately: true);
-
-    verifyOnly(
-      listener1,
-      listener1(
-        argThat(
-          isA<ValueNotifier<int>>().having((s) => s.value, 'value', 0),
-        ),
-      ),
-    );
-
-    verifyOnly(
-      listener2,
-      listener2(
-        argThat(
-          isA<ValueNotifier<int>>().having((s) => s.value, 'value', 84),
-        ),
-      ),
-    );
   });
 
   test('can specify name', () {
@@ -180,8 +148,8 @@ void main() {
     addTearDown(container.dispose);
 
     var callCount = 0;
-    final sub = container.listen(provider, (_) => callCount++);
-    final notifierSub = container.listen(provider.notifier, (_) {});
+    final sub = container.listen(provider, (_, __) => callCount++);
+    final notifierSub = container.listen(provider.notifier, (_, __) {});
 
     expect(sub.read(), notifier);
     expect(callCount, 0);
@@ -216,64 +184,10 @@ void main() {
     expect(notifier2.mounted, true);
     expect(notifier.mounted, true);
   });
-
-  test('overrideWithProvider preserves the state accross update', () async {
-    final provider = ChangeNotifierProvider.autoDispose((_) {
-      return TestNotifier();
-    });
-    final notifier = TestNotifier();
-    final notifier2 = TestNotifier();
-    final container = ProviderContainer(overrides: [
-      provider.overrideWithProvider(
-        ChangeNotifierProvider.autoDispose((_) => notifier),
-      ),
-    ]);
-    addTearDown(container.dispose);
-
-    var callCount = 0;
-    final sub = container.listen(provider, (_) => callCount++);
-
-    expect(sub.read(), notifier);
-    expect(container.read(provider.notifier), notifier);
-    expect(notifier.hasListeners, true);
-    expect(callCount, 0);
-
-    notifier.count++;
-
-    await container.pump();
-    expect(callCount, 1);
-
-    container.updateOverrides([
-      provider.overrideWithProvider(
-        ChangeNotifierProvider.autoDispose((_) => notifier2),
-      ),
-    ]);
-
-    await container.pump();
-    expect(callCount, 1);
-    expect(container.read(provider.notifier), notifier);
-    expect(notifier2.hasListeners, false);
-
-    notifier.count++;
-
-    await container.pump();
-    expect(callCount, 2);
-    expect(container.read(provider.notifier), notifier);
-    expect(notifier.mounted, true);
-
-    container.dispose();
-
-    expect(callCount, 2);
-    expect(notifier.mounted, false);
-  });
 }
 
 class OnDisposeMock extends Mock {
   void call();
-}
-
-class Listener<T> extends Mock {
-  void call(T? value);
 }
 
 class TestNotifier extends ChangeNotifier {

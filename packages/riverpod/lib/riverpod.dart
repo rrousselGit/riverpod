@@ -1,13 +1,7 @@
 export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
 
 export 'src/common.dart'
-    show
-        AsyncValue,
-        AsyncData,
-        AsyncLoading,
-        AsyncError,
-        AsyncValueX,
-        AsyncValueLoadingError;
+    show AsyncValue, AsyncData, AsyncLoading, AsyncError, AsyncValueX;
 
 export 'src/framework.dart'
     show
@@ -18,8 +12,8 @@ export 'src/framework.dart'
         CircularDependencyError,
         ProviderBase,
         Override,
-        AutoDisposeProviderRefBase,
-        ProviderRefBase,
+        AutoDisposeRef,
+        Ref,
         ProviderListenable,
         ProviderContainer,
         ProviderObserver,
@@ -28,11 +22,9 @@ export 'src/framework.dart'
         AutoDisposeProviderBase,
         AutoDisposeProviderElementBase,
         ProviderElementBase,
-        XFamily,
         ProviderOverride,
         FamilyOverride,
         SetupOverride,
-        XAutoDisposeFamily,
         // ignore: deprecated_member_use_from_same_package
         ProviderReference,
         AlwaysAliveProviderListenable,
@@ -65,7 +57,8 @@ export 'src/state_notifier_provider.dart'
         StateNotifierProvider,
         StateNotifierProviderFamily,
         AutoDisposeStateNotifierProviderRef,
-        StateNotifierProviderRef;
+        StateNotifierProviderRef,
+        StateNotifierProviderOverrideMixin;
 
 export 'src/state_provider.dart'
     show

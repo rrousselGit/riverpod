@@ -54,7 +54,7 @@ void main() {
 
         ref.state = 42;
 
-        verifyOnly(listener, listener(42));
+        verifyOnly(listener, listener(0, 42));
         expect(ref.state, 42);
       });
 
@@ -125,7 +125,7 @@ void main() {
 
       container.listen(provider, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(0));
+      verifyOnly(listener, listener(null, 0));
 
       ref.state = 0;
       await container.pump();
@@ -159,23 +159,7 @@ void main() {
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });
-
-      test('when using provider.overrideWithProvider', () {
-        final provider = Provider((ref) => 0);
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithProvider(Provider((ref) => 42)),
-        ]);
-
-        expect(container.read(provider), 42);
-        expect(container.getAllProviderElements(), [
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider)
-        ]);
-        expect(root.getAllProviderElements(), isEmpty);
-      });
     });
-
-    test('can be refreshed', () {}, skip: true);
 
     group('override', () {
       test('does not notify listeners if updated with the same value', () {
@@ -189,7 +173,7 @@ void main() {
 
         container.listen(provider, listener, fireImmediately: true);
 
-        verifyOnly(listener, listener(42));
+        verifyOnly(listener, listener(null, 42));
 
         container.updateOverrides([
           provider.overrideWithValue(42),
@@ -210,13 +194,13 @@ void main() {
 
         container.listen(provider, listener, fireImmediately: true);
 
-        verifyOnly(listener, listener(42));
+        verifyOnly(listener, listener(null, 42));
 
         container.updateOverrides([
           provider.overrideWithValue(21),
         ]);
 
-        verifyOnly(listener, listener(21));
+        verifyOnly(listener, listener(42, 21));
       });
     });
 
@@ -256,18 +240,6 @@ void main() {
     verify(onDispose()).called(1);
   });
 
-  test('Provider can be overriden by anything', () {
-    final provider = Provider((_) => 42);
-    final AlwaysAliveProviderBase<int> override = Provider((_) {
-      return 21;
-    });
-    final container = createContainer(overrides: [
-      provider.overrideWithProvider(override),
-    ]);
-
-    expect(container.read(provider), 21);
-  });
-
   test('Read creates the value only once', () {
     final container = createContainer();
     var callCount = 0;
@@ -297,7 +269,7 @@ void main() {
 
     final sub = container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(true));
+    verifyOnly(listener, listener(null, true));
     expect(sub.read(), true);
     expect(buildCount, 1);
 
@@ -320,12 +292,29 @@ void main() {
 
     final sub = container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(true));
+    verifyOnly(listener, listener(null, true));
     expect(sub.read(), true);
 
     counter.increment();
 
     expect(sub.read(), false);
-    verifyOnly(listener, listener(false));
+    verifyOnly(listener, listener(true, false));
+  });
+
+  test('can be auto-scoped', () async {
+    final dep = Provider((ref) => 0);
+    final provider = Provider(
+      (ref) => ref.watch(dep),
+      dependencies: [dep],
+    );
+    final root = createContainer();
+    final container = createContainer(
+      parent: root,
+      overrides: [dep.overrideWithValue(42)],
+    );
+
+    expect(container.read(provider), 42);
+
+    expect(root.getAllProviderElements(), isEmpty);
   });
 }

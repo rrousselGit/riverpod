@@ -1,20 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
 import 'utils.dart';
 
 void main() {
-  testWidgets(
-      'cannot attach a ProviderContainer to an ProviderScope if the container has pending tasks',
-      (tester) async {},
-      skip: true);
-
   testWidgets('ref.read works with providers that returns null',
       (tester) async {
     final nullProvider = Provider((ref) => null);
@@ -97,6 +90,38 @@ void main() {
 
     FlutterError.onError = onError;
     expect(error, isNotNull);
+  });
+
+  testWidgets('ref.watch within a build method can flush providers',
+      (tester) async {
+    final container = createContainer();
+    final dep = StateProvider((ref) => 0);
+    final provider = Provider((ref) => ref.watch(dep).state);
+
+    // reading `provider` but not listening to it, so that it is active
+    // but with no listener – causing "ref.watch" inside Consumer to flush it
+    container.read(provider);
+
+    // We need to use runAsync as the container isn't attached to a ProviderScope
+    // yet, so the WidgetTester is preventing the scheduler from start microtasks
+    await tester.runAsync<void>(() async {
+      // marking `provider` as out of date
+      container.read(dep).state++;
+    });
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: Consumer(builder: (context, ref, _) {
+          return Text(
+            ref.watch(provider).toString(),
+            textDirection: TextDirection.ltr,
+          );
+        }),
+      ),
+    );
+
+    expect(find.text('1'), findsOneWidget);
   });
 
   testWidgets(
@@ -273,15 +298,17 @@ void main() {
   testWidgets('adding overrides throws', (tester) async {
     final provider = Provider((_) => 0);
 
-    await tester.pumpWidget(ProviderScope(child: Container()));
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Container(),
+      ),
+    );
 
     expect(tester.takeException(), isNull);
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          provider.overrideWithProvider(Provider((_) => 1)),
-        ],
+        overrides: [provider],
         child: Container(),
       ),
     );
@@ -289,7 +316,7 @@ void main() {
     expect(tester.takeException(), isAssertionError);
   });
 
-  testWidgets('removing overrides is no-op', (tester) async {
+  testWidgets('removing overrides throws', (tester) async {
     final provider = Provider((_) => 0);
 
     final consumer = Consumer(builder: (context, ref, _) {
@@ -300,18 +327,16 @@ void main() {
     });
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          provider.overrideWithProvider(Provider((_) => 1)),
-        ],
+        overrides: [provider],
         child: consumer,
       ),
     );
 
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('0'), findsOneWidget);
 
     await tester.pumpWidget(ProviderScope(child: consumer));
 
-    expect(find.text('1'), findsOneWidget);
+    expect(tester.takeException(), isAssertionError);
   });
 
   testWidgets('overrive origin mismatch throws', (tester) async {
@@ -320,9 +345,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          provider.overrideWithProvider(Provider((_) => 1)),
-        ],
+        overrides: [provider],
         child: Container(),
       ),
     );
@@ -331,9 +354,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          provider2.overrideWithProvider(Provider((_) => 1)),
-        ],
+        overrides: [provider2],
         child: Container(),
       ),
     );
@@ -358,7 +379,7 @@ void main() {
     );
   });
 
-  testWidgets('providers can be overriden', (tester) async {
+  testWidgets('providers can be overridden', (tester) async {
     final provider = Provider((_) => 'root');
     final provider2 = Provider((_) => 'root2');
 
@@ -386,7 +407,7 @@ void main() {
       ProviderScope(
         key: UniqueKey(),
         overrides: [
-          provider.overrideWithProvider(Provider((_) => 'override')),
+          provider.overrideWithValue('override'),
         ],
         child: builder,
       ),
@@ -404,7 +425,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          provider.overrideWithProvider(Provider((_) => 'rootoverride')),
+          provider.overrideWithValue('rootoverride'),
         ],
         child: ProviderScope(
           child: Consumer(builder: (c, ref, _) {
@@ -506,6 +527,24 @@ void main() {
     );
   });
 
+  group('ProviderScope.containerOf', () {
+    testWidgets('throws if no container is found independently from `listen`',
+        (tester) async {
+      await tester.pumpWidget(Container());
+
+      final context = tester.element(find.byType(Container));
+
+      expect(
+        () => ProviderScope.containerOf(context, listen: false),
+        throwsStateError,
+      );
+      expect(
+        () => ProviderScope.containerOf(context),
+        throwsStateError,
+      );
+    });
+  });
+
   testWidgets(
       'autoDispose initState and ProviderListener does not destroy the state',
       (tester) async {
@@ -524,7 +563,7 @@ void main() {
           builder: (context, ref) {
             // ignore: deprecated_member_use_from_same_package
             return ProviderListener(
-              onChange: (_, __) {},
+              onChange: (ct, prev, value) {},
               provider: counterProvider,
               child: Container(),
             );

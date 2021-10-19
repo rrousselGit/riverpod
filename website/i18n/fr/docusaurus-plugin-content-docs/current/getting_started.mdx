@@ -45,7 +45,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.18.0
-  hooks_riverpod: ^1.0.0-dev.7
+  hooks_riverpod: ^1.0.0-dev.11
 ```
 
 Then run `flutter pub get`.
@@ -61,7 +61,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^1.0.0-dev.7
+  flutter_riverpod: ^1.0.0-dev.11
 ```
 
 Then run `flutter pub get`.
@@ -74,7 +74,7 @@ environment:
   sdk: ">=2.12.0-0 <3.0.0"
 
 dependencies:
-  riverpod: ^1.0.0-dev.7
+  riverpod: ^1.0.0-dev.10
 ```
 
 Then run `pub get`.
@@ -82,7 +82,7 @@ Then run `pub get`.
 </TabItem>
 </Tabs>
 
-Voila. Vous pouvez maintenant utiliser [Riverpod] dans votre application!
+Voilà. Vous pouvez maintenant utiliser [Riverpod] dans votre application!
 
 ## Exemple d'utilisation: Hello world
 
@@ -107,12 +107,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Nous créons un "provider", qui va stocker une valeur (ici "Hello world").
-// En utilisant un provider, cela permet de mocker/changer la valeur exposé.
+// En utilisant un provider, cela permet de mocker/changer la valeur exposée.
 final helloWorldProvider = Provider((_) => 'Hello world');
 
 void main() {
   runApp(
-    // Pour que les widgets soient capable de lire des providers, nous
+    // Pour que les widgets soient capables de lire des providers, nous
     // devons encapsuler l'entièreté de notre application dans le
     // widget "ProviderScope".
     // C'est dans celui-ci que sera stocké l'état de nos providers.
@@ -127,7 +127,7 @@ class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Pour lire note provider, nous pouvons utiliser l'objet "ref"
-    // Cet objet est fournis par HookConsumerWidget.
+    // Cet objet est fourni par HookConsumerWidget.
     final String value = ref.watch(helloWorldProvider);
 
     return MaterialApp(
@@ -153,12 +153,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Nous créons un "provider", qui va stocker une valeur (ici "Hello world").
-// En utilisant un provider, cela permet de mocker/changer la valeur exposé.
+// En utilisant un provider, cela permet de mocker/changer la valeur exposée.
 final helloWorldProvider = Provider((_) => 'Hello world');
 
 void main() {
   runApp(
-    // Pour que les widgets soient capable de lire des providers, nous
+    // Pour que les widgets soient capables de lire des providers, nous
     // devons encapsuler l'entièreté de notre application dans le
     // widget "ProviderScope".
     // C'est dans celui-ci que sera stocké l'état de nos providers.
@@ -173,7 +173,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Pour lire note provider, nous pouvons utiliser l'objet "ref"
-    // Cet objet est fournis par HookConsumerWidget.
+    // Cet objet est fourni par HookConsumerWidget.
     final String value = ref.watch(helloWorldProvider);
 
     return MaterialApp(
@@ -198,7 +198,7 @@ Cela va afficher "Hello world" sur votre téléphone.
 import 'package:riverpod/riverpod.dart';
 
 // Nous créons un "provider", qui va stocker une valeur (ici "Hello world").
-// En utilisant un provider, cela permet de mocker/changer la valeur exposé.
+// En utilisant un provider, cela permet de mocker/changer la valeur exposée.
 final helloWorldProvider = Provider((_) => 'Hello world');
 
 void main() {
@@ -212,7 +212,7 @@ void main() {
 }
 ```
 
-Nous pouvons ensuite executer l'application via `dart lib/main.dart`.  
+Nous pouvons ensuite exécuter l'application via `dart lib/main.dart`.  
 Cela va afficher "Hello world" dans la console.
 
 </TabItem>
@@ -220,9 +220,9 @@ Cela va afficher "Hello world" dans la console.
 
 ## Aller plus loin: Installer des raccourcis de code
 
-Si vous utilisez `Flutter` et `Vscode` , considérez installer [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
+Si vous utilisez `Flutter` et `Vscode` , considérez l'installation des [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
 
-Si vous utilisez `Flutter` et `Android Studio`/`IntelliJ`, considérez installer [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
+Si vous utilisez `Flutter` et `Android Studio`/`IntelliJ`, considérez l'installation des [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
 
 ![img](/img/snippets/greetingProvider.gif)
 

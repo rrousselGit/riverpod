@@ -7,8 +7,22 @@ import 'package:mockito/mockito.dart';
 import 'utils.dart';
 
 void main() {
-  test('throws if watch/listen are used outside of `build`', () {}, skip: true);
   test('ref.read should keep providers alive', () {}, skip: true);
+
+  testWidgets('throws if listen is used outside of `build`', (tester) async {
+    final provider = Provider((ref) => 0);
+
+    await tester.pumpWidget(
+      CallbackConsumerWidget(
+        key: const Key('initState'),
+        initState: (ctx, ref) {
+          ref.listen(provider, (prev, value) {});
+        },
+      ),
+    );
+
+    expect(tester.takeException(), isAssertionError);
+  });
 
   testWidgets('works with providers that returns null', (tester) async {
     final nullProvider = Provider((ref) => null);
@@ -623,5 +637,69 @@ class MyWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Text(ref.watch(_provider), textDirection: TextDirection.rtl);
+  }
+}
+
+class CallbackConsumerWidget extends ConsumerStatefulWidget {
+  const CallbackConsumerWidget({
+    Key? key,
+    this.initState,
+    this.didChangeDependencies,
+    this.dispose,
+    this.didUpdateWidget,
+    this.reassemble,
+  }) : super(key: key);
+
+  final void Function(BuildContext context, WidgetRef ref)? initState;
+  final void Function(BuildContext context, WidgetRef ref)?
+      didChangeDependencies;
+  final void Function(BuildContext context, WidgetRef ref)? dispose;
+  final void Function(
+    BuildContext context,
+    WidgetRef ref,
+    CallbackConsumerWidget oldWidget,
+  )? didUpdateWidget;
+  final void Function(BuildContext context, WidgetRef ref)? reassemble;
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _CallbackConsumerWidgetState createState() => _CallbackConsumerWidgetState();
+}
+
+class _CallbackConsumerWidgetState
+    extends ConsumerState<CallbackConsumerWidget> {
+  @override
+  void initState() {
+    super.initState();
+    widget.initState?.call(context, ref);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    widget.didChangeDependencies?.call(context, ref);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.dispose?.call(context, ref);
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    widget.reassemble?.call(context, ref);
+  }
+
+  @override
+  void didUpdateWidget(covariant CallbackConsumerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    widget.didUpdateWidget?.call(context, ref, oldWidget);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

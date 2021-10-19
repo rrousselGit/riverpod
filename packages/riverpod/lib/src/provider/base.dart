@@ -2,7 +2,7 @@ part of '../provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [state], the value currently exposed by this providers.
-abstract class ProviderRef<State> implements ProviderRefBase {
+abstract class ProviderRef<State> implements Ref {
   /// Obtains the state currently exposed by this provider.
   ///
   /// Mutating this property will notify the provider listeners.
@@ -175,7 +175,7 @@ abstract class ProviderRef<State> implements ProviderRefBase {
 /// class Location {
 ///   Location(this._ref);
 ///
-///   final ProviderRefBase _ref;
+///   final Ref _ref;
 ///
 ///   String get label {
 ///     final city = _ref.read(cityProvider);
@@ -278,15 +278,22 @@ class ProviderElement<State> extends ProviderElementBase<State>
 /// {@macro riverpod.provider}
 @sealed
 class Provider<State> extends AlwaysAliveProviderBase<State>
-    with ProviderOverridesMixin<State> {
+    with OverrideWithValueMixin<State> {
   /// {@macro riverpod.provider}
-  Provider(this._create, {String? name}) : super(name);
+  Provider(
+    this._create, {
+    String? name,
+    this.dependencies,
+  }) : super(name: name);
 
   /// {@macro riverpod.family}
   static const family = ProviderFamilyBuilder();
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeProviderBuilder();
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
 
   final Create<State, ProviderRef<State>> _create;
 
@@ -299,28 +306,6 @@ class Provider<State> extends AlwaysAliveProviderBase<State>
   }
 
   @override
-  void setupOverride(SetupOverride setup) {
-    setup(origin: this, override: this);
-  }
-
-  @override
-  Override overrideWithProvider(AlwaysAliveProviderBase<State> provider) {
-    return ProviderOverride((setup) {
-      setup(origin: this, override: provider);
-    });
-  }
-
-  @override
-  Override overrideWithValue(State value) {
-    return ProviderOverride((setup) {
-      setup(
-        origin: this,
-        override: ValueProvider<State>(value),
-      );
-    });
-  }
-
-  @override
   ProviderElement<State> createElement() => ProviderElement(this);
 }
 
@@ -330,7 +315,11 @@ class Provider<State> extends AlwaysAliveProviderBase<State>
 @sealed
 class ProviderFamily<State, Arg> extends Family<State, Arg, Provider<State>> {
   /// {@macro riverpod.provider.family}
-  ProviderFamily(this._create, {String? name}) : super(name);
+  ProviderFamily(
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
 
   final FamilyCreate<State, ProviderRef<State>, Arg> _create;
 

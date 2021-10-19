@@ -1,5 +1,5 @@
 // ignore_for_file: deprecated_member_use_from_same_package
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Listener;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -7,16 +7,40 @@ import 'package:mockito/mockito.dart';
 import 'utils.dart';
 
 void main() {
-  testWidgets('can downcast the value', (tester) async {}, skip: true);
-
   group('ProviderListener', () {
+    testWidgets('can downcast the value', (tester) async {
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider((ref) => ref.watch(dep).state);
+
+      final container = createContainer();
+      final listener = Listener<num>();
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: ProviderListener<num>(
+            provider: provider,
+            onChange: (c, prev, value) => listener(prev, value),
+            child: Container(),
+          ),
+        ),
+      );
+
+      verifyZeroInteractions(listener);
+
+      container.read(dep).state++;
+      await tester.pump();
+
+      verifyOnly(listener, listener(0, 1));
+    });
+
     testWidgets('works with providers that returns null', (tester) async {
       final nullProvider = Provider((ref) => null);
 
       // should compile
       ProviderListener<void>(
         provider: nullProvider,
-        onChange: (context, value) {},
+        onChange: (context, prev, value) {},
         child: Container(),
       );
     });
@@ -34,7 +58,7 @@ void main() {
           child: ProviderListener<StateController<int>>(
             key: key,
             provider: provider,
-            onChange: (c, _) => context = c,
+            onChange: (c, _, __) => context = c,
             child: Container(),
           ),
         ),
@@ -52,7 +76,7 @@ void main() {
         ProviderScope(
           child: ProviderListener<StateController<int>>(
             provider: provider,
-            onChange: (_, value) {},
+            onChange: (_, prev, value) {},
             child: const Text('hello', textDirection: TextDirection.ltr),
           ),
         ),
@@ -65,14 +89,14 @@ void main() {
         (tester) async {
       final container = createContainer();
       final provider = StateProvider((ref) => 0);
-      final onChange = ListenerMock<int>();
+      final onChange = Listener<int>();
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
           child: ProviderListener<StateController<int>>(
             provider: provider,
-            onChange: (_, value) => onChange(value.state),
+            onChange: (_, prev, value) => onChange(prev?.state, value.state),
             child: Container(),
           ),
         ),
@@ -82,13 +106,13 @@ void main() {
 
       container.read(provider).state++;
 
-      verifyOnly(onChange, onChange(1));
+      verifyOnly(onChange, onChange(1, 1));
     });
 
     testWidgets('can mark parents as dirty during onChange', (tester) async {
       final container = createContainer();
       final provider = StateProvider((ref) => 0);
-      final onChange = ListenerMock<int>();
+      final onChange = Listener<int>();
 
       await tester.pumpWidget(
         StatefulBuilder(
@@ -97,7 +121,7 @@ void main() {
               container: container,
               child: ProviderListener<StateController<int>>(
                 provider: provider,
-                onChange: (_, value) => setState(() {}),
+                onChange: (_, prev, value) => setState(() {}),
                 child: Container(),
               ),
             );
@@ -113,7 +137,7 @@ void main() {
 
     testWidgets('calls onChange synchronously if possible', (tester) async {
       final provider = StateProvider((ref) => 0);
-      final onChange = ListenerMock<int>();
+      final onChange = Listener<int>();
       final container = createContainer();
 
       await tester.pumpWidget(
@@ -121,7 +145,7 @@ void main() {
           container: container,
           child: ProviderListener<StateController<int>>(
             provider: provider,
-            onChange: (_, value) => onChange(value.state),
+            onChange: (_, prev, value) => onChange(prev?.state, value.state),
             child: Container(),
           ),
         ),
@@ -133,9 +157,9 @@ void main() {
       container.read(provider).state++;
 
       verifyInOrder([
-        onChange(1),
-        onChange(2),
-        onChange(3),
+        onChange(1, 1),
+        onChange(2, 2),
+        onChange(3, 3),
       ]);
       verifyNoMoreInteractions(onChange);
     });
@@ -144,7 +168,7 @@ void main() {
         (tester) async {
       final provider = StateProvider((ref) => 0);
       final isEven = Provider((ref) => ref.watch(provider).state.isEven);
-      final onChange = ListenerMock<bool>();
+      final onChange = Listener<bool>();
       final container = createContainer();
 
       await tester.pumpWidget(
@@ -152,7 +176,7 @@ void main() {
           container: container,
           child: ProviderListener<bool>(
             provider: isEven,
-            onChange: (_, value) => onChange(value),
+            onChange: (_, prev, value) => onChange(prev, value),
             child: Container(),
           ),
         ),
@@ -167,7 +191,7 @@ void main() {
 
       await tester.pump();
 
-      verifyOnly(onChange, onChange(false));
+      verifyOnly(onChange, onChange(true, false));
     });
 
     group('supports null', () {
@@ -176,7 +200,7 @@ void main() {
           ProviderScope(
             child: ProviderListener<StateController<int>>(
               provider: null,
-              onChange: (_, value) {},
+              onChange: (_, prev, value) {},
               child: Container(),
             ),
           ),
@@ -188,7 +212,7 @@ void main() {
           ProviderScope(
             child: ProviderListener<StateController<int>>(
               provider: null,
-              onChange: (_, value) {},
+              onChange: (_, prev, value) {},
               child: Container(),
             ),
           ),
@@ -200,7 +224,7 @@ void main() {
 
     testWidgets('closes the subscription on dispose', (tester) async {
       final provider = StateProvider((ref) => 0);
-      final onChange = ListenerMock<int>();
+      final onChange = Listener<int>();
       final container = createContainer();
 
       await tester.pumpWidget(
@@ -208,7 +232,7 @@ void main() {
           container: container,
           child: ProviderListener<StateController<int>>(
             provider: provider,
-            onChange: (_, value) => onChange(value.state),
+            onChange: (_, prev, value) => onChange(prev?.state, value.state),
             child: Container(),
           ),
         ),
@@ -230,7 +254,7 @@ void main() {
           container: container,
           child: ProviderListener<StateController<int>>(
             provider: provider(0),
-            onChange: (_, value) {},
+            onChange: (_, prev, value) {},
             child: Container(),
           ),
         ),
@@ -244,7 +268,7 @@ void main() {
           container: container,
           child: ProviderListener<StateController<int>>(
             provider: provider(1),
-            onChange: (_, value) {},
+            onChange: (_, prev, value) {},
             child: Container(),
           ),
         ),
@@ -258,14 +282,14 @@ void main() {
         (tester) async {
       final provider = StateProvider.family<int, int>((ref, _) => 0);
       final container = createContainer();
-      final onChange = ListenerMock<int>();
+      final onChange = Listener<int>();
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
           child: ProviderListener<StateController<int>>(
             provider: provider(0),
-            onChange: (_, value) => onChange(value.state),
+            onChange: (_, prev, value) => onChange(prev?.state, value.state),
             child: Container(),
           ),
         ),
@@ -276,7 +300,7 @@ void main() {
           container: container,
           child: ProviderListener<StateController<int>>(
             provider: provider(1),
-            onChange: (_, value) => onChange(value.state),
+            onChange: (_, prev, value) => onChange(prev?.state, value.state),
             child: Container(),
           ),
         ),
@@ -289,12 +313,12 @@ void main() {
 
       await Future<void>.value();
 
-      verifyOnly(onChange, onChange(42));
+      verifyOnly(onChange, onChange(42, 42));
     });
 
     testWidgets('supports Changing the ProviderContainer', (tester) async {
       final provider = Provider((ref) => 0);
-      final onChange = ListenerMock<int>();
+      final onChange = Listener<int>();
       final container = createContainer(overrides: [
         provider.overrideWithValue(0),
       ]);
@@ -307,7 +331,7 @@ void main() {
           container: container,
           child: ProviderListener<int>(
             provider: provider,
-            onChange: (_, value) => onChange(value),
+            onChange: (_, prev, value) => onChange(prev, value),
             child: Container(),
           ),
         ),
@@ -318,7 +342,7 @@ void main() {
           container: container2,
           child: ProviderListener<int>(
             provider: provider,
-            onChange: (_, value) => onChange(value),
+            onChange: (_, prev, value) => onChange(prev, value),
             child: Container(),
           ),
         ),
@@ -333,12 +357,12 @@ void main() {
 
       await Future<void>.value();
 
-      verifyOnly(onChange, onChange(42));
+      verifyOnly(onChange, onChange(0, 42));
     });
 
     testWidgets('supports scoping Providers', (tester) async {
       final provider = Provider((ref) => 0);
-      final onChange = ListenerMock<int>();
+      final onChange = Listener<int>();
       final container = createContainer(overrides: [
         provider.overrideWithValue(42),
       ]);
@@ -348,7 +372,7 @@ void main() {
           container: container,
           child: ProviderListener<int>(
             provider: provider,
-            onChange: (_, value) => onChange(value),
+            onChange: (_, prev, value) => onChange(prev, value),
             child: Container(),
           ),
         ),
@@ -360,11 +384,7 @@ void main() {
 
       await Future<void>.value();
 
-      verifyOnly(onChange, onChange(21));
+      verifyOnly(onChange, onChange(42, 21));
     });
   });
-}
-
-class ListenerMock<T> extends Mock {
-  void call(T value);
 }

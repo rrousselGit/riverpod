@@ -1,13 +1,15 @@
 // ignore_for_file: avoid_types_on_closure_parameters, type_init_formals, unused_local_variable, avoid_print, unnecessary_lambdas, unused_import
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+// ignore: unnecessary_import
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+// ignore: unnecessary_import
 import 'package:riverpod/riverpod.dart';
 
 class Counter extends StateNotifier<int> {
-  Counter(ProviderRefBase this.ref) : super(1);
-  final ProviderRefBase ref;
+  Counter(Ref this.ref) : super(1);
+  final Ref ref;
   void increment() => state++;
   void decrement() => state--;
 }
@@ -21,7 +23,7 @@ class CounterTest extends StateNotifier<int> implements Counter {
   void decrement() => state--;
 
   @override
-  ProviderRefBase get ref => throw UnimplementedError();
+  Ref get ref => throw UnimplementedError();
 }
 
 final testProvider = Provider<int>((ref) => 0);
@@ -112,7 +114,7 @@ class StatelessListen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(counterProvider, (i) {
+    ref.listen(counterProvider, (previous, i) {
       print(i);
     });
     return const Text('Counter');
@@ -129,7 +131,7 @@ class StatelessListen2 extends ConsumerWidget {
   }
 }
 
-void _onChange(int i) {
+void _onChange(int? previous, int i) {
   print(i);
 }
 
@@ -142,7 +144,7 @@ class StatelessExpressionListen extends ConsumerWidget {
     return const Text('Counter');
   }
 
-  void onChange(int i) {
+  void onChange(int? previous, int i) {
     print(i);
   }
 }
@@ -200,10 +202,29 @@ class StatefulConsumer2 extends ConsumerStatefulWidget {
 class HooksWatch extends HookConsumerWidget {
   const HooksWatch({Key? key}) : super(key: key);
 
+  void empty() {}
+  void error(Object err, StackTrace? st) {}
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final countNotifier = ref.watch(counterProvider.notifier);
     final count = ref.watch(counterProvider);
+    final asyncValue = ref.watch(futureProvider);
+    asyncValue.when(loading: (last) {}, data: (_) {}, error: (_, __, last) {});
+    asyncValue.maybeWhen(
+        loading: (last) {},
+        data: (_) {},
+        error: (_, __, last) {},
+        orElse: () {});
+    asyncValue.when(
+        loading: (last) => empty(),
+        data: (_) {},
+        error: (err, stackTrace, last) => error(err, stackTrace));
+    asyncValue.maybeWhen(
+        loading: (last) => empty(),
+        data: (_) {},
+        error: (err, stackTrace, last) => error(err, stackTrace),
+        orElse: () {});
     return Center(
       child: ElevatedButton(
         onPressed: () {
@@ -287,11 +308,13 @@ void main() {
   final count = container.read(testProvider);
   ProviderContainer(overrides: [
     stateNotifierProvider.overrideWithValue(CounterTest()),
-  ]).listen<Counter>(stateNotifierProvider.notifier, (value) {}).read();
+  ])
+      .listen<Counter>(stateNotifierProvider.notifier, (previous, value) {})
+      .read();
   ProviderContainer().read(testProvider);
   final _ = ProviderContainer(
     overrides: [
-      testProvider.overrideWithProvider(Provider<int>((ref) => 100)),
+      testProvider.overrideWithValue(100),
     ],
   );
   final fut = container.refresh(futureProvider.future);

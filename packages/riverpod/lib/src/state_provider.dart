@@ -1,11 +1,7 @@
 import 'package:meta/meta.dart';
-import 'package:state_notifier/state_notifier.dart';
 
 import '../riverpod.dart';
-import 'builders.dart';
-import 'common.dart';
-import 'framework.dart';
-import 'value_provider.dart';
+import 'internals.dart';
 
 part 'state_provider/auto_dispose.dart';
 part 'state_provider/base.dart';
@@ -23,6 +19,22 @@ class StateController<T> extends StateNotifier<T> {
 
   @override
   set state(T value) => super.state = value;
+
+  /// Calls a function with the current [state] and assign the result as new state
+  ///
+  /// This allows simplifying the syntax for updating the state when the update
+  /// depends on the previous state, such that rather than:
+  ///
+  /// ```dart
+  /// ref.read(provider).state = ref.read(provider).state + 1;
+  /// ```
+  ///
+  /// we can do:
+  ///
+  /// ```dart
+  /// ref.read(provider).update((state) => state + 1);
+  /// ```
+  T update(T Function(T state) cb) => state = cb(state);
 }
 
 /// {@template riverpod.stateprovider}
@@ -73,4 +85,25 @@ StateController<State> _listenStateProvider<State>(
   controller.addListener(listener, fireImmediately: false);
 
   return controller;
+}
+
+/// Add [overrideWithValue] to [StateProvider]
+mixin StateProviderOverrideMixin<State>
+    on ProviderBase<StateController<State>> {
+  ///
+  ProviderBase<StateController<State>> get notifier;
+
+  @override
+  late final List<ProviderOrFamily>? dependencies = [notifier];
+
+  @override
+  ProviderBase get originProvider => notifier;
+
+  /// {@macro riverpod.overrridewithvalue}
+  Override overrideWithValue(StateController<State> value) {
+    return ProviderOverride(
+      origin: notifier,
+      override: ValueProvider<StateController<State>>(value),
+    );
+  }
 }

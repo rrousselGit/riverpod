@@ -8,6 +8,25 @@ import '../../utils.dart';
 
 void main() {
   group('StreamProvider.autoDispose', () {
+    test('can be auto-scoped', () async {
+      final dep = Provider((ref) => 0);
+      final provider = StreamProvider.autoDispose(
+        (ref) => Stream.value(ref.watch(dep)),
+        dependencies: [dep],
+      );
+      final root = createContainer();
+      final container = createContainer(
+        parent: root,
+        overrides: [dep.overrideWithValue(42)],
+      );
+
+      await expectLater(container.read(provider.stream), emits(42));
+      await expectLater(container.read(provider.last), completion(42));
+      expect(container.read(provider), const AsyncData(42));
+
+      expect(root.getAllProviderElements(), isEmpty);
+    });
+
     test(
         'when going from AsyncLoading to AsyncLoading, does not notify listeners',
         () async {
@@ -17,7 +36,7 @@ void main() {
       final container = createContainer();
       final listener = Listener<AsyncValue<int>>();
 
-      container.listen(provider, (value) {});
+      container.listen(provider, (prev, value) {});
 
       await expectLater(
         container.read(provider.stream),
@@ -36,7 +55,7 @@ void main() {
 
       verifyOnly(
         listener,
-        listener(const AsyncLoading<int>(previous: AsyncData(42))),
+        listener(null, const AsyncLoading<int>(previous: AsyncData(42))),
       );
 
       container.read(dep).state = Stream.value(21);
@@ -61,7 +80,7 @@ void main() {
           StreamProvider.autoDispose((ref) => ref.watch(dep).state);
       final container = createContainer();
 
-      container.listen(provider, (value) {});
+      container.listen(provider, (prev, value) {});
 
       expect(
         container.read(provider),
@@ -94,7 +113,7 @@ void main() {
           StreamProvider.autoDispose((ref) => ref.watch(dep).state);
       final container = createContainer();
 
-      container.listen(provider, (value) {});
+      container.listen(provider, (prev, value) {});
 
       expect(
         container.read(provider),
@@ -126,7 +145,7 @@ void main() {
       final provider =
           StreamProvider.autoDispose((ref) => Stream.value(result));
 
-      container.listen(provider, (_) {});
+      container.listen(provider, (_, __) {});
 
       expect(container.read(provider.stream), emits(0));
       expect(await container.read(provider.last), 0);
@@ -155,7 +174,7 @@ void main() {
 
       container.listen(provider, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(const AsyncValue.loading()));
+      verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
       container.read(dep).state++;
       await container.pump();
@@ -176,7 +195,7 @@ void main() {
 
       container.listen(provider.stream, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(any));
+      verifyOnly(listener, listener(any, any));
 
       container.read(dep).state++;
       await container.pump();
@@ -197,7 +216,7 @@ void main() {
 
       container.listen(provider.last, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(any));
+      verifyOnly(listener, listener(any, any));
 
       container.read(dep).state++;
       await container.pump();
@@ -256,32 +275,6 @@ void main() {
           ]),
         );
       });
-
-      test('when using provider.overrideWithProvider', () async {
-        final provider = StreamProvider.autoDispose((ref) => Stream.value(0));
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithProvider(
-            FutureProvider.autoDispose((ref) async => 42),
-          ),
-        ]);
-
-        expect(await container.read(provider.stream).first, 42);
-        expect(await container.read(provider.last), 42);
-        expect(container.read(provider), const AsyncValue.data(42));
-        expect(root.getAllProviderElements(), isEmpty);
-        expect(
-          container.getAllProviderElements(),
-          unorderedEquals(<Object?>[
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider.last),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider.stream),
-          ]),
-        );
-      });
     });
 
     test('works', () async {
@@ -296,7 +289,7 @@ void main() {
 
       final sub = container.listen(provider, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(const AsyncValue.loading()));
+      verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
       sub.close();
 
@@ -312,11 +305,14 @@ void main() {
         fireImmediately: true,
       );
 
-      verifyOnly(listener, listener(const AsyncValue.loading()));
+      verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
       await container.pump();
 
-      verifyOnly(listener, listener(const AsyncValue.data(21)));
+      verifyOnly(
+        listener,
+        listener(const AsyncValue.loading(), const AsyncValue.data(21)),
+      );
     });
   });
 }
