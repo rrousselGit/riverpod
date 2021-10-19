@@ -486,7 +486,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       inAutoDisposeProvider = false;
       inProvider = ProviderType.none;
 
-      print('getting type arguments from $type\n$e\n$st');
+      addError('getting type arguments from $type\n$e\n$st');
     }
   }
 
