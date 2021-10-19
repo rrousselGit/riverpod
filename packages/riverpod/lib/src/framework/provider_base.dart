@@ -225,7 +225,7 @@ class _ProviderSubscription<State> implements ProviderSubscription<State> {
         'called ProviderSubscription.read on a subscription that was closed',
       );
     }
-    return _listenedElement.getExposedValue();
+    return _listenedElement.readSelf();
   }
 }
 
@@ -570,7 +570,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     // TODO(rrousselGit) add onError parameter
     if (fireImmediately) {
       try {
-        listener(null, getExposedValue());
+        listener(null, readSelf());
       } catch (err, stack) {
         Zone.current.handleUncaughtError(err, stack);
       }
@@ -623,7 +623,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
       return Object();
     });
 
-    return element.getExposedValue();
+    return element.readSelf();
   }
 
   @override
@@ -652,7 +652,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     element.flush();
 
     if (fireImmediately) {
-      listener(null, element.getExposedValue());
+      listener(null, element.readSelf());
     }
 
     // TODO(rrousselGit) test
@@ -677,7 +677,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
   /// Returns the currently exposed by a provider
   ///
   /// May throw if the provider threw when creating the exposed value.
-  State getExposedValue() {
+  State readSelf() {
     flush();
 
     return getState() as State;

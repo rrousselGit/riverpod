@@ -239,7 +239,7 @@ class ProviderContainer {
     // In case `read` was called on a provider that has no listener
     element.mayNeedDispose();
 
-    return element.getExposedValue();
+    return element.readSelf();
   }
 
   /// Subscribe to this provider.
