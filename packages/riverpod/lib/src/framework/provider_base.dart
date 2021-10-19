@@ -398,6 +398,7 @@ abstract class ProviderElementBase<State> implements Ref {
   ///
   /// Useful to reset debug state before a provider rebuilds, such as variables
   /// for asserts.
+  @visibleForOverriding
   void debugWillRebuildState() {}
 
   void _maybeRebuildState() {
