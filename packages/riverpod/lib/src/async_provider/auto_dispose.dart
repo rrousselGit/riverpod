@@ -29,9 +29,10 @@ class AutoDisposeAsyncProviderElement<T>
           return;
         }
 
-        previous.maybeMap(
+        final state = requireState;
+        state.maybeMap(
           orElse: () {
-            super.setState(AsyncLoading<T>(previous: previous));
+            super.setState(AsyncLoading<T>(previous: state));
           },
           loading: (_) {
             // TODO test does not notify listeners
@@ -40,17 +41,15 @@ class AutoDisposeAsyncProviderElement<T>
         );
       },
       error: (e) {
-        final previous = getState();
-
-        if (previous == null) {
+        if (getState() == null) {
           // Reached when FutureOr<T> throws, bypassing AsyncLoading
           super.setState(AsyncError<T>(e.error, stackTrace: e.stackTrace));
           return;
         }
 
-        previous.map(
+        requireState.map(
           data: (data) {
-            // Reached when FutureOr<T> returns T, bypassing AsyncLoading
+            // Reached when FutureOr<T> returned T, bypassing AsyncLoading
             super.setState(
               AsyncError(
                 e.error,
@@ -60,7 +59,7 @@ class AutoDisposeAsyncProviderElement<T>
             );
           },
           error: (previousErr) {
-            // Reached when FutureOr<T> throws, bypassing AsyncLoading
+            // Reached when FutureOr<T> threw, bypassing AsyncLoading
             super.setState(
               AsyncError(
                 e.error,

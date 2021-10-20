@@ -52,35 +52,8 @@ class StateProviderElement<State>
   StateProviderElement(ProviderBase<StateController<State>> provider)
       : super(provider);
 
-  bool _debugDidSetValue = false;
-
   @override
-  StateController<State> get controller {
-    assert(() {
-      if (!_debugDidSetValue) {
-        throw StateError(
-          'Cannot read the state exposed by a provider within '
-          'before it was set',
-        );
-      }
-      return true;
-    }(), '');
-    return getState()!;
-  }
-
-  @override
-  void setState(StateController<State> newState) {
-    assert(() {
-      _debugDidSetValue = true;
-      return true;
-    }(), '');
-    super.setState(newState);
-  }
-
-  @override
-  void debugWillRebuildState() {
-    _debugDidSetValue = false;
-  }
+  StateController<State> get controller => requireState;
 }
 
 /// {@macro riverpod.stateprovider}

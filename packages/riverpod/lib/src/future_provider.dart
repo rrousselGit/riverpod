@@ -87,7 +87,7 @@ AsyncValue<State> _listenFuture<State>(
   var running = true;
   ref.onDispose(() => running = false);
   try {
-    final Object? value = future();
+    final value = future();
 
     if (value is Future<State>) {
       ref.setState(AsyncValue<State>.loading());
@@ -106,10 +106,10 @@ AsyncValue<State> _listenFuture<State>(
         },
       );
     } else {
-      return AsyncData(value as State);
+      return AsyncData(value);
     }
 
-    return ref.getState()!;
+    return ref.requireState;
   } catch (err, stack) {
     return AsyncValue.error(err, stackTrace: stack);
   }

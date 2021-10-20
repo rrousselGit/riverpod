@@ -75,7 +75,7 @@ StateController<State> _listenStateProvider<State>(
   StateController<State> controller,
 ) {
   void listener(State newState) {
-    ref.notifyListeners(previousState: controller);
+    ref.setState(controller);
   }
 
   // No need to remove the listener on dispose, since we are disposing the controller

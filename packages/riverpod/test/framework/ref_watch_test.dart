@@ -111,7 +111,7 @@ void main() {
     final container = createContainer();
     final provider = StateNotifierProvider<StateController<int>, int>((ref) {
       return StateController(0);
-    });
+    }, name: 'provider');
     final isEvenSelector = Selector<int, bool>(false, (c) => c.isEven);
     final isEvenListener = Listener<bool>();
     var buildCount = 0;
@@ -119,7 +119,7 @@ void main() {
     final another = Provider<bool>((ref) {
       buildCount++;
       return ref.watch(provider.select(isEvenSelector));
-    });
+    }, name: 'another');
 
     container.listen(another, isEvenListener, fireImmediately: true);
 
@@ -374,18 +374,20 @@ void main() {
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>, int>((_) {
       return notifier;
-    });
+    }, name: 'provider');
     var callCount = 0;
     final computed = StreamProvider((ref) async* {
       callCount++;
       yield ref.watch(provider);
-    });
+    }, name: 'computed');
 
     final sub = container.listen(computed, (_, __) {});
 
     expect(callCount, 0);
     expect(sub.read(), const AsyncValue<int>.loading());
+
     await container.read(computed.stream).first;
+
     expect(sub.read(), const AsyncValue<int>.data(0));
     expect(callCount, 1);
 
@@ -394,7 +396,9 @@ void main() {
 
     expect(sub.read(), const AsyncValue<int>.loading(previous: AsyncData(0)));
     expect(callCount, 1);
+
     await container.read(computed.stream).first;
+
     expect(sub.read(), const AsyncValue<int>.data(42));
     expect(callCount, 2);
   });
