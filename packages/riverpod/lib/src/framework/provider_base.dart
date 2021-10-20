@@ -654,14 +654,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (fireImmediately) {
       // TODO test flush
       flush();
-      getState()!.map(
-        data: (data) => _runBinaryGuarded(listener, null, data.state),
-        error: (error) {
-          if (onError != null) {
-            _runBinaryGuarded(onError, error.error, error.stackTrace);
-          }
-        },
-      );
+      _fireImmediately(getState()!, listener: listener, onError: onError);
     }
 
     final sub = _ProviderSubscription<State>._(this, listener);
@@ -742,15 +735,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     element.flush();
 
     if (fireImmediately) {
-      // TODO handle exception in listener
-      element.getState()!.map(
-            data: (data) => _runBinaryGuarded(listener, null, data.state),
-            error: (error) {
-              if (onError != null) {
-                _runBinaryGuarded(onError, error.error, error.stackTrace);
-              }
-            },
-          );
+      _fireImmediately(
+        element.getState()!,
+        listener: listener,
+        onError: onError,
+      );
     }
 
     // TODO(rrousselGit) test

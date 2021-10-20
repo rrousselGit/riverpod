@@ -22,18 +22,10 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
     required void Function(Object error, StackTrace stackTrace)? onError,
   }) {
     final selectedElement = container.readProviderElement(provider);
-
     var lastSelectedValue = _select(selectedElement.getState()!);
 
     if (fireImmediately) {
-      lastSelectedValue.map(
-        data: (data) => _runBinaryGuarded(listener, null, data.state),
-        error: (error) {
-          if (onError != null) {
-            _runBinaryGuarded(onError, error.error, error.stackTrace);
-          }
-        },
-      );
+      _fireImmediately(lastSelectedValue, listener: listener, onError: onError);
     }
 
     final sub = container.listen<Input>(provider, (prev, input) {
@@ -98,18 +90,10 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
     required void Function(Object error, StackTrace stackTrace)? onError,
   }) {
     final selectedElement = element._container.readProviderElement(provider);
-
     var lastSelectedValue = _select(selectedElement.getState()!);
 
     if (fireImmediately) {
-      lastSelectedValue.map(
-        data: (data) => _runBinaryGuarded(listener, null, data.state),
-        error: (error) {
-          if (onError != null) {
-            _runBinaryGuarded(onError, error.error, error.stackTrace);
-          }
-        },
-      );
+      _fireImmediately(lastSelectedValue, listener: listener, onError: onError);
     }
 
     return element.listen<Input>(provider, (prev, input) {
