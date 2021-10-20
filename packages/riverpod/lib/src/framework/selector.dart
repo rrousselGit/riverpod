@@ -39,7 +39,6 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
   }
 
   void _selectOnChange({
-    required Input? previousState,
     required Input newState,
     required Result<Output> lastSelectedValue,
     required void Function(Object error, StackTrace stackTrace)? onError,
@@ -82,7 +81,6 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
 
     final sub = container.listen<Input>(provider, (prev, input) {
       _selectOnChange(
-        previousState: prev,
         newState: input,
         lastSelectedValue: lastSelectedValue,
         listener: listener,
@@ -115,7 +113,6 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
 
     return element.listen<Input>(provider, (prev, input) {
       _selectOnChange(
-        previousState: prev,
         newState: input,
         lastSelectedValue: lastSelectedValue,
         listener: listener,
