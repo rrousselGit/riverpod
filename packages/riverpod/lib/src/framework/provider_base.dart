@@ -338,7 +338,7 @@ abstract class ProviderElementBase<State> implements Ref {
 
   Result<State>? getState() => _state;
 
-  @protected
+  // TODO make protected
   State get requireState {
     assert(() {
       if (debugAssertDidSetStateEnabled && !_debugDidSetState) {
