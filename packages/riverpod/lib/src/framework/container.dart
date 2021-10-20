@@ -308,9 +308,16 @@ class ProviderContainer {
     ProviderListenable<State> provider,
     void Function(State? previous, State next) listener, {
     bool fireImmediately = false,
+    void Function(Object error, StackTrace stackTrace)? onError,
   }) {
+    // TODO test always flushed provider
     if (provider is _ProviderSelector<Object?, State>) {
-      return provider.listen(this, listener, fireImmediately: fireImmediately);
+      return provider.listen(
+        this,
+        listener,
+        fireImmediately: fireImmediately,
+        onError: onError,
+      );
     }
 
     final element = readProviderElement(provider as ProviderBase<State>);
@@ -319,6 +326,7 @@ class ProviderContainer {
       provider,
       listener,
       fireImmediately: fireImmediately,
+      onError: onError,
     );
   }
 

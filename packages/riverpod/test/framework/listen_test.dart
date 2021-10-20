@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/riverpod.dart' hide ErrorListener;
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
@@ -54,6 +54,237 @@ void main() {
       container.read(dep.notifier).state++;
 
       verifyOnly(listener, listener(true, false));
+    });
+
+    group('fireImmediately', () {
+      test('on provider that threw, fireImmediately calls onError', () {
+        final container = createContainer();
+        final dep = Provider<int>((ref) => throw UnimplementedError());
+        final listener = Listener<int>();
+        final errorListener = ErrorListener();
+        final provider = Provider((ref) {
+          ref.listen(
+            dep,
+            listener,
+            onError: errorListener,
+            fireImmediately: true,
+          );
+        });
+
+        container.read(provider);
+
+        verifyZeroInteractions(listener);
+        verifyOnly(
+          errorListener,
+          errorListener(isUnimplementedError, argThat(isNotNull)),
+        );
+      });
+
+      test('when selecting provider that threw, fireImmediately calls onError',
+          () {
+        final container = createContainer();
+        final dep = Provider<String>((ref) => throw UnimplementedError());
+        final listener = Listener<int>();
+        final errorListener = ErrorListener();
+        final provider = Provider((ref) {
+          ref.listen<int>(
+            dep.select((value) => 0),
+            listener,
+            onError: errorListener,
+            fireImmediately: true,
+          );
+        });
+
+        container.read(provider);
+
+        verifyZeroInteractions(listener);
+        verifyOnly(
+          errorListener,
+          errorListener(isUnimplementedError, argThat(isNotNull)),
+        );
+      });
+
+      test('correctly listens to the provider if selector listener throws', () {
+        final dep = StateProvider((ref) => 0);
+        final listener = Listener<int>();
+        var isFirstCall = true;
+
+        final container = createContainer();
+        final errors = <Object>[];
+
+        ProviderSubscription? sub;
+
+        final provider = Provider((ref) {
+          sub = runZonedGuarded(
+            () => container.listen<int>(
+              dep.select((value) => value.state),
+              (prev, value) {
+                listener(prev, value);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
+            ),
+            (err, stack) => errors.add(err),
+          );
+        });
+
+        container.listen<void>(provider, (prev, value) {});
+
+        expect(sub, isNotNull);
+        verifyOnly(listener, listener(null, 0));
+        expect(errors, [isStateError]);
+
+        container.read(dep).state++;
+        verifyOnly(listener, listener(0, 1));
+      });
+
+      test('correctly listens to the provider if normal listener throws', () {
+        final dep = StateProvider((ref) => 0);
+        final listener = Listener<int>();
+        var isFirstCall = true;
+
+        final container = createContainer();
+        final errors = <Object>[];
+
+        ProviderSubscription? sub;
+
+        final provider = Provider((ref) {
+          sub = runZonedGuarded(
+            () => container.listen<StateController<int>>(
+              dep,
+              (prev, value) {
+                listener(prev?.state, value.state);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
+            ),
+            (err, stack) => errors.add(err),
+          );
+        });
+
+        container.listen<void>(provider, (prev, value) {});
+
+        expect(sub, isNotNull);
+        verifyOnly(listener, listener(null, 0));
+        expect(errors, [isStateError]);
+
+        container.read(dep).state++;
+        verifyOnly(listener, listener(1, 1));
+      });
+
+      test(
+          'correctly listens to the provider if selector onError listener throws',
+          () async {
+        final dep = StateProvider<int>((ref) => 0);
+        final dep2 = Provider<int>((ref) {
+          if (ref.watch(dep).state == 0) {
+            throw UnimplementedError();
+          }
+          return ref.watch(dep).state;
+        });
+        final listener = Listener<int>();
+        final errorListener = ErrorListener();
+        var isFirstCall = true;
+
+        final container = createContainer();
+        final errors = <Object>[];
+
+        ProviderSubscription? sub;
+
+        final provider = Provider((ref) {
+          sub = runZonedGuarded(
+            () => container.listen<int>(
+              dep2.select((value) => value),
+              listener,
+              onError: (err, stack) {
+                errorListener(err, stack);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
+            ),
+            (err, stack) => errors.add(err),
+          );
+        });
+
+        container.read(provider);
+
+        expect(sub, isNotNull);
+        verifyZeroInteractions(listener);
+        verifyOnly(
+          errorListener,
+          errorListener(argThat(isUnimplementedError), argThat(isNotNull)),
+        );
+        expect(errors, [isStateError]);
+
+        container.read(dep).state++;
+        await container.pump();
+
+        verifyNoMoreInteractions(errorListener);
+        verifyOnly(listener, listener(null, 1));
+      });
+
+      test(
+          'correctly listens to the provider if normal onError listener throws',
+          () async {
+        final dep = StateProvider<int>((ref) => 0);
+        final dep2 = Provider<int>((ref) {
+          if (ref.watch(dep).state == 0) {
+            throw UnimplementedError();
+          }
+          return ref.watch(dep).state;
+        });
+        final listener = Listener<int>();
+        final errorListener = ErrorListener();
+        var isFirstCall = true;
+
+        final container = createContainer();
+        final errors = <Object>[];
+
+        ProviderSubscription? sub;
+
+        final provider = Provider((ref) {
+          sub = runZonedGuarded(
+            () => container.listen<int>(
+              dep2,
+              listener,
+              onError: (err, stack) {
+                errorListener(err, stack);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
+            ),
+            (err, stack) => errors.add(err),
+          );
+        });
+
+        container.read(provider);
+
+        expect(sub, isNotNull);
+        verifyZeroInteractions(listener);
+        verifyOnly(
+          errorListener,
+          errorListener(argThat(isUnimplementedError), argThat(isNotNull)),
+        );
+        expect(errors, [isStateError]);
+
+        container.read(dep).state++;
+        await container.pump();
+
+        verifyNoMoreInteractions(errorListener);
+        verifyOnly(listener, listener(null, 1));
+      });
     });
   });
 
@@ -250,6 +481,26 @@ void main() {
     });
 
     group('fireImmediately', () {
+      test('on provider that threw, fireImmediately calls onError', () {
+        final container = createContainer();
+        final provider = Provider<int>((ref) => throw UnimplementedError());
+        final listener = Listener<int>();
+        final errorListener = ErrorListener();
+
+        container.listen(
+          provider,
+          listener,
+          onError: errorListener,
+          fireImmediately: true,
+        );
+
+        verifyZeroInteractions(listener);
+        verifyOnly(
+          errorListener,
+          errorListener(isUnimplementedError, argThat(isNotNull)),
+        );
+      });
+
       test('supports selectors', () {
         final container = createContainer();
         final provider =
@@ -288,6 +539,106 @@ void main() {
         verifyZeroInteractions(listener);
       });
 
+      test(
+          'correctly listens to the provider if selector onError listener throws',
+          () async {
+        final dep = StateProvider<int>((ref) => 0);
+        final provider = Provider<int>((ref) {
+          if (ref.watch(dep).state == 0) {
+            throw UnimplementedError();
+          }
+          return ref.watch(dep).state;
+        });
+        final listener = Listener<int>();
+        final errorListener = ErrorListener();
+        var isFirstCall = true;
+
+        final container = createContainer();
+        final errors = <Object>[];
+
+        final sub = runZonedGuarded(
+          () => container.listen<int>(
+            provider.select((value) => value),
+            listener,
+            onError: (err, stack) {
+              errorListener(err, stack);
+              if (isFirstCall) {
+                isFirstCall = false;
+                throw StateError('Some error');
+              }
+            },
+            fireImmediately: true,
+          ),
+          (err, stack) => errors.add(err),
+        );
+
+        container.listen(provider, (prev, value) {});
+
+        expect(sub, isNotNull);
+        verifyZeroInteractions(listener);
+        verifyOnly(
+          errorListener,
+          errorListener(argThat(isUnimplementedError), argThat(isNotNull)),
+        );
+        expect(errors, [isStateError]);
+
+        container.read(dep).state++;
+        await container.pump();
+
+        verifyNoMoreInteractions(errorListener);
+        verifyOnly(listener, listener(null, 1));
+      });
+
+      test(
+          'correctly listens to the provider if normal onError listener throws',
+          () async {
+        final dep = StateProvider<int>((ref) => 0);
+        final provider = Provider<int>((ref) {
+          if (ref.watch(dep).state == 0) {
+            throw UnimplementedError();
+          }
+          return ref.watch(dep).state;
+        });
+        final listener = Listener<int>();
+        final errorListener = ErrorListener();
+        var isFirstCall = true;
+
+        final container = createContainer();
+        final errors = <Object>[];
+
+        final sub = runZonedGuarded(
+          () => container.listen<int>(
+            provider,
+            listener,
+            onError: (err, stack) {
+              errorListener(err, stack);
+              if (isFirstCall) {
+                isFirstCall = false;
+                throw StateError('Some error');
+              }
+            },
+            fireImmediately: true,
+          ),
+          (err, stack) => errors.add(err),
+        );
+
+        container.listen(provider, (prev, value) {});
+
+        expect(sub, isNotNull);
+        verifyZeroInteractions(listener);
+        verifyOnly(
+          errorListener,
+          errorListener(argThat(isUnimplementedError), argThat(isNotNull)),
+        );
+        expect(errors, [isStateError]);
+
+        container.read(dep).state++;
+        await container.pump();
+
+        verifyNoMoreInteractions(errorListener);
+        verifyOnly(listener, listener(null, 1));
+      });
+
       test('correctly listens to the provider if selector listener throws', () {
         final provider = StateProvider((ref) => 0);
         final listener = Listener<int>();
@@ -318,6 +669,38 @@ void main() {
         container.read(provider).state++;
 
         verifyOnly(listener, listener(0, 1));
+      });
+
+      test('correctly listens to the provider if normal listener throws', () {
+        final provider = StateProvider((ref) => 0);
+        final listener = Listener<int>();
+        var isFirstCall = true;
+
+        final container = createContainer();
+        final errors = <Object>[];
+
+        final sub = runZonedGuarded(
+          () => container.listen<StateController<int>>(
+            provider,
+            (prev, value) {
+              listener(prev?.state, value.state);
+              if (isFirstCall) {
+                isFirstCall = false;
+                throw StateError('Some error');
+              }
+            },
+            fireImmediately: true,
+          ),
+          (err, stack) => errors.add(err),
+        );
+
+        expect(sub, isNotNull);
+        verifyOnly(listener, listener(null, 0));
+        expect(errors, [isStateError]);
+
+        container.read(provider).state++;
+
+        verifyOnly(listener, listener(1, 1));
       });
 
       test('correctly listens to the provider if normal listener throws', () {

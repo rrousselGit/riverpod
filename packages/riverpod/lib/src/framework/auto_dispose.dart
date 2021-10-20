@@ -29,6 +29,7 @@ abstract class AutoDisposeRef extends Ref {
     ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     bool fireImmediately,
+    void Function(Object error, StackTrace stackTrace)? onError,
   });
 }
 

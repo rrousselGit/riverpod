@@ -539,7 +539,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
 
     if (previousStateResult != null &&
-        previousStateResult.hasData &&
+        previousStateResult.hasState &&
         !provider.updateShouldNotify(previousState as State, newState)) {
       return;
     }
@@ -649,14 +649,19 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ProviderBase<State> provider,
     void Function(State? previous, State next) listener, {
     required bool fireImmediately,
+    required void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    // TODO(rrousselGit) add onError parameter
     if (fireImmediately) {
-      try {
-        listener(null, readSelf());
-      } catch (err, stack) {
-        Zone.current.handleUncaughtError(err, stack);
-      }
+      // TODO test flush
+      flush();
+      getState()!.map(
+        data: (data) => _runBinaryGuarded(listener, null, data.state),
+        error: (error) {
+          if (onError != null) {
+            _runBinaryGuarded(onError, error.error, error.stackTrace);
+          }
+        },
+      );
     }
 
     final sub = _ProviderSubscription<State>._(this, listener);
@@ -714,6 +719,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ProviderListenable<T> listenable,
     void Function(T? previous, T value) listener, {
     bool fireImmediately = false,
+    void Function(Object error, StackTrace stackTrace)? onError,
   }) {
     _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
@@ -723,6 +729,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         this,
         listener,
         fireImmediately: fireImmediately,
+        onError: onError,
       );
     }
 
@@ -735,11 +742,18 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     element.flush();
 
     if (fireImmediately) {
-      listener(null, element.readSelf());
+      // TODO handle exception in listener
+      element.getState()!.map(
+            data: (data) => listener(null, data.state),
+            error: (error) {
+              if (onError != null) {
+                _runBinaryGuarded(onError, error.error, error.stackTrace);
+              }
+            },
+          );
     }
 
     // TODO(rrousselGit) test
-    // TODO(rrousselGit) onError
 
     final sub = _ProviderListener._(
       listenedElement: element,
@@ -942,7 +956,10 @@ abstract class Result<State> {
   factory Result.data(State state) = ResultData;
   factory Result.error(Object error, StackTrace stackTrace) = ResultError;
 
-  bool get hasData;
+  bool get hasState;
+
+  State? get stateOrNull;
+  State get requireState;
 
   R map<R>({
     required R Function(ResultData<State> data) data,
@@ -956,7 +973,13 @@ class ResultData<State> implements Result<State> {
   final State state;
 
   @override
-  bool get hasData => true;
+  bool get hasState => true;
+
+  @override
+  State? get stateOrNull => state;
+
+  @override
+  State get requireState => state;
 
   @override
   R map<R>({
@@ -974,7 +997,14 @@ class ResultError<State> implements Result<State> {
   final StackTrace stackTrace;
 
   @override
-  bool get hasData => false;
+  bool get hasState => false;
+
+  @override
+  State? get stateOrNull => null;
+
+  @override
+  // ignore: only_throw_errors
+  State get requireState => throw error;
 
   @override
   R map<R>({

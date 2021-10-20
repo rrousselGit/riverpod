@@ -47,6 +47,10 @@ class Listener<T> extends Mock {
   void call(T? previous, T? next);
 }
 
+class ErrorListener extends Mock {
+  void call(Object? error, StackTrace? stackTrace);
+}
+
 class Selector<Input, Output> extends Mock {
   Selector(this.fake, Output Function(Input) selector) {
     when(call(any)).thenAnswer((i) {

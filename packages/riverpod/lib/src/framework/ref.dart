@@ -134,5 +134,6 @@ abstract class Ref {
     AlwaysAliveProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     bool fireImmediately,
+    void Function(Object error, StackTrace stackTrace)? onError,
   });
 }
