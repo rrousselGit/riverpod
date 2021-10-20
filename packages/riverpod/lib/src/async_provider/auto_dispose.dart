@@ -19,6 +19,9 @@ class AutoDisposeAsyncProviderElement<T>
       : super(provider);
 
   @override
+  bool get debugAssertDidSetStateEnabled => false;
+
+  @override
   void setState(AsyncValue<T> newState) {
     newState.map(
       loading: (_) {

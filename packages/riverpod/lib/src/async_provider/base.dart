@@ -16,6 +16,9 @@ class AsyncProviderElement<T> extends ProviderElementBase<AsyncValue<T>> {
   AsyncProviderElement(AsyncProvider<T> provider) : super(provider);
 
   @override
+  bool get debugAssertDidSetStateEnabled => false;
+
+  @override
   void setState(AsyncValue<T> newState) {
     newState.map(
       loading: (_) {

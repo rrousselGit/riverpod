@@ -42,10 +42,10 @@ void main() {
 
   test('throw when trying to use ref.read inside selectors during initial call',
       () {
-    final dep = Provider((ref) => 0);
+    final dep = Provider((ref) => 0, name: 'dep');
     final provider = Provider((ref) {
       ref.watch(dep.select((value) => ref.read(dep)));
-    });
+    }, name: 'provider');
     final container = createContainer();
 
     expect(

@@ -24,6 +24,19 @@ void _runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
   }
 }
 
+void _runTernaryGuarded<A, B, C>(
+  void Function(A, B, C) cb,
+  A value,
+  B value2,
+  C value3,
+) {
+  try {
+    cb(value, value2, value3);
+  } catch (err, stack) {
+    Zone.current.handleUncaughtError(err, stack);
+  }
+}
+
 ProviderBase? _circularDependencyLock;
 
 void _defaultVsync(void Function() task) {
@@ -74,8 +87,14 @@ class _StateReader {
         ..mount();
 
       for (final observer in container._observers) {
-        _runGuarded(
-          () => observer.didAddProvider(origin, element._state, container),
+        _runTernaryGuarded(
+          observer.didAddProvider,
+          origin,
+          element.getState()!.map<Object?>(
+                data: (data) => data.state,
+                error: (_) => null,
+              ),
+          container,
         );
       }
       return element;

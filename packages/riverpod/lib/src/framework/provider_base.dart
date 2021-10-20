@@ -312,12 +312,22 @@ abstract class ProviderElementBase<State> implements Ref {
   @visibleForTesting
   bool get mounted => _mounted;
 
+  /// Whether the assert that prevents [requireState] from returning
+  /// if the state was not set before is enabled.
+  @visibleForOverriding
+  bool get debugAssertDidSetStateEnabled => true;
+
+  bool _debugDidSetState = false;
   bool _didBuild = false;
 
   /* STATE */
   Result<State>? _state;
 
   void setState(State newState) {
+    assert(() {
+      _debugDidSetState = true;
+      return true;
+    }(), '');
     final previousState = getState();
 
     _state = Result.data(newState);
@@ -330,6 +340,15 @@ abstract class ProviderElementBase<State> implements Ref {
 
   @protected
   State get requireState {
+    assert(() {
+      if (debugAssertDidSetStateEnabled && !_debugDidSetState) {
+        throw StateError(
+          'Tried to read the state of an uninitialized provider',
+        );
+      }
+      return true;
+    }(), '');
+
     final state = getState();
     if (state == null) {
       throw StateError('uninitialized');
@@ -412,6 +431,10 @@ abstract class ProviderElementBase<State> implements Ref {
 
     final previousStateResult = _state;
 
+    assert(() {
+      _debugDidSetState = false;
+      return true;
+    }(), '');
     _buildState();
 
     if (_state != previousStateResult) {
@@ -458,6 +481,10 @@ abstract class ProviderElementBase<State> implements Ref {
       setState(_provider.create(this));
     } catch (err, stack) {
       // TODO
+      assert(() {
+        _debugDidSetState = true;
+        return true;
+      }(), '');
       _state = Result.error(err, stack);
     } finally {
       _didBuild = true;
