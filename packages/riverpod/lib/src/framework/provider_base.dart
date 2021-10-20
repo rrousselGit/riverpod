@@ -654,7 +654,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (fireImmediately) {
       // TODO test flush
       flush();
-      _fireImmediately(getState()!, listener: listener, onError: onError);
+      handleFireImmediately(getState()!, listener: listener, onError: onError);
     }
 
     final sub = _ProviderSubscription<State>._(this, listener);
@@ -735,7 +735,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     element.flush();
 
     if (fireImmediately) {
-      _fireImmediately(
+      handleFireImmediately(
         element.getState()!,
         listener: listener,
         onError: onError,

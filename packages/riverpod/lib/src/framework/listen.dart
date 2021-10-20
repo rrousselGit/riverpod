@@ -1,6 +1,8 @@
 part of '../framework.dart';
 
-void _fireImmediately<State>(
+/// Deals with the internals of synchronously calling the listeners
+/// when using `fireImmediately: true`
+void handleFireImmediately<State>(
   Result<State> currentState, {
   required void Function(State? previous, State current) listener,
   required void Function(Object error, StackTrace stackTrace)? onError,

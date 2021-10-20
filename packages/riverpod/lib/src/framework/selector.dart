@@ -76,7 +76,11 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
     var lastSelectedValue = _select(selectedElement.getState()!);
 
     if (fireImmediately) {
-      _fireImmediately(lastSelectedValue, listener: listener, onError: onError);
+      handleFireImmediately(
+        lastSelectedValue,
+        listener: listener,
+        onError: onError,
+      );
     }
 
     final sub = container.listen<Input>(provider, (prev, input) {
@@ -108,7 +112,11 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
     var lastSelectedValue = _select(selectedElement.getState()!);
 
     if (fireImmediately) {
-      _fireImmediately(lastSelectedValue, listener: listener, onError: onError);
+      handleFireImmediately(
+        lastSelectedValue,
+        listener: listener,
+        onError: onError,
+      );
     }
 
     return element.listen<Input>(provider, (prev, input) {
