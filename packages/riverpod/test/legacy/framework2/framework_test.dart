@@ -489,7 +489,7 @@ void main() {
       expect(providerReference.container, root);
     });
 
-    test('Immediatly creates a new value, even if no changes are pending',
+    test('immediately creates a new value, even if no changes are pending',
         () async {
       var future = Future.value(42);
       var callCount = 0;

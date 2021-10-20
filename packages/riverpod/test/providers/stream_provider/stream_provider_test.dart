@@ -1258,7 +1258,7 @@ void main() {
   });
 
   group('mock as value', () {
-    test('value immediatly then other value', () async {
+    test('value immediately then other value', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
         provider.overrideWithValue(const AsyncValue.data(42)),
@@ -1282,7 +1282,7 @@ void main() {
       await expectLater(stream, emitsDone);
     });
 
-    test('value immediatly then error', () async {
+    test('value immediately then error', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
         provider.overrideWithValue(const AsyncValue.data(42)),
@@ -1307,7 +1307,7 @@ void main() {
       await expectLater(stream, emitsDone);
     });
 
-    test('value immediatly then loading', () async {
+    test('value immediately then loading', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
         provider.overrideWithValue(const AsyncValue.data(42)),
@@ -1330,7 +1330,7 @@ void main() {
       await expectLater(stream, emitsDone);
     });
 
-    test('loading immediatly then value', () async {
+    test('loading immediately then value', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
         provider.overrideWithValue(const AsyncValue<int>.loading()),
@@ -1353,7 +1353,7 @@ void main() {
       await expectLater(stream, emitsDone);
     });
 
-    test('loading immediatly then error', () async {
+    test('loading immediately then error', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
         provider.overrideWithValue(const AsyncValue<int>.loading()),
@@ -1380,7 +1380,7 @@ void main() {
       await expectLater(stream, emitsDone);
     });
 
-    test('loading immediatly then loading', () async {
+    test('loading immediately then loading', () async {
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
         provider.overrideWithValue(const AsyncValue<int>.loading()),
@@ -1414,7 +1414,7 @@ void main() {
       await expectLater(stream, emitsDone);
     });
 
-    test('error immediatly then different error', () async {
+    test('error immediately then different error', () async {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
@@ -1441,7 +1441,7 @@ void main() {
       await expectLater(stream, emitsDone);
     });
 
-    test('error immediatly then different stacktrace', () async {
+    test('error immediately then different stacktrace', () async {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
@@ -1470,7 +1470,7 @@ void main() {
       await expectLater(stream, emitsDone);
     });
 
-    test('error immediatly then data', () async {
+    test('error immediately then data', () async {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
@@ -1496,7 +1496,7 @@ void main() {
       await expectLater(stream, emitsDone);
     });
 
-    test('error immediatly then loading', () async {
+    test('error immediately then loading', () async {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [

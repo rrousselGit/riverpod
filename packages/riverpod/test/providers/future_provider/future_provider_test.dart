@@ -682,7 +682,7 @@ void main() {
   });
 
   group('mock as value', () {
-    test('value immediatly then other value', () async {
+    test('value immediately then other value', () async {
       final provider = FutureProvider((_) async => 0);
       final container = createContainer(overrides: [
         provider.overrideWithValue(const AsyncValue.data(42)),
@@ -708,7 +708,7 @@ void main() {
       expect(sub.read(), const AsyncValue.data(21));
     });
 
-    test('value immediatly then error', () async {
+    test('value immediately then error', () async {
       final provider = FutureProvider((_) async => 0);
       final container = createContainer(overrides: [
         provider.overrideWithValue(const AsyncValue.data(42)),
@@ -734,7 +734,7 @@ void main() {
       expect(sub.read(), const AsyncValue<int>.error(21));
     });
 
-    test('value immediatly then loading', () async {
+    test('value immediately then loading', () async {
       final provider = FutureProvider((_) async => 0);
       final container = createContainer(overrides: [
         provider.overrideWithValue(const AsyncValue.data(42)),
@@ -765,7 +765,7 @@ void main() {
       ]);
     });
 
-    test('loading immediatly then value', () async {
+    test('loading immediately then value', () async {
       final provider = FutureProvider((_) async => 0);
       final container = createContainer(overrides: [
         provider.overrideWithValue(const AsyncValue.loading()),
@@ -786,7 +786,7 @@ void main() {
       await expectLater(future, completion(42));
     });
 
-    test('loading immediatly then error', () async {
+    test('loading immediately then error', () async {
       final provider = FutureProvider((_) async => 0);
       final container = createContainer(overrides: [
         provider.overrideWithValue(const AsyncValue.loading()),
@@ -810,7 +810,7 @@ void main() {
       await expectLater(future, throwsA(42));
     });
 
-    test('loading immediatly then loading', () async {
+    test('loading immediately then loading', () async {
       final provider = FutureProvider((_) async => 0);
       final container = createContainer(overrides: [
         provider.overrideWithValue(const AsyncValue.loading()),
@@ -840,7 +840,7 @@ void main() {
       await expectLater(future, completion(42));
     });
 
-    test('error immediatly then different error', () async {
+    test('error immediately then different error', () async {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
       final container = createContainer(overrides: [
@@ -869,7 +869,7 @@ void main() {
       expect(sub.read(), AsyncValue<int>.error(21, stackTrace: stackTrace));
     });
 
-    test('error immediatly then different stacktrace', () async {
+    test('error immediately then different stacktrace', () async {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
       final container = createContainer(overrides: [
@@ -902,7 +902,7 @@ void main() {
       expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stack2));
     });
 
-    test('error immediatly then data', () async {
+    test('error immediately then data', () async {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
       final container = createContainer(overrides: [
@@ -930,7 +930,7 @@ void main() {
       expect(sub.read(), const AsyncValue<int>.data(42));
     });
 
-    test('error immediatly then loading', () async {
+    test('error immediately then loading', () async {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
       final container = createContainer(overrides: [
