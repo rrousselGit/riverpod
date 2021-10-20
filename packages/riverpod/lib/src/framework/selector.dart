@@ -15,51 +15,6 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
   /// The selector applied
   final Output Function(Input) selector;
 
-  _SelectorSubscription<Input, Output> listen(
-    ProviderContainer container,
-    void Function(Output? previous, Output next) listener, {
-    required bool fireImmediately,
-    required void Function(Object error, StackTrace stackTrace)? onError,
-  }) {
-    final selectedElement = container.readProviderElement(provider);
-    var lastSelectedValue = _select(selectedElement.getState()!);
-
-    if (fireImmediately) {
-      _fireImmediately(lastSelectedValue, listener: listener, onError: onError);
-    }
-
-    final sub = container.listen<Input>(provider, (prev, input) {
-      final newSelectedValue = _select(Result.data(input));
-      if (!lastSelectedValue.hasState ||
-          !newSelectedValue.hasState ||
-          lastSelectedValue.requireState != newSelectedValue.requireState) {
-        final previous = lastSelectedValue;
-        // TODO test events after selector exception correctly send `previous`s
-
-        lastSelectedValue = newSelectedValue;
-        // TODO test handle exception in listener
-        lastSelectedValue.map(
-          data: (data) {
-            listener(
-              // TOOD test from error
-              previous.stateOrNull,
-              data.state,
-            );
-          },
-          error: (error) => onError?.call(error.error, error.stackTrace),
-        );
-      }
-    }, onError: (err, stack) {
-      // TODO
-    });
-
-    return _SelectorSubscription(
-      sub,
-      // TODO test rethrow error
-      () => lastSelectedValue.requireState,
-    );
-  }
-
   Result<Output> _select(Result<Input> value) {
     assert(() {
       _debugIsRunningSelector = true;
@@ -83,6 +38,68 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
     }
   }
 
+  void _selectOnChange({
+    required Input? previousState,
+    required Input newState,
+    required Result<Output> lastSelectedValue,
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function(Output? prev, Output next) listener,
+    required void Function(Result<Output> newState) onChange,
+  }) {
+    final newSelectedValue = _select(Result.data(newState));
+    if (!lastSelectedValue.hasState ||
+        !newSelectedValue.hasState ||
+        lastSelectedValue.requireState != newSelectedValue.requireState) {
+      // TODO test events after selector exception correctly send `previous`s
+
+      onChange(newSelectedValue);
+      // TODO test handle exception in listener
+      newSelectedValue.map(
+        data: (data) {
+          listener(
+            // TOOD test from error
+            lastSelectedValue.stateOrNull,
+            data.state,
+          );
+        },
+        error: (error) => onError?.call(error.error, error.stackTrace),
+      );
+    }
+  }
+
+  _SelectorSubscription<Input, Output> listen(
+    ProviderContainer container,
+    void Function(Output? previous, Output next) listener, {
+    required bool fireImmediately,
+    required void Function(Object error, StackTrace stackTrace)? onError,
+  }) {
+    final selectedElement = container.readProviderElement(provider);
+    var lastSelectedValue = _select(selectedElement.getState()!);
+
+    if (fireImmediately) {
+      _fireImmediately(lastSelectedValue, listener: listener, onError: onError);
+    }
+
+    final sub = container.listen<Input>(provider, (prev, input) {
+      _selectOnChange(
+        previousState: prev,
+        newState: input,
+        lastSelectedValue: lastSelectedValue,
+        listener: listener,
+        onError: onError,
+        onChange: (newState) => lastSelectedValue = newState,
+      );
+    }, onError: (err, stack) {
+      // TODO
+    });
+
+    return _SelectorSubscription(
+      sub,
+      // TODO test rethrow error
+      () => lastSelectedValue.requireState,
+    );
+  }
+
   void Function() _elementListen(
     ProviderElementBase element,
     void Function(Output? prev, Output next) listener, {
@@ -97,26 +114,14 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
     }
 
     return element.listen<Input>(provider, (prev, input) {
-      final newSelectedValue = _select(Result.data(input));
-      if (!lastSelectedValue.hasState ||
-          !newSelectedValue.hasState ||
-          lastSelectedValue.requireState != newSelectedValue.requireState) {
-        final previous = lastSelectedValue;
-        // TODO test events after selector exception correctly send `previous`s
-
-        lastSelectedValue = newSelectedValue;
-        // TODO test handle exception in listener
-        lastSelectedValue.map(
-          data: (data) {
-            listener(
-              // TOOD test from error
-              previous.stateOrNull,
-              data.state,
-            );
-          },
-          error: (error) => onError?.call(error.error, error.stackTrace),
-        );
-      }
+      _selectOnChange(
+        previousState: prev,
+        newState: input,
+        lastSelectedValue: lastSelectedValue,
+        listener: listener,
+        onError: onError,
+        onChange: (newState) => lastSelectedValue = newState,
+      );
     }, onError: (err, stack) {
       // TODO
     });
