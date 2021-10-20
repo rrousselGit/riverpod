@@ -103,7 +103,7 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
 
     if (fireImmediately) {
       lastSelectedValue.map(
-        data: (data) => listener(null, data.state),
+        data: (data) => _runBinaryGuarded(listener, null, data.state),
         error: (error) {
           if (onError != null) {
             _runBinaryGuarded(onError, error.error, error.stackTrace);

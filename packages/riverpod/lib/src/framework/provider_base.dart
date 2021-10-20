@@ -744,7 +744,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (fireImmediately) {
       // TODO handle exception in listener
       element.getState()!.map(
-            data: (data) => listener(null, data.state),
+            data: (data) => _runBinaryGuarded(listener, null, data.state),
             error: (error) {
               if (onError != null) {
                 _runBinaryGuarded(onError, error.error, error.stackTrace);

@@ -112,11 +112,11 @@ void main() {
         final container = createContainer();
         final errors = <Object>[];
 
-        ProviderSubscription? sub;
+        void Function()? sub;
 
         final provider = Provider((ref) {
           sub = runZonedGuarded(
-            () => container.listen<int>(
+            () => ref.listen<int>(
               dep.select((value) => value.state),
               (prev, value) {
                 listener(prev, value);
@@ -149,11 +149,11 @@ void main() {
         final container = createContainer();
         final errors = <Object>[];
 
-        ProviderSubscription? sub;
+        void Function()? sub;
 
         final provider = Provider((ref) {
           sub = runZonedGuarded(
-            () => container.listen<StateController<int>>(
+            () => ref.listen<StateController<int>>(
               dep,
               (prev, value) {
                 listener(prev?.state, value.state);
@@ -195,11 +195,11 @@ void main() {
         final container = createContainer();
         final errors = <Object>[];
 
-        ProviderSubscription? sub;
+        void Function()? sub;
 
         final provider = Provider((ref) {
           sub = runZonedGuarded(
-            () => container.listen<int>(
+            () => ref.listen<int>(
               dep2.select((value) => value),
               listener,
               onError: (err, stack) {
@@ -249,11 +249,11 @@ void main() {
         final container = createContainer();
         final errors = <Object>[];
 
-        ProviderSubscription? sub;
+        void Function()? sub;
 
         final provider = Provider((ref) {
           sub = runZonedGuarded(
-            () => container.listen<int>(
+            () => ref.listen<int>(
               dep2,
               listener,
               onError: (err, stack) {
