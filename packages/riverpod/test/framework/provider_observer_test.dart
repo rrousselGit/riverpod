@@ -19,6 +19,8 @@ void main() {
     });
 
     group('didUpdateProvider', () {
+      // TODO after an error didUpdateProvider receives null as previous value
+
       test(
           'on scoped ProviderContainer, applies both child and ancestors observers',
           () {
@@ -231,7 +233,103 @@ void main() {
       });
     });
 
+    group('providerDidFail', () {
+      // is called when FutureProvider emits an error
+      // is called when StreamProvider emits an error
+
+      test('is called on uncaught error during first initialization', () {
+        final observer = ObserverMock();
+        final observer2 = ObserverMock();
+        final container = createContainer(observers: [observer, observer2]);
+        final provider = Provider((ref) => throw UnimplementedError());
+
+        expect(
+          () => container.read(provider),
+          throwsA(isA<ProviderException>()),
+        );
+
+        verifyInOrder([
+          observer.didAddProvider(provider, null, container),
+          observer2.didAddProvider(provider, null, container),
+          observer.providerDidFail(
+            provider,
+            argThat(isUnimplementedError),
+            argThat(isNotNull),
+            container,
+          ),
+          observer2.providerDidFail(
+            provider,
+            argThat(isUnimplementedError),
+            argThat(isNotNull),
+            container,
+          ),
+        ]);
+        verifyNoMoreInteractions(observer);
+      });
+
+      test('is called on uncaught error after update ', () async {
+        final observer = ObserverMock();
+        final observer2 = ObserverMock();
+        final container = createContainer(observers: [observer, observer2]);
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider((ref) {
+          if (ref.watch(dep).state != 0) {
+            throw UnimplementedError();
+          }
+          return 0;
+        });
+
+        container.listen(provider, (_, __) {});
+
+        clearInteractions(observer);
+        clearInteractions(observer2);
+
+        container.read(dep).state++;
+        await container.pump();
+
+        verifyInOrder([
+          observer.didUpdateProvider(
+            provider,
+            0,
+            null,
+            container,
+          ),
+          observer2.didUpdateProvider(
+            provider,
+            0,
+            null,
+            container,
+          ),
+          observer.providerDidFail(
+            provider,
+            argThat(isUnimplementedError),
+            argThat(isNotNull),
+            container,
+          ),
+          observer2.providerDidFail(
+            provider,
+            argThat(isUnimplementedError),
+            argThat(isNotNull),
+            container,
+          ),
+        ]);
+      });
+    });
+
     group('didAddProvider', () {
+      test('when throwing during creation, receives `null` as value', () {
+        final observer = ObserverMock();
+        final container = createContainer(observers: [observer]);
+        final provider = Provider((ref) => throw UnimplementedError());
+
+        expect(
+          () => container.read(provider),
+          throwsA(isA<ProviderException>()),
+        );
+
+        verify(observer.didAddProvider(provider, null, container));
+      });
+
       test(
           'on scoped ProviderContainer, applies both child and ancestors observers',
           () {

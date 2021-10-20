@@ -158,6 +158,21 @@ class ObserverMock extends Mock implements ProviderObserver {
   }
 
   @override
+  void providerDidFail(
+    ProviderBase? provider,
+    Object? error,
+    Object? stackTrace,
+    Object? container,
+  ) {
+    super.noSuchMethod(
+      Invocation.method(
+        #providerDidFail,
+        [provider, error, stackTrace, container],
+      ),
+    );
+  }
+
+  @override
   void didAddProvider(
     ProviderBase<Object?>? provider,
     Object? value,

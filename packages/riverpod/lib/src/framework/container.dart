@@ -37,6 +37,20 @@ void _runTernaryGuarded<A, B, C>(
   }
 }
 
+void _runQuaternaryGuarded<A, B, C, D>(
+  void Function(A, B, C, D) cb,
+  A value,
+  B value2,
+  C value3,
+  D value4,
+) {
+  try {
+    cb(value, value2, value3, value4);
+  } catch (err, stack) {
+    Zone.current.handleUncaughtError(err, stack);
+  }
+}
+
 ProviderBase? _circularDependencyLock;
 
 void _defaultVsync(void Function() task) {
@@ -86,17 +100,38 @@ class _StateReader {
         .._container = container
         ..mount();
 
-      for (final observer in container._observers) {
-        _runTernaryGuarded(
-          observer.didAddProvider,
-          origin,
-          element.getState()!.map<Object?>(
-                data: (data) => data.state,
-                error: (_) => null,
-              ),
-          container,
-        );
-      }
+      element.getState()!.map<Object?>(
+        // ignore: avoid_types_on_closure_parameters
+        data: (ResultData<Object?> data) {
+          for (final observer in container._observers) {
+            _runTernaryGuarded(
+              observer.didAddProvider,
+              origin,
+              data.state,
+              container,
+            );
+          }
+        },
+        error: (error) {
+          for (final observer in container._observers) {
+            _runTernaryGuarded(
+              observer.didAddProvider,
+              origin,
+              null,
+              container,
+            );
+          }
+          for (final observer in container._observers) {
+            _runQuaternaryGuarded(
+              observer.providerDidFail,
+              origin,
+              error.error,
+              error.stackTrace,
+              container,
+            );
+          }
+        },
+      );
       return element;
     } finally {
       if (_circularDependencyLock == origin) {
@@ -682,13 +717,27 @@ abstract class ProviderObserver {
   const ProviderObserver();
 
   /// A provider was initialized, and the value exposed is [value].
+  ///
+  /// [value] will be `null` if the provider threw during initialization.
   void didAddProvider(
     ProviderBase provider,
     Object? value,
     ProviderContainer container,
   ) {}
 
+  /// A provider emitted an error, be it by throwing during initialization
+  /// or by having a [Future]/[Stream] emit an error
+  void providerDidFail(
+    ProviderBase provider,
+    Object error,
+    StackTrace stackTrace,
+    ProviderContainer container,
+  ) {}
+
   /// Called my providers when they emit a notification.
+  ///
+  /// - [newValue] will be `null` if the provider threw during initialization.
+  /// - [previousValue] will be `null` if the previous build threw during initialization.
   void didUpdateProvider(
     ProviderBase provider,
     Object? previousValue,

@@ -448,6 +448,27 @@ abstract class ProviderElementBase<State> implements Ref {
         data: (data) => _notifyListeners(data.state, previousStateResult),
         error: (error) {
           // TODO
+          for (final observer in _container._observers) {
+            _runQuaternaryGuarded(
+              observer.didUpdateProvider,
+              provider,
+              previousStateResult!.map(
+                data: (data) => data.state,
+                error: (error) => null,
+              ),
+              null,
+              _container,
+            );
+          }
+          for (final observer in _container._observers) {
+            _runQuaternaryGuarded(
+              observer.providerDidFail,
+              provider,
+              error.error,
+              error.stackTrace,
+              _container,
+            );
+          }
         },
       );
       assert(() {
@@ -546,13 +567,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     if (previousState != const _Sentinel()) {
       for (final observer in _container._observers) {
-        Zone.current.runGuarded(
-          () => observer.didUpdateProvider(
-            provider,
-            previousState,
-            newState,
-            _container,
-          ),
+        _runQuaternaryGuarded(
+          observer.didUpdateProvider,
+          provider,
+          previousState,
+          newState,
+          _container,
         );
       }
     }
