@@ -310,6 +310,8 @@ class ProviderContainer {
     bool fireImmediately = false,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
+    onError ??= Zone.current.handleUncaughtError;
+
     // TODO test always flushed provider
     if (provider is _ProviderSelector<Object?, State>) {
       return provider.listen(

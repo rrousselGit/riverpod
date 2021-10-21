@@ -56,7 +56,18 @@ void main() {
       verifyOnly(listener, listener(true, false));
     });
 
+    test(
+      'when no onError is specified, fallbacks to handleUncaughtError',
+      () {},
+      skip: true,
+    );
+
     group('fireImmediately', () {
+      test(
+        'when no onError is specified, fallbacks to handleUncaughtError',
+        () {},
+      );
+
       test('on provider that threw, fireImmediately calls onError', () {
         final container = createContainer();
         final dep = Provider<int>((ref) => throw UnimplementedError());

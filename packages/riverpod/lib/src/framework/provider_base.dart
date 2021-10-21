@@ -651,6 +651,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     required bool fireImmediately,
     required void Function(Object error, StackTrace stackTrace)? onError,
   }) {
+    onError ??= Zone.current.handleUncaughtError;
+
     if (fireImmediately) {
       // TODO test flush
       flush();
@@ -671,7 +673,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     if (listenable is _ProviderSelector) {
       var initialized = false;
-      late T firstValue;
+      late Result<T> firstValue;
 
       listen<T>(
         listenable,
@@ -679,14 +681,29 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           if (initialized) {
             _didChangeDependency();
           } else {
-            firstValue = value;
+            firstValue = Result.data(value);
             initialized = true;
+          }
+        },
+        onError: (err, stack) {
+          if (initialized) {
+            _didChangeDependency();
+          } else {
+            initialized = true;
+            firstValue = Result.error(
+              ProviderException._(
+                err,
+                stack,
+                (listenable as _ProviderSelector).provider,
+              ),
+              stack,
+            );
           }
         },
         fireImmediately: true,
       );
 
-      return firstValue;
+      return firstValue.requireState;
     }
 
     final provider = listenable as ProviderBase<T>;
@@ -714,6 +731,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     bool fireImmediately = false,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
+    onError ??= Zone.current.handleUncaughtError;
+
     _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
 

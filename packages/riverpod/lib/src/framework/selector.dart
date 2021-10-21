@@ -41,7 +41,7 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
   void _selectOnChange({
     required Input newState,
     required Result<Output> lastSelectedValue,
-    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function(Object error, StackTrace stackTrace) onError,
     required void Function(Output? prev, Output next) listener,
     required void Function(Result<Output> newState) onChange,
   }) {
@@ -61,7 +61,7 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
             data.state,
           );
         },
-        error: (error) => onError?.call(error.error, error.stackTrace),
+        error: (error) => onError(error.error, error.stackTrace),
       );
     }
   }
@@ -70,7 +70,7 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
     ProviderContainer container,
     void Function(Output? previous, Output next) listener, {
     required bool fireImmediately,
-    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function(Object error, StackTrace stackTrace) onError,
   }) {
     final selectedElement = container.readProviderElement(provider);
     var lastSelectedValue = _select(selectedElement.getState()!);
@@ -106,7 +106,7 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
     ProviderElementBase element,
     void Function(Output? prev, Output next) listener, {
     required bool fireImmediately,
-    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function(Object error, StackTrace stackTrace) onError,
   }) {
     final selectedElement = element._container.readProviderElement(provider);
     var lastSelectedValue = _select(selectedElement.getState()!);
