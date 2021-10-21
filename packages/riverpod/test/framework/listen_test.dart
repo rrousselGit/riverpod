@@ -62,6 +62,72 @@ void main() {
       skip: true,
     );
 
+    test('when rebuild throws, calls onError', () async {
+      final container = createContainer();
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider((ref) {
+        if (ref.watch(dep).state != 0) {
+          throw UnimplementedError();
+        }
+        return 0;
+      });
+      final errorListener = ErrorListener();
+      final listener = Listener<int>();
+
+      final a = Provider((ref) {
+        ref.listen(provider, listener, onError: errorListener);
+      });
+
+      container.read(a);
+
+      verifyZeroInteractions(errorListener);
+      verifyZeroInteractions(listener);
+
+      container.read(dep).state++;
+      await container.pump();
+
+      verifyZeroInteractions(listener);
+      verifyOnly(
+        errorListener,
+        errorListener(isUnimplementedError, any),
+      );
+    });
+
+    test('when rebuild throws on selector, calls onError', () async {
+      final container = createContainer();
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider((ref) {
+        if (ref.watch(dep).state != 0) {
+          throw UnimplementedError();
+        }
+        return 0;
+      });
+      final errorListener = ErrorListener();
+      final listener = Listener<int>();
+
+      final a = Provider((ref) {
+        ref.listen(
+          provider.select((value) => value),
+          listener,
+          onError: errorListener,
+        );
+      });
+
+      container.read(a);
+
+      verifyZeroInteractions(errorListener);
+      verifyZeroInteractions(listener);
+
+      container.read(dep).state++;
+      await container.pump();
+
+      verifyZeroInteractions(listener);
+      verifyOnly(
+        errorListener,
+        errorListener(isUnimplementedError, any),
+      );
+    });
+
     group('fireImmediately', () {
       test('when no onError is specified, fallbacks to handleUncaughtError',
           () {
@@ -348,6 +414,64 @@ void main() {
   });
 
   group('ProviderContainer.listen', () {
+    test('when rebuild throws, calls onError', () async {
+      final container = createContainer();
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider((ref) {
+        if (ref.watch(dep).state != 0) {
+          throw UnimplementedError();
+        }
+        return 0;
+      });
+      final errorListener = ErrorListener();
+      final listener = Listener<int>();
+
+      container.listen(provider, listener, onError: errorListener);
+
+      verifyZeroInteractions(errorListener);
+      verifyZeroInteractions(listener);
+
+      container.read(dep).state++;
+      await container.pump();
+
+      verifyZeroInteractions(listener);
+      verifyOnly(
+        errorListener,
+        errorListener(isUnimplementedError, any),
+      );
+    });
+
+    test('when rebuild throws on selector, calls onError', () async {
+      final container = createContainer();
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider((ref) {
+        if (ref.watch(dep).state != 0) {
+          throw UnimplementedError();
+        }
+        return 0;
+      });
+      final errorListener = ErrorListener();
+      final listener = Listener<int>();
+
+      container.listen(
+        provider.select((value) => value),
+        listener,
+        onError: errorListener,
+      );
+
+      verifyZeroInteractions(errorListener);
+      verifyZeroInteractions(listener);
+
+      container.read(dep).state++;
+      await container.pump();
+
+      verifyZeroInteractions(listener);
+      verifyOnly(
+        errorListener,
+        errorListener(isUnimplementedError, any),
+      );
+    });
+
     test(
         'when using selectors, `previous` is the latest notification instead of latest event',
         () {

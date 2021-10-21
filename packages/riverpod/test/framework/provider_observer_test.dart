@@ -279,7 +279,7 @@ void main() {
           return 0;
         });
 
-        container.listen(provider, (_, __) {});
+        container.listen(provider, (_, __) {}, onError: (err, stack) {});
 
         clearInteractions(observer);
         clearInteractions(observer2);

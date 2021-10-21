@@ -85,17 +85,19 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
       );
     }
 
-    final sub = container.listen<Input>(provider, (prev, input) {
-      _selectOnChange(
-        newState: input,
-        lastSelectedValue: lastSelectedValue,
-        listener: listener,
-        onError: onError!,
-        onChange: (newState) => lastSelectedValue = newState,
-      );
-    }, onError: (err, stack) {
-      // TODO
-    });
+    final sub = container.listen<Input>(
+      provider,
+      (prev, input) {
+        _selectOnChange(
+          newState: input,
+          lastSelectedValue: lastSelectedValue,
+          listener: listener,
+          onError: onError!,
+          onChange: (newState) => lastSelectedValue = newState,
+        );
+      },
+      onError: onError,
+    );
 
     return _SelectorSubscription(
       sub,
@@ -123,17 +125,19 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
       );
     }
 
-    return element.listen<Input>(provider, (prev, input) {
-      _selectOnChange(
-        newState: input,
-        lastSelectedValue: lastSelectedValue,
-        listener: listener,
-        onError: onError!,
-        onChange: (newState) => lastSelectedValue = newState,
-      );
-    }, onError: (err, stack) {
-      // TODO
-    });
+    return element.listen<Input>(
+      provider,
+      (prev, input) {
+        _selectOnChange(
+          newState: input,
+          lastSelectedValue: lastSelectedValue,
+          listener: listener,
+          onError: onError!,
+          onChange: (newState) => lastSelectedValue = newState,
+        );
+      },
+      onError: onError,
+    );
   }
 }
 

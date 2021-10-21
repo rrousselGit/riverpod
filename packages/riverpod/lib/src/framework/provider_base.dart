@@ -204,11 +204,13 @@ var _debugIsRunningSelector = false;
 class _ProviderSubscription<State> implements ProviderSubscription<State> {
   _ProviderSubscription._(
     this._listenedElement,
-    this._listener,
-  );
+    this._listener, {
+    required this.onError,
+  });
 
   final void Function(State? previous, State next) _listener;
   final ProviderElementBase<State> _listenedElement;
+  final void Function(Object error, StackTrace stackTrace) onError;
   var _closed = false;
 
   @override
@@ -235,11 +237,13 @@ class _ProviderListener {
     required this.listenedElement,
     required this.dependentElement,
     required this.listener,
+    required this.onError,
   });
 
   final void Function(Object? prev, Object? state) listener;
   final ProviderElementBase dependentElement;
   final ProviderElementBase listenedElement;
+  final void Function(Object, StackTrace) onError;
 
   void close() {
     listenedElement
@@ -330,9 +334,9 @@ abstract class ProviderElementBase<State> implements Ref {
     }(), '');
     final previousState = getState();
 
-    _state = Result.data(newState);
+    final result = _state = Result.data(newState);
     if (_didBuild) {
-      _notifyListeners(newState, previousState);
+      _notifyListeners(result, previousState);
     }
   }
 
@@ -445,30 +449,31 @@ abstract class ProviderElementBase<State> implements Ref {
         return true;
       }(), '');
       _state!.map(
-        data: (data) => _notifyListeners(data.state, previousStateResult),
+        data: (data) => _notifyListeners(data, previousStateResult),
         error: (error) {
+          _notifyListeners(_state!, previousStateResult);
           // TODO
-          for (final observer in _container._observers) {
-            _runQuaternaryGuarded(
-              observer.didUpdateProvider,
-              provider,
-              previousStateResult!.map(
-                data: (data) => data.state,
-                error: (error) => null,
-              ),
-              null,
-              _container,
-            );
-          }
-          for (final observer in _container._observers) {
-            _runQuaternaryGuarded(
-              observer.providerDidFail,
-              provider,
-              error.error,
-              error.stackTrace,
-              _container,
-            );
-          }
+          // for (final observer in _container._observers) {
+          //   _runQuaternaryGuarded(
+          //     observer.didUpdateProvider,
+          //     provider,
+          //     previousStateResult!.map(
+          //       data: (data) => data.state,
+          //       error: (error) => null,
+          //     ),
+          //     null,
+          //     _container,
+          //   );
+          // }
+          // for (final observer in _container._observers) {
+          //   _runQuaternaryGuarded(
+          //     observer.providerDidFail,
+          //     provider,
+          //     error.error,
+          //     error.stackTrace,
+          //     _container,
+          //   );
+          // }
         },
       );
       assert(() {
@@ -501,7 +506,6 @@ abstract class ProviderElementBase<State> implements Ref {
       _mounted = true;
       setState(_provider.create(this));
     } catch (err, stack) {
-      // TODO
       assert(() {
         _debugDidSetState = true;
         return true;
@@ -516,7 +520,10 @@ abstract class ProviderElementBase<State> implements Ref {
     }
   }
 
-  void _notifyListeners(State newState, Result<State>? previousStateResult) {
+  void _notifyListeners(
+    Result<State> newState,
+    Result<State>? previousStateResult,
+  ) {
     assert(() {
       if (_debugSkipNotifyListenersAsserts) return true;
 
@@ -533,48 +540,82 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       return true;
     }(), '');
 
-    final previousState = previousStateResult?.map<State?>(
-      data: (data) => data.state,
-      error: (error) => null,
-    );
+    final previousState = previousStateResult?.stateOrNull;
 
     if (previousStateResult != null &&
         previousStateResult.hasState &&
-        !provider.updateShouldNotify(previousState as State, newState)) {
+        newState.hasState &&
+        !provider.updateShouldNotify(
+          previousState as State,
+          newState.requireState,
+        )) {
       return;
     }
 
     final listeners = _listeners.toList(growable: false);
     final subscribers = _subscribers.toList(growable: false);
-    for (var i = 0; i < listeners.length; i++) {
-      Zone.current.runBinaryGuarded(
-        listeners[i]._listener,
-        previousState,
-        newState,
-      );
-    }
-    for (var i = 0; i < subscribers.length; i++) {
-      Zone.current.runBinaryGuarded(
-        subscribers[i].listener,
-        previousState,
-        newState,
-      );
-    }
+    newState.map(
+      data: (newState) {
+        for (var i = 0; i < listeners.length; i++) {
+          Zone.current.runBinaryGuarded(
+            listeners[i]._listener,
+            previousState,
+            newState.state,
+          );
+        }
+        for (var i = 0; i < subscribers.length; i++) {
+          Zone.current.runBinaryGuarded(
+            subscribers[i].listener,
+            previousState,
+            newState.state,
+          );
+        }
+      },
+      error: (newState) {
+        for (var i = 0; i < listeners.length; i++) {
+          Zone.current.runBinaryGuarded(
+            listeners[i].onError,
+            newState.error,
+            newState.stackTrace,
+          );
+        }
+        for (var i = 0; i < subscribers.length; i++) {
+          Zone.current.runBinaryGuarded(
+            subscribers[i].onError,
+            newState.error,
+            newState.stackTrace,
+          );
+        }
+      },
+    );
 
     for (var i = 0; i < _dependents.length; i++) {
       _dependents[i]._didChangeDependency();
     }
 
-    if (previousState != const _Sentinel()) {
-      for (final observer in _container._observers) {
-        _runQuaternaryGuarded(
-          observer.didUpdateProvider,
-          provider,
-          previousState,
-          newState,
-          _container,
-        );
-      }
+    for (final observer in _container._observers) {
+      _runQuaternaryGuarded(
+        observer.didUpdateProvider,
+        provider,
+        previousState,
+        newState.stateOrNull,
+        _container,
+      );
+    }
+
+    for (final observer in _container._observers) {
+      newState.map(
+        data: (_) {},
+        error: (newState) {
+          _runQuaternaryGuarded(
+            observer.providerDidFail,
+            provider,
+            newState.error,
+            newState.stackTrace,
+            _container,
+          );
+        },
+      );
     }
   }
 
@@ -659,7 +700,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       handleFireImmediately(getState()!, listener: listener, onError: onError);
     }
 
-    final sub = _ProviderSubscription<State>._(this, listener);
+    final sub = _ProviderSubscription<State>._(
+      this,
+      listener,
+      onError: onError,
+    );
 
     _listeners.add(sub);
 
@@ -766,6 +811,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       listenedElement: element,
       dependentElement: this,
       listener: (prev, value) => listener(prev as T?, value as T),
+      onError: onError,
     );
 
     element._subscribers.add(sub);
