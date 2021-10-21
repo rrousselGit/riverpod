@@ -651,7 +651,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     required bool fireImmediately,
     required void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    onError ??= Zone.current.handleUncaughtError;
+    onError ??= _fallbackOnErrorForProvider(provider);
 
     if (fireImmediately) {
       // TODO test flush
@@ -731,8 +731,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     bool fireImmediately = false,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    onError ??= Zone.current.handleUncaughtError;
-
     _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
 
@@ -746,6 +744,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     final provider = listenable as ProviderBase<T>;
+    onError ??= _fallbackOnErrorForProvider(provider);
     assert(_debugAssertCanDependOn(provider), '');
 
     // TODO remove by passing the a debug flag to `listen`

@@ -4,9 +4,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:meta/meta.dart';
-
-import 'provider.dart';
-import 'value_provider.dart';
+import 'internals.dart';
 
 part 'framework/always_alive.dart';
 part 'framework/auto_dispose.dart';

@@ -18,6 +18,31 @@ class Counter extends StateNotifier<int> {
 void main() {
   test('when selector throws, rebuild providers', () {}, skip: true);
 
+  test('on provider that threw, exceptions bypass the selector', () {
+    final container = createContainer();
+    final dep = Provider<int>((ref) {
+      throw UnimplementedError();
+    });
+    final provider = Provider<int>((ref) {
+      return ref.watch(dep.select((value) => throw StateError('message')));
+    });
+
+    expect(
+      () => container.read(provider),
+      throwsA(
+        isA<ProviderException>()
+            .having(
+              (e) => e.exception,
+              'exception',
+              isA<ProviderException>()
+                  .having((e) => e.exception, 'exception', isUnimplementedError)
+                  .having((e) => e.provider, 'provider', dep),
+            )
+            .having((e) => e.provider, 'provider', provider),
+      ),
+    );
+  });
+
   test(
       'when rebuilding a provider after an uncaught exception, correctly updates dependents',
       () {

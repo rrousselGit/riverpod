@@ -63,10 +63,58 @@ void main() {
     );
 
     group('fireImmediately', () {
+      test('when no onError is specified, fallbacks to handleUncaughtError',
+          () {
+        final container = createContainer();
+        final dep = Provider<int>((ref) => throw UnimplementedError());
+        final listener = Listener<int>();
+        final errors = <Object>[];
+        final provider = Provider((ref) {
+          runZonedGuarded(() {
+            ref.listen(
+              dep,
+              listener,
+              fireImmediately: true,
+            );
+          }, (err, stack) => errors.add(err));
+        });
+
+        container.read(provider);
+
+        verifyZeroInteractions(listener);
+        expect(errors, [
+          isA<ProviderException>()
+              .having((e) => e.exception, 'exception', isUnimplementedError)
+              .having((e) => e.provider, 'provider', dep),
+        ]);
+      });
+
       test(
-        'when no onError is specified, fallbacks to handleUncaughtError',
-        () {},
-      );
+          'when no onError is specified on selectors, fallbacks to handleUncaughtError',
+          () {
+        final container = createContainer();
+        final dep = Provider<int>((ref) => throw UnimplementedError());
+        final listener = Listener<int>();
+        final errors = <Object>[];
+        final provider = Provider((ref) {
+          runZonedGuarded(() {
+            ref.listen(
+              dep.select((value) => value),
+              listener,
+              fireImmediately: true,
+            );
+          }, (err, stack) => errors.add(err));
+        });
+
+        container.read(provider);
+
+        verifyZeroInteractions(listener);
+        expect(errors, [
+          isA<ProviderException>()
+              .having((e) => e.exception, 'exception', isUnimplementedError)
+              .having((e) => e.provider, 'provider', dep),
+        ]);
+      });
 
       test('on provider that threw, fireImmediately calls onError', () {
         final container = createContainer();
@@ -492,6 +540,53 @@ void main() {
     });
 
     group('fireImmediately', () {
+      test('when no onError is specified, fallbacks to handleUncaughtError',
+          () {
+        final container = createContainer();
+        final dep = Provider<int>((ref) => throw UnimplementedError());
+        final listener = Listener<int>();
+        final errors = <Object>[];
+
+        runZonedGuarded(() {
+          container.listen(
+            dep,
+            listener,
+            fireImmediately: true,
+          );
+        }, (err, stack) => errors.add(err));
+
+        verifyZeroInteractions(listener);
+        expect(errors, [
+          isA<ProviderException>()
+              .having((e) => e.exception, 'exception', isUnimplementedError)
+              .having((e) => e.provider, 'provider', dep),
+        ]);
+      });
+
+      test(
+          'when no onError is specified on selectors, fallbacks to handleUncaughtError',
+          () {
+        final container = createContainer();
+        final dep = Provider<int>((ref) => throw UnimplementedError());
+        final listener = Listener<int>();
+        final errors = <Object>[];
+
+        runZonedGuarded(() {
+          container.listen(
+            dep.select((value) => value),
+            listener,
+            fireImmediately: true,
+          );
+        }, (err, stack) => errors.add(err));
+
+        verifyZeroInteractions(listener);
+        expect(errors, [
+          isA<ProviderException>()
+              .having((e) => e.exception, 'exception', isUnimplementedError)
+              .having((e) => e.provider, 'provider', dep),
+        ]);
+      });
+
       test('on provider that threw, fireImmediately calls onError', () {
         final container = createContainer();
         final provider = Provider<int>((ref) => throw UnimplementedError());
