@@ -292,7 +292,22 @@ ProviderScope(
   child: MyApp(),
 );
 ```
+  
+:::info
+The method for overriding a provider with the `family` modifier is slightly different.
 
+If you used a provider like this:
+
+```dart
+final response = ref.watch(myProvider('11111'));
+```  
+
+You could override the extra parameter value:
+  
+```dart
+myProvider('12345').overrideWithValue(...));
+```
+  
 :::
 
 ## Full widget test example
