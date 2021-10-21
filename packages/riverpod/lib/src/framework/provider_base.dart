@@ -3,10 +3,6 @@
 
 part of '../framework.dart';
 
-class _Sentinel {
-  const _Sentinel();
-}
-
 /// Alias for [Ref]
 @Deprecated('Use Ref instead.')
 typedef ProviderReference = Ref;

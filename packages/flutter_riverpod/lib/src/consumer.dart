@@ -399,6 +399,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   /// The [Element] for a [ConsumerStatefulWidget]
   ConsumerStatefulElement(ConsumerStatefulWidget widget) : super(widget);
 
+  // ignore: invalid_use_of_visible_for_testing_member
   late ProviderContainer _container = ProviderScope.containerOf(this);
   var _dependencies = <ProviderListenable, ProviderSubscription>{};
   Map<ProviderListenable, ProviderSubscription>? _oldDependencies;
@@ -407,6 +408,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // ignore: invalid_use_of_visible_for_testing_member
     final newContainer = ProviderScope.containerOf(this);
     if (_container != newContainer) {
       _container = newContainer;
@@ -482,11 +484,13 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 
   @override
   T read<T>(ProviderBase<T> provider) {
+    // ignore: invalid_use_of_visible_for_testing_member
     return ProviderScope.containerOf(this, listen: false).read(provider);
   }
 
   @override
   State refresh<State>(ProviderBase<State> provider) {
+    // ignore: invalid_use_of_visible_for_testing_member
     return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
 }
