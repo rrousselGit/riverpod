@@ -487,6 +487,7 @@ abstract class ProviderElementBase<State> implements Ref {
     _previousDependencies = null;
   }
 
+  @pragma('vm:notify-debugger-on-exception')
   void _buildState() {
     ProviderElementBase? debugPreviouslyBuildingElement;
     assert(() {
