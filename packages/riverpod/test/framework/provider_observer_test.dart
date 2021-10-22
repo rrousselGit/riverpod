@@ -31,7 +31,43 @@ void main() {
     });
 
     group('didUpdateProvider', () {
-      // TODO after an error didUpdateProvider receives null as previous value
+      test('after an error didUpdateProvider receives null as previous value ',
+          () async {
+        final observer = ObserverMock();
+        final observer2 = ObserverMock();
+        final container = createContainer(observers: [observer, observer2]);
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider((ref) {
+          if (ref.watch(dep).state == 0) {
+            throw UnimplementedError();
+          }
+          return 0;
+        });
+
+        container.listen(provider, (_, __) {}, onError: (err, stack) {});
+
+        clearInteractions(observer);
+        clearInteractions(observer2);
+
+        container.read(dep).state++;
+        await container.pump();
+
+        verifyInOrder([
+          observer.didUpdateProvider(
+            provider,
+            null,
+            0,
+            container,
+          ),
+          observer2.didUpdateProvider(
+            provider,
+            null,
+            0,
+            container,
+          ),
+        ]);
+        verifyNever(observer.providerDidFail(any, any, any, any));
+      });
 
       test(
           'on scoped ProviderContainer, applies both child and ancestors observers',
