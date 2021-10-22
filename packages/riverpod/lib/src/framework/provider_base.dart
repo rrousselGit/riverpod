@@ -446,31 +446,7 @@ abstract class ProviderElementBase<State> implements Ref {
       }(), '');
       _state!.map(
         data: (data) => _notifyListeners(data, previousStateResult),
-        error: (error) {
-          _notifyListeners(_state!, previousStateResult);
-          // TODO
-          // for (final observer in _container._observers) {
-          //   _runQuaternaryGuarded(
-          //     observer.didUpdateProvider,
-          //     provider,
-          //     previousStateResult!.map(
-          //       data: (data) => data.state,
-          //       error: (error) => null,
-          //     ),
-          //     null,
-          //     _container,
-          //   );
-          // }
-          // for (final observer in _container._observers) {
-          //   _runQuaternaryGuarded(
-          //     observer.providerDidFail,
-          //     provider,
-          //     error.error,
-          //     error.stackTrace,
-          //     _container,
-          //   );
-          // }
-        },
+        error: (error) => _notifyListeners(_state!, previousStateResult),
       );
       assert(() {
         _debugSkipNotifyListenersAsserts = false;
@@ -499,7 +475,6 @@ abstract class ProviderElementBase<State> implements Ref {
     _didBuild = false;
     try {
       // TODO move outside this function?
-      // TODO disable notifyListeners during "build"
       _mounted = true;
       setState(_provider.create(this));
     } catch (err, stack) {
