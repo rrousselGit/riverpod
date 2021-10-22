@@ -56,11 +56,74 @@ void main() {
       verifyOnly(listener, listener(true, false));
     });
 
+    test('when no onError is specified, fallbacks to handleUncaughtError',
+        () async {
+      final container = createContainer();
+      final isErrored = StateProvider((ref) => false);
+      final dep = Provider<int>((ref) {
+        if (ref.watch(isErrored).state) throw UnimplementedError();
+        return 0;
+      });
+      final listener = Listener<int>();
+      final errors = <Object>[];
+      final provider = Provider((ref) {
+        ref.listen(dep, listener);
+      });
+
+      container.read(provider);
+
+      verifyZeroInteractions(listener);
+      expect(errors, isEmpty);
+
+      runZonedGuarded(
+        () => container.read(isErrored).state = true,
+        (err, stack) => errors.add(err),
+      );
+
+      await container.pump();
+
+      verifyZeroInteractions(listener);
+      expect(errors, [
+        isA<ProviderException>()
+            .having((e) => e.exception, 'exception', isUnimplementedError)
+            .having((e) => e.provider, 'provider', dep),
+      ]);
+    });
+
     test(
-      'when no onError is specified, fallbacks to handleUncaughtError',
-      () {},
-      skip: true,
-    );
+        'when no onError is specified, selectors fallbacks to handleUncaughtError',
+        () async {
+      final container = createContainer();
+      final isErrored = StateProvider((ref) => false);
+      final dep = Provider<int>((ref) {
+        if (ref.watch(isErrored).state) throw UnimplementedError();
+        return 0;
+      });
+      final listener = Listener<int>();
+      final errors = <Object>[];
+      final provider = Provider((ref) {
+        ref.listen(dep.select((value) => value), listener);
+      });
+
+      container.read(provider);
+
+      verifyZeroInteractions(listener);
+      expect(errors, isEmpty);
+
+      runZonedGuarded(
+        () => container.read(isErrored).state = true,
+        (err, stack) => errors.add(err),
+      );
+
+      await container.pump();
+
+      verifyZeroInteractions(listener);
+      expect(errors, [
+        isA<ProviderException>()
+            .having((e) => e.exception, 'exception', isUnimplementedError)
+            .having((e) => e.provider, 'provider', dep),
+      ]);
+    });
 
     test('when rebuild throws, calls onError', () async {
       final container = createContainer();
@@ -414,6 +477,69 @@ void main() {
   });
 
   group('ProviderContainer.listen', () {
+    test('when no onError is specified, fallbacks to handleUncaughtError',
+        () async {
+      final container = createContainer();
+      final isErrored = StateProvider((ref) => false);
+      final dep = Provider<int>((ref) {
+        if (ref.watch(isErrored).state) throw UnimplementedError();
+        return 0;
+      });
+      final listener = Listener<int>();
+      final errors = <Object>[];
+
+      container.listen(dep, listener);
+
+      verifyZeroInteractions(listener);
+      expect(errors, isEmpty);
+
+      runZonedGuarded(
+        () => container.read(isErrored).state = true,
+        (err, stack) => errors.add(err),
+      );
+
+      await container.pump();
+
+      verifyZeroInteractions(listener);
+      expect(errors, [
+        isA<ProviderException>()
+            .having((e) => e.exception, 'exception', isUnimplementedError)
+            .having((e) => e.provider, 'provider', dep),
+      ]);
+    });
+
+    test(
+        'when no onError is specified, selectors fallbacks to handleUncaughtError',
+        () async {
+      final container = createContainer();
+      final isErrored = StateProvider((ref) => false);
+      final dep = Provider<int>((ref) {
+        if (ref.watch(isErrored).state) throw UnimplementedError();
+        return 0;
+      });
+      final listener = Listener<int>();
+      final errors = <Object>[];
+
+      container.listen(dep.select((value) => value), listener);
+
+      verifyZeroInteractions(listener);
+      expect(errors, isEmpty);
+
+      runZonedGuarded(
+        () => container.read(isErrored).state = true,
+        (err, stack) => errors.add(err),
+      );
+
+      await container.pump();
+
+      verifyZeroInteractions(listener);
+      expect(errors, [
+        isA<ProviderException>()
+            .having((e) => e.exception, 'exception', isUnimplementedError)
+            .having((e) => e.provider, 'provider', dep),
+      ]);
+    });
+
     test('when rebuild throws, calls onError', () async {
       final container = createContainer();
       final dep = StateProvider((ref) => 0);
