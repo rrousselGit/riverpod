@@ -8,8 +8,20 @@ import '../utils.dart';
 
 void main() {
   group('ProviderObserver', () {
+    test('life-cycles do nothing by default', () {
+      const observer = ConstObserver();
+
+      final provider = Provider((ref) => 0);
+      final container = createContainer();
+
+      observer.didAddProvider(provider, 0, container);
+      observer.didDisposeProvider(provider, container);
+      observer.didUpdateProvider(provider, 0, 0, container);
+      observer.providerDidFail(provider, 0, StackTrace.empty, container);
+    });
+
     test('ProviderObservers can have const constructors', () {
-      final root = ProviderContainer(
+      final root = createContainer(
         observers: [
           const ConstObserver(),
         ],
