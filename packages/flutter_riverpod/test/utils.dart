@@ -4,6 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 
+class ErrorListener extends Mock {
+  void call(Object? error, StackTrace? stackTrace);
+}
+
 ProviderContainer createContainer({
   ProviderContainer? parent,
   List<Override> overrides = const [],
