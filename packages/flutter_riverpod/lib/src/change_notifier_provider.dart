@@ -20,7 +20,7 @@ T _listenNotifier<T extends ChangeNotifier?>(
 ) {
   if (notifier != null) {
     void listener() {
-      ref.notifyListeners(previousState: notifier);
+      ref.setState(notifier);
     }
 
     notifier.addListener(listener);

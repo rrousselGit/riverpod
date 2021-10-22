@@ -83,6 +83,7 @@ class ProviderScope extends StatefulWidget {
   }) : super(key: key);
 
   /// Read the current [ProviderContainer] for a [BuildContext].
+  @visibleForTesting
   static ProviderContainer containerOf(
     BuildContext context, {
     bool listen = true,

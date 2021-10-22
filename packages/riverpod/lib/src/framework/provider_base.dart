@@ -3,10 +3,6 @@
 
 part of '../framework.dart';
 
-class _Sentinel {
-  const _Sentinel();
-}
-
 /// Alias for [Ref]
 @Deprecated('Use Ref instead.')
 typedef ProviderReference = Ref;
@@ -204,11 +200,13 @@ var _debugIsRunningSelector = false;
 class _ProviderSubscription<State> implements ProviderSubscription<State> {
   _ProviderSubscription._(
     this._listenedElement,
-    this._listener,
-  );
+    this._listener, {
+    required this.onError,
+  });
 
   final void Function(State? previous, State next) _listener;
   final ProviderElementBase<State> _listenedElement;
+  final void Function(Object error, StackTrace stackTrace) onError;
   var _closed = false;
 
   @override
@@ -225,7 +223,7 @@ class _ProviderSubscription<State> implements ProviderSubscription<State> {
         'called ProviderSubscription.read on a subscription that was closed',
       );
     }
-    return _listenedElement.getExposedValue();
+    return _listenedElement.readSelf();
   }
 }
 
@@ -235,11 +233,13 @@ class _ProviderListener {
     required this.listenedElement,
     required this.dependentElement,
     required this.listener,
+    required this.onError,
   });
 
   final void Function(Object? prev, Object? state) listener;
   final ProviderElementBase dependentElement;
   final ProviderElementBase listenedElement;
+  final void Function(Object, StackTrace) onError;
 
   void close() {
     listenedElement
@@ -312,28 +312,56 @@ abstract class ProviderElementBase<State> implements Ref {
   @visibleForTesting
   bool get mounted => _mounted;
 
+  /// Whether the assert that prevents [requireState] from returning
+  /// if the state was not set before is enabled.
+  @visibleForOverriding
+  bool get debugAssertDidSetStateEnabled => true;
+
+  bool _debugDidSetState = false;
   bool _didBuild = false;
 
-  ProviderException? _exception;
-
   /* STATE */
-  State? _state;
+  Result<State>? _state;
 
   void setState(State newState) {
-    late State previousState;
-    if (_didBuild) previousState = getState() as State;
+    assert(() {
+      _debugDidSetState = true;
+      return true;
+    }(), '');
+    final previousState = getState();
 
-    _state = newState;
-    if (_didBuild && provider.updateShouldNotify(previousState, newState)) {
-      notifyListeners(previousState: previousState);
+    final result = _state = Result.data(newState);
+    if (_didBuild) {
+      _notifyListeners(result, previousState);
     }
   }
 
-  State? getState() {
-    if (_exception != null) {
-      throw _exception!;
+  Result<State>? getState() => _state;
+
+  // TODO make protected
+  State get requireState {
+    assert(() {
+      if (debugAssertDidSetStateEnabled && !_debugDidSetState) {
+        throw StateError(
+          'Tried to read the state of an uninitialized provider',
+        );
+      }
+      return true;
+    }(), '');
+
+    final state = getState();
+    if (state == null) {
+      throw StateError('uninitialized');
     }
-    return _state;
+
+    return state.map(
+      error: (error) => throw ProviderException._(
+        error.error,
+        error.stackTrace,
+        origin,
+      ),
+      data: (data) => data.state,
+    );
   }
 
   /* /STATE */
@@ -382,7 +410,10 @@ abstract class ProviderElementBase<State> implements Ref {
 
   void flush() {
     _maybeRebuildDependencies();
-    _maybeRebuildState();
+    if (_mustRecomputeState) {
+      _mustRecomputeState = false;
+      _performBuild();
+    }
   }
 
   void _maybeRebuildDependencies() {
@@ -394,52 +425,77 @@ abstract class ProviderElementBase<State> implements Ref {
     visitAncestors((element) => element.flush());
   }
 
-  /// A debug-only life-cycle called before a provider rebuilds.
-  ///
-  /// Useful to reset debug state before a provider rebuilds, such as variables
-  /// for asserts.
-  void debugWillRebuildState() {}
+  void _performBuild() {
+    _previousDependencies = _dependencies;
+    _dependencies = HashMap();
 
-  void _maybeRebuildState() {
-    if (_mustRecomputeState) {
-      _previousDependencies = _dependencies;
-      _dependencies = HashMap();
+    final previousStateResult = _state;
 
-      final previousState = getState() as State;
+    assert(() {
+      _debugDidSetState = false;
+      return true;
+    }(), '');
+    _buildState();
 
+    if (_state != previousStateResult) {
       assert(() {
-        debugWillRebuildState();
+        // Asserts would otherwise prevent a provider rebuild from updating
+        // other providers
+        _debugSkipNotifyListenersAsserts = true;
         return true;
       }(), '');
+      _state!.map(
+        data: (data) => _notifyListeners(data, previousStateResult),
+        error: (error) => _notifyListeners(_state!, previousStateResult),
+      );
+      assert(() {
+        _debugSkipNotifyListenersAsserts = false;
+        return true;
+      }(), '');
+    }
 
-      _buildState();
+    // Unsubscribe to everything that a provider no-longer depends on.
+    for (final sub in _previousDependencies!.entries) {
+      sub.key
+        .._dependents.remove(this)
+        ..mayNeedDispose();
+    }
+    _previousDependencies = null;
+  }
 
-      if (provider.updateShouldNotify(previousState, getState() as State)) {
-        assert(() {
-          // Asserts would otherwise prevent a provider rebuild from updating
-          // other providers
-          _debugSkipNotifyListenersAsserts = true;
-          return true;
-        }(), '');
-        notifyListeners(previousState: previousState);
-        assert(() {
-          _debugSkipNotifyListenersAsserts = false;
-          return true;
-        }(), '');
-      }
-
-      // Unsubscribe to everything that a provider no-longer depends on.
-      for (final sub in _previousDependencies!.entries) {
-        sub.key
-          .._dependents.remove(this)
-          ..mayNeedDispose();
-      }
-      _previousDependencies = null;
-      _mustRecomputeState = false;
+  @pragma('vm:notify-debugger-on-exception')
+  void _buildState() {
+    ProviderElementBase? debugPreviouslyBuildingElement;
+    assert(() {
+      _debugDidChangeDependency = false;
+      debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
+      _debugCurrentlyBuildingElement = this;
+      return true;
+    }(), '');
+    _didBuild = false;
+    try {
+      // TODO move outside this function?
+      _mounted = true;
+      setState(_provider.create(this));
+    } catch (err, stack) {
+      assert(() {
+        _debugDidSetState = true;
+        return true;
+      }(), '');
+      _state = Result.error(err, stack);
+    } finally {
+      _didBuild = true;
+      assert(() {
+        _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
+        return true;
+      }(), '');
     }
   }
 
-  void notifyListeners({Object? previousState = const _Sentinel()}) {
+  void _notifyListeners(
+    Result<State> newState,
+    Result<State>? previousStateResult,
+  ) {
     assert(() {
       if (_debugSkipNotifyListenersAsserts) return true;
 
@@ -449,49 +505,89 @@ abstract class ProviderElementBase<State> implements Ref {
           '''
 Providers are not allowed to modify other providers during their initialization.
 
-The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider while building.
+The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while building.
 ''');
 
       container.debugCanModifyProviders?.call();
       return true;
     }(), '');
 
-    final previous =
-        previousState != const _Sentinel() ? previousState as State? : null;
+    final previousState = previousStateResult?.stateOrNull;
 
-    final newValue = getState() as State;
+    if (previousStateResult != null &&
+        previousStateResult.hasState &&
+        newState.hasState &&
+        !provider.updateShouldNotify(
+          previousState as State,
+          newState.requireState,
+        )) {
+      return;
+    }
+
     final listeners = _listeners.toList(growable: false);
     final subscribers = _subscribers.toList(growable: false);
-    for (var i = 0; i < listeners.length; i++) {
-      Zone.current.runBinaryGuarded(
-        listeners[i]._listener,
-        previous,
-        newValue,
-      );
-    }
-    for (var i = 0; i < subscribers.length; i++) {
-      Zone.current.runBinaryGuarded(
-        subscribers[i].listener,
-        previous,
-        newValue,
-      );
-    }
+    newState.map(
+      data: (newState) {
+        for (var i = 0; i < listeners.length; i++) {
+          Zone.current.runBinaryGuarded(
+            listeners[i]._listener,
+            previousState,
+            newState.state,
+          );
+        }
+        for (var i = 0; i < subscribers.length; i++) {
+          Zone.current.runBinaryGuarded(
+            subscribers[i].listener,
+            previousState,
+            newState.state,
+          );
+        }
+      },
+      error: (newState) {
+        for (var i = 0; i < listeners.length; i++) {
+          Zone.current.runBinaryGuarded(
+            listeners[i].onError,
+            newState.error,
+            newState.stackTrace,
+          );
+        }
+        for (var i = 0; i < subscribers.length; i++) {
+          Zone.current.runBinaryGuarded(
+            subscribers[i].onError,
+            newState.error,
+            newState.stackTrace,
+          );
+        }
+      },
+    );
 
     for (var i = 0; i < _dependents.length; i++) {
       _dependents[i]._didChangeDependency();
     }
 
-    if (previousState != const _Sentinel()) {
-      for (final observer in _container._observers) {
-        Zone.current.runGuarded(
-          () => observer.didUpdateProvider(
+    for (final observer in _container._observers) {
+      _runQuaternaryGuarded(
+        observer.didUpdateProvider,
+        provider,
+        previousState,
+        newState.stateOrNull,
+        _container,
+      );
+    }
+
+    for (final observer in _container._observers) {
+      newState.map(
+        data: (_) {},
+        error: (newState) {
+          _runQuaternaryGuarded(
+            observer.providerDidFail,
             provider,
-            previousState,
-            getState(),
+            newState.error,
+            newState.stackTrace,
             _container,
-          ),
-        );
-      }
+          );
+        },
+      );
     }
   }
 
@@ -566,17 +662,21 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     ProviderBase<State> provider,
     void Function(State? previous, State next) listener, {
     required bool fireImmediately,
+    required void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    // TODO(rrousselGit) add onError parameter
+    onError ??= _fallbackOnErrorForProvider(provider);
+
     if (fireImmediately) {
-      try {
-        listener(null, getExposedValue());
-      } catch (err, stack) {
-        Zone.current.handleUncaughtError(err, stack);
-      }
+      // TODO test flush
+      flush();
+      handleFireImmediately(getState()!, listener: listener, onError: onError);
     }
 
-    final sub = _ProviderSubscription<State>._(this, listener);
+    final sub = _ProviderSubscription<State>._(
+      this,
+      listener,
+      onError: onError,
+    );
 
     _listeners.add(sub);
 
@@ -590,7 +690,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
 
     if (listenable is _ProviderSelector) {
       var initialized = false;
-      late T firstValue;
+      late Result<T> firstValue;
 
       listen<T>(
         listenable,
@@ -598,14 +698,29 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
           if (initialized) {
             _didChangeDependency();
           } else {
-            firstValue = value;
+            firstValue = Result.data(value);
             initialized = true;
+          }
+        },
+        onError: (err, stack) {
+          if (initialized) {
+            _didChangeDependency();
+          } else {
+            initialized = true;
+            firstValue = Result.error(
+              ProviderException._(
+                err,
+                stack,
+                (listenable as _ProviderSelector).provider,
+              ),
+              stack,
+            );
           }
         },
         fireImmediately: true,
       );
 
-      return firstValue;
+      return firstValue.requireState;
     }
 
     final provider = listenable as ProviderBase<T>;
@@ -623,7 +738,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
       return Object();
     });
 
-    return element.getExposedValue();
+    return element.readSelf();
   }
 
   @override
@@ -631,6 +746,7 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     ProviderListenable<T> listenable,
     void Function(T? previous, T value) listener, {
     bool fireImmediately = false,
+    void Function(Object error, StackTrace stackTrace)? onError,
   }) {
     _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
@@ -640,10 +756,12 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
         this,
         listener,
         fireImmediately: fireImmediately,
+        onError: onError,
       );
     }
 
     final provider = listenable as ProviderBase<T>;
+    onError ??= _fallbackOnErrorForProvider(provider);
     assert(_debugAssertCanDependOn(provider), '');
 
     // TODO remove by passing the a debug flag to `listen`
@@ -652,16 +770,20 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
     element.flush();
 
     if (fireImmediately) {
-      listener(null, element.getExposedValue());
+      handleFireImmediately(
+        element.getState()!,
+        listener: listener,
+        onError: onError,
+      );
     }
 
     // TODO(rrousselGit) test
-    // TODO(rrousselGit) onError
 
     final sub = _ProviderListener._(
       listenedElement: element,
       dependentElement: this,
       listener: (prev, value) => listener(prev as T?, value as T),
+      onError: onError,
     );
 
     element._subscribers.add(sub);
@@ -677,35 +799,10 @@ The provider ${_debugCurrentlyBuildingElement!.provider} modified $provider whil
   /// Returns the currently exposed by a provider
   ///
   /// May throw if the provider threw when creating the exposed value.
-  State getExposedValue() {
+  State readSelf() {
     flush();
 
-    return getState() as State;
-  }
-
-  @protected
-  void _buildState() {
-    ProviderElementBase? debugPreviouslyBuildingElement;
-    assert(() {
-      _debugDidChangeDependency = false;
-      debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
-      _debugCurrentlyBuildingElement = this;
-      return true;
-    }(), '');
-
-    try {
-      _mounted = true;
-      _didBuild = false;
-      setState(_provider.create(this));
-    } catch (err, stack) {
-      _exception = ProviderException._(err, stack, _provider);
-    } finally {
-      _didBuild = true;
-      assert(() {
-        _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
-        return true;
-      }(), '');
-    }
+    return requireState;
   }
 
   /// Visit the [ProviderElement]s of providers that are listening to this element.
@@ -877,5 +974,68 @@ mixin OverrideWithValueMixin<State> on ProviderBase<State> {
       origin: this,
       override: ValueProvider<State>(value),
     );
+  }
+}
+
+abstract class Result<State> {
+  factory Result.data(State state) = ResultData;
+  factory Result.error(Object error, StackTrace stackTrace) = ResultError;
+
+  bool get hasState;
+
+  State? get stateOrNull;
+  State get requireState;
+
+  R map<R>({
+    required R Function(ResultData<State> data) data,
+    required R Function(ResultError<State>) error,
+  });
+}
+
+class ResultData<State> implements Result<State> {
+  ResultData(this.state);
+
+  final State state;
+
+  @override
+  bool get hasState => true;
+
+  @override
+  State? get stateOrNull => state;
+
+  @override
+  State get requireState => state;
+
+  @override
+  R map<R>({
+    required R Function(ResultData<State> data) data,
+    required R Function(ResultError<State>) error,
+  }) {
+    return data(this);
+  }
+}
+
+class ResultError<State> implements Result<State> {
+  ResultError(this.error, this.stackTrace);
+
+  final Object error;
+  final StackTrace stackTrace;
+
+  @override
+  bool get hasState => false;
+
+  @override
+  State? get stateOrNull => null;
+
+  @override
+  // ignore: only_throw_errors
+  State get requireState => throw error;
+
+  @override
+  R map<R>({
+    required R Function(ResultData<State> data) data,
+    required R Function(ResultError<State>) error,
+  }) {
+    return error(this);
   }
 }

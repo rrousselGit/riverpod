@@ -24,6 +24,33 @@ void _runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
   }
 }
 
+void _runTernaryGuarded<A, B, C>(
+  void Function(A, B, C) cb,
+  A value,
+  B value2,
+  C value3,
+) {
+  try {
+    cb(value, value2, value3);
+  } catch (err, stack) {
+    Zone.current.handleUncaughtError(err, stack);
+  }
+}
+
+void _runQuaternaryGuarded<A, B, C, D>(
+  void Function(A, B, C, D) cb,
+  A value,
+  B value2,
+  C value3,
+  D value4,
+) {
+  try {
+    cb(value, value2, value3, value4);
+  } catch (err, stack) {
+    Zone.current.handleUncaughtError(err, stack);
+  }
+}
+
 ProviderBase? _circularDependencyLock;
 
 void _defaultVsync(void Function() task) {
@@ -73,11 +100,38 @@ class _StateReader {
         .._container = container
         ..mount();
 
-      for (final observer in container._observers) {
-        _runGuarded(
-          () => observer.didAddProvider(origin, element._state, container),
-        );
-      }
+      element.getState()!.map<Object?>(
+        // ignore: avoid_types_on_closure_parameters
+        data: (ResultData<Object?> data) {
+          for (final observer in container._observers) {
+            _runTernaryGuarded(
+              observer.didAddProvider,
+              origin,
+              data.state,
+              container,
+            );
+          }
+        },
+        error: (error) {
+          for (final observer in container._observers) {
+            _runTernaryGuarded(
+              observer.didAddProvider,
+              origin,
+              null,
+              container,
+            );
+          }
+          for (final observer in container._observers) {
+            _runQuaternaryGuarded(
+              observer.providerDidFail,
+              origin,
+              error.error,
+              error.stackTrace,
+              container,
+            );
+          }
+        },
+      );
       return element;
     } finally {
       if (_circularDependencyLock == origin) {
@@ -239,7 +293,7 @@ class ProviderContainer {
     // In case `read` was called on a provider that has no listener
     element.mayNeedDispose();
 
-    return element.getExposedValue();
+    return element.readSelf();
   }
 
   /// Subscribe to this provider.
@@ -254,9 +308,16 @@ class ProviderContainer {
     ProviderListenable<State> provider,
     void Function(State? previous, State next) listener, {
     bool fireImmediately = false,
+    void Function(Object error, StackTrace stackTrace)? onError,
   }) {
+    // TODO test always flushed provider
     if (provider is _ProviderSelector<Object?, State>) {
-      return provider.listen(this, listener, fireImmediately: fireImmediately);
+      return provider.listen(
+        this,
+        listener,
+        fireImmediately: fireImmediately,
+        onError: onError,
+      );
     }
 
     final element = readProviderElement(provider as ProviderBase<State>);
@@ -265,6 +326,7 @@ class ProviderContainer {
       provider,
       listener,
       fireImmediately: fireImmediately,
+      onError: onError,
     );
   }
 
@@ -663,13 +725,27 @@ abstract class ProviderObserver {
   const ProviderObserver();
 
   /// A provider was initialized, and the value exposed is [value].
+  ///
+  /// [value] will be `null` if the provider threw during initialization.
   void didAddProvider(
     ProviderBase provider,
     Object? value,
     ProviderContainer container,
   ) {}
 
+  /// A provider emitted an error, be it by throwing during initialization
+  /// or by having a [Future]/[Stream] emit an error
+  void providerDidFail(
+    ProviderBase provider,
+    Object error,
+    StackTrace stackTrace,
+    ProviderContainer container,
+  ) {}
+
   /// Called my providers when they emit a notification.
+  ///
+  /// - [newValue] will be `null` if the provider threw during initialization.
+  /// - [previousValue] will be `null` if the previous build threw during initialization.
   void didUpdateProvider(
     ProviderBase provider,
     Object? previousValue,

@@ -20,8 +20,9 @@ abstract class WidgetRef {
   /// This is useful for showing modals or other imperative logic.
   void listen<T>(
     ProviderListenable<T> provider,
-    void Function(T? previous, T next) listener,
-  );
+    void Function(T? previous, T next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  });
 
   /// Reads a provider without listening to it.
   ///
@@ -399,6 +400,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   /// The [Element] for a [ConsumerStatefulWidget]
   ConsumerStatefulElement(ConsumerStatefulWidget widget) : super(widget);
 
+  // ignore: invalid_use_of_visible_for_testing_member
   late ProviderContainer _container = ProviderScope.containerOf(this);
   var _dependencies = <ProviderListenable, ProviderSubscription>{};
   Map<ProviderListenable, ProviderSubscription>? _oldDependencies;
@@ -407,6 +409,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // ignore: invalid_use_of_visible_for_testing_member
     final newContainer = ProviderScope.containerOf(this);
     if (_container != newContainer) {
       _container = newContainer;
@@ -465,8 +468,9 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   @override
   void listen<T>(
     ProviderListenable<T> provider,
-    void Function(T? previous, T value) listener,
-  ) {
+    void Function(T? previous, T value) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  }) {
     assert(
       debugDoingBuild,
       'ref.listen can only be used within the build method of a ConsumerWidget',
@@ -476,17 +480,19 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     // which listen call was preserved between widget rebuild, and we wouldn't
     // want to call the listener on every rebuild.
     // TODO onError
-    final sub = _container.listen<T>(provider, listener);
+    final sub = _container.listen<T>(provider, listener, onError: onError);
     _listeners.add(sub);
   }
 
   @override
   T read<T>(ProviderBase<T> provider) {
+    // ignore: invalid_use_of_visible_for_testing_member
     return ProviderScope.containerOf(this, listen: false).read(provider);
   }
 
   @override
   State refresh<State>(ProviderBase<State> provider) {
+    // ignore: invalid_use_of_visible_for_testing_member
     return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
 }

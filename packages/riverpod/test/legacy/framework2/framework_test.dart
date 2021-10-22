@@ -448,12 +448,57 @@ void main() {
         );
       });
 
+      test('rethrows the exception thrown when building a selected provider',
+          () {
+        final error = Error();
+        final provider = Provider<int>((ref) => throw error, name: 'hello');
+
+        final sub = container.listen(
+          provider.select((value) => value),
+          (_, __) {},
+        );
+
+        expect(
+          sub.read,
+          throwsA(
+            isA<ProviderException>()
+                .having((s) => s.exception, 'exception', error)
+                .having((s) => s.provider, 'provider', provider)
+                .having((s) => s.stackTrace, 'stackTrace', isA<StackTrace>())
+                .having(
+                  (s) => s.toString().split('\n').first,
+                  'toString',
+                  equalsIgnoringHashCodes(
+                    'An exception was thrown while building hello:Provider<int>#00000.',
+                  ),
+                ),
+          ),
+        );
+      });
+
       test('flushes the provider', () {
         final counter = Counter();
         final first = StateNotifierProvider<Counter, int>((ref) => counter);
         final provider = Provider((ref) => ref.watch(first));
 
         final sub = container.listen(provider, (_, __) {});
+
+        expect(sub.read(), 0);
+
+        counter.increment();
+
+        expect(sub.read(), 1);
+      });
+
+      test('flushes the selected provider', () {
+        final counter = Counter();
+        final first = StateNotifierProvider<Counter, int>((ref) => counter);
+        final provider = Provider((ref) => ref.watch(first));
+
+        final sub = container.listen(
+          provider.select((value) => value),
+          (_, __) {},
+        );
 
         expect(sub.read(), 0);
 
@@ -489,7 +534,7 @@ void main() {
       expect(providerReference.container, root);
     });
 
-    test('Immediatly creates a new value, even if no changes are pending',
+    test('immediately creates a new value, even if no changes are pending',
         () async {
       var future = Future.value(42);
       var callCount = 0;

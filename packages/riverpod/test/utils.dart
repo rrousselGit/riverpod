@@ -47,6 +47,10 @@ class Listener<T> extends Mock {
   void call(T? previous, T? next);
 }
 
+class ErrorListener extends Mock {
+  void call(Object? error, StackTrace? stackTrace);
+}
+
 class Selector<Input, Output> extends Mock {
   Selector(this.fake, Output Function(Input) selector) {
     when(call(any)).thenAnswer((i) {
@@ -154,6 +158,21 @@ class ObserverMock extends Mock implements ProviderObserver {
   ) {
     super.noSuchMethod(
       Invocation.method(#didDisposeProvider, [provider, container]),
+    );
+  }
+
+  @override
+  void providerDidFail(
+    ProviderBase? provider,
+    Object? error,
+    Object? stackTrace,
+    Object? container,
+  ) {
+    super.noSuchMethod(
+      Invocation.method(
+        #providerDidFail,
+        [provider, error, stackTrace, container],
+      ),
     );
   }
 
