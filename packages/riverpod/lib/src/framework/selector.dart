@@ -101,8 +101,16 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
 
     return _SelectorSubscription(
       sub,
-      // TODO test rethrow error
-      () => lastSelectedValue.requireState,
+      () {
+        return lastSelectedValue.map(
+          data: (data) => data.state,
+          error: (error) => throw ProviderException._(
+            error.error,
+            error.stackTrace,
+            provider,
+          ),
+        );
+      },
     );
   }
 
@@ -162,6 +170,9 @@ class _SelectorSubscription<Input, Output>
         'called ProviderSubscription.read on a subscription that was closed',
       );
     }
+    // flushes the provider
+    _internalSub.read();
+
     return _read();
   }
 }
