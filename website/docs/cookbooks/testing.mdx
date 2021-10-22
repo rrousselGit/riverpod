@@ -273,8 +273,8 @@ test('override repositoryProvider', () async {
 </Tabs>
 
 As you can see by the highlighted code, [ProviderScope]/[ProviderContainer]
-allows replacing the implementation of a provider with a different behavior.
-
+allows replacing the implementation of a provider with a different behavior. 
+  
 :::info
 Some providers expose simplified ways to override their behavior.  
 For example, [FutureProvider] allows overriding the provider with an `AsyncValue`:
@@ -292,8 +292,23 @@ ProviderScope(
   child: MyApp(),
 );
 ```
-
 :::
+  
+:::info
+The syntax for overriding a provider with the `family` modifier is slightly different.
+
+If you used a provider like this:
+
+```dart
+final response = ref.watch(myProvider('11111'));
+```  
+
+You could override the extra parameter value:
+  
+```dart
+myProvider('12345').overrideWithValue(...));
+```
+::: 
 
 ## Full widget test example
 
