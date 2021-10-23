@@ -988,6 +988,7 @@ mixin OverrideWithProviderMixin<State, ProviderType extends ProviderBase<State>>
   @override
   ProviderBase<State> get originProvider;
 
+  /// {@template riverpod.overridewithprovider}
   /// Overrides a provider with a value, ejecting the default behaviour.
   ///
   /// This will also disable the auto-scoping mechanism, meaning that if the
@@ -1022,6 +1023,7 @@ mixin OverrideWithProviderMixin<State, ProviderType extends ProviderBase<State>>
   ///   ),
   /// );
   /// ```
+  /// {@endtemplate}
   Override overrideWithProvider(ProviderType value) {
     assert(
       value.dependencies == null,

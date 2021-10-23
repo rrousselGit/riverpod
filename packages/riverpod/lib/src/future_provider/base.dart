@@ -17,7 +17,10 @@ abstract class FutureProviderRef<State> implements Ref {
 /// {@macro riverpod.futureprovider}
 @sealed
 class FutureProvider<State> extends AsyncProvider<State>
-    with OverrideWithValueMixin<AsyncValue<State>> {
+    with
+        OverrideWithValueMixin<AsyncValue<State>>,
+        OverrideWithProviderMixin<AsyncValue<State>,
+            AlwaysAliveProviderBase<AsyncValue<State>>> {
   /// {@macro riverpod.futureprovider}
   FutureProvider(
     this._create, {
@@ -30,6 +33,9 @@ class FutureProvider<State> extends AsyncProvider<State>
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeFutureProviderBuilder();
+
+  @override
+  ProviderBase<AsyncValue<State>> get originProvider => this;
 
   @override
   final List<ProviderOrFamily>? dependencies;
@@ -139,5 +145,16 @@ class FutureProviderFamily<State, Arg>
     final futureProvider = call(argument);
     setup(origin: futureProvider, override: futureProvider);
     setup(origin: futureProvider.future, override: futureProvider.future);
+  }
+
+  /// {@macro riverpod.overridewithprovider}
+  Override overrideWithProvider(
+    AlwaysAliveProviderBase<AsyncValue<State>> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(this, (arg, setup) {
+      final futureProvider = call(arg);
+      setup(origin: futureProvider, override: override(arg));
+      setup(origin: futureProvider.future, override: futureProvider.future);
+    });
   }
 }

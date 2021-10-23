@@ -63,6 +63,13 @@ typedef SetupFamilyOverride<Arg> = void Function(
 /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
 /// to override the behavior of a "family" for part of the application.
 abstract class FamilyOverride<Arg> implements Override {
+  /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
+  /// to override the behavior of a "family" for part of the application.
+  factory FamilyOverride(
+    Family<Object?, Arg, ProviderBase<Object?>> overriddenFamily,
+    void Function(Arg argument, SetupOverride setup) setup,
+  ) = _FamilyOverride<Arg>;
+
   /// The family that was overridden.
   Family<Object?, Arg, ProviderBase<Object?>> get overriddenFamily;
 

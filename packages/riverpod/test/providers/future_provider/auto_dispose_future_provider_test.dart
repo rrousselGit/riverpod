@@ -483,6 +483,23 @@ void main() {
             .having((e) => e.origin, 'origin', provider.future)
       ]);
     });
+
+    test('when using provider.overrideWithProvider', () async {
+      final provider = FutureProvider.autoDispose((ref) async => 0);
+      final root = createContainer();
+      final container = createContainer(parent: root, overrides: [
+        provider.overrideWithProvider(FutureProvider.autoDispose((ref) => 42)),
+      ]);
+
+      expect(await container.read(provider.future), 42);
+      expect(container.read(provider), const AsyncValue.data(42));
+      expect(root.getAllProviderElementsInOrder(), isEmpty);
+      expect(container.getAllProviderElementsInOrder(), [
+        isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
+        isA<ProviderElementBase>()
+            .having((e) => e.origin, 'origin', provider.future)
+      ]);
+    });
   });
 
   test('FutureProvider.autoDispose', () async {
