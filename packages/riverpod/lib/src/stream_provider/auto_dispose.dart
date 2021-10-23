@@ -70,8 +70,8 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
   }
 
   @override
-  AutoDisposeAsyncProviderElement<State> createElement() {
-    return AutoDisposeAsyncProviderElement(this);
+  AutoDisposeStreamProviderElement<State> createElement() {
+    return AutoDisposeStreamProviderElement(this);
   }
 }
 
