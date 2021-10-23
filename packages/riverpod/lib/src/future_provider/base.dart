@@ -81,7 +81,6 @@ class FutureProvider<State> extends AsyncProvider<State>
   }
 
   @override
-  // ignore: library_private_types_in_public_api, not made to be extended/implemented
   FutureProviderElement<State> createElement() => FutureProviderElement(this);
 }
 
