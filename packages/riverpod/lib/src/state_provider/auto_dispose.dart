@@ -1,56 +1,9 @@
 part of '../state_provider.dart';
 
-class _AutoDisposeNotifierProvider<State>
-    extends AutoDisposeProviderBase<StateController<State>> {
-  _AutoDisposeNotifierProvider(
-    this._create, {
-    required String? name,
-    required this.dependencies,
-  }) : super(name: name);
-
-  final Create<State, AutoDisposeStateProviderRef<State>> _create;
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
-
-  @override
-  StateController<State> create(AutoDisposeStateProviderRef<State> ref) {
-    final initialState = _create(ref);
-    final notifier = StateController(initialState);
-    ref.onDispose(notifier.dispose);
-    return notifier;
-  }
-
-  @override
-  bool updateShouldNotify(
-    StateController<State> previousState,
-    StateController<State> newState,
-  ) {
-    return true;
-  }
-
-  @override
-  AutoDisposeStateProviderElement<State> createElement() {
-    return AutoDisposeStateProviderElement(this);
-  }
-}
-
 /// {@macro riverpod.providerrefbase}
 /// - [controller], the [StateController] currently exposed by this providers.
 abstract class AutoDisposeStateProviderRef<State>
     implements AutoDisposeRef, StateProviderRef<State> {}
-
-/// The [ProviderElementBase] for [StateProvider]
-class AutoDisposeStateProviderElement<State>
-    extends AutoDisposeProviderElementBase<StateController<State>>
-    implements AutoDisposeStateProviderRef<State> {
-  /// The [ProviderElementBase] for [StateProvider]
-  AutoDisposeStateProviderElement(ProviderBase<StateController<State>> provider)
-      : super(provider);
-
-  @override
-  StateController<State> get controller => requireState;
-}
 
 /// {@macro riverpod.stateprovider}
 @sealed
@@ -82,6 +35,53 @@ class AutoDisposeStateProvider<State>
       ref as ProviderElementBase<StateController<State>>,
       ref.watch(notifier),
     );
+  }
+
+  @override
+  bool updateShouldNotify(
+    StateController<State> previousState,
+    StateController<State> newState,
+  ) {
+    return true;
+  }
+
+  @override
+  AutoDisposeStateProviderElement<State> createElement() {
+    return AutoDisposeStateProviderElement(this);
+  }
+}
+
+/// The [ProviderElementBase] for [StateProvider]
+class AutoDisposeStateProviderElement<State>
+    extends AutoDisposeProviderElementBase<StateController<State>>
+    implements AutoDisposeStateProviderRef<State> {
+  /// The [ProviderElementBase] for [StateProvider]
+  AutoDisposeStateProviderElement(ProviderBase<StateController<State>> provider)
+      : super(provider);
+
+  @override
+  StateController<State> get controller => requireState;
+}
+
+class _AutoDisposeNotifierProvider<State>
+    extends AutoDisposeProviderBase<StateController<State>> {
+  _AutoDisposeNotifierProvider(
+    this._create, {
+    required String? name,
+    required this.dependencies,
+  }) : super(name: name);
+
+  final Create<State, AutoDisposeStateProviderRef<State>> _create;
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
+
+  @override
+  StateController<State> create(AutoDisposeStateProviderRef<State> ref) {
+    final initialState = _create(ref);
+    final notifier = StateController(initialState);
+    ref.onDispose(notifier.dispose);
+    return notifier;
   }
 
   @override
