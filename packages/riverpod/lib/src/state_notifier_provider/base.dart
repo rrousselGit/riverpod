@@ -1,8 +1,13 @@
 part of '../state_notifier_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-typedef StateNotifierProviderRef<Notifier extends StateNotifier<State>, State>
-    = Ref;
+abstract class StateNotifierProviderRef<Notifier extends StateNotifier<State>,
+    State> implements Ref {
+  /// The [StateNotifier] currently exposed by this provider.
+  ///
+  /// Cannot be accessed while creating the provider.
+  Notifier get notifier;
+}
 
 /// {@macro riverpod.statenotifierprovider}
 @sealed
@@ -60,7 +65,7 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
   ProviderElementBase<State> createElement() => ProviderElement(this);
 }
 
-class _NotifierProvider<Notifier extends StateNotifier<Object?>>
+class _NotifierProvider<Notifier extends StateNotifier<State>, State>
     extends AlwaysAliveProviderBase<Notifier> {
   _NotifierProvider(
     this._create, {
@@ -70,13 +75,15 @@ class _NotifierProvider<Notifier extends StateNotifier<Object?>>
           name: name == null ? null : '$name.notifier',
         );
 
-  final Create<Notifier, Ref> _create;
+  final Create<Notifier, StateNotifierProviderRef<Notifier, State>> _create;
 
   @override
   final List<ProviderOrFamily>? dependencies;
 
   @override
-  Notifier create(Ref ref) {
+  Notifier create(
+    covariant StateNotifierProviderRef<Notifier, State> ref,
+  ) {
     final notifier = _create(ref);
     ref.onDispose(notifier.dispose);
     return notifier;
@@ -88,7 +95,19 @@ class _NotifierProvider<Notifier extends StateNotifier<Object?>>
   }
 
   @override
-  ProviderElement<Notifier> createElement() => ProviderElement(this);
+  _NotifierProviderElement<Notifier, State> createElement() =>
+      _NotifierProviderElement(this);
+}
+
+class _NotifierProviderElement<Notifier extends StateNotifier<State>, State>
+    extends ProviderElementBase<Notifier>
+    implements StateNotifierProviderRef<Notifier, State> {
+  _NotifierProviderElement(
+    _NotifierProvider<Notifier, State> provider,
+  ) : super(provider);
+
+  @override
+  Notifier get notifier => requireState;
 }
 
 /// {@template riverpod.statenotifierprovider.family}

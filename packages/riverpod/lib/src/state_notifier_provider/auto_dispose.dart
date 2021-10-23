@@ -1,9 +1,13 @@
 part of '../state_notifier_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-typedef AutoDisposeStateNotifierProviderRef<
-        Notifier extends StateNotifier<State>, State>
-    = AutoDisposeRef;
+abstract class AutoDisposeStateNotifierProviderRef<
+    Notifier extends StateNotifier<State>, State> implements AutoDisposeRef {
+  /// The [StateNotifier] currently exposed by this provider.
+  ///
+  /// Cannot be accessed while creating the provider.
+  Notifier get notifier;
+}
 
 /// {@template riverpod.statenotifierprovider}
 /// Creates a [StateNotifier] and expose its current state.
@@ -124,7 +128,7 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
   }
 }
 
-class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
+class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<State>, State>
     extends AutoDisposeProviderBase<Notifier> {
   _AutoDisposeNotifierProvider(
     this._create, {
@@ -132,13 +136,16 @@ class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
     required this.dependencies,
   }) : super(name: name == null ? null : '$name.notifier');
 
-  final Create<Notifier, AutoDisposeRef> _create;
+  final Create<Notifier, AutoDisposeStateNotifierProviderRef<Notifier, State>>
+      _create;
 
   @override
   final List<ProviderOrFamily>? dependencies;
 
   @override
-  Notifier create(AutoDisposeRef ref) {
+  Notifier create(
+    covariant AutoDisposeStateNotifierProviderRef<Notifier, State> ref,
+  ) {
     final notifier = _create(ref);
     ref.onDispose(notifier.dispose);
     return notifier;
@@ -150,9 +157,20 @@ class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
   }
 
   @override
-  AutoDisposeProviderElement<Notifier> createElement() {
-    return AutoDisposeProviderElement(this);
+  _AutoDisposeNotifierProviderElement<Notifier, State> createElement() {
+    return _AutoDisposeNotifierProviderElement(this);
   }
+}
+
+class _AutoDisposeNotifierProviderElement<Notifier extends StateNotifier<State>,
+        State> extends AutoDisposeProviderElementBase<Notifier>
+    implements AutoDisposeStateNotifierProviderRef<Notifier, State> {
+  _AutoDisposeNotifierProviderElement(
+    _AutoDisposeNotifierProvider<Notifier, State> provider,
+  ) : super(provider);
+
+  @override
+  Notifier get notifier => requireState;
 }
 
 /// {@template riverpod.statenotifierprovider.family}
