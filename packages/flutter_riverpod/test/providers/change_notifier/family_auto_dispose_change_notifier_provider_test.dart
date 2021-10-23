@@ -45,6 +45,31 @@ void main() {
 
         expect(root.getAllProviderElements(), isEmpty);
       });
+
+      test('when using provider.overrideWithProvider', () async {
+        final provider = ChangeNotifierProvider.autoDispose
+            .family<ValueNotifier<int>, int>((ref, _) => ValueNotifier(0));
+        final root = createContainer();
+        final container = createContainer(parent: root, overrides: [
+          provider.overrideWithProvider(
+            (value) =>
+                ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(42)),
+          ),
+        ]);
+
+        expect(container.read(provider(0).notifier).value, 42);
+        expect(container.read(provider(0)).value, 42);
+        expect(root.getAllProviderElementsInOrder(), isEmpty);
+        expect(
+          container.getAllProviderElementsInOrder(),
+          unorderedEquals(<Object?>[
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider(0)),
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider(0).notifier),
+          ]),
+        );
+      });
     });
   });
 }
