@@ -96,9 +96,6 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
   /// {@macro riverpod.family}
   static const family = AutoDisposeStateNotifierProviderFamilyBuilder();
 
-  @override
-  ProviderBase<Notifier> get originProvider => notifier;
-
   /// {@template riverpod.statenotifierprovider.notifier}
   /// Obtains the [StateNotifier] associated with this [AutoDisposeStateNotifierProvider],
   /// without listening to it.
