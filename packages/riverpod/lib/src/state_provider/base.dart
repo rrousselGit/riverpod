@@ -1,40 +1,5 @@
 part of '../state_provider.dart';
 
-class _NotifierProvider<State>
-    extends AlwaysAliveProviderBase<StateController<State>> {
-  _NotifierProvider(
-    this._create, {
-    required String? name,
-    required this.dependencies,
-  }) : super(name: name);
-
-  final Create<State, StateProviderRef<State>> _create;
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
-
-  @override
-  StateController<State> create(StateProviderRef<State> ref) {
-    final initialState = _create(ref);
-    final notifier = StateController(initialState);
-    ref.onDispose(notifier.dispose);
-    return notifier;
-  }
-
-  @override
-  bool updateShouldNotify(
-    StateController<State> previousState,
-    StateController<State> newState,
-  ) {
-    return true;
-  }
-
-  @override
-  StateProviderElement<State> createElement() {
-    return StateProviderElement(this);
-  }
-}
-
 /// {@macro riverpod.providerrefbase}
 /// - [controller], the [StateController] currently exposed by this providers.
 abstract class StateProviderRef<State> implements Ref {
@@ -42,18 +7,6 @@ abstract class StateProviderRef<State> implements Ref {
   ///
   /// Cannot be accessed while creating the provider.
   StateController<State> get controller;
-}
-
-/// The [ProviderElementBase] for [StateProvider]
-class StateProviderElement<State>
-    extends ProviderElementBase<StateController<State>>
-    implements StateProviderRef<State> {
-  /// The [ProviderElementBase] for [StateProvider]
-  StateProviderElement(ProviderBase<StateController<State>> provider)
-      : super(provider);
-
-  @override
-  StateController<State> get controller => requireState;
 }
 
 /// {@macro riverpod.stateprovider}
@@ -120,6 +73,53 @@ class StateProvider<State>
 
   @override
   StateProviderElement<State> createElement() => StateProviderElement(this);
+}
+
+/// The [ProviderElementBase] for [StateProvider]
+class StateProviderElement<State>
+    extends ProviderElementBase<StateController<State>>
+    implements StateProviderRef<State> {
+  /// The [ProviderElementBase] for [StateProvider]
+  StateProviderElement(ProviderBase<StateController<State>> provider)
+      : super(provider);
+
+  @override
+  StateController<State> get controller => requireState;
+}
+
+class _NotifierProvider<State>
+    extends AlwaysAliveProviderBase<StateController<State>> {
+  _NotifierProvider(
+    this._create, {
+    required String? name,
+    required this.dependencies,
+  }) : super(name: name);
+
+  final Create<State, StateProviderRef<State>> _create;
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
+
+  @override
+  StateController<State> create(StateProviderRef<State> ref) {
+    final initialState = _create(ref);
+    final notifier = StateController(initialState);
+    ref.onDispose(notifier.dispose);
+    return notifier;
+  }
+
+  @override
+  bool updateShouldNotify(
+    StateController<State> previousState,
+    StateController<State> newState,
+  ) {
+    return true;
+  }
+
+  @override
+  StateProviderElement<State> createElement() {
+    return StateProviderElement(this);
+  }
 }
 
 /// {@macro riverpod.stateprovider.family}

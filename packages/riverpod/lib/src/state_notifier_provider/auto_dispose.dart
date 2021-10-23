@@ -1,39 +1,12 @@
 part of '../state_notifier_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-typedef AutoDisposeStateNotifierProviderRef<
-        Notifier extends StateNotifier<State>, State>
-    = AutoDisposeRef;
-
-class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
-    extends AutoDisposeProviderBase<Notifier> {
-  _AutoDisposeNotifierProvider(
-    this._create, {
-    required String? name,
-    required this.dependencies,
-  }) : super(name: name == null ? null : '$name.notifier');
-
-  final Create<Notifier, AutoDisposeRef> _create;
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
-
-  @override
-  Notifier create(AutoDisposeRef ref) {
-    final notifier = _create(ref);
-    ref.onDispose(notifier.dispose);
-    return notifier;
-  }
-
-  @override
-  bool updateShouldNotify(Notifier previousState, Notifier newState) {
-    return true;
-  }
-
-  @override
-  AutoDisposeProviderElement<Notifier> createElement() {
-    return AutoDisposeProviderElement(this);
-  }
+abstract class AutoDisposeStateNotifierProviderRef<
+    Notifier extends StateNotifier<State>, State> implements AutoDisposeRef {
+  /// The [StateNotifier] currently exposed by this provider.
+  ///
+  /// Cannot be accessed while creating the provider.
+  Notifier get notifier;
 }
 
 /// {@template riverpod.statenotifierprovider}
@@ -153,6 +126,51 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
   AutoDisposeProviderElementBase<State> createElement() {
     return AutoDisposeProviderElement(this);
   }
+}
+
+class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<State>, State>
+    extends AutoDisposeProviderBase<Notifier> {
+  _AutoDisposeNotifierProvider(
+    this._create, {
+    required String? name,
+    required this.dependencies,
+  }) : super(name: name == null ? null : '$name.notifier');
+
+  final Create<Notifier, AutoDisposeStateNotifierProviderRef<Notifier, State>>
+      _create;
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
+
+  @override
+  Notifier create(
+    covariant AutoDisposeStateNotifierProviderRef<Notifier, State> ref,
+  ) {
+    final notifier = _create(ref);
+    ref.onDispose(notifier.dispose);
+    return notifier;
+  }
+
+  @override
+  bool updateShouldNotify(Notifier previousState, Notifier newState) {
+    return true;
+  }
+
+  @override
+  _AutoDisposeNotifierProviderElement<Notifier, State> createElement() {
+    return _AutoDisposeNotifierProviderElement(this);
+  }
+}
+
+class _AutoDisposeNotifierProviderElement<Notifier extends StateNotifier<State>,
+        State> extends AutoDisposeProviderElementBase<Notifier>
+    implements AutoDisposeStateNotifierProviderRef<Notifier, State> {
+  _AutoDisposeNotifierProviderElement(
+    _AutoDisposeNotifierProvider<Notifier, State> provider,
+  ) : super(provider);
+
+  @override
+  Notifier get notifier => requireState;
 }
 
 /// {@template riverpod.statenotifierprovider.family}

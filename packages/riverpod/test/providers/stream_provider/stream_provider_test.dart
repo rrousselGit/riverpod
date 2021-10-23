@@ -20,6 +20,67 @@ void main() {
     controller.close();
   });
 
+  test('can read and set current AsyncValue', () async {
+    final container = createContainer();
+    final listener = Listener<AsyncValue<int>>();
+    late StreamProviderRef<int> ref;
+    final provider = StreamProvider<int>((r) {
+      ref = r;
+      return Stream.value(0);
+    });
+
+    container.listen(provider, listener);
+
+    await container.read(provider.last);
+    expect(ref.state, const AsyncData<int>(0));
+    verifyOnly(
+      listener,
+      listener(
+        const AsyncLoading(),
+        const AsyncData(0),
+      ),
+    );
+
+    ref.state = const AsyncLoading<int>();
+
+    expect(
+      ref.state,
+      const AsyncLoading<int>(previous: AsyncData(0)),
+    );
+
+    verifyOnly(
+      listener,
+      listener(
+        const AsyncData(0),
+        const AsyncLoading<int>(previous: AsyncData(0)),
+      ),
+    );
+  });
+
+  test('throws if trying to set AsyncValue with a previous value', () {
+    final container = createContainer();
+    final listener = Listener<AsyncValue<int>>();
+    late StreamProviderRef<int> ref;
+    final provider = StreamProvider<int>((r) {
+      ref = r;
+      return Stream.value(0);
+    });
+
+    container.listen(provider, listener);
+
+    expect(ref.state, const AsyncLoading<int>());
+    verifyZeroInteractions(listener);
+
+    expect(
+      () => ref.state = const AsyncLoading<int>(previous: AsyncData(42)),
+      throwsA(isA<AssertionError>()),
+    );
+    expect(
+      () => ref.state = const AsyncError<int>(42, previous: AsyncData(42)),
+      throwsA(isA<AssertionError>()),
+    );
+  });
+
   test('can be auto-scoped', () async {
     final dep = Provider((ref) => 0);
     final provider = StreamProvider(

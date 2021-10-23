@@ -5,6 +5,21 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('can read and set current StateNotifier', () async {
+    final container = createContainer();
+    final listener = Listener<int>();
+    late StateNotifierProviderRef<Counter, int> ref;
+    final provider = StateNotifierProvider<Counter, int>((r) {
+      ref = r;
+      return Counter();
+    });
+
+    container.listen(provider, listener);
+
+    verifyZeroInteractions(listener);
+    expect(ref.notifier.debugState, 0);
+  });
+
   test('can be auto-scoped', () async {
     final dep = Provider((ref) => 0);
     final provider = StateNotifierProvider<StateController<int>, int>(

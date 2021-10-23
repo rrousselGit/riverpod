@@ -7,6 +7,60 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('can read and set current AsyncValue', () {
+    final container = createContainer();
+    final listener = Listener<AsyncValue<int>>();
+    late AutoDisposeFutureProviderRef<int> ref;
+    final provider = FutureProvider.autoDispose<int>((r) {
+      ref = r;
+      return 0;
+    });
+
+    container.listen(provider, listener);
+
+    expect(ref.state, const AsyncData(0));
+    verifyZeroInteractions(listener);
+
+    ref.state = const AsyncLoading<int>();
+
+    expect(
+      ref.state,
+      const AsyncLoading<int>(previous: AsyncData(0)),
+    );
+
+    verifyOnly(
+      listener,
+      listener(
+        const AsyncData(0),
+        const AsyncLoading<int>(previous: AsyncData(0)),
+      ),
+    );
+  });
+
+  test('throws if trying to set AsyncValue with a previous value', () {
+    final container = createContainer();
+    final listener = Listener<AsyncValue<int>>();
+    late AutoDisposeFutureProviderRef<int> ref;
+    final provider = FutureProvider.autoDispose<int>((r) {
+      ref = r;
+      return 0;
+    });
+
+    container.listen(provider, listener);
+
+    expect(ref.state, const AsyncData(0));
+    verifyZeroInteractions(listener);
+
+    expect(
+      () => ref.state = const AsyncLoading<int>(previous: AsyncData(42)),
+      throwsA(isA<AssertionError>()),
+    );
+    expect(
+      () => ref.state = const AsyncError<int>(42, previous: AsyncData(42)),
+      throwsA(isA<AssertionError>()),
+    );
+  });
+
   test('can be auto-scoped', () async {
     final dep = Provider((ref) => 0);
     final provider = FutureProvider.autoDispose(
