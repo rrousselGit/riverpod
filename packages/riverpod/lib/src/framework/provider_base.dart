@@ -323,6 +323,7 @@ abstract class ProviderElementBase<State> implements Ref {
   /* STATE */
   Result<State>? _state;
 
+  @protected
   void setState(State newState) {
     assert(() {
       _debugDidSetState = true;
@@ -336,9 +337,10 @@ abstract class ProviderElementBase<State> implements Ref {
     }
   }
 
+  @protected
   Result<State>? getState() => _state;
 
-  // TODO make protected
+  @protected
   State get requireState {
     assert(() {
       if (debugAssertDidSetStateEnabled && !_debugDidSetState) {

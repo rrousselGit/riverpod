@@ -2,7 +2,17 @@ part of '../future_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [ProviderRef.state], the value currently exposed by this providers.
-typedef FutureProviderRef<State> = Ref;
+abstract class FutureProviderRef<State> implements Ref {
+  /// Obtains the state currently exposed by this provider.
+  ///
+  /// Mutating this property will notify the provider listeners.
+  ///
+  /// Cannot be called while a provider is creating, unless the setter was called first.
+  ///
+  /// Will throw if the provider threw during creation.
+  AsyncValue<State> get state;
+  set state(AsyncValue<State> newState);
+}
 
 /// {@macro riverpod.futureprovider}
 @sealed
@@ -52,9 +62,9 @@ class FutureProvider<State> extends AsyncProvider<State>
 
   @override
   AsyncValue<State> create(
-    ProviderElementBase<AsyncValue<State>> ref,
+    covariant FutureProviderElement<State> ref,
   ) {
-    return _listenFuture(() => _create(ref), ref);
+    return ref._listenFuture(() => _create(ref));
   }
 
   @override
@@ -71,7 +81,22 @@ class FutureProvider<State> extends AsyncProvider<State>
   }
 
   @override
-  AsyncProviderElement<State> createElement() => AsyncProviderElement(this);
+  // ignore: library_private_types_in_public_api, not made to be extended/implemented
+  FutureProviderElement<State> createElement() => FutureProviderElement(this);
+}
+
+/// The element of a [FutureProvider]
+class FutureProviderElement<State> extends AsyncProviderElement<State>
+    with _FutureProviderElementMixin<State>
+    implements FutureProviderRef<State> {
+  /// The element of a [FutureProvider]
+  FutureProviderElement(FutureProvider<State> provider) : super(provider);
+
+  @override
+  AsyncValue<State> get state => requireState;
+
+  @override
+  set state(AsyncValue<State> newState) => setState(newState);
 }
 
 /// {@template riverpod.futureprovider.family}

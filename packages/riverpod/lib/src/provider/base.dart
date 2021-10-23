@@ -9,7 +9,7 @@ abstract class ProviderRef<State> implements Ref {
   ///
   /// Cannot be called while a provider is creating, unless the setter was called first.
   ///
-  /// Will throw a [ProviderException] if the provider threw during creation.
+  /// Will throw if the provider threw during creation.
   State get state;
   set state(State newState);
 }

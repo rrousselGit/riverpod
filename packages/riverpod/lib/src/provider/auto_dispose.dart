@@ -5,20 +5,6 @@ part of '../provider.dart';
 abstract class AutoDisposeProviderRef<State>
     implements ProviderRef<State>, AutoDisposeRef {}
 
-/// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
-class AutoDisposeProviderElement<State>
-    extends AutoDisposeProviderElementBase<State>
-    implements AutoDisposeProviderRef<State> {
-  /// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
-  AutoDisposeProviderElement(ProviderBase<State> provider) : super(provider);
-
-  @override
-  State get state => requireState;
-
-  @override
-  set state(State newState) => setState(newState);
-}
-
 /// {@macro riverpod.provider}
 @sealed
 class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
@@ -50,6 +36,20 @@ class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
   AutoDisposeProviderElement<State> createElement() {
     return AutoDisposeProviderElement(this);
   }
+}
+
+/// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
+class AutoDisposeProviderElement<State>
+    extends AutoDisposeProviderElementBase<State>
+    implements AutoDisposeProviderRef<State> {
+  /// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
+  AutoDisposeProviderElement(ProviderBase<State> provider) : super(provider);
+
+  @override
+  State get state => requireState;
+
+  @override
+  set state(State newState) => setState(newState);
 }
 
 /// {@macro riverpod.provider.family}
