@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
-  test('can read and set current AsyncValue', () async {
+  test('can read and set current StateNotifier', () async {
     final container = createContainer();
     final listener = Listener<int>();
     late StateNotifierProviderRef<Counter, int> ref;
