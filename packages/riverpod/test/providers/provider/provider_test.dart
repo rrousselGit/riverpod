@@ -54,7 +54,7 @@ void main() {
 
         ref.state = 42;
 
-        verifyOnly(listener, listener(42));
+        verifyOnly(listener, listener(0, 42));
         expect(ref.state, 42);
       });
 
@@ -125,7 +125,7 @@ void main() {
 
       container.listen(provider, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(0));
+      verifyOnly(listener, listener(null, 0));
 
       ref.state = 0;
       await container.pump();
@@ -187,7 +187,7 @@ void main() {
 
         container.listen(provider, listener, fireImmediately: true);
 
-        verifyOnly(listener, listener(42));
+        verifyOnly(listener, listener(null, 42));
 
         container.updateOverrides([
           provider.overrideWithValue(42),
@@ -208,13 +208,13 @@ void main() {
 
         container.listen(provider, listener, fireImmediately: true);
 
-        verifyOnly(listener, listener(42));
+        verifyOnly(listener, listener(null, 42));
 
         container.updateOverrides([
           provider.overrideWithValue(21),
         ]);
 
-        verifyOnly(listener, listener(21));
+        verifyOnly(listener, listener(42, 21));
       });
     });
 
@@ -295,7 +295,7 @@ void main() {
 
     final sub = container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(true));
+    verifyOnly(listener, listener(null, true));
     expect(sub.read(), true);
     expect(buildCount, 1);
 
@@ -318,13 +318,13 @@ void main() {
 
     final sub = container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(true));
+    verifyOnly(listener, listener(null, true));
     expect(sub.read(), true);
 
     counter.increment();
 
     expect(sub.read(), false);
-    verifyOnly(listener, listener(false));
+    verifyOnly(listener, listener(true, false));
   });
 
   test('can be auto-scoped', () async {

@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import 'common.dart';
-import 'framework.dart';
 import 'internals.dart';
 
 ///
@@ -101,7 +99,7 @@ Stream<State> _asyncValueToStream<State>(
 
   ref.onDispose(() => controller?.close());
 
-  void listener(AsyncValue<State> value) {
+  void listener(AsyncValue<State>? previous, AsyncValue<State> value) {
     value.when(
       loading: (_) {
         controller?.close();
@@ -116,7 +114,7 @@ Stream<State> _asyncValueToStream<State>(
 
   ref.listen<AsyncValue<State>>(provider, listener, fireImmediately: true);
 
-  return ref.getState()!;
+  return ref.requireState;
 }
 
 ///
@@ -205,7 +203,7 @@ Future<State> _asyncValueAsFuture<State>(
     }
   });
 
-  void listener(AsyncValue<State> value) {
+  void listener(AsyncValue<State>? previous, AsyncValue<State> value) {
     value.when(
       loading: (_) {
         if (loadingCompleter == null) {
@@ -239,5 +237,5 @@ Future<State> _asyncValueAsFuture<State>(
 
   ref.listen<AsyncValue<State>>(provider, listener, fireImmediately: true);
 
-  return ref.getState()!;
+  return ref.requireState;
 }

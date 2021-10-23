@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -508,6 +506,24 @@ void main() {
     );
   });
 
+  group('ProviderScope.containerOf', () {
+    testWidgets('throws if no container is found independently from `listen`',
+        (tester) async {
+      await tester.pumpWidget(Container());
+
+      final context = tester.element(find.byType(Container));
+
+      expect(
+        () => ProviderScope.containerOf(context, listen: false),
+        throwsStateError,
+      );
+      expect(
+        () => ProviderScope.containerOf(context),
+        throwsStateError,
+      );
+    });
+  });
+
   testWidgets(
       'autoDispose initState and ProviderListener does not destroy the state',
       (tester) async {
@@ -526,7 +542,7 @@ void main() {
           builder: (context, ref) {
             // ignore: deprecated_member_use_from_same_package
             return ProviderListener(
-              onChange: (_, __) {},
+              onChange: (ct, prev, value) {},
               provider: counterProvider,
               child: Container(),
             );

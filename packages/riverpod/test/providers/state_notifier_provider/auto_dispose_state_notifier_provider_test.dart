@@ -5,6 +5,21 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('can read and set current StateNotifier', () async {
+    final container = createContainer();
+    final listener = Listener<int>();
+    late AutoDisposeStateNotifierProviderRef<Counter, int> ref;
+    final provider = StateNotifierProvider.autoDispose<Counter, int>((r) {
+      ref = r;
+      return Counter();
+    });
+
+    container.listen(provider, listener);
+
+    verifyZeroInteractions(listener);
+    expect(ref.notifier.debugState, 0);
+  });
+
   test('can be auto-scoped', () async {
     final dep = Provider((ref) => 0);
     final provider =
@@ -189,18 +204,21 @@ void main() {
       provider.overrideWithValue(notifier),
     ]);
 
-    container.listen(provider.notifier, notifierListener,
-        fireImmediately: true);
-    verify(notifierListener(notifier)).called(1);
+    container.listen(
+      provider.notifier,
+      notifierListener,
+      fireImmediately: true,
+    );
+    verify(notifierListener(null, notifier)).called(1);
     verifyNoMoreInteractions(notifierListener);
 
     container.listen(provider, stateListener, fireImmediately: true);
-    verify(stateListener(42)).called(1);
+    verify(stateListener(null, 42)).called(1);
     verifyNoMoreInteractions(stateListener);
 
     notifier.increment();
 
-    verify(stateListener(43)).called(1);
+    verify(stateListener(42, 43)).called(1);
     verifyNoMoreInteractions(notifierListener);
     verifyNoMoreInteractions(stateListener);
   });
@@ -228,7 +246,7 @@ void main() {
     final container = createContainer();
     addTearDown(container.dispose);
 
-    container.listen(provider, (value) {});
+    container.listen(provider, (prev, value) {});
     expect(notifier.mounted, isTrue);
 
     container.dispose();
@@ -241,13 +259,14 @@ void main() {
     final provider = StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
       return notifier;
     });
-    final listener = ControllerListenerMock();
+    final listener = Listener<TestNotifier>();
     final container = createContainer();
     addTearDown(container.dispose);
 
     container.listen(provider.notifier, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(argThat(isA<TestNotifier>())));
+    verifyOnly(
+        listener, listener(argThat(isNull), argThat(isA<TestNotifier>())));
 
     notifier.increment();
 
@@ -271,11 +290,11 @@ void main() {
 
     container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(argThat(equals(0))));
+    verifyOnly(listener, listener(null, 0));
 
     notifier.increment();
 
-    verifyOnly(listener, listener(1)).called(1);
+    verifyOnly(listener, listener(0, 1)).called(1);
 
     container.dispose();
 
@@ -294,7 +313,7 @@ void main() {
     addTearDown(container.dispose);
 
     var callCount = 0;
-    final sub = container.listen(provider.notifier, (_) => callCount++);
+    final sub = container.listen(provider.notifier, (_, __) => callCount++);
 
     expect(sub.read(), notifier);
     expect(callCount, 0);
@@ -376,8 +395,4 @@ class TestNotifier extends StateNotifier<int> {
   String toString() {
     return 'TestNotifier($state)';
   }
-}
-
-class ControllerListenerMock extends Mock {
-  void call(TestNotifier? value);
 }

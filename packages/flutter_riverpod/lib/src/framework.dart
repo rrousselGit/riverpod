@@ -95,7 +95,6 @@ class ProviderScope extends StatefulWidget {
       scope = context //
           .dependOnInheritedWidgetOfExactType<UncontrolledProviderScope>();
     } else {
-      // TODO(rrousselGit): Test getElementForInheritedWidgetOfExactType return null
       scope = context
           .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
           ?.widget as UncontrolledProviderScope?;

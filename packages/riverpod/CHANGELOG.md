@@ -2,10 +2,15 @@
 
 - **Breaking** `AsyncValue.value` now return `null` instead of throwing if
   used during loading state (#270)
+- **Breaking** Renamed `ProviderRefBase` to `Ref`.
+- **Breaking** The listener passed `ref.listen`/`container.listen` now receives
+  both the previous and current value.
 - Added an assertion that detects when a provider override is missing.
 - Added an assert for when a provider specified `dependencies` but is
   depending on a provider that isn't in the list.
 - Increased minimum SDK version (#806)
+- `container.listen`/`ref.listen` now correctly handle cases where `fireImmediately`
+  is specified but the listener threw.
 
 ## 1.0.0-dev.10
 

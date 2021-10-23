@@ -2,14 +2,14 @@ part of '../provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [state], the value currently exposed by this providers.
-abstract class ProviderRef<State> implements ProviderRefBase {
+abstract class ProviderRef<State> implements Ref {
   /// Obtains the state currently exposed by this provider.
   ///
   /// Mutating this property will notify the provider listeners.
   ///
   /// Cannot be called while a provider is creating, unless the setter was called first.
   ///
-  /// Will throw a [ProviderException] if the provider threw during creation.
+  /// Will throw if the provider threw during creation.
   State get state;
   set state(State newState);
 }
@@ -175,7 +175,7 @@ abstract class ProviderRef<State> implements ProviderRefBase {
 /// class Location {
 ///   Location(this._ref);
 ///
-///   final ProviderRefBase _ref;
+///   final Ref _ref;
 ///
 ///   String get label {
 ///     final city = _ref.read(cityProvider);
@@ -229,43 +229,11 @@ class ProviderElement<State> extends ProviderElementBase<State>
   /// A [ProviderElementBase] for [Provider]
   ProviderElement(ProviderBase<State> provider) : super(provider);
 
-  bool _debugDidSetValue = false;
+  @override
+  State get state => requireState;
 
   @override
-  State get state {
-    final state = getState();
-
-    assert(() {
-      if (!_debugDidSetValue) {
-        throw StateError(
-          'Cannot read the state exposed by a provider within '
-          'before it was set',
-        );
-      }
-      return true;
-    }(), '');
-
-    return state as State;
-  }
-
-  @override
-  set state(State newState) {
-    setState(newState);
-  }
-
-  @override
-  void setState(State newState) {
-    assert(() {
-      _debugDidSetValue = true;
-      return true;
-    }(), '');
-    super.setState(newState);
-  }
-
-  @override
-  void debugWillRebuildState() {
-    _debugDidSetValue = false;
-  }
+  set state(State newState) => setState(newState);
 }
 
 /// {@macro riverpod.provider}

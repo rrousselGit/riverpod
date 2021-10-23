@@ -8,8 +8,20 @@ import '../utils.dart';
 
 void main() {
   group('ProviderObserver', () {
+    test('life-cycles do nothing by default', () {
+      const observer = ConstObserver();
+
+      final provider = Provider((ref) => 0);
+      final container = createContainer();
+
+      observer.didAddProvider(provider, 0, container);
+      observer.didDisposeProvider(provider, container);
+      observer.didUpdateProvider(provider, 0, 0, container);
+      observer.providerDidFail(provider, 0, StackTrace.empty, container);
+    });
+
     test('ProviderObservers can have const constructors', () {
-      final root = ProviderContainer(
+      final root = createContainer(
         observers: [
           const ConstObserver(),
         ],
@@ -19,6 +31,44 @@ void main() {
     });
 
     group('didUpdateProvider', () {
+      test('after an error didUpdateProvider receives null as previous value ',
+          () async {
+        final observer = ObserverMock();
+        final observer2 = ObserverMock();
+        final container = createContainer(observers: [observer, observer2]);
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider((ref) {
+          if (ref.watch(dep).state == 0) {
+            throw UnimplementedError();
+          }
+          return 0;
+        });
+
+        container.listen(provider, (_, __) {}, onError: (err, stack) {});
+
+        clearInteractions(observer);
+        clearInteractions(observer2);
+
+        container.read(dep).state++;
+        await container.pump();
+
+        verifyInOrder([
+          observer.didUpdateProvider(
+            provider,
+            null,
+            0,
+            container,
+          ),
+          observer2.didUpdateProvider(
+            provider,
+            null,
+            0,
+            container,
+          ),
+        ]);
+        verifyNever(observer.providerDidFail(any, any, any, any));
+      });
+
       test(
           'on scoped ProviderContainer, applies both child and ancestors observers',
           () {
@@ -70,7 +120,7 @@ void main() {
         final provider = StateNotifierProvider<Counter, int>((_) => notifier);
         final computed = Provider((ref) => ref.watch(provider));
 
-        container.listen(computed, (_) {});
+        container.listen(computed, (_, __) {});
         notifier.increment();
 
         clearInteractions(observer);
@@ -115,7 +165,7 @@ void main() {
 
         container.listen(provider, listener, fireImmediately: true);
 
-        verify(listener(0)).called(1);
+        verify(listener(null, 0)).called(1);
         verifyNoMoreInteractions(listener);
         verifyInOrder([
           observer.didAddProvider(
@@ -133,7 +183,7 @@ void main() {
         counter.increment();
 
         verifyInOrder([
-          listener(1),
+          listener(0, 1),
           observer.didUpdateProvider(provider, 0, 1, container),
           observer2.didUpdateProvider(provider, 0, 1, container),
         ]);
@@ -193,7 +243,7 @@ void main() {
         container.listen(isNegative, isNegativeListener, fireImmediately: true);
 
         clearInteractions(observer);
-        verifyOnly(isNegativeListener, isNegativeListener(false));
+        verifyOnly(isNegativeListener, isNegativeListener(null, false));
 
         counter.increment();
         await container.pump();
@@ -218,7 +268,7 @@ void main() {
             -10,
             container,
           ),
-          isNegativeListener(true),
+          isNegativeListener(false, true),
           observer.didUpdateProvider(
             isNegative,
             false,
@@ -231,7 +281,103 @@ void main() {
       });
     });
 
+    group('providerDidFail', () {
+      // is called when FutureProvider emits an error
+      // is called when StreamProvider emits an error
+
+      test('is called on uncaught error during first initialization', () {
+        final observer = ObserverMock();
+        final observer2 = ObserverMock();
+        final container = createContainer(observers: [observer, observer2]);
+        final provider = Provider((ref) => throw UnimplementedError());
+
+        expect(
+          () => container.read(provider),
+          throwsA(isA<ProviderException>()),
+        );
+
+        verifyInOrder([
+          observer.didAddProvider(provider, null, container),
+          observer2.didAddProvider(provider, null, container),
+          observer.providerDidFail(
+            provider,
+            argThat(isUnimplementedError),
+            argThat(isNotNull),
+            container,
+          ),
+          observer2.providerDidFail(
+            provider,
+            argThat(isUnimplementedError),
+            argThat(isNotNull),
+            container,
+          ),
+        ]);
+        verifyNoMoreInteractions(observer);
+      });
+
+      test('is called on uncaught error after update ', () async {
+        final observer = ObserverMock();
+        final observer2 = ObserverMock();
+        final container = createContainer(observers: [observer, observer2]);
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider((ref) {
+          if (ref.watch(dep).state != 0) {
+            throw UnimplementedError();
+          }
+          return 0;
+        });
+
+        container.listen(provider, (_, __) {}, onError: (err, stack) {});
+
+        clearInteractions(observer);
+        clearInteractions(observer2);
+
+        container.read(dep).state++;
+        await container.pump();
+
+        verifyInOrder([
+          observer.didUpdateProvider(
+            provider,
+            0,
+            null,
+            container,
+          ),
+          observer2.didUpdateProvider(
+            provider,
+            0,
+            null,
+            container,
+          ),
+          observer.providerDidFail(
+            provider,
+            argThat(isUnimplementedError),
+            argThat(isNotNull),
+            container,
+          ),
+          observer2.providerDidFail(
+            provider,
+            argThat(isUnimplementedError),
+            argThat(isNotNull),
+            container,
+          ),
+        ]);
+      });
+    });
+
     group('didAddProvider', () {
+      test('when throwing during creation, receives `null` as value', () {
+        final observer = ObserverMock();
+        final container = createContainer(observers: [observer]);
+        final provider = Provider((ref) => throw UnimplementedError());
+
+        expect(
+          () => container.read(provider),
+          throwsA(isA<ProviderException>()),
+        );
+
+        verify(observer.didAddProvider(provider, null, container));
+      });
+
       test(
           'on scoped ProviderContainer, applies both child and ancestors observers',
           () {
@@ -355,7 +501,7 @@ void main() {
         return Counter();
       });
 
-      final sub = container.listen(provider, (_) {});
+      final sub = container.listen(provider, (_, __) {});
 
       clearInteractions(observer);
 
@@ -418,10 +564,6 @@ void main() {
 
 class OnDisposeMock extends Mock {
   void call();
-}
-
-class Listener<T> extends Mock {
-  void call(T value);
 }
 
 class Counter extends StateNotifier<int> {

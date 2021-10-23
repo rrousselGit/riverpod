@@ -19,10 +19,14 @@ T _listenNotifier<T extends ChangeNotifier?>(
   ProviderElementBase<T> ref,
 ) {
   if (notifier != null) {
-    notifier.addListener(ref.notifyListeners);
+    void listener() {
+      ref.setState(notifier);
+    }
+
+    notifier.addListener(listener);
     ref.onDispose(() {
       try {
-        notifier.removeListener(ref.notifyListeners);
+        notifier.removeListener(listener);
         // ignore: empty_catches, may throw if called after the notifier is dispose, but this is safe to ignore.
       } catch (err) {}
     });

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
@@ -74,14 +72,14 @@ void main() {
 
       container.listen<int>(provider, listener, fireImmediately: true);
 
-      verifyOnly(listener, listener(0));
+      verifyOnly(listener, listener(null, 0));
 
       child.dispose();
 
       container.read(dep).state++;
       await container.pump();
 
-      verifyOnly(listener, listener(1));
+      verifyOnly(listener, listener(0, 1));
     });
 
     test('flushes listened providers even if they have no external listeners',
@@ -89,7 +87,7 @@ void main() {
       final dep = StateProvider((ref) => 0);
       final provider = Provider((ref) => ref.watch(dep).state);
       final another = StateProvider<int>((ref) {
-        ref.listen(provider, (value) => ref.controller.state++);
+        ref.listen(provider, (prev, value) => ref.controller.state++);
         return 0;
       });
       final container = createContainer();
@@ -117,20 +115,20 @@ void main() {
         scoped.listen(a, aListener, fireImmediately: true);
         scoped.listen(b, bListener, fireImmediately: true);
 
-        verifyOnly(aListener, aListener(0));
-        verifyOnly(bListener, bListener(0));
+        verifyOnly(aListener, aListener(null, 0));
+        verifyOnly(bListener, bListener(null, 0));
 
         root.read(dep).state++;
         await root.pump();
 
-        verifyOnly(aListener, aListener(1));
-        verifyOnly(bListener, bListener(1));
+        verifyOnly(aListener, aListener(0, 1));
+        verifyOnly(bListener, bListener(0, 1));
 
         scoped.read(dep).state++;
         await scoped.pump();
 
-        verifyOnly(aListener, aListener(2));
-        verifyOnly(bListener, bListener(2));
+        verifyOnly(aListener, aListener(1, 2));
+        verifyOnly(bListener, bListener(1, 2));
       });
     });
 
@@ -224,7 +222,7 @@ void main() {
         final provider = Provider.autoDispose((ref) => 0);
 
         expect(container.read(unrelated), 42);
-        var sub = container.listen(provider, (_) {});
+        var sub = container.listen(provider, (_, __) {});
 
         expect(
           container.getAllProviderElements(),
@@ -242,7 +240,7 @@ void main() {
           [isA<ProviderElementBase<int>>()],
         );
 
-        sub = container.listen(provider, (_) {});
+        sub = container.listen(provider, (_, __) {});
 
         expect(
           container.getAllProviderElements(),
@@ -326,7 +324,7 @@ void main() {
 
       container.read(provider).state++;
 
-      verifyOnly(listener, listener(any));
+      verifyOnly(listener, listener(any, any));
     });
 
     test(
@@ -369,7 +367,7 @@ void main() {
 
         controller.state++;
 
-        verify(listener(1)).called(2);
+        verify(listener(0, 1)).called(2);
         verifyNoMoreInteractions(listener);
 
         sub.close();
@@ -377,7 +375,7 @@ void main() {
 
         controller.state++;
 
-        verifyOnly(listener, listener(2));
+        verifyOnly(listener, listener(1, 2));
       },
     );
 
@@ -406,373 +404,6 @@ void main() {
       expect(container.read(provider), 42);
       expect(callCount, 2);
     });
-
-    group('.listen', () {
-      test('can downcast the value', () async {
-        final listener = Listener<num>();
-        final dep = StateProvider((ref) => 0);
-
-        final container = createContainer();
-
-        container.listen<StateController<num>>(
-          dep,
-          (value) => listener(value.state),
-        );
-
-        verifyZeroInteractions(listener);
-
-        container.read(dep).state++;
-        await container.pump();
-
-        verifyOnly(listener, listener(1));
-      });
-
-      test(
-          'if a listener adds a container.listen, the new listener is not called immediately',
-          () {
-        final provider = StateProvider((ref) => 0);
-        final container = createContainer();
-
-        final listener = Listener<int>();
-
-        container.listen<StateController<int>>(provider, (value) {
-          listener(value.state);
-          container.listen<StateController<int>>(provider, (value) {
-            listener(value.state);
-          });
-        });
-
-        verifyZeroInteractions(listener);
-
-        container.read(provider).state++;
-
-        verify(listener(1)).called(1);
-
-        container.read(provider).state++;
-
-        verify(listener(2)).called(2);
-      });
-
-      test(
-          'if a listener removes another provider.listen, the removed listener is still called',
-          () {
-        final provider = StateProvider((ref) => 0);
-        final container = createContainer();
-
-        final listener = Listener<int>();
-        final listener2 = Listener<int>();
-
-        final p = Provider((ref) {
-          void Function()? a;
-          ref.listen<StateController<int>>(provider, (value) {
-            listener(value.state);
-            a?.call();
-            a = null;
-          });
-
-          a = ref.listen<StateController<int>>(provider, (value) {
-            listener2(value.state);
-          });
-        });
-        container.read(p);
-
-        verifyZeroInteractions(listener);
-        verifyZeroInteractions(listener2);
-
-        container.read(provider).state++;
-
-        verifyInOrder([
-          listener(1),
-          listener2(1),
-        ]);
-
-        container.read(provider).state++;
-
-        verify(listener(2)).called(1);
-        verifyNoMoreInteractions(listener2);
-      });
-
-      test(
-          'if a listener adds a provider.listen, the new listener is not called immediately',
-          () {
-        final provider = StateProvider((ref) => 0);
-        final container = createContainer();
-
-        final listener = Listener<int>();
-
-        final p = Provider((ref) {
-          ref.listen<StateController<int>>(provider, (value) {
-            listener(value.state);
-            ref.listen<StateController<int>>(provider, (value) {
-              listener(value.state);
-            });
-          });
-        });
-        container.read(p);
-
-        verifyZeroInteractions(listener);
-
-        container.read(provider).state++;
-
-        verify(listener(1)).called(1);
-
-        container.read(provider).state++;
-
-        verify(listener(2)).called(2);
-      });
-
-      test(
-          'if a listener removes another container.listen, the removed listener is still called',
-          () {
-        final provider = StateProvider((ref) => 0);
-        final container = createContainer();
-
-        final listener = Listener<int>();
-        final listener2 = Listener<int>();
-
-        ProviderSubscription? a;
-        container.listen<StateController<int>>(provider, (value) {
-          listener(value.state);
-          a?.close();
-          a = null;
-        });
-
-        a = container.listen<StateController<int>>(provider, (value) {
-          listener2(value.state);
-        });
-
-        verifyZeroInteractions(listener);
-        verifyZeroInteractions(listener2);
-
-        container.read(provider).state++;
-
-        verifyInOrder([
-          listener(1),
-          listener2(1),
-        ]);
-
-        container.read(provider).state++;
-
-        verify(listener(2)).called(1);
-        verifyNoMoreInteractions(listener2);
-      });
-
-      test('.read on closed subscription throws', () {
-        final notifier = Counter();
-        final provider = StateNotifierProvider<Counter, int>((_) => notifier);
-        final container = createContainer();
-        final listener = Listener<int>();
-
-        final sub = container.listen(provider, listener, fireImmediately: true);
-
-        verify(listener(0)).called(1);
-        verifyNoMoreInteractions(listener);
-
-        sub.close();
-        notifier.increment();
-
-        expect(sub.read, throwsStateError);
-
-        verifyNoMoreInteractions(listener);
-      });
-
-      test('.read on closed selector subscription throws', () {
-        final notifier = Counter();
-        final provider = StateNotifierProvider<Counter, int>((_) => notifier);
-        final container = createContainer();
-        final listener = Listener<int>();
-
-        final sub = container.listen(
-          provider.select((value) => value * 2),
-          listener,
-          fireImmediately: true,
-        );
-
-        verify(listener(0)).called(1);
-        verifyNoMoreInteractions(listener);
-
-        sub.close();
-        notifier.increment();
-
-        expect(sub.read, throwsStateError);
-        verifyNoMoreInteractions(listener);
-      });
-
-      test("doesn't trow when creating a provider that failed", () {
-        final container = createContainer();
-        final provider = Provider((ref) {
-          throw Error();
-        });
-
-        final sub = container.listen(provider, (_) {});
-
-        expect(sub, isA<ProviderSubscription>());
-      });
-
-      test('selectors fireImmediately', () {
-        final container = createContainer();
-        final provider =
-            StateNotifierProvider<Counter, int>((ref) => Counter());
-        final listener = Listener<bool>();
-        final listener2 = Listener<bool>();
-
-        container.listen(
-          provider.select((v) => v.isEven),
-          listener,
-          fireImmediately: true,
-        );
-        container.listen(provider.select((v) => v.isEven), listener2);
-
-        verifyOnly(listener, listener(true));
-        verifyZeroInteractions(listener2);
-
-        container.read(provider.notifier).state = 21;
-
-        verifyOnly(listener, listener(false));
-        verifyOnly(listener2, listener2(false));
-      });
-
-      test('selectors can close listeners', () {
-        final container = createContainer();
-        final provider =
-            StateNotifierProvider<Counter, int>((ref) => Counter());
-
-        expect(container.readProviderElement(provider).hasListeners, false);
-
-        final sub = container.listen<bool>(
-          provider.select((count) => count.isEven),
-          (isEven) {},
-        );
-
-        expect(container.readProviderElement(provider).hasListeners, true);
-
-        sub.close();
-
-        expect(container.readProviderElement(provider).hasListeners, false);
-      });
-
-      test('can watch selectors', () async {
-        final container = createContainer();
-        final provider =
-            StateNotifierProvider<Counter, int>((ref) => Counter());
-        final isAdultSelector = Selector<int, bool>(false, (c) => c >= 18);
-        final isAdultListener = Listener<bool>();
-
-        final controller = container.read(provider.notifier);
-        container.listen<bool>(
-          provider.select(isAdultSelector),
-          isAdultListener,
-          fireImmediately: true,
-        );
-
-        verifyOnly(isAdultSelector, isAdultSelector(0));
-        verifyOnly(isAdultListener, isAdultListener(false));
-
-        controller.state += 10;
-
-        verifyOnly(isAdultSelector, isAdultSelector(10));
-        verifyNoMoreInteractions(isAdultListener);
-
-        controller.state += 10;
-
-        verifyOnly(isAdultSelector, isAdultSelector(20));
-        verifyOnly(isAdultListener, isAdultListener(true));
-
-        controller.state += 10;
-
-        verifyOnly(isAdultSelector, isAdultSelector(30));
-        verifyNoMoreInteractions(isAdultListener);
-      });
-
-      test('calls immediately the listener with the current value', () {
-        final provider = Provider((ref) => 0);
-        final listener = Listener<int>();
-
-        final container = createContainer();
-
-        container.listen(provider, listener, fireImmediately: true);
-
-        verifyOnly(listener, listener(0));
-      });
-
-      test('passing fireImmediately: false skips the initial value', () {
-        final provider = StateProvider((ref) => 0);
-        final listener = Listener<int>();
-
-        final container = createContainer();
-
-        container.listen<StateController<int>>(
-          provider,
-          (notifier) => listener(notifier.state),
-          fireImmediately: false,
-        );
-
-        verifyZeroInteractions(listener);
-      });
-
-      test('call listener when provider rebuilds', () async {
-        final controller = StreamController<int>();
-        addTearDown(controller.close);
-        final container = createContainer();
-
-        final count = StateProvider((ref) => 0);
-        final provider = Provider((ref) => ref.watch(count).state);
-
-        container.listen(provider, controller.add, fireImmediately: true);
-
-        container.read(count).state++;
-
-        await expectLater(
-          controller.stream,
-          emitsInOrder(<dynamic>[0, 1]),
-        );
-      });
-
-      test('call listener when provider emits an update', () async {
-        final container = createContainer();
-
-        final count = StateProvider((ref) => 0);
-        final listener = Listener<int>();
-
-        container.listen<StateController<int>>(
-          count,
-          (c) => listener(c.state),
-          fireImmediately: false,
-        );
-
-        container.read(count).state++;
-
-        verifyOnly(listener, listener(1));
-
-        container.read(count).state++;
-
-        verifyOnly(listener, listener(2));
-      });
-
-      test('supports selectors', () {
-        final container = createContainer();
-
-        final count = StateProvider((ref) => 0);
-        final listener = Listener<bool>();
-
-        container.listen<bool>(
-          count.select((value) => value.state.isEven),
-          listener,
-          fireImmediately: true,
-        );
-
-        verifyOnly(listener, listener(true));
-
-        container.read(count).state = 2;
-
-        verifyNoMoreInteractions(listener);
-
-        container.read(count).state = 3;
-
-        verifyOnly(listener, listener(false));
-      });
-    });
-
     test(
       'does not refresh providers if their dependencies changes but they have no active listeners',
       () async {

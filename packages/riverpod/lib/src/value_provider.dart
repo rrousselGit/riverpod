@@ -1,6 +1,5 @@
 import 'package:meta/meta.dart';
 
-import '../riverpod.dart';
 import 'framework.dart';
 
 /// A provider that is driven by a value instead of a function.
@@ -9,23 +8,21 @@ import 'framework.dart';
 @sealed
 class ValueProvider<State> extends AlwaysAliveProviderBase<State> {
   /// Creates a [ValueProvider].
-  ValueProvider(this._value, [this._create]) : super(name: null);
-
-  final State Function(ValueProviderElement<State> ref)? _create;
+  ValueProvider(this._value) : super(name: null);
 
   final State _value;
+
+  @override
+  ProviderBase<Object?> get originProvider {
+    // ValueNotifier cannot be used directly, so it's never the origin
+    throw UnimplementedError();
+  }
 
   @override
   List<ProviderOrFamily>? get dependencies => null;
 
   @override
-  ProviderBase<Object?> get originProvider => this;
-
-  @override
-  State create(ValueProviderElement<State> ref) {
-    if (_create == null) return _value;
-    return _create!(ref);
-  }
+  State create(ValueProviderElement<State> ref) => _value;
 
   @override
   bool updateShouldNotify(State previousState, State newState) {
@@ -54,7 +51,11 @@ class ValueProviderElement<State> extends ProviderElementBase<State> {
   void update(ProviderBase<State> newProvider) {
     super.update(newProvider);
     final newValue = (provider as ValueProvider<State>)._value;
-    if (newValue != getState()) {
+
+    // `getState` will never be in error/loading state since there is no "create"
+    final previousState = getState()! as ResultData<State>;
+
+    if (newValue != previousState.state) {
       setState(newValue);
       onChange?.call(newValue);
     }

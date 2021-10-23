@@ -1,10 +1,6 @@
 import 'package:meta/meta.dart';
-import 'package:state_notifier/state_notifier.dart';
 
 import '../riverpod.dart';
-import 'builders.dart';
-import 'common.dart';
-import 'framework.dart';
 import 'internals.dart';
 
 part 'state_provider/auto_dispose.dart';
@@ -79,7 +75,7 @@ StateController<State> _listenStateProvider<State>(
   StateController<State> controller,
 ) {
   void listener(State newState) {
-    ref.notifyListeners(previousState: controller);
+    ref.setState(controller);
   }
 
   // No need to remove the listener on dispose, since we are disposing the controller

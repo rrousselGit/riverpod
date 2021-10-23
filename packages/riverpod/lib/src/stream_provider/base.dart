@@ -2,7 +2,17 @@ part of '../stream_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [ProviderRef.state], the value currently exposed by this providers.
-typedef StreamProviderRef<State> = ProviderRefBase;
+abstract class StreamProviderRef<State> implements Ref {
+  /// Obtains the state currently exposed by this provider.
+  ///
+  /// Mutating this property will notify the provider listeners.
+  ///
+  /// Cannot be called while a provider is creating, unless the setter was called first.
+  ///
+  /// Will throw if the provider threw during creation.
+  AsyncValue<State> get state;
+  set state(AsyncValue<State> newState);
+}
 
 /// {@macro riverpod.streamprovider}
 @sealed
@@ -40,8 +50,8 @@ class StreamProvider<State> extends AsyncProvider<State>
       AsyncValueAsFutureProvider(this, name: modifierName(name, 'last'));
 
   @override
-  AsyncValue<State> create(ProviderElementBase<AsyncValue<State>> ref) {
-    return _listenStream(() => _create(ref), ref);
+  AsyncValue<State> create(covariant StreamProviderElement<State> ref) {
+    return ref._listenStream(() => _create(ref));
   }
 
   @override
@@ -58,7 +68,30 @@ class StreamProvider<State> extends AsyncProvider<State>
   }
 
   @override
-  AsyncProviderElement<State> createElement() => AsyncProviderElement(this);
+  StreamProviderElement<State> createElement() => StreamProviderElement(this);
+}
+
+/// The Element of a [StreamProvider]
+class StreamProviderElement<State> extends AsyncProviderElement<State>
+    with _StreamProviderElementMixin<State>
+    implements StreamProviderRef<State> {
+  /// The Element of a [StreamProvider]
+  StreamProviderElement(StreamProvider<State> provider) : super(provider);
+
+  @override
+  AsyncValue<State> get state => requireState;
+
+  @override
+  set state(AsyncValue<State> newState) {
+    assert(
+      newState is AsyncData ||
+          (newState is AsyncLoading &&
+              (newState as AsyncLoading).previous == null) ||
+          (newState is AsyncError && (newState as AsyncError).previous == null),
+      'Cannot specify "previous" for AsyncValue but got $newState',
+    );
+    setState(newState);
+  }
 }
 
 /// {@template riverpod.streamprovider.family}

@@ -1,8 +1,10 @@
 // ignore_for_file: avoid_types_on_closure_parameters, type_init_formals, unused_local_variable, avoid_print, unnecessary_lambdas, unused_import
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+// ignore: unnecessary_import
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+// ignore: unnecessary_import
 import 'package:riverpod/riverpod.dart';
 
 class Counter extends StateNotifier<int> {
@@ -204,10 +206,20 @@ class StatefulConsumer2 extends StatefulWidget {
 class HooksWatch extends HookWidget {
   const HooksWatch({Key? key}) : super(key: key);
 
+  void empty() {}
+  void error(Object err, StackTrace? st) {}
+
   @override
   Widget build(BuildContext context) {
     final countNotifier = useProvider(counterProvider.notifier);
     final count = useProvider(counterProvider);
+    final asyncValue = useProvider(futureProvider);
+    asyncValue.when(loading: () {}, data: (_) {}, error: (_, __) {});
+    asyncValue.maybeWhen(
+        loading: () {}, data: (_) {}, error: (_, __) {}, orElse: () {});
+    asyncValue.when(loading: empty, data: (_) {}, error: error);
+    asyncValue.maybeWhen(
+        loading: empty, data: (_) {}, error: error, orElse: () {});
     return Center(
       child: ElevatedButton(
         onPressed: () {

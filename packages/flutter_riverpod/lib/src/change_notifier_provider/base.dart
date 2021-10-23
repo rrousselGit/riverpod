@@ -1,8 +1,13 @@
 part of '../change_notifier_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-typedef ChangeNotifierProviderRef<Notifier extends ChangeNotifier>
-    = ProviderRefBase;
+abstract class ChangeNotifierProviderRef<Notifier extends ChangeNotifier>
+    implements Ref {
+  /// The [ChangeNotifier] currently exposed by this provider.
+  ///
+  /// Cannot be accessed while creating the provider.
+  Notifier get notifier;
+}
 
 // ignore: subtype_of_sealed_class
 /// {@macro riverpod.changenotifierprovider}
@@ -15,12 +20,11 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
     Create<Notifier, ChangeNotifierProviderRef<Notifier>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-  })  : notifier = Provider((ref) {
-          final notifier = create(ref);
-          ref.onDispose(notifier.dispose);
-
-          return notifier;
-        }, dependencies: dependencies),
+  })  : notifier = _NotifierProvider<Notifier>(
+          create,
+          name: name,
+          dependencies: dependencies,
+        ),
         super(name: name);
 
   /// {@macro riverpod.family}
@@ -85,6 +89,49 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
 }
 
 // ignore: subtype_of_sealed_class
+class _NotifierProvider<Notifier extends ChangeNotifier>
+    extends AlwaysAliveProviderBase<Notifier> {
+  _NotifierProvider(
+    this._create, {
+    required String? name,
+    required this.dependencies,
+  }) : super(
+          name: modifierName(name, 'notifier'),
+        );
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
+
+  final Create<Notifier, ChangeNotifierProviderRef<Notifier>> _create;
+
+  @override
+  Notifier create(covariant ChangeNotifierProviderRef<Notifier> ref) {
+    final notifier = _create(ref);
+    ref.onDispose(notifier.dispose);
+
+    return notifier;
+  }
+
+  @override
+  _NotifierProviderElement<Notifier> createElement() {
+    return _NotifierProviderElement(this);
+  }
+
+  @override
+  bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
+}
+
+class _NotifierProviderElement<Notifier extends ChangeNotifier>
+    extends ProviderElementBase<Notifier>
+    implements ChangeNotifierProviderRef<Notifier> {
+  _NotifierProviderElement(_NotifierProvider<Notifier> provider)
+      : super(provider);
+
+  @override
+  Notifier get notifier => requireState;
+}
+
+// ignore: subtype_of_sealed_class
 /// {@template riverpod.changenotifierprovider.family}
 /// A class that allows building a [ChangeNotifierProvider] from an external parameter.
 /// {@endtemplate}
@@ -103,7 +150,7 @@ class ChangeNotifierProviderFamily<Notifier extends ChangeNotifier, Arg>
 
   @override
   ChangeNotifierProvider<Notifier> create(Arg argument) {
-    final provider = ChangeNotifierProvider(
+    final provider = ChangeNotifierProvider<Notifier>(
       (ref) => _create(ref, argument),
       name: name,
     );

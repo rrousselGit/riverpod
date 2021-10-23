@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
-import 'framework.dart';
 import 'internals.dart';
 
 /// An object that allows widgets to interact with providers.
@@ -21,8 +20,9 @@ abstract class WidgetRef {
   /// This is useful for showing modals or other imperative logic.
   void listen<T>(
     ProviderListenable<T> provider,
-    void Function(T value) listener,
-  );
+    void Function(T? previous, T next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  });
 
   /// Reads a provider without listening to it.
   ///
@@ -447,7 +447,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 
       return _container.listen<Res>(
         target,
-        (_) => markNeedsBuild(),
+        (_, __) => markNeedsBuild(),
       );
     }).read() as Res;
   }
@@ -466,8 +466,9 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   @override
   void listen<T>(
     ProviderListenable<T> provider,
-    void Function(T value) listener,
-  ) {
+    void Function(T? previous, T value) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  }) {
     assert(
       debugDoingBuild,
       'ref.listen can only be used within the build method of a ConsumerWidget',
@@ -477,7 +478,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     // which listen call was preserved between widget rebuild, and we wouldn't
     // want to call the listener on every rebuild.
     // TODO onError
-    final sub = _container.listen<T>(provider, listener);
+    final sub = _container.listen<T>(provider, listener, onError: onError);
     _listeners.add(sub);
   }
 

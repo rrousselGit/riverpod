@@ -28,7 +28,7 @@ void main() {
 
     final observer = ObserverMock();
     final container = createContainer(observers: [observer]);
-    final provider = StateProvider<int>((_) => 0);
+    final provider = StateProvider<int>((ref) => 0);
 
     final notifier = container.read(provider);
 
@@ -54,7 +54,7 @@ void main() {
 
       container.listen<StateController<int>>(
         provider,
-        (s) => listener(s.state),
+        (prev, value) => listener(prev?.state, value.state),
       );
       verifyZeroInteractions(listener);
 
@@ -62,7 +62,7 @@ void main() {
 
       ref.controller.state = 42;
 
-      verifyOnly(listener, listener(42));
+      verifyOnly(listener, listener(42, 42));
 
       expect(ref.controller.state, 42);
     });
@@ -202,15 +202,15 @@ void main() {
 
       container.listen<StateController<int>>(
         provider,
-        (controller) => listener(controller.state),
+        (prev, controller) => listener(prev?.state, controller.state),
         fireImmediately: true,
       );
 
-      verifyOnly(listener, listener(42));
+      verifyOnly(listener, listener(null, 42));
 
       container.read(provider).state++;
 
-      verifyOnly(listener, listener(43));
+      verifyOnly(listener, listener(43, 43));
     },
   );
 
@@ -297,11 +297,11 @@ void main() {
     expect(controller.state, 0);
 
     container.listen(provider, listener, fireImmediately: true);
-    verifyOnly(listener, listener(controller));
+    verifyOnly(listener, listener(null, controller));
 
     controller.state = 42;
 
-    verifyOnly(listener, listener(controller));
+    verifyOnly(listener, listener(controller, controller));
   });
 
   test('disposes the controller when the container is disposed', () {
@@ -325,7 +325,7 @@ void main() {
     final otherController = container.read(other);
     final firstController = container.read(provider);
 
-    final sub = container.listen(provider, (_) {});
+    final sub = container.listen(provider, (_, __) {});
 
     expect(sub.read(), firstController);
     expect(firstController.mounted, true);
@@ -351,7 +351,7 @@ void main() {
       var callCount = 0;
       final sub = container.listen(
         provider.notifier,
-        (_) => callCount++,
+        (_, __) => callCount++,
       );
 
       final controller = container.read(provider);
@@ -387,7 +387,7 @@ void main() {
       var callCount = 0;
       final sub = container.listen(
         provider.notifier,
-        (_) => callCount++,
+        (_, __) => callCount++,
       );
 
       final controller = container.read(provider);
@@ -414,7 +414,7 @@ void main() {
       final container = createContainer();
       final provider = StateProvider.autoDispose((ref) => 0);
 
-      final sub = container.listen(provider, (_) {});
+      final sub = container.listen(provider, (_, __) {});
       final first = sub.read();
 
       first.state++;
@@ -444,8 +444,8 @@ void main() {
       final provider =
           StateProvider.autoDispose.family<int, int>((ref, id) => id);
 
-      final sub = container.listen(provider(0), (_) {});
-      final sub2 = container.listen(provider(42), (_) {});
+      final sub = container.listen(provider(0), (_, __) {});
+      final sub2 = container.listen(provider(42), (_, __) {});
       final first = sub.read();
 
       first.state++;

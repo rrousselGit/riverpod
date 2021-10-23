@@ -35,7 +35,7 @@ void main() {
 
       container.listen<StateController<int>>(
         provider,
-        (s) => listener(s.state),
+        (prev, value) => listener(prev?.state, value.state),
       );
       verifyZeroInteractions(listener);
 
@@ -43,7 +43,7 @@ void main() {
 
       ref.controller.state = 42;
 
-      verifyOnly(listener, listener(42));
+      verifyOnly(listener, listener(42, 42));
 
       expect(ref.controller.state, 42);
     });

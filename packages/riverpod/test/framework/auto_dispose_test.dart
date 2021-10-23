@@ -66,7 +66,7 @@ final alwaysAlive = Provider((ref) {
   ref.listen<int>(
     // expect-error: ARGUMENT_TYPE_NOT_ASSIGNABLE
     autoDispose,
-    (value) {},
+    (prev, value) {},
   );
 });
 '''), compiles);
@@ -83,7 +83,7 @@ final alwaysAlive = Provider((ref) {
     // expect-error: ARGUMENT_TYPE_NOT_ASSIGNABLE
     autoDispose
       .select((value) => value),
-    (value) {},
+    (prev, value) {},
   );
 });
 '''), compiles);
@@ -107,7 +107,7 @@ final alwaysAlive = Provider((ref) {
       }
     });
 
-    container.listen(provider, (_) {});
+    container.listen<void>(provider, (_, __) {});
 
     expect(dependencyDisposeCount, 0);
     expect(
@@ -157,7 +157,7 @@ final alwaysAlive = Provider((ref) {
 
     final sub = container.listen(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(0));
+    verifyOnly(listener, listener(null, 0));
     expect(buildCount, 1);
     expect(disposeCount, 0);
 
@@ -175,7 +175,7 @@ final alwaysAlive = Provider((ref) {
 
     expect(buildCount, 2);
     expect(disposeCount, 1);
-    verifyOnly(listener, listener(42));
+    verifyOnly(listener, listener(null, 42));
   });
 
   test('scoped autoDispose override preserve the override after one disposal',
@@ -290,7 +290,7 @@ final alwaysAlive = Provider((ref) {
   test('setting maintainState to false destroys the state when not listened',
       () async {
     final onDispose = OnDisposeMock();
-    late AutoDisposeProviderRefBase ref;
+    late AutoDisposeRef ref;
     final provider = Provider.autoDispose((_ref) {
       ref = _ref;
       ref.onDispose(onDispose);
@@ -298,7 +298,7 @@ final alwaysAlive = Provider((ref) {
     });
     final container = createContainer();
 
-    final sub = container.listen(provider, (value) {});
+    final sub = container.listen<void>(provider, (prev, value) {});
     sub.close();
 
     await container.pump();
@@ -328,7 +328,7 @@ final alwaysAlive = Provider((ref) {
     final listener = Listener<int>();
 
     final sub = container.listen(provider, listener, fireImmediately: true);
-    verify(listener(42)).called(1);
+    verify(listener(null, 42)).called(1);
     verifyNoMoreInteractions(listener);
     sub.close();
 
@@ -339,7 +339,7 @@ final alwaysAlive = Provider((ref) {
     value = 21;
     container.listen(provider, listener, fireImmediately: true);
 
-    verify(listener(42)).called(1);
+    verify(listener(null, 42)).called(1);
     verifyNoMoreInteractions(listener);
   });
 
@@ -351,7 +351,7 @@ final alwaysAlive = Provider((ref) {
     });
     final container = createContainer();
 
-    container.listen(provider, (value) {});
+    container.listen(provider, (prev, value) {});
 
     expect(maintainState, false);
   });
@@ -371,10 +371,10 @@ final alwaysAlive = Provider((ref) {
       return '42';
     });
 
-    final subA = container.listen(a, (value) {});
+    final subA = container.listen(a, (prev, value) {});
     subA.close();
 
-    final subB = container.listen(b, (value) {});
+    final subB = container.listen(b, (prev, value) {});
     subB.close();
 
     verifyNoMoreInteractions(aDispose);
@@ -407,7 +407,7 @@ final alwaysAlive = Provider((ref) {
 
     var sub = container.listen(provider2, listener, fireImmediately: true);
 
-    verify(listener(42)).called(1);
+    verify(listener(null, 42)).called(1);
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(onDispose);
     verifyNoMoreInteractions(onDispose2);
@@ -431,7 +431,7 @@ final alwaysAlive = Provider((ref) {
     value = 21;
     sub = container.listen(provider2, listener, fireImmediately: true);
 
-    verify(listener(21)).called(1);
+    verify(listener(null, 21)).called(1);
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(onDispose);
     verifyNoMoreInteractions(onDispose2);
@@ -450,7 +450,7 @@ final alwaysAlive = Provider((ref) {
       return 42;
     });
 
-    var subA = container.listen(a, (value) {});
+    var subA = container.listen(a, (prev, value) {});
     verifyNoMoreInteractions(aDispose);
     verifyNoMoreInteractions(bDispose);
     subA.close();
@@ -461,8 +461,8 @@ final alwaysAlive = Provider((ref) {
     verifyNoMoreInteractions(aDispose);
     verifyNoMoreInteractions(bDispose);
 
-    subA = container.listen(a, (value) {});
-    final subB = container.listen(b, (value) {});
+    subA = container.listen(a, (prev, value) {});
+    final subB = container.listen(b, (prev, value) {});
 
     subB.close();
 
@@ -482,7 +482,7 @@ final alwaysAlive = Provider((ref) {
       return 42;
     });
 
-    final sub = container.listen(provider, (value) {});
+    final sub = container.listen(provider, (prev, value) {});
 
     verifyNoMoreInteractions(onDispose);
 
@@ -507,14 +507,14 @@ final alwaysAlive = Provider((ref) {
       return 42;
     });
 
-    final sub = container.listen(provider, (value) {});
+    final sub = container.listen(provider, (prev, value) {});
 
     verifyNoMoreInteractions(onDispose);
 
     sub.close();
     verifyNoMoreInteractions(onDispose);
 
-    final sub2 = container.listen(provider, (value) {});
+    final sub2 = container.listen(provider, (prev, value) {});
 
     await container.pump();
 
@@ -536,8 +536,8 @@ final alwaysAlive = Provider((ref) {
       return 42;
     });
 
-    final sub = container.listen(provider, (value) {});
-    final sub2 = container.listen(provider, (value) {});
+    final sub = container.listen(provider, (prev, value) {});
+    final sub2 = container.listen(provider, (prev, value) {});
 
     verifyNoMoreInteractions(onDispose);
 
@@ -562,7 +562,7 @@ final alwaysAlive = Provider((ref) {
     });
     final container = createContainer();
 
-    final sub = container.listen(provider, (_) {});
+    final sub = container.listen(provider, (_, __) {});
     sub.close();
 
     container.dispose();
@@ -584,12 +584,12 @@ final alwaysAlive = Provider((ref) {
       return 0;
     });
     final provider = Provider.autoDispose((ref) {
-      ref.listen(listened, (value) {});
+      ref.listen(listened, (prev, value) {});
       return 0;
     });
 
-    container.listen(provider, (value) {});
-    final sub = container.listen(listened, (value) {});
+    container.listen(provider, (prev, value) {});
+    final sub = container.listen(listened, (prev, value) {});
 
     sub.close();
 

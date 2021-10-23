@@ -1,11 +1,26 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart' hide Listener;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 
-import '../../provider_listener_test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('can read and set current StateNotifier', () async {
+    final container = createContainer();
+    final listener = Listener<ValueNotifier<int>>();
+    late ChangeNotifierProviderRef<ValueNotifier<int>> ref;
+    final provider = ChangeNotifierProvider<ValueNotifier<int>>((r) {
+      ref = r;
+      return ValueNotifier(0);
+    });
+
+    container.listen(provider, listener);
+
+    verifyZeroInteractions(listener);
+    expect(ref.notifier.value, 0);
+  });
+
   test('can be refreshed', () async {
     var result = ValueNotifier(0);
     final container = createContainer();
@@ -19,6 +34,21 @@ void main() {
 
     expect(container.read(provider), result);
     expect(container.read(provider.notifier), result);
+  });
+
+  test('pass the notifier as previous value when notifying listeners', () {
+    final container = createContainer();
+    final notifier = ValueNotifier(0);
+    final provider = ChangeNotifierProvider((ref) => notifier);
+    final listener = Listener<ValueNotifier<int>>();
+
+    container.listen(provider, listener, fireImmediately: true);
+
+    verifyOnly(listener, listener(null, notifier));
+
+    notifier.value++;
+
+    verifyOnly(listener, listener(notifier, notifier));
   });
 
   group('scoping an override overrides all the associated subproviders', () {
@@ -89,20 +119,23 @@ void main() {
   test('overriding with value listens to the ChangeNotifier', () {
     final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
     final notifier = ValueNotifier(42);
-    final listener = ListenerMock<int>();
+    final listener = Listener<int>();
 
     final container = createContainer(
       overrides: [provider.overrideWithValue(notifier)],
     );
 
-    container.listen<ValueNotifier<int>>(provider, (c) => listener(c.value));
+    container.listen<ValueNotifier<int>>(
+      provider,
+      (prev, value) => listener(prev?.value, value.value),
+    );
 
     expect(container.read(provider).value, 42);
     expect(container.read(provider.notifier).value, 42);
 
     notifier.value = 21;
 
-    verifyOnly(listener, listener(21));
+    verifyOnly(listener, listener(21, 21));
   });
 
   test('refresh recreates the ChangeNotifier', () {
@@ -208,7 +241,7 @@ void main() {
     var callCount = 0;
     final sub = container.listen(
       provider.notifier,
-      (_) => callCount++,
+      (_, __) => callCount++,
     );
 
     expect(sub.read(), notifier);
@@ -242,8 +275,8 @@ void main() {
     addTearDown(container.dispose);
 
     var callCount = 0;
-    final sub = container.listen(provider, (_) => callCount++);
-    final notifierSub = container.listen(provider.notifier, (_) {});
+    final sub = container.listen(provider, (_, __) => callCount++);
+    final notifierSub = container.listen(provider.notifier, (_, __) {});
 
     expect(sub.read(), notifier);
     expect(callCount, 0);

@@ -3,51 +3,7 @@ part of '../provider.dart';
 /// {@macro riverpod.providerrefbase}
 /// - [state], the value currently exposed by this providers.
 abstract class AutoDisposeProviderRef<State>
-    implements ProviderRef<State>, AutoDisposeProviderRefBase {}
-
-/// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
-class AutoDisposeProviderElement<State>
-    extends AutoDisposeProviderElementBase<State>
-    implements AutoDisposeProviderRef<State> {
-  /// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
-  AutoDisposeProviderElement(ProviderBase<State> provider) : super(provider);
-
-  bool _debugDidSetValue = false;
-
-  @override
-  State get state {
-    assert(() {
-      if (!_debugDidSetValue) {
-        throw StateError(
-          'Cannot read the state exposed by a provider within '
-          'before it was set',
-        );
-      }
-      return true;
-    }(), '');
-
-    return getState() as State;
-  }
-
-  @override
-  set state(State newState) {
-    setState(newState);
-  }
-
-  @override
-  void setState(State newState) {
-    assert(() {
-      _debugDidSetValue = true;
-      return true;
-    }(), '');
-    super.setState(newState);
-  }
-
-  @override
-  void debugWillRebuildState() {
-    _debugDidSetValue = false;
-  }
-}
+    implements ProviderRef<State>, AutoDisposeRef {}
 
 /// {@macro riverpod.provider}
 @sealed
@@ -83,6 +39,20 @@ class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
   AutoDisposeProviderElement<State> createElement() {
     return AutoDisposeProviderElement(this);
   }
+}
+
+/// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
+class AutoDisposeProviderElement<State>
+    extends AutoDisposeProviderElementBase<State>
+    implements AutoDisposeProviderRef<State> {
+  /// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
+  AutoDisposeProviderElement(ProviderBase<State> provider) : super(provider);
+
+  @override
+  State get state => requireState;
+
+  @override
+  set state(State newState) => setState(newState);
 }
 
 /// {@macro riverpod.provider.family}

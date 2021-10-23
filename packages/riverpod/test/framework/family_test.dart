@@ -86,24 +86,34 @@ void main() {
     final listener2 = Listener<AsyncValue<String>>();
 
     container.listen(family(0), listener, fireImmediately: true);
-    verify(listener(const AsyncValue.loading()));
+    verify(listener(null, const AsyncValue.loading()));
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener2);
 
     container.listen(family(1), listener2, fireImmediately: true);
-    verify(listener2(const AsyncValue.loading()));
+    verify(listener2(null, const AsyncValue.loading()));
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener2);
 
     controllers[0]!.add('42');
 
-    verify(listener(const AsyncValue.data('42')));
+    verify(
+      listener(
+        const AsyncValue.loading(),
+        const AsyncValue.data('42'),
+      ),
+    );
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener2);
 
     controllers[1]!.add('21');
 
-    verify(listener2(const AsyncValue.data('21')));
+    verify(
+      listener2(
+        const AsyncValue.loading(),
+        const AsyncValue.data('21'),
+      ),
+    );
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener2);
   });
