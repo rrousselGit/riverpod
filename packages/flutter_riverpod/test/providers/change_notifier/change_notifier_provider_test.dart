@@ -1,10 +1,26 @@
 import 'package:flutter/widgets.dart' hide Listener;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 
 import '../../utils.dart';
 
 void main() {
+  test('can read and set current StateNotifier', () async {
+    final container = createContainer();
+    final listener = Listener<ValueNotifier<int>>();
+    late ChangeNotifierProviderRef<ValueNotifier<int>> ref;
+    final provider = ChangeNotifierProvider<ValueNotifier<int>>((r) {
+      ref = r;
+      return ValueNotifier(0);
+    });
+
+    container.listen(provider, listener);
+
+    verifyZeroInteractions(listener);
+    expect(ref.notifier.value, 0);
+  });
+
   test('can be refreshed', () async {
     var result = ValueNotifier(0);
     final container = createContainer();
