@@ -19,7 +19,9 @@ abstract class StreamProviderRef<State> implements Ref {
 class StreamProvider<State> extends AsyncProvider<State>
     with
         _StreamProviderMixin<State>,
-        OverrideWithValueMixin<AsyncValue<State>> {
+        OverrideWithValueMixin<AsyncValue<State>>,
+        OverrideWithProviderMixin<AsyncValue<State>,
+            AlwaysAliveProviderBase<AsyncValue<State>>> {
   /// {@macro riverpod.streamprovider}
   StreamProvider(
     this._create, {
@@ -32,6 +34,9 @@ class StreamProvider<State> extends AsyncProvider<State>
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStreamProviderBuilder();
+
+  @override
+  ProviderBase<AsyncValue<State>> get originProvider => this;
 
   final Create<Stream<State>, StreamProviderRef<State>> _create;
 
@@ -125,5 +130,17 @@ class StreamProviderFamily<State, Arg>
     setup(origin: provider, override: provider);
     setup(origin: provider.stream, override: provider.stream);
     setup(origin: provider.last, override: provider.last);
+  }
+
+  /// {@macro riverpod.overridewithprovider}
+  Override overrideWithProvider(
+    AlwaysAliveProviderBase<AsyncValue<State>> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(this, (arg, setup) {
+      final provider = call(arg);
+      setup(origin: provider, override: override(arg));
+      setup(origin: provider.stream, override: provider.stream);
+      setup(origin: provider.last, override: provider.last);
+    });
   }
 }

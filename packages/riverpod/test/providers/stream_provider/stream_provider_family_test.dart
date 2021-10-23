@@ -28,6 +28,33 @@ void main() {
           ]),
         );
       });
+
+      test('when using provider.overrideWithProvider', () async {
+        final provider =
+            StreamProvider.family<int, int>((ref, _) => Stream.value(0));
+        final root = createContainer();
+        final container = createContainer(parent: root, overrides: [
+          provider.overrideWithProvider(
+            (value) => StreamProvider((ref) => Stream.value(42)),
+          ),
+        ]);
+
+        expect(await container.read(provider(0).stream).first, 42);
+        expect(await container.read(provider(0).last), 42);
+        expect(container.read(provider(0)), const AsyncData(42));
+        expect(root.getAllProviderElements(), isEmpty);
+        expect(
+          container.getAllProviderElements(),
+          unorderedEquals(<Object?>[
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider(0)),
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider(0).last),
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider(0).stream),
+          ]),
+        );
+      });
     });
 
     test('can be auto-scoped', () async {
@@ -47,6 +74,26 @@ void main() {
       expect(container.read(provider(10)), const AsyncData(52));
 
       expect(root.getAllProviderElements(), isEmpty);
+    });
+
+    test('StreamProvider.family override', () async {
+      final provider = StreamProvider.family<String, int>((ref, a) {
+        return Stream.value('$a');
+      });
+      final container = ProviderContainer(overrides: [
+        provider.overrideWithProvider(
+          (a) => StreamProvider((ref) => Stream.value('override $a')),
+        ),
+      ]);
+
+      expect(container.read(provider(0)), const AsyncValue<String>.loading());
+
+      await container.pump();
+
+      expect(
+        container.read(provider(0)),
+        const AsyncValue<String>.data('override 0'),
+      );
     });
   });
 }
