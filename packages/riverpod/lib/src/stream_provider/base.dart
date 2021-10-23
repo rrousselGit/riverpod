@@ -79,7 +79,16 @@ class StreamProviderElement<State> extends AsyncProviderElement<State>
   AsyncValue<State> get state => requireState;
 
   @override
-  set state(AsyncValue<State> newState) => setState(newState);
+  set state(AsyncValue<State> newState) {
+    assert(
+      newState is AsyncData ||
+          (newState is AsyncLoading &&
+              (newState as AsyncLoading).previous == null) ||
+          (newState is AsyncError && (newState as AsyncError).previous == null),
+      'Cannot specify "previous" for AsyncValue but got $newState',
+    );
+    setState(newState);
+  }
 }
 
 /// {@template riverpod.streamprovider.family}
