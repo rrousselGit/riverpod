@@ -13,7 +13,10 @@ abstract class StateNotifierProviderRef<Notifier extends StateNotifier<State>,
 @sealed
 class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
     extends AlwaysAliveProviderBase<State>
-    with StateNotifierProviderOverrideMixin<Notifier, State> {
+    with
+        StateNotifierProviderOverrideMixin<Notifier, State>,
+        OverrideWithProviderMixin<Notifier,
+            StateNotifierProvider<Notifier, State>> {
   /// {@macro riverpod.statenotifierprovider}
   StateNotifierProvider(
     Create<Notifier, StateNotifierProviderRef<Notifier, State>> create, {
@@ -31,6 +34,9 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStateNotifierProviderBuilder();
+
+  @override
+  ProviderBase<Notifier> get originProvider => notifier;
 
   /// {@template riverpod.statenotifierprovider.notifier}
   /// Obtains the [StateNotifier] associated with this [StateNotifierProvider],
@@ -145,5 +151,19 @@ class StateNotifierProviderFamily<Notifier extends StateNotifier<State>, State,
     final provider = call(argument);
     setup(origin: provider, override: provider);
     setup(origin: provider.notifier, override: provider.notifier);
+  }
+
+  /// {@macro riverpod.overridewithprovider}
+  Override overrideWithProvider(
+    StateNotifierProvider<Notifier, State> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(
+      this,
+      (arg, setup) {
+        final provider = call(arg);
+        setup(origin: provider.notifier, override: override(arg).notifier);
+        setup(origin: provider, override: provider);
+      },
+    );
   }
 }

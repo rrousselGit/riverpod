@@ -983,18 +983,17 @@ mixin OverrideWithValueMixin<State> on ProviderBase<State> {
   }
 }
 
-mixin OverrideWithProviderMixin<State, ProviderType extends ProviderBase<State>>
-    on ProviderBase<State> {
-  @override
+mixin OverrideWithProviderMixin<State,
+    ProviderType extends ProviderBase<Object?>> {
   ProviderBase<State> get originProvider;
 
   /// {@template riverpod.overridewithprovider}
   /// Overrides a provider with a value, ejecting the default behaviour.
   ///
   /// This will also disable the auto-scoping mechanism, meaning that if the
-  /// overridden provider specified [dependencies], it will have no effect.
+  /// overridden provider specified `dependencies`, it will have no effect.
   ///
-  /// The override must not specify a [dependencies].
+  /// The override must not specify a `dependencies`.
   ///
   /// Some common use-cases are:
   /// - testing, by replacing a service with a fake implementation, or to reach

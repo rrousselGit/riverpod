@@ -47,6 +47,33 @@ void main() {
         );
         expect(root.getAllProviderElementsInOrder(), isEmpty);
       });
+
+      test('when using provider.overrideWithProvider', () async {
+        final controller = StateController(0);
+        final provider = StateNotifierProvider.autoDispose
+            .family<StateController<int>, int, int>((ref, _) => controller);
+        final root = createContainer();
+        final controllerOverride = StateController(42);
+        final container = createContainer(parent: root, overrides: [
+          provider.overrideWithProvider(
+            (value) =>
+                StateNotifierProvider.autoDispose((ref) => controllerOverride),
+          ),
+        ]);
+
+        expect(container.read(provider(0).notifier), controllerOverride);
+        expect(container.read(provider(0)), 42);
+        expect(root.getAllProviderElementsInOrder(), isEmpty);
+        expect(
+          container.getAllProviderElementsInOrder(),
+          unorderedEquals(<Object?>[
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider(0)),
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider(0).notifier),
+          ]),
+        );
+      });
     });
 
     test('properly overrides ==', () {

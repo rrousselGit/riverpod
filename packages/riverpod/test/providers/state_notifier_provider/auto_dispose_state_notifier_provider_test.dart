@@ -251,6 +251,59 @@ void main() {
     expect(sub.read(), notifier2);
     expect(callCount, 1);
   });
+
+  test('overrideWithProvider preserves the state accross update', () async {
+    final provider = StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
+      return TestNotifier();
+    });
+    final notifier = TestNotifier(42);
+    final notifier2 = TestNotifier(21);
+    final container = createContainer(overrides: [
+      provider.overrideWithProvider(
+        StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
+          return notifier;
+        }),
+      ),
+    ]);
+    addTearDown(container.dispose);
+    final listener = Listener<int>();
+
+    container.listen<int>(provider, listener, fireImmediately: true);
+
+    verifyOnly(listener, listener(null, 42));
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier.hasListeners, true);
+
+    notifier.increment();
+
+    verifyOnly(listener, listener(42, 43));
+
+    container.updateOverrides([
+      provider.overrideWithProvider(
+        StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
+          return notifier2;
+        }),
+      ),
+    ]);
+
+    await container.pump();
+
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier2.hasListeners, false);
+    verifyNoMoreInteractions(listener);
+
+    notifier.increment();
+
+    await container.pump();
+
+    expect(container.read(provider.notifier), notifier);
+    verifyOnly(listener, listener(43, 44));
+    expect(notifier.mounted, true);
+
+    container.dispose();
+
+    expect(notifier.mounted, false);
+  });
 }
 
 class TestNotifier extends StateNotifier<int> {
