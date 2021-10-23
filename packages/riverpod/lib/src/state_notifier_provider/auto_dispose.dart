@@ -5,37 +5,6 @@ typedef AutoDisposeStateNotifierProviderRef<
         Notifier extends StateNotifier<State>, State>
     = AutoDisposeRef;
 
-class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
-    extends AutoDisposeProviderBase<Notifier> {
-  _AutoDisposeNotifierProvider(
-    this._create, {
-    required String? name,
-    required this.dependencies,
-  }) : super(name: name == null ? null : '$name.notifier');
-
-  final Create<Notifier, AutoDisposeRef> _create;
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
-
-  @override
-  Notifier create(AutoDisposeRef ref) {
-    final notifier = _create(ref);
-    ref.onDispose(notifier.dispose);
-    return notifier;
-  }
-
-  @override
-  bool updateShouldNotify(Notifier previousState, Notifier newState) {
-    return true;
-  }
-
-  @override
-  AutoDisposeProviderElement<Notifier> createElement() {
-    return AutoDisposeProviderElement(this);
-  }
-}
-
 /// {@template riverpod.statenotifierprovider}
 /// Creates a [StateNotifier] and expose its current state.
 ///
@@ -151,6 +120,37 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
 
   @override
   AutoDisposeProviderElementBase<State> createElement() {
+    return AutoDisposeProviderElement(this);
+  }
+}
+
+class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
+    extends AutoDisposeProviderBase<Notifier> {
+  _AutoDisposeNotifierProvider(
+    this._create, {
+    required String? name,
+    required this.dependencies,
+  }) : super(name: name == null ? null : '$name.notifier');
+
+  final Create<Notifier, AutoDisposeRef> _create;
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
+
+  @override
+  Notifier create(AutoDisposeRef ref) {
+    final notifier = _create(ref);
+    ref.onDispose(notifier.dispose);
+    return notifier;
+  }
+
+  @override
+  bool updateShouldNotify(Notifier previousState, Notifier newState) {
+    return true;
+  }
+
+  @override
+  AutoDisposeProviderElement<Notifier> createElement() {
     return AutoDisposeProviderElement(this);
   }
 }
