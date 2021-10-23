@@ -9,7 +9,10 @@ abstract class AutoDisposeStateProviderRef<State>
 @sealed
 class AutoDisposeStateProvider<State>
     extends AutoDisposeProviderBase<StateController<State>>
-    with StateProviderOverrideMixin<State> {
+    with
+        StateProviderOverrideMixin<State>,
+        OverrideWithProviderMixin<StateController<State>,
+            AutoDisposeStateProvider<State>> {
   /// {@macro riverpod.stateprovider}
   AutoDisposeStateProvider(
     Create<State, AutoDisposeStateProviderRef<State>> create, {
@@ -130,5 +133,19 @@ class AutoDisposeStateProviderFamily<State, Arg> extends Family<
     final provider = call(argument);
     setup(origin: provider, override: provider);
     setup(origin: provider.notifier, override: provider.notifier);
+  }
+
+  /// {@macro riverpod.overridewithprovider}
+  Override overrideWithProvider(
+    AutoDisposeStateProvider<State> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(
+      this,
+      (arg, setup) {
+        final provider = call(arg);
+        setup(origin: provider.notifier, override: override(arg).notifier);
+        setup(origin: provider, override: provider);
+      },
+    );
   }
 }

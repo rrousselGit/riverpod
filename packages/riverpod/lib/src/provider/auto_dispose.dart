@@ -8,7 +8,9 @@ abstract class AutoDisposeProviderRef<State>
 /// {@macro riverpod.provider}
 @sealed
 class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
-    with OverrideWithValueMixin<State> {
+    with
+        OverrideWithValueMixin<State>,
+        OverrideWithProviderMixin<State, AutoDisposeProviderBase<State>> {
   /// {@macro riverpod.provider}
   AutoDisposeProvider(
     this._create, {
@@ -18,6 +20,9 @@ class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeProviderFamilyBuilder();
+
+  @override
+  ProviderBase<State> get originProvider => this;
 
   final Create<State, AutoDisposeProviderRef<State>> _create;
 

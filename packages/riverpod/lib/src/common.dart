@@ -61,21 +61,27 @@ abstract class AsyncValue<T> {
   /// Creates an [AsyncValue] with a data.
   ///
   /// The data can be `null`.
+  // coverage:ignore-start
   const factory AsyncValue.data(T value) = AsyncData<T>;
+  // coverage:ignore-end
 
   /// Creates an [AsyncValue] in loading state.
   ///
   /// Prefer always using this constructor with the `const` keyword.
+  // coverage:ignore-start
   const factory AsyncValue.loading({AsyncValue<T>? previous}) = AsyncLoading<T>;
+  // coverage:ignore-end
 
   /// Creates an [AsyncValue] in error state.
   ///
   /// The parameter [error] cannot be `null`.
+  // coverage:ignore-start
   const factory AsyncValue.error(
     Object error, {
     StackTrace? stackTrace,
     AsyncData<T>? previous,
   }) = AsyncError<T>;
+  // coverage:ignore-end
 
   /// Transforms a [Future] that may fail into something that is safe to read.
   ///

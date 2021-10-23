@@ -5,6 +5,7 @@
 - **Breaking** Renamed `ProviderRefBase` to `Ref`.
 - **Breaking** The listener passed `ref.listen`/`container.listen` now receives
   both the previous and current value.
+- `overrideWithProvider` is added again
 - Added an assertion that detects when a provider override is missing.
 - Added an assert for when a provider specified `dependencies` but is
   depending on a provider that isn't in the list.

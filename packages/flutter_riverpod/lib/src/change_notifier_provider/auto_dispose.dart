@@ -14,7 +14,10 @@ abstract class AutoDisposeChangeNotifierProviderRef<Notifier>
 @sealed
 class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
     extends AutoDisposeProviderBase<Notifier>
-    with ChangeNotifierProviderOverrideMixin<Notifier> {
+    with
+        ChangeNotifierProviderOverrideMixin<Notifier>,
+        OverrideWithProviderMixin<Notifier,
+            AutoDisposeChangeNotifierProvider<Notifier>> {
   /// {@macro riverpod.changenotifierprovider}
   AutoDisposeChangeNotifierProvider(
     Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>> create, {
@@ -31,7 +34,7 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
   static const family = AutoDisposeChangeNotifierProviderFamilyBuilder();
 
   @override
-  ProviderBase<Object?> get originProvider => notifier;
+  ProviderBase<Notifier> get originProvider => notifier;
 
   /// {@macro flutter_riverpod.changenotifierprovider.notifier}
   @override
@@ -133,5 +136,20 @@ class AutoDisposeChangeNotifierProviderFamily<Notifier extends ChangeNotifier,
 
     setup(origin: provider, override: provider);
     setup(origin: provider.notifier, override: provider.notifier);
+  }
+
+  /// {@endtemplate}
+  Override overrideWithProvider(
+    AutoDisposeChangeNotifierProvider<Notifier> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(
+      this,
+      (arg, setup) {
+        final provider = call(arg);
+
+        setup(origin: provider.notifier, override: override(arg).notifier);
+        setup(origin: provider, override: provider);
+      },
+    );
   }
 }

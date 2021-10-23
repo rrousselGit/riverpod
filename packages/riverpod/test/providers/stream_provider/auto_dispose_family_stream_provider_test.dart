@@ -49,6 +49,32 @@ void main() {
       );
     });
 
+    test('overrideWithProvider', () async {
+      final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
+        return Stream.value(a * 2);
+      });
+      final container = ProviderContainer(overrides: [
+        provider.overrideWithProvider((a) {
+          return StreamProvider.autoDispose((ref) => Stream.value(a * 4));
+        }),
+      ]);
+      final listener = Listener<AsyncValue<int>>();
+
+      container.listen(provider(21), listener, fireImmediately: true);
+
+      verifyOnly(listener, listener(null, const AsyncValue.loading()));
+
+      await container.pump();
+
+      verifyOnly(
+        listener,
+        listener(
+          const AsyncLoading(),
+          const AsyncValue.data(84),
+        ),
+      );
+    });
+
     test('can be auto-scoped', () async {
       final dep = Provider((ref) => 0);
       final provider = StreamProvider.autoDispose.family<int, int>(

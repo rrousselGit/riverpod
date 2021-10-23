@@ -14,7 +14,9 @@ abstract class ChangeNotifierProviderRef<Notifier extends ChangeNotifier>
 @sealed
 class ChangeNotifierProvider<Notifier extends ChangeNotifier>
     extends AlwaysAliveProviderBase<Notifier>
-    with ChangeNotifierProviderOverrideMixin<Notifier> {
+    with
+        ChangeNotifierProviderOverrideMixin<Notifier>,
+        OverrideWithProviderMixin<Notifier, ChangeNotifierProvider<Notifier>> {
   /// {@macro riverpod.changenotifierprovider}
   ChangeNotifierProvider(
     Create<Notifier, ChangeNotifierProviderRef<Notifier>> create, {
@@ -34,7 +36,7 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
   static const autoDispose = AutoDisposeChangeNotifierProviderBuilder();
 
   @override
-  ProviderBase<Object?> get originProvider => notifier;
+  ProviderBase<Notifier> get originProvider => notifier;
 
   /// {@template flutter_riverpod.changenotifierprovider.notifier}
   /// Obtains the [ChangeNotifier] associated with this provider, but without
@@ -154,5 +156,55 @@ class ChangeNotifierProviderFamily<Notifier extends ChangeNotifier, Arg>
 
     setup(origin: provider, override: provider);
     setup(origin: provider.notifier, override: provider.notifier);
+  }
+
+  /// {@template riverpod.overridewithprovider}
+  /// Overrides a provider with a value, ejecting the default behaviour.
+  ///
+  /// This will also disable the auto-scoping mechanism, meaning that if the
+  /// overridden provider specified `dependencies`, it will have no effect.
+  ///
+  /// The override must not specify a `dependencies`.
+  ///
+  /// Some common use-cases are:
+  /// - testing, by replacing a service with a fake implementation, or to reach
+  ///   a very specific state easily.
+  /// - multiple environments, by changing the implementation of a class
+  ///   based on the platform or other parameters.
+  ///
+  /// This function should be used in combination with `ProviderScope.overrides`
+  /// or `ProviderContainer.overrides`:
+  ///
+  /// ```dart
+  /// final myService = Provider((ref) => MyService());
+  ///
+  /// runApp(
+  ///   ProviderScope(
+  ///     overrides: [
+  ///       myService.overrideWithProvider(
+  ///         // Replace the implementation of the provider with a different one
+  ///         Provider((ref) {
+  ///           ref.watch('other');
+  ///           return MyFakeService(),
+  ///         }),
+  ///       ),
+  ///     ],
+  ///     child: MyApp(),
+  ///   ),
+  /// );
+  /// ```
+  /// {@endtemplate}
+  Override overrideWithProvider(
+    ChangeNotifierProvider<Notifier> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(
+      this,
+      (arg, setup) {
+        final provider = call(arg);
+
+        setup(origin: provider.notifier, override: override(arg).notifier);
+        setup(origin: provider, override: provider);
+      },
+    );
   }
 }

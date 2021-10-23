@@ -612,7 +612,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
   bool _debugAssertCanDependOn(ProviderBase provider) {
     assert(
-      origin.dependencies == null ||
+      this.provider != origin ||
+          origin.dependencies == null ||
           origin.dependencies!.contains(provider.from) ||
           origin.dependencies!.contains(provider),
       'The provider $origin tried to read $provider, but it specified a '
@@ -944,6 +945,11 @@ $stackTrace
 
 mixin OverrideWithValueMixin<State> on ProviderBase<State> {
   /// {@template riverpod.overrridewithvalue}
+  /// Overrides a provider with a value, ejecting the default behaviour.
+  ///
+  /// This will also disable the auto-scoping mechanism, meaning that if the
+  /// overridden provider specified [dependencies], it will have no effect.
+  ///
   /// Some common use-cases are:
   /// - testing, by replacing a service with a fake implementation, or to reach
   ///   a very specific state easily.
@@ -977,9 +983,67 @@ mixin OverrideWithValueMixin<State> on ProviderBase<State> {
   }
 }
 
+mixin OverrideWithProviderMixin<State,
+    ProviderType extends ProviderBase<Object?>> {
+  ProviderBase<State> get originProvider;
+
+  /// {@template riverpod.overridewithprovider}
+  /// Overrides a provider with a value, ejecting the default behaviour.
+  ///
+  /// This will also disable the auto-scoping mechanism, meaning that if the
+  /// overridden provider specified `dependencies`, it will have no effect.
+  ///
+  /// The override must not specify a `dependencies`.
+  ///
+  /// Some common use-cases are:
+  /// - testing, by replacing a service with a fake implementation, or to reach
+  ///   a very specific state easily.
+  /// - multiple environments, by changing the implementation of a class
+  ///   based on the platform or other parameters.
+  ///
+  /// This function should be used in combination with `ProviderScope.overrides`
+  /// or `ProviderContainer.overrides`:
+  ///
+  /// ```dart
+  /// final myService = Provider((ref) => MyService());
+  ///
+  /// runApp(
+  ///   ProviderScope(
+  ///     overrides: [
+  ///       myService.overrideWithProvider(
+  ///         // Replace the implementation of the provider with a different one
+  ///         Provider((ref) {
+  ///           ref.watch('other');
+  ///           return MyFakeService(),
+  ///         }),
+  ///       ),
+  ///     ],
+  ///     child: MyApp(),
+  ///   ),
+  /// );
+  /// ```
+  /// {@endtemplate}
+  Override overrideWithProvider(ProviderType value) {
+    assert(
+      value.originProvider.dependencies == null,
+      'When using overrideWithProvider, the override cannot specify `dependencies`.',
+    );
+
+    return ProviderOverride(
+      origin: originProvider,
+      override: value.originProvider,
+    );
+  }
+}
+
 abstract class Result<State> {
+  // coverage:ignore-start
   factory Result.data(State state) = ResultData;
+  // coverage:ignore-end
+
+  // coverage:ignore-start
   factory Result.error(Object error, StackTrace stackTrace) = ResultError;
+  // coverage:ignore-end
 
   bool get hasState;
 

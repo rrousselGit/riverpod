@@ -576,4 +576,60 @@ final b = Provider(
       );
     });
   });
+
+  test(
+      'throw if non-family overrideWithProvider returnes a provider with dependencies',
+      () {
+    final provider = Provider<int>((ref) => 0);
+    final a = Provider((ref) => 0);
+
+    expect(
+      () => provider.overrideWithProvider(
+        Provider((ref) => 0, dependencies: [a]),
+      ),
+      throwsA(isA<AssertionError>()),
+    );
+  });
+
+  test('does not auto-scope provider overrides', () {
+    final a = Provider((ref) => 0);
+    final another = Provider((ref) => 42);
+    final b = Provider((ref) => ref.watch(a), dependencies: [a]);
+    final c = Provider((ref) => ref.watch(a), dependencies: [a]);
+
+    final root = createContainer(overrides: [
+      b.overrideWithValue(21),
+      c.overrideWithProvider(Provider((ref) => ref.watch(another) + 10)),
+    ]);
+    final container = createContainer(parent: root, overrides: [
+      a.overrideWithValue(42),
+      another.overrideWithValue(84),
+    ]);
+
+    expect(container.read(a), 42);
+    expect(container.read(b), 21);
+    expect(container.read(c), 52);
+  });
+
+  test('does not auto-scope family overrides', () {
+    final a = Provider((ref) => 0);
+    final another = Provider((ref) => 42);
+    final b = Provider.family<int, int>(
+      (ref, _) => ref.watch(a),
+      dependencies: [a],
+    );
+
+    final root = createContainer(overrides: [
+      b.overrideWithProvider(
+        (value) => Provider((ref) => ref.watch(another) + value),
+      ),
+    ]);
+    final container = createContainer(parent: root, overrides: [
+      a.overrideWithValue(42),
+      another.overrideWithValue(84),
+    ]);
+
+    expect(container.read(a), 42);
+    expect(container.read(b(10)), 52);
+  });
 }
