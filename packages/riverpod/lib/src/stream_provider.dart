@@ -185,23 +185,23 @@ mixin _StreamProviderMixin<T> on ProviderBase<AsyncValue<T>> {
 /// - [StreamProvider.family], to create a [StreamProvider] from external parameters
 /// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no-longer needed.
 /// {@endtemplate}
-AsyncValue<State> _listenStream<State>(
-  Stream<State> Function() stream,
-  ProviderElementBase<AsyncValue<State>> ref,
-) {
-  try {
-    final sub = stream().listen(
-      (event) => ref.setState(AsyncValue.data(event)),
-      // ignore: avoid_types_on_closure_parameters
-      onError: (Object err, StackTrace stack) {
-        ref.setState(AsyncValue.error(err, stackTrace: stack));
-      },
-    );
+mixin _StreamProviderElementMixin<State>
+    on ProviderElementBase<AsyncValue<State>> {
+  AsyncValue<State> _listenStream(Stream<State> Function() stream) {
+    try {
+      final sub = stream().listen(
+        (event) => setState(AsyncValue.data(event)),
+        // ignore: avoid_types_on_closure_parameters
+        onError: (Object err, StackTrace stack) {
+          setState(AsyncValue.error(err, stackTrace: stack));
+        },
+      );
 
-    ref.onDispose(sub.cancel);
+      onDispose(sub.cancel);
 
-    return AsyncValue<State>.loading();
-  } catch (err, stack) {
-    return AsyncValue<State>.error(err, stackTrace: stack);
+      return AsyncValue<State>.loading();
+    } catch (err, stack) {
+      return AsyncValue<State>.error(err, stackTrace: stack);
+    }
   }
 }

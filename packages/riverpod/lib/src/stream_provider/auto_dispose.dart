@@ -2,7 +2,17 @@ part of '../stream_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [ProviderRef.state], the value currently exposed by this providers.
-typedef AutoDisposeStreamProviderRef<State> = AutoDisposeRef;
+abstract class AutoDisposeStreamProviderRef<State> implements AutoDisposeRef {
+  /// Obtains the state currently exposed by this provider.
+  ///
+  /// Mutating this property will notify the provider listeners.
+  ///
+  /// Cannot be called while a provider is creating, unless the setter was called first.
+  ///
+  /// Will throw if the provider threw during creation.
+  AsyncValue<State> get state;
+  set state(AsyncValue<State> newState);
+}
 
 /// {@macro riverpod.streamprovider}
 @sealed
@@ -41,9 +51,9 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
 
   @override
   AsyncValue<State> create(
-    AutoDisposeProviderElementBase<AsyncValue<State>> ref,
+    covariant AutoDisposeStreamProviderElement<State> ref,
   ) {
-    return _listenStream(() => _create(ref), ref);
+    return ref._listenStream(() => _create(ref));
   }
 
   @override
@@ -63,6 +73,22 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
   AutoDisposeAsyncProviderElement<State> createElement() {
     return AutoDisposeAsyncProviderElement(this);
   }
+}
+
+/// The Element of a [AutoDisposeStreamProvider]
+class AutoDisposeStreamProviderElement<State>
+    extends AutoDisposeAsyncProviderElement<State>
+    with _StreamProviderElementMixin<State>
+    implements AutoDisposeStreamProviderRef<State> {
+  /// The Element of a [AutoDisposeStreamProvider]
+  AutoDisposeStreamProviderElement(AutoDisposeStreamProvider<State> provider)
+      : super(provider);
+
+  @override
+  AsyncValue<State> get state => requireState;
+
+  @override
+  set state(AsyncValue<State> newState) => setState(newState);
 }
 
 /// {@macro riverpod.streamprovider.family}
