@@ -70,3 +70,49 @@ abstract class FamilyOverride<Arg> implements Override {
   /// an argument.
   void setupOverride(Arg argument, SetupOverride setup);
 }
+
+class _FamilyOverride<Arg> implements FamilyOverride<Arg> {
+  _FamilyOverride(this.overriddenFamily, this._setup);
+
+  @override
+  final Family<Object?, Arg, ProviderBase<Object?>> overriddenFamily;
+
+  final void Function(Arg argument, SetupOverride setup) _setup;
+
+  @override
+  void setupOverride(Arg argument, SetupOverride setup) {
+    _setup(argument, setup);
+  }
+}
+
+/// An extension that adds [overrideWithProvider] to [Family].
+extension XFamily<State, Arg,
+        FamilyProvider extends AlwaysAliveProviderBase<State>>
+    on Family<State, Arg, FamilyProvider> {
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    AlwaysAliveProviderBase<State> Function(Arg argument) override,
+  ) {
+    return _FamilyOverride<Arg>(this, (arg, setup) {
+      setup(origin: call(arg), override: override(arg));
+    });
+  }
+}
+
+/// An extension that adds [overrideWithProvider] to [Family].
+extension XAutoDisposeFamily<State, Arg,
+        FamilyProvider extends AutoDisposeProviderBase<State>>
+    on Family<State, Arg, FamilyProvider> {
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overideWith}
+  Override overrideWithProvider(
+    AutoDisposeProviderBase<State> Function(Arg argument) override,
+  ) {
+    return _FamilyOverride<Arg>(this, (arg, setup) {
+      setup(origin: call(arg), override: override(arg));
+    });
+  }
+}

@@ -28,7 +28,9 @@ export 'src/framework.dart'
         // ignore: deprecated_member_use_from_same_package
         ProviderReference,
         AlwaysAliveProviderListenable,
-        FamilyCreate;
+        FamilyCreate,
+        XAutoDisposeFamily,
+        XFamily;
 
 export 'src/future_provider.dart'
     show
