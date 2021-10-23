@@ -13,7 +13,10 @@ abstract class StateProviderRef<State> implements Ref {
 @sealed
 class StateProvider<State>
     extends AlwaysAliveProviderBase<StateController<State>>
-    with StateProviderOverrideMixin<State> {
+    with
+        StateProviderOverrideMixin<State>,
+        OverrideWithProviderMixin<StateController<State>,
+            StateProvider<State>> {
   /// {@macro riverpod.stateprovider}
   StateProvider(
     Create<State, StateProviderRef<State>> create, {
@@ -31,6 +34,9 @@ class StateProvider<State>
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStateProviderBuilder();
+
+  @override
+  ProviderBase<StateController<State>> get originProvider => notifier;
 
   /// {@template riverpod.stateprovider.notifier}
   /// Obtains the [StateController] associated with this provider, but without
@@ -154,5 +160,19 @@ class StateProviderFamily<State, Arg>
     final provider = call(argument);
     setup(origin: provider, override: provider);
     setup(origin: provider.notifier, override: provider.notifier);
+  }
+
+  /// {@macro riverpod.overidewithprovider}
+  Override overrideWithProvider(
+    StateProvider<State> Function(Arg argument) override,
+  ) {
+    return FamilyOverride<Arg>(
+      this,
+      (arg, setup) {
+        final provider = call(arg);
+        setup(origin: provider.notifier, override: override(arg).notifier);
+        setup(origin: provider, override: provider);
+      },
+    );
   }
 }

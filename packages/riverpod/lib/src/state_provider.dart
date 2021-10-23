@@ -94,7 +94,7 @@ mixin StateProviderOverrideMixin<State>
   late final List<ProviderOrFamily>? dependencies = [notifier];
 
   @override
-  ProviderBase get originProvider => notifier;
+  ProviderBase<StateController<State>> get originProvider => notifier;
 
   /// {@macro riverpod.overrridewithvalue}
   Override overrideWithValue(StateController<State> value) {

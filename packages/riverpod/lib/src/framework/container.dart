@@ -560,6 +560,8 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
 
         if (containerForDependencyOverride != null &&
             containerForDependencyOverride.isNotEmpty) {
+          // a dependency of the provider was overridden, so the provider is overridden too
+
           final deepestOverrideContainer = containerForDependencyOverride
               .fold<ProviderContainer>(root, (previous, container) {
             if (container!.depth > previous.depth) {
@@ -567,8 +569,6 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
             }
             return previous;
           });
-
-          // a dependency of the provider was overridden, so the provider is overridden too
 
           final reader = _StateReader(
             origin: provider,

@@ -1026,13 +1026,13 @@ mixin OverrideWithProviderMixin<State, ProviderType extends ProviderBase<State>>
   /// {@endtemplate}
   Override overrideWithProvider(ProviderType value) {
     assert(
-      value.dependencies == null,
+      value.originProvider.dependencies == null,
       'When using overrideWithProvider, the override cannot specify `dependencies`.',
     );
 
     return ProviderOverride(
       origin: originProvider,
-      override: value,
+      override: value.originProvider,
     );
   }
 }
