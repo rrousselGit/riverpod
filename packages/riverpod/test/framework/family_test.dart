@@ -7,6 +7,25 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
+  test('throw if overrideWithProvider returnes a provider with dependencies',
+      () {
+    final family = Provider.family<int, int>((ref, _) => 0);
+    final a = Provider((ref) => 0);
+
+    final container = createContainer(
+      overrides: [
+        family.overrideWithProvider(
+          (argument) => Provider((ref) => 0, dependencies: [a]),
+        ),
+      ],
+    );
+
+    expect(
+      () => container.read(family(42)),
+      throwsA(isA<AssertionError>()),
+    );
+  });
+
   test(
       'does not re-initialize a family if read by a child container after the provider was initialized',
       () {

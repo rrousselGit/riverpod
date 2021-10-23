@@ -467,9 +467,10 @@ class ProviderContainer {
           final dependencyElement = readProviderElement<Object?>(dependency);
 
           assert(
-              dependencyElement ==
-                  targetElement.container
-                      .readProviderElement<Object?>(dependency),
+              targetElement.provider != targetElement.origin ||
+                  dependencyElement ==
+                      targetElement.container
+                          .readProviderElement<Object?>(dependency),
               '''
 Tried to read $provider from a place where one of its dependencies were overridden but the provider is not.
 
@@ -506,6 +507,10 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
             required ProviderBase origin,
             required ProviderBase override,
           }) {
+            assert(
+              origin == override || override.dependencies == null,
+              'A provider override cannot specify `dependencies`',
+            );
             assert(
               !familyOverrideRef.container._stateReaders.containsKey(origin),
               'A family override tried to override a provider that was already overridden',

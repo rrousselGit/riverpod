@@ -612,7 +612,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
   bool _debugAssertCanDependOn(ProviderBase provider) {
     assert(
-      origin.dependencies == null ||
+      this.provider != origin ||
+          origin.dependencies == null ||
           origin.dependencies!.contains(provider.from) ||
           origin.dependencies!.contains(provider),
       'The provider $origin tried to read $provider, but it specified a '
