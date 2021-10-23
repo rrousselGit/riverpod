@@ -42,7 +42,7 @@ class AutoDisposeFutureProvider<State> extends AutoDisposeAsyncProvider<State>
 
   @override
   AsyncValue<State> create(
-    covariant AutoDisposeFutureProviderElement<State> ref,
+    covariant AutoDisposeFutureProviderRef<State> ref,
   ) {
     return ref._listenFuture(() => _create(ref));
   }

@@ -62,7 +62,7 @@ class FutureProvider<State> extends AsyncProvider<State>
 
   @override
   AsyncValue<State> create(
-    covariant FutureProviderElement<State> ref,
+    covariant FutureProviderRef<State> ref,
   ) {
     return ref._listenFuture(() => _create(ref));
   }

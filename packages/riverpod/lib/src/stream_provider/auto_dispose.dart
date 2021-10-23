@@ -51,7 +51,7 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
 
   @override
   AsyncValue<State> create(
-    covariant AutoDisposeStreamProviderElement<State> ref,
+    covariant AutoDisposeStreamProviderRef<State> ref,
   ) {
     return ref._listenStream(() => _create(ref));
   }

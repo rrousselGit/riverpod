@@ -47,7 +47,7 @@ class StreamProvider<State> extends AsyncProvider<State>
       AsyncValueAsFutureProvider(this, name: modifierName(name, 'last'));
 
   @override
-  AsyncValue<State> create(covariant StreamProviderElement<State> ref) {
+  AsyncValue<State> create(covariant StreamProviderRef<State> ref) {
     return ref._listenStream(() => _create(ref));
   }
 
