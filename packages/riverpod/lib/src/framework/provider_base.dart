@@ -1037,8 +1037,13 @@ mixin OverrideWithProviderMixin<State,
 }
 
 abstract class Result<State> {
+  // coverage:ignore-start
   factory Result.data(State state) = ResultData;
+  // coverage:ignore-end
+
+  // coverage:ignore-start
   factory Result.error(Object error, StackTrace stackTrace) = ResultError;
+  // coverage:ignore-end
 
   bool get hasState;
 
