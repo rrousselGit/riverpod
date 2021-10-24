@@ -625,37 +625,6 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       final functionName = node.methodName.toSource();
       final target =
           node.realTarget?.staticType?.getDisplayString(withNullability: true);
-      if (functionName == 'when' ||
-          functionName == 'maybeWhen' &&
-              (target?.contains('AsyncValue') ?? false)) {
-        final loadingArgs = node.argumentList.arguments.where(
-            (a) => (a is NamedExpression) && a.name.label.name == 'loading');
-        if (loadingArgs.isNotEmpty) {
-          final loading = (loadingArgs.first as NamedExpression).expression;
-          if (loading is FunctionExpression) {
-            yieldPatch('last', loading.parameters!.leftParenthesis.offset + 1,
-                loading.parameters!.leftParenthesis.offset + 1);
-          } else if (loading is SimpleIdentifier &&
-              loading.staticType is FunctionType) {
-            yieldPatch('(last) => ', loading.offset, loading.offset);
-            yieldPatch('()', loading.end, loading.end);
-          }
-        }
-        final errorArgs = node.argumentList.arguments.where(
-            (a) => (a is NamedExpression) && a.name.label.name == 'error');
-        if (errorArgs.isNotEmpty) {
-          final error = (errorArgs.first as NamedExpression).expression;
-          if (error is FunctionExpression) {
-            yieldPatch(', last ', error.parameters!.parameters.last.end,
-                error.parameters!.parameters.last.end);
-          } else if (error is SimpleIdentifier &&
-              error.staticType is FunctionType) {
-            yieldPatch(
-                '(err, stackTrace, last) => ', error.offset, error.offset);
-            yieldPatch('(err, stackTrace)', error.end, error.end);
-          }
-        }
-      }
 
       if (target?.contains('ProviderContainer') ?? false) {
         // No need to migrate container methods unless refreshing FutureProvider

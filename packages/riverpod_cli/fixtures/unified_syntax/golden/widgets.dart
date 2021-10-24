@@ -213,15 +213,9 @@ class HooksWatch extends HookConsumerWidget {
     asyncValue.when(loading: () {}, data: (_) {}, error: (_, __) {});
     asyncValue.maybeWhen(
         loading: () {}, data: (_) {}, error: (_, __) {}, orElse: () {});
-    asyncValue.when(
-        loading: () => empty(),
-        data: (_) {},
-        error: (err, stackTrace) => error(err, stackTrace));
+    asyncValue.when(loading: empty, data: (_) {}, error: error);
     asyncValue.maybeWhen(
-        loading: () => empty(),
-        data: (_) {},
-        error: (err, stackTrace) => error(err, stackTrace),
-        orElse: () {});
+        loading: empty, data: (_) {}, error: error, orElse: () {});
     return Center(
       child: ElevatedButton(
         onPressed: () {
