@@ -76,13 +76,16 @@ class _StateReader {
     required this.origin,
     required this.override,
     required this.container,
-    required this.shouldPreserveStateReaderOnProviderDispose,
+    required this.isDynamicallyCreated,
   });
 
   final ProviderBase origin;
   ProviderBase override;
   final ProviderContainer container;
-  final bool shouldPreserveStateReaderOnProviderDispose;
+
+  /// Whether the [_StateReader] was created on first provider read instead of
+  /// at the creation of the [ProviderContainer]
+  final bool isDynamicallyCreated;
 
   ProviderElementBase? _element;
 
@@ -162,6 +165,11 @@ class ProviderContainer {
           ...?observers,
           if (parent != null) ...parent._observers,
         ],
+        _stateReaders = {
+          if (parent != null)
+            for (final entry in parent._stateReaders.entries)
+              if (!entry.value.isDynamicallyCreated) entry.key: entry.value,
+        },
         _root = parent?._root ?? parent {
     assert(() {
       _debugId = '${_debugNextId++}';
@@ -173,10 +181,8 @@ class ProviderContainer {
     }(), '');
 
     if (parent != null) {
-      // TODO ProviderObserver on scoped providers uses scoped observers + ancestor observers
       parent._children.add(this);
       _overrideForFamily.addAll(parent._overrideForFamily);
-      _stateReaders.addAll(parent._stateReaders);
     }
 
     for (final override in overrides) {
@@ -190,7 +196,7 @@ class ProviderContainer {
           origin: override._origin,
           override: override._override,
           container: this,
-          shouldPreserveStateReaderOnProviderDispose: true,
+          isDynamicallyCreated: false,
         );
       } else if (override is FamilyOverride) {
         _overrideForFamily[override.overriddenFamily] = _FamilyOverrideRef(
@@ -251,7 +257,7 @@ class ProviderContainer {
 
   final _overrideForProvider = HashMap<ProviderBase, ProviderBase>();
   final _overrideForFamily = HashMap<Family, _FamilyOverrideRef>();
-  final _stateReaders = HashMap<ProviderBase, _StateReader>();
+  final Map<ProviderBase, _StateReader> _stateReaders;
 
   /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
   Future<void> pump() async {
@@ -351,9 +357,10 @@ class ProviderContainer {
 
     final reader = _stateReaders[element._origin]!;
 
-    if (reader.shouldPreserveStateReaderOnProviderDispose) {
-      reader._element = null;
-    } else {
+    if (reader.isDynamicallyCreated) {
+      // Since the StateReader is implicitly created, we don't keep it
+      // on provider dispose, to avoid memory leak
+
       void removeStateReaderFrom(ProviderContainer container) {
         container._stateReaders.remove(element._origin);
 
@@ -363,6 +370,8 @@ class ProviderContainer {
       }
 
       removeStateReaderFrom(this);
+    } else {
+      reader._element = null;
     }
   }
 
@@ -520,7 +529,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
               origin: origin,
               override: override,
               container: familyOverrideRef.container,
-              shouldPreserveStateReaderOnProviderDispose: true,
+              isDynamicallyCreated: true,
             );
           }
 
@@ -548,8 +557,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
         final containerForDependencyOverride = dependencies
             ?.map((dep) {
               final reader = _stateReaders[dep];
-              if (reader != null &&
-                  reader.shouldPreserveStateReaderOnProviderDispose) {
+              if (reader != null) {
                 return reader.container;
               }
               final familyOverride = _overrideForFamily[dep];
@@ -570,27 +578,17 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
             return previous;
           });
 
-          final reader = _StateReader(
-            origin: provider,
-            override: provider,
-            container: deepestOverrideContainer,
-            // Since it's an implicit override, we don't preserve the StateReader
-            // to avoid memory leak
-            shouldPreserveStateReaderOnProviderDispose: false,
-          );
-
-          /// Since we are dynamically adding an override, it needs to be propagated
-          /// to all the children ProviderContainers
-          void visitChildContainer(ProviderContainer container) {
-            container._stateReaders.putIfAbsent(provider, () {
-              container._children.forEach(visitChildContainer);
-              return reader;
-            });
-          }
-
-          visitChildContainer(deepestOverrideContainer);
-
-          return reader;
+          /// Insert the StateReader in the container that it belongs to,
+          /// and import it locally
+          return deepestOverrideContainer._stateReaders.putIfAbsent(provider,
+              () {
+            return _StateReader(
+              origin: provider,
+              override: provider,
+              container: deepestOverrideContainer,
+              isDynamicallyCreated: true,
+            );
+          });
         }
       }
 
@@ -609,7 +607,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
         // guaranteed to not be overridden
         override: provider,
         container: _root ?? this,
-        shouldPreserveStateReaderOnProviderDispose: false,
+        isDynamicallyCreated: true,
       );
 
       if (_root != null) {

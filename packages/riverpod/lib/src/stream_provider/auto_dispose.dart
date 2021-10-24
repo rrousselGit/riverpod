@@ -16,9 +16,9 @@ abstract class AutoDisposeStreamProviderRef<State> implements AutoDisposeRef {
 
 /// {@macro riverpod.streamprovider}
 @sealed
-class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
+class AutoDisposeStreamProvider<State>
+    extends AutoDisposeProviderBase<AsyncValue<State>>
     with
-        _StreamProviderMixin<State>,
         OverrideWithValueMixin<AsyncValue<State>>,
         OverrideWithProviderMixin<AsyncValue<State>,
             AutoDisposeProviderBase<AsyncValue<State>>> {
@@ -40,19 +40,17 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
   @override
   final List<ProviderOrFamily>? dependencies;
 
-  @override
+  /// {@template riverpod.streamprovider.stream}
   late final AutoDisposeProviderBase<Stream<State>> stream =
-      AutoDisposeAsyncValueAsStreamProvider(
-    this,
-    name: modifierName(name, 'stream'),
-  );
+      AutoDisposeAsyncValueAsStreamProvider(this);
 
-  @override
-  late final AutoDisposeProviderBase<Future<State>> last =
-      AutoDisposeAsyncValueAsFutureProvider(
-    this,
-    name: modifierName(name, 'last'),
-  );
+  /// {@template riverpod.streamprovider.future}
+  late final AutoDisposeProviderBase<Future<State>> future =
+      AutoDisposeAsyncValueAsFutureProvider(this);
+
+  /// {@template riverpod.streamprovider.future}
+  @Deprecated('Use `future` instead')
+  AutoDisposeProviderBase<Future<State>> get last => future;
 
   @override
   AsyncValue<State> create(
@@ -82,7 +80,7 @@ class AutoDisposeStreamProvider<State> extends AutoDisposeAsyncProvider<State>
 
 /// The Element of a [AutoDisposeStreamProvider]
 class AutoDisposeStreamProviderElement<State>
-    extends AutoDisposeAsyncProviderElement<State>
+    extends AutoDisposeProviderElementBase<AsyncValue<State>>
     with _StreamProviderElementMixin<State>
     implements AutoDisposeStreamProviderRef<State> {
   /// The Element of a [AutoDisposeStreamProvider]
@@ -93,16 +91,7 @@ class AutoDisposeStreamProviderElement<State>
   AsyncValue<State> get state => requireState;
 
   @override
-  set state(AsyncValue<State> newState) {
-    assert(
-      newState is AsyncData ||
-          (newState is AsyncLoading &&
-              (newState as AsyncLoading).previous == null) ||
-          (newState is AsyncError && (newState as AsyncError).previous == null),
-      'Cannot specify "previous" for AsyncValue but got $newState',
-    );
-    setState(newState);
-  }
+  set state(AsyncValue<State> newState) => setState(newState);
 }
 
 /// {@macro riverpod.streamprovider.family}
@@ -126,9 +115,6 @@ class AutoDisposeStreamProviderFamily<State, Arg>
       name: name,
     );
 
-    registerProvider(provider.stream, argument);
-    registerProvider(provider.last, argument);
-
     return provider;
   }
 
@@ -136,8 +122,6 @@ class AutoDisposeStreamProviderFamily<State, Arg>
   void setupOverride(Arg argument, SetupOverride setup) {
     final provider = call(argument);
     setup(origin: provider, override: provider);
-    setup(origin: provider.stream, override: provider.stream);
-    setup(origin: provider.last, override: provider.last);
   }
 
   /// {@macro riverpod.overridewithprovider}
@@ -147,8 +131,6 @@ class AutoDisposeStreamProviderFamily<State, Arg>
     return FamilyOverride<Arg>(this, (arg, setup) {
       final provider = call(arg);
       setup(origin: provider, override: override(arg));
-      setup(origin: provider.stream, override: provider.stream);
-      setup(origin: provider.last, override: provider.last);
     });
   }
 }

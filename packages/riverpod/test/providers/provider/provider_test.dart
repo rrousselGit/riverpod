@@ -6,6 +6,22 @@ import '../../utils.dart';
 
 void main() {
   group('Provider', () {
+    test('can benefit from .future extension if returning an AsyncValue',
+        () async {
+      final container = createContainer();
+      final provider = Provider((ref) => const AsyncValue.data(42));
+
+      await expectLater(container.read(provider.future), completion(42));
+    });
+
+    test('can benefit from .stream extension if returning an AsyncValue',
+        () async {
+      final container = createContainer();
+      final provider = Provider((ref) => const AsyncValue.data(42));
+
+      await expectLater(container.read(provider.stream), emits(42));
+    });
+
     test('can be refreshed', () async {
       var result = 0;
       final container = createContainer();

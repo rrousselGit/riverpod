@@ -16,7 +16,8 @@ abstract class AutoDisposeFutureProviderRef<State> implements AutoDisposeRef {
 
 /// {@macro riverpod.futureprovider}
 @sealed
-class AutoDisposeFutureProvider<State> extends AutoDisposeAsyncProvider<State>
+class AutoDisposeFutureProvider<State>
+    extends AutoDisposeProviderBase<AsyncValue<State>>
     with
         OverrideWithValueMixin<AsyncValue<State>>,
         OverrideWithProviderMixin<AsyncValue<State>,
@@ -41,10 +42,7 @@ class AutoDisposeFutureProvider<State> extends AutoDisposeAsyncProvider<State>
 
   /// {@macro riverpod.futureprovider.future}
   late final AutoDisposeProviderBase<Future<State>> future =
-      AutoDisposeAsyncValueAsFutureProvider(
-    this,
-    name: modifierName(name, 'future'),
-  );
+      AutoDisposeAsyncValueAsFutureProvider(this);
 
   @override
   AsyncValue<State> create(
@@ -74,7 +72,7 @@ class AutoDisposeFutureProvider<State> extends AutoDisposeAsyncProvider<State>
 
 /// The element of a [AutoDisposeFutureProvider]
 class AutoDisposeFutureProviderElement<State>
-    extends AutoDisposeAsyncProviderElement<State>
+    extends AutoDisposeProviderElementBase<AsyncValue<State>>
     with _FutureProviderElementMixin<State>
     implements AutoDisposeFutureProviderRef<State> {
   /// The element of a [AutoDisposeFutureProvider]
@@ -85,16 +83,7 @@ class AutoDisposeFutureProviderElement<State>
   AsyncValue<State> get state => requireState;
 
   @override
-  set state(AsyncValue<State> newState) {
-    assert(
-      newState is AsyncData ||
-          (newState is AsyncLoading &&
-              (newState as AsyncLoading).previous == null) ||
-          (newState is AsyncError && (newState as AsyncError).previous == null),
-      'Cannot specify "previous" for AsyncValue but got $newState',
-    );
-    setState(newState);
-  }
+  set state(AsyncValue<State> newState) => setState(newState);
 }
 
 /// {@template riverpod.futureprovider.family}
@@ -120,8 +109,6 @@ class AutoDisposeFutureProviderFamily<State, Arg>
       name: name,
     );
 
-    registerProvider(provider.future, argument);
-
     return provider;
   }
 
@@ -129,7 +116,6 @@ class AutoDisposeFutureProviderFamily<State, Arg>
   void setupOverride(Arg argument, SetupOverride setup) {
     final futureProvider = call(argument);
     setup(origin: futureProvider, override: futureProvider);
-    setup(origin: futureProvider.future, override: futureProvider.future);
   }
 
   /// {@macro riverpod.overridewithprovider}
@@ -139,7 +125,6 @@ class AutoDisposeFutureProviderFamily<State, Arg>
     return FamilyOverride<Arg>(this, (arg, setup) {
       final futureProvider = call(arg);
       setup(origin: futureProvider, override: override(arg));
-      setup(origin: futureProvider.future, override: futureProvider.future);
     });
   }
 }

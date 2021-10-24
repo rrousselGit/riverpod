@@ -1,5 +1,8 @@
 export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
 
+export 'src/async_value_converters.dart'
+    show AlwaysAliveAsyncProviderX, AutoDisposeAsyncProviderX;
+
 export 'src/common.dart'
     show AsyncValue, AsyncData, AsyncLoading, AsyncError, AsyncValueX;
 

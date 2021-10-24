@@ -26,8 +26,8 @@ void main() {
           child: Consumer(builder: (c, ref, _) {
             return ref.watch(futureProvider).when(
                   data: (data) => Text(data.toString()),
-                  loading: (_) => const Text('loading'),
-                  error: (err, stack, _) => Text('$err'),
+                  loading: () => const Text('loading'),
+                  error: (err, stack) => Text('$err'),
                 );
           }),
         ),
@@ -55,8 +55,8 @@ void main() {
           child: Consumer(builder: (c, ref, _) {
             return ref.watch(futureProvider).when(
                   data: (data) => Text(data.toString()),
-                  loading: (_) => const Text('loading'),
-                  error: (err, stack, _) {
+                  loading: () => const Text('loading'),
+                  error: (err, stack) {
                     whenError = err;
                     whenStack = stack;
                     return const Text('error');
@@ -154,8 +154,8 @@ void main() {
         ref.watch(proxy);
         return ref.watch(futureProvider).when(
               data: (data) => Text(data.toString()),
-              loading: (_) => const Text('loading'),
-              error: (err, stack, _) {
+              loading: () => const Text('loading'),
+              error: (err, stack) {
                 return const Text('error');
               },
             );
@@ -348,8 +348,8 @@ void main() {
           child: Consumer(builder: (c, ref, _) {
             return ref.watch(futureProviderFamily).when(
                   data: (value) => Text(value.toString()),
-                  loading: (_) => const Text('loading'),
-                  error: (err, stack, _) => const Text('error'),
+                  loading: () => const Text('loading'),
+                  error: (err, stack) => const Text('error'),
                 );
           }),
         ),
@@ -378,8 +378,8 @@ void main() {
           child: Consumer(builder: (c, ref, _) {
             return ref.watch(futureProviderFamily).when(
                   data: (value) => Text(value.toString()),
-                  loading: (_) => const Text('loading'),
-                  error: (err, stack, _) => const Text('error'),
+                  loading: () => const Text('loading'),
+                  error: (err, stack) => const Text('error'),
                 );
           }),
         ),
@@ -408,8 +408,8 @@ void main() {
           child: Consumer(builder: (c, ref, _) {
             return ref.watch(futureProviderFamily).when(
                   data: (value) => Text(value.toString()),
-                  loading: (_) => const Text('loading'),
-                  error: (err, stack, _) => const Text('error'),
+                  loading: () => const Text('loading'),
+                  error: (err, stack) => const Text('error'),
                 );
           }),
         ),

@@ -9,6 +9,141 @@ import '../utils.dart';
 Future<void> main() async {
   final library = await Library.parseFromStacktrace();
 
+  test(
+      'transitive dependencies includes the transitive dependencies of families',
+      () {
+    final a = Provider((ref) => 0);
+    final b = Provider.family((ref, _) => 0, dependencies: [a]);
+    final c = Provider((ref) => 0, dependencies: [b]);
+
+    expect(c.allTransitiveDependencies, containsAll(<Object>[a, b]));
+  });
+
+  test(
+      'reading a provider from a scoped container, '
+      'then adding a new container with an override, '
+      'then reading from the new container correctly auto-scope again', () {
+    final a = Provider((ref) => 0);
+    final b = Provider((ref) => ref.watch(a) + 10, dependencies: [a]);
+
+    final root = createContainer();
+    final mid = createContainer(
+      parent: root,
+      overrides: [a.overrideWithValue(42)],
+    );
+
+    expect(mid.read(b), 52);
+
+    final child = createContainer(
+      parent: mid,
+      overrides: [a.overrideWithValue(84)],
+    );
+
+    expect(child.read(b), 94);
+  });
+
+  test(
+      'reading a provider from a scoped container, '
+      'then reading from container further down the tree correctly auto-scope again',
+      () {
+    final a = Provider((ref) => 0);
+    final b = Provider((ref) => ref.watch(a) + 10, dependencies: [a]);
+
+    final root = createContainer();
+    final mid = createContainer(
+      parent: root,
+      overrides: [a.overrideWithValue(42)],
+    );
+    final child = createContainer(
+      parent: mid,
+      overrides: [a.overrideWithValue(84)],
+    );
+
+    expect(mid.read(b), 52);
+    expect(child.read(b), 94);
+  });
+
+  test(
+      'reading a family override from a scoped container, '
+      'then adding a new container with the same family overridden again, '
+      'then reading from the new container correctly obtains the new override',
+      () {
+    final a = Provider.family<int, int>((ref, id) => id);
+
+    final root = createContainer();
+    final mid = createContainer(
+      parent: root,
+      overrides: [
+        a.overrideWithProvider((argument) => Provider((ref) => argument + 10)),
+      ],
+    );
+
+    expect(mid.read(a(10)), 20);
+
+    final child = createContainer(
+      parent: mid,
+      overrides: [
+        a.overrideWithProvider((argument) => Provider((ref) => argument + 20)),
+      ],
+    );
+
+    expect(child.read(a(10)), 30);
+  });
+
+  test(
+      'reading a family override from a scoped container, '
+      'then reading from container further down the tree correctly uses the deepest override',
+      () {
+    final a = Provider.family<int, int>((ref, id) => id);
+
+    final root = createContainer();
+    final mid = createContainer(
+      parent: root,
+      overrides: [
+        a.overrideWithProvider((argument) => Provider((ref) => argument + 10)),
+      ],
+    );
+
+    final child = createContainer(
+      parent: mid,
+      overrides: [
+        a.overrideWithProvider((argument) => Provider((ref) => argument + 20)),
+      ],
+    );
+
+    expect(mid.read(a(10)), 20);
+    expect(child.read(a(10)), 30);
+  });
+
+  test(
+      'reading a family override from a scoped container, '
+      'then reading from container further down the tree reuse the provider state when possible',
+      () {
+    final a = Provider.family<int, int>((ref, id) => id);
+    var overrideBuildCount = 0;
+    final root = createContainer();
+    final mid = createContainer(
+      parent: root,
+      overrides: [
+        a.overrideWithProvider((argument) {
+          return Provider((ref) {
+            overrideBuildCount++;
+            return argument + 10;
+          });
+        }),
+      ],
+    );
+
+    expect(overrideBuildCount, 0);
+    expect(mid.read(a(10)), 20);
+    expect(overrideBuildCount, 1);
+
+    final child = createContainer(parent: mid);
+
+    expect(child.read(a(10)), 20);
+    expect(overrideBuildCount, 1);
+  });
+
   group('Scoping non-family providers', () {
     test('can override a provider with a reference to the provider directly',
         () {

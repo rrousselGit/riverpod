@@ -5,6 +5,10 @@
 - **Breaking** Renamed `ProviderRefBase` to `Ref`.
 - **Breaking** The listener passed `ref.listen`/`container.listen` now receives
   both the previous and current value.
+
+- **Breaking** Remove `AsyncError.previous` and `AsyncLoading.previous`
+- Now all providers that return an `AsyncValue` can use `ref.watch(provider.future)`/`.stream`
+- Renamed `StreamProvider.last` to `StreamProvider.future`
 - `overrideWithProvider` is added again
 - Added an assertion that detects when a provider override is missing.
 - Added an assert for when a provider specified `dependencies` but is

@@ -120,10 +120,10 @@ class MyHomePage extends HookConsumerWidget {
         final count = ref.watch(questionsCountProvider);
 
         return count.when(
-          loading: (_) => const Center(
+          loading: () => const Center(
             child: CircularProgressIndicator(),
           ),
-          error: (err, stack, _) {
+          error: (err, stack) {
             if (err is DioError) {
               return Text(
                 err.response!.data.toString(),

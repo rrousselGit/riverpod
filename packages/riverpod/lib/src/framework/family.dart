@@ -14,6 +14,9 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   final String? name;
 
   @override
+  Family<dynamic, dynamic, ProviderBase>? get from => null;
+
+  @override
   Family<Object?, Arg, ProviderBase<Object?>> get overriddenFamily => this;
 
   @override
