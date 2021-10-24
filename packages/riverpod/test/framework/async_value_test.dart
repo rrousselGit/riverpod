@@ -7,14 +7,6 @@ import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('AsyncLoading rejects AsyncLoading as previous value', () {
-    expect(
-      // ignore: prefer_const_constructors
-      () => AsyncLoading<int>(previous: AsyncLoading<int>()),
-      throwsA(isA<AssertionError>()),
-    );
-  });
-
   group('custom AsyncValue', () {
     test('supports when', () {
       expect(
@@ -56,15 +48,12 @@ void main() {
     );
 
     expect(
-      const AsyncValue<int>.loading(
-        previous: AsyncValue.data(42),
-      ).map(
+      const AsyncValue<int>.loading().map(
         data: (value) => throw Error(),
         error: (_) => throw Error(),
-        loading: (AsyncLoading<int> loading) =>
-            'loading ${loading.previous?.value}',
+        loading: (AsyncLoading<int> loading) => 'loading',
       ),
-      'loading 42',
+      'loading',
     );
   });
 
@@ -89,14 +78,11 @@ void main() {
       );
 
       expect(
-        const AsyncValue<int>.loading(
-          previous: AsyncValue.data(42),
-        ).maybeMap(
-          loading: (AsyncLoading<int> loading) =>
-              'loading ${loading.previous?.value}',
+        const AsyncValue<int>.loading().maybeMap(
+          loading: (AsyncLoading<int> loading) => 'loading',
           orElse: () => throw Error(),
         ),
-        'loading 42',
+        'loading',
       );
     });
 
@@ -151,13 +137,10 @@ void main() {
       );
 
       expect(
-        const AsyncValue<int>.loading(
-          previous: AsyncValue.data(42),
-        ).mapOrNull(
-          loading: (AsyncLoading<int> loading) =>
-              'loading ${loading.previous?.value}',
+        const AsyncValue<int>.loading().mapOrNull(
+          loading: (AsyncLoading<int> loading) => 'loading',
         ),
-        'loading 42',
+        'loading',
       );
     });
 
@@ -194,8 +177,8 @@ void main() {
     expect(
       const AsyncValue.data(42).when(
         data: (value) => [value],
-        error: (a, b, p) => throw Error(),
-        loading: (_) => throw Error(),
+        error: (a, b) => throw Error(),
+        loading: () => throw Error(),
       ),
       [42],
     );
@@ -206,24 +189,21 @@ void main() {
       AsyncValue<int>.error(
         42,
         stackTrace: stack,
-        previous: const AsyncData(21),
       ).when(
         data: (value) => throw Error(),
-        error: (a, b, p) => [a, b, p?.value],
-        loading: (_) => throw Error(),
+        error: (a, b) => [a, b],
+        loading: () => throw Error(),
       ),
-      [42, stack, 21],
+      [42, stack],
     );
 
     expect(
-      const AsyncValue<int>.loading(
-        previous: AsyncValue.data(42),
-      ).when(
+      const AsyncValue<int>.loading().when(
         data: (value) => throw Error(),
-        error: (a, b, p) => throw Error(),
-        loading: (previous) => 'loading ${previous?.value}',
+        error: (a, b) => throw Error(),
+        loading: () => 'loading',
       ),
-      'loading 42',
+      'loading',
     );
   });
 
@@ -243,30 +223,27 @@ void main() {
         AsyncValue<int>.error(
           42,
           stackTrace: stack,
-          previous: const AsyncData(21),
         ).maybeWhen(
-          error: (a, b, p) => [a, b, p?.value],
+          error: (a, b) => [a, b],
           orElse: () => throw Error(),
         ),
-        [42, stack, 21],
+        [42, stack],
       );
 
       expect(
-        const AsyncValue<int>.loading(
-          previous: AsyncValue.data(42),
-        ).maybeWhen(
-          loading: (previous) => 'loading ${previous?.value}',
+        const AsyncValue<int>.loading().maybeWhen(
+          loading: () => 'loading',
           orElse: () => throw Error(),
         ),
-        'loading 42',
+        'loading',
       );
     });
 
     test('orElse', () {
       expect(
         const AsyncValue.data(42).maybeWhen(
-          error: (a, b, p) => throw Error(),
-          loading: (_) => throw Error(),
+          error: (a, b) => throw Error(),
+          loading: () => throw Error(),
           orElse: () => 'orElse',
         ),
         'orElse',
@@ -277,7 +254,7 @@ void main() {
       expect(
         AsyncValue<int>.error(42, stackTrace: stack).maybeWhen(
           data: (value) => throw Error(),
-          loading: (_) => throw Error(),
+          loading: () => throw Error(),
           orElse: () => 'orElse',
         ),
         'orElse',
@@ -286,7 +263,7 @@ void main() {
       expect(
         const AsyncValue<int>.loading().maybeWhen(
           data: (value) => throw Error(),
-          error: (a, b, p) => throw Error(),
+          error: (a, b) => throw Error(),
           orElse: () => 'orElse',
         ),
         'orElse',
@@ -309,28 +286,25 @@ void main() {
         AsyncValue<int>.error(
           42,
           stackTrace: stack,
-          previous: const AsyncData(21),
         ).whenOrNull(
-          error: (a, b, p) => [a, b, p?.value],
+          error: (a, b) => [a, b],
         ),
-        [42, stack, 21],
+        [42, stack],
       );
 
       expect(
-        const AsyncValue<int>.loading(
-          previous: AsyncValue.data(42),
-        ).whenOrNull(
-          loading: (previous) => 'loading ${previous?.value}',
+        const AsyncValue<int>.loading().whenOrNull(
+          loading: () => 'loading',
         ),
-        'loading 42',
+        'loading',
       );
     });
 
     test('orElse', () {
       expect(
         const AsyncValue.data(42).whenOrNull(
-          error: (a, b, p) => throw Error(),
-          loading: (_) => throw Error(),
+          error: (a, b) => throw Error(),
+          loading: () => throw Error(),
         ),
         null,
       );
@@ -340,7 +314,7 @@ void main() {
       expect(
         AsyncValue<int>.error(42, stackTrace: stack).whenOrNull(
           data: (value) => throw Error(),
-          loading: (_) => throw Error(),
+          loading: () => throw Error(),
         ),
         null,
       );
@@ -348,7 +322,7 @@ void main() {
       expect(
         const AsyncValue<int>.loading().whenOrNull(
           data: (value) => throw Error(),
-          error: (a, b, p) => throw Error(),
+          error: (a, b) => throw Error(),
         ),
         null,
       );
@@ -384,42 +358,6 @@ void main() {
     expect(
       AsyncValue<int>.error(value, stackTrace: stack),
       AsyncValue<int>.error(value, stackTrace: stack),
-    );
-    expect(
-      AsyncValue<int>.error(value, stackTrace: stack),
-      isNot(
-        AsyncValue<int>.error(
-          value,
-          stackTrace: stack,
-          previous: const AsyncData(42),
-        ),
-      ),
-    );
-    expect(
-      AsyncValue<int>.error(
-        value,
-        stackTrace: stack,
-        previous: const AsyncData(42),
-      ),
-      AsyncValue<int>.error(
-        value,
-        stackTrace: stack,
-        previous: const AsyncData(42),
-      ),
-    );
-    expect(
-      AsyncValue<int>.error(
-        value,
-        stackTrace: stack,
-        previous: const AsyncData(42),
-      ),
-      isNot(
-        AsyncValue<int>.error(
-          value,
-          stackTrace: stack,
-          previous: const AsyncData(21),
-        ),
-      ),
     );
     expect(
       AsyncValue<int>.error(value, stackTrace: stack),
@@ -488,28 +426,7 @@ void main() {
       AsyncValue<int>.error(value, stackTrace: stack).hashCode,
       AsyncValue<int>.error(value, stackTrace: stack).hashCode,
     );
-    expect(
-      AsyncValue<int>.error(value, stackTrace: stack).hashCode,
-      isNot(
-        AsyncValue<int>.error(
-          value,
-          stackTrace: stack,
-          previous: const AsyncData(42),
-        ).hashCode,
-      ),
-    );
-    expect(
-      AsyncValue<int>.error(
-        value,
-        stackTrace: stack,
-        previous: const AsyncData(42),
-      ).hashCode,
-      AsyncValue<int>.error(
-        value,
-        stackTrace: stack,
-        previous: const AsyncData(42),
-      ).hashCode,
-    );
+
     expect(
       AsyncValue<int>.error(value, stackTrace: stack).hashCode,
       isNot(AsyncValue<num>.error(value, stackTrace: stack).hashCode),
@@ -554,13 +471,13 @@ void main() {
     );
 
     expect(
-      const AsyncValue<int>.error(42, previous: AsyncData(42)).toString(),
-      'AsyncError<int>(error: 42, stackTrace: null, previous: AsyncData<int>(value: 42))',
+      const AsyncValue<int>.error(42).toString(),
+      'AsyncError<int>(error: 42, stackTrace: null)',
     );
 
     expect(
-      const AsyncValue<int>.loading(previous: AsyncValue.data(42)).toString(),
-      'AsyncLoading<int>(previous: AsyncData<int>(value: 42))',
+      const AsyncValue<int>.loading().toString(),
+      'AsyncLoading<int>()',
     );
   });
 
@@ -651,13 +568,9 @@ class CustomData<T> extends AsyncData<T> {
 }
 
 class CustomError<T> extends AsyncError<T> {
-  CustomError(
-    Object error, {
-    StackTrace? stackTrace,
-    AsyncData<T>? previous,
-  }) : super(
+  CustomError(Object error, {StackTrace? stackTrace})
+      : super(
           error,
           stackTrace: stackTrace,
-          previous: previous,
         );
 }

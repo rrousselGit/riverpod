@@ -16,7 +16,7 @@ abstract class FutureProviderRef<State> implements Ref {
 
 /// {@macro riverpod.futureprovider}
 @sealed
-class FutureProvider<State> extends AsyncProvider<State>
+class FutureProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
     with
         OverrideWithValueMixin<AsyncValue<State>>,
         OverrideWithProviderMixin<AsyncValue<State>,
@@ -64,7 +64,7 @@ class FutureProvider<State> extends AsyncProvider<State>
   /// ```
   /// {@endtemplate}
   late final AlwaysAliveProviderBase<Future<State>> future =
-      AsyncValueAsFutureProvider(this, name: modifierName(name, 'future'));
+      AsyncValueAsFutureProvider(this);
 
   @override
   AsyncValue<State> create(
@@ -91,7 +91,8 @@ class FutureProvider<State> extends AsyncProvider<State>
 }
 
 /// The element of a [FutureProvider]
-class FutureProviderElement<State> extends AsyncProviderElement<State>
+class FutureProviderElement<State>
+    extends ProviderElementBase<AsyncValue<State>>
     with _FutureProviderElementMixin<State>
     implements FutureProviderRef<State> {
   /// The element of a [FutureProvider]
@@ -101,16 +102,7 @@ class FutureProviderElement<State> extends AsyncProviderElement<State>
   AsyncValue<State> get state => requireState;
 
   @override
-  set state(AsyncValue<State> newState) {
-    assert(
-      newState is AsyncData ||
-          (newState is AsyncLoading &&
-              (newState as AsyncLoading).previous == null) ||
-          (newState is AsyncError && (newState as AsyncError).previous == null),
-      'Cannot specify "previous" for AsyncValue but got $newState',
-    );
-    setState(newState);
-  }
+  set state(AsyncValue<State> newState) => setState(newState);
 }
 
 /// {@template riverpod.futureprovider.family}
@@ -135,8 +127,6 @@ class FutureProviderFamily<State, Arg>
       name: name,
     );
 
-    registerProvider(provider.future, argument);
-
     return provider;
   }
 
@@ -144,7 +134,6 @@ class FutureProviderFamily<State, Arg>
   void setupOverride(Arg argument, SetupOverride setup) {
     final futureProvider = call(argument);
     setup(origin: futureProvider, override: futureProvider);
-    setup(origin: futureProvider.future, override: futureProvider.future);
   }
 
   /// {@macro riverpod.overridewithprovider}
@@ -154,7 +143,6 @@ class FutureProviderFamily<State, Arg>
     return FamilyOverride<Arg>(this, (arg, setup) {
       final futureProvider = call(arg);
       setup(origin: futureProvider, override: override(arg));
-      setup(origin: futureProvider.future, override: futureProvider.future);
     });
   }
 }

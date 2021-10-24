@@ -13,7 +13,7 @@ void main() {
         final container = createContainer(parent: root, overrides: [provider]);
 
         expect(await container.read(provider(0).stream).first, 0);
-        expect(await container.read(provider(0).last), 0);
+        expect(await container.read(provider(0).future), 0);
         expect(container.read(provider(0)), const AsyncData(0));
         expect(root.getAllProviderElements(), isEmpty);
         expect(
@@ -22,7 +22,7 @@ void main() {
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider(0)),
             isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).last),
+                .having((e) => e.origin, 'origin', provider(0).future),
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider(0).stream),
           ]),
@@ -88,7 +88,7 @@ void main() {
       );
 
       await expectLater(container.read(provider(10).stream), emits(52));
-      await expectLater(container.read(provider(10).last), completion(52));
+      await expectLater(container.read(provider(10).future), completion(52));
       expect(container.read(provider(10)), const AsyncData(52));
 
       expect(root.getAllProviderElements(), isEmpty);

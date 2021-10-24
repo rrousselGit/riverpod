@@ -11,6 +11,9 @@ abstract class ProviderOrFamily {
   /// that isn't listed in [dependencies].
   List<ProviderOrFamily>? get dependencies;
 
+  /// The family that this provider/family depends on.
+  Family? get from;
+
   /// All the dependencies of a provider and their dependencies too.
   late final allTransitiveDependencies =
       dependencies == null ? null : _allTransitiveDependencies(dependencies!);
@@ -23,6 +26,12 @@ List<ProviderOrFamily> _allTransitiveDependencies(
   void visitDependency(ProviderOrFamily dep) {
     if (result.add(dep) && dep.dependencies != null) {
       dep.dependencies!.forEach(visitDependency);
+    }
+    final depFamily = dep.from;
+    if (depFamily != null &&
+        result.add(depFamily) &&
+        depFamily.dependencies != null) {
+      depFamily.dependencies!.forEach(visitDependency);
     }
   }
 

@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:meta/meta.dart';
-
-import 'async_provider/auto_dispose.dart';
-import 'async_provider/base.dart';
 import 'async_value_converters.dart';
+
 import 'builders.dart';
 import 'common.dart';
 import 'framework.dart';
@@ -58,8 +56,8 @@ part 'future_provider/base.dart';
 ///   AsyncValue<Configuration> config = ref.watch(configProvider);
 ///
 ///   return config.when(
-///     loading: (_) => const CircularProgressIndicator(),
-///     error: (err, stack, _) => Text('Error: $err'),
+///     loading: () => const CircularProgressIndicator(),
+///     error: (err, stack) => Text('Error: $err'),
 ///     data: (config) {
 ///       return Text(config.host);
 ///     },

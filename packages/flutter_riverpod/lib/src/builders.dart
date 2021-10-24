@@ -136,8 +136,8 @@ class ChangeNotifierProviderBuilder {
   ///
   ///     return user.when(
   ///       data: (user) => Text(user.name),
-  ///       loading: (_) => const CircularProgressIndicator(),
-  ///       error: (err, stack, _) => const Text('error'),
+  ///       loading: () => const CircularProgressIndicator(),
+  ///       error: (err, stack) => const Text('error'),
   ///     );
   ///   }
   ///   ```

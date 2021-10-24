@@ -54,6 +54,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   Family? _from;
 
   /// If this provider was created with the `.family` modifier, [from] is the `.family` instance.
+  @override
   Family? get from => _from;
 
   Object? _argument;

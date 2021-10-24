@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 import '../../utils.dart';
@@ -556,15 +555,11 @@ void main() {
 
       expect(
         container.refresh(provider),
-        const AsyncValue<int>.loading(
-          previous: AsyncData(42),
-        ),
+        const AsyncValue<int>.loading(),
       );
       expect(
         container.read(provider),
-        const AsyncValue<int>.loading(
-          previous: AsyncData(42),
-        ),
+        const AsyncValue<int>.loading(),
       );
       expect(callCount, 2);
 
