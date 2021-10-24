@@ -540,14 +540,12 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
 
           assert(
             familyOverrideRef.container._stateReaders.containsKey(provider),
-            'A family overrode $provider, but the this provider was already overridden.',
+            'Overrode a family, but the family override did not override anything',
           );
 
           return familyOverrideRef.container._stateReaders[provider]!;
         }
       }
-
-      // TODO test read provider the add child container then test auto-scope with child container
 
       final root = _root;
       if (root != null) {
