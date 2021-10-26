@@ -12,7 +12,7 @@ abstract class AutoDisposeChangeNotifierProviderRef<Notifier>
 // ignore: subtype_of_sealed_class
 /// {@macro riverpod.changenotifierprovider}
 @sealed
-class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
+class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier?>
     extends AutoDisposeProviderBase<Notifier>
     with
         ChangeNotifierProviderOverrideMixin<Notifier>,
@@ -56,7 +56,7 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier>
 }
 
 // ignore: subtype_of_sealed_class
-class _AutoDisposeNotifierProvider<Notifier extends ChangeNotifier>
+class _AutoDisposeNotifierProvider<Notifier extends ChangeNotifier?>
     extends AutoDisposeProviderBase<Notifier> {
   _AutoDisposeNotifierProvider(
     this._create, {
@@ -77,21 +77,21 @@ class _AutoDisposeNotifierProvider<Notifier extends ChangeNotifier>
     covariant AutoDisposeChangeNotifierProviderRef<Notifier> ref,
   ) {
     final notifier = _create(ref);
-    ref.onDispose(notifier.dispose);
+    if (notifier != null) ref.onDispose(notifier.dispose);
 
     return notifier;
   }
 
   @override
   _AutoDisposeNotifierProviderElement<Notifier> createElement() {
-    return _AutoDisposeNotifierProviderElement(this);
+    return _AutoDisposeNotifierProviderElement<Notifier>(this);
   }
 
   @override
   bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
 }
 
-class _AutoDisposeNotifierProviderElement<Notifier extends ChangeNotifier>
+class _AutoDisposeNotifierProviderElement<Notifier extends ChangeNotifier?>
     extends AutoDisposeProviderElementBase<Notifier>
     implements AutoDisposeChangeNotifierProviderRef<Notifier> {
   _AutoDisposeNotifierProviderElement(
@@ -105,7 +105,7 @@ class _AutoDisposeNotifierProviderElement<Notifier extends ChangeNotifier>
 // ignore: subtype_of_sealed_class
 /// {@macro riverpod.changenotifierprovider.family}
 @sealed
-class AutoDisposeChangeNotifierProviderFamily<Notifier extends ChangeNotifier,
+class AutoDisposeChangeNotifierProviderFamily<Notifier extends ChangeNotifier?,
         Arg>
     extends Family<Notifier, Arg, AutoDisposeChangeNotifierProvider<Notifier>> {
   /// {@macro riverpod.changenotifierprovider.family}

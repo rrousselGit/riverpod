@@ -6,6 +6,19 @@ import '../../utils.dart';
 
 void main() {
   group('ChangeNotifierProvider.autoDispose.family', () {
+    test('support null ChangeNotifier', () {
+      final container = createContainer();
+      final provider =
+          ChangeNotifierProvider.family.autoDispose<ValueNotifier<int>?, int>(
+        (ref, _) => null,
+      );
+
+      expect(container.read(provider(0)), null);
+      expect(container.read(provider(0).notifier), null);
+
+      container.dispose();
+    });
+
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () async {
         final provider = ChangeNotifierProvider.autoDispose

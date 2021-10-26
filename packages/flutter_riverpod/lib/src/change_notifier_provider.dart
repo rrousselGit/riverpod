@@ -37,7 +37,7 @@ T _listenNotifier<T extends ChangeNotifier?>(
 
 // ignore: subtype_of_sealed_class
 /// Add [overrideWithValue] to [AutoDisposeStateNotifierProvider]
-mixin ChangeNotifierProviderOverrideMixin<Notifier extends ChangeNotifier>
+mixin ChangeNotifierProviderOverrideMixin<Notifier extends ChangeNotifier?>
     on ProviderBase<Notifier> {
   ///
   ProviderBase<Notifier> get notifier;

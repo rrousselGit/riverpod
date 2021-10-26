@@ -1,3 +1,7 @@
+## [Unreleased]
+
+- `ChangeNotifierProvider` now supports nullable `ChangeNotifier` (#856)
+
 ## 1.0.0-dev.11
 
 Fixed an issue where `dependencies` did not work for `ChangeNotifierProvider` (#800)

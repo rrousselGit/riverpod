@@ -66,12 +66,12 @@ class ChangeNotifierProviderBuilder {
   /// });
   /// ```
   /// {@endtemplate}
-  ChangeNotifierProvider<Notifier> call<Notifier extends ChangeNotifier>(
+  ChangeNotifierProvider<Notifier> call<Notifier extends ChangeNotifier?>(
     Create<Notifier, ChangeNotifierProviderRef<Notifier>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
   }) {
-    return ChangeNotifierProvider(
+    return ChangeNotifierProvider<Notifier>(
       create,
       name: name,
       dependencies: dependencies,
@@ -304,12 +304,12 @@ class ChangeNotifierProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   ChangeNotifierProviderFamily<Notifier, Arg>
-      call<Notifier extends ChangeNotifier, Arg>(
+      call<Notifier extends ChangeNotifier?, Arg>(
     FamilyCreate<Notifier, ChangeNotifierProviderRef<Notifier>, Arg> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
   }) {
-    return ChangeNotifierProviderFamily(
+    return ChangeNotifierProviderFamily<Notifier, Arg>(
       create,
       name: name,
       dependencies: dependencies,
@@ -329,12 +329,12 @@ class AutoDisposeChangeNotifierProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   AutoDisposeChangeNotifierProvider<Notifier>
-      call<Notifier extends ChangeNotifier>(
+      call<Notifier extends ChangeNotifier?>(
     Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
   }) {
-    return AutoDisposeChangeNotifierProvider(
+    return AutoDisposeChangeNotifierProvider<Notifier>(
       create,
       name: name,
       dependencies: dependencies,
@@ -354,13 +354,13 @@ class AutoDisposeChangeNotifierProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>
-      call<Notifier extends ChangeNotifier, Arg>(
+      call<Notifier extends ChangeNotifier?, Arg>(
     FamilyCreate<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>, Arg>
         create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
   }) {
-    return AutoDisposeChangeNotifierProviderFamily(
+    return AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>(
       create,
       name: name,
       dependencies: dependencies,

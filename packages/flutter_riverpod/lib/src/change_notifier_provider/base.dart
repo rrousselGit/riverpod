@@ -1,7 +1,7 @@
 part of '../change_notifier_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-abstract class ChangeNotifierProviderRef<Notifier extends ChangeNotifier>
+abstract class ChangeNotifierProviderRef<Notifier extends ChangeNotifier?>
     implements Ref {
   /// The [ChangeNotifier] currently exposed by this provider.
   ///
@@ -12,7 +12,7 @@ abstract class ChangeNotifierProviderRef<Notifier extends ChangeNotifier>
 // ignore: subtype_of_sealed_class
 /// {@macro riverpod.changenotifierprovider}
 @sealed
-class ChangeNotifierProvider<Notifier extends ChangeNotifier>
+class ChangeNotifierProvider<Notifier extends ChangeNotifier?>
     extends AlwaysAliveProviderBase<Notifier>
     with
         ChangeNotifierProviderOverrideMixin<Notifier>,
@@ -79,7 +79,7 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier>
 }
 
 // ignore: subtype_of_sealed_class
-class _NotifierProvider<Notifier extends ChangeNotifier>
+class _NotifierProvider<Notifier extends ChangeNotifier?>
     extends AlwaysAliveProviderBase<Notifier> {
   _NotifierProvider(
     this._create, {
@@ -97,21 +97,21 @@ class _NotifierProvider<Notifier extends ChangeNotifier>
   @override
   Notifier create(covariant ChangeNotifierProviderRef<Notifier> ref) {
     final notifier = _create(ref);
-    ref.onDispose(notifier.dispose);
+    if (notifier != null) ref.onDispose(notifier.dispose);
 
     return notifier;
   }
 
   @override
   _NotifierProviderElement<Notifier> createElement() {
-    return _NotifierProviderElement(this);
+    return _NotifierProviderElement<Notifier>(this);
   }
 
   @override
   bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
 }
 
-class _NotifierProviderElement<Notifier extends ChangeNotifier>
+class _NotifierProviderElement<Notifier extends ChangeNotifier?>
     extends ProviderElementBase<Notifier>
     implements ChangeNotifierProviderRef<Notifier> {
   _NotifierProviderElement(_NotifierProvider<Notifier> provider)
@@ -126,7 +126,7 @@ class _NotifierProviderElement<Notifier extends ChangeNotifier>
 /// A class that allows building a [ChangeNotifierProvider] from an external parameter.
 /// {@endtemplate}
 @sealed
-class ChangeNotifierProviderFamily<Notifier extends ChangeNotifier, Arg>
+class ChangeNotifierProviderFamily<Notifier extends ChangeNotifier?, Arg>
     extends Family<Notifier, Arg, ChangeNotifierProvider<Notifier>> {
   /// {@macro riverpod.changenotifierprovider.family}
   ChangeNotifierProviderFamily(

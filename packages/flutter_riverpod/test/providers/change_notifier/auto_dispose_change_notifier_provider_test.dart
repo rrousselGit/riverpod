@@ -7,7 +7,19 @@ import '../../utils.dart';
 
 void main() {
   group('ChangeNotifierProvider.autoDispose', () {
-    test('can read and set current StateNotifier', () async {
+    test('support null ChangeNotifier', () {
+      final container = createContainer();
+      final provider = ChangeNotifierProvider.autoDispose<ValueNotifier<int>?>(
+        (ref) => null,
+      );
+
+      expect(container.read(provider), null);
+      expect(container.read(provider.notifier), null);
+
+      container.dispose();
+    });
+
+    test('can read and set current ChangeNotifier', () async {
       final container = createContainer();
       final listener = Listener<ValueNotifier<int>>();
       late AutoDisposeChangeNotifierProviderRef<ValueNotifier<int>> ref;
