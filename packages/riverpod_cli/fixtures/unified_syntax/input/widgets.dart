@@ -111,7 +111,6 @@ class StatelessConsumerRead extends StatelessWidget {
 
   void onPressed(BuildContext context) {
     context.read(counterProvider);
-    context.refresh(counterProvider);
   }
 
   @override
@@ -132,7 +131,6 @@ class StatelessConsumerRead extends StatelessWidget {
   }
 
   void onPressed2(BuildContext context) {
-    context.read(counterProvider);
     context.refresh(counterProvider);
   }
 }

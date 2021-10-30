@@ -2,6 +2,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:codemod/codemod.dart';
+import 'package:meta/meta.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 import 'errors.dart';
@@ -17,21 +18,46 @@ enum ProviderType {
   none
 }
 
-/// Aggregates information needed for the unified syntax change with hooks
+@immutable
+class ProviderFunction {
+  const ProviderFunction({
+    required this.name,
+    required this.path,
+    required this.line,
+  });
+  final String name;
+  final String path;
+  final int line;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ProviderFunction &&
+        other.name == name &&
+        other.path == path &&
+        other.line == line;
+  }
+
+  @override
+  int get hashCode => name.hashCode ^ path.hashCode ^ line.hashCode;
+}
+
+/// Aggregates information needed for the unified syntax change
 ///
 /// Runs before [RiverpodUnifiedSyntaxChangesMigrationSuggestor]
-class RiverpodHooksProviderInfo extends GeneralizingAstVisitor<void>
-    with AstVisitingSuggestor {
-  RiverpodHooksProviderInfo(this.riverpodVersion);
+class RiverpodProviderUsageInfo extends GeneralizingAstVisitor<void>
+    with AstVisitingSuggestor, ErrorHandling {
+  RiverpodProviderUsageInfo(this.riverpodVersion);
   final VersionConstraint riverpodVersion;
-  static Map<String, bool> isConsumerHookFunction = {};
-  static Map<String, Set<String>> hookDependencies = {};
-  FunctionDeclaration? currentFunction;
+  static Map<ProviderFunction, bool> isProviderDependentFunction = {};
+  static Map<ProviderFunction, Set<ProviderFunction>> functionDependencies = {};
+  ProviderFunction? currentFunctionInfo;
   static bool computedDependencies = false;
 
-  static bool shouldMigrate(String functionName) {
+  static bool shouldMigrate(ProviderFunction functionName) {
     _propagateDependencies();
-    return isConsumerHookFunction[functionName] ?? false;
+    return isProviderDependentFunction[functionName] ?? false;
   }
 
   static void _propagateDependencies() {
@@ -41,12 +67,12 @@ class RiverpodHooksProviderInfo extends GeneralizingAstVisitor<void>
     var changed = true;
     while (changed) {
       changed = false;
-      for (final entry in isConsumerHookFunction.entries) {
+      for (final entry in isProviderDependentFunction.entries) {
         if (entry.value) {
-          for (final dependency in hookDependencies.entries) {
+          for (final dependency in functionDependencies.entries) {
             if (dependency.value.contains(entry.key) &&
-                !isConsumerHookFunction[dependency.key]!) {
-              isConsumerHookFunction[dependency.key] = true;
+                !isProviderDependentFunction[dependency.key]!) {
+              isProviderDependentFunction[dependency.key] = true;
               changed = true;
             }
           }
@@ -68,36 +94,77 @@ class RiverpodHooksProviderInfo extends GeneralizingAstVisitor<void>
 
   @override
   void visitFunctionDeclaration(FunctionDeclaration node) {
-    currentFunction = node;
-    isConsumerHookFunction[currentFunction!.name.name] = false;
-    hookDependencies[currentFunction!.name.name] = {};
+    currentFunctionInfo = ProviderFunction(
+        name: node.name.name,
+        path: node.declaredElement!.declaration.location!.components.join('/'),
+        line: node.name.offset);
+    isProviderDependentFunction[currentFunctionInfo!] = false;
+    functionDependencies[currentFunctionInfo!] = {};
     super.visitFunctionDeclaration(node);
-    currentFunction = null;
+    currentFunctionInfo = null;
+  }
+
+  @override
+  void visitMethodDeclaration(MethodDeclaration node) {
+    currentFunctionInfo = ProviderFunction(
+        name: node.name.name,
+        path: node.declaredElement!.declaration.location!.components.join('/'),
+        line: node.name.offset);
+    isProviderDependentFunction[currentFunctionInfo!] = false;
+    functionDependencies[currentFunctionInfo!] = {};
+    super.visitMethodDeclaration(node);
+    currentFunctionInfo = null;
   }
 
   @override
   void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
-    final functionName = node.function.toSource();
-    if (functionName.startsWith('use') && currentFunction != null) {
-      hookDependencies[currentFunction!.name.name]!.add(functionName);
-      if (functionName == 'useProvider') {
-        isConsumerHookFunction[currentFunction!.name.name] = true;
+    try {
+      final functionName = node.function.toSource();
+      if (currentFunctionInfo != null) {
+        final func = ProviderFunction(
+          name: node.staticElement!.name,
+          path: node.staticElement!.declaration.location!.components.join('/'),
+          line: node.staticElement!.declaration.nameOffset,
+        );
+        functionDependencies[currentFunctionInfo]!.add(func);
+        if ((functionName == 'useProvider' ||
+                (functionName == 'read') ||
+                (functionName == 'refresh')) &&
+            node.staticType?.element?.declaration?.name !=
+                'ProviderContainer') {
+          isProviderDependentFunction[currentFunctionInfo!] = true;
+        }
       }
+    } catch (e, st) {
+      // addError('Method invocation problem, ${node.toSource()}, $e, $st');
     }
     super.visitFunctionExpressionInvocation(node);
   }
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    final functionName = node.methodName.toSource();
-    if (currentFunction != null) {
-      if (functionName.startsWith('use')) {
-        hookDependencies[currentFunction!.name.name]!.add(functionName);
-        if (functionName == 'useProvider') {
-          hookDependencies[currentFunction!.name.name]!.add(functionName);
-          isConsumerHookFunction[currentFunction!.name.name] = true;
+    try {
+      final functionName = node.methodName.toSource();
+      if (currentFunctionInfo != null) {
+        final func = ProviderFunction(
+          name: node.function.staticType!.element!.declaration!.name!,
+          path: node
+              .function.staticType!.element!.declaration!.location!.components
+              .join('/'),
+          line: node.function.staticType!.element!.declaration!.nameOffset,
+        );
+
+        functionDependencies[currentFunctionInfo!]!.add(func);
+        if ((functionName == 'useProvider' ||
+                (functionName == 'read') ||
+                (functionName == 'refresh')) &&
+            node.realTarget?.staticType?.element?.declaration?.name !=
+                'ProviderContainer') {
+          isProviderDependentFunction[currentFunctionInfo!] = true;
         }
       }
+    } catch (e, st) {
+      // addError('Method invocation problem, ${node.toSource()}, $e, $st');
     }
     super.visitMethodInvocation(node);
   }
@@ -123,12 +190,12 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
 
   ClassType withinClass = ClassType.none;
   FormalParameterList? buildParams;
-  bool foundProviderUsage = false;
   FunctionBody? functionBody;
   ConstructorName? hookBuilder;
   bool inConsumerBuilder = false;
   bool inHookBuilder = false;
-  bool lookingForParams = false;
+  bool lookingForBuilderParams = false;
+  final List<bool> foundProviderUsage = [false];
   final Map<String, ClassDeclaration> statefulDeclarations = {};
   final Set<String> statefulNeedsMigration = {};
   final Map<String, FunctionDeclaration> functionDecls = {};
@@ -137,7 +204,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    foundProviderUsage = false;
+    foundProviderUsage.add(false);
     methodDecls.clear();
     final name = node.extendsClause?.superclass.name.name;
     if (name == 'StatelessWidget') {
@@ -146,7 +213,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       withinClass = ClassType.stateful;
     } else if (name == 'ConsumerWidget') {
       withinClass = ClassType.consumer;
-      foundProviderUsage = true;
+      foundProviderUsage.last = true;
     } else if (name == 'HookWidget') {
       withinClass = ClassType.hook;
     } else {
@@ -159,34 +226,12 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       }
     }
     super.visitClassDeclaration(node);
-    if (foundProviderUsage) {
+    if (foundProviderUsage.last) {
       migrateClass(node);
       migrateParams(buildParams);
     }
     withinClass = ClassType.none;
-    foundProviderUsage = false;
-  }
-
-  @override
-  void visitMethodDeclaration(MethodDeclaration node) {
-    if (node.name.name == 'build') {
-      buildParams = node.parameters;
-      functionBody = node.body;
-      if (withinClass == ClassType.consumer) {
-        // Consumer should be migrated regardless if providers are watched / read or not
-        migrateParams(buildParams);
-      }
-    } else if (node.name.name == 'didUpdateProvider') {
-      yieldPatch(
-          ', ProviderContainer container',
-          node.parameters!.parameters.last.end,
-          node.parameters!.parameters.last.end);
-      yieldPatch(', Object? oldValue, ', node.parameters!.parameters.first.end,
-          node.parameters!.parameters.last.offset);
-    }
-    methodDecls[node.name.name] = node;
-    migrateOnChangeFunction(node.name.name);
-    super.visitMethodDeclaration(node);
+    foundProviderUsage.removeLast();
   }
 
   void migrateParams(FormalParameterList? buildParams) {
@@ -240,8 +285,6 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       addError(
           'migrating widget build method parameters $buildParams\n$e\n$st');
     }
-
-    buildParams = null;
   }
 
   void migrateClass(ClassDeclaration classDecl) {
@@ -274,7 +317,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     }
   }
 
-  void migrateConsumerHookFunctionCall(ArgumentList argumentList) {
+  void migrateFunctionCall(ArgumentList argumentList) {
     try {
       if (argumentList.arguments.isNotEmpty) {
         yieldPatch('ref, ', argumentList.arguments.first.offset,
@@ -307,10 +350,25 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     }
   }
 
+  void migrateMethodDeclaration(MethodDeclaration node) {
+    try {
+      if (node.parameters!.parameters.isNotEmpty) {
+        yieldPatch('WidgetRef ref, ', node.parameters!.parameters.first.offset,
+            node.parameters!.parameters.first.offset);
+      } else {
+        yieldPatch('WidgetRef ref', node.parameters!.leftParenthesis.end,
+            node.parameters!.rightParenthesis.offset);
+      }
+      methodDecls[node.name.name] = node;
+    } catch (e, st) {
+      addError('migrating function declaration $node\n$e\n$st');
+    }
+  }
+
   @override
   void visitFunctionExpression(FunctionExpression node) {
-    if ((inConsumerBuilder || inHookBuilder) && lookingForParams) {
-      lookingForParams = false;
+    if ((inConsumerBuilder || inHookBuilder) && lookingForBuilderParams) {
+      lookingForBuilderParams = false;
       migrateParams(node.parameters);
     }
     super.visitFunctionExpression(node);
@@ -325,6 +383,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           element is NamedExpression &&
           element.name.label.name == 'onChange') as NamedExpression;
       final fn = functionBody;
+
       final providerSource = context.sourceText
           .substring(provider.expression.offset, provider.expression.end);
 
@@ -498,17 +557,19 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     try {
       if (type != null) {
         if (type.contains('Consumer')) {
+          foundProviderUsage.add(true);
           inConsumerBuilder = true;
-          lookingForParams = true;
+          lookingForBuilderParams = true;
         }
         if (type.contains('HookBuilder')) {
+          foundProviderUsage.add(true);
           inHookBuilder = true;
-          lookingForParams = true;
+          lookingForBuilderParams = true;
           hookBuilder = node.constructorName;
         }
         if (type.contains('ProviderListener')) {
           migrateListener(node);
-          foundProviderUsage = true;
+          foundProviderUsage.last = true;
         } else if (!type.contains('Family') &&
             type.contains('Provider') &&
             type.contains('Scoped')) {
@@ -539,6 +600,9 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     }
     super.visitInstanceCreationExpression(node);
     inProvider = ProviderType.none;
+    if (inConsumerBuilder || inHookBuilder) {
+      foundProviderUsage.removeLast();
+    }
     inConsumerBuilder = false;
     inHookBuilder = false;
     inAutoDisposeProvider = false;
@@ -588,15 +652,20 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       return;
     }
     if (functionName == 'watch' || functionName == 'useProvider') {
-      foundProviderUsage = true;
+      foundProviderUsage.last = true;
 
       // watch(provider) => watch(provider.notifier)
       // useProvider(provider) => useProvider(provider.notifier)
       yieldPatch('ref.watch', node.function.offset, node.function.end);
     } else if (functionName.startsWith('use')) {
-      if (RiverpodHooksProviderInfo.shouldMigrate(functionName)) {
-        migrateConsumerHookFunctionCall(node.argumentList);
-        foundProviderUsage = true;
+      final func = ProviderFunction(
+        name: node.staticElement!.name,
+        path: node.staticElement!.declaration.location!.components.join('/'),
+        line: node.staticElement!.declaration.nameOffset,
+      );
+      if (RiverpodProviderUsageInfo.shouldMigrate(func)) {
+        migrateFunctionCall(node.argumentList);
+        foundProviderUsage.last = true;
       }
     }
 
@@ -605,14 +674,50 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
 
   @override
   void visitFunctionDeclaration(FunctionDeclaration node) {
-    final functionName = node.name.name;
-    if (RiverpodHooksProviderInfo.shouldMigrate(functionName)) {
+    final func = ProviderFunction(
+      name: node.name.name,
+      path: node.declaredElement!.declaration.location!.components.join('/'),
+      line: node.name.offset,
+    );
+    if (RiverpodProviderUsageInfo.shouldMigrate(func)) {
       migrateFunctionDeclaration(node);
     }
 
     functionDecls[node.name.name] = node;
     migrateOnChangeFunction(node.name.name);
     super.visitFunctionDeclaration(node);
+  }
+
+  @override
+  void visitMethodDeclaration(MethodDeclaration node) {
+    if (node.name.name == 'build') {
+      buildParams = node.parameters;
+      functionBody = node.body;
+      if (withinClass == ClassType.consumer) {
+        // Consumer should be migrated regardless if providers are watched / read or not
+        migrateParams(buildParams);
+      }
+    } else if (node.name.name == 'didUpdateProvider') {
+      yieldPatch(
+          ', ProviderContainer container',
+          node.parameters!.parameters.last.end,
+          node.parameters!.parameters.last.end);
+      yieldPatch(', Object? oldValue, ', node.parameters!.parameters.first.end,
+          node.parameters!.parameters.last.offset);
+    }
+    final func = ProviderFunction(
+      name: node.name.name,
+      path: node.declaredElement!.declaration.location!.components.join('/'),
+      line: node.name.offset,
+    );
+    if (node.name.name != 'build' &&
+        RiverpodProviderUsageInfo.shouldMigrate(func)) {
+      migrateMethodDeclaration(node);
+    }
+
+    methodDecls[node.name.name] = node;
+    migrateOnChangeFunction(node.name.name);
+    super.visitMethodDeclaration(node);
   }
 
   @override
@@ -655,32 +760,38 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
 
       // ref.read / ref.watch / context.read / context.watch, useProvider
       if (functionName == 'watch' || functionName == 'useProvider') {
-        foundProviderUsage = true;
+        foundProviderUsage.last = true;
         yieldPatch('ref.watch', node.offset, node.methodName.end);
       } else if (functionName == 'read' &&
           node.methodName.staticType!
               .getDisplayString(withNullability: true)
               .contains('Function<T>(Provider')) {
-        foundProviderUsage = true;
+        foundProviderUsage.last = true;
         yieldPatch('ref.read', node.offset, node.methodName.end);
       } else if (functionName == 'refresh') {
-        foundProviderUsage = true;
+        foundProviderUsage.last = true;
         yieldPatch('ref.refresh', node.offset, node.methodName.end);
         final firstArgStaticType = node.argumentList.arguments.first.staticType!
             .getDisplayString(withNullability: true);
-        if (firstArgStaticType.contains('FutureProvider')
-            // || firstArgStaticType.contains('StreamProvider')
-            ) {
+        if (firstArgStaticType.contains('FutureProvider')) {
           yieldPatch('.future', node.argumentList.arguments.first.end,
               node.argumentList.arguments.first.end);
         } else if (firstArgStaticType.contains('StateNotifier')) {
           yieldPatch('.notifier', node.argumentList.arguments.first.end,
               node.argumentList.arguments.first.end);
         }
-      } else if (functionName.startsWith('use')) {
-        if (RiverpodHooksProviderInfo.shouldMigrate(functionName)) {
-          migrateConsumerHookFunctionCall(node.argumentList);
-          foundProviderUsage = true;
+      } else {
+        final func = ProviderFunction(
+          name: node.function.staticType!.element!.declaration!.name!,
+          path: node
+              .function.staticType!.element!.declaration!.location!.components
+              .join('/'),
+          line: node.function.staticType!.element!.declaration!.nameOffset,
+        );
+        if (RiverpodProviderUsageInfo.shouldMigrate(func)) {
+          migrateFunctionCall(node.argumentList);
+          foundProviderUsage.last = true;
+          // migrateParams();
         }
       }
     } catch (e, st) {

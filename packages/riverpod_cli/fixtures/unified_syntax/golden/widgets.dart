@@ -112,9 +112,8 @@ class StatelessRead extends ConsumerWidget {
 class StatelessConsumerRead extends ConsumerWidget {
   const StatelessConsumerRead({Key? key}) : super(key: key);
 
-  void onPressed(BuildContext context, WidgetRef ref) {
+  void onPressed(WidgetRef ref, BuildContext context) {
     ref.read(counterProvider);
-    ref.refresh(counterProvider);
   }
 
   @override
@@ -122,20 +121,20 @@ class StatelessConsumerRead extends ConsumerWidget {
     return Center(
       child: ElevatedButton(
         onPressed: () {
-          onPressed(context, ref);
-          onPressed2(context, ref);
+          onPressed(ref, context);
+          onPressed2(ref, context);
         },
         child: Consumer(builder: (context, ref, child) {
           final count = ref.watch(counterProvider);
+
           return Text('Counter $count');
         }),
       ),
     );
   }
 
-  void onPressed2(BuildContext context, WidgetRef ref) {
-    ref.read(counterProvider);
-    ref.refresh(counterProvider);
+  void onPressed2(WidgetRef ref, BuildContext context) {
+    ref.refresh(counterProvider.notifier);
   }
 }
 
@@ -280,12 +279,12 @@ class HooksConsumerWatch extends StatelessWidget {
   }
 }
 
-class HooksConsumerSimple extends StatelessWidget {
+class HooksConsumerSimple extends ConsumerWidget {
   const HooksConsumerSimple({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => _build();
-  Widget _build() => HookConsumer(
+  Widget build(BuildContext context, WidgetRef ref) => _build(ref);
+  Widget _build(WidgetRef ref) => HookConsumer(
         builder: (context, ref, child) {
           ref.watch(counterProvider);
           final value = useAHook(ref, '');
