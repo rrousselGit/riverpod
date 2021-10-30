@@ -106,6 +106,37 @@ class StatelessRead extends StatelessWidget {
   }
 }
 
+class StatelessConsumerRead extends StatelessWidget {
+  const StatelessConsumerRead({Key? key}) : super(key: key);
+
+  void onPressed(BuildContext context) {
+    context.read(counterProvider);
+    context.refresh(counterProvider);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          onPressed(context);
+          onPressed2(context);
+        },
+        child: Consumer(builder: (context, watch, child) {
+          final count = watch(counterProvider);
+
+          return Text('Counter $count');
+        }),
+      ),
+    );
+  }
+
+  void onPressed2(BuildContext context) {
+    context.read(counterProvider);
+    context.refresh(counterProvider);
+  }
+}
+
 class StatelessListen extends StatelessWidget {
   const StatelessListen({Key? key}) : super(key: key);
 
