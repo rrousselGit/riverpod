@@ -122,8 +122,8 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   bool shouldResolveAst(FileContext context) => true;
 
   ClassType withinClass = ClassType.none;
-  ClassDeclaration? classDeclaration;
-  FormalParameterList? params;
+  FormalParameterList? buildParams;
+  bool foundProviderUsage = false;
   FunctionBody? functionBody;
   ConstructorName? hookBuilder;
   bool inConsumerBuilder = false;
@@ -137,20 +137,20 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
+    foundProviderUsage = false;
     methodDecls.clear();
     final name = node.extendsClause?.superclass.name.name;
-    classDeclaration = node;
     if (name == 'StatelessWidget') {
       withinClass = ClassType.stateless;
     } else if (name == 'State') {
       withinClass = ClassType.stateful;
     } else if (name == 'ConsumerWidget') {
       withinClass = ClassType.consumer;
+      foundProviderUsage = true;
     } else if (name == 'HookWidget') {
       withinClass = ClassType.hook;
     } else {
       withinClass = ClassType.none;
-      classDeclaration = null;
     }
     if (name == 'StatefulWidget') {
       statefulDeclarations[node.name.name] = node;
@@ -159,18 +159,22 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       }
     }
     super.visitClassDeclaration(node);
+    if (foundProviderUsage) {
+      migrateClass(node);
+      migrateParams(buildParams);
+    }
     withinClass = ClassType.none;
-    classDeclaration = null;
+    foundProviderUsage = false;
   }
 
   @override
   void visitMethodDeclaration(MethodDeclaration node) {
     if (node.name.name == 'build') {
-      params = node.parameters;
+      buildParams = node.parameters;
       functionBody = node.body;
       if (withinClass == ClassType.consumer) {
         // Consumer should be migrated regardless if providers are watched / read or not
-        migrateParams();
+        migrateParams(buildParams);
       }
     } else if (node.name.name == 'didUpdateProvider') {
       yieldPatch(
@@ -185,94 +189,89 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     super.visitMethodDeclaration(node);
   }
 
-  void migrateParams() {
+  void migrateParams(FormalParameterList? buildParams) {
     try {
       if (withinClass == ClassType.none) {
         return;
       }
-      final params = this.params;
-      if (params != null) {
+      if (buildParams != null) {
         if (inConsumerBuilder) {
           assert(
-            params.parameters.length == 3,
+            buildParams.parameters.length == 3,
             'Consumers should have a parameter list of length 3',
           );
           yieldPatch(
             'ref',
-            params.parameters[1].offset,
-            params.parameters[1].end,
+            buildParams.parameters[1].offset,
+            buildParams.parameters[1].end,
           );
         } else if (inHookBuilder) {
           assert(
-            params.parameters.length == 1,
-            'HookBuilders should have a parameter list of length 1, $params',
+            buildParams.parameters.length == 1,
+            'HookBuilders should have a parameter list of length 1, $buildParams',
           );
           yieldPatch('HookConsumer', hookBuilder!.offset, hookBuilder!.end);
           yieldPatch(
             ', ref, child',
-            params.parameters.first.end,
-            params.parameters.first.end,
+            buildParams.parameters.first.end,
+            buildParams.parameters.first.end,
           );
         } else if (withinClass != ClassType.stateful) {
           // In build method
-          if (params.parameters.length == 2) {
+          if (buildParams.parameters.length == 2) {
             // Consumer
             yieldPatch(
               'WidgetRef ref',
-              params.parameters.last.offset,
-              params.parameters.last.end,
+              buildParams.parameters.last.offset,
+              buildParams.parameters.last.end,
             );
           }
-          if (params.parameters.length == 1) {
+          if (buildParams.parameters.length == 1) {
             // Stateless, Hook
             yieldPatch(
               ', WidgetRef ref',
-              params.parameters.last.end,
-              params.parameters.last.end,
+              buildParams.parameters.last.end,
+              buildParams.parameters.last.end,
             );
           }
         }
       }
     } catch (e, st) {
-      addError('migrating widget build method parameters $params\n$e\n$st');
+      addError(
+          'migrating widget build method parameters $buildParams\n$e\n$st');
     }
 
-    params = null;
+    buildParams = null;
   }
 
-  void migrateClass() {
-    final classDecl = classDeclaration;
-
+  void migrateClass(ClassDeclaration classDecl) {
     try {
-      if (classDecl != null && !inHookBuilder && !inConsumerBuilder) {
-        if (withinClass == ClassType.hook) {
-          yieldPatch(
-            'HookConsumerWidget',
-            classDecl.extendsClause!.superclass.offset,
-            classDecl.extendsClause!.superclass.end,
-          );
-        } else if (withinClass == ClassType.stateless) {
-          yieldPatch(
-            'ConsumerWidget',
-            classDecl.extendsClause!.superclass.offset,
-            classDecl.extendsClause!.superclass.end,
-          );
-        } else if (withinClass == ClassType.stateful) {
-          yieldPatch(
-            'ConsumerState',
-            classDecl.extendsClause!.superclass.name.offset,
-            classDecl.extendsClause!.superclass.name.end,
-          );
+      if (withinClass == ClassType.hook) {
+        yieldPatch(
+          'HookConsumerWidget',
+          classDecl.extendsClause!.superclass.offset,
+          classDecl.extendsClause!.superclass.end,
+        );
+      } else if (withinClass == ClassType.stateless) {
+        yieldPatch(
+          'ConsumerWidget',
+          classDecl.extendsClause!.superclass.offset,
+          classDecl.extendsClause!.superclass.end,
+        );
+      } else if (withinClass == ClassType.stateful) {
+        yieldPatch(
+          'ConsumerState',
+          classDecl.extendsClause!.superclass.name.offset,
+          classDecl.extendsClause!.superclass.name.end,
+        );
 
-          migrateStateful(classDecl
-              .extendsClause!.superclass.typeArguments!.arguments.first.type!
-              .getDisplayString(withNullability: true));
-        }
+        migrateStateful(classDecl
+            .extendsClause!.superclass.typeArguments!.arguments.first.type!
+            .getDisplayString(withNullability: true));
       }
     } catch (e, st) {
       addError('migrating class $classDecl\n$e\n$st');
     }
-    classDeclaration = null;
   }
 
   void migrateConsumerHookFunctionCall(ArgumentList argumentList) {
@@ -311,8 +310,8 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   @override
   void visitFunctionExpression(FunctionExpression node) {
     if ((inConsumerBuilder || inHookBuilder) && lookingForParams) {
-      params = node.parameters;
       lookingForParams = false;
+      migrateParams(node.parameters);
     }
     super.visitFunctionExpression(node);
   }
@@ -509,8 +508,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         }
         if (type.contains('ProviderListener')) {
           migrateListener(node);
-          migrateParams();
-          migrateClass();
+          foundProviderUsage = true;
         } else if (!type.contains('Family') &&
             type.contains('Provider') &&
             type.contains('Scoped')) {
@@ -590,8 +588,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       return;
     }
     if (functionName == 'watch' || functionName == 'useProvider') {
-      migrateParams();
-      migrateClass();
+      foundProviderUsage = true;
 
       // watch(provider) => watch(provider.notifier)
       // useProvider(provider) => useProvider(provider.notifier)
@@ -599,8 +596,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     } else if (functionName.startsWith('use')) {
       if (RiverpodHooksProviderInfo.shouldMigrate(functionName)) {
         migrateConsumerHookFunctionCall(node.argumentList);
-        migrateClass();
-        migrateParams();
+        foundProviderUsage = true;
       }
     }
 
@@ -659,19 +655,16 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
 
       // ref.read / ref.watch / context.read / context.watch, useProvider
       if (functionName == 'watch' || functionName == 'useProvider') {
-        migrateParams();
-        migrateClass();
+        foundProviderUsage = true;
         yieldPatch('ref.watch', node.offset, node.methodName.end);
       } else if (functionName == 'read' &&
           node.methodName.staticType!
               .getDisplayString(withNullability: true)
               .contains('Function<T>(Provider')) {
-        migrateParams();
-        migrateClass();
+        foundProviderUsage = true;
         yieldPatch('ref.read', node.offset, node.methodName.end);
       } else if (functionName == 'refresh') {
-        migrateParams();
-        migrateClass();
+        foundProviderUsage = true;
         yieldPatch('ref.refresh', node.offset, node.methodName.end);
         final firstArgStaticType = node.argumentList.arguments.first.staticType!
             .getDisplayString(withNullability: true);
@@ -687,8 +680,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       } else if (functionName.startsWith('use')) {
         if (RiverpodHooksProviderInfo.shouldMigrate(functionName)) {
           migrateConsumerHookFunctionCall(node.argumentList);
-          migrateClass();
-          migrateParams();
+          foundProviderUsage = true;
         }
       }
     } catch (e, st) {
