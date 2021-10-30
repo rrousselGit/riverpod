@@ -135,7 +135,7 @@ class RiverpodProviderUsageInfo extends GeneralizingAstVisitor<void>
           isProviderDependentFunction[currentFunctionInfo!] = true;
         }
       }
-    } catch (e, st) {
+    } catch (e, _) {
       // addError('Method invocation problem, ${node.toSource()}, $e, $st');
     }
     super.visitFunctionExpressionInvocation(node);
@@ -163,7 +163,7 @@ class RiverpodProviderUsageInfo extends GeneralizingAstVisitor<void>
           isProviderDependentFunction[currentFunctionInfo!] = true;
         }
       }
-    } catch (e, st) {
+    } catch (e, _) {
       // addError('Method invocation problem, ${node.toSource()}, $e, $st');
     }
     super.visitMethodInvocation(node);
