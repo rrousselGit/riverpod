@@ -1,22 +1,40 @@
 .feature {
-  &__container {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 32px;
-
+  &__card {
+    display: flex;
+    flex-direction: column;
+    margin: 1.5rem;
+    margin-top: 0;
     padding: 2rem;
+    border-radius: 24px;
+    background-color: var(--ifm-color-emphasis-100);
 
     @include min-width(lg) {
-      grid-template-columns: repeat(2, 1fr);
-      padding: 11rem;
+      flex-direction: row;
+      align-items: center;
+      margin: 6rem;
+      margin-top: 0;
+      padding: 6rem;
     }
   }
 
-  &__title {
-    font-size: 36px;
+  &__content {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+    margin-bottom: 2rem;
+
+    @include min-width(lg) {
+      margin-right: 4rem;
+      margin-bottom: 0;
+    }
   }
 
-  &__description {
-    font-size: 18px;
+  &__preview {
+    flex: 3;
+    
+    > * {
+      border-radius: 8px;
+      box-shadow: 0px 14px 50px -34px rgba(0, 0, 0, 0.64);
+    }
   }
 }
