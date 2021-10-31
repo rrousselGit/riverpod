@@ -25,7 +25,7 @@ Riverpod is now stable!
 
   ```dart
   final counterProvider = StateNotifierProvider<Counter, int>(...);
-  
+
   class Example extends ConsumerWidget {
     @override
     Widget build(BuildContext context, WidgetRef ref) {
@@ -36,10 +36,31 @@ Riverpod is now stable!
   }
   ```
 
-- `StreamProvider.last`, `StreamProvider.stream` and `FutureProvider.future` now
+- It is now possible to "await" all providers that emit an `AsyncValue` (previously limited to `FutureProvider`/`StreamProvider`).
+  This includes cases where a `StateNotifierProvider` exposes an `AsyncValue`:
+
+  ```dart
+  class MyAsyncStateNotifier extends StateNotifier<AsyncValue<MyState>> {
+    MyAsyncStateNotifier(): super(AsyncValue.loading()) {
+      // TODO fetch some data and update the state when it is obtained
+    }
+  }
+
+  final myAsyncStateNotifierProvider = StateNotifierProvider<MyAsyncStateNotifier, AsyncValue<MyState>>((ref) {
+    return MyAsyncStateNotifier();
+  });
+
+  final someFutureProvider = FutureProvider((ref) async {
+    MyState myState = await ref.watch(myAsyncStateNotifierProvider.future);
+  });
+  ```
+
+- Deprecated `StreamProvider.last` in favor of `StreamProvider.future`.
+
+- `StreamProvider.future`, `StreamProvider.stream` and `FutureProvider.future` now
   expose a future/stream that is independent from how many times the associated provider "rebuilt":
   - if a `StreamProvider` rebuild before its stream emitted any value,
-    `StreamProvider.last` will resolve with the first value of the new stream instead.
+    `StreamProvider.future` will resolve with the first value of the new stream instead.
   - if a `FutureProvider` rebuild before its future completes,
     `FutureProvider.future` will resolve with the result of the new future instead.
 - You can now override any provider with any other provider, as long as the value
