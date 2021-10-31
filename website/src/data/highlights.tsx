@@ -4,6 +4,7 @@ import { IHighlightProps } from "../components/Highlight";
 
 export const highlights: IHighlightProps[] = [
   {
+    imageUrl: "img/highlights/compile.svg",
     title: translate({
       id: "homepage.compile_safe_title",
       message: "Compile safe",
@@ -19,6 +20,7 @@ export const highlights: IHighlightProps[] = [
     ),
   },
   {
+    imageUrl: "img/highlights/provider.svg",
     title: translate({
       id: "homepage.unlimited_provider_title",
       message: "Provider, without its limitations",
@@ -32,6 +34,7 @@ export const highlights: IHighlightProps[] = [
     ),
   },
   {
+    imageUrl: "img/highlights/flutter.svg",
     title: translate({
       id: "homepage.no_flutter_dependency_title",
       message: "Doesn't depend on Flutter",

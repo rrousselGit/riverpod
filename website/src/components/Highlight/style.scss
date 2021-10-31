@@ -1,22 +1,31 @@
 .highlight {
+  display: flex;
+  flex-direction: column;
+
   &__container {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
-    gap: 32px;
+    gap: 30px;
 
     padding: 2rem;
 
     @include min-width(lg) {
-      grid-template-columns: repeat(2, 1fr);
-      padding: 11rem;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 8rem;
     }
   }
 
+  &__illustration {
+    height: 180px;
+    margin-bottom: 24px;
+  }
+
   &__title {
-    font-size: 36px;
+    margin-bottom: 12px;
+    text-align: center;
   }
 
   &__description {
-    font-size: 18px;
+    text-align: center;
   }
 }
