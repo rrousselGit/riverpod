@@ -11,8 +11,7 @@ abstract class StateProviderRef<State> implements Ref {
 
 /// {@macro riverpod.stateprovider}
 @sealed
-class StateProvider<State>
-    extends AlwaysAliveProviderBase<StateController<State>>
+class StateProvider<State> extends AlwaysAliveProviderBase<State>
     with
         StateProviderOverrideMixin<State>,
         OverrideWithProviderMixin<StateController<State>,
@@ -37,6 +36,15 @@ class StateProvider<State>
 
   @override
   ProviderBase<StateController<State>> get originProvider => notifier;
+
+  @override
+  late final AlwaysAliveProviderBase<StateController<State>> state =
+      Provider((ref) {
+    return _listenStateProvider(
+      ref as ProviderElementBase<StateController<State>>,
+      ref.watch(notifier),
+    );
+  }, dependencies: [notifier]);
 
   /// {@template riverpod.stateprovider.notifier}
   /// Obtains the [StateController] associated with this provider, but without
@@ -63,17 +71,19 @@ class StateProvider<State>
   final AlwaysAliveProviderBase<StateController<State>> notifier;
 
   @override
-  StateController<State> create(
-    ProviderElementBase<StateController<State>> ref,
+  State create(
+    ProviderElementBase<State> ref,
   ) {
-    return _listenStateProvider(ref, ref.watch(notifier));
+    final notifier = ref.watch(this.notifier);
+
+    final removeListener = notifier.addListener(ref.setState);
+    ref.onDispose(removeListener);
+
+    return notifier.state;
   }
 
   @override
-  bool updateShouldNotify(
-    StateController<State> previousState,
-    StateController<State> newState,
-  ) {
+  bool updateShouldNotify(State previousState, State newState) {
     return true;
   }
 
@@ -82,15 +92,9 @@ class StateProvider<State>
 }
 
 /// The [ProviderElementBase] for [StateProvider]
-class StateProviderElement<State>
-    extends ProviderElementBase<StateController<State>>
-    implements StateProviderRef<State> {
+class StateProviderElement<State> extends ProviderElementBase<State> {
   /// The [ProviderElementBase] for [StateProvider]
-  StateProviderElement(ProviderBase<StateController<State>> provider)
-      : super(provider);
-
-  @override
-  StateController<State> get controller => requireState;
+  StateProviderElement(StateProvider<State> provider) : super(provider);
 }
 
 class _NotifierProvider<State>
@@ -123,15 +127,25 @@ class _NotifierProvider<State>
   }
 
   @override
-  StateProviderElement<State> createElement() {
-    return StateProviderElement(this);
+  _NotifierStateProviderElement<State> createElement() {
+    return _NotifierStateProviderElement(this);
   }
+}
+
+class _NotifierStateProviderElement<State>
+    extends ProviderElementBase<StateController<State>>
+    implements StateProviderRef<State> {
+  _NotifierStateProviderElement(_NotifierProvider<State> provider)
+      : super(provider);
+
+  @override
+  StateController<State> get controller => requireState;
 }
 
 /// {@macro riverpod.stateprovider.family}
 @sealed
 class StateProviderFamily<State, Arg>
-    extends Family<StateController<State>, Arg, StateProvider<State>> {
+    extends Family<State, Arg, StateProvider<State>> {
   /// {@macro riverpod.stateprovider.family}
   StateProviderFamily(
     this._create, {
@@ -151,6 +165,7 @@ class StateProviderFamily<State, Arg>
     );
 
     registerProvider(provider.notifier, argument);
+    registerProvider(provider.state, argument);
 
     return provider;
   }
@@ -158,7 +173,6 @@ class StateProviderFamily<State, Arg>
   @override
   void setupOverride(Arg argument, SetupOverride setup) {
     final provider = call(argument);
-    setup(origin: provider, override: provider);
     setup(origin: provider.notifier, override: provider.notifier);
   }
 
@@ -171,7 +185,6 @@ class StateProviderFamily<State, Arg>
       (arg, setup) {
         final provider = call(arg);
         setup(origin: provider.notifier, override: override(arg).notifier);
-        setup(origin: provider, override: provider);
       },
     );
   }

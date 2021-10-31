@@ -85,10 +85,13 @@ StateController<State> _listenStateProvider<State>(
 }
 
 /// Add [overrideWithValue] to [StateProvider]
-mixin StateProviderOverrideMixin<State>
-    on ProviderBase<StateController<State>> {
+mixin StateProviderOverrideMixin<State> on ProviderBase<State> {
   ///
   ProviderBase<StateController<State>> get notifier;
+
+  /// Obtains the [StateNotifier] and also listens to the state, as opposed to
+  /// [notifier] which will not listen to the state.
+  ProviderBase<StateController<State>> get state;
 
   @override
   late final List<ProviderOrFamily>? dependencies = [notifier];
