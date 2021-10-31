@@ -648,12 +648,14 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       if (functionName == 'watch' && withinScopedProvider) {
         yieldPatch('ref.watch', node.function.offset, node.function.end);
       }
+      migrateStateProvider(node.argumentList.arguments.first);
+
       super.visitFunctionExpressionInvocation(node);
       return;
     }
     if (functionName == 'watch' || functionName == 'useProvider') {
       foundProviderUsage.last = true;
-
+      migrateStateProvider(node.argumentList.arguments.first);
       // watch(provider) => watch(provider.notifier)
       // useProvider(provider) => useProvider(provider.notifier)
       yieldPatch('ref.watch', node.function.offset, node.function.end);
@@ -663,10 +665,19 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         path: node.staticElement!.declaration.location!.components.join('/'),
         line: node.staticElement!.declaration.nameOffset,
       );
+      migrateStateProvider(node.argumentList.arguments.first);
+
       if (RiverpodProviderUsageInfo.shouldMigrate(func)) {
         migrateFunctionCall(node.argumentList);
         foundProviderUsage.last = true;
       }
+    } else if (functionName == 'read') {
+      foundProviderUsage.last = true;
+      migrateStateProvider(node.argumentList.arguments.first);
+
+      // watch(provider) => watch(provider.notifier)
+      // useProvider(provider) => useProvider(provider.notifier)
+      yieldPatch('ref.read', node.function.offset, node.function.end);
     }
 
     super.visitFunctionExpressionInvocation(node);
@@ -749,11 +760,21 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
               node.argumentList.arguments.first.end,
               node.argumentList.arguments.first.end);
         }
+        if (functionName == 'watch' ||
+            functionName == 'read' ||
+            functionName == 'refresh') {
+          migrateStateProvider(node.argumentList.arguments.first);
+        }
         super.visitMethodInvocation(node);
         return;
       }
 
       if (withinClass == ClassType.none && !functionName.startsWith('use')) {
+        if (functionName == 'watch' ||
+            functionName == 'read' ||
+            functionName == 'refresh') {
+          migrateStateProvider(node.argumentList.arguments.first);
+        }
         super.visitMethodInvocation(node);
         return;
       }
@@ -762,12 +783,14 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       if (functionName == 'watch' || functionName == 'useProvider') {
         foundProviderUsage.last = true;
         yieldPatch('ref.watch', node.offset, node.methodName.end);
+        migrateStateProvider(node.argumentList.arguments.first);
       } else if (functionName == 'read' &&
           node.methodName.staticType!
               .getDisplayString(withNullability: true)
               .contains('Function<T>(Provider')) {
         foundProviderUsage.last = true;
         yieldPatch('ref.read', node.offset, node.methodName.end);
+        migrateStateProvider(node.argumentList.arguments.first);
       } else if (functionName == 'refresh') {
         foundProviderUsage.last = true;
         yieldPatch('ref.refresh', node.offset, node.methodName.end);
@@ -780,6 +803,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           yieldPatch('.notifier', node.argumentList.arguments.first.end,
               node.argumentList.arguments.first.end);
         }
+        migrateStateProvider(node.argumentList.arguments.first);
       } else {
         final func = ProviderFunction(
           name: node.function.staticType!.element!.declaration!.name!,
@@ -797,9 +821,18 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     } catch (e, st) {
       errorOccuredDuringMigration = true;
 
-      addError('when visiting a method declaration $node\n$e\n$st');
+      addError('when visiting a method invocation $node\n$e\n$st');
     }
     super.visitMethodInvocation(node);
+  }
+
+  void migrateStateProvider(Expression expression) {
+    if (expression.staticType
+            ?.getDisplayString(withNullability: true)
+            .contains('StateProvider') ??
+        false) {
+      yieldPatch('.state', expression.end, expression.end);
+    }
   }
 
   void migrateStateful(String statefulName) {
