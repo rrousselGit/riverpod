@@ -138,18 +138,6 @@ Riverpod is now stable!
   ```
 
 - `ProviderReference` is deprecated in favor of `Ref`.
-- `ref.watch` now supports `myProvider.select((value) => ...)`.
-  This allows filtering rebuilds:
-
-  ```dart
-  final userProvider = StateNotifierProvider<UserController, User>(...);
-
-  final anotherProvider = Provider((ref) {
-    // With this syntax, the Consumer will not rebuild if `userProvider`
-    // emits a new User but its "name" didn't change.
-    bool userName = ref.watch(userProvider.select((user) => user.name));
-  });
-  ```
 
 - **Breaking**: `ProviderObserver.didUpdateProvider` now receives both the previous and new value.
 - **Breaking**: `ProviderObserver.mayHaveChanged` is removed.
