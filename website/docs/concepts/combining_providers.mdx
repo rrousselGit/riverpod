@@ -154,7 +154,7 @@ class Repository {
   final Reader read;
 
   Future<Catalog> fetchCatalog() async {
-    String token = read(userTokenProvider).state;
+    String token = read(userTokenProvider);
 
     final response = await dio.get('/path', queryParameters: {
       'token': token,

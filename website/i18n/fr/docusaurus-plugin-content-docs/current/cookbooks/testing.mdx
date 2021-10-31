@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
       home: Consumer(builder: (context, ref, _) {
         final counter = ref.watch(counterProvider);
         return RaisedButton(
-          onPressed: () => counter.state++,
+          onPressed: () => ref.read(counterProvider.notifier).state++,
           child: Text('${counter.state}'),
         );
       }),
@@ -113,7 +113,7 @@ final counterProvider = StateProvider((ref) => 0);
 
 // Utilise mockito pour vérifier le nombre de fois que un provider notifie ses dépendences
 class Listener extends Mock {
-  void call(int value);
+  void call(int? previous, int value);
 }
 
 void main() {
@@ -125,21 +125,21 @@ void main() {
     final listener = Listener();
 
     // Écoute un provider
-    container.listen<StateController<int>>(
+    container.listen<int>(
       counterProvider,
-      (StateController<int> controller) => listener(controller.state),
+      listener,
       fireImmediately: true,
     );
 
     // "listener" est is appelé immediatement avec 0, la valeur par défaut
-    verify(listener(0)).called(1);
+    verify(listener(null, 0)).called(1);
     verifyNoMoreInteractions(listener);
 
     // On incrémente le compteur
-    container.read(counterProvider).state++;
+    container.read(counterProvider.notifier).state++;
 
     // "listener" est appelé à nouveau, avec 1 cette fois
-    verify(listener(1)).called(1);
+    verify(listener(0, 1)).called(1);
     verifyNoMoreInteractions(listener);
   });
 
@@ -150,14 +150,14 @@ void main() {
     addTearDown(container.dispose);
     final listener = Listener();
 
-    container.listen<StateController<int>>(
+    container.listen<int>(
       counterProvider,
-      (StateController<int> controller) => listener(controller.state),
+      listener,
       fireImmediately: true,
     );
 
     // Le compteur est à nouveau à 0
-    verify(listener(0)).called(1);
+    verify(listener(null, 0)).called(1);
     verifyNoMoreInteractions(listener);
   });
 }
