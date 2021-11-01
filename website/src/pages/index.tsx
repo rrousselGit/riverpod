@@ -27,7 +27,11 @@ export default function Home() {
 
         <section>
           {features.map((props, index) => (
-            <Feature key={`feature-${index}`} {...props} />
+            <Feature
+              key={`feature-${index}`}
+              {...props}
+              direction={index % 2 == 0 ? "normal" : "reverse"}
+            />
           ))}
         </section>
       </main>

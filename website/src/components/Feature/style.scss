@@ -14,18 +14,28 @@
       margin: 6rem;
       margin-top: 0;
       padding: 6rem;
+
+      &--reverse {
+        flex-direction: row-reverse;
+      }
     }
+
+
   }
 
   &__content {
     display: flex;
     flex-direction: column;
     flex: 2;
-    margin-bottom: 2rem;
+  }
+
+  &__space {
+    width: 2rem;
+    height: 2rem;
 
     @include min-width(lg) {
-      margin-right: 4rem;
-      margin-bottom: 0;
+      width: 4rem;
+      height: 4rem;
     }
   }
 

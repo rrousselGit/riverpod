@@ -6,6 +6,7 @@ export interface IFeatureProps {
   description: ReactNode;
   snippet?: string;
   imageUrl?: string;
+  direction?: 'normal' | 'reverse';
 }
 
 export const Feature: React.FC<IFeatureProps> = ({
@@ -13,13 +14,15 @@ export const Feature: React.FC<IFeatureProps> = ({
   description,
   snippet,
   imageUrl,
+  direction = 'normal',
 }) => {
   return (
-    <div className="feature__card">
+    <div className={`feature__card feature__card--${direction}`}>
       <div className="feature__content">
         <h1>{title}</h1>
         <p>{description}</p>
       </div>
+      <div className="feature__space"></div>
       <div className="feature__preview">
         {!!imageUrl ? (
           <img src={imageUrl} alt={title} />
