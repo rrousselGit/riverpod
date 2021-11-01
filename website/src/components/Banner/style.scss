@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   padding: 2rem;
-  background-color: var(--ifm-hero-background-color);
+  background-color: var(--ifm-color-emphasis-100);
 
   @include min-width(lg) {
     flex-direction: row;
@@ -34,5 +34,22 @@
 
   &__headline {
     font-size: 48px;
+  }
+
+  &__cta {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 40px;
+    border-radius: 8px;
+    background-color: var(--ifm-color-primary);
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+
+    &:hover {
+      color: white;
+      text-decoration: none;
+      background-color: var(--ifm-color-primary-dark);
+    }
   }
 }
