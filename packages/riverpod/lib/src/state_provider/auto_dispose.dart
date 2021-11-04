@@ -42,7 +42,7 @@ class AutoDisposeStateProvider<State> extends AutoDisposeProviderBase<State>
       ref as ProviderElementBase<StateController<State>>,
       ref.watch(notifier),
     );
-  }, dependencies: [notifier]);
+  }, dependencies: [notifier], from: from, argument: argument);
 
   @override
   State create(AutoDisposeProviderElementBase<State> ref) {
@@ -79,8 +79,8 @@ class _AutoDisposeNotifierProvider<State>
     this._create, {
     required String? name,
     required this.dependencies,
-    Family? from,
-    Object? argument,
+    required Family? from,
+    required Object? argument,
   }) : super(name: name, from: from, argument: argument);
 
   final Create<State, AutoDisposeStateProviderRef<State>> _create;
@@ -126,7 +126,14 @@ class _AutoDisposeNotifierStateProvider<State>
   _AutoDisposeNotifierStateProvider(
     Create<State, AutoDisposeProviderRef<State>> create, {
     List<ProviderOrFamily>? dependencies,
-  }) : super(create, dependencies: dependencies);
+    required Family? from,
+    required Object? argument,
+  }) : super(
+          create,
+          dependencies: dependencies,
+          from: from,
+          argument: argument,
+        );
 
   @override
   bool updateShouldNotify(State previousState, State newState) {
@@ -148,12 +155,12 @@ class AutoDisposeStateProviderFamily<State, Arg>
   final FamilyCreate<State, AutoDisposeStateProviderRef<State>, Arg> _create;
 
   @override
-  AutoDisposeStateProvider<State> create(
-    Arg argument,
-  ) {
+  AutoDisposeStateProvider<State> create(Arg argument) {
     return AutoDisposeStateProvider<State>(
       (ref) => _create(ref, argument),
       name: name,
+      from: this,
+      argument: argument,
     );
   }
 

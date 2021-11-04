@@ -44,11 +44,19 @@ class AutoDisposeStreamProvider<State>
 
   /// {@template riverpod.streamprovider.stream}
   late final AutoDisposeProviderBase<Stream<State>> stream =
-      AutoDisposeAsyncValueAsStreamProvider(this);
+      AutoDisposeAsyncValueAsStreamProvider(
+    this,
+    from: from,
+    argument: argument,
+  );
 
   /// {@template riverpod.streamprovider.future}
   late final AutoDisposeProviderBase<Future<State>> future =
-      AutoDisposeAsyncValueAsFutureProvider(this);
+      AutoDisposeAsyncValueAsFutureProvider(
+    this,
+    from: from,
+    argument: argument,
+  );
 
   /// {@template riverpod.streamprovider.future}
   @Deprecated('Use `future` instead')

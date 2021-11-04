@@ -119,7 +119,7 @@ void main() {
     expect(notifier.state, 0);
 
     result = 42;
-    expect(container.refresh(provider.state).state, 42);
+    expect(container.refresh(provider), 42);
 
     expect(container.read(provider.state).state, 42);
     expect(container.read(provider.notifier), isNot(notifier));
@@ -134,10 +134,13 @@ void main() {
 
       expect(container.read(provider.notifier).state, 0);
       expect(container.read(provider.state).state, 0);
+      expect(container.read(provider), 0);
       expect(root.getAllProviderElements(), isEmpty);
       expect(
         container.getAllProviderElements(),
         unorderedEquals(<Object?>[
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider.state),
           isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider),
           isA<ProviderElementBase>()
@@ -155,12 +158,15 @@ void main() {
 
       expect(container.read(provider.notifier).state, 42);
       expect(container.read(provider.state).state, 42);
+      expect(container.read(provider), 42);
       expect(root.getAllProviderElements(), isEmpty);
       expect(
         container.getAllProviderElements(),
         unorderedEquals(<Object?>[
           isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider),
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider.state),
           isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider.notifier),
         ]),
@@ -178,11 +184,14 @@ void main() {
 
       expect(container.read(provider.notifier).state, 42);
       expect(container.read(provider.state).state, 42);
+      expect(container.read(provider), 42);
       expect(
         container.getAllProviderElements(),
         unorderedEquals(<Object?>[
           isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider),
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider.state),
           isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider.notifier),
         ]),
@@ -206,7 +215,8 @@ void main() {
       ]);
       addTearDown(container.dispose);
 
-      expect(container.read(provider), override);
+      expect(container.read(provider), 42);
+      expect(container.read(provider.notifier), override);
       expect(container2.read(provider.state).state, 42);
     });
 

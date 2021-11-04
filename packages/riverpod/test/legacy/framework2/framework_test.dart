@@ -244,8 +244,8 @@ void main() {
     final first = StateProvider((ref) => 0);
     final second = StateProvider((ref) => 0);
     final computed = Provider<String>((ref) {
-      if (ref.watch(first.state).state == 0) {
-        return ref.watch(second.state).state.toString();
+      if (ref.watch(first) == 0) {
+        return ref.watch(second).toString();
       }
       return 'fallback';
     });
@@ -301,7 +301,7 @@ void main() {
   test('remove dependencies on dispose', () async {
     final first = StateProvider((ref) => 0);
     final computed = Provider.autoDispose((ref) {
-      return ref.watch(first.state).state;
+      return ref.watch(first);
     });
     final firstElement = container.readProviderElement(first);
     final computedElement = container.readProviderElement(computed);

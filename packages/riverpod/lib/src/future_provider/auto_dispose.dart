@@ -44,7 +44,11 @@ class AutoDisposeFutureProvider<State>
 
   /// {@macro riverpod.futureprovider.future}
   late final AutoDisposeProviderBase<Future<State>> future =
-      AutoDisposeAsyncValueAsFutureProvider(this);
+      AutoDisposeAsyncValueAsFutureProvider(
+    this,
+    from: from,
+    argument: argument,
+  );
 
   @override
   AsyncValue<State> create(

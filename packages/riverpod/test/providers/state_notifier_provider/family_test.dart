@@ -7,6 +7,18 @@ import 'state_notifier_provider_test.dart';
 
 void main() {
   group('StateNotifier.family', () {
+    test('specfies `from` & `argument` for related providers', () {
+      final provider = StateNotifierProvider.family<Counter, int, int>(
+        (ref, _) => Counter(),
+      );
+
+      expect(provider(0).from, provider);
+      expect(provider(0).argument, 0);
+
+      expect(provider(0).notifier.from, provider);
+      expect(provider(0).notifier.argument, 0);
+    });
+
     test('can be auto-scoped', () async {
       final dep = Provider((ref) => 0);
       final provider =

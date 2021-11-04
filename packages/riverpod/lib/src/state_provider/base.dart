@@ -43,12 +43,17 @@ class StateProvider<State> extends AlwaysAliveProviderBase<State>
 
   @override
   late final AlwaysAliveProviderBase<StateController<State>> state =
-      _NotifierStateProvider((ref) {
-    return _listenStateProvider(
-      ref as ProviderElementBase<StateController<State>>,
-      ref.watch(notifier),
-    );
-  }, dependencies: [notifier]);
+      _NotifierStateProvider(
+    (ref) {
+      return _listenStateProvider(
+        ref as ProviderElementBase<StateController<State>>,
+        ref.watch(notifier),
+      );
+    },
+    dependencies: [notifier],
+    from: from,
+    argument: argument,
+  );
 
   /// {@template riverpod.stateprovider.notifier}
   /// Obtains the [StateController] associated with this provider, but without
@@ -105,7 +110,14 @@ class _NotifierStateProvider<State> extends Provider<State> {
   _NotifierStateProvider(
     Create<State, ProviderRef<State>> create, {
     List<ProviderOrFamily>? dependencies,
-  }) : super(create, dependencies: dependencies);
+    required Family? from,
+    required Object? argument,
+  }) : super(
+          create,
+          dependencies: dependencies,
+          from: from,
+          argument: argument,
+        );
 
   @override
   bool updateShouldNotify(State previousState, State newState) {
@@ -119,8 +131,8 @@ class _NotifierProvider<State>
     this._create, {
     required String? name,
     required this.dependencies,
-    Family? from,
-    Object? argument,
+    required Family? from,
+    required Object? argument,
   }) : super(name: name, from: from, argument: argument);
 
   final Create<State, StateProviderRef<State>> _create;
