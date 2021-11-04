@@ -150,10 +150,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<StateController<int>>(
-                provider.state,
-                (prev, v) => onChange(prev?.state, v.state),
-              );
+              ref.listen<int>(provider, onChange);
               return Container();
             },
           ),
@@ -176,7 +173,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<StateController<int>>(provider(0).state, (prev, v) {});
+              ref.listen<int>(provider(0), (prev, v) {});
               return Container();
             },
           ),
@@ -191,7 +188,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<StateController<int>>(provider(1).state, (prev, v) {});
+              ref.listen<int>(provider(1), (prev, v) {});
               return Container();
             },
           ),
@@ -213,10 +210,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<StateController<int>>(
-                provider(0).state,
-                (prev, v) => onChange(prev?.state, v.state),
-              );
+              ref.listen<int>(provider(0), onChange);
               return Container();
             },
           ),
@@ -228,10 +222,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<StateController<int>>(
-                provider(1).state,
-                (prev, v) => onChange(prev?.state, v.state),
-              );
+              ref.listen<int>(provider(1), onChange);
               return Container();
             },
           ),
@@ -240,12 +231,12 @@ void main() {
 
       verifyZeroInteractions(onChange);
 
-      container.read(provider(0).state).state++;
-      container.read(provider(1).state).state = 42;
+      container.read(provider(0).notifier).state++;
+      container.read(provider(1).notifier).state = 42;
 
       await container.pump();
 
-      verifyOnly(onChange, onChange(42, 42));
+      verifyOnly(onChange, onChange(0, 42));
     });
 
     testWidgets('supports Changing the ProviderContainer', (tester) async {

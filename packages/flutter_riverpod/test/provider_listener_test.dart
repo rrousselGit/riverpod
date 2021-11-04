@@ -230,9 +230,9 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: ProviderListener<StateController<int>>(
-            provider: provider.state,
-            onChange: (_, prev, value) => onChange(prev?.state, value.state),
+          child: ProviderListener<int>(
+            provider: provider,
+            onChange: (_, prev, value) => onChange(prev, value),
             child: Container(),
           ),
         ),
@@ -252,8 +252,8 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: ProviderListener<StateController<int>>(
-            provider: provider(0).state,
+          child: ProviderListener<int>(
+            provider: provider(0),
             onChange: (_, prev, value) {},
             child: Container(),
           ),
@@ -266,8 +266,8 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: ProviderListener<StateController<int>>(
-            provider: provider(1).state,
+          child: ProviderListener<int>(
+            provider: provider(1),
             onChange: (_, prev, value) {},
             child: Container(),
           ),

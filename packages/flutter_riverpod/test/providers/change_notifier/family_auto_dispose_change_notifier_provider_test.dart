@@ -6,6 +6,19 @@ import '../../utils.dart';
 
 void main() {
   group('ChangeNotifierProvider.autoDispose.family', () {
+    test('specifies `from` and `argument` for related providers', () {
+      final provider =
+          ChangeNotifierProvider.autoDispose.family<ValueNotifier<int>, int>(
+        (ref, _) => ValueNotifier(42),
+      );
+
+      expect(provider(0).from, provider);
+      expect(provider(0).argument, 0);
+
+      expect(provider(0).notifier.from, provider);
+      expect(provider(0).notifier.argument, 0);
+    });
+
     test('support null ChangeNotifier', () {
       final container = createContainer();
       final provider =
