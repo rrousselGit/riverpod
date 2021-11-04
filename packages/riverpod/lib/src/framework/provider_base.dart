@@ -34,10 +34,15 @@ typedef FamilyCreate<T, R extends Ref, Arg> = T Function(
 typedef Reader = T Function<T>(ProviderBase<T> provider);
 
 /// A base class for _all_ providers.
+@immutable
 abstract class ProviderBase<State> extends ProviderOrFamily
     implements ProviderListenable<State>, ProviderOverride {
   /// A base class for _all_ providers.
-  ProviderBase({required this.name});
+  ProviderBase({
+    required this.name,
+    required this.from,
+    required this.argument,
+  });
 
   @override
   ProviderBase get _origin => originProvider;
@@ -51,17 +56,13 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   /// {@endtemplate}
   final String? name;
 
-  Family? _from;
-
   /// If this provider was created with the `.family` modifier, [from] is the `.family` instance.
   @override
-  Family? get from => _from;
-
-  Object? _argument;
+  final Family? from;
 
   /// If this provider was created with the `.family` modifier, [argument] is
   /// variable used.
-  Object? get argument => _argument;
+  final Object? argument;
 
   /// The provider that will be refreshed when calling [ProviderContainer.refresh]
   /// and that will be overridden when passed to `ProviderScope`.
@@ -907,6 +908,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     _onDisposeListeners?.forEach(_runGuarded);
     _onDisposeListeners = null;
+  }
+
+  @override
+  String toString() {
+    return '$runtimeType(provider: $provider, origin: $origin)';
   }
 }
 

@@ -107,7 +107,7 @@ extension AlwaysAliveAsyncProviderX<State>
   /// which is the expected behavior.
   /// {@endtemplate}
   AlwaysAliveProviderBase<Future<State>> get future =>
-      AsyncValueAsFutureProvider(this);
+      AsyncValueAsFutureProvider(this, from: from, argument: argument);
 
   /// {@template riverpod.asyncprovider.stream}
   /// Exposes the [Stream] created by a [StreamProvider].
@@ -123,7 +123,7 @@ extension AlwaysAliveAsyncProviderX<State>
   /// a stream will be generated and manipulated based on the [AsyncValue] used.
   /// {@endtemplate}
   AlwaysAliveProviderBase<Stream<State>> get stream =>
-      AsyncValueAsStreamProvider(this);
+      AsyncValueAsStreamProvider(this, from: from, argument: argument);
 }
 
 /// Adds [future] and [stream] to autoDispose providers that emit an [AsyncValue]
@@ -131,11 +131,19 @@ extension AutoDisposeAsyncProviderX<State>
     on AutoDisposeProviderBase<AsyncValue<State>> {
   /// {@macro riverpod.asyncprovider.future}
   AutoDisposeProviderBase<Future<State>> get future =>
-      AutoDisposeAsyncValueAsFutureProvider(this);
+      AutoDisposeAsyncValueAsFutureProvider(
+        this,
+        from: from,
+        argument: argument,
+      );
 
   /// {@macro riverpod.asyncprovider.stream}
   AutoDisposeProviderBase<Stream<State>> get stream =>
-      AutoDisposeAsyncValueAsStreamProvider(this);
+      AutoDisposeAsyncValueAsStreamProvider(
+        this,
+        from: from,
+        argument: argument,
+      );
 }
 
 ///
@@ -143,8 +151,15 @@ extension AutoDisposeAsyncProviderX<State>
 class AsyncValueAsStreamProvider<State>
     extends AlwaysAliveProviderBase<Stream<State>> {
   ///
-  AsyncValueAsStreamProvider(this._provider)
-      : super(name: modifierName(_provider.name, 'stream'));
+  AsyncValueAsStreamProvider(
+    this._provider, {
+    required Family? from,
+    required Object? argument,
+  }) : super(
+          name: modifierName(_provider.name, 'stream'),
+          from: from,
+          argument: argument,
+        );
 
   final AlwaysAliveProviderBase<AsyncValue<State>> _provider;
 
@@ -186,8 +201,15 @@ class AsyncValueAsStreamProvider<State>
 class AutoDisposeAsyncValueAsStreamProvider<State>
     extends AutoDisposeProviderBase<Stream<State>> {
   ///
-  AutoDisposeAsyncValueAsStreamProvider(this._provider)
-      : super(name: modifierName(_provider.name, 'stream'));
+  AutoDisposeAsyncValueAsStreamProvider(
+    this._provider, {
+    required Family? from,
+    required Object? argument,
+  }) : super(
+          name: modifierName(_provider.name, 'stream'),
+          from: from,
+          argument: argument,
+        );
 
   final AutoDisposeProviderBase<AsyncValue<State>> _provider;
 
@@ -272,8 +294,15 @@ Stream<State> _asyncValueToStream<State>(
 class AsyncValueAsFutureProvider<State>
     extends AlwaysAliveProviderBase<Future<State>> {
   ///
-  AsyncValueAsFutureProvider(this._provider)
-      : super(name: modifierName(_provider.name, 'future'));
+  AsyncValueAsFutureProvider(
+    this._provider, {
+    required Family? from,
+    required Object? argument,
+  }) : super(
+          name: modifierName(_provider.name, 'future'),
+          from: from,
+          argument: argument,
+        );
 
   final AlwaysAliveProviderBase<AsyncValue<State>> _provider;
 
@@ -315,8 +344,15 @@ class AsyncValueAsFutureProvider<State>
 class AutoDisposeAsyncValueAsFutureProvider<State>
     extends AutoDisposeProviderBase<Future<State>> {
   ///
-  AutoDisposeAsyncValueAsFutureProvider(this._provider)
-      : super(name: modifierName(_provider.name, 'future'));
+  AutoDisposeAsyncValueAsFutureProvider(
+    this._provider, {
+    required Family? from,
+    required Object? argument,
+  }) : super(
+          name: modifierName(_provider.name, 'future'),
+          from: from,
+          argument: argument,
+        );
 
   final AutoDisposeProviderBase<AsyncValue<State>> _provider;
 

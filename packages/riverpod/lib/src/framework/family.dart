@@ -28,26 +28,7 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   ///
   /// That external value should be immutable and preferably override `==`/`hashCode`.
   /// See the documentation of [Provider.family] for more informations.
-  FamilyProvider call(Arg argument) {
-    final provider = create(argument);
-
-    registerProvider(provider, argument);
-
-    return provider;
-  }
-
-  /// Register a provider as part of this family.
-  @protected
-  void registerProvider(ProviderBase provider, Arg argument) {
-    assert(
-      provider._from == null,
-      'The provider created already belongs to a Family',
-    );
-
-    provider
-      .._from = this
-      .._argument = argument;
-  }
+  FamilyProvider call(Arg argument) => create(argument);
 
   /// Creates the provider for a given parameter.
   @protected

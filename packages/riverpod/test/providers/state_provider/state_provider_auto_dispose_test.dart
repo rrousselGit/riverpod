@@ -17,7 +17,7 @@ void main() {
       overrides: [dep.overrideWithValue(42)],
     );
 
-    expect(container.read(provider).state, 42);
+    expect(container.read(provider.state).state, 42);
     expect(container.read(provider.notifier).state, 42);
 
     expect(root.getAllProviderElements(), isEmpty);
@@ -34,12 +34,12 @@ void main() {
       });
 
       container.listen<StateController<int>>(
-        provider,
+        provider.state,
         (prev, value) => listener(prev?.state, value.state),
       );
       verifyZeroInteractions(listener);
 
-      expect(ref.controller, container.read(provider));
+      expect(ref.controller, container.read(provider.notifier));
 
       ref.controller.state = 42;
 
@@ -70,7 +70,7 @@ void main() {
       final container = createContainer();
       Object? err;
       final provider = StateProvider.autoDispose<int>((ref) {
-        if (ref.watch(dep).state) {
+        if (ref.watch(dep.state).state) {
           try {
             ref.controller;
           } catch (e) {
@@ -83,7 +83,7 @@ void main() {
       container.read(provider);
       expect(err, isNull);
 
-      container.read(dep).state = true;
+      container.read(dep.state).state = true;
       container.read(provider);
 
       expect(err, isStateError);
@@ -97,7 +97,7 @@ void main() {
     final container = createContainer(observers: [observer]);
     final provider = StateProvider.autoDispose<int>((_) => 0);
 
-    final notifier = container.read(provider);
+    final notifier = container.read(provider.state);
 
     clearInteractions(observer);
 
@@ -105,7 +105,7 @@ void main() {
 
     verifyOnly(
       observer,
-      observer.didUpdateProvider(provider, notifier, notifier, container),
+      observer.didUpdateProvider(provider.state, notifier, notifier, container),
     );
   });
 
@@ -115,13 +115,13 @@ void main() {
     final provider = StateProvider.autoDispose<int>((ref) => result);
 
     final notifier = container.read(provider.notifier);
-    expect(container.read(provider).state, 0);
+    expect(container.read(provider.state).state, 0);
     expect(notifier.state, 0);
 
     result = 42;
-    expect(container.refresh(provider).state, 42);
+    expect(container.refresh(provider), 42);
 
-    expect(container.read(provider).state, 42);
+    expect(container.read(provider.state).state, 42);
     expect(container.read(provider.notifier), isNot(notifier));
     expect(container.read(provider.notifier).state, 42);
   });
@@ -133,11 +133,14 @@ void main() {
       final container = createContainer(parent: root, overrides: [provider]);
 
       expect(container.read(provider.notifier).state, 0);
-      expect(container.read(provider).state, 0);
+      expect(container.read(provider.state).state, 0);
+      expect(container.read(provider), 0);
       expect(root.getAllProviderElements(), isEmpty);
       expect(
         container.getAllProviderElements(),
         unorderedEquals(<Object?>[
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider.state),
           isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider),
           isA<ProviderElementBase>()
@@ -154,13 +157,16 @@ void main() {
       ]);
 
       expect(container.read(provider.notifier).state, 42);
-      expect(container.read(provider).state, 42);
+      expect(container.read(provider.state).state, 42);
+      expect(container.read(provider), 42);
       expect(root.getAllProviderElements(), isEmpty);
       expect(
         container.getAllProviderElements(),
         unorderedEquals(<Object?>[
           isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider),
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider.state),
           isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider.notifier),
         ]),
@@ -177,12 +183,15 @@ void main() {
       ]);
 
       expect(container.read(provider.notifier).state, 42);
-      expect(container.read(provider).state, 42);
+      expect(container.read(provider.state).state, 42);
+      expect(container.read(provider), 42);
       expect(
         container.getAllProviderElements(),
         unorderedEquals(<Object?>[
           isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider),
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider.state),
           isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider.notifier),
         ]),
@@ -206,8 +215,9 @@ void main() {
       ]);
       addTearDown(container.dispose);
 
-      expect(container.read(provider), override);
-      expect(container2.read(provider).state, 42);
+      expect(container.read(provider), 42);
+      expect(container.read(provider.notifier), override);
+      expect(container2.read(provider.state).state, 42);
     });
 
     test(

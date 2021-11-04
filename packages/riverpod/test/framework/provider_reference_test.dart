@@ -19,7 +19,7 @@ void main() {
 
         container.read(provider);
 
-        container.read(dep).state++;
+        container.read(dep.state).state++;
 
         final another = Provider((ref) => 0);
 
@@ -74,7 +74,7 @@ void main() {
         final dep = StateProvider((ref) => 0);
         final provider = Provider((ref) {
           ref.listen<StateController<num>>(
-            dep,
+            dep.state,
             (prev, value) => listener(prev?.state, value.state),
           );
         });
@@ -84,7 +84,7 @@ void main() {
 
         verifyZeroInteractions(listener);
 
-        container.read(dep).state++;
+        container.read(dep.state).state++;
         await container.pump();
 
         verifyOnly(listener, listener(1, 1));
@@ -181,20 +181,20 @@ void main() {
         final count2 = StateProvider((ref) => 0);
 
         final provider = Provider((ref) {
-          final first = ref.watch(count).state;
-          final second = ref.watch(count2).state;
+          final first = ref.watch(count.state).state;
+          final second = ref.watch(count2.state).state;
 
           return '$first $second';
         });
 
         expect(container.read(provider), '0 0');
 
-        container.read(count).state++;
+        container.read(count.state).state++;
         await container.pump();
 
         expect(container.read(provider), '1 0');
 
-        container.read(count2).state++;
+        container.read(count2.state).state++;
         await container.pump();
 
         expect(container.read(provider), '1 1');
@@ -207,7 +207,7 @@ void main() {
         var buildCount = 0;
         final provider = Provider((ref) {
           buildCount++;
-          return ref.watch(count).state.isEven;
+          return ref.watch(count.state).state.isEven;
         });
 
         final container = ProviderContainer();
@@ -218,7 +218,7 @@ void main() {
         expect(container.read(provider), true);
         expect(buildCount, 1);
 
-        container.read(count).state++;
+        container.read(count.state).state++;
         await container.pump();
 
         expect(container.read(provider), false);
@@ -277,7 +277,7 @@ void main() {
         verifyZeroInteractions(onDispose);
         verifyZeroInteractions(onDispose2);
 
-        container.read(count).state++;
+        container.read(count.state).state++;
         await container.pump();
 
         verifyInOrder([
@@ -307,8 +307,8 @@ void main() {
 
         verifyZeroInteractions(onDispose);
 
-        container.read(count).state++;
-        container.read(count2).state++;
+        container.read(count.state).state++;
+        container.read(count2.state).state++;
 
         verifyOnly(onDispose, onDispose());
       });
@@ -334,7 +334,7 @@ void main() {
 
         verifyZeroInteractions(onDispose);
 
-        container.read(count).state++;
+        container.read(count.state).state++;
         // no pump() because that would rebuild the provider, which means it would
         // need to be disposed once again.
 
@@ -366,7 +366,7 @@ void main() {
         container.read(provider);
         expect(mounted, null);
 
-        container.read(dep).state++;
+        container.read(dep.state).state++;
 
         expect(mounted, false);
       });
@@ -402,7 +402,7 @@ void main() {
         container.read(provider);
         expect(element.mounted, true);
 
-        container.read(dep).state++;
+        container.read(dep.state).state++;
 
         expect(element.mounted, false);
       });
@@ -413,7 +413,7 @@ void main() {
       var buildCount = 0;
       final provider = Provider((ref) {
         buildCount++;
-        return ref.watch(dep).state;
+        return ref.watch(dep.state).state;
       });
       final listener = Listener<int>();
       final another = Provider((ref) {
@@ -424,7 +424,7 @@ void main() {
       expect(container.read(provider), 0);
       expect(buildCount, 1);
 
-      container.read(dep).state = 42;
+      container.read(dep.state).state = 42;
 
       expect(buildCount, 1);
 

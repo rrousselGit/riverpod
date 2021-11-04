@@ -62,8 +62,8 @@ class MyApp extends StatelessWidget {
       home: Consumer(builder: (context, ref, _) {
         final counter = ref.watch(counterProvider);
         return RaisedButton(
-          onPressed: () => counter.state++,
-          child: Text('${counter.state}'),
+          onPressed: () => ref.read(counterProvider.notifier).state++,
+          child: Text('${counter}'),
         );
       }),
     );
@@ -109,7 +109,7 @@ final counterProvider = StateProvider((ref) => 0);
 
 // Using mockito to keep track of when a provider notify its listeners
 class Listener extends Mock {
-  void call(int value);
+  void call(int? previous, int value);
 }
 
 void main() {
@@ -121,21 +121,21 @@ void main() {
     final listener = Listener();
 
     // Observe a provider and spy the changes.
-    container.listen<StateController<int>>(
+    container.listen<int>(
       counterProvider,
-      (StateController<int> controller) => listener(controller.state),
+      listener,
       fireImmediately: true,
     );
 
     // the listener is called immediately with 0, the default value
-    verify(listener(0)).called(1);
+    verify(listener(null, 0)).called(1);
     verifyNoMoreInteractions(listener);
 
     // We increment the value
-    container.read(counterProvider).state++;
+    container.read(counterProvider.notifier).state++;
 
     // The listener was called again, but with 1 this time
-    verify(listener(1)).called(1);
+    verify(listener(0, 1)).called(1);
     verifyNoMoreInteractions(listener);
   });
 
@@ -146,14 +146,14 @@ void main() {
     addTearDown(container.dispose);
     final listener = Listener();
 
-    container.listen<StateController<int>>(
+    container.listen<int>(
       counterProvider,
-      (StateController<int> controller) => listener(controller.state),
+      listener,
       fireImmediately: true,
     );
 
     // The new test correcly uses the default value: 0
-    verify(listener(0)).called(1);
+    verify(listener(null, 0)).called(1);
     verifyNoMoreInteractions(listener);
   });
 }

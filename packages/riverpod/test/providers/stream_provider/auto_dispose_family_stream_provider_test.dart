@@ -5,6 +5,26 @@ import '../../utils.dart';
 
 void main() {
   group('StreamProvider.autoDispose.family', () {
+    test('specfies `from` & `argument` for related providers', () {
+      final provider = StreamProvider.autoDispose.family<int, int>(
+        (ref, _) => Stream.value(0),
+      );
+
+      expect(provider(0).from, provider);
+      expect(provider(0).argument, 0);
+
+      expect(provider(0).future.from, provider);
+      expect(provider(0).future.argument, 0);
+
+      expect(provider(0).stream.from, provider);
+      expect(provider(0).stream.argument, 0);
+
+      // ignore: deprecated_member_use_from_same_package
+      expect(provider(0).last.from, provider);
+      // ignore: deprecated_member_use_from_same_package
+      expect(provider(0).last.argument, 0);
+    });
+
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () async {
         final provider = StreamProvider.autoDispose

@@ -38,7 +38,7 @@ void main() {
         final container = createContainer(observers: [observer, observer2]);
         final dep = StateProvider((ref) => 0);
         final provider = Provider((ref) {
-          if (ref.watch(dep).state == 0) {
+          if (ref.watch(dep.state).state == 0) {
             throw UnimplementedError();
           }
           return 0;
@@ -49,7 +49,7 @@ void main() {
         clearInteractions(observer);
         clearInteractions(observer2);
 
-        container.read(dep).state++;
+        container.read(dep.state).state++;
         await container.pump();
 
         verifyInOrder([
@@ -321,7 +321,7 @@ void main() {
         final container = createContainer(observers: [observer, observer2]);
         final dep = StateProvider((ref) => 0);
         final provider = Provider((ref) {
-          if (ref.watch(dep).state != 0) {
+          if (ref.watch(dep.state).state != 0) {
             throw UnimplementedError();
           }
           return 0;
@@ -332,7 +332,7 @@ void main() {
         clearInteractions(observer);
         clearInteractions(observer2);
 
-        container.read(dep).state++;
+        container.read(dep.state).state++;
         await container.pump();
 
         verifyInOrder([

@@ -110,7 +110,7 @@ void main() {
 
     verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
-    container.read(dep).state++;
+    container.read(dep.state).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
@@ -132,7 +132,7 @@ void main() {
 
     verifyOnly(listener, listener(any, any));
 
-    container.read(dep).state++;
+    container.read(dep.state).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
@@ -308,14 +308,14 @@ void main() {
       final futureProvider = StateProvider((ref) => Future.value(42));
       // a FutureProvider that can rebuild with a new future
       final provider =
-          FutureProvider<int>((ref) => ref.watch(futureProvider).state);
+          FutureProvider<int>((ref) => ref.watch(futureProvider.state).state);
       var callCount = 0;
       final dependent = Provider<Future<int>>((ref) {
         callCount++;
         return ref.watch(provider.future);
       });
       final container = createContainer();
-      final futureController = container.read(futureProvider);
+      final futureController = container.read(futureProvider.state);
 
       await expectLater(container.read(dependent), completion(42));
       expect(callCount, 1);
@@ -353,15 +353,15 @@ void main() {
     test('update dependents when the future changes', () async {
       final futureProvider = StateProvider((ref) => Future.value(42));
       // a FutureProvider that can rebuild with a new future
-      final provider =
-          FutureProvider.autoDispose((ref) => ref.watch(futureProvider).state);
+      final provider = FutureProvider.autoDispose(
+          (ref) => ref.watch(futureProvider.state).state);
       var callCount = 0;
       final dependent = Provider.autoDispose((ref) {
         callCount++;
         return ref.watch(provider.future);
       });
       final container = createContainer();
-      final futureController = container.read(futureProvider);
+      final futureController = container.read(futureProvider.state);
 
       final sub = container.listen(dependent, (_, __) {});
 

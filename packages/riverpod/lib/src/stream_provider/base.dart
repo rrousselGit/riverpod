@@ -26,7 +26,9 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
     this._create, {
     String? name,
     this.dependencies,
-  }) : super(name: name);
+    Family? from,
+    Object? argument,
+  }) : super(name: name, from: from, argument: argument);
 
   /// {@macro riverpod.family}
   static const family = StreamProviderFamilyBuilder();
@@ -56,7 +58,7 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   /// a stream will be generated and manipulated based on the [AsyncValue] used.
   /// {@endtemplate}
   late final AlwaysAliveProviderBase<Stream<State>> stream =
-      AsyncValueAsStreamProvider(this);
+      AsyncValueAsStreamProvider(this, from: from, argument: argument);
 
   /// {@template riverpod.streamprovider.future}
   /// Exposes a [Future] which resolves with the last value or error emitted.
@@ -158,7 +160,7 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   /// which is the expected behavior.
   /// {@endtemplate}
   late final AlwaysAliveProviderBase<Future<State>> future =
-      AsyncValueAsFutureProvider(this);
+      AsyncValueAsFutureProvider(this, from: from, argument: argument);
 
   /// {@template riverpod.streamprovider.future}
   @Deprecated('use `future` instead')
@@ -218,12 +220,12 @@ class StreamProviderFamily<State, Arg>
 
   @override
   StreamProvider<State> create(Arg argument) {
-    final provider = StreamProvider<State>(
+    return StreamProvider<State>(
       (ref) => _create(ref, argument),
       name: name,
+      from: this,
+      argument: argument,
     );
-
-    return provider;
   }
 
   @override

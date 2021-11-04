@@ -504,10 +504,12 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
   _StateReader _getStateReader(ProviderBase provider) {
     return _stateReaders.putIfAbsent(provider, () {
       if (provider.from != null) {
-        // If from a family, apply family overrides
-        final familyOverrideRef = _overrideForFamily[provider.from];
+        // reading a family
 
+        final familyOverrideRef = _overrideForFamily[provider.from];
         if (familyOverrideRef != null) {
+          // A family was overridden, so we implicitly mount the readers
+
           if (familyOverrideRef.container._stateReaders.containsKey(provider)) {
             return familyOverrideRef.container._stateReaders[provider]!;
           }
@@ -520,12 +522,11 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
               origin == override || override.dependencies == null,
               'A provider override cannot specify `dependencies`',
             );
-            assert(
-              !familyOverrideRef.container._stateReaders.containsKey(origin),
-              'A family override tried to override a provider that was already overridden',
-            );
 
-            familyOverrideRef.container._stateReaders[origin] = _StateReader(
+            // setupOverride may be called multiple times on different providers
+            // of the same family (provider vs provider.modifier), so we use ??=
+            // to initialize the providers only once
+            familyOverrideRef.container._stateReaders[origin] ??= _StateReader(
               origin: origin,
               override: override,
               container: familyOverrideRef.container,
@@ -538,12 +539,15 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
             setupOverride,
           );
 
-          assert(
-            familyOverrideRef.container._stateReaders.containsKey(provider),
-            'Overrode a family, but the family override did not override anything',
-          );
-
-          return familyOverrideRef.container._stateReaders[provider]!;
+          // if setupOverride overrode the provider, it was already initialized
+          // in the code above. Otherwise we initialize it as if it was not overridden
+          return familyOverrideRef.container._stateReaders[provider] ??
+              _StateReader(
+                origin: provider,
+                override: provider,
+                container: familyOverrideRef.container,
+                isDynamicallyCreated: true,
+              );
         }
       }
 

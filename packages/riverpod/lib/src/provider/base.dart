@@ -247,7 +247,9 @@ class Provider<State> extends AlwaysAliveProviderBase<State>
     this._create, {
     String? name,
     this.dependencies,
-  }) : super(name: name);
+    Family? from,
+    Object? argument,
+  }) : super(name: name, from: from, argument: argument);
 
   /// {@macro riverpod.family}
   static const family = ProviderFamilyBuilder();
@@ -291,9 +293,11 @@ class ProviderFamily<State, Arg> extends Family<State, Arg, Provider<State>> {
 
   @override
   Provider<State> create(Arg argument) {
-    return Provider(
+    return Provider<State>(
       (ref) => _create(ref, argument),
       name: name,
+      from: this,
+      argument: argument,
     );
   }
 }

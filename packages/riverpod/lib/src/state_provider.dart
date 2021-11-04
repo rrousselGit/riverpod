@@ -26,7 +26,7 @@ class StateController<T> extends StateNotifier<T> {
   /// depends on the previous state, such that rather than:
   ///
   /// ```dart
-  /// ref.read(provider).state = ref.read(provider).state + 1;
+  /// ref.read(provider.state).state = ref.read(provider.state).state + 1;
   /// ```
   ///
   /// we can do:
@@ -85,10 +85,13 @@ StateController<State> _listenStateProvider<State>(
 }
 
 /// Add [overrideWithValue] to [StateProvider]
-mixin StateProviderOverrideMixin<State>
-    on ProviderBase<StateController<State>> {
+mixin StateProviderOverrideMixin<State> on ProviderBase<State> {
   ///
   ProviderBase<StateController<State>> get notifier;
+
+  /// Obtains the [StateNotifier] and also listens to the state, as opposed to
+  /// [notifier] which will not listen to the state.
+  ProviderBase<StateController<State>> get state;
 
   @override
   late final List<ProviderOrFamily>? dependencies = [notifier];

@@ -27,7 +27,9 @@ class AutoDisposeStreamProvider<State>
     this._create, {
     String? name,
     this.dependencies,
-  }) : super(name: name);
+    Family? from,
+    Object? argument,
+  }) : super(name: name, from: from, argument: argument);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStreamProviderFamilyBuilder();
@@ -42,11 +44,19 @@ class AutoDisposeStreamProvider<State>
 
   /// {@template riverpod.streamprovider.stream}
   late final AutoDisposeProviderBase<Stream<State>> stream =
-      AutoDisposeAsyncValueAsStreamProvider(this);
+      AutoDisposeAsyncValueAsStreamProvider(
+    this,
+    from: from,
+    argument: argument,
+  );
 
   /// {@template riverpod.streamprovider.future}
   late final AutoDisposeProviderBase<Future<State>> future =
-      AutoDisposeAsyncValueAsFutureProvider(this);
+      AutoDisposeAsyncValueAsFutureProvider(
+    this,
+    from: from,
+    argument: argument,
+  );
 
   /// {@template riverpod.streamprovider.future}
   @Deprecated('Use `future` instead')
@@ -110,12 +120,12 @@ class AutoDisposeStreamProviderFamily<State, Arg>
 
   @override
   AutoDisposeStreamProvider<State> create(Arg argument) {
-    final provider = AutoDisposeStreamProvider<State>(
+    return AutoDisposeStreamProvider<State>(
       (ref) => _create(ref, argument),
       name: name,
+      from: this,
+      argument: argument,
     );
-
-    return provider;
   }
 
   @override

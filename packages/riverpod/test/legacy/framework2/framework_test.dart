@@ -222,7 +222,7 @@ void main() {
       () {
     var callCount = 0;
     final atom = StateProvider((ref) => 0);
-    final dependency = Provider((ref) => ref.watch(atom).state);
+    final dependency = Provider((ref) => ref.watch(atom.state).state);
     final provider = Provider((ref) {
       callCount++;
       ref.watch(dependency);
@@ -234,7 +234,7 @@ void main() {
     expect(() => container.read(provider), throwsA(isA<ProviderException>()));
     expect(callCount, 1);
 
-    container.read(atom).state = 0;
+    container.read(atom.state).state = 0;
 
     expect(() => container.read(provider), throwsA(isA<ProviderException>()));
     expect(callCount, 1);
@@ -244,8 +244,8 @@ void main() {
     final first = StateProvider((ref) => 0);
     final second = StateProvider((ref) => 0);
     final computed = Provider<String>((ref) {
-      if (ref.watch(first).state == 0) {
-        return ref.watch(second).state.toString();
+      if (ref.watch(first) == 0) {
+        return ref.watch(second).toString();
       }
       return 'fallback';
     });
@@ -265,7 +265,7 @@ void main() {
     expect(secondDependents, [computedElement]);
     expect(secondElement.hasListeners, true);
 
-    container.read(first).state++;
+    container.read(first.state).state++;
     expect(sub.read(), 'fallback');
 
     firstDependents = <ProviderElementBase>[];
@@ -301,7 +301,7 @@ void main() {
   test('remove dependencies on dispose', () async {
     final first = StateProvider((ref) => 0);
     final computed = Provider.autoDispose((ref) {
-      return ref.watch(first).state;
+      return ref.watch(first);
     });
     final firstElement = container.readProviderElement(first);
     final computedElement = container.readProviderElement(computed);
@@ -327,7 +327,7 @@ void main() {
       () async {
     final provider = StateProvider.autoDispose((ref) => 0);
 
-    final state = container.read(provider);
+    final state = container.read(provider.state);
 
     expect(state.mounted, true);
 
@@ -605,7 +605,7 @@ void main() {
       container.refresh(provider);
       expect(callCount, 1);
 
-      container.read(dep).state++;
+      container.read(dep.state).state++;
       future = Future.value(21);
 
       expect(callCount, 1);
