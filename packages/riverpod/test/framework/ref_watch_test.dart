@@ -49,7 +49,7 @@ void main() {
     final container = createContainer();
     final throws = StateProvider((ref) => true);
     final provider = Provider((ref) {
-      if (ref.watch(throws).state) {
+      if (ref.watch(throws.state).state) {
         throw UnimplementedError();
       }
       return 0;
@@ -74,7 +74,7 @@ void main() {
       ),
     );
 
-    container.read(throws).state = false;
+    container.read(throws.state).state = false;
 
     expect(container.read(dep), 0);
   });
@@ -85,7 +85,7 @@ void main() {
     final container = createContainer();
     final throws = StateProvider((ref) => true);
     final provider = Provider((ref) {
-      if (ref.watch(throws).state) {
+      if (ref.watch(throws.state).state) {
         throw UnimplementedError();
       }
       return 0;
@@ -110,7 +110,7 @@ void main() {
       ),
     );
 
-    container.read(throws).state = false;
+    container.read(throws.state).state = false;
 
     expect(container.read(dep), 0);
   });
@@ -129,12 +129,12 @@ void main() {
 
     container.read(provider);
 
-    container.read(dep).state++;
+    container.read(dep.state).state++;
 
     verifyOnly(onDispose, onDispose());
 
-    container.read(dep).state++;
-    container.read(dep2).state++;
+    container.read(dep.state).state++;
+    container.read(dep2.state).state++;
 
     verifyNoMoreInteractions(onDispose);
   });
@@ -260,7 +260,7 @@ void main() {
     var computedBuildCount = 0;
     final computed = Provider((ref) {
       computedBuildCount++;
-      final state = ref.watch(stateProvider).state;
+      final state = ref.watch(stateProvider.state).state;
       final value = state == 0 ? ref.watch(provider0) : ref.watch(provider1);
       return '${ref.watch(provider0)} $value';
     });
@@ -293,7 +293,7 @@ void main() {
     verifyNoMoreInteractions(computedListener);
 
     // changing the provider that computed is subscribed to
-    container.read(stateProvider).state = 1;
+    container.read(stateProvider.state).state = 1;
     await container.pump();
 
     verifyOnly(computedListener, computedListener('1 1', '1 43'));
@@ -331,7 +331,7 @@ void main() {
     var computedBuildCount = 0;
     final computed = Provider((ref) {
       computedBuildCount++;
-      final state = ref.watch(stateProvider).state;
+      final state = ref.watch(stateProvider.state).state;
       return state == 0 ? ref.watch(provider0) : ref.watch(provider1);
     });
 
@@ -361,7 +361,7 @@ void main() {
     verifyNoMoreInteractions(computedListener);
 
     // changing the provider that computed is subscribed to
-    container.read(stateProvider).state = 1;
+    container.read(stateProvider.state).state = 1;
     await container.pump();
 
     expect(computedBuildCount, 3);
@@ -444,7 +444,7 @@ void main() {
     var firstCallCount = 0;
     final first = Provider((ref) {
       firstCallCount++;
-      ref.watch(state).state;
+      ref.watch(state.state).state;
       return 0;
     });
     var secondCallCount = 0;
@@ -454,7 +454,7 @@ void main() {
     });
     final container = createContainer();
 
-    final controller = container.read(state);
+    final controller = container.read(state.state);
 
     expect(container.read(second), '0');
     expect(firstCallCount, 1);

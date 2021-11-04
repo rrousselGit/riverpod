@@ -49,7 +49,7 @@ void main() {
     //   final vsync = VsyncMock();
 
     //   final sub = container.listen(provider, (_) {});
-    //   container.read(dep).state++;
+    //   container.read(dep.state).state++;
 
     //   container.debugVsyncs.add(vsync);
 
@@ -76,18 +76,18 @@ void main() {
 
   test('rebuilding a provider can modify other providers', () async {
     final dep = StateProvider((ref) => 0);
-    final provider = Provider((ref) => ref.watch(dep).state);
+    final provider = Provider((ref) => ref.watch(dep.state).state);
     final another = StateProvider<int>((ref) {
       ref.listen(provider, (prev, value) => ref.controller.state++);
       return 0;
     });
     final container = createContainer();
 
-    expect(container.read(another).state, 0);
+    expect(container.read(another.state).state, 0);
 
-    container.read(dep).state = 42;
+    container.read(dep.state).state = 42;
 
-    expect(container.read(another).state, 1);
+    expect(container.read(another.state).state, 1);
   });
 
   group('ref.watch cannot end-up in a circular dependency', () {
@@ -169,7 +169,7 @@ void main() {
   test("initState can't dirty ancestors", () {
     final ancestor = StateProvider((_) => 0);
     final child = Provider((ref) {
-      return ref.watch(ancestor).state++;
+      return ref.watch(ancestor.state).state++;
     });
 
     expect(errorsOf(() => container.read(child)), isNotEmpty);
@@ -179,7 +179,7 @@ void main() {
     final ancestor = StateProvider((_) => 0, name: 'ancestor');
     final counter = Counter();
     final sibling = StateNotifierProvider<Counter, int>((ref) {
-      ref.watch(ancestor).state;
+      ref.watch(ancestor.state).state;
       return counter;
     }, name: 'sibling');
     var didWatchAncestor = false;
@@ -198,11 +198,11 @@ void main() {
   test("initState can't mark dirty other provider", () {
     final provider = StateProvider((ref) => 0);
     final provider2 = Provider((ref) {
-      ref.watch(provider).state = 42;
+      ref.watch(provider.state).state = 42;
       return 0;
     });
 
-    expect(container.read(provider).state, 0);
+    expect(container.read(provider.state).state, 0);
 
     expect(errorsOf(() => container.read(provider2)), isNotEmpty);
   });

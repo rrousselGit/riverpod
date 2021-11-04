@@ -72,9 +72,13 @@ class AutoDisposeProviderFamily<State, Arg>
 
   @override
   AutoDisposeProvider<State> create(Arg argument) {
-    return AutoDisposeProvider<State>(
+    final provider = AutoDisposeProvider<State>(
       (ref) => _create(ref, argument),
       name: name,
     );
+
+    registerProvider(provider, argument);
+
+    return provider;
   }
 }

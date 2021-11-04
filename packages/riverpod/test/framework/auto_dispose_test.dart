@@ -99,10 +99,13 @@ final alwaysAlive = Provider((ref) {
       ref.onDispose(() => dependencyDisposeCount++);
       return 0;
     });
-    final isDependendingOnDependency = StateProvider((ref) => true);
+    final isDependendingOnDependency = StateProvider(
+      (ref) => true,
+      name: 'foo',
+    );
     final provider = Provider.autoDispose((ref) {
       ref.maintainState = true;
-      if (ref.watch(isDependendingOnDependency).state) {
+      if (ref.watch(isDependendingOnDependency.state).state) {
         ref.watch(dependency);
       }
     });
@@ -111,32 +114,25 @@ final alwaysAlive = Provider((ref) {
 
     expect(dependencyDisposeCount, 0);
     expect(
-      container.getAllProviderElements(),
-      unorderedEquals(<Matcher>[
-        isA<ProviderElementBase>()
-            .having((e) => e.provider, 'provider', dependency),
-        isA<ProviderElementBase>()
-            .having((e) => e.provider, 'provider', provider),
-        isA<ProviderElementBase>()
-            .having((e) => e.provider, 'provider', isDependendingOnDependency),
-        isA<ProviderElementBase>().having(
-            (e) => e.provider, 'provider', isDependendingOnDependency.notifier),
+      container.getAllProviderElements().map((e) => e.provider),
+      unorderedEquals(<Object>[
+        dependency,
+        provider,
+        isDependendingOnDependency.state,
+        isDependendingOnDependency.notifier,
       ]),
     );
 
-    container.read(isDependendingOnDependency).state = false;
+    container.read(isDependendingOnDependency.state).state = false;
     await container.pump();
 
     expect(dependencyDisposeCount, 1);
     expect(
-      container.getAllProviderElements(),
-      unorderedEquals(<Matcher>[
-        isA<ProviderElementBase>()
-            .having((e) => e.provider, 'provider', provider),
-        isA<ProviderElementBase>()
-            .having((e) => e.provider, 'provider', isDependendingOnDependency),
-        isA<ProviderElementBase>().having(
-            (e) => e.provider, 'provider', isDependendingOnDependency.notifier),
+      container.getAllProviderElements().map((e) => e.provider),
+      unorderedEquals(<Object>[
+        provider,
+        isDependendingOnDependency.state,
+        isDependendingOnDependency.notifier,
       ]),
     );
   });

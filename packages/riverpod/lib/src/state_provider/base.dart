@@ -39,7 +39,7 @@ class StateProvider<State> extends AlwaysAliveProviderBase<State>
 
   @override
   late final AlwaysAliveProviderBase<StateController<State>> state =
-      Provider((ref) {
+      _NotifierStateProvider((ref) {
     return _listenStateProvider(
       ref as ProviderElementBase<StateController<State>>,
       ref.watch(notifier),
@@ -95,6 +95,18 @@ class StateProvider<State> extends AlwaysAliveProviderBase<State>
 class StateProviderElement<State> extends ProviderElementBase<State> {
   /// The [ProviderElementBase] for [StateProvider]
   StateProviderElement(StateProvider<State> provider) : super(provider);
+}
+
+class _NotifierStateProvider<State> extends Provider<State> {
+  _NotifierStateProvider(
+    Create<State, ProviderRef<State>> create, {
+    List<ProviderOrFamily>? dependencies,
+  }) : super(create, dependencies: dependencies);
+
+  @override
+  bool updateShouldNotify(State previousState, State newState) {
+    return true;
+  }
 }
 
 class _NotifierProvider<State>
@@ -165,13 +177,12 @@ class StateProviderFamily<State, Arg>
     );
 
     registerProvider(provider.notifier, argument);
-    registerProvider(provider.state, argument);
 
     return provider;
   }
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup) {
+  void setupOverride(Arg argument, SetupOverride setup, _) {
     final provider = call(argument);
     setup(origin: provider.notifier, override: provider.notifier);
   }
@@ -184,7 +195,8 @@ class StateProviderFamily<State, Arg>
       this,
       (arg, setup) {
         final provider = call(arg);
-        setup(origin: provider.notifier, override: override(arg).notifier);
+        final newProvider = override(arg);
+        setup(origin: provider.notifier, override: newProvider.notifier);
       },
     );
   }

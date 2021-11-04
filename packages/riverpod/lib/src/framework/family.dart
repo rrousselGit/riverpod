@@ -20,7 +20,7 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   Family<Object?, Arg, ProviderBase<Object?>> get overriddenFamily => this;
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup) {
+  void setupOverride(Arg argument, SetupOverride setup, _) {
     setup(origin: call(argument), override: call(argument));
   }
 
@@ -30,8 +30,6 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   /// See the documentation of [Provider.family] for more informations.
   FamilyProvider call(Arg argument) {
     final provider = create(argument);
-
-    registerProvider(provider, argument);
 
     return provider;
   }
@@ -80,7 +78,7 @@ abstract class FamilyOverride<Arg> implements Override {
 
   /// Allows a family to override all the different providers associated with
   /// an argument.
-  void setupOverride(Arg argument, SetupOverride setup);
+  void setupOverride(Arg argument, SetupOverride setup, ProviderBase provider);
 }
 
 class _FamilyOverride<Arg> implements FamilyOverride<Arg> {
@@ -92,7 +90,7 @@ class _FamilyOverride<Arg> implements FamilyOverride<Arg> {
   final void Function(Arg argument, SetupOverride setup) _setup;
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup) {
+  void setupOverride(Arg argument, SetupOverride setup, _) {
     _setup(argument, setup);
   }
 }

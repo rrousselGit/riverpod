@@ -70,7 +70,7 @@ void main() {
         final container = createContainer();
         Object? err;
         final provider = Provider.autoDispose<int>((ref) {
-          if (ref.watch(dep).state) {
+          if (ref.watch(dep.state).state) {
             try {
               ref.state;
             } catch (e) {
@@ -83,7 +83,7 @@ void main() {
         container.read(provider);
         expect(err, isNull);
 
-        container.read(dep).state = true;
+        container.read(dep.state).state = true;
         container.read(provider);
 
         expect(err, isStateError);

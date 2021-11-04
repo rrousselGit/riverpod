@@ -504,10 +504,12 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
   _StateReader _getStateReader(ProviderBase provider) {
     return _stateReaders.putIfAbsent(provider, () {
       if (provider.from != null) {
-        // If from a family, apply family overrides
-        final familyOverrideRef = _overrideForFamily[provider.from];
+        // reading a family
 
+        final familyOverrideRef = _overrideForFamily[provider.from];
         if (familyOverrideRef != null) {
+          // A family was overridden, so we implicitly mount the readers
+
           if (familyOverrideRef.container._stateReaders.containsKey(provider)) {
             return familyOverrideRef.container._stateReaders[provider]!;
           }
@@ -520,12 +522,12 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
               origin == override || override.dependencies == null,
               'A provider override cannot specify `dependencies`',
             );
-            assert(
-              !familyOverrideRef.container._stateReaders.containsKey(origin),
-              'A family override tried to override a provider that was already overridden',
-            );
+            // assert(
+            //   !familyOverrideRef.container._stateReaders.containsKey(origin),
+            //   'A family override tried to override a provider that was already overridden',
+            // );
 
-            familyOverrideRef.container._stateReaders[origin] = _StateReader(
+            familyOverrideRef.container._stateReaders[origin] ??= _StateReader(
               origin: origin,
               override: override,
               container: familyOverrideRef.container,
@@ -536,6 +538,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
           familyOverrideRef.override.setupOverride(
             provider.argument,
             setupOverride,
+            provider,
           );
 
           assert(

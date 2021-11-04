@@ -223,11 +223,13 @@ class StreamProviderFamily<State, Arg>
       name: name,
     );
 
+    registerProvider(provider, argument);
+
     return provider;
   }
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup) {
+  void setupOverride(Arg argument, SetupOverride setup, _) {
     final provider = call(argument);
     setup(origin: provider, override: provider);
   }

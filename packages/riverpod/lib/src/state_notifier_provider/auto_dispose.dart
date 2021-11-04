@@ -202,12 +202,13 @@ class AutoDisposeStateNotifierProviderFamily<
     );
 
     registerProvider(provider.notifier, argument);
+    registerProvider(provider, argument);
 
     return provider;
   }
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup) {
+  void setupOverride(Arg argument, SetupOverride setup, _) {
     final provider = call(argument);
     setup(origin: provider, override: provider);
     setup(origin: provider.notifier, override: provider.notifier);
@@ -223,7 +224,6 @@ class AutoDisposeStateNotifierProviderFamily<
       (arg, setup) {
         final provider = call(arg);
         setup(origin: provider.notifier, override: override(arg).notifier);
-        setup(origin: provider, override: provider);
       },
     );
   }

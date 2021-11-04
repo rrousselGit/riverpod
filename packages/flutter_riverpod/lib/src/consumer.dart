@@ -219,7 +219,7 @@ typedef ConsumerBuilder = Widget Function(
 ///               builder: (BuildContext context, WidgetRef ref, Widget? child) {
 ///                 // This builder will only get called when the counterProvider
 ///                 // is updated.
-///                 final count = ref.watch(counterProvider).state;
+///                 final count = ref.watch(counterProvider.state).state;
 ///
 ///                 return Row(
 ///                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -239,7 +239,7 @@ typedef ConsumerBuilder = Widget Function(
 ///       ),
 ///       floatingActionButton: FloatingActionButton(
 ///         child: Icon(Icons.plus_one),
-///         onPressed: () => context.read(counterProvider).state++,
+///         onPressed: () => context.read(counterProvider.state).state++,
 ///       ),
 ///     );
 ///   }

@@ -69,7 +69,7 @@ void main() {
         () async {
       final dep = StateProvider((ref) => Stream.value(42));
       final provider =
-          StreamProvider.autoDispose((ref) => ref.watch(dep).state);
+          StreamProvider.autoDispose((ref) => ref.watch(dep.state).state);
       final container = createContainer();
       final listener = Listener<AsyncValue<int>>();
 
@@ -86,7 +86,7 @@ void main() {
 
       final controller = StreamController<int>();
       addTearDown(controller.close);
-      container.read(dep).state = controller.stream;
+      container.read(dep.state).state = controller.stream;
 
       container.listen(provider, listener, fireImmediately: true);
 
@@ -95,7 +95,7 @@ void main() {
         listener(null, const AsyncLoading<int>()),
       );
 
-      container.read(dep).state = Stream.value(21);
+      container.read(dep.state).state = Stream.value(21);
 
       verifyNoMoreInteractions(listener);
 
@@ -146,7 +146,7 @@ void main() {
 
       verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
-      container.read(dep).state++;
+      container.read(dep.state).state++;
       await container.pump();
 
       verifyNoMoreInteractions(listener);
@@ -167,7 +167,7 @@ void main() {
 
       verifyOnly(listener, listener(any, any));
 
-      container.read(dep).state++;
+      container.read(dep.state).state++;
       await container.pump();
 
       verifyNoMoreInteractions(listener);
@@ -188,7 +188,7 @@ void main() {
 
       verifyOnly(listener, listener(any, any));
 
-      container.read(dep).state++;
+      container.read(dep.state).state++;
       await container.pump();
 
       verifyNoMoreInteractions(listener);

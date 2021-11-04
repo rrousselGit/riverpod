@@ -109,11 +109,13 @@ class AutoDisposeFutureProviderFamily<State, Arg>
       name: name,
     );
 
+    registerProvider(provider, argument);
+
     return provider;
   }
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup) {
+  void setupOverride(Arg argument, SetupOverride setup, _) {
     final futureProvider = call(argument);
     setup(origin: futureProvider, override: futureProvider);
   }

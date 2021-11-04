@@ -84,7 +84,8 @@ void main() {
       'when going from AsyncLoading to AsyncLoading, does not notify listeners',
       () async {
     final dep = StateProvider((ref) => Future.value(42));
-    final provider = FutureProvider.autoDispose((ref) => ref.watch(dep).state);
+    final provider =
+        FutureProvider.autoDispose((ref) => ref.watch(dep.state).state);
     final container = createContainer();
     final listener = Listener<AsyncValue<int>>();
 
@@ -100,7 +101,7 @@ void main() {
     );
 
     final completer = Completer<int>();
-    container.read(dep).state = completer.future;
+    container.read(dep.state).state = completer.future;
 
     container.listen(provider, listener, fireImmediately: true);
 
@@ -109,7 +110,7 @@ void main() {
       listener(null, const AsyncLoading<int>()),
     );
 
-    container.read(dep).state = Future.value(21);
+    container.read(dep.state).state = Future.value(21);
 
     verifyNoMoreInteractions(listener);
 
@@ -158,7 +159,7 @@ void main() {
 
     verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
-    container.read(dep).state++;
+    container.read(dep.state).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
@@ -180,7 +181,7 @@ void main() {
 
     verifyOnly(listener, listener(any, any));
 
-    container.read(dep).state++;
+    container.read(dep.state).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);

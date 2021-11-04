@@ -80,7 +80,7 @@ void main() {
       'when going from AsyncLoading to AsyncLoading, does not notify listeners',
       () async {
     final dep = StateProvider((ref) => Stream.value(42));
-    final provider = StreamProvider((ref) => ref.watch(dep).state);
+    final provider = StreamProvider((ref) => ref.watch(dep.state).state);
     final container = createContainer();
     final listener = Listener<AsyncValue<int>>();
 
@@ -95,7 +95,7 @@ void main() {
 
     final controller = StreamController<int>();
     addTearDown(controller.close);
-    container.read(dep).state = controller.stream;
+    container.read(dep.state).state = controller.stream;
 
     container.listen(provider, listener, fireImmediately: true);
 
@@ -104,7 +104,7 @@ void main() {
       listener(null, const AsyncLoading<int>()),
     );
 
-    container.read(dep).state = Stream.value(21);
+    container.read(dep.state).state = Stream.value(21);
 
     verifyNoMoreInteractions(listener);
 
@@ -477,7 +477,7 @@ void main() {
 
     verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
-    container.read(dep).state++;
+    container.read(dep.state).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
@@ -497,7 +497,7 @@ void main() {
 
     verifyOnly(listener, listener(any, any));
 
-    container.read(dep).state++;
+    container.read(dep.state).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
@@ -518,7 +518,7 @@ void main() {
 
     verifyOnly(listener, listener(any, any));
 
-    container.read(dep).state++;
+    container.read(dep.state).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
@@ -766,14 +766,15 @@ void main() {
     test('update dependents when the future changes', () async {
       final streamProvider = StateProvider((ref) => Stream.value(42));
       // a StreamProvider that can rebuild with a new future
-      final provider = StreamProvider((ref) => ref.watch(streamProvider).state);
+      final provider =
+          StreamProvider((ref) => ref.watch(streamProvider.state).state);
       var callCount = 0;
       final dependent = Provider((ref) {
         callCount++;
         return ref.watch(provider.stream);
       });
       final container = createContainer();
-      final streamController = container.read(streamProvider);
+      final streamController = container.read(streamProvider.state);
 
       await expectLater(container.read(dependent), emits(42));
       expect(callCount, 1);
@@ -839,7 +840,7 @@ void main() {
           StateProvider((ref) => Stream.value(42), name: 'stateProvider');
       // a StreamProvider that can rebuild with a new future
       final streamProvider = StreamProvider.autoDispose((ref) {
-        return ref.watch(streamStateProvider).state;
+        return ref.watch(streamStateProvider.state).state;
       }, name: 'streamProvider');
       var callCount = 0;
       final dependent = Provider.autoDispose((ref) {
@@ -848,7 +849,7 @@ void main() {
       }, name: 'dependent');
       final container = createContainer();
 
-      final streamController = container.read(streamStateProvider);
+      final streamController = container.read(streamStateProvider.state);
       container.read(streamProvider.stream);
       final sub = container.listen(dependent, (_, __) {});
 

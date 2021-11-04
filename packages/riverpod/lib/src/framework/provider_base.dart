@@ -908,6 +908,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _onDisposeListeners?.forEach(_runGuarded);
     _onDisposeListeners = null;
   }
+
+  @override
+  String toString() {
+    return '$runtimeType(provider: $provider, origin: $origin)';
+  }
 }
 
 /// Encapulates an exception thrown while building a provider.

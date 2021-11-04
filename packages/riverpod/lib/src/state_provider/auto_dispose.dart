@@ -33,7 +33,7 @@ class AutoDisposeStateProvider<State> extends AutoDisposeProviderBase<State>
 
   @override
   late final AutoDisposeProviderBase<StateController<State>> state =
-      AutoDisposeProvider((ref) {
+      _AutoDisposeNotifierStateProvider((ref) {
     return _listenStateProvider(
       ref as ProviderElementBase<StateController<State>>,
       ref.watch(notifier),
@@ -41,7 +41,7 @@ class AutoDisposeStateProvider<State> extends AutoDisposeProviderBase<State>
   }, dependencies: [notifier]);
 
   @override
-  State create(AutoDisposeProviderElement<State> ref) {
+  State create(AutoDisposeProviderElementBase<State> ref) {
     final notifier = ref.watch(this.notifier);
 
     final removeListener = notifier.addListener(ref.setState);
@@ -106,13 +106,26 @@ class _AutoDisposeNotifierProvider<State>
 
 class _AutoDisposeNotifierStateProviderElement<State>
     extends AutoDisposeProviderElementBase<StateController<State>>
-    implements StateProviderRef<State> {
+    implements AutoDisposeStateProviderRef<State> {
   _AutoDisposeNotifierStateProviderElement(
       _AutoDisposeNotifierProvider<State> provider)
       : super(provider);
 
   @override
   StateController<State> get controller => requireState;
+}
+
+class _AutoDisposeNotifierStateProvider<State>
+    extends AutoDisposeProvider<State> {
+  _AutoDisposeNotifierStateProvider(
+    Create<State, AutoDisposeProviderRef<State>> create, {
+    List<ProviderOrFamily>? dependencies,
+  }) : super(create, dependencies: dependencies);
+
+  @override
+  bool updateShouldNotify(State previousState, State newState) {
+    return true;
+  }
 }
 
 /// {@macro riverpod.stateprovider.family}
@@ -138,13 +151,12 @@ class AutoDisposeStateProviderFamily<State, Arg>
     );
 
     registerProvider(provider.notifier, argument);
-    registerProvider(provider.state, argument);
 
     return provider;
   }
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup) {
+  void setupOverride(Arg argument, SetupOverride setup, _) {
     final provider = call(argument);
     setup(origin: provider.notifier, override: provider.notifier);
   }
@@ -157,7 +169,8 @@ class AutoDisposeStateProviderFamily<State, Arg>
       this,
       (arg, setup) {
         final provider = call(arg);
-        setup(origin: provider.notifier, override: override(arg).notifier);
+        final newProvider = override(arg);
+        setup(origin: provider.notifier, override: newProvider.notifier);
       },
     );
   }

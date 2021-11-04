@@ -131,7 +131,7 @@ class AutoDisposeChangeNotifierProviderFamily<Notifier extends ChangeNotifier?,
   }
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup) {
+  void setupOverride(Arg argument, SetupOverride setup, _) {
     final provider = call(argument);
 
     setup(origin: provider, override: provider);

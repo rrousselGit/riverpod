@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
-  test('throw if overrideWithProvider returnes a provider with dependencies',
+  test('throw if overrideWithProvider returns a provider with dependencies',
       () {
     final family = Provider.family<int, int>((ref, _) => 0);
     final a = Provider((ref) => 0);
@@ -140,10 +140,22 @@ void main() {
           .having((p) => p.from, 'from', family),
     );
     expect(
+      family(0).notifier,
+      isA<AlwaysAliveProviderBase<Counter>>()
+          .having((p) => p.argument, 'argument', 0)
+          .having((p) => p.from, 'from', family),
+    );
+    expect(
       family(1),
       isA<StateNotifierProvider<Counter, int>>()
           .having((p) => p.from, 'from', family)
           .having((p) => p.argument, 'argument', 1),
+    );
+    expect(
+      family(1).notifier,
+      isA<AlwaysAliveProviderBase<Counter>>()
+          .having((p) => p.argument, 'argument', 1)
+          .having((p) => p.from, 'from', family),
     );
   });
 

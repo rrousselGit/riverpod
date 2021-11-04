@@ -291,9 +291,13 @@ class ProviderFamily<State, Arg> extends Family<State, Arg, Provider<State>> {
 
   @override
   Provider<State> create(Arg argument) {
-    return Provider(
+    final provider = Provider<State>(
       (ref) => _create(ref, argument),
       name: name,
     );
+
+    registerProvider(provider, argument);
+
+    return provider;
   }
 }
