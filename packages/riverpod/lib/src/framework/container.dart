@@ -538,7 +538,6 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
           familyOverrideRef.override.setupOverride(
             provider.argument,
             setupOverride,
-            provider,
           );
 
           assert(

@@ -17,12 +17,16 @@ class AutoDisposeStateProvider<State> extends AutoDisposeProviderBase<State>
     Create<State, AutoDisposeStateProviderRef<State>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
+    Family? from,
+    Object? argument,
   })  : notifier = _AutoDisposeNotifierProvider(
           create,
           name: modifierName(name, 'notifier'),
           dependencies: dependencies,
+          from: from,
+          argument: argument,
         ),
-        super(name: name);
+        super(name: name, from: from, argument: argument);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStateProviderFamilyBuilder();
@@ -75,7 +79,9 @@ class _AutoDisposeNotifierProvider<State>
     this._create, {
     required String? name,
     required this.dependencies,
-  }) : super(name: name);
+    Family? from,
+    Object? argument,
+  }) : super(name: name, from: from, argument: argument);
 
   final Create<State, AutoDisposeStateProviderRef<State>> _create;
 
@@ -145,18 +151,14 @@ class AutoDisposeStateProviderFamily<State, Arg>
   AutoDisposeStateProvider<State> create(
     Arg argument,
   ) {
-    final provider = AutoDisposeStateProvider<State>(
+    return AutoDisposeStateProvider<State>(
       (ref) => _create(ref, argument),
       name: name,
     );
-
-    registerProvider(provider.notifier, argument);
-
-    return provider;
   }
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup, _) {
+  void setupOverride(Arg argument, SetupOverride setup) {
     final provider = call(argument);
     setup(origin: provider.notifier, override: provider.notifier);
   }

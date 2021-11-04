@@ -143,8 +143,15 @@ extension AutoDisposeAsyncProviderX<State>
 class AsyncValueAsStreamProvider<State>
     extends AlwaysAliveProviderBase<Stream<State>> {
   ///
-  AsyncValueAsStreamProvider(this._provider)
-      : super(name: modifierName(_provider.name, 'stream'));
+  AsyncValueAsStreamProvider(
+    this._provider, {
+    Family? from,
+    Object? argument,
+  }) : super(
+          name: modifierName(_provider.name, 'stream'),
+          from: from,
+          argument: argument,
+        );
 
   final AlwaysAliveProviderBase<AsyncValue<State>> _provider;
 
@@ -186,8 +193,15 @@ class AsyncValueAsStreamProvider<State>
 class AutoDisposeAsyncValueAsStreamProvider<State>
     extends AutoDisposeProviderBase<Stream<State>> {
   ///
-  AutoDisposeAsyncValueAsStreamProvider(this._provider)
-      : super(name: modifierName(_provider.name, 'stream'));
+  AutoDisposeAsyncValueAsStreamProvider(
+    this._provider, {
+    Family? from,
+    Object? argument,
+  }) : super(
+          name: modifierName(_provider.name, 'stream'),
+          from: from,
+          argument: argument,
+        );
 
   final AutoDisposeProviderBase<AsyncValue<State>> _provider;
 
@@ -272,8 +286,15 @@ Stream<State> _asyncValueToStream<State>(
 class AsyncValueAsFutureProvider<State>
     extends AlwaysAliveProviderBase<Future<State>> {
   ///
-  AsyncValueAsFutureProvider(this._provider)
-      : super(name: modifierName(_provider.name, 'future'));
+  AsyncValueAsFutureProvider(
+    this._provider, {
+    Family? from,
+    Object? argument,
+  }) : super(
+          name: modifierName(_provider.name, 'future'),
+          from: from,
+          argument: argument,
+        );
 
   final AlwaysAliveProviderBase<AsyncValue<State>> _provider;
 
@@ -315,8 +336,15 @@ class AsyncValueAsFutureProvider<State>
 class AutoDisposeAsyncValueAsFutureProvider<State>
     extends AutoDisposeProviderBase<Future<State>> {
   ///
-  AutoDisposeAsyncValueAsFutureProvider(this._provider)
-      : super(name: modifierName(_provider.name, 'future'));
+  AutoDisposeAsyncValueAsFutureProvider(
+    this._provider, {
+    Family? from,
+    Object? argument,
+  }) : super(
+          name: modifierName(_provider.name, 'future'),
+          from: from,
+          argument: argument,
+        );
 
   final AutoDisposeProviderBase<AsyncValue<State>> _provider;
 

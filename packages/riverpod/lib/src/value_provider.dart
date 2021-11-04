@@ -8,7 +8,7 @@ import 'framework.dart';
 @sealed
 class ValueProvider<State> extends AlwaysAliveProviderBase<State> {
   /// Creates a [ValueProvider].
-  ValueProvider(this._value) : super(name: null);
+  ValueProvider(this._value) : super(name: null, from: null, argument: null);
 
   final State _value;
 

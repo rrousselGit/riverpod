@@ -26,7 +26,9 @@ class FutureProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
     this._create, {
     String? name,
     this.dependencies,
-  }) : super(name: name);
+    Family? from,
+    Object? argument,
+  }) : super(name: name, from: from, argument: argument);
 
   /// {@macro riverpod.family}
   static const family = FutureProviderFamilyBuilder();
@@ -122,18 +124,16 @@ class FutureProviderFamily<State, Arg>
 
   @override
   FutureProvider<State> create(Arg argument) {
-    final provider = FutureProvider<State>(
+    return FutureProvider<State>(
       (ref) => _create(ref, argument),
       name: name,
+      from: this,
+      argument: argument,
     );
-
-    registerProvider(provider, argument);
-
-    return provider;
   }
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup, _) {
+  void setupOverride(Arg argument, SetupOverride setup) {
     final futureProvider = call(argument);
     setup(origin: futureProvider, override: futureProvider);
   }

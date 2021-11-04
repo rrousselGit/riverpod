@@ -20,7 +20,7 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   Family<Object?, Arg, ProviderBase<Object?>> get overriddenFamily => this;
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup, _) {
+  void setupOverride(Arg argument, SetupOverride setup) {
     setup(origin: call(argument), override: call(argument));
   }
 
@@ -28,24 +28,7 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   ///
   /// That external value should be immutable and preferably override `==`/`hashCode`.
   /// See the documentation of [Provider.family] for more informations.
-  FamilyProvider call(Arg argument) {
-    final provider = create(argument);
-
-    return provider;
-  }
-
-  /// Register a provider as part of this family.
-  @protected
-  void registerProvider(ProviderBase provider, Arg argument) {
-    assert(
-      provider._from == null,
-      'The provider created already belongs to a Family',
-    );
-
-    provider
-      .._from = this
-      .._argument = argument;
-  }
+  FamilyProvider call(Arg argument) => create(argument);
 
   /// Creates the provider for a given parameter.
   @protected
@@ -78,7 +61,7 @@ abstract class FamilyOverride<Arg> implements Override {
 
   /// Allows a family to override all the different providers associated with
   /// an argument.
-  void setupOverride(Arg argument, SetupOverride setup, ProviderBase provider);
+  void setupOverride(Arg argument, SetupOverride setup);
 }
 
 class _FamilyOverride<Arg> implements FamilyOverride<Arg> {
@@ -90,7 +73,7 @@ class _FamilyOverride<Arg> implements FamilyOverride<Arg> {
   final void Function(Arg argument, SetupOverride setup) _setup;
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup, _) {
+  void setupOverride(Arg argument, SetupOverride setup) {
     _setup(argument, setup);
   }
 }

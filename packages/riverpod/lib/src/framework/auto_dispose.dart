@@ -42,7 +42,11 @@ abstract class AutoDisposeRef extends Ref {
 /// {@endtemplate}
 abstract class AutoDisposeProviderBase<State> extends ProviderBase<State> {
   /// {@macro riverpod.AutoDisposeProviderBase}
-  AutoDisposeProviderBase({required String? name}) : super(name: name);
+  AutoDisposeProviderBase({
+    required String? name,
+    required Family? from,
+    required Object? argument,
+  }) : super(name: name, from: from, argument: argument);
 
   @override
   State create(AutoDisposeRef ref);

@@ -21,12 +21,16 @@ class StateProvider<State> extends AlwaysAliveProviderBase<State>
     Create<State, StateProviderRef<State>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
+    Family? from,
+    Object? argument,
   })  : notifier = _NotifierProvider(
           create,
           name: modifierName(name, 'notifier'),
           dependencies: dependencies,
+          from: from,
+          argument: argument,
         ),
-        super(name: name);
+        super(name: name, from: from, argument: argument);
 
   /// {@macro riverpod.family}
   static const family = StateProviderFamilyBuilder();
@@ -115,7 +119,9 @@ class _NotifierProvider<State>
     this._create, {
     required String? name,
     required this.dependencies,
-  }) : super(name: name);
+    Family? from,
+    Object? argument,
+  }) : super(name: name, from: from, argument: argument);
 
   final Create<State, StateProviderRef<State>> _create;
 
@@ -171,18 +177,16 @@ class StateProviderFamily<State, Arg>
   StateProvider<State> create(
     Arg argument,
   ) {
-    final provider = StateProvider<State>(
+    return StateProvider<State>(
       (ref) => _create(ref, argument),
       name: name,
+      from: this,
+      argument: argument,
     );
-
-    registerProvider(provider.notifier, argument);
-
-    return provider;
   }
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup, _) {
+  void setupOverride(Arg argument, SetupOverride setup) {
     final provider = call(argument);
     setup(origin: provider.notifier, override: provider.notifier);
   }

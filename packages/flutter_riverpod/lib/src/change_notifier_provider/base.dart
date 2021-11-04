@@ -22,12 +22,16 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier?>
     Create<Notifier, ChangeNotifierProviderRef<Notifier>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
+    Family? from,
+    Object? argument,
   })  : notifier = _NotifierProvider<Notifier>(
           create,
           name: name,
           dependencies: dependencies,
+          from: from,
+          argument: argument,
         ),
-        super(name: name);
+        super(name: name, from: from, argument: argument);
 
   /// {@macro riverpod.family}
   static const family = ChangeNotifierProviderFamilyBuilder();
@@ -85,8 +89,12 @@ class _NotifierProvider<Notifier extends ChangeNotifier?>
     this._create, {
     required String? name,
     required this.dependencies,
+    Family? from,
+    Object? argument,
   }) : super(
           name: modifierName(name, 'notifier'),
+          from: from,
+          argument: argument,
         );
 
   @override
@@ -140,18 +148,16 @@ class ChangeNotifierProviderFamily<Notifier extends ChangeNotifier?, Arg>
 
   @override
   ChangeNotifierProvider<Notifier> create(Arg argument) {
-    final provider = ChangeNotifierProvider<Notifier>(
+    return ChangeNotifierProvider<Notifier>(
       (ref) => _create(ref, argument),
       name: name,
+      from: this,
+      argument: argument,
     );
-
-    registerProvider(provider.notifier, argument);
-
-    return provider;
   }
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup, _) {
+  void setupOverride(Arg argument, SetupOverride setup) {
     final provider = call(argument);
 
     setup(origin: provider, override: provider);

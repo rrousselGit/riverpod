@@ -27,7 +27,9 @@ class AutoDisposeFutureProvider<State>
     this._create, {
     String? name,
     this.dependencies,
-  }) : super(name: name);
+    Family? from,
+    Object? argument,
+  }) : super(name: name, from: from, argument: argument);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeFutureProviderFamilyBuilder();
@@ -104,18 +106,16 @@ class AutoDisposeFutureProviderFamily<State, Arg>
 
   @override
   AutoDisposeFutureProvider<State> create(Arg argument) {
-    final provider = AutoDisposeFutureProvider<State>(
+    return AutoDisposeFutureProvider<State>(
       (ref) => _create(ref, argument),
       name: name,
+      from: this,
+      argument: argument,
     );
-
-    registerProvider(provider, argument);
-
-    return provider;
   }
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup, _) {
+  void setupOverride(Arg argument, SetupOverride setup) {
     final futureProvider = call(argument);
     setup(origin: futureProvider, override: futureProvider);
   }

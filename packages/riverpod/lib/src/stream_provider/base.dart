@@ -26,7 +26,9 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
     this._create, {
     String? name,
     this.dependencies,
-  }) : super(name: name);
+    Family? from,
+    Object? argument,
+  }) : super(name: name, from: from, argument: argument);
 
   /// {@macro riverpod.family}
   static const family = StreamProviderFamilyBuilder();
@@ -218,18 +220,14 @@ class StreamProviderFamily<State, Arg>
 
   @override
   StreamProvider<State> create(Arg argument) {
-    final provider = StreamProvider<State>(
+    return StreamProvider<State>(
       (ref) => _create(ref, argument),
       name: name,
     );
-
-    registerProvider(provider, argument);
-
-    return provider;
   }
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup, _) {
+  void setupOverride(Arg argument, SetupOverride setup) {
     final provider = call(argument);
     setup(origin: provider, override: provider);
   }

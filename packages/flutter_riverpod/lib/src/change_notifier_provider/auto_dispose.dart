@@ -23,12 +23,16 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier?>
     Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
+    Family? from,
+    Object? argument,
   })  : notifier = _AutoDisposeNotifierProvider<Notifier>(
           create,
           name: modifierName(name, 'notifier'),
           dependencies: dependencies,
+          from: from,
+          argument: argument,
         ),
-        super(name: name);
+        super(name: name, from: from, argument: argument);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeChangeNotifierProviderFamilyBuilder();
@@ -62,8 +66,12 @@ class _AutoDisposeNotifierProvider<Notifier extends ChangeNotifier?>
     this._create, {
     required String? name,
     required this.dependencies,
+    Family? from,
+    Object? argument,
   }) : super(
           name: modifierName(name, 'notifier'),
+          from: from,
+          argument: argument,
         );
 
   @override
@@ -120,18 +128,16 @@ class AutoDisposeChangeNotifierProviderFamily<Notifier extends ChangeNotifier?,
 
   @override
   AutoDisposeChangeNotifierProvider<Notifier> create(Arg argument) {
-    final provider = AutoDisposeChangeNotifierProvider<Notifier>(
+    return AutoDisposeChangeNotifierProvider<Notifier>(
       (ref) => _create(ref, argument),
       name: name,
+      from: this,
+      argument: argument,
     );
-
-    registerProvider(provider.notifier, argument);
-
-    return provider;
   }
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup, _) {
+  void setupOverride(Arg argument, SetupOverride setup) {
     final provider = call(argument);
 
     setup(origin: provider, override: provider);

@@ -22,12 +22,16 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
     Create<Notifier, StateNotifierProviderRef<Notifier, State>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
+    Family? from,
+    Object? argument,
   })  : notifier = _NotifierProvider(
           create,
           name: name,
           dependencies: dependencies,
+          from: from,
+          argument: argument,
         ),
-        super(name: name);
+        super(name: name, from: from, argument: argument);
 
   /// {@macro riverpod.family}
   static const family = StateNotifierProviderFamilyBuilder();
@@ -74,8 +78,12 @@ class _NotifierProvider<Notifier extends StateNotifier<State>, State>
     this._create, {
     required String? name,
     required this.dependencies,
+    Family? from,
+    Object? argument,
   }) : super(
           name: name == null ? null : '$name.notifier',
+          from: from,
+          argument: argument,
         );
 
   final Create<Notifier, StateNotifierProviderRef<Notifier, State>> _create;
@@ -133,19 +141,16 @@ class StateNotifierProviderFamily<Notifier extends StateNotifier<State>, State,
   StateNotifierProvider<Notifier, State> create(
     Arg argument,
   ) {
-    final provider = StateNotifierProvider<Notifier, State>(
+    return StateNotifierProvider<Notifier, State>(
       (ref) => _create(ref, argument),
       name: name,
+      from: this,
+      argument: argument,
     );
-
-    registerProvider(provider.notifier, argument);
-    registerProvider(provider, argument);
-
-    return provider;
   }
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup, ProviderBase provider) {
+  void setupOverride(Arg argument, SetupOverride setup) {
     final provider = call(argument);
     setup(origin: provider.notifier, override: provider.notifier);
   }
