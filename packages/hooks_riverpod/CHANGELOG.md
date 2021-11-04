@@ -8,6 +8,14 @@ Riverpod is now stable!
   You can now instead use `ProviderContainer.getAllProviderElements`.
 - `ChangeNotifierProvider` now supports nullable `ChangeNotifier` (#856)
 - Increased minimum SDK version to 2.14.0
+- **Breaking** The return value when reading a `StateProvider` changed.
+  Before, doing `ref.read(someStateProvider)` would return the `StateController` instance.  
+  Now, this will only return the state of the `StateController`.  
+  This new behaviour matches `StateNotifierProvider`.
+
+  For a simple migration, the old behavior is available by writing
+  `ref.read(someStateProvider.state)`.
+
 - Added `ref.listen` for triggering actions inside providers/widgets when a provider changes.
 
   It can be used to listen to another provider without recreating the provider state:
