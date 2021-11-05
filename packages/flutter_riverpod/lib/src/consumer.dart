@@ -477,7 +477,6 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     // We can't implement a fireImmediately flag because we wouldn't know
     // which listen call was preserved between widget rebuild, and we wouldn't
     // want to call the listener on every rebuild.
-    // TODO onError
     final sub = _container.listen<T>(provider, listener, onError: onError);
     _listeners.add(sub);
   }
