@@ -838,7 +838,7 @@ Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstance
   ```
 
 * Removed `ref.dependOn`.
-  You can now use `ref.read`/`ref.watch` to acheive the same effect.
+  You can now use `ref.read`/`ref.watch` to achieve the same effect.
 
   Before:
 

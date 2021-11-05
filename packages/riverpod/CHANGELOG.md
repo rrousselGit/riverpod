@@ -662,7 +662,7 @@ Migrated to null-safety
   ```
 
 * Removed `ref.dependOn`.
-  You can now use `ref.read`/`ref.watch` to acheive the same effect.
+  You can now use `ref.read`/`ref.watch` to achieve the same effect.
 
   Before:
 
