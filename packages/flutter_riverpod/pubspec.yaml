@@ -15,7 +15,7 @@ dependencies:
   flutter:
     sdk: flutter
   meta: ^1.3.0
-  riverpod: ^1.0.0
+  riverpod: 1.0.0
   state_notifier: ^0.7.0
 
 dev_dependencies:

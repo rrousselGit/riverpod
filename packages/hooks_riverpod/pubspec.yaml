@@ -15,8 +15,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.18.0
-  flutter_riverpod: ^1.0.0
-  riverpod: ^1.0.0
+  flutter_riverpod: 1.0.0
+  riverpod: 1.0.0
   state_notifier: ^0.7.0
 
 dev_dependencies:
