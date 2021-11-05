@@ -36,6 +36,7 @@ final futureProvider = FutureProvider<int>((FutureProviderRef<int> ref) async {
 final streamProvider = StreamProvider<int>((StreamProviderRef<int> ref) async* {
   yield 0;
   await Future<void>.delayed(const Duration(seconds: 1));
+  final state = ref.watch(stateProvider.state).state;
   yield 1;
 });
 final plainProvider = Provider<String>((ProviderRef<String> ref) => '');
@@ -83,6 +84,7 @@ class ConsumerWatch extends ConsumerWidget {
     final countNotifier = ref.watch(counterProvider.notifier);
     final count = ref.watch(counterProvider);
     final fam = ref.watch(plainProviderFamilyAD(''));
+    final state = ref.watch(stateProvider.state).state;
     return Column(
       children: [
         const ImageProvider(),
@@ -106,6 +108,35 @@ class StatelessRead extends ConsumerWidget {
         child: const Text('Counter'),
       ),
     );
+  }
+}
+
+class StatelessConsumerRead extends ConsumerWidget {
+  const StatelessConsumerRead({Key? key}) : super(key: key);
+
+  void onPressed(WidgetRef ref, BuildContext context) {
+    ref.read(counterProvider);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          onPressed(ref, context);
+          onPressed2(ref, context);
+        },
+        child: Consumer(builder: (context, ref, child) {
+          final count = ref.watch(counterProvider);
+
+          return Text('Counter $count');
+        }),
+      ),
+    );
+  }
+
+  void onPressed2(WidgetRef ref, BuildContext context) {
+    ref.refresh(counterProvider.notifier);
   }
 }
 
@@ -250,12 +281,12 @@ class HooksConsumerWatch extends StatelessWidget {
   }
 }
 
-class HooksConsumerSimple extends StatelessWidget {
+class HooksConsumerSimple extends ConsumerWidget {
   const HooksConsumerSimple({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => _build();
-  Widget _build() => HookConsumer(
+  Widget build(BuildContext context, WidgetRef ref) => _build(ref);
+  Widget _build(WidgetRef ref) => HookConsumer(
         builder: (context, ref, child) {
           ref.watch(counterProvider);
           final value = useAHook(ref, '');

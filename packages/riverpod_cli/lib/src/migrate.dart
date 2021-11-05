@@ -77,7 +77,7 @@ class MigrateCommand extends Command<void> {
             RiverpodNotifierChangesMigrationSuggestor(version),
           ],
         ),
-        RiverpodHooksProviderInfo(version),
+        RiverpodProviderUsageInfo(version),
         RiverpodUnifiedSyntaxChangesMigrationSuggestor(version),
       ],
       args: argResults?.arguments ?? [],

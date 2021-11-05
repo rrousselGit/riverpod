@@ -36,6 +36,7 @@ final futureProvider = FutureProvider((ProviderReference ref) async {
 final streamProvider = StreamProvider((ProviderReference ref) async* {
   yield 0;
   await Future<void>.delayed(const Duration(seconds: 1));
+  final state = ref.watch(stateProvider).state;
   yield 1;
 });
 final plainProvider = Provider((ProviderReference ref) => '');
@@ -80,6 +81,7 @@ class ConsumerWatch extends ConsumerWidget {
     final countNotifier = watch(counterProvider.notifier);
     final count = watch(counterProvider);
     final fam = watch(plainProviderFamilyAD(''));
+    final state = watch(stateProvider).state;
     return Column(
       children: [
         const ImageProvider(),
@@ -103,6 +105,35 @@ class StatelessRead extends StatelessWidget {
         child: const Text('Counter'),
       ),
     );
+  }
+}
+
+class StatelessConsumerRead extends StatelessWidget {
+  const StatelessConsumerRead({Key? key}) : super(key: key);
+
+  void onPressed(BuildContext context) {
+    context.read(counterProvider);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          onPressed(context);
+          onPressed2(context);
+        },
+        child: Consumer(builder: (context, watch, child) {
+          final count = watch(counterProvider);
+
+          return Text('Counter $count');
+        }),
+      ),
+    );
+  }
+
+  void onPressed2(BuildContext context) {
+    context.refresh(counterProvider);
   }
 }
 
