@@ -426,6 +426,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
       for (var i = 0; i < _listeners.length; i++) {
         _listeners[i].close();
       }
+      _listeners.clear();
       _dependencies = {};
       return super.build();
     } finally {
