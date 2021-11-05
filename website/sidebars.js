@@ -116,6 +116,11 @@ module.exports = {
           label: "Firebase Authentication with Riverpod Following Flutter DDD Architecture Pattern",
           href: "https://github.com/pythonhubpy/firebase_authentication_flutter_DDD",
         },
+         {
+          type: "link",
+          label: "Todo App with Backup and Restore feature",
+          href: "https://github.com/TheAlphaApp/flutter_riverpod_todo_app",
+        },
       ],
     },
     {
