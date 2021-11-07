@@ -7,6 +7,7 @@
     grid-template-columns: repeat(1, 1fr);
     gap: 30px;
     padding: 2rem;
+    max-width: $max-width;
 
     @include min-width(lg) {
       grid-template-columns: repeat(3, 1fr);

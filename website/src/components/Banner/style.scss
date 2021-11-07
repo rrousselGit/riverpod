@@ -1,6 +1,7 @@
 .banner {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   padding: 1rem;
   background-color: var(--ifm-color-emphasis-100);
 
@@ -15,6 +16,7 @@
     flex-direction: column;
     flex: 1;
     padding: 1rem;
+    max-width: $max-width / 2;
   }
 
   &__logo {

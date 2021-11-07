@@ -2,6 +2,7 @@
   &__card {
     display: flex;
     flex-direction: column;
+    max-width: $max-width;
     margin: 1rem;
     margin-top: 0;
     margin-bottom: 2rem;
