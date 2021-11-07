@@ -20,7 +20,7 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({
         </div>
         <div className="snippet__title">{title}</div>
       </div>
-      <CodeBlock>{children}</CodeBlock>
+      <CodeBlock>{children.toString().trim()}</CodeBlock>
     </div>
   );
 };
