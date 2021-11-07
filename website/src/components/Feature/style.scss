@@ -2,8 +2,9 @@
   &__card {
     display: flex;
     flex-direction: column;
-    margin: 1.5rem;
+    margin: 1rem;
     margin-top: 0;
+    margin-bottom: 2rem;
     padding: 2rem;
     border-radius: 24px;
     background-color: var(--ifm-color-emphasis-100);
@@ -19,8 +20,6 @@
         flex-direction: row-reverse;
       }
     }
-
-
   }
 
   &__content {
@@ -41,7 +40,7 @@
 
   &__preview {
     flex: 3;
-    
+
     > * {
       border-radius: 8px;
       box-shadow: 0px 14px 50px -34px rgba(0, 0, 0, 0.64);
