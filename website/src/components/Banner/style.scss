@@ -1,3 +1,5 @@
+@use "sass:math";
+
 .banner {
   display: flex;
   flex-direction: column;
@@ -16,7 +18,7 @@
     flex-direction: column;
     flex: 1;
     padding: 1rem;
-    max-width: $max-width / 2;
+    max-width: math.div($max-width, 2);
   }
 
   &__logo {
