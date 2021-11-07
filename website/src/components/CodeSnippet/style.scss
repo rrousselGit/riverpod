@@ -1,32 +1,41 @@
 .snippet {
   position: relative;
 
-  &__dots {
-    z-index: 10;
+  &__title_bar {
     position: absolute;
+    right: 0;
+    left: 0;
+    z-index: 10;
     display: flex;
-    top: 14px;
-    left: 14px;
+    align-items: center;
+    padding: 16px 14px;
+  }
+
+  &__dots {
+    display: flex;
   }
 
   &__dot {
     height: 14px;
     width: 14px;
     border-radius: 50%;
-    margin-left: 6px;
+    margin-left: 4px;
 
     @include themed(background-color, #00000013, #ffffff25);
+
+    @include min-width(lg) {
+      margin-left: 6px;
+    }
   }
 
   &__title {
-    z-index: 10;
     position: absolute;
     right: 0;
     left: 0;
     text-align: center;
-    margin-top: 12px;
-    opacity: 0.68;
-    font-size: 14px;
+    opacity: 0.64;
+    font-size: 13.4px;
+    line-height: 0;
   }
 
   .prism-code {
