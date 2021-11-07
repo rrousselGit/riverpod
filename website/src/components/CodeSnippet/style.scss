@@ -18,8 +18,8 @@
   &__dot {
     height: 14px;
     width: 14px;
-    border-radius: 50%;
     margin-left: 4px;
+    border-radius: 50%;
 
     @include themed(background-color, #00000013, #ffffff25);
 
@@ -32,9 +32,9 @@
     position: absolute;
     right: 0;
     left: 0;
-    text-align: center;
     opacity: 0.64;
     font-size: 13.4px;
+    text-align: center;
     line-height: 0;
   }
 
@@ -45,11 +45,11 @@
     &.language-dart .token-line::before {
       counter-increment: line-number;
       content: counter(line-number);
-      margin-right: calc(var(--ifm-pre-padding) * 1.5);
-      min-width: 1rem;
+      position: sticky;
       display: inline-block;
       opacity: 0.3;
-      position: sticky;
+      min-width: 1rem;
+      margin-right: calc(var(--ifm-pre-padding) * 1.5);
     }
   }
 }

@@ -17,8 +17,8 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    padding: 1rem;
     max-width: math.div($max-width, 2);
+    padding: 1rem;
   }
 
   &__logo {
@@ -51,9 +51,9 @@
     font-weight: 600;
 
     &:hover {
+      background-color: var(--ifm-color-primary-dark);
       color: white;
       text-decoration: none;
-      background-color: var(--ifm-color-primary-dark);
     }
   }
 }
