@@ -74,7 +74,7 @@ class StateProvider<State> extends AlwaysAliveProviderBase<State>
   /// ```
   ///
   /// The reasoning is, using `read` could cause hard to catch bugs, such as
-  /// not rebuilding dependent providers/widgets after using `context.refresh` on this provider.
+  /// not rebuilding dependent providers/widgets after using `ref.refresh` on this provider.
   /// {@endtemplate}
   @override
   final AlwaysAliveProviderBase<StateController<State>> notifier;

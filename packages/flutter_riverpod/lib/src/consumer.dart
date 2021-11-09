@@ -31,7 +31,7 @@ abstract class WidgetRef {
   /// ```dart
   /// Widget build(BuildContext context) {
   ///   // counter is used only for the onPressed of RaisedButton
-  ///   final counter = context.read(counterProvider);
+  ///   final counter = ref.read(counterProvider);
   ///
   ///   return RaisedButton(
   ///     onPressed: () => counter.increment(),
@@ -50,7 +50,7 @@ abstract class WidgetRef {
   ///   return RaisedButton(
   ///     onPressed: () {
   ///       // as performant as the previous solution, but resilient to refactoring
-  ///       context.read(counterProvider).increment(),
+  ///       ref.read(counterProvider).increment(),
   ///     },
   ///   );
   /// }
@@ -64,7 +64,7 @@ abstract class WidgetRef {
   /// ```dart
   /// Widget build(BuildContext context) {
   ///   // using read because we only use a value that never changes.
-  ///   final model = context.read(modelProvider);
+  ///   final model = ref.read(modelProvider);
   ///
   ///   return Text('${model.valueThatNeverChanges}');
   /// }
@@ -113,7 +113,7 @@ abstract class WidgetRef {
   ///     final Products products = ref.watch(productsProvider);
   ///
   ///     return RefreshIndicator(
-  ///       onRefresh: () => context.refresh(productsProvider),
+  ///       onRefresh: () => ref.refresh(productsProvider),
   ///       child: ListView(
   ///         children: [
   ///           for (final product in products.items) ProductItem(product: product),
@@ -239,7 +239,7 @@ typedef ConsumerBuilder = Widget Function(
 ///       ),
 ///       floatingActionButton: FloatingActionButton(
 ///         child: Icon(Icons.plus_one),
-///         onPressed: () => context.read(counterProvider.state).state++,
+///         onPressed: () => ref.read(counterProvider.state).state++,
 ///       ),
 ///     );
 ///   }

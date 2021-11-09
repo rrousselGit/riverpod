@@ -190,7 +190,7 @@ void main() {
     expect(container2.debugCanModifyProviders, null);
   });
 
-  testWidgets('context.refresh forces a provider to refresh', (tester) async {
+  testWidgets('ref.refresh forces a provider to refresh', (tester) async {
     var future = Future<int>.value(21);
     final provider = FutureProvider<int>((ref) => future);
     late WidgetRef ref;
@@ -212,7 +212,7 @@ void main() {
     await expectLater(ref.read(provider.future), completion(42));
   });
 
-  testWidgets('context.refresh forces a provider of nullable type to refresh',
+  testWidgets('ref.refresh forces a provider of nullable type to refresh',
       (tester) async {
     int? value = 42;
     final provider = Provider<int?>((ref) => value);

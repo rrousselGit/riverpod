@@ -61,7 +61,7 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier?>
   /// ```
   ///
   /// The reasoning is, using `read` could cause hard to catch bugs, such as
-  /// not rebuilding dependent providers/widgets after using `context.refresh` on this provider.
+  /// not rebuilding dependent providers/widgets after using `ref.refresh` on this provider.
   /// {@endtemplate}
   @override
   final AlwaysAliveProviderBase<Notifier> notifier;
