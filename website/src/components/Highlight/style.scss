@@ -1,0 +1,31 @@
+.highlight {
+  display: flex;
+  flex-direction: column;
+
+  &__container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 30px;
+    max-width: $max-width;
+    padding: 2rem;
+
+    @include min-width(lg) {
+      grid-template-columns: repeat(3, 1fr);
+      padding: 8rem;
+    }
+  }
+
+  &__illustration {
+    height: 180px;
+    margin-bottom: 24px;
+  }
+
+  &__title {
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  &__description {
+    text-align: center;
+  }
+}

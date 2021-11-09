@@ -1,0 +1,59 @@
+@use "sass:math";
+
+.banner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1rem;
+  background-color: var(--ifm-color-emphasis-100);
+
+  @include min-width(lg) {
+    flex-direction: row;
+    align-items: center;
+    padding: 4rem 6rem;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    max-width: math.div($max-width, 2);
+    padding: 1rem;
+  }
+
+  &__logo {
+    display: inline;
+    font-size: 28px;
+    font-weight: 600;
+
+    @include min-width(lg) {
+      margin-top: -64px;
+    }
+
+    > img {
+      width: 26px;
+      margin-right: 16px;
+    }
+  }
+
+  &__headline {
+    font-size: 48px;
+  }
+
+  &__cta {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 40px;
+    border-radius: 8px;
+    background-color: var(--ifm-color-primary);
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+
+    &:hover {
+      background-color: var(--ifm-color-primary-dark);
+      color: white;
+      text-decoration: none;
+    }
+  }
+}
