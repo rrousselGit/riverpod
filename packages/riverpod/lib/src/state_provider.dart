@@ -49,7 +49,7 @@ class StateController<T> extends StateNotifier<T> {
 ///
 /// ```dart
 /// final selectedProductIdProvider = StateProvider<String?>((ref) => null);
-/// final productsProvider = StateNotifierProvider<ProductsNotifier>((ref) => ProductsNotifier());
+/// final productsProvider = StateNotifierProvider<ProductsNotifier, List<Product>>((ref) => ProductsNotifier());
 ///
 /// Widget build(BuildContext context, WidgetRef ref) {
 ///   final List<Product> products = ref.watch(productsProvider);
