@@ -185,7 +185,7 @@ Riverpod is now stable!
 - It is no-longer allowed to use `ref.watch` or `ref.read` inside a selector:
 
   ```dart
-  provider.select((value) => ref.watch(something)); // KO, cannot user ref.watch inside selectors
+  provider.select((value) => ref.watch(something)); // NO, cannot use ref.watch inside selectors
   ```
 
 - FutureProvider now creates a `FutureOr<T>` instead of a `Future<T>`.  
