@@ -10,12 +10,6 @@ la méthode que vous souhaitez utiliser.
 - `didAddProvider` est appelé chaque fois qu'un provider a été initialisé, et la valeur exposée est value.
 - `didDisposeProvider` est appelé chaque fois que le provider A a été éliminé.
 - `didUpdateProvider` est appelé à chaque fois que mes providers émettent une notification.
-- `mayHaveChanged` est appelé lorsque la dépendance d'un provider a changé, mais il n'est pas encore certain que la valeur calculée change.
-
-:::info
-Il est possible que mayHaveChanged soit appelé, sans que didUpdateProvider soit appelé, 
-par exemple lorsqu'un Provider est recalculé mais renvoie une valeur == à la précédente.
-:::
 
 ### Usage: 
 
