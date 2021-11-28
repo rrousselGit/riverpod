@@ -192,13 +192,13 @@ final myProvider = Provider((ref) {
 ```
 
 Si vous avez utilisé [read] pour tenter d'éviter les reconstructions non souhaitées de votre objet, reportez-vous à 
-[Mon provider fait des mises à jour trop souvent, que puis-je faire ?](#Mon-provider-fait-des-mises-à-jour-trop-souvent,-que-puis-je-faire-?)
+[Mon provider fait des mises à jour trop souvent, que puis-je faire ?](#mon-provider-fait-des-mises-à-jour-trop-souvent-que-puis-je-faire-)
 Mauvaise pratique pour appeler `read` ici
 :::
 
 ### Comment tester un objet qui reçoit [read] comme paramètre de son constructeur ?
 
-Si vous utilisez le modèle décrit dans [Peut-on lire un provider sans l'écouter ?](#Peut-on-lire-un-provider-sans-l'écouter-?), 
+Si vous utilisez le modèle décrit dans [Peut-on lire un provider sans l'écouter ?](#peut-on-lire-un-provider-sans-lécouter-), 
 vous vous demandez peut-être comment écrire des tests pour votre objet.
 
 Dans ce scénario, considérez tester le provider directement au lieu de l'objet brut. 
