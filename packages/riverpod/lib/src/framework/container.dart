@@ -144,6 +144,8 @@ class _StateReader {
   }
 }
 
+var _debugVerifyDependenciesAreRespectedEnabled = true;
+
 /// {@template riverpod.providercontainer}
 /// An object that stores the state of the providers and allows overriding the
 /// behavior of a specific provider.
@@ -462,25 +464,30 @@ class ProviderContainer {
     final reader = _getStateReader(provider);
 
     assert(() {
-      // Check that this containers doesn't have access to an overridden
-      // dependency of the targetted provider
+      // Avoid having the assert trigger itself exponentially
+      if (!_debugVerifyDependenciesAreRespectedEnabled) return true;
 
-      final targetElement = reader.getElement();
-      final visitedDependencies = <ProviderBase>{};
-      final queue = Queue<ProviderBase>();
-      targetElement.visitAncestors((e) => queue.add(e.origin));
+      try {
+        _debugVerifyDependenciesAreRespectedEnabled = false;
 
-      while (queue.isNotEmpty) {
-        final dependency = queue.removeFirst();
-        if (visitedDependencies.add(dependency)) {
-          final dependencyElement = readProviderElement<Object?>(dependency);
+        // Check that this containers doesn't have access to an overridden
+        // dependency of the targetted provider
+        final targetElement = reader.getElement();
+        final visitedDependencies = <ProviderBase>{};
+        final queue = Queue<ProviderBase>();
+        targetElement.visitAncestors((e) => queue.add(e.origin));
 
-          assert(
-              targetElement.provider != targetElement.origin ||
-                  dependencyElement ==
-                      targetElement.container
-                          .readProviderElement<Object?>(dependency),
-              '''
+        while (queue.isNotEmpty) {
+          final dependency = queue.removeFirst();
+          if (visitedDependencies.add(dependency)) {
+            final dependencyElement = readProviderElement<Object?>(dependency);
+
+            assert(
+                targetElement.provider != targetElement.origin ||
+                    dependencyElement ==
+                        targetElement.container
+                            .readProviderElement<Object?>(dependency),
+                '''
 Tried to read $provider from a place where one of its dependencies were overridden but the provider is not.
 
 To fix this error, you can add add "dependencies" to $provider such that we have:
@@ -491,10 +498,12 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
 ```
 ''');
 
-          dependencyElement.visitAncestors((e) => queue.add(e.origin));
+            dependencyElement.visitAncestors((e) => queue.add(e.origin));
+          }
         }
+      } finally {
+        _debugVerifyDependenciesAreRespectedEnabled = true;
       }
-
       return true;
     }(), '');
 

@@ -1,3 +1,8 @@
+## 1.0.1
+
+Improved the performance of the assert which verifies that providers properly
+respect their `dependencies` variable.
+
 ## 1.0.0
 
 Riverpod is now stable!
