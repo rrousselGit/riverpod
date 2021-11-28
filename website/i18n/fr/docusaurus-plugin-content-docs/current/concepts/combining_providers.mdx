@@ -42,7 +42,7 @@ Et voilà. Nous avons créé un provider qui dépend d'un autre provider.
 Selon le provider que vous écoutez, la valeur obtenue peut changer au fil du temps. 
 
 Par exemple, vous pourriez être à l'écoute d'un [StateNotifierProvider], 
-ou le provider écouté a été forcé de se rafraîchir à l'aide de [ProviderContainer.refresh]/[context.refresh].
+ou le provider écouté a été forcé de se rafraîchir à l'aide de [ProviderContainer.refresh]/[ref.refresh].
 
 En utilisant [watch], Riverpod est capable de détecter que la valeur 
 écoutée a changé et réexécutera _automatiquement_ le provider si nécessaire.
@@ -275,4 +275,4 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 [watch]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html
 [read]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/read.html
 [providercontainer.refresh]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer/refresh.html
-[context.refresh]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/BuildContextX/refresh.html
+[ref.refresh]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef/refresh.html
