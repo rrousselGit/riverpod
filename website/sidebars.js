@@ -33,7 +33,10 @@ module.exports = {
       type: "category",
       label: "Migration",
       collapsed: false,
-      items: ["migration/0.13.0_to_0.14.0"],
+      items: [
+        "migration/0.13.0_to_0.14.0",
+        "migration/0.14.0_to_1.0.0"
+      ],
     },
     {
       type: "category",
