@@ -136,6 +136,33 @@ As such:
   )
   ```
 
+- `context.read` is removed in favor of `ref.read`.
+  Before:
+
+  ```dart
+  class Example extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      SomeButton(
+        onPressed: () => context.read(provider.notifier).doSomething(),
+      );
+    }
+  }
+  ```
+
+  After:
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef) {
+      SomeButton(
+        onPressed: () => ref.read(provider.notifier).doSomething(),
+      );
+    }
+  }
+  ```
+
 ### StateProvider update
 
 [StateProvider] was updated to match [StateNotifierProvider].

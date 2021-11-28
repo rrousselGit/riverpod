@@ -136,6 +136,34 @@ Ce qui veut dire que:
   )
   ```
 
+- `context.read` est remplacé par `ref.read`.
+  Avant:
+
+  ```dart
+  class Example extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      SomeButton(
+        onPressed: () => context.read(provider.notifier).doSomething(),
+      );
+    }
+  }
+  ```
+
+  Après:
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef) {
+      SomeButton(
+        onPressed: () => ref.read(provider.notifier).doSomething(),
+      );
+    }
+  }
+  ```
+
+
 ### StateProvider
 
 [StateProvider] est aligné avec [StateNotifierProvider].
