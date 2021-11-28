@@ -2,6 +2,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:codemod/codemod.dart';
+import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:pub_semver/pub_semver.dart';
 
@@ -222,7 +223,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     if (name == 'StatefulWidget') {
       statefulDeclarations[node.name.name] = node;
       if (statefulNeedsMigration.contains(node.name.name)) {
-        migrateStateful(node.name.name);
+        migrateStateful(node.name.name, node);
       }
     }
     super.visitClassDeclaration(node);
@@ -308,9 +309,11 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           classDecl.extendsClause!.superclass.name.end,
         );
 
-        migrateStateful(classDecl
-            .extendsClause!.superclass.typeArguments!.arguments.first.type!
-            .getDisplayString(withNullability: true));
+        migrateStateful(
+            classDecl
+                .extendsClause!.superclass.typeArguments!.arguments.first.type!
+                .getDisplayString(withNullability: true),
+            classDecl);
       }
     } catch (e, st) {
       addError('migrating class $classDecl\n$e\n$st');
@@ -805,17 +808,19 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         }
         migrateStateProvider(node.argumentList.arguments.first);
       } else {
-        final func = ProviderFunction(
-          name: node.function.staticType!.element!.declaration!.name!,
-          path: node
-              .function.staticType!.element!.declaration!.location!.components
-              .join('/'),
-          line: node.function.staticType!.element!.declaration!.nameOffset,
-        );
-        if (RiverpodProviderUsageInfo.shouldMigrate(func)) {
-          migrateFunctionCall(node.argumentList);
-          foundProviderUsage.last = true;
-          // migrateParams();
+        if (node.function.staticType?.element?.declaration?.name != null) {
+          final func = ProviderFunction(
+            name: node.function.staticType!.element!.declaration!.name!,
+            path: node
+                .function.staticType!.element!.declaration!.location!.components
+                .join('/'),
+            line: node.function.staticType!.element!.declaration!.nameOffset,
+          );
+          if (RiverpodProviderUsageInfo.shouldMigrate(func)) {
+            migrateFunctionCall(node.argumentList);
+            foundProviderUsage.last = true;
+            // migrateParams();
+          }
         }
       }
     } catch (e, st) {
@@ -835,13 +840,23 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     }
   }
 
-  void migrateStateful(String statefulName) {
+  void migrateStateful(String statefulName, ClassDeclaration node) {
     final statefulDeclaration = statefulDeclarations[statefulName];
     if (statefulDeclaration != null) {
       yieldPatch(
           'ConsumerStatefulWidget',
           statefulDeclaration.extendsClause!.superclass.offset,
           statefulDeclaration.extendsClause!.superclass.end);
+      final method = node.members.firstWhereOrNull((m) =>
+              m is MethodDeclaration && m.name.name.contains('createState'))
+          as MethodDeclaration?;
+
+      if (method != null &&
+          method.returnType != null &&
+          method.returnType!.toSource().contains('State<StatefulWidget>')) {
+        yieldPatch('ConsumerState<ConsumerStatefulWidget>',
+            method.returnType!.offset, method.returnType!.end);
+      }
     } else {
       statefulNeedsMigration.add(statefulName);
     }

@@ -180,6 +180,32 @@ class StatelessExpressionListen extends ConsumerWidget {
   }
 }
 
+class StatefulConsumerBasic extends ConsumerStatefulWidget {
+  const StatefulConsumerBasic({Key? key}) : super(key: key);
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _StatefulConsumerBasicState();
+}
+
+class _StatefulConsumerBasicState extends ConsumerState<StatefulConsumer> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: GestureDetector(
+        onTap: () {
+          ref.read(counterProvider);
+        },
+        child: Consumer(
+          builder: (context, ref, child) {
+            return Text('${ref.watch(counterProvider)}');
+          },
+        ),
+      ),
+    );
+  }
+}
+
 class StatefulConsumer extends ConsumerStatefulWidget {
   const StatefulConsumer({Key? key}) : super(key: key);
 

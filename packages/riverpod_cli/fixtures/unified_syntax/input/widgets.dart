@@ -184,6 +184,31 @@ class StatelessExpressionListen extends StatelessWidget {
   }
 }
 
+class StatefulConsumerBasic extends StatefulWidget {
+  const StatefulConsumerBasic({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _StatefulConsumerBasicState();
+}
+
+class _StatefulConsumerBasicState extends State<StatefulConsumer> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: GestureDetector(
+        onTap: () {
+          context.read(counterProvider);
+        },
+        child: Consumer(
+          builder: (context, watch, child) {
+            return Text('${watch(counterProvider)}');
+          },
+        ),
+      ),
+    );
+  }
+}
+
 class StatefulConsumer extends StatefulWidget {
   const StatefulConsumer({Key? key}) : super(key: key);
 
