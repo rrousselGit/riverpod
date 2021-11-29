@@ -31,13 +31,13 @@ class Home extends ConsumerWidget {
         // Consumer is a widget that allows you reading providers.
         // You could also use the hook "ref.watch(" if you uses flutter_hooks
         child: Consumer(builder: (context, ref, _) {
-          final count = ref.watch(counterProvider).state;
+          final count = ref.watch(counterProvider.state).state;
           return Text('$count');
         }),
       ),
       floatingActionButton: FloatingActionButton(
         // The read method is an utility to read a provider without listening to it
-        onPressed: () => ref.read(counterProvider).state++,
+        onPressed: () => ref.read(counterProvider.state).state++,
         child: const Icon(Icons.add),
       ),
     );

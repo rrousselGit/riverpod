@@ -9,7 +9,7 @@ abstract class ProviderRef<State> implements Ref {
   ///
   /// Cannot be called while a provider is creating, unless the setter was called first.
   ///
-  /// Will throw a [ProviderException] if the provider threw during creation.
+  /// Will throw if the provider threw during creation.
   State get state;
   set state(State newState);
 }
@@ -229,61 +229,36 @@ class ProviderElement<State> extends ProviderElementBase<State>
   /// A [ProviderElementBase] for [Provider]
   ProviderElement(ProviderBase<State> provider) : super(provider);
 
-  bool _debugDidSetValue = false;
+  @override
+  State get state => requireState;
 
   @override
-  State get state {
-    final state = getState();
-
-    assert(() {
-      if (!_debugDidSetValue) {
-        throw StateError(
-          'Cannot read the state exposed by a provider within '
-          'before it was set',
-        );
-      }
-      return true;
-    }(), '');
-
-    return state as State;
-  }
-
-  @override
-  set state(State newState) {
-    setState(newState);
-  }
-
-  @override
-  void setState(State newState) {
-    assert(() {
-      _debugDidSetValue = true;
-      return true;
-    }(), '');
-    super.setState(newState);
-  }
-
-  @override
-  void debugWillRebuildState() {
-    _debugDidSetValue = false;
-  }
+  set state(State newState) => setState(newState);
 }
 
 /// {@macro riverpod.provider}
 @sealed
 class Provider<State> extends AlwaysAliveProviderBase<State>
-    with OverrideWithValueMixin<State> {
+    with
+        OverrideWithValueMixin<State>,
+        OverrideWithProviderMixin<State, AlwaysAliveProviderBase<State>> {
   /// {@macro riverpod.provider}
   Provider(
     this._create, {
     String? name,
     this.dependencies,
-  }) : super(name: name);
+    Family? from,
+    Object? argument,
+  }) : super(name: name, from: from, argument: argument);
 
   /// {@macro riverpod.family}
   static const family = ProviderFamilyBuilder();
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeProviderBuilder();
+
+  @override
+  ProviderBase<State> get originProvider => this;
 
   @override
   final List<ProviderOrFamily>? dependencies;
@@ -318,9 +293,11 @@ class ProviderFamily<State, Arg> extends Family<State, Arg, Provider<State>> {
 
   @override
   Provider<State> create(Arg argument) {
-    return Provider(
+    return Provider<State>(
       (ref) => _create(ref, argument),
       name: name,
+      from: this,
+      argument: argument,
     );
   }
 }

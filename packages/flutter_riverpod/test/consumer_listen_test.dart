@@ -9,7 +9,7 @@ void main() {
   group('WidgetRef.listen', () {
     testWidgets('can downcast the value', (tester) async {
       final dep = StateProvider((ref) => 0);
-      final provider = Provider((ref) => ref.watch(dep).state);
+      final provider = Provider((ref) => ref.watch(dep.state).state);
 
       final container = createContainer();
       final listener = Listener<num>();
@@ -28,7 +28,7 @@ void main() {
 
       verifyZeroInteractions(listener);
 
-      container.read(dep).state++;
+      container.read(dep.state).state++;
       await tester.pump();
 
       verifyOnly(listener, listener(0, 1));
@@ -59,7 +59,7 @@ void main() {
               child: Consumer(
                 builder: (context, ref, _) {
                   ref.listen<StateController<int>>(
-                    provider,
+                    provider.state,
                     (prev, v) => setState(() {}),
                   );
                   return Container();
@@ -73,7 +73,7 @@ void main() {
       verifyZeroInteractions(onChange);
 
       // This would fail if the setState was not allowed
-      container.read(provider).state++;
+      container.read(provider.state).state++;
     });
 
     testWidgets('calls onChange synchronously if possible', (tester) async {
@@ -87,7 +87,7 @@ void main() {
           child: Consumer(
             builder: (context, ref, _) {
               ref.listen<StateController<int>>(
-                provider,
+                provider.state,
                 (prev, v) => onChange(prev?.state, v.state),
               );
               return Container();
@@ -97,9 +97,9 @@ void main() {
       );
       verifyZeroInteractions(onChange);
 
-      container.read(provider).state++;
-      container.read(provider).state++;
-      container.read(provider).state++;
+      container.read(provider.state).state++;
+      container.read(provider.state).state++;
+      container.read(provider.state).state++;
 
       verifyInOrder([
         onChange(1, 1),
@@ -112,7 +112,7 @@ void main() {
     testWidgets('calls onChange asynchronously if the change is indirect',
         (tester) async {
       final provider = StateProvider((ref) => 0);
-      final isEven = Provider((ref) => ref.watch(provider).state.isEven);
+      final isEven = Provider((ref) => ref.watch(provider.state).state.isEven);
       final onChange = Listener<bool>();
       final container = createContainer();
 
@@ -129,9 +129,9 @@ void main() {
       );
       verifyZeroInteractions(onChange);
 
-      container.read(provider).state++;
-      container.read(provider).state++;
-      container.read(provider).state++;
+      container.read(provider.state).state++;
+      container.read(provider.state).state++;
+      container.read(provider.state).state++;
 
       verifyZeroInteractions(onChange);
 
@@ -150,8 +150,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<StateController<int>>(
-                  provider, (prev, v) => onChange(prev?.state, v.state));
+              ref.listen<int>(provider, onChange);
               return Container();
             },
           ),
@@ -174,7 +173,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<StateController<int>>(provider(0), (prev, v) {});
+              ref.listen<int>(provider(0), (prev, v) {});
               return Container();
             },
           ),
@@ -189,7 +188,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<StateController<int>>(provider(1), (prev, v) {});
+              ref.listen<int>(provider(1), (prev, v) {});
               return Container();
             },
           ),
@@ -211,10 +210,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<StateController<int>>(
-                provider(0),
-                (prev, v) => onChange(prev?.state, v.state),
-              );
+              ref.listen<int>(provider(0), onChange);
               return Container();
             },
           ),
@@ -226,10 +222,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen<StateController<int>>(
-                provider(1),
-                (prev, v) => onChange(prev?.state, v.state),
-              );
+              ref.listen<int>(provider(1), onChange);
               return Container();
             },
           ),
@@ -238,12 +231,12 @@ void main() {
 
       verifyZeroInteractions(onChange);
 
-      container.read(provider(0)).state++;
-      container.read(provider(1)).state = 42;
+      container.read(provider(0).notifier).state++;
+      container.read(provider(1).notifier).state = 42;
 
       await container.pump();
 
-      verifyOnly(onChange, onChange(42, 42));
+      verifyOnly(onChange, onChange(0, 42));
     });
 
     testWidgets('supports Changing the ProviderContainer', (tester) async {

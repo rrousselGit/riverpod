@@ -6,6 +6,26 @@ import '../../utils.dart';
 
 void main() {
   group('Provider.autoDispose', () {
+    test('can benefit from .future extension if returning an AsyncValue',
+        () async {
+      final container = createContainer();
+      final provider = Provider.autoDispose((ref) => const AsyncValue.data(42));
+
+      container.listen(provider, (previous, next) {});
+
+      await expectLater(container.read(provider.future), completion(42));
+    });
+
+    test('can benefit from .stream extension if returning an AsyncValue',
+        () async {
+      final container = createContainer();
+      final provider = Provider.autoDispose((ref) => const AsyncValue.data(42));
+
+      container.listen(provider, (previous, next) {});
+
+      await expectLater(container.read(provider.stream), emits(42));
+    });
+
     group('ref.state', () {
       test('can read and change current value', () {
         final container = createContainer();
@@ -50,7 +70,7 @@ void main() {
         final container = createContainer();
         Object? err;
         final provider = Provider.autoDispose<int>((ref) {
-          if (ref.watch(dep).state) {
+          if (ref.watch(dep.state).state) {
             try {
               ref.state;
             } catch (e) {
@@ -63,7 +83,7 @@ void main() {
         container.read(provider);
         expect(err, isNull);
 
-        container.read(dep).state = true;
+        container.read(dep.state).state = true;
         container.read(provider);
 
         expect(err, isStateError);
@@ -141,6 +161,32 @@ void main() {
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });
+
+      test('when using provider.overrideWithProvider', () {
+        final provider = Provider.autoDispose((ref) => 0);
+        final root = createContainer();
+        final container = createContainer(parent: root, overrides: [
+          provider.overrideWithProvider(Provider.autoDispose((ref) => 42)),
+        ]);
+
+        expect(container.read(provider), 42);
+        expect(container.getAllProviderElements(), [
+          isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider)
+        ]);
+        expect(root.getAllProviderElements(), isEmpty);
+      });
+    });
+
+    test('can be overridden by anything', () {
+      final provider = Provider.autoDispose((_) => 42);
+      final AutoDisposeProviderBase<int> override = Provider.autoDispose((_) {
+        return 21;
+      });
+      final container = createContainer(overrides: [
+        provider.overrideWithProvider(override),
+      ]);
+
+      expect(container.read(provider), 21);
     });
 
     test('can be auto-scoped', () async {

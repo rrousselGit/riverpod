@@ -1,10 +1,36 @@
 import 'package:flutter/widgets.dart' hide Listener;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 
 import '../../utils.dart';
 
 void main() {
+  test('support null ChangeNotifier', () {
+    final container = createContainer();
+    final provider = ChangeNotifierProvider<ValueNotifier<int>?>((ref) => null);
+
+    expect(container.read(provider), null);
+    expect(container.read(provider.notifier), null);
+
+    container.dispose();
+  });
+
+  test('can read and set current ChangeNotifier', () async {
+    final container = createContainer();
+    final listener = Listener<ValueNotifier<int>>();
+    late ChangeNotifierProviderRef<ValueNotifier<int>> ref;
+    final provider = ChangeNotifierProvider<ValueNotifier<int>>((r) {
+      ref = r;
+      return ValueNotifier(0);
+    });
+
+    container.listen(provider, listener);
+
+    verifyZeroInteractions(listener);
+    expect(ref.notifier.value, 0);
+  });
+
   test('can be refreshed', () async {
     var result = ValueNotifier(0);
     final container = createContainer();
@@ -60,6 +86,29 @@ void main() {
       final root = createContainer();
       final container = createContainer(parent: root, overrides: [
         provider.overrideWithValue(ValueNotifier(42)),
+      ]);
+
+      expect(container.read(provider.notifier).value, 42);
+      expect(container.read(provider).value, 42);
+      expect(
+        container.getAllProviderElements(),
+        unorderedEquals(<Object>[
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider),
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider.notifier)
+        ]),
+      );
+      expect(root.getAllProviderElements(), isEmpty);
+    });
+
+    test('when using provider.overrideWithProvider', () {
+      final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
+      final root = createContainer();
+      final container = createContainer(parent: root, overrides: [
+        provider.overrideWithProvider(
+          ChangeNotifierProvider((ref) => ValueNotifier(42)),
+        ),
       ]);
 
       expect(container.read(provider.notifier).value, 42);
@@ -173,7 +222,7 @@ void main() {
     final notifier = TestNotifier();
     final notifier2 = TestNotifier();
     final provider = ChangeNotifierProvider((ref) {
-      return ref.watch(dep).state == 0 ? notifier : notifier2;
+      return ref.watch(dep.state).state == 0 ? notifier : notifier2;
     });
     final container = createContainer();
     addTearDown(container.dispose);
@@ -192,7 +241,7 @@ void main() {
     await container.pump();
     expect(callCount, 0);
 
-    container.read(dep).state++;
+    container.read(dep.state).state++;
 
     expect(sub.read(), notifier2);
 
@@ -268,6 +317,52 @@ void main() {
     expect(container.read(provider.notifier).value, 42);
 
     expect(root.getAllProviderElements(), isEmpty);
+  });
+
+  test('overrideWithProvider preserves the state accross update', () async {
+    final provider = ChangeNotifierProvider((_) {
+      return TestNotifier();
+    });
+    final notifier = TestNotifier();
+    final notifier2 = TestNotifier();
+    final container = createContainer(overrides: [
+      provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier)),
+    ]);
+    addTearDown(container.dispose);
+
+    var callCount = 0;
+    final sub = container.listen(provider, (prev, value) => callCount++);
+
+    expect(sub.read(), notifier);
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier.hasListeners, true);
+    expect(callCount, 0);
+
+    notifier.count++;
+
+    await container.pump();
+    expect(callCount, 1);
+
+    container.updateOverrides([
+      provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier2)),
+    ]);
+
+    await container.pump();
+    expect(callCount, 1);
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier2.hasListeners, false);
+
+    notifier.count++;
+
+    await container.pump();
+    expect(callCount, 2);
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier.mounted, true);
+
+    container.dispose();
+
+    expect(callCount, 2);
+    expect(notifier.mounted, false);
   });
 }
 

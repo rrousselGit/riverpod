@@ -20,8 +20,9 @@ abstract class WidgetRef {
   /// This is useful for showing modals or other imperative logic.
   void listen<T>(
     ProviderListenable<T> provider,
-    void Function(T? previous, T next) listener,
-  );
+    void Function(T? previous, T next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  });
 
   /// Reads a provider without listening to it.
   ///
@@ -30,7 +31,7 @@ abstract class WidgetRef {
   /// ```dart
   /// Widget build(BuildContext context) {
   ///   // counter is used only for the onPressed of RaisedButton
-  ///   final counter = context.read(counterProvider);
+  ///   final counter = ref.read(counterProvider);
   ///
   ///   return RaisedButton(
   ///     onPressed: () => counter.increment(),
@@ -49,7 +50,7 @@ abstract class WidgetRef {
   ///   return RaisedButton(
   ///     onPressed: () {
   ///       // as performant as the previous solution, but resilient to refactoring
-  ///       context.read(counterProvider).increment(),
+  ///       ref.read(counterProvider).increment(),
   ///     },
   ///   );
   /// }
@@ -63,7 +64,7 @@ abstract class WidgetRef {
   /// ```dart
   /// Widget build(BuildContext context) {
   ///   // using read because we only use a value that never changes.
-  ///   final model = context.read(modelProvider);
+  ///   final model = ref.read(modelProvider);
   ///
   ///   return Text('${model.valueThatNeverChanges}');
   /// }
@@ -112,7 +113,7 @@ abstract class WidgetRef {
   ///     final Products products = ref.watch(productsProvider);
   ///
   ///     return RefreshIndicator(
-  ///       onRefresh: () => context.refresh(productsProvider),
+  ///       onRefresh: () => ref.refresh(productsProvider),
   ///       child: ListView(
   ///         children: [
   ///           for (final product in products.items) ProductItem(product: product),
@@ -218,7 +219,7 @@ typedef ConsumerBuilder = Widget Function(
 ///               builder: (BuildContext context, WidgetRef ref, Widget? child) {
 ///                 // This builder will only get called when the counterProvider
 ///                 // is updated.
-///                 final count = ref.watch(counterProvider).state;
+///                 final count = ref.watch(counterProvider.state).state;
 ///
 ///                 return Row(
 ///                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -238,7 +239,7 @@ typedef ConsumerBuilder = Widget Function(
 ///       ),
 ///       floatingActionButton: FloatingActionButton(
 ///         child: Icon(Icons.plus_one),
-///         onPressed: () => context.read(counterProvider).state++,
+///         onPressed: () => ref.read(counterProvider.state).state++,
 ///       ),
 ///     );
 ///   }
@@ -425,6 +426,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
       for (var i = 0; i < _listeners.length; i++) {
         _listeners[i].close();
       }
+      _listeners.clear();
       _dependencies = {};
       return super.build();
     } finally {
@@ -465,8 +467,9 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   @override
   void listen<T>(
     ProviderListenable<T> provider,
-    void Function(T? previous, T value) listener,
-  ) {
+    void Function(T? previous, T value) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  }) {
     assert(
       debugDoingBuild,
       'ref.listen can only be used within the build method of a ConsumerWidget',
@@ -475,8 +478,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     // We can't implement a fireImmediately flag because we wouldn't know
     // which listen call was preserved between widget rebuild, and we wouldn't
     // want to call the listener on every rebuild.
-    // TODO onError
-    final sub = _container.listen<T>(provider, listener);
+    final sub = _container.listen<T>(provider, listener, onError: onError);
     _listeners.add(sub);
   }
 

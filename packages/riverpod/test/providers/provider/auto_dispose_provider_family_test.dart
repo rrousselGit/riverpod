@@ -6,6 +6,30 @@ import '../../utils.dart';
 
 void main() {
   group('Provider.autoDispose.family', () {
+    test('specfies `from` & `argument` for related providers', () {
+      final provider = Provider.autoDispose.family<int, int>((ref, _) => 0);
+
+      expect(provider(0).from, provider);
+      expect(provider(0).argument, 0);
+    });
+
+    test(
+        'on async provider, specifies `from` and `argument` for related providers',
+        () {
+      final provider = Provider.autoDispose.family<AsyncValue<int>, int>(
+        (ref, _) => const AsyncValue.data(42),
+      );
+
+      expect(provider(0).from, provider);
+      expect(provider(0).argument, 0);
+
+      expect(provider(0).future.from, provider);
+      expect(provider(0).future.argument, 0);
+
+      expect(provider(0).stream.from, provider);
+      expect(provider(0).stream.argument, 0);
+    });
+
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () {
         final provider = Provider.autoDispose.family<int, int>((ref, _) => 0);
@@ -51,6 +75,39 @@ void main() {
           container.listen(provider(0), listener, fireImmediately: true);
 
       verifyOnly(listener, listener(null, '0'));
+
+      sub.close();
+
+      verifyZeroInteractions(onDispose);
+
+      await container.pump();
+
+      verifyOnly(onDispose, onDispose());
+    });
+
+    test('Provider.autoDispose.family override', () async {
+      final onDispose = OnDisposeMock();
+      final provider = Provider.autoDispose.family<String, int>((ref, value) {
+        return '$value';
+      });
+      final listener = Listener<String>();
+      final container = ProviderContainer(overrides: [
+        provider.overrideWithProvider((value) {
+          return Provider.autoDispose<String>((ref) {
+            ref.onDispose(onDispose);
+            return '$value override';
+          });
+        })
+      ]);
+      addTearDown(container.dispose);
+
+      final sub = container.listen(
+        provider(0),
+        listener,
+        fireImmediately: true,
+      );
+
+      verifyOnly(listener, listener(null, '0 override'));
 
       sub.close();
 

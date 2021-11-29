@@ -168,8 +168,8 @@ const _familyDoc = r'''
 ///
 ///     return user.when(
 ///       data: (user) => Text(user.name),
-///       loading: (_) => const CircularProgressIndicator(),
-///       error: (err, stack, _) => const Text('error'),
+///       loading: () => const CircularProgressIndicator(),
+///       error: (err, stack) => const Text('error'),
 ///     );
 ///   }
 ///   ```
@@ -431,7 +431,7 @@ import 'internals.dart';
             kind: StateType.changeNotifier,
             className: 'ChangeNotifierProvider',
             ref: 'ChangeNotifierProviderRef<Notifier>',
-            constraints: 'Notifier extends ChangeNotifier',
+            constraints: 'Notifier extends ChangeNotifier?',
             generics: 'Notifier',
             createType: 'Notifier',
           ),
@@ -554,7 +554,7 @@ ${familyDoc().replaceAll('///', '  ///')}
     String? name,
     List<ProviderOrFamily>? dependencies,
   }) {
-    return ${configs.providerName}(create, name: name, dependencies: dependencies,);
+    return ${configs.providerName}<${configs.item2.generics}, Arg>(create, name: name, dependencies: dependencies,);
   }
 ${configs.links(matrix)}
 }
@@ -582,7 +582,7 @@ ${autoDisposeDoc().replaceAll('///', '  ///')}
     String? name,
     List<ProviderOrFamily>? dependencies,
   }) {
-    return ${configs.providerName}(create, name: name, dependencies: dependencies,);
+    return ${configs.providerName}<${configs.item2.generics}>(create, name: name, dependencies: dependencies,);
   }
 ${configs.links(matrix)}
 }

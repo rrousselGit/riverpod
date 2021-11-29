@@ -5,6 +5,30 @@ import '../../utils.dart';
 
 void main() {
   group('Provider.family', () {
+    test('specfies `from` & `argument` for related providers', () {
+      final provider = Provider.family<int, int>((ref, _) => 0);
+
+      expect(provider(0).from, provider);
+      expect(provider(0).argument, 0);
+    });
+
+    test(
+        'on async provider, specifies `from` and `argument` for related providers',
+        () {
+      final provider = Provider.family<AsyncValue<int>, int>(
+        (ref, _) => const AsyncValue.data(42),
+      );
+
+      expect(provider(0).from, provider);
+      expect(provider(0).argument, 0);
+
+      expect(provider(0).future.from, provider);
+      expect(provider(0).future.argument, 0);
+
+      expect(provider(0).stream.from, provider);
+      expect(provider(0).stream.argument, 0);
+    });
+
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () {
         final provider = Provider.family<int, int>((ref, _) => 0);
@@ -17,6 +41,21 @@ void main() {
               .having((e) => e.origin, 'origin', provider(0))
         ]);
         expect(root.getAllProviderElements(), isEmpty);
+      });
+
+      test('when using provider.overrideWithProvider', () {
+        final provider = Provider.family<int, int>((ref, _) => 0);
+        final root = createContainer();
+        final container = createContainer(parent: root, overrides: [
+          provider.overrideWithProvider((value) => Provider((ref) => 42)),
+        ]);
+
+        expect(root.getAllProviderElements(), isEmpty);
+        expect(container.read(provider(0)), 42);
+        expect(container.getAllProviderElements(), [
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider(0))
+        ]);
       });
     });
 

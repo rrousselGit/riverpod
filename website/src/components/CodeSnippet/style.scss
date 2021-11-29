@@ -1,0 +1,55 @@
+.snippet {
+  position: relative;
+
+  &__title_bar {
+    position: absolute;
+    right: 0;
+    left: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    padding: 16px 14px;
+  }
+
+  &__dots {
+    display: flex;
+  }
+
+  &__dot {
+    height: 14px;
+    width: 14px;
+    margin-left: 4px;
+    border-radius: 50%;
+
+    @include themed(background-color, #00000013, #ffffff25);
+
+    @include min-width(lg) {
+      margin-left: 6px;
+    }
+  }
+
+  &__title {
+    position: absolute;
+    right: 0;
+    left: 0;
+    opacity: 0.64;
+    font-size: 13.4px;
+    text-align: center;
+    line-height: 0;
+  }
+
+  .prism-code {
+    counter-reset: line-number;
+    padding-top: 32px;
+
+    &.language-dart .token-line::before {
+      counter-increment: line-number;
+      content: counter(line-number);
+      position: sticky;
+      display: inline-block;
+      opacity: 0.3;
+      min-width: 1rem;
+      margin-right: calc(var(--ifm-pre-padding) * 1.5);
+    }
+  }
+}

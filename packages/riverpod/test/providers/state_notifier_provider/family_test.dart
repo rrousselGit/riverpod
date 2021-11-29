@@ -1,10 +1,24 @@
+import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 import '../../utils.dart';
+import 'state_notifier_provider_test.dart';
 
 void main() {
   group('StateNotifier.family', () {
+    test('specfies `from` & `argument` for related providers', () {
+      final provider = StateNotifierProvider.family<Counter, int, int>(
+        (ref, _) => Counter(),
+      );
+
+      expect(provider(0).from, provider);
+      expect(provider(0).argument, 0);
+
+      expect(provider(0).notifier.from, provider);
+      expect(provider(0).notifier.argument, 0);
+    });
+
     test('can be auto-scoped', () async {
       final dep = Provider((ref) => 0);
       final provider =
@@ -46,6 +60,33 @@ void main() {
           ]),
         );
         expect(root.getAllProviderElementsInOrder(), isEmpty);
+      });
+
+      test('when using provider.overrideWithProvider', () async {
+        final controller = StateController(0);
+        final provider =
+            StateNotifierProvider.family<StateController<int>, int, int>(
+                (ref, _) => controller);
+        final root = createContainer();
+        final controllerOverride = StateController(42);
+        final container = createContainer(parent: root, overrides: [
+          provider.overrideWithProvider(
+            (value) => StateNotifierProvider((ref) => controllerOverride),
+          ),
+        ]);
+
+        expect(container.read(provider(0).notifier), controllerOverride);
+        expect(container.read(provider(0)), 42);
+        expect(root.getAllProviderElementsInOrder(), isEmpty);
+        expect(
+          container.getAllProviderElementsInOrder(),
+          unorderedEquals(<Object?>[
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider(0)),
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider(0).notifier),
+          ]),
+        );
       });
     });
 
@@ -98,5 +139,57 @@ void main() {
         );
       },
     );
+
+    test('StateNotifierFamily override', () async {
+      final notifier2 = TestNotifier(42);
+      final provider = StateNotifierProvider.autoDispose
+          .family<TestNotifier, int, int>((ref, a) => TestNotifier());
+      final container = createContainer(
+        overrides: [
+          provider.overrideWithProvider((a) {
+            return StateNotifierProvider.autoDispose<TestNotifier, int>(
+              (ref) => notifier2,
+            );
+          }),
+        ],
+      );
+      addTearDown(container.dispose);
+      final ownerStateListener = Listener<int>();
+      final ownerNotifierListener = Listener<TestNotifier>();
+
+      // access in the child container
+      // try to read provider.state before provider and see if it points to the override
+      final stateSub = container.listen(
+        provider(0),
+        ownerStateListener,
+        fireImmediately: true,
+      );
+
+      verify(ownerStateListener(null, 42)).called(1);
+      verifyNoMoreInteractions(ownerStateListener);
+
+      final notifierSub = container.listen(
+        provider(0).notifier,
+        ownerNotifierListener,
+        fireImmediately: true,
+      );
+      verifyOnly(ownerNotifierListener, ownerNotifierListener(null, notifier2));
+
+      notifierSub.close();
+
+      await container.pump();
+
+      expect(notifier2.mounted, true);
+
+      stateSub.close();
+
+      expect(notifier2.mounted, true);
+
+      await container.pump();
+
+      await container.pump();
+
+      expect(notifier2.mounted, false);
+    });
   });
 }

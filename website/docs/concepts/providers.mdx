@@ -133,7 +133,7 @@ is consumed.
 Modifiers can be used on all providers, with a syntax similar to named constructor:
 
 ```dart
-final myAutoDisposeProvider = StateProvider.autoDispose<String>((ref) => 0);
+final myAutoDisposeProvider = StateProvider.autoDispose<int>((ref) => 0);
 final myFamilyProvider = Provider.family<String, int>((ref, id) => '$id');
 ```
 

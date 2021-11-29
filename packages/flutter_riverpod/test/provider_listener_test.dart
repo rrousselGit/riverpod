@@ -10,7 +10,7 @@ void main() {
   group('ProviderListener', () {
     testWidgets('can downcast the value', (tester) async {
       final dep = StateProvider((ref) => 0);
-      final provider = Provider((ref) => ref.watch(dep).state);
+      final provider = Provider((ref) => ref.watch(dep.state).state);
 
       final container = createContainer();
       final listener = Listener<num>();
@@ -28,7 +28,7 @@ void main() {
 
       verifyZeroInteractions(listener);
 
-      container.read(dep).state++;
+      container.read(dep.state).state++;
       await tester.pump();
 
       verifyOnly(listener, listener(0, 1));
@@ -57,14 +57,14 @@ void main() {
           container: container,
           child: ProviderListener<StateController<int>>(
             key: key,
-            provider: provider,
+            provider: provider.state,
             onChange: (c, _, __) => context = c,
             child: Container(),
           ),
         ),
       );
 
-      container.read(provider).state++;
+      container.read(provider.state).state++;
 
       expect(context, key.currentContext);
     });
@@ -75,7 +75,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           child: ProviderListener<StateController<int>>(
-            provider: provider,
+            provider: provider.state,
             onChange: (_, prev, value) {},
             child: const Text('hello', textDirection: TextDirection.ltr),
           ),
@@ -95,7 +95,7 @@ void main() {
         UncontrolledProviderScope(
           container: container,
           child: ProviderListener<StateController<int>>(
-            provider: provider,
+            provider: provider.state,
             onChange: (_, prev, value) => onChange(prev?.state, value.state),
             child: Container(),
           ),
@@ -104,7 +104,7 @@ void main() {
 
       verifyZeroInteractions(onChange);
 
-      container.read(provider).state++;
+      container.read(provider.state).state++;
 
       verifyOnly(onChange, onChange(1, 1));
     });
@@ -120,7 +120,7 @@ void main() {
             return UncontrolledProviderScope(
               container: container,
               child: ProviderListener<StateController<int>>(
-                provider: provider,
+                provider: provider.state,
                 onChange: (_, prev, value) => setState(() {}),
                 child: Container(),
               ),
@@ -132,7 +132,7 @@ void main() {
       verifyZeroInteractions(onChange);
 
       // This would fail if the setState was not allowed
-      container.read(provider).state++;
+      container.read(provider.state).state++;
     });
 
     testWidgets('calls onChange synchronously if possible', (tester) async {
@@ -144,7 +144,7 @@ void main() {
         UncontrolledProviderScope(
           container: container,
           child: ProviderListener<StateController<int>>(
-            provider: provider,
+            provider: provider.state,
             onChange: (_, prev, value) => onChange(prev?.state, value.state),
             child: Container(),
           ),
@@ -152,9 +152,9 @@ void main() {
       );
       verifyZeroInteractions(onChange);
 
-      container.read(provider).state++;
-      container.read(provider).state++;
-      container.read(provider).state++;
+      container.read(provider.state).state++;
+      container.read(provider.state).state++;
+      container.read(provider.state).state++;
 
       verifyInOrder([
         onChange(1, 1),
@@ -167,7 +167,7 @@ void main() {
     testWidgets('calls onChange asynchronously if the change is indirect',
         (tester) async {
       final provider = StateProvider((ref) => 0);
-      final isEven = Provider((ref) => ref.watch(provider).state.isEven);
+      final isEven = Provider((ref) => ref.watch(provider.state).state.isEven);
       final onChange = Listener<bool>();
       final container = createContainer();
 
@@ -183,9 +183,9 @@ void main() {
       );
       verifyZeroInteractions(onChange);
 
-      container.read(provider).state++;
-      container.read(provider).state++;
-      container.read(provider).state++;
+      container.read(provider.state).state++;
+      container.read(provider.state).state++;
+      container.read(provider.state).state++;
 
       verifyZeroInteractions(onChange);
 
@@ -230,9 +230,9 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: ProviderListener<StateController<int>>(
+          child: ProviderListener<int>(
             provider: provider,
-            onChange: (_, prev, value) => onChange(prev?.state, value.state),
+            onChange: (_, prev, value) => onChange(prev, value),
             child: Container(),
           ),
         ),
@@ -252,7 +252,7 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: ProviderListener<StateController<int>>(
+          child: ProviderListener<int>(
             provider: provider(0),
             onChange: (_, prev, value) {},
             child: Container(),
@@ -266,7 +266,7 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: ProviderListener<StateController<int>>(
+          child: ProviderListener<int>(
             provider: provider(1),
             onChange: (_, prev, value) {},
             child: Container(),
@@ -288,7 +288,7 @@ void main() {
         UncontrolledProviderScope(
           container: container,
           child: ProviderListener<StateController<int>>(
-            provider: provider(0),
+            provider: provider(0).state,
             onChange: (_, prev, value) => onChange(prev?.state, value.state),
             child: Container(),
           ),
@@ -299,7 +299,7 @@ void main() {
         UncontrolledProviderScope(
           container: container,
           child: ProviderListener<StateController<int>>(
-            provider: provider(1),
+            provider: provider(1).state,
             onChange: (_, prev, value) => onChange(prev?.state, value.state),
             child: Container(),
           ),
@@ -308,8 +308,8 @@ void main() {
 
       verifyZeroInteractions(onChange);
 
-      container.read(provider(0)).state++;
-      container.read(provider(1)).state = 42;
+      container.read(provider(0).state).state++;
+      container.read(provider(1).state).state = 42;
 
       await Future<void>.value();
 

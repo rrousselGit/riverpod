@@ -16,6 +16,105 @@ class Counter extends StateNotifier<int> {
 }
 
 void main() {
+  test('when selector throws, rebuild providers', () {}, skip: true);
+
+  test('on provider that threw, exceptions bypass the selector', () {
+    final container = createContainer();
+    final dep = Provider<int>((ref) {
+      throw UnimplementedError();
+    });
+    final provider = Provider<int>((ref) {
+      return ref.watch(dep.select((value) => throw StateError('message')));
+    });
+
+    expect(
+      () => container.read(provider),
+      throwsA(
+        isA<ProviderException>()
+            .having(
+              (e) => e.exception,
+              'exception',
+              isA<ProviderException>()
+                  .having((e) => e.exception, 'exception', isUnimplementedError)
+                  .having((e) => e.provider, 'provider', dep),
+            )
+            .having((e) => e.provider, 'provider', provider),
+      ),
+    );
+  });
+
+  test(
+      'when rebuilding a provider after an uncaught exception, correctly updates dependents',
+      () {
+    final container = createContainer();
+    final throws = StateProvider((ref) => true);
+    final provider = Provider((ref) {
+      if (ref.watch(throws.state).state) {
+        throw UnimplementedError();
+      }
+      return 0;
+    });
+
+    final dep = Provider((ref) {
+      return ref.watch(provider);
+    });
+
+    expect(
+      () => container.read(dep),
+      throwsA(
+        isA<ProviderException>()
+            .having(
+              (e) => e.exception,
+              'exception',
+              isA<ProviderException>()
+                  .having((e) => e.exception, 'exception', isUnimplementedError)
+                  .having((e) => e.provider, 'provider', provider),
+            )
+            .having((e) => e.provider, 'provider', dep),
+      ),
+    );
+
+    container.read(throws.state).state = false;
+
+    expect(container.read(dep), 0);
+  });
+
+  test(
+      'when rebuilding a provider after an uncaught selected exception, correctly updates dependents',
+      () {
+    final container = createContainer();
+    final throws = StateProvider((ref) => true);
+    final provider = Provider((ref) {
+      if (ref.watch(throws.state).state) {
+        throw UnimplementedError();
+      }
+      return 0;
+    });
+
+    final dep = Provider((ref) {
+      return ref.watch(provider.select((value) => value));
+    });
+
+    expect(
+      () => container.read(dep),
+      throwsA(
+        isA<ProviderException>()
+            .having(
+              (e) => e.exception,
+              'exception',
+              isA<ProviderException>()
+                  .having((e) => e.exception, 'exception', isUnimplementedError)
+                  .having((e) => e.provider, 'provider', provider),
+            )
+            .having((e) => e.provider, 'provider', dep),
+      ),
+    );
+
+    container.read(throws.state).state = false;
+
+    expect(container.read(dep), 0);
+  });
+
   test('disposes providers synchronously when their dependency changes',
       () async {
     final onDispose = OnDisposeMock();
@@ -30,22 +129,22 @@ void main() {
 
     container.read(provider);
 
-    container.read(dep).state++;
+    container.read(dep.state).state++;
 
     verifyOnly(onDispose, onDispose());
 
-    container.read(dep).state++;
-    container.read(dep2).state++;
+    container.read(dep.state).state++;
+    container.read(dep2.state).state++;
 
     verifyNoMoreInteractions(onDispose);
   });
 
   test('throw when trying to use ref.read inside selectors during initial call',
       () {
-    final dep = Provider((ref) => 0);
+    final dep = Provider((ref) => 0, name: 'dep');
     final provider = Provider((ref) {
       ref.watch(dep.select((value) => ref.read(dep)));
-    });
+    }, name: 'provider');
     final container = createContainer();
 
     expect(
@@ -111,7 +210,7 @@ void main() {
     final container = createContainer();
     final provider = StateNotifierProvider<StateController<int>, int>((ref) {
       return StateController(0);
-    });
+    }, name: 'provider');
     final isEvenSelector = Selector<int, bool>(false, (c) => c.isEven);
     final isEvenListener = Listener<bool>();
     var buildCount = 0;
@@ -119,7 +218,7 @@ void main() {
     final another = Provider<bool>((ref) {
       buildCount++;
       return ref.watch(provider.select(isEvenSelector));
-    });
+    }, name: 'another');
 
     container.listen(another, isEvenListener, fireImmediately: true);
 
@@ -161,7 +260,7 @@ void main() {
     var computedBuildCount = 0;
     final computed = Provider((ref) {
       computedBuildCount++;
-      final state = ref.watch(stateProvider).state;
+      final state = ref.watch(stateProvider.state).state;
       final value = state == 0 ? ref.watch(provider0) : ref.watch(provider1);
       return '${ref.watch(provider0)} $value';
     });
@@ -194,7 +293,7 @@ void main() {
     verifyNoMoreInteractions(computedListener);
 
     // changing the provider that computed is subscribed to
-    container.read(stateProvider).state = 1;
+    container.read(stateProvider.state).state = 1;
     await container.pump();
 
     verifyOnly(computedListener, computedListener('1 1', '1 43'));
@@ -232,7 +331,7 @@ void main() {
     var computedBuildCount = 0;
     final computed = Provider((ref) {
       computedBuildCount++;
-      final state = ref.watch(stateProvider).state;
+      final state = ref.watch(stateProvider.state).state;
       return state == 0 ? ref.watch(provider0) : ref.watch(provider1);
     });
 
@@ -262,7 +361,7 @@ void main() {
     verifyNoMoreInteractions(computedListener);
 
     // changing the provider that computed is subscribed to
-    container.read(stateProvider).state = 1;
+    container.read(stateProvider.state).state = 1;
     await container.pump();
 
     expect(computedBuildCount, 3);
@@ -345,7 +444,7 @@ void main() {
     var firstCallCount = 0;
     final first = Provider((ref) {
       firstCallCount++;
-      ref.watch(state).state;
+      ref.watch(state.state).state;
       return 0;
     });
     var secondCallCount = 0;
@@ -355,7 +454,7 @@ void main() {
     });
     final container = createContainer();
 
-    final controller = container.read(state);
+    final controller = container.read(state.state);
 
     expect(container.read(second), '0');
     expect(firstCallCount, 1);
@@ -374,27 +473,31 @@ void main() {
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>, int>((_) {
       return notifier;
-    });
+    }, name: 'provider');
     var callCount = 0;
     final computed = StreamProvider((ref) async* {
       callCount++;
       yield ref.watch(provider);
-    });
+    }, name: 'computed');
 
     final sub = container.listen(computed, (_, __) {});
 
     expect(callCount, 0);
     expect(sub.read(), const AsyncValue<int>.loading());
+
     await container.read(computed.stream).first;
+
     expect(sub.read(), const AsyncValue<int>.data(0));
     expect(callCount, 1);
 
     notifier.setState(42);
     await container.pump();
 
-    expect(sub.read(), const AsyncValue<int>.loading(previous: AsyncData(0)));
+    expect(sub.read(), const AsyncValue<int>.loading());
     expect(callCount, 1);
+
     await container.read(computed.stream).first;
+
     expect(sub.read(), const AsyncValue<int>.data(42));
     expect(callCount, 2);
   });

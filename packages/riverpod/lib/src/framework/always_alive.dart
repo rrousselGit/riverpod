@@ -16,7 +16,11 @@ mixin AlwaysAliveProviderListenable<State>
 abstract class AlwaysAliveProviderBase<State> extends ProviderBase<State>
     implements AlwaysAliveProviderListenable<State> {
   /// Creates an [AlwaysAliveProviderBase].
-  AlwaysAliveProviderBase({required String? name}) : super(name: name);
+  AlwaysAliveProviderBase({
+    required String? name,
+    required Family? from,
+    required Object? argument,
+  }) : super(name: name, from: from, argument: argument);
 
   @override
   ProviderElementBase<State> createElement();

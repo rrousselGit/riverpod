@@ -1,5 +1,6 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/internals.dart' show ResultError;
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -13,7 +14,22 @@ void main() {
       final element = container.readProviderElement(provider);
 
       expect(
-        element.getState,
+        element.getState(),
+        isA<ResultError>()
+            .having((e) => e.error, 'error', isUnimplementedError),
+      );
+    });
+  });
+
+  group('readSelf', () {
+    test('throws on providers that threw', () {
+      final container = createContainer();
+      final provider = Provider((ref) => throw UnimplementedError());
+
+      final element = container.readProviderElement(provider);
+
+      expect(
+        element.readSelf,
         throwsA(isA<ProviderException>()),
       );
     });
@@ -124,7 +140,7 @@ void main() {
 
     final dep = StateProvider((ref) => 0);
     final provider = Provider((ref) {
-      ref.watch(dep).state;
+      ref.watch(dep.state).state;
       return ref.state = 0;
     });
 
@@ -132,7 +148,7 @@ void main() {
 
     verifyOnly(listener, listener(null, 0));
 
-    container.read(dep).state++;
+    container.read(dep.state).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);

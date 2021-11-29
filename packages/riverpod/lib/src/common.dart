@@ -30,7 +30,7 @@ String? modifierName(String? from, String modifier) {
 ///     final AsyncValue<User> user = ref.watch(userProvider);
 ///
 ///     return user.when(
-///       loading: (_) => CircularProgressIndicator(),
+///       loading: () => CircularProgressIndicator(),
 ///       error: (error, stack) => Text('Oops, something unexpected happened'),
 ///       data: (value) => Text('Hello ${user.name}'),
 ///     );
@@ -61,21 +61,24 @@ abstract class AsyncValue<T> {
   /// Creates an [AsyncValue] with a data.
   ///
   /// The data can be `null`.
+  // coverage:ignore-start
   const factory AsyncValue.data(T value) = AsyncData<T>;
+  // coverage:ignore-end
 
   /// Creates an [AsyncValue] in loading state.
   ///
   /// Prefer always using this constructor with the `const` keyword.
-  const factory AsyncValue.loading({AsyncValue<T>? previous}) = AsyncLoading<T>;
+  // coverage:ignore-start
+  const factory AsyncValue.loading() = AsyncLoading<T>;
+  // coverage:ignore-end
 
   /// Creates an [AsyncValue] in error state.
   ///
   /// The parameter [error] cannot be `null`.
-  const factory AsyncValue.error(
-    Object error, {
-    StackTrace? stackTrace,
-    AsyncData<T>? previous,
-  }) = AsyncError<T>;
+  // coverage:ignore-start
+  const factory AsyncValue.error(Object error, {StackTrace? stackTrace}) =
+      AsyncError<T>;
+  // coverage:ignore-end
 
   /// Transforms a [Future] that may fail into something that is safe to read.
   ///
@@ -229,13 +232,8 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// If [AsyncValue] was in a case that is not handled, will return [orElse].
   R maybeWhen<R>({
     R Function(T data)? data,
-    R Function(
-      Object error,
-      StackTrace? stackTrace,
-      AsyncData<T>? previous,
-    )?
-        error,
-    R Function(AsyncValue<T>? previous)? loading,
+    R Function(Object error, StackTrace? stackTrace)? error,
+    R Function()? loading,
     required R Function() orElse,
   }) {
     return _map(
@@ -244,11 +242,11 @@ extension AsyncValueX<T> on AsyncValue<T> {
         return orElse();
       },
       error: (e) {
-        if (error != null) return error(e.error, e.stackTrace, e.previous);
+        if (error != null) return error(e.error, e.stackTrace);
         return orElse();
       },
       loading: (l) {
-        if (loading != null) return loading(l.previous);
+        if (loading != null) return loading();
         return orElse();
       },
     );
@@ -259,18 +257,13 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// All cases are required, which allows returning a non-nullable value.
   R when<R>({
     required R Function(T data) data,
-    required R Function(
-      Object error,
-      StackTrace? stackTrace,
-      AsyncData<T>? previous,
-    )
-        error,
-    required R Function(AsyncValue<T>? previous) loading,
+    required R Function(Object error, StackTrace? stackTrace) error,
+    required R Function() loading,
   }) {
     return _map(
       data: (d) => data(d.value),
-      error: (e) => error(e.error, e.stackTrace, e.previous),
-      loading: (l) => loading(l.previous),
+      error: (e) => error(e.error, e.stackTrace),
+      loading: (l) => loading(),
     );
   }
 
@@ -281,18 +274,13 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// This is similar to [maybeWhen] where `orElse` returns null.
   R? whenOrNull<R>({
     R Function(T data)? data,
-    R Function(
-      Object error,
-      StackTrace? stackTrace,
-      AsyncData<T>? previous,
-    )?
-        error,
-    R Function(AsyncValue<T>? previous)? loading,
+    R Function(Object error, StackTrace? stackTrace)? error,
+    R Function()? loading,
   }) {
     return _map(
       data: (d) => data?.call(d.value),
-      error: (e) => error?.call(e.error, e.stackTrace, e.previous),
-      loading: (l) => loading?.call(l.previous),
+      error: (e) => error?.call(e.error, e.stackTrace),
+      loading: (l) => loading?.call(),
     );
   }
 
@@ -354,17 +342,7 @@ class AsyncLoading<T> implements AsyncValue<T> {
   /// Creates an [AsyncValue] in loading state.
   ///
   /// Prefer always using this constructor with the `const` keyword.
-  const AsyncLoading({this.previous})
-      : assert(
-          previous is! AsyncLoading,
-          'The previous value can only be null or an instance of AsyncData/AsyncError',
-        );
-
-  /// The previous error or loading valid state, if any.
-  ///
-  /// This is useful when a value is refreshing, to keep showing the value
-  /// before refresh while the request is pending.
-  final AsyncValue<T>? previous;
+  const AsyncLoading();
 
   @override
   R _map<R>({
@@ -377,18 +355,16 @@ class AsyncLoading<T> implements AsyncValue<T> {
 
   @override
   String toString() {
-    return 'AsyncLoading<$T>(previous: $previous)';
+    return 'AsyncLoading<$T>()';
   }
 
   @override
   bool operator ==(Object other) {
-    return runtimeType == other.runtimeType &&
-        other is AsyncLoading<T> &&
-        other.previous == previous;
+    return runtimeType == other.runtimeType;
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, previous);
+  int get hashCode => runtimeType.hashCode;
 }
 
 /// Creates an [AsyncValue] in error state.
@@ -398,16 +374,13 @@ class AsyncError<T> implements AsyncValue<T> {
   /// Creates an [AsyncValue] in error state.
   ///
   /// The parameter [error] cannot be `null`.
-  const AsyncError(this.error, {this.stackTrace, this.previous});
+  const AsyncError(this.error, {this.stackTrace});
 
   /// The error.
   final Object error;
 
   /// The stacktrace of [error].
   final StackTrace? stackTrace;
-
-  /// The last valid data before this error, or null is none.
-  final AsyncData<T>? previous;
 
   @override
   R _map<R>({
@@ -420,7 +393,7 @@ class AsyncError<T> implements AsyncValue<T> {
 
   @override
   String toString() {
-    return 'AsyncError<$T>(error: $error, stackTrace: $stackTrace, previous: $previous)';
+    return 'AsyncError<$T>(error: $error, stackTrace: $stackTrace)';
   }
 
   @override
@@ -428,10 +401,9 @@ class AsyncError<T> implements AsyncValue<T> {
     return runtimeType == other.runtimeType &&
         other is AsyncError<T> &&
         other.error == error &&
-        other.previous == previous &&
         other.stackTrace == stackTrace;
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, error, stackTrace, previous);
+  int get hashCode => Object.hash(runtimeType, error, stackTrace);
 }

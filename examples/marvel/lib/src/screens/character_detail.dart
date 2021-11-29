@@ -64,12 +64,12 @@ class CharacterView extends HookConsumerWidget {
     final id = ref.watch(selectedCharacterId);
 
     return ref.watch(character(id)).when(
-      loading: (_) {
+      loading: () {
         return const Scaffold(
           body: Center(child: CircularProgressIndicator()),
         );
       },
-      error: (err, stack, _) {
+      error: (err, stack) {
         return Scaffold(
           appBar: AppBar(
             title: const Text('Error'),

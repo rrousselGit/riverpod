@@ -16,7 +16,7 @@ void main() {
 
       await expectSuggestorSequenceGeneratesFormattedPatches(
         [
-          RiverpodHooksProviderInfo(
+          RiverpodProviderUsageInfo(
             VersionConstraint.parse('^0.14.0'),
           ),
           RiverpodUnifiedSyntaxChangesMigrationSuggestor(
@@ -36,7 +36,7 @@ void main() {
 
       await expectSuggestorSequenceGeneratesFormattedPatches(
         [
-          RiverpodHooksProviderInfo(
+          RiverpodProviderUsageInfo(
             VersionConstraint.parse('^1.0.0'),
           ),
           RiverpodUnifiedSyntaxChangesMigrationSuggestor(

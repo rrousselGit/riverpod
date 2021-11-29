@@ -80,7 +80,7 @@ void main() {
         UncontrolledProviderScope(
           container: container,
           child: Consumer(builder: (context, ref, _) {
-            ref.watch(provider).state++;
+            ref.watch(provider.state).state++;
             return Container();
           }),
         ),
@@ -96,7 +96,7 @@ void main() {
       (tester) async {
     final container = createContainer();
     final dep = StateProvider((ref) => 0);
-    final provider = Provider((ref) => ref.watch(dep).state);
+    final provider = Provider((ref) => ref.watch(dep.state).state);
 
     // reading `provider` but not listening to it, so that it is active
     // but with no listener – causing "ref.watch" inside Consumer to flush it
@@ -106,7 +106,7 @@ void main() {
     // yet, so the WidgetTester is preventing the scheduler from start microtasks
     await tester.runAsync<void>(() async {
       // marking `provider` as out of date
-      container.read(dep).state++;
+      container.read(dep.state).state++;
     });
 
     await tester.pumpWidget(
@@ -190,7 +190,7 @@ void main() {
     expect(container2.debugCanModifyProviders, null);
   });
 
-  testWidgets('context.refresh forces a provider to refresh', (tester) async {
+  testWidgets('ref.refresh forces a provider to refresh', (tester) async {
     var future = Future<int>.value(21);
     final provider = FutureProvider<int>((ref) => future);
     late WidgetRef ref;
@@ -212,7 +212,7 @@ void main() {
     await expectLater(ref.read(provider.future), completion(42));
   });
 
-  testWidgets('context.refresh forces a provider of nullable type to refresh',
+  testWidgets('ref.refresh forces a provider of nullable type to refresh',
       (tester) async {
     int? value = 42;
     final provider = Provider<int?>((ref) => value);
@@ -558,7 +558,7 @@ void main() {
       ProviderScope(
         child: Demo(
           initState: (context, ref) {
-            ref.read(counterProvider).addListener((state) {});
+            ref.read(counterProvider.state).addListener((state) {});
           },
           builder: (context, ref) {
             // ignore: deprecated_member_use_from_same_package
@@ -593,7 +593,7 @@ void main() {
           navigatorKey: key,
           home: Consumer(
             builder: (context, ref, _) {
-              final count = ref.watch(counterProvider).state;
+              final count = ref.watch(counterProvider.state).state;
               return Text('$count');
             },
           ),
@@ -603,7 +603,7 @@ void main() {
 
     expect(find.text('0'), findsOneWidget);
 
-    container.read(counterProvider).state++;
+    container.read(counterProvider.state).state++;
     await tester.pump();
 
     expect(find.text('1'), findsOneWidget);
@@ -613,7 +613,7 @@ void main() {
       PageRouteBuilder<void>(pageBuilder: (_, __, ___) {
         return Consumer(
           builder: (context, ref, _) {
-            final count = ref.watch(counterProvider).state;
+            final count = ref.watch(counterProvider.state).state;
             return Text('new $count');
           },
         );

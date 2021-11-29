@@ -50,7 +50,7 @@ final _fetchedPages = StateProvider((ref) => <int>[]);
 
 final paginatedQuestionsProvider = FutureProvider.autoDispose
     .family<QuestionsResponse, int>((ref, pageIndex) async {
-  final fetchedPages = ref.watch(_fetchedPages).state;
+  final fetchedPages = ref.watch(_fetchedPages.state).state;
   fetchedPages.add(pageIndex);
   ref.onDispose(() => fetchedPages.remove(pageIndex));
 
@@ -120,10 +120,10 @@ class MyHomePage extends HookConsumerWidget {
         final count = ref.watch(questionsCountProvider);
 
         return count.when(
-          loading: (_) => const Center(
+          loading: () => const Center(
             child: CircularProgressIndicator(),
           ),
-          error: (err, stack, _) {
+          error: (err, stack) {
             if (err is DioError) {
               return Text(
                 err.response!.data.toString(),

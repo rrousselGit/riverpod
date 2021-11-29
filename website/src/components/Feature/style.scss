@@ -1,0 +1,50 @@
+.feature {
+  &__card {
+    display: flex;
+    flex-direction: column;
+    max-width: $max-width;
+    margin: 1rem;
+    margin-top: 0;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    border-radius: 24px;
+    background-color: var(--ifm-color-emphasis-100);
+
+    @include min-width(lg) {
+      flex-direction: row;
+      align-items: center;
+      margin: 6rem;
+      margin-top: 0;
+      padding: 6rem;
+
+      &--reverse {
+        flex-direction: row-reverse;
+      }
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+  }
+
+  &__space {
+    width: 2rem;
+    height: 2rem;
+
+    @include min-width(lg) {
+      width: 4rem;
+      height: 4rem;
+    }
+  }
+
+  &__preview {
+    flex: 3;
+
+    > * {
+      border-radius: 8px;
+      box-shadow: 0px 14px 50px -34px rgba(0, 0, 0, 0.64);
+    }
+  }
+}

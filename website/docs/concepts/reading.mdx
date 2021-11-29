@@ -223,7 +223,7 @@ final todosProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) => TodoL
 
 final filteredTodoListProvider = Provider((ref) {
   // obtains both the filter and the list of todos
-  final FilterType filter = ref.watch(filterTypeProvider).state;
+  final FilterType filter = ref.watch(filterTypeProvider);
   final List<Todo> todos = ref.watch(todosProvider);
 
   switch (filter) {
@@ -255,7 +255,7 @@ class HomeView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // use ref to listen to a provider
-    final counter = ref.watch(counterProvider).state;
+    final counter = ref.watch(counterProvider);
 
     return Text('$counter');
   }
@@ -268,7 +268,7 @@ to show the new value.
 
 :::caution
 The `watch` method should not be called asynchronously,
-like inside `onPressed` or a [ElevatedButton]. Not should it be used
+like inside `onPressed` or a [ElevatedButton]. Nor should it be used
 inside `initState` and other [State] life-cycles.
 
 In those cases, consider using `ref.read` instead.
@@ -367,7 +367,7 @@ final counterProvider = StateProvider((ref) => 0);
 
 Widget build(BuildContext context, WidgetRef ref) {
   // use "read" to ignore updates on a provider
-  final counter = ref.read(counterProvider);
+  final counter = ref.read(counterProvider.notifier);
   return ElevatedButton(
     onPressed: () => counter.state++,
   )
@@ -404,7 +404,7 @@ For example instead of
 final counterProvider = StateProvider((ref) => 0);
 
 Widget build(BuildContext context, WidgetRef ref) {
-  StateController<int> counter = ref.read(counterProvider);
+  StateController<int> counter = ref.read(counterProvider.notifier);
   return ElevatedButton(
     onPressed: () => counter.state++,
   )
@@ -417,8 +417,8 @@ we could do:
 final counterProvider = StateProvider((ref) => 0);
 
 Widget build(BuildContext context, WidgetRef ref) {
-  // Subscribes to the StateController instance but do not rebuild the
-  // widget if its state changes
+  // ".notifier" subscribes to the StateController instance but does
+  // not rebuild the widget if its state changes
   StateController<int> counter = ref.watch(counterProvider.notifier);
   return ElevatedButton(
     onPressed: () => counter.state++,
@@ -462,8 +462,8 @@ When reading this `userProvider`, you can:
     AsyncValue<User> user = ref.watch(userProvider);
 
     return user.when(
-      loading: (_) => const CircularProgressIndicator(),
-      error: (error, stack, _) => const Text('Oops'),
+      loading: () => const CircularProgressIndicator(),
+      error: (error, stack) => const Text('Oops'),
       data: (user) => Text(user.name),
     );
   }
@@ -477,11 +477,11 @@ When reading this `userProvider`, you can:
   }
   ```
 
-- obtain a [Future] that resolves with the latest value emitted, by listening to `userProvider.last`:
+- obtain a [Future] that resolves with the latest value emitted, by listening to `userProvider.future`:
 
   ```dart
   Widget build(BuildContext context, WidgetRef ref) {
-    Future<User> user = ref.watch(userProvider.last);
+    Future<User> user = ref.watch(userProvider.future);
   }
   ```
 
@@ -594,4 +594,5 @@ final label = ref.watch(userProvider.select((user) => 'Mr ${user.name}'));
 [statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
 [streamprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StreamProvider-class.html
 [statelesswidget]: https://api.flutter.dev/flutter/widgets/StatelessWidget-class.html
+[statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
 [state]: https://api.flutter.dev/flutter/widgets/State-class.html

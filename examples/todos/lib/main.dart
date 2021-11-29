@@ -55,7 +55,7 @@ final filteredTodos = Provider<List<Todo>>((ref) {
   final filter = ref.watch(todoListFilter);
   final todos = ref.watch(todoListProvider);
 
-  switch (filter.state) {
+  switch (filter) {
     case TodoListFilter.completed:
       return todos.where((todo) => todo.completed).toList();
     case TodoListFilter.active:
@@ -141,7 +141,7 @@ class Toolbar extends HookConsumerWidget {
     final filter = ref.watch(todoListFilter);
 
     Color? textColorFor(TodoListFilter value) {
-      return filter.state == value ? Colors.blue : Colors.black;
+      return filter == value ? Colors.blue : Colors.black;
     }
 
     return Material(
@@ -158,7 +158,8 @@ class Toolbar extends HookConsumerWidget {
             key: allFilterKey,
             message: 'All todos',
             child: TextButton(
-              onPressed: () => filter.state = TodoListFilter.all,
+              onPressed: () =>
+                  ref.read(todoListFilter.notifier).state = TodoListFilter.all,
               style: ButtonStyle(
                 visualDensity: VisualDensity.compact,
                 foregroundColor:
@@ -171,7 +172,8 @@ class Toolbar extends HookConsumerWidget {
             key: activeFilterKey,
             message: 'Only uncompleted todos',
             child: TextButton(
-              onPressed: () => filter.state = TodoListFilter.active,
+              onPressed: () => ref.read(todoListFilter.notifier).state =
+                  TodoListFilter.active,
               style: ButtonStyle(
                 visualDensity: VisualDensity.compact,
                 foregroundColor: MaterialStateProperty.all(
@@ -185,7 +187,8 @@ class Toolbar extends HookConsumerWidget {
             key: completedFilterKey,
             message: 'Only completed todos',
             child: TextButton(
-              onPressed: () => filter.state = TodoListFilter.completed,
+              onPressed: () => ref.read(todoListFilter.notifier).state =
+                  TodoListFilter.completed,
               style: ButtonStyle(
                 visualDensity: VisualDensity.compact,
                 foregroundColor: MaterialStateProperty.all(

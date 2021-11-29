@@ -144,14 +144,14 @@ class _SearchHints extends HookConsumerWidget {
     final search = _useDebouncedSearch(textEditingController);
 
     return ref.watch(charactersCount(search)).when(
-          loading: (_) => const Center(
+          loading: () => const Center(
             heightFactor: 1,
             child: Padding(
               padding: EdgeInsets.all(8),
               child: CircularProgressIndicator(),
             ),
           ),
-          error: (err, stack, _) => const Center(
+          error: (err, stack) => const Center(
             heightFactor: 1,
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 8),
@@ -171,11 +171,10 @@ class _SearchHints extends HookConsumerWidget {
                     ));
 
                     return character.when(
-                      loading: (_) {
+                      loading: () {
                         return const Center(child: CircularProgressIndicator());
                       },
-                      error: (err, stack, _) =>
-                          const Center(child: Text('Error')),
+                      error: (err, stack) => const Center(child: Text('Error')),
                       data: (character) {
                         return ListTile(
                           visualDensity: VisualDensity.compact,

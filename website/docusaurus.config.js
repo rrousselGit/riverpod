@@ -5,12 +5,11 @@ module.exports = {
   favicon: "img/logo.svg",
   organizationName: "rrousselgit", // Usually your GitHub org/user name.
   projectName: "riverpod", // Usually your repo name.
-
+  plugins: ["docusaurus-plugin-sass"],
   i18n: {
     defaultLocale: "en",
     locales: ["en", "fr"],
   },
-
   themeConfig: {
     googleAnalytics: {
       trackingID: "UA-138675999-4",
@@ -23,7 +22,10 @@ module.exports = {
       defaultMode: "dark",
     },
     prism: {
+      defaultLanguage: "dart",
       additionalLanguages: ["dart", "yaml"],
+      theme: require("prism-react-renderer/themes/vsLight"),
+      darkTheme: require("prism-react-renderer/themes/dracula"),
     },
     image: "/img/cover.png",
 
@@ -35,14 +37,14 @@ module.exports = {
       },
       items: [
         {
-          type: "localeDropdown",
-          position: "right",
-        },
-        {
           to: "docs/getting_started",
           activeBasePath: "docs",
           label: "Docs",
-          position: "left",
+          position: "right",
+        },
+        {
+          type: "localeDropdown",
+          position: "right",
         },
         {
           href: "https://github.com/rrousselGit/river_pod",
@@ -52,7 +54,7 @@ module.exports = {
       ],
     },
     footer: {
-      style: "dark",
+
       logo: {
         alt: "Riverpod logo",
         src: "img/full_logo.svg",
@@ -85,7 +87,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Remi Rousselet. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Remi Rousselet.<br /> Built with Docusaurus.`,
     },
   },
   presets: [
@@ -94,15 +96,12 @@ module.exports = {
       {
         docs: {
           editLocalizedFiles: true,
-
-          // It is recommended to set document id as docs home page (`docs/` path).
           sidebarPath: require.resolve("./sidebars.js"),
-          // Please change this to your repo.
           editUrl:
             "https://github.com/rrousselGit/river_pod/edit/master/website/",
         },
         theme: {
-          customCss: require.resolve("./src/css/custom.css"),
+          customCss: require.resolve("./src/scss/main.scss"),
         },
       },
     ],

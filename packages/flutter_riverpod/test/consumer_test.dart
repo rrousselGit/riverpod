@@ -105,7 +105,7 @@ void main() {
     await tester.pumpWidget(ProviderScope(
       child: Consumer(builder: (c, ref, _) {
         buildCount++;
-        final state = ref.watch(stateProvider).state;
+        final state = ref.watch(stateProvider.state).state;
         final value = state == 0 ? ref.watch(provider0) : ref.watch(provider1);
 
         return Text(
@@ -144,7 +144,7 @@ void main() {
     expect(buildCount, 2);
 
     // changing the provider that computed is subscribed to
-    container.read(stateProvider).state = 1;
+    container.read(stateProvider.state).state = 1;
     await tester.pump();
 
     expect(buildCount, 3);
@@ -183,7 +183,7 @@ void main() {
       ProviderScope(
         child: Consumer(builder: (c, ref, _) {
           buildCount++;
-          final state = ref.watch(stateProvider).state;
+          final state = ref.watch(stateProvider.state).state;
           final result = state == 0 //
               ? ref.watch(provider0)
               : ref.watch(provider1);
@@ -221,7 +221,7 @@ void main() {
     expect(buildCount, 2);
 
     // changing the provider that computed is subscribed to
-    container.read(stateProvider).state = 1;
+    container.read(stateProvider.state).state = 1;
     await tester.pump();
 
     expect(buildCount, 3);

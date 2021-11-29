@@ -5,6 +5,21 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('can read and set current StateNotifier', () async {
+    final container = createContainer();
+    final listener = Listener<int>();
+    late StateNotifierProviderRef<Counter, int> ref;
+    final provider = StateNotifierProvider<Counter, int>((r) {
+      ref = r;
+      return Counter();
+    });
+
+    container.listen(provider, listener);
+
+    verifyZeroInteractions(listener);
+    expect(ref.notifier.debugState, 0);
+  });
+
   test('can be auto-scoped', () async {
     final dep = Provider((ref) => 0);
     final provider = StateNotifierProvider<StateController<int>, int>(
@@ -70,6 +85,34 @@ void main() {
         final controllerOverride = StateController(42);
         final container = createContainer(parent: root, overrides: [
           provider.overrideWithValue(controllerOverride),
+        ]);
+
+        expect(container.read(provider.notifier), controllerOverride);
+        expect(container.read(provider), 42);
+        expect(root.getAllProviderElements(), isEmpty);
+        expect(
+          container.getAllProviderElements(),
+          unorderedEquals(<Object?>[
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider),
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider.notifier),
+          ]),
+        );
+      });
+
+      test('when using provider.overrideWithProvider', () async {
+        final controller = StateController(0);
+        final provider =
+            StateNotifierProvider.autoDispose<StateController<int>, int>(
+                (ref) => controller);
+        final root = createContainer();
+        final controllerOverride = StateController(42);
+        final container = createContainer(parent: root, overrides: [
+          provider.overrideWithProvider(
+            StateNotifierProvider.autoDispose<StateController<int>, int>(
+                (ref) => controllerOverride),
+          ),
         ]);
 
         expect(container.read(provider.notifier), controllerOverride);
@@ -196,7 +239,7 @@ void main() {
     final notifier = TestNotifier();
     final notifier2 = TestNotifier();
     final provider = StateNotifierProvider<TestNotifier, int>((ref) {
-      return ref.watch(dep).state == 0 ? notifier : notifier2;
+      return ref.watch(dep.state).state == 0 ? notifier : notifier2;
     });
     final container = createContainer();
     addTearDown(container.dispose);
@@ -216,7 +259,7 @@ void main() {
 
     expect(callCount, 0);
 
-    container.read(dep).state++;
+    container.read(dep.state).state++;
 
     expect(sub.read(), notifier2);
 
@@ -269,6 +312,58 @@ void main() {
     await container.pump();
 
     verifyOnly(listener, listener(21, 22));
+  });
+
+  test('overrideWithProvider preserves the state accross update', () async {
+    final provider = StateNotifierProvider<TestNotifier, int>((_) {
+      return TestNotifier();
+    });
+    final notifier = TestNotifier(42);
+    final notifier2 = TestNotifier(21);
+    final container = createContainer(overrides: [
+      provider.overrideWithProvider(
+        StateNotifierProvider<TestNotifier, int>((_) {
+          return notifier;
+        }),
+      ),
+    ]);
+    addTearDown(container.dispose);
+    final listener = Listener<int>();
+
+    container.listen<int>(provider, listener, fireImmediately: true);
+
+    verifyOnly(listener, listener(null, 42));
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier.hasListeners, true);
+
+    notifier.increment();
+
+    await container.pump();
+    verifyOnly(listener, listener(42, 43));
+
+    container.updateOverrides([
+      provider.overrideWithProvider(
+        StateNotifierProvider<TestNotifier, int>((_) {
+          return notifier2;
+        }),
+      ),
+    ]);
+
+    await container.pump();
+    expect(container.read(provider.notifier), notifier);
+    expect(notifier2.hasListeners, false);
+    verifyNoMoreInteractions(listener);
+
+    notifier.increment();
+
+    await container.pump();
+    expect(container.read(provider.notifier), notifier);
+    verifyOnly(listener, listener(43, 44));
+    expect(notifier.mounted, true);
+
+    container.dispose();
+
+    expect(notifier.mounted, false);
   });
 }
 

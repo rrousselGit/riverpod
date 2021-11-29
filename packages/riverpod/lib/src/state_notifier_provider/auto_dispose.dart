@@ -1,39 +1,12 @@
 part of '../state_notifier_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-typedef AutoDisposeStateNotifierProviderRef<
-        Notifier extends StateNotifier<State>, State>
-    = AutoDisposeRef;
-
-class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
-    extends AutoDisposeProviderBase<Notifier> {
-  _AutoDisposeNotifierProvider(
-    this._create, {
-    required String? name,
-    required this.dependencies,
-  }) : super(name: name == null ? null : '$name.notifier');
-
-  final Create<Notifier, AutoDisposeRef> _create;
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
-
-  @override
-  Notifier create(AutoDisposeRef ref) {
-    final notifier = _create(ref);
-    ref.onDispose(notifier.dispose);
-    return notifier;
-  }
-
-  @override
-  bool updateShouldNotify(Notifier previousState, Notifier newState) {
-    return true;
-  }
-
-  @override
-  AutoDisposeProviderElement<Notifier> createElement() {
-    return AutoDisposeProviderElement(this);
-  }
+abstract class AutoDisposeStateNotifierProviderRef<
+    Notifier extends StateNotifier<State>, State> implements AutoDisposeRef {
+  /// The [StateNotifier] currently exposed by this provider.
+  ///
+  /// Cannot be accessed while creating the provider.
+  Notifier get notifier;
 }
 
 /// {@template riverpod.statenotifierprovider}
@@ -92,7 +65,7 @@ class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
 ///         CheckboxListTile(
 ///            value: todo.completed,
 ///            // When tapping on the todo, change its completed status
-///            onChanged: (value) => context.read(todosProvider.notifier).toggle(todo.id),
+///            onChanged: (value) => ref.read(todosProvider.notifier).toggle(todo.id),
 ///            title: Text(todo.description),
 ///         ),
 ///     ],
@@ -103,19 +76,26 @@ class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<Object?>>
 @sealed
 class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
         State> extends AutoDisposeProviderBase<State>
-    with StateNotifierProviderOverrideMixin<Notifier, State> {
+    with
+        StateNotifierProviderOverrideMixin<Notifier, State>,
+        OverrideWithProviderMixin<Notifier,
+            AutoDisposeStateNotifierProvider<Notifier, State>> {
   /// {@macro riverpod.statenotifierprovider}
   AutoDisposeStateNotifierProvider(
     Create<Notifier, AutoDisposeStateNotifierProviderRef<Notifier, State>>
         create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
+    Family? from,
+    Object? argument,
   })  : notifier = _AutoDisposeNotifierProvider(
           create,
           name: name,
           dependencies: dependencies,
+          from: from,
+          argument: argument,
         ),
-        super(name: name);
+        super(name: name, from: from, argument: argument);
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStateNotifierProviderFamilyBuilder();
@@ -141,7 +121,7 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
     final removeListener = notifier.addListener(listener);
     ref.onDispose(removeListener);
 
-    return ref.getState() as State;
+    return ref.requireState;
   }
 
   @override
@@ -153,6 +133,57 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
   AutoDisposeProviderElementBase<State> createElement() {
     return AutoDisposeProviderElement(this);
   }
+}
+
+class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<State>, State>
+    extends AutoDisposeProviderBase<Notifier> {
+  _AutoDisposeNotifierProvider(
+    this._create, {
+    required String? name,
+    required this.dependencies,
+    Family? from,
+    Object? argument,
+  }) : super(
+          name: name == null ? null : '$name.notifier',
+          from: from,
+          argument: argument,
+        );
+
+  final Create<Notifier, AutoDisposeStateNotifierProviderRef<Notifier, State>>
+      _create;
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
+
+  @override
+  Notifier create(
+    covariant AutoDisposeStateNotifierProviderRef<Notifier, State> ref,
+  ) {
+    final notifier = _create(ref);
+    ref.onDispose(notifier.dispose);
+    return notifier;
+  }
+
+  @override
+  bool updateShouldNotify(Notifier previousState, Notifier newState) {
+    return true;
+  }
+
+  @override
+  _AutoDisposeNotifierProviderElement<Notifier, State> createElement() {
+    return _AutoDisposeNotifierProviderElement(this);
+  }
+}
+
+class _AutoDisposeNotifierProviderElement<Notifier extends StateNotifier<State>,
+        State> extends AutoDisposeProviderElementBase<Notifier>
+    implements AutoDisposeStateNotifierProviderRef<Notifier, State> {
+  _AutoDisposeNotifierProviderElement(
+    _AutoDisposeNotifierProvider<Notifier, State> provider,
+  ) : super(provider);
+
+  @override
+  Notifier get notifier => requireState;
 }
 
 /// {@template riverpod.statenotifierprovider.family}
@@ -175,14 +206,12 @@ class AutoDisposeStateNotifierProviderFamily<
 
   @override
   AutoDisposeStateNotifierProvider<Notifier, State> create(Arg argument) {
-    final provider = AutoDisposeStateNotifierProvider<Notifier, State>(
+    return AutoDisposeStateNotifierProvider<Notifier, State>(
       (ref) => _create(ref, argument),
       name: name,
+      from: this,
+      argument: argument,
     );
-
-    registerProvider(provider.notifier, argument);
-
-    return provider;
   }
 
   @override
@@ -190,5 +219,19 @@ class AutoDisposeStateNotifierProviderFamily<
     final provider = call(argument);
     setup(origin: provider, override: provider);
     setup(origin: provider.notifier, override: provider.notifier);
+  }
+
+  /// {@macro riverpod.overridewithprovider}
+  Override overrideWithProvider(
+    AutoDisposeStateNotifierProvider<Notifier, State> Function(Arg argument)
+        override,
+  ) {
+    return FamilyOverride<Arg>(
+      this,
+      (arg, setup) {
+        final provider = call(arg);
+        setup(origin: provider.notifier, override: override(arg).notifier);
+      },
+    );
   }
 }

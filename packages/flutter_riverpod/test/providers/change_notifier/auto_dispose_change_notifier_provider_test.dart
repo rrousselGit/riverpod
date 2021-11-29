@@ -1,11 +1,40 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart' hide Listener;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 
 import '../../utils.dart';
 
 void main() {
   group('ChangeNotifierProvider.autoDispose', () {
+    test('support null ChangeNotifier', () {
+      final container = createContainer();
+      final provider = ChangeNotifierProvider.autoDispose<ValueNotifier<int>?>(
+        (ref) => null,
+      );
+
+      expect(container.read(provider), null);
+      expect(container.read(provider.notifier), null);
+
+      container.dispose();
+    });
+
+    test('can read and set current ChangeNotifier', () async {
+      final container = createContainer();
+      final listener = Listener<ValueNotifier<int>>();
+      late AutoDisposeChangeNotifierProviderRef<ValueNotifier<int>> ref;
+      final provider =
+          ChangeNotifierProvider.autoDispose<ValueNotifier<int>>((r) {
+        ref = r;
+        return ValueNotifier(0);
+      });
+
+      container.listen(provider, listener);
+
+      verifyZeroInteractions(listener);
+      expect(ref.notifier.value, 0);
+    });
+
     test('can be refreshed', () async {
       var result = ValueNotifier(0);
       final container = createContainer();
@@ -48,6 +77,30 @@ void main() {
         final root = createContainer();
         final container = createContainer(parent: root, overrides: [
           provider.overrideWithValue(ValueNotifier(42)),
+        ]);
+
+        expect(container.read(provider.notifier).value, 42);
+        expect(container.read(provider).value, 42);
+        expect(
+          container.getAllProviderElements(),
+          unorderedEquals(<Object>[
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider),
+            isA<ProviderElementBase>()
+                .having((e) => e.origin, 'origin', provider.notifier)
+          ]),
+        );
+        expect(root.getAllProviderElements(), isEmpty);
+      });
+
+      test('when using provider.overrideWithProvider', () {
+        final provider =
+            ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(0));
+        final root = createContainer();
+        final container = createContainer(parent: root, overrides: [
+          provider.overrideWithProvider(
+            ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(42)),
+          ),
         ]);
 
         expect(container.read(provider.notifier).value, 42);

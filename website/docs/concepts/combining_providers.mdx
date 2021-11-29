@@ -41,7 +41,7 @@ That's it. We've created a provider that depends on another provider.
 Depending on the provider that you are listening, the value obtained may change
 over time.  
 For example, you may be listening to a [StateNotifierProvider], or the provider
-listened was forced to refresh using [ProviderContainer.refresh]/[context.refresh].
+listened was forced to refresh using [ProviderContainer.refresh]/[ref.refresh].
 
 When using [watch], Riverpod is able to detect that the value listened changed
 and will _automatically_ re-execute the provider when needed.
@@ -115,7 +115,7 @@ final configsProvider = StreamProvider<Configuration>(...);
 
 final charactersProvider = FutureProvider<List<Character>>((ref) async {
   final search = ref.watch(searchProvider);
-  final configs = await ref.watch(configsProvider.last);
+  final configs = await ref.watch(configsProvider.future);
   final response = await dio.get('${configs.host}/characters?search=$search');
 
   return response.data.map((json) => Character.fromJson(json)).toList();
@@ -154,7 +154,7 @@ class Repository {
   final Reader read;
 
   Future<Catalog> fetchCatalog() async {
-    String token = read(userTokenProvider).state;
+    String token = read(userTokenProvider);
 
     final response = await dio.get('/path', queryParameters: {
       'token': token,
@@ -242,7 +242,7 @@ final configsProvider = StreamProvider<Configuration>(...);
 final productsProvider = FutureProvider<List<Product>>((ref) async {
   // Will cause productsProvider to re-fetch the products if anything in the
   // configurations changes
-  final configs = await ref.watch(configsProvider.last);
+  final configs = await ref.watch(configsProvider.future);
 
   return dio.get('${configs.host}/products');
 });
@@ -255,7 +255,7 @@ final configsProvider = StreamProvider<Configuration>(...);
 
 /// A provider that exposes only the current host
 final _hostProvider = FutureProvider<String>((ref) async {
-  final config = await ref.watch(configsProvider.last);
+  final config = await ref.watch(configsProvider.future);
   return config.host;
 });
 
@@ -276,4 +276,4 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 [watch]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html
 [read]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/read.html
 [providercontainer.refresh]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer/refresh.html
-[context.refresh]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/BuildContextX/refresh.html
+[ref.refresh]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef/refresh.html

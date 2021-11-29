@@ -26,7 +26,7 @@ class StateController<T> extends StateNotifier<T> {
   /// depends on the previous state, such that rather than:
   ///
   /// ```dart
-  /// ref.read(provider).state = ref.read(provider).state + 1;
+  /// ref.read(provider.state).state = ref.read(provider.state).state + 1;
   /// ```
   ///
   /// we can do:
@@ -49,7 +49,7 @@ class StateController<T> extends StateNotifier<T> {
 ///
 /// ```dart
 /// final selectedProductIdProvider = StateProvider<String?>((ref) => null);
-/// final productsProvider = StateNotifierProvider<ProductsNotifier>((ref) => ProductsNotifier());
+/// final productsProvider = StateNotifierProvider<ProductsNotifier, List<Product>>((ref) => ProductsNotifier());
 ///
 /// Widget build(BuildContext context, WidgetRef ref) {
 ///   final List<Product> products = ref.watch(productsProvider);
@@ -75,7 +75,7 @@ StateController<State> _listenStateProvider<State>(
   StateController<State> controller,
 ) {
   void listener(State newState) {
-    ref.notifyListeners(previousState: controller);
+    ref.setState(controller);
   }
 
   // No need to remove the listener on dispose, since we are disposing the controller
@@ -85,16 +85,19 @@ StateController<State> _listenStateProvider<State>(
 }
 
 /// Add [overrideWithValue] to [StateProvider]
-mixin StateProviderOverrideMixin<State>
-    on ProviderBase<StateController<State>> {
+mixin StateProviderOverrideMixin<State> on ProviderBase<State> {
   ///
   ProviderBase<StateController<State>> get notifier;
+
+  /// Obtains the [StateNotifier] and also listens to the state, as opposed to
+  /// [notifier] which will not listen to the state.
+  ProviderBase<StateController<State>> get state;
 
   @override
   late final List<ProviderOrFamily>? dependencies = [notifier];
 
   @override
-  ProviderBase get originProvider => notifier;
+  ProviderBase<StateController<State>> get originProvider => notifier;
 
   /// {@macro riverpod.overrridewithvalue}
   Override overrideWithValue(StateController<State> value) {

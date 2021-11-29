@@ -1,5 +1,8 @@
 export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
 
+export 'src/async_value_converters.dart'
+    show AlwaysAliveAsyncProviderX, AutoDisposeAsyncProviderX;
+
 export 'src/common.dart'
     show AsyncValue, AsyncData, AsyncLoading, AsyncError, AsyncValueX;
 
@@ -28,7 +31,9 @@ export 'src/framework.dart'
         // ignore: deprecated_member_use_from_same_package
         ProviderReference,
         AlwaysAliveProviderListenable,
-        FamilyCreate;
+        FamilyCreate,
+        XAutoDisposeFamily,
+        XFamily;
 
 export 'src/future_provider.dart'
     show

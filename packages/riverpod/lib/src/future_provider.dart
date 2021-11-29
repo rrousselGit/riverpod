@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:meta/meta.dart';
-
-import 'async_provider/auto_dispose.dart';
-import 'async_provider/base.dart';
 import 'async_value_converters.dart';
+
 import 'builders.dart';
 import 'common.dart';
 import 'framework.dart';
@@ -58,8 +56,8 @@ part 'future_provider/base.dart';
 ///   AsyncValue<Configuration> config = ref.watch(configProvider);
 ///
 ///   return config.when(
-///     loading: (_) => const CircularProgressIndicator(),
-///     error: (err, stack, _) => Text('Error: $err'),
+///     loading: () => const CircularProgressIndicator(),
+///     error: (err, stack) => Text('Error: $err'),
 ///     data: (config) {
 ///       return Text(config.host);
 ///     },
@@ -80,37 +78,39 @@ part 'future_provider/base.dart';
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no-longer needed.
 /// {@endtemplate}
-AsyncValue<State> _listenFuture<State>(
-  FutureOr<State> Function() future,
-  ProviderElementBase<AsyncValue<State>> ref,
-) {
-  var running = true;
-  ref.onDispose(() => running = false);
-  try {
-    final Object? value = future();
+mixin _FutureProviderElementMixin<State>
+    on ProviderElementBase<AsyncValue<State>> {
+  AsyncValue<State> _listenFuture(
+    FutureOr<State> Function() future,
+  ) {
+    var running = true;
+    onDispose(() => running = false);
+    try {
+      final value = future();
 
-    if (value is Future<State>) {
-      ref.setState(AsyncValue<State>.loading());
+      if (value is Future<State>) {
+        setState(AsyncValue<State>.loading());
 
-      value.then(
-        (event) {
-          if (running) ref.setState(AsyncValue<State>.data(event));
-        },
-        // ignore: avoid_types_on_closure_parameters
-        onError: (Object err, StackTrace stack) {
-          if (running) {
-            ref.setState(
-              AsyncValue<State>.error(err, stackTrace: stack),
-            );
-          }
-        },
-      );
-    } else {
-      return AsyncData(value as State);
+        value.then(
+          (event) {
+            if (running) setState(AsyncValue<State>.data(event));
+          },
+          // ignore: avoid_types_on_closure_parameters
+          onError: (Object err, StackTrace stack) {
+            if (running) {
+              setState(
+                AsyncValue<State>.error(err, stackTrace: stack),
+              );
+            }
+          },
+        );
+      } else {
+        return AsyncData(value);
+      }
+
+      return requireState;
+    } catch (err, stack) {
+      return AsyncValue.error(err, stackTrace: stack);
     }
-
-    return ref.getState()!;
-  } catch (err, stack) {
-    return AsyncValue.error(err, stackTrace: stack);
   }
 }
