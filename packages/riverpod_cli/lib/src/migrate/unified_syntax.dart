@@ -411,7 +411,8 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           .split(',');
 
       var listenType = types.length > 1 ? types[1] : types[0];
-      if (providerType.contains('Future') || providerType.contains('Stream')) {
+      if (providerType.contains('FutureProvider') ||
+          providerType.contains('StreamProvider')) {
         listenType = 'AsyncValue<$listenType>';
       }
 

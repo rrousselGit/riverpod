@@ -20,7 +20,6 @@ dependencies:
 dev_dependencies:
   dart_style: any
   test: any
-  diff_match_patch: ^0.4.1
 
 executables:
   riverpod: riverpod_cli
