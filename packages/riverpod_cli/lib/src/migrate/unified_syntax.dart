@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:codemod/codemod.dart';
 import 'package:collection/collection.dart';
@@ -223,7 +224,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     if (name == 'StatefulWidget') {
       statefulDeclarations[node.name.name] = node;
       if (statefulNeedsMigration.contains(node.name.name)) {
-        migrateStateful(node.name.name, node);
+        migrateStateful(node.name.name);
       }
     }
     super.visitClassDeclaration(node);
@@ -310,10 +311,10 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         );
 
         migrateStateful(
-            classDecl
-                .extendsClause!.superclass.typeArguments!.arguments.first.type!
-                .getDisplayString(withNullability: true),
-            classDecl);
+          classDecl
+              .extendsClause!.superclass.typeArguments!.arguments.first.type!
+              .getDisplayString(withNullability: true),
+        );
       }
     } catch (e, st) {
       addError('migrating class $classDecl\n$e\n$st');
@@ -394,6 +395,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           .substring(onChange.expression.offset, onChange.expression.end);
       if (onChange.expression is FunctionExpression) {
         final onChangeFunction = onChange.expression as FunctionExpression;
+
         onChangeSource =
             '(previous, ${context.sourceText.substring(onChangeFunction.parameters!.parameters[1].offset, onChangeFunction.end)}';
       } else if (onChange.expression is SimpleIdentifier &&
@@ -402,18 +404,33 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         functionNeedsMigration.add(functionName.name);
         migrateOnChangeFunction(functionName.name);
       }
+      final providerType =
+          provider.staticType!.getDisplayString(withNullability: true);
+      final types = providerType
+          .substring(providerType.indexOf('<') + 1, providerType.indexOf('>'))
+          .split(',');
+
+      var listenType = types.length > 1 ? types[1] : types[0];
+      if (providerType.contains('Future') || providerType.contains('Stream')) {
+        listenType = 'AsyncValue<$listenType>';
+      }
 
       final child = node.argumentList.arguments.firstWhere((element) =>
               element is NamedExpression && element.name.label.name == 'child')
           as NamedExpression;
+
       final childSource = context.sourceText
           .substring(child.expression.offset, child.expression.end);
       if (fn is BlockFunctionBody) {
-        yieldPatch('\nref.listen($providerSource, $onChangeSource);',
-            fn.block.leftBracket.end, fn.block.leftBracket.end);
+        yieldPatch(
+            '\nref.listen<$listenType>($providerSource, $onChangeSource);',
+            fn.block.leftBracket.end,
+            fn.block.leftBracket.end);
       } else if (fn is ExpressionFunctionBody) {
-        yieldPatch('{\nref.listen($providerSource, $onChangeSource);return ',
-            fn.offset, fn.expression.offset);
+        yieldPatch(
+            '{\nref.listen<$listenType>($providerSource, $onChangeSource);return ',
+            fn.offset,
+            fn.expression.offset);
         yieldPatch(';}', fn.endToken.offset, fn.endToken.end);
       }
 
@@ -776,6 +793,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         if (functionName == 'watch' ||
             functionName == 'read' ||
             functionName == 'refresh') {
+          foundProviderUsage.last = true;
           migrateStateProvider(node.argumentList.arguments.first);
         }
         super.visitMethodInvocation(node);
@@ -840,14 +858,14 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     }
   }
 
-  void migrateStateful(String statefulName, ClassDeclaration node) {
+  void migrateStateful(String statefulName) {
     final statefulDeclaration = statefulDeclarations[statefulName];
     if (statefulDeclaration != null) {
       yieldPatch(
           'ConsumerStatefulWidget',
           statefulDeclaration.extendsClause!.superclass.offset,
           statefulDeclaration.extendsClause!.superclass.end);
-      final method = node.members.firstWhereOrNull((m) =>
+      final method = statefulDeclaration.members.firstWhereOrNull((m) =>
               m is MethodDeclaration && m.name.name.contains('createState'))
           as MethodDeclaration?;
 
