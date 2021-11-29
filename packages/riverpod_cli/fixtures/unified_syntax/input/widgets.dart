@@ -214,11 +214,6 @@ class _StatefulConsumerBasicState extends State<StatefulConsumerBasic> {
         onTap: () {
           context.read(counterProvider);
         },
-        child: Consumer(
-          builder: (context, watch, child) {
-            return Text('${watch(counterProvider)}');
-          },
-        ),
       ),
     );
   }
