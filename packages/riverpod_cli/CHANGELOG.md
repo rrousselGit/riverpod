@@ -1,3 +1,12 @@
+# 1.0.1
+
+- Updated to migrate to version 1.0.1
+- Fixed some issues with the migration
+
+# 1.0.0
+
+Updated to migrate to version 1.0.0
+
 # 1.0.0-dev.6
 
 Fix issues with the automatic migration of `ProviderContainer`.
@@ -17,7 +26,7 @@ Enable debugging the command line.
 # 1.0.0-dev.1
 
 - The migration now updates ProviderObserver methods to add the
- `ProviderContainer` parameter.
+  `ProviderContainer` parameter.
 
 # 1.0.0-dev.0
 
