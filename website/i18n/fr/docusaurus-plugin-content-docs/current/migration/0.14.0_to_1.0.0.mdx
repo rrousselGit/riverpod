@@ -155,7 +155,7 @@ Ce qui veut dire que:
   ```dart
   class Example extends ConsumerWidget {
     @override
-    Widget build(BuildContext context, WidgetRef) {
+    Widget build(BuildContext context, WidgetRef ref) {
       SomeButton(
         onPressed: () => ref.read(provider.notifier).doSomething(),
       );
