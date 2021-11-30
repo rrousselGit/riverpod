@@ -34,6 +34,12 @@ Maintenant que la ligne de commande est installé, nous pouvons l'utiliser.
 - Premièrement, ouvrez votre projt dans votre terminal.
 - **Ne pas** mettre à jour Riverpod.  
   L'outil de migration va automatiquement changer la version de Riverpod pour vous.
+  :::danger
+  Ne pas mettre à jour Riverpod est important.
+  L'outil ne va pas fonctionner correctement si vous avez déjà installé la version 1.0.0.
+  Verifiez donc bien que votre projet utilise une version antérieure avant de lancer l'outil.
+  :::
+
 - Assurez vous que votre projet ne contient pas d'erreurs.
 - Executez:
   ```sh
@@ -162,7 +168,6 @@ Ce qui veut dire que:
     }
   }
   ```
-
 
 ### StateProvider
 

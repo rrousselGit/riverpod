@@ -34,6 +34,13 @@ Now that the command line is installed, we can start using it.
 - First, open the project you want to migrate in your terminal.
 - **Do not** upgrade Riverpod.  
   The migration tool will upgrade the version of Riverpod for you.
+
+  :::danger
+  Not upgrading Riverpod is important.  
+  The tool will not execute properly if you have already installed the version 1.0.0.  
+  As such, make sure that you are properly using an older version before starting the tool.
+  :::
+
 - Make sure that your project does not contain errors.
 - Execute:
   ```sh
