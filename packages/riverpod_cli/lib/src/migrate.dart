@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:codemod/codemod.dart';
 import 'package:glob/glob.dart';
-import 'package:pub_semver/pub_semver.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
 
 import 'migrate/errors.dart';
