@@ -145,7 +145,7 @@ class StatelessListen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(counterProvider, (previous, i) {
+    ref.listen<int>(counterProvider, (previous, i) {
       print(i);
     });
     return const Text('Counter');
@@ -157,7 +157,19 @@ class StatelessListen2 extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(counterProvider, _onChange);
+    ref.listen<int>(counterProvider, _onChange);
+    return const Text('Counter');
+  }
+}
+
+class StatelessListen3 extends ConsumerWidget {
+  const StatelessListen3({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen<AsyncValue<int>>(futureProvider, (previous, i) {
+      print(i);
+    });
     return const Text('Counter');
   }
 }
@@ -171,12 +183,33 @@ class StatelessExpressionListen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(counterProvider, onChange);
+    ref.listen<int>(counterProvider, onChange);
     return const Text('Counter');
   }
 
   void onChange(int? previous, int i) {
     print(i);
+  }
+}
+
+class StatefulConsumerBasic extends ConsumerStatefulWidget {
+  const StatefulConsumerBasic({Key? key}) : super(key: key);
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _StatefulConsumerBasicState();
+}
+
+class _StatefulConsumerBasicState extends ConsumerState<StatefulConsumerBasic> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: GestureDetector(
+        onTap: () {
+          ref.read(counterProvider);
+        },
+      ),
+    );
   }
 }
 

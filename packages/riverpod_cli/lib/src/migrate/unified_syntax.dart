@@ -2,6 +2,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:codemod/codemod.dart';
+import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:pub_semver/pub_semver.dart';
 
@@ -308,9 +309,11 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           classDecl.extendsClause!.superclass.name.end,
         );
 
-        migrateStateful(classDecl
-            .extendsClause!.superclass.typeArguments!.arguments.first.type!
-            .getDisplayString(withNullability: true));
+        migrateStateful(
+          classDecl
+              .extendsClause!.superclass.typeArguments!.arguments.first.type!
+              .getDisplayString(withNullability: true),
+        );
       }
     } catch (e, st) {
       addError('migrating class $classDecl\n$e\n$st');
@@ -391,6 +394,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           .substring(onChange.expression.offset, onChange.expression.end);
       if (onChange.expression is FunctionExpression) {
         final onChangeFunction = onChange.expression as FunctionExpression;
+
         onChangeSource =
             '(previous, ${context.sourceText.substring(onChangeFunction.parameters!.parameters[1].offset, onChangeFunction.end)}';
       } else if (onChange.expression is SimpleIdentifier &&
@@ -399,18 +403,34 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         functionNeedsMigration.add(functionName.name);
         migrateOnChangeFunction(functionName.name);
       }
+      final providerType =
+          provider.staticType!.getDisplayString(withNullability: true);
+      final types = providerType
+          .substring(providerType.indexOf('<') + 1, providerType.indexOf('>'))
+          .split(',');
+
+      var listenType = types.length > 1 ? types[1] : types[0];
+      if (providerType.contains('FutureProvider') ||
+          providerType.contains('StreamProvider')) {
+        listenType = 'AsyncValue<$listenType>';
+      }
 
       final child = node.argumentList.arguments.firstWhere((element) =>
               element is NamedExpression && element.name.label.name == 'child')
           as NamedExpression;
+
       final childSource = context.sourceText
           .substring(child.expression.offset, child.expression.end);
       if (fn is BlockFunctionBody) {
-        yieldPatch('\nref.listen($providerSource, $onChangeSource);',
-            fn.block.leftBracket.end, fn.block.leftBracket.end);
+        yieldPatch(
+            '\nref.listen<$listenType>($providerSource, $onChangeSource);',
+            fn.block.leftBracket.end,
+            fn.block.leftBracket.end);
       } else if (fn is ExpressionFunctionBody) {
-        yieldPatch('{\nref.listen($providerSource, $onChangeSource);return ',
-            fn.offset, fn.expression.offset);
+        yieldPatch(
+            '{\nref.listen<$listenType>($providerSource, $onChangeSource);return ',
+            fn.offset,
+            fn.expression.offset);
         yieldPatch(';}', fn.endToken.offset, fn.endToken.end);
       }
 
@@ -773,6 +793,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         if (functionName == 'watch' ||
             functionName == 'read' ||
             functionName == 'refresh') {
+          foundProviderUsage.last = true;
           migrateStateProvider(node.argumentList.arguments.first);
         }
         super.visitMethodInvocation(node);
@@ -805,17 +826,19 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         }
         migrateStateProvider(node.argumentList.arguments.first);
       } else {
-        final func = ProviderFunction(
-          name: node.function.staticType!.element!.declaration!.name!,
-          path: node
-              .function.staticType!.element!.declaration!.location!.components
-              .join('/'),
-          line: node.function.staticType!.element!.declaration!.nameOffset,
-        );
-        if (RiverpodProviderUsageInfo.shouldMigrate(func)) {
-          migrateFunctionCall(node.argumentList);
-          foundProviderUsage.last = true;
-          // migrateParams();
+        if (node.function.staticType?.element?.declaration?.name != null) {
+          final func = ProviderFunction(
+            name: node.function.staticType!.element!.declaration!.name!,
+            path: node
+                .function.staticType!.element!.declaration!.location!.components
+                .join('/'),
+            line: node.function.staticType!.element!.declaration!.nameOffset,
+          );
+          if (RiverpodProviderUsageInfo.shouldMigrate(func)) {
+            migrateFunctionCall(node.argumentList);
+            foundProviderUsage.last = true;
+            // migrateParams();
+          }
         }
       }
     } catch (e, st) {
@@ -842,6 +865,16 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           'ConsumerStatefulWidget',
           statefulDeclaration.extendsClause!.superclass.offset,
           statefulDeclaration.extendsClause!.superclass.end);
+      final method = statefulDeclaration.members.firstWhereOrNull((m) =>
+              m is MethodDeclaration && m.name.name.contains('createState'))
+          as MethodDeclaration?;
+
+      if (method != null &&
+          method.returnType != null &&
+          method.returnType!.toSource().contains('State<StatefulWidget>')) {
+        yieldPatch('ConsumerState<ConsumerStatefulWidget>',
+            method.returnType!.offset, method.returnType!.end);
+      }
     } else {
       statefulNeedsMigration.add(statefulName);
     }
