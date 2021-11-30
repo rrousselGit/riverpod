@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:codemod/codemod.dart';
 import 'package:codemod/test.dart';
@@ -26,14 +28,14 @@ Future<FileContext> fileContextForInput(String name) async {
 Future<void> expectSuggestorGeneratesFormattedPatches(
   Suggestor suggestor,
   FileContext context,
-  Object resultMatcher,
+  String resultMatcher,
 ) async {
   await expectLater(
     Future(() async {
       final patches = await suggestor(context).toList();
       return _formatter.format(applyPatches(context.sourceFile, patches));
     }),
-    completion(resultMatcher),
+    completion(FileMatcher(resultMatcher)),
   );
 }
 
@@ -47,7 +49,7 @@ Future<void> expectSuggestorGeneratesFormattedPatches(
 Future<void> expectSuggestorSequenceGeneratesFormattedPatches(
   List<Suggestor> suggestors,
   FileContext context,
-  Object resultMatcher,
+  String resultMatcher,
 ) async {
   await expectLater(
     Future(() async {
@@ -57,6 +59,32 @@ Future<void> expectSuggestorSequenceGeneratesFormattedPatches(
       }
       return _formatter.format(applyPatches(context.sourceFile, patches));
     }),
-    completion(resultMatcher),
+    completion(FileMatcher(resultMatcher)),
   );
+}
+
+class FileMatcher extends Matcher {
+  FileMatcher(this.expected);
+
+  final String expected;
+  late final String item;
+  @override
+  Description describe(Description description) {
+    // TODO: Diff matcher only prints a pretty diff for linux / macos systems
+    if (Platform.isLinux || Platform.isMacOS) {
+      File('/tmp/riverpod_diff').writeAsStringSync(item);
+      File('/tmp/riverpod_expected').writeAsStringSync(expected);
+      final result = Process.runSync(
+          'diff', ['/tmp/riverpod_diff', '/tmp/riverpod_expected'],
+          runInShell: true);
+      description.add('${result.stdout}\n\n');
+    }
+    return description;
+  }
+
+  @override
+  bool matches(dynamic item, Map matchState) {
+    this.item = item as String;
+    return expected == item;
+  }
 }

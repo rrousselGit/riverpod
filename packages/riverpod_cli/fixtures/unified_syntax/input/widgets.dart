@@ -165,6 +165,21 @@ class StatelessListen2 extends StatelessWidget {
   }
 }
 
+class StatelessListen3 extends StatelessWidget {
+  const StatelessListen3({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ProviderListener(
+      provider: futureProvider,
+      onChange: (context, i) {
+        print(i);
+      },
+      child: const Text('Counter'),
+    );
+  }
+}
+
 void _onChange(BuildContext context, int i) {
   print(i);
 }
@@ -181,6 +196,26 @@ class StatelessExpressionListen extends StatelessWidget {
 
   void onChange(BuildContext context, int i) {
     print(i);
+  }
+}
+
+class StatefulConsumerBasic extends StatefulWidget {
+  const StatefulConsumerBasic({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _StatefulConsumerBasicState();
+}
+
+class _StatefulConsumerBasicState extends State<StatefulConsumerBasic> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: GestureDetector(
+        onTap: () {
+          context.read(counterProvider);
+        },
+      ),
+    );
   }
 }
 
