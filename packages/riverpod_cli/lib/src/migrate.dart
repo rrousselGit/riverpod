@@ -65,7 +65,18 @@ class MigrateCommand extends Command<void> {
       version = dep.version;
     } else {
       throw UnimplementedError(
-          'Migrating git and path dependencies can cause issues because of trying to understand riverpod versioning, please depend on an official package');
+        'Migrating git and path dependencies can cause issues because of '
+        'trying to understand riverpod versioning, please depend on an official package',
+      );
+    }
+
+    if (version.allows(latestVersion)) {
+      stderr.writeln(
+        'It seems like your project already has Riverpod $latestVersion installed.\n'
+        'The migration tool will not work if your project already uses the new '
+        'version. To fix, downgrade the version of Riverpod then try again.',
+      );
+      exit(-1);
     }
 
     await runInteractiveCodemodSequence(
