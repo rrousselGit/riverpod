@@ -1,3 +1,8 @@
+# 1.0.2
+
+The command `riverpod migrate` will now fail if used on a project that already
+uses the latest version available.
+
 # 1.0.1
 
 - Updated to migrate to version 1.0.1
