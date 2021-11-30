@@ -53,24 +53,23 @@ class MigrateCommand extends Command<void> {
       stderr.writeln(
         'Pubspec not found! Are you in the root directory of your package / app?',
       );
-      return;
+      exit(-1);
     }
+
     final pubspec = Pubspec.parse(pubspecFile.readAsStringSync());
     final dep = pubspec.dependencies['hooks_riverpod'] ??
         pubspec.dependencies['flutter_riverpod'] ??
         pubspec.dependencies['riverpod'];
 
-    VersionConstraint version;
-    if (dep is HostedDependency) {
-      version = dep.version;
-    } else {
-      throw UnimplementedError(
+    if (dep is! HostedDependency) {
+      stderr.writeln(
         'Migrating git and path dependencies can cause issues because of '
         'trying to understand riverpod versioning, please depend on an official package',
       );
+      exit(-1);
     }
 
-    if (version.allows(latestVersion)) {
+    if (dep.version.allows(latestVersion)) {
       stderr.writeln(
         'It seems like your project already has Riverpod $latestVersion installed.\n'
         'The migration tool will not work if your project already uses the new '
@@ -85,11 +84,11 @@ class MigrateCommand extends Command<void> {
         aggregate(
           [
             RiverpodImportAllMigrationSuggestor(),
-            RiverpodNotifierChangesMigrationSuggestor(version),
+            RiverpodNotifierChangesMigrationSuggestor(dep.version),
           ],
         ),
-        RiverpodProviderUsageInfo(version),
-        RiverpodUnifiedSyntaxChangesMigrationSuggestor(version),
+        RiverpodProviderUsageInfo(dep.version),
+        RiverpodUnifiedSyntaxChangesMigrationSuggestor(dep.version),
       ],
       args: argResults?.arguments ?? [],
     );
