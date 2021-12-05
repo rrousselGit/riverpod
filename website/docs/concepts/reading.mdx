@@ -58,11 +58,6 @@ Doing so would allow our `Counter` class to read providers.
 Widgets naturally do not have a ref parameter. But [Riverpod] offers multiple
 solutions to obtain one from widgets.
 
-:::warning
-When a widget obtains a "ref", this "ref" should not be passed around.
-It should be used only by the widget that created this object.
-:::
-
 #### Extending ConsumerWidget instead of StatelessWidget
 
 The most common solution will be to replace [StatelessWidget] by [ConsumerWidget]
@@ -563,10 +558,8 @@ overrides == will work. For example you could do:
 ```dart
 final label = ref.watch(userProvider.select((user) => 'Mr ${user.name}'));
 ```
+
 :::
-
-
-
 
 [provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
 [stateprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider-class.html
