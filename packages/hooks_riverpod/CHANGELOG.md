@@ -1,3 +1,7 @@
+## 1.0.2
+
+Fixed a null exception on web
+
 ## 1.0.1
 
 Improved the performance of the assert which verifies that providers properly

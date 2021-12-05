@@ -8,7 +8,7 @@ import TabItem from "@theme/TabItem";
 A common use-case when using providers is to want to destroy the state of a provider
 when it is no-longer used.
 
-There are multiple reasons for doing such, such as:
+There are multiple reasons for doing so, such as:
 
 - When using Firebase, to close the connection and avoid unnecessary cost
 - To reset the state when the user leaves a screen and re-enters it.
@@ -65,10 +65,10 @@ final myProvider = FutureProvider.autoDispose((ref) async {
 
 This way, if the request failed and the user leaves the screen then re-enters
 it, then the request will be performed again.
-But if the request completed successfuly, the state will be preserved
+But if the request completed successfully, the state will be preserved
 and re-entering the screen will not trigger a new request.
 
-## Example: Cancelling HTTP requests when no-longer used
+## Example: Canceling HTTP requests when no-longer used
 
 The `autoDispose` modifier could be combined with [FutureProvider] and `ref.onDispose`
 to easily cancel HTTP requests when they are no-longer needed.
@@ -76,7 +76,7 @@ to easily cancel HTTP requests when they are no-longer needed.
 The goal is:
 
 - Start an HTTP request when the user enters a screen
-- if the user leaves the screen before the request completed, cancels the HTTP request
+- if the user leaves the screen before the request completed, cancel the HTTP request
 - if the request succeeded, leaving and re-entering the screen does not start a new request
 
 In code, this would be:

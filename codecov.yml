@@ -20,6 +20,7 @@ ignore:
   - "examples"
   - "**/*.g.dart"
   - "**/*.freezed.dart"
+  - "packages/riverpod_cli"
 
 comment:
   layout: "reach,diff,flags,tree"

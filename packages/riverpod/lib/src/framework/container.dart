@@ -511,7 +511,10 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
   }
 
   _StateReader _getStateReader(ProviderBase provider) {
-    return _stateReaders.putIfAbsent(provider, () {
+    final currentReader = _stateReaders[provider];
+    if (currentReader != null) return currentReader;
+
+    _StateReader getReader() {
       if (provider.from != null) {
         // reading a family
 
@@ -628,7 +631,9 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
       }
 
       return reader;
-    });
+    }
+
+    return _stateReaders[provider] = getReader();
   }
 
   /// Release all the resources associated with this [ProviderContainer].

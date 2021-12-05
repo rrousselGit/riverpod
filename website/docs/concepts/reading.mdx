@@ -58,11 +58,6 @@ Doing so would allow our `Counter` class to read providers.
 Widgets naturally do not have a ref parameter. But [Riverpod] offers multiple
 solutions to obtain one from widgets.
 
-:::warning
-When a widget obtains a "ref", this "ref" should not be passed around.
-It should be used only by the widget that created this object.
-:::
-
 #### Extending ConsumerWidget instead of StatelessWidget
 
 The most common solution will be to replace [StatelessWidget] by [ConsumerWidget]
@@ -284,7 +279,7 @@ if the listened provider changes, using `ref.listen` will instead call a custom 
 That can be useful to perform actions when a certain change happens, such that
 to show a snackbar when an error happens.
 
-The `ref.listen` method can be used inside body of a provider:
+The `ref.listen` method can be used inside the body of a provider:
 
 ```dart
 final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter());
@@ -382,7 +377,7 @@ The problem with this assumption is that, while today that provider
 may indeed never update its value, there is no guarantee that tomorrow will be
 the same.
 
-Softwares tend to change a lot, and it is likely that in the future, a value
+Software tends to change a lot, and it is likely that in the future, a value
 that previously never changed will need to change.  
 But if you used `ref.read`, when that value starts to change, you would have
 to go through your entire codebase to change `ref.read` into `ref.watch` –
@@ -390,12 +385,12 @@ which is error prone and chances are you'll forget some cases.
 
 Whereas if you used `ref.watch` to begin with, you wouldn't have any problem
 
-**_But I wanted to use `ref.read` to reduce the number of times my widget rebuild_**
+**_But I wanted to use `ref.read` to reduce the number of times my widget rebuilds_**
 
 While the goal is commendable, it is important to note that you can achieve the
 exact same effect (reducing the number of builds) using `ref.watch` instead.
 
-Providers offers various way to obtain a value while reducing the number of
+Providers offer various ways to obtain a value while reducing the number of
 rebuilds, which you could use instead.
 
 For example instead of
@@ -563,10 +558,8 @@ overrides == will work. For example you could do:
 ```dart
 final label = ref.watch(userProvider.select((user) => 'Mr ${user.name}'));
 ```
+
 :::
-
-
-
 
 [provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
 [stateprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider-class.html
