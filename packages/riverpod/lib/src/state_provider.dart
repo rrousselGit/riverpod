@@ -59,7 +59,7 @@ class StateController<T> extends StateNotifier<T> {
 ///     children: [
 ///       for (final product in products)
 ///         GestureDetector(
-///           onTap: () => selectedProductId.state = product.id,
+///           onTap: () => ref.read(selectedProductIdProvider.notifier).state = product.id,
 ///           child: ProductItem(
 ///             product: product,
 ///             isSelected: selectedProductId.state == product.id,
