@@ -56,11 +56,6 @@ Cela permettrait à notre classe `Counter` de lire les providers.
 Les widgets ne disposent naturellement pas d'un paramètre ref. Mais [Riverpod] propose plusieurs
 solutions pour en obtenir un, à partir des widgets.
 
-:::warning
-Lorsqu'un widget obtient un "ref", ce "ref" ne doit pas être transmis.
-Il ne doit être utilisé que par le widget qui a créé cet objet.
-:::
-
 ### Étendre de ConsumerWidget au lieu de StatelessWidget
 
 La solution la plus courante consistera à remplacer [StatelessWidget] par [ConsumerWidget].
