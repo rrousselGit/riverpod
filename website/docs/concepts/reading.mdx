@@ -279,14 +279,18 @@ if the listened provider changes, using `ref.listen` will instead call a custom 
 That can be useful to perform actions when a certain change happens, such that
 to show a snackbar when an error happens.
 
+The `ref.listen` method needs 2 positional arguments, the first one is the Provider and the second one is the callback function that we want to execute when the state change.
+
+The callback function when called will return 2 values, the value of the previous State and the value of the new State. 
+
 The `ref.listen` method can be used inside the body of a provider:
 
 ```dart
 final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter());
 
 final anotherProvider = Provider((ref) {
-  ref.listen<int>(counterProvider, (int count) {
-    print('The counter changed ${count}');
+  ref.listen<int>(counterProvider, (int previousCount, int newCount) {
+    print('The counter changed ${newCount}');
   });
   ...
 });
@@ -302,8 +306,8 @@ class HomeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen<int>(counterProvider, (int count) {
-      print('The counter changed ${count}');
+    ref.listen<int>(counterProvider, (int previousCount, int newCount) {
+      print('The counter changed ${newCount}');
     });
     ...
   }
@@ -542,8 +546,8 @@ It is possible to use `select` with `ref.listen` too:
 ```dart
 ref.listen<String>(
   userProvider.select((user) => user.name),
-  (String name) {
-    print('The user name changed $name');
+  (String previousName, String newName) {
+    print('The user name changed $newName');
   }
 );
 ```
