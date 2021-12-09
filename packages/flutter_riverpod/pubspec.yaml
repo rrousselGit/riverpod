@@ -17,10 +17,6 @@ dependencies:
   meta: ^1.3.0
   riverpod: 1.0.2
   state_notifier: ^0.7.0
-    
-dependency_overrides:
-  riverpod:
-    path: ../riverpod
 
 dev_dependencies:
   flutter_test:
