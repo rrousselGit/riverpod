@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 import 'internals.dart';
 
 /// An object that allows widgets to interact with providers.
-abstract class WidgetRef extends Ref {
+abstract class WidgetRef extends BaseRef {
   @override
   T watch<T>(ProviderListenable<T> provider);
 

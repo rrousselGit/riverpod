@@ -19,13 +19,13 @@ typedef ProviderReference = Ref;
 ///
 /// - [Ref], which exposes the methods to read other providers.
 /// - [Provider], a provider that uses [Create] to expose an immutable value.
-typedef Create<T, R extends FrameworkRef> = T Function(R ref);
+typedef Create<T, R extends Ref> = T Function(R ref);
 
 /// A function to stop listenening to a provider
 typedef RemoveListener = void Function();
 
 /// A [Create] equivalent used by [Family].
-typedef FamilyCreate<T, R extends FrameworkRef, Arg> = T Function(
+typedef FamilyCreate<T, R extends Ref, Arg> = T Function(
   R ref,
   Arg arg,
 );
@@ -253,7 +253,7 @@ class _ProviderListener {
 /// An internal class that handles the state of a provider.
 ///
 /// Do not use.
-abstract class ProviderElementBase<State> implements FrameworkRef {
+abstract class ProviderElementBase<State> implements Ref {
   /// Do not use.
   ProviderElementBase(this._provider);
 

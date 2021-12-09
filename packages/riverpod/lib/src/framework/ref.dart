@@ -8,7 +8,7 @@ part of '../framework.dart';
 ///
 /// - [read] and [watch], two methods that allows a provider to consume other providers.
 /// {@endtemplate}
-abstract class Ref {
+abstract class BaseRef {
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
 
@@ -125,7 +125,7 @@ abstract class Ref {
 /// - [read] and [watch], two methods that allows a provider to consume other providers.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
-abstract class FrameworkRef extends Ref {
+abstract class Ref extends BaseRef {
   /// Adds a listener to perform an operation right before the provider is destroyed.
   ///
   /// This typically happen when a provider marked with `.autoDispose` is no-longer

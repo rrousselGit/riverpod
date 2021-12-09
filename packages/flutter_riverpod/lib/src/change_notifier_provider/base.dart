@@ -2,7 +2,7 @@ part of '../change_notifier_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 abstract class ChangeNotifierProviderRef<Notifier extends ChangeNotifier?>
-    implements FrameworkRef {
+    implements Ref {
   /// The [ChangeNotifier] currently exposed by this provider.
   ///
   /// Cannot be accessed while creating the provider.
