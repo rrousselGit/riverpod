@@ -16,6 +16,7 @@ export 'src/framework.dart'
         ProviderBase,
         Override,
         AutoDisposeRef,
+        FrameworkRef,
         Ref,
         ProviderListenable,
         ProviderContainer,

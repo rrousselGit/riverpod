@@ -4,15 +4,14 @@ import 'package:meta/meta.dart';
 import 'internals.dart';
 
 /// An object that allows widgets to interact with providers.
-abstract class WidgetRef implements Ref {
+abstract class WidgetRef extends Ref {
   @override
   T watch<T>(ProviderListenable<T> provider);
 
   @override
-  RemoveListener listen<T>(
+  void listen<T>(
     ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
-    bool fireImmediately,
     void Function(Object error, StackTrace stackTrace)? onError,
   });
 }
@@ -359,10 +358,9 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   }
 
   @override
-  RemoveListener listen<T>(
+  void listen<T>(
     ProviderListenable<T> provider,
     void Function(T? previous, T value) listener, {
-    bool fireImmediately = false,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
     assert(
@@ -377,11 +375,8 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
       provider,
       listener,
       onError: onError,
-      fireImmediately: fireImmediately,
     );
     _listeners.add(sub);
-
-    return () => _listeners.remove(sub);
   }
 
   @override
@@ -393,7 +388,4 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   State refresh<State>(ProviderBase<State> provider) {
     return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
-
-  @override
-  void onDispose(void Function() cb) => throw UnimplementedError();
 }

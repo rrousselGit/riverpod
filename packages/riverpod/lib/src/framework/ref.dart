@@ -7,7 +7,6 @@ part of '../framework.dart';
 /// See also:
 ///
 /// - [read] and [watch], two methods that allows a provider to consume other providers.
-/// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
 abstract class Ref {
   /// The [ProviderContainer] that this provider is associated with.
@@ -15,19 +14,6 @@ abstract class Ref {
 
   /// Re-create the state of a provider and return the new state.
   State refresh<State>(ProviderBase<State> provider);
-
-  /// Adds a listener to perform an operation right before the provider is destroyed.
-  ///
-  /// This typically happen when a provider marked with `.autoDispose` is no-longer
-  /// used, or when [ProviderContainer.dispose] is called.
-  ///
-  /// See also:
-  ///
-  /// - [Provider.autoDispose], a modifier which tell a provider that it should
-  ///   destroy its state when no-longer listened.
-  /// - [ProviderContainer.dispose], to destroy all providers associated with
-  ///   a [ProviderContainer] at once.
-  void onDispose(void Function() cb);
 
   /// Read the state associated with a provider, without listening to that provider.
   ///
@@ -123,6 +109,40 @@ abstract class Ref {
   ///
   /// Listeners will automatically be removed when the provider rebuilds (such
   /// as when a provider listeneed with [watch] changes).
+  void listen<T>(
+    AlwaysAliveProviderListenable<T> provider,
+    void Function(T? previous, T next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  });
+}
+
+/// {@template riverpod.providerrefbase}
+/// An object used by providers to interact with other providers and the life-cycles
+/// of the application.
+///
+/// See also:
+///
+/// - [read] and [watch], two methods that allows a provider to consume other providers.
+/// - [onDispose], a method that allows performing a task when the provider is destroyed.
+/// {@endtemplate}
+abstract class FrameworkRef extends Ref {
+  /// Adds a listener to perform an operation right before the provider is destroyed.
+  ///
+  /// This typically happen when a provider marked with `.autoDispose` is no-longer
+  /// used, or when [ProviderContainer.dispose] is called.
+  ///
+  /// See also:
+  ///
+  /// - [Provider.autoDispose], a modifier which tell a provider that it should
+  ///   destroy its state when no-longer listened.
+  /// - [ProviderContainer.dispose], to destroy all providers associated with
+  ///   a [ProviderContainer] at once.
+  void onDispose(void Function() cb);
+
+  /// Listen to a provider and call `listener` whenever its value changes.
+  ///
+  /// Listeners will automatically be removed when the provider rebuilds (such
+  /// as when a provider listeneed with [watch] changes).
   ///
   /// Returns a function that allows cancelling the subscription early.
   ///
@@ -130,6 +150,7 @@ abstract class Ref {
   ///    call the listener with the current value.
   ///    Defaults to false.
   // TODO update ProviderContainer.listen to match the return value
+  @override
   RemoveListener listen<T>(
     AlwaysAliveProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {

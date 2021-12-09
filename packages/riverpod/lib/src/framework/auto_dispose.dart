@@ -6,7 +6,7 @@ part of '../framework.dart';
 /// The difference with [Ref] is that it has an extra
 /// [maintainState] property, to help determine if the state can be destroyed
 ///  or not.
-abstract class AutoDisposeRef extends Ref {
+abstract class AutoDisposeRef extends FrameworkRef {
   /// Whether to destroy the state of the provider when all listeners are removed or not.
   ///
   /// Can be changed at any time, in which case when setting it to `false`,

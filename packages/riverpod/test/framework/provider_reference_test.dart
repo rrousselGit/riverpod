@@ -9,7 +9,7 @@ void main() {
     test(
       'cannot call ref.watch/ref.read/ref.listen/ref.onDispose after a dependency changed',
       () {
-        late Ref ref;
+        late FrameworkRef ref;
         final container = createContainer();
         final dep = StateProvider((ref) => 0);
         final provider = Provider((r) {
