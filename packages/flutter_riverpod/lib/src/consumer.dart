@@ -4,126 +4,17 @@ import 'package:meta/meta.dart';
 import 'internals.dart';
 
 /// An object that allows widgets to interact with providers.
-abstract class WidgetRef {
-  /// Returns the value exposed by a provider and rebuild the widget when that
-  /// value changes.
-  ///
-  /// See also:
-  ///
-  /// - [ProviderBase.select], which allows a widget to filter rebuilds by
-  ///   observing only the properties.
-  /// - [listen], to react to changes on a provider, such as for showing modals.
+abstract class WidgetRef implements Ref {
+  @override
   T watch<T>(ProviderListenable<T> provider);
 
-  /// Listen to a provider and call `listener` whenever its value changes.
-  ///
-  /// This is useful for showing modals or other imperative logic.
-  void listen<T>(
+  @override
+  RemoveListener listen<T>(
     ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
+    bool fireImmediately,
     void Function(Object error, StackTrace stackTrace)? onError,
   });
-
-  /// Reads a provider without listening to it.
-  ///
-  /// **AVOID** calling [read] inside build if the value is used only for events:
-  ///
-  /// ```dart
-  /// Widget build(BuildContext context) {
-  ///   // counter is used only for the onPressed of RaisedButton
-  ///   final counter = ref.read(counterProvider);
-  ///
-  ///   return RaisedButton(
-  ///     onPressed: () => counter.increment(),
-  ///   );
-  /// }
-  /// ```
-  ///
-  /// While this code is not bugged in itself, this is an anti-pattern.
-  /// It could easily lead to bugs in the future after refactoring the widget
-  /// to use `counter` for other things, but forget to change [read] into [Consumer]/`ref.watch(`.
-  ///
-  /// **CONSIDER** calling [read] inside event handlers:
-  ///
-  /// ```dart
-  /// Widget build(BuildContext context) {
-  ///   return RaisedButton(
-  ///     onPressed: () {
-  ///       // as performant as the previous solution, but resilient to refactoring
-  ///       ref.read(counterProvider).increment(),
-  ///     },
-  ///   );
-  /// }
-  /// ```
-  ///
-  /// This has the same efficiency as the previous anti-pattern, but does not
-  /// suffer from the drawback of being brittle.
-  ///
-  /// **AVOID** using [read] for creating widgets with a value that never changes
-  ///
-  /// ```dart
-  /// Widget build(BuildContext context) {
-  ///   // using read because we only use a value that never changes.
-  ///   final model = ref.read(modelProvider);
-  ///
-  ///   return Text('${model.valueThatNeverChanges}');
-  /// }
-  /// ```
-  ///
-  /// While the idea of not rebuilding the widget if unnecessary is good,
-  /// this should not be done with [read].
-  /// Relying on [read] for optimisations is very brittle and dependent
-  /// on an implementation detail.
-  ///
-  /// **CONSIDER** using [Provider] or `select` for filtering unwanted rebuilds:
-  ///
-  /// ```dart
-  /// Widget build(BuildContext context) {
-  ///   // Using select to listen only to the value that used
-  ///   final valueThatNeverChanges = ref.watch(modelProvider.select((model) {
-  ///     return model.valueThatNeverChanges;
-  ///   }));
-  ///
-  ///   return Text('$valueThatNeverChanges');
-  /// }
-  /// ```
-  ///
-  /// While more verbose than [read], using [Provider]/`select` is a lot safer.
-  /// It does not rely on implementation details on `Model`, and it makes
-  /// impossible to have a bug where our UI does not refresh.
-  T read<T>(ProviderBase<T> provider);
-
-  /// Forces a provider to re-evaluate its state immediately, and return the created value.
-  ///
-  /// This method is useful for features like "pull to refresh" or "retry on error",
-  /// to restart a specific provider.
-  ///
-  /// For example, a pull-to-refresh may be implemented by combining
-  /// [FutureProvider] and a [RefreshIndicator]:
-  ///
-  /// ```dart
-  /// final productsProvider = FutureProvider((ref) async {
-  ///   final response = await httpClient.get('https://host.com/products');
-  ///   return Products.fromJson(response.data);
-  /// });
-  ///
-  /// class Example extends ConsumerWidget {
-  ///   @override
-  ///   Widget build(BuildContext context, WidgetRef ref) {
-  ///     final Products products = ref.watch(productsProvider);
-  ///
-  ///     return RefreshIndicator(
-  ///       onRefresh: () => ref.refresh(productsProvider),
-  ///       child: ListView(
-  ///         children: [
-  ///           for (final product in products.items) ProductItem(product: product),
-  ///         ],
-  ///       ),
-  ///     );
-  ///   }
-  /// }
-  /// ```
-  State refresh<State>(ProviderBase<State> provider);
 }
 
 /// A function that can also listen to providers
@@ -406,6 +297,9 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   final _listeners = <ProviderSubscription>[];
 
   @override
+  ProviderContainer get container => _container;
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final newContainer = ProviderScope.containerOf(this);
@@ -465,9 +359,10 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   }
 
   @override
-  void listen<T>(
+  RemoveListener listen<T>(
     ProviderListenable<T> provider,
     void Function(T? previous, T value) listener, {
+    bool fireImmediately = false,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
     assert(
@@ -478,8 +373,15 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     // We can't implement a fireImmediately flag because we wouldn't know
     // which listen call was preserved between widget rebuild, and we wouldn't
     // want to call the listener on every rebuild.
-    final sub = _container.listen<T>(provider, listener, onError: onError);
+    final sub = _container.listen<T>(
+      provider,
+      listener,
+      onError: onError,
+      fireImmediately: fireImmediately,
+    );
     _listeners.add(sub);
+
+    return () => _listeners.remove(sub);
   }
 
   @override
@@ -491,4 +393,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   State refresh<State>(ProviderBase<State> provider) {
     return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
+
+  @override
+  void onDispose(void Function() cb) => throw UnimplementedError();
 }
