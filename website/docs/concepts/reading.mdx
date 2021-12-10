@@ -289,7 +289,7 @@ The `ref.listen` method can be used inside the body of a provider:
 final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter());
 
 final anotherProvider = Provider((ref) {
-  ref.listen<int>(counterProvider, (int previousCount, int newCount) {
+  ref.listen<int>(counterProvider, (int? previousCount, int newCount) {
     print('The counter changed ${newCount}');
   });
   ...
@@ -306,7 +306,7 @@ class HomeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen<int>(counterProvider, (int previousCount, int newCount) {
+    ref.listen<int>(counterProvider, (int? previousCount, int newCount) {
       print('The counter changed ${newCount}');
     });
     ...
