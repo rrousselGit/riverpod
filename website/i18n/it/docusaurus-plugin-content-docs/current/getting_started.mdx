@@ -1,0 +1,232 @@
+---
+title: Débuter
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+Avant d'expliquer le fonctionnement de [Riverpod], commençons par les bases:
+Installons [Riverpod], puis écrivons un "Hello world".
+
+## Quelle librairie installer
+
+Avant toute chose, il faut noter que [Riverpod] est séparé en plusieurs libraries, pour des usages différents.  
+La variante de [Riverpod] à installer dépendra donc de votre application.
+
+Pour choisir, vous pouvez vous référer au tableau suivant:
+
+| Type d'application             | Librarie à installer                                                               | descriptif                                                     |
+| ------------------------------ | ---------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Flutter + [flutter_hooks]      | [hooks_riverpod]                                                                   | Permet d'utiliser [flutter_hooks] et [Riverpod] en même temps. |
+| Flutter uniquement             | [flutter_riverpod]                                                                 | Une librarie pour utiliser [Riverpod] avec Flutter.            |
+| Dart uniquement (Sans Flutter) | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | Le core de [Riverpod] sans dépendence à Flutter.               |
+
+## Installation
+
+Une fois la librarie choisie, vous pouvez modifier votre `pubspec.yaml` pour y include:
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="hooks_riverpod"
+  values={[
+    { label: 'Flutter + flutter_hooks', value: 'hooks_riverpod', },
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Dart only', value: 'riverpod', },
+  ]}
+>
+<TabItem value="hooks_riverpod">
+
+```yaml title="pubspec.yaml"
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+  flutter: ">=2.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_hooks: ^0.18.0
+  hooks_riverpod: ^1.0.0-dev.11
+```
+
+Then run `flutter pub get`.
+
+</TabItem>
+<TabItem value="flutter_riverpod">
+
+```yaml title="pubspec.yaml"
+environment:
+  sdk: ">=2.12.0-0 <3.0.0"
+  flutter: ">=2.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^1.0.0-dev.11
+```
+
+Then run `flutter pub get`.
+
+</TabItem>
+<TabItem value="riverpod">
+
+```yaml title="pubspec.yaml"
+environment:
+  sdk: ">=2.12.0-0 <3.0.0"
+
+dependencies:
+  riverpod: ^1.0.0-dev.10
+```
+
+Then run `pub get`.
+
+</TabItem>
+</Tabs>
+
+Voilà. Vous pouvez maintenant utiliser [Riverpod] dans votre application!
+
+## Exemple d'utilisation: Hello world
+
+Maintenant que nous avons installé [Riverpod], commençons à l'utiliser.
+
+Les exemples de code suivant montrent comment utiliser notre nouvelle dépendence pour consuite un "Hello world":
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="hooks_riverpod"
+  values={[
+    { label: "Flutter + flutter_hooks", value: "hooks_riverpod" },
+    { label: "Flutter", value: "flutter_riverpod" },
+    { label: "Dart only", value: "riverpod" },
+  ]}
+>
+<TabItem value="hooks_riverpod">
+
+```dart title="lib/main.dart"
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+
+// Nous créons un "provider", qui va stocker une valeur (ici "Hello world").
+// En utilisant un provider, cela permet de mocker/changer la valeur exposée.
+final helloWorldProvider = Provider((_) => 'Hello world');
+
+void main() {
+  runApp(
+    // Pour que les widgets soient capables de lire des providers, nous
+    // devons encapsuler l'entièreté de notre application dans le
+    // widget "ProviderScope".
+    // C'est dans celui-ci que sera stocké l'état de nos providers.
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+
+// Note: MyApp est un HookConsumerWidget, exposé par hooks_riverpod.
+class MyApp extends HookConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Pour lire note provider, nous pouvons utiliser l'objet "ref"
+    // Cet objet est fourni par HookConsumerWidget.
+    final String value = ref.watch(helloWorldProvider);
+
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Example')),
+        body: Center(
+          child: Text(value),
+        ),
+      ),
+    );
+  }
+}
+```
+
+Nous pouvons ensuite executer l'application via `flutter run`.  
+Cela va afficher "Hello world" sur votre téléphone.
+
+</TabItem>
+<TabItem value="flutter_riverpod">
+
+```dart title="lib/main.dart"
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Nous créons un "provider", qui va stocker une valeur (ici "Hello world").
+// En utilisant un provider, cela permet de mocker/changer la valeur exposée.
+final helloWorldProvider = Provider((_) => 'Hello world');
+
+void main() {
+  runApp(
+    // Pour que les widgets soient capables de lire des providers, nous
+    // devons encapsuler l'entièreté de notre application dans le
+    // widget "ProviderScope".
+    // C'est dans celui-ci que sera stocké l'état de nos providers.
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+
+// Note: MyApp est un ConsumerWidget, exposé par flutter_riverpod.
+class MyApp extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Pour lire note provider, nous pouvons utiliser l'objet "ref"
+    // Cet objet est fourni par HookConsumerWidget.
+    final String value = ref.watch(helloWorldProvider);
+
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Example')),
+        body: Center(
+          child: Text(value),
+        ),
+      ),
+    );
+  }
+}
+```
+
+Nous pouvons ensuite executer l'application via `flutter run`.  
+Cela va afficher "Hello world" sur votre téléphone.
+
+</TabItem>
+<TabItem value="riverpod">
+
+```dart title="lib/main.dart"
+import 'package:riverpod/riverpod.dart';
+
+// Nous créons un "provider", qui va stocker une valeur (ici "Hello world").
+// En utilisant un provider, cela permet de mocker/changer la valeur exposée.
+final helloWorldProvider = Provider((_) => 'Hello world');
+
+void main() {
+  // ProviderContainer est un objet stockant l'état de nos providers.
+  final container = ProviderContainer();
+
+  // Grace à "container", nous pouvons lire nos providers.
+  final value = container.read(helloWorldProvider);
+
+  print(value); // Hello world
+}
+```
+
+Nous pouvons ensuite exécuter l'application via `dart lib/main.dart`.  
+Cela va afficher "Hello world" dans la console.
+
+</TabItem>
+</Tabs>
+
+## Aller plus loin: Installer des raccourcis de code
+
+Si vous utilisez `Flutter` et `Vscode` , considérez l'installation des [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
+
+Si vous utilisez `Flutter` et `Android Studio`/`IntelliJ`, considérez l'installation des [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
+
+![img](/img/snippets/greetingProvider.gif)
+
+[riverpod]: https://github.com/rrousselgit/river_pod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks

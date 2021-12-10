@@ -1,0 +1,86 @@
+---
+title: ProviderObserver
+---
+
+[ProviderObserver] écoute les changements d'un ProviderContainer.
+
+Pour l'utiliser, étendez (extend) la classe ProviderObserver et surchargez (override) 
+la méthode que vous souhaitez utiliser.
+
+- `didAddProvider` est appelé chaque fois qu'un provider a été initialisé, et la valeur exposée est value.
+- `didDisposeProvider` est appelé chaque fois que le provider A a été éliminé.
+- `didUpdateProvider` est appelé à chaque fois que mes providers émettent une notification.
+
+### Usage: 
+
+Un cas d'utilisation simple de [ProviderObserver], est d'enregistrer 
+les changements dans les providers en surchargeant (override) la méthode `didUpdateProvider`.
+
+```dart
+// Un exemple de compteur mis en œuvre avec riverpod avec Logger
+
+class Logger extends ProviderObserver {
+  @override
+  void didUpdateProvider(
+    ProviderBase provider,
+    Object? previousValue,
+    Object? newValue,
+    ProviderContainer container,
+  ) {
+    print('''
+{
+  "provider": "${provider.name ?? provider.runtimeType}",
+  "newValue": "$newValue"
+}''');
+  }
+}
+
+void main() {
+  runApp(
+    // L'ajout de ProviderScope active Riverpod pour l'ensemble du projet.
+    // Ajout de notre Logger à la liste des observateurs.
+    ProviderScope(observers: [Logger()], child: MyApp()),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(home: Home());
+  }
+}
+
+final counterProvider = StateProvider((ref) => 0);
+
+class Home extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Counter example')),
+      body: Center(
+        child: Consumer(builder: (context, ref, _) {
+          final count = ref.watch(counterProvider).state;
+          return Text('$count');
+        }),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.read(counterProvider).state++,
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+```
+
+Maintenant, chaque fois que la valeur de notre provider est mise à jour, le logger l'enregistrera :
+
+```
+I/flutter (16783): {
+I/flutter (16783):   "provider": "counter",
+I/flutter (16783):   "newValue": "Instance of 'StateController<int>'"
+I/flutter (16783): }
+```
+
+[providerobserver]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderObserver-class.html
