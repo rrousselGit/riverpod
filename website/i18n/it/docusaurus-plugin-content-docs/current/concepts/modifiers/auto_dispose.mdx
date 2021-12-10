@@ -5,21 +5,21 @@ title: .autoDispose
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-Un cas d'utilisation commun lors de l'utilisation des providers est de vouloir détruire 
-l'état (state) d'un provider lorsqu'il n'est plus utilisé.
+A common use-case when using providers is to want to destroy the state of a provider
+when it is no-longer used.
 
-Il y a de multiples raisons de le faire, comme par exemple :
+There are multiple reasons for doing so, such as:
 
-- Lors de l'utilisation de Firebase, pour fermer la connexion et éviter les coûts inutiles.
-- Pour réinitialiser l'état (state) lorsque l'utilisateur quitte un écran et y revient.
+- When using Firebase, to close the connection and avoid unnecessary cost
+- To reset the state when the user leaves a screen and re-enters it.
 
-Providers est livré avec un support intégré (built-in) pour un tel cas d'utilisation, 
-on utilisant le modificateur `.autoDispose`.
+Providers comes with a built-in support for such use-case, through the `.autoDispose`
+modifier.
 
 ## Usage
 
-Pour indiquer à Riverpod de détruire l'état (state) d'un provider 
-lorsqu'il n'est plus utilisé, ajoutez simplement `.autoDispose` à votre provider :
+To tell Riverpod to destroy the state of a provider when it is no-longer used,
+simply append `.autoDispose` to your provider:
 
 ```dart
 final userProvider = StreamProvider.autoDispose<User>((ref) {
@@ -27,14 +27,14 @@ final userProvider = StreamProvider.autoDispose<User>((ref) {
 });
 ```
 
-C'est tout. Maintenant, l'état de `userProvider` 
-sera automatiquement détruit quand il est plus utilisé.
+That's it. Now, the state of `userProvider` will automatically be destroyed
+when it is no-longer used.
 
-Notez que les paramètres génériques sont passés après `autoDispose` et non pas avant - 
-`autoDispose` n'est pas un constructeur nommé.
+Note how the generic parameters are passed after `autoDispose` instead of before –
+`autoDispose` is not a named constructor.
 
 :::note
-Vous pouvez combiner `.autoDispose` avec d'autres modificateurs si vous en avez besoin :
+You can combine `.autoDispose` with other modifiers if you need to:
 
 ```dart
 final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
@@ -46,13 +46,14 @@ final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
 
 ### ref.maintainState
 
-Marquer un provider avec `autoDispose` ajoute également une 
-propriété supplémentaire sur `ref` : `maintainState`.
+Marking a provider with `autoDispose` also adds an extra property on `ref`: `maintainState`.
 
-La propriété `maintainState` est un booléen (`false` par défaut) qui permet au provider d'indiquer à Riverpod si l'état (state) '
-du provider doit être préservé même s'il n'est plus écouté.
+The `maintainState` property is a boolean (`false` by default) that allows
+the provider to tell Riverpod if the state of the provider should be preserved
+even if no-longer listened.
 
-Un cas d'utilisation serait de mettre ce drapeau à `true` après qu'une requête HTTP soit terminée :
+A use-case would be to set this flag to `true` after an HTTP request have
+completed:
 
 ```dart
 final myProvider = FutureProvider.autoDispose((ref) async {
@@ -62,66 +63,66 @@ final myProvider = FutureProvider.autoDispose((ref) async {
 });
 ```
 
-Ainsi, si la demande a échoué et que l'utilisateur quitte l'écran puis 
-y revient, la demande sera exécutée à nouveau.
-Mais si la demande s'est terminée avec succès, l'état (state) sera préservé et le fait de revenir 
-à l'écran ne déclenchera pas une nouvelle demande.
+This way, if the request failed and the user leaves the screen then re-enters
+it, then the request will be performed again.
+But if the request completed successfully, the state will be preserved
+and re-entering the screen will not trigger a new request.
 
-## Exemple : Annulation des demandes HTTP lorsqu'elles ne sont plus utilisées
+## Example: Canceling HTTP requests when no-longer used
 
-Le modificateur `autoDispose` pourrait être combiné avec [FutureProvider] et `ref.onDispose` pour annuler 
-facilement les requêtes HTTP lorsqu'elles ne sont plus nécessaires.
+The `autoDispose` modifier could be combined with [FutureProvider] and `ref.onDispose`
+to easily cancel HTTP requests when they are no-longer needed.
 
-L'objectif est :
+The goal is:
 
-- Lancer une requête HTTP lorsque l'utilisateur entre dans un écran.
-- si l'utilisateur quitte l'écran avant la fin de la requête, annule la requête HTTP.
-- si la demande a réussi, le fait de quitter l'écran et d'y revenir n'entraîne pas le lancement d'une nouvelle demande.
+- Start an HTTP request when the user enters a screen
+- if the user leaves the screen before the request completed, cancel the HTTP request
+- if the request succeeded, leaving and re-entering the screen does not start a new request
 
-En code, cela serait :
+In code, this would be:
 
 ```dart
 final myProvider = FutureProvider.autoDispose((ref) async {
-  // Un objet du package:dio qui permet d'annuler les requêtes http.
+  // An object from package:dio that allows cancelling http requests
   final cancelToken = CancelToken();
-  // Lorsque le provider est détruit, annuler la requête http.
+  // When the provider is destroyed, cancel the http request
   ref.onDispose(() => cancelToken.cancel());
 
-  // Récupérer nos données et passer notre `cancelToken` pour que l'annulation fonctionne.
+  // Fetch our data and pass our `cancelToken` for cancellation to work
   final response = await dio.get('path', cancelToken: cancelToken);
-  // i la requête s'est terminée avec succès, gardez l'état (state)
+  // If the request completed successfully, keep the state
   ref.maintainState = true;
   return response;
 });
 ```
 
-## Le type de l'argument 'AutoDisposeProvider' ne peut pas être attribué (assigned) au type de paramètre 'AlwaysAliveProviderBase'.
+## The argument type 'AutoDisposeProvider' can't be assigned to the parameter type 'AlwaysAliveProviderBase'
 
-Lorsque vous utilisez `.autoDispose`, vous pouvez vous retrouver 
-dans une situation où votre application ne compile pas avec une erreur similaire à :
+When using `.autoDispose`, you may find yourself in a situation where your
+application does not compile with an error similar to:
 
 > The argument type 'AutoDisposeProvider' can't be assigned to the parameter
 > type 'AlwaysAliveProviderBase'
 
-Ne vous inquiétez pas ! Cette erreur est volontaire. Elle se produit 
-parce que vous avez très probablement un bug :
+Don't worry! This error is voluntary. It happens because you most likely
+have a bug:
 
-Vous avez essayé d'écouter un provider marqué avec `.autoDispose` dans un provider 
-qui n'est **pas** marqué avec `.autoDispose`, tel que :
+You tried to listen to a provider marked with `.autoDispose` in a provider that
+is **not** marked with `.autoDispose`, such as:
 
 ```dart
 final firstProvider = Provider.autoDispose((ref) => 0);
 
 final secondProvider = Provider((ref) {
-  // Le type d'argument 'AutoDisposeProvider<int>' ne peut être 
-  // attribué au type de paramètre 'AlwaysAliveProviderBase<Object, Null>'.
+  // The argument type 'AutoDisposeProvider<int>' can't be assigned to the
+  // parameter type 'AlwaysAliveProviderBase<Object, Null>'
   ref.watch(firstProvider);
 });
 ```
 
-Ce n'est pas souhaité, car cela ferait que `firstProvider` ne soit jamais éliminé.
+This is undesired, as it would cause `firstProvider` to never be disposed.
 
-Pour corriger cela, pensez à marquer `secondProvider` avec `.autoDispose` aussi :
+To fix, consider marking `secondProvider` with `.autoDispose` too:
 
 ```dart
 final firstProvider = Provider.autoDispose((ref) => 0);

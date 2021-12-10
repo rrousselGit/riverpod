@@ -2,22 +2,22 @@
 title: ProviderObserver
 ---
 
-[ProviderObserver] écoute les changements d'un ProviderContainer.
+[ProviderObserver] listens to the changes of a ProviderContainer.
 
-Pour l'utiliser, étendez (extend) la classe ProviderObserver et surchargez (override) 
-la méthode que vous souhaitez utiliser.
+To use it, extend the class ProviderObserver and override the method you like to use.
 
-- `didAddProvider` est appelé chaque fois qu'un provider a été initialisé, et la valeur exposée est value.
-- `didDisposeProvider` est appelé chaque fois que le provider A a été éliminé.
-- `didUpdateProvider` est appelé à chaque fois que mes providers émettent une notification.
+[ProviderObserver] has four methods :
 
-### Usage: 
+- `didAddProvider` is called every time a provider was initialized, and the value exposed is value.
+- `didDisposeProvider` is called every time A provider was disposed
+- `didUpdateProvider` is called every time my providers when they emit a notification.
 
-Un cas d'utilisation simple de [ProviderObserver], est d'enregistrer 
-les changements dans les providers en surchargeant (override) la méthode `didUpdateProvider`.
+### Usage :
+
+A simple use case for [ProviderObserver], is to log the changes in providers by overriding the method `didUpdateProvider`.
 
 ```dart
-// Un exemple de compteur mis en œuvre avec riverpod avec Logger
+// A Counter example implemented with riverpod with Logger
 
 class Logger extends ProviderObserver {
   @override
@@ -37,8 +37,8 @@ class Logger extends ProviderObserver {
 
 void main() {
   runApp(
-    // L'ajout de ProviderScope active Riverpod pour l'ensemble du projet.
-    // Ajout de notre Logger à la liste des observateurs.
+    // Adding ProviderScope enables Riverpod for the entire project
+    // Adding our Logger to the list of observers
     ProviderScope(observers: [Logger()], child: MyApp()),
   );
 }
@@ -61,12 +61,12 @@ class Home extends StatelessWidget {
       appBar: AppBar(title: const Text('Counter example')),
       body: Center(
         child: Consumer(builder: (context, ref, _) {
-          final count = ref.watch(counterProvider).state;
+          final count = ref.watch(counterProvider);
           return Text('$count');
         }),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.read(counterProvider).state++,
+        onPressed: () => ref.read(counterProvider.notifier).state++,
         child: const Icon(Icons.add),
       ),
     );
@@ -74,7 +74,7 @@ class Home extends StatelessWidget {
 }
 ```
 
-Maintenant, chaque fois que la valeur de notre provider est mise à jour, le logger l'enregistrera :
+Now that every time the value of our provider is updated, the logger will log it :
 
 ```
 I/flutter (16783): {
