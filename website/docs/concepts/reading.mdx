@@ -546,7 +546,7 @@ It is possible to use `select` with `ref.listen` too:
 ```dart
 ref.listen<String>(
   userProvider.select((user) => user.name),
-  (String previousName, String newName) {
+  (String? previousName, String newName) {
     print('The user name changed $newName');
   }
 );
