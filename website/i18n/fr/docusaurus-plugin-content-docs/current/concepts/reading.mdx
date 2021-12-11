@@ -196,42 +196,11 @@ la valeur de l'état (state) précédent et la valeur du nouvel état (state).
 
 La méthode `ref.listen` peut etre utilisée à l'intérieur d'un provider.
 
-<CodeBlock>{trimSnippet(listen)}</CodeBlock>
 
 Ou à l'intérieur de la méthode `build` d'un widget:
 
 <CodeBlock>{trimSnippet(listenBuild)}</CodeBlock>
 
-:::caution
-La méthode `listen` ne doit pas être appelée de manière asynchrone,
-comme dans `onPressed` ou un [ElevatedButton]. Elle ne doit pas non 
-plus être utilisée dans `initState` et dans d'autres cycles 
-de vie de [State].
-:::
-
-### Usage de ref.read pour obtenir l'état d'un provider qu'une fois
-
-La méthode `ref.read` est un moyen d'obtenir l'état d'un provider, 
-sans aucun effet supplémentaire.
-
-Il est généralement utilisé dans les fonctions déclenchées par les interactions de l'utilisateur.
-Par exemple, on peut utiliser `ref.read` pour incrémenter 
-un compteur lorsqu'un utilisateur clique sur un bouton :
-
-<CodeBlock>{trimSnippet(read)}</CodeBlock>
-
-:::note
-L'utilisation de `ref.read` doit être évitée autant que possible.
-
-Il existe une solution pour contourner les cas où l'utilisation 
-de `watch` ou `listen` serait trop peu pratique à utiliser. 
-Si vous le pouvez, il est presque toujours préférable d'utiliser 
-`watch`/`listen`, surtout `watch`.
-:::
-
-#### **NE PAS** utiliser `ref.read` à l'intérieur de la méthode build
-
-Vous pouvez être tenté d'utiliser `ref.read` pour optimiser 
 les performances d'un widget en faisant :
 
 <CodeBlock>{trimSnippet(readBuild)}</CodeBlock>
