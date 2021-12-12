@@ -56,11 +56,6 @@ Cela permettrait à notre classe `Counter` de lire les providers.
 Les widgets ne disposent naturellement pas d'un paramètre ref. Mais [Riverpod] propose plusieurs
 solutions pour en obtenir un, à partir des widgets.
 
-:::warning
-Lorsqu'un widget obtient un "ref", ce "ref" ne doit pas être transmis.
-Il ne doit être utilisé que par le widget qui a créé cet objet.
-:::
-
 ### Étendre de ConsumerWidget au lieu de StatelessWidget
 
 La solution la plus courante consistera à remplacer [StatelessWidget] par [ConsumerWidget].
@@ -279,14 +274,19 @@ de `ref.listen` appellera plutôt une fonction personnalisée.
 Cela peut être utile pour effectuer des actions lorsqu'un certain changement se produit, 
 par exemple d'afficher un snackbar lorsqu'une erreur se produit.
 
+La méthode `ref.listen` a besoin de 2 arguments positionnels, le premier est le Provider et 
+le second est la fonction callback que nous voulons exécuter lorsque l'état (state) change.
+La fonction callback, lorsqu'elle est appelée, renvoie deux valeurs, 
+la valeur de l'état (state) précédent et la valeur du nouvel état (state).
+
 La méthode `ref.listen` peut etre utilisée à l'intérieur d'un provider.
 
 ```dart
 final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter());
 
 final anotherProvider = Provider((ref) {
-  ref.listen<int>(counterProvider, (int count) {
-    print('The counter changed ${count}');
+  ref.listen<int>(counterProvider, (int? previousCount, int newCount) {
+    print('The counter changed ${newCount}');
   });
   ...
 });
@@ -302,8 +302,8 @@ class HomeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen<int>(counterProvider, (int count) {
-      print('The counter changed ${count}');
+    ref.listen<int>(counterProvider, (int? previousCount, int newCount) {
+      print('The counter changed ${newCount}');
     });
     ...
   }
@@ -546,8 +546,8 @@ Il est aussi possible d'utiliser `select` avec `ref.listen`:
 ```dart
 ref.listen<String>(
   userProvider.select((user) => user.name),
-  (String name) {
-    print('The user name changed $name');
+  (String? previousName, String newName) {
+    print('The user name changed $newName');
   }
 );
 ```
