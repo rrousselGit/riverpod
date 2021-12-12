@@ -6,10 +6,10 @@ Avant de commencer, assurez-vous de lire la section sur [les providers](/docs/co
 
 ### Combiner des providers
 
-Nous avons vu précédemment comment créer un simple provider. Mais la réalité est la suivante, 
+Nous avons vu précédemment comment créer un simple provider. Mais la réalité est la suivante,
 dans de nombreuses situations, un provider pourra vouloir lire l'état d'un autre provider.
 
-Pour ce faire, nous pouvons utiliser l'objet [ref] passé au 
+Pour ce faire, nous pouvons utiliser l'objet [ref] passé au
 callback de notre provider, et utiliser sa méthode [watch].
 
 À titre d'exemple, considérons le provider suivant :
@@ -22,12 +22,12 @@ Nous pouvons maintenant créer un autre provider qui va consommer notre `cityPro
 
 ```dart
 final weatherProvider = FutureProvider((ref) async {
-  // On utilise `ref.watch` pour écouter un autre provider, 
-  // et on lui passe le provider que l'on veut consommer. 
+  // On utilise `ref.watch` pour écouter un autre provider,
+  // et on lui passe le provider que l'on veut consommer.
   // Ici : cityProvider
   final city = ref.watch(cityProvider);
 
-  // On peut ensuite utiliser le résultat pour faire quelque chose en 
+  // On peut ensuite utiliser le résultat pour faire quelque chose en
   // fonction de la valeur de `cityProvider`.
   return fetchWeather(city: city);
 });
@@ -39,12 +39,12 @@ Et voilà. Nous avons créé un provider qui dépend d'un autre provider.
 
 ### Que faire si la valeur écoutée change au fil du temps ? Et voilà. Nous avons créé un provider qui dépend d'un autre provider.
 
-Selon le provider que vous écoutez, la valeur obtenue peut changer au fil du temps. 
+Selon le provider que vous écoutez, la valeur obtenue peut changer au fil du temps.
 
-Par exemple, vous pourriez être à l'écoute d'un [StateNotifierProvider], 
+Par exemple, vous pourriez être à l'écoute d'un [StateNotifierProvider],
 ou le provider écouté a été forcé de se rafraîchir à l'aide de [ProviderContainer.refresh]/[ref.refresh].
 
-En utilisant [watch], Riverpod est capable de détecter que la valeur 
+En utilisant [watch], Riverpod est capable de détecter que la valeur
 écoutée a changé et réexécutera _automatiquement_ le provider si nécessaire.
 
 Cela peut être utile pour les états (states) calculés.
@@ -57,23 +57,25 @@ class TodoList extends StateNotifier<List<Todo>> {
 
 final todoListProvider = StateNotifierProvider((ref) => TodoList());
 ```
-Un cas d'utilisation commun serait de faire en sorte que l'interface utilisateur (UI) filtre la liste des tâches (todos) 
+
+Un cas d'utilisation commun serait de faire en sorte que l'interface utilisateur (UI) filtre la liste des tâches (todos)
 pour n'afficher seulement les tâches terminées/non terminées.
 
 Une façon simple de mettre en place un tel scénario serait de :
 
 - créer [StateProvider], qui présente la méthode de filtrage actuellement sélectionnée :
 
- ```dart
-  enum Filter {
-    none,
-    completed,
-    uncompleted,
-  }
+```dart
+ enum Filter {
+   none,
+   completed,
+   uncompleted,
+ }
 
-  final filterProvider = StateProvider((ref) => Filter.none);
-  ```
-- créer un provider indépendant qui combine la méthode de filtrage et 
+ final filterProvider = StateProvider((ref) => Filter.none);
+```
+
+- créer un provider indépendant qui combine la méthode de filtrage et
   la todo-list pour exposer la todo-list filtrée :
 
   ```dart
@@ -81,7 +83,7 @@ Une façon simple de mettre en place un tel scénario serait de :
     final filter = ref.watch(filterProvider);
     final todos = ref.watch(todoListProvider);
 
-    switch (filter.state) {
+    switch (filter) {
       case Filter.none:
         return todos;
       case Filter.completed:
@@ -92,18 +94,18 @@ Une façon simple de mettre en place un tel scénario serait de :
   });
   ```
 
-Ensuite, notre interface utilisateur (UI) peut écouter `filteredTodoListProvider` pour écouter la todo-list filtrée. 
-En utilisant cette approche, l'interface sera automatiquement mise à jour lorsque le filtre ou 
+Ensuite, notre interface utilisateur (UI) peut écouter `filteredTodoListProvider` pour écouter la todo-list filtrée.
+En utilisant cette approche, l'interface sera automatiquement mise à jour lorsque le filtre ou
 la liste de tâches changera. ou la todo-list change.
 
-Pour voir cette approche en action, vous pouvez consulter le code source de 
+Pour voir cette approche en action, vous pouvez consulter le code source de
 [exemple de Todo List](https://github.com/rrousselGit/river_pod/tree/master/examples/todos).
 
 :::info
 Ce comportement n'est pas spécifique à [Provider], et fonctionne avec tous les providers.
 
-Par exemple, vous pouvez combiner [watch] et [FutureProvider] pour implémenter une fonction de recherche 
-ou un mode de changement de live-configuration. 
+Par exemple, vous pouvez combiner [watch] et [FutureProvider] pour implémenter une fonction de recherche
+ou un mode de changement de live-configuration.
 
 ```dart
 // Le filtre de recherche actuel
@@ -121,25 +123,25 @@ final charactersProvider = FutureProvider<List<Character>>((ref) async {
 });
 ```
 
-Ce code récupère une liste de caractères à partir du service, 
-et récupère à nouveau automatiquement la liste, chaque fois que les 
+Ce code récupère une liste de caractères à partir du service,
+et récupère à nouveau automatiquement la liste, chaque fois que les
 configurations changent ou que la requête de recherche change.
 :::
 
 ### Peut-on lire un provider sans l'écouter ?
 
-Parfois, on souhaite lire le contenu d'un provider, mais sans recréer la valeur 
+Parfois, on souhaite lire le contenu d'un provider, mais sans recréer la valeur
 exposée lorsque la valeur obtenue change.
 
 Un exemple serait un `Repository`, qui lit depuis un autre provider le jeton de l'utilisateur
 pour l'authentification.
-Nous pourrions utiliser [watch] et créer un nouveau `Repository` chaque fois que le jeton de l'utilisateur change, 
+Nous pourrions utiliser [watch] et créer un nouveau `Repository` chaque fois que le jeton de l'utilisateur change,
 mais il y a peu ou pas d'utilité à faire cela.
 
-Dans cette situation, nous pouvons utiliser [read], qui est similaire à [watch], mais qui n'obligera pas le provider 
+Dans cette situation, nous pouvons utiliser [read], qui est similaire à [watch], mais qui n'obligera pas le provider
 à recréer sa valeur exposée lorsque la valeur obtenue change.
 
-Dans ce cas, une pratique commune est de faire passer `ref.read` à l'objet créé. 
+Dans ce cas, une pratique commune est de faire passer `ref.read` à l'objet créé.
 Cet objet sera alors capable de lire les providers quand il le souhaite.
 
 ```dart
@@ -150,7 +152,7 @@ final repositoryProvider = Provider((ref) => Repository(ref.read));
 class Repository {
   Repository(this.read);
 
-  /// La fonction `ref.read` 
+  /// La fonction `ref.read`
   final Reader read;
 
   Future<Catalog> fetchCatalog() async {
@@ -178,7 +180,7 @@ class Repository {
 }
 ```
 
-La seule différence que le passage de `ref.read` apporte est un code 
+La seule différence que le passage de `ref.read` apporte est un code
 un peu moins verbeux et la garantie que notre objet n'utilise jamais `ref.watch`.
 :::
 
@@ -191,17 +193,17 @@ final myProvider = Provider((ref) {
 });
 ```
 
-Si vous avez utilisé [read] pour tenter d'éviter les reconstructions non souhaitées de votre objet, reportez-vous à 
+Si vous avez utilisé [read] pour tenter d'éviter les reconstructions non souhaitées de votre objet, reportez-vous à
 [Mon provider fait des mises à jour trop souvent, que puis-je faire ?](#mon-provider-fait-des-mises-à-jour-trop-souvent-que-puis-je-faire-)
 Mauvaise pratique pour appeler `read` ici
 :::
 
 ### Comment tester un objet qui reçoit [read] comme paramètre de son constructeur ?
 
-Si vous utilisez le modèle décrit dans [Peut-on lire un provider sans l'écouter ?](#peut-on-lire-un-provider-sans-lécouter-), 
+Si vous utilisez le modèle décrit dans [Peut-on lire un provider sans l'écouter ?](#peut-on-lire-un-provider-sans-lécouter-),
 vous vous demandez peut-être comment écrire des tests pour votre objet.
 
-Dans ce scénario, considérez tester le provider directement au lieu de l'objet brut. 
+Dans ce scénario, considérez tester le provider directement au lieu de l'objet brut.
 Vous pouvez le faire en utilisant la classe [ProviderContainer] :
 
 ```dart
@@ -222,15 +224,15 @@ test('fetches catalog', () async {
 
 ### Mon provider fait des mises à jour trop souvent, que puis-je faire ?
 
-Si votre objet est recréé trop souvent, il y a de fortes chances que votre provider soit en train 
+Si votre objet est recréé trop souvent, il y a de fortes chances que votre provider soit en train
 d'écouter des objets dont il ne se soucie pas.
 
-Par exemple, vous pouvez écouter un objet `Configuration`, 
+Par exemple, vous pouvez écouter un objet `Configuration`,
 mais n'utiliser que sa propriété `host`.
-En écoutant l'ensemble de l'objet `Configuration`, si une propriété 
+En écoutant l'ensemble de l'objet `Configuration`, si une propriété
 autre que `host` est modifiée, votre provider sera toujours réévalué. Ce qui peut être indésirable.
 
-La solution à ce problème est de créer un provider séparé qui expose _seulement_ ce dont vous 
+La solution à ce problème est de créer un provider séparé qui expose _seulement_ ce dont vous
 avez besoin dans `Configuration` (donc `host`).
 
 **ÉVITEZ** l'écoute de l'objet entier :
@@ -239,7 +241,7 @@ avez besoin dans `Configuration` (donc `host`).
 final configsProvider = StreamProvider<Configuration>(...);
 
 final productsProvider = FutureProvider<List<Product>>((ref) async {
-  // Le ProductsProvider devra récupérer les produits si 
+  // Le ProductsProvider devra récupérer les produits si
   // un élément de la configuration change.
   final configs = await ref.watch(configsProvider.last);
 
@@ -259,7 +261,7 @@ final _hostProvider = FutureProvider<String>((ref) async {
 });
 
 final productsProvider = FutureProvider<List<Product>>((ref) async {
-  // Écoute uniquement le host. Si quelque chose d'autre dans les configurations change, 
+  // Écoute uniquement le host. Si quelque chose d'autre dans les configurations change,
   // cela ne réévaluera pas inutilement notre provider.
   final host = await ref.watch(_hostProvider.future);
 
