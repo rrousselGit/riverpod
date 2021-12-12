@@ -81,7 +81,7 @@ Une façon simple de mettre en place un tel scénario serait de :
     final filter = ref.watch(filterProvider);
     final todos = ref.watch(todoListProvider);
 
-    switch (filter.state) {
+    switch (filter) {
       case Filter.none:
         return todos;
       case Filter.completed:
