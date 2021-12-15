@@ -7,6 +7,41 @@ import 'uni_directional_test.dart';
 
 void main() {
   group('ProviderContainer', () {
+    test(
+        'when the same provider is overridden multiple times at once, uses the latest override',
+        () {
+      final provider = Provider((ref) => 0);
+      final container = createContainer(
+        overrides: [
+          provider.overrideWithValue(21),
+          provider.overrideWithValue(42),
+        ],
+      );
+
+      expect(container.read(provider), 42);
+      expect(container.getAllProviderElements(), [
+        isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
+      ]);
+    });
+
+    test(
+        'when the same family is overridden multiple times at once, uses the latest override',
+        () {
+      final provider = Provider.family<int, int>((ref, value) => 0);
+      final container = createContainer(
+        overrides: [
+          provider.overrideWithProvider((value) => Provider((ref) => 21)),
+          provider.overrideWithProvider((value) => Provider((ref) => 42)),
+        ],
+      );
+
+      expect(container.read(provider(0)), 42);
+      expect(container.getAllProviderElements(), [
+        isA<ProviderElementBase>()
+            .having((e) => e.origin, 'origin', provider(0)),
+      ]);
+    });
+
     group('validate that properties respect `dependencies`', () {
       test('on reading an element, asserts that dependencies are respected',
           () {

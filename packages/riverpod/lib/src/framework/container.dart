@@ -189,10 +189,6 @@ class ProviderContainer {
 
     for (final override in overrides) {
       if (override is ProviderOverride) {
-        assert(
-          !_overrideForProvider.containsKey(override._origin),
-          'The provider ${override._origin} is already overridden',
-        );
         _overrideForProvider[override._origin] = override._override;
         _stateReaders[override._origin] = _StateReader(
           origin: override._origin,
