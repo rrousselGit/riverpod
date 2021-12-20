@@ -21,24 +21,23 @@ Voyons comment [Riverpod] peut nous aider pour cela.
 
 ## Ne pas préserver d'état entre `test`/`testWidgets`.
 
-Vu que les providers sont déclarés en tant que variables globale, on pourrait
+Vu que les providers sont déclarés en tant que variables globales, on pourrait
 s'inquiéter à ce niveau.
 Après tout, des variables globales pourraient rendre les tests difficile à
-écrire, car necessitant de complexe `setUp`/`tearDown`.
+écrire, car nécessitant de complexes opération de `setUp` et `tearDown`.
 
-Mais dans les faits: Certes les providers sont déclarés en tant que globales, mais
-leur état n'est quant-à lui pas global.
+Dans les faits les providers sont déclarés en tant que variables globales mais
+leur état ne l'est pas.
 
 À la place, il est stocké dans un objet nommé [ProviderContainer], que vous avez
-sûrement déjà vu si vous avez lû les exemples de code précédents.  
+sûrement déjà vu si vous avez lû les exemples de code pure Dart précédents.  
 Dans le cas contraire, sachez que ce [ProviderContainer] est implicitement crée
 par [ProviderScope], le widget qui permet d'utiliser [Riverpod] dans une application Flutter.
 
-De manière concrète, cela signifie que deux `testWidgets` utilisant des providers
-ne partagent aucun état.  
-Et donc, utiliser `setUp`/`tearDown` n'est pas nécessaire.
+De manière concrète, cela signifie que des `testWidgets` utilisant des providers
+ne partagent aucun état et donc, utiliser `setUp`/`tearDown` n'est pas requis.
 
-Mais un éxemple est mieux qu'une longue explication:
+Mais un exemple vaut mieux qu'une longue explication:
 
 <Tabs
   defaultValue="testWidgets"
