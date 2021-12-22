@@ -1,3 +1,9 @@
+## 1.0.3
+
+Removed an assert preventing from overriding the same provider/family
+multiple times on a `ProviderScope`/`ProviderContainer`.
+
+
 ## 1.0.2
 
 Fixed a null exception on web
