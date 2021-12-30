@@ -25,10 +25,7 @@ export const Banner: React.FC = () => {
         </h1>
 
         <div>
-          <Link
-            className="banner__cta"
-            to={useBaseUrl("docs/getting_started")}
-          >
+          <Link className="banner__cta" to={useBaseUrl("docs/getting_started")}>
             <Translate id="home.get_started">Get Started</Translate>
           </Link>
         </div>
@@ -39,17 +36,15 @@ export const Banner: React.FC = () => {
             id: "home.create_provider",
             message: "Create a Provider",
           })}
-        >
-          {SnippetCreate}
-        </CodeSnippet>
+          snippet={SnippetCreate}
+        ></CodeSnippet>
         <CodeSnippet
           title={translate({
             id: "home.consume_provider",
             message: "Consume the Provider",
           })}
-        >
-          {SnippetRead}
-        </CodeSnippet>
+          snippet={SnippetRead}
+        ></CodeSnippet>
       </div>
     </header>
   );

@@ -1,8 +1,25 @@
 // Parse a file without having to deal with errors
-final configurationsProvider = FutureProvider((ref) async {
+// ignore_for_file: avoid_unused_constructor_parameters, use_key_in_widget_constructors
+
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class Configuration {
+  Configuration.fromJson(Object? json);
+
+  String get host => throw UnimplementedError();
+}
+
+/* SNIPPET START */
+
+final configurationsProvider = FutureProvider<Configuration>((ref) async {
   final uri = Uri.parse('configs.json');
-  final json = await File.fromUri(uri).readAsString();
-  return Configurations.fromJson(json);
+  final rawJson = await File.fromUri(uri).readAsString();
+
+  return Configuration.fromJson(json.decode(rawJson));
 });
 
 class Example extends ConsumerWidget {
@@ -13,8 +30,8 @@ class Example extends ConsumerWidget {
     // Use Riverpod's built-in support
     // for error/loading states using "when":
     return configs.when(
-      loading: (_) => const CircularProgressIndicator(),
-      error: (err, stack, _) => Text('Error $err'),
+      loading: () => const CircularProgressIndicator(),
+      error: (err, stack) => Text('Error $err'),
       data: (configs) => Text('data: ${configs.host}'),
     );
   }
