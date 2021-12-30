@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from "react";
+import React, { ReactNode } from "react";
 import { CodeSnippet } from "../CodeSnippet";
 
 export interface IFeatureProps {
@@ -9,8 +9,6 @@ export interface IFeatureProps {
   direction?: "normal" | "reverse";
 }
 
-const START_AT = "/* SNIPPET START */";
-
 export const Feature: React.FC<IFeatureProps> = ({
   title,
   description,
@@ -18,15 +16,6 @@ export const Feature: React.FC<IFeatureProps> = ({
   imageUrl,
   direction = "normal",
 }) => {
-  const trimmedSnippet = useMemo(() => {
-    if (!snippet) return;
-
-    const startAtIndex = snippet.indexOf(START_AT);
-    if (startAtIndex < 0) return snippet;
-
-    return snippet.substring(startAtIndex + START_AT.length).trim();
-  }, [snippet]);
-
   return (
     <div className={`feature__card feature__card--${direction}`}>
       <div className="feature__content">
@@ -38,7 +27,7 @@ export const Feature: React.FC<IFeatureProps> = ({
         {imageUrl ? (
           <img src={imageUrl} alt={title} />
         ) : (
-          <CodeSnippet>{trimmedSnippet}</CodeSnippet>
+          <CodeSnippet snippet={snippet}></CodeSnippet>
         )}
       </div>
     </div>
