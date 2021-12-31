@@ -4,6 +4,13 @@ title: Reading a provider
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import counter from "!!raw-loader!/docs/concepts/reading_counter.dart";
+import consumerWidget from "!!raw-loader!/docs/concepts/reading_consumer_widget.dart";
+import consumerStatefulWidget from "!!raw-loader!/docs/concepts/reading_consumer_stateful_widget.dart";
+import consumerHookWidget from "!!raw-loader!/docs/concepts/reading_consumer_hook_widget.dart";
+import consumerHook from "!!raw-loader!/docs/concepts/reading_consumer_hook.dart";
+import { trimSnippet } from "../../src/components/CodeSnippet";
 
 Before reading this guide, make sure to [read about Providers](/docs/concepts/providers) first.
 
@@ -33,23 +40,7 @@ This parameter is safe to pass to the value exposed by the provider.
 
 For example, a common use-case is to pass the provider's "ref" to a [StateNotifier]:
 
-```dart
-final counter = StateNotifierProvider<Counter, int>((ref) {
-  return Counter(ref);
-});
-
-class Counter extends StateNotifier<int> {
-  Counter(this.ref): super(0);
-
-  final Ref ref;
-
-  void increment() {
-    // Counter can use the "ref" to read other providers
-    final repository = ref.read(repositoryProvider);
-    repository.post('...');
-  }
-}
-```
+<CodeBlock>{trimSnippet(counter)}</CodeBlock>
 
 Doing so would allow our `Counter` class to read providers.
 
@@ -68,18 +59,7 @@ difference being that it has an extra parameter on its build method: the "ref" o
 
 A typical [ConsumerWidget] would look like:
 
-```dart
-class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // use ref to listen to a provider
-    final counter = ref.watch(counterProvider);
-    return Text('$counter');
-  }
-}
-```
+<CodeBlock>{trimSnippet(consumerWidget)}</CodeBlock>
 
 #### Extending ConsumerStatefulWidget+ConsumerState instead of StatefulWidget+State
 
@@ -89,30 +69,7 @@ Similar to [ConsumerWidget], [ConsumerStatefulWidget] and [ConsumerState] are th
 This time, the "ref" isn't passed as parameter of the build method, but is rather
 a property of the [ConsumerState] object:
 
-```dart
-class HomeView extends ConsumerStatefulWidget {
-  const HomeView({Key? key}): super(key: key);
-
-  @override
-  HomeViewState createState() => HomeViewState();
-}
-
-class HomeViewState extends ConsumerState<HomeView> {
-  @override
-  void initState() {
-    super.initState();
-    // "ref" can be used in all life-cycles of a StatefulWidget.
-    ref.read(counterProvider);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // We can also use "ref" to listen to a provider inside the build method
-    final counter = ref.watch(counterProvider);
-    return Text('$counter');
-  }
-}
-```
+<CodeBlock>{trimSnippet(consumerStatefulWidget)}</CodeBlock>
 
 #### Extending HookConsumerWidget instead of HookWidget
 
@@ -127,21 +84,7 @@ allows a widget to both listen to providers and use hooks.
 
 An example would be:
 
-```dart
-class HomeView extends HookConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // HookConsumerWidget allows using hooks inside the build method
-    final state = useState(0);
-
-    // We can also use the ref parameter to listen to providers.
-    final counter = ref.watch(counterProvider);
-    return Text('$counter');
-  }
-}
-```
+<CodeBlock>{trimSnippet(consumerHookWidget)}</CodeBlock>
 
 #### Consumer and HookConsumer widgets
 
@@ -154,20 +97,7 @@ properties as [ConsumerWidget]/[HookConsumerWidget].
 These widgets can be a way to obtain a "ref" without having to define a class.
 An example would be:
 
-```dart
-Scaffold(
-  body: HookConsumer(
-    builder: (context, ref, child) {
-      // Like HookConsumerWidget, we can use hooks inside the builder
-      final state = useState(0);
-
-      // We can also use the ref parameter to listen to providers.
-      final counter = ref.watch(counterProvider);
-      return Text('$counter');
-    },
-  ),
-)
-```
+<CodeBlock>{trimSnippet(consumerHook)}</CodeBlock>
 
 ## Using ref to interact with providers
 
