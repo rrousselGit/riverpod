@@ -41,7 +41,7 @@ jobs:
           cd packages/riverpod_cli/fixtures/unified_syntax/input && flutter pub get && cd -
 
       - name: Check format
-        run: flutter format --set-exit-if-changed .
+        run: melos exec --ignore="website_snipets" -- "flutter format --set-exit-if-changed ."
 
       - name: Generate (dart)
         run: melos exec --depends-on="build_runner" --no-flutter -- "dart run build_runner build --delete-conflicting-outputs"
