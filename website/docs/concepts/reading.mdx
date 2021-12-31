@@ -16,6 +16,8 @@ import listen from "!!raw-loader!/docs/concepts/reading_listen.dart";
 import listenBuild from "!!raw-loader!/docs/concepts/reading_listen_build.dart";
 import read from "!!raw-loader!/docs/concepts/reading_read.dart";
 import readBuild from "!!raw-loader!/docs/concepts/reading_read_build.dart";
+import readNotifierBuild from "!!raw-loader!/docs/concepts/reading_read_notifier_build.dart";
+import watchNotifierBuild from "!!raw-loader!/docs/concepts/reading_watch_notifier_build.dart";
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
 Before reading this guide, make sure to [read about Providers](/docs/concepts/providers) first.
@@ -251,31 +253,11 @@ rebuilds, which you could use instead.
 
 For example instead of
 
-```dart
-final counterProvider = StateProvider((ref) => 0);
-
-Widget build(BuildContext context, WidgetRef ref) {
-  StateController<int> counter = ref.read(counterProvider.notifier);
-  return ElevatedButton(
-    onPressed: () => counter.state++,
-  )
-}
-```
+<CodeBlock>{trimSnippet(readNotifierBuild)}</CodeBlock>
 
 we could do:
 
-```dart
-final counterProvider = StateProvider((ref) => 0);
-
-Widget build(BuildContext context, WidgetRef ref) {
-  // ".notifier" subscribes to the StateController instance but does
-  // not rebuild the widget if its state changes
-  StateController<int> counter = ref.watch(counterProvider.notifier);
-  return ElevatedButton(
-    onPressed: () => counter.state++,
-  )
-}
-```
+<CodeBlock>{trimSnippet(watchNotifierBuild)}</CodeBlock>
 
 Both snippets achieve the same effect: our button will not rebuild when the
 counter increments.
@@ -378,7 +360,7 @@ The updated code would be:
 
 ```dart
 Widget build(BuildContext context, WidgetRef ref) {
-  String name = ref.watch(userProvider.select((user) => user.name))
+  String name = ref.watch(userProvider.select((user) => user.name));
   return Text(name);
 }
 ```
