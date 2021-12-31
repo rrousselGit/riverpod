@@ -26,6 +26,33 @@ void main() {
     });
   });
 
+  test('isData', () {
+    expect(const AsyncData(42).isData, true);
+    expect(const AsyncLoading<int>().isData, false);
+    expect(const AsyncError<int>(Object()).isData, false);
+  });
+
+  test('isLoading', () {
+    expect(const AsyncData(42).isLoading, false);
+    expect(const AsyncLoading<int>().isLoading, true);
+    expect(const AsyncError<int>(Object()).isLoading, false);
+  });
+
+  test('isError', () {
+    expect(const AsyncData(42).isError, false);
+    expect(const AsyncLoading<int>().isError, false);
+    expect(const AsyncError<int>(Object()).isError, true);
+  });
+
+  test('asError', () {
+    expect(const AsyncData(42).asError, null);
+    expect(const AsyncLoading<int>().asError, null);
+    expect(
+      const AsyncError<int>(Object()).asError,
+      const AsyncError<int>(Object()),
+    );
+  });
+
   test('map', () {
     expect(
       const AsyncValue.data(42).map(

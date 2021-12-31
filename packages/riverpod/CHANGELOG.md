@@ -1,3 +1,9 @@
+# [Unreleased minor]
+
+- Adding `isLoading`, `isError`, `isData` and `asError` to `AsyncValue`.
+  Those getters allow interacting with `AsyncValue` without having to rely on
+  pattern matching.
+
 ## 1.0.3
 
 Removed an assert preventing from overriding the same provider/family

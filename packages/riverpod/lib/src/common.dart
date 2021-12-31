@@ -208,6 +208,35 @@ extension AsyncValueX<T> on AsyncValue<T> {
     );
   }
 
+  /// Whether this [AsyncValue] is an [AsyncLoading].
+  bool get isLoading => map(
+        data: (_) => false,
+        error: (_) => false,
+        loading: (_) => true,
+      );
+
+  /// Whether this [AsyncValue] is an [AsyncData].
+  bool get isData => map(
+        data: (_) => true,
+        error: (_) => false,
+        loading: (_) => false,
+      );
+
+  /// Whether this [AsyncValue] is an [AsyncError].
+  bool get isError => map(
+        data: (_) => false,
+        error: (_) => true,
+        loading: (_) => false,
+      );
+
+  /// Upcast [AsyncValue] into an [AsyncError], or return null if the [AsyncValue]
+  /// is in loading/data state.
+  AsyncError? get asError => map(
+        data: (_) => null,
+        error: (e) => e,
+        loading: (_) => null,
+      );
+
   /// Shorthand for [when] to handle only the `data` case.
   ///
   /// For loading/error cases, creates a new [AsyncValue] with the corresponding
