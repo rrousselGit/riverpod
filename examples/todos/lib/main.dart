@@ -236,10 +236,12 @@ class TodoItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Create a dummy notifier to make the widget rebuild on purpose
+    final dummy = useValueNotifier(false);
+    useListenable(dummy);
+
     final todo = ref.watch(_currentTodo);
     final itemFocusNode = useFocusNode();
-    // listen to focus chances
-    useListenable(itemFocusNode);
     final isFocused = itemFocusNode.hasFocus;
 
     final textEditingController = useTextEditingController();
@@ -254,6 +256,8 @@ class TodoItem extends HookConsumerWidget {
           if (focused) {
             textEditingController.text = todo.description;
           } else {
+            // Actually we don't need this, but put it here in case of removing the below committing changes
+            dummy.value ^= true;
             // Commit changes only when the textfield is unfocused, for performance
             ref
                 .read(todoListProvider.notifier)
@@ -264,6 +268,8 @@ class TodoItem extends HookConsumerWidget {
           onTap: () {
             itemFocusNode.requestFocus();
             textFieldFocusNode.requestFocus();
+            // Make the widget rebuild
+            dummy.value ^= true;
           },
           leading: Checkbox(
             value: todo.completed,
