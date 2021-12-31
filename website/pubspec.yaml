@@ -14,6 +14,7 @@ dependencies:
     path: ../packages/flutter_riverpod
   hooks_riverpod:
     path: ../packages/hooks_riverpod
+  mockito: ^5.0.0
   riverpod:
     path: ../packages/riverpod
 
@@ -26,7 +27,6 @@ dependency_overrides:
     path: ../packages/flutter_riverpod
   hooks_riverpod:
     path: ../packages/hooks_riverpod
-  mockito: ^5.0.0
   riverpod:
     path: ../packages/riverpod
 
