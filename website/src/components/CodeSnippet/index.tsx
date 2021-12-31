@@ -1,13 +1,26 @@
 import React, { ReactElement } from "react";
 import CodeBlock from "@theme/CodeBlock";
 
+const SKIP = "/* SKIP */";
+const SKIP_END = "/* SKIP END */";
 const START_AT = "/* SNIPPET START */";
+const END_AT = "/* SNIPPET END */";
 
 export function trimSnippet(snippet: string): string {
   const startAtIndex = snippet.indexOf(START_AT);
   if (startAtIndex < 0) return snippet;
 
-  return snippet.substring(startAtIndex + START_AT.length).trim();
+  let endAtIndex = snippet.indexOf(END_AT);
+  if (endAtIndex < 0) endAtIndex = undefined;
+
+  snippet = snippet
+    .substring(startAtIndex + START_AT.length, endAtIndex)
+    .trim();
+
+  return snippet.replace(
+    /\n?(?:\/\* SKIP \*\/)(?:\n|.)+(?:\/\* SKIP END \*\/)/,
+    ""
+  );
 }
 
 interface CodeSnippetProps {

@@ -4,6 +4,15 @@ title: Testing
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import testingOriginalTestFlutter from "!!raw-loader!/docs/cookbooks/testing_original_test_flutter.dart";
+import testingOriginalTestDart from "!!raw-loader!/docs/cookbooks/testing_original_test_dart.dart";
+import repositorySnippet from "!!raw-loader!/docs/cookbooks/testing_repository.dart";
+import testFlutter from "!!raw-loader!/docs/cookbooks/testing_flutter.dart";
+import testDart from "!!raw-loader!/docs/cookbooks/testing_dart.dart";
+import testFull from "!!raw-loader!/docs/cookbooks/testing_full.dart";
+import testOverrideInfo from "!!raw-loader!/docs/cookbooks/testing_override_info.dart";
+import { trimSnippet } from "../../src/components/CodeSnippet";
 
 For any medium to large-scale applications, it is critical to test the application.
 
@@ -47,117 +56,12 @@ But an example is better than lengthy explanations:
 >
 <TabItem value="testWidgets">
 
-```dart
-// A Counter implemented and tested using Flutter
-
-// We declared a provider globally, and we will use it in two tests, to see
-// if the state correctly resets to `0` between tests.
-final counterProvider = StateProvider((ref) => 0);
-
-// Renders the current state and a button that allows incrementing the state
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Consumer(builder: (context, ref, _) {
-        final counter = ref.watch(counterProvider);
-        return RaisedButton(
-          onPressed: () => ref.read(counterProvider.notifier).state++,
-          child: Text('${counter}'),
-        );
-      }),
-    );
-  }
-}
-
-void main() {
-  testWidgets('update the UI when incrementing the state', (tester) async {
-    await tester.pumpWidget(ProviderScope(child: MyApp()));
-
-    // The default value is `0`, as declared in our provider
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Increment the state and re-render
-    await tester.tap(find.byType(RaisedButton));
-    await tester.pump();
-
-    // The state have properly incremented
-    expect(find.text('1'), findsOneWidget);
-    expect(find.text('0'), findsNothing);
-  });
-
-  testWidgets('the counter state is not shared between tests', (tester) async {
-    await tester.pumpWidget(ProviderScope(child: MyApp()));
-
-    // The state is `0` once again, with no tearDown/setUp needed
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-  });
-}
-```
+<CodeBlock>{trimSnippet(testingOriginalTestFlutter)}</CodeBlock>
 
 </TabItem>
 <TabItem value="test">
 
-```dart
-// A Counter implemented and tested with Dart only (no dependency on Flutter)
-
-// We declared a provider globally, and we will use it in two tests, to see
-// if the state correctly resets to `0` between tests.
-final counterProvider = StateProvider((ref) => 0);
-
-// Using mockito to keep track of when a provider notify its listeners
-class Listener extends Mock {
-  void call(int? previous, int value);
-}
-
-void main() {
-  test('defaults to 0 and notify listeners when value changes', () {
-    // An object that will allow us to read providers
-    // Do not share this between tests.
-    final container = ProviderContainer();
-    addTearDown(container.dispose);
-    final listener = Listener();
-
-    // Observe a provider and spy the changes.
-    container.listen<int>(
-      counterProvider,
-      listener,
-      fireImmediately: true,
-    );
-
-    // the listener is called immediately with 0, the default value
-    verify(listener(null, 0)).called(1);
-    verifyNoMoreInteractions(listener);
-
-    // We increment the value
-    container.read(counterProvider.notifier).state++;
-
-    // The listener was called again, but with 1 this time
-    verify(listener(0, 1)).called(1);
-    verifyNoMoreInteractions(listener);
-  });
-
-  test('the counter state is not shared between tests', () {
-    // We use a different ProviderContainer to read our provider.
-    // This unsure that no state is reused between tests
-    final container = ProviderContainer();
-    addTearDown(container.dispose);
-    final listener = Listener();
-
-    container.listen<int>(
-      counterProvider,
-      listener,
-      fireImmediately: true,
-    );
-
-    // The new test correcly uses the default value: 0
-    verify(listener(null, 0)).called(1);
-    verifyNoMoreInteractions(listener);
-  });
-}
-```
+<CodeBlock>{trimSnippet(testingOriginalTestDart)}</CodeBlock>
 
 </TabItem>
 </Tabs>
@@ -180,24 +84,7 @@ A common real-world application may have the following objects:
 
 Using [Riverpod], this may be represented as follows:
 
-```dart
-class Repository {
-  Future<List<Todo>> fetchTodos() async {}
-}
-
-// We expose our instance of Repository in a provider
-final repositoryProvider = Provider((ref) => Repository());
-
-/// The list of todos. Here, we are simply fetching them from the server using
-/// [Repository] and doing nothing else.
-final todoListProvider = FutureProvider((ref) async {
-  // Obtains the Repository instance
-  final repository = ref.watch(repositoryProvider);
-
-  // Fetch the todos and expose them to the UI.
-  return repository.fetchTodos();
-});
-```
+<CodeBlock>{trimSnippet(repositorySnippet)}</CodeBlock>
 
 In this situation, when making a unit/widget test, we will typically want to
 replace our `Repository` instance with a fake implementation that returns
@@ -218,82 +105,27 @@ to override the behavior of `repositoryProvider`:
 >
 <TabItem value="ProviderScope">
 
-```dart {7}
-testWidgets('override repositoryProvider', (tester) async {
-  await tester.pumpWidget(
-    ProviderScope(
-      overrides: [
-        // Override the behavior of repositoryProvider to return
-        // FakeRepository instead of Repository.
-        repositoryProvider.overrideWithValue(FakeRepository())
-        // We do not have to override `todoListProvider`, it will automatically
-        // use the overridden repositoryProvider
-      ],
-      child: MyApp(),
-    ),
-  );
-}
-```
+<CodeBlock>{trimSnippet(testFlutter)}</CodeBlock>
 
 </TabItem>
 <TabItem value="ProviderContainer">
 
-```dart {6}
-test('override repositoryProvider', () async {
-  final container = ProviderContainer(
-    overrides: [
-      // Override the behavior of repositoryProvider to return
-      // FakeRepository instead of Repository.
-      repositoryProvider.overrideWithValue(FakeRepository())
-      // We do not have to override `todoListProvider`, it will automatically
-      // use the overridden repositoryProvider
-    ],
-  );
-
-  // The first read if the loading state
-  expect(
-    container.read(todoListProvider),
-    const AsyncValue<List<Todo>>.loading(),
-  );
-
-  /// Wait for the request to finish
-  await container.read(todoListProvider.future);
-
-  // Exposes the data fetched
-  expect(container.read(todoListProvider).value, [
-    isA<Todo>()
-        .having((s) => s.id, 'id', '42')
-        .having((s) => s.label, 'label', 'Hello world')
-        .having((s) => s.completed, 'completed', false),
-  ]);
-});
-```
+<CodeBlock>{trimSnippet(testDart)}</CodeBlock>
 
 </TabItem>
 </Tabs>
 
 As you can see by the highlighted code, [ProviderScope]/[ProviderContainer]
-allows replacing the implementation of a provider with a different behavior. 
-  
+allows replacing the implementation of a provider with a different behavior.
+
 :::info
 Some providers expose simplified ways to override their behavior.  
 For example, [FutureProvider] allows overriding the provider with an `AsyncValue`:
 
-```dart
-final todoListProvider = FutureProvider((ref) async => <Todo>[]);
-// ...
-ProviderScope(
-  overrides: [
-    /// Allows overriding a FutureProvider to return a fixed value
-    todoListProvider.debugOverrideWithValue(
-      AsyncValue.data([Todo(id: '42', label: 'Hello', completed: true)]),
-    ),
-  ],
-  child: MyApp(),
-);
-```
+<CodeBlock>{trimSnippet(testOverrideInfo)}</CodeBlock>
+
 :::
-  
+
 :::info
 The syntax for overriding a provider with the `family` modifier is slightly different.
 
@@ -301,119 +133,21 @@ If you used a provider like this:
 
 ```dart
 final response = ref.watch(myProvider('11111'));
-```  
+```
 
 You could override the extra parameter value:
-  
+
 ```dart
 myProvider('12345').overrideWithValue(...));
 ```
-::: 
+
+:::
 
 ## Full widget test example
 
 Wrapping up, here is the entire full code for our Flutter test.
 
-```dart
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_test/flutter_test.dart';
-
-class Repository {
-  Future<List<Todo>> fetchTodos() async {}
-}
-
-class Todo {
-  Todo({
-    required this.id,
-    required this.label,
-    required this.completed,
-  });
-
-  final String id;
-  final String label;
-  final bool completed;
-}
-
-// We expose our instance of Repository in a provider
-final repositoryProvider = Provider((ref) => Repository());
-
-/// The list of todos. Here, we are simply fetching them from the server using
-/// [Repository] and doing nothing else.
-final todoListProvider = FutureProvider((ref) async {
-  // Obtains the Repository instance
-  final repository = ref.read(repositoryProvider);
-
-  // Fetch the todos and expose them to the UI.
-  return repository.fetchTodos();
-});
-
-/// A mocked implementation of Repository that returns a pre-defined list of todos
-class FakeRepository implements Repository {
-  @override
-  Future<List<Todo>> fetchTodos() async {
-    return [
-      Todo(id: '42', label: 'Hello world', completed: false),
-    ];
-  }
-}
-
-class TodoItem extends StatelessWidget {
-  const TodoItem({Key? key, required this.todo}) : super(key: key);
-  final Todo todo;
-  @override
-  Widget build(BuildContext context) {
-    return Text(todo.label);
-  }
-}
-
-void main() {
-  testWidgets('override repositoryProvider', (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          repositoryProvider.overrideWithValue(FakeRepository())
-        ],
-        // Our application, which will read from todoListProvider to display the todo-list.
-        // You may extract this into a MyApp widget
-        child: MaterialApp(
-          home: Scaffold(
-            body: Consumer(builder: (context, ref, _) {
-              final todos = ref.watch(todoListProvider);
-              // The list of todos is loading or in error
-              if (todos.data == null) {
-                return const CircularProgressIndicator();
-              }
-              return ListView(
-                children: [
-                  for (final todo in todos.data.value) TodoItem(todo: todo)
-                ],
-              );
-            }),
-          ),
-        ),
-      ),
-    );
-
-    // The first frame is a loading state.
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
-
-    // Re-render. TodoListProvider should have finished fetching the todos by now
-    await tester.pump();
-
-    // No-longer loading
-    expect(find.byType(CircularProgressIndicator), findsNothing);
-
-    // Rendered one TodoItem with the data returned by FakeRepository
-    expect(tester.widgetList(find.byType(TodoItem)), [
-      isA<TodoItem>()
-          .having((s) => s.todo.id, 'todo.id', '42')
-          .having((s) => s.todo.label, 'todo.label', 'Hello world')
-          .having((s) => s.todo.completed, 'todo.completed', false),
-    ]);
-  });
-}
-```
+<CodeBlock>{trimSnippet(testFull)}</CodeBlock>
 
 [riverpod]: https://github.com/rrousselgit/river_pod
 [providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
