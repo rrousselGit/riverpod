@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final counterProvider = StateProvider((ref) => 0);
 
 Widget build(BuildContext context, WidgetRef ref) {
-  StateController<int> counter = ref.read(counterProvider.notifier);
+  StateController<int> counter = ref.watch(counterProvider.notifier);
   return ElevatedButton(
     onPressed: () => counter.state++,
     child: const Text('button'),
