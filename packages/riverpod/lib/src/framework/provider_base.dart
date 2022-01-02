@@ -337,9 +337,7 @@ abstract class ProviderElementBase<State> implements Ref {
       final previousState = previousResult.requireState;
 
       newResult = Result<State>.data(
-        (previousState is AsyncValue
-            ? previousState.asRefreshing()
-            : AsyncData(previousState, isRefreshing: true)) as State,
+        (previousState as AsyncValue).asRefreshing() as State,
       );
     } else {
       newResult = Result.data(newState);
