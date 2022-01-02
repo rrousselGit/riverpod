@@ -272,15 +272,25 @@ Stream<State> _asyncValueToStream<State>(
   ref.onDispose(() => controller?.close());
 
   void listener(AsyncValue<State>? previous, AsyncValue<State> value) {
-    value.when(
-      loading: () {
-        controller?.close();
-        controller = null;
-        // will call ref.state =
-        getController();
+    if (value.isLoading || value.isRefreshing) {
+      controller?.close();
+      controller = null;
+      // will call ref.state =
+      getController();
+    }
+
+    value.map(
+      loading: (_) {
+        // already taken care of above
       },
-      data: (data) => getController().add(data),
-      error: (err, stack) => getController().addError(err, stack),
+      data: (value) {
+        if (!value.isRefreshing) getController().add(value.value);
+      },
+      error: (value) {
+        if (!value.isRefreshing) {
+          getController().addError(value.error, value.stackTrace);
+        }
+      },
     );
   }
 
@@ -406,32 +416,42 @@ Future<State> _asyncValueAsFuture<State>(
   });
 
   void listener(AsyncValue<State>? previous, AsyncValue<State> value) {
-    value.when(
-      loading: () {
-        if (loadingCompleter == null) {
-          loadingCompleter = Completer<State>();
-          ref.setState(
-            // TODO test ignore
-            loadingCompleter!.future..ignore(),
-          );
-        }
+    if (value.isLoading || value.isRefreshing) {
+      if (loadingCompleter == null) {
+        loadingCompleter = Completer<State>();
+        ref.setState(
+          // TODO test ignore
+          loadingCompleter!.future..ignore(),
+        );
+      }
+    }
+
+    value.map(
+      loading: (_) {
+        // already taken care of above
       },
       data: (data) {
+        // already taken care of above
+        if (data.isRefreshing) return;
+
         if (loadingCompleter != null) {
-          loadingCompleter!.complete(data);
+          loadingCompleter!.complete(data.value);
           // allow follow-up data calls to go on the 'else' branch
           loadingCompleter = null;
         } else {
-          ref.setState(Future<State>.value(data));
+          ref.setState(Future<State>.value(data.value));
         }
       },
-      error: (err, stack) {
+      error: (error) {
+        // already taken care of above
+        if (error.isRefreshing) return;
+
         if (loadingCompleter != null) {
-          loadingCompleter!.completeError(err, stack);
+          loadingCompleter!.completeError(error.error, error.stackTrace);
           // allow follow-up error calls to go on the 'else' branch
           loadingCompleter = null;
         } else {
-          ref.setState(Future<State>.error(err, stack));
+          ref.setState(Future<State>.error(error.error, error.stackTrace));
         }
       },
     );

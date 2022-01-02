@@ -58,11 +58,13 @@ String? modifierName(String? from, String modifier) {
 @sealed
 @immutable
 abstract class AsyncValue<T> {
+  const AsyncValue._();
+
   /// Creates an [AsyncValue] with a data.
   ///
   /// The data can be `null`.
   // coverage:ignore-start
-  const factory AsyncValue.data(T value) = AsyncData<T>;
+  const factory AsyncValue.data(T value, {bool isRefreshing}) = AsyncData<T>;
   // coverage:ignore-end
 
   /// Creates an [AsyncValue] in loading state.
@@ -76,8 +78,11 @@ abstract class AsyncValue<T> {
   ///
   /// The parameter [error] cannot be `null`.
   // coverage:ignore-start
-  const factory AsyncValue.error(Object error, {StackTrace? stackTrace}) =
-      AsyncError<T>;
+  const factory AsyncValue.error(
+    Object error, {
+    StackTrace? stackTrace,
+    bool isRefreshing,
+  }) = AsyncError<T>;
   // coverage:ignore-end
 
   /// Transforms a [Future] that may fail into something that is safe to read.
@@ -138,19 +143,38 @@ abstract class AsyncValue<T> {
     required R Function(AsyncError<T> error) error,
     required R Function(AsyncLoading<T> loading) loading,
   });
+
+  /// Whether the provider assiciated with this [AsyncValue] is currently rebuilding.
+  ///
+  /// This is different from [isLoading] in that [isLoading] is for waiting
+  /// the first value to be available, while [isRefreshing] is after a value
+  /// was emitted but a provider refresh was triggered.
+  bool get isRefreshing;
+
+  AsyncValue<T> _asRefreshing() {
+    return map(
+      data: (data) => AsyncData(data.value, isRefreshing: true),
+      error: (err) =>
+          AsyncError(err.error, stackTrace: err.stackTrace, isRefreshing: true),
+      loading: (l) => l,
+    );
+  }
 }
 
 /// Creates an [AsyncValue] with a data.
 ///
 /// The data can be `null`.
-class AsyncData<T> implements AsyncValue<T> {
+class AsyncData<T> extends AsyncValue<T> {
   /// Creates an [AsyncValue] with a data.
   ///
   /// The data can be `null`.
-  const AsyncData(this.value);
+  const AsyncData(this.value, {this.isRefreshing = false}) : super._();
 
   /// The value currently exposed.
   final T value;
+
+  @override
+  final bool isRefreshing;
 
   @override
   R _map<R>({
@@ -163,18 +187,111 @@ class AsyncData<T> implements AsyncValue<T> {
 
   @override
   String toString() {
-    return 'AsyncData<$T>(value: $value)';
+    final content = [
+      'value: $value',
+      if (isRefreshing) 'isRefreshing: true',
+    ].join(', ');
+
+    return 'AsyncData<$T>($content)';
   }
 
   @override
   bool operator ==(Object other) {
     return runtimeType == other.runtimeType &&
         other is AsyncData<T> &&
+        other.isRefreshing == isRefreshing &&
         other.value == value;
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, value);
+  int get hashCode => Object.hash(runtimeType, value, isRefreshing);
+}
+
+/// Creates an [AsyncValue] in loading state.
+///
+/// Prefer always using this constructor with the `const` keyword.
+class AsyncLoading<T> extends AsyncValue<T> {
+  /// Creates an [AsyncValue] in loading state.
+  ///
+  /// Prefer always using this constructor with the `const` keyword.
+  const AsyncLoading() : super._();
+
+  @override
+  bool get isRefreshing => false;
+
+  @override
+  R _map<R>({
+    required R Function(AsyncData<T> data) data,
+    required R Function(AsyncError<T> error) error,
+    required R Function(AsyncLoading<T> loading) loading,
+  }) {
+    return loading(this);
+  }
+
+  @override
+  String toString() {
+    return 'AsyncLoading<$T>()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return runtimeType == other.runtimeType;
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+}
+
+/// Creates an [AsyncValue] in error state.
+///
+/// The parameter [error] cannot be `null`.
+class AsyncError<T> extends AsyncValue<T> {
+  /// Creates an [AsyncValue] in error state.
+  ///
+  /// The parameter [error] cannot be `null`.
+  const AsyncError(this.error, {this.stackTrace, this.isRefreshing = false})
+      : super._();
+
+  /// The error.
+  final Object error;
+
+  /// The stacktrace of [error].
+  final StackTrace? stackTrace;
+
+  @override
+  final bool isRefreshing;
+
+  @override
+  R _map<R>({
+    required R Function(AsyncData<T> data) data,
+    required R Function(AsyncError<T> error) error,
+    required R Function(AsyncLoading<T> loading) loading,
+  }) {
+    return error(this);
+  }
+
+  @override
+  String toString() {
+    final content = [
+      'error: $error',
+      'stackTrace: $stackTrace',
+      if (isRefreshing) 'isRefreshing: true',
+    ].join(', ');
+
+    return 'AsyncError<$T>($content)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return runtimeType == other.runtimeType &&
+        other is AsyncError<T> &&
+        other.error == error &&
+        other.isRefreshing == isRefreshing &&
+        other.stackTrace == stackTrace;
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, error, stackTrace, isRefreshing);
 }
 
 /// An extension that adds methods like [when] to an [AsyncValue].
@@ -364,75 +481,8 @@ extension AsyncValueX<T> on AsyncValue<T> {
   }
 }
 
-/// Creates an [AsyncValue] in loading state.
-///
-/// Prefer always using this constructor with the `const` keyword.
-class AsyncLoading<T> implements AsyncValue<T> {
-  /// Creates an [AsyncValue] in loading state.
-  ///
-  /// Prefer always using this constructor with the `const` keyword.
-  const AsyncLoading();
-
-  @override
-  R _map<R>({
-    required R Function(AsyncData<T> data) data,
-    required R Function(AsyncError<T> error) error,
-    required R Function(AsyncLoading<T> loading) loading,
-  }) {
-    return loading(this);
-  }
-
-  @override
-  String toString() {
-    return 'AsyncLoading<$T>()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return runtimeType == other.runtimeType;
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-}
-
-/// Creates an [AsyncValue] in error state.
-///
-/// The parameter [error] cannot be `null`.
-class AsyncError<T> implements AsyncValue<T> {
-  /// Creates an [AsyncValue] in error state.
-  ///
-  /// The parameter [error] cannot be `null`.
-  const AsyncError(this.error, {this.stackTrace});
-
-  /// The error.
-  final Object error;
-
-  /// The stacktrace of [error].
-  final StackTrace? stackTrace;
-
-  @override
-  R _map<R>({
-    required R Function(AsyncData<T> data) data,
-    required R Function(AsyncError<T> error) error,
-    required R Function(AsyncLoading<T> loading) loading,
-  }) {
-    return error(this);
-  }
-
-  @override
-  String toString() {
-    return 'AsyncError<$T>(error: $error, stackTrace: $stackTrace)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return runtimeType == other.runtimeType &&
-        other is AsyncError<T> &&
-        other.error == error &&
-        other.stackTrace == stackTrace;
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, error, stackTrace);
+// ignore: public_member_api_docs
+extension InternalAsyncValueX on AsyncValue {
+  // ignore: public_member_api_docs
+  AsyncValue<Object?> asRefreshing() => _asRefreshing();
 }

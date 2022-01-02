@@ -10,12 +10,12 @@ void main() {
   group('custom AsyncValue', () {
     test('supports when', () {
       expect(
-        CustomData(42).whenOrNull(data: (v) => v * 2),
+        const CustomData(42).whenOrNull(data: (v) => v * 2),
         84,
       );
 
       expect(
-        CustomError<int>(42).whenOrNull(data: (v) => v * 2),
+        const CustomError<int>(42).whenOrNull(data: (v) => v * 2),
         null,
       );
 
@@ -24,6 +24,20 @@ void main() {
         null,
       );
     });
+  });
+
+  test('isRefreshing', () {
+    expect(const AsyncValue<int>.data(42).isRefreshing, false);
+    expect(
+      const AsyncValue<int>.data(42, isRefreshing: true).isRefreshing,
+      true,
+    );
+    expect(const AsyncValue<int>.loading().isRefreshing, false);
+    expect(const AsyncValue<int>.error('err').isRefreshing, false);
+    expect(
+      const AsyncValue<int>.error('err', isRefreshing: true).isRefreshing,
+      true,
+    );
   });
 
   test('isData', () {
@@ -371,6 +385,10 @@ void main() {
     );
     expect(
       AsyncValue<int>.data(value),
+      isNot(AsyncValue<int>.data(value, isRefreshing: true)),
+    );
+    expect(
+      AsyncValue<int>.data(value),
       isNot(AsyncValue<int>.data(value2)),
     );
     expect(
@@ -385,6 +403,12 @@ void main() {
     expect(
       AsyncValue<int>.error(value, stackTrace: stack),
       AsyncValue<int>.error(value, stackTrace: stack),
+    );
+    expect(
+      AsyncValue<int>.error(value, stackTrace: stack),
+      isNot(
+        AsyncValue<int>.error(value, stackTrace: stack, isRefreshing: true),
+      ),
     );
     expect(
       AsyncValue<int>.error(value, stackTrace: stack),
@@ -438,6 +462,10 @@ void main() {
     );
     expect(
       AsyncValue<int>.data(value).hashCode,
+      isNot(AsyncValue<int>.data(value, isRefreshing: true).hashCode),
+    );
+    expect(
+      AsyncValue<int>.data(value).hashCode,
       isNot(AsyncValue<int>.data(value2).hashCode),
     );
     expect(
@@ -452,6 +480,14 @@ void main() {
     expect(
       AsyncValue<int>.error(value, stackTrace: stack).hashCode,
       AsyncValue<int>.error(value, stackTrace: stack).hashCode,
+    );
+
+    expect(
+      AsyncValue<int>.error(value, stackTrace: stack).hashCode,
+      isNot(
+        AsyncValue<int>.error(value, stackTrace: stack, isRefreshing: true)
+            .hashCode,
+      ),
     );
 
     expect(
@@ -496,10 +532,18 @@ void main() {
       const AsyncValue.data(42).toString(),
       'AsyncData<int>(value: 42)',
     );
+    expect(
+      const AsyncValue.data(42, isRefreshing: true).toString(),
+      'AsyncData<int>(value: 42, isRefreshing: true)',
+    );
 
     expect(
       const AsyncValue<int>.error(42).toString(),
       'AsyncError<int>(error: 42, stackTrace: null)',
+    );
+    expect(
+      const AsyncValue<int>.error(42, isRefreshing: true).toString(),
+      'AsyncError<int>(error: 42, stackTrace: null, isRefreshing: true)',
     );
 
     expect(
@@ -591,11 +635,11 @@ class CustomLoading<T> extends AsyncLoading<T> {
 }
 
 class CustomData<T> extends AsyncData<T> {
-  CustomData(T value) : super(value);
+  const CustomData(T value) : super(value);
 }
 
 class CustomError<T> extends AsyncError<T> {
-  CustomError(Object error, {StackTrace? stackTrace})
+  const CustomError(Object error, {StackTrace? stackTrace})
       : super(
           error,
           stackTrace: stackTrace,

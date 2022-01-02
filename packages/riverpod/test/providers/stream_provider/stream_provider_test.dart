@@ -45,14 +45,14 @@ void main() {
 
     expect(
       ref.state,
-      const AsyncLoading<int>(),
+      const AsyncData<int>(0, isRefreshing: true),
     );
 
     verifyOnly(
       listener,
       listener(
         const AsyncData(0),
-        const AsyncLoading<int>(),
+        const AsyncData<int>(0, isRefreshing: true),
       ),
     );
   });
@@ -101,7 +101,7 @@ void main() {
 
     verifyOnly(
       listener,
-      listener(null, const AsyncLoading<int>()),
+      listener(null, const AsyncData<int>(42, isRefreshing: true)),
     );
 
     container.read(dep.state).state = Stream.value(21);
@@ -130,7 +130,7 @@ void main() {
     result = 1;
     expect(
       container.refresh(provider),
-      const AsyncValue<int>.loading(),
+      const AsyncValue<int>.data(0, isRefreshing: true),
     );
 
     expect(container.read(provider.stream), emits(1));
@@ -763,7 +763,7 @@ void main() {
       expect(callCount, 1);
     });
 
-    test('update dependents when the future changes', () async {
+    test('update dependents when the stream changes', () async {
       final streamProvider = StateProvider((ref) => Stream.value(42));
       // a StreamProvider that can rebuild with a new future
       final provider =
@@ -1328,7 +1328,7 @@ void main() {
         provider.overrideWithValue(const AsyncValue<int>.loading()),
       ]);
 
-      expect(sub.read(), const AsyncValue<int>.loading());
+      expect(sub.read(), const AsyncValue<int>.data(42, isRefreshing: true));
 
       container.dispose();
 
@@ -1519,7 +1519,10 @@ void main() {
         provider.overrideWithValue(const AsyncValue<int>.loading()),
       ]);
 
-      expect(sub.read(), const AsyncValue<int>.loading());
+      expect(
+        sub.read(),
+        AsyncValue<int>.error(42, stackTrace: stackTrace, isRefreshing: true),
+      );
 
       container.dispose();
 

@@ -25,14 +25,14 @@ void main() {
 
     expect(
       ref.state,
-      const AsyncLoading<int>(),
+      const AsyncData<int>(0, isRefreshing: true),
     );
 
     verifyOnly(
       listener,
       listener(
         const AsyncData(0),
-        const AsyncLoading<int>(),
+        const AsyncData<int>(0, isRefreshing: true),
       ),
     );
   });
@@ -88,7 +88,7 @@ void main() {
     result = 1;
     expect(
       container.refresh(provider),
-      const AsyncValue<int>.loading(),
+      const AsyncValue<int>.data(0, isRefreshing: true),
     );
 
     expect(await container.read(provider.future), 1);
@@ -546,13 +546,7 @@ void main() {
       ]);
 
       expect(container.read(provider.future), isNot(future));
-      expect(sub.read(), const AsyncValue<int>.loading());
-
-      // pushing a value value after "loading" to avoid StateError on dispose
-      // before the faked future couldn't complete
-      container.updateOverrides([
-        provider.overrideWithValue(const AsyncValue.data(42)),
-      ]);
+      expect(sub.read(), const AsyncData<int>(42, isRefreshing: true));
     });
 
     test('loading immediately then value', () async {
@@ -740,13 +734,10 @@ void main() {
       ]);
 
       expect(container.read(provider.future), isNot(future));
-      expect(sub.read(), const AsyncValue<int>.loading());
-
-      // pushing a value value after "loading" to avoid StateError on dispose
-      // before the faked future couldn't complete
-      container.updateOverrides([
-        provider.overrideWithValue(const AsyncValue.data(42)),
-      ]);
+      expect(
+        sub.read(),
+        AsyncValue<int>.error(42, stackTrace: stackTrace, isRefreshing: true),
+      );
     });
   });
 }
