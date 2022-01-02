@@ -272,15 +272,21 @@ Stream<State> _asyncValueToStream<State>(
   ref.onDispose(() => controller?.close());
 
   void listener(AsyncValue<State>? previous, AsyncValue<State> value) {
-    value.when(
-      loading: () {
+    value.map(
+      loading: (_) {
         controller?.close();
         controller = null;
         // will call ref.state =
         getController();
       },
-      data: (data) => getController().add(data),
-      error: (err, stack) => getController().addError(err, stack),
+      data: (value) {
+        if (!value.isRefreshing) getController().add(value.value);
+      },
+      error: (value) {
+        if (!value.isRefreshing) {
+          getController().addError(value.error, value.stackTrace);
+        }
+      },
     );
   }
 
