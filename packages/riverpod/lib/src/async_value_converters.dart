@@ -272,12 +272,16 @@ Stream<State> _asyncValueToStream<State>(
   ref.onDispose(() => controller?.close());
 
   void listener(AsyncValue<State>? previous, AsyncValue<State> value) {
+    if (value.isLoading || value.isRefreshing) {
+      controller?.close();
+      controller = null;
+      // will call ref.state =
+      getController();
+    }
+
     value.map(
       loading: (_) {
-        controller?.close();
-        controller = null;
-        // will call ref.state =
-        getController();
+        // already taken care of above
       },
       data: (value) {
         if (!value.isRefreshing) getController().add(value.value);
