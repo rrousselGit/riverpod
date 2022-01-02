@@ -1,0 +1,18 @@
+name: Sync gists
+
+on: push
+# disabled for testing purpose
+#     branches:
+#       - 'master'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        gist:
+          - '20c7f6d9081f3fa0eda2469472c2e312:packages/riverpod/example/lib/main.dart'
+
+    steps:
+      - run: echo ${{ matrix.gist }}
