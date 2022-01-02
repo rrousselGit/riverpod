@@ -35,6 +35,24 @@ void main() {
       expect(ref.notifier.value, 0);
     });
 
+    test('can refresh .notifier', () async {
+      var initialValue = 1;
+      final provider = ChangeNotifierProvider.autoDispose<ValueNotifier<int>>(
+        (ref) => ValueNotifier<int>(initialValue),
+      );
+      final container = createContainer();
+
+      container.listen(provider.notifier, (prev, value) {});
+
+      expect(container.read(provider).value, 1);
+      expect(container.read(provider.notifier).value, 1);
+
+      initialValue = 42;
+
+      expect(container.refresh(provider.notifier).value, 42);
+      expect(container.read(provider).value, 42);
+    });
+
     test('can be refreshed', () async {
       var result = ValueNotifier(0);
       final container = createContainer();

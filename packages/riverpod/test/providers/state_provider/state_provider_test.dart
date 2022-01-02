@@ -109,6 +109,35 @@ void main() {
     });
   });
 
+  test('can refresh .notifier', () async {
+    var initialValue = 1;
+    final provider = StateProvider<int>((ref) => initialValue);
+    final container = createContainer();
+
+    expect(container.read(provider), 1);
+    expect(container.read(provider.notifier).debugState, 1);
+
+    initialValue = 42;
+
+    expect(container.refresh(provider.notifier).debugState, 42);
+    expect(container.read(provider), 42);
+  });
+
+  test('can refresh .state', () async {
+    // TODO fix this test
+    var initialValue = 1;
+    final provider = StateProvider<int>((ref) => initialValue);
+    final container = createContainer();
+
+    expect(container.read(provider), 1);
+    expect(container.read(provider.state).debugState, 1);
+
+    initialValue = 42;
+
+    expect(container.refresh(provider.state).debugState, 42);
+    expect(container.read(provider), 42);
+  }, skip: true);
+
   test('can be refreshed', () async {
     var result = 0;
     final container = createContainer();

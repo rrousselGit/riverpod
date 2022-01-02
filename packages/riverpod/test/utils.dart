@@ -5,7 +5,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 class Counter extends StateNotifier<int> {
-  Counter() : super(0);
+  Counter([int initialValue = 0]) : super(initialValue);
 
   void increment() => state++;
 
