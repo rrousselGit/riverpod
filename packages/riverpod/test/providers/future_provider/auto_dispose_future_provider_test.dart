@@ -124,6 +124,36 @@ void main() {
     );
   });
 
+  test('can refresh .future', () async {
+    var future = Future.value(1);
+    final provider = FutureProvider.autoDispose((ref) => future);
+    final container = createContainer();
+
+    container.listen(provider.future, (prev, value) {});
+
+    expect(await container.read(provider.future), 1);
+
+    future = Future.value(42);
+
+    expect(await container.refresh(provider.future), 42);
+    expect(container.read(provider), const AsyncData(42));
+  });
+
+  test('can refresh .stream', () async {
+    var future = Future.value(1);
+    final provider = FutureProvider.autoDispose((ref) => future);
+    final container = createContainer();
+
+    container.listen(provider.stream, (prev, value) {});
+
+    expect(await container.read(provider.stream).first, 1);
+
+    future = Future.value(42);
+
+    expect(await container.refresh(provider.stream).first, 42);
+    expect(container.read(provider), const AsyncData(42));
+  });
+
   test('can be refreshed', () async {
     var result = 0;
     final container = createContainer();
