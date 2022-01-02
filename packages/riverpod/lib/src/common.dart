@@ -156,7 +156,7 @@ abstract class AsyncValue<T> {
       data: (data) => AsyncData(data.value, isRefreshing: true),
       error: (err) =>
           AsyncError(err.error, stackTrace: err.stackTrace, isRefreshing: true),
-      loading: (_) => const AsyncLoading(),
+      loading: (l) => l,
     );
   }
 }
