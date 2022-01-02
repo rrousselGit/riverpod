@@ -187,7 +187,12 @@ class AsyncData<T> extends AsyncValue<T> {
 
   @override
   String toString() {
-    return 'AsyncData<$T>(value: $value)';
+    final content = [
+      'value: $value',
+      if (isRefreshing) 'isRefreshing: true',
+    ].join(', ');
+
+    return 'AsyncData<$T>($content)';
   }
 
   @override
@@ -267,7 +272,13 @@ class AsyncError<T> extends AsyncValue<T> {
 
   @override
   String toString() {
-    return 'AsyncError<$T>(error: $error, stackTrace: $stackTrace)';
+    final content = [
+      'error: $error',
+      'stackTrace: $stackTrace',
+      if (isRefreshing) 'isRefreshing: true',
+    ].join(', ');
+
+    return 'AsyncError<$T>($content)';
   }
 
   @override

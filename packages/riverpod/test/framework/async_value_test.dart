@@ -532,10 +532,18 @@ void main() {
       const AsyncValue.data(42).toString(),
       'AsyncData<int>(value: 42)',
     );
+    expect(
+      const AsyncValue.data(42, isRefreshing: true).toString(),
+      'AsyncData<int>(value: 42, isRefreshing: true)',
+    );
 
     expect(
       const AsyncValue<int>.error(42).toString(),
       'AsyncError<int>(error: 42, stackTrace: null)',
+    );
+    expect(
+      const AsyncValue<int>.error(42, isRefreshing: true).toString(),
+      'AsyncError<int>(error: 42, stackTrace: null, isRefreshing: true)',
     );
 
     expect(
