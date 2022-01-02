@@ -10,12 +10,12 @@ void main() {
   group('custom AsyncValue', () {
     test('supports when', () {
       expect(
-        CustomData(42).whenOrNull(data: (v) => v * 2),
+        const CustomData(42).whenOrNull(data: (v) => v * 2),
         84,
       );
 
       expect(
-        CustomError<int>(42).whenOrNull(data: (v) => v * 2),
+        const CustomError<int>(42).whenOrNull(data: (v) => v * 2),
         null,
       );
 
@@ -635,11 +635,11 @@ class CustomLoading<T> extends AsyncLoading<T> {
 }
 
 class CustomData<T> extends AsyncData<T> {
-  CustomData(T value) : super(value);
+  const CustomData(T value) : super(value);
 }
 
 class CustomError<T> extends AsyncError<T> {
-  CustomError(Object error, {StackTrace? stackTrace})
+  const CustomError(Object error, {StackTrace? stackTrace})
       : super(
           error,
           stackTrace: stackTrace,
