@@ -110,16 +110,16 @@ extension AlwaysAliveAsyncProviderX<State>
       AsyncValueAsFutureProvider(this, from: from, argument: argument);
 
   /// {@template riverpod.asyncprovider.stream}
-  /// Exposes the [Stream] created by a [StreamProvider].
+  /// Converts the provider into a stream.
   ///
-  /// The stream obtained is not strictly identical to the stream created.
-  /// Instead, this stream is always a broadcast stream.
+  /// If the transformed provider created a stram, it is important to keep in mind
+  /// that the stream obtained and the stream created will be different.
   ///
-  /// The stream obtained may change over time, if the [StreamProvider] is
+  /// The stream obtained may change over time if the provider is
   /// re-evaluated, such as when it is using [Ref.watch] and the
   /// provider listened changes, or on [ProviderContainer.refresh].
   ///
-  /// If the [StreamProvider] was overridden using `overrideWithValue`,
+  /// If the provider was overridden using `overrideWithValue`,
   /// a stream will be generated and manipulated based on the [AsyncValue] used.
   /// {@endtemplate}
   AlwaysAliveProviderBase<Stream<State>> get stream =>
