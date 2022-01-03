@@ -4,6 +4,11 @@ title: Getting started
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import helloWorldHooks from "!!raw-loader!/docs/getting_started_hello_world_hooks.dart";
+import helloWorldFlutter from "!!raw-loader!/docs/getting_started_hello_world_flutter.dart";
+import helloWorldDart from "!!raw-loader!/docs/getting_started_hello_world_dart.dart";
+import { trimSnippet } from "../src/components/CodeSnippet";
 
 Before diving into the inner mechanisms of [Riverpod], let's start with the basics:
 Installing up [Riverpod], then writing a "Hello world".
@@ -45,7 +50,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.18.0
-  hooks_riverpod: ^1.0.2
+  hooks_riverpod: ^1.0.3
 ```
 
 Then run `flutter pub get`.
@@ -61,7 +66,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^1.0.2
+  flutter_riverpod: ^1.0.3
 ```
 
 Then run `flutter pub get`.
@@ -74,7 +79,7 @@ environment:
   sdk: ">=2.12.0-0 <3.0.0"
 
 dependencies:
-  riverpod: ^1.0.2
+  riverpod: ^1.0.3
 ```
 
 Then run `pub get`.
@@ -90,6 +95,8 @@ Now that we have installed [Riverpod], we can start using it.
 
 The following snippets showcase how to use our new dependency to make a "Hello world":
 
+export const foo = 42;
+
 <Tabs
   groupId="riverpod"
   defaultValue="hooks_riverpod"
@@ -101,45 +108,7 @@ The following snippets showcase how to use our new dependency to make a "Hello w
 >
 <TabItem value="hooks_riverpod">
 
-```dart title="lib/main.dart"
-import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-
-// We create a "provider", which will store a value (here "Hello world").
-// By using a provider, this allows us to mock/override the value exposed.
-final helloWorldProvider = Provider((_) => 'Hello world');
-
-void main() {
-  runApp(
-    // For widgets to be able to read providers, we need to wrap the entire
-    // application in a "ProviderScope" widget.
-    // This is where the state of our providers will be stored.
-    ProviderScope(
-      child: MyApp(),
-    ),
-  );
-}
-
-// Note: MyApp is a HookConsumerWidget, from flutter_hooks.
-class MyApp extends HookConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // To read our provider, we can use the hook "ref.watch(".
-    // This is only possible because MyApp is a HookConsumerWidget.
-    final String value = ref.watch(helloWorldProvider);
-
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: Text('Example')),
-        body: Center(
-          child: Text(value),
-        ),
-      ),
-    );
-  }
-}
-```
+<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldHooks)}</CodeBlock>
 
 Which you can then execute with `flutter run`.  
 This will render "Hello world" on your device.
@@ -147,42 +116,7 @@ This will render "Hello world" on your device.
 </TabItem>
 <TabItem value="flutter_riverpod">
 
-```dart title="lib/main.dart"
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-// We create a "provider", which will store a value (here "Hello world").
-// By using a provider, this allows us to mock/override the value exposed.
-final helloWorldProvider = Provider((_) => 'Hello world');
-
-void main() {
-  runApp(
-    // For widgets to be able to read providers, we need to wrap the entire
-    // application in a "ProviderScope" widget.
-    // This is where the state of our providers will be stored.
-    ProviderScope(
-      child: MyApp(),
-    ),
-  );
-}
-
-// Extend ConsumerWidget instead of StatelessWidget, which is exposed by Riverpod
-class MyApp extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final String value = ref.watch(helloWorldProvider);
-
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: Text('Example')),
-        body: Center(
-          child: Text(value),
-        ),
-      ),
-    );
-  }
-}
-```
+<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldFlutter)}</CodeBlock>
 
 Which you can then execute with `flutter run`.  
 This will render "Hello world" in on your device.
@@ -190,23 +124,7 @@ This will render "Hello world" in on your device.
 </TabItem>
 <TabItem value="riverpod">
 
-```dart title="lib/main.dart"
-import 'package:riverpod/riverpod.dart';
-
-// We create a "provider", which will store a value (here "Hello world").
-// By using a provider, this allows us to mock/override the value exposed.
-final helloWorldProvider = Provider((_) => 'Hello world');
-
-void main() {
-  // This object is where the state of our providers will be stored.
-  final container = ProviderContainer();
-
-  // Thanks to "container", we can read our provider.
-  final value = container.read(helloWorldProvider);
-
-  print(value); // Hello world
-}
-```
+<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldDart)}</CodeBlock>
 
 Which you can then execute with `dart lib/main.dart`.  
 This will print "Hello world" in the console.

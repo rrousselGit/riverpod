@@ -330,11 +330,23 @@ abstract class ProviderElementBase<State> implements Ref {
       _debugDidSetState = true;
       return true;
     }(), '');
-    final previousState = getState();
+    final previousResult = getState();
 
-    final result = _state = Result.data(newState);
+    Result<State> newResult;
+    if (newState is AsyncLoading && previousResult != null) {
+      final previousState = previousResult.requireState;
+
+      newResult = Result<State>.data(
+        (previousState as AsyncValue).asRefreshing() as State,
+      );
+    } else {
+      newResult = Result.data(newState);
+    }
+
+    final result = _state = newResult;
+
     if (_didBuild) {
-      _notifyListeners(result, previousState);
+      _notifyListeners(result, previousResult);
     }
   }
 

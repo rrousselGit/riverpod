@@ -39,6 +39,23 @@ void main() {
     expect(root.getAllProviderElements(), isEmpty);
   });
 
+  test('can refresh .notifier', () async {
+    var initialValue = 1;
+    final provider = StateNotifierProvider.autoDispose<Counter, int>(
+        (ref) => Counter(initialValue));
+    final container = createContainer();
+
+    container.listen(provider, (prev, value) {});
+
+    expect(container.read(provider), 1);
+    expect(container.read(provider.notifier).debugState, 1);
+
+    initialValue = 42;
+
+    expect(container.refresh(provider.notifier).debugState, 42);
+    expect(container.read(provider), 42);
+  });
+
   test('can be refreshed', () async {
     var result = StateController(0);
     final container = createContainer();

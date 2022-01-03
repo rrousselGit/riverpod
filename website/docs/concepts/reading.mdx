@@ -4,6 +4,21 @@ title: Reading a provider
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import counter from "!!raw-loader!/docs/concepts/reading_counter.dart";
+import consumerWidget from "!!raw-loader!/docs/concepts/reading_consumer_widget.dart";
+import consumerStatefulWidget from "!!raw-loader!/docs/concepts/reading_consumer_stateful_widget.dart";
+import consumerHookWidget from "!!raw-loader!/docs/concepts/reading_consumer_hook_widget.dart";
+import consumerHook from "!!raw-loader!/docs/concepts/reading_consumer_hook.dart";
+import watch from "!!raw-loader!/docs/concepts/reading_watch.dart";
+import watchBuild from "!!raw-loader!/docs/concepts/reading_watch_build.dart";
+import listen from "!!raw-loader!/docs/concepts/reading_listen.dart";
+import listenBuild from "!!raw-loader!/docs/concepts/reading_listen_build.dart";
+import read from "!!raw-loader!/docs/concepts/reading_read.dart";
+import readBuild from "!!raw-loader!/docs/concepts/reading_read_build.dart";
+import readNotifierBuild from "!!raw-loader!/docs/concepts/reading_read_notifier_build.dart";
+import watchNotifierBuild from "!!raw-loader!/docs/concepts/reading_watch_notifier_build.dart";
+import { trimSnippet } from "../../src/components/CodeSnippet";
 
 Before reading this guide, make sure to [read about Providers](/docs/concepts/providers) first.
 
@@ -33,23 +48,7 @@ This parameter is safe to pass to the value exposed by the provider.
 
 For example, a common use-case is to pass the provider's "ref" to a [StateNotifier]:
 
-```dart
-final counter = StateNotifierProvider<Counter, int>((ref) {
-  return Counter(ref);
-});
-
-class Counter extends StateNotifier<int> {
-  Counter(this.ref): super(0);
-
-  final Ref ref;
-
-  void increment() {
-    // Counter can use the "ref" to read other providers
-    final repository = ref.read(repositoryProvider);
-    repository.post('...');
-  }
-}
-```
+<CodeBlock>{trimSnippet(counter)}</CodeBlock>
 
 Doing so would allow our `Counter` class to read providers.
 
@@ -68,18 +67,7 @@ difference being that it has an extra parameter on its build method: the "ref" o
 
 A typical [ConsumerWidget] would look like:
 
-```dart
-class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // use ref to listen to a provider
-    final counter = ref.watch(counterProvider);
-    return Text('$counter');
-  }
-}
-```
+<CodeBlock>{trimSnippet(consumerWidget)}</CodeBlock>
 
 #### Extending ConsumerStatefulWidget+ConsumerState instead of StatefulWidget+State
 
@@ -89,30 +77,7 @@ Similar to [ConsumerWidget], [ConsumerStatefulWidget] and [ConsumerState] are th
 This time, the "ref" isn't passed as parameter of the build method, but is rather
 a property of the [ConsumerState] object:
 
-```dart
-class HomeView extends ConsumerStatefulWidget {
-  const HomeView({Key? key}): super(key: key);
-
-  @override
-  HomeViewState createState() => HomeViewState();
-}
-
-class HomeViewState extends ConsumerState<HomeView> {
-  @override
-  void initState() {
-    super.initState();
-    // "ref" can be used in all life-cycles of a StatefulWidget.
-    ref.read(counterProvider);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // We can also use "ref" to listen to a provider inside the build method
-    final counter = ref.watch(counterProvider);
-    return Text('$counter');
-  }
-}
-```
+<CodeBlock>{trimSnippet(consumerStatefulWidget)}</CodeBlock>
 
 #### Extending HookConsumerWidget instead of HookWidget
 
@@ -127,21 +92,7 @@ allows a widget to both listen to providers and use hooks.
 
 An example would be:
 
-```dart
-class HomeView extends HookConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // HookConsumerWidget allows using hooks inside the build method
-    final state = useState(0);
-
-    // We can also use the ref parameter to listen to providers.
-    final counter = ref.watch(counterProvider);
-    return Text('$counter');
-  }
-}
-```
+<CodeBlock>{trimSnippet(consumerHookWidget)}</CodeBlock>
 
 #### Consumer and HookConsumer widgets
 
@@ -154,20 +105,7 @@ properties as [ConsumerWidget]/[HookConsumerWidget].
 These widgets can be a way to obtain a "ref" without having to define a class.
 An example would be:
 
-```dart
-Scaffold(
-  body: HookConsumer(
-    builder: (context, ref, child) {
-      // Like HookConsumerWidget, we can use hooks inside the builder
-      final state = useState(0);
-
-      // We can also use the ref parameter to listen to providers.
-      final counter = ref.watch(counterProvider);
-      return Text('$counter');
-    },
-  ),
-)
-```
+<CodeBlock>{trimSnippet(consumerHook)}</CodeBlock>
 
 ## Using ref to interact with providers
 
@@ -212,25 +150,7 @@ We could have two providers:
 With this, using `ref.watch`, we could make a third provider that combines both providers to
 create a filtered list of tasks:
 
-```dart
-final filterTypeProvider = StateProvider<FilterType>((ref) => FilterType.none);
-final todosProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) => TodoList());
-
-final filteredTodoListProvider = Provider((ref) {
-  // obtains both the filter and the list of todos
-  final FilterType filter = ref.watch(filterTypeProvider);
-  final List<Todo> todos = ref.watch(todosProvider);
-
-  switch (filter) {
-    case FilterType.completed:
-      // return the completed list of todos
-      return todos.where((todo) => todo.isCompleted).toList();
-    case FilterType.none:
-      // returns the unfiltered list of todos
-      return todos;
-  }
-});
-```
+<CodeBlock>{trimSnippet(watch)}</CodeBlock>
 
 With this code, `filteredTodoListProvider` now exposes the filtered list of tasks.
 
@@ -241,21 +161,7 @@ neither the filter nor the list of tasks changed.
 Similarly, a widget could use `ref.watch` to show a user interface that depends
 on a provider:
 
-```dart
-final counterProvider = StateProvider((ref) => 0);
-
-class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // use ref to listen to a provider
-    final counter = ref.watch(counterProvider);
-
-    return Text('$counter');
-  }
-}
-```
+<CodeBlock>{trimSnippet(watchBuild)}</CodeBlock>
 
 This snippet shows a widgets that listens to a provider which stores a counter.
 And if that counter changes, the widget will rebuild and the UI will update
@@ -284,34 +190,11 @@ The callback function when called will return 2 values, the value of the previou
 
 The `ref.listen` method can be used inside the body of a provider:
 
-```dart
-final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter());
-
-final anotherProvider = Provider((ref) {
-  ref.listen<int>(counterProvider, (int? previousCount, int newCount) {
-    print('The counter changed ${newCount}');
-  });
-  ...
-});
-```
+<CodeBlock>{trimSnippet(listen)}</CodeBlock>
 
 or inside the `build` method of a widget:
 
-```dart
-final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter());
-
-class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen<int>(counterProvider, (int? previousCount, int newCount) {
-      print('The counter changed ${newCount}');
-    });
-    ...
-  }
-}
-```
+<CodeBlock>{trimSnippet(listenBuild)}</CodeBlock>
 
 :::caution
 The `listen` method should not be called asynchronously,
@@ -327,25 +210,7 @@ extra effect.
 It is commonly used inside functions triggered on user interactions.
 For example, we can use `ref.read` to increment a counter when a user click on a button:
 
-```dart
-final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter());
-
-class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Call `increment()` on the `Counter` class
-          ref.read(counterProvider.notifier).increment();
-        },
-      ),
-    );
-  }
-}
-```
+<CodeBlock>{trimSnippet(read)}</CodeBlock>
 
 :::note
 Using `ref.read` should be avoided as much as possible.
@@ -360,17 +225,7 @@ If you can, it is almost always better to use `watch`/`listen`, especially `watc
 You might be tempted to use `ref.read` to optimize the performance of a widget
 by doing:
 
-```dart
-final counterProvider = StateProvider((ref) => 0);
-
-Widget build(BuildContext context, WidgetRef ref) {
-  // use "read" to ignore updates on a provider
-  final counter = ref.read(counterProvider.notifier);
-  return ElevatedButton(
-    onPressed: () => counter.state++,
-  )
-}
-```
+<CodeBlock>{trimSnippet(readBuild)}</CodeBlock>
 
 But this is a very bad practice and can cause bugs that are difficult to track.
 
@@ -398,31 +253,11 @@ rebuilds, which you could use instead.
 
 For example instead of
 
-```dart
-final counterProvider = StateProvider((ref) => 0);
-
-Widget build(BuildContext context, WidgetRef ref) {
-  StateController<int> counter = ref.read(counterProvider.notifier);
-  return ElevatedButton(
-    onPressed: () => counter.state++,
-  )
-}
-```
+<CodeBlock>{trimSnippet(readNotifierBuild)}</CodeBlock>
 
 we could do:
 
-```dart
-final counterProvider = StateProvider((ref) => 0);
-
-Widget build(BuildContext context, WidgetRef ref) {
-  // ".notifier" subscribes to the StateController instance but does
-  // not rebuild the widget if its state changes
-  StateController<int> counter = ref.watch(counterProvider.notifier);
-  return ElevatedButton(
-    onPressed: () => counter.state++,
-  )
-}
-```
+<CodeBlock>{trimSnippet(watchNotifierBuild)}</CodeBlock>
 
 Both snippets achieve the same effect: our button will not rebuild when the
 counter increments.
@@ -571,7 +406,7 @@ The updated code would be:
 
 ```dart
 Widget build(BuildContext context, WidgetRef ref) {
-  String name = ref.watch(userProvider.select((user) => user.name))
+  String name = ref.watch(userProvider.select((user) => user.name));
   return Text(name);
 }
 ```

@@ -25,14 +25,14 @@ void main() {
 
     expect(
       ref.state,
-      const AsyncLoading<int>(),
+      const AsyncData<int>(0, isRefreshing: true),
     );
 
     verifyOnly(
       listener,
       listener(
         const AsyncData(0),
-        const AsyncLoading<int>(),
+        const AsyncData<int>(0, isRefreshing: true),
       ),
     );
   });
@@ -77,6 +77,32 @@ void main() {
     );
   });
 
+  test('can refresh .future', () async {
+    var future = Future.value(1);
+    final provider = FutureProvider((ref) => future);
+    final container = createContainer();
+
+    expect(await container.read(provider.future), 1);
+
+    future = Future.value(42);
+
+    expect(await container.refresh(provider.future), 42);
+    expect(container.read(provider), const AsyncData(42));
+  });
+
+  test('can refresh .stream', () async {
+    var future = Future.value(1);
+    final provider = FutureProvider((ref) => future);
+    final container = createContainer();
+
+    expect(await container.read(provider.stream).first, 1);
+
+    future = Future.value(42);
+
+    expect(await container.refresh(provider.stream).first, 42);
+    expect(container.read(provider), const AsyncData(42));
+  });
+
   test('can be refreshed', () async {
     var result = 0;
     final container = createContainer();
@@ -88,7 +114,7 @@ void main() {
     result = 1;
     expect(
       container.refresh(provider),
-      const AsyncValue<int>.loading(),
+      const AsyncValue<int>.data(0, isRefreshing: true),
     );
 
     expect(await container.read(provider.future), 1);
@@ -546,13 +572,7 @@ void main() {
       ]);
 
       expect(container.read(provider.future), isNot(future));
-      expect(sub.read(), const AsyncValue<int>.loading());
-
-      // pushing a value value after "loading" to avoid StateError on dispose
-      // before the faked future couldn't complete
-      container.updateOverrides([
-        provider.overrideWithValue(const AsyncValue.data(42)),
-      ]);
+      expect(sub.read(), const AsyncData<int>(42, isRefreshing: true));
     });
 
     test('loading immediately then value', () async {
@@ -740,13 +760,10 @@ void main() {
       ]);
 
       expect(container.read(provider.future), isNot(future));
-      expect(sub.read(), const AsyncValue<int>.loading());
-
-      // pushing a value value after "loading" to avoid StateError on dispose
-      // before the faked future couldn't complete
-      container.updateOverrides([
-        provider.overrideWithValue(const AsyncValue.data(42)),
-      ]);
+      expect(
+        sub.read(),
+        AsyncValue<int>.error(42, stackTrace: stackTrace, isRefreshing: true),
+      );
     });
   });
 }

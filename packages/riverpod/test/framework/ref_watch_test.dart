@@ -468,7 +468,7 @@ void main() {
     expect(secondCallCount, 1);
   });
 
-  test('can call ref.watch outside of the Provider', () async {
+  test('can call ref.watch asynchronously', () async {
     final container = createContainer();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>, int>((_) {
@@ -493,7 +493,7 @@ void main() {
     notifier.setState(42);
     await container.pump();
 
-    expect(sub.read(), const AsyncValue<int>.loading());
+    expect(sub.read(), const AsyncValue<int>.data(0, isRefreshing: true));
     expect(callCount, 1);
 
     await container.read(computed.stream).first;
