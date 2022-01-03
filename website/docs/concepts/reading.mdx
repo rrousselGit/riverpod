@@ -440,6 +440,52 @@ If we used `ref.read` here, our button would still use the previous
 `StateController` instance, which was disposed and should no-longer be used.  
 Whereas using `ref.watch` correctly rebuilt the button to use the new `StateController`.
 
+### Using .update() to update previous state esily
+
+Sometimes you want to update the state based on the previous state without calling ref.read multiple times!
+
+This is what you usually want to avoid:
+
+```dart
+final counterProvider = StateProvider<int>((ref) => 0);
+
+class HomeView extends ConsumerWidget {
+  const HomeView({Key? key}): super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          ref.read(counterProvider.notifier).state = ref.read(counterProvider.notifier).state + 1;
+        },
+      ),
+    );
+  }
+}
+```
+
+Instead this is what you'll want to do:
+
+```dart
+final counterProvider = StateProvider<int>((ref) => 0);
+
+class HomeView extends ConsumerWidget {
+  const HomeView({Key? key}): super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          ref.read(counterProvider.notifier).update((previousCounterState) => previousCounterState + 1);
+        },
+      ),
+    );
+  }
+}
+```
+
 ## Deciding what to read
 
 Depending on the provider you want to listen, you may have multiple possible
