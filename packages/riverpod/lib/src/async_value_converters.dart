@@ -110,16 +110,16 @@ extension AlwaysAliveAsyncProviderX<State>
       AsyncValueAsFutureProvider(this, from: from, argument: argument);
 
   /// {@template riverpod.asyncprovider.stream}
-  /// Exposes the [Stream] created by a [StreamProvider].
+  /// Converts the provider into a stream.
   ///
-  /// The stream obtained is not strictly identical to the stream created.
-  /// Instead, this stream is always a broadcast stream.
+  /// If the transformed provider created a stram, it is important to keep in mind
+  /// that the stream obtained and the stream created will be different.
   ///
-  /// The stream obtained may change over time, if the [StreamProvider] is
+  /// The stream obtained may change over time if the provider is
   /// re-evaluated, such as when it is using [Ref.watch] and the
   /// provider listened changes, or on [ProviderContainer.refresh].
   ///
-  /// If the [StreamProvider] was overridden using `overrideWithValue`,
+  /// If the provider was overridden using `overrideWithValue`,
   /// a stream will be generated and manipulated based on the [AsyncValue] used.
   /// {@endtemplate}
   AlwaysAliveProviderBase<Stream<State>> get stream =>
@@ -165,6 +165,9 @@ class AsyncValueAsStreamProvider<State>
 
   @override
   late final List<ProviderOrFamily>? dependencies = [_provider];
+
+  @override
+  ProviderBase<Object?> get originProvider => _provider;
 
   @override
   Stream<State> create(covariant ProviderElementBase<Stream<State>> ref) {
@@ -215,6 +218,9 @@ class AutoDisposeAsyncValueAsStreamProvider<State>
 
   @override
   late final List<ProviderOrFamily>? dependencies = [_provider];
+
+  @override
+  ProviderBase<Object?> get originProvider => _provider;
 
   @override
   Stream<State> create(
@@ -272,15 +278,25 @@ Stream<State> _asyncValueToStream<State>(
   ref.onDispose(() => controller?.close());
 
   void listener(AsyncValue<State>? previous, AsyncValue<State> value) {
-    value.when(
-      loading: () {
-        controller?.close();
-        controller = null;
-        // will call ref.state =
-        getController();
+    if (value.isLoading || value.isRefreshing) {
+      controller?.close();
+      controller = null;
+      // will call ref.state =
+      getController();
+    }
+
+    value.map(
+      loading: (_) {
+        // already taken care of above
       },
-      data: (data) => getController().add(data),
-      error: (err, stack) => getController().addError(err, stack),
+      data: (value) {
+        if (!value.isRefreshing) getController().add(value.value);
+      },
+      error: (value) {
+        if (!value.isRefreshing) {
+          getController().addError(value.error, value.stackTrace);
+        }
+      },
     );
   }
 
@@ -308,6 +324,9 @@ class AsyncValueAsFutureProvider<State>
 
   @override
   late final List<ProviderOrFamily>? dependencies = [_provider];
+
+  @override
+  ProviderBase<Object?> get originProvider => _provider;
 
   @override
   Future<State> create(ProviderElementBase<Future<State>> ref) {
@@ -360,6 +379,9 @@ class AutoDisposeAsyncValueAsFutureProvider<State>
   late final List<ProviderOrFamily>? dependencies = [_provider];
 
   @override
+  ProviderBase<Object?> get originProvider => _provider;
+
+  @override
   Future<State> create(AutoDisposeProviderElementBase<Future<State>> ref) {
     return _asyncValueAsFuture(_provider, ref);
   }
@@ -406,32 +428,42 @@ Future<State> _asyncValueAsFuture<State>(
   });
 
   void listener(AsyncValue<State>? previous, AsyncValue<State> value) {
-    value.when(
-      loading: () {
-        if (loadingCompleter == null) {
-          loadingCompleter = Completer<State>();
-          ref.setState(
-            // TODO test ignore
-            loadingCompleter!.future..ignore(),
-          );
-        }
+    if (value.isLoading || value.isRefreshing) {
+      if (loadingCompleter == null) {
+        loadingCompleter = Completer<State>();
+        ref.setState(
+          // TODO test ignore
+          loadingCompleter!.future..ignore(),
+        );
+      }
+    }
+
+    value.map(
+      loading: (_) {
+        // already taken care of above
       },
       data: (data) {
+        // already taken care of above
+        if (data.isRefreshing) return;
+
         if (loadingCompleter != null) {
-          loadingCompleter!.complete(data);
+          loadingCompleter!.complete(data.value);
           // allow follow-up data calls to go on the 'else' branch
           loadingCompleter = null;
         } else {
-          ref.setState(Future<State>.value(data));
+          ref.setState(Future<State>.value(data.value));
         }
       },
-      error: (err, stack) {
+      error: (error) {
+        // already taken care of above
+        if (error.isRefreshing) return;
+
         if (loadingCompleter != null) {
-          loadingCompleter!.completeError(err, stack);
+          loadingCompleter!.completeError(error.error, error.stackTrace);
           // allow follow-up error calls to go on the 'else' branch
           loadingCompleter = null;
         } else {
-          ref.setState(Future<State>.error(err, stack));
+          ref.setState(Future<State>.error(error.error, error.stackTrace));
         }
       },
     );

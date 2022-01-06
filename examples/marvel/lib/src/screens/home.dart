@@ -39,7 +39,7 @@ final characterPages = FutureProvider.autoDispose
       cancelToken: cancelToken,
     );
 
-    // Once a page was downloaded, preserve its state to avoid re-downloading it again.
+    // Once a page gets downloaded, preserve its state to avoid re-downloading it again.
     ref.maintainState = true;
     return charactersResponse;
   },

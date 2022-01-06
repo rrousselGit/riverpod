@@ -1,6 +1,7 @@
 name: my_project
 
 packages:
+  - website/**
   - packages/**
   - examples/**
 

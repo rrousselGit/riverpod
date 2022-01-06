@@ -1,8 +1,23 @@
+# [Unreleased major]
+
+- **Breaking** After a provider has emitted an `AsyncValue.data` or `AsyncValue.error`,
+  that provider will no-longer emit an `AsyncValue.loading`.  
+  Instead, it will re-emit the latest value, but with the property
+  `AsyncValue.isRefreshing` to true.
+
+  This allows the UI to keep showing the previous data/error when a provider
+  is being refreshed.
+
+- Adding `isLoading`, `isError`, `isData` and `asError` to `AsyncValue`.
+  Those getters allow interacting with `AsyncValue` without having to rely on
+  pattern matching.
+
+- Fixed an issue where refreshing a `provider.future`/`provider.stream` did work properly
+
 ## 1.0.3
 
 Removed an assert preventing from overriding the same provider/family
 multiple times on a `ProviderScope`/`ProviderContainer`.
-
 
 ## 1.0.2
 

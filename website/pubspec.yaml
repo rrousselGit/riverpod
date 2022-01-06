@@ -1,0 +1,34 @@
+name: website_snipets
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.12.0-0 <3.0.0"
+
+dependencies:
+  cupertino_icons: ^0.1.3
+  flutter:
+    sdk: flutter
+  flutter_hooks: ^0.18.2
+  flutter_riverpod:
+    path: ../packages/flutter_riverpod
+  hooks_riverpod:
+    path: ../packages/hooks_riverpod
+  mockito: ^5.0.0
+  riverpod:
+    path: ../packages/riverpod
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+dependency_overrides:
+  flutter_riverpod:
+    path: ../packages/flutter_riverpod
+  hooks_riverpod:
+    path: ../packages/hooks_riverpod
+  riverpod:
+    path: ../packages/riverpod
+
+flutter:
+  uses-material-design: true

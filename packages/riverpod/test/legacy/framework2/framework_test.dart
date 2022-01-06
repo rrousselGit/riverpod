@@ -555,11 +555,11 @@ void main() {
 
       expect(
         container.refresh(provider),
-        const AsyncValue<int>.loading(),
+        const AsyncValue<int>.data(42, isRefreshing: true),
       );
       expect(
         container.read(provider),
-        const AsyncValue<int>.loading(),
+        const AsyncValue<int>.data(42, isRefreshing: true),
       );
       expect(callCount, 2);
 

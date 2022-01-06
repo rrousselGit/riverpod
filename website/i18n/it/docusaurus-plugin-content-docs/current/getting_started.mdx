@@ -5,15 +5,15 @@ title: Introduzione
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-Prima di addentrarci nei meccanisci interni di [Riverpod], iniziamo con le basi, ovvero
+Prima di addentrarci nei meccanismi interni di [Riverpod], iniziamo con le basi, ovvero
 installare [Riverpod] e di seguito creare il classico "Hello World".
 
 ## Check pacchetto installare
 
-Prima di tutto, devi sapere che [Riverpod] is diviso in diversi pacchetti, con uso differente in base alle proprie esigenze.
+Prima di tutto, devi sapere che [Riverpod] è diviso in diversi pacchetti, ognuno per una propria esigenza.
 La variante di [Riverpod] che vorrai installare dipenderà dal tipo di App che hai intenzione di creare.
 
-Puoi fare riverimento alla seguente tabella per aiutarti a decidere che pacchetto installere:
+Fai riferimento alla seguente tabella per decidere quale pacchetto installere:
 
 | tipo app                  | nome pacchetto                                                                     | descrizione                                                            |
 | ------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
@@ -23,7 +23,7 @@ Puoi fare riverimento alla seguente tabella per aiutarti a decidere che pacchett
 
 ## Installare il pacchetto
 
-Una volta che sai che paccketto vuoi installare, procedi aggiungendo la versione dalla seguente tabella al file `pubspec.yaml`:
+Una volta che sai quale pacchetto installare, procedi aggiungendo la versione dalla seguente tabella al file `pubspec.yaml`:
 
 <Tabs
   groupId="riverpod"
@@ -82,13 +82,13 @@ Dopodichè esegui `pub get`.
 </TabItem>
 </Tabs>
 
-Questo è! Hai appena aggiunto [Riverpod] alla tua app!
+Ottimo! Hai appena aggiunto [Riverpod] alla tua app!
 
 ## Esempio di utilizzo: Hello world
 
 Ora che hai installato [Riverpod], possiamo iniziare ad utilizzarlo.
 
-Le seguenti snippet mostrano come utilizzare la nostra nuova dipendenza per creare un "Hello world":
+I seguenti snippet mostrano come utilizzare la nostra nuova dipendenza per creare un "Hello world":
 
 <Tabs
   groupId="riverpod"
@@ -106,7 +106,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-// Creiamo un "provider", che salverà un valore(Nel nostro caso "Hello world")
+// Creiamo un "provider", che salverà un valore (Nel nostro caso "Hello world")
 // Utilizzando provider ci permetterà di mock/override il valore esposto.
 final helloWorldProvider = Provider((_) => 'Hello world');
 
@@ -114,7 +114,7 @@ void main() {
   runApp(
     // Per i widget, per avere la possibilità di leggere i provider, dobbiamo avvolgere
     // l'intera applicazione con il Widget "ProviderScope".
-    // Qui è dove lo stato dei nostri provider sarà immagazzinato.
+    // Qui è dove sarà salvato lo stato dei nostri provider.
     ProviderScope(
       child: MyApp(),
     ),
@@ -141,7 +141,7 @@ class MyApp extends HookConsumerWidget {
 }
 ```
 
-Che dopo puoi eseguire con `flutter run`.  
+Puoi eseguire l'app con `flutter run`.  
 Questo mostrerà "Hello world" nel tuo device.
 
 </TabItem>
@@ -151,7 +151,7 @@ Questo mostrerà "Hello world" nel tuo device.
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Creiamo un "provider", che salverà un valore(Nel nostro caso "Hello world")
+// Creiamo un "provider", che salverà un valore (Nel nostro caso "Hello world")
 // Utilizzando provider ci permetterà di mock/override il valore esposto.
 final helloWorldProvider = Provider((_) => 'Hello world');
 
@@ -159,14 +159,14 @@ void main() {
   runApp(
     // Per i widget, per avere la possibilità di leggere i provider, dobbiamo avvolgere
     // l'intera applicazione con il Widget "ProviderScope".
-    // Qui è dove lo stato dei nostri provider sarà immagazzinato.
+    // Qui è dove sarà salvato lo stato dei nostri provider.
    ProviderScope(
       child: MyApp(),
     ),
   );
 }
 
-// Estende ConsumerWidget invece che StatelessWidget, che è esposto da Riverpod
+// Estende ConsumerWidget ( esposto da Riverpod) invece che StatelessWidget
 class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -199,7 +199,7 @@ final helloWorldProvider = Provider((_) => 'Hello world');
 
 void main() {
 
-  // Questo è l'oggetto in cui lo stato dei nostri provider sarà immagazzinato.
+  // In questo oggetto sarà salvato lo stato dei nostri provider.
   final container = ProviderContainer();
 
   // Grazie a "container", possiamo leggere il nostro provider.
@@ -209,13 +209,13 @@ void main() {
 }
 ```
 
-Che dopo puoi eseguire con `dart lib/main.dart`.
+Puoi eseguire con `dart lib/main.dart`.
 Questo mostrerà "Hello world" nella console
 
 </TabItem>
 </Tabs>
 
-## Andando oltre: Installare snippet codice
+## Andando oltre: Installare snippet
 
 Se stai utilizzando `Flutter` e `Vscode`, considera l'utilizzo di [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
 
