@@ -7,7 +7,7 @@ void main() {
   runApp(const ProviderScope(child: RandomNumberApp()));
 }
 
-// State notifier for generate a random number exposed by a state notifier
+// State notifier for generating a random number exposed by a state notifier
 // provider
 class RandomNumberGenerator extends StateNotifier<int> {
   RandomNumberGenerator() : super(Random().nextInt(9999));
