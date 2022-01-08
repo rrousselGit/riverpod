@@ -6,6 +6,44 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
+  test(
+      'does not throw outdated error when a dependency is flushed while the dependent is building',
+      () async {
+    final container = createContainer();
+    final a = StateProvider((ref) => 0);
+
+    final dep = Provider<int>((ref) {
+      return ref.watch(a) + 10;
+    });
+    final dependent = Provider<int?>((ref) {
+      if (ref.watch(a) > 0) {
+        ref.watch(dep);
+        // Voluntarily using "watch" twice.
+        // When `dep` is flushed, it could cause subsequent "watch" calls to throw
+        // because `dependent` is considered as outdated
+        return ref.watch(dep);
+      }
+      return null;
+    });
+    final listener = Listener<int?>();
+
+    expect(container.read(dep), 10);
+    container.listen(dependent, listener, fireImmediately: true);
+
+    verifyOnly(listener, listener(null, null));
+
+    // schedules `dep` and `dependent` to rebuild
+    // Will build `dependent` before `dep` because `dependent` doesn't depend on `dep` yet
+    // And since nothing is watchin `dep` at the moment, then `dependent` will
+    // rebuild before `dep` even though `dep` is its ancestor.
+    // This is fine since nothing is listening to `dep` yet, but it should
+    // not cause certain assertions to trigger
+    container.read(a.notifier).state++;
+    await container.pump();
+
+    verifyOnly(listener, listener(null, 11));
+  });
+
   group('getState', () {
     test('throws on providers that threw', () {
       final container = createContainer();
