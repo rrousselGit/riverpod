@@ -200,60 +200,6 @@ void main() {
       });
     });
 
-    group('.watch', () {
-      test('can listen multiple providers at once', () async {
-        final container = createContainer();
-        final count = StateProvider((ref) => 0);
-        final count2 = StateProvider((ref) => 0);
-
-        final provider = Provider((ref) {
-          final first = ref.watch(count.state).state;
-          final second = ref.watch(count2.state).state;
-
-          return '$first $second';
-        });
-
-        expect(container.read(provider), '0 0');
-
-        container.read(count.state).state++;
-        await container.pump();
-
-        expect(container.read(provider), '1 0');
-
-        container.read(count2.state).state++;
-        await container.pump();
-
-        expect(container.read(provider), '1 1');
-      });
-
-      test(
-          'listens to the parameter and rebuild the state whenever this provider changed',
-          () async {
-        final count = StateProvider((ref) => 0);
-        var buildCount = 0;
-        final provider = Provider((ref) {
-          buildCount++;
-          return ref.watch(count.state).state.isEven;
-        });
-
-        final container = ProviderContainer();
-        addTearDown(container.dispose);
-
-        expect(container.read(provider), true);
-        // reading twice to make sure the provider isn't rebuilt on every read
-        expect(container.read(provider), true);
-        expect(buildCount, 1);
-
-        container.read(count.state).state++;
-        await container.pump();
-
-        expect(container.read(provider), false);
-        // reading twice to make sure the provider isn't rebuilt on every read
-        expect(container.read(provider), false);
-        expect(buildCount, 2);
-      });
-    });
-
     group('.onDispose', () {
       test(
           'calls all the listeners in order when the ProviderContainer is disposed',
