@@ -32,7 +32,7 @@ module.exports = {
     navbar: {
       title: "Riverpod",
       logo: {
-        alt: "Riverpod logo",
+        alt: "Riverpod",
         src: "img/logo.png",
       },
       items: [
@@ -54,9 +54,8 @@ module.exports = {
       ],
     },
     footer: {
-
       logo: {
-        alt: "Riverpod logo",
+        alt: "Riverpod",
         src: "img/full_logo.svg",
       },
       links: [

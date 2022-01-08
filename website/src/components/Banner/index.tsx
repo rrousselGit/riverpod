@@ -14,7 +14,7 @@ export const Banner: React.FC = () => {
     <header className="banner">
       <div className="banner__content">
         <h1 className="banner__logo">
-          <img src="img/logo.svg" alt="Riverpod logo" />
+          <img src="img/logo.svg" alt="Riverpod" />
           {siteConfig.title}
         </h1>
 
