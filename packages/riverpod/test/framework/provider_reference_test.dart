@@ -69,6 +69,32 @@ void main() {
     test('ref.read should keep providers alive', () {}, skip: true);
 
     group('listen', () {
+      test('ref.listen on outdated provider causes it to rebuild', () {
+        final dep = StateProvider((ref) => 0);
+        var buildCount = 0;
+        final provider = Provider((ref) {
+          buildCount++;
+          return ref.watch(dep.state).state;
+        });
+        final listener = Listener<int>();
+        final another = Provider((ref) {
+          ref.listen<int>(provider, listener, fireImmediately: true);
+        });
+        final container = createContainer();
+
+        expect(container.read(provider), 0);
+        expect(buildCount, 1);
+
+        container.read(dep.state).state = 42;
+
+        expect(buildCount, 1);
+
+        container.read(another);
+
+        expect(buildCount, 2);
+        verifyOnly(listener, listener(null, 42));
+      });
+
       test('can downcast the value', () async {
         final listener = Listener<num>();
         final dep = StateProvider((ref) => 0);
@@ -406,32 +432,6 @@ void main() {
 
         expect(element.mounted, false);
       });
-    });
-
-    test('ref.listen on outdated provider causes it to rebuild', () {
-      final dep = StateProvider((ref) => 0);
-      var buildCount = 0;
-      final provider = Provider((ref) {
-        buildCount++;
-        return ref.watch(dep.state).state;
-      });
-      final listener = Listener<int>();
-      final another = Provider((ref) {
-        ref.listen<int>(provider, listener, fireImmediately: true);
-      });
-      final container = createContainer();
-
-      expect(container.read(provider), 0);
-      expect(buildCount, 1);
-
-      container.read(dep.state).state = 42;
-
-      expect(buildCount, 1);
-
-      container.read(another);
-
-      expect(buildCount, 2);
-      verifyOnly(listener, listener(null, 42));
     });
   });
 }
