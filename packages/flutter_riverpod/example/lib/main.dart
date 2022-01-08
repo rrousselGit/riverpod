@@ -29,7 +29,6 @@ class Home extends ConsumerWidget {
       appBar: AppBar(title: const Text('Counter example')),
       body: Center(
         // Consumer is a widget that allows you reading providers.
-        // You could also use the hook "ref.watch(" if you uses flutter_hooks
         child: Consumer(builder: (context, ref, _) {
           final count = ref.watch(counterProvider.state).state;
           return Text('$count');

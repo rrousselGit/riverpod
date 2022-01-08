@@ -24,8 +24,6 @@ void main() {
 class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // To read our provider, we can use the hook "ref.watch(".
-    // This is only possible because MyApp is a HookConsumerWidget.
     final String value = ref.watch(helloWorldProvider);
 
     return MaterialApp(
