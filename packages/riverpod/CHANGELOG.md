@@ -7,12 +7,11 @@
 
   This allows the UI to keep showing the previous data/error when a provider
   is being refreshed.
-
 - Adding `isLoading`, `isError`, `isData` and `asError` to `AsyncValue`.
   Those getters allow interacting with `AsyncValue` without having to rely on
   pattern matching.
-
 - Fixed an issue where refreshing a `provider.future`/`provider.stream` did work properly
+- Fixed false positive with `ref.watch` asserts
 
 ## 1.0.3
 
