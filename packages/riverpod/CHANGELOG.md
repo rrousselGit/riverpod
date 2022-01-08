@@ -1,4 +1,4 @@
-# [Unreleased major]
+# 2.0.0-dev.0
 
 - **Breaking** After a provider has emitted an `AsyncValue.data` or `AsyncValue.error`,
   that provider will no-longer emit an `AsyncValue.loading`.  
