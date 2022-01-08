@@ -103,7 +103,7 @@ class _StateReader {
         .._container = container
         ..mount();
 
-      element.getState()!.map<Object?>(
+      element.getState()!.map<void>(
         // ignore: avoid_types_on_closure_parameters
         data: (ResultData<Object?> data) {
           for (final observer in container._observers) {
