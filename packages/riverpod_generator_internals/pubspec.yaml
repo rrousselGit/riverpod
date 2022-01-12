@@ -1,0 +1,19 @@
+name: riverpod_generator_internals
+description: A new Flutter project.
+publish_to: none
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.16.0-144.0.dev <3.0.0"
+
+dependencies:
+  freezed_annotation: ^1.1.0
+  riverpod_annotation: ^0.0.0
+
+dev_dependencies:
+  build_runner: ^2.1.7
+  freezed: ^1.1.0
+
+dependency_overrides:
+  riverpod_annotation:
+    path: ../riverpod_annotation
