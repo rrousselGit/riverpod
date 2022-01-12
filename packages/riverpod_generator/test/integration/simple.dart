@@ -4,10 +4,29 @@ part 'simple.g.dart';
 
 @atom
 @autoDispose
-String _$label(LabelRef ref) {
+String _$label(_$LabelRef ref) {
   return 'Hello world';
 }
 
 class Label {}
 
-class LabelRef {}
+class _$LabelRef {}
+
+@atom
+class _$Another with _$AnotherMixin {
+  int init() {
+    return 0;
+  }
+
+  @action
+  void increment() => state + 1;
+}
+
+class Another {}
+
+class _$AnotherRef {}
+
+mixin _$AnotherMixin {
+  _$AnotherRef get ref => throw UnimplementedError();
+  int get state => throw UnimplementedError();
+}

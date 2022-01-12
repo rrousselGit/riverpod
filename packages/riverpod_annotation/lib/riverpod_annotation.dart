@@ -9,3 +9,9 @@ class AutoDispose {
 }
 
 const autoDispose = AutoDispose();
+
+class Action {
+  const Action();
+}
+
+const action = Action();
