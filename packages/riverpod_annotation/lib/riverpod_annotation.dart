@@ -1,8 +1,8 @@
-class Atom {
-  const Atom();
+class Provider {
+  const Provider();
 }
 
-const atom = Atom();
+const provider = Provider();
 
 class AutoDispose {
   const AutoDispose();

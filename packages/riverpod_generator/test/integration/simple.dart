@@ -2,7 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'simple.g.dart';
 
-@atom
+@provider
 @autoDispose
 String _$label(_$LabelRef ref) {
   return 'Hello world';
@@ -12,7 +12,7 @@ class Label {}
 
 class _$LabelRef {}
 
-@atom
+@provider
 class _$Another with _$AnotherMixin {
   int init() {
     return 0;

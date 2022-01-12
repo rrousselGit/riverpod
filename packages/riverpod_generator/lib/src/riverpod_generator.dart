@@ -8,7 +8,7 @@ import 'models.dart';
 import 'parse_generator.dart';
 
 @immutable
-class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Atom> {
+class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Provider> {
   RiverpodGenerator(this.configs);
 
   final Map<String, Object?> configs;
