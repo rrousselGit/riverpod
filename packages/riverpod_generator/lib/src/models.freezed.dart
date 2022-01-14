@@ -18,8 +18,10 @@ final _privateConstructorUsedError = UnsupportedError(
 class _$DataTearOff {
   const _$DataTearOff();
 
-  _Data call() {
-    return _Data();
+  _Data call({required String name}) {
+    return _Data(
+      name: name,
+    );
   }
 }
 
@@ -27,12 +29,18 @@ class _$DataTearOff {
 const $Data = _$DataTearOff();
 
 /// @nodoc
-mixin _$Data {}
+mixin _$Data {
+  String get name => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $DataCopyWith<Data> get copyWith => throw _privateConstructorUsedError;
+}
 
 /// @nodoc
 abstract class $DataCopyWith<$Res> {
   factory $DataCopyWith(Data value, $Res Function(Data) then) =
       _$DataCopyWithImpl<$Res>;
+  $Res call({String name});
 }
 
 /// @nodoc
@@ -42,12 +50,26 @@ class _$DataCopyWithImpl<$Res> implements $DataCopyWith<$Res> {
   final Data _value;
   // ignore: unused_field
   final $Res Function(Data) _then;
+
+  @override
+  $Res call({
+    Object? name = freezed,
+  }) {
+    return _then(_value.copyWith(
+      name: name == freezed
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
-abstract class _$DataCopyWith<$Res> {
+abstract class _$DataCopyWith<$Res> implements $DataCopyWith<$Res> {
   factory _$DataCopyWith(_Data value, $Res Function(_Data) then) =
       __$DataCopyWithImpl<$Res>;
+  @override
+  $Res call({String name});
 }
 
 /// @nodoc
@@ -58,30 +80,59 @@ class __$DataCopyWithImpl<$Res> extends _$DataCopyWithImpl<$Res>
 
   @override
   _Data get _value => super._value as _Data;
+
+  @override
+  $Res call({
+    Object? name = freezed,
+  }) {
+    return _then(_Data(
+      name: name == freezed
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$_Data implements _Data {
-  _$_Data();
+  _$_Data({required this.name});
+
+  @override
+  final String name;
 
   @override
   String toString() {
-    return 'Data()';
+    return 'Data(name: $name)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _Data);
+        (other.runtimeType == runtimeType &&
+            other is _Data &&
+            const DeepCollectionEquality().equals(other.name, name));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(name));
+
+  @JsonKey(ignore: true)
+  @override
+  _$DataCopyWith<_Data> get copyWith =>
+      __$DataCopyWithImpl<_Data>(this, _$identity);
 }
 
 abstract class _Data implements Data {
-  factory _Data() = _$_Data;
+  factory _Data({required String name}) = _$_Data;
+
+  @override
+  String get name;
+  @override
+  @JsonKey(ignore: true)
+  _$DataCopyWith<_Data> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc

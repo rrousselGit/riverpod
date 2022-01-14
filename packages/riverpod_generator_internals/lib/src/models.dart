@@ -4,7 +4,9 @@ part 'models.freezed.dart';
 
 @freezed
 class Data with _$Data {
-  factory Data() = _Data;
+  factory Data({
+    required String name,
+  }) = _Data;
 }
 
 @freezed

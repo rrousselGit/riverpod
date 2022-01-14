@@ -6,6 +6,7 @@ import 'package:source_gen/source_gen.dart';
 
 import 'models.dart';
 import 'parse_generator.dart';
+import 'templates/provider.dart';
 
 @immutable
 class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Provider> {
@@ -32,7 +33,9 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Provider> {
     //   );
     // }
 
-    return Data();
+    return Data(
+      name: element.name!,
+    );
   }
 
   @override
@@ -40,9 +43,6 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Provider> {
     GlobalData globalData,
     Data data,
   ) sync* {
-    print('hey');
-    yield '''
-class HelloWorld {}
-''';
+    yield ProviderTemplate(data);
   }
 }
