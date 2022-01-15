@@ -10,10 +10,21 @@ class JsonKey {
   const JsonKey({bool? ignore});
 }
 
+enum ProviderType {
+  stateNotifierProvider,
+  provider,
+  futureProvider,
+  streamProvider,
+  changeNotifierProvider,
+}
+
 @freezed
 class Data with _$Data {
   factory Data({
-    required String name,
+    required String providerName,
+    required String refName,
+    required ProviderType providerType,
+    required String valueDisplayType,
   }) = _Data;
 }
 

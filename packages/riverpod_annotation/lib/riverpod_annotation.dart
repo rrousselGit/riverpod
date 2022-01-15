@@ -1,17 +1,1 @@
-class Provider {
-  const Provider();
-}
-
-const provider = Provider();
-
-class AutoDispose {
-  const AutoDispose();
-}
-
-const autoDispose = AutoDispose();
-
-class Action {
-  const Action();
-}
-
-const action = Action();
+export 'src/riverpod_annotation.dart' show action, autoDispose, provider;

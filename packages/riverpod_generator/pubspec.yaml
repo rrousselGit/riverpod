@@ -11,6 +11,7 @@ dependencies:
   build_config: ^1.0.0
   collection: ^1.15.0
   meta: ^1.7.0
+  riverpod: ^1.0.3
   riverpod_annotation: ^0.0.0
   source_gen: ^1.2.0
 

@@ -18,9 +18,16 @@ final _privateConstructorUsedError = UnsupportedError(
 class _$DataTearOff {
   const _$DataTearOff();
 
-  _Data call({required String name}) {
+  _Data call(
+      {required String providerName,
+      required String refName,
+      required ProviderType providerType,
+      required String valueDisplayType}) {
     return _Data(
-      name: name,
+      providerName: providerName,
+      refName: refName,
+      providerType: providerType,
+      valueDisplayType: valueDisplayType,
     );
   }
 }
@@ -30,7 +37,10 @@ const $Data = _$DataTearOff();
 
 /// @nodoc
 mixin _$Data {
-  String get name => throw _privateConstructorUsedError;
+  String get providerName => throw _privateConstructorUsedError;
+  String get refName => throw _privateConstructorUsedError;
+  ProviderType get providerType => throw _privateConstructorUsedError;
+  String get valueDisplayType => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $DataCopyWith<Data> get copyWith => throw _privateConstructorUsedError;
@@ -40,7 +50,11 @@ mixin _$Data {
 abstract class $DataCopyWith<$Res> {
   factory $DataCopyWith(Data value, $Res Function(Data) then) =
       _$DataCopyWithImpl<$Res>;
-  $Res call({String name});
+  $Res call(
+      {String providerName,
+      String refName,
+      ProviderType providerType,
+      String valueDisplayType});
 }
 
 /// @nodoc
@@ -53,12 +67,27 @@ class _$DataCopyWithImpl<$Res> implements $DataCopyWith<$Res> {
 
   @override
   $Res call({
-    Object? name = freezed,
+    Object? providerName = freezed,
+    Object? refName = freezed,
+    Object? providerType = freezed,
+    Object? valueDisplayType = freezed,
   }) {
     return _then(_value.copyWith(
-      name: name == freezed
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+      providerName: providerName == freezed
+          ? _value.providerName
+          : providerName // ignore: cast_nullable_to_non_nullable
+              as String,
+      refName: refName == freezed
+          ? _value.refName
+          : refName // ignore: cast_nullable_to_non_nullable
+              as String,
+      providerType: providerType == freezed
+          ? _value.providerType
+          : providerType // ignore: cast_nullable_to_non_nullable
+              as ProviderType,
+      valueDisplayType: valueDisplayType == freezed
+          ? _value.valueDisplayType
+          : valueDisplayType // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -69,7 +98,11 @@ abstract class _$DataCopyWith<$Res> implements $DataCopyWith<$Res> {
   factory _$DataCopyWith(_Data value, $Res Function(_Data) then) =
       __$DataCopyWithImpl<$Res>;
   @override
-  $Res call({String name});
+  $Res call(
+      {String providerName,
+      String refName,
+      ProviderType providerType,
+      String valueDisplayType});
 }
 
 /// @nodoc
@@ -83,12 +116,27 @@ class __$DataCopyWithImpl<$Res> extends _$DataCopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object? name = freezed,
+    Object? providerName = freezed,
+    Object? refName = freezed,
+    Object? providerType = freezed,
+    Object? valueDisplayType = freezed,
   }) {
     return _then(_Data(
-      name: name == freezed
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+      providerName: providerName == freezed
+          ? _value.providerName
+          : providerName // ignore: cast_nullable_to_non_nullable
+              as String,
+      refName: refName == freezed
+          ? _value.refName
+          : refName // ignore: cast_nullable_to_non_nullable
+              as String,
+      providerType: providerType == freezed
+          ? _value.providerType
+          : providerType // ignore: cast_nullable_to_non_nullable
+              as ProviderType,
+      valueDisplayType: valueDisplayType == freezed
+          ? _value.valueDisplayType
+          : valueDisplayType // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -97,14 +145,24 @@ class __$DataCopyWithImpl<$Res> extends _$DataCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_Data implements _Data {
-  _$_Data({required this.name});
+  _$_Data(
+      {required this.providerName,
+      required this.refName,
+      required this.providerType,
+      required this.valueDisplayType});
 
   @override
-  final String name;
+  final String providerName;
+  @override
+  final String refName;
+  @override
+  final ProviderType providerType;
+  @override
+  final String valueDisplayType;
 
   @override
   String toString() {
-    return 'Data(name: $name)';
+    return 'Data(providerName: $providerName, refName: $refName, providerType: $providerType, valueDisplayType: $valueDisplayType)';
   }
 
   @override
@@ -112,12 +170,22 @@ class _$_Data implements _Data {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _Data &&
-            const DeepCollectionEquality().equals(other.name, name));
+            const DeepCollectionEquality()
+                .equals(other.providerName, providerName) &&
+            const DeepCollectionEquality().equals(other.refName, refName) &&
+            const DeepCollectionEquality()
+                .equals(other.providerType, providerType) &&
+            const DeepCollectionEquality()
+                .equals(other.valueDisplayType, valueDisplayType));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(name));
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(providerName),
+      const DeepCollectionEquality().hash(refName),
+      const DeepCollectionEquality().hash(providerType),
+      const DeepCollectionEquality().hash(valueDisplayType));
 
   @JsonKey(ignore: true)
   @override
@@ -126,10 +194,20 @@ class _$_Data implements _Data {
 }
 
 abstract class _Data implements Data {
-  factory _Data({required String name}) = _$_Data;
+  factory _Data(
+      {required String providerName,
+      required String refName,
+      required ProviderType providerType,
+      required String valueDisplayType}) = _$_Data;
 
   @override
-  String get name;
+  String get providerName;
+  @override
+  String get refName;
+  @override
+  ProviderType get providerType;
+  @override
+  String get valueDisplayType;
   @override
   @JsonKey(ignore: true)
   _$DataCopyWith<_Data> get copyWith => throw _privateConstructorUsedError;

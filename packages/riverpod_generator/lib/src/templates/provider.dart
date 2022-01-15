@@ -6,6 +6,9 @@ class ProviderTemplate {
 
   @override
   String toString() {
-    return 'class ${data.name} {}';
+    return '''
+final ${data.providerName} = Provider<${data.valueDisplayType}>((ref) {
+  throw UnimplementedError();
+});''';
   }
 }
