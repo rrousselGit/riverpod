@@ -132,7 +132,7 @@ module.exports = {
           type: "category",
           label: "All Providers",
           collapsed: true,
-          items: ["providers/provider"],
+          items: ["providers/provider", "providers/state_notifier_provider"],
         },
         {
           type: "link",
