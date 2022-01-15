@@ -132,10 +132,10 @@ The syntax for overriding a provider with the `family` modifier is slightly diff
 If you used a provider like this:
 
 ```dart
-final response = ref.watch(myProvider('11111'));
+final response = ref.watch(myProvider('12345'));
 ```
 
-You could override the extra parameter value:
+You could override the provider as:
 
 ```dart
 myProvider('12345').overrideWithValue(...));
