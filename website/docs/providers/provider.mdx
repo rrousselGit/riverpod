@@ -12,31 +12,31 @@ import unoptimizedPreviousButton from "!!raw-loader!/docs/providers/provider/uno
 import optimizedPreviousButton from "!!raw-loader!/docs/providers/provider/optimized_previous_button.dart";
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
-[Provider] is the most basic of all providers. It creates a value... And that's about it.
+`Provider` is the most basic of all providers. It creates a value... And that's about it.
 
-[Provider] is typically used for:
+`Provider` is typically used for:
 
 - caching computations
 - exposing a value to other providers (such as a `Repository`/`HttpClient`).
 - offering a way for tests or widgets to override a value.
 - reducing rebuilds of providers/widgets without having to use `select`.
 
-## Using [Provider] to cache computations
+## Using `Provider` to cache computations
 
-[Provider] is a powerful tool for caching synchronous operations when combined
+`Provider` is a powerful tool for caching synchronous operations when combined
 with [ref.watch].
 
 An example would be filtering a list of todos.  
 Since filtering a list could be slightly expensive, we ideally do not want to
 filter out list of todos whenever our application re-renders.  
-In this situation, we could use [Provider] to do the filter for us.
+In this situation, we could use `Provider` to do the filter for us.
 
 For that, assume that our application have an existing [StateNotifierProvider]
 which manipulates a list of todos:
 
 <CodeBlock>{trimSnippet(todo)}</CodeBlock>
 
-From there, we can use [Provider] to expose the filtered list of todos, showing
+From there, we can use `Provider` to expose the filtered list of todos, showing
 only the completed todos:
 
 <CodeBlock>{trimSnippet(completedTodos)}</CodeBlock>
@@ -53,12 +53,12 @@ todos are added/removed/updated, even if we are reading the list of completed
 todos multiple times.
 
 Note how we do not need to manually invalidate the cache when the list of todos
-changes. [Provider] is automatically able to know when the result must be recomputed
+changes. `Provider` is automatically able to know when the result must be recomputed
 thanks to [ref.watch].
 
-## Reducing provider/widget rebuilds by using [Provider]
+## Reducing provider/widget rebuilds by using `Provider`
 
-A unique aspect of [Provider] is that even when [Provider] is recomputed
+A unique aspect of `Provider` is that even when `Provider` is recomputed
 (typically when using [ref.watch]), it will not update the widgets/providers
 that listens to it unless the value changed.
 
@@ -83,12 +83,12 @@ activated and deactivated.
 The root of the issue here is that we are computing whether the user is
 allowed to go to the previous page directly within the "previous" button.
 
-A way to solve this is to extract this logic outside of the widget and into a [Provider]:
+A way to solve this is to extract this logic outside of the widget and into a `Provider`:
 
 <CodeBlock>{trimSnippet(optimizedPreviousButton)}</CodeBlock>
 
 By doing this small refactoring, our `PreviousButton` widget will no-longer
-rebuild when the page index changes thanks to [Provider].
+rebuild when the page index changes thanks to `Provider`.
 
 From now on when the page index changes, our `canGoToPreviousPageProvider` provider
 will be recomputed. But if the value exposed by the provider does not change,
@@ -98,5 +98,4 @@ This change both improved the performances of our button and had the interesting
 benefit of extracting the logic outside of our widget.
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
-[statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
-[provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
+[statenotifierprovider]: ./state_notifier_provider

@@ -9,9 +9,9 @@ import todos from "!!raw-loader!/docs/providers/state_notifier_provider/todos.da
 import todosConsumer from "!!raw-loader!/docs/providers/state_notifier_provider/todos_consumer.dart";
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
-[StateNotifierProvider] is a provider that is used to listen to expose a
+`StateNotifierProvider` is a provider that is used to listen to expose a
 [StateNotifier] (from the package [state_notifier], which Riverpod re-exports).  
-[StateNotifierProvider] along with [StateNotifier] is Riverpod's recommended solution
+`StateNotifierProvider` along with [StateNotifier] is Riverpod's recommended solution
 for managing state which may change in reaction to a user interaction.
 
 It is typically used for:
@@ -22,19 +22,18 @@ It is typically used for:
   single place, improving maintainability over time.
 
 
-As a usage example, we could use [StateNotifierProvider] to implement a todo-list.
+As a usage example, we could use `StateNotifierProvider` to implement a todo-list.
 Doing so would allow us to expose methods such as `addTodo` to let the UI
 modify the list of todos on user interactions:
 
 <CodeBlock>{trimSnippet(todos)}</CodeBlock>
 
-Now that we have defined a [StateNotifierProvider], we can now use it to interact
+Now that we have defined a `StateNotifierProvider`, we can now use it to interact
 with the list of todos in our UI:
 
 <CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
 
 [state_notifier]: https://pub.dev/packages/state_notifier
 [statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
-[statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
-[provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
+[provider]: ./provider
 [futureprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/FutureProvider-class.html
