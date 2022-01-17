@@ -60,8 +60,8 @@ class AutoDisposeProviderElement<State>
 
   @override
   void dispose() {
-    if(state is Future) {
-      (state as Future).then((dynamic value) => super.dispose());
+    if (state is Future) {
+      (state as Future).whenComplete(() => super.dispose());
     } else {
       super.dispose();
     }

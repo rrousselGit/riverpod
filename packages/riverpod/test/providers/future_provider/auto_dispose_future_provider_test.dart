@@ -65,6 +65,16 @@ void main() {
     await expectLater(container.read(provider.future), completion(0));
   });
 
+  test('waiting until provider has been loaded', () async {
+    final provider = FutureProvider.autoDispose((ref) async {
+      await Future<void>.delayed(const Duration(seconds: 1));
+      return 0;
+    });
+    final container = createContainer();
+
+    await expectLater(container.read(provider.future), completion(0));
+  });
+
   test('can return an error synchronously, bypassing AsyncLoading', () async {
     final provider =
         FutureProvider.autoDispose((ref) => throw UnimplementedError());
