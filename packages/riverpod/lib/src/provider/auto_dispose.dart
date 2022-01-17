@@ -57,6 +57,15 @@ class AutoDisposeProviderElement<State>
 
   @override
   set state(State newState) => setState(newState);
+
+  @override
+  void dispose() {
+    if(state is Future) {
+      (state as Future).then((dynamic value) => super.dispose());
+    } else {
+      super.dispose();
+    }
+  }
 }
 
 /// {@macro riverpod.provider.family}
