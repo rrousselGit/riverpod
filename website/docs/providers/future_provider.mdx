@@ -16,127 +16,61 @@ import { trimSnippet } from "../../src/components/CodeSnippet";
 - nicely handling error/loading states of asynchronous operations
 - combining multiple asynchronous values into another value.
 
-`FutureProvider` gains a lot in being combined with [ref.watch]. This combination
-allows automatic re-fetching of some data when a certain variable changes,
+`FutureProvider` gains a lot in combining it with [ref.watch]. This combination
+allows automatic re-fetching of some data when some variables change,
 ensuring that we always have the most up-to-date value.
 
 :::caution
-`FutureProvider` does not offer a way for modifying the computation after
-a user interaction. It is designed to solve the simple use-cases.  
+`FutureProvider` does not offer a way of directly modifying the computation after
+a user interaction. It is designed to solve simple use-cases.  
 For more advanced scenarios, consider using [StateNotifierProvider].
 :::
 
-A real world example could be to use `FutureProvider` to implement a searchbar.
+## Usage example: reading a configuration file
 
-## Usage example: "Search as we type" searchbar
+`FutureProvider` can be a convenient way to expose a `Configuration` object
+created by reading a JSON file.
 
-Implementing a "seach as we type" can seem daunting at first when using
-conventional means.  
-There are lots of moving parts, such as:
+Creating the configuration would be done with your typical async/await
+syntax, but inside the provider.
+Using Flutter's asset system, this would be:
 
-- handling errors.
-- debouncing the user input to avoid making network requests on every keystroke.
-- cancelling previously pending network requests when the search field changes.
+```dart
+final configProvider = FutureProvider<Configuration>((ref) async {
+  final content = json.decode(
+    await rootBundle.loadString('assets/configurations.json'),
+  ) as Map<String, Object?>;
 
-But the combination of `FutureProvider` and the power of [ref.watch] can
-significantly simplify this task.
-
-A common pattern when using `FutureProvider` is to perform asynchronous requests
-is to split the `FutureProvider` into multiple providers
-
-
-<!-- 
-// Copyright (c) 2019, the Dart project authors.  Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-final searchFieldProvider = StateProvider<String>((ref) => '');
-final questionsProvider = FutureProvider<List>((ref) async {
-  final client = http.Client();
-  ref.onDispose(client.close);
-
-  final search = ref.watch(searchFieldProvider);
-
-  Uri uri;
-
-  if (search.isEmpty) {
-    uri = Uri.parse(
-      'https://api.stackexchange.com/2.3/questions?order=desc&sort=activity&site=stackoverflow',
-    );
-  } else {
-    final encodedQuery = Uri.encodeComponent(search);
-    uri = Uri.parse(
-      'https://api.stackexchange.com/2.3/search?order=desc&sort=activity&intitle=$encodedQuery&site=stackoverflow',
-    );
-  }
-
-  final response = await client.get(uri);
-  final questions = jsonDecode(response.body);
-
-  return questions['items'].map((question) => question['title']).toList();
+  return Configuration.fromJson(content);
 });
+```
 
-void main() => runApp(const ProviderScope(child: MyApp()));
+Then, the UI can listen to configurations like so:
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+```dart
+Widget build(BuildContext context, WidgetRef ref) {
+  AsyncValue<Configuration> config = ref.watch(configProvider);
 
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(home: MyHomePage());
-  }
+  return config.when(
+    loading: () => const CircularProgressIndicator(),
+    error: (err, stack) => Text('Error: $err'),
+    data: (config) {
+      return Text(config.host);
+    },
+  );
 }
+```
 
-class MyHomePage extends ConsumerWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+This will automatically rebuild the UI when the [Future] completes.
+At the same time, if multiple widgets want the configurations,
+the asset will be decoded only once.
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final questions = ref.watch(questionsProvider);
-
-    return Scaffold(
-      appBar: AppBar(title: const Text('Questions')),
-      body: Column(
-        children: [
-          TextField(
-            onChanged: (value) =>
-                ref.read(searchFieldProvider.notifier).state = value,
-          ),
-          Expanded(
-            child: questions.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(child: Text('Error $error')),
-              data: (questions) {
-                return ListView.builder(
-                  itemCount: questions.length,
-                  itemBuilder: (context, index) {
-                    final question = questions[index];
-
-                    return ListTile(
-                      title: Text(
-                        question.toString(),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-} -->
-
+As you can see, listening to a `FutureProvider` inside a widget returns
+an [AsyncValue] – which allows handling the error/loading states.
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
 [statenotifierprovider]: ./state_notifier_provider
 [provider]: ./provider
-[streamprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StreamProvider-class.html
 [asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
 [future]: https://api.dart.dev/dart-async/Future-class.html
+[family]: ../concepts/modifiers/family
