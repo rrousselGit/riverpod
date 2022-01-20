@@ -35,7 +35,8 @@ class TodosNotifier extends StateNotifier<List<Todo>> {
 
   // Todo の追加
   void addTodo(Todo todo) {
-    // ステート自体もイミュータブルなため、`state.add(todo)`　のような操作はできません。
+    // ステート自体もイミュータブルなため、`state.add(todo)`
+    // のような操作はできません。
     // 代わりに、既存 Todo と新規 Todo を含む新しいリストを作成します。
     // Dart のスプレッド演算子を使うと便利ですよ!
     state = [...state, todo];
