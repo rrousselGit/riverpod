@@ -1,0 +1,52 @@
+---
+title: FutureProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import configProvider from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/future_provider/config_provider.dart";
+import configConsumer from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/future_provider/config_consumer.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`FutureProvider` は非同期操作が可能な [Provider] であると言えます。
+
+一般的に次の用途で使われます。
+
+- 非同期操作を実行し、その結果をキャッシュするため（例えばネットワークリクエストなど)。
+- 非同期操作の error/loading ステートを適切に処理するため。
+- 非同期的に取得した複数の値を組み合わせて一つの値にするため。
+
+`FutureProvider` は [ref.watch] と組み合わせることでその効果を発揮します。
+例えば、何かの値が変わったときに自動でデータを再取得するよう設定することで、プロバイダが常に最新データを外部に公開することを保証できます。
+
+:::info
+`FutureProvider` には値を計算する処理を直接変更する手段がありません（ユーザ操作時）。
+値を計算するメソッドが複数必要など、より高度なことをする場合は [StateNotifierProvider] の使用を検討してください。
+:::
+
+## 使用例: 設定ファイルを取得する
+
+`FutureProvider` は例えば、次のような用途に適しています: JSON ファイルを外部から読み込み、そのデータをもとに `Configuration` オブジェクトを生成、プロバイダの値として外部へ公開する。
+
+ファイルの読み込みはプロバイダ内で async/await を使うことで可能です。
+Flutter のアセットからファイルを読み込む場合は、次のようになります。
+
+<CodeBlock>{trimSnippet(configProvider)}</CodeBlock>
+
+UI 側では以下の通り `Configuration` を監視します。
+
+<CodeBlock>{trimSnippet(configConsumer)}</CodeBlock>
+
+これにより [Future] が解決すると UI は自動で再構築されます。
+おまけにキャッシュ機能が働くため、複数のウィジェットがこの `Configuration` を必要とする場合でもアセットは一度しか読み込まれません。
+
+そして、ご覧いただける通り `FutureProvider` を監視した際の戻り値は [AsyncValue] です。
+[AsyncValue] のおかげで error/loading などのステートを適切にウィジェットに変換することができます。
+
+[ref.watch]: ../concepts/reading#refwatch-を使ってプロバイダを監視する
+[statenotifierprovider]: ./state_notifier_provider
+[provider]: ./provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[family]: ../concepts/modifiers/family
