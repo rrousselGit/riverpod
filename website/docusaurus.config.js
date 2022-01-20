@@ -8,7 +8,7 @@ module.exports = {
   plugins: ["docusaurus-plugin-sass"],
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "fr", "ko"],
+    locales: ["en", "fr", "ko", "ja"],
   },
   themeConfig: {
     googleAnalytics: {
