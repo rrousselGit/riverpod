@@ -1,0 +1,190 @@
+---
+title: StateProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import configProvider from "!!raw-loader!/docs/providers/future_provider/config_provider.dart";
+import configConsumer from "!!raw-loader!/docs/providers/future_provider/config_consumer.dart";
+import { trimSnippet } from "../../src/components/CodeSnippet";
+
+`StateProvider` is a provider that exposes a way to modify its state.
+It is a simplification of [StateNotifierProvier], designed to avoid
+having to write a [StateNotifier] class for very simple use-cases.
+
+`StateProvider` exists primarily to allow the modification of
+**simple** variables by the User Interface.  
+The state of a `StateProvider` is typically one of:
+
+- an enum, such as a filter type
+- a String, typically the raw content of a text field
+- a boolean, for checkboxes
+- a number, for pagination or age form fields
+
+You should not use `StateProvider` if:
+
+- your state needs a validation logic
+- your state is a complex object (such as a custom class, a list/map, ...)
+- the logic for modifying your state is more advanced than a simple `count++`.
+
+For more advanced cases, consider using [StateNotifierProvider] instead and
+create a [StateNotifier] class.  
+While the initial boilerplate will be a bit larger, having a custom
+[StateNotifier] class is critical for the long-term maintainability of your
+project – as it centralizes the business logic of your state in a single place.
+
+## Usage example: Changing the filter type using a dropdown
+
+A real-world use-case of `StateProvider` would be to manage the state of
+simple form components like dropdowns/text fields/checkboxes.  
+In particular, we will see how to use `StateProvider` to implement a dropdown
+which allows changing how a list of products is sorted.
+
+For the sake of simplicity, the list of products that we will obtain
+will be built directly in the application and be as followed:
+
+```dart
+class Product {
+  Product({required this.name, required this.price});
+
+  final String name;
+  final double price;
+}
+
+final _products = [
+  Product(name: 'iPhone', price: 999),
+  Product(name: 'cookie', price: 2),
+  Product(name: 'ps5', price: 500),
+];
+
+final productsProvider = Provider<List<Product>>((ref) {
+  return _products;
+});
+```
+
+In a real-world application, this list would typically be obtained using
+[FutureProvider] by making a network request.
+
+The User Interface could then show the list of products by doing:
+
+```dart
+Widget build(BuildContext context, WidgetRef ref) {
+  final products = ref.watch(productsProvider);
+  return Scaffold(
+    body: ListView.builder(
+      itemCount: products.length,
+      itemBuilder: (context, index) {
+        final product = products[index];
+        return ListTile(
+          title: Text(product.name),
+          subtitle: Text('${product.price} \$'),
+        );
+      },
+    ),
+  );
+}
+```
+
+Now that we're done with the base, we can add a dropdown, which will
+allow filtering our products either by price or by name.  
+For that, we will use [DropDownButton](https://api.flutter.dev/flutter/material/DropdownButton-class.html).
+
+```dart
+// An enum representing the filter type
+enum ProductSortType {
+  name,
+  price,
+}
+
+Widget build(BuildContext context, WidgetRef ref) {
+  final products = ref.watch(productsProvider);
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text('Products'),
+      actions: [
+        DropdownButton<ProductSortType>(
+          value: ProductSortType.price,
+          onChanged: (value) {},
+          items: [
+            DropdownMenuItem(
+              value: ProductSortType.name,
+              child: Icon(Icons.sort_by_alpha),
+            ),
+            DropdownMenuItem(
+              value: ProductSortType.price,
+              child: Icon(Icons.sort),
+            ),
+          ],
+        ),
+      ],
+    ),
+    body: ListView.builder(
+      // ...
+    ),
+  );
+}
+```
+
+
+Now that we have a dropdown, let's create a `StateProvider` and
+synchronize the state of the dropdown with our provider.
+
+First, let's create the `StateProvider`:
+
+```dart
+final productSortTypeProvider = StateProvider<ProductSortType>(
+  // We return the default sort type, here name.
+  (ref) => ProductSortType.name,
+);
+```
+
+Then, we can connect this provider with our dropdown by doing:
+
+```dart
+ DropdownButton<ProductSortType>(
+  // When the sort type changes, this will rebuild the dropdown
+  // to update the icon shown.
+  value: ref.watch(productSortTypeProvider),
+  // When the user interacts with the dropdown, we update the provider state.
+  onChanged: (value) => ref.read(productSortTypeProvider.notifier).state = value,
+  items: [
+    // ...
+  ],
+),
+```
+
+With this, we should now be able to change the sort type.  
+It has no impact on the list of products yet though! It's now time for the
+final part: Updating our `productsProvider` to sort the list of products.
+
+A key component of implementing this is to use [ref.watch], to have
+our `productsProvider` obtain the sort type and recompute the list of
+products whenever the sort type changes.
+
+The implementation would be:
+
+```dart
+final productsProvider = Provider<List<Product>>((ref) {
+  final sortType = ref.watch(productSortTypeProvider);
+  switch (sortType) {
+    case ProductSortType.name:
+      return _products.sorted((a, b) => a.name.compareTo(b.name));
+    case ProductSortType.price:
+      return _products.sorted((a, b) => a.price.compareTo(b.price));
+  }
+});
+```
+
+
+That's all! This change is enough for the User Interface to automatically
+re-render the list of products when the sort type changes.
+
+
+
+[ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
+[statenotifierprovider]: ./state_notifier_provider
+[provider]: ./provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[family]: ../concepts/modifiers/family
