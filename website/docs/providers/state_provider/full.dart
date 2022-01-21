@@ -1,6 +1,6 @@
 // This code is distributed under the MIT License.
-// Copyright (c) 2019 Remi Rousselet.
-// You can find the original at https://github.com/rrousselGit/provider.
+// Copyright (c) 2022 Remi Rousselet.
+// You can find the original at https://github.com/rrousselGit/river_pod.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +15,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: MyHomePage());
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: MyHomePage(),
+    );
   }
 }
 

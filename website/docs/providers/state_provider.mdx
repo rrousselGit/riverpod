@@ -126,7 +126,6 @@ Widget build(BuildContext context, WidgetRef ref) {
 }
 ```
 
-
 Now that we have a dropdown, let's create a `StateProvider` and
 synchronize the state of the dropdown with our provider.
 
@@ -176,11 +175,16 @@ final productsProvider = Provider<List<Product>>((ref) {
 });
 ```
 
-
 That's all! This change is enough for the User Interface to automatically
 re-render the list of products when the sort type changes.
 
+Here is the complete example on Dartpad:
 
+<iframe
+  src="https://dartpad.dev/embed-flutter.html?gh_owner=rrousselGit&gh_repo=river_pod&gh_path=website%2Fdocs%2Fproviders%2Fstate_provider"
+  style={{border: 0, width: '100%', aspectRatio: "2/1.5"}}
+>
+</iframe>
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
 [statenotifierprovider]: ./state_notifier_provider
