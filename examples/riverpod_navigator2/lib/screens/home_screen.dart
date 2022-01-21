@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_navigator2/models/app_pages.dart';
-import 'package:riverpod_navigator2/providers/app_state_manager.dart';
+import '../models/app_pages.dart';
+import '../providers/app_state_manager.dart';
 
 class HomeScreen extends ConsumerWidget {
   static MaterialPage page() {

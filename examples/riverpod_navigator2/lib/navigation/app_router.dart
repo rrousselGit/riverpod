@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:riverpod_navigator2/providers/app_state_manager.dart';
-import 'package:riverpod_navigator2/screens/home_screen.dart';
-
-import 'package:riverpod_navigator2/screens/login_screen.dart';
+import '../providers/app_state_manager.dart';
+import '../screens/home_screen.dart';
+import '../screens/login_screen.dart';
 
 class AppRouter extends RouterDelegate
     with PopNavigatorRouterDelegateMixin, ChangeNotifier {
