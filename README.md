@@ -175,11 +175,8 @@ compromise.
 
 Not in the short term, no.
 
-This project is still experimental and unpopular. While it is, in a way,
-a [provider] 2.0, its worth has yet to be proven.
-
-Until it is certain that [Riverpod] is a better way of doing things
-and that the community likes it, [provider] will still be maintained.
+However, a migration tool is planned to help assist migration from provider
+to [Riverpod].
 
 [provider]: https://github.com/rrousselGit/provider
 [riverpod]: https://github.com/rrousselGit/river_pod

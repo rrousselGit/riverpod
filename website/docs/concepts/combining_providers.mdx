@@ -1,14 +1,14 @@
 ---
-title: Combining providers
+title: Combining Provider States
 ---
 
 Make sure to [read about Providers](/docs/concepts/providers) first.  
-In this guide, we will see everything there is to know about combining providers.
+In this guide, we will learn about combining provider states.
 
-## Combining providers
+## Combining provider states
 
 We've previously seen how to create a simple provider. But the reality is,
-in many situation a provider will want to read the state of another provider.
+in many situations a provider will want to read the state of another provider.
 
 To do that, we can use the [ref] object passed to the callback of our provider,
 and use its [watch] method.
@@ -38,13 +38,13 @@ That's it. We've created a provider that depends on another provider.
 
 ### What if the value listened changes over time?
 
-Depending on the provider that you are listening, the value obtained may change
+Depending on the provider that you are listening to, the value obtained may change
 over time.  
 For example, you may be listening to a [StateNotifierProvider], or the provider
 listened was forced to refresh using [ProviderContainer.refresh]/[ref.refresh].
 
 When using [watch], Riverpod is able to detect that the value listened changed
-and will _automatically_ re-execute the provider when needed.
+and will _automatically_ re-execute the provider's creation callback when needed.
 
 This can be useful for computed states.
 For example, consider a [StateNotifierProvider] that exposes a todo-list:
@@ -104,7 +104,7 @@ example](https://github.com/rrousselGit/river_pod/tree/master/examples/todos)
 This behavior is not specific to [Provider], and works with all providers.
 
 For example, you could combine [watch] with [FutureProvider] to implement a search
-feature or live-configurations change:
+feature or live-configuration changes:
 
 ```dart
 // The current search filter
@@ -178,8 +178,8 @@ class Repository {
 }
 ```
 
-The only difference that passing `ref.read` brings is a slightly less verbose
-code and making sure that our object never uses `ref.watch`.
+The only difference is that passing `ref.read` brings is that it is 
+slightly less verbose and ensures that our object never uses `ref.watch`.
 :::
 
 :::danger **DON'T** call [read] inside the body of a provider
@@ -193,7 +193,6 @@ final myProvider = Provider((ref) {
 
 If you used [read] as an attempt to avoid unwanted rebuilds of your object,
 refer to [My provider updates too often, what can I do?](#my-provider-updates-too-often-what-can-i-do)
-
 :::
 
 ### How to test an object that receives [read] as parameter of its constructor?
@@ -222,13 +221,13 @@ test('fetches catalog', () async {
 
 ### My provider updates too often, what can I do?
 
-If your object is re-created too often chances are, your provider is listening
+If your object is re-created too often your provider is likely listening
 to objects that it doesn't care about.
 
-For example, you may be listening a `Configuration` object, but only use the `host`
+For example, you may be listening to a `Configuration` object, but only use the `host`
 property.  
 By listening to the entire `Configuration` object, if a property other than `host`
-changes, this would still cause your provider to be re-evaluated – which may be
+changes, this still causes your provider to be re-evaluated – which may be
 undesired.
 
 The solution to this problem is to create a separate provider that exposes _only_
@@ -237,7 +236,7 @@ what you need in `Configuration` (so `host`):
 **AVOID** listening to the entire object:
 
 ```dart
-final configsProvider = StreamProvider<Configuration>(...);
+final configProvider = StreamProvider<Configuration>(...);
 
 final productsProvider = FutureProvider<List<Product>>((ref) async {
   // Will cause productsProvider to re-fetch the products if anything in the
@@ -251,7 +250,7 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 **PREFER** listening to only what you use:
 
 ```dart
-final configsProvider = StreamProvider<Configuration>(...);
+final configProvider = StreamProvider<Configuration>(...);
 
 /// A provider that exposes only the current host
 final _hostProvider = FutureProvider<String>((ref) async {
@@ -267,6 +266,25 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
   return dio.get('$host/products');
 });
 ```
+
+You can also use `.select` in simple cases which will achieve the same effect.
+
+**PREFER** using select when a property of the object is used in one place:
+
+```dart
+final configProvider = StateProvider<Configuration>(...);
+
+final productsProvider = FutureProvider<List<Product>>((ref) async {
+  // Listens only to the host. If something else in the configurations
+  // changes, this will not pointlessly re-evaluate our provider.
+  final host = await ref.watch(configProvider.select((config) => config.host));
+
+  return dio.get('$host/products');
+});
+```
+
+However, if you will be using the host property in many different providers or widgets, it is better
+to separate it into it's own provider.
 
 [provider]: ../providers/provider
 [stateprovider]: ../providers/state_provider

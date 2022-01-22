@@ -22,7 +22,7 @@ A simple use case for [ProviderObserver], is to log the changes in providers by 
 
 <CodeBlock>{trimSnippet(logger)}</CodeBlock>
 
-Now that every time the value of our provider is updated, the logger will log it :
+Now, every time the value of our provider is updated, the logger will log it:
 
 ```
 I/flutter (16783): {
@@ -30,5 +30,8 @@ I/flutter (16783):   "provider": "counter",
 I/flutter (16783):   "newValue": "1"
 I/flutter (16783): }
 ```
+
+For states that are mutable such as `StateController` and `ChangeNotifier` the previousValue and newValue will be the same
+since they reference the same `StateController` or `ChangeNotifier`.
 
 [providerobserver]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderObserver-class.html
