@@ -38,6 +38,8 @@ class MyStateNotifier extends StateNotifier<MyModel> {
 
 - to obtain the [StateNotifier], you should now read `myProvider.notifier` instead of just `myProvider`:
 
+  Before:
+
   ```dart
   Widget build(BuildContext context, ScopedReader watch) {
     MyStateNotifier notifier = watch(provider);
@@ -85,7 +87,7 @@ dart pub global activate riverpod_cli
 
 You should now be able to do:
 
-```dart
+```sh
 riverpod --help
 ```
 

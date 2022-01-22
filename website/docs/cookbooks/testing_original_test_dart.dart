@@ -45,7 +45,7 @@ void main() {
 
   test('the counter state is not shared between tests', () {
     // We use a different ProviderContainer to read our provider.
-    // This unsure that no state is reused between tests
+    // This ensure that no state is reused between tests
     final container = ProviderContainer();
     addTearDown(container.dispose);
     final listener = Listener();
