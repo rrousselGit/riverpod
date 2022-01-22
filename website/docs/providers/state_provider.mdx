@@ -5,8 +5,12 @@ title: StateProvider
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import configProvider from "!!raw-loader!/docs/providers/future_provider/config_provider.dart";
-import configConsumer from "!!raw-loader!/docs/providers/future_provider/config_consumer.dart";
+import product from "!!raw-loader!/docs/providers/state_provider/product.dart";
+import productListView from "!!raw-loader!/docs/providers/state_provider/product_list_view.dart";
+import dropdown from "!!raw-loader!/docs/providers/state_provider/dropdown.dart";
+import sortProvider from "!!raw-loader!/docs/providers/state_provider/sort_provider.dart";
+import connectedDropdown from "!!raw-loader!/docs/providers/state_provider/connected_dropdown.dart";
+import sortedProductProvider from "!!raw-loader!/docs/providers/state_provider/sorted_product_provider.dart";
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
 `StateProvider` is a provider that exposes a way to modify its state.
@@ -44,114 +48,31 @@ which allows changing how a list of products is sorted.
 For the sake of simplicity, the list of products that we will obtain
 will be built directly in the application and be as followed:
 
-```dart
-class Product {
-  Product({required this.name, required this.price});
-
-  final String name;
-  final double price;
-}
-
-final _products = [
-  Product(name: 'iPhone', price: 999),
-  Product(name: 'cookie', price: 2),
-  Product(name: 'ps5', price: 500),
-];
-
-final productsProvider = Provider<List<Product>>((ref) {
-  return _products;
-});
-```
+<CodeBlock>{trimSnippet(product)}</CodeBlock>
 
 In a real-world application, this list would typically be obtained using
 [FutureProvider] by making a network request.
 
 The User Interface could then show the list of products by doing:
 
-```dart
-Widget build(BuildContext context, WidgetRef ref) {
-  final products = ref.watch(productsProvider);
-  return Scaffold(
-    body: ListView.builder(
-      itemCount: products.length,
-      itemBuilder: (context, index) {
-        final product = products[index];
-        return ListTile(
-          title: Text(product.name),
-          subtitle: Text('${product.price} \$'),
-        );
-      },
-    ),
-  );
-}
-```
+<CodeBlock>{trimSnippet(productListView)}</CodeBlock>
 
 Now that we're done with the base, we can add a dropdown, which will
 allow filtering our products either by price or by name.  
 For that, we will use [DropDownButton](https://api.flutter.dev/flutter/material/DropdownButton-class.html).
 
-```dart
-// An enum representing the filter type
-enum ProductSortType {
-  name,
-  price,
-}
-
-Widget build(BuildContext context, WidgetRef ref) {
-  final products = ref.watch(productsProvider);
-  return Scaffold(
-    appBar: AppBar(
-      title: const Text('Products'),
-      actions: [
-        DropdownButton<ProductSortType>(
-          value: ProductSortType.price,
-          onChanged: (value) {},
-          items: [
-            DropdownMenuItem(
-              value: ProductSortType.name,
-              child: Icon(Icons.sort_by_alpha),
-            ),
-            DropdownMenuItem(
-              value: ProductSortType.price,
-              child: Icon(Icons.sort),
-            ),
-          ],
-        ),
-      ],
-    ),
-    body: ListView.builder(
-      // ...
-    ),
-  );
-}
-```
+<CodeBlock>{trimSnippet(dropdown)}</CodeBlock>
 
 Now that we have a dropdown, let's create a `StateProvider` and
 synchronize the state of the dropdown with our provider.
 
 First, let's create the `StateProvider`:
 
-```dart
-final productSortTypeProvider = StateProvider<ProductSortType>(
-  // We return the default sort type, here name.
-  (ref) => ProductSortType.name,
-);
-```
+<CodeBlock>{trimSnippet(sortProvider)}</CodeBlock>
 
 Then, we can connect this provider with our dropdown by doing:
 
-```dart
- DropdownButton<ProductSortType>(
-  // When the sort type changes, this will rebuild the dropdown
-  // to update the icon shown.
-  value: ref.watch(productSortTypeProvider),
-  // When the user interacts with the dropdown, we update the provider state.
-  onChanged: (value) => ref.read(productSortTypeProvider.notifier).state = value,
-  items: [
-    // ...
-  ],
-),
-```
+<CodeBlock>{trimSnippet(connectedDropdown)}</CodeBlock>
 
 With this, we should now be able to change the sort type.  
 It has no impact on the list of products yet though! It's now time for the
@@ -163,17 +84,7 @@ products whenever the sort type changes.
 
 The implementation would be:
 
-```dart
-final productsProvider = Provider<List<Product>>((ref) {
-  final sortType = ref.watch(productSortTypeProvider);
-  switch (sortType) {
-    case ProductSortType.name:
-      return _products.sorted((a, b) => a.name.compareTo(b.name));
-    case ProductSortType.price:
-      return _products.sorted((a, b) => a.price.compareTo(b.price));
-  }
-});
-```
+<CodeBlock>{trimSnippet(sortedProductProvider)}</CodeBlock>
 
 That's all! This change is enough for the User Interface to automatically
 re-render the list of products when the sort type changes.
@@ -182,9 +93,8 @@ Here is the complete example on Dartpad:
 
 <iframe
   src="https://dartpad.dev/embed-flutter.html?gh_owner=rrousselGit&gh_repo=river_pod&gh_path=website%2Fdocs%2Fproviders%2Fstate_provider"
-  style={{border: 0, width: '100%', aspectRatio: "2/1.5"}}
->
-</iframe>
+  style={{ border: 0, width: "100%", aspectRatio: "2/1.5" }}
+></iframe>
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
 [statenotifierprovider]: ./state_notifier_provider
