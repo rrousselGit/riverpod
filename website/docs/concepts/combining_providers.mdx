@@ -196,57 +196,6 @@ refer to [My provider updates too often, what can I do?](#my-provider-updates-to
 
 :::
 
-### How to update state without calling read 2 times?
-
-Sometimes you want to update the state based on the previous state without calling ref.read multiple times!
-
-In order to not call `ref.read` 2 times or more, you could use `ref.read().update()` by passing a callback 
-function. 
-
-You'll get the previous state as the first parameter, you should return the updated state.
-
-This is what you usually want to avoid:
-
-```dart
-final counterProvider = StateProvider<int>((ref) => 0);
-
-class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ref.read(counterProvider.notifier).state = ref.read(counterProvider.notifier).state + 1;
-        },
-      ),
-    );
-  }
-}
-```
-
-Instead this is what you'll want to do:
-
-```dart
-final counterProvider = StateProvider<int>((ref) => 0);
-
-class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ref.read(counterProvider.notifier).update((previousCounterState) => previousCounterState + 1);
-        },
-      ),
-    );
-  }
-}
-```
-
 ### How to test an object that receives [read] as parameter of its constructor?
 
 If you are using the pattern described in [Can I read a provider without listening to it?](#can-i-read-a-provider-without-listening-to-it),

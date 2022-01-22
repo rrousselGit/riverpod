@@ -11,6 +11,8 @@ import dropdown from "!!raw-loader!/docs/providers/state_provider/dropdown.dart"
 import sortProvider from "!!raw-loader!/docs/providers/state_provider/sort_provider.dart";
 import connectedDropdown from "!!raw-loader!/docs/providers/state_provider/connected_dropdown.dart";
 import sortedProductProvider from "!!raw-loader!/docs/providers/state_provider/sorted_product_provider.dart";
+import updateReadTwice from "!!raw-loader!/docs/providers/state_provider/update_read_twice.dart";
+import updateReadOnce from "!!raw-loader!/docs/providers/state_provider/update_read_once.dart";
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
 `StateProvider` is a provider that exposes a way to modify its state.
@@ -96,7 +98,26 @@ Here is the complete example on Dartpad:
   style={{ border: 0, width: "100%", aspectRatio: "2/1.5" }}
 ></iframe>
 
+## How to update the state based on the previous value without reading the provider twice
+
+Sometimes, you want to update the state of a `StateProvider` based on the previous value.
+Naturally, you may end-up writing:
+
+<CodeBlock>{trimSnippet(updateReadTwice)}</CodeBlock>
+
+While there's nothing particularly wrong with this snippet, the syntax is a bit inconvenient.
+
+To make the syntax a bit better, we can use the `update` function.
+This function will take a callback that will receive the current state and is expected
+to return the new state.  
+We can use it to refactor our previous code to:
+
+<CodeBlock>{trimSnippet(updateReadOnce)}</CodeBlock>
+
+This change achieve the same effect while making the syntax a big better.
+
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
+[ref.read]: ../concepts/reading#using-refread-to-obtain-the-state-of-a-provider-once
 [statenotifierprovider]: ./state_notifier_provider
 [futureprovider]: ./future_provider
 [statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
