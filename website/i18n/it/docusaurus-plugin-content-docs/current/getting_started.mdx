@@ -77,7 +77,7 @@ dependencies:
   riverpod: ^1.0.2
 ```
 
-Dopodichè esegui `pub get`.
+Dopodichè esegui `dart pub get`.
 
 </TabItem>
 </Tabs>
@@ -121,12 +121,10 @@ void main() {
   );
 }
 
-// Nota: MyApp è un HookConsumerWidget, da flutter_hooks
+// Nota: MyApp è un HookConsumerWidget, da hooks_riverpod
 class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Per leggere il nostro provider, possiamo usare l'hook "ref.watch(".
-    // Questo è solamente possibile perchè MyApp è un HookConsumerWidget
     final String value = ref.watch(helloWorldProvider);
 
     return MaterialApp(
@@ -217,7 +215,7 @@ Questo mostrerà "Hello world" nella console
 
 ## Andando oltre: Installare snippet
 
-Se stai utilizzando `Flutter` e `Vscode`, considera l'utilizzo di [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
+Se stai utilizzando `Flutter` e `VS Code`, considera l'utilizzo di [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
 
 Se stai utilizzando `Flutter` e `Android Studio` o `IntelliJ`, considera l'utilizzo di [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
 

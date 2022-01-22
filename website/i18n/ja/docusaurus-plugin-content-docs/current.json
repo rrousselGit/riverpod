@@ -12,7 +12,7 @@
     "description": "The label for category Concepts in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Modifiers": {
-    "message": "修飾子",
+    "message": "プロバイダ修飾子",
     "description": "The label for category Modifiers in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Migration": {
@@ -86,6 +86,14 @@
   "sidebar.Sidebar.link.Todo App with Backup and Restore feature": {
     "message": "バックアップと復元機能付きの Todo アプリ",
     "description": "The label for link Todo App with Backup and Restore feature in sidebar Sidebar, linking to https://github.com/TheAlphaApp/flutter_riverpod_todo_app"
+  },
+  "sidebar.Sidebar.link.Integrating Hive database with Riverpod (simple example)": {
+    "message": "Hive データベースと Riverpod の併用",
+    "description": "The label for link Integrating Hive database with Riverpod (simple example) in sidebar Sidebar, linking to https://github.com/GitGud31/theme_riverpod_hive"
+  },
+  "sidebar.Sidebar.category.All Providers": {
+    "message": "プロバイダ",
+    "description": "The label for category All Providers in sidebar Sidebar"
   },
   "sidebar.Sidebar.link.riverpod": {
     "message": "riverpod",

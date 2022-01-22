@@ -748,6 +748,14 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         return previousSub;
       }
 
+      assert(() {
+        // Flushing the provider before adding a new dependency
+        // as otherwise this could cause false positives with certain asserts.
+        // It's done only in debug mode since `readSelf` will flush the value
+        // again anyway, and the only value of this flush is to not break asserts.
+        element.flush();
+        return true;
+      }(), '');
       element._dependents.add(this);
 
       return Object();
