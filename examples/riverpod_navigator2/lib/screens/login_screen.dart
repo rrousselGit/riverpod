@@ -1,17 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/app_pages.dart';
 import '../providers/app_state_manager.dart';
 
 class LoginScreen extends ConsumerWidget {
-  static MaterialPage page() {
-    return MaterialPage(
-      name: AppPages.loginPath,
-      key: ValueKey(AppPages.loginPath),
-      child: const LoginScreen(),
-    );
-  }
-
   const LoginScreen({Key? key}) : super(key: key);
 
   @override

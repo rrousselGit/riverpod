@@ -10,6 +10,7 @@ environment:
 
 
 dependencies:
+  auto_route: ^3.2.2
   flutter:
     sdk: flutter
   flutter_riverpod: ^1.0.3
@@ -18,6 +19,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^1.0.0
+  auto_route_generator: ^3.2.1
+  build_runner: ^2.1.7
 
 flutter:
   uses-material-design: true

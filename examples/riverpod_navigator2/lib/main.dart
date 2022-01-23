@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import './navigation/app_router.dart';
-import './providers/app_state_manager.dart';
+import './navigation/material_app_router.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,27 +15,17 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> {
-  late AppRouter _appRouter;
-
-
-  @override
-  void initState() {
-    _appRouter = AppRouter(
-      appStateManager: ref.read(appStateManager),
-    );
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Navigator 2.0 Riverpod Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Router(
-        routerDelegate: _appRouter,
-      ),
+      home: MaterialAppRouter(),
     );
   }
 }
+
+
