@@ -9,27 +9,27 @@ import todos from "!!raw-loader!/docs/providers/state_notifier_provider/todos.da
 import todosConsumer from "!!raw-loader!/docs/providers/state_notifier_provider/todos_consumer.dart";
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
-`StateNotifierProvider` is a provider that is used to listen to expose a
-[StateNotifier] (from the package [state_notifier], which Riverpod re-exports).  
-`StateNotifierProvider` along with [StateNotifier] is Riverpod's recommended solution
-for managing state which may change in reaction to a user interaction.
+`StateNotifierProvider` ist ein Provider, der zum Lauschen verwendet wird, der einen
+[StateNotifier] zur Verfügung stellt (vom Paket [state_notifier], welches Riverpod Re-exportiert).  
+`StateNotifierProvider` zusammen mit [StateNotifier] ist die von Riverpod empfohlene Lösung für 
+die Verwaltung von Zuständen, die sich in Reaktion auf eine Benutzerinteraktion ändern können.
 
-It is typically used for:
+Typischerweise wird es für folgendes verwendet:
 
-- exposing an **immutable** state which can change over time after reacting to
-  custom events.
-- centralizing the logic for modifying some state (aka "business logic") in a
-  single place, improving maintainability over time.
+- Veröffentlichung eines **immutable** Zustands, der sich im Laufe der Zeit ändern kann, nachdem 
+  er auf benutzerdefinierte Ereignisse reagiert hat.
+- Zentralisierung der Logik für die Änderung eines Zustands (aka "business logic") an einer 
+  einzigen Stelle, wodurch die Wartbarkeit im Laufe der Zeit verbessert wird.
 
 
-As a usage example, we could use `StateNotifierProvider` to implement a todo-list.
-Doing so would allow us to expose methods such as `addTodo` to let the UI
-modify the list of todos on user interactions:
+Als Anwendungsbeispiel könnten wir `StateNotifierProvider` verwenden, um eine ToDo-Liste zu 
+implementieren. Dies würde uns erlauben, Methoden wie `addTodo` bereitzustellen, damit die UI 
+die Liste der ToDo's bei Benutzerinteraktionen zu ändern:
 
 <CodeBlock>{trimSnippet(todos)}</CodeBlock>
 
-Now that we have defined a `StateNotifierProvider`, we can now use it to interact
-with the list of todos in our UI:
+Nachdem wir nun einen `StateNotifierProvider` definiert haben, können wir ihn verwenden, 
+um mit der Liste der ToDo's in unserer UI:
 
 <CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
 

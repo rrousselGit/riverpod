@@ -1,14 +1,9 @@
-// ignore_for_file: omit_local_variable_types
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'reading_counter.dart';
-
 /* SNIPPET START */
 
-final counterProvider =
-    StateNotifierProvider<Counter, int>((ref) => Counter(ref));
+final counterProvider = StateProvider<int>((ref) => 0);
 
 class HomeView extends ConsumerWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -18,8 +13,10 @@ class HomeView extends ConsumerWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Aufruf von `increment()` der `Counter` Klasse
-          ref.read(counterProvider.notifier).increment();
+          // Wir aktualisieren den Status des vorherigen Wertes und haben den
+          // Provider zweimal gelesen!
+          ref.read(counterProvider.notifier).state =
+              ref.read(counterProvider.notifier).state + 1;
         },
       ),
     );

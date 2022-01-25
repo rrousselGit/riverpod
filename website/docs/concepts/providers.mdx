@@ -1,41 +1,43 @@
 ---
 title: Providers
 ---
-
+Nachdem nun [Riverpod] installiert ist, können wir uns "providers" anschauen.
 Now that we have installed [Riverpod], let's talk about "providers".
 
-Providers are the most important part of a [Riverpod] application.
-A provider is an object that encapsulates a piece of state and allows listening
-to that state.
+Die Provider sind der wichtigste Teil einer [Riverpod] Anwendung.
+Ein Provider ist ein Objekt, welches einen (Teil-) Zustand kapselt und die Möglichkeit
+bietet auf den Zustand zu lauschen.
 
-## Why use providers?
+## Warum Provider benutzen?
 
-By wrapping a piece of state in a provider, this:
+Einen (Teil-) Zustand in einen Provider zu packen, bietet folgendes:
 
-- Allows easily accessing that state in multiple locations.
-  Providers are a complete replacement for patterns like Singletons,
-  Service Locators, Dependency Injection or InheritedWidgets.
+- Ermöglicht einen einfachen Zugriff auf den Zustand, an mehreren Stellen im Code.
+  Provider erstetzen das Singleton Pattern, Service Locators, Dependency Injection
+  oder InheritedWidgets.
 
-- Simplifies combining this state with others.
-  Ever struggled to merge multiple objects into one? This scenario is built
-  directly inside providers, with a simple syntax.
+- Vereinfacht die Kombination eines Zustands mit anderen Zuständen.
+  Haben Sie schon einmal damit zu kämpfen gehabt, mehrere Objekte zu einem einzigen 
+  zusammenzuführen? Dieses Szenario ist im Provider mit einer einfachen 
+  Syntax eingebaut.
 
-- Enables performance optimizations.
-  Whether for filtering widget rebuilds or for caching expensive state computations;
-  providers ensure that only what is impacted by a state change is recomputed.
+- Ermöglicht Leistungsoptimierungen.
+  Provider stellen sicher, dass nur das, was von einer Zustandsänderung betroffen ist, 
+  neu berechnet wird. Egal ob Filterergebnisse oder das Zwischenspeichern von 
+  aufwendigen Zustandsberechnungen.
 
-- Increases the testability of your application.
-  With providers, you do not need complex `setUp`/`tearDown` steps. Furthermore,
-  any provider can be overridden to behave differently during test, which
-  allows easily testing a very specific behavior.
+- Erhöht die Testbarkeit von Applikationen.
+  Mit Provider braucht man keine komplizierten `setUp`/`tearDown`-Schritte. Außerdem
+  kann jeder Provider so überschrieben werden, dass er sich während des Tests anders 
+  verhält, was ein sehr spezifisches Verhalten leicht testen kann.
 
-- Easily integrate with advanced features, such as logging or pull-to-refresh.
+- Einfache Integration mit fortgeschrittenen Funktionen wie z.B. Logging oder pull-to-refresh.
 
-## Creating a provider
+## Erstellen eines Providers
 
-Providers come in many variants, but they all work the same way.
+Provider gibt es in verschiedenen Varianten, aber sie funktionieren alle auf die gleiche Weise.
 
-The most common usage is to declare them as global constant like so:
+Am häufigsten werden Provider als globale Konstanten deklariert, wie z.B.:
 
 ```dart
 final myProvider = Provider((ref) {
@@ -44,49 +46,50 @@ final myProvider = Provider((ref) {
 ```
 
 :::note
-Do not be afraid by the global aspect of providers.
-Providers are fully immutable. Declaring a provider is no different from declaring
-a function, and is testable and maintainable.
+Lassen Sie sich nicht von dem globalen Aspekt der Provider abschrecken.
+Provider sind komplett immutable. Die Deklaration eines Providers unterscheidet 
+sich nicht von der Deklaration einer Funktion, und ist testbar und wartbar.
 :::
 
-This snippet consists of three components:
+Dieses Snippet besteht aus drei Komponenten:
 
-- `final myProvider`, the declaration of a variable.
-  This variable is what we will use in the future to read the state of our provider.
-  It should always be immutable.
+- `final myProvider`, die Deklaration einer variable.
+  Diese Variable wollen wir in Zukunft dazu nutzen, um den Zustand des Providers zu Lesen.
+  Es sollte immer immutable sein.
 
-- `Provider`, the provider that we decided to use.
-  [Provider] is the most basic of all providers. It exposes an object that never
-  changes.
-  We could replace [Provider] with other providers like [StreamProvider] or
-  [StateNotifierProvider], to change how the value is interacted with.
+- `Provider`, der Provider, für den man sich entschieden hat.
+  [Provider] ist der einfachste aller Provider. Er stellt ein Objekt zur Verfügung, 
+  das sich nie verändert.
+  Wir könnten [Provider] durch andere Provider wie z.B. [StreamProvider] oder 
+  [StateNotifierProvider] ersetzen, um zu ändern, wie mit dem Wert interagiert wird.
 
-- A function that creates the shared state.
-  That function will always receive an object called `ref` as a parameter. This object
-  allows us to read other providers or to perform some operations when the state
-  of our provider will be destroyed.
+- Eine Funktion, die den gemeinsamen Zustand erzeugt.
+  Diese Funktion erhält immer ein Objekt namens "ref" als Parameter. Dieses Objekt
+  ermöglicht es uns, andere Provider zu lesen oder einige Operationen durchzuführen, 
+  wenn der Zustand unseres Providers zerstört wird.
 
-The type of the object created by the function passed to a provider depends on
-the provider used.
-For example, the function of a [Provider] can create any object.
-On the other hand, [StreamProvider]'s callback will be expected to return a [Stream].
+Der Typ des Objekts, das durch die an einen Provider übergebene Funktion erstellt wird, 
+hängt von dem verwendeten Provider ab.
+Zum Beispiel kann die Funktion eines [Providers] ein beliebiges Objekt erstellen.
+Andererseits wird vom Callback eines [StreamProvider] erwartet, dass er einen [Stream] 
+zurückgibt.
 
 :::info
-You can declare as many providers as you want without limitations.
-As opposed to when using `package:provider`, in [Riverpod] we can have two
-providers expose a state of the same "type":
+Es können beliebig viele Provider, ohne Einschränkungen anmelden.
+Im Gegensatz zur Verwendung von `package:provider`, mit [Riverpod] können wir zwei Provider 
+haben, die einen Zustand vom gleichen "Typ" bereitstellen.
 
 ```dart
 final cityProvider = Provider((ref) => 'London');
 final countryProvider = Provider((ref) => 'England');
 ```
 
-The fact that both providers create a `String` does not cause any problem.
+Die Tatsache, dass beide Anbieter einen `String` erstellen, stellt kein Problem dar.
 :::
 
 :::caution
-For providers to work, you must add [ProviderScope] at the root of your
-Flutter applications:
+Damit Provider funktionieren, muss [ProviderScope] am Einstiegspunkt der 
+Applikation hinzugefügt werden:
 
 ```dart
 void main() {
@@ -96,22 +99,23 @@ void main() {
 
 :::
 
-## Performing actions before the state destruction
+## Ausführen von Aktionen, bevor der Zustand zerstört wird
 
-In some cases, the state of a provider may get destroyed or re-created.
-A common use-case in those situations is to perform a cleanup before the state of a provider
-is destroyed, such as closing a `StreamController`.
+In einigen Fällen kann der Zustand eines Provider zerstört oder neu erstellt werden.
+Ein üblicher Anwendungsfall in solchen Situationen ist die Durchführung einer Bereinigung, 
+bevor der Zustand eines Providers zerstört wird, z.B. das Schließen eines "StreamControllers".
 
-This is done using the `ref` object, which is passed to the callback of all providers, using its [onDispose] method.
+Dies geschieht mit Hilfe des Objekts `ref`, das mit seiner Methode [onDispose] an den Callback 
+aller Provider übergeben wird.
 
-The following example uses [onDispose] to close a `StreamController`:
+Das folgende Beispiel nutzt [onDispose] um einen `StreamController` zu schließen:
 
 ```dart
 final example = StreamProvider.autoDispose((ref) {
   final streamController = StreamController<int>();
 
   ref.onDispose(() {
-    // Closes the StreamController when the state of this provider is destroyed.
+    // Schließt den StreamController, wenn der Zustand des Providers zerstört wird.
     streamController.close();
   });
 
@@ -120,31 +124,34 @@ final example = StreamProvider.autoDispose((ref) {
 ```
 
 :::note
-Depending on the provider used, it may already take care of the clean-up process.
-For example, [StateNotifierProvider] will call the `dispose` method of a `StateNotifier`.
+In Abhängigkeit des eingesetzten Providers, kann er sich bereits um den Bereinigungsprozess kümmern.
+Z.B. wird der [StateNotifierProvider] die `dispose` Funktion des `StateNotifier` aufrufen.
 :::
 
-## Provider Modifiers
+## Provider Modifikatoren
 
-All Providers have a built-in way to add extra functionalities to your different providers.
+Alle Provider haben eine eingebaute Möglichkeit, zusätzliche Funktionen zu Ihren verschiedenen 
+Providern hinzuzufügen.
 
-They may add new features to the `ref` object or change slightly how the provider
-is consumed.
-Modifiers can be used on all providers, with a syntax similar to named constructor:
+Sie können dem Objekt "ref" neue Funktionen hinzufügen oder die Art und Weise, 
+wie der Provider konsumiert wird.
+Modifikatoren können für alle Provider verwendet werden, mit einer Syntax ähnlich 
+wie bei named cunstructors:
 
 ```dart
 final myAutoDisposeProvider = StateProvider.autoDispose<int>((ref) => 0);
 final myFamilyProvider = Provider.family<String, int>((ref, id) => '$id');
 ```
 
-At the moment, there are two modifiers available:
+Zum aktuellen Zeitpunkt sind zwei Modifikatoren verfügbar:
 
-- [`.autoDispose`](/docs/concepts/modifiers/auto_dispose), which will make the provider automatically destroy its state
-  when it is no-longer listened.
-- [`.family`](/docs/concepts/modifiers/family), which allows creating a provider from external parameters.
+- [`.autoDispose`](/docs/concepts/modifiers/auto_dispose), der dafür sorgt, dass der Provider seinen 
+Status automatisch zerstört, wenn auf ihn nicht mehr gelauscht wird.
+- [`.family`](/docs/concepts/modifiers/family), der es ermöglicht, einen Anbieter aus externen Parametern 
+zu erstellen.
 
 :::note
-A provider can use multiple modifiers at once:
+Ein Provider kann mehrere Modifikatoren gleichzeitig verwenden:
 
 ```dart
 final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) async {
@@ -154,10 +161,10 @@ final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) 
 
 :::
 
-That's it for this guide!
+Das war's für diesen Leitfaden!
 
-You can continue with [How to read a provider](/docs/concepts/reading).
-Alternatively, you can see [How to combine providers](/docs/concepts/combining_providers).
+Du kannst hier weiterlesen [How to read a provider](/docs/concepts/reading).
+Alternativ, kannst du dir auch das durchlesen [How to combine providers](/docs/concepts/combining_providers).
 
 [get_it]: http://pub.dev/packages/get_it
 [inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html

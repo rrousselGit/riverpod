@@ -13,7 +13,7 @@ abstract class Todo {
 }
 
 class TodoList extends StateNotifier<List<Todo>> {
-  TodoList(): super([]);
+  TodoList() : super([]);
 }
 
 /* SNIPPET START */
@@ -21,11 +21,11 @@ class TodoList extends StateNotifier<List<Todo>> {
 final counterProvider = StateProvider((ref) => 0);
 
 class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
+  const HomeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // use ref to listen to a provider
+    // benutze ref um auf einen Provider zu lauschen
     final counter = ref.watch(counterProvider);
 
     return Text('$counter');

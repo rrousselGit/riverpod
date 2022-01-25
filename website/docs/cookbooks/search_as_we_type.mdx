@@ -1,34 +1,36 @@
-A real world example could be to use `FutureProvider` to implement a searchbar.
 
-## Usage example: "Search as we type" searchbar
+Ein Beispiel aus der Praxis könnte die Verwendung von `FutureProvider` 
+zur Implementierung einer Suchleiste sein.
 
-Implementing a "seach as we type" can seem daunting at first when using
-conventional means.  
-There are lots of moving parts, such as:
+## Beispiel für die Verwendung: "Suche während der Eingabe" Suchleiste
 
-- handling errors.
-- debouncing the user input to avoid making network requests on every keystroke.
-- cancelling previously pending network requests when the search field changes.
+Die Implementierung einer "Suche während der Eingabe" kann anfangs, 
+mit herkömmlichen Mitteln, entmutigend erscheinen. Es gibt viele 
+bewegliche Teile, wie zum Beispiel:
 
-But the combination of `FutureProvider` and the power of [ref.watch] can
-significantly simplify this task.
+- Behandlung von Fehlern.
+- debouncing der Benutzereingabe, um zu vermeiden, dass bei jedem Tastendruck Netzanfragen gestellt werden.
+- Stornierung bereits laufender Netzanfragen, wenn sich das Suchfeld ändert.
 
-A common pattern wanting to perform an asynchronous requests
-is to split it into multiple providers:
+Aber die Kombination von `FutureProvider` und der Funktionen von 
+[ref.watch] kann diese Aufgabe erheblich vereinfachen.
 
-- a [StateNotifierProvider] or `StateProvider` for the parameters of your request
-  (or alternatively use [family])
-- a `FutureProvider`, which will do the request by reading the parameters from
-  the other providers/[family].
+Ein gängiges Muster für die Durchführung asynchroner Anforderungen 
+ist die Aufteilung in mehrere Provider:
 
-The first step would be to store the user input somewhere. For this example,
-we will use `StateProvider` (as the seach state is only a single `String`):
+- ein [StateNotifierProvider] oder `StateProvider` für die Parameter deiner Anfrage
+  (oder benutze alternativ [family])
+- ein `FutureProvider`, der die Anfrage abschickt. Dafür liest er die Parameter
+  von anderen Providern/[family].
+
+Der erste Schritt wäre, die Benutzereingaben irgendwo zu speichern. Für dieses Beispiel, 
+werden wir `StateProvider` verwenden (da der Suchstatus nur ein einzelner `String` ist):
 
 ```dart
 final seachInputProvider = StateProvider<String>((ref) => '');
 ```
 
-We can then connect this provider to a [TextField] by doing:
+Wir können dann diesen Provider mit einem [TextField] verbinden, indem wir folgendes tun:
 
 ```dart
 Consumer(
@@ -40,7 +42,7 @@ Consumer(
 )
 ```
 
-Then, we can create our `FutureProvider` which will take care of the request:
+Dann können wir einen `FutureProvider` erstellen, der sich um die Anfrage kümmern wird:
 
 ```dart
 final searchProvider = FutureProvider<

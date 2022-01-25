@@ -8,21 +8,22 @@ import 'todos.dart';
 /* SNIPPET START */
 
 class TodoListView extends ConsumerWidget {
-  const TodoListView({Key? key}): super(key: key);
+  const TodoListView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // rebuild the widget when the todo list changes
+    // Widget neu aufbauen, wenn sich die ToDo-Liste ändert
     List<Todo> todos = ref.watch(todosProvider);
 
-    // Let's render the todos in a scrollable list view
+    // Lassen Sie uns die ToDos in einer scrollbaren Listenansicht darstellen
     return ListView(
       children: [
         for (final todo in todos)
           CheckboxListTile(
             value: todo.completed,
-            // When tapping on the todo, change its completed status
-            onChanged: (value) => ref.read(todosProvider.notifier).toggle(todo.id),
+            // Wenn Sie auf das ToDo tippen, änder es seinen Erledigungsstatus
+            onChanged: (value) =>
+                ref.read(todosProvider.notifier).toggle(todo.id),
             title: Text(todo.description),
           ),
       ],
