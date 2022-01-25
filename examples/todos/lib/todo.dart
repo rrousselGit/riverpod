@@ -5,7 +5,7 @@ const _uuid = Uuid();
 
 /// A read-only description of a todo-item
 class Todo {
-  Todo({
+  const Todo({
     required this.description,
     required this.id,
     this.completed = false,
