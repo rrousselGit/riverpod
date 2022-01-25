@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart' show immutable;
 import 'package:riverpod/riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 const _uuid = Uuid();
 
 /// A read-only description of a todo-item
+@immutable
 class Todo {
   const Todo({
     required this.description,
