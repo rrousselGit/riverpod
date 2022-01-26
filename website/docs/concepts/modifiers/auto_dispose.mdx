@@ -6,19 +6,19 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
 A common use-case when using providers is to want to destroy the state of a provider
-when it is no-longer used.
+when it is no longer used.
 
 There are multiple reasons for doing so, such as:
 
-- When using Firebase, to close the connection and avoid unnecessary cost
+- When using Firebase, to close the connection and avoid unnecessary cost.
 - To reset the state when the user leaves a screen and re-enters it.
 
-Providers comes with a built-in support for such use-case, through the `.autoDispose`
+Providers come with built-in support for such use-cases, through the `.autoDispose`
 modifier.
 
 ## Usage
 
-To tell Riverpod to destroy the state of a provider when it is no-longer used,
+To tell Riverpod to destroy the state of a provider when it is no longer used,
 simply append `.autoDispose` to your provider:
 
 ```dart
@@ -28,7 +28,7 @@ final userProvider = StreamProvider.autoDispose<User>((ref) {
 ```
 
 That's it. Now, the state of `userProvider` will automatically be destroyed
-when it is no-longer used.
+when it is no longer used.
 
 Note how the generic parameters are passed after `autoDispose` instead of before –
 `autoDispose` is not a named constructor.
@@ -50,9 +50,9 @@ Marking a provider with `autoDispose` also adds an extra property on `ref`: `mai
 
 The `maintainState` property is a boolean (`false` by default) that allows
 the provider to tell Riverpod if the state of the provider should be preserved
-even if no-longer listened.
+even if it is no longer being listened to.
 
-A use-case would be to set this flag to `true` after an HTTP request have
+A use-case would be to set this flag to `true` after an HTTP request has
 completed:
 
 ```dart
@@ -68,10 +68,10 @@ it, then the request will be performed again.
 But if the request completed successfully, the state will be preserved
 and re-entering the screen will not trigger a new request.
 
-## Example: Canceling HTTP requests when no-longer used
+## Example: Canceling HTTP requests when no longer used
 
 The `autoDispose` modifier could be combined with [FutureProvider] and `ref.onDispose`
-to easily cancel HTTP requests when they are no-longer needed.
+to easily cancel HTTP requests when they are no longer needed.
 
 The goal is:
 
@@ -122,7 +122,7 @@ final secondProvider = Provider((ref) {
 
 This is undesired, as it would cause `firstProvider` to never be disposed.
 
-To fix, consider marking `secondProvider` with `.autoDispose` too:
+To fix this, consider marking `secondProvider` with `.autoDispose` too:
 
 ```dart
 final firstProvider = Provider.autoDispose((ref) => 0);

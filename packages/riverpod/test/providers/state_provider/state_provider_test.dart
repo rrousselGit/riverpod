@@ -404,7 +404,7 @@ void main() {
       expect(callCount, 1);
     });
 
-    test('creates a new controller when no-longer listened', () async {
+    test('creates a new controller when no longer listened to', () async {
       final container = createContainer();
       final provider = StateProvider.autoDispose((ref) => 0);
 
@@ -428,7 +428,7 @@ void main() {
   });
 
   group('StateProvider.family.autoDispose', () {
-    test('creates a new controller when no-longer listened', () async {
+    test('creates a new controller when no longer listened to', () async {
       final container = createContainer();
 
       StateProvider.family.autoDispose<int, String>((ref, id) {

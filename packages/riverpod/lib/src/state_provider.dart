@@ -20,7 +20,8 @@ class StateController<T> extends StateNotifier<T> {
   @override
   set state(T value) => super.state = value;
 
-  /// Calls a function with the current [state] and assign the result as new state
+  /// Calls a function with the current [state] and assigns the result as the
+  /// new state.
   ///
   /// This allows simplifying the syntax for updating the state when the update
   /// depends on the previous state, such that rather than:
@@ -38,7 +39,7 @@ class StateController<T> extends StateNotifier<T> {
 }
 
 /// {@template riverpod.stateprovider}
-/// A provider that expose a value which can be modified from outside.
+/// A provider that exposes a value that can be modified from outside.
 ///
 /// It can be useful for very simple states, like a filter or the currently
 /// selected item – which can then be combined with other providers or accessed

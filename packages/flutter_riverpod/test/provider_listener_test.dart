@@ -45,7 +45,7 @@ void main() {
       );
     });
 
-    testWidgets('receives the buildContext as parameter on change',
+    testWidgets('receives the buildContext as a parameter on change',
         (tester) async {
       final provider = StateProvider((ref) => 0);
       final key = GlobalKey();

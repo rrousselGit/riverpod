@@ -8,18 +8,18 @@ String? modifierName(String? from, String modifier) {
   return from == null ? null : '$from.$modifier';
 }
 
-/// An utility for safely manipulating asynchronous data.
+/// A utility for safely manipulating asynchronous data.
 ///
 /// By using [AsyncValue], you are guaranteed that you cannot forget to
 /// handle the loading/error state of an asynchronous operation.
 ///
-/// It also expose some utilities to nicely convert an [AsyncValue] to
+/// It also exposes some utilities to nicely convert an [AsyncValue] to
 /// a different object.
 /// For example, a Flutter Widget may use [when] to convert an [AsyncValue]
 /// into either a progress indicator, an error screen, or to show the data:
 ///
 /// ```dart
-/// /// A provider that asynchronously expose the current user
+/// /// A provider that asynchronously exposes the current user
 /// final userProvider = StreamProvider<User>((_) async* {
 ///   // fetch the user
 /// });
@@ -74,7 +74,7 @@ abstract class AsyncValue<T> {
   const factory AsyncValue.loading() = AsyncLoading<T>;
   // coverage:ignore-end
 
-  /// Creates an [AsyncValue] in error state.
+  /// Creates an [AsyncValue] in the error state.
   ///
   /// The parameter [error] cannot be `null`.
   // coverage:ignore-start
@@ -242,11 +242,11 @@ class AsyncLoading<T> extends AsyncValue<T> {
   int get hashCode => runtimeType.hashCode;
 }
 
-/// Creates an [AsyncValue] in error state.
+/// Creates an [AsyncValue] in the error state.
 ///
 /// The parameter [error] cannot be `null`.
 class AsyncError<T> extends AsyncValue<T> {
-  /// Creates an [AsyncValue] in error state.
+  /// Creates an [AsyncValue] in the error state.
   ///
   /// The parameter [error] cannot be `null`.
   const AsyncError(this.error, {this.stackTrace, this.isRefreshing = false})
@@ -311,7 +311,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
     );
   }
 
-  /// Attempts to synchronously.
+  /// Attempts to synchronously read the data.
   ///
   /// On error, this will rethrow the error.
   /// If loading, will return `null`.

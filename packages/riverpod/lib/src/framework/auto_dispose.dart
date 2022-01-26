@@ -1,10 +1,10 @@
 part of '../framework.dart';
 
 /// A [Ref] for providers that are automatically destroyed when
-/// no-longer used.
+/// no longer used.
 ///
 /// The difference with [Ref] is that it has an extra
-/// [maintainState] property, to help determine if the state can be destroyed
+/// [maintainState] property to help determine if the state can be destroyed
 ///  or not.
 abstract class AutoDisposeRef extends Ref {
   /// Whether to destroy the state of the provider when all listeners are removed or not.
@@ -34,7 +34,7 @@ abstract class AutoDisposeRef extends Ref {
 }
 
 /// {@template riverpod.AutoDisposeProviderBase}
-/// A base class for providers that destroy their state when no-longer listened.
+/// A base class for providers that destroy their state when no longer listened to.
 ///
 /// See also:
 ///

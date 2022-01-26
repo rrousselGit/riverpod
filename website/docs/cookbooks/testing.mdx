@@ -36,7 +36,7 @@ lengthy `setUp`/`tearDown`.
 But the reality is: While providers are declared as globals, the state of a provider
 is **not** global.
 
-Instead, it is stored in an object named [ProviderContainer], that you may have
+Instead, it is stored in an object named [ProviderContainer], which you may have
 seen if you looked at the dart-only examples.  
 If you haven't, know that this [ProviderContainer] object is implicitly created
 by [ProviderScope], the widget that enables [Riverpod] on our project.
@@ -79,7 +79,7 @@ A common real-world application may have the following objects:
   to perform HTTP requests.
 
 - An object that manages the application state, and may use `Repository` to perform
-  HTTP requests based on different factors.  
+  HTTP requests based on different factors.
   This may be a `ChangeNotifier`, `Bloc`, or even a provider.
 
 Using [Riverpod], this may be represented as follows:
