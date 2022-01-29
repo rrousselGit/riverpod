@@ -1,7 +1,7 @@
 part of '../state_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [controller], the [StateController] currently exposed by this providers.
+/// - [controller], the [StateController] currently exposed by this provider.
 abstract class StateProviderRef<State> implements Ref {
   /// The [StateController] currently exposed by this provider.
   ///

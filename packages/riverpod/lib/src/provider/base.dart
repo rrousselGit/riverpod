@@ -1,7 +1,7 @@
 part of '../provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [state], the value currently exposed by this providers.
+/// - [state], the value currently exposed by this provider.
 abstract class ProviderRef<State> implements Ref {
   /// Obtains the state currently exposed by this provider.
   ///
@@ -34,7 +34,7 @@ abstract class ProviderRef<State> implements Ref {
 ///   Even if the state is loaded asynchronously.
 ///
 /// - Providers allow easily and efficiently listening to a piece of state.\
-///   They can be accessed in a single line of code, and offers many way to optimize
+///   They can be accessed in a single line of code, and offer many ways to optimize
 ///   your application.
 ///
 /// ## Creating a provider
@@ -86,7 +86,7 @@ abstract class ProviderRef<State> implements Ref {
 /// final countryProvider = Provider((ref) => 'England');
 /// ```
 ///
-/// The fact that both providers creates a `String` does not cause conflicts.
+/// The fact that both providers create a `String` does not cause conflicts.
 /// We will be able to read both values independently from each other without issue.
 ///
 /// **WARNING**
@@ -102,7 +102,7 @@ abstract class ProviderRef<State> implements Ref {
 /// ## Combining providers
 ///
 /// We've previously seen how to create a simple provider. But the reality is,
-/// in many situation a provider will want to read the state of another provider.
+/// in many situations a provider will want to read the state of another provider.
 ///
 /// To do that, we can use the `ref` object passed to the callback of our provider,
 /// and use its `watch` method.
@@ -200,7 +200,7 @@ abstract class ProviderRef<State> implements Ref {
 ///
 /// This is done by using the `ref` object that is passed to the callback of all providers.
 ///
-/// That `ref` object expose an `onDispose` method, which can be used to listen to
+/// That `ref` object exposes an `onDispose` method, which can be used to listen to
 /// the state destruction even to perform some task.
 ///
 /// The following example uses `ref.onDispose` to close a `StreamController`:
@@ -221,7 +221,7 @@ abstract class ProviderRef<State> implements Ref {
 /// See also:
 ///
 /// - [Provider.autoDispose], to automatically destroy the state of a provider
-///   when that provider is no-longer listened.
+///   when that provider is no longer listened to.
 /// - [Provider.family], to allow providers to create a value from external parameters.
 /// {@endtemplate}
 class ProviderElement<State> extends ProviderElementBase<State>

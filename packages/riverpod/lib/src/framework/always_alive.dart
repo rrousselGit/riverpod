@@ -9,7 +9,7 @@ part of '../framework.dart';
 mixin AlwaysAliveProviderListenable<State>
     implements ProviderListenable<State> {}
 
-/// A base class for providers that never disposes themselves.
+/// A base class for providers that never dispose themselves.
 ///
 /// This is the default base class for providers, unless a provider was marked
 /// with the `.autoDispose` modifier, like: `Provider.autoDispose(...)`

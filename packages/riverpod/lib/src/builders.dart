@@ -19,7 +19,7 @@ class StateProviderBuilder {
   const StateProviderBuilder();
 
   /// {@template riverpod.autoDispose}
-  /// Marks the provider as automatically disposed when no-longer listened.
+  /// Marks the provider as automatically disposed when no longer listened to.
   ///
   /// Some typical use-cases:
   ///
@@ -34,7 +34,7 @@ class StateProviderBuilder {
   ///
   /// The `maintainState` property is a boolean (`false` by default) that allows
   /// the provider to tell Riverpod if the state of the provider should be preserved
-  /// even if no-longer listened.
+  /// even if no longer listened to.
   ///
   /// A use-case would be to set this flag to `true` after an HTTP request have
   /// completed:
@@ -116,7 +116,7 @@ class StateProviderBuilder {
   ///   }
   ///   ```
   ///
-  /// - Have a "user provider" that receives the user ID as parameter
+  /// - Have a "user provider" that receives the user ID as a parameter
   ///
   ///   ```dart
   ///   final userFamily = FutureProvider.family<User, int>((ref, userId) async {
@@ -538,9 +538,9 @@ class StreamProviderFamilyBuilder {
   }
 }
 
-/// Builds a [AutoDisposeStateProvider].
+/// Builds an [AutoDisposeStateProvider].
 class AutoDisposeStateProviderBuilder {
-  /// Builds a [AutoDisposeStateProvider].
+  /// Builds an [AutoDisposeStateProvider].
   const AutoDisposeStateProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
@@ -562,9 +562,9 @@ class AutoDisposeStateProviderBuilder {
   }
 }
 
-/// Builds a [AutoDisposeStateProviderFamily].
+/// Builds an [AutoDisposeStateProviderFamily].
 class AutoDisposeStateProviderFamilyBuilder {
-  /// Builds a [AutoDisposeStateProviderFamily].
+  /// Builds an [AutoDisposeStateProviderFamily].
   const AutoDisposeStateProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
@@ -581,9 +581,9 @@ class AutoDisposeStateProviderFamilyBuilder {
   }
 }
 
-/// Builds a [AutoDisposeStateNotifierProvider].
+/// Builds an [AutoDisposeStateNotifierProvider].
 class AutoDisposeStateNotifierProviderBuilder {
-  /// Builds a [AutoDisposeStateNotifierProvider].
+  /// Builds an [AutoDisposeStateNotifierProvider].
   const AutoDisposeStateNotifierProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
@@ -607,9 +607,9 @@ class AutoDisposeStateNotifierProviderBuilder {
   }
 }
 
-/// Builds a [AutoDisposeStateNotifierProviderFamily].
+/// Builds an [AutoDisposeStateNotifierProviderFamily].
 class AutoDisposeStateNotifierProviderFamilyBuilder {
-  /// Builds a [AutoDisposeStateNotifierProviderFamily].
+  /// Builds an [AutoDisposeStateNotifierProviderFamily].
   const AutoDisposeStateNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
@@ -629,9 +629,9 @@ class AutoDisposeStateNotifierProviderFamilyBuilder {
   }
 }
 
-/// Builds a [AutoDisposeProvider].
+/// Builds an [AutoDisposeProvider].
 class AutoDisposeProviderBuilder {
-  /// Builds a [AutoDisposeProvider].
+  /// Builds an [AutoDisposeProvider].
   const AutoDisposeProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
@@ -653,9 +653,9 @@ class AutoDisposeProviderBuilder {
   }
 }
 
-/// Builds a [AutoDisposeProviderFamily].
+/// Builds an [AutoDisposeProviderFamily].
 class AutoDisposeProviderFamilyBuilder {
-  /// Builds a [AutoDisposeProviderFamily].
+  /// Builds an [AutoDisposeProviderFamily].
   const AutoDisposeProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
@@ -672,9 +672,9 @@ class AutoDisposeProviderFamilyBuilder {
   }
 }
 
-/// Builds a [AutoDisposeFutureProvider].
+/// Builds an [AutoDisposeFutureProvider].
 class AutoDisposeFutureProviderBuilder {
-  /// Builds a [AutoDisposeFutureProvider].
+  /// Builds an [AutoDisposeFutureProvider].
   const AutoDisposeFutureProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
@@ -696,9 +696,9 @@ class AutoDisposeFutureProviderBuilder {
   }
 }
 
-/// Builds a [AutoDisposeFutureProviderFamily].
+/// Builds an [AutoDisposeFutureProviderFamily].
 class AutoDisposeFutureProviderFamilyBuilder {
-  /// Builds a [AutoDisposeFutureProviderFamily].
+  /// Builds an [AutoDisposeFutureProviderFamily].
   const AutoDisposeFutureProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
@@ -716,9 +716,9 @@ class AutoDisposeFutureProviderFamilyBuilder {
   }
 }
 
-/// Builds a [AutoDisposeStreamProvider].
+/// Builds an [AutoDisposeStreamProvider].
 class AutoDisposeStreamProviderBuilder {
-  /// Builds a [AutoDisposeStreamProvider].
+  /// Builds an [AutoDisposeStreamProvider].
   const AutoDisposeStreamProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
@@ -740,9 +740,9 @@ class AutoDisposeStreamProviderBuilder {
   }
 }
 
-/// Builds a [AutoDisposeStreamProviderFamily].
+/// Builds an [AutoDisposeStreamProviderFamily].
 class AutoDisposeStreamProviderFamilyBuilder {
-  /// Builds a [AutoDisposeStreamProviderFamily].
+  /// Builds an [AutoDisposeStreamProviderFamily].
   const AutoDisposeStreamProviderFamilyBuilder();
 
   /// {@macro riverpod.family}

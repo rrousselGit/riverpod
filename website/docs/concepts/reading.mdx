@@ -34,7 +34,7 @@ or another provider.
 
 ### Obtaining a "ref" from a provider
 
-All providers receive a "ref" as parameter:
+All providers receive a "ref" as a parameter:
 
 ```dart
 final provider = Provider((ref) {
@@ -142,7 +142,7 @@ and declarative, which makes it more maintainable.
 ### Using ref.watch to observe a provider
 
 `ref.watch` is used inside the `build` method of a widget or
-inside the body of a provider to have the widget/provider listen to provider:
+inside the body of a provider to have the widget/provider listen to a provider:
 
 For example, a provider could use `ref.watch` to combine multiple providers
 into a new value.
@@ -154,7 +154,7 @@ We could have two providers:
   (none, show only completed tasks, ...)
 - `todosProvider`, a provider that exposes the entire list of tasks
 
-With this, using `ref.watch`, we could make a third provider that combines both providers to
+And by using `ref.watch`, we could make a third provider that combines both providers to
 create a filtered list of tasks:
 
 <CodeBlock>{trimSnippet(watch)}</CodeBlock>
@@ -176,7 +176,7 @@ to show the new value.
 
 :::caution
 The `watch` method should not be called asynchronously,
-like inside `onPressed` or a [ElevatedButton]. Nor should it be used
+like inside an `onPressed` of an [ElevatedButton]. Nor should it be used
 inside `initState` and other [State] life-cycles.
 
 In those cases, consider using `ref.read` instead.
@@ -187,13 +187,13 @@ In those cases, consider using `ref.read` instead.
 Similarly to `ref.watch`, it is possible to use `ref.listen` to observe a provider.
 
 The main difference between them is that, rather than rebuilding the widget/provider
-if the listened provider changes, using `ref.listen` will instead call a custom function.
+if the listened to provider changes, using `ref.listen` will instead call a custom function.
 
-That can be useful to perform actions when a certain change happens, such that
-to show a snackbar when an error happens.
+That can be useful for performing actions when a certain change happens, such
+as showing a snackbar when an error happens.
 
-The `ref.listen` method needs 2 positional arguments, the first one is the Provider and the second one is the callback function that we want to execute when the state change.
-The callback function when called will return 2 values, the value of the previous State and the value of the new State. 
+The `ref.listen` method needs 2 positional arguments, the first one is the Provider and the second one is the callback function that we want to execute when the state changes.
+The callback function when called will be passed 2 values, the value of the previous State and the value of the new State.
 
 The `ref.listen` method can be used inside the body of a provider:
 
@@ -205,7 +205,7 @@ or inside the `build` method of a widget:
 
 :::caution
 The `listen` method should not be called asynchronously,
-like inside `onPressed` or an [ElevatedButton]. Nor should it be used
+like inside an `onPressed` of an [ElevatedButton]. Nor should it be used
 inside `initState` and other [State] life-cycles.
 :::
 
@@ -213,8 +213,8 @@ inside `initState` and other [State] life-cycles.
 
 The `ref.read` method is a way to obtain the state of a provider without listening to it.
 
-It is commonly used inside functions triggered on user interactions.
-For example, we can use `ref.read` to increment a counter when a user click on a button:
+It is commonly used inside functions triggered by user interactions.
+For example, we can use `ref.read` to increment a counter when a user clicks a button:
 
 <CodeBlock>{trimSnippet(read)}</CodeBlock>
 
@@ -235,10 +235,9 @@ by doing:
 But this is a very bad practice and can cause bugs that are difficult to track.
 
 Using `ref.read` this way is commonly associated with the thought "The value
-exposed by a provider never changes so using 'ref.read' is safe".  
-The problem with this assumption is that, while today that provider
-may indeed never update its value, there is no guarantee that tomorrow will be
-the same.
+exposed by a provider never changes so using 'ref.read' is safe". The problem
+with this assumption is that, while today that provider may indeed never update
+its value, there is no guarantee that tomorrow will be the same.
 
 Software tends to change a lot, and it is likely that in the future, a value
 that previously never changed will need to change.  
@@ -267,7 +266,7 @@ we could do:
 Both snippets achieve the same effect: our button will not rebuild when the
 counter increments.
 
-On the other hand, the second approach supports cases where the counter is reset.  
+On the other hand, the second approach supports cases where the counter is reset.
 For example, another part of the application could call:
 
 ```dart
@@ -282,10 +281,10 @@ Whereas using `ref.watch` correctly rebuilds the button to use the new `StateCon
 
 ## Deciding what to read
 
-Depending on the provider you want to listen, you may have multiple possible
-values that you can listen.
+Depending on the provider you want to listen to, you may have multiple possible
+values that you can listen to.
 
-As example, consider the following [StreamProvider]:
+As an example, consider the following [StreamProvider]:
 
 ```dart
 final userProvider = StreamProvider<User>(...);
@@ -380,7 +379,7 @@ However, if they are equal (such as when the age changed), Riverpod will not
 rebuild the widget.
 
 :::info
-It is possible to use `select` with `ref.listen` as well:
+It is also possible to use `select` with `ref.listen`:
 
 ```dart
 ref.listen<String>(

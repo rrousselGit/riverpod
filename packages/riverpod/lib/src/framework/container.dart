@@ -634,7 +634,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
 
   /// Release all the resources associated with this [ProviderContainer].
   ///
-  /// This will destroy the state of all providers associated to this
+  /// This will destroy the state of all providers associated with this
   /// [ProviderContainer] and call [Ref.onDispose] listeners.
   void dispose() {
     if (_disposed) {
@@ -818,7 +818,7 @@ abstract class Override {}
 ///
 /// Circular dependencies are both not supported for performance reasons
 /// and maintainability reasons.
-/// Consider reading about unidirectional data-flow to learn about the
+/// Consider reading about unidirectional data flow to learn about the
 /// benefits of avoiding circular dependencies.
 class CircularDependencyError extends Error {
   CircularDependencyError._();

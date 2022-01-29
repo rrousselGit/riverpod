@@ -11,7 +11,7 @@ part 'change_notifier_provider/base.dart';
 /// {@template riverpod.changenotifierprovider}
 /// Creates a [ChangeNotifier] and subscribes to it.
 ///
-/// Note: By using Riverpod, [ChangeNotifier] will no-longer be O(N^2) for
+/// Note: By using Riverpod, [ChangeNotifier] will no longer be O(N^2) for
 /// dispatching notifications, but instead O(N)
 /// {@endtemplate}
 T _listenNotifier<T extends ChangeNotifier?>(

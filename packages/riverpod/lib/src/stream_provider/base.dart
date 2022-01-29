@@ -1,7 +1,7 @@
 part of '../stream_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [ProviderRef.state], the value currently exposed by this providers.
+/// - [ProviderRef.state], the value currently exposed by this provider.
 abstract class StreamProviderRef<State> implements Ref {
   /// Obtains the state currently exposed by this provider.
   ///
@@ -52,7 +52,7 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   ///
   /// The stream obtained may change over time, if the [StreamProvider] is
   /// re-evaluated, such as when it is using [Ref.watch] and the
-  /// provider listened changes, or on [ProviderContainer.refresh].
+  /// provider being listened to changes, or on [ProviderContainer.refresh].
   ///
   /// If the [StreamProvider] was overridden using `overrideWithValue`,
   /// a stream will be generated and manipulated based on the [AsyncValue] used.
@@ -61,7 +61,7 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
       AsyncValueAsStreamProvider(this, from: from, argument: argument);
 
   /// {@template riverpod.streamprovider.future}
-  /// Exposes a [Future] which resolves with the last value or error emitted.
+  /// Exposes a [Future] that resolves with the last value or error emitted.
   ///
   /// This can be useful for scenarios where we want to read the current value
   /// exposed by a [StreamProvider], but also handle the scenario were no

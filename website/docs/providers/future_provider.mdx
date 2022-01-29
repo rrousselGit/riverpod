@@ -9,15 +9,15 @@ import configProvider from "!!raw-loader!/docs/providers/future_provider/config_
 import configConsumer from "!!raw-loader!/docs/providers/future_provider/config_consumer.dart";
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
-`FutureProvider` is the equivalent of [Provider] from asynchronous code.
+`FutureProvider` is the equivalent of [Provider] but for asynchronous code.
 
 `FutureProvider` is typically used for:
 
 - performing and caching asynchronous operations (such as network requests)
 - nicely handling error/loading states of asynchronous operations
-- combining multiple asynchronous values into another value.
+- combining multiple asynchronous values into another value
 
-`FutureProvider` gains a lot in combining it with [ref.watch]. This combination
+`FutureProvider` gains a lot when combined with [ref.watch]. This combination
 allows automatic re-fetching of some data when some variables change,
 ensuring that we always have the most up-to-date value.
 
