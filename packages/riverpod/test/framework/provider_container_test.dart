@@ -133,7 +133,7 @@ void main() {
       verifyOnly(listener, listener(0, 1));
     });
 
-    test('flushes listened providers even if they have no external listeners',
+    test('flushes listened-to providers even if they have no external listeners',
         () async {
       final dep = StateProvider((ref) => 0);
       final provider = Provider((ref) => ref.watch(dep.state).state);

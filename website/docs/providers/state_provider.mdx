@@ -16,7 +16,7 @@ import updateReadOnce from "!!raw-loader!/docs/providers/state_provider/update_r
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
 `StateProvider` is a provider that exposes a way to modify its state.
-It is a simplification of [StateNotifierProvier], designed to avoid
+It is a simplification of [StateNotifierProvider], designed to avoid
 having to write a [StateNotifier] class for very simple use-cases.
 
 `StateProvider` exists primarily to allow the modification of
@@ -30,7 +30,7 @@ The state of a `StateProvider` is typically one of:
 
 You should not use `StateProvider` if:
 
-- your state needs a validation logic
+- your state needs validation logic
 - your state is a complex object (such as a custom class, a list/map, ...)
 - the logic for modifying your state is more advanced than a simple `count++`.
 
@@ -45,10 +45,10 @@ project – as it centralizes the business logic of your state in a single place
 A real-world use-case of `StateProvider` would be to manage the state of
 simple form components like dropdowns/text fields/checkboxes.  
 In particular, we will see how to use `StateProvider` to implement a dropdown
-which allows changing how a list of products is sorted.
+that allows changing how a list of products is sorted.
 
 For the sake of simplicity, the list of products that we will obtain
-will be built directly in the application and be as followed:
+will be built directly in the application and will be as follows:
 
 <CodeBlock>{trimSnippet(product)}</CodeBlock>
 
@@ -114,7 +114,7 @@ We can use it to refactor our previous code to:
 
 <CodeBlock>{trimSnippet(updateReadOnce)}</CodeBlock>
 
-This change achieve the same effect while making the syntax a big better.
+This change achieves the same effect while making the syntax a bit better.
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
 [ref.read]: ../concepts/reading#using-refread-to-obtain-the-state-of-a-provider-once

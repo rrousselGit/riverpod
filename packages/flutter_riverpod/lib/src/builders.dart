@@ -17,7 +17,7 @@ class ChangeNotifierProviderBuilder {
   const ChangeNotifierProviderBuilder();
 
   /// {@template riverpod.autoDispose}
-  /// Marks the provider as automatically disposed when no-longer listened.
+  /// Marks the provider as automatically disposed when no longer listened to.
   ///
   /// Some typical use-cases:
   ///
@@ -32,7 +32,7 @@ class ChangeNotifierProviderBuilder {
   ///
   /// The `maintainState` property is a boolean (`false` by default) that allows
   /// the provider to tell Riverpod if the state of the provider should be preserved
-  /// even if no-longer listened.
+  /// even if no longer listened to.
   ///
   /// A use-case would be to set this flag to `true` after an HTTP request have
   /// completed:
@@ -114,7 +114,7 @@ class ChangeNotifierProviderBuilder {
   ///   }
   ///   ```
   ///
-  /// - Have a "user provider" that receives the user ID as parameter
+  /// - Have a "user provider" that receives the user ID as a parameter
   ///
   ///   ```dart
   ///   final userFamily = FutureProvider.family<User, int>((ref, userId) async {
@@ -322,9 +322,9 @@ class ChangeNotifierProviderFamilyBuilder {
   }
 }
 
-/// Builds a [AutoDisposeChangeNotifierProvider].
+/// Builds an [AutoDisposeChangeNotifierProvider].
 class AutoDisposeChangeNotifierProviderBuilder {
-  /// Builds a [AutoDisposeChangeNotifierProvider].
+  /// Builds an [AutoDisposeChangeNotifierProvider].
   const AutoDisposeChangeNotifierProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
@@ -347,9 +347,9 @@ class AutoDisposeChangeNotifierProviderBuilder {
   }
 }
 
-/// Builds a [AutoDisposeChangeNotifierProviderFamily].
+/// Builds an [AutoDisposeChangeNotifierProviderFamily].
 class AutoDisposeChangeNotifierProviderFamilyBuilder {
-  /// Builds a [AutoDisposeChangeNotifierProviderFamily].
+  /// Builds an [AutoDisposeChangeNotifierProviderFamily].
   const AutoDisposeChangeNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}

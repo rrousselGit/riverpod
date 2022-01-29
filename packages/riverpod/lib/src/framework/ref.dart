@@ -6,7 +6,7 @@ part of '../framework.dart';
 ///
 /// See also:
 ///
-/// - [read] and [watch], two methods that allows a provider to consume other providers.
+/// - [read] and [watch], two methods that allow a provider to consume other providers.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
 abstract class Ref {
@@ -18,13 +18,13 @@ abstract class Ref {
 
   /// Adds a listener to perform an operation right before the provider is destroyed.
   ///
-  /// This typically happen when a provider marked with `.autoDispose` is no-longer
+  /// This typically happen when a provider marked with `.autoDispose` is no longer
   /// used, or when [ProviderContainer.dispose] is called.
   ///
   /// See also:
   ///
   /// - [Provider.autoDispose], a modifier which tell a provider that it should
-  ///   destroy its state when no-longer listened.
+  ///   destroy its state when no longer listened to.
   /// - [ProviderContainer.dispose], to destroy all providers associated with
   ///   a [ProviderContainer] at once.
   void onDispose(void Function() cb);
@@ -67,7 +67,7 @@ abstract class Ref {
   /// safer to use.
   T read<T>(ProviderBase<T> provider);
 
-  /// Obtains the state of a provider and cause the state to be re-evaluated
+  /// Obtains the state of a provider and causes the state to be re-evaluated
   /// when that provider emits a new value.
   ///
   /// Using [watch] allows supporting the scenario where we want to re-create
