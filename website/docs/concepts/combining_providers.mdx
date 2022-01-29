@@ -247,27 +247,6 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 });
 ```
 
-**PREFER** listening to only what you use:
-
-```dart
-final configProvider = StreamProvider<Configuration>(...);
-
-/// A provider that exposes only the current host
-final _hostProvider = FutureProvider<String>((ref) async {
-  final config = await ref.watch(configsProvider.future);
-  return config.host;
-});
-
-final productsProvider = FutureProvider<List<Product>>((ref) async {
-  // Listens only to the host. If something else in the configurations
-  // changes, this will not pointlessly re-evaluate our provider.
-  final host = await ref.watch(_hostProvider.future);
-
-  return dio.get('$host/products');
-});
-```
-
-You can also use `.select` in simple cases which will achieve the same effect.
 
 **PREFER** using select when a property of the object is used in one place:
 
@@ -283,8 +262,7 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 });
 ```
 
-However, if you will be using the host property in many different providers or widgets, it is better
-to separate it into it's own provider.
+This will only rebuild the `productsProvider` when the `host` changes.
 
 [provider]: ../providers/provider
 [stateprovider]: ../providers/state_provider

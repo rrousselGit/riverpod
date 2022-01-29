@@ -9,6 +9,7 @@ import counter from "!!raw-loader!/docs/concepts/reading_counter.dart";
 import consumerWidget from "!!raw-loader!/docs/concepts/reading_consumer_widget.dart";
 import consumerStatefulWidget from "!!raw-loader!/docs/concepts/reading_consumer_stateful_widget.dart";
 import consumerHookWidget from "!!raw-loader!/docs/concepts/reading_consumer_hook_widget.dart";
+import statefulHookConsumerWidget from "!!raw-loader!/docs/concepts/reading_stateful_hook_consumer_widget.dart";
 import consumerHook from "!!raw-loader!/docs/concepts/reading_consumer_hook.dart";
 import watch from "!!raw-loader!/docs/concepts/reading_watch.dart";
 import watchBuild from "!!raw-loader!/docs/concepts/reading_watch_build.dart";
@@ -95,10 +96,10 @@ An example would be:
 
 #### Extending StatefulHookConsumerWidget instead of HookWidget
 
-This option is for [flutter_hooks] users. Although Hooks and riverpod [Provider]s are a general replacement for
-management of local state, there has been requests for a StatefulWidget version of [HookConsumerWidget].
-This variant is called [StatefulHookConsumerWidget] and is a [ConsumerStatefulWidget] that allows for usage of
-[flutter_hooks].
+This option is for [flutter_hooks] users, who need to use [StatefulWidget] lifecycle methods in addition to hooks.
+
+An example would be:
+<CodeBlock>{trimSnippet(statefulHookConsumerWidget)}</CodeBlock>
 
 #### Consumer and HookConsumer widgets
 
@@ -208,10 +209,9 @@ like inside `onPressed` or an [ElevatedButton]. Nor should it be used
 inside `initState` and other [State] life-cycles.
 :::
 
-### Using ref.read to obtain the state of a provider at the current moment
+### Using ref.read to obtain the state of a provider
 
-The `ref.read` method is a way to obtain the state of a provider, without any
-extra effect.
+The `ref.read` method is a way to obtain the state of a provider without listening to it.
 
 It is commonly used inside functions triggered on user interactions.
 For example, we can use `ref.read` to increment a counter when a user click on a button:
@@ -219,7 +219,7 @@ For example, we can use `ref.read` to increment a counter when a user click on a
 <CodeBlock>{trimSnippet(read)}</CodeBlock>
 
 :::note
-Using `ref.read` should be avoided as much as possible in the widget tree (except for in callbacks)
+Using `ref.read` should be avoided as much as possible because it is not reactive.
 
 It exists for cases where using `watch` or `listen` would cause issues.
 If you can, it is almost always better to use `watch`/`listen`, especially `watch`.

@@ -103,14 +103,14 @@ There are multiple types of providers for multiple different use cases.
 With all of these providers available, it is sometimes difficult to understand when to use one provider type over another.
 Use the table below to choose a provider that fits what you want to provide to the widget tree.
 
-| Provider Type          | Provider Create Function             | Example Use Case                                                     |
-| ---------------------- | ------------------------------------ | -------------------------------------------------------------------- |
-| Provider               | Returns any type                     | A service class / computed property (filtered list)                  |
-| StateProvider          | Returns any type                     | A filter condition / simple state object                             |
-| FutureProvider         | Returns a Future of any type         | A result from an API call                                            |
-| StreamProvider         | Returns a Stream of any type         | A stream of results from an API                                      |
-| StateNotifierProvider  | Returns a subclass of StateNotifier  | A complex state object that is immutable except through an interface |
-| ChangeNotifierProvider | Returns a subclass of ChangeNotifier | A complex state object that requires mutability                      |
+| Provider Type            | Provider Create Function             | Example Use Case                                                     |
+| ------------------------ | ------------------------------------ | -------------------------------------------------------------------- |
+| [Provider]               | Returns any type                     | A service class / computed property (filtered list)                  |
+| [StateProvider]          | Returns any type                     | A filter condition / simple state object                             |
+| [FutureProvider]         | Returns a Future of any type         | A result from an API call                                            |
+| [StreamProvider]         | Returns a Stream of any type         | A stream of results from an API                                      |
+| [StateNotifierProvider]  | Returns a subclass of StateNotifier  | A complex state object that is immutable except through an interface |
+| [ChangeNotifierProvider] | Returns a subclass of ChangeNotifier | A complex state object that requires mutability                      |
 
 :::caution
 While all providers have their purpose, [ChangeNotifierProvider]s are not recommended for scalable applications, 
@@ -165,6 +165,10 @@ Alternatively, you can see [How to combine providers](/docs/concepts/combining_p
 [flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
 [provider]: ../providers/provider
-[streamprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StreamProvider-class.html
+[streamprovider]: ../providers/stream_provider
+[futureprovider]: ../providers/future_provider
+[stateprovider]: ../providers/state_provider
 [statenotifierprovider]: ../providers/state_notifier_provider
+[changenotifierprovider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ChangeNotifierProvider-class.html
+
 [providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
