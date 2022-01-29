@@ -262,8 +262,9 @@ abstract class ProviderElementBase<State> implements Ref {
   var _debugSkipNotifyListenersAsserts = false;
 
   /// The provider associated to this [ProviderElementBase], before applying overrides.
-  ProviderBase<State> get origin => _origin;
-  late ProviderBase<State> _origin;
+  // Not typed as <State> because of https://github.com/rrousselGit/river_pod/issues/1100
+  ProviderBase<Object?> get origin => _origin;
+  late ProviderBase<Object?> _origin;
 
   /// The provider associated to this [ProviderElementBase], after applying overrides.
   ProviderBase<State> get provider => _provider;

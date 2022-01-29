@@ -8,6 +8,22 @@ import 'uni_directional_test.dart';
 void main() {
   group('ProviderContainer', () {
     test(
+        'when using overrideWithProvider, handles overriding with a more specific provider type',
+        () {
+      final fooProvider = Provider<Foo>((ref) => Foo());
+
+      final container = createContainer(
+        overrides: [
+          fooProvider.overrideWithProvider(
+            Provider<Bar>((ref) => Bar()),
+          ),
+        ],
+      );
+
+      expect(container.read(fooProvider), isA<Bar>());
+    });
+
+    test(
         'when the same provider is overridden multiple times at once, uses the latest override',
         () {
       final provider = Provider((ref) => 0);
@@ -463,3 +479,7 @@ void main() {
     );
   });
 }
+
+class Foo {}
+
+class Bar extends Foo {}
