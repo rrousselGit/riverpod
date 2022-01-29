@@ -313,7 +313,8 @@ final alwaysAlive = Provider((ref) {
     verifyNoMoreInteractions(onDispose);
   });
 
-  test("maintainState to true don't dispose the state when no longer listened to",
+  test(
+      "maintainState to true don't dispose the state when no longer listened to",
       () async {
     var value = 42;
     final onDispose = OnDisposeMock();
