@@ -4,7 +4,7 @@
     "description": "The title of the 404 page"
   },
   "theme.NotFound.p1": {
-    "message": "No pudimos encontrar por lo que estabas buscando.",
+    "message": "No pudimos encontrar lo que estabas buscando.",
     "description": "The first paragraph of the 404 page"
   },
   "theme.NotFound.p2": {
@@ -227,7 +227,7 @@
     "description": "The homepage input placeholder"
   },
   "home.recompute_title": {
-    "message": "Recalcular el estado y reconstruir el interfaz solo cuando sea necesario."
+    "message": "Recalcular el estado y reconstruir el interfaz solo cuando sea necesario"
   },
   "home.recompute_body": {
     "message": "Ya no tenemos que ordenar y/o filtrar listas dentro del método {build} o tener que recurrir a un mecanismo de caché avanzado.{br}{br} Con {Provider} y {families}, puedes ordenar tus listas o hacer solicitudes HTTP solo cuando realmente lo necesites."
@@ -242,7 +242,7 @@
     "message": "Inspecciona tu estado en el devtool"
   },
   "home.devtool_body": {
-    "message": "Usando Riverpod, por defecto, tu estado es visible dentro del devtool de Flutter. Por si fuera poco, una herramienta integral de inspección de estados esta en camino."
+    "message": "Usando Riverpod, por defecto, tu estado es visible dentro del devtool de Flutter. Por si fuera poco, una herramienta integral de inspección de estados esta en desarrollo."
   },
   "home.create_provider": {
     "message": "Crea un Provider"

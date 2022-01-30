@@ -24,7 +24,7 @@
     "description": "The label for category Official examples in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Third party examples": {
-    "message": "Ejemplos de la comunidad",
+    "message": "Ejemplos de terceros",
     "description": "The label for category Third party examples in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Api references": {
