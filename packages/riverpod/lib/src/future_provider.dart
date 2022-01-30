@@ -22,7 +22,7 @@ part 'future_provider/base.dart';
 /// future completes.
 ///
 /// A common use-case for [FutureProvider] is to represent an asynchronous operation
-/// such as reading a file or making an HTTP request, that is then listened by the UI.
+/// such as reading a file or making an HTTP request, that is then listened to by the UI.
 ///
 /// It can then be combined with:
 /// - [FutureProvider.family], for parameterizing the http request based on external
@@ -73,10 +73,10 @@ part 'future_provider/base.dart';
 /// See also:
 ///
 /// - [Provider], a provider that synchronously creates a value
-/// - [StreamProvider], a provider that asynchronously expose a value which
+/// - [StreamProvider], a provider that asynchronously exposes a value that
 ///   can change over time.
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
-/// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no-longer needed.
+/// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
 mixin _FutureProviderElementMixin<State>
     on ProviderElementBase<AsyncValue<State>> {

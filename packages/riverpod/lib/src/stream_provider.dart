@@ -13,7 +13,7 @@ part 'stream_provider/auto_dispose.dart';
 part 'stream_provider/base.dart';
 
 /// {@template riverpod.streamprovider}
-/// Creates a stream and expose its latest event.
+/// Creates a stream and exposes its latest event.
 ///
 /// [StreamProvider] is identical in behavior/usage to [FutureProvider], modulo
 /// the fact that the value created is a [Stream] instead of a [Future].
@@ -56,18 +56,18 @@ part 'stream_provider/base.dart';
 /// When listening to web sockets, firebase, or anything that consumes resources,
 /// it is important to use [StreamProvider.autoDispose] instead of simply [StreamProvider].
 ///
-/// This ensures that the resources are released when no-longer needed as,
+/// This ensures that the resources are released when no longer needed as,
 /// by default, a [StreamProvider] is almost never destroyed.
 ///
 /// See also:
 ///
 /// - [Provider], a provider that synchronously creates a value
-/// - [FutureProvider], a provider that asynchronously expose a value which
+/// - [FutureProvider], a provider that asynchronously exposes a value that
 ///   can change over time.
 /// - [AlwaysAliveAsyncProviderX.stream], to obtain the [Stream] created instead of an [AsyncValue].
 /// - [AlwaysAliveAsyncProviderX.future], to obtain the last value emitted by a [Stream].
 /// - [StreamProvider.family], to create a [StreamProvider] from external parameters
-/// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no-longer needed.
+/// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no longer needed.
 /// {@endtemplate}
 mixin _StreamProviderElementMixin<State>
     on ProviderElementBase<AsyncValue<State>> {

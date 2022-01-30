@@ -1,7 +1,7 @@
 part of '../future_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [ProviderRef.state], the value currently exposed by this providers.
+/// - [ProviderRef.state], the value currently exposed by this provider.
 abstract class AutoDisposeFutureProviderRef<State> implements AutoDisposeRef {
   /// Obtains the state currently exposed by this provider.
   ///
@@ -76,12 +76,12 @@ class AutoDisposeFutureProvider<State>
   }
 }
 
-/// The element of a [AutoDisposeFutureProvider]
+/// The element of an [AutoDisposeFutureProvider]
 class AutoDisposeFutureProviderElement<State>
     extends AutoDisposeProviderElementBase<AsyncValue<State>>
     with _FutureProviderElementMixin<State>
     implements AutoDisposeFutureProviderRef<State> {
-  /// The element of a [AutoDisposeFutureProvider]
+  /// The element of an [AutoDisposeFutureProvider]
   AutoDisposeFutureProviderElement(AutoDisposeFutureProvider<State> provider)
       : super(provider);
 
@@ -93,7 +93,7 @@ class AutoDisposeFutureProviderElement<State>
 }
 
 /// {@template riverpod.futureprovider.family}
-/// A class that allows building a [AutoDisposeFutureProvider] from an external parameter.
+/// A class that allows building an [AutoDisposeFutureProvider] from an external parameter.
 /// {@endtemplate}
 @sealed
 class AutoDisposeFutureProviderFamily<State, Arg>

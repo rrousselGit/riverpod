@@ -221,7 +221,7 @@ void main() {
   });
 
   test(
-      'when overridden with an error but provider.future is not listened, it should not emit an error to the zone',
+      'when overridden with an error but provider.future is not listened to, it should not emit an error to the zone',
       () async {
     final error = Error();
     final future = FutureProvider<int>((ref) async => 0);
@@ -352,7 +352,7 @@ void main() {
       expect(callCount, 2);
     });
 
-    test('.name is the listened name.future', () {
+    test('.name is the listened-to name.future', () {
       expect(
         FutureProvider((ref) async {}, name: 'hey').future.name,
         'hey.future',
@@ -365,7 +365,7 @@ void main() {
   });
 
   group('FutureProvider.autoDispose().future', () {
-    test('.name is the listened name.future', () {
+    test('.name is the listened-to name.future', () {
       expect(
         FutureProvider.autoDispose((ref) async {}, name: 'hey').future.name,
         'hey.future',
@@ -425,7 +425,7 @@ void main() {
       expect(callCount, 1);
     });
 
-    test('disposes the main provider when no-longer used', () async {
+    test('disposes the main provider when no longer used', () async {
       var didDispose = false;
       final provider = FutureProvider.autoDispose((ref) {
         ref.onDispose(() => didDispose = true);

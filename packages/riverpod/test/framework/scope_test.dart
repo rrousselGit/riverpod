@@ -517,7 +517,7 @@ Future<void> main() async {
 
     test(
         'when a provider with dependencies is overridden with a value, '
-        'it is no-longer automatically overridden if a lower container overrides a dependency',
+        'it is no longer automatically overridden if a lower container overrides a dependency',
         () {
       final dep = Provider((ref) => 0);
       final provider = Provider((ref) => ref.watch(dep), dependencies: [dep]);

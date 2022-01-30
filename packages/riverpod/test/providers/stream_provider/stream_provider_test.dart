@@ -592,7 +592,7 @@ void main() {
   });
 
   test(
-      'when overridden with an error but provider.stream is not listened, it should not emit an error to the zone',
+      'when overridden with an error but provider.stream is not listened to, it should not emit an error to the zone',
       () async {
     final error = Error();
     final stream = StreamProvider<int>((ref) => const Stream.empty());
@@ -785,7 +785,7 @@ void main() {
       expect(callCount, 2);
     });
 
-    test('.name is the listened name.stream', () {
+    test('.name is the listened-to name.stream', () {
       expect(
         StreamProvider<int>((ref) async* {}, name: 'hey').stream.name,
         'hey.stream',
@@ -796,7 +796,7 @@ void main() {
       );
     });
 
-    test('.name is the listened name.future', () {
+    test('.name is the listened-to name.future', () {
       expect(
         StreamProvider<int>((ref) async* {}, name: 'hey').future.name,
         'hey.future',
@@ -809,7 +809,7 @@ void main() {
   });
 
   group('StreamProvider.autoDispose().stream', () {
-    test('.name is the listened name.stream', () {
+    test('.name is the listened-to name.stream', () {
       expect(
         StreamProvider.autoDispose<int>((ref) async* {}, name: 'hey')
             .stream
@@ -822,7 +822,7 @@ void main() {
       );
     });
 
-    test('.name is the listened name.future', () {
+    test('.name is the listened-to name.future', () {
       expect(
         StreamProvider.autoDispose<int>((ref) async* {}, name: 'hey')
             .future
@@ -888,7 +888,7 @@ void main() {
       expect(callCount, 1);
     });
 
-    test('disposes the main provider when no-longer used', () async {
+    test('disposes the main provider when no longer used', () async {
       final controller = StreamController<int>(sync: true);
       addTearDown(controller.close);
       var didDispose = false;

@@ -323,7 +323,7 @@ void main() {
   });
 
   test(
-      'ProviderContainer.read(MyProvider.autoDispose) disposes the provider if not listened',
+      'ProviderContainer.read(MyProvider.autoDispose) disposes the provider if not listened to',
       () async {
     final provider = StateProvider.autoDispose((ref) => 0);
 
@@ -403,7 +403,7 @@ void main() {
   });
 
   group('ProviderSubscription', () {
-    test('no-longer call listeners anymore after close', () {
+    test('no longer call listeners anymore after close', () {
       final counter = Counter();
       final first = StateNotifierProvider<Counter, int>((ref) => counter);
       final provider = Provider((ref) => ref.watch(first));

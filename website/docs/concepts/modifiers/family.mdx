@@ -13,7 +13,7 @@ The `.family` modifier has one purpose: Creating a provider from external values
 Some common use-cases for `family` would be:
 
 - Combining [FutureProvider] with `.family` to fetch a `Message` from its ID
-- Passing the current `Locale` to a provider, so that we can handle translations:
+- Passing the current `Locale` to a provider, so that we can handle translations
 
 ## Usage
 
@@ -49,7 +49,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 
 :::info
 It is possible to use a family with different parameters simultaneously.  
-For example, we could use a `titleFamily` to read both the french and english
+For example, we could use a `titleFamily` to read both the French and English
 translations at the same time:
 
 ```dart
@@ -69,7 +69,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 For families to work correctly, it is critical for the parameter passed to
 a provider to have a consistent `hashCode` and `==`.
 
-Ideally the parameter should either be a primitive (bool/int/double/String),
+Ideally, the parameter should either be a primitive (bool/int/double/String),
 a constant (providers), or an immutable object that overrides `==` and `hashCode`.
 
 ### _PREFER_ using `autoDispose` when the parameter is not constant:
@@ -77,7 +77,7 @@ a constant (providers), or an immutable object that overrides `==` and `hashCode
 You may want to use families to pass the input of a search field to your provider.
 But that value can change often and never be reused.  
 This could cause memory leaks as, by default, a provider is never destroyed even
-if no-longer used.
+if no longer used.
 
 Using both `.family` and `.autoDispose` fixes that memory leak:
 

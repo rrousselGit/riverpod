@@ -64,7 +64,7 @@ See the [FAQ](#FAQ) if you have questions about what this means for [provider].
 
 ## Migration
 
-With the release of the version 1.0.0, the syntax for interacting with providers changed.
+With the release of version 1.0.0, the syntax for interacting with providers changed.
 
 See [the migration guide](https://riverpod.dev/docs/migration/0.14.0_to_1.0.0/) for more informations
 
@@ -96,7 +96,7 @@ as an attempt to fix the common problems that [provider] face.
 - Testable and composable
 - Improve the readability of [InheritedWidget]s when we have multiple of them
   (which would naturally lead to a deeply nested widget tree).
-- Make apps more scalable with a unidirectional data-flow.
+- Make apps more scalable with a unidirectional data flow.
 
 From there, [Riverpod] goes a few steps beyond:
 

@@ -19,7 +19,7 @@ class PreviousButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // We are now watching our new Provider
-    // Our widget is no-longer calculating whether we can go to the previous page.
+    // Our widget is no longer calculating whether we can go to the previous page.
 /* highlight-start */
     final canGoToPreviousPage = ref.watch(canGoToPreviousPageProvider);
 /* highlight-end */
