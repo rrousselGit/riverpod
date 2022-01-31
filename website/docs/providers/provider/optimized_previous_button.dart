@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final pageIndexProvider = StateProvider<int>((ref) => 0);
 
-// Ein Provider, der berechnet, ob der Benutzer zur vorherigen Seite wechseln darf
+// A provider which computes whether the user is allowed to go to the previous page
 /* highlight-start */
 final canGoToPreviousPageProvider = Provider<bool>((ref) {
 /* highlight-end */
@@ -14,12 +14,12 @@ final canGoToPreviousPageProvider = Provider<bool>((ref) {
 });
 
 class PreviousButton extends ConsumerWidget {
-  const PreviousButton({Key? key}) : super(key: key);
+  const PreviousButton({Key? key}): super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Wir beobachten jetzt unseren neuen Provider.
-    // Unser Widget berechnet nicht mehr, ob wir zur vorherigen Seite wechseln können.
+    // We are now watching our new Provider
+    // Our widget is no-longer calculating whether we can go to the previous page.
 /* highlight-start */
     final canGoToPreviousPage = ref.watch(canGoToPreviousPageProvider);
 /* highlight-end */

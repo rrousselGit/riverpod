@@ -12,90 +12,90 @@ import unoptimizedPreviousButton from "!!raw-loader!/docs/providers/provider/uno
 import optimizedPreviousButton from "!!raw-loader!/docs/providers/provider/optimized_previous_button.dart";
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
-`Provider` ist der einfachste aller Provider. Er erzeugt einen Wert... Und das war's auch schon.
+`Provider` is the most basic of all providers. It creates a value... And that's about it.
 
-`Provider` wird überlicherweise für folgendes eingesetzt:
+`Provider` is typically used for:
 
-- Zwischenspeicherung von Berechnungen
-- einen Wert anderer Provider (wie z.B. `Repository`/`HttpClient`) zur Verfügung stellen.
-- eine Möglichkeit für Tests oder Widgets, einen Wert außer Kraft zu setzen.
-- Verringerung des Neuaufbaus von Provider/Widgets, ohne `select` verwenden zu müssen.
+- caching computations
+- exposing a value to other providers (such as a `Repository`/`HttpClient`).
+- offering a way for tests or widgets to override a value.
+- reducing rebuilds of providers/widgets without having to use `select`.
 
-## Verwendung von `Provider` zur Zwischenspeicherung von Berechnungen
+## Using `Provider` to cache computations
 
-`Provider` ist ein leistungsfähiges Werkzeug für die Zwischenspeicherung synchroner 
-Operationen, wenn es mit [ref.watch] kombiniert wird.
+`Provider` is a powerful tool for caching synchronous operations when combined
+with [ref.watch].
 
-Ein Beispiel wäre das Filtern einer Liste von ToDos.  
-Da das Filtern einer Liste etwas kostspielig sein könnte, wollen wir idealerweise die 
-Liste der ToDo's nicht jedes Mal herausfiltern, wenn sich unsere Anwendung neu aufbaut.   
-In dieser Situation könnten wir `Provider` verwenden, um den Filter für uns zu erledigen.
+An example would be filtering a list of todos.  
+Since filtering a list could be slightly expensive, we ideally do not want to
+filter out list of todos whenever our application re-renders.  
+In this situation, we could use `Provider` to do the filter for us.
 
-Dazu nehmen wir an, dass unsere Anwendung einen bestehenden [StateNotifierProvider] hat, 
-der eine Liste von Todos bearbeitet:
+For that, assume that our application have an existing [StateNotifierProvider]
+which manipulates a list of todos:
 
 <CodeBlock>{trimSnippet(todo)}</CodeBlock>
 
-Von dort aus können wir `Provider` verwenden, um die gefilterte Liste der ToDo's zu veröffentlichen, 
-die nur nur die erledigten Aufgaben:
+From there, we can use `Provider` to expose the filtered list of todos, showing
+only the completed todos:
 
 <CodeBlock>{trimSnippet(completedTodos)}</CodeBlock>
 
-Indem wir auf `completedTodosProvider` lauschen, ist die UI nun in der Lage, die Liste der 
-erledigten ToDos anzuzeigen:
+With this code, our UI is now able to show the list of the completed todos
+by listening to `completedTodosProvider`:
 
 <CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
 
-Das Interessante ist, dass die Listenfilterung jetzt zwischengespeichert wird.
+The interesting part is, the list filtering is now cached.
 
-Das bedeutet, dass die Liste der erledigten ToDos nicht neu berechnet wird, bis 
-ToDos hinzugefügt/entfernt/aktualisiert werden, selbst wenn wir die Liste der 
-erledigten ToDos mehrmals lesen.
+Meaning that the list of completed todos will not be recomputed until
+todos are added/removed/updated, even if we are reading the list of completed
+todos multiple times.
 
-Beachten Sie, dass wir den Cache nicht mehr manuell ungültig machen müssen, wenn 
-sich die Liste der ToDos ändert. Der `Provider` ist automatisch in der Lage zu wissen, 
-wann das Ergebnis neu berechnet werden muss dank [ref.watch].
+Note how we do not need to manually invalidate the cache when the list of todos
+changes. `Provider` is automatically able to know when the result must be recomputed
+thanks to [ref.watch].
 
-## Verringerung von Provider/Widget Neuerstellungen durch Verwendung `Provider`
+## Reducing provider/widget rebuilds by using `Provider`
 
-Ein einzigartiger Aspekt von `Provider` ist, dass selbst wenn `Provider` neu berechnet 
-wird (typischerweise bei der Verwendung von [ref.watch]), werden die Widgets/Provider, 
-die darauf lauschen, nicht aktualisiert, es sei denn, der Wert hat sich geändert.
+A unique aspect of `Provider` is that even when `Provider` is recomputed
+(typically when using [ref.watch]), it will not update the widgets/providers
+that listens to it unless the value changed.
 
-Ein Beispiel aus der realen Welt wäre das Aktivieren/Deaktivieren der vorherigen/nächsten Schaltflächen
-in einer paginierten Ansicht:
+A real world example would be for enabling/disabling previous/next buttons
+of a paginated view:
 
 ![stepper example](https://user-images.githubusercontent.com/134939/47580830-31263a00-d950-11e8-9b61-0eaddab2709e.png)
 
-In unserem Fall werden wir uns speziell auf die Schaltfläche "Zurück" konzentrieren.  
-Eine naive Implementierung einer solchen Schaltfläche wäre ein Widget, das den
-aktuellen Seitenindex ermittelt, und wenn dieser Index gleich 0 ist, würden wir die Schaltfläche deaktivieren.
+In our case, we will focus specifically on the "previous" button.  
+A naïve implementation of such button would be a widget which obtains the
+current page index, and if that index is equal to 0, we would disable the button.
 
-Der Code könnte so aussehen:
+This code could be:
 
 <CodeBlock>{trimSnippet(unoptimizedPreviousButton)}</CodeBlock>
 
-Das Problem bei diesem Code ist, dass die Schaltfläche "Zurück" jedes Mal neu erstellt wird, 
-wenn wir die aktuelle Seite wechseln. In der idealen Welt würden wir wollen, dass die 
-Schaltfläche nur beim Wechsel zwischen aktiviert und deaktiviert neu aufgebaut wird.
+The issue with this code is that whenever we change the current page, the "previous"
+button will rebuild.  
+In the ideal world, we would want the button to rebuild only when changing between
+activated and deactivated.
 
-Das Problem besteht darin, dass wir berechnen, ob der Benutzer direkt über die Schaltfläche 
-"Zurück" zur vorherigen Seite wechseln darf.
+The root of the issue here is that we are computing whether the user is
+allowed to go to the previous page directly within the "previous" button.
 
-Eine Möglichkeit, dieses Problem zu lösen, besteht darin, diese Logik außerhalb des Widgets 
-und in einen `Provider` auszulagern:
+A way to solve this is to extract this logic outside of the widget and into a `Provider`:
 
 <CodeBlock>{trimSnippet(optimizedPreviousButton)}</CodeBlock>
 
-Durch dieses kleine Refactoring wird unser `PreviousButton` Widget nicht mehr neu aufgebaut, wenn 
-sich der Seitenindex ändert und das dank des `Provider`.
+By doing this small refactoring, our `PreviousButton` widget will no-longer
+rebuild when the page index changes thanks to `Provider`.
 
-Von nun an, wenn sich der Seitenindex ändert, wird unser `canGoToPreviousPageProvider` Provider 
-neu berechnet. Aber wenn sich der Wert, der durch den Provider zur Verfügung gestellt wrid, nicht ändert,
-dann wird `PreviousButton` nicht neu erstellt.
+From now on when the page index changes, our `canGoToPreviousPageProvider` provider
+will be recomputed. But if the value exposed by the provider does not change,
+then `PreviousButton` will not rebuild.
 
-Diese Änderung verbesserte die Leistung unserer Schaltfläche und hatte den interessanten 
-Vorteil, die Logik außerhalb unseres Widgets zu extrahieren.
+This change both improved the performances of our button and had the interesting
+benefit of extracting the logic outside of our widget.
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
 [statenotifierprovider]: ./state_notifier_provider

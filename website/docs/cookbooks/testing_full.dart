@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,21 +19,20 @@ class Todo {
   final bool completed;
 }
 
-// Wir veröffentlichen unser Repository in einem Provider
+// We expose our instance of Repository in a provider
 final repositoryProvider = Provider((ref) => Repository());
 
-/// Die Liste der Todos. Hier holen wir sie einfach mit dem
-/// [Repository] vom Server ab und tun nichts weiter.
+/// The list of todos. Here, we are simply fetching them from the server using
+/// [Repository] and doing nothing else.
 final todoListProvider = FutureProvider((ref) async {
-  // Erhält die Repository Instanz
+  // Obtains the Repository instance
   final repository = ref.read(repositoryProvider);
 
-  // Holen Sie die ToDos ab und stellen Sie sie der Benutzeroberfläche zur Verfügung.
+  // Fetch the todos and expose them to the UI.
   return repository.fetchTodos();
 });
 
-/// Eine mocked Implementierung von Repository, die eine vordefinierte Liste
-/// von ToDos zurückgibt
+/// A mocked implementation of Repository that returns a pre-defined list of todos
 class FakeRepository implements Repository {
   @override
   Future<List<Todo>> fetchTodos() async {
@@ -55,14 +55,16 @@ void main() {
   testWidgets('override repositoryProvider', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [repositoryProvider.overrideWithValue(FakeRepository())],
-        // Unsere Anwendung, die von todoListProvider lesen wird, um die Todo-Liste anzuzeigen.
-        // Sie können dies in ein MyApp-Widget extrahieren
+        overrides: [
+          repositoryProvider.overrideWithValue(FakeRepository())
+        ],
+        // Our application, which will read from todoListProvider to display the todo-list.
+        // You may extract this into a MyApp widget
         child: MaterialApp(
           home: Scaffold(
             body: Consumer(builder: (context, ref, _) {
               final todos = ref.watch(todoListProvider);
-              // Die ToDo-Liste wird gerade geladen oder ist fehlerhaft
+              // The list of todos is loading or in error
               if (todos.asData == null) {
                 return const CircularProgressIndicator();
               }
@@ -77,16 +79,16 @@ void main() {
       ),
     );
 
-    // Der erste Frame ist ein Ladezustand.
+    // The first frame is a loading state.
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-    // Neu gerendert. TodoListProvider sollte jetzt die ToDo's abgerufen haben
+    // Re-render. TodoListProvider should have finished fetching the todos by now
     await tester.pump();
 
-    // Nicht mehr laden
+    // No-longer loading
     expect(find.byType(CircularProgressIndicator), findsNothing);
 
-    // Ein TodoItem mit den von FakeRepository zurückgegebenen Daten gerendert
+    // Rendered one TodoItem with the data returned by FakeRepository
     expect(tester.widgetList(find.byType(TodoItem)), [
       isA<TodoItem>()
           .having((s) => s.todo.id, 'todo.id', '42')

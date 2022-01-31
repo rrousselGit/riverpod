@@ -5,9 +5,9 @@ import 'todo.dart';
 /* SNIPPET START */
 
 final completedTodosProvider = Provider<List<Todo>>((ref) {
-  // Wir erhalten die Liste aller Todos vom todosProvider
+  // We obtain the list of all todos from the todosProvider
   final todos = ref.watch(todosProvider);
 
-  // wir geben nur die erledigten ToDos zurück
+  // we return only the completed todos
   return todos.where((todo) => todo.isCompleted).toList();
 });

@@ -10,26 +10,25 @@ import helloWorldFlutter from "!!raw-loader!/docs/getting_started_hello_world_fl
 import helloWorldDart from "!!raw-loader!/docs/getting_started_hello_world_dart.dart";
 import { trimSnippet } from "../src/components/CodeSnippet";
 
-Vor einem tiefen Einstieg in die genaue Funktionsweise und Mechanismen von [Riverpod], fangen wir zunächst mit den Basics an:
-Installation von [Riverpod], dann schreiben wir ein "Hello World".
+Before diving into the inner mechanisms of [Riverpod], let's start with the basics:
+Installing up [Riverpod], then writing a "Hello world".
 
-## Welches Paket ist zu installieren
+## What package to install
 
-Zunächst müssen wir uns klar machen, dass [Riverpod] über mehrere Pakete verteilt ist, die leicht unterschiedlich genutzt werden.
-Welche Variante von [Riverpod] eingesetzt werden soll, hängt von der App ab, die entwickelt werden soll.
+Before anything, you need to be aware that [Riverpod] is spread across multiple packages, with slightly different usage.  
+The variant of [Riverpod] that you will want to install depends on the app you are making.
 
-Die folgende Tabelle hilft bei der Entscheidung, welches Paket eingesetzt werden soll:
 You can refer to the following table to help you decide which package to use:
 
-| App Typ                   | Paket Name                                                                         | Beschreibung                                                                  |
+| app type                  | package name                                                                       | description                                                                   |
 | ------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                   | Erlaubt die Nutzung von beiden Paketen [flutter_hooks] und [Riverpod].        |
-| Flutter only              | [flutter_riverpod]                                                                 | Ein einfacher Weg um [Riverpod] in Flutter Applikationen zu verwenden.        |
-| Dart only (No Flutter)    | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | Eine [Riverpod] Version ohne die Flutter Klassen.                             |
+| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                   | Allows using both [flutter_hooks] and [Riverpod] together.                    |
+| Flutter only              | [flutter_riverpod]                                                                 | A basic way of using [Riverpod] for Flutter applications                      |
+| Dart only (No Flutter)    | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | A version of [Riverpod] with all the classes related to Flutter stripped out. |
 
-## Installation des Pakets
+## Installing the package
 
-Wenn die Entscheidung getroffen wurde, welches Paket verwendet werden soll, füge folgendes in deine `pubspec.yaml` Datei ein:
+Once you know what package you want to install, proceed to add the following to your `pubspec.yaml`:
 
 <Tabs
   groupId="riverpod"
@@ -54,7 +53,7 @@ dependencies:
   hooks_riverpod: ^2.0.0-dev.0
 ```
 
-Dann führe `flutter pug get` aus.
+Then run `flutter pub get`.
 
 </TabItem>
 <TabItem value="flutter_riverpod">
@@ -70,7 +69,7 @@ dependencies:
   flutter_riverpod: ^2.0.0-dev.0
 ```
 
-Dann führe `flutter pug get` aus.
+Then run `flutter pub get`.
 
 </TabItem>
 <TabItem value="riverpod">
@@ -83,18 +82,18 @@ dependencies:
   riverpod: ^2.0.0-dev.0
 ```
 
-Dann führe `flutter pug get` aus.
+Then run `pub get`.
 
 </TabItem>
 </Tabs>
 
-Das war's. Du hast [Riverpod] zu deiner App hinzugefügt!
+That's it. You've added [Riverpod] to your app!
 
-## Anwendungsbeispiel: Hello World
+## Usage example: Hello world
 
-Nachdem du [Riverpod] installiert hast, kannst du es anfangen zu verwenden.
+Now that we have installed [Riverpod], we can start using it.
 
-Die folgenden Snippets zeigen, wie die neue Dependency dazu verwendet werden kann um ein "Hello world" zu erstellen:
+The following snippets showcase how to use our new dependency to make a "Hello world":
 
 export const foo = 42;
 
@@ -111,34 +110,33 @@ export const foo = 42;
 
 <CodeBlock title="lib/main.dart">{trimSnippet(helloWorldHooks)}</CodeBlock>
 
-
-Das kannst du dann mit `flutter run` ausführen.
-Das wird dir "Hello world" aufs Gerät rendern.
+Which you can then execute with `flutter run`.  
+This will render "Hello world" on your device.
 
 </TabItem>
 <TabItem value="flutter_riverpod">
 
 <CodeBlock title="lib/main.dart">{trimSnippet(helloWorldFlutter)}</CodeBlock>
 
-Das kannst du dann mit `flutter run` ausführen.
-Das wird dir "Hello world" aufs Gerät rendern.
+Which you can then execute with `flutter run`.  
+This will render "Hello world" in on your device.
 
 </TabItem>
 <TabItem value="riverpod">
 
 <CodeBlock title="lib/main.dart">{trimSnippet(helloWorldDart)}</CodeBlock>
 
-Das kannst du dann mit `flutter run` ausführen.
-Das wird dir "Hello world" aufs Gerät rendern.
+Which you can then execute with `dart lib/main.dart`.  
+This will print "Hello world" in the console.
 
 </TabItem>
 </Tabs>
 
-## Weiterführend: Installation von Code Snippets
+## Going further: Installing code snippets
 
-Wenn du `Flutter` und `Vscode` verwendest, schau dir [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets) an
+If you are using `Flutter` and `Vscode` , consider using [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
 
-Wenn du `Flutter` und `Android Studio` oder `IntelliJ` verwendest, schau dir [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets) an
+If you are using `Flutter` and `Android Studio` or `IntelliJ`, consider using [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
 
 ![img](/img/snippets/greetingProvider.gif)
 

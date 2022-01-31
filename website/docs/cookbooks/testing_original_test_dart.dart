@@ -4,49 +4,48 @@ import 'package:riverpod/riverpod.dart';
 
 /* SNIPPET START */
 
-// Ein Zähler implementiert und getestet nur mit Dart (keine Abhängigkeit zu Flutter)
+// A Counter implemented and tested with Dart only (no dependency on Flutter)
 
-// Wir haben einen Provider global deklariert und werden ihn in zwei Tests
-// verwenden, um zu sehen, ob der Zustand zwischen den Tests korrekt auf `0`
-// zurückgesetzt wird.
+// We declared a provider globally, and we will use it in two tests, to see
+// if the state correctly resets to `0` between tests.
 
 final counterProvider = StateProvider((ref) => 0);
 
-// Verwendung von mockito, um zu verfolgen, wann ein Provider seine Zuhörer benachrichtigt
+// Using mockito to keep track of when a provider notify its listeners
 class Listener extends Mock {
   void call(int? previous, int value);
 }
 
 void main() {
   test('defaults to 0 and notify listeners when value changes', () {
-    // Ein Objekt, das uns erlauben wird Provider auszulesen
-    // Teile das nicht zwischen den Tests
+    // An object that will allow us to read providers
+    // Do not share this between tests.
     final container = ProviderContainer();
     addTearDown(container.dispose);
     final listener = Listener();
 
-    // Beobachten Sie einen Provider und erspähen Sie die Veränderungen.
+    // Observe a provider and spy the changes.
     container.listen<int>(
       counterProvider,
       listener,
       fireImmediately: true,
     );
 
-    // Der listener wurde sofort mit 0 aufgerufen, der Standardwert
+    // the listener is called immediately with 0, the default value
     verify(listener(null, 0)).called(1);
     verifyNoMoreInteractions(listener);
 
     // We increment the value
     container.read(counterProvider.notifier).state++;
 
-    // Der listener wurde wieder aufgerufen, aber mit der 1 dieses mal
+    // The listener was called again, but with 1 this time
     verify(listener(0, 1)).called(1);
     verifyNoMoreInteractions(listener);
   });
 
   test('the counter state is not shared between tests', () {
-    // Wir verwenden einen anderen ProviderContainer, um unseren Provider zu lesen.
-    // Dadurch wird sichergestellt, dass kein Zustand zwischen den Tests wiederverwendet wird.
+    // We use a different ProviderContainer to read our provider.
+    // This unsure that no state is reused between tests
     final container = ProviderContainer();
     addTearDown(container.dispose);
     final listener = Listener();
@@ -57,7 +56,7 @@ void main() {
       fireImmediately: true,
     );
 
-    // Der neue Test verwendet den Standardwert: 0 richtig
+    // The new test correcly uses the default value: 0
     verify(listener(null, 0)).called(1);
     verifyNoMoreInteractions(listener);
   });

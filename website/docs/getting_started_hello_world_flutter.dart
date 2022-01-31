@@ -5,23 +5,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Wir erstellen einen "Provider", der einen Wert speichern wird (hier "Hello world").
-// Durch die Nutzung eines Provider, ist es uns erlaubt den gelieferten Wert
-// zu mocken oder zu überschreiben
+// We create a "provider", which will store a value (here "Hello world").
+// By using a provider, this allows us to mock/override the value exposed.
 final helloWorldProvider = Provider((_) => 'Hello world');
 
 void main() {
   runApp(
-    // Damit Widgets providers lesen können, müssen wir die komplette App in einen
-    // "ProviderScope" Widget einpacken.
-    // Hier wird der Zustand unserer Provider gespeichert.
+    // For widgets to be able to read providers, we need to wrap the entire
+    // application in a "ProviderScope" widget.
+    // This is where the state of our providers will be stored.
     ProviderScope(
       child: MyApp(),
     ),
   );
 }
 
-// Erweitern Sie ConsumerWidget anstelle von StatelessWidget, das von Riverpod bereitgestellt wird.
+// Extend ConsumerWidget instead of StatelessWidget, which is exposed by Riverpod
 class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {

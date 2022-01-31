@@ -27,10 +27,9 @@ final todoListProvider = FutureProvider((ref) async => <Todo>[]);
 /* SKIP */
 final foo =
 /* SKIP END */
-    ProviderScope(
+ProviderScope(
   overrides: [
-    /// Ermöglicht das Überschreiben eines FutureProviders, um einen festen Wert
-    /// zurückzugeben
+    /// Allows overriding a FutureProvider to return a fixed value
     todoListProvider.overrideWithValue(
       AsyncValue.data([Todo(id: '42', label: 'Hello', completed: true)]),
     ),

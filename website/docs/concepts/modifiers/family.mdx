@@ -5,22 +5,23 @@ title: .family
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-Bevor sie das lesen, sollten sie sich über [Providers](/docs/concepts/providers) und [Wie man sie ausließt](/docs/concepts/reading) informieren.
-In diesem Teil werden wir im Detail über den Provider-Modifikator `.family` sprechen.
+Before reading this, consider reading about [providers](/docs/concepts/providers) and [how to read them](/docs/concepts/reading).
+In this part, we will talk in detail about the `.family` provider modifier.
 
-Der `.family`-Modifikator hat einen Zweck: Einen Provider aus externen Werten zu erstellen.
+The `.family` modifier has one purpose: Creating a provider from external values.
 
-Einige häufige Anwendungsfälle für `family` wären:
+Some common use-cases for `family` would be:
 
-- Kombination von [FutureProvider] mit `.family`, um eine `Message` anhand ihrer ID zu laden
-- Übergabe der aktuellen `Locale` an einen Provider, so dass wir mit Übersetzungen umgehen können:
+- Combining [FutureProvider] with `.family` to fetch a `Message` from its ID
+- Passing the current `Locale` to a provider, so that we can handle translations:
 
-## Verwendung
+## Usage
 
-Die `family`'s funktionieren, indem sie dem Provider einen zusätzlichen Parameter hinzufügen.
-Dieser Parameter kann dann in unserem Provider frei verwendet werden, um einen Zustand zu erzeugen.
+The way families works is by adding an extra parameter to the provider.
+This parameter can then be freely used in our provider to create some state.
 
-Zum Beispiel könnten wir `family` mit [FutureProvider] kombinieren, um eine `Message` anhand ihrer ID zu laden:
+For example, we could combine `family` with [FutureProvider] to fetch
+a `Message` from its ID:
 
 ```dart
 final messagesFamily = FutureProvider.family<Message, String>((ref, id) async {
@@ -28,8 +29,8 @@ final messagesFamily = FutureProvider.family<Message, String>((ref, id) async {
 });
 ```
 
-Bei der Verwendung unseres `messagesFamily`-Providers wird die Syntax dann leicht geändert.  
-Die übliche Syntax wird nicht mehr funktionieren
+Then, when using our `messagesFamily` provider, the syntax is slightly modified.  
+The usual syntax will not work anymore:
 
 ```dart
 Widget build(BuildContext context, WidgetRef ref) {
@@ -38,7 +39,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 }
 ```
 
-Stattdessen müssen wir einen Parameter an `messagesFamily` übergeben:
+Instead, we need to pass a parameter to `messagesFamily`:
 
 ```dart
 Widget build(BuildContext context, WidgetRef ref) {
@@ -47,9 +48,9 @@ Widget build(BuildContext context, WidgetRef ref) {
 ```
 
 :::info
-Es ist möglich, eine `family` mit verschiedenen Parametern gleichzeitig zu verwenden.  
-Zum Beispiel könnten wir eine `titleFamily` verwenden, um sowohl die französische als auch die englische
-Übersetzungen gleichzeitig zu lesen:
+It is possible to use a family with different parameters simultaneously.  
+For example, we could use a `titleFamily` to read both the french and english
+translations at the same time:
 
 ```dart
 @override
@@ -63,22 +64,22 @@ Widget build(BuildContext context, WidgetRef ref) {
 
 :::
 
-## Parameter Einschränkungen
+## Parameter restrictions
 
-Damit `family`'s korrekt funktionieren, ist es wichtig, dass der an einen Provider 
-übergebene Parameter einen konsistenten `hashCode` und `==` haben muss.
+For families to work correctly, it is critical for the parameter passed to
+a provider to have a consistent `hashCode` and `==`.
 
-Idealerweise sollte der Parameter entweder ein primitiver Datentyp (bool/int/double/String),
-eine Konstante (Provider) oder ein immutable Objekt, das `==` und `hashCode` überschreibt, sein.
+Ideally the parameter should either be a primitive (bool/int/double/String),
+a constant (providers), or an immutable object that overrides `==` and `hashCode`.
 
-### _BEVORZUGE_ die Benutzung von `autoDispose` wenn der Parameter keine Konstante ist:
+### _PREFER_ using `autoDispose` when the parameter is not constant:
 
-Sie möchten vielleicht `family`'s verwenden, um die Eingabe eines Suchfeldes an Ihren Provider zu übergeben.
-Dieser Wert kann sich jedoch häufig ändern und nie wieder verwendet werden.  
-Dies könnte zu Memory leaks führen, da ein Provider standardmäßig nie zerstört wird, 
-selbst wenn er nicht mehr verwendet wird.
+You may want to use families to pass the input of a search field to your provider.
+But that value can change often and never be reused.  
+This could cause memory leaks as, by default, a provider is never destroyed even
+if no-longer used.
 
-Die Verwendung von `.family` und `.autoDispose` behebt dieses Speicherleck:
+Using both `.family` and `.autoDispose` fixes that memory leak:
 
 ```dart
 final characters = FutureProvider.autoDispose.family<List<Character>, String>((ref, filter) async {
@@ -86,20 +87,20 @@ final characters = FutureProvider.autoDispose.family<List<Character>, String>((r
 });
 ```
 
-## Übergabe mehrerer Parameter an eine family
+## Passing multiple parameters to a family
 
-`family`'s  haben keine eingebaute Unterstützung für die Übergabe mehrerer Werte an einen Provider.
+Families have no built-in support for passing multiple values to a provider.
 
-Andererseits kann dieser Wert _beliebig_ sein (solange er mit den
-den zuvor genannten Einschränkungen übereinstimmt).
+On the other hand, that value could be _anything_ (as long as it matches with
+the restrictions mentioned previously).
 
-Dazu gehört:
+This includes:
 
-- Ein Tuple aus [tuple](http://pub.dev/packages/tuple)
-- Objekte mit [Freezed] oder [built_value](https://pub.dev/packages/built_value) generiert 
-- Objekte die [equatable](https://pub.dev/packages/equatable) benutzen
+- A tuple from [tuple](http://pub.dev/packages/tuple)
+- Objects generated with [Freezed] or [built_value](https://pub.dev/packages/built_value)
+- Objects using [equatable](https://pub.dev/packages/equatable)
 
-Hier ist ein Beispiel mit [Freezed] und [equatable]:
+Here's an example using [Freezed] and [equatable]:
 
 <Tabs
   groupId="family"
@@ -124,12 +125,12 @@ abstract class MyParameter with _$MyParameter {
 final exampleProvider = Provider.autoDispose.family<Something, MyParameter>((ref, myParameter) {
   print(myParameter.userId);
   print(myParameter.locale);
-  // Benutze userId/locale
+  // Do something with userId/locale
 });
 
 @override
 Widget build(BuildContext context, WidgetRef ref) {
-  int userId; // Lesen Sie die Benutzer-ID von irgendwoher
+  int userId; // Read the user ID from somewhere
   final locale = Localizations.localeOf(context);
 
   final something = ref.watch(
@@ -160,12 +161,12 @@ class MyParameter extends Equatable  {
 final exampleProvider = Provider.family<Something, MyParameter>((ref, myParameter) {
   print(myParameter.userId);
   print(myParameter.locale);
-  // Benutze userId/locale
+  // Do something with userId/locale
 });
 
 @override
 Widget build(BuildContext context, WidgetRef ref) {
-  int userId; // Lesen Sie die Benutzer-ID von irgendwoher
+  int userId; // Read the user ID from somewhere
   final locale = Localizations.localeOf(context);
 
   final something = ref.watch(

@@ -5,11 +5,11 @@ import 'reading_counter.dart';
 /* SNIPPET START */
 
 class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({Key? key}): super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Benutze ref um auf Provider zu lauschen
+    // use ref to listen to a provider
     final counter = ref.watch(counterProvider);
     return Text('$counter');
   }

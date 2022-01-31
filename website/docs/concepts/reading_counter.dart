@@ -13,12 +13,12 @@ final counterProvider = StateNotifierProvider<Counter, int>((ref) {
 });
 
 class Counter extends StateNotifier<int> {
-  Counter(this.ref) : super(0);
+  Counter(this.ref): super(0);
 
   final Ref ref;
 
   void increment() {
-    // Counter kann "ref" dazu benutzen um andere Provider auszulesen
+    // Counter can use the "ref" to read other providers
     final repository = ref.read(repositoryProvider);
     repository.post('...');
   }

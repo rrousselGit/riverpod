@@ -6,24 +6,23 @@ import CodeBlock from "@theme/CodeBlock";
 import logger from "!!raw-loader!/docs/concepts/provider_observer_logger.dart";
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
-[ProviderObserver] lauscht auf die Änderungen eines ProviderContainer.
+[ProviderObserver] listens to the changes of a ProviderContainer.
 
-Um es zu nutzen, extende die Klasse ProviderObserver und überschreibe die Methoden, die du benutzen möchtest.
+To use it, extend the class ProviderObserver and override the method you like to use.
 
-[ProviderObserver] hat drei Methoden :
+[ProviderObserver] has three methods :
 
-- `didAddProvider` wird jedes Mal aufgerufen, wenn ein Provider initialisiert wurde, und der angezeigte Wert ist Wert.
-- `didDisposeProvider` wird jedes Mal aufgerufen, wenn ein Provider entsorgt/gelöscht wurde.
-- `didUpdateProvider` wird jedes Mal vom Provider aufgerufen, wenn eine Notification ausgesendet wird.
+- `didAddProvider` is called every time a provider was initialized, and the value exposed is value.
+- `didDisposeProvider` is called every time A provider was disposed
+- `didUpdateProvider` is called every time my providers when they emit a notification.
 
-### Verwendung:
+### Usage :
 
-Ein einfacher Anwendungsfall für [ProviderObserver] ist es, die Änderungen in Providern zu protokollieren, indem man 
-die Methode `didUpdateProvider` überschreibt.
+A simple use case for [ProviderObserver], is to log the changes in providers by overriding the method `didUpdateProvider`.
 
 <CodeBlock>{trimSnippet(logger)}</CodeBlock>
 
-Nun wird jedes Mal, wenn der Wert unseres Providers aktualisiert wird, der Logger dies protokollieren:
+Now that every time the value of our provider is updated, the logger will log it :
 
 ```
 I/flutter (16783): {

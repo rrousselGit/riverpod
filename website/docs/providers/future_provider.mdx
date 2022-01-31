@@ -9,45 +9,45 @@ import configProvider from "!!raw-loader!/docs/providers/future_provider/config_
 import configConsumer from "!!raw-loader!/docs/providers/future_provider/config_consumer.dart";
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
-`FutureProvider` ist das Äquivalent zu [Provider] aus asynchronem Code.
+`FutureProvider` is the equivalent of [Provider] from asynchronous code.
 
-`FutureProvider` wird üblicherweiße für folgendes verwendet:
+`FutureProvider` is typically used for:
 
-- Durchführung und Zwischenspeicherung asynchroner Vorgänge (z. B. Netzwerkanfragen)
-- nette Handhabung von Fehler-/Ladezuständen bei asynchronen Operationen
-- Kombination mehrerer asynchroner Werte zu einem anderen Wert.
+- performing and caching asynchronous operations (such as network requests)
+- nicely handling error/loading states of asynchronous operations
+- combining multiple asynchronous values into another value.
 
-`FutureProvider` in Kombination mit [ref.watch] wird sehr mächtig. Diese Kombination 
-ermöglicht es, einige Daten automatisch neu zu holen, wenn sich einige Variablen ändern, 
-um sicherzustellen, dass wir immer den aktuellsten Wert haben.
+`FutureProvider` gains a lot in combining it with [ref.watch]. This combination
+allows automatic re-fetching of some data when some variables change,
+ensuring that we always have the most up-to-date value.
 
 :::info
-Der `FutureProvider` bietet keine Möglichkeit, die Berechnung nach einer Benutzerinteraktion 
-direkt zu ändern. Er ist für die Lösung einfacher Anwendungsfälle konzipiert.   
-Für fortgeschrittenere Szenarien sollte [StateNotifierProvider] verwendet werden.
+`FutureProvider` does not offer a way of directly modifying the computation after
+a user interaction. It is designed to solve simple use-cases.  
+For more advanced scenarios, consider using [StateNotifierProvider].
 :::
 
-## Anwendungsbeispiel: Lesen einer Konfigurationsdatei
+## Usage example: reading a configuration file
 
-`FutureProvider` kann ein bequemer Weg sein, um ein Konfigurationsobjekt, das durch 
-das Lesen einer JSON-Datei erstellt wurde, zu veröffentlichen.
+`FutureProvider` can be a convenient way to expose a `Configuration` object
+created by reading a JSON file.
 
-Die Erstellung der Konfiguration würde mit der typischen async/await Syntax, 
-aber innerhalb des Providers.
-Unter Verwendung des Asset-Systems von Flutter würde dies wie folgt aussehen:
+Creating the configuration would be done with your typical async/await
+syntax, but inside the provider.
+Using Flutter's asset system, this would be:
 
 <CodeBlock>{trimSnippet(configProvider)}</CodeBlock>
 
-Dann kann die UI auf die Konfigurationen wie folgt lauschen:
+Then, the UI can listen to configurations like so:
 
 <CodeBlock>{trimSnippet(configConsumer)}</CodeBlock>
 
-Dadurch wird die UI automatisch neu aufgebaut, wenn das [Future] 
-abgeschlossen ist. Wenn mehrere Widgets die Konfigurationen benötigen, wird das 
-Asset trotzdem nur einmal dekodiert.
+This will automatically rebuild the UI when the [Future] completes.
+At the same time, if multiple widgets want the configurations,
+the asset will be decoded only once.
 
-Wie man sieht, gibt das Abhören eines `FutureProvider` innerhalb eines Widgets
-einen [AsyncValue] zurück, der die Behandlung des Fehler-/Ladezustands einfach ermöglicht.
+As you can see, listening to a `FutureProvider` inside a widget returns
+an [AsyncValue] – which allows handling the error/loading states.
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
 [statenotifierprovider]: ./state_notifier_provider

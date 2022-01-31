@@ -19,22 +19,22 @@ class FakeRepository {}
 void main() {
 /* SNIPPET START */
 
-  testWidgets('override repositoryProvider', (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          // Überschreiben Sie das Verhalten von repositoryProvider, um
-          // FakeRepository anstelle von Repository zurückzugeben.
-          /* highlight-start */
-          repositoryProvider.overrideWithValue(FakeRepository())
-          /* highlight-end */
-          // Wir müssen den `todoListProvider` nicht überschreiben, er wird
-          // automatisch den überschriebenen repositoryProvider verwenden
-        ],
-        child: MyApp(),
-      ),
-    );
-  });
+testWidgets('override repositoryProvider', (tester) async {
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        // Override the behavior of repositoryProvider to return
+        // FakeRepository instead of Repository.
+        /* highlight-start */
+        repositoryProvider.overrideWithValue(FakeRepository())
+        /* highlight-end */
+        // We do not have to override `todoListProvider`, it will automatically
+        // use the overridden repositoryProvider
+      ],
+      child: MyApp(),
+    ),
+  );
+});
 
 /* SNIPPET END */
 }
