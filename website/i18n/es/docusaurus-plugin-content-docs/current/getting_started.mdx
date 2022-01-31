@@ -1,0 +1,225 @@
+---
+title: Empezando
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+Antes de sumergirnos en los mecanismos internos de [Riverpod], comencemos con 
+lo básico: instalar [Riverpod] y luego escribir un "Hello world".
+
+## Qué paquete instalar
+
+Antes que nada, debes tener en cuenta que [Riverpod] se distribuye en varios paquetes con un uso ligeramente diferente.
+La variante de [Riverpod] a instalar depende de la aplicación que vas a desarrollar.
+
+Puedes consultar la siguiente tabla para decidir qué paquete usar:
+
+| Tipo de aplicación             | Nombre del paquete                                                                 | Descripción                                                    |
+| ------------------------------ | ---------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Flutter + [flutter_hooks]      | [hooks_riverpod]                                                                   | Permite usar [flutter_hooks] y [Riverpod] juntos.              |
+| Solo Flutter                   | [flutter_riverpod]                                                                 | Una forma básica de usar [Riverpod] para aplicaciones Flutter. |
+| Solo Dart (Sin Flutter)        | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | [Riverpod] sin todas las clases dependientes de Flutter.       |
+
+## Instalación
+
+Una vez que sepas qué paquete deseas instalar, procede a añadir lo siguiente a tu `pubspec.yaml`:
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="hooks_riverpod"
+  values={[
+    { label: 'Flutter + flutter_hooks', value: 'hooks_riverpod', },
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Solo Dart', value: 'riverpod', },
+  ]}
+>
+<TabItem value="hooks_riverpod">
+
+```yaml title="pubspec.yaml"
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+  flutter: ">=2.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_hooks: ^0.18.0
+  hooks_riverpod: ^2.0.0-dev.0
+```
+
+Luego ejecuta `flutter pub get`.
+
+</TabItem>
+<TabItem value="flutter_riverpod">
+
+```yaml title="pubspec.yaml"
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+  flutter: ">=2.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.0.0-dev.0
+```
+
+Luego ejecuta `flutter pub get`.
+
+</TabItem>
+<TabItem value="riverpod">
+
+```yaml title="pubspec.yaml"
+environment:
+  sdk: ">=2.12.0-0 <3.0.0"
+
+dependencies:
+  riverpod: ^2.0.0-dev.0
+```
+
+Luego ejecuta `dart pub get`.
+
+</TabItem>
+</Tabs>
+
+Eso es todo. ¡Lograste añadir [Riverpod] a tu aplicación!
+
+## Ejemplo de uso: Hello world
+
+Ahora que hemos instalado [Riverpod], podemos comenzar a usarlo.
+
+Los siguientes fragmentos de código muestran cómo usar nuestra nueva dependencia para crear un "Hello world":
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="hooks_riverpod"
+  values={[
+    { label: "Flutter + flutter_hooks", value: "hooks_riverpod" },
+    { label: "Flutter", value: "flutter_riverpod" },
+    { label: "Solo Dart", value: "riverpod" },
+  ]}
+>
+<TabItem value="hooks_riverpod">
+
+```dart title="lib/main.dart"
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+// Creamos un "provider", el cual almacenará un valor (en este caso "Hello world").
+// El usar un provider nos permitirá simular/sobrescribir el valor expuesto.
+final helloWorldProvider = Provider((_) => 'Hello world');
+
+void main() {
+  runApp(
+    // Para que los widgets puedan leer los providers, necesitamos envolver
+    // toda la aplicación en un `ProviderScope`.
+    // Aquí es donde se almacenará el estado de nuestros providers.
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+
+// Nota: MyApp es un HookConsumerWidget de flutter_hooks.
+class MyApp extends HookConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final String value = ref.watch(helloWorldProvider);
+
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Example')),
+        body: Center(
+          child: Text(value),
+        ),
+      ),
+    );
+  }
+}
+```
+
+Que luego puedes ejecutar con `flutter run`.
+Esto mostrará un "Hello world" en tu dispositivo.
+
+</TabItem>
+<TabItem value="flutter_riverpod">
+
+```dart title="lib/main.dart"
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Creamos un "provider", el cual almacenará un valor (aquí "Hello world").
+// El usar un provider nos permitirá simular/sobrescribir el valor expuesto.
+final helloWorldProvider = Provider((_) => 'Hello world');
+
+void main() {
+  runApp(
+    // Para que los widgets puedan leer los providers, necesitamos envolver
+    // toda la aplicación en un "ProviderScope".
+    // Aquí es donde se almacenará el estado de nuestros providers.
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+
+// Extienda de un ConsumerWidget (expuesto por Riverpod) en lugar de un StatelessWidget.
+class MyApp extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final String value = ref.watch(helloWorldProvider);
+
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Example')),
+        body: Center(
+          child: Text(value),
+        ),
+      ),
+    );
+  }
+}
+```
+
+Que luego puedes ejecutar con `flutter run`.
+Esto mostrará un "Hello world" en tu dispositivo.
+
+</TabItem>
+<TabItem value="riverpod">
+
+```dart title="lib/main.dart"
+import 'package:riverpod/riverpod.dart';
+
+// Creamos un "provider", el cual almacenará un valor (aquí "Hello world").
+// El usar un provider nos permitirá simular/sobrescribir el valor expuesto.
+final helloWorldProvider = Provider((_) => 'Hello world');
+
+void main() {
+  // En este objeto es donde se almacenará el estado de nuestros providers.
+  final container = ProviderContainer();
+
+  // Gracias al "container", podemos leer nuestro provider.
+  final value = container.read(helloWorldProvider);
+
+  print(value); // Hello world
+}
+```
+
+Que luego puedes ejecutar con `dart lib/main.dart`.
+Esto mostrará un "Hello world" en la consola.
+
+</TabItem> 
+</Tabs>
+
+## Mejora tu productividad: Instala los atajos de código
+
+Si usas `Flutter` y `VS Code`, considera usar [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets).
+
+Si usas `Flutter` y `Android Studio` o `IntelliJ`, considera usar [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets).
+
+![img](/img/snippets/greetingProvider.gif)
+
+[riverpod]: https://github.com/rrousselgit/river_pod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks

@@ -24,7 +24,7 @@
     "description": "The label of footer link with label=GitHub linking to https://github.com/rrousselgit/river_pod"
   },
   "copyright": {
-    "message": "Copyright © 2021 Remi Rousselet. <br /> Construido con Docusaurus.",
+    "message": "Copyright © 2022 Remi Rousselet. <br /> Construido con Docusaurus.",
     "description": "The footer copyright"
   }
 }
