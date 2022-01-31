@@ -121,6 +121,11 @@ module.exports = {
           label: "Integrating Hive database with Riverpod (simple example)",
           href: "https://github.com/GitGud31/theme_riverpod_hive",
         },
+        {
+          type: "link",
+          label: "Browser App with Riverpod",
+          href: "https://github.com/MarioCroSite/simple_browser_app",
+        },
       ],
     },
     {
