@@ -86,7 +86,7 @@ class ThemeNotifier extends StateNotifier<ThemeSettings> {
 }
 
 @freezed
-abstract class ThemeSettings with _$ThemeSettings {
+class ThemeSettings with _$ThemeSettings {
   const factory ThemeSettings({ThemeMode mode, Color primaryColor}) = _ThemeSettings;
 }
 
@@ -104,6 +104,8 @@ extension ToggleTheme on ThemeMode {
 }
 
 ```
+
+To use this code, remember to import `freezed_annotation` and run build_runner to generate the freezed classes!
 
 [changenotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html
 [statenotifier]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifier-class.html

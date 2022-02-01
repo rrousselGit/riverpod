@@ -11,10 +11,10 @@ Many issues that developers have with Riverpod come from misunderstanding scope.
 
 ## Container Scope
 
-A scope is introduced by a `ProviderContainer`. This container holds the current state of all of your providers. 
+A scope is introduced by a [ProviderContainer]. This container holds the current state of all of your providers. 
 It manages the lookup and subscriptions between providers.
 
-In Flutter you should use the [ProviderScope] widget, which contains a `ProviderContainer`
+In Flutter you should use the [ProviderScope] widget, which contains a [ProviderContainer]
 internally, and provides a way to access that container to the rest of the widget tree.
 
 ```dart
@@ -33,17 +33,17 @@ void main(){
 ```
 
 :::warning
-Do not use multiple `ProviderContainers` unless you are very familiar with how Riverpod works. 
+Do not use multiple [ProviderContainer]s unless you are very familiar with how Riverpod works. 
 Each will have it's own separate thread of states, which will not be able to access each other.
 You will quickly become disoriented and confused.
 :::
 
-A `ProviderContainer` by itself should only be utilized for testing and dart-only usage.
+A [ProviderContainer] by itself should only be utilized for testing and dart-only usage.
 In Flutter it should not be used, unless you have a need for asynchronous initialization prior
 to showing any screens, in which case you can use it along with [UncontrolledProviderScope]
 
-When a widget or provider requests the value of a provider riverpod finds the state of that provider in the nearest `ProviderScope` or
-if not already initialized creates it in the root `ProviderScope`.
+When a widget or provider requests the value of a provider riverpod finds the state of that provider in the nearest 
+[ProviderScope] or if not already initialized creates it in the root [ProviderScope].
 
 ## Scoping Providers to a Widget Subtree
 
@@ -244,10 +244,10 @@ widget tree. This way you can access the same provider from all parts
 of your app. But in that scope the `todoItemIndexProvider` provider is not overridden otherwise
 you'd have the same todo index for the whole app.
 
-The solution to this problem is to tell riverpod override the todoProvider for the subtree as well by 
-adding the todoItemIndexProvider to a dependency list for the todoProvider.
+The solution to this problem is to tell riverpod override the `todoProvider` for the subtree as well by 
+adding the `todoItemIndexProvider` to a dependency list for the `todoProvider`.
 
-When using scoped dependencies `todoProvider` we need to specify `all` of the providers our provider depends on
+When using scoped dependencies `todoProvider` we need to specify *all* of the providers our provider depends on
 so that Riverpod when overriding a provider which dependent providers also need overrides.
 
 ```dart
@@ -258,5 +258,8 @@ final todoProvider = Provider<Todo>(
 );
 ```
 
+Now you have a scoped provider!
+
+[ProviderContainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
 [providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
 [UncontrolledProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/UncontrolledProviderScope-class.html

@@ -26,11 +26,11 @@ providers that you read or watch will be created as needed and their state will 
 If there are any circular dependencies during this creation process Riverpod will throw an error.
 The best way to fix this error is to redesign your dependencies to have a uni-directional dataflow.
 
-The provider's state is stored in a `ProviderContainer`. In a Flutter app this container is in a `ProviderScope` widget.
+The provider's state is stored in a [ProviderContainer]. In a Flutter app this container is in a [ProviderScope] widget.
 
 
 :::warning
-Do not create a ProviderContainer for use in flutter unless using UncontrolledProviderScope and you know what you are doing.
+Do not create a ProviderContainer for use in flutter unless using [UncontrolledProviderScope] and you know what you are doing.
 :::
 
 ### Alive
@@ -54,11 +54,11 @@ A disposed provider is in the uninitialized state again, and will be created on 
 
 In some cases, the state of a provider may get destroyed or re-created.
 A common requirement in those situations is to perform a cleanup before the state of a provider
-is destroyed, such as closing a `StreamController`.
+is destroyed, such as closing a [StreamController].
 
 This is done using the `ref`'s [onDispose] method.
 
-The following example uses [onDispose] to close a `StreamController`:
+The following example uses onDispose to close a StreamController:
 
 ```dart
 final example = StreamProvider.autoDispose((ref) {
@@ -75,8 +75,13 @@ final example = StreamProvider.autoDispose((ref) {
 
 :::note
 Depending on the provider used, it may already take care of the clean-up process.
-For example, [StateNotifierProvider] will call the `dispose` method of the returned `StateNotifier`.
+For example, [StateNotifierProvider] will call the `dispose` method of the returned [StateNotifier].
 :::
 
 [onDispose]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderRef/onDispose.html
+[ProviderContainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
+[ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[StateNotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
 [StateNotifierProvider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
+[StreamController]: https://api.dart.dev/stable/2.15.1/dart-async/StreamController-class.html
+[UncontrolledProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/UncontrolledProviderScope-class.html
