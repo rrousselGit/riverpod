@@ -24,7 +24,7 @@ abstract class AutoDisposeRef extends Ref {
   );
 
   @override
-  void Function() listen<T>(
+  ProviderSubscription<T> listen<T>(
     // overridden to allow AutoDisposeProviderBase
     ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {

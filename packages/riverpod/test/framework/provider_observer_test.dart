@@ -293,7 +293,7 @@ void main() {
 
         expect(
           () => container.read(provider),
-          throwsA(isA<ProviderException>()),
+          throwsUnimplementedError,
         );
 
         verifyInOrder([
@@ -372,7 +372,7 @@ void main() {
 
         expect(
           () => container.read(provider),
-          throwsA(isA<ProviderException>()),
+          throwsUnimplementedError,
         );
 
         verify(observer.didAddProvider(provider, null, container));

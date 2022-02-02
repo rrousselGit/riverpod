@@ -21,9 +21,6 @@ typedef ProviderReference = Ref;
 /// - [Provider], a provider that uses [Create] to expose an immutable value.
 typedef Create<T, R extends Ref> = T Function(R ref);
 
-/// A function to stop listenening to a provider
-typedef RemoveListener = void Function();
-
 /// A [Create] equivalent used by [Family].
 typedef FamilyCreate<T, R extends Ref, Arg> = T Function(
   R ref,
@@ -71,6 +68,34 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   @visibleForOverriding
   // ignore: avoid_returning_this
   ProviderBase<Object?> get originProvider => this;
+
+  @override
+  ProviderSubscription<State> addListener(
+    Node node,
+    void Function(State? previous, State next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+    bool fireImmediately = false,
+  }) {
+    onError ??= _fallbackOnErrorForProvider(this);
+
+    final element = node.readProviderElement(this);
+
+    if (fireImmediately) {
+      // TODO test flush
+      element.flush();
+      handleFireImmediately(
+        element.getState()!,
+        listener: listener,
+        onError: onError,
+      );
+    }
+
+    return node._createSubscription(
+      element,
+      listener: listener,
+      onError: onError,
+    );
+  }
 
   /// Initializes the state of a provider
   @visibleForOverriding
@@ -230,7 +255,7 @@ class _ProviderSubscription<State> implements ProviderSubscription<State> {
 }
 
 /// When a provider listens to another provider using `listen`
-class _ProviderListener {
+class _ProviderListener<State> implements ProviderSubscription<State> {
   _ProviderListener._({
     required this.listenedElement,
     required this.dependentElement,
@@ -238,22 +263,29 @@ class _ProviderListener {
     required this.onError,
   });
 
+// TODO can't we type it properly?
   final void Function(Object? prev, Object? state) listener;
-  final ProviderElementBase dependentElement;
-  final ProviderElementBase listenedElement;
+  final ProviderElementBase<Object?> dependentElement;
+  final ProviderElementBase<State> listenedElement;
   final void Function(Object, StackTrace) onError;
 
+  @override
   void close() {
+    dependentElement._subscriptions.remove(this);
     listenedElement
       .._subscribers.remove(this)
       ..mayNeedDispose();
   }
+
+// TODO
+  @override
+  State read() => listenedElement.readSelf();
 }
 
 /// An internal class that handles the state of a provider.
 ///
 /// Do not use.
-abstract class ProviderElementBase<State> implements Ref {
+abstract class ProviderElementBase<State> implements Ref, Node {
   /// Do not use.
   ProviderElementBase(this._provider);
 
@@ -370,10 +402,9 @@ abstract class ProviderElementBase<State> implements Ref {
     }
 
     return state.map(
-      error: (error) => throw ProviderException._(
+      error: (error) => Error.throwWithStackTrace(
         error.error,
         error.stackTrace,
-        origin,
       ),
       data: (data) => data.state,
     );
@@ -625,25 +656,27 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     visitChildren((element) => element._markDependencyMayHaveChanged());
   }
 
-  bool _debugAssertCanDependOn(ProviderBase provider) {
-    assert(
-      this.provider != origin ||
-          origin.dependencies == null ||
-          origin.dependencies!.contains(provider.from) ||
-          origin.dependencies!.contains(provider),
-      'The provider $origin tried to read $provider, but it specified a '
-      "'dependendencies' list yet that list does not contain $provider.\n\n"
-      "To fix, add $provider to $origin's 'dependencies' parameter",
-    );
-
+  bool _debugAssertCanDependOn(ProviderListenable listenable) {
     assert(() {
+      if (listenable is! ProviderBase) return true;
+
+      assert(
+        provider != origin ||
+            origin.dependencies == null ||
+            origin.dependencies!.contains(listenable.from) ||
+            origin.dependencies!.contains(listenable),
+        'The provider $origin tried to read $listenable, but it specified a '
+        "'dependendencies' list yet that list does not contain $listenable.\n\n"
+        "To fix, add $listenable to $origin's 'dependencies' parameter",
+      );
+
       final queue = Queue<ProviderElementBase>.from(_dependents);
 
       while (queue.isNotEmpty) {
         final current = queue.removeFirst();
         queue.addAll(current._dependents);
 
-        if (current.origin == provider) {
+        if (current.origin == listenable) {
           throw CircularDependencyError._();
         }
       }
@@ -674,37 +707,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     return _container.read(provider);
   }
 
-  ProviderSubscription<State> addListener(
-    ProviderBase<State> provider,
-    void Function(State? previous, State next) listener, {
-    required bool fireImmediately,
-    required void Function(Object error, StackTrace stackTrace)? onError,
-  }) {
-    onError ??= _fallbackOnErrorForProvider(provider);
-
-    if (fireImmediately) {
-      // TODO test flush
-      flush();
-      handleFireImmediately(getState()!, listener: listener, onError: onError);
-    }
-
-    final sub = _ProviderSubscription<State>._(
-      this,
-      listener,
-      onError: onError,
-    );
-
-    _listeners.add(sub);
-
-    return sub;
-  }
-
   @override
   T watch<T>(ProviderListenable<T> listenable) {
     _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.watch inside a selector');
 
-    if (listenable is _ProviderSelector) {
+    if (listenable is! ProviderBase<T>) {
       var initialized = false;
       late Result<T> firstValue;
 
@@ -723,14 +731,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
             _didChangeDependency();
           } else {
             initialized = true;
-            firstValue = Result.error(
-              ProviderException._(
-                err,
-                stack,
-                (listenable as _ProviderSelector).provider,
-              ),
-              stack,
-            );
+            firstValue = Result.error(err, stack);
           }
         },
         fireImmediately: true,
@@ -739,10 +740,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       return firstValue.requireState;
     }
 
-    final provider = listenable as ProviderBase<T>;
-    assert(_debugAssertCanDependOn(provider), '');
+    assert(_debugAssertCanDependOn(listenable), '');
 
-    final element = _container.readProviderElement(provider);
+    final element = _container.readProviderElement(listenable);
     _dependencies.putIfAbsent(element, () {
       final previousSub = _previousDependencies?.remove(element);
       if (previousSub != null) {
@@ -766,44 +766,17 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  void Function() listen<T>(
-    ProviderListenable<T> listenable,
-    void Function(T? previous, T value) listener, {
-    bool fireImmediately = false,
-    void Function(Object error, StackTrace stackTrace)? onError,
+  ProviderElementBase<T> readProviderElement<T>(ProviderBase<T> provider) {
+    return _container.readProviderElement(provider);
+  }
+
+  @override
+  ProviderSubscription<T> _createSubscription<T>(
+    ProviderElementBase<T> element, {
+    required void Function(T? previous, T next) listener,
+    required void Function(Object error, StackTrace stackTrace) onError,
   }) {
-    _assertNotOutdated();
-    assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
-
-    if (listenable is _ProviderSelector<Object?, T>) {
-      return listenable._elementListen(
-        this,
-        listener,
-        fireImmediately: fireImmediately,
-        onError: onError,
-      );
-    }
-
-    final provider = listenable as ProviderBase<T>;
-    onError ??= _fallbackOnErrorForProvider(provider);
-    assert(_debugAssertCanDependOn(provider), '');
-
-    // TODO remove by passing the a debug flag to `listen`
-    final element = container.readProviderElement(provider);
-    // TODO test flush
-    element.flush();
-
-    if (fireImmediately) {
-      handleFireImmediately(
-        element.getState()!,
-        listener: listener,
-        onError: onError,
-      );
-    }
-
-    // TODO(rrousselGit) test
-
-    final sub = _ProviderListener._(
+    final sub = _ProviderListener<T>._(
       listenedElement: element,
       dependentElement: this,
       listener: (prev, value) => listener(prev as T?, value as T),
@@ -813,11 +786,26 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     element._subscribers.add(sub);
     _subscriptions.add(sub);
 
-    return () {
-      _subscriptions.remove(sub);
-      // this will remove element._subscribers
-      sub.close();
-    };
+    return sub;
+  }
+
+  @override
+  ProviderSubscription<T> listen<T>(
+    ProviderListenable<T> listenable,
+    void Function(T? previous, T value) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+    bool fireImmediately = false,
+  }) {
+    _assertNotOutdated();
+    assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
+    assert(_debugAssertCanDependOn(listenable), '');
+
+    return listenable.addListener(
+      this,
+      listener,
+      fireImmediately: fireImmediately,
+      onError: onError,
+    );
   }
 
   /// Returns the currently exposed by a provider
@@ -922,10 +910,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   @protected
   void _runOnDispose() {
     // TODO(rrousselGit) test
-    for (final subscription in _subscriptions) {
-      subscription.close();
+    while (_subscriptions.isNotEmpty) {
+      _subscriptions.first.close();
     }
-    _subscriptions.clear();
 
     _onDisposeListeners?.forEach(_runGuarded);
     _onDisposeListeners = null;
@@ -934,40 +921,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   @override
   String toString() {
     return '$runtimeType(provider: $provider, origin: $origin)';
-  }
-}
-
-/// Encapsulates an exception thrown while building a provider.
-///
-/// This exception can be thrown if a provider fails to return a valid value:
-/// ```dart
-/// final example = Provider((ref) => throw Error());
-/// ```
-///
-/// in which case, any attempt at listening to `example` with result in a [ProviderException].
-class ProviderException implements Exception {
-  ProviderException._(this.exception, this.stackTrace, this.provider);
-
-  /// The exception thrown while building the provider
-  final Object exception;
-
-  /// The [StackTrace] associated with [exception].
-  final StackTrace stackTrace;
-
-  /// The provider that threw this exception.
-  final ProviderBase provider;
-
-  @override
-  String toString() {
-    return '''
-An exception was thrown while building $provider.
-
-Thrown exception:
-$exception
-
-Stack trace:
-$stackTrace
-''';
   }
 }
 
@@ -1072,6 +1025,14 @@ abstract class Result<State> {
   // coverage:ignore-start
   factory Result.error(Object error, StackTrace stackTrace) = ResultError;
   // coverage:ignore-end
+
+  static Result<State> guard<State>(State Function() cb) {
+    try {
+      return Result.data(cb());
+    } catch (err, stack) {
+      return Result.error(err, stack);
+    }
+  }
 
   bool get hasState;
 

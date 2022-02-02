@@ -65,10 +65,19 @@ String shortHash(Object? object) {
 /// It is used by [ProviderContainer.listen] and `ref.watch` to listen to
 /// both a provider and `provider.select`.
 ///
-/// Do not implement or extend.
-abstract class ProviderListenable<State> {}
+/// Should override ==/hashCode when possible
+@immutable
+abstract class ProviderListenable<State> {
+  /// Starts listening to this transformer
+  ProviderSubscription<State> addListener(
+    Node container,
+    void Function(State? previous, State next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+    bool fireImmediately = false,
+  });
+}
 
-/// Represents the subscription to a provider
+/// Represents the subscription to a [ProviderListenable]
 abstract class ProviderSubscription<State> {
   /// Stops listening to the provider
   void close();

@@ -81,17 +81,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsA(
-        isA<ProviderException>()
-            .having(
-              (e) => e.exception,
-              'exception',
-              isA<ProviderException>()
-                  .having((e) => e.exception, 'exception', isUnimplementedError)
-                  .having((e) => e.provider, 'provider', dep),
-            )
-            .having((e) => e.provider, 'provider', provider),
-      ),
+      throwsUnimplementedError,
     );
   });
 
@@ -113,17 +103,7 @@ void main() {
 
     expect(
       () => container.read(dep),
-      throwsA(
-        isA<ProviderException>()
-            .having(
-              (e) => e.exception,
-              'exception',
-              isA<ProviderException>()
-                  .having((e) => e.exception, 'exception', isUnimplementedError)
-                  .having((e) => e.provider, 'provider', provider),
-            )
-            .having((e) => e.provider, 'provider', dep),
-      ),
+      throwsUnimplementedError,
     );
 
     container.read(throws.state).state = false;
@@ -149,17 +129,7 @@ void main() {
 
     expect(
       () => container.read(dep),
-      throwsA(
-        isA<ProviderException>()
-            .having(
-              (e) => e.exception,
-              'exception',
-              isA<ProviderException>()
-                  .having((e) => e.exception, 'exception', isUnimplementedError)
-                  .having((e) => e.provider, 'provider', provider),
-            )
-            .having((e) => e.provider, 'provider', dep),
-      ),
+      throwsUnimplementedError,
     );
 
     container.read(throws.state).state = false;
@@ -201,7 +171,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsA(isA<ProviderException>()),
+      throwsA(isA<AssertionError>()),
     );
   });
 
@@ -216,7 +186,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsA(isA<ProviderException>()),
+      throwsA(isA<AssertionError>()),
     );
   });
 
@@ -234,7 +204,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsA(isA<ProviderException>()),
+      throwsA(isA<AssertionError>()),
     );
   });
 

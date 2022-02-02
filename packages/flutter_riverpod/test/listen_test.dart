@@ -102,11 +102,7 @@ void main() {
       );
 
       verifyZeroInteractions(listener);
-      expect(errors, [
-        isA<ProviderException>()
-            .having((e) => e.exception, 'exception', isUnimplementedError)
-            .having((e) => e.provider, 'provider', dep),
-      ]);
+      expect(errors, [isUnimplementedError]);
     });
 
     testWidgets(
@@ -145,11 +141,7 @@ void main() {
       );
 
       verifyZeroInteractions(listener);
-      expect(errors, [
-        isA<ProviderException>()
-            .having((e) => e.exception, 'exception', isUnimplementedError)
-            .having((e) => e.provider, 'provider', dep),
-      ]);
+      expect(errors, [isUnimplementedError]);
     });
 
     testWidgets('when rebuild throws, calls onError', (tester) async {

@@ -21,7 +21,6 @@ export 'src/framework.dart'
         ProviderContainer,
         ProviderObserver,
         ProviderSubscription,
-        ProviderException,
         AutoDisposeProviderBase,
         AutoDisposeProviderElementBase,
         ProviderElementBase,
