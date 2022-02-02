@@ -8,14 +8,14 @@ import 'reading_counter.dart';
 /* SNIPPET START */
 
 class HomeView extends HookConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
+  const HomeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // HookConsumerWidget allows using hooks inside the build method
+    // HookConsumerWidget অনুমতি দেয় বিল্ড মেথড এর ভিতরে hooks ব্যবহার করার
     final state = useState(0);
 
-    // We can also use the ref parameter to listen to providers.
+    // আমরা একইসাথে "ref" দিয়ে প্রভাইডার রিড করতে পারব
     final counter = ref.watch(counterProvider);
     return Text('$counter');
   }

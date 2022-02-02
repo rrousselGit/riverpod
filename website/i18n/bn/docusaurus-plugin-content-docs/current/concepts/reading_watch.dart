@@ -12,25 +12,26 @@ abstract class Todo {
 }
 
 class TodoList extends StateNotifier<List<Todo>> {
-  TodoList(): super([]);
+  TodoList() : super([]);
 }
 
 /* SNIPPET START */
 
 final filterTypeProvider = StateProvider<FilterType>((ref) => FilterType.none);
-final todosProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) => TodoList());
+final todosProvider =
+    StateNotifierProvider<TodoList, List<Todo>>((ref) => TodoList());
 
 final filteredTodoListProvider = Provider((ref) {
-  // obtains both the filter and the list of todos
+  // ফিল্টার করা এবং সকল টুডু গুলা ধারণ করুন
   final FilterType filter = ref.watch(filterTypeProvider);
   final List<Todo> todos = ref.watch(todosProvider);
 
   switch (filter) {
     case FilterType.completed:
-      // return the completed list of todos
+      // কমপ্লিটেড সব টুডু রিটার্ন করবে
       return todos.where((todo) => todo.isCompleted).toList();
     case FilterType.none:
-      // returns the unfiltered list of todos
+      // আনফিল্টারড সব টুডু গুলা রিটার্ন করবে
       return todos;
   }
 });

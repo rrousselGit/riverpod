@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final counterProvider = StateProvider((ref) => 0);
 
 Widget build(BuildContext context, WidgetRef ref) {
-  // use "read" to ignore updates on a provider
+  // "read" ব্যবহার করুন একটি প্রভাইডার এর আপডেট এড়িয়ে যাওয়ার জন্যে
   final counter = ref.read(counterProvider.notifier);
   return ElevatedButton(
     onPressed: () => counter.state++,

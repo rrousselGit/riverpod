@@ -5,7 +5,7 @@ import 'reading_counter.dart';
 /* SNIPPET START */
 
 class HomeView extends ConsumerStatefulWidget {
-  const HomeView({Key? key}): super(key: key);
+  const HomeView({Key? key}) : super(key: key);
 
   @override
   HomeViewState createState() => HomeViewState();
@@ -15,13 +15,13 @@ class HomeViewState extends ConsumerState<HomeView> {
   @override
   void initState() {
     super.initState();
-    // "ref" can be used in all life-cycles of a StatefulWidget.
+    // "ref" একটি StatefulWidget এর সকল লাইফসাইকেল এ ব্যবহার করে যাবে.
     ref.read(counterProvider);
   }
 
   @override
   Widget build(BuildContext context) {
-    // We can also use "ref" to listen to a provider inside the build method
+    // আমরা আর ব্যবহার করতে পারব "ref" কে বিল্ড মেথড এ একটি প্রভাইডার রিড/লিসেন করার ক্ষেত্রে
     final counter = ref.watch(counterProvider);
     return Text('$counter');
   }
