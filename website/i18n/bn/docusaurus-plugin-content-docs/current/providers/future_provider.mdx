@@ -9,45 +9,39 @@ import configProvider from "!!raw-loader!./future_provider/config_provider.dart"
 import configConsumer from "!!raw-loader!./future_provider/config_consumer.dart";
 import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 
-`FutureProvider` is the equivalent of [Provider] but for asynchronous code.
+`FutureProvider` হল [Provider] এর সমতুল্য কিন্তু অ্যাসিঙ্ক্রোনাস কোডের জন্য।
 
-`FutureProvider` is typically used for:
+`FutureProvider` সাধারণত এর জন্য ব্যবহৃত হয়:
 
-- performing and caching asynchronous operations (such as network requests)
-- nicely handling error/loading states of asynchronous operations
-- combining multiple asynchronous values into another value
+- অ্যাসিঙ্ক্রোনাস ক্রিয়াকলাপ সম্পাদন করা এবং ক্যাশে করা (যেমন নেটওয়ার্ক রিকুয়েস্ট)
+- অ্যাসিঙ্ক্রোনাস অপারেশনের ত্রুটি/লোডিং অবস্থা সুন্দরভাবে পরিচালনা করা
+- একাধিক অ্যাসিঙ্ক্রোনাস ভ্যালুকে অন্য ভ্যালুর সাথে একত্রিত করা
 
-`FutureProvider` gains a lot when combined with [ref.watch]. This combination
-allows automatic re-fetching of some data when some variables change,
-ensuring that we always have the most up-to-date value.
+[ref.watch] এর সাথে মিলিত হলে `FutureProvider` অনেক লাভ করে। এই সংমিশ্রণটি কিছু ভেরিয়েবল পরিবর্তন হলে কিছু ডেটা স্বয়ংক্রিয়ভাবে পুনঃ-আনয়নের/ফেচের অনুমতি দেয়, এটি নিশ্চিত করে যে আমাদের সর্বদা সর্বাধিক আপ-টু-ডেট ভ্যালু রয়েছে।
 
 :::info
-`FutureProvider` does not offer a way of directly modifying the computation after
-a user interaction. It is designed to solve simple use-cases.  
-For more advanced scenarios, consider using [StateNotifierProvider].
+`FutureProvider` ব্যবহারকারীর ইন্টারঅ্যাকশনের পরে গণনাকে সরাসরি পরিবর্তন করার উপায় অফার করে না। এটি সাধারণ ব্যবহারের ক্ষেত্রে সমাধান করার জন্য ডিজাইন করা হয়েছে। আরও উন্নত পরিস্থিতির জন্য, [StateNotifierProvider] ব্যবহার করার কথা বিবেচনা করুন।
 :::
 
-## Usage example: reading a configuration file
+## ব্যবহারের উদাহরণ: একটি কনফিগারেশন ফাইল পড়া
 
-`FutureProvider` can be a convenient way to expose a `Configuration` object
-created by reading a JSON file.
+`FutureProvider` একটি JSON ফাইল পড়ার মাধ্যমে তৈরি করা `Configuration` অবজেক্টকে প্রকাশ করার একটি সুবিধাজনক উপায় হতে পারে।
 
-Creating the configuration would be done with your typical async/await
-syntax, but inside the provider.
-Using Flutter's asset system, this would be:
+
+কনফিগারেশন তৈরি করা আপনার সাধারণ async/await সিনট্যাক্স দিয়ে করা হবে, কিন্তু প্রভাইডারের ভিতরে। Flutter এর Asset সিস্টেম ব্যবহার করে, এটি হবে:
 
 <CodeBlock>{trimSnippet(configProvider)}</CodeBlock>
 
-Then, the UI can listen to configurations like so:
+তারপরে, UI এর মতো কনফিগারেশন রিড করতে পারেঃ
 
 <CodeBlock>{trimSnippet(configConsumer)}</CodeBlock>
 
-This will automatically rebuild the UI when the [Future] completes.
-At the same time, if multiple widgets want the configurations,
-the asset will be decoded only once.
+[Future] সম্পূর্ণ হলে এটি স্বয়ংক্রিয়ভাবে UI পুনর্নির্মাণ করবে।
+একই সময়ে, যদি একাধিক উইজেট কনফিগারেশন চায়,
+Asset শুধুমাত্র একবার ডিকোড করা হবে.
 
-As you can see, listening to a `FutureProvider` inside a widget returns
-an [AsyncValue] – which allows handling the error/loading states.
+আপনি দেখতে পাচ্ছেন, একটি উইজেটের ভিতরে একটি `FutureProvider` শোনার ফলে রিটার্ন আসে
+একটি [AsyncValue] - যা ত্রুটি/লোডিং অবস্থাগুলি পরিচালনা করার অনুমতি দেয়।
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
 [statenotifierprovider]: ./state_notifier_provider

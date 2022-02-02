@@ -5,9 +5,9 @@ import 'todo.dart';
 /* SNIPPET START */
 
 final completedTodosProvider = Provider<List<Todo>>((ref) {
-  // We obtain the list of all todos from the todosProvider
+  // আমরা todosProvider থেকে সব টুডু ধারণ করব
   final todos = ref.watch(todosProvider);
 
-  // we return only the completed todos
+  // আর আমরা শুধু completed টুডু রিটার্ন করব
   return todos.where((todo) => todo.isCompleted).toList();
 });

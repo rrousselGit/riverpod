@@ -41,7 +41,7 @@ enum ProductSortType {
 }
 
 final productSortTypeProvider = StateProvider<ProductSortType>(
-  // We return the default sort type, here name.
+  // আমরা ডিফল্ট সর্ট টাইপ রিটার্ন দিই, এখানে নাম।
   (ref) => ProductSortType.name,
 );
 
@@ -66,10 +66,11 @@ class MyHomePage extends ConsumerWidget {
         title: const Text('Products'),
         actions: [
           DropdownButton<ProductSortType>(
-            // When the sort type changes, this will rebuild the dropdown
-            // to update the icon shown.
+            // যখন সর্ট টাইপ পরিবর্তিত হয়, এটি প্রদর্শিত আইকন আপডেট
+            // করতে ড্রপডাউনটি পুনর্নির্মাণ করবে।
             value: ref.watch(productSortTypeProvider),
-            // When the user interacts with the dropdown, we update the provider state.
+            // যখন ব্যবহারকারী ড্রপডাউনের সাথে ইন্টারঅ্যাক্ট করে, তখন
+            // আমরা প্রভাইডারের স্টেট আপডেট করি।
             onChanged: (value) =>
                 ref.read(productSortTypeProvider.notifier).state = value!,
             items: const [
