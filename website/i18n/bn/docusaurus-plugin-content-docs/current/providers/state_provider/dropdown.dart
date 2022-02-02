@@ -7,7 +7,7 @@ import 'full.dart';
 
 /* SNIPPET START */
 
-// An enum representing the filter type
+//এ কটি enum যা ফিল্টার টাইপ রিপ্রেসেন্ট করে
 enum ProductSortType {
   name,
   price,
