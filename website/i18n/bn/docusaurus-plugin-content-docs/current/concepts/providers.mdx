@@ -145,9 +145,9 @@ final myFamilyProvider = Provider.family<String, int>((ref, id) => '$id');
 
 এই মুহুর্তে, দুটি সংশোধক এভেইলেবেল রয়েছেঃ
 
-- [`.autoDispose`](/docs/concepts/modifiers/auto_dispose), যা প্রভাইডারকে স্বয়ংক্রিয়ভাবে তার স্টেট ধ্বংস করে দেবে
+- [`.autoDispose`](./modifiers/auto_dispose), যা প্রভাইডারকে স্বয়ংক্রিয়ভাবে তার স্টেট ধ্বংস করে দেবে
    যখন এটি আর রিড করা হচ্ছে না।
-- [`.family`](/docs/concepts/modifiers/family), যা বাহ্যিক প্যারমিটার থেকে একটি প্রভাইডার তৈরি করার অনুমতি দেয়.
+- [`.family`](./modifiers/family), যা বাহ্যিক প্যারমিটার থেকে একটি প্রভাইডার তৈরি করার অনুমতি দেয়.
 
 :::note
 একজন প্রভাইডার একসাথে একাধিক সংশোধক ব্যবহার করতে পারেঃ
@@ -162,8 +162,8 @@ final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) 
 
 তাহলে এই গাইডটি এই পর্যন্তই!
 
-আপনি আর জানতে পারেন [কিভাবে একটি প্রভাইডার পড়তে হয়](/docs/concepts/reading).
-অথবা, আপনি দেখতে পারেন [কিভাবে প্রভাইডার একত্র করবেন](/docs/concepts/combining_providers).
+আপনি আর জানতে পারেন [কিভাবে একটি প্রভাইডার পড়তে হয়](./reading).
+অথবা, আপনি দেখতে পারেন [কিভাবে প্রভাইডার একত্র করবেন](./combining_providers).
 
 [get_it]: http://pub.dev/packages/get_it
 [inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
