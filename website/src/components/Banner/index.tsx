@@ -20,7 +20,7 @@ export const Banner: React.FC = () => {
 
         <h1 className="banner__headline">
           <Translate id="home.tagline">
-            A Reactive State-Management and Dependency Injection Framework
+            A Reactive Caching and Data-binding Framework
           </Translate>
         </h1>
 
