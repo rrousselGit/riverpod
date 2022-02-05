@@ -1,6 +1,7 @@
 part of '../framework.dart';
 
-// TODO handle alwaysAlive
+/// An abstraction of both [ProviderContainer] and [ProviderElement] used by
+/// [ProviderListenable].
 abstract class Node {
   /// Starts listening to this transformer
   ProviderSubscription<State> listen<State>(
