@@ -12,7 +12,7 @@
         "description": "The 2nd paragraph of the 404 page"
     },
     "theme.AnnouncementBar.closeButtonAriaLabel": {
-        "message": "Fermer",
+        "message": "বন্ধ",
         "description": "The ARIA label for close button of announcement bar"
     },
     "theme.blog.paginator.navAriaLabel": {
@@ -52,7 +52,7 @@
         "description": "The blog post button label to navigate to the older/next post"
     },
     "theme.blog.sidebar.navAriaLabel": {
-        "message": "Blog recent posts navigation",
+        "message": "সাম্প্রতিক ব্লগের পোস্ট নেভিগেশন",
         "description": "The ARIA label for recent posts in the blog sidebar"
     },
     "theme.blog.post.plurals": {
@@ -214,7 +214,7 @@
         "message": "প্রভাইডার তৈরি, শেয়ার, টেস্ট করুন ফ্লাটার এর উপর কোন নির্ভরশীলতা ছাড়াই. এটির মধ্যে {BuildContext} ছাড়া প্রভাইডার কনসিউম বা লিসেন ও রিড।"
     },
     "home.tagline": {
-        "message": "একটি রি-এক্টিব স্টেট-ম্যানেজম্যান্ট এবং ডিপেন্ডন্সী ইনজেকশন"
+        "message": "একটি রিএক্টিভ ক্যাশিং এবং ডেটা-বাইন্ডিং ফ্রেমওয়ার্ক"
     },
     "home.get_started": {
         "message": "শুরু করি"
