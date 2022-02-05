@@ -81,7 +81,11 @@ void main() {
         ProviderScope(
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen(dep, listener);
+              runZonedGuarded(
+                () => ref.listen(dep, listener),
+                (err, stack) => errors.add(err),
+              );
+
               return Container();
             },
           ),
@@ -96,10 +100,7 @@ void main() {
 
       container.read(isErrored.state).state = true;
 
-      await runZonedGuarded(
-        () => tester.pump(),
-        (err, stack) => errors.add(err),
-      );
+      await tester.pump();
 
       verifyZeroInteractions(listener);
       expect(errors, [isUnimplementedError]);
@@ -120,7 +121,11 @@ void main() {
         ProviderScope(
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen(dep.select((value) => value), listener);
+              runZonedGuarded(
+                () => ref.listen(dep.select((value) => value), listener),
+                (err, stack) => errors.add(err),
+              );
+
               return Container();
             },
           ),
@@ -135,10 +140,7 @@ void main() {
 
       container.read(isErrored.state).state = true;
 
-      await runZonedGuarded(
-        () => tester.pump(),
-        (err, stack) => errors.add(err),
-      );
+      await tester.pump();
 
       verifyZeroInteractions(listener);
       expect(errors, [isUnimplementedError]);
