@@ -1017,6 +1017,7 @@ mixin OverrideWithProviderMixin<State,
   }
 }
 
+@immutable
 abstract class Result<State> {
   // coverage:ignore-start
   factory Result.data(State state) = ResultData;
@@ -1066,6 +1067,15 @@ class ResultData<State> implements Result<State> {
   }) {
     return data(this);
   }
+
+  @override
+  bool operator ==(Object? other) =>
+      other is ResultData<State> &&
+      other.runtimeType == runtimeType &&
+      other.state == state;
+
+  @override
+  int get hashCode => Object.hash(runtimeType, state);
 }
 
 class ResultError<State> implements Result<State> {
@@ -1091,4 +1101,14 @@ class ResultError<State> implements Result<State> {
   }) {
     return error(this);
   }
+
+  @override
+  bool operator ==(Object? other) =>
+      other is ResultError<State> &&
+      other.runtimeType == runtimeType &&
+      other.stackTrace == stackTrace &&
+      other.error == error;
+
+  @override
+  int get hashCode => Object.hash(runtimeType, error, stackTrace);
 }

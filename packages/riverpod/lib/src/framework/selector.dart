@@ -1,7 +1,6 @@
 part of '../framework.dart';
 
 // TODO handle alwaysAlive
-@sealed
 abstract class Node {
   /// Starts listening to this transformer
   ProviderSubscription<State> listen<State>(
