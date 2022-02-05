@@ -16,6 +16,43 @@ class Counter extends StateNotifier<int> {
 }
 
 void main() {
+  test('can chain select', () {
+    final container = createContainer();
+
+    var buildCount = 0;
+    final dep = StateProvider((ref) => 0);
+    final provider = Provider((ref) {
+      buildCount++;
+      return ref.watch(
+        dep.select((value) => value % 10).select((value) => value < 5),
+      );
+    });
+
+    expect(buildCount, 0);
+    expect(container.read(provider), true);
+    expect(buildCount, 1);
+
+    container.read(dep.notifier).state = 3;
+
+    expect(container.read(provider), true);
+    expect(buildCount, 1);
+
+    container.read(dep.notifier).state = 7;
+
+    expect(container.read(provider), false);
+    expect(buildCount, 2);
+
+    container.read(dep.notifier).state = 8;
+
+    expect(container.read(provider), false);
+    expect(buildCount, 2);
+
+    container.read(dep.notifier).state = 18;
+
+    expect(container.read(provider), false);
+    expect(buildCount, 2);
+  });
+
   test('asyncSelect on a isRefreshing provider waits until the refresh', () {});
 
   test('can watch async selectors', () async {

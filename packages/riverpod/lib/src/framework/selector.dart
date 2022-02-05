@@ -29,7 +29,7 @@ abstract class Node {
 
 /// An internal class for `ProviderBase.select`.
 @sealed
-class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
+class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
   /// An internal class for `ProviderBase.select`.
   _ProviderSelector({
     required this.provider,
@@ -37,7 +37,7 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
   });
 
   /// The provider that was selected
-  final ProviderBase<Input> provider;
+  final ProviderListenable<Input> provider;
 
   /// The selector applied
   final Output Function(Input) selector;
@@ -100,7 +100,7 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,
   }) {
-    onError ??= _fallbackOnErrorForProvider(provider);
+    onError ??= Zone.current.handleUncaughtError;
 
     late Result<Output> lastSelectedValue;
 

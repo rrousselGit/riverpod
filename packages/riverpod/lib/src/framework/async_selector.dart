@@ -3,7 +3,7 @@ part of '../framework.dart';
 /// Adds [selectAsync] to [ProviderListenable]
 extension AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
   /// {@template riverpod.async_select}
-  /// A variant of [ProviderBase.select] for asynchronous values
+  /// A variant of [select] for asynchronous values
   ///
   /// [selectAsync] is useful for filtering rebuilds of a provider
   /// when it depends on asynchronous values, which we want to await.
@@ -54,8 +54,7 @@ class _AlwaysAliveAsyncSelector<Input, Output> = _AsyncSelector<Input, Output>
 
 /// An internal class for `ProviderBase.selectAsync`.
 @sealed
-class _AsyncSelector<Input, Output>
-    implements ProviderListenable<Future<Output>> {
+class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
   /// An internal class for `ProviderBase.select`.
   _AsyncSelector({
     required this.provider,
