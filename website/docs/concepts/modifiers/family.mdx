@@ -87,9 +87,6 @@ final characters = FutureProvider.autoDispose.family<List<Character>, String>((r
 });
 ```
 
-In this case however you can also achieve the same effect by using a single [StateNotifier] with a method that is called every time
-the filter is called, allowing you to debounce the filter if it changes frequently.
-
 ## Passing multiple parameters to a family
 
 Families have no built-in support for passing multiple values to a provider.

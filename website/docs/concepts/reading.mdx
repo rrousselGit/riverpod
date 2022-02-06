@@ -166,12 +166,12 @@ changed. At the same time, the filtered list will not be recomputed if
 neither the filter nor the list of tasks changed.
 
 Similarly, a widget can use `ref.watch` to show
-content from a provider whenever that content changes:
+the content from a provider and update the user interface whenever that content changes:
 
 <CodeBlock>{trimSnippet(watchBuild)}</CodeBlock>
 
-This snippet shows a widgets that listens to a provider which stores a count.
-And if that count changes, the widget will rebuild and the UI will update
+This snippet shows a widgets that listens to a provider which stores a `count`.
+And if that `count` changes, the widget will rebuild and the UI will update
 to show the new value.
 
 :::caution

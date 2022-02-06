@@ -31,7 +31,10 @@ I/flutter (16783):   "newValue": "1"
 I/flutter (16783): }
 ```
 
-For states that are mutable such as [StateController] (the state of [StateProvider.state]) and [ChangeNotifier] the previousValue and newValue will be the same
+:::note:
+For states that are mutable such as [StateController] (the state of [StateProvider.state]) and
+[ChangeNotifier] the previousValue and newValue will be the same
+:::
 since they reference the same `StateController` / `ChangeNotifier`.
 
 [providerobserver]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderObserver-class.html
