@@ -53,43 +53,6 @@ void main() {
     expect(buildCount, 2);
   });
 
-  test('asyncSelect on a isRefreshing provider waits until the refresh', () {});
-
-  test('can watch async selectors', () async {
-    final container = createContainer();
-    var buildCount = 0;
-    final dep = StateProvider((ref) => 0);
-    final a = FutureProvider((ref) async => ref.watch(dep));
-    final b = FutureProvider((ref) {
-      buildCount++;
-      return ref.watch(a.selectAsync((value) => value % 10));
-    });
-
-    expect(buildCount, 0);
-    expect(container.read(b), const AsyncLoading<int>());
-    expect(container.read(b), const AsyncLoading<int>());
-    expect(await container.read(b.future), 0);
-    expect(buildCount, 1);
-
-    container.read(dep.notifier).state = 1;
-    expect(container.read(a), const AsyncData(0, isRefreshing: true));
-    expect(container.read(b), const AsyncData(0));
-    expect(buildCount, 1);
-
-    await container.pump();
-    expect(await container.read(b.future), 1);
-    expect(buildCount, 2);
-
-    container.read(dep.notifier).state = 11;
-    expect(container.read(a), const AsyncData(1, isRefreshing: true));
-    expect(container.read(b), const AsyncData(1));
-    expect(buildCount, 2);
-
-    await container.pump();
-    expect(await container.read(b.future), 1);
-    expect(buildCount, 2);
-  });
-
   test('can listen multiple providers at once', () async {
     final container = createContainer();
     final count = StateProvider((ref) => 0);
