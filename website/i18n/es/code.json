@@ -214,7 +214,7 @@
     "message": "Crea/comparte/prueba providers, sin depender de Flutter. Esto incluye poder escuchar providers sin un {BuildContext}."
   },
   "home.tagline": {
-    "message": "Un Framework Reactivo de Manejo de Estados e Inyección de Dependencias"
+    "message": "Un Framework de Caché y Enlace de Datos Reactivo"
   },
   "home.get_started": {
     "message": "Empezar"

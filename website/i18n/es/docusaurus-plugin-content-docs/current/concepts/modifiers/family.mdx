@@ -47,7 +47,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 ```
 
 :::info
-Es posible utilizar una familia con diferentes parámetros simultáneamente.
+Es posible utilizar una familia con diferentes parámetros simultáneamente.  
 Por ejemplo, podríamos usar a `titleFamily` para leer las traducciones al francés y al inglés al mismo tiempo:
 
 ```dart
@@ -74,7 +74,7 @@ o un objeto inmutable que sobrescriba `==` y `hashCode`.
 ### _PREFIERA_ usar `autoDispose` cuando el parámetro no es constante:
 
 Es posible que desee utilizar familias para pasar la entrada de un campo de búsqueda a su provider. 
-Pero ese valor puede cambiar a menudo y nunca volver a utilizarse.
+Pero ese valor puede cambiar a menudo y nunca volver a utilizarse.  
 Esto podría causar el uso de memoria en vano ya que, de manera predeterminada, un provider nunca se destruye, incluso si ya no se usa.
 
 Usando ambos `.family` y `.autoDispose` corrige esa pérdida de memoria:

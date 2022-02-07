@@ -114,7 +114,7 @@ final configsProvider = StreamProvider<Configuration>(...);
 
 final charactersProvider = FutureProvider<List<Character>>((ref) async {
   final search = ref.watch(searchProvider);
-  final configs = await ref.watch(configsProvider.last);
+  final configs = await ref.watch(configsProvider.future);
   final response = await dio.get('${configs.host}/characters?search=$search');
 
   return response.data.map((json) => Character.fromJson(json)).toList();
@@ -241,7 +241,7 @@ final configsProvider = StreamProvider<Configuration>(...);
 final productsProvider = FutureProvider<List<Product>>((ref) async {
   // Le ProductsProvider devra récupérer les produits si 
   // un élément de la configuration change.
-  final configs = await ref.watch(configsProvider.last);
+  final configs = await ref.watch(configsProvider.future);
 
   return dio.get('${configs.host}/products');
 });
@@ -254,7 +254,7 @@ final configsProvider = StreamProvider<Configuration>(...);
 
 /// Un provider qui n'expose que l'hôte actuel.
 final _hostProvider = FutureProvider<String>((ref) async {
-  final config = await ref.watch(configsProvider.last);
+  final config = await ref.watch(configsProvider.future);
   return config.host;
 });
 
@@ -276,3 +276,4 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 [read]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/read.html
 [providercontainer.refresh]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer/refresh.html
 [ref.refresh]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef/refresh.html
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
