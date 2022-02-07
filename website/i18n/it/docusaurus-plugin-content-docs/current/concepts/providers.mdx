@@ -11,7 +11,7 @@ Un provider è un oggetto che incapsula un pezzo di stato e ci permette di ascol
 
 ## Perchè usare i provider?
 
-Avvolgendo un pezzo di stato in un provider, ciò:
+Avvolgere un pezzo di stato in un provider:
 
 - Permette l'accesso a tale stato facilmente ed in posizioni differenti.
   I Provider sono un rimpiazzamento completo a Design Patterns come Singleton, 
@@ -23,14 +23,14 @@ Avvolgendo un pezzo di stato in un provider, ciò:
 
 - Permette ottimizzazioni delle performance.
   Sia per filtrare la ricostruzione di più widget o per chaching di uno stato che richiede molta computazione;
-  I provider assicurano che solo ciò che è impattato dal cambio dello stato venga ricalcolato.
+  i provider assicurano che solo ciò che è impattato dal cambio dello stato venga ricalcolato.
 
 - Incremento della testabilità della tua applicazione.
-  Con I provider, non hai più bisogno di complessi `setUp`/`tearDown`. Inoltre,
+  Con i provider, non hai più bisogno di complessi `setUp`/`tearDown`. Inoltre,
   ogni provider può essere sovrascritto per comportarsi in maniera differente durante i test, che 
   permettono di testare un comportamento specifico.
 
-- Integrazione facile di feature avanzate, come logging e transcina per aggiornare
+- Integrazione facile di feature avanzate, come logging e trascina per aggiornare
 
 
 ## Creare un provider
@@ -45,7 +45,7 @@ final myProvider = Provider((ref) {
 });
 ```
 
-:::nota
+:::note
 Non avere paura di definirli globalmente.
 I Provider sono totalmente immutabili. Dichiarare un provider non è differente dal dichiarare
 una funzione, inoltre è testabile e mantenibile.
@@ -53,7 +53,7 @@ una funzione, inoltre è testabile e mantenibile.
 
 Questa porzione di codice consiste in 3 parti:
 
-- `final myProvider`, la declarazione della variabile.
+- `final myProvider`, la dichiarazione della variabile.
   Questa variabile è ciò che useremo in futuro per leggere lo stato del nostro provider.
   Dovrebbe essere sempre immutabile.
 
@@ -62,7 +62,7 @@ Questa porzione di codice consiste in 3 parti:
   Potremmo rimpiazzare [Provider] con altri provider come [StreamProvider] o
   [StateNotifierProvider], per cambiare il modo in cui ci si interagisce.
 
-- Una funzione che create lo stato condiviso
+- Una funzione che crea lo stato condiviso.
   Tale funzione ci permetterà di ricevere un oggetto chiamato `ref` come parametro. Questo oggetto
   ci permette di leggere altri provider o fare alcune operazioni quando lo stato 
   del nostro provider verrà distrutto.
@@ -82,12 +82,12 @@ final cityProvider = Provider((ref) => 'London');
 final countryProvider = Provider((ref) => 'England');
 ```
 
-Il fatto che entrambi i provider create una `String` non causa nessun problema.
+Il fatto che entrambi i provider creino una `String` non causa nessun problema.
 :::
 
-:::attenzione
-Per permettere ai provider di funzionare, sei obbligato [ProviderScope] 
-nella radice della tua applicazione Flutter:
+:::caution
+Per permettere ai provider di funzionare, devi aggiungere [ProviderScope] 
+alla radice della tue applicazioni Flutter:
 
 ```dart
 void main() {
@@ -100,10 +100,10 @@ void main() {
 ## Fare azioni prima della distruzione dello stato
 
 In alcuni casi, lo stato di un provider potrebbe essere distrutto o ricreato.
-Uno scenario comune in quelle situaizoni è quello di fare un clean-up (pulire) prima che lo stato di un provider
-è distrutto, come la chiusura di uno `StreamController`.
+Uno scenario comune in queste situazioni è quello di fare un clean-up (pulizia) prima che lo stato di un provider
+sia distrutto, come la chiusura di uno `StreamController`.
 
-Ciò è possibile utilizzando l'oggetto `ref`, che è passato nella callback di tutti i provider, 
+Ciò è possibile utilizzando l'oggetto `ref` che è passato nella callback di tutti i provider
 usando il suo metodo [onDispose].
 
 Il seguente esempio utilizza [onDispose] per chiudere uno `StreamController`:
@@ -121,7 +121,7 @@ final example = StreamProvider.autoDispose((ref) {
 });
 ```
 
-:::nota
+:::note
 In base al provider utilizzato, potrebbe prendersi cura del processo di clean-up.
 Per esempio, [StateNotifierProvider] chiamerà il metodo `dispose` dello `StateNotifier`
 :::
@@ -144,11 +144,11 @@ Per il momento, ci sono due modificatori presenti:
 
 
 - [`.autoDispose`](/docs/concepts/modifiers/auto_dispose), che farà distruggere automaticamente lo stato del provider 
-  quando non + più in ascolto.
-- [`.family`](/docs/concepts/modifiers/family), che permetterà di creare un provide da parametri esterni.
+  quando non è più in ascolto.
+- [`.family`](/docs/concepts/modifiers/family), che permetterà di creare un provider da parametri esterni.
 
-:::nota
-Un provider può utilizzare più modificatori in una sola volta:
+:::note
+Un provider può utilizzare più modificatori in una volta sola:
 ```dart
 final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) async {
   return fetchUser(userId);
@@ -157,7 +157,7 @@ final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) 
 
 :::
 
-Questo è tutto per questa guida!
+Questo è quanto per questa guida!
 
 Puoi andare avanti con [Come leggere un provider](/docs/concepts/reading).
 In alternativa, puoi vedere [Come combinare i provider](/docs/concepts/combining_providers).
