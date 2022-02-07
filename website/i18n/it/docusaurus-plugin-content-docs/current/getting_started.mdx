@@ -13,7 +13,7 @@ installare [Riverpod] e di seguito creare il classico "Hello World".
 Prima di tutto, devi sapere che [Riverpod] è diviso in diversi pacchetti, ognuno per una propria esigenza.
 La variante di [Riverpod] che vorrai installare dipenderà dal tipo di App che hai intenzione di creare.
 
-Fai riferimento alla seguente tabella per decidere quale pacchetto installere:
+Fai riferimento alla seguente tabella per decidere quale pacchetto installare:
 
 | tipo app                  | nome pacchetto                                                                     | descrizione                                                            |
 | ------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
@@ -107,13 +107,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Creiamo un "provider", che salverà un valore (Nel nostro caso "Hello world")
-// Utilizzando provider ci permetterà di mock/override il valore esposto.
+// Utilizzare un provider ci permetterà di imitare/sovrascrivere il valore esposto.
 final helloWorldProvider = Provider((_) => 'Hello world');
 
 void main() {
   runApp(
-    // Per i widget, per avere la possibilità di leggere i provider, dobbiamo avvolgere
-    // l'intera applicazione con il Widget "ProviderScope".
+    // Per fare in modo che i widget leggano i provider, dobbiamo avvolgere
+    // l'intera applicazione in un widget "ProviderScope".
     // Qui è dove sarà salvato lo stato dei nostri provider.
     ProviderScope(
       child: MyApp(),
