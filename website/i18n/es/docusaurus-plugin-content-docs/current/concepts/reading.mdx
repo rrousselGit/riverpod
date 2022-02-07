@@ -208,7 +208,7 @@ final todosProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) => TodoL
 
 final filteredTodoListProvider = Provider((ref) {
   // obtiene tanto el filtro como la lista de tareas
-  final FilterType filter = ref.watch(filterTypeProvider).state;
+  final FilterType filter = ref.watch(filterTypeProvider);
   final List<Todo> todos = ref.watch(todosProvider);
 
   switch (filter) {
@@ -241,12 +241,15 @@ class HomeView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // use ref para escuchar a un provider
-    final counter = ref.watch(counterProvider).state;
+    final counter = ref.watch(counterProvider);
 
     return Text('$counter');
   }
 }
 ```
+Este fragmento de código muestra un widget que escucha a un provider que almacena un contador. 
+Y si ese contador cambia, el widget se reconstruirá y la interfaz de usuario se actualizará 
+para mostrar el nuevo valor.
 
 :::caution PRECAUCIÓN
 El método `watch` no debe llamarse de forma asíncrona, como dentro de un `onPressed` de un [ElevatedButton]. 
@@ -276,9 +279,9 @@ final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter());
 
 final anotherProvider = Provider((ref) {
   ref.listen<int>(counterProvider, (int? previousCount, int newCount) {
-    print('The counter changed ${newCount}');
+    print('The counter changed $newCount');
   });
-  ...
+  // ...
 });
 ```
 
@@ -293,14 +296,15 @@ class HomeView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen<int>(counterProvider, (int? previousCount, int newCount) {
-      print('The counter changed ${newCount}');
+      print('The counter changed $newCount');
     });
-    ...
+
+    return Container();
   }
 }
 ```
 
-:::caution
+:::caution PRECAUCIÓN
 El método `listen` no debe llamarse de forma asíncrona, como dentro de un `onPressed` de un [ElevatedButton]. 
 Tampoco se debe utilizar dentro del `initState` u otro ciclo de vida del [State].
 :::
@@ -351,9 +355,10 @@ final counterProvider = StateProvider((ref) => 0);
 
 Widget build(BuildContext context, WidgetRef ref) {
   // usar "read" para ignorar las actualizaciones de un provider
-  final counter = ref.read(counterProvider);
+  final counter = ref.read(counterProvider.notifier);
   return ElevatedButton(
     onPressed: () => counter.state++,
+    child: const Text('button'),
   )
 }
 ```
@@ -365,7 +370,7 @@ es que, si bien es posible que hoy ese provider nunca actualice su valor, no hay
 
 El software tiende a cambiar mucho, y es probable que en el futuro, un valor que antes nunca cambiaba, tenga que cambiar.
 Pero si usó `ref.read`, cuando ese valor comienza a cambiar, tendría que revisar todo su código base para cambiar 
-`ref.read` en `ref.watch`, lo cual es propenso a errores y es probable que olvide algunos casos.
+`ref.read` en `ref.watch`, lo cual es propenso a errores y es probable que olvides algunos casos.
 
 Mientras que si usaras `ref.watch` al principio, no tendrías ningún problema.
 
@@ -383,9 +388,10 @@ Por ejemplo en lugar de
 final counterProvider = StateProvider((ref) => 0);
 
 Widget build(BuildContext context, WidgetRef ref) {
-  StateController<int> counter = ref.read(counterProvider);
+  StateController<int> counter = ref.read(counterProvider.notifier);
   return ElevatedButton(
     onPressed: () => counter.state++,
+    child: const Text('button'),
   )
 }
 ```
@@ -399,6 +405,7 @@ Widget build(BuildContext context, WidgetRef ref) {
   StateController<int> counter = ref.watch(counterProvider.notifier);
   return ElevatedButton(
     onPressed: () => counter.state++,
+    child: const Text('button'),
   )
 }
 ```
@@ -437,8 +444,8 @@ Al leer este `userProvider`, usted puede:
     AsyncValue<User> user = ref.watch(userProvider);
 
     return user.when(
-      loading: (_) => const CircularProgressIndicator(),
-      error: (error, stack, _) => const Text('Oops'),
+      loading: () => const CircularProgressIndicator(),
+      error: (error, stack) => const Text('Oops'),
       data: (user) => Text(user.name),
     );
   }
@@ -455,7 +462,7 @@ Al leer este `userProvider`, usted puede:
   
   ```dart
   Widget build(BuildContext context, WidgetRef ref) {
-    Future<User> user = ref.watch(userProvider.last);
+    Future<User> user = ref.watch(userProvider.future);
   }
   ```
 
