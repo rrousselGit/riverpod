@@ -13,17 +13,17 @@ from version 0.14.x to version 1.0.0.
 Before explaining the various changes, it is worth noting that Riverpod comes with
 a command-line tool to automatically migrate your project for you.
 
-### Installing the command line
+### Installing the command line tool
 
-To install the migration tool, do:
+To install the migration tool, run:
 
 ```sh
 dart pub global activate riverpod_cli
 ```
 
-You should now be able to do:
+You should now be able to run:
 
-```dart
+```sh
 riverpod --help
 ```
 
@@ -37,7 +37,7 @@ Now that the command line is installed, we can start using it.
 
   :::danger
   Not upgrading Riverpod is important.  
-  The tool will not execute properly if you have already installed the version 1.0.0.  
+  The tool will not execute properly if you have already installed version 1.0.0.
   As such, make sure that you are properly using an older version before starting the tool.
   :::
 
@@ -64,15 +64,15 @@ To accept the change, simply press <kbd>y</kbd>. Otherwise to reject it, press <
 ## The changes
 
 Now that we've seen how to use the CLI to automatically upgrade your project,
-let's see in details the changes necessary.
+let's see in detail the changes necessary.
 
 ### Syntax unification
 
-The version 1.0.0 of Riverpod focused on the unification of the syntax for
+Version 1.0.0 of Riverpod focused on the unification of the syntax for
 interacting with providers.  
 Before, Riverpod had many similar yet different syntaxes for reading a provider,
 such as `ref.watch(provider)` vs `useProvider(provider)` vs `watch(provider)`.  
-With the version 1.0.0, only one syntax remains: `ref.watch(provider)`. The
+With version 1.0.0, only one syntax remains: `ref.watch(provider)`. The
 others were removed.
 
 As such:

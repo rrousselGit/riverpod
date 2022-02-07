@@ -9,7 +9,7 @@ import todos from "!!raw-loader!/docs/providers/state_notifier_provider/todos.da
 import todosConsumer from "!!raw-loader!/docs/providers/state_notifier_provider/todos_consumer.dart";
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
-`StateNotifierProvider` is a provider that is used to listen to expose a
+`StateNotifierProvider` is a provider that is used to listen to and expose a
 [StateNotifier] (from the package [state_notifier], which Riverpod re-exports).  
 `StateNotifierProvider` along with [StateNotifier] is Riverpod's recommended solution
 for managing state which may change in reaction to a user interaction.
@@ -28,7 +28,7 @@ modify the list of todos on user interactions:
 
 <CodeBlock>{trimSnippet(todos)}</CodeBlock>
 
-Now that we have defined a `StateNotifierProvider`, we can now use it to interact
+Now that we have defined a `StateNotifierProvider`, we can use it to interact
 with the list of todos in our UI:
 
 <CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>

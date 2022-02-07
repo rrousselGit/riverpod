@@ -285,7 +285,7 @@ final alwaysAlive = Provider((ref) {
     expect(container.read(isEven), true);
   });
 
-  test('setting maintainState to false destroys the state when not listened',
+  test('setting maintainState to false destroys the state when not listened to',
       () async {
     final onDispose = OnDisposeMock();
     late AutoDisposeRef ref;
@@ -313,7 +313,8 @@ final alwaysAlive = Provider((ref) {
     verifyNoMoreInteractions(onDispose);
   });
 
-  test("maintainState to true don't dispose the state when no-longer listened",
+  test(
+      "maintainState to true don't dispose the state when no longer listened to",
       () async {
     var value = 42;
     final onDispose = OnDisposeMock();

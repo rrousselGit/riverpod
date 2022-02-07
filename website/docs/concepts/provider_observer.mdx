@@ -8,21 +8,21 @@ import { trimSnippet } from "../../src/components/CodeSnippet";
 
 [ProviderObserver] listens to the changes of a ProviderContainer.
 
-To use it, extend the class ProviderObserver and override the method you like to use.
+To use it, extend the class ProviderObserver and override the method you want to use.
 
 [ProviderObserver] has three methods :
 
-- `didAddProvider` is called every time a provider was initialized, and the value exposed is value.
-- `didDisposeProvider` is called every time A provider was disposed
-- `didUpdateProvider` is called every time my providers when they emit a notification.
+- `didAddProvider` is called every time a provider was initialized, and the value exposed is `value`.
+- `didDisposeProvider` is called every time a provider was disposed.
+- `didUpdateProvider` is called every time by providers when they emit a notification.
 
 ### Usage :
 
-A simple use case for [ProviderObserver], is to log the changes in providers by overriding the method `didUpdateProvider`.
+A simple use case for [ProviderObserver] is to log the changes in providers by overriding the `didUpdateProvider` method.
 
 <CodeBlock>{trimSnippet(logger)}</CodeBlock>
 
-Now that every time the value of our provider is updated, the logger will log it :
+Now every time the value of our provider is updated, the logger will log it:
 
 ```
 I/flutter (16783): {

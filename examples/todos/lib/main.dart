@@ -15,7 +15,7 @@ final allFilterKey = UniqueKey();
 /// We are using [StateNotifierProvider] here as a `List<Todo>` is a complex
 /// object, with advanced business logic like how to edit a todo.
 final todoListProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) {
-  return TodoList([
+  return TodoList(const [
     Todo(id: 'todo-0', description: 'hi'),
     Todo(id: 'todo-1', description: 'hello'),
     Todo(id: 'todo-2', description: 'bonjour'),

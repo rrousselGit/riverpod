@@ -1,0 +1,35 @@
+---
+title: প্রভাইডার অবসার্বার
+---
+
+import CodeBlock from "@theme/CodeBlock";
+import logger from "!!raw-loader!./provider_observer_logger.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+[ProviderObserver] একটি ProviderContainer এর পরিবর্তন লিসেন করে।
+
+এটি ব্যবহার করতে, ProviderObserver ক্লাস এক্সটেন্ড করুন এবং আপনি যে মেথড ব্যবহার করতে চান সেটি ওভাররাইড করুন।
+
+[ProviderObserver] এর তিনটি মেথড রয়েছে :
+
+- `didAddProvider` প্রতিবার যখন কোনো প্রভাইডারের সূচনা করা হয় তখন কল হয়, এবং উন্মোচিত মান হল `value`।
+- `didDisposeProvider` প্রতিবার কল করা হয় যখন একটি প্রভাইডার নিষ্পত্তি হয়।
+- `didUpdateProvider` প্রতিবার প্রভাইডারের যখন একটি বিজ্ঞপ্তি প্রকাশ করে তখন কল করে।
+
+### Usage :
+
+[ProviderObserver]-এর জন্য একটি সাধারণ ব্যবহারের ক্ষেত্রে হল `didUpdateProvider` মেথড ওভাররাইড
+করে প্রভাইডারদের পরিবর্তনগুলি লগ করা।
+
+<CodeBlock>{trimSnippet(logger)}</CodeBlock>
+
+এখন প্রতিবার আমাদের প্রভাইডারের মান আপডেট করা হলে, লগার এটি লগ করবে:
+
+```
+I/flutter (16783): {
+I/flutter (16783):   "provider": "counter",
+I/flutter (16783):   "newValue": "1"
+I/flutter (16783): }
+```
+
+[providerobserver]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderObserver-class.html

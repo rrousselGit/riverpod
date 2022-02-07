@@ -1,0 +1,14 @@
+{
+  "title": {
+    "message": "Riverpod",
+    "description": "The title in the navbar"
+  },
+  "item.label.Docs": {
+    "message": "ডকুমেন্টশন",
+    "description": "Navbar item with label Docs"
+  },
+  "item.label.GitHub": {
+    "message": "Github",
+    "description": "Navbar item with label GitHub"
+  }
+}

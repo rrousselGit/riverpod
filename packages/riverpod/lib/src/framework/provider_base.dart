@@ -61,7 +61,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   final Family? from;
 
   /// If this provider was created with the `.family` modifier, [argument] is
-  /// variable used.
+  /// the variable that was used.
   final Object? argument;
 
   /// The provider that will be refreshed when calling [ProviderContainer.refresh]
@@ -261,11 +261,12 @@ abstract class ProviderElementBase<State> implements Ref {
 
   var _debugSkipNotifyListenersAsserts = false;
 
-  /// The provider associated to this [ProviderElementBase], before applying overrides.
-  ProviderBase<State> get origin => _origin;
-  late ProviderBase<State> _origin;
+  /// The provider associated with this [ProviderElementBase], before applying overrides.
+  // Not typed as <State> because of https://github.com/rrousselGit/river_pod/issues/1100
+  ProviderBase<Object?> get origin => _origin;
+  late ProviderBase<Object?> _origin;
 
-  /// The provider associated to this [ProviderElementBase], after applying overrides.
+  /// The provider associated with this [ProviderElementBase], after applying overrides.
   ProviderBase<State> get provider => _provider;
   ProviderBase<State> _provider;
 
@@ -274,7 +275,7 @@ abstract class ProviderElementBase<State> implements Ref {
   ProviderContainer get container => _container;
   late ProviderContainer _container;
 
-  /// Whether this [ProviderElementBase] is currently listened or not.
+  /// Whether this [ProviderElementBase] is currently listened to or not.
   ///
   /// This maps to listeners added with [listen].
   /// See also [mayNeedDispose], called when [hasListeners] may have changed.
@@ -468,7 +469,7 @@ abstract class ProviderElementBase<State> implements Ref {
       }(), '');
     }
 
-    // Unsubscribe to everything that a provider no-longer depends on.
+    // Unsubscribe to everything that a provider no longer depends on.
     for (final sub in _previousDependencies!.entries) {
       sub.key
         .._dependents.remove(this)
@@ -903,7 +904,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// See also:
   ///
   /// - [AutoDisposeProviderElementBase], which overrides this method to destroy the
-  ///   state of a provider when no-longer used.
+  ///   state of a provider when no longer used.
   @protected
   @visibleForOverriding
   void mayNeedDispose() {}
@@ -936,7 +937,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 }
 
-/// Encapulates an exception thrown while building a provider.
+/// Encapsulates an exception thrown while building a provider.
 ///
 /// This exception can be thrown if a provider fails to return a valid value:
 /// ```dart

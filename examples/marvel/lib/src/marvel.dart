@@ -1,6 +1,6 @@
 /// This file contains the necessary objects to connect with the Marvel API.
 ///
-/// This includes [MarvelRepository], which expose methods to do the request
+/// This includes [MarvelRepository], which exposes methods to do the request
 /// in a type-safe way.
 /// It also includes all the intermediate objects used to deserialize the
 /// response from the API.

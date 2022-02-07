@@ -26,12 +26,12 @@ import { trimSnippet } from "../../src/components/CodeSnippet";
 `Provider` is a powerful tool for caching synchronous operations when combined
 with [ref.watch].
 
-An example would be filtering a list of todos.  
+An example would be filtering a list of todos.
 Since filtering a list could be slightly expensive, we ideally do not want to
-filter out list of todos whenever our application re-renders.  
-In this situation, we could use `Provider` to do the filter for us.
+filter our list of todos whenever our application re-renders.
+In this situation, we could use `Provider` to do the filtering for us.
 
-For that, assume that our application have an existing [StateNotifierProvider]
+For that, assume that our application has an existing [StateNotifierProvider]
 which manipulates a list of todos:
 
 <CodeBlock>{trimSnippet(todo)}</CodeBlock>
@@ -60,7 +60,7 @@ thanks to [ref.watch].
 
 A unique aspect of `Provider` is that even when `Provider` is recomputed
 (typically when using [ref.watch]), it will not update the widgets/providers
-that listens to it unless the value changed.
+that listen to it unless the value changed.
 
 A real world example would be for enabling/disabling previous/next buttons
 of a paginated view:
@@ -87,14 +87,14 @@ A way to solve this is to extract this logic outside of the widget and into a `P
 
 <CodeBlock>{trimSnippet(optimizedPreviousButton)}</CodeBlock>
 
-By doing this small refactoring, our `PreviousButton` widget will no-longer
+By doing this small refactoring, our `PreviousButton` widget will no longer
 rebuild when the page index changes thanks to `Provider`.
 
 From now on when the page index changes, our `canGoToPreviousPageProvider` provider
 will be recomputed. But if the value exposed by the provider does not change,
 then `PreviousButton` will not rebuild.
 
-This change both improved the performances of our button and had the interesting
+This change both improved the performance of our button and had the interesting
 benefit of extracting the logic outside of our widget.
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider

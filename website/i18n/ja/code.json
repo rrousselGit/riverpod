@@ -156,7 +156,7 @@
     "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
   },
   "theme.TOCCollapsible.toggleButtonLabel": {
-    "message": "このページから",
+    "message": "目次",
     "description": "The label used by the button on the collapsible TOC component"
   },
   "theme.SearchPage.documentsFound.plurals": {
@@ -214,7 +214,7 @@
     "message": "Riverpod は Flutter に依存することなくプロバイダを作成・共有・テストすることが可能です。 {BuildContext} を使わずにプロバイダを利用することができます。"
   },
   "home.tagline": {
-    "message": "リアクティブステートマネジメントと DI のフレームワーク"
+    "message": "リアクティブ・ステートマネジメントと DI のフレームワーク"
   },
   "home.get_started": {
     "message": "利用開始"
