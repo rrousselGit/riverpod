@@ -10,13 +10,13 @@
     "message": "Neuberechnung von Zuständen/Neuaufbau der Benutzeroberfläche nur bei Bedarf"
   },
   "home.recompute_body": {
-    "message": "Listen müssen nicht mehr in der {build} Methode sortiert/gefiltert\n          werden oder auf erweiterte Cache-Mechanismen zurückgreifen. {br} {br}\n          Mit {Provider} und {families}, sortieren deiner Liste oder HTTP\n          Requests müssen nur noch gemacht werden, wenn du es {wirklich} brauchst."
+    "message": "Listen müssen nicht mehr in der {build} Methode sortiert/gefiltert\n          werden oder auf erweiterte Cache-Mechanismen zurückgreifen. {br} {br}\n          Mit {Provider} und {families}, sortieren deiner Liste oder HTTP\n          Requests müssen nur noch gemacht werden, wenn du es wirklich brauchst."
   },
   "home.safe_read_title": {
     "message": "Provider sicher lesen"
   },
   "home.safe_read_body": {
-    "message": "Das Lesen eines Providers wird niemals zu einem bad state führen. Wenn\n          wenn der benötigte Code zum Auslesen eines Providers geschrieben werden kann, erhält man\n          einen validen Wert. {br} {br}\n          Das gilt auch für asynchron geladene Werte. Im Gegensatz\n          zu Providern, erlaubt Riverpod eine saubere Handhabung\n          von Lade-/Fehlerfällen."
+    "message": "Das Lesen eines Providers wird niemals zu einem bad state führen. Wenn\n          der benötigte Code zum Auslesen eines Providers geschrieben werden kann, erhält man\n          einen validen Wert. {br} {br}\n          Das gilt auch für asynchron geladene Werte. Im Gegensatz\n          zu Providern, erlaubt Riverpod eine saubere Handhabung\n          von Lade-/Fehlerfällen."
   },
   "home.devtool_title": {
     "message": "Überprüfen Sie ihren Zustand im devtool"
@@ -28,7 +28,7 @@
     "message": "Compile safe"
   },
   "homepage.compile_safe_body": {
-    "message": "Keine {ProviderNotFound} mehr und kein Vergessen der Behandlungen von Ladezuständen\n          Durch die Benutzung von Riverpod, funktioniert ihr Code, wenn er erfolgreich compiliert."
+    "message": "Keine {ProviderNotFound} mehr und kein Vergessen der Behandlungen von Ladezuständen.\n          Durch die Benutzung von Riverpod, funktioniert ihr Code, wenn er erfolgreich compiliert."
   },
   "homepage.unlimited_provider_title": {
     "message": "Provider ohne Einschränkungen"
