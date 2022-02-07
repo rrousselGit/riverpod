@@ -216,7 +216,7 @@ final todosProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) => TodoL
 
 final filteredTodoListProvider = Provider((ref) {
   // obtient à la fois le filtre et la liste des todos
-  final FilterType filter = ref.watch(filterTypeProvider).state;
+  final FilterType filter = ref.watch(filterTypeProvider);
   final List<Todo> todos = ref.watch(todosProvider);
 
   switch (filter) {
@@ -249,7 +249,7 @@ class HomeView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // utiliser ref pour écouter un provider
-    final counter = ref.watch(counterProvider).state;
+    final counter = ref.watch(counterProvider);
 
     return Text('$counter');
   }
@@ -286,9 +286,9 @@ final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter());
 
 final anotherProvider = Provider((ref) {
   ref.listen<int>(counterProvider, (int? previousCount, int newCount) {
-    print('The counter changed ${newCount}');
+    print('The counter changed $newCount');
   });
-  ...
+  //...
 });
 ```
 
@@ -303,9 +303,10 @@ class HomeView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen<int>(counterProvider, (int? previousCount, int newCount) {
-      print('The counter changed ${newCount}');
+      print('The counter changed $newCount');
     });
-    ...
+    
+    return Container();
   }
 }
 ```
@@ -365,9 +366,10 @@ final counterProvider = StateProvider((ref) => 0);
 
 Widget build(BuildContext context, WidgetRef ref) {
   // utiliser "read" pour ignorer les mise à jour d'un provider
-  final counter = ref.read(counterProvider);
+  final counter = ref.read(counterProvider.notifier);
   return ElevatedButton(
     onPressed: () => counter.state++,
+    child: const Text('button'),
   )
 }
 ```
@@ -403,9 +405,10 @@ Par exemple, au lieu de
 final counterProvider = StateProvider((ref) => 0);
 
 Widget build(BuildContext context, WidgetRef ref) {
-  StateController<int> counter = ref.read(counterProvider);
+  StateController<int> counter = ref.read(counterProvider.notifier);
   return ElevatedButton(
     onPressed: () => counter.state++,
+    child: const Text('button'),
   )
 }
 ```
@@ -421,6 +424,7 @@ Widget build(BuildContext context, WidgetRef ref) {
   StateController<int> counter = ref.watch(counterProvider.notifier);
   return ElevatedButton(
     onPressed: () => counter.state++,
+    child: const Text('button'),
   )
 }
 ```
@@ -460,8 +464,8 @@ En lisant ce `userProvider`, vous pouvez :
     AsyncValue<User> user = ref.watch(userProvider);
 
     return user.when(
-      loading: (_) => const CircularProgressIndicator(),
-      error: (error, stack, _) => const Text('Oops'),
+      loading: () => const CircularProgressIndicator(),
+      error: (error, stack) => const Text('Oops'),
       data: (user) => Text(user.name),
     );
   }
@@ -478,7 +482,7 @@ En lisant ce `userProvider`, vous pouvez :
   
   ```dart
   Widget build(BuildContext context, WidgetRef ref) {
-    Future<User> user = ref.watch(userProvider.last);
+    Future<User> user = ref.watch(userProvider.future);
   }
   ```
 
