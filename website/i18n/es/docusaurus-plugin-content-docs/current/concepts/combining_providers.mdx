@@ -2,7 +2,7 @@
 title: Combinando providers
 ---
 
-Asegúrese de [leer primero acerca de los providers](/docs/concepts/providers).
+Asegúrese de [leer primero acerca de los providers](/docs/concepts/providers).  
 En esta guía, veremos todo lo que hay que saber sobre la combinación de providers.
 
 ### Combinando providers
@@ -10,8 +10,8 @@ En esta guía, veremos todo lo que hay que saber sobre la combinación de provid
 Anteriormente hemos visto cómo crear un provider simple. Pero la realidad es que, 
 en muchas situaciones, un provider querrá leer el estado de otro provider.
 
-Para hacer eso, podemos usar el objeto `ref` pasado al callback de nuestro 
-provider y usar su método `watch`.
+Para hacer eso, podemos usar el objeto [ref] pasado al callback de nuestro 
+provider y usar su método [watch].
 
 Como ejemplo, considere el siguiente provider:
 
@@ -111,7 +111,7 @@ final configsProvider = StreamProvider<Configuration>(...);
 
 final charactersProvider = FutureProvider<List<Character>>((ref) async {
   final search = ref.watch(searchProvider);
-  final configs = await ref.watch(configsProvider.last);
+  final configs = await ref.watch(configsProvider.future);
   final response = await dio.get('${configs.host}/characters?search=$search');
 
   return response.data.map((json) => Character.fromJson(json)).toList();
@@ -126,7 +126,7 @@ automáticamente la lista cada vez que cambien las configuraciones o cuando camb
 
 A veces, queremos leer el contenido de un provider, pero sin recrear el valor expuesto cuando cambia el valor obtenido.
 
-Un ejemplo sería un `Repository`, que lee de otro provider el token de usuario para la autenticación.
+Un ejemplo sería un `Repository`, que lee de otro provider el token de usuario para la autenticación.  
 Podríamos usar [watch] y crear uno nuevo `Repository` cada vez que cambie el token de usuario, pero no sirve de nada hacerlo.
  
 En esta situación, podemos usar [read], que es similar a [watch], pero no hará que el provider vuelva a crear el valor que expone cuando cambia el valor obtenido.
@@ -142,7 +142,7 @@ final repositoryProvider = Provider((ref) => Repository(ref.read));
 class Repository {
   Repository(this.read);
 
-  /// La fonction `ref.read` 
+  /// La función `ref.read` 
   final Reader read;
 
   Future<Catalog> fetchCatalog() async {
@@ -229,7 +229,7 @@ final configsProvider = StreamProvider<Configuration>(...);
 final productsProvider = FutureProvider<List<Product>>((ref) async {
   // Hará que productsProvider vuelva a obtener los productos si algo
   // cambio en la configuración
-  final configs = await ref.watch(configsProvider.last);
+  final configs = await ref.watch(configsProvider.future);
 
   return dio.get('${configs.host}/products');
 });
@@ -243,7 +243,7 @@ final configsProvider = StreamProvider<Configuration>(...);
 
 /// Un provider que expone solo el host actual
 final _hostProvider = FutureProvider<String>((ref) async {
-  final config = await ref.watch(configsProvider.last);
+  final config = await ref.watch(configsProvider.future);
   return config.host;
 });
 
