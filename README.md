@@ -151,13 +151,9 @@ very similar usages, but we cannot create a lightbulb by improving our candle.
 
 ### Is it safe to use in production?
 
-Yes, but with caution.
+Yes.
 
-[Riverpod] recently left its experimental status, but it isn't fully stable either.
-The API may change slightly when more features are added, and some use-cases
-may not be as simple as they could be.
-
-But overall, you should be able to use [Riverpod] without trouble.
+[Riverpod] is stable and actively maintained.
 
 ### Will this get merged with [provider] at some point?
 
