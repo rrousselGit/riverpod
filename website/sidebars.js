@@ -18,9 +18,6 @@ module.exports = {
           ],
         },
         "concepts/provider_observer",
-        "concepts/provider_lifecycles",
-        "concepts/why_immutability",
-        "concepts/scopes",
       ],
     },
     {
