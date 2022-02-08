@@ -78,7 +78,7 @@ See [the migration guide](https://riverpod.dev/docs/migration/0.14.0_to_1.0.0/) 
   - [Why another project when provider already exists?](#why-another-project-when-provider-already-exists)
   - [Is it safe to use in production?](#is-it-safe-to-use-in-production)
   - [Will this get merged with provider at some point?](#will-this-get-merged-with-provider-at-some-point)
-  - [Will [provider] be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
+  - [Will provider be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
 
 ## Motivation
 
