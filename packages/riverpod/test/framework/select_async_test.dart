@@ -15,23 +15,17 @@ void main() {
       (prev, next) {},
     );
 
-    print('a');
     expect(await sub.read(), true);
-    print('b');
 
     container.read(dep.notifier).state += 2;
-    await container.pump();
-    print('c');
+    await container.read(provider.future);
 
     expect(await sub.read(), true);
-    print('d');
 
     container.read(dep.notifier).state++;
-    await container.pump();
+    await container.read(provider.future);
 
-    print('e');
     expect(await sub.read(), false);
-    print('f');
   });
 
   test('handles fireImmediately: true', () async {
@@ -46,8 +40,8 @@ void main() {
       fireImmediately: true,
     );
 
-    final result =
-        verify(listener(null, captureAny)).captured.single as Future<bool>;
+    final result = verify(listener(argThat(isNull), captureAny)).captured.single
+        as Future<bool>;
     verifyNoMoreInteractions(listener);
     expect(await result, true);
   });
@@ -92,7 +86,7 @@ void main() {
     expect(container.read(b), const AsyncData(0));
     expect(buildCount, 1);
 
-    await container.pump();
+    await container.read(a.future);
     expect(await container.read(b.future), 1);
     expect(buildCount, 2);
 
@@ -101,7 +95,7 @@ void main() {
     expect(container.read(b), const AsyncData(1));
     expect(buildCount, 2);
 
-    await container.pump();
+    await container.read(a.future);
     expect(await container.read(b.future), 1);
     expect(buildCount, 2);
   });

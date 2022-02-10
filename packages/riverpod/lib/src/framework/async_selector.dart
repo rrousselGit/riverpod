@@ -96,18 +96,12 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
     Result<Output>? lastSelectedValue;
     Completer<Output>? selectedCompleter;
     Future<Output>? selectedFuture;
-    // Whether the AsyncValue listened went back from data/error to loading state
-    // This is necessary to differentiate between the initial await vs sub-sequents awaits
-    var didGoBackToLoading = false;
 
     void emitData(Output data, {required bool callListeners}) {
       final previousFuture = selectedFuture;
       if (selectedCompleter != null) {
         selectedCompleter!.complete(data);
         selectedCompleter = null;
-        if (callListeners && didGoBackToLoading) {
-          listener(previousFuture, selectedFuture!);
-        }
       } else {
         selectedFuture = Future.value(data);
         if (callListeners) listener(previousFuture, selectedFuture!);
@@ -135,12 +129,13 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
     }) {
       void onLoading(AsyncValue<void> loading) {
         if (selectedCompleter == null) {
-          if (selectedFuture != null) {
-            didGoBackToLoading = true;
+          if (selectedFuture == null) {
+            // The first time a future is emited
+
+            selectedCompleter = Completer();
+            selectedFuture = selectedCompleter!.future;
           }
 
-          selectedCompleter = Completer();
-          selectedFuture = selectedCompleter!.future;
           // We don't notify listeners when the future changes since
           // they want to filter rebuilds based on the result
         }
@@ -175,7 +170,6 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
           );
 
           lastSelectedValue = newSelectedValue;
-          didGoBackToLoading = false;
         },
         error: (value) {
           final stack = value.stackTrace ?? StackTrace.empty;
@@ -189,8 +183,6 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
           // Error in the provider, it should've already been propagated
           // so no need to pollute the stack
           selectedFuture!.ignore();
-
-          didGoBackToLoading = false;
         },
       );
     }
