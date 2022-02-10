@@ -1,0 +1,51 @@
+---
+title: FutureProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import configProvider from "!!raw-loader!./future_provider/config_provider.dart";
+import configConsumer from "!!raw-loader!./future_provider/config_consumer.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`FutureProvider` হল [Provider] এর সমতুল্য কিন্তু অ্যাসিঙ্ক্রোনাস কোডের জন্য।
+
+`FutureProvider` সাধারণত এর জন্য ব্যবহৃত হয়:
+
+- অ্যাসিঙ্ক্রোনাস ক্রিয়াকলাপ সম্পাদন করা এবং ক্যাশে করা (যেমন নেটওয়ার্ক রিকুয়েস্ট)
+- অ্যাসিঙ্ক্রোনাস অপারেশনের ত্রুটি/লোডিং অবস্থা সুন্দরভাবে পরিচালনা করা
+- একাধিক অ্যাসিঙ্ক্রোনাস ভ্যালুকে অন্য ভ্যালুর সাথে একত্রিত করা
+
+[ref.watch] এর সাথে মিলিত হলে `FutureProvider` অনেক লাভ করে। এই সংমিশ্রণটি কিছু ভেরিয়েবল পরিবর্তন হলে কিছু ডেটা স্বয়ংক্রিয়ভাবে পুনঃ-আনয়নের/ফেচের অনুমতি দেয়, এটি নিশ্চিত করে যে আমাদের সর্বদা সর্বাধিক আপ-টু-ডেট ভ্যালু রয়েছে।
+
+:::info
+`FutureProvider` ব্যবহারকারীর ইন্টারঅ্যাকশনের পরে গণনাকে সরাসরি পরিবর্তন করার উপায় অফার করে না। এটি সাধারণ ব্যবহারের ক্ষেত্রে সমাধান করার জন্য ডিজাইন করা হয়েছে। আরও উন্নত পরিস্থিতির জন্য, [StateNotifierProvider] ব্যবহার করার কথা বিবেচনা করুন।
+:::
+
+## ব্যবহারের উদাহরণ: একটি কনফিগারেশন ফাইল পড়া
+
+`FutureProvider` একটি JSON ফাইল পড়ার মাধ্যমে তৈরি করা `Configuration` অবজেক্টকে প্রকাশ করার একটি সুবিধাজনক উপায় হতে পারে।
+
+
+কনফিগারেশন তৈরি করা আপনার সাধারণ async/await সিনট্যাক্স দিয়ে করা হবে, কিন্তু প্রভাইডারের ভিতরে। Flutter এর Asset সিস্টেম ব্যবহার করে, এটি হবে:
+
+<CodeBlock>{trimSnippet(configProvider)}</CodeBlock>
+
+তারপরে, UI এর মতো কনফিগারেশন রিড করতে পারেঃ
+
+<CodeBlock>{trimSnippet(configConsumer)}</CodeBlock>
+
+[Future] সম্পূর্ণ হলে এটি স্বয়ংক্রিয়ভাবে UI পুনর্নির্মাণ করবে।
+একই সময়ে, যদি একাধিক উইজেট কনফিগারেশন চায়,
+Asset শুধুমাত্র একবার ডিকোড করা হবে.
+
+আপনি দেখতে পাচ্ছেন, একটি উইজেটের ভিতরে একটি `FutureProvider` শোনার ফলে রিটার্ন আসে
+একটি [AsyncValue] - যা ত্রুটি/লোডিং অবস্থাগুলি পরিচালনা করার অনুমতি দেয়।
+
+[ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
+[statenotifierprovider]: ./state_notifier_provider
+[provider]: ./provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[family]: ../concepts/modifiers/family

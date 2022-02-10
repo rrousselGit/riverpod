@@ -1,0 +1,115 @@
+---
+title: StateProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import product from "!!raw-loader!./state_provider/product.dart";
+import productListView from "!!raw-loader!./state_provider/product_list_view.dart";
+import dropdown from "!!raw-loader!./state_provider/dropdown.dart";
+import sortProvider from "!!raw-loader!./state_provider/sort_provider.dart";
+import connectedDropdown from "!!raw-loader!./state_provider/connected_dropdown.dart";
+import sortedProductProvider from "!!raw-loader!./state_provider/sorted_product_provider.dart";
+import updateReadTwice from "!!raw-loader!./state_provider/update_read_twice.dart";
+import updateReadOnce from "!!raw-loader!./state_provider/update_read_once.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+
+`StateProvider` হল একটি প্রভাইডার যেটি তার অবস্থা পরিবর্তন করার একটি উপায় প্রকাশ করে। এটি [StateNotifierProvider]-এর একটি সরলীকরণ, খুব সাধারণ ব্যবহারের ক্ষেত্রে একটি [StateNotifier] ক্লাস লিখতে না দেওয়ার জন্য ডিজাইন করা হয়েছে।
+
+`StateProvider` এর পরিবর্তনের অনুমতি দেওয়ার জন্য প্রাথমিকভাবে বিদ্যমান
+ইউজার ইন্টারফেস দ্বারা **সহজ** ভেরিয়েবল।
+
+একটি `StateProvider`-এর স্টেট সাধারণতঃ
+
+- একটি enum, যেমন একটি ফিল্টার প্রকার
+- একটি স্ট্রিং, সাধারণত একটি পাঠ্য ক্ষেত্রের কাঁচা বিষয়বস্তু
+- একটি বুলিয়ান, চেকবক্সের জন্য
+- একটি সংখ্যা, পেজিনেশন বা বয়স ফর্ম ক্ষেত্রের জন্য
+
+আপনার 'StateProvider' ব্যবহার করা উচিত নয় যদি:
+
+- আপনার স্ট্যাট বৈধতা যুক্তি প্রয়োজন
+- আপনার স্ট্যাট একটি জটিল বস্তু (যেমন একটি কাস্টম ক্লাস, একটি list/map, ...)
+- আপনার অবস্থা পরিবর্তন করার লজিক একটি সাধারণ `count++` এর চেয়ে আরও উন্নত।
+
+আরও উন্নত ক্ষেত্রে, পরিবর্তে [StateNotifierProvider] ব্যবহার করার কথা বিবেচনা করুন এবং একটি [StateNotifier] ক্লাস তৈরি করুন। যদিও প্রাথমিক বয়লারপ্লেটটি একটু বড় হবে, একটি কাস্টম [StateNotifier] ক্লাস থাকা আপনার প্রকল্পের দীর্ঘমেয়াদী রক্ষণাবেক্ষণের জন্য গুরুত্বপূর্ণ - কারণ এটি আপনার ষ্টেটের বিজনেস লজিককে একক জায়গায় কেন্দ্রীভূত করে।
+
+## ব্যবহারের উদাহরণ: ড্রপডাউন ব্যবহার করে ফিল্টারের ধরন পরিবর্তন করা
+
+ড্রপডাউন/টেক্সট ফিল্ড/চেকবক্সের মতো সাধারণ ফর্ম উপাদানগুলির অবস্থা পরিচালনা করা হল `StateProvider`-এর একটি বাস্তব-বিশ্ব ব্যবহার-কেস। বিশেষ করে, আমরা দেখব কীভাবে একটি ড্রপডাউন বাস্তবায়ন করতে `StateProvider` ব্যবহার করতে হয় যা পণ্যের তালিকা কীভাবে সাজানো হয় তা পরিবর্তন করতে দেয়।
+
+সরলতার খাতিরে, আমরা যে পণ্যগুলি প্রাপ্ত করব তার তালিকা
+অ্যাপ্লিকেশনটিতে সরাসরি তৈরি করা হবে এবং নিম্নরূপ হবে:
+
+<CodeBlock>{trimSnippet(product)}</CodeBlock>
+
+একটি বাস্তব-বিশ্বের অ্যাপ্লিকেশনে, এই তালিকাটি সাধারণত একটি নেটওয়ার্ক রিকুয়েস্ট করে [FutureProvider] ব্যবহার করে প্রাপ্ত করা হবে।
+
+ইউজার ইন্টারফেস তারপর করে পণ্যের তালিকা দেখাতে পারেঃ
+
+<CodeBlock>{trimSnippet(productListView)}</CodeBlock>
+
+এখন যেহেতু আমরা বেস দিয়ে শেষ করেছি, আমরা একটি ড্রপডাউন যোগ করতে পারি, যা মূল্য বা নাম অনুসারে আমাদের পণ্যগুলিকে ফিল্টার করার অনুমতি দেবে৷
+এর জন্য, আমরা [DropDownButton](https://api.flutter.dev/flutter/material/DropdownButton-class.html) ব্যবহার করব।
+
+<CodeBlock>{trimSnippet(dropdown)}</CodeBlock>
+
+এখন আমাদের একটি ড্রপডাউন আছে, আসুন একটি `StateProvider` তৈরি করি এবং
+আমাদের প্রদানকারীর সাথে ড্রপডাউনের অবস্থা সিঙ্ক্রোনাইজ করুন।
+
+প্রথমে, আসুন `StateProvider` তৈরি করিঃ
+
+<CodeBlock>{trimSnippet(sortProvider)}</CodeBlock>
+
+তারপর, আমরা এই প্রভাইডারকে আমাদের ড্রপডাউনের সাথে সংযুক্ত করতে পারিঃ
+
+<CodeBlock>{trimSnippet(connectedDropdown)}</CodeBlock>
+
+এই সঙ্গে, আমরা এখন সাজানোর ধরন পরিবর্তন করতে সক্ষম হওয়া উচিত.
+যদিও পণ্যের তালিকায় এর কোনো প্রভাব পড়েনি! এটি এখন চূড়ান্ত অংশের জন্য সময়: পণ্যের তালিকা বাছাই করতে আমাদের `productsProvider` আপডেট করা হচ্ছে।
+
+এটি বাস্তবায়নের একটি মূল উপাদান হল [ref.watch] ব্যবহার করা
+আমাদের `productsProvider` সাজানোর ধরন পায় এবং এর তালিকা পুনরায় গণনা করে
+পণ্য যখনই সাজানোর ধরন পরিবর্তিত হয়।
+
+বাস্তবায়ন হবে এভাবেঃ
+
+<CodeBlock>{trimSnippet(sortedProductProvider)}</CodeBlock>
+
+এখানেই শেষ! এই পরিবর্তনটি ব্যবহারকারী ইন্টারফেসের জন্য যথেষ্ট যাতে পণ্যের তালিকাটি সাজানোর ধরণ পরিবর্তন হলে স্বয়ংক্রিয়ভাবে পুনরায় রেন্ডার করা যায়।
+
+এখানে ডার্টপ্যাডের সম্পূর্ণ উদাহরণ রয়েছেঃ
+
+<iframe
+  src="https://dartpad.dev/embed-flutter.html?gh_owner=rrousselGit&gh_repo=river_pod&gh_path=website%2Fdocs%2Fproviders%2Fstate_provider"
+  style={{ border: 0, width: "100%", aspectRatio: "2/1.5" }}
+></iframe>
+
+## প্রভাইডারকে দুবার রিড না করে আগের মানের উপর ভিত্তি করে কীভাবে স্ট্যাট আপডেট করবেন
+
+কখনও কখনও, আপনি পূর্ববর্তী মানের উপর ভিত্তি করে একটি `StateProvider`-এর অবস্থা আপডেট করতে চান। স্বাভাবিকভাবেই, আপনি এভাবে লিখতে পারেনঃ
+
+<CodeBlock>{trimSnippet(updateReadTwice)}</CodeBlock>
+
+যদিও এই স্নিপেটের সাথে বিশেষভাবে ভুল কিছু নেই, সিনট্যাক্সটি কিছুটা অসুবিধাজনক।
+
+সিনট্যাক্স একটু ভালো করতে, আমরা `update` ফাংশন ব্যবহার করতে পারি।
+এই ফাংশনটি একটি কলব্যাক নেবে যা বর্তমান অবস্থা গ্রহণ করবে এবং নতুন অবস্থায় ফিরে আসবে বলে আশা করা যায়।
+
+আমরা আমাদের পূর্ববর্তী কোড রিফ্যাক্টর করতে এটি ব্যবহার করতে পারিঃ
+
+<CodeBlock>{trimSnippet(updateReadOnce)}</CodeBlock>
+
+এই পরিবর্তনটি একই প্রভাব অর্জন করে যখন সিনট্যাক্সটিকে কিছুটা ভাল করে তোলে।
+
+[ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
+[ref.read]: ../concepts/reading#using-refread-to-obtain-the-state-of-a-provider-once
+[statenotifierprovider]: ./state_notifier_provider
+[futureprovider]: ./future_provider
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[provider]: ./provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[family]: ../concepts/modifiers/family

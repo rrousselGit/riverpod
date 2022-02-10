@@ -1,15 +1,7 @@
 module.exports = {
   Sidebar: [
     "getting_started",
-    {
-      type: "category",
-      label: "Guides",
-      collapsed: false,
-      items: [
-        "cookbooks/testing",
-        //"cookbooks/refresh",
-      ],
-    },
+    
     {
       type: "category",
       label: "Concepts",
@@ -17,8 +9,6 @@ module.exports = {
         "concepts/providers",
         "concepts/reading",
         "concepts/combining_providers",
-        "concepts/provider_observer",
-        // "concepts/computed",
         {
           type: "category",
           label: "Modifiers",
@@ -27,10 +17,19 @@ module.exports = {
             "concepts/modifiers/auto_dispose",
           ],
         },
+        "concepts/provider_observer",
       ],
     },
     {
       type: "category",
+      label: "Guides",
+      collapsed: false,
+      items: [
+        "cookbooks/testing",
+        //"cookbooks/refresh",
+      ],
+    }, 
+    { type: "category",
       label: "Migration",
       collapsed: false,
       items: ["migration/0.13.0_to_0.14.0", "migration/0.14.0_to_1.0.0"],
@@ -120,6 +119,11 @@ module.exports = {
           type: "link",
           label: "Integrating Hive database with Riverpod (simple example)",
           href: "https://github.com/GitGud31/theme_riverpod_hive",
+        },
+        {
+          type: "link",
+          label: "Browser App with Riverpod",
+          href: "https://github.com/MarioCroSite/simple_browser_app",
         },
       ],
     },

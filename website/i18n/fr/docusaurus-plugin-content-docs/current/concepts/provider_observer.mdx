@@ -52,21 +52,20 @@ class MyApp extends StatelessWidget {
   }
 }
 
-final counterProvider = StateProvider((ref) => 0);
+final counterProvider = StateProvider((ref) => 0, name: 'counter');
 
-class Home extends StatelessWidget {
+class Home extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterProvider);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Counter example')),
       body: Center(
-        child: Consumer(builder: (context, ref, _) {
-          final count = ref.watch(counterProvider).state;
-          return Text('$count');
-        }),
+        child: Text('$count'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.read(counterProvider).state++,
+        onPressed: () => ref.read(counterProvider.notifier).state++,
         child: const Icon(Icons.add),
       ),
     );
@@ -79,7 +78,7 @@ Maintenant, chaque fois que la valeur de notre provider est mise à jour, le log
 ```
 I/flutter (16783): {
 I/flutter (16783):   "provider": "counter",
-I/flutter (16783):   "newValue": "Instance of 'StateController<int>'"
+I/flutter (16783):   "newValue": "1"
 I/flutter (16783): }
 ```
 
