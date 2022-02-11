@@ -12,9 +12,3 @@ void handleFireImmediately<State>(
     error: (error) => _runBinaryGuarded(onError, error.error, error.stackTrace),
   );
 }
-
-void Function(Object, StackTrace) _fallbackOnErrorForProvider(
-  ProviderBase provider,
-) {
-  return Zone.current.handleUncaughtError;
-}

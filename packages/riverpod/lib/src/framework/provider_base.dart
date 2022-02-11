@@ -77,7 +77,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,
   }) {
-    onError ??= _fallbackOnErrorForProvider(this);
+    onError ??= Zone.current.handleUncaughtError;
 
     final element = node.readProviderElement(this);
 
