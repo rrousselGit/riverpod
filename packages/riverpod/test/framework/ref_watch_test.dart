@@ -16,6 +16,43 @@ class Counter extends StateNotifier<int> {
 }
 
 void main() {
+  test('can chain select', () {
+    final container = createContainer();
+
+    var buildCount = 0;
+    final dep = StateProvider((ref) => 0);
+    final provider = Provider((ref) {
+      buildCount++;
+      return ref.watch(
+        dep.select((value) => value % 10).select((value) => value < 5),
+      );
+    });
+
+    expect(buildCount, 0);
+    expect(container.read(provider), true);
+    expect(buildCount, 1);
+
+    container.read(dep.notifier).state = 3;
+
+    expect(container.read(provider), true);
+    expect(buildCount, 1);
+
+    container.read(dep.notifier).state = 7;
+
+    expect(container.read(provider), false);
+    expect(buildCount, 2);
+
+    container.read(dep.notifier).state = 8;
+
+    expect(container.read(provider), false);
+    expect(buildCount, 2);
+
+    container.read(dep.notifier).state = 18;
+
+    expect(container.read(provider), false);
+    expect(buildCount, 2);
+  });
+
   test('can listen multiple providers at once', () async {
     final container = createContainer();
     final count = StateProvider((ref) => 0);
@@ -81,17 +118,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsA(
-        isA<ProviderException>()
-            .having(
-              (e) => e.exception,
-              'exception',
-              isA<ProviderException>()
-                  .having((e) => e.exception, 'exception', isUnimplementedError)
-                  .having((e) => e.provider, 'provider', dep),
-            )
-            .having((e) => e.provider, 'provider', provider),
-      ),
+      throwsUnimplementedError,
     );
   });
 
@@ -113,17 +140,7 @@ void main() {
 
     expect(
       () => container.read(dep),
-      throwsA(
-        isA<ProviderException>()
-            .having(
-              (e) => e.exception,
-              'exception',
-              isA<ProviderException>()
-                  .having((e) => e.exception, 'exception', isUnimplementedError)
-                  .having((e) => e.provider, 'provider', provider),
-            )
-            .having((e) => e.provider, 'provider', dep),
-      ),
+      throwsUnimplementedError,
     );
 
     container.read(throws.state).state = false;
@@ -149,17 +166,7 @@ void main() {
 
     expect(
       () => container.read(dep),
-      throwsA(
-        isA<ProviderException>()
-            .having(
-              (e) => e.exception,
-              'exception',
-              isA<ProviderException>()
-                  .having((e) => e.exception, 'exception', isUnimplementedError)
-                  .having((e) => e.provider, 'provider', provider),
-            )
-            .having((e) => e.provider, 'provider', dep),
-      ),
+      throwsUnimplementedError,
     );
 
     container.read(throws.state).state = false;
@@ -201,7 +208,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsA(isA<ProviderException>()),
+      throwsA(isA<AssertionError>()),
     );
   });
 
@@ -216,7 +223,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsA(isA<ProviderException>()),
+      throwsA(isA<AssertionError>()),
     );
   });
 
@@ -234,7 +241,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsA(isA<ProviderException>()),
+      throwsA(isA<AssertionError>()),
     );
   });
 

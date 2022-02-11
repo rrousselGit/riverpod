@@ -189,7 +189,7 @@ void main() {
     final container = createContainer();
     expect(
       () => container.read(provider),
-      throwsA(isA<ProviderException>()),
+      throwsA(isA<CircularDependencyError>()),
     );
   });
 
@@ -209,7 +209,7 @@ void main() {
     final container = createContainer();
     expect(
       () => container.read(provider)(),
-      throwsA(isA<ProviderException>()),
+      throwsA(isA<CircularDependencyError>()),
     );
   });
 
@@ -297,7 +297,7 @@ void main() {
     });
     final container = createContainer();
 
-    expect(() => container.read(provider), throwsA(isA<ProviderException>()));
+    expect(() => container.read(provider), throwsA(error));
     expect(callCount, 1);
 
     final onDispose2 = OnDisposeMock();
