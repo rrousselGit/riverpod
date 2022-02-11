@@ -48,6 +48,7 @@ void main() {
     test('throws on providers that threw', () {
       final container = createContainer();
       final provider = Provider((ref) => throw UnimplementedError());
+      final b = Provider((ref) => ref.watch(provider));
 
       final element = container.readProviderElement(provider);
 

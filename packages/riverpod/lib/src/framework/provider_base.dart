@@ -326,11 +326,7 @@ abstract class ProviderElementBase<State> implements Ref, Node {
     }
 
     return state.map(
-      error: (error) => Error.throwWithStackTrace(
-        // TODO any way to concatenante the provider's stack with Stack.current?
-        error.error,
-        error.stackTrace,
-      ),
+      error: (error) => _rethrowProviderError(error.error, error.stackTrace),
       data: (data) => data.state,
     );
   }
@@ -847,6 +843,15 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   String toString() {
     return '$runtimeType(provider: $provider, origin: $origin)';
   }
+}
+
+Never _rethrowProviderError(Object error, StackTrace stackTrace) {
+  final chain = Chain([
+    Trace.current(),
+    ...Chain.forTrace(stackTrace).traces,
+  ]).foldFrames((frame) => frame.package == 'riverpod');
+
+  Error.throwWithStackTrace(error, chain);
 }
 
 mixin OverrideWithValueMixin<State> on ProviderBase<State> {
