@@ -663,11 +663,7 @@ final b = Provider(
 
       expect(
         () => container.read(provider),
-        throwsA(
-          isA<ProviderException>()
-              .having((e) => e.provider, 'provider', provider)
-              .having((e) => e.exception, 'exception', isA<AssertionError>()),
-        ),
+        throwsA(isA<AssertionError>()),
       );
     });
 
@@ -683,11 +679,7 @@ final b = Provider(
 
       expect(
         () => container.read(provider),
-        throwsA(
-          isA<ProviderException>()
-              .having((e) => e.provider, 'provider', provider)
-              .having((e) => e.exception, 'exception', isA<AssertionError>()),
-        ),
+        throwsA(isA<AssertionError>()),
       );
     });
 
@@ -703,11 +695,7 @@ final b = Provider(
 
       expect(
         () => container.read(provider),
-        throwsA(
-          isA<ProviderException>()
-              .having((e) => e.provider, 'provider', provider)
-              .having((e) => e.exception, 'exception', isA<AssertionError>()),
-        ),
+        throwsA(isA<AssertionError>()),
       );
     });
   });

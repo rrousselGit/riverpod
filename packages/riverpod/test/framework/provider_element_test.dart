@@ -68,7 +68,7 @@ void main() {
 
       expect(
         element.readSelf,
-        throwsA(isA<ProviderException>()),
+        throwsUnimplementedError,
       );
     });
   });

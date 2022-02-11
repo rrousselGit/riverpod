@@ -1,6 +1,14 @@
 [Unreleased bugfix]
 
+- Now requires Dart 2.16
+
+- **Breaking** Providers no-longer throw a `ProviderException` if an exception was thrown while building their value.  
+  Instead, they will rethrow the thrown exception and its stacktrace.
+
 - Fixed a cast error when overriding a provider with a more specific provider type (#1100)
+
+- Added `provider.selectAsync`, which allows to both await an async value
+  while also filtering rebuilds.
 
 # 2.0.0-dev.0
 

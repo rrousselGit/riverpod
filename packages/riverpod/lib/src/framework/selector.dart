@@ -1,8 +1,36 @@
 part of '../framework.dart';
 
+/// An abstraction of both [ProviderContainer] and [ProviderElement] used by
+/// [ProviderListenable].
+abstract class Node {
+  /// Starts listening to this transformer
+  ProviderSubscription<State> listen<State>(
+    ProviderListenable<State> listenable,
+    void Function(State? previous, State next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+    bool fireImmediately = false,
+  });
+
+  /// Reads the state of a provider, potentially creating it in the process.
+  ///
+  /// It may throw if the provider requested threw when it was built.
+  ///
+  /// Do not use this in production code. This is exposed only for testing
+  /// and devtools, to be able to test if a provider has listeners or similar.
+  ProviderElementBase<State> readProviderElement<State>(
+    ProviderBase<State> provider,
+  );
+
+  ProviderSubscription<State> _createSubscription<State>(
+    ProviderElementBase<State> element, {
+    required void Function(State? previous, State next) listener,
+    required void Function(Object error, StackTrace stackTrace) onError,
+  });
+}
+
 /// An internal class for `ProviderBase.select`.
 @sealed
-class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
+class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
   /// An internal class for `ProviderBase.select`.
   _ProviderSelector({
     required this.provider,
@@ -10,7 +38,7 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
   });
 
   /// The provider that was selected
-  final ProviderBase<Input> provider;
+  final ProviderListenable<Input> provider;
 
   /// The selector applied
   final Output Function(Input) selector;
@@ -66,26 +94,18 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
     }
   }
 
-  _SelectorSubscription<Input, Output> listen(
-    ProviderContainer container,
+  @override
+  _SelectorSubscription<Input, Output> addListener(
+    Node node,
     void Function(Output? previous, Output next) listener, {
-    required bool fireImmediately,
-    required void Function(Object error, StackTrace stackTrace)? onError,
+    void Function(Object error, StackTrace stackTrace)? onError,
+    bool fireImmediately = false,
   }) {
-    onError ??= _fallbackOnErrorForProvider(provider);
+    onError ??= Zone.current.handleUncaughtError;
 
-    final selectedElement = container.readProviderElement(provider);
-    var lastSelectedValue = _select(selectedElement.getState()!);
+    late Result<Output> lastSelectedValue;
 
-    if (fireImmediately) {
-      handleFireImmediately(
-        lastSelectedValue,
-        listener: listener,
-        onError: onError,
-      );
-    }
-
-    final sub = container.listen<Input>(
+    final sub = node.listen<Input>(
       provider,
       (prev, input) {
         _selectOnChange(
@@ -98,53 +118,28 @@ class _ProviderSelector<Input, Output> implements ProviderListenable<Output> {
       },
       onError: onError,
     );
+
+    lastSelectedValue = _select(Result.guard(sub.read));
+
+    if (fireImmediately) {
+      handleFireImmediately(
+        lastSelectedValue,
+        listener: listener,
+        onError: onError,
+      );
+    }
 
     return _SelectorSubscription(
       sub,
       () {
         return lastSelectedValue.map(
           data: (data) => data.state,
-          error: (error) => throw ProviderException._(
+          error: (error) => _rethrowProviderError(
             error.error,
             error.stackTrace,
-            provider,
           ),
         );
       },
-    );
-  }
-
-  void Function() _elementListen(
-    ProviderElementBase element,
-    void Function(Output? prev, Output next) listener, {
-    required bool fireImmediately,
-    required void Function(Object error, StackTrace stackTrace)? onError,
-  }) {
-    onError ??= _fallbackOnErrorForProvider(provider);
-
-    final selectedElement = element._container.readProviderElement(provider);
-    var lastSelectedValue = _select(selectedElement.getState()!);
-
-    if (fireImmediately) {
-      handleFireImmediately(
-        lastSelectedValue,
-        listener: listener,
-        onError: onError,
-      );
-    }
-
-    return element.listen<Input>(
-      provider,
-      (prev, input) {
-        _selectOnChange(
-          newState: input,
-          lastSelectedValue: lastSelectedValue,
-          listener: listener,
-          onError: onError!,
-          onChange: (newState) => lastSelectedValue = newState,
-        );
-      },
-      onError: onError,
     );
   }
 }

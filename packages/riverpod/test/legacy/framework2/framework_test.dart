@@ -217,8 +217,7 @@ void main() {
     expect(child.read(provider), 42);
   });
 
-  test(
-      'ProviderException not cleared if dependency mayHaveChanged but did not change',
+  test('Providers still rethrow error if dependency rebuilt but did not change',
       () {
     var callCount = 0;
     final atom = StateProvider((ref) => 0);
@@ -227,16 +226,16 @@ void main() {
       callCount++;
       ref.watch(dependency);
       if (callCount == 1) {
-        throw Error();
+        throw StateError('err');
       }
     });
 
-    expect(() => container.read(provider), throwsA(isA<ProviderException>()));
+    expect(() => container.read(provider), throwsStateError);
     expect(callCount, 1);
 
     container.read(atom.state).state = 0;
 
-    expect(() => container.read(provider), throwsA(isA<ProviderException>()));
+    expect(() => container.read(provider), throwsStateError);
     expect(callCount, 1);
   });
 
@@ -429,22 +428,7 @@ void main() {
 
         final sub = container.listen(provider, (_, __) {});
 
-        expect(
-          sub.read,
-          throwsA(
-            isA<ProviderException>()
-                .having((s) => s.exception, 'exception', error)
-                .having((s) => s.provider, 'provider', provider)
-                .having((s) => s.stackTrace, 'stackTrace', isA<StackTrace>())
-                .having(
-                  (s) => s.toString().split('\n').first,
-                  'toString',
-                  equalsIgnoringHashCodes(
-                    'An exception was thrown while building hello:Provider<int>#00000.',
-                  ),
-                ),
-          ),
-        );
+        expect(sub.read, throwsA(error));
       });
 
       test('rethrows the exception thrown when building a selected provider',
@@ -457,22 +441,7 @@ void main() {
           (_, __) {},
         );
 
-        expect(
-          sub.read,
-          throwsA(
-            isA<ProviderException>()
-                .having((s) => s.exception, 'exception', error)
-                .having((s) => s.provider, 'provider', provider)
-                .having((s) => s.stackTrace, 'stackTrace', isA<StackTrace>())
-                .having(
-                  (s) => s.toString().split('\n').first,
-                  'toString',
-                  equalsIgnoringHashCodes(
-                    'An exception was thrown while building hello:Provider<int>#00000.',
-                  ),
-                ),
-          ),
-        );
+        expect(sub.read, throwsA(error));
       });
 
       test('flushes the provider', () {

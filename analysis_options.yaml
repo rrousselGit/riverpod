@@ -19,6 +19,9 @@ linter:
     # temporarily disabled
     require_trailing_commas: false
 
+    # false positive
+    one_member_abstracts: false
+
     # too verbose
     prefer_final_parameters: false
 

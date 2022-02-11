@@ -129,11 +129,10 @@ abstract class Ref {
   /// - `fireImmediately` can be optionally passed to tell Riverpod to immediately
   ///    call the listener with the current value.
   ///    Defaults to false.
-  // TODO update ProviderContainer.listen to match the return value
-  RemoveListener listen<T>(
+  ProviderSubscription<T> listen<T>(
     AlwaysAliveProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
-    bool fireImmediately,
     void Function(Object error, StackTrace stackTrace)? onError,
+    bool fireImmediately,
   });
 }
