@@ -76,7 +76,6 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
     try {
       return Result.data(selector(value));
     } catch (err, stack) {
-      // TODO test
       return Result.error(err, stack);
     } finally {
       assert(() {
@@ -128,17 +127,17 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
       bool callListeners = true,
     }) {
       void onLoading(AsyncValue<void> loading) {
-        if (selectedCompleter == null) {
-          if (selectedFuture == null) {
-            // The first time a future is emited
+        // if (selectedCompleter == null) {
+        if (selectedFuture == null) {
+          // The first time a future is emited
 
-            selectedCompleter = Completer();
-            selectedFuture = selectedCompleter!.future;
-          }
-
-          // We don't notify listeners when the future changes since
-          // they want to filter rebuilds based on the result
+          selectedCompleter = Completer();
+          selectedFuture = selectedCompleter!.future;
         }
+
+        // We don't notify listeners when the future changes since
+        // they want to filter rebuilds based on the result
+        // }
       }
 
       value.map(
@@ -172,6 +171,11 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
           lastSelectedValue = newSelectedValue;
         },
         error: (value) {
+          if (value.isRefreshing) {
+            onLoading(value);
+            return;
+          }
+
           final stack = value.stackTrace ?? StackTrace.empty;
 
           emitError(

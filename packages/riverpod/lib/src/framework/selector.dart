@@ -135,6 +135,7 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
         return lastSelectedValue.map(
           data: (data) => data.state,
           error: (error) => Error.throwWithStackTrace(
+            // TODO any way to concatenante the provider's stack with Stack.current?
             error.error,
             error.stackTrace,
           ),

@@ -327,6 +327,7 @@ abstract class ProviderElementBase<State> implements Ref, Node {
 
     return state.map(
       error: (error) => Error.throwWithStackTrace(
+        // TODO any way to concatenante the provider's stack with Stack.current?
         error.error,
         error.stackTrace,
       ),
