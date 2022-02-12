@@ -28,6 +28,12 @@ void main() {
 
   test('isRefreshing', () {
     expect(const AsyncLoading<int>().isRefreshing, false);
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncLoading())
+          .isRefreshing,
+      false,
+    );
 
     expect(const AsyncData<int>(42).isRefreshing, false);
     expect(
@@ -36,6 +42,7 @@ void main() {
           .isRefreshing,
       true,
     );
+
     expect(const AsyncError<int>('err').isRefreshing, false);
     expect(
       const AsyncLoading<int>()
@@ -45,25 +52,29 @@ void main() {
     );
   });
 
-  test('isData', () {
-    expect(const AsyncData(42).isData, true);
-    expect(const AsyncLoading<int>().isData, false);
-    expect(const AsyncError<int>(Object()).isData, false);
-  });
-
   test('isLoading', () {
     expect(const AsyncData(42).isLoading, false);
     expect(const AsyncLoading<int>().isLoading, true);
     expect(const AsyncError<int>(Object()).isLoading, false);
-  });
 
-  test('isError', () {
-    expect(const AsyncData(42).isError, false);
-    expect(const AsyncLoading<int>().isError, false);
-    expect(const AsyncError<int>(Object()).isError, true);
+    expect(
+      const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)).isLoading,
+      true,
+    );
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncError(42))
+          .isLoading,
+      true,
+    );
   });
 
   test('asError', () {
+    const value = AsyncValue<int>.error(42);
+
+    // ignore: omit_local_variable_types, unused_local_variable, testing that assignment works,
+    final AsyncError? error = value.asError;
+
     expect(const AsyncData(42).asError, null);
     expect(const AsyncLoading<int>().asError, null);
     expect(
@@ -451,6 +462,18 @@ void main() {
       // ignore: prefer_const_constructors
       isNot(AsyncLoading<int>()),
     );
+
+    expect(
+      const AsyncError<int?>(42).copyWithPrevious(const AsyncData(null)),
+      isNot(const AsyncError<int?>(42)),
+      reason: 'hasValue should be checked',
+    );
+
+    expect(
+      const AsyncError<int?>(42).copyWithPrevious(const AsyncData(42)),
+      isNot(const AsyncData<int?>(42).copyWithPrevious(const AsyncError(42))),
+      reason: 'runtimeType should be checked',
+    );
   });
 
   test('hashCode', () {
@@ -534,6 +557,24 @@ void main() {
       // ignore: prefer_const_constructors
       isNot(AsyncLoading<int>().hashCode),
     );
+
+    expect(
+      const AsyncError<int?>(42)
+          .copyWithPrevious(const AsyncData(null))
+          .hashCode,
+      isNot(const AsyncError<int?>(42).hashCode),
+      reason: 'hasValue should be checked',
+    );
+
+    expect(
+      const AsyncError<int?>(42).copyWithPrevious(const AsyncData(42)).hashCode,
+      isNot(
+        const AsyncData<int?>(42)
+            .copyWithPrevious(const AsyncError(42))
+            .hashCode,
+      ),
+      reason: 'runtimeType should be checked',
+    );
   });
 
   test('toString', () {
@@ -576,6 +617,52 @@ void main() {
     );
   });
 
+  test('hasValue', () {
+    expect(const AsyncData(42).hasValue, true);
+    expect(const AsyncLoading<int>().hasValue, false);
+    expect(const AsyncError<int>('err').hasValue, false);
+
+    expect(
+      const AsyncError<int>(42).copyWithPrevious(const AsyncData(42)).hasValue,
+      true,
+    );
+    expect(
+      const AsyncError<int>(42)
+          .copyWithPrevious(
+            const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
+          )
+          .hasValue,
+      true,
+    );
+    expect(
+      const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)).hasValue,
+      true,
+    );
+  });
+
+  test('hasError', () {
+    expect(const AsyncData(42).hasError, false);
+    expect(const AsyncLoading<int>().hasError, false);
+    expect(const AsyncError<int>('err').hasError, true);
+
+    expect(
+      const AsyncData<int>(42).copyWithPrevious(const AsyncError(42)).hasError,
+      true,
+    );
+    expect(
+      const AsyncData<int>(42)
+          .copyWithPrevious(
+            const AsyncLoading<int>().copyWithPrevious(const AsyncError(42)),
+          )
+          .hasError,
+      true,
+    );
+    expect(
+      const AsyncLoading<int>().copyWithPrevious(const AsyncError(42)).hasError,
+      true,
+    );
+  });
+
   group('whenData', () {
     test('transforms data if any', () {
       expect(
@@ -606,12 +693,22 @@ void main() {
   });
 
   test('AsyncValue.asData', () {
+    const value = AsyncValue<int>.data(42);
+
+    // ignore: omit_local_variable_types, unused_local_variable, testing that assignment works,
+    final AsyncData? data = value.asData;
+
     expect(
       const AsyncValue.data(42).asData,
       const AsyncData<int>(42),
     );
     expect(const AsyncValue<void>.loading().asData, isNull);
     expect(AsyncValue<void>.error(Error()).asData, isNull);
+
+    expect(
+      const AsyncValue<int?>.data(null).asData,
+      const AsyncData<int?>(null),
+    );
   });
 
   test('AsyncValue.value', () {
@@ -620,14 +717,15 @@ void main() {
       const AsyncLoading<int>().value,
       null,
     );
-
     expect(const AsyncError<int>('err').value, null);
-  });
 
-  test('AsyncValue.asData handles null', () {
     expect(
-      const AsyncValue<int?>.data(null).asData,
-      const AsyncData<int?>(null),
+      const AsyncError<int>('err').copyWithPrevious(const AsyncData(42)).value,
+      42,
+    );
+    expect(
+      const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)).value,
+      42,
     );
   });
 

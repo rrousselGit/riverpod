@@ -8,12 +8,6 @@ String? modifierName(String? from, String modifier) {
   return from == null ? null : '$from.$modifier';
 }
 
-enum AsyncValueStatus {
-  data,
-  loading,
-  error,
-}
-
 /// A utility for safely manipulating asynchronous data.
 ///
 /// By using [AsyncValue], you are guaranteed that you cannot forget to
@@ -156,12 +150,6 @@ abstract class AsyncValue<T> {
   /// The value currently exposed.
   T? get value;
 
-  /// Whether [value] is set.
-  ///
-  /// Even if [hasError] is true, it is still possible for [hasValue]/[isLoading]
-  /// to also be true.
-  bool get hasError;
-
   /// The [error].
   Object? get error;
 
@@ -207,7 +195,6 @@ abstract class AsyncValue<T> {
         other is AsyncValue<T> &&
         other.isLoading == isLoading &&
         other.hasValue == hasValue &&
-        other.hasError == hasError &&
         other.error == error &&
         other.stackTrace == stackTrace &&
         other.value == value;
@@ -218,7 +205,6 @@ abstract class AsyncValue<T> {
         runtimeType,
         value,
         isLoading,
-        hasError,
         hasValue,
         error,
         stackTrace,
@@ -232,14 +218,19 @@ class AsyncData<T> extends AsyncValue<T> {
   /// Creates an [AsyncValue] with a data.
   ///
   /// The data can be `null`.
-  const AsyncData(T value) : this._(value, hasError: false, isLoading: false);
+  const AsyncData(T value)
+      : this._(
+          value,
+          isLoading: false,
+          error: null,
+          stackTrace: null,
+        );
 
   const AsyncData._(
     this.value, {
-    required this.hasError,
     required this.isLoading,
-    this.error,
-    this.stackTrace,
+    required this.error,
+    required this.stackTrace,
   }) : super._();
 
   @override
@@ -250,9 +241,6 @@ class AsyncData<T> extends AsyncValue<T> {
 
   @override
   final bool isLoading;
-
-  @override
-  final bool hasError;
 
   @override
   final Object? error;
@@ -276,7 +264,6 @@ class AsyncData<T> extends AsyncValue<T> {
       isLoading: isLoading,
       stackTrace: previous.stackTrace,
       error: previous.error,
-      hasError: previous.hasError,
     );
   }
 }
@@ -298,9 +285,6 @@ class AsyncLoading<T> extends AsyncValue<T> {
 
   @override
   T? get value => null;
-
-  @override
-  bool get hasError => false;
 
   @override
   Object? get error => null;
@@ -325,7 +309,6 @@ class AsyncLoading<T> extends AsyncValue<T> {
         isLoading: true,
         error: d.error,
         stackTrace: d.stackTrace,
-        hasError: d.hasError,
       ),
       error: (e) => AsyncError._(
         e.error,
@@ -354,12 +337,18 @@ class AsyncError<T> extends AsyncValue<T> {
   const AsyncError(
     Object error, {
     StackTrace? stackTrace,
-  }) : this._(error, stackTrace: stackTrace, hasValue: false, isLoading: false);
+  }) : this._(
+          error,
+          stackTrace: stackTrace,
+          isLoading: false,
+          hasValue: false,
+          value: null,
+        );
 
   const AsyncError._(
     this.error, {
-    this.stackTrace,
-    this.value,
+    required this.stackTrace,
+    required this.value,
     required this.hasValue,
     required this.isLoading,
   }) : super._();
@@ -372,9 +361,6 @@ class AsyncError<T> extends AsyncValue<T> {
 
   @override
   final T? value;
-
-  @override
-  bool get hasError => true;
 
   @override
   final Object error;
@@ -408,12 +394,15 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// Whether an [AsyncData] or [AsyncError] was emitted but the state went
   /// back to loading state.
   bool get isRefreshing {
-    return map(
-      data: (d) => d.isLoading,
-      error: (e) => e.isLoading,
-      loading: (_) => false,
-    );
+    return isLoading && (hasValue || hasError);
   }
+
+  /// Whether [value] is set.
+  ///
+  /// Even if [hasError] is true, it is still possible for [hasValue]/[isLoading]
+  /// to also be true.
+  // It is safe to check it through `error != null` because `error` is non-nullable
+  bool get hasError => error != null;
 
   /// Upcast [AsyncValue] into an [AsyncData], or return null if the [AsyncValue]
   /// is in loading/error state.
@@ -424,41 +413,6 @@ extension AsyncValueX<T> on AsyncValue<T> {
       loading: (l) => null,
     );
   }
-
-  /// Attempts to synchronously read the data.
-  ///
-  /// On error, this will rethrow the error.
-  /// If loading, will return `null`.
-  /// Otherwise will return the data.
-  T? get value {
-    return map(
-      data: (d) => d.value,
-      // ignore: only_throw_errors
-      error: (e) => throw e.error,
-      loading: (l) => null,
-    );
-  }
-
-  /// Whether this [AsyncValue] is an [AsyncLoading].
-  bool get isLoading => map(
-        data: (_) => false,
-        error: (_) => false,
-        loading: (_) => true,
-      );
-
-  /// Whether this [AsyncValue] is an [AsyncData].
-  bool get isData => map(
-        data: (_) => true,
-        error: (_) => false,
-        loading: (_) => false,
-      );
-
-  /// Whether this [AsyncValue] is an [AsyncError].
-  bool get isError => map(
-        data: (_) => false,
-        error: (_) => true,
-        loading: (_) => false,
-      );
 
   /// Upcast [AsyncValue] into an [AsyncError], or return null if the [AsyncValue]
   /// is in loading/data state.
