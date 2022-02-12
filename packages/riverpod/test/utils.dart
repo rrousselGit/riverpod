@@ -43,6 +43,10 @@ class OnDisposeMock extends Mock {
   void call();
 }
 
+class OnCancelMock extends Mock {
+  void call();
+}
+
 class Listener<T> extends Mock {
   void call(T? previous, T? next);
 }
