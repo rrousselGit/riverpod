@@ -107,6 +107,16 @@ abstract class AutoDisposeProviderElementBase<State>
       _container._scheduler.scheduleProviderDispose(this);
     }
   }
+
+  @override
+  void _runOnDispose() {
+    _keepAliveLinks.clear();
+    super._runOnDispose();
+    assert(
+      _keepAliveLinks.isEmpty,
+      'Cannot call keepAlive() within onDispose listeners',
+    );
+  }
 }
 
 /// A object which maintains a provider alive

@@ -11,6 +11,35 @@ Future<void> main() async {
   final library = await Library.parseFromStacktrace();
 
   group('ref.keepAlive', () {
+    test('when the provider rebuilds, links are cleared', () async {
+      final container = createContainer();
+      final dep = StateProvider((ref) => 0);
+      KeepAliveLink? a;
+
+      final provider = Provider.autoDispose<void>((ref) {
+        ref.watch(dep);
+        a ??= ref.keepAlive();
+      });
+
+      container.read(provider);
+      await container.pump();
+
+      expect(
+        container.getAllProviderElements().map((e) => e.provider),
+        contains(provider),
+      );
+
+      container.read(dep.notifier).state++;
+      // manually trigger rebuild, as the provider is not listened
+      container.read(provider);
+      await container.pump();
+
+      expect(
+        container.getAllProviderElements().map((e) => e.provider),
+        isNot(contains(provider)),
+      );
+    });
+
     test('maintains the state of the provider until all links are closed',
         () async {
       final container = createContainer();
