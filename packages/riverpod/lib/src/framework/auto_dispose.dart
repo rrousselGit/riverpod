@@ -4,7 +4,7 @@ part of '../framework.dart';
 /// no longer used.
 ///
 /// The difference with [Ref] is that it has an extra
-/// [maintainState] property to help determine if the state can be destroyed
+/// [keepAlive] function to help determine if the state can be destroyed
 ///  or not.
 abstract class AutoDisposeRef extends Ref {
   /// Whether to destroy the state of the provider when all listeners are removed or not.
@@ -13,9 +13,21 @@ abstract class AutoDisposeRef extends Ref {
   /// may destroy the provider state if it currently has no listeners.
   ///
   /// Defaults to `false`.
+  @Deprecated('use keepAlive() instead')
   bool get maintainState;
-  // TODO deprecate in favour of "keepAlive().cancel()"
+
+  @Deprecated('use keepAlive() instead')
   set maintainState(bool value);
+
+  /// Requests for the state of a provider to not be disposed when all the
+  /// listeners of the provider are removed.
+  ///
+  /// Returns an object which allows cancelling this operation, therefore
+  /// allowing the provider to dispose itself when all listeners are removed.
+  ///
+  /// If [keepAlive] is invoked multiple times, all [KeepAliveLink] will have
+  /// to be closed for the provider to dispose itself when all listeners are removed.
+  KeepAliveLink keepAlive();
 
   @override
   T watch<T>(
@@ -62,21 +74,49 @@ abstract class AutoDisposeProviderElementBase<State>
   AutoDisposeProviderElementBase(ProviderBase<State> provider)
       : super(provider);
 
+  final _keepAliveLinks = <KeepAliveLink>[];
+
+  @override
+  KeepAliveLink keepAlive() {
+    late KeepAliveLink link;
+
+    link = KeepAliveLink._(() {
+      _keepAliveLinks.remove(link);
+      if (_keepAliveLinks.isEmpty) mayNeedDispose();
+    });
+    _keepAliveLinks.add(link);
+
+    return link;
+  }
+
   bool _maintainState = false;
+
+  @Deprecated('Use `keepAlive()` instead')
   @override
   bool get maintainState => _maintainState;
   @override
   set maintainState(bool value) {
     _maintainState = value;
-    if (!_maintainState && !hasListeners) {
-      _container._scheduler.scheduleProviderDispose(this);
-    }
+    if (!value) mayNeedDispose();
   }
 
   @override
   void mayNeedDispose() {
-    if (!maintainState && !hasListeners) {
+    // ignore: deprecated_member_use_from_same_package
+    if (!maintainState && !hasListeners && _keepAliveLinks.isEmpty) {
       _container._scheduler.scheduleProviderDispose(this);
     }
   }
+}
+
+/// A object which maintains a provider alive
+class KeepAliveLink {
+  KeepAliveLink._(this._close);
+
+  final void Function() _close;
+
+  /// Release this [KeepAliveLink], allowing the associated provider to
+  /// be disposed if the provider is no-longer listener nor has any
+  /// remaning [KeepAliveLink].
+  void close() => _close();
 }

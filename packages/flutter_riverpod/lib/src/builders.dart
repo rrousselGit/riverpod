@@ -28,11 +28,10 @@ class ChangeNotifierProviderBuilder {
   ///   re-enter the screen.
   /// - Cancel HTTP requests if the user leaves a screen before the request completed.
   ///
-  /// Marking a provider with `autoDispose` also adds an extra property on `ref`: `maintainState`.
+  /// Marking a provider with `autoDispose` also adds an extra method on `ref`: `keepAlive`.
   ///
-  /// The `maintainState` property is a boolean (`false` by default) that allows
-  /// the provider to tell Riverpod if the state of the provider should be preserved
-  /// even if no longer listened to.
+  /// The `keep` function is used to tell Riverpod that the state of the provider
+  /// should be preserved even if no longer listened to.
   ///
   /// A use-case would be to set this flag to `true` after an HTTP request have
   /// completed:
@@ -40,7 +39,7 @@ class ChangeNotifierProviderBuilder {
   /// ```dart
   /// final myProvider = FutureProvider.autoDispose((ref) async {
   ///   final response = await httpClient.get(...);
-  ///   ref.maintainState = true;
+  ///   ref.keepAlive();
   ///   return response;
   /// });
   /// ```
@@ -61,7 +60,7 @@ class ChangeNotifierProviderBuilder {
   ///
   /// + final response = await dio.get('path', cancelToken: cancelToken);
   /// - final response = await dio.get('path');
-  ///   ref.maintainState = true;
+  ///   ref.keepAlive();
   ///   return response;
   /// });
   /// ```
