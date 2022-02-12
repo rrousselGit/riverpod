@@ -179,7 +179,7 @@ void main() {
 
     container.read(provider.notifier).state = const AsyncData(2);
 
-    throw 'todo';
+    // the previous unawaited `completion` should resolve with 2+40
   });
 
   test('can watch async selectors', () async {

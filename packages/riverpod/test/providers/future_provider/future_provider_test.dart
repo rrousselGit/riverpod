@@ -548,7 +548,10 @@ void main() {
         container.read(provider.future),
         throwsA(21),
       );
-      expect(sub.read(), const AsyncValue<int>.error(21));
+      expect(
+        sub.read(),
+        const AsyncValue<int>.error(21).copyWithPrevious(const AsyncData(42)),
+      );
     });
 
     test('value immediately then loading', () async {
@@ -742,7 +745,11 @@ void main() {
         container.read(provider.future),
         completion(42),
       );
-      expect(sub.read(), const AsyncValue<int>.data(42));
+      expect(
+        sub.read(),
+        const AsyncValue<int>.data(42)
+            .copyWithPrevious(AsyncError(42, stackTrace: stackTrace)),
+      );
     });
 
     test('error immediately then loading', () async {

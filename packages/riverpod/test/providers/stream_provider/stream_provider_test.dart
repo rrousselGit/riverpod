@@ -704,7 +704,9 @@ void main() {
       listener,
       listener(
         AsyncError<int>(error, stackTrace: stack),
-        const AsyncValue.data(21),
+        const AsyncValue.data(21).copyWithPrevious(
+          AsyncError(error, stackTrace: stack),
+        ),
       ),
     );
 
@@ -1308,8 +1310,15 @@ void main() {
         provider.overrideWithValue(const AsyncValue.error(21)),
       ]);
 
-      expect(sub.read(), const AsyncValue<int>.error(21));
-      expect(sub.read(), const AsyncValue<int>.error(21));
+      expect(
+        sub.read(),
+        const AsyncValue<int>.error(21).copyWithPrevious(const AsyncData(42)),
+      );
+      // TODO why call "read" twice?
+      expect(
+        sub.read(),
+        const AsyncValue<int>.error(21).copyWithPrevious(const AsyncData(42)),
+      );
       await expectLater(stream, emitsError(21));
 
       container.dispose();
@@ -1485,24 +1494,31 @@ void main() {
     });
 
     test('error immediately then data', () async {
-      final stackTrace = StackTrace.current;
+      const stackTrace = StackTrace.empty;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
         provider.overrideWithValue(
-            AsyncValue<int>.error(42, stackTrace: stackTrace)),
+            const AsyncValue<int>.error(42, stackTrace: stackTrace)),
       ]);
       final stream = container.read(provider.stream);
 
       final sub = container.listen(provider, (_, __) {});
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
+      expect(
+        sub.read(),
+        const AsyncValue<int>.error(42, stackTrace: stackTrace),
+      );
       await expectLater(stream, emitsError(42));
 
       container.updateOverrides([
         provider.overrideWithValue(const AsyncValue.data(21)),
       ]);
 
-      expect(sub.read(), const AsyncValue.data(21));
+      expect(
+        sub.read(),
+        const AsyncValue.data(21)
+            .copyWithPrevious(const AsyncError(42, stackTrace: stackTrace)),
+      );
       await expectLater(stream, emits(21));
 
       container.dispose();
