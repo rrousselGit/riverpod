@@ -393,6 +393,10 @@ class AsyncError<T> extends AsyncValue<T> {
 extension AsyncValueX<T> on AsyncValue<T> {
   /// Whether an [AsyncData] or [AsyncError] was emitted but the state went
   /// back to loading state.
+  ///
+  /// This is different from [isLoading] in that [isLoading] is for waiting
+  /// the first value to be available, while [isRefreshing] is after a value
+  /// was emitted but a provider refresh was triggered.
   bool get isRefreshing {
     return isLoading && (hasValue || hasError);
   }
