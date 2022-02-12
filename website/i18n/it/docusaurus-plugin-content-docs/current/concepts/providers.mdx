@@ -45,7 +45,7 @@ final myProvider = Provider((ref) {
 });
 ```
 
-:::note
+:::note NOTA
 Non avere paura di definirli globalmente.
 I Provider sono totalmente immutabili. Dichiarare un provider non è differente dal dichiarare
 una funzione, inoltre è testabile e mantenibile.
@@ -85,7 +85,7 @@ final countryProvider = Provider((ref) => 'England');
 Il fatto che entrambi i provider creino una `String` non causa nessun problema.
 :::
 
-:::caution
+:::caution ATTENZIONE
 Per permettere ai provider di funzionare, devi aggiungere [ProviderScope] 
 alla radice della tue applicazioni Flutter:
 
@@ -121,7 +121,7 @@ final example = StreamProvider.autoDispose((ref) {
 });
 ```
 
-:::note
+:::note NOTA
 In base al provider utilizzato, potrebbe prendersi cura del processo di clean-up.
 Per esempio, [StateNotifierProvider] chiamerà il metodo `dispose` dello `StateNotifier`
 :::
@@ -142,12 +142,11 @@ final myFamilyProvider = Provider.family<String, int>((ref, id) => '$id');
 
 Per il momento, ci sono due modificatori presenti:
 
-
 - [`.autoDispose`](/docs/concepts/modifiers/auto_dispose), che farà distruggere automaticamente lo stato del provider 
   quando non è più in ascolto.
 - [`.family`](/docs/concepts/modifiers/family), che permetterà di creare un provider da parametri esterni.
 
-:::note
+:::note NOTA
 Un provider può utilizzare più modificatori in una volta sola:
 ```dart
 final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) async {

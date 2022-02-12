@@ -114,7 +114,7 @@ final secondProvider = Provider((ref) {
 });
 ```
 
-Questo è indesiderato, siccome causerebbe la mancata disposizione di `firstProvider` .
+Ciò è indesiderato, siccome causerebbe la mancata eliminazione di `firstProvider` .
 
 Per correggere il problema, considera contrassegnare anche `secondProvider` con `.autoDispose`:
 
