@@ -12,6 +12,11 @@
 - When a provider emits an `AsyncError` followed by an `AsyncData`,
   the `AsyncData` emitted will now contain the latest error/stackTrace too.
 
+- Deprecated `ref.maintainState=` in favor of a newly added `ref.keepAlive()`.
+  This new `ref.keepAlive()` function is similar to `maintainState` but
+  better handles cases where we have multiple logics that want to
+  keep the state of a provider alive for some period of time.
+
 - Fixed a cast error when overriding a provider with a more specific provider type (#1100)
 - Fixed a bug where `onDispose` listeners could be executed twice under certain
   conditions when using `autoDispose`.
