@@ -7,6 +7,32 @@ import '../utils.dart';
 
 void main() {
   test(
+      'onDispose is triggered only once if within autoDispose unmount, a dependency chnaged',
+      () async {
+    // regression test for https://github.com/rrousselGit/river_pod/issues/1064
+    final container = createContainer();
+    final onDispose = OnDisposeMock();
+    final dep = StateProvider((ref) => 0);
+    final provider = Provider.autoDispose((ref) {
+      ref.watch(dep);
+      ref.onDispose(onDispose);
+    });
+
+    when(onDispose()).thenAnswer((realInvocation) {
+      container.read(dep.notifier).state++;
+    });
+
+    container.read(provider);
+    verifyZeroInteractions(onDispose);
+
+    // cause provider to be disposed
+    await container.pump();
+
+    verify(onDispose()).called(1);
+    verifyNoMoreInteractions(onDispose);
+  });
+
+  test(
       'does not throw outdated error when a dependency is flushed while the dependent is building',
       () async {
     final container = createContainer();

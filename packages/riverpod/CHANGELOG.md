@@ -7,6 +7,9 @@
 
 - Fixed a cast error when overriding a provider with a more specific provider type (#1100)
 
+- Fixed a bug where `onDispose` listeners could be executed twice under certain
+  conditions when using `autoDispose`.
+
 - Added `provider.selectAsync`, which allows to both await an async value
   while also filtering rebuilds.
 

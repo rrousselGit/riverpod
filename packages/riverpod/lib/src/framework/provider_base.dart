@@ -364,7 +364,6 @@ abstract class ProviderElementBase<State> implements Ref, Node {
     if (_mustRecomputeState) return;
 
     _mustRecomputeState = true;
-    _mounted = false;
     _runOnDispose();
     _container._scheduler.scheduleProviderRefresh(this);
 
@@ -786,7 +785,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       return true;
     }(), '');
 
-    _mounted = false;
     _runOnDispose();
 
     // TODO test [listen] calls are cleared
@@ -830,7 +828,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
   @protected
   void _runOnDispose() {
-    // TODO(rrousselGit) test
+    if (!_mounted) return;
+    _mounted = false;
+
     while (_subscriptions.isNotEmpty) {
       _subscriptions.first.close();
     }
