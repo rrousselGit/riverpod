@@ -171,12 +171,15 @@ void main() {
 
     expect(sub.read(), completion(42));
 
-    container.read(provider.notifier).state =
-        const AsyncData(0, isRefreshing: true);
-    container.read(provider.notifier).state =
-        const AsyncError('err', isRefreshing: true);
+    container.read(provider.notifier).state = const AsyncLoading<int>()
+        .copyWithPrevious(const AsyncValue<int>.data(0));
+    container.read(provider.notifier).state = const AsyncLoading<int>()
+        .copyWithPrevious(const AsyncError<int>('err'));
+    container.read(provider.notifier).state = const AsyncLoading<int>();
 
     container.read(provider.notifier).state = const AsyncData(2);
+
+    throw 'todo';
   });
 
   test('can watch async selectors', () async {
@@ -196,7 +199,10 @@ void main() {
     expect(buildCount, 1);
 
     container.read(dep.notifier).state = 1;
-    expect(container.read(a), const AsyncData(0, isRefreshing: true));
+    expect(
+      container.read(a),
+      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
+    );
     expect(container.read(b), const AsyncData(0));
     expect(buildCount, 1);
 
@@ -205,7 +211,10 @@ void main() {
     expect(buildCount, 2);
 
     container.read(dep.notifier).state = 11;
-    expect(container.read(a), const AsyncData(1, isRefreshing: true));
+    expect(
+      container.read(a),
+      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(1)),
+    );
     expect(container.read(b), const AsyncData(1));
     expect(buildCount, 2);
 
@@ -231,7 +240,10 @@ void main() {
     expect(buildCount, 1);
 
     container.read(dep.notifier).state = 1;
-    expect(container.read(a), const AsyncData(0, isRefreshing: true));
+    expect(
+      container.read(a),
+      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
+    );
     expect(container.read(b), const AsyncData(0));
     expect(buildCount, 1);
 
@@ -240,7 +252,10 @@ void main() {
     expect(buildCount, 2);
 
     container.read(dep.notifier).state = 11;
-    expect(container.read(a), const AsyncData(1, isRefreshing: true));
+    expect(
+      container.read(a),
+      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(1)),
+    );
     expect(container.read(b), const AsyncData(1));
     expect(buildCount, 2);
 

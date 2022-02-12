@@ -552,7 +552,10 @@ void main() {
     notifier.setState(42);
     await container.pump();
 
-    expect(sub.read(), const AsyncValue<int>.data(0, isRefreshing: true));
+    expect(
+      sub.read(),
+      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
+    );
     expect(callCount, 1);
 
     await container.read(computed.stream).first;

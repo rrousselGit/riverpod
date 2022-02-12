@@ -25,14 +25,15 @@ void main() {
 
     expect(
       ref.state,
-      const AsyncData<int>(0, isRefreshing: true),
+      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
     );
 
     verifyOnly(
       listener,
       listener(
         const AsyncData(0),
-        const AsyncData<int>(0, isRefreshing: true),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncValue<int>.data(0)),
       ),
     );
   });
@@ -114,7 +115,7 @@ void main() {
     result = 1;
     expect(
       container.refresh(provider),
-      const AsyncValue<int>.data(0, isRefreshing: true),
+      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
     );
 
     expect(await container.read(provider.future), 1);
@@ -572,7 +573,11 @@ void main() {
       ]);
 
       expect(container.read(provider.future), isNot(future));
-      expect(sub.read(), const AsyncData<int>(42, isRefreshing: true));
+      expect(
+        sub.read(),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncValue<int>.data(42)),
+      );
     });
 
     test('loading immediately then value', () async {
@@ -762,7 +767,8 @@ void main() {
       expect(container.read(provider.future), isNot(future));
       expect(
         sub.read(),
-        AsyncValue<int>.error(42, stackTrace: stackTrace, isRefreshing: true),
+        const AsyncLoading<int>()
+            .copyWithPrevious(AsyncError<int>(42, stackTrace: stackTrace)),
       );
     });
   });
