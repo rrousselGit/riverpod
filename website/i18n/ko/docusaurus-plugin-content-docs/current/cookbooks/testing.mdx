@@ -1,0 +1,143 @@
+---
+title: 테스트
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import testingOriginalTestFlutter from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/cookbooks/testing_original_test_flutter.dart";
+import testingOriginalTestDart from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/cookbooks/testing_original_test_dart.dart";
+import repositorySnippet from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/cookbooks/testing_repository.dart";
+import testFlutter from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/cookbooks/testing_flutter.dart";
+import testDart from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/cookbooks/testing_dart.dart";
+import testFull from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/cookbooks/testing_full.dart";
+import testOverrideInfo from "!!raw-loader!/i18n/ko/docusaurus-plugin-content-docs/current/cookbooks/testing_override_info.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+중, 대규모 애플리케이션에서 테스트는 중요한 작업입니다.
+
+우리의 앱을 성공적으로 테스트하기 위해서 아래의 몇가지 포인트를 생각해 보아야합니다.
+
+- `test`/`testWidgets`간 상태를 공유하지 않습니다.
+  이것은 글로벌 상태를 가지지 않은 앱 또는 모든 글로벌 상태들이 테스트 후에 초기화됨을 의미합니다.
+
+- 프로바이더에 특정한 상태를 가질 수 있도록 할 수 있는데, mocking 또는 조작을 통해 원하는 상태로 만들어 줄 수 있습니다.
+
+[Riverpod]의 기능을 어떻게 활용할 수 있는지 하나씩 확인해봅시다.
+
+## `test`와`testWidgets`간 상태를 공유(보존)하지 않음.
+
+당신은 프로바이더가 전역(글로벌)변수로서 선언되어 사용되기 때문에 이 부분을 걱정할 수 도 있습니다.
+어쨋든, 전역 상태를 만들어 테스팅하는것은  `setUp`/`tearDown`이 많이 요구되기 때문에 매우 까다롭습니다.
+
+그러나 실제로는 프로바이더가 전역(상태변수)로서 선언되는 동안 프로바이더의 상태는 전역이**아닙니다**.
+
+대신에, 상태들은 [ProviderContainer]의 객체 이름을 가지고 저장됩니다. 
+Dart만 사용하는 경우(dart-only)의 샘플 코드에서 [ProviderContainer]객체를 보셨을 수 있습니다. 
+만약 모르고 있었다면 [ProviderContainer] 객체는 암묵적으로 우리의 프로젝트에서 [Riverpod]을 사용하기위해 
+사용하는 위젯 [ProviderScope]에 의해 생성됩니다. 
+
+구체적으로, 상태가 글로벌(전역)이 아니라는 것은 프로바이더를 사용하는 2개의 `testWidgets` 간 상태는 공유되지 않습니다.
+엄밀히 말해서 `setUp`/`tearDown`을 모두 필요로 하지 않습니다. 
+
+길게 설정하는것보다 예제로 확인해보도록 합시다.
+
+<Tabs
+  defaultValue="testWidgets"
+  values={[
+    { label: 'testWidgets (Flutter)', value: 'testWidgets', },
+    { label: 'test (Dart only)', value: 'test', },
+  ]}
+>
+<TabItem value="testWidgets">
+
+<CodeBlock>{trimSnippet(testingOriginalTestFlutter)}</CodeBlock>
+
+</TabItem>
+<TabItem value="test">
+
+<CodeBlock>{trimSnippet(testingOriginalTestDart)}</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+보았듯이 `counterProvider`가 전역상태번수로 선언되어 있음에도 테스트 간 상태는 공유되지 않습니다. 
+그래서 우리는 각각의 테스트가 독립된 환경에서 실행되지 때문에 실행순서에 따라 테스트 결과가 달라지는 것을 걱정하지 않아도 됩니다. 
+
+## 테스트 하는동안 프로바이더의 동작을 오버라이딩 하는 경우.
+
+통상적인 현실세계의 애플리케이션은 아래와 같은 객체를 가지고 있다고 생각합니다. 
+
+A common real-world application may have the following objects:
+
+- 타입세이프(a type-safe)와 HTTP 요청 수행 기능을 제공하는 `Repository` 클래스를 가지고 있습니다.
+
+- 앱 상태를 관리하고 `Repository`를 사용해 다양한 조건을 기반으로 한 HTTP 요청을 수행하는 객체를 가지고 있습니다. 이것은 아마도  `ChangeNotifier`, `Bloc` 또는 프로바이더 일것입니다.
+
+[Riverpod]을 사용하면 아래와 같이 표현 할 수 있습니다. 
+
+<CodeBlock>{trimSnippet(repositorySnippet)}</CodeBlock>
+
+이 상황에서는 a unit/widget test를 만들때, `Repository` 인스턴스를 실제 HTTP요청 대신에 사전 정의된 응답을 반환하는 fake 구현 레포지토리로 대체합니다. 
+`todoListProvider` 또는 `Repository`의 구현된 mock과 동등한 객체를 사용합니다. 
+
+이를 달성하기위해서, `repositoryProvider`의 행위를 오버라이드 하기위해 [ProviderScope]/[ProviderContainer]의 `overrides` 파라미터를 사용할 수 있습니다. 
+
+<Tabs
+  defaultValue="ProviderScope"
+  values={[
+    { label: 'ProviderScope (Flutter)', value: 'ProviderScope', },
+    { label: 'ProviderContainer (Dart only)', value: 'ProviderContainer', },
+  ]}
+>
+<TabItem value="ProviderScope">
+
+<CodeBlock>{trimSnippet(testFlutter)}</CodeBlock>
+
+</TabItem>
+<TabItem value="ProviderContainer">
+
+<CodeBlock>{trimSnippet(testDart)}</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+하이라이트된 코드를 확인해보면, [ProviderScope]/[ProviderContainer]는 다른 동작을 하는 프로바이더의 구현체로 교체할 수 있는것을 허용합니다. 
+
+
+:::info
+프로바이더에 따라 프로바이더가 가지는 동작을 오버라이드하기 위해 간단한 방법을 노출합니다.
+예를들어 [FutureProvider]는 `AsyncValue`와 함께 프로바이더를 오버라이딩 할 수 있습니다. 
+
+<CodeBlock>{trimSnippet(testOverrideInfo)}</CodeBlock>
+
+:::
+
+:::info
+프로바이더를 오버라이딩하기 위해 사용하는 `family` 수식자와 구문이 조금 차이가 있습니다.
+
+만약 아래와 같이 프로바이더를 사용한다면 
+
+```dart
+final response = ref.watch(myProvider('12345'));
+```
+
+아래와 같이 프로바이더를 오버라이드할 수 있습니다.
+
+```dart
+myProvider('12345').overrideWithValue(...));
+```
+
+:::
+
+## 모든 위젯 테스트 예제 Full widget test example
+
+마지막으로 위의 내용을 정리한 모든 테스트 코드를 확인해봅시다.
+
+<CodeBlock>{trimSnippet(testFull)}</CodeBlock>
+
+[riverpod]: https://github.com/rrousselgit/river_pod
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
+[futureprovider]: ../providers/future_provider
+[zone]: https://api.flutter.dev/flutter/dart-async/Zone-class.html
