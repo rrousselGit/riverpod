@@ -157,6 +157,7 @@ mixin ProviderListenable<State> {
 /// Represents the subscription to a [ProviderListenable]
 abstract class ProviderSubscription<State> {
   /// Stops listening to the provider
+  @mustCallSuper
   void close();
 
   /// Obtain the latest value emitted by the provider

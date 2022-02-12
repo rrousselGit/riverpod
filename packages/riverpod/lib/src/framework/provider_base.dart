@@ -164,7 +164,7 @@ class _ProviderSubscription<State> implements ProviderSubscription<State> {
   void close() {
     _closed = true;
     _listenedElement._listeners.remove(this);
-    _listenedElement.mayNeedDispose();
+    _listenedElement._onRemoveListener();
   }
 
   @override
@@ -198,7 +198,7 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
     dependentElement._subscriptions.remove(this);
     listenedElement
       .._subscribers.remove(this)
-      ..mayNeedDispose();
+      .._onRemoveListener();
   }
 
 // TODO
@@ -259,7 +259,8 @@ abstract class ProviderElementBase<State> implements Ref, Node {
 
   var _dependencies = HashMap<ProviderElementBase, Object>();
   HashMap<ProviderElementBase, Object>? _previousDependencies;
-  DoubleLinkedQueue<void Function()>? _onDisposeListeners;
+  List<void Function()>? _onDisposeListeners;
+  List<void Function()>? _onCancelListeners;
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
@@ -424,7 +425,7 @@ abstract class ProviderElementBase<State> implements Ref, Node {
     for (final sub in _previousDependencies!.entries) {
       sub.key
         .._dependents.remove(this)
-        ..mayNeedDispose();
+        .._onRemoveListener();
     }
     _previousDependencies = null;
   }
@@ -791,7 +792,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     for (final sub in _dependencies.entries) {
       sub.key._dependents.remove(this);
-      sub.key.mayNeedDispose();
+      sub.key._onRemoveListener();
     }
     _dependencies.clear();
 
@@ -804,6 +805,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     _listeners.clear();
+  }
+
+  void _onRemoveListener() {
+    if (!hasListeners) _onCancelListeners?.forEach(_runGuarded);
+    mayNeedDispose();
   }
 
   /// Life-cycle for when a listener is removed.
@@ -822,7 +828,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (!_mounted) {
       throw StateError('Cannot call onDispose after a provider was dispose');
     }
-    _onDisposeListeners ??= DoubleLinkedQueue();
+    _onDisposeListeners ??= [];
     _onDisposeListeners!.add(listener);
   }
 
@@ -837,6 +843,14 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     _onDisposeListeners?.forEach(_runGuarded);
     _onDisposeListeners = null;
+
+    _onCancelListeners = null;
+  }
+
+  @override
+  void onCancel(void Function() cb) {
+    _onCancelListeners ??= [];
+    _onCancelListeners!.add(cb);
   }
 
   @override
