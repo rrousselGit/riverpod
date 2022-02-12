@@ -4,14 +4,17 @@
 
 - **Breaking** Providers no-longer throw a `ProviderException` if an exception was thrown while building their value.  
   Instead, they will rethrow the thrown exception and its stacktrace.
+- Removed `AsyncValue`'s `isError`/`isData`
 
-- Fixed a cast error when overriding a provider with a more specific provider type (#1100)
-
-- Fixed a bug where `onDispose` listeners could be executed twice under certain
-  conditions when using `autoDispose`.
-
+- Added new functionalities to `AsyncValue`: `hasError`, `hasData`, `copyWithPrevious`
 - Added `provider.selectAsync`, which allows to both await an async value
   while also filtering rebuilds.
+- When a provider emits an `AsyncError` followed by an `AsyncData`,
+  the `AsyncData` emitted will now contain the latest error/stackTrace too.
+
+- Fixed a cast error when overriding a provider with a more specific provider type (#1100)
+- Fixed a bug where `onDispose` listeners could be executed twice under certain
+  conditions when using `autoDispose`.
 
 # 2.0.0-dev.0
 
