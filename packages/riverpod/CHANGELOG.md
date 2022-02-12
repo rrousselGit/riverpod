@@ -1,3 +1,10 @@
+# [Unreleased minor]
+
+- Deprecated `ref.maintainState=` in favor of a newly added `ref.keepAlive()`.
+  This new `ref.keepAlive()` function is similar to `maintainState` but
+  better handles cases where we have multiple logics that want to
+  keep the state of a provider alive for some period of time.
+
 # 2.0.0-dev.1
 
 - Now requires Dart 2.16
