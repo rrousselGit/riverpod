@@ -5,6 +5,9 @@
   better handles cases where we have multiple logics that want to
   keep the state of a provider alive for some period of time.
 
+- Added `ref.onCancel`, for performing actions when all listeners of
+  a provider are removed.
+
 # 2.0.0-dev.1
 
 - Now requires Dart 2.16
