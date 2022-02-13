@@ -260,6 +260,7 @@ abstract class ProviderElementBase<State> implements Ref, Node {
   var _dependencies = HashMap<ProviderElementBase, Object>();
   HashMap<ProviderElementBase, Object>? _previousDependencies;
   List<void Function()>? _onDisposeListeners;
+  List<void Function()>? _onResumeListeners;
   List<void Function()>? _onCancelListeners;
 
   bool _mustRecomputeState = false;
@@ -697,6 +698,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     required void Function(T? previous, T next) listener,
     required void Function(Object error, StackTrace stackTrace) onError,
   }) {
+    element._onListen();
+
     final sub = _ProviderListener<T>._(
       listenedElement: element,
       dependentElement: this,
@@ -807,8 +810,19 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _listeners.clear();
   }
 
+  void _onListen() {
+    if (_didCancelOnce && !hasListeners) {
+      _onResumeListeners?.forEach(_runGuarded);
+    }
+  }
+
+  var _didCancelOnce = false;
+
   void _onRemoveListener() {
-    if (!hasListeners) _onCancelListeners?.forEach(_runGuarded);
+    if (!hasListeners) {
+      _didCancelOnce = true;
+      _onCancelListeners?.forEach(_runGuarded);
+    }
     mayNeedDispose();
   }
 
@@ -845,12 +859,19 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _onDisposeListeners = null;
 
     _onCancelListeners = null;
+    _onResumeListeners = null;
   }
 
   @override
   void onCancel(void Function() cb) {
     _onCancelListeners ??= [];
     _onCancelListeners!.add(cb);
+  }
+
+  @override
+  void onResume(void Function() cb) {
+    _onResumeListeners ??= [];
+    _onResumeListeners!.add(cb);
   }
 
   @override

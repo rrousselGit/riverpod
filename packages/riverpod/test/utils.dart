@@ -47,6 +47,10 @@ class OnCancelMock extends Mock {
   void call();
 }
 
+class OnResume extends Mock {
+  void call();
+}
+
 class Listener<T> extends Mock {
   void call(T? previous, T? next);
 }

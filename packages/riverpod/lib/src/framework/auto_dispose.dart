@@ -57,8 +57,17 @@ abstract class AutoDisposeProviderBase<State> extends ProviderBase<State> {
   AutoDisposeProviderBase({
     required String? name,
     required Family? from,
+    // required this.cacheTime,
     required Object? argument,
   }) : super(name: name, from: from, argument: argument);
+
+  /// {@template riverpod.cache_time}
+  /// The duration for how long the provider state will be maintained when
+  /// it is not listened.
+  /// {@endtemplate riverpod.cache_time}
+  ///
+  /// If null, fallbacks to [ProviderContainer.cacheTime].
+  final Duration? cacheTime = Duration.zero;
 
   @override
   State create(AutoDisposeRef ref);
@@ -76,6 +85,17 @@ abstract class AutoDisposeProviderElementBase<State>
 
   final _keepAliveLinks = <KeepAliveLink>[];
 
+  bool _maintainState = false;
+
+  @Deprecated('Use `keepAlive()` instead')
+  @override
+  bool get maintainState => _maintainState;
+  @override
+  set maintainState(bool value) {
+    _maintainState = value;
+    if (!value) mayNeedDispose();
+  }
+
   @override
   KeepAliveLink keepAlive() {
     late KeepAliveLink link;
@@ -89,23 +109,40 @@ abstract class AutoDisposeProviderElementBase<State>
     return link;
   }
 
-  bool _maintainState = false;
-
-  @Deprecated('Use `keepAlive()` instead')
-  @override
-  bool get maintainState => _maintainState;
-  @override
-  set maintainState(bool value) {
-    _maintainState = value;
-    if (!value) mayNeedDispose();
-  }
-
   @override
   void mayNeedDispose() {
     // ignore: deprecated_member_use_from_same_package
     if (!maintainState && !hasListeners && _keepAliveLinks.isEmpty) {
       _container._scheduler.scheduleProviderDispose(this);
     }
+  }
+
+  @override
+  void _buildState() {
+    final cacheTime =
+        (provider as AutoDisposeProviderBase).cacheTime ?? _container.cacheTime;
+    if (cacheTime != Duration.zero) {
+      Timer? timer;
+      KeepAliveLink? link;
+
+      onCancel(() {
+        link = keepAlive();
+        timer = Timer(cacheTime, () {
+          timer = null;
+          link?.close();
+          link = null;
+        });
+      });
+
+      onResume(() {
+        timer?.cancel();
+        timer = null;
+        link?.close();
+        link = null;
+      });
+    }
+
+    super._buildState();
   }
 
   @override

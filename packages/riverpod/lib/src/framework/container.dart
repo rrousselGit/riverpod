@@ -158,11 +158,13 @@ class ProviderContainer implements Node {
   /// {@macro riverpod.providercontainer}
   ProviderContainer({
     ProviderContainer? parent,
+    Duration? cacheTime,
     List<Override> overrides = const [],
     List<ProviderObserver>? observers,
   })  : _debugOverridesLength = overrides.length,
         depth = parent == null ? 0 : parent.depth + 1,
         _parent = parent,
+        cacheTime = cacheTime ?? parent?.cacheTime ?? Duration.zero,
         _observers = [
           ...?observers,
           if (parent != null) ...parent._observers,
@@ -204,6 +206,13 @@ class ProviderContainer implements Node {
       }
     }
   }
+
+  /// The default value for [AutoDisposeProviderBase.cacheTime].
+  ///
+  /// {@macro riverpod.cache_time}
+  ///
+  /// Defaults to [Duration.zero].
+  final Duration cacheTime;
 
   final int _debugOverridesLength;
 
@@ -306,6 +315,8 @@ class ProviderContainer implements Node {
     required void Function(State? previous, State next) listener,
     required void Function(Object error, StackTrace stackTrace) onError,
   }) {
+    element._onListen();
+
     final sub = _ProviderSubscription<State>._(
       element,
       listener,
