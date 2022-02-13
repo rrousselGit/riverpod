@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final pageIndexProvider = StateProvider<int>((ref) => 0);
 
-// A provider which computes whether the user is allowed to go to the previous page
+// 사용자(the user)가 이전 페이지로 돌아가는지 계산하기 위한 프로바이더
 /* highlight-start */
 final canGoToPreviousPageProvider = Provider<bool>((ref) {
 /* highlight-end */
@@ -14,7 +14,7 @@ final canGoToPreviousPageProvider = Provider<bool>((ref) {
 });
 
 class PreviousButton extends ConsumerWidget {
-  const PreviousButton({Key? key}): super(key: key);
+  const PreviousButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

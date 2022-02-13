@@ -16,7 +16,7 @@ class TodosNotifier extends StateNotifier<List<Todo>> {
   void addTodo(Todo todo) {
     state = [...state, todo];
   }
-  // TODO add other methods, such as "removeTodo", ...
+  // TODO "removeTodo"와 같은 다른 메소드들을 추가하기
 }
 
 final todosProvider = StateNotifierProvider<TodosNotifier, List<Todo>>((ref) {

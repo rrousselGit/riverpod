@@ -5,9 +5,9 @@ import 'todo.dart';
 /* SNIPPET START */
 
 final completedTodosProvider = Provider<List<Todo>>((ref) {
-  // We obtain the list of all todos from the todosProvider
+  // todosProvider로부터 모든 할일(todos)목록을 가져옵니다.
   final todos = ref.watch(todosProvider);
 
-  // we return only the completed todos
+  // 완료된(completed) 할일(todos)들만 반환합니다.
   return todos.where((todo) => todo.isCompleted).toList();
 });

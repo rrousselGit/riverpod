@@ -1,4 +1,4 @@
-// A provider that controls the current page
+// 현재 페이지를 제어하는 프로바이더
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,11 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final pageIndexProvider = StateProvider<int>((ref) => 0);
 
 class PreviousButton extends ConsumerWidget {
-  const PreviousButton({Key? key}): super(key: key);
+  const PreviousButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // if not on first page, the previous button is active
+    // 만약 첫페이지가 아니라면 이전 버튼이 활성화 됩니다.
     final canGoToPreviousPage = ref.watch(pageIndexProvider) == 0;
 
     void goToPreviousPage() {
