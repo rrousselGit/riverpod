@@ -5,8 +5,14 @@
   better handles cases where we have multiple logics that want to
   keep the state of a provider alive for some period of time.
 
+- Added `ProviderContainer.cacheTime` and `MyProvider.autoDispose(..., cacheTime: duration)`.
+  `cacheTime` is used to keep an `autoDispose` provider alive for at least
+  a minimum amount of time before it gets disposed if not listened.
+
 - Added `ref.onCancel`, for performing actions when all listeners of
   a provider are removed.
+- Added `ref.onResume`, the mirror of `ref.onCancel`, for performing action
+  after `onCancel` was called and a new listener was added.
 
 # 2.0.0-dev.1
 
