@@ -3,10 +3,6 @@
 
 part of '../framework.dart';
 
-/// Alias for [Ref]
-@Deprecated('Use Ref instead.')
-typedef ProviderReference = Ref;
-
 /// A callback used by providers to create the value exposed.
 ///
 /// If an exception is thrown within that callback, all attempts at reading
