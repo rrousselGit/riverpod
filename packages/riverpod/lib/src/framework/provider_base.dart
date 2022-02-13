@@ -197,7 +197,6 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
       .._onRemoveListener();
   }
 
-// TODO
   @override
   State read() => listenedElement.readSelf();
 }
@@ -258,10 +257,13 @@ abstract class ProviderElementBase<State> implements Ref, Node {
   List<void Function()>? _onDisposeListeners;
   List<void Function()>? _onResumeListeners;
   List<void Function()>? _onCancelListeners;
+  List<void Function()>? _onAddListeners;
+  List<void Function()>? _onRemoveListeners;
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
   bool _debugDidChangeDependency = false;
+  var _didCancelOnce = false;
 
   bool _mounted = false;
 
@@ -675,7 +677,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         element.flush();
         return true;
       }(), '');
-      element._dependents.add(this);
+
+      element
+        .._onListen()
+        .._dependents.add(this);
 
       return Object();
     });
@@ -807,14 +812,14 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void _onListen() {
+    _onAddListeners?.forEach(_runGuarded);
     if (_didCancelOnce && !hasListeners) {
       _onResumeListeners?.forEach(_runGuarded);
     }
   }
 
-  var _didCancelOnce = false;
-
   void _onRemoveListener() {
+    _onRemoveListeners?.forEach(_runGuarded);
     if (!hasListeners) {
       _didCancelOnce = true;
       _onCancelListeners?.forEach(_runGuarded);
@@ -852,10 +857,25 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     _onDisposeListeners?.forEach(_runGuarded);
-    _onDisposeListeners = null;
 
+    _onDisposeListeners = null;
     _onCancelListeners = null;
     _onResumeListeners = null;
+    _onAddListeners = null;
+    _onRemoveListeners = null;
+    _didCancelOnce = false;
+  }
+
+  @override
+  void onAddListener(void Function() cb) {
+    _onAddListeners ??= [];
+    _onAddListeners!.add(cb);
+  }
+
+  @override
+  void onRemoveListener(void Function() cb) {
+    _onRemoveListeners ??= [];
+    _onRemoveListeners!.add(cb);
   }
 
   @override

@@ -88,6 +88,317 @@ void main() {
     });
   });
 
+  group('ref.onRemoveListener', () {
+    test('is not called on read', () {
+      final container = createContainer();
+      final listener = OnRemoveListener();
+      final provider = Provider((ref) {
+        ref.onRemoveListener(listener);
+      });
+
+      container.read(provider);
+
+      verifyZeroInteractions(listener);
+    });
+
+    test('calls listeners when container.listen subscriptions are closed', () {
+      final container = createContainer();
+      final listener = OnRemoveListener();
+      final listener2 = OnRemoveListener();
+      final provider = Provider((ref) {
+        ref.onRemoveListener(listener);
+        ref.onRemoveListener(listener2);
+      });
+
+      final sub = container.listen<void>(provider, (previous, next) {});
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      sub.close();
+
+      verifyInOrder([listener(), listener2()]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      final sub2 = container.listen<void>(provider, (previous, next) {});
+
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      sub2.close();
+
+      verifyInOrder([listener(), listener2()]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('calls listeners when ref.listen subscriptions are closed', () {
+      final container = createContainer();
+      final listener = OnRemoveListener();
+      final listener2 = OnRemoveListener();
+      final dep = Provider((ref) {
+        ref.onRemoveListener(listener);
+        ref.onRemoveListener(listener2);
+      }, name: 'dep');
+      late Ref ref;
+      final provider = Provider((r) {
+        ref = r;
+      }, name: 'provider');
+
+      // initialize ref
+      container.read(provider);
+
+      final sub = ref.listen<void>(dep, (previous, next) {});
+
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      sub.close();
+
+      verifyInOrder([listener(), listener2()]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      final sub2 = ref.listen<void>(dep, (previous, next) {});
+
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      sub2.close();
+
+      verifyInOrder([listener(), listener2()]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('calls listeners when ref.watch subscriptions are removed', () {
+      final container = createContainer();
+      final listener = OnRemoveListener();
+      final listener2 = OnRemoveListener();
+      final dep = Provider((ref) {
+        ref.onRemoveListener(listener);
+        ref.onRemoveListener(listener2);
+      }, name: 'dep');
+      late Ref ref;
+      final provider = Provider((r) {
+        ref = r;
+      }, name: 'provider');
+
+      // initialize refs
+      container.read(provider);
+
+      ref.watch<void>(dep);
+
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      container.refresh(provider);
+
+      verifyInOrder([listener(), listener2()]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('listeners are cleared on rebuild', () {
+      final container = createContainer();
+      final listener = OnRemoveListener();
+      final listener2 = OnRemoveListener();
+      var isSecondBuild = false;
+      final provider = Provider((ref) {
+        if (isSecondBuild) {
+          ref.onRemoveListener(listener2);
+        } else {
+          ref.onRemoveListener(listener);
+        }
+      });
+
+      container.read(provider);
+      isSecondBuild = true;
+      container.refresh(provider);
+
+      final sub = container.listen<void>(provider, (previous, next) {});
+      sub.close();
+
+      verify(listener2()).called(1);
+      verifyNoMoreInteractions(listener2);
+      verifyZeroInteractions(listener);
+    });
+
+    test('if a listener throws, still calls all listeners', () {
+      final errors = <Object?>[];
+      final container = createContainer();
+      final listener = OnRemoveListener();
+      final listener2 = OnRemoveListener();
+      when(listener()).thenThrow(42);
+      final provider = Provider((ref) {
+        ref.onRemoveListener(listener);
+        ref.onRemoveListener(listener2);
+      });
+
+      final sub = container.listen<void>(provider, (prev, next) {});
+
+      runZonedGuarded(
+        sub.close,
+        (err, stack) => errors.add(err),
+      );
+
+      verifyInOrder([listener(), listener2()]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+      expect(errors, [42]);
+    });
+  });
+
+  group('ref.onAddListener', () {
+    test('is not called on read', () {
+      final container = createContainer();
+      final listener = OnAddListener();
+      final provider = Provider((ref) {
+        ref.onAddListener(listener);
+      });
+
+      container.read(provider);
+
+      verifyZeroInteractions(listener);
+    });
+
+    test('calls listeners when container.listen is invoked', () {
+      final container = createContainer();
+      final listener = OnAddListener();
+      final listener2 = OnAddListener();
+      final provider = Provider((ref) {
+        ref.onAddListener(listener);
+        ref.onAddListener(listener2);
+      });
+
+      container.listen<void>(provider, (previous, next) {});
+
+      verifyInOrder([listener(), listener2()]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      container.listen<void>(provider, (previous, next) {});
+
+      verifyInOrder([listener(), listener2()]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('calls listeners when new ref.listen is invoked', () {
+      final container = createContainer();
+      final listener = OnAddListener();
+      final listener2 = OnAddListener();
+      final dep = Provider((ref) {
+        ref.onAddListener(listener);
+        ref.onAddListener(listener2);
+      }, name: 'dep');
+      late Ref ref;
+      final provider = Provider((r) {
+        ref = r;
+      }, name: 'provider');
+
+      // initialize ref
+      container.read(provider);
+
+      ref.listen<void>(dep, (previous, next) {});
+
+      verifyInOrder([listener(), listener2()]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      ref.listen<void>(dep, (previous, next) {});
+
+      verifyInOrder([listener(), listener2()]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('calls listeners when new ref.watch is invoked', () {
+      final container = createContainer();
+      final listener = OnAddListener();
+      final listener2 = OnAddListener();
+      final dep = Provider((ref) {
+        ref.onAddListener(listener);
+        ref.onAddListener(listener2);
+      }, name: 'dep');
+      late Ref ref;
+      final provider = Provider((r) {
+        ref = r;
+      }, name: 'provider');
+      late Ref ref2;
+      final provider2 = Provider((r) {
+        ref2 = r;
+      }, name: 'provider');
+
+      // initialize refs
+      container.read(provider);
+      container.read(provider2);
+
+      ref.watch<void>(dep);
+
+      verifyInOrder([listener(), listener2()]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      ref.watch<void>(dep);
+
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      ref2.watch<void>(dep);
+
+      verifyInOrder([listener(), listener2()]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('listeners are cleared on rebuild', () {
+      final container = createContainer();
+      final listener = OnAddListener();
+      final listener2 = OnAddListener();
+      var isSecondBuild = false;
+      final provider = Provider((ref) {
+        if (isSecondBuild) {
+          ref.onAddListener(listener2);
+        } else {
+          ref.onAddListener(listener);
+        }
+      });
+
+      container.read(provider);
+      isSecondBuild = true;
+      container.refresh(provider);
+
+      container.listen<void>(provider, (previous, next) {});
+
+      verify(listener2()).called(1);
+      verifyNoMoreInteractions(listener2);
+      verifyZeroInteractions(listener);
+    });
+
+    test('if a listener throws, still calls all listeners', () {
+      final errors = <Object?>[];
+      final container = createContainer();
+      final listener = OnAddListener();
+      final listener2 = OnAddListener();
+      when(listener()).thenThrow(42);
+      final provider = Provider((ref) {
+        ref.onAddListener(listener);
+        ref.onAddListener(listener2);
+      });
+
+      runZonedGuarded(
+        () => container.listen<void>(provider, (prev, next) {}),
+        (err, stack) => errors.add(err),
+      );
+
+      verifyInOrder([listener(), listener2()]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+      expect(errors, [42]);
+    });
+  });
+
   group('ref.onResume', () {
     test('is not called on initial subscription', () {
       final container = createContainer();
@@ -116,6 +427,7 @@ void main() {
       sub.close();
 
       verifyZeroInteractions(listener);
+      verifyZeroInteractions(listener2);
 
       container.listen<void>(provider, (previous, next) {});
 
@@ -177,6 +489,114 @@ void main() {
       container.read(provider);
 
       verifyZeroInteractions(listener);
+    });
+
+    test('calls listeners when ref.watch is invoked after a cancel', () {
+      final container = createContainer();
+      final listener = OnResume();
+      final listener2 = OnResume();
+      final dep = Provider((ref) {
+        ref.onAddListener(listener);
+        ref.onAddListener(listener2);
+      }, name: 'dep');
+      late Ref ref;
+      final provider = Provider((r) {
+        ref = r;
+      }, name: 'provider');
+
+      // initialize refs
+      container.read(provider);
+
+      final sub = container.listen<void>(provider, (previous, next) {});
+      sub.close();
+
+      verifyZeroInteractions(listener);
+
+      ref.watch<void>(dep);
+
+      verifyInOrder([listener(), listener2()]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('listeners are cleared on rebuild', () {
+      final container = createContainer();
+      final listener = OnResume();
+      final listener2 = OnResume();
+      var isSecondBuild = false;
+      final provider = Provider((ref) {
+        if (isSecondBuild) {
+          ref.onResume(listener2);
+        } else {
+          ref.onResume(listener);
+        }
+      });
+
+      container.read(provider);
+      isSecondBuild = true;
+      container.refresh(provider);
+
+      final sub = container.listen<void>(provider, (previous, next) {});
+      sub.close();
+
+      verifyZeroInteractions(listener);
+      verifyZeroInteractions(listener2);
+
+      container.listen<void>(provider, (previous, next) {});
+
+      verify(listener2()).called(1);
+      verifyNoMoreInteractions(listener2);
+      verifyZeroInteractions(listener);
+    });
+
+    test('internal resume status is cleared on rebuild', () {
+      final container = createContainer();
+      final listener = OnResume();
+      final provider = Provider((ref) {
+        ref.onResume(listener);
+      });
+
+      final sub = container.listen<void>(provider, (previous, next) {});
+      sub.close();
+
+      container.refresh(provider);
+
+      final sub2 = container.listen<void>(provider, (previous, next) {});
+      sub2.close();
+
+      verifyZeroInteractions(listener);
+
+      container.listen<void>(provider, (previous, next) {});
+
+      verifyOnly(listener, listener());
+    });
+
+    test('if a listener throws, still calls all listeners', () {
+      final errors = <Object?>[];
+      final container = createContainer();
+      final listener = OnResume();
+      final listener2 = OnResume();
+      when(listener()).thenThrow(42);
+      final provider = Provider((ref) {
+        ref.onResume(listener);
+        ref.onResume(listener2);
+      });
+
+      final sub = container.listen<void>(provider, (previous, next) {});
+      sub.close();
+
+      verifyZeroInteractions(listener);
+      verifyZeroInteractions(listener2);
+
+      runZonedGuarded(
+        () => container.listen<void>(provider, (prev, next) {}),
+        (err, stack) => errors.add(err),
+      );
+
+      verifyInOrder([listener(), listener2()]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+      expect(errors, [42]);
     });
   });
 

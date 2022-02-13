@@ -11,10 +11,9 @@
   `cacheTime` is used to keep an `autoDispose` provider alive for at least
   a minimum amount of time before it gets disposed if not listened.
 
-- Added `ref.onCancel`, for performing actions when all listeners of
-  a provider are removed.
-- Added `ref.onResume`, the mirror of `ref.onCancel`, for performing action
-  after `onCancel` was called and a new listener was added.
+- Added `ref.onAddListener`, `ref.onRemoveListener`, `ref.onCancel` and
+  `ref.onResume`. All of which allow performing side-effects when providers
+  are listened or stop being listened.
 
 # 2.0.0-dev.1
 

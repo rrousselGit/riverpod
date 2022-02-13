@@ -53,6 +53,14 @@ class OnResume extends Mock {
   void call();
 }
 
+class OnAddListener extends Mock {
+  void call();
+}
+
+class OnRemoveListener extends Mock {
+  void call();
+}
+
 class Listener<T> extends Mock {
   void call(T? previous, T? next);
 }

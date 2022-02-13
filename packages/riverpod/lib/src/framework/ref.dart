@@ -16,6 +16,18 @@ abstract class Ref {
   /// Re-create the state of a provider and return the new state.
   State refresh<State>(ProviderBase<State> provider);
 
+  /// A life-cycle for whenever a new listener is added to the provider.
+  ///
+  /// See also:
+  /// - [onRemoveListener], for when a listener is removed
+  void onAddListener(void Function() cb);
+
+  /// A life-cycle for whenever a listener is removed from the provider.
+  ///
+  /// See also:
+  /// - [onAddListener], for when a listener is addded
+  void onRemoveListener(void Function() cb);
+
   /// A life-cycle for when a provider is listened again after it was paused
   /// (and [onCancel] was triggered).
   ///
