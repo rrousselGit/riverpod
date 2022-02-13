@@ -7,6 +7,30 @@ import 'uni_directional_test.dart';
 
 void main() {
   group('ProviderContainer', () {
+    group('cacheTime', () {
+      test('defaults to zero', () {
+        final container = createContainer();
+
+        expect(container.cacheTime, Duration.zero);
+      });
+
+      test(
+          'if a parent is specified and no default is passed, use the parent cacheTime',
+          () {
+        final parent = createContainer(cacheTime: const Duration(seconds: 5));
+        final container = createContainer(
+          parent: parent,
+          cacheTime: const Duration(seconds: 2),
+        );
+
+        expect(container.cacheTime, const Duration(seconds: 2));
+
+        final container2 = createContainer(parent: parent);
+
+        expect(container2.cacheTime, const Duration(seconds: 5));
+      });
+    });
+
     test(
         'when using overrideWithProvider, handles overriding with a more specific provider type',
         () {

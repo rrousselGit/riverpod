@@ -19,11 +19,13 @@ ProviderContainer createContainer({
   ProviderContainer? parent,
   List<Override> overrides = const [],
   List<ProviderObserver>? observers,
+  Duration? cacheTime,
 }) {
   final container = ProviderContainer(
     parent: parent,
     overrides: overrides,
     observers: observers,
+    cacheTime: cacheTime,
   );
   addTearDown(container.dispose);
   return container;

@@ -210,8 +210,6 @@ class ProviderContainer implements Node {
   /// The default value for [AutoDisposeProviderBase.cacheTime].
   ///
   /// {@macro riverpod.cache_time}
-  ///
-  /// Defaults to [Duration.zero].
   final Duration cacheTime;
 
   final int _debugOverridesLength;

@@ -5,9 +5,89 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' show ResultError;
 import 'package:test/test.dart';
 
+import '../third_party/fake_async.dart';
 import '../utils.dart';
 
 void main() {
+  group('cacheTime', () {
+    test('keeps autoDispose provider alive for at least duration', () async {
+      fakeAsync((async) {
+        final container = createContainer();
+        final listener = OnDisposeMock();
+        final provider = Provider.autoDispose(
+          (ref) => ref.onDispose(listener),
+          cacheTime: const Duration(seconds: 2),
+        );
+
+        container.read(provider);
+        verifyZeroInteractions(listener);
+
+        async.elapse(const Duration(seconds: 1));
+
+        verifyZeroInteractions(listener);
+
+        async.elapse(const Duration(seconds: 1));
+
+        verifyOnly(listener, listener());
+      });
+    });
+
+    test('if provider rebuilds, reset the timer', () async {
+      fakeAsync((async) {
+        final container = createContainer();
+        final listener = OnDisposeMock();
+        final provider = Provider.autoDispose(
+          (ref) => ref.onDispose(listener),
+          cacheTime: const Duration(seconds: 5),
+        );
+
+        container.read(provider);
+        verifyZeroInteractions(listener);
+
+        async.elapse(const Duration(seconds: 3));
+
+        verifyZeroInteractions(listener);
+
+        container.refresh(provider);
+        verifyOnly(listener, listener());
+
+        async.elapse(const Duration(seconds: 3));
+
+        verifyNoMoreInteractions(listener);
+
+        async.elapse(const Duration(seconds: 2));
+
+        verifyOnly(listener, listener());
+      });
+    });
+
+    test('If provider.cacheTime is null, use container.cacheTime', () async {
+      fakeAsync((async) {
+        final listener = OnDisposeMock();
+        final provider = Provider.autoDispose((ref) => ref.onDispose(listener));
+        final root = createContainer(
+          cacheTime: const Duration(seconds: 10),
+        );
+        final container = createContainer(
+          parent: root,
+          cacheTime: const Duration(seconds: 5),
+          overrides: [provider],
+        );
+
+        container.read(provider);
+        verifyZeroInteractions(listener);
+
+        async.elapse(const Duration(seconds: 2));
+
+        verifyZeroInteractions(listener);
+
+        async.elapse(const Duration(seconds: 3));
+
+        verifyOnly(listener, listener());
+      });
+    });
+  });
+
   group('ref.onResume', () {
     test('is not called on initial subscription', () {
       final container = createContainer();

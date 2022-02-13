@@ -30,7 +30,7 @@ class ChangeNotifierProviderBuilder {
   ///
   /// Marking a provider with `autoDispose` also adds an extra method on `ref`: `keepAlive`.
   ///
-  /// The `keep` function is used to tell Riverpod that the state of the provider
+  /// The `keepAlive` function is used to tell Riverpod that the state of the provider
   /// should be preserved even if no longer listened to.
   ///
   /// A use-case would be to set this flag to `true` after an HTTP request have
@@ -66,15 +66,11 @@ class ChangeNotifierProviderBuilder {
   /// ```
   /// {@endtemplate}
   ChangeNotifierProvider<Notifier> call<Notifier extends ChangeNotifier?>(
-    Create<Notifier, ChangeNotifierProviderRef<Notifier>> create, {
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-  }) {
-    return ChangeNotifierProvider<Notifier>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
+      Create<Notifier, ChangeNotifierProviderRef<Notifier>> create,
+      {String? name,
+      List<ProviderOrFamily>? dependencies}) {
+    return ChangeNotifierProvider<Notifier>(create,
+        name: name, dependencies: dependencies);
   }
 
   /// {@macro riverpod.autoDispose}
@@ -302,17 +298,13 @@ class ChangeNotifierProviderFamilyBuilder {
   const ChangeNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  ChangeNotifierProviderFamily<Notifier, Arg>
-      call<Notifier extends ChangeNotifier?, Arg>(
-    FamilyCreate<Notifier, ChangeNotifierProviderRef<Notifier>, Arg> create, {
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-  }) {
-    return ChangeNotifierProviderFamily<Notifier, Arg>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
+  ChangeNotifierProviderFamily<Notifier, Arg> call<
+          Notifier extends ChangeNotifier?, Arg>(
+      FamilyCreate<Notifier, ChangeNotifierProviderRef<Notifier>, Arg> create,
+      {String? name,
+      List<ProviderOrFamily>? dependencies}) {
+    return ChangeNotifierProviderFamily<Notifier, Arg>(create,
+        name: name, dependencies: dependencies);
   }
 
   /// {@macro riverpod.autoDispose}
@@ -321,23 +313,20 @@ class ChangeNotifierProviderFamilyBuilder {
   }
 }
 
-/// Builds an [AutoDisposeChangeNotifierProvider].
+/// Builds a [AutoDisposeChangeNotifierProvider].
 class AutoDisposeChangeNotifierProviderBuilder {
-  /// Builds an [AutoDisposeChangeNotifierProvider].
+  /// Builds a [AutoDisposeChangeNotifierProvider].
   const AutoDisposeChangeNotifierProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
-  AutoDisposeChangeNotifierProvider<Notifier>
-      call<Notifier extends ChangeNotifier?>(
-    Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>> create, {
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-  }) {
-    return AutoDisposeChangeNotifierProvider<Notifier>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
+  AutoDisposeChangeNotifierProvider<Notifier> call<
+          Notifier extends ChangeNotifier?>(
+      Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>> create,
+      {String? name,
+      List<ProviderOrFamily>? dependencies,
+      Duration? cacheTime}) {
+    return AutoDisposeChangeNotifierProvider<Notifier>(create,
+        name: name, dependencies: dependencies, cacheTime: cacheTime);
   }
 
   /// {@macro riverpod.family}
@@ -346,23 +335,21 @@ class AutoDisposeChangeNotifierProviderBuilder {
   }
 }
 
-/// Builds an [AutoDisposeChangeNotifierProviderFamily].
+/// Builds a [AutoDisposeChangeNotifierProviderFamily].
 class AutoDisposeChangeNotifierProviderFamilyBuilder {
-  /// Builds an [AutoDisposeChangeNotifierProviderFamily].
+  /// Builds a [AutoDisposeChangeNotifierProviderFamily].
   const AutoDisposeChangeNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
   AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>
       call<Notifier extends ChangeNotifier?, Arg>(
-    FamilyCreate<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>, Arg>
-        create, {
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-  }) {
-    return AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
+          FamilyCreate<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>,
+                  Arg>
+              create,
+          {String? name,
+          List<ProviderOrFamily>? dependencies,
+          Duration? cacheTime}) {
+    return AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>(create,
+        name: name, dependencies: dependencies, cacheTime: cacheTime);
   }
 }
