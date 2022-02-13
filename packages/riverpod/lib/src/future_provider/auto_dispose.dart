@@ -29,7 +29,13 @@ class AutoDisposeFutureProvider<State>
     this.dependencies,
     Family? from,
     Object? argument,
-  }) : super(name: name, from: from, argument: argument);
+    Duration? cacheTime,
+  }) : super(
+          name: name,
+          from: from,
+          argument: argument,
+          cacheTime: cacheTime,
+        );
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeFutureProviderFamilyBuilder();
@@ -48,6 +54,7 @@ class AutoDisposeFutureProvider<State>
     this,
     from: from,
     argument: argument,
+    cacheTime: cacheTime,
   );
 
   @override
@@ -103,7 +110,12 @@ class AutoDisposeFutureProviderFamily<State, Arg>
     this._create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+    Duration? cacheTime,
+  }) : super(
+          name: name,
+          dependencies: dependencies,
+          cacheTime: cacheTime,
+        );
 
   final FamilyCreate<FutureOr<State>, AutoDisposeFutureProviderRef<State>, Arg>
       _create;

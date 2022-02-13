@@ -541,6 +541,17 @@ class FamilyBuilder {
 
   @override
   String toString() {
+    final createNamedParams = [
+      'String? name',
+      'List<ProviderOrFamily>? dependencies',
+      if (configs.item1 == DisposeType.autoDispose) 'Duration? cacheTime',
+    ].join(',');
+    final providerParams = [
+      'create',
+      'name: name',
+      'dependencies: dependencies',
+      if (configs.item1 == DisposeType.autoDispose) 'cacheTime: cacheTime',
+    ].join(',');
     return '''
 /// Builds a [${configs.providerName}].
 class ${configs.providerName}Builder {
@@ -549,11 +560,8 @@ class ${configs.providerName}Builder {
 
 ${familyDoc().replaceAll('///', '  ///')}
   ${configs.providerName}<${configs.item2.generics}, Arg> call<${configs.constraint}, Arg>(
-    FamilyCreate<${configs.createType}, ${configs.ref}, Arg> create, {
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-  }) {
-    return ${configs.providerName}<${configs.item2.generics}, Arg>(create, name: name, dependencies: dependencies,);
+    FamilyCreate<${configs.createType}, ${configs.ref}, Arg> create, { $createNamedParams }) {
+    return ${configs.providerName}<${configs.item2.generics}, Arg>($providerParams);
   }
 ${configs.links(matrix)}
 }
@@ -569,6 +577,18 @@ class ProviderBuilder {
 
   @override
   String toString() {
+    final callNamedParams = [
+      'String? name',
+      'List<ProviderOrFamily>? dependencies',
+      if (configs.item1 == DisposeType.autoDispose) 'Duration? cacheTime',
+    ].join(',');
+    final providerParams = [
+      'create',
+      'name: name',
+      'dependencies: dependencies',
+      if (configs.item1 == DisposeType.autoDispose) 'cacheTime: cacheTime',
+    ].join(',');
+
     return '''
 /// Builds a [${configs.providerName}].
 class ${configs.providerName}Builder {
@@ -577,11 +597,8 @@ class ${configs.providerName}Builder {
 
 ${autoDisposeDoc().replaceAll('///', '  ///')}
   ${configs.providerName}<${configs.item2.generics}> call<${configs.constraint}>(
-    Create<${configs.createType}, ${configs.ref}> create, {
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-  }) {
-    return ${configs.providerName}<${configs.item2.generics}>(create, name: name, dependencies: dependencies,);
+    Create<${configs.createType}, ${configs.ref}> create, { $callNamedParams }) {
+    return ${configs.providerName}<${configs.item2.generics}>($providerParams);
   }
 ${configs.links(matrix)}
 }

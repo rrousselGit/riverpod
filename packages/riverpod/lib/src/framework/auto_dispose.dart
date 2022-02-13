@@ -58,7 +58,20 @@ abstract class AutoDisposeProviderBase<State> extends ProviderBase<State> {
     required String? name,
     required Family? from,
     required Object? argument,
+    required this.cacheTime,
   }) : super(name: name, from: from, argument: argument);
+
+  /// {@template riverpod.cache_time}
+  /// The minimum amount of time before an `autoDispose` provider can be
+  /// disposed if not listened.
+  ///
+  /// If the provider rebuilds (such as when using `ref.watch` or `ref.refresh`),
+  /// the timer will be refreshed.
+  ///
+  /// If null, use the nearest ancestor [ProviderContainer]'s [cacheTime].
+  /// If no ancestor is found, fallbacks to [Duration.zero].
+  /// {@endtemplate}
+  final Duration? cacheTime;
 
   @override
   State create(AutoDisposeRef ref);
@@ -74,7 +87,22 @@ abstract class AutoDisposeProviderElementBase<State>
   AutoDisposeProviderElementBase(ProviderBase<State> provider)
       : super(provider);
 
+  // TODO make nullable
   final _keepAliveLinks = <KeepAliveLink>[];
+
+  bool _maintainState = false;
+
+  late final _cacheTime =
+      (provider as AutoDisposeProviderBase).cacheTime ?? _container.cacheTime;
+
+  @Deprecated('Use `keepAlive()` instead')
+  @override
+  bool get maintainState => _maintainState;
+  @override
+  set maintainState(bool value) {
+    _maintainState = value;
+    if (!value) mayNeedDispose();
+  }
 
   @override
   KeepAliveLink keepAlive() {
@@ -89,22 +117,21 @@ abstract class AutoDisposeProviderElementBase<State>
     return link;
   }
 
-  bool _maintainState = false;
-
-  @Deprecated('Use `keepAlive()` instead')
-  @override
-  bool get maintainState => _maintainState;
-  @override
-  set maintainState(bool value) {
-    _maintainState = value;
-    if (!value) mayNeedDispose();
-  }
-
   @override
   void mayNeedDispose() {
     // ignore: deprecated_member_use_from_same_package
     if (!maintainState && !hasListeners && _keepAliveLinks.isEmpty) {
       _container._scheduler.scheduleProviderDispose(this);
+    }
+  }
+
+  @override
+  void _buildState() {
+    super._buildState();
+    if (_cacheTime != Duration.zero) {
+      final link = keepAlive();
+      final timer = Timer(_cacheTime, link.close);
+      onDispose(timer.cancel);
     }
   }
 

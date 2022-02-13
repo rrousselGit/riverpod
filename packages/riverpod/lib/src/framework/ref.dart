@@ -16,6 +16,18 @@ abstract class Ref {
   /// Re-create the state of a provider and return the new state.
   State refresh<State>(ProviderBase<State> provider);
 
+  /// A life-cycle for when a provider is listened again after it was paused
+  /// (and [onCancel] was triggered).
+  ///
+  /// See also:
+  /// - [AutoDisposeRef.keepAlive], which can be combined with [onCancel] for
+  ///   advanced manipulation on when the provider should get disposed.
+  /// - [Provider.autoDispose], a modifier which tell a provider that it should
+  ///   destroy its state when no longer listened to.
+  /// - [onDispose], a life-cycle for when a provider is disposed.
+  /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
+  void onResume(void Function() cb);
+
   /// Add a listener to perform an operation when the last listener of the provider
   /// is removed.
   ///
@@ -32,6 +44,7 @@ abstract class Ref {
   /// - [Provider.autoDispose], a modifier which tell a provider that it should
   ///   destroy its state when no longer listened to.
   /// - [onDispose], a life-cycle for when a provider is disposed.
+  /// - [onResume], a life-cycle for when the provider is listened to again.
   void onCancel(void Function() cb);
 
   /// Adds a listener to perform an operation right before the provider is destroyed.
