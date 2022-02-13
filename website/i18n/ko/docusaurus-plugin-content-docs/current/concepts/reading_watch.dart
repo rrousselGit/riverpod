@@ -12,25 +12,26 @@ abstract class Todo {
 }
 
 class TodoList extends StateNotifier<List<Todo>> {
-  TodoList(): super([]);
+  TodoList() : super([]);
 }
 
 /* SNIPPET START */
 
 final filterTypeProvider = StateProvider<FilterType>((ref) => FilterType.none);
-final todosProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) => TodoList());
+final todosProvider =
+    StateNotifierProvider<TodoList, List<Todo>>((ref) => TodoList());
 
 final filteredTodoListProvider = Provider((ref) {
-  // obtains both the filter and the list of todos
+  // 할일(todos)목록과 필터(filter)상태 값을 취득합니다.
   final FilterType filter = ref.watch(filterTypeProvider);
   final List<Todo> todos = ref.watch(todosProvider);
 
   switch (filter) {
     case FilterType.completed:
-      // return the completed list of todos
+      // 완료된(completed) 할일 목록을 반환합니다.
       return todos.where((todo) => todo.isCompleted).toList();
     case FilterType.none:
-      // returns the unfiltered list of todos
+      // 필터링되지 않은 목록을 반환합니다.
       return todos;
   }
 });

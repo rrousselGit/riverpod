@@ -7,17 +7,18 @@ import 'reading_counter.dart';
 
 /* SNIPPET START */
 
-final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter(ref));
+final counterProvider =
+    StateNotifierProvider<Counter, int>((ref) => Counter(ref));
 
 class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
+  const HomeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Call `increment()` on the `Counter` class
+          // `Counter`클래스의 increment() 메소드를 호출합니다.
           ref.read(counterProvider.notifier).increment();
         },
       ),
