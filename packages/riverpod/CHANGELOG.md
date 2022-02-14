@@ -1,4 +1,4 @@
-# [Unreleased minor]
+# 2.0.0-dev.2
 
 - Deprecated `ref.maintainState=` in favor of a newly added `ref.keepAlive()`.
   This new `ref.keepAlive()` function is similar to `maintainState` but

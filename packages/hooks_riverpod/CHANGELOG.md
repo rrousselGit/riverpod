@@ -1,3 +1,20 @@
+# 2.0.0-dev.2
+
+- Deprecated `ref.maintainState=` in favor of a newly added `ref.keepAlive()`.
+  This new `ref.keepAlive()` function is similar to `maintainState` but
+  better handles cases where we have multiple logics that want to
+  keep the state of a provider alive for some period of time.
+
+- Removed the deprecated `ProviderReference`.
+
+- Added `ProviderContainer.cacheTime` and `MyProvider.autoDispose(..., cacheTime: duration)`.
+  `cacheTime` is used to keep an `autoDispose` provider alive for at least
+  a minimum amount of time before it gets disposed if not listened.
+
+- Added `ref.onAddListener`, `ref.onRemoveListener`, `ref.onCancel` and
+  `ref.onResume`. All of which allow performing side-effects when providers
+  are listened or stop being listened.
+
 # 2.0.0-dev.1
 
 - Now requires Dart 2.16
@@ -16,7 +33,6 @@
 - Fixed a bug where `onDispose` listeners could be executed twice under certain
   conditions when using `autoDispose`.
 
-
 # 2.0.0-dev.0
 
 - **Breaking** After a provider has emitted an `AsyncValue.data` or `AsyncValue.error`,
@@ -26,6 +42,7 @@
 
   This allows the UI to keep showing the previous data/error when a provider
   is being refreshed.
+
 - Adding `isLoading`, `isError`, `isData` and `asError` to `AsyncValue`.
   Those getters allow interacting with `AsyncValue` without having to rely on
   pattern matching.
