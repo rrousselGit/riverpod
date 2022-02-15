@@ -77,9 +77,8 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 
     final element = node.readProviderElement(this);
 
+    element.flush();
     if (fireImmediately) {
-      // TODO test flush
-      element.flush();
       handleFireImmediately(
         element.getState()!,
         listener: listener,

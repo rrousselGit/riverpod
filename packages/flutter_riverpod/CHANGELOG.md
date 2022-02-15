@@ -1,3 +1,8 @@
+# 2.0.0-dev.3
+
+When calling `ref.listen` on a provider, this provider will now properly
+rebuild if one of its dependency had changed.
+
 # 2.0.0-dev.2
 
 - Deprecated `ref.maintainState=` in favor of a newly added `ref.keepAlive()`.
