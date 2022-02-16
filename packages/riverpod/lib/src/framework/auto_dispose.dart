@@ -6,7 +6,7 @@ part of '../framework.dart';
 /// The difference with [Ref] is that it has an extra
 /// [keepAlive] function to help determine if the state can be destroyed
 ///  or not.
-abstract class AutoDisposeRef extends Ref {
+abstract class AutoDisposeRef<State> extends Ref<State> {
   /// Whether to destroy the state of the provider when all listeners are removed or not.
   ///
   /// Can be changed at any time, in which case when setting it to `false`,
@@ -82,7 +82,7 @@ abstract class AutoDisposeProviderBase<State> extends ProviderBase<State> {
 
 /// The [ProviderElementBase] of an [AutoDisposeProviderBase].
 abstract class AutoDisposeProviderElementBase<State>
-    extends ProviderElementBase<State> implements AutoDisposeRef {
+    extends ProviderElementBase<State> implements AutoDisposeRef<State> {
   /// The [ProviderElementBase] of an [AutoDisposeProviderBase].
   AutoDisposeProviderElementBase(ProviderBase<State> provider)
       : super(provider);

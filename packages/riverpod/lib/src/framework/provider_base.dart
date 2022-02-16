@@ -203,7 +203,7 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
 /// An internal class that handles the state of a provider.
 ///
 /// Do not use.
-abstract class ProviderElementBase<State> implements Ref, Node {
+abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// Do not use.
   ProviderElementBase(this._provider);
 
