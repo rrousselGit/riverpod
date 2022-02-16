@@ -10,6 +10,58 @@ import '../utils.dart';
 
 void main() {
   group('cacheTime', () {
+    test('refresh timer when new values are emitted', () {
+      throw UnimplementedError();
+    });
+
+    test(
+        'resets AsyncValue.isRefreshing after cacheTime expires, without notifying listeners',
+        () {
+      fakeAsync((async) {
+        final provider = Provider.autoDispose(
+          (ref) => const AsyncValue<int>.loading(),
+        );
+        final container = createContainer(
+          overrides: [
+            provider.overrideWithValue(const AsyncData(42)),
+          ],
+          cacheTime: const Duration(seconds: 5),
+        );
+        final listener = Listener<AsyncValue<int>>();
+
+        final sub = container.listen(provider, listener);
+        verifyZeroInteractions(listener);
+
+        container.updateOverrides([
+          provider.overrideWithValue(const AsyncLoading()),
+        ]);
+
+        verifyOnly(
+          listener,
+          listener(
+            const AsyncData(42),
+            const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
+          ),
+        );
+        expect(
+          sub.read(),
+          const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
+        );
+
+        async.elapse(const Duration(seconds: 5));
+
+        expect(
+          sub.read(),
+          const AsyncLoading<int>(),
+        );
+        expect(
+          container.read(provider),
+          const AsyncLoading<int>(),
+        );
+        verifyNoMoreInteractions(listener);
+      });
+    });
+
     test('keeps autoDispose provider alive for at least duration', () async {
       fakeAsync((async) {
         final container = createContainer();
