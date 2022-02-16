@@ -130,7 +130,22 @@ abstract class AutoDisposeProviderElementBase<State>
     super._buildState();
     if (_cacheTime != Duration.zero) {
       final link = keepAlive();
-      final timer = Timer(_cacheTime, link.close);
+      final timer = Timer(_cacheTime, () {
+        link.close();
+        _state!.map(
+          data: (result) {
+            print('here');
+            final state = result.state;
+            if (state is AsyncValue) {
+              print('there');
+              _state = Result.data(state.unwrapPrevious() as State);
+            }
+          },
+          error: (_) {
+            // Nothing to do, as AsyncErrors would be considered "data"
+          },
+        );
+      });
       onDispose(timer.cancel);
     }
   }
