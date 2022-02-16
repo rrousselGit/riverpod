@@ -16,6 +16,12 @@ abstract class Ref {
   /// Re-create the state of a provider and return the new state.
   State refresh<State>(ProviderBase<State> provider);
 
+  void listenSelf(
+    void Function(T? previous, T next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+    bool fireImmediately,
+  });
+
   /// A life-cycle for whenever a new listener is added to the provider.
   ///
   /// See also:
