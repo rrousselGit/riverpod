@@ -79,6 +79,7 @@ class ProviderScope extends StatefulWidget {
     Key? key,
     this.overrides = const [],
     this.observers,
+    this.cacheTime,
     required this.child,
   }) : super(key: key);
 
@@ -104,6 +105,16 @@ class ProviderScope extends StatefulWidget {
 
     return scope.container;
   }
+
+  /// The minimum amount of time before an `autoDispose` provider can be
+  /// disposed if not listened.
+  ///
+  /// If the provider rebuilds (such as when using `ref.watch` or `ref.refresh`),
+  /// the timer will be refreshed.
+  ///
+  /// If null, use the nearest ancestor [ProviderScope]'s [cacheTime].
+  /// If no ancestor is found, fallbacks to [Duration.zero].
+  final Duration? cacheTime;
 
   /// The part of the widget tree that can use Riverpod and has overridden providers.
   final Widget child;
@@ -145,6 +156,7 @@ class ProviderScopeState extends State<ProviderScope> {
       parent: scope?.container,
       overrides: widget.overrides,
       observers: widget.observers,
+      cacheTime: widget.cacheTime,
       // TODO How to report to FlutterError?
       // onError: (dynamic error, stack) {
       //   FlutterError.reportError(
@@ -272,6 +284,7 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
     assert(_task == null, 'Only one task can be scheduled at a time');
     _task = task;
 
+    // ignore: unnecessary_non_null_assertion, blocked by https://github.com/rrousselGit/river_pod/issues/1156
     if (SchedulerBinding.instance!.schedulerPhase ==
         SchedulerPhase.transientCallbacks) {
       markNeedsBuild();

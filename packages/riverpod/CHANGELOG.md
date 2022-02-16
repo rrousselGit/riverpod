@@ -1,14 +1,42 @@
-[Unreleased bugfix]
+# 2.0.0-dev.3
+
+When calling `ref.listen` on a provider, this provider will now properly
+rebuild if one of its dependency had changed.
+
+# 2.0.0-dev.2
+
+- Deprecated `ref.maintainState=` in favor of a newly added `ref.keepAlive()`.
+  This new `ref.keepAlive()` function is similar to `maintainState` but
+  better handles cases where we have multiple logics that want to
+  keep the state of a provider alive for some period of time.
+
+- Removed the deprecated `ProviderReference`.
+
+- Added `ProviderContainer.cacheTime` and `MyProvider.autoDispose(..., cacheTime: duration)`.
+  `cacheTime` is used to keep an `autoDispose` provider alive for at least
+  a minimum amount of time before it gets disposed if not listened.
+
+- Added `ref.onAddListener`, `ref.onRemoveListener`, `ref.onCancel` and
+  `ref.onResume`. All of which allow performing side-effects when providers
+  are listened or stop being listened.
+
+# 2.0.0-dev.1
 
 - Now requires Dart 2.16
 
 - **Breaking** Providers no-longer throw a `ProviderException` if an exception was thrown while building their value.  
   Instead, they will rethrow the thrown exception and its stacktrace.
+- Removed `AsyncValue`'s `isError`/`isData`
 
-- Fixed a cast error when overriding a provider with a more specific provider type (#1100)
-
+- Added new functionalities to `AsyncValue`: `hasError`, `hasData`, `copyWithPrevious`
 - Added `provider.selectAsync`, which allows to both await an async value
   while also filtering rebuilds.
+- When a provider emits an `AsyncError` followed by an `AsyncData`,
+  the `AsyncData` emitted will now contain the latest error/stackTrace too.
+
+- Fixed a cast error when overriding a provider with a more specific provider type (#1100)
+- Fixed a bug where `onDispose` listeners could be executed twice under certain
+  conditions when using `autoDispose`.
 
 # 2.0.0-dev.0
 

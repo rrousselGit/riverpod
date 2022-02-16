@@ -3,10 +3,6 @@
 
 part of '../framework.dart';
 
-/// Alias for [Ref]
-@Deprecated('Use Ref instead.')
-typedef ProviderReference = Ref;
-
 /// A callback used by providers to create the value exposed.
 ///
 /// If an exception is thrown within that callback, all attempts at reading
@@ -81,9 +77,8 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 
     final element = node.readProviderElement(this);
 
+    element.flush();
     if (fireImmediately) {
-      // TODO test flush
-      element.flush();
       handleFireImmediately(
         element.getState()!,
         listener: listener,
@@ -164,7 +159,7 @@ class _ProviderSubscription<State> implements ProviderSubscription<State> {
   void close() {
     _closed = true;
     _listenedElement._listeners.remove(this);
-    _listenedElement.mayNeedDispose();
+    _listenedElement._onRemoveListener();
   }
 
   @override
@@ -198,10 +193,9 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
     dependentElement._subscriptions.remove(this);
     listenedElement
       .._subscribers.remove(this)
-      ..mayNeedDispose();
+      .._onRemoveListener();
   }
 
-// TODO
   @override
   State read() => listenedElement.readSelf();
 }
@@ -259,11 +253,16 @@ abstract class ProviderElementBase<State> implements Ref, Node {
 
   var _dependencies = HashMap<ProviderElementBase, Object>();
   HashMap<ProviderElementBase, Object>? _previousDependencies;
-  DoubleLinkedQueue<void Function()>? _onDisposeListeners;
+  List<void Function()>? _onDisposeListeners;
+  List<void Function()>? _onResumeListeners;
+  List<void Function()>? _onCancelListeners;
+  List<void Function()>? _onAddListeners;
+  List<void Function()>? _onRemoveListeners;
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
   bool _debugDidChangeDependency = false;
+  var _didCancelOnce = false;
 
   bool _mounted = false;
 
@@ -290,11 +289,11 @@ abstract class ProviderElementBase<State> implements Ref, Node {
     final previousResult = getState();
 
     Result<State> newResult;
-    if (newState is AsyncLoading && previousResult != null) {
+    if (newState is AsyncValue && previousResult != null) {
       final previousState = previousResult.requireState;
 
       newResult = Result<State>.data(
-        (previousState as AsyncValue).asRefreshing() as State,
+        newState.copyWithPrevious(previousState as AsyncValue) as State,
       );
     } else {
       newResult = Result.data(newState);
@@ -364,7 +363,6 @@ abstract class ProviderElementBase<State> implements Ref, Node {
     if (_mustRecomputeState) return;
 
     _mustRecomputeState = true;
-    _mounted = false;
     _runOnDispose();
     _container._scheduler.scheduleProviderRefresh(this);
 
@@ -425,7 +423,7 @@ abstract class ProviderElementBase<State> implements Ref, Node {
     for (final sub in _previousDependencies!.entries) {
       sub.key
         .._dependents.remove(this)
-        ..mayNeedDispose();
+        .._onRemoveListener();
     }
     _previousDependencies = null;
   }
@@ -678,7 +676,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         element.flush();
         return true;
       }(), '');
-      element._dependents.add(this);
+
+      element
+        .._onListen()
+        .._dependents.add(this);
 
       return Object();
     });
@@ -697,6 +698,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     required void Function(T? previous, T next) listener,
     required void Function(Object error, StackTrace stackTrace) onError,
   }) {
+    element._onListen();
+
     final sub = _ProviderListener<T>._(
       listenedElement: element,
       dependentElement: this,
@@ -786,14 +789,13 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       return true;
     }(), '');
 
-    _mounted = false;
     _runOnDispose();
 
     // TODO test [listen] calls are cleared
 
     for (final sub in _dependencies.entries) {
       sub.key._dependents.remove(this);
-      sub.key.mayNeedDispose();
+      sub.key._onRemoveListener();
     }
     _dependencies.clear();
 
@@ -806,6 +808,22 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     _listeners.clear();
+  }
+
+  void _onListen() {
+    _onAddListeners?.forEach(_runGuarded);
+    if (_didCancelOnce && !hasListeners) {
+      _onResumeListeners?.forEach(_runGuarded);
+    }
+  }
+
+  void _onRemoveListener() {
+    _onRemoveListeners?.forEach(_runGuarded);
+    if (!hasListeners) {
+      _didCancelOnce = true;
+      _onCancelListeners?.forEach(_runGuarded);
+    }
+    mayNeedDispose();
   }
 
   /// Life-cycle for when a listener is removed.
@@ -824,19 +842,51 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (!_mounted) {
       throw StateError('Cannot call onDispose after a provider was dispose');
     }
-    _onDisposeListeners ??= DoubleLinkedQueue();
+    _onDisposeListeners ??= [];
     _onDisposeListeners!.add(listener);
   }
 
   @protected
   void _runOnDispose() {
-    // TODO(rrousselGit) test
+    if (!_mounted) return;
+    _mounted = false;
+
     while (_subscriptions.isNotEmpty) {
       _subscriptions.first.close();
     }
 
     _onDisposeListeners?.forEach(_runGuarded);
+
     _onDisposeListeners = null;
+    _onCancelListeners = null;
+    _onResumeListeners = null;
+    _onAddListeners = null;
+    _onRemoveListeners = null;
+    _didCancelOnce = false;
+  }
+
+  @override
+  void onAddListener(void Function() cb) {
+    _onAddListeners ??= [];
+    _onAddListeners!.add(cb);
+  }
+
+  @override
+  void onRemoveListener(void Function() cb) {
+    _onRemoveListeners ??= [];
+    _onRemoveListeners!.add(cb);
+  }
+
+  @override
+  void onCancel(void Function() cb) {
+    _onCancelListeners ??= [];
+    _onCancelListeners!.add(cb);
+  }
+
+  @override
+  void onResume(void Function() cb) {
+    _onResumeListeners ??= [];
+    _onResumeListeners!.add(cb);
   }
 
   @override

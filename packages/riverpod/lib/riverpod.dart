@@ -27,8 +27,6 @@ export 'src/framework.dart'
         ProviderOverride,
         FamilyOverride,
         SetupOverride,
-        // ignore: deprecated_member_use_from_same_package
-        ProviderReference,
         AlwaysAliveProviderListenable,
         FamilyCreate,
         XAutoDisposeFamily,

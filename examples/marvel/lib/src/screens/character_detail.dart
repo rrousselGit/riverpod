@@ -52,7 +52,7 @@ final character =
   );
 
   /// Cache the Character once it was successfully obtained.
-  ref.maintainState = true;
+  ref.keepAlive();
   return character;
 });
 

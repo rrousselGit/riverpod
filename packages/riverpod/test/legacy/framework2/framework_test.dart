@@ -524,11 +524,13 @@ void main() {
 
       expect(
         container.refresh(provider),
-        const AsyncValue<int>.data(42, isRefreshing: true),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncValue<int>.data(42)),
       );
       expect(
         container.read(provider),
-        const AsyncValue<int>.data(42, isRefreshing: true),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncValue<int>.data(42)),
       );
       expect(callCount, 2);
 

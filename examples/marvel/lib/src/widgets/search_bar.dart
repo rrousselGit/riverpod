@@ -11,6 +11,7 @@ import '../screens/home.dart';
 class _SearchTheme {
   const _SearchTheme({
     required this.width,
+    // ignore: unused_element, blocked by https://github.com/dart-lang/linter/issues/3232
     this.height = 300,
     required this.searchDecoration,
     required this.iconPadding,

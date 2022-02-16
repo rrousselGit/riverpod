@@ -40,7 +40,7 @@ final characterPages = FutureProvider.autoDispose
     );
 
     // Once a page gets downloaded, preserve its state to avoid re-downloading it again.
-    ref.maintainState = true;
+    ref.keepAlive();
     return charactersResponse;
   },
 );

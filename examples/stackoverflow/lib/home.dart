@@ -84,7 +84,7 @@ final paginatedQuestionsProvider = FutureProvider.autoDispose
     }).toList(),
   );
 
-  ref.maintainState = true;
+  ref.keepAlive();
 
   return page;
 });

@@ -29,6 +29,35 @@ void main() {
     });
 
     test(
+        'calling ref.listen on a provider with an outdated dependency flushes it, then add the listener',
+        () {
+      final container = createContainer();
+      var buildCount = 0;
+      final dep2 = StateNotifierProvider<StateController<int>, int>(
+        (ref) => StateController(0),
+      );
+      final dep = Provider<int>((ref) {
+        buildCount++;
+        return ref.watch(dep2);
+      });
+      final listener = Listener<int>();
+      final provider = Provider((ref) {
+        ref.listen<int>(dep, listener);
+      });
+
+      container.read(dep);
+      container.read(dep2.notifier).state++; // mark `dep` as outdated
+
+      expect(buildCount, 1);
+      verifyZeroInteractions(listener);
+
+      container.read(provider);
+
+      expect(buildCount, 2);
+      verifyZeroInteractions(listener);
+    });
+
+    test(
         'when using selectors, `previous` is the latest notification instead of latest event',
         () {
       final container = createContainer();
