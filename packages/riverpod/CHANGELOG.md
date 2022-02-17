@@ -1,3 +1,13 @@
+# [Unreleased]
+
+- Added `ref.listenSelf`, for subscribing to changes of a provider within
+  that provider.
+  That can be useful for logging purposes or storing the state of a provider
+  in a DB.
+
+- Fixed an issue where providers were incorrectly allowed to depend on themselves,
+  breaking `autoDispose` in the process.
+
 # 2.0.0-dev.3
 
 When calling `ref.listen` on a provider, this provider will now properly

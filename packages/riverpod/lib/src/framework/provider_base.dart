@@ -258,6 +258,8 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   List<void Function()>? _onCancelListeners;
   List<void Function()>? _onAddListeners;
   List<void Function()>? _onRemoveListeners;
+  List<void Function(State?, State)>? _onChangeSelfListeners;
+  List<void Function(Object, StackTrace)>? _onErrorSelfListeners;
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
@@ -344,6 +346,33 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
       return true;
     }(), '');
     _buildState();
+
+    _state!.map(
+      data: (newState) {
+        final onChangeSelfListeners = _onChangeSelfListeners;
+        if (onChangeSelfListeners != null) {
+          for (var i = 0; i < onChangeSelfListeners.length; i++) {
+            Zone.current.runBinaryGuarded(
+              onChangeSelfListeners[i],
+              null,
+              newState.state,
+            );
+          }
+        }
+      },
+      error: (newState) {
+        final onErrorSelfListeners = _onErrorSelfListeners;
+        if (onErrorSelfListeners != null) {
+          for (var i = 0; i < onErrorSelfListeners.length; i++) {
+            Zone.current.runBinaryGuarded(
+              onErrorSelfListeners[i],
+              newState.error,
+              newState.stackTrace,
+            );
+          }
+        }
+      },
+    );
   }
 
   // ignore: use_setters_to_change_properties
@@ -402,17 +431,14 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     }(), '');
     _buildState();
 
-    if (_state != previousStateResult) {
+    if (!identical(_state, previousStateResult)) {
       assert(() {
         // Asserts would otherwise prevent a provider rebuild from updating
         // other providers
         _debugSkipNotifyListenersAsserts = true;
         return true;
       }(), '');
-      _state!.map(
-        data: (data) => _notifyListeners(data, previousStateResult),
-        error: (error) => _notifyListeners(_state!, previousStateResult),
-      );
+      _notifyListeners(_state!, previousStateResult);
       assert(() {
         _debugSkipNotifyListenersAsserts = false;
         return true;
@@ -493,6 +519,16 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     final subscribers = _subscribers.toList(growable: false);
     newState.map(
       data: (newState) {
+        final onChangeSelfListeners = _onChangeSelfListeners;
+        if (onChangeSelfListeners != null) {
+          for (var i = 0; i < onChangeSelfListeners.length; i++) {
+            Zone.current.runBinaryGuarded(
+              onChangeSelfListeners[i],
+              previousState,
+              newState.state,
+            );
+          }
+        }
         for (var i = 0; i < listeners.length; i++) {
           Zone.current.runBinaryGuarded(
             listeners[i]._listener,
@@ -509,6 +545,16 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
       },
       error: (newState) {
+        final onErrorSelfListeners = _onErrorSelfListeners;
+        if (onErrorSelfListeners != null) {
+          for (var i = 0; i < onErrorSelfListeners.length; i++) {
+            Zone.current.runBinaryGuarded(
+              onErrorSelfListeners[i],
+              newState.error,
+              newState.stackTrace,
+            );
+          }
+        }
         for (var i = 0; i < listeners.length; i++) {
           Zone.current.runBinaryGuarded(
             listeners[i].onError,
@@ -578,6 +624,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   bool _debugAssertCanDependOn(ProviderListenable listenable) {
     assert(() {
       if (listenable is! ProviderBase) return true;
+
+      assert(
+        listenable.originProvider != origin,
+        'A provider cannot depend on itself',
+      );
 
       assert(
         provider != origin ||
@@ -732,6 +783,23 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
+  @override
+  void listenSelf(
+    void Function(State? previous, State next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  }) {
+    // TODO do we want to expose a way to close the subscription?
+    // TODO do we want a fireImmdiately?
+
+    _onChangeSelfListeners ??= [];
+    _onChangeSelfListeners!.add(listener);
+
+    if (onError != null) {
+      _onErrorSelfListeners ??= [];
+      _onErrorSelfListeners!.add(onError);
+    }
+  }
+
   /// Returns the currently exposed by a provider
   ///
   /// May throw if the provider threw when creating the exposed value.
@@ -862,6 +930,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _onResumeListeners = null;
     _onAddListeners = null;
     _onRemoveListeners = null;
+    _onChangeSelfListeners = null;
+    _onErrorSelfListeners = null;
     _didCancelOnce = false;
   }
 

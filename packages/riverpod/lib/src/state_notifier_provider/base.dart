@@ -2,7 +2,7 @@ part of '../state_notifier_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 abstract class StateNotifierProviderRef<Notifier extends StateNotifier<State>,
-    State> implements Ref {
+    State> implements Ref<Notifier> {
   /// The [StateNotifier] currently exposed by this provider.
   ///
   /// Cannot be accessed while creating the provider.
