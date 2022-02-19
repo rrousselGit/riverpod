@@ -1,11 +1,11 @@
 ---
-title: プロバイダを組み合わせる
+title: プロバイダのステートを組み合わせる
 ---
 
 本セクションの前に「[プロバイダとは](/docs/concepts/providers)」のセクションに目を通していただくことをおすすめします。
-ここでは複数のプロバイダを組み合わせて活用する方法をご紹介します。
+ここでは複数のプロバイダのステート（状態）を組み合わせる方法をご紹介します。
 
-## プロバイダを組み合わせる
+## プロバイダのステートを組み合わせる
 
 これまでプロバイダの簡単な使用方法をご紹介しましたが、実際の開発ではプロバイダを他のプロバイダと組み合わせる場面が多いかと思います。
 
@@ -101,11 +101,11 @@ final todoListProvider = StateNotifierProvider((ref) => TodoList());
 final searchProvider = StateProvider((ref) => '');
 
 /// ホスト名等の検索設定
-final configsProvider = StreamProvider<Configuration>(...);
+final configProvider = StreamProvider<Configuration>(...);
 
 final charactersProvider = FutureProvider<List<Character>>((ref) async {
   final search = ref.watch(searchProvider);
-  final configs = await ref.watch(configsProvider.future);
+  final configs = await ref.watch(configProvider.future);
   final response = await dio.get('${configs.host}/characters?search=$search');
 
   return response.data.map((json) => Character.fromJson(json)).toList();
@@ -220,12 +220,12 @@ test('fetches catalog', () async {
 **【変更前】** オブジェクト全体を監視
 
 ```dart
-final configsProvider = StreamProvider<Configuration>(...);
+final configProvider = StreamProvider<Configuration>(...);
 
 final productsProvider = FutureProvider<List<Product>>((ref) async {
   // この場合、値の再評価に無関係なプロパティに変化があったとしても
   // 製品リストを再取得する処理が実行されてしまう。
-  final configs = await ref.watch(configsProvider.future);
+  final configs = await ref.watch(configProvider.future);
 
   return dio.get('${configs.host}/products');
 });
@@ -234,11 +234,11 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 **【変更後】** 実際に使用するプロパティのみを監視
 
 ```dart
-final configsProvider = StreamProvider<Configuration>(...);
+final configProvider = StreamProvider<Configuration>(...);
 
 /// Configuration のプロパティのうち、ホスト名のみを公開するプロバイダを別途作成。
 final _hostProvider = FutureProvider<String>((ref) async {
-  final config = await ref.watch(configsProvider.future);
+  final config = await ref.watch(configProvider.future);
   return config.host;
 });
 
@@ -251,6 +251,8 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 });
 ```
 
+これにより `productsProvider` は `host` の値が変わったときにのみ更新されるようになります。
+
 [provider]: ../providers/provider
 [stateprovider]: ../providers/state_provider
 [futureprovider]: ../providers/future_provider
@@ -260,3 +262,4 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 [read]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/read.html
 [providercontainer.refresh]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer/refresh.html
 [ref.refresh]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef/refresh.html
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html

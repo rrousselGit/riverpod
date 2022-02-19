@@ -11,9 +11,9 @@ import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 
 `FutureProvider` は非同期操作が可能な [Provider] であると言えます。
 
-一般的に次の用途で使われます。
+一般的には次のような用途で使われます。
 
-- 非同期操作を実行し、その結果をキャッシュするため（例えばネットワークリクエストなど)。
+- 非同期操作を実行し、その結果をキャッシュするため（例えばネットワークリクエストなど）。
 - 非同期操作の error/loading ステートを適切に処理するため。
 - 非同期的に取得した複数の値を組み合わせて一つの値にするため。
 
@@ -38,7 +38,7 @@ UI 側では以下の通り `Configuration` を監視します。
 
 <CodeBlock>{trimSnippet(configConsumer)}</CodeBlock>
 
-これにより [Future] が解決すると UI は自動で再構築されます。
+これにより [Future] が解決すると UI は自動で更新されます。
 おまけにキャッシュ機能が働くため、複数のウィジェットがこの `Configuration` を必要とする場合でもアセットは一度しか読み込まれません。
 
 そして、ご覧いただける通り `FutureProvider` を監視した際の戻り値は [AsyncValue] です。

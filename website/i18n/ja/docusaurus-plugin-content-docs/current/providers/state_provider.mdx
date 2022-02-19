@@ -16,7 +16,7 @@ import updateReadOnce from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs
 import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 
 `StateProvider` は外部から変更が可能なステート（状態）を公開するプロバイダです。
-[StateNotifierProvier] の簡易版であり、ステートの管理にわざわざ [StateNotifier] クラスを定義するほどではない場合にご利用いただけます。
+[StateNotifierProvider] の簡易版であり、ステートの管理にわざわざ [StateNotifier] クラスを定義するほどではない場合にご利用いただけます。
 
 そのため、`StateProvider` は UI 側で利用される **シンプルなステート** を管理するのにうってつけでしょう。
 シンプルなステートとは、次のような型のステートのことを指します。
@@ -109,7 +109,7 @@ import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 
 <CodeBlock>{trimSnippet(updateReadOnce)}</CodeBlock>
 
-効果はそのままに、簡潔で見やすいコードにすることができましたね。
+効果はそのままに、簡潔で見やすいコードにすることができました。
 
 [ref.watch]: ../concepts/reading#refwatch-を使ってプロバイダを監視する
 [ref.read]: ../concepts/reading#refread-を使ってプロバイダのステートを取得する
