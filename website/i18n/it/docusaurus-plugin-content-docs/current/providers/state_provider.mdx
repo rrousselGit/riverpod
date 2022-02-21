@@ -7,6 +7,7 @@ import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import product from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/state_provider/product.dart";
 import productListView from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/state_provider/product_list_view.dart";
+import dropdown from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/state_provider/dropdown.dart";
 import sortProvider from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/state_provider/sort_provider.dart";
 import connectedDropdown from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/state_provider/connected_dropdown.dart";
 import sortedProductProvider from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/state_provider/sorted_product_provider.dart";
@@ -62,41 +63,7 @@ Ora che abbiamo finito con la base, possiamo aggiungere una dropdown,
 la quale ci permetterà di filtrare i nostri prodotti sia per prezzo che per nome.  
 Per questo, useremo [DropDownButton](https://api.flutter.dev/flutter/material/DropdownButton-class.html).
 
-```dart
-// Un enum che rappresenta il tipo di filtro.
-enum ProductSortType {
-  name,
-  price,
-}
-
-Widget build(BuildContext context, WidgetRef ref) {
-  final products = ref.watch(productsProvider);
-  return Scaffold(
-    appBar: AppBar(
-      title: const Text('Products'),
-      actions: [
-        DropdownButton<ProductSortType>(
-          value: ProductSortType.price,
-          onChanged: (value) {},
-          items: const [
-            DropdownMenuItem(
-              value: ProductSortType.name,
-              child: Icon(Icons.sort_by_alpha),
-            ),
-            DropdownMenuItem(
-              value: ProductSortType.price,
-              child: Icon(Icons.sort),
-            ),
-          ],
-        ),
-      ],
-    ),
-    body: ListView.builder(
-      // ... 
-    ),
-  );
-}
-```
+<CodeBlock>{trimSnippet(product)}</CodeBlock>
 
 Ora che abbiamo una dropdown, creiamo uno `StateProvider` e 
 sincronizziamo lo stato della dropdown con il nostro provider.

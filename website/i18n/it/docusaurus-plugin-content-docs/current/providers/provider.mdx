@@ -7,6 +7,7 @@ import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import todo from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/provider/todo.dart";
 import completedTodos from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/provider/completed_todos.dart";
+import todosConsumer from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/provider/todos_consumer.dart";
 import unoptimizedPreviousButton from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/provider/unoptimized_previous_button.dart";
 import optimizedPreviousButton from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/provider/optimized_previous_button.dart";
 import { trimSnippet } from "../../../../../src/components/CodeSnippet";
@@ -43,12 +44,7 @@ mostrando solo i todo completati:
 Con questo codice, la nostra UI è ora in grado di mostrare la lista dei todo 
 completati stando in ascolto di `completedTodosProvider`:
 
-```dart
-Consumer(builder: (context, ref, child) {
-  final completedTodos = ref.watch(completedTodosProvider);
-  // TODO: mostrare i todo usando ListView/GridView/...
-});
-```
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
 
 La parte interessante è che la lista filtrata ora è memorizzata in cache.
 
