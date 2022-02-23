@@ -9,6 +9,7 @@ import counter from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/curren
 import consumerWidget from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_consumer_widget.dart";
 import consumerStatefulWidget from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_consumer_stateful_widget.dart";
 import consumerHookWidget from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_consumer_hook_widget.dart";
+import statefulHookConsumerWidget from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_stateful_hook_consumer_widget.dart";
 import consumerHook from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_consumer_hook.dart";
 import watch from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_watch.dart";
 import watchBuild from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/reading_watch_build.dart";
@@ -58,7 +59,7 @@ final provider = Provider((ref) {
 
 #### StatelessWidget の代わりに ConsumerWidget を継承する
 
-最もベーシックな方法は、ウィジェットを [StatelessWidget] から [ConsumerWidget] に置き換える方法です。
+ウィジェットツリーの中で `ref` を取得するには [StatelessWidget] を [ConsumerWidget] に置き換えるのが基本です。
 
 [ConsumerWidget] は [StatelessWidget] とほぼ同等のものであり、build メソッドに第2パラメータが存在する以外の違いはありません。
 それが `ref` です。
@@ -79,10 +80,10 @@ final provider = Provider((ref) {
 
 #### HookWidget の代わりに HookConsumerWidget を継承する
 
-この方法は [flutter_hooks] のユーザ向けです。
-[flutter_hooks] では [HookWidget] を使用する必要があるため、フックを使うウィジェットでは [ConsumerWidget] に置き換えることができません。
+これは [flutter_hooks] のユーザ向けです。
+フックを使用するために [HookWidget] を使っている場合、そのまま [ConsumerWidget] に置き換えることができません。
 
-これを解決するのが [hooks_riverpod] の [HookConsumerWidget] です。
+そこで登場するのが [hooks_riverpod] の [HookConsumerWidget] です。
 [HookConsumerWidget] は [ConsumerWidget] と [HookWidget] の役割を併せ持ちます。
 これにより、ウィジェットはプロバイダーとフックの両方を利用することができます。
 
@@ -90,11 +91,19 @@ final provider = Provider((ref) {
 
 <CodeBlock>{trimSnippet(consumerHookWidget)}</CodeBlock>
 
+#### HookWidget の代わりに StatefulHookConsumerWidget を継承する
+
+[flutter_hooks] のフックに加えて [StatefulWidget] のライフサイクルメソッドを活用する必要がある場合は [StatefulHookConsumerWidget] に置き換えてください。
+
+使用例は次の通りです。
+
+<CodeBlock>{trimSnippet(statefulHookConsumerWidget)}</CodeBlock>
+
 #### Consumer と HookConsumer ウィジェット
 
-`ref` オブジェクトは [Consumer] もしくは [HookConsumer] ウィジェットから取得することもできます。
+`ref` オブジェクトは [Consumer] もしくは [HookConsumer] ウィジェットのコールバック関数  `builder` から取得することもできます。
 
-[ConsumerWidget] および [HookConsumerWidget] と異なり、クラスを定義する必要がありません。
+これらのウィジェットを使用する場合は [ConsumerWidget] および [HookConsumerWidget] のようにクラスを定義する必要がありません。
 使用例は次の通りです。
 
 <CodeBlock>{trimSnippet(consumerHook)}</CodeBlock>
@@ -106,12 +115,12 @@ final provider = Provider((ref) {
 `ref` の使い道は主に3通りあります。
 
 - `ref.watch`: プロバイダの値を取得した上で、その変化を監視する。値が変化すると、その値に依存するウィジェットやプロバイダの更新が行われる。
-- `ref.listen`: プロバイダの値を監視し、値が変化するたびに呼び出されるコールバック関数を登録する。
+- `ref.listen`: プロバイダの値を監視し、値が変化するたびに呼び出されるコールバック関数（画面遷移、ダイアログの表示など）を登録する。
 - `ref.read`: プロバイダの値を取得する（監視はしない）。クリックイベント等の発生時に、その時点での値を取得する場合に使用できる。
 
 :::note
-機能の実装時には、可能な限り `ref.watch` を使用するようにしてください。
-リアクティブかつ宣言的な実装にすることで、コードの保守性を高めることができます。
+機能の実装時には可能な限り `ref.watch` を使用するようにしてください。
+`ref.watch` によりアプリはリアクティブかつ宣言的になり、コードの保守性を高めることができます。
 :::
 
 ### `ref.watch` を使ってプロバイダを監視する
@@ -135,7 +144,7 @@ final provider = Provider((ref) {
 この Todo リストは、`filterTypeProvider` や `todosProvider` の値が変わると自動的に更新されます。
 逆に言えば、いずれかが変わらない限りは再計算されることはありません。
 
-同様にウィジェット内でも `ref.watch` を使ってプロバイダを利用し、その値に依存する UI を構築することができます。
+同様にウィジェット内でも `ref.watch` を使ってプロバイダの値を表示し、値が変わるたびに UI を更新させることができます。
 
 <CodeBlock>{trimSnippet(watchBuild)}</CodeBlock>
 
@@ -185,9 +194,9 @@ final provider = Provider((ref) {
 <CodeBlock>{trimSnippet(read)}</CodeBlock>
 
 :::note
-`ref.read` の使用は可能な限り避けてください。
+`ref.read` はリアクティブではないため、可能な限り使用を避けてください。
 
-`watch` や `listen` の使用ではかなりの不便を強いられる場合の回避策として存在しています。
+`watch` や `listen` の使用では問題が生じる場合の回避策として存在しています。
 ほとんどの場面では `watch` や `listen` の使用、特に `watch` の使用がベターなはずです。
 :::
 
@@ -208,9 +217,9 @@ final provider = Provider((ref) {
 そしてもしこの値の取得に `ref.read` が使われていたら、その時にはコードを振り返り `ref.read` が使われているところをすべて
 `ref.watch` に変更する必要があります。これはエラーを招くおそれがありますし、変更し忘れる箇所がいくつか出てくる可能性もあります。
 
-一方、最初の段階から `ref.watch` を使用していた場合はこのような問題が生じることはありません。
+一方、最初から `ref.watch` を使用していれば、リファクタリング時に生じる問題は比較的少ないはずです。
 
-**_でもウィジェットの更新を抑制するためにどうしても `ref.read` が使いたい_**
+**_でもウィジェットの更新回数を抑えるためにどうしても `ref.read` が使いたい_**
 
 このような声に対しては、`ref.watch` を使用してまったく同じ効果を得ることができる点を強調しておきたいです。
 
@@ -285,12 +294,12 @@ final userProvider = StreamProvider<User>(...);
 [API reference](https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html)
 を参照してください。
 
-## `select`を使って更新を抑制する
+## `select`を使って更新の条件を限定する
 
-最後に、ウィジェットおよびプロバイダの更新（もしくは `ref.listen` による関数の実行）を抑制する方法をご紹介します。
+最後に、ウィジェットおよびプロバイダの更新（もしくは `ref.listen` による関数の実行）の条件を限定する方法をご紹介します。
 
-プロバイダを監視するということは、そのプロバイダが公開するオブジェクトのすべてのプロパティを監視するということです。
-しかし、その監視の範囲を狭めて特定のプロパティのみを監視の対象としたい場合があります。
+プロバイダを監視するということは、そのプロバイダが公開するオブジェクト全体のステートを監視するということです。
+しかし、その監視の範囲を狭めて特定のプロパティのみを監視対象としたい場合があります。
 
 例えば、次の `User` オブジェクトを公開するプロバイダがあるとします。
 
@@ -310,10 +319,10 @@ Widget build(BuildContext context, WidgetRef ref) {
 }
 ```
 
-このように userProvider を通常通り監視すると、
+このように userProvider を普通に監視すると、
 無関係な age プロパティの変化もウィジェット更新のトリガーとなってしまいます。
 
-更新のトリガーを特定プロパティの変化に限定したい場合は、`select` を使ってそのプロパティを明示する必要があります。
+監視対象を name プロパティに限定したい場合は、`select` を使ってその旨明示します。
 
 変更後のコードは次のようになります。
 
@@ -324,7 +333,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 }
 ```
 
-要は `select` を使って、監視対象にしたいプロパティを返す関数を設定するわけです。
+つまり `select` を使って監視対象にするプロパティを返す関数を指定することができるのです。
 
 これで `User` オブジェクトに変化があるたびに、Riverpod はこの関数を呼び出し、対象プロパティの古い値と新しい値を比較します。
 そして値が異なる場合は Riverpod はウィジェットを更新します。
@@ -375,10 +384,11 @@ final label = ref.watch(userProvider.select((user) => 'Mr ${user.name}'));
 [hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
 [hookconsumerwidget]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumerWidget-class.html
 [hookconsumer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumer-class.html
+[statefulhookconsumerwidget]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/StatefulHookConsumerWidget-class.html
 [flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
 [statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
-[streamprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StreamProvider-class.html
+[streamprovider]: ../providers/stream_provider
 [statelesswidget]: https://api.flutter.dev/flutter/widgets/StatelessWidget-class.html
 [statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
 [state]: https://api.flutter.dev/flutter/widgets/State-class.html
