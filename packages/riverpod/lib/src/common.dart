@@ -282,9 +282,6 @@ class AsyncData<T> extends AsyncValue<T> {
       error: previous.error,
     );
   }
-
-  @override
-  AsyncData<T> unwrapPrevious() => AsyncData(value);
 }
 
 /// Creates an [AsyncValue] in loading state.

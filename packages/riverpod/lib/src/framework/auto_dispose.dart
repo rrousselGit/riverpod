@@ -63,7 +63,7 @@ abstract class AutoDisposeProviderBase<State> extends ProviderBase<State> {
 
   /// {@template riverpod.cache_time}
   /// The minimum amount of time before an `autoDispose` provider can be
-  /// disposed if not listened.
+  /// disposed if not listened after the last value change.
   ///
   /// If the provider rebuilds (such as when using `ref.watch` or `ref.refresh`),
   /// the timer will be refreshed.
@@ -129,24 +129,40 @@ abstract class AutoDisposeProviderElementBase<State>
   void _buildState() {
     super._buildState();
     if (_cacheTime != Duration.zero) {
-      final link = keepAlive();
-      final timer = Timer(_cacheTime, () {
-        link.close();
-        _state!.map(
-          data: (result) {
-            print('here');
-            final state = result.state;
-            if (state is AsyncValue) {
-              print('there');
-              _state = Result.data(state.unwrapPrevious() as State);
-            }
-          },
-          error: (_) {
-            // Nothing to do, as AsyncErrors would be considered "data"
-          },
-        );
+      KeepAliveLink? link;
+      Timer? timer;
+
+      listenSelf((previous, next) {
+        link ??= keepAlive();
+        timer?.cancel();
+
+        timer = Timer(_cacheTime, () {
+          link!.close();
+          link = null;
+
+          _state!.map(
+            data: (result) {
+              final state = result.state;
+              if (state is AsyncValue) {
+                _state = Result.data(state.unwrapPrevious() as State);
+              }
+            },
+            error: (_) {
+              // Nothing to do, as AsyncErrors would be considered "data"
+            },
+          );
+        });
+      }, onError: (err, stack) {
+        link ??= keepAlive();
+        timer?.cancel();
+
+        timer = Timer(_cacheTime, () {
+          link!.close();
+          link = null;
+        });
       });
-      onDispose(timer.cancel);
+
+      onDispose(() => timer?.cancel());
     }
   }
 

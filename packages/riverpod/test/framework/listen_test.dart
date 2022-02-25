@@ -89,6 +89,36 @@ void main() {
       verifyNoMoreInteractions(listener2);
     });
 
+    test('notify listeners independently from updateShouldNotify', () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      final listener2 = Listener<int>();
+      final provider = Provider<int>((ref) {
+        ref.listenSelf(listener);
+        ref.listenSelf(listener2);
+
+        return 0;
+      });
+
+      container.read(provider);
+
+      verifyInOrder([
+        listener(null, 0),
+        listener2(null, 0),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      container.refresh(provider);
+
+      verifyInOrder([
+        listener(0, 0),
+        listener2(0, 0),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
     test('clears state listeners on rebuild', () async {
       final container = createContainer();
       final listener = Listener<int>();

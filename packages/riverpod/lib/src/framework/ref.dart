@@ -17,6 +17,13 @@ abstract class Ref<State extends Object?> {
   /// Re-create the state of a provider and return the new state.
   T refresh<T>(ProviderBase<T> provider);
 
+  /// Listens to changes on the value exposed by this provider
+  ///
+  /// The listener will be called immediately after the provider completes building.
+  ///
+  /// As opposed to [listen], the listener will be called even if
+  /// [ProviderBase.updateShouldNotify] returns false, meaning that the previous
+  /// and new value can potentially be identical.
   void listenSelf(
     void Function(State? previous, State next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,

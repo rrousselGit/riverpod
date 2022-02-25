@@ -10,55 +10,92 @@ import '../utils.dart';
 
 void main() {
   group('cacheTime', () {
-    test('refresh timer when new values are emitted', () {
-      throw UnimplementedError();
-    });
+    group('reverts copyWithPrevious when cacheTime expires', () {
+      test(
+          'resets AsyncValue.isRefreshing after cacheTime expires, without notifying listeners',
+          () {
+        fakeAsync((async) {
+          final provider = StateProvider.autoDispose(
+            (ref) => const AsyncValue<int>.data(42),
+          );
+          final container = createContainer(
+            cacheTime: const Duration(seconds: 5),
+          );
+          final listener = Listener<AsyncValue<int>>();
 
-    test(
-        'resets AsyncValue.isRefreshing after cacheTime expires, without notifying listeners',
-        () {
-      fakeAsync((async) {
-        final provider = Provider.autoDispose(
-          (ref) => const AsyncValue<int>.loading(),
-        );
-        final container = createContainer(
-          overrides: [
-            provider.overrideWithValue(const AsyncData(42)),
-          ],
-          cacheTime: const Duration(seconds: 5),
-        );
-        final listener = Listener<AsyncValue<int>>();
+          final sub = container.listen(provider, listener);
+          verifyZeroInteractions(listener);
 
-        final sub = container.listen(provider, listener);
-        verifyZeroInteractions(listener);
+          container.read(provider.notifier).state = const AsyncLoading();
 
-        container.updateOverrides([
-          provider.overrideWithValue(const AsyncLoading()),
-        ]);
-
-        verifyOnly(
-          listener,
-          listener(
-            const AsyncData(42),
+          verifyOnly(
+            listener,
+            listener(
+              const AsyncData(42),
+              const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
+            ),
+          );
+          expect(
+            sub.read(),
             const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
-          ),
-        );
-        expect(
-          sub.read(),
-          const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
-        );
+          );
 
-        async.elapse(const Duration(seconds: 5));
+          async.elapse(const Duration(seconds: 5));
 
-        expect(
-          sub.read(),
-          const AsyncLoading<int>(),
-        );
-        expect(
-          container.read(provider),
-          const AsyncLoading<int>(),
-        );
-        verifyNoMoreInteractions(listener);
+          expect(
+            sub.read(),
+            const AsyncLoading<int>(),
+          );
+          expect(
+            container.read(provider),
+            const AsyncLoading<int>(),
+          );
+          verifyNoMoreInteractions(listener);
+        });
+      });
+
+      test('refresh timer when new values are emitted', () {
+        fakeAsync((async) {
+          final provider = StateProvider.autoDispose(
+            (ref) => const AsyncValue<int>.data(42),
+          );
+          final container = createContainer(
+            cacheTime: const Duration(seconds: 5),
+          );
+
+          container.listen(provider, (prev, next) {}); // initialize data
+
+          container.read(provider.notifier).state = const AsyncLoading();
+
+          expect(
+            container.read(provider),
+            const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
+          );
+
+          async.elapse(const Duration(seconds: 2));
+
+          expect(
+            container.read(provider),
+            const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
+          );
+
+          container.read(provider.notifier).state = const AsyncData(21);
+          container.read(provider.notifier).state = const AsyncLoading();
+
+          async.elapse(const Duration(seconds: 3));
+
+          expect(
+            container.read(provider),
+            const AsyncLoading<int>().copyWithPrevious(const AsyncData(21)),
+          );
+
+          async.elapse(const Duration(seconds: 3));
+
+          expect(
+            container.read(provider),
+            const AsyncLoading<int>(),
+          );
+        });
       });
     });
 
@@ -101,6 +138,38 @@ void main() {
         verifyZeroInteractions(listener);
 
         container.refresh(provider);
+        verifyOnly(listener, listener());
+
+        async.elapse(const Duration(seconds: 3));
+
+        verifyNoMoreInteractions(listener);
+
+        async.elapse(const Duration(seconds: 2));
+
+        verifyOnly(listener, listener());
+      });
+    });
+
+    test('if provider rebuilds with an error, reset the timer', () async {
+      fakeAsync((async) {
+        final container = createContainer();
+        final listener = OnDisposeMock();
+        final provider = Provider.autoDispose(
+          (ref) {
+            ref.onDispose(listener);
+            throw StateError('message');
+          },
+          cacheTime: const Duration(seconds: 5),
+        );
+
+        expect(() => container.read(provider), throwsStateError);
+        verifyZeroInteractions(listener);
+
+        async.elapse(const Duration(seconds: 3));
+
+        verifyZeroInteractions(listener);
+
+        expect(() => container.refresh(provider), throwsStateError);
         verifyOnly(listener, listener());
 
         async.elapse(const Duration(seconds: 3));

@@ -26,6 +26,47 @@ void main() {
     });
   });
 
+  test('unwrapPrevious', () {
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(42))
+          .unwrapPrevious(),
+      const AsyncLoading<int>(),
+    );
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncError(42))
+          .unwrapPrevious(),
+      const AsyncLoading<int>(),
+    );
+
+    expect(
+      const AsyncData<int>(42)
+          .copyWithPrevious(const AsyncLoading())
+          .unwrapPrevious(),
+      const AsyncData<int>(42),
+    );
+    expect(
+      const AsyncData<int>(42)
+          .copyWithPrevious(const AsyncError(42))
+          .unwrapPrevious(),
+      const AsyncData<int>(42),
+    );
+
+    expect(
+      const AsyncError<int>(42)
+          .copyWithPrevious(const AsyncLoading())
+          .unwrapPrevious(),
+      const AsyncError<int>(42),
+    );
+    expect(
+      const AsyncError<int>(42)
+          .copyWithPrevious(const AsyncData(42))
+          .unwrapPrevious(),
+      const AsyncError<int>(42),
+    );
+  });
+
   test('isRefreshing', () {
     expect(const AsyncLoading<int>().isRefreshing, false);
     expect(

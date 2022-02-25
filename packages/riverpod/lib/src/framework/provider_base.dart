@@ -505,6 +505,34 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     final previousState = previousStateResult?.stateOrNull;
 
+    // listenSelf listeners do not respect updateShouldNotify
+    newState.map(
+      data: (newState) {
+        final onChangeSelfListeners = _onChangeSelfListeners;
+        if (onChangeSelfListeners != null) {
+          for (var i = 0; i < onChangeSelfListeners.length; i++) {
+            Zone.current.runBinaryGuarded(
+              onChangeSelfListeners[i],
+              previousState,
+              newState.state,
+            );
+          }
+        }
+      },
+      error: (newState) {
+        final onErrorSelfListeners = _onErrorSelfListeners;
+        if (onErrorSelfListeners != null) {
+          for (var i = 0; i < onErrorSelfListeners.length; i++) {
+            Zone.current.runBinaryGuarded(
+              onErrorSelfListeners[i],
+              newState.error,
+              newState.stackTrace,
+            );
+          }
+        }
+      },
+    );
+
     if (previousStateResult != null &&
         previousStateResult.hasState &&
         newState.hasState &&
@@ -519,16 +547,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     final subscribers = _subscribers.toList(growable: false);
     newState.map(
       data: (newState) {
-        final onChangeSelfListeners = _onChangeSelfListeners;
-        if (onChangeSelfListeners != null) {
-          for (var i = 0; i < onChangeSelfListeners.length; i++) {
-            Zone.current.runBinaryGuarded(
-              onChangeSelfListeners[i],
-              previousState,
-              newState.state,
-            );
-          }
-        }
         for (var i = 0; i < listeners.length; i++) {
           Zone.current.runBinaryGuarded(
             listeners[i]._listener,
@@ -545,16 +563,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
       },
       error: (newState) {
-        final onErrorSelfListeners = _onErrorSelfListeners;
-        if (onErrorSelfListeners != null) {
-          for (var i = 0; i < onErrorSelfListeners.length; i++) {
-            Zone.current.runBinaryGuarded(
-              onErrorSelfListeners[i],
-              newState.error,
-              newState.stackTrace,
-            );
-          }
-        }
         for (var i = 0; i < listeners.length; i++) {
           Zone.current.runBinaryGuarded(
             listeners[i].onError,
@@ -1007,6 +1015,7 @@ mixin OverrideWithValueMixin<State> on ProviderBase<State> {
   /// ```
   /// {@endtemplate}
   Override overrideWithValue(State value) {
+    // TODO handle autoDispose such that cacheTime is applied
     return ProviderOverride(
       origin: this,
       override: ValueProvider<State>(value),
