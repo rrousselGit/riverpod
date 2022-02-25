@@ -139,6 +139,7 @@ abstract class AutoDisposeProviderElementBase<State>
         timer = Timer(_cacheTime, () {
           link!.close();
           link = null;
+          timer = null;
 
           _state!.map(
             data: (result) {
@@ -159,10 +160,14 @@ abstract class AutoDisposeProviderElementBase<State>
         timer = Timer(_cacheTime, () {
           link!.close();
           link = null;
+          timer = null;
         });
       });
 
-      onDispose(() => timer?.cancel());
+      // No need for an onDispose logic, as onDispose will not be executing
+      // unless the timer completes or the provider is refreshed.
+      // But if the provider is refreshed, a new value will be sent, clearing
+      // the previous timer anyway
     }
   }
 

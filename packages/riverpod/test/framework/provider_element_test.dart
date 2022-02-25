@@ -150,6 +150,88 @@ void main() {
       });
     });
 
+    test(
+        'on error and the timer completes yet the provider is still listened, properly clears resources',
+        () async {
+      return fakeAsync((async) async {
+        final container = createContainer();
+        final listener = OnDisposeMock();
+        final provider = Provider.autoDispose(
+          (ref) {
+            ref.onDispose(listener);
+            throw StateError('message');
+          },
+          cacheTime: const Duration(seconds: 5),
+        );
+
+        final sub = container.listen(
+          provider,
+          (prev, next) {},
+          onError: (err, stack) {},
+        );
+        verifyZeroInteractions(listener);
+
+        async.elapse(const Duration(seconds: 5));
+
+        verifyZeroInteractions(listener);
+
+        expect(() => container.refresh(provider), throwsStateError);
+        verifyOnly(listener, listener());
+
+        sub.close();
+        final f = container.pump();
+        async.elapse(const Duration(seconds: 1));
+        await f;
+
+        verifyNoMoreInteractions(listener);
+
+        async.elapse(const Duration(seconds: 5));
+
+        verifyOnly(listener, listener());
+      });
+    });
+
+    test(
+        'on data and the timer completes yet the provider is still listened, properly clears resources',
+        () async {
+      return fakeAsync((async) async {
+        final container = createContainer();
+        final listener = OnDisposeMock();
+        final provider = StateProvider.autoDispose(
+          (ref) {
+            ref.onDispose(listener);
+            return 0;
+          },
+          cacheTime: const Duration(seconds: 5),
+        );
+
+        final sub = container.listen(
+          provider,
+          (prev, next) {},
+          onError: (err, stack) {},
+        );
+        verifyZeroInteractions(listener);
+
+        async.elapse(const Duration(seconds: 5));
+
+        verifyZeroInteractions(listener);
+
+        container.read(provider.notifier).state++;
+        verifyNoMoreInteractions(listener);
+
+        sub.close();
+        final f = container.pump();
+        async.elapse(const Duration(seconds: 1));
+        await f;
+
+        verifyNoMoreInteractions(listener);
+
+        async.elapse(const Duration(seconds: 5));
+
+        verifyOnly(listener, listener());
+      });
+    });
+
     test('if provider rebuilds with an error, reset the timer', () async {
       fakeAsync((async) {
         final container = createContainer();
