@@ -175,6 +175,22 @@ abstract class AsyncValue<T> {
   /// to true if [previous] is an [AsyncData] or [AsyncError].
   AsyncValue<T> copyWithPrevious(AsyncValue<T> previous);
 
+  /// The opposite of [copyWithPrevious], reverting to the raw [AsyncValue]
+  /// with no informations on the previous state.
+  AsyncValue<T> unwrapPrevious() {
+    return map(
+      data: (d) {
+        if (d.isLoading) return AsyncLoading<T>();
+        return AsyncData(d.value);
+      },
+      error: (e) {
+        if (e.isLoading) return AsyncLoading<T>();
+        return AsyncError(e.error, stackTrace: e.stackTrace);
+      },
+      loading: (l) => l,
+    );
+  }
+
   @override
   String toString() {
     final content = [

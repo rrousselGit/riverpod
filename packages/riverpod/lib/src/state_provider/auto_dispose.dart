@@ -3,7 +3,9 @@ part of '../state_provider.dart';
 /// {@macro riverpod.providerrefbase}
 /// - [controller], the [StateController] currently exposed by this provider.
 abstract class AutoDisposeStateProviderRef<State>
-    implements AutoDisposeRef, StateProviderRef<State> {}
+    implements
+        AutoDisposeRef<StateController<State>>,
+        StateProviderRef<State> {}
 
 /// {@macro riverpod.stateprovider}
 @sealed
