@@ -4,6 +4,9 @@
   that provider.
   That can be useful for logging purposes or storing the state of a provider
   in a DB.
+- Added `disposeDelay` to all `autoDispose` providers and to `ProviderContainer`/`ProviderScope`.
+  This configures the amount of time before a provider is disposed when it is
+  not listened.
 
 - The duration passed to `cacheTime` now represents the minimum amount of
   time after the latest change of a provider, instead of the first time
