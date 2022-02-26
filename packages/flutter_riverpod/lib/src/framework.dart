@@ -166,7 +166,7 @@ class ProviderScopeState extends State<ProviderScope> {
   /// The [ProviderContainer] exposed to [ProviderScope.child].
   @visibleForTesting
   // ignore: diagnostic_describe_all_properties
-  late ProviderContainer container;
+  late final ProviderContainer container;
   ProviderContainer? _debugParentOwner;
   var _dirty = false;
 
@@ -215,15 +215,26 @@ class ProviderScopeState extends State<ProviderScope> {
     super.didUpdateWidget(oldWidget);
     _dirty = true;
 
-    assert(
-      oldWidget.parent == widget.parent,
-      'Changing `parent` is not supported',
-    );
+    if (oldWidget.parent != widget.parent) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          library: 'flutter_riverpod',
+          exception: UnsupportedError(
+            'Changing ProviderScope.parent is not supported',
+          ),
+          context: ErrorDescription('while rebuilding ProviderScope'),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     assert(() {
+      if (widget.parent != null) {
+        // didUpdateWidget already takes care of widget.parent change
+        return true;
+      }
       final parent = _getParent();
 
       if (parent != _debugParentOwner) {
