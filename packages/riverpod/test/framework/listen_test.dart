@@ -6,9 +6,292 @@ import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
 import '../utils.dart';
+import 'uni_directional_test.dart';
 
 void main() {
+  group('Ref.listenSelf', () {
+    test('does not break autoDispose', () async {
+      final container = createContainer();
+      final provider = Provider.autoDispose((ref) {
+        ref.listenSelf((previous, next) {});
+      });
+
+      container.read(provider);
+      expect(container.getAllProviderElements(), [anything]);
+
+      await container.pump();
+
+      expect(container.getAllProviderElements(), isEmpty);
+    });
+
+    test('listens to mutations post build', () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      final listener2 = Listener<int>();
+
+      late ProviderRef<int> ref;
+      final provider = Provider<int>((r) {
+        ref = r;
+        ref.listenSelf(listener);
+        ref.listenSelf(listener2);
+
+        return 0;
+      });
+
+      container.read(provider);
+
+      verifyInOrder([
+        listener(null, 0),
+        listener2(null, 0),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      ref.state = 42;
+
+      verifyInOrder([
+        listener(0, 42),
+        listener2(0, 42),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('listens to rebuild', () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      final listener2 = Listener<int>();
+      var result = 0;
+      final provider = Provider<int>((ref) {
+        ref.listenSelf(listener);
+        ref.listenSelf(listener2);
+
+        return result;
+      });
+
+      container.read(provider);
+
+      verifyInOrder([
+        listener(null, 0),
+        listener2(null, 0),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      result = 42;
+      container.refresh(provider);
+
+      verifyInOrder([
+        listener(0, 42),
+        listener2(0, 42),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('notify listeners independently from updateShouldNotify', () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      final listener2 = Listener<int>();
+      final provider = Provider<int>((ref) {
+        ref.listenSelf(listener);
+        ref.listenSelf(listener2);
+
+        return 0;
+      });
+
+      container.read(provider);
+
+      verifyInOrder([
+        listener(null, 0),
+        listener2(null, 0),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      container.refresh(provider);
+
+      verifyInOrder([
+        listener(0, 0),
+        listener2(0, 0),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('clears state listeners on rebuild', () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      final listener2 = Listener<int>();
+      var result = 0;
+      final provider = Provider<int>((ref) {
+        if (result == 0) {
+          ref.listenSelf(listener);
+        } else {
+          ref.listenSelf(listener2);
+        }
+
+        return result;
+      });
+
+      container.read(provider);
+
+      verifyOnly(listener, listener(null, 0));
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      result = 42;
+      container.refresh(provider);
+
+      verifyOnly(listener2, listener2(0, 42));
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('listens to errors', () {
+      final container = createContainer();
+      final listener = Listener<int>();
+      final errorListener = ErrorListener();
+      final errorListener2 = ErrorListener();
+      var error = 42;
+      final provider = Provider<int>((ref) {
+        ref.listenSelf(listener, onError: errorListener);
+        ref.listenSelf((prev, next) {}, onError: errorListener2);
+
+        Error.throwWithStackTrace(error, StackTrace.empty);
+      });
+
+      expect(() => container.read(provider), throwsA(42));
+
+      verifyZeroInteractions(listener);
+      verifyInOrder([
+        errorListener(42, StackTrace.empty),
+        errorListener2(42, StackTrace.empty),
+      ]);
+      verifyNoMoreInteractions(errorListener);
+      verifyNoMoreInteractions(errorListener2);
+
+      error = 21;
+      expect(() => container.refresh(provider), throwsA(21));
+
+      verifyZeroInteractions(listener);
+
+      verifyInOrder([
+        errorListener(21, StackTrace.empty),
+        errorListener2(21, StackTrace.empty),
+      ]);
+      verifyNoMoreInteractions(errorListener);
+      verifyNoMoreInteractions(errorListener2);
+    });
+
+    test('executes error listener before other listeners', () {
+      final container = createContainer();
+      final errorListener = ErrorListener();
+      final errorListener2 = ErrorListener();
+      Exception? error;
+      final provider = Provider<int>((ref) {
+        ref.listenSelf((prev, next) {}, onError: errorListener);
+
+        if (error != null) Error.throwWithStackTrace(error, StackTrace.empty);
+
+        return 0;
+      });
+
+      container.listen(provider, (prev, next) {}, onError: errorListener2);
+
+      verifyZeroInteractions(errorListener);
+      verifyZeroInteractions(errorListener2);
+
+      error = Exception();
+      expect(() => container.refresh(provider), throwsA(error));
+
+      verifyInOrder([
+        errorListener(error, StackTrace.empty),
+        errorListener2(error, StackTrace.empty),
+      ]);
+      verifyNoMoreInteractions(errorListener);
+      verifyNoMoreInteractions(errorListener2);
+    });
+
+    test('executes state listener before other listeners', () {
+      final container = createContainer();
+      final listener = Listener<int>();
+      final listener2 = Listener<int>();
+      var result = 0;
+      final provider = Provider<int>((ref) {
+        ref.listenSelf(listener);
+        return result;
+      });
+
+      container.listen(provider, listener2, fireImmediately: true);
+
+      verifyInOrder([
+        listener(null, 0),
+        listener2(null, 0),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      result = 42;
+      container.refresh(provider);
+
+      verifyInOrder([
+        listener(0, 42),
+        listener2(0, 42),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('listeners are not allowed to modify the state', () {});
+  });
+
   group('Ref.listen', () {
+    test(
+        'when rebuild throws identical error/stack, listeners are still notified',
+        () {
+      final container = createContainer();
+      const stack = StackTrace.empty;
+      final listener = Listener<int>();
+      final errorListener = ErrorListener();
+      final provider = Provider<int>((ref) {
+        Error.throwWithStackTrace(42, stack);
+      });
+
+      container.listen(
+        provider,
+        listener,
+        onError: errorListener,
+        fireImmediately: true,
+      );
+
+      verifyZeroInteractions(listener);
+      verifyOnly(errorListener, errorListener(42, stack));
+
+      expect(() => container.refresh(provider), throwsA(42));
+
+      verifyZeroInteractions(listener);
+      verifyOnly(errorListener, errorListener(42, stack));
+    });
+
+    test('cannot listen itself', () {
+      final container = createContainer();
+      final listener = Listener<int>();
+      late ProviderRef<int> ref;
+      late Provider<int> provider;
+      provider = Provider<int>((r) {
+        ref = r;
+        ref.listen(provider, (previous, next) {});
+        return 0;
+      });
+
+      expect(() => container.read(provider), throwsA(isAssertionError));
+
+      ref.state = 42;
+
+      verifyZeroInteractions(listener);
+    });
+
     test('expose previous and new value on change', () {
       final container = createContainer();
       final dep = StateNotifierProvider<StateController<int>, int>(

@@ -31,4 +31,13 @@ I/flutter (16783):   "newValue": "1"
 I/flutter (16783): }
 ```
 
+:::note
+[StateController] （[StateProvider.state] のステート）や [ChangeNotifier] のようにステートがミュータブル（可変）の場合は、
+`previousValue` と `newValue` の値が変わることはありません。
+それぞれ同じ `StateController` / `ChangeNotifier` を参照しているためです。
+:::
+
 [providerobserver]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderObserver-class.html
+[statecontroller]: https://pub.dev/documentation/riverpod/latest/riverpod/StateController-class.html
+[stateprovider.state]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider/state.html
+[changenotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html

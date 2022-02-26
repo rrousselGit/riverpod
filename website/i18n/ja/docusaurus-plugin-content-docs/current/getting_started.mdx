@@ -22,8 +22,8 @@ import { trimSnippet } from "../../../../src/components/CodeSnippet";
 
 | アプリの形態                    | パッケージ名                                                                         | 説明                                                     |
 | ----------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| Flutter + [flutter_hooks]     | [hooks_riverpod]                                                                   | [flutter_hooks] と [Riverpod] を併用する場合のパッケージ。   |
 | Flutter のみ                   | [flutter_riverpod]                                                                 | Flutter アプリで [Riverpod] を使用する場合の基本のパッケージ。 |
+| Flutter + [flutter_hooks]     | [hooks_riverpod]                                                                   | [flutter_hooks] と [Riverpod] を併用する場合のパッケージ。   |
 | Dart のみ（Flutter は使用しない） | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | Flutter 関連のクラスをすべて除いた [Riverpod] パッケージ。    |
 
 ## パッケージのインストール方法
@@ -50,7 +50,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.18.0
-  hooks_riverpod: ^2.0.0-dev.0
+  hooks_riverpod: ^2.0.0-dev.3
 ```
 
 そして `flutter pub get` コマンドを実行してください。
@@ -66,7 +66,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^2.0.0-dev.0
+  flutter_riverpod: ^2.0.0-dev.3
 ```
 
 そして `flutter pub get` コマンドを実行してください。
@@ -79,7 +79,7 @@ environment:
   sdk: ">=2.12.0-0 <3.0.0"
 
 dependencies:
-  riverpod: ^2.0.0-dev.0
+  riverpod: ^2.0.0-dev.3
 ```
 
 そして `dart pub get` コマンドを実行してください。
@@ -143,6 +143,16 @@ export const foo = 42;
 を利用してください。
 
 ![img](/img/snippets/greetingProvider.gif)
+
+## 次のステップ
+
+基本コンセプトを学ぶ：
+
+- [プロバイダとは](/docs/concepts/providers)
+
+具体的な使用方法を学ぶ：
+
+- [プロバイダのテストについて](/docs/cookbooks/testing)
 
 [riverpod]: https://github.com/rrousselgit/river_pod
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod

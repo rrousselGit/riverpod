@@ -6,7 +6,7 @@ part of '../framework.dart';
 /// The difference with [Ref] is that it has an extra
 /// [keepAlive] function to help determine if the state can be destroyed
 ///  or not.
-abstract class AutoDisposeRef extends Ref {
+abstract class AutoDisposeRef<State> extends Ref<State> {
   /// Whether to destroy the state of the provider when all listeners are removed or not.
   ///
   /// Can be changed at any time, in which case when setting it to `false`,
@@ -63,7 +63,7 @@ abstract class AutoDisposeProviderBase<State> extends ProviderBase<State> {
 
   /// {@template riverpod.cache_time}
   /// The minimum amount of time before an `autoDispose` provider can be
-  /// disposed if not listened.
+  /// disposed if not listened after the last value change.
   ///
   /// If the provider rebuilds (such as when using `ref.watch` or `ref.refresh`),
   /// the timer will be refreshed.
@@ -82,7 +82,7 @@ abstract class AutoDisposeProviderBase<State> extends ProviderBase<State> {
 
 /// The [ProviderElementBase] of an [AutoDisposeProviderBase].
 abstract class AutoDisposeProviderElementBase<State>
-    extends ProviderElementBase<State> implements AutoDisposeRef {
+    extends ProviderElementBase<State> implements AutoDisposeRef<State> {
   /// The [ProviderElementBase] of an [AutoDisposeProviderBase].
   AutoDisposeProviderElementBase(ProviderBase<State> provider)
       : super(provider);
@@ -103,6 +103,8 @@ abstract class AutoDisposeProviderElementBase<State>
     _maintainState = value;
     if (!value) mayNeedDispose();
   }
+
+  Timer? _timer;
 
   @override
   KeepAliveLink keepAlive() {
@@ -129,9 +131,42 @@ abstract class AutoDisposeProviderElementBase<State>
   void _buildState() {
     super._buildState();
     if (_cacheTime != Duration.zero) {
-      final link = keepAlive();
-      final timer = Timer(_cacheTime, link.close);
-      onDispose(timer.cancel);
+      // Safe to have as a local variable since links are cleared
+      // on rebuild
+      KeepAliveLink? link;
+
+      listenSelf((previous, next) {
+        link ??= keepAlive();
+        _timer?.cancel();
+
+        _timer = Timer(_cacheTime, () {
+          link!.close();
+          link = null;
+          _timer = null;
+
+          // will always be initialized so `!` is safe
+          // requireState is safe because if an error is emitted, the timer
+          // will be cancelled anyway
+          final state = _state!.requireState;
+          if (state is AsyncValue) {
+            _state = Result.data(state.unwrapPrevious() as State);
+          }
+        });
+      }, onError: (err, stack) {
+        link ??= keepAlive();
+        _timer?.cancel();
+
+        _timer = Timer(_cacheTime, () {
+          link!.close();
+          link = null;
+          _timer = null;
+        });
+      });
+
+      // No need for an onDispose logic, as onDispose will not be executing
+      // unless the timer completes or the provider is refreshed.
+      // But if the provider is refreshed, a new value will be sent, clearing
+      // the previous timer anyway
     }
   }
 

@@ -20,7 +20,7 @@ title: プロバイダとは
   開発では複数のオブジェクトを組み合わせて一つのステートにまとめるのに四苦八苦する場面も多いかと思います。プロバイダにはこのための機能が組み込まれています。
 
 - アプリのパフォーマンスを最適化してくれます。
-  例えば、ウィジェットの更新を抑制したり、負荷が高いステートの計算をキャッシュしたりといったことが可能になります。
+  例えば、ウィジェット更新の条件を限定したり、負荷が高いステートの計算をキャッシュしたりといったことが可能になります。
   プロバイダがステートの変化による外部への影響をコントロールしてくれます。
 
 - アプリのテスト容易性を高めてくれます。
@@ -48,9 +48,9 @@ final myProvider = Provider((ref) {
 また、テスト容易性および保守性が損なわれることはありません。
 :::
 
-上記コードは3つのコンポーネントから成り立っています。
+上記コードは3つのパーツから成り立っています。
 
-- `final myProvider` は変数の宣言であり、その中身は常にイミュータブルのはずです。
+- `final myProvider` は変数の宣言です。ここは常に `final` で宣言するようにしてください。
   詳細は次のセクションで説明しますが、プロバイダのステートを取得するにはこの変数を利用します。
 
 - `Provider` はここで使用するプロバイダの種類を示しています。
@@ -58,7 +58,7 @@ final myProvider = Provider((ref) {
   [Provider] の部分は [StreamProvider] や [StateNotifierProvider]
   など適宜他のプロバイダに置き換えることができ、それぞれ取り扱い方が異なります。
 
-- コードの残りの部分は、外部に公開するステートを生成するための関数であり `ref` と呼ばれるオブジェクトをパラメータとして受け取ります。
+- 残りの部分は、外部に公開するステートを生成するための関数であり `ref` と呼ばれるオブジェクトをパラメータとして受け取ります。
   この `ref` を使って他のプロバイダを利用したり、プロバイダのステートが破棄される際のコールバック関数を登録したりすることができます。
 
 プロバイダ内で生成できるオブジェクトの型は、使用するプロバイダの種類によって異なります。
@@ -88,31 +88,27 @@ void main() {
 
 :::
 
-## ステート破棄の直前に処理を実行する
+## プロバイダの種類
 
-プロバイダのステートはアプリの実行中に破棄されることがあります。
-この直前のタイミングは、使用した `StreamController` を閉じるなど、リソース解放に関する処理を実行するにはうってつけです。
+プロバイダには複数の種類があり、それぞれ用途が異なります。
 
-これにはプロバイダ内で使用できる `ref` オブジェクトの [onDispose] メソッドを利用することができます。
+ステートをウィジェットツリーに挿入するためにどのプロバイダを使えばいいのか、慣れるまで迷うこともあるかと思います。
+そのような場合は次の表を参考にしてください。
 
-以下のコードではこの [onDispose] を使って `StreamController` を閉じています。
+| プロバイダの種類            | 生成されるステートの型        | 具体例                                                         |
+| ------------------------ | ------------------------- | -------------------------------------------------------------  |
+| [Provider]               | 任意                       | サービスクラス / 算出プロパティ（リストのフィルタなど）                |
+| [StateProvider]          | 任意                       | フィルタの条件 / シンプルなステートオブジェクト                       |
+| [FutureProvider]         | 任意の Future              | API の呼び出し結果                                               |
+| [StreamProvider]         | 任意の Stream              | API の呼び出し結果の Stream                                      |
+| [StateNotifierProvider]  | StateNotifier のサブクラス  | イミュータブル（インタフェースを介さない限り）で複雑なステートオブジェクト |
+| [ChangeNotifierProvider] | ChangeNotifier のサブクラス | ミュータブルで複雑なステートオブジェクト                             |
 
-```dart
-final example = StreamProvider.autoDispose((ref) {
-  final streamController = StreamController<int>();
-
-  ref.onDispose(() {
-    // このプロバイダのステートが破棄される直前に StreamController を閉じる。
-    streamController.close();
-  });
-
-  return streamController.stream;
-});
-```
-
-:::note
-使用するプロバイダの種類によっては、このようなリソース解放の処理が既に内部で行われている場合があります。
-例えば、[StateNotifierProvider] は `StateNotifier` の `dispose` メソッドを呼び出します。
+:::caution
+拡張性が求められるアプリの開発に [ChangeNotifierProvider] を使用することはおすすめできません。
+ミュータブル（可変）なステートが様々な問題を引き起こす可能性があるためです。
+基本的には `package:provider` からの移行を容易にするため、そして Navigator 2.0 系のパッケージでの使用など
+Flutter 特有のユースケースに対応するために存在しています。
 :::
 
 ## プロバイダ修飾子
@@ -145,7 +141,7 @@ final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) 
 このセクションは以上です!
 
 「[プロバイダの利用方法](/docs/concepts/reading)」のセクションに続きます。
-もしくは、その後の「[プロバイダを組み合わせる](/docs/concepts/combining_providers)」のセクションを先にご覧いただいても問題ありません。
+もしくは、その後の「[プロバイダのステートを組み合わせる](/docs/concepts/combining_providers)」のセクションを先にご覧いただいても問題ありません。
 
 [get_it]: http://pub.dev/packages/get_it
 [inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
@@ -155,7 +151,11 @@ final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) 
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
 [flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
-[provider]: ../providers/provider
-[streamprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StreamProvider-class.html
-[statenotifierprovider]: ../providers/state_notifier_provider
+[provider]: /docs/providers/provider
+[streamprovider]: /docs/providers/stream_provider
+[futureprovider]: /docs/providers/future_provider
+[stateprovider]: /docs/providers/state_provider
+[statenotifierprovider]: /docs/providers/state_notifier_provider
+[changenotifierprovider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ChangeNotifierProvider-class.html
+
 [providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html

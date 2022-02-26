@@ -39,26 +39,24 @@ final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
 
 :::
 
-### `ref.maintainState`
+### `ref.keepAlive`
 
-プロバイダに `.autoDispose` 修飾子を付けると、`ref` オブジェクトに `maintainState` というプロパティが追加されます。
+プロバイダに `.autoDispose` 修飾子を付けると、`ref` オブジェクトに `keepAlive` というメソッドが追加されます。
 
-`maintainState` は `false` をデフォルト値とする bool 型であり、
-プロバイダが参照されなくなった際にステートを維持するか否かのフラグを管理します。
+この `keepAlive` メソッドを実行することで、プロバイダが参照されなくなった際にもステートを維持するよう Riverpod に伝えることができます。
 
-`maintainState` を活用する例としては、次のようなものがあります。
+例えば、次のコードの通り HTTP リクエスト完了後に `keepAlive` を実行するとします。
 
 ```dart
 final myProvider = FutureProvider.autoDispose((ref) async {
-  final response = await dio.get(...);
-  ref.maintainState = true;
+  final response = await httpClient.get(...);
+  ref.keepAlive();
   return response;
 });
 ```
 
-通常 `autoDispose` では、ユーザが画面を破棄してその後に同じ画面に戻ってきた場合、再び HTTP リクエストが実行されます。
-しかし、上記コードのように HTTP リクエスト完了後にフラグを `true` に切り替えることで、プロバイダにステートを維持させることができます。
-これは HTTP リクエスト完了前にユーザが画面を離れて再度同じ画面に戻った場合はリクエストが再実行される一方、リクエスト完了後に同じ画面に戻ってきた場合は再実行されないということです。
+すると、リクエスト完了前に画面を破棄して再度同じ画面に戻った場合は HTTP リクエストが再実行される一方、
+リクエスト完了後に同じ動作を行った場合はステートが維持されるため、HTTP リクエストが再実行されることはありません。
 
 ## 使用例: プロバイダが参照されなくなったタイミングで HTTP リクエストをキャンセルする
 
@@ -83,12 +81,12 @@ final myProvider = FutureProvider.autoDispose((ref) async {
   // データを取得しつつキャンセル用の `cancelToken` を渡す
   final response = await dio.get('path', cancelToken: cancelToken);
   // リクエストが成功したらステートを維持する
-  ref.maintainState = true;
+  ref.keepAlive();
   return response;
 });
 ```
 
-## The argument type 'AutoDisposeProvider' can't be assigned to the parameter type 'AlwaysAliveProviderBase'
+## エラー：The argument type 'AutoDisposeProvider' can't be assigned to the parameter type 'AlwaysAliveProviderBase'
 
 `.autoDispose` を使用していると、次のようなコンパイル時エラーに出くわすことがあるかもしれません。
 
@@ -106,8 +104,8 @@ final myProvider = FutureProvider.autoDispose((ref) async {
 final firstProvider = Provider.autoDispose((ref) => 0);
 
 final secondProvider = Provider((ref) {
-  // The argument type 'AutoDisposeProvider<int>' can't be assigned to the
-  // parameter type 'AlwaysAliveProviderBase<Object, Null>'
+  // エラー：The argument type 'AutoDisposeProvider<int>' can't be assigned to
+  // the parameter type 'AlwaysAliveProviderBase<Object, Null>'
   ref.watch(firstProvider);
 });
 ```

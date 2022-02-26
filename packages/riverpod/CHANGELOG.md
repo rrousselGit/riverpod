@@ -1,3 +1,17 @@
+# [Unreleased]
+
+- Added `ref.listenSelf`, for subscribing to changes of a provider within
+  that provider.
+  That can be useful for logging purposes or storing the state of a provider
+  in a DB.
+
+- The duration passed to `cacheTime` now represents the minimum amount of
+  time after the latest change of a provider, instead of the first time
+  a provider built.
+
+- Fixed an issue where providers were incorrectly allowed to depend on themselves,
+  breaking `autoDispose` in the process.
+
 # 2.0.0-dev.3
 
 When calling `ref.listen` on a provider, this provider will now properly

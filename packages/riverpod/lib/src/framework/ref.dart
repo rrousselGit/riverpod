@@ -9,12 +9,25 @@ part of '../framework.dart';
 /// - [read] and [watch], two methods that allow a provider to consume other providers.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
-abstract class Ref {
+@optionalTypeArgs
+abstract class Ref<State extends Object?> {
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
 
   /// Re-create the state of a provider and return the new state.
-  State refresh<State>(ProviderBase<State> provider);
+  T refresh<T>(ProviderBase<T> provider);
+
+  /// Listens to changes on the value exposed by this provider
+  ///
+  /// The listener will be called immediately after the provider completes building.
+  ///
+  /// As opposed to [listen], the listener will be called even if
+  /// [ProviderBase.updateShouldNotify] returns false, meaning that the previous
+  /// and new value can potentially be identical.
+  void listenSelf(
+    void Function(State? previous, State next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  });
 
   /// A life-cycle for whenever a new listener is added to the provider.
   ///
