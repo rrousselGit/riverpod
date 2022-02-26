@@ -97,6 +97,50 @@ void main() {
           );
         });
       });
+
+      test('refresh timer when AsyncErrors are emitted', () {
+        fakeAsync((async) {
+          final provider = StateProvider.autoDispose(
+            (ref) => const AsyncValue<int>.error(42),
+          );
+          final container = createContainer(
+            cacheTime: const Duration(seconds: 5),
+          );
+
+          container.listen(provider, (prev, next) {}); // initialize data
+
+          container.read(provider.notifier).state = const AsyncLoading();
+
+          expect(
+            container.read(provider),
+            const AsyncLoading<int>().copyWithPrevious(const AsyncError(42)),
+          );
+
+          async.elapse(const Duration(seconds: 2));
+
+          expect(
+            container.read(provider),
+            const AsyncLoading<int>().copyWithPrevious(const AsyncError(42)),
+          );
+
+          container.read(provider.notifier).state = const AsyncError(21);
+          container.read(provider.notifier).state = const AsyncLoading();
+
+          async.elapse(const Duration(seconds: 3));
+
+          expect(
+            container.read(provider),
+            const AsyncLoading<int>().copyWithPrevious(const AsyncError(21)),
+          );
+
+          async.elapse(const Duration(seconds: 3));
+
+          expect(
+            container.read(provider),
+            const AsyncLoading<int>(),
+          );
+        });
+      });
     });
 
     test('keeps autoDispose provider alive for at least duration', () async {

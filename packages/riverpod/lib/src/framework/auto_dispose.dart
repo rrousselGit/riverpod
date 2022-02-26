@@ -104,6 +104,8 @@ abstract class AutoDisposeProviderElementBase<State>
     if (!value) mayNeedDispose();
   }
 
+  Timer? _timer;
+
   @override
   KeepAliveLink keepAlive() {
     late KeepAliveLink link;
@@ -129,38 +131,35 @@ abstract class AutoDisposeProviderElementBase<State>
   void _buildState() {
     super._buildState();
     if (_cacheTime != Duration.zero) {
+      // Safe to have as a local variable since links are cleared
+      // on rebuild
       KeepAliveLink? link;
-      Timer? timer;
 
       listenSelf((previous, next) {
         link ??= keepAlive();
-        timer?.cancel();
+        _timer?.cancel();
 
-        timer = Timer(_cacheTime, () {
+        _timer = Timer(_cacheTime, () {
           link!.close();
           link = null;
-          timer = null;
+          _timer = null;
 
-          _state!.map(
-            data: (result) {
-              final state = result.state;
-              if (state is AsyncValue) {
-                _state = Result.data(state.unwrapPrevious() as State);
-              }
-            },
-            error: (_) {
-              // Nothing to do, as AsyncErrors would be considered "data"
-            },
-          );
+          // will always be initialized so `!` is safe
+          // requireState is safe because if an error is emitted, the timer
+          // will be cancelled anyway
+          final state = _state!.requireState;
+          if (state is AsyncValue) {
+            _state = Result.data(state.unwrapPrevious() as State);
+          }
         });
       }, onError: (err, stack) {
         link ??= keepAlive();
-        timer?.cancel();
+        _timer?.cancel();
 
-        timer = Timer(_cacheTime, () {
+        _timer = Timer(_cacheTime, () {
           link!.close();
           link = null;
-          timer = null;
+          _timer = null;
         });
       });
 
