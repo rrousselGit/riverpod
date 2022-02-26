@@ -31,11 +31,13 @@ class AutoDisposeFutureProvider<State>
     Family? from,
     Object? argument,
     Duration? cacheTime,
+    Duration? disposeDelay,
   }) : super(
           name: name,
           from: from,
           argument: argument,
           cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   /// {@macro riverpod.family}
@@ -56,6 +58,7 @@ class AutoDisposeFutureProvider<State>
     from: from,
     argument: argument,
     cacheTime: cacheTime,
+    disposeDelay: disposeDelay,
   );
 
   @override
@@ -112,10 +115,12 @@ class AutoDisposeFutureProviderFamily<State, Arg>
     String? name,
     List<ProviderOrFamily>? dependencies,
     Duration? cacheTime,
+    Duration? disposeDelay,
   }) : super(
           name: name,
           dependencies: dependencies,
           cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   final FamilyCreate<FutureOr<State>, AutoDisposeFutureProviderRef<State>, Arg>

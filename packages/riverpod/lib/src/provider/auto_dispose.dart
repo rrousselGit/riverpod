@@ -19,11 +19,13 @@ class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
     Family? from,
     Object? argument,
     Duration? cacheTime,
+    Duration? disposeDelay,
   }) : super(
           name: name,
           from: from,
           argument: argument,
           cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   /// {@macro riverpod.family}
@@ -75,10 +77,12 @@ class AutoDisposeProviderFamily<State, Arg>
     String? name,
     List<ProviderOrFamily>? dependencies,
     Duration? cacheTime,
+    Duration? disposeDelay,
   }) : super(
           name: name,
           dependencies: dependencies,
           cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   final FamilyCreate<State, AutoDisposeProviderRef<State>, Arg> _create;

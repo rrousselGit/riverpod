@@ -90,6 +90,7 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
     Family? from,
     Object? argument,
     Duration? cacheTime,
+    Duration? disposeDelay,
   })  : notifier = _AutoDisposeNotifierProvider(
           create,
           name: name,
@@ -97,12 +98,14 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
           from: from,
           argument: argument,
           cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         ),
         super(
           name: name,
           from: from,
           argument: argument,
           cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   /// {@macro riverpod.family}
@@ -152,11 +155,13 @@ class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<State>, State>
     Family? from,
     Object? argument,
     Duration? cacheTime,
+    Duration? disposeDelay,
   }) : super(
           name: name == null ? null : '$name.notifier',
           from: from,
           argument: argument,
           cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   final Create<Notifier, AutoDisposeStateNotifierProviderRef<Notifier, State>>
@@ -210,10 +215,12 @@ class AutoDisposeStateNotifierProviderFamily<
     String? name,
     List<ProviderOrFamily>? dependencies,
     Duration? cacheTime,
+    Duration? disposeDelay,
   }) : super(
           name: name,
           dependencies: dependencies,
           cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   final FamilyCreate<Notifier,

@@ -544,13 +544,19 @@ class FamilyBuilder {
     final createNamedParams = [
       'String? name',
       'List<ProviderOrFamily>? dependencies',
-      if (configs.item1 == DisposeType.autoDispose) 'Duration? cacheTime',
+      if (configs.item1 == DisposeType.autoDispose) ...[
+        'Duration? cacheTime',
+        'Duration? disposeDelay',
+      ],
     ].join(',');
     final providerParams = [
       'create',
       'name: name',
       'dependencies: dependencies',
-      if (configs.item1 == DisposeType.autoDispose) 'cacheTime: cacheTime',
+      if (configs.item1 == DisposeType.autoDispose) ...[
+        'cacheTime: cacheTime',
+        'disposeDelay: disposeDelay',
+      ],
     ].join(',');
     return '''
 /// Builds a [${configs.providerName}].
@@ -580,13 +586,19 @@ class ProviderBuilder {
     final callNamedParams = [
       'String? name',
       'List<ProviderOrFamily>? dependencies',
-      if (configs.item1 == DisposeType.autoDispose) 'Duration? cacheTime',
+      if (configs.item1 == DisposeType.autoDispose) ...[
+        'Duration? cacheTime',
+        'Duration? disposeDelay',
+      ],
     ].join(',');
     final providerParams = [
       'create',
       'name: name',
       'dependencies: dependencies',
-      if (configs.item1 == DisposeType.autoDispose) 'cacheTime: cacheTime',
+      if (configs.item1 == DisposeType.autoDispose) ...[
+        'cacheTime: cacheTime',
+        'disposeDelay: disposeDelay',
+      ],
     ].join(',');
 
     return '''
