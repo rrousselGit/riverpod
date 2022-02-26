@@ -388,7 +388,13 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     _provider = newProvider;
   }
 
-  void markMustRecomputeState() {
+  @override
+  void invalidate(ProviderBase<Object?> provider) {
+    _container.invalidate(provider);
+  }
+
+  @override
+  void invalidateSelf() {
     if (_mustRecomputeState) return;
 
     _mustRecomputeState = true;
@@ -618,7 +624,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (_mustRecomputeState) return;
 
     // will notify children that their dependency may have changed
-    markMustRecomputeState();
+    invalidateSelf();
   }
 
   void _markDependencyMayHaveChanged() {
@@ -855,10 +861,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   @protected
   @mustCallSuper
   void dispose() {
-    assert(
-      _mounted || _debugDidChangeDependency,
-      '$provider was disposed twice',
-    );
     assert(() {
       RiverpodBinding.debugInstance
           .providerListChangedFor(containerId: container._debugId);
@@ -867,6 +869,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     _runOnDispose();
 
+    // TODO test invalidateSelf() then dispose() properly unlinks dependencies
     // TODO test [listen] calls are cleared
 
     for (final sub in _dependencies.entries) {
@@ -875,6 +878,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
     _dependencies.clear();
 
+    // TODO move to runOnDispose
     for (final observer in _container._observers) {
       _runBinaryGuarded(
         observer.didDisposeProvider,

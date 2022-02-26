@@ -357,18 +357,19 @@ class ProviderContainer implements Node {
     );
   }
 
-  /// Forces a provider to re-evaluate its state immediately, and return the created value.
-  ///
-  /// This method is useful for features like "pull to refresh" or "retry on error",
-  /// to restart a specific provider.
-  Created refresh<Created>(ProviderBase<Created> provider) {
+  /// {@template riverpod.invalidate}
+  void invalidate(ProviderBase<Object?> provider) {
     final reader = _getStateReader(provider.originProvider);
 
     if (reader._element != null) {
       final element = reader._element!;
-      element.markMustRecomputeState();
+      element.invalidateSelf();
     }
+  }
 
+  /// {@template riverpod.refresh}
+  Created refresh<Created>(ProviderBase<Created> provider) {
+    invalidate(provider);
     return read(provider);
   }
 
