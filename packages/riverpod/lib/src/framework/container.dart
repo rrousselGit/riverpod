@@ -159,12 +159,14 @@ class ProviderContainer implements Node {
   ProviderContainer({
     ProviderContainer? parent,
     Duration? cacheTime,
+    Duration? disposeDelay,
     List<Override> overrides = const [],
     List<ProviderObserver>? observers,
   })  : _debugOverridesLength = overrides.length,
         depth = parent == null ? 0 : parent.depth + 1,
         _parent = parent,
         cacheTime = cacheTime ?? parent?.cacheTime ?? Duration.zero,
+        disposeDelay = disposeDelay ?? parent?.disposeDelay ?? Duration.zero,
         _observers = [
           ...?observers,
           if (parent != null) ...parent._observers,
@@ -211,6 +213,11 @@ class ProviderContainer implements Node {
   ///
   /// {@macro riverpod.cache_time}
   final Duration cacheTime;
+
+  /// The default value for [AutoDisposeProviderBase.disposeDelay].
+  ///
+  /// {@macro riverpod.dispose_delay}
+  final Duration disposeDelay;
 
   final int _debugOverridesLength;
 

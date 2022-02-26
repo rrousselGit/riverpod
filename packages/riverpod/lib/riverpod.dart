@@ -32,7 +32,8 @@ export 'src/framework.dart'
         XAutoDisposeFamily,
         XFamily,
         AsyncSelector,
-        AlwaysAliveAsyncSelector;
+        AlwaysAliveAsyncSelector,
+        KeepAliveLink;
 
 export 'src/future_provider.dart'
     show

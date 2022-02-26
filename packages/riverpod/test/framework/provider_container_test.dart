@@ -7,6 +7,31 @@ import 'uni_directional_test.dart';
 
 void main() {
   group('ProviderContainer', () {
+    group('disposeDelay', () {
+      test('defaults to zero', () {
+        final container = createContainer();
+
+        expect(container.disposeDelay, Duration.zero);
+      });
+
+      test(
+          'if a parent is specified and no default is passed, use the parent disposeDelay',
+          () {
+        final parent =
+            createContainer(disposeDelay: const Duration(seconds: 5));
+        final container = createContainer(
+          parent: parent,
+          disposeDelay: const Duration(seconds: 2),
+        );
+
+        expect(container.disposeDelay, const Duration(seconds: 2));
+
+        final container2 = createContainer(parent: parent);
+
+        expect(container2.disposeDelay, const Duration(seconds: 5));
+      });
+    });
+
     group('cacheTime', () {
       test('defaults to zero', () {
         final container = createContainer();
