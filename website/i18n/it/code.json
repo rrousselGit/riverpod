@@ -236,7 +236,7 @@
     "message": "Leggere in modo sicuro i provider"
   },
   "home.safe_read_body": {
-    "message": "Leggere un provider non comporterà mai un cattivo stato. Se riesci a scrivere il codice necessario per leggere un provider, otterrai un valore valido."
+    "message": "Leggere un provider non comporterà mai uno stato sbagliato. Se scrivi il codice necessario per leggere un provider, otterrai un valore valido."
   },
   "home.devtool_title": {
     "message": "Ispeziona lo stato nel devtool"
