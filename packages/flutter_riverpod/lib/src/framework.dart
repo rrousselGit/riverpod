@@ -80,6 +80,7 @@ class ProviderScope extends StatefulWidget {
     this.overrides = const [],
     this.observers,
     this.cacheTime,
+    this.disposeDelay,
     required this.child,
   }) : super(key: key);
 
@@ -115,6 +116,16 @@ class ProviderScope extends StatefulWidget {
   /// If null, use the nearest ancestor [ProviderScope]'s [cacheTime].
   /// If no ancestor is found, fallbacks to [Duration.zero].
   final Duration? cacheTime;
+
+  /// The amount of time before a provider is disposed after its last listener
+  /// is removed.
+  ///
+  /// If a new listener is added within that duration, the provider will not be
+  /// disposed.
+  ///
+  /// If null, use the nearest ancestor [ProviderContainer]'s [disposeDelay].
+  /// If no ancestor is found, fallbacks to [Duration.zero].
+  final Duration? disposeDelay;
 
   /// The part of the widget tree that can use Riverpod and has overridden providers.
   final Widget child;
@@ -157,6 +168,7 @@ class ProviderScopeState extends State<ProviderScope> {
       overrides: widget.overrides,
       observers: widget.observers,
       cacheTime: widget.cacheTime,
+      disposeDelay: widget.disposeDelay,
       // TODO How to report to FlutterError?
       // onError: (dynamic error, stack) {
       //   FlutterError.reportError(
