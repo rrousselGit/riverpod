@@ -1,3 +1,9 @@
+# [Unreleased]
+
+- Added `ProviderScope.parent`, a property used for manually overriding a scope's
+  parent.
+  This is useful for allowing modals/dialogs to access scoped providers
+
 # 2.0.0-dev.3
 
 When calling `ref.listen` on a provider, this provider will now properly
