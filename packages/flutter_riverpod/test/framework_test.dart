@@ -8,6 +8,51 @@ import 'package:mockito/mockito.dart';
 import 'utils.dart';
 
 void main() {
+  testWidgets('ProviderScope can receive a customn parent', (tester) async {
+    final provider = Provider((ref) => 0);
+
+    final container = createContainer(
+      overrides: [provider.overrideWithValue(42)],
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        parent: container,
+        child: Consumer(
+          builder: (context, ref, _) {
+            return Text(
+              '${ref.watch(provider)}',
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
+      ),
+    );
+
+    expect(find.text('42'), findsOneWidget);
+  });
+
+  testWidgets('ProviderScope.parent cannot change', (tester) async {
+    final container = createContainer();
+    final container2 = createContainer();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        parent: container,
+        child: Container(),
+      ),
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        parent: container2,
+        child: Container(),
+      ),
+    );
+
+    expect(tester.takeException(), isUnsupportedError);
+  });
+
   testWidgets('ref.read works with providers that returns null',
       (tester) async {
     final nullProvider = Provider((ref) => null);
