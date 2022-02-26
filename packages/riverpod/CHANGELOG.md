@@ -8,6 +8,12 @@
   This configures the amount of time before a provider is disposed when it is
   not listened.
 
+- Added `container.invalidate(provider)`/`ref.invalidate(provider)` and `ref.invalidateSelf()`.
+  These are similar to `ref.refresh` methods, but do not immediately rebuild the provider.
+
+  These methods are safer than `ref.refresh` as they can avoid a provider
+  rebuilding twice in a quick succession.
+
 - The duration passed to `cacheTime` now represents the minimum amount of
   time after the latest change of a provider, instead of the first time
   a provider built.
