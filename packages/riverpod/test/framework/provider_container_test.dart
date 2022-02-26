@@ -7,6 +7,26 @@ import 'uni_directional_test.dart';
 
 void main() {
   group('ProviderContainer', () {
+    test('invalidate triggers a rebuild on next frame', () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      var result = 0;
+      final provider = Provider((r) => result);
+
+      container.listen(provider, listener);
+      verifyZeroInteractions(listener);
+
+      container.invalidate(provider);
+      container.invalidate(provider);
+      result = 1;
+
+      verifyZeroInteractions(listener);
+
+      await container.pump();
+
+      verifyOnly(listener, listener(0, 1));
+    });
+
     group('disposeDelay', () {
       test('defaults to zero', () {
         final container = createContainer();

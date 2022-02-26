@@ -95,6 +95,10 @@ abstract class WidgetRef {
 
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
+  /// If you do not care about the new value, prefer [invalidate] instead,
+  /// which makes the invalidation logic more resilient by avoiding
+  /// multiple refreshes at once.
+  ///
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
   ///
@@ -113,7 +117,7 @@ abstract class WidgetRef {
   ///     final Products products = ref.watch(productsProvider);
   ///
   ///     return RefreshIndicator(
-  ///       onRefresh: () => ref.refresh(productsProvider),
+  ///       onRefresh: () => ref.refresh(productsProvider.future),
   ///       child: ListView(
   ///         children: [
   ///           for (final product in products.items) ProductItem(product: product),
@@ -124,6 +128,17 @@ abstract class WidgetRef {
   /// }
   /// ```
   State refresh<State>(ProviderBase<State> provider);
+
+  /// Invalidates the state of the provider, causing it to refresh.
+  ///
+  /// As opposed to [refresh], the refresh is not immediate and is instead
+  /// delayed to the next read or next frame.
+  ///
+  /// Calling [invalidate] multiple times will refresh the provider only
+  /// once.
+  ///
+  /// Calling [invalidate] will cause the provider to be disposed immediately.
+  void invalidate(ProviderBase<Object?> provider);
 }
 
 /// A function that can also listen to providers
@@ -490,5 +505,10 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   @override
   State refresh<State>(ProviderBase<State> provider) {
     return ProviderScope.containerOf(this, listen: false).refresh(provider);
+  }
+
+  @override
+  void invalidate(ProviderBase<Object?> provider) {
+    _container.invalidate(provider);
   }
 }

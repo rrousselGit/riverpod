@@ -14,8 +14,30 @@ abstract class Ref<State extends Object?> {
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
 
-  /// Re-create the state of a provider and return the new state.
+  /// {@template riverpod.refresh}
+  /// Forces a provider to re-evaluate its state immediately, and return the created value.
+  ///
+  /// If you do not care about the new value, prefer [invalidate] instead,
+  /// which makes the invalidation logic more resilient by avoiding
+  /// multiple refreshes at once.
+  ///
+  /// This method is useful for features like "pull to refresh" or "retry on error",
+  /// to restart a specific provider.
+  /// {@endtemplate}
   T refresh<T>(ProviderBase<T> provider);
+
+  /// {@template riverpod.invalidate}
+  /// Invalidates the state of the provider, causing it to refresh.
+  ///
+  /// As opposed to [refresh], the refresh is not immediate and is instead
+  /// delayed to the next read or next frame.
+  ///
+  /// Calling [invalidate] multiple times will refresh the provider only
+  /// once.
+  ///
+  /// Calling [invalidate] will cause the provider to be disposed immediately.
+  /// {@endtemplate}
+  void invalidate(ProviderBase<Object?> provider);
 
   /// Listens to changes on the value exposed by this provider
   ///
@@ -28,6 +50,17 @@ abstract class Ref<State extends Object?> {
     void Function(State? previous, State next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   });
+
+  /// Invalidates the state of the provider, causing it to refresh.
+  ///
+  /// The refresh is not immediate and is instead delayed to the next read
+  /// or next frame.
+  ///
+  /// Calling [invalidateSelf] multiple times will refresh the provider only
+  /// once.
+  ///
+  /// Calling [invalidateSelf] will cause the provider to be disposed immediately.
+  void invalidateSelf();
 
   /// A life-cycle for whenever a new listener is added to the provider.
   ///

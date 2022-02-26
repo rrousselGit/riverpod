@@ -9,6 +9,101 @@ import '../third_party/fake_async.dart';
 import '../utils.dart';
 
 void main() {
+  test('ref.invalidate triggers a rebuild on next frame', () async {
+    final container = createContainer();
+    final listener = Listener<int>();
+    var result = 0;
+    final provider = Provider((r) => result);
+    late Ref ref;
+    final another = Provider((r) {
+      ref = r;
+    });
+
+    container.listen(provider, listener);
+    container.read(another);
+    verifyZeroInteractions(listener);
+
+    ref.invalidate(provider);
+    ref.invalidate(provider);
+    result = 1;
+
+    verifyZeroInteractions(listener);
+
+    await container.pump();
+
+    verifyOnly(listener, listener(0, 1));
+  });
+
+  group('ref.invalidateSelf', () {
+    test('calls dispose immediately', () {
+      final container = createContainer();
+      final listener = OnDisposeMock();
+      late Ref ref;
+      final provider = Provider((r) {
+        ref = r;
+        ref.onDispose(listener);
+      });
+
+      container.read(provider);
+      verifyZeroInteractions(listener);
+
+      ref.invalidateSelf();
+
+      verifyOnly(listener, listener());
+
+      ref.invalidateSelf();
+
+      verifyNoMoreInteractions(listener);
+    });
+
+    test('triggers a rebuild on next frame', () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      var result = 0;
+      late Ref ref;
+      final provider = Provider((r) {
+        ref = r;
+        return result;
+      });
+
+      container.listen(provider, listener);
+      verifyZeroInteractions(listener);
+
+      ref.invalidateSelf();
+      ref.invalidateSelf();
+      result = 1;
+
+      verifyZeroInteractions(listener);
+
+      await container.pump();
+
+      verifyOnly(listener, listener(0, 1));
+    });
+
+    test('merges the rebuild with dependency change rebuild', () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      final dep = StateProvider((ref) => 0);
+      late Ref ref;
+      final provider = Provider((r) {
+        ref = r;
+        return ref.watch(dep);
+      });
+
+      container.listen(provider, listener);
+      verifyZeroInteractions(listener);
+
+      ref.invalidateSelf();
+      container.read(dep.notifier).state++;
+
+      verifyZeroInteractions(listener);
+
+      await container.pump();
+
+      verifyOnly(listener, listener(0, 1));
+    });
+  });
+
   group('delayTime', () {
     test(
         'keeps the provider alive for duration after the last listener is removed',
