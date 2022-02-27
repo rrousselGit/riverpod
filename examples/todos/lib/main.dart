@@ -236,7 +236,6 @@ class TodoItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print("build");
     final todo = ref.watch(_currentTodo);
     final textEditingController = useTextEditingController();
     final textFieldFocusNode = useFocusNode();
