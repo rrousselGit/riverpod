@@ -6,6 +6,12 @@
 <a href="https://discord.gg/Bbumvej"><img src="https://img.shields.io/discord/765557403865186374.svg?logo=discord&color=blue" alt="Discord"></a>
 
 <p align="center">
+<a href="https://www.netlify.com">
+  <img src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg" alt="Deploys by Netlify" />
+</a>
+</p>
+
+<p align="center">
 <img src="https://github.com/rrousselGit/river_pod/blob/master/resources/icon/Facebook%20Cover%20A.png?raw=true" width="100%" alt="Riverpod" />
 </p>
 
@@ -75,10 +81,10 @@ See [the migration guide](https://riverpod.dev/docs/migration/0.14.0_to_1.0.0/) 
 - [Motivation](#motivation)
 - [Contributing](#contributing)
 - [FAQ](#faq)
-  - [Why another project when provider already exists?](#why-another-project-when-provider-already-exists)
+  - [Why another project when [provider] already exists?](#why-another-project-when-provider-already-exists)
   - [Is it safe to use in production?](#is-it-safe-to-use-in-production)
-  - [Will this get merged with provider at some point?](#will-this-get-merged-with-provider-at-some-point)
-  - [Will provider be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
+  - [Will this get merged with [provider] at some point?](#will-this-get-merged-with-provider-at-some-point)
+  - [Will [provider] be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
 
 ## Motivation
 
