@@ -23,6 +23,8 @@
 
 - Fixed a memory leak when using `StateProvider.autoDispose`'s `.state`
 
+- Fix `ProviderObserver.didDisposeProvider` not executing on provider refresh.
+
 # 2.0.0-dev.3
 
 When calling `ref.listen` on a provider, this provider will now properly
