@@ -878,15 +878,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
     _dependencies.clear();
 
-    // TODO move to runOnDispose
-    for (final observer in _container._observers) {
-      _runBinaryGuarded(
-        observer.didDisposeProvider,
-        _origin,
-        _container,
-      );
-    }
-
     _listeners.clear();
   }
 
@@ -936,6 +927,14 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     _onDisposeListeners?.forEach(_runGuarded);
+
+    for (final observer in _container._observers) {
+      _runBinaryGuarded(
+        observer.didDisposeProvider,
+        _origin,
+        _container,
+      );
+    }
 
     _onDisposeListeners = null;
     _onCancelListeners = null;
