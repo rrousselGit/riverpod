@@ -240,7 +240,7 @@ class TodoItem extends HookConsumerWidget {
     final todo = ref.watch(_currentTodo);
     final textEditingController = useTextEditingController();
     final textFieldFocusNode = useFocusNode();
-    final isFocused = useState(false);
+    final isFocused = useIsFocused();
 
     return Material(
       color: Colors.white,
@@ -276,3 +276,5 @@ class TodoItem extends HookConsumerWidget {
     );
   }
 }
+
+ValueNotifier<bool> useIsFocused() => useState<bool>(false);
