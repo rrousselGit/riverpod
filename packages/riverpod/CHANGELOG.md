@@ -21,6 +21,8 @@
 - Fixed an issue where providers were incorrectly allowed to depend on themselves,
   breaking `autoDispose` in the process.
 
+- Fixed a memory leak when using `StateProvider.autoDispose`'s `.state`
+
 # 2.0.0-dev.3
 
 When calling `ref.listen` on a provider, this provider will now properly

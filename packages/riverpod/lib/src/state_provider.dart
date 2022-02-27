@@ -80,7 +80,9 @@ StateController<State> _listenStateProvider<State>(
   }
 
   // No need to remove the listener on dispose, since we are disposing the controller
-  controller.addListener(listener, fireImmediately: false);
+  ref.onDispose(
+    controller.addListener(listener, fireImmediately: false),
+  );
 
   return controller;
 }
