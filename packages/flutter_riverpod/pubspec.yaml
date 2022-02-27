@@ -2,7 +2,7 @@ name: flutter_riverpod
 description: >
   A simple way to access state from anywhere in your application
   while robust and testable.
-version: 2.0.0-dev.3
+version: 2.0.0-dev.4
 homepage: https://riverpod.dev
 repository: https://github.com/rrousselGit/river_pod
 
@@ -15,7 +15,7 @@ dependencies:
   flutter:
     sdk: flutter
   meta: ^1.3.0
-  riverpod: 2.0.0-dev.3
+  riverpod: 2.0.0-dev.4
   state_notifier: ^0.7.0
 
 dev_dependencies:

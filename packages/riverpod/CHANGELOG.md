@@ -1,4 +1,4 @@
-# [Unreleased]
+# 2.0.0-dev.4
 
 - Added `ref.listenSelf`, for subscribing to changes of a provider within
   that provider.
