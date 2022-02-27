@@ -324,9 +324,13 @@ class AutoDisposeChangeNotifierProviderBuilder {
       Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>> create,
       {String? name,
       List<ProviderOrFamily>? dependencies,
-      Duration? cacheTime}) {
+      Duration? cacheTime,
+      Duration? disposeDelay}) {
     return AutoDisposeChangeNotifierProvider<Notifier>(create,
-        name: name, dependencies: dependencies, cacheTime: cacheTime);
+        name: name,
+        dependencies: dependencies,
+        cacheTime: cacheTime,
+        disposeDelay: disposeDelay);
   }
 
   /// {@macro riverpod.family}
@@ -348,8 +352,12 @@ class AutoDisposeChangeNotifierProviderFamilyBuilder {
               create,
           {String? name,
           List<ProviderOrFamily>? dependencies,
-          Duration? cacheTime}) {
+          Duration? cacheTime,
+          Duration? disposeDelay}) {
     return AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>(create,
-        name: name, dependencies: dependencies, cacheTime: cacheTime);
+        name: name,
+        dependencies: dependencies,
+        cacheTime: cacheTime,
+        disposeDelay: disposeDelay);
   }
 }

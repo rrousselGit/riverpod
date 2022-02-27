@@ -7,6 +7,51 @@ import 'uni_directional_test.dart';
 
 void main() {
   group('ProviderContainer', () {
+    test('invalidate triggers a rebuild on next frame', () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      var result = 0;
+      final provider = Provider((r) => result);
+
+      container.listen(provider, listener);
+      verifyZeroInteractions(listener);
+
+      container.invalidate(provider);
+      container.invalidate(provider);
+      result = 1;
+
+      verifyZeroInteractions(listener);
+
+      await container.pump();
+
+      verifyOnly(listener, listener(0, 1));
+    });
+
+    group('disposeDelay', () {
+      test('defaults to zero', () {
+        final container = createContainer();
+
+        expect(container.disposeDelay, Duration.zero);
+      });
+
+      test(
+          'if a parent is specified and no default is passed, use the parent disposeDelay',
+          () {
+        final parent =
+            createContainer(disposeDelay: const Duration(seconds: 5));
+        final container = createContainer(
+          parent: parent,
+          disposeDelay: const Duration(seconds: 2),
+        );
+
+        expect(container.disposeDelay, const Duration(seconds: 2));
+
+        final container2 = createContainer(parent: parent);
+
+        expect(container2.disposeDelay, const Duration(seconds: 5));
+      });
+    });
+
     group('cacheTime', () {
       test('defaults to zero', () {
         final container = createContainer();

@@ -4,6 +4,15 @@
   that provider.
   That can be useful for logging purposes or storing the state of a provider
   in a DB.
+- Added `disposeDelay` to all `autoDispose` providers and to `ProviderContainer`/`ProviderScope`.
+  This configures the amount of time before a provider is disposed when it is
+  not listened.
+
+- Added `container.invalidate(provider)`/`ref.invalidate(provider)` and `ref.invalidateSelf()`.
+  These are similar to `ref.refresh` methods, but do not immediately rebuild the provider.
+
+  These methods are safer than `ref.refresh` as they can avoid a provider
+  rebuilding twice in a quick succession.
 
 - The duration passed to `cacheTime` now represents the minimum amount of
   time after the latest change of a provider, instead of the first time
@@ -11,6 +20,10 @@
 
 - Fixed an issue where providers were incorrectly allowed to depend on themselves,
   breaking `autoDispose` in the process.
+
+- Fixed a memory leak when using `StateProvider.autoDispose`'s `.state`
+
+- Fix `ProviderObserver.didDisposeProvider` not executing on provider refresh.
 
 # 2.0.0-dev.3
 

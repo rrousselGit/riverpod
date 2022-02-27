@@ -26,6 +26,7 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier?>
     Family? from,
     Object? argument,
     Duration? cacheTime,
+    Duration? disposeDelay,
   })  : notifier = _AutoDisposeNotifierProvider<Notifier>(
           create,
           name: modifierName(name, 'notifier'),
@@ -39,6 +40,7 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier?>
           from: from,
           argument: argument,
           cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   /// {@macro riverpod.family}
@@ -76,11 +78,13 @@ class _AutoDisposeNotifierProvider<Notifier extends ChangeNotifier?>
     Family? from,
     Object? argument,
     Duration? cacheTime,
+    Duration? disposeDelay,
   }) : super(
           name: modifierName(name, 'notifier'),
           from: from,
           argument: argument,
           cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   @override
@@ -131,10 +135,12 @@ class AutoDisposeChangeNotifierProviderFamily<Notifier extends ChangeNotifier?,
     String? name,
     List<ProviderOrFamily>? dependencies,
     Duration? cacheTime,
+    Duration? disposeDelay,
   }) : super(
           name: name,
           dependencies: dependencies,
           cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   final FamilyCreate<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>,

@@ -159,12 +159,14 @@ class ProviderContainer implements Node {
   ProviderContainer({
     ProviderContainer? parent,
     Duration? cacheTime,
+    Duration? disposeDelay,
     List<Override> overrides = const [],
     List<ProviderObserver>? observers,
   })  : _debugOverridesLength = overrides.length,
         depth = parent == null ? 0 : parent.depth + 1,
         _parent = parent,
         cacheTime = cacheTime ?? parent?.cacheTime ?? Duration.zero,
+        disposeDelay = disposeDelay ?? parent?.disposeDelay ?? Duration.zero,
         _observers = [
           ...?observers,
           if (parent != null) ...parent._observers,
@@ -211,6 +213,11 @@ class ProviderContainer implements Node {
   ///
   /// {@macro riverpod.cache_time}
   final Duration cacheTime;
+
+  /// The default value for [AutoDisposeProviderBase.disposeDelay].
+  ///
+  /// {@macro riverpod.dispose_delay}
+  final Duration disposeDelay;
 
   final int _debugOverridesLength;
 
@@ -350,18 +357,19 @@ class ProviderContainer implements Node {
     );
   }
 
-  /// Forces a provider to re-evaluate its state immediately, and return the created value.
-  ///
-  /// This method is useful for features like "pull to refresh" or "retry on error",
-  /// to restart a specific provider.
-  Created refresh<Created>(ProviderBase<Created> provider) {
+  /// {@template riverpod.invalidate}
+  void invalidate(ProviderBase<Object?> provider) {
     final reader = _getStateReader(provider.originProvider);
 
     if (reader._element != null) {
       final element = reader._element!;
-      element.markMustRecomputeState();
+      element.invalidateSelf();
     }
+  }
 
+  /// {@template riverpod.refresh}
+  Created refresh<Created>(ProviderBase<Created> provider) {
+    invalidate(provider);
     return read(provider);
   }
 

@@ -9,6 +9,256 @@ import '../third_party/fake_async.dart';
 import '../utils.dart';
 
 void main() {
+  test('ref.invalidate triggers a rebuild on next frame', () async {
+    final container = createContainer();
+    final listener = Listener<int>();
+    var result = 0;
+    final provider = Provider((r) => result);
+    late Ref ref;
+    final another = Provider((r) {
+      ref = r;
+    });
+
+    container.listen(provider, listener);
+    container.read(another);
+    verifyZeroInteractions(listener);
+
+    ref.invalidate(provider);
+    ref.invalidate(provider);
+    result = 1;
+
+    verifyZeroInteractions(listener);
+
+    await container.pump();
+
+    verifyOnly(listener, listener(0, 1));
+  });
+
+  group('ref.invalidateSelf', () {
+    test('calls dispose immediately', () {
+      final container = createContainer();
+      final listener = OnDisposeMock();
+      late Ref ref;
+      final provider = Provider((r) {
+        ref = r;
+        ref.onDispose(listener);
+      });
+
+      container.read(provider);
+      verifyZeroInteractions(listener);
+
+      ref.invalidateSelf();
+
+      verifyOnly(listener, listener());
+
+      ref.invalidateSelf();
+
+      verifyNoMoreInteractions(listener);
+    });
+
+    test('triggers a rebuild on next frame', () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      var result = 0;
+      late Ref ref;
+      final provider = Provider((r) {
+        ref = r;
+        return result;
+      });
+
+      container.listen(provider, listener);
+      verifyZeroInteractions(listener);
+
+      ref.invalidateSelf();
+      ref.invalidateSelf();
+      result = 1;
+
+      verifyZeroInteractions(listener);
+
+      await container.pump();
+
+      verifyOnly(listener, listener(0, 1));
+    });
+
+    test('merges the rebuild with dependency change rebuild', () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      final dep = StateProvider((ref) => 0);
+      late Ref ref;
+      final provider = Provider((r) {
+        ref = r;
+        return ref.watch(dep);
+      });
+
+      container.listen(provider, listener);
+      verifyZeroInteractions(listener);
+
+      ref.invalidateSelf();
+      container.read(dep.notifier).state++;
+
+      verifyZeroInteractions(listener);
+
+      await container.pump();
+
+      verifyOnly(listener, listener(0, 1));
+    });
+  });
+
+  group('delayTime', () {
+    test(
+        'keeps the provider alive for duration after the last listener is removed',
+        () async {
+      return fakeAsync((async) async {
+        final listener = OnDisposeMock();
+        final provider = Provider.autoDispose(
+          (ref) {
+            ref.onDispose(listener);
+          },
+        );
+        final container = createContainer(
+          disposeDelay: const Duration(seconds: 5),
+        );
+
+        final sub = container.listen<void>(provider, (prev, next) {});
+        verifyZeroInteractions(listener);
+
+        sub.close();
+        await container.pump();
+
+        async.elapse(const Duration(seconds: 1));
+        verifyZeroInteractions(listener);
+
+        async.elapse(const Duration(seconds: 4));
+        await container.pump();
+
+        verifyOnly(listener, listener());
+      });
+    });
+
+    test('if a listener is added during the duration, aborts the disposal',
+        () async {
+      return fakeAsync((async) async {
+        final listener = OnDisposeMock();
+        final provider = Provider.autoDispose(
+          (ref) {
+            ref.onDispose(listener);
+          },
+        );
+        final container = createContainer(
+          disposeDelay: const Duration(seconds: 5),
+        );
+
+        final sub = container.listen<void>(provider, (prev, next) {});
+        verifyZeroInteractions(listener);
+
+        sub.close();
+        async.elapse(const Duration(seconds: 1));
+        await container.pump();
+
+        verifyZeroInteractions(listener);
+
+        final sub2 = container.listen<void>(provider, (prev, next) {});
+
+        async.elapse(const Duration(seconds: 4));
+        await container.pump();
+
+        verifyZeroInteractions(listener);
+
+        sub2.close();
+        await container.pump();
+        verifyZeroInteractions(listener);
+
+        async.elapse(const Duration(seconds: 5));
+        await container.pump();
+
+        verifyOnly(listener, listener());
+      });
+    });
+
+    test(
+        'the timer properly continues even if the provider is refreshed in the middle of the duration',
+        () async {
+      return fakeAsync((async) async {
+        final listener = OnDisposeMock();
+        final provider = Provider.autoDispose(
+          (ref) {
+            ref.onDispose(listener);
+          },
+        );
+        final container = createContainer(
+          disposeDelay: const Duration(seconds: 5),
+        );
+
+        final sub = container.listen<void>(provider, (prev, next) {});
+        verifyZeroInteractions(listener);
+
+        sub.close();
+        async.elapse(const Duration(seconds: 2));
+        await container.pump();
+
+        verifyZeroInteractions(listener);
+
+        container.refresh(provider);
+
+        verifyOnly(listener, listener());
+
+        async.elapse(const Duration(seconds: 1));
+        await container.pump();
+        verifyNoMoreInteractions(listener);
+
+        async.elapse(const Duration(seconds: 2));
+
+        verifyOnly(listener, listener());
+      });
+    });
+
+    test(
+        'if the timer completes yet the provider is still kept alive due to something else, adding a listener properly resume the logic',
+        () async {
+      return fakeAsync((async) async {
+        final listener = OnDisposeMock();
+        late KeepAliveLink link;
+        final provider = Provider.autoDispose(
+          (ref) {
+            link = ref.keepAlive();
+            ref.onDispose(listener);
+          },
+        );
+        final container = createContainer(
+          disposeDelay: const Duration(seconds: 5),
+        );
+
+        final sub = container.listen<void>(provider, (prev, next) {});
+        verifyZeroInteractions(listener);
+
+        sub.close();
+        async.elapse(const Duration(seconds: 5));
+        await container.pump();
+
+        verifyZeroInteractions(listener);
+
+        final sub2 = container.listen<void>(provider, (prev, next) {});
+        link.close();
+
+        async.elapse(Duration.zero);
+        await container.pump();
+
+        verifyZeroInteractions(listener);
+
+        sub2.close();
+        async.elapse(Duration.zero);
+        await container.pump();
+
+        verifyZeroInteractions(listener);
+
+        async.elapse(const Duration(seconds: 5));
+        await container.pump();
+
+        verifyOnly(listener, listener());
+      });
+    });
+  });
+
   group('cacheTime', () {
     group('reverts copyWithPrevious when cacheTime expires', () {
       test(

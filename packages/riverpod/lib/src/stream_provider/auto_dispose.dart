@@ -31,11 +31,13 @@ class AutoDisposeStreamProvider<State>
     Family? from,
     Object? argument,
     Duration? cacheTime,
+    Duration? disposeDelay,
   }) : super(
           name: name,
           from: from,
           argument: argument,
           cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   /// {@macro riverpod.family}
@@ -56,6 +58,7 @@ class AutoDisposeStreamProvider<State>
     from: from,
     argument: argument,
     cacheTime: cacheTime,
+    disposeDelay: disposeDelay,
   );
 
   /// {@template riverpod.streamprovider.future}
@@ -65,6 +68,7 @@ class AutoDisposeStreamProvider<State>
     from: from,
     argument: argument,
     cacheTime: cacheTime,
+    disposeDelay: disposeDelay,
   );
 
   /// {@template riverpod.streamprovider.future}
@@ -123,10 +127,12 @@ class AutoDisposeStreamProviderFamily<State, Arg>
     String? name,
     List<ProviderOrFamily>? dependencies,
     Duration? cacheTime,
+    Duration? disposeDelay,
   }) : super(
           name: name,
           dependencies: dependencies,
           cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   final FamilyCreate<Stream<State>, AutoDisposeStreamProviderRef<State>, Arg>

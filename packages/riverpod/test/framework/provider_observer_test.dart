@@ -249,6 +249,7 @@ void main() {
         await container.pump();
 
         verifyInOrder([
+          observer.didDisposeProvider(isNegative, container),
           observer.didUpdateProvider(
             provider,
             0,
@@ -262,6 +263,7 @@ void main() {
         await container.pump();
 
         verifyInOrder([
+          observer.didDisposeProvider(isNegative, container),
           observer.didUpdateProvider(
             provider,
             1,
@@ -468,6 +470,21 @@ void main() {
   });
 
   group('didDisposeProvider', () {
+    test('supports invalidate', () {
+      final observer = ObserverMock();
+      final container = createContainer(observers: [observer]);
+      final provider = Provider<int>((ref) => 0);
+
+      container.read(provider);
+      clearInteractions(observer);
+
+      container.invalidate(provider);
+      verifyOnly(observer, observer.didDisposeProvider(provider, container));
+
+      container.invalidate(provider);
+      verifyNoMoreInteractions(observer);
+    });
+
     test('supports container dispose', () {
       final observer = ObserverMock();
       final container = createContainer(observers: [observer]);

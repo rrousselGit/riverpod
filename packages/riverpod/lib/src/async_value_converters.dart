@@ -136,6 +136,7 @@ extension AutoDisposeAsyncProviderX<State>
         from: from,
         argument: argument,
         cacheTime: cacheTime,
+        disposeDelay: disposeDelay,
       );
 
   /// {@macro riverpod.asyncprovider.stream}
@@ -145,6 +146,7 @@ extension AutoDisposeAsyncProviderX<State>
         from: from,
         argument: argument,
         cacheTime: cacheTime,
+        disposeDelay: disposeDelay,
       );
 }
 
@@ -211,11 +213,13 @@ class AutoDisposeAsyncValueAsStreamProvider<State>
     required Family? from,
     required Object? argument,
     required Duration? cacheTime,
+    required Duration? disposeDelay,
   }) : super(
           name: modifierName(_provider.name, 'stream'),
           from: from,
           argument: argument,
           cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   final AutoDisposeProviderBase<AsyncValue<State>> _provider;
@@ -372,11 +376,13 @@ class AutoDisposeAsyncValueAsFutureProvider<State>
     required Family? from,
     required Object? argument,
     required Duration? cacheTime,
+    required Duration? disposeDelay,
   }) : super(
           name: modifierName(_provider.name, 'future'),
           from: from,
           argument: argument,
           cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   final AutoDisposeProviderBase<AsyncValue<State>> _provider;

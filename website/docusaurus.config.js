@@ -83,6 +83,10 @@ module.exports = {
               label: "GitHub",
               href: "https://github.com/rrousselgit/river_pod",
             },
+            {
+              label: "Code of conduct",
+              href: "https://github.com/rrousselGit/river_pod/blob/master/CODE_OF_CONDUCT.md",
+            },
           ],
         },
       ],
