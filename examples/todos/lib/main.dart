@@ -236,21 +236,19 @@ class TodoItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print("build");
     final todo = ref.watch(_currentTodo);
-    final itemFocusNode = useFocusNode();
-    // listen to focus chances
-    useListenable(itemFocusNode);
-    final isFocused = itemFocusNode.hasFocus;
-
     final textEditingController = useTextEditingController();
     final textFieldFocusNode = useFocusNode();
+    final isFocused = useValueNotifier(false);
+    useListenable(isFocused);
 
     return Material(
       color: Colors.white,
       elevation: 6,
       child: Focus(
-        focusNode: itemFocusNode,
         onFocusChange: (focused) {
+          isFocused.value = focused;
           if (focused) {
             textEditingController.text = todo.description;
           } else {
@@ -261,16 +259,13 @@ class TodoItem extends HookConsumerWidget {
           }
         },
         child: ListTile(
-          onTap: () {
-            itemFocusNode.requestFocus();
-            textFieldFocusNode.requestFocus();
-          },
+          onTap: () => isFocused.value = true,
           leading: Checkbox(
             value: todo.completed,
             onChanged: (value) =>
                 ref.read(todoListProvider.notifier).toggle(todo.id),
           ),
-          title: isFocused
+          title: isFocused.value
               ? TextField(
                   autofocus: true,
                   focusNode: textFieldFocusNode,
