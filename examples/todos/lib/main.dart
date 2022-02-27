@@ -237,9 +237,10 @@ class TodoItem extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final todo = ref.watch(_currentTodo);
+    final isFocused = useIsFocused();
+
     final textEditingController = useTextEditingController();
     final textFieldFocusNode = useFocusNode();
-    final isFocused = useIsFocused();
 
     return Material(
       color: Colors.white,
