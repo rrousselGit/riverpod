@@ -226,9 +226,9 @@ test('fetches catalog', () async {
 Wenn Ihr Objekt zu oft neu erstellt wird, besteht die Möglichkeit, dass 
 Ihr Provider auf Objekte hört, die ihn nicht interessieren.
 
-Sie können zum Beispiel ein "Configuration"-Objekt abhören, aber nur die 
+Sie können zum Beispiel ein `Configuration`-Objekt abhören, aber nur die 
 Eigenschaft `host` verwenden.  
-Wenn Sie das gesamte Objekt "Konfiguration" abhören und sich eine andere 
+Wenn Sie das gesamte Objekt `Configuration` abhören und sich eine andere 
 Eigenschaft als `host` ändert, würde dies dazu führen, dass Ihr Anbieter 
 neu ausgewertet wird, was möglicherweise unerwünscht ist.
 
@@ -249,7 +249,7 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 });
 ```
 
-**Bevorzugen** Sie es, nur auf das zu hören, was Sie benutzen:
+**BEVORZUGEN** Sie es, nur auf das zu hören, was Sie benutzen:
 
 ```dart
 final configsProvider = StreamProvider<Configuration>(...);
