@@ -240,7 +240,6 @@ class TodoItem extends HookConsumerWidget {
     final isFocused = useIsFocused();
 
     final textEditingController = useTextEditingController();
-    final textFieldFocusNode = useFocusNode();
 
     return Material(
       color: Colors.white,
@@ -267,7 +266,6 @@ class TodoItem extends HookConsumerWidget {
           title: isFocused.value
               ? TextField(
                   autofocus: true,
-                  focusNode: textFieldFocusNode,
                   controller: textEditingController,
                 )
               : Text(todo.description),
