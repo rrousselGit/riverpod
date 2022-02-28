@@ -237,7 +237,7 @@ class TodoItem extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final todo = ref.watch(_currentTodo);
-    final isFocused = useIsFocused();
+    final isFocused = useState(false);
 
     final textEditingController = useTextEditingController();
 
@@ -274,5 +274,3 @@ class TodoItem extends HookConsumerWidget {
     );
   }
 }
-
-ValueNotifier<bool> useIsFocused() => useState<bool>(false);
