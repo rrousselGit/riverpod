@@ -237,16 +237,18 @@ class TodoItem extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final todo = ref.watch(_currentTodo);
-    final isFocused = useState(false);
+    final itemFocusNode = useFocusNode();
+    final itemIsFocused = useIsFocused(itemFocusNode);
 
     final textEditingController = useTextEditingController();
+    final textFieldFocusNode = useFocusNode();
 
     return Material(
       color: Colors.white,
       elevation: 6,
       child: Focus(
+        focusNode: itemFocusNode,
         onFocusChange: (focused) {
-          isFocused.value = focused;
           if (focused) {
             textEditingController.text = todo.description;
           } else {
@@ -257,15 +259,19 @@ class TodoItem extends HookConsumerWidget {
           }
         },
         child: ListTile(
-          onTap: () => isFocused.value = true,
+          onTap: () {
+            itemFocusNode.requestFocus();
+            textFieldFocusNode.requestFocus();
+          },
           leading: Checkbox(
             value: todo.completed,
             onChanged: (value) =>
                 ref.read(todoListProvider.notifier).toggle(todo.id),
           ),
-          title: isFocused.value
+          title: itemIsFocused
               ? TextField(
                   autofocus: true,
+                  focusNode: textFieldFocusNode,
                   controller: textEditingController,
                 )
               : Text(todo.description),
@@ -273,4 +279,19 @@ class TodoItem extends HookConsumerWidget {
       ),
     );
   }
+}
+
+bool useIsFocused(FocusNode node) {
+  final hasFocusVN = useState(node.hasFocus);
+
+  useEffect(() {
+    void l() {
+      hasFocusVN.value = node.hasFocus;
+    }
+
+    node.addListener(l);
+    return () => node.removeListener(l);
+  }, [node]);
+
+  return hasFocusVN.value;
 }
