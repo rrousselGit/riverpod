@@ -56,7 +56,7 @@ Hacerlo permitiría que nuestra clase `Counter` lea providers.
 Los widgets, naturalmente, no tienen un parámetro `ref`. 
 Pero [Riverpod] ofrece múltiples soluciones para obtener uno de los widgets.
 
-#### Exteniendo de ConsumerWidget en lugar de StatelessWidget
+#### Extendiendo de ConsumerWidget en lugar de StatelessWidget
 
 La solución más común será reemplazar [StatelessWidget] por [ConsumerWidget] al crear un widget.
 
@@ -78,7 +78,7 @@ class HomeView extends ConsumerWidget {
 }
 ```
 
-#### Exteniendo de ConsumerStatefulWidget+ConsumerState en lugar de StatefulWidget+State
+#### Extendiendo de ConsumerStatefulWidget+ConsumerState en lugar de StatefulWidget+State
 
 Al igual que [ConsumerWidget], [ConsumerStatefulWidget] y [ConsumerState] son el equivalente 
 de un [StatefulWidget] con su [State] (estado), con la diferencia de que el estado tiene un objeto "ref".
@@ -111,7 +111,7 @@ class HomeViewState extends ConsumerState<HomeView> {
 }
 ```
 
-#### Exteniendo un HookConsumerWidget en lugar de HookWidget
+#### Extendiendo un HookConsumerWidget en lugar de HookWidget
 
 Esta solución es específica para los usuarios de [flutter_hooks]. Dado que [flutter_hooks] 
 requiere extender [HookWidget] para funcionar, los widgets que usan hooks no pueden 
@@ -437,7 +437,7 @@ final userProvider = StreamProvider<User>(...);
 
 Al leer este `userProvider`, usted puede:
 
-- leer sincrónicamente el estado actual escuchándo de `userProvider`:
+- leer sincrónicamente el estado actual escuchando de `userProvider`:
 
   ```dart
   Widget build(BuildContext context, WidgetRef ref) {
