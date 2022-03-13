@@ -1,0 +1,45 @@
+---
+title: StreamProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import configProvider from "!!raw-loader!/docs/providers/future_provider/config_provider.dart";
+import configConsumer from "!!raw-loader!/docs/providers/future_provider/config_consumer.dart";
+import { trimSnippet } from "../../src/components/CodeSnippet";
+
+`StreamProvider` es similar a [FutureProvider] pero aplicado a [Streams] en lugar de [Futures].
+
+`StreamProvider` normalmente es utilizado para:
+
+- escuchar a Firebase o web-sockets.
+- reconstruir otro proveedor cada pocos segundos.
+
+Dado que los [Streams] exponen naturalmente una manera de escuchar las actualizaciones, algunos
+podrían pensar que utilizar un `StreamProvider` tiene poco valor. De hecho, podría pensar que 
+los [StreamBuilder] de Flutter funcionarían de la misma manera al momento de escuchar un [Stream], 
+pero esto es un error.
+
+El uso de un `StreamProvider` en lugar de [StreamBuilder] tiene numerosos beneficios:
+
+- permite que otros proveedores escuchen al stream, utilizando [ref.watch].
+- asegura que los casos de carga y error se manejen correctamente, gracias a [AsyncValue].
+- elimina la necesidad de tener que diferenciar los streams de transmisión (broadcast streams) de 
+  los streams normales.
+- almacena en caché el último valor emitido por el stream, lo que garantiza que si se agrega un 
+  oyente luego de emitirse un evento, el oyente seguirá teniendo acceso inmediato al evento
+  más actualizado.
+- permite simular (mocking) fácilmente el stream durante las pruebas, anulando el `StreamProvider`.
+
+[ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
+[statenotifierprovider]: ./state_notifier_provider
+[provider]: ./provider
+[futureprovider]: ./future_provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[stream]: https://api.dart.dev/dart-async/Stream-class.html
+[streams]: https://api.dart.dev/dart-async/Stream-class.html
+[stream.periodic]: https://api.dart.dev/stable/2.15.1/dart-async/Stream/Stream.periodic.html
+[family]: ../concepts/modifiers/family
+[streambuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
