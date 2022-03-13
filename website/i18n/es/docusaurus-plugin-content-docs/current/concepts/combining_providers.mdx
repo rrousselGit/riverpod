@@ -127,7 +127,7 @@ automáticamente la lista cada vez que cambien las configuraciones o cuando camb
 A veces, queremos leer el contenido de un provider, pero sin recrear el valor expuesto cuando cambia el valor obtenido.
 
 Un ejemplo sería un `Repository`, que lee de otro provider el token de usuario para la autenticación.  
-Podríamos usar [watch] y crear uno nuevo `Repository` cada vez que cambie el token de usuario, pero no sirve de nada hacerlo.
+Podríamos usar [watch] y crear un nuevo `Repository` cada vez que cambie el token de usuario, pero no serviría de nada hacerlo.
  
 En esta situación, podemos usar [read], que es similar a [watch], pero no hará que el provider vuelva a crear el valor que expone cuando cambia el valor obtenido.
 
@@ -173,7 +173,7 @@ Sin embargo, pasar `ref.read` da como resultado un código un poco menos verboso
 y asegura que nuestro objeto nunca usará `ref.watch`.
 :::
 
-:::danger **NO** uses [read] dentro del cuerpo de un provider
+:::danger **NO** use [read] dentro del cuerpo de un provider
 
 ```dart
 final myProvider = Provider((ref) {
@@ -216,10 +216,10 @@ escuchando objetos que no le interesan.
 
 Por ejemplo, puede estar escuchando un objeto `Configuration`, pero solo usa la propiedad `host`. 
 Al escuchar todo el objeto `Configuration`, si `host` cambia una propiedad que no sea la misma, 
-esto provocaría que su provider sea reevaluado, lo que puede no ser deseado.
+esto provocaría que su provider sea reevaluado, algo que podría no ser lo deseado.
 
-La solución a este problema es crear un provider separado que exponga _solo_ lo que necesita 
-en `Configuration`(entonces `host`):
+La solución a este problema es crear un provider aparte que exponga _solo_ lo que necesita 
+en `Configuration`(para este caso, `host`):
 
 **EVITE** escuchar todo el objeto:
 
@@ -228,7 +228,7 @@ final configsProvider = StreamProvider<Configuration>(...);
 
 final productsProvider = FutureProvider<List<Product>>((ref) async {
   // Hará que productsProvider vuelva a obtener los productos si algo
-  // cambio en la configuración
+  // cambió en la configuración
   final configs = await ref.watch(configsProvider.future);
 
   return dio.get('${configs.host}/products');
@@ -248,8 +248,8 @@ final _hostProvider = FutureProvider<String>((ref) async {
 });
 
 final productsProvider = FutureProvider<List<Product>>((ref) async {
-  // Escucha solo al host. Si algo más en los cambios de las configuraciones 
-  // esto no volverá a evaluar inútilmente a nuestro provider.
+  // Escucha solo al host. Si algo más cambia en las configuraciones, 
+  // esto no provocará que nuestro provider sea evaluado inútilmente.
   final host = await ref.watch(_hostProvider.future);
 
   return dio.get('$host/products');
