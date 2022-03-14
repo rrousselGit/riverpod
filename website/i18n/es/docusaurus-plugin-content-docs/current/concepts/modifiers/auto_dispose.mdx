@@ -45,12 +45,12 @@ final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
 
 ### ref.maintainState
 
-Marcar un provider con `autoDispose` también agrega una propiedad adicional en `ref`:`maintainState`.
+Marcar un provider con `autoDispose` también agrega una propiedad adicional en `ref`: `maintainState`.
 
 La propiedad `maintainState` es un valor booleano (por defecto `false`) que permite al provider 
-decirle a Riverpod si el estado del provider debe conservarse incluso si ya no se escucha.
+decirle a Riverpod si su estado debe conservarse, incluso si ya no se escucha.
 
-Un caso de uso sería establecer este indicador `true` después de que se haya completado una solicitud HTTP:
+Un caso de uso sería establecer este indicador en `true` después de que se haya completado una solicitud HTTP:
 
 ```dart
 final myProvider = FutureProvider.autoDispose((ref) async {
@@ -61,8 +61,8 @@ final myProvider = FutureProvider.autoDispose((ref) async {
 ```
 
 De esta manera, si la solicitud falla y el usuario sale de la pantalla y luego vuelve a ingresar, 
-entonces la solicitud se realizará nuevamente. Pero si la solicitud se completó con éxito, 
-el estado se conservará y volver a ingresar a la pantalla no activará una nueva solicitud.
+la solicitud se realizará nuevamente. Pero si la solicitud se completó con éxito, 
+el estado se conservará, y al volver a ingresar a la pantalla no activará una nueva solicitud.
 
 ## Ejemplo: cancelar solicitudes HTTP cuando ya no se usan
 
@@ -71,9 +71,9 @@ fácilmente las solicitudes HTTP cuando ya no sean necesarias.
 
 El objetivo es:
 
-- Iniciar una solicitud HTTP cuando el usuario ingresa a una pantalla
-- si el usuario abandona la pantalla antes de que se complete la solicitud, cancele la solicitud HTTP
-- si la solicitud tuvo éxito, salir y volver a ingresar a la pantalla no inicia una nueva solicitud
+- iniciar una solicitud HTTP cuando el usuario ingresa a una pantalla.
+- si el usuario abandona la pantalla antes de que se complete la solicitud, cancele la solicitud HTTP.
+- si la solicitud tuvo éxito, salir y volver a ingresar a la pantalla no inicia una nueva solicitud.
 
 En código, esto sería:
 
