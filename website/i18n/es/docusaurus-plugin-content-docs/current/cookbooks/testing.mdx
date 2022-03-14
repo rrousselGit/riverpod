@@ -9,23 +9,23 @@ Para cualquier aplicación de mediana a gran escala, es fundamental hacer prueba
 
 Para testear con éxito nuestra aplicación, necesitaremos lo siguiente:
 
-- No se debe conservar ningún estado entre `test`/`testWidgets`. 
+- No conservar ningún estado entre `test`/`testWidgets`. 
   Eso significa que no hay estado global en la aplicación, o todos los estados globales 
   deben restablecerse después de cada test.
 
-- Siendo capaces de forzar a nuestros providers a tener un estado determinado, 
+- Ser capaces de forzar a nuestros providers a tener un estado determinado, 
   ya sea mediante "mocks" o manipulándolos hasta llegar al estado deseado.
 
 Veamos uno por uno cómo [Riverpod] te ayuda con esto.
 
-## No se debe conservar ningún estado entre `test`/`testWidgets`. 
+## No conservar ningún estado entre `test`/`testWidgets`. 
 
 Dado que los providers generalmente se declaran como variables globales, 
 es posible que te preocupes por eso. Después de todo, 
 el estado global hace que los test sean muy difíciles, 
 ya que puede requerir un `setUp`/`tearDown` bastante largo.
 
-Pero la realidad es: mientras que los providers se declaran como globales, 
+Pero la realidad es: que mientras que los providers se declaran como globales, 
 el estado de un provider **no** es global.
 
 En su lugar, se almacena en un objeto llamado [ProviderContainer], 
@@ -191,7 +191,7 @@ class Repository {
 final repositoryProvider = Provider((ref) => Repository());
 
 /// La lista de tareas. Aquí, simplemente los estamos obteniendo del servidor usando
-/// [Repository] y no haciendo nada más.
+/// [Repository], sin nada más que hacer.
 final todoListProvider = FutureProvider((ref) async {
   // Obtiene la instancia de Repository
   final repository = ref.read(repositoryProvider);
@@ -205,7 +205,7 @@ En esta situación, al realizar un test unitario o de widget, normalmente querre
 reemplazar nuestra instancia de `Repository` con una implementación falsa que devuelva 
 una respuesta predefinida en lugar de realizar una solicitud HTTP real.
 
-Entonces querremos que nuestro todoListProvider o equivalente use la implementación simulada de `Repository`.
+Entonces querremos que nuestro todoListProvider o equivalente use la implementación simulada (mocking) de `Repository`.
 
 Para lograr esto, podemos usar el parámetro `overrides` de [ProviderScope]/[ProviderContainer] 
 para sobrescribir el comportamiento de `repositoryProvider`:
@@ -228,7 +228,7 @@ testWidgets('override repositoryProvider', (tester) async {
         // FakeRepository en lugar de Repository.
         repositoryProvider.overrideWithValue(FakeRepository())
         // No tenemos que sobrescribir `todoListProvider`,
-        // automáticamente usara el repositoryProvider sobrescrito
+        // automáticamente usará el repositoryProvider sobrescrito
       ],
       child: MyApp(),
     ),
@@ -341,8 +341,8 @@ class Todo {
 // Exponemos nuestra instancia de Repository en un provider
 final repositoryProvider = Provider((ref) => Repository());
 
-/// La lista de tareas. Aquí, simplemente los estamos obteniendo del servidor usando 
-/// [ReposiRepositorytorio] y no hacemos nada más.
+/// La lista de tareas. Aquí, simplemente la estamos obteniendo del servidor usando 
+/// [Repository] y no hacemos nada más.
 final todoListProvider = FutureProvider((ref) async {
   // Obtiene la instancia del Repository
   final repository = ref.read(repositoryProvider);
@@ -401,7 +401,7 @@ void main() {
     // El primer frame es un estado de carga.
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-    // Re-renderiza. TodoListProvider ya debería haber obtener todos las tareas.
+    // Re-renderiza. TodoListProvider ya debería haber obtenido todas las tareas.
     await tester.pump();
 
     // Sin estado de carga.
