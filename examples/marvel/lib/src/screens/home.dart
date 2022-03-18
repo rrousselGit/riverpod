@@ -46,11 +46,12 @@ final characterPages = FutureProvider.autoDispose
       nameStartsWith: meta.name,
       cancelToken: cancelToken,
     );
-
-    // Once a page gets downloaded, preserve its state to avoid re-downloading it again.
-    ref.keepAlive();
     return charactersResponse;
   },
+  // When a page is no-longer use, keep it in cache for up to 5 minutes.
+  // After this point, if the list of characters is requested again, a new fetch
+  // will be performed.
+  cacheTime: const Duration(minutes: 5),
 );
 
 final charactersCount =
