@@ -22,6 +22,8 @@ class CharacterPagination with _$CharacterPagination {
   }) = _CharacterPagination;
 }
 
+class AbortedException implements Exception {}
+
 final characterPages = FutureProvider.autoDispose
     .family<MarvelListCharactersReponse, CharacterPagination>(
   (ref, meta) async {
@@ -30,6 +32,12 @@ final characterPages = FutureProvider.autoDispose
     // This typically happen if the user scrolls very fast
     final cancelToken = CancelToken();
     ref.onDispose(cancelToken.cancel);
+
+    // Debouncing the request. By having this delay, it leaves the opportunity
+    // for consumers to subscribe to a different `meta` parameters. In which
+    // case, this request will be aborted.
+    await Future<void>.delayed(const Duration(milliseconds: 250));
+    if (cancelToken.isCancelled) throw AbortedException();
 
     final repository = ref.watch(repositoryProvider);
     final charactersResponse = await repository.fetchCharacters(
