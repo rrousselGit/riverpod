@@ -285,12 +285,12 @@ bool useIsFocused(FocusNode node) {
   final hasFocusVN = useState(node.hasFocus);
 
   useEffect(() {
-    void l() {
+    void listener() {
       hasFocusVN.value = node.hasFocus;
     }
 
-    node.addListener(l);
-    return () => node.removeListener(l);
+    node.addListener(listener);
+    return () => node.removeListener(listener);
   }, [node]);
 
   return hasFocusVN.value;
