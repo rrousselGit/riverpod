@@ -238,9 +238,7 @@ class TodoItem extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final todo = ref.watch(_currentTodo);
     final itemFocusNode = useFocusNode();
-    // listen to focus chances
-    useListenable(itemFocusNode);
-    final isFocused = itemFocusNode.hasFocus;
+    final itemIsFocused = useIsFocused(itemFocusNode);
 
     final textEditingController = useTextEditingController();
     final textFieldFocusNode = useFocusNode();
@@ -270,7 +268,7 @@ class TodoItem extends HookConsumerWidget {
             onChanged: (value) =>
                 ref.read(todoListProvider.notifier).toggle(todo.id),
           ),
-          title: isFocused
+          title: itemIsFocused
               ? TextField(
                   autofocus: true,
                   focusNode: textFieldFocusNode,
@@ -281,4 +279,19 @@ class TodoItem extends HookConsumerWidget {
       ),
     );
   }
+}
+
+bool useIsFocused(FocusNode node) {
+  final isFocused = useState(node.hasFocus);
+
+  useEffect(() {
+    void listener() {
+      isFocused.value = node.hasFocus;
+    }
+
+    node.addListener(listener);
+    return () => node.removeListener(listener);
+  }, [node]);
+
+  return isFocused.value;
 }
