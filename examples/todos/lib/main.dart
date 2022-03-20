@@ -282,16 +282,16 @@ class TodoItem extends HookConsumerWidget {
 }
 
 bool useIsFocused(FocusNode node) {
-  final hasFocusVN = useState(node.hasFocus);
+  final isFocused = useState(node.hasFocus);
 
   useEffect(() {
     void listener() {
-      hasFocusVN.value = node.hasFocus;
+      isFocused.value = node.hasFocus;
     }
 
     node.addListener(listener);
     return () => node.removeListener(listener);
   }, [node]);
 
-  return hasFocusVN.value;
+  return isFocused.value;
 }
