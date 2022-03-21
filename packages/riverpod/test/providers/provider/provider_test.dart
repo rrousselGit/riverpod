@@ -35,6 +35,20 @@ void main() {
       expect(container.read(provider), 1);
     });
 
+    test(
+      'can be refreshed even if the type of state is nullalbe AsyncValue',
+      () {
+        final container = createContainer();
+        AsyncValue? nullableAsyncValue;
+
+        final provider = Provider<AsyncValue?>((ref) => nullableAsyncValue);
+        expect(container.read(provider), null);
+
+        nullableAsyncValue = const AsyncValue<dynamic>.loading();
+        expect(container.refresh(provider), isA<AsyncLoading>());
+      },
+    );
+
     group('ref.state', () {
       test('throws on providers that threw', () {
         final container = createContainer();
