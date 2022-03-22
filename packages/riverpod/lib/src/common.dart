@@ -275,12 +275,7 @@ class AsyncData<T> extends AsyncValue<T> {
 
   @override
   AsyncData<T> copyWithPrevious(AsyncValue<T> previous) {
-    return AsyncData._(
-      value,
-      isLoading: isLoading,
-      stackTrace: previous.stackTrace,
-      error: previous.error,
-    );
+    return this;
   }
 }
 

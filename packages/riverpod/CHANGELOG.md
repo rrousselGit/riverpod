@@ -1,3 +1,7 @@
+# 2.0.0-dev.5
+
+- Fixed a bug where emitting an `AsyncData` after an `AsyncError` leads to `AsyncValue.hasError` to be true
+
 # 2.0.0-dev.4
 
 - Added `ref.listenSelf`, for subscribing to changes of a provider within
