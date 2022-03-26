@@ -8,7 +8,7 @@
 // You can then use it in your terminal by executing:
 // generate_providers <riverpod/flutter_riverpod/hooks_riverpod> <path to builder file to update>
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'internals.dart';
 
 /// Builds a [ChangeNotifierProvider].
@@ -313,6 +313,53 @@ class ChangeNotifierProviderFamilyBuilder {
   }
 }
 
+/// Builds a [RestorableProvider].
+class RestorableProviderBuilder {
+  /// Builds a [RestorableProvider].
+  const RestorableProviderBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  RestorableProvider<Restorable>
+      call<Restorable extends RestorableProperty<dynamic>?>(
+          Create<Restorable, RestorableProviderRef<Restorable>> create,
+          {String? name,
+          List<ProviderOrFamily>? dependencies}) {
+    return RestorableProvider<Restorable>(create,
+        name: name, dependencies: dependencies);
+  }
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeRestorableProviderBuilder get autoDispose {
+    return const AutoDisposeRestorableProviderBuilder();
+  }
+
+  /// {@macro riverpod.family}
+  RestorableProviderFamilyBuilder get family {
+    return const RestorableProviderFamilyBuilder();
+  }
+}
+
+/// Builds a [RestorableProviderFamily].
+class RestorableProviderFamilyBuilder {
+  /// Builds a [RestorableProviderFamily].
+  const RestorableProviderFamilyBuilder();
+
+  /// {@macro riverpod.family}
+  RestorableProviderFamily<Restorable, Arg> call<
+          Restorable extends RestorableProperty<dynamic>?, Arg>(
+      FamilyCreate<Restorable, RestorableProviderRef<Restorable>, Arg> create,
+      {String? name,
+      List<ProviderOrFamily>? dependencies}) {
+    return RestorableProviderFamily<Restorable, Arg>(create,
+        name: name, dependencies: dependencies);
+  }
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeRestorableProviderFamilyBuilder get autoDispose {
+    return const AutoDisposeRestorableProviderFamilyBuilder();
+  }
+}
+
 /// Builds a [AutoDisposeChangeNotifierProvider].
 class AutoDisposeChangeNotifierProviderBuilder {
   /// Builds a [AutoDisposeChangeNotifierProvider].
@@ -355,6 +402,55 @@ class AutoDisposeChangeNotifierProviderFamilyBuilder {
           Duration? cacheTime,
           Duration? disposeDelay}) {
     return AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>(create,
+        name: name,
+        dependencies: dependencies,
+        cacheTime: cacheTime,
+        disposeDelay: disposeDelay);
+  }
+}
+
+/// Builds a [AutoDisposeRestorableProvider].
+class AutoDisposeRestorableProviderBuilder {
+  /// Builds a [AutoDisposeRestorableProvider].
+  const AutoDisposeRestorableProviderBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeRestorableProvider<Restorable> call<
+          Restorable extends RestorableProperty<dynamic>?>(
+      Create<Restorable, AutoDisposeRestorableProviderRef<Restorable>> create,
+      {String? name,
+      List<ProviderOrFamily>? dependencies,
+      Duration? cacheTime,
+      Duration? disposeDelay}) {
+    return AutoDisposeRestorableProvider<Restorable>(create,
+        name: name,
+        dependencies: dependencies,
+        cacheTime: cacheTime,
+        disposeDelay: disposeDelay);
+  }
+
+  /// {@macro riverpod.family}
+  AutoDisposeRestorableProviderFamilyBuilder get family {
+    return const AutoDisposeRestorableProviderFamilyBuilder();
+  }
+}
+
+/// Builds a [AutoDisposeRestorableProviderFamily].
+class AutoDisposeRestorableProviderFamilyBuilder {
+  /// Builds a [AutoDisposeRestorableProviderFamily].
+  const AutoDisposeRestorableProviderFamilyBuilder();
+
+  /// {@macro riverpod.family}
+  AutoDisposeRestorableProviderFamily<Restorable, Arg>
+      call<Restorable extends RestorableProperty<dynamic>?, Arg>(
+          FamilyCreate<Restorable, AutoDisposeRestorableProviderRef<Restorable>,
+                  Arg>
+              create,
+          {String? name,
+          List<ProviderOrFamily>? dependencies,
+          Duration? cacheTime,
+          Duration? disposeDelay}) {
+    return AutoDisposeRestorableProviderFamily<Restorable, Arg>(create,
         name: name,
         dependencies: dependencies,
         cacheTime: cacheTime,

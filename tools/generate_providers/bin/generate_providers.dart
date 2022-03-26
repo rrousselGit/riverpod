@@ -20,6 +20,7 @@ enum StateType {
   state,
   stateNotifier,
   changeNotifier,
+  restorable,
   future,
   stream,
 }
@@ -434,12 +435,20 @@ import 'internals.dart';
             generics: 'Notifier',
             createType: 'Notifier',
           ),
+          StateDetails(
+            kind: StateType.restorable,
+            className: 'RestorableProvider',
+            ref: 'RestorableProviderRef<Restorable>',
+            constraints: 'Restorable extends RestorableProperty<dynamic>?',
+            generics: 'Restorable',
+            createType: 'Restorable',
+          ),
         ],
         ProviderType.values,
       );
       builder.writeln(
         """
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'internals.dart';
 """,
       );

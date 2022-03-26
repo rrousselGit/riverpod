@@ -792,6 +792,7 @@ abstract class ProviderObserver {
   /// A provider was disposed
   void didDisposeProvider(
     ProviderBase provider,
+    Object? value,
     ProviderContainer container,
   ) {}
 }

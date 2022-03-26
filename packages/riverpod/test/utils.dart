@@ -174,6 +174,7 @@ class ObserverMock extends Mock implements ProviderObserver {
   @override
   void didDisposeProvider(
     ProviderBase<Object?>? provider,
+    Object? value,
     ProviderContainer? container,
   ) {
     super.noSuchMethod(

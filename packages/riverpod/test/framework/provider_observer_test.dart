@@ -15,7 +15,7 @@ void main() {
       final container = createContainer();
 
       observer.didAddProvider(provider, 0, container);
-      observer.didDisposeProvider(provider, container);
+      observer.didDisposeProvider(provider, 0, container);
       observer.didUpdateProvider(provider, 0, 0, container);
       observer.providerDidFail(provider, 0, StackTrace.empty, container);
     });
@@ -249,7 +249,7 @@ void main() {
         await container.pump();
 
         verifyInOrder([
-          observer.didDisposeProvider(isNegative, container),
+          observer.didDisposeProvider(isNegative, 0, container),
           observer.didUpdateProvider(
             provider,
             0,
@@ -263,7 +263,7 @@ void main() {
         await container.pump();
 
         verifyInOrder([
-          observer.didDisposeProvider(isNegative, container),
+          observer.didDisposeProvider(isNegative, 0, container),
           observer.didUpdateProvider(
             provider,
             1,
@@ -479,7 +479,7 @@ void main() {
       clearInteractions(observer);
 
       container.invalidate(provider);
-      verifyOnly(observer, observer.didDisposeProvider(provider, container));
+      verifyOnly(observer, observer.didDisposeProvider(provider, 0, container));
 
       container.invalidate(provider);
       verifyNoMoreInteractions(observer);
@@ -497,8 +497,8 @@ void main() {
       container.dispose();
 
       verifyInOrder([
-        observer.didDisposeProvider(provider, container),
-        observer.didDisposeProvider(provider.notifier, container),
+        observer.didDisposeProvider(provider, 0, container),
+        observer.didDisposeProvider(provider.notifier, 0, container),
       ]);
       verifyNoMoreInteractions(observer);
     });
@@ -518,17 +518,17 @@ void main() {
       await container.pump();
 
       verifyInOrder([
-        observer.didDisposeProvider(provider, container),
-        observer.didDisposeProvider(provider.notifier, container),
+        observer.didDisposeProvider(provider, 0, container),
+        observer.didDisposeProvider(provider.notifier, 0, container),
       ]);
       verifyNoMoreInteractions(observer);
     });
 
     test('is guarded', () {
       final observer = ObserverMock();
-      when(observer.didDisposeProvider(any, any)).thenThrow('error1');
+      when(observer.didDisposeProvider(any, 0, any)).thenThrow('error1');
       final observer2 = ObserverMock();
-      when(observer2.didDisposeProvider(any, any)).thenThrow('error2');
+      when(observer2.didDisposeProvider(any, 0, any)).thenThrow('error2');
       final observer3 = ObserverMock();
       final onDispose = OnDisposeMock();
       final provider = Provider((ref) {
@@ -552,13 +552,13 @@ void main() {
 
       expect(errors, ['error1', 'error2', 'error1', 'error2']);
       verifyInOrder([
-        observer.didDisposeProvider(provider2, container),
-        observer2.didDisposeProvider(provider2, container),
-        observer3.didDisposeProvider(provider2, container),
+        observer.didDisposeProvider(provider2, 0, container),
+        observer2.didDisposeProvider(provider2, 0, container),
+        observer3.didDisposeProvider(provider2, 0, container),
         onDispose(),
-        observer.didDisposeProvider(provider, container),
-        observer2.didDisposeProvider(provider, container),
-        observer3.didDisposeProvider(provider, container),
+        observer.didDisposeProvider(provider, 0, container),
+        observer2.didDisposeProvider(provider, 0, container),
+        observer3.didDisposeProvider(provider, 0, container),
       ]);
       verifyNoMoreInteractions(onDispose);
       verifyNoMoreInteractions(observer);

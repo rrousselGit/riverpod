@@ -929,9 +929,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _onDisposeListeners?.forEach(_runGuarded);
 
     for (final observer in _container._observers) {
-      _runBinaryGuarded(
+      _runTernaryGuarded(
         observer.didDisposeProvider,
         _origin,
+        _state?.stateOrNull,
         _container,
       );
     }

@@ -1,9 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart' hide describeIdentity;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
-import 'package:riverpod/riverpod.dart';
+
+import 'internals.dart';
 
 /// {@template riverpod.providerscope}
 /// A widget that stores the state of providers.
@@ -83,6 +85,8 @@ class ProviderScope extends StatefulWidget {
     this.cacheTime,
     this.disposeDelay,
     this.parent,
+    this.restorationId,
+    this.restorables = const [],
     required this.child,
   }) : super(key: key);
 
@@ -97,9 +101,8 @@ class ProviderScope extends StatefulWidget {
       scope = context //
           .dependOnInheritedWidgetOfExactType<UncontrolledProviderScope>();
     } else {
-      scope = context
-          .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
-          ?.widget as UncontrolledProviderScope?;
+      scope = context.getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()?.widget
+          as UncontrolledProviderScope?;
     }
 
     if (scope == null) {
@@ -166,6 +169,12 @@ class ProviderScope extends StatefulWidget {
   /// Informations on how to override a provider/family.
   final List<Override> overrides;
 
+  /// {@macro flutter.widgets.widgetsApp.restorationScopeId}
+  final String? restorationId;
+
+  /// Registers global [RestorableProvider]s for restoration.
+  final List<RestorableRestorationId> restorables;
+
   @override
   ProviderScopeState createState() => ProviderScopeState();
 }
@@ -173,7 +182,7 @@ class ProviderScope extends StatefulWidget {
 /// Do not use: The [State] of [ProviderScope]
 @visibleForTesting
 @sealed
-class ProviderScopeState extends State<ProviderScope> {
+class ProviderScopeState extends State<ProviderScope> with RestorationMixin implements ProviderObserver {
   /// The [ProviderContainer] exposed to [ProviderScope.child].
   @visibleForTesting
   // ignore: diagnostic_describe_all_properties
@@ -194,7 +203,10 @@ class ProviderScopeState extends State<ProviderScope> {
     container = ProviderContainer(
       parent: parent,
       overrides: widget.overrides,
-      observers: widget.observers,
+      observers: [
+        ...?widget.observers,
+        if (widget.restorables.isNotEmpty) this,
+      ],
       cacheTime: widget.cacheTime,
       disposeDelay: widget.disposeDelay,
       // TODO How to report to FlutterError?
@@ -261,6 +273,18 @@ class ProviderScopeState extends State<ProviderScope> {
       container.updateOverrides(widget.overrides);
     }
 
+    // Watch for changes to overidden RestorableProvider
+    // Not sure if nessisary
+    for (final override in widget.overrides) {
+      if (override is RestorableProviderOverride) {
+        container.listen<RestorableProperty?>(override.override, (prev, next) {
+          if (identical(prev, next)) return;
+          if (prev != null) unregisterFromRestoration(prev);
+          if (next != null) registerForRestoration(next, override.restorationId);
+        });
+      }
+    }
+
     return UncontrolledProviderScope(
       container: container,
       child: widget.child,
@@ -271,6 +295,89 @@ class ProviderScopeState extends State<ProviderScope> {
   void dispose() {
     container.dispose();
     super.dispose();
+  }
+
+  @override
+  String? get restorationId => widget.restorationId;
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+    for (final override in widget.overrides) {
+      if (override is RestorableProviderOverride) {
+        final value = container.read(override.override);
+        if (value is RestorableProperty) {
+          registerForRestoration(value, override.restorationId);
+        }
+      }
+    }
+  }
+
+  @override
+  void didAddProvider(
+    ProviderBase<Object?> provider,
+    Object? value,
+    ProviderContainer container,
+  ) {
+    final restorationId = _providerRestorationId(provider, container);
+    if (restorationId == null) return;
+
+    if (value is RestorableProperty) {
+      registerForRestoration(value, restorationId);
+    }
+  }
+
+  @override
+  void didUpdateProvider(
+    ProviderBase<Object?> provider,
+    Object? previousValue,
+    Object? newValue,
+    ProviderContainer container,
+  ) {
+    if (identical(previousValue, newValue)) return;
+
+    final restorationId = _providerRestorationId(provider, container);
+    if (restorationId == null) return;
+
+    if (previousValue is RestorableProperty) {
+      unregisterFromRestoration(previousValue);
+    }
+    if (newValue is RestorableProperty) {
+      registerForRestoration(newValue, restorationId);
+    }
+  }
+
+  @override
+  void didDisposeProvider(
+    ProviderBase<Object?> provider,
+    Object? value,
+    ProviderContainer container,
+  ) {
+    final restorationId = _providerRestorationId(provider, container);
+    if (restorationId == null) return;
+
+    if (value is RestorableProperty) {
+      unregisterFromRestoration(value);
+    }
+  }
+
+  @override
+  void providerDidFail(
+    ProviderBase<Object?> provider,
+    Object error,
+    StackTrace stackTrace,
+    ProviderContainer container,
+  ) {}
+
+  String? _providerRestorationId(ProviderBase provider, ProviderContainer container) {
+    // Only look for providers for this container.
+    // We only care about providers that implement OverrideWithProviderMixin
+    if (container != this.container || provider is! OverrideWithProviderMixin) {
+      return null;
+    }
+
+    return widget.restorables
+        .firstWhereOrNull((e) => identical(e.provider, provider.from ?? provider))
+        ?.restorationIdFromArg(provider.argument);
   }
 }
 
