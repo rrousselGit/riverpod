@@ -41,13 +41,16 @@ class MarvelRepository {
   }) async {
     final cleanNameFilter = nameStartsWith?.trim();
 
-    final response =
-        await _get('characters', queryParameters: <String, Object?>{
-      'offset': offset,
-      if (limit != null) 'limit': limit,
-      if (cleanNameFilter != null && cleanNameFilter.isNotEmpty)
-        'nameStartsWith': cleanNameFilter,
-    });
+    final response = await _get(
+      'characters',
+      queryParameters: <String, Object?>{
+        'offset': offset,
+        if (limit != null) 'limit': limit,
+        if (cleanNameFilter != null && cleanNameFilter.isNotEmpty)
+          'nameStartsWith': cleanNameFilter,
+      },
+      cancelToken: cancelToken,
+    );
 
     final result = MarvelListCharactersReponse(
       characters: response.data.results.map((e) {
