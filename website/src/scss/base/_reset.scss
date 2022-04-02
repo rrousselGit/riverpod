@@ -42,6 +42,6 @@ section {
   max-width: 100vw;
 }
 
-pre code {
-  background-color: var(--ifm-pre-background);;
+html[data-theme=light]  pre code {
+  background-color: var(--ifm-pre-background);
 }
