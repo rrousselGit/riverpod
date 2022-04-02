@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, {ReactElement, useEffect, useState} from "react";
 import CodeBlock from "@theme/CodeBlock";
 import useThemeContext from '@theme/hooks/useThemeContext';
 
@@ -30,10 +30,17 @@ interface CodeSnippetProps {
 }
 
 export const CodeSnippet: React.FC<CodeSnippetProps> = ({ snippet, title}) => {
-  const {isDarkTheme} = useThemeContext()
+  const themeData = useThemeContext()
+  const [isDarkTheme, setIsDarkTheme] = useState<boolean>(true)
+
+  useEffect(() => {
+    if(themeData){
+      setTimeout(() => setIsDarkTheme(themeData.isDarkTheme), 0)
+    }
+  },[themeData])
 
   return (
-    <div className={`snippet ${!isDarkTheme && 'whiteCodeBlock'}`}>
+    <div className={`snippet ${!isDarkTheme ? 'whiteCodeBlock' : ''}`}>
       <div className="snippet__title_bar">
         <div className="snippet__dots">
           <div className="snippet__dot"></div>
