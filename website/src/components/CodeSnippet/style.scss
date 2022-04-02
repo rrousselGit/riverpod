@@ -1,6 +1,11 @@
 .snippet {
   position: relative;
 
+  &.whiteCodeBlock  pre code {
+    background-color: white;
+  }
+
+
   &__title_bar {
     position: absolute;
     right: 0;
