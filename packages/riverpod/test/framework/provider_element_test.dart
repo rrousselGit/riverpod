@@ -104,7 +104,7 @@ void main() {
     });
   });
 
-  group('delayTime', () {
+  group('disposeDelay', () {
     test(
         'keeps the provider alive for duration after the last listener is removed',
         () async {
@@ -1204,6 +1204,23 @@ void main() {
       verifyZeroInteractions(listener);
     });
 
+    test('is not called when using container.read (autoDispose)', () async {
+      final container = createContainer();
+      final listener = OnCancelMock();
+      final dispose = OnDisposeMock();
+      final provider = StateProvider.autoDispose((ref) {
+        ref.keepAlive();
+        ref.onCancel(listener);
+        ref.onDispose(dispose);
+      });
+
+      container.read(provider);
+      await container.pump();
+
+      verifyZeroInteractions(listener);
+      verifyZeroInteractions(dispose);
+    });
+
     test('listeners are cleared on rebuild', () {
       final container = createContainer();
       final listener = OnCancelMock();
@@ -1312,7 +1329,7 @@ void main() {
     final listener = Listener<int?>();
 
     expect(container.read(dep), 10);
-    container.listen(dependent, listener, fireImmediately: true);
+    container.listen<int?>(dependent, listener, fireImmediately: true);
 
     verifyOnly(listener, listener(null, null));
 
