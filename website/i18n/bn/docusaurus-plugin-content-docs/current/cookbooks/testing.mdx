@@ -1,0 +1,141 @@
+---
+title: টেস্টিং
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import testingOriginalTestFlutter from "!!raw-loader!./testing_original_test_flutter.dart";
+import testingOriginalTestDart from "!!raw-loader!./testing_original_test_dart.dart";
+import repositorySnippet from "!!raw-loader!./testing_repository.dart";
+import testFlutter from "!!raw-loader!./testing_flutter.dart";
+import testDart from "!!raw-loader!./testing_dart.dart";
+import testFull from "!!raw-loader!./testing_full.dart";
+import testOverrideInfo from "!!raw-loader!./testing_override_info.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+
+যেকোনো মাঝারি থেকে বড় আকারের অ্যাপ্লিকেশনের জন্য, অ্যাপ্লিকেশনটি টেস্টিং করা গুরুত্বপূর্ণ।
+
+সফলভাবে আমাদের এ্যাপ টেস্টিং করার জন্য, আমরা নিম্নলিখিত জিনিসগুলি দরকার:
+
+- কোন স্টেট `test`/`testWidgets` এর মধ্যে সংরক্ষিত থাকবে না।  
+  এটির অর্থ হচ্ছে কোন গ্লোবাল স্টেট থাকবে না, অথবা সকল গ্লোবাল স্টেট রিসেট করতে হবে প্রতি টেস্ট এর পরে।
+
+- আমাদের প্রভাইডার গুলাকে জোরপূর্বক একটি নির্দিষ্ট স্টেট এ আনার ক্ষমতা, হয়তোবা মকিং দিয়ে অথবা তাদের ম্যানুপুলেট করে যতক্ষণনা আমরা আমদের চাওয়া স্টেট পাচ্ছি না।
+
+চলুন দেখি [Riverpod] কিভাবে আপনাকে সাহায্য করতে পারে।
+
+## কোন স্টেট `test`/`testWidgets` এর মধ্যে সংরক্ষিত থাকবে না।
+
+সাধারণত প্রোভাইডার গুলা গ্লোবাল ভ্যারিয়েবেল হিসেবে ডিক্লার করা থাকে, যা নিয়ে আপনার চিন্তা করা উচিত।
+পরিশেষে, গ্লোবাল স্ট্যাট টেস্ট করা খুব কষ্টসাধ্য একটি কাজ, কারণ এটিতে আপনার অনেক লম্বা `setUp`/`tearDown` এর মুখোমুখী হতে হবে.
+
+কিন্তু সত্যি এই যে: প্রোভাইডার গুলা গ্লোবাল ভাবে ডিক্লার হলে ও, প্রোভাইডার এর স্ট্যাট গ্লোবাল **না**।
+
+এর পরিবর্তে, এটি [ProviderContainer] নাম এর একটি অবজেক্ট এ স্টোর করা থাকে, হয়তো এটি আপনি দেখেছেন, যদি আপনি ডার্ট এর (dart-only) উদাহরণটা দেখে থাকেন। 
+
+যদি আপনি না দেখে থাকেন, এটি জেনে রাখেন যে [ProviderContainer] অবজেক্টটি পরোক্ষভাবে তৈরি হয়ে থাকে [ProviderScope] দিয়ে, এই উইজেট সেটাই যেটা আমাদের প্রজেক্ট এ [Riverpod] চালু করে দেই.
+
+নিশ্চিতভাবে এর মানে, দুইটি `testWidgets` প্রোভাইডার ব্যবহার করলে ও তাদের মধ্যে কোন স্ট্যাট এর শেয়ার করে না।
+এই হিসাবে এখানে কোন `setUp`/`tearDown` প্রয়োজন নেই একেবারে.
+
+কিন্তু একটি উদাহরণ অনেক উত্তম লম্বা ব্যাখ্যা এর চেয়ে:
+
+<Tabs
+  defaultValue="testWidgets"
+  values={[
+    { label: 'testWidgets (Flutter)', value: 'testWidgets', },
+    { label: 'test (Dart only)', value: 'test', },
+  ]}
+>
+<TabItem value="testWidgets">
+
+<CodeBlock>{trimSnippet(testingOriginalTestFlutter)}</CodeBlock>
+
+</TabItem>
+<TabItem value="test">
+
+<CodeBlock>{trimSnippet(testingOriginalTestDart)}</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+যেটা আমরা এখানে দেখতে পাচ্ছি, `counterProvider` গ্লোবালি ডিক্লার হলেও, টেস্টগুলার মধ্যে কোন স্টেট শেয়ার করা হয়নি। এই কারণে, আমাদের চিন্তা করতে হবে না এই যে, আমাদের টেস্ট গুলা সম্ভবত ভিন্নভাবে বিহেব করবে, যদি আমরা তা ভিন্নভাবে এক্সিকিউট করি, কারণ তা সম্পূর্ণভাবে আইসোলেটেড ভাবে চলতেছে।
+
+## একটি প্রভাইডার এর আচরণ ওভারড়াইড করা
+
+একটি সাধারণ বাস্তব-জীবন এর এপ্লিকেশন এর নিম্নোক্ত অবজেক্ট গুলা থাকে:
+
+- এটির একটি `Repository` ক্লাস থাকবে, যেটি টাইপ সেইফ এবং সাধারণ একটি এপিয়াই প্রভাইড করে যেটি HTTP রিকুয়েস্ট এক্সিকিউট করে
+
+- একটি অবজেক্ট যা এপ্লিকেশন এর স্ট্যট ম্যানেজ করে, এবং এটি হয়তো `Repository` ব্যবহার করবে বিভিন্ন ফ্যাক্টর এর উপর ভিত্তি করে। এটি হয়তোবা `ChangeNotifier`, `Bloc`, অথবা প্রোভাইডার ও হতে পারে.
+
+[Riverpod] ব্যবহার করে, এটি নিম্নোক্ত ভাবে হয়ে থাকতে পারে:
+
+<CodeBlock>{trimSnippet(repositorySnippet)}</CodeBlock>
+
+এই অবস্থায়, যখন আমরা unit/widget টেস্ট বানাব, আমরা সাধারণত আমাদের  `Repository` ইন্সট্যান্সকে একটি ফেক ইমপ্লেমেন্টেশন দিয়ে রিপ্লেস করে দিব, যেটি আমাদের আগে থেকে ঠিক করা কিছু রেসপন্স পাঠাবে, সত্যিকারের HTTP রিকুয়েস্ট করা ছাড়া।
+
+আমরা তখন আমাদের `todoListProvider` কে অথবা তার সমমানকে `Repository` এর একটি মক ইমপ্লেমেন্টেশন ব্যবহার করাতে চাইব।
+
+আমরা এটি এচিভ করার জন্য `overrides` প্যারামিটারটি আমরা ব্যবহার করতে পারব যা [ProviderScope]/[ProviderContainer] এ রয়েছে, `repositoryProvider` এর আচরণ পরিবর্তন করার জন্যঃ
+
+<Tabs
+  defaultValue="ProviderScope"
+  values={[
+    { label: 'ProviderScope (Flutter)', value: 'ProviderScope', },
+    { label: 'ProviderContainer (Dart only)', value: 'ProviderContainer', },
+  ]}
+>
+<TabItem value="ProviderScope">
+
+<CodeBlock>{trimSnippet(testFlutter)}</CodeBlock>
+
+</TabItem>
+<TabItem value="ProviderContainer">
+
+<CodeBlock>{trimSnippet(testDart)}</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+হাইলেটেড কোড হতে আপনি দেখতে পাচ্ছেন, [ProviderScope]/[ProviderContainer]
+অনুমতি (Allow) দেই একটি প্রভাইডার এর ইমপ্লেমেন্টেশন এর আচরণ পরিবর্তন করার।
+
+:::info
+কিছু আর সিম্পল ভাবে ওভাররাইড করার রাস্তা এক্সপোস করে.  
+উদাহারণসরূপ, [FutureProvider] অনুমতি দেই `AsyncValue` দিয়ে একটি প্রভাইডার ওভাররাইড করার:
+
+<CodeBlock>{trimSnippet(testOverrideInfo)}</CodeBlock>
+
+:::
+
+:::info
+`family` মডিফাইয়ার কে একটি প্রভাইডার দিয়ে ওভাররাইড করার পদ্ধতি একটু ভিন্ন।
+
+যদি আপনি এরকম একটি প্রভাইডার ব্যবহার করে থাকেনঃ
+
+```dart
+final response = ref.watch(myProvider('12345'));
+```
+
+আপনি প্রভাইডারটা কে এভাবে ওভাররাইড করতে পারেন:
+
+```dart
+myProvider('12345').overrideWithValue(...));
+```
+
+:::
+
+## সম্পূর্ণ উইজেট টেস্ট ঊদাহারণ
+
+এখানেই শেষ করতেছি, নিচে পুরো কোড স্নিপেট দেওয়া হল ফ্লাটার টেস্ট এর।
+
+<CodeBlock>{trimSnippet(testFull)}</CodeBlock>
+
+[riverpod]: https://github.com/rrousselgit/river_pod
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
+[futureprovider]: ../providers/future_provider
+[zone]: https://api.flutter.dev/flutter/dart-async/Zone-class.html

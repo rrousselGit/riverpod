@@ -1,0 +1,39 @@
+---
+title: StateNotifierProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todos from "!!raw-loader!/docs/providers/state_notifier_provider/todos.dart";
+import todosConsumer from "!!raw-loader!/docs/providers/state_notifier_provider/todos_consumer.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`StateNotifierProvider` ist ein Provider, der zum Lauschen verwendet wird, der einen
+[StateNotifier] zur Verfügung stellt (vom Paket [state_notifier], welches Riverpod Re-exportiert).  
+`StateNotifierProvider` zusammen mit [StateNotifier] ist die von Riverpod empfohlene Lösung für 
+die Verwaltung von Zuständen, die sich in Reaktion auf eine Benutzerinteraktion ändern können.
+
+Typischerweise wird es für folgendes verwendet:
+
+- Veröffentlichung eines **immutable** Zustands, der sich im Laufe der Zeit ändern kann, nachdem 
+  er auf benutzerdefinierte Ereignisse reagiert hat.
+- Zentralisierung der Logik für die Änderung eines Zustands (aka "business logic") an einer 
+  einzigen Stelle, wodurch die Wartbarkeit im Laufe der Zeit verbessert wird.
+
+
+Als Anwendungsbeispiel könnten wir `StateNotifierProvider` verwenden, um eine ToDo-Liste zu 
+implementieren. Dies würde uns erlauben, Methoden wie `addTodo` bereitzustellen, damit die UI 
+die Liste der ToDo's bei Benutzerinteraktionen zu ändern:
+
+<CodeBlock>{trimSnippet(todos)}</CodeBlock>
+
+Nachdem wir nun einen `StateNotifierProvider` definiert haben, können wir ihn verwenden, 
+um mit der Liste der ToDo's in unserer UI:
+
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
+
+[state_notifier]: https://pub.dev/packages/state_notifier
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[provider]: ./provider
+[futureprovider]: ./future_provider

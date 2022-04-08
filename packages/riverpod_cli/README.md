@@ -18,7 +18,7 @@ A command line for Riverpod, to help upgrade to newer versions of Riverpod.
 
 ## Installation
 
-To install the migration tool, do:
+To install the migration tool, run:
 
 ```sh
 dart pub global activate riverpod_cli

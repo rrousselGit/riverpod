@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart' hide describeIdentity;
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
@@ -79,6 +80,9 @@ class ProviderScope extends StatefulWidget {
     Key? key,
     this.overrides = const [],
     this.observers,
+    this.cacheTime,
+    this.disposeDelay,
+    this.parent,
     required this.child,
   }) : super(key: key);
 
@@ -105,6 +109,54 @@ class ProviderScope extends StatefulWidget {
     return scope.container;
   }
 
+  /// The minimum amount of time before an `autoDispose` provider can be
+  /// disposed if not listened.
+  ///
+  /// If the provider rebuilds (such as when using `ref.watch` or `ref.refresh`),
+  /// the timer will be refreshed.
+  ///
+  /// If null, use the nearest ancestor [ProviderScope]'s [cacheTime].
+  /// If no ancestor is found, fallbacks to [Duration.zero].
+  final Duration? cacheTime;
+
+  /// The amount of time before a provider is disposed after its last listener
+  /// is removed.
+  ///
+  /// If a new listener is added within that duration, the provider will not be
+  /// disposed.
+  ///
+  /// If null, use the nearest ancestor [ProviderContainer]'s [disposeDelay].
+  /// If no ancestor is found, fallbacks to [Duration.zero].
+  final Duration? disposeDelay;
+
+  /// Explicitly override the parent [ProviderContainer] that this [ProviderScope]
+  /// would be a descendant of.
+  ///
+  /// A common use-case is to allow modals to access scoped providers, as they
+  /// would otherwise be unable to since they would be in a different branch
+  /// of the widget tree.
+  ///
+  /// That can be achieved with:
+  ///
+  /// ```dart
+  /// ElevatedButton(
+  ///   onTap: () {
+  ///     final container = ProviderScope.containerOf(context);
+  ///     showDialog(
+  ///       context: context,
+  ///       builder: (context) {
+  ///         return ProviderScope(parent: container, child: MyModal());
+  ///       },
+  ///     );
+  ///   },
+  ///   child: Text('show modal'),
+  /// )
+  /// ```
+  ///
+  ///
+  /// The [parent] variable must never change.
+  final ProviderContainer? parent;
+
   /// The part of the widget tree that can use Riverpod and has overridden providers.
   final Widget child;
 
@@ -125,26 +177,26 @@ class ProviderScopeState extends State<ProviderScope> {
   /// The [ProviderContainer] exposed to [ProviderScope.child].
   @visibleForTesting
   // ignore: diagnostic_describe_all_properties
-  late ProviderContainer container;
+  late final ProviderContainer container;
   ProviderContainer? _debugParentOwner;
   var _dirty = false;
 
   @override
   void initState() {
     super.initState();
-    final scope = context
-        .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
-        ?.widget as UncontrolledProviderScope?;
 
+    final parent = _getParent();
     assert(() {
-      _debugParentOwner = scope?.container;
+      _debugParentOwner = parent;
       return true;
     }(), '');
 
     container = ProviderContainer(
-      parent: scope?.container,
+      parent: parent,
       overrides: widget.overrides,
       observers: widget.observers,
+      cacheTime: widget.cacheTime,
+      disposeDelay: widget.disposeDelay,
       // TODO How to report to FlutterError?
       // onError: (dynamic error, stack) {
       //   FlutterError.reportError(
@@ -158,20 +210,46 @@ class ProviderScopeState extends State<ProviderScope> {
     );
   }
 
+  ProviderContainer? _getParent() {
+    if (widget.parent != null) {
+      return widget.parent;
+    } else {
+      final scope = context
+          .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
+          ?.widget as UncontrolledProviderScope?;
+
+      return scope?.container;
+    }
+  }
+
   @override
   void didUpdateWidget(ProviderScope oldWidget) {
     super.didUpdateWidget(oldWidget);
     _dirty = true;
+
+    if (oldWidget.parent != widget.parent) {
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          library: 'flutter_riverpod',
+          exception: UnsupportedError(
+            'Changing ProviderScope.parent is not supported',
+          ),
+          context: ErrorDescription('while rebuilding ProviderScope'),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     assert(() {
-      final scope = context
-          .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
-          ?.widget as UncontrolledProviderScope?;
+      if (widget.parent != null) {
+        // didUpdateWidget already takes care of widget.parent change
+        return true;
+      }
+      final parent = _getParent();
 
-      if (scope?.container != _debugParentOwner) {
+      if (parent != _debugParentOwner) {
         throw UnsupportedError(
           'ProviderScope was rebuilt with a different ProviderScope ancestor',
         );
@@ -272,6 +350,7 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
     assert(_task == null, 'Only one task can be scheduled at a time');
     _task = task;
 
+    // ignore: unnecessary_non_null_assertion, blocked by https://github.com/rrousselGit/river_pod/issues/1156
     if (SchedulerBinding.instance!.schedulerPhase ==
         SchedulerPhase.transientCallbacks) {
       markNeedsBuild();

@@ -1,0 +1,125 @@
+---
+title: .autoDispose
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+多くの場合、参照されなくなったプロバイダのステート（状態）は破棄することが望ましいはずです。
+破棄する理由は様々ですが、例えば次のようなケースが考えられます。
+
+- Firebase 使用時に、サービスとの接続を切って不必要な負荷を避けるため。
+- ユーザが別の画面に遷移してまた戻って来る際に、ステートをリセットしてデータ取得をやり直すため。
+
+Riverpod はこのようなケースにも `.autoDispose` 修飾子を使うことで対応することが可能です。
+
+## 使用方法
+
+プロバイダ作成時に次のように `.autoDispose` 修飾子を付け加えてください。
+
+```dart
+final userProvider = StreamProvider.autoDispose<User>((ref) {
+
+});
+```
+
+これで `userProvider` が参照されなくなった際に、ステートが自動的に破棄されるようになります。
+
+ちなみに、ジェネリクスの型引数が `autoDispose` の前ではなく後にあることから分かる通り、
+`autoDispose` は名前付きコンストラタではありません。
+
+:::note
+`.autoDispose` 修飾子は他の修飾子と組み合わせることもできます。
+
+```dart
+final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
+
+});
+```
+
+:::
+
+### `ref.keepAlive`
+
+プロバイダに `.autoDispose` 修飾子を付けると、`ref` オブジェクトに `keepAlive` というメソッドが追加されます。
+
+この `keepAlive` メソッドを実行することで、プロバイダが参照されなくなった際にもステートを維持するよう Riverpod に伝えることができます。
+
+例えば、次のコードの通り HTTP リクエスト完了後に `keepAlive` を実行するとします。
+
+```dart
+final myProvider = FutureProvider.autoDispose((ref) async {
+  final response = await httpClient.get(...);
+  ref.keepAlive();
+  return response;
+});
+```
+
+すると、リクエスト完了前に画面を破棄して再度同じ画面に戻った場合は HTTP リクエストが再実行される一方、
+リクエスト完了後に同じ動作を行った場合はステートが維持されるため、HTTP リクエストが再実行されることはありません。
+
+## 使用例: プロバイダが参照されなくなったタイミングで HTTP リクエストをキャンセルする
+
+`.autoDispose` 修飾子と [FutureProvider]、そして `ref.onDispose` を組み合わせて、
+プロバイダが参照されなくなったタイミング（プロバイダのステートを監視するオブジェクトがなくなったタイミング）で HTTP リクエストをキャンセルすることができます。
+
+実装したい動作は次の3点です。
+
+- ユーザが画面に入ったら、HTTP リクエストを開始
+- リクエスト完了前に画面を離れてステートが破棄されたら、HTTP リクエストをキャンセル
+- リクエストが成功したら状態を維持し、再び同じ画面に入っても新たなリクエストが開始されないようにする
+
+コードは以下の通りです。
+
+```dart
+final myProvider = FutureProvider.autoDispose((ref) async {
+  // http リクエストのキャンセルを実行するための package:dio のオブジェクト
+  final cancelToken = CancelToken();
+  // プロバイダのステートが破棄されたら http リクエストをキャンセル
+  ref.onDispose(() => cancelToken.cancel());
+
+  // データを取得しつつキャンセル用の `cancelToken` を渡す
+  final response = await dio.get('path', cancelToken: cancelToken);
+  // リクエストが成功したらステートを維持する
+  ref.keepAlive();
+  return response;
+});
+```
+
+## エラー：The argument type 'AutoDisposeProvider' can't be assigned to the parameter type 'AlwaysAliveProviderBase'
+
+`.autoDispose` を使用していると、次のようなコンパイル時エラーに出くわすことがあるかもしれません。
+
+> The argument type 'AutoDisposeProvider' can't be assigned to the parameter
+> type 'AlwaysAliveProviderBase'
+
+（日本語訳: 引数型 'AutoDisposeProvider' はパラメータ型 'AlwaysAliveProviderBase' にアサインできません）
+
+心配は無用です! これは書いたコードに起因するエラーのため、修正可能です。
+
+原因は `.autoDispose` 修飾子付きのプロバイダを、そうではないプロバイダ内で利用したためです。
+例えば...
+
+```dart
+final firstProvider = Provider.autoDispose((ref) => 0);
+
+final secondProvider = Provider((ref) {
+  // エラー：The argument type 'AutoDisposeProvider<int>' can't be assigned to
+  // the parameter type 'AlwaysAliveProviderBase<Object, Null>'
+  ref.watch(firstProvider);
+});
+```
+
+この場合 `firstProvider` が破棄されることはありません。
+
+エラーを解消するには、`secondProvider` も同様に `.autoDispose` 修飾子を付ける必要があります。
+
+```dart
+final firstProvider = Provider.autoDispose((ref) => 0);
+
+final secondProvider = Provider.autoDispose((ref) {
+  ref.watch(firstProvider);
+});
+```
+
+[futureprovider]: ../../providers/future_provider

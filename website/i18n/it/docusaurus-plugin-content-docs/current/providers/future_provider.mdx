@@ -1,0 +1,54 @@
+---
+title: FutureProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import configProvider from "!!raw-loader!/docs/providers/future_provider/config_provider.dart";
+import configConsumer from "!!raw-loader!/docs/providers/future_provider/config_consumer.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`FutureProvider` è l'equivalente di [Provider] ma per il codice asincrono.
+
+`FutureProvider` è tipicamente usato per:
+
+- eseguire e memorizzare nella cache operazioni asincrone (come le richieste di rete)
+- gestire ottimamente gli stati di errore/caricamento delle operazioni asincrone
+- combinare più valori asincroni in un altro valore
+
+`FutureProvider` è ottimo quando combinato con [ref.watch]. Tale combinazione consente il ri-ottenimento automatico 
+dei dati al variare di alcune variabili, assicurando che si abbia sempre il valore più aggiornato.
+
+:::info
+`FutureProvider` non offre un modo per modificare direttamente il calcolo (o computazione) dopo un'interazione dell'utente. 
+È invece progettato per risolvere semplici casi d'uso. 
+Per scenari più avanzati, considera usare [StateNotifierProvider].
+:::
+
+## Esempio d'uso: leggere un file di configurazione
+
+`FutureProvider` può essere utile per esporre un oggetto `Configuration` 
+creato leggendo un file JSON.
+
+La creazione della configurazione verrebbe eseguita con la tipica sintassi async/await, ma all'interno del provider. 
+Usando gli asset di Flutter, sarebbe quindi:
+
+<CodeBlock>{trimSnippet(configProvider)}</CodeBlock>
+
+Successivamente, la UI può stare in ascolto delle configurazioni in questo modo:
+
+<CodeBlock>{trimSnippet(configConsumer)}</CodeBlock>
+
+Ciò ricostruirà automaticamente l'interfaccia quando il [Future] finisce. 
+Allo stesso tempo, se più widget vogliono accedere alle configurazioni, l'asset verrà decodificato solo una volta.
+
+Come puoi vedere, ascoltare un `FutureProvider` dentro un widget restituisce un [AsyncValue], 
+il che permette di gestire gli stati di errore/caricamento.
+
+[ref.watch]: ../concepts/reading#usare-ref.watch-per-osservare-un-provider
+[statenotifierprovider]: ./state_notifier_provider
+[provider]: ./provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[family]: ../concepts/modifiers/family

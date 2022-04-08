@@ -4,7 +4,18 @@ part of '../framework.dart';
 abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
     extends ProviderOrFamily implements FamilyOverride<Arg> {
   /// A base class for all families
-  Family({required this.name, required this.dependencies});
+  Family({
+    required this.name,
+    required this.dependencies,
+    this.cacheTime,
+    this.disposeDelay,
+  });
+
+  /// {@macro riverpod.cache_time}
+  final Duration? cacheTime;
+
+  /// {@macro riverpod.dispose_delay}
+  final Duration? disposeDelay;
 
   @override
   final List<ProviderOrFamily>? dependencies;

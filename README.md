@@ -4,7 +4,12 @@
 <a href="https://github.com/rrousselgit/river_pod"><img src="https://img.shields.io/github/stars/rrousselgit/river_pod.svg?style=flat&logo=github&colorB=deeppink&label=stars" alt="Star on Github"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
 <a href="https://discord.gg/Bbumvej"><img src="https://img.shields.io/discord/765557403865186374.svg?logo=discord&color=blue" alt="Discord"></a>
-<a href="https://www.buymeacoffee.com/remirousselet" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="25px"></a>
+
+<p align="center">
+<a href="https://www.netlify.com">
+  <img src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg" alt="Deploys by Netlify" />
+</a>
+</p>
 
 <p align="center">
 <img src="https://github.com/rrousselGit/river_pod/blob/master/resources/icon/Facebook%20Cover%20A.png?raw=true" width="100%" alt="Riverpod" />
@@ -65,7 +70,7 @@ See the [FAQ](#FAQ) if you have questions about what this means for [provider].
 
 ## Migration
 
-With the release of the version 1.0.0, the syntax for interacting with providers changed.
+With the release of version 1.0.0, the syntax for interacting with providers changed.
 
 See [the migration guide](https://riverpod.dev/docs/migration/0.14.0_to_1.0.0/) for more informations
 
@@ -97,7 +102,7 @@ as an attempt to fix the common problems that [provider] face.
 - Testable and composable
 - Improve the readability of [InheritedWidget]s when we have multiple of them
   (which would naturally lead to a deeply nested widget tree).
-- Make apps more scalable with a unidirectional data-flow.
+- Make apps more scalable with a unidirectional data flow.
 
 From there, [Riverpod] goes a few steps beyond:
 
@@ -152,13 +157,9 @@ very similar usages, but we cannot create a lightbulb by improving our candle.
 
 ### Is it safe to use in production?
 
-Yes, but with caution.
+Yes.
 
-[Riverpod] recently left its experimental status, but it isn't fully stable either.
-The API may change slightly when more features are added, and some use-cases
-may not be as simple as they could be.
-
-But overall, you should be able to use [Riverpod] without trouble.
+[Riverpod] is stable and actively maintained.
 
 ### Will this get merged with [provider] at some point?
 
@@ -176,11 +177,8 @@ compromise.
 
 Not in the short term, no.
 
-This project is still experimental and unpopular. While it is, in a way,
-a [provider] 2.0, its worth has yet to be proven.
-
-Until it is certain that [Riverpod] is a better way of doing things
-and that the community likes it, [provider] will still be maintained.
+However, a migration tool is planned to help assist migration from provider
+to [Riverpod].
 
 [provider]: https://github.com/rrousselGit/provider
 [riverpod]: https://github.com/rrousselGit/river_pod

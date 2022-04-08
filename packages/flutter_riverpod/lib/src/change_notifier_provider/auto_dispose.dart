@@ -2,7 +2,7 @@ part of '../change_notifier_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 abstract class AutoDisposeChangeNotifierProviderRef<Notifier>
-    implements AutoDisposeRef {
+    implements AutoDisposeRef<Notifier> {
   /// The [ChangeNotifier] currently exposed by this provider.
   ///
   /// Cannot be accessed while creating the provider.
@@ -25,14 +25,23 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier?>
     List<ProviderOrFamily>? dependencies,
     Family? from,
     Object? argument,
+    Duration? cacheTime,
+    Duration? disposeDelay,
   })  : notifier = _AutoDisposeNotifierProvider<Notifier>(
           create,
           name: modifierName(name, 'notifier'),
           dependencies: dependencies,
           from: from,
           argument: argument,
+          cacheTime: cacheTime,
         ),
-        super(name: name, from: from, argument: argument);
+        super(
+          name: name,
+          from: from,
+          argument: argument,
+          cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
+        );
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeChangeNotifierProviderFamilyBuilder();
@@ -68,10 +77,14 @@ class _AutoDisposeNotifierProvider<Notifier extends ChangeNotifier?>
     required this.dependencies,
     Family? from,
     Object? argument,
+    Duration? cacheTime,
+    Duration? disposeDelay,
   }) : super(
           name: modifierName(name, 'notifier'),
           from: from,
           argument: argument,
+          cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   @override
@@ -121,7 +134,14 @@ class AutoDisposeChangeNotifierProviderFamily<Notifier extends ChangeNotifier?,
     this._create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+    Duration? cacheTime,
+    Duration? disposeDelay,
+  }) : super(
+          name: name,
+          dependencies: dependencies,
+          cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
+        );
 
   final FamilyCreate<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>,
       Arg> _create;

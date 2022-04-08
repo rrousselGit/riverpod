@@ -1,4 +1,5 @@
 blank_issues_enabled: false
 contact_links:
   - name: I have a problem and I need help
-    url: https://stackoverflow.com/questions/tagged/flutter
+    url: https://github.com/rrousselGit/river_pod/discussions
+    about: Pleast ask and answer questions here

@@ -103,7 +103,7 @@ class _StateReader {
         .._container = container
         ..mount();
 
-      element.getState()!.map<Object?>(
+      element.getState()!.map<void>(
         // ignore: avoid_types_on_closure_parameters
         data: (ResultData<Object?> data) {
           for (final observer in container._observers) {
@@ -154,15 +154,19 @@ var _debugVerifyDependenciesAreRespectedEnabled = true;
 /// (outside of testing), as it is implicitly created for you by `ProviderScope`.
 /// {@endtemplate}
 @sealed
-class ProviderContainer {
+class ProviderContainer implements Node {
   /// {@macro riverpod.providercontainer}
   ProviderContainer({
     ProviderContainer? parent,
+    Duration? cacheTime,
+    Duration? disposeDelay,
     List<Override> overrides = const [],
     List<ProviderObserver>? observers,
   })  : _debugOverridesLength = overrides.length,
         depth = parent == null ? 0 : parent.depth + 1,
         _parent = parent,
+        cacheTime = cacheTime ?? parent?.cacheTime ?? Duration.zero,
+        disposeDelay = disposeDelay ?? parent?.disposeDelay ?? Duration.zero,
         _observers = [
           ...?observers,
           if (parent != null) ...parent._observers,
@@ -204,6 +208,16 @@ class ProviderContainer {
       }
     }
   }
+
+  /// The default value for [AutoDisposeProviderBase.cacheTime].
+  ///
+  /// {@macro riverpod.cache_time}
+  final Duration cacheTime;
+
+  /// The default value for [AutoDisposeProviderBase.disposeDelay].
+  ///
+  /// {@macro riverpod.dispose_delay}
+  final Duration disposeDelay;
 
   final int _debugOverridesLength;
 
@@ -300,6 +314,25 @@ class ProviderContainer {
     return element.readSelf();
   }
 
+  @override
+  ProviderSubscription<State> _createSubscription<State>(
+    ProviderElementBase<State> element, {
+    required void Function(State? previous, State next) listener,
+    required void Function(Object error, StackTrace stackTrace) onError,
+  }) {
+    element._onListen();
+
+    final sub = _ProviderSubscription<State>._(
+      element,
+      listener,
+      onError: onError,
+    );
+
+    element._listeners.add(sub);
+
+    return sub;
+  }
+
   /// Subscribe to this provider.
   ///
   /// See also:
@@ -308,6 +341,7 @@ class ProviderContainer {
   ///   closing the subscription.
   /// - [Ref.watch], which is an easier way for providers to listen
   ///   to another provider.
+  @override
   ProviderSubscription<State> listen<State>(
     ProviderListenable<State> provider,
     void Function(State? previous, State next) listener, {
@@ -315,37 +349,27 @@ class ProviderContainer {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
     // TODO test always flushed provider
-    if (provider is _ProviderSelector<Object?, State>) {
-      return provider.listen(
-        this,
-        listener,
-        fireImmediately: fireImmediately,
-        onError: onError,
-      );
-    }
-
-    final element = readProviderElement(provider as ProviderBase<State>);
-
-    return element.addListener(
-      provider,
+    return provider.addListener(
+      this,
       listener,
       fireImmediately: fireImmediately,
       onError: onError,
     );
   }
 
-  /// Forces a provider to re-evaluate its state immediately, and return the created value.
-  ///
-  /// This method is useful for features like "pull to refresh" or "retry on error",
-  /// to restart a specific provider.
-  Created refresh<Created>(ProviderBase<Created> provider) {
+  /// {@template riverpod.invalidate}
+  void invalidate(ProviderBase<Object?> provider) {
     final reader = _getStateReader(provider.originProvider);
 
     if (reader._element != null) {
       final element = reader._element!;
-      element.markMustRecomputeState();
+      element.invalidateSelf();
     }
+  }
 
+  /// {@template riverpod.refresh}
+  Created refresh<Created>(ProviderBase<Created> provider) {
+    invalidate(provider);
     return read(provider);
   }
 
@@ -442,12 +466,7 @@ class ProviderContainer {
     );
   }
 
-  /// Reads the state of a provider, potentially creating it in the process.
-  ///
-  /// It may throw if the provider requested threw when it was built.
-  ///
-  /// Do not use this in production code. This is exposed only for testing
-  /// and devtools, to be able to test if a provider has listeners or similar.
+  @override
   ProviderElementBase<State> readProviderElement<State>(
     ProviderBase<State> provider,
   ) {
@@ -634,7 +653,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
 
   /// Release all the resources associated with this [ProviderContainer].
   ///
-  /// This will destroy the state of all providers associated to this
+  /// This will destroy the state of all providers associated with this
   /// [ProviderContainer] and call [Ref.onDispose] listeners.
   void dispose() {
     if (_disposed) {
@@ -773,7 +792,7 @@ abstract class ProviderObserver {
   /// A provider was disposed
   void didDisposeProvider(
     ProviderBase provider,
-    ProviderContainer containers,
+    ProviderContainer container,
   ) {}
 }
 
@@ -818,7 +837,7 @@ abstract class Override {}
 ///
 /// Circular dependencies are both not supported for performance reasons
 /// and maintainability reasons.
-/// Consider reading about unidirectional data-flow to learn about the
+/// Consider reading about unidirectional data flow to learn about the
 /// benefits of avoiding circular dependencies.
 class CircularDependencyError extends Error {
   CircularDependencyError._();

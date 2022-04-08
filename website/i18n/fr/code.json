@@ -220,7 +220,7 @@
     "message": "Commencer"
   },
   "home.shared_state_title": {
-    "message": "Déclarez un état partagé de n'import où"
+    "message": "Déclarez un état partagé de n'importe où"
   },
   "home.shared_state_body": {
     "message": "Plus besoin de sauter entre votre {main} and vos fichiers d'UI.{br} Placez le code de votre état partagé où vous voulez, que ce soit à côté du Widget qui l'utilise ou dans un autre package, sans perdre en testabilité.",

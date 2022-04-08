@@ -12,7 +12,7 @@
     "description": "The label for category Concepts in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Modifiers": {
-    "message": "Modifiers",
+    "message": "Modificatori",
     "description": "The label for category Modifiers in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Migration": {

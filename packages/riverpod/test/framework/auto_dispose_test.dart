@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:expect_error/expect_error.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
@@ -7,6 +9,172 @@ import '../utils.dart';
 
 Future<void> main() async {
   final library = await Library.parseFromStacktrace();
+
+  group('ref.keepAlive', () {
+    test('when the provider rebuilds, links are cleared', () async {
+      final container = createContainer();
+      final dep = StateProvider((ref) => 0);
+      KeepAliveLink? a;
+
+      final provider = Provider.autoDispose<void>((ref) {
+        ref.watch(dep);
+        a ??= ref.keepAlive();
+      });
+
+      container.read(provider);
+      await container.pump();
+
+      expect(
+        container.getAllProviderElements().map((e) => e.provider),
+        contains(provider),
+      );
+
+      container.read(dep.notifier).state++;
+      // manually trigger rebuild, as the provider is not listened
+      container.read(provider);
+      await container.pump();
+
+      expect(
+        container.getAllProviderElements().map((e) => e.provider),
+        isNot(contains(provider)),
+      );
+    });
+
+    test('maintains the state of the provider until all links are closed',
+        () async {
+      final container = createContainer();
+      late KeepAliveLink a;
+      late KeepAliveLink b;
+
+      final provider = Provider.autoDispose<void>((ref) {
+        a = ref.keepAlive();
+        b = ref.keepAlive();
+      });
+
+      container.read(provider);
+
+      expect(
+        container.getAllProviderElements().map((e) => e.provider),
+        [provider],
+      );
+
+      await container.pump();
+
+      expect(
+        container.getAllProviderElements().map((e) => e.provider),
+        [provider],
+      );
+
+      a.close();
+      await container.pump();
+
+      expect(
+        container.getAllProviderElements().map((e) => e.provider),
+        [provider],
+      );
+
+      b.close();
+      await container.pump();
+
+      expect(
+        container.getAllProviderElements(),
+        isEmpty,
+      );
+    });
+
+    test(
+        'when closing KeepAliveLink, does not dispose the provider if it is still being listened to',
+        () async {
+      final container = createContainer();
+      late KeepAliveLink a;
+
+      final provider = Provider.autoDispose<void>((ref) {
+        a = ref.keepAlive();
+      });
+
+      final sub = container.listen<void>(provider, (previous, next) {});
+
+      a.close();
+      await container.pump();
+
+      expect(
+        container.getAllProviderElements().map((e) => e.provider),
+        [provider],
+      );
+
+      sub.close();
+      await container.pump();
+
+      expect(
+        container.getAllProviderElements().map((e) => e.provider),
+        isEmpty,
+      );
+    });
+
+    test(
+        'when closing KeepAliveLink, does not dispose the provider maintainState=true',
+        () async {
+      final container = createContainer();
+      late KeepAliveLink a;
+      late AutoDisposeRef ref;
+
+      final provider = Provider.autoDispose<void>((r) {
+        ref = r;
+        r.maintainState = true;
+        a = ref.keepAlive();
+      });
+
+      container.read<void>(provider);
+
+      a.close();
+      await container.pump();
+
+      expect(
+        container.getAllProviderElements().map((e) => e.provider),
+        [provider],
+      );
+
+      ref.maintainState = false;
+      await container.pump();
+
+      expect(
+        container.getAllProviderElements().map((e) => e.provider),
+        isEmpty,
+      );
+    });
+
+    test(
+        'when closing the last KeepAliveLink, then immediately adding a new link, '
+        'the provider will not be disposed.', () async {
+      final container = createContainer();
+      late KeepAliveLink a;
+      late AutoDisposeRef ref;
+
+      final provider = Provider.autoDispose<void>((r) {
+        ref = r;
+        a = ref.keepAlive();
+      });
+
+      container.read<void>(provider);
+
+      a.close();
+      final b = ref.keepAlive();
+      await container.pump();
+
+      expect(
+        container.getAllProviderElements().map((e) => e.provider),
+        [provider],
+      );
+
+      b.close();
+      await container.pump();
+
+      expect(
+        container.getAllProviderElements().map((e) => e.provider),
+        isEmpty,
+      );
+    });
+  });
 
   group(
       'emits compilation error when passing an autoDispose provider to a non-autoDispose provider',
@@ -285,7 +453,7 @@ final alwaysAlive = Provider((ref) {
     expect(container.read(isEven), true);
   });
 
-  test('setting maintainState to false destroys the state when not listened',
+  test('setting maintainState to false destroys the state when not listened to',
       () async {
     final onDispose = OnDisposeMock();
     late AutoDisposeRef ref;
@@ -313,7 +481,8 @@ final alwaysAlive = Provider((ref) {
     verifyNoMoreInteractions(onDispose);
   });
 
-  test("maintainState to true don't dispose the state when no-longer listened",
+  test(
+      "maintainState to true don't dispose the state when no longer listened to",
       () async {
     var value = 42;
     final onDispose = OnDisposeMock();

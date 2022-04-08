@@ -45,14 +45,15 @@ void main() {
 
     expect(
       ref.state,
-      const AsyncData<int>(0, isRefreshing: true),
+      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
     );
 
     verifyOnly(
       listener,
       listener(
         const AsyncData(0),
-        const AsyncData<int>(0, isRefreshing: true),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncValue<int>.data(0)),
       ),
     );
   });
@@ -101,7 +102,11 @@ void main() {
 
     verifyOnly(
       listener,
-      listener(null, const AsyncData<int>(42, isRefreshing: true)),
+      listener(
+        null,
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncValue<int>.data(42)),
+      ),
     );
 
     container.read(dep.state).state = Stream.value(21);
@@ -130,7 +135,7 @@ void main() {
     result = 1;
     expect(
       container.refresh(provider),
-      const AsyncValue<int>.data(0, isRefreshing: true),
+      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
     );
 
     expect(container.read(provider.stream), emits(1));
@@ -592,7 +597,7 @@ void main() {
   });
 
   test(
-      'when overridden with an error but provider.stream is not listened, it should not emit an error to the zone',
+      'when overridden with an error but provider.stream is not listened to, it should not emit an error to the zone',
       () async {
     final error = Error();
     final stream = StreamProvider<int>((ref) => const Stream.empty());
@@ -699,7 +704,9 @@ void main() {
       listener,
       listener(
         AsyncError<int>(error, stackTrace: stack),
-        const AsyncValue.data(21),
+        const AsyncValue.data(21).copyWithPrevious(
+          AsyncError(error, stackTrace: stack),
+        ),
       ),
     );
 
@@ -785,7 +792,7 @@ void main() {
       expect(callCount, 2);
     });
 
-    test('.name is the listened name.stream', () {
+    test('.name is the listened-to name.stream', () {
       expect(
         StreamProvider<int>((ref) async* {}, name: 'hey').stream.name,
         'hey.stream',
@@ -796,7 +803,7 @@ void main() {
       );
     });
 
-    test('.name is the listened name.future', () {
+    test('.name is the listened-to name.future', () {
       expect(
         StreamProvider<int>((ref) async* {}, name: 'hey').future.name,
         'hey.future',
@@ -809,7 +816,7 @@ void main() {
   });
 
   group('StreamProvider.autoDispose().stream', () {
-    test('.name is the listened name.stream', () {
+    test('.name is the listened-to name.stream', () {
       expect(
         StreamProvider.autoDispose<int>((ref) async* {}, name: 'hey')
             .stream
@@ -822,7 +829,7 @@ void main() {
       );
     });
 
-    test('.name is the listened name.future', () {
+    test('.name is the listened-to name.future', () {
       expect(
         StreamProvider.autoDispose<int>((ref) async* {}, name: 'hey')
             .future
@@ -888,7 +895,7 @@ void main() {
       expect(callCount, 1);
     });
 
-    test('disposes the main provider when no-longer used', () async {
+    test('disposes the main provider when no longer used', () async {
       final controller = StreamController<int>(sync: true);
       addTearDown(controller.close);
       var didDispose = false;
@@ -1303,8 +1310,15 @@ void main() {
         provider.overrideWithValue(const AsyncValue.error(21)),
       ]);
 
-      expect(sub.read(), const AsyncValue<int>.error(21));
-      expect(sub.read(), const AsyncValue<int>.error(21));
+      expect(
+        sub.read(),
+        const AsyncValue<int>.error(21).copyWithPrevious(const AsyncData(42)),
+      );
+      // TODO why call "read" twice?
+      expect(
+        sub.read(),
+        const AsyncValue<int>.error(21).copyWithPrevious(const AsyncData(42)),
+      );
       await expectLater(stream, emitsError(21));
 
       container.dispose();
@@ -1328,7 +1342,11 @@ void main() {
         provider.overrideWithValue(const AsyncValue<int>.loading()),
       ]);
 
-      expect(sub.read(), const AsyncValue<int>.data(42, isRefreshing: true));
+      expect(
+        sub.read(),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncValue<int>.data(42)),
+      );
 
       container.dispose();
 
@@ -1476,24 +1494,31 @@ void main() {
     });
 
     test('error immediately then data', () async {
-      final stackTrace = StackTrace.current;
+      const stackTrace = StackTrace.empty;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
         provider.overrideWithValue(
-            AsyncValue<int>.error(42, stackTrace: stackTrace)),
+            const AsyncValue<int>.error(42, stackTrace: stackTrace)),
       ]);
       final stream = container.read(provider.stream);
 
       final sub = container.listen(provider, (_, __) {});
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
+      expect(
+        sub.read(),
+        const AsyncValue<int>.error(42, stackTrace: stackTrace),
+      );
       await expectLater(stream, emitsError(42));
 
       container.updateOverrides([
         provider.overrideWithValue(const AsyncValue.data(21)),
       ]);
 
-      expect(sub.read(), const AsyncValue.data(21));
+      expect(
+        sub.read(),
+        const AsyncValue.data(21)
+            .copyWithPrevious(const AsyncError(42, stackTrace: stackTrace)),
+      );
       await expectLater(stream, emits(21));
 
       container.dispose();
@@ -1521,7 +1546,8 @@ void main() {
 
       expect(
         sub.read(),
-        AsyncValue<int>.error(42, stackTrace: stackTrace, isRefreshing: true),
+        const AsyncLoading<int>()
+            .copyWithPrevious(AsyncError<int>(42, stackTrace: stackTrace)),
       );
 
       container.dispose();

@@ -54,7 +54,7 @@ const providerLabel = {
 
 const _autoDisposeDoc = '''
 /// {@template riverpod.autoDispose}
-/// Marks the provider as automatically disposed when no-longer listened.
+/// Marks the provider as automatically disposed when no longer listened to.
 ///
 /// Some typical use-cases:
 ///
@@ -65,11 +65,10 @@ const _autoDisposeDoc = '''
 ///   re-enter the screen.
 /// - Cancel HTTP requests if the user leaves a screen before the request completed.
 ///
-/// Marking a provider with `autoDispose` also adds an extra property on `ref`: `maintainState`.
+/// Marking a provider with `autoDispose` also adds an extra method on `ref`: `keepAlive`.
 ///
-/// The `maintainState` property is a boolean (`false` by default) that allows
-/// the provider to tell Riverpod if the state of the provider should be preserved
-/// even if no-longer listened.
+/// The `keepAlive` function is used to tell Riverpod that the state of the provider
+/// should be preserved even if no longer listened to.
 ///
 /// A use-case would be to set this flag to `true` after an HTTP request have
 /// completed:
@@ -77,7 +76,7 @@ const _autoDisposeDoc = '''
 /// ```dart
 /// final myProvider = FutureProvider.autoDispose((ref) async {
 ///   final response = await httpClient.get(...);
-///   ref.maintainState = true;
+///   ref.keepAlive();
 ///   return response;
 /// });
 /// ```
@@ -95,10 +94,10 @@ const _autoDisposeDoc = '''
 /// final myProvider = FutureProvider.autoDispose((ref) async {
 /// + final cancelToken = CancelToken();
 /// + ref.onDispose(() => cancelToken.cancel());
-/// 
+///
 /// + final response = await dio.get('path', cancelToken: cancelToken);
 /// - final response = await dio.get('path');
-///   ref.maintainState = true;
+///   ref.keepAlive();
 ///   return response;
 /// });
 /// ```
@@ -146,7 +145,7 @@ const _familyDoc = r'''
 ///   }
 ///   ```
 ///
-/// - Have a "user provider" that receives the user ID as parameter
+/// - Have a "user provider" that receives the user ID as a parameter
 ///
 ///   ```dart
 ///   final userFamily = FutureProvider.family<User, int>((ref, userId) async {
@@ -542,6 +541,23 @@ class FamilyBuilder {
 
   @override
   String toString() {
+    final createNamedParams = [
+      'String? name',
+      'List<ProviderOrFamily>? dependencies',
+      if (configs.item1 == DisposeType.autoDispose) ...[
+        'Duration? cacheTime',
+        'Duration? disposeDelay',
+      ],
+    ].join(',');
+    final providerParams = [
+      'create',
+      'name: name',
+      'dependencies: dependencies',
+      if (configs.item1 == DisposeType.autoDispose) ...[
+        'cacheTime: cacheTime',
+        'disposeDelay: disposeDelay',
+      ],
+    ].join(',');
     return '''
 /// Builds a [${configs.providerName}].
 class ${configs.providerName}Builder {
@@ -550,11 +566,8 @@ class ${configs.providerName}Builder {
 
 ${familyDoc().replaceAll('///', '  ///')}
   ${configs.providerName}<${configs.item2.generics}, Arg> call<${configs.constraint}, Arg>(
-    FamilyCreate<${configs.createType}, ${configs.ref}, Arg> create, {
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-  }) {
-    return ${configs.providerName}<${configs.item2.generics}, Arg>(create, name: name, dependencies: dependencies,);
+    FamilyCreate<${configs.createType}, ${configs.ref}, Arg> create, { $createNamedParams }) {
+    return ${configs.providerName}<${configs.item2.generics}, Arg>($providerParams);
   }
 ${configs.links(matrix)}
 }
@@ -570,6 +583,24 @@ class ProviderBuilder {
 
   @override
   String toString() {
+    final callNamedParams = [
+      'String? name',
+      'List<ProviderOrFamily>? dependencies',
+      if (configs.item1 == DisposeType.autoDispose) ...[
+        'Duration? cacheTime',
+        'Duration? disposeDelay',
+      ],
+    ].join(',');
+    final providerParams = [
+      'create',
+      'name: name',
+      'dependencies: dependencies',
+      if (configs.item1 == DisposeType.autoDispose) ...[
+        'cacheTime: cacheTime',
+        'disposeDelay: disposeDelay',
+      ],
+    ].join(',');
+
     return '''
 /// Builds a [${configs.providerName}].
 class ${configs.providerName}Builder {
@@ -578,11 +609,8 @@ class ${configs.providerName}Builder {
 
 ${autoDisposeDoc().replaceAll('///', '  ///')}
   ${configs.providerName}<${configs.item2.generics}> call<${configs.constraint}>(
-    Create<${configs.createType}, ${configs.ref}> create, {
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-  }) {
-    return ${configs.providerName}<${configs.item2.generics}>(create, name: name, dependencies: dependencies,);
+    Create<${configs.createType}, ${configs.ref}> create, { $callNamedParams }) {
+    return ${configs.providerName}<${configs.item2.generics}>($providerParams);
   }
 ${configs.links(matrix)}
 }

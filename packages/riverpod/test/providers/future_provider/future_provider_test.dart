@@ -25,14 +25,15 @@ void main() {
 
     expect(
       ref.state,
-      const AsyncData<int>(0, isRefreshing: true),
+      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
     );
 
     verifyOnly(
       listener,
       listener(
         const AsyncData(0),
-        const AsyncData<int>(0, isRefreshing: true),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncValue<int>.data(0)),
       ),
     );
   });
@@ -114,7 +115,7 @@ void main() {
     result = 1;
     expect(
       container.refresh(provider),
-      const AsyncValue<int>.data(0, isRefreshing: true),
+      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
     );
 
     expect(await container.read(provider.future), 1);
@@ -221,7 +222,7 @@ void main() {
   });
 
   test(
-      'when overridden with an error but provider.future is not listened, it should not emit an error to the zone',
+      'when overridden with an error but provider.future is not listened to, it should not emit an error to the zone',
       () async {
     final error = Error();
     final future = FutureProvider<int>((ref) async => 0);
@@ -352,7 +353,7 @@ void main() {
       expect(callCount, 2);
     });
 
-    test('.name is the listened name.future', () {
+    test('.name is the listened-to name.future', () {
       expect(
         FutureProvider((ref) async {}, name: 'hey').future.name,
         'hey.future',
@@ -365,7 +366,7 @@ void main() {
   });
 
   group('FutureProvider.autoDispose().future', () {
-    test('.name is the listened name.future', () {
+    test('.name is the listened-to name.future', () {
       expect(
         FutureProvider.autoDispose((ref) async {}, name: 'hey').future.name,
         'hey.future',
@@ -425,7 +426,7 @@ void main() {
       expect(callCount, 1);
     });
 
-    test('disposes the main provider when no-longer used', () async {
+    test('disposes the main provider when no longer used', () async {
       var didDispose = false;
       final provider = FutureProvider.autoDispose((ref) {
         ref.onDispose(() => didDispose = true);
@@ -547,7 +548,10 @@ void main() {
         container.read(provider.future),
         throwsA(21),
       );
-      expect(sub.read(), const AsyncValue<int>.error(21));
+      expect(
+        sub.read(),
+        const AsyncValue<int>.error(21).copyWithPrevious(const AsyncData(42)),
+      );
     });
 
     test('value immediately then loading', () async {
@@ -572,7 +576,11 @@ void main() {
       ]);
 
       expect(container.read(provider.future), isNot(future));
-      expect(sub.read(), const AsyncData<int>(42, isRefreshing: true));
+      expect(
+        sub.read(),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncValue<int>.data(42)),
+      );
     });
 
     test('loading immediately then value', () async {
@@ -737,7 +745,11 @@ void main() {
         container.read(provider.future),
         completion(42),
       );
-      expect(sub.read(), const AsyncValue<int>.data(42));
+      expect(
+        sub.read(),
+        const AsyncValue<int>.data(42)
+            .copyWithPrevious(AsyncError(42, stackTrace: stackTrace)),
+      );
     });
 
     test('error immediately then loading', () async {
@@ -762,7 +774,8 @@ void main() {
       expect(container.read(provider.future), isNot(future));
       expect(
         sub.read(),
-        AsyncValue<int>.error(42, stackTrace: stackTrace, isRefreshing: true),
+        const AsyncLoading<int>()
+            .copyWithPrevious(AsyncError<int>(42, stackTrace: stackTrace)),
       );
     });
   });

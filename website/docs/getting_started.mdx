@@ -11,7 +11,7 @@ import helloWorldDart from "!!raw-loader!/docs/getting_started_hello_world_dart.
 import { trimSnippet } from "../src/components/CodeSnippet";
 
 Before diving into the inner mechanisms of [Riverpod], let's start with the basics:
-Installing up [Riverpod], then writing a "Hello world".
+Installing [Riverpod], then writing a "Hello world".
 
 ## What package to install
 
@@ -22,8 +22,8 @@ You can refer to the following table to help you decide which package to use:
 
 | app type                  | package name                                                                       | description                                                                   |
 | ------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                   | Allows using both [flutter_hooks] and [Riverpod] together.                    |
-| Flutter only              | [flutter_riverpod]                                                                 | A basic way of using [Riverpod] for Flutter applications                      |
+| Flutter only              | [flutter_riverpod]                                                                 | A basic way of using [Riverpod] with flutter.                                 |
+| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                   | A way to use both [flutter_hooks] and [Riverpod] together.                    |
 | Dart only (No Flutter)    | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | A version of [Riverpod] with all the classes related to Flutter stripped out. |
 
 ## Installing the package
@@ -50,7 +50,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.18.0
-  hooks_riverpod: ^1.0.3
+  hooks_riverpod: ^2.0.0-dev.5
 ```
 
 Then run `flutter pub get`.
@@ -66,7 +66,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^1.0.3
+  flutter_riverpod: ^2.0.0-dev.5
 ```
 
 Then run `flutter pub get`.
@@ -79,10 +79,10 @@ environment:
   sdk: ">=2.12.0-0 <3.0.0"
 
 dependencies:
-  riverpod: ^1.0.3
+  riverpod: ^2.0.0-dev.5
 ```
 
-Then run `pub get`.
+Then run `dart pub get`.
 
 </TabItem>
 </Tabs>
@@ -119,7 +119,7 @@ This will render "Hello world" on your device.
 <CodeBlock title="lib/main.dart">{trimSnippet(helloWorldFlutter)}</CodeBlock>
 
 Which you can then execute with `flutter run`.  
-This will render "Hello world" in on your device.
+This will render "Hello world" on your device.
 
 </TabItem>
 <TabItem value="riverpod">
@@ -134,11 +134,21 @@ This will print "Hello world" in the console.
 
 ## Going further: Installing code snippets
 
-If you are using `Flutter` and `Vscode` , consider using [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
+If you are using `Flutter` and `VS Code` , consider using [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
 
 If you are using `Flutter` and `Android Studio` or `IntelliJ`, consider using [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
 
 ![img](/img/snippets/greetingProvider.gif)
+
+## Choose your next step
+
+Learn some basic concepts:
+
+- [Learn more about providers](/docs/concepts/providers)
+
+Follow a cookbook:
+
+- [How to test providers](/docs/cookbooks/testing)
 
 [riverpod]: https://github.com/rrousselgit/river_pod
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod

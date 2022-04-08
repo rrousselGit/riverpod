@@ -58,6 +58,6 @@ Future<void> main() async {
     print(comic.title);
   }
 
-  /// Disposes the providers associated to [container].
+  /// Disposes the providers associated with [container].
   container.dispose();
 }

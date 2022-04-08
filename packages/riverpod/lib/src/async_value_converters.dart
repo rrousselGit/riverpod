@@ -8,7 +8,7 @@ import 'internals.dart';
 extension AlwaysAliveAsyncProviderX<State>
     on AlwaysAliveProviderBase<AsyncValue<State>> {
   /// {@template riverpod.asyncprovider.future}
-  /// Exposes a [Future] which resolves with the last value or error emitted.
+  /// Exposes a [Future] that resolves with the last value or error emitted.
   ///
   /// This can be useful for scenarios where we want to read the current value
   /// exposed by a [StreamProvider], but also handle the scenario were no
@@ -117,7 +117,7 @@ extension AlwaysAliveAsyncProviderX<State>
   ///
   /// The stream obtained may change over time if the provider is
   /// re-evaluated, such as when it is using [Ref.watch] and the
-  /// provider listened changes, or on [ProviderContainer.refresh].
+  /// provider being listened to changes, or on [ProviderContainer.refresh].
   ///
   /// If the provider was overridden using `overrideWithValue`,
   /// a stream will be generated and manipulated based on the [AsyncValue] used.
@@ -135,6 +135,8 @@ extension AutoDisposeAsyncProviderX<State>
         this,
         from: from,
         argument: argument,
+        cacheTime: cacheTime,
+        disposeDelay: disposeDelay,
       );
 
   /// {@macro riverpod.asyncprovider.stream}
@@ -143,6 +145,8 @@ extension AutoDisposeAsyncProviderX<State>
         this,
         from: from,
         argument: argument,
+        cacheTime: cacheTime,
+        disposeDelay: disposeDelay,
       );
 }
 
@@ -208,10 +212,14 @@ class AutoDisposeAsyncValueAsStreamProvider<State>
     this._provider, {
     required Family? from,
     required Object? argument,
+    required Duration? cacheTime,
+    required Duration? disposeDelay,
   }) : super(
           name: modifierName(_provider.name, 'stream'),
           from: from,
           argument: argument,
+          cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   final AutoDisposeProviderBase<AsyncValue<State>> _provider;
@@ -367,10 +375,14 @@ class AutoDisposeAsyncValueAsFutureProvider<State>
     this._provider, {
     required Family? from,
     required Object? argument,
+    required Duration? cacheTime,
+    required Duration? disposeDelay,
   }) : super(
           name: modifierName(_provider.name, 'future'),
           from: from,
           argument: argument,
+          cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         );
 
   final AutoDisposeProviderBase<AsyncValue<State>> _provider;

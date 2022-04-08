@@ -85,7 +85,7 @@ void main() {
     // Re-render. TodoListProvider should have finished fetching the todos by now
     await tester.pump();
 
-    // No-longer loading
+    // No longer loading
     expect(find.byType(CircularProgressIndicator), findsNothing);
 
     // Rendered one TodoItem with the data returned by FakeRepository

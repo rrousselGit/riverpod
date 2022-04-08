@@ -1,0 +1,129 @@
+---
+title: StateProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import product from "!!raw-loader!/docs/providers/state_provider/product.dart";
+import productListView from "!!raw-loader!/docs/providers/state_provider/product_list_view.dart";
+import dropdown from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/state_provider/dropdown.dart";
+import sortProvider from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/state_provider/sort_provider.dart";
+import connectedDropdown from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/state_provider/connected_dropdown.dart";
+import sortedProductProvider from "!!raw-loader!/docs/providers/state_provider/sorted_product_provider.dart";
+import updateReadTwice from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/providers/state_provider/update_read_twice.dart";
+import updateReadOnce from "!!raw-loader!/docs/providers/state_provider/update_read_once.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`StateProvider` è un provider che espone un modo per modificare il suo stato. 
+É una semplificazione di [StateNotifierProvider] e progettato per evitare di 
+dover scrivere una classe [StateNotifier] per casi d'uso molto semplici.
+
+`StateProvider` esiste principalmente per consentire la modifica di variabili **semplici** 
+da parte dell'interfaccia utente. 
+Lo stato di uno `StateProvider` è generalmente:
+
+- un enum, come può essere un tipo di filtro
+- una String, tipicamente il contenuto grezzo di un campo di testo
+- un booleano, per le checkbox
+- un numero, per impaginazione e campi d'età
+
+Non dovresti usare `StateProvider` se:
+
+- il tuo stato necessita di logica di validazione
+- il tuo stato è un oggetto complesso (come una classe personalizzata, una lista/map ecc)
+- la logica per modificare il tuo stato è più avanzata di un semplice `count++`.
+
+Per casi più avanzati, considera usare [StateNotifierProvider] e creare una classe [StateNotifier].
+Anche se il codice boilerplate inizialmente sarà più grande, avere una classe  [StateNotifier] 
+personalizzata è fondamentale per la mantenibilità a lungo termine del tuo progetto - 
+poichè centralizza la logica del tuo stato in un'unica posizione.
+
+## Esempio d'uso: cambiare il tipo di filtro usando una dropdown
+
+Un caso d'uso reale di `StateProvider` sarebbe quello di gestire lo stato di 
+semplici componenti di form come dropdowns/campi di testo/checkboxes.
+
+In particolare, vedremo come usare `StateProvider` per implementare una dropdown 
+che permetta di cambiare come una lista di prodotti è ordinata.
+
+Per semplificare le cose, la lista dei prodotti che otterremo sarà costruita direttamente 
+nell'applicazione e sarà come di seguito:
+
+<CodeBlock>{trimSnippet(product)}</CodeBlock>
+
+In un'applicazione reale, questa lista sarebbe stata generalmente ottenuta 
+usando [FutureProvider] facendo una richiesta di rete.
+
+L'interfaccia utente può mostrare quindi la lista dei prodotti scrivendo:
+
+<CodeBlock>{trimSnippet(productListView)}</CodeBlock>
+
+Ora che abbiamo finito con la base, possiamo aggiungere una dropdown,  
+la quale ci permetterà di filtrare i nostri prodotti sia per prezzo che per nome.  
+Per questo, useremo [DropDownButton](https://api.flutter.dev/flutter/material/DropdownButton-class.html).
+
+<CodeBlock>{trimSnippet(product)}</CodeBlock>
+
+Ora che abbiamo una dropdown, creiamo uno `StateProvider` e 
+sincronizziamo lo stato della dropdown con il nostro provider.
+
+Per prima cosa, creiamo il provider con `StateProvider`:
+
+<CodeBlock>{trimSnippet(sortProvider)}</CodeBlock>
+
+Successivamente possiamo connettere questo provider con la nostra dropdown 
+scrivendo:
+
+<CodeBlock>{trimSnippet(connectedDropdown)}</CodeBlock>
+
+Con questo, ora dovremmo essere in grado di cambiare il tipo di ordinamento.  
+Tuttavia, non ha ancora alcun impatto sulla lista dei prodotti! É ora della parte finale: 
+aggiornare `productsProvider` per ordinare la lista dei prodotti.
+
+Una compenente chiave di tale implementazione è di usare [ref.watch], per far sì che `productsProvider` 
+ottenga il tipo di ordinamento e ricalcoli la lista dei prodotti ogni volta 
+che il tipo di ordinamento cambia.
+
+L'implementazione sarà:
+
+<CodeBlock>{trimSnippet(sortedProductProvider)}</CodeBlock>
+
+Questo è quanto! Questa modifica basta per fare in modo che l'interfaccia utente 
+ri-renderizzi automaticamente la lista dei prodotti quando il tipo di ordinamento cambia. 
+
+Di seguito l'esempio completo su Dartpad:
+
+<iframe
+  src="https://dartpad.dev/embed-flutter.html?gh_owner=rrousselGit&gh_repo=river_pod&gh_path=website%2Fdocs%2Fproviders%2Fstate_provider"
+  style={{ border: 0, width: "100%", aspectRatio: "2/1.5" }}
+></iframe>
+
+## Come aggiornare lo stato basandosi sul valore precedente senza leggere il provider due volte
+
+Delle volte, potresti voler aggiornare lo stato di uno `StateProvider` basandosi sul valore precedente. 
+Naturalmente, potresti finire per scrivere:
+
+<CodeBlock>{trimSnippet(updateReadTwice)}</CodeBlock>
+
+Anche se non c'è niente di particolarmente sbagliato in questo codice, 
+la sintassi è un po' scomoda.
+
+Per migliorare la sintassi, possiamo usare la funzione `update`. Tale funzione 
+prenderà una funzione callback che riceverà lo stato corrente e dovrebbe 
+restituire il nuovo stato. 
+Possiamo usarla per riscrivere il nostro codice precedente in:
+
+<CodeBlock>{trimSnippet(updateReadOnce)}</CodeBlock>
+
+Questa modifica ottiene lo stesso effetto ma migliora leggermente la sintassi.
+
+[ref.watch]: ../concepts/reading#usare-ref.watch-per-osservare-un-provider
+[ref.read]: ../concepts/reading#usare-refread-per-ottenere-lo-stato-di-un-provider
+[statenotifierprovider]: ./state_notifier_provider
+[futureprovider]: ./future_provider
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[provider]: ./provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[family]: ../concepts/modifiers/family

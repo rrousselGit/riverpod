@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Listener;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -8,6 +8,83 @@ import 'package:mockito/mockito.dart';
 import 'utils.dart';
 
 void main() {
+  testWidgets('ref.invalidate triggers a rebuild on next frame',
+      (tester) async {
+    final listener = Listener<int>();
+    var result = 0;
+    final provider = Provider((r) => result);
+    late WidgetRef ref;
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (context, r, _) {
+            ref = r;
+            ref.listen(provider, listener);
+            return Container();
+          },
+        ),
+      ),
+    );
+
+    verifyZeroInteractions(listener);
+
+    ref.invalidate(provider);
+    ref.invalidate(provider);
+    result = 1;
+
+    verifyZeroInteractions(listener);
+
+    await tester.pumpAndSettle();
+
+    verifyOnly(listener, listener(0, 1));
+  });
+
+  testWidgets('ProviderScope can receive a customn parent', (tester) async {
+    final provider = Provider((ref) => 0);
+
+    final container = createContainer(
+      overrides: [provider.overrideWithValue(42)],
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        parent: container,
+        child: Consumer(
+          builder: (context, ref, _) {
+            return Text(
+              '${ref.watch(provider)}',
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
+      ),
+    );
+
+    expect(find.text('42'), findsOneWidget);
+  });
+
+  testWidgets('ProviderScope.parent cannot change', (tester) async {
+    final container = createContainer();
+    final container2 = createContainer();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        parent: container,
+        child: Container(),
+      ),
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        parent: container2,
+        child: Container(),
+      ),
+    );
+
+    expect(tester.takeException(), isUnsupportedError);
+  });
+
   testWidgets('ref.read works with providers that returns null',
       (tester) async {
     final nullProvider = Provider((ref) => null);

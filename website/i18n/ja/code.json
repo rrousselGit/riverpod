@@ -8,7 +8,7 @@
     "description": "The first paragraph of the 404 page"
   },
   "theme.NotFound.p2": {
-    "message": "この URL の提供元にリンクが切れている旨をお知らせいただくようお願い申し上げます。",
+    "message": "この URL の提供元にリンクが切れている旨をお知らせいただくようお願いします。",
     "description": "The 2nd paragraph of the 404 page"
   },
   "theme.AnnouncementBar.closeButtonAriaLabel": {
@@ -156,7 +156,7 @@
     "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
   },
   "theme.TOCCollapsible.toggleButtonLabel": {
-    "message": "このページから",
+    "message": "目次",
     "description": "The label used by the button on the collapsible TOC component"
   },
   "theme.SearchPage.documentsFound.plurals": {
@@ -199,55 +199,55 @@
     "message": "コンパイルセーフ"
   },
   "homepage.compile_safe_body": {
-    "message": "{ProviderNotFound} が発生したり、ロード中の状態を処理し忘れたりする心配はもういりません。Riverpod ではコンパイルできるコードは有効なコードです。"
+    "message": "{ProviderNotFound} の発生や、loading ステートを処理し忘れることを心配する必要はもうありません。Riverpod ではコンパイル可能なコードは有効なコードです。"
   },
   "homepage.unlimited_provider_title": {
     "message": "制限のない Provider"
   },
   "homepage.unlimited_provider_body": {
-    "message": "Riverpod は Provider にインスパイアされていますが、その主要な問題を解決します。同じ型のプロバイダーを複数持つ / 非同期プロバイダーで await / プロバイダーをどこでも追加...といったことが可能になります。"
+    "message": "Riverpod は Provider からインスパイアされていますが、その主要な問題を解決します。同じ型を値に持つプロバイダを複数作成したり、場所に縛られずにプロバイダを作成したり、といったことが可能になりました。"
   },
   "homepage.no_flutter_dependency_title": {
     "message": "Flutter に依存しない"
   },
   "homepage.no_flutter_dependency_body": {
-    "message": "Flutter に依存することなくプロバイダーを作成 / 共有 / テストすることが可能です。 {BuildContext} を使わずにプロバイダーを購読することもできます。"
+    "message": "Riverpod は Flutter に依存することなくプロバイダを作成・共有・テストすることが可能です。 {BuildContext} を使わずにプロバイダを利用することができます。"
   },
   "home.tagline": {
-    "message": "リアクティブな状態管理と依存性注入のフレームワーク"
+    "message": "リアクティブ・キャッシングとデータバインディングを実現するフレームワーク"
   },
   "home.get_started": {
-    "message": "使用方法"
+    "message": "利用開始"
   },
   "home.shared_state_title": {
-    "message": "どこでも状態を宣言"
+    "message": "場所に縛られないステート宣言"
   },
   "home.shared_state_body": {
-    "message": "もう {main} と UI 側のコードの間を行き来する必要はありません。 {br} テスト容易性を失うことなく、どこでも状態のコードを書くことができます。それが別のパッケージ内であろうと、依存するウィジェットのすぐ近くであろうと。",
+    "message": "{main} と UI 側のコードの間を行き来する必要はもうありません。 {br} 別のパッケージ内であろうと、ウィジェットのコードと同じファイル内であろうと、場所に縛られることなくステートを宣言することができます。これによりテスト容易性を損なうことはありません。",
     "description": "The homepage input placeholder"
   },
   "home.recompute_title": {
-    "message": "必要時に限った状態の再計算とUIの再構築"
+    "message": "ステートの再評価、UI の更新を最小限に"
   },
   "home.recompute_body": {
-    "message": "{build} メソッドの中でリストをソート / フィルタする必要はもうありません。応用的なキャッシュ手法に頼る必要もありません。 {br}{br} {Provider} と {families} を使って、本当に必要な時に限ってリストのソートや HTTP リクエストを行えます。"
+    "message": "{build} メソッドの中でリストをソート / フィルタする必要はもうありません。高度なキャッシュ手法に頼る必要もありません。 {br}{br} {Provider} と {families} を使って、本当に必要な時に限ってリストのソートや HTTP リクエストを行えます。"
   },
   "home.safe_read_title": {
-    "message": "安全なプロバイダーの購読"
+    "message": "Bad state とは無縁"
   },
   "home.safe_read_body": {
-    "message": "プロバイダーの購読により Bad State エラーが発生することはありません。正しいコードを書けば、有効な値を取得することができます。 {br}{br} これは非同期処理による値の取得についても言えることです。Riverpod では loading / error の状態を簡潔に処理することができます。"
+    "message": "プロバイダの監視により Bad state エラーが発生することはありません。プロバイダを適切に利用することで、常に有効な値を取得できます。 {br}{br} これは非同期操作により値を取得する場合も同様です。Riverpod なら、loading/error のステートを簡潔に処理することができます。"
   },
   "home.devtool_title": {
-    "message": "DevTools による状態の検証"
+    "message": "DevTools によるステートの検証"
   },
   "home.devtool_body": {
-    "message": "Riverpod を使えば、特別な設定をすることなく状態を Flutter の DevTools で見ることができます。 {br} 加えて、より本格的な状態検証ツールの開発が進行中です。"
+    "message": "Riverpod では特別な設定をすることなく Flutter の DevTools でステートを検証することができます。 {br} 加えて、より本格的なステート検証ツールの開発が進行中です。"
   },
   "home.create_provider": {
-    "message": "プロバイダーを作成する"
+    "message": "プロバイダを作成する"
   },
   "home.consume_provider": {
-    "message": "プロバイダーを消費する"
+    "message": "プロバイダを利用する"
   }
 }

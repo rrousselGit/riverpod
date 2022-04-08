@@ -1,0 +1,152 @@
+---
+title: Getting started
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import helloWorldHooks from "!!raw-loader!/docs/getting_started_hello_world_hooks.dart";
+import helloWorldFlutter from "!!raw-loader!/docs/getting_started_hello_world_flutter.dart";
+import helloWorldDart from "!!raw-loader!/docs/getting_started_hello_world_dart.dart";
+import { trimSnippet } from "../../../../src/components/CodeSnippet";
+
+[Riverpod] এর অভ্যন্তরীণ বিষয়ে ডুব দেওয়ার আগে বেসিক দিয়ে শুরু করা যাক:
+[Riverpod] ইন্সটল করা, এবং "Hello world" প্রোগ্রাম লেখা.
+
+
+## কি প্যাকেজ ইন্সটল করবেন
+
+যে কোন কিছু করার আগে, আপনার খেয়াল রাখতে হবে [Riverpod] কয়েকটি প্যাকেজ এর মধ্যে ভাগ করা রয়েছে, সামান্য ব্যবহারবিধি এর পার্থক্য রেখে। আপনি [Riverpod] এর যে ভ্যারিয়েন্টটি ইন্সটল করবেন তা আপনার এ্যাপ এর উপর নির্ভর করে।
+
+
+কোন প্যাকেজ ব্যবহার করতে হবে তা নির্ধারণ করতে আপনি নিম্নলিখিত টেবিলটি উল্লেখ করতে পারেন:
+
+| এ্যাপ টাইপ             | প্যাকেজ এর নাম                                                              | ব্যাখ্যা                                                     |
+| ------------------------------ | ---------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Flutter + [flutter_hooks]      | [hooks_riverpod]                                                                   | একইসাথে [flutter_hooks] এবং [Riverpod] ব্যবহার করতে পারবেন. |
+| Flutter uniquement             | [flutter_riverpod]                                                                 | ফ্লাটার এ [Riverpod] ব্যবহার করার একটি সহজ উপায়.            |
+| Dart uniquement (ফ্লাটার ছাড়া) | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | একটি [Riverpod] ভার্সন যেটিতে ফ্লাটার এর কোন ক্লাস নেই.               |
+
+
+## ইন্সটল প্রক্রিয়া
+
+আপনি কোন প্যাকেজ ইনস্টল করতে চান তা জানার পরে, আপনার `pubspec.yaml`-এ নিম্নলিখিতগুলি যুক্ত করতে এগিয়ে যান:
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="hooks_riverpod"
+  values={[
+    { label: 'Flutter + flutter_hooks', value: 'hooks_riverpod', },
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Dart only', value: 'riverpod', },
+  ]}
+>
+<TabItem value="hooks_riverpod">
+
+```yaml title="pubspec.yaml"
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+  flutter: ">=2.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_hooks: ^0.18.0
+  hooks_riverpod: ^1.0.0-dev.11
+```
+
+তারপর টার্মিনালে রান করুন `pub get`.
+
+</TabItem>
+<TabItem value="flutter_riverpod">
+
+```yaml title="pubspec.yaml"
+environment:
+  sdk: ">=2.12.0-0 <3.0.0"
+  flutter: ">=2.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^1.0.0-dev.11
+```
+
+তারপর টার্মিনালে রান করুন `pub get`.
+
+</TabItem>
+<TabItem value="riverpod">
+
+```yaml title="pubspec.yaml"
+environment:
+  sdk: ">=2.12.0-0 <3.0.0"
+
+dependencies:
+  riverpod: ^1.0.0-dev.10
+```
+তারপর টার্মিনালে রান করুন `pub get`.
+
+</TabItem>
+</Tabs>
+
+এটাই, আপনি আপনার এ্যাপে [Riverpod] এড করে ফেলেছেন!
+
+## Usage example: Hello world
+
+এখন আমরা যখন [Riverpod] ইন্সটল করে ফেলছি, ব্যবহার শুরু করা যাক.
+
+নিচের কোড স্নিপেট টি দেখে বুঝা যায়, নতুন ডিপেন্ডেন্সী ব্যবহার করে কিভাবে আমরা "Hello World" বানাতে পারি:
+
+export const foo = 42;
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="hooks_riverpod"
+  values={[
+    { label: "Flutter + flutter_hooks", value: "hooks_riverpod" },
+    { label: "Flutter", value: "flutter_riverpod" },
+    { label: "Dart only", value: "riverpod" },
+  ]}
+>
+<TabItem value="hooks_riverpod">
+
+<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldHooks)}</CodeBlock>
+
+যা আপনি তখন flutter run দিয়ে এক্সিকিউট করতে পারবেন।
+এটি আপনার ডিভাইসে "Hello World" রেন্ডার করবে।
+
+</TabItem>
+<TabItem value="flutter_riverpod">
+
+<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldFlutter)}</CodeBlock>
+
+Which you can then execute with `flutter run`.  
+This will render "Hello world" in on your device.
+
+যা আপনি তখন flutter run দিয়ে এক্সিকিউট করতে পারবেন।
+এটি আপনার ডিভাইসে "Hello World" রেন্ডার করবে।
+
+</TabItem>
+<TabItem value="riverpod">
+
+<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldDart)}</CodeBlock>
+
+যেটি আপনি এক্সিকিউট করতে পারবেন `dart lib/main.dart`.  
+এটি কনসোল এ "Hello world" প্রিন্ট করতে পারবে.
+
+</TabItem>
+</Tabs>
+
+
+## আরও এগিয়ে যাওয়া: কোড স্নিপেট ইনস্টল করা
+
+যদি আপনি `Flutter` এবং  `Vscode` ব্যবহার করেন, তাহলে আপনি এই এক্সটেনশেন ইন্সটল করতে পারেন  [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
+
+যদি আপনি `Flutter` এবং  `Android Studio`/`IntelliJ` ব্যবহার করেন, তাহলে আপনি এই প্লাগিন ইন্সটল করতে পারেন [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
+
+![img](/img/snippets/greetingProvider.gif)
+
+[riverpod]: https://github.com/rrousselgit/river_pod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+
