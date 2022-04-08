@@ -115,14 +115,6 @@ module.exports = {
           label: "Todo App with Backup and Restore feature",
           href: "https://github.com/TheAlphaApp/flutter_riverpod_todo_app",
         },
-<<<<<<< HEAD
-        {
-          type: "link",
-          label: "Integrating Hive database with Riverpod (simple example)",
-          href: "https://github.com/GitGud31/theme_riverpod_hive"
-        }
-||||||| e14bdfa
-=======
         {
           type: "link",
           label: "Integrating Hive database with Riverpod (simple example)",
@@ -133,7 +125,6 @@ module.exports = {
           label: "Browser App with Riverpod",
           href: "https://github.com/MarioCroSite/simple_browser_app",
         },
->>>>>>> 95fe8c833a7820a791a3025827c946f6e5771933
       ],
     },
     {
