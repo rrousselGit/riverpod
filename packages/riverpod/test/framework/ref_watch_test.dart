@@ -16,6 +16,95 @@ class Counter extends StateNotifier<int> {
 }
 
 void main() {
+  test('can chain select', () {
+    final container = createContainer();
+
+    var buildCount = 0;
+    final dep = StateProvider((ref) => 0);
+    final provider = Provider((ref) {
+      buildCount++;
+      return ref.watch(
+        dep.select((value) => value % 10).select((value) => value < 5),
+      );
+    });
+
+    expect(buildCount, 0);
+    expect(container.read(provider), true);
+    expect(buildCount, 1);
+
+    container.read(dep.notifier).state = 3;
+
+    expect(container.read(provider), true);
+    expect(buildCount, 1);
+
+    container.read(dep.notifier).state = 7;
+
+    expect(container.read(provider), false);
+    expect(buildCount, 2);
+
+    container.read(dep.notifier).state = 8;
+
+    expect(container.read(provider), false);
+    expect(buildCount, 2);
+
+    container.read(dep.notifier).state = 18;
+
+    expect(container.read(provider), false);
+    expect(buildCount, 2);
+  });
+
+  test('can listen multiple providers at once', () async {
+    final container = createContainer();
+    final count = StateProvider((ref) => 0);
+    final count2 = StateProvider((ref) => 0);
+
+    final provider = Provider((ref) {
+      final first = ref.watch(count.state).state;
+      final second = ref.watch(count2.state).state;
+
+      return '$first $second';
+    });
+
+    expect(container.read(provider), '0 0');
+
+    container.read(count.state).state++;
+    await container.pump();
+
+    expect(container.read(provider), '1 0');
+
+    container.read(count2.state).state++;
+    await container.pump();
+
+    expect(container.read(provider), '1 1');
+  });
+
+  test(
+      'listens to the parameter and rebuild the state whenever this provider changed',
+      () async {
+    final count = StateProvider((ref) => 0);
+    var buildCount = 0;
+    final provider = Provider((ref) {
+      buildCount++;
+      return ref.watch(count.state).state.isEven;
+    });
+
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    expect(container.read(provider), true);
+    // reading twice to make sure the provider isn't rebuilt on every read
+    expect(container.read(provider), true);
+    expect(buildCount, 1);
+
+    container.read(count.state).state++;
+    await container.pump();
+
+    expect(container.read(provider), false);
+    // reading twice to make sure the provider isn't rebuilt on every read
+    expect(container.read(provider), false);
+    expect(buildCount, 2);
+  });
+
   test('when selector throws, rebuild providers', () {}, skip: true);
 
   test('on provider that threw, exceptions bypass the selector', () {
@@ -29,17 +118,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsA(
-        isA<ProviderException>()
-            .having(
-              (e) => e.exception,
-              'exception',
-              isA<ProviderException>()
-                  .having((e) => e.exception, 'exception', isUnimplementedError)
-                  .having((e) => e.provider, 'provider', dep),
-            )
-            .having((e) => e.provider, 'provider', provider),
-      ),
+      throwsUnimplementedError,
     );
   });
 
@@ -61,17 +140,7 @@ void main() {
 
     expect(
       () => container.read(dep),
-      throwsA(
-        isA<ProviderException>()
-            .having(
-              (e) => e.exception,
-              'exception',
-              isA<ProviderException>()
-                  .having((e) => e.exception, 'exception', isUnimplementedError)
-                  .having((e) => e.provider, 'provider', provider),
-            )
-            .having((e) => e.provider, 'provider', dep),
-      ),
+      throwsUnimplementedError,
     );
 
     container.read(throws.state).state = false;
@@ -97,17 +166,7 @@ void main() {
 
     expect(
       () => container.read(dep),
-      throwsA(
-        isA<ProviderException>()
-            .having(
-              (e) => e.exception,
-              'exception',
-              isA<ProviderException>()
-                  .having((e) => e.exception, 'exception', isUnimplementedError)
-                  .having((e) => e.provider, 'provider', provider),
-            )
-            .having((e) => e.provider, 'provider', dep),
-      ),
+      throwsUnimplementedError,
     );
 
     container.read(throws.state).state = false;
@@ -149,7 +208,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsA(isA<ProviderException>()),
+      throwsA(isA<AssertionError>()),
     );
   });
 
@@ -164,7 +223,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsA(isA<ProviderException>()),
+      throwsA(isA<AssertionError>()),
     );
   });
 
@@ -182,7 +241,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsA(isA<ProviderException>()),
+      throwsA(isA<AssertionError>()),
     );
   });
 
@@ -493,7 +552,10 @@ void main() {
     notifier.setState(42);
     await container.pump();
 
-    expect(sub.read(), const AsyncValue<int>.data(0, isRefreshing: true));
+    expect(
+      sub.read(),
+      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
+    );
     expect(callCount, 1);
 
     await container.read(computed.stream).first;

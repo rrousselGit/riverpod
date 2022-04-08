@@ -69,6 +69,32 @@ void main() {
     test('ref.read should keep providers alive', () {}, skip: true);
 
     group('listen', () {
+      test('ref.listen on outdated provider causes it to rebuild', () {
+        final dep = StateProvider((ref) => 0);
+        var buildCount = 0;
+        final provider = Provider((ref) {
+          buildCount++;
+          return ref.watch(dep.state).state;
+        });
+        final listener = Listener<int>();
+        final another = Provider((ref) {
+          ref.listen<int>(provider, listener, fireImmediately: true);
+        });
+        final container = createContainer();
+
+        expect(container.read(provider), 0);
+        expect(buildCount, 1);
+
+        container.read(dep.state).state = 42;
+
+        expect(buildCount, 1);
+
+        container.read(another);
+
+        expect(buildCount, 2);
+        verifyOnly(listener, listener(null, 42));
+      });
+
       test('can downcast the value', () async {
         final listener = Listener<num>();
         final dep = StateProvider((ref) => 0);
@@ -171,60 +197,6 @@ void main() {
         await container.pump();
 
         expect(buildCount, 1);
-      });
-    });
-
-    group('.watch', () {
-      test('can listen multiple providers at once', () async {
-        final container = createContainer();
-        final count = StateProvider((ref) => 0);
-        final count2 = StateProvider((ref) => 0);
-
-        final provider = Provider((ref) {
-          final first = ref.watch(count.state).state;
-          final second = ref.watch(count2.state).state;
-
-          return '$first $second';
-        });
-
-        expect(container.read(provider), '0 0');
-
-        container.read(count.state).state++;
-        await container.pump();
-
-        expect(container.read(provider), '1 0');
-
-        container.read(count2.state).state++;
-        await container.pump();
-
-        expect(container.read(provider), '1 1');
-      });
-
-      test(
-          'listens to the parameter and rebuild the state whenever this provider changed',
-          () async {
-        final count = StateProvider((ref) => 0);
-        var buildCount = 0;
-        final provider = Provider((ref) {
-          buildCount++;
-          return ref.watch(count.state).state.isEven;
-        });
-
-        final container = ProviderContainer();
-        addTearDown(container.dispose);
-
-        expect(container.read(provider), true);
-        // reading twice to make sure the provider isn't rebuilt on every read
-        expect(container.read(provider), true);
-        expect(buildCount, 1);
-
-        container.read(count.state).state++;
-        await container.pump();
-
-        expect(container.read(provider), false);
-        // reading twice to make sure the provider isn't rebuilt on every read
-        expect(container.read(provider), false);
-        expect(buildCount, 2);
       });
     });
 
@@ -406,32 +378,6 @@ void main() {
 
         expect(element.mounted, false);
       });
-    });
-
-    test('ref.listen on outdated provider causes it to rebuild', () {
-      final dep = StateProvider((ref) => 0);
-      var buildCount = 0;
-      final provider = Provider((ref) {
-        buildCount++;
-        return ref.watch(dep.state).state;
-      });
-      final listener = Listener<int>();
-      final another = Provider((ref) {
-        ref.listen<int>(provider, listener, fireImmediately: true);
-      });
-      final container = createContainer();
-
-      expect(container.read(provider), 0);
-      expect(buildCount, 1);
-
-      container.read(dep.state).state = 42;
-
-      expect(buildCount, 1);
-
-      container.read(another);
-
-      expect(buildCount, 2);
-      verifyOnly(listener, listener(null, 42));
     });
   });
 }

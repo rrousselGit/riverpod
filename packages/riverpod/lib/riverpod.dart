@@ -21,19 +21,19 @@ export 'src/framework.dart'
         ProviderContainer,
         ProviderObserver,
         ProviderSubscription,
-        ProviderException,
         AutoDisposeProviderBase,
         AutoDisposeProviderElementBase,
         ProviderElementBase,
         ProviderOverride,
         FamilyOverride,
         SetupOverride,
-        // ignore: deprecated_member_use_from_same_package
-        ProviderReference,
         AlwaysAliveProviderListenable,
         FamilyCreate,
         XAutoDisposeFamily,
-        XFamily;
+        XFamily,
+        AsyncSelector,
+        AlwaysAliveAsyncSelector,
+        KeepAliveLink;
 
 export 'src/future_provider.dart'
     show

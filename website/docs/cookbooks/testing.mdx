@@ -36,7 +36,7 @@ lengthy `setUp`/`tearDown`.
 But the reality is: While providers are declared as globals, the state of a provider
 is **not** global.
 
-Instead, it is stored in an object named [ProviderContainer], that you may have
+Instead, it is stored in an object named [ProviderContainer], which you may have
 seen if you looked at the dart-only examples.  
 If you haven't, know that this [ProviderContainer] object is implicitly created
 by [ProviderScope], the widget that enables [Riverpod] on our project.
@@ -79,7 +79,7 @@ A common real-world application may have the following objects:
   to perform HTTP requests.
 
 - An object that manages the application state, and may use `Repository` to perform
-  HTTP requests based on different factors.  
+  HTTP requests based on different factors.
   This may be a `ChangeNotifier`, `Bloc`, or even a provider.
 
 Using [Riverpod], this may be represented as follows:
@@ -132,10 +132,10 @@ The syntax for overriding a provider with the `family` modifier is slightly diff
 If you used a provider like this:
 
 ```dart
-final response = ref.watch(myProvider('11111'));
+final response = ref.watch(myProvider('12345'));
 ```
 
-You could override the extra parameter value:
+You could override the provider as:
 
 ```dart
 myProvider('12345').overrideWithValue(...));
@@ -152,5 +152,5 @@ Wrapping up, here is the entire full code for our Flutter test.
 [riverpod]: https://github.com/rrousselgit/river_pod
 [providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
 [providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
-[futureprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/FutureProvider-class.html
+[futureprovider]: ../providers/future_provider
 [zone]: https://api.flutter.dev/flutter/dart-async/Zone-class.html

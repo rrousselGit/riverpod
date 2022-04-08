@@ -1,0 +1,120 @@
+---
+title: da ^0.13.0 a ^0.14.0
+---
+
+Con il rilascio della versione `0.14.0` di Riverpod, la sintassi per usare [StateNotifierProvider] è cambiata.  
+(vedere https://github.com/rrousselGit/river_pod/issues/341 per la spiegazione).
+
+Per l'intero articolo, considera leggere [StateNotifier]:
+
+```dart
+class MyModel {}
+
+class MyStateNotifier extends StateNotifier<MyModel> {
+  MyStateNotifier(): super(MyModel());
+}
+```
+
+## Cambiamenti
+
+- [StateNotifierProvider] accetta un generico parametro extra, che dovrebbe essere il tipo 
+dello stato del tuo [StateNotifier].
+
+  Prima:
+
+  ```dart
+  final provider = StateNotifierProvider<MyStateNotifier>((ref) {
+    return MyStateNotifier();
+  });
+  ```
+
+  Dopo:
+
+  ```dart
+  final provider = StateNotifierProvider<MyStateNotifier, MyModel>((ref) {
+    return MyStateNotifier();
+  });
+  ```
+
+- per ottenere lo [StateNotifier], ora dovresti leggere `myProvider.notifier` invece di solo `myProvider` :
+
+  Prima:    
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyStateNotifier notifier = watch(provider);
+  }
+  ```
+
+  Dopo:
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyStateNotifier notifier = watch(provider.notifier);
+  }
+  ```
+
+- per stare in ascolto di un [StateNotifier], ora dovresti leggere `myProvider` invece di `myProvider.state` :
+
+  Prima:
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyModel state = watch(provider.state);
+  }
+  ```
+
+  Dopo:
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyModel state = watch(provider);
+  }
+  ```
+
+## Utilizzo dello strumento di migrazione per aggiornare i tuoi progetti alla nuova sintassi
+
+Con la versione 0.14.0, viene introdotto uno strumento da riga di comando per Riverpod, il quale può aiutarti a migrare i progetti.
+
+### Installazione dello strumento
+
+Per installare lo strumento di migrazione, eseguire: 
+
+```sh
+dart pub global activate riverpod_cli
+```
+
+Dovresti poter eseguire ora:
+
+```sh
+riverpod --help
+```
+
+### Uso
+
+Ora che lo strumento è installato, possiamo iniziare ad utilizzarlo.
+
+- Per prima cosa, apri il progetto che vuoi migrare nel tuo terminale.
+- **NON** aggiornare Riverpod.
+  Lo strumento di migrazione aggiornerà la versione di Riverpod per te.
+- Assicurati che il tuo progetto non contenga errori.
+- Eseguire:
+  ```sh
+  riverpod migrate
+  ```
+
+Lo strumento analizzerà il tuo progetto e ti suggerirà le modifiche. Per esempio potresti vedere:
+
+```diff
+Widget build(BuildContext context, ScopedReader watch) {
+-  MyModel state = watch(provider.state);
++  MyModel state = watch(provider);
+}
+
+Accept change (y = yes, n = no [default], A = yes to all, q = quit)? 
+```
+
+Per accettare la modifica, premi semplicemente <kbd>y</kbd>. In caso contrario, premi <kbd>n</kbd>.
+
+[statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html

@@ -1,0 +1,259 @@
+{
+    "theme.NotFound.title": {
+        "message": "পেজ পাওয়া যায়নি",
+        "description": "The title of the 404 page"
+    },
+    "theme.NotFound.p1": {
+        "message": "আপনি যা খুঁজছেন তা আমরা খুঁজে পাইনি",
+        "description": "The first paragraph of the 404 page"
+    },
+    "theme.NotFound.p2": {
+        "message": "অনুগ্রহ করে এই সাইটের মালিকের সাথে যোগাযোগ করুন, এবং যেটি আপনাকে মূল URL এর সাথে লিঙ্ক করেছে এবং তাদের জানান যে তাদের লিঙ্কটি কাজ করতেছে না।",
+        "description": "The 2nd paragraph of the 404 page"
+    },
+    "theme.AnnouncementBar.closeButtonAriaLabel": {
+        "message": "বন্ধ",
+        "description": "The ARIA label for close button of announcement bar"
+    },
+    "theme.blog.paginator.navAriaLabel": {
+        "message": "ব্লগ পোস্টের তালিকার পেজিনেশন",
+        "description": "The ARIA label for the blog pagination"
+    },
+    "theme.blog.paginator.newerEntries": {
+        "message": "নতুন এন্ট্রি",
+        "description": "The label used to navigate to the newer blog posts page (previous page)"
+    },
+    "theme.blog.paginator.olderEntries": {
+        "message": "পুরাতন এন্ট্রি",
+        "description": "The label used to navigate to the older blog posts page (next page)"
+    },
+    "theme.blog.post.readingTime.plurals": {
+        "message": "এক মিনিট পড়া|{readingTime} মিনিট পড়া",
+        "description": "Pluralized label for \"{readingTime} min read\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+    },
+    "theme.tags.tagsListLabel": {
+        "message": "ট্যাগ :",
+        "description": "The label alongside a tag list"
+    },
+    "theme.blog.post.readMore": {
+        "message": "আরো পড়ুন",
+        "description": "The label used in blog post item excerpts to link to full blog posts"
+    },
+    "theme.blog.post.paginator.navAriaLabel": {
+        "message": "ব্লগ পোস্টের পেজিনেশন",
+        "description": "The ARIA label for the blog posts pagination"
+    },
+    "theme.blog.post.paginator.newerPost": {
+        "message": "নতুন পোষ্ট",
+        "description": "The blog post button label to navigate to the newer/previous post"
+    },
+    "theme.blog.post.paginator.olderPost": {
+        "message": "পুরনো পোস্ট",
+        "description": "The blog post button label to navigate to the older/next post"
+    },
+    "theme.blog.sidebar.navAriaLabel": {
+        "message": "সাম্প্রতিক ব্লগের পোস্ট নেভিগেশন",
+        "description": "The ARIA label for recent posts in the blog sidebar"
+    },
+    "theme.blog.post.plurals": {
+        "message": "একটি আর্টিকেল|{count} আর্টিকেলস",
+        "description": "Pluralized label for \"{count} posts\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+    },
+    "theme.blog.tagTitle": {
+        "message": "{nPosts} সঙ্গে ট্যাগ « {tagName} »",
+        "description": "The title of the page for a blog tag"
+    },
+    "theme.tags.tagsPageLink": {
+        "message": "সব ট্যাগ দেখুন",
+        "description": "The label of the link targeting the tag list page"
+    },
+    "theme.CodeBlock.copyButtonAriaLabel": {
+        "message": "কোড কপি করুন",
+        "description": "The ARIA label for copy code blocks button"
+    },
+    "theme.CodeBlock.copied": {
+        "message": "কপি হয়েছে",
+        "description": "The copied button label on code blocks"
+    },
+    "theme.CodeBlock.copy": {
+        "message": "কপি",
+        "description": "The copy button label on code blocks"
+    },
+    "theme.tags.tagsPageTitle": {
+        "message": "ট্যাগ",
+        "description": "The title of the tag list page"
+    },
+    "theme.docs.sidebar.expandButtonTitle": {
+        "message": "পাশের মেনুটি খুলুন",
+        "description": "The ARIA label and title attribute for expand button of doc sidebar"
+    },
+    "theme.docs.sidebar.expandButtonAriaLabel": {
+        "message": "পাশের মেনুটি খুলুন",
+        "description": "The ARIA label and title attribute for expand button of doc sidebar"
+    },
+    "theme.docs.paginator.navAriaLabel": {
+        "message": "নথির পৃষ্ঠা সংখ্যা",
+        "description": "The ARIA label for the docs pagination"
+    },
+    "theme.docs.paginator.previous": {
+        "message": "পূর্ব",
+        "description": "The label used to navigate to the previous doc"
+    },
+    "theme.docs.paginator.next": {
+        "message": "পরবর্তী",
+        "description": "The label used to navigate to the next doc"
+    },
+    "theme.docs.sidebar.collapseButtonTitle": {
+        "message": "সাইড মেনু টগল করুন",
+        "description": "The title attribute for collapse button of doc sidebar"
+    },
+    "theme.docs.sidebar.collapseButtonAriaLabel": {
+        "message": "সাইড মেনু টগল করুন",
+        "description": "The title attribute for collapse button of doc sidebar"
+    },
+    "theme.docs.versions.unreleasedVersionLabel": {
+        "message": "এটি আগামী ভার্সন {versionLabel} এর {siteTitle} এর ডকুমেন্টশন .",
+        "description": "The label used to tell the user that he's browsing an unreleased doc version"
+    },
+    "theme.docs.versions.unmaintainedVersionLabel": {
+        "message": "এটি {siteTitle} {versionLabel}-এর ডকুমেন্টেশন, যা আর সক্রিয়ভাবে মেইন্টেইন করা হয় না।",
+        "description": "The label used to tell the user that he's browsing an unmaintained doc version"
+    },
+    "theme.docs.versions.latestVersionSuggestionLabel": {
+        "message": "আপ-টু-ডেট ডকুমেন্টেশনের জন্য, {latestVersionLink} ({versionLabel}) দেখুন।",
+        "description": "The label used to tell the user to check the latest version"
+    },
+    "theme.docs.versions.latestVersionLinkLabel": {
+        "message": "শেষ সংস্করণ",
+        "description": "The label used for the latest version suggestion link label"
+    },
+    "theme.common.editThisPage": {
+        "message": "এই পেজটি এডিট করুন",
+        "description": "The link label to edit the current page"
+    },
+    "theme.common.headingLinkTitle": {
+        "message": "শিরোনামের সরাসরি লিঙ্ক",
+        "description": "Title for link to heading"
+    },
+    "theme.lastUpdated.atDate": {
+        "message": "{date} তারিখে",
+        "description": "The words used to describe on which date a page has been last updated"
+    },
+    "theme.lastUpdated.byUser": {
+        "message": "{user} এর দ্বারা",
+        "description": "The words used to describe by who the page has been last updated"
+    },
+    "theme.lastUpdated.lastUpdatedAtBy": {
+        "message": "এই পেজটি আপডেট করার হয়েছেঃ {atDate}, {byUser}",
+        "description": "The sentence used to display when a page has been last updated, and by who"
+    },
+    "theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel": {
+        "message": "← প্রধান মেনুতে ফিরে যান",
+        "description": "The label of the back button to return to main menu, inside the mobile navbar sidebar secondary menu (notably used to display the docs sidebar)"
+    },
+    "theme.common.skipToMainContent": {
+        "message": "স্কিপ করে মূল কন্টেন্ট এ যাও",
+        "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
+    },
+    "theme.TOCCollapsible.toggleButtonLabel": {
+        "message": "এই পৃষ্ঠায়",
+        "description": "The label used by the button on the collapsible TOC component"
+    },
+    "theme.SearchPage.documentsFound.plurals": {
+        "message": "একটি ডকুমেন্ট পাওয়া গেছে|{count}টি ডকুমেন্ট পাওয়া গেছে৷",
+        "description": "Pluralized label for \"{count} documents found\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+    },
+    "theme.SearchPage.existingResultsTitle": {
+        "message": "« {query} » এর অনুসন্ধান ফলাফল",
+        "description": "The search page title for non-empty query"
+    },
+    "theme.SearchPage.emptyResultsTitle": {
+        "message": "ডকুমেন্টেশন অনুসন্ধান করুন",
+        "description": "The search page title for empty query"
+    },
+    "theme.SearchPage.inputPlaceholder": {
+        "message": "এখানে আপনার অনুসন্ধান টাইপ করুন",
+        "description": "The placeholder for search page input"
+    },
+    "theme.SearchPage.inputLabel": {
+        "message": "খুঁজুন",
+        "description": "The ARIA label for search page input"
+    },
+    "theme.SearchPage.algoliaLabel": {
+        "message": "Algolia দ্বারা অনুসন্ধান",
+        "description": "The ARIA label for Algolia mention"
+    },
+    "theme.SearchPage.noResultsText": {
+        "message": "কোন ফলাফল পাওয়া যায়নি",
+        "description": "The paragraph for empty search result"
+    },
+    "theme.SearchPage.fetchingNewResults": {
+        "message": "নতুন ফলাফল লোড হচ্ছে...",
+        "description": "The paragraph for fetching new search results"
+    },
+    "theme.SearchBar.label": {
+        "message": "খোঁজ করুন",
+        "description": "The ARIA label and placeholder for search button"
+    },
+    "homepage.compile_safe_title": {
+        "message": "কম্পাইল সেফ"
+    },
+    "homepage.compile_safe_body": {
+        "message": "আর নয় {ProviderNotFound} অথবা লোডিং অবস্থাগুলি পরিচালনা করতে ভুলে যাওয়া। যদি Riverpod দিয়ে আপনার কোড কম্পাইল হয়, তাহলে আপনার কোড কাজ করবেই।"
+    },
+    "homepage.unlimited_provider_title": {
+        "message": "এটি প্রভাইডার, তবে তার লিমিটগুলা ছাড়া"
+    },
+    "homepage.unlimited_provider_body": {
+        "message": "রিভারপড প্রোভাইডার দ্বারা অনুপ্রাণিত কিন্তু একই ধরনের একাধিক প্রোভাইডারকে সমর্থন করার মতো কিছু মূল সমস্যা সমাধান করে। যেমনঃ Awaiting, Asynchronous প্রভাইডার, যেখনো জায়গা থেকে প্রভাইডার এড করা; ..."
+    },
+    "homepage.no_flutter_dependency_title": {
+        "message": "ফ্লাটার এর নির্ভর নয়"
+    },
+    "homepage.no_flutter_dependency_body": {
+        "message": "প্রভাইডার তৈরি, শেয়ার, টেস্ট করুন ফ্লাটার এর উপর কোন নির্ভরশীলতা ছাড়াই. এটির মধ্যে {BuildContext} ছাড়া প্রভাইডার কনসিউম বা লিসেন ও রিড।"
+    },
+    "home.tagline": {
+        "message": "একটি রিএক্টিভ ক্যাশিং এবং ডেটা-বাইন্ডিং ফ্রেমওয়ার্ক"
+    },
+    "home.get_started": {
+        "message": "শুরু করি"
+    },
+    "home.shared_state_title": {
+        "message": "শেয়ারড স্টেট ডিক্লার করুন যেখনো জায়গা থেকে"
+    },
+    "home.shared_state_body": {
+        "message": "এখন আপনার আর {main} ফাইল আর ইউয়াই এর ফাইল এ লাফালাফি করতে হবে না.{br} আপনার শেয়ারড স্টেটের কোডটি যেখানে এটির জায়গা রয়েছে সেখানে রাখুন, তা একটি পৃথক প্যাকেজে হোক বা যে প্রয়োজনীয় উইজেটের  ঠিক পাশেই হোক, তাও টেস্টে কোন রকম কম্প্রোমাইস ছাড়া৷",
+        "description": "The homepage input placeholder"
+    },
+    "home.recompute_title": {
+        "message": "প্রয়োজন হলেই UI পুনরায় গণনা করুন/ইউআই পুনর্নির্মাণ করুন"
+    },
+    "home.recompute_body": {
+        "message": "আমাদের আর {build} মেথড এর মধ্যে তালিকাগুলি বাছাই/ফিল্টার করতে হবে না বা কোন একটি উন্নত ক্যাশে পদ্ধতি অবলম্বন করতে হবে।{br}{br} {Provider} এর সাথে {families}, আপনার তালিকা বাছাই (ফিল্টার) করুন বা HTTP রিকুয়েস্ট করুন শুধুমাত্র যখন আপনার তা সত্যিই প্রয়োজন."
+    },
+    "home.safe_read_title": {
+        "message": "সেফটি এর সাথে প্রভাইডার পড়ুন"
+    },
+    "home.safe_read_body": {
+        "message": "একটি প্রভাইডার পরার ক্ষেত্রে আপনি কখনো খারাপ স্টেট পাবেন না। যদি আপনি একটি প্রভাইডার পড়ার (Read) জন্য কোড লিখতে পারেন, তাহলে আপনি একটি ভ্যালিড ভ্যালু পাবেন{br}{br} এটি এমনকি অ্যাসিঙ্ক্রোনাস লোড করা ভ্যালুগুলির ক্ষেত্রেও প্রযোজ্য। প্রভাইডার এর বিপরীতে, রিভারপড পরিষ্কারভাবে লোডিং/ত্রুটির কেস পরিচালনা করার সুবিধা দেয়।"
+    },
+    "home.devtool_title": {
+        "message": "ফ্লাটার এর ডেবটুল এ আপনার স্টেট পর্যবেক্ষন করুন"
+    },
+    "home.devtool_body": {
+        "message": "রিভারপড ব্যবহার করে, আপনার স্টেট ফ্লটারের ডেভটুলের ভিতরের বাক্সের বাইরে দৃশ্যমান। {br} অধিকন্তু, একটি পূর্ণাঙ্গ স্টেট-পরিদর্শকের কাজ চলছে।"
+    },
+    "home.create_provider": {
+        "message": "একটি প্রভাইডার তৈরি করুন"
+    },
+    "home.consume_provider": {
+        "message": "প্রভাইডার কনসিউম করুন"
+    },
+    "declare_anywhere_img": {
+        "message": "img/intro/fr/declare_anywhere.png"
+    },
+    "home.async_img": {
+        "message": "img/intro/fr/async.png"
+    }
+}

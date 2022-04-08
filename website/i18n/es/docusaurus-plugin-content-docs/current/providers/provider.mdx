@@ -1,0 +1,96 @@
+---
+title: Provider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todo from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/provider/todo.dart";
+import completedTodos from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/provider/completed_todos.dart";
+import unoptimizedPreviousButton from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/provider/unoptimized_previous_button.dart";
+import optimizedPreviousButton from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/provider/optimized_previous_button.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`Provider` es el más básico de todos los providers. Crea un valor... Y eso es todo.
+
+`Provider` se utiliza típicamente para:
+
+- almacenamiento de cálculos en caché 
+- exponer un valor a otros providers (como un `Repository`/`HttpClient`).
+- ofreciendo una forma para testear o que los widgets sobrescriban un valor.
+- reduciendo las reconstrucciones de providers/widgets sin tener que usar `select`.
+
+## Uso de `Provider` para almacenar los cálculos en caché 
+
+`Provider` es una poderosa herramienta para almacenar en caché 
+operaciones sincrónicas cuando se combina con [ref.watch].
+
+Un ejemplo sería filtrar una lista de tareas. Dado que filtrar una lista puede ser un poco costoso, 
+idealmente no queremos filtrar nuestra lista de tareas cada vez que nuestra aplicación se vuelve a 
+renderizar. En esta situación, podríamos usar `Provider` para hacer el filtrado por nosotros.
+
+Para eso, suponga que nuestra aplicación tiene un [StateNotifierProvider] 
+existente que manipula una lista de tareas:
+
+<CodeBlock>{trimSnippet(todo)}</CodeBlock>
+
+A partir de ahí, podemos usar `Provider` para exponer la lista filtrada de tareas, 
+mostrando solo las tareas completadas:
+
+<CodeBlock>{trimSnippet(completedTodos)}</CodeBlock>
+
+Con este código, nuestra interfaz de usuario ahora puede mostrar la lista de 
+tareas completados al escuchar `completedTodosProvider`:
+
+```dart
+Consumer(builder: (context, ref, child) {
+  final completedTodos = ref.watch(completedTodosProvider);
+  // TODO: mostrar la lista de tareas (todos) en un ListView/GridView/...
+});
+```
+
+La parte interesante es que el filtrado de listas ahora está en caché.
+
+Lo que significa que la lista de tareas completados no se volverá a calcular hasta que se 
+agreguen/eliminen/actualicen tareas, incluso si estamos leyendo la lista de tareas completadas varias veces.
+
+Tenga en cuenta que no necesitamos invalidar manualmente el caché cuando cambia la lista de tareas. 
+`Provider` es capaz de saber automáticamente cuándo se debe volver a calcular el resultado gracias a [ref.watch].
+
+## Reducción de reconstrucciones de widgets/providers mediante el uso de `Provider`
+
+Un aspecto único de `Provider` es que incluso cuando se vuelve a calcular `Provider` 
+(normalmente cuando se usa [ref.watch]), no actualizará los widgets/providers que lo escuchan 
+a menos que cambie el valor.
+
+Un ejemplo del mundo real sería habilitar/deshabilitar los botones anterior/siguiente de una vista paginada:
+
+![Botón "Atrás/Siguiente"](https://user-images.githubusercontent.com/134939/47580830-31263a00-d950-11e8-9b61-0eaddab2709e.png)
+
+En nuestro caso, nos centraremos concretamente en el botón "anterior".
+Una implementación ingenua de dicho botón sería un widget que obtiene el índice de la página actual,
+y si ese índice es igual a 0, deshabilitaríamos el botón.
+
+Este código podría ser:
+
+<CodeBlock>{trimSnippet(unoptimizedPreviousButton)}</CodeBlock>
+
+El problema con este código es que cada vez que cambiamos la página actual, el botón "anterior" se reconstruirá.
+En el mundo ideal, querríamos que el botón se reconstruya solo cuando cambie entre activado y desactivado.
+
+La raíz del problema aquí es que estamos calculando si el usuario puede ir a la página anterior directamente desde el botón "anterior".
+
+Una forma de resolver esto es extraer esta lógica fuera del widget y en un `Provider`:
+
+<CodeBlock>{trimSnippet(optimizedPreviousButton)}</CodeBlock>
+
+Al hacer esta pequeña refactorización, nuestro widget `PreviousButton` ya no se reconstruirá cuando 
+el índice de la página cambie gracias a `Provider`.
+
+A partir de ahora, cuando cambie el índice de la página, `canGoToPreviousPageProvider` se volverá a 
+calcular. Pero si el valor expuesto por el provider no cambia, entonces `PreviousButton` no se reconstruirá.
+
+Este cambio mejoró el rendimiento de nuestro botón y tuvo el beneficio interesante de extraer la lógica fuera de nuestro widget.
+
+[ref.watch]: ../concepts/reading#uso-de-refwatch-para-observar-a-un-provider
+[statenotifierprovider]: ./state_notifier_provider

@@ -1,9 +1,9 @@
 part of '../provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [state], the value currently exposed by this providers.
+/// - [state], the value currently exposed by this provider.
 abstract class AutoDisposeProviderRef<State>
-    implements ProviderRef<State>, AutoDisposeRef {}
+    implements ProviderRef<State>, AutoDisposeRef<State> {}
 
 /// {@macro riverpod.provider}
 @sealed
@@ -18,7 +18,15 @@ class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
     this.dependencies,
     Family? from,
     Object? argument,
-  }) : super(name: name, from: from, argument: argument);
+    Duration? cacheTime,
+    Duration? disposeDelay,
+  }) : super(
+          name: name,
+          from: from,
+          argument: argument,
+          cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
+        );
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeProviderFamilyBuilder();
@@ -68,7 +76,14 @@ class AutoDisposeProviderFamily<State, Arg>
     this._create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+    Duration? cacheTime,
+    Duration? disposeDelay,
+  }) : super(
+          name: name,
+          dependencies: dependencies,
+          cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
+        );
 
   final FamilyCreate<State, AutoDisposeProviderRef<State>, Arg> _create;
 

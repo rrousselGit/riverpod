@@ -15,6 +15,10 @@
   background-color: rgb(72, 77, 91);
 }
 
+html[data-theme=light] .docusaurus-highlight-code-line {
+  background-color: rgb(203, 209, 232);
+}
+
 .markdown {
   > .player {
     position: relative;
@@ -40,4 +44,8 @@ main {
 
 section {
   max-width: 100vw;
+}
+
+html[data-theme=light]  pre code {
+  background-color: var(--ifm-pre-background);
 }

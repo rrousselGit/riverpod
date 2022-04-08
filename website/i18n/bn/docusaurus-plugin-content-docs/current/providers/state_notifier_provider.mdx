@@ -1,0 +1,32 @@
+---
+title: StateNotifierProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todos from "!!raw-loader!./state_notifier_provider/todos.dart";
+import todosConsumer from "!!raw-loader!./state_notifier_provider/todos_consumer.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`StateNotifierProvider` হল একটি প্রভাইডার যা একটি [StateNotifier] (প্যাকেজ [state_notifier] থেকে, যা রিভারপড পুনরায় রি-এক্সপোর্ট করে) রিড এবং এক্সপোস করতে ব্যবহৃত হয়।
+[StateNotifier] এর সাথে `StateNotifierProvider` হল স্ট্যাট পরিচালনার জন্য রিভারপডের প্রস্তাবিত সমাধান যা ব্যবহারকারীর ইন্টারঅ্যাকশনের প্রতিক্রিয়ায় পরিবর্তিত হতে পারে।
+
+এটি সাধারণত এর জন্য ব্যবহৃত হয়:
+
+- একটি **অপরিবর্তনীয়** অবস্থা এক্সপোস করা যা কাস্টম ইভেন্টগুলিতে প্রতিক্রিয়া করার পরে সময়ের সাথে সাথে পরিবর্তিত হতে পারে।
+- একটি একক জায়গায় কিছু অবস্থা (ওরফে "বিজনেস লজিক") সংশোধন করার জন্য লজিককে কেন্দ্রীভূত করা, সময়ের সাথে সাথে রক্ষণাবেক্ষণযোগ্যতা উন্নত করা।
+
+ব্যবহারের উদাহরণ হিসাবে, আমরা একটি টুডু তালিকা বাস্তবায়ন করতে `StateNotifierProvider` ব্যবহার করতে পারি।
+এটি করার ফলে ব্যবহারকারীর ইন্টারঅ্যাকশনে UI-কে টুডুর তালিকা পরিবর্তন করতে দেওয়ার জন্য `addTodo`-এর মতো মেথডগুলোকে এক্সপোস করার অনুমতি দেওয়া হবে:
+
+<CodeBlock>{trimSnippet(todos)}</CodeBlock>
+
+এখন যেহেতু আমরা একটি `StateNotifierProvider` সংজ্ঞায়িত করেছি, আমরা এটি ব্যবহার করতে পারি আমাদের UI-তে todos তালিকার সাথে ইন্টারঅ্যাক্ট করতেঃ
+
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
+
+[state_notifier]: https://pub.dev/packages/state_notifier
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[provider]: ./provider
+[futureprovider]: ./future_provider

@@ -305,8 +305,8 @@ En lisant ce `userProvider`, vous pouvez :
     AsyncValue<User> user = ref.watch(userProvider);
 
     return user.when(
-      loading: (_) => const CircularProgressIndicator(),
-      error: (error, stack, _) => const Text('Oops'),
+      loading: () => const CircularProgressIndicator(),
+      error: (error, stack) => const Text('Oops'),
       data: (user) => Text(user.name),
     );
   }
@@ -323,7 +323,7 @@ En lisant ce `userProvider`, vous pouvez :
   
   ```dart
   Widget build(BuildContext context, WidgetRef ref) {
-    Future<User> user = ref.watch(userProvider.last);
+    Future<User> user = ref.watch(userProvider.future);
   }
   ```
 

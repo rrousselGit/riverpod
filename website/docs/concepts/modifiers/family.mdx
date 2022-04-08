@@ -8,20 +8,19 @@ import TabItem from "@theme/TabItem";
 Before reading this, consider reading about [providers](/docs/concepts/providers) and [how to read them](/docs/concepts/reading).
 In this part, we will talk in detail about the `.family` provider modifier.
 
-The `.family` modifier has one purpose: Creating a provider from external values.
+The `.family` modifier has one purpose: Getting a unique provider based on external parameters.
 
 Some common use-cases for `family` would be:
 
 - Combining [FutureProvider] with `.family` to fetch a `Message` from its ID
-- Passing the current `Locale` to a provider, so that we can handle translations:
-- Connecting a provider with another provider without having access to its variable.
+- Passing the current `Locale` to a provider, so that we can handle translations
 
 ## Usage
 
 The way families works is by adding an extra parameter to the provider.
 This parameter can then be freely used in our provider to create some state.
 
-For example, we could combine `family` with [FutureProvider] to fetch
+For example, we can combine `family` with [FutureProvider] to fetch
 a `Message` from its ID:
 
 ```dart
@@ -30,7 +29,7 @@ final messagesFamily = FutureProvider.family<Message, String>((ref, id) async {
 });
 ```
 
-Then, when using our `messagesFamily` provider, the syntax is slightly modified.  
+When using our `messagesFamily` provider, the syntax is slightly different.  
 The usual syntax will not work anymore:
 
 ```dart
@@ -50,7 +49,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 
 :::info
 It is possible to use a family with different parameters simultaneously.  
-For example, we could use a `titleFamily` to read both the french and english
+For example, we could use a `titleFamily` to read both the French and English
 translations at the same time:
 
 ```dart
@@ -70,7 +69,7 @@ Widget build(BuildContext context, WidgetRef ref) {
 For families to work correctly, it is critical for the parameter passed to
 a provider to have a consistent `hashCode` and `==`.
 
-Ideally the parameter should either be a primitive (bool/int/double/String),
+Ideally, the parameter should either be a primitive (bool/int/double/String),
 a constant (providers), or an immutable object that overrides `==` and `hashCode`.
 
 ### _PREFER_ using `autoDispose` when the parameter is not constant:
@@ -78,7 +77,7 @@ a constant (providers), or an immutable object that overrides `==` and `hashCode
 You may want to use families to pass the input of a search field to your provider.
 But that value can change often and never be reused.  
 This could cause memory leaks as, by default, a provider is never destroyed even
-if no-longer used.
+if no longer used.
 
 Using both `.family` and `.autoDispose` fixes that memory leak:
 
@@ -101,7 +100,7 @@ This includes:
 - Objects generated with [Freezed] or [built_value](https://pub.dev/packages/built_value)
 - Objects using [equatable](https://pub.dev/packages/equatable)
 
-Here's an example using [Freezed] and [equatable]:
+Here's an example of using [Freezed] or [equatable] for multiple parameters:
 
 <Tabs
   groupId="family"
@@ -177,10 +176,10 @@ Widget build(BuildContext context, WidgetRef ref) {
   ...
 }
 ```
+
 </TabItem>
 </Tabs>
 
 [freezed]: https://pub.dev/packages/freezed
-[provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
 [equatable]: https://pub.dev/packages/equatable
-[futureprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/FutureProvider-class.html
+[futureprovider]: ../../providers/future_provider

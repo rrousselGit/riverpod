@@ -1,8 +1,8 @@
 part of '../future_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [ProviderRef.state], the value currently exposed by this providers.
-abstract class FutureProviderRef<State> implements Ref {
+/// - [ProviderRef.state], the value currently exposed by this provider.
+abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
   /// Obtains the state currently exposed by this provider.
   ///
   /// Mutating this property will notify the provider listeners.

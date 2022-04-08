@@ -6,11 +6,6 @@ import '../utils.dart';
 
 final isAssertionError = isA<AssertionError>();
 
-TypeMatcher isProviderException([Object? exceptionMatcher]) {
-  return isA<ProviderException>()
-      .having((s) => s.exception, 'exception', exceptionMatcher);
-}
-
 void main() {
   late ProviderContainer container;
   setUp(() {

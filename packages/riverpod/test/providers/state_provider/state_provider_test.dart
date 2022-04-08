@@ -5,6 +5,27 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('.state clears listener when autoDisposed', () async {
+    final observer = ObserverMock();
+    final container = createContainer(observers: [observer]);
+    final provider = StateProvider.autoDispose((ref) => 0);
+    final listener = Listener<StateController<int>>();
+
+    container.listen(provider.notifier, (previous, next) {});
+
+    container.read(provider.state);
+    await container.pump();
+
+    verifyZeroInteractions(listener);
+
+    container.listen(provider.state, listener);
+
+    container.read(provider.notifier).state++;
+
+    verify(listener(any, any)).called(1);
+    verify(observer.didUpdateProvider(any, any, any, container)).called(1);
+  });
+
   test('can be auto-scoped', () async {
     final dep = Provider((ref) => 0);
     final provider = StateProvider(
@@ -404,7 +425,7 @@ void main() {
       expect(callCount, 1);
     });
 
-    test('creates a new controller when no-longer listened', () async {
+    test('creates a new controller when no longer listened to', () async {
       final container = createContainer();
       final provider = StateProvider.autoDispose((ref) => 0);
 
@@ -428,7 +449,7 @@ void main() {
   });
 
   group('StateProvider.family.autoDispose', () {
-    test('creates a new controller when no-longer listened', () async {
+    test('creates a new controller when no longer listened to', () async {
       final container = createContainer();
 
       StateProvider.family.autoDispose<int, String>((ref, id) {

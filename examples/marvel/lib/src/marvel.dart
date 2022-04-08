@@ -1,6 +1,6 @@
 /// This file contains the necessary objects to connect with the Marvel API.
 ///
-/// This includes [MarvelRepository], which expose methods to do the request
+/// This includes [MarvelRepository], which exposes methods to do the request
 /// in a type-safe way.
 /// It also includes all the intermediate objects used to deserialize the
 /// response from the API.
@@ -41,13 +41,16 @@ class MarvelRepository {
   }) async {
     final cleanNameFilter = nameStartsWith?.trim();
 
-    final response =
-        await _get('characters', queryParameters: <String, Object?>{
-      'offset': offset,
-      if (limit != null) 'limit': limit,
-      if (cleanNameFilter != null && cleanNameFilter.isNotEmpty)
-        'nameStartsWith': cleanNameFilter,
-    });
+    final response = await _get(
+      'characters',
+      queryParameters: <String, Object?>{
+        'offset': offset,
+        if (limit != null) 'limit': limit,
+        if (cleanNameFilter != null && cleanNameFilter.isNotEmpty)
+          'nameStartsWith': cleanNameFilter,
+      },
+      cancelToken: cancelToken,
+    );
 
     final result = MarvelListCharactersReponse(
       characters: response.data.results.map((e) {

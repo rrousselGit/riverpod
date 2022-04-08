@@ -13,7 +13,7 @@ installare [Riverpod] e di seguito creare il classico "Hello World".
 Prima di tutto, devi sapere che [Riverpod] è diviso in diversi pacchetti, ognuno per una propria esigenza.
 La variante di [Riverpod] che vorrai installare dipenderà dal tipo di App che hai intenzione di creare.
 
-Fai riferimento alla seguente tabella per decidere quale pacchetto installere:
+Fai riferimento alla seguente tabella per decidere quale pacchetto installare:
 
 | tipo app                  | nome pacchetto                                                                     | descrizione                                                            |
 | ------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
@@ -77,7 +77,7 @@ dependencies:
   riverpod: ^1.0.2
 ```
 
-Dopodichè esegui `pub get`.
+Dopodichè esegui `dart pub get`.
 
 </TabItem>
 </Tabs>
@@ -107,13 +107,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Creiamo un "provider", che salverà un valore (Nel nostro caso "Hello world")
-// Utilizzando provider ci permetterà di mock/override il valore esposto.
+// Utilizzare un provider ci permetterà di imitare/sovrascrivere il valore esposto.
 final helloWorldProvider = Provider((_) => 'Hello world');
 
 void main() {
   runApp(
-    // Per i widget, per avere la possibilità di leggere i provider, dobbiamo avvolgere
-    // l'intera applicazione con il Widget "ProviderScope".
+    // Per fare in modo che i widget leggano i provider, dobbiamo avvolgere
+    // l'intera applicazione in un widget "ProviderScope".
     // Qui è dove sarà salvato lo stato dei nostri provider.
     ProviderScope(
       child: MyApp(),
@@ -121,12 +121,10 @@ void main() {
   );
 }
 
-// Nota: MyApp è un HookConsumerWidget, da flutter_hooks
+// Nota: MyApp è un HookConsumerWidget, da hooks_riverpod
 class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Per leggere il nostro provider, possiamo usare l'hook "ref.watch(".
-    // Questo è solamente possibile perchè MyApp è un HookConsumerWidget
     final String value = ref.watch(helloWorldProvider);
 
     return MaterialApp(
@@ -166,7 +164,7 @@ void main() {
   );
 }
 
-// Estende ConsumerWidget ( esposto da Riverpod) invece che StatelessWidget
+// Estende ConsumerWidget (esposto da Riverpod) invece che StatelessWidget
 class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -184,7 +182,7 @@ class MyApp extends ConsumerWidget {
 }
 ```
 
-Che dopo puoi eseguire con `flutter run`.  
+Puoi eseguire con `flutter run`.  
 Questo mostrerà "Hello world" nel tuo device.
 
 </TabItem>
@@ -217,7 +215,7 @@ Questo mostrerà "Hello world" nella console
 
 ## Andando oltre: Installare snippet
 
-Se stai utilizzando `Flutter` e `Vscode`, considera l'utilizzo di [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
+Se stai utilizzando `Flutter` e `VS Code`, considera l'utilizzo di [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
 
 Se stai utilizzando `Flutter` e `Android Studio` o `IntelliJ`, considera l'utilizzo di [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
 

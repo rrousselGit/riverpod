@@ -14,13 +14,13 @@ export const Banner: React.FC = () => {
     <header className="banner">
       <div className="banner__content">
         <h1 className="banner__logo">
-          <img src="img/logo.svg" alt="Riverpod logo" />
+          <img src="img/logo.svg" alt="Riverpod" />
           {siteConfig.title}
         </h1>
 
         <h1 className="banner__headline">
           <Translate id="home.tagline">
-            A Reactive State-Management and Dependency Injection Framework
+            A Reactive Caching and Data-binding Framework
           </Translate>
         </h1>
 

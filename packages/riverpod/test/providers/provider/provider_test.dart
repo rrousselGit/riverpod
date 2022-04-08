@@ -42,7 +42,7 @@ void main() {
 
         expect(
           () => container.read(provider),
-          throwsA(isA<ProviderException>()),
+          throwsUnimplementedError,
         );
 
         final element =
@@ -50,7 +50,7 @@ void main() {
 
         expect(
           () => element.state,
-          throwsA(isA<ProviderException>()),
+          throwsUnimplementedError,
         );
       });
 

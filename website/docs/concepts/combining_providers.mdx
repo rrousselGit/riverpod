@@ -1,14 +1,14 @@
 ---
-title: Combining providers
+title: Combining Provider States
 ---
 
 Make sure to [read about Providers](/docs/concepts/providers) first.  
-In this guide, we will see everything there is to know about combining providers.
+In this guide, we will learn about combining provider states.
 
-## Combining providers
+## Combining provider states
 
 We've previously seen how to create a simple provider. But the reality is,
-in many situation a provider will want to read the state of another provider.
+in many situations a provider will want to read the state of another provider.
 
 To do that, we can use the [ref] object passed to the callback of our provider,
 and use its [watch] method.
@@ -36,15 +36,16 @@ That's it. We've created a provider that depends on another provider.
 
 ## FAQ
 
-### What if the value listened changes over time?
+### What if the value being listened to changes over time?
 
-Depending on the provider that you are listening, the value obtained may change
-over time.  
+Depending on the provider that you are listening to, the value obtained may
+change over time.
 For example, you may be listening to a [StateNotifierProvider], or the provider
-listened was forced to refresh using [ProviderContainer.refresh]/[ref.refresh].
+being listened to may have been forced to refresh through the use of
+[ProviderContainer.refresh]/[ref.refresh].
 
-When using [watch], Riverpod is able to detect that the value listened changed
-and will _automatically_ re-execute the provider when needed.
+When using [watch], Riverpod is able to detect that the value being listened to changed
+and will _automatically_ re-execute the provider's creation callback when needed.
 
 This can be useful for computed states.
 For example, consider a [StateNotifierProvider] that exposes a todo-list:
@@ -60,9 +61,9 @@ final todoListProvider = StateNotifierProvider((ref) => TodoList());
 A common use-case would be to have the UI filter the list of todos to show
 only the completed/uncompleted todos.
 
-An easy way to implement such scenario would be to:
+An easy way to implement such a scenario would be to:
 
-- create [StateProvider], which exposes the currently selected filter method:
+- create a [StateProvider], which exposes the currently selected filter method:
 
   ```dart
   enum Filter {
@@ -94,17 +95,17 @@ An easy way to implement such scenario would be to:
   ```
 
 Then, our UI can listen to `filteredTodoListProvider` to listen to the filtered todo-list.  
-Using such approach, the UI will automatically update when either the filter
+Using such an approach, the UI will automatically update when either the filter
 or the todo-list changes.
 
 To see this approach in action, you can look at the source code of the [Todo List
-example](https://github.com/rrousselGit/river_pod/tree/master/examples/todos)
+example](https://github.com/rrousselGit/river_pod/tree/master/examples/todos).
 
 :::info
 This behavior is not specific to [Provider], and works with all providers.
 
 For example, you could combine [watch] with [FutureProvider] to implement a search
-feature or live-configurations change:
+feature that supports live-configuration changes:
 
 ```dart
 // The current search filter
@@ -123,7 +124,7 @@ final charactersProvider = FutureProvider<List<Character>>((ref) async {
 ```
 
 This code will fetch a list of characters from the service, and automatically
-re-fetch the list whenever the configurations changes or when the search query changes.
+re-fetch the list whenever the configurations change or when the search query changes.
 :::
 
 ### Can I read a provider without listening to it?
@@ -137,7 +138,7 @@ We could use [watch] and create a new `Repository` whenever the user token chang
 but there is little to no use in doing that.
 
 In this situation, we can use [read], which is similar to [watch], but will not
-cause the provider to recreate its value exposed when the value obtained changes.
+cause the provider to recreate the value it exposes when the value obtained changes.
 
 In that case, a common practice is to pass `ref.read` to the object created.
 The object created will then be able to read providers whenever it wants.
@@ -178,8 +179,8 @@ class Repository {
 }
 ```
 
-The only difference that passing `ref.read` brings is a slightly less verbose
-code and making sure that our object never uses `ref.watch`.
+The only difference that passing `ref.read` brings is that it is 
+slightly less verbose and ensures that our object never uses `ref.watch`.
 :::
 
 :::danger **DON'T** call [read] inside the body of a provider
@@ -193,10 +194,9 @@ final myProvider = Provider((ref) {
 
 If you used [read] as an attempt to avoid unwanted rebuilds of your object,
 refer to [My provider updates too often, what can I do?](#my-provider-updates-too-often-what-can-i-do)
-
 :::
 
-### How to test an object that receives [read] as parameter of its constructor?
+### How to test an object that receives [read] as a parameter of its constructor?
 
 If you are using the pattern described in [Can I read a provider without listening to it?](#can-i-read-a-provider-without-listening-to-it),
 you may be wondering how to write tests for your object.
@@ -222,13 +222,13 @@ test('fetches catalog', () async {
 
 ### My provider updates too often, what can I do?
 
-If your object is re-created too often chances are, your provider is listening
+If your object is re-created too often your provider is likely listening
 to objects that it doesn't care about.
 
-For example, you may be listening a `Configuration` object, but only use the `host`
+For example, you may be listening to a `Configuration` object, but only use the `host`
 property.  
 By listening to the entire `Configuration` object, if a property other than `host`
-changes, this would still cause your provider to be re-evaluated – which may be
+changes, this still causes your provider to be re-evaluated – which may be
 undesired.
 
 The solution to this problem is to create a separate provider that exposes _only_
@@ -237,43 +237,41 @@ what you need in `Configuration` (so `host`):
 **AVOID** listening to the entire object:
 
 ```dart
-final configsProvider = StreamProvider<Configuration>(...);
+final configProvider = StreamProvider<Configuration>(...);
 
 final productsProvider = FutureProvider<List<Product>>((ref) async {
   // Will cause productsProvider to re-fetch the products if anything in the
   // configurations changes
-  final configs = await ref.watch(configsProvider.future);
+  final configs = await ref.watch(configProvider.future);
 
   return dio.get('${configs.host}/products');
 });
 ```
 
-**PREFER** listening to only what you use:
+
+**PREFER** using select when you only need a single property of an object:
 
 ```dart
-final configsProvider = StreamProvider<Configuration>(...);
-
-/// A provider that exposes only the current host
-final _hostProvider = FutureProvider<String>((ref) async {
-  final config = await ref.watch(configsProvider.future);
-  return config.host;
-});
+final configProvider = StateProvider<Configuration>(...);
 
 final productsProvider = FutureProvider<List<Product>>((ref) async {
   // Listens only to the host. If something else in the configurations
   // changes, this will not pointlessly re-evaluate our provider.
-  final host = await ref.watch(_hostProvider.future);
+  final host = await ref.watch(configProvider.select((config) => config.host));
 
   return dio.get('$host/products');
 });
 ```
 
-[provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
-[stateprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider-class.html
-[futureprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/FutureProvider-class.html
-[statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
+This will only rebuild the `productsProvider` when the `host` changes.
+
+[provider]: ../providers/provider
+[stateprovider]: ../providers/state_provider
+[futureprovider]: ../providers/future_provider
+[statenotifierprovider]: ../providers/state_notifier_provider
 [ref]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref-class.html
 [watch]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html
 [read]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/read.html
 [providercontainer.refresh]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer/refresh.html
 [ref.refresh]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef/refresh.html
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
