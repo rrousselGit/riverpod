@@ -121,6 +121,10 @@ abstract class Ref<State extends Object?> {
   /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
   void onDispose(void Function() cb);
 
+  /// Adds a listener to perform an operation before the provider is refreshed
+  /// by calling [ProviderContainer.refresh].
+  void onRefresh(void Function() cb);
+
   /// Read the state associated with a provider, without listening to that provider.
   ///
   /// By calling [read] instead of [watch], this will not cause a provider's

@@ -930,6 +930,24 @@ void main() {
     });
   });
 
+  group('ref.onReload', () {
+    test('is called on refresh', () {
+      final container = createContainer();
+      final onRefreshListener = OnRefreshListener();
+      when(onRefreshListener()).thenReturn(null);
+      final provider = Provider((ref) {
+        ref.onRefresh(onRefreshListener);
+      });
+      container.read(provider);
+      verifyZeroInteractions(onRefreshListener);
+      container.refresh(provider);
+      verify(onRefreshListener()).called(1);
+      // a second refresh will again call the invalidate listener.
+      container.refresh(provider);
+      verify(onRefreshListener()).called(2);
+    });
+  });
+
   test(
       'onDispose is triggered only once if within autoDispose unmount, a dependency chnaged',
       () async {

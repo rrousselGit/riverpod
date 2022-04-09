@@ -325,6 +325,13 @@ class ProviderContainer implements Node {
 
   /// {@template riverpod.refresh}
   State refresh<State>(Refreshable<State> provider) {
+    final reader = _getStateReader(provider._origin);
+
+    if (reader._element != null) {
+      final element = reader._element!;
+      element.triggerOnRefresh();
+    }
+
     invalidate(provider._origin);
     return read(provider);
   }
