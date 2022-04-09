@@ -1,8 +1,24 @@
 ---
 title: Lire un Provider
 --- 
+
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import counter from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/reading_counter.dart";
+import consumerWidget from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/reading_consumer_widget.dart";
+import consumerStatefulWidget from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/reading_consumer_stateful_widget.dart";
+import consumerHookWidget from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/reading_consumer_hook_widget.dart";
+import consumerHook from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/reading_consumer_hook.dart";
+import watch from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/reading_watch.dart";
+import watchBuild from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/reading_watch_build.dart";
+import listen from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/reading_listen.dart";
+import listenBuild from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/reading_listen_build.dart";
+import read from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/reading_read.dart";
+import readBuild from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/reading_read_build.dart";
+import readNotifierBuild from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/reading_read_notifier_build.dart";
+import watchNotifierBuild from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/reading_watch_notifier_build.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 
 Avant de lire ce guide, assurez-vous d'abord de [lire sur les Providers](/docs/concepts/providers).
 
@@ -31,23 +47,7 @@ Ce paramètre peut être passer à la valeur exposée par le provider sans dange
 
 Par exemple, un cas d'utilisation courant consiste à transmettre le "ref" du provider à un [StateNotifier]:
 
-```dart
-final counter = StateNotifierProvider<Counter, int>((ref) {
-  return Counter(ref);
-});
-
-class Counter extends StateNotifier<int> {
-  Counter(this.ref): super(0);
-
-  final Ref ref;
-
-  void increment() {
-    // Counter peut utilisé le "ref" pour lire les providers.
-    final repository = ref.read(repositoryProvider);
-    repository.post('...');
-  }
-}
-```
+<CodeBlock>{trimSnippet(counter)}</CodeBlock>
 
 Cela permettrait à notre classe `Counter` de lire les providers.
 
@@ -67,18 +67,7 @@ dans sa méthode de construction : l'objet "ref".
 
 Une [ConsumerWidget] classique ressemblerait à ceci :
 
-```dart
-class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // utiliser ref pour écouter un provider
-    final counter = ref.watch(counterProvider);
-    return Text('$counter');
-  }
-}
-```
+<CodeBlock>{trimSnippet(consumerWidget)}</CodeBlock>
 
 ### Étendre ConsumerStatefulWidget+ConsumerState au lieu de StatefulWidget+State
 
@@ -88,30 +77,7 @@ sont l'équivalent d'une [StatefulWidget] avec son [State], à la différence qu
 Cette fois, le "ref" n'est pas passé comme paramètre de la méthode build, 
 mais est plutôt une propriété de l'objet [ConsumerState]:
 
-```dart
-class HomeView extends ConsumerStatefulWidget {
-  const HomeView({Key? key}): super(key: key);
-
-  @override
-  HomeViewState createState() => HomeViewState();
-}
-
-class HomeViewState extends ConsumerState<HomeView> {
-  @override
-  void initState() {
-    super.initState();
-    // "ref" peut etre utilisé dans tous les life-cycles d'un StatefulWidget.
-    ref.read(counterProvider);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // On peut aussi utiliser "ref" pour écouter un provider dans la méthode build.
-    final counter = ref.watch(counterProvider);
-    return Text('$counter');
-  }
-}
-```
+<CodeBlock>{trimSnippet(consumerStatefulWidget)}</CodeBlock>
 
 ### Étendre HookConsumerWidget au lieu de HookWidget
 
@@ -124,21 +90,8 @@ Une solution consiste, à travers le package [hooks_riverpod],
 
 Un exemple serait:
 
-```dart
-class HomeView extends HookConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
+<CodeBlock>{trimSnippet(consumerHookWidget)}</CodeBlock>
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // HookConsumerWidget permet d'utiliser des hooks dans la méthode build.
-    final state = useState(0);
-
-    // On peut également utiliser le paramètre ref pour écouter les providers.
-    final counter = ref.watch(counterProvider);
-    return Text('$counter');
-  }
-}
-```
 ### Les widgets Consumer et HookConsumer
 
 Une dernière solution pour obtenir un "ref" à l'intérieur des widgets est de se servir 
@@ -150,20 +103,7 @@ que [ConsumerWidget]/[HookConsumerWidget]
 Ces widgets peuvent être un moyen d'obtenir un "ref" sans avoir à définir une classe. 
 Un exemple serait :
 
-```dart
-Scaffold(
-  body: HookConsumer(
-    builder: (context, ref, child) {
-      // Comme pour le HookConsumerWidget, il est possible d'utiliser des hooks dans le builder.
-      final state = useState(0);
-
-      // On peut utiliser le paramètre ref pour écouter les providers.
-      final counter = ref.watch(counterProvider);
-      return Text('$counter');
-    },
-  ),
-)
-```
+<CodeBlock>{trimSnippet(consumerHook)}</CodeBlock>
 
 ## Usage de ref pour interagir avec les providers
 
@@ -210,25 +150,7 @@ On pourrait avoir deux providers:
 Grâce à cela, en utilisant `ref.watch`, on peut créer un troisième provider 
 qui combine les deux autre providers pour créer une liste filtrée de tâches :
 
-```dart
-final filterTypeProvider = StateProvider<FilterType>((ref) => FilterType.none);
-final todosProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) => TodoList());
-
-final filteredTodoListProvider = Provider((ref) {
-  // obtient à la fois le filtre et la liste des todos
-  final FilterType filter = ref.watch(filterTypeProvider);
-  final List<Todo> todos = ref.watch(todosProvider);
-
-  switch (filter) {
-    case FilterType.completed:
-      // renvoie la liste complétée des todos
-      return todos.where((todo) => todo.isCompleted).toList();
-    case FilterType.none:
-      // renvoie la liste non filtrée des todos
-      return todos;
-  }
-});
-```
+<CodeBlock>{trimSnippet(watch)}</CodeBlock>
 
 Avec ce code, `filteredTodoListProvider` expose (révèle) maintenant la liste filtrée des tâches.
 
@@ -240,25 +162,18 @@ des tâches n'ont changé.
 De la même manière, un widget pourrait utiliser `ref.watch` 
 pour montrer une interface utilisateur qui dépend d'un provider:
 
-```dart
-final counterProvider = StateProvider((ref) => 0);
+<CodeBlock>{trimSnippet(watchBuild)}</CodeBlock>
 
-class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // utiliser ref pour écouter un provider
-    final counter = ref.watch(counterProvider);
-
-    return Text('$counter');
-  }
-}
-```
+Ce snippet montre un widget qui écoute un provider qui stocke 
+un compteur. Et si ce compteur change, le widget sera reconstruit 
+et l'interface utilisateur sera mise à jour pour montrer la nouvelle 
+valeur.
 
 :::caution
 La méthode `watch` ne doit pas être appelée de manière asynchrone,
-comme dans `onPressed` ou un [ElevatedButton]. Elle ne doit pas non plus être utilisée dans `initState` et d'autres cycles de vie de [State].
+comme dans `onPressed` ou un [ElevatedButton]. Elle ne doit pas non plus être utilisée 
+dans `initState` et d'autres cycles de vie de [State].
+
 Dans ces cas, pensez à utiliser `ref.read` à la place.
 :::
 
@@ -281,35 +196,11 @@ la valeur de l'état (state) précédent et la valeur du nouvel état (state).
 
 La méthode `ref.listen` peut etre utilisée à l'intérieur d'un provider.
 
-```dart
-final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter());
-
-final anotherProvider = Provider((ref) {
-  ref.listen<int>(counterProvider, (int? previousCount, int newCount) {
-    print('The counter changed $newCount');
-  });
-  //...
-});
-```
+<CodeBlock>{trimSnippet(listen)}</CodeBlock>
 
 Ou à l'intérieur de la méthode `build` d'un widget:
 
-```dart
-final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter());
-
-class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen<int>(counterProvider, (int? previousCount, int newCount) {
-      print('The counter changed $newCount');
-    });
-    
-    return Container();
-  }
-}
-```
+<CodeBlock>{trimSnippet(listenBuild)}</CodeBlock>
 
 :::caution
 La méthode `listen` ne doit pas être appelée de manière asynchrone,
@@ -327,25 +218,7 @@ Il est généralement utilisé dans les fonctions déclenchées par les interact
 Par exemple, on peut utiliser `ref.read` pour incrémenter 
 un compteur lorsqu'un utilisateur clique sur un bouton :
 
-```dart
-final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter());
-
-class HomeView extends ConsumerWidget {
-  const HomeView({Key? key}): super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Appelez `increment()` sur la classe `Counter`.
-          ref.read(counterProvider.notifier).increment();
-        },
-      ),
-    );
-  }
-}
-```
+<CodeBlock>{trimSnippet(read)}</CodeBlock>
 
 :::note
 L'utilisation de `ref.read` doit être évitée autant que possible.
@@ -361,18 +234,8 @@ Si vous le pouvez, il est presque toujours préférable d'utiliser
 Vous pouvez être tenté d'utiliser `ref.read` pour optimiser 
 les performances d'un widget en faisant :
 
-```dart
-final counterProvider = StateProvider((ref) => 0);
+<CodeBlock>{trimSnippet(readBuild)}</CodeBlock>
 
-Widget build(BuildContext context, WidgetRef ref) {
-  // utiliser "read" pour ignorer les mise à jour d'un provider
-  final counter = ref.read(counterProvider.notifier);
-  return ElevatedButton(
-    onPressed: () => counter.state++,
-    child: const Text('button'),
-  )
-}
-```
 Mais ce n'est pas une bonne pratique et cela peut provoquer des bogues difficiles à repérer.
 
 L'utilisation de `ref.read` de cette manière est généralement associée à la idée "La valeur exposée par un provider ne change jamais, 
@@ -401,33 +264,12 @@ que vous pourriez utiliser à la place.
 
 Par exemple, au lieu de 
 
-```dart
-final counterProvider = StateProvider((ref) => 0);
-
-Widget build(BuildContext context, WidgetRef ref) {
-  StateController<int> counter = ref.read(counterProvider.notifier);
-  return ElevatedButton(
-    onPressed: () => counter.state++,
-    child: const Text('button'),
-  )
-}
-```
+<CodeBlock>{trimSnippet(readNotifierBuild)}</CodeBlock>
 
 On peut faire
 
-```dart
-final counterProvider = StateProvider((ref) => 0);
+<CodeBlock>{trimSnippet(watchNotifierBuild)}</CodeBlock>
 
-Widget build(BuildContext context, WidgetRef ref) {
-  // Souscrit à l'instance StateController
-  // mais ne reconstruit pas le widget si son état change.
-  StateController<int> counter = ref.watch(counterProvider.notifier);
-  return ElevatedButton(
-    onPressed: () => counter.state++,
-    child: const Text('button'),
-  )
-}
-```
 On obtient les memes effects dans les deux exemples: notre bouton ne se reconstruira 
 pas lorsque le compteur s'incrémente.
 
