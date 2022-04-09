@@ -258,6 +258,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   List<void Function()>? _onCancelListeners;
   List<void Function()>? _onAddListeners;
   List<void Function()>? _onRemoveListeners;
+  List<void Function()>? _onBeforeInvalidateListeners;
   List<void Function(State?, State)>? _onChangeSelfListeners;
   List<void Function(Object, StackTrace)>? _onErrorSelfListeners;
 
@@ -397,6 +398,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   void invalidateSelf() {
     if (_mustRecomputeState) return;
 
+    _onBeforeInvalidateListeners?.forEach(_runGuarded);
     _mustRecomputeState = true;
     _runOnDispose();
     _container._scheduler.scheduleProviderRefresh(this);
@@ -968,6 +970,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   void onResume(void Function() cb) {
     _onResumeListeners ??= [];
     _onResumeListeners!.add(cb);
+  }
+
+  @override
+  void onBeforeInvalidate(void Function() cb) {
+    _onBeforeInvalidateListeners ??= [];
+    _onBeforeInvalidateListeners!.add(cb);
   }
 
   @override

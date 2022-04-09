@@ -1281,6 +1281,42 @@ void main() {
     });
   });
 
+  group('ref.onBeforeInvalidate', () {
+    test('is called on invalidate', () {
+      final container = createContainer();
+      final onBeforeInvalidate = OnBeforeInvalidateListener();
+      when(onBeforeInvalidate()).thenReturn(null);
+      final provider = Provider((ref) {
+        ref.onBeforeInvalidate(onBeforeInvalidate);
+      });
+      container.read(provider);
+      verifyZeroInteractions(onBeforeInvalidate);
+      container.invalidate(provider);
+      verify(onBeforeInvalidate()).called(1);
+      // it's already invalidated, so no more calls to the listener.
+      container.invalidate(provider);
+      verifyNoMoreInteractions(onBeforeInvalidate);
+      // not called for `dispose`.
+      container.dispose();
+      verifyNoMoreInteractions(onBeforeInvalidate);
+    });
+    test('is called on refresh', () {
+      final container = createContainer();
+      final onBeforeInvalidate = OnBeforeInvalidateListener();
+      when(onBeforeInvalidate()).thenReturn(null);
+      final provider = Provider((ref) {
+        ref.onBeforeInvalidate(onBeforeInvalidate);
+      });
+      container.read(provider);
+      verifyZeroInteractions(onBeforeInvalidate);
+      container.refresh(provider);
+      verify(onBeforeInvalidate()).called(1);
+      // a second refresh will again call the invalidate listener.
+      container.refresh(provider);
+      verify(onBeforeInvalidate()).called(2);
+    });
+  });
+
   test(
       'onDispose is triggered only once if within autoDispose unmount, a dependency chnaged',
       () async {

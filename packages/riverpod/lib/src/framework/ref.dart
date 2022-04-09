@@ -119,6 +119,12 @@ abstract class Ref<State extends Object?> {
   /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
   void onDispose(void Function() cb);
 
+  /// Adds a listener to perform an operation before the provider is invalidated.
+  ///
+  /// This is usually when calling [ProviderContainer.invalidate] or
+  /// [ProviderContainer.refresh].
+  void onBeforeInvalidate(void Function() cb);
+
   /// Read the state associated with a provider, without listening to that provider.
   ///
   /// By calling [read] instead of [watch], this will not cause a provider's
