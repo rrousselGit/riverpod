@@ -11,7 +11,7 @@ final pageIndexProvider = StateProvider<int>((ref) => 0);
 /* highlight-start */
 final canGoToPreviousPageProvider = Provider<bool>((ref) {
 /* highlight-end */
-  return ref.watch(pageIndexProvider) == 0;
+  return ref.watch(pageIndexProvider) != 0;
 });
 
 class PreviousButton extends ConsumerWidget {

@@ -12,7 +12,7 @@ class PreviousButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // si ce n'est pas sur la première page, le bouton précédent est actif
-    final canGoToPreviousPage = ref.watch(pageIndexProvider) == 0;
+    final canGoToPreviousPage = ref.watch(pageIndexProvider) != 0;
 
     void goToPreviousPage() {
       ref.read(pageIndexProvider.notifier).update((state) => state - 1);
