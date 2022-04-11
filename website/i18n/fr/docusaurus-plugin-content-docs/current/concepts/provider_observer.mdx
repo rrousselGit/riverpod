@@ -2,6 +2,10 @@
 title: ProviderObserver
 ---
 
+import CodeBlock from "@theme/CodeBlock";
+import logger from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/provider_observer_logger.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
 [ProviderObserver] écoute les changements d'un ProviderContainer.
 
 Pour l'utiliser, étendez (extend) la classe ProviderObserver et surchargez (override) 
@@ -16,62 +20,7 @@ la méthode que vous souhaitez utiliser.
 Un cas d'utilisation simple de [ProviderObserver], est d'enregistrer 
 les changements dans les providers en surchargeant (override) la méthode `didUpdateProvider`.
 
-```dart
-// Un exemple de compteur mis en œuvre avec riverpod avec Logger
-
-class Logger extends ProviderObserver {
-  @override
-  void didUpdateProvider(
-    ProviderBase provider,
-    Object? previousValue,
-    Object? newValue,
-    ProviderContainer container,
-  ) {
-    print('''
-{
-  "provider": "${provider.name ?? provider.runtimeType}",
-  "newValue": "$newValue"
-}''');
-  }
-}
-
-void main() {
-  runApp(
-    // L'ajout de ProviderScope active Riverpod pour l'ensemble du projet.
-    // Ajout de notre Logger à la liste des observateurs.
-    ProviderScope(observers: [Logger()], child: MyApp()),
-  );
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(home: Home());
-  }
-}
-
-final counterProvider = StateProvider((ref) => 0, name: 'counter');
-
-class Home extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final count = ref.watch(counterProvider);
-
-    return Scaffold(
-      appBar: AppBar(title: const Text('Counter example')),
-      body: Center(
-        child: Text('$count'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => ref.read(counterProvider.notifier).state++,
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
-```
+<CodeBlock>{trimSnippet(logger)}</CodeBlock>
 
 Maintenant, chaque fois que la valeur de notre provider est mise à jour, le logger l'enregistrera :
 

@@ -1219,7 +1219,7 @@ void main() {
 
       verifyZeroInteractions(listener);
       verifyZeroInteractions(dispose);
-    });
+    }, skip: true);
 
     test('listeners are cleared on rebuild', () {
       final container = createContainer();
