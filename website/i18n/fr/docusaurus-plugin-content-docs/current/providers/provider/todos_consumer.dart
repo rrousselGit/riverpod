@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'completed_todos.dart';
 
 Widget build() {
-
   /* SNIPPET START */
   return Consumer(builder: (context, ref, child) {
     final completedTodos = ref.watch(completedTodosProvider);
@@ -14,5 +13,5 @@ Widget build() {
     return Container();
     /* SKIP END */
   });
-/* END SNIPPET */
+/* SNIPPET END */
 }
