@@ -125,6 +125,11 @@ module.exports = {
           label: "Browser App with Riverpod",
           href: "https://github.com/MarioCroSite/simple_browser_app",
         },
+        {
+          type: "link",
+          label: "GoRouter with Riverpod",
+          href: "https://github.com/lucavenir/go_router_riverpod",
+        },
       ],
     },
     {

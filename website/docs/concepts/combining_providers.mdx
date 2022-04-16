@@ -252,12 +252,12 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 **PREFER** using select when you only need a single property of an object:
 
 ```dart
-final configProvider = StateProvider<Configuration>(...);
+final configProvider = StreamProvider<Configuration>(...);
 
 final productsProvider = FutureProvider<List<Product>>((ref) async {
   // Listens only to the host. If something else in the configurations
   // changes, this will not pointlessly re-evaluate our provider.
-  final host = await ref.watch(configProvider.select((config) => config.host));
+  final host = await ref.watch(configProvider.selectAsync((config) => config.host));
 
   return dio.get('$host/products');
 });
