@@ -9,6 +9,7 @@ import 'package:pub_semver/pub_semver.dart';
 import 'errors.dart';
 
 enum ClassType { consumer, hook, stateless, stateful, none }
+
 enum ProviderType {
   stream,
   future,
