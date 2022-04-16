@@ -11,7 +11,7 @@ class Configuration {
   final String host = '';
 }
 
-/* DÉBUT DU SNIPPET */
+/* SNIPPET START */
 
 final configProvider = FutureProvider<Configuration>((ref) async {
   final content = json.decode(

@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_print
 
-/* DËBUT DU SNIPPET */
+/* SNIPPET START */
 
 import 'package:riverpod/riverpod.dart';
 

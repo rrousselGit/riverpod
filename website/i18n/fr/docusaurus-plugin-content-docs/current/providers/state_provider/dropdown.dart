@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'full.dart';
 
-/* DÉBUT DU SNIPPET */
+/* SNIPPET START */
 
 // Un enum représentant le type de filtre
 enum ProductSortType {

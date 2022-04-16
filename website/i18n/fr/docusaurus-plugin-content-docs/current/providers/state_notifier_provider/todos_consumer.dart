@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'todos.dart';
 
-/* DÉBUT DU SNIPPET */
+/* SNIPPET START */
 
 class TodoListView extends ConsumerWidget {
   const TodoListView({Key? key}): super(key: key);

@@ -1,6 +1,6 @@
 import 'package:riverpod/riverpod.dart';
 
-/* DÉBUT DU SNIPPET */
+/* SNIPPET START */
 
 class Product {
   Product({required this.name, required this.price});

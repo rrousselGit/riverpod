@@ -7,14 +7,13 @@ import 'dropdown.dart';
 import 'sort_provider.dart';
 
 Widget build(BuildContext context, WidgetRef ref) {
-
-  /* DÉBUT DU SNIPPET */
+  /* SNIPPET START */
   return AppBar(actions: [
     DropdownButton<ProductSortType>(
       // Lorsque le type de tri change, le dropdown est
       // reconstruite pour mettre à jour l'icône affichée.
       value: ref.watch(productSortTypeProvider),
-      // Lorsque l'utilisateur interagit avec le dropdown, 
+      // Lorsque l'utilisateur interagit avec le dropdown,
       // on met à jour l'état (state) du provider.
       onChanged: (value) =>
           ref.read(productSortTypeProvider.notifier).state = value!,
@@ -22,6 +21,6 @@ Widget build(BuildContext context, WidgetRef ref) {
         // ...
       ],
     ),
-    /* FIN DU SNIPPET */
+    /* END SNIPPET */
   ]);
 }

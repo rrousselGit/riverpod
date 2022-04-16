@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'todo.dart';
 
-/* DÉBUT DU SNIPPET */
+/* SNIPPET START */
 
 final completedTodosProvider = Provider<List<Todo>>((ref) {
   // On obtient la liste de tous les todos à partir du todosProvider.

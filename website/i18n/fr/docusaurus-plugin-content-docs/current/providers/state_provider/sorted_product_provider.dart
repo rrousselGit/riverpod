@@ -11,7 +11,7 @@ final _products = [
   Product(name: 'ps5', price: 500),
 ];
 
-/* DÉBUT DU SNIPPET */
+/* SNIPPET START */
 
 final productsProvider = Provider<List<Product>>((ref) {
   final sortType = ref.watch(productSortTypeProvider);

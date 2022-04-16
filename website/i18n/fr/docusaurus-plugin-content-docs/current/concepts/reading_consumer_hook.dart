@@ -12,7 +12,7 @@ class HomeView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
 
-      /* DÉBUT DU SNIPPET */
+      /* SNIPPET START */
       body: HookConsumer(
         builder: (context, ref, child) {
           // Comme HookConsumerWidget, on peut utiliser des hooks dans le builder.
@@ -25,5 +25,5 @@ class HomeView extends HookConsumerWidget {
       ),
     );
   }
-    /* FIN DU SNIPPET */
+    /* END SNIPPET */
 }

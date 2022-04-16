@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'config_provider.dart';
 
-/* DÉBUT DU SNIPPET */
+/* SNIPPET START */
 
 Widget build(BuildContext context, WidgetRef ref) {
   AsyncValue<Configuration> config = ref.watch(configProvider);

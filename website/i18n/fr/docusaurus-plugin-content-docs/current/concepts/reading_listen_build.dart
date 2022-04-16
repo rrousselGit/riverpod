@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'reading_counter.dart';
 
-/* DËBUT DU SNIPPET */
+/* SNIPPET START */
 
 final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter(ref));
 

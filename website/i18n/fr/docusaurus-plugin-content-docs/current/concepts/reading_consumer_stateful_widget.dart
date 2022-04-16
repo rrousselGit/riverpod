@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'reading_counter.dart';
 
-/* DÉBUT DU SNIPPET */
+/* SNIPPET START */
 
 class HomeView extends ConsumerStatefulWidget {
   const HomeView({Key? key}): super(key: key);

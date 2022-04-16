@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/* DÉBUT DU SNIPPET */
+/* SNIPPET START */
 
 // L'état de notre StateNotifier doit être immuable.
 // On peut aussi utiliser des packages comme Freezed pour aider à la mise en œuvre.

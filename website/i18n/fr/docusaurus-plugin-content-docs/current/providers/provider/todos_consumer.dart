@@ -7,12 +7,12 @@ import 'completed_todos.dart';
 
 Widget build() {
 
-  /* DÉBUT DU SNIPPET */
+  /* SNIPPET START */
   return Consumer(builder: (context, ref, child) {
     final completedTodos = ref.watch(completedTodosProvider);
     // TODO afficher les todos en utilisant un ListView/GridView/... /* SKIP */
     return Container();
     /* SKIP END */
   });
-/* FIN DE SNIPPET */
+/* END SNIPPET */
 }

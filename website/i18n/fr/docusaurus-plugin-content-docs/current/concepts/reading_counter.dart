@@ -6,7 +6,7 @@ class Repository {
   Future<void> post(String url) async {}
 }
 
-/* DÉBUT DU SNIPPET */
+/* SNIPPET START */
 
 final counterProvider = StateNotifierProvider<Counter, int>((ref) {
   return Counter(ref);

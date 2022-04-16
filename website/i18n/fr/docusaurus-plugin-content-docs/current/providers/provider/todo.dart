@@ -2,7 +2,7 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/* DÉBUT DU SNIPPET */
+/* SNIPPET START */
 
 class Todo {
   Todo(this.description, this.isCompleted);

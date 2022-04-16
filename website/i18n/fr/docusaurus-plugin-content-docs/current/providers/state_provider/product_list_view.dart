@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'product.dart';
 
-/* DÉBUT DU SNIPPET */
+/* SNIPPET START */
 
 Widget build(BuildContext context, WidgetRef ref) {
   final products = ref.watch(productsProvider);

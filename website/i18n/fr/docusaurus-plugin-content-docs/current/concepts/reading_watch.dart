@@ -15,7 +15,7 @@ class TodoList extends StateNotifier<List<Todo>> {
   TodoList(): super([]);
 }
 
-/* DËBUT DU SNIPPET */
+/* SNIPPET START */
 
 final filterTypeProvider = StateProvider<FilterType>((ref) => FilterType.none);
 final todosProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) => TodoList());

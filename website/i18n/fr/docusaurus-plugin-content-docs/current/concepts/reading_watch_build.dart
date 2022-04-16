@@ -16,7 +16,7 @@ class TodoList extends StateNotifier<List<Todo>> {
   TodoList(): super([]);
 }
 
-/* DËBUT DU SNIPPET */
+/* SNIPPET START */
 
 final counterProvider = StateProvider((ref) => 0);
 

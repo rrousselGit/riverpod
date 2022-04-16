@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/* DÉBUT DU SNIPPET */
+/* SNIPPET START */
 
 final pageIndexProvider = StateProvider<int>((ref) => 0);
 
