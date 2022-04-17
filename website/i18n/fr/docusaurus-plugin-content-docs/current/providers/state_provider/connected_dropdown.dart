@@ -21,6 +21,6 @@ Widget build(BuildContext context, WidgetRef ref) {
         // ...
       ],
     ),
-    /* SNIPPET END*/
+    /* SNIPPET END */
   ]);
 }
