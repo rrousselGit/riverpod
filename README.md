@@ -85,6 +85,7 @@ See [the migration guide](https://riverpod.dev/docs/migration/0.14.0_to_1.0.0/) 
   - [Is it safe to use in production?](#is-it-safe-to-use-in-production)
   - [Will this get merged with [provider] at some point?](#will-this-get-merged-with-provider-at-some-point)
   - [Will [provider] be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
+- [Sponsors](#sponsors)
 
 ## Motivation
 
@@ -179,6 +180,14 @@ Not in the short term, no.
 
 However, a migration tool is planned to help assist migration from provider
 to [Riverpod].
+
+## Sponsors
+
+<p align="center">
+  <a href="https://raw.githubusercontent.com/rrousselGit/freezed/master/sponsorkit/sponsors.svg">
+    <img src='https://raw.githubusercontent.com/rrousselGit/freezed/master/sponsorkit/sponsors.svg'/>
+  </a>
+</p>
 
 [provider]: https://github.com/rrousselGit/provider
 [riverpod]: https://github.com/rrousselGit/river_pod
