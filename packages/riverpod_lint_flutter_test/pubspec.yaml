@@ -1,0 +1,19 @@
+name: riverpod_lint_flutter_test
+version: 0.0.0
+publish_to: none
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  hooks_riverpod:
+    path: ../hooks_riverpod
+
+dev_dependencies:
+  custom_lint: ^0.0.3
+  custom_lint_builder: ^0.0.3
+  flutter_test:
+    sdk: flutter
+  riverpod_lint:
+    path: ../riverpod_lint

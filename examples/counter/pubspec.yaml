@@ -20,6 +20,9 @@ dependencies:
     path: ../../packages/riverpod
 
 dev_dependencies:
+  custom_lint: 0.0.3
+  riverpod_lint:
+    path: ../../packages/riverpod_lint
   flutter_test:
     sdk: flutter
 
