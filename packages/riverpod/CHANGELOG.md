@@ -1,3 +1,8 @@
+# [Unreleased minor]
+
+- Added `AsyncValue.valueOrNull` to obtain the value while ignoring potential errors.
+- Fixed an issue where `AsyncValue.value` did not throw if there is an error.
+
 # 2.0.0-dev.5
 
 - Fixed a bug where emitting an `AsyncData` after an `AsyncError` leads to `AsyncValue.hasError` to be true

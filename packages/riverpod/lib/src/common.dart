@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import 'future_provider.dart' show FutureProvider;
+import 'stack_trace.dart';
 import 'stream_provider.dart' show StreamProvider;
 
 /// Utility for `.name` of provider modifiers.
@@ -148,6 +149,14 @@ abstract class AsyncValue<T> {
   bool get hasValue;
 
   /// The value currently exposed.
+  ///
+  /// When reading [value] during loading state, null will be returning.
+  ///
+  /// When trying to read [value] in error state, the error will be rethrown
+  /// instead. The exception is if [isRefreshing] is true, in which case
+  /// the previous value will be returned.
+  ///
+  /// See also [valueOrNull], which does not throw during loading state.
   T? get value;
 
   /// The [error].
@@ -213,17 +222,18 @@ abstract class AsyncValue<T> {
         other.hasValue == hasValue &&
         other.error == error &&
         other.stackTrace == stackTrace &&
-        other.value == value;
+        other.valueOrNull == valueOrNull;
   }
 
   @override
   int get hashCode => Object.hash(
         runtimeType,
-        value,
         isLoading,
         hasValue,
-        error,
-        stackTrace,
+        // Fallback null values to 0, making sure Object.hash hashes all values
+        valueOrNull ?? 0,
+        error ?? 0,
+        stackTrace ?? 0,
       );
 }
 
@@ -324,7 +334,7 @@ class AsyncLoading<T> extends AsyncValue<T> {
       error: (e) => AsyncError._(
         e.error,
         isLoading: true,
-        value: e.value,
+        value: e.valueOrNull,
         stackTrace: e.stackTrace,
         hasValue: e.hasValue,
       ),
@@ -359,10 +369,11 @@ class AsyncError<T> extends AsyncValue<T> {
   const AsyncError._(
     this.error, {
     required this.stackTrace,
-    required this.value,
+    required T? value,
     required this.hasValue,
     required this.isLoading,
-  }) : super._();
+  })  : _value = value,
+        super._();
 
   @override
   final bool isLoading;
@@ -370,8 +381,19 @@ class AsyncError<T> extends AsyncValue<T> {
   @override
   final bool hasValue;
 
+  final T? _value;
+
   @override
-  final T? value;
+  T? get value {
+    if (!hasValue) {
+      final stackTrace = this.stackTrace;
+      // ignore: only_throw_errors
+      if (stackTrace == null) throw error;
+
+      throwErrorWithCombinedStackTrace(error, stackTrace);
+    }
+    return _value;
+  }
 
   @override
   final Object error;
@@ -394,7 +416,7 @@ class AsyncError<T> extends AsyncValue<T> {
       error,
       stackTrace: stackTrace,
       isLoading: isLoading,
-      value: previous.value,
+      value: previous.valueOrNull,
       hasValue: previous.hasValue,
     );
   }
@@ -402,6 +424,15 @@ class AsyncError<T> extends AsyncValue<T> {
 
 /// An extension that adds methods like [when] to an [AsyncValue].
 extension AsyncValueX<T> on AsyncValue<T> {
+  /// Return the value, or null if in error/loading state.
+  ///
+  /// This is different from [value], which will throw if trying to read the value
+  /// in error state.
+  T? get valueOrNull {
+    if (hasValue) return value;
+    return null;
+  }
+
   /// Whether an [AsyncData] or [AsyncError] was emitted but the state went
   /// back to loading state.
   ///

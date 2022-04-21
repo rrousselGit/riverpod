@@ -61,6 +61,12 @@ void main() {
     );
     expect(
       const AsyncError<int>(42)
+          .copyWithPrevious(const AsyncError(21, stackTrace: StackTrace.empty))
+          .unwrapPrevious(),
+      const AsyncError<int>(42),
+    );
+    expect(
+      const AsyncError<int>(42)
           .copyWithPrevious(const AsyncData(42))
           .unwrapPrevious(),
       const AsyncError<int>(42),
@@ -775,7 +781,7 @@ void main() {
       const AsyncLoading<int>().value,
       null,
     );
-    expect(const AsyncError<int>('err').value, null);
+    expect(() => const AsyncError<int>('err').value, throwsA('err'));
 
     expect(
       const AsyncError<int>('err').copyWithPrevious(const AsyncData(42)).value,
@@ -783,6 +789,28 @@ void main() {
     );
     expect(
       const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)).value,
+      42,
+    );
+  });
+
+  test('AsyncValue.valueOrNull', () {
+    expect(const AsyncValue.data(42).valueOrNull, 42);
+    expect(
+      const AsyncLoading<int>().valueOrNull,
+      null,
+    );
+    expect(const AsyncError<int>('err').valueOrNull, null);
+
+    expect(
+      const AsyncError<int>('err')
+          .copyWithPrevious(const AsyncData(42))
+          .valueOrNull,
+      42,
+    );
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(42))
+          .valueOrNull,
       42,
     );
   });

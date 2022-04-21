@@ -134,7 +134,7 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
       () {
         return lastSelectedValue.map(
           data: (data) => data.state,
-          error: (error) => _rethrowProviderError(
+          error: (error) => throwErrorWithCombinedStackTrace(
             error.error,
             error.stackTrace,
           ),

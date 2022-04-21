@@ -4,8 +4,8 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:meta/meta.dart';
-import 'package:stack_trace/stack_trace.dart';
 import 'internals.dart';
+import 'stack_trace.dart';
 
 part 'framework/always_alive.dart';
 part 'framework/auto_dispose.dart';
