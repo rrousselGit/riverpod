@@ -33,7 +33,8 @@ export 'src/framework.dart'
         XFamily,
         AsyncSelector,
         AlwaysAliveAsyncSelector,
-        KeepAliveLink;
+        KeepAliveLink,
+        ProviderOrFamily;
 
 export 'src/future_provider.dart'
     show
