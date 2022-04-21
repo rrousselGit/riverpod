@@ -4,6 +4,11 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
+R Function(Key) cacheFamily<Key, R>(R Function(Key key) create) {
+  final cache = <Key, R>{};
+  return (key) => cache.putIfAbsent(key, () => create(key));
+}
+
 class Counter extends StateNotifier<int> {
   Counter([int initialValue = 0]) : super(initialValue);
 

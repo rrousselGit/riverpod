@@ -233,6 +233,8 @@ class AutoDisposeStateNotifierProviderFamily<
       name: name,
       from: this,
       argument: argument,
+      cacheTime: cacheTime,
+      disposeDelay: disposeDelay,
     );
   }
 
