@@ -75,7 +75,7 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   /// final productsProvider = FutureProvider<Products>((ref) async {
   ///   // If a "Configuration" was emitted, retrieve it.
   ///   // Otherwise, wait for a Configuration to be emitted.
-  ///   final configs = await ref.watch(configsProvider.last);
+  ///   final configs = await ref.watch(configsProvider.future);
   ///
   ///   final response = await httpClient.get('${configs.host}/products');
   ///   return Products.fromJson(response.data);
