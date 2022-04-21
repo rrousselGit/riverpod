@@ -3,7 +3,7 @@
 import 'package:riverpod/riverpod.dart';
 import 'reading_counter.dart';
 
-/* DËBUT DU SNIPPET */
+/* SNIPPET START */
 
 final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter(ref));
 

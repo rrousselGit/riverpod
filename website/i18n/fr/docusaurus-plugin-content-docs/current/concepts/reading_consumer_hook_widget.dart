@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'reading_counter.dart';
 
-/* DÉBUT DU SNIPPET */
+/* SNIPPET START */
 
 class HomeView extends HookConsumerWidget {
   const HomeView({Key? key}): super(key: key);

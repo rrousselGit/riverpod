@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/* DÉBUT DU SNIPPET */
+/* SNIPPET START */
 
 // Un exemple de compteur mis en pratique avec Riverpod avec Logger
 
