@@ -81,10 +81,10 @@ See [the migration guide](https://riverpod.dev/docs/migration/0.14.0_to_1.0.0/) 
 - [Motivation](#motivation)
 - [Contributing](#contributing)
 - [FAQ](#faq)
-  - [Why another project when [provider] already exists?](#why-another-project-when-provider-already-exists)
+  - [Why another project when provider already exists?](#why-another-project-when-provider-already-exists)
   - [Is it safe to use in production?](#is-it-safe-to-use-in-production)
-  - [Will this get merged with [provider] at some point?](#will-this-get-merged-with-provider-at-some-point)
-  - [Will [provider] be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
+  - [Will this get merged with provider at some point?](#will-this-get-merged-with-provider-at-some-point)
+  - [Will provider be deprecated/stop being supported?](#will-provider-be-deprecatedstop-being-supported)
 - [Sponsors](#sponsors)
 
 ## Motivation
@@ -130,12 +130,13 @@ Here is a curated list of how you can help:
 
 - Report bugs and scenarios that are difficult to implement
 - Report parts of the documentation that are unclear
+- Fix typos/grammar mistakes
 - Update the documentation / add examples
 - Implement new features by making a pull-request
 
 ## FAQ
 
-### Why another project when [provider] already exists?
+### Why another project when provider already exists?
 
 While [provider] is largely used and well accepted by the community,
 it is not perfect either.
@@ -143,7 +144,7 @@ it is not perfect either.
 People regularly file issues or ask questions about some problems they face, such as:
 
 - Why do I have a `ProviderNotFoundException`?
-- How can I make that my state automatically disposed of when not used anymore?
+- How can I automatically dispose my state when not used anymore?
 - How to make a provider that depends on other (potentially complex) providers?
 
 These are legitimate problems, and I believe that something can be improved to fix
@@ -162,7 +163,7 @@ Yes.
 
 [Riverpod] is stable and actively maintained.
 
-### Will this get merged with [provider] at some point?
+### Will this get merged with provider at some point?
 
 No. At least not until it is proven that the community likes [Riverpod]
 and that it doesn't cause more problems than it solves.
@@ -174,7 +175,7 @@ change for users of [provider] to migrate [Riverpod].
 Considering that, separating both projects initially sounds like a better
 compromise.
 
-### Will [provider] be deprecated/stop being supported?
+### Will provider be deprecated/stop being supported?
 
 Not in the short term, no.
 
