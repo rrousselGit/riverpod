@@ -147,6 +147,7 @@ module.exports = {
             "providers/future_provider",
             "providers/stream_provider",
             "providers/state_provider",
+            "providers/change_notifier_provider",
           ],
         },
         {
