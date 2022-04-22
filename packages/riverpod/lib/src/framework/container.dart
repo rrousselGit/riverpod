@@ -333,14 +333,7 @@ class ProviderContainer implements Node {
     return sub;
   }
 
-  /// Subscribe to this provider.
-  ///
-  /// See also:
-  ///
-  /// - [ProviderSubscription], which allows reading the current value and
-  ///   closing the subscription.
-  /// - [Ref.watch], which is an easier way for providers to listen
-  ///   to another provider.
+  /// {@macro riverpod.listen}
   @override
   ProviderSubscription<State> listen<State>(
     ProviderListenable<State> provider,

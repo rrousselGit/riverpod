@@ -209,16 +209,25 @@ abstract class Ref<State extends Object?> {
   /// - if nothing is listening to `sortedTodosProvider`, then no sort is performed.
   T watch<T>(AlwaysAliveProviderListenable<T> provider);
 
-  /// Listen to a provider and call `listener` whenever its value changes.
+  /// {@template riverpod.listen}
+  /// Listen to a provider and call [listener] whenever its value changes.
   ///
   /// Listeners will automatically be removed when the provider rebuilds (such
-  /// as when a provider listeneed with [watch] changes).
+  /// as when a provider listened with [watch] changes).
   ///
-  /// Returns a function that allows cancelling the subscription early.
+  /// Returns an object that allows cancelling the subscription early.
   ///
-  /// - `fireImmediately` can be optionally passed to tell Riverpod to immediately
-  ///    call the listener with the current value.
-  ///    Defaults to false.
+  ///
+  /// [fireImmediately] (false by default) can be optionally passed to tell
+  /// Riverpod to immediately call the listener with the current value.
+  ///
+  /// [onError] can be specified to listen to uncaught errors in the provider.\
+  /// **Note:**\
+  /// [onError] will _not_ be triggered if the provider catches the exception
+  /// and emit a valid value out of it. As such, if a
+  /// [FutureProvider]/[StreamProvider] fail, [onError] will not be called.
+  /// Instead the listener will receive an [AsyncError].
+  /// {@endtemplate}
   ProviderSubscription<T> listen<T>(
     AlwaysAliveProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
