@@ -131,8 +131,9 @@ abstract class AutoDisposeProviderElementBase<State>
     late KeepAliveLink link;
 
     link = KeepAliveLink._(() {
-      _keepAliveLinks.remove(link);
-      if (_keepAliveLinks.isEmpty) mayNeedDispose();
+      if (_keepAliveLinks.remove(link)) {
+        if (_keepAliveLinks.isEmpty) mayNeedDispose();
+      }
     });
     _keepAliveLinks.add(link);
 

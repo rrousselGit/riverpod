@@ -260,6 +260,21 @@ void main() {
   });
 
   group('cacheTime', () {
+    test('supports disposing the container before the timer completes',
+        () async {
+      await fakeAsync((async) async {
+        final provider = Provider.autoDispose((ref) => 42);
+        final container = createContainer(
+          cacheTime: const Duration(seconds: 5),
+        );
+
+        container.read(provider);
+
+        container.dispose();
+        async.elapse(const Duration(seconds: 10));
+      });
+    });
+
     group('reverts copyWithPrevious when cacheTime expires', () {
       test(
           'resets AsyncValue.isRefreshing after cacheTime expires, without notifying listeners',
