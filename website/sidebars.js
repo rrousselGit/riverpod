@@ -118,7 +118,6 @@ module.exports = {
         {
           type: "link",
           label: "Integrating Hive database with Riverpod (simple example)",
-<<<<<<< HEAD
           href: "https://github.com/GitGud31/theme_riverpod_hive",
         },
         {
@@ -131,10 +130,6 @@ module.exports = {
           label: "GoRouter with Riverpod",
           href: "https://github.com/lucavenir/go_router_riverpod",
         },
-=======
-          href: "https://github.com/GitGud31/theme_riverpod_hive"
-        }
->>>>>>> 12d5640 (Add third party example)
       ],
     },
     {
