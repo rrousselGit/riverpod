@@ -18,14 +18,14 @@ Per qualsiasi applicazione di media-grande scala è fondamentale testare l'appli
 
 Per testare con successo la nostra applicazione vorremo le seguenti cose:
 
-- Nessuno stato dovrebbe essere preservato tra `test`/`testWidgets`. 
-  Ciò significa che non esiste uno stato globale nell'applicazione o che tutti
-  gli stati globali, devono essere resettati dopo ogni test.
+- Nessuno stato dovrebbe essere preservato tra `test`/`testWidgets`.  
+  Ciò significa che nessuno stato globale nell'applicazione o tutti gli stati 
+  globali devono essere ripristinati dopo ogni test.
 
-- Essere in grado di costringere i nostri provider ad avere uno stato specifico,
+- Essere in grado di forzare i nostri provider ad avere uno stato specifico,
   mediante mocking o manipolandoli fino a raggiungere lo stato desiderato.
    
-Vediamo uno per uno come [Riverpod] ti aiuta per i test.
+Vediamo caso per caso come [Riverpod] ti aiuta per i test.
 
 ## Nessuno stato dovrebbe essere preservato tra `test`/`testWidgets`. 
 
@@ -42,7 +42,7 @@ che potresti aver notato se hai visto gli esempi dart-only.
 Se non è così, ti basta sapere che questo oggetto è creato implicitamente
 da [ProviderScope], il widget che abilita [Riverpod] nel nostro progetto.
 
-Concretamente ciò significa che due `testWidgets` che usano i provider
+Concretamente, ciò significa che due `testWidgets` che usano i provider
 non condividono nessuno stato.
 In quanto tale, non c'è bisogno di nessun metodo `setUp`/`tearDown`.
 
@@ -79,7 +79,7 @@ Una comune applicazione reale può avere i seguenti oggetti:
 - Una classe `Repository` che fornisce una semplice e 'type-safe' API per effettuare richieste HTTP.
 
 - Un oggetto che gestisce lo stato dell'applicazione che usa `Repository`
-  per effettuare richieste HTTP basate su differenti fattori.
+  per effettuare richieste HTTP basate su diversi fattori.
   Questo oggetto potrebbe essere un `ChangeNotifier`, `Bloc` o anche un provider.
 
 Usando [Riverpod], può essere rappresentato in questo modo:

@@ -90,10 +90,10 @@ final characters = FutureProvider.autoDispose.family<List<Character>, String>((r
 
 Le famiglie non hanno un supporto costruito internamente per passare più valori ad un provider.
 
-D'altro canto, quel valore potrebbe essere _qualsiasi_ cosa (purchè corrisponda alle 
+D'altro canto però, quel valore potrebbe essere _qualsiasi_ oggetto (purchè corrisponda alle 
 restrizioni menzionate precedentemente).
 
-Ciò include:
+Possiamo dunque passare più parametri tramite:
 
 - Una tupla di [tupla](http://pub.dev/packages/tuple).
 - Oggetti generati con [Freezed] o [built_value](https://pub.dev/packages/built_value).

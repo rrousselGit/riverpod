@@ -57,11 +57,11 @@ Ma [Riverpod] offre diverse soluzioni per ottenerne uno dai widget.
 
 #### Estendendo ConsumerWidget al posto di StatelessWidget
 
-La soluzione più comune sarà quella di sostituire [StatelessWidget] con [ConsumerWidget] 
+La soluzione più comune è di sostituire [StatelessWidget] con [ConsumerWidget] 
 quando si crea un widget.
 
-[ConsumerWidget] è sostanzialmente identico a [StatelessWidget], con la sola differenza che 
-il suo metodo "build" riceve un parametro extra: l'oggetto "ref".
+[ConsumerWidget] è identico a [StatelessWidget] nell'uso, con la sola differenza che 
+ha un parametro extra nel suo metodo "build": l'oggetto "ref".
 
 Un tipico [ConsumerWidget] è simile al seguente:
 
@@ -79,29 +79,35 @@ una proprietà dell'oggetto [ConsumerState]:
 
 #### Estendendo HookConsumerWidget al posto di HookWidget
 
-Questa soluzione è specifica per chi usa [flutter_hooks]. Dato che [flutter_hooks] 
+Quest'opzione è specifica per chi usa [flutter_hooks]. Dato che [flutter_hooks] 
 richiede l'estensione di [HookWidget] per funzionare, i widget che usano gli hooks 
 non possono estendere [ConsumerWidget].
 
-Una soluzione, che è resa possibile dal package [hooks_riverpod], è rimpiazzare [HookWidget] 
-con [HookConsumerWidget]. [HookConsumerWidget] si comporta come un [ConsumerWidget] e un [HookWidget]. 
+Il pacchetto [hooks_riverpod] espone un nuovo widget chiamato [HookConsumerWidget].
+[HookConsumerWidget] si comporta come un [ConsumerWidget] e un [HookWidget]. 
 Ciò consente ad un widget: sia di stare in ascolto dei provider e sia di usare gli hooks.
 
 Un esempio potrebbe essere:
 
 <CodeBlock>{trimSnippet(consumerHookWidget)}</CodeBlock>
 
+#### Estendendo StatefulHookConsumerWidget invece di HookWidget
+
+Quest'opzione è specifica per chi usa [flutter_hooks], per poter usare i metodi del ciclo di 
+vita di uno [StatefulWidget] in aggiunta agli hooks.
+
+Di seguito un esempio:
+<CodeBlock>{trimSnippet(statefulHookConsumerWidget)}</CodeBlock>
+
 #### Widgets Consumer e HookConsumer
 
-Una soluzione finale per ottenere un "ref" dentro i widget è fare affidamento 
-a [Consumer]/[HookConsumer].
+Un ultimo modo per ottenere un "ref" dentro i widget è fare affidamento a [Consumer]/[HookConsumer].
 
 Queste classi sono widget che possono essere usati per ottenere un "ref", 
 con le stesse proprietà di [ConsumerWidget]/[HookConsumerWidget].
 
-Questi widgets possono essere un modo per ottenere un "ref" senza dover 
-definire una classe. 
-Un esempio potrebbe essere:
+In quanto tali, questi widget sono un modo per ottenere un "ref" senza dover definire una classe. 
+Di seguito un esempio:
 
 <CodeBlock>{trimSnippet(consumerHook)}</CodeBlock>
 
@@ -113,11 +119,13 @@ Questi sono i tre usi primari di "ref":
 
 - ottenere il valore di un provider e ascoltarne i cambiamenti, in modo tale 
   che quando questo valore cambia, questo ricostruirà il widget o il provider 
-  che ha sottoscritto il valore. Ciò può essere fatto usando `ref.watch`.
+  che ha sottoscritto il valore. 
+  Ciò può essere fatto usando `ref.watch`
 - aggiungendo un "listener" ad un provider, per eseguire un'azione ogni tal volta 
-  che il provider cambia. Ciò può essere fatto usando `ref.listen`.
-- ottenere il valore di un provider ignorandone i cambiamenti. Questo è utile quando 
-  abbiamo bisogno del valore di un provider in un evento come `onPressed`. 
+  che il provider cambia, ad esempio aprire una nuova pagina o mostrare una modale. 
+  Ciò può essere fatto usando `ref.listen`.
+- ottenere il valore di un provider ignorandone i cambiamenti. 
+  Questo è utile quando abbiamo bisogno del valore di un provider in un evento come "on click". 
   Ciò può essere fatto usando `ref.read`.
 
 :::note NOTA
@@ -148,7 +156,7 @@ precedenti per creare una lista filtrata di task.
 
 Con questo codice, `filteredTodoListProvider` ora espone la lista dei task filtrata.
 
-La lista filtrata inoltre si aggiornerà automaticamente se o il filtro o la lista dei task 
+La lista filtrata inoltre si aggiornerà automaticamente se, o il filtro o la lista dei task 
 cambierà.
 Allo stesso tempo, la lista filtrata non verrà ricalcolata se nè il filtro nè la lista dei 
 task verranno modificati.
@@ -158,8 +166,8 @@ provider e aggiornare l'interfaccia grafica ogni volta che il contenuto cambia:
 
 <CodeBlock>{trimSnippet(watchBuild)}</CodeBlock>
 
-Questo pezzo di codice mostra un widget che ascolta un provider che memorizza un conteggio. 
-Se quel conteggio cambia, il widget si ricostruirà e la UI si aggiornerà per mostrare il nuovo
+Questo snippet mostra un widget che ascolta un provider che memorizza un `count`. 
+Se `count` cambia, il widget si ricostruirà e la UI si aggiornerà per mostrare il nuovo
 valore.
 
 :::caution ATTENZIONE 
@@ -232,7 +240,7 @@ il suo valore, non vi è alcuna garanzia che domani sarà lo stesso.
 
 Il software tende a cambiare molto ed è probabile che nel futuro, un valore che 
 precedentemente non cambiava mai dovrà cambiare. 
-Se si usa `ref.read`, quando il valore necessita di cambiare, devi andare in tutto il codice 
+Se si usa `ref.read`, quando il valore necessiterà di cambiare, si dovrà andare in tutto il codice 
 per modificare `ref.read` in `ref.watch`, il che è un approccio soggetto a errori ed è 
 probabile che dimenticherai alcuni casi.
 
