@@ -25,13 +25,5 @@ class HomeView extends HookConsumerWidget {
       ),
     );
   }
-<<<<<<< HEAD
-<<<<<<< HEAD
     /* SNIPPET END */
-=======
-    /* END SNIPPET */
->>>>>>> dd44f74 (Fix translation)
-=======
-    /* SNIPPET END */
->>>>>>> a75d524 (Fix translation)
 }
