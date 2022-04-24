@@ -250,7 +250,7 @@ final configsProvider = StreamProvider<Configuration>(...);
 final productsProvider = FutureProvider<List<Product>>((ref) async {
   // Ascolta solo la proprietà 'host'. Se qualcos'altro nelle configurazioni
   // cambia, non causerà inutili ri-elaborazioni del nostro provider.
-  final host = await ref.watch(configProvider.select((config) => config.host));
+  final host = await ref.watch(configProvider.selectAsync((config) => config.host));
 
   return dio.get('$host/products');
 });
