@@ -86,6 +86,8 @@ abstract class ProviderBase<State> extends ProviderOrFamily
       );
     }
 
+    element._onListen();
+
     return node._createSubscription(
       element,
       listener: listener,
@@ -766,8 +768,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     required void Function(T? previous, T next) listener,
     required void Function(Object error, StackTrace stackTrace) onError,
   }) {
-    element._onListen();
-
     final sub = _ProviderListener<T>._(
       listenedElement: element,
       dependentElement: this,

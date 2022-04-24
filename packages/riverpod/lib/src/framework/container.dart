@@ -320,8 +320,6 @@ class ProviderContainer implements Node {
     required void Function(State? previous, State next) listener,
     required void Function(Object error, StackTrace stackTrace) onError,
   }) {
-    element._onListen();
-
     final sub = _ProviderSubscription<State>._(
       element,
       listener,
