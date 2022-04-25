@@ -38,7 +38,7 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   /// Create a provider from an external value.
   ///
   /// That external value should be immutable and preferably override `==`/`hashCode`.
-  /// See the documentation of [Provider.family] for more informations.
+  /// See the documentation of [Provider.family] for more information.
   FamilyProvider call(Arg argument) => create(argument);
 
   /// Creates the provider for a given parameter.
@@ -95,7 +95,7 @@ extension XFamily<State, Arg,
     on Family<State, Arg, FamilyProvider> {
   /// Overrides the behavior of a family for a part of the application.
   ///
-  /// {@macro riverpod.overideWith}
+  /// {@macro riverpod.overrideWith}
   Override overrideWithProvider(
     AlwaysAliveProviderBase<State> Function(Arg argument) override,
   ) {
@@ -111,7 +111,7 @@ extension XAutoDisposeFamily<State, Arg,
     on Family<State, Arg, FamilyProvider> {
   /// Overrides the behavior of a family for a part of the application.
   ///
-  /// {@macro riverpod.overideWith}
+  /// {@macro riverpod.overrideWith}
   Override overrideWithProvider(
     AutoDisposeProviderBase<State> Function(Arg argument) override,
   ) {

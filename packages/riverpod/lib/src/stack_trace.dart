@@ -1,6 +1,6 @@
 import 'package:stack_trace/stack_trace.dart';
 
-/// Rethrows [error] with a stacktrace that is the comination of [stackTrace]
+/// Rethrows [error] with a stacktrace that is the combination of [stackTrace]
 /// and [StackTrace.current].
 Never throwErrorWithCombinedStackTrace(Object error, StackTrace stackTrace) {
   final chain = Chain([

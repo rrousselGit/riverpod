@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:codemod/codemod.dart';
 
-bool errorOccuredDuringMigration = false;
+bool errorOccurredDuringMigration = false;
 const migrationUrl = 'https://riverpod.dev/docs/migration/0.14.0_to_1.0.0';
 final migrationErrors = <String, String>{};
 void printErrorLogs() {
@@ -24,7 +24,7 @@ void printErrorLogs() {
 
 mixin ErrorHandling<T> on AstVisitingSuggestor<T> {
   void addError(String message) {
-    errorOccuredDuringMigration = true;
+    errorOccurredDuringMigration = true;
     migrationErrors[context.path] = message;
   }
 }

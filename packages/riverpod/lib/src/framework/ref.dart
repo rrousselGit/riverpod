@@ -71,7 +71,7 @@ abstract class Ref<State extends Object?> {
   /// A life-cycle for whenever a listener is removed from the provider.
   ///
   /// See also:
-  /// - [onAddListener], for when a listener is addded
+  /// - [onAddListener], for when a listener is added
   void onRemoveListener(void Function() cb);
 
   /// A life-cycle for when a provider is listened again after it was paused

@@ -185,7 +185,7 @@ abstract class AsyncValue<T> {
   AsyncValue<T> copyWithPrevious(AsyncValue<T> previous);
 
   /// The opposite of [copyWithPrevious], reverting to the raw [AsyncValue]
-  /// with no informations on the previous state.
+  /// with no information on the previous state.
   AsyncValue<T> unwrapPrevious() {
     return map(
       data: (d) {

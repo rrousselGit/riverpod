@@ -42,7 +42,7 @@ void main() {
       });
     });
 
-    test('specfies `from` & `argument` for related providers', () {
+    test('specifies `from` & `argument` for related providers', () {
       final provider = StreamProvider.autoDispose.family<int, int>(
         (ref, _) => Stream.value(0),
       );

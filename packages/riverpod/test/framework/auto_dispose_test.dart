@@ -328,7 +328,7 @@ final alwaysAlive = Provider((ref) {
     );
   });
 
-  test('works if used accross a ProviderContainer', () async {
+  test('works if used across a ProviderContainer', () async {
     var value = 0;
     var buildCount = 0;
     var disposeCount = 0;

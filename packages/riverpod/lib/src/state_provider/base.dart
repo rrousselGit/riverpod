@@ -63,7 +63,7 @@ class StateProvider<State> extends AlwaysAliveProviderBase<State>
   /// event that the [StateController] it recreated.
   ///
   ///
-  /// It is preferrable to do:
+  /// It is preferable to do:
   /// ```dart
   /// ref.watch(stateProvider.notifier)
   /// ```

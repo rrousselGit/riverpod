@@ -33,7 +33,7 @@ class MarvelRepository {
   final int Function() _getCurrentTimestamp;
   final _characterCache = <String, Character>{};
 
-  Future<MarvelListCharactersReponse> fetchCharacters({
+  Future<MarvelListCharactersResponse> fetchCharacters({
     required int offset,
     int? limit,
     String? nameStartsWith,
@@ -52,7 +52,7 @@ class MarvelRepository {
       cancelToken: cancelToken,
     );
 
-    final result = MarvelListCharactersReponse(
+    final result = MarvelListCharactersResponse(
       characters: response.data.results.map((e) {
         return Character.fromJson(e);
       }).toList(growable: false),
@@ -110,11 +110,11 @@ class MarvelRepository {
 }
 
 @freezed
-class MarvelListCharactersReponse with _$MarvelListCharactersReponse {
-  factory MarvelListCharactersReponse({
+class MarvelListCharactersResponse with _$MarvelListCharactersResponse {
+  factory MarvelListCharactersResponse({
     required int totalCount,
     required List<Character> characters,
-  }) = _MarvelListCharactersReponse;
+  }) = _MarvelListCharactersResponse;
 }
 
 @freezed

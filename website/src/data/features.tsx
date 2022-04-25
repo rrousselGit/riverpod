@@ -95,7 +95,7 @@ export const features: IFeatureProps[] = [
         }}
       >
         {`Using Riverpod, your state is visible out of the box inside Flutter's devtool. {br}
-          Futhermore, a full-blown state-inspector is in progress.`}
+          Furthermore, a full-blown state-inspector is in progress.`}
       </Translate>
     ),
   },
