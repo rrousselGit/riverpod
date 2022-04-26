@@ -3,8 +3,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:marvel/src/screens/home/home_models.dart';
 
-import '../screens/home.dart';
+import '../screens/home/home_providers.dart';
 
 class _SearchTheme {
   const _SearchTheme({
@@ -154,8 +155,7 @@ class _SearchHints extends HookConsumerWidget {
                         return ListTile(
                           visualDensity: VisualDensity.compact,
                           onTap: () {
-                            Navigator.pushNamed(
-                                context, '/characters/${character.id}');
+                            Navigator.pushNamed(context, '/characters/${character.id}');
                           },
                           title: Text(
                             character.name,

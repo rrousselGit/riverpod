@@ -8,7 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'src/fake_marvel.dart';
 import 'src/marvel.dart';
 import 'src/screens/character_detail.dart';
-import 'src/screens/home.dart';
+import 'src/screens/home/home.dart';
 
 void main() {
   runApp(
