@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../marvel.dart';
 import 'home_models.dart';
 
-final characterPages = FutureProvider.autoDispose.family<MarvelListCharactersReponse, CharacterPagination>(
+final characterPages = FutureProvider.autoDispose.family<MarvelListCharactersResponse, CharacterPagination>(
   (ref, meta) async {
     // Cancel the page request if the UI no longer needs it before the request
     // is finished.
