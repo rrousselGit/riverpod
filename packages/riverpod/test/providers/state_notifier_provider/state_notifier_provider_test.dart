@@ -329,7 +329,7 @@ void main() {
     verifyOnly(listener, listener(21, 22));
   });
 
-  test('overrideWithProvider preserves the state accross update', () async {
+  test('overrideWithProvider preserves the state across update', () async {
     final provider = StateNotifierProvider<TestNotifier, int>((_) {
       return TestNotifier();
     });

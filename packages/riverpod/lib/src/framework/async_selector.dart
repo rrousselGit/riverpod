@@ -129,7 +129,7 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
       void onLoading(AsyncValue<void> loading) {
         // if (selectedCompleter == null) {
         if (selectedFuture == null) {
-          // The first time a future is emited
+          // The first time a future is emitted
 
           selectedCompleter = Completer();
           selectedFuture = selectedCompleter!.future;

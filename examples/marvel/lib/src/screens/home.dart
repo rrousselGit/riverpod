@@ -25,7 +25,7 @@ class CharacterPagination with _$CharacterPagination {
 class AbortedException implements Exception {}
 
 final characterPages = FutureProvider.autoDispose
-    .family<MarvelListCharactersReponse, CharacterPagination>(
+    .family<MarvelListCharactersResponse, CharacterPagination>(
   (ref, meta) async {
     // Cancel the page request if the UI no longer needs it before the request
     // is finished.

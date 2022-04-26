@@ -269,7 +269,7 @@ void main() {
     expect(callCount, 1);
   });
 
-  test('overrideWithProvider preserves the state accross update', () async {
+  test('overrideWithProvider preserves the state across update', () async {
     final provider = StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
       return TestNotifier();
     });

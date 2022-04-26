@@ -224,7 +224,7 @@ class Title extends StatelessWidget {
 
 /// A provider which exposes the [Todo] displayed by a [TodoItem].
 ///
-/// By retreiving the [Todo] through a provider instead of through its
+/// By retrieving the [Todo] through a provider instead of through its
 /// constructor, this allows [TodoItem] to be instantiated using the `const` keyword.
 ///
 /// This ensures that when we add/remove/edit todos, only what the

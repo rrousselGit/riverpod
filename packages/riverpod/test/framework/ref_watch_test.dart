@@ -464,7 +464,7 @@ void main() {
   });
 
   test(
-      'mutliple ref.watch, when one of them forces re-evaluate, all dependencies are still flushed',
+      'multiple ref.watch, when one of them forces re-evaluate, all dependencies are still flushed',
       () async {
     final container = createContainer();
     final notifier = Notifier(0);

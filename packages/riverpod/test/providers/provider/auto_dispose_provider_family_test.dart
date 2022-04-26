@@ -39,7 +39,7 @@ void main() {
       });
     });
 
-    test('specfies `from` & `argument` for related providers', () {
+    test('specifies `from` & `argument` for related providers', () {
       final provider = Provider.autoDispose.family<int, int>((ref, _) => 0);
 
       expect(provider(0).from, provider);

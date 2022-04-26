@@ -50,7 +50,7 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier?>
   /// event that the [ChangeNotifier] it recreated.
   ///
   ///
-  /// It is preferrable to do:
+  /// It is preferable to do:
   /// ```dart
   /// ref.watch(changeNotifierProvider.notifier)
   /// ```
