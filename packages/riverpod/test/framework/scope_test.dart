@@ -701,7 +701,7 @@ final b = Provider(
   });
 
   test(
-      'throw if non-family overrideWithProvider returnes a provider with dependencies',
+      'throw if non-family overrideWithProvider returns a provider with dependencies',
       () {
     final provider = Provider<int>((ref) => 0);
     final a = Provider((ref) => 0);

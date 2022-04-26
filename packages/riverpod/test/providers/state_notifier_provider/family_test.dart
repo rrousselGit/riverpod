@@ -7,7 +7,7 @@ import 'state_notifier_provider_test.dart';
 
 void main() {
   group('StateNotifier.family', () {
-    test('specfies `from` & `argument` for related providers', () {
+    test('specifies `from` & `argument` for related providers', () {
       final provider = StateNotifierProvider.family<Counter, int, int>(
         (ref, _) => Counter(),
       );

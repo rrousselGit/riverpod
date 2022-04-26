@@ -40,7 +40,7 @@ void main() {
       });
     });
 
-    test('specfies `from` & `argument` for related providers', () {
+    test('specifies `from` & `argument` for related providers', () {
       final provider =
           StateNotifierProvider.autoDispose.family<Counter, int, int>(
         (ref, _) => Counter(),

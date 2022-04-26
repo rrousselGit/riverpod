@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // objects at the same time
 final countProvider = StateProvider((ref) => 0);
 
-// Comsumes the shared state and rebuild when it changes
+// Consumes the shared state and rebuild when it changes
 class Title extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
