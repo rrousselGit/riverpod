@@ -159,6 +159,11 @@ abstract class AsyncValue<T> {
   /// See also [valueOrNull], which does not throw during loading state.
   T? get value;
 
+  /// Returns [value], if present. But if no value is found, throws instead.
+  ///
+  /// This is different from [value], which will return `null` during loading.
+  T get requireValue;
+
   /// The [error].
   Object? get error;
 
@@ -263,6 +268,9 @@ class AsyncData<T> extends AsyncValue<T> {
   final T value;
 
   @override
+  T get requireValue => value;
+
+  @override
   bool get hasValue => true;
 
   @override
@@ -306,6 +314,13 @@ class AsyncLoading<T> extends AsyncValue<T> {
 
   @override
   T? get value => null;
+
+  @override
+  T get requireValue {
+    throw StateError(
+      'Tried to read AsyncValue.requireValue on a loading state',
+    );
+  }
 
   @override
   Object? get error => null;
@@ -382,13 +397,16 @@ class AsyncError<T> extends AsyncValue<T> {
   final T? _value;
 
   @override
-  T? get value {
+  T get value {
     if (!hasValue) {
       final stackTrace = this.stackTrace;
       throwErrorWithCombinedStackTrace(error, stackTrace);
     }
-    return _value;
+    return _value as T;
   }
+
+  @override
+  T get requireValue => value;
 
   @override
   final Object error;

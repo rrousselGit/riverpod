@@ -835,6 +835,31 @@ void main() {
     );
   });
 
+  test('AsyncValue.requireValue', () {
+    expect(const AsyncValue.data(42).requireValue, 42);
+    expect(
+      () => const AsyncLoading<int>().requireValue,
+      throwsStateError,
+    );
+    expect(
+      () => const AsyncError<int>('err', StackTrace.empty).requireValue,
+      throwsA('err'),
+    );
+
+    expect(
+      const AsyncError<int>('err', StackTrace.empty)
+          .copyWithPrevious(const AsyncData(42))
+          .requireValue,
+      42,
+    );
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(42))
+          .requireValue,
+      42,
+    );
+  });
+
   test('AsyncValue.guard emits the data when the created future completes',
       () async {
     await expectLater(
