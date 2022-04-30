@@ -306,7 +306,11 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     final result = _state = newResult;
 
     if (_didBuild) {
-      _notifyListeners(result, previousResult);
+      _notifyListeners(
+        result,
+        previousResult,
+        applyUpdateShouldNotify: true,
+      );
     }
   }
 
@@ -449,7 +453,11 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
         _debugSkipNotifyListenersAsserts = true;
         return true;
       }(), '');
-      _notifyListeners(_state!, previousStateResult);
+      _notifyListeners(
+        _state!,
+        previousStateResult,
+        applyUpdateShouldNotify: true,
+      );
       assert(() {
         _debugSkipNotifyListenersAsserts = false;
         return true;
@@ -494,10 +502,22 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     }
   }
 
+  @override
+  void notifyListeners() {
+    final state = getState();
+    if (state == null) {
+      throw StateError(
+        'Trying to call `notifyListeners()` on an uninitialized provider',
+      );
+    }
+    _notifyListeners(state, state, applyUpdateShouldNotify: false);
+  }
+
   void _notifyListeners(
     Result<State> newState,
-    Result<State>? previousStateResult,
-  ) {
+    Result<State>? previousStateResult, {
+    required bool applyUpdateShouldNotify,
+  }) {
     assert(() {
       if (_debugSkipNotifyListenersAsserts) return true;
 
@@ -544,7 +564,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       },
     );
 
-    if (previousStateResult != null &&
+    if (applyUpdateShouldNotify &&
+        previousStateResult != null &&
         previousStateResult.hasState &&
         newState.hasState &&
         !provider.updateShouldNotify(
