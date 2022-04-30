@@ -175,6 +175,36 @@ class _ProviderSubscription<State> implements ProviderSubscription<State> {
   }
 }
 
+class _SelfListenSubscription<State> implements ProviderSubscription<State> {
+  _SelfListenSubscription._(
+    this.element,
+    this.listener, {
+    required this.onError,
+  });
+
+  final void Function(State? previous, State next) listener;
+  final ProviderElementBase<State> element;
+  final void Function(Object error, StackTrace stackTrace)? onError;
+  var _closed = false;
+
+  @override
+  void close() {
+    _closed = true;
+    element._onChangeSelfListeners?.remove(listener);
+    element._onErrorSelfListeners?.remove(onError);
+  }
+
+  @override
+  State read() {
+    if (_closed) {
+      throw StateError(
+        'called ProviderSubscription.read on a subscription that was closed',
+      );
+    }
+    return element.readSelf();
+  }
+}
+
 /// When a provider listens to another provider using `listen`
 class _ProviderListener<State> implements ProviderSubscription<State> {
   _ProviderListener._({
@@ -822,11 +852,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  void listenSelf(
+  ProviderSubscription<State> listenSelf(
     void Function(State? previous, State next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    // TODO do we want to expose a way to close the subscription?
     // TODO do we want a fireImmdiately?
 
     _onChangeSelfListeners ??= [];
@@ -836,6 +865,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       _onErrorSelfListeners ??= [];
       _onErrorSelfListeners!.add(onError);
     }
+
+    return _SelfListenSubscription._(this, listener, onError: onError);
   }
 
   /// Returns the currently exposed by a provider
