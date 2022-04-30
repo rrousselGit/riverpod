@@ -82,7 +82,9 @@ class NotifierProvider<Controller extends Notifier<State>, State>
   State create(
     covariant NotifierProviderElement<Controller, State> ref,
   ) {
-    return ref.notifier.init();
+    // TODO test "create notifier fail"
+    final notifier = ref.notifier = _createNotifier().._element = ref;
+    return notifier.init();
   }
 
   @override
@@ -101,13 +103,9 @@ class NotifierProviderElement<Controller extends Notifier<State>, State>
     extends ProviderElementBase<State> {
   NotifierProviderElement(
     NotifierProvider<Controller, State> provider,
-    // TODO test "create notifier fail"
-  )   : notifier = provider._createNotifier(),
-        super(provider) {
-    notifier._element = this;
-  }
+  ) : super(provider);
 
-  final Controller notifier;
+  late Controller notifier;
 }
 
 class AsyncNotifierProvider<Controller extends AsyncNotifier<State>, State>
@@ -128,7 +126,7 @@ class AsyncNotifierProvider<Controller extends AsyncNotifier<State>, State>
   AsyncValue<State> create(
     covariant AsyncNotifierProviderElement<Controller, State> ref,
   ) {
-    final notifier = ref.notifier;
+    final notifier = ref.notifier = _createNotifier().._element = ref;
 
     return listenFuture(ref, notifier.init);
   }
@@ -152,10 +150,7 @@ class AsyncNotifierProviderElement<Controller extends AsyncNotifier<State>,
   AsyncNotifierProviderElement(
     AsyncNotifierProvider<Controller, State> provider,
     // TODO test "create notifier fail"
-  )   : notifier = provider._createNotifier(),
-        super(provider) {
-    notifier._element = this;
-  }
+  ) : super(provider);
 
-  final Controller notifier;
+  late Controller notifier;
 }
