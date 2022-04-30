@@ -72,7 +72,7 @@ class FutureProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   AsyncValue<State> create(
     covariant FutureProviderElement<State> ref,
   ) {
-    return ref._listenFuture(() => _create(ref));
+    return listenFuture(ref, () => _create(ref));
   }
 
   @override
@@ -95,7 +95,6 @@ class FutureProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
 /// The element of a [FutureProvider]
 class FutureProviderElement<State>
     extends ProviderElementBase<AsyncValue<State>>
-    with _FutureProviderElementMixin<State>
     implements FutureProviderRef<State> {
   /// The element of a [FutureProvider]
   FutureProviderElement(FutureProvider<State> provider) : super(provider);

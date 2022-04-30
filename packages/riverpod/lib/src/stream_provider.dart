@@ -77,7 +77,7 @@ mixin _StreamProviderElementMixin<State>
         (event) => setState(AsyncValue.data(event)),
         // ignore: avoid_types_on_closure_parameters
         onError: (Object err, StackTrace stack) {
-          setState(AsyncValue.error(err, stackTrace: stack));
+          setState(AsyncValue.error(err, stack));
         },
       );
 
@@ -85,7 +85,7 @@ mixin _StreamProviderElementMixin<State>
 
       return AsyncValue<State>.loading();
     } catch (err, stack) {
-      return AsyncValue<State>.error(err, stackTrace: stack);
+      return AsyncValue<State>.error(err, stack);
     }
   }
 }

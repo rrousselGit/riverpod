@@ -115,7 +115,8 @@ void main() {
 
   test('handles fireImmediately: true on AsyncError', () async {
     final container = createContainer();
-    final provider = Provider((ref) => const AsyncError<int>(0));
+    final provider =
+        Provider((ref) => const AsyncError<int>(0, StackTrace.empty));
     final listener = Listener<Future<bool>>();
 
     container.listen(
@@ -148,7 +149,8 @@ void main() {
       'catching errors in the future is not necessary if the error is coming from AsyncError',
       () async {
     final container = createContainer();
-    final provider = Provider((ref) => const AsyncError<int>(0));
+    final provider =
+        Provider((ref) => const AsyncError<int>(0, StackTrace.empty));
 
     container.listen(
       provider.selectAsync((data) => data.isEven),
@@ -174,7 +176,7 @@ void main() {
     container.read(provider.notifier).state = const AsyncLoading<int>()
         .copyWithPrevious(const AsyncValue<int>.data(0));
     container.read(provider.notifier).state = const AsyncLoading<int>()
-        .copyWithPrevious(const AsyncError<int>('err'));
+        .copyWithPrevious(const AsyncError<int>('err', StackTrace.empty));
     container.read(provider.notifier).state = const AsyncLoading<int>();
 
     container.read(provider.notifier).state = const AsyncData(2);

@@ -228,13 +228,13 @@ void main() {
     final future = FutureProvider<int>((ref) async => 0);
 
     final container = createContainer(overrides: [
-      future.overrideWithValue(AsyncValue.error(error)),
+      future.overrideWithValue(AsyncValue.error(error, StackTrace.empty)),
     ]);
     addTearDown(container.dispose);
 
     expect(
       container.read(future),
-      AsyncValue<int>.error(error),
+      AsyncValue<int>.error(error, StackTrace.empty),
     );
 
     // the test will naturally fail if a non-caught future is created
@@ -541,7 +541,8 @@ void main() {
       expect(sub.read(), const AsyncValue.data(42));
 
       container.updateOverrides([
-        provider.overrideWithValue(const AsyncValue.error(21)),
+        provider
+            .overrideWithValue(const AsyncValue.error(21, StackTrace.empty)),
       ]);
 
       await expectLater(
@@ -550,7 +551,8 @@ void main() {
       );
       expect(
         sub.read(),
-        const AsyncValue<int>.error(21).copyWithPrevious(const AsyncData(42)),
+        const AsyncValue<int>.error(21, StackTrace.empty)
+            .copyWithPrevious(const AsyncData(42)),
       );
     });
 
@@ -619,11 +621,10 @@ void main() {
       final stackTrace = StackTrace.current;
 
       container.updateOverrides([
-        provider
-            .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
+        provider.overrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
 
       await expectLater(future, throwsA(42));
     });
@@ -662,8 +663,7 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
       final container = createContainer(overrides: [
-        provider
-            .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
+        provider.overrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
 
       await expectLater(
@@ -673,26 +673,24 @@ void main() {
 
       final sub = container.listen(provider, (_, __) {});
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
 
       container.updateOverrides([
-        provider
-            .overrideWithValue(AsyncValue.error(21, stackTrace: stackTrace)),
+        provider.overrideWithValue(AsyncValue.error(21, stackTrace)),
       ]);
 
       await expectLater(
         container.read(provider.future),
         throwsA(21),
       );
-      expect(sub.read(), AsyncValue<int>.error(21, stackTrace: stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(21, stackTrace));
     });
 
     test('error immediately then different stacktrace', () async {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
       final container = createContainer(overrides: [
-        provider
-            .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
+        provider.overrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
 
       final future = container.read(provider.future);
@@ -701,12 +699,12 @@ void main() {
 
       final sub = container.listen(provider, (_, __) {});
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
 
       final stack2 = StackTrace.current;
 
       container.updateOverrides([
-        provider.overrideWithValue(AsyncValue.error(42, stackTrace: stack2)),
+        provider.overrideWithValue(AsyncValue.error(42, stack2)),
       ]);
 
       expect(
@@ -717,15 +715,14 @@ void main() {
         container.read(provider.future),
         throwsA(42),
       );
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stack2));
+      expect(sub.read(), AsyncValue<int>.error(42, stack2));
     });
 
     test('error immediately then data', () async {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
       final container = createContainer(overrides: [
-        provider
-            .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
+        provider.overrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
 
       await expectLater(
@@ -735,7 +732,7 @@ void main() {
 
       final sub = container.listen(provider, (_, __) {});
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
 
       container.updateOverrides([
         provider.overrideWithValue(const AsyncValue.data(42)),
@@ -748,7 +745,7 @@ void main() {
       expect(
         sub.read(),
         const AsyncValue<int>.data(42)
-            .copyWithPrevious(AsyncError(42, stackTrace: stackTrace)),
+            .copyWithPrevious(AsyncError(42, stackTrace)),
       );
     });
 
@@ -756,8 +753,7 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = FutureProvider((_) async => 0);
       final container = createContainer(overrides: [
-        provider
-            .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
+        provider.overrideWithValue(AsyncValue.error(42, stackTrace)),
       ]);
 
       final future = container.read(provider.future);
@@ -765,7 +761,7 @@ void main() {
 
       final sub = container.listen(provider, (_, __) {});
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
 
       container.updateOverrides([
         provider.overrideWithValue(const AsyncValue.loading()),
@@ -775,7 +771,7 @@ void main() {
       expect(
         sub.read(),
         const AsyncLoading<int>()
-            .copyWithPrevious(AsyncError<int>(42, stackTrace: stackTrace)),
+            .copyWithPrevious(AsyncError<int>(42, stackTrace)),
       );
     });
   });

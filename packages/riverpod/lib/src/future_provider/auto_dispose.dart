@@ -65,7 +65,7 @@ class AutoDisposeFutureProvider<State>
   AsyncValue<State> create(
     covariant AutoDisposeFutureProviderElement<State> ref,
   ) {
-    return ref._listenFuture(() => _create(ref));
+    return listenFuture(ref, () => _create(ref));
   }
 
   @override
@@ -90,7 +90,6 @@ class AutoDisposeFutureProvider<State>
 /// The element of an [AutoDisposeFutureProvider]
 class AutoDisposeFutureProviderElement<State>
     extends AutoDisposeProviderElementBase<AsyncValue<State>>
-    with _FutureProviderElementMixin<State>
     implements AutoDisposeFutureProviderRef<State> {
   /// The element of an [AutoDisposeFutureProvider]
   AutoDisposeFutureProviderElement(AutoDisposeFutureProvider<State> provider)
