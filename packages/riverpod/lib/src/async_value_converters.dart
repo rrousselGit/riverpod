@@ -112,7 +112,7 @@ extension AlwaysAliveAsyncProviderX<State>
   /// {@template riverpod.asyncprovider.stream}
   /// Converts the provider into a stream.
   ///
-  /// If the transformed provider created a stram, it is important to keep in mind
+  /// If the transformed provider created a stream, it is important to keep in mind
   /// that the stream obtained and the stream created will be different.
   ///
   /// The stream obtained may change over time if the provider is

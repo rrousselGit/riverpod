@@ -286,7 +286,7 @@ void main() {
   });
 
   testWidgets(
-      'mutliple watch, when one of them forces rebuild, all dependencies are still flushed',
+      'multiple watch, when one of them forces rebuild, all dependencies are still flushed',
       (tester) async {
     final notifier = TestNotifier();
     final provider = StateNotifierProvider<TestNotifier, int>((_) {

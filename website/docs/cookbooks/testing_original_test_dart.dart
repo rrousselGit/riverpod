@@ -56,7 +56,7 @@ void main() {
       fireImmediately: true,
     );
 
-    // The new test correcly uses the default value: 0
+    // The new test correctly uses the default value: 0
     verify(listener(null, 0)).called(1);
     verifyNoMoreInteractions(listener);
   });

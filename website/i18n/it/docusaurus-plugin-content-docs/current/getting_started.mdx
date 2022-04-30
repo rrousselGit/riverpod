@@ -8,7 +8,7 @@ import TabItem from "@theme/TabItem";
 Prima di addentrarci nei meccanismi interni di [Riverpod], iniziamo con le basi, ovvero
 installare [Riverpod] e di seguito creare il classico "Hello World".
 
-## Check pacchetto installare
+## Quale pacchetto installare
 
 Prima di tutto, devi sapere che [Riverpod] è diviso in diversi pacchetti, ognuno per una propria esigenza.
 La variante di [Riverpod] che vorrai installare dipenderà dal tipo di App che hai intenzione di creare.
@@ -18,7 +18,7 @@ Fai riferimento alla seguente tabella per decidere quale pacchetto installare:
 | tipo app                  | nome pacchetto                                                                     | descrizione                                                            |
 | ------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | Flutter + [flutter_hooks] | [hooks_riverpod]                                                                   | Permette l'utilizzo di entrambi [flutter_hooks] e [Riverpod] insieme.  |
-| Solo Flutter              | [flutter_riverpod]                                                                 | Modo semplice per utilizzare [Riverpod] per App Flutter                |
+| Solo Flutter              | [flutter_riverpod]                                                                 | Per utilizzare [Riverpod] per App Flutter                              |
 | Solo Dart (No Flutter)    | [riverpod](https://github.com/rrousselGit/river_pod/tree/master/packages/riverpod) | Versione di [Riverpod] con tutte le classi collegate a Flutter rimosse |
 
 ## Installare il pacchetto
@@ -45,7 +45,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.18.0
-  hooks_riverpod: ^1.0.2
+  hooks_riverpod: ^2.0.0-dev.5
 ```
 
 Dopodichè esegui `flutter pub get`.
@@ -61,7 +61,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^1.0.2
+  flutter_riverpod: ^2.0.0-dev.5
 ```
 
 Dopodichè esegui `flutter pub get`.
@@ -74,7 +74,7 @@ environment:
   sdk: ">=2.12.0-0 <3.0.0"
 
 dependencies:
-  riverpod: ^1.0.2
+  riverpod: ^2.0.0-dev.5
 ```
 
 Dopodichè esegui `dart pub get`.
@@ -220,6 +220,16 @@ Se stai utilizzando `Flutter` e `VS Code`, considera l'utilizzo di [Flutter Rive
 Se stai utilizzando `Flutter` e `Android Studio` o `IntelliJ`, considera l'utilizzo di [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
 
 ![img](/img/snippets/greetingProvider.gif)
+
+## Scegli il prossimo passo
+
+Apprendi i concetti base:
+
+- [Impara di più riguardo i providers](/docs/concepts/providers)
+
+Segui un cookbook:
+
+- [Come testare i provider](/docs/cookbooks/testing)
 
 [riverpod]: https://github.com/rrousselgit/river_pod
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod

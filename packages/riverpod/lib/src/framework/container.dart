@@ -477,7 +477,7 @@ class ProviderContainer implements Node {
         _debugVerifyDependenciesAreRespectedEnabled = false;
 
         // Check that this containers doesn't have access to an overridden
-        // dependency of the targetted provider
+        // dependency of the targeted provider
         final targetElement = reader.getElement();
         final visitedDependencies = <ProviderBase>{};
         final queue = Queue<ProviderBase>();

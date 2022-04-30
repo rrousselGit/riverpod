@@ -246,6 +246,6 @@ class KeepAliveLink {
 
   /// Release this [KeepAliveLink], allowing the associated provider to
   /// be disposed if the provider is no-longer listener nor has any
-  /// remaning [KeepAliveLink].
+  /// remaining [KeepAliveLink].
   void close() => _close();
 }
