@@ -1,6 +1,13 @@
-# [Unreleased minor]
+# [Unreleased major]
 
+- **Breaking**: `AsyncError.stackTrace` is now a required positional parameter
+  and non-nullable
 - Added `AsyncValue.valueOrNull` to obtain the value while ignoring potential errors.
+- Added `AsyncValue.requireValue` which throws if no value is available
+  (including during loading state).
+- `Ref.listenSelf` now returns a `ProviderSubscription`, for removing the listener
+  early if desired.
+- Added `Ref.notifyListeners` for manually notifying listeners of a provider.
 - Fixed an issue where `AsyncValue.value` did not throw if there is an error.
 - Fix families not applying cacheTime/disposeDelay
 - Fixed a bug where an exception may be thrown asynchronously after a
