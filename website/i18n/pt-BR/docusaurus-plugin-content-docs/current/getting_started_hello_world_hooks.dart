@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Criamos um "provider", que armazenará um valor (aqui "Olá, mundo").
 // Ao usar um provider, isso nos permite simular/substituir o valor exposto.
-final helloWorldProvider = Provider((_) => 'Olá mundo');
+final olaMundoProvider = Provider((_) => 'Olá mundo');
 
 void main() {
   runApp(
@@ -24,7 +24,7 @@ void main() {
 class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final String value = ref.watch(helloWorldProvider);
+    final String value = ref.watch(olaMundoProvider);
 
     return MaterialApp(
       home: Scaffold(

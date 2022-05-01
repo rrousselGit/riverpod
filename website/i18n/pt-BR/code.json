@@ -46,7 +46,7 @@
     "message": "Um Framework Reativo de Cache e Data-binding"
   },
   "home.get_started": {
-    "message": "Começar"
+    "message": "Primeiros passos"
   },
   "home.create_provider": {
     "message": "Criar um Provider"
@@ -55,7 +55,7 @@
     "message": "Consumir o Provider"
   },
   "theme.ErrorPageContent.title": {
-    "message": "Essa página falhou.",
+    "message": "☠️ Impossível gerar a página solicitada.",
     "description": "The title of the fallback page when the page crashed"
   },
   "theme.ErrorPageContent.tryAgain": {
