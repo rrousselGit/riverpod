@@ -6,7 +6,7 @@ import 'package:riverpod/riverpod.dart';
 
 // Criamos um "provider", que armazenará um valor (aqui "Olá, mundo").
 // Ao usar um provider, isso nos permite simular/substituir o valor exposto.
-final helloWorldProvider = Provider((_) => 'Hello world');
+final helloWorldProvider = Provider((_) => 'Olá mundo');
 
 void main() {
   // Este objeto é onde será armazenado o estado de nossos providers.
