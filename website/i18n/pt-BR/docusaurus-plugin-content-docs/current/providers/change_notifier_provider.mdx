@@ -1,0 +1,43 @@
+---
+title: ChangeNotifierProvider
+---
+
+`ChangeNotifierProvider` (flutter_riverpod/hooks_riverpod only) is a provider that
+is used to listen to and expose a [ChangeNotifier] from Flutter itself.
+
+Using `ChangeNotifierProvider` is discouraged by Riverpod and exists primarily for:
+
+- an easy transition from `package:provider` when using its `ChangeNotifierProvider`
+- supporting mutable state, even though immutable state is preferred
+
+:::info
+Prefer using [StateNotifierProvider] instead.  
+Consider using `ChangeNotifierProvider` only if you are absolutely certain
+that you want mutable state.
+:::
+
+Using mutable state instead of immutable state can sometimes be more efficient.
+The downside is, it can be harder to maintain and may break various features.  
+For example, using `provider.select` to optimize rebuilds of your widgets
+may not work if your state is mutable, as `select` will think that the value
+hasn't changed.  
+As such, using immutable data structures can sometimes be faster. Therefore
+it is important to make benchmarks specific to your use-case, to make sure
+that you are truly gaining performance by using `ChangeNotifierProvider`.
+
+As a usage example, we could use `ChangeNotifierProvider` to implement a todo-list.
+Doing so would allow us to expose methods such as `addTodo` to let the UI
+modify the list of todos on user interactions:
+
+<CodeBlock>{trimSnippet(todos)}</CodeBlock>
+
+Now that we have defined a `ChangeNotifierProvider`, we can use it to interact
+with the list of todos in our UI:
+
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
+
+[state_notifier]: https://pub.dev/packages/state_notifier
+[statenotifierprovider]: ./state_notifier_provider
+[changenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/ChangeNotifier-class.html
+[provider]: ./provider
+[futureprovider]: ./future_provider

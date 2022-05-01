@@ -55,11 +55,11 @@
     "message": "Consumir o Provider"
   },
   "theme.ErrorPageContent.title": {
-    "message": "This page crashed.",
+    "message": "Essa página falhou.",
     "description": "The title of the fallback page when the page crashed"
   },
   "theme.ErrorPageContent.tryAgain": {
-    "message": "Try again",
+    "message": "Tente novamente",
     "description": "The label of the button to try again when the page crashed"
   },
   "theme.NotFound.title": {
