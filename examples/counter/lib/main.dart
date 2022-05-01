@@ -22,9 +22,15 @@ class MyApp extends StatelessWidget {
 /// Providers are declared globally and specify how to create a state
 final counterProvider = StateProvider((ref) => 0);
 
+final futureProvider = FutureProvider((ref) => 0);
+final asyncProvider = Provider<AsyncValue<int>>((ref) => AsyncData(42));
+
 class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(futureProvider.future);
+    ref.watch(asyncProvider.future);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Counter example')),
       body: Center(
