@@ -24,9 +24,6 @@ class CharacterPagination with _$CharacterPagination {
 
 class AbortedException implements Exception {}
 
-final counter = Provider((ref) => 0);
-final counterFamily = Provider.family<int, int>((ref, id) => 0);
-
 final characterPages = FutureProvider.autoDispose
     .family<MarvelListCharactersResponse, CharacterPagination>(
   (ref, meta) async {
@@ -60,9 +57,6 @@ final characterPages = FutureProvider.autoDispose
 final charactersCount =
     Provider.autoDispose.family<AsyncValue<int>, String>((ref, name) {
   final meta = CharacterPagination(page: 0, name: name);
-
-  ref.watch(counter.select((value) => null));
-  ref.watch(counterFamily(42).select((value) => null));
 
   return ref.watch(characterPages(meta)).whenData((value) => value.totalCount);
 });
