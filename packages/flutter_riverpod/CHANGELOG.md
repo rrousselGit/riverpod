@@ -1,3 +1,8 @@
+# Unreleased minor
+
+- Added `WidgetRef.listenOnce` for listening to providers in a widget
+  outside of `build`.
+
 # 2.0.0-dev.5
 
 - Fixed a bug where emitting an `AsyncData` after an `AsyncError` leads to `AsyncValue.hasError` to be true
@@ -72,7 +77,6 @@ rebuild if one of its dependency had changed.
 - Fixed a cast error when overriding a provider with a more specific provider type (#1100)
 - Fixed a bug where `onDispose` listeners could be executed twice under certain
   conditions when using `autoDispose`.
-
 
 # 2.0.0-dev.0
 
