@@ -61,7 +61,7 @@ void main() {
       verifyZeroInteractions(listener);
     });
 
-    testWidgets('supports fireImediately', (tester) async {
+    testWidgets('supports fireImmediately', (tester) async {
       final provider = StateProvider((ref) => 0);
       final listener = Listener<int>();
 
