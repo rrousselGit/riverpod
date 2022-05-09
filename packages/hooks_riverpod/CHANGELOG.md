@@ -1,3 +1,13 @@
+# 2.0.0-dev.6
+
+- Added `WidgetRef.listenOnce` for listening to providers in a widget
+  outside of `build`.
+- Added `AsyncValue.valueOrNull` to obtain the value while ignoring potential errors.
+- Fixed an issue where `AsyncValue.value` did not throw if there is an error.
+- Fix families not applying cacheTime/disposeDelay
+- Fixed a bug where an exception may be thrown asynchronously after a
+  `KeepAliveLink` is cancelled.
+
 # 2.0.0-dev.5
 
 - Fixed a bug where emitting an `AsyncData` after an `AsyncError` leads to `AsyncValue.hasError` to be true
