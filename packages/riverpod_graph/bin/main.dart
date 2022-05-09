@@ -12,7 +12,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/file_system/physical_file_system.dart';
 import 'package:collection/collection.dart';
 
-void main(List<String> args) async {
+Future<void> main(List<String> args) async {
   final collection = AnalysisContextCollection(
     includedPaths: [Directory.current.absolute.path],
     resourceProvider: PhysicalResourceProvider.INSTANCE,
