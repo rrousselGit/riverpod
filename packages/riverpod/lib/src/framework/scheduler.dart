@@ -78,8 +78,7 @@ class _ProviderScheduler {
       // ignore: deprecated_member_use_from_same_package
       if (element.maintainState ||
           element._keepAliveLinks.isNotEmpty ||
-          element.hasListeners ||
-          !element._mounted) {
+          element.hasListeners) {
         continue;
       }
       element._container._disposeProvider(element._origin);

@@ -1113,6 +1113,30 @@ void main() {
   });
 
   group('ref.onCancel', () {
+    test('is called when dependent is invalidated and was the only listener',
+        () async {
+      //
+      final container = createContainer();
+      final onCancel = OnCancelMock();
+      final dep = StateProvider((ref) {
+        ref.onCancel(onCancel);
+        return 0;
+      });
+      final provider = Provider.autoDispose((ref) => ref.watch(dep));
+
+      container.read(provider);
+
+      verifyZeroInteractions(onCancel);
+
+      container.read(dep.notifier).state++;
+
+      verify(onCancel()).called(1);
+
+      await container.pump();
+
+      verifyNoMoreInteractions(onCancel);
+    }, skip: 'Waiting for "clear dependencies after futureprovider rebuilds"');
+
     test('is called when all container listeners are removed', () {
       final container = createContainer();
       final listener = OnCancelMock();
