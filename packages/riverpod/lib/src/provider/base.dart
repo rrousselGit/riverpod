@@ -227,13 +227,19 @@ abstract class ProviderRef<State> implements Ref<State> {
 class ProviderElement<State> extends ProviderElementBase<State>
     implements ProviderRef<State> {
   /// A [ProviderElementBase] for [Provider]
-  ProviderElement(ProviderBase<State> provider) : super(provider);
+  ProviderElement(this.provider);
+
+  @override
+  final Provider<State> provider;
 
   @override
   State get state => requireState;
 
   @override
   set state(State newState) => setState(newState);
+
+  @override
+  State create() => provider._create(this);
 }
 
 /// {@macro riverpod.provider}

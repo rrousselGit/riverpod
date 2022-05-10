@@ -78,14 +78,15 @@ part 'future_provider/base.dart';
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
-AsyncValue<State> listenFuture<State>(
-  ProviderElementBase<AsyncValue<State>> element,
-  FutureOr<State> Function() future,
+AsyncValue<State>
+    listenFuture<State, Element extends ProviderElementBase<AsyncValue<State>>>(
+  Element element,
+  FutureOr<State> Function(Element element) future,
 ) {
   var running = true;
   element.onDispose(() => running = false);
   try {
-    final value = future();
+    final value = future(element);
 
     if (value is Future<State>) {
       element.setState(AsyncValue<State>.loading());

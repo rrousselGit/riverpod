@@ -9,10 +9,20 @@ abstract class Notifier<State> extends _NotifierBase<State> {
 
 class NotifierProviderElement<Controller extends Notifier<State>, State>
     extends ProviderElementBase<State> {
-  NotifierProviderElement(NotifierProvider<Controller, State> provider)
-      : super(provider);
+  NotifierProviderElement(this.provider);
+
+  @override
+  final NotifierProvider<Controller, State> provider;
 
   late Controller notifier;
+
+  @override
+  State create() {
+    // TODO test "create notifier fail"
+    final notifier = this.notifier = provider._createNotifier();
+    notifier._element = this;
+    return notifier.init();
+  }
 }
 
 class NotifierProvider<Controller extends Notifier<State>, State>
@@ -29,15 +39,6 @@ class NotifierProvider<Controller extends Notifier<State>, State>
 
   @override
   final List<ProviderOrFamily>? dependencies;
-
-  @override
-  State create(
-    covariant NotifierProviderElement<Controller, State> ref,
-  ) {
-    // TODO test "create notifier fail"
-    final notifier = ref.notifier = _createNotifier().._element = ref;
-    return notifier.init();
-  }
 
   @override
   NotifierProviderElement<Controller, State> createElement() {

@@ -80,18 +80,6 @@ class StateProvider<State> extends AlwaysAliveProviderBase<State>
   final AlwaysAliveProviderBase<StateController<State>> notifier;
 
   @override
-  State create(
-    ProviderElementBase<State> ref,
-  ) {
-    final notifier = ref.watch(this.notifier);
-
-    final removeListener = notifier.addListener(ref.setState);
-    ref.onDispose(removeListener);
-
-    return notifier.state;
-  }
-
-  @override
   bool updateShouldNotify(State previousState, State newState) {
     return true;
   }
@@ -103,7 +91,20 @@ class StateProvider<State> extends AlwaysAliveProviderBase<State>
 /// The [ProviderElementBase] for [StateProvider]
 class StateProviderElement<State> extends ProviderElementBase<State> {
   /// The [ProviderElementBase] for [StateProvider]
-  StateProviderElement(StateProvider<State> provider) : super(provider);
+  StateProviderElement(this.provider);
+
+  @override
+  final StateProvider<State> provider;
+
+  @override
+  State create() {
+    final notifier = watch(provider.notifier);
+
+    final removeListener = notifier.addListener(setState);
+    onDispose(removeListener);
+
+    return notifier.state;
+  }
 }
 
 class _NotifierStateProvider<State> extends Provider<State> {
@@ -141,14 +142,6 @@ class _NotifierProvider<State>
   final List<ProviderOrFamily>? dependencies;
 
   @override
-  StateController<State> create(StateProviderRef<State> ref) {
-    final initialState = _create(ref);
-    final notifier = StateController(initialState);
-    ref.onDispose(notifier.dispose);
-    return notifier;
-  }
-
-  @override
   bool updateShouldNotify(
     StateController<State> previousState,
     StateController<State> newState,
@@ -165,11 +158,21 @@ class _NotifierProvider<State>
 class _NotifierStateProviderElement<State>
     extends ProviderElementBase<StateController<State>>
     implements StateProviderRef<State> {
-  _NotifierStateProviderElement(_NotifierProvider<State> provider)
-      : super(provider);
+  _NotifierStateProviderElement(this.provider);
+
+  @override
+  final _NotifierProvider<State> provider;
 
   @override
   StateController<State> get controller => requireState;
+
+  @override
+  StateController<State> create() {
+    final initialState = provider._create(this);
+    final notifier = StateController(initialState);
+    onDispose(notifier.dispose);
+    return notifier;
+  }
 }
 
 /// {@macro riverpod.stateprovider.family}

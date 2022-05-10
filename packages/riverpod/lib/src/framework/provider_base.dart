@@ -95,10 +95,6 @@ abstract class ProviderBase<State> extends ProviderOrFamily
     );
   }
 
-  /// Initializes the state of a provider
-  @visibleForOverriding
-  State create(covariant Ref ref);
-
   /// Called when a provider is rebuilt. Used for providers to not notify their
   /// listeners if the exposed value did not change.
   @visibleForOverriding
@@ -228,12 +224,7 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
 }
 
 /// An internal class that handles the state of a provider.
-///
-/// Do not use.
 abstract class ProviderElementBase<State> implements Ref<State>, Node {
-  /// Do not use.
-  ProviderElementBase(this._provider);
-
   static ProviderElementBase? _debugCurrentlyBuildingElement;
 
   var _debugSkipNotifyListenersAsserts = false;
@@ -244,8 +235,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   late ProviderBase<Object?> _origin;
 
   /// The provider associated with this [ProviderElementBase], after applying overrides.
-  ProviderBase<State> get provider => _provider;
-  ProviderBase<State> _provider;
+  ProviderBase<State> get provider;
 
   /// The [ProviderContainer] that owns this [ProviderElementBase].
   @override
@@ -409,18 +399,13 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     );
   }
 
-  // ignore: use_setters_to_change_properties
   /// Called when the override of a provider changes.
   ///
   /// See also:
   /// - `overrideWithValue`, which relies on [update] to handle
   ///   the scenario where the value changed.
   @protected
-  @mustCallSuper
-  // ignore: use_setters_to_change_properties
-  void update(ProviderBase<State> newProvider) {
-    _provider = newProvider;
-  }
+  void update(ProviderBase<State> newProvider) {}
 
   @override
   void invalidate(ProviderBase<Object?> provider) {
@@ -498,6 +483,8 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     _previousDependencies = null;
   }
 
+  State create();
+
   @pragma('vm:notify-debugger-on-exception')
   void _buildState() {
     ProviderElementBase? debugPreviouslyBuildingElement;
@@ -511,7 +498,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     try {
       // TODO move outside this function?
       _mounted = true;
-      setState(_provider.create(this));
+      setState(create());
     } catch (err, stack) {
       assert(() {
         _debugDidSetState = true;

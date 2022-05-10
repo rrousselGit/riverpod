@@ -40,9 +40,6 @@ class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
   final List<ProviderOrFamily>? dependencies;
 
   @override
-  State create(AutoDisposeProviderRef<State> ref) => _create(ref);
-
-  @override
   bool updateShouldNotify(State previousState, State newState) {
     return previousState != newState;
   }
@@ -58,13 +55,19 @@ class AutoDisposeProviderElement<State>
     extends AutoDisposeProviderElementBase<State>
     implements AutoDisposeProviderRef<State> {
   /// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
-  AutoDisposeProviderElement(ProviderBase<State> provider) : super(provider);
+  AutoDisposeProviderElement(this.provider);
+
+  @override
+  final AutoDisposeProvider<State> provider;
 
   @override
   State get state => requireState;
 
   @override
   set state(State newState) => setState(newState);
+
+  @override
+  State create() => provider._create(this);
 }
 
 /// {@macro riverpod.provider.family}

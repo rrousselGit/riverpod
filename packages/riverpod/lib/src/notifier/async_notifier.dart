@@ -60,15 +60,6 @@ class AsyncNotifierProvider<Controller extends AsyncNotifier<State>, State>
   final List<ProviderOrFamily>? dependencies;
 
   @override
-  AsyncValue<State> create(
-    covariant AsyncNotifierProviderElement<Controller, State> ref,
-  ) {
-    final notifier = ref.notifier = _createNotifier().._element = ref;
-
-    return listenFuture(ref, notifier.init);
-  }
-
-  @override
   AsyncNotifierProviderElement<Controller, State> createElement() {
     return AsyncNotifierProviderElement<Controller, State>(this);
   }
@@ -84,10 +75,18 @@ class AsyncNotifierProvider<Controller extends AsyncNotifier<State>, State>
 
 class AsyncNotifierProviderElement<Controller extends AsyncNotifier<State>,
     State> extends ProviderElementBase<AsyncValue<State>> {
-  AsyncNotifierProviderElement(
-    AsyncNotifierProvider<Controller, State> provider,
-    // TODO test "create notifier fail"
-  ) : super(provider);
+  AsyncNotifierProviderElement(this.provider);
 
   late Controller notifier;
+
+  @override
+  final AsyncNotifierProvider<Controller, State> provider;
+
+  @override
+  AsyncValue<State> create() {
+    final notifier =
+        this.notifier = provider._createNotifier().._element = this;
+
+    return listenFuture(this, (ref) => notifier.init());
+  }
 }

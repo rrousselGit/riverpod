@@ -69,13 +69,6 @@ class FutureProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
       AsyncValueAsFutureProvider(this, from: from, argument: argument);
 
   @override
-  AsyncValue<State> create(
-    covariant FutureProviderElement<State> ref,
-  ) {
-    return listenFuture(ref, () => _create(ref));
-  }
-
-  @override
   bool updateShouldNotify(
     AsyncValue<State> previousState,
     AsyncValue<State> newState,
@@ -97,13 +90,19 @@ class FutureProviderElement<State>
     extends ProviderElementBase<AsyncValue<State>>
     implements FutureProviderRef<State> {
   /// The element of a [FutureProvider]
-  FutureProviderElement(FutureProvider<State> provider) : super(provider);
+  FutureProviderElement(this.provider);
+
+  @override
+  final FutureProvider<State> provider;
 
   @override
   AsyncValue<State> get state => requireState;
 
   @override
   set state(AsyncValue<State> newState) => setState(newState);
+
+  @override
+  AsyncValue<State> create() => listenFuture(this, provider._create);
 }
 
 /// {@template riverpod.futureprovider.family}

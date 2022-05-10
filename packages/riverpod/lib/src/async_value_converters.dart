@@ -174,13 +174,8 @@ class AsyncValueAsStreamProvider<State>
   ProviderBase<Object?> get originProvider => _provider;
 
   @override
-  Stream<State> create(covariant ProviderElementBase<Stream<State>> ref) {
-    return _asyncValueToStream(_provider, ref);
-  }
-
-  @override
-  ProviderElement<Stream<State>> createElement() {
-    return ProviderElement(this);
+  AsyncValueAsStreamProviderElement<State> createElement() {
+    return AsyncValueAsStreamProviderElement(this);
   }
 
   @override
@@ -192,18 +187,31 @@ class AsyncValueAsStreamProvider<State>
   }
 
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
     return other is AsyncValueAsStreamProvider<State> &&
         other._provider == _provider;
   }
 
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _provider.hashCode;
 }
 
-///
+/// The element for [AsyncValueAsStreamProvider].
+class AsyncValueAsStreamProviderElement<State>
+    extends ProviderElementBase<Stream<State>> {
+  /// The element for [AsyncValueAsStreamProvider].
+  AsyncValueAsStreamProviderElement(this.provider);
+
+  @override
+  final AsyncValueAsStreamProvider<State> provider;
+
+  @override
+  Stream<State> create() {
+    return _asyncValueToStream(provider._provider, this);
+  }
+}
+
+/// Transforms a Provider<AsyncValue<T>> into Provider<Stream<T>>
 @protected
 class AutoDisposeAsyncValueAsStreamProvider<State>
     extends AutoDisposeProviderBase<Stream<State>> {
@@ -231,14 +239,8 @@ class AutoDisposeAsyncValueAsStreamProvider<State>
   ProviderBase<Object?> get originProvider => _provider;
 
   @override
-  Stream<State> create(
-      covariant AutoDisposeProviderElementBase<Stream<State>> ref) {
-    return _asyncValueToStream(_provider, ref);
-  }
-
-  @override
-  AutoDisposeProviderElement<Stream<State>> createElement() {
-    return AutoDisposeProviderElement(this);
+  AutoDisposeAsyncValueAsStreamProviderElement<State> createElement() {
+    return AutoDisposeAsyncValueAsStreamProviderElement(this);
   }
 
   @override
@@ -250,15 +252,28 @@ class AutoDisposeAsyncValueAsStreamProvider<State>
   }
 
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
     return other is AutoDisposeAsyncValueAsStreamProvider<State> &&
         other._provider == _provider;
   }
 
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _provider.hashCode;
+}
+
+/// The element for [AutoDisposeAsyncValueAsStreamProvider].
+class AutoDisposeAsyncValueAsStreamProviderElement<State>
+    extends AutoDisposeProviderElementBase<Stream<State>> {
+  /// The element for [AutoDisposeAsyncValueAsStreamProvider].
+  AutoDisposeAsyncValueAsStreamProviderElement(this.provider);
+
+  @override
+  final AutoDisposeAsyncValueAsStreamProvider<State> provider;
+
+  @override
+  Stream<State> create() {
+    return _asyncValueToStream(provider._provider, this);
+  }
 }
 
 Stream<State> _asyncValueToStream<State>(
@@ -337,11 +352,6 @@ class AsyncValueAsFutureProvider<State>
   ProviderBase<Object?> get originProvider => _provider;
 
   @override
-  Future<State> create(ProviderElementBase<Future<State>> ref) {
-    return _asyncValueAsFuture(_provider, ref);
-  }
-
-  @override
   bool updateShouldNotify(
     Future<State> previousState,
     Future<State> newState,
@@ -350,20 +360,31 @@ class AsyncValueAsFutureProvider<State>
   }
 
   @override
-  ProviderElement<Future<State>> createElement() {
-    return ProviderElement(this);
+  AsyncValueAsFutureProviderElement<State> createElement() {
+    return AsyncValueAsFutureProviderElement(this);
   }
 
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
     return other is AsyncValueAsFutureProvider<State> &&
         other._provider == _provider;
   }
 
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _provider.hashCode;
+}
+
+/// The element for [AutoDisposeAsyncValueAsFutureProvider].
+class AsyncValueAsFutureProviderElement<State>
+    extends ProviderElementBase<Future<State>> {
+  /// The element for [AsyncValueAsFutureProvider].
+  AsyncValueAsFutureProviderElement(this.provider);
+
+  @override
+  final AsyncValueAsFutureProvider<State> provider;
+
+  @override
+  Future<State> create() => _asyncValueAsFuture(provider._provider, this);
 }
 
 ///
@@ -394,11 +415,6 @@ class AutoDisposeAsyncValueAsFutureProvider<State>
   ProviderBase<Object?> get originProvider => _provider;
 
   @override
-  Future<State> create(AutoDisposeProviderElementBase<Future<State>> ref) {
-    return _asyncValueAsFuture(_provider, ref);
-  }
-
-  @override
   bool updateShouldNotify(
     Future<State> previousState,
     Future<State> newState,
@@ -407,20 +423,31 @@ class AutoDisposeAsyncValueAsFutureProvider<State>
   }
 
   @override
-  AutoDisposeProviderElement<Future<State>> createElement() {
-    return AutoDisposeProviderElement(this);
+  AutoDisposeAsyncValueAsFutureProviderElement<State> createElement() {
+    return AutoDisposeAsyncValueAsFutureProviderElement(this);
   }
 
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
     return other is AutoDisposeAsyncValueAsFutureProvider<State> &&
         other._provider == _provider;
   }
 
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _provider.hashCode;
+}
+
+/// The element for [AutoDisposeAsyncValueAsFutureProvider].
+class AutoDisposeAsyncValueAsFutureProviderElement<State>
+    extends AutoDisposeProviderElementBase<Future<State>> {
+  /// The element for [AutoDisposeAsyncValueAsFutureProvider].
+  AutoDisposeAsyncValueAsFutureProviderElement(this.provider);
+
+  @override
+  final AutoDisposeAsyncValueAsFutureProvider<State> provider;
+
+  @override
+  Future<State> create() => _asyncValueAsFuture(provider._provider, this);
 }
 
 Future<State> _asyncValueAsFuture<State>(

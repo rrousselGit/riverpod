@@ -50,26 +50,37 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
   final AlwaysAliveProviderBase<Notifier> notifier;
 
   @override
-  State create(ProviderElementBase<State> ref) {
-    final notifier = ref.watch(this.notifier);
-
-    void listener(State newState) {
-      ref.setState(newState);
-    }
-
-    final removeListener = notifier.addListener(listener);
-    ref.onDispose(removeListener);
-
-    return ref.requireState;
-  }
-
-  @override
   bool updateShouldNotify(State previousState, State newState) {
     return true;
   }
 
   @override
-  ProviderElementBase<State> createElement() => ProviderElement(this);
+  StateNotifierProviderElement<Notifier, State> createElement() =>
+      StateNotifierProviderElement(this);
+}
+
+/// The element of a [StateNotifierProvider]
+class StateNotifierProviderElement<Notifier extends StateNotifier<State>, State>
+    extends ProviderElementBase<State> {
+  /// The element of a [StateNotifierProvider]
+  StateNotifierProviderElement(this.provider);
+
+  @override
+  final StateNotifierProvider<Notifier, State> provider;
+
+  @override
+  State create() {
+    final notifier = watch(provider.notifier);
+
+    void listener(State newState) {
+      setState(newState);
+    }
+
+    final removeListener = notifier.addListener(listener);
+    onDispose(removeListener);
+
+    return requireState;
+  }
 }
 
 class _NotifierProvider<Notifier extends StateNotifier<State>, State>
@@ -92,33 +103,31 @@ class _NotifierProvider<Notifier extends StateNotifier<State>, State>
   final List<ProviderOrFamily>? dependencies;
 
   @override
-  Notifier create(
-    covariant StateNotifierProviderRef<Notifier, State> ref,
-  ) {
-    final notifier = _create(ref);
-    ref.onDispose(notifier.dispose);
-    return notifier;
-  }
+  bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
 
   @override
-  bool updateShouldNotify(Notifier previousState, Notifier newState) {
-    return true;
+  _NotifierProviderElement<Notifier, State> createElement() {
+    return _NotifierProviderElement(this);
   }
-
-  @override
-  _NotifierProviderElement<Notifier, State> createElement() =>
-      _NotifierProviderElement(this);
 }
 
 class _NotifierProviderElement<Notifier extends StateNotifier<State>, State>
     extends ProviderElementBase<Notifier>
     implements StateNotifierProviderRef<Notifier, State> {
-  _NotifierProviderElement(
-    _NotifierProvider<Notifier, State> provider,
-  ) : super(provider);
+  _NotifierProviderElement(this.provider);
+
+  @override
+  final _NotifierProvider<Notifier, State> provider;
 
   @override
   Notifier get notifier => requireState;
+
+  @override
+  Notifier create() {
+    final notifier = provider._create(this);
+    onDispose(notifier.dispose);
+    return notifier;
+  }
 }
 
 /// {@template riverpod.statenotifierprovider.family}

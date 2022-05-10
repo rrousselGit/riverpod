@@ -167,11 +167,6 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   AlwaysAliveProviderBase<Future<State>> get last => future;
 
   @override
-  AsyncValue<State> create(covariant StreamProviderElement<State> ref) {
-    return ref._listenStream(() => _create(ref));
-  }
-
-  @override
   bool updateShouldNotify(
     AsyncValue<State> previousState,
     AsyncValue<State> newState,
@@ -191,16 +186,21 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
 /// The Element of a [StreamProvider]
 class StreamProviderElement<State>
     extends ProviderElementBase<AsyncValue<State>>
-    with _StreamProviderElementMixin<State>
     implements StreamProviderRef<State> {
   /// The Element of a [StreamProvider]
-  StreamProviderElement(StreamProvider<State> provider) : super(provider);
+  StreamProviderElement(this.provider);
+
+  @override
+  final StreamProvider<State> provider;
 
   @override
   AsyncValue<State> get state => requireState;
 
   @override
   set state(AsyncValue<State> newState) => setState(newState);
+
+  @override
+  AsyncValue<State> create() => _listenStream(this, provider._create);
 }
 
 /// {@template riverpod.streamprovider.family}
