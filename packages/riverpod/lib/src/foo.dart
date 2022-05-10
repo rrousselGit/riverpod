@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'notifier.dart';
 
-final counterProvider = AsyncNotifierProvider<Counter, int>(Counter.new);
+final counterProvider = AsyncNotifierProvider<Counter, int>(() => Counter());
 
 class Counter extends AsyncNotifier<int> {
   @override
