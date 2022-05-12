@@ -87,6 +87,6 @@ class AsyncNotifierProviderElement<Controller extends AsyncNotifier<State>,
     final notifier =
         this.notifier = provider._createNotifier().._element = this;
 
-    return listenFuture(this, (ref) => notifier.init());
+    return listenFuture(this, (_) => notifier.init());
   }
 }

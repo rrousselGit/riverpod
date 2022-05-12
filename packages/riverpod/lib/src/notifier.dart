@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 import 'internals.dart';
 
 part 'notifier/notifier.dart';
+part 'notifier/notifier_family.dart';
 part 'notifier/async_notifier.dart';
 part 'notifier/auto_dispose_notifier.dart';
 part 'notifier/auto_dispose_async_notifier.dart';

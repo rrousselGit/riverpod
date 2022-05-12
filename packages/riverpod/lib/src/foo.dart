@@ -1,12 +1,13 @@
 import 'dart:async';
 
-import 'notifier.dart';
+import '../riverpod.dart';
 
-final counterProvider = AsyncNotifierProvider<Counter, int>(() => Counter());
+final counterProvider =
+    NotifierProviderFamily<Counter, int, String>(() => Counter());
 
-class Counter extends AsyncNotifier<int> {
+class Counter extends NotifierFamily<int, String> {
   @override
-  FutureOr<int> init() {
+  int init(String param) {
     // TODO: implement init
     throw UnimplementedError();
   }

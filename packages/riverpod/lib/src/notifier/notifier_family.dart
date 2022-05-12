@@ -1,18 +1,22 @@
 part of '../notifier.dart';
 
-abstract class Notifier<State> extends _NotifierBase<State> {
+abstract class NotifierFamily<State, Arg> extends _NotifierBase<State> {
   Ref<State> get ref => _element;
 
+  late final Arg argument;
+
   @visibleForOverriding
-  State init();
+  State init(Arg argument);
 }
 
-class NotifierProviderElement<Controller extends Notifier<State>, State>
-    extends ProviderElementBase<State> {
-  NotifierProviderElement(this.provider);
+class NotifierProviderFamilyElement<
+    Controller extends NotifierFamily<State, Arg>,
+    State,
+    Arg> extends ProviderElementBase<State> {
+  NotifierProviderFamilyElement(this.provider);
 
   @override
-  final NotifierProvider<Controller, State> provider;
+  final NotifierProviderFamily<Controller, State, Arg> provider;
 
   late Controller notifier;
 
@@ -21,13 +25,13 @@ class NotifierProviderElement<Controller extends Notifier<State>, State>
     // TODO test "create notifier fail"
     final notifier = this.notifier = provider._createNotifier();
     notifier._element = this;
-    return notifier.init();
+    return notifier.init(provider.argument as Arg);
   }
 }
 
-class NotifierProvider<Controller extends Notifier<State>, State>
-    extends AlwaysAliveProviderBase<State> {
-  NotifierProvider(
+class NotifierProviderFamily<Controller extends NotifierFamily<State, Arg>,
+    State, Arg> extends AlwaysAliveProviderBase<State> {
+  NotifierProviderFamily(
     this._createNotifier, {
     String? name,
     this.dependencies,
@@ -44,13 +48,13 @@ class NotifierProvider<Controller extends Notifier<State>, State>
       Provider<Controller>((ref) {
     ref.watch(this);
     return (ref.container.readProviderElement(this)
-            as NotifierProviderElement<Controller, State>)
+            as NotifierProviderFamilyElement<Controller, State, Arg>)
         .notifier;
   });
 
   @override
-  NotifierProviderElement<Controller, State> createElement() {
-    return NotifierProviderElement<Controller, State>(this);
+  NotifierProviderFamilyElement<Controller, State, Arg> createElement() {
+    return NotifierProviderFamilyElement<Controller, State, Arg>(this);
   }
 
   @override
