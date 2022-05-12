@@ -272,7 +272,7 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
     assert(_task == null, 'Only one task can be scheduled at a time');
     _task = task;
 
-    if (SchedulerBinding.instance!.schedulerPhase ==
+    if (SchedulerBinding.instance.schedulerPhase ==
         SchedulerPhase.transientCallbacks) {
       markNeedsBuild();
     } else {

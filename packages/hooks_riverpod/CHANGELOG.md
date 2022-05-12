@@ -1,3 +1,7 @@
+## 1.0.4
+
+Upgrade minimum Flutter SDK to 3.0.0
+
 ## 1.0.3
 
 Removed an assert preventing from overriding the same provider/family
