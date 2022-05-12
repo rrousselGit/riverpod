@@ -1,3 +1,8 @@
+# 2.0.0-dev.7
+
+- Upgrade minimum required Dart SDK version to 2.17.0
+- Upgrade minimum required Flutter SDK version to 3.0.0
+
 # 2.0.0-dev.6
 
 - Added `WidgetRef.listenOnce` for listening to providers in a widget

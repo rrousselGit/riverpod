@@ -151,7 +151,7 @@ class FakeAsync {
   /// The [`clock`][] property will be set to a clock that reports the fake
   /// elapsed time. By default, it starts at the time the [FakeAsync] was
   /// created (according to [`clock.now()`][]), but this can be controlled by
-  /// passing `initialTime` to [new FakeAsync].
+  /// passing `initialTime` to [FakeAsync].
   ///
   /// [`clock`]: https://www.dartdocs.org/documentation/clock/latest/clock/clock.html
   /// [`clock.now()`]: https://www.dartdocs.org/documentation/clock/latest/clock/Clock/now.html
