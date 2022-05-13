@@ -1,4 +1,8 @@
-# [Unreleased major]
+# 2.0.0-dev.7
+
+Upgrade minimum required Dart SDK version to 2.17.0
+
+# 2.0.0-dev.6
 
 - **Breaking**: `AsyncError.stackTrace` is now a required positional parameter
   and non-nullable
