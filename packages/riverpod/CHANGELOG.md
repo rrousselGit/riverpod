@@ -1,3 +1,7 @@
+# 2.0.0-dev.8
+
+fix: a bug where unmounting a nested ProviderScope could cause an exception (#1400)
+
 # 2.0.0-dev.7
 
 Upgrade minimum required Dart SDK version to 2.17.0

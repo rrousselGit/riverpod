@@ -10,6 +10,20 @@ import '../utils.dart';
 Future<void> main() async {
   final library = await Library.parseFromStacktrace();
 
+  test(
+      'Handles cases where the ProviderContainer is disposed yet Scheduler.performDispose is invoked anyway',
+      () async {
+    // regression test for https://github.com/rrousselGit/riverpod/issues/1400
+    final provider = Provider.autoDispose((ref) => 0);
+    final root = createContainer();
+    final container = createContainer(parent: root, overrides: [provider]);
+
+    container.read(provider);
+    container.dispose();
+
+    await root.pump();
+  });
+
   group('ref.keepAlive', () {
     test('supports pausing providers if they are not listened', () async {
       // regression test for https://github.com/rrousselGit/riverpod/issues/1360
