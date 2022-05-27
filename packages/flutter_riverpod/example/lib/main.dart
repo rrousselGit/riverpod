@@ -23,6 +23,8 @@ class MyApp extends StatelessWidget {
 final counterProvider = StateProvider((ref) => 0);
 
 class Home extends ConsumerWidget {
+  Home({super.key});
+  
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(

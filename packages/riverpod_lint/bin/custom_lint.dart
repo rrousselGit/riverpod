@@ -242,6 +242,7 @@ extension on FunctionExpressionInvocation {
 }
 
 extension on FunctionExpression {
+  /// Null if unknown
   bool? get isWidgetBuilder {
     final returnType = declaredElement?.returnType.element;
     if (returnType == null) return null;
