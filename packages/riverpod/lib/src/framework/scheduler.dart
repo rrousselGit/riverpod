@@ -11,8 +11,6 @@ class _ProviderScheduler {
 
   final void Function(void Function() onDone) vsync;
 
-  bool _disposed = false;
-  bool _scheduledTask = false;
   final _stateToDispose = <AutoDisposeProviderElementBase>[];
   final _stateToRefresh = <ProviderElementBase>[];
 
@@ -26,22 +24,18 @@ class _ProviderScheduler {
   }
 
   void _scheduleTask() {
-    assert(!_disposed, 'tried to emit updates with a disposed Scheduler');
-    if (_scheduledTask) return;
-
-    _scheduledTask = true;
-    assert(_pendingTaskCompleter == null, 'bad state');
+    if (_pendingTaskCompleter != null) return;
     _pendingTaskCompleter = Completer<void>();
     vsync(_task);
   }
 
   void _task() {
-    _pendingTaskCompleter!.complete();
-    if (_disposed) return;
+    final pendingTaskCompleter = _pendingTaskCompleter;
+    if (pendingTaskCompleter == null) return;
+    pendingTaskCompleter.complete();
+
     _performRefresh();
     _performDispose();
-
-    _scheduledTask = false;
     _stateToRefresh.clear();
     _stateToDispose.clear();
     _pendingTaskCompleter = null;
@@ -78,7 +72,8 @@ class _ProviderScheduler {
       // ignore: deprecated_member_use_from_same_package
       if (element.maintainState ||
           element._keepAliveLinks.isNotEmpty ||
-          element.hasListeners) {
+          element.hasListeners ||
+          element._container._disposed) {
         continue;
       }
       element._container._disposeProvider(element._origin);
@@ -86,6 +81,7 @@ class _ProviderScheduler {
   }
 
   void dispose() {
-    _disposed = true;
+    _pendingTaskCompleter?.complete();
+    _pendingTaskCompleter = null;
   }
 }

@@ -105,6 +105,23 @@ void main() {
   });
 
   group('disposeDelay', () {
+    test('supports disposing the container before the timer completes',
+        () async {
+      await fakeAsync((async) async {
+        final provider = Provider.autoDispose((ref) => 42);
+        final container = createContainer(
+          disposeDelay: const Duration(seconds: 5),
+        );
+
+        final sub = container.listen(provider, (prev, next) {});
+        sub.close();
+
+        container.dispose();
+
+        expect(async.pendingTimers, isEmpty);
+      });
+    });
+
     test(
         'keeps the provider alive for duration after the last listener is removed',
         () async {
@@ -271,7 +288,8 @@ void main() {
         container.read(provider);
 
         container.dispose();
-        async.elapse(const Duration(seconds: 10));
+
+        expect(async.pendingTimers, isEmpty);
       });
     });
 
