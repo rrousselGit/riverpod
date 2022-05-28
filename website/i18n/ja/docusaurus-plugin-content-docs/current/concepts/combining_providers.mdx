@@ -231,21 +231,15 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 });
 ```
 
-**【変更後】** 実際に使用するプロパティのみを監視
+**【変更後】** select を利用して必要なプロパティのみを監視
 
 ```dart
 final configProvider = StreamProvider<Configuration>(...);
 
-/// Configuration のプロパティのうち、ホスト名のみを公開するプロバイダを別途作成。
-final _hostProvider = FutureProvider<String>((ref) async {
-  final config = await ref.watch(configProvider.future);
-  return config.host;
-});
-
 final productsProvider = FutureProvider<List<Product>>((ref) async {
-  // 上記プロバイダを間に入れることで、ホスト名の値のみを監視することができる。
+  // select によりホスト名の値のみを監視することができる。
   // Configuration の他のプロパティが変わっても無駄に値が再評価されることはない。
-  final host = await ref.watch(_hostProvider.future);
+  final host = await ref.watch(configProvider.selectAsync((config) => config.host));
 
   return dio.get('$host/products');
 });

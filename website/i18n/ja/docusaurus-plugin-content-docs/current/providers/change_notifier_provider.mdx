@@ -1,0 +1,43 @@
+---
+title: ChangeNotifierProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todos from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/change_notifier_provider/todos.dart";
+import todosConsumer from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/change_notifier_provider/todos_consumer.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`ChangeNotifierProvider` （flutter_riverpod/hooks_riverpod のみ）は [ChangeNotifier] を Flutter で利用するためのプロバイダです。
+
+Riverpod では使用を非推奨としており、主に次の理由により存在しています。
+
+- `package:provider` で `ChangeNotifierProvider` を利用していた場合の移行作業を容易にするため
+- ミュータブル（可変）なステート管理手法をサポートするため
+
+:::info
+可能な限り [StateNotifierProvider] を使用してください。  
+`ChangeNotifierProvider` の使用はミュータブルなステート管理を行う必然性がある場合に限定してください。
+:::
+
+ミュータブル（可変）なステートを管理する方が都合がいいと感じるケースもあるかもしれません。
+しかし、それによりコードの保守性を損ない、実装した機能が想定外の動作をするおそれがあることも念頭に置いてください。
+例えば、ウィジェットの再構築を最適化するために `provider.select` を使っている場合、
+ステートの変化がうまく `select` に伝わらず、再構築が機能しない可能性があります。
+結果的にイミュータブルなステートを管理していた方が確実で効率が良かったと振り返ることもあるかもしれません。
+そのため、`ChangeNotifierProvider` の導入を検討する際はユースケースに特化したベンチマークを行い、導入により全体的なパフォーマンスにどう影響するのかを慎重に見極めることが重要です。
+
+以下のコードは Todo リストでの使用例です。まずは Todo のモデルと [ChangeNotifier] を定義し、`ChangeNotifierProvider` を作成します。
+
+<CodeBlock>{trimSnippet(todos)}</CodeBlock>
+
+次に `ChangeNotifierProvider` を通じて、UI 側から Todo リストを監視・操作できるようにします。
+
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
+
+[state_notifier]: https://pub.dev/packages/state_notifier
+[statenotifierprovider]: ./state_notifier_provider
+[changenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/ChangeNotifier-class.html
+[provider]: ./provider
+[futureprovider]: ./future_provider
