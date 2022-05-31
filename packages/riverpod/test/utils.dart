@@ -76,6 +76,10 @@ class ErrorListener extends Mock {
   void call(Object? error, StackTrace? stackTrace);
 }
 
+class OnInvalidateSelfListener extends Mock {
+  void call();
+}
+
 class Selector<Input, Output> extends Mock {
   Selector(this.fake, Output Function(Input) selector) {
     when(call(any)).thenAnswer((i) {

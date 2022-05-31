@@ -64,6 +64,26 @@ void main() {
         expect(ref.refresh(state), 42);
         expect(container.read(state), 42);
       });
+
+      test('causes onInvalidateSelf to be called', () {
+        var value = 0;
+        final state = Provider((ref) { 
+          ref.onInvalidateSelf(() => value = 42);
+          return value;
+        });
+        late Ref ref;
+        final provider = Provider((r) {
+          ref = r;
+        });
+        final container = createContainer();
+
+        container.read(provider);
+
+        expect(container.read(state), 0);
+
+        expect(ref.refresh(state), 42);
+        expect(container.read(state), 42);
+      });
     });
 
     test('ref.read should keep providers alive', () {}, skip: true);

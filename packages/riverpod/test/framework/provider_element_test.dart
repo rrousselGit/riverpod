@@ -1338,6 +1338,53 @@ void main() {
     });
   });
 
+  group('ref.onInvalidateSelf', () {
+    test('is called when provider is refreshed',
+        () async {
+      final container = createContainer();
+      final onInvalidateSelfListener = OnInvalidateSelfListener();
+
+      final provider = Provider((ref) { 
+        ref.onInvalidateSelf(onInvalidateSelfListener);
+      });
+
+      container.read(provider);
+
+      verifyZeroInteractions(onInvalidateSelfListener);
+
+      container.refresh(provider);
+
+      verify(onInvalidateSelfListener()).called(1);
+
+      await container.pump();
+
+      verifyNoMoreInteractions(onInvalidateSelfListener);
+    });
+
+    test('is called when provider is invalidated',
+        () async {
+      final container = createContainer();
+      final onInvalidateSelfListener = OnInvalidateSelfListener();
+
+      final provider = Provider((ref) { 
+        ref.onInvalidateSelf(onInvalidateSelfListener);
+      });
+
+      container.read(provider);
+
+      verifyZeroInteractions(onInvalidateSelfListener);
+
+      container.invalidate(provider);
+
+      verify(onInvalidateSelfListener()).called(1);
+
+      await container.pump();
+
+      verifyNoMoreInteractions(onInvalidateSelfListener);
+    });
+  });
+
+
   test(
       'onDispose is triggered only once if within autoDispose unmount, a dependency chnaged',
       () async {

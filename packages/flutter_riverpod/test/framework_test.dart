@@ -311,6 +311,30 @@ void main() {
     expect(ref.refresh(provider), null);
   });
 
+  testWidgets('ref.refresh causes onInvalidateSelf to be called',
+      (tester) async {
+    int value = 42;
+    final provider = Provider<int>((ref) { 
+      ref.onInvalidateSelf(() => value++);
+      return value;
+    });
+    late WidgetRef ref;
+
+    await tester.pumpWidget(ProviderScope(
+      child: Consumer(
+        builder: (context, r, _) {
+          ref = r;
+          return Container();
+        },
+      ),
+    ));
+
+    expect(ref.read(provider), 42);
+
+    expect(ref.refresh(provider), 43);
+    expect(ref.refresh(provider), 44);
+  });
+
   testWidgets('ProviderScope allows specifying a ProviderContainer',
       (tester) async {
     final provider = FutureProvider((ref) async => 42);
