@@ -13,6 +13,9 @@ abstract class _NotifierBase<State> {
   late final ProviderElementBase<State> _element;
 
   // TODO should this use readSelf?
+  @protected
   State get state => _element.requireState;
+
+  @protected
   set state(State value) => _element.setState(value);
 }

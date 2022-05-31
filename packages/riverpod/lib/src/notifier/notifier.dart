@@ -1,10 +1,30 @@
 part of '../notifier.dart';
 
+Provider<AsyncValue<T>> AsyncProvider<T>(
+    FutureOr<void> Function(
+            ProviderRef<AsyncValue<T>> ref, void Function(T value) emit)
+        cb) {
+  return Provider((ref) {
+    ref.state = const AsyncLoading();
+
+    var disposed = false;
+    ref.onDispose(() => disposed = true);
+
+    void emit(T value) {
+      if (disposed) throw StateError('Called `emit` on a disposed provider');
+    }
+
+    Future(() => cb(ref, emit)).ignore();
+
+    return ref.state;
+  });
+}
+
 abstract class Notifier<State> extends _NotifierBase<State> {
   Ref<State> get ref => _element;
 
   @visibleForOverriding
-  State init();
+  State build();
 }
 
 class NotifierProviderElement<Controller extends Notifier<State>, State>
@@ -21,7 +41,7 @@ class NotifierProviderElement<Controller extends Notifier<State>, State>
     // TODO test "create notifier fail"
     final notifier = this.notifier = provider._createNotifier();
     notifier._element = this;
-    return notifier.init();
+    return notifier.build();
   }
 }
 
@@ -55,6 +75,6 @@ class NotifierProvider<Controller extends Notifier<State>, State>
 
   @override
   bool updateShouldNotify(State previousState, State newState) {
-    return identical(previousState, newState);
+    return !identical(previousState, newState);
   }
 }

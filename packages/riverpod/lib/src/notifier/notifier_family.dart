@@ -59,6 +59,6 @@ class NotifierProviderFamily<Controller extends NotifierFamily<State, Arg>,
 
   @override
   bool updateShouldNotify(State previousState, State newState) {
-    return identical(previousState, newState);
+    return !identical(previousState, newState);
   }
 }
