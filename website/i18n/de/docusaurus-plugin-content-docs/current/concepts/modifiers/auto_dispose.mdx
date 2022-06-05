@@ -57,7 +57,7 @@ abgeschlossen ist:
 
 ```dart
 final myProvider = FutureProvider.autoDispose((ref) async {
-  final response = await dio.get(...);
+  final response = await httpClient.get(...);
   ref.keepAlive();
   return response;
 });

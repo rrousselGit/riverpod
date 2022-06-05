@@ -56,7 +56,7 @@ Un cas d'utilisation serait de mettre ce drapeau à `true` après qu'une requêt
 
 ```dart
 final myProvider = FutureProvider.autoDispose((ref) async {
-  final response = await dio.get(...);
+  final response = await httpClient.get(...);
   ref.keepAlive();
   return response;
 });
