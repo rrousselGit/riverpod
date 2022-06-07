@@ -12,17 +12,18 @@ const _providerBase = TypeChecker.fromRuntime(ProviderBase);
 const _family = TypeChecker.fromRuntime(Family);
 const _providerOrFamily = TypeChecker.any([_providerBase, _family]);
 
-const _widget =
-    TypeChecker.fromUrl('package:flutter/src/widgets/framework.dart#Widget');
+const _widget = TypeChecker.fromName('Widget', packageName: 'flutter');
 
 const _widgetRef =
-    TypeChecker.fromUrl('package:flutter_riverpod/src/consumer.dart#WidgetRef');
+    TypeChecker.fromName('WidgetRef', packageName: 'flutter_riverpod');
 
-const _consumerWidget = TypeChecker.fromUrl(
-  'package:flutter_riverpod/src/consumer.dart#ConsumerWidget',
+const _consumerWidget = TypeChecker.fromName(
+  'ConsumerWidget',
+  packageName: 'flutter_riverpod',
 );
-const _consumerState = TypeChecker.fromUrl(
-  'package:flutter_riverpod/src/consumer.dart#ConsumerState',
+const _consumerState = TypeChecker.fromName(
+  'ConsumerState',
+  packageName: 'flutter_riverpod',
 );
 const _ref = TypeChecker.fromRuntime(Ref);
 
@@ -83,7 +84,7 @@ class ProviderVisitor extends RecursiveAstVisitor<void> {
               _consumerState.isAssignableFrom(classElement);
         }
       }
-      return false;
+      return null;
     }
 
     // Whther the invocation is inside or ouside the build method of a provider/widget
@@ -98,8 +99,8 @@ class ProviderVisitor extends RecursiveAstVisitor<void> {
               code: 'riverpod_avoid_read_inside_build',
               message:
                   'Avoid using ref.read inside the build method of widgets/providers.',
-              location: LintLocation.fromOffsets(
-                offset: node.offset,
+              location: unit.lintLocationFromOffset(
+                node.offset,
                 length: node.length,
               ),
             ),
@@ -113,8 +114,8 @@ class ProviderVisitor extends RecursiveAstVisitor<void> {
               code: 'riverpod_avoid_watch_outside_build',
               message:
                   'Avoid using ref.watch outside the build method of widgets/providers.',
-              location: LintLocation.fromOffsets(
-                offset: node.offset,
+              location: unit.lintLocationFromOffset(
+                node.offset,
                 length: node.length,
               ),
             ),
@@ -135,8 +136,8 @@ class ProviderVisitor extends RecursiveAstVisitor<void> {
         Lint(
           code: 'riverpod_final_provider',
           message: 'Providers should always be declared as final',
-          location: LintLocation.fromOffsets(
-            offset: providerNode.offset,
+          location: unit.lintLocationFromOffset(
+            providerNode.offset,
             length: providerNode.length,
           ),
         ),
@@ -154,8 +155,8 @@ class ProviderVisitor extends RecursiveAstVisitor<void> {
           code: 'riverpod_avoid_dynamic_provider',
           message:
               'Providers should be either top level variables or static properties',
-          location: LintLocation.fromOffsets(
-            offset: variable.nameOffset,
+          location: unit.lintLocationFromOffset(
+            variable.nameOffset,
             length: variable.nameLength,
           ),
         ),
@@ -167,8 +168,8 @@ class ProviderVisitor extends RecursiveAstVisitor<void> {
         Lint(
           code: 'riverpod_final_provider',
           message: 'Providers should always be declared as final',
-          location: LintLocation.fromOffsets(
-            offset: variable.nameOffset,
+          location: unit.lintLocationFromOffset(
+            variable.nameOffset,
             length: variable.nameLength,
           ),
         ),

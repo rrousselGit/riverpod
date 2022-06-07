@@ -7,12 +7,11 @@ environment:
   flutter: ">=3.0.0"
 
 dependencies:
-  hooks_riverpod:
-    path: ../hooks_riverpod
+  hooks_riverpod: ^2.0.0-dev.9
 
 dev_dependencies:
-  custom_lint: ^0.0.3
-  custom_lint_builder: ^0.0.3
+  custom_lint: 0.0.5
+  custom_lint_builder: 0.0.5
   flutter_test:
     sdk: flutter
   riverpod_lint:

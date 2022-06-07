@@ -38,7 +38,6 @@ void main() {
   test/goldens/read_vs_watch.dart:98:7 • Avoid using ref.read inside the build method of widgets/providers. • riverpod_avoid_read_inside_build
   test/goldens/read_vs_watch.dart:104:9 • Avoid using ref.watch outside the build method of widgets/providers. • riverpod_avoid_watch_outside_build
   test/goldens/read_vs_watch.dart:114:5 • Avoid using ref.watch outside the build method of widgets/providers. • riverpod_avoid_watch_outside_build
-  test/goldens/read_vs_watch.dart:121:5 • Avoid using ref.watch outside the build method of widgets/providers. • riverpod_avoid_watch_outside_build
   test/goldens/read_vs_watch.dart:128:5 • Avoid using ref.watch outside the build method of widgets/providers. • riverpod_avoid_watch_outside_build
 ''');
   });

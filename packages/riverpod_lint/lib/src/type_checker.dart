@@ -42,6 +42,17 @@ abstract class TypeChecker {
   /// Create a new [TypeChecker] backed by a static [type].
   const factory TypeChecker.fromStatic(DartType type) = _LibraryTypeChecker;
 
+  /// Checks that the element has a specific name and comes from a specific package.
+  ///
+  /// This is similar to [TypeChecker.fromUrl] but does not rely on exactly where
+  /// the definition of the element comes from.
+  /// The downside is that if somehow a package exposes two elements with the
+  /// same name, there could be a conflict.
+  const factory TypeChecker.fromName(
+    String name, {
+    required String packageName,
+  }) = _NamedChecker;
+
   /// Create a new [TypeChecker] backed by a library [url].
   ///
   /// Example of referring to a `LinkedHashMap` from `dart:collection`:
@@ -240,6 +251,38 @@ class _MirrorTypeChecker extends TypeChecker {
 
   @override
   String toString() => _computed.toString();
+}
+
+@immutable
+class _NamedChecker extends TypeChecker {
+  const _NamedChecker(this._name, {required this.packageName}) : super._();
+
+  final String _name;
+  final String packageName;
+
+  @override
+  bool isExactly(Element element) {
+    if (element.name != _name) return false;
+
+    final elementUri = element.librarySource?.uri;
+
+    return elementUri != null &&
+        elementUri.scheme == 'package' &&
+        elementUri.pathSegments.first == packageName;
+  }
+
+  @override
+  bool operator ==(Object o) {
+    return o is _NamedChecker &&
+        o._name == _name &&
+        o.packageName == packageName;
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, _name, packageName);
+
+  @override
+  String toString() => '$packageName#$_name';
 }
 
 // Checks a runtime type against an Uri and Symbol.
