@@ -311,11 +311,10 @@ void main() {
     expect(ref.refresh(provider), null);
   });
 
-  testWidgets('ref.refresh causes onInvalidateSelf to be called',
-      (tester) async {
-    int value = 42;
-    final provider = Provider<int>((ref) { 
-      ref.onInvalidateSelf(() => value++);
+  testWidgets('ref.refresh causes onRefresh to be called', (tester) async {
+    var value = 42;
+    final provider = Provider<int>((ref) {
+      ref.onRefresh(() => value++);
       return value;
     });
     late WidgetRef ref;

@@ -360,6 +360,13 @@ class ProviderContainer implements Node {
 
   /// {@template riverpod.refresh}
   Created refresh<Created>(ProviderBase<Created> provider) {
+    final reader = _getStateReader(provider.originProvider);
+
+    if (reader._element != null) {
+      final element = reader._element!;
+      element.runOnRefresh();
+    }
+
     invalidate(provider);
     return read(provider);
   }

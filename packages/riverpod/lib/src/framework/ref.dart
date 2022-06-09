@@ -122,13 +122,10 @@ abstract class Ref<State extends Object?> {
   void onDispose(void Function() cb);
 
   /// Adds a listener to perform an operation right before the provider is refreshed
-  /// or invalidated
   ///
   /// This includes:
   /// - when using [refresh].
-  /// - when using [invalidate].
-  /// - when using [invalidateSelf].
-  void onInvalidateSelf(void Function() cb);
+  void onRefresh(void Function() cb);
 
   /// Read the state associated with a provider, without listening to that provider.
   ///

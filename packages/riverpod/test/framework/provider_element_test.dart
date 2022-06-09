@@ -1338,52 +1338,28 @@ void main() {
     });
   });
 
-  group('ref.onInvalidateSelf', () {
-    test('is called when provider is refreshed',
-        () async {
+  group('ref.onRefresh', () {
+    test('is called when provider is refreshed', () async {
       final container = createContainer();
-      final onInvalidateSelfListener = OnInvalidateSelfListener();
+      final onRefreshListener = OnRefreshListener();
 
-      final provider = Provider((ref) { 
-        ref.onInvalidateSelf(onInvalidateSelfListener);
+      final provider = Provider((ref) {
+        ref.onRefresh(onRefreshListener);
       });
 
       container.read(provider);
 
-      verifyZeroInteractions(onInvalidateSelfListener);
+      verifyZeroInteractions(onRefreshListener);
 
       container.refresh(provider);
 
-      verify(onInvalidateSelfListener()).called(1);
+      verify(onRefreshListener()).called(1);
 
       await container.pump();
 
-      verifyNoMoreInteractions(onInvalidateSelfListener);
-    });
-
-    test('is called when provider is invalidated',
-        () async {
-      final container = createContainer();
-      final onInvalidateSelfListener = OnInvalidateSelfListener();
-
-      final provider = Provider((ref) { 
-        ref.onInvalidateSelf(onInvalidateSelfListener);
-      });
-
-      container.read(provider);
-
-      verifyZeroInteractions(onInvalidateSelfListener);
-
-      container.invalidate(provider);
-
-      verify(onInvalidateSelfListener()).called(1);
-
-      await container.pump();
-
-      verifyNoMoreInteractions(onInvalidateSelfListener);
+      verifyNoMoreInteractions(onRefreshListener);
     });
   });
-
 
   test(
       'onDispose is triggered only once if within autoDispose unmount, a dependency chnaged',

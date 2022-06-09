@@ -65,10 +65,10 @@ void main() {
         expect(container.read(state), 42);
       });
 
-      test('causes onInvalidateSelf to be called', () {
+      test('causes onRefresh to be called', () {
         var value = 0;
-        final state = Provider((ref) { 
-          ref.onInvalidateSelf(() => value = 42);
+        final state = Provider((ref) {
+          ref.onRefresh(() => value = 42);
           return value;
         });
         late Ref ref;

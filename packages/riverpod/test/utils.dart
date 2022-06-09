@@ -76,7 +76,7 @@ class ErrorListener extends Mock {
   void call(Object? error, StackTrace? stackTrace);
 }
 
-class OnInvalidateSelfListener extends Mock {
+class OnRefreshListener extends Mock {
   void call();
 }
 
