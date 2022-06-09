@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod/riverpod.dart';
@@ -34,89 +35,139 @@ void main(List<String> args, SendPort sendPort) {
 class _RiverpodLint extends PluginBase {
   @override
   Iterable<Lint> getLints(ResolvedUnitResult unit) {
-    final visitor = ProviderVisitor(unit);
+    final visitor = RiverpodVisitor(unit);
     unit.unit.accept(visitor);
 
     return visitor.lints;
   }
 }
 
-class ProviderVisitor extends RecursiveAstVisitor<void> {
-  ProviderVisitor(this.unit);
+mixin _ProviderCreationVisitor on RecursiveAstVisitor<void> {
+  /// The initialization of a provider was found
+  void visitProviderCreation(AstNode providerNode);
+
+  @override
+  void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
+    super.visitFunctionExpressionInvocation(node);
+
+    if (node.isProviderCreation ?? false) {
+      visitProviderCreation(node);
+    }
+  }
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    super.visitInstanceCreationExpression(node);
+
+    final createdType = node.staticType?.element;
+    if (createdType != null &&
+        _providerOrFamily.isAssignableFrom(createdType)) {
+      visitProviderCreation(node);
+    }
+  }
+}
+
+class RefLifecycleInvocation {
+  RefLifecycleInvocation._(this.invocation);
+
+  // Whether the invocation is inside or ouside the build method of a provider/widget
+  // Null if unknown
+  static bool? _isWithinBuild(AstNode node) {
+    var hasFoundFunctionExpression = false;
+
+    for (final parent in node.parents) {
+      if (parent is FunctionExpression) {
+        if (hasFoundFunctionExpression) return false;
+
+        if (parent.isWidgetBuilder ?? false) {
+          return true;
+        }
+
+        // Since anonymous functions could be the build of a provider,
+        // we need to check their ancestors for more information.
+        hasFoundFunctionExpression = true;
+      }
+      if (parent is InstanceCreationExpression) {
+        return parent.isProviderCreation;
+      }
+      if (parent is FunctionExpressionInvocation) {
+        return parent.isProviderCreation;
+      }
+      if (parent is MethodDeclaration) {
+        if (hasFoundFunctionExpression || parent.name.name != 'build') {
+          return false;
+        }
+
+        final classElement = parent.parents
+            .whereType<ClassDeclaration>()
+            .firstOrNull
+            ?.declaredElement;
+
+        if (classElement == null) return null;
+        return _consumerWidget.isAssignableFrom(classElement) ||
+            _consumerState.isAssignableFrom(classElement);
+      }
+    }
+    return null;
+  }
+
+  final MethodInvocation invocation;
+
+  late final bool? isWithinBuild = _isWithinBuild(invocation);
+}
+
+mixin _RefLifecycleVisitor on RecursiveAstVisitor<void> {
+  /// A Ref/WidgetRef method was invoked. It isn't guaranted to be watch/listen/read
+  void visitRefInvocation(RefLifecycleInvocation node);
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    super.visitMethodInvocation(node);
+    final targetType = node.target?.staticType?.element;
+    if (targetType == null) return;
+
+    if (_ref.isAssignableFrom(targetType) ||
+        _widgetRef.isAssignableFrom(targetType)) {
+      visitRefInvocation(RefLifecycleInvocation._(node));
+    }
+  }
+}
+
+class RiverpodVisitor extends RecursiveAstVisitor<void>
+    with _RefLifecycleVisitor, _ProviderCreationVisitor {
+  RiverpodVisitor(this.unit);
 
   final ResolvedUnitResult unit;
   final lints = <Lint>[];
 
-  void visitRefInvocation(MethodInvocation node) {
-    bool? _isWithinBuild() {
-      var hasFoundFunctionExpression = false;
-
-      for (final parent in node.parents) {
-        if (parent is FunctionExpression) {
-          if (hasFoundFunctionExpression) return false;
-
-          if (parent.isWidgetBuilder ?? false) {
-            return true;
-          }
-
-          // Since anonymous functions could be the build of a provider,
-          // we need to check their ancestors for more information.
-          hasFoundFunctionExpression = true;
-        }
-        if (parent is InstanceCreationExpression) {
-          return parent.isProviderCreation;
-        }
-        if (parent is FunctionExpressionInvocation) {
-          return parent.isProviderCreation;
-        }
-        if (parent is MethodDeclaration) {
-          if (hasFoundFunctionExpression || parent.name.name != 'build') {
-            return false;
-          }
-
-          final classElement = parent.parents
-              .whereType<ClassDeclaration>()
-              .firstOrNull
-              ?.declaredElement;
-
-          if (classElement == null) return null;
-          return _consumerWidget.isAssignableFrom(classElement) ||
-              _consumerState.isAssignableFrom(classElement);
-        }
-      }
-      return null;
-    }
-
-    // Whther the invocation is inside or ouside the build method of a provider/widget
-    // Null if unknown
-    late final isWithinBuild = _isWithinBuild();
-
-    switch (node.methodName.name) {
+  @override
+  void visitRefInvocation(RefLifecycleInvocation node) {
+    switch (node.invocation.methodName.name) {
       case 'read':
-        if (isWithinBuild ?? false) {
+        if (node.isWithinBuild ?? false) {
           lints.add(
             Lint(
               code: 'riverpod_avoid_read_inside_build',
               message:
                   'Avoid using ref.read inside the build method of widgets/providers.',
               location: unit.lintLocationFromOffset(
-                node.offset,
-                length: node.length,
+                node.invocation.offset,
+                length: node.invocation.length,
               ),
             ),
           );
         }
         break;
       case 'watch':
-        if (isWithinBuild == false) {
+        if (node.isWithinBuild == false) {
           lints.add(
             Lint(
               code: 'riverpod_avoid_watch_outside_build',
               message:
                   'Avoid using ref.watch outside the build method of widgets/providers.',
               location: unit.lintLocationFromOffset(
-                node.offset,
-                length: node.length,
+                node.invocation.offset,
+                length: node.invocation.length,
               ),
             ),
           );
@@ -126,7 +177,27 @@ class ProviderVisitor extends RecursiveAstVisitor<void> {
     }
   }
 
+  @override
   void visitProviderCreation(AstNode providerNode) {
+    _checkValidProviderDeclaration(providerNode);
+    _checkProviderDependencies(providerNode);
+  }
+
+  void _checkProviderDependencies(AstNode providerNode) {
+    if (providerNode is InstanceCreationExpression) {
+      final dependenciesExpression = providerNode.argumentList.arguments
+          .whereType<NamedExpression>()
+          .firstWhereOrNull((e) => e.name.label.name == 'dependencies')
+          ?.expression;
+
+      if (dependenciesExpression is ListLiteral) {
+        print(
+            'Provider creation $providerNode ----- dependencies ${dependenciesExpression.elements.map((e) => e.runtimeType)}');
+      }
+    }
+  }
+
+  void _checkValidProviderDeclaration(AstNode providerNode) {
     final declaration =
         providerNode.parents.whereType<VariableDeclaration>().firstOrNull;
     final variable = declaration?.declaredElement;
@@ -176,47 +247,6 @@ class ProviderVisitor extends RecursiveAstVisitor<void> {
       );
     }
   }
-
-  @override
-  void visitMethodInvocation(MethodInvocation node) {
-    super.visitMethodInvocation(node);
-    final targetType = node.target?.staticType?.element;
-    if (targetType == null) return;
-
-    if (_ref.isAssignableFrom(targetType) ||
-        _widgetRef.isAssignableFrom(targetType)) {
-      visitRefInvocation(node);
-    }
-  }
-
-  @override
-  void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
-    super.visitFunctionExpressionInvocation(node);
-
-    if (node.isProviderCreation ?? false) {
-      visitProviderCreation(node);
-    }
-  }
-
-  @override
-  void visitClassDeclaration(ClassDeclaration node) {
-    super.visitClassDeclaration(node);
-
-    final classElement = node.declaredElement;
-    if (classElement == null) return;
-  }
-
-  @override
-  void visitInstanceCreationExpression(InstanceCreationExpression node) {
-    super.visitInstanceCreationExpression(node);
-
-    final createdType = node.staticType?.element;
-    if (createdType == null) return;
-
-    if (_providerOrFamily.isAssignableFrom(createdType)) {
-      visitProviderCreation(node);
-    }
-  }
 }
 
 extension on AstNode {
@@ -226,6 +256,8 @@ extension on AstNode {
     }
   }
 }
+
+VariableDeclaration? findProviderDeclaration(AstNode node) {}
 
 extension on FunctionExpressionInvocation {
   /// Null if unknown

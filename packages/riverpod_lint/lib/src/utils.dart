@@ -2,13 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:io';
-
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:path/path.dart' as p;
-import 'package:yaml/yaml.dart';
 
 /// Returns a non-null name for the provided [type].
 ///
@@ -75,9 +72,11 @@ Uri _normalizeDartUrl(Uri url) => url.pathSegments.isNotEmpty
 
 Uri _fileToAssetUrl(Uri url) {
   if (!p.isWithin(p.url.current, url.path)) return url;
+
   return Uri(
     scheme: 'asset',
-    path: p.join(_rootPackageName, p.relative(url.path)),
+    // TODO is it safe to use empty url?
+    path: p.join('', p.relative(url.path)),
   );
 }
 
@@ -120,15 +119,3 @@ Uri assetToPackageUrl(Uri url) => url.scheme == 'asset' &&
         ],
       )
     : url;
-
-final String _rootPackageName = () {
-  final name = (loadYaml(File('pubspec.yaml').readAsStringSync())
-      as Map<Object?, Object?>)['name'];
-  if (name is! String) {
-    throw StateError(
-      "Your pubspec.yaml file is missing a `name` field or it isn't "
-      'a String.',
-    );
-  }
-  return name;
-}();

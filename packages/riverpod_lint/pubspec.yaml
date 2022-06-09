@@ -10,7 +10,7 @@ dependencies:
   analyzer: ^4.0.0
   collection: ^1.16.0
   custom_lint_builder: 0.0.5
-  meta: ^1.8.0
+  meta: ^1.7.0
   path: ^1.8.1
   riverpod: ^2.0.0-dev.9
   source_span: ^1.8.0
