@@ -46,9 +46,9 @@ final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
 
 ### ref.keepAlive
 
-Marking a provider with `autoDispose` also adds an extra method on `ref`: `keepAlive`.
+Marking a provider with `autoDispose` also adds an extra mutable property on `ref`: `maintainState`.
 
-The `keepAlive` function is used to tell Riverpod that the state of the provider
+The `maintainState` property is used to tell Riverpod that the state of the provider
 should be preserved even if no longer listened to.
 
 A use-case would be to set this flag to `true` after an HTTP request have
@@ -57,7 +57,7 @@ completed:
 ```dart
 final myProvider = FutureProvider.autoDispose((ref) async {
   final response = await httpClient.get(...);
-  ref.keepAlive();
+  ref.maintainState = true;
   return response;
 });
 ```
@@ -66,6 +66,8 @@ This way, if the request failed and the UI leaves the screen then re-enters
 it, then the request will be performed again.
 But if the request completed successfully, the state will be preserved
 and re-entering the screen will not trigger a new request.
+
+This property can be changed at any time, in which case, when setting it to `false`, may destroy the provider state if it currently has no listeners. The default value is `false`.
 
 ## Example: Canceling HTTP requests when no longer used
 
