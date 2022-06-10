@@ -64,6 +64,47 @@ void main() {
         expect(ref.refresh(state), 42);
         expect(container.read(state), 42);
       });
+      test('onRefresh listener called.', () {
+        final onRefreshState1Listener = OnRefreshListener();
+        final onRefreshState2Listener = OnRefreshListener();
+        var state1Count = 0;
+        var state2Count = 0;
+        final state1 = Provider((ref) {
+          state1Count++;
+          ref.onRefresh(onRefreshState1Listener);
+        });
+        final state2 = Provider((ref) {
+          state2Count++;
+          ref.onRefresh(onRefreshState2Listener);
+        });
+        late Ref ref;
+        final provider = Provider((r) {
+          ref = r;
+          r.read(state1);
+          r.read(state2);
+
+          r.onRefresh(() {
+            r.refresh(state1);
+          });
+        });
+        final container = createContainer();
+
+        container.read(provider);
+        expect(state1Count, 1);
+        expect(state2Count, 1);
+
+        verifyZeroInteractions(onRefreshState1Listener);
+        ref.refresh(provider);
+        expect(state1Count, 2);
+        verify(onRefreshState1Listener()).called(1);
+        // a second refresh will again call the invalidate listener once.
+        ref.refresh(provider);
+        expect(state1Count, 3);
+        verify(onRefreshState1Listener()).called(1);
+        // onRefreshState2Listener gets never called.
+        verifyZeroInteractions(onRefreshState2Listener);
+        expect(state2Count, 1);
+      });
     });
 
     test('ref.read should keep providers alive', () {}, skip: true);

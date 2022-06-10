@@ -904,6 +904,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _onDisposeListeners = null;
     _onCancelListeners = null;
     _onResumeListeners = null;
+    _onRefreshListeners = null;
     _onAddListeners = null;
     _onRemoveListeners = null;
     _onChangeSelfListeners = null;

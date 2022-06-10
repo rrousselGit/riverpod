@@ -356,6 +356,26 @@ void main() {
     expect(ref.refresh(provider), null);
   });
 
+  testWidgets('ref.refresh calls onRefresh listeners', (tester) async {
+    final onRefreshListener = OnRefreshListener();
+    final provider = Provider((ref) {
+      ref.onRefresh(onRefreshListener);
+    });
+    late WidgetRef ref;
+    await tester.pumpWidget(ProviderScope(
+      child: Consumer(
+        builder: (context, r, _) {
+          ref = r;
+          return Container();
+        },
+      ),
+    ));
+    ref.read(provider);
+    verifyZeroInteractions(onRefreshListener);
+    ref.refresh(provider);
+    verify(onRefreshListener()).called(1);
+  });
+
   // testWidgets('ProviderScope allows specifying a ProviderContainer',
   //     (tester) async {
   //   final provider = FutureProvider((ref) async => 42);

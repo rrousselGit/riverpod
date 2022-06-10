@@ -8,6 +8,10 @@ class ErrorListener extends Mock {
   void call(Object? error, StackTrace? stackTrace);
 }
 
+class OnRefreshListener extends Mock {
+  void call();
+}
+
 ProviderContainer createContainer({
   ProviderContainer? parent,
   List<Override> overrides = const [],
