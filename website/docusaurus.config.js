@@ -1,14 +1,14 @@
 module.exports = {
   title: "Riverpod",
   url: "https://riverpod.dev",
-  baseUrl: "/",
+  baseUrl: "/riverpod/",
   favicon: "img/logo.svg",
-  organizationName: "rrousselgit", // Usually your GitHub org/user name.
+  organizationName: "ulisseshen", // Usually your GitHub org/user name.
   projectName: "riverpod", // Usually your repo name.
   plugins: ["docusaurus-plugin-sass"],
   i18n: {
-    defaultLocale: "en",
-    locales: ["en", "fr", "ko", "ja", "es", "bn", "de", "it", "pt-BR"],
+    defaultLocale: "pt-BR",
+    locales: ["pt-BR"],
   },
   themeConfig: {
     googleAnalytics: {
