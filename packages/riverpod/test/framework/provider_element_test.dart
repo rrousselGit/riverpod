@@ -105,6 +105,23 @@ void main() {
   });
 
   group('disposeDelay', () {
+    test('supports disposing the container before the timer completes',
+        () async {
+      await fakeAsync((async) async {
+        final provider = Provider.autoDispose((ref) => 42);
+        final container = createContainer(
+          disposeDelay: const Duration(seconds: 5),
+        );
+
+        final sub = container.listen(provider, (prev, next) {});
+        sub.close();
+
+        container.dispose();
+
+        expect(async.pendingTimers, isEmpty);
+      });
+    });
+
     test(
         'keeps the provider alive for duration after the last listener is removed',
         () async {
@@ -271,7 +288,8 @@ void main() {
         container.read(provider);
 
         container.dispose();
-        async.elapse(const Duration(seconds: 10));
+
+        expect(async.pendingTimers, isEmpty);
       });
     });
 
@@ -1113,6 +1131,30 @@ void main() {
   });
 
   group('ref.onCancel', () {
+    test('is called when dependent is invalidated and was the only listener',
+        () async {
+      //
+      final container = createContainer();
+      final onCancel = OnCancelMock();
+      final dep = StateProvider((ref) {
+        ref.onCancel(onCancel);
+        return 0;
+      });
+      final provider = Provider.autoDispose((ref) => ref.watch(dep));
+
+      container.read(provider);
+
+      verifyZeroInteractions(onCancel);
+
+      container.read(dep.notifier).state++;
+
+      verify(onCancel()).called(1);
+
+      await container.pump();
+
+      verifyNoMoreInteractions(onCancel);
+    }, skip: 'Waiting for "clear dependencies after futureprovider rebuilds"');
+
     test('is called when all container listeners are removed', () {
       final container = createContainer();
       final listener = OnCancelMock();

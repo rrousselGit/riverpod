@@ -1,3 +1,26 @@
+# 2.0.0-dev.9
+
+Fix Timer leak when using `cacheTime`/`disposeDelay` and disposing a `ProviderContainer`
+
+# 2.0.0-dev.8
+
+fix: a bug where unmounting a nested ProviderScope could cause an exception (#1400)
+
+# 2.0.0-dev.7
+
+- Upgrade minimum required Dart SDK version to 2.17.0
+- Upgrade minimum required Flutter SDK version to 3.0.0
+
+# 2.0.0-dev.6
+
+- Added `WidgetRef.listenOnce` for listening to providers in a widget
+  outside of `build`.
+- Added `AsyncValue.valueOrNull` to obtain the value while ignoring potential errors.
+- Fixed an issue where `AsyncValue.value` did not throw if there is an error.
+- Fix families not applying cacheTime/disposeDelay
+- Fixed a bug where an exception may be thrown asynchronously after a
+  `KeepAliveLink` is cancelled.
+
 # 2.0.0-dev.5
 
 - Fixed a bug where emitting an `AsyncData` after an `AsyncError` leads to `AsyncValue.hasError` to be true

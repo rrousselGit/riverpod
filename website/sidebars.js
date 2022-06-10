@@ -130,6 +130,11 @@ module.exports = {
           label: "GoRouter with Riverpod",
           href: "https://github.com/lucavenir/go_router_riverpod",
         },
+        {
+          type: "link",
+          label: "Piano Chords Test",
+          href: "https://github.com/akvus/piano_fun",
+        },
       ],
     },
     {

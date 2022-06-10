@@ -107,8 +107,10 @@ abstract class Ref<State extends Object?> {
 
   /// Adds a listener to perform an operation right before the provider is destroyed.
   ///
-  /// This typically happen when a provider marked with `.autoDispose` is no longer
-  /// used, or when [ProviderContainer.dispose] is called.
+  /// This includes:
+  /// - when the provider will rebuild (such as when using [watch] or [refresh]).
+  /// - when an `autoDispose` provider is no longer used
+  /// - when the associated [ProviderContainer]/`ProviderScope` is disposed`.
   ///
   /// See also:
   ///

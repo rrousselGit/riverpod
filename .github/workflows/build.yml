@@ -14,8 +14,7 @@ jobs:
     strategy:
       matrix:
         channel:
-          - dev
-          # - stable
+          - stable
 
     steps:
       - uses: actions/checkout@v2

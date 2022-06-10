@@ -10,6 +10,20 @@ import '../utils.dart';
 Future<void> main() async {
   final library = await Library.parseFromStacktrace();
 
+  test(
+      'Handles cases where the ProviderContainer is disposed yet Scheduler.performDispose is invoked anyway',
+      () async {
+    // regression test for https://github.com/rrousselGit/riverpod/issues/1400
+    final provider = Provider.autoDispose((ref) => 0);
+    final root = createContainer();
+    final container = createContainer(parent: root, overrides: [provider]);
+
+    container.read(provider);
+    container.dispose();
+
+    await root.pump();
+  });
+
   group('ref.keepAlive', () {
     test('supports pausing providers if they are not listened', () async {
       // regression test for https://github.com/rrousselGit/riverpod/issues/1360
@@ -279,6 +293,37 @@ final alwaysAlive = Provider((ref) {
 });
 '''), compiles);
     });
+  });
+
+  test(
+      'if a dependency changed, the element is still disposed, '
+      'but without calling ref.onDispose again', () async {
+    final container = createContainer();
+    final onDispose = OnDisposeMock();
+    final dep = StateProvider((ref) => 0);
+    final provider = Provider.autoDispose((ref) {
+      ref.onDispose(onDispose);
+      return ref.watch(dep);
+    });
+
+    container.read(provider);
+
+    verifyZeroInteractions(onDispose);
+    expect(
+      container.getAllProviderElements().map((e) => e.origin),
+      contains(provider),
+    );
+
+    container.read(dep.notifier).state++;
+
+    await container.pump();
+
+    verify(onDispose()).called(1);
+
+    expect(
+      container.getAllProviderElements().map((e) => e.origin),
+      isNot(contains(provider)),
+    );
   });
 
   test(
