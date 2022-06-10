@@ -930,11 +930,10 @@ void main() {
     });
   });
 
-  group('ref.onReload', () {
+  group('ref.onRefresh', () {
     test('is called on refresh', () {
       final container = createContainer();
       final onRefreshListener = OnRefreshListener();
-      when(onRefreshListener()).thenReturn(null);
       final provider = Provider((ref) {
         ref.onRefresh(onRefreshListener);
       });
@@ -942,9 +941,9 @@ void main() {
       verifyZeroInteractions(onRefreshListener);
       container.refresh(provider);
       verify(onRefreshListener()).called(1);
-      // a second refresh will again call the invalidate listener.
+      // a second refresh will again call the invalidate listener once.
       container.refresh(provider);
-      verify(onRefreshListener()).called(2);
+      verify(onRefreshListener()).called(1);
     });
   });
 
