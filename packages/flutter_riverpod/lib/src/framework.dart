@@ -350,8 +350,7 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
     assert(_task == null, 'Only one task can be scheduled at a time');
     _task = task;
 
-    // ignore: unnecessary_non_null_assertion, blocked by https://github.com/rrousselGit/river_pod/issues/1156
-    if (SchedulerBinding.instance!.schedulerPhase ==
+    if (SchedulerBinding.instance.schedulerPhase ==
         SchedulerPhase.transientCallbacks) {
       markNeedsBuild();
     } else {

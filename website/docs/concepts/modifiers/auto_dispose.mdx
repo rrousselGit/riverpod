@@ -48,7 +48,7 @@ final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
 
 Marking a provider with `autoDispose` also adds an extra method on `ref`: `keepAlive`.
 
-The `keep` function is used to tell Riverpod that the state of the provider
+The `keepAlive` function is used to tell Riverpod that the state of the provider
 should be preserved even if no longer listened to.
 
 A use-case would be to set this flag to `true` after an HTTP request have

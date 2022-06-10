@@ -236,6 +236,17 @@ abstract class AutoDisposeProviderElementBase<State>
       'Cannot call keepAlive() within onDispose listeners',
     );
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // Since there's no onDispose for the timers, we need to manually handle the
+    // case where the ProviderContainer is disposed when the provider is still alive.
+    _cacheTimer?.cancel();
+    _cacheTimer = null;
+    _disposeDelayTimer?.cancel();
+    _disposeDelayTimer = null;
+  }
 }
 
 /// A object which maintains a provider alive
