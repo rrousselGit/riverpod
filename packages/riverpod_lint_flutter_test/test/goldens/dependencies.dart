@@ -72,7 +72,7 @@ class K extends StateNotifier<int> {
 
 final l = StateProvider.autoDispose((ref) {
   return 0;
-}, dependencies: [a]);
+}, dependencies: []);
 
 final m = StateProvider.autoDispose.family((ref, param) {
   return 0;

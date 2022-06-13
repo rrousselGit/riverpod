@@ -10,8 +10,8 @@ dependencies:
   hooks_riverpod: ^2.0.0-dev.9
 
 dev_dependencies:
-  custom_lint: 0.0.5
-  custom_lint_builder: 0.0.5
+  custom_lint: ^0.0.6
+  custom_lint_builder: ^0.0.6
   flutter_test:
     sdk: flutter
   riverpod_lint:

@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/analysis/session.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
@@ -7,9 +8,19 @@ import 'package:analyzer/dart/element/element.dart';
 Future<AstNode?> findAstNodeForElement(Element element) async {
   final libraryElement = element.library;
   if (libraryElement == null) return null;
-  final parsedLibrary =
-      await element.session?.getResolvedLibraryByElement(libraryElement);
-  if (parsedLibrary is! ResolvedLibraryResult) return null;
+  ResolvedLibraryResult parsedLibrary;
+  try {
+    final result =
+        await element.session?.getResolvedLibraryByElement(libraryElement);
+    if (result is! ResolvedLibraryResult) return null;
+    parsedLibrary = result;
+  } on InconsistentAnalysisException {
+    await element.session?.analysisContext.applyPendingFileChanges();
+    final result = await element.session
+        ?.getResolvedLibrary(libraryElement.source.fullName);
+    if (result is! ResolvedLibraryResult) return null;
+    parsedLibrary = result;
+  }
 
   final declaration = parsedLibrary.getElementDeclaration(element);
   return declaration?.node;
