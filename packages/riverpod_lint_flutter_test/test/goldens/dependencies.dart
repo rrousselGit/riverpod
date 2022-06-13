@@ -57,4 +57,26 @@ class J extends StateNotifier<int> {
   }
 }
 
-// TODO check .autoDispose/family definition and family/select dependencies
+final k = StateNotifierProvider<K, int>((ref) {
+  return K(ref);
+}, dependencies: []);
+
+class K extends StateNotifier<int> {
+  K(this.ref) : super(0);
+  final Ref ref;
+
+  void fn() {
+    ref.read(a);
+  }
+}
+
+final l = StateProvider.autoDispose((ref) {
+  return 0;
+}, dependencies: [a]);
+
+final m = StateProvider.autoDispose.family((ref, param) {
+  return 0;
+}, dependencies: [a]);
+
+// TODO check random Service
+// TODO test passing ref to a function/method
