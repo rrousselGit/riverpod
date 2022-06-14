@@ -301,7 +301,7 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
       for (final expectedDependency in expectedDependencies) {
         if (!actualDependencies.contains(expectedDependency.origin)) {
           yield Lint(
-            code: 'riverpod_extra_dependency',
+            code: 'riverpod_unused_dependency',
             message:
                 'This provider specifies that it depends on "${expectedDependency.origin.name}" '
                 'yet it never uses that provider.',
