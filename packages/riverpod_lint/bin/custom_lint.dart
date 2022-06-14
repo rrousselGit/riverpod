@@ -137,7 +137,9 @@ mixin _RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
     if (superStream != null) yield* superStream;
 
     final targetType = node.target?.staticType?.element;
-    if (targetType == null) return;
+    if (targetType == null) {
+      return;
+    }
 
     if (_ref.isAssignableFrom(targetType) ||
         _widgetRef.isAssignableFrom(targetType)) {
@@ -166,9 +168,20 @@ class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
         // it uses ref.
 
         for (final parent in node.parents) {
-          if (parent is Expression) {
-            final createdObject = parent.staticType?.element;
+          if (parent is MethodInvocation) {
+            final functionExpression = parent.function;
+            final functionElement = functionExpression is Identifier
+                ? functionExpression.staticElement
+                : null;
+            if (functionElement != null) {
+              final declaration = await findAstNodeForElement(functionElement);
+              final createdObjectStream = declaration?.accept(this);
+              if (createdObjectStream != null) yield* createdObjectStream;
+            }
 
+            continue argumentsLoop;
+          } else if (parent is InstanceCreationExpression) {
+            final createdObject = parent.staticType?.element;
             if (createdObject != null) {
               final ast = await findAstNodeForElement(createdObject);
               final createdObjectStream = ast?.accept(this);

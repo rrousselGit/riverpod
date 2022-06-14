@@ -78,5 +78,19 @@ final m = StateProvider.autoDispose.family((ref, param) {
   return 0;
 }, dependencies: [a]);
 
-// TODO check random Service
-// TODO test passing ref to a function/method
+final n = StateProvider((ref) {
+  fn(ref);
+  return 0;
+}, dependencies: [a]);
+
+final o = StateProvider((ref) {
+  fn(ref);
+  return 0;
+}, dependencies: []);
+
+void fn(Ref ref) {
+  ref.watch(a);
+}
+
+// TODO handle Provider(Service.new);
+// TODO check dynamic ref invocation

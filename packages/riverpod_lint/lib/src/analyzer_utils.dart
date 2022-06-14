@@ -8,22 +8,19 @@ import 'package:analyzer/dart/element/element.dart';
 Future<AstNode?> findAstNodeForElement(Element element) async {
   final libraryElement = element.library;
   if (libraryElement == null) return null;
-  ResolvedLibraryResult parsedLibrary;
   try {
-    final result =
+    final parsedLibrary =
         await element.session?.getResolvedLibraryByElement(libraryElement);
-    if (result is! ResolvedLibraryResult) return null;
-    parsedLibrary = result;
-  } on InconsistentAnalysisException {
-    await element.session?.analysisContext.applyPendingFileChanges();
-    final result = await element.session
-        ?.getResolvedLibrary(libraryElement.source.fullName);
-    if (result is! ResolvedLibraryResult) return null;
-    parsedLibrary = result;
-  }
+    if (parsedLibrary is! ResolvedLibraryResult) return null;
 
-  final declaration = parsedLibrary.getElementDeclaration(element);
-  return declaration?.node;
+    final declaration = parsedLibrary.getElementDeclaration(element);
+    return declaration?.node;
+  } on InconsistentAnalysisException {
+    final libraryResult =
+        await element.session?.getLibraryByUri(libraryElement.source.fullName);
+    if (libraryResult is! LibraryElementResult) return null;
+    return findAstNodeForElement(libraryResult.element);
+  }
 }
 
 class AsyncRecursiveVisitor<T> extends GeneralizingAstVisitor<Stream<T>> {
