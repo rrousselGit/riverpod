@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/analysis/results.dart';
-import 'package:analyzer/dart/analysis/session.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
@@ -8,19 +7,12 @@ import 'package:analyzer/dart/element/element.dart';
 Future<AstNode?> findAstNodeForElement(Element element) async {
   final libraryElement = element.library;
   if (libraryElement == null) return null;
-  try {
-    final parsedLibrary =
-        await element.session?.getResolvedLibraryByElement(libraryElement);
-    if (parsedLibrary is! ResolvedLibraryResult) return null;
+  final parsedLibrary =
+      await element.session?.getResolvedLibraryByElement(libraryElement);
+  if (parsedLibrary is! ResolvedLibraryResult) return null;
 
-    final declaration = parsedLibrary.getElementDeclaration(element);
-    return declaration?.node;
-  } on InconsistentAnalysisException {
-    final libraryResult =
-        await element.session?.getLibraryByUri(libraryElement.source.fullName);
-    if (libraryResult is! LibraryElementResult) return null;
-    return findAstNodeForElement(libraryResult.element);
-  }
+  final declaration = parsedLibrary.getElementDeclaration(element);
+  return declaration?.node;
 }
 
 class AsyncRecursiveVisitor<T> extends GeneralizingAstVisitor<Stream<T>> {
