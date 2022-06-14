@@ -26,6 +26,16 @@ class AsyncRecursiveVisitor<T> extends GeneralizingAstVisitor<Stream<T>> {
   }
 }
 
+class CombiningRecursiveVisitor<T> extends GeneralizingAstVisitor<Iterable<T>> {
+  @override
+  Iterable<T> visitNode(AstNode node) {
+    final visitor = _VisitChildren();
+    node.visitChildren(visitor);
+
+    return visitor._children.expand((e) => e.accept(this) ?? const []);
+  }
+}
+
 class _VisitChildren extends GeneralizingAstVisitor<void> {
   final List<AstNode> _children = [];
 

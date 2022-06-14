@@ -3,7 +3,10 @@ import 'dart:isolate';
 
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer_plugin/protocol/protocol_generated.dart';
+import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:meta/meta.dart';
@@ -209,6 +212,16 @@ class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
   }
 }
 
+class _FindProviderCallbackVisitor
+    extends CombiningRecursiveVisitor<FunctionExpression> {
+  @override
+  Iterable<FunctionExpression>? visitArgumentList(ArgumentList node) {
+    if (node.arguments.isEmpty) return null;
+
+    return [node.arguments.first as FunctionExpression];
+  }
+}
+
 class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
     with _RefLifecycleVisitor, _ProviderCreationVisitor {
   RiverpodVisitor(this.unit);
@@ -288,6 +301,30 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
               provider.node.offset,
               length: provider.name.length,
             ),
+            getAnalysisErrorFixes: (lint) async* {
+              final changeBuilder = ChangeBuilder(session: unit.session);
+
+              final providerCallback =
+                  provider.node.accept(_FindProviderCallbackVisitor())!.single;
+
+              await changeBuilder.addDartFileEdit(unit.path, (builder) {
+                builder.addSimpleInsertion(
+                  providerCallback.end,
+                  ', dependencies: [${actualDependencies.map((e) => e.name).join(', ')}]',
+                );
+              });
+
+              yield AnalysisErrorFixes(
+                lint.asAnalysisError(),
+                fixes: [
+                  PrioritizedSourceChange(
+                    0,
+                    changeBuilder.sourceChange
+                      ..message = 'List all dependencies',
+                  )
+                ],
+              );
+            },
           );
         }
       }
