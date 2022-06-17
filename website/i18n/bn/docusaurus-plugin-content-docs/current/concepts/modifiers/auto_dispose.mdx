@@ -43,18 +43,18 @@ final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
 
 :::
 
-### ref.maintainState
+### ref.keepAlive
 
-একটি প্রদানকারীকে `autoDispose` দিয়ে চিহ্নিত করলে `ref`-এ একটি অতিরিক্ত প্রপার্টি যোগ হয়: `maintainState`।
+একটি প্রদানকারীকে `autoDispose` দিয়ে চিহ্নিত করলে `ref`-এ একটি অতিরিক্ত প্রপার্টি যোগ হয়: `keepAlive`।
 
-`maintainState` প্রপার্টি হল একটি বুলিয়ান (ডিফল্টরূপে `false`) যা প্রভাইডার রিভারপডকে জানাতে দেয় যে প্রভাইডাররের অবস্থা সংরক্ষণ করা উচিত, এমনকি যদি এটি আর শোনা না হয়।
+`keepAlive` প্রপার্টি হল একটি বুলিয়ান (ডিফল্টরূপে `false`) যা প্রভাইডার রিভারপডকে জানাতে দেয় যে প্রভাইডাররের অবস্থা সংরক্ষণ করা উচিত, এমনকি যদি এটি আর শোনা না হয়।
 
 একটি ব্যবহার-কেস একটি HTTP রিকুয়েস্ট সম্পূর্ণ হওয়ার পরে এই ফ্ল্যাগটি `true` তে সেট করতে হবে:
 
 ```dart
 final myProvider = FutureProvider.autoDispose((ref) async {
-  final response = await dio.get(...);
-  ref.maintainState = true;
+  final response = await httpClient.get(...);
+  ref.keepAlive();
   return response;
 });
 ```
@@ -83,7 +83,7 @@ final myProvider = FutureProvider.autoDispose((ref) async {
   // আমাদের ডেটা ফেচ করুন এবং বাতিলকরণ এর জন্য আমাদের `cancelToken` পাস করুন
   final response = await dio.get('path', cancelToken: cancelToken);
   // অনুরোধ সফলভাবে সম্পন্ন হলে, স্টেট রাখুন
-  ref.maintainState = true;
+  ref.keepAlive();
   return response;
 });
 ```

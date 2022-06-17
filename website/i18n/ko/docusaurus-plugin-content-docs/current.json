@@ -56,7 +56,7 @@
     "description": "The label for link Dictionary App in sidebar Sidebar, linking to https://github.com/lohanidamodar/fl_dictio"
   },
   "sidebar.Sidebar.link.Firebase Starter": {
-    "message": "Firebase Starter",
+    "message": "Firebase 스타터",
     "description": "The label for link Firebase Starter in sidebar Sidebar, linking to https://github.com/lohanidamodar/flutter_firebase_starter/tree/feature/riverpod"
   },
   "sidebar.Sidebar.link.Time Tracking App (with Firebase)": {
@@ -80,7 +80,7 @@
     "description": "The label for link Blood Pressure Tracker App in sidebar Sidebar, linking to https://github.com/UrosTodosijevic/blood_pressure_tracker"
   },
   "sidebar.Sidebar.link.Firebase Authentication with Riverpod Following Flutter DDD Architecture Pattern": {
-    "message": "Riverpod와 DDD 아키텍처 패던을 적용한 Firebase Authentication",
+    "message": "Riverpod와 DDD 아키텍처 패던을 적용한 Firebase 인증(Authentication)",
     "description": "The label for link Firebase Authentication with Riverpod Following Flutter DDD Architecture Pattern in sidebar Sidebar, linking to https://github.com/pythonhubpy/firebase_authentication_flutter_DDD"
   },
   "sidebar.Sidebar.link.Todo App with Backup and Restore feature": {
@@ -90,6 +90,18 @@
   "sidebar.Sidebar.link.Integrating Hive database with Riverpod (simple example)": {
     "message": "Hive 데이터베이스",
     "description": "The label for link Integrating Hive database with Riverpod (simple example) in sidebar Sidebar, linking to https://github.com/GitGud31/theme_riverpod_hive"
+  },
+  "sidebar.Sidebar.link.Browser App with Riverpod": {
+    "message": "브라우저 앱",
+    "description": "The label for link Browser App with Riverpod, linking to https://github.com/MarioCroSite/simple_browser_app"
+  },
+  "sidebar.Sidebar.link.GoRouter with Riverpod": {
+    "message": "GoRouter",
+    "description": "The label for link GoRouter with Riverpod, linking to https://github.com/lucavenir/go_router_riverpod"
+  },
+  "sidebar.Sidebar.link.Piano Chords Test": {
+    "message": "피아노 화음 테스트",
+    "description": "The label for link Piano Chords Test, linking to https://github.com/akvus/piano_fun"
   },
   "sidebar.Sidebar.category.All Providers": {
     "message": "프로바이더",

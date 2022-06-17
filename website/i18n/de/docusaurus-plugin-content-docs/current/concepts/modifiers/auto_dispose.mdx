@@ -43,12 +43,12 @@ final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
 
 :::
 
-### ref.maintainState
+### ref.keepAlive
 
 Das Markieren eines Providers mit `autoDispose` fügt auch eine zusätzliche Eigenschaft 
-für "ref" hinzu: "MaintainState".
+für "ref" hinzu: "keepAlive".
 
-Die Eigenschaft `maintainState` ist ein boolescher Wert (standardmäßig `false`), mit 
+Die Eigenschaft `keepAlive` ist ein boolescher Wert (standardmäßig `false`), mit 
 dem Provider Riverpod mitteilen kann, ob der Status des Providers erhalten bleiben 
 soll auch wenn auf ihn nicht mehr gelauscht wird.
 
@@ -57,8 +57,8 @@ abgeschlossen ist:
 
 ```dart
 final myProvider = FutureProvider.autoDispose((ref) async {
-  final response = await dio.get(...);
-  ref.maintainState = true;
+  final response = await httpClient.get(...);
+  ref.keepAlive();
   return response;
 });
 ```
@@ -92,7 +92,7 @@ final myProvider = FutureProvider.autoDispose((ref) async {
   // Lade unsere Daten und übergebe unseren `cancelToken`, damit die Stornierung funktioniert
   final response = await dio.get('path', cancelToken: cancelToken);
   // Wenn die Anfrage erfolgreich war, behalte den Zustand
-  ref.maintainState = true;
+  ref.keepAlive();
   return response;
 });
 ```

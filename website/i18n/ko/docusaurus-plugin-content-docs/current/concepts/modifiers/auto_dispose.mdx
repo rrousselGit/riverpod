@@ -44,21 +44,19 @@ final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
 
 :::
 
-### ref.maintainState
+### ref.keepAlive
 
-프로바이더에 `autoDispose` 수식어를 붙이면 `ref`객체에서 `maintainState`를 사용할 수 있습니다. 
+프로바이더에 `autoDispose` 수식어를 붙이면 `ref`객체에 `keepAlive` 메소드를 사용할 수 있습니다. 
 
-`maintainState`의 데이터 타입(속성)은 boolean형이며 (`false`를 기본값으로 가집니다.) 
-프로바이더가 더 이상 사용되지 않는지에 대한 상태를 Riverpod에게 전달해줍니다.
+`keepAlive` 메소드를 실행하는 것으로, 프로바이더가 참조되지 않게 되었을 때에도 
+상태를 유지하도록 Riverpod 에 전할 수가 있습니다.
 
-
-좀 더 이해를 돕기위해서 HTTP 요청이 완료되면 `maintainState`의 플레그를 `true`로 설정하는 예시 코드입니다. 
-
+좀 더 이해를 돕기위해서 HTTP 요청이 완료되면 플레그를 `true`로 설정하는 예시 코드입니다. 
 
 ```dart
 final myProvider = FutureProvider.autoDispose((ref) async {
-  final response = await dio.get(...);
-  ref.maintainState = true;
+  final response = await httpClient.get(...);
+  ref.keepAlive();
   return response;
 });
 ```
@@ -91,7 +89,7 @@ final myProvider = FutureProvider.autoDispose((ref) async {
   // 데이터를 가져오고 취소하기 위한 `cancelToken`을 파라미터로 념겨줍니다. 
   final response = await dio.get('path', cancelToken: cancelToken);
   // 만약 요청이 성곡적으로 완료되었다면, 현재 상태를 유지합니다. 
-  ref.maintainState = true;
+  ref.keepAlive();
   return response;
 });
 ```
