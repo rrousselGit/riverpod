@@ -76,19 +76,6 @@ class AutoDisposeStreamProvider<State>
   AutoDisposeProviderBase<Future<State>> get last => future;
 
   @override
-  bool updateShouldNotify(
-    AsyncValue<State> previousState,
-    AsyncValue<State> newState,
-  ) {
-    final wasLoading = previousState is AsyncLoading;
-    final isLoading = newState is AsyncLoading;
-
-    if (wasLoading || isLoading) return wasLoading != isLoading;
-
-    return true;
-  }
-
-  @override
   AutoDisposeStreamProviderElement<State> createElement() {
     return AutoDisposeStreamProviderElement(this);
   }
@@ -112,6 +99,19 @@ class AutoDisposeStreamProviderElement<State>
 
   @override
   AsyncValue<State> create() => _listenStream(this, provider._create);
+
+  @override
+  bool updateShouldNotify(
+    AsyncValue<State> previousState,
+    AsyncValue<State> newState,
+  ) {
+    final wasLoading = previousState is AsyncLoading;
+    final isLoading = newState is AsyncLoading;
+
+    if (wasLoading || isLoading) return wasLoading != isLoading;
+
+    return true;
+  }
 }
 
 /// {@macro riverpod.streamprovider.family}

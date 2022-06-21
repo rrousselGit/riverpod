@@ -61,7 +61,7 @@ abstract class Ref<State extends Object?> {
   /// The listener will be called immediately after the provider completes building.
   ///
   /// As opposed to [listen], the listener will be called even if
-  /// [ProviderBase.updateShouldNotify] returns false, meaning that the previous
+  /// [.updateShouldNotify] returns false, meaning that the previous
   /// and new value can potentially be identical.
   ProviderSubscription<State> listenSelf(
     void Function(State? previous, State next) listener, {

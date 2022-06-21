@@ -240,6 +240,11 @@ class ProviderElement<State> extends ProviderElementBase<State>
 
   @override
   State create() => provider._create(this);
+
+  @override
+  bool updateShouldNotify(State previousState, State newState) {
+    return previousState != newState;
+  }
 }
 
 /// {@macro riverpod.provider}
@@ -270,14 +275,6 @@ class Provider<State> extends AlwaysAliveProviderBase<State>
   final List<ProviderOrFamily>? dependencies;
 
   final Create<State, ProviderRef<State>> _create;
-
-  @override
-  State create(ProviderRef<State> ref) => _create(ref);
-
-  @override
-  bool updateShouldNotify(State previousState, State newState) {
-    return previousState != newState;
-  }
 
   @override
   ProviderElement<State> createElement() => ProviderElement(this);

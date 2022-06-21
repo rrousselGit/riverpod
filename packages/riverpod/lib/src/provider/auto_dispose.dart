@@ -40,11 +40,6 @@ class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
   final List<ProviderOrFamily>? dependencies;
 
   @override
-  bool updateShouldNotify(State previousState, State newState) {
-    return previousState != newState;
-  }
-
-  @override
   AutoDisposeProviderElement<State> createElement() {
     return AutoDisposeProviderElement(this);
   }
@@ -68,6 +63,11 @@ class AutoDisposeProviderElement<State>
 
   @override
   State create() => provider._create(this);
+
+  @override
+  bool updateShouldNotify(State previousState, State newState) {
+    return previousState != newState;
+  }
 }
 
 /// {@macro riverpod.provider.family}

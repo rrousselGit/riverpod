@@ -27,6 +27,11 @@ class NotifierProviderFamilyElement<
     notifier._element = this;
     return notifier.init(provider.argument as Arg);
   }
+
+  @override
+  bool updateShouldNotify(State previousState, State newState) {
+    return notifier.updateShouldNotify(previousState, newState);
+  }
 }
 
 class NotifierProviderFamily<Controller extends NotifierFamily<State, Arg>,

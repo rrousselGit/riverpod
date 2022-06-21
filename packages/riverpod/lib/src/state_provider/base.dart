@@ -23,7 +23,7 @@ class StateProvider<State> extends AlwaysAliveProviderBase<State>
     List<ProviderOrFamily>? dependencies,
     Family? from,
     Object? argument,
-  })  : notifier = _NotifierProvider(
+  })  : notifier = _StateProviderNotifier(
           create,
           name: modifierName(name, 'notifier'),
           dependencies: dependencies,
@@ -43,16 +43,12 @@ class StateProvider<State> extends AlwaysAliveProviderBase<State>
 
   @override
   late final AlwaysAliveProviderBase<StateController<State>> state =
-      _NotifierStateProvider(
-    (ref) {
-      return _listenStateProvider(
-        ref as ProviderElementBase<StateController<State>>,
-        ref.watch(notifier),
-      );
-    },
+      _StateProviderState(
+    this,
     dependencies: [notifier],
     from: from,
     argument: argument,
+    name: modifierName(name, 'state'),
   );
 
   /// {@template riverpod.stateprovider.notifier}
@@ -80,11 +76,6 @@ class StateProvider<State> extends AlwaysAliveProviderBase<State>
   final AlwaysAliveProviderBase<StateController<State>> notifier;
 
   @override
-  bool updateShouldNotify(State previousState, State newState) {
-    return true;
-  }
-
-  @override
   StateProviderElement<State> createElement() => StateProviderElement(this);
 }
 
@@ -105,20 +96,6 @@ class StateProviderElement<State> extends ProviderElementBase<State> {
 
     return notifier.state;
   }
-}
-
-class _NotifierStateProvider<State> extends Provider<State> {
-  _NotifierStateProvider(
-    Create<State, ProviderRef<State>> create, {
-    List<ProviderOrFamily>? dependencies,
-    required Family? from,
-    required Object? argument,
-  }) : super(
-          create,
-          dependencies: dependencies,
-          from: from,
-          argument: argument,
-        );
 
   @override
   bool updateShouldNotify(State previousState, State newState) {
@@ -126,9 +103,54 @@ class _NotifierStateProvider<State> extends Provider<State> {
   }
 }
 
-class _NotifierProvider<State>
+class _StateProviderState<State>
     extends AlwaysAliveProviderBase<StateController<State>> {
-  _NotifierProvider(
+  _StateProviderState(
+    this._origin, {
+    required this.dependencies,
+    required super.from,
+    required super.argument,
+    required super.name,
+  });
+
+  final StateProvider<State> _origin;
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
+
+  @override
+  _StateProviderStateElement<State> createElement() {
+    return _StateProviderStateElement(this);
+  }
+}
+
+class _StateProviderStateElement<State>
+    extends ProviderElementBase<StateController<State>> {
+  _StateProviderStateElement(this.provider);
+
+  @override
+  final _StateProviderState<State> provider;
+
+  @override
+  StateController<State> create() {
+    return _listenStateProvider(
+      this,
+      watch(provider._origin.notifier),
+    );
+  }
+
+  @override
+  bool updateShouldNotify(
+    StateController<State> previousState,
+    StateController<State> newState,
+  ) {
+    return true;
+  }
+}
+
+class _StateProviderNotifier<State>
+    extends AlwaysAliveProviderBase<StateController<State>> {
+  _StateProviderNotifier(
     this._create, {
     required String? name,
     required this.dependencies,
@@ -142,26 +164,18 @@ class _NotifierProvider<State>
   final List<ProviderOrFamily>? dependencies;
 
   @override
-  bool updateShouldNotify(
-    StateController<State> previousState,
-    StateController<State> newState,
-  ) {
-    return true;
-  }
-
-  @override
-  _NotifierStateProviderElement<State> createElement() {
-    return _NotifierStateProviderElement(this);
+  _StateProviderNotifierElement<State> createElement() {
+    return _StateProviderNotifierElement(this);
   }
 }
 
-class _NotifierStateProviderElement<State>
+class _StateProviderNotifierElement<State>
     extends ProviderElementBase<StateController<State>>
     implements StateProviderRef<State> {
-  _NotifierStateProviderElement(this.provider);
+  _StateProviderNotifierElement(this.provider);
 
   @override
-  final _NotifierProvider<State> provider;
+  final _StateProviderNotifier<State> provider;
 
   @override
   StateController<State> get controller => requireState;
@@ -172,6 +186,14 @@ class _NotifierStateProviderElement<State>
     final notifier = StateController(initialState);
     onDispose(notifier.dispose);
     return notifier;
+  }
+
+  @override
+  bool updateShouldNotify(
+    StateController<State> previousState,
+    StateController<State> newState,
+  ) {
+    return true;
   }
 }
 

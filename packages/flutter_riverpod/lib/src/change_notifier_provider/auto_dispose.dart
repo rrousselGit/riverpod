@@ -54,18 +54,26 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier?>
   final AutoDisposeProviderBase<Notifier> notifier;
 
   @override
-  Notifier create(AutoDisposeProviderElementBase<Notifier> ref) {
-    final notifier = ref.watch<Notifier>(this.notifier);
-    _listenNotifier(notifier, ref);
+  AutoDisposeProviderElementBase<Notifier> createElement() =>
+      _AutoDisposeChangeNotifierProviderElement<Notifier>(this);
+}
+
+class _AutoDisposeChangeNotifierProviderElement<
+        Notifier extends ChangeNotifier?>
+    extends AutoDisposeProviderElementBase<Notifier> {
+  _AutoDisposeChangeNotifierProviderElement(this.provider);
+  @override
+  final AutoDisposeChangeNotifierProvider<Notifier> provider;
+
+  @override
+  Notifier create() {
+    final notifier = watch<Notifier>(provider.notifier);
+    _listenNotifier(notifier, this);
     return notifier;
   }
 
   @override
   bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
-
-  @override
-  AutoDisposeProviderElement<Notifier> createElement() =>
-      AutoDisposeProviderElement(this);
 }
 
 // ignore: subtype_of_sealed_class
@@ -94,33 +102,32 @@ class _AutoDisposeNotifierProvider<Notifier extends ChangeNotifier?>
       _create;
 
   @override
-  Notifier create(
-    covariant AutoDisposeChangeNotifierProviderRef<Notifier> ref,
-  ) {
-    final notifier = _create(ref);
-    if (notifier != null) ref.onDispose(notifier.dispose);
-
-    return notifier;
-  }
-
-  @override
   _AutoDisposeNotifierProviderElement<Notifier> createElement() {
     return _AutoDisposeNotifierProviderElement<Notifier>(this);
   }
-
-  @override
-  bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
 }
 
 class _AutoDisposeNotifierProviderElement<Notifier extends ChangeNotifier?>
     extends AutoDisposeProviderElementBase<Notifier>
     implements AutoDisposeChangeNotifierProviderRef<Notifier> {
-  _AutoDisposeNotifierProviderElement(
-      _AutoDisposeNotifierProvider<Notifier> provider)
-      : super(provider);
+  _AutoDisposeNotifierProviderElement(this.provider);
+
+  @override
+  final _AutoDisposeNotifierProvider<Notifier> provider;
 
   @override
   Notifier get notifier => requireState;
+
+  @override
+  Notifier create() {
+    final notifier = provider._create(this);
+    if (notifier != null) onDispose(notifier.dispose);
+
+    return notifier;
+  }
+
+  @override
+  bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
 }
 
 // ignore: subtype_of_sealed_class

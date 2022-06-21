@@ -49,17 +49,15 @@ class AutoDisposeStateProvider<State> extends AutoDisposeProviderBase<State>
 
   @override
   late final AutoDisposeProviderBase<StateController<State>> state =
-      _AutoDisposeNotifierStateProvider((ref) {
-    return _listenStateProvider(
-      ref as ProviderElementBase<StateController<State>>,
-      ref.watch(notifier),
-    );
-  }, dependencies: [notifier], from: from, argument: argument);
-
-  @override
-  bool updateShouldNotify(State previousState, State newState) {
-    return true;
-  }
+      _AutoDisposeStateProviderState(
+    this,
+    dependencies: [notifier],
+    from: from,
+    argument: argument,
+    cacheTime: cacheTime,
+    disposeDelay: disposeDelay,
+    name: modifierName(name, 'state'),
+  );
 
   @override
   AutoDisposeStateProviderElement<State> createElement() {
@@ -84,6 +82,11 @@ class AutoDisposeStateProviderElement<State>
     onDispose(removeListener);
 
     return notifier.state;
+  }
+
+  @override
+  bool updateShouldNotify(State previousState, State newState) {
+    return true;
   }
 }
 
@@ -111,14 +114,6 @@ class _AutoDisposeNotifierProvider<State>
   final List<ProviderOrFamily>? dependencies;
 
   @override
-  bool updateShouldNotify(
-    StateController<State> previousState,
-    StateController<State> newState,
-  ) {
-    return true;
-  }
-
-  @override
   _AutoDisposeNotifierStateProviderElement<State> createElement() {
     return _AutoDisposeNotifierStateProviderElement(this);
   }
@@ -142,24 +137,59 @@ class _AutoDisposeNotifierStateProviderElement<State>
     onDispose(notifier.dispose);
     return notifier;
   }
-}
-
-class _AutoDisposeNotifierStateProvider<State>
-    extends AutoDisposeProvider<State> {
-  _AutoDisposeNotifierStateProvider(
-    Create<State, AutoDisposeProviderRef<State>> create, {
-    List<ProviderOrFamily>? dependencies,
-    required Family? from,
-    required Object? argument,
-  }) : super(
-          create,
-          dependencies: dependencies,
-          from: from,
-          argument: argument,
-        );
 
   @override
-  bool updateShouldNotify(State previousState, State newState) {
+  bool updateShouldNotify(
+    StateController<State> previousState,
+    StateController<State> newState,
+  ) {
+    return true;
+  }
+}
+
+class _AutoDisposeStateProviderState<State>
+    extends AutoDisposeProviderBase<StateController<State>> {
+  _AutoDisposeStateProviderState(
+    this._origin, {
+    required this.dependencies,
+    required super.from,
+    required super.argument,
+    required super.name,
+    required super.cacheTime,
+    required super.disposeDelay,
+  });
+
+  final AutoDisposeStateProvider<State> _origin;
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
+
+  @override
+  _AutoDisposeStateProviderStateElement<State> createElement() {
+    return _AutoDisposeStateProviderStateElement(this);
+  }
+}
+
+class _AutoDisposeStateProviderStateElement<State>
+    extends AutoDisposeProviderElementBase<StateController<State>> {
+  _AutoDisposeStateProviderStateElement(this.provider);
+
+  @override
+  final _AutoDisposeStateProviderState<State> provider;
+
+  @override
+  StateController<State> create() {
+    return _listenStateProvider(
+      this,
+      watch(provider._origin.notifier),
+    );
+  }
+
+  @override
+  bool updateShouldNotify(
+    StateController<State> previousState,
+    StateController<State> newState,
+  ) {
     return true;
   }
 }

@@ -167,19 +167,6 @@ class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
   AlwaysAliveProviderBase<Future<State>> get last => future;
 
   @override
-  bool updateShouldNotify(
-    AsyncValue<State> previousState,
-    AsyncValue<State> newState,
-  ) {
-    final wasLoading = previousState is AsyncLoading;
-    final isLoading = newState is AsyncLoading;
-
-    if (wasLoading || isLoading) return wasLoading != isLoading;
-
-    return true;
-  }
-
-  @override
   StreamProviderElement<State> createElement() => StreamProviderElement(this);
 }
 
@@ -201,6 +188,19 @@ class StreamProviderElement<State>
 
   @override
   AsyncValue<State> create() => _listenStream(this, provider._create);
+
+  @override
+  bool updateShouldNotify(
+    AsyncValue<State> previousState,
+    AsyncValue<State> newState,
+  ) {
+    final wasLoading = previousState is AsyncLoading;
+    final isLoading = newState is AsyncLoading;
+
+    if (wasLoading || isLoading) return wasLoading != isLoading;
+
+    return true;
+  }
 }
 
 /// {@template riverpod.streamprovider.family}

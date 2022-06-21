@@ -95,11 +95,6 @@ abstract class ProviderBase<State> extends ProviderOrFamily
     );
   }
 
-  /// Called when a provider is rebuilt. Used for providers to not notify their
-  /// listeners if the exposed value did not change.
-  @visibleForOverriding
-  bool updateShouldNotify(State previousState, State newState);
-
   /// An internal method that defines how a provider behaves.
   @visibleForOverriding
   ProviderElementBase<State> createElement();
@@ -249,7 +244,8 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   bool get hasListeners =>
       _listeners.isNotEmpty ||
       _subscribers.isNotEmpty ||
-      _dependents.isNotEmpty;
+      _dependents.isNotEmpty ||
+      _elementListenerCount != 0;
 
   // TODO(rrousselGit) refactor to match ChangeNotifier
   /// Accepts only _ProviderSubscription<State>, but not typed so that
@@ -296,6 +292,15 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
   bool _debugDidSetState = false;
   bool _didBuild = false;
+
+  /// A tracker for how many [addElementListener]/[removeElementListener] where
+  /// called.
+  ///
+  /// This is used to keep a [ProviderElementBase] alive as long as there is
+  /// at least one listener.
+  ///
+  /// If 0, it means that there are no active listeners.
+  int _elementListenerCount = 0;
 
   /* STATE */
   Result<State>? _state;
@@ -407,6 +412,11 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   @protected
   void update(ProviderBase<State> newProvider) {}
 
+  /// Called when a provider is rebuilt. Used for providers to not notify their
+  /// listeners if the exposed value did not change.
+  @visibleForOverriding
+  bool updateShouldNotify(State previousState, State newState);
+
   @override
   void invalidate(ProviderBase<Object?> provider) {
     _container.invalidate(provider);
@@ -514,6 +524,16 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     }
   }
 
+  void addElementListener() => _elementListenerCount++;
+
+  void removeElementListener() {
+    assert(
+      _elementListenerCount > 0,
+      'Bad state, removeElementListener was likely called more than necessary',
+    );
+    _elementListenerCount--;
+  }
+
   @override
   void notifyListeners() {
     final state = getState();
@@ -580,7 +600,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         previousStateResult != null &&
         previousStateResult.hasState &&
         newState.hasState &&
-        !provider.updateShouldNotify(
+        !updateShouldNotify(
           previousState as State,
           newState.requireState,
         )) {
@@ -1181,8 +1201,7 @@ class ResultError<State> implements Result<State> {
   State? get stateOrNull => null;
 
   @override
-  // ignore: only_throw_errors
-  State get requireState => throw error;
+  State get requireState => Error.throwWithStackTrace(error, stackTrace);
 
   @override
   R map<R>({

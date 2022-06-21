@@ -50,11 +50,6 @@ class StateNotifierProvider<Notifier extends StateNotifier<State>, State>
   final AlwaysAliveProviderBase<Notifier> notifier;
 
   @override
-  bool updateShouldNotify(State previousState, State newState) {
-    return true;
-  }
-
-  @override
   StateNotifierProviderElement<Notifier, State> createElement() =>
       StateNotifierProviderElement(this);
 }
@@ -81,6 +76,11 @@ class StateNotifierProviderElement<Notifier extends StateNotifier<State>, State>
 
     return requireState;
   }
+
+  @override
+  bool updateShouldNotify(State previousState, State newState) {
+    return true;
+  }
 }
 
 class _NotifierProvider<Notifier extends StateNotifier<State>, State>
@@ -101,9 +101,6 @@ class _NotifierProvider<Notifier extends StateNotifier<State>, State>
 
   @override
   final List<ProviderOrFamily>? dependencies;
-
-  @override
-  bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
 
   @override
   _NotifierProviderElement<Notifier, State> createElement() {
@@ -128,6 +125,9 @@ class _NotifierProviderElement<Notifier extends StateNotifier<State>, State>
     onDispose(notifier.dispose);
     return notifier;
   }
+
+  @override
+  bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
 }
 
 /// {@template riverpod.statenotifierprovider.family}

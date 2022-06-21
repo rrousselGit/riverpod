@@ -34,14 +34,16 @@ class NotifierProviderElement<Controller extends Notifier<State>, State>
   @override
   final NotifierProvider<Controller, State> provider;
 
-  late Controller notifier;
+  late final Result<Controller> _notifier =
+      Result.guard(provider._createNotifier)..stateOrNull?._element = this;
 
   @override
-  State create() {
-    // TODO test "create notifier fail"
-    final notifier = this.notifier = provider._createNotifier();
-    notifier._element = this;
-    return notifier.build();
+  State create() => _notifier.requireState.build();
+
+  @override
+  bool updateShouldNotify(State previousState, State newState) {
+    return _notifier.stateOrNull?.updateShouldNotify(previousState, newState) ??
+        true;
   }
 }
 
@@ -49,11 +51,11 @@ class NotifierProvider<Controller extends Notifier<State>, State>
     extends AlwaysAliveProviderBase<State> {
   NotifierProvider(
     this._createNotifier, {
-    String? name,
+    super.name,
     this.dependencies,
-    Family? from,
-    Object? argument,
-  }) : super(name: name, from: from, argument: argument);
+    super.from,
+    super.argument,
+  }) : super();
 
   final Controller Function() _createNotifier;
 
@@ -61,20 +63,54 @@ class NotifierProvider<Controller extends Notifier<State>, State>
   final List<ProviderOrFamily>? dependencies;
 
   late final AlwaysAliveProviderBase<Controller> notifier =
-      Provider<Controller>((ref) {
-    ref.watch(this);
-    return (ref.container.readProviderElement(this)
-            as NotifierProviderElement<Controller, State>)
-        .notifier;
-  });
+      _NotifierNotifierProvider<Controller, State>(this);
 
   @override
   NotifierProviderElement<Controller, State> createElement() {
     return NotifierProviderElement<Controller, State>(this);
   }
+}
+
+class _NotifierNotifierProvider<Controller extends Notifier<State>, State>
+    extends AlwaysAliveProviderBase<Controller> {
+  _NotifierNotifierProvider(
+    this.origin, {
+    super.name,
+    super.from,
+    super.argument,
+  }) : super();
+
+  final NotifierProvider<Controller, State> origin;
 
   @override
-  bool updateShouldNotify(State previousState, State newState) {
-    return !identical(previousState, newState);
+  ProviderElementBase<Controller> createElement() =>
+      _NotifierNotifierProviderElement<Controller, State>(this);
+
+  @override
+  List<ProviderOrFamily>? get dependencies => origin.dependencies;
+}
+
+class _NotifierNotifierProviderElement<Controller extends Notifier<State>,
+    State> extends ProviderElementBase<Controller> {
+  _NotifierNotifierProviderElement(this.provider);
+
+  @override
+  final _NotifierNotifierProvider<Controller, State> provider;
+
+  @override
+  Controller create() {
+    final element = container.readProviderElement(provider.origin)
+        as NotifierProviderElement<Controller, State>;
+
+// TODO
+    // element.addElementListener();
+    // onDispose(element.removeElementListener);
+
+    return element._notifier.requireState;
+  }
+
+  @override
+  bool updateShouldNotify(Controller previousState, Controller newState) {
+    throw StateError('never reached');
   }
 }

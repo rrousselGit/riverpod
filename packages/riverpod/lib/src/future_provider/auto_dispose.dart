@@ -62,19 +62,6 @@ class AutoDisposeFutureProvider<State>
   );
 
   @override
-  bool updateShouldNotify(
-    AsyncValue<State> previousState,
-    AsyncValue<State> newState,
-  ) {
-    final wasLoading = previousState is AsyncLoading;
-    final isLoading = newState is AsyncLoading;
-
-    if (wasLoading || isLoading) return wasLoading != isLoading;
-
-    return true;
-  }
-
-  @override
   AutoDisposeFutureProviderElement<State> createElement() {
     return AutoDisposeFutureProviderElement(this);
   }
@@ -98,6 +85,19 @@ class AutoDisposeFutureProviderElement<State>
 
   @override
   AsyncValue<State> create() => listenFuture(this, provider._create);
+
+  @override
+  bool updateShouldNotify(
+    AsyncValue<State> previousState,
+    AsyncValue<State> newState,
+  ) {
+    final wasLoading = previousState is AsyncLoading;
+    final isLoading = newState is AsyncLoading;
+
+    if (wasLoading || isLoading) return wasLoading != isLoading;
+
+    return true;
+  }
 }
 
 /// {@template riverpod.futureprovider.family}

@@ -69,19 +69,6 @@ class FutureProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
       AsyncValueAsFutureProvider(this, from: from, argument: argument);
 
   @override
-  bool updateShouldNotify(
-    AsyncValue<State> previousState,
-    AsyncValue<State> newState,
-  ) {
-    final wasLoading = previousState is AsyncLoading;
-    final isLoading = newState is AsyncLoading;
-
-    if (wasLoading || isLoading) return wasLoading != isLoading;
-
-    return true;
-  }
-
-  @override
   FutureProviderElement<State> createElement() => FutureProviderElement(this);
 }
 
@@ -103,6 +90,19 @@ class FutureProviderElement<State>
 
   @override
   AsyncValue<State> create() => listenFuture(this, provider._create);
+
+  @override
+  bool updateShouldNotify(
+    AsyncValue<State> previousState,
+    AsyncValue<State> newState,
+  ) {
+    final wasLoading = previousState is AsyncLoading;
+    final isLoading = newState is AsyncLoading;
+
+    if (wasLoading || isLoading) return wasLoading != isLoading;
+
+    return true;
+  }
 }
 
 /// {@template riverpod.futureprovider.family}

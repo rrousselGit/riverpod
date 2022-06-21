@@ -122,9 +122,6 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
   final AutoDisposeProviderBase<Notifier> notifier;
 
   @override
-  bool updateShouldNotify(State previousState, State newState) => true;
-
-  @override
   AutoDisposeStateNotifierProviderElement<Notifier, State> createElement() {
     return AutoDisposeStateNotifierProviderElement(this);
   }
@@ -153,6 +150,9 @@ class AutoDisposeStateNotifierProviderElement<
 
     return requireState;
   }
+
+  @override
+  bool updateShouldNotify(State previousState, State newState) => true;
 }
 
 class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<State>, State>
@@ -180,9 +180,6 @@ class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<State>, State>
   final List<ProviderOrFamily>? dependencies;
 
   @override
-  bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
-
-  @override
   _AutoDisposeNotifierProviderElement<Notifier, State> createElement() {
     return _AutoDisposeNotifierProviderElement(this);
   }
@@ -205,6 +202,9 @@ class _AutoDisposeNotifierProviderElement<Notifier extends StateNotifier<State>,
     onDispose(notifier.dispose);
     return notifier;
   }
+
+  @override
+  bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
 }
 
 /// {@template riverpod.statenotifierprovider.family}

@@ -179,14 +179,6 @@ class AsyncValueAsStreamProvider<State>
   }
 
   @override
-  bool updateShouldNotify(
-    Stream<State> previousState,
-    Stream<State> newState,
-  ) {
-    return true;
-  }
-
-  @override
   bool operator ==(Object other) {
     return other is AsyncValueAsStreamProvider<State> &&
         other._provider == _provider;
@@ -208,6 +200,14 @@ class AsyncValueAsStreamProviderElement<State>
   @override
   Stream<State> create() {
     return _asyncValueToStream(provider._provider, this);
+  }
+
+  @override
+  bool updateShouldNotify(
+    Stream<State> previousState,
+    Stream<State> newState,
+  ) {
+    return true;
   }
 }
 
@@ -244,14 +244,6 @@ class AutoDisposeAsyncValueAsStreamProvider<State>
   }
 
   @override
-  bool updateShouldNotify(
-    Stream<State> previousState,
-    Stream<State> newState,
-  ) {
-    return true;
-  }
-
-  @override
   bool operator ==(Object other) {
     return other is AutoDisposeAsyncValueAsStreamProvider<State> &&
         other._provider == _provider;
@@ -273,6 +265,14 @@ class AutoDisposeAsyncValueAsStreamProviderElement<State>
   @override
   Stream<State> create() {
     return _asyncValueToStream(provider._provider, this);
+  }
+
+  @override
+  bool updateShouldNotify(
+    Stream<State> previousState,
+    Stream<State> newState,
+  ) {
+    return true;
   }
 }
 
@@ -352,14 +352,6 @@ class AsyncValueAsFutureProvider<State>
   ProviderBase<Object?> get originProvider => _provider;
 
   @override
-  bool updateShouldNotify(
-    Future<State> previousState,
-    Future<State> newState,
-  ) {
-    return true;
-  }
-
-  @override
   AsyncValueAsFutureProviderElement<State> createElement() {
     return AsyncValueAsFutureProviderElement(this);
   }
@@ -385,6 +377,14 @@ class AsyncValueAsFutureProviderElement<State>
 
   @override
   Future<State> create() => _asyncValueAsFuture(provider._provider, this);
+
+  @override
+  bool updateShouldNotify(
+    Future<State> previousState,
+    Future<State> newState,
+  ) {
+    return true;
+  }
 }
 
 ///
@@ -415,14 +415,6 @@ class AutoDisposeAsyncValueAsFutureProvider<State>
   ProviderBase<Object?> get originProvider => _provider;
 
   @override
-  bool updateShouldNotify(
-    Future<State> previousState,
-    Future<State> newState,
-  ) {
-    return true;
-  }
-
-  @override
   AutoDisposeAsyncValueAsFutureProviderElement<State> createElement() {
     return AutoDisposeAsyncValueAsFutureProviderElement(this);
   }
@@ -448,6 +440,14 @@ class AutoDisposeAsyncValueAsFutureProviderElement<State>
 
   @override
   Future<State> create() => _asyncValueAsFuture(provider._provider, this);
+
+  @override
+  bool updateShouldNotify(
+    Future<State> previousState,
+    Future<State> newState,
+  ) {
+    return true;
+  }
 }
 
 Future<State> _asyncValueAsFuture<State>(

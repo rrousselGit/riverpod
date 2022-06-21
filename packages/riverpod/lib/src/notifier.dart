@@ -12,10 +12,13 @@ part 'notifier/auto_dispose_async_notifier.dart';
 abstract class _NotifierBase<State> {
   late final ProviderElementBase<State> _element;
 
-  // TODO should this use readSelf?
   @protected
-  State get state => _element.requireState;
+  State get state => _element.readSelf();
 
   @protected
   set state(State value) => _element.setState(value);
+
+  bool updateShouldNotify(State previous, State next) {
+    return !identical(previous, next);
+  }
 }

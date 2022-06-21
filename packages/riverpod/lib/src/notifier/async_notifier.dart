@@ -63,14 +63,6 @@ class AsyncNotifierProvider<Controller extends AsyncNotifier<State>, State>
   AsyncNotifierProviderElement<Controller, State> createElement() {
     return AsyncNotifierProviderElement<Controller, State>(this);
   }
-
-  @override
-  bool updateShouldNotify(
-    AsyncValue<State> previousState,
-    AsyncValue<State> newState,
-  ) {
-    return identical(previousState, newState);
-  }
 }
 
 class AsyncNotifierProviderElement<Controller extends AsyncNotifier<State>,
@@ -88,5 +80,13 @@ class AsyncNotifierProviderElement<Controller extends AsyncNotifier<State>,
         this.notifier = provider._createNotifier().._element = this;
 
     return listenFuture(this, (_) => notifier.init());
+  }
+
+  @override
+  bool updateShouldNotify(
+    AsyncValue<State> previousState,
+    AsyncValue<State> newState,
+  ) {
+    return identical(previousState, newState);
   }
 }
