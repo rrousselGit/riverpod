@@ -256,11 +256,11 @@ class Provider<State> extends AlwaysAliveProviderBase<State>
   /// {@macro riverpod.provider}
   Provider(
     this._create, {
-    String? name,
     this.dependencies,
-    Family? from,
-    Object? argument,
-  }) : super(name: name, from: from, argument: argument);
+    super.name,
+    super.from,
+    super.argument,
+  });
 
   /// {@macro riverpod.family}
   static const family = ProviderFamilyBuilder();

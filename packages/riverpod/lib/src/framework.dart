@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:meta/meta.dart';
+import 'devtool.dart';
 import 'internals.dart';
 import 'stack_trace.dart';
 

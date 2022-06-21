@@ -14,19 +14,13 @@ class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
   /// {@macro riverpod.provider}
   AutoDisposeProvider(
     this._create, {
-    String? name,
+    super.name,
     this.dependencies,
-    Family? from,
-    Object? argument,
-    Duration? cacheTime,
-    Duration? disposeDelay,
-  }) : super(
-          name: name,
-          from: from,
-          argument: argument,
-          cacheTime: cacheTime,
-          disposeDelay: disposeDelay,
-        );
+    super.from,
+    super.argument,
+    super.cacheTime,
+    super.disposeDelay,
+  });
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeProviderFamilyBuilder();
