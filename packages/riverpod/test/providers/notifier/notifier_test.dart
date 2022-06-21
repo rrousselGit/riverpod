@@ -280,7 +280,28 @@ void main() {
 
     test(
         'Can override Notifier.updateShouldNotify to change the default filter logic',
-        () {});
+        () {
+      final provider = _TestNotifierProvider<Equal<int>>(
+        (ref) => Equal(42),
+        updateShouldNotify: (a, b) => a != b,
+      );
+      final container = createContainer();
+      final listener = Listener<Equal<int>>();
+
+      container.listen(provider, listener);
+      final notifier = container.read(provider.notifier);
+      notifier.state = notifier.state;
+
+      verifyZeroInteractions(listener);
+
+      notifier.state = Equal(42);
+
+      verifyZeroInteractions(listener);
+
+      notifier.state = Equal(21);
+
+      verifyOnly(listener, listener(Equal(42), Equal(21)));
+    });
 
     test('can override the Notifier with a matching custom implementation',
         () {});
@@ -327,15 +348,21 @@ class Equal<T> {
 
 // ignore: non_constant_identifier_names
 NotifierProvider<TestNotifier<T>, T> _TestNotifierProvider<T>(
-  T Function(Ref<T> ref) init,
-) {
-  return NotifierProvider<TestNotifier<T>, T>(() => TestNotifier(init));
+  T Function(Ref<T> ref) init, {
+  bool Function(T prev, T next)? updateShouldNotify,
+}) {
+  return NotifierProvider<TestNotifier<T>, T>(
+    () => TestNotifier(init, updateShouldNotify: updateShouldNotify),
+  );
 }
 
 class TestNotifier<T> extends Notifier<T> {
-  TestNotifier(this._init);
+  TestNotifier(this._init, {bool Function(T prev, T next)? updateShouldNotify})
+      : _updateShouldNotify = updateShouldNotify;
 
   final T Function(Ref<T> ref) _init;
+
+  final bool Function(T prev, T next)? _updateShouldNotify;
 
   // overriding to remove the @protected
   @override
@@ -350,6 +377,12 @@ class TestNotifier<T> extends Notifier<T> {
   T build() => _init(ref);
 
   void update(T Function(T state) cb) => state = cb(state);
+
+  @override
+  bool updateShouldNotify(T previous, T next) {
+    return _updateShouldNotify?.call(previous, next) ??
+        super.updateShouldNotify(previous, next);
+  }
 
   @override
   String toString() {
