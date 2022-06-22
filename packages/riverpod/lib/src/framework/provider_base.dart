@@ -202,6 +202,8 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
   State read() => listenedElement.readSelf();
 }
 
+var _elementDebugNextId = 0;
+
 /// An internal class that handles the state of a provider.
 ///
 /// Do not use.
@@ -212,6 +214,21 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   static ProviderElementBase? _debugCurrentlyBuildingElement;
 
   var _debugSkipNotifyListenersAsserts = false;
+
+  String? _debugId;
+
+  /// A unique ID for this object, used by the devtool to differentiate two [ProviderElementBase].
+  ///
+  /// Should not be used.
+  String get debugId {
+    String? id;
+    assert(() {
+      id = _debugId ??= '${_elementDebugNextId++}';
+      return true;
+    }(), '');
+
+    return id!;
+  }
 
   /// The provider associated with this [ProviderElementBase], before applying overrides.
   // Not typed as <State> because of https://github.com/rrousselGit/river_pod/issues/1100
@@ -273,6 +290,12 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// Whether the element was disposed or not
   @visibleForTesting
   bool get mounted => _mounted;
+
+  /// Whether this [ProviderElementBase] dependencies have changed or not.
+  ///
+  /// Should not be used, only meant for debug purposes
+  @visibleForTesting
+  bool get dependencyMayHaveChanged => _dependencyMayHaveChanged;
 
   /// Whether the assert that prevents [requireState] from returning
   /// if the state was not set before is enabled.
@@ -884,11 +907,24 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _listeners.clear();
   }
 
+  /// Triggered when the listeners count changes. Runs right after [_onListen]
+  /// and [_onRemoveListener]
+  void _notifyListenersChanged() {
+    assert(() {
+      RiverpodBinding.debugInstance.providerChanged(
+        containerId: container.debugId,
+        providerId: debugId,
+      );
+      return true;
+    }(), '');
+  }
+
   void _onListen() {
     _onAddListeners?.forEach(_runGuarded);
     if (_didCancelOnce && !hasListeners) {
       _onResumeListeners?.forEach(_runGuarded);
     }
+    _notifyListenersChanged();
   }
 
   void _onRemoveListener() {
@@ -898,6 +934,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       _onCancelListeners?.forEach(_runGuarded);
     }
     mayNeedDispose();
+    _notifyListenersChanged();
   }
 
   /// Life-cycle for when a listener is removed.

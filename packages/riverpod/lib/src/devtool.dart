@@ -1,6 +1,49 @@
-// ignore_for_file: public_member_api_docs
+// ignore_for_file: public_member_api_docs, invalid_use_of_visible_for_testing_member
 
 part of 'provider.dart';
+
+class RiverpodNode {
+  RiverpodNode({
+    required this.id,
+    required this.containerId,
+    this.name,
+    this.state,
+    required this.type,
+    required this.mightBeOutdated,
+  });
+
+  final String id;
+  final String containerId;
+  final String? name;
+  final Result<dynamic>? state;
+  final String type;
+  final bool mightBeOutdated;
+}
+
+class ContainerNode {
+  ContainerNode(this.id, this.riverpodNodes);
+
+  final String id;
+  final Map<String, RiverpodNode> riverpodNodes;
+}
+
+extension on ProviderContainer {
+  ContainerNode asNode(String id) {
+    final riverpodNodes = {
+      for (final element in getAllProviderElements())
+        element.debugId: RiverpodNode(
+          id: element.debugId,
+          containerId: element.container.debugId,
+          name: element.origin.name,
+          state: element.getState(),
+          type: element.origin.runtimeType.toString(),
+          mightBeOutdated: element.dependencyMayHaveChanged,
+        ),
+    };
+
+    return ContainerNode(id, riverpodNodes);
+  }
+}
 
 void Function(
   String eventKind,
@@ -70,11 +113,23 @@ class RiverpodBinding {
     return binding!;
   }
 
+  bool get supportsDevTool => true;
+
   Map<String, ProviderContainer> _containers = {};
   Map<String, ProviderContainer> get containers => _containers;
+
+  Map<String, ContainerNode> get containerNodes => {
+        for (final entry in _containers.entries)
+          entry.key: entry.value.asNode(entry.key),
+      };
+
   set containers(Map<String, ProviderContainer> value) {
     debugPostEvent('riverpod:container_list_changed');
     _containers = value;
+  }
+
+  RiverpodNode? getProvider(String containerId, String providerId) {
+    return containerNodes[containerId]?.riverpodNodes[providerId];
   }
 
   void providerListChangedFor({required String containerId}) {
