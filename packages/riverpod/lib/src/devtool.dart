@@ -69,6 +69,10 @@ PostEventSpy spyPostEvent() {
   return spy;
 }
 
+void stopSpyPostEvent() {
+  _debugPostEventOverride = null;
+}
+
 @protected
 class PostEventCall {
   PostEventCall._(this.eventKind, this.event);
@@ -112,6 +116,7 @@ class RiverpodBinding {
 
     return binding!;
   }
+
 
   bool get supportsDevTool => true;
 
