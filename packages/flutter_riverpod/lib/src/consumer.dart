@@ -155,7 +155,10 @@ abstract class WidgetRef {
   ///     final Products products = ref.watch(productsProvider);
   ///
   ///     return RefreshIndicator(
-  ///       onRefresh: () => ref.refresh(productsProvider.future),
+  ///       onRefresh: () {
+  ///         ref.refresh(productsProvider),
+  ///         return ref.read(productsProvider.future),
+  ///       }
   ///       child: ListView(
   ///         children: [
   ///           for (final product in products.items) ProductItem(product: product),
