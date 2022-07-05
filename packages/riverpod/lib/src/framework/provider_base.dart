@@ -202,8 +202,6 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
   State read() => listenedElement.readSelf();
 }
 
-var _elementDebugNextId = 0;
-
 /// An internal class that handles the state of a provider.
 ///
 /// Do not use.
@@ -212,6 +210,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   ProviderElementBase(this._provider);
 
   static ProviderElementBase? _debugCurrentlyBuildingElement;
+  static var _elementDebugNextId = 0;
 
   var _debugSkipNotifyListenersAsserts = false;
 
@@ -223,7 +222,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   String get debugId {
     String? id;
     assert(() {
-      id = _debugId ??= '${_elementDebugNextId++}';
+      id = _debugId;
       return true;
     }(), '');
 
@@ -290,12 +289,6 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// Whether the element was disposed or not
   @visibleForTesting
   bool get mounted => _mounted;
-
-  /// Whether this [ProviderElementBase] dependencies have changed or not.
-  ///
-  /// Should not be used, only meant for debug purposes
-  @visibleForTesting
-  bool get dependencyMayHaveChanged => _dependencyMayHaveChanged;
 
   /// Whether the assert that prevents [requireState] from returning
   /// if the state was not set before is enabled.
@@ -368,6 +361,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   void mount() {
     _mounted = true;
     assert(() {
+      _debugId = '${_elementDebugNextId++}';
       RiverpodBinding.debugInstance
           .providerListChangedFor(containerId: container._debugId);
 

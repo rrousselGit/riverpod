@@ -1,7 +1,7 @@
-import 'package:riverpod/src/provider.dart';
+import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
-Matcher isPostEventCall(Object kind, Object? event) {
+Matcher isPostEventCall(Object kind, [Object? event]) {
   var matcher =
       isA<PostEventCall>().having((e) => e.eventKind, 'eventKind', kind);
 

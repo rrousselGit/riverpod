@@ -1,6 +1,6 @@
-// ignore_for_file: public_member_api_docs, invalid_use_of_visible_for_testing_member
+// ignore_for_file: public_member_api_docs
 
-part of 'provider.dart';
+part of 'framework.dart';
 
 class RiverpodNode {
   RiverpodNode({
@@ -37,7 +37,7 @@ extension on ProviderContainer {
           name: element.origin.name,
           state: element.getState(),
           type: element.origin.runtimeType.toString(),
-          mightBeOutdated: element.dependencyMayHaveChanged,
+          mightBeOutdated: element._dependencyMayHaveChanged,
         ),
     };
 
@@ -116,9 +116,6 @@ class RiverpodBinding {
 
     return binding!;
   }
-
-
-  bool get supportsDevTool => true;
 
   Map<String, ProviderContainer> _containers = {};
   Map<String, ProviderContainer> get containers => _containers;

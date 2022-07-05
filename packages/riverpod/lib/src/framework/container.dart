@@ -246,7 +246,6 @@ class ProviderContainer implements Node {
   /// A unique ID for this object, used by the devtool to differentiate two [ProviderContainer].
   ///
   /// Should not be used.
-  @visibleForTesting
   String get debugId {
     String? id;
     assert(() {

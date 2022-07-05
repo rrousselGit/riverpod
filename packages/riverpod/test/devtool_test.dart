@@ -3,6 +3,9 @@
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
+import 'matchers.dart';
+import 'utils.dart';
+
 void main() {
   tearDown(() {
     RiverpodBinding.debugInstance.containers = {};
@@ -10,8 +13,8 @@ void main() {
   });
 
   test('should add container to containers map', () {
-    final firstContainer = ProviderContainer();
-    final secondContainer = ProviderContainer();
+    final firstContainer = createContainer();
+    final secondContainer = createContainer();
 
     final container = RiverpodBinding.debugInstance.containers;
 
@@ -25,8 +28,8 @@ void main() {
   });
 
   test('should map containers to ContainerNode', () {
-    final firstContainer = ProviderContainer();
-    final secondContainer = ProviderContainer();
+    final firstContainer = createContainer();
+    final secondContainer = createContainer();
     final stringProvider = Provider(
       (_) => 'some string',
       name: 'stringProvider',
@@ -76,7 +79,7 @@ void main() {
   });
 
   test('should get provider with contanerId and providerId', () {
-    final container = ProviderContainer();
+    final container = createContainer();
     final firstProvider = Provider(
       (_) => 'some string',
       name: 'firstProvider',
@@ -112,43 +115,32 @@ void main() {
 
   test('should send debug event when provider list changes', () {
     final spy = spyPostEvent();
-    final container = ProviderContainer();
+    final container = createContainer();
     final provider = Provider((_) => 'some string');
     container.read(provider);
 
     expect(
       spy.logs.last,
-      isA<PostEventCall>()
-          .having(
-            (p) => p.eventKind,
-            'eventKind',
-            equals('riverpod:provider_list_changed'),
-          )
-          .having(
-            (p) => p.event,
-            'event',
-            equals({'container_id': container.debugId}),
-          ),
+      isPostEventCall(
+        'riverpod:provider_list_changed',
+        {'container_id': container.debugId},
+      ),
     );
   });
 
   test('should send debug event when container list changes', () {
     final spy = spyPostEvent();
-    ProviderContainer();
+    createContainer();
 
     expect(
       spy.logs.last,
-      isA<PostEventCall>().having(
-        (p) => p.eventKind,
-        'eventKind',
-        equals('riverpod:container_list_changed'),
-      ),
+      isPostEventCall('riverpod:container_list_changed'),
     );
   });
 
   test('should send debug event on provider listened', () {
     final spy = spyPostEvent();
-    final container = ProviderContainer();
+    final container = createContainer();
     final provider = Provider((_) => 'some string');
 
     container.listen(provider, (previous, next) {});
@@ -157,20 +149,10 @@ void main() {
 
     expect(
       spy.logs.last,
-      isA<PostEventCall>()
-          .having(
-            (p) => p.eventKind,
-            'eventKind',
-            equals('riverpod:provider_changed'),
-          )
-          .having(
-            (p) => p.event,
-            'event',
-            equals({
-              'container_id': container.debugId,
-              'provider_id': providerId,
-            }),
-          ),
+      isPostEventCall('riverpod:provider_changed', {
+        'container_id': container.debugId,
+        'provider_id': providerId,
+      }),
     );
   });
 }
