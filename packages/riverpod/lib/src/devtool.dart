@@ -2,8 +2,9 @@
 
 part of 'framework.dart';
 
+@immutable
 class RiverpodNode {
-  RiverpodNode({
+  const RiverpodNode({
     required this.id,
     required this.containerId,
     this.name,
@@ -18,13 +19,48 @@ class RiverpodNode {
   final Result<dynamic>? state;
   final String type;
   final bool mightBeOutdated;
+
+  @override
+  bool operator ==(Object other) {
+    return other is RiverpodNode &&
+        other.id == id &&
+        other.containerId == containerId &&
+        other.name == name &&
+        other.state?.stateOrNull == state?.stateOrNull &&
+        other.type == type &&
+        other.mightBeOutdated == mightBeOutdated;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        id,
+        containerId,
+        name,
+        state?.stateOrNull,
+        type,
+        mightBeOutdated,
+      );
 }
 
+@immutable
 class ContainerNode {
-  ContainerNode(this.id, this.riverpodNodes);
+  const ContainerNode(this.id, this.riverpodNodes);
 
   final String id;
   final Map<String, RiverpodNode> riverpodNodes;
+
+  @override
+  bool operator ==(Object other) {
+    return other is ContainerNode &&
+        other.id == id &&
+        const MapEquality<String, RiverpodNode>().equals(
+          other.riverpodNodes,
+          riverpodNodes,
+        );
+  }
+
+  @override
+  int get hashCode => Object.hash(id, riverpodNodes);
 }
 
 extension on ProviderContainer {

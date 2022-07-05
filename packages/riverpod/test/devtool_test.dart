@@ -44,36 +44,34 @@ void main() {
 
     expect(
       containerNodes,
-      predicate(
-        (_) => containerNodes.isEqualTo(
-          {
-            firstContainer.debugId: ContainerNode(
-              firstContainer.debugId,
-              {
-                stringProviderId: RiverpodNode(
-                  id: stringProviderId,
-                  containerId: firstContainer.debugId,
-                  name: 'stringProvider',
-                  state: Result<dynamic>.data('some string'),
-                  type: stringProvider.runtimeType.toString(),
-                  mightBeOutdated: false,
-                )
-              },
-            ),
-            secondContainer.debugId: ContainerNode(
-              secondContainer.debugId,
-              {
-                intProviderId: RiverpodNode(
-                  id: intProviderId,
-                  containerId: secondContainer.debugId,
-                  state: Result<dynamic>.data(10),
-                  type: intProvider.runtimeType.toString(),
-                  mightBeOutdated: false,
-                )
-              },
-            ),
-          },
-        ),
+      equals(
+        {
+          firstContainer.debugId: ContainerNode(
+            firstContainer.debugId,
+            {
+              stringProviderId: RiverpodNode(
+                id: stringProviderId,
+                containerId: firstContainer.debugId,
+                name: 'stringProvider',
+                state: Result<dynamic>.data('some string'),
+                type: stringProvider.runtimeType.toString(),
+                mightBeOutdated: false,
+              )
+            },
+          ),
+          secondContainer.debugId: ContainerNode(
+            secondContainer.debugId,
+            {
+              intProviderId: RiverpodNode(
+                id: intProviderId,
+                containerId: secondContainer.debugId,
+                state: Result<dynamic>.data(10),
+                type: intProvider.runtimeType.toString(),
+                mightBeOutdated: false,
+              )
+            },
+          ),
+        },
       ),
     );
   });
@@ -98,16 +96,14 @@ void main() {
         container.debugId,
         secondProviderId,
       ),
-      predicate(
-        (RiverpodNode node) => node.isEqualTo(
-          RiverpodNode(
-            id: secondProviderId,
-            containerId: container.debugId,
-            type: secondProvider.runtimeType.toString(),
-            mightBeOutdated: false,
-            name: 'secondProvider',
-            state: Result<dynamic>.data('some other string'),
-          ),
+      equals(
+        RiverpodNode(
+          id: secondProviderId,
+          containerId: container.debugId,
+          type: secondProvider.runtimeType.toString(),
+          mightBeOutdated: false,
+          name: 'secondProvider',
+          state: Result<dynamic>.data('some other string'),
         ),
       ),
     );
@@ -155,40 +151,6 @@ void main() {
       }),
     );
   });
-}
-
-extension on Map<String, ContainerNode> {
-  bool isEqualTo(Map<String, ContainerNode> other) {
-    return entries.fold(
-      true,
-      (previousValue, entry) {
-        return entry.value.isEqualTo(other[entry.key]!);
-      },
-    );
-  }
-}
-
-extension on ContainerNode {
-  bool isEqualTo(ContainerNode other) {
-    final areRiverpodNodesEqual = riverpodNodes.entries.fold(
-      true,
-      (previousValue, entry) {
-        return entry.value.isEqualTo(other.riverpodNodes[entry.key]!);
-      },
-    );
-    return id == other.id && areRiverpodNodesEqual;
-  }
-}
-
-extension on RiverpodNode {
-  bool isEqualTo(RiverpodNode other) {
-    return id == other.id &&
-        containerId == other.containerId &&
-        name == other.name &&
-        state?.stateOrNull == other.state?.stateOrNull &&
-        type == other.type &&
-        mightBeOutdated == other.mightBeOutdated;
-  }
 }
 
 extension on ProviderContainer {

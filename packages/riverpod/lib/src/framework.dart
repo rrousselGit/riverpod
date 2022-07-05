@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:developer' as developer;
 
+import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 
 import 'internals.dart';
