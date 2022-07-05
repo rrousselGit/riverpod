@@ -1,3 +1,7 @@
+# 2.0.0-dev.10
+
+Fixes StateProvider.state not respecting the `name` parameter (#1470)
+
 # 2.0.0-dev.9
 
 Fix Timer leak when using `cacheTime`/`disposeDelay` and disposing a `ProviderContainer`

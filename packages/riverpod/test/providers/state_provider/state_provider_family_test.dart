@@ -4,6 +4,37 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('supports .name', () {
+    expect(
+      StateProvider.family<int, int>((ref, id) => 0)(0).state.name,
+      null,
+    );
+    expect(
+      StateProvider.family<int, int>((ref, id) => 0, name: 'foo')(0).state.name,
+      'foo.state',
+    );
+
+    expect(
+      StateProvider.family<int, int>((ref, id) => 0)(0).notifier.name,
+      null,
+    );
+    expect(
+      StateProvider.family<int, int>((ref, id) => 0, name: 'foo')(0)
+          .notifier
+          .name,
+      'foo.notifier',
+    );
+
+    expect(
+      StateProvider.family<int, int>((ref, id) => 0)(0).name,
+      null,
+    );
+    expect(
+      StateProvider.family<int, int>((ref, id) => 0, name: 'foo')(0).name,
+      'foo',
+    );
+  });
+
   group('StateProvider.family', () {
     test('specifies `from` and `argument` for related providers', () {
       final provider = StateProvider.family<AsyncValue<int>, int>(

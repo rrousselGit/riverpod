@@ -6,6 +6,46 @@ import '../../third_party/fake_async.dart';
 import '../../utils.dart';
 
 void main() {
+  test('supports .name', () {
+    expect(
+      StateProvider.autoDispose.family<int, int>((ref, id) => 0)(0).state.name,
+      null,
+    );
+    expect(
+      StateProvider.autoDispose
+          .family<int, int>((ref, id) => 0, name: 'foo')(0)
+          .state
+          .name,
+      'foo.state',
+    );
+
+    expect(
+      StateProvider.autoDispose
+          .family<int, int>((ref, id) => 0)(0)
+          .notifier
+          .name,
+      null,
+    );
+    expect(
+      StateProvider.autoDispose
+          .family<int, int>((ref, id) => 0, name: 'foo')(0)
+          .notifier
+          .name,
+      'foo.notifier',
+    );
+
+    expect(
+      StateProvider.autoDispose.family<int, int>((ref, id) => 0)(0).name,
+      null,
+    );
+    expect(
+      StateProvider.autoDispose
+          .family<int, int>((ref, id) => 0, name: 'foo')(0)
+          .name,
+      'foo',
+    );
+  });
+
   group('StateProvider.autoDispose.family.autoDispose', () {
     test('supports cacheTime', () async {
       final onDispose = cacheFamily<int, OnDisposeMock>(

@@ -49,12 +49,18 @@ class AutoDisposeStateProvider<State> extends AutoDisposeProviderBase<State>
 
   @override
   late final AutoDisposeProviderBase<StateController<State>> state =
-      _AutoDisposeNotifierStateProvider((ref) {
-    return _listenStateProvider(
-      ref as ProviderElementBase<StateController<State>>,
-      ref.watch(notifier),
-    );
-  }, dependencies: [notifier], from: from, argument: argument);
+      _AutoDisposeNotifierStateProvider(
+    (ref) {
+      return _listenStateProvider(
+        ref as ProviderElementBase<StateController<State>>,
+        ref.watch(notifier),
+      );
+    },
+    dependencies: [notifier],
+    from: from,
+    argument: argument,
+    name: modifierName(name, 'state'),
+  );
 
   @override
   State create(AutoDisposeProviderElementBase<State> ref) {
@@ -145,15 +151,11 @@ class _AutoDisposeNotifierStateProvider<State>
     extends AutoDisposeProvider<State> {
   _AutoDisposeNotifierStateProvider(
     Create<State, AutoDisposeProviderRef<State>> create, {
-    List<ProviderOrFamily>? dependencies,
-    required Family? from,
-    required Object? argument,
-  }) : super(
-          create,
-          dependencies: dependencies,
-          from: from,
-          argument: argument,
-        );
+    super.dependencies,
+    required super.from,
+    required super.argument,
+    required super.name,
+  }) : super(create);
 
   @override
   bool updateShouldNotify(State previousState, State newState) {

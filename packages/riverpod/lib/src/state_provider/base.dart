@@ -53,6 +53,7 @@ class StateProvider<State> extends AlwaysAliveProviderBase<State>
     dependencies: [notifier],
     from: from,
     argument: argument,
+    name: modifierName(name, 'state'),
   );
 
   /// {@template riverpod.stateprovider.notifier}
@@ -109,15 +110,11 @@ class StateProviderElement<State> extends ProviderElementBase<State> {
 class _NotifierStateProvider<State> extends Provider<State> {
   _NotifierStateProvider(
     Create<State, ProviderRef<State>> create, {
-    List<ProviderOrFamily>? dependencies,
-    required Family? from,
-    required Object? argument,
-  }) : super(
-          create,
-          dependencies: dependencies,
-          from: from,
-          argument: argument,
-        );
+    super.dependencies,
+    required super.from,
+    required super.argument,
+    required super.name,
+  }) : super(create);
 
   @override
   bool updateShouldNotify(State previousState, State newState) {
