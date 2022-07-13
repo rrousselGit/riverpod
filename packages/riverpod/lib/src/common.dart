@@ -33,7 +33,7 @@ String? modifierName(String? from, String modifier) {
 ///     return user.when(
 ///       loading: () => CircularProgressIndicator(),
 ///       error: (error, stack) => Text('Oops, something unexpected happened'),
-///       data: (value) => Text('Hello ${user.name}'),
+///       data: (user) => Text('Hello ${user.name}'),
 ///     );
 ///   }
 /// }
