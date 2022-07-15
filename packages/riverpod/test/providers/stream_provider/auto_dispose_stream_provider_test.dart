@@ -33,14 +33,16 @@ void main() {
 
       expect(
         ref.state,
-        const AsyncData<int>(0, isRefreshing: true),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncValue<int>.data(0)),
       );
 
       verifyOnly(
         listener,
         listener(
           const AsyncData(0),
-          const AsyncData<int>(0, isRefreshing: true),
+          const AsyncLoading<int>()
+              .copyWithPrevious(const AsyncValue<int>.data(0)),
         ),
       );
     });
@@ -92,7 +94,11 @@ void main() {
 
       verifyOnly(
         listener,
-        listener(null, const AsyncData<int>(42, isRefreshing: true)),
+        listener(
+          null,
+          const AsyncLoading<int>()
+              .copyWithPrevious(const AsyncValue<int>.data(42)),
+        ),
       );
 
       container.read(dep.state).state = Stream.value(21);
@@ -124,7 +130,8 @@ void main() {
       result = 1;
       expect(
         container.refresh(provider),
-        const AsyncValue<int>.data(0, isRefreshing: true),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncValue<int>.data(0)),
       );
 
       expect(container.read(provider.stream), emits(1));

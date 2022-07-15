@@ -1,0 +1,139 @@
+Un esempio reale potrebbe essere usare `FutureProvider` per implementare una barra di ricerca.
+
+## Esempio d'uso: barra di ricerca "Search as we type"
+
+Implementare una "search as we type" ("cerca mentre si digita") può sembrare 
+scoraggiante all'inizio quando si utilizzano mezzi convenzionali.
+Ci sono molte parti dinamiche, come:
+
+- gestire gli errori.
+- rimbalzare l'input dell'utente per evitare di effettuare richieste
+  di rete ad ogni battitura.
+- cancellare precedenti richieste di rete in sospeso quando il
+  campo di ricerca cambia.
+
+Tuttavia, la combinazione di `FutureProvider` e la potenza di [ref.watch] 
+possono semplificare di gran lunga questo lavoro.
+
+Un pattern comune per eseguire richieste asincrone consiste nel 
+suddividerle in più provider:
+
+- uno [StateNotifierProvider] o `StateProvider` per i parametri della tua richiesta
+  (o in alternativa usare [family])
+- un `FutureProvider`, che farà la richiesta leggendo i parametri dagli altri 
+  providers/[family].
+
+Il primo passo è immagazzinare l'input dell'utente da qualche parte. 
+Per questo esempio useremo `StateProvider` (dato che lo stato di ricerca 
+è solo una singola `String`):
+
+```dart
+final seachInputProvider = StateProvider<String>((ref) => '');
+```
+
+Possiamo poi connettere questo provider ad un [TextField] scrivendo:
+
+```dart
+Consumer(
+  builder: (context, ref, child) {
+    return TextField(
+      onChanged: (value) => ref.read(searchInputProvider.notifier).state = value,
+    );
+  },
+)
+```
+
+Successivamente, possiamo creare `FutureProvider` che si occuperà della richiesta:
+
+```dart
+final searchProvider = FutureProvider<
+
+
+<!--
+// Copyright (c) 2019, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+final searchFieldProvider = StateProvider<String>((ref) => '');
+final questionsProvider = FutureProvider<List>((ref) async {
+  final client = http.Client();
+  ref.onDispose(client.close);
+
+  final search = ref.watch(searchFieldProvider);
+
+  Uri uri;
+
+  if (search.isEmpty) {
+    uri = Uri.parse(
+      'https://api.stackexchange.com/2.3/questions?order=desc&sort=activity&site=stackoverflow',
+    );
+  } else {
+    final encodedQuery = Uri.encodeComponent(search);
+    uri = Uri.parse(
+      'https://api.stackexchange.com/2.3/search?order=desc&sort=activity&intitle=$encodedQuery&site=stackoverflow',
+    );
+  }
+
+  final response = await client.get(uri);
+  final questions = jsonDecode(response.body);
+
+  return questions['items'].map((question) => question['title']).toList();
+});
+
+void main() => runApp(const ProviderScope(child: MyApp()));
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(home: MyHomePage());
+  }
+}
+
+class MyHomePage extends ConsumerWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final questions = ref.watch(questionsProvider);
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Questions')),
+      body: Column(
+        children: [
+          TextField(
+            onChanged: (value) =>
+                ref.read(searchFieldProvider.notifier).state = value,
+          ),
+          Expanded(
+            child: questions.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stack) => Center(child: Text('Error $error')),
+              data: (questions) {
+                return ListView.builder(
+                  itemCount: questions.length,
+                  itemBuilder: (context, index) {
+                    final question = questions[index];
+
+                    return ListTile(
+                      title: Text(
+                        question.toString(),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```

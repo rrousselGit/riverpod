@@ -167,7 +167,7 @@ void main() {
   //   );
   //   spy.logs.clear();
 
-  //   // re-subscribe to the provider that was no-longer listened but still mounted
+  //   // re-subscribe to the provider that was no longer listened to but still mounted
   //   sub2 = container.listen(provider2, (_) {});
 
   //   expect(spy.logs, isEmpty);

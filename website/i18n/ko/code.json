@@ -28,7 +28,7 @@
     "message": "안전한 컴파일"
   },
   "homepage.compile_safe_body": {
-    "message": "더 이상 {ProviderNotFound} 예외가 발생하지 않고 로딩 상태를 처리하는 것을 걱정하지 않아도 됩니다. Riverpod를 사용하면 코드가 컴파일되면 작동합니다."
+    "message": "더 이상 {ProviderNotFound} 예외가 발생하지 않고, 로딩 상태를 처리하는 것을 걱정하지 않아도 됩니다. Riverpod를 사용하면 코드가 컴파일되면 작동합니다."
   },
   "homepage.unlimited_provider_title": {
     "message": "제한없는 Provider"
@@ -43,7 +43,7 @@
     "message": "Flutter에 의존하지 않고 Provider를 생성/공유/테스트합니다. 여기에는 {BuildContext} 없이 Provider를 수신할 수 있는 기능이 포함됩니다."
   },
   "home.tagline": {
-    "message": "A Reactive State-Management and Dependency Injection Framework"
+    "message": "리엑티브 캐싱, 데이터바인딩 프레임워크"
   },
   "home.get_started": {
     "message": "시작하기"
@@ -215,15 +215,15 @@
     "description": "Title for link to heading"
   },
   "theme.lastUpdated.atDate": {
-    "message": " {date}에",
+    "message": "갱신일: {date}",
     "description": "The words used to describe on which date a page has been last updated"
   },
   "theme.lastUpdated.byUser": {
-    "message": " {user}가",
+    "message": "갱신자: {user}",
     "description": "The words used to describe by who the page has been last updated"
   },
   "theme.lastUpdated.lastUpdatedAtBy": {
-    "message": "{atDate}{byUser} 마지막으로 업데이트했습니다.",
+    "message": "{atDate} {byUser} 마지막으로 업데이트했습니다.",
     "description": "The sentence used to display when a page has been last updated, and by who"
   },
   "theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel": {

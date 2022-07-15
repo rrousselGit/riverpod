@@ -5,7 +5,7 @@ import '../../utils.dart';
 
 void main() {
   group('StreamProvider.family', () {
-    test('specfies `from` & `argument` for related providers', () {
+    test('specifies `from` & `argument` for related providers', () {
       final provider =
           StreamProvider.family<int, int>((ref, _) => Stream.value(0));
 

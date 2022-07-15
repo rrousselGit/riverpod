@@ -1,10 +1,85 @@
+import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
+import '../../third_party/fake_async.dart';
 import '../../utils.dart';
 
 void main() {
+  test('supports .name', () {
+    expect(
+      StateProvider.autoDispose.family<int, int>((ref, id) => 0)(0).state.name,
+      null,
+    );
+    expect(
+      StateProvider.autoDispose
+          .family<int, int>((ref, id) => 0, name: 'foo')(0)
+          .state
+          .name,
+      'foo.state',
+    );
+
+    expect(
+      StateProvider.autoDispose
+          .family<int, int>((ref, id) => 0)(0)
+          .notifier
+          .name,
+      null,
+    );
+    expect(
+      StateProvider.autoDispose
+          .family<int, int>((ref, id) => 0, name: 'foo')(0)
+          .notifier
+          .name,
+      'foo.notifier',
+    );
+
+    expect(
+      StateProvider.autoDispose.family<int, int>((ref, id) => 0)(0).name,
+      null,
+    );
+    expect(
+      StateProvider.autoDispose
+          .family<int, int>((ref, id) => 0, name: 'foo')(0)
+          .name,
+      'foo',
+    );
+  });
+
   group('StateProvider.autoDispose.family.autoDispose', () {
+    test('supports cacheTime', () async {
+      final onDispose = cacheFamily<int, OnDisposeMock>(
+        (key) => OnDisposeMock(),
+      );
+
+      await fakeAsync((async) async {
+        final container = createContainer();
+        final provider =
+            StateProvider.autoDispose.family<int, int>((ref, value) {
+          ref.onDispose(onDispose(value));
+          return value;
+        }, cacheTime: const Duration(minutes: 5));
+
+        final sub = container.listen<int>(provider(42), (previous, next) {});
+
+        expect(sub.read(), 42);
+
+        verifyZeroInteractions(onDispose(42));
+
+        sub.close();
+
+        async.elapse(const Duration(minutes: 2));
+        await container.pump();
+
+        verifyZeroInteractions(onDispose(42));
+
+        async.elapse(const Duration(minutes: 3));
+        await container.pump();
+
+        verifyOnly(onDispose(42), onDispose(42)());
+      });
+    });
+
     test('specifies `from` and `argument` for related providers', () {
       final provider = StateProvider.autoDispose.family<AsyncValue<int>, int>(
         (ref, _) => const AsyncValue.data(42),

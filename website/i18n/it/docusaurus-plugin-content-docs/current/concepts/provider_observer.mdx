@@ -1,0 +1,44 @@
+---
+title: ProviderObserver
+---
+
+import CodeBlock from "@theme/CodeBlock";
+import logger from "!!raw-loader!/i18n/it/docusaurus-plugin-content-docs/current/concepts/provider_observer_logger.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+[ProviderObserver] ascolta i cambiamenti di un ProviderContainer.
+
+Per poter usarlo, estendi la classe ProviderObserver e sovrascrivi il metodo che vuoi usare.
+
+[ProviderObserver] ha tre metodi:
+
+- `didAddProvider` viene chiamato ogni volta che un provider è inizializzato. Il valore esposto è `value`.
+- `didDisposeProvider` viene chiamato ogni volta che un provider è stato eliminato.
+- `didUpdateProvider` viene chiamato ogni volta dai provider quando emettono una notifica.
+
+### Uso: 
+
+Un semplice caso d'uso per [ProviderObserver] è loggare i cambiamenti nei provider 
+sovrascrivendo il metodo `didUpdateProvider`.
+
+<CodeBlock>{trimSnippet(logger)}</CodeBlock>
+
+Ora, ogni volta che il valore del nostro provider si aggiorna, il logger lo registrerà:
+
+```
+I/flutter (16783): {
+I/flutter (16783):   "provider": "counter",
+I/flutter (16783):   "newValue": "1"
+I/flutter (16783): }
+```
+
+:::note NOTA
+Per stati mutabili come [StateController] (lo stato di [StateProvider.state]) e 
+[ChangeNotifier] il valore precedente (previousValue) e quello nuovo (newValue) saranno gli stessi
+:::
+siccome referenziano lo stesso `StateController` / `ChangeNotifier`.
+
+[providerobserver]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderObserver-class.html
+[statecontroller]: https://pub.dev/documentation/riverpod/latest/riverpod/StateController-class.html
+[stateprovider.state]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider/state.html
+[changenotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html

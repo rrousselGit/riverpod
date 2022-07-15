@@ -45,7 +45,7 @@ void main() {
 
   test('the counter state is not shared between tests', () {
     // We use a different ProviderContainer to read our provider.
-    // This unsure that no state is reused between tests
+    // This ensure that no state is reused between tests
     final container = ProviderContainer();
     addTearDown(container.dispose);
     final listener = Listener();
@@ -56,7 +56,7 @@ void main() {
       fireImmediately: true,
     );
 
-    // The new test correcly uses the default value: 0
+    // The new test correctly uses the default value: 0
     verify(listener(null, 0)).called(1);
     verifyNoMoreInteractions(listener);
   });

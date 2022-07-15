@@ -51,7 +51,7 @@ export const features: IFeatureProps[] = [
           truly: <strong>truly</strong>,
         }}
       >
-        {`We no-longer have to sort/filter lists inside the {build}
+        {`We no longer have to sort/filter lists inside the {build}
           method or have to resort to advanced cache mechanism. {br} {br}
           With {Provider} and {families}, sort your lists or do HTTP
           requests only when you {truly} need it.`}
@@ -95,7 +95,7 @@ export const features: IFeatureProps[] = [
         }}
       >
         {`Using Riverpod, your state is visible out of the box inside Flutter's devtool. {br}
-          Futhermore, a full-blown state-inspector is in progress.`}
+          Furthermore, a full-blown state-inspector is in progress.`}
       </Translate>
     ),
   },

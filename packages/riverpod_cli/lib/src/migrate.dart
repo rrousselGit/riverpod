@@ -97,7 +97,7 @@ class MigrateCommand extends Command<void> {
       versionMigrationSuggestor,
       args: argResults?.arguments ?? [],
     );
-    if (errorOccuredDuringMigration) {
+    if (errorOccurredDuringMigration) {
       printErrorLogs();
     } else {
       stdout.writeln(

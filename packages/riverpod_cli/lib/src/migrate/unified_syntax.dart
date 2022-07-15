@@ -9,6 +9,7 @@ import 'package:pub_semver/pub_semver.dart';
 import 'errors.dart';
 
 enum ClassType { consumer, hook, stateless, stateful, none }
+
 enum ProviderType {
   stream,
   future,
@@ -589,7 +590,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
             providerTypeArgs.substring(0, providerTypeArgs.lastIndexOf(','));
       }
     } catch (e, st) {
-      errorOccuredDuringMigration = true;
+      errorOccurredDuringMigration = true;
       // Can't know anything if we ran into an exception
       providerTypeArgs = '';
       inAutoDisposeProvider = false;
@@ -890,7 +891,7 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         }
       }
     } catch (e, st) {
-      errorOccuredDuringMigration = true;
+      errorOccurredDuringMigration = true;
 
       addError('when visiting a method invocation $node\n$e\n$st');
     }

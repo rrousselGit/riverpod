@@ -1,0 +1,259 @@
+{
+  "theme.NotFound.title": {
+    "message": "Página No Encontrada",
+    "description": "The title of the 404 page"
+  },
+  "theme.NotFound.p1": {
+    "message": "No pudimos encontrar lo que estabas buscando.",
+    "description": "The first paragraph of the 404 page"
+  },
+  "theme.NotFound.p2": {
+    "message": "Por favor comuníquese con el propietario del sitio que lo vinculó a la URL original e infórmele que su vínculo no funciona.",
+    "description": "The 2nd paragraph of the 404 page"
+  },
+  "theme.AnnouncementBar.closeButtonAriaLabel": {
+    "message": "De cerca",
+    "description": "The ARIA label for close button of announcement bar"
+  },
+  "theme.blog.paginator.navAriaLabel": {
+    "message": "Paginación de la lista de publicaciones del blog",
+    "description": "The ARIA label for the blog pagination"
+  },
+  "theme.blog.paginator.newerEntries": {
+    "message": "Nuevas entradas",
+    "description": "The label used to navigate to the newer blog posts page (previous page)"
+  },
+  "theme.blog.paginator.olderEntries": {
+    "message": "Entradas antiguas",
+    "description": "The label used to navigate to the older blog posts page (next page)"
+  },
+  "theme.blog.post.readingTime.plurals": {
+    "message": "Un minuto de lectura|{readingTime} minutos de lectura",
+    "description": "Pluralized label for \"{readingTime} min read\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.tags.tagsListLabel": {
+    "message": "Etiquetas: ",
+    "description": "The label alongside a tag list"
+  },
+  "theme.blog.post.readMore": {
+    "message": "Leer más",
+    "description": "The label used in blog post item excerpts to link to full blog posts"
+  },
+  "theme.blog.post.paginator.navAriaLabel": {
+    "message": "Paginación de publicaciones del blog",
+    "description": "The ARIA label for the blog posts pagination"
+  },
+  "theme.blog.post.paginator.newerPost": {
+    "message": "Publicación más reciente",
+    "description": "The blog post button label to navigate to the newer/previous post"
+  },
+  "theme.blog.post.paginator.olderPost": {
+    "message": "Publicación más antigua",
+    "description": "The blog post button label to navigate to the older/next post"
+  },
+  "theme.blog.sidebar.navAriaLabel": {
+    "message": "Navegación de publicaciones recientes del blog",
+    "description": "The ARIA label for recent posts in the blog sidebar"
+  },
+  "theme.blog.post.plurals": {
+    "message": "Un artículo|{count} artículos",
+    "description": "Pluralized label for \"{count} posts\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.blog.tagTitle": {
+    "message": "{nPosts} etiquetadas con « {tagName} »",
+    "description": "The title of the page for a blog tag"
+  },
+  "theme.tags.tagsPageLink": {
+    "message": "Ver todas las etiquetas",
+    "description": "The label of the link targeting the tag list page"
+  },
+  "theme.CodeBlock.copyButtonAriaLabel": {
+    "message": "Copiar código",
+    "description": "The ARIA label for copy code blocks button"
+  },
+  "theme.CodeBlock.copied": {
+    "message": "Copiado",
+    "description": "The copied button label on code blocks"
+  },
+  "theme.CodeBlock.copy": {
+    "message": "Copiar",
+    "description": "The copy button label on code blocks"
+  },
+  "theme.tags.tagsPageTitle": {
+    "message": "Etiquetas",
+    "description": "The title of the tag list page"
+  },
+  "theme.docs.sidebar.expandButtonTitle": {
+    "message": "Desplegar el menú lateral",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.docs.sidebar.expandButtonAriaLabel": {
+    "message": "Desplegar el menú lateral",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.docs.paginator.navAriaLabel": {
+    "message": "Paginación de documentos",
+    "description": "The ARIA label for the docs pagination"
+  },
+  "theme.docs.paginator.previous": {
+    "message": "Anterior",
+    "description": "The label used to navigate to the previous doc"
+  },
+  "theme.docs.paginator.next": {
+    "message": "Siguiente",
+    "description": "The label used to navigate to the next doc"
+  },
+  "theme.docs.sidebar.collapseButtonTitle": {
+    "message": "Ocultar menú lateral",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.sidebar.collapseButtonAriaLabel": {
+    "message": "Ocultar menú lateral",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.versions.unreleasedVersionLabel": {
+    "message": "Esta es la documentación para la próxima versión {versionLabel} de {siteTitle}.",
+    "description": "The label used to tell the user that he's browsing an unreleased doc version"
+  },
+  "theme.docs.versions.unmaintainedVersionLabel": {
+    "message": "Esta es la documentación de {siteTitle} {versionLabel}, que ya no se mantiene activamente.",
+    "description": "The label used to tell the user that he's browsing an unmaintained doc version"
+  },
+  "theme.docs.versions.latestVersionSuggestionLabel": {
+    "message": "Haga clic aquí para obtener la documentación de la última versión [{versionLabel}]: {latestVersionLink}",
+    "description": "The label used to tell the user to check the latest version"
+  },
+  "theme.docs.versions.latestVersionLinkLabel": {
+    "message": "Última versión",
+    "description": "The label used for the latest version suggestion link label"
+  },
+  "theme.common.editThisPage": {
+    "message": "Editar esta página",
+    "description": "The link label to edit the current page"
+  },
+  "theme.common.headingLinkTitle": {
+    "message": "Enlace directo al título",
+    "description": "Title for link to heading"
+  },
+  "theme.lastUpdated.atDate": {
+    "message": "Última fecha de actualización: {date}",
+    "description": "The words used to describe on which date a page has been last updated"
+  },
+  "theme.lastUpdated.byUser": {
+    "message": "Última actualización por: {user}",
+    "description": "The words used to describe by who the page has been last updated"
+  },
+  "theme.lastUpdated.lastUpdatedAtBy": {
+    "message": "Última actualización el {atDate} por {byUser}",
+    "description": "The sentence used to display when a page has been last updated, and by who"
+  },
+  "theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel": {
+    "message": "← Volver al menú principal",
+    "description": "The label of the back button to return to main menu, inside the mobile navbar sidebar secondary menu (notably used to display the docs sidebar)"
+  },
+  "theme.common.skipToMainContent": {
+    "message": "Saltar al contenido principal",
+    "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
+  },
+  "theme.TOCCollapsible.toggleButtonLabel": {
+    "message": "En esta página",
+    "description": "The label used by the button on the collapsible TOC component"
+  },
+  "theme.SearchPage.documentsFound.plurals": {
+    "message": "Un documento encontrado|{count} documentos encontrados",
+    "description": "Pluralized label for \"{count} documents found\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.SearchPage.existingResultsTitle": {
+    "message": "Resultados de la búsqueda de « {query} »",
+    "description": "The search page title for non-empty query"
+  },
+  "theme.SearchPage.emptyResultsTitle": {
+    "message": "Buscar documentos.",
+    "description": "The search page title for empty query"
+  },
+  "theme.SearchPage.inputPlaceholder": {
+    "message": "Escriba su búsqueda aquí",
+    "description": "The placeholder for search page input"
+  },
+  "theme.SearchPage.inputLabel": {
+    "message": "Buscar",
+    "description": "The ARIA label for search page input"
+  },
+  "theme.SearchPage.algoliaLabel": {
+    "message": "Búsqueda por Algolia",
+    "description": "The ARIA label for Algolia mention"
+  },
+  "theme.SearchPage.noResultsText": {
+    "message": "Ningún resultado encontrado",
+    "description": "The paragraph for empty search result"
+  },
+  "theme.SearchPage.fetchingNewResults": {
+    "message": "Cargando nuevos resultados...",
+    "description": "The paragraph for fetching new search results"
+  },
+  "theme.SearchBar.label": {
+    "message": "Buscar",
+    "description": "The ARIA label and placeholder for search button"
+  },
+  "homepage.compile_safe_title": {
+    "message": "Compilación segura"
+  },
+  "homepage.compile_safe_body": {
+    "message": "No más {ProviderNotFound} u olvidarse de manejar los estados de carga. Usando Riverpod, si tu código compila, funciona. "
+  },
+  "homepage.unlimited_provider_title": {
+    "message": "Provider, sin sus limitaciones"
+  },
+  "homepage.unlimited_provider_body": {
+    "message": "Riverpod está inspirado en Provider pero resuelve algunos de sus problemas clave, como soportar múltiples providers del mismo tipo; esperar por providers asincrónicos; agregar providers desde cualquier lugar, ..."
+  },
+  "homepage.no_flutter_dependency_title": {
+    "message": "No depende de Flutter"
+  },
+  "homepage.no_flutter_dependency_body": {
+    "message": "Crea/comparte/prueba providers, sin depender de Flutter. Esto incluye poder escuchar providers sin un {BuildContext}."
+  },
+  "home.tagline": {
+    "message": "Un Framework de Caché y Enlace de Datos Reactivo"
+  },
+  "home.get_started": {
+    "message": "Empezar"
+  },
+  "home.shared_state_title": {
+    "message": "Declara un estado compartido desde cualquier lugar"
+  },
+  "home.shared_state_body": {
+    "message": "Ya no es necesario saltar entre tu {main} y tus archivos de interfaz de usuario. Escribe el código de tu estado compartido donde pertenece, ya sea en un paquete separado o justo al lado del Widget que lo necesita, sin perder la capacidad de hacer pruebas.",
+    "description": "The homepage input placeholder"
+  },
+  "home.recompute_title": {
+    "message": "Recalcular el estado y reconstruir el interfaz solo cuando sea necesario"
+  },
+  "home.recompute_body": {
+    "message": "Ya no tenemos que ordenar y/o filtrar listas dentro del método {build} o tener que recurrir a un mecanismo de caché avanzado.{br}{br} Con {Provider} y {families}, puedes ordenar tus listas o hacer solicitudes HTTP solo cuando realmente lo necesites."
+  },
+  "home.safe_read_title": {
+    "message": "Lea los providers de forma segura"
+  },
+  "home.safe_read_body": {
+    "message": "Leer un provider nunca resultará en un mal estado. Si puedes escribir el código necesario para leer un provider, obtendrás un valor válido. {br}{br} Esto incluso se aplica a los valores obtenidos de forma asíncrona. A diferencia de Provider, Riverpod te permite manejar de forma limpia los casos de carga y error."
+  },
+  "home.devtool_title": {
+    "message": "Inspecciona tu estado en el devtool"
+  },
+  "home.devtool_body": {
+    "message": "Usando Riverpod, por defecto, tu estado es visible dentro del devtool de Flutter. Por si fuera poco, una herramienta integral de inspección de estados esta en desarrollo."
+  },
+  "home.create_provider": {
+    "message": "Crea un Provider"
+  },
+  "home.consume_provider": {
+    "message": "Consume el Provider"
+  },
+  "declare_anywhere_img": {
+    "message": "img/intro/fr/declare_anywhere.png"
+  },
+  "home.async_img": {
+    "message": "img/intro/fr/async.png"
+  }
+}

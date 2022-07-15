@@ -1,8 +1,8 @@
 part of '../state_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [controller], the [StateController] currently exposed by this providers.
-abstract class StateProviderRef<State> implements Ref {
+/// - [controller], the [StateController] currently exposed by this provider.
+abstract class StateProviderRef<State> implements Ref<StateController<State>> {
   /// The [StateController] currently exposed by this provider.
   ///
   /// Cannot be accessed while creating the provider.
@@ -53,6 +53,7 @@ class StateProvider<State> extends AlwaysAliveProviderBase<State>
     dependencies: [notifier],
     from: from,
     argument: argument,
+    name: modifierName(name, 'state'),
   );
 
   /// {@template riverpod.stateprovider.notifier}
@@ -63,7 +64,7 @@ class StateProvider<State> extends AlwaysAliveProviderBase<State>
   /// event that the [StateController] it recreated.
   ///
   ///
-  /// It is preferrable to do:
+  /// It is preferable to do:
   /// ```dart
   /// ref.watch(stateProvider.notifier)
   /// ```
@@ -109,15 +110,11 @@ class StateProviderElement<State> extends ProviderElementBase<State> {
 class _NotifierStateProvider<State> extends Provider<State> {
   _NotifierStateProvider(
     Create<State, ProviderRef<State>> create, {
-    List<ProviderOrFamily>? dependencies,
-    required Family? from,
-    required Object? argument,
-  }) : super(
-          create,
-          dependencies: dependencies,
-          from: from,
-          argument: argument,
-        );
+    super.dependencies,
+    required super.from,
+    required super.argument,
+    required super.name,
+  }) : super(create);
 
   @override
   bool updateShouldNotify(State previousState, State newState) {

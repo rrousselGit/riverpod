@@ -1,8 +1,9 @@
 part of '../future_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [ProviderRef.state], the value currently exposed by this providers.
-abstract class AutoDisposeFutureProviderRef<State> implements AutoDisposeRef {
+/// - [ProviderRef.state], the value currently exposed by this provider.
+abstract class AutoDisposeFutureProviderRef<State>
+    implements AutoDisposeRef<AsyncValue<State>> {
   /// Obtains the state currently exposed by this provider.
   ///
   /// Mutating this property will notify the provider listeners.
@@ -29,7 +30,15 @@ class AutoDisposeFutureProvider<State>
     this.dependencies,
     Family? from,
     Object? argument,
-  }) : super(name: name, from: from, argument: argument);
+    Duration? cacheTime,
+    Duration? disposeDelay,
+  }) : super(
+          name: name,
+          from: from,
+          argument: argument,
+          cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
+        );
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeFutureProviderFamilyBuilder();
@@ -48,6 +57,8 @@ class AutoDisposeFutureProvider<State>
     this,
     from: from,
     argument: argument,
+    cacheTime: cacheTime,
+    disposeDelay: disposeDelay,
   );
 
   @override
@@ -76,12 +87,12 @@ class AutoDisposeFutureProvider<State>
   }
 }
 
-/// The element of a [AutoDisposeFutureProvider]
+/// The element of an [AutoDisposeFutureProvider]
 class AutoDisposeFutureProviderElement<State>
     extends AutoDisposeProviderElementBase<AsyncValue<State>>
     with _FutureProviderElementMixin<State>
     implements AutoDisposeFutureProviderRef<State> {
-  /// The element of a [AutoDisposeFutureProvider]
+  /// The element of an [AutoDisposeFutureProvider]
   AutoDisposeFutureProviderElement(AutoDisposeFutureProvider<State> provider)
       : super(provider);
 
@@ -93,7 +104,7 @@ class AutoDisposeFutureProviderElement<State>
 }
 
 /// {@template riverpod.futureprovider.family}
-/// A class that allows building a [AutoDisposeFutureProvider] from an external parameter.
+/// A class that allows building an [AutoDisposeFutureProvider] from an external parameter.
 /// {@endtemplate}
 @sealed
 class AutoDisposeFutureProviderFamily<State, Arg>
@@ -103,7 +114,14 @@ class AutoDisposeFutureProviderFamily<State, Arg>
     this._create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+    Duration? cacheTime,
+    Duration? disposeDelay,
+  }) : super(
+          name: name,
+          dependencies: dependencies,
+          cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
+        );
 
   final FamilyCreate<FutureOr<State>, AutoDisposeFutureProviderRef<State>, Arg>
       _create;
@@ -115,6 +133,8 @@ class AutoDisposeFutureProviderFamily<State, Arg>
       name: name,
       from: this,
       argument: argument,
+      cacheTime: cacheTime,
+      disposeDelay: disposeDelay,
     );
   }
 

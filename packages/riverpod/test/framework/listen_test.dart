@@ -6,9 +6,292 @@ import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
 import '../utils.dart';
+import 'uni_directional_test.dart';
 
 void main() {
+  group('Ref.listenSelf', () {
+    test('does not break autoDispose', () async {
+      final container = createContainer();
+      final provider = Provider.autoDispose((ref) {
+        ref.listenSelf((previous, next) {});
+      });
+
+      container.read(provider);
+      expect(container.getAllProviderElements(), [anything]);
+
+      await container.pump();
+
+      expect(container.getAllProviderElements(), isEmpty);
+    });
+
+    test('listens to mutations post build', () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      final listener2 = Listener<int>();
+
+      late ProviderRef<int> ref;
+      final provider = Provider<int>((r) {
+        ref = r;
+        ref.listenSelf(listener);
+        ref.listenSelf(listener2);
+
+        return 0;
+      });
+
+      container.read(provider);
+
+      verifyInOrder([
+        listener(null, 0),
+        listener2(null, 0),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      ref.state = 42;
+
+      verifyInOrder([
+        listener(0, 42),
+        listener2(0, 42),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('listens to rebuild', () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      final listener2 = Listener<int>();
+      var result = 0;
+      final provider = Provider<int>((ref) {
+        ref.listenSelf(listener);
+        ref.listenSelf(listener2);
+
+        return result;
+      });
+
+      container.read(provider);
+
+      verifyInOrder([
+        listener(null, 0),
+        listener2(null, 0),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      result = 42;
+      container.refresh(provider);
+
+      verifyInOrder([
+        listener(0, 42),
+        listener2(0, 42),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('notify listeners independently from updateShouldNotify', () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      final listener2 = Listener<int>();
+      final provider = Provider<int>((ref) {
+        ref.listenSelf(listener);
+        ref.listenSelf(listener2);
+
+        return 0;
+      });
+
+      container.read(provider);
+
+      verifyInOrder([
+        listener(null, 0),
+        listener2(null, 0),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      container.refresh(provider);
+
+      verifyInOrder([
+        listener(0, 0),
+        listener2(0, 0),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('clears state listeners on rebuild', () async {
+      final container = createContainer();
+      final listener = Listener<int>();
+      final listener2 = Listener<int>();
+      var result = 0;
+      final provider = Provider<int>((ref) {
+        if (result == 0) {
+          ref.listenSelf(listener);
+        } else {
+          ref.listenSelf(listener2);
+        }
+
+        return result;
+      });
+
+      container.read(provider);
+
+      verifyOnly(listener, listener(null, 0));
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      result = 42;
+      container.refresh(provider);
+
+      verifyOnly(listener2, listener2(0, 42));
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('listens to errors', () {
+      final container = createContainer();
+      final listener = Listener<int>();
+      final errorListener = ErrorListener();
+      final errorListener2 = ErrorListener();
+      var error = 42;
+      final provider = Provider<int>((ref) {
+        ref.listenSelf(listener, onError: errorListener);
+        ref.listenSelf((prev, next) {}, onError: errorListener2);
+
+        Error.throwWithStackTrace(error, StackTrace.empty);
+      });
+
+      expect(() => container.read(provider), throwsA(42));
+
+      verifyZeroInteractions(listener);
+      verifyInOrder([
+        errorListener(42, StackTrace.empty),
+        errorListener2(42, StackTrace.empty),
+      ]);
+      verifyNoMoreInteractions(errorListener);
+      verifyNoMoreInteractions(errorListener2);
+
+      error = 21;
+      expect(() => container.refresh(provider), throwsA(21));
+
+      verifyZeroInteractions(listener);
+
+      verifyInOrder([
+        errorListener(21, StackTrace.empty),
+        errorListener2(21, StackTrace.empty),
+      ]);
+      verifyNoMoreInteractions(errorListener);
+      verifyNoMoreInteractions(errorListener2);
+    });
+
+    test('executes error listener before other listeners', () {
+      final container = createContainer();
+      final errorListener = ErrorListener();
+      final errorListener2 = ErrorListener();
+      Exception? error;
+      final provider = Provider<int>((ref) {
+        ref.listenSelf((prev, next) {}, onError: errorListener);
+
+        if (error != null) Error.throwWithStackTrace(error, StackTrace.empty);
+
+        return 0;
+      });
+
+      container.listen(provider, (prev, next) {}, onError: errorListener2);
+
+      verifyZeroInteractions(errorListener);
+      verifyZeroInteractions(errorListener2);
+
+      error = Exception();
+      expect(() => container.refresh(provider), throwsA(error));
+
+      verifyInOrder([
+        errorListener(error, StackTrace.empty),
+        errorListener2(error, StackTrace.empty),
+      ]);
+      verifyNoMoreInteractions(errorListener);
+      verifyNoMoreInteractions(errorListener2);
+    });
+
+    test('executes state listener before other listeners', () {
+      final container = createContainer();
+      final listener = Listener<int>();
+      final listener2 = Listener<int>();
+      var result = 0;
+      final provider = Provider<int>((ref) {
+        ref.listenSelf(listener);
+        return result;
+      });
+
+      container.listen(provider, listener2, fireImmediately: true);
+
+      verifyInOrder([
+        listener(null, 0),
+        listener2(null, 0),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      result = 42;
+      container.refresh(provider);
+
+      verifyInOrder([
+        listener(0, 42),
+        listener2(0, 42),
+      ]);
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+    });
+
+    test('listeners are not allowed to modify the state', () {});
+  });
+
   group('Ref.listen', () {
+    test(
+        'when rebuild throws identical error/stack, listeners are still notified',
+        () {
+      final container = createContainer();
+      const stack = StackTrace.empty;
+      final listener = Listener<int>();
+      final errorListener = ErrorListener();
+      final provider = Provider<int>((ref) {
+        Error.throwWithStackTrace(42, stack);
+      });
+
+      container.listen(
+        provider,
+        listener,
+        onError: errorListener,
+        fireImmediately: true,
+      );
+
+      verifyZeroInteractions(listener);
+      verifyOnly(errorListener, errorListener(42, stack));
+
+      expect(() => container.refresh(provider), throwsA(42));
+
+      verifyZeroInteractions(listener);
+      verifyOnly(errorListener, errorListener(42, stack));
+    });
+
+    test('cannot listen itself', () {
+      final container = createContainer();
+      final listener = Listener<int>();
+      late ProviderRef<int> ref;
+      late Provider<int> provider;
+      provider = Provider<int>((r) {
+        ref = r;
+        ref.listen(provider, (previous, next) {});
+        return 0;
+      });
+
+      expect(() => container.read(provider), throwsA(isAssertionError));
+
+      ref.state = 42;
+
+      verifyZeroInteractions(listener);
+    });
+
     test('expose previous and new value on change', () {
       final container = createContainer();
       final dep = StateNotifierProvider<StateController<int>, int>(
@@ -26,6 +309,35 @@ void main() {
       container.read(dep.notifier).state++;
 
       verifyOnly(listener, listener(0, 1));
+    });
+
+    test(
+        'calling ref.listen on a provider with an outdated dependency flushes it, then add the listener',
+        () {
+      final container = createContainer();
+      var buildCount = 0;
+      final dep2 = StateNotifierProvider<StateController<int>, int>(
+        (ref) => StateController(0),
+      );
+      final dep = Provider<int>((ref) {
+        buildCount++;
+        return ref.watch(dep2);
+      });
+      final listener = Listener<int>();
+      final provider = Provider((ref) {
+        ref.listen<int>(dep, listener);
+      });
+
+      container.read(dep);
+      container.read(dep2.notifier).state++; // mark `dep` as outdated
+
+      expect(buildCount, 1);
+      verifyZeroInteractions(listener);
+
+      container.read(provider);
+
+      expect(buildCount, 2);
+      verifyZeroInteractions(listener);
     });
 
     test(
@@ -67,7 +379,10 @@ void main() {
       final listener = Listener<int>();
       final errors = <Object>[];
       final provider = Provider((ref) {
-        ref.listen(dep, listener);
+        runZonedGuarded(
+          () => ref.listen(dep, listener),
+          (err, stack) => errors.add(err),
+        );
       });
 
       container.read(provider);
@@ -75,19 +390,12 @@ void main() {
       verifyZeroInteractions(listener);
       expect(errors, isEmpty);
 
-      runZonedGuarded(
-        () => container.read(isErrored.state).state = true,
-        (err, stack) => errors.add(err),
-      );
+      container.read(isErrored.notifier).state = true;
 
       await container.pump();
 
       verifyZeroInteractions(listener);
-      expect(errors, [
-        isA<ProviderException>()
-            .having((e) => e.exception, 'exception', isUnimplementedError)
-            .having((e) => e.provider, 'provider', dep),
-      ]);
+      expect(errors, [isUnimplementedError]);
     });
 
     test(
@@ -102,7 +410,10 @@ void main() {
       final listener = Listener<int>();
       final errors = <Object>[];
       final provider = Provider((ref) {
-        ref.listen(dep.select((value) => value), listener);
+        runZonedGuarded(
+          () => ref.listen(dep.select((value) => value), listener),
+          (err, stack) => errors.add(err),
+        );
       });
 
       container.read(provider);
@@ -110,19 +421,12 @@ void main() {
       verifyZeroInteractions(listener);
       expect(errors, isEmpty);
 
-      runZonedGuarded(
-        () => container.read(isErrored.state).state = true,
-        (err, stack) => errors.add(err),
-      );
+      container.read(isErrored.state).state = true;
 
       await container.pump();
 
       verifyZeroInteractions(listener);
-      expect(errors, [
-        isA<ProviderException>()
-            .having((e) => e.exception, 'exception', isUnimplementedError)
-            .having((e) => e.provider, 'provider', dep),
-      ]);
+      expect(errors, [isUnimplementedError]);
     });
 
     test('when rebuild throws, calls onError', () async {
@@ -212,9 +516,7 @@ void main() {
 
         verifyZeroInteractions(listener);
         expect(errors, [
-          isA<ProviderException>()
-              .having((e) => e.exception, 'exception', isUnimplementedError)
-              .having((e) => e.provider, 'provider', dep),
+          isUnimplementedError,
         ]);
       });
 
@@ -239,9 +541,7 @@ void main() {
 
         verifyZeroInteractions(listener);
         expect(errors, [
-          isA<ProviderException>()
-              .having((e) => e.exception, 'exception', isUnimplementedError)
-              .having((e) => e.provider, 'provider', dep),
+          isUnimplementedError,
         ]);
       });
 
@@ -300,7 +600,7 @@ void main() {
         final container = createContainer();
         final errors = <Object>[];
 
-        void Function()? sub;
+        ProviderSubscription<int>? sub;
 
         final provider = Provider((ref) {
           sub = runZonedGuarded(
@@ -337,7 +637,7 @@ void main() {
         final container = createContainer();
         final errors = <Object>[];
 
-        void Function()? sub;
+        ProviderSubscription<StateController<int>>? sub;
 
         final provider = Provider((ref) {
           sub = runZonedGuarded(
@@ -383,7 +683,7 @@ void main() {
         final container = createContainer();
         final errors = <Object>[];
 
-        void Function()? sub;
+        ProviderSubscription<int>? sub;
 
         final provider = Provider((ref) {
           sub = runZonedGuarded(
@@ -437,7 +737,7 @@ void main() {
         final container = createContainer();
         final errors = <Object>[];
 
-        void Function()? sub;
+        ProviderSubscription<int>? sub;
 
         final provider = Provider((ref) {
           sub = runZonedGuarded(
@@ -488,24 +788,20 @@ void main() {
       final listener = Listener<int>();
       final errors = <Object>[];
 
-      container.listen(dep, listener);
+      runZonedGuarded(
+        () => container.listen(dep, listener),
+        (err, stack) => errors.add(err),
+      );
 
       verifyZeroInteractions(listener);
       expect(errors, isEmpty);
 
-      runZonedGuarded(
-        () => container.read(isErrored.state).state = true,
-        (err, stack) => errors.add(err),
-      );
+      container.read(isErrored.state).state = true;
 
       await container.pump();
 
       verifyZeroInteractions(listener);
-      expect(errors, [
-        isA<ProviderException>()
-            .having((e) => e.exception, 'exception', isUnimplementedError)
-            .having((e) => e.provider, 'provider', dep),
-      ]);
+      expect(errors, [isUnimplementedError]);
     });
 
     test(
@@ -520,24 +816,20 @@ void main() {
       final listener = Listener<int>();
       final errors = <Object>[];
 
-      container.listen(dep.select((value) => value), listener);
+      runZonedGuarded(
+        () => container.listen(dep.select((value) => value), listener),
+        (err, stack) => errors.add(err),
+      );
 
       verifyZeroInteractions(listener);
       expect(errors, isEmpty);
 
-      runZonedGuarded(
-        () => container.read(isErrored.state).state = true,
-        (err, stack) => errors.add(err),
-      );
+      container.read(isErrored.state).state = true;
 
       await container.pump();
 
       verifyZeroInteractions(listener);
-      expect(errors, [
-        isA<ProviderException>()
-            .having((e) => e.exception, 'exception', isUnimplementedError)
-            .having((e) => e.provider, 'provider', dep),
-      ]);
+      expect(errors, [isUnimplementedError]);
     });
 
     test('when rebuild throws, calls onError', () async {
@@ -695,10 +987,10 @@ void main() {
       final listener2 = Listener<int>();
 
       final p = Provider((ref) {
-        void Function()? a;
+        ProviderSubscription<StateController<int>>? a;
         ref.listen<StateController<int>>(provider.state, (prev, value) {
           listener(prev?.state, value.state);
-          a?.call();
+          a?.close();
           a = null;
         });
 
@@ -807,9 +1099,7 @@ void main() {
 
         verifyZeroInteractions(listener);
         expect(errors, [
-          isA<ProviderException>()
-              .having((e) => e.exception, 'exception', isUnimplementedError)
-              .having((e) => e.provider, 'provider', dep),
+          isUnimplementedError,
         ]);
       });
 
@@ -831,9 +1121,7 @@ void main() {
 
         verifyZeroInteractions(listener);
         expect(errors, [
-          isA<ProviderException>()
-              .having((e) => e.exception, 'exception', isUnimplementedError)
-              .having((e) => e.provider, 'provider', dep),
+          isUnimplementedError,
         ]);
       });
 

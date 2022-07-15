@@ -15,7 +15,7 @@ final allFilterKey = UniqueKey();
 /// We are using [StateNotifierProvider] here as a `List<Todo>` is a complex
 /// object, with advanced business logic like how to edit a todo.
 final todoListProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) {
-  return TodoList([
+  return TodoList(const [
     Todo(id: 'todo-0', description: 'hi'),
     Todo(id: 'todo-1', description: 'hello'),
     Todo(id: 'todo-2', description: 'bonjour'),
@@ -224,7 +224,7 @@ class Title extends StatelessWidget {
 
 /// A provider which exposes the [Todo] displayed by a [TodoItem].
 ///
-/// By retreiving the [Todo] through a provider instead of through its
+/// By retrieving the [Todo] through a provider instead of through its
 /// constructor, this allows [TodoItem] to be instantiated using the `const` keyword.
 ///
 /// This ensures that when we add/remove/edit todos, only what the
@@ -238,9 +238,7 @@ class TodoItem extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final todo = ref.watch(_currentTodo);
     final itemFocusNode = useFocusNode();
-    // listen to focus chances
-    useListenable(itemFocusNode);
-    final isFocused = itemFocusNode.hasFocus;
+    final itemIsFocused = useIsFocused(itemFocusNode);
 
     final textEditingController = useTextEditingController();
     final textFieldFocusNode = useFocusNode();
@@ -270,7 +268,7 @@ class TodoItem extends HookConsumerWidget {
             onChanged: (value) =>
                 ref.read(todoListProvider.notifier).toggle(todo.id),
           ),
-          title: isFocused
+          title: itemIsFocused
               ? TextField(
                   autofocus: true,
                   focusNode: textFieldFocusNode,
@@ -281,4 +279,19 @@ class TodoItem extends HookConsumerWidget {
       ),
     );
   }
+}
+
+bool useIsFocused(FocusNode node) {
+  final isFocused = useState(node.hasFocus);
+
+  useEffect(() {
+    void listener() {
+      isFocused.value = node.hasFocus;
+    }
+
+    node.addListener(listener);
+    return () => node.removeListener(listener);
+  }, [node]);
+
+  return isFocused.value;
 }

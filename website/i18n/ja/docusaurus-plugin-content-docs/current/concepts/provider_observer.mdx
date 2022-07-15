@@ -1,0 +1,43 @@
+---
+title: ProviderObserver
+---
+
+import CodeBlock from "@theme/CodeBlock";
+import logger from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/concepts/provider_observer_logger.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+[ProviderObserver] は ProviderContainer 内で起こる変化を監視します。
+
+ProviderObserver クラスを継承するクラスを定義し、使用したいメソッドをオーバーライドして使用してください。
+
+[ProviderObserver] には3つのメソッドがあります。
+
+- `didAddProvider` はプロバイダが初期化されるたびに呼び出されます。公開される値は `value` パラメータで利用できます。
+- `didDisposeProvider` はプロバイダが破棄されるたびに呼び出されます。
+- `didUpdateProvider` はプロバイダが変更通知を送信するたびに呼び出されます。
+
+### 使用方法
+
+例えば `didUpdateProvider` メソッドをオーバーライドして、プロバイダのステート変化をログに残すという用途にも使用することができます。
+
+<CodeBlock>{trimSnippet(logger)}</CodeBlock>
+
+これでプロバイダのステートが変化するたびに、Logger がログを取ってくれるようになりました。
+
+```
+I/flutter (16783): {
+I/flutter (16783):   "provider": "counter",
+I/flutter (16783):   "newValue": "1"
+I/flutter (16783): }
+```
+
+:::note
+[StateController] （[StateProvider.state] のステート）や [ChangeNotifier] のようにステートがミュータブル（可変）の場合は、
+`previousValue` と `newValue` の値が変わることはありません。
+それぞれ同じ `StateController` / `ChangeNotifier` を参照しているためです。
+:::
+
+[providerobserver]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderObserver-class.html
+[statecontroller]: https://pub.dev/documentation/riverpod/latest/riverpod/StateController-class.html
+[stateprovider.state]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider/state.html
+[changenotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html

@@ -1,0 +1,34 @@
+---
+title: StateNotifierProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todos from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/state_notifier_provider/todos.dart";
+import todosConsumer from "!!raw-loader!/i18n/ja/docusaurus-plugin-content-docs/current/providers/state_notifier_provider/todos_consumer.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`StateNotifierProvider` は [StateNotifier]（Riverpod が依存する [state_notifier] パッケージのクラス）を監視し、公開するためのプロバイダです。
+この `StateNotifierProvider` および [StateNotifier] は、ユーザ操作などにより変化するステート（状態）を管理するソリューションとして Riverpod が推奨するものです。
+
+一般的には次のような用途で使われます。
+
+- **「イミュータブル（不変）」** なステートを公開するため（イミュータブルではあるが、イベントに応じて変わることがある）。
+- ステートを変更するためのロジック（いわゆるビジネスロジック）を一つの場所で集中管理して保守性を高めるため。
+
+
+ここで具体例として、`StateNotifierProvider` を使って Todo リストを管理します。
+`StateNotifierProvider` を使うことで `addTodo` などのメソッドを公開し、UI 側から Todo リストの内容を操作できるようにします。
+
+<CodeBlock>{trimSnippet(todos)}</CodeBlock>
+
+これで `StateNotifierProvider` の定義は完了です。
+次にウィジェット内でプロバイダを利用し、Todo リストの内容表示と操作の部分を実装します。
+
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
+
+[state_notifier]: https://pub.dev/packages/state_notifier
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[provider]: ./provider
+[futureprovider]: ./future_provider

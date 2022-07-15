@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/// Providers are declared globally and specifies how to create a state
+/// Providers are declared globally and specify how to create a state
 final counterProvider = StateProvider((ref) => 0);
 
 class Home extends ConsumerWidget {
@@ -35,7 +35,7 @@ class Home extends ConsumerWidget {
         }),
       ),
       floatingActionButton: FloatingActionButton(
-        // The read method is an utility to read a provider without listening to it
+        // The read method is a utility to read a provider without listening to it
         onPressed: () => ref.read(counterProvider.state).state++,
         child: const Icon(Icons.add),
       ),

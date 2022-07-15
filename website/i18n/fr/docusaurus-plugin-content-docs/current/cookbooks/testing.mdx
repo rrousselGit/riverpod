@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Consumer(builder: (context, ref, _) {
         final counter = ref.watch(counterProvider);
-        return RaisedButton(
+        return ElevatedButton(
           onPressed: () => ref.read(counterProvider.notifier).state++,
           child: Text('${counter.state}'),
         );
@@ -81,7 +81,7 @@ void main() {
     expect(find.text('1'), findsNothing);
 
     // Incrémente le compteur et met à jour l'UI
-    await tester.tap(find.byType(RaisedButton));
+    await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
 
     // Le compteur a bien changé
@@ -287,7 +287,7 @@ final todoListProvider = FutureProvider((ref) async => <Todo>[]);
 ProviderScope(
   overrides: [
     /// Permet de surcharger un FutureProvider avec une valeur prédéfinie
-    todoListProvider.debugOverrideWithValue(
+    todoListProvider.overrideWithValue(
       AsyncValue.data([Todo(id: '42', label: 'Hello', completed: true)]),
     ),
   ],
@@ -368,12 +368,12 @@ void main() {
             body: Consumer(builder: (context, ref, _) {
               final todos = ref.watch(todoListProvider);
               // La liste de tache est en chargement ou erreur
-              if (todos.data == null) {
+              if (todos.asData == null) {
                 return const CircularProgressIndicator();
               }
               return ListView(
                 children: [
-                  for (final todo in todos.data.value) TodoItem(todo: todo)
+                  for (final todo in todos.asData!.value) TodoItem(todo: todo)
                 ],
               );
             }),

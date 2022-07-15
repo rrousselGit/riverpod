@@ -8,7 +8,7 @@ module.exports = {
   plugins: ["docusaurus-plugin-sass"],
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "fr", "ko"],
+    locales: ["en", "fr", "ko", "ja", "es", "bn", "de", "it"],
   },
   themeConfig: {
     googleAnalytics: {
@@ -82,6 +82,18 @@ module.exports = {
             {
               label: "GitHub",
               href: "https://github.com/rrousselgit/river_pod",
+            },
+            {
+              label: "Code of conduct",
+              href: "https://github.com/rrousselGit/river_pod/blob/master/CODE_OF_CONDUCT.md",
+            },
+          ],
+        },
+        {
+          title: "Sponsors",
+          items: [
+            {
+              html: "<a href='https://www.netlify.com'><img src='https://www.netlify.com/img/global/badges/netlify-color-bg.svg' alt='Deploys by Netlify' /></a>",
             },
           ],
         },

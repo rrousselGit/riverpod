@@ -8,6 +8,127 @@ import 'package:mockito/mockito.dart';
 import 'utils.dart';
 
 void main() {
+  group('WidgetRef.listenOnce', () {
+    testWidgets('listens to changes', (tester) async {
+      final provider = StateProvider((ref) => 0);
+      final listener = Listener<int>();
+
+      late WidgetRef ref;
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(builder: (context, r, _) {
+            ref = r;
+            ref.watch(provider);
+            return Container();
+          }),
+        ),
+      );
+
+      ref.listenOnce(provider, listener);
+
+      ref.read(provider.notifier).state++;
+      verifyOnly(listener, listener(0, 1));
+
+      await tester.pump();
+
+      ref.read(provider.notifier).state++;
+      verifyOnly(listener, listener(1, 2));
+    });
+
+    testWidgets('removes listeners on dispose', (tester) async {
+      final provider = StateProvider((ref) => 0);
+      final listener = Listener<int>();
+
+      late WidgetRef ref;
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(builder: (context, r, _) {
+            ref = r;
+            return Container();
+          }),
+        ),
+      );
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(Consumer)),
+      );
+
+      ref.listenOnce(provider, listener);
+
+      await tester.pumpWidget(ProviderScope(child: Container()));
+
+      container.read(provider.notifier).state++;
+      verifyZeroInteractions(listener);
+    });
+
+    testWidgets('supports fireImmediately', (tester) async {
+      final provider = StateProvider((ref) => 0);
+      final listener = Listener<int>();
+
+      late WidgetRef ref;
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(builder: (context, r, _) {
+            ref = r;
+            return Container();
+          }),
+        ),
+      );
+
+      ref.listenOnce(provider, listener, fireImmediately: true);
+
+      verifyOnly(listener, listener(null, 0));
+    });
+
+    testWidgets('can use ProviderSubscription.read to get the current value',
+        (tester) async {
+      final provider = StateProvider((ref) => 0);
+
+      late WidgetRef ref;
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(builder: (context, r, _) {
+            ref = r;
+            return Container();
+          }),
+        ),
+      );
+
+      final sub = ref.listenOnce(provider, (prev, next) {});
+
+      expect(sub.read(), 0);
+
+      ref.read(provider.notifier).state++;
+
+      expect(sub.read(), 1);
+    });
+
+    testWidgets('can cancel the listener early', (tester) async {
+      final provider = StateProvider((ref) => 0);
+      final listener = Listener<int>();
+
+      late WidgetRef ref;
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(builder: (context, r, _) {
+            ref = r;
+            return Container();
+          }),
+        ),
+      );
+
+      final sub = ref.listenOnce(provider, listener);
+
+      ref.read(provider.notifier).state++;
+      verifyOnly(listener, listener(0, 1));
+
+      sub.close();
+
+      ref.read(provider.notifier).state++;
+      verifyNoMoreInteractions(listener);
+    });
+  });
+
   group('WidgetRef.listen', () {
     testWidgets('expose previous and new value on change', (tester) async {
       final container = createContainer();
@@ -81,7 +202,11 @@ void main() {
         ProviderScope(
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen(dep, listener);
+              runZonedGuarded(
+                () => ref.listen(dep, listener),
+                (err, stack) => errors.add(err),
+              );
+
               return Container();
             },
           ),
@@ -96,17 +221,10 @@ void main() {
 
       container.read(isErrored.state).state = true;
 
-      await runZonedGuarded(
-        () => tester.pump(),
-        (err, stack) => errors.add(err),
-      );
+      await tester.pump();
 
       verifyZeroInteractions(listener);
-      expect(errors, [
-        isA<ProviderException>()
-            .having((e) => e.exception, 'exception', isUnimplementedError)
-            .having((e) => e.provider, 'provider', dep),
-      ]);
+      expect(errors, [isUnimplementedError]);
     });
 
     testWidgets(
@@ -124,7 +242,11 @@ void main() {
         ProviderScope(
           child: Consumer(
             builder: (context, ref, _) {
-              ref.listen(dep.select((value) => value), listener);
+              runZonedGuarded(
+                () => ref.listen(dep.select((value) => value), listener),
+                (err, stack) => errors.add(err),
+              );
+
               return Container();
             },
           ),
@@ -139,17 +261,10 @@ void main() {
 
       container.read(isErrored.state).state = true;
 
-      await runZonedGuarded(
-        () => tester.pump(),
-        (err, stack) => errors.add(err),
-      );
+      await tester.pump();
 
       verifyZeroInteractions(listener);
-      expect(errors, [
-        isA<ProviderException>()
-            .having((e) => e.exception, 'exception', isUnimplementedError)
-            .having((e) => e.provider, 'provider', dep),
-      ]);
+      expect(errors, [isUnimplementedError]);
     });
 
     testWidgets('when rebuild throws, calls onError', (tester) async {

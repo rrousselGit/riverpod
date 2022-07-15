@@ -4,6 +4,11 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
+R Function(Key) cacheFamily<Key, R>(R Function(Key key) create) {
+  final cache = <Key, R>{};
+  return (key) => cache.putIfAbsent(key, () => create(key));
+}
+
 class Counter extends StateNotifier<int> {
   Counter([int initialValue = 0]) : super(initialValue);
 
@@ -19,11 +24,15 @@ ProviderContainer createContainer({
   ProviderContainer? parent,
   List<Override> overrides = const [],
   List<ProviderObserver>? observers,
+  Duration? cacheTime,
+  Duration? disposeDelay,
 }) {
   final container = ProviderContainer(
     parent: parent,
     overrides: overrides,
     observers: observers,
+    cacheTime: cacheTime,
+    disposeDelay: disposeDelay,
   );
   addTearDown(container.dispose);
   return container;
@@ -40,6 +49,22 @@ class OnBuildMock extends Mock {
 }
 
 class OnDisposeMock extends Mock {
+  void call();
+}
+
+class OnCancelMock extends Mock {
+  void call();
+}
+
+class OnResume extends Mock {
+  void call();
+}
+
+class OnAddListener extends Mock {
+  void call();
+}
+
+class OnRemoveListener extends Mock {
   void call();
 }
 

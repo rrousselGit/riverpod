@@ -17,7 +17,7 @@ import '../widgets/loading_image.dart';
 ///   [selectedCharacterId] to set the ID based by parsing the route path.
 ///
 /// - [CharacterView], which consumes this provider and [character] to
-///   show the informations of one specific [Character].
+///   show the information of one specific [Character].
 final selectedCharacterId = Provider<String>((ref) {
   throw UnimplementedError();
 });
@@ -52,7 +52,7 @@ final character =
   );
 
   /// Cache the Character once it was successfully obtained.
-  ref.maintainState = true;
+  ref.keepAlive();
   return character;
 });
 

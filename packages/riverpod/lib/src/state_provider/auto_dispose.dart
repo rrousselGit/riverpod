@@ -1,9 +1,11 @@
 part of '../state_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [controller], the [StateController] currently exposed by this providers.
+/// - [controller], the [StateController] currently exposed by this provider.
 abstract class AutoDisposeStateProviderRef<State>
-    implements AutoDisposeRef, StateProviderRef<State> {}
+    implements
+        AutoDisposeRef<StateController<State>>,
+        StateProviderRef<State> {}
 
 /// {@macro riverpod.stateprovider}
 @sealed
@@ -19,14 +21,24 @@ class AutoDisposeStateProvider<State> extends AutoDisposeProviderBase<State>
     List<ProviderOrFamily>? dependencies,
     Family? from,
     Object? argument,
+    Duration? cacheTime,
+    Duration? disposeDelay,
   })  : notifier = _AutoDisposeNotifierProvider(
           create,
           name: modifierName(name, 'notifier'),
           dependencies: dependencies,
           from: from,
           argument: argument,
+          cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
         ),
-        super(name: name, from: from, argument: argument);
+        super(
+          name: name,
+          from: from,
+          argument: argument,
+          cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
+        );
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStateProviderFamilyBuilder();
@@ -37,12 +49,18 @@ class AutoDisposeStateProvider<State> extends AutoDisposeProviderBase<State>
 
   @override
   late final AutoDisposeProviderBase<StateController<State>> state =
-      _AutoDisposeNotifierStateProvider((ref) {
-    return _listenStateProvider(
-      ref as ProviderElementBase<StateController<State>>,
-      ref.watch(notifier),
-    );
-  }, dependencies: [notifier], from: from, argument: argument);
+      _AutoDisposeNotifierStateProvider(
+    (ref) {
+      return _listenStateProvider(
+        ref as ProviderElementBase<StateController<State>>,
+        ref.watch(notifier),
+      );
+    },
+    dependencies: [notifier],
+    from: from,
+    argument: argument,
+    name: modifierName(name, 'state'),
+  );
 
   @override
   State create(AutoDisposeProviderElementBase<State> ref) {
@@ -81,7 +99,15 @@ class _AutoDisposeNotifierProvider<State>
     required this.dependencies,
     required Family? from,
     required Object? argument,
-  }) : super(name: name, from: from, argument: argument);
+    required Duration? cacheTime,
+    required Duration? disposeDelay,
+  }) : super(
+          name: name,
+          from: from,
+          argument: argument,
+          cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
+        );
 
   final Create<State, AutoDisposeStateProviderRef<State>> _create;
 
@@ -125,15 +151,11 @@ class _AutoDisposeNotifierStateProvider<State>
     extends AutoDisposeProvider<State> {
   _AutoDisposeNotifierStateProvider(
     Create<State, AutoDisposeProviderRef<State>> create, {
-    List<ProviderOrFamily>? dependencies,
-    required Family? from,
-    required Object? argument,
-  }) : super(
-          create,
-          dependencies: dependencies,
-          from: from,
-          argument: argument,
-        );
+    super.dependencies,
+    required super.from,
+    required super.argument,
+    required super.name,
+  }) : super(create);
 
   @override
   bool updateShouldNotify(State previousState, State newState) {
@@ -150,7 +172,14 @@ class AutoDisposeStateProviderFamily<State, Arg>
     this._create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
+    Duration? cacheTime,
+    Duration? disposeDelay,
+  }) : super(
+          name: name,
+          dependencies: dependencies,
+          cacheTime: cacheTime,
+          disposeDelay: disposeDelay,
+        );
 
   final FamilyCreate<State, AutoDisposeStateProviderRef<State>, Arg> _create;
 
@@ -161,6 +190,8 @@ class AutoDisposeStateProviderFamily<State, Arg>
       name: name,
       from: this,
       argument: argument,
+      cacheTime: cacheTime,
+      disposeDelay: disposeDelay,
     );
   }
 

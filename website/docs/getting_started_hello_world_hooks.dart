@@ -20,7 +20,7 @@ void main() {
   );
 }
 
-// Note: MyApp is a HookConsumerWidget, from flutter_hooks.
+// Note: MyApp is a HookConsumerWidget, from hooks_riverpod.
 class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -65,12 +65,99 @@ String shortHash(Object? object) {
 /// It is used by [ProviderContainer.listen] and `ref.watch` to listen to
 /// both a provider and `provider.select`.
 ///
-/// Do not implement or extend.
-abstract class ProviderListenable<State> {}
+/// Should override ==/hashCode when possible
+@immutable
+mixin ProviderListenable<State> {
+  /// Starts listening to this transformer
+  ProviderSubscription<State> addListener(
+    Node node,
+    void Function(State? previous, State next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+    bool fireImmediately = false,
+  });
 
-/// Represents the subscription to a provider
+  /// Partially listen to a provider.
+  ///
+  /// Note: This method of listening to an object is currently only supported
+  /// by `ref.watch(` from `hooks_riverpod` and [ProviderContainer.listen].
+  ///
+  /// The [select] function allows filtering unwanted rebuilds of a Widget
+  /// by reading only the properties that we care about.
+  ///
+  /// For example, consider the following `ChangeNotifier`:
+  ///
+  /// ```dart
+  /// class Person extends ChangeNotifier {
+  ///   int _age = 0;
+  ///   int get age => _age;
+  ///   set age(int age) {
+  ///     _age = age;
+  ///     notifyListeners();
+  ///   }
+  ///
+  ///   String _name = '';
+  ///   String get name => _name;
+  ///   set name(String name) {
+  ///     _name = name;
+  ///     notifyListeners();
+  ///   }
+  /// }
+  ///
+  /// final personProvider = ChangeNotifierProvider((_) => Person());
+  /// ```
+  ///
+  /// In this class, both `name` and `age` may change, but a widget may need
+  /// only `age`.
+  ///
+  /// If we used `ref.watch(`/`Consumer` as we normally would, this would cause
+  /// widgets that only use `age` to still rebuild when `name` changes, which
+  /// is inefficient.
+  ///
+  /// The method [select] can be used to fix this, by explicitly reading only
+  /// a specific part of the object.
+  ///
+  /// A typical usage would be:
+  ///
+  /// ```dart
+  /// @override
+  /// Widget build(BuildContext context, WidgetRef ref) {
+  ///   final age = ref.watch(personProvider.select((p) => p.age));
+  ///   return Text('$age');
+  /// }
+  /// ```
+  ///
+  /// This will cause our widget to rebuild **only** when `age` changes.
+  ///
+  ///
+  /// **NOTE**: The function passed to [select] can return complex computations
+  /// too.
+  ///
+  /// For example, instead of `age`, we could return a "isAdult" boolean:
+  ///
+  /// ```dart
+  /// @override
+  /// Widget build(BuildContext context, WidgetRef ref) {
+  ///   final isAdult = ref.watch(personProvider.select((p) => p.age >= 18));
+  ///   return Text('$isAdult');
+  /// }
+  /// ```
+  ///
+  /// This will further optimise our widget by rebuilding it only when "isAdult"
+  /// changed instead of whenever the age changes.
+  ProviderListenable<Selected> select<Selected>(
+    Selected Function(State value) selector,
+  ) {
+    return _ProviderSelector<State, Selected>(
+      provider: this,
+      selector: selector,
+    );
+  }
+}
+
+/// Represents the subscription to a [ProviderListenable]
 abstract class ProviderSubscription<State> {
   /// Stops listening to the provider
+  @mustCallSuper
   void close();
 
   /// Obtain the latest value emitted by the provider

@@ -22,14 +22,22 @@ class CharacterPagination with _$CharacterPagination {
   }) = _CharacterPagination;
 }
 
+class AbortedException implements Exception {}
+
 final characterPages = FutureProvider.autoDispose
-    .family<MarvelListCharactersReponse, CharacterPagination>(
+    .family<MarvelListCharactersResponse, CharacterPagination>(
   (ref, meta) async {
-    // Cancel the page request if the UI no-longer needs it before the request
+    // Cancel the page request if the UI no longer needs it before the request
     // is finished.
     // This typically happen if the user scrolls very fast
     final cancelToken = CancelToken();
     ref.onDispose(cancelToken.cancel);
+
+    // Debouncing the request. By having this delay, it leaves the opportunity
+    // for consumers to subscribe to a different `meta` parameters. In which
+    // case, this request will be aborted.
+    await Future<void>.delayed(const Duration(milliseconds: 250));
+    if (cancelToken.isCancelled) throw AbortedException();
 
     final repository = ref.watch(repositoryProvider);
     final charactersResponse = await repository.fetchCharacters(
@@ -38,11 +46,12 @@ final characterPages = FutureProvider.autoDispose
       nameStartsWith: meta.name,
       cancelToken: cancelToken,
     );
-
-    // Once a page gets downloaded, preserve its state to avoid re-downloading it again.
-    ref.maintainState = true;
     return charactersResponse;
   },
+  // When a page is no-longer use, keep it in cache for up to 5 minutes.
+  // After this point, if the list of characters is requested again, a new fetch
+  // will be performed.
+  cacheTime: const Duration(minutes: 5),
 );
 
 final charactersCount =

@@ -155,7 +155,7 @@ void main() {
     expect(firstItem, findsNothing);
   });
 
-  testWidgets('Clicking on Active shows only uncomplete todos', (tester) async {
+  testWidgets('Clicking on Active shows only incomplete todos', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
     expect(firstItem, findsOneWidget);

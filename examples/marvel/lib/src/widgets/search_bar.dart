@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 // ignore: import_of_legacy_library_into_null_safe
@@ -11,6 +9,7 @@ import '../screens/home.dart';
 class _SearchTheme {
   const _SearchTheme({
     required this.width,
+    // ignore: unused_element, blocked by https://github.com/dart-lang/linter/issues/3232
     this.height = 300,
     required this.searchDecoration,
     required this.iconPadding,
@@ -107,30 +106,6 @@ class SearchBar extends HookConsumerWidget {
   }
 }
 
-/// Listens to the keyboard inputs, but debounce updates to avoid triggering
-/// too many HTTP requests.
-String _useDebouncedSearch(TextEditingController textEditingController) {
-  final search = useState(textEditingController.text);
-  useEffect(() {
-    Timer? timer;
-    void listener() {
-      timer?.cancel();
-      timer = Timer(
-        const Duration(milliseconds: 200),
-        () => search.value = textEditingController.text,
-      );
-    }
-
-    textEditingController.addListener(listener);
-    return () {
-      timer?.cancel();
-      textEditingController.removeListener(listener);
-    };
-  }, [textEditingController]);
-
-  return search.value;
-}
-
 class _SearchHints extends HookConsumerWidget {
   const _SearchHints({
     Key? key,
@@ -141,7 +116,7 @@ class _SearchHints extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final search = _useDebouncedSearch(textEditingController);
+    final search = useValueListenable(textEditingController).text;
 
     return ref.watch(charactersCount(search)).when(
           loading: () => const Center(

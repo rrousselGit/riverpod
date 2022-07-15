@@ -335,7 +335,7 @@ void main() {
     expect(root.getAllProviderElements(), isEmpty);
   });
 
-  test('overrideWithProvider preserves the state accross update', () async {
+  test('overrideWithProvider preserves the state across update', () async {
     final provider = ChangeNotifierProvider((_) {
       return TestNotifier();
     });

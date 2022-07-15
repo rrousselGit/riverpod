@@ -1,0 +1,226 @@
+---
+title: da ^0.14.0 a ^1.0.0
+---
+
+Dopo una lunga attesa, la prima versione stabile di Riverpod è stata finalmente rilasciata 👏
+
+Per vedere tutta la lista dei cambiamenti, consulta il [Changelog](https://pub.dev/packages/flutter_riverpod/changelog#100).  
+In questa pagina ci concentreremo su come migrare una applicazione Riverpod esistente 
+dalla versione 0.14.x alla versione 1.0.0.
+
+## Utilizzo dello strumento di migrazione per aggiornare i tuoi progetti alla nuova sintassi
+
+Prima di spiegare i vari cambiamenti, vale la pena far notare che Riverpod ha 
+uno strumento da riga di comando per migrare automaticamente il tuo progetto.
+
+### Installazione dello strumento
+
+Per installare lo strumento di migrazione, eseguire: 
+
+```sh
+dart pub global activate riverpod_cli
+```
+
+Dovresti poter eseguire ora:
+
+```sh
+riverpod --help
+```
+
+### Uso
+
+Ora che lo strumento è installato, possiamo iniziare ad utilizzarlo.
+
+- Per prima cosa, apri il progetto che vuoi migrare nel tuo terminale.
+- **NON** aggiornare Riverpod.  
+  Lo strumento di migrazione aggiornerà la versione di Riverpod per te.
+  :::danger PERICOLO
+  Non aggiornare Riverpod è importante.
+  Lo strumento non si eseguirà correttamente se hai già installato la versione 1.0.0.
+  Pertanto, assicurati di utilizzare correttamente una versione precedente prima di avviare lo strumento.
+  :::
+
+- Assicurati che il tuo progetto non contenga errori.
+- Eseguire:
+  ```sh
+  riverpod migrate
+  ```
+
+Lo strumento analizzerà il tuo progetto e ti suggerirà le modifiche. Per esempio potresti vedere:
+
+```diff
+-Widget build(BuildContext context, ScopedReader watch) {
++Widget build(BuildContext context, Widget ref) {
+-  MyModel state = watch(provider);
++  MyModel state = ref.watch(provider);
+}
+
+Accept change (y = yes, n = no [default], A = yes to all, q = quit)?
+```
+
+Per accettare la modifica, premi semplicemente <kbd>y</kbd>. In caso contrario, premi <kbd>n</kbd>.
+
+## I cambiamenti
+
+Ora che abbiamo visto come utilizzare il terminale per aggiornare il nostro progetto, 
+vediamo nel dettaglio queste modifiche.
+
+### Unificazione della sintassi
+
+La versione 1.0.0 di Riverpod si concentra sull'unificazione della sintassi 
+per interagire con i provider.  
+Prima, Riverpod aveva molte sintassi simili ma diverse per leggere un provider, 
+come `ref.watch(provider)` vs `useProvider(provider)` vs `watch(provider)`.  
+Con la versione 1.0.0, rimane solo una sintassi: `ref.watch(provider)`. Le altre sono state rimosse.
+
+Il che significa che:
+
+- `useProvider` è stato rimosso in favore di `HookConsumerWidget`.
+  Prima:
+
+  ```dart
+  class Example extends HookWidget {
+    @override
+    Widget build(BuildContext context) {
+      useState(...);
+      int count = useProvider(counterProvider);
+      ...
+    }
+  }
+  ```
+
+  Dopo:
+
+  ```dart
+  class Example extends HookConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      useState(...);
+      int count = ref.watch(counterProvider);
+      ...
+    }
+  }
+  ```
+
+- Il prototipo del metodo `build` di `ConsumerWidget` e `Consumer` è stato cambiato.
+
+  Prima:
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, ScopedReader watch) {
+      int count = watch(counterProvider);
+      ...
+    }
+  }
+
+  Consumer(
+    builder: (context, watch, child) {
+      int count = watch(counterProvider);
+      ...
+    }
+  )
+  ```
+
+  Dopo:
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      int count = ref.watch(counterProvider);
+      ...
+    }
+  }
+
+  Consumer(
+    builder: (context, ref, child) {
+      int count = ref.watch(counterProvider);
+      ...
+    }
+  )
+  ```
+
+- `context.read` è sostituito da `ref.read`.
+
+  Prima:
+
+  ```dart
+  class Example extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      SomeButton(
+        onPressed: () => context.read(provider.notifier).doSomething(),
+      );
+    }
+  }
+  ```
+
+  Dopo:
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      SomeButton(
+        onPressed: () => ref.read(provider.notifier).doSomething(),
+      );
+    }
+  }
+  ```
+
+### StateProvider
+
+[StateProvider] è stato allineato con [StateNotifierProvider].
+
+In precedenza, scrivere `ref.watch(StateProvider)` restituiva un'istanza `StateController`.
+Ora restituisce solo lo stato di `StateController`.
+
+Per migrare hai alcune soluzioni.
+Se il tuo codice otteneva lo stato senza modificarlo, puoi cambiare da:
+
+```dart
+final provider = StateProvider<int>(...);
+
+Consumer(
+  builder: (context, ref, child) {
+    StateController<int> count = ref.watch(provider);
+
+    return Text('${count.state}');
+  }
+)
+```
+
+a:
+
+```dart
+final provider = StateProvider<int>(...);
+
+Consumer(
+  builder: (context, ref, child) {
+    int count = ref.watch(provider);
+
+    return Text('${count}');
+  }
+)
+```
+
+Alternativemente, puoi usare il nuovo `StateProvider.state` per mantenere 
+il vecchio comportamento.
+
+```dart
+final provider = StateProvider<int>(...);
+
+Consumer(
+  builder: (context, ref, child) {
+    StateController<int> count = ref.watch(provider.state);
+
+    return Text('${count.state}');
+  }
+)
+```
+
+[statenotifierprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
+[stateprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider-class.html
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html

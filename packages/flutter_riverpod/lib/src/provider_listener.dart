@@ -34,7 +34,7 @@ class ProviderListener<T> extends ConsumerWidget {
     required this.child,
   }) : super(key: key);
 
-  /// The provider listened.
+  /// The provider listened to.
   ///
   /// Can be `null`.
   final ProviderListenable<T>? provider;

@@ -95,7 +95,7 @@ void main() {
     completer.complete(42);
 
     // wait for then to tick
-    await Future.value(null);
+    await Future<void>.value();
   });
 
   testWidgets("future fails after unmount does't crash", (tester) async {
@@ -118,7 +118,7 @@ void main() {
     completer.completeError(error);
 
     // wait for onError to tick
-    await Future.value(null);
+    await Future<void>.value();
   });
 
   group('overrideWithValue', () {
@@ -199,7 +199,7 @@ void main() {
       );
 
       // make sure the future doesn't just complete in one frame
-      await Future.value(null);
+      await Future<void>.value();
 
       expect(completed, false);
       expect(future, isNotNull);
@@ -230,7 +230,7 @@ void main() {
       );
 
       // make sure the future doesn't just complete in one frame
-      await Future.value(null);
+      await Future<void>.value();
 
       expect(completed, false);
       expect(future, isNotNull);
@@ -273,7 +273,7 @@ void main() {
       );
 
       // make sure the future doesn't just complete in one frame
-      await Future.value(null);
+      await Future<void>.value();
 
       expect(completed, false);
       expect(future, isNotNull);

@@ -2,16 +2,17 @@ name: riverpod
 description: >
   A simple way to access state from anywhere in your application while robust
   and testable.
-version: 2.0.0-dev.0
+version: 2.0.0-dev.9
 homepage: https://riverpod.dev
 repository: https://github.com/rrousselGit/river_pod
 
 environment:
-  sdk: ">=2.14.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
   collection: ^1.15.0
   meta: ^1.3.0
+  stack_trace: ^1.10.0
   state_notifier: ^0.7.0
 
 dev_dependencies:

@@ -19,6 +19,9 @@ linter:
     # temporarily disabled
     require_trailing_commas: false
 
+    # false positive
+    one_member_abstracts: false
+
     # too verbose
     prefer_final_parameters: false
 
@@ -42,7 +45,7 @@ linter:
     always_specify_types: false
 
     # Incompatible with `prefer_final_locals`
-    # Having immutable local variables makes larger functions more predictible
+    # Having immutable local variables makes larger functions more predictable
     # so we will use `prefer_final_locals` instead.
     unnecessary_final: false
 

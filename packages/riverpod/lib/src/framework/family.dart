@@ -4,7 +4,18 @@ part of '../framework.dart';
 abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
     extends ProviderOrFamily implements FamilyOverride<Arg> {
   /// A base class for all families
-  Family({required this.name, required this.dependencies});
+  Family({
+    required this.name,
+    required this.dependencies,
+    this.cacheTime,
+    this.disposeDelay,
+  });
+
+  /// {@macro riverpod.cache_time}
+  final Duration? cacheTime;
+
+  /// {@macro riverpod.dispose_delay}
+  final Duration? disposeDelay;
 
   @override
   final List<ProviderOrFamily>? dependencies;
@@ -27,7 +38,7 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   /// Create a provider from an external value.
   ///
   /// That external value should be immutable and preferably override `==`/`hashCode`.
-  /// See the documentation of [Provider.family] for more informations.
+  /// See the documentation of [Provider.family] for more information.
   FamilyProvider call(Arg argument) => create(argument);
 
   /// Creates the provider for a given parameter.
@@ -84,7 +95,7 @@ extension XFamily<State, Arg,
     on Family<State, Arg, FamilyProvider> {
   /// Overrides the behavior of a family for a part of the application.
   ///
-  /// {@macro riverpod.overideWith}
+  /// {@macro riverpod.overrideWith}
   Override overrideWithProvider(
     AlwaysAliveProviderBase<State> Function(Arg argument) override,
   ) {
@@ -100,7 +111,7 @@ extension XAutoDisposeFamily<State, Arg,
     on Family<State, Arg, FamilyProvider> {
   /// Overrides the behavior of a family for a part of the application.
   ///
-  /// {@macro riverpod.overideWith}
+  /// {@macro riverpod.overrideWith}
   Override overrideWithProvider(
     AutoDisposeProviderBase<State> Function(Arg argument) override,
   ) {
