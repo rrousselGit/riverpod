@@ -1,15 +1,3 @@
-import 'package:meta/meta.dart';
-import 'package:collection/collection.dart';
-
-part 'models.freezed.dart';
-
-const freezed = Object();
-
-class JsonKey {
-  // ignore: avoid_unused_constructor_parameters
-  const JsonKey({bool? ignore});
-}
-
 enum ProviderType {
   stateNotifierProvider,
   provider,
@@ -18,17 +6,20 @@ enum ProviderType {
   changeNotifierProvider,
 }
 
-@freezed
-class Data with _$Data {
-  factory Data({
-    required String providerName,
-    required String refName,
-    required ProviderType providerType,
-    required String valueDisplayType,
-  }) = _Data;
+class Data {
+  Data({
+    required this.providerName,
+    required this.refName,
+    required this.providerType,
+    required this.valueDisplayType,
+  });
+
+  final String providerName;
+  final String refName;
+  final ProviderType providerType;
+  final String valueDisplayType;
 }
 
-@freezed
-class GlobalData with _$GlobalData {
-  factory GlobalData() = _GlobalData;
+class GlobalData {
+  GlobalData();
 }
