@@ -95,29 +95,15 @@ abstract class ProviderBase<State> extends ProviderOrFamily
     );
   }
 
-  /// Initializes the state of a provider
-  @visibleForOverriding
-  State create(covariant Ref ref);
-
-  /// Called when a provider is rebuilt. Used for providers to not notify their
-  /// listeners if the exposed value did not change.
-  @visibleForOverriding
-  bool updateShouldNotify(State previousState, State newState);
-
   /// An internal method that defines how a provider behaves.
   @visibleForOverriding
   ProviderElementBase<State> createElement();
 
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
-  int get hashCode {
-    if (from == null) return super.hashCode;
-
-    return from.hashCode ^ argument.hashCode;
-  }
+  late final int hashCode =
+      from == null ? super.hashCode : from.hashCode ^ argument.hashCode;
 
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
     if (from == null) return identical(other, this);
 
@@ -175,6 +161,36 @@ class _ProviderSubscription<State> implements ProviderSubscription<State> {
   }
 }
 
+class _SelfListenSubscription<State> implements ProviderSubscription<State> {
+  _SelfListenSubscription._(
+    this.element,
+    this.listener, {
+    required this.onError,
+  });
+
+  final void Function(State? previous, State next) listener;
+  final ProviderElementBase<State> element;
+  final void Function(Object error, StackTrace stackTrace)? onError;
+  var _closed = false;
+
+  @override
+  void close() {
+    _closed = true;
+    element._onChangeSelfListeners?.remove(listener);
+    element._onErrorSelfListeners?.remove(onError);
+  }
+
+  @override
+  State read() {
+    if (_closed) {
+      throw StateError(
+        'called ProviderSubscription.read on a subscription that was closed',
+      );
+    }
+    return element.readSelf();
+  }
+}
+
 /// When a provider listens to another provider using `listen`
 class _ProviderListener<State> implements ProviderSubscription<State> {
   _ProviderListener._({
@@ -203,12 +219,7 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
 }
 
 /// An internal class that handles the state of a provider.
-///
-/// Do not use.
 abstract class ProviderElementBase<State> implements Ref<State>, Node {
-  /// Do not use.
-  ProviderElementBase(this._provider);
-
   static ProviderElementBase? _debugCurrentlyBuildingElement;
 
   var _debugSkipNotifyListenersAsserts = false;
@@ -219,8 +230,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   late ProviderBase<Object?> _origin;
 
   /// The provider associated with this [ProviderElementBase], after applying overrides.
-  ProviderBase<State> get provider => _provider;
-  ProviderBase<State> _provider;
+  ProviderBase<State> get provider;
 
   /// The [ProviderContainer] that owns this [ProviderElementBase].
   @override
@@ -234,7 +244,8 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   bool get hasListeners =>
       _listeners.isNotEmpty ||
       _subscribers.isNotEmpty ||
-      _dependents.isNotEmpty;
+      _dependents.isNotEmpty ||
+      _elementListenerCount != 0;
 
   // TODO(rrousselGit) refactor to match ChangeNotifier
   /// Accepts only _ProviderSubscription<State>, but not typed so that
@@ -282,6 +293,15 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   bool _debugDidSetState = false;
   bool _didBuild = false;
 
+  /// A tracker for how many [addElementListener]/[removeElementListener] where
+  /// called.
+  ///
+  /// This is used to keep a [ProviderElementBase] alive as long as there is
+  /// at least one listener.
+  ///
+  /// If 0, it means that there are no active listeners.
+  int _elementListenerCount = 0;
+
   /* STATE */
   Result<State>? _state;
 
@@ -306,7 +326,11 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     final result = _state = newResult;
 
     if (_didBuild) {
-      _notifyListeners(result, previousResult);
+      _notifyListeners(
+        result,
+        previousResult,
+        applyUpdateShouldNotify: true,
+      );
     }
   }
 
@@ -380,18 +404,18 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     );
   }
 
-  // ignore: use_setters_to_change_properties
   /// Called when the override of a provider changes.
   ///
   /// See also:
   /// - `overrideWithValue`, which relies on [update] to handle
   ///   the scenario where the value changed.
   @protected
-  @mustCallSuper
-  // ignore: use_setters_to_change_properties
-  void update(ProviderBase<State> newProvider) {
-    _provider = newProvider;
-  }
+  void update(ProviderBase<State> newProvider) {}
+
+  /// Called when a provider is rebuilt. Used for providers to not notify their
+  /// listeners if the exposed value did not change.
+  @visibleForOverriding
+  bool updateShouldNotify(State previousState, State newState);
 
   @override
   void invalidate(ProviderBase<Object?> provider) {
@@ -449,7 +473,11 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
         _debugSkipNotifyListenersAsserts = true;
         return true;
       }(), '');
-      _notifyListeners(_state!, previousStateResult);
+      _notifyListeners(
+        _state!,
+        previousStateResult,
+        applyUpdateShouldNotify: true,
+      );
       assert(() {
         _debugSkipNotifyListenersAsserts = false;
         return true;
@@ -465,6 +493,8 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     _previousDependencies = null;
   }
 
+  State create();
+
   @pragma('vm:notify-debugger-on-exception')
   void _buildState() {
     ProviderElementBase? debugPreviouslyBuildingElement;
@@ -478,7 +508,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     try {
       // TODO move outside this function?
       _mounted = true;
-      setState(_provider.create(this));
+      setState(create());
     } catch (err, stack) {
       assert(() {
         _debugDidSetState = true;
@@ -494,10 +524,32 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     }
   }
 
+  void addElementListener() => _elementListenerCount++;
+
+  void removeElementListener() {
+    assert(
+      _elementListenerCount > 0,
+      'Bad state, removeElementListener was likely called more than necessary',
+    );
+    _elementListenerCount--;
+  }
+
+  @override
+  void notifyListeners() {
+    final state = getState();
+    if (state == null) {
+      throw StateError(
+        'Trying to call `notifyListeners()` on an uninitialized provider',
+      );
+    }
+    _notifyListeners(state, state, applyUpdateShouldNotify: false);
+  }
+
   void _notifyListeners(
     Result<State> newState,
-    Result<State>? previousStateResult,
-  ) {
+    Result<State>? previousStateResult, {
+    required bool applyUpdateShouldNotify,
+  }) {
     assert(() {
       if (_debugSkipNotifyListenersAsserts) return true;
 
@@ -544,10 +596,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       },
     );
 
-    if (previousStateResult != null &&
+    if (applyUpdateShouldNotify &&
+        previousStateResult != null &&
         previousStateResult.hasState &&
         newState.hasState &&
-        !provider.updateShouldNotify(
+        !updateShouldNotify(
           previousState as State,
           newState.requireState,
         )) {
@@ -801,11 +854,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  void listenSelf(
+  ProviderSubscription<State> listenSelf(
     void Function(State? previous, State next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    // TODO do we want to expose a way to close the subscription?
     // TODO do we want a fireImmdiately?
 
     _onChangeSelfListeners ??= [];
@@ -815,6 +867,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       _onErrorSelfListeners ??= [];
       _onErrorSelfListeners!.add(onError);
     }
+
+    return _SelfListenSubscription._(this, listener, onError: onError);
   }
 
   /// Returns the currently exposed by a provider
@@ -1147,8 +1201,7 @@ class ResultError<State> implements Result<State> {
   State? get stateOrNull => null;
 
   @override
-  // ignore: only_throw_errors
-  State get requireState => throw error;
+  State get requireState => Error.throwWithStackTrace(error, stackTrace);
 
   @override
   R map<R>({

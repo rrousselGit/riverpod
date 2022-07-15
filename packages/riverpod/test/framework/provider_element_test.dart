@@ -384,7 +384,7 @@ void main() {
       test('refresh timer when AsyncErrors are emitted', () {
         fakeAsync((async) {
           final provider = StateProvider.autoDispose(
-            (ref) => const AsyncValue<int>.error(42),
+            (ref) => const AsyncValue<int>.error(42, StackTrace.empty),
           );
           final container = createContainer(
             cacheTime: const Duration(seconds: 5),
@@ -396,24 +396,28 @@ void main() {
 
           expect(
             container.read(provider),
-            const AsyncLoading<int>().copyWithPrevious(const AsyncError(42)),
+            const AsyncLoading<int>()
+                .copyWithPrevious(const AsyncError(42, StackTrace.empty)),
           );
 
           async.elapse(const Duration(seconds: 2));
 
           expect(
             container.read(provider),
-            const AsyncLoading<int>().copyWithPrevious(const AsyncError(42)),
+            const AsyncLoading<int>()
+                .copyWithPrevious(const AsyncError(42, StackTrace.empty)),
           );
 
-          container.read(provider.notifier).state = const AsyncError(21);
+          container.read(provider.notifier).state =
+              const AsyncError(21, StackTrace.empty);
           container.read(provider.notifier).state = const AsyncLoading();
 
           async.elapse(const Duration(seconds: 3));
 
           expect(
             container.read(provider),
-            const AsyncLoading<int>().copyWithPrevious(const AsyncError(21)),
+            const AsyncLoading<int>()
+                .copyWithPrevious(const AsyncError(21, StackTrace.empty)),
           );
 
           async.elapse(const Duration(seconds: 3));

@@ -87,30 +87,19 @@ abstract class AutoDisposeProviderBase<State> extends ProviderBase<State> {
   final Duration? disposeDelay;
 
   @override
-  State create(AutoDisposeRef ref);
-
-  @override
   AutoDisposeProviderElementBase<State> createElement();
 }
 
 /// The [ProviderElementBase] of an [AutoDisposeProviderBase].
 abstract class AutoDisposeProviderElementBase<State>
     extends ProviderElementBase<State> implements AutoDisposeRef<State> {
-  /// The [ProviderElementBase] of an [AutoDisposeProviderBase].
-  AutoDisposeProviderElementBase(ProviderBase<State> provider)
-      : super(provider);
+  @override
+  AutoDisposeProviderBase<State> get provider;
 
   // TODO make nullable
   final _keepAliveLinks = <KeepAliveLink>[];
 
   bool _maintainState = false;
-
-  late final _cacheTime =
-      (provider as AutoDisposeProviderBase).cacheTime ?? _container.cacheTime;
-
-  late final _disposeDelay =
-      (provider as AutoDisposeProviderBase).disposeDelay ??
-          _container.disposeDelay;
 
   @Deprecated('Use `keepAlive()` instead')
   @override
@@ -152,7 +141,10 @@ abstract class AutoDisposeProviderElementBase<State>
   void _buildState() {
     super._buildState();
 
-    if (_disposeDelay != Duration.zero) {
+    final cacheTime = provider.cacheTime ?? _container.cacheTime;
+    final disposeDelay = provider.disposeDelay ?? _container.disposeDelay;
+
+    if (disposeDelay != Duration.zero) {
       // TODO timer should not refresh when provider rebuilds
       // TODO adding a new listener cancels the timer
 
@@ -169,7 +161,7 @@ abstract class AutoDisposeProviderElementBase<State>
       onCancel(() {
         assert(_disposeDelayLink != null, 'Bad state');
         assert(_disposeDelayTimer == null, 'Bad state');
-        _disposeDelayTimer = Timer(_disposeDelay, () {
+        _disposeDelayTimer = Timer(disposeDelay, () {
           _disposeDelayTimer = null;
           _disposeDelayLink!.close();
           _disposeDelayLink = null;
@@ -187,7 +179,7 @@ abstract class AutoDisposeProviderElementBase<State>
       // when the last value was emitted.
     }
 
-    if (_cacheTime != Duration.zero) {
+    if (cacheTime != Duration.zero) {
       // Safe to have as a local variable since links are cleared
       // on rebuild
       KeepAliveLink? link;
@@ -196,7 +188,7 @@ abstract class AutoDisposeProviderElementBase<State>
         link ??= keepAlive();
         _cacheTimer?.cancel();
 
-        _cacheTimer = Timer(_cacheTime, () {
+        _cacheTimer = Timer(cacheTime, () {
           link!.close();
           link = null;
           _cacheTimer = null;
@@ -213,7 +205,7 @@ abstract class AutoDisposeProviderElementBase<State>
         link ??= keepAlive();
         _cacheTimer?.cancel();
 
-        _cacheTimer = Timer(_cacheTime, () {
+        _cacheTimer = Timer(cacheTime, () {
           link!.close();
           link = null;
           _cacheTimer = null;

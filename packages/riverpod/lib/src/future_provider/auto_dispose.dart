@@ -62,11 +62,29 @@ class AutoDisposeFutureProvider<State>
   );
 
   @override
-  AsyncValue<State> create(
-    covariant AutoDisposeFutureProviderElement<State> ref,
-  ) {
-    return ref._listenFuture(() => _create(ref));
+  AutoDisposeFutureProviderElement<State> createElement() {
+    return AutoDisposeFutureProviderElement(this);
   }
+}
+
+/// The element of an [AutoDisposeFutureProvider]
+class AutoDisposeFutureProviderElement<State>
+    extends AutoDisposeProviderElementBase<AsyncValue<State>>
+    implements AutoDisposeFutureProviderRef<State> {
+  /// The element of an [AutoDisposeFutureProvider]
+  AutoDisposeFutureProviderElement(this.provider);
+
+  @override
+  final AutoDisposeFutureProvider<State> provider;
+
+  @override
+  AsyncValue<State> get state => requireState;
+
+  @override
+  set state(AsyncValue<State> newState) => setState(newState);
+
+  @override
+  AsyncValue<State> create() => listenFuture(this, provider._create);
 
   @override
   bool updateShouldNotify(
@@ -80,27 +98,6 @@ class AutoDisposeFutureProvider<State>
 
     return true;
   }
-
-  @override
-  AutoDisposeFutureProviderElement<State> createElement() {
-    return AutoDisposeFutureProviderElement(this);
-  }
-}
-
-/// The element of an [AutoDisposeFutureProvider]
-class AutoDisposeFutureProviderElement<State>
-    extends AutoDisposeProviderElementBase<AsyncValue<State>>
-    with _FutureProviderElementMixin<State>
-    implements AutoDisposeFutureProviderRef<State> {
-  /// The element of an [AutoDisposeFutureProvider]
-  AutoDisposeFutureProviderElement(AutoDisposeFutureProvider<State> provider)
-      : super(provider);
-
-  @override
-  AsyncValue<State> get state => requireState;
-
-  @override
-  set state(AsyncValue<State> newState) => setState(newState);
 }
 
 /// {@template riverpod.futureprovider.family}

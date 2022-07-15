@@ -227,13 +227,24 @@ abstract class ProviderRef<State> implements Ref<State> {
 class ProviderElement<State> extends ProviderElementBase<State>
     implements ProviderRef<State> {
   /// A [ProviderElementBase] for [Provider]
-  ProviderElement(ProviderBase<State> provider) : super(provider);
+  ProviderElement(this.provider);
+
+  @override
+  final Provider<State> provider;
 
   @override
   State get state => requireState;
 
   @override
   set state(State newState) => setState(newState);
+
+  @override
+  State create() => provider._create(this);
+
+  @override
+  bool updateShouldNotify(State previousState, State newState) {
+    return previousState != newState;
+  }
 }
 
 /// {@macro riverpod.provider}
@@ -245,11 +256,11 @@ class Provider<State> extends AlwaysAliveProviderBase<State>
   /// {@macro riverpod.provider}
   Provider(
     this._create, {
-    String? name,
     this.dependencies,
-    Family? from,
-    Object? argument,
-  }) : super(name: name, from: from, argument: argument);
+    super.name,
+    super.from,
+    super.argument,
+  });
 
   /// {@macro riverpod.family}
   static const family = ProviderFamilyBuilder();
@@ -264,14 +275,6 @@ class Provider<State> extends AlwaysAliveProviderBase<State>
   final List<ProviderOrFamily>? dependencies;
 
   final Create<State, ProviderRef<State>> _create;
-
-  @override
-  State create(ProviderRef<State> ref) => _create(ref);
-
-  @override
-  bool updateShouldNotify(State previousState, State newState) {
-    return previousState != newState;
-  }
 
   @override
   ProviderElement<State> createElement() => ProviderElement(this);

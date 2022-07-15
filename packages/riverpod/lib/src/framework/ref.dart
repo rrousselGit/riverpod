@@ -14,6 +14,23 @@ abstract class Ref<State extends Object?> {
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
 
+  /// {@template riverpod.ref.notify_listeners}
+  /// UNSAFE: Update dependents no-matter if the internal provider state has
+  /// changed or not.
+  ///
+  /// [notifyListeners] should usually be avoided. Its primary use-case
+  /// is for supporting providers that expose mutable data.
+  /// Note that while mutable data is supported in Riverpod, it is not recommended.
+  /// Instead consider using immutable data combined with a cloning mechanism
+  /// (such as by using Freezed).
+  ///
+  /// Using mutable data may break some features, such as [ProviderListenable.select].
+  /// This `select` function relies on the selected property being immutable.
+  /// If it instead mutable, it is possible that `select` will cause consumers
+  /// to not rebuild even when the data has changed.
+  /// {@endtemplate}
+  void notifyListeners();
+
   /// {@template riverpod.refresh}
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
@@ -44,9 +61,9 @@ abstract class Ref<State extends Object?> {
   /// The listener will be called immediately after the provider completes building.
   ///
   /// As opposed to [listen], the listener will be called even if
-  /// [ProviderBase.updateShouldNotify] returns false, meaning that the previous
+  /// [.updateShouldNotify] returns false, meaning that the previous
   /// and new value can potentially be identical.
-  void listenSelf(
+  ProviderSubscription<State> listenSelf(
     void Function(State? previous, State next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   });

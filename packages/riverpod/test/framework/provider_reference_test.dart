@@ -46,6 +46,37 @@ void main() {
       },
     );
 
+    group('notifyListeners', () {
+      test('can notify listeners even if the value has no changed', () {
+        late Ref<void> ref;
+        final provider = Provider<void>((r) {
+          ref = r;
+        });
+        final container = createContainer();
+        final listener = Listener<void>();
+
+        container.listen(provider, listener);
+
+        verifyZeroInteractions(listener);
+
+        ref.notifyListeners();
+
+        verifyOnly(listener, listener(null, null));
+      });
+
+      test('throws if called before initialization', () {
+        final provider = Provider<void>((ref) {
+          expect(
+            () => ref.notifyListeners(),
+            throwsStateError,
+          );
+        });
+        final container = createContainer();
+
+        container.read(provider);
+      });
+    });
+
     group('refresh', () {
       test('refreshes a provider and return the new state', () {
         var value = 0;

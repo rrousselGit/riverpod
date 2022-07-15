@@ -10,6 +10,67 @@ import 'uni_directional_test.dart';
 
 void main() {
   group('Ref.listenSelf', () {
+    test('returns a ProviderSubscription for manually cancelling the listener',
+        () {
+      final container = createContainer();
+      final onError = ErrorListener();
+      final listener = Listener<int>();
+      final provider = Provider<int>((ref) {
+        final sub = ref.listenSelf(listener, onError: onError);
+        sub.close();
+
+        throw StateError('foo');
+      });
+      late ProviderRef<int> ref;
+      final provider2 = Provider<int>((r) {
+        ref = r;
+        final sub = ref.listenSelf(listener, onError: onError);
+        sub.close();
+        return 0;
+      });
+
+      expect(() => container.read(provider), throwsStateError);
+      container.read(provider2);
+
+      ref.state = 42;
+
+      verifyZeroInteractions(listener);
+      verifyZeroInteractions(onError);
+    });
+
+    test('ProviderSubscription.read returns current value', () {
+      final container = createContainer();
+      late ProviderRef<int> ref;
+      late ProviderSubscription<int> sub;
+      final provider = Provider<int>((r) {
+        ref = r;
+        sub = ref.listenSelf((a, b) {});
+        return 0;
+      });
+
+      container.read(provider);
+
+      expect(sub.read(), 0);
+
+      ref.state = 42;
+
+      expect(sub.read(), 42);
+    });
+
+    test('ProviderSubscription.read throws if used after close', () {
+      final container = createContainer();
+      late ProviderSubscription<int> sub;
+      final provider = Provider<int>((ref) {
+        sub = ref.listenSelf((a, b) {});
+        sub.close();
+        return 0;
+      });
+
+      container.read(provider);
+
+      expect(sub.read, throwsStateError);
+    });
+
     test('does not break autoDispose', () async {
       final container = createContainer();
       final provider = Provider.autoDispose((ref) {

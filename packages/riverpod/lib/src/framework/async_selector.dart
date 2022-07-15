@@ -176,11 +176,9 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
             return;
           }
 
-          final stack = value.stackTrace ?? StackTrace.empty;
-
           emitError(
             value.error,
-            stack,
+            value.stackTrace,
             callListeners: callListeners,
           );
 

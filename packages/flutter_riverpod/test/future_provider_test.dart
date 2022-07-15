@@ -239,7 +239,8 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.overrideWithValue(AsyncValue.error(error)),
+            futureProvider
+                .overrideWithValue(AsyncValue.error(error, StackTrace.empty)),
           ],
           child: child,
         ),
@@ -319,7 +320,8 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            futureProvider.overrideWithValue(AsyncValue.error(error)),
+            futureProvider
+                .overrideWithValue(AsyncValue.error(error, StackTrace.empty)),
           ],
           child: child,
         ),

@@ -16,14 +16,6 @@ class ValueProvider<State> extends AlwaysAliveProviderBase<State> {
   List<ProviderOrFamily>? get dependencies => null;
 
   @override
-  State create(ValueProviderElement<State> ref) => _value;
-
-  @override
-  bool updateShouldNotify(State previousState, State newState) {
-    return true;
-  }
-
-  @override
   ValueProviderElement<State> createElement() {
     return ValueProviderElement(this);
   }
@@ -33,9 +25,10 @@ class ValueProvider<State> extends AlwaysAliveProviderBase<State> {
 @sealed
 class ValueProviderElement<State> extends ProviderElementBase<State> {
   /// The [ProviderElementBase] of a [ValueProvider]
-  ValueProviderElement(
-    ValueProvider<State> provider,
-  ) : super(provider);
+  ValueProviderElement(this.provider);
+
+  @override
+  ValueProvider<State> provider;
 
   /// A custom listener called when `overrideWithValue` changes
   /// with a different value.
@@ -43,8 +36,8 @@ class ValueProviderElement<State> extends ProviderElementBase<State> {
 
   @override
   void update(ProviderBase<State> newProvider) {
-    super.update(newProvider);
-    final newValue = (provider as ValueProvider<State>)._value;
+    provider = newProvider as ValueProvider<State>;
+    final newValue = provider._value;
 
     // `getState` will never be in error/loading state since there is no "create"
     final previousState = getState()! as ResultData<State>;
@@ -53,5 +46,13 @@ class ValueProviderElement<State> extends ProviderElementBase<State> {
       setState(newValue);
       onChange?.call(newValue);
     }
+  }
+
+  @override
+  State create() => provider._value;
+
+  @override
+  bool updateShouldNotify(State previousState, State newState) {
+    return true;
   }
 }

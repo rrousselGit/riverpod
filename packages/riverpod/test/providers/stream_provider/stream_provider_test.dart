@@ -229,8 +229,7 @@ void main() {
     final stack = StackTrace.current;
     controller.addError(42, stack);
 
-    expect(
-        container.read(provider), AsyncValue<int>.error(42, stackTrace: stack));
+    expect(container.read(provider), AsyncValue<int>.error(42, stack));
   });
 
   group('.future', () {
@@ -269,7 +268,7 @@ void main() {
       final error = Error();
 
       container.updateOverrides([
-        provider.overrideWithValue(AsyncValue.error(error)),
+        provider.overrideWithValue(AsyncValue.error(error, StackTrace.empty)),
       ]);
 
       expect(container.read(provider.future), future);
@@ -286,7 +285,7 @@ void main() {
       future = container.read(provider.future);
 
       container.updateOverrides([
-        provider.overrideWithValue(AsyncValue.error(error2)),
+        provider.overrideWithValue(AsyncValue.error(error2, StackTrace.empty)),
       ]);
 
       expect(container.read(provider.future), future);
@@ -305,7 +304,7 @@ void main() {
       final error = Error();
 
       container.updateOverrides([
-        provider.overrideWithValue(AsyncValue.error(error)),
+        provider.overrideWithValue(AsyncValue.error(error, StackTrace.empty)),
       ]);
 
       expect(container.read(provider.future), future);
@@ -317,7 +316,7 @@ void main() {
 
       // error without passing by an intermediary loading state
       container.updateOverrides([
-        provider.overrideWithValue(AsyncValue.error(error2)),
+        provider.overrideWithValue(AsyncValue.error(error2, StackTrace.empty)),
       ]);
 
       future = container.read(provider.future);
@@ -603,13 +602,13 @@ void main() {
     final stream = StreamProvider<int>((ref) => const Stream.empty());
 
     final container = ProviderContainer(overrides: [
-      stream.overrideWithValue(AsyncValue.error(error)),
+      stream.overrideWithValue(AsyncValue.error(error, StackTrace.empty)),
     ]);
     addTearDown(container.dispose);
 
     expect(
       container.read(stream),
-      AsyncValue<int>.error(error),
+      AsyncValue<int>.error(error, StackTrace.empty),
     );
   });
 
@@ -694,7 +693,7 @@ void main() {
       listener,
       listener(
         const AsyncValue.loading(),
-        AsyncValue<int>.error(error, stackTrace: stack),
+        AsyncValue<int>.error(error, stack),
       ),
     );
 
@@ -703,9 +702,9 @@ void main() {
     verifyOnly(
       listener,
       listener(
-        AsyncError<int>(error, stackTrace: stack),
+        AsyncError<int>(error, stack),
         const AsyncValue.data(21).copyWithPrevious(
-          AsyncError(error, stackTrace: stack),
+          AsyncError(error, stack),
         ),
       ),
     );
@@ -1017,7 +1016,8 @@ void main() {
         final future = container.read(provider.future);
 
         container.updateOverrides([
-          provider.overrideWithValue(const AsyncValue.error(42)),
+          provider
+              .overrideWithValue(const AsyncValue.error(42, StackTrace.empty)),
         ]);
 
         await expectLater(future, throwsA(42));
@@ -1030,7 +1030,8 @@ void main() {
         ]);
 
         container.updateOverrides([
-          provider.overrideWithValue(const AsyncValue.error(42)),
+          provider
+              .overrideWithValue(const AsyncValue.error(42, StackTrace.empty)),
         ]);
 
         final future = container.read(provider.future);
@@ -1173,7 +1174,8 @@ void main() {
       test('error to loading creates a new stream', () async {
         final provider = StreamProvider<int>((_) async* {});
         final container = ProviderContainer(overrides: [
-          provider.overrideWithValue(const AsyncValue.error(42)),
+          provider
+              .overrideWithValue(const AsyncValue.error(42, StackTrace.empty)),
         ]);
 
         final stream1 = container.read(provider.stream);
@@ -1235,7 +1237,8 @@ void main() {
         final stream = container.read(provider.stream);
 
         container.updateOverrides([
-          provider.overrideWithValue(const AsyncValue.error(42)),
+          provider
+              .overrideWithValue(const AsyncValue.error(42, StackTrace.empty)),
         ]);
 
         await expectLater(stream, emitsError(42));
@@ -1248,7 +1251,8 @@ void main() {
         ]);
 
         container.updateOverrides([
-          provider.overrideWithValue(const AsyncValue.error(42)),
+          provider
+              .overrideWithValue(const AsyncValue.error(42, StackTrace.empty)),
         ]);
 
         final stream = container.read(provider.stream);
@@ -1307,17 +1311,20 @@ void main() {
       await expectLater(stream, emits(42));
 
       container.updateOverrides([
-        provider.overrideWithValue(const AsyncValue.error(21)),
+        provider
+            .overrideWithValue(const AsyncValue.error(21, StackTrace.empty)),
       ]);
 
       expect(
         sub.read(),
-        const AsyncValue<int>.error(21).copyWithPrevious(const AsyncData(42)),
+        const AsyncValue<int>.error(21, StackTrace.empty)
+            .copyWithPrevious(const AsyncData(42)),
       );
       // TODO why call "read" twice?
       expect(
         sub.read(),
-        const AsyncValue<int>.error(21).copyWithPrevious(const AsyncData(42)),
+        const AsyncValue<int>.error(21, StackTrace.empty)
+            .copyWithPrevious(const AsyncData(42)),
       );
       await expectLater(stream, emitsError(21));
 
@@ -1390,11 +1397,10 @@ void main() {
       final stackTrace = StackTrace.current;
 
       container.updateOverrides([
-        provider.overrideWithValue(
-            AsyncValue<int>.error(42, stackTrace: stackTrace)),
+        provider.overrideWithValue(AsyncValue<int>.error(42, stackTrace)),
       ]);
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
 
       await expectLater(stream, emitsError(42));
 
@@ -1441,22 +1447,20 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideWithValue(
-            AsyncValue<int>.error(42, stackTrace: stackTrace)),
+        provider.overrideWithValue(AsyncValue<int>.error(42, stackTrace)),
       ]);
       final stream = container.read(provider.stream);
 
       final sub = container.listen(provider, (_, __) {});
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
       await expectLater(stream, emitsError(42));
 
       container.updateOverrides([
-        provider.overrideWithValue(
-            AsyncValue<int>.error(21, stackTrace: stackTrace)),
+        provider.overrideWithValue(AsyncValue<int>.error(21, stackTrace)),
       ]);
 
-      expect(sub.read(), AsyncValue<int>.error(21, stackTrace: stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(21, stackTrace));
       await expectLater(stream, emitsError(21));
 
       container.dispose();
@@ -1468,24 +1472,23 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideWithValue(
-            AsyncValue<int>.error(42, stackTrace: stackTrace)),
+        provider.overrideWithValue(AsyncValue<int>.error(42, stackTrace)),
       ]);
       final stream = container.read(provider.stream);
 
       final sub = container.listen(provider, (_, __) {});
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
       await expectLater(stream, emitsError(42));
 
       final stackTrace2 = StackTrace.current;
       container.updateOverrides([
         provider.overrideWithValue(
-          AsyncValue<int>.error(42, stackTrace: stackTrace2),
+          AsyncValue<int>.error(42, stackTrace2),
         ),
       ]);
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace2));
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace2));
       await expectLater(stream, emitsError(42));
 
       container.dispose();
@@ -1497,8 +1500,7 @@ void main() {
       const stackTrace = StackTrace.empty;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideWithValue(
-            const AsyncValue<int>.error(42, stackTrace: stackTrace)),
+        provider.overrideWithValue(const AsyncValue<int>.error(42, stackTrace)),
       ]);
       final stream = container.read(provider.stream);
 
@@ -1506,7 +1508,7 @@ void main() {
 
       expect(
         sub.read(),
-        const AsyncValue<int>.error(42, stackTrace: stackTrace),
+        const AsyncValue<int>.error(42, stackTrace),
       );
       await expectLater(stream, emitsError(42));
 
@@ -1517,7 +1519,7 @@ void main() {
       expect(
         sub.read(),
         const AsyncValue.data(21)
-            .copyWithPrevious(const AsyncError(42, stackTrace: stackTrace)),
+            .copyWithPrevious(const AsyncError(42, stackTrace)),
       );
       await expectLater(stream, emits(21));
 
@@ -1530,14 +1532,13 @@ void main() {
       final stackTrace = StackTrace.current;
       final provider = StreamProvider<int>((_) async* {});
       final container = ProviderContainer(overrides: [
-        provider.overrideWithValue(
-            AsyncValue<int>.error(42, stackTrace: stackTrace)),
+        provider.overrideWithValue(AsyncValue<int>.error(42, stackTrace)),
       ]);
       final stream = container.read(provider.stream);
 
       final sub = container.listen(provider, (_, __) {});
 
-      expect(sub.read(), AsyncValue<int>.error(42, stackTrace: stackTrace));
+      expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
       await expectLater(stream, emitsError(42));
 
       container.updateOverrides([
@@ -1547,7 +1548,7 @@ void main() {
       expect(
         sub.read(),
         const AsyncLoading<int>()
-            .copyWithPrevious(AsyncError<int>(42, stackTrace: stackTrace)),
+            .copyWithPrevious(AsyncError<int>(42, stackTrace)),
       );
 
       container.dispose();

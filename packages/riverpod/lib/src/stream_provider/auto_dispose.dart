@@ -76,11 +76,29 @@ class AutoDisposeStreamProvider<State>
   AutoDisposeProviderBase<Future<State>> get last => future;
 
   @override
-  AsyncValue<State> create(
-    covariant AutoDisposeStreamProviderElement<State> ref,
-  ) {
-    return ref._listenStream(() => _create(ref));
+  AutoDisposeStreamProviderElement<State> createElement() {
+    return AutoDisposeStreamProviderElement(this);
   }
+}
+
+/// The Element of an [AutoDisposeStreamProvider]
+class AutoDisposeStreamProviderElement<State>
+    extends AutoDisposeProviderElementBase<AsyncValue<State>>
+    implements AutoDisposeStreamProviderRef<State> {
+  /// The Element of an [AutoDisposeStreamProvider]
+  AutoDisposeStreamProviderElement(this.provider);
+
+  @override
+  final AutoDisposeStreamProvider<State> provider;
+
+  @override
+  AsyncValue<State> get state => requireState;
+
+  @override
+  set state(AsyncValue<State> newState) => setState(newState);
+
+  @override
+  AsyncValue<State> create() => _listenStream(this, provider._create);
 
   @override
   bool updateShouldNotify(
@@ -94,27 +112,6 @@ class AutoDisposeStreamProvider<State>
 
     return true;
   }
-
-  @override
-  AutoDisposeStreamProviderElement<State> createElement() {
-    return AutoDisposeStreamProviderElement(this);
-  }
-}
-
-/// The Element of an [AutoDisposeStreamProvider]
-class AutoDisposeStreamProviderElement<State>
-    extends AutoDisposeProviderElementBase<AsyncValue<State>>
-    with _StreamProviderElementMixin<State>
-    implements AutoDisposeStreamProviderRef<State> {
-  /// The Element of an [AutoDisposeStreamProvider]
-  AutoDisposeStreamProviderElement(AutoDisposeStreamProvider<State> provider)
-      : super(provider);
-
-  @override
-  AsyncValue<State> get state => requireState;
-
-  @override
-  set state(AsyncValue<State> newState) => setState(newState);
 }
 
 /// {@macro riverpod.streamprovider.family}

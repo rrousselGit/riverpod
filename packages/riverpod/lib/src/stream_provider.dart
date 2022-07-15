@@ -69,23 +69,24 @@ part 'stream_provider/base.dart';
 /// - [StreamProvider.family], to create a [StreamProvider] from external parameters
 /// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no longer needed.
 /// {@endtemplate}
-mixin _StreamProviderElementMixin<State>
-    on ProviderElementBase<AsyncValue<State>> {
-  AsyncValue<State> _listenStream(Stream<State> Function() stream) {
-    try {
-      final sub = stream().listen(
-        (event) => setState(AsyncValue.data(event)),
-        // ignore: avoid_types_on_closure_parameters
-        onError: (Object err, StackTrace stack) {
-          setState(AsyncValue.error(err, stackTrace: stack));
-        },
-      );
+AsyncValue<State> _listenStream<State,
+    Element extends ProviderElementBase<AsyncValue<State>>>(
+  Element element,
+  Stream<State> Function(Element element) create,
+) {
+  try {
+    final sub = create(element).listen(
+      (event) => element.setState(AsyncValue.data(event)),
+      // ignore: avoid_types_on_closure_parameters
+      onError: (Object err, StackTrace stack) {
+        element.setState(AsyncValue.error(err, stack));
+      },
+    );
 
-      onDispose(sub.cancel);
+    element.onDispose(sub.cancel);
 
-      return AsyncValue<State>.loading();
-    } catch (err, stack) {
-      return AsyncValue<State>.error(err, stackTrace: stack);
-    }
+    return AsyncValue<State>.loading();
+  } catch (err, stack) {
+    return AsyncValue<State>.error(err, stack);
   }
 }

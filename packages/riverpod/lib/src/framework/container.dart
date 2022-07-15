@@ -98,7 +98,6 @@ class _StateReader {
     _circularDependencyLock ??= origin;
     try {
       final element = override.createElement()
-        .._provider = override
         .._origin = origin
         .._container = container
         ..mount();

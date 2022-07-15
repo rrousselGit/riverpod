@@ -53,7 +53,7 @@ class _ProviderScheduler {
   void scheduleProviderDispose(AutoDisposeProviderElementBase element) {
     assert(
       !element.hasListeners,
-      'Tried to dispose ${element._provider} , but still has listeners',
+      'Tried to dispose ${element.origin} , but still has listeners',
     );
 
     _stateToDispose.add(element);

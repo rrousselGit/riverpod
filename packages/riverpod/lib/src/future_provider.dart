@@ -78,39 +78,38 @@ part 'future_provider/base.dart';
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
-mixin _FutureProviderElementMixin<State>
-    on ProviderElementBase<AsyncValue<State>> {
-  AsyncValue<State> _listenFuture(
-    FutureOr<State> Function() future,
-  ) {
-    var running = true;
-    onDispose(() => running = false);
-    try {
-      final value = future();
+AsyncValue<State>
+    listenFuture<State, Element extends ProviderElementBase<AsyncValue<State>>>(
+  Element element,
+  FutureOr<State> Function(Element element) future,
+) {
+  var running = true;
+  element.onDispose(() => running = false);
+  try {
+    final value = future(element);
 
-      if (value is Future<State>) {
-        setState(AsyncValue<State>.loading());
+    if (value is Future<State>) {
+      element.setState(AsyncValue<State>.loading());
 
-        value.then(
-          (event) {
-            if (running) setState(AsyncValue<State>.data(event));
-          },
-          // ignore: avoid_types_on_closure_parameters
-          onError: (Object err, StackTrace stack) {
-            if (running) {
-              setState(
-                AsyncValue<State>.error(err, stackTrace: stack),
-              );
-            }
-          },
-        );
-      } else {
-        return AsyncData(value);
-      }
-
-      return requireState;
-    } catch (err, stack) {
-      return AsyncValue.error(err, stackTrace: stack);
+      value.then(
+        (event) {
+          if (running) element.setState(AsyncValue<State>.data(event));
+        },
+        // ignore: avoid_types_on_closure_parameters
+        onError: (Object err, StackTrace stack) {
+          if (running) {
+            element.setState(
+              AsyncValue<State>.error(err, stack),
+            );
+          }
+        },
+      );
+    } else {
+      return AsyncData(value);
     }
+
+    return element.requireState;
+  } catch (err, stack) {
+    return AsyncValue.error(err, stack);
   }
 }

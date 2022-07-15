@@ -67,15 +67,22 @@ class ChangeNotifierProvider<Notifier extends ChangeNotifier?>
   final AlwaysAliveProviderBase<Notifier> notifier;
 
   @override
-  Notifier create(ProviderElementBase<Notifier> ref) {
-    final notifier = ref.watch<Notifier>(this.notifier);
-    _listenNotifier(notifier, ref);
-    return notifier;
+  ProviderElementBase<Notifier> createElement() {
+    return _ChangeNotifierProviderElement<Notifier>(this);
   }
+}
+
+class _ChangeNotifierProviderElement<Notifier extends ChangeNotifier?>
+    extends ProviderElementBase<Notifier> {
+  _ChangeNotifierProviderElement(this.provider);
+  @override
+  final ChangeNotifierProvider<Notifier> provider;
 
   @override
-  ProviderElement<Notifier> createElement() {
-    return ProviderElement(this);
+  Notifier create() {
+    final notifier = watch<Notifier>(provider.notifier);
+    _listenNotifier(notifier, this);
+    return notifier;
   }
 
   @override
@@ -103,30 +110,32 @@ class _NotifierProvider<Notifier extends ChangeNotifier?>
   final Create<Notifier, ChangeNotifierProviderRef<Notifier>> _create;
 
   @override
-  Notifier create(covariant ChangeNotifierProviderRef<Notifier> ref) {
-    final notifier = _create(ref);
-    if (notifier != null) ref.onDispose(notifier.dispose);
-
-    return notifier;
-  }
-
-  @override
   _NotifierProviderElement<Notifier> createElement() {
     return _NotifierProviderElement<Notifier>(this);
   }
-
-  @override
-  bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
 }
 
 class _NotifierProviderElement<Notifier extends ChangeNotifier?>
     extends ProviderElementBase<Notifier>
     implements ChangeNotifierProviderRef<Notifier> {
-  _NotifierProviderElement(_NotifierProvider<Notifier> provider)
-      : super(provider);
+  _NotifierProviderElement(this.provider);
 
   @override
   Notifier get notifier => requireState;
+
+  @override
+  final _NotifierProvider<Notifier> provider;
+
+  @override
+  Notifier create() {
+    final notifier = provider._create(this);
+    if (notifier != null) onDispose(notifier.dispose);
+
+    return notifier;
+  }
+
+  @override
+  bool updateShouldNotify(Notifier previousState, Notifier newState) => true;
 }
 
 // ignore: subtype_of_sealed_class
