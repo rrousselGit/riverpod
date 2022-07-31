@@ -1,10 +1,12 @@
 part of '../notifier.dart';
 
+abstract class NotifierRef<State> extends Ref<State> {}
+
 abstract class Notifier<State> extends _NotifierBase<State> {
   Ref<State> get ref => _element;
 
   @visibleForOverriding
-  State build();
+  void build(Ref<State> ref);
 }
 
 class NotifierProviderElement<Controller extends Notifier<State>, State>
@@ -18,7 +20,10 @@ class NotifierProviderElement<Controller extends Notifier<State>, State>
       Result.guard(provider._createNotifier)..stateOrNull?._element = this;
 
   @override
-  State create() => _notifier.requireState.build();
+  State create() {
+    _notifier.requireState.build(this);
+    return requireState;
+  }
 
   @override
   bool updateShouldNotify(State previousState, State newState) {

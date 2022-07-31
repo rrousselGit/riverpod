@@ -6,6 +6,7 @@ class RefTemplate {
 
   @override
   String toString() {
-    return 'class ${data.refName} {}';
+    return '''
+typedef ${data.refName} = ProviderRef<${data.valueDisplayType}>;''';
   }
 }

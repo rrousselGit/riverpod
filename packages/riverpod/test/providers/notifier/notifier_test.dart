@@ -374,7 +374,7 @@ class TestNotifier<T> extends Notifier<T> {
   }
 
   @override
-  T build() => _init(ref);
+  void build(Ref<T> ref) => state = _init(ref);
 
   void update(T Function(T state) cb) => state = cb(state);
 

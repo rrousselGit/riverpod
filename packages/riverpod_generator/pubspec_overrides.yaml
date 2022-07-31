@@ -1,3 +1,5 @@
 dependency_overrides:
   riverpod_annotation:
     path: ../riverpod_annotation
+  riverpod:
+    path: ../riverpod
