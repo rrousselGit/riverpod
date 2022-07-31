@@ -9,6 +9,7 @@ dependencies:
   crypto: ^3.0.0
   dio: ^4.0.0
   freezed_annotation: ^2.0.0
+  json_annotation: ^4.6.0
   riverpod:
     path: ..
 
