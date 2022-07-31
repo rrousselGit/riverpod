@@ -8,6 +8,17 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 part 'common.freezed.dart';
 part 'common.g.dart';
 
+/// A Provider that exposes the current theme.
+///
+/// This is unimplemented by default, and will be overriden inside [MaterialApp]
+/// with the current theme obtained using a [BuildContext].
+final themeProvider = Provider<ThemeData>(
+  (ref) => throw UnimplementedError(),
+  // Specifying an empty "dependencies" signals riverpod_lint that this provider
+  // is scoped.
+  dependencies: const [],
+);
+
 class TimestampParser implements JsonConverter<DateTime, int> {
   const TimestampParser();
 
@@ -279,8 +290,20 @@ abstract class TagTheme with _$TagTheme {
 }
 
 final tagThemeProvider = Provider<TagTheme>((ref) {
-  throw UnimplementedError();
-});
+  final theme = ref.watch(themeProvider);
+
+  return TagTheme(
+    padding: EdgeInsets.symmetric(
+      horizontal: theme.textTheme.bodyText1!.fontSize! * 0.5,
+      vertical: theme.textTheme.bodyText1!.fontSize! * 0.4,
+    ),
+    style: theme.textTheme.bodyText2!.copyWith(
+      color: const Color(0xff9cc3db),
+    ),
+    borderRadius: BorderRadius.circular(3),
+    backgroundColor: const Color(0xFF3e4a52),
+  );
+}, dependencies: [themeProvider]);
 
 class Tag extends HookConsumerWidget {
   const Tag({

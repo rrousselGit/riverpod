@@ -104,7 +104,16 @@ abstract class QuestionTheme with _$QuestionTheme {
 }
 
 final questionThemeProvider = Provider<QuestionTheme>((ref) {
-  throw UnimplementedError();
+  return const QuestionTheme(
+    titleStyle: TextStyle(
+      color: Color(0xFF3ca4ff),
+      fontSize: 16,
+    ),
+    descriptionStyle: TextStyle(
+      color: Color(0xFFe7e8eb),
+      fontSize: 13,
+    ),
+  );
 });
 
 class MyHomePage extends HookConsumerWidget {
