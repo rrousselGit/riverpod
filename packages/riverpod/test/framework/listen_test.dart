@@ -1177,7 +1177,6 @@ void main() {
         container.listen<StateController<int>>(
           provider.state,
           (prev, notifier) => listener(prev?.state, notifier.state),
-          fireImmediately: false,
         );
 
         verifyZeroInteractions(listener);
@@ -1524,7 +1523,6 @@ void main() {
       container.listen<StateController<int>>(
         count.state,
         (prev, value) => listener(prev?.state, value.state),
-        fireImmediately: false,
       );
 
       container.read(count.state).state++;

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -7,6 +8,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 part 'common.freezed.dart';
 part 'common.g.dart';
+
+final client = Provider((ref) => Dio());
 
 /// A Provider that exposes the current theme.
 ///
@@ -275,55 +278,6 @@ class PostInfo extends HookConsumerWidget {
           ],
         ),
       ],
-    );
-  }
-}
-
-@freezed
-abstract class TagTheme with _$TagTheme {
-  const factory TagTheme({
-    required TextStyle style,
-    required EdgeInsets padding,
-    required Color backgroundColor,
-    required BorderRadius borderRadius,
-  }) = _TagTheme;
-}
-
-final tagThemeProvider = Provider<TagTheme>((ref) {
-  final theme = ref.watch(themeProvider);
-
-  return TagTheme(
-    padding: EdgeInsets.symmetric(
-      horizontal: theme.textTheme.bodyText1!.fontSize! * 0.5,
-      vertical: theme.textTheme.bodyText1!.fontSize! * 0.4,
-    ),
-    style: theme.textTheme.bodyText2!.copyWith(
-      color: const Color(0xff9cc3db),
-    ),
-    borderRadius: BorderRadius.circular(3),
-    backgroundColor: const Color(0xFF3e4a52),
-  );
-}, dependencies: [themeProvider]);
-
-class Tag extends HookConsumerWidget {
-  const Tag({
-    Key? key,
-    required this.tag,
-  }) : super(key: key);
-
-  final String tag;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final tagTheme = ref.watch(tagThemeProvider);
-
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: tagTheme.borderRadius,
-        color: tagTheme.backgroundColor,
-      ),
-      padding: tagTheme.padding,
-      child: Text(tag, style: tagTheme.style),
     );
   }
 }
