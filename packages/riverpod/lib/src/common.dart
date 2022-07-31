@@ -156,7 +156,7 @@ abstract class AsyncValue<T> {
   /// instead. The exception is if [isRefreshing] is true, in which case
   /// the previous value will be returned.
   ///
-  /// See also [valueOrNull], which does not throw during loading state.
+  /// See also [valueOrNull], which does not throw during error state.
   T? get value;
 
   /// Returns [value], if present. But if no value is found, throws instead.
