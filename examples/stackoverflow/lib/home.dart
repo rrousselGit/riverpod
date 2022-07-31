@@ -40,7 +40,7 @@ abstract class Question with _$Question {
     required String body,
   }) = _Question;
 
-  factory Question.fromJson(Map<String, Object> json) =>
+  factory Question.fromJson(Map<String, Object?> json) =>
       _$QuestionFromJson(json);
 }
 
