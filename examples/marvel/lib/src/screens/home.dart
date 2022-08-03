@@ -134,14 +134,17 @@ class Home extends HookConsumerWidget {
                         crossAxisCount: 2,
                         childAspectRatio: 0.8,
                       ),
-                      delegate: SliverChildBuilderDelegate((c, index) {
-                        return ProviderScope(
-                          overrides: [
-                            _characterIndex.overrideWithValue(index),
-                          ],
-                          child: const CharacterItem(),
-                        );
-                      }),
+                      delegate: SliverChildBuilderDelegate(
+                        (c, index) {
+                          return ProviderScope(
+                            overrides: [
+                              _characterIndex.overrideWithValue(index),
+                            ],
+                            child: const CharacterItem(),
+                          );
+                        },
+                        childCount: charactersCount,
+                      ),
                     ),
                   ),
                 ],
