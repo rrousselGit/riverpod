@@ -1,5 +1,7 @@
 part of '../notifier.dart';
 
+typedef AsyncRef<T> = Ref<AsyncValue<T>>;
+
 abstract class AsyncNotifier<State> extends _NotifierBase<AsyncValue<State>> {
   Ref<AsyncValue<State>> get ref => _element;
 

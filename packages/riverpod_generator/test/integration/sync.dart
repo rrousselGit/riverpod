@@ -4,12 +4,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'sync.g.dart';
 
 @provider
-void _publicProvider(ProviderRef<String> ref) {
+void _publicProvider(Ref<String> ref) {
   ref.state = 'Hello world';
 }
 
 @provider
-void __privateProvider(ProviderRef<String> ref) {
+void __privateProvider(Ref<String> ref) {
   ref.state = 'Hello world';
 }
 

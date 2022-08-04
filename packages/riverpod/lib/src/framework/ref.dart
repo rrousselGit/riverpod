@@ -11,6 +11,16 @@ part of '../framework.dart';
 /// {@endtemplate}
 @optionalTypeArgs
 abstract class Ref<State extends Object?> {
+  /// Obtains the state currently exposed by this provider.
+  ///
+  /// Mutating this property will notify the provider listeners.
+  ///
+  /// Cannot be called while a provider is creating, unless the setter was called first.
+  ///
+  /// Will throw if the provider threw during creation.
+  State get state;
+  set state(State newState);
+
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
 

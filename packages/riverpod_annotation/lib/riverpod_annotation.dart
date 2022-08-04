@@ -1,1 +1,2 @@
-export 'src/riverpod_annotation.dart' show action, autoDispose, provider;
+export 'src/riverpod_annotation.dart'
+    show action, autoDispose, provider, AsyncRef;

@@ -51,7 +51,8 @@ export 'src/notifier.dart'
         NotifierProvider,
         NotifierProviderElement,
         NotifierProviderFamily,
-        NotifierProviderFamilyElement;
+        NotifierProviderFamilyElement,
+        AsyncRef;
 export 'src/provider.dart'
     show
         AutoDisposeProvider,

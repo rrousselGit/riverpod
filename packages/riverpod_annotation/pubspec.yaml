@@ -7,3 +7,4 @@ environment:
 
 dependencies:
   meta: ^1.7.0
+  riverpod: 2.0.0-dev.9

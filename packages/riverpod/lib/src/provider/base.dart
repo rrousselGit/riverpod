@@ -1,18 +1,8 @@
 part of '../provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [state], the value currently exposed by this provider.
-abstract class ProviderRef<State> implements Ref<State> {
-  /// Obtains the state currently exposed by this provider.
-  ///
-  /// Mutating this property will notify the provider listeners.
-  ///
-  /// Cannot be called while a provider is creating, unless the setter was called first.
-  ///
-  /// Will throw if the provider threw during creation.
-  State get state;
-  set state(State newState);
-}
+@Deprecated('Use Ref instead')
+abstract class ProviderRef<State> implements Ref<State> {}
 
 /// {@template riverpod.provider}
 /// A provider that exposes a read-only value.
