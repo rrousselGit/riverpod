@@ -9,6 +9,80 @@ import '../third_party/fake_async.dart';
 import '../utils.dart';
 
 void main() {
+  group('ref.invalidate on families', () {
+    test('recomputes providers associated with the family', () async {
+      final container = createContainer();
+      final listener = Listener<String>();
+      final listener2 = Listener<String>();
+      final listener3 = Listener<int>();
+      var result = 0;
+      final unrelated = Provider((ref) => result);
+      final provider = Provider.family<String, int>((r, i) => '$result-$i');
+      late Ref ref;
+      final another = Provider((r) {
+        ref = r;
+      });
+
+      container.read(another);
+
+      container.listen(provider(0), listener, fireImmediately: true);
+      container.listen(provider(1), listener2, fireImmediately: true);
+      container.listen(unrelated, listener3, fireImmediately: true);
+
+      verifyOnly(listener, listener(null, '0-0'));
+      verifyOnly(listener2, listener2(null, '0-1'));
+      verifyOnly(listener3, listener3(null, 0));
+
+      ref.invalidate(provider);
+      ref.invalidate(provider);
+      result = 1;
+
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+      verifyNoMoreInteractions(listener3);
+
+      await container.pump();
+
+      verifyOnly(listener, listener('0-0', '1-0'));
+      verifyOnly(listener2, listener2('0-1', '1-1'));
+      verifyNoMoreInteractions(listener3);
+    });
+
+    test('clears only on the closest family override', () async {
+      late Ref ref;
+      final another = Provider((r) {
+        ref = r;
+      });
+      var result = 0;
+      final provider = Provider.family<int, int>((r, i) => result);
+      final listener = Listener<int>();
+      final listener2 = Listener<int>();
+      final root = createContainer();
+      final container = createContainer(
+        parent: root,
+        overrides: [provider, another],
+      );
+
+      container.read(another);
+      root.listen(provider(0), listener, fireImmediately: true);
+      container.listen(provider(1), listener2, fireImmediately: true);
+
+      verifyOnly(listener, listener(null, 0));
+      verifyOnly(listener2, listener2(null, 0));
+
+      ref.invalidate(provider);
+      result = 1;
+
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      await container.pump();
+
+      verifyOnly(listener2, listener2(0, 1));
+      verifyNoMoreInteractions(listener);
+    });
+  });
+
   test('ref.invalidate triggers a rebuild on next frame', () async {
     final container = createContainer();
     final listener = Listener<int>();

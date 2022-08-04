@@ -1,6 +1,7 @@
-# Unreleased fix
+# Unreleased minor
 
-Fixes StateProvider.state not respecting the `name` parameter (#1470)
+- fix: StateProvider.state not respecting the `name` parameter (#1470)
+- feat: Add support for `ref.invalidate(family)` to recompiute an entire family (#1517)
 
 # 2.0.0-dev.9
 

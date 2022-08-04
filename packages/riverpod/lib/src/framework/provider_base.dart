@@ -394,7 +394,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   }
 
   @override
-  void invalidate(ProviderBase<Object?> provider) {
+  void invalidate(ProviderOrFamily provider) {
     _container.invalidate(provider);
   }
 

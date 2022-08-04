@@ -8,6 +8,39 @@ import 'package:mockito/mockito.dart';
 import 'utils.dart';
 
 void main() {
+  testWidgets('ref.invalidate can invalidate a family', (tester) async {
+    final listener = Listener<String>();
+    final listener2 = Listener<String>();
+    var result = 0;
+    final provider = Provider.family<String, int>((r, i) => '$result-$i');
+    late WidgetRef ref;
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (context, r, _) {
+            ref = r;
+            ref.listen(provider(0), listener);
+            ref.listen(provider(1), listener2);
+            return Container();
+          },
+        ),
+      ),
+    );
+
+    verifyZeroInteractions(listener);
+
+    ref.invalidate(provider);
+    result = 1;
+
+    verifyZeroInteractions(listener);
+
+    await tester.pumpAndSettle();
+
+    verifyOnly(listener, listener('0-0', '1-0'));
+    verifyOnly(listener2, listener2('0-1', '1-1'));
+  });
+
   testWidgets('ref.invalidate triggers a rebuild on next frame',
       (tester) async {
     final listener = Listener<int>();

@@ -37,7 +37,7 @@ abstract class Ref<State extends Object?> {
   ///
   /// Calling [invalidate] will cause the provider to be disposed immediately.
   /// {@endtemplate}
-  void invalidate(ProviderBase<Object?> provider);
+  void invalidate(ProviderOrFamily provider);
 
   /// Listens to changes on the value exposed by this provider
   ///
