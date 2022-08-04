@@ -135,6 +135,11 @@ module.exports = {
           label: "Piano Chords Test",
           href: "https://github.com/akvus/piano_fun",
         },
+        {
+          type: "link",
+          label: "Movies API App with Caching & Pagination",
+          href: "https://github.com/Roaa94/movies_app",
+        },
       ],
     },
     {
