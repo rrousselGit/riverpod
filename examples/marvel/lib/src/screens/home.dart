@@ -135,6 +135,7 @@ class Home extends HookConsumerWidget {
                         childAspectRatio: 0.8,
                       ),
                       delegate: SliverChildBuilderDelegate(
+                        childCount: charactersCount,
                         (c, index) {
                           return ProviderScope(
                             overrides: [
@@ -143,7 +144,6 @@ class Home extends HookConsumerWidget {
                             child: const CharacterItem(),
                           );
                         },
-                        childCount: charactersCount,
                       ),
                     ),
                   ),
