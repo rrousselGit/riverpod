@@ -349,12 +349,21 @@ class ProviderContainer implements Node {
   }
 
   /// {@template riverpod.invalidate}
-  void invalidate(ProviderBase<Object?> provider) {
-    final reader = _getStateReader(provider.originProvider);
+  void invalidate(ProviderOrFamily provider) {
+    if (provider is ProviderBase) {
+      final reader = _getStateReader(provider.originProvider);
 
-    if (reader._element != null) {
-      final element = reader._element!;
-      element.invalidateSelf();
+      reader._element?.invalidateSelf();
+    } else {
+      provider as Family;
+
+      final familyContainer =
+          _overrideForFamily[provider]?.container ?? _root ?? this;
+
+      for (final stateReader in familyContainer._stateReaders.values) {
+        if (stateReader.origin.from != provider) continue;
+        stateReader._element?.invalidateSelf();
+      }
     }
   }
 

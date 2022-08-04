@@ -176,7 +176,7 @@ abstract class WidgetRef {
   /// once.
   ///
   /// Calling [invalidate] will cause the provider to be disposed immediately.
-  void invalidate(ProviderBase<Object?> provider);
+  void invalidate(ProviderOrFamily provider);
 }
 
 /// A function that can also listen to providers
@@ -555,7 +555,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   }
 
   @override
-  void invalidate(ProviderBase<Object?> provider) {
+  void invalidate(ProviderOrFamily provider) {
     _container.invalidate(provider);
   }
 
