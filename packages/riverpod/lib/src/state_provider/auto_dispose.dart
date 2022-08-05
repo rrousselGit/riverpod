@@ -84,8 +84,8 @@ class AutoDisposeStateProvider<State> extends AutoDisposeProviderBase<State>
 }
 
 /// The [ProviderElementBase] for [StateProvider]
-class AutoDisposeStateProviderElement<State>
-    extends AutoDisposeProviderElementBase<State> {
+class AutoDisposeStateProviderElement<State> extends ProviderElementBase<State>
+    with AutoDisposeProviderElementBase<State> {
   /// The [ProviderElementBase] for [StateProvider]
   AutoDisposeStateProviderElement(AutoDisposeStateProvider<State> provider)
       : super(provider);
@@ -137,7 +137,8 @@ class _AutoDisposeNotifierProvider<State>
 }
 
 class _AutoDisposeNotifierStateProviderElement<State>
-    extends AutoDisposeProviderElementBase<StateController<State>>
+    extends ProviderElementBase<StateController<State>>
+    with AutoDisposeProviderElementBase<StateController<State>>
     implements AutoDisposeStateProviderRef<State> {
   _AutoDisposeNotifierStateProviderElement(
       _AutoDisposeNotifierProvider<State> provider)

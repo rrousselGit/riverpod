@@ -148,7 +148,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
       return true;
     }(), '');
-    _buildState();
+    buildState();
 
     _state!.map(
       data: (newState) {
@@ -201,7 +201,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     if (_mustRecomputeState) return;
 
     _mustRecomputeState = true;
-    _runOnDispose();
+    runOnDispose();
     _container._scheduler.scheduleProviderRefresh(this);
 
     // We don't call this._markDependencyMayHaveChanged here because we voluntarily
@@ -238,7 +238,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
       _debugDidSetState = false;
       return true;
     }(), '');
-    _buildState();
+    buildState();
 
     if (!identical(_state, previousStateResult)) {
       assert(() {
@@ -264,7 +264,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   }
 
   @pragma('vm:notify-debugger-on-exception')
-  void _buildState() {
+  void buildState() {
     ProviderElementBase? debugPreviouslyBuildingElement;
     assert(() {
       _debugDidChangeDependency = false;
@@ -668,7 +668,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       return true;
     }(), '');
 
-    _runOnDispose();
+    runOnDispose();
 
     // TODO test invalidateSelf() then dispose() properly unlinks dependencies
     // TODO test [listen] calls are cleared
@@ -719,7 +719,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @protected
-  void _runOnDispose() {
+  @visibleForOverriding
+  void runOnDispose() {
     if (!_mounted) return;
     _mounted = false;
 

@@ -191,7 +191,8 @@ class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<State>, State>
 }
 
 class _AutoDisposeNotifierProviderElement<Notifier extends StateNotifier<State>,
-        State> extends AutoDisposeProviderElementBase<Notifier>
+        State> extends ProviderElementBase<Notifier>
+    with AutoDisposeProviderElementBase<Notifier>
     implements AutoDisposeStateNotifierProviderRef<Notifier, State> {
   _AutoDisposeNotifierProviderElement(
     _AutoDisposeNotifierProvider<Notifier, State> provider,

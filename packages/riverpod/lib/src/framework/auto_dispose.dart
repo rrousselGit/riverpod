@@ -49,12 +49,8 @@ abstract class AutoDisposeProviderBase<State> extends ProviderBase<State> {
 }
 
 /// The [ProviderElementBase] of an [AutoDisposeProviderBase].
-abstract class AutoDisposeProviderElementBase<State>
-    extends ProviderElementBase<State> implements AutoDisposeRef<State> {
-  /// The [ProviderElementBase] of an [AutoDisposeProviderBase].
-  AutoDisposeProviderElementBase(ProviderBase<State> provider)
-      : super(provider);
-
+mixin AutoDisposeProviderElementBase<State> on ProviderElementBase<State>
+    implements AutoDisposeRef<State> {
   List<KeepAliveLink>? _keepAliveLinks;
 
   bool _maintainState = false;
@@ -106,8 +102,8 @@ abstract class AutoDisposeProviderElementBase<State>
   }
 
   @override
-  void _buildState() {
-    super._buildState();
+  void buildState() {
+    super.buildState();
 
     if (_disposeDelay != Duration.zero) {
       // TODO timer should not refresh when provider rebuilds
@@ -186,9 +182,9 @@ abstract class AutoDisposeProviderElementBase<State>
   }
 
   @override
-  void _runOnDispose() {
+  void runOnDispose() {
     _keepAliveLinks?.clear();
-    super._runOnDispose();
+    super.runOnDispose();
     assert(
       _keepAliveLinks == null || _keepAliveLinks!.isEmpty,
       'Cannot call keepAlive() within onDispose listeners',

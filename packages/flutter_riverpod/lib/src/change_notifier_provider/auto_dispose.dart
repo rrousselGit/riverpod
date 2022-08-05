@@ -113,7 +113,8 @@ class _AutoDisposeNotifierProvider<Notifier extends ChangeNotifier?>
 }
 
 class _AutoDisposeNotifierProviderElement<Notifier extends ChangeNotifier?>
-    extends AutoDisposeProviderElementBase<Notifier>
+    extends ProviderElementBase<Notifier>
+    with AutoDisposeProviderElementBase<Notifier>
     implements AutoDisposeChangeNotifierProviderRef<Notifier> {
   _AutoDisposeNotifierProviderElement(
       _AutoDisposeNotifierProvider<Notifier> provider)

@@ -54,8 +54,8 @@ class AutoDisposeProvider<State> extends AutoDisposeProviderBase<State>
 }
 
 /// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
-class AutoDisposeProviderElement<State>
-    extends AutoDisposeProviderElementBase<State>
+class AutoDisposeProviderElement<State> extends ProviderElementBase<State>
+    with AutoDisposeProviderElementBase<State>
     implements AutoDisposeProviderRef<State> {
   /// An [AutoDisposeProviderElementBase] for [AutoDisposeProvider]
   AutoDisposeProviderElement(ProviderBase<State> provider) : super(provider);
