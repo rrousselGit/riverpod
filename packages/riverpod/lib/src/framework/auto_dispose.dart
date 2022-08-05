@@ -54,14 +54,6 @@ mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
   List<KeepAliveLink>? _keepAliveLinks;
 
   bool _maintainState = false;
-
-  late final _cacheTime =
-      (provider as AutoDisposeProviderBase).cacheTime ?? _container.cacheTime;
-
-  late final _disposeDelay =
-      (provider as AutoDisposeProviderBase).disposeDelay ??
-          _container.disposeDelay;
-
   @Deprecated('Use `keepAlive()` instead')
   @override
   bool get maintainState => _maintainState;
@@ -71,8 +63,14 @@ mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
     if (!value) mayNeedDispose();
   }
 
-  Timer? _cacheTimer;
+  late final _cacheTime =
+      (provider as AutoDisposeProviderBase).cacheTime ?? _container.cacheTime;
 
+  late final _disposeDelay =
+      (provider as AutoDisposeProviderBase).disposeDelay ??
+          _container.disposeDelay;
+
+  Timer? _cacheTimer;
   KeepAliveLink? _disposeDelayLink;
   Timer? _disposeDelayTimer;
 
