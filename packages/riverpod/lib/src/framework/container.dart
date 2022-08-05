@@ -303,15 +303,9 @@ class ProviderContainer implements Node {
   /// }
   /// ```
   Result read<Result>(
-    ProviderBase<Result> provider,
+    ProviderListenable<Result> provider,
   ) {
-    final element = readProviderElement(provider);
-    element.flush();
-
-    // In case `read` was called on a provider that has no listener
-    element.mayNeedDispose();
-
-    return element.readSelf();
+    return provider.read(this);
   }
 
   @override

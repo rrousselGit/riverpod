@@ -96,6 +96,18 @@ abstract class ProviderBase<State> extends ProviderOrFamily
     );
   }
 
+  @override
+  State read(Node node) {
+    final element = node.readProviderElement(this);
+
+    element.flush();
+
+    // In case `read` was called on a provider that has no listener
+    element.mayNeedDispose();
+
+    return element.requireState;
+  }
+
   /// Initializes the state of a provider
   @visibleForOverriding
   State create(covariant Ref ref);
@@ -690,7 +702,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  T read<T>(ProviderBase<T> provider) {
+  T read<T>(ProviderListenable<T> provider) {
     _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
     assert(_debugAssertCanDependOn(provider), '');

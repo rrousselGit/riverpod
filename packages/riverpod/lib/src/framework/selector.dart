@@ -142,6 +142,12 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
       },
     );
   }
+
+  @override
+  Output read(Node node) {
+    final input = provider.read(node);
+    return selector(input);
+  }
 }
 
 class _SelectorSubscription<Input, Output>

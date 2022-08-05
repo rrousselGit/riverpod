@@ -157,7 +157,7 @@ abstract class Ref<State extends Object?> {
   ///
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
-  T read<T>(ProviderBase<T> provider);
+  T read<T>(AlwaysAliveProviderListenable<T> provider);
 
   /// Obtains the state of a provider and causes the state to be re-evaluated
   /// when that provider emits a new value.

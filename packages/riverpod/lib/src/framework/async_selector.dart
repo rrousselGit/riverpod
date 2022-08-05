@@ -208,4 +208,10 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
       () => selectedFuture!,
     );
   }
+
+  @override
+  Future<Output> read(Node node) {
+    // TODO return "read(.future).then(selector)"
+    throw UnimplementedError();
+  }
 }

@@ -30,8 +30,12 @@ abstract class AutoDisposeRef<State> extends Ref<State> {
   KeepAliveLink keepAlive();
 
   @override
+  // can watch both auto-dispose and non-auto-dispose providers
+  T read<T>(ProviderListenable<T> provider);
+
+  @override
   T watch<T>(
-    // can watch both auto-dispose and non-auto-dispose providers
+    // can read both auto-dispose and non-auto-dispose providers
     ProviderListenable<T> provider,
   );
 

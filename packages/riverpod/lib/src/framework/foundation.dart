@@ -76,6 +76,9 @@ mixin ProviderListenable<State> {
     bool fireImmediately = false,
   });
 
+  /// Obtains the result of this provider expression without adding listener.
+  State read(Node node);
+
   /// Partially listen to a provider.
   ///
   /// Note: This method of listening to an object is currently only supported
