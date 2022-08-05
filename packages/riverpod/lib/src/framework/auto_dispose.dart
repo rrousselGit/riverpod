@@ -55,8 +55,7 @@ abstract class AutoDisposeProviderElementBase<State>
   AutoDisposeProviderElementBase(ProviderBase<State> provider)
       : super(provider);
 
-  // TODO make nullable
-  final _keepAliveLinks = <KeepAliveLink>[];
+  List<KeepAliveLink>? _keepAliveLinks;
 
   bool _maintainState = false;
 
@@ -83,22 +82,25 @@ abstract class AutoDisposeProviderElementBase<State>
 
   @override
   KeepAliveLink keepAlive() {
-    late KeepAliveLink link;
+    final links = _keepAliveLinks ??= [];
 
+    late KeepAliveLink link;
     link = KeepAliveLink._(() {
-      if (_keepAliveLinks.remove(link)) {
-        if (_keepAliveLinks.isEmpty) mayNeedDispose();
+      if (links.remove(link)) {
+        if (links.isEmpty) mayNeedDispose();
       }
     });
-    _keepAliveLinks.add(link);
+    links.add(link);
 
     return link;
   }
 
   @override
   void mayNeedDispose() {
+    final links = _keepAliveLinks;
+
     // ignore: deprecated_member_use_from_same_package
-    if (!maintainState && !hasListeners && _keepAliveLinks.isEmpty) {
+    if (!maintainState && !hasListeners && (links == null || links.isEmpty)) {
       _container._scheduler.scheduleProviderDispose(this);
     }
   }
@@ -116,7 +118,8 @@ abstract class AutoDisposeProviderElementBase<State>
       // new one
       assert(
         _disposeDelayLink == null ||
-            !_keepAliveLinks.contains(_disposeDelayLink),
+            _keepAliveLinks == null ||
+            !_keepAliveLinks!.contains(_disposeDelayLink),
         'Bad state',
       );
       _disposeDelayLink = keepAlive();
@@ -184,10 +187,10 @@ abstract class AutoDisposeProviderElementBase<State>
 
   @override
   void _runOnDispose() {
-    _keepAliveLinks.clear();
+    _keepAliveLinks?.clear();
     super._runOnDispose();
     assert(
-      _keepAliveLinks.isEmpty,
+      _keepAliveLinks == null || _keepAliveLinks!.isEmpty,
       'Cannot call keepAlive() within onDispose listeners',
     );
   }

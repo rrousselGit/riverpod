@@ -69,9 +69,11 @@ class _ProviderScheduler {
     for (var i = 0; i < _stateToDispose.length; i++) {
       final element = _stateToDispose[i];
 
+      final links = element._keepAliveLinks;
+
       // ignore: deprecated_member_use_from_same_package
       if (element.maintainState ||
-          element._keepAliveLinks.isNotEmpty ||
+          (links != null && links.isNotEmpty) ||
           element.hasListeners ||
           element._container._disposed) {
         continue;
