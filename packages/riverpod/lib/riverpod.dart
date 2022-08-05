@@ -9,6 +9,7 @@ export 'src/common.dart'
 export 'src/framework.dart'
     show
         Create,
+        // ignore: deprecated_member_use_from_same_package
         Reader,
         AlwaysAliveProviderBase,
         Family,
