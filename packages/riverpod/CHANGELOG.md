@@ -2,6 +2,7 @@
 
 - fix: StateProvider.state not respecting the `name` parameter (#1470)
 - feat: Add support for `ref.invalidate(family)` to recompiute an entire family (#1517)
+- `Reader` is now marked as deprecated.
 
 # 2.0.0-dev.9
 
