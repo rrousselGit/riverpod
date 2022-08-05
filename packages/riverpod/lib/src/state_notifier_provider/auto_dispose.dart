@@ -122,7 +122,7 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
   final AutoDisposeProviderBase<Notifier> notifier;
 
   @override
-  State create(AutoDisposeProviderElementBase<State> ref) {
+  State create(AutoDisposeProviderElementMixin<State> ref) {
     final notifier = ref.watch(this.notifier);
 
     void listener(State newState) {
@@ -141,7 +141,7 @@ class AutoDisposeStateNotifierProvider<Notifier extends StateNotifier<State>,
   }
 
   @override
-  AutoDisposeProviderElementBase<State> createElement() {
+  AutoDisposeProviderElementMixin<State> createElement() {
     return AutoDisposeProviderElement(this);
   }
 }
@@ -192,7 +192,7 @@ class _AutoDisposeNotifierProvider<Notifier extends StateNotifier<State>, State>
 
 class _AutoDisposeNotifierProviderElement<Notifier extends StateNotifier<State>,
         State> extends ProviderElementBase<Notifier>
-    with AutoDisposeProviderElementBase<Notifier>
+    with AutoDisposeProviderElementMixin<Notifier>
     implements AutoDisposeStateNotifierProviderRef<Notifier, State> {
   _AutoDisposeNotifierProviderElement(
     _AutoDisposeNotifierProvider<Notifier, State> provider,

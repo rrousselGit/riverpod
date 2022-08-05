@@ -349,7 +349,7 @@ void main() {
           container.getAllProviderElements(),
           unorderedMatches(<Matcher>[
             isA<ProviderElementBase<int>>(),
-            isA<AutoDisposeProviderElementBase<int>>(),
+            isA<AutoDisposeProviderElementMixin<int>>(),
           ]),
         );
 
@@ -367,7 +367,7 @@ void main() {
           container.getAllProviderElements(),
           unorderedMatches(<Matcher>[
             isA<ProviderElementBase<int>>(),
-            isA<AutoDisposeProviderElementBase<int>>(),
+            isA<AutoDisposeProviderElementMixin<int>>(),
           ]),
         );
       });

@@ -54,7 +54,7 @@ class AutoDisposeChangeNotifierProvider<Notifier extends ChangeNotifier?>
   final AutoDisposeProviderBase<Notifier> notifier;
 
   @override
-  Notifier create(AutoDisposeProviderElementBase<Notifier> ref) {
+  Notifier create(AutoDisposeProviderElementMixin<Notifier> ref) {
     final notifier = ref.watch<Notifier>(this.notifier);
     _listenNotifier(notifier, ref);
     return notifier;
@@ -114,7 +114,7 @@ class _AutoDisposeNotifierProvider<Notifier extends ChangeNotifier?>
 
 class _AutoDisposeNotifierProviderElement<Notifier extends ChangeNotifier?>
     extends ProviderElementBase<Notifier>
-    with AutoDisposeProviderElementBase<Notifier>
+    with AutoDisposeProviderElementMixin<Notifier>
     implements AutoDisposeChangeNotifierProviderRef<Notifier> {
   _AutoDisposeNotifierProviderElement(
       _AutoDisposeNotifierProvider<Notifier> provider)

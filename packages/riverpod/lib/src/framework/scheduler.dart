@@ -11,7 +11,7 @@ class _ProviderScheduler {
 
   final void Function(void Function() onDone) vsync;
 
-  final _stateToDispose = <AutoDisposeProviderElementBase>[];
+  final _stateToDispose = <AutoDisposeProviderElementMixin>[];
   final _stateToRefresh = <ProviderElementBase>[];
 
   Completer<void>? _pendingTaskCompleter;
@@ -50,7 +50,7 @@ class _ProviderScheduler {
     }
   }
 
-  void scheduleProviderDispose(AutoDisposeProviderElementBase element) {
+  void scheduleProviderDispose(AutoDisposeProviderElementMixin element) {
     assert(
       !element.hasListeners,
       'Tried to dispose ${element._provider} , but still has listeners',

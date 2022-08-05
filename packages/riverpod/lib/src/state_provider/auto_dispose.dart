@@ -63,7 +63,7 @@ class AutoDisposeStateProvider<State> extends AutoDisposeProviderBase<State>
   );
 
   @override
-  State create(AutoDisposeProviderElementBase<State> ref) {
+  State create(AutoDisposeProviderElementMixin<State> ref) {
     final notifier = ref.watch(this.notifier);
 
     final removeListener = notifier.addListener(ref.setState);
@@ -85,7 +85,7 @@ class AutoDisposeStateProvider<State> extends AutoDisposeProviderBase<State>
 
 /// The [ProviderElementBase] for [StateProvider]
 class AutoDisposeStateProviderElement<State> extends ProviderElementBase<State>
-    with AutoDisposeProviderElementBase<State> {
+    with AutoDisposeProviderElementMixin<State> {
   /// The [ProviderElementBase] for [StateProvider]
   AutoDisposeStateProviderElement(AutoDisposeStateProvider<State> provider)
       : super(provider);
@@ -138,7 +138,7 @@ class _AutoDisposeNotifierProvider<State>
 
 class _AutoDisposeNotifierStateProviderElement<State>
     extends ProviderElementBase<StateController<State>>
-    with AutoDisposeProviderElementBase<StateController<State>>
+    with AutoDisposeProviderElementMixin<StateController<State>>
     implements AutoDisposeStateProviderRef<State> {
   _AutoDisposeNotifierStateProviderElement(
       _AutoDisposeNotifierProvider<State> provider)

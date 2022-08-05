@@ -91,7 +91,7 @@ class AutoDisposeFutureProvider<State>
 class AutoDisposeFutureProviderElement<State>
     extends ProviderElementBase<AsyncValue<State>>
     with
-        AutoDisposeProviderElementBase<AsyncValue<State>>,
+        AutoDisposeProviderElementMixin<AsyncValue<State>>,
         _FutureProviderElementMixin<State>
     implements AutoDisposeFutureProviderRef<State> {
   /// The element of an [AutoDisposeFutureProvider]

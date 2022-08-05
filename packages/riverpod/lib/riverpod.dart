@@ -23,7 +23,7 @@ export 'src/framework.dart'
         ProviderObserver,
         ProviderSubscription,
         AutoDisposeProviderBase,
-        AutoDisposeProviderElementBase,
+        AutoDisposeProviderElementMixin,
         ProviderElementBase,
         ProviderOverride,
         FamilyOverride,

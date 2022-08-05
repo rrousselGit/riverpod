@@ -45,11 +45,11 @@ abstract class AutoDisposeProviderBase<State> extends ProviderBase<State> {
   State create(AutoDisposeRef ref);
 
   @override
-  AutoDisposeProviderElementBase<State> createElement();
+  AutoDisposeProviderElementMixin<State> createElement();
 }
 
-/// The [ProviderElementBase] of an [AutoDisposeProviderBase].
-mixin AutoDisposeProviderElementBase<State> on ProviderElementBase<State>
+/// A mixin that adds auto dispose support to a [ProviderElementBase].
+mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
     implements AutoDisposeRef<State> {
   List<KeepAliveLink>? _keepAliveLinks;
 

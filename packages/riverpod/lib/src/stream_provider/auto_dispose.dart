@@ -105,7 +105,7 @@ class AutoDisposeStreamProvider<State>
 class AutoDisposeStreamProviderElement<State>
     extends ProviderElementBase<AsyncValue<State>>
     with
-        AutoDisposeProviderElementBase<AsyncValue<State>>,
+        AutoDisposeProviderElementMixin<AsyncValue<State>>,
         _StreamProviderElementMixin<State>
     implements AutoDisposeStreamProviderRef<State> {
   /// The Element of an [AutoDisposeStreamProvider]

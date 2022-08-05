@@ -702,7 +702,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   ///
   /// See also:
   ///
-  /// - [AutoDisposeProviderElementBase], which overrides this method to destroy the
+  /// - [AutoDisposeProviderElementMixin], which overrides this method to destroy the
   ///   state of a provider when no longer used.
   @protected
   @visibleForOverriding

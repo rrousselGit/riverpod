@@ -232,7 +232,7 @@ class AutoDisposeAsyncValueAsStreamProvider<State>
 
   @override
   Stream<State> create(
-      covariant AutoDisposeProviderElementBase<Stream<State>> ref) {
+      covariant AutoDisposeProviderElementMixin<Stream<State>> ref) {
     return _asyncValueToStream(_provider, ref);
   }
 
@@ -394,7 +394,7 @@ class AutoDisposeAsyncValueAsFutureProvider<State>
   ProviderBase<Object?> get originProvider => _provider;
 
   @override
-  Future<State> create(AutoDisposeProviderElementBase<Future<State>> ref) {
+  Future<State> create(AutoDisposeProviderElementMixin<Future<State>> ref) {
     return _asyncValueAsFuture(_provider, ref);
   }
 
