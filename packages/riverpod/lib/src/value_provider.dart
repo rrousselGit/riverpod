@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import 'framework.dart';
+import 'result.dart';
 
 /// A provider that is driven by a value instead of a function.
 ///

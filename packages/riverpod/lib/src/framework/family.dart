@@ -1,5 +1,11 @@
 part of '../framework.dart';
 
+/// A [Create] equivalent used by [Family].
+typedef FamilyCreate<T, R extends Ref, Arg> = T Function(
+  R ref,
+  Arg arg,
+);
+
 /// A base class for all families
 abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
     extends ProviderOrFamily implements FamilyOverride<Arg> {
