@@ -126,35 +126,23 @@ void main() {
   //   verifyNoMoreInteractions(listener2);
   // });
 
-  // test('Pass family and argument properties', () {
-  //   final family = StateNotifierProvider.family<Counter, int, int>((_, a) {
-  //     return Counter();
-  //   });
-  //   expect(
-  //     family(0),
-  //     isA<StateNotifierProvider<Counter, int>>()
-  //         .having((p) => p.argument, 'argument', 0)
-  //         .having((p) => p.from, 'from', family),
-  //   );
-  //   expect(
-  //     family(0).notifier,
-  //     isA<AlwaysAliveProviderBase<Counter>>()
-  //         .having((p) => p.argument, 'argument', 0)
-  //         .having((p) => p.from, 'from', family),
-  //   );
-  //   expect(
-  //     family(1),
-  //     isA<StateNotifierProvider<Counter, int>>()
-  //         .having((p) => p.from, 'from', family)
-  //         .having((p) => p.argument, 'argument', 1),
-  //   );
-  //   expect(
-  //     family(1).notifier,
-  //     isA<AlwaysAliveProviderBase<Counter>>()
-  //         .having((p) => p.argument, 'argument', 1)
-  //         .having((p) => p.from, 'from', family),
-  //   );
-  // });
+  test('Pass family and argument properties', () {
+    final family = StateNotifierProvider.family<Counter, int, int>((_, a) {
+      return Counter();
+    });
+    expect(
+      family(0),
+      isA<StateNotifierProvider<Counter, int>>()
+          .having((p) => p.argument, 'argument', 0)
+          .having((p) => p.from, 'from', family),
+    );
+    expect(
+      family(1),
+      isA<StateNotifierProvider<Counter, int>>()
+          .having((p) => p.from, 'from', family)
+          .having((p) => p.argument, 'argument', 1),
+    );
+  });
 
   // test('family override', () {
   //   final family = Provider.family<String, int>((ref, a) => 'Hello $a');

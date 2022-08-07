@@ -55,15 +55,16 @@ export 'src/provider.dart'
 
 export 'src/state_controller.dart' show StateController;
 
-// export 'src/state_notifier_provider.dart'
-//     show
-//         AutoDisposeStateNotifierProvider,
-//         AutoDisposeStateNotifierProviderFamily,
-//         StateNotifierProvider,
-//         StateNotifierProviderFamily,
-//         AutoDisposeStateNotifierProviderRef,
-//         StateNotifierProviderRef,
-//         StateNotifierProviderOverrideMixin;
+export 'src/state_notifier_provider.dart'
+    show
+        AutoDisposeStateNotifierProvider,
+        AutoDisposeStateNotifierProviderFamily,
+        StateNotifierProvider,
+        StateNotifierProviderFamily,
+        AutoDisposeStateNotifierProviderRef,
+        StateNotifierProviderRef
+    // StateNotifierProviderOverrideMixin
+    ;
 
 export 'src/state_provider.dart'
     show
