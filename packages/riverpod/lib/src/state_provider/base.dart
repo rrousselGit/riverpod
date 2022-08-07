@@ -19,6 +19,9 @@ class StateProvider<T> extends _StateProviderBase<T>
     super.dependencies,
   }) : super(cacheTime: null, disposeDelay: null);
 
+  static const autoDispose = AutoDisposeStateProviderBuilder();
+  static const family = StateProviderFamilyBuilder();
+
   final T Function(StateProviderRef<T> ref) _createFn;
 
   @override

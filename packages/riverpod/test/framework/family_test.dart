@@ -1,30 +1,27 @@
-import 'dart:async';
-
-import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
 
 void main() {
-  test('throw if overrideWithProvider returns a provider with dependencies',
-      () {
-    final family = Provider.family<int, int>((ref, _) => 0);
-    final a = Provider((ref) => 0);
+  // test('throw if overrideWithProvider returns a provider with dependencies',
+  //     () {
+  //   final family = Provider.family<int, int>((ref, _) => 0);
+  //   final a = Provider((ref) => 0);
 
-    final container = createContainer(
-      overrides: [
-        family.overrideWithProvider(
-          (argument) => Provider((ref) => 0, dependencies: [a]),
-        ),
-      ],
-    );
+  //   final container = createContainer(
+  //     overrides: [
+  //       family.overrideWithProvider(
+  //         (argument) => Provider((ref) => 0, dependencies: [a]),
+  //       ),
+  //     ],
+  //   );
 
-    expect(
-      () => container.read(family(42)),
-      throwsA(isA<AssertionError>()),
-    );
-  });
+  //   expect(
+  //     () => container.read(family(42)),
+  //     throwsA(isA<AssertionError>()),
+  //   );
+  // });
 
   test(
       'does not re-initialize a family if read by a child container after the provider was initialized',
@@ -84,92 +81,92 @@ void main() {
     expect(container.read(family(21)), '21');
   });
 
-  test('each provider updates their dependents independently', () {
-    final controllers = {
-      0: StreamController<String>(sync: true),
-      1: StreamController<String>(sync: true),
-    };
-    final family = StreamProvider.family<String, int>((ref, a) {
-      return controllers[a]!.stream;
-    });
-    final container = createContainer();
-    final listener = Listener<AsyncValue<String>>();
-    final listener2 = Listener<AsyncValue<String>>();
+  // test('each provider updates their dependents independently', () {
+  //   final controllers = {
+  //     0: StreamController<String>(sync: true),
+  //     1: StreamController<String>(sync: true),
+  //   };
+  //   final family = StreamProvider.family<String, int>((ref, a) {
+  //     return controllers[a]!.stream;
+  //   });
+  //   final container = createContainer();
+  //   final listener = Listener<AsyncValue<String>>();
+  //   final listener2 = Listener<AsyncValue<String>>();
 
-    container.listen(family(0), listener, fireImmediately: true);
-    verify(listener(null, const AsyncValue.loading()));
-    verifyNoMoreInteractions(listener);
-    verifyNoMoreInteractions(listener2);
+  //   container.listen(family(0), listener, fireImmediately: true);
+  //   verify(listener(null, const AsyncValue.loading()));
+  //   verifyNoMoreInteractions(listener);
+  //   verifyNoMoreInteractions(listener2);
 
-    container.listen(family(1), listener2, fireImmediately: true);
-    verify(listener2(null, const AsyncValue.loading()));
-    verifyNoMoreInteractions(listener);
-    verifyNoMoreInteractions(listener2);
+  //   container.listen(family(1), listener2, fireImmediately: true);
+  //   verify(listener2(null, const AsyncValue.loading()));
+  //   verifyNoMoreInteractions(listener);
+  //   verifyNoMoreInteractions(listener2);
 
-    controllers[0]!.add('42');
+  //   controllers[0]!.add('42');
 
-    verify(
-      listener(
-        const AsyncValue.loading(),
-        const AsyncValue.data('42'),
-      ),
-    );
-    verifyNoMoreInteractions(listener);
-    verifyNoMoreInteractions(listener2);
+  //   verify(
+  //     listener(
+  //       const AsyncValue.loading(),
+  //       const AsyncValue.data('42'),
+  //     ),
+  //   );
+  //   verifyNoMoreInteractions(listener);
+  //   verifyNoMoreInteractions(listener2);
 
-    controllers[1]!.add('21');
+  //   controllers[1]!.add('21');
 
-    verify(
-      listener2(
-        const AsyncValue.loading(),
-        const AsyncValue.data('21'),
-      ),
-    );
-    verifyNoMoreInteractions(listener);
-    verifyNoMoreInteractions(listener2);
-  });
+  //   verify(
+  //     listener2(
+  //       const AsyncValue.loading(),
+  //       const AsyncValue.data('21'),
+  //     ),
+  //   );
+  //   verifyNoMoreInteractions(listener);
+  //   verifyNoMoreInteractions(listener2);
+  // });
 
-  test('Pass family and argument properties', () {
-    final family = StateNotifierProvider.family<Counter, int, int>((_, a) {
-      return Counter();
-    });
-    expect(
-      family(0),
-      isA<StateNotifierProvider<Counter, int>>()
-          .having((p) => p.argument, 'argument', 0)
-          .having((p) => p.from, 'from', family),
-    );
-    expect(
-      family(0).notifier,
-      isA<AlwaysAliveProviderBase<Counter>>()
-          .having((p) => p.argument, 'argument', 0)
-          .having((p) => p.from, 'from', family),
-    );
-    expect(
-      family(1),
-      isA<StateNotifierProvider<Counter, int>>()
-          .having((p) => p.from, 'from', family)
-          .having((p) => p.argument, 'argument', 1),
-    );
-    expect(
-      family(1).notifier,
-      isA<AlwaysAliveProviderBase<Counter>>()
-          .having((p) => p.argument, 'argument', 1)
-          .having((p) => p.from, 'from', family),
-    );
-  });
+  // test('Pass family and argument properties', () {
+  //   final family = StateNotifierProvider.family<Counter, int, int>((_, a) {
+  //     return Counter();
+  //   });
+  //   expect(
+  //     family(0),
+  //     isA<StateNotifierProvider<Counter, int>>()
+  //         .having((p) => p.argument, 'argument', 0)
+  //         .having((p) => p.from, 'from', family),
+  //   );
+  //   expect(
+  //     family(0).notifier,
+  //     isA<AlwaysAliveProviderBase<Counter>>()
+  //         .having((p) => p.argument, 'argument', 0)
+  //         .having((p) => p.from, 'from', family),
+  //   );
+  //   expect(
+  //     family(1),
+  //     isA<StateNotifierProvider<Counter, int>>()
+  //         .having((p) => p.from, 'from', family)
+  //         .having((p) => p.argument, 'argument', 1),
+  //   );
+  //   expect(
+  //     family(1).notifier,
+  //     isA<AlwaysAliveProviderBase<Counter>>()
+  //         .having((p) => p.argument, 'argument', 1)
+  //         .having((p) => p.from, 'from', family),
+  //   );
+  // });
 
-  test('family override', () {
-    final family = Provider.family<String, int>((ref, a) => 'Hello $a');
-    final container = createContainer(overrides: [
-      // Provider overrides always takes over family overrides
-      family(84).overrideWithValue('Bonjour 84'),
-      family,
-      family(21).overrideWithValue('Hi 21'),
-    ]);
+  // test('family override', () {
+  //   final family = Provider.family<String, int>((ref, a) => 'Hello $a');
+  //   final container = createContainer(overrides: [
+  //     // Provider overrides always takes over family overrides
+  //     family(84).overrideWithValue('Bonjour 84'),
+  //     family,
+  //     family(21).overrideWithValue('Hi 21'),
+  //   ]);
 
-    expect(container.read(family(21)), 'Hi 21');
-    expect(container.read(family(84)), 'Bonjour 84');
-    expect(container.read(family(42)), 'Hello 42');
-  });
+  //   expect(container.read(family(21)), 'Hi 21');
+  //   expect(container.read(family(84)), 'Bonjour 84');
+  //   expect(container.read(family(42)), 'Hello 42');
+  // });
 }
