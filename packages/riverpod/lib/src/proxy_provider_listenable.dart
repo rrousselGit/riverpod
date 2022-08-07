@@ -47,6 +47,8 @@ class ProviderElementProxy<R>
   }) {
     final element = node.readProviderElement(origin);
 
+    // TODO does this need a "flush"?
+
     // TODO remove
     Listen<R>? listen;
     void setListen(Listen<R> _listen) {
@@ -69,6 +71,7 @@ class ProviderElementProxy<R>
   @override
   R read(Node node) {
     final element = node.readProviderElement(origin);
+    element.flush();
     return lense(element, null).value;
   }
 
