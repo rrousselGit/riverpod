@@ -28,12 +28,38 @@ abstract class ProviderBase<State> extends ProviderOrFamily
     required this.name,
     required this.from,
     required this.argument,
+    required this.cacheTime,
+    required this.disposeDelay,
   });
 
   @override
   ProviderBase get _origin => originProvider;
   @override
   ProviderBase get _override => originProvider;
+
+  /// {@template riverpod.cache_time}
+  /// The minimum amount of time before an `autoDispose` provider can be
+  /// disposed if not listened after the last value change.
+  ///
+  /// If the provider rebuilds (such as when using `ref.watch` or `ref.refresh`)
+  /// or emits a new value, the timer will be refreshed.
+  ///
+  /// If null, use the nearest ancestor [ProviderContainer]'s [cacheTime].
+  /// If no ancestor is found, fallbacks to [Duration.zero].
+  /// {@endtemplate}
+  final Duration? cacheTime;
+
+  /// {@template riverpod.dispose_delay}
+  /// The amount of time before a provider is disposed after its last listener
+  /// is removed.
+  ///
+  /// If a new listener is added within that duration, the provider will not be
+  /// disposed.
+  ///
+  /// If null, use the nearest ancestor [ProviderContainer]'s [disposeDelay].
+  /// If no ancestor is found, fallbacks to [Duration.zero].
+  /// {@endtemplate}
+  final Duration? disposeDelay;
 
   /// {@template riverpod.name}
   /// A custom label for providers.
@@ -98,10 +124,6 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 
     return element.requireState;
   }
-
-  /// Initializes the state of a provider
-  @visibleForOverriding
-  State create(covariant Ref ref);
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
   /// listeners if the exposed value did not change.
@@ -206,6 +228,7 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
   State read() => listenedElement.readSelf();
 }
 
+/// A mixin to add [overrideWithValue] capability to a provider.
 mixin OverrideWithValueMixin<State> on ProviderBase<State> {
   /// {@template riverpod.overrridewithvalue}
   /// Overrides a provider with a value, ejecting the default behaviour.
@@ -247,6 +270,7 @@ mixin OverrideWithValueMixin<State> on ProviderBase<State> {
   }
 }
 
+/// A mixin to add [overrideWithProvider] capability to a provider.
 mixin OverrideWithProviderMixin<State,
     ProviderType extends ProviderBase<Object?>> {
   ProviderBase<State> get originProvider;

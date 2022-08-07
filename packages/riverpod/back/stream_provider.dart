@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 
 import 'async_value_converters.dart';
-import 'builders.dart';
-import 'common.dart';
-import 'framework.dart';
+import '../lib/src/builders.dart';
+import '../lib/src/common.dart';
+import '../lib/src/framework.dart';
 import 'future_provider.dart';
 import 'provider.dart';
 

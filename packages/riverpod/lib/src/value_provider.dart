@@ -7,17 +7,22 @@ import 'result.dart';
 ///
 /// This is an implementation detail of `overrideWithValue`.
 @sealed
-class ValueProvider<State> extends AlwaysAliveProviderBase<State> {
+class ValueProvider<State> extends ProviderBase<State>
+    with AlwaysAliveProviderBase<State> {
   /// Creates a [ValueProvider].
-  ValueProvider(this._value) : super(name: null, from: null, argument: null);
+  ValueProvider(this._value)
+      : super(
+          name: null,
+          from: null,
+          argument: null,
+          cacheTime: null,
+          disposeDelay: null,
+        );
 
   final State _value;
 
   @override
   List<ProviderOrFamily>? get dependencies => null;
-
-  @override
-  State create(ValueProviderElement<State> ref) => _value;
 
   @override
   bool updateShouldNotify(State previousState, State newState) {
@@ -54,5 +59,11 @@ class ValueProviderElement<State> extends ProviderElementBase<State> {
       setState(newValue);
       onChange?.call(newValue);
     }
+  }
+
+  @override
+  void create() {
+    final provider = this.provider as ValueProvider<State>;
+    setState(provider._value);
   }
 }

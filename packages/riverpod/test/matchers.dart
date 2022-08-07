@@ -1,4 +1,4 @@
-import 'package:riverpod/src/provider.dart';
+import 'package:riverpod/src/devtool.dart';
 import 'package:test/test.dart';
 
 Matcher isPostEventCall(Object kind, Object? event) {

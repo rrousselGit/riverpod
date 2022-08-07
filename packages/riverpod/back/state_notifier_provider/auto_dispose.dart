@@ -1,4 +1,4 @@
-part of '../state_notifier_provider.dart';
+part of 'back/state_notifier_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 abstract class AutoDisposeStateNotifierProviderRef<

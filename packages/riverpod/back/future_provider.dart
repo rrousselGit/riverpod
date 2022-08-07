@@ -1,45 +1,16 @@
 import 'dart:async';
 
-import 'common.dart';
-import 'framework.dart';
-import 'framework/family2.dart';
-import 'listenable.dart';
-import 'proxy_provider_listenable.dart';
-import 'result.dart';
-import 'synchronous_future.dart';
+import 'package:meta/meta.dart';
+import 'async_value_converters.dart';
+
+import '../lib/src/builders.dart';
+import '../lib/src/common.dart';
+import '../lib/src/framework.dart';
+import 'provider.dart';
+import 'stream_provider.dart';
 
 part 'future_provider/auto_dispose.dart';
 part 'future_provider/base.dart';
-
-ProviderElementProxy<Future<T>> _future<T>(
-  _FutureProviderBase<T> that,
-) {
-  return ProviderElementProxy<Future<T>>(
-    that,
-    (element, setListen) {
-      if (element is FutureProviderElement<T>) {
-        return element._futureNotifier;
-      }
-
-      throw UnsupportedError('Unknown element type ${element.runtimeType}');
-    },
-  );
-}
-
-ProviderElementProxy<Stream<T>> _stream<T>(
-  _FutureProviderBase<T> that,
-) {
-  return ProviderElementProxy<Stream<T>>(
-    that,
-    (element, setListen) {
-      if (element is FutureProviderElement<T>) {
-        return element._streamNotifier;
-      }
-
-      throw UnsupportedError('Unknown element type ${element.runtimeType}');
-    },
-  );
-}
 
 /// {@template riverpod.futureprovider}
 /// A provider that asynchronously creates a single value.
@@ -108,28 +79,38 @@ ProviderElementProxy<Stream<T>> _stream<T>(
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
 mixin _FutureProviderElementMixin<State>
-    on ProviderElementBase<AsyncValue<State>> {}
+    on ProviderElementBase<AsyncValue<State>> {
+  AsyncValue<State> _listenFuture(
+    FutureOr<State> Function() future,
+  ) {
+    var running = true;
+    onDispose(() => running = false);
+    try {
+      final value = future();
 
-abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
-  _FutureProviderBase({
-    required this.dependencies,
-    required super.name,
-    required super.from,
-    required super.argument,
-    required super.cacheTime,
-    required super.disposeDelay,
-  });
+      if (value is Future<State>) {
+        setState(AsyncValue<State>.loading());
 
-  @override
-  final List<ProviderOrFamily>? dependencies;
+        value.then(
+          (event) {
+            if (running) setState(AsyncValue<State>.data(event));
+          },
+          // ignore: avoid_types_on_closure_parameters
+          onError: (Object err, StackTrace stack) {
+            if (running) {
+              setState(
+                AsyncValue<State>.error(err, stackTrace: stack),
+              );
+            }
+          },
+        );
+      } else {
+        return AsyncData(value);
+      }
 
-  ProviderListenable<Future<T>> get future;
-  ProviderListenable<Stream<T>> get stream;
-
-  FutureOr<T> _create(covariant FutureProviderElement<T> ref);
-
-  @override
-  bool updateShouldNotify(AsyncValue<T> previousState, AsyncValue<T> newState) {
-    return true;
+      return requireState;
+    } catch (err, stack) {
+      return AsyncValue.error(err, stackTrace: stack);
+    }
   }
 }

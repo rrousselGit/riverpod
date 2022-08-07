@@ -1,4 +1,4 @@
-part of '../provider.dart';
+part of 'back/provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [state], the value currently exposed by this provider.
@@ -12,33 +12,6 @@ abstract class ProviderRef<State> implements Ref<State> {
   /// Will throw if the provider threw during creation.
   State get state;
   set state(State newState);
-}
-
-/// {@macro riverpod.provider}
-@sealed
-class Provider<State> extends _ProviderBase<State> {
-  /// {@macro riverpod.provider}
-  Provider(
-    this._createFn, {
-    super.name,
-    super.dependencies,
-    super.from,
-    super.argument,
-  }) : super(cacheTime: null, disposeDelay: null);
-
-  /// {@macro riverpod.family}
-  static const family = ProviderFamilyBuilder();
-
-  /// {@macro riverpod.autoDispose}
-  static const autoDispose = AutoDisposeProviderBuilder();
-
-  final Create<State, ProviderRef<State>> _createFn;
-
-  @override
-  State _create(ProviderElement<State> ref) => _createFn(ref);
-
-  @override
-  ProviderElement<State> createElement() => ProviderElement(this);
 }
 
 /// {@template riverpod.provider}
@@ -261,25 +234,70 @@ class ProviderElement<State> extends ProviderElementBase<State>
 
   @override
   set state(State newState) => setState(newState);
+}
+
+/// {@macro riverpod.provider}
+@sealed
+class Provider<State> extends AlwaysAliveProviderBase<State>
+    with
+        OverrideWithValueMixin<State>,
+        OverrideWithProviderMixin<State, AlwaysAliveProviderBase<State>> {
+  /// {@macro riverpod.provider}
+  Provider(
+    this._create, {
+    String? name,
+    this.dependencies,
+    Family? from,
+    Object? argument,
+  }) : super(name: name, from: from, argument: argument);
+
+  /// {@macro riverpod.family}
+  static const family = ProviderFamilyBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  static const autoDispose = AutoDisposeProviderBuilder();
 
   @override
-  void create() {
-    final provider = this.provider as _ProviderBase<State>;
+  ProviderBase<State> get originProvider => this;
 
-    setState(provider._create(this));
+  @override
+  final List<ProviderOrFamily>? dependencies;
+
+  final Create<State, ProviderRef<State>> _create;
+
+  @override
+  State create(ProviderRef<State> ref) => _create(ref);
+
+  @override
+  bool updateShouldNotify(State previousState, State newState) {
+    return previousState != newState;
   }
+
+  @override
+  ProviderElement<State> createElement() => ProviderElement(this);
 }
 
 /// {@template riverpod.provider.family}
 /// A class that allows building a [Provider] from an external parameter.
 /// {@endtemplate}
-class ProviderFamily<R, Arg>
-    extends FFamily<ProviderRef<R>, R, Arg, R, Provider<R>> {
+@sealed
+class ProviderFamily<State, Arg> extends Family<State, Arg, Provider<State>> {
+  /// {@macro riverpod.provider.family}
   ProviderFamily(
-    super.create, {
-    super.name,
-    super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
-  }) : super(providerFactory: Provider.new);
+    this._create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) : super(name: name, dependencies: dependencies);
+
+  final FamilyCreate<State, ProviderRef<State>, Arg> _create;
+
+  @override
+  Provider<State> create(Arg argument) {
+    return Provider<State>(
+      (ref) => _create(ref, argument),
+      name: name,
+      from: this,
+      argument: argument,
+    );
+  }
 }

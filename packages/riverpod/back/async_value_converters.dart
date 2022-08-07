@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import 'internals.dart';
+import '../lib/src/internals.dart';
 
 /// Adds [future] and [stream] to providers that emit an [AsyncValue]
 extension AlwaysAliveAsyncProviderX<State>

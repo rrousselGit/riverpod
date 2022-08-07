@@ -29,6 +29,11 @@ abstract class Result<State> {
     required R Function(ResultData<State> data) data,
     required R Function(ResultError<State>) error,
   });
+
+  R when<R>({
+    required R Function(State data) data,
+    required R Function(Object error, StackTrace stackTrace) error,
+  });
 }
 
 class ResultData<State> implements Result<State> {
@@ -51,6 +56,14 @@ class ResultData<State> implements Result<State> {
     required R Function(ResultError<State>) error,
   }) {
     return data(this);
+  }
+
+  @override
+  R when<R>({
+    required R Function(State data) data,
+    required R Function(Object error, StackTrace stackTrace) error,
+  }) {
+    return data(state);
   }
 
   @override
@@ -85,6 +98,14 @@ class ResultError<State> implements Result<State> {
     required R Function(ResultError<State>) error,
   }) {
     return error(this);
+  }
+
+  @override
+  R when<R>({
+    required R Function(State data) data,
+    required R Function(Object error, StackTrace stackTrace) error,
+  }) {
+    return error(this.error, this.stackTrace);
   }
 
   @override

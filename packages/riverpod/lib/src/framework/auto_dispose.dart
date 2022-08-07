@@ -1,53 +1,5 @@
 part of '../framework.dart';
 
-/// {@template riverpod.AutoDisposeProviderBase}
-/// A base class for providers that destroy their state when no longer listened to.
-///
-/// See also:
-///
-/// - [Provider.autoDispose], a variant of [Provider] that auto-dispose its state.
-/// {@endtemplate}
-abstract class AutoDisposeProviderBase<State> extends ProviderBase<State> {
-  /// {@macro riverpod.AutoDisposeProviderBase}
-  AutoDisposeProviderBase({
-    required String? name,
-    required Family? from,
-    required Object? argument,
-    required this.cacheTime,
-    required this.disposeDelay,
-  }) : super(name: name, from: from, argument: argument);
-
-  /// {@template riverpod.cache_time}
-  /// The minimum amount of time before an `autoDispose` provider can be
-  /// disposed if not listened after the last value change.
-  ///
-  /// If the provider rebuilds (such as when using `ref.watch` or `ref.refresh`)
-  /// or emits a new value, the timer will be refreshed.
-  ///
-  /// If null, use the nearest ancestor [ProviderContainer]'s [cacheTime].
-  /// If no ancestor is found, fallbacks to [Duration.zero].
-  /// {@endtemplate}
-  final Duration? cacheTime;
-
-  /// {@template riverpod.dispose_delay}
-  /// The amount of time before a provider is disposed after its last listener
-  /// is removed.
-  ///
-  /// If a new listener is added within that duration, the provider will not be
-  /// disposed.
-  ///
-  /// If null, use the nearest ancestor [ProviderContainer]'s [disposeDelay].
-  /// If no ancestor is found, fallbacks to [Duration.zero].
-  /// {@endtemplate}
-  final Duration? disposeDelay;
-
-  @override
-  State create(AutoDisposeRef ref);
-
-  @override
-  AutoDisposeProviderElementMixin<State> createElement();
-}
-
 /// A mixin that adds auto dispose support to a [ProviderElementBase].
 mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
     implements AutoDisposeRef<State> {
@@ -63,12 +15,9 @@ mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
     if (!value) mayNeedDispose();
   }
 
-  late final _cacheTime =
-      (provider as AutoDisposeProviderBase).cacheTime ?? _container.cacheTime;
+  late final _cacheTime = provider.cacheTime ?? _container.cacheTime;
 
-  late final _disposeDelay =
-      (provider as AutoDisposeProviderBase).disposeDelay ??
-          _container.disposeDelay;
+  late final _disposeDelay = provider.disposeDelay ?? _container.disposeDelay;
 
   Timer? _cacheTimer;
   KeepAliveLink? _disposeDelayLink;

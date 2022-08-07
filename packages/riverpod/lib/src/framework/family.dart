@@ -13,8 +13,8 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   Family({
     required this.name,
     required this.dependencies,
-    this.cacheTime,
-    this.disposeDelay,
+    required this.cacheTime,
+    required this.disposeDelay,
   });
 
   /// {@macro riverpod.cache_time}
@@ -45,11 +45,7 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   ///
   /// That external value should be immutable and preferably override `==`/`hashCode`.
   /// See the documentation of [Provider.family] for more information.
-  FamilyProvider call(Arg argument) => create(argument);
-
-  /// Creates the provider for a given parameter.
-  @protected
-  FamilyProvider create(Arg argument);
+  FamilyProvider call(Arg argument);
 }
 
 /// Setup how a family is overridden
@@ -95,34 +91,34 @@ class _FamilyOverride<Arg> implements FamilyOverride<Arg> {
   }
 }
 
-/// An extension that adds [overrideWithProvider] to [Family].
-extension XFamily<State, Arg,
-        FamilyProvider extends AlwaysAliveProviderBase<State>>
-    on Family<State, Arg, FamilyProvider> {
-  /// Overrides the behavior of a family for a part of the application.
-  ///
-  /// {@macro riverpod.overrideWith}
-  Override overrideWithProvider(
-    AlwaysAliveProviderBase<State> Function(Arg argument) override,
-  ) {
-    return _FamilyOverride<Arg>(this, (arg, setup) {
-      setup(origin: call(arg), override: override(arg));
-    });
-  }
-}
+// /// An extension that adds [overrideWithProvider] to [Family].
+// extension XFamily<State, Arg,
+//         FamilyProvider extends AlwaysAliveProviderBase<State>>
+//     on Family<State, Arg, FamilyProvider> {
+//   /// Overrides the behavior of a family for a part of the application.
+//   ///
+//   /// {@macro riverpod.overrideWith}
+//   Override overrideWithProvider(
+//     AlwaysAliveProviderBase<State> Function(Arg argument) override,
+//   ) {
+//     return _FamilyOverride<Arg>(this, (arg, setup) {
+//       setup(origin: call(arg), override: override(arg));
+//     });
+//   }
+// }
 
-/// An extension that adds [overrideWithProvider] to [Family].
-extension XAutoDisposeFamily<State, Arg,
-        FamilyProvider extends AutoDisposeProviderBase<State>>
-    on Family<State, Arg, FamilyProvider> {
-  /// Overrides the behavior of a family for a part of the application.
-  ///
-  /// {@macro riverpod.overrideWith}
-  Override overrideWithProvider(
-    AutoDisposeProviderBase<State> Function(Arg argument) override,
-  ) {
-    return _FamilyOverride<Arg>(this, (arg, setup) {
-      setup(origin: call(arg), override: override(arg));
-    });
-  }
-}
+// /// An extension that adds [overrideWithProvider] to [Family].
+// extension XAutoDisposeFamily<State, Arg,
+//         FamilyProvider extends AutoDisposeProviderBase<State>>
+//     on Family<State, Arg, FamilyProvider> {
+//   /// Overrides the behavior of a family for a part of the application.
+//   ///
+//   /// {@macro riverpod.overrideWith}
+//   Override overrideWithProvider(
+//     AutoDisposeProviderBase<State> Function(Arg argument) override,
+//   ) {
+//     return _FamilyOverride<Arg>(this, (arg, setup) {
+//       setup(origin: call(arg), override: override(arg));
+//     });
+//   }
+// }

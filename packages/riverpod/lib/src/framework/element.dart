@@ -186,10 +186,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   ///   the scenario where the value changed.
   @protected
   @mustCallSuper
-  // ignore: use_setters_to_change_properties
-  void update(ProviderBase<State> newProvider) {
-    _provider = newProvider;
-  }
+  void update(ProviderBase<State> newProvider) {}
 
   @override
   void invalidate(ProviderOrFamily provider) {
@@ -239,6 +236,10 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
       return true;
     }(), '');
     buildState();
+    assert(
+      _debugDidSetState,
+      'Bad state, the provider did not initialize. Did "create" forget to set the state?',
+    );
 
     if (!identical(_state, previousStateResult)) {
       assert(() {
@@ -263,6 +264,8 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     _previousDependencies = null;
   }
 
+  void create();
+
   @pragma('vm:notify-debugger-on-exception')
   void buildState() {
     ProviderElementBase? debugPreviouslyBuildingElement;
@@ -276,7 +279,8 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     try {
       // TODO move outside this function?
       _mounted = true;
-      setState(_provider.create(this));
+      create();
+      // setState(provider.create(this));
     } catch (err, stack) {
       assert(() {
         _debugDidSetState = true;

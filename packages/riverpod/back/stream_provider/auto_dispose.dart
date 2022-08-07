@@ -1,4 +1,4 @@
-part of '../stream_provider.dart';
+part of 'back/stream_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [ProviderRef.state], the value currently exposed by this provider.
