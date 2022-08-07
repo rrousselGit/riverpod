@@ -504,31 +504,33 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     assert(!_debugIsRunningSelector, 'Cannot call ref.watch inside a selector');
 
     if (listenable is! ProviderBase<T>) {
-      var initialized = false;
-      late Result<T> firstValue;
+      // var initialized = false;
+      // late Result<T> firstValue;
 
-      listen<T>(
+      final sub = listen<T>(
         listenable,
         (prev, value) {
-          if (initialized) {
-            _didChangeDependency();
-          } else {
-            firstValue = Result.data(value);
-            initialized = true;
-          }
+          // TODO remove dead code if all is passing
+          // if (initialized) {
+          _didChangeDependency();
+          // } else {
+          // firstValue = Result.data(value);
+          // initialized = true;
+          // }
         },
         onError: (err, stack) {
-          if (initialized) {
-            _didChangeDependency();
-          } else {
-            initialized = true;
-            firstValue = Result.error(err, stack);
-          }
+          // TODO remove dead code if all is passing
+          // if (initialized) {
+          _didChangeDependency();
+          // } else {
+          // initialized = true;
+          // firstValue = Result.error(err, stack);
+          // }
         },
-        fireImmediately: true,
+        // fireImmediately: true,
       );
 
-      return firstValue.requireState;
+      return sub.read();
     }
 
     assert(_debugAssertCanDependOn(listenable), '');

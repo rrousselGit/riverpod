@@ -78,7 +78,13 @@ mixin ProviderListenable<State> {
 
   /// Obtains the result of this provider expression without adding listener.
   State read(Node node);
+}
 
+/// Adds [select] to [ProviderListenable].
+///
+/// This is done through an extension as [ProviderListenable] is often
+/// implemented due to mixins being unable to apply other mixins.
+extension ProviderListenableSelect<State> on ProviderListenable<State> {
   /// Partially listen to a provider.
   ///
   /// Note: This method of listening to an object is currently only supported

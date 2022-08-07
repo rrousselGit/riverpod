@@ -29,7 +29,9 @@ export 'src/framework.dart'
         AsyncSelector,
         AlwaysAliveAsyncSelector,
         KeepAliveLink,
-        ProviderOrFamily;
+        ProviderOrFamily,
+        ProviderListenableSelect,
+        AlwaysAliveProviderListenableSelect;
 
 export 'src/future_provider.dart'
     show

@@ -9,7 +9,8 @@ abstract class StateProviderRef<State> implements Ref<State> {
   StateController<State> get controller;
 }
 
-class StateProvider<T> extends _StateProviderBase<T> {
+class StateProvider<T> extends _StateProviderBase<T>
+    with AlwaysAliveProviderBase<T> {
   StateProvider(
     this._createFn, {
     super.name,

@@ -14,7 +14,8 @@ abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
   set state(AsyncValue<State> newState);
 }
 
-class FutureProvider<T> extends _FutureProviderBase<T> {
+class FutureProvider<T> extends _FutureProviderBase<T>
+    with AlwaysAliveProviderBase<AsyncValue<T>> {
   FutureProvider(
     this._createFn, {
     super.name,

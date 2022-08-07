@@ -244,7 +244,7 @@ void main() {
       throwsA(isA<AssertionError>()),
     );
   });
-
+/*
   test(
       'when selecting a provider, element.visitChildren visits the selected provider',
       () {
@@ -495,7 +495,7 @@ void main() {
     verifyOnly(listener, listener('0 0', '1 1'));
     expect(callCount, 2);
   });
-
+*/
   test(
       'computed on computed, the first aborts rebuild, the second should not be re-evaluated',
       () async {
@@ -526,7 +526,7 @@ void main() {
     expect(firstCallCount, 2);
     expect(secondCallCount, 1);
   });
-
+/*
   test('can call ref.watch asynchronously', () async {
     final container = createContainer();
     final notifier = Notifier(0);
@@ -631,7 +631,7 @@ void main() {
 
     expect(callCount, 3);
     verifyNoMoreInteractions(listener);
-  });
+  });*/
 }
 
 class Notifier<T> extends StateNotifier<T> {
