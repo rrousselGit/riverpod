@@ -244,7 +244,7 @@ void main() {
       throwsA(isA<AssertionError>()),
     );
   });
-/*
+
   test(
       'when selecting a provider, element.visitChildren visits the selected provider',
       () {
@@ -495,7 +495,7 @@ void main() {
     verifyOnly(listener, listener('0 0', '1 1'));
     expect(callCount, 2);
   });
-*/
+
   test(
       'computed on computed, the first aborts rebuild, the second should not be re-evaluated',
       () async {
@@ -526,43 +526,43 @@ void main() {
     expect(firstCallCount, 2);
     expect(secondCallCount, 1);
   });
-/*
-  test('can call ref.watch asynchronously', () async {
-    final container = createContainer();
-    final notifier = Notifier(0);
-    final provider = StateNotifierProvider<Notifier<int>, int>((_) {
-      return notifier;
-    }, name: 'provider');
-    var callCount = 0;
-    final computed = StreamProvider((ref) async* {
-      callCount++;
-      yield ref.watch(provider);
-    }, name: 'computed');
 
-    final sub = container.listen(computed, (_, __) {});
+  // test('can call ref.watch asynchronously', () async {
+  //   final container = createContainer();
+  //   final notifier = Notifier(0);
+  //   final provider = StateNotifierProvider<Notifier<int>, int>((_) {
+  //     return notifier;
+  //   }, name: 'provider');
+  //   var callCount = 0;
+  //   final computed = StreamProvider((ref) async* {
+  //     callCount++;
+  //     yield ref.watch(provider);
+  //   }, name: 'computed');
 
-    expect(callCount, 0);
-    expect(sub.read(), const AsyncValue<int>.loading());
+  //   final sub = container.listen(computed, (_, __) {});
 
-    await container.read(computed.stream).first;
+  //   expect(callCount, 0);
+  //   expect(sub.read(), const AsyncValue<int>.loading());
 
-    expect(sub.read(), const AsyncValue<int>.data(0));
-    expect(callCount, 1);
+  //   await container.read(computed.stream).first;
 
-    notifier.setState(42);
-    await container.pump();
+  //   expect(sub.read(), const AsyncValue<int>.data(0));
+  //   expect(callCount, 1);
 
-    expect(
-      sub.read(),
-      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
-    );
-    expect(callCount, 1);
+  //   notifier.setState(42);
+  //   await container.pump();
 
-    await container.read(computed.stream).first;
+  //   expect(
+  //     sub.read(),
+  //     const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
+  //   );
+  //   expect(callCount, 1);
 
-    expect(sub.read(), const AsyncValue<int>.data(42));
-    expect(callCount, 2);
-  });
+  //   await container.read(computed.stream).first;
+
+  //   expect(sub.read(), const AsyncValue<int>.data(42));
+  //   expect(callCount, 2);
+  // });
 
   test('the value is cached between multiple listeners', () {
     final container = createContainer();
@@ -631,7 +631,7 @@ void main() {
 
     expect(callCount, 3);
     verifyNoMoreInteractions(listener);
-  });*/
+  });
 }
 
 class Notifier<T> extends StateNotifier<T> {

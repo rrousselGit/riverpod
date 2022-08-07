@@ -465,7 +465,7 @@ void main() {
 
       verifyOnly(listener, listener(any, any));
     });
-/*
+
     test(
       'can close a ProviderSubscription multiple times with no effect',
       () {
@@ -517,7 +517,7 @@ void main() {
         verifyOnly(listener, listener(1, 2));
       },
     );
-*/
+
     test('builds providers at most once per container', () {
       var result = 42;
       final container = createContainer();
