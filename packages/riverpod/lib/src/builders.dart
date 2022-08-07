@@ -456,11 +456,13 @@ class AutoDisposeProviderBuilder {
       List<ProviderOrFamily>? dependencies,
       Duration? cacheTime,
       Duration? disposeDelay}) {
-    return AutoDisposeProvider<State>(create,
-        name: name,
-        dependencies: dependencies,
-        cacheTime: cacheTime,
-        disposeDelay: disposeDelay);
+    return AutoDisposeProvider<State>(
+      create,
+      name: name,
+      dependencies: dependencies,
+      cacheTime: cacheTime,
+      disposeDelay: disposeDelay,
+    );
   }
 
   /// {@macro riverpod.family}

@@ -45,7 +45,7 @@ class _ChangeNotifier<T> {
 
   static bool debugAssertNotDisposed(_ChangeNotifier notifier) {
     assert(
-      notifier._debugDisposed,
+      !notifier._debugDisposed,
       'A ${notifier.runtimeType} was used after being disposed.\n'
       'Once you have called dispose() on a ${notifier.runtimeType}, it '
       'can no longer be used.',
@@ -70,7 +70,6 @@ class _ChangeNotifier<T> {
   /// so, stopping that same work.
   @protected
   bool get hasListeners {
-    assert(_ChangeNotifier.debugAssertNotDisposed(this), '');
     return _count > 0;
   }
 
@@ -207,7 +206,6 @@ class _ChangeNotifier<T> {
   /// listeners or not immediately before disposal.
   @mustCallSuper
   void dispose() {
-    assert(_ChangeNotifier.debugAssertNotDisposed(this), '');
     assert(() {
       _debugDisposed = true;
       return true;

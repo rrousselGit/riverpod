@@ -331,20 +331,26 @@ final alwaysAlive = Provider((ref) {
       () async {
     final container = createContainer();
     var dependencyDisposeCount = 0;
-    final dependency = Provider.autoDispose((ref) {
-      ref.onDispose(() => dependencyDisposeCount++);
-      return 0;
-    });
-    final isDependendingOnDependency = StateProvider(
-      (ref) => true,
-      name: 'foo',
+    final dependency = Provider.autoDispose(
+      name: 'dependency',
+      (ref) {
+        ref.onDispose(() => dependencyDisposeCount++);
+        return 0;
+      },
     );
-    final provider = Provider.autoDispose((ref) {
-      ref.maintainState = true;
-      if (ref.watch(isDependendingOnDependency.state).state) {
-        ref.watch(dependency);
-      }
-    });
+    final isDependendingOnDependency = StateProvider(
+      name: 'isDependendingOnDependency',
+      (ref) => true,
+    );
+    final provider = Provider.autoDispose(
+      name: 'provider',
+      (ref) {
+        ref.maintainState = true;
+        if (ref.watch(isDependendingOnDependency)) {
+          ref.watch(dependency);
+        }
+      },
+    );
 
     container.listen<void>(provider, (_, __) {});
 
@@ -354,8 +360,7 @@ final alwaysAlive = Provider((ref) {
       unorderedEquals(<Object>[
         dependency,
         provider,
-        isDependendingOnDependency.state,
-        isDependendingOnDependency.notifier,
+        isDependendingOnDependency,
       ]),
     );
 
@@ -367,8 +372,7 @@ final alwaysAlive = Provider((ref) {
       container.getAllProviderElements().map((e) => e.provider),
       unorderedEquals(<Object>[
         provider,
-        isDependendingOnDependency.state,
-        isDependendingOnDependency.notifier,
+        isDependendingOnDependency,
       ]),
     );
   });
