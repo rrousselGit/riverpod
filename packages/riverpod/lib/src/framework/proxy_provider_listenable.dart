@@ -1,12 +1,10 @@
-import '../riverpod.dart';
-import 'framework.dart';
-import 'listenable.dart';
+part of '../framework.dart';
 
-class _ProviderSubscription<T> extends ProviderSubscription<T> {
-  _ProviderSubscription(
+class _ProxySubscription<T> extends ProviderSubscription<T> {
+  _ProxySubscription(
     this._removeListeners,
     this._read, {
-    this.listenRemoveListeners,
+    required this.listenRemoveListeners,
   });
 
   final RemoveListener _removeListeners;
@@ -55,13 +53,26 @@ class ProviderElementProxy<R>
       listen = _listen;
     }
 
-    final removeListener = lense(element, setListen).addListener(
+    final notifier = lense(element, setListen);
+    if (fireImmediately) {
+      notifier.result?.when(
+        data: (data) {
+          runBinaryGuarded(listener, null, data);
+        },
+        error: (err, stack) {
+          if (onError != null) {
+            runBinaryGuarded(onError, err, stack);
+          }
+        },
+      );
+    }
+
+    final removeListener = notifier.addListener(
       listener,
       onError: onError,
-      fireImmediately: fireImmediately,
     );
 
-    return _ProviderSubscription(
+    return _ProxySubscription(
       removeListener,
       () => read(node),
       listenRemoveListeners: listen?.call(listener, onError: onError),

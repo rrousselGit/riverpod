@@ -1,56 +1,5 @@
 part of '../framework.dart';
 
-void _runGuarded(void Function() cb) {
-  try {
-    cb();
-  } catch (err, stack) {
-    Zone.current.handleUncaughtError(err, stack);
-  }
-}
-
-void _runUnaryGuarded<T, Res>(Res Function(T) cb, T value) {
-  try {
-    cb(value);
-  } catch (err, stack) {
-    Zone.current.handleUncaughtError(err, stack);
-  }
-}
-
-void _runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
-  try {
-    cb(value, value2);
-  } catch (err, stack) {
-    Zone.current.handleUncaughtError(err, stack);
-  }
-}
-
-void _runTernaryGuarded<A, B, C>(
-  void Function(A, B, C) cb,
-  A value,
-  B value2,
-  C value3,
-) {
-  try {
-    cb(value, value2, value3);
-  } catch (err, stack) {
-    Zone.current.handleUncaughtError(err, stack);
-  }
-}
-
-void _runQuaternaryGuarded<A, B, C, D>(
-  void Function(A, B, C, D) cb,
-  A value,
-  B value2,
-  C value3,
-  D value4,
-) {
-  try {
-    cb(value, value2, value3, value4);
-  } catch (err, stack) {
-    Zone.current.handleUncaughtError(err, stack);
-  }
-}
-
 ProviderBase? _circularDependencyLock;
 
 void _defaultVsync(void Function() task) {
@@ -107,7 +56,7 @@ class _StateReader {
         // ignore: avoid_types_on_closure_parameters
         data: (ResultData<Object?> data) {
           for (final observer in container._observers) {
-            _runTernaryGuarded(
+            runTernaryGuarded(
               observer.didAddProvider,
               origin,
               data.state,
@@ -117,7 +66,7 @@ class _StateReader {
         },
         error: (error) {
           for (final observer in container._observers) {
-            _runTernaryGuarded(
+            runTernaryGuarded(
               observer.didAddProvider,
               origin,
               null,
@@ -125,7 +74,7 @@ class _StateReader {
             );
           }
           for (final observer in container._observers) {
-            _runQuaternaryGuarded(
+            runQuaternaryGuarded(
               observer.providerDidFail,
               origin,
               error.error,
@@ -442,7 +391,7 @@ class ProviderContainer implements Node {
         final element = reader._element;
         if (element == null) continue;
 
-        _runUnaryGuarded(element.update, override._override);
+        runUnaryGuarded(element.update, override._override);
       } else if (override is FamilyOverride) {
         assert(() {
           unusedOverrides!.remove(override);

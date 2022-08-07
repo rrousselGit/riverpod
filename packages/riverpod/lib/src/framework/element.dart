@@ -398,7 +398,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     for (final observer in _container._observers) {
-      _runQuaternaryGuarded(
+      runQuaternaryGuarded(
         observer.didUpdateProvider,
         provider,
         previousState,
@@ -411,7 +411,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       newState.map(
         data: (_) {},
         error: (newState) {
-          _runQuaternaryGuarded(
+          runQuaternaryGuarded(
             observer.providerDidFail,
             provider,
             newState.error,
@@ -689,17 +689,17 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void _onListen() {
-    _onAddListeners?.forEach(_runGuarded);
+    _onAddListeners?.forEach(runGuarded);
     if (_didCancelOnce && !hasListeners) {
-      _onResumeListeners?.forEach(_runGuarded);
+      _onResumeListeners?.forEach(runGuarded);
     }
   }
 
   void _onRemoveListener() {
-    _onRemoveListeners?.forEach(_runGuarded);
+    _onRemoveListeners?.forEach(runGuarded);
     if (!hasListeners) {
       _didCancelOnce = true;
-      _onCancelListeners?.forEach(_runGuarded);
+      _onCancelListeners?.forEach(runGuarded);
     }
     mayNeedDispose();
   }
@@ -734,10 +734,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       _subscriptions.first.close();
     }
 
-    _onDisposeListeners?.forEach(_runGuarded);
+    _onDisposeListeners?.forEach(runGuarded);
 
     for (final observer in _container._observers) {
-      _runBinaryGuarded(
+      runBinaryGuarded(
         observer.didDisposeProvider,
         _origin,
         _container,

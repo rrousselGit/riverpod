@@ -4,9 +4,12 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:meta/meta.dart';
+import 'package:state_notifier/state_notifier.dart';
 import 'devtool.dart';
 import 'internals.dart';
+import 'listenable.dart';
 import 'result.dart';
+import 'run_guarded.dart';
 import 'stack_trace.dart';
 
 part 'framework/always_alive.dart';
@@ -18,6 +21,7 @@ part 'framework/container.dart';
 part 'framework/family.dart';
 part 'framework/listen.dart';
 part 'framework/foundation.dart';
+part 'framework/proxy_provider_listenable.dart';
 part 'framework/ref.dart';
 part 'framework/selector.dart';
 part 'framework/scheduler.dart';

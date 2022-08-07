@@ -102,7 +102,6 @@ class _ChangeNotifier<T> {
   void Function() addListener(
     void Function(T?, T) onChange, {
     required void Function(Object, StackTrace)? onError,
-    required bool fireImmediately,
   }) {
     assert(_ChangeNotifier.debugAssertNotDisposed(this), '');
 

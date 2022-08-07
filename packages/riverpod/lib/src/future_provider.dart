@@ -4,7 +4,6 @@ import 'common.dart';
 import 'framework.dart';
 import 'framework/family2.dart';
 import 'listenable.dart';
-import 'proxy_provider_listenable.dart';
 import 'result.dart';
 import 'synchronous_future.dart';
 

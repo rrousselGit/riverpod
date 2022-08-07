@@ -1,7 +1,6 @@
 import 'framework/family2.dart';
 import 'internals.dart';
 import 'listenable.dart';
-import 'proxy_provider_listenable.dart';
 import 'result.dart';
 import 'state_controller.dart';
 
