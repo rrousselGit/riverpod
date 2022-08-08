@@ -23,6 +23,10 @@ class ValueNotifier<T> extends _ChangeNotifier<T> {
       error: _notifyListenersError,
     );
   }
+
+  void unsafeSetResultWithoutNotifyingListeners(Result<T>? value) {
+    _result = value;
+  }
 }
 
 class _ChangeNotifier<T> {
