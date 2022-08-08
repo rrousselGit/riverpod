@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
@@ -81,50 +84,50 @@ void main() {
     expect(container.read(family(21)), '21');
   });
 
-  // test('each provider updates their dependents independently', () {
-  //   final controllers = {
-  //     0: StreamController<String>(sync: true),
-  //     1: StreamController<String>(sync: true),
-  //   };
-  //   final family = StreamProvider.family<String, int>((ref, a) {
-  //     return controllers[a]!.stream;
-  //   });
-  //   final container = createContainer();
-  //   final listener = Listener<AsyncValue<String>>();
-  //   final listener2 = Listener<AsyncValue<String>>();
+  test('each provider updates their dependents independently', () {
+    final controllers = {
+      0: StreamController<String>(sync: true),
+      1: StreamController<String>(sync: true),
+    };
+    final family = StreamProvider.family<String, int>((ref, a) {
+      return controllers[a]!.stream;
+    });
+    final container = createContainer();
+    final listener = Listener<AsyncValue<String>>();
+    final listener2 = Listener<AsyncValue<String>>();
 
-  //   container.listen(family(0), listener, fireImmediately: true);
-  //   verify(listener(null, const AsyncValue.loading()));
-  //   verifyNoMoreInteractions(listener);
-  //   verifyNoMoreInteractions(listener2);
+    container.listen(family(0), listener, fireImmediately: true);
+    verify(listener(null, const AsyncValue.loading()));
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(listener2);
 
-  //   container.listen(family(1), listener2, fireImmediately: true);
-  //   verify(listener2(null, const AsyncValue.loading()));
-  //   verifyNoMoreInteractions(listener);
-  //   verifyNoMoreInteractions(listener2);
+    container.listen(family(1), listener2, fireImmediately: true);
+    verify(listener2(null, const AsyncValue.loading()));
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(listener2);
 
-  //   controllers[0]!.add('42');
+    controllers[0]!.add('42');
 
-  //   verify(
-  //     listener(
-  //       const AsyncValue.loading(),
-  //       const AsyncValue.data('42'),
-  //     ),
-  //   );
-  //   verifyNoMoreInteractions(listener);
-  //   verifyNoMoreInteractions(listener2);
+    verify(
+      listener(
+        const AsyncValue.loading(),
+        const AsyncValue.data('42'),
+      ),
+    );
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(listener2);
 
-  //   controllers[1]!.add('21');
+    controllers[1]!.add('21');
 
-  //   verify(
-  //     listener2(
-  //       const AsyncValue.loading(),
-  //       const AsyncValue.data('21'),
-  //     ),
-  //   );
-  //   verifyNoMoreInteractions(listener);
-  //   verifyNoMoreInteractions(listener2);
-  // });
+    verify(
+      listener2(
+        const AsyncValue.loading(),
+        const AsyncValue.data('21'),
+      ),
+    );
+    verifyNoMoreInteractions(listener);
+    verifyNoMoreInteractions(listener2);
+  });
 
   test('Pass family and argument properties', () {
     final family = StateNotifierProvider.family<Counter, int, int>((_, a) {

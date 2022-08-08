@@ -77,11 +77,11 @@ export 'src/state_provider.dart'
         AutoDisposeStateProviderElement,
         StateProviderElement;
 
-// export 'src/stream_provider.dart'
-//     show
-//         AutoDisposeStreamProvider,
-//         AutoDisposeStreamProviderFamily,
-//         StreamProvider,
-//         StreamProviderFamily,
-//         AutoDisposeStreamProviderRef,
-//         StreamProviderRef;
+export 'src/stream_provider.dart'
+    show
+        AutoDisposeStreamProvider,
+        AutoDisposeStreamProviderFamily,
+        StreamProvider,
+        StreamProviderFamily,
+        AutoDisposeStreamProviderRef,
+        StreamProviderRef;

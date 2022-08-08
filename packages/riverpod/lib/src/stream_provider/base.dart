@@ -62,7 +62,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   @override
   void create() {
-    _streamController = StreamController<T>.broadcast(sync: true);
+    _streamController = StreamController<T>.broadcast();
     // TODO test stream change
     _streamNotifier.result = Result.data(_streamController.stream);
 
@@ -88,6 +88,8 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   @pragma('vm:prefer-inline')
   void _listenStream(Stream<T> stream) {
+    setState(AsyncLoading<T>());
+
     // TODO test that if a provider refreshes with before the stream has emitted a value,
     // then .future isn't notifying listeners
     if (_completer == null) {
@@ -111,8 +113,8 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
           _futureNotifier.result = Result.data(SynchronousFuture(event));
         }
 
-        _streamController.add(event);
         setState(AsyncData(event));
+        _streamController.add(event);
       },
       // ignore: avoid_types_on_closure_parameters
       onError: (Object err, StackTrace stack) {
@@ -129,8 +131,8 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
           );
         }
 
-        _streamController.addError(err, stack);
         setState(AsyncError<T>(err, stackTrace: stack));
+        _streamController.addError(err, stack);
       },
       // TODO test
       onDone: _streamController.close,

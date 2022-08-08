@@ -236,10 +236,6 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
       return true;
     }(), '');
     buildState();
-    assert(
-      _debugDidSetState,
-      'Bad state, the provider did not initialize. Did "create" forget to set the state?',
-    );
 
     if (!identical(_state, previousStateResult)) {
       assert(() {
@@ -293,6 +289,11 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
         _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
         return true;
       }(), '');
+
+      assert(
+        _debugDidSetState,
+        'Bad state, the provider did not initialize. Did "create" forget to set the state?',
+      );
     }
   }
 
