@@ -229,6 +229,7 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
 }
 
 /// A mixin to add [overrideWithValue] capability to a provider.
+// TODO merge with Provider directy
 mixin OverrideWithValueMixin<State> on ProviderBase<State> {
   /// {@template riverpod.overrridewithvalue}
   /// Overrides a provider with a value, ejecting the default behaviour.
@@ -270,11 +271,9 @@ mixin OverrideWithValueMixin<State> on ProviderBase<State> {
   }
 }
 
-/// A mixin to add [overrideWithProvider] capability to a provider.
-mixin OverrideWithProviderMixin<State,
-    ProviderType extends ProviderBase<Object?>> {
-  ProviderBase<State> get originProvider;
-
+/// A mixin to add [overrideWithProvider] capability to providers.
+extension OverrideWithProviderExtension<State,
+    ProviderType extends ProviderBase<State>> on ProviderType {
   /// {@template riverpod.overridewithprovider}
   /// Overrides a provider with a value, ejecting the default behaviour.
   ///
@@ -313,13 +312,10 @@ mixin OverrideWithProviderMixin<State,
   /// {@endtemplate}
   Override overrideWithProvider(ProviderType value) {
     assert(
-      value.originProvider.dependencies == null,
+      value.dependencies == null,
       'When using overrideWithProvider, the override cannot specify `dependencies`.',
     );
 
-    return ProviderOverride(
-      origin: originProvider,
-      override: value.originProvider,
-    );
+    return ProviderOverride(origin: this, override: value);
   }
 }

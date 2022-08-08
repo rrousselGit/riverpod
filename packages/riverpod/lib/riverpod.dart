@@ -1,3 +1,5 @@
+import 'src/framework.dart';
+
 export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
 
 export 'src/common.dart'
@@ -31,7 +33,8 @@ export 'src/framework.dart'
         KeepAliveLink,
         ProviderOrFamily,
         ProviderListenableSelect,
-        AlwaysAliveProviderListenableSelect;
+        AlwaysAliveProviderListenableSelect,
+        OverrideWithProviderExtension;
 
 export 'src/future_provider.dart'
     show

@@ -186,7 +186,10 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   ///   the scenario where the value changed.
   @protected
   @mustCallSuper
-  void update(ProviderBase<State> newProvider) {}
+  // ignore: use_setters_to_change_properties
+  void update(ProviderBase<State> newProvider) {
+    _provider = newProvider;
+  }
 
   @override
   void invalidate(ProviderOrFamily provider) {
