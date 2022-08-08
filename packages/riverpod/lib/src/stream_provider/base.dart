@@ -30,10 +30,10 @@ class StreamProvider<T> extends _StreamProviderBase<T>
   final Stream<T> Function(StreamProviderRef<T> ref) _createFn;
 
   @override
-  late final ProviderListenable<Future<T>> future = _future(this);
+  late final AlwaysAliveProviderListenable<Future<T>> future = _future(this);
 
   @override
-  late final ProviderListenable<Stream<T>> stream = _stream(this);
+  late final AlwaysAliveProviderListenable<Stream<T>> stream = _stream(this);
 
   @override
   Stream<T> _create(StreamProviderElement<T> ref) => _createFn(ref);
