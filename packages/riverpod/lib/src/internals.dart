@@ -12,4 +12,5 @@ export 'future_provider.dart';
 export 'provider.dart';
 export 'state_notifier_provider.dart';
 export 'state_provider.dart';
+export 'stream_provider.dart';
 export 'value_provider.dart';

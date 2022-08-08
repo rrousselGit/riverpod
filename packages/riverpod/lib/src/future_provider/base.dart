@@ -24,6 +24,9 @@ class FutureProvider<T> extends _FutureProviderBase<T>
     super.dependencies,
   }) : super(cacheTime: null, disposeDelay: null);
 
+  static const autoDispose = AutoDisposeFutureProviderBuilder();
+  static const family = FutureProviderFamilyBuilder();
+
   final FutureOr<T> Function(FutureProviderRef<T> ref) _createFn;
 
   @override

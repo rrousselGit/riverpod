@@ -447,7 +447,7 @@ class FutureProviderFamilyBuilder {
     return const AutoDisposeFutureProviderFamilyBuilder();
   }
 }
-/*
+
 /// Builds a [StreamProvider].
 class StreamProviderBuilder {
   /// Builds a [StreamProvider].
@@ -491,7 +491,7 @@ class StreamProviderFamilyBuilder {
   AutoDisposeStreamProviderFamilyBuilder get autoDispose {
     return const AutoDisposeStreamProviderFamilyBuilder();
   }
-}*/
+}
 
 /// Builds a [AutoDisposeStateProvider].
 class AutoDisposeStateProviderBuilder {
@@ -678,7 +678,7 @@ class AutoDisposeFutureProviderFamilyBuilder {
         disposeDelay: disposeDelay);
   }
 }
-/*
+
 /// Builds a [AutoDisposeStreamProvider].
 class AutoDisposeStreamProviderBuilder {
   /// Builds a [AutoDisposeStreamProvider].
@@ -723,4 +723,4 @@ class AutoDisposeStreamProviderFamilyBuilder {
         cacheTime: cacheTime,
         disposeDelay: disposeDelay);
   }
-}*/
+}

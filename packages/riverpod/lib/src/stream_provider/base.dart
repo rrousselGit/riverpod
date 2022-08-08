@@ -24,6 +24,9 @@ class StreamProvider<T> extends _StreamProviderBase<T>
     super.dependencies,
   }) : super(cacheTime: null, disposeDelay: null);
 
+  static const autoDispose = AutoDisposeStreamProviderBuilder();
+  static const family = StreamProviderFamilyBuilder();
+
   final Stream<T> Function(StreamProviderRef<T> ref) _createFn;
 
   @override
