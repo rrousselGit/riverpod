@@ -2,7 +2,6 @@ import 'package:meta/meta.dart';
 
 import 'builders.dart';
 import 'framework.dart';
-import 'framework/family2.dart';
 
 part 'provider/auto_dispose.dart';
 part 'provider/base.dart';

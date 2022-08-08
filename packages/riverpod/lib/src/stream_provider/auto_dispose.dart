@@ -38,7 +38,7 @@ class AutoDisposeStreamProviderElement<T> = StreamProviderElement<T>
     with AutoDisposeProviderElementMixin<AsyncValue<T>>
     implements AutoDisposeStreamProviderRef<T>;
 
-class AutoDisposeStreamProviderFamily<R, Arg> extends FFamily<
+class AutoDisposeStreamProviderFamily<R, Arg> extends FamilyBase<
     AutoDisposeStreamProviderRef<R>,
     AsyncValue<R>,
     Arg,

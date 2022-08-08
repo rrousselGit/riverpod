@@ -78,7 +78,7 @@ class StateProviderElement<T> extends ProviderElementBase<T>
 }
 
 class StateProviderFamily<R, Arg>
-    extends FFamily<StateProviderRef<R>, R, Arg, R, StateProvider<R>> {
+    extends FamilyBase<StateProviderRef<R>, R, Arg, R, StateProvider<R>> {
   StateProviderFamily(
     super.create, {
     super.name,

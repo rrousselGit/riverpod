@@ -275,7 +275,7 @@ class ProviderElement<State> extends ProviderElementBase<State>
 /// A class that allows building a [Provider] from an external parameter.
 /// {@endtemplate}
 class ProviderFamily<R, Arg>
-    extends FFamily<ProviderRef<R>, R, Arg, R, Provider<R>> {
+    extends FamilyBase<ProviderRef<R>, R, Arg, R, Provider<R>> {
   ProviderFamily(
     super.create, {
     super.name,

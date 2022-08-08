@@ -119,7 +119,7 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   }
 }
 
-class FutureProviderFamily<R, Arg> extends FFamily<FutureProviderRef<R>,
+class FutureProviderFamily<R, Arg> extends FamilyBase<FutureProviderRef<R>,
     AsyncValue<R>, Arg, FutureOr<R>, FutureProvider<R>> {
   FutureProviderFamily(
     super.create, {

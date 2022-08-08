@@ -147,7 +147,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   }
 }
 
-class StreamProviderFamily<R, Arg> extends FFamily<StreamProviderRef<R>,
+class StreamProviderFamily<R, Arg> extends FamilyBase<StreamProviderRef<R>,
     AsyncValue<R>, Arg, Stream<R>, StreamProvider<R>> {
   StreamProviderFamily(
     super.create, {

@@ -39,7 +39,7 @@ class AutoDisposeFutureProviderElement<T> = FutureProviderElement<T>
     with AutoDisposeProviderElementMixin<AsyncValue<T>>
     implements AutoDisposeFutureProviderRef<T>;
 
-class AutoDisposeFutureProviderFamily<R, Arg> extends FFamily<
+class AutoDisposeFutureProviderFamily<R, Arg> extends FamilyBase<
     AutoDisposeFutureProviderRef<R>,
     AsyncValue<R>,
     Arg,

@@ -31,7 +31,7 @@ class AutoDisposeProviderElement<T> = ProviderElement<T>
     with AutoDisposeProviderElementMixin<T>
     implements AutoDisposeProviderRef<T>;
 
-class AutoDisposeProviderFamily<R, Arg> extends FFamily<
+class AutoDisposeProviderFamily<R, Arg> extends FamilyBase<
     AutoDisposeProviderRef<R>, R, Arg, R, AutoDisposeProvider<R>> {
   AutoDisposeProviderFamily(
     super.create, {

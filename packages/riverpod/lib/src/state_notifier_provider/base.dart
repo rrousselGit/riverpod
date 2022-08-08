@@ -83,8 +83,8 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
 }
 
 class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
-    extends FFamily<StateNotifierProviderRef<NotifierT, T>, T, Arg, NotifierT,
-        StateNotifierProvider<NotifierT, T>> {
+    extends FamilyBase<StateNotifierProviderRef<NotifierT, T>, T, Arg,
+        NotifierT, StateNotifierProvider<NotifierT, T>> {
   StateNotifierProviderFamily(
     super.create, {
     super.name,
