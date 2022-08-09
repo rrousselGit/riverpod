@@ -36,8 +36,7 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
       StateNotifierProviderElement(this);
 
   @override
-  late final AlwaysAliveProviderListenable<NotifierT> notifier =
-      _notifier(this);
+  late final AlwaysAliveRefreshable<NotifierT> notifier = _notifier(this);
 }
 
 class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>

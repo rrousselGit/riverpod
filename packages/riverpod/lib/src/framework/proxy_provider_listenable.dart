@@ -26,30 +26,31 @@ typedef Listen<R> = RemoveListener Function(
   void Function(Object error, StackTrace stackTrace)? onError,
 });
 
-class ProviderElementProxy<R>
-    with ProviderListenable<R>, AlwaysAliveProviderListenable<R> {
-  const ProviderElementProxy(this.origin, this.lense);
+class ProviderElementProxy<State>
+    with ProviderListenable<State>, AlwaysAliveProviderListenable<State>
+    implements AlwaysAliveRefreshable<State> {
+  const ProviderElementProxy(this._origin, this.lense);
 
-  final ProviderBase<Object?> origin;
-  final ValueNotifier<R> Function(
+  final ProviderBase<Object?> _origin;
+  final ValueNotifier<State> Function(
     ProviderElementBase element,
-    void Function(Listen<R> listen)? setListen,
+    void Function(Listen<State> listen)? setListen,
   ) lense;
 
   @override
-  ProviderSubscription<R> addListener(
+  ProviderSubscription<State> addListener(
     Node node,
-    void Function(R? previous, R next) listener, {
+    void Function(State? previous, State next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,
   }) {
-    final element = node.readProviderElement(origin);
+    final element = node.readProviderElement(_origin);
 
     // TODO does this need a "flush"?
 
     // TODO remove
-    Listen<R>? listen;
-    void setListen(Listen<R> _listen) {
+    Listen<State>? listen;
+    void setListen(Listen<State> _listen) {
       listen = _listen;
     }
 
@@ -80,16 +81,16 @@ class ProviderElementProxy<R>
   }
 
   @override
-  R read(Node node) {
-    final element = node.readProviderElement(origin);
+  State read(Node node) {
+    final element = node.readProviderElement(_origin);
     element.flush();
     return lense(element, null).value;
   }
 
   @override
   bool operator ==(Object other) =>
-      other is ProviderElementProxy<R> && other.origin == origin;
+      other is ProviderElementProxy<State> && other._origin == _origin;
 
   @override
-  int get hashCode => origin.hashCode;
+  int get hashCode => _origin.hashCode;
 }

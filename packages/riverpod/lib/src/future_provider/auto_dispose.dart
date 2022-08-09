@@ -29,10 +29,10 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T> {
   }
 
   @override
-  late final ProviderListenable<Future<T>> future = _future(this);
+  late final Refreshable<Future<T>> future = _future(this);
 
   @override
-  late final ProviderListenable<Stream<T>> stream = _stream(this);
+  late final Refreshable<Stream<T>> stream = _stream(this);
 }
 
 class AutoDisposeFutureProviderElement<T> = FutureProviderElement<T>

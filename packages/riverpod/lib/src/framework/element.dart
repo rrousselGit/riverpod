@@ -1,5 +1,30 @@
 part of '../framework.dart';
 
+/// {@template riverpod.refreshable}
+/// An interface for provider expressions that can be passed to `ref.refresh`
+///
+/// This differentiates:
+///
+/// ```dart
+/// ref.watch(provider);
+/// ref.watch(provider.future);
+/// ```
+///
+/// from:
+///
+/// ```dart
+/// ref.watch(provider.select((value) => value));
+/// ```
+/// {@endtemplate}
+abstract class Refreshable<T> implements ProviderListenable<T> {
+  /// The provider that is being refreshed.
+  ProviderBase<Object?> get _origin;
+}
+
+/// {@macro riverpod.refreshable}
+abstract class AlwaysAliveRefreshable<T>
+    implements Refreshable<T>, AlwaysAliveProviderListenable<T> {}
+
 /// An internal class that handles the state of a provider.
 ///
 /// Do not use.
@@ -489,7 +514,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  T refresh<T>(ProviderBase<T> provider) {
+  T refresh<T>(Refreshable<T> provider) {
     _assertNotOutdated();
     return _container.refresh(provider);
   }

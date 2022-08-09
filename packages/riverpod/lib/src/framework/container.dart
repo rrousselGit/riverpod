@@ -311,8 +311,8 @@ class ProviderContainer implements Node {
   }
 
   /// {@template riverpod.refresh}
-  Created refresh<Created>(ProviderBase<Created> provider) {
-    invalidate(provider);
+  State refresh<State>(Refreshable<State> provider) {
+    invalidate(provider._origin);
     return read(provider);
   }
 

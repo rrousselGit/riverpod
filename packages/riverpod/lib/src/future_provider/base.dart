@@ -30,10 +30,10 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   final FutureOr<T> Function(FutureProviderRef<T> ref) _createFn;
 
   @override
-  late final AlwaysAliveProviderListenable<Future<T>> future = _future(this);
+  late final AlwaysAliveRefreshable<Future<T>> future = _future(this);
 
   @override
-  late final AlwaysAliveProviderListenable<Stream<T>> stream = _stream(this);
+  late final AlwaysAliveRefreshable<Stream<T>> stream = _stream(this);
 
   @override
   FutureOr<T> _create(FutureProviderElement<T> ref) => _createFn(ref);

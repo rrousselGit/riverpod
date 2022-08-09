@@ -24,7 +24,7 @@ abstract class Ref<State extends Object?> {
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
   /// {@endtemplate}
-  T refresh<T>(ProviderBase<T> provider);
+  T refresh<T>(AlwaysAliveRefreshable<T> provider);
 
   /// {@template riverpod.invalidate}
   /// Invalidates the state of the provider, causing it to refresh.
@@ -268,8 +268,12 @@ abstract class AutoDisposeRef<State> extends Ref<State> {
   KeepAliveLink keepAlive();
 
   @override
-  // can watch both auto-dispose and non-auto-dispose providers
+  // can read both auto-dispose and non-auto-dispose providers
   T read<T>(ProviderListenable<T> provider);
+
+  @override
+  // can refresh both auto-dispose and non-auto-dispose providers
+  T refresh<T>(Refreshable<T> provider);
 
   @override
   T watch<T>(

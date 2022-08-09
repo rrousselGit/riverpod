@@ -22,7 +22,7 @@ typedef Reader = T Function<T>(ProviderBase<T> provider);
 @immutable
 abstract class ProviderBase<State> extends ProviderOrFamily
     with ProviderListenable<State>
-    implements ProviderOverride {
+    implements ProviderOverride, Refreshable<State> {
   /// A base class for _all_ providers.
   ProviderBase({
     required this.name,

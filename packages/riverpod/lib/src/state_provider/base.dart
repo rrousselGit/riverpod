@@ -31,12 +31,11 @@ class StateProvider<T> extends _StateProviderBase<T>
   StateProviderElement<T> createElement() => StateProviderElement(this);
 
   @override
-  late final AlwaysAliveProviderListenable<StateController<T>> notifier =
+  late final AlwaysAliveRefreshable<StateController<T>> notifier =
       _notifier(this);
 
   @override
-  late final AlwaysAliveProviderListenable<StateController<T>> state =
-      _state(this);
+  late final AlwaysAliveRefreshable<StateController<T>> state = _state(this);
 }
 
 class StateProviderElement<T> extends ProviderElementBase<T>

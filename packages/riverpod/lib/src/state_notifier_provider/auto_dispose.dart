@@ -34,7 +34,7 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   }
 
   @override
-  late final ProviderListenable<NotifierT> notifier = _notifier(this);
+  late final Refreshable<NotifierT> notifier = _notifier(this);
 }
 
 class AutoDisposeStateNotifierProviderElement<

@@ -29,10 +29,10 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
   }
 
   @override
-  late final ProviderListenable<StateController<T>> notifier = _notifier(this);
+  late final Refreshable<StateController<T>> notifier = _notifier(this);
 
   @override
-  late final ProviderListenable<StateController<T>> state = _state(this);
+  late final Refreshable<StateController<T>> state = _state(this);
 }
 
 class AutoDisposeStateProviderElement<T> = StateProviderElement<T>
