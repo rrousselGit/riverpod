@@ -33,9 +33,10 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   });
 
   @override
-  ProviderBase get _origin => originProvider;
+  ProviderBase get _origin => this;
+
   @override
-  ProviderBase get _override => originProvider;
+  ProviderBase get _override => this;
 
   /// {@template riverpod.cache_time}
   /// The minimum amount of time before an `autoDispose` provider can be
@@ -75,14 +76,6 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   /// If this provider was created with the `.family` modifier, [argument] is
   /// the variable that was used.
   final Object? argument;
-
-  /// The provider that will be refreshed when calling [ProviderContainer.refresh]
-  /// and that will be overridden when passed to `ProviderScope`.
-  ///
-  /// Defaults to `this`.
-  @visibleForOverriding
-  // ignore: avoid_returning_this
-  ProviderBase<Object?> get originProvider => this;
 
   @override
   ProviderSubscription<State> addListener(

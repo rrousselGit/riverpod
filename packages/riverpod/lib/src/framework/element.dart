@@ -451,7 +451,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       if (listenable is! ProviderBase) return true;
 
       assert(
-        listenable.originProvider != origin,
+        listenable._origin != origin,
         'A provider cannot depend on itself',
       );
 
