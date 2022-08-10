@@ -65,7 +65,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   ///
   /// This is typically Flutter widgets or manual calls to [ProviderContainer.listen]
   /// with this provider as target.
-  final _externalDependents = <_ExternalProviderSubscription<Object?>>[];
+  final _externalDependents = <_ExternalProviderSubscription<State>>[];
 
   /// The [ProviderSubscription]s associated to the providers that this
   /// [ProviderElementBase] listens to.

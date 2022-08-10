@@ -1521,7 +1521,9 @@ void main() {
 
       final children = <ProviderElementBase>[];
 
-      container.readProviderElement(provider).visitChildren(children.add);
+      container
+          .readProviderElement(provider)
+          .visitChildren(elementVisitor: children.add, notifierVisitor: (_) {});
       expect(
         children,
         unorderedMatches(<Object>[
@@ -1548,7 +1550,9 @@ void main() {
 
       final children = <ProviderElementBase>[];
 
-      container.readProviderElement(provider).visitChildren(children.add);
+      container
+          .readProviderElement(provider)
+          .visitChildren(elementVisitor: children.add, notifierVisitor: (_) {});
       expect(
         children,
         unorderedMatches(<Object>[

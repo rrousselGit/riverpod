@@ -29,7 +29,9 @@ extension AlwaysAliveProviderListenableSelect<State>
 /// This is the default base class for providers, unless a provider was marked
 /// with the `.autoDispose` modifier, like: `Provider.autoDispose(...)`
 mixin AlwaysAliveProviderBase<State> on ProviderBase<State>
-    implements AlwaysAliveProviderListenable<State> {}
+    implements
+        AlwaysAliveProviderListenable<State>,
+        AlwaysAliveRefreshable<State> {}
 
 class _AlwaysAliveProviderSelector<Input, Output> = _ProviderSelector<Input,
     Output> with AlwaysAliveProviderListenable<Output>;
