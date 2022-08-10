@@ -86,35 +86,33 @@ void main() {
           unorderedEquals(<Object?>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider.notifier),
           ]),
         );
       });
 
-      test('when using provider.overrideWithValue', () async {
-        final controller = StateController(0);
-        final provider = StateNotifierProvider<StateController<int>, int>(
-            (ref) => controller);
-        final root = createContainer();
-        final controllerOverride = StateController(42);
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithValue(controllerOverride),
-        ]);
+      // test('when using provider.overrideWithValue', () async {
+      //   final controller = StateController(0);
+      //   final provider = StateNotifierProvider<StateController<int>, int>(
+      //       (ref) => controller);
+      //   final root = createContainer();
+      //   final controllerOverride = StateController(42);
+      //   final container = createContainer(parent: root, overrides: [
+      //     provider.overrideWithValue(controllerOverride),
+      //   ]);
 
-        expect(container.read(provider.notifier), controllerOverride);
-        expect(container.read(provider), 42);
-        expect(root.getAllProviderElements(), isEmpty);
-        expect(
-          container.getAllProviderElements(),
-          unorderedEquals(<Object?>[
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider.notifier),
-          ]),
-        );
-      });
+      //   expect(container.read(provider.notifier), controllerOverride);
+      //   expect(container.read(provider), 42);
+      //   expect(root.getAllProviderElements(), isEmpty);
+      //   expect(
+      //     container.getAllProviderElements(),
+      //     unorderedEquals(<Object?>[
+      //       isA<ProviderElementBase>()
+      //           .having((e) => e.origin, 'origin', provider),
+      //       isA<ProviderElementBase>()
+      //           .having((e) => e.origin, 'origin', provider.notifier),
+      //     ]),
+      //   );
+      // });
 
       test('when using provider.overrideWithProvider', () async {
         final controller = StateController(0);
@@ -138,50 +136,48 @@ void main() {
           unorderedEquals(<Object?>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider.notifier),
           ]),
         );
       });
     });
   });
 
-  test('overriding the provider overrides provider.state too', () {
-    final notifier = TestNotifier(42);
-    final provider =
-        StateNotifierProvider<TestNotifier, int>((_) => TestNotifier());
-    final container = createContainer(
-      overrides: [
-        provider.overrideWithValue(TestNotifier(10)),
-      ],
-    );
-    addTearDown(container.dispose);
+  // test('overriding the provider overrides provider.state too', () {
+  //   final notifier = TestNotifier(42);
+  //   final provider =
+  //       StateNotifierProvider<TestNotifier, int>((_) => TestNotifier());
+  //   final container = createContainer(
+  //     overrides: [
+  //       provider.overrideWithValue(TestNotifier(10)),
+  //     ],
+  //   );
+  //   addTearDown(container.dispose);
 
-    // does not crash
-    container.updateOverrides([
-      provider.overrideWithValue(notifier),
-    ]);
+  //   // does not crash
+  //   container.updateOverrides([
+  //     provider.overrideWithValue(notifier),
+  //   ]);
 
-    expect(container.read(provider.notifier), notifier);
-    expect(container.read(provider), 42);
+  //   expect(container.read(provider.notifier), notifier);
+  //   expect(container.read(provider), 42);
 
-    notifier.increment();
+  //   notifier.increment();
 
-    expect(container.read(provider), 43);
-  });
+  //   expect(container.read(provider), 43);
+  // });
 
   test('can specify name', () {
     final provider = StateNotifierProvider<TestNotifier, int>((_) {
       return TestNotifier();
     }, name: 'example');
 
-    expect(provider.notifier.name, 'example.notifier');
+    // expect(provider.notifier.name, 'example.notifier');
     expect(provider.name, 'example');
 
     final provider2 =
         StateNotifierProvider<TestNotifier, int>((_) => TestNotifier());
 
-    expect(provider2.notifier.name, isNull);
+    // expect(provider2.notifier.name, isNull);
     expect(provider2.name, isNull);
   });
 
@@ -284,50 +280,50 @@ void main() {
     expect(callCount, 1);
   });
 
-  test(
-      'overrideWithValue listens to the notifier, support notifier change, and does not dispose of the notifier',
-      () async {
-    final provider = StateNotifierProvider<TestNotifier, int>((_) {
-      return TestNotifier();
-    });
-    final notifier = TestNotifier(42);
-    final notifier2 = TestNotifier(21);
-    final container = createContainer(overrides: [
-      provider.overrideWithValue(notifier),
-    ]);
-    addTearDown(container.dispose);
-    final listener = Listener<int>();
+  // test(
+  //     'overrideWithValue listens to the notifier, support notifier change, and does not dispose of the notifier',
+  //     () async {
+  //   final provider = StateNotifierProvider<TestNotifier, int>((_) {
+  //     return TestNotifier();
+  //   });
+  //   final notifier = TestNotifier(42);
+  //   final notifier2 = TestNotifier(21);
+  //   final container = createContainer(overrides: [
+  //     provider.overrideWithValue(notifier),
+  //   ]);
+  //   addTearDown(container.dispose);
+  //   final listener = Listener<int>();
 
-    container.listen<int>(provider, listener, fireImmediately: true);
+  //   container.listen<int>(provider, listener, fireImmediately: true);
 
-    verifyOnly(listener, listener(null, 42));
-    expect(container.read(provider.notifier), notifier);
-    expect(notifier.hasListeners, true);
+  //   verifyOnly(listener, listener(null, 42));
+  //   expect(container.read(provider.notifier), notifier);
+  //   expect(notifier.hasListeners, true);
 
-    notifier.increment();
+  //   notifier.increment();
 
-    await container.pump();
+  //   await container.pump();
 
-    verifyOnly(listener, listener(42, 43));
+  //   verifyOnly(listener, listener(42, 43));
 
-    container.updateOverrides([
-      provider.overrideWithValue(notifier2),
-    ]);
+  //   container.updateOverrides([
+  //     provider.overrideWithValue(notifier2),
+  //   ]);
 
-    await container.pump();
+  //   await container.pump();
 
-    verifyOnly(listener, listener(43, 21));
+  //   verifyOnly(listener, listener(43, 21));
 
-    expect(notifier.hasListeners, false);
-    expect(notifier.mounted, true);
-    expect(container.read(provider.notifier), notifier2);
+  //   expect(notifier.hasListeners, false);
+  //   expect(notifier.mounted, true);
+  //   expect(container.read(provider.notifier), notifier2);
 
-    notifier2.increment();
+  //   notifier2.increment();
 
-    await container.pump();
+  //   await container.pump();
 
-    verifyOnly(listener, listener(21, 22));
-  });
+  //   verifyOnly(listener, listener(21, 22));
+  // });
 
   test('overrideWithProvider preserves the state across update', () async {
     final provider = StateNotifierProvider<TestNotifier, int>((_) {
