@@ -73,25 +73,6 @@ void main() {
     expect(root.getAllProviderElements(), isEmpty);
   });
 
-  test('is compatible with ProviderObserver', () {
-    // regression test for https://github.com/rrousselGit/river_pod/issues/623
-
-    final observer = ObserverMock();
-    final container = createContainer(observers: [observer]);
-    final provider = StateProvider<int>((ref) => 0);
-
-    final notifier = container.read(provider.state);
-
-    clearInteractions(observer);
-
-    notifier.state++;
-
-    verifyOnly(
-      observer,
-      observer.didUpdateProvider(provider, notifier, notifier, container),
-    );
-  });
-
   group('ref.state', () {
     test('can read and change current value', () {
       final container = createContainer();
