@@ -50,7 +50,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   Completer<T>? _completer;
 
   final _streamNotifier = ValueNotifier<Stream<T>>();
-  late StreamController<T> _streamController;
+  final StreamController<T> _streamController = StreamController<T>.broadcast();
 
   StreamSubscription<T>? _streamSubscription;
 
@@ -62,16 +62,12 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   @override
   void create() {
-    _streamController = StreamController<T>.broadcast();
-    // TODO test stream change
-    _streamNotifier.result = Result.data(_streamController.stream);
+    _streamNotifier.result ??= Result.data(_streamController.stream);
 
     final streamResult = Result.guard(() {
       final provider = this.provider as _StreamProviderBase<T>;
       return provider._create(this);
     });
-
-    _streamNotifier.result ??= Result.data(_streamController.stream);
 
     streamResult.when(
       data: _listenStream,
@@ -88,13 +84,16 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   @pragma('vm:prefer-inline')
   void _listenStream(Stream<T> stream) {
-    setState(AsyncLoading<T>());
+    final wasLoading = getState()?.stateOrNull?.isLoading ?? false;
+    if (!wasLoading) {
+      setState(AsyncLoading<T>());
+    }
 
     // TODO test that if a provider refreshes with before the stream has emitted a value,
     // then .future isn't notifying listeners
     if (_completer == null) {
-      _completer = Completer.sync();
-      _futureNotifier.result = null;
+      final completer = _completer = Completer<T>();
+      _futureNotifier.result = Result.data(completer.future);
     }
 
     _streamSubscription = stream.listen(
@@ -120,7 +119,11 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
       onError: (Object err, StackTrace stack) {
         final completer = _completer;
         if (completer != null) {
-          completer.completeError(err, stack);
+          completer
+            ..completeError(err, stack)
+            // The error is already sent to the Zone through the original Stream
+            // so no need for this Future to send the error to the Zone too.
+            ..future.ignore();
           _completer = null;
           // TODO can we have a SynchronousFutureError?
         } else {
@@ -134,8 +137,6 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
         setState(AsyncError<T>(err, stackTrace: stack));
         _streamController.addError(err, stack);
       },
-      // TODO test
-      onDone: _streamController.close,
     );
   }
 
@@ -143,6 +144,14 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   void runOnDispose() {
     super.runOnDispose();
     _streamSubscription?.cancel();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    /// The controller isn't recreated on provider rebuild. So we only close it
+    /// when the element is destroyed, not on "ref.onDispose".
     _streamController.close();
   }
 
