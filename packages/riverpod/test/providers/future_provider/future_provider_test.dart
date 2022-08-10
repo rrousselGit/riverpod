@@ -144,7 +144,7 @@ void main() {
   });
 
   test(
-      '.stream does not update dependents if the created stream did not change',
+      '.future does not update dependents if the created future did not change',
       () async {
     final container = createContainer();
     final dep = StateProvider((ref) => 0);
@@ -163,11 +163,6 @@ void main() {
     await container.pump();
 
     verifyNoMoreInteractions(listener);
-
-    // No value were emitted, so the future will fail. Catching the error to
-    // avoid false positive.
-    // ignore: unawaited_futures, avoid_types_on_closure_parameters
-    container.read(provider.future).catchError((Object _) => 0);
   });
 
   group('scoping an override overrides all the associated subproviders', () {

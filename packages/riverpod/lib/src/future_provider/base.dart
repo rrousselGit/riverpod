@@ -70,8 +70,10 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
       final future =
           futureOr is Future<T> ? futureOr : SynchronousFuture(futureOr);
 
-      _futureNotifier.result = Result.data(future);
-      _listenFuture(future);
+      if (future != _futureNotifier.result?.stateOrNull) {
+        _futureNotifier.result = Result.data(future);
+        _listenFuture(future);
+      }
     } catch (err, stack) {
       // TODO Can we have a SynchronousFutureError?
       _futureNotifier.result = Result.data(
