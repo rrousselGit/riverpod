@@ -10,11 +10,11 @@ void main() {
     expect(provider(0).from, provider);
     expect(provider(0).argument, 0);
 
-    expect(provider(0).future.from, provider);
-    expect(provider(0).future.argument, 0);
+    // expect(provider(0).future.from, provider);
+    // expect(provider(0).future.argument, 0);
 
-    expect(provider(0).stream.from, provider);
-    expect(provider(0).stream.argument, 0);
+    // expect(provider(0).stream.from, provider);
+    // expect(provider(0).stream.argument, 0);
   });
 
   group('scoping an override overrides all the associated subproviders', () {
@@ -28,8 +28,6 @@ void main() {
       expect(container.getAllProviderElementsInOrder(), [
         isA<ProviderElementBase>()
             .having((e) => e.origin, 'origin', provider(0)),
-        isA<ProviderElementBase>()
-            .having((e) => e.origin, 'origin', provider(0).future),
       ]);
       expect(root.getAllProviderElementsInOrder(), isEmpty);
     });
@@ -66,8 +64,6 @@ void main() {
       expect(container.getAllProviderElementsInOrder(), [
         isA<ProviderElementBase>()
             .having((e) => e.origin, 'origin', provider(0)),
-        isA<ProviderElementBase>()
-            .having((e) => e.origin, 'origin', provider(0).future),
       ]);
     });
   });

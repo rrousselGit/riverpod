@@ -319,7 +319,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
       }(), '');
 
       assert(
-        _debugDidSetState,
+        getState() != null,
         'Bad state, the provider did not initialize. Did "create" forget to set the state?',
       );
     }

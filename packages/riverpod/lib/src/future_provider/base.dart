@@ -48,7 +48,7 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   final _futureNotifier = ValueNotifier<Future<T>>();
   final _streamNotifier = ValueNotifier<Stream<T>>();
-  final _streamController = StreamController<T>.broadcast(sync: true);
+  final _streamController = StreamController<T>.broadcast();
 
   @override
   AsyncValue<T> get state => requireState;
@@ -58,30 +58,23 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   @override
   void create() {
-    final future = _guardCreate();
-
     // TODO add a Proxy variant that accepts T instead of Result<T>
     _streamNotifier.result ??= Result.data(_streamController.stream);
-    _futureNotifier.result = Result.data(future);
-
-    _listenFuture(future);
-  }
-
-  @pragma('vm:prefer-inline')
-  Future<T> _guardCreate() {
-    final provider = this.provider as _FutureProviderBase<T>;
 
     try {
+      final provider = this.provider as _FutureProviderBase<T>;
       final futureOr = provider._create(this);
 
-      if (futureOr is Future<T>) {
-        return futureOr;
-      } else {
-        return SynchronousFuture(futureOr);
-      }
+      final future =
+          futureOr is Future<T> ? futureOr : SynchronousFuture(futureOr);
+
+      _futureNotifier.result = Result.data(future);
+      _listenFuture(future);
     } catch (err, stack) {
       // TODO Can we have a SynchronousFutureError?
-      return Future.error(err, stack);
+      _futureNotifier.result = Result.data(Future.error(err, stack));
+      _streamController.addError(err, stack);
+      setState(AsyncError<T>(err, stackTrace: stack));
     }
   }
 
@@ -90,26 +83,26 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     var running = true;
     onDispose(() => running = false);
 
-    setState(AsyncLoading<T>());
+    final wasLoading = getState()?.stateOrNull?.isLoading ?? false;
+    if (!wasLoading) {
+      setState(AsyncLoading<T>());
+    }
 
     future.then(
       (value) {
         if (running) {
+          _streamController.add(value);
           setState(AsyncData<T>(value));
         }
       },
       // ignore: avoid_types_on_closure_parameters
       onError: (Object err, StackTrace stack) {
         if (running) {
+          _streamController.addError(err, stack);
           setState(AsyncError<T>(err, stackTrace: stack));
         }
       },
     );
-  }
-
-  @override
-  void runOnDispose() {
-    super.runOnDispose();
   }
 
   @override
