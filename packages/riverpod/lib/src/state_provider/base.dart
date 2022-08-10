@@ -74,6 +74,19 @@ class StateProviderElement<T> extends ProviderElementBase<T>
     _controllerNotifier.result?.stateOrNull?.dispose();
     _controllerNotifier.result = null;
   }
+
+  @override
+  void visitChildren({
+    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ValueNotifier element) notifierVisitor,
+  }) {
+    super.visitChildren(
+      elementVisitor: elementVisitor,
+      notifierVisitor: notifierVisitor,
+    );
+    notifierVisitor(_stateNotifier);
+    notifierVisitor(_controllerNotifier);
+  }
 }
 
 class StateProviderFamily<R, Arg>

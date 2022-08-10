@@ -5,14 +5,17 @@ class _ProxySubscription<T> extends ProviderSubscription<T> {
     this._removeListeners,
     this._read, {
     required this.listenRemoveListeners,
+    required this.innerSubscription,
   });
 
+  final ProviderSubscription innerSubscription;
   final RemoveListener _removeListeners;
   final RemoveListener? listenRemoveListeners;
   final T Function() _read;
 
   @override
   void close() {
+    innerSubscription.close();
     listenRemoveListeners?.call();
     _removeListeners();
   }
@@ -41,8 +44,9 @@ class ProviderElementProxy<State>
   ProviderSubscription<State> addListener(
     Node node,
     void Function(State? previous, State next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-    bool fireImmediately = false,
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool fireImmediately,
   }) {
     final element = node.readProviderElement(_origin);
 
@@ -71,12 +75,21 @@ class ProviderElementProxy<State>
     final removeListener = notifier.addListener(
       listener,
       onError: onError,
+      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
     );
 
     return _ProxySubscription(
       removeListener,
       () => read(node),
       listenRemoveListeners: listen?.call(listener, onError: onError),
+
+      // While we don't care about changes to the element, calling _listenElement
+      // is necessary to tell the listened element that it is being listened.
+      innerSubscription: node._listenElement<Object?>(
+        element,
+        listener: (prev, next) {},
+        onError: (err, stack) {},
+      ),
     );
   }
 

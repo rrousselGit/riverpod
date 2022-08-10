@@ -79,6 +79,18 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
     }
     _notifierNotifier.result = null;
   }
+
+  @override
+  void visitChildren({
+    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ValueNotifier element) notifierVisitor,
+  }) {
+    super.visitChildren(
+      elementVisitor: elementVisitor,
+      notifierVisitor: notifierVisitor,
+    );
+    notifierVisitor(_notifierNotifier);
+  }
 }
 
 class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>

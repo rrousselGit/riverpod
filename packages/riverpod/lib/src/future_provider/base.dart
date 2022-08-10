@@ -61,6 +61,8 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     // TODO add a Proxy variant that accepts T instead of Result<T>
     _streamNotifier.result ??= Result.data(_streamController.stream);
 
+    // The try/catch is here to handle synchronous exceptions, which can happen
+    // if the create function isn't marked with "async".
     try {
       final provider = this.provider as _FutureProviderBase<T>;
       final futureOr = provider._create(this);
@@ -72,7 +74,11 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
       _listenFuture(future);
     } catch (err, stack) {
       // TODO Can we have a SynchronousFutureError?
-      _futureNotifier.result = Result.data(Future.error(err, stack));
+      _futureNotifier.result = Result.data(
+        Future.error(err, stack)
+          // TODO report the error to the ProviderContainer's Zone
+          ..ignore(),
+      );
       _streamController.addError(err, stack);
       setState(AsyncError<T>(err, stackTrace: stack));
     }
@@ -103,6 +109,19 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
         }
       },
     );
+  }
+
+  @override
+  void visitChildren({
+    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ValueNotifier element) notifierVisitor,
+  }) {
+    super.visitChildren(
+      elementVisitor: elementVisitor,
+      notifierVisitor: notifierVisitor,
+    );
+    notifierVisitor(_futureNotifier);
+    notifierVisitor(_streamNotifier);
   }
 
   @override

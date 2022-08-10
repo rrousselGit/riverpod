@@ -158,12 +158,12 @@ class ProviderContainer implements Node {
     }
   }
 
-  /// The default value for [AutoDisposeProviderBase.cacheTime].
+  /// The default value for [ProviderBase.cacheTime].
   ///
   /// {@macro riverpod.cache_time}
   final Duration cacheTime;
 
-  /// The default value for [AutoDisposeProviderBase.disposeDelay].
+  /// The default value for [ProviderBase.disposeDelay].
   ///
   /// {@macro riverpod.dispose_delay}
   final Duration disposeDelay;
@@ -258,18 +258,18 @@ class ProviderContainer implements Node {
   }
 
   @override
-  ProviderSubscription<State> _createSubscription<State>(
+  ProviderSubscription<State> _listenElement<State>(
     ProviderElementBase<State> element, {
     required void Function(State? previous, State next) listener,
     required void Function(Object error, StackTrace stackTrace) onError,
   }) {
-    final sub = _ProviderSubscription<State>._(
+    final sub = _ExternalProviderSubscription<State>._(
       element,
       listener,
       onError: onError,
     );
 
-    element._listeners.add(sub);
+    element._externalDependents.add(sub);
 
     return sub;
   }
@@ -288,6 +288,7 @@ class ProviderContainer implements Node {
       listener,
       fireImmediately: fireImmediately,
       onError: onError,
+      onDependencyMayHaveChanged: null,
     );
   }
 
@@ -677,19 +678,23 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
       // were already visited before.
       // If a child does not have all of its ancestors visited, when those
       // ancestors will be visited, they will retry visiting this child.
-      element.visitChildren((dependent) {
-        if (dependent.container == this) {
-          // All the parents of a node must have been visited before a node is visited
-          var areAllAncestorsAlreadyVisited = true;
-          dependent.visitAncestors((e) {
-            if (e._container == this && !visitedNodes.contains(e)) {
-              areAllAncestorsAlreadyVisited = false;
-            }
-          });
+      element.visitChildren(
+        elementVisitor: (dependent) {
+          if (dependent.container == this) {
+            // All the parents of a node must have been visited before a node is visited
+            var areAllAncestorsAlreadyVisited = true;
+            dependent.visitAncestors((e) {
+              if (e._container == this && !visitedNodes.contains(e)) {
+                areAllAncestorsAlreadyVisited = false;
+              }
+            });
 
-          if (areAllAncestorsAlreadyVisited) queue.add(dependent);
-        }
-      });
+            if (areAllAncestorsAlreadyVisited) queue.add(dependent);
+          }
+        },
+        // We only care about Elements here, so let's ignore notifiers
+        notifierVisitor: (_) {},
+      );
     }
   }
 }

@@ -81,8 +81,9 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   ProviderSubscription<State> addListener(
     Node node,
     void Function(State? previous, State next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-    bool fireImmediately = false,
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool fireImmediately,
   }) {
     onError ??= Zone.current.handleUncaughtError;
 
@@ -99,7 +100,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 
     element._onListen();
 
-    return node._createSubscription(
+    return node._listenElement(
       element,
       listener: listener,
       onError: onError,
@@ -164,8 +165,9 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 
 var _debugIsRunningSelector = false;
 
-class _ProviderSubscription<State> implements ProviderSubscription<State> {
-  _ProviderSubscription._(
+class _ExternalProviderSubscription<State>
+    implements ProviderSubscription<State> {
+  _ExternalProviderSubscription._(
     this._listenedElement,
     this._listener, {
     required this.onError,
@@ -179,7 +181,7 @@ class _ProviderSubscription<State> implements ProviderSubscription<State> {
   @override
   void close() {
     _closed = true;
-    _listenedElement._listeners.remove(this);
+    _listenedElement._externalDependents.remove(this);
     _listenedElement._onRemoveListener();
   }
 
@@ -211,7 +213,7 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
 
   @override
   void close() {
-    dependentElement._subscriptions.remove(this);
+    dependentElement._listenedProviderSubscriptions.remove(this);
     listenedElement
       .._subscribers.remove(this)
       .._onRemoveListener();

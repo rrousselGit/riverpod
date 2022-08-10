@@ -21,7 +21,8 @@ abstract class Node {
     ProviderBase<State> provider,
   );
 
-  ProviderSubscription<State> _createSubscription<State>(
+  /// Subscribes to a [ProviderElementBase]/
+  ProviderSubscription<State> _listenElement<State>(
     ProviderElementBase<State> element, {
     required void Function(State? previous, State next) listener,
     required void Function(Object error, StackTrace stackTrace) onError,
@@ -98,8 +99,9 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
   _SelectorSubscription<Input, Output> addListener(
     Node node,
     void Function(Output? previous, Output next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-    bool fireImmediately = false,
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool fireImmediately,
   }) {
     onError ??= Zone.current.handleUncaughtError;
 

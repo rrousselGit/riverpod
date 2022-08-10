@@ -89,8 +89,9 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
   _SelectorSubscription<AsyncValue<Input>, Future<Output>> addListener(
     Node node,
     void Function(Future<Output>? previous, Future<Output> next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-    bool fireImmediately = false,
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool fireImmediately,
   }) {
     Result<Output>? lastSelectedValue;
     Completer<Output>? selectedCompleter;

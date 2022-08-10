@@ -374,16 +374,22 @@ void main() {
     // });
 
     test('update dependents when the future changes', () async {
-      final futureProvider = StateProvider((ref) => Future.value(42));
+      final futureProvider = StateProvider(
+        (ref) => Future.value(42),
+        name: 'futureProvider',
+      );
       // a FutureProvider that can rebuild with a new future
       final provider = FutureProvider.autoDispose(
-          (ref) => ref.watch(futureProvider.state).state);
+        name: 'provider',
+        (ref) => ref.watch(futureProvider.state).state,
+      );
       var callCount = 0;
-      final dependent = Provider.autoDispose((ref) {
+      final dependent = Provider.autoDispose(name: 'dependent', (ref) {
         callCount++;
         return ref.watch(provider.future);
       });
       final container = createContainer();
+
       final futureController = container.read(futureProvider.state);
 
       final sub = container.listen(dependent, (_, __) {});
@@ -461,10 +467,6 @@ void main() {
 
     verifyOnly(listener, listener(null, const AsyncValue<String>.loading()));
     completer.complete(42);
-
-    verifyNoMoreInteractions(listener);
-
-    await container.pump();
 
     verifyOnly(
       listener,

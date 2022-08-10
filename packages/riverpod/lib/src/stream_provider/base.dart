@@ -145,6 +145,19 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     _streamSubscription?.cancel();
     _streamController.close();
   }
+
+  @override
+  void visitChildren({
+    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ValueNotifier element) notifierVisitor,
+  }) {
+    super.visitChildren(
+      elementVisitor: elementVisitor,
+      notifierVisitor: notifierVisitor,
+    );
+    notifierVisitor(_futureNotifier);
+    notifierVisitor(_streamNotifier);
+  }
 }
 
 class StreamProviderFamily<R, Arg> extends FamilyBase<StreamProviderRef<R>,
