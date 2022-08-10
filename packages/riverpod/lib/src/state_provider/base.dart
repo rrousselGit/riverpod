@@ -95,7 +95,5 @@ class StateProviderFamily<R, Arg>
     super.create, {
     super.name,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
   }) : super(providerFactory: StateProvider.new);
 }

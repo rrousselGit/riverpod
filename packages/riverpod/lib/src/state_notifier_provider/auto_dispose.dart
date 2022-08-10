@@ -45,8 +45,12 @@ class AutoDisposeStateNotifierProviderElement<
 
 class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>,
         T, Arg>
-    extends FamilyBase<AutoDisposeStateNotifierProviderRef<NotifierT, T>, T,
-        Arg, NotifierT, AutoDisposeStateNotifierProvider<NotifierT, T>> {
+    extends AutoDisposeFamilyBase<
+        AutoDisposeStateNotifierProviderRef<NotifierT, T>,
+        T,
+        Arg,
+        NotifierT,
+        AutoDisposeStateNotifierProvider<NotifierT, T>> {
   AutoDisposeStateNotifierProviderFamily(
     super.create, {
     super.name,

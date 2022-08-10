@@ -6,41 +6,41 @@ import '../../third_party/fake_async.dart';
 import '../../utils.dart';
 
 void main() {
-  // test('supports cacheTime', () async {
-  //   final onDispose = cacheFamily<int, OnDisposeMock>(
-  //     (key) => OnDisposeMock(),
-  //   );
+  test('supports cacheTime', () async {
+    final onDispose = cacheFamily<int, OnDisposeMock>(
+      (key) => OnDisposeMock(),
+    );
 
-  //   await fakeAsync((async) async {
-  //     final container = createContainer();
-  //     final provider =
-  //         FutureProvider.autoDispose.family<int, int>((ref, value) {
-  //       ref.onDispose(onDispose(value));
-  //       return value;
-  //     }, cacheTime: const Duration(minutes: 5));
+    await fakeAsync((async) async {
+      final container = createContainer();
+      final provider =
+          FutureProvider.autoDispose.family<int, int>((ref, value) {
+        ref.onDispose(onDispose(value));
+        return value;
+      }, cacheTime: const Duration(minutes: 5));
 
-  //     final sub = container.listen<Future<int>>(
-  //       provider(42).future,
-  //       (previous, next) {},
-  //     );
+      final sub = container.listen<Future<int>>(
+        provider(42).future,
+        (previous, next) {},
+      );
 
-  //     expect(await sub.read(), 42);
+      expect(await sub.read(), 42);
 
-  //     verifyZeroInteractions(onDispose(42));
+      verifyZeroInteractions(onDispose(42));
 
-  //     sub.close();
+      sub.close();
 
-  //     async.elapse(const Duration(minutes: 2));
-  //     await container.pump();
+      async.elapse(const Duration(minutes: 2));
+      await container.pump();
 
-  //     verifyZeroInteractions(onDispose(42));
+      verifyZeroInteractions(onDispose(42));
 
-  //     async.elapse(const Duration(minutes: 3));
-  //     await container.pump();
+      async.elapse(const Duration(minutes: 3));
+      await container.pump();
 
-  //     verifyOnly(onDispose(42), onDispose(42)());
-  //   });
-  // });
+      verifyOnly(onDispose(42), onDispose(42)());
+    });
+  });
 
   test('specifies `from` & `argument` for related providers', () {
     final provider = FutureProvider.autoDispose.family<int, int>((ref, _) => 0);

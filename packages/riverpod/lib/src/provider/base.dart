@@ -280,7 +280,5 @@ class ProviderFamily<R, Arg>
     super.create, {
     super.name,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
   }) : super(providerFactory: Provider.new);
 }

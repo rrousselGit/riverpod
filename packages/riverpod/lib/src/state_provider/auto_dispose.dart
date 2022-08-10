@@ -39,7 +39,7 @@ class AutoDisposeStateProviderElement<T> = StateProviderElement<T>
     with AutoDisposeProviderElementMixin<T>
     implements AutoDisposeStateProviderRef<T>;
 
-class AutoDisposeStateProviderFamily<R, Arg> extends FamilyBase<
+class AutoDisposeStateProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     AutoDisposeStateProviderRef<R>, R, Arg, R, AutoDisposeStateProvider<R>> {
   AutoDisposeStateProviderFamily(
     super.create, {

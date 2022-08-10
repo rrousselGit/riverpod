@@ -139,7 +139,5 @@ class FutureProviderFamily<R, Arg> extends FamilyBase<FutureProviderRef<R>,
     super.create, {
     super.name,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
   }) : super(providerFactory: FutureProvider<R>.new);
 }

@@ -6,21 +6,21 @@ import '../../utils.dart';
 
 void main() {
   group('Provider', () {
-    test('can benefit from .future extension if returning an AsyncValue',
-        () async {
-      final container = createContainer();
-      final provider = Provider((ref) => const AsyncValue.data(42));
+    // test('can benefit from .future extension if returning an AsyncValue',
+    //     () async {
+    //   final container = createContainer();
+    //   final provider = Provider((ref) => const AsyncValue.data(42));
 
-      await expectLater(container.read(provider.future), completion(42));
-    });
+    //   await expectLater(container.read(provider.future), completion(42));
+    // });
 
-    test('can benefit from .stream extension if returning an AsyncValue',
-        () async {
-      final container = createContainer();
-      final provider = Provider((ref) => const AsyncValue.data(42));
+    // test('can benefit from .stream extension if returning an AsyncValue',
+    //     () async {
+    //   final container = createContainer();
+    //   final provider = Provider((ref) => const AsyncValue.data(42));
 
-      await expectLater(container.read(provider.stream), emits(42));
-    });
+    //   await expectLater(container.read(provider.stream), emits(42));
+    // });
 
     test('can be refreshed', () async {
       var result = 0;
@@ -192,17 +192,17 @@ void main() {
     });
 
     group('override', () {
-      test('Provider can be overridden by anything', () {
-        final provider = Provider((_) => 42);
-        final AlwaysAliveProviderBase<int> override = Provider((_) {
-          return 21;
-        });
-        final container = createContainer(overrides: [
-          provider.overrideWithProvider(override),
-        ]);
+      // test('Provider can be overridden by anything', () {
+      //   final provider = Provider((_) => 42);
+      //   final AlwaysAliveProviderBase<int> override = Provider((_) {
+      //     return 21;
+      //   });
+      //   final container = createContainer(overrides: [
+      //     provider.overrideWithProvider(override),
+      //   ]);
 
-        expect(container.read(provider), 21);
-      });
+      //   expect(container.read(provider), 21);
+      // });
 
       test('does not notify listeners if updated with the same value', () {
         final provider = Provider((ref) => 0);
