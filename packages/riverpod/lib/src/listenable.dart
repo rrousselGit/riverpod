@@ -12,7 +12,13 @@ class _Listener<T> {
 }
 
 class ValueNotifier<T> extends _ChangeNotifier<T> {
-  T get value => _result!.requireState;
+  T get value {
+    final result = _result;
+    if (result == null) {
+      throw StateError('Trying to read an uninitialized value.');
+    }
+    return result.requireState;
+  }
 
   Result<T>? _result;
   Result<T>? get result => _result;

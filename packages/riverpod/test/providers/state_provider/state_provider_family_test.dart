@@ -5,25 +5,25 @@ import '../../utils.dart';
 
 void main() {
   test('supports .name', () {
-    expect(
-      StateProvider.family<int, int>((ref, id) => 0)(0).state.name,
-      null,
-    );
-    expect(
-      StateProvider.family<int, int>((ref, id) => 0, name: 'foo')(0).state.name,
-      'foo.state',
-    );
+    // expect(
+    //   StateProvider.family<int, int>((ref, id) => 0)(0).state.name,
+    //   null,
+    // );
+    // expect(
+    //   StateProvider.family<int, int>((ref, id) => 0, name: 'foo')(0).state.name,
+    //   'foo.state',
+    // );
 
-    expect(
-      StateProvider.family<int, int>((ref, id) => 0)(0).notifier.name,
-      null,
-    );
-    expect(
-      StateProvider.family<int, int>((ref, id) => 0, name: 'foo')(0)
-          .notifier
-          .name,
-      'foo.notifier',
-    );
+    // expect(
+    //   StateProvider.family<int, int>((ref, id) => 0)(0).notifier.name,
+    //   null,
+    // );
+    // expect(
+    //   StateProvider.family<int, int>((ref, id) => 0, name: 'foo')(0)
+    //       .notifier
+    //       .name,
+    //   'foo.notifier',
+    // );
 
     expect(
       StateProvider.family<int, int>((ref, id) => 0)(0).name,
@@ -44,17 +44,17 @@ void main() {
       expect(provider(0).from, provider);
       expect(provider(0).argument, 0);
 
-      expect(provider(0).state.from, provider);
-      expect(provider(0).state.argument, 0);
+      // expect(provider(0).state.from, provider);
+      // expect(provider(0).state.argument, 0);
 
-      expect(provider(0).notifier.from, provider);
-      expect(provider(0).notifier.argument, 0);
+      // expect(provider(0).notifier.from, provider);
+      // expect(provider(0).notifier.argument, 0);
 
-      expect(provider(0).future.from, provider);
-      expect(provider(0).future.argument, 0);
+      // expect(provider(0).future.from, provider);
+      // expect(provider(0).future.argument, 0);
 
-      expect(provider(0).stream.from, provider);
-      expect(provider(0).stream.argument, 0);
+      // expect(provider(0).stream.from, provider);
+      // expect(provider(0).stream.argument, 0);
     });
 
     group('scoping an override overrides all the associated subproviders', () {
@@ -71,10 +71,6 @@ void main() {
           unorderedEquals(<Object?>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider(0)),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).state),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).notifier),
           ]),
         );
         expect(root.getAllProviderElementsInOrder(), isEmpty);
@@ -98,10 +94,6 @@ void main() {
           unorderedEquals(<Object?>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider(0)),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).state),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).notifier),
           ]),
         );
       });
