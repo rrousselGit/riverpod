@@ -1,7 +1,7 @@
 part of '../framework.dart';
 
 /// Adds [selectAsync] to [ProviderListenable]
-extension AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
+mixin AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
   /// {@template riverpod.async_select}
   /// A variant of [select] for asynchronous values
   ///
@@ -39,7 +39,7 @@ extension AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
 }
 
 /// Adds [selectAsync] to [AlwaysAliveProviderListenable]
-extension AlwaysAliveAsyncSelector<Input>
+mixin AlwaysAliveAsyncSelector<Input>
     on AlwaysAliveProviderListenable<AsyncValue<Input>> {
   /// {@macro riverpod.async_select}
   AlwaysAliveProviderListenable<Future<Output>> selectAsync<Output>(

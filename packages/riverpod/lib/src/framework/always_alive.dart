@@ -6,21 +6,17 @@ part of '../framework.dart';
 /// both a provider and `provider.select`.
 ///
 /// Do not implement or extend.
-mixin AlwaysAliveProviderListenable<State> on ProviderListenable<State> {}
-
-/// Adds [select] to all [AlwaysAliveProviderListenable].
-///
-// Using an extension of a method on AlwaysAliveProviderListenable because
-// the interface is sometimes implemented due to mixins being unable to use other mixins.
-extension AlwaysAliveProviderListenableSelect<State>
-    on AlwaysAliveProviderListenable<State> {
+mixin AlwaysAliveProviderListenable<State> on ProviderListenable<State> {
+  @override
   AlwaysAliveProviderListenable<Selected> select<Selected>(
     Selected Function(State value) selector,
   ) {
-    return _AlwaysAliveProviderSelector<State, Selected>(
-      provider: this,
-      selector: selector,
-    );
+    {
+      return _AlwaysAliveProviderSelector<State, Selected>(
+        provider: this,
+        selector: selector,
+      );
+    }
   }
 }
 
@@ -31,7 +27,16 @@ extension AlwaysAliveProviderListenableSelect<State>
 mixin AlwaysAliveProviderBase<State> on ProviderBase<State>
     implements
         AlwaysAliveProviderListenable<State>,
-        AlwaysAliveRefreshable<State> {}
-
-class _AlwaysAliveProviderSelector<Input, Output> = _ProviderSelector<Input,
-    Output> with AlwaysAliveProviderListenable<Output>;
+        AlwaysAliveRefreshable<State> {
+  @override
+  AlwaysAliveProviderListenable<Selected> select<Selected>(
+    Selected Function(State value) selector,
+  ) {
+    {
+      return _AlwaysAliveProviderSelector<State, Selected>(
+        provider: this,
+        selector: selector,
+      );
+    }
+  }
+}

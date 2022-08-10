@@ -15,7 +15,7 @@ abstract class StreamProviderRef<State> implements Ref<AsyncValue<State>> {
 }
 
 class StreamProvider<T> extends _StreamProviderBase<T>
-    with AlwaysAliveProviderBase<AsyncValue<T>> {
+    with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
   StreamProvider(
     this._createFn, {
     super.name,

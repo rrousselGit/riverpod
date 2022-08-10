@@ -29,21 +29,21 @@ typedef Listen<R> = RemoveListener Function(
   void Function(Object error, StackTrace stackTrace)? onError,
 });
 
-class ProviderElementProxy<State>
-    with ProviderListenable<State>, AlwaysAliveProviderListenable<State>
-    implements AlwaysAliveRefreshable<State> {
+class ProviderElementProxy<Input, Output>
+    with ProviderListenable<Output>, AlwaysAliveProviderListenable<Output>
+    implements AlwaysAliveRefreshable<Output> {
   const ProviderElementProxy(this._origin, this.lense);
 
-  final ProviderBase<Object?> _origin;
-  final ValueNotifier<State> Function(
-    ProviderElementBase element,
-    void Function(Listen<State> listen)? setListen,
+  final ProviderBase<Input> _origin;
+  final ValueNotifier<Output> Function(
+    ProviderElementBase<Input> element,
+    void Function(Listen<Output> listen)? setListen,
   ) lense;
 
   @override
-  ProviderSubscription<State> addListener(
+  ProviderSubscription<Output> addListener(
     Node node,
-    void Function(State? previous, State next) listener, {
+    void Function(Output? previous, Output next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
@@ -53,8 +53,8 @@ class ProviderElementProxy<State>
     // TODO does this need a "flush"?
 
     // TODO remove
-    Listen<State>? listen;
-    void setListen(Listen<State> _listen) {
+    Listen<Output>? listen;
+    void setListen(Listen<Output> _listen) {
       listen = _listen;
     }
 
@@ -85,7 +85,7 @@ class ProviderElementProxy<State>
 
       // While we don't care about changes to the element, calling _listenElement
       // is necessary to tell the listened element that it is being listened.
-      innerSubscription: node._listenElement<Object?>(
+      innerSubscription: node._listenElement<Input>(
         element,
         listener: (prev, next) {},
         onError: (err, stack) {},
@@ -94,7 +94,7 @@ class ProviderElementProxy<State>
   }
 
   @override
-  State read(Node node) {
+  Output read(Node node) {
     final element = node.readProviderElement(_origin);
     element.flush();
     return lense(element, null).value;
@@ -102,7 +102,7 @@ class ProviderElementProxy<State>
 
   @override
   bool operator ==(Object other) =>
-      other is ProviderElementProxy<State> && other._origin == _origin;
+      other is ProviderElementProxy<Input, Output> && other._origin == _origin;
 
   @override
   int get hashCode => _origin.hashCode;

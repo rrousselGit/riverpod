@@ -6,10 +6,10 @@ import 'state_controller.dart';
 part 'state_provider/auto_dispose.dart';
 part 'state_provider/base.dart';
 
-ProviderElementProxy<StateController<T>> _notifier<T>(
+ProviderElementProxy<T, StateController<T>> _notifier<T>(
   _StateProviderBase<T> that,
 ) {
-  return ProviderElementProxy<StateController<T>>(
+  return ProviderElementProxy<T, StateController<T>>(
     that,
     (element, setListen) {
       if (element is StateProviderElement<T>) {
@@ -21,10 +21,10 @@ ProviderElementProxy<StateController<T>> _notifier<T>(
   );
 }
 
-ProviderElementProxy<StateController<T>> _state<T>(
+ProviderElementProxy<T, StateController<T>> _state<T>(
   _StateProviderBase<T> that,
 ) {
-  return ProviderElementProxy<StateController<T>>(
+  return ProviderElementProxy<T, StateController<T>>(
     that,
     (element, setListen) {
       if (element is StateProviderElement<T>) {

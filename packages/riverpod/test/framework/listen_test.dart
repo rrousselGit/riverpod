@@ -604,7 +604,7 @@ void main() {
         final provider = Provider((ref) {
           sub = runZonedGuarded(
             () => ref.listen<int>(
-              dep.state.select((value) => value.state),
+              dep.select((value) => value),
               (prev, value) {
                 listener(prev, value);
                 if (isFirstCall) {
@@ -1374,7 +1374,7 @@ void main() {
 
         final sub = runZonedGuarded(
           () => container.listen<int>(
-            provider.state.select((value) => value.state),
+            provider.select((value) => value),
             (prev, value) {
               listener(prev, value);
               if (isFirstCall) {
@@ -1623,7 +1623,7 @@ void main() {
       final listener = Listener<bool>();
 
       container.listen<bool>(
-        count.state.select((value) => value.state.isEven),
+        count.select((value) => value.isEven),
         listener,
         fireImmediately: true,
       );

@@ -4,7 +4,8 @@ abstract class AutoDisposeFutureProviderRef<State>
     extends FutureProviderRef<State>
     implements AutoDisposeRef<AsyncValue<State>> {}
 
-class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T> {
+class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
+    with AsyncSelector<T> {
   AutoDisposeFutureProvider(
     this._createFn, {
     super.name,

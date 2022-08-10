@@ -8,11 +8,11 @@ import 'run_guarded.dart';
 part 'state_notifier_provider/auto_dispose.dart';
 part 'state_notifier_provider/base.dart';
 
-ProviderElementProxy<NotifierT>
+ProviderElementProxy<T, NotifierT>
     _notifier<NotifierT extends StateNotifier<T>, T>(
   _StateNotifierProviderBase<NotifierT, T> that,
 ) {
-  return ProviderElementProxy<NotifierT>(
+  return ProviderElementProxy<T, NotifierT>(
     that,
     (element, setListen) {
       if (element is StateNotifierProviderElement<NotifierT, T>) {

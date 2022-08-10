@@ -4,7 +4,8 @@ abstract class AutoDisposeStreamProviderRef<State>
     extends StreamProviderRef<State>
     implements AutoDisposeRef<AsyncValue<State>> {}
 
-class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T> {
+class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
+    with AsyncSelector<T> {
   AutoDisposeStreamProvider(
     this._createFn, {
     super.name,

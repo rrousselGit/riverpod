@@ -12,10 +12,10 @@ import 'synchronous_future.dart';
 part 'stream_provider/auto_dispose.dart';
 part 'stream_provider/base.dart';
 
-ProviderElementProxy<Future<T>> _future<T>(
+ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
   _StreamProviderBase<T> that,
 ) {
-  return ProviderElementProxy<Future<T>>(
+  return ProviderElementProxy<AsyncValue<T>, Future<T>>(
     that,
     (element, setListen) {
       if (element is StreamProviderElement<T>) {
@@ -27,10 +27,10 @@ ProviderElementProxy<Future<T>> _future<T>(
   );
 }
 
-ProviderElementProxy<Stream<T>> _stream<T>(
+ProviderElementProxy<AsyncValue<T>, Stream<T>> _stream<T>(
   _StreamProviderBase<T> that,
 ) {
-  return ProviderElementProxy<Stream<T>>(
+  return ProviderElementProxy<AsyncValue<T>, Stream<T>>(
     that,
     (element, setListen) {
       if (element is StreamProviderElement<T>) {

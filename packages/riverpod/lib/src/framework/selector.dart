@@ -179,3 +179,6 @@ class _SelectorSubscription<Input, Output>
     return _read();
   }
 }
+
+class _AlwaysAliveProviderSelector<Input, Output> = _ProviderSelector<Input,
+    Output> with AlwaysAliveProviderListenable<Output>;
