@@ -115,6 +115,14 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /* STATE */
   Result<State>? _state;
 
+  /// Update the exposed value of a provider and notify its listeners.
+  ///
+  /// Listeners will only be notified if [ProviderBase.updateShouldNotify]
+  /// returns true.
+  ///
+  /// This API is not meant for public consumption. Instead if a [Ref] needs
+  /// to expose a way to update the state, the practice is to expose a getter/setter.
+  @protected
   void setState(State newState) {
     assert(() {
       _debugDidSetState = true;
@@ -140,9 +148,25 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     }
   }
 
+  /// Obtains the current state, of null if the provider has yet to initialize.
+  ///
+  /// The returned object will contain error information, if any.
+  /// This function does not cause the provider to rebuild if it someohow was
+  /// outdated.
+  ///
+  /// This is not meant for public consumption. Instead, public API should use
+  /// [readSelf].
+  @protected
   Result<State>? getState() => _state;
 
-  // TODO make protected
+  /// Read the current value of a provider and:
+  ///
+  /// - if in error state, rethrow the error
+  /// - if the provider is not initialized, gracefully handle the error.
+  ///
+  /// This is not meant for public consumption. Instead, public API should use
+  /// [readSelf].
+  @protected
   State get requireState {
     assert(() {
       if (debugAssertDidSetStateEnabled && !_debugDidSetState) {
@@ -243,6 +267,15 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     );
   }
 
+  /// A utility for re-initializing a provider when needed.
+  ///
+  /// Calling [flush] will only re-initialize the provider if it needs to rerun.
+  /// This can involve:
+  /// - a previous call to [invalidateSelf]
+  /// - a dependency of the provider has changed (such as when using [watch]).
+  ///
+  /// This is not meant for public consumption. Public API should hide
+  /// [flush] from users, such that they don't need to care about invocing this function.
   void flush() {
     _maybeRebuildDependencies();
     if (_mustRecomputeState) {
@@ -251,6 +284,10 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     }
   }
 
+  /// Iterates over the dependencies of this provider, calling [flush] on them too.
+  ///
+  /// This work is only performed if a dependency has notified that it might
+  /// need to be re-executed.
   void _maybeRebuildDependencies() {
     if (!_dependencyMayHaveChanged) return;
 
@@ -263,6 +300,10 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     );
   }
 
+  /// Initialize a provider and track dependencies used during the initialization.
+  ///
+  /// After a provider is initialized, this function takes care of unsubscribing
+  /// to dependencies that are no-longer used.
   void _performBuild() {
     _previousDependencies = _dependencies;
     _dependencies = HashMap();
@@ -298,8 +339,17 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     _previousDependencies = null;
   }
 
+  /// Initialize a provider.
+  ///
+  /// This function **must** call [setState] or throw (or both).
+  ///
+  /// Exceptions within this function will be caught and set the provider in error
+  /// state. Then, reading this provider will rethrow the thrown exception.
+  @visibleForOverriding
+  @protected
   void create();
 
+  /// Invokes [create] and handles errors.
   @pragma('vm:notify-debugger-on-exception')
   void buildState() {
     ProviderElementBase? debugPreviouslyBuildingElement;
@@ -712,7 +762,17 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
   }
 
-  /// Called on [ProviderContainer.dispose].
+  /// Release the resources associated to this [ProviderElementBase].
+  ///
+  /// This will be invoked when:
+  /// - the provider is using `autoDispose` and it is no-longer used.
+  /// - the associated [ProviderContainer] is disposed
+  ///
+  /// On the other hand, this life-cycle will not be executed when a provider
+  /// rebuilds.
+  ///
+  /// As opposed to [runOnDispose], this life-cycle is executed only
+  /// for the lifetime of this element.
   @protected
   @mustCallSuper
   void dispose() {
@@ -772,6 +832,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _onDisposeListeners!.add(listener);
   }
 
+  /// Executes the [Ref.onDispose] listeners previously registered, then clear
+  /// the list of listeners.
   @protected
   @visibleForOverriding
   void runOnDispose() {
