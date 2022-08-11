@@ -18,11 +18,7 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
   return ProviderElementProxy<AsyncValue<T>, Future<T>>(
     that,
     (element) {
-      if (element is FutureProviderElement<T>) {
-        return element._futureNotifier;
-      }
-
-      throw UnsupportedError('Unknown element type ${element.runtimeType}');
+      return (element as FutureProviderElement<T>)._futureNotifier;
     },
   );
 }
@@ -33,11 +29,7 @@ ProviderElementProxy<AsyncValue<T>, Stream<T>> _stream<T>(
   return ProviderElementProxy<AsyncValue<T>, Stream<T>>(
     that,
     (element) {
-      if (element is FutureProviderElement<T>) {
-        return element._streamNotifier;
-      }
-
-      throw UnsupportedError('Unknown element type ${element.runtimeType}');
+      return (element as FutureProviderElement<T>)._streamNotifier;
     },
   );
 }

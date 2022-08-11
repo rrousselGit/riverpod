@@ -10,11 +10,7 @@ ProviderElementProxy<T, StateController<T>> _notifier<T>(
   return ProviderElementProxy<T, StateController<T>>(
     that,
     (element) {
-      if (element is StateProviderElement<T>) {
-        return element._controllerNotifier;
-      }
-
-      throw UnsupportedError('Unknown element type ${element.runtimeType}');
+      return (element as StateProviderElement<T>)._controllerNotifier;
     },
   );
 }

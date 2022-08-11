@@ -14,11 +14,8 @@ ProviderElementProxy<NotifierT, NotifierT>
   return ProviderElementProxy<NotifierT, NotifierT>(
     that,
     (element) {
-      if (element is ChangeNotifierProviderElement<NotifierT>) {
-        return element._notifierNotifier;
-      }
-
-      throw UnsupportedError('Unknown element type ${element.runtimeType}');
+      return (element as ChangeNotifierProviderElement<NotifierT>)
+          ._notifierNotifier;
     },
   );
 }
