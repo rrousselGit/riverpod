@@ -15,7 +15,7 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
 ) {
   return ProviderElementProxy<AsyncValue<T>, Future<T>>(
     that,
-    (element, setListen) {
+    (element) {
       if (element is StreamProviderElement<T>) {
         return element._futureNotifier;
       }
@@ -30,7 +30,7 @@ ProviderElementProxy<AsyncValue<T>, Stream<T>> _stream<T>(
 ) {
   return ProviderElementProxy<AsyncValue<T>, Stream<T>>(
     that,
-    (element, setListen) {
+    (element) {
       if (element is StreamProviderElement<T>) {
         return element._streamNotifier;
       }

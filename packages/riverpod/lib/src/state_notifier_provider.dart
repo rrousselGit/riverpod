@@ -14,7 +14,7 @@ ProviderElementProxy<T, NotifierT>
 ) {
   return ProviderElementProxy<T, NotifierT>(
     that,
-    (element, setListen) {
+    (element) {
       if (element is StateNotifierProviderElement<NotifierT, T>) {
         return element._notifierNotifier;
       }

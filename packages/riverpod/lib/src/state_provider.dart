@@ -11,7 +11,7 @@ ProviderElementProxy<T, StateController<T>> _notifier<T>(
 ) {
   return ProviderElementProxy<T, StateController<T>>(
     that,
-    (element, setListen) {
+    (element) {
       if (element is StateProviderElement<T>) {
         return element._controllerNotifier;
       }
@@ -26,7 +26,7 @@ ProviderElementProxy<T, StateController<T>> _state<T>(
 ) {
   return ProviderElementProxy<T, StateController<T>>(
     that,
-    (element, setListen) {
+    (element) {
       if (element is StateProviderElement<T>) {
         return element._stateNotifier;
       }

@@ -4,19 +4,16 @@ class _ProxySubscription<T> extends ProviderSubscription<T> {
   _ProxySubscription(
     this._removeListeners,
     this._read, {
-    required this.listenRemoveListeners,
     required this.innerSubscription,
   });
 
   final ProviderSubscription innerSubscription;
   final RemoveListener _removeListeners;
-  final RemoveListener? listenRemoveListeners;
   final T Function() _read;
 
   @override
   void close() {
     innerSubscription.close();
-    listenRemoveListeners?.call();
     _removeListeners();
   }
 
@@ -35,10 +32,8 @@ class ProviderElementProxy<Input, Output>
   const ProviderElementProxy(this._origin, this.lense);
 
   final ProviderBase<Input> _origin;
-  final ValueNotifier<Output> Function(
-    ProviderElementBase<Input> element,
-    void Function(Listen<Output> listen)? setListen,
-  ) lense;
+  final ValueNotifier<Output> Function(ProviderElementBase<Input> element)
+      lense;
 
   @override
   ProviderSubscription<Output> addListener(
@@ -52,13 +47,7 @@ class ProviderElementProxy<Input, Output>
 
     // TODO does this need a "flush"?
 
-    // TODO remove
-    Listen<Output>? listen;
-    void setListen(Listen<Output> _listen) {
-      listen = _listen;
-    }
-
-    final notifier = lense(element, setListen);
+    final notifier = lense(element);
     if (fireImmediately) {
       notifier.result?.when(
         data: (data) {
@@ -81,8 +70,6 @@ class ProviderElementProxy<Input, Output>
     return _ProxySubscription(
       removeListener,
       () => read(node),
-      listenRemoveListeners: listen?.call(listener, onError: onError),
-
       // While we don't care about changes to the element, calling _listenElement
       // is necessary to tell the listened element that it is being listened.
       innerSubscription: node._listenElement<Input>(
@@ -98,7 +85,7 @@ class ProviderElementProxy<Input, Output>
     final element = node.readProviderElement(_origin);
     element.flush();
     element.mayNeedDispose();
-    return lense(element, null).value;
+    return lense(element).value;
   }
 
   @override
