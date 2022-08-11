@@ -13,6 +13,9 @@
 
 Non breaking changes:
 
+- feat: A new `AutoDisposeRef.keepAlive()` function is added. It is meant to replace
+  `AutoDisposeRef.maintainState` to make logic for preventing the disposal of a provider more reusable.
+- `AutoDisposeRef.maintainState` is deprecated. Use the new ``AutoDisposeRef.keepAlive()` instead.
 - feat: Add support for `ref.invalidate(family)` to recompiute an entire family (#1517)
 
 # 2.0.0-dev.9
