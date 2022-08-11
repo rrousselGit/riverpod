@@ -11,12 +11,10 @@ mixin AlwaysAliveProviderListenable<State> on ProviderListenable<State> {
   AlwaysAliveProviderListenable<Selected> select<Selected>(
     Selected Function(State value) selector,
   ) {
-    {
-      return _AlwaysAliveProviderSelector<State, Selected>(
-        provider: this,
-        selector: selector,
-      );
-    }
+    return _AlwaysAliveProviderSelector<State, Selected>(
+      provider: this,
+      selector: selector,
+    );
   }
 }
 
@@ -32,11 +30,9 @@ mixin AlwaysAliveProviderBase<State> on ProviderBase<State>
   AlwaysAliveProviderListenable<Selected> select<Selected>(
     Selected Function(State value) selector,
   ) {
-    {
-      return _AlwaysAliveProviderSelector<State, Selected>(
-        provider: this,
-        selector: selector,
-      );
-    }
+    return _AlwaysAliveProviderSelector<State, Selected>(
+      provider: this,
+      selector: selector,
+    );
   }
 }
