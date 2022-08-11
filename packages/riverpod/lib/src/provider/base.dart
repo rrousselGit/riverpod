@@ -271,12 +271,10 @@ class ProviderElement<State> extends ProviderElementBase<State>
   }
 }
 
-/// {@template riverpod.provider.family}
-/// A class that allows building a [Provider] from an external parameter.
-/// {@endtemplate}
+/// The [Family] of [ProviderFamily]
 class ProviderFamily<R, Arg>
     extends FamilyBase<ProviderRef<R>, R, Arg, R, Provider<R>> {
-  /// Instantiate a [ProviderFamily], for creating a [Provider] from external values.
+  /// The [Family] of [ProviderFamily]
   ProviderFamily(
     super.create, {
     super.name,
