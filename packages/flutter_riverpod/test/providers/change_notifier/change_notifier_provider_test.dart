@@ -6,6 +6,23 @@ import 'package:mockito/mockito.dart';
 import '../../utils.dart';
 
 void main() {
+  test('ref.listenSelf listens to state changes', () {
+    final listener = Listener<ValueNotifier<int>>();
+    final container = createContainer();
+    final provider = ChangeNotifierProvider<ValueNotifier<int>>((ref) {
+      ref.listenSelf(listener);
+      return ValueNotifier(0);
+    });
+
+    final notifier = container.read(provider);
+
+    verifyOnly(listener, listener(null, notifier));
+
+    container.read(provider.notifier).value++;
+
+    verifyOnly(listener, listener(notifier, notifier));
+  });
+
   test('support null ChangeNotifier', () {
     final container = createContainer();
     final provider = ChangeNotifierProvider<ValueNotifier<int>?>((ref) => null);

@@ -5,6 +5,23 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('ref.listenSelf listens to state changes', () {
+    final listener = Listener<int>();
+    final container = createContainer();
+    final provider = StateNotifierProvider<StateController<int>, int>((ref) {
+      ref.listenSelf(listener);
+      return StateController(0);
+    });
+
+    final notifier = container.read(provider.notifier);
+
+    verifyOnly(listener, listener(null, 0));
+
+    notifier.state++;
+
+    verifyOnly(listener, listener(0, 1));
+  });
+
   test('can read and set current StateNotifier', () async {
     final container = createContainer();
     final listener = Listener<int>();
