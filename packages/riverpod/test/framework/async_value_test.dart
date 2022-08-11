@@ -728,6 +728,37 @@ void main() {
   });
 
   group('whenData', () {
+    test('preserves isLoading/isRefreshing', () {
+      expect(
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncData(42))
+            .whenData((value) => value * 2),
+        const AsyncLoading<int>().copyWithPrevious(const AsyncData(84)),
+      );
+
+      expect(
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncData(42))
+            .whenData<String>(
+              (value) => Error.throwWithStackTrace(84, StackTrace.empty),
+            ),
+        const AsyncLoading<String>().copyWithPrevious(
+          const AsyncError(84, stackTrace: StackTrace.empty),
+        ),
+      );
+
+      expect(
+        const AsyncLoading<int>()
+            .copyWithPrevious(
+              const AsyncError(84, stackTrace: StackTrace.empty),
+            )
+            .whenData<String>((value) => '$value'),
+        const AsyncLoading<String>().copyWithPrevious(
+          const AsyncError(84, stackTrace: StackTrace.empty),
+        ),
+      );
+    });
+
     test('transforms data if any', () {
       expect(
         const AsyncValue.data(42).whenData((value) => '$value'),

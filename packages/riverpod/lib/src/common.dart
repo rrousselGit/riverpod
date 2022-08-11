@@ -471,12 +471,29 @@ extension AsyncValueX<T> on AsyncValue<T> {
     return map(
       data: (d) {
         try {
-          return AsyncValue.data(cb(d.value));
+          return AsyncData._(
+            cb(d.value),
+            isLoading: d.isLoading,
+            error: d.error,
+            stackTrace: d.stackTrace,
+          );
         } catch (err, stack) {
-          return AsyncValue.error(err, stackTrace: stack);
+          return AsyncError._(
+            err,
+            stackTrace: stack,
+            isLoading: d.isLoading,
+            value: null,
+            hasValue: false,
+          );
         }
       },
-      error: (e) => AsyncError(e.error, stackTrace: e.stackTrace),
+      error: (e) => AsyncError._(
+        e.error,
+        stackTrace: e.stackTrace,
+        isLoading: e.isLoading,
+        value: null,
+        hasValue: false,
+      ),
       loading: (l) => AsyncLoading<R>(),
     );
   }
