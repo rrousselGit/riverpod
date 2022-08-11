@@ -568,7 +568,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
       }
 
       if (_root?._stateReaders.containsKey(provider) ?? false) {
-        // For unoverriden providers, it is possible that the provider was
+        // For un-overridden providers, it is possible that the provider was
         // read in the root ProviderContainer before this container. In which case
         // we reuse the existing state instead of creating a new one.
         return _root!._stateReaders[provider]!;
