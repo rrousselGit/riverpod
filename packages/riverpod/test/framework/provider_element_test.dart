@@ -373,10 +373,11 @@ void main() {
           () {
         fakeAsync((async) {
           late StreamProviderRef<int> ref;
+          late StreamController<int> controller;
           final provider = StreamProvider.autoDispose<int>(
             (r) {
               ref = r;
-              final controller = StreamController<int>(sync: true);
+              controller = StreamController<int>(sync: true);
               ref.onDispose(controller.close);
               return controller.stream;
             },
@@ -386,26 +387,27 @@ void main() {
           );
           final listener = Listener<AsyncValue<int>>();
 
-          final sub = container.listen(provider, listener);
-          ref.state = const AsyncData(42);
+          final sub = container.listen<AsyncValue<int>>(provider, listener);
+
+          controller.add(42);
 
           verifyOnly(
             listener,
             listener(const AsyncLoading<int>(), const AsyncData(42)),
           );
 
-          ref.state = const AsyncLoading<int>();
+          container.refresh(provider);
 
+          expect(
+            sub.read(),
+            const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
+          );
           verifyOnly(
             listener,
             listener(
               const AsyncData(42),
               const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
             ),
-          );
-          expect(
-            sub.read(),
-            const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
           );
 
           async.elapse(const Duration(seconds: 5));
@@ -424,11 +426,10 @@ void main() {
 
       test('refresh timer when new values are emitted', () {
         fakeAsync((async) {
-          late StreamProviderRef<int> ref;
+          late StreamController<int> controller;
           final provider = StreamProvider.autoDispose<int>(
-            (r) {
-              ref = r;
-              final controller = StreamController<int>(sync: true);
+            (ref) {
+              controller = StreamController<int>(sync: true);
               ref.onDispose(controller.close);
               return controller.stream;
             },
@@ -439,8 +440,8 @@ void main() {
 
           container.listen(provider, (prev, next) {}); // initialize data
 
-          ref.state = const AsyncData(42);
-          ref.state = const AsyncLoading<int>();
+          controller.add(42);
+          container.refresh(provider);
 
           expect(
             container.read(provider),
@@ -454,8 +455,8 @@ void main() {
             const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
           );
 
-          ref.state = const AsyncData(21);
-          ref.state = const AsyncLoading<int>();
+          controller.add(21);
+          container.refresh(provider);
 
           async.elapse(const Duration(seconds: 3));
 
@@ -475,11 +476,10 @@ void main() {
 
       test('refresh timer when AsyncErrors are emitted', () {
         fakeAsync((async) {
-          late StreamProviderRef<int> ref;
+          late StreamController<int> controller;
           final provider = StreamProvider.autoDispose<int>(
-            (r) {
-              ref = r;
-              final controller = StreamController<int>(sync: true);
+            (ref) {
+              controller = StreamController<int>(sync: true);
               ref.onDispose(controller.close);
               return controller.stream;
             },
@@ -490,29 +490,38 @@ void main() {
 
           container.listen(provider, (prev, next) {}); // initialize data
 
-          ref.state = const AsyncError<int>(42);
-          ref.state = const AsyncLoading();
+          controller.addError(42, StackTrace.empty);
+          container.refresh(provider);
 
           expect(
             container.read(provider),
-            const AsyncLoading<int>().copyWithPrevious(const AsyncError(42)),
+            const AsyncLoading<int>().copyWithPrevious(
+              const AsyncError(42, stackTrace: StackTrace.empty),
+            ),
           );
 
           async.elapse(const Duration(seconds: 2));
 
           expect(
             container.read(provider),
-            const AsyncLoading<int>().copyWithPrevious(const AsyncError(42)),
+            const AsyncLoading<int>().copyWithPrevious(
+              const AsyncError(42, stackTrace: StackTrace.empty),
+            ),
           );
 
-          ref.state = const AsyncError(21);
-          ref.state = const AsyncLoading();
+          controller.addError(42, StackTrace.empty);
+          container.refresh(provider);
+
+          controller.addError(21, StackTrace.empty);
+          container.refresh(provider);
 
           async.elapse(const Duration(seconds: 3));
 
           expect(
             container.read(provider),
-            const AsyncLoading<int>().copyWithPrevious(const AsyncError(21)),
+            const AsyncLoading<int>().copyWithPrevious(
+              const AsyncError(21, stackTrace: StackTrace.empty),
+            ),
           );
 
           async.elapse(const Duration(seconds: 3));

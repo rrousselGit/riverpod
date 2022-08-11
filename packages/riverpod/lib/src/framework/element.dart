@@ -95,7 +95,8 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
-  bool _debugDidChangeDependency = false;
+  bool _didChangeDependency = false;
+
   var _didCancelOnce = false;
 
   bool _mounted = false;
@@ -336,14 +337,15 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// state. Then, reading this provider will rethrow the thrown exception.
   @visibleForOverriding
   @protected
-  void create();
+  void create({required bool didChangeDependency});
 
   /// Invokes [create] and handles errors.
   @pragma('vm:notify-debugger-on-exception')
   void buildState() {
     ProviderElementBase? debugPreviouslyBuildingElement;
+    final previousDidChangeDependency = _didChangeDependency;
+    _didChangeDependency = false;
     assert(() {
-      _debugDidChangeDependency = false;
       debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
       _debugCurrentlyBuildingElement = this;
       return true;
@@ -352,7 +354,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     try {
       // TODO move outside this function?
       _mounted = true;
-      create();
+      create(didChangeDependency: previousDidChangeDependency);
     } catch (err, stack) {
       assert(() {
         _debugDidSetState = true;
@@ -471,7 +473,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
 
     for (var i = 0; i < _providerDependents.length; i++) {
-      _providerDependents[i]._didChangeDependency();
+      _providerDependents[i]._markDependencyChanged();
     }
 
     for (final observer in _container._observers) {
@@ -500,11 +502,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
   }
 
-  void _didChangeDependency() {
-    assert(() {
-      _debugDidChangeDependency = true;
-      return true;
-    }(), '');
+  void _markDependencyChanged() {
+    _didChangeDependency = true;
     if (_mustRecomputeState) return;
 
     // will notify children that their dependency may have changed
@@ -559,7 +558,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
   void _assertNotOutdated() {
     assert(
-      _debugDidChangeDependency == false,
+      _didChangeDependency == false,
       'Cannot use ref functions after the dependency of a provider changed but before the provider rebuilt',
     );
   }
@@ -586,8 +585,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (listenable is! ProviderBase<T>) {
       final sub = listen<T>(
         listenable,
-        (prev, value) => _didChangeDependency(),
-        onError: (err, stack) => _didChangeDependency(),
+        (prev, value) => _markDependencyChanged(),
+        onError: (err, stack) => _markDependencyChanged(),
         onDependencyMayHaveChanged: _markDependencyMayHaveChanged,
       );
 

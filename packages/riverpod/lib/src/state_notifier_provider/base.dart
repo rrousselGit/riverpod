@@ -123,7 +123,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
   void Function()? _removeListener;
 
   @override
-  void create() {
+  void create({required bool didChangeDependency}) {
     final provider = this.provider as _StateNotifierProviderBase<NotifierT, T>;
 
     final notifier =

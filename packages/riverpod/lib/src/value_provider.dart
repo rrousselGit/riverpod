@@ -62,7 +62,7 @@ class ValueProviderElement<State> extends ProviderElementBase<State> {
   }
 
   @override
-  void create() {
+  void create({required bool didChangeDependency}) {
     final provider = this.provider as ValueProvider<State>;
     setState(provider._value);
   }

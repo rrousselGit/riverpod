@@ -264,7 +264,7 @@ class ProviderElement<State> extends ProviderElementBase<State>
   set state(State newState) => setState(newState);
 
   @override
-  void create() {
+  void create({required bool didChangeDependency}) {
     final provider = this.provider as _ProviderBase<State>;
 
     setState(provider._create(this));

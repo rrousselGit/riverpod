@@ -21,6 +21,69 @@ void main() {
     controller.close();
   });
 
+  group('When going back to AsyncLoading', () {
+    test(
+        'sets isRefreshing to true if triggered by a ref.invalidate/ref.refresh',
+        () async {
+      final container = createContainer();
+      var count = 0;
+      final provider = StreamProvider((ref) => Stream.value(count++));
+
+      await expectLater(container.read(provider.future), completion(0));
+      expect(container.read(provider), const AsyncData(0));
+
+      expect(
+        container.refresh(provider),
+        const AsyncLoading<int>().copyWithPrevious(const AsyncData(0)),
+      );
+
+      await expectLater(container.read(provider.future), completion(1));
+      expect(container.read(provider), const AsyncData(1));
+
+      container.invalidate(provider);
+
+      expect(
+        container.read(provider),
+        const AsyncLoading<int>().copyWithPrevious(const AsyncData(1)),
+      );
+      await expectLater(container.read(provider.future), completion(2));
+      expect(container.read(provider), const AsyncData(2));
+    });
+
+    test('does not set isRefreshing if triggered by a dependency change',
+        () async {
+      final container = createContainer();
+      final dep = StateProvider((ref) => 0);
+      final provider = StreamProvider((ref) => Stream.value(ref.watch(dep)));
+
+      await expectLater(container.read(provider.future), completion(0));
+      expect(container.read(provider), const AsyncData(0));
+
+      container.read(dep.notifier).state++;
+      expect(container.read(provider), const AsyncLoading<int>());
+
+      await expectLater(container.read(provider.future), completion(1));
+      expect(container.read(provider), const AsyncData(1));
+    });
+
+    test(
+        'does not set isRefreshing if both triggered by a dependency change and ref.refresh',
+        () async {
+      final container = createContainer();
+      final dep = StateProvider((ref) => 0);
+      final provider = StreamProvider((ref) => Stream.value(ref.watch(dep)));
+
+      await expectLater(container.read(provider.future), completion(0));
+      expect(container.read(provider), const AsyncData(0));
+
+      container.read(dep.notifier).state++;
+      expect(container.refresh(provider), const AsyncLoading<int>());
+
+      await expectLater(container.read(provider.future), completion(1));
+      expect(container.read(provider), const AsyncData(1));
+    });
+  });
+
   test('can read and set current AsyncValue', () async {
     final container = createContainer();
     final listener = Listener<AsyncValue<int>>();
@@ -31,8 +94,8 @@ void main() {
     });
 
     container.listen(provider, listener);
-
     await container.read(provider.future);
+
     expect(ref.state, const AsyncData<int>(0));
     verifyOnly(
       listener,
@@ -44,18 +107,11 @@ void main() {
 
     ref.state = const AsyncLoading<int>();
 
-    expect(
-      ref.state,
-      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
-    );
+    expect(ref.state, const AsyncLoading<int>());
 
     verifyOnly(
       listener,
-      listener(
-        const AsyncData(0),
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncValue<int>.data(0)),
-      ),
+      listener(const AsyncData(0), const AsyncLoading<int>()),
     );
   });
 
@@ -85,6 +141,8 @@ void main() {
     final provider = StreamProvider((ref) => ref.watch(dep.state).state);
     final container = createContainer();
     final listener = Listener<AsyncValue<int>>();
+    final controller = StreamController<int>();
+    addTearDown(controller.close);
 
     await expectLater(
       container.read(provider.stream),
@@ -95,19 +153,12 @@ void main() {
       const AsyncData<int>(42),
     );
 
-    final controller = StreamController<int>();
-    addTearDown(controller.close);
     container.read(dep.state).state = controller.stream;
-
     container.listen(provider, listener, fireImmediately: true);
 
     verifyOnly(
       listener,
-      listener(
-        null,
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncValue<int>.data(42)),
-      ),
+      listener(null, const AsyncLoading<int>()),
     );
 
     container.read(dep.state).state = Stream.value(21);

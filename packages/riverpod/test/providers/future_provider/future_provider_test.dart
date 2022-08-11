@@ -7,6 +7,69 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  group('When going back to AsyncLoading', () {
+    test(
+        'sets isRefreshing to true if triggered by a ref.invalidate/ref.refresh',
+        () async {
+      final container = createContainer();
+      var count = 0;
+      final provider = FutureProvider((ref) => Future.value(count++));
+
+      await expectLater(container.read(provider.future), completion(0));
+      expect(container.read(provider), const AsyncData(0));
+
+      expect(
+        container.refresh(provider),
+        const AsyncLoading<int>().copyWithPrevious(const AsyncData(0)),
+      );
+
+      await expectLater(container.read(provider.future), completion(1));
+      expect(container.read(provider), const AsyncData(1));
+
+      container.invalidate(provider);
+
+      expect(
+        container.read(provider),
+        const AsyncLoading<int>().copyWithPrevious(const AsyncData(1)),
+      );
+      await expectLater(container.read(provider.future), completion(2));
+      expect(container.read(provider), const AsyncData(2));
+    });
+
+    test('does not set isRefreshing if triggered by a dependency change',
+        () async {
+      final container = createContainer();
+      final dep = StateProvider((ref) => 0);
+      final provider = FutureProvider((ref) => Future.value(ref.watch(dep)));
+
+      await expectLater(container.read(provider.future), completion(0));
+      expect(container.read(provider), const AsyncData(0));
+
+      container.read(dep.notifier).state++;
+      expect(container.read(provider), const AsyncLoading<int>());
+
+      await expectLater(container.read(provider.future), completion(1));
+      expect(container.read(provider), const AsyncData(1));
+    });
+
+    test(
+        'does not set isRefreshing if both triggered by a dependency change and ref.refresh',
+        () async {
+      final container = createContainer();
+      final dep = StateProvider((ref) => 0);
+      final provider = FutureProvider((ref) => Future.value(ref.watch(dep)));
+
+      await expectLater(container.read(provider.future), completion(0));
+      expect(container.read(provider), const AsyncData(0));
+
+      container.read(dep.notifier).state++;
+      expect(container.refresh(provider), const AsyncLoading<int>());
+
+      await expectLater(container.read(provider.future), completion(1));
+      expect(container.read(provider), const AsyncData(1));
+    });
+  });
+
   test('can read and set current AsyncValue', () {
     final container = createContainer();
     final listener = Listener<AsyncValue<int>>();
@@ -23,18 +86,11 @@ void main() {
 
     ref.state = const AsyncLoading<int>();
 
-    expect(
-      ref.state,
-      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
-    );
+    expect(ref.state, const AsyncLoading<int>());
 
     verifyOnly(
       listener,
-      listener(
-        const AsyncData(0),
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncValue<int>.data(0)),
-      ),
+      listener(const AsyncData(0), const AsyncLoading<int>()),
     );
   });
 

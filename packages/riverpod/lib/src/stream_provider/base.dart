@@ -123,21 +123,14 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   set state(AsyncValue<T> state) => setState(state);
 
   @override
-  void setState(AsyncValue<T> newState) {
-    AsyncValue<T> stateWithPrevious;
-
+  void create({required bool didChangeDependency}) {
     final previous = getState()?.requireState;
-    if (previous != null) {
-      stateWithPrevious = newState.copyWithPrevious(previous);
+    if (previous == null || didChangeDependency) {
+      setState(AsyncLoading<T>());
     } else {
-      stateWithPrevious = newState;
+      setState(AsyncLoading<T>().copyWithPrevious(previous));
     }
 
-    super.setState(stateWithPrevious);
-  }
-
-  @override
-  void create() {
     _streamNotifier.result ??= Result.data(_streamController.stream);
 
     final streamResult = Result.guard(() {
@@ -160,8 +153,6 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   @pragma('vm:prefer-inline')
   void _listenStream(Stream<T> stream) {
-    setState(AsyncLoading<T>());
-
     // TODO test that if a provider refreshes with before the stream has emitted a value,
     // then .future isn't notifying listeners
     if (_completer == null) {

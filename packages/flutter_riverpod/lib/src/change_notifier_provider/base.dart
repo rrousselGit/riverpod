@@ -124,7 +124,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
   void Function()? _removeListener;
 
   @override
-  void create() {
+  void create({required bool didChangeDependency}) {
     final provider = this.provider as _ChangeNotifierProviderBase<NotifierT>;
 
     final notifierResult =

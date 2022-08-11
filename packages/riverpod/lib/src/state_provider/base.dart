@@ -89,7 +89,7 @@ class StateProviderElement<T> extends ProviderElementBase<T>
   void Function()? _removeListener;
 
   @override
-  void create() {
+  void create({required bool didChangeDependency}) {
     final provider = this.provider as _StateProviderBase<T>;
     final initialState = provider._create(this);
 

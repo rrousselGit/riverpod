@@ -206,10 +206,7 @@ void main() {
     expect(buildCount, 1);
 
     container.read(dep.notifier).state = 1;
-    expect(
-      container.read(a),
-      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
-    );
+    expect(container.read(a), const AsyncLoading<int>());
     expect(container.read(b), const AsyncData(0));
     expect(buildCount, 1);
 
@@ -218,10 +215,7 @@ void main() {
     expect(buildCount, 2);
 
     container.read(dep.notifier).state = 11;
-    expect(
-      container.read(a),
-      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(1)),
-    );
+    expect(container.read(a), const AsyncLoading<int>());
     expect(container.read(b), const AsyncData(1));
     expect(buildCount, 2);
 
@@ -247,10 +241,7 @@ void main() {
     expect(buildCount, 1);
 
     container.read(dep.notifier).state = 1;
-    expect(
-      container.read(a),
-      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
-    );
+    expect(container.read(a), const AsyncLoading<int>());
     expect(container.read(b), const AsyncData(0));
     expect(buildCount, 1);
 
@@ -259,10 +250,7 @@ void main() {
     expect(buildCount, 2);
 
     container.read(dep.notifier).state = 11;
-    expect(
-      container.read(a),
-      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(1)),
-    );
+    expect(container.read(a), const AsyncLoading<int>());
     expect(container.read(b), const AsyncData(1));
     expect(buildCount, 2);
 

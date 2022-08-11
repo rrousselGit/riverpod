@@ -63,21 +63,14 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   set state(AsyncValue<T> state) => setState(state);
 
   @override
-  void setState(AsyncValue<T> newState) {
-    AsyncValue<T> stateWithPrevious;
-
+  void create({required bool didChangeDependency}) {
     final previous = getState()?.requireState;
-    if (previous != null) {
-      stateWithPrevious = newState.copyWithPrevious(previous);
+    if (previous == null || didChangeDependency) {
+      setState(AsyncLoading<T>());
     } else {
-      stateWithPrevious = newState;
+      setState(AsyncLoading<T>().copyWithPrevious(previous));
     }
 
-    super.setState(stateWithPrevious);
-  }
-
-  @override
-  void create() {
     // TODO add a Proxy variant that accepts T instead of Result<T>
     _streamNotifier.result ??= Result.data(_streamController.stream);
 
@@ -110,8 +103,6 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   void _listenFuture(Future<T> future) {
     var running = true;
     onDispose(() => running = false);
-
-    setState(AsyncLoading<T>());
 
     future.then(
       (value) {

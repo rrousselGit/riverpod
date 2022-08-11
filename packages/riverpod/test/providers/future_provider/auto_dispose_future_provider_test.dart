@@ -23,18 +23,10 @@ void main() {
 
     ref.state = const AsyncLoading<int>();
 
-    expect(
-      ref.state,
-      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
-    );
-
+    expect(ref.state, const AsyncLoading<int>());
     verifyOnly(
       listener,
-      listener(
-        const AsyncData(0),
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncValue<int>.data(0)),
-      ),
+      listener(const AsyncData(0), const AsyncLoading<int>()),
     );
   });
 
@@ -108,11 +100,7 @@ void main() {
 
     verifyOnly(
       listener,
-      listener(
-        null,
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncValue<int>.data(42)),
-      ),
+      listener(null, const AsyncLoading<int>()),
     );
 
     container.read(dep.state).state = Future.value(21);

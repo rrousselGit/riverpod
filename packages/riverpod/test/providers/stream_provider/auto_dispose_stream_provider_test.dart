@@ -31,19 +31,11 @@ void main() {
 
       ref.state = const AsyncLoading<int>();
 
-      expect(
-        ref.state,
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncValue<int>.data(0)),
-      );
+      expect(ref.state, const AsyncLoading<int>());
 
       verifyOnly(
         listener,
-        listener(
-          const AsyncData(0),
-          const AsyncLoading<int>()
-              .copyWithPrevious(const AsyncValue<int>.data(0)),
-        ),
+        listener(const AsyncData(0), const AsyncLoading<int>()),
       );
     });
 
@@ -74,6 +66,8 @@ void main() {
           StreamProvider.autoDispose((ref) => ref.watch(dep.state).state);
       final container = createContainer();
       final listener = Listener<AsyncValue<int>>();
+      final controller = StreamController<int>();
+      addTearDown(controller.close);
 
       container.listen(provider, (prev, value) {});
 
@@ -86,19 +80,12 @@ void main() {
         const AsyncData<int>(42),
       );
 
-      final controller = StreamController<int>();
-      addTearDown(controller.close);
       container.read(dep.state).state = controller.stream;
-
       container.listen(provider, listener, fireImmediately: true);
 
       verifyOnly(
         listener,
-        listener(
-          null,
-          const AsyncLoading<int>()
-              .copyWithPrevious(const AsyncValue<int>.data(42)),
-        ),
+        listener(null, const AsyncLoading<int>()),
       );
 
       container.read(dep.state).state = Stream.value(21);
