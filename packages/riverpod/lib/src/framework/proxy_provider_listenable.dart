@@ -97,6 +97,7 @@ class ProviderElementProxy<Input, Output>
   Output read(Node node) {
     final element = node.readProviderElement(_origin);
     element.flush();
+    element.mayNeedDispose();
     return lense(element, null).value;
   }
 
