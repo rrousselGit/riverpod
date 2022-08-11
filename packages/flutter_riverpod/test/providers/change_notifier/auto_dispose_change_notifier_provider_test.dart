@@ -82,8 +82,6 @@ void main() {
           unorderedEquals(<Object>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider.notifier)
           ]),
         );
         expect(root.getAllProviderElements(), isEmpty);
@@ -128,8 +126,6 @@ void main() {
           unorderedEquals(<Object>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider.notifier)
           ]),
         );
         expect(root.getAllProviderElements(), isEmpty);
