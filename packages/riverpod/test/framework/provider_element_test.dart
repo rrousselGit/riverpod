@@ -372,8 +372,14 @@ void main() {
           'resets AsyncValue.isRefreshing after cacheTime expires, without notifying listeners',
           () {
         fakeAsync((async) {
-          final provider = StateProvider.autoDispose(
-            (ref) => const AsyncValue<int>.data(42),
+          late StreamProviderRef<int> ref;
+          final provider = StreamProvider.autoDispose<int>(
+            (r) {
+              ref = r;
+              final controller = StreamController<int>(sync: true);
+              ref.onDispose(controller.close);
+              return controller.stream;
+            },
           );
           final container = createContainer(
             cacheTime: const Duration(seconds: 5),
@@ -381,9 +387,14 @@ void main() {
           final listener = Listener<AsyncValue<int>>();
 
           final sub = container.listen(provider, listener);
-          verifyZeroInteractions(listener);
+          ref.state = const AsyncData(42);
 
-          container.read(provider.notifier).state = const AsyncLoading();
+          verifyOnly(
+            listener,
+            listener(const AsyncLoading<int>(), const AsyncData(42)),
+          );
+
+          ref.state = const AsyncLoading<int>();
 
           verifyOnly(
             listener,
@@ -413,8 +424,14 @@ void main() {
 
       test('refresh timer when new values are emitted', () {
         fakeAsync((async) {
-          final provider = StateProvider.autoDispose(
-            (ref) => const AsyncValue<int>.data(42),
+          late StreamProviderRef<int> ref;
+          final provider = StreamProvider.autoDispose<int>(
+            (r) {
+              ref = r;
+              final controller = StreamController<int>(sync: true);
+              ref.onDispose(controller.close);
+              return controller.stream;
+            },
           );
           final container = createContainer(
             cacheTime: const Duration(seconds: 5),
@@ -422,7 +439,8 @@ void main() {
 
           container.listen(provider, (prev, next) {}); // initialize data
 
-          container.read(provider.notifier).state = const AsyncLoading();
+          ref.state = const AsyncData(42);
+          ref.state = const AsyncLoading<int>();
 
           expect(
             container.read(provider),
@@ -436,8 +454,8 @@ void main() {
             const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
           );
 
-          container.read(provider.notifier).state = const AsyncData(21);
-          container.read(provider.notifier).state = const AsyncLoading();
+          ref.state = const AsyncData(21);
+          ref.state = const AsyncLoading<int>();
 
           async.elapse(const Duration(seconds: 3));
 
@@ -457,8 +475,14 @@ void main() {
 
       test('refresh timer when AsyncErrors are emitted', () {
         fakeAsync((async) {
-          final provider = StateProvider.autoDispose(
-            (ref) => const AsyncValue<int>.error(42),
+          late StreamProviderRef<int> ref;
+          final provider = StreamProvider.autoDispose<int>(
+            (r) {
+              ref = r;
+              final controller = StreamController<int>(sync: true);
+              ref.onDispose(controller.close);
+              return controller.stream;
+            },
           );
           final container = createContainer(
             cacheTime: const Duration(seconds: 5),
@@ -466,7 +490,8 @@ void main() {
 
           container.listen(provider, (prev, next) {}); // initialize data
 
-          container.read(provider.notifier).state = const AsyncLoading();
+          ref.state = const AsyncError<int>(42);
+          ref.state = const AsyncLoading();
 
           expect(
             container.read(provider),
@@ -480,8 +505,8 @@ void main() {
             const AsyncLoading<int>().copyWithPrevious(const AsyncError(42)),
           );
 
-          container.read(provider.notifier).state = const AsyncError(21);
-          container.read(provider.notifier).state = const AsyncLoading();
+          ref.state = const AsyncError(21);
+          ref.state = const AsyncLoading();
 
           async.elapse(const Duration(seconds: 3));
 

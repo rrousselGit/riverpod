@@ -129,19 +129,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
       return true;
     }(), '');
     final previousResult = getState();
-
-    Result<State> newResult;
-    if (newState is AsyncValue && previousResult != null) {
-      final previousState = previousResult.requireState;
-
-      newResult = Result<State>.data(
-        newState.copyWithPrevious(previousState as AsyncValue) as State,
-      );
-    } else {
-      newResult = Result.data(newState);
-    }
-
-    final result = _state = newResult;
+    final result = _state = ResultData(newState);
 
     if (_didBuild) {
       _notifyListeners(result, previousResult);

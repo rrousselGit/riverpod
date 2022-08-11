@@ -63,6 +63,20 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   set state(AsyncValue<T> state) => setState(state);
 
   @override
+  void setState(AsyncValue<T> newState) {
+    AsyncValue<T> stateWithPrevious;
+
+    final previous = getState()?.requireState;
+    if (previous != null) {
+      stateWithPrevious = newState.copyWithPrevious(previous);
+    } else {
+      stateWithPrevious = newState;
+    }
+
+    super.setState(stateWithPrevious);
+  }
+
+  @override
   void create() {
     // TODO add a Proxy variant that accepts T instead of Result<T>
     _streamNotifier.result ??= Result.data(_streamController.stream);

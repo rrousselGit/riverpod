@@ -213,6 +213,17 @@ Future<void> main() async {
     });
   });
 
+  test('Can ref.read autoDispose selectors inside non-autoDispose providers',
+      () {
+    final autoDispose = Provider.autoDispose<int>((ref) => 0);
+
+    Provider((ref) {
+      ref.read(
+        autoDispose.select((value) => value),
+      );
+    });
+  });
+
   group(
       'emits compilation error when passing an autoDispose provider to a non-autoDispose provider',
       () {
@@ -237,22 +248,6 @@ final autoDispose = Provider.autoDispose<int>((ref) => 0);
 
 final alwaysAlive = Provider((ref) {
   ref.watch(
-    // expect-error: ARGUMENT_TYPE_NOT_ASSIGNABLE
-    autoDispose
-      .select((value) => value),
-  );
-});
-'''), compiles);
-    });
-
-    test('to ref.read when using selectors', () {
-      expect(library.withCode('''
-import 'package:riverpod/riverpod.dart';
-
-final autoDispose = Provider.autoDispose<int>((ref) => 0);
-
-final alwaysAlive = Provider((ref) {
-  ref.read(
     // expect-error: ARGUMENT_TYPE_NOT_ASSIGNABLE
     autoDispose
       .select((value) => value),

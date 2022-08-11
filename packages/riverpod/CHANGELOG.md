@@ -10,6 +10,8 @@
   appears inside `ProviderObserver`.
 - The `Reader` typedef is removed. Use `Ref` instead.
 - `ProviderListener` is removed. Used `ref.listen` instead.
+- Providers other than `FutureProvider`/`StreamProvider` no-longer override `AsyncValue`s
+  to set `AsyncValue.isRefreshing` when an `AsyncLoading` is emitted.
 
 Non-breaking changes:
 
