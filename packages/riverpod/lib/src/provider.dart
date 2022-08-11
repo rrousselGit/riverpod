@@ -7,7 +7,7 @@ part 'provider/auto_dispose.dart';
 part 'provider/base.dart';
 
 abstract class _ProviderBase<State> extends ProviderBase<State>
-    with OverrideWithValueMixin {
+    with OverrideWithValueMixin<State> {
   /// {@macro riverpod.provider}
   _ProviderBase({
     required this.dependencies,

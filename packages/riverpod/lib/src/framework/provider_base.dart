@@ -305,12 +305,12 @@ extension OverrideWithProviderExtension<State,
   /// );
   /// ```
   /// {@endtemplate}
-  Override overrideWithProvider(ProviderType value) {
+  Override overrideWithProvider(ProviderType override) {
     assert(
-      value.dependencies == null,
+      override.dependencies == null,
       'When using overrideWithProvider, the override cannot specify `dependencies`.',
     );
 
-    return ProviderOverride(origin: this, override: value);
+    return ProviderOverride(origin: this, override: override);
   }
 }

@@ -7,24 +7,24 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
-  // test('throw if overrideWithProvider returns a provider with dependencies',
-  //     () {
-  //   final family = Provider.family<int, int>((ref, _) => 0);
-  //   final a = Provider((ref) => 0);
+  test('throw if overrideWithProvider returns a provider with dependencies',
+      () {
+    final family = Provider.family<int, int>((ref, _) => 0);
+    final a = Provider((ref) => 0);
 
-  //   final container = createContainer(
-  //     overrides: [
-  //       family.overrideWithProvider(
-  //         (argument) => Provider((ref) => 0, dependencies: [a]),
-  //       ),
-  //     ],
-  //   );
+    final container = createContainer(
+      overrides: [
+        family.overrideWithProvider(
+          (argument) => Provider((ref) => 0, dependencies: [a]),
+        ),
+      ],
+    );
 
-  //   expect(
-  //     () => container.read(family(42)),
-  //     throwsA(isA<AssertionError>()),
-  //   );
-  // });
+    expect(
+      () => container.read(family(42)),
+      throwsA(isA<AssertionError>()),
+    );
+  });
 
   test(
       'does not re-initialize a family if read by a child container after the provider was initialized',
@@ -147,17 +147,17 @@ void main() {
     );
   });
 
-  // test('family override', () {
-  //   final family = Provider.family<String, int>((ref, a) => 'Hello $a');
-  //   final container = createContainer(overrides: [
-  //     // Provider overrides always takes over family overrides
-  //     family(84).overrideWithValue('Bonjour 84'),
-  //     family,
-  //     family(21).overrideWithValue('Hi 21'),
-  //   ]);
+  test('family override', () {
+    final family = Provider.family<String, int>((ref, a) => 'Hello $a');
+    final container = createContainer(overrides: [
+      // Provider overrides always takes over family overrides
+      family(84).overrideWithValue('Bonjour 84'),
+      family,
+      family(21).overrideWithValue('Hi 21'),
+    ]);
 
-  //   expect(container.read(family(21)), 'Hi 21');
-  //   expect(container.read(family(84)), 'Bonjour 84');
-  //   expect(container.read(family(42)), 'Hello 42');
-  // });
+    expect(container.read(family(21)), 'Hi 21');
+    expect(container.read(family(84)), 'Bonjour 84');
+    expect(container.read(family(42)), 'Hello 42');
+  });
 }

@@ -75,7 +75,6 @@ void main() {
       });
     });
 
-/*
     test(
         'when using overrideWithProvider, handles overriding with a more specific provider type',
         () {
@@ -179,7 +178,7 @@ void main() {
           throwsA(isAssertionError),
         );
       });
-    });*/
+    });
 
     test(
         'after a child container is disposed, ref.watch keeps working on providers associated with the ancestor container',
