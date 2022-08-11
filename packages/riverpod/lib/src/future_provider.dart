@@ -121,7 +121,34 @@ abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
   @override
   final List<ProviderOrFamily>? dependencies;
 
+  /// Obtains the [Future] associated with a [FutureProvider].
+  ///
+  /// The instance of [Future] obtained may change over time, if the provider
+  /// was recreated (such as when using [Ref.watch]).
+  ///
+  /// This provider allows using `async`/`await` to easily combine
+  /// [FutureProvider] together:
+  ///
+  /// ```dart
+  /// final configsProvider = FutureProvider((ref) async => Configs());
+  ///
+  /// final productsProvider = FutureProvider((ref) async {
+  ///   // Wait for the configurations to resolve
+  ///   final configs = await ref.watch(configsProvider.future);
+  ///
+  ///   // Do something with the result
+  ///   return await http.get('${configs.host}/products');
+  /// });
+  /// ```
   ProviderListenable<Future<T>> get future;
+
+  /// Obtains a [Stream] representation of this provider.
+  ///
+  /// The stream will not emit a value until the future returned by this [FutureProvider]
+  /// resolves at least once.
+  /// Errors inside the providers will be sent to the stream.
+  ///
+  /// If you want to listen to this provider, consider using `ref.listen(futureProvider)` instead.
   ProviderListenable<Stream<T>> get stream;
 
   FutureOr<T> _create(covariant FutureProviderElement<T> ref);

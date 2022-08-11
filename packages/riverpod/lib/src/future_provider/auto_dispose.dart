@@ -1,11 +1,15 @@
 part of '../future_provider.dart';
 
+/// {@macro riverpod.providerrefbase}
+/// - [FutureProviderRef.state], the value currently exposed by this provider.
 abstract class AutoDisposeFutureProviderRef<State>
     extends FutureProviderRef<State>
     implements AutoDisposeRef<AsyncValue<State>> {}
 
+/// {@macro riverpod.futureprovider}
 class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
     with AsyncSelector<T> {
+  /// {@macro riverpod.futureprovider}
   AutoDisposeFutureProvider(
     this._createFn, {
     super.name,
@@ -16,6 +20,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
     super.disposeDelay,
   });
 
+  /// {@macro riverpod.family}
   static const family = AutoDisposeFutureProviderFamily.new;
 
   final FutureOr<T> Function(AutoDisposeFutureProviderRef<T> ref) _createFn;
@@ -36,16 +41,19 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
   late final Refreshable<Stream<T>> stream = _stream(this);
 }
 
+/// The [ProviderElementBase] of [AutoDisposeFutureProvider]
 class AutoDisposeFutureProviderElement<T> = FutureProviderElement<T>
     with AutoDisposeProviderElementMixin<AsyncValue<T>>
     implements AutoDisposeFutureProviderRef<T>;
 
+/// The [Family] of an [AutoDisposeFutureProvider]
 class AutoDisposeFutureProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     AutoDisposeFutureProviderRef<R>,
     AsyncValue<R>,
     Arg,
     FutureOr<R>,
     AutoDisposeFutureProvider<R>> {
+  /// The [Family] of an [AutoDisposeFutureProvider]
   AutoDisposeFutureProviderFamily(
     super.create, {
     super.name,

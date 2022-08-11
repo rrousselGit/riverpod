@@ -14,8 +14,10 @@ abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
   set state(AsyncValue<State> newState);
 }
 
+/// {@macro riverpod.futureprovider}
 class FutureProvider<T> extends _FutureProviderBase<T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
+  /// {@macro riverpod.futureprovider}
   FutureProvider(
     this._createFn, {
     super.name,
@@ -24,7 +26,10 @@ class FutureProvider<T> extends _FutureProviderBase<T>
     super.dependencies,
   }) : super(cacheTime: null, disposeDelay: null);
 
+  /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeFutureProviderBuilder();
+
+  /// {@macro riverpod.family}
   static const family = FutureProviderFamilyBuilder();
 
   final FutureOr<T> Function(FutureProviderRef<T> ref) _createFn;
@@ -42,6 +47,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   FutureProviderElement<T> createElement() => FutureProviderElement._(this);
 }
 
+/// The element of a [FutureProvider]
 class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     implements FutureProviderRef<T> {
   FutureProviderElement._(_FutureProviderBase<T> provider) : super(provider);
@@ -130,8 +136,10 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   }
 }
 
+/// The [Family] of a [FutureProvider]
 class FutureProviderFamily<R, Arg> extends FamilyBase<FutureProviderRef<R>,
     AsyncValue<R>, Arg, FutureOr<R>, FutureProvider<R>> {
+  /// The [Family] of a [FutureProvider]
   FutureProviderFamily(
     super.create, {
     super.name,
