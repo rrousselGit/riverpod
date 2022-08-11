@@ -144,43 +144,50 @@ void main() {
     verifyZeroInteractions(listener);
   });
 
-  // test(
-  //     'catching errors in the future is not necessary if the error is coming from AsyncError',
-  //     () async {
-  //   final container = createContainer();
-  //   final provider = Provider((ref) => const AsyncError<int>(0));
+  test(
+      'catching errors in the future is not necessary if the error is coming from AsyncError',
+      () async {
+    final container = createContainer();
+    final provider = FutureProvider<int>((ref) => throw StateError('err'));
 
-  //   container.listen(
-  //     provider.selectAsync((data) => data.isEven),
-  //     (prev, next) {},
-  //     fireImmediately: true,
-  //   );
+    container.listen(
+      provider.selectAsync((data) => data.isEven),
+      (prev, next) {},
+      fireImmediately: true,
+    );
 
-  //   // If somehow the future failed, it would be sent to the zone,
-  //   // making the test fail
-  // });
+    // If somehow the future failed, it would be sent to the zone,
+    // making the test fail
+  });
 
-  // test('handles multiple AsyncLoading at once then data', () async {
-  //   final container = createContainer();
-  //   final provider = StateProvider((ref) => const AsyncValue<int>.loading());
+  test('handles multiple AsyncLoading at once then data', () async {
+    final container = createContainer();
+    late FutureProviderRef<int> ref;
+    final provider = FutureProvider<int>((r) {
+      ref = r;
+      final completer = Completer<int>();
+      ref.onDispose(() => completer.complete(42));
 
-  //   final sub = container.listen(
-  //     provider.selectAsync((data) => data + 40),
-  //     (prev, next) {},
-  //   );
+      return completer.future;
+    });
 
-  //   expect(sub.read(), completion(42));
+    final sub = container.listen(
+      provider.selectAsync((data) => data + 40),
+      (prev, next) {},
+    );
 
-  //   container.read(provider.notifier).state = const AsyncLoading<int>()
-  //       .copyWithPrevious(const AsyncValue<int>.data(0));
-  //   container.read(provider.notifier).state = const AsyncLoading<int>()
-  //       .copyWithPrevious(const AsyncError<int>('err'));
-  //   container.read(provider.notifier).state = const AsyncLoading<int>();
+    expect(sub.read(), completion(42));
 
-  //   container.read(provider.notifier).state = const AsyncData(2);
+    ref.state = const AsyncLoading<int>()
+        .copyWithPrevious(const AsyncValue<int>.data(0));
+    ref.state = const AsyncLoading<int>()
+        .copyWithPrevious(const AsyncError<int>('err'));
+    ref.state = const AsyncLoading<int>();
 
-  //   // the previous unawaited `completion` should resolve with 2+40
-  // });
+    ref.state = const AsyncData(2);
+
+    // the previous unawaited `completion` should resolve with 2+40
+  });
 
   test('can watch async selectors', () async {
     final container = createContainer();
