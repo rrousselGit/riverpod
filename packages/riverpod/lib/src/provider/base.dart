@@ -39,7 +39,7 @@ class Provider<State> extends _ProviderBase<State>
   State _create(ProviderElement<State> ref) => _createFn(ref);
 
   @override
-  ProviderElement<State> createElement() => ProviderElement(this);
+  ProviderElement<State> createElement() => ProviderElement._(this);
 }
 
 /// {@template riverpod.provider}
@@ -255,7 +255,7 @@ class Provider<State> extends _ProviderBase<State>
 class ProviderElement<State> extends ProviderElementBase<State>
     implements ProviderRef<State> {
   /// A [ProviderElementBase] for [Provider]
-  ProviderElement(ProviderBase<State> provider) : super(provider);
+  ProviderElement._(_ProviderBase<State> provider) : super(provider);
 
   @override
   State get state => requireState;
@@ -276,6 +276,7 @@ class ProviderElement<State> extends ProviderElementBase<State>
 /// {@endtemplate}
 class ProviderFamily<R, Arg>
     extends FamilyBase<ProviderRef<R>, R, Arg, R, Provider<R>> {
+  /// Instantiate a [ProviderFamily], for creating a [Provider] from external values.
   ProviderFamily(
     super.create, {
     super.name,

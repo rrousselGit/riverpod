@@ -26,7 +26,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
 
   @override
   AutoDisposeFutureProviderElement<T> createElement() {
-    return AutoDisposeFutureProviderElement(this);
+    return AutoDisposeFutureProviderElement._(this);
   }
 
   @override

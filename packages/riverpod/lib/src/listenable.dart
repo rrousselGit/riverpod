@@ -1,8 +1,9 @@
 import 'package:meta/meta.dart';
 
+import 'framework.dart' show ProviderElementBase;
 import 'result.dart';
 
-/// Listener for [_ChangeNotifier]
+/// Listener for [_ValueListenable]
 class _Listener<T> {
   _Listener._(this.onValue, this.onError, this.onDependencyMayHaveChanged);
 
@@ -11,7 +12,11 @@ class _Listener<T> {
   final void Function()? onDependencyMayHaveChanged;
 }
 
-class ValueNotifier<T> extends _ChangeNotifier<T> {
+/// A listenable object used by [ProviderElementBase] as a mean to subscribe
+/// to subsets of the state exposed by a provider.
+class ProxyElementValueNotifier<T> extends _ValueListenable<T> {
+  /// Directly obtain the value exposed, grafully handling cases where
+  /// [result] is null or in error state.
   T get value {
     final result = _result;
     if (result == null) {
@@ -20,8 +25,11 @@ class ValueNotifier<T> extends _ChangeNotifier<T> {
     return result.requireState;
   }
 
-  Result<T>? _result;
+  /// The state associated with this notifier.
+  ///
+  /// Modifying this property will notify listeners.
   Result<T>? get result => _result;
+  Result<T>? _result;
   set result(Result<T>? value) {
     final previous = _result;
     _result = value;
@@ -31,12 +39,14 @@ class ValueNotifier<T> extends _ChangeNotifier<T> {
     );
   }
 
-  void unsafeSetResultWithoutNotifyingListeners(Result<T>? value) {
+  /// Updates the [result] of this [ProxyElementValueNotifier] without invoking listeners.
+  // ignore: use_setters_to_change_properties, non_constant_identifier_names
+  void UNSAFE_setResultWithoutNotifyingListeners(Result<T>? value) {
     _result = value;
   }
 }
 
-class _ChangeNotifier<T> {
+class _ValueListenable<T> {
   int _count = 0;
   // The _listeners is intentionally set to a fixed-length _GrowableList instead
   // of const [].
@@ -54,7 +64,7 @@ class _ChangeNotifier<T> {
   int _reentrantlyRemovedListeners = 0;
   bool _debugDisposed = false;
 
-  static bool debugAssertNotDisposed(_ChangeNotifier notifier) {
+  static bool debugAssertNotDisposed(_ValueListenable notifier) {
     assert(
       !notifier._debugDisposed,
       'A ${notifier.runtimeType} was used after being disposed.\n'
@@ -97,7 +107,7 @@ class _ChangeNotifier<T> {
   /// (e.g. in response to a notification), it will still be called again. If,
   /// on the other hand, it is removed as many times as it was registered, then
   /// it will no longer be called. This odd behavior is the result of the
-  /// [_ChangeNotifier] not being able to determine which listener is being
+  /// [_ValueListenable] not being able to determine which listener is being
   /// removed, since they are identical, therefore it will conservatively still
   /// call all the listeners when it knows that any are still registered.
   ///
@@ -115,7 +125,7 @@ class _ChangeNotifier<T> {
     required void Function(Object, StackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
   }) {
-    assert(_ChangeNotifier.debugAssertNotDisposed(this), '');
+    assert(_ValueListenable.debugAssertNotDisposed(this), '');
 
     final listener = _Listener._(onChange, onError, onDependencyMayHaveChanged);
     if (_count == _listeners.length) {
@@ -242,7 +252,7 @@ class _ChangeNotifier<T> {
   @protected
   @pragma('vm:notify-debugger-on-exception')
   void _notifyListeners(void Function(_Listener<T> listener) notify) {
-    assert(_ChangeNotifier.debugAssertNotDisposed(this), '');
+    assert(_ValueListenable.debugAssertNotDisposed(this), '');
     if (_count == 0) {
       return;
     }

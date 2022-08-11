@@ -32,8 +32,8 @@ class ProviderElementProxy<Input, Output>
   const ProviderElementProxy(this._origin, this.lense);
 
   final ProviderBase<Input> _origin;
-  final ValueNotifier<Output> Function(ProviderElementBase<Input> element)
-      lense;
+  final ProxyElementValueNotifier<Output> Function(
+      ProviderElementBase<Input> element) lense;
 
   @override
   ProviderSubscription<Output> addListener(

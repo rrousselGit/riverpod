@@ -28,7 +28,7 @@ class StateProvider<T> extends _StateProviderBase<T>
   T _create(StateProviderElement<T> ref) => _createFn(ref);
 
   @override
-  StateProviderElement<T> createElement() => StateProviderElement(this);
+  StateProviderElement<T> createElement() => StateProviderElement._(this);
 
   @override
   late final AlwaysAliveRefreshable<StateController<T>> notifier =
@@ -40,13 +40,13 @@ class StateProvider<T> extends _StateProviderBase<T>
 
 class StateProviderElement<T> extends ProviderElementBase<T>
     implements StateProviderRef<T> {
-  StateProviderElement(_StateProviderBase<T> provider) : super(provider);
+  StateProviderElement._(_StateProviderBase<T> provider) : super(provider);
 
   @override
   StateController<T> get controller => _controllerNotifier.value;
-  final _controllerNotifier = ValueNotifier<StateController<T>>();
+  final _controllerNotifier = ProxyElementValueNotifier<StateController<T>>();
 
-  final _stateNotifier = ValueNotifier<StateController<T>>();
+  final _stateNotifier = ProxyElementValueNotifier<StateController<T>>();
 
   void Function()? _removeListener;
 
@@ -78,7 +78,7 @@ class StateProviderElement<T> extends ProviderElementBase<T>
   @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ValueNotifier element) notifierVisitor,
+    required void Function(ProxyElementValueNotifier element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

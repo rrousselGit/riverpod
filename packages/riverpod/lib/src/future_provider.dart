@@ -4,7 +4,9 @@ import 'builders.dart';
 import 'common.dart';
 import 'framework.dart';
 import 'listenable.dart';
+import 'provider.dart' show Provider;
 import 'result.dart';
+import 'stream_provider.dart' show StreamProvider;
 import 'synchronous_future.dart';
 
 part 'future_provider/auto_dispose.dart';
@@ -106,9 +108,6 @@ ProviderElementProxy<AsyncValue<T>, Stream<T>> _stream<T>(
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
-mixin _FutureProviderElementMixin<State>
-    on ProviderElementBase<AsyncValue<State>> {}
-
 abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
   _FutureProviderBase({
     required this.dependencies,

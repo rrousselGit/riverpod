@@ -25,7 +25,7 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
 
   @override
   AutoDisposeStateProviderElement<T> createElement() {
-    return AutoDisposeStateProviderElement(this);
+    return AutoDisposeStateProviderElement._(this);
   }
 
   @override

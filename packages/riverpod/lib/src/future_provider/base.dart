@@ -1,7 +1,7 @@
 part of '../future_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [ProviderRef.state], the value currently exposed by this provider.
+/// - [state], the value currently exposed by this provider.
 abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
   /// Obtains the state currently exposed by this provider.
   ///
@@ -39,15 +39,15 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   FutureOr<T> _create(FutureProviderElement<T> ref) => _createFn(ref);
 
   @override
-  FutureProviderElement<T> createElement() => FutureProviderElement(this);
+  FutureProviderElement<T> createElement() => FutureProviderElement._(this);
 }
 
 class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     implements FutureProviderRef<T> {
-  FutureProviderElement(_FutureProviderBase<T> provider) : super(provider);
+  FutureProviderElement._(_FutureProviderBase<T> provider) : super(provider);
 
-  final _futureNotifier = ValueNotifier<Future<T>>();
-  final _streamNotifier = ValueNotifier<Stream<T>>();
+  final _futureNotifier = ProxyElementValueNotifier<Future<T>>();
+  final _streamNotifier = ProxyElementValueNotifier<Stream<T>>();
   final _streamController = StreamController<T>.broadcast();
 
   @override
@@ -113,7 +113,7 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ValueNotifier element) notifierVisitor,
+    required void Function(ProxyElementValueNotifier element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

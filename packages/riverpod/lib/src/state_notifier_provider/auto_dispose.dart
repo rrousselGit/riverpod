@@ -30,7 +30,7 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
 
   @override
   AutoDisposeStateNotifierProviderElement<NotifierT, T> createElement() {
-    return AutoDisposeStateNotifierProviderElement(this);
+    return AutoDisposeStateNotifierProviderElement._(this);
   }
 
   @override

@@ -32,8 +32,9 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   }
 
   @override
-  StateNotifierProviderElement<NotifierT, T> createElement() =>
-      StateNotifierProviderElement(this);
+  StateNotifierProviderElement<NotifierT, T> createElement() {
+    return StateNotifierProviderElement._(this);
+  }
 
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier = _notifier(this);
@@ -42,13 +43,13 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
 class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
     extends ProviderElementBase<T>
     implements StateNotifierProviderRef<NotifierT, T> {
-  StateNotifierProviderElement(
+  StateNotifierProviderElement._(
     _StateNotifierProviderBase<NotifierT, T> provider,
   ) : super(provider);
 
   @override
   NotifierT get notifier => _notifierNotifier.value;
-  final _notifierNotifier = ValueNotifier<NotifierT>();
+  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
 
   void Function()? _removeListener;
 
@@ -83,7 +84,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
   @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ValueNotifier element) notifierVisitor,
+    required void Function(ProxyElementValueNotifier element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

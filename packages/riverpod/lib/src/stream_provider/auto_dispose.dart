@@ -25,7 +25,7 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
 
   @override
   AutoDisposeStreamProviderElement<T> createElement() {
-    return AutoDisposeStreamProviderElement(this);
+    return AutoDisposeStreamProviderElement._(this);
   }
 
   @override

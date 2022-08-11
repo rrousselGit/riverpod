@@ -157,6 +157,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// This is not meant for public consumption. Instead, public API should use
   /// [readSelf].
   @protected
+  @visibleForTesting
   Result<State>? getState() => _state;
 
   /// Read the current value of a provider and:
@@ -735,7 +736,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// [listen] multiple times to an element, it may be visited multiple times.
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ValueNotifier element) notifierVisitor,
+    required void Function(ProxyElementValueNotifier element) notifierVisitor,
   }) {
     for (var i = 0; i < _providerDependents.length; i++) {
       elementVisitor(_providerDependents[i]);

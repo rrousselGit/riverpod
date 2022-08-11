@@ -1,7 +1,6 @@
 part of '../provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [controller], the [StateController] currently exposed by this provider.
 abstract class AutoDisposeProviderRef<State> extends ProviderRef<State>
     implements AutoDisposeRef<State> {}
 
@@ -23,7 +22,7 @@ class AutoDisposeProvider<T> extends _ProviderBase<T> {
 
   @override
   AutoDisposeProviderElement<T> createElement() {
-    return AutoDisposeProviderElement(this);
+    return AutoDisposeProviderElement._(this);
   }
 }
 

@@ -1,7 +1,7 @@
 part of '../stream_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [ProviderRef.state], the value currently exposed by this provider.
+/// - [StreamProviderRef.state], the value currently exposed by this provider.
 abstract class StreamProviderRef<State> implements Ref<AsyncValue<State>> {
   /// Obtains the state currently exposed by this provider.
   ///
@@ -39,17 +39,17 @@ class StreamProvider<T> extends _StreamProviderBase<T>
   Stream<T> _create(StreamProviderElement<T> ref) => _createFn(ref);
 
   @override
-  StreamProviderElement<T> createElement() => StreamProviderElement(this);
+  StreamProviderElement<T> createElement() => StreamProviderElement._(this);
 }
 
 class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     implements StreamProviderRef<T> {
-  StreamProviderElement(_StreamProviderBase<T> provider) : super(provider);
+  StreamProviderElement._(_StreamProviderBase<T> provider) : super(provider);
 
-  final _futureNotifier = ValueNotifier<Future<T>>();
+  final _futureNotifier = ProxyElementValueNotifier<Future<T>>();
   Completer<T>? _completer;
 
-  final _streamNotifier = ValueNotifier<Stream<T>>();
+  final _streamNotifier = ProxyElementValueNotifier<Stream<T>>();
   final StreamController<T> _streamController = StreamController<T>.broadcast();
 
   StreamSubscription<T>? _streamSubscription;
@@ -102,7 +102,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
           // TODO test that ref.read(p.future) after an event is emitted
           // obtains a SynchronousFuture.
           // Yet listeners of .future added before the first event aren't notified
-          _futureNotifier.unsafeSetResultWithoutNotifyingListeners(
+          _futureNotifier.UNSAFE_setResultWithoutNotifyingListeners(
             Result.data(SynchronousFuture(event)),
           );
         } else {
@@ -155,7 +155,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ValueNotifier element) notifierVisitor,
+    required void Function(ProxyElementValueNotifier element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
