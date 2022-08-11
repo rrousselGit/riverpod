@@ -1,5 +1,3 @@
-import 'src/framework.dart';
-
 export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
 
 export 'src/common.dart'
@@ -8,8 +6,6 @@ export 'src/common.dart'
 export 'src/framework.dart'
     show
         Create,
-        // ignore: deprecated_member_use_from_same_package
-        Reader,
         AlwaysAliveProviderBase,
         Family,
         CircularDependencyError,
@@ -30,7 +26,9 @@ export 'src/framework.dart'
         FamilyCreate,
         KeepAliveLink,
         ProviderOrFamily,
-        OverrideWithProviderExtension;
+        OverrideWithProviderExtension,
+        AlwaysAliveRefreshable,
+        Refreshable;
 
 export 'src/future_provider.dart'
     show
@@ -39,7 +37,9 @@ export 'src/future_provider.dart'
         FutureProvider,
         FutureProviderFamily,
         AutoDisposeFutureProviderRef,
-        FutureProviderRef;
+        FutureProviderRef,
+        AutoDisposeFutureProviderElement,
+        FutureProviderElement;
 
 export 'src/provider.dart'
     show
@@ -61,9 +61,9 @@ export 'src/state_notifier_provider.dart'
         StateNotifierProvider,
         StateNotifierProviderFamily,
         AutoDisposeStateNotifierProviderRef,
-        StateNotifierProviderRef
-    // StateNotifierProviderOverrideMixin
-    ;
+        StateNotifierProviderRef,
+        AutoDisposeStateNotifierProviderElement,
+        StateNotifierProviderElement;
 
 export 'src/state_provider.dart'
     show
@@ -83,4 +83,6 @@ export 'src/stream_provider.dart'
         StreamProvider,
         StreamProviderFamily,
         AutoDisposeStreamProviderRef,
-        StreamProviderRef;
+        StreamProviderRef,
+        AutoDisposeStreamProviderElement,
+        StreamProviderElement;
