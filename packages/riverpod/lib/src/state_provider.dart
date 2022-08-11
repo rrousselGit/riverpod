@@ -52,8 +52,6 @@ abstract class _StateProviderBase<T> extends ProviderBase<T> {
   ProviderListenable<StateController<T>> get notifier;
   ProviderListenable<StateController<T>> get state;
 
-  // TODO remove originController
-
   T _create(covariant StateProviderElement<T> ref);
 
   @override

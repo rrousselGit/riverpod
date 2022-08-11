@@ -271,7 +271,7 @@ class ProviderElement<State> extends ProviderElementBase<State>
   }
 }
 
-/// The [Family] of [ProviderFamily]
+/// The [Family] of [Provider]
 class ProviderFamily<R, Arg>
     extends FamilyBase<ProviderRef<R>, R, Arg, R, Provider<R>> {
   /// The [Family] of [ProviderFamily]

@@ -5,7 +5,9 @@ part of '../state_provider.dart';
 abstract class AutoDisposeStateProviderRef<State>
     extends StateProviderRef<State> implements AutoDisposeRef<State> {}
 
+/// {@macro riverpod.stateprovider}
 class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
+  /// {@macro riverpod.stateprovider}
   AutoDisposeStateProvider(
     this._createFn, {
     super.name,
@@ -16,6 +18,7 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
     super.disposeDelay,
   });
 
+  /// {@macro riverpod.family}
   static const family = AutoDisposeStateProviderFamily.new;
 
   final T Function(AutoDisposeStateProviderRef<T> ref) _createFn;
@@ -35,12 +38,15 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
   late final Refreshable<StateController<T>> state = _state(this);
 }
 
+/// The element of [StateProvider].
 class AutoDisposeStateProviderElement<T> = StateProviderElement<T>
     with AutoDisposeProviderElementMixin<T>
     implements AutoDisposeStateProviderRef<T>;
 
+/// The [Family] of [StateProvider].
 class AutoDisposeStateProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     AutoDisposeStateProviderRef<R>, R, Arg, R, AutoDisposeStateProvider<R>> {
+  /// The [Family] of [StateProvider].
   AutoDisposeStateProviderFamily(
     super.create, {
     super.name,

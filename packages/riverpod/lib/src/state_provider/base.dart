@@ -9,8 +9,42 @@ abstract class StateProviderRef<State> implements Ref<State> {
   StateController<State> get controller;
 }
 
+/// {@template riverpod.stateprovider}
+/// A provider that exposes a value that can be modified from outside.
+///
+/// It can be useful for very simple states, like a filter or the currently
+/// selected item – which can then be combined with other providers or accessed
+/// in multiple screens.
+///
+/// The following code shows a list of products, and allows selecting
+/// a product by tapping on it.
+///
+/// ```dart
+/// final selectedProductIdProvider = StateProvider<String?>((ref) => null);
+/// final productsProvider = StateNotifierProvider<ProductsNotifier, List<Product>>((ref) => ProductsNotifier());
+///
+/// Widget build(BuildContext context, WidgetRef ref) {
+///   final List<Product> products = ref.watch(productsProvider);
+///   final selectedProductId = ref.watch(selectedProductIdProvider);
+///
+///   return ListView(
+///     children: [
+///       for (final product in products)
+///         GestureDetector(
+///           onTap: () => ref.read(selectedProductIdProvider.notifier).state = product.id,
+///           child: ProductItem(
+///             product: product,
+///             isSelected: selectedProductId.state == product.id,
+///           ),
+///         ),
+///     ],
+///   );
+/// }
+/// ```
+/// {@endtemplate}
 class StateProvider<T> extends _StateProviderBase<T>
     with AlwaysAliveProviderBase<T> {
+  /// {@macro riverpod.stateprovider}
   StateProvider(
     this._createFn, {
     super.name,
@@ -19,7 +53,10 @@ class StateProvider<T> extends _StateProviderBase<T>
     super.dependencies,
   }) : super(cacheTime: null, disposeDelay: null);
 
+  /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStateProviderBuilder();
+
+  /// {@macro riverpod.family}
   static const family = StateProviderFamilyBuilder();
 
   final T Function(StateProviderRef<T> ref) _createFn;
@@ -38,6 +75,7 @@ class StateProvider<T> extends _StateProviderBase<T>
   late final AlwaysAliveRefreshable<StateController<T>> state = _state(this);
 }
 
+/// The element of [StateProvider].
 class StateProviderElement<T> extends ProviderElementBase<T>
     implements StateProviderRef<T> {
   StateProviderElement._(_StateProviderBase<T> provider) : super(provider);
@@ -89,8 +127,10 @@ class StateProviderElement<T> extends ProviderElementBase<T>
   }
 }
 
+/// The [Family] of [StateProvider].
 class StateProviderFamily<R, Arg>
     extends FamilyBase<StateProviderRef<R>, R, Arg, R, StateProvider<R>> {
+  /// The [Family] of [StateProvider].
   StateProviderFamily(
     super.create, {
     super.name,
