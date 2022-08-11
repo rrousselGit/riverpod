@@ -343,31 +343,9 @@ void main() {
       await expectLater(container.read(dependent), completion(21));
       expect(callCount, 2);
     });
-
-    //   test('.name is the listened-to name.future', () {
-    //     expect(
-    //       FutureProvider((ref) async {}, name: 'hey').future.name,
-    //       'hey.future',
-    //     );
-    //     expect(
-    //       FutureProvider((ref) async {}).future.name,
-    //       null,
-    //     );
-    //   });
   });
 
   group('FutureProvider.autoDispose().future', () {
-    // test('.name is the listened-to name.future', () {
-    //   expect(
-    //     FutureProvider.autoDispose((ref) async {}, name: 'hey').future.name,
-    //     'hey.future',
-    //   );
-    //   expect(
-    //     FutureProvider.autoDispose((ref) async {}).future.name,
-    //     null,
-    //   );
-    // });
-
     test('update dependents when the future changes', () async {
       final futureProvider = StateProvider(
         (ref) => Future.value(42),

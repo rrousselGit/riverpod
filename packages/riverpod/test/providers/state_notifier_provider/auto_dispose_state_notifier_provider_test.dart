@@ -163,13 +163,9 @@ void main() {
       (_) => TestNotifier(),
       name: 'example',
     );
-
-    // expect(provider.notifier.name, 'example.notifier');
-    expect(provider.name, 'example');
-
     final provider2 = StateNotifierProvider.autoDispose((_) => TestNotifier());
 
-    // expect(provider2.notifier.name, isNull);
+    expect(provider.name, 'example');
     expect(provider2.name, isNull);
   });
 

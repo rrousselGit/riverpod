@@ -187,29 +187,26 @@ void main() {
     //   );
     // });
 
-    //   test('when using provider.overrideWithProvider', () async {
-    //     final provider = StreamProvider((ref) => Stream.value(0));
-    //     final root = createContainer();
-    //     final container = createContainer(parent: root, overrides: [
-    //       provider.overrideWithProvider(FutureProvider((ref) async => 42)),
-    //     ]);
+    test('when using provider.overrideWithProvider', () async {
+      final provider = StreamProvider((ref) => Stream.value(0));
+      final root = createContainer();
+      final container = createContainer(parent: root, overrides: [
+        provider
+            .overrideWithProvider(StreamProvider((ref) => Stream.value(42))),
+      ]);
 
-    //     expect(await container.read(provider.stream).first, 42);
-    //     expect(await container.read(provider.future), 42);
-    //     expect(container.read(provider), const AsyncValue.data(42));
-    //     expect(root.getAllProviderElements(), isEmpty);
-    //     expect(
-    //       container.getAllProviderElements(),
-    //       unorderedEquals(<Object?>[
-    //         isA<ProviderElementBase>()
-    //             .having((e) => e.origin, 'origin', provider),
-    //         isA<ProviderElementBase>()
-    //             .having((e) => e.origin, 'origin', provider.future),
-    //         isA<ProviderElementBase>()
-    //             .having((e) => e.origin, 'origin', provider.stream),
-    //       ]),
-    //     );
-    //   });
+      expect(await container.read(provider.stream).first, 42);
+      expect(await container.read(provider.future), 42);
+      expect(container.read(provider), const AsyncValue.data(42));
+      expect(root.getAllProviderElements(), isEmpty);
+      expect(
+        container.getAllProviderElements(),
+        unorderedEquals(<Object?>[
+          isA<ProviderElementBase>()
+              .having((e) => e.origin, 'origin', provider),
+        ]),
+      );
+    });
   });
 
   test('Loading to data', () {
@@ -795,57 +792,9 @@ void main() {
       await expectLater(stream, emitsDone);
       verifyNoMoreInteractions(listener);
     });
-
-    // test('.name is the listened-to name.stream', () {
-    //   expect(
-    //     StreamProvider<int>((ref) async* {}, name: 'hey').stream.name,
-    //     'hey.stream',
-    //   );
-    //   expect(
-    //     StreamProvider<int>((ref) async* {}).stream.name,
-    //     null,
-    //   );
-    // });
-
-    // test('.name is the listened-to name.future', () {
-    //   expect(
-    //     StreamProvider<int>((ref) async* {}, name: 'hey').future.name,
-    //     'hey.future',
-    //   );
-    //   expect(
-    //     StreamProvider<int>((ref) async* {}).stream.name,
-    //     null,
-    //   );
-    // });
   });
 
   group('StreamProvider.autoDispose().stream', () {
-    // test('.name is the listened-to name.stream', () {
-    //   expect(
-    //     StreamProvider.autoDispose<int>((ref) async* {}, name: 'hey')
-    //         .stream
-    //         .name,
-    //     'hey.stream',
-    //   );
-    //   expect(
-    //     StreamProvider.autoDispose<int>((ref) async* {}).stream.name,
-    //     null,
-    //   );
-    // });
-
-    // test('.name is the listened-to name.future', () {
-    //   expect(
-    //     StreamProvider.autoDispose<int>((ref) async* {}, name: 'hey')
-    //         .future
-    //         .name,
-    //     'hey.future',
-    //   );
-    //   expect(
-    //     StreamProvider.autoDispose<int>((ref) async* {}).stream.name,
-    //     null,
-    //   );
-    // });
-
     test('does not update dependents when the future completes', () async {
       final controller = StreamController<int>(sync: true);
       addTearDown(controller.close);

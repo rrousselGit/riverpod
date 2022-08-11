@@ -6,24 +6,6 @@ import '../../utils.dart';
 
 void main() {
   test('supports .name', () {
-    // expect(
-    //   StateProvider((ref) => 0).state.name,
-    //   null,
-    // );
-    // expect(
-    //   StateProvider((ref) => 0, name: 'foo').state.name,
-    //   'foo.state',
-    // );
-
-    // expect(
-    //   StateProvider((ref) => 0).notifier.name,
-    //   null,
-    // );
-    // expect(
-    //   StateProvider((ref) => 0, name: 'foo').notifier.name,
-    //   'foo.notifier',
-    // );
-
     expect(
       StateProvider((ref) => 0).name,
       null,

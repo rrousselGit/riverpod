@@ -6,24 +6,6 @@ import '../../utils.dart';
 
 void main() {
   test('supports .name', () {
-    // expect(
-    //   StateProvider.autoDispose((ref) => 0).state.name,
-    //   null,
-    // );
-    // expect(
-    //   StateProvider.autoDispose((ref) => 0, name: 'foo').state.name,
-    //   'foo.state',
-    // );
-
-    // expect(
-    //   StateProvider.autoDispose((ref) => 0).notifier.name,
-    //   null,
-    // );
-    // expect(
-    //   StateProvider.autoDispose((ref) => 0, name: 'foo').notifier.name,
-    //   'foo.notifier',
-    // );
-
     expect(
       StateProvider.autoDispose((ref) => 0).name,
       null,
