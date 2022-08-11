@@ -14,10 +14,6 @@ part of '../framework.dart';
 /// - [Provider], a provider that uses [Create] to expose an immutable value.
 typedef Create<T, R extends Ref> = T Function(R ref);
 
-/// A function that reads the state of a provider.
-@Deprecated('Directly pass Ref to your providers instead')
-typedef Reader = T Function<T>(ProviderBase<T> provider);
-
 /// A base class for _all_ providers.
 @immutable
 abstract class ProviderBase<State> extends ProviderOrFamily
