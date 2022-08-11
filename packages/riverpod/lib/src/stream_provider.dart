@@ -3,7 +3,9 @@ import 'dart:async';
 import 'builders.dart';
 import 'common.dart';
 import 'framework.dart';
+import 'future_provider.dart' show FutureProvider;
 import 'listenable.dart';
+import 'provider.dart' show Provider;
 import 'result.dart';
 import 'synchronous_future.dart';
 
