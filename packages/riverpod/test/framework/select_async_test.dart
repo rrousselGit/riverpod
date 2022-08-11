@@ -96,39 +96,39 @@ void main() {
     expect(await result, true);
   });
 
-  // test('handles fireImmediately: true on AsyncData', () async {
-  //   final container = createContainer();
-  //   final provider = Provider((ref) => const AsyncData(0));
-  //   final listener = Listener<Future<bool>>();
+  test('handles fireImmediately: true on AsyncData', () async {
+    final container = createContainer();
+    final provider = FutureProvider((ref) => 0);
+    final listener = Listener<Future<bool>>();
 
-  //   container.listen(
-  //     provider.selectAsync((data) => data.isEven),
-  //     listener,
-  //     fireImmediately: true,
-  //   );
+    container.listen(
+      provider.selectAsync((data) => data.isEven),
+      listener,
+      fireImmediately: true,
+    );
 
-  //   final result = verify(listener(argThat(isNull), captureAny)).captured.single
-  //       as Future<bool>;
-  //   verifyNoMoreInteractions(listener);
-  //   expect(await result, true);
-  // });
+    final result = verify(listener(argThat(isNull), captureAny)).captured.single
+        as Future<bool>;
+    verifyNoMoreInteractions(listener);
+    expect(await result, true);
+  });
 
-  // test('handles fireImmediately: true on AsyncError', () async {
-  //   final container = createContainer();
-  //   final provider = Provider((ref) => const AsyncError<int>(0));
-  //   final listener = Listener<Future<bool>>();
+  test('handles fireImmediately: true on AsyncError', () async {
+    final container = createContainer();
+    final provider = FutureProvider<int>((ref) => throw StateError('0'));
+    final listener = Listener<Future<bool>>();
 
-  //   container.listen(
-  //     provider.selectAsync((data) => data.isEven),
-  //     listener,
-  //     fireImmediately: true,
-  //   );
+    container.listen(
+      provider.selectAsync((data) => data.isEven),
+      listener,
+      fireImmediately: true,
+    );
 
-  //   final result = verify(listener(argThat(isNull), captureAny)).captured.single
-  //       as Future<bool>;
-  //   verifyNoMoreInteractions(listener);
-  //   await expectLater(result, throwsA(0));
-  // });
+    final result = verify(listener(argThat(isNull), captureAny)).captured.single
+        as Future<bool>;
+    verifyNoMoreInteractions(listener);
+    await expectLater(result, throwsStateError);
+  });
 
   test('handles fireImmediately: false', () async {
     final container = createContainer();
