@@ -151,12 +151,10 @@ mixin ProviderListenable<State> {
   ProviderListenable<Selected> select<Selected>(
     Selected Function(State value) selector,
   ) {
-    {
-      return _ProviderSelector<State, Selected>(
-        provider: this,
-        selector: selector,
-      );
-    }
+    return _ProviderSelector<State, Selected>(
+      provider: this,
+      selector: selector,
+    );
   }
 }
 

@@ -21,7 +21,7 @@ abstract class Node {
     ProviderBase<State> provider,
   );
 
-  /// Subscribes to a [ProviderElementBase]/
+  /// Subscribes to a [ProviderElementBase].
   ProviderSubscription<State> _listenElement<State>(
     ProviderElementBase<State> element, {
     required void Function(State? previous, State next) listener,
