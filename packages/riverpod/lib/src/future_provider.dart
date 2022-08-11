@@ -1,16 +1,38 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
-import 'async_value_converters.dart';
-
 import 'builders.dart';
 import 'common.dart';
 import 'framework.dart';
-import 'provider.dart';
-import 'stream_provider.dart';
+import 'listenable.dart';
+import 'provider.dart' show Provider;
+import 'result.dart';
+import 'stream_provider.dart' show StreamProvider;
+import 'synchronous_future.dart';
 
 part 'future_provider/auto_dispose.dart';
 part 'future_provider/base.dart';
+
+ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
+  _FutureProviderBase<T> that,
+) {
+  return ProviderElementProxy<AsyncValue<T>, Future<T>>(
+    that,
+    (element) {
+      return (element as FutureProviderElement<T>)._futureNotifier;
+    },
+  );
+}
+
+ProviderElementProxy<AsyncValue<T>, Stream<T>> _stream<T>(
+  _FutureProviderBase<T> that,
+) {
+  return ProviderElementProxy<AsyncValue<T>, Stream<T>>(
+    that,
+    (element) {
+      return (element as FutureProviderElement<T>)._streamNotifier;
+    },
+  );
+}
 
 /// {@template riverpod.futureprovider}
 /// A provider that asynchronously creates a single value.
@@ -78,39 +100,58 @@ part 'future_provider/base.dart';
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
-mixin _FutureProviderElementMixin<State>
-    on ProviderElementBase<AsyncValue<State>> {
-  AsyncValue<State> _listenFuture(
-    FutureOr<State> Function() future,
-  ) {
-    var running = true;
-    onDispose(() => running = false);
-    try {
-      final value = future();
+abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
+  _FutureProviderBase({
+    required this.dependencies,
+    required super.name,
+    required super.from,
+    required super.argument,
+    required super.cacheTime,
+    required super.disposeDelay,
+  });
 
-      if (value is Future<State>) {
-        setState(AsyncValue<State>.loading());
+  @override
+  final List<ProviderOrFamily>? dependencies;
 
-        value.then(
-          (event) {
-            if (running) setState(AsyncValue<State>.data(event));
-          },
-          // ignore: avoid_types_on_closure_parameters
-          onError: (Object err, StackTrace stack) {
-            if (running) {
-              setState(
-                AsyncValue<State>.error(err, stackTrace: stack),
-              );
-            }
-          },
-        );
-      } else {
-        return AsyncData(value);
-      }
+  /// Obtains the [Future] associated with a [FutureProvider].
+  ///
+  /// The instance of [Future] obtained may change over time, if the provider
+  /// was recreated (such as when using [Ref.watch]).
+  ///
+  /// This provider allows using `async`/`await` to easily combine
+  /// [FutureProvider] together:
+  ///
+  /// ```dart
+  /// final configsProvider = FutureProvider((ref) async => Configs());
+  ///
+  /// final productsProvider = FutureProvider((ref) async {
+  ///   // Wait for the configurations to resolve
+  ///   final configs = await ref.watch(configsProvider.future);
+  ///
+  ///   // Do something with the result
+  ///   return await http.get('${configs.host}/products');
+  /// });
+  /// ```
+  ProviderListenable<Future<T>> get future;
 
-      return requireState;
-    } catch (err, stack) {
-      return AsyncValue.error(err, stackTrace: stack);
-    }
+  /// Obtains a [Stream] representation of this provider.
+  ///
+  /// The stream will not emit a value until the future returned by this [FutureProvider]
+  /// resolves at least once.
+  /// Errors inside the providers will be sent to the stream.
+  ///
+  /// If you want to listen to this provider, consider using `ref.listen(futureProvider)` instead.
+  ProviderListenable<Stream<T>> get stream;
+
+  FutureOr<T> _create(covariant FutureProviderElement<T> ref);
+
+  @override
+  bool updateShouldNotify(AsyncValue<T> previousState, AsyncValue<T> newState) {
+    final wasLoading = previousState is AsyncLoading;
+    final isLoading = newState is AsyncLoading;
+
+    if (wasLoading || isLoading) return wasLoading != isLoading;
+
+    return true;
   }
 }

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show ResultError;
+import 'package:riverpod/src/result.dart';
 import 'package:test/test.dart';
 
 import '../third_party/fake_async.dart';
@@ -1521,7 +1521,9 @@ void main() {
 
       final children = <ProviderElementBase>[];
 
-      container.readProviderElement(provider).visitChildren(children.add);
+      container
+          .readProviderElement(provider)
+          .visitChildren(elementVisitor: children.add, notifierVisitor: (_) {});
       expect(
         children,
         unorderedMatches(<Object>[
@@ -1548,7 +1550,9 @@ void main() {
 
       final children = <ProviderElementBase>[];
 
-      container.readProviderElement(provider).visitChildren(children.add);
+      container
+          .readProviderElement(provider)
+          .visitChildren(elementVisitor: children.add, notifierVisitor: (_) {});
       expect(
         children,
         unorderedMatches(<Object>[

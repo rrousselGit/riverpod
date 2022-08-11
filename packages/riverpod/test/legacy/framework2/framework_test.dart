@@ -255,9 +255,15 @@ void main() {
 
     expect(sub.read(), '0');
     var firstDependents = <ProviderElementBase>[];
-    firstElement.visitChildren(firstDependents.add);
+    firstElement.visitChildren(
+      elementVisitor: firstDependents.add,
+      notifierVisitor: (_) {},
+    );
     var secondDependents = <ProviderElementBase>[];
-    secondElement.visitChildren(secondDependents.add);
+    secondElement.visitChildren(
+      elementVisitor: secondDependents.add,
+      notifierVisitor: (_) {},
+    );
 
     expect(firstDependents, [computedElement]);
     expect(firstElement.hasListeners, true);
@@ -268,34 +274,40 @@ void main() {
     expect(sub.read(), 'fallback');
 
     firstDependents = <ProviderElementBase>[];
-    firstElement.visitChildren(firstDependents.add);
+    firstElement.visitChildren(
+      elementVisitor: firstDependents.add,
+      notifierVisitor: (_) {},
+    );
     secondDependents = <ProviderElementBase>[];
-    secondElement.visitChildren(secondDependents.add);
+    secondElement.visitChildren(
+      elementVisitor: secondDependents.add,
+      notifierVisitor: (_) {},
+    );
     expect(firstDependents, [computedElement]);
     expect(firstElement.hasListeners, true);
     expect(secondDependents, <ProviderElement>[]);
     expect(secondElement.hasListeners, false);
   });
 
-  group('overrideWithValue', () {
-    test('synchronously overrides the value', () {
-      var callCount = 0;
-      final provider = FutureProvider((ref) async {
-        callCount++;
-        return 0;
-      });
-      final container = createContainer(overrides: [
-        provider.overrideWithValue(const AsyncValue.data(42)),
-      ]);
+  // group('overrideWithValue', () {
+  //   test('synchronously overrides the value', () {
+  //     var callCount = 0;
+  //     final provider = FutureProvider((ref) async {
+  //       callCount++;
+  //       return 0;
+  //     });
+  //     final container = createContainer(overrides: [
+  //       provider.overrideWithValue(const AsyncValue.data(42)),
+  //     ]);
 
-      addTearDown(container.dispose);
+  //     addTearDown(container.dispose);
 
-      final sub = container.listen(provider, (_, __) {});
+  //     final sub = container.listen(provider, (_, __) {});
 
-      expect(callCount, 0);
-      expect(sub.read(), const AsyncValue.data(42));
-    });
-  });
+  //     expect(callCount, 0);
+  //     expect(sub.read(), const AsyncValue.data(42));
+  //   });
+  // });
 
   test('remove dependencies on dispose', () async {
     final first = StateProvider((ref) => 0);
@@ -308,7 +320,10 @@ void main() {
 
     expect(sub.read(), 0);
     var firstDependents = <ProviderElementBase>[];
-    firstElement.visitChildren(firstDependents.add);
+    firstElement.visitChildren(
+      elementVisitor: firstDependents.add,
+      notifierVisitor: (_) {},
+    );
     expect(firstDependents, {computedElement});
     expect(firstElement.hasListeners, true);
 
@@ -316,7 +331,10 @@ void main() {
     await container.pump();
 
     firstDependents = <ProviderElementBase>[];
-    firstElement.visitChildren(firstDependents.add);
+    firstElement.visitChildren(
+      elementVisitor: firstDependents.add,
+      notifierVisitor: (_) {},
+    );
     expect(firstDependents, <ProviderElement>{});
     expect(firstElement.hasListeners, false);
   });
@@ -561,7 +579,7 @@ void main() {
     });
 
     test(
-        'retrying a provider already marked as needing to update do not create the value twice',
+        'refreshing a provider already marked as needing to update do not create the value twice',
         () async {
       var future = Future.value(42);
       var callCount = 0;
@@ -574,6 +592,7 @@ void main() {
       final container = createContainer();
 
       container.refresh(provider);
+
       expect(callCount, 1);
 
       container.read(dep.state).state++;
@@ -581,6 +600,7 @@ void main() {
 
       expect(callCount, 1);
       container.refresh(provider);
+
       expect(callCount, 2);
       await expectLater(container.read(provider.future), completion(21));
       expect(callCount, 2);

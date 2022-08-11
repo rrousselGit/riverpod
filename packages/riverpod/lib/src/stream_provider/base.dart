@@ -1,7 +1,7 @@
 part of '../stream_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [ProviderRef.state], the value currently exposed by this provider.
+/// - [StreamProviderRef.state], the value currently exposed by this provider.
 abstract class StreamProviderRef<State> implements Ref<AsyncValue<State>> {
   /// Obtains the state currently exposed by this provider.
   ///
@@ -14,233 +14,227 @@ abstract class StreamProviderRef<State> implements Ref<AsyncValue<State>> {
   set state(AsyncValue<State> newState);
 }
 
-/// {@macro riverpod.streamprovider}
-@sealed
-class StreamProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
-    with
-        OverrideWithValueMixin<AsyncValue<State>>,
-        OverrideWithProviderMixin<AsyncValue<State>,
-            AlwaysAliveProviderBase<AsyncValue<State>>> {
+/// {@template riverpod.streamprovider}
+/// Creates a stream and exposes its latest event.
+///
+/// [StreamProvider] is identical in behavior/usage to [FutureProvider], modulo
+/// the fact that the value created is a [Stream] instead of a [Future].
+///
+/// It can be used to express a value asynchronously loaded that can change over
+/// time, such as an editable `Message` coming from a web socket:
+///
+/// ```dart
+/// final messageProvider = StreamProvider.autoDispose<String>((ref) async* {
+///   // Open the connection
+///   final channel = IOWebSocketChannel.connect('ws://echo.websocket.org');
+///
+///   // Close the connection when the stream is destroyed
+///   ref.onDispose(() => channel.sink.close());
+///
+///   // Parse the value received and emit a Message instance
+///   await for (final value in channel.stream) {
+///     yield value.toString();
+///   }
+/// });
+/// ```
+///
+/// Which the UI can then listen:
+///
+/// ```dart
+/// Widget build(BuildContext context, WidgetRef ref) {
+///   AsyncValue<String> message = ref.watch(messageProvider);
+///
+///   return message.when(
+///     loading: () => const CircularProgressIndicator(),
+///     error: (err, stack) => Text('Error: $err'),
+///     data: (message) {
+///       return Text(message);
+///     },
+///   );
+/// }
+/// ```
+///
+/// **Note**:
+/// When listening to web sockets, firebase, or anything that consumes resources,
+/// it is important to use [StreamProvider.autoDispose] instead of simply [StreamProvider].
+///
+/// This ensures that the resources are released when no longer needed as,
+/// by default, a [StreamProvider] is almost never destroyed.
+///
+/// See also:
+///
+/// - [Provider], a provider that synchronously creates a value
+/// - [FutureProvider], a provider that asynchronously exposes a value that
+///   can change over time.
+/// - [stream], to obtain the [Stream] created instead of an [AsyncValue].
+/// - [future], to obtain the last value emitted by a [Stream].
+/// - [StreamProvider.family], to create a [StreamProvider] from external parameters
+/// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no longer needed.
+/// {@endtemplate}
+class StreamProvider<T> extends _StreamProviderBase<T>
+    with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.streamprovider}
   StreamProvider(
-    this._create, {
-    String? name,
-    this.dependencies,
-    Family? from,
-    Object? argument,
-  }) : super(name: name, from: from, argument: argument);
-
-  /// {@macro riverpod.family}
-  static const family = StreamProviderFamilyBuilder();
+    this._createFn, {
+    super.name,
+    super.from,
+    super.argument,
+    super.dependencies,
+  }) : super(cacheTime: null, disposeDelay: null);
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStreamProviderBuilder();
 
-  @override
-  ProviderBase<AsyncValue<State>> get originProvider => this;
+  /// {@macro riverpod.family}
+  static const family = StreamProviderFamilyBuilder();
 
-  final Create<Stream<State>, StreamProviderRef<State>> _create;
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
-
-  /// {@template riverpod.streamprovider.stream}
-  /// Exposes the [Stream] created by a [StreamProvider].
-  ///
-  /// The stream obtained is not strictly identical to the stream created.
-  /// Instead, this stream is always a broadcast stream.
-  ///
-  /// The stream obtained may change over time, if the [StreamProvider] is
-  /// re-evaluated, such as when it is using [Ref.watch] and the
-  /// provider being listened to changes, or on [ProviderContainer.refresh].
-  ///
-  /// If the [StreamProvider] was overridden using `overrideWithValue`,
-  /// a stream will be generated and manipulated based on the [AsyncValue] used.
-  /// {@endtemplate}
-  late final AlwaysAliveProviderBase<Stream<State>> stream =
-      AsyncValueAsStreamProvider(this, from: from, argument: argument);
-
-  /// {@template riverpod.streamprovider.future}
-  /// Exposes a [Future] that resolves with the last value or error emitted.
-  ///
-  /// This can be useful for scenarios where we want to read the current value
-  /// exposed by a [StreamProvider], but also handle the scenario were no
-  /// value were emitted yet:
-  ///
-  /// ```dart
-  /// final configsProvider = StreamProvider<Configuration>((ref) async* {
-  ///   // somehow emit a Configuration instance
-  /// });
-  ///
-  /// final productsProvider = FutureProvider<Products>((ref) async {
-  ///   // If a "Configuration" was emitted, retrieve it.
-  ///   // Otherwise, wait for a Configuration to be emitted.
-  ///   final configs = await ref.watch(configsProvider.future);
-  ///
-  ///   final response = await httpClient.get('${configs.host}/products');
-  ///   return Products.fromJson(response.data);
-  /// });
-  /// ```
-  ///
-  /// ## Why not use [StreamProvider.stream.first] instead?
-  ///
-  /// If you are familiar with streams, you may wonder why not use [Stream.first]
-  /// instead:
-  ///
-  /// ```dart
-  /// final configsProvider = StreamProvider<Configuration>((ref) {...});
-  ///
-  /// final productsProvider = FutureProvider<Products>((ref) async {
-  ///   final configs = await ref.watch(configsProvider.stream).first;
-  ///   ...
-  /// }
-  /// ```
-  ///
-  /// The problem with this code is, unless your [StreamProvider] is creating
-  /// a `BehaviorSubject` from `package:rxdart`, you have a bug.
-  ///
-  /// By default, if we call [Stream.first] **after** the first value was emitted,
-  /// then the [Future] created will not obtain that first value but instead
-  /// wait for a second one – which may never come.
-  ///
-  /// The following code demonstrate this problem:
-  ///
-  /// ```dart
-  /// final exampleProvider = StreamProvider<int>((ref) async* {
-  ///   yield 42;
-  /// });
-  ///
-  /// final anotherProvider = FutureProvider<void>((ref) async {
-  ///   print(await ref.watch(exampleProvider.stream).first);
-  ///   // The code will block here and wait forever
-  ///   print(await ref.watch(exampleProvider.stream).first);
-  ///   print('this code is never reached');
-  /// });
-  ///
-  /// void main() async {
-  ///   final container = ProviderContainer();
-  ///   await container.read(anotherProvider.future);
-  ///   // never reached
-  ///   print('done');
-  /// }
-  /// ```
-  ///
-  /// This snippet will print `42` once, then wait forever.
-  ///
-  /// On the other hand, if we used [StreamProvider.future], our code would
-  /// correctly execute:
-  ///
-  /// ```dart
-  /// final exampleProvider = StreamProvider<int>((ref) async* {
-  ///   yield 42;
-  /// });
-  ///
-  /// final anotherProvider = FutureProvider<void>((ref) async {
-  ///   print(await ref.watch(exampleProvider.future));
-  ///   print(await ref.watch(exampleProvider.future));
-  ///   print('completed');
-  /// });
-  ///
-  /// void main() async {
-  ///   final container = ProviderContainer();
-  ///   await container.read(anotherProvider.future);
-  ///   print('done');
-  /// }
-  /// ```
-  ///
-  /// with this modification, our code will now print:
-  ///
-  /// ```
-  /// 42
-  /// 42
-  /// completed
-  /// done
-  /// ```
-  ///
-  /// which is the expected behavior.
-  /// {@endtemplate}
-  late final AlwaysAliveProviderBase<Future<State>> future =
-      AsyncValueAsFutureProvider(this, from: from, argument: argument);
-
-  /// {@template riverpod.streamprovider.future}
-  @Deprecated('use `future` instead')
-  AlwaysAliveProviderBase<Future<State>> get last => future;
+  final Stream<T> Function(StreamProviderRef<T> ref) _createFn;
 
   @override
-  AsyncValue<State> create(covariant StreamProviderElement<State> ref) {
-    return ref._listenStream(() => _create(ref));
-  }
+  late final AlwaysAliveRefreshable<Future<T>> future = _future(this);
 
   @override
-  bool updateShouldNotify(
-    AsyncValue<State> previousState,
-    AsyncValue<State> newState,
-  ) {
-    final wasLoading = previousState is AsyncLoading;
-    final isLoading = newState is AsyncLoading;
-
-    if (wasLoading || isLoading) return wasLoading != isLoading;
-
-    return true;
-  }
+  late final AlwaysAliveRefreshable<Stream<T>> stream = _stream(this);
 
   @override
-  StreamProviderElement<State> createElement() => StreamProviderElement(this);
+  Stream<T> _create(StreamProviderElement<T> ref) => _createFn(ref);
+
+  @override
+  StreamProviderElement<T> createElement() => StreamProviderElement._(this);
 }
 
-/// The Element of a [StreamProvider]
-class StreamProviderElement<State>
-    extends ProviderElementBase<AsyncValue<State>>
-    with _StreamProviderElementMixin<State>
-    implements StreamProviderRef<State> {
-  /// The Element of a [StreamProvider]
-  StreamProviderElement(StreamProvider<State> provider) : super(provider);
+/// The element of [StreamProvider].
+class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
+    implements StreamProviderRef<T> {
+  StreamProviderElement._(_StreamProviderBase<T> provider) : super(provider);
+
+  final _futureNotifier = ProxyElementValueNotifier<Future<T>>();
+  Completer<T>? _completer;
+
+  final _streamNotifier = ProxyElementValueNotifier<Stream<T>>();
+  final StreamController<T> _streamController = StreamController<T>.broadcast();
+
+  StreamSubscription<T>? _streamSubscription;
 
   @override
-  AsyncValue<State> get state => requireState;
+  AsyncValue<T> get state => requireState;
 
   @override
-  set state(AsyncValue<State> newState) => setState(newState);
-}
-
-/// {@template riverpod.streamprovider.family}
-/// A class that allows building a [StreamProvider] from an external parameter.
-/// {@endtemplate}
-@sealed
-class StreamProviderFamily<State, Arg>
-    extends Family<AsyncValue<State>, Arg, StreamProvider<State>> {
-  /// {@macro riverpod.streamprovider.family}
-  StreamProviderFamily(
-    this._create, {
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
-
-  final FamilyCreate<Stream<State>, StreamProviderRef<State>, Arg> _create;
+  set state(AsyncValue<T> state) => setState(state);
 
   @override
-  StreamProvider<State> create(Arg argument) {
-    return StreamProvider<State>(
-      (ref) => _create(ref, argument),
-      name: name,
-      from: this,
-      argument: argument,
+  void create() {
+    _streamNotifier.result ??= Result.data(_streamController.stream);
+
+    final streamResult = Result.guard(() {
+      final provider = this.provider as _StreamProviderBase<T>;
+      return provider._create(this);
+    });
+
+    streamResult.when(
+      data: _listenStream,
+      error: (err, stack) {
+        _futureNotifier.result = Result.data(
+          Future<T>.error(err, stack)
+            // TODO test ignore
+            ..ignore(),
+        );
+        setState(AsyncError<T>(err, stackTrace: stack));
+      },
+    );
+  }
+
+  @pragma('vm:prefer-inline')
+  void _listenStream(Stream<T> stream) {
+    setState(AsyncLoading<T>());
+
+    // TODO test that if a provider refreshes with before the stream has emitted a value,
+    // then .future isn't notifying listeners
+    if (_completer == null) {
+      final completer = _completer = Completer<T>();
+      _futureNotifier.result = Result.data(completer.future);
+    }
+
+    _streamSubscription = stream.listen(
+      (event) {
+        final completer = _completer;
+        if (completer != null) {
+          completer.complete(event);
+          _completer = null;
+          // TODO test that ref.read(p.future) after an event is emitted
+          // obtains a SynchronousFuture.
+          // Yet listeners of .future added before the first event aren't notified
+          _futureNotifier.UNSAFE_setResultWithoutNotifyingListeners(
+            Result.data(SynchronousFuture(event)),
+          );
+        } else {
+          _futureNotifier.result = Result.data(SynchronousFuture(event));
+        }
+
+        setState(AsyncData(event));
+        _streamController.add(event);
+      },
+      // ignore: avoid_types_on_closure_parameters
+      onError: (Object err, StackTrace stack) {
+        final completer = _completer;
+        if (completer != null) {
+          completer
+            ..completeError(err, stack)
+            // The error is already sent to the Zone through the original Stream
+            // so no need for this Future to send the error to the Zone too.
+            ..future.ignore();
+          _completer = null;
+          // TODO can we have a SynchronousFutureError?
+        } else {
+          _futureNotifier.result = Result.data(
+            Future<T>.error(err, stack)
+              // TODO test ignore
+              ..ignore(),
+          );
+        }
+
+        setState(AsyncError<T>(err, stackTrace: stack));
+        _streamController.addError(err, stack);
+      },
     );
   }
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup) {
-    final provider = call(argument);
-    setup(origin: provider, override: provider);
+  void runOnDispose() {
+    super.runOnDispose();
+    _streamSubscription?.cancel();
   }
 
-  /// {@macro riverpod.overridewithprovider}
-  Override overrideWithProvider(
-    AlwaysAliveProviderBase<AsyncValue<State>> Function(Arg argument) override,
-  ) {
-    return FamilyOverride<Arg>(this, (arg, setup) {
-      final provider = call(arg);
-      setup(origin: provider, override: override(arg));
-    });
+  @override
+  void dispose() {
+    super.dispose();
+
+    /// The controller isn't recreated on provider rebuild. So we only close it
+    /// when the element is destroyed, not on "ref.onDispose".
+    _streamController.close();
   }
+
+  @override
+  void visitChildren({
+    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+  }) {
+    super.visitChildren(
+      elementVisitor: elementVisitor,
+      notifierVisitor: notifierVisitor,
+    );
+    notifierVisitor(_futureNotifier);
+    notifierVisitor(_streamNotifier);
+  }
+}
+
+/// The [Family] of [StreamProvider].
+class StreamProviderFamily<R, Arg> extends FamilyBase<StreamProviderRef<R>,
+    AsyncValue<R>, Arg, Stream<R>, StreamProvider<R>> {
+  /// The [Family] of [StreamProvider].
+  StreamProviderFamily(
+    super.create, {
+    super.name,
+    super.dependencies,
+  }) : super(providerFactory: StreamProvider<R>.new);
 }

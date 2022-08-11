@@ -140,22 +140,10 @@ void main() {
           .having((p) => p.from, 'from', family),
     );
     expect(
-      family(0).notifier,
-      isA<AlwaysAliveProviderBase<Counter>>()
-          .having((p) => p.argument, 'argument', 0)
-          .having((p) => p.from, 'from', family),
-    );
-    expect(
       family(1),
       isA<StateNotifierProvider<Counter, int>>()
           .having((p) => p.from, 'from', family)
           .having((p) => p.argument, 'argument', 1),
-    );
-    expect(
-      family(1).notifier,
-      isA<AlwaysAliveProviderBase<Counter>>()
-          .having((p) => p.argument, 'argument', 1)
-          .having((p) => p.from, 'from', family),
     );
   });
 

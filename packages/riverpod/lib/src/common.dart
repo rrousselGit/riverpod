@@ -4,11 +4,6 @@ import 'future_provider.dart' show FutureProvider;
 import 'stack_trace.dart';
 import 'stream_provider.dart' show StreamProvider;
 
-/// Utility for `.name` of provider modifiers.
-String? modifierName(String? from, String modifier) {
-  return from == null ? null : '$from.$modifier';
-}
-
 /// A utility for safely manipulating asynchronous data.
 ///
 /// By using [AsyncValue], you are guaranteed that you cannot forget to

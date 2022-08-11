@@ -1,6 +1,10 @@
 // ignore_for_file: public_member_api_docs
 
-part of 'provider.dart';
+import 'dart:developer' as developer;
+
+import 'package:meta/meta.dart';
+
+import 'framework.dart';
 
 void Function(
   String eventKind,

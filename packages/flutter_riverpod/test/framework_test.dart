@@ -344,28 +344,28 @@ void main() {
     expect(ref.refresh(provider), null);
   });
 
-  testWidgets('ProviderScope allows specifying a ProviderContainer',
-      (tester) async {
-    final provider = FutureProvider((ref) async => 42);
-    late WidgetRef ref;
-    final container = createContainer(overrides: [
-      provider.overrideWithValue(const AsyncValue.data(42)),
-    ]);
+  // testWidgets('ProviderScope allows specifying a ProviderContainer',
+  //     (tester) async {
+  //   final provider = FutureProvider((ref) async => 42);
+  //   late WidgetRef ref;
+  //   final container = createContainer(overrides: [
+  //     provider.overrideWithValue(const AsyncValue.data(42)),
+  //   ]);
 
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: Consumer(
-          builder: (context, r, _) {
-            ref = r;
-            return Container();
-          },
-        ),
-      ),
-    );
+  //   await tester.pumpWidget(
+  //     UncontrolledProviderScope(
+  //       container: container,
+  //       child: Consumer(
+  //         builder: (context, r, _) {
+  //           ref = r;
+  //           return Container();
+  //         },
+  //       ),
+  //     ),
+  //   );
 
-    expect(ref.read(provider), const AsyncValue.data(42));
-  });
+  //   expect(ref.read(provider), const AsyncValue.data(42));
+  // });
 
   testWidgets('AlwaysAliveProviderBase.read(context) inside initState',
       (tester) async {
@@ -653,36 +653,6 @@ void main() {
         throwsStateError,
       );
     });
-  });
-
-  testWidgets(
-      'autoDispose initState and ProviderListener does not destroy the state',
-      (tester) async {
-    var disposeCount = 0;
-    final counterProvider = StateProvider.autoDispose((ref) {
-      ref.onDispose(() => disposeCount++);
-      return 0;
-    });
-
-    await tester.pumpWidget(
-      ProviderScope(
-        child: Demo(
-          initState: (context, ref) {
-            ref.read(counterProvider.state).addListener((state) {});
-          },
-          builder: (context, ref) {
-            // ignore: deprecated_member_use_from_same_package
-            return ProviderListener(
-              onChange: (ct, prev, value) {},
-              provider: counterProvider,
-              child: Container(),
-            );
-          },
-        ),
-      ),
-    );
-
-    expect(disposeCount, 0);
   });
 
   testWidgets('autoDispose states are kept alive during pushReplacement',

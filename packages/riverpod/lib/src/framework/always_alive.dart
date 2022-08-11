@@ -22,18 +22,17 @@ mixin AlwaysAliveProviderListenable<State> on ProviderListenable<State> {
 ///
 /// This is the default base class for providers, unless a provider was marked
 /// with the `.autoDispose` modifier, like: `Provider.autoDispose(...)`
-abstract class AlwaysAliveProviderBase<State> extends ProviderBase<State>
-    with AlwaysAliveProviderListenable<State> {
-  /// Creates an [AlwaysAliveProviderBase].
-  AlwaysAliveProviderBase({
-    required String? name,
-    required Family? from,
-    required Object? argument,
-  }) : super(name: name, from: from, argument: argument);
-
+mixin AlwaysAliveProviderBase<State> on ProviderBase<State>
+    implements
+        AlwaysAliveProviderListenable<State>,
+        AlwaysAliveRefreshable<State> {
   @override
-  ProviderElementBase<State> createElement();
+  AlwaysAliveProviderListenable<Selected> select<Selected>(
+    Selected Function(State value) selector,
+  ) {
+    return _AlwaysAliveProviderSelector<State, Selected>(
+      provider: this,
+      selector: selector,
+    );
+  }
 }
-
-class _AlwaysAliveProviderSelector<Input, Output> = _ProviderSelector<Input,
-    Output> with AlwaysAliveProviderListenable<Output>;

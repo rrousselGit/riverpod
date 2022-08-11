@@ -1,56 +1,5 @@
 part of '../framework.dart';
 
-void _runGuarded(void Function() cb) {
-  try {
-    cb();
-  } catch (err, stack) {
-    Zone.current.handleUncaughtError(err, stack);
-  }
-}
-
-void _runUnaryGuarded<T, Res>(Res Function(T) cb, T value) {
-  try {
-    cb(value);
-  } catch (err, stack) {
-    Zone.current.handleUncaughtError(err, stack);
-  }
-}
-
-void _runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
-  try {
-    cb(value, value2);
-  } catch (err, stack) {
-    Zone.current.handleUncaughtError(err, stack);
-  }
-}
-
-void _runTernaryGuarded<A, B, C>(
-  void Function(A, B, C) cb,
-  A value,
-  B value2,
-  C value3,
-) {
-  try {
-    cb(value, value2, value3);
-  } catch (err, stack) {
-    Zone.current.handleUncaughtError(err, stack);
-  }
-}
-
-void _runQuaternaryGuarded<A, B, C, D>(
-  void Function(A, B, C, D) cb,
-  A value,
-  B value2,
-  C value3,
-  D value4,
-) {
-  try {
-    cb(value, value2, value3, value4);
-  } catch (err, stack) {
-    Zone.current.handleUncaughtError(err, stack);
-  }
-}
-
 ProviderBase? _circularDependencyLock;
 
 void _defaultVsync(void Function() task) {
@@ -107,7 +56,7 @@ class _StateReader {
         // ignore: avoid_types_on_closure_parameters
         data: (ResultData<Object?> data) {
           for (final observer in container._observers) {
-            _runTernaryGuarded(
+            runTernaryGuarded(
               observer.didAddProvider,
               origin,
               data.state,
@@ -117,7 +66,7 @@ class _StateReader {
         },
         error: (error) {
           for (final observer in container._observers) {
-            _runTernaryGuarded(
+            runTernaryGuarded(
               observer.didAddProvider,
               origin,
               null,
@@ -125,7 +74,7 @@ class _StateReader {
             );
           }
           for (final observer in container._observers) {
-            _runQuaternaryGuarded(
+            runQuaternaryGuarded(
               observer.providerDidFail,
               origin,
               error.error,
@@ -209,12 +158,12 @@ class ProviderContainer implements Node {
     }
   }
 
-  /// The default value for [AutoDisposeProviderBase.cacheTime].
+  /// The default value for [ProviderBase.cacheTime].
   ///
   /// {@macro riverpod.cache_time}
   final Duration cacheTime;
 
-  /// The default value for [AutoDisposeProviderBase.disposeDelay].
+  /// The default value for [ProviderBase.disposeDelay].
   ///
   /// {@macro riverpod.dispose_delay}
   final Duration disposeDelay;
@@ -303,30 +252,24 @@ class ProviderContainer implements Node {
   /// }
   /// ```
   Result read<Result>(
-    ProviderBase<Result> provider,
+    ProviderListenable<Result> provider,
   ) {
-    final element = readProviderElement(provider);
-    element.flush();
-
-    // In case `read` was called on a provider that has no listener
-    element.mayNeedDispose();
-
-    return element.readSelf();
+    return provider.read(this);
   }
 
   @override
-  ProviderSubscription<State> _createSubscription<State>(
+  ProviderSubscription<State> _listenElement<State>(
     ProviderElementBase<State> element, {
     required void Function(State? previous, State next) listener,
     required void Function(Object error, StackTrace stackTrace) onError,
   }) {
-    final sub = _ProviderSubscription<State>._(
+    final sub = _ExternalProviderSubscription<State>._(
       element,
       listener,
       onError: onError,
     );
 
-    element._listeners.add(sub);
+    element._externalDependents.add(sub);
 
     return sub;
   }
@@ -345,13 +288,14 @@ class ProviderContainer implements Node {
       listener,
       fireImmediately: fireImmediately,
       onError: onError,
+      onDependencyMayHaveChanged: null,
     );
   }
 
   /// {@template riverpod.invalidate}
   void invalidate(ProviderOrFamily provider) {
     if (provider is ProviderBase) {
-      final reader = _getStateReader(provider.originProvider);
+      final reader = _getStateReader(provider._origin);
 
       reader._element?.invalidateSelf();
     } else {
@@ -368,8 +312,8 @@ class ProviderContainer implements Node {
   }
 
   /// {@template riverpod.refresh}
-  Created refresh<Created>(ProviderBase<Created> provider) {
-    invalidate(provider);
+  State refresh<State>(Refreshable<State> provider) {
+    invalidate(provider._origin);
     return read(provider);
   }
 
@@ -448,7 +392,7 @@ class ProviderContainer implements Node {
         final element = reader._element;
         if (element == null) continue;
 
-        _runUnaryGuarded(element.update, override._override);
+        runUnaryGuarded(element.update, override._override);
       } else if (override is FamilyOverride) {
         assert(() {
           unusedOverrides!.remove(override);
@@ -734,19 +678,23 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
       // were already visited before.
       // If a child does not have all of its ancestors visited, when those
       // ancestors will be visited, they will retry visiting this child.
-      element.visitChildren((dependent) {
-        if (dependent.container == this) {
-          // All the parents of a node must have been visited before a node is visited
-          var areAllAncestorsAlreadyVisited = true;
-          dependent.visitAncestors((e) {
-            if (e._container == this && !visitedNodes.contains(e)) {
-              areAllAncestorsAlreadyVisited = false;
-            }
-          });
+      element.visitChildren(
+        elementVisitor: (dependent) {
+          if (dependent.container == this) {
+            // All the parents of a node must have been visited before a node is visited
+            var areAllAncestorsAlreadyVisited = true;
+            dependent.visitAncestors((e) {
+              if (e._container == this && !visitedNodes.contains(e)) {
+                areAllAncestorsAlreadyVisited = false;
+              }
+            });
 
-          if (areAllAncestorsAlreadyVisited) queue.add(dependent);
-        }
-      });
+            if (areAllAncestorsAlreadyVisited) queue.add(dependent);
+          }
+        },
+        // We only care about Elements here, so let's ignore notifiers
+        notifierVisitor: (_) {},
+      );
     }
   }
 }

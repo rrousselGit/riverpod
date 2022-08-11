@@ -98,7 +98,7 @@ void main() {
 
   test('handles fireImmediately: true on AsyncData', () async {
     final container = createContainer();
-    final provider = Provider((ref) => const AsyncData(0));
+    final provider = FutureProvider((ref) => 0);
     final listener = Listener<Future<bool>>();
 
     container.listen(
@@ -115,7 +115,7 @@ void main() {
 
   test('handles fireImmediately: true on AsyncError', () async {
     final container = createContainer();
-    final provider = Provider((ref) => const AsyncError<int>(0));
+    final provider = FutureProvider<int>((ref) => throw StateError('0'));
     final listener = Listener<Future<bool>>();
 
     container.listen(
@@ -127,7 +127,7 @@ void main() {
     final result = verify(listener(argThat(isNull), captureAny)).captured.single
         as Future<bool>;
     verifyNoMoreInteractions(listener);
-    await expectLater(result, throwsA(0));
+    await expectLater(result, throwsStateError);
   });
 
   test('handles fireImmediately: false', () async {
@@ -148,7 +148,7 @@ void main() {
       'catching errors in the future is not necessary if the error is coming from AsyncError',
       () async {
     final container = createContainer();
-    final provider = Provider((ref) => const AsyncError<int>(0));
+    final provider = FutureProvider<int>((ref) => throw StateError('err'));
 
     container.listen(
       provider.selectAsync((data) => data.isEven),
@@ -162,7 +162,14 @@ void main() {
 
   test('handles multiple AsyncLoading at once then data', () async {
     final container = createContainer();
-    final provider = StateProvider((ref) => const AsyncValue<int>.loading());
+    late FutureProviderRef<int> ref;
+    final provider = FutureProvider<int>((r) {
+      ref = r;
+      final completer = Completer<int>();
+      ref.onDispose(() => completer.complete(42));
+
+      return completer.future;
+    });
 
     final sub = container.listen(
       provider.selectAsync((data) => data + 40),
@@ -171,13 +178,13 @@ void main() {
 
     expect(sub.read(), completion(42));
 
-    container.read(provider.notifier).state = const AsyncLoading<int>()
+    ref.state = const AsyncLoading<int>()
         .copyWithPrevious(const AsyncValue<int>.data(0));
-    container.read(provider.notifier).state = const AsyncLoading<int>()
+    ref.state = const AsyncLoading<int>()
         .copyWithPrevious(const AsyncError<int>('err'));
-    container.read(provider.notifier).state = const AsyncLoading<int>();
+    ref.state = const AsyncLoading<int>();
 
-    container.read(provider.notifier).state = const AsyncData(2);
+    ref.state = const AsyncData(2);
 
     // the previous unawaited `completion` should resolve with 2+40
   });
@@ -262,5 +269,38 @@ void main() {
     await container.read(a.future);
     expect(await container.read(b.future), 1);
     expect(buildCount, 2);
+  });
+
+  group('Supports ProviderContainer.read', () {
+    test('and resolves with data', () async {
+      final container = createContainer();
+      final provider = FutureProvider((ref) async => 0);
+
+      expect(
+        container.read(provider.selectAsync((data) => data.toString())),
+        completion('0'),
+      );
+    });
+
+    test('resolves with error', () async {
+      final container = createContainer();
+      final provider =
+          FutureProvider<int>((ref) async => throw StateError('err'));
+
+      expect(
+        container.read(provider.selectAsync((data) => data)),
+        throwsStateError,
+      );
+    });
+
+    test('emits exceptions inside selectors as Future.error', () async {
+      final container = createContainer();
+      final provider = FutureProvider<int>((ref) async => 42);
+
+      expect(
+        container.read(provider.selectAsync((data) => throw StateError('err'))),
+        throwsStateError,
+      );
+    });
   });
 }

@@ -14,9 +14,6 @@ void main() {
 
       expect(provider(0).from, provider);
       expect(provider(0).argument, 0);
-
-      expect(provider(0).notifier.from, provider);
-      expect(provider(0).notifier.argument, 0);
     });
 
     test('can be auto-scoped', () async {
@@ -55,8 +52,6 @@ void main() {
           unorderedEquals(<Object?>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider(0)),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).notifier),
           ]),
         );
         expect(root.getAllProviderElementsInOrder(), isEmpty);
@@ -83,8 +78,6 @@ void main() {
           unorderedEquals(<Object?>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider(0)),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).notifier),
           ]),
         );
       });
@@ -131,8 +124,6 @@ void main() {
         expect(
           container.getAllProviderElementsInOrder(),
           [
-            isA<ProviderElementBase>()
-                .having((e) => e.provider, 'provider', family('0').notifier),
             isA<ProviderElementBase>()
                 .having((e) => e.provider, 'provider', family('0')),
           ],

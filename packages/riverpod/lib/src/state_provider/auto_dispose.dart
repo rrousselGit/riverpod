@@ -3,215 +3,55 @@ part of '../state_provider.dart';
 /// {@macro riverpod.providerrefbase}
 /// - [controller], the [StateController] currently exposed by this provider.
 abstract class AutoDisposeStateProviderRef<State>
-    implements
-        AutoDisposeRef<StateController<State>>,
-        StateProviderRef<State> {}
+    extends StateProviderRef<State> implements AutoDisposeRef<State> {}
 
 /// {@macro riverpod.stateprovider}
-@sealed
-class AutoDisposeStateProvider<State> extends AutoDisposeProviderBase<State>
-    with
-        StateProviderOverrideMixin<State>,
-        OverrideWithProviderMixin<StateController<State>,
-            AutoDisposeStateProvider<State>> {
+class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
   /// {@macro riverpod.stateprovider}
   AutoDisposeStateProvider(
-    Create<State, AutoDisposeStateProviderRef<State>> create, {
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-    Family? from,
-    Object? argument,
-    Duration? cacheTime,
-    Duration? disposeDelay,
-  })  : notifier = _AutoDisposeNotifierProvider(
-          create,
-          name: modifierName(name, 'notifier'),
-          dependencies: dependencies,
-          from: from,
-          argument: argument,
-          cacheTime: cacheTime,
-          disposeDelay: disposeDelay,
-        ),
-        super(
-          name: name,
-          from: from,
-          argument: argument,
-          cacheTime: cacheTime,
-          disposeDelay: disposeDelay,
-        );
+    this._createFn, {
+    super.name,
+    super.from,
+    super.argument,
+    super.dependencies,
+    super.cacheTime,
+    super.disposeDelay,
+  });
 
   /// {@macro riverpod.family}
-  static const family = AutoDisposeStateProviderFamilyBuilder();
+  static const family = AutoDisposeStateProviderFamily.new;
 
-  /// {@macro riverpod.stateprovider.notifier}
-  @override
-  final AutoDisposeProviderBase<StateController<State>> notifier;
+  final T Function(AutoDisposeStateProviderRef<T> ref) _createFn;
 
   @override
-  late final AutoDisposeProviderBase<StateController<State>> state =
-      _AutoDisposeNotifierStateProvider(
-    (ref) {
-      return _listenStateProvider(
-        ref as ProviderElementBase<StateController<State>>,
-        ref.watch(notifier),
-      );
-    },
-    dependencies: [notifier],
-    from: from,
-    argument: argument,
-    name: modifierName(name, 'state'),
-  );
+  T _create(AutoDisposeStateProviderElement<T> ref) => _createFn(ref);
 
   @override
-  State create(AutoDisposeProviderElementBase<State> ref) {
-    final notifier = ref.watch(this.notifier);
-
-    final removeListener = notifier.addListener(ref.setState);
-    ref.onDispose(removeListener);
-
-    return notifier.state;
+  AutoDisposeStateProviderElement<T> createElement() {
+    return AutoDisposeStateProviderElement._(this);
   }
 
   @override
-  bool updateShouldNotify(State previousState, State newState) {
-    return true;
-  }
+  late final Refreshable<StateController<T>> notifier = _notifier(this);
 
   @override
-  AutoDisposeStateProviderElement<State> createElement() {
-    return AutoDisposeStateProviderElement(this);
-  }
+  late final Refreshable<StateController<T>> state = _state(this);
 }
 
-/// The [ProviderElementBase] for [StateProvider]
-class AutoDisposeStateProviderElement<State>
-    extends AutoDisposeProviderElementBase<State> {
-  /// The [ProviderElementBase] for [StateProvider]
-  AutoDisposeStateProviderElement(AutoDisposeStateProvider<State> provider)
-      : super(provider);
-}
+/// The element of [StateProvider].
+class AutoDisposeStateProviderElement<T> = StateProviderElement<T>
+    with AutoDisposeProviderElementMixin<T>
+    implements AutoDisposeStateProviderRef<T>;
 
-class _AutoDisposeNotifierProvider<State>
-    extends AutoDisposeProviderBase<StateController<State>> {
-  _AutoDisposeNotifierProvider(
-    this._create, {
-    required String? name,
-    required this.dependencies,
-    required Family? from,
-    required Object? argument,
-    required Duration? cacheTime,
-    required Duration? disposeDelay,
-  }) : super(
-          name: name,
-          from: from,
-          argument: argument,
-          cacheTime: cacheTime,
-          disposeDelay: disposeDelay,
-        );
-
-  final Create<State, AutoDisposeStateProviderRef<State>> _create;
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
-
-  @override
-  StateController<State> create(AutoDisposeStateProviderRef<State> ref) {
-    final initialState = _create(ref);
-    final notifier = StateController(initialState);
-    ref.onDispose(notifier.dispose);
-    return notifier;
-  }
-
-  @override
-  bool updateShouldNotify(
-    StateController<State> previousState,
-    StateController<State> newState,
-  ) {
-    return true;
-  }
-
-  @override
-  _AutoDisposeNotifierStateProviderElement<State> createElement() {
-    return _AutoDisposeNotifierStateProviderElement(this);
-  }
-}
-
-class _AutoDisposeNotifierStateProviderElement<State>
-    extends AutoDisposeProviderElementBase<StateController<State>>
-    implements AutoDisposeStateProviderRef<State> {
-  _AutoDisposeNotifierStateProviderElement(
-      _AutoDisposeNotifierProvider<State> provider)
-      : super(provider);
-
-  @override
-  StateController<State> get controller => requireState;
-}
-
-class _AutoDisposeNotifierStateProvider<State>
-    extends AutoDisposeProvider<State> {
-  _AutoDisposeNotifierStateProvider(
-    Create<State, AutoDisposeProviderRef<State>> create, {
-    super.dependencies,
-    required super.from,
-    required super.argument,
-    required super.name,
-  }) : super(create);
-
-  @override
-  bool updateShouldNotify(State previousState, State newState) {
-    return true;
-  }
-}
-
-/// {@macro riverpod.stateprovider.family}
-@sealed
-class AutoDisposeStateProviderFamily<State, Arg>
-    extends Family<State, Arg, AutoDisposeStateProvider<State>> {
-  /// {@macro riverpod.stateprovider.family}
+/// The [Family] of [StateProvider].
+class AutoDisposeStateProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
+    AutoDisposeStateProviderRef<R>, R, Arg, R, AutoDisposeStateProvider<R>> {
+  /// The [Family] of [StateProvider].
   AutoDisposeStateProviderFamily(
-    this._create, {
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-    Duration? cacheTime,
-    Duration? disposeDelay,
-  }) : super(
-          name: name,
-          dependencies: dependencies,
-          cacheTime: cacheTime,
-          disposeDelay: disposeDelay,
-        );
-
-  final FamilyCreate<State, AutoDisposeStateProviderRef<State>, Arg> _create;
-
-  @override
-  AutoDisposeStateProvider<State> create(Arg argument) {
-    return AutoDisposeStateProvider<State>(
-      (ref) => _create(ref, argument),
-      name: name,
-      from: this,
-      argument: argument,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
-    );
-  }
-
-  @override
-  void setupOverride(Arg argument, SetupOverride setup) {
-    final provider = call(argument);
-    setup(origin: provider.notifier, override: provider.notifier);
-  }
-
-  /// {@macro riverpod.overridewithprovider}
-  Override overrideWithProvider(
-    AutoDisposeStateProvider<State> Function(Arg argument) override,
-  ) {
-    return FamilyOverride<Arg>(
-      this,
-      (arg, setup) {
-        final provider = call(arg);
-        final newProvider = override(arg);
-        setup(origin: provider.notifier, override: newProvider.notifier);
-      },
-    );
-  }
+    super.create, {
+    super.name,
+    super.dependencies,
+    super.cacheTime,
+    super.disposeDelay,
+  }) : super(providerFactory: AutoDisposeStateProvider.new);
 }

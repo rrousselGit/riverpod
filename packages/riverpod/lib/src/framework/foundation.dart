@@ -72,9 +72,13 @@ mixin ProviderListenable<State> {
   ProviderSubscription<State> addListener(
     Node node,
     void Function(State? previous, State next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-    bool fireImmediately = false,
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool fireImmediately,
   });
+
+  /// Obtains the result of this provider expression without adding listener.
+  State read(Node node);
 
   /// Partially listen to a provider.
   ///

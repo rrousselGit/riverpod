@@ -90,88 +90,82 @@ void main() {
         unorderedEquals(<Object?>[
           isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider),
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider.notifier),
         ]),
       );
     });
 
-    test('when using provider.overrideWithValue', () async {
-      final controller = StateController(0);
-      final provider =
-          StateNotifierProvider.autoDispose<StateController<int>, int>(
-              (ref) => controller);
-      final root = createContainer();
-      final controllerOverride = StateController(42);
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithValue(controllerOverride),
-      ]);
+    // test('when using provider.overrideWithValue', () async {
+    //   final controller = StateController(0);
+    //   final provider =
+    //       StateNotifierProvider.autoDispose<StateController<int>, int>(
+    //           (ref) => controller);
+    //   final root = createContainer();
+    //   final controllerOverride = StateController(42);
+    //   final container = createContainer(parent: root, overrides: [
+    //     provider.overrideWithValue(controllerOverride),
+    //   ]);
 
-      expect(container.read(provider.notifier), controllerOverride);
-      expect(container.read(provider), 42);
-      expect(root.getAllProviderElements(), isEmpty);
-      expect(
-        container.getAllProviderElements(),
-        unorderedEquals(<Object?>[
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider),
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider.notifier),
-        ]),
-      );
-    });
+    //   expect(container.read(provider.notifier), controllerOverride);
+    //   expect(container.read(provider), 42);
+    //   expect(root.getAllProviderElements(), isEmpty);
+    //   expect(
+    //     container.getAllProviderElements(),
+    //     unorderedEquals(<Object?>[
+    //       isA<ProviderElementBase>()
+    //           .having((e) => e.origin, 'origin', provider),
+    //       isA<ProviderElementBase>()
+    //           .having((e) => e.origin, 'origin', provider.notifier),
+    //     ]),
+    //   );
+    // });
   });
 
-  test('overriding the provider overrides provider.state too', () {
-    final provider = StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
-      return TestNotifier();
-    });
-    final notifier = TestNotifier(42);
-    final container = createContainer(
-      overrides: [
-        provider.overrideWithValue(TestNotifier(10)),
-      ],
-    );
-    addTearDown(container.dispose);
-    final stateListener = Listener<int>();
-    final notifierListener = Listener<TestNotifier>();
+  // test('overriding the provider overrides provider.state too', () {
+  //   final provider = StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
+  //     return TestNotifier();
+  //   });
+  //   final notifier = TestNotifier(42);
+  //   final container = createContainer(
+  //     overrides: [
+  //       provider.overrideWithValue(TestNotifier(10)),
+  //     ],
+  //   );
+  //   addTearDown(container.dispose);
+  //   final stateListener = Listener<int>();
+  //   final notifierListener = Listener<TestNotifier>();
 
-    // does not crash
-    container.updateOverrides([
-      provider.overrideWithValue(notifier),
-    ]);
+  //   // does not crash
+  //   container.updateOverrides([
+  //     provider.overrideWithValue(notifier),
+  //   ]);
 
-    container.listen(
-      provider.notifier,
-      notifierListener,
-      fireImmediately: true,
-    );
-    verify(notifierListener(null, notifier)).called(1);
-    verifyNoMoreInteractions(notifierListener);
+  //   container.listen(
+  //     provider.notifier,
+  //     notifierListener,
+  //     fireImmediately: true,
+  //   );
+  //   verify(notifierListener(null, notifier)).called(1);
+  //   verifyNoMoreInteractions(notifierListener);
 
-    container.listen(provider, stateListener, fireImmediately: true);
-    verify(stateListener(null, 42)).called(1);
-    verifyNoMoreInteractions(stateListener);
+  //   container.listen(provider, stateListener, fireImmediately: true);
+  //   verify(stateListener(null, 42)).called(1);
+  //   verifyNoMoreInteractions(stateListener);
 
-    notifier.increment();
+  //   notifier.increment();
 
-    verify(stateListener(42, 43)).called(1);
-    verifyNoMoreInteractions(notifierListener);
-    verifyNoMoreInteractions(stateListener);
-  });
+  //   verify(stateListener(42, 43)).called(1);
+  //   verifyNoMoreInteractions(notifierListener);
+  //   verifyNoMoreInteractions(stateListener);
+  // });
 
   test('can specify name', () {
     final provider = StateNotifierProvider.autoDispose(
       (_) => TestNotifier(),
       name: 'example',
     );
-
-    expect(provider.notifier.name, 'example.notifier');
-    expect(provider.name, 'example');
-
     final provider2 = StateNotifierProvider.autoDispose((_) => TestNotifier());
 
-    expect(provider2.notifier.name, isNull);
+    expect(provider.name, 'example');
     expect(provider2.name, isNull);
   });
 

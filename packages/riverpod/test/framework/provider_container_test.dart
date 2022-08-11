@@ -3,7 +3,6 @@ import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
-import 'uni_directional_test.dart';
 
 void main() {
   group('ProviderContainer', () {
@@ -206,6 +205,24 @@ void main() {
         'flushes listened-to providers even if they have no external listeners',
         () async {
       final dep = StateProvider((ref) => 0);
+      final provider = Provider((ref) => ref.watch(dep));
+      final another = StateProvider<int>((ref) {
+        ref.listen(provider, (prev, value) => ref.controller.state++);
+        return 0;
+      });
+      final container = createContainer();
+
+      expect(container.read(another), 0);
+
+      container.read(dep.notifier).state = 42;
+
+      expect(container.read(another), 1);
+    });
+
+    test(
+        'flushes listened-to providers even if they have no external listeners (with ProviderListenable)',
+        () async {
+      final dep = StateProvider((ref) => 0);
       final provider = Provider((ref) => ref.watch(dep.state).state);
       final another = StateProvider<int>((ref) {
         ref.listen(provider, (prev, value) => ref.controller.state++);
@@ -349,7 +366,7 @@ void main() {
           container.getAllProviderElements(),
           unorderedMatches(<Matcher>[
             isA<ProviderElementBase<int>>(),
-            isA<AutoDisposeProviderElementBase<int>>(),
+            isA<AutoDisposeProviderElementMixin<int>>(),
           ]),
         );
 
@@ -367,7 +384,7 @@ void main() {
           container.getAllProviderElements(),
           unorderedMatches(<Matcher>[
             isA<ProviderElementBase<int>>(),
-            isA<AutoDisposeProviderElementBase<int>>(),
+            isA<AutoDisposeProviderElementMixin<int>>(),
           ]),
         );
       });

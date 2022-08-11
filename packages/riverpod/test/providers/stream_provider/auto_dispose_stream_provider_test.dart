@@ -221,44 +221,40 @@ void main() {
           unorderedEquals(<Object?>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider.future),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider.stream),
           ]),
         );
       });
 
-      test('when using provider.overrideWithValue', () async {
-        final provider = StreamProvider.autoDispose((ref) => Stream.value(0));
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithValue(const AsyncValue.data(42)),
-        ]);
+      // test('when using provider.overrideWithValue', () async {
+      //   final provider = StreamProvider.autoDispose((ref) => Stream.value(0));
+      //   final root = createContainer();
+      //   final container = createContainer(parent: root, overrides: [
+      //     provider.overrideWithValue(const AsyncValue.data(42)),
+      //   ]);
 
-        expect(await container.read(provider.stream).first, 42);
-        expect(await container.read(provider.future), 42);
-        expect(container.read(provider), const AsyncValue.data(42));
-        expect(root.getAllProviderElements(), isEmpty);
-        expect(
-          container.getAllProviderElements(),
-          unorderedEquals(<Object?>[
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider.future),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider.stream),
-          ]),
-        );
-      });
+      //   expect(await container.read(provider.stream).first, 42);
+      //   expect(await container.read(provider.future), 42);
+      //   expect(container.read(provider), const AsyncValue.data(42));
+      //   expect(root.getAllProviderElements(), isEmpty);
+      //   expect(
+      //     container.getAllProviderElements(),
+      //     unorderedEquals(<Object?>[
+      //       isA<ProviderElementBase>()
+      //           .having((e) => e.origin, 'origin', provider),
+      //       isA<ProviderElementBase>()
+      //           .having((e) => e.origin, 'origin', provider.future),
+      //       isA<ProviderElementBase>()
+      //           .having((e) => e.origin, 'origin', provider.stream),
+      //     ]),
+      //   );
+      // });
 
       test('when using provider.overrideWithProvider', () async {
         final provider = StreamProvider.autoDispose((ref) => Stream.value(0));
         final root = createContainer();
         final container = createContainer(parent: root, overrides: [
           provider.overrideWithProvider(
-            FutureProvider.autoDispose((ref) async => 42),
+            StreamProvider.autoDispose((ref) => Stream.value(42)),
           ),
         ]);
 
@@ -271,10 +267,6 @@ void main() {
           unorderedEquals(<Object?>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider.future),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider.stream),
           ]),
         );
       });
