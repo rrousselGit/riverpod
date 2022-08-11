@@ -21,6 +21,27 @@ void main() {
     controller.close();
   });
 
+  test('Emits AsyncLoading before the create function is executed', () async {
+    final container = createContainer();
+    late AsyncValue<int> state;
+    final provider = StreamProvider<int>((ref) {
+      state = ref.state;
+      return Stream.value(0);
+    });
+
+    container.read(provider);
+
+    expect(state, const AsyncLoading<int>());
+
+    await container.read(provider.future);
+    container.refresh(provider);
+
+    expect(
+      state,
+      const AsyncLoading<int>().copyWithPrevious(const AsyncData<int>(0)),
+    );
+  });
+
   group('When going back to AsyncLoading', () {
     test(
         'sets isRefreshing to true if triggered by a ref.invalidate/ref.refresh',
