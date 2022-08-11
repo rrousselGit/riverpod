@@ -655,36 +655,6 @@ void main() {
     });
   });
 
-  testWidgets(
-      'autoDispose initState and ProviderListener does not destroy the state',
-      (tester) async {
-    var disposeCount = 0;
-    final counterProvider = StateProvider.autoDispose((ref) {
-      ref.onDispose(() => disposeCount++);
-      return 0;
-    });
-
-    await tester.pumpWidget(
-      ProviderScope(
-        child: Demo(
-          initState: (context, ref) {
-            ref.read(counterProvider.state).addListener((state) {});
-          },
-          builder: (context, ref) {
-            // ignore: deprecated_member_use_from_same_package
-            return ProviderListener(
-              onChange: (ct, prev, value) {},
-              provider: counterProvider,
-              child: Container(),
-            );
-          },
-        ),
-      ),
-    );
-
-    expect(disposeCount, 0);
-  });
-
   testWidgets('autoDispose states are kept alive during pushReplacement',
       (tester) async {
     var disposeCount = 0;
