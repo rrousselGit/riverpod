@@ -38,6 +38,21 @@ abstract class _StateNotifierProviderBase<NotifierT extends StateNotifier<T>, T>
   @override
   final List<ProviderOrFamily>? dependencies;
 
+  /// Obtains the [StateNotifier] associated with this provider, without listening
+  /// to state changes.
+  ///
+  /// This is typically used to invoke methods on a [StateNotifier]. For example:
+  ///
+  /// ```dart
+  /// Button(
+  ///   onTap: () => ref.read(stateNotifierProvider.notifer).increment(),
+  /// )
+  /// ```
+  ///
+  /// This listenable will notify its notifiers if the [StateNotifier] instance
+  /// changes.
+  /// This may happen if the provider is refreshed or one of its dependencies
+  /// has changes.
   ProviderListenable<NotifierT> get notifier;
 
   NotifierT _create(covariant StateNotifierProviderElement<NotifierT, T> ref);
