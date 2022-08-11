@@ -21,19 +21,46 @@ class _ProxySubscription<T> extends ProviderSubscription<T> {
   T read() => _read();
 }
 
-typedef Listen<R> = RemoveListener Function(
-  void Function(R? previous, R next) listener, {
-  void Function(Object error, StackTrace stackTrace)? onError,
-});
-
+/// An internal utility for reading alternate values of a provider.
+///
+/// For example, this is used by [FutureProvider] to differentiate:
+///
+/// ```dart
+/// ref.watch(futureProvider);
+/// ```
+///
+/// from:
+///
+/// ```dart
+/// ref.watch(futureProvider.future);
+/// ```
+///
+/// This API is not meant for public consumption.
 class ProviderElementProxy<Input, Output>
     with ProviderListenable<Output>, AlwaysAliveProviderListenable<Output>
     implements AlwaysAliveRefreshable<Output> {
-  const ProviderElementProxy(this._origin, this.lense);
+  /// An internal utility for reading alternate values of a provider.
+  ///
+  /// For example, this is used by [FutureProvider] to differentiate:
+  ///
+  /// ```dart
+  /// ref.watch(futureProvider);
+  /// ```
+  ///
+  /// from:
+  ///
+  /// ```dart
+  /// ref.watch(futureProvider.future);
+  /// ```
+  ///
+  /// This API is not meant for public consumption.
+  const ProviderElementProxy(this._origin, this._lense);
 
+  @override
   final ProviderBase<Input> _origin;
   final ProxyElementValueNotifier<Output> Function(
-      ProviderElementBase<Input> element) lense;
+    ProviderElementBase<Input> element,
+  ) _lense;
 
   @override
   ProviderSubscription<Output> addListener(
@@ -47,7 +74,7 @@ class ProviderElementProxy<Input, Output>
 
     // TODO does this need a "flush"?
 
-    final notifier = lense(element);
+    final notifier = _lense(element);
     if (fireImmediately) {
       notifier.result?.when(
         data: (data) {
@@ -85,7 +112,7 @@ class ProviderElementProxy<Input, Output>
     final element = node.readProviderElement(_origin);
     element.flush();
     element.mayNeedDispose();
-    return lense(element).value;
+    return _lense(element).value;
   }
 
   @override

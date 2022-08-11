@@ -102,8 +102,16 @@ class _FamilyOverride<Arg> implements FamilyOverride<Arg> {
   }
 }
 
+/// A base implementation for [Family], used by the various providers to
+/// help them define a [Family].
+///
+/// This API is not meant for public consumption.
 class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
     ProviderT extends ProviderBase<R>> extends Family<R, Arg, ProviderT> {
+  /// A base implementation for [Family], used by the various providers to
+  /// help them define a [Family].
+  ///
+  /// This API is not meant for public consumption.
   FamilyBase(
     this._createFn, {
     required ProviderT Function(
@@ -132,6 +140,7 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
 
   final Created Function(RefT ref, Arg arg) _createFn;
 
+  @override
   ProviderT call(Arg argument) => _providerFactory(
         (ref) => _createFn(ref, argument),
         name: name,
@@ -141,8 +150,17 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
       );
 }
 
+/// A base implementation for [Family], used by the various providers to
+/// help them define a [Family].
+///
+/// This API is not meant for public consumption.
+
 class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
     ProviderT extends ProviderBase<R>> extends Family<R, Arg, ProviderT> {
+  /// A base implementation for [Family], used by the various providers to
+  /// help them define a [Family].
+  ///
+  /// This API is not meant for public consumption.
   AutoDisposeFamilyBase(
     this._createFn, {
     required ProviderT Function(
@@ -173,6 +191,7 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
 
   final Created Function(RefT ref, Arg arg) _createFn;
 
+  @override
   ProviderT call(Arg argument) => _providerFactory(
         (ref) => _createFn(ref, argument),
         name: name,
