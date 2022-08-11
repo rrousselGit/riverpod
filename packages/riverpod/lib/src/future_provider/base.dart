@@ -91,10 +91,7 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     var running = true;
     onDispose(() => running = false);
 
-    final wasLoading = getState()?.stateOrNull?.isLoading ?? false;
-    if (!wasLoading) {
-      setState(AsyncLoading<T>());
-    }
+    setState(AsyncLoading<T>());
 
     future.then(
       (value) {

@@ -599,7 +599,6 @@ void main() {
       future = Future.value(21);
 
       expect(callCount, 1);
-
       container.refresh(provider);
 
       expect(callCount, 2);

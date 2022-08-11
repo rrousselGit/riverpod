@@ -84,10 +84,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   @pragma('vm:prefer-inline')
   void _listenStream(Stream<T> stream) {
-    final wasLoading = getState()?.stateOrNull?.isLoading ?? false;
-    if (!wasLoading) {
-      setState(AsyncLoading<T>());
-    }
+    setState(AsyncLoading<T>());
 
     // TODO test that if a provider refreshes with before the stream has emitted a value,
     // then .future isn't notifying listeners

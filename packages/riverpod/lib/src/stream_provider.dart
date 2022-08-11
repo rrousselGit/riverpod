@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
-
 import 'builders.dart';
 import 'common.dart';
 import 'framework.dart';
@@ -62,6 +60,11 @@ abstract class _StreamProviderBase<T> extends ProviderBase<AsyncValue<T>> {
 
   @override
   bool updateShouldNotify(AsyncValue<T> previousState, AsyncValue<T> newState) {
+    final wasLoading = previousState is AsyncLoading;
+    final isLoading = newState is AsyncLoading;
+
+    if (wasLoading || isLoading) return wasLoading != isLoading;
+
     return true;
   }
 }

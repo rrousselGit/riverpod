@@ -155,15 +155,12 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
     final state = getState();
     if (state == null) {
-      throw StateError('uninitialized');
+      throw StateError('Tried to read the state of an uninitialized provider');
     }
 
-    return state.map(
-      error: (error) => throwErrorWithCombinedStackTrace(
-        error.error,
-        error.stackTrace,
-      ),
-      data: (data) => data.state,
+    return state.when(
+      error: throwErrorWithCombinedStackTrace,
+      data: (data) => data,
     );
   }
 
@@ -317,7 +314,6 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
       // TODO move outside this function?
       _mounted = true;
       create();
-      // setState(provider.create(this));
     } catch (err, stack) {
       assert(() {
         _debugDidSetState = true;
