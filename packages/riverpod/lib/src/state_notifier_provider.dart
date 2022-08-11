@@ -1,9 +1,6 @@
 import 'package:state_notifier/state_notifier.dart';
 
 import 'internals.dart';
-import 'listenable.dart';
-import 'result.dart';
-import 'run_guarded.dart';
 
 part 'state_notifier_provider/auto_dispose.dart';
 part 'state_notifier_provider/base.dart';

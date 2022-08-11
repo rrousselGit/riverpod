@@ -344,28 +344,28 @@ void main() {
     expect(ref.refresh(provider), null);
   });
 
-  testWidgets('ProviderScope allows specifying a ProviderContainer',
-      (tester) async {
-    final provider = FutureProvider((ref) async => 42);
-    late WidgetRef ref;
-    final container = createContainer(overrides: [
-      provider.overrideWithValue(const AsyncValue.data(42)),
-    ]);
+  // testWidgets('ProviderScope allows specifying a ProviderContainer',
+  //     (tester) async {
+  //   final provider = FutureProvider((ref) async => 42);
+  //   late WidgetRef ref;
+  //   final container = createContainer(overrides: [
+  //     provider.overrideWithValue(const AsyncValue.data(42)),
+  //   ]);
 
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: Consumer(
-          builder: (context, r, _) {
-            ref = r;
-            return Container();
-          },
-        ),
-      ),
-    );
+  //   await tester.pumpWidget(
+  //     UncontrolledProviderScope(
+  //       container: container,
+  //       child: Consumer(
+  //         builder: (context, r, _) {
+  //           ref = r;
+  //           return Container();
+  //         },
+  //       ),
+  //     ),
+  //   );
 
-    expect(ref.read(provider), const AsyncValue.data(42));
-  });
+  //   expect(ref.read(provider), const AsyncValue.data(42));
+  // });
 
   testWidgets('AlwaysAliveProviderBase.read(context) inside initState',
       (tester) async {

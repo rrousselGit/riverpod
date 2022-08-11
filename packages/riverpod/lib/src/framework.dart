@@ -7,9 +7,6 @@ import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'devtool.dart';
 import 'internals.dart';
-import 'listenable.dart';
-import 'result.dart';
-import 'run_guarded.dart';
 import 'stack_trace.dart';
 
 part 'framework/always_alive.dart';

@@ -1,6 +1,4 @@
 import 'internals.dart';
-import 'listenable.dart';
-import 'result.dart';
 import 'state_controller.dart';
 
 part 'state_provider/auto_dispose.dart';
