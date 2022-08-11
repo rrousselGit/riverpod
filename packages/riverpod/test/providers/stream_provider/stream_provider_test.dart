@@ -688,8 +688,10 @@ void main() {
 
     verifyOnly(
       listener,
-      listener(const AsyncValue.loading(),
-          AsyncValue<int>.error(error, stackTrace: stack)),
+      listener(
+        const AsyncValue.loading(),
+        AsyncValue<int>.error(error, stackTrace: stack),
+      ),
     );
 
     controller.add(21);

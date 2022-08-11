@@ -157,17 +157,17 @@ void main() {
       });
     });
 
-    // test('can be overridden by anything', () {
-    //   final provider = Provider.autoDispose((_) => 42);
-    //   final AutoDisposeProviderBase<int> override = Provider.autoDispose((_) {
-    //     return 21;
-    //   });
-    //   final container = createContainer(overrides: [
-    //     provider.overrideWithProvider(override),
-    //   ]);
+    test('can be overridden by anything', () {
+      final provider = Provider.autoDispose<num>((_) => 42);
+      final override = Provider.autoDispose<int>((_) {
+        return 21;
+      });
+      final container = createContainer(overrides: [
+        provider.overrideWithProvider(override),
+      ]);
 
-    //   expect(container.read(provider), 21);
-    // });
+      expect(container.read(provider), 21);
+    });
 
     test('can be auto-scoped', () async {
       final dep = Provider((ref) => 0);

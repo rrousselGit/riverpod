@@ -481,7 +481,7 @@ void main() {
         final first = StateNotifierProvider<Counter, int>((ref) => counter);
         final provider = Provider((ref) => ref.watch(first));
 
-        final sub = container.listen<Object?>(
+        final sub = container.listen(
           provider.select((value) => value),
           (_, __) {},
         );

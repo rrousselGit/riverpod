@@ -2,6 +2,9 @@ part of '../framework.dart';
 
 /// Adds [selectAsync] to [ProviderListenable]
 mixin AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
+  /// The future that [selectAsync] will query
+  ProviderListenable<Future<Input>> get future;
+
   /// {@template riverpod.async_select}
   /// A variant of [select] for asynchronous values
   ///
@@ -34,18 +37,29 @@ mixin AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
   ProviderListenable<Future<Output>> selectAsync<Output>(
     Output Function(Input data) selector,
   ) {
-    return _AlwaysAliveAsyncSelector(selector: selector, provider: this);
+    return _AlwaysAliveAsyncSelector(
+      selector: selector,
+      provider: this,
+      future: future,
+    );
   }
 }
 
 /// Adds [selectAsync] to [AlwaysAliveProviderListenable]
 mixin AlwaysAliveAsyncSelector<Input>
     on AlwaysAliveProviderListenable<AsyncValue<Input>> {
+  /// The future that [selectAsync] will query
+  AlwaysAliveProviderListenable<Future<Input>> get future;
+
   /// {@macro riverpod.async_select}
   AlwaysAliveProviderListenable<Future<Output>> selectAsync<Output>(
     Output Function(Input data) selector,
   ) {
-    return _AlwaysAliveAsyncSelector(selector: selector, provider: this);
+    return _AlwaysAliveAsyncSelector(
+      selector: selector,
+      provider: this,
+      future: future,
+    );
   }
 }
 
@@ -58,11 +72,15 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
   /// An internal class for `ProviderBase.select`.
   _AsyncSelector({
     required this.provider,
+    required this.future,
     required this.selector,
   });
 
   /// The provider that was selected
   final ProviderListenable<AsyncValue<Input>> provider;
+
+  /// The future associated to the listened provider
+  final ProviderListenable<Future<Input>> future;
 
   /// The selector applied
   final Output Function(Input) selector;
@@ -211,8 +229,5 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
   }
 
   @override
-  Future<Output> read(Node node) {
-    // TODO return "read(.future).then(selector)"
-    throw UnimplementedError();
-  }
+  Future<Output> read(Node node) => future.read(node).then(selector);
 }

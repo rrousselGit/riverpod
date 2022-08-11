@@ -270,4 +270,37 @@ void main() {
     expect(await container.read(b.future), 1);
     expect(buildCount, 2);
   });
+
+  group('Supports ProviderContainer.read', () {
+    test('and resolves with data', () async {
+      final container = createContainer();
+      final provider = FutureProvider((ref) async => 0);
+
+      expect(
+        container.read(provider.selectAsync((data) => data.toString())),
+        completion('0'),
+      );
+    });
+
+    test('resolves with error', () async {
+      final container = createContainer();
+      final provider =
+          FutureProvider<int>((ref) async => throw StateError('err'));
+
+      expect(
+        container.read(provider.selectAsync((data) => data)),
+        throwsStateError,
+      );
+    });
+
+    test('emits exceptions inside selectors as Future.error', () async {
+      final container = createContainer();
+      final provider = FutureProvider<int>((ref) async => 42);
+
+      expect(
+        container.read(provider.selectAsync((data) => throw StateError('err'))),
+        throwsStateError,
+      );
+    });
+  });
 }
