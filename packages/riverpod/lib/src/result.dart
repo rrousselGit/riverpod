@@ -105,7 +105,7 @@ class ResultError<State> implements Result<State> {
     required R Function(State data) data,
     required R Function(Object error, StackTrace stackTrace) error,
   }) {
-    return error(this.error, this.stackTrace);
+    return error(this.error, stackTrace);
   }
 
   @override
