@@ -67,6 +67,10 @@ it, then the request will be performed again.
 But if the request completed successfully, the state will be preserved
 and re-entering the screen will not trigger a new request.
 
+:::info
+In version 1.0.x, the equivalent of `keepAlive` is the property called `maintainState`.
+:::
+
 ## Example: Canceling HTTP requests when no longer used
 
 The `autoDispose` modifier could be combined with [FutureProvider] and `ref.onDispose`
