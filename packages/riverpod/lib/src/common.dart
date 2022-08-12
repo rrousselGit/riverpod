@@ -1,8 +1,25 @@
 import 'package:meta/meta.dart';
 
+import 'framework.dart';
 import 'future_provider.dart' show FutureProvider;
 import 'stack_trace.dart';
 import 'stream_provider.dart' show StreamProvider;
+
+/// An extension for [asyncTransition].
+extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
+  /// Internal utility for transitioning an [AsyncValue] after a provider refresh.
+  void asyncTransition({required bool didChangeDependency}) {
+    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+    final previous = getState()?.requireState;
+    if (previous == null || didChangeDependency) {
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      setState(AsyncLoading<T>());
+    } else {
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      setState(AsyncLoading<T>().copyWithPrevious(previous));
+    }
+  }
+}
 
 /// A utility for safely manipulating asynchronous data.
 ///

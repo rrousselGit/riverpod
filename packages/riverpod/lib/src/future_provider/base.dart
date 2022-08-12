@@ -64,13 +64,7 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   @override
   void create({required bool didChangeDependency}) {
-    final previous = getState()?.requireState;
-    if (previous == null || didChangeDependency) {
-      setState(AsyncLoading<T>());
-    } else {
-      setState(AsyncLoading<T>().copyWithPrevious(previous));
-    }
-
+    asyncTransition(didChangeDependency: didChangeDependency);
     // TODO add a Proxy variant that accepts T instead of Result<T>
     _streamNotifier.result ??= Result.data(_streamController.stream);
 

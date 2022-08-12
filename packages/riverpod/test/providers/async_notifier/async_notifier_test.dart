@@ -216,7 +216,53 @@ void main() {
         expect(notifier.state, const AsyncData(1));
         verify(listener()).called(1);
       });
+
+      test('can be read inside build', () {
+        final dep = StateProvider((ref) => 0);
+        late AsyncValue<int> state;
+        final provider = AsyncNotifierProvider<TestNotifier<int>, int>(
+          () {
+            late TestNotifier<int> notifier;
+            return notifier = TestNotifier<int>(
+              (ref) {
+                state = notifier.state;
+                return Future.value(ref.watch(dep));
+              },
+            );
+          },
+        );
+        final container = createContainer();
+
+        container.read(provider);
+
+        expect(state, const AsyncLoading<int>());
+
+        container.read(provider.notifier).state = const AsyncData(42);
+        container.refresh(provider);
+
+        expect(
+          state,
+          const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
+        );
+      });
+
+      test('notifies listeners when the setter is called', () {
+        final provider = _TestNotifierProvider((ref) => 0);
+        final container = createContainer();
+        final listener = Listener<AsyncValue<int>>();
+
+        container.listen(provider, listener);
+
+        verifyZeroInteractions(listener);
+
+        container.read(provider.notifier).state = const AsyncData(42);
+
+        verifyOnly(listener, listener(const AsyncData(0), const AsyncData(42)));
+      });
     });
+
+    test('performs AsyncValue transition on refresh', () {});
+    test('does not perform AsyncValue transition on dependency change', () {});
 
     group('AsyncNotifier.future', () {
       test('retuns a Future identical to that of .future', () {

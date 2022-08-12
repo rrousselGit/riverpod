@@ -104,7 +104,7 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
         setState(AsyncError(err, stack));
       },
       data: (notifier) {
-        setState(AsyncLoading<T>());
+        asyncTransition(didChangeDependency: didChangeDependency);
         final futureOrResult = Result.guard(notifier.build);
 
         // TODO test build throws -> provider emits AsyncError synchronously & .future emits Future.error
