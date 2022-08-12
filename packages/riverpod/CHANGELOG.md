@@ -17,7 +17,7 @@ Non-breaking changes:
 
 - feat: A new `AutoDisposeRef.keepAlive()` function is added. It is meant to replace
   `AutoDisposeRef.maintainState` to make logic for preventing the disposal of a provider more reusable.
-- `AutoDisposeRef.maintainState` is deprecated. Use the new ``AutoDisposeRef.keepAlive()` instead.
+- `AutoDisposeRef.maintainState` is deprecated. Use the new `AutoDisposeRef.keepAlive()` instead.
 - feat: Add support for `ref.invalidate(family)` to recompiute an entire family (#1517)
 - fixed a bug where `AsyncValue.whenData` did not preserve `AsyncValue.isLoading/isRefreshing`
 
@@ -391,7 +391,7 @@ Fix an issue where `*Provider.autoDispose` were not able to specify the
 
 - **Breaking** `AsyncValue.copyWith` is removed
 - **Breaking** `AsyncValue.error(..., stacktrace)` is now a named parameter instead of postional parameter.
-- **Breaking** `AsyncValue.when(loading: )` and ``AsyncValue.when(error: )` (and `when` variants)
+- **Breaking** `AsyncValue.when(loading: )` and `AsyncValue.when(error: )` (and `when` variants)
   now receive an extra "previous" parameter.
 - Deprecated `AsyncValue.data` in favor of `AsyncValue.value`
 - Allowed `AsyncData`, `AsyncError` and `AsyncLoading` to be extended
