@@ -89,8 +89,7 @@ class ResultError<State> implements Result<State> {
   State? get stateOrNull => null;
 
   @override
-  // ignore: only_throw_errors
-  State get requireState => throw error;
+  State get requireState => Error.throwWithStackTrace(error, stackTrace);
 
   @override
   R map<R>({

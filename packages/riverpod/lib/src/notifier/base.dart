@@ -10,6 +10,21 @@ abstract class Notifier<State> extends NotifierBase<State> {
 
   @override
   NotifierProviderRef<State> get ref => _element;
+
+  @protected
+  @override
+  State get state {
+    // TODO test flush
+    _element.flush();
+    // ignore: invalid_use_of_protected_member
+    return _element.requireState;
+  }
+
+  @override
+  set state(State value) {
+    // ignore: invalid_use_of_protected_member
+    _element.setState(value);
+  }
 }
 
 /// {@macro riverpod.providerrefbase}
@@ -57,15 +72,15 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
   void create({required bool didChangeDependency}) {
     final provider = this.provider as _NotifierProviderBase<NotifierT, T>;
 
-    final notifierResult =
-        _notifierNotifier.result ??= Result.guard(provider._createNotifier);
+    final notifierResult = _notifierNotifier.result ??= Result.guard(() {
+      return provider._createNotifier().._setElement(this);
+    });
 
 // TODO test if Element fails to init, the provider rethrows the error
     final notifier = notifierResult.requireState;
 
-    notifier
-      .._setElement(this)
-      ..build();
+// TODO test if Element fails to init, the provider rethrows the error
+    setState(notifier.build());
   }
 
   @override

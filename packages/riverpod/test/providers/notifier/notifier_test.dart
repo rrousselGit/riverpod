@@ -1,393 +1,391 @@
-void main() {}
-
-// import 'package:meta/meta.dart';
-// import 'package:mockito/mockito.dart';
-// import 'package:riverpod/riverpod.dart' hide ErrorListener;
-// import 'package:test/test.dart';
+import 'package:meta/meta.dart';
+import 'package:mockito/mockito.dart';
+import 'package:riverpod/riverpod.dart' hide ErrorListener;
+import 'package:test/test.dart';
 
-// import '../../utils.dart';
+import '../../utils.dart';
 
-// void main() {
-//   group('NotifierProvider', () {
-//     test(
-//         'uses notifier.build as initial state and update listeners when state changes',
-//         () {
-//       final provider = _TestNotifierProvider((ref) => 0);
-//       final container = createContainer();
-//       final listener = Listener<int>();
+void main() {
+  group('NotifierProvider', () {
+    test(
+        'uses notifier.build as initial state and update listeners when state changes',
+        () {
+      final provider = _TestNotifierProvider((ref) => 0);
+      final container = createContainer();
+      final listener = Listener<int>();
 
-//       container.listen(provider, listener, fireImmediately: true);
+      container.listen(provider, listener, fireImmediately: true);
 
-//       verifyOnly(listener, listener(null, 0));
+      verifyOnly(listener, listener(null, 0));
 
-//       container.read(provider.notifier).update((state) => state + 1);
+      container.read(provider.notifier).update((state) => state + 1);
 
-//       verifyOnly(listener, listener(0, 1));
-//     });
+      verifyOnly(listener, listener(0, 1));
+    });
 
-//     test('preserves the notifier between watch updates', () async {
-//       final dep = StateProvider((ref) => 0);
-//       final provider = _TestNotifierProvider((ref) {
-//         return ref.watch(dep);
-//       });
-//       final container = createContainer();
-//       final listener = Listener<TestNotifier<int>>();
+    test('preserves the notifier between watch updates', () async {
+      final dep = StateProvider((ref) => 0);
+      final provider = _TestNotifierProvider((ref) {
+        return ref.watch(dep);
+      });
+      final container = createContainer();
+      final listener = Listener<TestNotifier<int>>();
 
-//       container.listen(provider.notifier, listener, fireImmediately: true);
+      container.listen(provider.notifier, listener, fireImmediately: true);
 
-//       final notifier = container.read(provider.notifier);
+      final notifier = container.read(provider.notifier);
 
-//       verifyOnly(listener, listener(null, notifier));
+      verifyOnly(listener, listener(null, notifier));
 
-//       container.read(dep.notifier).update((state) => state + 1);
-//       await container.pump();
+      container.read(dep.notifier).update((state) => state + 1);
+      await container.pump();
 
-//       verifyNoMoreInteractions(listener);
-//       expect(container.read(provider.notifier), notifier);
-//     });
+      verifyNoMoreInteractions(listener);
+      expect(container.read(provider.notifier), notifier);
+    });
 
-//     test('calls notifier.build on every watch update', () async {
-//       final dep = StateProvider((ref) => 0);
-//       final provider = _TestNotifierProvider((ref) {
-//         return ref.watch(dep);
-//       });
-//       final container = createContainer();
-//       final listener = Listener<int>();
+    test('calls notifier.build on every watch update', () async {
+      final dep = StateProvider((ref) => 0);
+      final provider = _TestNotifierProvider((ref) {
+        return ref.watch(dep);
+      });
+      final container = createContainer();
+      final listener = Listener<int>();
 
-//       container.listen(provider, listener, fireImmediately: true);
+      container.listen(provider, listener, fireImmediately: true);
 
-//       verifyOnly(listener, listener(null, 0));
+      verifyOnly(listener, listener(null, 0));
 
-//       container.read(dep.notifier).update((state) => state + 1);
+      container.read(dep.notifier).update((state) => state + 1);
 
-//       verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener);
 
-//       await container.pump();
+      await container.pump();
 
-//       verifyOnly(listener, listener(0, 1));
-//     });
+      verifyOnly(listener, listener(0, 1));
+    });
 
-//     test('After a state initialization error, the notifier is still available',
-//         () {
-//       final provider = _TestNotifierProvider<int>((ref) {
-//         throw StateError('Hey');
-//       });
-//       final container = createContainer();
+    test('After a state initialization error, the notifier is still available',
+        () {
+      final provider = _TestNotifierProvider<int>((ref) {
+        throw StateError('Hey');
+      });
+      final container = createContainer();
 
-//       expect(
-//         () => container.read(provider),
-//         throwsStateError,
-//       );
+      expect(
+        () => container.read(provider),
+        throwsStateError,
+      );
 
-//       container.read(provider.notifier);
-//     });
+      container.read(provider.notifier);
+    });
+
+    test('handles fail to initialize the notifier', () {
+      final err = UnimplementedError();
+      final stack = StackTrace.current;
+      final provider = NotifierProvider<TestNotifier<int>, int>(
+        () => Error.throwWithStackTrace(err, stack),
+      );
+      final container = createContainer();
+      final listener = ErrorListener();
 
-//     test('handles fail to initialize the notifier', () {
-//       final err = UnimplementedError();
-//       final stack = StackTrace.current;
-//       final provider = NotifierProvider<TestNotifier<int>, int>(
-//         () => Error.throwWithStackTrace(err, stack),
-//       );
-//       final container = createContainer();
-//       final listener = ErrorListener();
+      expect(
+        () => container.read(provider.notifier),
+        throwsUnimplementedError,
+      );
+      expect(
+        () => container.read(provider),
+        throwsUnimplementedError,
+      );
 
-//       expect(
-//         () => container.read(provider.notifier),
-//         throwsUnimplementedError,
-//       );
-//       expect(
-//         () => container.read(provider),
-//         throwsUnimplementedError,
-//       );
+      final stateSub =
+          container.listen(provider, (previous, next) {}, onError: listener);
+
+      verifyNoMoreInteractions(listener);
 
-//       final stateSub =
-//           container.listen(provider, (previous, next) {}, onError: listener);
+      container.listen(
+        provider,
+        (previous, next) {},
+        onError: listener,
+        fireImmediately: true,
+      );
+
+      verifyOnly(listener, listener(err, stack));
+
+      final notifierSub = container
+          .listen(provider.notifier, (previous, next) {}, onError: listener);
+
+      verifyNoMoreInteractions(listener);
+
+      container.listen(
+        provider.notifier,
+        (previous, next) {},
+        onError: listener,
+        fireImmediately: true,
+      );
 
-//       verifyNoMoreInteractions(listener);
+      verifyOnly(listener, listener(err, stack));
 
-//       container.listen(
-//         provider,
-//         (previous, next) {},
-//         onError: listener,
-//         fireImmediately: true,
-//       );
-
-//       verifyOnly(listener, listener(err, stack));
-
-//       final notifierSub = container
-//           .listen(provider.notifier, (previous, next) {}, onError: listener);
-
-//       verifyNoMoreInteractions(listener);
+      expect(stateSub.read, throwsUnimplementedError);
+      expect(notifierSub.read, throwsUnimplementedError);
+    });
 
-//       container.listen(
-//         provider.notifier,
-//         (previous, next) {},
-//         onError: listener,
-//         fireImmediately: true,
-//       );
+    test('can read/set the current state within the notifier', () {
+      final provider = _TestNotifierProvider<int>((ref) => 0);
+      final container = createContainer();
+      final listener = Listener<int>();
 
-//       verifyOnly(listener, listener(err, stack));
+      container.listen(provider, listener, fireImmediately: true);
+      final notifier = container.read(provider.notifier);
 
-//       expect(stateSub.read, throwsUnimplementedError);
-//       expect(notifierSub.read, throwsUnimplementedError);
-//     });
+      expect(notifier.state, 0);
+      verifyOnly(listener, listener(null, 0));
 
-//     test('can read/set the current state within the notifier', () {
-//       final provider = _TestNotifierProvider<int>((ref) => 0);
-//       final container = createContainer();
-//       final listener = Listener<int>();
+      notifier.state++;
 
-//       container.listen(provider, listener, fireImmediately: true);
-//       final notifier = container.read(provider.notifier);
+      expect(notifier.state, 1);
+      verifyOnly(listener, listener(0, 1));
 
-//       expect(notifier.state, 0);
-//       verifyOnly(listener, listener(null, 0));
+      notifier.state++;
 
-//       notifier.state++;
+      expect(notifier.state, 2);
+      verifyOnly(listener, listener(1, 2));
+    });
 
-//       expect(notifier.state, 1);
-//       verifyOnly(listener, listener(0, 1));
+    test(
+        'Reading the state inside the notifier rethrows initilization error, if any',
+        () {
+      final provider =
+          _TestNotifierProvider<int>((ref) => throw UnimplementedError());
+      final container = createContainer();
 
-//       notifier.state++;
+      final notifier = container.read(provider.notifier);
 
-//       expect(notifier.state, 2);
-//       verifyOnly(listener, listener(1, 2));
-//     });
+      expect(() => notifier.state, throwsUnimplementedError);
+    });
 
-//     test(
-//         'Reading the state inside the notifier rethrows initilization error, if any',
-//         () {
-//       final provider =
-//           _TestNotifierProvider<int>((ref) => throw UnimplementedError());
-//       final container = createContainer();
+    test(
+        'Setting the state after an initialization error allow listening the state again',
+        () {
+      final err = UnimplementedError();
+      final stack = StackTrace.current;
+      final provider = _TestNotifierProvider<int>(
+          (ref) => Error.throwWithStackTrace(err, stack));
+      final container = createContainer();
+      final listener = Listener<int>();
+      final onError = ErrorListener();
 
-//       final notifier = container.read(provider.notifier);
+      container.listen(
+        provider,
+        listener,
+        onError: onError,
+        fireImmediately: true,
+      );
+      final notifier = container.read(provider.notifier);
 
-//       expect(() => notifier.state, throwsUnimplementedError);
-//     });
+      verifyOnly(onError, onError(err, stack));
+      verifyZeroInteractions(listener);
 
-//     test(
-//         'Setting the state after an initialization error allow listening the state again',
-//         () {
-//       final err = UnimplementedError();
-//       final stack = StackTrace.current;
-//       final provider = _TestNotifierProvider<int>(
-//           (ref) => Error.throwWithStackTrace(err, stack));
-//       final container = createContainer();
-//       final listener = Listener<int>();
-//       final onError = ErrorListener();
+      expect(() => notifier.state, throwsUnimplementedError);
 
-//       container.listen(
-//         provider,
-//         listener,
-//         onError: onError,
-//         fireImmediately: true,
-//       );
-//       final notifier = container.read(provider.notifier);
+      notifier.state = 0;
 
-//       verifyOnly(onError, onError(err, stack));
-//       verifyZeroInteractions(listener);
+      verifyOnly(listener, listener(null, 0));
+      verifyNoMoreInteractions(onError);
+      expect(notifier.state, 0);
+      expect(container.read(provider), 0);
 
-//       expect(() => notifier.state, throwsUnimplementedError);
+      container.listen(
+        provider,
+        listener,
+        onError: onError,
+        fireImmediately: true,
+      );
 
-//       notifier.state = 0;
+      verifyOnly(listener, listener(null, 0));
+      verifyNoMoreInteractions(onError);
+    });
 
-//       verifyOnly(listener, listener(null, 0));
-//       verifyNoMoreInteractions(onError);
-//       expect(notifier.state, 0);
-//       expect(container.read(provider), 0);
+    test('reading notifier.state on invalidated provider rebuilds the provider',
+        () {
+      final dep = StateProvider((ref) => 0);
+      final provider = _TestNotifierProvider<int>((ref) => ref.watch(dep));
+      final container = createContainer();
+      final listener = Listener<int>();
 
-//       container.listen(
-//         provider,
-//         listener,
-//         onError: onError,
-//         fireImmediately: true,
-//       );
+      container.listen(provider, listener);
+      final notifier = container.read(provider.notifier);
 
-//       verifyOnly(listener, listener(null, 0));
-//       verifyNoMoreInteractions(onError);
-//     });
+      expect(notifier.state, 0);
 
-//     test('reading notifier.state on invalidated provider rebuilds the provider',
-//         () {
-//       final dep = StateProvider((ref) => 0);
-//       final provider = _TestNotifierProvider<int>((ref) => ref.watch(dep));
-//       final container = createContainer();
-//       final listener = Listener<int>();
+      notifier.state = -1;
 
-//       container.listen(provider, listener);
-//       final notifier = container.read(provider.notifier);
+      verifyOnly(listener, listener(0, -1));
 
-//       expect(notifier.state, 0);
+      container.read(dep.notifier).state++;
 
-//       notifier.state = -1;
+      expect(notifier.state, 1);
+      verifyOnly(listener, listener(-1, 1));
+    });
 
-//       verifyOnly(listener, listener(0, -1));
+    test('supports ref.refresh(provider)', () {
+      final provider = _TestNotifierProvider<int>((ref) => 0);
+      final container = createContainer();
 
-//       container.read(dep.notifier).state++;
+      final notifier = container.read(provider.notifier);
 
-//       expect(notifier.state, 1);
-//       verifyOnly(listener, listener(-1, 1));
-//     });
+      expect(container.read(provider), 0);
 
-//     test('supports ref.refresh(provider)', () {
-//       final provider = _TestNotifierProvider<int>((ref) => 0);
-//       final container = createContainer();
+      notifier.state = 42;
 
-//       final notifier = container.read(provider.notifier);
+      expect(container.read(provider), 42);
 
-//       expect(container.read(provider), 0);
+      expect(container.refresh(provider), 0);
+      expect(container.read(provider), 0);
+      expect(notifier.state, 0);
+      expect(container.read(provider.notifier), notifier);
+    });
 
-//       notifier.state = 42;
+    test('supports listenSelf((State? prev, State next) {})', () {
+      final listener = Listener<int>();
+      final onError = ErrorListener();
+      final provider = _TestNotifierProvider<int>((ref) {
+        ref.listenSelf(listener, onError: onError);
+        Error.throwWithStackTrace(42, StackTrace.empty);
+      });
+      final container = createContainer();
 
-//       expect(container.read(provider), 42);
+      expect(() => container.read(provider), throwsA(42));
 
-//       expect(container.refresh(provider), 0);
-//       expect(container.read(provider), 0);
-//       expect(notifier.state, 0);
-//       expect(container.read(provider.notifier), notifier);
-//     });
+      verifyOnly(onError, onError(42, StackTrace.empty));
+    });
 
-//     test('supports listenSelf((State? prev, State next) {})', () {
-//       final listener = Listener<int>();
-//       final onError = ErrorListener();
-//       final provider = _TestNotifierProvider<int>((ref) {
-//         ref.listenSelf(listener, onError: onError);
-//         Error.throwWithStackTrace(42, StackTrace.empty);
-//       });
-//       final container = createContainer();
+    test('filters state update by identical by default', () {
+      final provider = _TestNotifierProvider<Equal<int>>((ref) => Equal(42));
+      final container = createContainer();
+      final listener = Listener<Equal<int>>();
 
-//       expect(() => container.read(provider), throwsA(42));
+      container.listen(provider, listener);
+      final notifier = container.read(provider.notifier);
+      final firstState = notifier.state;
 
-//       verifyOnly(onError, onError(42, StackTrace.empty));
-//     });
+      notifier.state = notifier.state;
 
-//     test('filters state update by identical by default', () {
-//       final provider = _TestNotifierProvider<Equal<int>>((ref) => Equal(42));
-//       final container = createContainer();
-//       final listener = Listener<Equal<int>>();
+      verifyZeroInteractions(listener);
 
-//       container.listen(provider, listener);
-//       final notifier = container.read(provider.notifier);
-//       final firstState = notifier.state;
+      final secondState = notifier.state = Equal(42);
 
-//       notifier.state = notifier.state;
+      verifyOnly(listener, listener(firstState, secondState));
+    });
 
-//       verifyZeroInteractions(listener);
+    test(
+        'Can override Notifier.updateShouldNotify to change the default filter logic',
+        () {
+      final provider = _TestNotifierProvider<Equal<int>>(
+        (ref) => Equal(42),
+        updateShouldNotify: (a, b) => a != b,
+      );
+      final container = createContainer();
+      final listener = Listener<Equal<int>>();
 
-//       final secondState = notifier.state = Equal(42);
+      container.listen(provider, listener);
+      final notifier = container.read(provider.notifier);
+      notifier.state = notifier.state;
 
-//       verifyOnly(listener, listener(firstState, secondState));
-//     });
+      verifyZeroInteractions(listener);
 
-//     test(
-//         'Can override Notifier.updateShouldNotify to change the default filter logic',
-//         () {
-//       final provider = _TestNotifierProvider<Equal<int>>(
-//         (ref) => Equal(42),
-//         updateShouldNotify: (a, b) => a != b,
-//       );
-//       final container = createContainer();
-//       final listener = Listener<Equal<int>>();
+      notifier.state = Equal(42);
 
-//       container.listen(provider, listener);
-//       final notifier = container.read(provider.notifier);
-//       notifier.state = notifier.state;
+      verifyZeroInteractions(listener);
 
-//       verifyZeroInteractions(listener);
+      notifier.state = Equal(21);
 
-//       notifier.state = Equal(42);
+      verifyOnly(listener, listener(Equal(42), Equal(21)));
+    }, skip: 'implement Notifier.updateShouldNotify');
 
-//       verifyZeroInteractions(listener);
+    test('can override the Notifier with a matching custom implementation',
+        () {});
 
-//       notifier.state = Equal(21);
+    test('can override Notifier.build', () {});
 
-//       verifyOnly(listener, listener(Equal(42), Equal(21)));
-//     });
+    test('invalidating/refreshing .notifier throws', () {});
 
-//     test('can override the Notifier with a matching custom implementation',
-//         () {});
+    test('calls notifier.initState once', () {});
 
-//     test('can override Notifier.build', () {});
+    test(
+        'calls to onDispose inside initState are executed when the element is destroyed',
+        () {});
 
-//     test('invalidating/refreshing .notifier throws', () {});
+    test(
+        'calls to listenSelf inside initState are cleared when the element is destroyed',
+        () {});
 
-//     test('calls notifier.initState once', () {});
+    test(
+        'calls to listen inside initState are cleared when the element is destroyed',
+        () {});
+  });
 
-//     test(
-//         'calls to onDispose inside initState are executed when the element is destroyed',
-//         () {});
+  group('autoDispose', () {
+    test('keeps state alive if notifier is listened', () {});
 
-//     test(
-//         'calls to listenSelf inside initState are cleared when the element is destroyed',
-//         () {});
+    test('does not rebuild state if only notifier is listened', () {});
+  });
+}
 
-//     test(
-//         'calls to listen inside initState are cleared when the element is destroyed',
-//         () {});
-//   });
+@immutable
+class Equal<T> {
+  // ignore: prefer_const_constructors_in_immutables
+  Equal(this.value);
 
-//   group('autoDispose', () {
-//     test('keeps state alive if notifier is listened', () {});
+  final T value;
 
-//     test('does not rebuild state if only notifier is listened', () {});
-//   });
-// }
+  @override
+  bool operator ==(Object other) => other is Equal<T> && other.value == value;
 
-// @immutable
-// class Equal<T> {
-//   // ignore: prefer_const_constructors_in_immutables
-//   Equal(this.value);
+  @override
+  int get hashCode => Object.hash(runtimeType, value);
+}
 
-//   final T value;
+// ignore: non_constant_identifier_names
+NotifierProvider<TestNotifier<T>, T> _TestNotifierProvider<T>(
+  T Function(Ref<T> ref) init, {
+  bool Function(T prev, T next)? updateShouldNotify,
+}) {
+  return NotifierProvider<TestNotifier<T>, T>(
+    () => TestNotifier(init, updateShouldNotify: updateShouldNotify),
+  );
+}
 
-//   @override
-//   bool operator ==(Object other) => other is Equal<T> && other.value == value;
+class TestNotifier<T> extends Notifier<T> {
+  TestNotifier(this._init, {bool Function(T prev, T next)? updateShouldNotify})
+      : _updateShouldNotify = updateShouldNotify;
 
-//   @override
-//   int get hashCode => Object.hash(runtimeType, value);
-// }
+  final T Function(NotifierProviderRef<T> ref) _init;
 
-// // ignore: non_constant_identifier_names
-// NotifierProvider<TestNotifier<T>, T> _TestNotifierProvider<T>(
-//   T Function(Ref<T> ref) init, {
-//   bool Function(T prev, T next)? updateShouldNotify,
-// }) {
-//   return NotifierProvider<TestNotifier<T>, T>(
-//     () => TestNotifier(init, updateShouldNotify: updateShouldNotify),
-//   );
-// }
+  final bool Function(T prev, T next)? _updateShouldNotify;
 
-// class TestNotifier<T> extends Notifier<T> {
-//   TestNotifier(this._init, {bool Function(T prev, T next)? updateShouldNotify})
-//       : _updateShouldNotify = updateShouldNotify;
+  // overriding to remove the @protected
+  @override
+  T get state => super.state;
 
-//   final T Function(Ref<T> ref) _init;
+  @override
+  set state(T value) {
+    super.state = value;
+  }
 
-//   final bool Function(T prev, T next)? _updateShouldNotify;
+  @override
+  T build() => _init(ref);
 
-//   // overriding to remove the @protected
-//   @override
-//   T get state => super.state;
+  void update(T Function(T state) cb) => state = cb(state);
 
-//   @override
-//   set state(T value) {
-//     super.state = value;
-//   }
+  @override
+  bool updateShouldNotify(T previous, T next) {
+    return _updateShouldNotify?.call(previous, next) ??
+        super.updateShouldNotify(previous, next);
+  }
 
-//   @override
-//   T build() => _init(ref);
-
-//   void update(T Function(T state) cb) => state = cb(state);
-
-//   @override
-//   bool updateShouldNotify(T previous, T next) {
-//     return _updateShouldNotify?.call(previous, next) ??
-//         super.updateShouldNotify(previous, next);
-//   }
-
-//   @override
-//   String toString() {
-//     return 'TestNotifier<$T>#$hashCode';
-//   }
-// }
+  @override
+  String toString() {
+    return 'TestNotifier<$T>#$hashCode';
+  }
+}

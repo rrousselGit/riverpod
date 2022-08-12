@@ -21,14 +21,14 @@ class SynchronousFuture<T> implements Future<T> {
   ///
   ///  * [Future.value] for information about creating a regular
   ///    [Future] that completes with a value.
-  SynchronousFuture(this._value);
+  SynchronousFuture(this.value);
 
-  final T _value;
+  final T value;
 
   @override
   Stream<T> asStream() {
     final controller = StreamController<T>();
-    controller.add(_value);
+    controller.add(value);
     controller.close();
     return controller.stream;
   }
@@ -42,7 +42,7 @@ class SynchronousFuture<T> implements Future<T> {
     FutureOr<R> Function(T value) onValue, {
     Function? onError,
   }) {
-    final dynamic result = onValue(_value);
+    final dynamic result = onValue(value);
     if (result is Future<R>) {
       return result;
     }
@@ -51,7 +51,7 @@ class SynchronousFuture<T> implements Future<T> {
 
   @override
   Future<T> timeout(Duration timeLimit, {FutureOr<T> Function()? onTimeout}) {
-    return Future<T>.value(_value).timeout(timeLimit, onTimeout: onTimeout);
+    return Future<T>.value(value).timeout(timeLimit, onTimeout: onTimeout);
   }
 
   @override
@@ -59,7 +59,7 @@ class SynchronousFuture<T> implements Future<T> {
     try {
       final result = action();
       if (result is Future) {
-        return result.then<T>((dynamic value) => _value);
+        return result.then<T>((dynamic value) => this.value);
       }
       return this;
     } catch (e, stack) {

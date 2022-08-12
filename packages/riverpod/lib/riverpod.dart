@@ -1,5 +1,12 @@
 export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
 
+export 'src/async_notifier.dart'
+    show
+        AsyncNotifier,
+        AsyncNotifierProvider,
+        AsyncNotifierProviderElement,
+        AsyncNotifierProviderRef;
+
 export 'src/common.dart'
     show AsyncValue, AsyncData, AsyncLoading, AsyncError, AsyncValueX;
 
@@ -40,6 +47,13 @@ export 'src/future_provider.dart'
         FutureProviderRef,
         AutoDisposeFutureProviderElement,
         FutureProviderElement;
+
+export 'src/notifier.dart'
+    show
+        Notifier,
+        NotifierProvider,
+        NotifierProviderElement,
+        NotifierProviderRef;
 
 export 'src/provider.dart'
     show

@@ -12,6 +12,28 @@ abstract class AsyncNotifier<State> extends AsyncNotifierBase<State> {
 
   @override
   AsyncNotifierProviderRef<State> get ref => _element;
+
+  @protected
+  @override
+  AsyncValue<State> get state {
+    // TODO test flush
+    _element.flush();
+    // ignore: invalid_use_of_protected_member
+    return _element.requireState;
+  }
+
+  @override
+  set state(AsyncValue<State> value) {
+    // ignore: invalid_use_of_protected_member
+    _element.setState(value);
+  }
+
+  @override
+  Future<State> future() {
+    // TODO test flush
+    _element.flush();
+    return _element._futureNotifier.value;
+  }
 }
 
 /// {@macro riverpod.providerrefbase}
@@ -65,8 +87,9 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
   void create({required bool didChangeDependency}) {
     final provider = this.provider as _AsyncNotifierProviderBase<NotifierT, T>;
 
-    final notifierResult =
-        _notifierNotifier.result ??= Result.guard(provider._createNotifier);
+    final notifierResult = _notifierNotifier.result ??= Result.guard(() {
+      return provider._createNotifier().._setElement(this);
+    });
 
 // TODO initialize Completer for .future
 
@@ -75,29 +98,48 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     // TODO test notifier constructor throws -> .future emits Future.error
     notifierResult.when(
       error: (err, stack) {
-        _futureNotifier.result = Result.data(Future.error(err, stack));
+        _futureNotifier.result = Result.data(
+          Future.error(err, stack)
+            // TODO test ignore
+            ..ignore(),
+        );
         setState(AsyncError(err, stack));
       },
       data: (notifier) {
-        notifier._setElement(this);
+        setState(AsyncLoading<T>());
         final futureOrResult = Result.guard(notifier.build);
 
         // TODO test build throws -> provider emits AsyncError synchronously & .future emits Future.error
         // TODO test build resolves with error -> emits AsyncError & .future emits Future.error
         // TODO test build emits value -> .future emits value & provider emits AsyncData
         futureOrResult.when(
-          error: (err, stack) {},
+          error: (err, stack) {
+            setState(AsyncError(err, stack));
+            _futureNotifier.result = Result.data(
+              Future<T>.error(err, stack)
+                // TODO test ignore
+                ..ignore(),
+            );
+          },
           data: (futureOr) {
             if (futureOr is Future<T>) {
-              _futureNotifier.result = Result.data(
-                futureOr.then(
-                  (_) => requireState.when<T>(
-                    loading: () => throw StateError(
-                        'Failed to initialize the provider. Did you forget to set a value during "build"?'),
-                    error: Error.throwWithStackTrace,
-                    data: (data) => data,
-                  ),
-                ),
+              _futureNotifier.result = Result.data(futureOr);
+
+              // TODO stop listening on dispose
+              futureOr.then(
+                (value) => setState(AsyncData(value)),
+                // ignore: avoid_types_on_closure_parameters
+                onError: (Object err, StackTrace stack) {
+                  // TODO test error
+                  setState(AsyncError(err, stack));
+                },
+                // TODO uncomment when using Future<void>
+                // (_) => requireState.when<T>(
+                //   loading: () => throw StateError(
+                //       'Failed to initialize the provider. Did you forget to set a value during "build"?'),
+                //   error: Error.throwWithStackTrace,
+                //   data: (data) => data,
+                // ),
               );
             } else {
               _futureNotifier.result = Result.data(SynchronousFuture(futureOr));

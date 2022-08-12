@@ -71,8 +71,10 @@ abstract class _NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
   /// has changes.
   ProviderListenable<NotifierT> get notifier;
 
-  NotifierT Function() _createNotifier;
+  final NotifierT Function() _createNotifier;
 
   @override
-  bool updateShouldNotify(T previousState, T newState) => true;
+  bool updateShouldNotify(T previousState, T newState) {
+    return !identical(previousState, newState);
+  }
 }
