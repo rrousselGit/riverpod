@@ -496,7 +496,7 @@ void main() {
           expect(
             container.read(provider),
             const AsyncLoading<int>().copyWithPrevious(
-              const AsyncError(42, stackTrace: StackTrace.empty),
+              const AsyncError(42, StackTrace.empty),
             ),
           );
 
@@ -505,7 +505,7 @@ void main() {
           expect(
             container.read(provider),
             const AsyncLoading<int>().copyWithPrevious(
-              const AsyncError(42, stackTrace: StackTrace.empty),
+              const AsyncError(42, StackTrace.empty),
             ),
           );
 
@@ -520,7 +520,7 @@ void main() {
           expect(
             container.read(provider),
             const AsyncLoading<int>().copyWithPrevious(
-              const AsyncError(21, stackTrace: StackTrace.empty),
+              const AsyncError(21, StackTrace.empty),
             ),
           );
 

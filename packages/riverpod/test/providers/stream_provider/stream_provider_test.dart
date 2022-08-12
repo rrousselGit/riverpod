@@ -297,7 +297,7 @@ void main() {
 
     expect(
       container.read(provider),
-      AsyncValue<int>.error(42, stackTrace: stack),
+      AsyncValue<int>.error(42, stack),
     );
   });
 
@@ -762,7 +762,7 @@ void main() {
       listener,
       listener(
         const AsyncValue.loading(),
-        AsyncValue<int>.error(error, stackTrace: stack),
+        AsyncValue<int>.error(error, stack),
       ),
     );
 
@@ -771,9 +771,9 @@ void main() {
     verifyOnly(
       listener,
       listener(
-        AsyncError<int>(error, stackTrace: stack),
+        AsyncError<int>(error, stack),
         const AsyncValue.data(21).copyWithPrevious(
-          AsyncError(error, stackTrace: stack),
+          AsyncError(error, stack),
         ),
       ),
     );
