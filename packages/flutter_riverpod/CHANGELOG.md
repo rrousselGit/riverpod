@@ -1,3 +1,9 @@
+# Unrelased major
+
+**Breaking changes**:
+
+- Removed the deprecated `ProviderListener` and `OnProviderChange`.
+
 # 2.0.0-dev.9
 
 Fix Timer leak when using `cacheTime`/`disposeDelay` and disposing a `ProviderContainer`

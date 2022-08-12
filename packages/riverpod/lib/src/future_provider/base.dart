@@ -1,7 +1,7 @@
 part of '../future_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [ProviderRef.state], the value currently exposed by this provider.
+/// - [state], the value currently exposed by this provider.
 abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
   /// Obtains the state currently exposed by this provider.
   ///
@@ -15,136 +15,139 @@ abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
 }
 
 /// {@macro riverpod.futureprovider}
-@sealed
-class FutureProvider<State> extends AlwaysAliveProviderBase<AsyncValue<State>>
-    with
-        OverrideWithValueMixin<AsyncValue<State>>,
-        OverrideWithProviderMixin<AsyncValue<State>,
-            AlwaysAliveProviderBase<AsyncValue<State>>> {
+class FutureProvider<T> extends _FutureProviderBase<T>
+    with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.futureprovider}
   FutureProvider(
-    this._create, {
-    String? name,
-    this.dependencies,
-    Family? from,
-    Object? argument,
-  }) : super(name: name, from: from, argument: argument);
-
-  /// {@macro riverpod.family}
-  static const family = FutureProviderFamilyBuilder();
+    this._createFn, {
+    super.name,
+    super.from,
+    super.argument,
+    super.dependencies,
+  }) : super(cacheTime: null, disposeDelay: null);
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeFutureProviderBuilder();
 
-  @override
-  ProviderBase<AsyncValue<State>> get originProvider => this;
+  /// {@macro riverpod.family}
+  static const family = FutureProviderFamilyBuilder();
+
+  final FutureOr<T> Function(FutureProviderRef<T> ref) _createFn;
 
   @override
-  final List<ProviderOrFamily>? dependencies;
-
-  final Create<FutureOr<State>, FutureProviderRef<State>> _create;
-
-  /// {@template riverpod.futureprovider.future}
-  /// A provider that exposes the [Future] created by a [FutureProvider].
-  ///
-  /// The instance of [Future] obtained may change over time, if the provider
-  /// was recreated (such as when using [Ref.watch]).
-  ///
-  /// This provider allows using `async`/`await` to easily combine
-  /// [FutureProvider] together:
-  ///
-  /// ```dart
-  /// final configsProvider = FutureProvider((ref) async => Configs());
-  ///
-  /// final productsProvider = FutureProvider((ref) async {
-  ///   // Wait for the configurations to resolve
-  ///   final configs = await ref.watch(configsProvider.future);
-  ///
-  ///   // Do something with the result
-  ///   return await http.get('${configs.host}/products');
-  /// });
-  /// ```
-  /// {@endtemplate}
-  late final AlwaysAliveProviderBase<Future<State>> future =
-      AsyncValueAsFutureProvider(this, from: from, argument: argument);
+  late final AlwaysAliveRefreshable<Future<T>> future = _future(this);
 
   @override
-  AsyncValue<State> create(
-    covariant FutureProviderElement<State> ref,
-  ) {
-    return ref._listenFuture(() => _create(ref));
-  }
+  late final AlwaysAliveRefreshable<Stream<T>> stream = _stream(this);
 
   @override
-  bool updateShouldNotify(
-    AsyncValue<State> previousState,
-    AsyncValue<State> newState,
-  ) {
-    final wasLoading = previousState is AsyncLoading;
-    final isLoading = newState is AsyncLoading;
-
-    if (wasLoading || isLoading) return wasLoading != isLoading;
-
-    return true;
-  }
+  FutureOr<T> _create(FutureProviderElement<T> ref) => _createFn(ref);
 
   @override
-  FutureProviderElement<State> createElement() => FutureProviderElement(this);
+  FutureProviderElement<T> createElement() => FutureProviderElement._(this);
 }
 
 /// The element of a [FutureProvider]
-class FutureProviderElement<State>
-    extends ProviderElementBase<AsyncValue<State>>
-    with _FutureProviderElementMixin<State>
-    implements FutureProviderRef<State> {
-  /// The element of a [FutureProvider]
-  FutureProviderElement(FutureProvider<State> provider) : super(provider);
+class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
+    implements FutureProviderRef<T> {
+  FutureProviderElement._(_FutureProviderBase<T> provider) : super(provider);
+
+  final _futureNotifier = ProxyElementValueNotifier<Future<T>>();
+  final _streamNotifier = ProxyElementValueNotifier<Stream<T>>();
+  final _streamController = StreamController<T>.broadcast();
 
   @override
-  AsyncValue<State> get state => requireState;
+  AsyncValue<T> get state => requireState;
 
   @override
-  set state(AsyncValue<State> newState) => setState(newState);
-}
-
-/// {@template riverpod.futureprovider.family}
-/// A class that allows building a [FutureProvider] from an external parameter.
-/// {@endtemplate}
-@sealed
-class FutureProviderFamily<State, Arg>
-    extends Family<AsyncValue<State>, Arg, FutureProvider<State>> {
-  /// {@macro riverpod.futureprovider.family}
-  FutureProviderFamily(
-    this._create, {
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
-
-  final FamilyCreate<FutureOr<State>, FutureProviderRef<State>, Arg> _create;
+  set state(AsyncValue<T> state) => setState(state);
 
   @override
-  FutureProvider<State> create(Arg argument) {
-    return FutureProvider<State>(
-      (ref) => _create(ref, argument),
-      name: name,
-      from: this,
-      argument: argument,
+  void create({required bool didChangeDependency}) {
+    final previous = getState()?.requireState;
+    if (previous == null || didChangeDependency) {
+      setState(AsyncLoading<T>());
+    } else {
+      setState(AsyncLoading<T>().copyWithPrevious(previous));
+    }
+
+    // TODO add a Proxy variant that accepts T instead of Result<T>
+    _streamNotifier.result ??= Result.data(_streamController.stream);
+
+    // The try/catch is here to handle synchronous exceptions, which can happen
+    // if the create function isn't marked with "async".
+    try {
+      final provider = this.provider as _FutureProviderBase<T>;
+      final futureOr = provider._create(this);
+
+      final future =
+          futureOr is Future<T> ? futureOr : SynchronousFuture(futureOr);
+
+      if (future != _futureNotifier.result?.stateOrNull) {
+        _futureNotifier.result = Result.data(future);
+        _listenFuture(future);
+      }
+    } catch (err, stack) {
+      // TODO Can we have a SynchronousFutureError?
+      _futureNotifier.result = Result.data(
+        Future.error(err, stack)
+          // TODO report the error to the ProviderContainer's Zone
+          ..ignore(),
+      );
+      _streamController.addError(err, stack);
+      setState(AsyncError<T>(err, stackTrace: stack));
+    }
+  }
+
+  @pragma('vm:prefer-inline')
+  void _listenFuture(Future<T> future) {
+    var running = true;
+    onDispose(() => running = false);
+
+    future.then(
+      (value) {
+        if (running) {
+          _streamController.add(value);
+          setState(AsyncData<T>(value));
+        }
+      },
+      // ignore: avoid_types_on_closure_parameters
+      onError: (Object err, StackTrace stack) {
+        if (running) {
+          _streamController.addError(err, stack);
+          setState(AsyncError<T>(err, stackTrace: stack));
+        }
+      },
     );
   }
 
   @override
-  void setupOverride(Arg argument, SetupOverride setup) {
-    final futureProvider = call(argument);
-    setup(origin: futureProvider, override: futureProvider);
+  void visitChildren({
+    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+  }) {
+    super.visitChildren(
+      elementVisitor: elementVisitor,
+      notifierVisitor: notifierVisitor,
+    );
+    notifierVisitor(_futureNotifier);
+    notifierVisitor(_streamNotifier);
   }
 
-  /// {@macro riverpod.overridewithprovider}
-  Override overrideWithProvider(
-    AlwaysAliveProviderBase<AsyncValue<State>> Function(Arg argument) override,
-  ) {
-    return FamilyOverride<Arg>(this, (arg, setup) {
-      final futureProvider = call(arg);
-      setup(origin: futureProvider, override: override(arg));
-    });
+  @override
+  void dispose() {
+    _streamController.close();
+    super.dispose();
   }
+}
+
+/// The [Family] of a [FutureProvider]
+class FutureProviderFamily<R, Arg> extends FamilyBase<FutureProviderRef<R>,
+    AsyncValue<R>, Arg, FutureOr<R>, FutureProvider<R>> {
+  /// The [Family] of a [FutureProvider]
+  FutureProviderFamily(
+    super.create, {
+    super.name,
+    super.dependencies,
+  }) : super(providerFactory: FutureProvider<R>.new);
 }

@@ -7,6 +7,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: unnecessary_import
 import 'package:riverpod/riverpod.dart';
 
+extension on ProviderBase {
+  // ignore: unused_element
+  Override overrideWithValue(Object? value) => throw UnimplementedError();
+}
+
 class Counter extends StateNotifier<int> {
   Counter(Ref this.ref) : super(1);
   final Ref ref;

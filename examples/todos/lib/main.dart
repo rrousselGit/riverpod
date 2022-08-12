@@ -150,7 +150,7 @@ class Toolbar extends HookConsumerWidget {
         children: [
           Expanded(
             child: Text(
-              '${ref.watch(uncompletedTodosCount).toString()} items left',
+              '${ref.watch(uncompletedTodosCount)} items left',
               overflow: TextOverflow.ellipsis,
             ),
           ),

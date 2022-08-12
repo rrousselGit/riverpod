@@ -1,5 +1,11 @@
 part of '../framework.dart';
 
+/// A [Create] equivalent used by [Family].
+typedef FamilyCreate<T, R extends Ref, Arg> = T Function(
+  R ref,
+  Arg arg,
+);
+
 /// A base class for all families
 abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
     extends ProviderOrFamily implements FamilyOverride<Arg> {
@@ -7,8 +13,8 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   Family({
     required this.name,
     required this.dependencies,
-    this.cacheTime,
-    this.disposeDelay,
+    required this.cacheTime,
+    required this.disposeDelay,
   });
 
   /// {@macro riverpod.cache_time}
@@ -39,11 +45,18 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   ///
   /// That external value should be immutable and preferably override `==`/`hashCode`.
   /// See the documentation of [Provider.family] for more information.
-  FamilyProvider call(Arg argument) => create(argument);
+  FamilyProvider call(Arg argument);
 
-  /// Creates the provider for a given parameter.
-  @protected
-  FamilyProvider create(Arg argument);
+  /// Overrides the behavior of a family for a part of the application.
+  ///
+  /// {@macro riverpod.overrideWith}
+  Override overrideWithProvider(
+    FamilyProvider Function(Arg argument) override,
+  ) {
+    return _FamilyOverride<Arg>(this, (arg, setup) {
+      setup(origin: call(arg), override: override(arg));
+    });
+  }
 }
 
 /// Setup how a family is overridden
@@ -89,34 +102,103 @@ class _FamilyOverride<Arg> implements FamilyOverride<Arg> {
   }
 }
 
-/// An extension that adds [overrideWithProvider] to [Family].
-extension XFamily<State, Arg,
-        FamilyProvider extends AlwaysAliveProviderBase<State>>
-    on Family<State, Arg, FamilyProvider> {
-  /// Overrides the behavior of a family for a part of the application.
+/// A base implementation for [Family], used by the various providers to
+/// help them define a [Family].
+///
+/// This API is not meant for public consumption.
+class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
+    ProviderT extends ProviderBase<R>> extends Family<R, Arg, ProviderT> {
+  /// A base implementation for [Family], used by the various providers to
+  /// help them define a [Family].
   ///
-  /// {@macro riverpod.overrideWith}
-  Override overrideWithProvider(
-    AlwaysAliveProviderBase<State> Function(Arg argument) override,
-  ) {
-    return _FamilyOverride<Arg>(this, (arg, setup) {
-      setup(origin: call(arg), override: override(arg));
-    });
-  }
+  /// This API is not meant for public consumption.
+  FamilyBase(
+    this._createFn, {
+    required ProviderT Function(
+      Create<Created, RefT> create, {
+      String? name,
+      Family from,
+      Object? argument,
+      List<ProviderOrFamily>? dependencies,
+    })
+        providerFactory,
+    required super.name,
+    required super.dependencies,
+  })  : _providerFactory = providerFactory,
+        super(
+          cacheTime: null,
+          disposeDelay: null,
+        );
+
+  final ProviderT Function(
+    Create<Created, RefT> create, {
+    String? name,
+    Family from,
+    Object? argument,
+    List<ProviderOrFamily>? dependencies,
+  }) _providerFactory;
+
+  final Created Function(RefT ref, Arg arg) _createFn;
+
+  @override
+  ProviderT call(Arg argument) => _providerFactory(
+        (ref) => _createFn(ref, argument),
+        name: name,
+        from: this,
+        argument: argument,
+        dependencies: dependencies,
+      );
 }
 
-/// An extension that adds [overrideWithProvider] to [Family].
-extension XAutoDisposeFamily<State, Arg,
-        FamilyProvider extends AutoDisposeProviderBase<State>>
-    on Family<State, Arg, FamilyProvider> {
-  /// Overrides the behavior of a family for a part of the application.
+/// A base implementation for [Family], used by the various providers to
+/// help them define a [Family].
+///
+/// This API is not meant for public consumption.
+
+class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
+    ProviderT extends ProviderBase<R>> extends Family<R, Arg, ProviderT> {
+  /// A base implementation for [Family], used by the various providers to
+  /// help them define a [Family].
   ///
-  /// {@macro riverpod.overrideWith}
-  Override overrideWithProvider(
-    AutoDisposeProviderBase<State> Function(Arg argument) override,
-  ) {
-    return _FamilyOverride<Arg>(this, (arg, setup) {
-      setup(origin: call(arg), override: override(arg));
-    });
-  }
+  /// This API is not meant for public consumption.
+  AutoDisposeFamilyBase(
+    this._createFn, {
+    required ProviderT Function(
+      Create<Created, RefT> create, {
+      String? name,
+      Family from,
+      Object? argument,
+      List<ProviderOrFamily>? dependencies,
+      Duration? cacheTime,
+      Duration? disposeDelay,
+    })
+        providerFactory,
+    required super.name,
+    required super.dependencies,
+    required super.cacheTime,
+    required super.disposeDelay,
+  }) : _providerFactory = providerFactory;
+
+  final ProviderT Function(
+    Create<Created, RefT> create, {
+    String? name,
+    Family from,
+    Object? argument,
+    List<ProviderOrFamily>? dependencies,
+    Duration? cacheTime,
+    Duration? disposeDelay,
+  }) _providerFactory;
+
+  final Created Function(RefT ref, Arg arg) _createFn;
+
+  @override
+  ProviderT call(Arg argument) => _providerFactory(
+        (ref) => _createFn(ref, argument),
+        name: name,
+        from: this,
+        argument: argument,
+        dependencies: dependencies,
+        cacheTime: cacheTime,
+        disposeDelay: disposeDelay,
+      );
 }

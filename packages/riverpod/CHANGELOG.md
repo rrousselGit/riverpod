@@ -1,3 +1,26 @@
+# Unreleased major
+
+**Breaking changes**:
+
+- Using `overrideWithProvider`, it is no-longer possible to override a provider
+  with a different type of provider (such as overriding `FutureProvider` with a `StreamProvider`).
+- All `overrideWithValue` methods are removed, besides `Provider.overrideWithValue`.
+  This change is temporary, and these methods will be reintroduced in a later version.
+- Modifiers (`provider.future`, `provider.state`, ...) no-longer are providers, and therefore no-longer
+  appears inside `ProviderObserver`.
+- The `Reader` typedef is removed. Use `Ref` instead.
+- `ProviderListener` is removed. Used `ref.listen` instead.
+- Providers other than `FutureProvider`/`StreamProvider` no-longer override `AsyncValue`s
+  to set `AsyncValue.isRefreshing` when an `AsyncLoading` is emitted.
+
+Non-breaking changes:
+
+- feat: A new `AutoDisposeRef.keepAlive()` function is added. It is meant to replace
+  `AutoDisposeRef.maintainState` to make logic for preventing the disposal of a provider more reusable.
+- `AutoDisposeRef.maintainState` is deprecated. Use the new ``AutoDisposeRef.keepAlive()` instead.
+- feat: Add support for `ref.invalidate(family)` to recompiute an entire family (#1517)
+- fixed a bug where `AsyncValue.whenData` did not preserve `AsyncValue.isLoading/isRefreshing`
+
 # 2.0.0-dev.9
 
 Fix Timer leak when using `cacheTime`/`disposeDelay` and disposing a `ProviderContainer`

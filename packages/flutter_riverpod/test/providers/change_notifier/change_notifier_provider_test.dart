@@ -6,6 +6,23 @@ import 'package:mockito/mockito.dart';
 import '../../utils.dart';
 
 void main() {
+  test('ref.listenSelf listens to state changes', () {
+    final listener = Listener<ValueNotifier<int>>();
+    final container = createContainer();
+    final provider = ChangeNotifierProvider<ValueNotifier<int>>((ref) {
+      ref.listenSelf(listener);
+      return ValueNotifier(0);
+    });
+
+    final notifier = container.read(provider);
+
+    verifyOnly(listener, listener(null, notifier));
+
+    container.read(provider.notifier).value++;
+
+    verifyOnly(listener, listener(notifier, notifier));
+  });
+
   test('support null ChangeNotifier', () {
     final container = createContainer();
     final provider = ChangeNotifierProvider<ValueNotifier<int>?>((ref) => null);
@@ -90,33 +107,31 @@ void main() {
         unorderedEquals(<Object>[
           isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider),
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider.notifier)
         ]),
       );
       expect(root.getAllProviderElements(), isEmpty);
     });
 
-    test('when using provider.overrideWithValue', () {
-      final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
-      final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithValue(ValueNotifier(42)),
-      ]);
+    // test('when using provider.overrideWithValue', () {
+    //   final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
+    //   final root = createContainer();
+    //   final container = createContainer(parent: root, overrides: [
+    //     provider.overrideWithValue(ValueNotifier(42)),
+    //   ]);
 
-      expect(container.read(provider.notifier).value, 42);
-      expect(container.read(provider).value, 42);
-      expect(
-        container.getAllProviderElements(),
-        unorderedEquals(<Object>[
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider),
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider.notifier)
-        ]),
-      );
-      expect(root.getAllProviderElements(), isEmpty);
-    });
+    //   expect(container.read(provider.notifier).value, 42);
+    //   expect(container.read(provider).value, 42);
+    //   expect(
+    //     container.getAllProviderElements(),
+    //     unorderedEquals(<Object>[
+    //       isA<ProviderElementBase>()
+    //           .having((e) => e.origin, 'origin', provider),
+    //       isA<ProviderElementBase>()
+    //           .having((e) => e.origin, 'origin', provider.notifier)
+    //     ]),
+    //   );
+    //   expect(root.getAllProviderElements(), isEmpty);
+    // });
 
     test('when using provider.overrideWithProvider', () {
       final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
@@ -134,35 +149,33 @@ void main() {
         unorderedEquals(<Object>[
           isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider),
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider.notifier)
         ]),
       );
       expect(root.getAllProviderElements(), isEmpty);
     });
   });
 
-  test('overriding with value listens to the ChangeNotifier', () {
-    final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
-    final notifier = ValueNotifier(42);
-    final listener = Listener<int>();
+  // test('overriding with value listens to the ChangeNotifier', () {
+  //   final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
+  //   final notifier = ValueNotifier(42);
+  //   final listener = Listener<int>();
 
-    final container = createContainer(
-      overrides: [provider.overrideWithValue(notifier)],
-    );
+  //   final container = createContainer(
+  //     overrides: [provider.overrideWithValue(notifier)],
+  //   );
 
-    container.listen<ValueNotifier<int>>(
-      provider,
-      (prev, value) => listener(prev?.value, value.value),
-    );
+  //   container.listen<ValueNotifier<int>>(
+  //     provider,
+  //     (prev, value) => listener(prev?.value, value.value),
+  //   );
 
-    expect(container.read(provider).value, 42);
-    expect(container.read(provider.notifier).value, 42);
+  //   expect(container.read(provider).value, 42);
+  //   expect(container.read(provider.notifier).value, 42);
 
-    notifier.value = 21;
+  //   notifier.value = 21;
 
-    verifyOnly(listener, listener(21, 21));
-  });
+  //   verifyOnly(listener, listener(21, 21));
+  // });
 
   test('refresh recreates the ChangeNotifier', () {
     final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
@@ -266,56 +279,56 @@ void main() {
     expect(callCount, 1);
   });
 
-  test(
-      'overrideWithValue listens to the notifier, support notifier change, and does not dispose of the notifier',
-      () async {
-    final provider = ChangeNotifierProvider((_) {
-      return TestNotifier('a');
-    });
-    final notifier = TestNotifier('b');
-    final notifier2 = TestNotifier('c');
-    final container = createContainer(overrides: [
-      provider.overrideWithValue(notifier),
-    ]);
-    addTearDown(container.dispose);
+  // test(
+  //     'overrideWithValue listens to the notifier, support notifier change, and does not dispose of the notifier',
+  //     () async {
+  //   final provider = ChangeNotifierProvider((_) {
+  //     return TestNotifier('a');
+  //   });
+  //   final notifier = TestNotifier('b');
+  //   final notifier2 = TestNotifier('c');
+  //   final container = createContainer(overrides: [
+  //     provider.overrideWithValue(notifier),
+  //   ]);
+  //   addTearDown(container.dispose);
 
-    var callCount = 0;
-    final sub = container.listen(provider, (_, __) => callCount++);
-    final notifierSub = container.listen(provider.notifier, (_, __) {});
+  //   var callCount = 0;
+  //   final sub = container.listen(provider, (_, __) => callCount++);
+  //   final notifierSub = container.listen(provider.notifier, (_, __) {});
 
-    expect(sub.read(), notifier);
-    expect(callCount, 0);
-    expect(notifierSub.read(), notifier);
-    expect(notifier.hasListeners, true);
+  //   expect(sub.read(), notifier);
+  //   expect(callCount, 0);
+  //   expect(notifierSub.read(), notifier);
+  //   expect(notifier.hasListeners, true);
 
-    notifier.count++;
+  //   notifier.count++;
 
-    await container.pump();
-    expect(callCount, 1);
+  //   await container.pump();
+  //   expect(callCount, 1);
 
-    container.updateOverrides([
-      provider.overrideWithValue(notifier2),
-    ]);
+  //   container.updateOverrides([
+  //     provider.overrideWithValue(notifier2),
+  //   ]);
 
-    await container.pump();
-    expect(callCount, 2);
-    expect(notifier.hasListeners, false);
-    expect(notifier2.hasListeners, true);
-    expect(notifier.mounted, true);
-    expect(notifierSub.read(), notifier2);
+  //   await container.pump();
+  //   expect(callCount, 2);
+  //   expect(notifier.hasListeners, false);
+  //   expect(notifier2.hasListeners, true);
+  //   expect(notifier.mounted, true);
+  //   expect(notifierSub.read(), notifier2);
 
-    notifier2.count++;
+  //   notifier2.count++;
 
-    await container.pump();
-    expect(callCount, 3);
+  //   await container.pump();
+  //   expect(callCount, 3);
 
-    container.dispose();
+  //   container.dispose();
 
-    expect(callCount, 3);
-    expect(notifier2.hasListeners, false);
-    expect(notifier2.mounted, true);
-    expect(notifier.mounted, true);
-  });
+  //   expect(callCount, 3);
+  //   expect(notifier2.hasListeners, false);
+  //   expect(notifier2.mounted, true);
+  //   expect(notifier.mounted, true);
+  // });
 
   test('ChangeNotifier can be auto-scoped', () async {
     final dep = Provider((ref) => 0);

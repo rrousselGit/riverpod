@@ -2,13 +2,87 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show ResultError;
+import 'package:riverpod/src/result.dart';
 import 'package:test/test.dart';
 
 import '../third_party/fake_async.dart';
 import '../utils.dart';
 
 void main() {
+  group('ref.invalidate on families', () {
+    test('recomputes providers associated with the family', () async {
+      final container = createContainer();
+      final listener = Listener<String>();
+      final listener2 = Listener<String>();
+      final listener3 = Listener<int>();
+      var result = 0;
+      final unrelated = Provider((ref) => result);
+      final provider = Provider.family<String, int>((r, i) => '$result-$i');
+      late Ref ref;
+      final another = Provider((r) {
+        ref = r;
+      });
+
+      container.read(another);
+
+      container.listen(provider(0), listener, fireImmediately: true);
+      container.listen(provider(1), listener2, fireImmediately: true);
+      container.listen(unrelated, listener3, fireImmediately: true);
+
+      verifyOnly(listener, listener(null, '0-0'));
+      verifyOnly(listener2, listener2(null, '0-1'));
+      verifyOnly(listener3, listener3(null, 0));
+
+      ref.invalidate(provider);
+      ref.invalidate(provider);
+      result = 1;
+
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+      verifyNoMoreInteractions(listener3);
+
+      await container.pump();
+
+      verifyOnly(listener, listener('0-0', '1-0'));
+      verifyOnly(listener2, listener2('0-1', '1-1'));
+      verifyNoMoreInteractions(listener3);
+    });
+
+    test('clears only on the closest family override', () async {
+      late Ref ref;
+      final another = Provider((r) {
+        ref = r;
+      });
+      var result = 0;
+      final provider = Provider.family<int, int>((r, i) => result);
+      final listener = Listener<int>();
+      final listener2 = Listener<int>();
+      final root = createContainer();
+      final container = createContainer(
+        parent: root,
+        overrides: [provider, another],
+      );
+
+      container.read(another);
+      root.listen(provider(0), listener, fireImmediately: true);
+      container.listen(provider(1), listener2, fireImmediately: true);
+
+      verifyOnly(listener, listener(null, 0));
+      verifyOnly(listener2, listener2(null, 0));
+
+      ref.invalidate(provider);
+      result = 1;
+
+      verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener2);
+
+      await container.pump();
+
+      verifyOnly(listener2, listener2(0, 1));
+      verifyNoMoreInteractions(listener);
+    });
+  });
+
   test('ref.invalidate triggers a rebuild on next frame', () async {
     final container = createContainer();
     final listener = Listener<int>();
@@ -298,29 +372,42 @@ void main() {
           'resets AsyncValue.isRefreshing after cacheTime expires, without notifying listeners',
           () {
         fakeAsync((async) {
-          final provider = StateProvider.autoDispose(
-            (ref) => const AsyncValue<int>.data(42),
+          late StreamProviderRef<int> ref;
+          late StreamController<int> controller;
+          final provider = StreamProvider.autoDispose<int>(
+            (r) {
+              ref = r;
+              controller = StreamController<int>(sync: true);
+              ref.onDispose(controller.close);
+              return controller.stream;
+            },
           );
           final container = createContainer(
             cacheTime: const Duration(seconds: 5),
           );
           final listener = Listener<AsyncValue<int>>();
 
-          final sub = container.listen(provider, listener);
-          verifyZeroInteractions(listener);
+          final sub = container.listen<AsyncValue<int>>(provider, listener);
 
-          container.read(provider.notifier).state = const AsyncLoading();
+          controller.add(42);
 
+          verifyOnly(
+            listener,
+            listener(const AsyncLoading<int>(), const AsyncData(42)),
+          );
+
+          container.refresh(provider);
+
+          expect(
+            sub.read(),
+            const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
+          );
           verifyOnly(
             listener,
             listener(
               const AsyncData(42),
               const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
             ),
-          );
-          expect(
-            sub.read(),
-            const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
           );
 
           async.elapse(const Duration(seconds: 5));
@@ -339,8 +426,13 @@ void main() {
 
       test('refresh timer when new values are emitted', () {
         fakeAsync((async) {
-          final provider = StateProvider.autoDispose(
-            (ref) => const AsyncValue<int>.data(42),
+          late StreamController<int> controller;
+          final provider = StreamProvider.autoDispose<int>(
+            (ref) {
+              controller = StreamController<int>(sync: true);
+              ref.onDispose(controller.close);
+              return controller.stream;
+            },
           );
           final container = createContainer(
             cacheTime: const Duration(seconds: 5),
@@ -348,7 +440,8 @@ void main() {
 
           container.listen(provider, (prev, next) {}); // initialize data
 
-          container.read(provider.notifier).state = const AsyncLoading();
+          controller.add(42);
+          container.refresh(provider);
 
           expect(
             container.read(provider),
@@ -362,8 +455,8 @@ void main() {
             const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
           );
 
-          container.read(provider.notifier).state = const AsyncData(21);
-          container.read(provider.notifier).state = const AsyncLoading();
+          controller.add(21);
+          container.refresh(provider);
 
           async.elapse(const Duration(seconds: 3));
 
@@ -383,8 +476,13 @@ void main() {
 
       test('refresh timer when AsyncErrors are emitted', () {
         fakeAsync((async) {
-          final provider = StateProvider.autoDispose(
-            (ref) => const AsyncValue<int>.error(42),
+          late StreamController<int> controller;
+          final provider = StreamProvider.autoDispose<int>(
+            (ref) {
+              controller = StreamController<int>(sync: true);
+              ref.onDispose(controller.close);
+              return controller.stream;
+            },
           );
           final container = createContainer(
             cacheTime: const Duration(seconds: 5),
@@ -392,28 +490,38 @@ void main() {
 
           container.listen(provider, (prev, next) {}); // initialize data
 
-          container.read(provider.notifier).state = const AsyncLoading();
+          controller.addError(42, StackTrace.empty);
+          container.refresh(provider);
 
           expect(
             container.read(provider),
-            const AsyncLoading<int>().copyWithPrevious(const AsyncError(42)),
+            const AsyncLoading<int>().copyWithPrevious(
+              const AsyncError(42, stackTrace: StackTrace.empty),
+            ),
           );
 
           async.elapse(const Duration(seconds: 2));
 
           expect(
             container.read(provider),
-            const AsyncLoading<int>().copyWithPrevious(const AsyncError(42)),
+            const AsyncLoading<int>().copyWithPrevious(
+              const AsyncError(42, stackTrace: StackTrace.empty),
+            ),
           );
 
-          container.read(provider.notifier).state = const AsyncError(21);
-          container.read(provider.notifier).state = const AsyncLoading();
+          controller.addError(42, StackTrace.empty);
+          container.refresh(provider);
+
+          controller.addError(21, StackTrace.empty);
+          container.refresh(provider);
 
           async.elapse(const Duration(seconds: 3));
 
           expect(
             container.read(provider),
-            const AsyncLoading<int>().copyWithPrevious(const AsyncError(21)),
+            const AsyncLoading<int>().copyWithPrevious(
+              const AsyncError(21, stackTrace: StackTrace.empty),
+            ),
           );
 
           async.elapse(const Duration(seconds: 3));
@@ -1447,7 +1555,9 @@ void main() {
 
       final children = <ProviderElementBase>[];
 
-      container.readProviderElement(provider).visitChildren(children.add);
+      container
+          .readProviderElement(provider)
+          .visitChildren(elementVisitor: children.add, notifierVisitor: (_) {});
       expect(
         children,
         unorderedMatches(<Object>[
@@ -1474,7 +1584,9 @@ void main() {
 
       final children = <ProviderElementBase>[];
 
-      container.readProviderElement(provider).visitChildren(children.add);
+      container
+          .readProviderElement(provider)
+          .visitChildren(elementVisitor: children.add, notifierVisitor: (_) {});
       expect(
         children,
         unorderedMatches(<Object>[

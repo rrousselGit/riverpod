@@ -3,6 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+extension on ProviderBase {
+  // ignore: unused_element
+  Override overrideWithValue(Object? value) => throw UnimplementedError();
+}
+
 class Todo {
   Todo({
     required String id,
@@ -27,7 +32,7 @@ final todoListProvider = FutureProvider((ref) async => <Todo>[]);
 /* SKIP */
 final foo =
 /* SKIP END */
-ProviderScope(
+    ProviderScope(
   overrides: [
     /// FutureProvider をオーバーライドして固定のステートを返す
     todoListProvider.overrideWithValue(

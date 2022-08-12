@@ -1,168 +1,62 @@
 part of '../stream_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
-/// - [ProviderRef.state], the value currently exposed by this provider.
 abstract class AutoDisposeStreamProviderRef<State>
-    implements AutoDisposeRef<AsyncValue<State>> {
-  /// Obtains the state currently exposed by this provider.
-  ///
-  /// Mutating this property will notify the provider listeners.
-  ///
-  /// Cannot be called while a provider is creating, unless the setter was called first.
-  ///
-  /// Will throw if the provider threw during creation.
-  AsyncValue<State> get state;
-  set state(AsyncValue<State> newState);
-}
+    extends StreamProviderRef<State>
+    implements AutoDisposeRef<AsyncValue<State>> {}
 
 /// {@macro riverpod.streamprovider}
-@sealed
-class AutoDisposeStreamProvider<State>
-    extends AutoDisposeProviderBase<AsyncValue<State>>
-    with
-        OverrideWithValueMixin<AsyncValue<State>>,
-        OverrideWithProviderMixin<AsyncValue<State>,
-            AutoDisposeProviderBase<AsyncValue<State>>> {
+class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
+    with AsyncSelector<T> {
   /// {@macro riverpod.streamprovider}
   AutoDisposeStreamProvider(
-    this._create, {
-    String? name,
-    this.dependencies,
-    Family? from,
-    Object? argument,
-    Duration? cacheTime,
-    Duration? disposeDelay,
-  }) : super(
-          name: name,
-          from: from,
-          argument: argument,
-          cacheTime: cacheTime,
-          disposeDelay: disposeDelay,
-        );
+    this._createFn, {
+    super.name,
+    super.from,
+    super.argument,
+    super.dependencies,
+    super.cacheTime,
+    super.disposeDelay,
+  });
 
   /// {@macro riverpod.family}
-  static const family = AutoDisposeStreamProviderFamilyBuilder();
+  static const family = AutoDisposeStreamProviderFamily.new;
+
+  final Stream<T> Function(AutoDisposeStreamProviderRef<T> ref) _createFn;
 
   @override
-  ProviderBase<AsyncValue<State>> get originProvider => this;
-
-  final Create<Stream<State>, AutoDisposeStreamProviderRef<State>> _create;
+  Stream<T> _create(AutoDisposeStreamProviderElement<T> ref) => _createFn(ref);
 
   @override
-  final List<ProviderOrFamily>? dependencies;
-
-  /// {@template riverpod.streamprovider.stream}
-  late final AutoDisposeProviderBase<Stream<State>> stream =
-      AutoDisposeAsyncValueAsStreamProvider(
-    this,
-    from: from,
-    argument: argument,
-    cacheTime: cacheTime,
-    disposeDelay: disposeDelay,
-  );
-
-  /// {@template riverpod.streamprovider.future}
-  late final AutoDisposeProviderBase<Future<State>> future =
-      AutoDisposeAsyncValueAsFutureProvider(
-    this,
-    from: from,
-    argument: argument,
-    cacheTime: cacheTime,
-    disposeDelay: disposeDelay,
-  );
-
-  /// {@template riverpod.streamprovider.future}
-  @Deprecated('Use `future` instead')
-  AutoDisposeProviderBase<Future<State>> get last => future;
-
-  @override
-  AsyncValue<State> create(
-    covariant AutoDisposeStreamProviderElement<State> ref,
-  ) {
-    return ref._listenStream(() => _create(ref));
+  AutoDisposeStreamProviderElement<T> createElement() {
+    return AutoDisposeStreamProviderElement._(this);
   }
 
   @override
-  bool updateShouldNotify(
-    AsyncValue<State> previousState,
-    AsyncValue<State> newState,
-  ) {
-    final wasLoading = previousState is AsyncLoading;
-    final isLoading = newState is AsyncLoading;
-
-    if (wasLoading || isLoading) return wasLoading != isLoading;
-
-    return true;
-  }
+  late final Refreshable<Future<T>> future = _future(this);
 
   @override
-  AutoDisposeStreamProviderElement<State> createElement() {
-    return AutoDisposeStreamProviderElement(this);
-  }
+  late final Refreshable<Stream<T>> stream = _stream(this);
 }
 
-/// The Element of an [AutoDisposeStreamProvider]
-class AutoDisposeStreamProviderElement<State>
-    extends AutoDisposeProviderElementBase<AsyncValue<State>>
-    with _StreamProviderElementMixin<State>
-    implements AutoDisposeStreamProviderRef<State> {
-  /// The Element of an [AutoDisposeStreamProvider]
-  AutoDisposeStreamProviderElement(AutoDisposeStreamProvider<State> provider)
-      : super(provider);
+/// The element of [AutoDisposeStreamProvider].
+class AutoDisposeStreamProviderElement<T> = StreamProviderElement<T>
+    with AutoDisposeProviderElementMixin<AsyncValue<T>>
+    implements AutoDisposeStreamProviderRef<T>;
 
-  @override
-  AsyncValue<State> get state => requireState;
-
-  @override
-  set state(AsyncValue<State> newState) => setState(newState);
-}
-
-/// {@macro riverpod.streamprovider.family}
-@sealed
-class AutoDisposeStreamProviderFamily<State, Arg>
-    extends Family<AsyncValue<State>, Arg, AutoDisposeStreamProvider<State>> {
-  /// {@macro riverpod.streamprovider.family}
+/// The [Family] of [AutoDisposeStreamProvider].
+class AutoDisposeStreamProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
+    AutoDisposeStreamProviderRef<R>,
+    AsyncValue<R>,
+    Arg,
+    Stream<R>,
+    AutoDisposeStreamProvider<R>> {
+  /// The [Family] of [AutoDisposeStreamProvider].
   AutoDisposeStreamProviderFamily(
-    this._create, {
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-    Duration? cacheTime,
-    Duration? disposeDelay,
-  }) : super(
-          name: name,
-          dependencies: dependencies,
-          cacheTime: cacheTime,
-          disposeDelay: disposeDelay,
-        );
-
-  final FamilyCreate<Stream<State>, AutoDisposeStreamProviderRef<State>, Arg>
-      _create;
-
-  @override
-  AutoDisposeStreamProvider<State> create(Arg argument) {
-    return AutoDisposeStreamProvider<State>(
-      (ref) => _create(ref, argument),
-      name: name,
-      from: this,
-      argument: argument,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
-    );
-  }
-
-  @override
-  void setupOverride(Arg argument, SetupOverride setup) {
-    final provider = call(argument);
-    setup(origin: provider, override: provider);
-  }
-
-  /// {@macro riverpod.overridewithprovider}
-  Override overrideWithProvider(
-    AutoDisposeProviderBase<AsyncValue<State>> Function(Arg argument) override,
-  ) {
-    return FamilyOverride<Arg>(this, (arg, setup) {
-      final provider = call(arg);
-      setup(origin: provider, override: override(arg));
-    });
-  }
+    super.create, {
+    super.name,
+    super.dependencies,
+    super.cacheTime,
+    super.disposeDelay,
+  }) : super(providerFactory: AutoDisposeStreamProvider.new);
 }

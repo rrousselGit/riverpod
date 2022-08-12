@@ -28,7 +28,7 @@ Utiliser `StreamProvider` plutôt que [StreamBuilder] présente de nombreux avan
 - il n'est plus nécessaire de différencier les streams de diffusion des streams normaux.
 - il met en cache la dernière valeur émise par le stream, ce qui garantit que si un écouteur est ajouté après 
   l'émission d'un événement, l'écouteur aura toujours un accès immédiat à l'événement le plus récent.
-- il permet de facilement simuler le streal pendant les tests en surchargeant le `StreamProvider`.
+- il permet de facilement simuler le stream pendant les tests en surchargeant le `StreamProvider`.
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
 [statenotifierprovider]: ./state_notifier_provider

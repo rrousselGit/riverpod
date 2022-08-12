@@ -1,6 +1,4 @@
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -134,14 +132,17 @@ class Home extends HookConsumerWidget {
                         crossAxisCount: 2,
                         childAspectRatio: 0.8,
                       ),
-                      delegate: SliverChildBuilderDelegate((c, index) {
-                        return ProviderScope(
-                          overrides: [
-                            _characterIndex.overrideWithValue(index),
-                          ],
-                          child: const CharacterItem(),
-                        );
-                      }),
+                      delegate: SliverChildBuilderDelegate(
+                        childCount: charactersCount,
+                        (c, index) {
+                          return ProviderScope(
+                            overrides: [
+                              _characterIndex.overrideWithValue(index),
+                            ],
+                            child: const CharacterItem(),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ],

@@ -1,91 +1,62 @@
 import 'dart:async';
 
-import 'package:meta/meta.dart';
-
-import 'async_value_converters.dart';
 import 'builders.dart';
 import 'common.dart';
 import 'framework.dart';
-import 'future_provider.dart';
-import 'provider.dart';
+import 'future_provider.dart' show FutureProvider;
+import 'listenable.dart';
+import 'provider.dart' show Provider;
+import 'result.dart';
+import 'synchronous_future.dart';
 
 part 'stream_provider/auto_dispose.dart';
 part 'stream_provider/base.dart';
 
-/// {@template riverpod.streamprovider}
-/// Creates a stream and exposes its latest event.
-///
-/// [StreamProvider] is identical in behavior/usage to [FutureProvider], modulo
-/// the fact that the value created is a [Stream] instead of a [Future].
-///
-/// It can be used to express a value asynchronously loaded that can change over
-/// time, such as an editable `Message` coming from a web socket:
-///
-/// ```dart
-/// final messageProvider = StreamProvider.autoDispose<String>((ref) async* {
-///   // Open the connection
-///   final channel = IOWebSocketChannel.connect('ws://echo.websocket.org');
-///
-///   // Close the connection when the stream is destroyed
-///   ref.onDispose(() => channel.sink.close());
-///
-///   // Parse the value received and emit a Message instance
-///   await for (final value in channel.stream) {
-///     yield value.toString();
-///   }
-/// });
-/// ```
-///
-/// Which the UI can then listen:
-///
-/// ```dart
-/// Widget build(BuildContext context, WidgetRef ref) {
-///   AsyncValue<String> message = ref.watch(messageProvider);
-///
-///   return message.when(
-///     loading: () => const CircularProgressIndicator(),
-///     error: (err, stack) => Text('Error: $err'),
-///     data: (message) {
-///       return Text(message);
-///     },
-///   );
-/// }
-/// ```
-///
-/// **Note**:
-/// When listening to web sockets, firebase, or anything that consumes resources,
-/// it is important to use [StreamProvider.autoDispose] instead of simply [StreamProvider].
-///
-/// This ensures that the resources are released when no longer needed as,
-/// by default, a [StreamProvider] is almost never destroyed.
-///
-/// See also:
-///
-/// - [Provider], a provider that synchronously creates a value
-/// - [FutureProvider], a provider that asynchronously exposes a value that
-///   can change over time.
-/// - [AlwaysAliveAsyncProviderX.stream], to obtain the [Stream] created instead of an [AsyncValue].
-/// - [AlwaysAliveAsyncProviderX.future], to obtain the last value emitted by a [Stream].
-/// - [StreamProvider.family], to create a [StreamProvider] from external parameters
-/// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no longer needed.
-/// {@endtemplate}
-mixin _StreamProviderElementMixin<State>
-    on ProviderElementBase<AsyncValue<State>> {
-  AsyncValue<State> _listenStream(Stream<State> Function() stream) {
-    try {
-      final sub = stream().listen(
-        (event) => setState(AsyncValue.data(event)),
-        // ignore: avoid_types_on_closure_parameters
-        onError: (Object err, StackTrace stack) {
-          setState(AsyncValue.error(err, stackTrace: stack));
-        },
-      );
+ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
+  _StreamProviderBase<T> that,
+) {
+  return ProviderElementProxy<AsyncValue<T>, Future<T>>(
+    that,
+    (element) => (element as StreamProviderElement<T>)._futureNotifier,
+  );
+}
 
-      onDispose(sub.cancel);
+ProviderElementProxy<AsyncValue<T>, Stream<T>> _stream<T>(
+  _StreamProviderBase<T> that,
+) {
+  return ProviderElementProxy<AsyncValue<T>, Stream<T>>(
+    that,
+    (element) {
+      return (element as StreamProviderElement<T>)._streamNotifier;
+    },
+  );
+}
 
-      return AsyncValue<State>.loading();
-    } catch (err, stack) {
-      return AsyncValue<State>.error(err, stackTrace: stack);
-    }
+abstract class _StreamProviderBase<T> extends ProviderBase<AsyncValue<T>> {
+  _StreamProviderBase({
+    required this.dependencies,
+    required super.name,
+    required super.from,
+    required super.argument,
+    required super.cacheTime,
+    required super.disposeDelay,
+  });
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
+
+  ProviderListenable<Future<T>> get future;
+  ProviderListenable<Stream<T>> get stream;
+
+  Stream<T> _create(covariant StreamProviderElement<T> ref);
+
+  @override
+  bool updateShouldNotify(AsyncValue<T> previousState, AsyncValue<T> newState) {
+    final wasLoading = previousState is AsyncLoading;
+    final isLoading = newState is AsyncLoading;
+
+    if (wasLoading || isLoading) return wasLoading != isLoading;
+
+    return true;
   }
 }

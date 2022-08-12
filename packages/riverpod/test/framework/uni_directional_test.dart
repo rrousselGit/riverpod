@@ -4,8 +4,6 @@ import 'package:test/test.dart';
 
 import '../utils.dart';
 
-final isAssertionError = isA<AssertionError>();
-
 void main() {
   late ProviderContainer container;
   setUp(() {

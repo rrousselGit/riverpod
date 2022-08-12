@@ -23,18 +23,10 @@ void main() {
 
     ref.state = const AsyncLoading<int>();
 
-    expect(
-      ref.state,
-      const AsyncLoading<int>().copyWithPrevious(const AsyncValue<int>.data(0)),
-    );
-
+    expect(ref.state, const AsyncLoading<int>());
     verifyOnly(
       listener,
-      listener(
-        const AsyncData(0),
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncValue<int>.data(0)),
-      ),
+      listener(const AsyncData(0), const AsyncLoading<int>()),
     );
   });
 
@@ -108,11 +100,7 @@ void main() {
 
     verifyOnly(
       listener,
-      listener(
-        null,
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncValue<int>.data(42)),
-      ),
+      listener(null, const AsyncLoading<int>()),
     );
 
     container.read(dep.state).state = Future.value(21);
@@ -238,27 +226,25 @@ void main() {
       expect(root.getAllProviderElementsInOrder(), isEmpty);
       expect(container.getAllProviderElementsInOrder(), [
         isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
-        isA<ProviderElementBase>()
-            .having((e) => e.origin, 'origin', provider.future)
       ]);
     });
 
-    test('when using provider.overrideWithValue', () async {
-      final provider = FutureProvider.autoDispose((ref) async => 0);
-      final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithValue(const AsyncValue.data(42)),
-      ]);
+    // test('when using provider.overrideWithValue', () async {
+    //   final provider = FutureProvider.autoDispose((ref) async => 0);
+    //   final root = createContainer();
+    //   final container = createContainer(parent: root, overrides: [
+    //     provider.overrideWithValue(const AsyncValue.data(42)),
+    //   ]);
 
-      expect(await container.read(provider.future), 42);
-      expect(container.read(provider), const AsyncValue.data(42));
-      expect(root.getAllProviderElementsInOrder(), isEmpty);
-      expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
-        isA<ProviderElementBase>()
-            .having((e) => e.origin, 'origin', provider.future)
-      ]);
-    });
+    //   expect(await container.read(provider.future), 42);
+    //   expect(container.read(provider), const AsyncValue.data(42));
+    //   expect(root.getAllProviderElementsInOrder(), isEmpty);
+    //   expect(container.getAllProviderElementsInOrder(), [
+    //     isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
+    //     isA<ProviderElementBase>()
+    //         .having((e) => e.origin, 'origin', provider.future)
+    //   ]);
+    // });
 
     test('when using provider.overrideWithProvider', () async {
       final provider = FutureProvider.autoDispose((ref) async => 0);
@@ -272,8 +258,6 @@ void main() {
       expect(root.getAllProviderElementsInOrder(), isEmpty);
       expect(container.getAllProviderElementsInOrder(), [
         isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
-        isA<ProviderElementBase>()
-            .having((e) => e.origin, 'origin', provider.future)
       ]);
     });
   });

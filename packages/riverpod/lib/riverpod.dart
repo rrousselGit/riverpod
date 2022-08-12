@@ -1,15 +1,11 @@
 export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
 
-export 'src/async_value_converters.dart'
-    show AlwaysAliveAsyncProviderX, AutoDisposeAsyncProviderX;
-
 export 'src/common.dart'
     show AsyncValue, AsyncData, AsyncLoading, AsyncError, AsyncValueX;
 
 export 'src/framework.dart'
     show
         Create,
-        Reader,
         AlwaysAliveProviderBase,
         Family,
         CircularDependencyError,
@@ -21,20 +17,18 @@ export 'src/framework.dart'
         ProviderContainer,
         ProviderObserver,
         ProviderSubscription,
-        AutoDisposeProviderBase,
-        AutoDisposeProviderElementBase,
+        AutoDisposeProviderElementMixin,
         ProviderElementBase,
         ProviderOverride,
         FamilyOverride,
         SetupOverride,
         AlwaysAliveProviderListenable,
         FamilyCreate,
-        XAutoDisposeFamily,
-        XFamily,
-        AsyncSelector,
-        AlwaysAliveAsyncSelector,
         KeepAliveLink,
-        ProviderOrFamily;
+        ProviderOrFamily,
+        OverrideWithProviderExtension,
+        AlwaysAliveRefreshable,
+        Refreshable;
 
 export 'src/future_provider.dart'
     show
@@ -43,7 +37,9 @@ export 'src/future_provider.dart'
         FutureProvider,
         FutureProviderFamily,
         AutoDisposeFutureProviderRef,
-        FutureProviderRef;
+        FutureProviderRef,
+        AutoDisposeFutureProviderElement,
+        FutureProviderElement;
 
 export 'src/provider.dart'
     show
@@ -56,6 +52,8 @@ export 'src/provider.dart'
         AutoDisposeProviderElement,
         ProviderElement;
 
+export 'src/state_controller.dart' show StateController;
+
 export 'src/state_notifier_provider.dart'
     show
         AutoDisposeStateNotifierProvider,
@@ -64,11 +62,11 @@ export 'src/state_notifier_provider.dart'
         StateNotifierProviderFamily,
         AutoDisposeStateNotifierProviderRef,
         StateNotifierProviderRef,
-        StateNotifierProviderOverrideMixin;
+        AutoDisposeStateNotifierProviderElement,
+        StateNotifierProviderElement;
 
 export 'src/state_provider.dart'
     show
-        StateController,
         StateProvider,
         AutoDisposeStateProvider,
         AutoDisposeStateProviderFamily,
@@ -85,4 +83,6 @@ export 'src/stream_provider.dart'
         StreamProvider,
         StreamProviderFamily,
         AutoDisposeStreamProviderRef,
-        StreamProviderRef;
+        StreamProviderRef,
+        AutoDisposeStreamProviderElement,
+        StreamProviderElement;

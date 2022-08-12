@@ -4,11 +4,6 @@ import 'future_provider.dart' show FutureProvider;
 import 'stack_trace.dart';
 import 'stream_provider.dart' show StreamProvider;
 
-/// Utility for `.name` of provider modifiers.
-String? modifierName(String? from, String modifier) {
-  return from == null ? null : '$from.$modifier';
-}
-
 /// A utility for safely manipulating asynchronous data.
 ///
 /// By using [AsyncValue], you are guaranteed that you cannot forget to
@@ -33,7 +28,7 @@ String? modifierName(String? from, String modifier) {
 ///     return user.when(
 ///       loading: () => CircularProgressIndicator(),
 ///       error: (error, stack) => Text('Oops, something unexpected happened'),
-///       data: (value) => Text('Hello ${user.name}'),
+///       data: (user) => Text('Hello ${user.name}'),
 ///     );
 ///   }
 /// }
@@ -156,7 +151,7 @@ abstract class AsyncValue<T> {
   /// instead. The exception is if [isRefreshing] is true, in which case
   /// the previous value will be returned.
   ///
-  /// See also [valueOrNull], which does not throw during loading state.
+  /// See also [valueOrNull], which does not throw during error state.
   T? get value;
 
   /// The [error].
@@ -476,12 +471,29 @@ extension AsyncValueX<T> on AsyncValue<T> {
     return map(
       data: (d) {
         try {
-          return AsyncValue.data(cb(d.value));
+          return AsyncData._(
+            cb(d.value),
+            isLoading: d.isLoading,
+            error: d.error,
+            stackTrace: d.stackTrace,
+          );
         } catch (err, stack) {
-          return AsyncValue.error(err, stackTrace: stack);
+          return AsyncError._(
+            err,
+            stackTrace: stack,
+            isLoading: d.isLoading,
+            value: null,
+            hasValue: false,
+          );
         }
       },
-      error: (e) => AsyncError(e.error, stackTrace: e.stackTrace),
+      error: (e) => AsyncError._(
+        e.error,
+        stackTrace: e.stackTrace,
+        isLoading: e.isLoading,
+        value: null,
+        hasValue: false,
+      ),
       loading: (l) => AsyncLoading<R>(),
     );
   }

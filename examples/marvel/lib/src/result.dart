@@ -34,7 +34,7 @@ class Result<T> with _$Result<T> {
           return Result.error(err, stack);
         }
       },
-      error: (err, stack) => Result.error(err, stack),
+      error: Result.error,
     );
   }
 

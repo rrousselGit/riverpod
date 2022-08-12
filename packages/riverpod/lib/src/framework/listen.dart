@@ -8,7 +8,7 @@ void handleFireImmediately<State>(
   required void Function(Object error, StackTrace stackTrace) onError,
 }) {
   currentState.map(
-    data: (data) => _runBinaryGuarded(listener, null, data.state),
-    error: (error) => _runBinaryGuarded(onError, error.error, error.stackTrace),
+    data: (data) => runBinaryGuarded(listener, null, data.state),
+    error: (error) => runBinaryGuarded(onError, error.error, error.stackTrace),
   );
 }

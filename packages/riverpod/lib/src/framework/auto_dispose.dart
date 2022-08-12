@@ -1,117 +1,11 @@
 part of '../framework.dart';
 
-/// A [Ref] for providers that are automatically destroyed when
-/// no longer used.
-///
-/// The difference with [Ref] is that it has an extra
-/// [keepAlive] function to help determine if the state can be destroyed
-///  or not.
-abstract class AutoDisposeRef<State> extends Ref<State> {
-  /// Whether to destroy the state of the provider when all listeners are removed or not.
-  ///
-  /// Can be changed at any time, in which case when setting it to `false`,
-  /// may destroy the provider state if it currently has no listeners.
-  ///
-  /// Defaults to `false`.
-  @Deprecated('use keepAlive() instead')
-  bool get maintainState;
-
-  @Deprecated('use keepAlive() instead')
-  set maintainState(bool value);
-
-  /// Requests for the state of a provider to not be disposed when all the
-  /// listeners of the provider are removed.
-  ///
-  /// Returns an object which allows cancelling this operation, therefore
-  /// allowing the provider to dispose itself when all listeners are removed.
-  ///
-  /// If [keepAlive] is invoked multiple times, all [KeepAliveLink] will have
-  /// to be closed for the provider to dispose itself when all listeners are removed.
-  KeepAliveLink keepAlive();
-
-  @override
-  T watch<T>(
-    // can watch both auto-dispose and non-auto-dispose providers
-    ProviderListenable<T> provider,
-  );
-
-  @override
-  ProviderSubscription<T> listen<T>(
-    // overridden to allow AutoDisposeProviderBase
-    ProviderListenable<T> provider,
-    void Function(T? previous, T next) listener, {
-    bool fireImmediately,
-    void Function(Object error, StackTrace stackTrace)? onError,
-  });
-}
-
-/// {@template riverpod.AutoDisposeProviderBase}
-/// A base class for providers that destroy their state when no longer listened to.
-///
-/// See also:
-///
-/// - [Provider.autoDispose], a variant of [Provider] that auto-dispose its state.
-/// {@endtemplate}
-abstract class AutoDisposeProviderBase<State> extends ProviderBase<State> {
-  /// {@macro riverpod.AutoDisposeProviderBase}
-  AutoDisposeProviderBase({
-    required String? name,
-    required Family? from,
-    required Object? argument,
-    required this.cacheTime,
-    required this.disposeDelay,
-  }) : super(name: name, from: from, argument: argument);
-
-  /// {@template riverpod.cache_time}
-  /// The minimum amount of time before an `autoDispose` provider can be
-  /// disposed if not listened after the last value change.
-  ///
-  /// If the provider rebuilds (such as when using `ref.watch` or `ref.refresh`)
-  /// or emits a new value, the timer will be refreshed.
-  ///
-  /// If null, use the nearest ancestor [ProviderContainer]'s [cacheTime].
-  /// If no ancestor is found, fallbacks to [Duration.zero].
-  /// {@endtemplate}
-  final Duration? cacheTime;
-
-  /// {@template riverpod.dispose_delay}
-  /// The amount of time before a provider is disposed after its last listener
-  /// is removed.
-  ///
-  /// If a new listener is added within that duration, the provider will not be
-  /// disposed.
-  ///
-  /// If null, use the nearest ancestor [ProviderContainer]'s [disposeDelay].
-  /// If no ancestor is found, fallbacks to [Duration.zero].
-  /// {@endtemplate}
-  final Duration? disposeDelay;
-
-  @override
-  State create(AutoDisposeRef ref);
-
-  @override
-  AutoDisposeProviderElementBase<State> createElement();
-}
-
-/// The [ProviderElementBase] of an [AutoDisposeProviderBase].
-abstract class AutoDisposeProviderElementBase<State>
-    extends ProviderElementBase<State> implements AutoDisposeRef<State> {
-  /// The [ProviderElementBase] of an [AutoDisposeProviderBase].
-  AutoDisposeProviderElementBase(ProviderBase<State> provider)
-      : super(provider);
-
-  // TODO make nullable
-  final _keepAliveLinks = <KeepAliveLink>[];
+/// A mixin that adds auto dispose support to a [ProviderElementBase].
+mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
+    implements AutoDisposeRef<State> {
+  List<KeepAliveLink>? _keepAliveLinks;
 
   bool _maintainState = false;
-
-  late final _cacheTime =
-      (provider as AutoDisposeProviderBase).cacheTime ?? _container.cacheTime;
-
-  late final _disposeDelay =
-      (provider as AutoDisposeProviderBase).disposeDelay ??
-          _container.disposeDelay;
-
   @Deprecated('Use `keepAlive()` instead')
   @override
   bool get maintainState => _maintainState;
@@ -121,36 +15,42 @@ abstract class AutoDisposeProviderElementBase<State>
     if (!value) mayNeedDispose();
   }
 
-  Timer? _cacheTimer;
+  late final _cacheTime = provider.cacheTime ?? _container.cacheTime;
 
+  late final _disposeDelay = provider.disposeDelay ?? _container.disposeDelay;
+
+  Timer? _cacheTimer;
   KeepAliveLink? _disposeDelayLink;
   Timer? _disposeDelayTimer;
 
   @override
   KeepAliveLink keepAlive() {
-    late KeepAliveLink link;
+    final links = _keepAliveLinks ??= [];
 
+    late KeepAliveLink link;
     link = KeepAliveLink._(() {
-      if (_keepAliveLinks.remove(link)) {
-        if (_keepAliveLinks.isEmpty) mayNeedDispose();
+      if (links.remove(link)) {
+        if (links.isEmpty) mayNeedDispose();
       }
     });
-    _keepAliveLinks.add(link);
+    links.add(link);
 
     return link;
   }
 
   @override
   void mayNeedDispose() {
+    final links = _keepAliveLinks;
+
     // ignore: deprecated_member_use_from_same_package
-    if (!maintainState && !hasListeners && _keepAliveLinks.isEmpty) {
+    if (!maintainState && !hasListeners && (links == null || links.isEmpty)) {
       _container._scheduler.scheduleProviderDispose(this);
     }
   }
 
   @override
-  void _buildState() {
-    super._buildState();
+  void buildState() {
+    super.buildState();
 
     if (_disposeDelay != Duration.zero) {
       // TODO timer should not refresh when provider rebuilds
@@ -161,7 +61,8 @@ abstract class AutoDisposeProviderElementBase<State>
       // new one
       assert(
         _disposeDelayLink == null ||
-            !_keepAliveLinks.contains(_disposeDelayLink),
+            _keepAliveLinks == null ||
+            !_keepAliveLinks!.contains(_disposeDelayLink),
         'Bad state',
       );
       _disposeDelayLink = keepAlive();
@@ -228,11 +129,11 @@ abstract class AutoDisposeProviderElementBase<State>
   }
 
   @override
-  void _runOnDispose() {
-    _keepAliveLinks.clear();
-    super._runOnDispose();
+  void runOnDispose() {
+    _keepAliveLinks?.clear();
+    super.runOnDispose();
     assert(
-      _keepAliveLinks.isEmpty,
+      _keepAliveLinks == null || _keepAliveLinks!.isEmpty,
       'Cannot call keepAlive() within onDispose listeners',
     );
   }

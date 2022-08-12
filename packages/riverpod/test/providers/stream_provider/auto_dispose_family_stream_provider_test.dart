@@ -49,17 +49,6 @@ void main() {
 
       expect(provider(0).from, provider);
       expect(provider(0).argument, 0);
-
-      expect(provider(0).future.from, provider);
-      expect(provider(0).future.argument, 0);
-
-      expect(provider(0).stream.from, provider);
-      expect(provider(0).stream.argument, 0);
-
-      // ignore: deprecated_member_use_from_same_package
-      expect(provider(0).last.from, provider);
-      // ignore: deprecated_member_use_from_same_package
-      expect(provider(0).last.argument, 0);
     });
 
     group('scoping an override overrides all the associated subproviders', () {
@@ -78,10 +67,6 @@ void main() {
           unorderedEquals(<Object?>[
             isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider(0)),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).future),
-            isA<ProviderElementBase>()
-                .having((e) => e.origin, 'origin', provider(0).stream),
           ]),
         );
       });

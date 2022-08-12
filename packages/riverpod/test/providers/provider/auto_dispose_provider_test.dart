@@ -6,26 +6,6 @@ import '../../utils.dart';
 
 void main() {
   group('Provider.autoDispose', () {
-    test('can benefit from .future extension if returning an AsyncValue',
-        () async {
-      final container = createContainer();
-      final provider = Provider.autoDispose((ref) => const AsyncValue.data(42));
-
-      container.listen(provider, (previous, next) {});
-
-      await expectLater(container.read(provider.future), completion(42));
-    });
-
-    test('can benefit from .stream extension if returning an AsyncValue',
-        () async {
-      final container = createContainer();
-      final provider = Provider.autoDispose((ref) => const AsyncValue.data(42));
-
-      container.listen(provider, (previous, next) {});
-
-      await expectLater(container.read(provider.stream), emits(42));
-    });
-
     group('ref.state', () {
       test('can read and change current value', () {
         final container = createContainer();
@@ -178,8 +158,8 @@ void main() {
     });
 
     test('can be overridden by anything', () {
-      final provider = Provider.autoDispose((_) => 42);
-      final AutoDisposeProviderBase<int> override = Provider.autoDispose((_) {
+      final provider = Provider.autoDispose<num>((_) => 42);
+      final override = Provider.autoDispose<int>((_) {
         return 21;
       });
       final container = createContainer(overrides: [

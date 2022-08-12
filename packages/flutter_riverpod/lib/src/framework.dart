@@ -354,7 +354,7 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
         SchedulerPhase.transientCallbacks) {
       markNeedsBuild();
     } else {
-      // Using microtask as Flutter otherwise Flutter tests omplains about pending timers
+      // Using microtask, otherwise Flutter tests complain about pending timers
       Future.microtask(() {
         if (_mounted) markNeedsBuild();
       });

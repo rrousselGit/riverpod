@@ -8,6 +8,39 @@ import 'package:mockito/mockito.dart';
 import 'utils.dart';
 
 void main() {
+  testWidgets('ref.invalidate can invalidate a family', (tester) async {
+    final listener = Listener<String>();
+    final listener2 = Listener<String>();
+    var result = 0;
+    final provider = Provider.family<String, int>((r, i) => '$result-$i');
+    late WidgetRef ref;
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (context, r, _) {
+            ref = r;
+            ref.listen(provider(0), listener);
+            ref.listen(provider(1), listener2);
+            return Container();
+          },
+        ),
+      ),
+    );
+
+    verifyZeroInteractions(listener);
+
+    ref.invalidate(provider);
+    result = 1;
+
+    verifyZeroInteractions(listener);
+
+    await tester.pumpAndSettle();
+
+    verifyOnly(listener, listener('0-0', '1-0'));
+    verifyOnly(listener2, listener2('0-1', '1-1'));
+  });
+
   testWidgets('ref.invalidate triggers a rebuild on next frame',
       (tester) async {
     final listener = Listener<int>();
@@ -311,28 +344,28 @@ void main() {
     expect(ref.refresh(provider), null);
   });
 
-  testWidgets('ProviderScope allows specifying a ProviderContainer',
-      (tester) async {
-    final provider = FutureProvider((ref) async => 42);
-    late WidgetRef ref;
-    final container = createContainer(overrides: [
-      provider.overrideWithValue(const AsyncValue.data(42)),
-    ]);
+  // testWidgets('ProviderScope allows specifying a ProviderContainer',
+  //     (tester) async {
+  //   final provider = FutureProvider((ref) async => 42);
+  //   late WidgetRef ref;
+  //   final container = createContainer(overrides: [
+  //     provider.overrideWithValue(const AsyncValue.data(42)),
+  //   ]);
 
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: Consumer(
-          builder: (context, r, _) {
-            ref = r;
-            return Container();
-          },
-        ),
-      ),
-    );
+  //   await tester.pumpWidget(
+  //     UncontrolledProviderScope(
+  //       container: container,
+  //       child: Consumer(
+  //         builder: (context, r, _) {
+  //           ref = r;
+  //           return Container();
+  //         },
+  //       ),
+  //     ),
+  //   );
 
-    expect(ref.read(provider), const AsyncValue.data(42));
-  });
+  //   expect(ref.read(provider), const AsyncValue.data(42));
+  // });
 
   testWidgets('AlwaysAliveProviderBase.read(context) inside initState',
       (tester) async {
@@ -620,36 +653,6 @@ void main() {
         throwsStateError,
       );
     });
-  });
-
-  testWidgets(
-      'autoDispose initState and ProviderListener does not destroy the state',
-      (tester) async {
-    var disposeCount = 0;
-    final counterProvider = StateProvider.autoDispose((ref) {
-      ref.onDispose(() => disposeCount++);
-      return 0;
-    });
-
-    await tester.pumpWidget(
-      ProviderScope(
-        child: Demo(
-          initState: (context, ref) {
-            ref.read(counterProvider.state).addListener((state) {});
-          },
-          builder: (context, ref) {
-            // ignore: deprecated_member_use_from_same_package
-            return ProviderListener(
-              onChange: (ct, prev, value) {},
-              provider: counterProvider,
-              child: Container(),
-            );
-          },
-        ),
-      ),
-    );
-
-    expect(disposeCount, 0);
   });
 
   testWidgets('autoDispose states are kept alive during pushReplacement',

@@ -2,218 +2,138 @@ part of '../state_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
 /// - [controller], the [StateController] currently exposed by this provider.
-abstract class StateProviderRef<State> implements Ref<StateController<State>> {
+abstract class StateProviderRef<State> implements Ref<State> {
   /// The [StateController] currently exposed by this provider.
   ///
   /// Cannot be accessed while creating the provider.
   StateController<State> get controller;
 }
 
-/// {@macro riverpod.stateprovider}
-@sealed
-class StateProvider<State> extends AlwaysAliveProviderBase<State>
-    with
-        StateProviderOverrideMixin<State>,
-        OverrideWithProviderMixin<StateController<State>,
-            StateProvider<State>> {
+/// {@template riverpod.stateprovider}
+/// A provider that exposes a value that can be modified from outside.
+///
+/// It can be useful for very simple states, like a filter or the currently
+/// selected item – which can then be combined with other providers or accessed
+/// in multiple screens.
+///
+/// The following code shows a list of products, and allows selecting
+/// a product by tapping on it.
+///
+/// ```dart
+/// final selectedProductIdProvider = StateProvider<String?>((ref) => null);
+/// final productsProvider = StateNotifierProvider<ProductsNotifier, List<Product>>((ref) => ProductsNotifier());
+///
+/// Widget build(BuildContext context, WidgetRef ref) {
+///   final List<Product> products = ref.watch(productsProvider);
+///   final selectedProductId = ref.watch(selectedProductIdProvider);
+///
+///   return ListView(
+///     children: [
+///       for (final product in products)
+///         GestureDetector(
+///           onTap: () => ref.read(selectedProductIdProvider.notifier).state = product.id,
+///           child: ProductItem(
+///             product: product,
+///             isSelected: selectedProductId.state == product.id,
+///           ),
+///         ),
+///     ],
+///   );
+/// }
+/// ```
+/// {@endtemplate}
+class StateProvider<T> extends _StateProviderBase<T>
+    with AlwaysAliveProviderBase<T> {
   /// {@macro riverpod.stateprovider}
   StateProvider(
-    Create<State, StateProviderRef<State>> create, {
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-    Family? from,
-    Object? argument,
-  })  : notifier = _NotifierProvider(
-          create,
-          name: modifierName(name, 'notifier'),
-          dependencies: dependencies,
-          from: from,
-          argument: argument,
-        ),
-        super(name: name, from: from, argument: argument);
-
-  /// {@macro riverpod.family}
-  static const family = StateProviderFamilyBuilder();
+    this._createFn, {
+    super.name,
+    super.from,
+    super.argument,
+    super.dependencies,
+  }) : super(cacheTime: null, disposeDelay: null);
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStateProviderBuilder();
 
-  @override
-  ProviderBase<StateController<State>> get originProvider => notifier;
+  /// {@macro riverpod.family}
+  static const family = StateProviderFamilyBuilder();
+
+  final T Function(StateProviderRef<T> ref) _createFn;
 
   @override
-  late final AlwaysAliveProviderBase<StateController<State>> state =
-      _NotifierStateProvider(
-    (ref) {
-      return _listenStateProvider(
-        ref as ProviderElementBase<StateController<State>>,
-        ref.watch(notifier),
-      );
-    },
-    dependencies: [notifier],
-    from: from,
-    argument: argument,
-  );
-
-  /// {@template riverpod.stateprovider.notifier}
-  /// Obtains the [StateController] associated with this provider, but without
-  /// listening to it.
-  ///
-  /// Listening to this provider may cause providers/widgets to rebuild in the
-  /// event that the [StateController] it recreated.
-  ///
-  ///
-  /// It is preferable to do:
-  /// ```dart
-  /// ref.watch(stateProvider.notifier)
-  /// ```
-  ///
-  /// instead of:
-  /// ```dart
-  /// ref.read(stateProvider)
-  /// ```
-  ///
-  /// The reasoning is, using `read` could cause hard to catch bugs, such as
-  /// not rebuilding dependent providers/widgets after using `ref.refresh` on this provider.
-  /// {@endtemplate}
-  @override
-  final AlwaysAliveProviderBase<StateController<State>> notifier;
+  T _create(StateProviderElement<T> ref) => _createFn(ref);
 
   @override
-  State create(
-    ProviderElementBase<State> ref,
-  ) {
-    final notifier = ref.watch(this.notifier);
+  StateProviderElement<T> createElement() => StateProviderElement._(this);
 
-    final removeListener = notifier.addListener(ref.setState);
-    ref.onDispose(removeListener);
+  @override
+  late final AlwaysAliveRefreshable<StateController<T>> notifier =
+      _notifier(this);
 
-    return notifier.state;
+  @override
+  late final AlwaysAliveRefreshable<StateController<T>> state = _state(this);
+}
+
+/// The element of [StateProvider].
+class StateProviderElement<T> extends ProviderElementBase<T>
+    implements StateProviderRef<T> {
+  StateProviderElement._(_StateProviderBase<T> provider) : super(provider);
+
+  @override
+  StateController<T> get controller => _controllerNotifier.value;
+  final _controllerNotifier = ProxyElementValueNotifier<StateController<T>>();
+
+  final _stateNotifier = ProxyElementValueNotifier<StateController<T>>();
+
+  void Function()? _removeListener;
+
+  @override
+  void create({required bool didChangeDependency}) {
+    final provider = this.provider as _StateProviderBase<T>;
+    final initialState = provider._create(this);
+
+    final controller = StateController(initialState);
+    _controllerNotifier.result = Result.data(controller);
+
+    _removeListener = controller.addListener((state) {
+      _stateNotifier.result = _controllerNotifier.result;
+      setState(state);
+    }, fireImmediately: true);
   }
 
   @override
-  bool updateShouldNotify(State previousState, State newState) {
-    return true;
+  void runOnDispose() {
+    super.runOnDispose();
+
+    _removeListener?.call();
+    _removeListener = null;
+
+    _controllerNotifier.result?.stateOrNull?.dispose();
+    _controllerNotifier.result = null;
   }
 
   @override
-  StateProviderElement<State> createElement() => StateProviderElement(this);
-}
-
-/// The [ProviderElementBase] for [StateProvider]
-class StateProviderElement<State> extends ProviderElementBase<State> {
-  /// The [ProviderElementBase] for [StateProvider]
-  StateProviderElement(StateProvider<State> provider) : super(provider);
-}
-
-class _NotifierStateProvider<State> extends Provider<State> {
-  _NotifierStateProvider(
-    Create<State, ProviderRef<State>> create, {
-    List<ProviderOrFamily>? dependencies,
-    required Family? from,
-    required Object? argument,
-  }) : super(
-          create,
-          dependencies: dependencies,
-          from: from,
-          argument: argument,
-        );
-
-  @override
-  bool updateShouldNotify(State previousState, State newState) {
-    return true;
+  void visitChildren({
+    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+  }) {
+    super.visitChildren(
+      elementVisitor: elementVisitor,
+      notifierVisitor: notifierVisitor,
+    );
+    notifierVisitor(_stateNotifier);
+    notifierVisitor(_controllerNotifier);
   }
 }
 
-class _NotifierProvider<State>
-    extends AlwaysAliveProviderBase<StateController<State>> {
-  _NotifierProvider(
-    this._create, {
-    required String? name,
-    required this.dependencies,
-    required Family? from,
-    required Object? argument,
-  }) : super(name: name, from: from, argument: argument);
-
-  final Create<State, StateProviderRef<State>> _create;
-
-  @override
-  final List<ProviderOrFamily>? dependencies;
-
-  @override
-  StateController<State> create(StateProviderRef<State> ref) {
-    final initialState = _create(ref);
-    final notifier = StateController(initialState);
-    ref.onDispose(notifier.dispose);
-    return notifier;
-  }
-
-  @override
-  bool updateShouldNotify(
-    StateController<State> previousState,
-    StateController<State> newState,
-  ) {
-    return true;
-  }
-
-  @override
-  _NotifierStateProviderElement<State> createElement() {
-    return _NotifierStateProviderElement(this);
-  }
-}
-
-class _NotifierStateProviderElement<State>
-    extends ProviderElementBase<StateController<State>>
-    implements StateProviderRef<State> {
-  _NotifierStateProviderElement(_NotifierProvider<State> provider)
-      : super(provider);
-
-  @override
-  StateController<State> get controller => requireState;
-}
-
-/// {@macro riverpod.stateprovider.family}
-@sealed
-class StateProviderFamily<State, Arg>
-    extends Family<State, Arg, StateProvider<State>> {
-  /// {@macro riverpod.stateprovider.family}
+/// The [Family] of [StateProvider].
+class StateProviderFamily<R, Arg>
+    extends FamilyBase<StateProviderRef<R>, R, Arg, R, StateProvider<R>> {
+  /// The [Family] of [StateProvider].
   StateProviderFamily(
-    this._create, {
-    String? name,
-    List<ProviderOrFamily>? dependencies,
-  }) : super(name: name, dependencies: dependencies);
-
-  final FamilyCreate<State, StateProviderRef<State>, Arg> _create;
-
-  @override
-  StateProvider<State> create(
-    Arg argument,
-  ) {
-    return StateProvider<State>(
-      (ref) => _create(ref, argument),
-      name: name,
-      from: this,
-      argument: argument,
-    );
-  }
-
-  @override
-  void setupOverride(Arg argument, SetupOverride setup) {
-    final provider = call(argument);
-    setup(origin: provider.notifier, override: provider.notifier);
-  }
-
-  /// {@macro riverpod.overidewithprovider}
-  Override overrideWithProvider(
-    StateProvider<State> Function(Arg argument) override,
-  ) {
-    return FamilyOverride<Arg>(
-      this,
-      (arg, setup) {
-        final provider = call(arg);
-        final newProvider = override(arg);
-        setup(origin: provider.notifier, override: newProvider.notifier);
-      },
-    );
-  }
+    super.create, {
+    super.name,
+    super.dependencies,
+  }) : super(providerFactory: StateProvider.new);
 }

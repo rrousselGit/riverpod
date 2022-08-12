@@ -129,7 +129,7 @@ abstract class WidgetRef {
   /// While more verbose than [read], using [Provider]/`select` is a lot safer.
   /// It does not rely on implementation details on `Model`, and it makes
   /// impossible to have a bug where our UI does not refresh.
-  T read<T>(ProviderBase<T> provider);
+  T read<T>(ProviderListenable<T> provider);
 
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
@@ -165,7 +165,7 @@ abstract class WidgetRef {
   ///   }
   /// }
   /// ```
-  State refresh<State>(ProviderBase<State> provider);
+  State refresh<State>(Refreshable<State> provider);
 
   /// Invalidates the state of the provider, causing it to refresh.
   ///
@@ -176,7 +176,7 @@ abstract class WidgetRef {
   /// once.
   ///
   /// Calling [invalidate] will cause the provider to be disposed immediately.
-  void invalidate(ProviderBase<Object?> provider);
+  void invalidate(ProviderOrFamily provider);
 }
 
 /// A function that can also listen to providers
@@ -545,17 +545,17 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   }
 
   @override
-  T read<T>(ProviderBase<T> provider) {
+  T read<T>(ProviderListenable<T> provider) {
     return ProviderScope.containerOf(this, listen: false).read(provider);
   }
 
   @override
-  State refresh<State>(ProviderBase<State> provider) {
+  State refresh<State>(Refreshable<State> provider) {
     return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
 
   @override
-  void invalidate(ProviderBase<Object?> provider) {
+  void invalidate(ProviderOrFamily provider) {
     _container.invalidate(provider);
   }
 
