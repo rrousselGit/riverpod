@@ -117,7 +117,158 @@ void main() {
       await expectLater(container.read(provider.future), throwsA(42));
     });
 
-    group('update', () {});
+    test(
+        'stops listening to the previous future data when the provider rebuilds',
+        () async {
+      final container = createContainer();
+      final dep = StateProvider((ref) => 0);
+      final completers = {
+        0: Completer<int>.sync(),
+        1: Completer<int>.sync(),
+      };
+      final provider = _TestNotifierProvider<int>(
+        (ref) => completers[ref.watch(dep)]!.future,
+      );
+      final listener = Listener<AsyncValue<int>>();
+
+      container.listen(provider, listener);
+
+      expect(container.read(provider.future), completion(42));
+      verifyZeroInteractions(listener);
+      expect(container.read(provider), const AsyncLoading<int>());
+
+      container.read(dep.notifier).state++;
+      completers[0]!.complete(42);
+
+      verifyZeroInteractions(listener);
+
+      expect(container.read(provider.future), completion(21));
+      expect(container.read(provider), const AsyncLoading<int>());
+
+      completers[1]!.complete(21);
+
+      expect(await container.read(provider.future), 21);
+      expect(container.read(provider), const AsyncData<int>(21));
+    });
+
+    test(
+        'stops listening to the previous future error when the provider rebuilds',
+        () async {
+      final container = createContainer();
+      final dep = StateProvider((ref) => 0);
+      final completers = {
+        0: Completer<int>.sync(),
+        1: Completer<int>.sync(),
+      };
+      final provider = _TestNotifierProvider<int>(
+        (ref) => completers[ref.watch(dep)]!.future,
+      );
+      final listener = Listener<AsyncValue<int>>();
+
+      container.listen(provider, listener);
+
+      expect(container.read(provider.future), throwsA(42));
+      verifyZeroInteractions(listener);
+      expect(container.read(provider), const AsyncLoading<int>());
+
+      container.read(dep.notifier).state++;
+      completers[0]!.completeError(42, StackTrace.empty);
+
+      verifyZeroInteractions(listener);
+
+      expect(container.read(provider.future), throwsA(21));
+      expect(container.read(provider), const AsyncLoading<int>());
+
+      completers[1]!.completeError(21, StackTrace.empty);
+
+      await expectLater(container.read(provider.future), throwsA(21));
+      expect(
+        container.read(provider),
+        const AsyncError<int>(21, StackTrace.empty),
+      );
+    });
+
+    group('AsyncNotifier.state', () {
+      test(
+          'when read on outdated provider, refreshes the provider and return the up-to-date state',
+          () async {
+        final listener = OnBuildMock();
+        final dep = StateProvider((ref) => 0);
+        final provider = _TestNotifierProvider<int>(
+          (ref) {
+            listener();
+            return Future.value(ref.watch(dep));
+          },
+        );
+        final container = createContainer();
+
+        final notifier = container.read(provider.notifier);
+
+        expect(notifier.state, const AsyncLoading<int>());
+        expect(await container.read(provider.future), 0);
+        expect(notifier.state, const AsyncData(0));
+        verify(listener()).called(1);
+
+        container.read(dep.notifier).state++;
+
+        expect(notifier.state, const AsyncLoading<int>());
+        expect(await container.read(provider.future), 1);
+        expect(notifier.state, const AsyncData(1));
+        verify(listener()).called(1);
+      });
+    });
+
+    group('AsyncNotifier.future', () {
+      test('retuns a Future identical to that of .future', () {
+        final listener = OnBuildMock();
+        final dep = StateProvider((ref) => 0);
+        final provider = _TestNotifierProvider<int>(
+          (ref) {
+            listener();
+            return Future.value(ref.watch(dep));
+          },
+        );
+        final container = createContainer();
+
+        final notifier = container.read(provider.notifier);
+
+        expect(notifier.future(), same(container.read(provider.future)));
+      });
+
+      test(
+          'when read on outdated provider, refreshes the provider and return the up-to-date state',
+          () async {
+        final listener = OnBuildMock();
+        final dep = StateProvider((ref) => 0);
+        final provider = _TestNotifierProvider<int>(
+          (ref) {
+            listener();
+            return Future.value(ref.watch(dep));
+          },
+        );
+        final container = createContainer();
+
+        final notifier = container.read(provider.notifier);
+
+        expect(await container.read(provider.future), 0);
+        verify(listener()).called(1);
+
+        container.read(dep.notifier).state++;
+
+        expect(notifier.future(), notifier.future());
+        expect(notifier.future(), same(container.read(provider.future)));
+        expect(await notifier.future(), 1);
+        verify(listener()).called(1);
+      });
+    });
+
+    group('AsyncNotifierProvider.notifier', () {
+      test(
+          'never emits an update. The Notifier is never recreated once it is instantiated',
+          () {});
+    });
+
+    group('AsyncNotifer.update', () {});
   });
 }
 

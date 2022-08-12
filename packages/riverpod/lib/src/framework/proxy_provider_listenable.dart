@@ -73,6 +73,7 @@ class ProviderElementProxy<Input, Output>
     final element = node.readProviderElement(_origin);
 
     // TODO does this need a "flush"?
+    // element.flush();
 
     final notifier = _lense(element);
     if (fireImmediately) {

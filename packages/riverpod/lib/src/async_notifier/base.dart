@@ -16,7 +16,6 @@ abstract class AsyncNotifier<State> extends AsyncNotifierBase<State> {
   @protected
   @override
   AsyncValue<State> get state {
-    // TODO test flush
     _element.flush();
     // ignore: invalid_use_of_protected_member
     return _element.requireState;
@@ -30,7 +29,6 @@ abstract class AsyncNotifier<State> extends AsyncNotifierBase<State> {
 
   @override
   Future<State> future() {
-    // TODO test flush
     _element.flush();
     return _element._futureNotifier.value;
   }
@@ -125,21 +123,18 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
             if (futureOr is Future<T>) {
               _futureNotifier.result = Result.data(futureOr);
 
+              var running = true;
+              onDispose(() => running = false);
+
               // TODO stop listening on dispose
               futureOr.then(
-                (value) => setState(AsyncData(value)),
+                (value) {
+                  if (running) setState(AsyncData(value));
+                },
                 // ignore: avoid_types_on_closure_parameters
                 onError: (Object err, StackTrace stack) {
-                  // TODO test error
-                  setState(AsyncError(err, stack));
+                  if (running) setState(AsyncError(err, stack));
                 },
-                // TODO uncomment when using Future<void>
-                // (_) => requireState.when<T>(
-                //   loading: () => throw StateError(
-                //       'Failed to initialize the provider. Did you forget to set a value during "build"?'),
-                //   error: Error.throwWithStackTrace,
-                //   data: (data) => data,
-                // ),
               );
             } else {
               _futureNotifier.result = Result.data(SynchronousFuture(futureOr));
