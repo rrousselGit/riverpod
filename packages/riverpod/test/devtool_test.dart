@@ -12,6 +12,10 @@ void main() {
     stopSpyPostEvent();
   });
 
+  test('should have the right binding version', () {
+    expect(RiverpodBinding.debugInstance.bindingVersion, equals(1));
+  });
+
   test('should add container to containers map', () {
     final firstContainer = createContainer();
     final secondContainer = createContainer();

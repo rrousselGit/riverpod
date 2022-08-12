@@ -153,6 +153,10 @@ class RiverpodBinding {
     return binding!;
   }
 
+  /// Used in the devtools implementation to enable/disable certain features.
+  /// Should be increased whenever a change is made to this api.
+  final bindingVersion = 1;
+
   Map<String, ProviderContainer> _containers = {};
   Map<String, ProviderContainer> get containers => _containers;
 
