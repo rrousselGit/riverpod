@@ -98,7 +98,7 @@ rebuild if one of its dependency had changed.
 
 - Now requires Dart 2.16
 
-- **Breaking** Providers no-longer throw a `ProviderException` if an exception was thrown while building their value.  
+- **Breaking** Providers no-longer throw a `ProviderException` if an exception was thrown while building their value.
   Instead, they will rethrow the thrown exception and its stacktrace.
 - Removed `AsyncValue`'s `isError`/`isData`
 
@@ -115,7 +115,7 @@ rebuild if one of its dependency had changed.
 # 2.0.0-dev.0
 
 - **Breaking** After a provider has emitted an `AsyncValue.data` or `AsyncValue.error`,
-  that provider will no longer emit an `AsyncValue.loading`.  
+  that provider will no longer emit an `AsyncValue.loading`.
   Instead, it will re-emit the latest value, but with the property
   `AsyncValue.isRefreshing` to true.
 
@@ -152,8 +152,8 @@ Riverpod is now stable!
   You can now instead use `ProviderContainer.getAllProviderElements`.
 - Increased minimum SDK version to 2.14.0
 - **Breaking** The return value when reading a `StateProvider` changed.
-  Before, doing `ref.read(someStateProvider)` would return the `StateController` instance.  
-  Now, this will only return the state of the `StateController`.  
+  Before, doing `ref.read(someStateProvider)` would return the `StateController` instance.
+  Now, this will only return the state of the `StateController`.
   This new behaviour matches `StateNotifierProvider`.
 
   For a simple migration, the old behavior is available by writing
@@ -293,7 +293,7 @@ Riverpod is now stable!
 
 ### All providers can now be scoped.
 
-- **Breaking**: `ScopedProvider` is removed.  
+- **Breaking**: `ScopedProvider` is removed.
   To migrate, change `ScopedProvider`s to `Provider`s.
 
 - All providers now come with an extra named parameter called `dependencies`.
@@ -332,7 +332,7 @@ Riverpod is now stable!
   provider.select((value) => ref.watch(something)); // KO, cannot use ref.watch inside selectors
   ```
 
-- FutureProvider now creates a `FutureOr<T>` instead of a `Future<T>`.  
+- FutureProvider now creates a `FutureOr<T>` instead of a `Future<T>`.
   That allows bypassing the loading state in the event where a value was synchronously available.
 
 ### Bug fixes
@@ -359,7 +359,7 @@ Fix an issue where `*Provider.autoDispose` were not able to specify the
   That allows bypassing the loading state in the event where a value was synchronously available.
 
 - During loading and error states, `FutureProvider` and `StreamProvider` now expose the
-  latest value through `AsyncValue`.  
+  latest value through `AsyncValue`.
   That allows UI to show the previous data while some new data is loading,
   inatead of showing a spinner:
 
@@ -404,7 +404,7 @@ Fix an issue where `*Provider.autoDispose` were not able to specify the
 
 ### General
 
-- **Breaking** All `overrideWithProvider` methods are removed.  
+- **Breaking** All `overrideWithProvider` methods are removed.
   To migrate, instead use `overrideWithValue`.
 - All providers now come with an extra named parameter called `dependencies`.
   This parameter optionally allows defining the list of providers/families that this
