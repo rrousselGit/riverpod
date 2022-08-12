@@ -146,7 +146,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
             // TODO test ignore
             ..ignore(),
         );
-        setState(AsyncError<T>(err, stackTrace: stack));
+        setState(AsyncError<T>(err, stack));
       },
     );
   }
@@ -198,7 +198,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
           );
         }
 
-        setState(AsyncError<T>(err, stackTrace: stack));
+        setState(AsyncError<T>(err, stack));
         _streamController.addError(err, stack);
       },
     );

@@ -95,7 +95,7 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
           ..ignore(),
       );
       _streamController.addError(err, stack);
-      setState(AsyncError<T>(err, stackTrace: stack));
+      setState(AsyncError<T>(err, stack));
     }
   }
 
@@ -115,7 +115,7 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
       onError: (Object err, StackTrace stack) {
         if (running) {
           _streamController.addError(err, stack);
-          setState(AsyncError<T>(err, stackTrace: stack));
+          setState(AsyncError<T>(err, stack));
         }
       },
     );

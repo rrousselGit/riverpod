@@ -76,7 +76,7 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     notifierResult.when(
       error: (err, stack) {
         _futureNotifier.result = Result.data(Future.error(err, stack));
-        setState(AsyncError(err, stackTrace: stack));
+        setState(AsyncError(err, stack));
       },
       data: (notifier) {
         notifier._setElement(this);
@@ -94,10 +94,7 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
                   (_) => requireState.when<T>(
                     loading: () => throw StateError(
                         'Failed to initialize the provider. Did you forget to set a value during "build"?'),
-                    error: (err, stack) => Error.throwWithStackTrace(
-                      err,
-                      stack ?? StackTrace.current,
-                    ),
+                    error: Error.throwWithStackTrace,
                     data: (data) => data,
                   ),
                 ),
