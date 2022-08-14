@@ -22,7 +22,7 @@ abstract class AutoDisposeAsyncNotifierProviderRef<T>
 /// {@macro riverpod.asyncnotifier}
 typedef AutoDisposeAsyncNotifierProvider<
         NotifierT extends AutoDisposeAsyncNotifier<T>, T>
-    = TestAsyncNotifierProvider<NotifierT, T>;
+    = TestAutoDisposeAsyncNotifierProvider<NotifierT, T>;
 
 /// The implementation of [AutoDisposeAsyncNotifierProvider] but with loosened type constraints
 /// that can be shared with [AsyncNotifierProvider].

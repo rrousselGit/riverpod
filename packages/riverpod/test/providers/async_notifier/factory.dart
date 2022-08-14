@@ -13,48 +13,77 @@ typedef AsyncNotifierProviderFactoryType
   String? name,
 });
 
-typedef AsyncNotifierFactoryType = AsyncNotifierBase<T> Function<T>(
+typedef AsyncNotifierFactoryType = AsyncTestNotifier<T> Function<T>(
   FutureOr<T> Function(AsyncNotifierProviderRef<T>), {
   bool Function(T, T)? updateShouldNotify,
 });
 
-typedef TestProviderFactoryType
+typedef SimpleTestProviderFactoryType
     = AsyncNotifierProviderBase<AsyncTestNotifier<T>, T> Function<T>(
   FutureOr<T> Function(AsyncNotifierProviderRef<T> ref) init, {
   bool Function(T prev, T next)? updateShouldNotify,
 });
 
-const matrix = <AsyncNotifierFactory>[
-  AsyncNotifierFactory(
-    label: 'AsyncNotifierProvider',
-    provider: TestAsyncNotifierProvider.new,
-    notifier: AsyncTestNotifier.new,
-    testProvider: _AsyncTestNotifierProvider,
-  ),
-  AsyncNotifierFactory(
-    label: 'AutoDisposeAsyncNotifierProvider',
-    provider: TestAutoDisposeAsyncNotifierProvider.new,
-    notifier: AutoDisposeAsyncTestNotifier.new,
-    testProvider: _AutoDisposeAsyncTestNotifierProvider,
-  ),
-];
+typedef TestProviderFactoryType
+    = AsyncNotifierProviderBase<AsyncTestNotifier<T>, T> Function<T>(
+  AsyncTestNotifier<T> Function() createNotifier,
+);
+
+List<AsyncNotifierFactory> matrix({
+  bool alwaysAlive = true,
+  bool autoDispose = true,
+}) {
+  return <AsyncNotifierFactory>[
+    if (alwaysAlive)
+      AsyncNotifierFactory(
+        label: 'AsyncNotifierProvider',
+        isAutoDispose: false,
+        provider: TestAsyncNotifierProvider.new,
+        notifier: AsyncTestNotifier.new,
+        testProvider: <T>(createNotifier) {
+          return TestAsyncNotifierProvider<AsyncTestNotifier<T>, T>(
+              createNotifier);
+        },
+        simpleTestProvider: _SimpleAsyncTestNotifierProvider,
+      ),
+    if (autoDispose)
+      AsyncNotifierFactory(
+        label: 'AutoDisposeAsyncNotifierProvider',
+        isAutoDispose: true,
+        provider: TestAutoDisposeAsyncNotifierProvider.new,
+        notifier: AutoDisposeAsyncTestNotifier.new,
+        testProvider: <T>(createNotifier) {
+          return TestAutoDisposeAsyncNotifierProvider<
+              AutoDisposeAsyncTestNotifier<T>, T>(
+            () => createNotifier() as AutoDisposeAsyncTestNotifier<T>,
+          );
+        },
+        simpleTestProvider: _SimpleAutoDisposeAsyncTestNotifierProvider,
+      ),
+  ];
+}
 
 class AsyncNotifierFactory {
   const AsyncNotifierFactory({
     required this.label,
     required this.provider,
     required this.notifier,
+    required this.isAutoDispose,
     required this.testProvider,
+    required this.simpleTestProvider,
   });
 
   final String label;
+  final bool isAutoDispose;
   final AsyncNotifierProviderFactoryType provider;
   final AsyncNotifierFactoryType notifier;
   final TestProviderFactoryType testProvider;
+  final SimpleTestProviderFactoryType simpleTestProvider;
 }
 
+AsyncNotifierProvider<AsyncTestNotifier<T>, T>
 // ignore: non_constant_identifier_names
-AsyncNotifierProvider<AsyncTestNotifier<T>, T> _AsyncTestNotifierProvider<T>(
+    _SimpleAsyncTestNotifierProvider<T>(
   FutureOr<T> Function(AsyncNotifierProviderRef<T> ref) init, {
   bool Function(T prev, T next)? updateShouldNotify,
 }) {
@@ -68,7 +97,7 @@ AsyncNotifierProvider<AsyncTestNotifier<T>, T> _AsyncTestNotifierProvider<T>(
 
 AutoDisposeAsyncNotifierProvider<AutoDisposeAsyncTestNotifier<T>, T>
 // ignore: non_constant_identifier_names
-    _AutoDisposeAsyncTestNotifierProvider<T>(
+    _SimpleAutoDisposeAsyncTestNotifierProvider<T>(
   FutureOr<T> Function(AutoDisposeAsyncNotifierProviderRef<T> ref) init, {
   bool Function(T prev, T next)? updateShouldNotify,
 }) {

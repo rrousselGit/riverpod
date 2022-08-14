@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart' hide ErrorListener;
+import 'package:riverpod/src/async_notifier.dart';
 import 'package:test/test.dart';
 
 import '../../matchers.dart';
@@ -10,7 +11,7 @@ import '../../utils.dart';
 import 'factory.dart';
 
 void main() {
-  for (final factory in matrix) {
+  for (final factory in matrix()) {
     group(factory.label, () {
       group('supports refresh transition', () {
         test(
@@ -18,9 +19,11 @@ void main() {
             () async {
           final container = createContainer();
           var count = 0;
-          final provider = _TestNotifierProvider(
+          final provider = factory.simpleTestProvider(
             (ref) => Future.value(count++),
           );
+
+          container.listen(provider, (previous, next) {});
 
           await expectLater(container.read(provider.future), completion(0));
           expect(container.read(provider), const AsyncData(0));
@@ -47,9 +50,11 @@ void main() {
             () async {
           final container = createContainer();
           final dep = StateProvider((ref) => 0);
-          final provider = _TestNotifierProvider(
+          final provider = factory.simpleTestProvider(
             (ref) => Future.value(ref.watch(dep)),
           );
+
+          container.listen(provider, (previous, next) {});
 
           await expectLater(container.read(provider.future), completion(0));
           expect(container.read(provider), const AsyncData(0));
@@ -66,9 +71,11 @@ void main() {
             () async {
           final container = createContainer();
           final dep = StateProvider((ref) => 0);
-          final provider = _TestNotifierProvider(
+          final provider = factory.simpleTestProvider(
             (ref) => Future.value(ref.watch(dep)),
           );
+
+          container.listen(provider, (previous, next) {});
 
           await expectLater(container.read(provider.future), completion(0));
           expect(container.read(provider), const AsyncData(0));
@@ -84,13 +91,13 @@ void main() {
       test('supports listenSelf', () {
         final listener = Listener<AsyncValue<int>>();
         final onError = ErrorListener();
-        final provider = _TestNotifierProvider<int>((ref) {
+        final provider = factory.simpleTestProvider<int>((ref) {
           ref.listenSelf(listener, onError: onError);
           Error.throwWithStackTrace(42, StackTrace.empty);
         });
         final container = createContainer();
 
-        container.read(provider);
+        container.listen(provider, (previous, next) {});
 
         verifyOnly(
           listener,
@@ -113,7 +120,7 @@ void main() {
       test(
           'converts AsyncNotifier.build into an AsyncData if the future completes',
           () async {
-        final provider = _TestNotifierProvider((ref) => Future.value(0));
+        final provider = factory.simpleTestProvider((ref) => Future.value(0));
         final container = createContainer();
         final listener = Listener<AsyncValue<int>>();
 
@@ -128,15 +135,19 @@ void main() {
         expect(await container.read(provider.future), 0);
 
         verifyOnly(
-            listener, listener(const AsyncLoading(), const AsyncData(0)));
+          listener,
+          listener(const AsyncLoading(), const AsyncData(0)),
+        );
         expect(
-            container.read(provider.notifier).state, const AsyncData<int>(0));
+          container.read(provider.notifier).state,
+          const AsyncData<int>(0),
+        );
       });
 
       test(
           'converts AsyncNotifier.build into an AsyncError if the future fails',
           () async {
-        final provider = _TestNotifierProvider<int>(
+        final provider = factory.simpleTestProvider<int>(
           (ref) => Future.error(0, StackTrace.empty),
         );
         final container = createContainer();
@@ -164,7 +175,7 @@ void main() {
 
       test('supports cases where the AsyncNotifier constructor throws',
           () async {
-        final provider = AsyncNotifierProvider<TestNotifier<int>, int>(
+        final provider = factory.testProvider<int>(
           () => Error.throwWithStackTrace(0, StackTrace.empty),
         );
         final container = createContainer();
@@ -187,7 +198,7 @@ void main() {
       test(
           'synchronously emits AsyncData if AsyncNotifier.build emits synchronously',
           () async {
-        final provider = _TestNotifierProvider<int>((ref) => 0);
+        final provider = factory.simpleTestProvider<int>((ref) => 0);
         final container = createContainer();
         final listener = Listener<AsyncValue<int>>();
 
@@ -201,7 +212,7 @@ void main() {
       test(
           'synchronously emits AsyncError if AsyncNotifier.build throws synchronously',
           () async {
-        final provider = _TestNotifierProvider<int>(
+        final provider = factory.simpleTestProvider<int>(
           (ref) => Error.throwWithStackTrace(42, StackTrace.empty),
         );
         final container = createContainer();
@@ -229,7 +240,7 @@ void main() {
           0: Completer<int>.sync(),
           1: Completer<int>.sync(),
         };
-        final provider = _TestNotifierProvider<int>(
+        final provider = factory.simpleTestProvider<int>(
           (ref) => completers[ref.watch(dep)]!.future,
         );
         final listener = Listener<AsyncValue<int>>();
@@ -263,7 +274,7 @@ void main() {
           0: Completer<int>.sync(),
           1: Completer<int>.sync(),
         };
-        final provider = _TestNotifierProvider<int>(
+        final provider = factory.simpleTestProvider<int>(
           (ref) => completers[ref.watch(dep)]!.future,
         );
         final listener = Listener<AsyncValue<int>>();
@@ -297,7 +308,7 @@ void main() {
             () async {
           final listener = OnBuildMock();
           final dep = StateProvider((ref) => 0);
-          final provider = _TestNotifierProvider<int>(
+          final provider = factory.simpleTestProvider<int>(
             (ref) {
               listener();
               return Future.value(ref.watch(dep));
@@ -305,6 +316,7 @@ void main() {
           );
           final container = createContainer();
 
+          container.listen(provider, (previous, next) {});
           final notifier = container.read(provider.notifier);
 
           expect(notifier.state, const AsyncLoading<int>());
@@ -323,10 +335,10 @@ void main() {
         test('can be read inside build', () {
           final dep = StateProvider((ref) => 0);
           late AsyncValue<int> state;
-          final provider = AsyncNotifierProvider<TestNotifier<int>, int>(
+          final provider = factory.testProvider<int>(
             () {
-              late TestNotifier<int> notifier;
-              return notifier = TestNotifier<int>(
+              late AsyncTestNotifier<int> notifier;
+              return notifier = factory.notifier<int>(
                 (ref) {
                   state = notifier.state;
                   return Future.value(ref.watch(dep));
@@ -336,7 +348,7 @@ void main() {
           );
           final container = createContainer();
 
-          container.read(provider);
+          container.listen(provider, (previous, next) {});
 
           expect(state, const AsyncLoading<int>());
 
@@ -350,7 +362,7 @@ void main() {
         });
 
         test('notifies listeners when the setter is called', () {
-          final provider = _TestNotifierProvider((ref) => 0);
+          final provider = factory.simpleTestProvider((ref) => 0);
           final container = createContainer();
           final listener = Listener<AsyncValue<int>>();
 
@@ -361,7 +373,9 @@ void main() {
           container.read(provider.notifier).state = const AsyncData(42);
 
           verifyOnly(
-              listener, listener(const AsyncData(0), const AsyncData(42)));
+            listener,
+            listener(const AsyncData(0), const AsyncData(42)),
+          );
         });
       });
 
@@ -373,7 +387,7 @@ void main() {
         test('retuns a Future identical to that of .future', () {
           final listener = OnBuildMock();
           final dep = StateProvider((ref) => 0);
-          final provider = _TestNotifierProvider<int>(
+          final provider = factory.simpleTestProvider<int>(
             (ref) {
               listener();
               return Future.value(ref.watch(dep));
@@ -381,6 +395,7 @@ void main() {
           );
           final container = createContainer();
 
+          container.listen(provider.notifier, (previous, next) {});
           final notifier = container.read(provider.notifier);
 
           expect(notifier.future(), same(container.read(provider.future)));
@@ -391,7 +406,7 @@ void main() {
             () async {
           final listener = OnBuildMock();
           final dep = StateProvider((ref) => 0);
-          final provider = _TestNotifierProvider<int>(
+          final provider = factory.simpleTestProvider<int>(
             (ref) {
               listener();
               return Future.value(ref.watch(dep));
@@ -399,6 +414,7 @@ void main() {
           );
           final container = createContainer();
 
+          container.listen(provider, (previous, next) {});
           final notifier = container.read(provider.notifier);
 
           expect(await container.read(provider.future), 0);
@@ -419,12 +435,13 @@ void main() {
             () async {
           final listener = OnBuildMock();
           final dep = StateProvider((ref) => 0);
-          final provider = AsyncNotifierProvider<TestNotifier<int>, int>(() {
+          final provider = factory.testProvider<int>(() {
             listener();
-            return TestNotifier((ref) => ref.watch(dep));
+            return factory.notifier((ref) => ref.watch(dep));
           });
           final container = createContainer();
 
+          container.listen(provider, (previous, next) {});
           final notifier = container.read(provider.notifier);
 
           verify(listener()).called(1);
@@ -441,6 +458,21 @@ void main() {
       group('AsyncNotifer.update', () {});
     });
   }
+
+  group('AutoDispose variant', () {
+    test('can watch autoDispose providers', () {
+      final dep = Provider.autoDispose((ref) => 0);
+      final provider = AutoDisposeAsyncNotifierProvider<
+          AutoDisposeAsyncTestNotifier<int>, int>(
+        () => AutoDisposeAsyncTestNotifier((ref) {
+          return ref.watch(dep);
+        }),
+      );
+      final container = createContainer();
+
+      expect(container.read(provider), const AsyncData(0));
+    });
+  });
 }
 
 @immutable
@@ -455,46 +487,4 @@ class Equal<T> {
 
   @override
   int get hashCode => Object.hash(runtimeType, value);
-}
-
-// ignore: non_constant_identifier_names
-AsyncNotifierProvider<TestNotifier<T>, T> _TestNotifierProvider<T>(
-  FutureOr<T> Function(AsyncNotifierProviderRef<T> ref) init, {
-  bool Function(T prev, T next)? updateShouldNotify,
-}) {
-  return AsyncNotifierProvider<TestNotifier<T>, T>(
-    () => TestNotifier(init, updateShouldNotify: updateShouldNotify),
-  );
-}
-
-class TestNotifier<T> extends AsyncNotifier<T> {
-  TestNotifier(this._init, {bool Function(T prev, T next)? updateShouldNotify})
-      : _updateShouldNotify = updateShouldNotify;
-
-  final FutureOr<T> Function(AsyncNotifierProviderRef<T> ref) _init;
-
-  final bool Function(T prev, T next)? _updateShouldNotify;
-
-  // overriding to remove the @protected
-  @override
-  AsyncValue<T> get state => super.state;
-
-  @override
-  set state(AsyncValue<T> value) {
-    super.state = value;
-  }
-
-  @override
-  FutureOr<T> build() => _init(ref);
-
-  @override
-  bool updateShouldNotify(T previous, T next) {
-    return _updateShouldNotify?.call(previous, next) ??
-        super.updateShouldNotify(previous, next);
-  }
-
-  @override
-  String toString() {
-    return 'TestNotifier<$T>#$hashCode';
-  }
 }
