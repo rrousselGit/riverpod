@@ -9,23 +9,41 @@ import 'result.dart';
 import 'synchronous_future.dart';
 
 part 'async_notifier/base.dart';
+part 'async_notifier/auto_dispose.dart';
 
+@visibleForTesting
 abstract class AsyncNotifierBase<State> {
+  AsyncNotifierProviderElement<AsyncNotifierBase<State>, State> get _element;
+
   void _setElement(ProviderElementBase<AsyncValue<State>> element);
 
   @protected
-  AsyncValue<State> get state;
+  @override
+  AsyncValue<State> get state {
+    _element.flush();
+    // ignore: invalid_use_of_protected_member
+    return _element.requireState;
+  }
 
   @protected
-  set state(AsyncValue<State> value);
+  @override
+  set state(AsyncValue<State> value) {
+    // ignore: invalid_use_of_protected_member
+    _element.setState(value);
+  }
 
   Ref<AsyncValue<State>> get ref;
 
   @visibleForOverriding
   FutureOr<State> build();
 
-  Future<State> future();
+  @override
+  Future<State> future() {
+    _element.flush();
+    return _element._futureNotifier.value;
+  }
 
+  @protected
   FutureOr<State> update(
     FutureOr<State> Function(State) cb, {
     FutureOr<State> Function(State)? onError,
@@ -41,7 +59,7 @@ abstract class AsyncNotifierBase<State> {
 
 ProviderElementProxy<AsyncValue<T>, NotifierT>
     _notifier<NotifierT extends AsyncNotifierBase<T>, T>(
-  _AsyncNotifierProviderBase<NotifierT, T> that,
+  AsyncNotifierProviderBase<NotifierT, T> that,
 ) {
   return ProviderElementProxy<AsyncValue<T>, NotifierT>(
     that,
@@ -53,7 +71,7 @@ ProviderElementProxy<AsyncValue<T>, NotifierT>
 }
 
 ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
-  _AsyncNotifierProviderBase<AsyncNotifierBase<T>, T> that,
+  AsyncNotifierProviderBase<AsyncNotifierBase<T>, T> that,
 ) {
   return ProviderElementProxy<AsyncValue<T>, Future<T>>(
     that,
@@ -64,10 +82,10 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
   );
 }
 
-abstract class _AsyncNotifierProviderBase<
-    NotifierT extends AsyncNotifierBase<T>,
+@visibleForTesting
+abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
     T> extends ProviderBase<AsyncValue<T>> {
-  _AsyncNotifierProviderBase(
+  AsyncNotifierProviderBase(
     this._createNotifier, {
     required super.name,
     required super.from,

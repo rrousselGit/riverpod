@@ -12,38 +12,27 @@ abstract class AsyncNotifier<State> extends AsyncNotifierBase<State> {
 
   @override
   AsyncNotifierProviderRef<State> get ref => _element;
-
-  @protected
-  @override
-  AsyncValue<State> get state {
-    _element.flush();
-    // ignore: invalid_use_of_protected_member
-    return _element.requireState;
-  }
-
-  @override
-  set state(AsyncValue<State> value) {
-    // ignore: invalid_use_of_protected_member
-    _element.setState(value);
-  }
-
-  @override
-  Future<State> future() {
-    _element.flush();
-    return _element._futureNotifier.value;
-  }
 }
 
 /// {@macro riverpod.providerrefbase}
 abstract class AsyncNotifierProviderRef<T> implements Ref<AsyncValue<T>> {}
 
-/// {@template riverpod.notifier}
+/// {@template riverpod.asyncnotifier}
 /// {@endtemplate}
-class AsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T>
-    extends _AsyncNotifierProviderBase<NotifierT, T>
+typedef AsyncNotifierProvider<NotifierT extends AsyncNotifier<T>, T>
+    = TestAsyncNotifierProvider<NotifierT, T>;
+
+/// The implementation of [AsyncNotifierProvider] but with loosened type constraints
+/// that can be shared with [AutoDisposeAsyncNotifierProvider].
+///
+/// This enables tests to execute on both [AsyncNotifierProvider] and
+/// [AutoDisposeAsyncNotifierProvider] at the same time.
+@visibleForTesting
+class TestAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T>
+    extends AsyncNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.notifier}
-  AsyncNotifierProvider(
+  TestAsyncNotifierProvider(
     super._createNotifier, {
     super.name,
     super.from,
@@ -67,7 +56,7 @@ class AsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T>
       _notifier<NotifierT, T>(this);
 
   @override
-  late final AlwaysAliveProviderListenable<Future<T>> future = _future<T>(this);
+  late final AlwaysAliveRefreshable<Future<T>> future = _future<T>(this);
 }
 
 /// The element of [AsyncNotifierProvider].
@@ -75,7 +64,7 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     extends ProviderElementBase<AsyncValue<T>>
     implements AsyncNotifierProviderRef<T> {
   AsyncNotifierProviderElement._(
-      _AsyncNotifierProviderBase<NotifierT, T> provider)
+      AsyncNotifierProviderBase<NotifierT, T> provider)
       : super(provider);
 
   final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
@@ -83,7 +72,7 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
 
   @override
   void create({required bool didChangeDependency}) {
-    final provider = this.provider as _AsyncNotifierProviderBase<NotifierT, T>;
+    final provider = this.provider as AsyncNotifierProviderBase<NotifierT, T>;
 
     final notifierResult = _notifierNotifier.result ??= Result.guard(() {
       return provider._createNotifier().._setElement(this);
