@@ -24,14 +24,14 @@ abstract class FamilyAsyncNotifier<State, Arg>
 /// The provider for [AsyncNotifierProviderFamily].
 typedef AsyncNotifierFamilyProvider<
         NotifierT extends FamilyAsyncNotifier<T, Arg>, T, Arg>
-    = TestAsyncNotifierFamilyProvider<NotifierT, T, Arg>;
+    = TestFamilyAsyncNotifierProvider<NotifierT, T, Arg>;
 
 @visibleForTesting
-class TestAsyncNotifierFamilyProvider<NotifierT extends AsyncNotifierBase<T>, T,
+class TestFamilyAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T,
         Arg> extends AsyncNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.notifier}
-  TestAsyncNotifierFamilyProvider(
+  TestFamilyAsyncNotifierProvider(
     super._createNotifier, {
     super.name,
     super.from,

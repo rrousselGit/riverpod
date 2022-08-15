@@ -24,19 +24,19 @@ abstract class AutoDisposeFamilyAsyncNotifier<State, Arg>
 /// {@macro riverpod.asyncnotifier}
 typedef AutoDisposeFamilyAsyncNotifierProvider<
         NotifierT extends AutoDisposeFamilyAsyncNotifier<T, Arg>, T, Arg>
-    = TestAutoDisposeAsyncNotifierFamilyProvider<NotifierT, T, Arg>;
+    = TestAutoDisposeFamilyAsyncNotifierProvider<NotifierT, T, Arg>;
 
 /// The implementation of [AutoDisposeAsyncNotifierProvider] but with loosened type constraints
 /// that can be shared with [AsyncNotifierProvider].
 ///
 /// This enables tests to execute on both [AutoDisposeAsyncNotifierProvider] and
 /// [AsyncNotifierProvider] at the same time.
-class TestAutoDisposeAsyncNotifierFamilyProvider<
+class TestAutoDisposeFamilyAsyncNotifierProvider<
     NotifierT extends AsyncNotifierBase<T>,
     T,
     Arg> extends AsyncNotifierProviderBase<NotifierT, T> with AsyncSelector<T> {
   /// {@macro riverpod.notifier}
-  TestAutoDisposeAsyncNotifierFamilyProvider(
+  TestAutoDisposeFamilyAsyncNotifierProvider(
     super._createNotifier, {
     super.name,
     super.from,

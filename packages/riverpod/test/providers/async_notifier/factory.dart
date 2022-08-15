@@ -60,21 +60,21 @@ List<AsyncNotifierFactory> matrix({
         isAutoDispose: false,
         provider: <NotifierT extends AsyncNotifierBase<T>, T>(create,
             {argument, dependencies, from, name}) {
-          return TestAsyncNotifierFamilyProvider<NotifierT, T, int>(
+          return TestFamilyAsyncNotifierProvider<NotifierT, T, int>(
             create,
             argument: 0,
           );
         },
         notifier: AsyncTestNotifierFamily.new,
         testProvider: <T>(createNotifier) {
-          return TestAsyncNotifierFamilyProvider<AsyncTestNotifierFamily<T>, T,
+          return TestFamilyAsyncNotifierProvider<AsyncTestNotifierFamily<T>, T,
               int>(
             () => createNotifier() as AsyncTestNotifierFamily<T>,
             argument: 0,
           );
         },
         simpleTestProvider: <T>(init, {updateShouldNotify}) {
-          return TestAsyncNotifierFamilyProvider<AsyncTestNotifierFamily<T>, T,
+          return TestFamilyAsyncNotifierProvider<AsyncTestNotifierFamily<T>, T,
               int>(
             () => AsyncTestNotifierFamily<T>(
               init,
@@ -112,21 +112,21 @@ List<AsyncNotifierFactory> matrix({
         isAutoDispose: true,
         provider: <NotifierT extends AsyncNotifierBase<T>, T>(create,
             {argument, dependencies, from, name}) {
-          return TestAutoDisposeAsyncNotifierFamilyProvider<NotifierT, T, int>(
+          return TestAutoDisposeFamilyAsyncNotifierProvider<NotifierT, T, int>(
             create,
             argument: 0,
           );
         },
         notifier: AutoDisposeAsyncTestNotifierFamily.new,
         testProvider: <T>(createNotifier) {
-          return TestAutoDisposeAsyncNotifierFamilyProvider<
+          return TestAutoDisposeFamilyAsyncNotifierProvider<
               AutoDisposeAsyncTestNotifierFamily<T>, T, int>(
             () => createNotifier() as AutoDisposeAsyncTestNotifierFamily<T>,
             argument: 0,
           );
         },
         simpleTestProvider: <T>(init, {updateShouldNotify}) {
-          return TestAutoDisposeAsyncNotifierFamilyProvider<
+          return TestAutoDisposeFamilyAsyncNotifierProvider<
               AutoDisposeAsyncTestNotifierFamily<T>, T, int>(
             () => AutoDisposeAsyncTestNotifierFamily<T>(
               init,
