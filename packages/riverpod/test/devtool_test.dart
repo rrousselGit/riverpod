@@ -58,8 +58,8 @@ void main() {
                 containerId: firstContainer.debugId,
                 name: 'stringProvider',
                 state: Result<dynamic>.data('some string'),
-                type: stringProvider.runtimeType.toString(),
                 mightBeOutdated: false,
+                argument: null,
               )
             },
           ),
@@ -70,8 +70,9 @@ void main() {
                 id: intProviderId,
                 containerId: secondContainer.debugId,
                 state: Result<dynamic>.data(10),
-                type: intProvider.runtimeType.toString(),
+                name: intProvider.runtimeType.toString(),
                 mightBeOutdated: false,
+                argument: null,
               )
             },
           ),
@@ -104,10 +105,40 @@ void main() {
         RiverpodNode(
           id: secondProviderId,
           containerId: container.debugId,
-          type: secondProvider.runtimeType.toString(),
           mightBeOutdated: false,
           name: 'secondProvider',
           state: Result<dynamic>.data('some other string'),
+          argument: null,
+        ),
+      ),
+    );
+  });
+
+  test('should read provider family argument', () {
+    final container = createContainer();
+    const familyArgument = 'familyArgument';
+    final familyProvider = Provider.family(
+      (_, String arg) => 'some string $arg',
+      name: 'familyProvider',
+    );
+    final provider = familyProvider(familyArgument);
+    container.read(provider);
+
+    final familyProviderId = container.debugIdForProvider(provider);
+
+    expect(
+      RiverpodBinding.debugInstance.getProvider(
+        container.debugId,
+        familyProviderId,
+      ),
+      equals(
+        RiverpodNode(
+          id: familyProviderId,
+          containerId: container.debugId,
+          mightBeOutdated: false,
+          name: 'familyProvider($familyArgument)',
+          state: Result<dynamic>.data('some string $familyArgument'),
+          argument: familyArgument,
         ),
       ),
     );

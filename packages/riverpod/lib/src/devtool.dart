@@ -7,18 +7,18 @@ class RiverpodNode {
   const RiverpodNode({
     required this.id,
     required this.containerId,
-    this.name,
+    required this.name,
     this.state,
-    required this.type,
     required this.mightBeOutdated,
+    required this.argument,
   });
 
   final String id;
   final String containerId;
-  final String? name;
+  final String name;
   final Result<dynamic>? state;
-  final String type;
   final bool mightBeOutdated;
+  final Object? argument;
 
   @override
   bool operator ==(Object other) {
@@ -27,8 +27,8 @@ class RiverpodNode {
         other.containerId == containerId &&
         other.name == name &&
         other.state?.stateOrNull == state?.stateOrNull &&
-        other.type == type &&
-        other.mightBeOutdated == mightBeOutdated;
+        other.mightBeOutdated == mightBeOutdated &&
+        other.argument == argument;
   }
 
   @override
@@ -37,8 +37,8 @@ class RiverpodNode {
         containerId,
         name,
         state?.stateOrNull,
-        type,
         mightBeOutdated,
+        argument,
       );
 }
 
@@ -63,18 +63,26 @@ class ContainerNode {
   int get hashCode => Object.hash(id, riverpodNodes);
 }
 
+extension on ProviderElementBase {
+  RiverpodNode asNode() {
+    final argument = provider.argument;
+    final name = provider.name ?? provider.runtimeType.toString();
+    return RiverpodNode(
+      id: debugId,
+      containerId: container.debugId,
+      name: argument != null ? '$name($argument)' : name,
+      state: getState(),
+      mightBeOutdated: _dependencyMayHaveChanged,
+      argument: argument,
+    );
+  }
+}
+
 extension on ProviderContainer {
   ContainerNode asNode(String id) {
     final riverpodNodes = {
       for (final element in getAllProviderElements())
-        element.debugId: RiverpodNode(
-          id: element.debugId,
-          containerId: element.container.debugId,
-          name: element.origin.name,
-          state: element.getState(),
-          type: element.origin.runtimeType.toString(),
-          mightBeOutdated: element._dependencyMayHaveChanged,
-        ),
+        element.debugId: element.asNode(),
     };
 
     return ContainerNode(id, riverpodNodes);
