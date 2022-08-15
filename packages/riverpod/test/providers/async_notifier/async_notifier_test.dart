@@ -473,6 +473,91 @@ void main() {
       expect(container.read(provider), const AsyncData(0));
     });
   });
+
+  test('modifiers', () {
+    final provider = AsyncNotifierProvider<AsyncTestNotifier<int>, int>(
+      () => AsyncTestNotifier((ref) => 0),
+    );
+    final autoDispose = AsyncNotifierProvider.autoDispose<
+        AutoDisposeAsyncTestNotifier<int>, int>(
+      () => AutoDisposeAsyncTestNotifier((ref) => 0),
+    );
+    final family = AsyncNotifierProvider.family<AsyncTestNotifierFamily<String>,
+        String, int>(
+      () => AsyncTestNotifierFamily((ref) => '0'),
+    );
+    final autoDisposeFamily = AsyncNotifierProvider.autoDispose
+        .family<AutoDisposeAsyncTestNotifierFamily<String>, String, int>(
+      () => AutoDisposeAsyncTestNotifierFamily((ref) => '0'),
+    );
+    final familyAutoDispose = AsyncNotifierProvider.family
+        .autoDispose<AutoDisposeAsyncTestNotifierFamily<String>, String, int>(
+      () => AutoDisposeAsyncTestNotifierFamily((ref) => '0'),
+    );
+
+    provider.select((AsyncValue<int> value) => 0);
+    provider.selectAsync((int value) => 0);
+
+    autoDispose.select((AsyncValue<int> value) => 0);
+    autoDispose.selectAsync((int value) => 0);
+
+    autoDisposeFamily(0).select((AsyncValue<String> value) => 0);
+    autoDisposeFamily(0).selectAsync((String value) => 0);
+
+    familyAutoDispose(0).select((AsyncValue<String> value) => 0);
+    familyAutoDispose(0).selectAsync((String value) => 0);
+
+    void canBeAssignedToAlwaysAliveRefreshable<T>(
+      AlwaysAliveRefreshable<T> provider,
+    ) {}
+
+    void canBeAssignedToRefreshable<T>(
+      Refreshable<T> provider,
+    ) {}
+
+    void canBeAssignedToAlwaysAliveListenable<T>(
+      AlwaysAliveProviderListenable<T> provider,
+    ) {}
+
+    void canBeAssignedToProviderListenable<T>(
+      ProviderListenable<T> provider,
+    ) {}
+
+    canBeAssignedToProviderListenable<AsyncValue<int>>(provider);
+    canBeAssignedToAlwaysAliveListenable<AsyncValue<int>>(provider);
+    canBeAssignedToRefreshable<AsyncValue<int>>(provider);
+    canBeAssignedToAlwaysAliveRefreshable<AsyncValue<int>>(provider);
+
+    canBeAssignedToProviderListenable<Future<int>>(provider.future);
+    canBeAssignedToAlwaysAliveListenable<Future<int>>(provider.future);
+    canBeAssignedToRefreshable<Future<int>>(provider.future);
+    canBeAssignedToAlwaysAliveRefreshable<Future<int>>(provider.future);
+
+    canBeAssignedToProviderListenable<AsyncNotifier<int>>(provider.notifier);
+    canBeAssignedToAlwaysAliveListenable<AsyncNotifier<int>>(provider.notifier);
+    canBeAssignedToRefreshable<AsyncNotifier<int>>(provider.notifier);
+    canBeAssignedToAlwaysAliveRefreshable<AsyncNotifier<int>>(
+      provider.notifier,
+    );
+
+    canBeAssignedToProviderListenable<AsyncValue<int>>(autoDispose);
+    canBeAssignedToAlwaysAliveListenable<AsyncValue<int>>(autoDispose);
+    canBeAssignedToRefreshable<AsyncValue<int>>(autoDispose);
+    canBeAssignedToAlwaysAliveRefreshable<AsyncValue<int>>(autoDispose);
+
+    canBeAssignedToProviderListenable<Future<int>>(autoDispose.future);
+    canBeAssignedToAlwaysAliveListenable<Future<int>>(autoDispose.future);
+    canBeAssignedToRefreshable<Future<int>>(autoDispose.future);
+    canBeAssignedToAlwaysAliveRefreshable<Future<int>>(autoDispose.future);
+
+    canBeAssignedToProviderListenable<AsyncNotifier<int>>(autoDispose.notifier);
+    canBeAssignedToAlwaysAliveListenable<AsyncNotifier<int>>(
+        autoDispose.notifier);
+    canBeAssignedToRefreshable<AsyncNotifier<int>>(autoDispose.notifier);
+    canBeAssignedToAlwaysAliveRefreshable<AsyncNotifier<int>>(
+      autoDispose.notifier,
+    );
+  });
 }
 
 @immutable

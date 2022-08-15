@@ -21,17 +21,17 @@ abstract class AsyncNotifierFamily<State, Arg>
   FutureOr<State> build(Arg arg);
 }
 
-/// {@macro riverpod.asyncnotifier}
-typedef AsyncNotifierProviderFamily<
+/// The provider for [AsyncNotifierProviderFamily].
+typedef AsyncNotifierFamilyProvider<
         NotifierT extends AsyncNotifierFamily<T, Arg>, T, Arg>
-    = TestAsyncNotifierProviderFamily<NotifierT, T, Arg>;
+    = TestAsyncNotifierFamilyProvider<NotifierT, T, Arg>;
 
 @visibleForTesting
-class TestAsyncNotifierProviderFamily<NotifierT extends AsyncNotifierBase<T>, T,
+class TestAsyncNotifierFamilyProvider<NotifierT extends AsyncNotifierBase<T>, T,
         Arg> extends AsyncNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.notifier}
-  TestAsyncNotifierProviderFamily(
+  TestAsyncNotifierFamilyProvider(
     super._createNotifier, {
     super.name,
     super.from,
@@ -39,8 +39,9 @@ class TestAsyncNotifierProviderFamily<NotifierT extends AsyncNotifierBase<T>, T,
     super.dependencies,
   }) : super(cacheTime: null, disposeDelay: null);
 
-  // /// {@macro riverpod.autoDispose}
-  // static const autoDispose = AutoDisposeAsyncNotifierProviderBuilder();
+  /// {@macro riverpod.autoDispose}
+  // ignore: prefer_const_declarations
+  static final autoDispose = AutoDisposeAsyncNotifierProviderFamily.new;
 
   // /// {@macro riverpod.family}
   // static const family = AsyncNotifierProviderFamilyBuilder();
@@ -63,4 +64,17 @@ class TestAsyncNotifierProviderFamily<NotifierT extends AsyncNotifierBase<T>, T,
   ) {
     return notifier.build(notifier.arg);
   }
+}
+
+/// The [Family] of [AsyncNotifierProvider].
+class AsyncNotifierProviderFamily<NotifierT extends AsyncNotifierFamily<T, Arg>,
+        T, Arg>
+    extends NotifierFamilyBase<AsyncNotifierProviderRef<T>, AsyncValue<T>, Arg,
+        NotifierT, AsyncNotifierFamilyProvider<NotifierT, T, Arg>> {
+  /// The [Family] of [AsyncNotifierProvider].
+  AsyncNotifierProviderFamily(
+    super.create, {
+    super.name,
+    super.dependencies,
+  }) : super(providerFactory: AsyncNotifierFamilyProvider.new);
 }

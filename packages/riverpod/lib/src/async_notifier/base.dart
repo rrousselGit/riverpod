@@ -43,11 +43,11 @@ class TestAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T>
     super.dependencies,
   }) : super(cacheTime: null, disposeDelay: null);
 
-  // /// {@macro riverpod.autoDispose}
-  // static const autoDispose = AutoDisposeAsyncNotifierProviderBuilder();
+  /// {@macro riverpod.autoDispose}
+  static const autoDispose = AutoDisposeAsyncNotifierProviderBuilder();
 
-  // /// {@macro riverpod.family}
-  // static const family = AsyncNotifierProviderFamilyBuilder();
+  /// {@macro riverpod.family}
+  static const family = AsyncNotifierProviderFamilyBuilder();
 
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier =

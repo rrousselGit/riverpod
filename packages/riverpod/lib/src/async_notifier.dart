@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
+import 'builders.dart';
 import 'common.dart';
 import 'framework.dart';
 import 'listenable.dart';
@@ -112,10 +113,10 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
   /// changes.
   /// This may happen if the provider is refreshed or one of its dependencies
   /// has changes.
-  ProviderListenable<NotifierT> get notifier;
+  Refreshable<NotifierT> get notifier;
 
 // TODO doc
-  ProviderListenable<Future<T>> get future;
+  Refreshable<Future<T>> get future;
 
   final NotifierT Function() _createNotifier;
 

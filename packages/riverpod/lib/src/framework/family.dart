@@ -202,3 +202,99 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
         disposeDelay: disposeDelay,
       );
 }
+
+/// A base implementation for [Family] specific to autoDispose `Notifier`-based providers.
+///
+/// It offers a unique "create" function which does not take any argument.
+///
+/// This API is not meant for public consumption.
+class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
+    ProviderT extends ProviderBase<R>> extends Family<R, Arg, ProviderT> {
+  /// A base implementation for [Family], used by the various providers to
+  /// help them define a [Family].
+  ///
+  /// This API is not meant for public consumption.
+  AutoDisposeNotifierFamilyBase(
+    this._createFn, {
+    required ProviderT Function(
+      NotifierT Function() create, {
+      String? name,
+      Family from,
+      Object? argument,
+      List<ProviderOrFamily>? dependencies,
+    })
+        providerFactory,
+    required super.name,
+    required super.dependencies,
+    required super.cacheTime,
+    required super.disposeDelay,
+  }) : _providerFactory = providerFactory;
+
+  final ProviderT Function(
+    NotifierT Function() create, {
+    String? name,
+    Family from,
+    Object? argument,
+    List<ProviderOrFamily>? dependencies,
+  }) _providerFactory;
+
+  final NotifierT Function() _createFn;
+
+  @override
+  ProviderT call(Arg argument) => _providerFactory(
+        _createFn,
+        name: name,
+        from: this,
+        argument: argument,
+        dependencies: dependencies,
+      );
+}
+
+/// A base implementation for [Family] specific to `Notifier`-based providers.
+///
+/// It offers a unique "create" function which does not take any argument.
+///
+/// This API is not meant for public consumption.
+class NotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
+    ProviderT extends ProviderBase<R>> extends Family<R, Arg, ProviderT> {
+  /// A base implementation for [Family], used by the various providers to
+  /// help them define a [Family].
+  ///
+  /// This API is not meant for public consumption.
+  NotifierFamilyBase(
+    this._createFn, {
+    required ProviderT Function(
+      NotifierT Function() create, {
+      String? name,
+      Family from,
+      Object? argument,
+      List<ProviderOrFamily>? dependencies,
+    })
+        providerFactory,
+    required super.name,
+    required super.dependencies,
+  })  : _providerFactory = providerFactory,
+        super(
+          cacheTime: null,
+          disposeDelay: null,
+        );
+
+  final ProviderT Function(
+    NotifierT Function() create, {
+    String? name,
+    Family from,
+    Object? argument,
+    List<ProviderOrFamily>? dependencies,
+  }) _providerFactory;
+
+  final NotifierT Function() _createFn;
+
+  @override
+  ProviderT call(Arg argument) => _providerFactory(
+        _createFn,
+        name: name,
+        from: this,
+        argument: argument,
+        dependencies: dependencies,
+      );
+}

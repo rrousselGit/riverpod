@@ -43,20 +43,18 @@ class TestAutoDisposeAsyncNotifierProvider<
     super.from,
     super.argument,
     super.dependencies,
-  }) : super(cacheTime: null, disposeDelay: null);
+    super.cacheTime,
+    super.disposeDelay,
+  });
 
-  // /// {@macro riverpod.autoDispose}
-  // static const autoDispose = AutoDisposeAutoDisposeAsyncNotifierProviderBuilder();
-
-  // /// {@macro riverpod.family}
-  // static const family = AutoDisposeAsyncNotifierProviderFamilyBuilder();
-
-  @override
-  late final AlwaysAliveRefreshable<NotifierT> notifier =
-      _notifier<NotifierT, T>(this);
+  /// {@macro riverpod.family}
+  static const family = AutoDisposeAsyncNotifierProviderFamily.new;
 
   @override
-  late final AlwaysAliveProviderListenable<Future<T>> future = _future<T>(this);
+  late final Refreshable<NotifierT> notifier = _notifier<NotifierT, T>(this);
+
+  @override
+  late final Refreshable<Future<T>> future = _future<T>(this);
 
   @override
   AutoDisposeAsyncNotifierProviderElement<NotifierT, T> createElement() {
