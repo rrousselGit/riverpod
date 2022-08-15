@@ -337,7 +337,7 @@ void main() {
           late AsyncValue<int> state;
           final provider = factory.testProvider<int>(
             () {
-              late AsyncTestNotifier<int> notifier;
+              late AsyncTestNotifierBase<int> notifier;
               return notifier = factory.notifier<int>(
                 (ref) {
                   state = notifier.state;

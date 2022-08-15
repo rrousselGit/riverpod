@@ -10,6 +10,8 @@ import 'synchronous_future.dart';
 
 part 'async_notifier/base.dart';
 part 'async_notifier/auto_dispose.dart';
+part 'async_notifier/family.dart';
+part 'async_notifier/auto_dispose_family.dart';
 
 @visibleForTesting
 abstract class AsyncNotifierBase<State> {
@@ -33,9 +35,6 @@ abstract class AsyncNotifierBase<State> {
   }
 
   Ref<AsyncValue<State>> get ref;
-
-  @visibleForOverriding
-  FutureOr<State> build();
 
   @override
   Future<State> future() {
@@ -119,6 +118,8 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
   ProviderListenable<Future<T>> get future;
 
   final NotifierT Function() _createNotifier;
+
+  FutureOr<T> _runNotifierBuild(AsyncNotifierBase<T> notifier);
 
   @override
   bool updateShouldNotify(AsyncValue<T> previousState, AsyncValue<T> newState) {

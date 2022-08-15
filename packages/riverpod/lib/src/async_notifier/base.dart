@@ -12,6 +12,9 @@ abstract class AsyncNotifier<State> extends AsyncNotifierBase<State> {
 
   @override
   AsyncNotifierProviderRef<State> get ref => _element;
+
+  @visibleForOverriding
+  FutureOr<State> build();
 }
 
 /// {@macro riverpod.providerrefbase}
@@ -47,16 +50,21 @@ class TestAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T>
   // static const family = AsyncNotifierProviderFamilyBuilder();
 
   @override
-  AsyncNotifierProviderElement<NotifierT, T> createElement() {
-    return AsyncNotifierProviderElement._(this);
-  }
-
-  @override
   late final AlwaysAliveRefreshable<NotifierT> notifier =
       _notifier<NotifierT, T>(this);
 
   @override
   late final AlwaysAliveRefreshable<Future<T>> future = _future<T>(this);
+
+  @override
+  AsyncNotifierProviderElement<NotifierT, T> createElement() {
+    return AsyncNotifierProviderElement._(this);
+  }
+
+  @override
+  FutureOr<T> _runNotifierBuild(covariant AsyncNotifier<T> notifier) {
+    return notifier.build();
+  }
 }
 
 /// The element of [AsyncNotifierProvider].
@@ -94,7 +102,9 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
       },
       data: (notifier) {
         asyncTransition(didChangeDependency: didChangeDependency);
-        final futureOrResult = Result.guard(notifier.build);
+        final futureOrResult = Result.guard(
+          () => provider._runNotifierBuild(notifier),
+        );
 
         // TODO test build throws -> provider emits AsyncError synchronously & .future emits Future.error
         // TODO test build resolves with error -> emits AsyncError & .future emits Future.error
