@@ -3,7 +3,7 @@ part of '../framework.dart';
 /// Adds [selectAsync] to [ProviderListenable]
 mixin AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
   /// The future that [selectAsync] will query
-  ProviderListenable<Future<Input>> get future;
+  Refreshable<Future<Input>> get future;
 
   /// {@template riverpod.async_select}
   /// A variant of [select] for asynchronous values
@@ -49,7 +49,7 @@ mixin AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
 mixin AlwaysAliveAsyncSelector<Input>
     on AlwaysAliveProviderListenable<AsyncValue<Input>> {
   /// The future that [selectAsync] will query
-  AlwaysAliveProviderListenable<Future<Input>> get future;
+  AlwaysAliveRefreshable<Future<Input>> get future;
 
   /// {@macro riverpod.async_select}
   AlwaysAliveProviderListenable<Future<Output>> selectAsync<Output>(

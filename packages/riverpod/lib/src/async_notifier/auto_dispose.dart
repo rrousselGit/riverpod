@@ -33,9 +33,8 @@ typedef AutoDisposeAsyncNotifierProvider<
 /// This enables tests to execute on both [AutoDisposeAsyncNotifierProvider] and
 /// [AsyncNotifierProvider] at the same time.
 class TestAutoDisposeAsyncNotifierProvider<
-        NotifierT extends AsyncNotifierBase<T>,
-        T> extends AsyncNotifierProviderBase<NotifierT, T>
-    with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
+    NotifierT extends AsyncNotifierBase<T>,
+    T> extends AsyncNotifierProviderBase<NotifierT, T> with AsyncSelector<T> {
   /// {@macro riverpod.notifier}
   TestAutoDisposeAsyncNotifierProvider(
     super._createNotifier, {

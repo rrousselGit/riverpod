@@ -191,7 +191,7 @@ class AsyncTestNotifier<T> extends AsyncNotifier<T>
   }
 }
 
-class AsyncTestNotifierFamily<T> extends AsyncNotifierFamily<T, int>
+class AsyncTestNotifierFamily<T> extends FamilyAsyncNotifier<T, int>
     implements AsyncTestNotifierBase<T> {
   AsyncTestNotifierFamily(
     this._init, {

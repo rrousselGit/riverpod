@@ -1,16 +1,16 @@
 part of '../async_notifier.dart';
 
-abstract class AsyncNotifierFamily<State, Arg>
+abstract class FamilyAsyncNotifier<State, Arg>
     extends AsyncNotifierBase<State> {
   late final Arg arg;
 
-  late final AsyncNotifierProviderElement<AsyncNotifierFamily<State, Arg>,
+  late final AsyncNotifierProviderElement<FamilyAsyncNotifier<State, Arg>,
       State> _element;
 
   @override
   void _setElement(ProviderElementBase<AsyncValue<State>> element) {
     _element = element
-        as AsyncNotifierProviderElement<AsyncNotifierFamily<State, Arg>, State>;
+        as AsyncNotifierProviderElement<FamilyAsyncNotifier<State, Arg>, State>;
     arg = element.origin.argument as Arg;
   }
 
@@ -23,7 +23,7 @@ abstract class AsyncNotifierFamily<State, Arg>
 
 /// The provider for [AsyncNotifierProviderFamily].
 typedef AsyncNotifierFamilyProvider<
-        NotifierT extends AsyncNotifierFamily<T, Arg>, T, Arg>
+        NotifierT extends FamilyAsyncNotifier<T, Arg>, T, Arg>
     = TestAsyncNotifierFamilyProvider<NotifierT, T, Arg>;
 
 @visibleForTesting
@@ -60,14 +60,14 @@ class TestAsyncNotifierFamilyProvider<NotifierT extends AsyncNotifierBase<T>, T,
 
   @override
   FutureOr<T> _runNotifierBuild(
-    covariant AsyncNotifierFamily<T, Arg> notifier,
+    covariant FamilyAsyncNotifier<T, Arg> notifier,
   ) {
     return notifier.build(notifier.arg);
   }
 }
 
 /// The [Family] of [AsyncNotifierProvider].
-class AsyncNotifierProviderFamily<NotifierT extends AsyncNotifierFamily<T, Arg>,
+class AsyncNotifierProviderFamily<NotifierT extends FamilyAsyncNotifier<T, Arg>,
         T, Arg>
     extends NotifierFamilyBase<AsyncNotifierProviderRef<T>, AsyncValue<T>, Arg,
         NotifierT, AsyncNotifierFamilyProvider<NotifierT, T, Arg>> {

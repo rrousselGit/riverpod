@@ -50,7 +50,7 @@ class AsyncNotifierProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   AsyncNotifierProviderFamily<NotifierT, T, Arg>
-      call<NotifierT extends AsyncNotifierFamily<T, Arg>, T, Arg>(
+      call<NotifierT extends FamilyAsyncNotifier<T, Arg>, T, Arg>(
     NotifierT Function() create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
