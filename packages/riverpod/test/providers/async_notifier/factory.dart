@@ -54,6 +54,36 @@ List<AsyncNotifierFactory> matrix({
           );
         },
       ),
+    if (alwaysAlive)
+      AsyncNotifierFactory(
+        label: 'AsyncNotifierProviderFamily',
+        isAutoDispose: false,
+        provider: <NotifierT extends AsyncNotifierBase<T>, T>(create,
+            {argument, dependencies, from, name}) {
+          return TestAsyncNotifierProviderFamily<NotifierT, T, int>(
+            create,
+            argument: 0,
+          );
+        },
+        notifier: AsyncTestNotifierFamily.new,
+        testProvider: <T>(createNotifier) {
+          return TestAsyncNotifierProviderFamily<AsyncTestNotifierFamily<T>, T,
+              int>(
+            () => createNotifier() as AsyncTestNotifierFamily<T>,
+            argument: 0,
+          );
+        },
+        simpleTestProvider: <T>(init, {updateShouldNotify}) {
+          return TestAsyncNotifierProviderFamily<AsyncTestNotifierFamily<T>, T,
+              int>(
+            () => AsyncTestNotifierFamily<T>(
+              init,
+              updateShouldNotify: updateShouldNotify,
+            ),
+            argument: 0,
+          );
+        },
+      ),
     if (autoDispose)
       AsyncNotifierFactory(
         label: 'AutoDisposeAsyncNotifierProvider',
