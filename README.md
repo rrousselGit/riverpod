@@ -165,23 +165,28 @@ Yes.
 
 ### Will this get merged with provider at some point?
 
-No. At least not until it is proven that the community likes [Riverpod]
-and that it doesn't cause more problems than it solves.
+It is possible. Some experiments are being made that could make this
+doable. But their outcome isn't clear yet.
+(no link to an issue to avoid putting unnecessary pressure on the people
+involved)
 
-While [provider] and this project have a lot in common, they do have some
-major differences. Differences big enough that it would be a large breaking
-change for users of [provider] to migrate [Riverpod].
-
-Considering that, separating both projects initially sounds like a better
-compromise.
+If those experiments are successful (although unlikely), then Provider
+and Riverpod could be fused.
 
 ### Will provider be deprecated/stop being supported?
 
-Maybe. There are still some experiments being made to see if there's a better solution.
-But it is being considered.
+Maybe. 
+
+Provider has numerous flaws that can't quite be fixed. At the same time,
+Riverpod has proven to fix many of those.  
+As such, deprecating Provider is being considered.
+
+The only inconvenience of Riverpod is the need for a "Consumer",
+which Provider doesn't need.
+But some alternatives are being investigated to maybe remove this constraint.
 
 Whatever the decision is, a migration tool is planned to help assist
-migration from provider to [Riverpod].
+migration from provider to [Riverpod]. Along with whatever other tool necessary to help.
 
 ## Sponsors
 
