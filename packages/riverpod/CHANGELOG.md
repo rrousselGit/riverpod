@@ -606,7 +606,7 @@ Removed an assert that could cause issues when an application is partially migra
   }
   ```
 
-  See also https://github.com/rrousselGit/river_pod/issues/341 for more information.
+  See also https://github.com/rrousselGit/riverpod/issues/341 for more information.
 
 - **BREAKING CHANGE** It is no longer possible to override `StreamProvider.stream/last` and `FutureProvider.future`.
 - feat: Calling `ProviderContainer.dispose` multiple time no longer throws.
@@ -617,7 +617,7 @@ Removed an assert that could cause issues when an application is partially migra
 
 ## 0.13.1
 
-- Fixed a bug where overriding a `FutureProvider` with an error value could cause tests to fail (see https://github.com/rrousselGit/river_pod/issues/355)
+- Fixed a bug where overriding a `FutureProvider` with an error value could cause tests to fail (see https://github.com/rrousselGit/riverpod/issues/355)
 
 ## 0.13.0
 
@@ -646,17 +646,17 @@ Migrated to null-safety
 
 ## 0.12.1
 
-- Fixed an remaining memory leak related to StreamProvider (see also https://github.com/rrousselGit/river_pod/issues/193)
+- Fixed an remaining memory leak related to StreamProvider (see also https://github.com/rrousselGit/riverpod/issues/193)
 
 ## 0.12.0
 
 - **Breaking** FutureProvider and StreamProvider no longer supports `null` as a valid value.
-- Fixed a memory leak with StreamProvider (see also https://github.com/rrousselGit/river_pod/issues/193)
+- Fixed a memory leak with StreamProvider (see also https://github.com/rrousselGit/riverpod/issues/193)
 
 ## 0.11.2
 
 - Fixed a bug where providers (usually ScopedProviders) did not dispose correctly
-  (see also https://github.com/rrousselGit/river_pod/issues/154).
+  (see also https://github.com/rrousselGit/riverpod/issues/154).
 
 ## 0.11.0
 
@@ -690,7 +690,7 @@ Migrated to null-safety
 
 - Renamed `ProviderContainer.debugProviderStates` to `ProviderContainer.debugProviderElements`
 - Fixed a bug where updating `ProviderScope.overrides` may cause an exception
-  for no reason (see https://github.com/rrousselGit/river_pod/issues/107)
+  for no reason (see https://github.com/rrousselGit/riverpod/issues/107)
 
 ## 0.7.0
 

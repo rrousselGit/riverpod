@@ -47,7 +47,7 @@ module.exports = {
           position: "right",
         },
         {
-          href: "https://github.com/rrousselGit/river_pod",
+          href: "https://github.com/rrousselGit/riverpod",
           label: "GitHub",
           position: "right",
         },
@@ -81,11 +81,11 @@ module.exports = {
             },
             {
               label: "GitHub",
-              href: "https://github.com/rrousselgit/river_pod",
+              href: "https://github.com/rrousselgit/riverpod",
             },
             {
               label: "Code of conduct",
-              href: "https://github.com/rrousselGit/river_pod/blob/master/CODE_OF_CONDUCT.md",
+              href: "https://github.com/rrousselGit/riverpod/blob/master/CODE_OF_CONDUCT.md",
             },
           ],
         },
@@ -109,7 +109,7 @@ module.exports = {
           editLocalizedFiles: true,
           sidebarPath: require.resolve("./sidebars.js"),
           editUrl:
-            "https://github.com/rrousselGit/river_pod/edit/master/website/",
+            "https://github.com/rrousselGit/riverpod/edit/master/website/",
         },
         theme: {
           customCss: require.resolve("./src/scss/main.scss"),
