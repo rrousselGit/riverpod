@@ -177,10 +177,11 @@ compromise.
 
 ### Will provider be deprecated/stop being supported?
 
-Not in the short term, no.
+Maybe. There are still some experiments being made to see if there's a better solution.
+But it is being considered.
 
-However, a migration tool is planned to help assist migration from provider
-to [Riverpod].
+Whatever the decision is, a migration tool is planned to help assist
+migration from provider to [Riverpod].
 
 ## Sponsors
 
