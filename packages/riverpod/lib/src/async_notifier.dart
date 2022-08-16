@@ -64,13 +64,16 @@ abstract class AsyncNotifierBase<State> {
     return _element._futureNotifier.value;
   }
 
+  /// A function to update [state] from its previous value, while
+  /// abstracting the fact that the [state] is asynchronously initialized
   @protected
-  FutureOr<State> update(
-    FutureOr<State> Function(State) cb, {
-    FutureOr<State> Function(State)? onError,
-  }) {
+  Future<State> update(
+    FutureOr<State> Function(State) cb,
+  ) {
+    // TODO what's the expected error handling?
+    // TODO use SynchronousFuture when possible
     // TODO cancel on rebuild?
-    return future.then(cb, onError: onError);
+    return future.then(cb);
   }
 
   bool updateShouldNotify(State previous, State next) {
