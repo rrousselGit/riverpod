@@ -1,6 +1,7 @@
 part of '../framework.dart';
 
 /// A mixin that adds auto dispose support to a [ProviderElementBase].
+@internal
 mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
     implements AutoDisposeRef<State> {
   List<KeepAliveLink>? _keepAliveLinks;

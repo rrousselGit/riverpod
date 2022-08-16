@@ -1,6 +1,7 @@
 part of '../framework.dart';
 
 /// A [Create] equivalent used by [Family].
+@internal
 typedef FamilyCreate<T, R extends Ref, Arg> = T Function(
   R ref,
   Arg arg,
@@ -60,6 +61,7 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
 }
 
 /// Setup how a family is overridden
+@internal
 typedef SetupFamilyOverride<Arg> = void Function(
   Arg argument,
   void Function({
@@ -70,6 +72,7 @@ typedef SetupFamilyOverride<Arg> = void Function(
 
 /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
 /// to override the behavior of a "family" for part of the application.
+@internal
 abstract class FamilyOverride<Arg> implements Override {
   /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
   /// to override the behavior of a "family" for part of the application.
@@ -106,6 +109,7 @@ class _FamilyOverride<Arg> implements FamilyOverride<Arg> {
 /// help them define a [Family].
 ///
 /// This API is not meant for public consumption.
+@internal
 class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
     ProviderT extends ProviderBase<R>> extends Family<R, Arg, ProviderT> {
   /// A base implementation for [Family], used by the various providers to
@@ -155,6 +159,7 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
 ///
 /// This API is not meant for public consumption.
 
+@internal
 class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
     ProviderT extends ProviderBase<R>> extends Family<R, Arg, ProviderT> {
   /// A base implementation for [Family], used by the various providers to
@@ -208,6 +213,7 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
 /// It offers a unique "create" function which does not take any argument.
 ///
 /// This API is not meant for public consumption.
+@internal
 class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
     ProviderT extends ProviderBase<R>> extends Family<R, Arg, ProviderT> {
   /// A base implementation for [Family], used by the various providers to
@@ -255,6 +261,7 @@ class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
 /// It offers a unique "create" function which does not take any argument.
 ///
 /// This API is not meant for public consumption.
+@internal
 class NotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
     ProviderT extends ProviderBase<R>> extends Family<R, Arg, ProviderT> {
   /// A base implementation for [Family], used by the various providers to

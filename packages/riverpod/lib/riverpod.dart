@@ -21,31 +21,19 @@ export 'src/common.dart'
     show AsyncValue, AsyncData, AsyncLoading, AsyncError, AsyncValueX;
 
 export 'src/framework.dart'
-    show
-        Create,
-        AlwaysAliveProviderBase,
-        Family,
-        CircularDependencyError,
-        ProviderBase,
-        Override,
-        AutoDisposeRef,
-        Ref,
-        ProviderListenable,
-        ProviderContainer,
-        ProviderObserver,
-        ProviderSubscription,
-        AutoDisposeProviderElementMixin,
-        ProviderElementBase,
-        ProviderOverride,
-        FamilyOverride,
-        SetupOverride,
-        AlwaysAliveProviderListenable,
+    hide
         FamilyCreate,
-        KeepAliveLink,
-        ProviderOrFamily,
-        OverrideWithProviderExtension,
-        AlwaysAliveRefreshable,
-        Refreshable;
+        AsyncSelector,
+        FamilyBase,
+        AutoDisposeProviderElementMixin,
+        FamilyOverride,
+        NotifierFamilyBase,
+        SetupFamilyOverride,
+        SetupOverride,
+        AutoDisposeNotifierFamilyBase,
+        ProviderOverride,
+        AutoDisposeFamilyBase,
+        AlwaysAliveAsyncSelector;
 
 export 'src/future_provider.dart'
     show

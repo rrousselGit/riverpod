@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_internal_member
+
 part of '../change_notifier_provider.dart';
 
 /// {@macro riverpod.providerrefbase}

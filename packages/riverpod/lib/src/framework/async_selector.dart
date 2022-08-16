@@ -1,6 +1,7 @@
 part of '../framework.dart';
 
 /// Adds [selectAsync] to [ProviderListenable]
+@internal
 mixin AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
   /// The future that [selectAsync] will query
   Refreshable<Future<Input>> get future;
@@ -46,6 +47,7 @@ mixin AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
 }
 
 /// Adds [selectAsync] to [AlwaysAliveProviderListenable]
+@internal
 mixin AlwaysAliveAsyncSelector<Input>
     on AlwaysAliveProviderListenable<AsyncValue<Input>> {
   /// The future that [selectAsync] will query
