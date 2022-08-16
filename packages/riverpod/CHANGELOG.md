@@ -4,6 +4,7 @@
 
 - Using `overrideWithProvider`, it is no-longer possible to override a provider
   with a different type of provider (such as overriding `FutureProvider` with a `StreamProvider`).
+- `AsyncError.stackTrace` is now a required positional parameter and non-nullable
 - All `overrideWithValue` methods are removed, besides `Provider.overrideWithValue`.
   This change is temporary, and these methods will be reintroduced in a later version.
 - Modifiers (`provider.future`, `provider.state`, ...) no-longer are providers, and therefore no-longer
