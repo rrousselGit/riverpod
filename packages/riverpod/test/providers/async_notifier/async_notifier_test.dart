@@ -456,6 +456,34 @@ void main() {
         });
       });
 
+      test(
+          'Can override AsyncNotifier.updateShouldNotify to change the default filter logic',
+          () {
+        final provider = factory.simpleTestProvider<Equal<int>>(
+          (ref) => Equal(42),
+          updateShouldNotify: (a, b) => a != b,
+        );
+        final container = createContainer();
+        final listener = Listener<AsyncValue<Equal<int>>>();
+
+        container.listen(provider, listener);
+        final notifier = container.read(provider.notifier);
+        notifier.state = notifier.state;
+
+        verifyZeroInteractions(listener);
+
+        notifier.state = AsyncData(Equal(42));
+
+        verifyZeroInteractions(listener);
+
+        notifier.state = AsyncData(Equal(21));
+
+        verifyOnly(
+          listener,
+          listener(AsyncData(Equal(42)), AsyncData(Equal(21))),
+        );
+      });
+
       group('AsyncNotifer.update', () {});
     });
   }

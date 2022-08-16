@@ -310,7 +310,7 @@ void main() {
         notifier.state = Equal(21);
 
         verifyOnly(listener, listener(Equal(42), Equal(21)));
-      }, skip: 'implement Notifier.updateShouldNotify');
+      });
 
       test('can override the Notifier with a matching custom implementation',
           () {});
