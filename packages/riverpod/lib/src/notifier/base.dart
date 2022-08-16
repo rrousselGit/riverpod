@@ -1,6 +1,7 @@
 part of '../notifier.dart';
 
 abstract class Notifier<State> extends NotifierBase<State> {
+  @override
   late final NotifierProviderElement<Notifier<State>, State> _element;
 
   @override

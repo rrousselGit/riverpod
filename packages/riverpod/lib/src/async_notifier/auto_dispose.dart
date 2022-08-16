@@ -2,6 +2,7 @@ part of '../async_notifier.dart';
 
 abstract class AutoDisposeAsyncNotifier<State>
     extends AsyncNotifierBase<State> {
+  @override
   late final AutoDisposeAsyncNotifierProviderElement<
       AutoDisposeAsyncNotifier<State>, State> _element;
 

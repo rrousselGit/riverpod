@@ -3,6 +3,7 @@ part of '../notifier.dart';
 abstract class FamilyNotifier<State, Arg> extends NotifierBase<State> {
   late final Arg arg;
 
+  @override
   late final NotifierProviderElement<FamilyNotifier<State, Arg>, State>
       _element;
 
