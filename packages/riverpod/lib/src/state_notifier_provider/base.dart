@@ -136,7 +136,12 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
   }
 
   @override
-  bool updateShouldNotify(T previous, T next) => true;
+  bool updateShouldNotify(T previous, T next) {
+    // TODO test that updateShouldNotify is applied
+    return _notifierNotifier.result!.requireState
+        // ignore: invalid_use_of_protected_member
+        .updateShouldNotify(previous, next);
+  }
 
   @override
   void runOnDispose() {

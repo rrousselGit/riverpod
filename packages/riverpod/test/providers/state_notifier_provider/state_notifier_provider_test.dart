@@ -5,6 +5,25 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test(
+      'on refresh, does not notify listeners if the new value is identical to the previous one',
+      () {
+    // regression test for https://github.com/rrousselGit/riverpod/issues/1560
+    final container = createContainer();
+    final provider = StateNotifierProvider<StateController<int>, int>(
+      (ref) => StateController(0),
+    );
+    final listener = Listener<int>();
+
+    container.listen(provider, listener, fireImmediately: true);
+
+    verifyOnly(listener, listener(null, 0));
+
+    container.refresh(provider);
+
+    verifyNoMoreInteractions(listener);
+  });
+
   test('ref.listenSelf listens to state changes', () {
     final listener = Listener<int>();
     final container = createContainer();

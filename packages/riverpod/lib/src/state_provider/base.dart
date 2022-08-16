@@ -104,7 +104,7 @@ class StateProviderElement<T> extends ProviderElementBase<T>
 
   @override
   bool updateShouldNotify(T previous, T next) {
-    return true;
+    return !identical(previous, next);
   }
 
   @override
