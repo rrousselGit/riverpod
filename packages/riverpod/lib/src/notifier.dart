@@ -1,15 +1,15 @@
 import 'package:meta/meta.dart';
 
-import '../riverpod.dart';
+import 'async_notifier.dart';
 import 'builders.dart';
 import 'framework.dart';
 import 'listenable.dart';
 import 'result.dart';
 
-part 'notifier/base.dart';
 part 'notifier/auto_dispose.dart';
-part 'notifier/family.dart';
 part 'notifier/auto_dispose_family.dart';
+part 'notifier/base.dart';
+part 'notifier/family.dart';
 
 /// A base class for [NotifierBase].
 ///
