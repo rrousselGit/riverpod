@@ -21,7 +21,6 @@ abstract class AsyncNotifierBase<State> {
   void _setElement(ProviderElementBase<AsyncValue<State>> element);
 
   @protected
-  @override
   AsyncValue<State> get state {
     _element.flush();
     // ignore: invalid_use_of_protected_member
@@ -29,7 +28,6 @@ abstract class AsyncNotifierBase<State> {
   }
 
   @protected
-  @override
   set state(AsyncValue<State> value) {
     // ignore: invalid_use_of_protected_member
     _element.setState(value);
@@ -37,7 +35,6 @@ abstract class AsyncNotifierBase<State> {
 
   Ref<AsyncValue<State>> get ref;
 
-  @override
   Future<State> future() {
     _element.flush();
     return _element._futureNotifier.value;

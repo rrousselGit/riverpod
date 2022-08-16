@@ -16,7 +16,6 @@ abstract class NotifierBase<State> {
   void _setElement(ProviderElementBase<State> element);
 
   @protected
-  @override
   State get state {
     // TODO test flush
     _element.flush();
@@ -24,7 +23,6 @@ abstract class NotifierBase<State> {
     return _element.requireState;
   }
 
-  @override
   set state(State value) {
     // ignore: invalid_use_of_protected_member
     _element.setState(value);

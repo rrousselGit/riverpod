@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:riverpod/src/async_notifier.dart';
 import 'package:riverpod/src/internals.dart';
 
 typedef AsyncNotifierProviderFactoryType

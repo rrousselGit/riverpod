@@ -4,6 +4,7 @@ abstract class AutoDisposeFamilyAsyncNotifier<State, Arg>
     extends AsyncNotifierBase<State> {
   late final Arg arg;
 
+  @override
   late final AutoDisposeAsyncNotifierProviderElement<
       AutoDisposeFamilyAsyncNotifier<State, Arg>, State> _element;
 

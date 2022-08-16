@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:riverpod/src/notifier.dart';
 import 'package:riverpod/src/internals.dart';
 
 typedef NotifierProviderFactoryType = NotifierProviderBase<NotifierT, T>

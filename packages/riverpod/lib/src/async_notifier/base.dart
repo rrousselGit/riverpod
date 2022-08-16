@@ -1,6 +1,7 @@
 part of '../async_notifier.dart';
 
 abstract class AsyncNotifier<State> extends AsyncNotifierBase<State> {
+  @override
   late final AsyncNotifierProviderElement<AsyncNotifierBase<State>, State>
       _element;
 

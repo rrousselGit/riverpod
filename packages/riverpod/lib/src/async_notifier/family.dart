@@ -4,6 +4,7 @@ abstract class FamilyAsyncNotifier<State, Arg>
     extends AsyncNotifierBase<State> {
   late final Arg arg;
 
+  @override
   late final AsyncNotifierProviderElement<FamilyAsyncNotifier<State, Arg>,
       State> _element;
 

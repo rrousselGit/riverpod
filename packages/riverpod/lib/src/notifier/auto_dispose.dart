@@ -1,6 +1,7 @@
 part of '../notifier.dart';
 
 abstract class AutoDisposeNotifier<State> extends NotifierBase<State> {
+  @override
   late final AutoDisposeNotifierProviderElement<AutoDisposeNotifier<State>,
       State> _element;
 
