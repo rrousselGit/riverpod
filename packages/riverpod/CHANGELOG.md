@@ -12,6 +12,8 @@
 - `ProviderListener` is removed. Used `ref.listen` instead.
 - Providers other than `FutureProvider`/`StreamProvider` no-longer override `AsyncValue`s
   to set `AsyncValue.isRefreshing` when an `AsyncLoading` is emitted.
+- It is no longer possible to pass `provider.future/.notifier/...` to the parameter `dependencies` of provider.
+  Simply pass the provider instead.
 
 Non-breaking changes:
 
