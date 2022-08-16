@@ -1,21 +1,13 @@
 export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
 
 export 'src/async_notifier.dart'
-    show
-        AsyncNotifier,
-        AsyncNotifierProvider,
-        AsyncNotifierProviderElement,
-        AsyncNotifierProviderRef,
-        AsyncNotifierProviderFamily,
-        AutoDisposeAsyncNotifier,
-        AutoDisposeAsyncNotifierProviderElement,
-        AutoDisposeAsyncNotifierProviderFamily,
-        AutoDisposeAsyncNotifierProviderRef,
-        AutoDisposeFamilyAsyncNotifier,
-        FamilyAsyncNotifier,
-        AsyncNotifierFamilyProvider,
-        AutoDisposeAsyncNotifierProvider,
-        AutoDisposeFamilyAsyncNotifierProvider;
+    hide
+        TestAsyncNotifierProvider,
+        TestAutoDisposeAsyncNotifierProvider,
+        TestAutoDisposeFamilyAsyncNotifierProvider,
+        TestFamilyAsyncNotifierProvider,
+        AsyncNotifierBase,
+        AsyncNotifierProviderBase;
 
 export 'src/common.dart'
     show AsyncValue, AsyncData, AsyncLoading, AsyncError, AsyncValueX;
