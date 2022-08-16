@@ -26,11 +26,6 @@ class ValueProvider<State> extends ProviderBase<State>
   List<ProviderOrFamily>? get dependencies => null;
 
   @override
-  bool updateShouldNotify(State previousState, State newState) {
-    return true;
-  }
-
-  @override
   ValueProviderElement<State> createElement() {
     return ValueProviderElement(this);
   }
@@ -67,5 +62,10 @@ class ValueProviderElement<State> extends ProviderElementBase<State> {
   void create({required bool didChangeDependency}) {
     final provider = this.provider as ValueProvider<State>;
     setState(provider._value);
+  }
+
+  @override
+  bool updateShouldNotify(State previous, State next) {
+    return true;
   }
 }

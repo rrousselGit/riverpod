@@ -269,6 +269,11 @@ class ProviderElement<State> extends ProviderElementBase<State>
 
     setState(provider._create(this));
   }
+
+  @override
+  bool updateShouldNotify(State previous, State next) {
+    return previous != next;
+  }
 }
 
 /// The [Family] of [Provider]

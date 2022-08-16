@@ -175,4 +175,11 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     );
     notifierVisitor(_notifierNotifier);
   }
+
+  @override
+  bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
+    return _notifierNotifier.result?.stateOrNull
+            ?.updateShouldNotify(previous, next) ??
+        true;
+  }
 }

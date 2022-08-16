@@ -145,6 +145,9 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
   }
 
   @override
+  bool updateShouldNotify(NotifierT previous, NotifierT next) => true;
+
+  @override
   void runOnDispose() {
     super.runOnDispose();
 

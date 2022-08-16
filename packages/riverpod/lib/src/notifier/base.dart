@@ -114,4 +114,11 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     );
     notifierVisitor(_notifierNotifier);
   }
+
+  @override
+  bool updateShouldNotify(T previous, T next) {
+    return _notifierNotifier.result?.stateOrNull
+            ?.updateShouldNotify(previous, next) ??
+        true;
+  }
 }

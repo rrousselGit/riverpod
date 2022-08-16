@@ -76,7 +76,7 @@ abstract class AsyncNotifierBase<State> {
     return future.then(cb);
   }
 
-  bool updateShouldNotify(State previous, State next) {
+  bool updateShouldNotify(AsyncValue<State> previous, AsyncValue<State> next) {
     return !identical(previous, next);
   }
 }
@@ -156,9 +156,4 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
   final NotifierT Function() _createNotifier;
 
   FutureOr<T> _runNotifierBuild(AsyncNotifierBase<T> notifier);
-
-  @override
-  bool updateShouldNotify(AsyncValue<T> previousState, AsyncValue<T> newState) {
-    return true;
-  }
 }

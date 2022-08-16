@@ -116,11 +116,6 @@ abstract class ProviderBase<State> extends ProviderOrFamily
     return element.requireState;
   }
 
-  /// Called when a provider is rebuilt. Used for providers to not notify their
-  /// listeners if the exposed value did not change.
-  @visibleForOverriding
-  bool updateShouldNotify(State previousState, State newState);
-
   /// An internal method that defines how a provider behaves.
   @visibleForOverriding
   ProviderElementBase<State> createElement();

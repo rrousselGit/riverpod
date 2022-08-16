@@ -103,10 +103,5 @@ abstract class NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
 
   final NotifierT Function() _createNotifier;
 
-  @override
-  bool updateShouldNotify(T previousState, T newState) {
-    return !identical(previousState, newState);
-  }
-
   T _runNotifierBuild(NotifierBase<T> notifier);
 }

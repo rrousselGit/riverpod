@@ -61,7 +61,4 @@ abstract class _ChangeNotifierProviderBase<NotifierT extends ChangeNotifier?>
   ProviderListenable<NotifierT> get notifier;
 
   NotifierT _create(covariant ChangeNotifierProviderElement<NotifierT> ref);
-
-  @override
-  bool updateShouldNotify(NotifierT previousState, NotifierT newState) => true;
 }

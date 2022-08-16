@@ -145,6 +145,16 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     );
   }
 
+  @override
+  bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
+    final wasLoading = previous is AsyncLoading;
+    final isLoading = next is AsyncLoading;
+
+    if (wasLoading || isLoading) return wasLoading != isLoading;
+
+    return true;
+  }
+
   @pragma('vm:prefer-inline')
   void _listenStream(Stream<T> stream) {
     // TODO test that if a provider refreshes with before the stream has emitted a value,

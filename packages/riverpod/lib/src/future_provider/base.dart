@@ -93,6 +93,16 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     }
   }
 
+  @override
+  bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
+    final wasLoading = previous is AsyncLoading;
+    final isLoading = next is AsyncLoading;
+
+    if (wasLoading || isLoading) return wasLoading != isLoading;
+
+    return true;
+  }
+
   @pragma('vm:prefer-inline')
   void _listenFuture(Future<T> future) {
     var running = true;
