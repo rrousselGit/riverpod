@@ -11,21 +11,6 @@ abstract class Notifier<State> extends NotifierBase<State> {
   @override
   NotifierProviderRef<State> get ref => _element;
 
-  @protected
-  @override
-  State get state {
-    // TODO test flush
-    _element.flush();
-    // ignore: invalid_use_of_protected_member
-    return _element.requireState;
-  }
-
-  @override
-  set state(State value) {
-    // ignore: invalid_use_of_protected_member
-    _element.setState(value);
-  }
-
   @visibleForOverriding
   State build();
 }
@@ -33,12 +18,16 @@ abstract class Notifier<State> extends NotifierBase<State> {
 /// {@macro riverpod.providerrefbase}
 abstract class NotifierProviderRef<T> implements Ref<T> {}
 
+/// {@macro riverpod.notifier}
+typedef NotifierProvider<NotifierT extends Notifier<T>, T>
+    = TestNotifierProvider<NotifierT, T>;
+
 /// {@template riverpod.notifier}
 /// {@endtemplate}
-class NotifierProvider<NotifierT extends NotifierBase<T>, T>
+class TestNotifierProvider<NotifierT extends NotifierBase<T>, T>
     extends NotifierProviderBase<NotifierT, T> with AlwaysAliveProviderBase<T> {
   /// {@macro riverpod.notifier}
-  NotifierProvider(
+  TestNotifierProvider(
     super._createNotifier, {
     super.name,
     super.from,

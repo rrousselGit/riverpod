@@ -10,13 +10,24 @@ part 'notifier/family.dart';
 part 'notifier/auto_dispose_family.dart';
 
 abstract class NotifierBase<State> {
+  NotifierProviderElement<NotifierBase<State>, State> get _element;
+
   void _setElement(ProviderElementBase<State> element);
 
   @protected
-  State get state;
+  @override
+  State get state {
+    // TODO test flush
+    _element.flush();
+    // ignore: invalid_use_of_protected_member
+    return _element.requireState;
+  }
 
-  @protected
-  set state(State value);
+  @override
+  set state(State value) {
+    // ignore: invalid_use_of_protected_member
+    _element.setState(value);
+  }
 
   Ref<State> get ref;
 
