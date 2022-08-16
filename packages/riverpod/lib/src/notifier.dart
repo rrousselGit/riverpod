@@ -41,6 +41,7 @@ abstract class NotifierBase<State> {
     _element.setState(value);
   }
 
+  /// The [Ref] from the provider associated with this [AsyncNotifier].
   Ref<State> get ref;
 
   bool updateShouldNotify(State previous, State next) {

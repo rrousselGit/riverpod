@@ -45,7 +45,7 @@ abstract class AsyncNotifierBase<State> {
     _element.setState(value);
   }
 
-  /// The [Ref] associated with []
+  /// The [Ref] from the provider associated with this [AsyncNotifier].
   Ref<AsyncValue<State>> get ref;
 
   /// {@template riverpod.async_notifier.future}
