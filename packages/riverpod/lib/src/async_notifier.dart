@@ -102,7 +102,7 @@ abstract class AsyncNotifierBase<State> {
   ///
   /// If you do not want that, you can override this method to perform a deep
   /// comparison of the previous and new values.
-  @visibleForOverriding
+  @protected
   bool updateShouldNotify(AsyncValue<State> previous, AsyncValue<State> next) {
     return !identical(previous, next);
   }
