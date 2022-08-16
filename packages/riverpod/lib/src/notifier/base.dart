@@ -25,6 +25,9 @@ abstract class Notifier<State> extends NotifierBase<State> {
     // ignore: invalid_use_of_protected_member
     _element.setState(value);
   }
+
+  @visibleForOverriding
+  State build();
 }
 
 /// {@macro riverpod.providerrefbase}
@@ -33,8 +36,7 @@ abstract class NotifierProviderRef<T> implements Ref<T> {}
 /// {@template riverpod.notifier}
 /// {@endtemplate}
 class NotifierProvider<NotifierT extends NotifierBase<T>, T>
-    extends _NotifierProviderBase<NotifierT, T>
-    with AlwaysAliveProviderBase<T> {
+    extends NotifierProviderBase<NotifierT, T> with AlwaysAliveProviderBase<T> {
   /// {@macro riverpod.notifier}
   NotifierProvider(
     super._createNotifier, {
@@ -58,19 +60,24 @@ class NotifierProvider<NotifierT extends NotifierBase<T>, T>
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier =
       _notifier<NotifierT, T>(this);
+
+  @override
+  T _runNotifierBuild(covariant Notifier<T> notifier) {
+    return notifier.build();
+  }
 }
 
 /// The element of [NotifierProvider].
 class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     extends ProviderElementBase<T> implements NotifierProviderRef<T> {
-  NotifierProviderElement._(_NotifierProviderBase<NotifierT, T> provider)
+  NotifierProviderElement._(NotifierProviderBase<NotifierT, T> provider)
       : super(provider);
 
   final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
 
   @override
   void create({required bool didChangeDependency}) {
-    final provider = this.provider as _NotifierProviderBase<NotifierT, T>;
+    final provider = this.provider as NotifierProviderBase<NotifierT, T>;
 
     final notifierResult = _notifierNotifier.result ??= Result.guard(() {
       return provider._createNotifier().._setElement(this);
@@ -80,7 +87,7 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     final notifier = notifierResult.requireState;
 
 // TODO test if Element fails to init, the provider rethrows the error
-    setState(notifier.build());
+    setState(provider._runNotifierBuild(notifier));
   }
 
   @override

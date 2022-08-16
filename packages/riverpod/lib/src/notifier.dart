@@ -6,6 +6,8 @@ import 'result.dart';
 
 part 'notifier/base.dart';
 part 'notifier/auto_dispose.dart';
+part 'notifier/family.dart';
+part 'notifier/auto_dispose_family.dart';
 
 abstract class NotifierBase<State> {
   void _setElement(ProviderElementBase<State> element);
@@ -18,9 +20,6 @@ abstract class NotifierBase<State> {
 
   Ref<State> get ref;
 
-  @visibleForOverriding
-  State build();
-
   bool updateShouldNotify(State previous, State next) {
     return !identical(previous, next);
   }
@@ -28,7 +27,7 @@ abstract class NotifierBase<State> {
 
 ProviderElementProxy<T, NotifierT>
     _notifier<NotifierT extends NotifierBase<T>, T>(
-  _NotifierProviderBase<NotifierT, T> that,
+  NotifierProviderBase<NotifierT, T> that,
 ) {
   return ProviderElementProxy<T, NotifierT>(
     that,
@@ -39,9 +38,9 @@ ProviderElementProxy<T, NotifierT>
   );
 }
 
-abstract class _NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
+abstract class NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
     extends ProviderBase<T> {
-  _NotifierProviderBase(
+  NotifierProviderBase(
     this._createNotifier, {
     required super.name,
     required super.from,
@@ -77,4 +76,6 @@ abstract class _NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
   bool updateShouldNotify(T previousState, T newState) {
     return !identical(previousState, newState);
   }
+
+  T _runNotifierBuild(NotifierBase<T> notifier);
 }
