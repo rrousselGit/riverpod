@@ -6,6 +6,7 @@ import 'builders.dart';
 import 'common.dart';
 import 'framework.dart';
 import 'listenable.dart';
+import 'notifier.dart';
 import 'result.dart';
 import 'synchronous_future.dart';
 

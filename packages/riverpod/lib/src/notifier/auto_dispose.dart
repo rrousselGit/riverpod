@@ -1,5 +1,6 @@
 part of '../notifier.dart';
 
+/// {@template riverpod.notifier}
 abstract class AutoDisposeNotifier<State> extends NotifierBase<State> {
   @override
   late final AutoDisposeNotifierProviderElement<AutoDisposeNotifier<State>,
@@ -14,6 +15,7 @@ abstract class AutoDisposeNotifier<State> extends NotifierBase<State> {
   @override
   AutoDisposeNotifierProviderRef<State> get ref => _element;
 
+  /// {@macro riverpod.asyncnotifier.build}
   @visibleForOverriding
   State build();
 }
@@ -63,6 +65,7 @@ class TestAutoDisposeNotifierProvider<NotifierT extends NotifierBase<T>, T>
   }
 }
 
+/// The element of [AutoDisposeNotifierProvider]
 class AutoDisposeNotifierProviderElement<NotifierT extends NotifierBase<T>,
         T> = NotifierProviderElement<NotifierT, T>
     with AutoDisposeProviderElementMixin<T>

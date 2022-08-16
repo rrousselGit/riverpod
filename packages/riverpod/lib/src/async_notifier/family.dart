@@ -1,7 +1,19 @@
 part of '../async_notifier.dart';
 
+/// {@macro riverpod.asyncnotifier}
 abstract class FamilyAsyncNotifier<State, Arg>
     extends AsyncNotifierBase<State> {
+  /// {@template riverpod.notifier.family_arg}
+  /// The argument that was passed to this family.
+  ///
+  /// For example, when doing:
+  ///
+  /// ```dart
+  /// ref.watch(provider(0));
+  /// ```
+  ///
+  /// then [arg] will be `0`.
+  /// {@endtemplate}
   late final Arg arg;
 
   @override
@@ -18,20 +30,26 @@ abstract class FamilyAsyncNotifier<State, Arg>
   @override
   AsyncNotifierProviderRef<State> get ref => _element;
 
+  /// {@macro riverpod.asyncnotifier.build}
   @visibleForOverriding
   FutureOr<State> build(Arg arg);
 }
 
+/// {@template riverpod.async_notifier_family_provider}
 /// The provider for [AsyncNotifierProviderFamily].
+/// {@endtemplate}
 typedef AsyncNotifierFamilyProvider<
         NotifierT extends FamilyAsyncNotifier<T, Arg>, T, Arg>
     = TestFamilyAsyncNotifierProvider<NotifierT, T, Arg>;
 
+/// An internal implementation of [AsyncNotifierFamilyProvider] for testing purpose.
+///
+/// Not meant for public consumption.
 @visibleForTesting
 class TestFamilyAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T,
         Arg> extends AsyncNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
-  /// {@macro riverpod.notifier}
+  /// {@macro riverpod.async_notifier_family_provider}
   TestFamilyAsyncNotifierProvider(
     super._createNotifier, {
     super.name,
@@ -41,11 +59,7 @@ class TestFamilyAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T,
   }) : super(cacheTime: null, disposeDelay: null);
 
   /// {@macro riverpod.autoDispose}
-  // ignore: prefer_const_declarations
-  static final autoDispose = AutoDisposeAsyncNotifierProviderFamily.new;
-
-  // /// {@macro riverpod.family}
-  // static const family = AsyncNotifierProviderFamilyBuilder();
+  static const autoDispose = AutoDisposeAsyncNotifierProviderFamily.new;
 
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier =

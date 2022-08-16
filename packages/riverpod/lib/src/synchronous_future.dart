@@ -23,6 +23,7 @@ class SynchronousFuture<T> implements Future<T> {
   ///    [Future] that completes with a value.
   SynchronousFuture(this.value);
 
+  /// The value that is synchronously emitted by this [Future].
   final T value;
 
   @override

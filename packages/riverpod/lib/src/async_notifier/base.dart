@@ -1,5 +1,9 @@
 part of '../async_notifier.dart';
 
+/// {@template riverpod.asyncnotifier}
+/// A [Notifier] implementation that is asynchronously initialized.
+/// {@endtemplate}
+// TODO add usage example
 abstract class AsyncNotifier<State> extends AsyncNotifierBase<State> {
   @override
   late final AsyncNotifierProviderElement<AsyncNotifierBase<State>, State>
@@ -14,6 +18,19 @@ abstract class AsyncNotifier<State> extends AsyncNotifierBase<State> {
   @override
   AsyncNotifierProviderRef<State> get ref => _element;
 
+  /// {@template riverpod.asyncnotifier.build}
+  /// Initialize an [AsyncNotifier].
+  ///
+  /// It is safe to use [Ref.watch] or [Ref.listen] inside this method.
+  ///
+  /// If a dependency of this [AsyncNotifier] (when using [Ref.watch]) changes,
+  /// then [build] will be re-executed. On the other hand, the [AsyncNotifier]
+  /// will **not** be recreated. Its instance will be preserved between
+  /// executions of [build].
+  ///
+  /// If this method throws or returns a future that fails, the error
+  /// will be caught and an [AsyncError] will be emitted.
+  /// {@endtemplate}
   @visibleForOverriding
   FutureOr<State> build();
 }
@@ -21,7 +38,7 @@ abstract class AsyncNotifier<State> extends AsyncNotifierBase<State> {
 /// {@macro riverpod.providerrefbase}
 abstract class AsyncNotifierProviderRef<T> implements Ref<AsyncValue<T>> {}
 
-/// {@template riverpod.asyncnotifier}
+/// {@template riverpod.async_notifier_provider}
 /// {@endtemplate}
 typedef AsyncNotifierProvider<NotifierT extends AsyncNotifier<T>, T>
     = TestAsyncNotifierProvider<NotifierT, T>;
@@ -35,7 +52,7 @@ typedef AsyncNotifierProvider<NotifierT extends AsyncNotifier<T>, T>
 class TestAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
-  /// {@macro riverpod.notifier}
+  /// {@macro riverpod.async_notifier_provider}
   TestAsyncNotifierProvider(
     super._createNotifier, {
     super.name,

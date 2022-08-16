@@ -1,7 +1,9 @@
 part of '../async_notifier.dart';
 
+/// {@macro riverpod.asyncnotifier}
 abstract class AutoDisposeFamilyAsyncNotifier<State, Arg>
     extends AsyncNotifierBase<State> {
+  /// {@template riverpod.notifier.family_arg}
   late final Arg arg;
 
   @override
@@ -18,6 +20,7 @@ abstract class AutoDisposeFamilyAsyncNotifier<State, Arg>
   @override
   AutoDisposeAsyncNotifierProviderRef<State> get ref => _element;
 
+  /// {@macro riverpod.asyncnotifier.build}
   @visibleForOverriding
   FutureOr<State> build(Arg arg);
 }

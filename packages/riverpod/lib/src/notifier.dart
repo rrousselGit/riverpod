@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 
+import '../riverpod.dart';
 import 'builders.dart';
 import 'framework.dart';
 import 'listenable.dart';
@@ -15,9 +16,17 @@ abstract class NotifierBase<State> {
 
   void _setElement(ProviderElementBase<State> element);
 
+  /// The value currently exposed by this [Notifier].
+  ///
+  /// Invoking the setter will notify listeners if [updateShouldNotify] returns true.
+  /// By default, this will compare the previous and new value using [identical].
+  ///
+  /// Reading [state] if the provider is out of date (such as if one of its
+  /// dependency has changed) will trigger [Notifier.build] to be re-executed.
+  ///
+  /// If [Notifier.build] threw, reading [state] will rethow the exception.
   @protected
   State get state {
-    // TODO test flush
     _element.flush();
     // ignore: invalid_use_of_protected_member
     return _element.requireState;
@@ -48,8 +57,14 @@ ProviderElementProxy<T, NotifierT>
   );
 }
 
+/// An internal base class for [Notifier].
+///
+/// Not meant for public consumption.
 abstract class NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
     extends ProviderBase<T> {
+  /// An internal base class for [Notifier].
+  ///
+  /// Not meant for public consumption.
   NotifierProviderBase(
     this._createNotifier, {
     required super.name,
