@@ -49,6 +49,7 @@ typedef AsyncNotifierProvider<NotifierT extends AsyncNotifier<T>, T>
 /// This enables tests to execute on both [AsyncNotifierProvider] and
 /// [AutoDisposeAsyncNotifierProvider] at the same time.
 @visibleForTesting
+@internal
 class TestAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {

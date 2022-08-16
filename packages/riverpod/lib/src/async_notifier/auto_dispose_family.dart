@@ -35,6 +35,7 @@ typedef AutoDisposeFamilyAsyncNotifierProvider<
 ///
 /// This enables tests to execute on both [AutoDisposeAsyncNotifierProvider] and
 /// [AsyncNotifierProvider] at the same time.
+@internal
 class TestAutoDisposeFamilyAsyncNotifierProvider<
     NotifierT extends AsyncNotifierBase<T>,
     T,

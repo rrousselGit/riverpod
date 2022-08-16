@@ -15,12 +15,23 @@ part 'async_notifier/auto_dispose.dart';
 part 'async_notifier/family.dart';
 part 'async_notifier/auto_dispose_family.dart';
 
+/// A base class for [AsyncNotifier].
+///
+/// Not meant for public consumption.
 @visibleForTesting
+@internal
 abstract class AsyncNotifierBase<State> {
   AsyncNotifierProviderElement<AsyncNotifierBase<State>, State> get _element;
 
   void _setElement(ProviderElementBase<AsyncValue<State>> element);
 
+  /// The value currently exposed by this [Notifier].
+  ///
+  /// Invoking the setter will notify listeners if [updateShouldNotify] returns true.
+  /// By default, this will compare the previous and new value using [identical].
+  ///
+  /// Reading [state] if the provider is out of date (such as if one of its
+  /// dependency has changed) will trigger [Notifier.build] to be re-executed.
   @protected
   AsyncValue<State> get state {
     _element.flush();
@@ -34,9 +45,21 @@ abstract class AsyncNotifierBase<State> {
     _element.setState(value);
   }
 
+  /// The [Ref] associated with []
   Ref<AsyncValue<State>> get ref;
 
-  Future<State> future() {
+  /// {@template riverpod.async_notifier.future}
+  /// Obtains a [Future] that resolves with the first [state] value that is not
+  /// [AsyncLoading].
+  ///
+  /// This future will not necesserily wait for [AsyncNotifier.build] to complete.
+  /// If [state] is modified before [AsyncNotifier.build] completes, then [future]
+  /// will resolve with that new [state] value.
+  ///
+  /// The future will fail if [AsyncNotifier.build] throws or returns a future
+  /// that fails.
+  /// {@endtemplate}
+  Future<State> get future {
     _element.flush();
     return _element._futureNotifier.value;
   }
@@ -47,7 +70,7 @@ abstract class AsyncNotifierBase<State> {
     FutureOr<State> Function(State)? onError,
   }) {
     // TODO cancel on rebuild?
-    return future().then(cb, onError: onError);
+    return future.then(cb, onError: onError);
   }
 
   bool updateShouldNotify(State previous, State next) {
@@ -80,9 +103,16 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
   );
 }
 
+/// A base class for [AsyncNotifierProvider]
+///
+/// Not meant for public consumption
 @visibleForTesting
+@internal
 abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
     T> extends ProviderBase<AsyncValue<T>> {
+  /// A base class for [AsyncNotifierProvider]
+  ///
+  /// Not meant for public consumption
   AsyncNotifierProviderBase(
     this._createNotifier, {
     required super.name,
@@ -113,7 +143,11 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
   /// has changes.
   Refreshable<NotifierT> get notifier;
 
-// TODO doc
+  /// {@macro riverpod.async_notifier.future}
+  ///
+  /// Listening to this using [Ref.watch] will rebuild the widget/provider
+  /// when the [AsyncNotifier] emits a new value.
+  /// This will then return a new [Future] that resoles with the latest "state".
   Refreshable<Future<T>> get future;
 
   final NotifierT Function() _createNotifier;

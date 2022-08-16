@@ -35,6 +35,7 @@ typedef AutoDisposeFamilyNotifierProvider<
 ///
 /// This enables tests to execute on both [AutoDisposeNotifierProvider] and
 /// [NotifierProvider] at the same time.
+@internal
 class TestAutoDisposeFamilyNotifierProvider<NotifierT extends NotifierBase<T>,
     T, Arg> extends NotifierProviderBase<NotifierT, T> {
   /// {@macro riverpod.notifier}

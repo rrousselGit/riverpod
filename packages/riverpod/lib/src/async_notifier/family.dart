@@ -46,6 +46,7 @@ typedef AsyncNotifierFamilyProvider<
 ///
 /// Not meant for public consumption.
 @visibleForTesting
+@internal
 class TestFamilyAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T,
         Arg> extends AsyncNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {

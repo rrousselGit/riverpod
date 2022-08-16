@@ -399,7 +399,7 @@ void main() {
           container.listen(provider.notifier, (previous, next) {});
           final notifier = container.read(provider.notifier);
 
-          expect(notifier.future(), same(container.read(provider.future)));
+          expect(notifier.future, same(container.read(provider.future)));
         });
 
         test(
@@ -423,9 +423,9 @@ void main() {
 
           container.read(dep.notifier).state++;
 
-          expect(notifier.future(), notifier.future());
-          expect(notifier.future(), same(container.read(provider.future)));
-          expect(await notifier.future(), 1);
+          expect(notifier.future, notifier.future);
+          expect(notifier.future, same(container.read(provider.future)));
+          expect(await notifier.future, 1);
           verify(listener()).called(1);
         });
       });

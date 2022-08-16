@@ -11,6 +11,10 @@ part 'notifier/auto_dispose.dart';
 part 'notifier/family.dart';
 part 'notifier/auto_dispose_family.dart';
 
+/// A base class for [NotifierBase].
+///
+/// Not meant for public consumption.
+@internal
 abstract class NotifierBase<State> {
   NotifierProviderElement<NotifierBase<State>, State> get _element;
 
@@ -60,6 +64,7 @@ ProviderElementProxy<T, NotifierT>
 /// An internal base class for [Notifier].
 ///
 /// Not meant for public consumption.
+@internal
 abstract class NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
     extends ProviderBase<T> {
   /// An internal base class for [Notifier].
