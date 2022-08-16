@@ -1,0 +1,74 @@
+import 'dart:async';
+
+import 'package:analyzer/dart/element/element.dart';
+import 'package:build/build.dart';
+import 'package:source_gen/source_gen.dart';
+
+abstract class ParserGenerator<GlobalData, Data, Annotation>
+    extends GeneratorForAnnotation<Annotation> {
+  @override
+  FutureOr<String> generate(
+    // ignore: avoid_renaming_method_parameters
+    LibraryReader oldLibrary,
+    BuildStep buildStep,
+  ) async {
+    print('het');
+    final library = await buildStep.resolver.libraryFor(
+      await buildStep.resolver.assetIdForElement(oldLibrary.element),
+    );
+
+    final values = StringBuffer();
+
+    final globalData = parseGlobalData(library);
+
+    var hasGeneratedGlobalCode = false;
+
+    for (final element
+        in library.topLevelElements.where(typeChecker.hasAnnotationOf)) {
+      print('foo');
+      if (!hasGeneratedGlobalCode) {
+        hasGeneratedGlobalCode = true;
+        generateForAll(globalData)
+            .map((e) => e.toString())
+            .forEach(values.writeln);
+      }
+
+      final data = await parseElement(buildStep, globalData, element);
+      if (data == null) continue;
+      generateForData(globalData, data)
+          .map((e) => e.toString())
+          .forEach(values.writeln);
+    }
+
+    return values.toString();
+  }
+
+  Iterable<Object> generateForAll(GlobalData globalData) sync* {}
+
+  GlobalData parseGlobalData(LibraryElement library);
+
+  FutureOr<Data> parseElement(
+    BuildStep buildStep,
+    GlobalData globalData,
+    Element element,
+  );
+
+  Iterable<Object> generateForData(GlobalData globalData, Data data);
+
+  @override
+  Stream<String> generateForAnnotatedElement(
+    Element element,
+    ConstantReader annotation,
+    BuildStep buildStep,
+  ) async* {
+    // implemented for source_gen_test – otherwise unused
+    final globalData = parseGlobalData(element.library!);
+    final data = parseElement(buildStep, globalData, element);
+
+    if (data == null) return;
+
+    for (final value in generateForData(globalData, await data)) {
+      yield value.toString();
+    }
+  }
+}
