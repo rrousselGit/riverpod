@@ -7,6 +7,7 @@ import 'result.dart';
 ///
 /// This is an implementation detail of `overrideWithValue`.
 @sealed
+@internal
 class ValueProvider<State> extends ProviderBase<State>
     with AlwaysAliveProviderBase<State> {
   /// Creates a [ValueProvider].
@@ -37,6 +38,7 @@ class ValueProvider<State> extends ProviderBase<State>
 
 /// The [ProviderElementBase] of a [ValueProvider]
 @sealed
+@internal
 class ValueProviderElement<State> extends ProviderElementBase<State> {
   /// The [ProviderElementBase] of a [ValueProvider]
   ValueProviderElement(

@@ -6,6 +6,7 @@ import 'stack_trace.dart';
 import 'stream_provider.dart' show StreamProvider;
 
 /// An extension for [asyncTransition].
+@internal
 extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
   /// Internal utility for transitioning an [AsyncValue] after a provider refresh.
   void asyncTransition({required bool didChangeDependency}) {

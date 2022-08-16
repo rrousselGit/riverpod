@@ -4,6 +4,8 @@
 
 import 'dart:async';
 
+import 'package:meta/meta.dart';
+
 /// A [Future] whose [then] implementation calls the callback immediately.
 ///
 /// This is similar to [Future.value], except that the value is available in
@@ -14,6 +16,7 @@ import 'dart:async';
 /// rare occasions you want the ability to switch to an asynchronous model. **In
 /// general use of this class should be avoided as it is very difficult to debug
 /// such bimodal behavior.**
+@internal
 class SynchronousFuture<T> implements Future<T> {
   /// Creates a synchronous future.
   ///
