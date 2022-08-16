@@ -12,7 +12,7 @@ void main() {
       test(
           'uses notifier.build as initial state and update listeners when state changes',
           () {
-        final provider = _TestNotifierProvider((ref) => 0);
+        final provider = factory.simpleTestProvider((ref) => 0);
         final container = createContainer();
         final listener = Listener<int>();
 
@@ -20,18 +20,18 @@ void main() {
 
         verifyOnly(listener, listener(null, 0));
 
-        container.read(provider.notifier).update((state) => state + 1);
+        container.read(provider.notifier).state++;
 
         verifyOnly(listener, listener(0, 1));
       });
 
       test('preserves the notifier between watch updates', () async {
         final dep = StateProvider((ref) => 0);
-        final provider = _TestNotifierProvider((ref) {
+        final provider = factory.simpleTestProvider((ref) {
           return ref.watch(dep);
         });
         final container = createContainer();
-        final listener = Listener<TestNotifier<int>>();
+        final listener = Listener<TestNotifierBase<int>>();
 
         container.listen(provider.notifier, listener, fireImmediately: true);
 
@@ -48,7 +48,7 @@ void main() {
 
       test('calls notifier.build on every watch update', () async {
         final dep = StateProvider((ref) => 0);
-        final provider = _TestNotifierProvider((ref) {
+        final provider = factory.simpleTestProvider((ref) {
           return ref.watch(dep);
         });
         final container = createContainer();
@@ -70,7 +70,7 @@ void main() {
       test(
           'After a state initialization error, the notifier is still available',
           () {
-        final provider = _TestNotifierProvider<int>((ref) {
+        final provider = factory.simpleTestProvider<int>((ref) {
           throw StateError('Hey');
         });
         final container = createContainer();
@@ -86,7 +86,7 @@ void main() {
       test('handles fail to initialize the notifier', () {
         final err = UnimplementedError();
         final stack = StackTrace.current;
-        final provider = NotifierProvider<TestNotifier<int>, int>(
+        final provider = factory.provider<TestNotifierBase<int>, int>(
           () => Error.throwWithStackTrace(err, stack),
         );
         final container = createContainer();
@@ -134,7 +134,7 @@ void main() {
       });
 
       test('can read/set the current state within the notifier', () {
-        final provider = _TestNotifierProvider<int>((ref) => 0);
+        final provider = factory.simpleTestProvider<int>((ref) => 0);
         final container = createContainer();
         final listener = Listener<int>();
 
@@ -158,8 +158,8 @@ void main() {
       test(
           'Reading the state inside the notifier rethrows initilization error, if any',
           () {
-        final provider =
-            _TestNotifierProvider<int>((ref) => throw UnimplementedError());
+        final provider = factory
+            .simpleTestProvider<int>((ref) => throw UnimplementedError());
         final container = createContainer();
 
         final notifier = container.read(provider.notifier);
@@ -172,8 +172,9 @@ void main() {
           () {
         final err = UnimplementedError();
         final stack = StackTrace.current;
-        final provider = _TestNotifierProvider<int>(
-            (ref) => Error.throwWithStackTrace(err, stack));
+        final provider = factory.simpleTestProvider<int>(
+          (ref) => Error.throwWithStackTrace(err, stack),
+        );
         final container = createContainer();
         final listener = Listener<int>();
         final onError = ErrorListener();
@@ -213,7 +214,8 @@ void main() {
           'reading notifier.state on invalidated provider rebuilds the provider',
           () {
         final dep = StateProvider((ref) => 0);
-        final provider = _TestNotifierProvider<int>((ref) => ref.watch(dep));
+        final provider =
+            factory.simpleTestProvider<int>((ref) => ref.watch(dep));
         final container = createContainer();
         final listener = Listener<int>();
 
@@ -233,7 +235,7 @@ void main() {
       });
 
       test('supports ref.refresh(provider)', () {
-        final provider = _TestNotifierProvider<int>((ref) => 0);
+        final provider = factory.simpleTestProvider<int>((ref) => 0);
         final container = createContainer();
 
         final notifier = container.read(provider.notifier);
@@ -253,7 +255,7 @@ void main() {
       test('supports listenSelf((State? prev, State next) {})', () {
         final listener = Listener<int>();
         final onError = ErrorListener();
-        final provider = _TestNotifierProvider<int>((ref) {
+        final provider = factory.simpleTestProvider<int>((ref) {
           ref.listenSelf(listener, onError: onError);
           Error.throwWithStackTrace(42, StackTrace.empty);
         });
@@ -265,7 +267,8 @@ void main() {
       });
 
       test('filters state update by identical by default', () {
-        final provider = _TestNotifierProvider<Equal<int>>((ref) => Equal(42));
+        final provider =
+            factory.simpleTestProvider<Equal<int>>((ref) => Equal(42));
         final container = createContainer();
         final listener = Listener<Equal<int>>();
 
@@ -285,7 +288,7 @@ void main() {
       test(
           'Can override Notifier.updateShouldNotify to change the default filter logic',
           () {
-        final provider = _TestNotifierProvider<Equal<int>>(
+        final provider = factory.simpleTestProvider<Equal<int>>(
           (ref) => Equal(42),
           updateShouldNotify: (a, b) => a != b,
         );
@@ -349,48 +352,4 @@ class Equal<T> {
 
   @override
   int get hashCode => Object.hash(runtimeType, value);
-}
-
-// ignore: non_constant_identifier_names
-NotifierProvider<TestNotifier<T>, T> _TestNotifierProvider<T>(
-  T Function(Ref<T> ref) init, {
-  bool Function(T prev, T next)? updateShouldNotify,
-}) {
-  return NotifierProvider<TestNotifier<T>, T>(
-    () => TestNotifier(init, updateShouldNotify: updateShouldNotify),
-  );
-}
-
-class TestNotifier<T> extends Notifier<T> {
-  TestNotifier(this._init, {bool Function(T prev, T next)? updateShouldNotify})
-      : _updateShouldNotify = updateShouldNotify;
-
-  final T Function(NotifierProviderRef<T> ref) _init;
-
-  final bool Function(T prev, T next)? _updateShouldNotify;
-
-  // overriding to remove the @protected
-  @override
-  T get state => super.state;
-
-  @override
-  set state(T value) {
-    super.state = value;
-  }
-
-  @override
-  T build() => _init(ref);
-
-  void update(T Function(T state) cb) => state = cb(state);
-
-  @override
-  bool updateShouldNotify(T previous, T next) {
-    return _updateShouldNotify?.call(previous, next) ??
-        super.updateShouldNotify(previous, next);
-  }
-
-  @override
-  String toString() {
-    return 'TestNotifier<$T>#$hashCode';
-  }
 }
