@@ -76,6 +76,33 @@ abstract class AsyncNotifierBase<State> {
     return future.then(cb);
   }
 
+  /// A method invoked when the state exposed by this [AsyncNotifier] changes.
+  /// It compares the previous and new value, and return whether listeners
+  /// should be notified.
+  ///
+  /// By default, the previous and new value are compared using [identical]
+  /// for performance reasons.
+  ///
+  /// Doing so ensured that doing:
+  ///
+  /// ```dart
+  /// state = const AsyncData(42);
+  /// state = const AsyncData(42);
+  /// ```
+  ///
+  /// does not notify listeners twice.
+  ///
+  /// But at the same time, for very complex objects with potentially dozens
+  /// if not hundreds of properties, Riverpod won't deeply compare every single
+  /// value.
+  ///
+  /// This ensures that the comparison stays efficient for the most common scenarios.
+  /// But it also means that listeners should be notified even if the
+  /// previous and new values are considered "equal".
+  ///
+  /// If you do not want that, you can override this method to perform a deep
+  /// comparison of the previous and new values.
+  @visibleForOverriding
   bool updateShouldNotify(AsyncValue<State> previous, AsyncValue<State> next) {
     return !identical(previous, next);
   }
