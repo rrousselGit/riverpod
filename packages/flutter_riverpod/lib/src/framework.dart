@@ -173,6 +173,7 @@ class ProviderScope extends StatefulWidget {
 /// Do not use: The [State] of [ProviderScope]
 @visibleForTesting
 @sealed
+@internal
 class ProviderScopeState extends State<ProviderScope> {
   /// The [ProviderContainer] exposed to [ProviderScope.child].
   @visibleForTesting

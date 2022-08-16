@@ -1,9 +1,10 @@
 part of '../framework.dart';
 
 /// Adds [selectAsync] to [ProviderListenable]
+@internal
 mixin AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
   /// The future that [selectAsync] will query
-  ProviderListenable<Future<Input>> get future;
+  Refreshable<Future<Input>> get future;
 
   /// {@template riverpod.async_select}
   /// A variant of [select] for asynchronous values
@@ -46,10 +47,11 @@ mixin AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
 }
 
 /// Adds [selectAsync] to [AlwaysAliveProviderListenable]
+@internal
 mixin AlwaysAliveAsyncSelector<Input>
     on AlwaysAliveProviderListenable<AsyncValue<Input>> {
   /// The future that [selectAsync] will query
-  AlwaysAliveProviderListenable<Future<Input>> get future;
+  AlwaysAliveRefreshable<Future<Input>> get future;
 
   /// {@macro riverpod.async_select}
   AlwaysAliveProviderListenable<Future<Output>> selectAsync<Output>(
@@ -195,11 +197,9 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
             return;
           }
 
-          final stack = value.stackTrace ?? StackTrace.empty;
-
           emitError(
             value.error,
-            stack,
+            value.stackTrace,
             callListeners: callListeners,
           );
 

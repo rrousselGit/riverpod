@@ -23,9 +23,4 @@ abstract class _ProviderBase<State> extends ProviderBase<State>
   final List<ProviderOrFamily>? dependencies;
 
   State _create(covariant ProviderElement<State> ref);
-
-  @override
-  bool updateShouldNotify(State previousState, State newState) {
-    return previousState != newState;
-  }
 }

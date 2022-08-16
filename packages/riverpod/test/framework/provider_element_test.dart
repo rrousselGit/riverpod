@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/result.dart';
+import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 import '../third_party/fake_async.dart';
@@ -496,7 +495,7 @@ void main() {
           expect(
             container.read(provider),
             const AsyncLoading<int>().copyWithPrevious(
-              const AsyncError(42, stackTrace: StackTrace.empty),
+              const AsyncError(42, StackTrace.empty),
             ),
           );
 
@@ -505,7 +504,7 @@ void main() {
           expect(
             container.read(provider),
             const AsyncLoading<int>().copyWithPrevious(
-              const AsyncError(42, stackTrace: StackTrace.empty),
+              const AsyncError(42, StackTrace.empty),
             ),
           );
 
@@ -520,7 +519,7 @@ void main() {
           expect(
             container.read(provider),
             const AsyncLoading<int>().copyWithPrevious(
-              const AsyncError(21, stackTrace: StackTrace.empty),
+              const AsyncError(21, StackTrace.empty),
             ),
           );
 

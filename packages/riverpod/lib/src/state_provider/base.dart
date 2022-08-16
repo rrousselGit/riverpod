@@ -103,6 +103,11 @@ class StateProviderElement<T> extends ProviderElementBase<T>
   }
 
   @override
+  bool updateShouldNotify(T previous, T next) {
+    return true;
+  }
+
+  @override
   void runOnDispose() {
     super.runOnDispose();
 

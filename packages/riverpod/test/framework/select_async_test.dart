@@ -181,7 +181,7 @@ void main() {
     ref.state = const AsyncLoading<int>()
         .copyWithPrevious(const AsyncValue<int>.data(0));
     ref.state = const AsyncLoading<int>()
-        .copyWithPrevious(const AsyncError<int>('err'));
+        .copyWithPrevious(const AsyncError<int>('err', StackTrace.empty));
     ref.state = const AsyncLoading<int>();
 
     ref.state = const AsyncData(2);

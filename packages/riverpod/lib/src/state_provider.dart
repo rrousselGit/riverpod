@@ -47,9 +47,4 @@ abstract class _StateProviderBase<T> extends ProviderBase<T> {
   ProviderListenable<StateController<T>> get state;
 
   T _create(covariant StateProviderElement<T> ref);
-
-  @override
-  bool updateShouldNotify(T previousState, T newState) {
-    return true;
-  }
 }

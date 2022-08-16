@@ -136,6 +136,9 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
   }
 
   @override
+  bool updateShouldNotify(T previous, T next) => true;
+
+  @override
   void runOnDispose() {
     super.runOnDispose();
 

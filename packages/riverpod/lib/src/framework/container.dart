@@ -745,6 +745,7 @@ abstract class ProviderObserver {
 }
 
 /// An implementation detail for the override mechanism of providers
+@internal
 typedef SetupOverride = void Function({
   required ProviderBase origin,
   required ProviderBase override,
@@ -759,6 +760,7 @@ typedef SetupOverride = void Function({
 ///
 /// - [ProviderContainer], which uses this object.
 /// - `overrideWithValue`, which creates a [ProviderOverride].
+@internal
 class ProviderOverride implements Override {
   /// Override a provider
   ProviderOverride({

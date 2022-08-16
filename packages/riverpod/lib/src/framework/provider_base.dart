@@ -12,6 +12,7 @@ part of '../framework.dart';
 ///
 /// - [Ref], which exposes the methods to read other providers.
 /// - [Provider], a provider that uses [Create] to expose an immutable value.
+@internal
 typedef Create<T, R extends Ref> = T Function(R ref);
 
 /// A base class for _all_ providers.
@@ -114,11 +115,6 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 
     return element.requireState;
   }
-
-  /// Called when a provider is rebuilt. Used for providers to not notify their
-  /// listeners if the exposed value did not change.
-  @visibleForOverriding
-  bool updateShouldNotify(State previousState, State newState);
 
   /// An internal method that defines how a provider behaves.
   @visibleForOverriding

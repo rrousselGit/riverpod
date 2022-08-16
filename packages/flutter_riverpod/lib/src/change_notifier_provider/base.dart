@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_internal_member
+
 part of '../change_notifier_provider.dart';
 
 /// {@macro riverpod.providerrefbase}
@@ -141,6 +143,9 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
       _removeListener = () => notifier.removeListener(listener);
     }
   }
+
+  @override
+  bool updateShouldNotify(NotifierT previous, NotifierT next) => true;
 
   @override
   void runOnDispose() {

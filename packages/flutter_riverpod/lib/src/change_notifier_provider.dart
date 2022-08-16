@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_internal_member
+
 import 'package:flutter/widgets.dart';
 // ignore: implementation_imports
 import 'package:riverpod/src/internals.dart';
@@ -59,7 +61,4 @@ abstract class _ChangeNotifierProviderBase<NotifierT extends ChangeNotifier?>
   ProviderListenable<NotifierT> get notifier;
 
   NotifierT _create(covariant ChangeNotifierProviderElement<NotifierT> ref);
-
-  @override
-  bool updateShouldNotify(NotifierT previousState, NotifierT newState) => true;
 }

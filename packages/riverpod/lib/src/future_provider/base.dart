@@ -64,13 +64,7 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   @override
   void create({required bool didChangeDependency}) {
-    final previous = getState()?.requireState;
-    if (previous == null || didChangeDependency) {
-      setState(AsyncLoading<T>());
-    } else {
-      setState(AsyncLoading<T>().copyWithPrevious(previous));
-    }
-
+    asyncTransition(didChangeDependency: didChangeDependency);
     // TODO add a Proxy variant that accepts T instead of Result<T>
     _streamNotifier.result ??= Result.data(_streamController.stream);
 
@@ -95,8 +89,18 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
           ..ignore(),
       );
       _streamController.addError(err, stack);
-      setState(AsyncError<T>(err, stackTrace: stack));
+      setState(AsyncError<T>(err, stack));
     }
+  }
+
+  @override
+  bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
+    final wasLoading = previous is AsyncLoading;
+    final isLoading = next is AsyncLoading;
+
+    if (wasLoading || isLoading) return wasLoading != isLoading;
+
+    return true;
   }
 
   @pragma('vm:prefer-inline')
@@ -115,7 +119,7 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
       onError: (Object err, StackTrace stack) {
         if (running) {
           _streamController.addError(err, stack);
-          setState(AsyncError<T>(err, stackTrace: stack));
+          setState(AsyncError<T>(err, stack));
         }
       },
     );
