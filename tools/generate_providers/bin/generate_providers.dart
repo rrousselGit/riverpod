@@ -459,7 +459,7 @@ class AsyncNotifierProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   AsyncNotifierProviderFamily<NotifierT, T, Arg>
-      call<NotifierT extends AsyncNotifierFamily<T, Arg>, T, Arg>(
+      call<NotifierT extends FamilyAsyncNotifier<T, Arg>, T, Arg>(
     NotifierT Function() create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
@@ -513,7 +513,7 @@ class AutoDisposeAsyncNotifierProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   AutoDisposeAsyncNotifierProviderFamily<NotifierT, T, Arg>
-      call<NotifierT extends AutoDisposeAsyncNotifierFamily<T, Arg>, T, Arg>(
+      call<NotifierT extends AutoDisposeFamilyAsyncNotifier<T, Arg>, T, Arg>(
     NotifierT Function() create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
@@ -521,6 +521,114 @@ class AutoDisposeAsyncNotifierProviderFamilyBuilder {
     Duration? disposeDelay,
   }) {
     return AutoDisposeAsyncNotifierProviderFamily<NotifierT, T, Arg>(
+      create,
+      name: name,
+      dependencies: dependencies,
+      cacheTime: cacheTime,
+      disposeDelay: disposeDelay,
+    );
+  }
+}
+
+/// Builds a [NotifierProvider].
+class NotifierProviderBuilder {
+  /// Builds a [NotifierProvider].
+  const NotifierProviderBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  NotifierProvider<NotifierT, State>
+      call<NotifierT extends Notifier<State>, State>(
+    NotifierT Function() create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) {
+    return NotifierProvider<NotifierT, State>(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
+  }
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeNotifierProviderBuilder get autoDispose {
+    return const AutoDisposeNotifierProviderBuilder();
+  }
+
+  /// {@macro riverpod.family}
+  NotifierProviderFamilyBuilder get family {
+    return const NotifierProviderFamilyBuilder();
+  }
+}
+
+/// Builds a [NotifierProviderFamily].
+class NotifierProviderFamilyBuilder {
+  /// Builds a [NotifierProviderFamily].
+  const NotifierProviderFamilyBuilder();
+
+  /// {@macro riverpod.family}
+  NotifierProviderFamily<NotifierT, State, Arg>
+      call<NotifierT extends FamilyNotifier<State, Arg>, State, Arg>(
+    NotifierT Function() create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) {
+    return NotifierProviderFamily<NotifierT, State, Arg>(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
+  }
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeNotifierProviderFamilyBuilder get autoDispose {
+    return const AutoDisposeNotifierProviderFamilyBuilder();
+  }
+}
+
+/// Builds a [AutoDisposeNotifierProvider].
+class AutoDisposeNotifierProviderBuilder {
+  /// Builds a [AutoDisposeNotifierProvider].
+  const AutoDisposeNotifierProviderBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeNotifierProvider<NotifierT, State>
+      call<NotifierT extends AutoDisposeNotifier<State>, State>(
+    NotifierT Function() create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+    Duration? cacheTime,
+    Duration? disposeDelay,
+  }) {
+    return AutoDisposeNotifierProvider<NotifierT, State>(
+      create,
+      name: name,
+      dependencies: dependencies,
+      cacheTime: cacheTime,
+      disposeDelay: disposeDelay,
+    );
+  }
+
+  /// {@macro riverpod.family}
+  AutoDisposeNotifierProviderFamilyBuilder get family {
+    return const AutoDisposeNotifierProviderFamilyBuilder();
+  }
+}
+
+/// Builds a [AutoDisposeNotifierProviderFamily].
+class AutoDisposeNotifierProviderFamilyBuilder {
+  /// Builds a [AutoDisposeNotifierProviderFamily].
+  const AutoDisposeNotifierProviderFamilyBuilder();
+
+  /// {@macro riverpod.family}
+  AutoDisposeNotifierProviderFamily<NotifierT, State, Arg>
+      call<NotifierT extends AutoDisposeFamilyNotifier<State, Arg>, State, Arg>(
+    NotifierT Function() create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+    Duration? cacheTime,
+    Duration? disposeDelay,
+  }) {
+    return AutoDisposeNotifierProviderFamily<NotifierT, State, Arg>(
       create,
       name: name,
       dependencies: dependencies,
@@ -658,7 +766,7 @@ class FamilyBuilder {
         'Duration? cacheTime',
         'Duration? disposeDelay',
       ],
-    ].join(',');
+    ].map((e) => '$e,').join();
     final providerParams = [
       'create',
       'name: name',
@@ -667,7 +775,7 @@ class FamilyBuilder {
         'cacheTime: cacheTime',
         'disposeDelay: disposeDelay',
       ],
-    ].join(',');
+    ].map((e) => '$e,').join();
     return '''
 /// Builds a [${configs.providerName}].
 class ${configs.providerName}Builder {
@@ -700,7 +808,7 @@ class ProviderBuilder {
         'Duration? cacheTime',
         'Duration? disposeDelay',
       ],
-    ].join(',');
+    ].map((e) => '$e,').join();
     final providerParams = [
       'create',
       'name: name',
@@ -709,7 +817,7 @@ class ProviderBuilder {
         'cacheTime: cacheTime',
         'disposeDelay: disposeDelay',
       ],
-    ].join(',');
+    ].map((e) => '$e,').join();
 
     return '''
 /// Builds a [${configs.providerName}].

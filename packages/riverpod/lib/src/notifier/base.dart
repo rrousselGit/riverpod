@@ -35,11 +35,11 @@ class TestNotifierProvider<NotifierT extends NotifierBase<T>, T>
     super.dependencies,
   }) : super(cacheTime: null, disposeDelay: null);
 
-  // /// {@macro riverpod.autoDispose}
-  // static const autoDispose = AutoDisposeNotifierProviderBuilder();
+  /// {@macro riverpod.autoDispose}
+  static const autoDispose = AutoDisposeNotifierProviderBuilder();
 
-  // /// {@macro riverpod.family}
-  // static const family = NotifierProviderFamilyBuilder();
+  /// {@macro riverpod.family}
+  static const family = NotifierProviderFamilyBuilder();
 
   @override
   NotifierProviderElement<NotifierT, T> createElement() {

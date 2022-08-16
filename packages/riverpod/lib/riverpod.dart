@@ -5,7 +5,17 @@ export 'src/async_notifier.dart'
         AsyncNotifier,
         AsyncNotifierProvider,
         AsyncNotifierProviderElement,
-        AsyncNotifierProviderRef;
+        AsyncNotifierProviderRef,
+        AsyncNotifierProviderFamily,
+        AutoDisposeAsyncNotifier,
+        AutoDisposeAsyncNotifierProviderElement,
+        AutoDisposeAsyncNotifierProviderFamily,
+        AutoDisposeAsyncNotifierProviderRef,
+        AutoDisposeFamilyAsyncNotifier,
+        FamilyAsyncNotifier,
+        AsyncNotifierFamilyProvider,
+        AutoDisposeAsyncNotifierProvider,
+        AutoDisposeFamilyAsyncNotifierProvider;
 
 export 'src/common.dart'
     show AsyncValue, AsyncData, AsyncLoading, AsyncError, AsyncValueX;
@@ -53,7 +63,17 @@ export 'src/notifier.dart'
         Notifier,
         NotifierProvider,
         NotifierProviderElement,
-        NotifierProviderRef;
+        NotifierProviderRef,
+        AutoDisposeFamilyNotifier,
+        AutoDisposeNotifier,
+        AutoDisposeNotifierProviderElement,
+        AutoDisposeNotifierProviderFamily,
+        AutoDisposeNotifierProviderRef,
+        FamilyNotifier,
+        NotifierProviderFamily,
+        AutoDisposeFamilyNotifierProvider,
+        AutoDisposeNotifierProvider,
+        NotifierFamilyProvider;
 
 export 'src/provider.dart'
     show

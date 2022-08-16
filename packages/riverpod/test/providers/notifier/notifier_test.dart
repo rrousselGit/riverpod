@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_types_on_closure_parameters
+
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart' hide ErrorListener;
@@ -338,6 +340,144 @@ void main() {
       test('does not rebuild state if only notifier is listened', () {});
     });
   }
+
+  group('modifiers', () {
+    void canBeAssignedToAlwaysAliveRefreshable<T>(
+      AlwaysAliveRefreshable<T> provider,
+    ) {}
+
+    void canBeAssignedToRefreshable<T>(
+      Refreshable<T> provider,
+    ) {}
+
+    void canBeAssignedToAlwaysAliveListenable<T>(
+      AlwaysAliveProviderListenable<T> provider,
+    ) {}
+
+    void canBeAssignedToProviderListenable<T>(
+      ProviderListenable<T> provider,
+    ) {}
+
+    // TODO use package:expect_error to test that commented lined are not compiling
+
+    test('provider', () {
+      final provider = NotifierProvider<TestNotifier<int>, int>(
+        () => TestNotifier((ref) => 0),
+      );
+
+      provider.select((int value) => 0);
+
+      canBeAssignedToProviderListenable<int>(provider);
+      canBeAssignedToAlwaysAliveListenable<int>(provider);
+      canBeAssignedToRefreshable<int>(provider);
+      canBeAssignedToAlwaysAliveRefreshable<int>(provider);
+
+      canBeAssignedToProviderListenable<Notifier<int>>(provider.notifier);
+      canBeAssignedToAlwaysAliveListenable<Notifier<int>>(
+        provider.notifier,
+      );
+      canBeAssignedToRefreshable<Notifier<int>>(provider.notifier);
+      canBeAssignedToAlwaysAliveRefreshable<Notifier<int>>(
+        provider.notifier,
+      );
+    });
+
+    test('autoDispose', () {
+      final autoDispose =
+          NotifierProvider.autoDispose<AutoDisposeTestNotifier<int>, int>(
+        () => AutoDisposeTestNotifier((ref) => 0),
+      );
+
+      autoDispose.select((int value) => 0);
+
+      canBeAssignedToProviderListenable<int>(autoDispose);
+      // canBeAssignedToAlwaysAliveListenable<int>(autoDispose);
+      canBeAssignedToRefreshable<int>(autoDispose);
+      // canBeAssignedToAlwaysAliveRefreshable<int>(autoDispose);
+
+      canBeAssignedToProviderListenable<AutoDisposeNotifier<int>>(
+        autoDispose.notifier,
+      );
+      // canBeAssignedToAlwaysAliveListenable<AutoDisposeNotifier<int>>(
+      //   autoDispose.notifier,
+      // );
+      canBeAssignedToRefreshable<AutoDisposeNotifier<int>>(
+        autoDispose.notifier,
+      );
+      // canBeAssignedToAlwaysAliveRefreshable<AutoDisposeNotifier<int>>(
+      //   autoDispose.notifier,
+      // );
+    });
+
+    test('family', () {
+      final family =
+          NotifierProvider.family<TestNotifierFamily<String>, String, int>(
+        () => TestNotifierFamily((ref) => '0'),
+      );
+
+      family(0).select((String value) => 0);
+
+      canBeAssignedToProviderListenable<String>(family(0));
+      canBeAssignedToAlwaysAliveListenable<String>(family(0));
+      canBeAssignedToRefreshable<String>(family(0));
+      canBeAssignedToAlwaysAliveRefreshable<String>(family(0));
+
+      canBeAssignedToProviderListenable<FamilyNotifier<String, int>>(
+        family(0).notifier,
+      );
+      canBeAssignedToAlwaysAliveListenable<FamilyNotifier<String, int>>(
+        family(0).notifier,
+      );
+      canBeAssignedToRefreshable<FamilyNotifier<String, int>>(
+        family(0).notifier,
+      );
+      canBeAssignedToAlwaysAliveRefreshable<FamilyNotifier<String, int>>(
+        family(0).notifier,
+      );
+    });
+
+    test('autoDisposeFamily', () {
+      expect(
+        NotifierProvider.autoDispose.family,
+        same(NotifierProvider.family.autoDispose),
+      );
+
+      final autoDisposeFamily = NotifierProvider.autoDispose
+          .family<AutoDisposeTestNotifierFamily<String>, String, int>(
+        () => AutoDisposeTestNotifierFamily((ref) => '0'),
+      );
+
+      autoDisposeFamily(0).select((String value) => 0);
+
+      canBeAssignedToProviderListenable<String>(
+        autoDisposeFamily(0),
+      );
+      // canBeAssignedToAlwaysAliveListenable<String>(
+      //   autoDisposeFamily(0),
+      // );
+      canBeAssignedToRefreshable<String>(
+        autoDisposeFamily(0),
+      );
+      // canBeAssignedToAlwaysAliveRefreshable<String>(
+      //   autoDisposeFamily(0),
+      // );
+
+      canBeAssignedToProviderListenable<AutoDisposeFamilyNotifier<String, int>>(
+        autoDisposeFamily(0).notifier,
+      );
+      // canBeAssignedToAlwaysAliveListenable<
+      //     AutoDisposeFamilyNotifier<String, int>>(
+      //   autoDisposeFamily(0).notifier,
+      // );
+      canBeAssignedToRefreshable<AutoDisposeFamilyNotifier<String, int>>(
+        autoDisposeFamily(0).notifier,
+      );
+      // canBeAssignedToAlwaysAliveRefreshable<
+      //     AutoDisposeFamilyNotifier<String, int>>(
+      //   autoDisposeFamily(0).notifier,
+      // );
+    });
+  });
 }
 
 @immutable
