@@ -88,7 +88,7 @@ final todoListProvider = StateNotifierProvider((ref) => TodoList());
 これで UI 側にこの `filteredTodoListProvider` を監視させることで、その値の変化に応じて Todo リストを表示することができるようになりました。
 フィルタの種類もしくは Todo リストの内容が変われば、UI も自動的に再構築されます。
 
-この手法を使って作成された Todo アプリのサンプルコードは[こちら](https://github.com/rrousselGit/river_pod/tree/master/examples/todos)でご覧いただけます。
+この手法を使って作成された Todo アプリのサンプルコードは[こちら](https://github.com/rrousselGit/riverpod/tree/master/examples/todos)でご覧いただけます。
 
 :::info
 依存するプロバイダの値が変わると自動で値が再評価されるプロバイダは [Provider] だけではありません。

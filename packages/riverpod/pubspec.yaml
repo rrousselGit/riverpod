@@ -4,7 +4,7 @@ description: >
   and testable.
 version: 2.0.0-dev.9
 homepage: https://riverpod.dev
-repository: https://github.com/rrousselGit/river_pod
+repository: https://github.com/rrousselGit/riverpod
 
 environment:
   sdk: ">=2.17.0 <3.0.0"

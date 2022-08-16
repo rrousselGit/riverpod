@@ -1448,7 +1448,7 @@ void main() {
   test(
       'onDispose is triggered only once if within autoDispose unmount, a dependency chnaged',
       () async {
-    // regression test for https://github.com/rrousselGit/river_pod/issues/1064
+    // regression test for https://github.com/rrousselGit/riverpod/issues/1064
     final container = createContainer();
     final onDispose = OnDisposeMock();
     final dep = StateProvider((ref) => 0);

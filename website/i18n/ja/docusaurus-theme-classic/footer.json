@@ -21,7 +21,7 @@
   },
   "link.item.label.GitHub": {
     "message": "GitHub",
-    "description": "The label of footer link with label=GitHub linking to https://github.com/rrousselgit/river_pod"
+    "description": "The label of footer link with label=GitHub linking to https://github.com/rrousselgit/riverpod"
   },
   "link.item.label.Code of conduct": {
     "message": "行動規範",
