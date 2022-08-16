@@ -12,6 +12,7 @@ part of '../framework.dart';
 ///
 /// - [Ref], which exposes the methods to read other providers.
 /// - [Provider], a provider that uses [Create] to expose an immutable value.
+@internal
 typedef Create<T, R extends Ref> = T Function(R ref);
 
 /// A base class for _all_ providers.

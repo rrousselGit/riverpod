@@ -33,7 +33,11 @@ export 'src/framework.dart'
         AutoDisposeNotifierFamilyBase,
         ProviderOverride,
         AutoDisposeFamilyBase,
-        AlwaysAliveAsyncSelector;
+        AlwaysAliveAsyncSelector,
+        handleFireImmediately,
+        Create,
+        Node,
+        ProviderElementProxy;
 
 export 'src/future_provider.dart'
     show
