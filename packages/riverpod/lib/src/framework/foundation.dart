@@ -3,6 +3,9 @@ part of '../framework.dart';
 /// A common interface shared by [ProviderBase] and [Family]
 @sealed
 abstract class ProviderOrFamily {
+  /// A common interface shared by [ProviderBase] and [Family]
+  const ProviderOrFamily();
+
   /// The list of providers that this provider potentially depends on.
   ///
   /// Specifying this list will tell Riverpod to automatically scope this provider
@@ -15,8 +18,7 @@ abstract class ProviderOrFamily {
   Family? get from;
 
   /// All the dependencies of a provider and their dependencies too.
-  late final allTransitiveDependencies =
-      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
+  List<ProviderOrFamily>? get allTransitiveDependencies;
 }
 
 List<ProviderOrFamily> _allTransitiveDependencies(

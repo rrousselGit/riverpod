@@ -75,6 +75,10 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   final Object? argument;
 
   @override
+  late final List<ProviderOrFamily>? allTransitiveDependencies =
+      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
+
+  @override
   ProviderSubscription<State> addListener(
     Node node,
     void Function(State? previous, State next) listener, {
