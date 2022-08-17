@@ -57,22 +57,47 @@ void main() {
   final y = container.read(PublicClassProvider);
 }
 
-Provider<String> FamilyExample(
-  int first, {
-  String? second,
-  required double third,
-  bool forth = true,
-  List<String>? fifth,
-}) {
-  return _$FamilyExampleProvider(
-    first,
-    second: second,
-    third: third,
-    forth: forth,
-    fifth: fifth,
-  );
-}
+const FamilyExample = $FamilyExampleFamily();
 
+// ignore: subtype_of_sealed_class
+class $FamilyExampleFamily extends Family<String> {
+  const $FamilyExampleFamily({
+    required super.dependencies,
+    required super.cacheTime,
+    required super.disposeDelay,
+  }) : super(
+          name: 'FamilyExample',
+        );
+
+  Provider<String> call(
+    int first, {
+    String? second,
+    required double third,
+    bool forth = true,
+    List<String>? fifth,
+  }) {
+    return _$FamilyExampleProvider(
+      first,
+      second: second,
+      third: third,
+      forth: forth,
+      fifth: fifth,
+    );
+  }
+
+  @override
+  ProviderBase<String> getProviderOverride(
+    covariant _$FamilyExampleProvider provider,
+  ) {
+    return call(
+      provider.first,
+      second: provider.second,
+      third: provider.third,
+      forth: provider.forth,
+      fifth: provider.fifth,
+    );
+  }
+}
 
 // ignore: subtype_of_sealed_class, invalid_use_of_internal_member
 class _$FamilyExampleProvider extends Provider<String> {
@@ -96,7 +121,7 @@ class _$FamilyExampleProvider extends Provider<String> {
             forth: forth,
             fifth: fifth,
           ),
-          from: 
+          from: FamilyExample,
         );
 
   final int first;
