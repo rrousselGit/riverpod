@@ -16,7 +16,7 @@ abstract class ProviderRef<State> implements Ref<State> {
 
 /// {@macro riverpod.provider}
 @sealed
-class Provider<State> extends _ProviderBase<State>
+class Provider<State> extends InternalProvider<State>
     with AlwaysAliveProviderBase<State> {
   /// {@macro riverpod.provider}
   Provider(
@@ -265,7 +265,7 @@ class ProviderElement<State> extends ProviderElementBase<State>
 
   @override
   void create({required bool didChangeDependency}) {
-    final provider = this.provider as _ProviderBase<State>;
+    final provider = this.provider as InternalProvider<State>;
 
     setState(provider._create(this));
   }

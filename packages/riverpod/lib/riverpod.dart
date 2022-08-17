@@ -42,7 +42,7 @@ export 'src/future_provider.dart';
 //         TestFamilyNotifierProvider,
 //         TestNotifierProvider;
 
-export 'src/provider.dart';
+export 'src/provider.dart' hide InternalProvider;
 export 'src/state_controller.dart';
 export 'src/state_notifier_provider.dart';
 export 'src/state_provider.dart';
