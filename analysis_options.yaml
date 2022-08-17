@@ -1,8 +1,8 @@
 include: all_lint_rules.yaml
 analyzer:
-  exclude:
-    - "**/*.g.dart"
-    - "**/*.freezed.dart"
+  # exclude:
+  #   - "**/*.g.dart"
+  #   - "**/*.freezed.dart"
   strong-mode:
     implicit-casts: false
     implicit-dynamic: false

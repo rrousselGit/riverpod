@@ -51,11 +51,17 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Provider> {
     final providerName = _providerNameFor(element);
 
     return Data.function(
+      rawName: element.name,
       isScoped: element.isExternal,
+      // functional providers have a "ref" has paramter, so families have at
+      // least 2 parameters.
+      isFamily: element.parameters.length > 1,
       isAsync: _isBuildAsync(element),
       functionName: element.name,
       providerName: providerName,
       refName: _refNameFor(element),
+      // Remove "ref" from the parameters
+      parameters: element.parameters.skip(1).toList(),
       valueDisplayType:
           _getUserModelType(element).getDisplayString(withNullability: true),
     );
@@ -116,10 +122,14 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Provider> {
     );
 
     return Data.notifier(
-      isScoped: buildMethod.isAbstract,
-      isAsync: _isBuildAsync(buildMethod),
+      rawName: element.name,
       notifierName: element.name,
       providerName: providerName,
+      isScoped: buildMethod.isAbstract,
+      // No "ref" on build, therefore any parameter = family
+      isFamily: buildMethod.parameters.isNotEmpty,
+      isAsync: _isBuildAsync(buildMethod),
+      parameters: buildMethod.parameters,
       refName: _refNameFor(element),
       valueDisplayType: _getUserModelType(buildMethod)
           .getDisplayString(withNullability: true),

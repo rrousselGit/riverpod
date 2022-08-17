@@ -11,7 +11,7 @@ String _publicProvider(_PublicProviderRef ref) {
 
 @provider
 String _familyExample(
-  _FamilyRef ref,
+  _FamilyExampleRef ref,
   int first, {
   String? second,
   required double third,
@@ -57,102 +57,6 @@ void main() {
   final y = container.read(PublicClassProvider);
 }
 
-const FamilyExample = $FamilyExampleFamily();
-
-// ignore: subtype_of_sealed_class
-class $FamilyExampleFamily extends Family<String> {
-  const $FamilyExampleFamily({
-    required super.dependencies,
-    required super.cacheTime,
-    required super.disposeDelay,
-  }) : super(
-          name: 'FamilyExample',
-        );
-
-  Provider<String> call(
-    int first, {
-    String? second,
-    required double third,
-    bool forth = true,
-    List<String>? fifth,
-  }) {
-    return _$FamilyExampleProvider(
-      first,
-      second: second,
-      third: third,
-      forth: forth,
-      fifth: fifth,
-    );
-  }
-
-  @override
-  ProviderBase<String> getProviderOverride(
-    covariant _$FamilyExampleProvider provider,
-  ) {
-    return call(
-      provider.first,
-      second: provider.second,
-      third: provider.third,
-      forth: provider.forth,
-      fifth: provider.fifth,
-    );
-  }
-}
-
-// ignore: subtype_of_sealed_class, invalid_use_of_internal_member
-class _$FamilyExampleProvider extends Provider<String> {
-  _$FamilyExampleProvider(
-    this.first, {
-    // required super.dependencies,
-    // required super.name,
-    // required super.argument,
-    // required super.cacheTime,
-    // required super.disposeDelay,
-    this.second,
-    required this.third,
-    this.forth = true,
-    this.fifth,
-  }) : super(
-          (ref) => _familyExample(
-            ref,
-            first,
-            second: second,
-            third: third,
-            forth: forth,
-            fifth: fifth,
-          ),
-          from: FamilyExample,
-        );
-
-  final int first;
-  final String? second;
-  final double third;
-  final bool forth;
-  final List<String>? fifth;
-
-  @override
-  bool operator ==(Object other) {
-    return other is _$FamilyExampleProvider &&
-        other.first == first &&
-        other.second == second &&
-        other.third == third &&
-        other.forth == forth &&
-        other.fifth == fifth;
-  }
-
-  @override
-  int get hashCode {
-    var hash = SystemHash.combine(0, runtimeType.hashCode);
-    hash = SystemHash.combine(hash, first.hashCode);
-    hash = SystemHash.combine(hash, second.hashCode);
-    hash = SystemHash.combine(hash, third.hashCode);
-    hash = SystemHash.combine(hash, forth.hashCode);
-    hash = SystemHash.combine(hash, fifth.hashCode);
-
-    return SystemHash.finish(hash);
-  }
-}
-
 @provider
 class _MyNotifierFamily extends _$MyNotifierFamily {
   @override
@@ -164,104 +68,6 @@ class _MyNotifierFamily extends _$MyNotifierFamily {
     List<String>? fifth,
   }) {
     return 'Hello world';
-  }
-}
-
-abstract class _$MyNotifierFamily extends NotifierBase<String> {
-  late final int first;
-  late final String? second;
-  late final double third;
-  late final bool forth;
-  late final List<String>? fifth;
-
-  @override
-  String build(
-    int first, {
-    String? second,
-    required double third,
-    bool forth = true,
-    List<String>? fifth,
-  });
-}
-
-NotifierProvider<_MyNotifierFamily, String> MyNotifierFamily(
-  int first, {
-  String? second,
-  required double third,
-  bool forth = true,
-  List<String>? fifth,
-}) {
-  return _$MyNotifierFamilyProvider(
-    first,
-    second: second,
-    third: third,
-    forth: forth,
-    fifth: fifth,
-  );
-}
-
-// ignore: subtype_of_sealed_class, invalid_use_of_internal_member
-class _$MyNotifierFamilyProvider
-    extends NotifierProvider<_MyNotifierFamily, String> {
-  _$MyNotifierFamilyProvider(
-    this.first, {
-    // super.dependencies,
-    // super.name,
-    // super.from,
-    // super.argument,
-    // super.cacheTime,
-    // super.disposeDelay,
-    required this.second,
-    required this.third,
-    required this.forth,
-    required this.fifth,
-  }) : super(
-          () => _MyNotifierFamily()
-            ..first = first
-            ..second = second
-            ..third = third
-            ..forth = forth
-            ..fifth = fifth,
-        );
-
-  final int first;
-  final String? second;
-  final double third;
-  final bool forth;
-  final List<String>? fifth;
-
-  @override
-  bool operator ==(Object other) {
-    return other is _$MyNotifierFamilyProvider &&
-        other.first == first &&
-        other.second == second &&
-        other.third == third &&
-        other.forth == forth &&
-        other.fifth == fifth;
-  }
-
-  @override
-  int get hashCode {
-    var hash = SystemHash.combine(0, runtimeType.hashCode);
-    hash = SystemHash.combine(hash, first.hashCode);
-    hash = SystemHash.combine(hash, second.hashCode);
-    hash = SystemHash.combine(hash, third.hashCode);
-    hash = SystemHash.combine(hash, forth.hashCode);
-    hash = SystemHash.combine(hash, fifth.hashCode);
-
-    return SystemHash.finish(hash);
-  }
-
-  String _runNotifierBuild(
-    covariant _MyNotifierFamily notifier,
-  ) {
-    return notifier.build(
-      first,
-      second: second,
-      third: third,
-      forth: forth,
-      fifth: fifth,
-    );
   }
 }
 
