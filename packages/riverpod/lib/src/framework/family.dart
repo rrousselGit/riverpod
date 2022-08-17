@@ -8,8 +8,8 @@ typedef FamilyCreate<T, R extends Ref, Arg> = T Function(
 );
 
 /// A base class for all families
-abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
-    extends ProviderOrFamily implements FamilyOverride<Arg> {
+abstract class Family<State> extends ProviderOrFamily
+    implements FamilyOverride<State> {
   /// A base class for all families
   Family({
     required this.name,
@@ -32,16 +32,14 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   final String? name;
 
   @override
-  Family<dynamic, dynamic, ProviderBase>? get from => null;
+  Family<Object?>? get from => null;
 
   @override
-  Family<Object?, Arg, ProviderBase<Object?>> get overriddenFamily => this;
+  Family<State> get overriddenFamily => this;
+}
 
-  @override
-  void setupOverride(Arg argument, SetupOverride setup) {
-    setup(origin: call(argument), override: call(argument));
-  }
-
+mixin _FamilyMixin<State, Arg, FamilyProvider extends ProviderBase<State>>
+    on Family<State> {
   /// Create a provider from an external value.
   ///
   /// That external value should be immutable and preferably override `==`/`hashCode`.
@@ -54,9 +52,13 @@ abstract class Family<State, Arg, FamilyProvider extends ProviderBase<State>>
   Override overrideWithProvider(
     FamilyProvider Function(Arg argument) override,
   ) {
-    return _FamilyOverride<Arg>(this, (arg, setup) {
-      setup(origin: call(arg), override: override(arg));
-    });
+    return _FamilyOverride<State, Arg, FamilyProvider>(this, override);
+  }
+
+  @visibleForOverriding
+  @override
+  ProviderBase<State> getProviderOverride(ProviderBase<State> provider) {
+    return call(provider.argument as Arg);
   }
 }
 
@@ -73,35 +75,29 @@ typedef SetupFamilyOverride<Arg> = void Function(
 /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
 /// to override the behavior of a "family" for part of the application.
 @internal
-abstract class FamilyOverride<Arg> implements Override {
-  /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
-  /// to override the behavior of a "family" for part of the application.
-  // coverage:ignore-start
-  factory FamilyOverride(
-    Family<Object?, Arg, ProviderBase<Object?>> overriddenFamily,
-    void Function(Arg argument, SetupOverride setup) setup,
-  ) = _FamilyOverride<Arg>;
-  // coverage:ignore-end
-
+abstract class FamilyOverride<State> implements Override {
   /// The family that was overridden.
-  Family<Object?, Arg, ProviderBase<Object?>> get overriddenFamily;
+  Family<State> get overriddenFamily;
 
-  /// Allows a family to override all the different providers associated with
-  /// an argument.
-  void setupOverride(Arg argument, SetupOverride setup);
+  /// Obtains the new behavior for a provider associated to the overridden family.
+  @visibleForOverriding
+  ProviderBase<State> getProviderOverride(ProviderBase<State> provider);
 }
 
-class _FamilyOverride<Arg> implements FamilyOverride<Arg> {
-  _FamilyOverride(this.overriddenFamily, this._setup);
+class _FamilyOverride<State, Arg, FamilyProvider extends ProviderBase<State>>
+    implements FamilyOverride<State> {
+  _FamilyOverride(this.overriddenFamily, this._newCreate);
+
+  final FamilyProvider Function(Arg arg) _newCreate;
 
   @override
-  final Family<Object?, Arg, ProviderBase<Object?>> overriddenFamily;
+  final _FamilyMixin<State, Arg, FamilyProvider> overriddenFamily;
 
-  final void Function(Arg argument, SetupOverride setup) _setup;
-
+  @visibleForOverriding
   @override
-  void setupOverride(Arg argument, SetupOverride setup) {
-    _setup(argument, setup);
+  ProviderBase<State> getProviderOverride(ProviderBase<State> provider) {
+    final arg = provider.argument as Arg;
+    return _newCreate(arg);
   }
 }
 
@@ -111,7 +107,8 @@ class _FamilyOverride<Arg> implements FamilyOverride<Arg> {
 /// This API is not meant for public consumption.
 @internal
 class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
-    ProviderT extends ProviderBase<R>> extends Family<R, Arg, ProviderT> {
+        ProviderT extends ProviderBase<R>> extends Family<R>
+    with _FamilyMixin<R, Arg, ProviderT> {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
   ///
@@ -161,7 +158,8 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
 
 @internal
 class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
-    ProviderT extends ProviderBase<R>> extends Family<R, Arg, ProviderT> {
+        ProviderT extends ProviderBase<R>> extends Family<R>
+    with _FamilyMixin<R, Arg, ProviderT> {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
   ///
@@ -215,7 +213,8 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
 /// This API is not meant for public consumption.
 @internal
 class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
-    ProviderT extends ProviderBase<R>> extends Family<R, Arg, ProviderT> {
+        ProviderT extends ProviderBase<R>> extends Family<R>
+    with _FamilyMixin<R, Arg, ProviderT> {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
   ///
@@ -263,7 +262,8 @@ class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
 /// This API is not meant for public consumption.
 @internal
 class NotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
-    ProviderT extends ProviderBase<R>> extends Family<R, Arg, ProviderT> {
+        ProviderT extends ProviderBase<R>> extends Family<R>
+    with _FamilyMixin<R, Arg, ProviderT> {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
   ///

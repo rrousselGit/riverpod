@@ -505,10 +505,10 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
             );
           }
 
-          familyOverrideRef.override.setupOverride(
-            provider.argument,
-            setupOverride,
-          );
+          final providerOverride =
+              familyOverrideRef.override.getProviderOverride(provider);
+
+          setupOverride(origin: provider, override: providerOverride);
 
           // if setupOverride overrode the provider, it was already initialized
           // in the code above. Otherwise we initialize it as if it was not overridden
