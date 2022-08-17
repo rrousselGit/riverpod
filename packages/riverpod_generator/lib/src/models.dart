@@ -1,17 +1,8 @@
-enum ProviderType {
-  stateNotifierProvider,
-  provider,
-  futureProvider,
-  streamProvider,
-  changeNotifierProvider,
-}
-
 class Data {
   Data.function({
     required this.functionName,
     required this.providerName,
     required this.refName,
-    required this.providerType,
     required this.valueDisplayType,
     required this.isAsync,
     required this.isScoped,
@@ -21,7 +12,6 @@ class Data {
     required this.notifierName,
     required this.providerName,
     required this.refName,
-    required this.providerType,
     required this.valueDisplayType,
     required this.isAsync,
     required this.isScoped,
@@ -33,8 +23,22 @@ class Data {
   final String? notifierName;
   final String providerName;
   final String refName;
-  final ProviderType providerType;
   final String valueDisplayType;
+
+  String get notifierType {
+    assert(functionName != null, 'functions do not have a notifier');
+    return isAsync ? 'AsyncNotifier' : 'Notifier';
+  }
+
+  String get providerType {
+    if (functionName != null) {
+      return isAsync ? 'FutureProvider' : 'Provider';
+    } else {
+      return isAsync ? 'AsyncNotifierProvider' : 'NotifierProvider';
+    }
+  }
+
+  String get refType => '${providerType}Ref';
 }
 
 class GlobalData {

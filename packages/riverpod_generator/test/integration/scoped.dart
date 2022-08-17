@@ -1,22 +1,23 @@
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod/src/internals.dart';
 
 part 'scoped.g.dart';
 
 @provider
-external Future<void> _scopedProvider(Ref<String> ref);
+external Future<String> _scopedProvider(_ScopedProviderRef ref);
 
 @provider
 class _ScopedClass extends _$ScopedClass {
   @override
-  Future<void> build(Ref<String> ref);
+  Future<String> build();
 }
 
 @provider
-external Future<void> _asyncScopedProvider(Ref<String> ref);
+external Future<void> _asyncScopedProvider(_AsyncScopedProviderRef ref);
 
 @provider
 class _AsyncScopedClass extends _$AsyncScopedClass {
   @override
-  Future<void> build(Ref<String> ref);
+  Future<String> build();
 }

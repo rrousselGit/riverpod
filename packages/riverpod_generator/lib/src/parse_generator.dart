@@ -12,7 +12,6 @@ abstract class ParserGenerator<GlobalData, Data, Annotation>
     LibraryReader oldLibrary,
     BuildStep buildStep,
   ) async {
-    print('het');
     final library = await buildStep.resolver.libraryFor(
       await buildStep.resolver.assetIdForElement(oldLibrary.element),
     );
@@ -25,7 +24,6 @@ abstract class ParserGenerator<GlobalData, Data, Annotation>
 
     for (final element
         in library.topLevelElements.where(typeChecker.hasAnnotationOf)) {
-      print('foo');
       if (!hasGeneratedGlobalCode) {
         hasGeneratedGlobalCode = true;
         generateForAll(globalData)
