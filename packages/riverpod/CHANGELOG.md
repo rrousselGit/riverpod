@@ -2,6 +2,7 @@
 
 **Breaking changes**:
 
+- `Family` now has a single generic parameter instead of 3.
 - Using `overrideWithProvider`, it is no-longer possible to override a provider
   with a different type of provider (such as overriding `FutureProvider` with a `StreamProvider`).
 - `AsyncError.stackTrace` is now a required positional parameter and non-nullable
