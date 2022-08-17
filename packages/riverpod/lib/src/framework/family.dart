@@ -11,25 +11,20 @@ typedef FamilyCreate<T, R extends Ref, Arg> = T Function(
 abstract class Family<State> extends ProviderOrFamily
     implements FamilyOverride<State> {
   /// A base class for all families
-  Family({
-    required this.name,
-    required this.dependencies,
-    required this.cacheTime,
-    required this.disposeDelay,
-  });
+  const Family();
 
   /// {@macro riverpod.cache_time}
-  final Duration? cacheTime;
+  Duration? get cacheTime;
 
   /// {@macro riverpod.dispose_delay}
-  final Duration? disposeDelay;
+  Duration? get disposeDelay;
 
   @override
-  final List<ProviderOrFamily>? dependencies;
+  List<ProviderOrFamily>? get dependencies;
 
   /// The family name.
   @protected
-  final String? name;
+  String? get name;
 
   @override
   Family<Object?>? get from => null;
@@ -123,13 +118,9 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
       List<ProviderOrFamily>? dependencies,
     })
         providerFactory,
-    required super.name,
-    required super.dependencies,
-  })  : _providerFactory = providerFactory,
-        super(
-          cacheTime: null,
-          disposeDelay: null,
-        );
+    required this.name,
+    required this.dependencies,
+  }) : _providerFactory = providerFactory;
 
   final ProviderT Function(
     Create<Created, RefT> create, {
@@ -149,6 +140,22 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
         argument: argument,
         dependencies: dependencies,
       );
+
+  @override
+  final String? name;
+
+  @override
+  Duration? get disposeDelay => null;
+
+  @override
+  Duration? get cacheTime => null;
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
+
+  @override
+  late final List<ProviderOrFamily>? allTransitiveDependencies =
+      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
 }
 
 /// A base implementation for [Family], used by the various providers to
@@ -176,10 +183,10 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
       Duration? disposeDelay,
     })
         providerFactory,
-    required super.name,
-    required super.dependencies,
-    required super.cacheTime,
-    required super.disposeDelay,
+    required this.name,
+    required this.dependencies,
+    required this.cacheTime,
+    required this.disposeDelay,
   }) : _providerFactory = providerFactory;
 
   final ProviderT Function(
@@ -204,6 +211,22 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
         cacheTime: cacheTime,
         disposeDelay: disposeDelay,
       );
+
+  @override
+  final String? name;
+
+  @override
+  final Duration? disposeDelay;
+
+  @override
+  final Duration? cacheTime;
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
+
+  @override
+  late final List<ProviderOrFamily>? allTransitiveDependencies =
+      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
 }
 
 /// A base implementation for [Family] specific to autoDispose `Notifier`-based providers.
@@ -229,10 +252,10 @@ class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
       List<ProviderOrFamily>? dependencies,
     })
         providerFactory,
-    required super.name,
-    required super.dependencies,
-    required super.cacheTime,
-    required super.disposeDelay,
+    required this.name,
+    required this.dependencies,
+    required this.cacheTime,
+    required this.disposeDelay,
   }) : _providerFactory = providerFactory;
 
   final ProviderT Function(
@@ -253,6 +276,22 @@ class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
         argument: argument,
         dependencies: dependencies,
       );
+
+  @override
+  final String? name;
+
+  @override
+  final Duration? disposeDelay;
+
+  @override
+  final Duration? cacheTime;
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
+
+  @override
+  late final List<ProviderOrFamily>? allTransitiveDependencies =
+      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
 }
 
 /// A base implementation for [Family] specific to `Notifier`-based providers.
@@ -278,13 +317,9 @@ class NotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
       List<ProviderOrFamily>? dependencies,
     })
         providerFactory,
-    required super.name,
-    required super.dependencies,
-  })  : _providerFactory = providerFactory,
-        super(
-          cacheTime: null,
-          disposeDelay: null,
-        );
+    required this.name,
+    required this.dependencies,
+  }) : _providerFactory = providerFactory;
 
   final ProviderT Function(
     NotifierT Function() create, {
@@ -304,4 +339,20 @@ class NotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
         argument: argument,
         dependencies: dependencies,
       );
+
+  @override
+  final String? name;
+
+  @override
+  Duration? get disposeDelay => null;
+
+  @override
+  Duration? get cacheTime => null;
+
+  @override
+  final List<ProviderOrFamily>? dependencies;
+
+  @override
+  late final List<ProviderOrFamily>? allTransitiveDependencies =
+      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
 }
