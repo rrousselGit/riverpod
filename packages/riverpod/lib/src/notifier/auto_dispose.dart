@@ -6,13 +6,13 @@ part of '../notifier.dart';
 @internal
 abstract class BuildlessAutoDisposeNotifier<State> extends NotifierBase<State> {
   @override
-  late final AutoDisposeNotifierProviderElement<AutoDisposeNotifier<State>,
-      State> _element;
+  late final AutoDisposeNotifierProviderElement<NotifierBase<State>, State>
+      _element;
 
   @override
   void _setElement(ProviderElementBase<State> element) {
-    _element = element as AutoDisposeNotifierProviderElement<
-        AutoDisposeNotifier<State>, State>;
+    _element = element
+        as AutoDisposeNotifierProviderElement<NotifierBase<State>, State>;
   }
 
   @override

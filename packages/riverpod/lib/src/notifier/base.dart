@@ -6,11 +6,11 @@ part of '../notifier.dart';
 @internal
 abstract class BuildlessNotifier<State> extends NotifierBase<State> {
   @override
-  late final NotifierProviderElement<Notifier<State>, State> _element;
+  late final NotifierProviderElement<NotifierBase<State>, State> _element;
 
   @override
   void _setElement(ProviderElementBase<State> element) {
-    _element = element as NotifierProviderElement<Notifier<State>, State>;
+    _element = element as NotifierProviderElement<NotifierBase<State>, State>;
   }
 
   @override

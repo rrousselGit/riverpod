@@ -1,5 +1,8 @@
 part of '../async_notifier.dart';
 
+/// A [AsyncNotifier] base class shared between family and non-family notifiers.
+///
+/// Not meant for public consumption outside of riverpod_generator
 abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
   @override
   late final AsyncNotifierProviderElement<AsyncNotifierBase<State>, State>
