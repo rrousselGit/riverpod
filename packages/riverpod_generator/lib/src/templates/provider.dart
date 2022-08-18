@@ -16,7 +16,7 @@ class ProviderTemplate {
     }
 
     return '''
-final ${data.providerName} = ${data.providerTypeDisplayString()}(
+final ${data.providerName} = ${data.providerTypeDisplayString}(
   ${create()},
   name: '${data.providerName}',
 );''';
@@ -31,7 +31,7 @@ final ${data.providerName} = ${data.providerTypeDisplayString()}(
       case ProviderType.asyncNotifier:
         return '''
   @override
-  ${data.valueDisplayType} runNotifierBuild(
+  ${data.buildValueDisplayType} runNotifierBuild(
     covariant ${data.notifierBaseName} notifier,
   ) {
     return notifier.build(${data.paramInvocationPassAround});
@@ -44,8 +44,7 @@ final ${data.providerName} = ${data.providerTypeDisplayString()}(
     // TODO inject provider doc into the provider
 
     return '''
-// ignore: subtype_of_sealed_class, invalid_use_of_internal_member
-class ${data.internalProviderTypeName} extends ${data.providerTypeDisplayString()} {
+class ${data.internalProviderTypeName} extends ${data.providerTypeDisplayString} {
   ${data.internalProviderTypeName}(${data.thisParamDefinition}) : super(
           $superConstructor,
           from: ${data.providerName},

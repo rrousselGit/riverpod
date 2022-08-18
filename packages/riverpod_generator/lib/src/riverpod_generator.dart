@@ -141,6 +141,8 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Provider> {
   @override
   Iterable<Object> generateForAll(GlobalData globalData) sync* {
     yield '''
+// ignore_for_file: avoid_private_typedef_functions, non_constant_identifier_names, subtype_of_sealed_class, invalid_use_of_internal_member, unused_element, constant_identifier_names, unnecessary_raw_strings, library_private_types_in_public_api
+
 /// Copied from Dart SDK
 class _SystemHash {
   _SystemHash._();

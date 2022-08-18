@@ -8,19 +8,19 @@ class FamilyTemplate {
   @override
   String toString() {
     // TODO inject provider doc into the provider
+
     return '''
 const ${data.providerName} = ${data.internalFamilyName}();
 
-// ignore: subtype_of_sealed_class
-class ${data.internalFamilyName} extends Family<${data.valueDisplayType}> {
+class ${data.internalFamilyName} extends Family<${data.exposedValueDisplayType}> {
   const ${data.internalFamilyName}();
 
-  ${data.providerTypeDisplayString()} call(${data.paramDefinition}) {
+  ${data.providerTypeDisplayString} call(${data.paramDefinition}) {
     return ${data.internalProviderTypeName}(${data.paramInvocationPassAround});
   }
 
   @override
-  ${data.providerTypeDisplayString()} getProviderOverride(
+  ${data.providerTypeDisplayString} getProviderOverride(
     covariant ${data.internalProviderTypeName} provider,
   ) {
     return call(${data.paramInvocationFromProvider});

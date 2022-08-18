@@ -1,3 +1,5 @@
+// ignore_for_file: omit_local_variable_types, prefer_final_locals, unused_local_variable
+
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,6 +13,18 @@ Future<String> _publicProvider(_PublicProviderRef ref) async {
 
 @provider
 Future<String> __privateProvider(__PrivateProviderRef ref) async {
+  return 'Hello world';
+}
+
+@provider
+FutureOr<String> _familyExample(
+  _FamilyExampleRef ref,
+  int first, {
+  String? second,
+  required double third,
+  bool forth = true,
+  List<String>? fifth,
+}) {
   return 'Hello world';
 }
 
@@ -33,6 +47,20 @@ class __PrivateClassProvider extends _$PrivateClassProvider {
 void main() {
   final container = ProviderContainer();
 
-  final x = container.read(PublicProvider);
-  final y = container.read(PublicClassProvider);
+  AsyncValue<String> x = container.read(PublicProvider);
+  AsyncValue<String> y = container.read(PublicClassProvider);
+}
+
+@provider
+class _MyNotifierFamily extends _$MyNotifierFamily {
+  @override
+  FutureOr<String> build(
+    int first, {
+    String? second,
+    required double third,
+    bool forth = true,
+    List<String>? fifth,
+  }) {
+    return 'Hello world';
+  }
 }

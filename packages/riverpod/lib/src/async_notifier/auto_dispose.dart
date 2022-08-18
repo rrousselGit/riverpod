@@ -1,7 +1,6 @@
 part of '../async_notifier.dart';
 
-/// {@macro riverpod.asyncnotifier}
-abstract class AutoDisposeAsyncNotifier<State>
+abstract class BuildlessAutoDisposeAsyncNotifier<State>
     extends AsyncNotifierBase<State> {
   @override
   late final AutoDisposeAsyncNotifierProviderElement<
@@ -15,7 +14,11 @@ abstract class AutoDisposeAsyncNotifier<State>
 
   @override
   AutoDisposeAsyncNotifierProviderRef<State> get ref => _element;
+}
 
+/// {@macro riverpod.asyncnotifier}
+abstract class AutoDisposeAsyncNotifier<State>
+    extends BuildlessAutoDisposeAsyncNotifier<State> {
   /// {@macro riverpod.asyncnotifier.build}
   @visibleForOverriding
   FutureOr<State> build();
@@ -65,10 +68,8 @@ class AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  FutureOr<T> runNotifierBuild(
-    covariant AutoDisposeAsyncNotifier<T> notifier,
-  ) {
-    return notifier.build();
+  FutureOr<T> runNotifierBuild(AsyncNotifierBase<T> notifier) {
+    return (notifier as AutoDisposeAsyncNotifier<T>).build();
   }
 }
 

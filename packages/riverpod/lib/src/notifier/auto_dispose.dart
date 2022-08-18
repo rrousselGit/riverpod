@@ -66,10 +66,8 @@ class AutoDisposeNotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   }
 
   @override
-  T runNotifierBuild(
-    covariant AutoDisposeNotifier<T> notifier,
-  ) {
-    return notifier.build();
+  T runNotifierBuild(NotifierBase<T> notifier) {
+    return (notifier as AutoDisposeNotifier<T>).build();
   }
 }
 

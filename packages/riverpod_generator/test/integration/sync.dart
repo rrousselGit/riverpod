@@ -1,6 +1,8 @@
+// ignore_for_file: omit_local_variable_types, unused_local_variable
+
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:riverpod/src/internals.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'sync.g.dart';
 
@@ -53,8 +55,8 @@ class __PrivateClassProvider extends _$PrivateClassProvider {
 void main() {
   final container = ProviderContainer();
 
-  final x = container.read(PublicProvider);
-  final y = container.read(PublicClassProvider);
+  final String x = container.read(PublicProvider);
+  final String y = container.read(PublicClassProvider);
 }
 
 @provider

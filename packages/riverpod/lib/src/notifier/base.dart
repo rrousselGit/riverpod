@@ -81,8 +81,8 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
       _notifier<NotifierT, T>(this);
 
   @override
-  T runNotifierBuild(covariant Notifier<T> notifier) {
-    return notifier.build();
+  T runNotifierBuild(NotifierBase<T> notifier) {
+    return (notifier as Notifier<T>).build();
   }
 }
 

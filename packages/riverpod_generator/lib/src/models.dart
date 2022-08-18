@@ -43,6 +43,14 @@ class Data {
   final String valueDisplayType;
   final List<ParameterElement> parameters;
 
+  String get exposedValueDisplayType {
+    return isAsync ? 'AsyncValue<$valueDisplayType>' : valueDisplayType;
+  }
+
+  String get buildValueDisplayType {
+    return isAsync ? 'FutureOr<$valueDisplayType>' : valueDisplayType;
+  }
+
   late final String notifierBaseName =
       '_\$${rawName.replaceFirst(RegExp('_*'), '')}';
 
@@ -61,13 +69,13 @@ class Data {
     assert(isNotifier, 'functions do not have a notifier');
     switch (providerType) {
       case ProviderType.notifier:
-        final trailing = generics ? '<$rawName, $valueDisplayType>' : '';
+        final trailing = generics ? '<$valueDisplayType>' : '';
         if (isFamily) {
           return 'BuildlessNotifier$trailing';
         }
         return 'Notifier$trailing';
       case ProviderType.asyncNotifier:
-        final trailing = generics ? '<$rawName, $valueDisplayType>' : '';
+        final trailing = generics ? '<$valueDisplayType>' : '';
         if (isFamily) {
           return 'BuildlessAsyncNotifier$trailing';
         }
@@ -77,7 +85,18 @@ class Data {
     }
   }
 
-  String get refType => '${providerTypeDisplayString(generics: false)}Ref';
+  String get refType {
+    switch (providerType) {
+      case ProviderType.provider:
+        return 'ProviderRef';
+      case ProviderType.futureProvider:
+        return 'FutureProviderRef';
+      case ProviderType.notifier:
+        return 'NotifierProviderRef';
+      case ProviderType.asyncNotifier:
+        return 'AsyncNotifierProviderRef';
+    }
+  }
 
   late final familyName = '${providerName}Family';
   late final internalFamilyName = '\$$familyName';
@@ -165,14 +184,12 @@ class Data {
     }
   }
 
-  String providerTypeDisplayString({bool generics = true}) {
-    var trailing = '';
-    if (generics) {
-      if (isNotifier) {
-        trailing = '<$rawName, $valueDisplayType>';
-      } else {
-        trailing = '<$valueDisplayType>';
-      }
+  String get providerTypeDisplayString {
+    String trailing;
+    if (isNotifier) {
+      trailing = '<$rawName, $valueDisplayType>';
+    } else {
+      trailing = '<$valueDisplayType>';
     }
 
     switch (providerType) {
@@ -181,8 +198,10 @@ class Data {
       case ProviderType.futureProvider:
         return 'FutureProvider$trailing';
       case ProviderType.notifier:
+        if (isFamily) return 'NotifierProviderImpl$trailing';
         return 'NotifierProvider$trailing';
       case ProviderType.asyncNotifier:
+        if (isFamily) return 'AsyncNotifierProviderImpl$trailing';
         return 'AsyncNotifierProvider$trailing';
     }
   }

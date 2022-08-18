@@ -1,10 +1,6 @@
 part of '../async_notifier.dart';
 
-/// {@template riverpod.asyncnotifier}
-/// A [Notifier] implementation that is asynchronously initialized.
-/// {@endtemplate}
-// TODO add usage example
-abstract class AsyncNotifier<State> extends AsyncNotifierBase<State> {
+abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
   @override
   late final AsyncNotifierProviderElement<AsyncNotifierBase<State>, State>
       _element;
@@ -17,7 +13,13 @@ abstract class AsyncNotifier<State> extends AsyncNotifierBase<State> {
 
   @override
   AsyncNotifierProviderRef<State> get ref => _element;
+}
 
+/// {@template riverpod.asyncnotifier}
+/// A [Notifier] implementation that is asynchronously initialized.
+/// {@endtemplate}
+// TODO add usage example
+abstract class AsyncNotifier<State> extends BuildlessAsyncNotifier<State> {
   /// {@template riverpod.asyncnotifier.build}
   /// Initialize an [AsyncNotifier].
   ///
@@ -81,8 +83,8 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   }
 
   @override
-  FutureOr<T> runNotifierBuild(covariant AsyncNotifier<T> notifier) {
-    return notifier.build();
+  FutureOr<T> runNotifierBuild(AsyncNotifierBase<T> notifier) {
+    return (notifier as AsyncNotifier<T>).build();
   }
 }
 
