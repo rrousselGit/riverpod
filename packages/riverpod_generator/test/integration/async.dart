@@ -6,20 +6,20 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'async.g.dart';
 
 @provider
-FutureOr<String> _publicProvider(_PublicProviderRef ref) {
+FutureOr<String> public(PublicRef ref) {
   return 'Hello world';
 }
 
 const privateProvider = _PrivateProvider;
 
 @provider
-Future<String> __privateProvider(__PrivateProviderRef ref) async {
+Future<String> _private(_PrivateRef ref) async {
   return 'Hello world';
 }
 
 @provider
-FutureOr<String> _familyExample(
-  _FamilyExampleRef ref,
+FutureOr<String> family(
+  FamilyRef ref,
   int first, {
   String? second,
   required double third,
@@ -30,32 +30,25 @@ FutureOr<String> _familyExample(
 }
 
 @provider
-class _PublicClassProvider extends _$PublicClassProvider {
+class PublicClass extends _$PublicClass {
+  @override
+  FutureOr<String> build() {
+    return 'Hello world';
+  }
+}
+
+const privateClassProvider = _PrivateClassProvider;
+
+@provider
+class _PrivateClass extends _$PrivateClass {
   @override
   Future<String> build() async {
     return 'Hello world';
   }
 }
 
-const privateClassProvider = _PrivateProvider;
-
 @provider
-class __PrivateClassProvider extends _$PrivateClassProvider {
-  @override
-  Future<String> build() async {
-    return 'Hello world';
-  }
-}
-
-void main() {
-  final container = ProviderContainer();
-
-  AsyncValue<String> x = container.read(PublicProvider);
-  AsyncValue<String> y = container.read(PublicClassProvider);
-}
-
-@provider
-class _MyNotifierFamily extends _$MyNotifierFamily {
+class FamilyClass extends _$FamilyClass {
   @override
   FutureOr<String> build(
     int first, {
@@ -64,6 +57,6 @@ class _MyNotifierFamily extends _$MyNotifierFamily {
     bool forth = true,
     List<String>? fifth,
   }) {
-    return 'Hello world';
+    return '(first: $first, second: $second, third: $third, forth: $forth, fifth: $fifth)';
   }
 }

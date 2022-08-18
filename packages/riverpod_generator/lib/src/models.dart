@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:source_gen/source_gen.dart';
 
 enum ProviderType {
   provider,
@@ -11,8 +12,6 @@ class Data {
   Data.function({
     required this.rawName,
     required this.functionName,
-    required this.providerName,
-    required this.refName,
     required this.valueDisplayType,
     required this.isAsync,
     required this.isScoped,
@@ -23,8 +22,6 @@ class Data {
   Data.notifier({
     required this.rawName,
     required this.notifierName,
-    required this.providerName,
-    required this.refName,
     required this.valueDisplayType,
     required this.isAsync,
     required this.isScoped,
@@ -38,10 +35,16 @@ class Data {
   final String rawName;
   final String? functionName;
   final String? notifierName;
-  final String providerName;
-  final String refName;
   final String valueDisplayType;
   final List<ParameterElement> parameters;
+
+  String get refName => '${rawName.titled}Ref';
+
+  String get providerName {
+    // _foo -> _FooProvider
+    // foo -> FooProvider
+    return '${rawName.titled}Provider';
+  }
 
   String get exposedValueDisplayType {
     return isAsync ? 'AsyncValue<$valueDisplayType>' : valueDisplayType;
@@ -208,4 +211,13 @@ class Data {
 
 class GlobalData {
   GlobalData();
+}
+
+extension on String {
+  String get titled {
+    return replaceFirstMapped(
+      RegExp('[a-zA-Z]'),
+      (match) => match.group(0)!.toUpperCase(),
+    );
+  }
 }

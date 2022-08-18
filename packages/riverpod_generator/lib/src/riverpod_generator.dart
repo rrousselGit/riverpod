@@ -50,8 +50,6 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Provider> {
     GlobalData globalData,
     FunctionElement element,
   ) {
-    final providerName = _providerNameFor(element);
-
     return Data.function(
       rawName: element.name,
       isScoped: element.isExternal,
@@ -60,8 +58,6 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Provider> {
       isFamily: element.parameters.length > 1,
       isAsync: _isBuildAsync(element),
       functionName: element.name,
-      providerName: providerName,
-      refName: _refNameFor(element),
       // Remove "ref" from the parameters
       parameters: element.parameters.skip(1).toList(),
       valueDisplayType:
@@ -72,24 +68,6 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Provider> {
   bool _isBuildAsync(FunctionTypedElement element) {
     return element.returnType.isDartAsyncFutureOr ||
         element.returnType.isDartAsyncFuture;
-  }
-
-  String _providerNameFor(Element element) {
-    final name = element.name ?? '';
-    if (!name.startsWith('_')) {
-      throw InvalidGenerationSourceError(
-        'The name of providers must start with a `_`',
-        element: element,
-      );
-    }
-
-    // __provider -> _Provider
-    // _provider -> Provider
-    return name.substring(1).titled;
-  }
-
-  String _refNameFor(Element element) {
-    return '${element.name!.titled}Ref';
   }
 
   DartType _getUserModelType(ExecutableElement element) {
@@ -111,7 +89,6 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Provider> {
   ) {
     // __provider -> _Provider
     // _provider -> Provider
-    final providerName = _providerNameFor(element);
 
     // TODO check has default constructor with no param.
 
@@ -126,13 +103,11 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Provider> {
     return Data.notifier(
       rawName: element.name,
       notifierName: element.name,
-      providerName: providerName,
       isScoped: buildMethod.isAbstract,
       // No "ref" on build, therefore any parameter = family
       isFamily: buildMethod.parameters.isNotEmpty,
       isAsync: _isBuildAsync(buildMethod),
       parameters: buildMethod.parameters,
-      refName: _refNameFor(element),
       valueDisplayType: _getUserModelType(buildMethod)
           .getDisplayString(withNullability: true),
     );
@@ -180,14 +155,5 @@ class _SystemHash {
     if (data.isNotifier) {
       yield NotifierTemplate(data);
     }
-  }
-}
-
-extension on String {
-  String get titled {
-    return replaceFirstMapped(
-      RegExp('[a-zA-Z]'),
-      (match) => match.group(0)!.toUpperCase(),
-    );
   }
 }

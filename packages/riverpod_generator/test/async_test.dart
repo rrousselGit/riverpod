@@ -22,19 +22,19 @@ void main() {
     expect(PublicProvider.name, 'PublicProvider');
     expect(privateProvider.name, '_PrivateProvider');
 
-    expect(FamilyExample.name, 'FamilyExample');
-    expect(FamilyExample(42, third: .42).name, 'FamilyExample');
+    expect(FamilyProvider.name, 'FamilyProvider');
+    expect(FamilyProvider(42, third: .42).name, 'FamilyProvider');
   });
 
   test('Sets cacheTime/disposeDelay to null on non-autoDispose providers', () {
     expect(PublicProvider.cacheTime, null);
     expect(PublicProvider.disposeDelay, null);
 
-    expect(FamilyExample.cacheTime, null);
-    expect(FamilyExample.disposeDelay, null);
+    expect(FamilyProvider.cacheTime, null);
+    expect(FamilyProvider.disposeDelay, null);
 
-    expect(FamilyExample(42, third: .42).cacheTime, null);
-    expect(FamilyExample(42, third: .42).disposeDelay, null);
+    expect(FamilyProvider(42, third: .42).cacheTime, null);
+    expect(FamilyProvider(42, third: .42).disposeDelay, null);
   });
 
   test(
@@ -42,27 +42,27 @@ void main() {
       () {
     final container = createContainer();
 
-    const FamilyExampleFamily family = FamilyExample;
+    const FamilyProviderFamily family = FamilyProvider;
 
-    expect(FamilyExample(42, third: .42).from, FamilyExample);
+    expect(FamilyProvider(42, third: .42).from, FamilyProvider);
 
     expect(
-      FamilyExample(42, third: .42),
-      FamilyExample(42, third: .42),
+      FamilyProvider(42, third: .42),
+      FamilyProvider(42, third: .42),
     );
     expect(
-      FamilyExample(42, third: .42),
-      isNot(FamilyExample(42, third: .21)),
+      FamilyProvider(42, third: .42),
+      isNot(FamilyProvider(42, third: .21)),
     );
     expect(
-      FamilyExample(42, third: .42).hashCode,
-      isNot(FamilyExample(42, third: .21).hashCode),
+      FamilyProvider(42, third: .42).hashCode,
+      isNot(FamilyProvider(42, third: .21).hashCode),
     );
 
     // handle defaults
     expect(
-      FamilyExample(42, third: .42),
-      FamilyExample(
+      FamilyProvider(42, third: .42),
+      FamilyProvider(
         42,
         third: .42,
         // ignore: avoid_redundant_argument_values
@@ -70,8 +70,8 @@ void main() {
       ),
     );
     expect(
-      FamilyExample(42, third: .42).hashCode,
-      FamilyExample(
+      FamilyProvider(42, third: .42).hashCode,
+      FamilyProvider(
         42,
         third: .42,
         // ignore: avoid_redundant_argument_values
@@ -79,7 +79,7 @@ void main() {
       ).hashCode,
     );
 
-    final FamilyExampleProvider provider = FamilyExample(
+    final FamilyProviderProvider provider = FamilyProvider(
       42,
       second: 'x42',
       third: .42,
@@ -95,7 +95,7 @@ void main() {
     expect(provider.fifth, ['x42']);
 
     final AsyncValue<String> result = container.read(
-      FamilyExample(
+      FamilyProvider(
         42,
         second: 'x42',
         third: .42,
@@ -107,7 +107,8 @@ void main() {
     expect(
       result,
       const AsyncData(
-          '(first: 42, second: x42, third: 0.42, forth: false, fifth: [x42])'),
+        '(first: 42, second: x42, third: 0.42, forth: false, fifth: [x42])',
+      ),
     );
   });
 }

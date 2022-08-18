@@ -6,18 +6,18 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'sync.g.dart';
 
 @provider
-String _publicProvider(_PublicProviderRef ref) {
+String public(PublicRef ref) {
   return 'Hello world';
 }
 
 @provider
-String _supports$inNames(_Supports$inNamesRef ref) {
+String supports$inNames(Supports$inNamesRef ref) {
   return 'Hello world';
 }
 
 @provider
-String _familyExample(
-  _FamilyExampleRef ref,
+String family(
+  FamilyRef ref,
   int first, {
   String? second,
   required double third,
@@ -30,12 +30,12 @@ String _familyExample(
 const privateProvider = _PrivateProvider;
 
 @provider
-String __privateProvider(__PrivateProviderRef ref) {
+String _private(_PrivateRef ref) {
   return 'Hello world';
 }
 
 @provider
-class _PublicClassProvider extends _$PublicClassProvider {
+class PublicClass extends _$PublicClass {
   @override
   String build() {
     return 'Hello world';
@@ -45,7 +45,7 @@ class _PublicClassProvider extends _$PublicClassProvider {
 const privateClassProvider = _PrivateClassProvider;
 
 @provider
-class __PrivateClassProvider extends _$PrivateClassProvider {
+class _PrivateClass extends _$PrivateClass {
   @override
   String build() {
     return 'Hello world';
@@ -53,7 +53,7 @@ class __PrivateClassProvider extends _$PrivateClassProvider {
 }
 
 @provider
-class _MyNotifierFamily extends _$MyNotifierFamily {
+class FamilyClass extends _$FamilyClass {
   @override
   String build(
     int first, {
@@ -62,12 +62,12 @@ class _MyNotifierFamily extends _$MyNotifierFamily {
     bool forth = true,
     List<String>? fifth,
   }) {
-    return 'Hello world';
+    return '(first: $first, second: $second, third: $third, forth: $forth, fifth: $fifth)';
   }
 }
 
 @provider
-class _Supports$InClassName extends _$Supports$InClassName {
+class Supports$InClassName extends _$Supports$InClassName {
   @override
   String build() {
     return 'Hello world';
