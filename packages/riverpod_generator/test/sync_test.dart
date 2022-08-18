@@ -25,6 +25,17 @@ void main() {
     expect(FamilyExample(42, third: .42).name, 'FamilyExample');
   });
 
+  test('Sets cacheTime/disposeDelay to null on non-autoDispose providers', () {
+    expect(PublicProvider.cacheTime, null);
+    expect(PublicProvider.disposeDelay, null);
+
+    expect(FamilyExample.cacheTime, null);
+    expect(FamilyExample.disposeDelay, null);
+
+    expect(FamilyExample(42, third: .42).cacheTime, null);
+    expect(FamilyExample(42, third: .42).disposeDelay, null);
+  });
+
   test(
       'Creates a Provider.family<T> if @provider is used on a synchronous function with parameters',
       () {

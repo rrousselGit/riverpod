@@ -31,13 +31,13 @@ class ${data.familyName} extends Family<${data.exposedValueDisplayType}> {
       throw UnimplementedError();
 
   @override
-  Duration? get cacheTime => throw UnimplementedError();
+  Duration? get disposeDelay => null;
+
+  @override
+  Duration? get cacheTime => null;
 
   @override
   List<ProviderOrFamily>? get dependencies => throw UnimplementedError();
-
-  @override
-  Duration? get disposeDelay => throw UnimplementedError();
 
   @override
   String? get name => r'${data.providerName}';
