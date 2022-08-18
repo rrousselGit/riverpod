@@ -29,4 +29,4 @@ export 'package:riverpod/src/internals.dart'
         AsyncNotifier,
         AutoDisposeAsyncNotifier;
 
-export 'src/riverpod_annotation.dart' show action, autoDispose, provider;
+export 'src/riverpod_annotation.dart';

@@ -1,24 +1,19 @@
 // DO NOT MOVE/RENAME
 
-import 'package:meta/meta.dart';
+import 'package:meta/meta_meta.dart';
 
-@internal
-class Provider {
-  const Provider();
+/// {@template riverpod_annotation.provider}
+/// An annotation placed on classes or functions.
+///
+/// This tells riverpod_generator to generate a provider out of the annotation
+/// element.
+/// {@endtemplate}
+@Target({TargetKind.classType, TargetKind.function})
+class Riverpod {
+  /// {@macro riverpod_annotation.provider}
+  const Riverpod();
 }
 
-const provider = Provider();
-
-@internal
-class AutoDispose {
-  const AutoDispose();
-}
-
-const autoDispose = AutoDispose();
-
-@internal
-class Action {
-  const Action();
-}
-
-const action = Action();
+/// {@macro riverpod_annotation.provider}
+@Target({TargetKind.classType, TargetKind.function})
+const riverpod = Riverpod();

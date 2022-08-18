@@ -5,17 +5,17 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'sync.g.dart';
 
-@provider
+@riverpod
 String public(PublicRef ref) {
   return 'Hello world';
 }
 
-@provider
+@riverpod
 String supports$inNames(Supports$inNamesRef ref) {
   return 'Hello world';
 }
 
-@provider
+@riverpod
 String family(
   FamilyRef ref,
   int first, {
@@ -29,12 +29,12 @@ String family(
 
 const privateProvider = _PrivateProvider;
 
-@provider
+@riverpod
 String _private(_PrivateRef ref) {
   return 'Hello world';
 }
 
-@provider
+@riverpod
 class PublicClass extends _$PublicClass {
   @override
   String build() {
@@ -44,7 +44,7 @@ class PublicClass extends _$PublicClass {
 
 const privateClassProvider = _PrivateClassProvider;
 
-@provider
+@riverpod
 class _PrivateClass extends _$PrivateClass {
   @override
   String build() {
@@ -52,7 +52,7 @@ class _PrivateClass extends _$PrivateClass {
   }
 }
 
-@provider
+@riverpod
 class FamilyClass extends _$FamilyClass {
   @override
   String build(
@@ -66,7 +66,7 @@ class FamilyClass extends _$FamilyClass {
   }
 }
 
-@provider
+@riverpod
 class Supports$InClassName extends _$Supports$InClassName {
   @override
   String build() {

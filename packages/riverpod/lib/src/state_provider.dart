@@ -31,7 +31,7 @@ ProviderElementProxy<T, StateController<T>> _state<T>(
 }
 
 abstract class _StateProviderBase<T> extends ProviderBase<T> {
-  _StateProviderBase({
+  const _StateProviderBase({
     required super.name,
     required super.from,
     required super.argument,

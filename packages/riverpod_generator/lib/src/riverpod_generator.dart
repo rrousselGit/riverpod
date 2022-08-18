@@ -17,7 +17,7 @@ import 'templates/ref.dart';
 
 @immutable
 // ignore: invalid_use_of_internal_member
-class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Provider> {
+class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
   RiverpodGenerator(this.configs);
 
   final Map<String, Object?> configs;

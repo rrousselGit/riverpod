@@ -5,19 +5,19 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'async.g.dart';
 
-@provider
+@riverpod
 FutureOr<String> public(PublicRef ref) {
   return 'Hello world';
 }
 
 const privateProvider = _PrivateProvider;
 
-@provider
+@riverpod
 Future<String> _private(_PrivateRef ref) async {
   return 'Hello world';
 }
 
-@provider
+@riverpod
 FutureOr<String> family(
   FamilyRef ref,
   int first, {
@@ -29,7 +29,7 @@ FutureOr<String> family(
   return '(first: $first, second: $second, third: $third, forth: $forth, fifth: $fifth)';
 }
 
-@provider
+@riverpod
 class PublicClass extends _$PublicClass {
   @override
   FutureOr<String> build() {
@@ -39,7 +39,7 @@ class PublicClass extends _$PublicClass {
 
 const privateClassProvider = _PrivateClassProvider;
 
-@provider
+@riverpod
 class _PrivateClass extends _$PrivateClass {
   @override
   Future<String> build() async {
@@ -47,7 +47,7 @@ class _PrivateClass extends _$PrivateClass {
   }
 }
 
-@provider
+@riverpod
 class FamilyClass extends _$FamilyClass {
   @override
   FutureOr<String> build(
