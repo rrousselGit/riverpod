@@ -16,7 +16,7 @@ class ProviderTemplate {
     }
 
     return '''
-final ${data.providerName} = ${data.providerTypeDisplayString}(
+const ${data.providerName} = ${data.providerTypeDisplayString}(
   ${create()},
   name: '${data.providerName}',
 );''';

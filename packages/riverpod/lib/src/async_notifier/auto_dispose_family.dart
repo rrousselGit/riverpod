@@ -33,7 +33,7 @@ class AutoDisposeFamilyAsyncNotifierProviderImpl<
     T,
     Arg> extends AsyncNotifierProviderBase<NotifierT, T> with AsyncSelector<T> {
   /// {@macro riverpod.notifier}
-  AutoDisposeFamilyAsyncNotifierProviderImpl(
+  const AutoDisposeFamilyAsyncNotifierProviderImpl(
     super._createNotifier, {
     super.name,
     super.from,
@@ -44,10 +44,10 @@ class AutoDisposeFamilyAsyncNotifierProviderImpl<
   });
 
   @override
-  late final Refreshable<NotifierT> notifier = _notifier<NotifierT, T>(this);
+  Refreshable<NotifierT> get notifier => _notifier<NotifierT, T>(this);
 
   @override
-  late final Refreshable<Future<T>> future = _future<T>(this);
+  Refreshable<Future<T>> get future => _future<T>(this);
 
   @override
   AutoDisposeAsyncNotifierProviderElement<NotifierT, T> createElement() {

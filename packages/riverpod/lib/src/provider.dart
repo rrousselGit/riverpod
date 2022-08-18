@@ -17,7 +17,7 @@ abstract class InternalProvider<State> extends ProviderBase<State>
   /// A base class for [Provider]
   ///
   /// Not meant for public consumption
-  InternalProvider({
+  const InternalProvider({
     required this.dependencies,
     required super.name,
     required super.from,

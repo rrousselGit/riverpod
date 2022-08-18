@@ -10,10 +10,10 @@ class FamilyTemplate {
     // TODO inject provider doc into the provider
 
     return '''
-const ${data.providerName} = ${data.internalFamilyName}();
+const ${data.providerName} = ${data.familyName}();
 
-class ${data.internalFamilyName} extends Family<${data.exposedValueDisplayType}> {
-  const ${data.internalFamilyName}();
+class ${data.familyName} extends Family<${data.exposedValueDisplayType}> {
+  const ${data.familyName}();
 
   ${data.providerTypeDisplayString} call(${data.paramDefinition}) {
     return ${data.internalProviderTypeName}(${data.paramInvocationPassAround});

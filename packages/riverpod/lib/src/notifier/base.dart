@@ -57,7 +57,7 @@ typedef NotifierProvider<NotifierT extends Notifier<T>, T>
 class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     extends NotifierProviderBase<NotifierT, T> with AlwaysAliveProviderBase<T> {
   /// {@macro riverpod.notifier_provider}
-  NotifierProviderImpl(
+  const NotifierProviderImpl(
     super._createNotifier, {
     super.name,
     super.from,
@@ -77,7 +77,7 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   }
 
   @override
-  late final AlwaysAliveRefreshable<NotifierT> notifier =
+  AlwaysAliveRefreshable<NotifierT> get notifier =>
       _notifier<NotifierT, T>(this);
 
   @override

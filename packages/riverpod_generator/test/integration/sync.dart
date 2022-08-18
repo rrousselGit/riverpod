@@ -19,8 +19,10 @@ String _familyExample(
   bool forth = true,
   List<String>? fifth,
 }) {
-  return 'Hello world';
+  return '(first: $first, second: $second, third: $third, forth: $forth, fifth: $fifth)';
 }
+
+const privateProvider = _PrivateProvider;
 
 @provider
 String __privateProvider(__PrivateProviderRef ref) {
@@ -43,19 +45,14 @@ class _ClassFamily extends _$ClassFamily {
   }
 }
 
+const privateClassProvider = _PrivateClassProvider;
+
 @provider
 class __PrivateClassProvider extends _$PrivateClassProvider {
   @override
   String build() {
     return 'Hello world';
   }
-}
-
-void main() {
-  final container = ProviderContainer();
-
-  final String x = container.read(PublicProvider);
-  final String y = container.read(PublicClassProvider);
 }
 
 @provider

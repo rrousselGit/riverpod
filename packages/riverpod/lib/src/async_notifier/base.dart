@@ -60,7 +60,7 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.async_notifier_provider}
-  AsyncNotifierProviderImpl(
+  const AsyncNotifierProviderImpl(
     super._createNotifier, {
     super.name,
     super.from,
@@ -75,11 +75,11 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   static const family = AsyncNotifierProviderFamilyBuilder();
 
   @override
-  late final AlwaysAliveRefreshable<NotifierT> notifier =
+  AlwaysAliveRefreshable<NotifierT> get notifier =>
       _notifier<NotifierT, T>(this);
 
   @override
-  late final AlwaysAliveRefreshable<Future<T>> future = _future<T>(this);
+  AlwaysAliveRefreshable<Future<T>> get future => _future<T>(this);
 
   @override
   AsyncNotifierProviderElement<NotifierT, T> createElement() {

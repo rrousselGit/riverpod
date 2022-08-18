@@ -99,7 +99,6 @@ class Data {
   }
 
   late final familyName = '${providerName}Family';
-  late final internalFamilyName = '\$$familyName';
   late final internalProviderTypeName = '\$$providerName';
 
   late final paramDefinition = [
