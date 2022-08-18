@@ -3,6 +3,7 @@ part of '../async_notifier.dart';
 /// A [AutoDisposeAsyncNotifier] base class shared between family and non-family notifiers.
 ///
 /// Not meant for public consumption outside of riverpod_generator
+@internal
 abstract class BuildlessAutoDisposeAsyncNotifier<State>
     extends AsyncNotifierBase<State> {
   @override

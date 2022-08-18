@@ -1,7 +1,6 @@
 // ignore_for_file: omit_local_variable_types, unused_local_variable
 
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'sync.g.dart';
