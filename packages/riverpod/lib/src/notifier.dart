@@ -130,5 +130,10 @@ abstract class NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
 
   final NotifierT Function() _createNotifier;
 
-  T _runNotifierBuild(NotifierBase<T> notifier);
+  /// Runs the `build` method of a notifier.
+  ///
+  /// This is an implementation detail for differentiating [Notifier.build]
+  /// from [FamilyNotifier.build].
+  @visibleForOverriding
+  T runNotifierBuild(NotifierBase<T> notifier);
 }

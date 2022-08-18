@@ -75,7 +75,7 @@ class TestNotifierProvider<NotifierT extends NotifierBase<T>, T>
       _notifier<NotifierT, T>(this);
 
   @override
-  T _runNotifierBuild(covariant Notifier<T> notifier) {
+  T runNotifierBuild(covariant Notifier<T> notifier) {
     return notifier.build();
   }
 }
@@ -100,7 +100,7 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     final notifier = notifierResult.requireState;
 
 // TODO test if Element fails to init, the provider rethrows the error
-    setState(provider._runNotifierBuild(notifier));
+    setState(provider.runNotifierBuild(notifier));
   }
 
   @override

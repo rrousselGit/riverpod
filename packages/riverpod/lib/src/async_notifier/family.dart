@@ -75,7 +75,7 @@ class TestFamilyAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T,
   }
 
   @override
-  FutureOr<T> _runNotifierBuild(
+  FutureOr<T> runNotifierBuild(
     covariant FamilyAsyncNotifier<T, Arg> notifier,
   ) {
     return notifier.build(notifier.arg);

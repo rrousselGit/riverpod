@@ -59,7 +59,7 @@ class TestAutoDisposeNotifierProvider<NotifierT extends NotifierBase<T>, T>
   }
 
   @override
-  T _runNotifierBuild(
+  T runNotifierBuild(
     covariant AutoDisposeNotifier<T> notifier,
   ) {
     return notifier.build();

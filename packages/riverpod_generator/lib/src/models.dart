@@ -66,6 +66,76 @@ class Data {
   late final familyName = '${providerName}Family';
   late final internalFamilyName = '\$$familyName';
   late final internalProviderTypeName = '\$$providerName';
+
+  late final paramDefinition = [
+    ...positionalParameters.map((e) {
+      return '${e.type.getDisplayString(withNullability: true)} ${e.name},';
+    }),
+    if (optionalPositionalParameters.isNotEmpty) ...[
+      '[',
+      ...optionalPositionalParameters.map((e) {
+        final defaultValue =
+            e.defaultValueCode != null ? '= ${e.defaultValueCode}' : '';
+
+        return '${e.type.getDisplayString(withNullability: true)} ${e.name} $defaultValue,';
+      }),
+      ']',
+    ],
+    if (namedParameters.isNotEmpty) ...[
+      '{',
+      ...namedParameters.map((e) {
+        final defaultValue =
+            e.defaultValueCode != null ? '= ${e.defaultValueCode}' : '';
+
+        final leading = e.isRequired ? 'required' : '';
+
+        return '$leading ${e.type.getDisplayString(withNullability: true)} ${e.name} $defaultValue,';
+      }),
+      '}',
+    ],
+  ].join();
+
+  late final thisParamDefinition = [
+    ...positionalParameters.map((e) {
+      return 'this.${e.name},';
+    }),
+    if (optionalPositionalParameters.isNotEmpty) ...[
+      '[',
+      ...optionalPositionalParameters.map((e) {
+        final defaultValue =
+            e.defaultValueCode != null ? '= ${e.defaultValueCode}' : '';
+
+        return 'this.${e.name} $defaultValue,';
+      }),
+      ']',
+    ],
+    if (namedParameters.isNotEmpty) ...[
+      '{',
+      ...namedParameters.map((e) {
+        final defaultValue =
+            e.defaultValueCode != null ? '= ${e.defaultValueCode}' : '';
+
+        final leading = e.isRequired ? 'required' : '';
+
+        return '$leading this.${e.name} $defaultValue,';
+      }),
+      '}',
+    ],
+  ].join();
+
+  late final paramInvocationPassAround = parameters.map((e) {
+    if (e.isNamed) {
+      return '${e.name}: ${e.name},';
+    }
+    return '${e.name},';
+  }).join();
+
+  late final paramInvocationFromProvider = parameters.map((e) {
+    if (e.isNamed) {
+      return '${e.name}: provider.${e.name},';
+    }
+    return 'provider.${e.name},';
+  }).join();
 }
 
 class GlobalData {

@@ -63,7 +63,7 @@ class TestFamilyNotifierProvider<NotifierT extends NotifierBase<T>, T, Arg>
   }
 
   @override
-  T _runNotifierBuild(
+  T runNotifierBuild(
     covariant FamilyNotifier<T, Arg> notifier,
   ) {
     return notifier.build(notifier.arg);

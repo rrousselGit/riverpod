@@ -65,7 +65,7 @@ class TestAutoDisposeAsyncNotifierProvider<
   }
 
   @override
-  FutureOr<T> _runNotifierBuild(
+  FutureOr<T> runNotifierBuild(
     covariant AutoDisposeAsyncNotifier<T> notifier,
   ) {
     return notifier.build();

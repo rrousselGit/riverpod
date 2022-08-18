@@ -81,7 +81,7 @@ class TestAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T>
   }
 
   @override
-  FutureOr<T> _runNotifierBuild(covariant AsyncNotifier<T> notifier) {
+  FutureOr<T> runNotifierBuild(covariant AsyncNotifier<T> notifier) {
     return notifier.build();
   }
 }
@@ -122,7 +122,7 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
       data: (notifier) {
         asyncTransition(didChangeDependency: didChangeDependency);
         final futureOrResult = Result.guard(
-          () => provider._runNotifierBuild(notifier),
+          () => provider.runNotifierBuild(notifier),
         );
 
         // TODO test build throws -> provider emits AsyncError synchronously & .future emits Future.error
