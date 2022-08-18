@@ -15,13 +15,13 @@ const ${data.providerName} = ${data.familyName}();
 class ${data.familyName} extends Family<${data.exposedValueDisplayType}> {
   const ${data.familyName}();
 
-  ${data.providerTypeDisplayString} call(${data.paramDefinition}) {
-    return ${data.internalProviderTypeName}(${data.paramInvocationPassAround});
+  ${data.providerTypeNameImpl} call(${data.paramDefinition}) {
+    return ${data.providerTypeNameImpl}(${data.paramInvocationPassAround});
   }
 
   @override
   ${data.providerTypeDisplayString} getProviderOverride(
-    covariant ${data.internalProviderTypeName} provider,
+    covariant ${data.providerTypeNameImpl} provider,
   ) {
     return call(${data.paramInvocationFromProvider});
   }

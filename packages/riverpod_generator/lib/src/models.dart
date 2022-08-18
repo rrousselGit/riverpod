@@ -99,7 +99,7 @@ class Data {
   }
 
   late final familyName = '${providerName}Family';
-  late final internalProviderTypeName = '\$$providerName';
+  late final providerTypeNameImpl = '${providerName}Provider';
 
   late final paramDefinition = [
     ...positionalParameters.map((e) {

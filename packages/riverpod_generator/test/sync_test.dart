@@ -30,7 +30,7 @@ void main() {
       () {
     final container = createContainer();
 
-    const FamilyExampleFamily provider = FamilyExample;
+    const FamilyExampleFamily family = FamilyExample;
 
     expect(FamilyExample(42, third: .42).from, FamilyExample);
 
@@ -66,6 +66,20 @@ void main() {
         forth: true,
       ).hashCode,
     );
+
+    final FamilyExampleProvider provider = FamilyExample(
+      42,
+      second: 'x42',
+      third: .42,
+      forth: false,
+      fifth: ['x42'],
+    );
+
+    expect(provider.first, 42);
+    expect(provider.second, 'x42');
+    expect(provider.third, .42);
+    expect(provider.forth, false);
+    expect(provider.fifth, ['x42']);
 
     final String result = container.read(
       FamilyExample(

@@ -44,8 +44,8 @@ const ${data.providerName} = ${data.providerTypeDisplayString}(
     // TODO inject provider doc into the provider
 
     return '''
-class ${data.internalProviderTypeName} extends ${data.providerTypeDisplayString} {
-  ${data.internalProviderTypeName}(${data.thisParamDefinition}) : super(
+class ${data.providerTypeNameImpl} extends ${data.providerTypeDisplayString} {
+  ${data.providerTypeNameImpl}(${data.thisParamDefinition}) : super(
           $superConstructor,
           from: ${data.providerName},
           name: r'${data.providerName}',
@@ -56,7 +56,7 @@ ${data.parameters.map((e) => 'final ${e.type.getDisplayString(withNullability: t
   @override
   bool operator ==(Object other) {
     return ${[
-      'other is ${data.internalProviderTypeName}',
+      'other is ${data.providerTypeNameImpl}',
       ...data.parameters.map((e) => 'other.${e.name} == ${e.name}')
     ].join(' && ')};
   }
