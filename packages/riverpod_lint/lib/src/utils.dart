@@ -26,10 +26,10 @@ String typeNameOf(DartType type) {
     return 'dynamic';
   }
   if (type is InterfaceType) {
-    return type.element.name;
+    return type.element2.name;
   }
   if (type is TypeParameterType) {
-    return type.element.name;
+    return type.element2.name;
   }
   throw UnimplementedError('(${type.runtimeType}) $type');
 }

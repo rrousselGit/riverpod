@@ -3,7 +3,6 @@ import 'dart:isolate';
 
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer_plugin/protocol/protocol_generated.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
@@ -72,7 +71,7 @@ mixin _ProviderCreationVisitor<T> on AsyncRecursiveVisitor<T> {
     final superStream = super.visitInstanceCreationExpression(node);
     if (superStream != null) yield* superStream;
 
-    final createdType = node.staticType?.element;
+    final createdType = node.staticType?.element2;
     if (createdType != null &&
         _providerOrFamily.isAssignableFrom(createdType)) {
       final stream = visitProviderCreation(node);
@@ -84,7 +83,7 @@ mixin _ProviderCreationVisitor<T> on AsyncRecursiveVisitor<T> {
 class RefLifecycleInvocation {
   RefLifecycleInvocation._(this.invocation);
 
-  // Whether the invocation is inside or ouside the build method of a provider/widget
+  // Whether the invocation is inside or outside the build method of a provider/widget
   // Null if unknown
   static bool? _isWithinBuild(AstNode node) {
     var hasFoundFunctionExpression = false;
@@ -108,14 +107,14 @@ class RefLifecycleInvocation {
         return parent.isProviderCreation;
       }
       if (parent is MethodDeclaration) {
-        if (hasFoundFunctionExpression || parent.name.name != 'build') {
+        if (hasFoundFunctionExpression || parent.name2.lexeme != 'build') {
           return false;
         }
 
         final classElement = parent.parents
             .whereType<ClassDeclaration>()
             .firstOrNull
-            ?.declaredElement;
+            ?.declaredElement2;
 
         if (classElement == null) return null;
         return _consumerWidget.isAssignableFrom(classElement) ||
@@ -131,7 +130,7 @@ class RefLifecycleInvocation {
 }
 
 mixin _RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
-  /// A Ref/WidgetRef method was invoked. It isn't guaranted to be watch/listen/read
+  /// A Ref/WidgetRef method was invoked. It isn't guaranteed to be watch/listen/read
   Stream<T>? visitRefInvocation(RefLifecycleInvocation node);
 
   @override
@@ -139,7 +138,7 @@ mixin _RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
     final superStream = super.visitMethodInvocation(node);
     if (superStream != null) yield* superStream;
 
-    final targetType = node.target?.staticType?.element;
+    final targetType = node.target?.staticType?.element2;
     if (targetType == null) {
       return;
     }
@@ -153,7 +152,6 @@ mixin _RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
 }
 
 /// Recursively search all the places where a Provider's `ref` is used
-// TODO handle Service()..ref=
 // TODO handle Ref fn() => ref;
 class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
     with _RefLifecycleVisitor {
@@ -161,10 +159,21 @@ class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
   Stream<ProviderDeclaration>? visitArgumentList(ArgumentList node) async* {
     final superStream = super.visitArgumentList(node);
     if (superStream != null) yield* superStream;
+    final providerBody = node.arguments.firstOrNull;
+    if (providerBody is ConstructorReference) {
+      final element = providerBody
+          .constructorName.staticElement?.declaration.enclosingElement3;
+      if (element != null) {
+        final ast = await findAstNodeForElement(element);
+
+        final createdObjectStream = ast?.accept(this);
+        if (createdObjectStream != null) yield* createdObjectStream;
+      }
+    }
 
     argumentsLoop:
     for (final arg in node.arguments) {
-      final type = arg.staticType?.element;
+      final type = arg.staticType?.element2;
       if (type != null && _ref.isAssignableFrom(type)) {
         // "ref" was passed as argument to a constructor/function.
         // We now will search for the constructor/function invoked, to see how
@@ -176,6 +185,7 @@ class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
             final functionElement = functionExpression is Identifier
                 ? functionExpression.staticElement
                 : null;
+
             if (functionElement != null) {
               final declaration = await findAstNodeForElement(functionElement);
               final createdObjectStream = declaration?.accept(this);
@@ -184,7 +194,8 @@ class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
 
             continue argumentsLoop;
           } else if (parent is InstanceCreationExpression) {
-            final createdObject = parent.staticType?.element;
+            final createdObject = parent.staticType?.element2;
+
             if (createdObject != null) {
               final ast = await findAstNodeForElement(createdObject);
               final createdObjectStream = ast?.accept(this);
@@ -192,6 +203,28 @@ class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
             }
 
             continue argumentsLoop;
+          }
+        }
+      }
+    }
+  }
+
+  @override
+  Stream<ProviderDeclaration>? visitAssignmentExpression(
+      AssignmentExpression node) async* {
+    final superStream = super.visitAssignmentExpression(node);
+    if (superStream != null) yield* superStream;
+    final type = node.rightHandSide.staticType?.element2;
+    if (type != null && _ref.isAssignableFrom(type)) {
+      // "ref" was assigned to a variable or field
+      // We now will see if it is a field, to see how the class the field is assigned to uses ref.
+      for (final parent in node.parents) {
+        if (parent is CascadeExpression) {
+          final classElement = parent.target.staticType?.element2;
+          if (classElement != null) {
+            final declaration = await findAstNodeForElement(classElement);
+            final objectStream = declaration?.accept(this);
+            if (objectStream != null) yield* objectStream;
           }
         }
       }
@@ -265,10 +298,10 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
   Stream<Lint> visitProviderCreation(AstNode node) async* {
     final variableDeclaration =
         node.parents.whereType<VariableDeclaration>().firstOrNull;
-    final providerDeclaration = variableDeclaration?.declaredElement != null
+    final providerDeclaration = variableDeclaration?.declaredElement2 != null
         ? ProviderDeclaration._(
             variableDeclaration!,
-            variableDeclaration.declaredElement!,
+            variableDeclaration.declaredElement2!,
           )
         : null;
     yield* _checkValidProviderDeclaration(node);
@@ -292,7 +325,7 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
         if (await actualDependency.isScoped) {
           yield Lint(
             code: 'riverpod_unspecified_dependencies',
-            message: 'This provider does not specifies `dependencies`, '
+            message: 'This provider does not specify `dependencies`, '
                 'yet depends on "${actualDependency.name}" which did specify its dependencies.',
             correction: 'Add `dependencies` to this provider '
                 'or remove `dependencies` from "${actualDependency.name}".',
@@ -375,7 +408,7 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
   Stream<Lint> _checkValidProviderDeclaration(AstNode providerNode) async* {
     final declaration =
         providerNode.parents.whereType<VariableDeclaration>().firstOrNull;
-    final variable = declaration?.declaredElement;
+    final variable = declaration?.declaredElement2;
 
     if (variable == null) {
       yield Lint(
@@ -487,7 +520,7 @@ class ProviderDeclaration {
   /// Finds the "dependencies:" expression in a provider creation
   ///
   /// Returns null if failed to parse.
-  /// Returns Result(null) if successfuly passed but no dependencies was specified
+  /// Returns Result(null) if successfully passed but no dependencies was specified
   static Result<NamedExpression?>? _findDependenciesExpression(
     VariableDeclaration node,
   ) {
@@ -542,12 +575,12 @@ class ProviderDeclaration {
   /// The [AstNode] that points to the `dependencies` parameter of a provider
   late final dependenciesExpression = _findDependenciesExpression(node);
 
-  /// The decoded `dependencpes` of a provider
+  /// The decoded `dependencies` of a provider
   late final dependencies = _findDependencies(dependenciesExpression);
 
   late final Future<bool> isScoped = dependencies.then((e) => e?.value != null);
 
-  String get name => node.name.name;
+  String get name => node.name2.lexeme;
 
   @override
   String toString() => node.toString();
@@ -575,7 +608,7 @@ class ProviderDependency {
 extension on FunctionExpressionInvocation {
   /// Null if unknown
   bool? get isProviderCreation {
-    final returnType = staticType?.element;
+    final returnType = staticType?.element2;
     if (returnType == null) return null;
 
     final function = this.function;
@@ -590,7 +623,7 @@ extension on FunctionExpressionInvocation {
 extension on FunctionExpression {
   /// Null if unknown
   bool? get isWidgetBuilder {
-    final returnType = declaredElement?.returnType.element;
+    final returnType = declaredElement?.returnType.element2;
     if (returnType == null) return null;
 
     return _widget.isAssignableFrom(returnType);
@@ -600,7 +633,7 @@ extension on FunctionExpression {
 extension on InstanceCreationExpression {
   /// Null if unknown
   bool? get isProviderCreation {
-    final type = staticType?.element;
+    final type = staticType?.element2;
     if (type == null) return null;
 
     return _providerOrFamily.isAssignableFrom(type);

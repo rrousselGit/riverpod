@@ -181,13 +181,13 @@ abstract class TypeChecker {
 
   /// Returns `true` if [staticType] can be assigned to this type.
   bool isAssignableFromType(DartType staticType) =>
-      isAssignableFrom(staticType.element!);
+      isAssignableFrom(staticType.element2!);
 
   /// Returns `true` if representing the exact same class as [element].
   bool isExactly(Element element);
 
   /// Returns `true` if representing the exact same type as [staticType].
-  bool isExactlyType(DartType staticType) => isExactly(staticType.element!);
+  bool isExactlyType(DartType staticType) => isExactly(staticType.element2!);
 
   /// Returns `true` if representing a super class of [element].
   ///
@@ -213,7 +213,7 @@ abstract class TypeChecker {
   ///
   /// This only takes into account the *extends* hierarchy. If you wish
   /// to check mixins and interfaces, use [isAssignableFromType].
-  bool isSuperTypeOf(DartType staticType) => isSuperOf(staticType.element!);
+  bool isSuperTypeOf(DartType staticType) => isSuperOf(staticType.element2!);
 }
 
 // Checks a static type against another static type;
@@ -224,10 +224,10 @@ class _LibraryTypeChecker extends TypeChecker {
 
   @override
   bool isExactly(Element element) =>
-      element is ClassElement && element == _type.element;
+      element is ClassElement && element == _type.element2;
 
   @override
-  String toString() => urlOfElement(_type.element!);
+  String toString() => urlOfElement(_type.element2!);
 }
 
 // Checks a runtime type against a static type.
