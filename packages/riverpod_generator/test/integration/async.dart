@@ -6,9 +6,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'async.g.dart';
 
 @provider
-Future<String> _publicProvider(_PublicProviderRef ref) async {
+FutureOr<String> _publicProvider(_PublicProviderRef ref) {
   return 'Hello world';
 }
+
+const privateProvider = _PrivateProvider;
 
 @provider
 Future<String> __privateProvider(__PrivateProviderRef ref) async {
@@ -24,7 +26,7 @@ FutureOr<String> _familyExample(
   bool forth = true,
   List<String>? fifth,
 }) {
-  return 'Hello world';
+  return '(first: $first, second: $second, third: $third, forth: $forth, fifth: $fifth)';
 }
 
 @provider
@@ -34,6 +36,8 @@ class _PublicClassProvider extends _$PublicClassProvider {
     return 'Hello world';
   }
 }
+
+const privateClassProvider = _PrivateProvider;
 
 @provider
 class __PrivateClassProvider extends _$PrivateClassProvider {

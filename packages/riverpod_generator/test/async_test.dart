@@ -3,18 +3,19 @@
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import 'integration/sync.dart';
+import 'integration/async.dart';
 import 'utils.dart';
 
 void main() {
-  test('Creates a Provider<T> if @provider is used on a synchronous function',
+  test(
+      'Creates a FutureProvider<T> if @provider is used on a synchronous function',
       () {
     final container = createContainer();
 
-    const Provider<String> provider = PublicProvider;
-    final String result = container.read(PublicProvider);
+    const FutureProvider<String> provider = PublicProvider;
+    final AsyncValue<String> result = container.read(PublicProvider);
 
-    expect(result, 'Hello world');
+    expect(result, const AsyncData('Hello world'));
   });
 
   test('Generates .name for providers', () {
@@ -85,7 +86,7 @@ void main() {
       forth: false,
       fifth: ['x42'],
     );
-    final Provider<String> futureProvider = provider;
+    final FutureProvider<String> futureProvider = provider;
 
     expect(provider.first, 42);
     expect(provider.second, 'x42');
@@ -93,7 +94,7 @@ void main() {
     expect(provider.forth, false);
     expect(provider.fifth, ['x42']);
 
-    final String result = container.read(
+    final AsyncValue<String> result = container.read(
       FamilyExample(
         42,
         second: 'x42',
@@ -105,7 +106,8 @@ void main() {
 
     expect(
       result,
-      '(first: 42, second: x42, third: 0.42, forth: false, fifth: [x42])',
+      const AsyncData(
+          '(first: 42, second: x42, third: 0.42, forth: false, fifth: [x42])'),
     );
   });
 }
