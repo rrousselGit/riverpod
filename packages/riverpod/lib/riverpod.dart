@@ -2,10 +2,10 @@ export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
 
 // export 'src/async_notifier.dart'
 //     hide
-//         TestAsyncNotifierProvider,
-//         TestAutoDisposeAsyncNotifierProvider,
-//         TestAutoDisposeFamilyAsyncNotifierProvider,
-//         TestFamilyAsyncNotifierProvider,
+//         AsyncNotifierProviderImpl,
+//         AutoDisposeAsyncNotifierProviderImpl,
+//         AutoDisposeFamilyAsyncNotifierProviderImpl,
+//         FamilyAsyncNotifierProviderImpl,
 //         AsyncNotifierBase,
 //         AsyncNotifierProviderBase;
 
@@ -37,10 +37,10 @@ export 'src/future_provider.dart';
 //     hide
 //         NotifierBase,
 //         NotifierProviderBase,
-//         TestAutoDisposeFamilyNotifierProvider,
-//         TestAutoDisposeNotifierProvider,
-//         TestFamilyNotifierProvider,
-//         TestNotifierProvider;
+//         AutoDisposeFamilyNotifierProviderImpl,
+//         AutoDisposeNotifierProviderImpl,
+//         FamilyNotifierProviderImpl,
+//         NotifierProviderImpl;
 
 export 'src/provider.dart' hide InternalProvider;
 export 'src/state_controller.dart';

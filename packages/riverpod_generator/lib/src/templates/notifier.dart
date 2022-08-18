@@ -7,11 +7,15 @@ class NotifierTemplate {
 
   @override
   String toString() {
+    final buildReturnValueDisplayType = data.isAsync
+        ? 'FutureOr<${data.valueDisplayType}>'
+        : data.valueDisplayType;
+
     return '''
-abstract class ${data.notifierBaseName} extends NotifierBase<${data.valueDisplayType}> {
+abstract class ${data.notifierBaseName} extends ${data.notifierType()} {
 ${data.parameters.map((e) => 'late final ${e.type.getDisplayString(withNullability: true)} ${e.name};').join()}
 
-  ${data.valueDisplayType} build(${data.paramDefinition});
+  $buildReturnValueDisplayType build(${data.paramDefinition});
 }
 ''';
   }

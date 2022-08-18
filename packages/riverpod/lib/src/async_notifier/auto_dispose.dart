@@ -28,7 +28,7 @@ abstract class AutoDisposeAsyncNotifierProviderRef<T>
 /// {@macro riverpod.asyncnotifier}
 typedef AutoDisposeAsyncNotifierProvider<
         NotifierT extends AutoDisposeAsyncNotifier<T>, T>
-    = TestAutoDisposeAsyncNotifierProvider<NotifierT, T>;
+    = AutoDisposeAsyncNotifierProviderImpl<NotifierT, T>;
 
 /// The implementation of [AutoDisposeAsyncNotifierProvider] but with loosened type constraints
 /// that can be shared with [AsyncNotifierProvider].
@@ -36,11 +36,11 @@ typedef AutoDisposeAsyncNotifierProvider<
 /// This enables tests to execute on both [AutoDisposeAsyncNotifierProvider] and
 /// [AsyncNotifierProvider] at the same time.
 @internal
-class TestAutoDisposeAsyncNotifierProvider<
+class AutoDisposeAsyncNotifierProviderImpl<
     NotifierT extends AsyncNotifierBase<T>,
     T> extends AsyncNotifierProviderBase<NotifierT, T> with AsyncSelector<T> {
   /// {@macro riverpod.notifier}
-  TestAutoDisposeAsyncNotifierProvider(
+  AutoDisposeAsyncNotifierProviderImpl(
     super._createNotifier, {
     super.name,
     super.from,

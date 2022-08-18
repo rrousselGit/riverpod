@@ -34,10 +34,10 @@ List<NotifierFactory> matrix({
       NotifierFactory(
         label: 'NotifierProvider',
         isAutoDispose: false,
-        provider: TestNotifierProvider.new,
+        provider: NotifierProviderImpl.new,
         notifier: TestNotifier.new,
         testProvider: <T>(createNotifier) {
-          return TestNotifierProvider<TestNotifierBase<T>, T>(
+          return NotifierProviderImpl<TestNotifierBase<T>, T>(
             createNotifier,
           );
         },
@@ -56,20 +56,20 @@ List<NotifierFactory> matrix({
         isAutoDispose: false,
         provider: <NotifierT extends NotifierBase<T>, T>(create,
             {argument, dependencies, from, name}) {
-          return TestFamilyNotifierProvider<NotifierT, T, int>(
+          return FamilyNotifierProviderImpl<NotifierT, T, int>(
             create,
             argument: 0,
           );
         },
         notifier: TestNotifierFamily.new,
         testProvider: <T>(createNotifier) {
-          return TestFamilyNotifierProvider<TestNotifierFamily<T>, T, int>(
+          return FamilyNotifierProviderImpl<TestNotifierFamily<T>, T, int>(
             () => createNotifier() as TestNotifierFamily<T>,
             argument: 0,
           );
         },
         simpleTestProvider: <T>(init, {updateShouldNotify}) {
-          return TestFamilyNotifierProvider<TestNotifierFamily<T>, T, int>(
+          return FamilyNotifierProviderImpl<TestNotifierFamily<T>, T, int>(
             () => TestNotifierFamily<T>(
               init,
               updateShouldNotify: updateShouldNotify,
@@ -82,10 +82,10 @@ List<NotifierFactory> matrix({
       NotifierFactory(
         label: 'AutoDisposeNotifierProvider',
         isAutoDispose: true,
-        provider: TestAutoDisposeNotifierProvider.new,
+        provider: AutoDisposeNotifierProviderImpl.new,
         notifier: AutoDisposeTestNotifier.new,
         testProvider: <T>(createNotifier) {
-          return TestAutoDisposeNotifierProvider<AutoDisposeTestNotifier<T>, T>(
+          return AutoDisposeNotifierProviderImpl<AutoDisposeTestNotifier<T>, T>(
             () => createNotifier() as AutoDisposeTestNotifier<T>,
           );
         },
@@ -104,21 +104,21 @@ List<NotifierFactory> matrix({
         isAutoDispose: true,
         provider: <NotifierT extends NotifierBase<T>, T>(create,
             {argument, dependencies, from, name}) {
-          return TestAutoDisposeFamilyNotifierProvider<NotifierT, T, int>(
+          return AutoDisposeFamilyNotifierProviderImpl<NotifierT, T, int>(
             create,
             argument: 0,
           );
         },
         notifier: AutoDisposeTestNotifierFamily.new,
         testProvider: <T>(createNotifier) {
-          return TestAutoDisposeFamilyNotifierProvider<
+          return AutoDisposeFamilyNotifierProviderImpl<
               AutoDisposeTestNotifierFamily<T>, T, int>(
             () => createNotifier() as AutoDisposeTestNotifierFamily<T>,
             argument: 0,
           );
         },
         simpleTestProvider: <T>(init, {updateShouldNotify}) {
-          return TestAutoDisposeFamilyNotifierProvider<
+          return AutoDisposeFamilyNotifierProviderImpl<
               AutoDisposeTestNotifierFamily<T>, T, int>(
             () => AutoDisposeTestNotifierFamily<T>(
               init,

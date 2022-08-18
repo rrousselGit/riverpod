@@ -41,7 +41,7 @@ abstract class AsyncNotifierProviderRef<T> implements Ref<AsyncValue<T>> {}
 /// {@template riverpod.async_notifier_provider}
 /// {@endtemplate}
 typedef AsyncNotifierProvider<NotifierT extends AsyncNotifier<T>, T>
-    = TestAsyncNotifierProvider<NotifierT, T>;
+    = AsyncNotifierProviderImpl<NotifierT, T>;
 
 /// The implementation of [AsyncNotifierProvider] but with loosened type constraints
 /// that can be shared with [AutoDisposeAsyncNotifierProvider].
@@ -50,11 +50,11 @@ typedef AsyncNotifierProvider<NotifierT extends AsyncNotifier<T>, T>
 /// [AutoDisposeAsyncNotifierProvider] at the same time.
 @visibleForTesting
 @internal
-class TestAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T>
+class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.async_notifier_provider}
-  TestAsyncNotifierProvider(
+  AsyncNotifierProviderImpl(
     super._createNotifier, {
     super.name,
     super.from,

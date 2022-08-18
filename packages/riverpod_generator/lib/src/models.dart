@@ -57,9 +57,24 @@ class Data {
 
   bool get isNotifier => functionName == null;
 
-  String get notifierType {
+  String notifierType({bool generics = true}) {
     assert(isNotifier, 'functions do not have a notifier');
-    return isAsync ? 'AsyncNotifier' : 'Notifier';
+    switch (providerType) {
+      case ProviderType.notifier:
+        final trailing = generics ? '<$rawName, $valueDisplayType>' : '';
+        if (isFamily) {
+          return 'BuildlessNotifier$trailing';
+        }
+        return 'Notifier$trailing';
+      case ProviderType.asyncNotifier:
+        final trailing = generics ? '<$rawName, $valueDisplayType>' : '';
+        if (isFamily) {
+          return 'BuildlessAsyncNotifier$trailing';
+        }
+        return 'AsyncNotifier$trailing';
+      default:
+        throw UnsupportedError('Not a notifier');
+    }
   }
 
   String get refType => '${providerTypeDisplayString(generics: false)}Ref';
@@ -151,19 +166,24 @@ class Data {
   }
 
   String providerTypeDisplayString({bool generics = true}) {
+    var trailing = '';
+    if (generics) {
+      if (isNotifier) {
+        trailing = '<$rawName, $valueDisplayType>';
+      } else {
+        trailing = '<$valueDisplayType>';
+      }
+    }
+
     switch (providerType) {
       case ProviderType.provider:
-        if (!generics) return 'Provider';
-        return 'Provider<$valueDisplayType>';
+        return 'Provider$trailing';
       case ProviderType.futureProvider:
-        if (!generics) return 'FutureProvider';
-        return 'FutureProvider<$valueDisplayType>';
+        return 'FutureProvider$trailing';
       case ProviderType.notifier:
-        if (!generics) return 'NotifierProvider';
-        return 'NotifierProvider<$rawName, $valueDisplayType>';
+        return 'NotifierProvider$trailing';
       case ProviderType.asyncNotifier:
-        if (!generics) return 'AsyncNotifierProvider';
-        return 'AsyncNotifierProvider<$rawName, $valueDisplayType>';
+        return 'AsyncNotifierProvider$trailing';
     }
   }
 }
