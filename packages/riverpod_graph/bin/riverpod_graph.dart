@@ -8,11 +8,8 @@ import 'package:path/path.dart' as path;
 import 'package:riverpod_graph/riverpod_graph.dart';
 
 Future<void> main(List<String> args) {
-  print('args $args');
   final rootDirectory = args.isNotEmpty
       ? path.normalize(path.absolute(args.first))
       : Directory.current.absolute.path;
-  print('root directory $rootDirectory');
-  print('current directory ${Directory.current.absolute.path}');
   return analyze(rootDirectory);
 }

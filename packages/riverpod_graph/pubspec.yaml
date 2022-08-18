@@ -9,3 +9,4 @@ environment:
 dependencies:
   analyzer: ">=4.0.0 <4.1.0"
   collection: ^1.0.0
+  path: ^1.8.2
