@@ -5,7 +5,7 @@ import 'package:meta/meta_meta.dart';
 /// {@template riverpod_annotation.provider}
 /// An annotation placed on classes or functions.
 ///
-/// This tells riverpod_generator to generate a provider out of the annotation
+/// This tells riverpod_generator to generate a provider out of the annotated
 /// element.
 /// {@endtemplate}
 @Target({TargetKind.classType, TargetKind.function})
