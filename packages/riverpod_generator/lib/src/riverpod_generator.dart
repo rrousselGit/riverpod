@@ -10,6 +10,8 @@ import 'package:source_gen/source_gen.dart';
 
 import 'models.dart';
 import 'parse_generator.dart';
+import 'templates/family.dart';
+import 'templates/notifier.dart';
 import 'templates/provider.dart';
 import 'templates/ref.dart';
 
@@ -137,12 +139,45 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Provider> {
   }
 
   @override
+  Iterable<Object> generateForAll(GlobalData globalData) sync* {
+    yield '''
+/// Copied from Dart SDK
+class _SystemHash {
+  _SystemHash._();
+
+  static int combine(int hash, int value) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + value);
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
+    return hash ^ (hash >> 6);
+  }
+
+  static int finish(int hash) {
+    // ignore: parameter_assignments
+    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
+    // ignore: parameter_assignments
+    hash = hash ^ (hash >> 11);
+    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  }
+}
+''';
+  }
+
+  @override
   Iterable<Object> generateForData(
     GlobalData globalData,
     Data data,
   ) sync* {
     yield ProviderTemplate(data);
     yield RefTemplate(data);
+
+    if (data.isFamily) {
+      yield FamilyTemplate(data);
+    }
+    if (data.isNotifier) {
+      yield NotifierTemplate(data);
+    }
   }
 }
 

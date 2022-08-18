@@ -7,8 +7,6 @@ class FamilyTemplate {
 
   @override
   String toString() {
-    final providerType =
-        'NotifierProvider<${data.rawName}, ${data.valueDisplayType}>';
     // TODO inject provider doc into the provider
     return '''
 const ${data.providerName} = ${data.internalFamilyName}();
@@ -17,12 +15,12 @@ const ${data.providerName} = ${data.internalFamilyName}();
 class ${data.internalFamilyName} extends Family<${data.valueDisplayType}> {
   const ${data.internalFamilyName}();
 
-  $providerType call(${data.paramDefinition}) {
+  ${data.providerTypeDisplayString()} call(${data.paramDefinition}) {
     return ${data.internalProviderTypeName}(${data.paramInvocationPassAround});
   }
 
   @override
-  $providerType getProviderOverride(
+  ${data.providerTypeDisplayString()} getProviderOverride(
     covariant ${data.internalProviderTypeName} provider,
   ) {
     return call(${data.paramInvocationFromProvider});

@@ -1,5 +1,12 @@
 import 'package:analyzer/dart/element/element.dart';
 
+enum ProviderType {
+  provider,
+  futureProvider,
+  notifier,
+  asyncNotifier,
+}
+
 class Data {
   Data.function({
     required this.rawName,
@@ -48,20 +55,14 @@ class Data {
   late final List<ParameterElement> namedParameters =
       parameters.where((e) => e.isNamed).toList();
 
+  bool get isNotifier => functionName == null;
+
   String get notifierType {
-    assert(functionName != null, 'functions do not have a notifier');
+    assert(isNotifier, 'functions do not have a notifier');
     return isAsync ? 'AsyncNotifier' : 'Notifier';
   }
 
-  String get providerType {
-    if (functionName != null) {
-      return isAsync ? 'FutureProvider' : 'Provider';
-    } else {
-      return isAsync ? 'AsyncNotifierProvider' : 'NotifierProvider';
-    }
-  }
-
-  String get refType => '${providerType}Ref';
+  String get refType => '${providerTypeDisplayString(generics: false)}Ref';
 
   late final familyName = '${providerName}Family';
   late final internalFamilyName = '\$$familyName';
@@ -136,6 +137,35 @@ class Data {
     }
     return 'provider.${e.name},';
   }).join();
+
+  ProviderType get providerType {
+    if (isNotifier) {
+      if (isAsync) {
+        return ProviderType.asyncNotifier;
+      }
+      return ProviderType.notifier;
+    } else {
+      if (isAsync) return ProviderType.futureProvider;
+      return ProviderType.provider;
+    }
+  }
+
+  String providerTypeDisplayString({bool generics = true}) {
+    switch (providerType) {
+      case ProviderType.provider:
+        if (!generics) return 'Provider';
+        return 'Provider<$valueDisplayType>';
+      case ProviderType.futureProvider:
+        if (!generics) return 'FutureProvider';
+        return 'FutureProvider<$valueDisplayType>';
+      case ProviderType.notifier:
+        if (!generics) return 'NotifierProvider';
+        return 'NotifierProvider<$rawName, $valueDisplayType>';
+      case ProviderType.asyncNotifier:
+        if (!generics) return 'AsyncNotifierProvider';
+        return 'AsyncNotifierProvider<$rawName, $valueDisplayType>';
+    }
+  }
 }
 
 class GlobalData {
