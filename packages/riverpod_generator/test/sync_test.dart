@@ -17,6 +17,14 @@ void main() {
     expect(result, 'Hello world');
   });
 
+  test('Generates .name for providers', () {
+    expect(PublicProvider.name, 'PublicProvider');
+    expect(privateProvider.name, '_PrivateProvider');
+
+    expect(FamilyExample.name, 'FamilyExample');
+    expect(FamilyExample(42, third: .42).name, 'FamilyExample');
+  });
+
   test(
       'Creates a Provider.family<T> if @provider is used on a synchronous function with parameters',
       () {

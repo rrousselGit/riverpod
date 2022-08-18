@@ -11,6 +11,11 @@ String _publicProvider(_PublicProviderRef ref) {
 }
 
 @provider
+String _supports$inNames(_Supports$inNamesRef ref) {
+  return 'Hello world';
+}
+
+@provider
 String _familyExample(
   _FamilyExampleRef ref,
   int first, {
@@ -37,14 +42,6 @@ class _PublicClassProvider extends _$PublicClassProvider {
   }
 }
 
-@provider
-class _ClassFamily extends _$ClassFamily {
-  @override
-  String build() {
-    return 'Hello world';
-  }
-}
-
 const privateClassProvider = _PrivateClassProvider;
 
 @provider
@@ -65,6 +62,14 @@ class _MyNotifierFamily extends _$MyNotifierFamily {
     bool forth = true,
     List<String>? fifth,
   }) {
+    return 'Hello world';
+  }
+}
+
+@provider
+class _Supports$InClassName extends _$Supports$InClassName {
+  @override
+  String build() {
     return 'Hello world';
   }
 }

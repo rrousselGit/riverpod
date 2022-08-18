@@ -18,7 +18,7 @@ class ProviderTemplate {
     return '''
 const ${data.providerName} = ${data.providerTypeDisplayString}(
   ${create()},
-  name: '${data.providerName}',
+  name: r'${data.providerName}',
 );''';
   }
 
@@ -48,6 +48,7 @@ class ${data.internalProviderTypeName} extends ${data.providerTypeDisplayString}
   ${data.internalProviderTypeName}(${data.thisParamDefinition}) : super(
           $superConstructor,
           from: ${data.providerName},
+          name: r'${data.providerName}',
         );
 
 ${data.parameters.map((e) => 'final ${e.type.getDisplayString(withNullability: true)} ${e.name};').join()}
