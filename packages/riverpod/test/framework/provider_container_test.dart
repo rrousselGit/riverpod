@@ -31,7 +31,7 @@ void main() {
       test('defaults to zero', () {
         final container = createContainer();
 
-        expect(container.disposeDelay, Duration.zero);
+        expect(container.disposeDelay, 0);
       });
 
       test(
@@ -43,11 +43,11 @@ void main() {
           disposeDelay: 2 * 1000,
         );
 
-        expect(container.disposeDelay, const Duration(seconds: 2));
+        expect(container.disposeDelay, 2000);
 
         final container2 = createContainer(parent: parent);
 
-        expect(container2.disposeDelay, const Duration(seconds: 5));
+        expect(container2.disposeDelay, 5000);
       });
     });
 
@@ -55,7 +55,7 @@ void main() {
       test('defaults to zero', () {
         final container = createContainer();
 
-        expect(container.cacheTime, Duration.zero);
+        expect(container.cacheTime, 0);
       });
 
       test(
@@ -67,11 +67,11 @@ void main() {
           cacheTime: 2 * 1000,
         );
 
-        expect(container.cacheTime, const Duration(seconds: 2));
+        expect(container.cacheTime, 2000);
 
         final container2 = createContainer(parent: parent);
 
-        expect(container2.cacheTime, const Duration(seconds: 5));
+        expect(container2.cacheTime, 5000);
       });
     });
 
