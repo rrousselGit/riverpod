@@ -11,7 +11,7 @@ void main() {
       () {
     final container = createContainer();
 
-    const Provider<String> provider = PublicProvider;
+    const AutoDisposeProvider<String> provider = PublicProvider;
     final String result = container.read(PublicProvider);
 
     expect(result, 'Hello world');
@@ -85,7 +85,7 @@ void main() {
       forth: false,
       fifth: ['x42'],
     );
-    final Provider<String> futureProvider = provider;
+    final AutoDisposeProvider<String> futureProvider = provider;
 
     expect(provider.first, 42);
     expect(provider.second, 'x42');

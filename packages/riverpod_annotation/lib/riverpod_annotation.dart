@@ -8,6 +8,10 @@ export 'package:riverpod/src/internals.dart'
         // ignore: invalid_use_of_internal_member
         AsyncNotifierProviderImpl,
         // ignore: invalid_use_of_internal_member
+        AutoDisposeNotifierProviderImpl,
+        // ignore: invalid_use_of_internal_member
+        AutoDisposeAsyncNotifierProviderImpl,
+        // ignore: invalid_use_of_internal_member
         BuildlessAsyncNotifier,
         // ignore: invalid_use_of_internal_member
         BuildlessNotifier,

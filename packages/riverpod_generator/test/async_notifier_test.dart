@@ -12,7 +12,7 @@ void main() {
       () {
     final container = createContainer();
 
-    const AsyncNotifierProvider<PublicClass, String> provider =
+    const AutoDisposeAsyncNotifierProvider<PublicClass, String> provider =
         PublicClassProvider;
     final AsyncValue<String> result = container.read(PublicClassProvider);
 
@@ -88,8 +88,8 @@ void main() {
       fifth: ['x42'],
     );
     // ignore: invalid_use_of_internal_member
-    final AsyncNotifierProviderImpl<FamilyClass, String> futureProvider =
-        provider;
+    final AutoDisposeAsyncNotifierProviderImpl<FamilyClass, String>
+        futureProvider = provider;
 
     expect(provider.first, 42);
     expect(provider.second, 'x42');

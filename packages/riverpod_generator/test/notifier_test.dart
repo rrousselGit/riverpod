@@ -11,7 +11,8 @@ void main() {
       () {
     final container = createContainer();
 
-    const NotifierProvider<PublicClass, String> provider = PublicClassProvider;
+    const AutoDisposeNotifierProvider<PublicClass, String> provider =
+        PublicClassProvider;
     final String result = container.read(PublicProvider);
 
     expect(result, 'Hello world');
@@ -86,7 +87,8 @@ void main() {
       fifth: ['x42'],
     );
     // ignore: invalid_use_of_internal_member
-    final NotifierProviderImpl<FamilyClass, String> futureProvider = provider;
+    final AutoDisposeNotifierProviderImpl<FamilyClass, String> futureProvider =
+        provider;
 
     expect(provider.first, 42);
     expect(provider.second, 'x42');

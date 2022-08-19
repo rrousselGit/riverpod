@@ -12,7 +12,7 @@ void main() {
       () {
     final container = createContainer();
 
-    const FutureProvider<String> provider = PublicProvider;
+    const AutoDisposeFutureProvider<String> provider = PublicProvider;
     final AsyncValue<String> result = container.read(PublicProvider);
 
     expect(result, const AsyncData('Hello world'));
@@ -86,7 +86,7 @@ void main() {
       forth: false,
       fifth: ['x42'],
     );
-    final FutureProvider<String> futureProvider = provider;
+    final AutoDisposeFutureProvider<String> futureProvider = provider;
 
     expect(provider.first, 42);
     expect(provider.second, 'x42');

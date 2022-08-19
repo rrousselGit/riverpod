@@ -84,35 +84,37 @@ class Data {
   bool get isNotifier => functionName == null;
 
   String notifierType({bool generics = true}) {
-    assert(isNotifier, 'functions do not have a notifier');
+    final trailing = generics ? '<$valueDisplayType>' : '';
+    final leading = keepAlive ? '' : 'AutoDispose';
+
     switch (providerType) {
       case ProviderType.notifier:
-        final trailing = generics ? '<$valueDisplayType>' : '';
         if (isFamily) {
-          return 'BuildlessNotifier$trailing';
+          return 'Buildless${leading}Notifier$trailing';
         }
-        return 'Notifier$trailing';
+        return '${leading}Notifier$trailing';
       case ProviderType.asyncNotifier:
         final trailing = generics ? '<$valueDisplayType>' : '';
         if (isFamily) {
-          return 'BuildlessAsyncNotifier$trailing';
+          return 'Buildless${leading}AsyncNotifier$trailing';
         }
-        return 'AsyncNotifier$trailing';
+        return '${leading}AsyncNotifier$trailing';
       default:
-        throw UnsupportedError('Not a notifier');
+        throw UnsupportedError('functions do not have a notifier');
     }
   }
 
   String get refType {
+    final leading = keepAlive ? '' : 'AutoDispose';
     switch (providerType) {
       case ProviderType.provider:
-        return 'ProviderRef';
+        return '${leading}ProviderRef';
       case ProviderType.futureProvider:
-        return 'FutureProviderRef';
+        return '${leading}FutureProviderRef';
       case ProviderType.notifier:
-        return 'NotifierProviderRef';
+        return '${leading}NotifierProviderRef';
       case ProviderType.asyncNotifier:
-        return 'AsyncNotifierProviderRef';
+        return '${leading}AsyncNotifierProviderRef';
     }
   }
 
@@ -202,6 +204,8 @@ class Data {
   }
 
   String get providerTypeDisplayString {
+    final leading = keepAlive ? '' : 'AutoDispose';
+
     String trailing;
     if (isNotifier) {
       trailing = '<$rawName, $valueDisplayType>';
@@ -211,15 +215,15 @@ class Data {
 
     switch (providerType) {
       case ProviderType.provider:
-        return 'Provider$trailing';
+        return '${leading}Provider$trailing';
       case ProviderType.futureProvider:
-        return 'FutureProvider$trailing';
+        return '${leading}FutureProvider$trailing';
       case ProviderType.notifier:
-        if (isFamily) return 'NotifierProviderImpl$trailing';
-        return 'NotifierProvider$trailing';
+        if (isFamily) return '${leading}NotifierProviderImpl$trailing';
+        return '${leading}NotifierProvider$trailing';
       case ProviderType.asyncNotifier:
-        if (isFamily) return 'AsyncNotifierProviderImpl$trailing';
-        return 'AsyncNotifierProvider$trailing';
+        if (isFamily) return '${leading}AsyncNotifierProviderImpl$trailing';
+        return '${leading}AsyncNotifierProvider$trailing';
     }
   }
 }
