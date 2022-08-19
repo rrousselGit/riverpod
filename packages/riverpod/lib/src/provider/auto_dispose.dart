@@ -15,6 +15,7 @@ class AutoDisposeProvider<T> extends InternalProvider<T> {
     super.dependencies,
     super.cacheTime,
     super.disposeDelay,
+    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.family}

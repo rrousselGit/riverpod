@@ -24,6 +24,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
     super.from,
     super.argument,
     super.dependencies,
+    super.debugGetCreateSourceHash,
   }) : super(cacheTime: null, disposeDelay: null);
 
   /// {@macro riverpod.autoDispose}

@@ -151,6 +151,7 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
     required this.dependencies,
     required super.cacheTime,
     required super.disposeDelay,
+    required super.debugGetCreateSourceHash,
   });
 
   @override

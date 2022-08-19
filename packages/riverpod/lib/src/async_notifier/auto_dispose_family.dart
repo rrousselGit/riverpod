@@ -41,6 +41,7 @@ class AutoDisposeFamilyAsyncNotifierProviderImpl<
     super.dependencies,
     super.cacheTime,
     super.disposeDelay,
+    super.debugGetCreateSourceHash,
   });
 
   @override

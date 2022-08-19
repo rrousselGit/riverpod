@@ -27,6 +27,7 @@ abstract class _StateNotifierProviderBase<NotifierT extends StateNotifier<T>, T>
     required this.dependencies,
     required super.cacheTime,
     required super.disposeDelay,
+    required super.debugGetCreateSourceHash,
   });
 
   @override

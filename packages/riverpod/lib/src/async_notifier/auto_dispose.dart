@@ -55,6 +55,7 @@ class AutoDisposeAsyncNotifierProviderImpl<
     super.dependencies,
     super.cacheTime,
     super.disposeDelay,
+    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.family}

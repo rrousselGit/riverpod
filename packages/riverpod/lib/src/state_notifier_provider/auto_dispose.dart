@@ -18,6 +18,7 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
     super.dependencies,
     super.cacheTime,
     super.disposeDelay,
+    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.family}

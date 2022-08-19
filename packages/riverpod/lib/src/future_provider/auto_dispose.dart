@@ -18,6 +18,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
     super.dependencies,
     super.cacheTime,
     super.disposeDelay,
+    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.family}
