@@ -31,7 +31,7 @@ void main() {
             StateProvider.autoDispose.family<int, int>((ref, value) {
           ref.onDispose(onDispose(value));
           return value;
-        }, cacheTime: const Duration(minutes: 5));
+        }, cacheTime: 5 * 1000);
 
         final sub = container.listen<int>(provider(42), (previous, next) {});
 
@@ -41,12 +41,12 @@ void main() {
 
         sub.close();
 
-        async.elapse(const Duration(minutes: 2));
+        async.elapse(const Duration(seconds: 2));
         await container.pump();
 
         verifyZeroInteractions(onDispose(42));
 
-        async.elapse(const Duration(minutes: 3));
+        async.elapse(const Duration(seconds: 3));
         await container.pump();
 
         verifyOnly(onDispose(42), onDispose(42)());

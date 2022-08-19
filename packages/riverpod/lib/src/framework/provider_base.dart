@@ -36,16 +36,18 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   ProviderBase get _override => this;
 
   /// {@template riverpod.cache_time}
-  /// The minimum amount of time before an `autoDispose` provider can be
-  /// disposed if not listened after the last value change.
+  /// The minimum amount of time (in milliseconds) before an `autoDispose` provider
+  /// can be disposed if not listened after the last value change.
   ///
   /// If the provider rebuilds (such as when using `ref.watch` or `ref.refresh`)
   /// or emits a new value, the timer will be refreshed.
   ///
   /// If null, use the nearest ancestor [ProviderContainer]'s [cacheTime].
-  /// If no ancestor is found, fallbacks to [Duration.zero].
+  /// If no ancestor is found, fallbacks to `0`.
+  ///
+  /// If negative, this is equivalent to "infinite duration".
   /// {@endtemplate}
-  final Duration? cacheTime;
+  final int? cacheTime;
 
   /// {@template riverpod.dispose_delay}
   /// The amount of time before a provider is disposed after its last listener
@@ -55,9 +57,11 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   /// disposed.
   ///
   /// If null, use the nearest ancestor [ProviderContainer]'s [disposeDelay].
-  /// If no ancestor is found, fallbacks to [Duration.zero].
+  /// If no ancestor is found, fallbacks to `0`.
+  ///
+  /// If negative, this is equivalent to "infinite duration".
   /// {@endtemplate}
-  final Duration? disposeDelay;
+  final int? disposeDelay;
 
   /// {@template riverpod.name}
   /// A custom label for providers.

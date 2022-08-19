@@ -488,8 +488,8 @@ class AutoDisposeAsyncNotifierProviderBuilder {
     NotifierT Function() create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    Duration? cacheTime,
-    Duration? disposeDelay,
+    int? cacheTime,
+    int? disposeDelay,
   }) {
     return AutoDisposeAsyncNotifierProvider<NotifierT, T>(
       create,
@@ -517,8 +517,8 @@ class AutoDisposeAsyncNotifierProviderFamilyBuilder {
     NotifierT Function() create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    Duration? cacheTime,
-    Duration? disposeDelay,
+    int? cacheTime,
+    int? disposeDelay,
   }) {
     return AutoDisposeAsyncNotifierProviderFamily<NotifierT, T, Arg>(
       create,
@@ -596,8 +596,8 @@ class AutoDisposeNotifierProviderBuilder {
     NotifierT Function() create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    Duration? cacheTime,
-    Duration? disposeDelay,
+    int? cacheTime,
+    int? disposeDelay,
   }) {
     return AutoDisposeNotifierProvider<NotifierT, State>(
       create,
@@ -625,8 +625,8 @@ class AutoDisposeNotifierProviderFamilyBuilder {
     NotifierT Function() create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    Duration? cacheTime,
-    Duration? disposeDelay,
+    int? cacheTime,
+    int? disposeDelay,
   }) {
     return AutoDisposeNotifierProviderFamily<NotifierT, State, Arg>(
       create,
@@ -763,8 +763,8 @@ class FamilyBuilder {
       'String? name',
       'List<ProviderOrFamily>? dependencies',
       if (configs.item1 == DisposeType.autoDispose) ...[
-        'Duration? cacheTime',
-        'Duration? disposeDelay',
+        'int? cacheTime',
+        'int? disposeDelay',
       ],
     ].map((e) => '$e,').join();
     final providerParams = [
@@ -805,8 +805,8 @@ class ProviderBuilder {
       'String? name',
       'List<ProviderOrFamily>? dependencies',
       if (configs.item1 == DisposeType.autoDispose) ...[
-        'Duration? cacheTime',
-        'Duration? disposeDelay',
+        'int? cacheTime',
+        'int? disposeDelay',
       ],
     ].map((e) => '$e,').join();
     final providerParams = [

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
@@ -14,6 +15,8 @@ import 'templates/family.dart';
 import 'templates/notifier.dart';
 import 'templates/provider.dart';
 import 'templates/ref.dart';
+
+const riverpodTypeChecker = TypeChecker.fromRuntime(Riverpod);
 
 @immutable
 // ignore: invalid_use_of_internal_member
@@ -45,13 +48,30 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     }
   }
 
+  bool _getKeepAlive(DartObject element) {
+    return element.getField('keepAlive')?.toBoolValue() ?? false;
+  }
+
+  int? _getCacheTime(DartObject element) {
+    return element.getField('cacheTime')?.toIntValue();
+  }
+
+  int? _getDisposeDelay(DartObject element) {
+    return element.getField('disposeDelay')?.toIntValue();
+  }
+
   FutureOr<Data> _parseFunctionElement(
     BuildStep buildStep,
     GlobalData globalData,
     FunctionElement element,
   ) {
+    final riverpod = riverpodTypeChecker.firstAnnotationOf(element)!;
+
     return Data.function(
       rawName: element.name,
+      keepAlive: _getKeepAlive(riverpod),
+      cacheTime: _getCacheTime(riverpod),
+      disposeDelay: _getDisposeDelay(riverpod),
       isScoped: element.isExternal,
       // functional providers have a "ref" has paramter, so families have at
       // least 2 parameters.
@@ -87,8 +107,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     GlobalData globalData,
     ClassElement element,
   ) {
-    // __provider -> _Provider
-    // _provider -> Provider
+    final riverpod = riverpodTypeChecker.firstAnnotationOf(element)!;
 
     // TODO check has default constructor with no param.
 
@@ -101,6 +120,9 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     );
 
     return Data.notifier(
+      keepAlive: _getKeepAlive(riverpod),
+      cacheTime: _getCacheTime(riverpod),
+      disposeDelay: _getDisposeDelay(riverpod),
       rawName: element.name,
       notifierName: element.name,
       isScoped: buildMethod.isAbstract,

@@ -116,8 +116,8 @@ class ProviderScope extends StatefulWidget {
   /// the timer will be refreshed.
   ///
   /// If null, use the nearest ancestor [ProviderScope]'s [cacheTime].
-  /// If no ancestor is found, fallbacks to [Duration.zero].
-  final Duration? cacheTime;
+  /// If no ancestor is found, fallbacks to 0.
+  final int? cacheTime;
 
   /// The amount of time before a provider is disposed after its last listener
   /// is removed.
@@ -126,8 +126,8 @@ class ProviderScope extends StatefulWidget {
   /// disposed.
   ///
   /// If null, use the nearest ancestor [ProviderContainer]'s [disposeDelay].
-  /// If no ancestor is found, fallbacks to [Duration.zero].
-  final Duration? disposeDelay;
+  /// If no ancestor is found, fallbacks to 0.
+  final int? disposeDelay;
 
   /// Explicitly override the parent [ProviderContainer] that this [ProviderScope]
   /// would be a descendant of.

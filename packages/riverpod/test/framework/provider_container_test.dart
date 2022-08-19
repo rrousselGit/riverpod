@@ -37,11 +37,10 @@ void main() {
       test(
           'if a parent is specified and no default is passed, use the parent disposeDelay',
           () {
-        final parent =
-            createContainer(disposeDelay: const Duration(seconds: 5));
+        final parent = createContainer(disposeDelay: 5 * 1000);
         final container = createContainer(
           parent: parent,
-          disposeDelay: const Duration(seconds: 2),
+          disposeDelay: 2 * 1000,
         );
 
         expect(container.disposeDelay, const Duration(seconds: 2));
@@ -62,10 +61,10 @@ void main() {
       test(
           'if a parent is specified and no default is passed, use the parent cacheTime',
           () {
-        final parent = createContainer(cacheTime: const Duration(seconds: 5));
+        final parent = createContainer(cacheTime: 5 * 1000);
         final container = createContainer(
           parent: parent,
-          cacheTime: const Duration(seconds: 2),
+          cacheTime: 2 * 1000,
         );
 
         expect(container.cacheTime, const Duration(seconds: 2));

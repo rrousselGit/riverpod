@@ -14,10 +14,10 @@ abstract class Family<State> extends ProviderOrFamily
   const Family();
 
   /// {@macro riverpod.cache_time}
-  Duration? get cacheTime;
+  int? get cacheTime;
 
   /// {@macro riverpod.dispose_delay}
-  Duration? get disposeDelay;
+  int? get disposeDelay;
 
   @override
   List<ProviderOrFamily>? get dependencies;
@@ -145,10 +145,10 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
   final String? name;
 
   @override
-  Duration? get disposeDelay => null;
+  int? get disposeDelay => null;
 
   @override
-  Duration? get cacheTime => null;
+  int? get cacheTime => null;
 
   @override
   final List<ProviderOrFamily>? dependencies;
@@ -179,8 +179,8 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
       Family from,
       Object? argument,
       List<ProviderOrFamily>? dependencies,
-      Duration? cacheTime,
-      Duration? disposeDelay,
+      int? cacheTime,
+      int? disposeDelay,
     })
         providerFactory,
     required this.name,
@@ -195,8 +195,8 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
     Family from,
     Object? argument,
     List<ProviderOrFamily>? dependencies,
-    Duration? cacheTime,
-    Duration? disposeDelay,
+    int? cacheTime,
+    int? disposeDelay,
   }) _providerFactory;
 
   final Created Function(RefT ref, Arg arg) _createFn;
@@ -216,10 +216,10 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
   final String? name;
 
   @override
-  final Duration? disposeDelay;
+  final int? disposeDelay;
 
   @override
-  final Duration? cacheTime;
+  final int? cacheTime;
 
   @override
   final List<ProviderOrFamily>? dependencies;
@@ -281,10 +281,10 @@ class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
   final String? name;
 
   @override
-  final Duration? disposeDelay;
+  final int? disposeDelay;
 
   @override
-  final Duration? cacheTime;
+  final int? cacheTime;
 
   @override
   final List<ProviderOrFamily>? dependencies;
@@ -344,10 +344,10 @@ class NotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
   final String? name;
 
   @override
-  Duration? get disposeDelay => null;
+  int? get disposeDelay => null;
 
   @override
-  Duration? get cacheTime => null;
+  int? get cacheTime => null;
 
   @override
   final List<ProviderOrFamily>? dependencies;

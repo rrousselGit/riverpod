@@ -1,6 +1,12 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:source_gen/source_gen.dart';
 
+class Optional<T> {
+  const Optional(this.value);
+
+  final T? value;
+}
+
 enum ProviderType {
   provider,
   futureProvider,
@@ -17,6 +23,9 @@ class Data {
     required this.isScoped,
     required this.isFamily,
     required this.parameters,
+    required this.keepAlive,
+    required this.cacheTime,
+    required this.disposeDelay,
   }) : notifierName = null;
 
   Data.notifier({
@@ -27,6 +36,9 @@ class Data {
     required this.isScoped,
     required this.isFamily,
     required this.parameters,
+    required this.keepAlive,
+    required this.cacheTime,
+    required this.disposeDelay,
   }) : functionName = null;
 
   final bool isScoped;
@@ -37,6 +49,9 @@ class Data {
   final String? notifierName;
   final String valueDisplayType;
   final List<ParameterElement> parameters;
+  final bool keepAlive;
+  final int? cacheTime;
+  final int? disposeDelay;
 
   String get refName => '${rawName.titled}Ref';
 

@@ -183,7 +183,7 @@ void main() {
       await fakeAsync((async) async {
         final provider = Provider.autoDispose((ref) => 42);
         final container = createContainer(
-          disposeDelay: const Duration(seconds: 5),
+          disposeDelay: 5 * 1000,
         );
 
         final sub = container.listen(provider, (prev, next) {});
@@ -206,7 +206,7 @@ void main() {
           },
         );
         final container = createContainer(
-          disposeDelay: const Duration(seconds: 5),
+          disposeDelay: 5 * 1000,
         );
 
         final sub = container.listen<void>(provider, (prev, next) {});
@@ -235,7 +235,7 @@ void main() {
           },
         );
         final container = createContainer(
-          disposeDelay: const Duration(seconds: 5),
+          disposeDelay: 5 * 1000,
         );
 
         final sub = container.listen<void>(provider, (prev, next) {});
@@ -276,7 +276,7 @@ void main() {
           },
         );
         final container = createContainer(
-          disposeDelay: const Duration(seconds: 5),
+          disposeDelay: 5 * 1000,
         );
 
         final sub = container.listen<void>(provider, (prev, next) {});
@@ -315,7 +315,7 @@ void main() {
           },
         );
         final container = createContainer(
-          disposeDelay: const Duration(seconds: 5),
+          disposeDelay: 5 * 1000,
         );
 
         final sub = container.listen<void>(provider, (prev, next) {});
@@ -355,7 +355,7 @@ void main() {
       await fakeAsync((async) async {
         final provider = Provider.autoDispose((ref) => 42);
         final container = createContainer(
-          cacheTime: const Duration(seconds: 5),
+          cacheTime: 5 * 1000,
         );
 
         container.read(provider);
@@ -382,7 +382,7 @@ void main() {
             },
           );
           final container = createContainer(
-            cacheTime: const Duration(seconds: 5),
+            cacheTime: 5 * 1000,
           );
           final listener = Listener<AsyncValue<int>>();
 
@@ -434,7 +434,7 @@ void main() {
             },
           );
           final container = createContainer(
-            cacheTime: const Duration(seconds: 5),
+            cacheTime: 5 * 1000,
           );
 
           container.listen(provider, (prev, next) {}); // initialize data
@@ -484,7 +484,7 @@ void main() {
             },
           );
           final container = createContainer(
-            cacheTime: const Duration(seconds: 5),
+            cacheTime: 5 * 1000,
           );
 
           container.listen(provider, (prev, next) {}); // initialize data
@@ -539,7 +539,7 @@ void main() {
         final listener = OnDisposeMock();
         final provider = Provider.autoDispose(
           (ref) => ref.onDispose(listener),
-          cacheTime: const Duration(seconds: 2),
+          cacheTime: 2 * 1000,
         );
 
         container.read(provider);
@@ -561,7 +561,7 @@ void main() {
         final listener = OnDisposeMock();
         final provider = Provider.autoDispose(
           (ref) => ref.onDispose(listener),
-          cacheTime: const Duration(seconds: 5),
+          cacheTime: 5 * 1000,
         );
 
         container.read(provider);
@@ -595,7 +595,7 @@ void main() {
             ref.onDispose(listener);
             throw StateError('message');
           },
-          cacheTime: const Duration(seconds: 5),
+          cacheTime: 5 * 1000,
         );
 
         final sub = container.listen(
@@ -636,7 +636,7 @@ void main() {
             ref.onDispose(listener);
             return 0;
           },
-          cacheTime: const Duration(seconds: 5),
+          cacheTime: 5 * 1000,
         );
 
         final sub = container.listen(
@@ -675,7 +675,7 @@ void main() {
             ref.onDispose(listener);
             throw StateError('message');
           },
-          cacheTime: const Duration(seconds: 5),
+          cacheTime: 5 * 1000,
         );
 
         expect(() => container.read(provider), throwsStateError);
@@ -703,11 +703,11 @@ void main() {
         final listener = OnDisposeMock();
         final provider = Provider.autoDispose((ref) => ref.onDispose(listener));
         final root = createContainer(
-          cacheTime: const Duration(seconds: 10),
+          cacheTime: 10 * 1000,
         );
         final container = createContainer(
           parent: root,
-          cacheTime: const Duration(seconds: 5),
+          cacheTime: 5 * 1000,
           overrides: [provider],
         );
 

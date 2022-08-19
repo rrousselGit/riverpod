@@ -5,8 +5,8 @@ ProviderContainer createContainer({
   ProviderContainer? parent,
   List<Override> overrides = const [],
   List<ProviderObserver>? observers,
-  Duration? cacheTime,
-  Duration? disposeDelay,
+  int? cacheTime,
+  int? disposeDelay,
 }) {
   final container = ProviderContainer(
     parent: parent,
