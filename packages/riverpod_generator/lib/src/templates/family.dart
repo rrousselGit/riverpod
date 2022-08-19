@@ -8,7 +8,7 @@ class FamilyTemplate {
   @override
   String toString() {
     return '''
-${data.providerDoc ?? ''}
+${data.providerDoc}
 const ${data.providerName} = ${data.familyName}();
 
 class ${data.familyName} extends Family<${data.exposedValueDisplayType}> {

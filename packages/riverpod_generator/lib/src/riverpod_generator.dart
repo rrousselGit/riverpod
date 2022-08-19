@@ -68,7 +68,9 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     final riverpod = riverpodTypeChecker.firstAnnotationOf(element)!;
 
     return Data.function(
-      providerDoc: element.documentationComment,
+      providerDoc: element.documentationComment == null
+          ? '/// See also [${element.name}].'
+          : '${element.documentationComment}\n///\n/// Copied from [${element.name}].',
       rawName: element.name,
       keepAlive: _getKeepAlive(riverpod),
       cacheTime: _getCacheTime(riverpod),
@@ -119,7 +121,9 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     );
 
     return Data.notifier(
-      providerDoc: element.documentationComment,
+      providerDoc: element.documentationComment == null
+          ? '/// See also [${element.name}].'
+          : '${element.documentationComment}\n///\n/// Copied from [${element.name}].',
       keepAlive: _getKeepAlive(riverpod),
       cacheTime: _getCacheTime(riverpod),
       disposeDelay: _getDisposeDelay(riverpod),

@@ -53,7 +53,7 @@ class Data {
   final bool keepAlive;
   final int? cacheTime;
   final int? disposeDelay;
-  final String? providerDoc;
+  final String providerDoc;
 
   String get refName => '${rawName.titled}Ref';
 
