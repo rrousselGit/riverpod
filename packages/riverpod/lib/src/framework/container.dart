@@ -257,6 +257,17 @@ class ProviderContainer implements Node {
     return provider.read(this);
   }
 
+  /// Executes [ProviderElementBase.debugReassemble] on all the providers.
+  void debugReassemble() {
+    assert(() {
+      for (final element in getAllProviderElements()) {
+        element.debugReassemble();
+      }
+
+      return true;
+    }(), '');
+  }
+
   @override
   ProviderSubscription<State> _listenElement<State>(
     ProviderElementBase<State> element, {

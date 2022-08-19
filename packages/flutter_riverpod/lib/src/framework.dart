@@ -330,6 +330,15 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
   }
 
   @override
+  void reassemble() {
+    super.reassemble();
+    assert(() {
+      _containerOf(widget).debugReassemble();
+      return true;
+    }(), '');
+  }
+
+  @override
   void update(ProxyWidget newWidget) {
     if (kDebugMode) {
       _containerOf(widget).debugCanModifyProviders = null;
