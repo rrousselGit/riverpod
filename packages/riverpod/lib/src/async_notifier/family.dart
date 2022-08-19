@@ -2,7 +2,7 @@ part of '../async_notifier.dart';
 
 /// {@macro riverpod.asyncnotifier}
 abstract class FamilyAsyncNotifier<State, Arg>
-    extends AsyncNotifierBase<State> {
+    extends BuildlessAsyncNotifier<State> {
   /// {@template riverpod.notifier.family_arg}
   /// The argument that was passed to this family.
   ///
@@ -17,18 +17,10 @@ abstract class FamilyAsyncNotifier<State, Arg>
   late final Arg arg;
 
   @override
-  late final AsyncNotifierProviderElement<FamilyAsyncNotifier<State, Arg>,
-      State> _element;
-
-  @override
   void _setElement(ProviderElementBase<AsyncValue<State>> element) {
-    _element = element
-        as AsyncNotifierProviderElement<FamilyAsyncNotifier<State, Arg>, State>;
+    super._setElement(element);
     arg = element.origin.argument as Arg;
   }
-
-  @override
-  AsyncNotifierProviderRef<State> get ref => _element;
 
   /// {@macro riverpod.asyncnotifier.build}
   @visibleForOverriding
@@ -40,18 +32,18 @@ abstract class FamilyAsyncNotifier<State, Arg>
 /// {@endtemplate}
 typedef AsyncNotifierFamilyProvider<
         NotifierT extends FamilyAsyncNotifier<T, Arg>, T, Arg>
-    = TestFamilyAsyncNotifierProvider<NotifierT, T, Arg>;
+    = FamilyAsyncNotifierProviderImpl<NotifierT, T, Arg>;
 
 /// An internal implementation of [AsyncNotifierFamilyProvider] for testing purpose.
 ///
 /// Not meant for public consumption.
 @visibleForTesting
 @internal
-class TestFamilyAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T,
+class FamilyAsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T,
         Arg> extends AsyncNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.async_notifier_family_provider}
-  TestFamilyAsyncNotifierProvider(
+  FamilyAsyncNotifierProviderImpl(
     super._createNotifier, {
     super.name,
     super.from,
@@ -75,7 +67,7 @@ class TestFamilyAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T,
   }
 
   @override
-  FutureOr<T> _runNotifierBuild(
+  FutureOr<T> runNotifierBuild(
     covariant FamilyAsyncNotifier<T, Arg> notifier,
   ) {
     return notifier.build(notifier.arg);

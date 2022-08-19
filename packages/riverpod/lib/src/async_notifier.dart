@@ -143,7 +143,7 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
   /// A base class for [AsyncNotifierProvider]
   ///
   /// Not meant for public consumption
-  AsyncNotifierProviderBase(
+  const AsyncNotifierProviderBase(
     this._createNotifier, {
     required super.name,
     required super.from,
@@ -182,5 +182,9 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
 
   final NotifierT Function() _createNotifier;
 
-  FutureOr<T> _runNotifierBuild(AsyncNotifierBase<T> notifier);
+  /// Runs the `build` method of a notifier.
+  ///
+  /// This is an implementation detail for differentiating [AsyncNotifier.build]
+  /// from [FamilyAsyncNotifier.build].
+  FutureOr<T> runNotifierBuild(AsyncNotifierBase<T> notifier);
 }

@@ -1,20 +1,27 @@
 part of '../notifier.dart';
 
-/// {@template riverpod.notifier}
-abstract class AutoDisposeNotifier<State> extends NotifierBase<State> {
+/// An [AutoDisposeNotifier] base class shared between family and non-family notifiers.
+///
+/// Not meant for public consumption outside of riverpod_generator
+@internal
+abstract class BuildlessAutoDisposeNotifier<State> extends NotifierBase<State> {
   @override
-  late final AutoDisposeNotifierProviderElement<AutoDisposeNotifier<State>,
-      State> _element;
+  late final AutoDisposeNotifierProviderElement<NotifierBase<State>, State>
+      _element;
 
   @override
   void _setElement(ProviderElementBase<State> element) {
-    _element = element as AutoDisposeNotifierProviderElement<
-        AutoDisposeNotifier<State>, State>;
+    _element = element
+        as AutoDisposeNotifierProviderElement<NotifierBase<State>, State>;
   }
 
   @override
   AutoDisposeNotifierProviderRef<State> get ref => _element;
+}
 
+/// {@template riverpod.notifier}
+abstract class AutoDisposeNotifier<State>
+    extends BuildlessAutoDisposeNotifier<State> {
   /// {@macro riverpod.asyncnotifier.build}
   @visibleForOverriding
   State build();
@@ -26,7 +33,7 @@ abstract class AutoDisposeNotifierProviderRef<T>
 
 /// {@macro riverpod.notifier}
 typedef AutoDisposeNotifierProvider<NotifierT extends AutoDisposeNotifier<T>, T>
-    = TestAutoDisposeNotifierProvider<NotifierT, T>;
+    = AutoDisposeNotifierProviderImpl<NotifierT, T>;
 
 /// The implementation of [AutoDisposeNotifierProvider] but with loosened type constraints
 /// that can be shared with [NotifierProvider].
@@ -34,10 +41,10 @@ typedef AutoDisposeNotifierProvider<NotifierT extends AutoDisposeNotifier<T>, T>
 /// This enables tests to execute on both [AutoDisposeNotifierProvider] and
 /// [NotifierProvider] at the same time.
 @internal
-class TestAutoDisposeNotifierProvider<NotifierT extends NotifierBase<T>, T>
+class AutoDisposeNotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     extends NotifierProviderBase<NotifierT, T> {
   /// {@macro riverpod.notifier}
-  TestAutoDisposeNotifierProvider(
+  const AutoDisposeNotifierProviderImpl(
     super._createNotifier, {
     super.name,
     super.from,
@@ -51,7 +58,7 @@ class TestAutoDisposeNotifierProvider<NotifierT extends NotifierBase<T>, T>
   static const family = AutoDisposeNotifierProviderFamily.new;
 
   @override
-  late final Refreshable<NotifierT> notifier = _notifier<NotifierT, T>(this);
+  Refreshable<NotifierT> get notifier => _notifier<NotifierT, T>(this);
 
   @override
   AutoDisposeNotifierProviderElement<NotifierT, T> createElement() {
@@ -59,10 +66,8 @@ class TestAutoDisposeNotifierProvider<NotifierT extends NotifierBase<T>, T>
   }
 
   @override
-  T _runNotifierBuild(
-    covariant AutoDisposeNotifier<T> notifier,
-  ) {
-    return notifier.build();
+  T runNotifierBuild(NotifierBase<T> notifier) {
+    return (notifier as AutoDisposeNotifier<T>).build();
   }
 }
 

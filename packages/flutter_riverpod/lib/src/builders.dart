@@ -68,11 +68,15 @@ class ChangeNotifierProviderBuilder {
   /// ```
   /// {@endtemplate}
   ChangeNotifierProvider<Notifier> call<Notifier extends ChangeNotifier?>(
-      Create<Notifier, ChangeNotifierProviderRef<Notifier>> create,
-      {String? name,
-      List<ProviderOrFamily>? dependencies}) {
-    return ChangeNotifierProvider<Notifier>(create,
-        name: name, dependencies: dependencies);
+    Create<Notifier, ChangeNotifierProviderRef<Notifier>> create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+  }) {
+    return ChangeNotifierProvider<Notifier>(
+      create,
+      name: name,
+      dependencies: dependencies,
+    );
   }
 
   /// {@macro riverpod.autoDispose}
@@ -325,18 +329,21 @@ class AutoDisposeChangeNotifierProviderBuilder {
   const AutoDisposeChangeNotifierProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
-  AutoDisposeChangeNotifierProvider<Notifier> call<
-          Notifier extends ChangeNotifier?>(
-      Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>> create,
-      {String? name,
-      List<ProviderOrFamily>? dependencies,
-      Duration? cacheTime,
-      Duration? disposeDelay}) {
-    return AutoDisposeChangeNotifierProvider<Notifier>(create,
-        name: name,
-        dependencies: dependencies,
-        cacheTime: cacheTime,
-        disposeDelay: disposeDelay);
+  AutoDisposeChangeNotifierProvider<Notifier>
+      call<Notifier extends ChangeNotifier?>(
+    Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>> create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+    int? cacheTime,
+    int? disposeDelay,
+  }) {
+    return AutoDisposeChangeNotifierProvider<Notifier>(
+      create,
+      name: name,
+      dependencies: dependencies,
+      cacheTime: cacheTime,
+      disposeDelay: disposeDelay,
+    );
   }
 
   /// {@macro riverpod.family}
@@ -353,17 +360,19 @@ class AutoDisposeChangeNotifierProviderFamilyBuilder {
   /// {@macro riverpod.family}
   AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>
       call<Notifier extends ChangeNotifier?, Arg>(
-          FamilyCreate<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>,
-                  Arg>
-              create,
-          {String? name,
-          List<ProviderOrFamily>? dependencies,
-          Duration? cacheTime,
-          Duration? disposeDelay}) {
-    return AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>(create,
-        name: name,
-        dependencies: dependencies,
-        cacheTime: cacheTime,
-        disposeDelay: disposeDelay);
+    FamilyCreate<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>, Arg>
+        create, {
+    String? name,
+    List<ProviderOrFamily>? dependencies,
+    int? cacheTime,
+    int? disposeDelay,
+  }) {
+    return AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>(
+      create,
+      name: name,
+      dependencies: dependencies,
+      cacheTime: cacheTime,
+      disposeDelay: disposeDelay,
+    );
   }
 }

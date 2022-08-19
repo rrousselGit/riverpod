@@ -1,23 +1,15 @@
 part of '../notifier.dart';
 
 /// {@template riverpod.notifier}
-abstract class FamilyNotifier<State, Arg> extends NotifierBase<State> {
+abstract class FamilyNotifier<State, Arg> extends BuildlessNotifier<State> {
   /// {@template riverpod.notifier.family_arg}
   late final Arg arg;
 
   @override
-  late final NotifierProviderElement<FamilyNotifier<State, Arg>, State>
-      _element;
-
-  @override
   void _setElement(ProviderElementBase<State> element) {
-    _element =
-        element as NotifierProviderElement<FamilyNotifier<State, Arg>, State>;
+    super._setElement(element);
     arg = element.origin.argument as Arg;
   }
-
-  @override
-  NotifierProviderRef<State> get ref => _element;
 
   /// {@macro riverpod.asyncnotifier.build}
   @visibleForOverriding
@@ -26,7 +18,7 @@ abstract class FamilyNotifier<State, Arg> extends NotifierBase<State> {
 
 /// The provider for [NotifierProviderFamily].
 typedef NotifierFamilyProvider<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
-    = TestFamilyNotifierProvider<NotifierT, T, Arg>;
+    = FamilyNotifierProviderImpl<NotifierT, T, Arg>;
 
 /// The implementation of [NotifierFamilyProvider] but with loosened type constraints
 /// that can be shared with [AutoDisposeNotifierProvider].
@@ -35,10 +27,10 @@ typedef NotifierFamilyProvider<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
 /// [AutoDisposeNotifierProvider] at the same time.
 @visibleForTesting
 @internal
-class TestFamilyNotifierProvider<NotifierT extends NotifierBase<T>, T, Arg>
+class FamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>, T, Arg>
     extends NotifierProviderBase<NotifierT, T> with AlwaysAliveProviderBase<T> {
   /// {@macro riverpod.notifier}
-  TestFamilyNotifierProvider(
+  FamilyNotifierProviderImpl(
     super._createNotifier, {
     super.name,
     super.from,
@@ -63,7 +55,7 @@ class TestFamilyNotifierProvider<NotifierT extends NotifierBase<T>, T, Arg>
   }
 
   @override
-  T _runNotifierBuild(
+  T runNotifierBuild(
     covariant FamilyNotifier<T, Arg> notifier,
   ) {
     return notifier.build(notifier.arg);

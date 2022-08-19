@@ -53,7 +53,7 @@ mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
   void buildState() {
     super.buildState();
 
-    if (_disposeDelay != Duration.zero) {
+    if (_disposeDelay != 0) {
       // TODO timer should not refresh when provider rebuilds
       // TODO adding a new listener cancels the timer
 
@@ -71,7 +71,7 @@ mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
       onCancel(() {
         assert(_disposeDelayLink != null, 'Bad state');
         assert(_disposeDelayTimer == null, 'Bad state');
-        _disposeDelayTimer = Timer(_disposeDelay, () {
+        _disposeDelayTimer = Timer(Duration(milliseconds: _disposeDelay), () {
           _disposeDelayTimer = null;
           _disposeDelayLink!.close();
           _disposeDelayLink = null;
@@ -89,7 +89,7 @@ mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
       // when the last value was emitted.
     }
 
-    if (_cacheTime != Duration.zero) {
+    if (_cacheTime != 0) {
       // Safe to have as a local variable since links are cleared
       // on rebuild
       KeepAliveLink? link;
@@ -98,7 +98,7 @@ mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
         link ??= keepAlive();
         _cacheTimer?.cancel();
 
-        _cacheTimer = Timer(_cacheTime, () {
+        _cacheTimer = Timer(Duration(milliseconds: _cacheTime), () {
           link!.close();
           link = null;
           _cacheTimer = null;
@@ -115,7 +115,7 @@ mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
         link ??= keepAlive();
         _cacheTimer?.cancel();
 
-        _cacheTimer = Timer(_cacheTime, () {
+        _cacheTimer = Timer(Duration(milliseconds: _cacheTime), () {
           link!.close();
           link = null;
           _cacheTimer = null;

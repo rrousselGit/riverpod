@@ -98,7 +98,7 @@ abstract class NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
   /// An internal base class for [Notifier].
   ///
   /// Not meant for public consumption.
-  NotifierProviderBase(
+  const NotifierProviderBase(
     this._createNotifier, {
     required super.name,
     required super.from,
@@ -130,5 +130,10 @@ abstract class NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
 
   final NotifierT Function() _createNotifier;
 
-  T _runNotifierBuild(NotifierBase<T> notifier);
+  /// Runs the `build` method of a notifier.
+  ///
+  /// This is an implementation detail for differentiating [Notifier.build]
+  /// from [FamilyNotifier.build].
+  @visibleForOverriding
+  T runNotifierBuild(NotifierBase<T> notifier);
 }

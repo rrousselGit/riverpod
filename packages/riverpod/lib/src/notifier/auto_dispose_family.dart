@@ -2,23 +2,15 @@ part of '../notifier.dart';
 
 /// {@template riverpod.notifier}
 abstract class AutoDisposeFamilyNotifier<State, Arg>
-    extends NotifierBase<State> {
+    extends BuildlessAutoDisposeNotifier<State> {
   /// {@template riverpod.notifier.family_arg}
   late final Arg arg;
 
   @override
-  late final AutoDisposeNotifierProviderElement<
-      AutoDisposeFamilyNotifier<State, Arg>, State> _element;
-
-  @override
   void _setElement(ProviderElementBase<State> element) {
-    _element = element as AutoDisposeNotifierProviderElement<
-        AutoDisposeFamilyNotifier<State, Arg>, State>;
+    super._setElement(element);
     arg = element.origin.argument as Arg;
   }
-
-  @override
-  AutoDisposeNotifierProviderRef<State> get ref => _element;
 
   /// {@macro riverpod.asyncnotifier.build}
   @visibleForOverriding
@@ -28,7 +20,7 @@ abstract class AutoDisposeFamilyNotifier<State, Arg>
 /// {@macro riverpod.notifier}
 typedef AutoDisposeFamilyNotifierProvider<
         NotifierT extends AutoDisposeFamilyNotifier<T, Arg>, T, Arg>
-    = TestAutoDisposeFamilyNotifierProvider<NotifierT, T, Arg>;
+    = AutoDisposeFamilyNotifierProviderImpl<NotifierT, T, Arg>;
 
 /// The implementation of [AutoDisposeNotifierProvider] but with loosened type constraints
 /// that can be shared with [NotifierProvider].
@@ -36,10 +28,10 @@ typedef AutoDisposeFamilyNotifierProvider<
 /// This enables tests to execute on both [AutoDisposeNotifierProvider] and
 /// [NotifierProvider] at the same time.
 @internal
-class TestAutoDisposeFamilyNotifierProvider<NotifierT extends NotifierBase<T>,
+class AutoDisposeFamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>,
     T, Arg> extends NotifierProviderBase<NotifierT, T> {
   /// {@macro riverpod.notifier}
-  TestAutoDisposeFamilyNotifierProvider(
+  AutoDisposeFamilyNotifierProviderImpl(
     super._createNotifier, {
     super.name,
     super.from,
@@ -58,7 +50,7 @@ class TestAutoDisposeFamilyNotifierProvider<NotifierT extends NotifierBase<T>,
   }
 
   @override
-  T _runNotifierBuild(
+  T runNotifierBuild(
     covariant AutoDisposeFamilyNotifier<T, Arg> notifier,
   ) {
     return notifier.build(notifier.arg);

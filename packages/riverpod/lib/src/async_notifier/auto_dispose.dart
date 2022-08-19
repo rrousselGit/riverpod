@@ -1,21 +1,28 @@
 part of '../async_notifier.dart';
 
-/// {@macro riverpod.asyncnotifier}
-abstract class AutoDisposeAsyncNotifier<State>
+/// A [AutoDisposeAsyncNotifier] base class shared between family and non-family notifiers.
+///
+/// Not meant for public consumption outside of riverpod_generator
+@internal
+abstract class BuildlessAutoDisposeAsyncNotifier<State>
     extends AsyncNotifierBase<State> {
   @override
-  late final AutoDisposeAsyncNotifierProviderElement<
-      AutoDisposeAsyncNotifier<State>, State> _element;
+  late final AutoDisposeAsyncNotifierProviderElement<AsyncNotifierBase<State>,
+      State> _element;
 
   @override
   void _setElement(ProviderElementBase<AsyncValue<State>> element) {
     _element = element as AutoDisposeAsyncNotifierProviderElement<
-        AutoDisposeAsyncNotifier<State>, State>;
+        AsyncNotifierBase<State>, State>;
   }
 
   @override
   AutoDisposeAsyncNotifierProviderRef<State> get ref => _element;
+}
 
+/// {@macro riverpod.asyncnotifier}
+abstract class AutoDisposeAsyncNotifier<State>
+    extends BuildlessAutoDisposeAsyncNotifier<State> {
   /// {@macro riverpod.asyncnotifier.build}
   @visibleForOverriding
   FutureOr<State> build();
@@ -28,7 +35,7 @@ abstract class AutoDisposeAsyncNotifierProviderRef<T>
 /// {@macro riverpod.asyncnotifier}
 typedef AutoDisposeAsyncNotifierProvider<
         NotifierT extends AutoDisposeAsyncNotifier<T>, T>
-    = TestAutoDisposeAsyncNotifierProvider<NotifierT, T>;
+    = AutoDisposeAsyncNotifierProviderImpl<NotifierT, T>;
 
 /// The implementation of [AutoDisposeAsyncNotifierProvider] but with loosened type constraints
 /// that can be shared with [AsyncNotifierProvider].
@@ -36,11 +43,11 @@ typedef AutoDisposeAsyncNotifierProvider<
 /// This enables tests to execute on both [AutoDisposeAsyncNotifierProvider] and
 /// [AsyncNotifierProvider] at the same time.
 @internal
-class TestAutoDisposeAsyncNotifierProvider<
+class AutoDisposeAsyncNotifierProviderImpl<
     NotifierT extends AsyncNotifierBase<T>,
     T> extends AsyncNotifierProviderBase<NotifierT, T> with AsyncSelector<T> {
   /// {@macro riverpod.notifier}
-  TestAutoDisposeAsyncNotifierProvider(
+  const AutoDisposeAsyncNotifierProviderImpl(
     super._createNotifier, {
     super.name,
     super.from,
@@ -54,10 +61,10 @@ class TestAutoDisposeAsyncNotifierProvider<
   static const family = AutoDisposeAsyncNotifierProviderFamily.new;
 
   @override
-  late final Refreshable<NotifierT> notifier = _notifier<NotifierT, T>(this);
+  Refreshable<NotifierT> get notifier => _notifier<NotifierT, T>(this);
 
   @override
-  late final Refreshable<Future<T>> future = _future<T>(this);
+  Refreshable<Future<T>> get future => _future<T>(this);
 
   @override
   AutoDisposeAsyncNotifierProviderElement<NotifierT, T> createElement() {
@@ -65,10 +72,8 @@ class TestAutoDisposeAsyncNotifierProvider<
   }
 
   @override
-  FutureOr<T> _runNotifierBuild(
-    covariant AutoDisposeAsyncNotifier<T> notifier,
-  ) {
-    return notifier.build();
+  FutureOr<T> runNotifierBuild(AsyncNotifierBase<T> notifier) {
+    return (notifier as AutoDisposeAsyncNotifier<T>).build();
   }
 }
 

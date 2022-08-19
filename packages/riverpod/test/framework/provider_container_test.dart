@@ -31,24 +31,23 @@ void main() {
       test('defaults to zero', () {
         final container = createContainer();
 
-        expect(container.disposeDelay, Duration.zero);
+        expect(container.disposeDelay, 0);
       });
 
       test(
           'if a parent is specified and no default is passed, use the parent disposeDelay',
           () {
-        final parent =
-            createContainer(disposeDelay: const Duration(seconds: 5));
+        final parent = createContainer(disposeDelay: 5 * 1000);
         final container = createContainer(
           parent: parent,
-          disposeDelay: const Duration(seconds: 2),
+          disposeDelay: 2 * 1000,
         );
 
-        expect(container.disposeDelay, const Duration(seconds: 2));
+        expect(container.disposeDelay, 2000);
 
         final container2 = createContainer(parent: parent);
 
-        expect(container2.disposeDelay, const Duration(seconds: 5));
+        expect(container2.disposeDelay, 5000);
       });
     });
 
@@ -56,23 +55,23 @@ void main() {
       test('defaults to zero', () {
         final container = createContainer();
 
-        expect(container.cacheTime, Duration.zero);
+        expect(container.cacheTime, 0);
       });
 
       test(
           'if a parent is specified and no default is passed, use the parent cacheTime',
           () {
-        final parent = createContainer(cacheTime: const Duration(seconds: 5));
+        final parent = createContainer(cacheTime: 5 * 1000);
         final container = createContainer(
           parent: parent,
-          cacheTime: const Duration(seconds: 2),
+          cacheTime: 2 * 1000,
         );
 
-        expect(container.cacheTime, const Duration(seconds: 2));
+        expect(container.cacheTime, 2000);
 
         final container2 = createContainer(parent: parent);
 
-        expect(container2.cacheTime, const Duration(seconds: 5));
+        expect(container2.cacheTime, 5000);
       });
     });
 

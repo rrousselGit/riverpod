@@ -1,10 +1,10 @@
 part of '../async_notifier.dart';
 
-/// {@template riverpod.asyncnotifier}
-/// A [Notifier] implementation that is asynchronously initialized.
-/// {@endtemplate}
-// TODO add usage example
-abstract class AsyncNotifier<State> extends AsyncNotifierBase<State> {
+/// A [AsyncNotifier] base class shared between family and non-family notifiers.
+///
+/// Not meant for public consumption outside of riverpod_generator
+@internal
+abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
   @override
   late final AsyncNotifierProviderElement<AsyncNotifierBase<State>, State>
       _element;
@@ -17,7 +17,13 @@ abstract class AsyncNotifier<State> extends AsyncNotifierBase<State> {
 
   @override
   AsyncNotifierProviderRef<State> get ref => _element;
+}
 
+/// {@template riverpod.asyncnotifier}
+/// A [Notifier] implementation that is asynchronously initialized.
+/// {@endtemplate}
+// TODO add usage example
+abstract class AsyncNotifier<State> extends BuildlessAsyncNotifier<State> {
   /// {@template riverpod.asyncnotifier.build}
   /// Initialize an [AsyncNotifier].
   ///
@@ -41,7 +47,7 @@ abstract class AsyncNotifierProviderRef<T> implements Ref<AsyncValue<T>> {}
 /// {@template riverpod.async_notifier_provider}
 /// {@endtemplate}
 typedef AsyncNotifierProvider<NotifierT extends AsyncNotifier<T>, T>
-    = TestAsyncNotifierProvider<NotifierT, T>;
+    = AsyncNotifierProviderImpl<NotifierT, T>;
 
 /// The implementation of [AsyncNotifierProvider] but with loosened type constraints
 /// that can be shared with [AutoDisposeAsyncNotifierProvider].
@@ -50,11 +56,11 @@ typedef AsyncNotifierProvider<NotifierT extends AsyncNotifier<T>, T>
 /// [AutoDisposeAsyncNotifierProvider] at the same time.
 @visibleForTesting
 @internal
-class TestAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T>
+class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderBase<NotifierT, T>
     with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.async_notifier_provider}
-  TestAsyncNotifierProvider(
+  const AsyncNotifierProviderImpl(
     super._createNotifier, {
     super.name,
     super.from,
@@ -69,11 +75,11 @@ class TestAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T>
   static const family = AsyncNotifierProviderFamilyBuilder();
 
   @override
-  late final AlwaysAliveRefreshable<NotifierT> notifier =
+  AlwaysAliveRefreshable<NotifierT> get notifier =>
       _notifier<NotifierT, T>(this);
 
   @override
-  late final AlwaysAliveRefreshable<Future<T>> future = _future<T>(this);
+  AlwaysAliveRefreshable<Future<T>> get future => _future<T>(this);
 
   @override
   AsyncNotifierProviderElement<NotifierT, T> createElement() {
@@ -81,8 +87,8 @@ class TestAsyncNotifierProvider<NotifierT extends AsyncNotifierBase<T>, T>
   }
 
   @override
-  FutureOr<T> _runNotifierBuild(covariant AsyncNotifier<T> notifier) {
-    return notifier.build();
+  FutureOr<T> runNotifierBuild(AsyncNotifierBase<T> notifier) {
+    return (notifier as AsyncNotifier<T>).build();
   }
 }
 
@@ -122,7 +128,7 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
       data: (notifier) {
         asyncTransition(didChangeDependency: didChangeDependency);
         final futureOrResult = Result.guard(
-          () => provider._runNotifierBuild(notifier),
+          () => provider.runNotifierBuild(notifier),
         );
 
         // TODO test build throws -> provider emits AsyncError synchronously & .future emits Future.error

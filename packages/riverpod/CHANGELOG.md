@@ -16,6 +16,8 @@
   to set `AsyncValue.isRefreshing` when an `AsyncLoading` is emitted.
 - It is no longer possible to pass `provider.future/.notifier/...` to the parameter `dependencies` of provider.
   Simply pass the provider instead.
+- `cacheTime`/`disposeDelay` are no longer a `Duration` but instead an `int`,
+  representing the `Duration` in milliseconds.
 
 Non-breaking changes:
 

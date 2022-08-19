@@ -1,23 +1,29 @@
 part of '../notifier.dart';
 
+/// A [Notifier] base class shared between family and non-family notifiers.
+///
+/// Not meant for public consumption outside of riverpod_generator
+@internal
+abstract class BuildlessNotifier<State> extends NotifierBase<State> {
+  @override
+  late final NotifierProviderElement<NotifierBase<State>, State> _element;
+
+  @override
+  void _setElement(ProviderElementBase<State> element) {
+    _element = element as NotifierProviderElement<NotifierBase<State>, State>;
+  }
+
+  @override
+  NotifierProviderRef<State> get ref => _element;
+}
+
 /// {@template riverpod.notifier}
 /// A class which exposes a state that can change over time.
 ///
 /// The state of [Notifier] is expected to be initialized synchronously.
 /// For asynchronous initializations, see [AsyncNotifier].
 /// {@endtemplate}
-abstract class Notifier<State> extends NotifierBase<State> {
-  @override
-  late final NotifierProviderElement<Notifier<State>, State> _element;
-
-  @override
-  void _setElement(ProviderElementBase<State> element) {
-    _element = element as NotifierProviderElement<Notifier<State>, State>;
-  }
-
-  @override
-  NotifierProviderRef<State> get ref => _element;
-
+abstract class Notifier<State> extends BuildlessNotifier<State> {
   /// {@template riverpod.notifier.build}
   /// Initialize a [Notifier].
   ///
@@ -40,7 +46,7 @@ abstract class NotifierProviderRef<T> implements Ref<T> {}
 /// {@template riverpod.notifier_provider}
 /// {@endtemplate}
 typedef NotifierProvider<NotifierT extends Notifier<T>, T>
-    = TestNotifierProvider<NotifierT, T>;
+    = NotifierProviderImpl<NotifierT, T>;
 
 /// The implementation of [NotifierProvider] but with loosened type constraints
 /// that can be shared with [AutoDisposeNotifierProvider].
@@ -48,10 +54,10 @@ typedef NotifierProvider<NotifierT extends Notifier<T>, T>
 /// This enables tests to execute on both [NotifierProvider] and
 /// [AutoDisposeNotifierProvider] at the same time.
 @internal
-class TestNotifierProvider<NotifierT extends NotifierBase<T>, T>
+class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     extends NotifierProviderBase<NotifierT, T> with AlwaysAliveProviderBase<T> {
   /// {@macro riverpod.notifier_provider}
-  TestNotifierProvider(
+  const NotifierProviderImpl(
     super._createNotifier, {
     super.name,
     super.from,
@@ -71,12 +77,12 @@ class TestNotifierProvider<NotifierT extends NotifierBase<T>, T>
   }
 
   @override
-  late final AlwaysAliveRefreshable<NotifierT> notifier =
+  AlwaysAliveRefreshable<NotifierT> get notifier =>
       _notifier<NotifierT, T>(this);
 
   @override
-  T _runNotifierBuild(covariant Notifier<T> notifier) {
-    return notifier.build();
+  T runNotifierBuild(NotifierBase<T> notifier) {
+    return (notifier as Notifier<T>).build();
   }
 }
 
@@ -100,7 +106,7 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     final notifier = notifierResult.requireState;
 
 // TODO test if Element fails to init, the provider rethrows the error
-    setState(provider._runNotifierBuild(notifier));
+    setState(provider.runNotifierBuild(notifier));
   }
 
   @override
