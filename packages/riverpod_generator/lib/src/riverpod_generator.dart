@@ -96,9 +96,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
 
     if (!isAsync) return element.returnType;
 
-// TODO test this does not throw with FutureOR
     final returnType = element.returnType as InterfaceType;
-
     return returnType.typeArguments.single;
   }
 
