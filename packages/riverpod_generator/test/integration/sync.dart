@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'sync.g.dart';
 
+/// This is some documentation
 @riverpod
 String public(PublicRef ref) {
   return 'Hello world';
@@ -13,6 +14,7 @@ String supports$inNames(Supports$inNamesRef ref) {
   return 'Hello world';
 }
 
+/// This is some documentation
 @riverpod
 String family(
   FamilyRef ref,
@@ -32,6 +34,7 @@ String _private(_PrivateRef ref) {
   return 'Hello world';
 }
 
+/// This is some documentation
 @riverpod
 class PublicClass extends _$PublicClass {
   @override
@@ -50,6 +53,7 @@ class _PrivateClass extends _$PrivateClass {
   }
 }
 
+/// This is some documentation
 @riverpod
 class FamilyClass extends _$FamilyClass {
   @override

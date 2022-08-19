@@ -16,6 +16,7 @@ class ProviderTemplate {
     }
 
     return '''
+${data.providerDoc ?? ''}
 const ${data.providerName} = ${data.providerTypeDisplayString}(
   ${create()},
   name: r'${data.providerName}',
@@ -45,9 +46,8 @@ const ${data.providerName} = ${data.providerTypeDisplayString}(
   }
 
   String _familyClass() {
-    // TODO inject provider doc into the provider
-
     return '''
+${data.providerDoc ?? ''}
 class ${data.providerTypeNameImpl} extends ${data.providerTypeDisplayString} {
   ${data.providerTypeNameImpl}(${data.thisParamDefinition}) : super(
           $superConstructor,

@@ -68,6 +68,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     final riverpod = riverpodTypeChecker.firstAnnotationOf(element)!;
 
     return Data.function(
+      providerDoc: element.documentationComment,
       rawName: element.name,
       keepAlive: _getKeepAlive(riverpod),
       cacheTime: _getCacheTime(riverpod),
@@ -118,6 +119,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     );
 
     return Data.notifier(
+      providerDoc: element.documentationComment,
       keepAlive: _getKeepAlive(riverpod),
       cacheTime: _getCacheTime(riverpod),
       disposeDelay: _getDisposeDelay(riverpod),

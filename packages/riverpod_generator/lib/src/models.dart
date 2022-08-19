@@ -25,6 +25,7 @@ class Data {
     required this.keepAlive,
     required this.cacheTime,
     required this.disposeDelay,
+    required this.providerDoc,
   }) : notifierName = null;
 
   Data.notifier({
@@ -38,6 +39,7 @@ class Data {
     required this.keepAlive,
     required this.cacheTime,
     required this.disposeDelay,
+    required this.providerDoc,
   }) : functionName = null;
 
   final bool isScoped;
@@ -51,6 +53,7 @@ class Data {
   final bool keepAlive;
   final int? cacheTime;
   final int? disposeDelay;
+  final String? providerDoc;
 
   String get refName => '${rawName.titled}Ref';
 

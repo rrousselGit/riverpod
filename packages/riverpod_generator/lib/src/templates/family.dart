@@ -7,9 +7,8 @@ class FamilyTemplate {
 
   @override
   String toString() {
-    // TODO inject provider doc into the provider
-
     return '''
+${data.providerDoc ?? ''}
 const ${data.providerName} = ${data.familyName}();
 
 class ${data.familyName} extends Family<${data.exposedValueDisplayType}> {
