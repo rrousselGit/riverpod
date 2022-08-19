@@ -18,6 +18,7 @@ const _family = TypeChecker.fromRuntime(Family);
 const _providerOrFamily = TypeChecker.any([_providerBase, _family]);
 
 const _widget = TypeChecker.fromName('Widget', packageName: 'flutter');
+const _widgetState = TypeChecker.fromName('State', packageName: 'flutter');
 
 const _widgetRef =
     TypeChecker.fromName('WidgetRef', packageName: 'flutter_riverpod');
@@ -214,8 +215,9 @@ class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
       AssignmentExpression node) async* {
     final superStream = super.visitAssignmentExpression(node);
     if (superStream != null) yield* superStream;
-    final type = node.rightHandSide.staticType?.element2;
-    if (type != null && _ref.isAssignableFrom(type)) {
+    final rightType = node.rightHandSide.staticType?.element2;
+
+    if (rightType != null && _ref.isAssignableFrom(rightType)) {
       // "ref" was assigned to a variable or field
       // We now will see if it is a field, to see how the class the field is assigned to uses ref.
       for (final parent in node.parents) {
@@ -225,6 +227,16 @@ class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
             final declaration = await findAstNodeForElement(classElement);
             final objectStream = declaration?.accept(this);
             if (objectStream != null) yield* objectStream;
+          }
+        } else if (parent is ExpressionStatement) {
+          final assignee = node.leftHandSide;
+          if (assignee is PrefixedIdentifier) {
+            final target = assignee.prefix.staticType?.element2;
+            if (target is InterfaceElement) {
+              final declaration = await findAstNodeForElement(target);
+              final objectStream = declaration?.accept(this);
+              if (objectStream != null) yield* objectStream;
+            }
           }
         }
       }
@@ -308,6 +320,57 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
 
     if (providerDeclaration != null) {
       yield* _checkProviderDependencies(providerDeclaration);
+    }
+  }
+
+  @override
+  Stream<Lint>? visitExpression(Expression node) async* {
+    final superStream = super.visitExpression(node);
+    if (superStream != null) yield* superStream;
+    final st = node.staticType?.element2;
+    if (st != null &&
+        _ref.isAssignableFrom(st) &&
+        (node.parent is ExpressionFunctionBody ||
+            node.parent is ReturnStatement)) {
+      yield Lint(
+        code: 'riverpod_ref_escape_scope',
+        message: 'Ref escaped the scope via a function or return expression.',
+        correction:
+            'Pass ref to the function or constructor that needs it instead',
+        severity: LintSeverity.warning,
+        location: unit.lintLocationFromOffset(
+          node.offset,
+          length: node.length,
+        ),
+      );
+    }
+  }
+
+  @override
+  Stream<Lint>? visitConstructorDeclaration(
+      ConstructorDeclaration node) async* {
+    final superStream = super.visitConstructorDeclaration(node);
+    if (superStream != null) yield* superStream;
+    for (final param in node.parameters.parameters) {
+      final type = param.declaredElement?.type.element2;
+
+      if (type != null && _widgetRef.isAssignableFrom(type)) {
+        final klass = node.returnType.staticElement;
+        if (klass != null &&
+            (_widget.isAssignableFrom(klass) ||
+                _widgetState.isAssignableFrom(klass))) {
+          yield Lint(
+            code: 'riverpod_ref_escape_scope',
+            message: 'Ref escaped its scope to another widget.',
+            correction: 'Use a Consumer widget instead',
+            severity: LintSeverity.warning,
+            location: unit.lintLocationFromOffset(
+              param.offset,
+              length: param.length,
+            ),
+          );
+        }
+      }
     }
   }
 

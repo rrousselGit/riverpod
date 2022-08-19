@@ -24,7 +24,7 @@ Future<void> main() async {
   test/goldens/dependencies.dart:93:4 • This provider depends on "a" yet "a" isn't listed in the dependencies. • riverpod_missing_dependency
   test/goldens/dependencies.dart:110:48 • This provider depends on "a" yet "a" isn't listed in the dependencies. • riverpod_missing_dependency
   test/goldens/dependencies.dart:122:60 • This provider depends on "a" yet "a" isn't listed in the dependencies. • riverpod_missing_dependency
-  test/goldens/dependencies.dart:136:4 • This provider depends on "a" yet "a" isn't listed in the dependencies. • riverpod_missing_dependency
+  test/goldens/dependencies.dart:127:4 • This provider depends on "a" yet "a" isn't listed in the dependencies. • riverpod_missing_dependency
   test/goldens/final_provider.dart:5:14 • Providers should always be declared as final • riverpod_final_provider
   test/goldens/final_provider.dart:6:51 • Providers should always be declared as final • riverpod_final_provider
   test/goldens/final_provider.dart:11:5 • Providers should always be declared as final • riverpod_final_provider
@@ -48,6 +48,9 @@ Future<void> main() async {
   test/goldens/read_vs_watch.dart:104:9 • Avoid using ref.watch outside the build method of widgets/providers. • riverpod_avoid_watch_outside_build
   test/goldens/read_vs_watch.dart:114:5 • Avoid using ref.watch outside the build method of widgets/providers. • riverpod_avoid_watch_outside_build
   test/goldens/read_vs_watch.dart:128:5 • Avoid using ref.watch outside the build method of widgets/providers. • riverpod_avoid_watch_outside_build
+  test/goldens/ref_escape_scope.dart:7:12 • Ref escaped the scope via a function or return expression. • riverpod_ref_escape_scope
+  test/goldens/ref_escape_scope.dart:33:32 • Ref escaped its scope to another widget. • riverpod_ref_escape_scope
+  test/goldens/ref_escape_scope.dart:42:32 • Ref escaped its scope to another widget. • riverpod_ref_escape_scope
 ''');
   });
 }

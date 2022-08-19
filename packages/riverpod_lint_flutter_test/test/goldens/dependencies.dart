@@ -118,8 +118,13 @@ class Q extends StateNotifier<int> {
   }
 }
 
-final r =
+final r1 =
     StateNotifierProvider<R, int>((ref) => R()..ref = ref, dependencies: []);
+final r2 = StateNotifierProvider<R, int>((ref) {
+  final r = R();
+  r.ref = ref;
+  return r;
+}, dependencies: []);
 
 class R extends StateNotifier<int> {
   R() : super(0);
@@ -127,26 +132,6 @@ class R extends StateNotifier<int> {
 
   void fn() {
     ref.read(a);
-  }
-}
-
-final s = StateProvider((ref) {
-  get() => ref;
-  get().watch(a);
-}, dependencies: []);
-
-// TODO: Ref escape analysis
-final t = StateNotifierProvider<T, int>((ref) {
-  get() => ref;
-  return T(get);
-}, dependencies: []);
-
-class T extends StateNotifier<int> {
-  T(this.get) : super(0);
-  final Ref Function() get;
-
-  void fn() {
-    get().read(a);
   }
 }
 
