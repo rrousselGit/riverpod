@@ -20,7 +20,7 @@ ProviderElementProxy<T, NotifierT>
 
 abstract class _StateNotifierProviderBase<NotifierT extends StateNotifier<T>, T>
     extends ProviderBase<T> {
-  const _StateNotifierProviderBase({
+  _StateNotifierProviderBase({
     required super.name,
     required super.from,
     required super.argument,

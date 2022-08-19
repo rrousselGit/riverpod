@@ -7,7 +7,7 @@ abstract class AutoDisposeProviderRef<State> extends ProviderRef<State>
 /// {@macro riverpod.provider}
 class AutoDisposeProvider<T> extends InternalProvider<T> {
   /// {@macro riverpod.provider}
-  const AutoDisposeProvider(
+  AutoDisposeProvider(
     this._createFn, {
     super.name,
     super.from,

@@ -17,7 +17,7 @@ class ProviderTemplate {
 
     return '''
 ${data.providerDoc}
-const ${data.providerName} = ${data.providerTypeDisplayString}(
+final ${data.providerName} = ${data.providerTypeDisplayString}(
   ${create()},
   name: r'${data.providerName}',
   debugGetCreateSourceHash: ${data.hashFn},

@@ -44,7 +44,7 @@ typedef AutoDisposeNotifierProvider<NotifierT extends AutoDisposeNotifier<T>, T>
 class AutoDisposeNotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     extends NotifierProviderBase<NotifierT, T> {
   /// {@macro riverpod.notifier}
-  const AutoDisposeNotifierProviderImpl(
+  AutoDisposeNotifierProviderImpl(
     super._createNotifier, {
     super.name,
     super.from,
@@ -59,7 +59,7 @@ class AutoDisposeNotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   static const family = AutoDisposeNotifierProviderFamily.new;
 
   @override
-  Refreshable<NotifierT> get notifier => _notifier<NotifierT, T>(this);
+  late final Refreshable<NotifierT> notifier = _notifier<NotifierT, T>(this);
 
   @override
   AutoDisposeNotifierProviderElement<NotifierT, T> createElement() {

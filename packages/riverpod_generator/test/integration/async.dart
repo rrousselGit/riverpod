@@ -8,7 +8,7 @@ FutureOr<String> public(PublicRef ref) {
   return 'Hello world';
 }
 
-const privateProvider = _PrivateProvider;
+final privateProvider = _PrivateProvider;
 
 @riverpod
 Future<String> _private(_PrivateRef ref) async {
@@ -35,7 +35,7 @@ class PublicClass extends _$PublicClass {
   }
 }
 
-const privateClassProvider = _PrivateClassProvider;
+final privateClassProvider = _PrivateClassProvider;
 
 @riverpod
 class _PrivateClass extends _$PrivateClass {

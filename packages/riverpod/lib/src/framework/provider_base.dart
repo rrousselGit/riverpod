@@ -21,7 +21,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
     with ProviderListenable<State>
     implements ProviderOverride, Refreshable<State> {
   /// A base class for _all_ providers.
-  const ProviderBase({
+  ProviderBase({
     required this.name,
     required this.from,
     required this.argument,

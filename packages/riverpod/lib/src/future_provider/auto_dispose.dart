@@ -10,7 +10,7 @@ abstract class AutoDisposeFutureProviderRef<State>
 class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
     with AsyncSelector<T> {
   /// {@macro riverpod.futureprovider}
-  const AutoDisposeFutureProvider(
+  AutoDisposeFutureProvider(
     this._createFn, {
     super.name,
     super.from,
@@ -36,10 +36,10 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
   }
 
   @override
-  Refreshable<Future<T>> get future => _future(this);
+  late final Refreshable<Future<T>> future = _future(this);
 
   @override
-  Refreshable<Stream<T>> get stream => _stream(this);
+  late final Refreshable<Stream<T>> stream = _stream(this);
 }
 
 /// The [ProviderElementBase] of [AutoDisposeFutureProvider]

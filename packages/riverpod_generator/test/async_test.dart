@@ -12,7 +12,7 @@ void main() {
       () {
     final container = createContainer();
 
-    const AutoDisposeFutureProvider<String> provider = PublicProvider;
+    final AutoDisposeFutureProvider<String> provider = PublicProvider;
     final AsyncValue<String> result = container.read(PublicProvider);
 
     expect(result, const AsyncData('Hello world'));
@@ -42,7 +42,7 @@ void main() {
       () {
     final container = createContainer();
 
-    const FamilyProviderFamily family = FamilyProvider;
+    final FamilyProviderFamily family = FamilyProvider;
 
     expect(FamilyProvider(42, third: .42).from, FamilyProvider);
 

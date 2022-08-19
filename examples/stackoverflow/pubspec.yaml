@@ -16,6 +16,7 @@ dependencies:
   hooks_riverpod: any
   html: ^0.15.0
   json_annotation: ^4.6.0
+  riverpod_annotation:
 
 dev_dependencies:
   build_runner: ^2.0.0
@@ -24,6 +25,7 @@ dev_dependencies:
   freezed: ^2.1.0
   json_serializable: ^6.3.0
   mockito: ^5.0.0
+  riverpod_generator:
 
 flutter:
   uses-material-design: true
