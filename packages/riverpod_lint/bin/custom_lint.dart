@@ -37,10 +37,10 @@ const _ref = TypeChecker.fromRuntime(Ref);
 const _refBinders = {'read', 'watch', 'listen'};
 
 void main(List<String> args, SendPort sendPort) {
-  startPlugin(sendPort, _RiverpodLint());
+  startPlugin(sendPort, RiverpodLint());
 }
 
-class _RiverpodLint extends PluginBase {
+class RiverpodLint extends PluginBase {
   @override
   Stream<Lint> getLints(ResolvedUnitResult unit) {
     final visitor = RiverpodVisitor(unit);
