@@ -45,6 +45,9 @@ class Repository {
         'hash': hash,
       },
     );
+    if (result.data == null) {
+      return [];
+    }
     final response = MarvelResponse.fromJson(result.data!);
 
     return response //
