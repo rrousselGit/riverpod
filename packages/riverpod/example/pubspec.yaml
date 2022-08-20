@@ -3,13 +3,13 @@ version: 0.0.1
 publish_to: "none"
 
 environment:
-  sdk: ">=2.12.0-0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
   crypto: ^3.0.0
+  dio: ^4.0.0
+  freezed_annotation: ^2.0.0
   json_annotation: ^4.6.0
-  dio: ^4.0.6
-  freezed_annotation: ^2.1.0
   riverpod:
     path: ..
 

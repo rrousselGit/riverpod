@@ -12,28 +12,23 @@ export 'package:state_notifier/state_notifier.dart' hide Listener, LocatorMixin;
 export 'src/common.dart' hide AsyncTransition;
 
 export 'src/framework.dart'
-    show
-        Create,
-        // ignore: deprecated_member_use_from_same_package
-        Reader,
-        AlwaysAliveProviderBase,
-        Family,
-        CircularDependencyError,
-        ProviderBase,
-        Override,
-        AutoDisposeRef,
-        Ref,
-        ProviderListenable,
-        ProviderContainer,
-        ProviderObserver,
-        ProviderSubscription,
-        AutoDisposeProviderBase,
-        AutoDisposeProviderElementBase,
-        ProviderElementBase,
-        ProviderOverride,
+    hide
+        FamilyCreate,
+        AsyncSelector,
+        FamilyBase,
+        AutoDisposeProviderElementMixin,
         FamilyOverride,
+        NotifierFamilyBase,
+        SetupFamilyOverride,
         SetupOverride,
-        AlwaysAliveProviderListenable;
+        AutoDisposeNotifierFamilyBase,
+        ProviderOverride,
+        AutoDisposeFamilyBase,
+        AlwaysAliveAsyncSelector,
+        handleFireImmediately,
+        Create,
+        Node,
+        ProviderElementProxy;
 
 export 'src/future_provider.dart';
 
