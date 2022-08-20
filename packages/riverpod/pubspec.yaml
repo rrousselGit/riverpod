@@ -16,6 +16,7 @@ dependencies:
   state_notifier: ^0.7.0
 
 dev_dependencies:
+  analyzer: ^4.6.0
   build_runner: ^2.0.0
   expect_error: ^1.0.0
   mockito: ^5.0.0
