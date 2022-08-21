@@ -20,7 +20,10 @@ dependencies:
   hooks_riverpod: any
   html: ^0.15.0
   json_annotation: ^4.6.0
+  pubspec_parse: ^1.2.1
   riverpod_annotation:
+  shimmer: ^2.0.0
+
 
 dev_dependencies:
   build_runner: ^2.0.0

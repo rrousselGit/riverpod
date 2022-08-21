@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:pubspec_parse/pubspec_parse.dart';
 
 part 'pub_repository.freezed.dart';
 part 'pub_repository.g.dart';
@@ -16,6 +17,8 @@ class PubRepository {
     );
 
     final response = await dio.getUri<Map<String, Object?>>(uri);
+
+    print('Packages\n${response.data}');
 
     final packagesResponse = PubPackagesResponse.fromJson(response.data!);
     return packagesResponse.packages;
@@ -47,6 +50,8 @@ class PubRepository {
     );
 
     final response = await dio.getUri<Map<String, Object?>>(uri);
+
+    print('Details ${response.data}');
 
     final packageResponse = Package.fromJson(response.data!);
     return packageResponse;
@@ -113,23 +118,23 @@ class PubRepository {
 
 const userToken = '';
 
-@freezed
-class PackagePubpspec with _$PackagePubpspec {
-  factory PackagePubpspec({
-    required String name,
-    required String? description,
-    required String? homepage,
-  }) = _PackagePubpspec;
+// @freezed
+// class PackagePubpspec with _$PackagePubpspec {
+//   factory PackagePubpspec({
+//     required String name,
+//     required String? description,
+//     required String? homepage,
+//   }) = _PackagePubpspec;
 
-  factory PackagePubpspec.fromJson(Map<String, Object?> json) =>
-      _$PackagePubpspecFromJson(json);
-}
+//   factory PackagePubpspec.fromJson(Map<String, Object?> json) =>
+//       _$PackagePubpspecFromJson(json);
+// }
 
 @freezed
 class PackageDetails with _$PackageDetails {
   factory PackageDetails({
     required String version,
-    required PackagePubpspec pubspec,
+    required Pubspec pubspec,
   }) = _PackageDetails;
 
   factory PackageDetails.fromJson(Map<String, Object?> json) =>

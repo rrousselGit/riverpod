@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'pub_repository.dart';
+import 'pub_ui/appbar.dart';
 
 part 'detail.g.dart';
 
@@ -69,7 +70,7 @@ class PackageDetailPage extends ConsumerWidget {
     final isLiked = likedPackages.valueOrNull?.contains(packageName) ?? false;
 
     return Scaffold(
-      appBar: AppBar(title: Text(packageName)),
+      appBar: const PubAppbar(),
       body: package.when(
         error: (err, stack) => Text('Error $err'),
         loading: () => const Center(child: CircularProgressIndicator()),

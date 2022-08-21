@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'detail.dart';
 import 'pub_repository.dart';
 import 'pub_ui/appbar.dart';
+import 'pub_ui/package_item.dart';
 import 'pub_ui/searchbar.dart';
 
 part 'search.g.dart';
@@ -54,7 +54,7 @@ class SearchPage extends HookConsumerWidget {
       appBar: const PubAppbar(),
       body: Column(
         children: [
-          const SearchBar(),
+          SearchBar(controller: searchController),
           Expanded(
             child: RefreshIndicator(
               onRefresh: () {
@@ -84,30 +84,22 @@ class SearchPage extends HookConsumerWidget {
 
                   return packageList.when(
                     error: (err, stack) => Text('Error $err'),
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator()),
+                    loading: () => const PackageItemShimmer(),
                     data: (packages) {
                       if (indexInPage >= packages.length) return null;
 
                       final package = packages[indexInPage];
 
-                      return ListTile(
+                      return PackageItem(
+                        name: package.name,
+                        description: package.latest.pubspec.description,
+                        version: package.latest.version,
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute<void>(builder: (context) {
                             return PackageDetailPage(packageName: package.name);
                           }),
                         ),
-                        title: Row(
-                          children: [
-                            Text(package.name),
-                            const Spacer(),
-                            Text(package.latest.version),
-                          ],
-                        ),
-                        subtitle: package.latest.pubspec.description != null
-                            ? Text(package.latest.pubspec.description!)
-                            : null,
                       );
                     },
                   );

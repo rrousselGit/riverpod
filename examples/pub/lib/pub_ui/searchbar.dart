@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class SearchBar extends StatelessWidget {
   const SearchBar({Key? key, this.controller}) : super(key: key);
@@ -35,6 +33,8 @@ class SearchBar extends StatelessWidget {
                     Expanded(
                       child: Center(
                         child: TextField(
+                          controller: controller,
+                          style: const TextStyle(color: Colors.white),
                           decoration: const InputDecoration(
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.zero,
