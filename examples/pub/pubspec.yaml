@@ -9,6 +9,8 @@ environment:
 
 dependencies:
   dio: ^4.0.0
+  firebase_core:
+  firebase_auth:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.18.0
