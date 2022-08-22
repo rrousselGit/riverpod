@@ -16,7 +16,6 @@ dependencies:
   flutter_hooks: ^0.18.0
   flutter_svg: ^1.1.4
   freezed_annotation: ^2.1.0
-  google_sign_in: ^5.4.1
   hooks_riverpod: any
   html: ^0.15.0
   json_annotation: ^4.6.0

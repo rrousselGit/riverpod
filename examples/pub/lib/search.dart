@@ -26,6 +26,7 @@ Future<List<Package>> fetchPackages(
   required int page,
   String search = '',
 }) async {
+  assert(page > 0, 'page offset starts at 1');
   final cancelToken = ref.cancelToken();
 
   if (search.isEmpty) {
@@ -74,7 +75,7 @@ class SearchPage extends HookConsumerWidget {
                 ref.invalidate(FetchPackagesProvider);
                 // keep showing the progress indicator until the first page is fetched
                 return ref.read(
-                  FetchPackagesProvider(page: 0, search: searchController.text)
+                  FetchPackagesProvider(page: 1, search: searchController.text)
                       .future,
                 );
               },
