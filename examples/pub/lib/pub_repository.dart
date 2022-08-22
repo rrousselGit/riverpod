@@ -8,7 +8,10 @@ part 'pub_repository.g.dart';
 class PubRepository {
   final dio = Dio();
 
-  Future<List<Package>> getPackages({required int page}) async {
+  Future<List<Package>> getPackages({
+    required int page,
+    CancelToken? cancelToken,
+  }) async {
     final uri = Uri(
       scheme: 'https',
       host: 'pub.dartlang.org',
@@ -16,9 +19,10 @@ class PubRepository {
       queryParameters: <String, String>{'page': '$page'},
     );
 
-    final response = await dio.getUri<Map<String, Object?>>(uri);
-
-    print('Packages\n${response.data}');
+    final response = await dio.getUri<Map<String, Object?>>(
+      uri,
+      cancelToken: cancelToken,
+    );
 
     final packagesResponse = PubPackagesResponse.fromJson(response.data!);
     return packagesResponse.packages;
@@ -27,6 +31,7 @@ class PubRepository {
   Future<List<SearchPackage>> searchPackages({
     required int page,
     required String search,
+    CancelToken? cancelToken,
   }) async {
     final uri = Uri(
       scheme: 'https',
@@ -35,13 +40,19 @@ class PubRepository {
       queryParameters: <String, String>{'page': '$page', 'q': search},
     );
     // Returns {packages: [{ package: string }]}
-    final response = await dio.getUri<Map<String, Object?>>(uri);
+    final response = await dio.getUri<Map<String, Object?>>(
+      uri,
+      cancelToken: cancelToken,
+    );
 
     final packagesResponse = PubSearchResponse.fromJson(response.data!);
     return packagesResponse.packages;
   }
 
-  Future<Package> getPackageDetails({required String packageName}) async {
+  Future<Package> getPackageDetails({
+    required String packageName,
+    CancelToken? cancelToken,
+  }) async {
     final dio = Dio();
     final uri = Uri(
       scheme: 'https',
@@ -49,27 +60,56 @@ class PubRepository {
       path: 'api/packages/$packageName',
     );
 
-    final response = await dio.getUri<Map<String, Object?>>(uri);
-
-    print('Details ${response.data}');
+    final response = await dio.getUri<Map<String, Object?>>(
+      uri,
+      cancelToken: cancelToken,
+    );
 
     final packageResponse = Package.fromJson(response.data!);
     return packageResponse;
   }
 
-  Future<int> getPackageLikesCount({required String packageName}) async {
+  Future<PackageMetricsScore> getPackageMetrics({
+    required String packageName,
+    CancelToken? cancelToken,
+  }) async {
     final uri = Uri(
+      scheme: 'https',
+      host: 'pub.dartlang.org',
+      path: 'api/packages/$packageName/metrics',
+    );
+
+    final responseFuture = dio.getUri<Map<String, Object?>>(
+      uri,
+      cancelToken: cancelToken,
+    );
+
+    final likesUri = Uri(
       scheme: 'https',
       host: 'pub.dartlang.org',
       path: 'api/packages/$packageName/likes',
     );
 
-    final response = await dio.getUri<Map<String, Object?>>(uri);
-    final likesResponse = PackageLikesResponse.fromJson(response.data!);
-    return likesResponse.likes;
+    /// Although the metrics request does include the likes count, it seems that
+    /// the server caches the response for a long period of time.
+    /// For the same of "http polling" showcase, we're separately fetching the likes
+    /// count
+    final likesResponsFuture = dio.getUri<Map<String, Object?>>(
+      likesUri,
+      cancelToken: cancelToken,
+    );
+
+    final metricsResponse =
+        PackageMetricsResponse.fromJson((await responseFuture).data!);
+    return metricsResponse.score.copyWith(
+      likeCount: (await likesResponsFuture).data!['likes']! as int,
+    );
   }
 
-  Future<void> like({required String packageName}) async {
+  Future<void> like({
+    required String packageName,
+    CancelToken? cancelToken,
+  }) async {
     final uri = Uri(
       scheme: 'https',
       host: 'pub.dartlang.org',
@@ -78,13 +118,17 @@ class PubRepository {
 
     await dio.putUri<void>(
       uri,
+      cancelToken: cancelToken,
       options: Options(
         headers: <String, String>{'authorization': userToken},
       ),
     );
   }
 
-  Future<void> unlike({required String packageName}) async {
+  Future<void> unlike({
+    required String packageName,
+    CancelToken? cancelToken,
+  }) async {
     final uri = Uri(
       scheme: 'https',
       host: 'pub.dartlang.org',
@@ -93,11 +137,12 @@ class PubRepository {
 
     await dio.deleteUri<void>(
       uri,
+      cancelToken: cancelToken,
       options: Options(headers: <String, String>{'authorization': userToken}),
     );
   }
 
-  Future<List<String>> getLikedPackages() async {
+  Future<List<String>> getLikedPackages({CancelToken? cancelToken}) async {
     final uri = Uri(
       scheme: 'https',
       host: 'pub.dartlang.org',
@@ -106,6 +151,7 @@ class PubRepository {
 
     final response = await dio.getUri<Map<String, Object?>>(
       uri,
+      cancelToken: cancelToken,
       options: Options(
         headers: <String, String>{'authorization': userToken},
       ),
@@ -118,17 +164,29 @@ class PubRepository {
 
 const userToken = '';
 
-// @freezed
-// class PackagePubpspec with _$PackagePubpspec {
-//   factory PackagePubpspec({
-//     required String name,
-//     required String? description,
-//     required String? homepage,
-//   }) = _PackagePubpspec;
+@freezed
+class PackageMetricsScore with _$PackageMetricsScore {
+  factory PackageMetricsScore({
+    required int grantedPoints,
+    required int maxPoints,
+    required int likeCount,
+    required double popularityScore,
+    required List<String> tags,
+  }) = _PackageMetricsScore;
 
-//   factory PackagePubpspec.fromJson(Map<String, Object?> json) =>
-//       _$PackagePubpspecFromJson(json);
-// }
+  factory PackageMetricsScore.fromJson(Map<String, Object?> json) =>
+      _$PackageMetricsScoreFromJson(json);
+}
+
+@freezed
+class PackageMetricsResponse with _$PackageMetricsResponse {
+  factory PackageMetricsResponse({
+    required PackageMetricsScore score,
+  }) = _PackageMetricsResponse;
+
+  factory PackageMetricsResponse.fromJson(Map<String, Object?> json) =>
+      _$PackageMetricsResponseFromJson(json);
+}
 
 @freezed
 class PackageDetails with _$PackageDetails {
@@ -150,15 +208,6 @@ class Package with _$Package {
 
   factory Package.fromJson(Map<String, Object?> json) =>
       _$PackageFromJson(json);
-}
-
-@freezed
-class PackageLikesResponse with _$PackageLikesResponse {
-  factory PackageLikesResponse({required String package, required int likes}) =
-      _PackageLikesResponse;
-
-  factory PackageLikesResponse.fromJson(Map<String, Object?> json) =>
-      _$PackageLikesResponseFromJson(json);
 }
 
 @freezed

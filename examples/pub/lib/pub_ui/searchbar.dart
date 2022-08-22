@@ -35,10 +35,12 @@ class SearchBar extends StatelessWidget {
                         child: TextField(
                           controller: controller,
                           style: const TextStyle(color: Colors.white),
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.zero,
                             isDense: true,
+                            hintText: 'search packages',
+                            hintStyle: TextStyle(color: Colors.grey.shade400),
                           ),
                           onEditingComplete: () {
                             FocusManager.instance.primaryFocus?.unfocus();

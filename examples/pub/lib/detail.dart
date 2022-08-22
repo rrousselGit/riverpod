@@ -1,9 +1,13 @@
+import 'dart:async';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'pub_repository.dart';
 import 'pub_ui/appbar.dart';
+import 'search.dart';
 
 part 'detail.g.dart';
 
@@ -13,37 +17,75 @@ part 'detail.g.dart';
 // TODO hot-reload handle family adding parameters
 // TODO found "Future already completed error" after adding family parameter
 
-@riverpod
+extension CancelTokenX on Ref {
+  CancelToken cancelToken() {
+    final cancelToken = CancelToken();
+    onDispose(cancelToken.cancel);
+    return cancelToken;
+  }
+}
+
+@Riverpod(cacheTime: 30 * 100)
 Future<Package> fetchPackageDetails(
   FetchPackageDetailsRef ref, {
   required String packageName,
 }) async {
+  final cancelToken = ref.cancelToken();
+
   return ref
       .watch(PubRepositoryProvider)
-      .getPackageDetails(packageName: packageName);
+      .getPackageDetails(packageName: packageName, cancelToken: cancelToken);
 }
 
 @riverpod
 Future<List<String>> likedPackages(LikedPackagesRef ref) async {
-  return ref.watch(PubRepositoryProvider).getLikedPackages();
+  final cancelToken = ref.cancelToken();
+
+  return ref
+      .watch(PubRepositoryProvider)
+      .getLikedPackages(cancelToken: cancelToken);
 }
 
 @riverpod
 PubRepository pubRepository(PubRepositoryRef ref) => PubRepository();
 
-@riverpod
-class PackageLikes extends _$PackageLikes {
+/// A provider that fetches the likes count, popularity score and pub points
+/// for a given package.
+///
+/// It also exposes utilities to like/unlike a package, assuming the user
+/// is logged-in.
+@Riverpod(cacheTime: 30 * 100)
+class PackageMetrics extends _$PackageMetrics {
   @override
-  Future<int> build({required String packageName}) {
-    return ref
+  Future<PackageMetricsScore> build({required String packageName}) async {
+    final metrics = await ref
         .watch(PubRepositoryProvider)
-        .getPackageLikesCount(packageName: packageName);
+        .getPackageMetrics(packageName: packageName);
+
+    // Automatically refresh the package metrics page every 5 seconds
+    final timer = Timer(const Duration(seconds: 5), () => ref.invalidateSelf());
+    // If the request was refreshed before the 5 second timer completes,
+    // cancel the timer.
+    ref.onDispose(timer.cancel);
+
+    return metrics;
   }
 
   Future<void> like() async {
     await ref.read(PubRepositoryProvider).like(packageName: packageName);
 
+    /// Since the like count as change, we refresh the package metrics.
+    /// We could alternatively do something like:
+    // state = AsyncData(
+    //   state.value!.copyWith(likeCount: state.value!.likeCount + 1),
+    // );
     ref.invalidateSelf();
+
+    // Since we liked a package, the list of liked packages should also be updated.
+    // An alternative could be:
+    // - convert likedPackages to a class
+    // - add a like/unlike methods that updates the list of liked packages
+    // - call ref.read(LikedPackagesProvider).like(packageName);
     ref.invalidate(LikedPackagesProvider);
   }
 
@@ -55,10 +97,12 @@ class PackageLikes extends _$PackageLikes {
   }
 }
 
+/// The detail page of a package, typically reached by clicking on a package from [SearchPage].
 class PackageDetailPage extends ConsumerWidget {
   const PackageDetailPage({Key? key, required this.packageName})
       : super(key: key);
 
+  /// The name of the package that is inspected.
   final String packageName;
 
   @override
@@ -69,38 +113,121 @@ class PackageDetailPage extends ConsumerWidget {
     final likedPackages = ref.watch(LikedPackagesProvider);
     final isLiked = likedPackages.valueOrNull?.contains(packageName) ?? false;
 
+    final metrics = ref.watch(
+      PackageMetricsProviderProvider(packageName: packageName),
+    );
+
     return Scaffold(
       appBar: const PubAppbar(),
       body: package.when(
-        error: (err, stack) => Text('Error $err'),
+        error: (err, stack) => Text('Error2 $err'),
         loading: () => const Center(child: CircularProgressIndicator()),
         data: (package) {
-          final likes = ref.watch(
-            PackageLikesProviderProvider(packageName: packageName),
-          );
-
           return RefreshIndicator(
             onRefresh: () {
               return Future.wait([
                 ref.refresh(
-                  PackageLikesProviderProvider(packageName: packageName).future,
+                  PackageMetricsProviderProvider(packageName: packageName)
+                      .future,
                 ),
                 ref.refresh(
                   FetchPackageDetailsProvider(packageName: packageName).future,
                 ),
               ]);
             },
-            child: ListView(
-              children: [
-                Text(package.name),
-                Text(package.latest.pubspec.description ?? ''),
-                likes.when(
-                  error: (err, stack) => Text('Error $err'),
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                  data: (likes) => Text('Likes: $likes'),
-                ),
-              ],
+            child: metrics.when(
+              error: (err, stack) => Text('Error $err'),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              data: (metrics) {
+                return ListView(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                  children: [
+                    Text(
+                      '${package.name} ${package.latest.version}',
+                      style: const TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(package.latest.pubspec.description ?? ''),
+                    const SizedBox(height: 40),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                              '${metrics.likeCount}',
+                              style: const TextStyle(
+                                color: Color(0xff1967d2),
+                                fontSize: 40,
+                              ),
+                            ),
+                            const Text('LIKES', style: TextStyle(fontSize: 13)),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              textBaseline: TextBaseline.alphabetic,
+                              children: [
+                                Text(
+                                  '${metrics.grantedPoints}',
+                                  style: const TextStyle(
+                                    color: Color(0xff1967d2),
+                                    fontSize: 40,
+                                  ),
+                                ),
+                                Text(
+                                  '/${metrics.maxPoints}',
+                                  style: const TextStyle(
+                                    color: Color(0xff1967d2),
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Text(
+                              'PUB POINTS',
+                              style: TextStyle(fontSize: 13),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              textBaseline: TextBaseline.alphabetic,
+                              children: [
+                                Text(
+                                  '${metrics.popularityScore.floor()}',
+                                  style: const TextStyle(
+                                    color: Color(0xff1967d2),
+                                    fontSize: 40,
+                                  ),
+                                ),
+                                const Text(
+                                  '%',
+                                  style: TextStyle(
+                                    color: Color(0xff1967d2),
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Text(
+                              'POPULARITY',
+                              style: TextStyle(fontSize: 13),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
             ),
           );
         },
@@ -108,7 +235,7 @@ class PackageDetailPage extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           final packageLikes = ref.read(
-            PackageLikesProviderProvider(packageName: packageName).notifier,
+            PackageMetricsProviderProvider(packageName: packageName).notifier,
           );
 
           if (isLiked) {

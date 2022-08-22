@@ -26,13 +26,25 @@ Future<List<Package>> fetchPackages(
   required int page,
   String search = '',
 }) async {
+  final cancelToken = ref.cancelToken();
+
   if (search.isEmpty) {
-    return ref.watch(PubRepositoryProvider).getPackages(page: page);
+    return ref
+        .watch(PubRepositoryProvider)
+        .getPackages(page: page, cancelToken: cancelToken);
+  }
+
+  // Debouncing searches by delaying the request.
+  // If the search was cancelled during this delay, the network request will
+  // not be performed.
+  await Future<void>.delayed(const Duration(milliseconds: 250));
+  if (cancelToken.isCancelled) {
+    throw Exception('cancelled');
   }
 
   final searchedPackages = await ref
       .watch(PubRepositoryProvider)
-      .searchPackages(page: page, search: search);
+      .searchPackages(page: page, search: search, cancelToken: cancelToken);
 
   return Future.wait([
     for (final package in searchedPackages)
