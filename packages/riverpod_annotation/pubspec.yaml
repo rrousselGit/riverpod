@@ -1,0 +1,14 @@
+name: riverpod_annotation
+description: A new Flutter project.
+version: 0.0.0
+
+environment:
+  sdk: ">=2.16.0-144.0.dev <3.0.0"
+
+dependencies:
+  meta: ^1.7.0
+  riverpod: 2.0.0-dev.9
+
+dev_dependencies:
+  test: ^1.21.0
+  

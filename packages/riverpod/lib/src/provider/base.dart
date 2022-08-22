@@ -16,10 +16,10 @@ abstract class ProviderRef<State> implements Ref<State> {
 
 /// {@macro riverpod.provider}
 @sealed
-class Provider<State> extends _ProviderBase<State>
+class Provider<State> extends InternalProvider<State>
     with AlwaysAliveProviderBase<State> {
   /// {@macro riverpod.provider}
-  Provider(
+  const Provider(
     this._createFn, {
     super.name,
     super.dependencies,
@@ -255,7 +255,7 @@ class Provider<State> extends _ProviderBase<State>
 class ProviderElement<State> extends ProviderElementBase<State>
     implements ProviderRef<State> {
   /// A [ProviderElementBase] for [Provider]
-  ProviderElement._(_ProviderBase<State> provider) : super(provider);
+  ProviderElement._(ProviderBase<State> provider) : super(provider);
 
   @override
   State get state => requireState;
@@ -265,9 +265,14 @@ class ProviderElement<State> extends ProviderElementBase<State>
 
   @override
   void create({required bool didChangeDependency}) {
-    final provider = this.provider as _ProviderBase<State>;
+    final provider = this.provider as InternalProvider<State>;
 
     setState(provider._create(this));
+  }
+
+  @override
+  bool updateShouldNotify(State previous, State next) {
+    return previous != next;
   }
 }
 

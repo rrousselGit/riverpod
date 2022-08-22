@@ -88,7 +88,7 @@ rebuild if one of its dependency had changed.
 
 - Now requires Dart 2.16
 
-- **Breaking** Providers no-longer throw a `ProviderException` if an exception was thrown while building their value.  
+- **Breaking** Providers no-longer throw a `ProviderException` if an exception was thrown while building their value.
   Instead, they will rethrow the thrown exception and its stacktrace.
 - Removed `AsyncValue`'s `isError`/`isData`
 
@@ -105,7 +105,7 @@ rebuild if one of its dependency had changed.
 # 2.0.0-dev.0
 
 - **Breaking** After a provider has emitted an `AsyncValue.data` or `AsyncValue.error`,
-  that provider will no longer emit an `AsyncValue.loading`.  
+  that provider will no longer emit an `AsyncValue.loading`.
   Instead, it will re-emit the latest value, but with the property
   `AsyncValue.isRefreshing` to true.
 
@@ -143,8 +143,8 @@ Riverpod is now stable!
 - `ChangeNotifierProvider` now supports nullable `ChangeNotifier` (#856)
 - Increased minimum SDK version to 2.14.0
 - **Breaking** The return value when reading a `StateProvider` changed.
-  Before, doing `ref.read(someStateProvider)` would return the `StateController` instance.  
-  Now, this will only return the state of the `StateController`.  
+  Before, doing `ref.read(someStateProvider)` would return the `StateController` instance.
+  Now, this will only return the state of the `StateController`.
   This new behaviour matches `StateNotifierProvider`.
 
   For a simple migration, the old behavior is available by writing
@@ -330,7 +330,7 @@ Riverpod is now stable!
 
 ### All providers can now be scoped.
 
-- **Breaking**: `ScopedProvider` is removed.  
+- **Breaking**: `ScopedProvider` is removed.
   To migrate, change `ScopedProvider`s to `Provider`s.
 
 - All providers now come with an extra named parameter called `dependencies`.
@@ -369,7 +369,7 @@ Riverpod is now stable!
   provider.select((value) => ref.watch(something)); // KO, cannot user ref.watch inside selectors
   ```
 
-- FutureProvider now creates a `FutureOr<T>` instead of a `Future<T>`.  
+- FutureProvider now creates a `FutureOr<T>` instead of a `Future<T>`.
   That allows bypassing the loading state in the event where a value was synchronously available.
 
 ### Bug fixes
@@ -400,7 +400,7 @@ Fix an issue where `*Provider.autoDispose` were not able to specify the
   That allows bypassing the loading state in the event where a value was synchronously available.
 
 - During loading and error states, `FutureProvider` and `StreamProvider` now expose the
-  latest value through `AsyncValue`.  
+  latest value through `AsyncValue`.
   That allows UI to show the previous data while some new data is loading,
   inatead of showing a spinner:
 
@@ -432,7 +432,7 @@ Fix an issue where `*Provider.autoDispose` were not able to specify the
 
 - **Breaking** `AsyncValue.copyWith` is removed
 - **Breaking** `AsyncValue.error(..., stacktrace)` is now a named parameter instead of postional parameter.
-- **Breaking** `AsyncValue.when(loading: )` and ``AsyncValue.when(error: )` (and `when` variants)
+- **Breaking** `AsyncValue.when(loading: )` and `AsyncValue.when(error: )` (and `when` variants)
   now receive an extra "previous" parameter.
 - Deprecated `AsyncValue.data` in favor of `AsyncValue.value`
 - Allowed `AsyncData`, `AsyncError` and `AsyncLoading` to be extended
@@ -445,7 +445,7 @@ Fix an issue where `*Provider.autoDispose` were not able to specify the
 
 ### General
 
-- **Breaking** All `overrideWithProvider` methods are removed.  
+- **Breaking** All `overrideWithProvider` methods are removed.
   To migrate, instead use `overrideWithValue`.
 - All providers now come with an extra named parameter called `dependencies`.
   This parameter optionally allows defining the list of providers/families that this
@@ -694,7 +694,7 @@ Removed an assert that could cause issues when an application is partially migra
   }
   ```
 
-  See also https://github.com/rrousselGit/river_pod/issues/341 for more information.
+  See also https://github.com/rrousselGit/riverpod/issues/341 for more information.
 
 - **BREAKING CHANGE** It is no longer possible to override `StreamProvider.stream/last` and `FutureProvider.future`.
 - feat: Calling `ProviderContainer.dispose` multiple time no longer throws.
@@ -711,7 +711,7 @@ Fixed an issue where `context.read` and `ProviderListener` were unable to read p
 
 ## 0.13.1
 
-- Fixed a bug where overriding a `FutureProvider` with an error value could cause tests to fail (see https://github.com/rrousselGit/river_pod/issues/355)
+- Fixed a bug where overriding a `FutureProvider` with an error value could cause tests to fail (see https://github.com/rrousselGit/riverpod/issues/355)
 
 ## 0.13.0
 
@@ -750,18 +750,18 @@ Migrated to null-safety
 
 ## 0.12.1
 
-- Fixed an remaining memory leak related to StreamProvider (see also https://github.com/rrousselGit/river_pod/issues/193)
+- Fixed an remaining memory leak related to StreamProvider (see also https://github.com/rrousselGit/riverpod/issues/193)
 
 ## 0.12.0
 
 - **Breaking** FutureProvider and StreamProvider no longer supports `null` as a valid value.
-- Fixed a memory leak with StreamProvider (see also https://github.com/rrousselGit/river_pod/issues/193)
+- Fixed a memory leak with StreamProvider (see also https://github.com/rrousselGit/riverpod/issues/193)
 - Fixed an error message typo related to Consumer
 
 ## 0.11.2
 
 - Fixed a bug where providers (usually ScopedProviders) did not dispose correctly
-  (see also https://github.com/rrousselGit/river_pod/issues/154).
+  (see also https://github.com/rrousselGit/riverpod/issues/154).
 
 ## 0.11.1
 
@@ -808,7 +808,7 @@ Migrated to null-safety
 
 - Renamed `ProviderContainer.debugProviderStates` to `ProviderContainer.debugProviderElements`
 - Fixed a bug where updating `ProviderScope.overrides` may cause an exception
-  for no reason (see https://github.com/rrousselGit/river_pod/issues/107)
+  for no reason (see https://github.com/rrousselGit/riverpod/issues/107)
 
 ## 0.7.2
 
@@ -816,7 +816,7 @@ Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstance
 
 ## 0.7.1
 
-- Fixed a bug where in release mode, `ScopedProvider` did not update correctly (https://github.com/rrousselGit/river_pod/issues/101)
+- Fixed a bug where in release mode, `ScopedProvider` did not update correctly (https://github.com/rrousselGit/riverpod/issues/101)
 
 ## 0.7.0
 

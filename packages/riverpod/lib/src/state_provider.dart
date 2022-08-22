@@ -31,7 +31,7 @@ ProviderElementProxy<T, StateController<T>> _state<T>(
 }
 
 abstract class _StateProviderBase<T> extends ProviderBase<T> {
-  _StateProviderBase({
+  const _StateProviderBase({
     required super.name,
     required super.from,
     required super.argument,
@@ -47,9 +47,4 @@ abstract class _StateProviderBase<T> extends ProviderBase<T> {
   ProviderListenable<StateController<T>> get state;
 
   T _create(covariant StateProviderElement<T> ref);
-
-  @override
-  bool updateShouldNotify(T previousState, T newState) {
-    return true;
-  }
 }

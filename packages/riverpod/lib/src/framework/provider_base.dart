@@ -12,6 +12,7 @@ part of '../framework.dart';
 ///
 /// - [Ref], which exposes the methods to read other providers.
 /// - [Provider], a provider that uses [Create] to expose an immutable value.
+@internal
 typedef Create<T, R extends Ref> = T Function(R ref);
 
 /// A base class for _all_ providers.
@@ -20,7 +21,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
     with ProviderListenable<State>
     implements ProviderOverride, Refreshable<State> {
   /// A base class for _all_ providers.
-  ProviderBase({
+  const ProviderBase({
     required this.name,
     required this.from,
     required this.argument,
@@ -35,16 +36,18 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   ProviderBase get _override => this;
 
   /// {@template riverpod.cache_time}
-  /// The minimum amount of time before an `autoDispose` provider can be
-  /// disposed if not listened after the last value change.
+  /// The minimum amount of time (in milliseconds) before an `autoDispose` provider
+  /// can be disposed if not listened after the last value change.
   ///
   /// If the provider rebuilds (such as when using `ref.watch` or `ref.refresh`)
   /// or emits a new value, the timer will be refreshed.
   ///
   /// If null, use the nearest ancestor [ProviderContainer]'s [cacheTime].
-  /// If no ancestor is found, fallbacks to [Duration.zero].
+  /// If no ancestor is found, fallbacks to `0`.
+  ///
+  /// If negative, this is equivalent to "infinite duration".
   /// {@endtemplate}
-  final Duration? cacheTime;
+  final int? cacheTime;
 
   /// {@template riverpod.dispose_delay}
   /// The amount of time before a provider is disposed after its last listener
@@ -54,9 +57,11 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   /// disposed.
   ///
   /// If null, use the nearest ancestor [ProviderContainer]'s [disposeDelay].
-  /// If no ancestor is found, fallbacks to [Duration.zero].
+  /// If no ancestor is found, fallbacks to `0`.
+  ///
+  /// If negative, this is equivalent to "infinite duration".
   /// {@endtemplate}
-  final Duration? disposeDelay;
+  final int? disposeDelay;
 
   /// {@template riverpod.name}
   /// A custom label for providers.
@@ -72,6 +77,10 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   /// If this provider was created with the `.family` modifier, [argument] is
   /// the variable that was used.
   final Object? argument;
+
+  @override
+  List<ProviderOrFamily>? get allTransitiveDependencies =>
+      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
 
   @override
   ProviderSubscription<State> addListener(
@@ -114,11 +123,6 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 
     return element.requireState;
   }
-
-  /// Called when a provider is rebuilt. Used for providers to not notify their
-  /// listeners if the exposed value did not change.
-  @visibleForOverriding
-  bool updateShouldNotify(State previousState, State newState);
 
   /// An internal method that defines how a provider behaves.
   @visibleForOverriding

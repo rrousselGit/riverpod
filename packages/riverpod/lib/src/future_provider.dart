@@ -101,7 +101,7 @@ ProviderElementProxy<AsyncValue<T>, Stream<T>> _stream<T>(
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
 abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
-  _FutureProviderBase({
+  const _FutureProviderBase({
     required this.dependencies,
     required super.name,
     required super.from,
@@ -144,14 +144,4 @@ abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
   ProviderListenable<Stream<T>> get stream;
 
   FutureOr<T> _create(covariant FutureProviderElement<T> ref);
-
-  @override
-  bool updateShouldNotify(AsyncValue<T> previousState, AsyncValue<T> newState) {
-    final wasLoading = previousState is AsyncLoading;
-    final isLoading = newState is AsyncLoading;
-
-    if (wasLoading || isLoading) return wasLoading != isLoading;
-
-    return true;
-  }
 }

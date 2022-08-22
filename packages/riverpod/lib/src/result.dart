@@ -3,6 +3,7 @@
 import 'package:meta/meta.dart';
 
 @immutable
+@internal
 abstract class Result<State> {
   // coverage:ignore-start
   factory Result.data(State state) = ResultData;
@@ -36,6 +37,7 @@ abstract class Result<State> {
   });
 }
 
+@internal
 class ResultData<State> implements Result<State> {
   ResultData(this.state);
 
@@ -76,6 +78,7 @@ class ResultData<State> implements Result<State> {
   int get hashCode => Object.hash(runtimeType, state);
 }
 
+@internal
 class ResultError<State> implements Result<State> {
   ResultError(this.error, this.stackTrace);
 
@@ -89,8 +92,7 @@ class ResultError<State> implements Result<State> {
   State? get stateOrNull => null;
 
   @override
-  // ignore: only_throw_errors
-  State get requireState => throw error;
+  State get requireState => Error.throwWithStackTrace(error, stackTrace);
 
   @override
   R map<R>({

@@ -53,7 +53,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   }
 
   /// The provider associated with this [ProviderElementBase], before applying overrides.
-  // Not typed as <State> because of https://github.com/rrousselGit/river_pod/issues/1100
+  // Not typed as <State> because of https://github.com/rrousselGit/riverpod/issues/1100
   ProviderBase<Object?> get origin => _origin;
   late ProviderBase<Object?> _origin;
 
@@ -134,7 +134,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
   /// Update the exposed value of a provider and notify its listeners.
   ///
-  /// Listeners will only be notified if [ProviderBase.updateShouldNotify]
+  /// Listeners will only be notified if [updateShouldNotify]
   /// returns true.
   ///
   /// This API is not meant for public consumption. Instead if a [Ref] needs
@@ -193,6 +193,11 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
       data: (data) => data,
     );
   }
+
+  /// Called when a provider is rebuilt. Used for providers to not notify their
+  /// listeners if the exposed value did not change.
+  @visibleForOverriding
+  bool updateShouldNotify(State previous, State next);
 
   /* /STATE */
 
@@ -457,7 +462,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (previousStateResult != null &&
         previousStateResult.hasState &&
         newState.hasState &&
-        !provider.updateShouldNotify(
+        !updateShouldNotify(
           previousState as State,
           newState.requireState,
         )) {

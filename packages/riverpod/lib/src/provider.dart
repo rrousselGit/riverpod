@@ -8,9 +8,16 @@ import 'stream_provider.dart' show StreamProvider;
 part 'provider/auto_dispose.dart';
 part 'provider/base.dart';
 
-abstract class _ProviderBase<State> extends ProviderBase<State>
+/// A base class for [Provider]
+///
+/// Not meant for public consumption
+@internal
+abstract class InternalProvider<State> extends ProviderBase<State>
     with OverrideWithValueMixin<State> {
-  _ProviderBase({
+  /// A base class for [Provider]
+  ///
+  /// Not meant for public consumption
+  const InternalProvider({
     required this.dependencies,
     required super.name,
     required super.from,
@@ -23,9 +30,4 @@ abstract class _ProviderBase<State> extends ProviderBase<State>
   final List<ProviderOrFamily>? dependencies;
 
   State _create(covariant ProviderElement<State> ref);
-
-  @override
-  bool updateShouldNotify(State previousState, State newState) {
-    return previousState != newState;
-  }
 }

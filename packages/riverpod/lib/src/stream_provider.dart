@@ -33,7 +33,7 @@ ProviderElementProxy<AsyncValue<T>, Stream<T>> _stream<T>(
 }
 
 abstract class _StreamProviderBase<T> extends ProviderBase<AsyncValue<T>> {
-  _StreamProviderBase({
+  const _StreamProviderBase({
     required this.dependencies,
     required super.name,
     required super.from,
@@ -49,14 +49,4 @@ abstract class _StreamProviderBase<T> extends ProviderBase<AsyncValue<T>> {
   ProviderListenable<Stream<T>> get stream;
 
   Stream<T> _create(covariant StreamProviderElement<T> ref);
-
-  @override
-  bool updateShouldNotify(AsyncValue<T> previousState, AsyncValue<T> newState) {
-    final wasLoading = previousState is AsyncLoading;
-    final isLoading = newState is AsyncLoading;
-
-    if (wasLoading || isLoading) return wasLoading != isLoading;
-
-    return true;
-  }
 }

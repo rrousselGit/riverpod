@@ -33,15 +33,15 @@
   },
   "sidebar.Sidebar.link.Counter": {
     "message": "カウンターアプリ",
-    "description": "The label for link Counter in sidebar Sidebar, linking to https://github.com/rrousselGit/river_pod/tree/master/examples/counter"
+    "description": "The label for link Counter in sidebar Sidebar, linking to https://github.com/rrousselGit/riverpod/tree/master/examples/counter"
   },
   "sidebar.Sidebar.link.Todo list": {
     "message": "Todo アプリ",
-    "description": "The label for link Todo list in sidebar Sidebar, linking to https://github.com/rrousselGit/river_pod/tree/master/examples/todos"
+    "description": "The label for link Todo list in sidebar Sidebar, linking to https://github.com/rrousselGit/riverpod/tree/master/examples/todos"
   },
   "sidebar.Sidebar.link.Marvel API": {
     "message": "マーベル API",
-    "description": "The label for link Marvel API in sidebar Sidebar, linking to https://github.com/rrousselGit/river_pod/tree/master/examples/marvel"
+    "description": "The label for link Marvel API in sidebar Sidebar, linking to https://github.com/rrousselGit/riverpod/tree/master/examples/marvel"
   },
   "sidebar.Sidebar.link.Android Launcher": {
     "message": "Android ランチャー",

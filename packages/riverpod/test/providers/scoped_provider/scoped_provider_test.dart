@@ -5,6 +5,19 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test(
+      'It is possible to read provider sub-values by specifying the provider in `dependencies`',
+      () {
+    final dep = StateProvider((ref) => 0);
+    final provider = Provider(
+      (ref) => ref.watch(dep.notifier),
+      dependencies: [dep],
+    );
+    final container = createContainer();
+
+    expect(container.read(provider).state, 0);
+  });
+
   group('scoping mechanism', () {
     test('use the deepest override', () {
       final provider = Provider((ref) => 0);

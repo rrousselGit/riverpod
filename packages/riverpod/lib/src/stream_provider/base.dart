@@ -124,13 +124,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   @override
   void create({required bool didChangeDependency}) {
-    final previous = getState()?.requireState;
-    if (previous == null || didChangeDependency) {
-      setState(AsyncLoading<T>());
-    } else {
-      setState(AsyncLoading<T>().copyWithPrevious(previous));
-    }
-
+    asyncTransition(didChangeDependency: didChangeDependency);
     _streamNotifier.result ??= Result.data(_streamController.stream);
 
     final streamResult = Result.guard(() {
@@ -146,9 +140,19 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
             // TODO test ignore
             ..ignore(),
         );
-        setState(AsyncError<T>(err, stackTrace: stack));
+        setState(AsyncError<T>(err, stack));
       },
     );
+  }
+
+  @override
+  bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
+    final wasLoading = previous is AsyncLoading;
+    final isLoading = next is AsyncLoading;
+
+    if (wasLoading || isLoading) return wasLoading != isLoading;
+
+    return true;
   }
 
   @pragma('vm:prefer-inline')
@@ -198,7 +202,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
           );
         }
 
-        setState(AsyncError<T>(err, stackTrace: stack));
+        setState(AsyncError<T>(err, stack));
         _streamController.addError(err, stack);
       },
     );

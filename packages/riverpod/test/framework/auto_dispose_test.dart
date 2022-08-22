@@ -34,7 +34,7 @@ Future<void> main() async {
         buildCount++;
         ref.watch(dep);
         ref.keepAlive();
-      }, cacheTime: const Duration(seconds: 5));
+      }, cacheTime: 5 * 1000);
 
       expect(buildCount, 0);
       container.read(provider);

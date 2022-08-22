@@ -36,6 +36,7 @@ class _ProxySubscription<T> extends ProviderSubscription<T> {
 /// ```
 ///
 /// This API is not meant for public consumption.
+@internal
 class ProviderElementProxy<Input, Output>
     with ProviderListenable<Output>, AlwaysAliveProviderListenable<Output>
     implements AlwaysAliveRefreshable<Output> {
@@ -73,6 +74,7 @@ class ProviderElementProxy<Input, Output>
     final element = node.readProviderElement(_origin);
 
     // TODO does this need a "flush"?
+    // element.flush();
 
     final notifier = _lense(element);
     if (fireImmediately) {

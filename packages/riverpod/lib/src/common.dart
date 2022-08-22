@@ -1,8 +1,26 @@
 import 'package:meta/meta.dart';
 
+import 'framework.dart';
 import 'future_provider.dart' show FutureProvider;
 import 'stack_trace.dart';
 import 'stream_provider.dart' show StreamProvider;
+
+/// An extension for [asyncTransition].
+@internal
+extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
+  /// Internal utility for transitioning an [AsyncValue] after a provider refresh.
+  void asyncTransition({required bool didChangeDependency}) {
+    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+    final previous = getState()?.requireState;
+    if (previous == null || didChangeDependency) {
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      setState(AsyncLoading<T>());
+    } else {
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      setState(AsyncLoading<T>().copyWithPrevious(previous));
+    }
+  }
+}
 
 /// A utility for safely manipulating asynchronous data.
 ///
@@ -74,7 +92,7 @@ abstract class AsyncValue<T> {
   ///
   /// The parameter [error] cannot be `null`.
   // coverage:ignore-start
-  const factory AsyncValue.error(Object error, {StackTrace? stackTrace}) =
+  const factory AsyncValue.error(Object error, StackTrace stackTrace) =
       AsyncError<T>;
   // coverage:ignore-end
 
@@ -125,7 +143,7 @@ abstract class AsyncValue<T> {
     try {
       return AsyncValue.data(await future());
     } catch (err, stack) {
-      return AsyncValue.error(err, stackTrace: stack);
+      return AsyncValue.error(err, stack);
     }
   }
 
@@ -189,7 +207,7 @@ abstract class AsyncValue<T> {
       },
       error: (e) {
         if (e.isLoading) return AsyncLoading<T>();
-        return AsyncError(e.error, stackTrace: e.stackTrace);
+        return AsyncError(e.error, e.stackTrace);
       },
       loading: (l) => l,
     );
@@ -350,10 +368,8 @@ class AsyncError<T> extends AsyncValue<T> {
   /// Creates an [AsyncValue] in the error state.
   ///
   /// The parameter [error] cannot be `null`.
-  const AsyncError(
-    Object error, {
-    StackTrace? stackTrace,
-  }) : this._(
+  const AsyncError(Object error, StackTrace stackTrace)
+      : this._(
           error,
           stackTrace: stackTrace,
           isLoading: false,
@@ -382,9 +398,6 @@ class AsyncError<T> extends AsyncValue<T> {
   T? get value {
     if (!hasValue) {
       final stackTrace = this.stackTrace;
-      // ignore: only_throw_errors
-      if (stackTrace == null) throw error;
-
       throwErrorWithCombinedStackTrace(error, stackTrace);
     }
     return _value;
@@ -394,7 +407,7 @@ class AsyncError<T> extends AsyncValue<T> {
   final Object error;
 
   @override
-  final StackTrace? stackTrace;
+  final StackTrace stackTrace;
 
   @override
   R map<R>({
@@ -504,7 +517,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// If [AsyncValue] was in a case that is not handled, will return [orElse].
   R maybeWhen<R>({
     R Function(T data)? data,
-    R Function(Object error, StackTrace? stackTrace)? error,
+    R Function(Object error, StackTrace stackTrace)? error,
     R Function()? loading,
     required R Function() orElse,
   }) {
@@ -529,7 +542,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// All cases are required, which allows returning a non-nullable value.
   R when<R>({
     required R Function(T data) data,
-    required R Function(Object error, StackTrace? stackTrace) error,
+    required R Function(Object error, StackTrace stackTrace) error,
     required R Function() loading,
   }) {
     return map(
@@ -546,7 +559,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// This is similar to [maybeWhen] where `orElse` returns null.
   R? whenOrNull<R>({
     R Function(T data)? data,
-    R Function(Object error, StackTrace? stackTrace)? error,
+    R Function(Object error, StackTrace stackTrace)? error,
     R Function()? loading,
   }) {
     return map(

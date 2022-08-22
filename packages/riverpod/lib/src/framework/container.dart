@@ -107,15 +107,15 @@ class ProviderContainer implements Node {
   /// {@macro riverpod.providercontainer}
   ProviderContainer({
     ProviderContainer? parent,
-    Duration? cacheTime,
-    Duration? disposeDelay,
+    int? cacheTime,
+    int? disposeDelay,
     List<Override> overrides = const [],
     List<ProviderObserver>? observers,
   })  : _debugOverridesLength = overrides.length,
         depth = parent == null ? 0 : parent.depth + 1,
         _parent = parent,
-        cacheTime = cacheTime ?? parent?.cacheTime ?? Duration.zero,
-        disposeDelay = disposeDelay ?? parent?.disposeDelay ?? Duration.zero,
+        cacheTime = cacheTime ?? parent?.cacheTime ?? 0,
+        disposeDelay = disposeDelay ?? parent?.disposeDelay ?? 0,
         _observers = [
           ...?observers,
           if (parent != null) ...parent._observers,
@@ -161,12 +161,12 @@ class ProviderContainer implements Node {
   /// The default value for [ProviderBase.cacheTime].
   ///
   /// {@macro riverpod.cache_time}
-  final Duration cacheTime;
+  final int cacheTime;
 
   /// The default value for [ProviderBase.disposeDelay].
   ///
   /// {@macro riverpod.dispose_delay}
-  final Duration disposeDelay;
+  final int disposeDelay;
 
   final int _debugOverridesLength;
 
@@ -504,10 +504,10 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
             );
           }
 
-          familyOverrideRef.override.setupOverride(
-            provider.argument,
-            setupOverride,
-          );
+          final providerOverride =
+              familyOverrideRef.override.getProviderOverride(provider);
+
+          setupOverride(origin: provider, override: providerOverride);
 
           // if setupOverride overrode the provider, it was already initialized
           // in the code above. Otherwise we initialize it as if it was not overridden
@@ -744,6 +744,7 @@ abstract class ProviderObserver {
 }
 
 /// An implementation detail for the override mechanism of providers
+@internal
 typedef SetupOverride = void Function({
   required ProviderBase origin,
   required ProviderBase override,
@@ -758,6 +759,7 @@ typedef SetupOverride = void Function({
 ///
 /// - [ProviderContainer], which uses this object.
 /// - `overrideWithValue`, which creates a [ProviderOverride].
+@internal
 class ProviderOverride implements Override {
   /// Override a provider
   ProviderOverride({

@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/result.dart';
+import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 import '../third_party/fake_async.dart';
@@ -184,7 +183,7 @@ void main() {
       await fakeAsync((async) async {
         final provider = Provider.autoDispose((ref) => 42);
         final container = createContainer(
-          disposeDelay: const Duration(seconds: 5),
+          disposeDelay: 5 * 1000,
         );
 
         final sub = container.listen(provider, (prev, next) {});
@@ -207,7 +206,7 @@ void main() {
           },
         );
         final container = createContainer(
-          disposeDelay: const Duration(seconds: 5),
+          disposeDelay: 5 * 1000,
         );
 
         final sub = container.listen<void>(provider, (prev, next) {});
@@ -236,7 +235,7 @@ void main() {
           },
         );
         final container = createContainer(
-          disposeDelay: const Duration(seconds: 5),
+          disposeDelay: 5 * 1000,
         );
 
         final sub = container.listen<void>(provider, (prev, next) {});
@@ -277,7 +276,7 @@ void main() {
           },
         );
         final container = createContainer(
-          disposeDelay: const Duration(seconds: 5),
+          disposeDelay: 5 * 1000,
         );
 
         final sub = container.listen<void>(provider, (prev, next) {});
@@ -316,7 +315,7 @@ void main() {
           },
         );
         final container = createContainer(
-          disposeDelay: const Duration(seconds: 5),
+          disposeDelay: 5 * 1000,
         );
 
         final sub = container.listen<void>(provider, (prev, next) {});
@@ -356,7 +355,7 @@ void main() {
       await fakeAsync((async) async {
         final provider = Provider.autoDispose((ref) => 42);
         final container = createContainer(
-          cacheTime: const Duration(seconds: 5),
+          cacheTime: 5 * 1000,
         );
 
         container.read(provider);
@@ -383,7 +382,7 @@ void main() {
             },
           );
           final container = createContainer(
-            cacheTime: const Duration(seconds: 5),
+            cacheTime: 5 * 1000,
           );
           final listener = Listener<AsyncValue<int>>();
 
@@ -435,7 +434,7 @@ void main() {
             },
           );
           final container = createContainer(
-            cacheTime: const Duration(seconds: 5),
+            cacheTime: 5 * 1000,
           );
 
           container.listen(provider, (prev, next) {}); // initialize data
@@ -485,7 +484,7 @@ void main() {
             },
           );
           final container = createContainer(
-            cacheTime: const Duration(seconds: 5),
+            cacheTime: 5 * 1000,
           );
 
           container.listen(provider, (prev, next) {}); // initialize data
@@ -496,7 +495,7 @@ void main() {
           expect(
             container.read(provider),
             const AsyncLoading<int>().copyWithPrevious(
-              const AsyncError(42, stackTrace: StackTrace.empty),
+              const AsyncError(42, StackTrace.empty),
             ),
           );
 
@@ -505,7 +504,7 @@ void main() {
           expect(
             container.read(provider),
             const AsyncLoading<int>().copyWithPrevious(
-              const AsyncError(42, stackTrace: StackTrace.empty),
+              const AsyncError(42, StackTrace.empty),
             ),
           );
 
@@ -520,7 +519,7 @@ void main() {
           expect(
             container.read(provider),
             const AsyncLoading<int>().copyWithPrevious(
-              const AsyncError(21, stackTrace: StackTrace.empty),
+              const AsyncError(21, StackTrace.empty),
             ),
           );
 
@@ -540,7 +539,7 @@ void main() {
         final listener = OnDisposeMock();
         final provider = Provider.autoDispose(
           (ref) => ref.onDispose(listener),
-          cacheTime: const Duration(seconds: 2),
+          cacheTime: 2 * 1000,
         );
 
         container.read(provider);
@@ -562,7 +561,7 @@ void main() {
         final listener = OnDisposeMock();
         final provider = Provider.autoDispose(
           (ref) => ref.onDispose(listener),
-          cacheTime: const Duration(seconds: 5),
+          cacheTime: 5 * 1000,
         );
 
         container.read(provider);
@@ -596,7 +595,7 @@ void main() {
             ref.onDispose(listener);
             throw StateError('message');
           },
-          cacheTime: const Duration(seconds: 5),
+          cacheTime: 5 * 1000,
         );
 
         final sub = container.listen(
@@ -637,7 +636,7 @@ void main() {
             ref.onDispose(listener);
             return 0;
           },
-          cacheTime: const Duration(seconds: 5),
+          cacheTime: 5 * 1000,
         );
 
         final sub = container.listen(
@@ -676,7 +675,7 @@ void main() {
             ref.onDispose(listener);
             throw StateError('message');
           },
-          cacheTime: const Duration(seconds: 5),
+          cacheTime: 5 * 1000,
         );
 
         expect(() => container.read(provider), throwsStateError);
@@ -704,11 +703,11 @@ void main() {
         final listener = OnDisposeMock();
         final provider = Provider.autoDispose((ref) => ref.onDispose(listener));
         final root = createContainer(
-          cacheTime: const Duration(seconds: 10),
+          cacheTime: 10 * 1000,
         );
         final container = createContainer(
           parent: root,
-          cacheTime: const Duration(seconds: 5),
+          cacheTime: 5 * 1000,
           overrides: [provider],
         );
 
@@ -1449,7 +1448,7 @@ void main() {
   test(
       'onDispose is triggered only once if within autoDispose unmount, a dependency chnaged',
       () async {
-    // regression test for https://github.com/rrousselGit/river_pod/issues/1064
+    // regression test for https://github.com/rrousselGit/riverpod/issues/1064
     final container = createContainer();
     final onDispose = OnDisposeMock();
     final dep = StateProvider((ref) => 0);

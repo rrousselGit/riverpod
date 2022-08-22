@@ -94,6 +94,7 @@ void Function(
   Map<Object?, Object?> event,
 )? _debugPostEventOverride;
 
+@internal
 void debugPostEvent(
   String eventKind, [
   Map<Object?, Object?> event = const {},
@@ -117,14 +118,14 @@ void stopSpyPostEvent() {
   _debugPostEventOverride = null;
 }
 
-@protected
+@internal
 class PostEventCall {
   PostEventCall._(this.eventKind, this.event);
   final String eventKind;
   final Map<Object?, Object?> event;
 }
 
-@protected
+@internal
 class PostEventSpy {
   PostEventSpy._();
   final logs = <PostEventCall>[];
@@ -145,7 +146,7 @@ class PostEventSpy {
   }
 }
 
-@protected
+@internal
 class RiverpodBinding {
   RiverpodBinding._();
 
