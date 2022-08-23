@@ -7,6 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'pub_repository.dart';
 import 'pub_ui/appbar.dart';
+import 'pub_ui/package_detail_body.dart';
 import 'search.dart';
 
 part 'detail.g.dart';
@@ -139,93 +140,14 @@ class PackageDetailPage extends ConsumerWidget {
               error: (err, stack) => Text('Error $err'),
               loading: () => const Center(child: CircularProgressIndicator()),
               data: (metrics) {
-                return ListView(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                  children: [
-                    Text(
-                      '${package.name} ${package.latest.version}',
-                      style: const TextStyle(
-                        fontSize: 20,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(package.latest.pubspec.description ?? ''),
-                    const SizedBox(height: 40),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            Text(
-                              '${metrics.likeCount}',
-                              style: const TextStyle(
-                                color: Color(0xff1967d2),
-                                fontSize: 40,
-                              ),
-                            ),
-                            const Text('LIKES', style: TextStyle(fontSize: 13)),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
-                              children: [
-                                Text(
-                                  '${metrics.grantedPoints}',
-                                  style: const TextStyle(
-                                    color: Color(0xff1967d2),
-                                    fontSize: 40,
-                                  ),
-                                ),
-                                Text(
-                                  '/${metrics.maxPoints}',
-                                  style: const TextStyle(
-                                    color: Color(0xff1967d2),
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Text(
-                              'PUB POINTS',
-                              style: TextStyle(fontSize: 13),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
-                              children: [
-                                Text(
-                                  '${metrics.popularityScore.floor()}',
-                                  style: const TextStyle(
-                                    color: Color(0xff1967d2),
-                                    fontSize: 40,
-                                  ),
-                                ),
-                                const Text(
-                                  '%',
-                                  style: TextStyle(
-                                    color: Color(0xff1967d2),
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Text(
-                              'POPULARITY',
-                              style: TextStyle(fontSize: 13),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                return PackageDetailBodyScrollView(
+                  packageName: packageName,
+                  packageVersion: package.latest.version,
+                  packageDescription: package.latest.pubspec.description,
+                  grantedPoints: metrics.grantedPoints,
+                  likeCount: metrics.likeCount,
+                  maxPoints: metrics.maxPoints,
+                  popularityScore: metrics.popularityScore,
                 );
               },
             ),
