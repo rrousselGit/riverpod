@@ -82,7 +82,7 @@ class PackageDetailBodyScrollView extends StatelessWidget {
                   textBaseline: TextBaseline.alphabetic,
                   children: [
                     Text(
-                      '${popularityScore.floor()}',
+                      '${popularityScore.round()}',
                       style: const TextStyle(
                         color: Color(0xff1967d2),
                         fontSize: 40,

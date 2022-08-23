@@ -147,7 +147,7 @@ class PackageDetailPage extends ConsumerWidget {
                   grantedPoints: metrics.grantedPoints,
                   likeCount: metrics.likeCount,
                   maxPoints: metrics.maxPoints,
-                  popularityScore: metrics.popularityScore,
+                  popularityScore: metrics.popularityScore * 100,
                 );
               },
             ),
