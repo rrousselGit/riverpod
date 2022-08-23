@@ -259,6 +259,12 @@ class ProviderContainer implements Node {
 
   /// Executes [ProviderElementBase.debugReassemble] on all the providers.
   void debugReassemble() {
+// TODO hot-reload handle provider type change
+// TODO hot-reload handle provider response type change
+// TODO hot-reload handle provider -> family
+// TODO hot-reload handle family adding parameters
+// TODO found "Future already completed error" after adding family parameter
+
     assert(() {
       for (final element in getAllProviderElements()) {
         element.debugReassemble();

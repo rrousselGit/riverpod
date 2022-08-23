@@ -14,12 +14,6 @@ part 'search.g.dart';
 const packagesPackageSize = 100;
 const searchPageSize = 10;
 
-// TODO hot-reload handle provider type change
-// TODO hot-reload handle provider response type change
-// TODO hot-reload handle provider -> family
-// TODO hot-reload handle family adding parameters
-// TODO found "Future already completed error" after adding family parameter
-
 @riverpod
 Future<List<Package>> fetchPackages(
   FetchPackagesRef ref, {
