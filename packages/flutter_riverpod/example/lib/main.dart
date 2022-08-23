@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: Home());
+    return const MaterialApp(home: Home());
   }
 }
 
@@ -23,6 +23,8 @@ class MyApp extends StatelessWidget {
 final counterProvider = StateProvider((ref) => 0);
 
 class Home extends ConsumerWidget {
+  const Home({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
