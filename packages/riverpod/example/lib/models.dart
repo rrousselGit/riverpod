@@ -53,7 +53,7 @@ class Repository {
     return response //
         .data
         .results
-        .map((e) => Comic.fromJson(e))
+        .map(Comic.fromJson)
         .toList();
   }
 
