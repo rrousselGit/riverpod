@@ -24,14 +24,16 @@ class PackageItem extends StatelessWidget {
       onTap: onTap,
       title: Row(
         children: [
-          Text(
-            name,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Color(0xff0175c2),
+          Expanded(
+            child: Text(
+              name,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color(0xff0175c2),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
-          const Spacer(),
           Text(version),
         ],
       ),
