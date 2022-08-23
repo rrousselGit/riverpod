@@ -31,13 +31,14 @@ ProviderElementProxy<NotifierT, NotifierT>
 /// {@endtemplate}
 abstract class _ChangeNotifierProviderBase<NotifierT extends ChangeNotifier?>
     extends ProviderBase<NotifierT> {
-  const _ChangeNotifierProviderBase({
+  _ChangeNotifierProviderBase({
     required super.name,
     required super.from,
     required super.argument,
     required this.dependencies,
     required super.cacheTime,
     required super.disposeDelay,
+    required super.debugGetCreateSourceHash,
   });
 
   @override

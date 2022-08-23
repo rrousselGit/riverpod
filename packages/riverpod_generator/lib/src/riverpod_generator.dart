@@ -12,6 +12,7 @@ import 'package:source_gen/source_gen.dart';
 import 'models.dart';
 import 'parse_generator.dart';
 import 'templates/family.dart';
+import 'templates/hash.dart';
 import 'templates/notifier.dart';
 import 'templates/provider.dart';
 import 'templates/ref.dart';
@@ -64,10 +65,12 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     BuildStep buildStep,
     GlobalData globalData,
     FunctionElement element,
-  ) {
+  ) async {
     final riverpod = riverpodTypeChecker.firstAnnotationOf(element)!;
 
     return Data.function(
+      createElement: element,
+      createAst: (await buildStep.resolver.astNodeFor(element, resolve: true))!,
       providerDoc: element.documentationComment == null
           ? '/// See also [${element.name}].'
           : '${element.documentationComment}\n///\n/// Copied from [${element.name}].',
@@ -107,7 +110,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     BuildStep buildStep,
     GlobalData globalData,
     ClassElement element,
-  ) {
+  ) async {
     final riverpod = riverpodTypeChecker.firstAnnotationOf(element)!;
 
     // TODO check has default constructor with no param.
@@ -121,6 +124,8 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     );
 
     return Data.notifier(
+      createAst: (await buildStep.resolver.astNodeFor(element, resolve: true))!,
+      createElement: buildMethod,
       providerDoc: element.documentationComment == null
           ? '/// See also [${element.name}].'
           : '${element.documentationComment}\n///\n/// Copied from [${element.name}].',
@@ -172,6 +177,7 @@ class _SystemHash {
     GlobalData globalData,
     Data data,
   ) sync* {
+    yield HashTemplate(data, globalData.hash);
     yield ProviderTemplate(data);
     yield RefTemplate(data);
 

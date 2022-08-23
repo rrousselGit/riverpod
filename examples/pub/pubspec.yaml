@@ -1,4 +1,4 @@
-name: stackoverflow
+name: pub_app
 description: A new Flutter project.
 publish_to: "none"
 version: 1.0.0+1
@@ -12,11 +12,15 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.18.0
+  flutter_svg: ^1.1.4
   freezed_annotation: ^2.1.0
   hooks_riverpod: any
   html: ^0.15.0
   json_annotation: ^4.6.0
+  pubspec_parse: ^1.2.1
   riverpod_annotation:
+  shimmer: ^2.0.0
+
 
 dev_dependencies:
   build_runner: ^2.0.0
@@ -29,3 +33,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/search_background.png

@@ -13,7 +13,7 @@ void main() {
       () {
     final container = createContainer();
 
-    const AutoDisposeProvider<String> provider = PublicProvider;
+    final AutoDisposeProvider<String> provider = PublicProvider;
     final String result = container.read(PublicProvider);
 
     expect(result, 'Hello world');
@@ -43,7 +43,7 @@ void main() {
       () {
     final container = createContainer();
 
-    const FamilyProviderFamily family = FamilyProvider;
+    final FamilyProviderFamily family = FamilyProvider;
 
     expect(FamilyProvider(42, third: .42).from, FamilyProvider);
 

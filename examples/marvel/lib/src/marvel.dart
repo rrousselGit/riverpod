@@ -20,7 +20,7 @@ part 'marvel.g.dart';
 
 final dioProvider = Provider((ref) => Dio());
 
-const repositoryProvider = Provider(MarvelRepository.new);
+final repositoryProvider = Provider(MarvelRepository.new);
 
 class MarvelRepository {
   MarvelRepository(

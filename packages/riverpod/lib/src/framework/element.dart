@@ -34,6 +34,10 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
   static ProviderElementBase? _debugCurrentlyBuildingElement;
 
+  /// The last result of [ProviderBase.debugGetCreateSourceHash].
+  ///
+  /// Available only in debug mode.
+  String? _debugCurrentCreateHash;
   var _debugSkipNotifyListenersAsserts = false;
 
   /// The provider associated with this [ProviderElementBase], before applying overrides.
@@ -185,6 +189,25 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
   /* /STATE */
 
+  /// A life-cycle executed when a hot-reload is performed.
+  ///
+  /// This is equivalent to Flutter's `State.reassemble`.
+  ///
+  /// This life-cycle is used to check for change in [ProviderBase.debugGetCreateSourceHash],
+  /// and invalidate the provider state on change.
+  void debugReassemble() {
+    assert(() {
+      final previousHash = _debugCurrentCreateHash;
+      _debugCurrentCreateHash = provider.debugGetCreateSourceHash?.call();
+
+      if (previousHash != _debugCurrentCreateHash) {
+        invalidateSelf();
+      }
+
+      return true;
+    }(), '');
+  }
+
   /// Called the first time a provider is obtained.
   @protected
   @mustCallSuper
@@ -193,6 +216,8 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     assert(() {
       RiverpodBinding.debugInstance
           .providerListChangedFor(containerId: container._debugId);
+
+      _debugCurrentCreateHash = provider.debugGetCreateSourceHash?.call();
 
       return true;
     }(), '');

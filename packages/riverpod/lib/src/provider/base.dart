@@ -19,12 +19,13 @@ abstract class ProviderRef<State> implements Ref<State> {
 class Provider<State> extends InternalProvider<State>
     with AlwaysAliveProviderBase<State> {
   /// {@macro riverpod.provider}
-  const Provider(
+  Provider(
     this._createFn, {
     super.name,
     super.dependencies,
     super.from,
     super.argument,
+    super.debugGetCreateSourceHash,
   }) : super(cacheTime: null, disposeDelay: null);
 
   /// {@macro riverpod.family}

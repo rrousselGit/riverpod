@@ -33,13 +33,14 @@ ProviderElementProxy<AsyncValue<T>, Stream<T>> _stream<T>(
 }
 
 abstract class _StreamProviderBase<T> extends ProviderBase<AsyncValue<T>> {
-  const _StreamProviderBase({
+  _StreamProviderBase({
     required this.dependencies,
     required super.name,
     required super.from,
     required super.argument,
     required super.cacheTime,
     required super.disposeDelay,
+    required super.debugGetCreateSourceHash,
   });
 
   @override

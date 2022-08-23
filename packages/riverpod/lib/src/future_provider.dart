@@ -101,13 +101,14 @@ ProviderElementProxy<AsyncValue<T>, Stream<T>> _stream<T>(
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
 abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
-  const _FutureProviderBase({
+  _FutureProviderBase({
     required this.dependencies,
     required super.name,
     required super.from,
     required super.argument,
     required super.cacheTime,
     required super.disposeDelay,
+    required super.debugGetCreateSourceHash,
   });
 
   @override

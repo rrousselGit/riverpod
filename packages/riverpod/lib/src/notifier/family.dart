@@ -36,6 +36,7 @@ class FamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>, T, Arg>
     super.from,
     super.argument,
     super.dependencies,
+    super.debugGetCreateSourceHash,
   }) : super(cacheTime: null, disposeDelay: null);
 
   /// {@macro riverpod.autoDispose}

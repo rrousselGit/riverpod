@@ -21,12 +21,13 @@ abstract class ProviderBase<State> extends ProviderOrFamily
     with ProviderListenable<State>
     implements ProviderOverride, Refreshable<State> {
   /// A base class for _all_ providers.
-  const ProviderBase({
+  ProviderBase({
     required this.name,
     required this.from,
     required this.argument,
     required this.cacheTime,
     required this.disposeDelay,
+    required this.debugGetCreateSourceHash,
   });
 
   @override
@@ -34,6 +35,15 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 
   @override
   ProviderBase get _override => this;
+
+  /// A debug-only fucntion for obtaining a hash of the source code of the
+  /// initialization function.
+  ///
+  /// If after a hot-reload this function returns a different result, the
+  /// provider will be re-executed.
+  ///
+  /// This variable is only set by `riverpod_generator`.
+  final String Function()? debugGetCreateSourceHash;
 
   /// {@template riverpod.cache_time}
   /// The minimum amount of time (in milliseconds) before an `autoDispose` provider

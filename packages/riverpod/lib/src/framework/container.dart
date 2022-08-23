@@ -257,6 +257,23 @@ class ProviderContainer implements Node {
     return provider.read(this);
   }
 
+  /// Executes [ProviderElementBase.debugReassemble] on all the providers.
+  void debugReassemble() {
+// TODO hot-reload handle provider type change
+// TODO hot-reload handle provider response type change
+// TODO hot-reload handle provider -> family
+// TODO hot-reload handle family adding parameters
+// TODO found "Future already completed error" after adding family parameter
+
+    assert(() {
+      for (final element in getAllProviderElements()) {
+        element.debugReassemble();
+      }
+
+      return true;
+    }(), '');
+  }
+
   @override
   ProviderSubscription<State> _listenElement<State>(
     ProviderElementBase<State> element, {

@@ -17,9 +17,10 @@ class ProviderTemplate {
 
     return '''
 ${data.providerDoc}
-const ${data.providerName} = ${data.providerTypeDisplayString}(
+final ${data.providerName} = ${data.providerTypeDisplayString}(
   ${create()},
   name: r'${data.providerName}',
+  debugGetCreateSourceHash: ${data.hashFn},
   ${[
       if (data.cacheTime != null) 'cacheTime: ${data.cacheTime},',
       if (data.disposeDelay != null) 'disposeDelay: ${data.disposeDelay},',
@@ -53,6 +54,7 @@ class ${data.providerTypeNameImpl} extends ${data.providerTypeDisplayString} {
           $superConstructor,
           from: ${data.providerName},
           name: r'${data.providerName}',
+          debugGetCreateSourceHash: ${data.hashFn},
     ${[
       if (data.cacheTime != null) 'cacheTime: ${data.cacheTime},',
       if (data.disposeDelay != null) 'disposeDelay: ${data.disposeDelay},',

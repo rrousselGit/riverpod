@@ -18,7 +18,7 @@ void main() {
   });
 
   test('Respects keepAlive parameter', () {
-    const AutoDisposeProvider<int> provider = TimersProvider;
+    final AutoDisposeProvider<int> provider = TimersProvider;
     final AutoDisposeProvider<int> provider2 = Timers2Provider(42);
     final container = createContainer();
 
