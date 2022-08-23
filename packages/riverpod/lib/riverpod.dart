@@ -28,7 +28,11 @@ export 'src/framework.dart'
         handleFireImmediately,
         Create,
         Node,
-        ProviderElementProxy;
+        ProviderElementProxy,
+        PostEventCall,
+        debugPostEvent,
+        RiverpodBinding,
+        PostEventSpy;
 
 export 'src/future_provider.dart';
 
