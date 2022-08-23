@@ -49,6 +49,7 @@ jobs:
         run: |
           cd examples/stackoverflow && flutter pub get && flutter pub run build_runner build --delete-conflicting-outputs && cd - 
           cd examples/marvel && flutter pub get && flutter pub run build_runner build --delete-conflicting-outputs && cd - 
+          cd examples/pub && flutter pub get && flutter pub run build_runner build --delete-conflicting-outputs && cd - 
           cd examples/todos && flutter pub get && flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Analyze
