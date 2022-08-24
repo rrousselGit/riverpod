@@ -16,6 +16,7 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
     super.dependencies,
     super.cacheTime,
     super.disposeDelay,
+    super.debugGetCreateSourceHash,
   });
 
   /// {@macro riverpod.family}

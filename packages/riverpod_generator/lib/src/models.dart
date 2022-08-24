@@ -1,4 +1,7 @@
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
+
+import 'templates/hash.dart';
 
 class Optional<T> {
   const Optional(this.value);
@@ -26,6 +29,8 @@ class Data {
     required this.cacheTime,
     required this.disposeDelay,
     required this.providerDoc,
+    required this.createElement,
+    required this.createAst,
   }) : notifierName = null;
 
   Data.notifier({
@@ -40,8 +45,12 @@ class Data {
     required this.cacheTime,
     required this.disposeDelay,
     required this.providerDoc,
+    required this.createElement,
+    required this.createAst,
   }) : functionName = null;
 
+  final ExecutableElement createElement;
+  final AstNode createAst;
   final bool isScoped;
   final bool isAsync;
   final bool isFamily;
@@ -54,6 +63,11 @@ class Data {
   final int? cacheTime;
   final int? disposeDelay;
   final String providerDoc;
+
+  String get hashFunctionName => '\$${rawName}Hash';
+
+  String get hashFn => "bool.fromEnvironment('dart.vm.product') ? "
+      'null : $hashFunctionName';
 
   String get refName => '${rawName.titled}Ref';
 
@@ -232,6 +246,8 @@ class Data {
 
 class GlobalData {
   GlobalData();
+
+  final ElementHash hash = ElementHash();
 }
 
 extension on String {

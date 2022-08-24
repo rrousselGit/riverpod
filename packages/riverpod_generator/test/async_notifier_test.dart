@@ -12,7 +12,7 @@ void main() {
       () {
     final container = createContainer();
 
-    const AutoDisposeAsyncNotifierProvider<PublicClass, String> provider =
+    final AutoDisposeAsyncNotifierProvider<PublicClass, String> provider =
         PublicClassProvider;
     final AsyncValue<String> result = container.read(PublicClassProvider);
 
@@ -43,7 +43,7 @@ void main() {
       () {
     final container = createContainer();
 
-    const FamilyClassProviderFamily family = FamilyClassProvider;
+    final FamilyClassProviderFamily family = FamilyClassProvider;
 
     expect(FamilyClassProvider(42, third: .42).from, FamilyClassProvider);
 

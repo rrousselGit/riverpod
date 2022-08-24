@@ -39,6 +39,7 @@ class AutoDisposeFamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>,
     super.dependencies,
     super.cacheTime,
     super.disposeDelay,
+    super.debugGetCreateSourceHash,
   });
 
   @override

@@ -9,10 +9,10 @@ class FamilyTemplate {
   String toString() {
     return '''
 ${data.providerDoc}
-const ${data.providerName} = ${data.familyName}();
+final ${data.providerName} = ${data.familyName}();
 
 class ${data.familyName} extends Family<${data.exposedValueDisplayType}> {
-  const ${data.familyName}();
+  ${data.familyName}();
 
   ${data.providerTypeNameImpl} call(${data.paramDefinition}) {
     return ${data.providerTypeNameImpl}(${data.paramInvocationPassAround});

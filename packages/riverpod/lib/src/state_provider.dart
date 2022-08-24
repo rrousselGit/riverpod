@@ -31,13 +31,14 @@ ProviderElementProxy<T, StateController<T>> _state<T>(
 }
 
 abstract class _StateProviderBase<T> extends ProviderBase<T> {
-  const _StateProviderBase({
+  _StateProviderBase({
     required super.name,
     required super.from,
     required super.argument,
     required this.dependencies,
     required super.cacheTime,
     required super.disposeDelay,
+    required super.debugGetCreateSourceHash,
   });
 
   @override
