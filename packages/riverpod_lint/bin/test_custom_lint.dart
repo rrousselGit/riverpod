@@ -14,7 +14,7 @@ import 'custom_lint.dart';
 void main() async {
   final collection = AnalysisContextCollection(
       includedPaths: [canonicalize('../riverpod_lint_flutter_test/')]);
-  const test = 'mutate_in_create';
+  const test = 'use_ref_before_async_gaps';
   final file =
       canonicalize('../riverpod_lint_flutter_test/test/goldens/$test.dart');
   final watcher = FileWatcher(file);

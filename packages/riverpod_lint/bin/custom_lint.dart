@@ -17,6 +17,7 @@ const _providerBase = TypeChecker.fromRuntime(ProviderBase);
 const _family = TypeChecker.fromRuntime(Family);
 const _future = TypeChecker.fromRuntime(Future);
 const _stream = TypeChecker.fromRuntime(Stream);
+const _container = TypeChecker.fromRuntime(ProviderContainer);
 const _providerOrFamily = TypeChecker.any([_providerBase, _family]);
 const _futureOrStream = TypeChecker.any([_future, _stream]);
 
@@ -133,6 +134,31 @@ class RefLifecycleInvocation {
   late final bool? isWithinBuild = _isWithinBuild(invocation);
 }
 
+mixin _AsyncContextVisitor<T> on AsyncRecursiveVisitor<T> {
+  bool synchronous = true;
+  @override
+  Stream<T>? visitBlockFunctionBody(BlockFunctionBody node) async* {
+    final last = synchronous;
+    synchronous = true;
+    yield* super.visitBlockFunctionBody(node) ?? const Stream.empty();
+    synchronous = last;
+  }
+
+  @override
+  Stream<T>? visitAwaitExpression(AwaitExpression node) async* {
+    yield* super.visitAwaitExpression(node) ?? const Stream.empty();
+    synchronous = false;
+  }
+
+  @override
+  Stream<T>? visitForStatement(ForStatement node) async* {
+    // First time through the loop could be synchronous, so wait till the loop is done
+    yield* super.visitForStatement(node) ?? const Stream.empty();
+    if (node.awaitKeyword != null) {
+      synchronous = false;
+    }
+  }
+}
 mixin _RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
   /// A Ref/WidgetRef method was invoked. It isn't guaranteed to be watch/listen/read
   Stream<T>? visitRefInvocation(RefLifecycleInvocation node);
@@ -151,6 +177,96 @@ mixin _RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
         _widgetRef.isAssignableFrom(targetType)) {
       final refInvocStream = visitRefInvocation(RefLifecycleInvocation._(node));
       if (refInvocStream != null) yield* refInvocStream;
+    }
+  }
+}
+
+mixin _InvocationVisitor<T>
+    on AsyncRecursiveVisitor<T>, _AsyncContextVisitor<T> {
+  // Whether the method is forced async
+  bool forceAsync = false;
+  bool get asyncBad;
+  Stream<T> visitCalledFunction(AstNode node, {required AstNode callingNode});
+  @override
+  Stream<T>? visitPropertyAccess(PropertyAccess node) async* {
+    final method = node.propertyName.staticElement;
+    if (method != null) {
+      final ast = await findAstNodeForElement(method);
+      if (ast != null) {
+        yield* visitCalledFunction(ast, callingNode: node);
+      }
+    }
+    yield* super.visitPropertyAccess(node) ?? const Stream.empty();
+  }
+
+  @override
+  Stream<T>? visitPrefixedIdentifier(PrefixedIdentifier node) async* {
+    final method = node.identifier.staticElement;
+    if (method != null) {
+      final ast = await findAstNodeForElement(method);
+      if (ast != null) {
+        yield* visitCalledFunction(ast, callingNode: node);
+      }
+    }
+    yield* super.visitPrefixedIdentifier(node) ?? const Stream.empty();
+  }
+
+  @override
+  Stream<T>? visitFunctionExpressionInvocation(
+      FunctionExpressionInvocation node) async* {
+    final method = node.staticElement;
+    if (method != null) {
+      final ast = await findAstNodeForElement(method);
+      if (ast != null) {
+        yield* visitCalledFunction(ast as FunctionDeclaration,
+            callingNode: node);
+      }
+    }
+    yield* super.visitFunctionExpressionInvocation(node) ??
+        const Stream.empty();
+  }
+
+  @override
+  Stream<T>? visitMethodInvocation(MethodInvocation node) async* {
+    final method = node.methodName.staticElement;
+    if (method != null) {
+      final ast = await findAstNodeForElement(method.declaration!);
+      if (ast != null) {
+        yield* visitCalledFunction(ast, callingNode: node);
+      }
+    }
+
+    yield* super.visitMethodInvocation(node) ?? const Stream.empty();
+  }
+
+  @override
+  Stream<T>? visitInstanceCreationExpression(
+      InstanceCreationExpression node) async* {
+    final constructor = node.constructorName.staticElement;
+    if (constructor != null) {
+      if (_futureOrStream.isAssignableFrom(constructor.enclosingElement3)) {
+        if (!asyncBad) {
+          return;
+        } else {
+          for (final arg in node.argumentList.arguments) {
+            // The arguments to a future or stream could be called after a widget is disposed
+            final last = forceAsync;
+            forceAsync = true;
+            yield* visitExpression(arg) ?? const Stream.empty();
+            forceAsync = last;
+          }
+        }
+      } else {
+        final ast = await findAstNodeForElement(constructor.declaration);
+
+        if (ast != null) {
+          yield* visitConstructorDeclaration(ast as ConstructorDeclaration) ??
+              const Stream.empty();
+        }
+        for (final arg in node.argumentList.arguments) {
+          yield* visitExpression(arg) ?? const Stream.empty();
+        }
+      }
     }
   }
 }
@@ -260,11 +376,62 @@ class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
   }
 }
 
-class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
+class RefAsyncUsageVisitor extends AsyncRecursiveVisitor<Lint>
+    with _AsyncContextVisitor, _InvocationVisitor, _RefLifecycleVisitor {
+  RefAsyncUsageVisitor(this.unit);
+  final ResolvedUnitResult unit;
+
+  @override
+  Stream<Lint> visitCalledFunction(AstNode node,
+      {required AstNode callingNode}) async* {
+    final results = node is MethodDeclaration
+        ? visitMethodDeclaration(node)
+        : node is FunctionDeclaration
+            ? visitFunctionDeclaration(node)
+            : null;
+    if (results != null) {
+      await for (final _ in results) {
+        yield Lint(
+          code: 'riverpod_no_ref_after_async',
+          message:
+              'Do not use ref after async gaps in flutter widgets, a function was called which uses ref after a widget could be disposed',
+          location: unit.lintLocationFromOffset(
+            callingNode.offset,
+            length: callingNode.length,
+          ),
+        );
+        // Only need to report the function once
+        return;
+      }
+    }
+  }
+
+  @override
+  Stream<Lint>? visitRefInvocation(RefLifecycleInvocation node) async* {
+    if (!synchronous || forceAsync) {
+      // TODO Allow checking mounted in stateful widgets and checking mounted in StateNotifiers
+      yield Lint(
+        code: 'riverpod_no_ref_after_async',
+        message: 'Do not use ref after async gaps in flutter widgets.',
+        location: unit.lintLocationFromOffset(
+          node.invocation.offset,
+          length: node.invocation.length,
+        ),
+      );
+    }
+  }
+
+  @override
+  bool get asyncBad => true;
+}
+
+class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint>
+    with _AsyncContextVisitor, _InvocationVisitor {
   ProviderSyncMutationVisitor(this.unit);
 
   final ResolvedUnitResult unit;
 
+  @override
   Stream<Lint> visitCalledFunction(AstNode node,
       {required AstNode callingNode}) async* {
     final results = node is MethodDeclaration
@@ -290,100 +457,6 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
   }
 
   @override
-  Stream<Lint>? visitPropertyAccess(PropertyAccess node) async* {
-    final method = node.propertyName.staticElement;
-    if (method != null) {
-      final ast = await findAstNodeForElement(method);
-      if (ast != null) {
-        yield* visitCalledFunction(ast, callingNode: node);
-      }
-    }
-    yield* super.visitPropertyAccess(node) ?? const Stream.empty();
-  }
-
-  @override
-  Stream<Lint>? visitPrefixedIdentifier(PrefixedIdentifier node) async* {
-    final method = node.identifier.staticElement;
-    if (method != null) {
-      final ast = await findAstNodeForElement(method);
-      if (ast != null) {
-        yield* visitCalledFunction(ast, callingNode: node);
-      }
-    }
-    yield* super.visitPrefixedIdentifier(node) ?? const Stream.empty();
-  }
-
-  @override
-  Stream<Lint>? visitFunctionExpressionInvocation(
-      FunctionExpressionInvocation node) async* {
-    final method = node.staticElement;
-    if (method != null) {
-      final ast = await findAstNodeForElement(method);
-      if (ast != null) {
-        yield* visitCalledFunction(ast as FunctionDeclaration,
-            callingNode: node);
-      }
-    }
-    yield* super.visitFunctionExpressionInvocation(node) ??
-        const Stream.empty();
-  }
-
-  @override
-  Stream<Lint> visitMethodInvocation(MethodInvocation node) async* {
-    final method = node.methodName.staticElement;
-    if (method != null) {
-      final ast = await findAstNodeForElement(method.declaration!);
-      if (ast != null) {
-        yield* visitCalledFunction(ast, callingNode: node);
-      }
-    }
-
-    yield* super.visitMethodInvocation(node) ?? const Stream.empty();
-  }
-
-  @override
-  Stream<Lint>? visitInstanceCreationExpression(
-      InstanceCreationExpression node) async* {
-    final constructor = node.constructorName.staticElement;
-    if (constructor != null) {
-      if (_futureOrStream.isAssignableFrom(constructor.enclosingElement3)) {
-        return;
-      }
-
-      final ast = await findAstNodeForElement(constructor.declaration);
-
-      if (ast != null) {
-        yield* visitConstructorDeclaration(ast as ConstructorDeclaration) ??
-            const Stream.empty();
-      }
-    }
-  }
-
-  bool synchronous = true;
-  @override
-  Stream<Lint>? visitBlockFunctionBody(BlockFunctionBody node) async* {
-    final last = synchronous;
-    synchronous = true;
-    yield* super.visitBlockFunctionBody(node) ?? const Stream.empty();
-    synchronous = last;
-  }
-
-  @override
-  Stream<Lint>? visitAwaitExpression(AwaitExpression node) async* {
-    yield* super.visitAwaitExpression(node) ?? const Stream.empty();
-    synchronous = false;
-  }
-
-  @override
-  Stream<Lint>? visitForStatement(ForStatement node) async* {
-    // First time through the loop could be synchronous, so wait till the loop is done
-    yield* super.visitForStatement(node) ?? const Stream.empty();
-    if (node.awaitKeyword != null) {
-      synchronous = false;
-    }
-  }
-
-  @override
   Stream<Lint>? visitAssignmentExpression(
       AssignmentExpression expression) async* {
     final mutate = expression.isMutation;
@@ -398,6 +471,9 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
       );
     }
   }
+
+  @override
+  bool get asyncBad => false;
 }
 
 class _FindProviderCallbackVisitor
@@ -614,6 +690,29 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
   }
 
   @override
+  Stream<Lint> visitTopLevelVariableDeclaration(
+      TopLevelVariableDeclaration node) async* {
+    yield* super.visitTopLevelVariableDeclaration(node) ?? const Stream.empty();
+    for (final variable in node.variables.variables) {
+      final type = variable.declaredElement2?.type;
+
+      if (type != null && _container.isAssignableFromType(type)) {
+        yield Lint(
+          code: 'riverpod_global_container',
+          message: 'This container is global',
+          correction:
+              'Make the container non-global by creating it in your main and assigning it to a UncontrolledProviderScope.',
+          severity: LintSeverity.warning,
+          location: unit.lintLocationFromOffset(
+            variable.offset,
+            length: variable.length,
+          ),
+        );
+      }
+    }
+  }
+
+  @override
   Stream<Lint> visitNode(AstNode node) async* {
     yield* super.visitNode(node) ?? const Stream.empty();
     if (node.isWidgetBuild ?? false) {
@@ -623,8 +722,14 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
           : node is FunctionDeclaration
               ? syncMutationDetector.visitFunctionDeclaration(node)
               : null;
-
       yield* results ?? const Stream<Lint>.empty();
+      final refAfterAsyncGaps = RefAsyncUsageVisitor(unit);
+      final results2 = node is MethodDeclaration
+          ? refAfterAsyncGaps.visitMethodDeclaration(node)
+          : node is FunctionDeclaration
+              ? refAfterAsyncGaps.visitFunctionDeclaration(node)
+              : null;
+      yield* results2 ?? const Stream<Lint>.empty();
     }
   }
 

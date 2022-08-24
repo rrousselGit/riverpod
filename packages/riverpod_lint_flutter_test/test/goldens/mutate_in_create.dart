@@ -5,6 +5,7 @@ final a = StateProvider((ref) => 'String');
 
 final b = Provider<bool>((ref) {
   ref.watch(a.notifier).state = '';
+  ref.watch(c.notifier).fn();
   return false;
 });
 
@@ -51,6 +52,7 @@ class D extends ConsumerWidget {
     fn(ref);
     fn2(ref);
     fn3(ref);
+    ref.watch(c.notifier).fn();
     ref.fn_g;
     ref.fn2_g;
     ref.fn3_g;
@@ -67,7 +69,7 @@ class D extends ConsumerWidget {
     await Future.delayed(Duration(seconds: 1));
   }
 
-  // Okay
+  // Okay, for synchronous, but bad for async usage
   Future<void> fn3(WidgetRef ref) async {
     await Future.delayed(Duration(seconds: 1));
     ref.read(a.notifier).state = '';
@@ -97,3 +99,39 @@ extension on WidgetRef {
 
   Future<void> get fn3_g => fn3();
 }
+
+class E extends ChangeNotifier {
+  E(this.ref) {
+    ref.read(a.notifier).state = '';
+    Future.delayed(Duration(milliseconds: 10), () {
+      ref.read(a.notifier).state = '';
+    });
+    ref.read(a.notifier).state = '';
+    fn();
+    fn2();
+    fn3();
+  }
+  final Ref ref;
+
+  void fn() {
+    ref.read(a.notifier).state = '';
+  }
+
+  // Not okay
+  Future<void> fn2() async {
+    ref.read(a.notifier).state = '';
+    await Future.delayed(Duration(seconds: 1));
+  }
+
+  // Okay
+  Future<void> fn3() async {
+    await Future.delayed(Duration(seconds: 1));
+    ref.read(a.notifier).state = '';
+  }
+}
+
+final f = ChangeNotifierProvider<E>((ref) {
+  final e = E(ref);
+  e.fn();
+  return e;
+});
