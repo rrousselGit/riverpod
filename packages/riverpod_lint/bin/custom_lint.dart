@@ -265,6 +265,29 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
 
   final ResolvedUnitResult unit;
 
+  Stream<Lint> visitCalledFunction(AstNode node) async* {
+    final results = node is MethodDeclaration
+        ? visitMethodDeclaration(node)
+        : node is FunctionDeclaration
+            ? visitFunctionDeclaration(node)
+            : null;
+    if (results != null) {
+      await for (final _ in results) {
+        yield Lint(
+          code: 'riverpod_no_mutate_sync',
+          message:
+              'Do not mutate a provider synchronously, a function was called which mutates a provider synchronously',
+          location: unit.lintLocationFromOffset(
+            node.offset,
+            length: node.length,
+          ),
+        );
+        // Only need to report the function once
+        return;
+      }
+    }
+  }
+
   @override
   Stream<Lint>? visitFunctionExpressionInvocation(
       FunctionExpressionInvocation node) async* {
@@ -272,23 +295,7 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
     if (method != null) {
       final ast = await findAstNodeForElement(method);
       if (ast != null) {
-        final decl = visitFunctionDeclaration(ast as FunctionDeclaration);
-        if (decl == null) {
-          return;
-        }
-        // If the method mutates synchronously, it is not a problem with the method necessarily, just that we call it synchronously
-        await for (final _ in decl) {
-          yield Lint(
-            code: 'riverpod_no_mutate_sync',
-            message:
-                'Do not mutate a provider synchronously, a function was called which mutates a provider synchronously',
-            location: unit.lintLocationFromOffset(
-              node.offset,
-              length: node.length,
-            ),
-          );
-          return;
-        }
+        yield* visitCalledFunction(ast as FunctionDeclaration);
       }
     }
     yield* super.visitFunctionExpressionInvocation(node) ??
@@ -296,28 +303,13 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
   }
 
   @override
-  Stream<Lint>? visitMethodInvocation(MethodInvocation node) async* {
+  Stream<Lint> visitMethodInvocation(MethodInvocation node) async* {
     final method = node.methodName.staticElement;
+    print(node.methodName.name);
     if (method != null) {
       final ast = await findAstNodeForElement(method.declaration!);
       if (ast != null) {
-        final decl = visitMethodDeclaration(ast as MethodDeclaration);
-        if (decl == null) {
-          return;
-        }
-        // If the method mutates synchronously, it is not a problem with the method necessarily, just that we call it synchronously
-        await for (final _ in decl) {
-          yield Lint(
-            code: 'riverpod_no_mutate_sync',
-            message:
-                'Do not mutate a provider synchronously, a method was called which mutates a provider synchronously',
-            location: unit.lintLocationFromOffset(
-              node.offset,
-              length: node.length,
-            ),
-          );
-          return;
-        }
+        yield* visitCalledFunction(ast);
       }
     }
 
@@ -332,7 +324,9 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
       if (_futureOrStream.isAssignableFrom(constructor.enclosingElement3)) {
         return;
       }
+
       final ast = await findAstNodeForElement(constructor.declaration);
+
       if (ast != null) {
         yield* visitConstructorDeclaration(ast as ConstructorDeclaration) ??
             const Stream.empty();
@@ -343,6 +337,7 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
   bool synchronous = true;
   @override
   Stream<Lint>? visitBlockFunctionBody(BlockFunctionBody node) async* {
+    print('Visiting $node');
     final last = synchronous;
     synchronous = true;
     yield* super.visitBlockFunctionBody(node) ?? const Stream.empty();
@@ -594,6 +589,21 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
     //     'Provider\n - origin: $node\n - expected: ${dependencies.value}\n - dependencies: ${visitor.dependencies}');
   }
 
+  @override
+  Stream<Lint> visitNode(AstNode node) async* {
+    yield* super.visitNode(node) ?? const Stream.empty();
+    if (node.isWidgetBuild ?? false) {
+      final syncMutationDetector = ProviderSyncMutationVisitor(unit);
+      final results = node is MethodDeclaration
+          ? syncMutationDetector.visitMethodDeclaration(node)
+          : node is FunctionDeclaration
+              ? syncMutationDetector.visitFunctionDeclaration(node)
+              : null;
+
+      yield* results ?? const Stream<Lint>.empty();
+    }
+  }
+
   Stream<Lint> _checkValidProviderDeclaration(AstNode providerNode) async* {
     final declaration =
         providerNode.parents.whereType<VariableDeclaration>().firstOrNull;
@@ -809,6 +819,30 @@ extension on FunctionExpressionInvocation {
   }
 }
 
+extension on AstNode {
+  bool? get isWidgetBuild {
+    final expr = this;
+    if (expr is FunctionExpression) {
+      return (this as FunctionExpression).isWidgetBuilder;
+    }
+    if (expr is MethodDeclaration) {
+      if (expr.name2.lexeme != 'build') {
+        return false;
+      }
+
+      final classElement = expr.parents
+          .whereType<ClassDeclaration>()
+          .firstOrNull
+          ?.declaredElement2;
+
+      if (classElement == null) return null;
+      return _consumerWidget.isAssignableFrom(classElement) ||
+          _consumerState.isAssignableFrom(classElement);
+    }
+    return null;
+  }
+}
+
 extension on FunctionExpression {
   /// Null if unknown
   bool? get isWidgetBuilder {
@@ -844,6 +878,7 @@ extension on AssignmentExpression {
     if (target == null) {
       return null;
     }
+    // TODO:
     if ((targ.methodName.name == 'watch' || targ.methodName.name == 'read') &&
         left.propertyName.name == 'state' &&
         _ref.isAssignableFromType(target)) {
