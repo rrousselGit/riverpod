@@ -265,7 +265,8 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
 
   final ResolvedUnitResult unit;
 
-  Stream<Lint> visitCalledFunction(AstNode node) async* {
+  Stream<Lint> visitCalledFunction(AstNode node,
+      {required AstNode callingNode}) async* {
     final results = node is MethodDeclaration
         ? visitMethodDeclaration(node)
         : node is FunctionDeclaration
@@ -278,8 +279,8 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
           message:
               'Do not mutate a provider synchronously, a function was called which mutates a provider synchronously',
           location: unit.lintLocationFromOffset(
-            node.offset,
-            length: node.length,
+            callingNode.offset,
+            length: callingNode.length,
           ),
         );
         // Only need to report the function once
@@ -289,13 +290,38 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
   }
 
   @override
+  Stream<Lint>? visitPropertyAccess(PropertyAccess node) async* {
+    final method = node.propertyName.staticElement;
+    if (method != null) {
+      final ast = await findAstNodeForElement(method);
+      if (ast != null) {
+        yield* visitCalledFunction(ast, callingNode: node);
+      }
+    }
+    yield* super.visitPropertyAccess(node) ?? const Stream.empty();
+  }
+
+  @override
+  Stream<Lint>? visitPrefixedIdentifier(PrefixedIdentifier node) async* {
+    final method = node.identifier.staticElement;
+    if (method != null) {
+      final ast = await findAstNodeForElement(method);
+      if (ast != null) {
+        yield* visitCalledFunction(ast, callingNode: node);
+      }
+    }
+    yield* super.visitPrefixedIdentifier(node) ?? const Stream.empty();
+  }
+
+  @override
   Stream<Lint>? visitFunctionExpressionInvocation(
       FunctionExpressionInvocation node) async* {
     final method = node.staticElement;
     if (method != null) {
       final ast = await findAstNodeForElement(method);
       if (ast != null) {
-        yield* visitCalledFunction(ast as FunctionDeclaration);
+        yield* visitCalledFunction(ast as FunctionDeclaration,
+            callingNode: node);
       }
     }
     yield* super.visitFunctionExpressionInvocation(node) ??
@@ -305,11 +331,10 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
   @override
   Stream<Lint> visitMethodInvocation(MethodInvocation node) async* {
     final method = node.methodName.staticElement;
-    print(node.methodName.name);
     if (method != null) {
       final ast = await findAstNodeForElement(method.declaration!);
       if (ast != null) {
-        yield* visitCalledFunction(ast);
+        yield* visitCalledFunction(ast, callingNode: node);
       }
     }
 
@@ -337,7 +362,6 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
   bool synchronous = true;
   @override
   Stream<Lint>? visitBlockFunctionBody(BlockFunctionBody node) async* {
-    print('Visiting $node');
     final last = synchronous;
     synchronous = true;
     yield* super.visitBlockFunctionBody(node) ?? const Stream.empty();
@@ -362,8 +386,8 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
   @override
   Stream<Lint>? visitAssignmentExpression(
       AssignmentExpression expression) async* {
-    final mutate = expression.isMutation ?? false;
-    if (synchronous && mutate) {
+    final mutate = expression.isMutation;
+    if (synchronous && (mutate ?? false)) {
       yield Lint(
         code: 'riverpod_no_mutate_sync',
         message: 'Do not mutate a provider synchronously',
@@ -867,22 +891,23 @@ extension on AssignmentExpression {
   // ref.watch(a.notifier).state = '';
   bool? get isMutation {
     final left = leftHandSide;
-    if (left is! PropertyAccess) {
+    if (left is! PropertyAccess || left.propertyName.name != 'state') {
       return null;
     }
     final targ = left.target;
     if (targ is! MethodInvocation) {
       return null;
     }
-    final target = targ.target?.staticType;
-    if (target == null) {
+    final methodTarget = targ.methodName.staticElement?.enclosingElement3;
+    if (methodTarget == null || methodTarget is! InterfaceElement) {
       return null;
     }
-    // TODO:
-    if ((targ.methodName.name == 'watch' || targ.methodName.name == 'read') &&
-        left.propertyName.name == 'state' &&
-        _ref.isAssignableFromType(target)) {
-      return true;
+    if (_ref.isAssignableFromType(methodTarget.thisType) ||
+        _widgetRef.isAssignableFromType(methodTarget.thisType)) {
+      // TODO: Synchronous listen
+      if (targ.methodName.name == 'watch' || targ.methodName.name == 'read') {
+        return true;
+      }
     }
     return false;
   }

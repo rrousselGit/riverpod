@@ -30,6 +30,16 @@ Future<void> main() async {
   test/goldens/final_provider.dart:11:5 • Providers should always be declared as final • riverpod_final_provider
   test/goldens/final_provider.dart:13:5 • Providers should always be declared as final • riverpod_final_provider
   test/goldens/final_provider.dart:15:42 • Providers should always be declared as final • riverpod_final_provider
+  test/goldens/mutate_in_create.dart:7:3 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:17:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:21:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:22:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:23:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:50:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:51:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:52:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:54:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:55:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
   test/goldens/read_vs_watch.dart:10:3 • Avoid using ref.read inside the build method of widgets/providers. • riverpod_avoid_read_inside_build
   test/goldens/read_vs_watch.dart:13:5 • Avoid using ref.watch outside the build method of widgets/providers. • riverpod_avoid_watch_outside_build
   test/goldens/read_vs_watch.dart:18:5 • Avoid using ref.watch outside the build method of widgets/providers. • riverpod_avoid_watch_outside_build
