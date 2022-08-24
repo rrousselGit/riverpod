@@ -5,7 +5,10 @@ import 'package:test_process/test_process.dart';
 
 void main() {
   test('It should log the structure of the addition project', () async {
-    await Process.run('flutter', ['pub', 'get', '../../examples/counter']);
+    await Process.run(
+      'flutter',
+      const ['pub', 'get', '../../examples/counter'],
+    );
     final process = await TestProcess.start(
       'dart',
       const ['run', 'riverpod_graph', '../../examples/counter'],
