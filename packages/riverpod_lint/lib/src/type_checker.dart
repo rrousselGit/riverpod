@@ -4,8 +4,6 @@
 
 // Code imported from source_gen
 
-import 'dart:mirrors' hide SourceLocation;
-
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/constant/value.dart';
@@ -33,11 +31,6 @@ abstract class TypeChecker {
   /// const $FooOrBar = const TypeChecker.forAny(const [$Foo, $Bar]);
   /// ```
   const factory TypeChecker.any(Iterable<TypeChecker> checkers) = _AnyChecker;
-
-  /// Create a new [TypeChecker] backed by a runtime [type].
-  ///
-  /// This implementation uses `dart:mirrors` (runtime reflection).
-  const factory TypeChecker.fromRuntime(Type type) = _MirrorTypeChecker;
 
   /// Create a new [TypeChecker] backed by a static [type].
   const factory TypeChecker.fromStatic(DartType type) = _LibraryTypeChecker;
@@ -228,29 +221,6 @@ class _LibraryTypeChecker extends TypeChecker {
 
   @override
   String toString() => urlOfElement(_type.element2!);
-}
-
-// Checks a runtime type against a static type.
-class _MirrorTypeChecker extends TypeChecker {
-  const _MirrorTypeChecker(this._type) : super._();
-
-  static Uri _uriOf(ClassMirror mirror) =>
-      normalizeUrl((mirror.owner! as LibraryMirror).uri)
-          .replace(fragment: MirrorSystem.getName(mirror.simpleName));
-
-  // Precomputed type checker for types that already have been used.
-  static final _cache = Expando<TypeChecker>();
-
-  final Type _type;
-
-  TypeChecker get _computed =>
-      _cache[this] ??= TypeChecker.fromUrl(_uriOf(reflectClass(_type)));
-
-  @override
-  bool isExactly(Element element) => _computed.isExactly(element);
-
-  @override
-  String toString() => _computed.toString();
 }
 
 @immutable

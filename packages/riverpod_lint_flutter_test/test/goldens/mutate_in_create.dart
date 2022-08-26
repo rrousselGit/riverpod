@@ -109,6 +109,8 @@ class E extends ChangeNotifier {
     ref.read(a.notifier).state = '';
     fn();
     fn2();
+    ref.invalidate(a);
+    ref.invalidateSelf();
     fn3();
   }
   final Ref ref;
@@ -135,3 +137,25 @@ final f = ChangeNotifierProvider<E>((ref) {
   e.fn();
   return e;
 });
+
+class G extends ConsumerStatefulWidget {
+  const G({Key? key}) : super(key: key);
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _GState();
+}
+
+class _GState extends ConsumerState<G> {
+  @override
+  void initState() {
+    ref.read(a.notifier).state = '';
+    ref.invalidate(a);
+    ref.invalidate(a);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}

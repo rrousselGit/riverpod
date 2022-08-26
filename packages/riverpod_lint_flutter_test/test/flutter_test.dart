@@ -12,6 +12,9 @@ Future<void> main() async {
     );
 
     expect(result.stdout, '''
+  test/goldens/auto_dispose_read.dart:11:5 • Avoid using ref.read inside the build method of widgets/providers. • riverpod_avoid_read_inside_build
+  test/goldens/auto_dispose_read.dart:11:5 • Avoid using ref.read on an autoDispose provider • riverpod_avoid_read_on_autoDispose
+  test/goldens/auto_dispose_read.dart:20:3 • Avoid using ref.read on an autoDispose provider • riverpod_avoid_read_on_autoDispose
   test/goldens/avoid_dynamic_provider.dart:10:9 • Providers should be either top level variables or static properties • riverpod_avoid_dynamic_provider
   test/goldens/avoid_dynamic_provider.dart:14:9 • Providers should be either top level variables or static properties • riverpod_avoid_dynamic_provider
   test/goldens/avoid_dynamic_provider.dart:15:9 • Providers should be either top level variables or static properties • riverpod_avoid_dynamic_provider
@@ -51,7 +54,12 @@ Future<void> main() async {
   test/goldens/mutate_in_create.dart:109:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
   test/goldens/mutate_in_create.dart:110:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
   test/goldens/mutate_in_create.dart:111:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
-  test/goldens/mutate_in_create.dart:135:3 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:112:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:113:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:137:3 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:151:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:152:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:153:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
   test/goldens/read_vs_watch.dart:10:3 • Avoid using ref.read inside the build method of widgets/providers. • riverpod_avoid_read_inside_build
   test/goldens/read_vs_watch.dart:13:5 • Avoid using ref.watch outside the build method of widgets/providers. • riverpod_avoid_watch_outside_build
   test/goldens/read_vs_watch.dart:18:5 • Avoid using ref.watch outside the build method of widgets/providers. • riverpod_avoid_watch_outside_build

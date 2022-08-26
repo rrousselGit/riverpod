@@ -83,3 +83,15 @@ class D extends ConsumerWidget {
     ref.refresh(b);
   }
 }
+
+final stream = StreamProvider((ref) async* {
+  // No lint after async
+  await Future.delayed(Duration(seconds: 1));
+  ref.watch(a);
+});
+
+final future = FutureProvider((ref) async* {
+  await Future.delayed(Duration(seconds: 1));
+  // No lint after async
+  ref.watch(a);
+});
