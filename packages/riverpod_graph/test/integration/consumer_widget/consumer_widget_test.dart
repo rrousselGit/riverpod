@@ -2,10 +2,10 @@ import 'package:test/test.dart';
 import 'package:test_process/test_process.dart';
 
 void main() {
-  test('It should log the structure of the addition project', () async {
+  test('It should log the structure of the consumer_widget project', () async {
     final process = await TestProcess.start(
       'dart',
-      const ['run', 'riverpod_graph', 'integration_test/counter'],
+      const ['run', 'riverpod_graph', 'integration_test/consumer_widget'],
     );
 
     final stdoutList = <String>[];
