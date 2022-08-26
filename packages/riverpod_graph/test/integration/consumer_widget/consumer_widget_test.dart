@@ -5,7 +5,11 @@ void main() {
   test('It should log the structure of the consumer_widget project', () async {
     final process = await TestProcess.start(
       'dart',
-      const ['run', 'riverpod_graph', 'integration_test/consumer_widget'],
+      const [
+        'run',
+        'riverpod_graph',
+        'test/integration/consumer_widget/golden',
+      ],
     );
 
     final stdoutList = <String>[];
@@ -18,7 +22,9 @@ void main() {
       allOf(
         [
           startsWith('Analyzing'),
-          endsWith('examples/counter ...'),
+          endsWith(
+            'packages/riverpod_graph/test/integration/consumer_widget/golden ...',
+          ),
         ],
       ),
       reason: 'It should log the analyzed folder',
@@ -46,9 +52,9 @@ flowchart TB
     ConsumerWidget((widget));
     Provider[[provider]];
   end
-  Home((Home));
-  counterProvider ==> Home;
-  counterProvider -.-> Home;
+  CounterWidget((CounterWidget));
+  counterProvider ==> CounterWidget;
+  counterProvider -.-> CounterWidget;
   counterProvider[[counterProvider]];''',
       reason: 'It should log the riverpod graph',
     );
