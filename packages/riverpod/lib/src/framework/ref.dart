@@ -39,7 +39,7 @@ abstract class Ref<State extends Object?> {
   /// {@endtemplate}
   void invalidate(ProviderOrFamily provider);
 
-  /// Listens to changes on the value exposed by this provider
+  /// Listens to changes on the value exposed by this provider.
   ///
   /// The listener will be called immediately after the provider completes building.
   ///
