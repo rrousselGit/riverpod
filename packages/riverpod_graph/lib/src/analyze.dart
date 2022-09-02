@@ -111,21 +111,22 @@ Future<void> analyze(String rootDirectory) async {
   }
 
   for (final node in graph.providers) {
-    stdout.writeln('  ${node.definition.name}[[${node.definition.name}]];');
+    final nodeDefinitionName = displayNameForProvider(node.definition);
+    stdout.writeln('  $nodeDefinitionName[[$nodeDefinitionName]];');
 
     for (final watch in node.watch) {
       stdout.writeln(
-        '  ${displayNameForProvider(watch.definition)} ==> ${node.definition.name};',
+        '  ${displayNameForProvider(watch.definition)} ==> $nodeDefinitionName;',
       );
     }
     for (final listen in node.listen) {
       stdout.writeln(
-        '  ${displayNameForProvider(listen.definition)} --> ${node.definition.name};',
+        '  ${displayNameForProvider(listen.definition)} --> $nodeDefinitionName;',
       );
     }
     for (final read in node.read) {
       stdout.writeln(
-        '  ${displayNameForProvider(read.definition)} -.-> ${node.definition.name};',
+        '  ${displayNameForProvider(read.definition)} -.-> $nodeDefinitionName;',
       );
     }
   }
@@ -297,8 +298,14 @@ class ProviderDependencyVisitor extends RecursiveAstVisitor<void> {
 
 /// Returns the name of the provider.
 String displayNameForProvider(VariableElement provider) {
+  final providerName = provider.name;
+  final enclosingElementName = provider.enclosingElement?.displayName;
+  if (enclosingElementName != null && enclosingElementName.isNotEmpty) {
+    // ClassName.providerName
+    return '$enclosingElementName.$providerName';
+  }
   // TODO print `futureProvider.future` when possible
-  return provider.name;
+  return providerName;
 }
 
 /// Returns the variable element of the watched/listened/read `provider` in an expression. For example:
