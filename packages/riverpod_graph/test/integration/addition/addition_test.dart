@@ -49,8 +49,12 @@ flowchart TB
   additionProvider[[additionProvider]];
   firstOperandProvider ==> additionProvider;
   secondOperandProvider ==> additionProvider;
+  operandProvider ==> additionProvider;
+  fourthOperandProvider ==> additionProvider;
   firstOperandProvider[[firstOperandProvider]];
-  secondOperandProvider[[secondOperandProvider]];''',
+  secondOperandProvider[[secondOperandProvider]];
+  operandProvider[[operandProvider]];
+  fourthOperandProvider[[fourthOperandProvider]];''',
       reason: 'It should log the riverpod graph',
     );
     await process.shouldExit(0);

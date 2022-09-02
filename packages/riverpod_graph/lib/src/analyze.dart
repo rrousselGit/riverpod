@@ -314,6 +314,13 @@ VariableElement parseProviderFromExpression(Expression providerExpression) {
     final target = providerExpression.target;
     if (target != null) return parseProviderFromExpression(target);
   } else if (providerExpression is PrefixedIdentifier) {
+    if (providerExpression.name.isStartedUpperCaseLetter) {
+      // watch(SomeClass.provider)
+      final Object? staticElement = providerExpression.staticElement;
+      if (staticElement is PropertyAccessorElement) {
+        return staticElement.declaration.variable;
+      }
+    }
     // watch(provider.modifier)
     return parseProviderFromExpression(providerExpression.prefix);
   } else if (providerExpression is Identifier) {
@@ -343,4 +350,11 @@ extension on Element {
         const {'riverpod', 'flutter_riverpod', 'hooks_riverpod'}
             .contains(source?.uri.pathSegments.firstOrNull);
   }
+}
+
+extension on String {
+  bool get isStartedUpperCaseLetter =>
+      isNotEmpty && _firstLetter == _firstLetter.toUpperCase();
+
+  String get _firstLetter => substring(0, 1);
 }
