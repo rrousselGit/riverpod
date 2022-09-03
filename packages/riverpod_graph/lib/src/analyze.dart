@@ -111,15 +111,9 @@ Future<void> analyze(String rootDirectory) async {
   }
 
   for (final node in graph.providers) {
-    final nodeGlobalName = displayNameForProvider(node.definition);
-    final isContainedInClass = nodeGlobalName.isStartedUpperCaseLetter;
-    final className = node.definition.enclosingElement?.displayName;
-    if (isContainedInClass) stdout.writeln('  subgraph $className');
-    stdout.writeln(
-      '  ${isContainedInClass ? '  ' : ''}$nodeGlobalName[[${node.definition.name}]];',
-    );
-    if (isContainedInClass) stdout.writeln('  end');
+    _writeProviderNode(node);
 
+    final nodeGlobalName = displayNameForProvider(node.definition);
     for (final watch in node.watch) {
       stdout.writeln(
         '  ${displayNameForProvider(watch.definition)} ==> $nodeGlobalName;',
@@ -136,6 +130,17 @@ Future<void> analyze(String rootDirectory) async {
       );
     }
   }
+}
+
+void _writeProviderNode(ProviderNode node) {
+  final nodeGlobalName = displayNameForProvider(node.definition);
+  final isContainedInClass = nodeGlobalName.isStartedUpperCaseLetter;
+  final className = node.definition.enclosingElement?.displayName;
+  if (isContainedInClass) stdout.writeln('  subgraph $className');
+  stdout.writeln(
+    '  ${isContainedInClass ? '  ' : ''}$nodeGlobalName[[${node.definition.name}]];',
+  );
+  if (isContainedInClass) stdout.writeln('  end');
 }
 
 /// The generated dependency graph.
