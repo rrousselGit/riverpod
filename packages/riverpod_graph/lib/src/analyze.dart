@@ -111,22 +111,28 @@ Future<void> analyze(String rootDirectory) async {
   }
 
   for (final node in graph.providers) {
-    final nodeDefinitionName = displayNameForProvider(node.definition);
-    stdout.writeln('  $nodeDefinitionName[[$nodeDefinitionName]];');
+    final nodeGlobalName = displayNameForProvider(node.definition);
+    final isContainedInClass = nodeGlobalName.isStartedUpperCaseLetter;
+    final className = node.definition.enclosingElement?.displayName;
+    if (isContainedInClass) stdout.writeln('  subgraph $className');
+    stdout.writeln(
+      '  ${isContainedInClass ? '  ' : ''}$nodeGlobalName[[${node.definition.name}]];',
+    );
+    if (isContainedInClass) stdout.writeln('  end');
 
     for (final watch in node.watch) {
       stdout.writeln(
-        '  ${displayNameForProvider(watch.definition)} ==> $nodeDefinitionName;',
+        '  ${displayNameForProvider(watch.definition)} ==> $nodeGlobalName;',
       );
     }
     for (final listen in node.listen) {
       stdout.writeln(
-        '  ${displayNameForProvider(listen.definition)} --> $nodeDefinitionName;',
+        '  ${displayNameForProvider(listen.definition)} --> $nodeGlobalName;',
       );
     }
     for (final read in node.read) {
       stdout.writeln(
-        '  ${displayNameForProvider(read.definition)} -.-> $nodeDefinitionName;',
+        '  ${displayNameForProvider(read.definition)} -.-> $nodeGlobalName;',
       );
     }
   }
