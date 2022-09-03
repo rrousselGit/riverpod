@@ -324,9 +324,7 @@ VariableElement parseProviderFromExpression(Expression providerExpression) {
       return staticElement.declaration.variable;
     }
     final target = providerExpression.target;
-    if (target != null) {
-      return parseProviderFromExpression(target);
-    }
+    if (target != null) return parseProviderFromExpression(target);
   } else if (providerExpression is PrefixedIdentifier) {
     if (providerExpression.name.isStartedUpperCaseLetter) {
       // watch(SomeClass.provider)
