@@ -4,14 +4,16 @@ import 'base_providers.dart';
 
 final additionProvider = FutureProvider<int>(
   (ref) async =>
-      ref.watch(firstOperandProvider) +
-      await ref.watch(secondOperandProvider.future) +
-      ref.watch(Third.operandProvider) +
-      await ref.watch(Fourth.operandProvider.future),
+      ref.watch(normalProvider) +
+      await ref.watch(futureProvider.future) +
+      ref.watch(familyProviders(0)) +
+      ref.watch(SampleClass.normalProvider) +
+      await ref.watch(SampleClass.futureProvider.future)
   dependencies: [
-    firstOperandProvider,
-    secondOperandProvider,
-    Third.operandProvider,
-    fourthOperandProvider.future,
+    normalProvider,
+    futureProvider.future,
+    familyProviders,
+    SampleClass.normalProvider,
+    SampleClass.futureProvider.future,
   ],
 );

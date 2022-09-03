@@ -1,12 +1,11 @@
 import 'package:riverpod/riverpod.dart';
 
-final firstOperandProvider = Provider((ref) => 0);
-final secondOperandProvider = FutureProvider((ref) => 1);
+final normalProvider = Provider((ref) => 0);
+final futureProvider = FutureProvider((ref) => 1);
+final familyProviders = Provider.family((ref, anyNumber) => 2);
 
-class Third {
-  static final operandProvider = Provider((_) => 2);
-}
-
-class Fourth {
-  static final operandProvider = FutureProvider((_) => 3);
+class SampleClass {
+  static final normalProvider = Provider((ref) => 0);
+  static final futureProvider = FutureProvider((ref) => 1);
+  //
 }
