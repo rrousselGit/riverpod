@@ -317,9 +317,16 @@ String displayNameForProvider(VariableElement provider) {
 /// - `watch(family(id).select(...))`
 VariableElement parseProviderFromExpression(Expression providerExpression) {
   if (providerExpression is PropertyAccess) {
-    // watch(family(0).modifier)
+    final staticElement = providerExpression.propertyName.staticElement;
+    if (staticElement is PropertyAccessorElement &&
+        providerExpression.realTarget.staticType == null) {
+      // SampleClass.familyProviders
+      return staticElement.declaration.variable;
+    }
     final target = providerExpression.target;
-    if (target != null) return parseProviderFromExpression(target);
+    if (target != null) {
+      return parseProviderFromExpression(target);
+    }
   } else if (providerExpression is PrefixedIdentifier) {
     if (providerExpression.name.isStartedUpperCaseLetter) {
       // watch(SomeClass.provider)
