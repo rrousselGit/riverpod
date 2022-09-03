@@ -132,17 +132,6 @@ Future<void> analyze(String rootDirectory) async {
   }
 }
 
-void _writeProviderNode(ProviderNode node) {
-  final nodeGlobalName = displayNameForProvider(node.definition);
-  final isContainedInClass = nodeGlobalName.isStartedUpperCaseLetter;
-  final className = node.definition.enclosingElement?.displayName;
-  if (isContainedInClass) stdout.writeln('  subgraph $className');
-  stdout.writeln(
-    '  ${isContainedInClass ? '  ' : ''}$nodeGlobalName[[${node.definition.name}]];',
-  );
-  if (isContainedInClass) stdout.writeln('  end');
-}
-
 /// The generated dependency graph.
 final graph = ProviderGraph();
 
@@ -364,6 +353,17 @@ VariableElement parseProviderFromExpression(Expression providerExpression) {
   throw UnsupportedError(
     'unknown expression $providerExpression ${providerExpression.runtimeType}',
   );
+}
+
+void _writeProviderNode(ProviderNode node) {
+  final nodeGlobalName = displayNameForProvider(node.definition);
+  final isContainedInClass = nodeGlobalName.isStartedUpperCaseLetter;
+  final className = node.definition.enclosingElement?.displayName;
+  if (isContainedInClass) stdout.writeln('  subgraph $className');
+  stdout.writeln(
+    '  ${isContainedInClass ? '  ' : ''}$nodeGlobalName[[${node.definition.name}]];',
+  );
+  if (isContainedInClass) stdout.writeln('  end');
 }
 
 extension on Element {
