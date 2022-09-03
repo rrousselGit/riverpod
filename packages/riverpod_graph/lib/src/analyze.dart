@@ -359,13 +359,9 @@ void _writeProviderNode(ProviderNode node) {
   final nodeGlobalName = displayNameForProvider(node.definition);
   final isContainedInClass = nodeGlobalName.isStartedUpperCaseLetter;
   final className = node.definition.enclosingElement?.displayName;
-  if (isContainedInClass) {
-    stdout.writeln('  subgraph $className');
-    stdout.write('  ');
-  }
-  stdout.writeln(
-    '  $nodeGlobalName[[${node.definition.name}]];',
-  );
+  if (isContainedInClass) stdout.writeln('  subgraph $className');
+  if (isContainedInClass) stdout.write('  ');
+  stdout.writeln('  $nodeGlobalName[[${node.definition.name}]];');
   if (isContainedInClass) stdout.writeln('  end');
 }
 
