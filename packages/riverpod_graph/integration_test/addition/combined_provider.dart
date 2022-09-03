@@ -2,7 +2,7 @@ import 'package:riverpod/riverpod.dart';
 
 import 'base_providers.dart';
 
-final additionProvider = FutureProvider<int>(
+final additionProvider = FutureProvider(
   (ref) async =>
       ref.watch(normalProvider) +
       await ref.watch(futureProvider.future) +
@@ -16,12 +16,12 @@ final additionProvider = FutureProvider<int>(
       ref.watch(SampleClass.selectedProvider.select((value) => value)),
   dependencies: [
     normalProvider,
-    futureProvider.future,
+    futureProvider,
     familyProviders,
     functionProvider,
     selectedProvider,
     SampleClass.normalProvider,
-    SampleClass.futureProvider.future,
+    SampleClass.futureProvider,
     SampleClass.familyProviders,
     SampleClass.functionProvider,
     SampleClass.selectedProvider,
