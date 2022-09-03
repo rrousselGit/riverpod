@@ -51,18 +51,22 @@ flowchart TB
   futureProvider ==> additionProvider;
   familyProviders ==> additionProvider;
   functionProvider ==> additionProvider;
+  selectedProvider ==> additionProvider;
   SampleClass.normalProvider ==> additionProvider;
   SampleClass.futureProvider ==> additionProvider;
   SampleClass.familyProviders ==> additionProvider;
   SampleClass.functionProvider ==> additionProvider;
+  SampleClass.selectedProvider ==> additionProvider;
   normalProvider[[normalProvider]];
   futureProvider[[futureProvider]];
   familyProviders[[familyProviders]];
   functionProvider[[functionProvider]];
+  selectedProvider[[selectedProvider]];
   SampleClass.normalProvider[[SampleClass.normalProvider]];
   SampleClass.futureProvider[[SampleClass.futureProvider]];
   SampleClass.familyProviders[[SampleClass.familyProviders]];
-  SampleClass.functionProvider[[SampleClass.functionProvider]];''',
+  SampleClass.functionProvider[[SampleClass.functionProvider]];
+  SampleClass.selectedProvider[[SampleClass.selectedProvider]];''',
       reason: 'It should log the riverpod graph',
     );
     await process.shouldExit(0);
