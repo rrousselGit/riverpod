@@ -55,8 +55,8 @@ flowchart TB
   normalProvider[[normalProvider]];
   futureProvider[[futureProvider]];
   familyProviders[[familyProviders]];
-  SampleClass.normalProvider[[normalProvider]];
-  SampleClass.futureProvider[[futureProvider]];''',
+  SampleClass.normalProvider[[SampleClass.normalProvider]];
+  SampleClass.futureProvider[[SampleClass.futureProvider]];''',
       reason: 'It should log the riverpod graph',
     );
     await process.shouldExit(0);
