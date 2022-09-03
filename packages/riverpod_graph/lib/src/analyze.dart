@@ -319,8 +319,8 @@ VariableElement parseProviderFromExpression(Expression providerExpression) {
   if (providerExpression is PropertyAccess) {
     final staticElement = providerExpression.propertyName.staticElement;
     if (staticElement is PropertyAccessorElement &&
-        providerExpression.realTarget.staticType == null) {
-      // SampleClass.familyProviders
+        staticElement.library.isFromRiverpod == false) {
+      // watch(SampleClass.familyProviders(id))
       return staticElement.declaration.variable;
     }
     final target = providerExpression.target;
