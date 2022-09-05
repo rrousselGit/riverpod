@@ -20,6 +20,47 @@ abstract class BuildlessNotifier<State> extends NotifierBase<State> {
 /// {@template riverpod.notifier}
 /// A class which exposes a state that can change over time.
 ///
+/// For example, [Notifier] can be used to implement a counter by doing:
+///
+/// ```dart
+/// final counterProvider = NotifierProvider<Counter, int>(Counter.new);
+///
+/// class Counter extends Notifier<int> {
+///   @override
+///   int build() {
+///     // Inside "build", we return the initial state of the counter.
+///     return 0;
+///   }
+///
+///   void increment() {
+///     state++;
+///   }
+/// }
+/// ```
+///
+/// We can then listen to the counter inside widgets by doing:
+///
+/// ```dart
+/// Consumer(
+///   builder: (context, ref) {
+///     return Text('count: ${ref.watch(counterProvider)}');
+///   },
+/// )
+/// ```
+///
+/// And finally, we can update the counter by doing:
+///
+/// ```dart
+/// Consumer(
+///   builder: (context, ref) {
+///     return ElevatedButton(
+///       onTap: () => ref.read(counterProvider.notifier).increment(),
+///       child: const Text('increment'),
+///     );
+///   },
+/// )
+/// ```
+///
 /// The state of [Notifier] is expected to be initialized synchronously.
 /// For asynchronous initializations, see [AsyncNotifier].
 /// {@endtemplate}
@@ -44,6 +85,9 @@ abstract class Notifier<State> extends BuildlessNotifier<State> {
 abstract class NotifierProviderRef<T> implements Ref<T> {}
 
 /// {@template riverpod.notifier_provider}
+/// A Provider which exposes a [Notifier] and listens to it.
+///
+/// See also [Notifier] for more information.
 /// {@endtemplate}
 typedef NotifierProvider<NotifierT extends Notifier<T>, T>
     = NotifierProviderImpl<NotifierT, T>;

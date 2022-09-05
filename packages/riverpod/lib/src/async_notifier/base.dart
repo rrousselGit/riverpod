@@ -21,6 +21,14 @@ abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
 
 /// {@template riverpod.asyncnotifier}
 /// A [Notifier] implementation that is asynchronously initialized.
+///
+/// It is commonly used for:
+/// - Caching a network request while also allowing to perform side-effects.
+///   For example, `build` could fetch information about the current "user".
+///   And the [AsyncNotifier] could expose methods such as "setName",
+///   to allow changing the current user name.
+/// - Initializing a [Notifier] from an asynchronous source of data.
+///   For example, obtaining the initial state of [Notifier] from a local database.
 /// {@endtemplate}
 // TODO add usage example
 abstract class AsyncNotifier<State> extends BuildlessAsyncNotifier<State> {
