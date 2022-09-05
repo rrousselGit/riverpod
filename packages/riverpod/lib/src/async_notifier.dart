@@ -65,7 +65,14 @@ abstract class AsyncNotifierBase<State> {
   }
 
   /// A function to update [state] from its previous value, while
-  /// abstracting the fact that the [state] is asynchronously initialized
+  /// abstracting loading/error cases for [state].
+  ///
+  /// If [state] was in error state, the callback will not be invoked and instead
+  /// the error will be returned. Alternatively, [onError] can specified to
+  /// gracefully handle error states.
+  ///
+  /// See also:
+  /// - [future], for manually awaiting the resolution of [state].
   @protected
   Future<State> update(
     FutureOr<State> Function(State) cb, {
