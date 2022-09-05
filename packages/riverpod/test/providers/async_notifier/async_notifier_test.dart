@@ -481,7 +481,100 @@ void main() {
         );
       });
 
-      group('AsyncNotifer.update', () {});
+      group('AsyncNotifer.update', () {
+        test('can specify onError to handle error scenario', () async {
+          final container = createContainer();
+          final provider = factory.simpleTestProvider<int>(
+            (ref) => Error.throwWithStackTrace(42, StackTrace.empty),
+          );
+          var callCount = 0;
+          Object? actualErr;
+          Object? actualStack;
+
+          expect(
+            container.read(provider),
+            const AsyncError<int>(42, StackTrace.empty),
+          );
+
+          await expectLater(
+            container.read(provider.notifier).update(
+              (prev) {
+                callCount++;
+                return prev;
+              },
+              onError: (err, stack) {
+                actualErr = err;
+                actualStack = stack;
+                return 21;
+              },
+            ),
+            completion(21),
+          );
+          expect(callCount, 0);
+          expect(actualErr, 42);
+          expect(actualStack, StackTrace.empty);
+          expect(container.read(provider), const AsyncData(21));
+        });
+
+        test(
+            'executes immediately with current state if a state is avalailable',
+            () async {
+          final container = createContainer();
+          final provider = factory.simpleTestProvider<int>((ref) => 1);
+
+          expect(container.read(provider), const AsyncData(1));
+
+          await expectLater(
+            container.read(provider.notifier).update((prev) => prev + 1),
+            completion(2),
+          );
+          expect(container.read(provider), const AsyncData(2));
+        });
+
+        test(
+            'executes immediately with current state if an error is avalailable',
+            () async {
+          final container = createContainer();
+          final provider = factory.simpleTestProvider<int>(
+            (ref) => Error.throwWithStackTrace(42, StackTrace.empty),
+          );
+          var callCount = 0;
+
+          expect(
+            container.read(provider),
+            const AsyncError<int>(42, StackTrace.empty),
+          );
+
+          await expectLater(
+            container.read(provider.notifier).update((prev) {
+              callCount++;
+              return prev + 1;
+            }),
+            throwsA(42),
+          );
+
+          expect(callCount, 0);
+          expect(
+            container.read(provider),
+            const AsyncError<int>(42, StackTrace.empty),
+          );
+        });
+
+        test('awaits the future resolution if in loading state', () async {
+          final container = createContainer();
+          final provider = factory.simpleTestProvider<int>(
+            (ref) => Future.value(42),
+          );
+
+          expect(container.read(provider), const AsyncLoading<int>());
+
+          await expectLater(
+            container.read(provider.notifier).update((prev) => prev + 1),
+            completion(43),
+          );
+          expect(container.read(provider), const AsyncData(43));
+        });
+      });
     });
   }
 

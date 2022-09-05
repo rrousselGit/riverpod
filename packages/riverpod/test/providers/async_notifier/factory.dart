@@ -163,6 +163,15 @@ abstract class AsyncTestNotifierBase<T> extends AsyncNotifierBase<T> {
 
   @override
   set state(AsyncValue<T> value) => super.state = value;
+
+  // overriding to remove the @protected
+  @override
+  Future<T> update(
+    FutureOr<T> Function(T p1) cb, {
+    FutureOr<T> Function(Object err, StackTrace stackTrace)? onError,
+  }) {
+    return super.update(cb);
+  }
 }
 
 class AsyncTestNotifier<T> extends AsyncNotifier<T>

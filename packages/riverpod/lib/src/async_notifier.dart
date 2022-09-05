@@ -68,12 +68,14 @@ abstract class AsyncNotifierBase<State> {
   /// abstracting the fact that the [state] is asynchronously initialized
   @protected
   Future<State> update(
-    FutureOr<State> Function(State) cb,
-  ) {
-    // TODO what's the expected error handling?
-    // TODO use SynchronousFuture when possible
+    FutureOr<State> Function(State) cb, {
+    FutureOr<State> Function(Object err, StackTrace stackTrace)? onError,
+  }) async {
     // TODO cancel on rebuild?
-    return future.then(cb);
+
+    final newState = await future.then(cb, onError: onError);
+    state = AsyncData<State>(newState);
+    return newState;
   }
 
   /// A method invoked when the state exposed by this [AsyncNotifier] changes.
