@@ -381,10 +381,6 @@ void main() {
         });
       });
 
-      test('performs AsyncValue transition on refresh', () {});
-      test(
-          'does not perform AsyncValue transition on dependency change', () {});
-
       group('AsyncNotifier.future', () {
         test('retuns a Future identical to that of .future', () {
           final listener = OnBuildMock();
