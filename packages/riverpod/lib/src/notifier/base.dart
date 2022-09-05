@@ -147,10 +147,11 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
       return provider._createNotifier().._setElement(this);
     });
 
-// TODO test if Element fails to init, the provider rethrows the error
+    // If the Notifier failed to create (such as if the constructor has an assert exception),
+    // then we purposefully rethrow the error.
+    // This way, doing `watch(provider)` will rethrow the error.
     final notifier = notifierResult.requireState;
 
-// TODO test if Element fails to init, the provider rethrows the error
     setState(provider.runNotifierBuild(notifier));
   }
 
