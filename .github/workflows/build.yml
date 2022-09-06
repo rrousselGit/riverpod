@@ -1,8 +1,14 @@
 name: Build
 
 on:
-  push:
   pull_request:
+    paths-ignore:
+      - '**.md'
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
   schedule:
     # runs the CI everyday at 10AM
     - cron: "0 10 * * *"
