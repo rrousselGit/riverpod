@@ -56,7 +56,7 @@ class MyHomePage extends HookConsumerWidget {
       body: Center(
         child: Text(
           '$count',
-          style: Theme.of(context).textTheme.headline4,
+          style: Theme.of(context).textTheme.headlineMedium,
         ),
       ),
       floatingActionButton: FloatingActionButton(

@@ -22,10 +22,10 @@ final tagThemeProvider = Provider<TagTheme>(
 
     return TagTheme(
       padding: EdgeInsets.symmetric(
-        horizontal: theme.textTheme.bodyText1!.fontSize! * 0.5,
-        vertical: theme.textTheme.bodyText1!.fontSize! * 0.4,
+        horizontal: theme.textTheme.bodyLarge!.fontSize! * 0.5,
+        vertical: theme.textTheme.bodyLarge!.fontSize! * 0.4,
       ),
-      style: theme.textTheme.bodyText2!.copyWith(
+      style: theme.textTheme.bodyMedium!.copyWith(
         color: const Color(0xff9cc3db),
       ),
       borderRadius: BorderRadius.circular(3),
