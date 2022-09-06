@@ -16,21 +16,24 @@ class TagTheme with _$TagTheme {
   }) = _TagTheme;
 }
 
-final tagThemeProvider = Provider<TagTheme>((ref) {
-  final theme = ref.watch(themeProvider);
+final tagThemeProvider = Provider<TagTheme>(
+  (ref) {
+    final theme = ref.watch(themeProvider);
 
-  return TagTheme(
-    padding: EdgeInsets.symmetric(
-      horizontal: theme.textTheme.bodyText1!.fontSize! * 0.5,
-      vertical: theme.textTheme.bodyText1!.fontSize! * 0.4,
-    ),
-    style: theme.textTheme.bodyText2!.copyWith(
-      color: const Color(0xff9cc3db),
-    ),
-    borderRadius: BorderRadius.circular(3),
-    backgroundColor: const Color(0xFF3e4a52),
-  );
-}, dependencies: [themeProvider]);
+    return TagTheme(
+      padding: EdgeInsets.symmetric(
+        horizontal: theme.textTheme.bodyText1!.fontSize! * 0.5,
+        vertical: theme.textTheme.bodyText1!.fontSize! * 0.4,
+      ),
+      style: theme.textTheme.bodyText2!.copyWith(
+        color: const Color(0xff9cc3db),
+      ),
+      borderRadius: BorderRadius.circular(3),
+      backgroundColor: const Color(0xFF3e4a52),
+    );
+  },
+  dependencies: [themeProvider],
+);
 
 class Tag extends HookConsumerWidget {
   const Tag({super.key, required this.tag});

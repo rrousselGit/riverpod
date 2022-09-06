@@ -103,9 +103,13 @@ class SearchPage extends HookConsumerWidget {
                         version: package.latest.version,
                         onTap: () => Navigator.push(
                           context,
-                          MaterialPageRoute<void>(builder: (context) {
-                            return PackageDetailPage(packageName: package.name);
-                          }),
+                          MaterialPageRoute<void>(
+                            builder: (context) {
+                              return PackageDetailPage(
+                                packageName: package.name,
+                              );
+                            },
+                          ),
                         ),
                       );
                     },

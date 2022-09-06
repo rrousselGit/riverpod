@@ -203,31 +203,35 @@ class QuestionItem extends HookConsumerWidget {
 String _useAskedHowLongAgo(DateTime creationDate) {
   final label = useState('');
 
-  useEffect(() {
-    void setLabel() {
-      // TODO use package:clock to make mock this value inside tests
-      final now = DateTime.now();
-      final diff = now.difference(creationDate);
+  useEffect(
+    () {
+      void setLabel() {
+        // TODO use package:clock to make mock this value inside tests
+        final now = DateTime.now();
+        final diff = now.difference(creationDate);
 
-      String value;
-      if (diff.inDays > 1) {
-        value = '${diff.inDays} days';
-      } else if (diff.inHours > 0) {
-        value = '${diff.inHours} hours';
-      } else if (diff.inMinutes > 0) {
-        value = '${diff.inMinutes} mins';
-      } else {
-        value = '${diff.inSeconds} seconds';
+        String value;
+        if (diff.inDays > 1) {
+          value = '${diff.inDays} days';
+        } else if (diff.inHours > 0) {
+          value = '${diff.inHours} hours';
+        } else if (diff.inMinutes > 0) {
+          value = '${diff.inMinutes} mins';
+        } else {
+          value = '${diff.inSeconds} seconds';
+        }
+
+        label.value = 'asked $value ago';
       }
 
-      label.value = 'asked $value ago';
-    }
+      setLabel();
+      final timer =
+          Timer.periodic(const Duration(minutes: 1), (_) => setLabel());
 
-    setLabel();
-    final timer = Timer.periodic(const Duration(minutes: 1), (_) => setLabel());
-
-    return timer.cancel;
-  }, [creationDate]);
+      return timer.cancel;
+    },
+    [creationDate],
+  );
 
   return label.value;
 }
