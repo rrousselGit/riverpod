@@ -101,7 +101,8 @@ class MigrateCommand extends Command<void> {
       printErrorLogs();
     } else {
       stdout.writeln(
-          'Migration finished successfully please run `flutter pub upgrade`');
+        'Migration finished successfully please run `flutter pub upgrade`',
+      );
     }
   }
 }

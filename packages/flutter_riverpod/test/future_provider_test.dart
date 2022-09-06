@@ -23,13 +23,15 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: ProviderScope(
-          child: Consumer(builder: (c, ref, _) {
-            return ref.watch(futureProvider).when(
-                  data: (data) => Text(data.toString()),
-                  loading: () => const Text('loading'),
-                  error: (err, stack) => Text('$err'),
-                );
-          }),
+          child: Consumer(
+            builder: (c, ref, _) {
+              return ref.watch(futureProvider).when(
+                    data: (data) => Text(data.toString()),
+                    loading: () => const Text('loading'),
+                    error: (err, stack) => Text('$err'),
+                  );
+            },
+          ),
         ),
       ),
     );
@@ -52,17 +54,19 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: ProviderScope(
-          child: Consumer(builder: (c, ref, _) {
-            return ref.watch(futureProvider).when(
-                  data: (data) => Text(data.toString()),
-                  loading: () => const Text('loading'),
-                  error: (err, stack) {
-                    whenError = err;
-                    whenStack = stack;
-                    return const Text('error');
-                  },
-                );
-          }),
+          child: Consumer(
+            builder: (c, ref, _) {
+              return ref.watch(futureProvider).when(
+                    data: (data) => Text(data.toString()),
+                    loading: () => const Text('loading'),
+                    error: (err, stack) {
+                      whenError = err;
+                      whenStack = stack;
+                      return const Text('error');
+                    },
+                  );
+            },
+          ),
         ),
       ),
     );
@@ -82,10 +86,12 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, ref, _) {
-          ref.watch(futureProvider);
-          return Container();
-        }),
+        child: Consumer(
+          builder: (c, ref, _) {
+            ref.watch(futureProvider);
+            return Container();
+          },
+        ),
       ),
     );
 
@@ -104,10 +110,12 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, ref, _) {
-          ref.watch(futureProvider);
-          return Container();
-        }),
+        child: Consumer(
+          builder: (c, ref, _) {
+            ref.watch(futureProvider);
+            return Container();
+          },
+        ),
       ),
     );
 
@@ -345,13 +353,15 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer(builder: (c, ref, _) {
-            return ref.watch(futureProviderFamily).when(
-                  data: (value) => Text(value.toString()),
-                  loading: () => const Text('loading'),
-                  error: (err, stack) => const Text('error'),
-                );
-          }),
+          child: Consumer(
+            builder: (c, ref, _) {
+              return ref.watch(futureProviderFamily).when(
+                    data: (value) => Text(value.toString()),
+                    loading: () => const Text('loading'),
+                    error: (err, stack) => const Text('error'),
+                  );
+            },
+          ),
         ),
       ),
     );
@@ -375,13 +385,15 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer(builder: (c, ref, _) {
-            return ref.watch(futureProviderFamily).when(
-                  data: (value) => Text(value.toString()),
-                  loading: () => const Text('loading'),
-                  error: (err, stack) => const Text('error'),
-                );
-          }),
+          child: Consumer(
+            builder: (c, ref, _) {
+              return ref.watch(futureProviderFamily).when(
+                    data: (value) => Text(value.toString()),
+                    loading: () => const Text('loading'),
+                    error: (err, stack) => const Text('error'),
+                  );
+            },
+          ),
         ),
       ),
     );
@@ -405,13 +417,15 @@ void main() {
       ProviderScope(
         child: Directionality(
           textDirection: TextDirection.ltr,
-          child: Consumer(builder: (c, ref, _) {
-            return ref.watch(futureProviderFamily).when(
-                  data: (value) => Text(value.toString()),
-                  loading: () => const Text('loading'),
-                  error: (err, stack) => const Text('error'),
-                );
-          }),
+          child: Consumer(
+            builder: (c, ref, _) {
+              return ref.watch(futureProviderFamily).when(
+                    data: (value) => Text(value.toString()),
+                    loading: () => const Text('loading'),
+                    error: (err, stack) => const Text('error'),
+                  );
+            },
+          ),
         ),
       ),
     );

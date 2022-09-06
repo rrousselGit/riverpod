@@ -42,7 +42,8 @@ void main() {
   test('can refresh .notifier', () async {
     var initialValue = 1;
     final provider = StateNotifierProvider.autoDispose<Counter, int>(
-        (ref) => Counter(initialValue));
+      (ref) => Counter(initialValue),
+    );
     final container = createContainer();
 
     container.listen(provider, (prev, value) {});
@@ -61,7 +62,8 @@ void main() {
     final container = createContainer();
     final provider =
         StateNotifierProvider.autoDispose<StateController<int>, int>(
-            (ref) => result);
+      (ref) => result,
+    );
 
     expect(container.read(provider), 0);
     expect(container.read(provider.notifier), result);
@@ -78,7 +80,8 @@ void main() {
       final controller = StateController(0);
       final provider =
           StateNotifierProvider.autoDispose<StateController<int>, int>(
-              (ref) => controller);
+        (ref) => controller,
+      );
       final root = createContainer();
       final container = createContainer(parent: root, overrides: [provider]);
 
@@ -197,7 +200,9 @@ void main() {
     container.listen(provider.notifier, listener, fireImmediately: true);
 
     verifyOnly(
-        listener, listener(argThat(isNull), argThat(isA<TestNotifier>())));
+      listener,
+      listener(argThat(isNull), argThat(isA<TestNotifier>())),
+    );
 
     notifier.increment();
 
@@ -269,13 +274,15 @@ void main() {
     });
     final notifier = TestNotifier(42);
     final notifier2 = TestNotifier(21);
-    final container = createContainer(overrides: [
-      provider.overrideWithProvider(
-        StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
-          return notifier;
-        }),
-      ),
-    ]);
+    final container = createContainer(
+      overrides: [
+        provider.overrideWithProvider(
+          StateNotifierProvider.autoDispose<TestNotifier, int>((_) {
+            return notifier;
+          }),
+        ),
+      ],
+    );
     addTearDown(container.dispose);
     final listener = Listener<int>();
 

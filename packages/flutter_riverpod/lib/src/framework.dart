@@ -187,10 +187,13 @@ class ProviderScopeState extends State<ProviderScope> {
     super.initState();
 
     final parent = _getParent();
-    assert(() {
-      _debugParentOwner = parent;
-      return true;
-    }(), '');
+    assert(
+      () {
+        _debugParentOwner = parent;
+        return true;
+      }(),
+      '',
+    );
 
     container = ProviderContainer(
       parent: parent,
@@ -243,20 +246,23 @@ class ProviderScopeState extends State<ProviderScope> {
 
   @override
   Widget build(BuildContext context) {
-    assert(() {
-      if (widget.parent != null) {
-        // didUpdateWidget already takes care of widget.parent change
-        return true;
-      }
-      final parent = _getParent();
+    assert(
+      () {
+        if (widget.parent != null) {
+          // didUpdateWidget already takes care of widget.parent change
+          return true;
+        }
+        final parent = _getParent();
 
-      if (parent != _debugParentOwner) {
-        throw UnsupportedError(
-          'ProviderScope was rebuilt with a different ProviderScope ancestor',
-        );
-      }
-      return true;
-    }(), '');
+        if (parent != _debugParentOwner) {
+          throw UnsupportedError(
+            'ProviderScope was rebuilt with a different ProviderScope ancestor',
+          );
+        }
+        return true;
+      }(),
+      '',
+    );
     if (_dirty) {
       _dirty = false;
       container.updateOverrides(widget.overrides);
@@ -331,10 +337,13 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
   @override
   void reassemble() {
     super.reassemble();
-    assert(() {
-      _containerOf(widget).debugReassemble();
-      return true;
-    }(), '');
+    assert(
+      () {
+        _containerOf(widget).debugReassemble();
+        return true;
+      }(),
+      '',
+    );
   }
 
   @override

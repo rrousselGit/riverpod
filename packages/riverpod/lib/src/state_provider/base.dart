@@ -97,10 +97,13 @@ class StateProviderElement<T> extends ProviderElementBase<T>
     final controller = StateController(initialState);
     _controllerNotifier.result = Result.data(controller);
 
-    _removeListener = controller.addListener((state) {
-      _stateNotifier.result = _controllerNotifier.result;
-      setState(state);
-    }, fireImmediately: true);
+    _removeListener = controller.addListener(
+      fireImmediately: true,
+      (state) {
+        _stateNotifier.result = _controllerNotifier.result;
+        setState(state);
+      },
+    );
   }
 
   @override

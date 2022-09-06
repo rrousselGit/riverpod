@@ -46,10 +46,13 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
   final Output Function(Input) selector;
 
   Result<Output> _select(Result<Input> value) {
-    assert(() {
-      _debugIsRunningSelector = true;
-      return true;
-    }(), '');
+    assert(
+      () {
+        _debugIsRunningSelector = true;
+        return true;
+      }(),
+      '',
+    );
 
     try {
       return value.map(
@@ -61,10 +64,13 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
       // TODO test
       return Result.error(err, stack);
     } finally {
-      assert(() {
-        _debugIsRunningSelector = false;
-        return true;
-      }(), '');
+      assert(
+        () {
+          _debugIsRunningSelector = false;
+          return true;
+        }(),
+        '',
+      );
     }
   }
 

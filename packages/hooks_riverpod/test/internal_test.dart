@@ -62,11 +62,13 @@ void main() {
 
     Widget build(StateNotifierProvider<Counter, int> provider) {
       return ProviderScope(
-        child: HookConsumer(builder: (c, ref, child) {
-          buildCount++;
-          final value = ref.watch(provider);
-          return Text('$value', textDirection: TextDirection.ltr);
-        }),
+        child: HookConsumer(
+          builder: (c, ref, child) {
+            buildCount++;
+            final value = ref.watch(provider);
+            return Text('$value', textDirection: TextDirection.ltr);
+          },
+        ),
       );
     }
 

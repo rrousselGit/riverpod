@@ -773,14 +773,20 @@ void main() {
       final container = createContainer();
       final listener = OnRemoveListener();
       final listener2 = OnRemoveListener();
-      final dep = Provider((ref) {
-        ref.onRemoveListener(listener);
-        ref.onRemoveListener(listener2);
-      }, name: 'dep');
+      final dep = Provider(
+        name: 'dep',
+        (ref) {
+          ref.onRemoveListener(listener);
+          ref.onRemoveListener(listener2);
+        },
+      );
       late Ref ref;
-      final provider = Provider((r) {
-        ref = r;
-      }, name: 'provider');
+      final provider = Provider(
+        name: 'provider',
+        (r) {
+          ref = r;
+        },
+      );
 
       // initialize ref
       container.read(provider);
@@ -812,14 +818,18 @@ void main() {
       final container = createContainer();
       final listener = OnRemoveListener();
       final listener2 = OnRemoveListener();
-      final dep = Provider((ref) {
-        ref.onRemoveListener(listener);
-        ref.onRemoveListener(listener2);
-      }, name: 'dep');
+      final dep = Provider(
+        name: 'dep',
+        (ref) {
+          ref.onRemoveListener(listener);
+          ref.onRemoveListener(listener2);
+        },
+      );
       late Ref ref;
-      final provider = Provider((r) {
-        ref = r;
-      }, name: 'provider');
+      final provider = Provider(
+        name: 'provider',
+        (r) => ref = r,
+      );
 
       // initialize refs
       container.read(provider);
@@ -925,14 +935,18 @@ void main() {
       final container = createContainer();
       final listener = OnAddListener();
       final listener2 = OnAddListener();
-      final dep = Provider((ref) {
-        ref.onAddListener(listener);
-        ref.onAddListener(listener2);
-      }, name: 'dep');
+      final dep = Provider(
+        name: 'dep',
+        (ref) {
+          ref.onAddListener(listener);
+          ref.onAddListener(listener2);
+        },
+      );
       late Ref ref;
-      final provider = Provider((r) {
-        ref = r;
-      }, name: 'provider');
+      final provider = Provider(
+        name: 'provider',
+        (r) => ref = r,
+      );
 
       // initialize ref
       container.read(provider);
@@ -954,18 +968,23 @@ void main() {
       final container = createContainer();
       final listener = OnAddListener();
       final listener2 = OnAddListener();
-      final dep = Provider((ref) {
-        ref.onAddListener(listener);
-        ref.onAddListener(listener2);
-      }, name: 'dep');
+      final dep = Provider(
+        name: 'dep',
+        (ref) {
+          ref.onAddListener(listener);
+          ref.onAddListener(listener2);
+        },
+      );
       late Ref ref;
-      final provider = Provider((r) {
-        ref = r;
-      }, name: 'provider');
+      final provider = Provider(
+        name: 'provider',
+        (r) => ref = r,
+      );
       late Ref ref2;
-      final provider2 = Provider((r) {
-        ref2 = r;
-      }, name: 'provider');
+      final provider2 = Provider(
+        name: 'provider',
+        (r) => ref2 = r,
+      );
 
       // initialize refs
       container.read(provider);
@@ -1082,14 +1101,18 @@ void main() {
       final container = createContainer();
       final listener = OnResume();
       final listener2 = OnResume();
-      final dep = Provider((ref) {
-        ref.onResume(listener);
-        ref.onResume(listener2);
-      }, name: 'dep');
+      final dep = Provider(
+        name: 'dep',
+        (ref) {
+          ref.onResume(listener);
+          ref.onResume(listener2);
+        },
+      );
       late Ref ref;
-      final provider = Provider((r) {
-        ref = r;
-      }, name: 'provider');
+      final provider = Provider(
+        name: 'provider',
+        (r) => ref = r,
+      );
 
       // initialize ref
       container.read(provider);
@@ -1132,14 +1155,18 @@ void main() {
       final container = createContainer();
       final listener = OnResume();
       final listener2 = OnResume();
-      final dep = Provider((ref) {
-        ref.onAddListener(listener);
-        ref.onAddListener(listener2);
-      }, name: 'dep');
+      final dep = Provider(
+        name: 'dep',
+        (ref) {
+          ref.onAddListener(listener);
+          ref.onAddListener(listener2);
+        },
+      );
       late Ref ref;
-      final provider = Provider((r) {
-        ref = r;
-      }, name: 'provider');
+      final provider = Provider(
+        name: 'provider',
+        (r) => ref = r,
+      );
 
       // initialize refs
       container.read(provider);
@@ -1238,29 +1265,32 @@ void main() {
   });
 
   group('ref.onCancel', () {
-    test('is called when dependent is invalidated and was the only listener',
-        () async {
-      //
-      final container = createContainer();
-      final onCancel = OnCancelMock();
-      final dep = StateProvider((ref) {
-        ref.onCancel(onCancel);
-        return 0;
-      });
-      final provider = Provider.autoDispose((ref) => ref.watch(dep));
+    test(
+      'is called when dependent is invalidated and was the only listener',
+      skip: 'Waiting for "clear dependencies after futureprovider rebuilds"',
+      () async {
+        //
+        final container = createContainer();
+        final onCancel = OnCancelMock();
+        final dep = StateProvider((ref) {
+          ref.onCancel(onCancel);
+          return 0;
+        });
+        final provider = Provider.autoDispose((ref) => ref.watch(dep));
 
-      container.read(provider);
+        container.read(provider);
 
-      verifyZeroInteractions(onCancel);
+        verifyZeroInteractions(onCancel);
 
-      container.read(dep.notifier).state++;
+        container.read(dep.notifier).state++;
 
-      verify(onCancel()).called(1);
+        verify(onCancel()).called(1);
 
-      await container.pump();
+        await container.pump();
 
-      verifyNoMoreInteractions(onCancel);
-    }, skip: 'Waiting for "clear dependencies after futureprovider rebuilds"');
+        verifyNoMoreInteractions(onCancel);
+      },
+    );
 
     test('is called when all container listeners are removed', () {
       final container = createContainer();
@@ -1368,22 +1398,26 @@ void main() {
       verifyZeroInteractions(listener);
     });
 
-    test('is not called when using container.read (autoDispose)', () async {
-      final container = createContainer();
-      final listener = OnCancelMock();
-      final dispose = OnDisposeMock();
-      final provider = StateProvider.autoDispose((ref) {
-        ref.keepAlive();
-        ref.onCancel(listener);
-        ref.onDispose(dispose);
-      });
+    test(
+      'is not called when using container.read (autoDispose)',
+      skip: true,
+      () async {
+        final container = createContainer();
+        final listener = OnCancelMock();
+        final dispose = OnDisposeMock();
+        final provider = StateProvider.autoDispose((ref) {
+          ref.keepAlive();
+          ref.onCancel(listener);
+          ref.onDispose(dispose);
+        });
 
-      container.read(provider);
-      await container.pump();
+        container.read(provider);
+        await container.pump();
 
-      verifyZeroInteractions(listener);
-      verifyZeroInteractions(dispose);
-    }, skip: true);
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(dispose);
+      },
+    );
 
     test('listeners are cleared on rebuild', () {
       final container = createContainer();

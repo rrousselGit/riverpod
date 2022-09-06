@@ -5,7 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 extension on String {
   String escapeRegexp() {
     return replaceAllMapped(
-        RegExp(r'[\.\+]'), (match) => '\\${match.group(0)}');
+      RegExp(r'[\.\+]'),
+      (match) => '\\${match.group(0)}',
+    );
   }
 }
 
@@ -58,36 +60,45 @@ void main() {
     );
   });
 
-  test('hooks_riverpod version matches with riverpod', () async {
-    final dartVersion = await hooksPubspec.readAsString().then((pub) {
-      return RegExp(
-        r'\briverpod:\s*\^{0,1}([0-9]+\.[0-9]+\.[0-9]+.*)$',
-        multiLine: true,
-      ).firstMatch(pub)!.group(1);
-    });
-    final actualDartVersion = await dartPubspec.readAsString().then((pub) {
-      return RegExp(
-        r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+.*)$',
-        multiLine: true,
-      ).firstMatch(pub)!.group(1);
-    });
+  test(
+    'hooks_riverpod version matches with riverpod',
+    skip: !hooksPubspec.existsSync() || !dartPubspec.existsSync(),
+    () async {
+      final dartVersion = await hooksPubspec.readAsString().then((pub) {
+        return RegExp(
+          r'\briverpod:\s*\^{0,1}([0-9]+\.[0-9]+\.[0-9]+.*)$',
+          multiLine: true,
+        ).firstMatch(pub)!.group(1);
+      });
+      final actualDartVersion = await dartPubspec.readAsString().then((pub) {
+        return RegExp(
+          r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+.*)$',
+          multiLine: true,
+        ).firstMatch(pub)!.group(1);
+      });
 
-    expect(dartVersion, actualDartVersion);
-  }, skip: !hooksPubspec.existsSync() || !dartPubspec.existsSync());
-  test('hooks_riverpod version matches with flutter_riverpod', () async {
-    final dartVersion = await hooksPubspec.readAsString().then((pub) {
-      return RegExp(
-        r'\bflutter_riverpod:\s*\^{0,1}([0-9]+\.[0-9]+\.[0-9]+.*)$',
-        multiLine: true,
-      ).firstMatch(pub)!.group(1);
-    });
-    final actualDartVersion = await flutterPubspec.readAsString().then((pub) {
-      return RegExp(
-        r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+.*)$',
-        multiLine: true,
-      ).firstMatch(pub)!.group(1);
-    });
+      expect(dartVersion, actualDartVersion);
+    },
+  );
 
-    expect(dartVersion, actualDartVersion);
-  }, skip: !hooksPubspec.existsSync() || !flutterPubspec.existsSync());
+  test(
+    'hooks_riverpod version matches with flutter_riverpod',
+    skip: !hooksPubspec.existsSync() || !flutterPubspec.existsSync(),
+    () async {
+      final dartVersion = await hooksPubspec.readAsString().then((pub) {
+        return RegExp(
+          r'\bflutter_riverpod:\s*\^{0,1}([0-9]+\.[0-9]+\.[0-9]+.*)$',
+          multiLine: true,
+        ).firstMatch(pub)!.group(1);
+      });
+      final actualDartVersion = await flutterPubspec.readAsString().then((pub) {
+        return RegExp(
+          r'\bversion:\s*([0-9]+\.[0-9]+\.[0-9]+.*)$',
+          multiLine: true,
+        ).firstMatch(pub)!.group(1);
+      });
+
+      expect(dartVersion, actualDartVersion);
+    },
+  );
 }

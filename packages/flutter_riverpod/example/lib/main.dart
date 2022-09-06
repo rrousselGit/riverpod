@@ -31,10 +31,12 @@ class Home extends ConsumerWidget {
       appBar: AppBar(title: const Text('Counter example')),
       body: Center(
         // Consumer is a widget that allows you reading providers.
-        child: Consumer(builder: (context, ref, _) {
-          final count = ref.watch(counterProvider.state).state;
-          return Text('$count');
-        }),
+        child: Consumer(
+          builder: (context, ref, _) {
+            final count = ref.watch(counterProvider.state).state;
+            return Text('$count');
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         // The read method is a utility to read a provider without listening to it

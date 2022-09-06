@@ -171,16 +171,22 @@ void main() {
   test("initState can't dirty siblings", () {
     final ancestor = StateProvider((_) => 0, name: 'ancestor');
     final counter = Counter();
-    final sibling = StateNotifierProvider<Counter, int>((ref) {
-      ref.watch(ancestor.state).state;
-      return counter;
-    }, name: 'sibling');
+    final sibling = StateNotifierProvider<Counter, int>(
+      name: 'sibling',
+      (ref) {
+        ref.watch(ancestor.state).state;
+        return counter;
+      },
+    );
     var didWatchAncestor = false;
-    final child = Provider((ref) {
-      ref.watch(ancestor);
-      didWatchAncestor = true;
-      counter.increment();
-    }, name: 'child');
+    final child = Provider(
+      name: 'child',
+      (ref) {
+        ref.watch(ancestor);
+        didWatchAncestor = true;
+        counter.increment();
+      },
+    );
 
     container.read(sibling);
 

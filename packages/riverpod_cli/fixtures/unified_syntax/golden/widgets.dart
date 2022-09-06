@@ -51,23 +51,31 @@ final plainProviderAD =
 final stateProvider =
     StateProvider<String>((StateProviderRef<String> ref) => '');
 final changeNotifier = ChangeNotifierProvider<ChangeNotifier>(
-    (ChangeNotifierProviderRef<ChangeNotifier> ref) => ChangeNotifier());
+  (ChangeNotifierProviderRef<ChangeNotifier> ref) => ChangeNotifier(),
+);
 final plainProviderFamilyAD = Provider.family
     .autoDispose<String, String>((AutoDisposeProviderRef<String> ref, _) => '');
 final futureProviderAD = FutureProvider.autoDispose<String>(
-    (AutoDisposeFutureProviderRef<String> ref) async => '');
+  (AutoDisposeFutureProviderRef<String> ref) async => '',
+);
 final streamProviderAD = StreamProvider.autoDispose<String>(
-    (AutoDisposeStreamProviderRef<String> ref) =>
-        Stream.fromIterable(['1', '2', '3']));
+  (AutoDisposeStreamProviderRef<String> ref) =>
+      Stream.fromIterable(['1', '2', '3']),
+);
 final stateNotifierProvider = StateNotifierProvider<Counter, int>(
-    (StateNotifierProviderRef<Counter, int> ref) => Counter(ref));
+  (StateNotifierProviderRef<Counter, int> ref) => Counter(ref),
+);
 final scopedProvider = Provider<int>((ref) => 0);
 final otherScopedProvider = Provider<int>((ref) => ref.watch(scopedProvider));
 
 class Logger extends ProviderObserver {
   @override
-  void didUpdateProvider(ProviderBase provider, Object? oldValue,
-      Object? newValue, ProviderContainer container) {
+  void didUpdateProvider(
+    ProviderBase provider,
+    Object? oldValue,
+    Object? newValue,
+    ProviderContainer container,
+  ) {
     print('$provider $newValue');
   }
 }
@@ -131,11 +139,13 @@ class StatelessConsumerRead extends ConsumerWidget {
           onPressed(ref, context);
           onPressed2(ref, context);
         },
-        child: Consumer(builder: (context, ref, child) {
-          final count = ref.watch(counterProvider);
+        child: Consumer(
+          builder: (context, ref, child) {
+            final count = ref.watch(counterProvider);
 
-          return Text('Counter $count');
-        }),
+            return Text('Counter $count');
+          },
+        ),
       ),
     );
   }
@@ -281,10 +291,18 @@ class HooksWatch extends HookConsumerWidget {
     final asyncValue = ref.watch(futureProvider);
     asyncValue.when(loading: () {}, data: (_) {}, error: (_, __) {});
     asyncValue.maybeWhen(
-        loading: () {}, data: (_) {}, error: (_, __) {}, orElse: () {});
+      loading: () {},
+      data: (_) {},
+      error: (_, __) {},
+      orElse: () {},
+    );
     asyncValue.when(loading: empty, data: (_) {}, error: error);
     asyncValue.maybeWhen(
-        loading: empty, data: (_) {}, error: error, orElse: () {});
+      loading: empty,
+      data: (_) {},
+      error: error,
+      orElse: () {},
+    );
     return Center(
       child: ElevatedButton(
         onPressed: () {
@@ -366,9 +384,11 @@ class NoMigrateHook extends HookWidget {
 void main() {
   final container = ProviderContainer();
   final count = container.read(testProvider);
-  ProviderContainer(overrides: [
-    stateNotifierProvider.overrideWithValue(CounterTest()),
-  ])
+  ProviderContainer(
+    overrides: [
+      stateNotifierProvider.overrideWithValue(CounterTest()),
+    ],
+  )
       .listen<Counter>(stateNotifierProvider.notifier, (previous, value) {})
       .read();
   ProviderContainer().read(testProvider);

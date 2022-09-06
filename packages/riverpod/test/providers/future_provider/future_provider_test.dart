@@ -276,9 +276,12 @@ void main() {
     test('when using provider.overrideWithProvider', () async {
       final provider = FutureProvider((ref) async => 0);
       final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(FutureProvider((ref) async => 42)),
-      ]);
+      final container = createContainer(
+        parent: root,
+        overrides: [
+          provider.overrideWithProvider(FutureProvider((ref) async => 42)),
+        ],
+      );
 
       expect(await container.read(provider.future), 42);
       expect(container.read(provider), const AsyncValue.data(42));

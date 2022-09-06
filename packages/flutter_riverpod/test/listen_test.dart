@@ -16,11 +16,13 @@ void main() {
       late WidgetRef ref;
       await tester.pumpWidget(
         ProviderScope(
-          child: Consumer(builder: (context, r, _) {
-            ref = r;
-            ref.watch(provider);
-            return Container();
-          }),
+          child: Consumer(
+            builder: (context, r, _) {
+              ref = r;
+              ref.watch(provider);
+              return Container();
+            },
+          ),
         ),
       );
 
@@ -42,10 +44,12 @@ void main() {
       late WidgetRef ref;
       await tester.pumpWidget(
         ProviderScope(
-          child: Consumer(builder: (context, r, _) {
-            ref = r;
-            return Container();
-          }),
+          child: Consumer(
+            builder: (context, r, _) {
+              ref = r;
+              return Container();
+            },
+          ),
         ),
       );
 
@@ -68,10 +72,12 @@ void main() {
       late WidgetRef ref;
       await tester.pumpWidget(
         ProviderScope(
-          child: Consumer(builder: (context, r, _) {
-            ref = r;
-            return Container();
-          }),
+          child: Consumer(
+            builder: (context, r, _) {
+              ref = r;
+              return Container();
+            },
+          ),
         ),
       );
 
@@ -87,10 +93,12 @@ void main() {
       late WidgetRef ref;
       await tester.pumpWidget(
         ProviderScope(
-          child: Consumer(builder: (context, r, _) {
-            ref = r;
-            return Container();
-          }),
+          child: Consumer(
+            builder: (context, r, _) {
+              ref = r;
+              return Container();
+            },
+          ),
         ),
       );
 
@@ -110,10 +118,12 @@ void main() {
       late WidgetRef ref;
       await tester.pumpWidget(
         ProviderScope(
-          child: Consumer(builder: (context, r, _) {
-            ref = r;
-            return Container();
-          }),
+          child: Consumer(
+            builder: (context, r, _) {
+              ref = r;
+              return Container();
+            },
+          ),
         ),
       );
 
