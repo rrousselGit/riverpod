@@ -38,7 +38,7 @@ jobs:
       - run: dart pub global activate melos
 
       - name: Install dependencies
-        run: melos bootstrap
+        run: melos list --ignore "codemod_riverpod_*,riverpod_cli" 
 
       - name: Install cli fixtures
         run: |
