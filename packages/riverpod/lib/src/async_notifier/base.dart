@@ -106,8 +106,7 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     extends ProviderElementBase<AsyncValue<T>>
     implements AsyncNotifierProviderRef<T> {
   AsyncNotifierProviderElement._(
-      AsyncNotifierProviderBase<NotifierT, T> provider)
-      : super(provider);
+      AsyncNotifierProviderBase<NotifierT, T> super.provider);
 
   final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
   final _futureNotifier = ProxyElementValueNotifier<Future<T>>();

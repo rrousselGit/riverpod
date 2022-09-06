@@ -52,7 +52,7 @@ void main() {
 final provider = Provider((ref) => 'Hello world');
 
 class HookStatefulTest extends StatefulHookConsumerWidget {
-  const HookStatefulTest({Key? key}) : super(key: key);
+  const HookStatefulTest({super.key});
 
   @override
   HookStatefulTestState createState() => HookStatefulTestState();
@@ -79,7 +79,7 @@ class HookStatefulTestState extends ConsumerState<HookStatefulTest> {
 }
 
 class HookConsumerTest extends HookConsumerWidget {
-  const HookConsumerTest({Key? key}) : super(key: key);
+  const HookConsumerTest({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

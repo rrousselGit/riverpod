@@ -114,8 +114,8 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
     extends ProviderElementBase<T>
     implements StateNotifierProviderRef<NotifierT, T> {
   StateNotifierProviderElement._(
-    _StateNotifierProviderBase<NotifierT, T> provider,
-  ) : super(provider);
+    _StateNotifierProviderBase<NotifierT, T> super.provider,
+  );
 
   @override
   NotifierT get notifier => _notifierNotifier.value;

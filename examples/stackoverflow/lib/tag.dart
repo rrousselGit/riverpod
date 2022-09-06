@@ -33,10 +33,7 @@ final tagThemeProvider = Provider<TagTheme>((ref) {
 }, dependencies: [themeProvider]);
 
 class Tag extends HookConsumerWidget {
-  const Tag({
-    Key? key,
-    required this.tag,
-  }) : super(key: key);
+  const Tag({super.key, required this.tag});
 
   final String tag;
 

@@ -3,12 +3,12 @@ import 'package:shimmer/shimmer.dart';
 
 class PackageItem extends StatelessWidget {
   const PackageItem({
-    Key? key,
+    super.key,
     required this.name,
     required this.version,
     required this.description,
     this.onTap,
-  }) : super(key: key);
+  });
 
   final String name;
   final String version;
@@ -43,9 +43,7 @@ class PackageItem extends StatelessWidget {
 }
 
 class PackageItemShimmer extends StatelessWidget {
-  const PackageItemShimmer({
-    Key? key,
-  }) : super(key: key);
+  const PackageItemShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {

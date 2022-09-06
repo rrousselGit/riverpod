@@ -717,10 +717,7 @@ class MockCreateState extends Mock {
 }
 
 class InitState extends ConsumerStatefulWidget {
-  const InitState({
-    Key? key,
-    required this.initState,
-  }) : super(key: key);
+  const InitState({super.key, required this.initState});
 
   // ignore: diagnostic_describe_all_properties
   final void Function(BuildContext context, WidgetRef ref) initState;
@@ -744,11 +741,7 @@ class _InitStateState extends ConsumerState<InitState> {
 }
 
 class Demo extends ConsumerStatefulWidget {
-  const Demo({
-    Key? key,
-    required this.initState,
-    required this.builder,
-  }) : super(key: key);
+  const Demo({super.key, required this.initState, required this.builder});
 
   // ignore: diagnostic_describe_all_properties
   final void Function(BuildContext context, WidgetRef ref) initState;

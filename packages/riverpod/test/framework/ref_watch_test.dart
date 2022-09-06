@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 class Counter extends StateNotifier<int> {
-  Counter([int initialValue = 0]) : super(initialValue);
+  Counter([super.initialValue = 0]);
 
   @override
   int get state => super.state;
@@ -632,7 +632,7 @@ void main() {
 }
 
 class Notifier<T> extends StateNotifier<T> {
-  Notifier(T state) : super(state);
+  Notifier(super.state);
 
   // ignore: use_setters_to_change_properties
   void setState(T value) => state = value;

@@ -617,7 +617,7 @@ void main() {
 }
 
 class TestNotifier extends StateNotifier<int> {
-  TestNotifier([int initialValue = 0]) : super(initialValue);
+  TestNotifier([super.initialValue = 0]);
 
   void increment() => state++;
 
@@ -632,7 +632,7 @@ class Listener<T> extends Mock {
 final _provider = Provider((ref) => 'hello world');
 
 class MyWidget extends ConsumerWidget {
-  const MyWidget({Key? key}) : super(key: key);
+  const MyWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -642,13 +642,13 @@ class MyWidget extends ConsumerWidget {
 
 class CallbackConsumerWidget extends ConsumerStatefulWidget {
   const CallbackConsumerWidget({
-    Key? key,
+    super.key,
     this.initState,
     this.didChangeDependencies,
     this.dispose,
     this.didUpdateWidget,
     this.reassemble,
-  }) : super(key: key);
+  });
 
   final void Function(BuildContext context, WidgetRef ref)? initState;
   final void Function(BuildContext context, WidgetRef ref)?

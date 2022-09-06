@@ -77,14 +77,14 @@ import 'package:riverpod/riverpod.dart';
 class ProviderScope extends StatefulWidget {
   /// {@macro riverpod.providerscope}
   const ProviderScope({
-    Key? key,
+    super.key,
     this.overrides = const [],
     this.observers,
     this.cacheTime,
     this.disposeDelay,
     this.parent,
     required this.child,
-  }) : super(key: key);
+  });
 
   /// Read the current [ProviderContainer] for a [BuildContext].
   static ProviderContainer containerOf(
@@ -284,10 +284,10 @@ class ProviderScopeState extends State<ProviderScope> {
 class UncontrolledProviderScope extends InheritedWidget {
   /// {@macro riverpod.UncontrolledProviderScope}
   const UncontrolledProviderScope({
-    Key? key,
+    super.key,
     required this.container,
-    required Widget child,
-  }) : super(key: key, child: child);
+    required super.child,
+  });
 
   /// The [ProviderContainer] exposed to the widget tree.
   final ProviderContainer container;
@@ -306,8 +306,7 @@ class UncontrolledProviderScope extends InheritedWidget {
 
 @sealed
 class _UncontrolledProviderScopeElement extends InheritedElement {
-  _UncontrolledProviderScopeElement(UncontrolledProviderScope widget)
-      : super(widget);
+  _UncontrolledProviderScopeElement(UncontrolledProviderScope super.widget);
 
   void Function()? _task;
   bool _mounted = true;

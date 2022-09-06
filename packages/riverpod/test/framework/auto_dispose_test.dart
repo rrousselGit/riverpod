@@ -524,8 +524,8 @@ final alwaysAlive = Provider((ref) {
       () async {
     final onDispose = OnDisposeMock();
     late AutoDisposeRef ref;
-    final provider = Provider.autoDispose((_ref) {
-      ref = _ref;
+    final provider = Provider.autoDispose((r) {
+      ref = r;
       ref.onDispose(onDispose);
       ref.maintainState = true;
     });

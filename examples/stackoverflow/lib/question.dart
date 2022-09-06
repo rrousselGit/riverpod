@@ -131,7 +131,7 @@ final currentQuestion = Provider<AsyncValue<Question>>((ref) {
 /// That question will be obtained through [currentQuestion]. As such, it is
 /// necessary to override that provider before using [QuestionItem].
 class QuestionItem extends HookConsumerWidget {
-  const QuestionItem({Key? key}) : super(key: key);
+  const QuestionItem({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

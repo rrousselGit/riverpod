@@ -890,7 +890,7 @@ class CustomLoading<T> extends AsyncLoading<T> {
 }
 
 class CustomData<T> extends AsyncData<T> {
-  const CustomData(T value) : super(value);
+  const CustomData(super.value);
 }
 
 class CustomError<T> extends AsyncError<T> {

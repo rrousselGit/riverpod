@@ -100,8 +100,7 @@ class PackageMetrics extends _$PackageMetrics {
 
 /// The detail page of a package, typically reached by clicking on a package from [SearchPage].
 class PackageDetailPage extends ConsumerWidget {
-  const PackageDetailPage({Key? key, required this.packageName})
-      : super(key: key);
+  const PackageDetailPage({super.key, required this.packageName});
 
   /// The name of the package that is inspected.
   final String packageName;
