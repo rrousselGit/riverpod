@@ -1,8 +1,14 @@
 name: Build
 
 on:
-  push:
   pull_request:
+    paths-ignore:
+      - '**.md'
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
   schedule:
     # runs the CI everyday at 10AM
     - cron: "0 10 * * *"
@@ -32,28 +38,16 @@ jobs:
       - run: dart pub global activate melos
 
       - name: Install dependencies
-        run: melos bootstrap
-
-      - name: Install cli fixtures
-        run: |
-          cd packages/riverpod_cli/fixtures/notifiers/input && flutter pub get && cd -
-          cd packages/riverpod_cli/fixtures/unified_syntax/input && flutter pub get && cd -
+        run: melos bootstrap --ignore "codemod_riverpod_*,riverpod_cli" 
 
       - name: Check format
         run: melos exec --ignore="website_snipets" -- "flutter format --set-exit-if-changed ."
 
-      - name: Generate (dart)
-        run: melos exec --depends-on="build_runner" --no-flutter -- "dart run build_runner build --delete-conflicting-outputs"
-
-      - name: Generate (flutter)
-        run: |
-          cd examples/stackoverflow && flutter pub get && flutter pub run build_runner build --delete-conflicting-outputs && cd - 
-          cd examples/marvel && flutter pub get && flutter pub run build_runner build --delete-conflicting-outputs && cd - 
-          cd examples/pub && flutter pub get && flutter pub run build_runner build --delete-conflicting-outputs && cd - 
-          cd examples/todos && flutter pub get && flutter pub run build_runner build --delete-conflicting-outputs
+      - name: Generate
+        run: melos exec --depends-on="build_runner" -- "dart run build_runner build --delete-conflicting-outputs"
 
       - name: Analyze
-        run: melos exec --ignore="marvel" --ignore="codemod_riverpod_test*" -- "flutter analyze"
+        run: melos exec --ignore="codemod_riverpod_test*" -- "flutter analyze"
 
       - name: Run tests
         run: melos run test
