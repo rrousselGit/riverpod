@@ -728,14 +728,6 @@ void main() {
   });
 }
 
-class Counter extends StateNotifier<int> {
-  Counter() : super(0);
-}
-
-class MockCreateState extends Mock {
-  void call();
-}
-
 class InitState extends ConsumerStatefulWidget {
   const InitState({super.key, required this.initState});
 
@@ -757,31 +749,5 @@ class _InitStateState extends ConsumerState<InitState> {
   @override
   Widget build(BuildContext context) {
     return Container();
-  }
-}
-
-class Demo extends ConsumerStatefulWidget {
-  const Demo({super.key, required this.initState, required this.builder});
-
-  // ignore: diagnostic_describe_all_properties
-  final void Function(BuildContext context, WidgetRef ref) initState;
-  // ignore: diagnostic_describe_all_properties
-  final Widget Function(BuildContext context, WidgetRef ref) builder;
-
-  @override
-  // ignore: library_private_types_in_public_api
-  _DemoState createState() => _DemoState();
-}
-
-class _DemoState extends ConsumerState<Demo> {
-  @override
-  void initState() {
-    super.initState();
-    widget.initState(context, ref);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return widget.builder(context, ref);
   }
 }

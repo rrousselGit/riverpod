@@ -7,14 +7,6 @@ import 'package:test/test.dart';
 
 import '../utils.dart';
 
-Matcher isProvider(ProviderBase provider) {
-  return isA<ProviderElementBase>().having(
-    (e) => e.origin,
-    'provider',
-    provider,
-  );
-}
-
 void main() {
   test('disposing parent container when child container is not dispose throws',
       () {
@@ -316,31 +308,4 @@ void main() {
     verifyNoMoreInteractions(onDispose);
     verifyNoMoreInteractions(onDispose2);
   });
-}
-
-class AsyncListenerMock extends Mock {
-  void call(AsyncValue<int> value);
-}
-
-class ListenerMock extends Mock {
-  ListenerMock([this.debugLabel]);
-  final String? debugLabel;
-
-  void call(int value);
-
-  @override
-  String toString() {
-    if (debugLabel != null) {
-      return debugLabel!;
-    }
-    return super.toString();
-  }
-}
-
-class MockMarkMayHaveChanged extends Mock {
-  void call();
-}
-
-class MockDidUpdateProvider extends Mock {
-  void call();
 }

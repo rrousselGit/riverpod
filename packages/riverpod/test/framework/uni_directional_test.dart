@@ -265,6 +265,6 @@ void main() {
   });
 }
 
-class VsyncMock extends Mock {
-  void call();
-}
+// class VsyncMock extends Mock {
+//   void call();
+// }

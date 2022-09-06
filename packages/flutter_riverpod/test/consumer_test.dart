@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 
 import 'utils.dart';
 
@@ -654,10 +653,6 @@ class TestNotifier extends StateNotifier<int> {
 
   // ignore: avoid_setters_without_getters
   set value(int value) => state = value;
-}
-
-class Listener<T> extends Mock {
-  void call(T value);
 }
 
 final _provider = Provider((ref) => 'hello world');

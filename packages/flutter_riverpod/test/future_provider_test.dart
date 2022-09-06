@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 
 import 'utils.dart';
 
@@ -436,8 +435,4 @@ void main() {
 
     expect(find.text('84'), findsOneWidget);
   });
-}
-
-class Listener extends Mock {
-  void call(AsyncValue<int> value);
 }

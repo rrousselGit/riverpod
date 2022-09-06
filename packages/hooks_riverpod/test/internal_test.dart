@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mockito/mockito.dart';
 
 void main() {
   // testWidgets('ref.watch supports changing the selected provider',
@@ -249,17 +248,17 @@ void main() {
   });
 }
 
-class SelectorSpy<T> extends Mock {
-  void call(T value);
-}
+// class SelectorSpy<T> extends Mock {
+//   void call(T value);
+// }
 
-class BuildSpy extends Mock {
-  void call();
-}
+// class BuildSpy extends Mock {
+//   void call();
+// }
 
-class MockCreateState extends Mock {
-  void call();
-}
+// class MockCreateState extends Mock {
+//   void call();
+// }
 
 class Counter extends StateNotifier<int> {
   Counter([super.initialValue = 0]);

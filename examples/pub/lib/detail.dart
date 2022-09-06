@@ -154,15 +154,15 @@ class PackageDetailPage extends ConsumerWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
           final packageLikes = ref.read(
             PackageMetricsProviderProvider(packageName: packageName).notifier,
           );
 
           if (isLiked) {
-            packageLikes.unlike();
+            await packageLikes.unlike();
           } else {
-            packageLikes.like();
+            await packageLikes.like();
           }
         },
         child: isLiked
