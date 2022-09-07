@@ -1,5 +1,6 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useContext, useEffect, useState } from "react";
 import CodeBlock from "@theme/CodeBlock";
+import { CodegenContext } from "../../theme/DocPage/Layout";
 
 const SKIP = "/* SKIP */";
 const SKIP_END = "/* SKIP END */";
@@ -43,3 +44,11 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({ snippet, title }) => {
     </div>
   );
 };
+
+export function Foo() {
+  const [codegen, setCodegen] = useContext(CodegenContext);
+
+  return (
+    <button onClick={() => setCodegen(!codegen)}>codegen {`${codegen}`}</button>
+  );
+}
