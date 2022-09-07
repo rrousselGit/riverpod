@@ -110,7 +110,8 @@ void main() {
       test('when passing the provider itself', () async {
         final controller = StateController(0);
         final provider = StateNotifierProvider<StateController<int>, int>(
-            (ref) => controller);
+          (ref) => controller,
+        );
         final root = createContainer();
         final container = createContainer(parent: root, overrides: [provider]);
 
@@ -154,15 +155,20 @@ void main() {
         final controller = StateController(0);
         final provider =
             StateNotifierProvider.autoDispose<StateController<int>, int>(
-                (ref) => controller);
+          (ref) => controller,
+        );
         final root = createContainer();
         final controllerOverride = StateController(42);
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithProvider(
-            StateNotifierProvider.autoDispose<StateController<int>, int>(
-                (ref) => controllerOverride),
-          ),
-        ]);
+        final container = createContainer(
+          parent: root,
+          overrides: [
+            provider.overrideWithProvider(
+              StateNotifierProvider.autoDispose<StateController<int>, int>(
+                (ref) => controllerOverride,
+              ),
+            ),
+          ],
+        );
 
         expect(container.read(provider.notifier), controllerOverride);
         expect(container.read(provider), 42);
@@ -203,9 +209,12 @@ void main() {
   // });
 
   test('can specify name', () {
-    final provider = StateNotifierProvider<TestNotifier, int>((_) {
-      return TestNotifier();
-    }, name: 'example');
+    final provider = StateNotifierProvider<TestNotifier, int>(
+      (_) {
+        return TestNotifier();
+      },
+      name: 'example',
+    );
     final provider2 =
         StateNotifierProvider<TestNotifier, int>((_) => TestNotifier());
 
@@ -363,13 +372,15 @@ void main() {
     });
     final notifier = TestNotifier(42);
     final notifier2 = TestNotifier(21);
-    final container = createContainer(overrides: [
-      provider.overrideWithProvider(
-        StateNotifierProvider<TestNotifier, int>((_) {
-          return notifier;
-        }),
-      ),
-    ]);
+    final container = createContainer(
+      overrides: [
+        provider.overrideWithProvider(
+          StateNotifierProvider<TestNotifier, int>((_) {
+            return notifier;
+          }),
+        ),
+      ],
+    );
     addTearDown(container.dispose);
     final listener = Listener<int>();
 
@@ -411,7 +422,7 @@ void main() {
 }
 
 class TestNotifier extends StateNotifier<int> {
-  TestNotifier([int initialValue = 0]) : super(initialValue);
+  TestNotifier([super.initialValue = 0]);
 
   void increment() => state++;
 

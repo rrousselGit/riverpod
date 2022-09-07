@@ -256,7 +256,7 @@ class Provider<State> extends InternalProvider<State>
 class ProviderElement<State> extends ProviderElementBase<State>
     implements ProviderRef<State> {
   /// A [ProviderElementBase] for [Provider]
-  ProviderElement._(ProviderBase<State> provider) : super(provider);
+  ProviderElement._(super.provider);
 
   @override
   State get state => requireState;

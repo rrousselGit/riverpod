@@ -32,9 +32,11 @@ class Repository {
   Future<List<Comic>> fetchComics() async {
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     final hash = md5
-        .convert(utf8.encode(
-          '$timestamp${_configuration.privateKey}${_configuration.publicKey}',
-        ))
+        .convert(
+          utf8.encode(
+            '$timestamp${_configuration.privateKey}${_configuration.publicKey}',
+          ),
+        )
         .toString();
 
     final result = await _client.get<Map<String, Object?>>(

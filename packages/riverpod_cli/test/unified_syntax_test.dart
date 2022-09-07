@@ -10,7 +10,8 @@ void main() {
   group('Unified Syntax', () {
     test('Migration', () async {
       final sourceFile = await fileContextForInput(
-          './fixtures/unified_syntax/input/widgets.dart');
+        './fixtures/unified_syntax/input/widgets.dart',
+      );
       final expected = File('./fixtures/unified_syntax/golden/widgets.dart')
           .readAsStringSync();
 
@@ -30,7 +31,8 @@ void main() {
 
     test('Already Migrated', () async {
       final sourceFile = await fileContextForInput(
-          './fixtures/unified_syntax/golden/widgets.dart');
+        './fixtures/unified_syntax/golden/widgets.dart',
+      );
       final expected = File('./fixtures/unified_syntax/golden/widgets.dart')
           .readAsStringSync();
 

@@ -541,8 +541,10 @@ void main() {
     expect(
       const AsyncError<int?>(42, StackTrace.empty)
           .copyWithPrevious(const AsyncData(42)),
-      isNot(const AsyncData<int?>(42)
-          .copyWithPrevious(const AsyncError(42, StackTrace.empty))),
+      isNot(
+        const AsyncData<int?>(42)
+            .copyWithPrevious(const AsyncError(42, StackTrace.empty)),
+      ),
       reason: 'runtimeType should be checked',
     );
   });
@@ -562,9 +564,9 @@ void main() {
     );
     expect(
       AsyncData<int>(value).hashCode,
-      isNot(const AsyncLoading<int>()
-          .copyWithPrevious(AsyncData(value))
-          .hashCode),
+      isNot(
+        const AsyncLoading<int>().copyWithPrevious(AsyncData(value)).hashCode,
+      ),
     );
     expect(
       AsyncData<int>(value).hashCode,
@@ -829,8 +831,10 @@ void main() {
       const AsyncLoading<int>().value,
       null,
     );
-    expect(() => const AsyncError<int>('err', StackTrace.empty).value,
-        throwsA('err'));
+    expect(
+      () => const AsyncError<int>('err', StackTrace.empty).value,
+      throwsA('err'),
+    );
 
     expect(
       const AsyncError<int>('err', StackTrace.empty)
@@ -890,7 +894,7 @@ class CustomLoading<T> extends AsyncLoading<T> {
 }
 
 class CustomData<T> extends AsyncData<T> {
-  const CustomData(T value) : super(value);
+  const CustomData(super.value);
 }
 
 class CustomError<T> extends AsyncError<T> {

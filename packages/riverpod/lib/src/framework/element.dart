@@ -129,10 +129,13 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// to expose a way to update the state, the practice is to expose a getter/setter.
   @protected
   void setState(State newState) {
-    assert(() {
-      _debugDidSetState = true;
-      return true;
-    }(), '');
+    assert(
+      () {
+        _debugDidSetState = true;
+        return true;
+      }(),
+      '',
+    );
     final previousResult = getState();
     final result = _state = ResultData(newState);
 
@@ -162,14 +165,17 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// [readSelf].
   @protected
   State get requireState {
-    assert(() {
-      if (debugAssertDidSetStateEnabled && !_debugDidSetState) {
-        throw StateError(
-          'Tried to read the state of an uninitialized provider',
-        );
-      }
-      return true;
-    }(), '');
+    assert(
+      () {
+        if (debugAssertDidSetStateEnabled && !_debugDidSetState) {
+          throw StateError(
+            'Tried to read the state of an uninitialized provider',
+          );
+        }
+        return true;
+      }(),
+      '',
+    );
 
     final state = getState();
     if (state == null) {
@@ -196,16 +202,19 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// This life-cycle is used to check for change in [ProviderBase.debugGetCreateSourceHash],
   /// and invalidate the provider state on change.
   void debugReassemble() {
-    assert(() {
-      final previousHash = _debugCurrentCreateHash;
-      _debugCurrentCreateHash = provider.debugGetCreateSourceHash?.call();
+    assert(
+      () {
+        final previousHash = _debugCurrentCreateHash;
+        _debugCurrentCreateHash = provider.debugGetCreateSourceHash?.call();
 
-      if (previousHash != _debugCurrentCreateHash) {
-        invalidateSelf();
-      }
+        if (previousHash != _debugCurrentCreateHash) {
+          invalidateSelf();
+        }
 
-      return true;
-    }(), '');
+        return true;
+      }(),
+      '',
+    );
   }
 
   /// Called the first time a provider is obtained.
@@ -213,14 +222,17 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   @mustCallSuper
   void mount() {
     _mounted = true;
-    assert(() {
-      RiverpodBinding.debugInstance
-          .providerListChangedFor(containerId: container._debugId);
+    assert(
+      () {
+        RiverpodBinding.debugInstance
+            .providerListChangedFor(containerId: container._debugId);
 
-      _debugCurrentCreateHash = provider.debugGetCreateSourceHash?.call();
+        _debugCurrentCreateHash = provider.debugGetCreateSourceHash?.call();
 
-      return true;
-    }(), '');
+        return true;
+      }(),
+      '',
+    );
     buildState();
 
     _state!.map(
@@ -330,24 +342,33 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
     final previousStateResult = _state;
 
-    assert(() {
-      _debugDidSetState = false;
-      return true;
-    }(), '');
+    assert(
+      () {
+        _debugDidSetState = false;
+        return true;
+      }(),
+      '',
+    );
     buildState();
 
     if (!identical(_state, previousStateResult)) {
-      assert(() {
-        // Asserts would otherwise prevent a provider rebuild from updating
-        // other providers
-        _debugSkipNotifyListenersAsserts = true;
-        return true;
-      }(), '');
+      assert(
+        () {
+          // Asserts would otherwise prevent a provider rebuild from updating
+          // other providers
+          _debugSkipNotifyListenersAsserts = true;
+          return true;
+        }(),
+        '',
+      );
       _notifyListeners(_state!, previousStateResult);
-      assert(() {
-        _debugSkipNotifyListenersAsserts = false;
-        return true;
-      }(), '');
+      assert(
+        () {
+          _debugSkipNotifyListenersAsserts = false;
+          return true;
+        }(),
+        '',
+      );
     }
 
     // Unsubscribe to everything that a provider no longer depends on.
@@ -375,28 +396,37 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     ProviderElementBase? debugPreviouslyBuildingElement;
     final previousDidChangeDependency = _didChangeDependency;
     _didChangeDependency = false;
-    assert(() {
-      debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
-      _debugCurrentlyBuildingElement = this;
-      return true;
-    }(), '');
+    assert(
+      () {
+        debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
+        _debugCurrentlyBuildingElement = this;
+        return true;
+      }(),
+      '',
+    );
     _didBuild = false;
     try {
       // TODO move outside this function?
       _mounted = true;
       create(didChangeDependency: previousDidChangeDependency);
     } catch (err, stack) {
-      assert(() {
-        _debugDidSetState = true;
-        return true;
-      }(), '');
+      assert(
+        () {
+          _debugDidSetState = true;
+          return true;
+        }(),
+        '',
+      );
       _state = Result.error(err, stack);
     } finally {
       _didBuild = true;
-      assert(() {
-        _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
-        return true;
-      }(), '');
+      assert(
+        () {
+          _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
+          return true;
+        }(),
+        '',
+      );
 
       assert(
         getState() != null,
@@ -409,21 +439,25 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     Result<State> newState,
     Result<State>? previousStateResult,
   ) {
-    assert(() {
-      if (_debugSkipNotifyListenersAsserts) return true;
+    assert(
+      () {
+        if (_debugSkipNotifyListenersAsserts) return true;
 
-      assert(
+        assert(
           _debugCurrentlyBuildingElement == null ||
               _debugCurrentlyBuildingElement == this,
           '''
 Providers are not allowed to modify other providers during their initialization.
 
 The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while building.
-''');
+''',
+        );
 
-      container.debugCanModifyProviders?.call();
-      return true;
-    }(), '');
+        container.debugCanModifyProviders?.call();
+        return true;
+      }(),
+      '',
+    );
 
     final previousState = previousStateResult?.stateOrNull;
 
@@ -552,37 +586,40 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   bool _debugAssertCanDependOn(ProviderListenable listenable) {
-    assert(() {
-      if (listenable is! ProviderBase) return true;
+    assert(
+      () {
+        if (listenable is! ProviderBase) return true;
 
-      assert(
-        listenable._origin != origin,
-        'A provider cannot depend on itself',
-      );
+        assert(
+          listenable._origin != origin,
+          'A provider cannot depend on itself',
+        );
 
-      assert(
-        provider != origin ||
-            origin.dependencies == null ||
-            origin.dependencies!.contains(listenable.from) ||
-            origin.dependencies!.contains(listenable),
-        'The provider $origin tried to read $listenable, but it specified a '
-        "'dependendencies' list yet that list does not contain $listenable.\n\n"
-        "To fix, add $listenable to $origin's 'dependencies' parameter",
-      );
+        assert(
+          provider != origin ||
+              origin.dependencies == null ||
+              origin.dependencies!.contains(listenable.from) ||
+              origin.dependencies!.contains(listenable),
+          'The provider $origin tried to read $listenable, but it specified a '
+          "'dependendencies' list yet that list does not contain $listenable.\n\n"
+          "To fix, add $listenable to $origin's 'dependencies' parameter",
+        );
 
-      final queue = Queue<ProviderElementBase>.from(_providerDependents);
+        final queue = Queue<ProviderElementBase>.from(_providerDependents);
 
-      while (queue.isNotEmpty) {
-        final current = queue.removeFirst();
-        queue.addAll(current._providerDependents);
+        while (queue.isNotEmpty) {
+          final current = queue.removeFirst();
+          queue.addAll(current._providerDependents);
 
-        if (current.origin == listenable) {
-          throw CircularDependencyError._();
+          if (current.origin == listenable) {
+            throw CircularDependencyError._();
+          }
         }
-      }
 
-      return true;
-    }(), '');
+        return true;
+      }(),
+      '',
+    );
     return true;
   }
 
@@ -632,14 +669,17 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         return previousSub;
       }
 
-      assert(() {
-        // Flushing the provider before adding a new dependency
-        // as otherwise this could cause false positives with certain asserts.
-        // It's done only in debug mode since `readSelf` will flush the value
-        // again anyway, and the only value of this flush is to not break asserts.
-        element.flush();
-        return true;
-      }(), '');
+      assert(
+        () {
+          // Flushing the provider before adding a new dependency
+          // as otherwise this could cause false positives with certain asserts.
+          // It's done only in debug mode since `readSelf` will flush the value
+          // again anyway, and the only value of this flush is to not break asserts.
+          element.flush();
+          return true;
+        }(),
+        '',
+      );
 
       element
         .._onListen()
@@ -774,11 +814,14 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   @protected
   @mustCallSuper
   void dispose() {
-    assert(() {
-      RiverpodBinding.debugInstance
-          .providerListChangedFor(containerId: container._debugId);
-      return true;
-    }(), '');
+    assert(
+      () {
+        RiverpodBinding.debugInstance
+            .providerListChangedFor(containerId: container._debugId);
+        return true;
+      }(),
+      '',
+    );
 
     runOnDispose();
 

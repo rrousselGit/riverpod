@@ -13,11 +13,13 @@ void main() {
       );
       await fakeAsync((async) async {
         final container = createContainer();
-        final provider =
-            StreamProvider.autoDispose.family<int, int>((ref, value) {
-          ref.onDispose(onDispose(value));
-          return Stream.value(value);
-        }, cacheTime: 5 * 1000);
+        final provider = StreamProvider.autoDispose.family<int, int>(
+          cacheTime: 5 * 1000,
+          (ref, value) {
+            ref.onDispose(onDispose(value));
+            return Stream.value(value);
+          },
+        );
 
         final sub = container.listen<Future<int>>(
           provider(42).future,
@@ -95,11 +97,13 @@ void main() {
       final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
         return Stream.value(a * 2);
       });
-      final container = ProviderContainer(overrides: [
-        provider.overrideWithProvider((a) {
-          return StreamProvider.autoDispose((ref) => Stream.value(a * 4));
-        }),
-      ]);
+      final container = ProviderContainer(
+        overrides: [
+          provider.overrideWithProvider((a) {
+            return StreamProvider.autoDispose((ref) => Stream.value(a * 4));
+          }),
+        ],
+      );
       final listener = Listener<AsyncValue<int>>();
 
       container.listen(provider(21), listener, fireImmediately: true);

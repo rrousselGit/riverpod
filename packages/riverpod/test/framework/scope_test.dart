@@ -162,9 +162,10 @@ Future<void> main() async {
     test('use latest override on mount', () {
       final provider = Provider((ref) => 0);
       final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithValue(42),
-      ]);
+      final container = createContainer(
+        parent: root,
+        overrides: [provider.overrideWithValue(42)],
+      );
 
       container.updateOverrides([
         provider.overrideWithValue(21),
@@ -176,9 +177,10 @@ Future<void> main() async {
     test('updating scoped override does not mount the provider', () {
       final provider = Provider((ref) => 0);
       final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithValue(42),
-      ]);
+      final container = createContainer(
+        parent: root,
+        overrides: [provider.overrideWithValue(42)],
+      );
 
       container.updateOverrides([
         provider.overrideWithValue(21),
@@ -239,10 +241,13 @@ Future<void> main() async {
         (ref, value) => '$value ${ref.watch(dep)}',
       );
       final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        dep.overrideWithValue(1),
-        provider,
-      ]);
+      final container = createContainer(
+        parent: root,
+        overrides: [
+          dep.overrideWithValue(1),
+          provider,
+        ],
+      );
 
       container.updateOverrides([
         dep.overrideWithValue(2),
@@ -277,10 +282,13 @@ Future<void> main() async {
         return '$value ${ref.watch(dep)}';
       });
       final root = createContainer();
-      final mid = createContainer(parent: root, overrides: [
-        dep.overrideWithValue(1),
-        provider,
-      ]);
+      final mid = createContainer(
+        parent: root,
+        overrides: [
+          dep.overrideWithValue(1),
+          provider,
+        ],
+      );
       final container = createContainer(parent: mid);
 
       expect(mid.read(provider(0)), '0 1');
@@ -295,10 +303,14 @@ Future<void> main() async {
     test('auto scope direct provider dependencies', () {
       final dep = Provider((ref) => 0, name: 'dep');
       var buildCount = 0;
-      final provider = Provider((ref) {
-        buildCount++;
-        return ref.watch(dep);
-      }, dependencies: [dep], name: 'provider');
+      final provider = Provider(
+        name: 'provider',
+        dependencies: [dep],
+        (ref) {
+          buildCount++;
+          return ref.watch(dep);
+        },
+      );
       final root = createContainer();
       final container = createContainer(
         parent: root,
@@ -328,10 +340,14 @@ Future<void> main() async {
         () {
       final dep = Provider((ref) => 0, name: 'dep');
       var buildCount = 0;
-      final provider = Provider((ref) {
-        buildCount++;
-        return ref.watch(dep);
-      }, dependencies: [dep], name: 'provider');
+      final provider = Provider(
+        dependencies: [dep],
+        name: 'provider',
+        (ref) {
+          buildCount++;
+          return ref.watch(dep);
+        },
+      );
       final root = createContainer();
       final container = createContainer(
         parent: root,
@@ -352,10 +368,13 @@ Future<void> main() async {
 
     test('auto scope transitive provider dependency', () {
       var depBuildCount = 0;
-      final dep = Provider((ref) {
-        depBuildCount++;
-        return 0;
-      }, name: 'dep');
+      final dep = Provider(
+        name: 'dep',
+        (ref) {
+          depBuildCount++;
+          return 0;
+        },
+      );
       var dep2BuildCount = 0;
       final dep2 = Provider.family<int, int>(
         (ref, multiplier) {
@@ -375,10 +394,14 @@ Future<void> main() async {
         dependencies: [dep2],
       );
       var buildCount = 0;
-      final provider = Provider((ref) {
-        buildCount++;
-        return ref.watch(dep3).toString();
-      }, dependencies: [dep3], name: 'provider');
+      final provider = Provider(
+        dependencies: [dep3],
+        name: 'provider',
+        (ref) {
+          buildCount++;
+          return ref.watch(dep3).toString();
+        },
+      );
 
       final root = createContainer();
       final container = createContainer(
@@ -634,7 +657,9 @@ Future<void> main() async {
     });
 
     test('accepts only providers or families', () async {
-      expect(library.withCode('''
+      expect(
+        library.withCode(
+          '''
 import 'package:riverpod/riverpod.dart';
 
 final a = Provider((ref) => 0);
@@ -648,7 +673,10 @@ final b = Provider(
     a.select((value) => 42),
   ],
 );
-'''), compiles);
+''',
+        ),
+        compiles,
+      );
     });
 
     test(
@@ -657,9 +685,10 @@ final b = Provider(
       final container = createContainer();
       final dep = Provider((ref) => 0);
       final dep2 = Provider((ref) => 0, dependencies: [dep]);
-      final provider = Provider((ref) {
-        ref.watch(dep2);
-      }, dependencies: [dep]);
+      final provider = Provider(
+        dependencies: [dep],
+        (ref) => ref.watch(dep2),
+      );
 
       expect(
         () => container.read(provider),
@@ -673,9 +702,10 @@ final b = Provider(
       final container = createContainer();
       final dep = Provider((ref) => 0);
       final dep2 = Provider((ref) => 0, dependencies: [dep]);
-      final provider = Provider((ref) {
-        ref.listen(dep2, (_, __) {});
-      }, dependencies: [dep]);
+      final provider = Provider(
+        dependencies: [dep],
+        (ref) => ref.listen(dep2, (_, __) {}),
+      );
 
       expect(
         () => container.read(provider),
@@ -689,9 +719,10 @@ final b = Provider(
       final container = createContainer();
       final dep = Provider((ref) => 0);
       final dep2 = Provider((ref) => 0, dependencies: [dep]);
-      final provider = Provider((ref) {
-        ref.read(dep2);
-      }, dependencies: [dep]);
+      final provider = Provider(
+        dependencies: [dep],
+        (ref) => ref.read(dep2),
+      );
 
       expect(
         () => container.read(provider),
@@ -720,14 +751,19 @@ final b = Provider(
     final b = Provider((ref) => ref.watch(a), dependencies: [a]);
     final c = Provider((ref) => ref.watch(a), dependencies: [a]);
 
-    final root = createContainer(overrides: [
-      b.overrideWithValue(21),
-      c.overrideWithProvider(Provider((ref) => ref.watch(another) + 10)),
-    ]);
-    final container = createContainer(parent: root, overrides: [
-      a.overrideWithValue(42),
-      another.overrideWithValue(84),
-    ]);
+    final root = createContainer(
+      overrides: [
+        b.overrideWithValue(21),
+        c.overrideWithProvider(Provider((ref) => ref.watch(another) + 10)),
+      ],
+    );
+    final container = createContainer(
+      parent: root,
+      overrides: [
+        a.overrideWithValue(42),
+        another.overrideWithValue(84),
+      ],
+    );
 
     expect(container.read(a), 42);
     expect(container.read(b), 21);
@@ -742,15 +778,20 @@ final b = Provider(
       dependencies: [a],
     );
 
-    final root = createContainer(overrides: [
-      b.overrideWithProvider(
-        (value) => Provider((ref) => ref.watch(another) + value),
-      ),
-    ]);
-    final container = createContainer(parent: root, overrides: [
-      a.overrideWithValue(42),
-      another.overrideWithValue(84),
-    ]);
+    final root = createContainer(
+      overrides: [
+        b.overrideWithProvider(
+          (value) => Provider((ref) => ref.watch(another) + value),
+        ),
+      ],
+    );
+    final container = createContainer(
+      parent: root,
+      overrides: [
+        a.overrideWithValue(42),
+        another.overrideWithValue(84),
+      ],
+    );
 
     expect(container.read(a), 42);
     expect(container.read(b(10)), 52);

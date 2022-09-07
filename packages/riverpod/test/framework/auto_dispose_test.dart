@@ -30,11 +30,14 @@ Future<void> main() async {
       final container = createContainer();
       final dep = StateProvider((ref) => 0);
       var buildCount = 0;
-      final provider = Provider.autoDispose((ref) {
-        buildCount++;
-        ref.watch(dep);
-        ref.keepAlive();
-      }, cacheTime: 5 * 1000);
+      final provider = Provider.autoDispose(
+        cacheTime: 5 * 1000,
+        (ref) {
+          buildCount++;
+          ref.watch(dep);
+          ref.keepAlive();
+        },
+      );
 
       expect(buildCount, 0);
       container.read(provider);
@@ -228,7 +231,9 @@ Future<void> main() async {
       'emits compilation error when passing an autoDispose provider to a non-autoDispose provider',
       () {
     test('to ref.watch', () {
-      expect(library.withCode('''
+      expect(
+        library.withCode(
+          '''
 import 'package:riverpod/riverpod.dart';
 
 final autoDispose = Provider.autoDispose<int>((ref) => 0);
@@ -237,11 +242,16 @@ final alwaysAlive = Provider((ref) {
   // expect-error: ARGUMENT_TYPE_NOT_ASSIGNABLE
   ref.watch(autoDispose);
 });
-'''), compiles);
+''',
+        ),
+        compiles,
+      );
     });
 
     test('to ref.watch when using selectors', () {
-      expect(library.withCode('''
+      expect(
+        library.withCode(
+          '''
 import 'package:riverpod/riverpod.dart';
 
 final autoDispose = Provider.autoDispose<int>((ref) => 0);
@@ -253,11 +263,16 @@ final alwaysAlive = Provider((ref) {
       .select((value) => value),
   );
 });
-'''), compiles);
+''',
+        ),
+        compiles,
+      );
     });
 
     test('to ref.listen', () {
-      expect(library.withCode('''
+      expect(
+        library.withCode(
+          '''
 import 'package:riverpod/riverpod.dart';
 
 final autoDispose = Provider.autoDispose<int>((ref) => 0);
@@ -269,11 +284,16 @@ final alwaysAlive = Provider((ref) {
     (prev, value) {},
   );
 });
-'''), compiles);
+''',
+        ),
+        compiles,
+      );
     });
 
     test('to ref.listen when using selectors', () {
-      expect(library.withCode('''
+      expect(
+        library.withCode(
+          '''
 import 'package:riverpod/riverpod.dart';
 
 final autoDispose = Provider.autoDispose<int>((ref) => 0);
@@ -286,7 +306,10 @@ final alwaysAlive = Provider((ref) {
     (prev, value) {},
   );
 });
-'''), compiles);
+''',
+        ),
+        compiles,
+      );
     });
   });
 
@@ -524,8 +547,8 @@ final alwaysAlive = Provider((ref) {
       () async {
     final onDispose = OnDisposeMock();
     late AutoDisposeRef ref;
-    final provider = Provider.autoDispose((_ref) {
-      ref = _ref;
+    final provider = Provider.autoDispose((r) {
+      ref = r;
       ref.onDispose(onDispose);
       ref.maintainState = true;
     });

@@ -117,22 +117,26 @@ void main() {
     expect(container.read(provider), 42);
   });
 
-  test('can refresh .state', () async {
-    // TODO fix this test
-    var initialValue = 1;
-    final provider = StateProvider.autoDispose<int>((ref) => initialValue);
-    final container = createContainer();
+  test(
+    'can refresh .state',
+    skip: 'TODO',
+    () async {
+      // TODO fix this test
+      var initialValue = 1;
+      final provider = StateProvider.autoDispose<int>((ref) => initialValue);
+      final container = createContainer();
 
-    container.listen(provider.state, (prev, value) {});
+      container.listen(provider.state, (prev, value) {});
 
-    expect(container.read(provider), 1);
-    expect(container.read(provider.state).debugState, 1);
+      expect(container.read(provider), 1);
+      expect(container.read(provider.state).debugState, 1);
 
-    initialValue = 42;
+      initialValue = 42;
 
-    expect(container.refresh(provider.state).debugState, 42);
-    expect(container.read(provider), 42);
-  }, skip: true);
+      expect(container.refresh(provider.state).debugState, 42);
+      expect(container.read(provider), 42);
+    },
+  );
 
   test('can be refreshed', () async {
     var result = 0;
@@ -197,11 +201,14 @@ void main() {
     test('when using provider.overrideWithProvider', () async {
       final provider = StateProvider.autoDispose<int>((ref) => 0, name: 'true');
       final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(
-          StateProvider.autoDispose((ref) => 42, name: 'meh'),
-        ),
-      ]);
+      final container = createContainer(
+        parent: root,
+        overrides: [
+          provider.overrideWithProvider(
+            StateProvider.autoDispose((ref) => 42, name: 'meh'),
+          ),
+        ],
+      );
 
       expect(container.read(provider.notifier).state, 42);
       expect(container.read(provider.state).state, 42);

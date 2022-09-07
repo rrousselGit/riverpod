@@ -67,10 +67,13 @@ class RiverpodBinding {
 
   static RiverpodBinding get debugInstance {
     RiverpodBinding? binding;
-    assert(() {
-      binding = _instance;
-      return true;
-    }(), '');
+    assert(
+      () {
+        binding = _instance;
+        return true;
+      }(),
+      '',
+    );
 
     return binding!;
   }

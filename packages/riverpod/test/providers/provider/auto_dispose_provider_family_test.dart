@@ -14,10 +14,13 @@ void main() {
 
       await fakeAsync((async) async {
         final container = createContainer();
-        final provider = Provider.autoDispose.family<int, int>((ref, value) {
-          ref.onDispose(onDispose(value));
-          return value;
-        }, cacheTime: 5 * 1000);
+        final provider = Provider.autoDispose.family<int, int>(
+          cacheTime: 5 * 1000,
+          (ref, value) {
+            ref.onDispose(onDispose(value));
+            return value;
+          },
+        );
 
         final sub = container.listen<int>(provider(42), (previous, next) {});
 
@@ -107,14 +110,16 @@ void main() {
         return '$value';
       });
       final listener = Listener<String>();
-      final container = ProviderContainer(overrides: [
-        provider.overrideWithProvider((value) {
-          return Provider.autoDispose<String>((ref) {
-            ref.onDispose(onDispose);
-            return '$value override';
-          });
-        })
-      ]);
+      final container = ProviderContainer(
+        overrides: [
+          provider.overrideWithProvider((value) {
+            return Provider.autoDispose<String>((ref) {
+              ref.onDispose(onDispose);
+              return '$value override';
+            });
+          })
+        ],
+      );
       addTearDown(container.dispose);
 
       final sub = container.listen(
