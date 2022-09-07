@@ -12,10 +12,12 @@ class CounterWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      body: Consumer(builder: (context, ref, _) {
-        final count = ref.watch(counterProvider.state).state;
-        return Text('$count');
-      }),
+      body: Consumer(
+        builder: (context, ref, _) {
+          final count = ref.watch(counterProvider.state).state;
+          return Text('$count');
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => ref.read(counterProvider.state).state++,
         child: const Icon(Icons.add),
