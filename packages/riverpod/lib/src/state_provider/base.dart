@@ -79,7 +79,7 @@ class StateProvider<T> extends _StateProviderBase<T>
 /// The element of [StateProvider].
 class StateProviderElement<T> extends ProviderElementBase<T>
     implements StateProviderRef<T> {
-  StateProviderElement._(_StateProviderBase<T> provider) : super(provider);
+  StateProviderElement._(_StateProviderBase<T> super.provider);
 
   @override
   StateController<T> get controller => _controllerNotifier.value;
@@ -97,10 +97,13 @@ class StateProviderElement<T> extends ProviderElementBase<T>
     final controller = StateController(initialState);
     _controllerNotifier.result = Result.data(controller);
 
-    _removeListener = controller.addListener((state) {
-      _stateNotifier.result = _controllerNotifier.result;
-      setState(state);
-    }, fireImmediately: true);
+    _removeListener = controller.addListener(
+      fireImmediately: true,
+      (state) {
+        _stateNotifier.result = _controllerNotifier.result;
+        setState(state);
+      },
+    );
   }
 
   @override

@@ -228,10 +228,13 @@ class _ValueListenable<T> {
   /// listeners or not immediately before disposal.
   @mustCallSuper
   void dispose() {
-    assert(() {
-      _debugDisposed = true;
-      return true;
-    }(), '');
+    assert(
+      () {
+        _debugDisposed = true;
+        return true;
+      }(),
+      '',
+    );
     _listeners = _emptyListeners();
     _count = 0;
   }

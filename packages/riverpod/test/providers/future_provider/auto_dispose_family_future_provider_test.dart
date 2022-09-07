@@ -13,11 +13,13 @@ void main() {
 
     await fakeAsync((async) async {
       final container = createContainer();
-      final provider =
-          FutureProvider.autoDispose.family<int, int>((ref, value) {
-        ref.onDispose(onDispose(value));
-        return value;
-      }, cacheTime: 5 * 1000);
+      final provider = FutureProvider.autoDispose.family<int, int>(
+        cacheTime: 5 * 1000,
+        (ref, value) {
+          ref.onDispose(onDispose(value));
+          return value;
+        },
+      );
 
       final sub = container.listen<Future<int>>(
         provider(42).future,
@@ -88,11 +90,14 @@ void main() {
         return 0;
       });
       final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(
-          (value) => FutureProvider.autoDispose((ref) => 42),
-        ),
-      ]);
+      final container = createContainer(
+        parent: root,
+        overrides: [
+          provider.overrideWithProvider(
+            (value) => FutureProvider.autoDispose((ref) => 42),
+          ),
+        ],
+      );
 
       expect(await container.read(provider(0).future), 42);
       expect(container.read(provider(0)), const AsyncData(42));

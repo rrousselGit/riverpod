@@ -242,12 +242,12 @@ void main() {
     testWidgets('supports Changing the ProviderContainer', (tester) async {
       final provider = Provider((ref) => 0);
       final onChange = Listener<int>();
-      final container = createContainer(overrides: [
-        provider.overrideWithValue(0),
-      ]);
-      final container2 = createContainer(overrides: [
-        provider.overrideWithValue(0),
-      ]);
+      final container = createContainer(
+        overrides: [provider.overrideWithValue(0)],
+      );
+      final container2 = createContainer(
+        overrides: [provider.overrideWithValue(0)],
+      );
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
@@ -288,9 +288,9 @@ void main() {
     testWidgets('supports overriding Providers', (tester) async {
       final provider = Provider((ref) => 0);
       final onChange = Listener<int>();
-      final container = createContainer(overrides: [
-        provider.overrideWithValue(42),
-      ]);
+      final container = createContainer(
+        overrides: [provider.overrideWithValue(42)],
+      );
 
       await tester.pumpWidget(
         UncontrolledProviderScope(

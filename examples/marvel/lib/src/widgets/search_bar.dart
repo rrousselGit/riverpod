@@ -159,7 +159,7 @@ class _SearchHints extends HookConsumerWidget {
                           },
                           title: Text(
                             character.name,
-                            style: Theme.of(context).textTheme.bodyText2,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         );
                       },

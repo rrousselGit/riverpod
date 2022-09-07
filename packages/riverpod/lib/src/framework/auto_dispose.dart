@@ -94,33 +94,36 @@ mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
       // on rebuild
       KeepAliveLink? link;
 
-      listenSelf((previous, next) {
-        link ??= keepAlive();
-        _cacheTimer?.cancel();
+      listenSelf(
+        (previous, next) {
+          link ??= keepAlive();
+          _cacheTimer?.cancel();
 
-        _cacheTimer = Timer(Duration(milliseconds: _cacheTime), () {
-          link!.close();
-          link = null;
-          _cacheTimer = null;
+          _cacheTimer = Timer(Duration(milliseconds: _cacheTime), () {
+            link!.close();
+            link = null;
+            _cacheTimer = null;
 
-          // will always be initialized so `!` is safe
-          // requireState is safe because if an error is emitted, the timer
-          // will be cancelled anyway
-          final state = _state!.requireState;
-          if (state is AsyncValue) {
-            _state = Result.data(state.unwrapPrevious() as State);
-          }
-        });
-      }, onError: (err, stack) {
-        link ??= keepAlive();
-        _cacheTimer?.cancel();
+            // will always be initialized so `!` is safe
+            // requireState is safe because if an error is emitted, the timer
+            // will be cancelled anyway
+            final state = _state!.requireState;
+            if (state is AsyncValue) {
+              _state = Result.data(state.unwrapPrevious() as State);
+            }
+          });
+        },
+        onError: (err, stack) {
+          link ??= keepAlive();
+          _cacheTimer?.cancel();
 
-        _cacheTimer = Timer(Duration(milliseconds: _cacheTime), () {
-          link!.close();
-          link = null;
-          _cacheTimer = null;
-        });
-      });
+          _cacheTimer = Timer(Duration(milliseconds: _cacheTime), () {
+            link!.close();
+            link = null;
+            _cacheTimer = null;
+          });
+        },
+      );
 
       // No need for an onDispose logic, as onDispose will not be executing
       // unless the timer completes or the provider is refreshed.

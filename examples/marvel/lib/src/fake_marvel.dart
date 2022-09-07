@@ -1,4 +1,6 @@
 // ignore: import_of_legacy_library_into_null_safe
+// ignore_for_file: invalid_annotation_target
+
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 

@@ -215,7 +215,8 @@ class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
 
   @override
   Stream<ProviderDeclaration>? visitAssignmentExpression(
-      AssignmentExpression node) async* {
+    AssignmentExpression node,
+  ) async* {
     final superStream = super.visitAssignmentExpression(node);
     if (superStream != null) yield* superStream;
     final rightType = node.rightHandSide.staticType?.element2;
@@ -267,7 +268,8 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
 
   @override
   Stream<Lint>? visitFunctionExpressionInvocation(
-      FunctionExpressionInvocation node) async* {
+    FunctionExpressionInvocation node,
+  ) async* {
     final method = node.staticElement;
     if (method != null) {
       final ast = await findAstNodeForElement(method);
@@ -326,7 +328,8 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
 
   @override
   Stream<Lint>? visitInstanceCreationExpression(
-      InstanceCreationExpression node) async* {
+    InstanceCreationExpression node,
+  ) async* {
     final constructor = node.constructorName.staticElement;
     if (constructor != null) {
       if (_futureOrStream.isAssignableFrom(constructor.enclosingElement3)) {
@@ -366,7 +369,8 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
 
   @override
   Stream<Lint>? visitAssignmentExpression(
-      AssignmentExpression expression) async* {
+    AssignmentExpression expression,
+  ) async* {
     final mutate = expression.isMutation ?? false;
     if (synchronous && mutate) {
       yield Lint(
@@ -474,7 +478,8 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
 
   @override
   Stream<Lint>? visitConstructorDeclaration(
-      ConstructorDeclaration node) async* {
+    ConstructorDeclaration node,
+  ) async* {
     final superStream = super.visitConstructorDeclaration(node);
     if (superStream != null) yield* superStream;
     for (final param in node.parameters.parameters) {
@@ -611,9 +616,11 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
       return;
     }
 
-    final isGlobal = declaration!.parents.any((element) =>
-        element is TopLevelVariableDeclaration ||
-        (element is FieldDeclaration && element.isStatic));
+    final isGlobal = declaration!.parents.any(
+      (element) =>
+          element is TopLevelVariableDeclaration ||
+          (element is FieldDeclaration && element.isStatic),
+    );
 
     if (!isGlobal) {
       yield Lint(
@@ -689,7 +696,9 @@ class ProviderDeclaration {
             .then((ast) {
           if (ast is VariableDeclaration) {
             return ProviderDeclaration._(
-                ast, staticElement.declaration.variable);
+              ast,
+              staticElement.declaration.variable,
+            );
           }
           return null;
         });

@@ -15,10 +15,13 @@ void main() {
       await fakeAsync((async) async {
         final container = createContainer();
         final provider = StateNotifierProvider.autoDispose
-            .family<StateController<int>, int, int>((ref, value) {
-          ref.onDispose(onDispose(value));
-          return StateController(value);
-        }, cacheTime: 5 * 1000);
+            .family<StateController<int>, int, int>(
+          cacheTime: 5 * 1000,
+          (ref, value) {
+            ref.onDispose(onDispose(value));
+            return StateController(value);
+          },
+        );
 
         final sub = container.listen<int>(provider(42), (previous, next) {});
 
@@ -97,12 +100,16 @@ void main() {
             .family<StateController<int>, int, int>((ref, _) => controller);
         final root = createContainer();
         final controllerOverride = StateController(42);
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithProvider(
-            (value) =>
-                StateNotifierProvider.autoDispose((ref) => controllerOverride),
-          ),
-        ]);
+        final container = createContainer(
+          parent: root,
+          overrides: [
+            provider.overrideWithProvider(
+              (value) => StateNotifierProvider.autoDispose(
+                (ref) => controllerOverride,
+              ),
+            ),
+          ],
+        );
 
         expect(container.read(provider(0).notifier), controllerOverride);
         expect(container.read(provider(0)), 42);

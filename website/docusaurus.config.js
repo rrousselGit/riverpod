@@ -11,10 +11,8 @@ module.exports = {
     locales: ["en", "fr", "ko", "ja", "es", "bn", "de", "it"],
   },
   themeConfig: {
-    googleAnalytics: {
-      trackingID: "UA-138675999-4",
-    },
     algolia: {
+      appId: "0UST1QN21Y",
       apiKey: "2a84d9068bda0a387816a77f366d855d",
       indexName: "riverpod",
     },
@@ -102,6 +100,14 @@ module.exports = {
     },
   },
   presets: [
+    [
+      "@docusaurus/plugin-google-analytics",
+      {
+        googleAnalytics: {
+          trackingID: "UA-138675999-4",
+        },
+      },
+    ],
     [
       "@docusaurus/preset-classic",
       {

@@ -57,8 +57,13 @@ List<AsyncNotifierFactory> matrix({
       AsyncNotifierFactory(
         label: 'AsyncNotifierProviderFamily',
         isAutoDispose: false,
-        provider: <NotifierT extends AsyncNotifierBase<T>, T>(create,
-            {argument, dependencies, from, name}) {
+        provider: <NotifierT extends AsyncNotifierBase<T>, T>(
+          create, {
+          argument,
+          dependencies,
+          from,
+          name,
+        }) {
           return FamilyAsyncNotifierProviderImpl<NotifierT, T, int>(
             create,
             argument: 0,
@@ -109,8 +114,13 @@ List<AsyncNotifierFactory> matrix({
       AsyncNotifierFactory(
         label: 'AutoDisposeAsyncNotifierProviderFamily',
         isAutoDispose: true,
-        provider: <NotifierT extends AsyncNotifierBase<T>, T>(create,
-            {argument, dependencies, from, name}) {
+        provider: <NotifierT extends AsyncNotifierBase<T>, T>(
+          create, {
+          argument,
+          dependencies,
+          from,
+          name,
+        }) {
           return AutoDisposeFamilyAsyncNotifierProviderImpl<NotifierT, T, int>(
             create,
             argument: 0,
@@ -163,14 +173,23 @@ abstract class AsyncTestNotifierBase<T> extends AsyncNotifierBase<T> {
 
   @override
   set state(AsyncValue<T> value) => super.state = value;
+
+  // overriding to remove the @protected
+  @override
+  Future<T> update(
+    FutureOr<T> Function(T p1) cb, {
+    FutureOr<T> Function(Object err, StackTrace stackTrace)? onError,
+  }) {
+    return super.update(cb);
+  }
 }
 
 class AsyncTestNotifier<T> extends AsyncNotifier<T>
     implements AsyncTestNotifierBase<T> {
-  AsyncTestNotifier(this._init,
-      {bool Function(AsyncValue<T> prev, AsyncValue<T> next)?
-          updateShouldNotify})
-      : _updateShouldNotify = updateShouldNotify;
+  AsyncTestNotifier(
+    this._init, {
+    bool Function(AsyncValue<T> prev, AsyncValue<T> next)? updateShouldNotify,
+  }) : _updateShouldNotify = updateShouldNotify;
 
   final FutureOr<T> Function(AsyncNotifierProviderRef<T> ref) _init;
 

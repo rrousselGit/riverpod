@@ -25,7 +25,8 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   static const family = AutoDisposeStateNotifierProviderFamily.new;
 
   final NotifierT Function(
-      AutoDisposeStateNotifierProviderRef<NotifierT, T> ref) _createFn;
+    AutoDisposeStateNotifierProviderRef<NotifierT, T> ref,
+  ) _createFn;
 
   @override
   NotifierT _create(AutoDisposeStateNotifierProviderElement<NotifierT, T> ref) {

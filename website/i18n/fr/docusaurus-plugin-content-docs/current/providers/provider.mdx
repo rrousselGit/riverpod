@@ -91,7 +91,7 @@ En effectuant cette petite refactorisation, notre widget `PreviousButton` ne ser
 reconstruit lorsque l'index de la page change grâce à `Provider`.
 
 Dorénavant, lorsque l'index de la page change, notre fournisseur `canGoToPreviousPageProvider` 
-sera recalculé. sera recalculé. Mais si la valeur exposée par le 
+sera recalculé. Mais si la valeur exposée par le 
 provider ne change pas, alors le `PreviousButton` ne sera pas reconstruit.
 
 Ce changement a permis d'améliorer les performances de notre bouton et a eu 

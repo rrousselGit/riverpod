@@ -32,17 +32,19 @@ class RiverpodNotifierChangesMigrationSuggestor
 
       if (nodeType.contains('Family')) {
         yieldPatch(
-            '<${notifierType.getDisplayString(withNullability: true)}, ${stateType.getDisplayString(withNullability: true)}, ${providerType.typeArguments.last.getDisplayString(withNullability: true)}>',
-            node.typeArguments!.offset,
-            node.argumentList.offset);
+          '<${notifierType.getDisplayString(withNullability: true)}, ${stateType.getDisplayString(withNullability: true)}, ${providerType.typeArguments.last.getDisplayString(withNullability: true)}>',
+          node.typeArguments!.offset,
+          node.argumentList.offset,
+        );
       } else {
         if (node.parent is VariableDeclaration) {
           // Make sure it is variable declaration so we don't add type params
           // on family accesses
           yieldPatch(
-              '<${notifierType.getDisplayString(withNullability: true)}, ${stateType.getDisplayString(withNullability: true)}>',
-              node.function.end,
-              node.argumentList.offset);
+            '<${notifierType.getDisplayString(withNullability: true)}, ${stateType.getDisplayString(withNullability: true)}>',
+            node.function.end,
+            node.argumentList.offset,
+          );
         }
       }
     }
@@ -59,11 +61,12 @@ class RiverpodNotifierChangesMigrationSuggestor
       final stateType = notifierType!.superclass!.typeArguments.first;
       final constructorTypeArguments = node.constructorName.type.typeArguments;
       yieldPatch(
-          '<${notifierType.getDisplayString(withNullability: true)}, ${stateType.getDisplayString(withNullability: true)}>',
-          constructorTypeArguments != null
-              ? constructorTypeArguments.offset
-              : node.constructorName.end,
-          node.argumentList.offset);
+        '<${notifierType.getDisplayString(withNullability: true)}, ${stateType.getDisplayString(withNullability: true)}>',
+        constructorTypeArguments != null
+            ? constructorTypeArguments.offset
+            : node.constructorName.end,
+        node.argumentList.offset,
+      );
     }
 
     super.visitInstanceCreationExpression(node);
@@ -111,8 +114,11 @@ class RiverpodNotifierChangesMigrationSuggestor
         // StateNotifierProvider
         // watch(provider) => watch(provider.notifier)
         // useProvider(provider) => ref.watch(provider.notifier)
-        yieldPatch('.notifier', node.argumentList.arguments.first.end,
-            node.argumentList.arguments.first.end);
+        yieldPatch(
+          '.notifier',
+          node.argumentList.arguments.first.end,
+          node.argumentList.arguments.first.end,
+        );
       }
     }
     super.visitFunctionExpressionInvocation(node);
@@ -129,8 +135,11 @@ class RiverpodNotifierChangesMigrationSuggestor
       // StateNotifierProvider
       if (firstArgStaticType.contains('StateNotifierProvider')) {
         // ref.watch(provider) => ref.watch(provider.notifier)
-        yieldPatch('.notifier', node.argumentList.arguments.first.end,
-            node.argumentList.arguments.first.end);
+        yieldPatch(
+          '.notifier',
+          node.argumentList.arguments.first.end,
+          node.argumentList.arguments.first.end,
+        );
       }
     }
     super.visitMethodInvocation(node);

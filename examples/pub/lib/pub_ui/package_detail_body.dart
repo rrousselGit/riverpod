@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class PackageDetailBodyScrollView extends StatelessWidget {
   const PackageDetailBodyScrollView({
-    Key? key,
+    super.key,
     this.packageDescription,
     required this.packageName,
     required this.packageVersion,
@@ -10,7 +10,7 @@ class PackageDetailBodyScrollView extends StatelessWidget {
     required this.grantedPoints,
     required this.maxPoints,
     required this.popularityScore,
-  }) : super(key: key);
+  });
 
   final String packageName;
   final String packageVersion;

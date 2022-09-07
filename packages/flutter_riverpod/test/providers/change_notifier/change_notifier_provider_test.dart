@@ -138,11 +138,14 @@ void main() {
     test('when using provider.overrideWithProvider', () {
       final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
       final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(
-          ChangeNotifierProvider((ref) => ValueNotifier(42)),
-        ),
-      ]);
+      final container = createContainer(
+        parent: root,
+        overrides: [
+          provider.overrideWithProvider(
+            ChangeNotifierProvider((ref) => ValueNotifier(42)),
+          ),
+        ],
+      );
 
       expect(container.read(provider.notifier).value, 42);
       expect(container.read(provider).value, 42);
@@ -227,12 +230,14 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (c, ref, _) {
-          return Text(
-            ref.watch(provider).count.toString(),
-            textDirection: TextDirection.ltr,
-          );
-        }),
+        child: Consumer(
+          builder: (c, ref, _) {
+            return Text(
+              ref.watch(provider).count.toString(),
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
       ),
     );
 
@@ -356,9 +361,11 @@ void main() {
     });
     final notifier = TestNotifier();
     final notifier2 = TestNotifier();
-    final container = createContainer(overrides: [
-      provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier)),
-    ]);
+    final container = createContainer(
+      overrides: [
+        provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier)),
+      ],
+    );
     addTearDown(container.dispose);
 
     var callCount = 0;

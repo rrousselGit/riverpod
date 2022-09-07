@@ -4,3 +4,6 @@ linter:
   rules:
     # Not useful for command lines
     public_member_api_docs: false
+
+    # Not useful for tests
+    unreachable_from_main: false

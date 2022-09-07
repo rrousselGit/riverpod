@@ -54,8 +54,13 @@ List<NotifierFactory> matrix({
       NotifierFactory(
         label: 'NotifierProviderFamily',
         isAutoDispose: false,
-        provider: <NotifierT extends NotifierBase<T>, T>(create,
-            {argument, dependencies, from, name}) {
+        provider: <NotifierT extends NotifierBase<T>, T>(
+          create, {
+          argument,
+          dependencies,
+          from,
+          name,
+        }) {
           return FamilyNotifierProviderImpl<NotifierT, T, int>(
             create,
             argument: 0,
@@ -102,8 +107,13 @@ List<NotifierFactory> matrix({
       NotifierFactory(
         label: 'AutoDisposeNotifierProviderFamily',
         isAutoDispose: true,
-        provider: <NotifierT extends NotifierBase<T>, T>(create,
-            {argument, dependencies, from, name}) {
+        provider: <NotifierT extends NotifierBase<T>, T>(
+          create, {
+          argument,
+          dependencies,
+          from,
+          name,
+        }) {
           return AutoDisposeFamilyNotifierProviderImpl<NotifierT, T, int>(
             create,
             argument: 0,
