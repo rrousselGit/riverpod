@@ -30,7 +30,7 @@ interface CodeSnippetProps {
 
 export const CodeSnippet: React.FC<CodeSnippetProps> = ({ snippet, title }) => {
   return (
-    <div className={`snippet whiteCodeBlock`}>
+    <div className={`snippet`}>
       <div className="snippet__title_bar">
         <div className="snippet__dots">
           <div className="snippet__dot"></div>
