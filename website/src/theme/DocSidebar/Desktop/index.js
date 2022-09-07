@@ -5,7 +5,7 @@ import Logo from "@theme/Logo";
 import CollapseButton from "@theme/DocSidebar/Desktop/CollapseButton";
 import Content from "@theme/DocSidebar/Desktop/Content";
 import styles from "./styles.module.css";
-import { CodegenContext } from "../../DocPage/Layout";
+import { CodegenContext, FlutterHooksContext } from "../../DocPage/Layout";
 
 function DocSidebarDesktop({ path, sidebar, onCollapse, isHidden }) {
   const {
@@ -16,6 +16,7 @@ function DocSidebarDesktop({ path, sidebar, onCollapse, isHidden }) {
   } = useThemeConfig();
 
   const [codegen, setCodegen] = useContext(CodegenContext);
+  const [flutterHooks, setFlutterHooks] = useContext(FlutterHooksContext);
 
   return (
     <div
@@ -25,11 +26,21 @@ function DocSidebarDesktop({ path, sidebar, onCollapse, isHidden }) {
         isHidden && styles.sidebarHidden
       )}
     >
-      <Toggle
-        checked={codegen}
-        onClick={() => setCodegen(!codegen)}
-        leading={<label>Code generation</label>}
-      ></Toggle>
+      <div style={{padding: "10px 10px 0 10px", display: "flex", alignItems: "end", flexDirection: "column"}}>
+        {/* Let's define some toggles for customizing the code output of snippets */}
+        <Toggle
+          checked={codegen}
+          onClick={() => setCodegen(!codegen)}
+          leading={<label>Code generation</label>}
+        ></Toggle>
+        <Toggle
+          checked={flutterHooks}
+          onClick={() => setFlutterHooks(!flutterHooks)}
+          leading={<label>flutter_hooks</label>}
+        ></Toggle>
+      </div>
+
+      <hr style={{ backgroundColor: "var(--ifm-toc-border-color)", margin: "10px 0" }}></hr>
 
       {hideOnScroll && <Logo tabIndex={-1} className={styles.sidebarLogo} />}
       <Content path={path} sidebar={sidebar} />
@@ -43,8 +54,8 @@ function Toggle({ checked, onClick, leading }) {
     <div
       style={{
         padding: "12 16px",
+        paddingRight: 40,
         transition: "background-color .5s",
-        margin: "6px 0 12px",
         borderRadius: 8,
         fontWeight: 600,
       }}
@@ -56,6 +67,7 @@ function Toggle({ checked, onClick, leading }) {
           onClick={onClick}
           style={{
             marginRight: 5,
+            marginLeft: 10,
             transform: "scale(0.8)",
             position: "relative",
             borderRadius: 11,
@@ -64,7 +76,7 @@ function Toggle({ checked, onClick, leading }) {
             height: 22,
             flexShrink: 0,
             border: "1px solid rgba(84, 84, 84, .65)",
-            transition: "border-color .25s,background-color .25s",
+            transition: "background-color .25s",
           }}
         >
           <span

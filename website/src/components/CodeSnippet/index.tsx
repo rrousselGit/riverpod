@@ -45,10 +45,21 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({ snippet, title }) => {
   );
 };
 
-export function Foo() {
-  const [codegen, setCodegen] = useContext(CodegenContext);
+export function AutoSnippet(props: {
+  title?: string;
+  codegen: string | Array<string>;
+  raw: string | Array<string>;
+}) {
+  const [codegen] = useContext(CodegenContext);
 
-  return (
-    <button onClick={() => setCodegen(!codegen)}>codegen {`${codegen}`}</button>
-  );
+  let snippet: string | Array<string>;
+  if (codegen) {
+    snippet = props.codegen;
+  } else {
+    snippet = props.raw;
+  }
+
+  const code = Array.isArray(snippet) ? snippet.join("\n") : snippet;
+
+  return <CodeBlock title={props.title}>{trimSnippet(code)}</CodeBlock>;
 }

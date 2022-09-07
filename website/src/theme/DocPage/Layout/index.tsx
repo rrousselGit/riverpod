@@ -1,6 +1,8 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import Layout from "@theme-original/DocPage/Layout";
 
+// Wrapping <Layout> to add custom contexts available for the entire app.
+
 export default function LayoutWrapper(props) {
   return (
     <Codegen>
@@ -18,12 +20,22 @@ export const CodegenContext = React.createContext<ContextValue<boolean>>([
   },
 ]);
 
+export const FlutterHooksContext = React.createContext<ContextValue<boolean>>([
+  false,
+  (_) => {
+    throw 42;
+  },
+]);
+
 function Codegen({ children }) {
   const codegen = useState(true);
+  const flutterHooks = useState(true);
 
   return (
     <CodegenContext.Provider value={codegen}>
-      {children}
+      <FlutterHooksContext.Provider value={flutterHooks}>
+        {children}
+      </FlutterHooksContext.Provider>
     </CodegenContext.Provider>
   );
 }
