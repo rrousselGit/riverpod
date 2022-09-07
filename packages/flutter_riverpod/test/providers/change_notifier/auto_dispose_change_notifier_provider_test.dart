@@ -115,11 +115,14 @@ void main() {
         final provider =
             ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(0));
         final root = createContainer();
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithProvider(
-            ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(42)),
-          ),
-        ]);
+        final container = createContainer(
+          parent: root,
+          overrides: [
+            provider.overrideWithProvider(
+              ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(42)),
+            ),
+          ],
+        );
 
         expect(container.read(provider.notifier).value, 42);
         expect(container.read(provider).value, 42);

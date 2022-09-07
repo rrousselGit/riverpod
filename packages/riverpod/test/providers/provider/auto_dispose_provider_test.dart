@@ -131,9 +131,12 @@ void main() {
       test('when using provider.overrideWithValue', () {
         final provider = Provider.autoDispose((ref) => 0);
         final root = createContainer();
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithValue(42),
-        ]);
+        final container = createContainer(
+          parent: root,
+          overrides: [
+            provider.overrideWithValue(42),
+          ],
+        );
 
         expect(container.read(provider), 42);
         expect(container.getAllProviderElements(), [
@@ -145,9 +148,12 @@ void main() {
       test('when using provider.overrideWithProvider', () {
         final provider = Provider.autoDispose((ref) => 0);
         final root = createContainer();
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithProvider(Provider.autoDispose((ref) => 42)),
-        ]);
+        final container = createContainer(
+          parent: root,
+          overrides: [
+            provider.overrideWithProvider(Provider.autoDispose((ref) => 42)),
+          ],
+        );
 
         expect(container.read(provider), 42);
         expect(container.getAllProviderElements(), [
@@ -162,9 +168,11 @@ void main() {
       final override = Provider.autoDispose<int>((_) {
         return 21;
       });
-      final container = createContainer(overrides: [
-        provider.overrideWithProvider(override),
-      ]);
+      final container = createContainer(
+        overrides: [
+          provider.overrideWithProvider(override),
+        ],
+      );
 
       expect(container.read(provider), 21);
     });

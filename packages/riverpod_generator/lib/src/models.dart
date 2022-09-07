@@ -66,7 +66,7 @@ class Data {
 
   String get hashFunctionName => '\$${rawName}Hash';
 
-  String get hashFn => "bool.fromEnvironment('dart.vm.product') ? "
+  String get hashFn => "const bool.fromEnvironment('dart.vm.product') ? "
       'null : $hashFunctionName';
 
   String get refName => '${rawName.titled}Ref';

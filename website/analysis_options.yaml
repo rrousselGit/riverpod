@@ -1,0 +1,4 @@
+include: ../analysis_options.yaml
+linter:
+  rules:
+   require_trailing_commas: false

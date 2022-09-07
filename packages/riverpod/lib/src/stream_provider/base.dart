@@ -107,7 +107,7 @@ class StreamProvider<T> extends _StreamProviderBase<T>
 /// The element of [StreamProvider].
 class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     implements StreamProviderRef<T> {
-  StreamProviderElement._(_StreamProviderBase<T> provider) : super(provider);
+  StreamProviderElement._(_StreamProviderBase<T> super.provider);
 
   final _futureNotifier = ProxyElementValueNotifier<Future<T>>();
   Completer<T>? _completer;

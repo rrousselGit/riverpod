@@ -22,7 +22,8 @@ abstract class ProviderOrFamily {
 }
 
 List<ProviderOrFamily> _allTransitiveDependencies(
-    List<ProviderOrFamily> dependencies) {
+  List<ProviderOrFamily> dependencies,
+) {
   final result = <ProviderOrFamily>{};
 
   void visitDependency(ProviderOrFamily dep) {

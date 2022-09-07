@@ -502,13 +502,16 @@ void main() {
         final listener = Listener<int>();
         final errors = <Object>[];
         final provider = Provider((ref) {
-          runZonedGuarded(() {
-            ref.listen(
-              dep,
-              listener,
-              fireImmediately: true,
-            );
-          }, (err, stack) => errors.add(err));
+          runZonedGuarded(
+            () {
+              ref.listen(
+                dep,
+                listener,
+                fireImmediately: true,
+              );
+            },
+            (err, stack) => errors.add(err),
+          );
         });
 
         container.read(provider);
@@ -527,13 +530,16 @@ void main() {
         final listener = Listener<int>();
         final errors = <Object>[];
         final provider = Provider((ref) {
-          runZonedGuarded(() {
-            ref.listen(
-              dep.select((value) => value),
-              listener,
-              fireImmediately: true,
-            );
-          }, (err, stack) => errors.add(err));
+          runZonedGuarded(
+            () {
+              ref.listen(
+                dep.select((value) => value),
+                listener,
+                fireImmediately: true,
+              );
+            },
+            (err, stack) => errors.add(err),
+          );
         });
 
         container.read(provider);
@@ -1014,49 +1020,51 @@ void main() {
     });
 
     test(
-        'if a listener removes another provider.listen, the removed listener is still called (ProviderListenable)',
-        () {
-      final provider = StateProvider((ref) => 0);
-      final container = createContainer();
+      'if a listener removes another provider.listen, the removed listener is still called (ProviderListenable)',
+      skip: true,
+      () {
+        final provider = StateProvider((ref) => 0);
+        final container = createContainer();
 
-      final listener = Listener<int>();
-      final listener2 = Listener<int>();
+        final listener = Listener<int>();
+        final listener2 = Listener<int>();
 
-      final p = Provider((ref) {
-        ProviderSubscription<StateController<int>>? a;
-        ref.listen<StateController<int>>(provider.state, (prev, value) {
-          listener(prev?.state, value.state);
-          a?.close();
-          a = null;
+        final p = Provider((ref) {
+          ProviderSubscription<StateController<int>>? a;
+          ref.listen<StateController<int>>(provider.state, (prev, value) {
+            listener(prev?.state, value.state);
+            a?.close();
+            a = null;
+          });
+
+          a = ref.listen<StateController<int>>(provider.state, (prev, value) {
+            listener2(prev?.state, value.state);
+          });
         });
+        container.read(p);
 
-        a = ref.listen<StateController<int>>(provider.state, (prev, value) {
-          listener2(prev?.state, value.state);
-        });
-      });
-      container.read(p);
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
 
-      verifyZeroInteractions(listener);
-      verifyZeroInteractions(listener2);
+        container.read(provider.state).state++;
 
-      container.read(provider.state).state++;
+        verifyInOrder([
+          listener(1, 1),
+          listener2(1, 1),
+        ]);
 
-      verifyInOrder([
-        listener(1, 1),
-        listener2(1, 1),
-      ]);
+        container.read(provider.state).state++;
 
-      container.read(provider.state).state++;
-
-      verify(listener(2, 2)).called(1);
-      verifyNoMoreInteractions(listener2);
-      // TODO the problem is that ProviderListenable subscriptions are separate from
-      // ProviderElement subscriptions. So the ProviderElement.notifyListeners
-      // making a local copy of the list of subscriptions before notifying listeners
-      // does not apply to ProviderListenables
-      // Support for modifying listeners within a listener probably should be dropped anyway for performance.
-      // This would remove a list copy
-    }, skip: true);
+        verify(listener(2, 2)).called(1);
+        verifyNoMoreInteractions(listener2);
+        // TODO the problem is that ProviderListenable subscriptions are separate from
+        // ProviderElement subscriptions. So the ProviderElement.notifyListeners
+        // making a local copy of the list of subscriptions before notifying listeners
+        // does not apply to ProviderListenables
+        // Support for modifying listeners within a listener probably should be dropped anyway for performance.
+        // This would remove a list copy
+      },
+    );
 
     test(
         'if a listener adds a provider.listen, the new listener is not called immediately',
@@ -1088,46 +1096,49 @@ void main() {
     });
 
     test(
-        'if a listener removes another container.listen, the removed listener is still called (ProviderListenable)',
-        () {
-      final provider = StateProvider((ref) => 0);
-      final container = createContainer();
+      'if a listener removes another container.listen, the removed listener is still called (ProviderListenable)',
+      skip: true,
+      () {
+        final provider = StateProvider((ref) => 0);
+        final container = createContainer();
 
-      final listener = Listener<int>();
-      final listener2 = Listener<int>();
+        final listener = Listener<int>();
+        final listener2 = Listener<int>();
 
-      ProviderSubscription? a;
-      container.listen<StateController<int>>(provider.state, (prev, value) {
-        listener(prev?.state, value.state);
-        a?.close();
-        a = null;
-      });
+        ProviderSubscription? a;
+        container.listen<StateController<int>>(provider.state, (prev, value) {
+          listener(prev?.state, value.state);
+          a?.close();
+          a = null;
+        });
 
-      a = container.listen<StateController<int>>(provider.state, (prev, value) {
-        listener2(prev?.state, value.state);
-      });
+        a = container.listen<StateController<int>>(provider.state,
+            (prev, value) {
+          listener2(prev?.state, value.state);
+        });
 
-      verifyZeroInteractions(listener);
-      verifyZeroInteractions(listener2);
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
 
-      container.read(provider.notifier).state++;
+        container.read(provider.notifier).state++;
 
-      verifyInOrder([
-        listener(1, 1),
-        listener2(1, 1),
-      ]);
+        verifyInOrder([
+          listener(1, 1),
+          listener2(1, 1),
+        ]);
 
-      container.read(provider.notifier).state++;
+        container.read(provider.notifier).state++;
 
-      verify(listener(2, 2)).called(1);
-      verifyNoMoreInteractions(listener2);
-      // TODO the problem is that ProviderListenable subscriptions are separate from
-      // ProviderElement subscriptions. So the ProviderElement.notifyListeners
-      // making a local copy of the list of subscriptions before notifying listeners
-      // does not apply to ProviderListenables
-      // Support for modifying listeners within a listener probably should be dropped anyway for performance.
-      // This would remove a list copy
-    }, skip: true);
+        verify(listener(2, 2)).called(1);
+        verifyNoMoreInteractions(listener2);
+        // TODO the problem is that ProviderListenable subscriptions are separate from
+        // ProviderElement subscriptions. So the ProviderElement.notifyListeners
+        // making a local copy of the list of subscriptions before notifying listeners
+        // does not apply to ProviderListenables
+        // Support for modifying listeners within a listener probably should be dropped anyway for performance.
+        // This would remove a list copy
+      },
+    );
 
     test(
         'if a listener removes another container.listen, the removed listener is still called',
@@ -1171,13 +1182,16 @@ void main() {
         final listener = Listener<int>();
         final errors = <Object>[];
 
-        runZonedGuarded(() {
-          container.listen(
-            dep,
-            listener,
-            fireImmediately: true,
-          );
-        }, (err, stack) => errors.add(err));
+        runZonedGuarded(
+          () {
+            container.listen(
+              dep,
+              listener,
+              fireImmediately: true,
+            );
+          },
+          (err, stack) => errors.add(err),
+        );
 
         verifyZeroInteractions(listener);
         expect(errors, [
@@ -1193,13 +1207,16 @@ void main() {
         final listener = Listener<int>();
         final errors = <Object>[];
 
-        runZonedGuarded(() {
-          container.listen(
-            dep.select((value) => value),
-            listener,
-            fireImmediately: true,
-          );
-        }, (err, stack) => errors.add(err));
+        runZonedGuarded(
+          () {
+            container.listen(
+              dep.select((value) => value),
+              listener,
+              fireImmediately: true,
+            );
+          },
+          (err, stack) => errors.add(err),
+        );
 
         verifyZeroInteractions(listener);
         expect(errors, [

@@ -126,14 +126,17 @@ class ProviderContainer implements Node {
               if (!entry.value.isDynamicallyCreated) entry.key: entry.value,
         },
         _root = parent?._root ?? parent {
-    assert(() {
-      _debugId = '${_debugNextId++}';
-      RiverpodBinding.debugInstance.containers = {
-        ...RiverpodBinding.debugInstance.containers,
-        _debugId: this,
-      };
-      return true;
-    }(), '');
+    assert(
+      () {
+        _debugId = '${_debugNextId++}';
+        RiverpodBinding.debugInstance.containers = {
+          ...RiverpodBinding.debugInstance.containers,
+          _debugId: this,
+        };
+        return true;
+      }(),
+      '',
+    );
 
     if (parent != null) {
       parent._children.add(this);
@@ -198,10 +201,13 @@ class ProviderContainer implements Node {
   @visibleForTesting
   String get debugId {
     String? id;
-    assert(() {
-      id = _debugId;
-      return true;
-    }(), '');
+    assert(
+      () {
+        id = _debugId;
+        return true;
+      }(),
+      '',
+    );
 
     return id!;
   }
@@ -265,13 +271,16 @@ class ProviderContainer implements Node {
 // TODO hot-reload handle family adding parameters
 // TODO found "Future already completed error" after adding family parameter
 
-    assert(() {
-      for (final element in getAllProviderElements()) {
-        element.debugReassemble();
-      }
+    assert(
+      () {
+        for (final element in getAllProviderElements()) {
+          element.debugReassemble();
+        }
 
-      return true;
-    }(), '');
+        return true;
+      }(),
+      '',
+    );
   }
 
   @override
@@ -380,17 +389,23 @@ class ProviderContainer implements Node {
     );
 
     List<Override>? unusedOverrides;
-    assert(() {
-      unusedOverrides = [...overrides];
-      return true;
-    }(), '');
+    assert(
+      () {
+        unusedOverrides = [...overrides];
+        return true;
+      }(),
+      '',
+    );
 
     for (final override in overrides) {
       if (override is ProviderOverride) {
-        assert(() {
-          unusedOverrides!.remove(override);
-          return true;
-        }(), '');
+        assert(
+          () {
+            unusedOverrides!.remove(override);
+            return true;
+          }(),
+          '',
+        );
 
         assert(
           _overrideForProvider[override._origin].runtimeType ==
@@ -411,10 +426,13 @@ class ProviderContainer implements Node {
 
         runUnaryGuarded(element.update, override._override);
       } else if (override is FamilyOverride) {
-        assert(() {
-          unusedOverrides!.remove(override);
-          return true;
-        }(), '');
+        assert(
+          () {
+            unusedOverrides!.remove(override);
+            return true;
+          }(),
+          '',
+        );
         // TODO assert family override did not change
 
         _overrideForFamily[override.overriddenFamily]!.override = override;
@@ -439,26 +457,28 @@ class ProviderContainer implements Node {
 
     final reader = _getStateReader(provider);
 
-    assert(() {
-      // Avoid having the assert trigger itself exponentially
-      if (!_debugVerifyDependenciesAreRespectedEnabled) return true;
+    assert(
+      () {
+        // Avoid having the assert trigger itself exponentially
+        if (!_debugVerifyDependenciesAreRespectedEnabled) return true;
 
-      try {
-        _debugVerifyDependenciesAreRespectedEnabled = false;
+        try {
+          _debugVerifyDependenciesAreRespectedEnabled = false;
 
-        // Check that this containers doesn't have access to an overridden
-        // dependency of the targeted provider
-        final targetElement = reader.getElement();
-        final visitedDependencies = <ProviderBase>{};
-        final queue = Queue<ProviderBase>();
-        targetElement.visitAncestors((e) => queue.add(e.origin));
+          // Check that this containers doesn't have access to an overridden
+          // dependency of the targeted provider
+          final targetElement = reader.getElement();
+          final visitedDependencies = <ProviderBase>{};
+          final queue = Queue<ProviderBase>();
+          targetElement.visitAncestors((e) => queue.add(e.origin));
 
-        while (queue.isNotEmpty) {
-          final dependency = queue.removeFirst();
-          if (visitedDependencies.add(dependency)) {
-            final dependencyElement = readProviderElement<Object?>(dependency);
+          while (queue.isNotEmpty) {
+            final dependency = queue.removeFirst();
+            if (visitedDependencies.add(dependency)) {
+              final dependencyElement =
+                  readProviderElement<Object?>(dependency);
 
-            assert(
+              assert(
                 targetElement.provider != targetElement.origin ||
                     dependencyElement ==
                         targetElement.container
@@ -472,16 +492,19 @@ To fix this error, you can add add "dependencies" to $provider such that we have
 final a = Provider(...);
 final b = Provider((ref) => ref.watch(a), dependencies: [a]);
 ```
-''');
+''',
+              );
 
-            dependencyElement.visitAncestors((e) => queue.add(e.origin));
+              dependencyElement.visitAncestors((e) => queue.add(e.origin));
+            }
           }
+        } finally {
+          _debugVerifyDependenciesAreRespectedEnabled = true;
         }
-      } finally {
-        _debugVerifyDependenciesAreRespectedEnabled = true;
-      }
-      return true;
-    }(), '');
+        return true;
+      }(),
+      '',
+    );
 
     return reader.getElement() as ProviderElementBase<State>;
   }
@@ -626,11 +649,15 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
       );
     }
 
-    assert(() {
-      RiverpodBinding.debugInstance.containers =
-          Map.from(RiverpodBinding.debugInstance.containers)..remove(_debugId);
-      return true;
-    }(), '');
+    assert(
+      () {
+        RiverpodBinding.debugInstance.containers =
+            Map.from(RiverpodBinding.debugInstance.containers)
+              ..remove(_debugId);
+        return true;
+      }(),
+      '',
+    );
 
     _parent?._children.remove(this);
 

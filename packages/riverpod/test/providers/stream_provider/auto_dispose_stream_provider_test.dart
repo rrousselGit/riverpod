@@ -239,11 +239,14 @@ void main() {
       test('when using provider.overrideWithProvider', () async {
         final provider = StreamProvider.autoDispose((ref) => Stream.value(0));
         final root = createContainer();
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithProvider(
-            StreamProvider.autoDispose((ref) => Stream.value(42)),
-          ),
-        ]);
+        final container = createContainer(
+          parent: root,
+          overrides: [
+            provider.overrideWithProvider(
+              StreamProvider.autoDispose((ref) => Stream.value(42)),
+            ),
+          ],
+        );
 
         expect(await container.read(provider.stream).first, 42);
         expect(await container.read(provider.future), 42);

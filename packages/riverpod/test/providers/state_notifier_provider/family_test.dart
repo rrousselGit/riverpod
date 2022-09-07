@@ -61,14 +61,18 @@ void main() {
         final controller = StateController(0);
         final provider =
             StateNotifierProvider.family<StateController<int>, int, int>(
-                (ref, _) => controller);
+          (ref, _) => controller,
+        );
         final root = createContainer();
         final controllerOverride = StateController(42);
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithProvider(
-            (value) => StateNotifierProvider((ref) => controllerOverride),
-          ),
-        ]);
+        final container = createContainer(
+          parent: root,
+          overrides: [
+            provider.overrideWithProvider(
+              (value) => StateNotifierProvider((ref) => controllerOverride),
+            ),
+          ],
+        );
 
         expect(container.read(provider(0).notifier), controllerOverride);
         expect(container.read(provider(0)), 42);
@@ -102,7 +106,8 @@ void main() {
 
     test('properly overrides ==', () {
       final family = StateNotifierProvider.family<Counter, int, int>(
-          (ref, _) => Counter());
+        (ref, _) => Counter(),
+      );
 
       expect(family(0), family(0));
       expect(family(1), isNot(family(0)));

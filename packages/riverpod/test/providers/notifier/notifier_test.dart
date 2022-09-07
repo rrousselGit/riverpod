@@ -313,33 +313,42 @@ void main() {
         verifyOnly(listener, listener(Equal(42), Equal(21)));
       });
 
-      test('can override the Notifier with a matching custom implementation',
-          () {});
+      test(
+        'can override the Notifier with a matching custom implementation',
+        () {},
+        skip: 'TODO',
+      );
 
       test('can override Notifier.build', () {});
-
-      test('invalidating/refreshing .notifier throws', () {});
-
-      test('calls notifier.initState once', () {});
-
-      test(
-          'calls to onDispose inside initState are executed when the element is destroyed',
-          () {});
-
-      test(
-          'calls to listenSelf inside initState are cleared when the element is destroyed',
-          () {});
-
-      test(
-          'calls to listen inside initState are cleared when the element is destroyed',
-          () {});
     });
 
-    group('autoDispose', () {
-      test('keeps state alive if notifier is listened', () {});
+    if (factory.isAutoDispose) {
+      group('autoDispose', () {
+        test('keeps state alive if notifier is listened', () async {
+          final container = createContainer();
+          final onDispose = OnDisposeMock();
+          final provider = factory.simpleTestProvider<int>((ref) {
+            ref.onDispose(onDispose);
+            return 0;
+          });
 
-      test('does not rebuild state if only notifier is listened', () {});
-    });
+          final sub = container.listen(provider, (prev, next) {});
+          verifyZeroInteractions(onDispose);
+          expect(container.getAllProviderElements().single.origin, provider);
+
+          await container.pump();
+
+          verifyZeroInteractions(onDispose);
+          expect(container.getAllProviderElements().single.origin, provider);
+
+          sub.close();
+          await container.pump();
+
+          verifyOnly(onDispose, onDispose());
+          expect(container.getAllProviderElements(), isEmpty);
+        });
+      });
+    }
   }
 
   group('modifiers', () {

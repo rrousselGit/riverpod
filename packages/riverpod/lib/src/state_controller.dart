@@ -5,7 +5,7 @@ import 'package:state_notifier/state_notifier.dart';
 /// This avoids having to make a [StateNotifier] subclass for simple scenarios.
 class StateController<T> extends StateNotifier<T> {
   /// Initialize the state of [StateController].
-  StateController(T state) : super(state);
+  StateController(super.state);
 
   // Remove the protected status
   @override

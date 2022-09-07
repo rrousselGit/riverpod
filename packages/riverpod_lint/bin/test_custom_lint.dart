@@ -13,7 +13,8 @@ import 'custom_lint.dart';
 
 void main() async {
   final collection = AnalysisContextCollection(
-      includedPaths: [canonicalize('../riverpod_lint_flutter_test/')]);
+    includedPaths: [canonicalize('../riverpod_lint_flutter_test/')],
+  );
   const test = 'mutate_in_create';
   final file =
       canonicalize('../riverpod_lint_flutter_test/test/goldens/$test.dart');
@@ -35,7 +36,8 @@ void main() async {
     }
     await for (final lint in RiverpodLint().getLints(unit!)) {
       dev.log(
-          'Got lint ${lint.code} "${lint.message}" at location ${lint.location.startLine}:${lint.location.startColumn}');
+        'Got lint ${lint.code} "${lint.message}" at location ${lint.location.startLine}:${lint.location.startColumn}',
+      );
     }
   }
 
@@ -46,13 +48,16 @@ void main() async {
     await getLints();
   });
 
-  final _ = await HotReloader.create(onBeforeReload: (_) {
-    dev.log('Linter changed, reloading linter code');
-    return true;
-  }, onAfterReload: (_) async {
-    dev.log('Rerunning lint analysis');
-    await getLints();
-  });
+  final _ = await HotReloader.create(
+    onBeforeReload: (_) {
+      dev.log('Linter changed, reloading linter code');
+      return true;
+    },
+    onAfterReload: (_) async {
+      dev.log('Rerunning lint analysis');
+      await getLints();
+    },
+  );
   dev.log('Analyzing test file');
   await analyzeTestFile();
   dev.log('Running lint analysis');

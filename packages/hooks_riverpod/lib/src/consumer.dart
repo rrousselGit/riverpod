@@ -9,7 +9,7 @@ import 'internals.dart';
 /// {@endtemplate}
 abstract class HookConsumerWidget extends ConsumerWidget {
   /// {@macro hooks_riverpod.hookconsumer.hookconsumerwidget}
-  const HookConsumerWidget({Key? key}) : super(key: key);
+  const HookConsumerWidget({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -18,15 +18,14 @@ abstract class HookConsumerWidget extends ConsumerWidget {
 
 // ignore: invalid_use_of_visible_for_testing_member
 class _HookConsumerElement extends ConsumerStatefulElement with HookElement {
-  _HookConsumerElement(HookConsumerWidget widget) : super(widget);
+  _HookConsumerElement(HookConsumerWidget super.widget);
 }
 
 /// {@macro hooks_riverpod.hookconsumer.hookconsumerwidget}
 
 class HookConsumer extends HookConsumerWidget {
   /// {@macro hooks_riverpod.hookconsumer.hookconsumerwidget}
-  const HookConsumer({Key? key, required this.builder, this.child})
-      : super(key: key);
+  const HookConsumer({super.key, required this.builder, this.child});
 
   /// A function that builds a widget.
   ///
@@ -48,7 +47,7 @@ class HookConsumer extends HookConsumerWidget {
 /// A [StatefulWidget] that is both a [ConsumerWidget] and a [HookWidget].
 abstract class StatefulHookConsumerWidget extends ConsumerStatefulWidget {
   /// A [StatefulWidget] that is both a [ConsumerWidget] and a [HookWidget].
-  const StatefulHookConsumerWidget({Key? key}) : super(key: key);
+  const StatefulHookConsumerWidget({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -60,6 +59,5 @@ class _StatefulHookConsumerElement extends ConsumerStatefulElement
     with
 // ignore: invalid_use_of_visible_for_testing_member
         HookElement {
-  _StatefulHookConsumerElement(StatefulHookConsumerWidget widget)
-      : super(widget);
+  _StatefulHookConsumerElement(StatefulHookConsumerWidget super.widget);
 }

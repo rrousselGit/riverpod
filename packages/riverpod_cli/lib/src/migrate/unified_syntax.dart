@@ -104,10 +104,10 @@ class RiverpodProviderUsageInfo extends GeneralizingAstVisitor<void>
   void visitFunctionDeclaration(FunctionDeclaration node) {
     try {
       currentFunctionInfo = ProviderFunction(
-          name: node.name.name,
-          path:
-              node.declaredElement!.declaration.location!.components.join('/'),
-          line: node.name.offset);
+        name: node.name.name,
+        path: node.declaredElement!.declaration.location!.components.join('/'),
+        line: node.name.offset,
+      );
       isProviderDependentFunction[currentFunctionInfo!] = false;
       functionDependencies[currentFunctionInfo!] = {};
     } catch (e) {
@@ -121,10 +121,10 @@ class RiverpodProviderUsageInfo extends GeneralizingAstVisitor<void>
   void visitMethodDeclaration(MethodDeclaration node) {
     try {
       currentFunctionInfo = ProviderFunction(
-          name: node.name.name,
-          path:
-              node.declaredElement!.declaration.location!.components.join('/'),
-          line: node.name.offset);
+        name: node.name.name,
+        path: node.declaredElement!.declaration.location!.components.join('/'),
+        line: node.name.offset,
+      );
       isProviderDependentFunction[currentFunctionInfo!] = false;
       functionDependencies[currentFunctionInfo!] = {};
     } catch (e) {
@@ -312,7 +312,8 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       }
     } catch (e, st) {
       addError(
-          'migrating widget build method parameters $buildParams\n$e\n$st');
+        'migrating widget build method parameters $buildParams\n$e\n$st',
+      );
     }
   }
 
@@ -351,11 +352,17 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   void migrateFunctionCall(ArgumentList argumentList) {
     try {
       if (argumentList.arguments.isNotEmpty) {
-        yieldPatch('ref, ', argumentList.arguments.first.offset,
-            argumentList.arguments.first.offset);
+        yieldPatch(
+          'ref, ',
+          argumentList.arguments.first.offset,
+          argumentList.arguments.first.offset,
+        );
       } else {
-        yieldPatch('ref', argumentList.leftParenthesis.end,
-            argumentList.rightParenthesis.offset);
+        yieldPatch(
+          'ref',
+          argumentList.leftParenthesis.end,
+          argumentList.rightParenthesis.offset,
+        );
       }
     } catch (e, st) {
       addError('migrating consumer hook function call $argumentList\n$e\n$st');
@@ -366,14 +373,16 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
     try {
       if (node.functionExpression.parameters!.parameters.isNotEmpty) {
         yieldPatch(
-            'WidgetRef ref, ',
-            node.functionExpression.parameters!.parameters.first.offset,
-            node.functionExpression.parameters!.parameters.first.offset);
+          'WidgetRef ref, ',
+          node.functionExpression.parameters!.parameters.first.offset,
+          node.functionExpression.parameters!.parameters.first.offset,
+        );
       } else {
         yieldPatch(
-            'WidgetRef ref',
-            node.functionExpression.parameters!.leftParenthesis.end,
-            node.functionExpression.parameters!.rightParenthesis.offset);
+          'WidgetRef ref',
+          node.functionExpression.parameters!.leftParenthesis.end,
+          node.functionExpression.parameters!.rightParenthesis.offset,
+        );
       }
       functionDecls[node.name.name] = node;
     } catch (e, st) {
@@ -384,11 +393,17 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
   void migrateMethodDeclaration(MethodDeclaration node) {
     try {
       if (node.parameters!.parameters.isNotEmpty) {
-        yieldPatch('WidgetRef ref, ', node.parameters!.parameters.first.offset,
-            node.parameters!.parameters.first.offset);
+        yieldPatch(
+          'WidgetRef ref, ',
+          node.parameters!.parameters.first.offset,
+          node.parameters!.parameters.first.offset,
+        );
       } else {
-        yieldPatch('WidgetRef ref', node.parameters!.leftParenthesis.end,
-            node.parameters!.rightParenthesis.offset);
+        yieldPatch(
+          'WidgetRef ref',
+          node.parameters!.leftParenthesis.end,
+          node.parameters!.rightParenthesis.offset,
+        );
       }
       methodDecls[node.name.name] = node;
     } catch (e, st) {
@@ -411,12 +426,14 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
 
   void migrateListener(InstanceCreationExpression node) {
     try {
-      final provider = node.argumentList.arguments.firstWhere((element) =>
-          element is NamedExpression &&
-          element.name.label.name == 'provider') as NamedExpression;
-      final onChange = node.argumentList.arguments.firstWhere((element) =>
-          element is NamedExpression &&
-          element.name.label.name == 'onChange') as NamedExpression;
+      final provider = node.argumentList.arguments.firstWhere(
+        (element) =>
+            element is NamedExpression && element.name.label.name == 'provider',
+      ) as NamedExpression;
+      final onChange = node.argumentList.arguments.firstWhere(
+        (element) =>
+            element is NamedExpression && element.name.label.name == 'onChange',
+      ) as NamedExpression;
       final fn = functionBody;
 
       final providerSource = context.sourceText
@@ -447,22 +464,25 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         listenType = 'AsyncValue<$listenType>';
       }
 
-      final child = node.argumentList.arguments.firstWhere((element) =>
-              element is NamedExpression && element.name.label.name == 'child')
-          as NamedExpression;
+      final child = node.argumentList.arguments.firstWhere(
+        (element) =>
+            element is NamedExpression && element.name.label.name == 'child',
+      ) as NamedExpression;
 
       final childSource = context.sourceText
           .substring(child.expression.offset, child.expression.end);
       if (fn is BlockFunctionBody) {
         yieldPatch(
-            '\nref.listen<$listenType>($providerSource, $onChangeSource);',
-            fn.block.leftBracket.end,
-            fn.block.leftBracket.end);
+          '\nref.listen<$listenType>($providerSource, $onChangeSource);',
+          fn.block.leftBracket.end,
+          fn.block.leftBracket.end,
+        );
       } else if (fn is ExpressionFunctionBody) {
         yieldPatch(
-            '{\nref.listen<$listenType>($providerSource, $onChangeSource);return ',
-            fn.offset,
-            fn.expression.offset);
+          '{\nref.listen<$listenType>($providerSource, $onChangeSource);return ',
+          fn.offset,
+          fn.expression.offset,
+        );
         yieldPatch(';}', fn.endToken.offset, fn.endToken.end);
       }
 
@@ -485,37 +505,45 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         switch (inProvider) {
           case ProviderType.stream:
             yieldPatch(
-                '${autoDisposePrefix}StreamProviderRef<$providerTypeArgs>',
-                node.name.offset,
-                node.name.end);
+              '${autoDisposePrefix}StreamProviderRef<$providerTypeArgs>',
+              node.name.offset,
+              node.name.end,
+            );
             break;
           case ProviderType.future:
             yieldPatch(
-                '${autoDisposePrefix}FutureProviderRef<$providerTypeArgs>',
-                node.name.offset,
-                node.name.end);
+              '${autoDisposePrefix}FutureProviderRef<$providerTypeArgs>',
+              node.name.offset,
+              node.name.end,
+            );
             break;
           case ProviderType.plain:
-            yieldPatch('${autoDisposePrefix}ProviderRef<$providerTypeArgs>',
-                node.name.offset, node.name.end);
+            yieldPatch(
+              '${autoDisposePrefix}ProviderRef<$providerTypeArgs>',
+              node.name.offset,
+              node.name.end,
+            );
             break;
           case ProviderType.state:
             yieldPatch(
-                '${autoDisposePrefix}StateProviderRef<$providerTypeArgs>',
-                node.name.offset,
-                node.name.end);
+              '${autoDisposePrefix}StateProviderRef<$providerTypeArgs>',
+              node.name.offset,
+              node.name.end,
+            );
             break;
           case ProviderType.statenotifier:
             yieldPatch(
-                '${autoDisposePrefix}StateNotifierProviderRef<$providerTypeArgs>',
-                node.name.offset,
-                node.name.end);
+              '${autoDisposePrefix}StateNotifierProviderRef<$providerTypeArgs>',
+              node.name.offset,
+              node.name.end,
+            );
             break;
           case ProviderType.changenotifier:
             yieldPatch(
-                '${autoDisposePrefix}ChangeNotifierProviderRef<$providerTypeArgs>',
-                node.name.offset,
-                node.name.end);
+              '${autoDisposePrefix}ChangeNotifierProviderRef<$providerTypeArgs>',
+              node.name.offset,
+              node.name.end,
+            );
             break;
           case ProviderType.none:
             yieldPatch('Ref', node.name.offset, node.name.end);
@@ -625,14 +653,18 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         } else if (!type.contains('Family') &&
             type.contains('Provider') &&
             type.contains('Scoped')) {
-          yieldPatch(type.replaceAll('Scoped', ''), node.constructorName.offset,
-              node.constructorName.end);
+          yieldPatch(
+            type.replaceAll('Scoped', ''),
+            node.constructorName.offset,
+            node.constructorName.end,
+          );
           final functionExpression =
               node.argumentList.arguments.first as FunctionExpression;
           yieldPatch(
-              'ref',
-              functionExpression.parameters!.parameters.first.offset,
-              functionExpression.parameters!.parameters.first.end);
+            'ref',
+            functionExpression.parameters!.parameters.first.offset,
+            functionExpression.parameters!.parameters.first.end,
+          );
         } else if (type.contains('Provider') &&
             !type.contains('ProviderOverride') &&
             !type.contains('ProviderScope') &&
@@ -641,8 +673,11 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
             node.constructorName.type.typeArguments == null) {
           updateProviderType(type, node.staticType!);
           if (inProvider != ProviderType.none) {
-            yieldPatch('<$providerTypeArgs>', node.constructorName.type.end,
-                node.constructorName.type.end);
+            yieldPatch(
+              '<$providerTypeArgs>',
+              node.constructorName.type.end,
+              node.constructorName.type.end,
+            );
           }
         }
         updateProviderType(type, node.staticType!);
@@ -683,14 +718,18 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
 
         if (!constructor.contains('Family')) {
           if (node.typeArguments == null) {
-            yieldPatch('<$providerTypeArgs>', node.argumentList.offset,
-                node.argumentList.offset);
+            yieldPatch(
+              '<$providerTypeArgs>',
+              node.argumentList.offset,
+              node.argumentList.offset,
+            );
           }
         }
       }
     } catch (e, st) {
       addError(
-          'when visiting invocation expression and migrating provider type params $type\n$e\n$st');
+        'when visiting invocation expression and migrating provider type params $type\n$e\n$st',
+      );
     }
     super.visitInvocationExpression(node);
     inProvider = ProviderType.none;
@@ -774,13 +813,15 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         }
       } else if (node.name.name == 'didUpdateProvider') {
         yieldPatch(
-            ', ProviderContainer container',
-            node.parameters!.parameters.last.end,
-            node.parameters!.parameters.last.end);
+          ', ProviderContainer container',
+          node.parameters!.parameters.last.end,
+          node.parameters!.parameters.last.end,
+        );
         yieldPatch(
-            ', Object? oldValue, ',
-            node.parameters!.parameters.first.end,
-            node.parameters!.parameters.last.offset);
+          ', Object? oldValue, ',
+          node.parameters!.parameters.first.end,
+          node.parameters!.parameters.last.offset,
+        );
       }
       final func = ProviderFunction(
         name: node.name.name,
@@ -816,18 +857,25 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           if (firstArgStaticType.contains('FutureProvider')
               // || firstArgStaticType.contains('StreamProvider')
               ) {
-            yieldPatch('.future', node.argumentList.arguments.first.end,
-                node.argumentList.arguments.first.end);
+            yieldPatch(
+              '.future',
+              node.argumentList.arguments.first.end,
+              node.argumentList.arguments.first.end,
+            );
           } else if (firstArgStaticType.contains('StateNotifier')) {
-            yieldPatch('.notifier', node.argumentList.arguments.first.end,
-                node.argumentList.arguments.first.end);
+            yieldPatch(
+              '.notifier',
+              node.argumentList.arguments.first.end,
+              node.argumentList.arguments.first.end,
+            );
           }
         }
         if (functionName == 'listen') {
           yieldPatch(
-              ', (previous, value) {}',
-              node.argumentList.arguments.first.end,
-              node.argumentList.arguments.first.end);
+            ', (previous, value) {}',
+            node.argumentList.arguments.first.end,
+            node.argumentList.arguments.first.end,
+          );
         }
         if (functionName == 'watch' ||
             functionName == 'read' ||
@@ -867,11 +915,17 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
         final firstArgStaticType = node.argumentList.arguments.first.staticType!
             .getDisplayString(withNullability: true);
         if (firstArgStaticType.contains('FutureProvider')) {
-          yieldPatch('.future', node.argumentList.arguments.first.end,
-              node.argumentList.arguments.first.end);
+          yieldPatch(
+            '.future',
+            node.argumentList.arguments.first.end,
+            node.argumentList.arguments.first.end,
+          );
         } else if (firstArgStaticType.contains('StateNotifier')) {
-          yieldPatch('.notifier', node.argumentList.arguments.first.end,
-              node.argumentList.arguments.first.end);
+          yieldPatch(
+            '.notifier',
+            node.argumentList.arguments.first.end,
+            node.argumentList.arguments.first.end,
+          );
         }
         migrateStateProvider(node.argumentList.arguments.first);
       } else {
@@ -908,7 +962,8 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       }
     } catch (e, st) {
       addError(
-          'when migrating state provider ${expression.toSource()}\n$e\n$st');
+        'when migrating state provider ${expression.toSource()}\n$e\n$st',
+      );
     }
   }
 
@@ -917,18 +972,22 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
       final statefulDeclaration = statefulDeclarations[statefulName];
       if (statefulDeclaration != null) {
         yieldPatch(
-            'ConsumerStatefulWidget',
-            statefulDeclaration.extendsClause!.superclass.offset,
-            statefulDeclaration.extendsClause!.superclass.end);
-        final method = statefulDeclaration.members.firstWhereOrNull((m) =>
-                m is MethodDeclaration && m.name.name.contains('createState'))
-            as MethodDeclaration?;
+          'ConsumerStatefulWidget',
+          statefulDeclaration.extendsClause!.superclass.offset,
+          statefulDeclaration.extendsClause!.superclass.end,
+        );
+        final method = statefulDeclaration.members.firstWhereOrNull(
+          (m) => m is MethodDeclaration && m.name.name.contains('createState'),
+        ) as MethodDeclaration?;
 
         if (method != null &&
             method.returnType != null &&
             method.returnType!.toSource().contains('State<StatefulWidget>')) {
-          yieldPatch('ConsumerState<ConsumerStatefulWidget>',
-              method.returnType!.offset, method.returnType!.end);
+          yieldPatch(
+            'ConsumerState<ConsumerStatefulWidget>',
+            method.returnType!.offset,
+            method.returnType!.end,
+          );
         }
       } else {
         statefulNeedsMigration.add(statefulName);
@@ -948,12 +1007,14 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
           final type =
               parameter.type!.type!.getDisplayString(withNullability: false);
           yieldPatch(
-              '$type? previous,',
-              methodDecl.parameters!.parameters.first.offset,
-              methodDecl.parameters!.parameters[1].offset);
+            '$type? previous,',
+            methodDecl.parameters!.parameters.first.offset,
+            methodDecl.parameters!.parameters[1].offset,
+          );
         } else {
           addError(
-              'failed to migrate listen function ${methodDecl.parameters?.toSource()}');
+            'failed to migrate listen function ${methodDecl.parameters?.toSource()}',
+          );
         }
       } else {
         final funcDecl = functionDecls[functionName];
@@ -965,18 +1026,21 @@ class RiverpodUnifiedSyntaxChangesMigrationSuggestor
             final type =
                 parameter.type!.type!.getDisplayString(withNullability: false);
             yieldPatch(
-                '$type? previous,',
-                funcDecl.functionExpression.parameters!.parameters.first.offset,
-                funcDecl.functionExpression.parameters!.parameters[1].offset);
+              '$type? previous,',
+              funcDecl.functionExpression.parameters!.parameters.first.offset,
+              funcDecl.functionExpression.parameters!.parameters[1].offset,
+            );
           } else {
             addError(
-                'failed to migrate listen function ${funcDecl.functionExpression.parameters?.toSource()}');
+              'failed to migrate listen function ${funcDecl.functionExpression.parameters?.toSource()}',
+            );
           }
         }
       }
     } catch (e, st) {
       addError(
-          'when migrating onChangeFunction $functionName for a listener\n$e\n$st');
+        'when migrating onChangeFunction $functionName for a listener\n$e\n$st',
+      );
     }
   }
 }

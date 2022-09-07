@@ -69,7 +69,8 @@ Future<void> analyze(String rootDirectory) async {
   }
 
   stdout.writeln('flowchart TB');
-  stdout.write('''
+  stdout.write(
+    '''
   subgraph Arrows
     direction LR
     start1[ ] -..->|read| stop1[ ]
@@ -88,7 +89,8 @@ Future<void> analyze(String rootDirectory) async {
     ConsumerWidget((widget));
     Provider[[provider]];
   end
-''');
+''',
+  );
 
   for (final node in graph.consumerWidgets) {
     stdout.writeln('  ${node.definition.name}((${node.definition.name}));');
