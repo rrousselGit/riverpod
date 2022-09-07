@@ -48,12 +48,14 @@ final plainProvider = Provider((ProviderReference ref) => '');
 final plainNullProvider = Provider<String?>((ProviderReference ref) => null);
 final plainProviderAD = Provider.autoDispose((ProviderReference ref) => '');
 final stateProvider = StateProvider((ProviderReference ref) => '');
-final changeNotifier =
-    ChangeNotifierProvider((ProviderReference ref) => ChangeNotifier());
+final changeNotifier = ChangeNotifierProvider(
+  (ProviderReference ref) => ChangeNotifier(),
+);
 final plainProviderFamilyAD = Provider.family
     .autoDispose<String, String>((ProviderReference ref, _) => '');
-final futureProviderAD =
-    FutureProvider.autoDispose((ProviderReference ref) async => '');
+final futureProviderAD = FutureProvider.autoDispose(
+  (ProviderReference ref) async => '',
+);
 final streamProviderAD = StreamProvider.autoDispose(
   (ProviderReference ref) => Stream.fromIterable(['1', '2', '3']),
 );

@@ -70,12 +70,8 @@ final otherScopedProvider = Provider<int>((ref) => ref.watch(scopedProvider));
 
 class Logger extends ProviderObserver {
   @override
-  void didUpdateProvider(
-    ProviderBase provider,
-    Object? oldValue,
-    Object? newValue,
-    ProviderContainer container,
-  ) {
+  void didUpdateProvider(ProviderBase provider, Object? oldValue,
+      Object? newValue, ProviderContainer container) {
     print('$provider $newValue');
   }
 }

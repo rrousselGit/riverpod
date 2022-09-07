@@ -28,8 +28,9 @@ class CounterNullable extends StateNotifier<int?> {
 
 final counterProvider = StateNotifierProvider((ref) => Counter());
 final counterProvider2 = StateNotifierProvider<Counter>((ref) => Counter());
-final counterNullableProvider =
-    StateNotifierProvider<CounterNullable>((ref) => CounterNullable(null));
+final counterNullableProvider = StateNotifierProvider<CounterNullable>(
+  (ref) => CounterNullable(null),
+);
 final counterNullableProviderFamily =
     StateNotifierProvider.family<CounterNullable, int?>(
   (ref, init) => CounterNullable(init),
