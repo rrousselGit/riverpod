@@ -32,7 +32,8 @@ void main() {
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () async {
         final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>(
-            (ref, _) => ValueNotifier(0));
+          (ref, _) => ValueNotifier(0),
+        );
         final root = createContainer();
         final container = createContainer(parent: root, overrides: [provider]);
 
@@ -69,13 +70,17 @@ void main() {
 
     test('when using provider.overrideWithProvider', () async {
       final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>(
-          (ref, _) => ValueNotifier(0));
+        (ref, _) => ValueNotifier(0),
+      );
       final root = createContainer();
-      final container = createContainer(parent: root, overrides: [
-        provider.overrideWithProvider(
-          (value) => ChangeNotifierProvider((ref) => ValueNotifier(42)),
-        ),
-      ]);
+      final container = createContainer(
+        parent: root,
+        overrides: [
+          provider.overrideWithProvider(
+            (value) => ChangeNotifierProvider((ref) => ValueNotifier(42)),
+          ),
+        ],
+      );
 
       expect(container.read(provider(0).notifier).value, 42);
       expect(container.read(provider(0)).value, 42);
@@ -94,11 +99,14 @@ void main() {
           ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
         return ValueNotifier(value);
       });
-      final container = createContainer(overrides: [
-        provider.overrideWithProvider(
-          (value) => ChangeNotifierProvider((ref) => ValueNotifier(value * 2)),
-        ),
-      ]);
+      final container = createContainer(
+        overrides: [
+          provider.overrideWithProvider(
+            (value) =>
+                ChangeNotifierProvider((ref) => ValueNotifier(value * 2)),
+          ),
+        ],
+      );
 
       expect(
         container.read(provider(0)),

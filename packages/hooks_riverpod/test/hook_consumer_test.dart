@@ -10,15 +10,17 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
-          child: HookConsumer(builder: (context, ref, child) {
-            final a = ref.watch(provider);
-            final b = useState(21).value;
+          child: HookConsumer(
+            builder: (context, ref, child) {
+              final a = ref.watch(provider);
+              final b = useState(21).value;
 
-            return Text(
-              '$a $b',
-              textDirection: TextDirection.ltr,
-            );
-          }),
+              return Text(
+                '$a $b',
+                textDirection: TextDirection.ltr,
+              );
+            },
+          ),
         ),
       );
 
@@ -52,7 +54,7 @@ void main() {
 final provider = Provider((ref) => 'Hello world');
 
 class HookStatefulTest extends StatefulHookConsumerWidget {
-  const HookStatefulTest({Key? key}) : super(key: key);
+  const HookStatefulTest({super.key});
 
   @override
   HookStatefulTestState createState() => HookStatefulTestState();
@@ -79,7 +81,7 @@ class HookStatefulTestState extends ConsumerState<HookStatefulTest> {
 }
 
 class HookConsumerTest extends HookConsumerWidget {
-  const HookConsumerTest({Key? key}) : super(key: key);
+  const HookConsumerTest({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

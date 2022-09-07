@@ -51,7 +51,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
 /// The element of a [FutureProvider]
 class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     implements FutureProviderRef<T> {
-  FutureProviderElement._(_FutureProviderBase<T> provider) : super(provider);
+  FutureProviderElement._(_FutureProviderBase<T> super.provider);
 
   final _futureNotifier = ProxyElementValueNotifier<Future<T>>();
   final _streamNotifier = ProxyElementValueNotifier<Stream<T>>();

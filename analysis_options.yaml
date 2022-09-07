@@ -16,8 +16,17 @@ analyzer:
 
 linter:
   rules:
-    # temporarily disabled
-    require_trailing_commas: false
+    # False positive whe nthe future is returned by the function
+    discarded_futures: false
+
+    # Low value and lacks a quick fix
+    combinators_ordering: false
+    
+    # Low value and high cost to change on all files
+    eol_at_end_of_file: false
+
+    # Conflicts with unused variables
+    no_leading_underscores_for_local_identifiers: false
 
     # false positive
     one_member_abstracts: false

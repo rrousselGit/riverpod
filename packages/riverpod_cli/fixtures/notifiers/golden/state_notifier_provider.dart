@@ -30,10 +30,12 @@ final counterProvider = StateNotifierProvider<Counter, int>((ref) => Counter());
 final counterProvider2 =
     StateNotifierProvider<Counter, int>((ref) => Counter());
 final counterNullableProvider = StateNotifierProvider<CounterNullable, int?>(
-    (ref) => CounterNullable(null));
+  (ref) => CounterNullable(null),
+);
 final counterNullableProviderFamily =
     StateNotifierProvider.family<CounterNullable, int?, int?>(
-        (ref, init) => CounterNullable(init));
+  (ref, init) => CounterNullable(init),
+);
 
 final counterFamilyProvider =
     StateNotifierProvider.family<Counter, int, String>((ref, _) => Counter());

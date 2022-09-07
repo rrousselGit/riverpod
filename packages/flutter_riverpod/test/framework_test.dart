@@ -125,10 +125,12 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: Consumer(builder: (context, r, _) {
-          ref = r;
-          return Container();
-        }),
+        child: Consumer(
+          builder: (context, r, _) {
+            ref = r;
+            return Container();
+          },
+        ),
       ),
     );
 
@@ -139,14 +141,16 @@ void main() {
     final provider = Provider((watch) => 42);
     late WidgetRef ref;
 
-    await tester.pumpWidget(ProviderScope(
-      child: Consumer(
-        builder: (context, r, _) {
-          ref = r;
-          return Container();
-        },
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (context, r, _) {
+            ref = r;
+            return Container();
+          },
+        ),
       ),
-    ));
+    );
 
     expect(ref.read(provider), 42);
   });
@@ -189,10 +193,12 @@ void main() {
       () => tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: Consumer(builder: (context, ref, _) {
-            ref.watch(provider.state).state++;
-            return Container();
-          }),
+          child: Consumer(
+            builder: (context, ref, _) {
+              ref.watch(provider.state).state++;
+              return Container();
+            },
+          ),
         ),
       ),
       (error, stack) {},
@@ -222,12 +228,14 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: Consumer(builder: (context, ref, _) {
-          return Text(
-            ref.watch(provider).toString(),
-            textDirection: TextDirection.ltr,
-          );
-        }),
+        child: Consumer(
+          builder: (context, ref, _) {
+            return Text(
+              ref.watch(provider).toString(),
+              textDirection: TextDirection.ltr,
+            );
+          },
+        ),
       ),
     );
 
@@ -305,14 +313,16 @@ void main() {
     final provider = FutureProvider<int>((ref) => future);
     late WidgetRef ref;
 
-    await tester.pumpWidget(ProviderScope(
-      child: Consumer(
-        builder: (context, r, _) {
-          ref = r;
-          return Container();
-        },
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (context, r, _) {
+            ref = r;
+            return Container();
+          },
+        ),
       ),
-    ));
+    );
 
     await expectLater(ref.read(provider.future), completion(21));
 
@@ -328,14 +338,16 @@ void main() {
     final provider = Provider<int?>((ref) => value);
     late WidgetRef ref;
 
-    await tester.pumpWidget(ProviderScope(
-      child: Consumer(
-        builder: (context, r, _) {
-          ref = r;
-          return Container();
-        },
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (context, r, _) {
+            ref = r;
+            return Container();
+          },
+        ),
       ),
-    ));
+    );
 
     expect(ref.read(provider), 42);
 
@@ -429,12 +441,14 @@ void main() {
   testWidgets('removing overrides throws', (tester) async {
     final provider = Provider((_) => 0);
 
-    final consumer = Consumer(builder: (context, ref, _) {
-      return Text(
-        ref.watch(provider).toString(),
-        textDirection: TextDirection.ltr,
-      );
-    });
+    final consumer = Consumer(
+      builder: (context, ref, _) {
+        return Text(
+          ref.watch(provider).toString(),
+          textDirection: TextDirection.ltr,
+        );
+      },
+    );
     await tester.pumpWidget(
       ProviderScope(
         overrides: [provider],
@@ -476,10 +490,12 @@ void main() {
     final provider = Provider((_) => 'foo');
 
     await tester.pumpWidget(
-      Consumer(builder: (context, ref, _) {
-        ref.watch(provider);
-        return Container();
-      }),
+      Consumer(
+        builder: (context, ref, _) {
+          ref.watch(provider);
+          return Container();
+        },
+      ),
     );
 
     expect(
@@ -538,14 +554,16 @@ void main() {
           provider.overrideWithValue('rootoverride'),
         ],
         child: ProviderScope(
-          child: Consumer(builder: (c, ref, _) {
-            final first = ref.watch(provider);
-            final second = ref.watch(provider2);
-            return Text(
-              '$first $second',
-              textDirection: TextDirection.ltr,
-            );
-          }),
+          child: Consumer(
+            builder: (c, ref, _) {
+              final first = ref.watch(provider);
+              final second = ref.watch(provider2);
+              return Text(
+                '$first $second',
+                textDirection: TextDirection.ltr,
+              );
+            },
+          ),
         ),
       ),
     );
@@ -690,14 +708,16 @@ void main() {
 
     // ignore: unawaited_futures
     key.currentState!.pushReplacement<void, void>(
-      PageRouteBuilder<void>(pageBuilder: (_, __, ___) {
-        return Consumer(
-          builder: (context, ref, _) {
-            final count = ref.watch(counterProvider.state).state;
-            return Text('new $count');
-          },
-        );
-      }),
+      PageRouteBuilder<void>(
+        pageBuilder: (_, __, ___) {
+          return Consumer(
+            builder: (context, ref, _) {
+              final count = ref.watch(counterProvider.state).state;
+              return Text('new $count');
+            },
+          );
+        },
+      ),
     );
 
     await tester.pumpAndSettle();
@@ -708,19 +728,8 @@ void main() {
   });
 }
 
-class Counter extends StateNotifier<int> {
-  Counter() : super(0);
-}
-
-class MockCreateState extends Mock {
-  void call();
-}
-
 class InitState extends ConsumerStatefulWidget {
-  const InitState({
-    Key? key,
-    required this.initState,
-  }) : super(key: key);
+  const InitState({super.key, required this.initState});
 
   // ignore: diagnostic_describe_all_properties
   final void Function(BuildContext context, WidgetRef ref) initState;
@@ -740,35 +749,5 @@ class _InitStateState extends ConsumerState<InitState> {
   @override
   Widget build(BuildContext context) {
     return Container();
-  }
-}
-
-class Demo extends ConsumerStatefulWidget {
-  const Demo({
-    Key? key,
-    required this.initState,
-    required this.builder,
-  }) : super(key: key);
-
-  // ignore: diagnostic_describe_all_properties
-  final void Function(BuildContext context, WidgetRef ref) initState;
-  // ignore: diagnostic_describe_all_properties
-  final Widget Function(BuildContext context, WidgetRef ref) builder;
-
-  @override
-  // ignore: library_private_types_in_public_api
-  _DemoState createState() => _DemoState();
-}
-
-class _DemoState extends ConsumerState<Demo> {
-  @override
-  void initState() {
-    super.initState();
-    widget.initState(context, ref);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return widget.builder(context, ref);
   }
 }

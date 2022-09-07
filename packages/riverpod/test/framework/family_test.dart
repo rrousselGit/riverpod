@@ -149,12 +149,14 @@ void main() {
 
   test('family override', () {
     final family = Provider.family<String, int>((ref, a) => 'Hello $a');
-    final container = createContainer(overrides: [
-      // Provider overrides always takes over family overrides
-      family(84).overrideWithValue('Bonjour 84'),
-      family,
-      family(21).overrideWithValue('Hi 21'),
-    ]);
+    final container = createContainer(
+      overrides: [
+        // Provider overrides always takes over family overrides
+        family(84).overrideWithValue('Bonjour 84'),
+        family,
+        family(21).overrideWithValue('Hi 21'),
+      ],
+    );
 
     expect(container.read(family(21)), 'Hi 21');
     expect(container.read(family(84)), 'Bonjour 84');

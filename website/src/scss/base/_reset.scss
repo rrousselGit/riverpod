@@ -8,14 +8,14 @@
   --ifm-color-primary-darkest: #22427a;
 }
 
-.docusaurus-highlight-code-line {
+.theme-code-block-highlighted-line {
   display: block;
   margin: 0 calc(-1 * var(--ifm-pre-padding));
   padding: 0 var(--ifm-pre-padding);
   background-color: rgb(72, 77, 91);
 }
 
-html[data-theme=light] .docusaurus-highlight-code-line {
+html[data-theme=light] .theme-code-block-highlighted-line {
   background-color: rgb(203, 209, 232);
 }
 

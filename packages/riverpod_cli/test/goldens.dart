@@ -75,8 +75,10 @@ class FileMatcher extends Matcher {
       File('/tmp/riverpod_diff').writeAsStringSync(item);
       File('/tmp/riverpod_expected').writeAsStringSync(expected);
       final result = Process.runSync(
-          'diff', ['/tmp/riverpod_diff', '/tmp/riverpod_expected'],
-          runInShell: true);
+        'diff',
+        ['/tmp/riverpod_diff', '/tmp/riverpod_expected'],
+        runInShell: true,
+      );
       description.add('${result.stdout}\n\n');
     }
     return description;

@@ -1,0 +1,5 @@
+import: ../../analysis_options.yaml
+analyzer:
+  errors:
+    # Some assets are voluntarily gitignored
+    asset_does_not_exist: ignore

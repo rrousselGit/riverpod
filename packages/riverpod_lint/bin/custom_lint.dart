@@ -205,13 +205,16 @@ mixin _InvocationVisitor<T>
 
   @override
   Stream<T>? visitFunctionExpressionInvocation(
-      FunctionExpressionInvocation node) async* {
+    FunctionExpressionInvocation node,
+  ) async* {
     final method = node.staticElement;
     if (method != null) {
       final ast = await findAstNodeForElement(method);
       if (ast != null) {
-        yield* visitCalledFunction(ast as FunctionDeclaration,
-            callingNode: node);
+        yield* visitCalledFunction(
+          ast as FunctionDeclaration,
+          callingNode: node,
+        );
       }
     }
     yield* super.visitFunctionExpressionInvocation(node) ??
@@ -233,7 +236,8 @@ mixin _InvocationVisitor<T>
 
   @override
   Stream<T>? visitInstanceCreationExpression(
-      InstanceCreationExpression node) async* {
+    InstanceCreationExpression node,
+  ) async* {
     final constructor = node.constructorName.staticElement;
     if (constructor != null) {
       if (_futureOrStream.isAssignableFrom(constructor.enclosingElement3)) {
@@ -326,7 +330,8 @@ class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
 
   @override
   Stream<ProviderDeclaration>? visitAssignmentExpression(
-      AssignmentExpression node) async* {
+    AssignmentExpression node,
+  ) async* {
     final superStream = super.visitAssignmentExpression(node);
     if (superStream != null) yield* superStream;
     final rightType = node.rightHandSide.staticType?.element2;
@@ -377,8 +382,10 @@ class RefAsyncUsageVisitor extends AsyncRecursiveVisitor<Lint>
   final ResolvedUnitResult unit;
 
   @override
-  Stream<Lint> visitCalledFunction(AstNode node,
-      {required AstNode callingNode}) async* {
+  Stream<Lint> visitCalledFunction(
+    AstNode node, {
+    required AstNode callingNode,
+  }) async* {
     final results = node is MethodDeclaration
         ? visitMethodDeclaration(node)
         : node is FunctionDeclaration
@@ -427,8 +434,10 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint>
   final ResolvedUnitResult unit;
 
   @override
-  Stream<Lint> visitCalledFunction(AstNode node,
-      {required AstNode callingNode}) async* {
+  Stream<Lint> visitCalledFunction(
+    AstNode node, {
+    required AstNode callingNode,
+  }) async* {
     final results = node is MethodDeclaration
         ? visitMethodDeclaration(node)
         : node is FunctionDeclaration
@@ -591,7 +600,8 @@ Then dispose of the listener when you no longer need the autoDispose provider to
 
   @override
   Stream<Lint>? visitConstructorDeclaration(
-      ConstructorDeclaration node) async* {
+    ConstructorDeclaration node,
+  ) async* {
     final superStream = super.visitConstructorDeclaration(node);
     if (superStream != null) yield* superStream;
     for (final param in node.parameters.parameters) {
@@ -713,7 +723,8 @@ Then dispose of the listener when you no longer need the autoDispose provider to
 
   @override
   Stream<Lint> visitTopLevelVariableDeclaration(
-      TopLevelVariableDeclaration node) async* {
+    TopLevelVariableDeclaration node,
+  ) async* {
     yield* super.visitTopLevelVariableDeclaration(node) ?? const Stream.empty();
     for (final variable in node.variables.variables) {
       final type = variable.declaredElement2?.type;
@@ -780,9 +791,11 @@ Then dispose of the listener when you no longer need the autoDispose provider to
       return;
     }
 
-    final isGlobal = declaration!.parents.any((element) =>
-        element is TopLevelVariableDeclaration ||
-        (element is FieldDeclaration && element.isStatic));
+    final isGlobal = declaration!.parents.any(
+      (element) =>
+          element is TopLevelVariableDeclaration ||
+          (element is FieldDeclaration && element.isStatic),
+    );
 
     if (!isGlobal) {
       yield Lint(
@@ -858,7 +871,9 @@ class ProviderDeclaration {
             .then((ast) {
           if (ast is VariableDeclaration) {
             return ProviderDeclaration._(
-                ast, staticElement.declaration.variable);
+              ast,
+              staticElement.declaration.variable,
+            );
           }
           return null;
         });
@@ -1035,7 +1050,8 @@ extension on AstNode {
           _consumerState.isAssignableFrom(classElement);
     }
     return parent?.isBuild(
-        hasFoundFunctionExpression: hasFoundFunctionExpression);
+      hasFoundFunctionExpression: hasFoundFunctionExpression,
+    );
   }
 
   bool? get inBuild {

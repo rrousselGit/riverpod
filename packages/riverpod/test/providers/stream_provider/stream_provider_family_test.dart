@@ -37,11 +37,14 @@ void main() {
         final provider =
             StreamProvider.family<int, int>((ref, _) => Stream.value(0));
         final root = createContainer();
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithProvider(
-            (value) => StreamProvider((ref) => Stream.value(42)),
-          ),
-        ]);
+        final container = createContainer(
+          parent: root,
+          overrides: [
+            provider.overrideWithProvider(
+              (value) => StreamProvider((ref) => Stream.value(42)),
+            ),
+          ],
+        );
 
         expect(await container.read(provider(0).stream).first, 42);
         expect(await container.read(provider(0).future), 42);
@@ -80,11 +83,13 @@ void main() {
       final provider = StreamProvider.family<String, int>((ref, a) {
         return Stream.value('$a');
       });
-      final container = ProviderContainer(overrides: [
-        provider.overrideWithProvider(
-          (a) => StreamProvider((ref) => Stream.value('override $a')),
-        ),
-      ]);
+      final container = ProviderContainer(
+        overrides: [
+          provider.overrideWithProvider(
+            (a) => StreamProvider((ref) => Stream.value('override $a')),
+          ),
+        ],
+      );
 
       expect(container.read(provider(0)), const AsyncValue<String>.loading());
 

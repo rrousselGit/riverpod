@@ -354,7 +354,8 @@ Future<void> main(List<String> args) async {
 
   Tuple3<List<DisposeType>, List<StateDetails>, List<ProviderType>> matrix;
 
-  final builder = StringBuffer('''
+  final builder = StringBuffer(
+    '''
 // GENERATED CODE - DO NOT MODIFY BY HAND
 //
 // If you need to modify this file, instead update /tools/generate_providers/bin/generate_providers.dart
@@ -365,7 +366,8 @@ Future<void> main(List<String> args) async {
 // You can then use it in your terminal by executing:
 // generate_providers <riverpod/flutter_riverpod/hooks_riverpod> <path to builder file to update>
 
-''');
+''',
+  );
 
   switch (args.first) {
     case 'riverpod':

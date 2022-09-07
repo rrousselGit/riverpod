@@ -63,7 +63,8 @@ class BenchmarkResultPrinter {
     final buf = StringBuffer();
     for (final result in _results) {
       buf.writeln(
-          '${result.description}: ${result.value.toStringAsFixed(1)} ${result.unit}');
+        '${result.description}: ${result.value.toStringAsFixed(1)} ${result.unit}',
+      );
     }
     return buf.toString();
   }

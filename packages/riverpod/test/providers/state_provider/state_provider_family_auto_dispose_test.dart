@@ -27,11 +27,13 @@ void main() {
 
       await fakeAsync((async) async {
         final container = createContainer();
-        final provider =
-            StateProvider.autoDispose.family<int, int>((ref, value) {
-          ref.onDispose(onDispose(value));
-          return value;
-        }, cacheTime: 5 * 1000);
+        final provider = StateProvider.autoDispose.family<int, int>(
+          cacheTime: 5 * 1000,
+          (ref, value) {
+            ref.onDispose(onDispose(value));
+            return value;
+          },
+        );
 
         final sub = container.listen<int>(provider(42), (previous, next) {});
 
@@ -85,11 +87,14 @@ void main() {
         final provider =
             StateProvider.autoDispose.family<int, int>((ref, _) => 0);
         final root = createContainer();
-        final container = createContainer(parent: root, overrides: [
-          provider.overrideWithProvider(
-            (value) => StateProvider.autoDispose((ref) => 42),
-          ),
-        ]);
+        final container = createContainer(
+          parent: root,
+          overrides: [
+            provider.overrideWithProvider(
+              (value) => StateProvider.autoDispose((ref) => 42),
+            ),
+          ],
+        );
 
         expect(container.read(provider(0).notifier).state, 42);
         expect(container.read(provider(0).state).state, 42);

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mockito/mockito.dart';
 
 void main() {
   // testWidgets('ref.watch supports changing the selected provider',
@@ -62,11 +61,13 @@ void main() {
 
     Widget build(StateNotifierProvider<Counter, int> provider) {
       return ProviderScope(
-        child: HookConsumer(builder: (c, ref, child) {
-          buildCount++;
-          final value = ref.watch(provider);
-          return Text('$value', textDirection: TextDirection.ltr);
-        }),
+        child: HookConsumer(
+          builder: (c, ref, child) {
+            buildCount++;
+            final value = ref.watch(provider);
+            return Text('$value', textDirection: TextDirection.ltr);
+          },
+        ),
       );
     }
 
@@ -247,20 +248,20 @@ void main() {
   });
 }
 
-class SelectorSpy<T> extends Mock {
-  void call(T value);
-}
+// class SelectorSpy<T> extends Mock {
+//   void call(T value);
+// }
 
-class BuildSpy extends Mock {
-  void call();
-}
+// class BuildSpy extends Mock {
+//   void call();
+// }
 
-class MockCreateState extends Mock {
-  void call();
-}
+// class MockCreateState extends Mock {
+//   void call();
+// }
 
 class Counter extends StateNotifier<int> {
-  Counter([int initialValue = 0]) : super(initialValue);
+  Counter([super.initialValue = 0]);
 
   void increment() => state++;
 

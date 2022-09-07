@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 class Counter extends StateNotifier<int> {
-  Counter([int initialValue = 0]) : super(initialValue);
+  Counter([super.initialValue = 0]);
 
   @override
   int get state => super.state;
@@ -201,9 +201,12 @@ void main() {
   test('throw when trying to use ref.read inside selectors during initial call',
       () {
     final dep = Provider((ref) => 0, name: 'dep');
-    final provider = Provider((ref) {
-      ref.watch(dep.select((value) => ref.read(dep)));
-    }, name: 'provider');
+    final provider = Provider(
+      name: 'provider',
+      (ref) {
+        ref.watch(dep.select((value) => ref.read(dep)));
+      },
+    );
     final container = createContainer();
 
     expect(
@@ -232,10 +235,12 @@ void main() {
       () {
     final dep = Provider((ref) => 0);
     final provider = Provider((ref) {
-      ref.watch(dep.select((value) {
-        ref.listen(dep, (prev, value) {});
-        return 0;
-      }));
+      ref.watch(
+        dep.select((value) {
+          ref.listen(dep, (prev, value) {});
+          return 0;
+        }),
+      );
     });
     final container = createContainer();
 
@@ -267,17 +272,21 @@ void main() {
 
   test('can watch selectors', () {
     final container = createContainer();
-    final provider = StateNotifierProvider<StateController<int>, int>((ref) {
-      return StateController(0);
-    }, name: 'provider');
+    final provider = StateNotifierProvider<StateController<int>, int>(
+      name: 'provider',
+      (ref) => StateController(0),
+    );
     final isEvenSelector = Selector<int, bool>(false, (c) => c.isEven);
     final isEvenListener = Listener<bool>();
     var buildCount = 0;
 
-    final another = Provider<bool>((ref) {
-      buildCount++;
-      return ref.watch(provider.select(isEvenSelector));
-    }, name: 'another');
+    final another = Provider<bool>(
+      name: 'another',
+      (ref) {
+        buildCount++;
+        return ref.watch(provider.select(isEvenSelector));
+      },
+    );
 
     container.listen(another, isEvenListener, fireImmediately: true);
 
@@ -530,14 +539,18 @@ void main() {
   test('can call ref.watch asynchronously', () async {
     final container = createContainer();
     final notifier = Notifier(0);
-    final provider = StateNotifierProvider<Notifier<int>, int>((_) {
-      return notifier;
-    }, name: 'provider');
+    final provider = StateNotifierProvider<Notifier<int>, int>(
+      name: 'provider',
+      (_) => notifier,
+    );
     var callCount = 0;
-    final computed = StreamProvider((ref) async* {
-      callCount++;
-      yield ref.watch(provider);
-    }, name: 'computed');
+    final computed = StreamProvider(
+      name: 'computed',
+      (ref) async* {
+        callCount++;
+        yield ref.watch(provider);
+      },
+    );
 
     final sub = container.listen(computed, (_, __) {});
 
@@ -575,17 +588,25 @@ void main() {
 
     late List<int> first;
     final firstListener = Listener<List<int>>();
-    container.listen<List<int>>(computed, (prev, value) {
-      first = value;
-      firstListener(prev, value);
-    }, fireImmediately: true);
+    container.listen<List<int>>(
+      computed,
+      fireImmediately: true,
+      (prev, value) {
+        first = value;
+        firstListener(prev, value);
+      },
+    );
 
     late List<int> second;
     final secondListener = Listener<List<int>>();
-    container.listen<List<int>>(computed, (prev, value) {
-      second = value;
-      secondListener(prev, value);
-    }, fireImmediately: true);
+    container.listen<List<int>>(
+      computed,
+      fireImmediately: true,
+      (prev, value) {
+        second = value;
+        secondListener(prev, value);
+      },
+    );
 
     expect(first, [0]);
     expect(callCount, 1);
@@ -632,7 +653,7 @@ void main() {
 }
 
 class Notifier<T> extends StateNotifier<T> {
-  Notifier(T state) : super(state);
+  Notifier(super.state);
 
   // ignore: use_setters_to_change_properties
   void setState(T value) => state = value;

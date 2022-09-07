@@ -306,13 +306,9 @@ typedef ConsumerBuilder = Widget Function(
 @sealed
 class Consumer extends ConsumerWidget {
   /// {@template riverpod.consumer}
-  const Consumer({
-    Key? key,
-    required ConsumerBuilder builder,
-    Widget? child,
-  })  : _child = child,
-        _builder = builder,
-        super(key: key);
+  const Consumer({super.key, required ConsumerBuilder builder, Widget? child})
+      : _child = child,
+        _builder = builder;
 
   final ConsumerBuilder _builder;
   final Widget? _child;
@@ -368,7 +364,7 @@ class Consumer extends ConsumerWidget {
 /// {@endtemplate}
 abstract class ConsumerWidget extends ConsumerStatefulWidget {
   /// {@macro riverpod.consumerwidget}
-  const ConsumerWidget({Key? key}) : super(key: key);
+  const ConsumerWidget({super.key});
 
   /// Describes the part of the user interface represented by this widget.
   ///
@@ -428,7 +424,7 @@ class _ConsumerState extends ConsumerState<ConsumerWidget> {
 /// A [StatefulWidget] that can read providers.
 abstract class ConsumerStatefulWidget extends StatefulWidget {
   /// A [StatefulWidget] that can read providers.
-  const ConsumerStatefulWidget({Key? key}) : super(key: key);
+  const ConsumerStatefulWidget({super.key});
 
   @override
   // ignore: no_logic_in_create_state
@@ -451,7 +447,7 @@ abstract class ConsumerState<T extends ConsumerStatefulWidget>
 /// The [Element] for a [ConsumerStatefulWidget]
 class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   /// The [Element] for a [ConsumerStatefulWidget]
-  ConsumerStatefulElement(ConsumerStatefulWidget widget) : super(widget);
+  ConsumerStatefulElement(ConsumerStatefulWidget super.widget);
 
   late ProviderContainer _container = ProviderScope.containerOf(this);
   var _dependencies = <ProviderListenable, ProviderSubscription>{};

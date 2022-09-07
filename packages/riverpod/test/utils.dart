@@ -12,7 +12,7 @@ R Function(Key) cacheFamily<Key, R>(R Function(Key key) create) {
 }
 
 class Counter extends StateNotifier<int> {
-  Counter([int initialValue = 0]) : super(initialValue);
+  Counter([super.initialValue = 0]);
 
   void increment() => state++;
 

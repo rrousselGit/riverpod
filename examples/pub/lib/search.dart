@@ -50,7 +50,7 @@ Future<List<Package>> fetchPackages(
 }
 
 class SearchPage extends HookConsumerWidget {
-  const SearchPage({Key? key}) : super(key: key);
+  const SearchPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -103,9 +103,13 @@ class SearchPage extends HookConsumerWidget {
                         version: package.latest.version,
                         onTap: () => Navigator.push(
                           context,
-                          MaterialPageRoute<void>(builder: (context) {
-                            return PackageDetailPage(packageName: package.name);
-                          }),
+                          MaterialPageRoute<void>(
+                            builder: (context) {
+                              return PackageDetailPage(
+                                packageName: package.name,
+                              );
+                            },
+                          ),
                         ),
                       );
                     },

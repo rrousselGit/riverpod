@@ -319,8 +319,10 @@ void main() {
       });
 
       test(
-          'once a provider was disposed, cannot add more listeners until it is rebuilt',
-          () {});
+        'once a provider was disposed, cannot add more listeners until it is rebuilt',
+        () {},
+        skip: 'TODO',
+      );
     });
 
     group('mounted', () {
