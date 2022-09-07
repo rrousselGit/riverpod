@@ -16,6 +16,9 @@ analyzer:
 
 linter:
   rules:
+    # False positive for custom enum-like classes (such as Flutter's "Colors")
+    avoid_classes_with_only_static_members: false
+
     # False positive whe nthe future is returned by the function
     discarded_futures: false
 
