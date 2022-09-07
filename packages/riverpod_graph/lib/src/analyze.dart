@@ -113,21 +113,22 @@ Future<void> analyze(String rootDirectory) async {
   }
 
   for (final node in graph.providers) {
-    stdout.writeln('  ${node.definition.name}[[${node.definition.name}]];');
+    _writeProviderNode(node);
 
+    final nodeGlobalName = displayNameForProvider(node.definition);
     for (final watch in node.watch) {
       stdout.writeln(
-        '  ${displayNameForProvider(watch.definition)} ==> ${node.definition.name};',
+        '  ${displayNameForProvider(watch.definition)} ==> $nodeGlobalName;',
       );
     }
     for (final listen in node.listen) {
       stdout.writeln(
-        '  ${displayNameForProvider(listen.definition)} --> ${node.definition.name};',
+        '  ${displayNameForProvider(listen.definition)} --> $nodeGlobalName;',
       );
     }
     for (final read in node.read) {
       stdout.writeln(
-        '  ${displayNameForProvider(read.definition)} -.-> ${node.definition.name};',
+        '  ${displayNameForProvider(read.definition)} -.-> $nodeGlobalName;',
       );
     }
   }
@@ -299,8 +300,14 @@ class ProviderDependencyVisitor extends RecursiveAstVisitor<void> {
 
 /// Returns the name of the provider.
 String displayNameForProvider(VariableElement provider) {
+  final providerName = provider.name;
+  final enclosingElementName = provider.enclosingElement?.displayName;
+  if (enclosingElementName != null && enclosingElementName.isNotEmpty) {
+    // ClassName.providerName
+    return '$enclosingElementName.$providerName';
+  }
   // TODO print `futureProvider.future` when possible
-  return provider.name;
+  return providerName;
 }
 
 /// Returns the variable element of the watched/listened/read `provider` in an expression. For example:
@@ -312,10 +319,22 @@ String displayNameForProvider(VariableElement provider) {
 /// - `watch(family(id).select(...))`
 VariableElement parseProviderFromExpression(Expression providerExpression) {
   if (providerExpression is PropertyAccess) {
-    // watch(family(0).modifier)
+    final staticElement = providerExpression.propertyName.staticElement;
+    if (staticElement is PropertyAccessorElement &&
+        staticElement.library.isFromRiverpod == false) {
+      // watch(SampleClass.familyProviders(id))
+      return staticElement.declaration.variable;
+    }
     final target = providerExpression.target;
     if (target != null) return parseProviderFromExpression(target);
   } else if (providerExpression is PrefixedIdentifier) {
+    if (providerExpression.name.isStartedUpperCaseLetter) {
+      // watch(SomeClass.provider)
+      final Object? staticElement = providerExpression.staticElement;
+      if (staticElement is PropertyAccessorElement) {
+        return staticElement.declaration.variable;
+      }
+    }
     // watch(provider.modifier)
     return parseProviderFromExpression(providerExpression.prefix);
   } else if (providerExpression is Identifier) {
@@ -338,6 +357,16 @@ VariableElement parseProviderFromExpression(Expression providerExpression) {
   );
 }
 
+void _writeProviderNode(ProviderNode node) {
+  final nodeGlobalName = displayNameForProvider(node.definition);
+  final isContainedInClass = nodeGlobalName.isStartedUpperCaseLetter;
+  final className = node.definition.enclosingElement?.displayName;
+  if (isContainedInClass) stdout.writeln('  subgraph $className');
+  if (isContainedInClass) stdout.write('  ');
+  stdout.writeln('  $nodeGlobalName[[${node.definition.name}]];');
+  if (isContainedInClass) stdout.writeln('  end');
+}
+
 extension on Element {
   /// Returns `true` if an element is defined in one of the riverpod packages.
   bool get isFromRiverpod {
@@ -345,4 +374,11 @@ extension on Element {
         const {'riverpod', 'flutter_riverpod', 'hooks_riverpod'}
             .contains(source?.uri.pathSegments.firstOrNull);
   }
+}
+
+extension on String {
+  bool get isStartedUpperCaseLetter =>
+      isNotEmpty && _firstLetter == _firstLetter.toUpperCase();
+
+  String get _firstLetter => substring(0, 1);
 }
