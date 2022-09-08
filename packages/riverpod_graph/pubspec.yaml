@@ -12,7 +12,5 @@ dependencies:
   path: ^1.8.2
 
 dev_dependencies:
-  riverpod:
-    path: ../riverpod
   test: ^1.21.4
   test_process: ^2.0.2

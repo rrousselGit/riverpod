@@ -5,7 +5,7 @@ void main() {
   test('It should log the structure of the addition project', () async {
     final process = await TestProcess.start(
       'dart',
-      const ['run', 'riverpod_graph', 'integration_test/addition'],
+      const ['run', 'riverpod_graph', 'test/integration/addition/golden'],
     );
 
     final stdoutList = <String>[];
@@ -18,7 +18,9 @@ void main() {
       allOf(
         [
           startsWith('Analyzing'),
-          endsWith('packages/riverpod_graph/integration_test/addition ...'),
+          endsWith(
+            'packages/riverpod_graph/test/integration/addition/golden ...',
+          ),
         ],
       ),
       reason: 'It should log the analyzed folder',

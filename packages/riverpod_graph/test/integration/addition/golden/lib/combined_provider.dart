@@ -2,6 +2,7 @@ import 'package:riverpod/riverpod.dart';
 
 import 'base_providers.dart';
 
+/// A provider returning the sum of the other providers.
 final additionProvider = FutureProvider(
   (ref) async =>
       ref.watch(normalProvider) +
