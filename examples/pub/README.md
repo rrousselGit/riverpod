@@ -10,7 +10,7 @@ dart pub global activate melos
 Build the riverpod packages
 
 ```bash
-melos bootstrap --ignore "codemod_riverpod_*,riverpod_cli" 
+fluttter pub get
 ```
 
 ## Start the Example App
