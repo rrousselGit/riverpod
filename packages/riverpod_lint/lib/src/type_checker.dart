@@ -173,8 +173,10 @@ abstract class TypeChecker {
       (element is ClassElement && element.allSupertypes.any(isExactlyType));
 
   /// Returns `true` if [staticType] can be assigned to this type.
-  bool isAssignableFromType(DartType staticType) =>
-      isAssignableFrom(staticType.element2!);
+  // ignore: avoid_bool_literals_in_conditional_expressions
+  bool isAssignableFromType(DartType staticType) => staticType.element2 == null
+      ? false
+      : isAssignableFrom(staticType.element2!);
 
   /// Returns `true` if representing the exact same class as [element].
   bool isExactly(Element element);

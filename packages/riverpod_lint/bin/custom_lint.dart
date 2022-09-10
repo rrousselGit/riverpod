@@ -34,6 +34,7 @@ const _widgetState = TypeChecker.fromName('State', packageName: 'flutter');
 
 const _widgetRef =
     TypeChecker.fromName('WidgetRef', packageName: 'flutter_riverpod');
+const _anyRef = TypeChecker.any([_widgetRef, _ref]);
 
 const _consumerWidget = TypeChecker.fromName(
   'ConsumerWidget',
@@ -184,7 +185,7 @@ mixin _InvocationVisitor<T>
     final method = node.propertyName.staticElement;
     if (method != null) {
       final ast = await findAstNodeForElement(method);
-      if (ast != null) {
+      if (ast != null && ast.refPassed) {
         yield* visitCalledFunction(ast, callingNode: node);
       }
     }
@@ -196,7 +197,7 @@ mixin _InvocationVisitor<T>
     final method = node.identifier.staticElement;
     if (method != null) {
       final ast = await findAstNodeForElement(method);
-      if (ast != null) {
+      if (ast != null && ast.refPassed) {
         yield* visitCalledFunction(ast, callingNode: node);
       }
     }
@@ -210,7 +211,7 @@ mixin _InvocationVisitor<T>
     final method = node.staticElement;
     if (method != null) {
       final ast = await findAstNodeForElement(method);
-      if (ast != null) {
+      if (ast != null && ast.refPassed) {
         yield* visitCalledFunction(
           ast as FunctionDeclaration,
           callingNode: node,
@@ -226,7 +227,7 @@ mixin _InvocationVisitor<T>
     final method = node.methodName.staticElement;
     if (method != null) {
       final ast = await findAstNodeForElement(method.declaration!);
-      if (ast != null) {
+      if (ast != null && ast.refPassed) {
         yield* visitCalledFunction(ast, callingNode: node);
       }
     }
@@ -425,6 +426,43 @@ class RefAsyncUsageVisitor extends AsyncRecursiveVisitor<Lint>
 
   @override
   bool get asyncBad => true;
+}
+
+extension on FormalParameterList {
+  bool get hasRefParameter {
+    return parameters.any((p) {
+      final type = p.declaredElement?.type;
+      return type != null && _anyRef.isAssignableFromType(type);
+    });
+  }
+}
+
+extension on InterfaceOrAugmentationElement {
+  bool get hasRefField =>
+      fields.any((f) => _anyRef.isAssignableFromType(f.type));
+}
+
+extension RefPassed on AstNode {
+  bool get refPassed {
+    final node = this;
+    if (node is MethodDeclaration) {
+      if (!(node.parameters?.hasRefParameter ?? false)) {
+        final enclosingElement = node.declaredElement2?.enclosingElement3;
+        if (enclosingElement is ExtensionElement &&
+            !_anyRef.isAssignableFromType(enclosingElement.extendedType)) {
+          return false; // If ref is not passed in, there is no way the ref could be used within the the called function
+        } else if (enclosingElement is InterfaceOrAugmentationElement &&
+            !enclosingElement.hasRefField) {
+          return false; // If ref is not passed in and not a field, there is no way the ref could be used within the the called function
+        }
+      }
+    } else if (node is FunctionDeclaration) {
+      if (!(node.functionExpression.parameters?.hasRefParameter ?? false)) {
+        return false; // If ref is not passed in, there is no way the ref could be used within the the called function
+      }
+    }
+    return true;
+  }
 }
 
 class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint>
