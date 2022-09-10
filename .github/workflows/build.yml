@@ -47,7 +47,7 @@ jobs:
         run: melos exec --depends-on="build_runner" -- "dart run build_runner build --delete-conflicting-outputs"
 
       - name: Analyze
-        run: melos exec --ignore="codemod_riverpod_test*" -- "flutter analyze"
+        run: melos exec --ignore="codemod_riverpod_test*" --ignore="riverpod_lint_flutter_test" -- "flutter analyze"
 
       - name: Run tests
         run: melos run test
