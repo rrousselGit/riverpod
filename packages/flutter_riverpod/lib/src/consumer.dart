@@ -15,9 +15,11 @@ abstract class WidgetRef {
   /// - [listen], to react to changes on a provider, such as for showing modals.
   T watch<T>(ProviderListenable<T> provider);
 
-  /// Listen to a provider and call `listener` whenever its value changes.
+  /// Listen to a provider and call `listener` whenever its value changes,
+  /// without having to take care of removing the listener.
   ///
-  /// It is safe to call [listen] within the `build` method of a widget:
+  /// The [listen] method should exclusively be used within the `build` method
+  /// of a widget:
   ///
   /// ```dart
   /// Consumer(
@@ -32,9 +34,7 @@ abstract class WidgetRef {
   /// When used inside `build`, listeners will automatically be removed
   /// if a widget rebuilds and stops listening to a provider.
   ///
-  /// [listen] should not be used outside of the `build` method of a widget.
-  /// It cannot be used within widget life-cycles such as initState/dispose or
-  /// event handles such as "on tap".
+  /// For listening to a provider from outside `build`, consider using [listenManual] instead.
   ///
   /// This is useful for showing modals or other imperative logic.
   void listen<T>(
@@ -45,17 +45,19 @@ abstract class WidgetRef {
 
   /// Listen to a provider and call `listener` whenever its value changes.
   ///
-  /// As opposed to [listen], [listenOnce] is not safe to use within the `build`
+  /// As opposed to [listen], [listenManual] is not safe to use within the `build`
   /// method of a widget.
-  /// [listenOnce] is meant to typically be used inside [State.initState].
+  /// Instead, [listenManual] is designed to be used inside [State.initState] or
+  /// other [State] lifecycles.
   ///
-  /// [listenOnce] returns a [ProviderSubscription] which can be used to stop
+  /// [listenManual] returns a [ProviderSubscription] which can be used to stop
   /// listening to the provider, or to read the current value exposed by
   /// the provider.
   ///
-  /// It is not necessary to call [ProviderSubscription.close]. The
-  /// subsription will automatically be closed when the widget is disposed.
-  ProviderSubscription<T> listenOnce<T>(
+  /// It is not necessary to call [ProviderSubscription.close] inside [State.dispose].
+  /// When the widget that calls [listenManual] is disposed, the subscription
+  /// will be disposed automatically.
+  ProviderSubscription<T> listenManual<T>(
     ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
@@ -556,7 +558,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   }
 
   @override
-  ProviderSubscription<T> listenOnce<T>(
+  ProviderSubscription<T> listenManual<T>(
     ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,

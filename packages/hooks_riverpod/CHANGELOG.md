@@ -13,7 +13,7 @@ fix: a bug where unmounting a nested ProviderScope could cause an exception (#14
 
 # 2.0.0-dev.6
 
-- Added `WidgetRef.listenOnce` for listening to providers in a widget
+- Added `WidgetRef.listenManual` for listening to providers in a widget
   outside of `build`.
 - Added `AsyncValue.valueOrNull` to obtain the value while ignoring potential errors.
 - Fixed an issue where `AsyncValue.value` did not throw if there is an error.
