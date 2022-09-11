@@ -11,6 +11,30 @@ Future<void> main() async {
   final library = await Library.parseFromStacktrace();
 
   test(
+      'When a non-overriden autoDispose provider is disposed '
+      'and the associated ProviderContainer has a child ProviderContainer which overrides said provider, '
+      'the child container keeps its override', () async {
+// Regression test for https://github.com/rrousselGit/riverpod/issues/1519
+
+    final root = createContainer();
+    final provider = Provider.autoDispose((ref) => 0);
+    final child = createContainer(
+      parent: root,
+      overrides: [provider.overrideWithValue(42)],
+    );
+
+    root.read(provider);
+
+    await root.pump();
+
+    child.updateOverrides([
+      provider.overrideWithValue(21),
+    ]);
+
+    expect(child.read(provider), 21);
+  });
+
+  test(
       'Handles cases where the ProviderContainer is disposed yet Scheduler.performDispose is invoked anyway',
       () async {
     // regression test for https://github.com/rrousselGit/riverpod/issues/1400
