@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 Future<void> main() async {
-  test('goldens', () async {
+  test('goldens', timeout: Timeout(Duration(seconds: 45)), () async {
     final result = await Process.run(
       'flutter',
       ['pub', 'run', 'custom_lint'],
@@ -12,6 +12,9 @@ Future<void> main() async {
     );
 
     expect(result.stdout, '''
+  test/goldens/auto_dispose_read.dart:11:5 • Avoid using ref.read inside the build method of widgets/providers. • riverpod_avoid_read_inside_build
+  test/goldens/auto_dispose_read.dart:11:5 • Avoid using ref.read on an autoDispose provider • riverpod_avoid_read_on_autoDispose
+  test/goldens/auto_dispose_read.dart:20:3 • Avoid using ref.read on an autoDispose provider • riverpod_avoid_read_on_autoDispose
   test/goldens/avoid_dynamic_provider.dart:10:9 • Providers should be either top level variables or static properties • riverpod_avoid_dynamic_provider
   test/goldens/avoid_dynamic_provider.dart:14:9 • Providers should be either top level variables or static properties • riverpod_avoid_dynamic_provider
   test/goldens/avoid_dynamic_provider.dart:15:9 • Providers should be either top level variables or static properties • riverpod_avoid_dynamic_provider
@@ -30,11 +33,33 @@ Future<void> main() async {
   test/goldens/final_provider.dart:11:5 • Providers should always be declared as final • riverpod_final_provider
   test/goldens/final_provider.dart:13:5 • Providers should always be declared as final • riverpod_final_provider
   test/goldens/final_provider.dart:15:42 • Providers should always be declared as final • riverpod_final_provider
-  test/goldens/mutate_in_create.dart:6:3 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
-  test/goldens/mutate_in_create.dart:16:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
-  test/goldens/mutate_in_create.dart:20:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
-  test/goldens/mutate_in_create.dart:21:5 • Do not mutate a provider synchronously, a method was called which mutates a provider synchronously • riverpod_no_mutate_sync
-  test/goldens/mutate_in_create.dart:22:5 • Do not mutate a provider synchronously, a method was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/global_providers.dart:3:7 • This container is global • riverpod_global_container
+  test/goldens/global_providers.dart:4:7 • This container is global • riverpod_global_container
+  test/goldens/global_providers.dart:4:42 • This container is global • riverpod_global_container
+  test/goldens/mutate_in_create.dart:7:3 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:8:3 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:18:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:22:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:23:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:24:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:51:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:52:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:53:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:54:5 • Do not use ref after async gaps in flutter widgets, a function was called which uses ref after a widget could be disposed • riverpod_no_ref_after_async
+  test/goldens/mutate_in_create.dart:55:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:55:5 • Do not use ref after async gaps in flutter widgets. • riverpod_no_ref_after_async
+  test/goldens/mutate_in_create.dart:56:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:57:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:105:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:109:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:110:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:111:5 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:112:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:113:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:137:3 • Do not mutate a provider synchronously, a function was called which mutates a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:151:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:152:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
+  test/goldens/mutate_in_create.dart:153:5 • Do not mutate a provider synchronously • riverpod_no_mutate_sync
   test/goldens/read_vs_watch.dart:10:3 • Avoid using ref.read inside the build method of widgets/providers. • riverpod_avoid_read_inside_build
   test/goldens/read_vs_watch.dart:13:5 • Avoid using ref.watch outside the build method of widgets/providers. • riverpod_avoid_watch_outside_build
   test/goldens/read_vs_watch.dart:18:5 • Avoid using ref.watch outside the build method of widgets/providers. • riverpod_avoid_watch_outside_build
@@ -54,8 +79,14 @@ Future<void> main() async {
   test/goldens/read_vs_watch.dart:114:5 • Avoid using ref.watch outside the build method of widgets/providers. • riverpod_avoid_watch_outside_build
   test/goldens/read_vs_watch.dart:128:5 • Avoid using ref.watch outside the build method of widgets/providers. • riverpod_avoid_watch_outside_build
   test/goldens/ref_escape_scope.dart:7:12 • Ref escaped the scope via a function or return expression. • riverpod_ref_escape_scope
-  test/goldens/ref_escape_scope.dart:33:32 • Ref escaped its scope to another widget. • riverpod_ref_escape_scope
-  test/goldens/ref_escape_scope.dart:42:32 • Ref escaped its scope to another widget. • riverpod_ref_escape_scope
+  test/goldens/ref_escape_scope.dart:37:32 • Ref escaped its scope to another widget. • riverpod_ref_escape_scope
+  test/goldens/ref_escape_scope.dart:46:32 • Ref escaped its scope to another widget. • riverpod_ref_escape_scope
+  test/goldens/use_ref_before_async_gaps.dart:48:11 • Do not use ref after async gaps in flutter widgets. • riverpod_no_ref_after_async
+  test/goldens/use_ref_before_async_gaps.dart:51:9 • Do not use ref after async gaps in flutter widgets, a function was called which uses ref after a widget could be disposed • riverpod_no_ref_after_async
+  test/goldens/use_ref_before_async_gaps.dart:53:9 • Do not use ref after async gaps in flutter widgets, a function was called which uses ref after a widget could be disposed • riverpod_no_ref_after_async
+  test/goldens/use_ref_before_async_gaps.dart:55:9 • Do not use ref after async gaps in flutter widgets, a function was called which uses ref after a widget could be disposed • riverpod_no_ref_after_async
+  test/goldens/use_ref_before_async_gaps.dart:57:15 • Do not use ref after async gaps in flutter widgets, a function was called which uses ref after a widget could be disposed • riverpod_no_ref_after_async
+  test/goldens/use_ref_before_async_gaps.dart:59:9 • Do not use ref after async gaps in flutter widgets. • riverpod_no_ref_after_async
 ''');
-  }, skip: 'TODO must fix');
+  }, skip: 'TODO flacky');
 }
