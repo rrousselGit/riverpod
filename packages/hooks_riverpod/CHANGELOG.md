@@ -1,3 +1,7 @@
+## 1.0.3+1
+
+Deprecate `Reader`
+
 ## 1.0.3
 
 Removed an assert preventing from overriding the same provider/family
