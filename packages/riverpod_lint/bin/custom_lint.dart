@@ -26,6 +26,10 @@ const _stream = TypeChecker.fromUrl(
 );
 const _container =
     TypeChecker.fromName('ProviderContainer', packageName: 'riverpod');
+const _asyncNotifier =
+    TypeChecker.fromName('AsyncNotifierBase', packageName: 'riverpod');
+const _notifier = TypeChecker.fromName('NotifierBase', packageName: 'riverpod');
+const _codegenNotifier = TypeChecker.any([_asyncNotifier, _notifier]);
 const _providerOrFamily = TypeChecker.any([_providerBase, _family]);
 const _futureOrStream = TypeChecker.any([_future, _stream]);
 
@@ -88,6 +92,17 @@ mixin _ProviderCreationVisitor<T> on AsyncRecursiveVisitor<T> {
     final createdType = node.staticType?.element2;
     if (createdType != null &&
         _providerOrFamily.isAssignableFrom(createdType)) {
+      final stream = visitProviderCreation(node);
+      if (stream != null) yield* stream;
+    }
+  }
+
+  @override
+  Stream<T>? visitClassDeclaration(ClassDeclaration node) async* {
+    final superStream = super.visitClassDeclaration(node);
+    if (superStream != null) yield* superStream;
+    final e = node.declaredElement2;
+    if (e != null && _codegenNotifier.isAssignableFrom(e)) {
       final stream = visitProviderCreation(node);
       if (stream != null) yield* stream;
     }
@@ -607,7 +622,10 @@ Then dispose of the listener when you no longer need the autoDispose provider to
     yield* _checkValidProviderDeclaration(node);
 
     if (providerDeclaration != null) {
-      yield* _checkProviderDependencies(providerDeclaration);
+      if (providerDeclaration is! ClassDeclaration) {
+        // No need to check for codegen providers
+        yield* _checkProviderDependencies(providerDeclaration);
+      }
       yield* ProviderSyncMutationVisitor(unit).visitNode(node) ??
           const Stream<Lint>.empty();
     }
@@ -813,6 +831,10 @@ Then dispose of the listener when you no longer need the autoDispose provider to
   }
 
   Stream<Lint> _checkValidProviderDeclaration(AstNode providerNode) async* {
+    if (providerNode is ClassDeclaration) {
+      // Codegen provider
+      return;
+    }
     final declaration =
         providerNode.parents.whereType<VariableDeclaration>().firstOrNull;
     final variable = declaration?.declaredElement2;

@@ -1,12 +1,14 @@
 name: riverpod_lint_flutter_test
 version: 0.0.0
+publish_to: none
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
   flutter: ">=3.0.0"
 
 dependencies:
-  hooks_riverpod: ^2.0.0-dev.9
+  riverpod_annotation: any
+  hooks_riverpod: any
   flutter:
     sdk: flutter
 
@@ -17,3 +19,18 @@ dev_dependencies:
     sdk: flutter
   riverpod_lint:
     path: ../riverpod_lint
+  build_runner: any
+  riverpod_generator: any
+
+dependency_overrides:
+  riverpod_generator:
+    path: ../riverpod_generator
+  riverpod:
+    path: ../riverpod
+  flutter_riverpod:
+    path: ../flutter_riverpod
+  hooks_riverpod:
+    path: ../hooks_riverpod
+  riverpod_annotation:
+    path: ../riverpod_annotation
+  

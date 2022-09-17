@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 Future<void> main() async {
-  test('goldens', timeout: Timeout(Duration(seconds: 45)), () async {
+  test('goldens', timeout: Timeout(Duration(seconds: 60)), () async {
     final result = await Process.run(
       'flutter',
       ['pub', 'run', 'custom_lint'],
@@ -88,5 +88,5 @@ Future<void> main() async {
   test/goldens/use_ref_before_async_gaps.dart:57:15 • Do not use ref after async gaps in flutter widgets, a function was called which uses ref after a widget could be disposed • riverpod_no_ref_after_async
   test/goldens/use_ref_before_async_gaps.dart:59:9 • Do not use ref after async gaps in flutter widgets. • riverpod_no_ref_after_async
 ''');
-  }, skip: 'TODO flacky');
+  }, skip: 'TODO flaky');
 }

@@ -1,5 +1,8 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'mutate_in_create.g.dart';
 
 final a = StateProvider((ref) => 'String');
 
@@ -157,5 +160,36 @@ class _GState extends ConsumerState<G> {
   @override
   Widget build(BuildContext context) {
     return Container();
+  }
+}
+
+@Riverpod(cacheTime: 100)
+class MyNotifier extends _$MyNotifier {
+  @override
+  Future<String> build(int i, String b) async {
+    ref.read(a.notifier).state = 'Other';
+    ref.invalidate(a);
+    ref.refresh(a);
+    await Future.delayed(Duration(seconds: 1));
+    ref.read(a.notifier).state = 'Other';
+    ref.invalidate(a);
+    ref.refresh(a);
+    return '';
+  }
+}
+
+@Riverpod(cacheTime: 100)
+class MyNotifier2 extends _$MyNotifier2 {
+  @override
+  String build(int i, String b) {
+    ref.read(a.notifier).state = 'Other';
+    ref.invalidate(a);
+    ref.refresh(a);
+    Future.delayed(Duration(seconds: 1), () {
+      ref.read(a.notifier).state = 'Other';
+      ref.invalidate(a);
+      ref.refresh(a);
+    });
+    return '';
   }
 }
