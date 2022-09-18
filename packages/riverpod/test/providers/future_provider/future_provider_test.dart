@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/synchronous_future.dart';
 import 'package:test/test.dart';
 
 import '../../utils.dart';
@@ -28,7 +29,54 @@ void main() {
     );
   });
 
+  test('On dispose, .future resolves with the future returned itself',
+      () async {
+    final container = createContainer();
+    final completer1 = Completer<int>.sync();
+    final completer2 = Completer<int>.sync();
+    var result = completer1.future;
+    final provider = FutureProvider((ref) => result);
+
+    expect(
+      container.read(provider.future),
+      completion(42),
+    );
+
+    result = completer2.future;
+    container.refresh(provider);
+
+    container.dispose();
+
+    completer2.complete(42);
+  });
+
   group('When going back to AsyncLoading', () {
+    test(
+        'provider.future resolves with the new data instead of the old future result',
+        () async {
+      final container = createContainer();
+      final completer1 = Completer<int>.sync();
+      final completer2 = Completer<int>.sync();
+      var result = completer1.future;
+      final provider = FutureProvider((ref) => result);
+
+      expect(
+        container.read(provider.future),
+        completion(42),
+      );
+
+      result = completer2.future;
+      container.refresh(provider);
+
+      completer1.complete(21);
+
+      expect(container.read(provider), const AsyncLoading<int>());
+
+      completer2.complete(42);
+
+      await expectLater(container.read(provider.future), SynchronousFuture(42));
+    });
+
     test(
         'sets isRefreshing to true if triggered by a ref.invalidate/ref.refresh',
         () async {
@@ -165,19 +213,6 @@ void main() {
     future = Future.value(42);
 
     expect(await container.refresh(provider.future), 42);
-    expect(container.read(provider), const AsyncData(42));
-  });
-
-  test('can refresh .stream', () async {
-    var future = Future.value(1);
-    final provider = FutureProvider((ref) => future);
-    final container = createContainer();
-
-    expect(await container.read(provider.stream).first, 1);
-
-    future = Future.value(42);
-
-    expect(await container.refresh(provider.stream).first, 42);
     expect(container.read(provider), const AsyncData(42));
   });
 
@@ -357,7 +392,7 @@ void main() {
     );
   });
 
-  test('noop if fails after dispose', () async {
+  test('noop if fails after provider dispose', () async {
     // ignore: only_throw_errors
     final provider = FutureProvider<int>((_) async => throw 42);
     final container = createContainer();
@@ -520,6 +555,8 @@ void main() {
 
     verifyOnly(listener, listener(null, const AsyncValue<String>.loading()));
     completer.complete(42);
+
+    await container.read(example.future);
 
     verifyOnly(
       listener,
