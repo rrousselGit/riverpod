@@ -1,13 +1,11 @@
 import 'dart:async';
 
+import 'async_notifier.dart';
 import 'builders.dart';
 import 'common.dart';
 import 'framework.dart';
-import 'listenable.dart';
 import 'provider.dart' show Provider;
-import 'result.dart';
 import 'stream_provider.dart' show StreamProvider;
-import 'synchronous_future.dart';
 
 part 'future_provider/auto_dispose.dart';
 part 'future_provider/base.dart';
@@ -18,7 +16,9 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
   return ProviderElementProxy<AsyncValue<T>, Future<T>>(
     that,
     (element) {
-      return (element as FutureProviderElement<T>)._futureNotifier;
+      return FutureHandlerProviderElementMixin.futureNotifierOf(
+        element as FutureHandlerProviderElementMixin<T>,
+      );
     },
   );
 }

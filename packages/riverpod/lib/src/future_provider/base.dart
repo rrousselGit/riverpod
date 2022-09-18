@@ -47,10 +47,9 @@ class FutureProvider<T> extends _FutureProviderBase<T>
 
 /// The element of a [FutureProvider]
 class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
+    with FutureHandlerProviderElementMixin<T>
     implements FutureProviderRef<T> {
   FutureProviderElement._(_FutureProviderBase<T> super.provider);
-
-  final _futureNotifier = ProxyElementValueNotifier<Future<T>>();
 
   @override
   AsyncValue<T> get state => requireState;
@@ -59,73 +58,21 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   set state(AsyncValue<T> state) => setState(state);
 
   @override
-  void create({required bool didChangeDependency}) {
-    asyncTransition(didChangeDependency: didChangeDependency);
-
-    // The try/catch is here to handle synchronous exceptions, which can happen
-    // if the create function isn't marked with "async".
-    try {
-      final provider = this.provider as _FutureProviderBase<T>;
-      final futureOr = provider._create(this);
-
-      final future =
-          futureOr is Future<T> ? futureOr : SynchronousFuture(futureOr);
-
-      if (future != _futureNotifier.result?.stateOrNull) {
-        _futureNotifier.result = Result.data(future);
-        _listenFuture(future);
-      }
-    } catch (err, stack) {
-      // TODO Can we have a SynchronousFutureError?
-      _futureNotifier.result = Result.data(
-        Future.error(err, stack)
-          // TODO report the error to the ProviderContainer's Zone
-          ..ignore(),
-      );
-      setState(AsyncError<T>(err, stack));
-    }
-  }
-
-  @override
   bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
-    final wasLoading = previous is AsyncLoading;
-    final isLoading = next is AsyncLoading;
-
-    if (wasLoading || isLoading) return wasLoading != isLoading;
-
-    return true;
-  }
-
-  @pragma('vm:prefer-inline')
-  void _listenFuture(Future<T> future) {
-    var running = true;
-    onDispose(() => running = false);
-
-    future.then(
-      (value) {
-        if (running) {
-          setState(AsyncData<T>(value));
-        }
-      },
-      // ignore: avoid_types_on_closure_parameters
-      onError: (Object err, StackTrace stack) {
-        if (running) {
-          setState(AsyncError<T>(err, stack));
-        }
-      },
+    return FutureHandlerProviderElementMixin.handleUpdateShouldNotify(
+      previous,
+      next,
     );
   }
 
   @override
-  void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
-  }) {
-    super.visitChildren(
-      elementVisitor: elementVisitor,
-      notifierVisitor: notifierVisitor,
+  void create({required bool didChangeDependency}) {
+    final provider = this.provider as _FutureProviderBase<T>;
+
+    return handleFuture(
+      () => provider._create(this),
+      didChangeDependency: didChangeDependency,
     );
-    notifierVisitor(_futureNotifier);
   }
 }
 

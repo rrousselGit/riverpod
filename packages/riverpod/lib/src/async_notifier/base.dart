@@ -101,15 +101,31 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   }
 }
 
-/// The element of [AsyncNotifierProvider].
-class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
-    extends ProviderElementBase<AsyncValue<T>>
-    implements AsyncNotifierProviderRef<T> {
-  AsyncNotifierProviderElement._(
-    AsyncNotifierProviderBase<NotifierT, T> super.provider,
-  );
+/// A mixin shared by [AsyncNotifierProvider] and [FutureProvider] for dealing with
+/// the logic of listening to a [Future] and converting it into an [AsyncValue].
+@internal
+mixin FutureHandlerProviderElementMixin<T>
+    on ProviderElementBase<AsyncValue<T>> {
+  /// A default implementation for [ProviderElementBase.updateShouldNotify].
+  static bool handleUpdateShouldNotify<T>(
+    AsyncValue<T> previous,
+    AsyncValue<T> next,
+  ) {
+    final wasLoading = previous.isLoading;
+    final isLoading = next.isLoading;
 
-  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+    if (wasLoading || isLoading) return wasLoading != isLoading;
+
+    return true;
+  }
+
+  /// An internal function used to obtain the private [_futureNotifier] from the mixin
+  static ProxyElementValueNotifier<Future<T>> futureNotifierOf<T>(
+    FutureHandlerProviderElementMixin<T> handler,
+  ) {
+    return handler._futureNotifier;
+  }
+
   final _futureNotifier = ProxyElementValueNotifier<Future<T>>();
   Completer<T>? _futureCompleter;
 
@@ -174,64 +190,52 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     setState(AsyncError<T>(err, stackTrace));
   }
 
-  @override
-  void create({required bool didChangeDependency}) {
-    final provider = this.provider as AsyncNotifierProviderBase<NotifierT, T>;
+  /// Listens to a [Future] and transforms it into an [AsyncValue].
+  @internal
+  void handleFuture(
+    FutureOr<T> Function() create, {
+    required bool didChangeDependency,
+  }) {
+    assert(_builtFuture == null, 'Bad state');
+    _loadingTransition(didChangeDependency: didChangeDependency);
+    final futureOrResult = Result.guard(create);
 
-    final notifierResult = _notifierNotifier.result ??= Result.guard(() {
-      return provider._createNotifier().._setElement(this);
-    });
-
-// TODO initialize Completer for .future
-
-    // TODO test notifier constructor throws -> provider emits AsyncError
-    // TODO test notifier constructor throws -> .notifier rethrows the error
-    // TODO test notifier constructor throws -> .future emits Future.error
-    notifierResult.when(
+    // TODO test build throws -> provider emits AsyncError synchronously & .future emits Future.error
+    // TODO test build resolves with error -> emits AsyncError & .future emits Future.error
+    // TODO test build emits value -> .future emits value & provider emits AsyncData
+    futureOrResult.when(
       error: _errorTransition,
-      data: (notifier) {
-        _loadingTransition(didChangeDependency: didChangeDependency);
-        final futureOrResult = Result.guard(
-          () => provider.runNotifierBuild(notifier),
-        );
+      data: (futureOr) {
+        if (futureOr is Future<T>) {
+          _builtFuture = futureOr;
 
-        // TODO test build throws -> provider emits AsyncError synchronously & .future emits Future.error
-        // TODO test build resolves with error -> emits AsyncError & .future emits Future.error
-        // TODO test build emits value -> .future emits value & provider emits AsyncData
-        futureOrResult.when(
-          error: _errorTransition,
-          data: (futureOr) {
-            if (futureOr is Future<T>) {
-              _builtFuture = futureOr;
+          futureOr.then(
+            (value) {
+              // If _builtFuture has changed, it means either a new state
+              // was manually emitted (such as with AsyncNotifier.state=)
+              // or the provider rebuilt (so a new future was created).
+              if (_builtFuture == futureOr) {
+                _dataTransition(value);
+                _builtFuture = null;
+              }
+            },
+            // ignore: avoid_types_on_closure_parameters
+            onError: (Object err, StackTrace stackTrace) {
+              // If _builtFuture has changed, it means either a new state
+              // was manually emitted (such as with AsyncNotifier.state=)
+              // or the provider rebuilt (so a new future was created).
+              if (_builtFuture == futureOr) {
+                _errorTransition(err, stackTrace);
+                _builtFuture = null;
+              }
+            },
+          );
+        } else {
+          // No need to set _builtFuture if AsyncNotifier.build resolved
+          // synchronously, as there is no loading state to handle.
 
-              // TODO stop listening on dispose
-              futureOr.then(
-                (value) {
-                  // If _builtFuture has changed, it means either a new state
-                  // was manually emitted (such as with AsyncNotifier.state=)
-                  // or the provider rebuilt (so a new future was created).
-                  if (_builtFuture == futureOr) _dataTransition(value);
-                  _builtFuture = null;
-                },
-                // ignore: avoid_types_on_closure_parameters
-                onError: (Object err, StackTrace stackTrace) {
-                  // If _builtFuture has changed, it means either a new state
-                  // was manually emitted (such as with AsyncNotifier.state=)
-                  // or the provider rebuilt (so a new future was created).
-                  if (_builtFuture == futureOr) {
-                    _errorTransition(err, stackTrace);
-                  }
-                  _builtFuture = null;
-                },
-              );
-            } else {
-              // No need to set _builtFuture if AsyncNotifier.build resolved
-              // synchronously, as there is no loading state to handle.
-
-              _dataTransition(futureOr);
-            }
-          },
-        );
+          _dataTransition(futureOr);
+        }
       },
     );
   }
@@ -248,23 +252,67 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     final completer = _futureCompleter;
     if (completer != null) {
       final future = _builtFuture;
+      // It is normally safe to ignore this error, as the provider is meant
+      // to no-longer be used anymore.
+      completer.future.ignore();
+
       if (future != null) {
         future.then(completer.complete, onError: completer.completeError);
       } else {
-        completer
-          // It is normally safe to ignore this error, as the provider is meant
-          // to no-longer be used anymore.
-          ..future.ignore()
-          ..completeError(
-            StateError(
-              'The provider $origin was disposed during loading state, '
-              'yet no value could be emitted.',
-            ),
-          );
+        completer.completeError(
+          StateError(
+            'The provider $origin was disposed during loading state, '
+            'yet no value could be emitted.',
+          ),
+        );
       }
     }
 
     super.dispose();
+  }
+
+  @override
+  void visitChildren({
+    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+  }) {
+    super.visitChildren(
+      elementVisitor: elementVisitor,
+      notifierVisitor: notifierVisitor,
+    );
+    notifierVisitor(_futureNotifier);
+  }
+}
+
+/// The element of [AsyncNotifierProvider].
+class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
+    extends ProviderElementBase<AsyncValue<T>>
+    with FutureHandlerProviderElementMixin<T>
+    implements AsyncNotifierProviderRef<T> {
+  AsyncNotifierProviderElement._(
+    AsyncNotifierProviderBase<NotifierT, T> super.provider,
+  );
+
+  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+
+  @override
+  void create({required bool didChangeDependency}) {
+    final provider = this.provider as AsyncNotifierProviderBase<NotifierT, T>;
+
+    final notifierResult = _notifierNotifier.result ??= Result.guard(() {
+      return provider._createNotifier().._setElement(this);
+    });
+
+    // TODO test notifier constructor throws -> provider emits AsyncError
+    // TODO test notifier constructor throws -> .notifier rethrows the error
+    // TODO test notifier constructor throws -> .future emits Future.error
+    notifierResult.when(
+      error: _errorTransition,
+      data: (notifier) => handleFuture(
+        () => provider.runNotifierBuild(notifier),
+        didChangeDependency: didChangeDependency,
+      ),
+    );
   }
 
   @override

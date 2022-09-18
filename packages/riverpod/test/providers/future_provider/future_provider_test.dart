@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/synchronous_future.dart';
 import 'package:test/test.dart';
 
 import '../../utils.dart';
@@ -73,7 +74,7 @@ void main() {
 
       completer2.complete(42);
 
-      await expectLater(container.read(provider.future), 42);
+      await expectLater(container.read(provider.future), SynchronousFuture(42));
     });
 
     test(
@@ -391,7 +392,7 @@ void main() {
     );
   });
 
-  test('noop if fails after dispose', () async {
+  test('noop if fails after provider dispose', () async {
     // ignore: only_throw_errors
     final provider = FutureProvider<int>((_) async => throw 42);
     final container = createContainer();
@@ -554,6 +555,8 @@ void main() {
 
     verifyOnly(listener, listener(null, const AsyncValue<String>.loading()));
     completer.complete(42);
+
+    await container.read(example.future);
 
     verifyOnly(
       listener,

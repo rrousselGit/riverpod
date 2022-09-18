@@ -90,6 +90,25 @@ void main() {
         });
       });
 
+      test('does not notify listeners when refreshed during loading', () async {
+        final provider = factory.simpleTestProvider((ref) => Future.value(0));
+        final container = createContainer();
+        final listener = Listener<AsyncValue<int>>();
+
+        container.listen(provider, listener, fireImmediately: true);
+
+        verifyOnly(listener, listener(null, const AsyncLoading()));
+
+        container.refresh(provider);
+
+        await container.read(provider.future);
+
+        verifyOnly(
+          listener,
+          listener(const AsyncLoading(), const AsyncData(0)),
+        );
+      });
+
       test('supports listenSelf', () {
         final listener = Listener<AsyncValue<int>>();
         final onError = ErrorListener();

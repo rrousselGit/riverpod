@@ -867,6 +867,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   void mayNeedDispose() {}
 
   @override
+  @mustCallSuper
   void onDispose(void Function() listener) {
     _assertNotOutdated();
     if (!_mounted) {
@@ -880,6 +881,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// the list of listeners.
   @protected
   @visibleForOverriding
+  @mustCallSuper
   void runOnDispose() {
     if (!_mounted) return;
     _mounted = false;
