@@ -21,10 +21,10 @@ String family(
   int first, {
   String? second,
   required double third,
-  bool forth = true,
+  bool fourth = true,
   List<String>? fifth,
 }) {
-  return '(first: $first, second: $second, third: $third, forth: $forth, fifth: $fifth)';
+  return '(first: $first, second: $second, third: $third, fourth: $fourth, fifth: $fifth)';
 }
 
 final privateProvider = _PrivateProvider;
@@ -61,10 +61,10 @@ class FamilyClass extends _$FamilyClass {
     int first, {
     String? second,
     required double third,
-    bool forth = true,
+    bool fourth = true,
     List<String>? fifth,
   }) {
-    return '(first: $first, second: $second, third: $third, forth: $forth, fifth: $fifth)';
+    return '(first: $first, second: $second, third: $third, fourth: $fourth, fifth: $fifth)';
   }
 }
 

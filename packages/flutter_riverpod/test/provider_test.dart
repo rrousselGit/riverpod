@@ -207,7 +207,7 @@ void main() {
     final third = Provider<int>((ref) {
       return ref.watch(second) + 1;
     });
-    final forth = Provider<int>((ref) {
+    final fourth = Provider<int>((ref) {
       return ref.watch(third) + 1;
     });
 
@@ -216,7 +216,7 @@ void main() {
         child: Consumer(
           builder: (c, ref, _) {
             return Text(
-              ref.watch(forth).toString(),
+              ref.watch(fourth).toString(),
               textDirection: TextDirection.ltr,
             );
           },
@@ -235,7 +235,7 @@ void main() {
     final third = Provider<int>((ref) {
       return ref.watch(second) + 1;
     });
-    final forth = Provider<int>((ref) {
+    final fourth = Provider<int>((ref) {
       return ref.watch(third) + 1;
     });
 
@@ -247,7 +247,7 @@ void main() {
         child: Consumer(
           builder: (c, ref, _) {
             return Text(
-              ref.watch(forth).toString(),
+              ref.watch(fourth).toString(),
               textDirection: TextDirection.ltr,
             );
           },
@@ -266,7 +266,7 @@ void main() {
     final third = Provider<int>((ref) {
       return ref.watch(second) + 1;
     });
-    final forth = Provider<int>((ref) {
+    final fourth = Provider<int>((ref) {
       return ref.watch(third) + 1;
     });
 
@@ -278,7 +278,7 @@ void main() {
         child: Consumer(
           builder: (c, ref, _) {
             return Text(
-              ref.watch(forth).toString(),
+              ref.watch(fourth).toString(),
               textDirection: TextDirection.ltr,
             );
           },

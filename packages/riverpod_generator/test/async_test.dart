@@ -66,7 +66,7 @@ void main() {
         42,
         third: .42,
         // ignore: avoid_redundant_argument_values
-        forth: true,
+        fourth: true,
       ),
     );
     expect(
@@ -75,7 +75,7 @@ void main() {
         42,
         third: .42,
         // ignore: avoid_redundant_argument_values
-        forth: true,
+        fourth: true,
       ).hashCode,
     );
 
@@ -83,7 +83,7 @@ void main() {
       42,
       second: 'x42',
       third: .42,
-      forth: false,
+      fourth: false,
       fifth: ['x42'],
     );
     final AutoDisposeFutureProvider<String> futureProvider = provider;
@@ -91,7 +91,7 @@ void main() {
     expect(provider.first, 42);
     expect(provider.second, 'x42');
     expect(provider.third, .42);
-    expect(provider.forth, false);
+    expect(provider.fourth, false);
     expect(provider.fifth, ['x42']);
 
     final AsyncValue<String> result = container.read(
@@ -99,7 +99,7 @@ void main() {
         42,
         second: 'x42',
         third: .42,
-        forth: false,
+        fourth: false,
         fifth: ['x42'],
       ),
     );
@@ -107,7 +107,7 @@ void main() {
     expect(
       result,
       const AsyncData(
-        '(first: 42, second: x42, third: 0.42, forth: false, fifth: [x42])',
+        '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
       ),
     );
   });
