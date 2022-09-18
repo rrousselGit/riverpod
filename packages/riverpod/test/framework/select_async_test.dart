@@ -166,7 +166,7 @@ void main() {
     final provider = FutureProvider<int>((r) {
       ref = r;
       final completer = Completer<int>();
-      ref.onDispose(() => completer.complete(42));
+      ref.onDispose(() => completer.complete(84));
 
       return completer.future;
     });

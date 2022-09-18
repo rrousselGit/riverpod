@@ -335,6 +335,34 @@ void main() {
 
       group('AsyncNotifier.state', () {
         test(
+            'when manually modifying the state, the new exposed value is identical to what is passed to the settter',
+            () async {
+          final provider = factory.simpleTestProvider<int>((ref) => 0);
+          final container = createContainer();
+
+          final sub = container.listen(provider.notifier, (previous, next) {});
+
+          // ignore: prefer_const_constructors, not using `const` as we voluntarility break identity to test `identical`
+          final newState = AsyncData(84);
+          // ignore: prefer_const_constructors, not using `const` as we voluntarility break identity to test `identical`
+          final newLoading = AsyncLoading<int>();
+          // ignore: prefer_const_constructors, not using `const` as we voluntarility break identity to test `identical`
+          final newError = AsyncError<int>(84, StackTrace.empty);
+
+          sub.read().state = newState;
+
+          expect(sub.read().state, same(newState));
+
+          sub.read().state = newLoading;
+
+          expect(sub.read().state, same(newLoading));
+
+          sub.read().state = newError;
+
+          expect(sub.read().state, same(newError));
+        });
+
+        test(
             'when read on outdated provider, refreshes the provider and return the up-to-date state',
             () async {
           final listener = OnBuildMock();

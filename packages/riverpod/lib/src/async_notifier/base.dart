@@ -140,6 +140,20 @@ mixin FutureHandlerProviderElementMixin<T>
   /// In that scenario, `AsyncNotifier.future` will resolve with [_builtFuture].
   Future<T>? _builtFuture;
 
+  /// Handles manual state change (as opposed to automatic state change from
+  /// listening to the [Future]).
+  @protected
+  set state(AsyncValue<T> newState) {
+    // TODO assert Notifier isn't disposed
+    newState.when(
+      error: _errorTransition,
+      loading: _loadingTransition,
+      data: _dataTransition,
+    );
+
+    setState(newState);
+  }
+
   void _dataTransition(T value) {
     _builtFuture = null;
 
@@ -157,17 +171,13 @@ mixin FutureHandlerProviderElementMixin<T>
     } else {
       _futureNotifier.result = Result.data(SynchronousFuture(value));
     }
-    setState(AsyncData<T>(value));
   }
 
-  void _loadingTransition({required bool didChangeDependency}) {
+  void _loadingTransition() {
     if (_futureCompleter == null) {
       final completer = _futureCompleter = Completer();
       _futureNotifier.result = ResultData(completer.future);
     }
-
-    // TODO refactor loading transition to not notify listeners if going from loading to loading
-    asyncTransition(didChangeDependency: didChangeDependency);
   }
 
   void _errorTransition(Object err, StackTrace stackTrace) {
@@ -187,7 +197,6 @@ mixin FutureHandlerProviderElementMixin<T>
         Future.error(err, stackTrace)..ignore(),
       );
     }
-    setState(AsyncError<T>(err, stackTrace));
   }
 
   /// Listens to a [Future] and transforms it into an [AsyncValue].
@@ -197,14 +206,19 @@ mixin FutureHandlerProviderElementMixin<T>
     required bool didChangeDependency,
   }) {
     assert(_builtFuture == null, 'Bad state');
-    _loadingTransition(didChangeDependency: didChangeDependency);
+    _loadingTransition();
+    asyncTransition(shouldClearPreviousState: didChangeDependency);
+
     final futureOrResult = Result.guard(create);
 
     // TODO test build throws -> provider emits AsyncError synchronously & .future emits Future.error
     // TODO test build resolves with error -> emits AsyncError & .future emits Future.error
     // TODO test build emits value -> .future emits value & provider emits AsyncData
     futureOrResult.when(
-      error: _errorTransition,
+      error: (error, stackTrace) {
+        _errorTransition(error, stackTrace);
+        setState(AsyncError(error, stackTrace));
+      },
       data: (futureOr) {
         if (futureOr is Future<T>) {
           _builtFuture = futureOr;
@@ -216,16 +230,18 @@ mixin FutureHandlerProviderElementMixin<T>
               // or the provider rebuilt (so a new future was created).
               if (_builtFuture == futureOr) {
                 _dataTransition(value);
+                setState(AsyncData(value));
                 _builtFuture = null;
               }
             },
             // ignore: avoid_types_on_closure_parameters
-            onError: (Object err, StackTrace stackTrace) {
+            onError: (Object error, StackTrace stackTrace) {
               // If _builtFuture has changed, it means either a new state
               // was manually emitted (such as with AsyncNotifier.state=)
               // or the provider rebuilt (so a new future was created).
               if (_builtFuture == futureOr) {
-                _errorTransition(err, stackTrace);
+                _errorTransition(error, stackTrace);
+                setState(AsyncError<T>(error, stackTrace));
                 _builtFuture = null;
               }
             },
@@ -235,6 +251,7 @@ mixin FutureHandlerProviderElementMixin<T>
           // synchronously, as there is no loading state to handle.
 
           _dataTransition(futureOr);
+          setState(AsyncData(futureOr));
         }
       },
     );
@@ -307,7 +324,10 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     // TODO test notifier constructor throws -> .notifier rethrows the error
     // TODO test notifier constructor throws -> .future emits Future.error
     notifierResult.when(
-      error: _errorTransition,
+      error: (error, stackTrace) {
+        _errorTransition(error, stackTrace);
+        setState(AsyncError(error, stackTrace));
+      },
       data: (notifier) => handleFuture(
         () => provider.runNotifierBuild(notifier),
         didChangeDependency: didChangeDependency,

@@ -125,7 +125,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   @override
   void create({required bool didChangeDependency}) {
-    asyncTransition(didChangeDependency: didChangeDependency);
+    asyncTransition(shouldClearPreviousState: didChangeDependency);
     _streamNotifier.result ??= Result.data(_streamController.stream);
 
     final streamResult = Result.guard(() {

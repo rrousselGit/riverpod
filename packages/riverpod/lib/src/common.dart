@@ -9,11 +9,11 @@ import 'stream_provider.dart' show StreamProvider;
 @internal
 extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
   /// Internal utility for transitioning an [AsyncValue] after a provider refresh.
-  void asyncTransition({required bool didChangeDependency}) {
+  void asyncTransition({required bool shouldClearPreviousState}) {
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     final previous = getState()?.requireState;
 
-    if (previous == null || didChangeDependency) {
+    if (previous == null || shouldClearPreviousState) {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       setState(AsyncLoading<T>());
     } else {

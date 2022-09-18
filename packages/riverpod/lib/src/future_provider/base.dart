@@ -55,9 +55,6 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   AsyncValue<T> get state => requireState;
 
   @override
-  set state(AsyncValue<T> state) => setState(state);
-
-  @override
   bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
     return FutureHandlerProviderElementMixin.handleUpdateShouldNotify(
       previous,
