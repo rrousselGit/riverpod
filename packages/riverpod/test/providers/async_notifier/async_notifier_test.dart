@@ -9,7 +9,6 @@ import 'package:riverpod/src/async_notifier.dart';
 import 'package:riverpod/src/synchronous_future.dart';
 import 'package:test/test.dart';
 
-import '../../matchers.dart';
 import '../../utils.dart';
 import 'factory.dart';
 

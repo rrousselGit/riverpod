@@ -1,5 +1,4 @@
 import 'package:riverpod/src/devtool.dart';
-import 'package:riverpod/src/synchronous_future.dart';
 import 'package:test/test.dart';
 
 Matcher isPostEventCall(Object kind, Object? event) {
@@ -11,8 +10,4 @@ Matcher isPostEventCall(Object kind, Object? event) {
   }
 
   return matcher;
-}
-
-class _Sentinel {
-  const _Sentinel();
 }
