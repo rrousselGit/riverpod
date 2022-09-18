@@ -12,6 +12,7 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
   void asyncTransition({required bool didChangeDependency}) {
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     final previous = getState()?.requireState;
+
     if (previous == null || didChangeDependency) {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       setState(AsyncLoading<T>());

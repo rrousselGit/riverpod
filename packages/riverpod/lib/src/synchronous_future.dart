@@ -17,6 +17,7 @@ import 'package:meta/meta.dart';
 /// general use of this class should be avoided as it is very difficult to debug
 /// such bimodal behavior.**
 @internal
+@immutable
 class SynchronousFuture<T> implements Future<T> {
   /// Creates a synchronous future.
   ///
@@ -24,6 +25,7 @@ class SynchronousFuture<T> implements Future<T> {
   ///
   ///  * [Future.value] for information about creating a regular
   ///    [Future] that completes with a value.
+  // ignore: prefer_const_constructors_in_immutables
   SynchronousFuture(this.value);
 
   /// The value that is synchronously emitted by this [Future].
@@ -69,5 +71,17 @@ class SynchronousFuture<T> implements Future<T> {
     } catch (e, stack) {
       return Future<T>.error(e, stack);
     }
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is SynchronousFuture<int> && other.value == value;
+
+  @override
+  int get hashCode => Object.hash(runtimeType, value);
+
+  @override
+  String toString() {
+    return 'SynchronousFuture<$T>($value)';
   }
 }

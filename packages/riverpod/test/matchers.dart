@@ -16,13 +16,3 @@ Matcher isPostEventCall(Object kind, Object? event) {
 class _Sentinel {
   const _Sentinel();
 }
-
-Matcher isSynchronousFuture<T>([Object? value = const _Sentinel()]) {
-  var matcher = isA<SynchronousFuture>();
-
-  if (value != const _Sentinel()) {
-    matcher = matcher.having((e) => e.value, 'value', value);
-  }
-
-  return matcher;
-}

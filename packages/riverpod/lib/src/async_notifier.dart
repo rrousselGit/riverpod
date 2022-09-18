@@ -40,9 +40,17 @@ abstract class AsyncNotifierBase<State> {
   }
 
   @protected
-  set state(AsyncValue<State> value) {
-    // ignore: invalid_use_of_protected_member
-    _element.setState(value);
+  set state(AsyncValue<State> newState) {
+    // TODO assert Notifier isn't disposed
+    newState.when(
+      error: (err, stack) {
+        _element._errorTransition(err, stack);
+      },
+      loading: () => _element._loadingTransition(didChangeDependency: false),
+      data: (value) {
+        _element._dataTransition(value);
+      },
+    );
   }
 
   /// The [Ref] from the provider associated with this [AsyncNotifier].

@@ -386,6 +386,9 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   ///
   /// Exceptions within this function will be caught and set the provider in error
   /// state. Then, reading this provider will rethrow the thrown exception.
+  ///
+  /// - [didChangeDependency] can be used to differentiate a rebuild caused
+  ///   by [watch] from one caused by [refresh]/[invalidate].
   @visibleForOverriding
   @protected
   void create({required bool didChangeDependency});

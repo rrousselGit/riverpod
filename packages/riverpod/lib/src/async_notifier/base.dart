@@ -111,6 +111,68 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
 
   final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
   final _futureNotifier = ProxyElementValueNotifier<Future<T>>();
+  Completer<T>? _futureCompleter;
+
+  /// The latest [Future] returned by [AsyncNotifier.build].
+  ///
+  /// This reference to the future is kept until a state is emitted.
+  /// As soon as a value is emitted, it will revert to `null`.
+  ///
+  /// The purpose of the variable is to handle the case where an [AsyncNotifier]
+  /// is disposed while still in loading state.
+  ///
+  /// In that scenario, [AsyncNotifier.future] will resolve with [_builtFuture].
+  Future<T>? _builtFuture;
+
+  void _dataTransition(T value) {
+    _builtFuture = null;
+
+    final completer = _futureCompleter;
+    if (completer != null) {
+      completer.complete(value);
+      _futureCompleter = null;
+
+      // Silently replace .future by a SynchronousFuture now that a value is
+      // available. No need to notify listeners, as the content of strictly the same.
+      // This allows future read of `.future` to resolve synchronously
+      _futureNotifier.UNSAFE_setResultWithoutNotifyingListeners(
+        Result.data(SynchronousFuture(value)),
+      );
+    } else {
+      _futureNotifier.result = Result.data(SynchronousFuture(value));
+    }
+    setState(AsyncData<T>(value));
+  }
+
+  void _loadingTransition({required bool didChangeDependency}) {
+    if (_futureCompleter == null) {
+      final completer = _futureCompleter = Completer();
+      _futureNotifier.result = ResultData(completer.future);
+    }
+
+    // TODO refactor loading transition to not notify listeners if going from loading to loading
+    asyncTransition(didChangeDependency: didChangeDependency);
+  }
+
+  void _errorTransition(Object err, StackTrace stackTrace) {
+    _builtFuture = null;
+
+    final completer = _futureCompleter;
+    if (completer != null) {
+      completer
+        // TODO test ignore
+        ..future.ignore()
+        ..completeError(err, stackTrace);
+      _futureCompleter = null;
+      // TODO SynchronousFuture.error
+    } else {
+      _futureNotifier.result = Result.data(
+        // TODO test ignore
+        Future.error(err, stackTrace)..ignore(),
+      );
+    }
+    setState(AsyncError<T>(err, stackTrace));
+  }
 
   @override
   void create({required bool didChangeDependency}) {
@@ -126,16 +188,9 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     // TODO test notifier constructor throws -> .notifier rethrows the error
     // TODO test notifier constructor throws -> .future emits Future.error
     notifierResult.when(
-      error: (err, stack) {
-        _futureNotifier.result = Result.data(
-          Future.error(err, stack)
-            // TODO test ignore
-            ..ignore(),
-        );
-        setState(AsyncError(err, stack));
-      },
+      error: _errorTransition,
       data: (notifier) {
-        asyncTransition(didChangeDependency: didChangeDependency);
+        _loadingTransition(didChangeDependency: didChangeDependency);
         final futureOrResult = Result.guard(
           () => provider.runNotifierBuild(notifier),
         );
@@ -144,39 +199,72 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
         // TODO test build resolves with error -> emits AsyncError & .future emits Future.error
         // TODO test build emits value -> .future emits value & provider emits AsyncData
         futureOrResult.when(
-          error: (err, stack) {
-            setState(AsyncError(err, stack));
-            _futureNotifier.result = Result.data(
-              Future<T>.error(err, stack)
-                // TODO test ignore
-                ..ignore(),
-            );
-          },
+          error: _errorTransition,
           data: (futureOr) {
             if (futureOr is Future<T>) {
-              _futureNotifier.result = Result.data(futureOr);
-
-              var running = true;
-              onDispose(() => running = false);
+              _builtFuture = futureOr;
 
               // TODO stop listening on dispose
               futureOr.then(
                 (value) {
-                  if (running) setState(AsyncData(value));
+                  // If _builtFuture has changed, it means either a new state
+                  // was manually emitted (such as with AsyncNotifier.state=)
+                  // or the provider rebuilt (so a new future was created).
+                  if (_builtFuture == futureOr) _dataTransition(value);
+                  _builtFuture = null;
                 },
                 // ignore: avoid_types_on_closure_parameters
-                onError: (Object err, StackTrace stack) {
-                  if (running) setState(AsyncError(err, stack));
+                onError: (Object err, StackTrace stackTrace) {
+                  // If _builtFuture has changed, it means either a new state
+                  // was manually emitted (such as with AsyncNotifier.state=)
+                  // or the provider rebuilt (so a new future was created).
+                  if (_builtFuture == futureOr) {
+                    _errorTransition(err, stackTrace);
+                  }
+                  _builtFuture = null;
                 },
               );
             } else {
-              _futureNotifier.result = Result.data(SynchronousFuture(futureOr));
-              setState(AsyncData(futureOr));
+              // No need to set _builtFuture if AsyncNotifier.build resolved
+              // synchronously, as there is no loading state to handle.
+
+              _dataTransition(futureOr);
             }
           },
         );
       },
     );
+  }
+
+  @override
+  void runOnDispose() {
+    // This will both stops listening to the previous future
+    _builtFuture = null;
+    super.runOnDispose();
+  }
+
+  @override
+  void dispose() {
+    final completer = _futureCompleter;
+    if (completer != null) {
+      final future = _builtFuture;
+      if (future != null) {
+        future.then(completer.complete, onError: completer.completeError);
+      } else {
+        completer
+          // It is normally safe to ignore this error, as the provider is meant
+          // to no-longer be used anymore.
+          ..future.ignore()
+          ..completeError(
+            StateError(
+              'The provider $origin was disposed during loading state, '
+              'yet no value could be emitted.',
+            ),
+          );
+      }
+    }
+
+    super.dispose();
   }
 
   @override
