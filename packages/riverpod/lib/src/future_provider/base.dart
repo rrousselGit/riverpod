@@ -39,9 +39,6 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   late final AlwaysAliveRefreshable<Future<T>> future = _future(this);
 
   @override
-  late final AlwaysAliveRefreshable<Stream<T>> stream = _stream(this);
-
-  @override
   FutureOr<T> _create(FutureProviderElement<T> ref) => _createFn(ref);
 
   @override
@@ -54,8 +51,6 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   FutureProviderElement._(_FutureProviderBase<T> super.provider);
 
   final _futureNotifier = ProxyElementValueNotifier<Future<T>>();
-  final _streamNotifier = ProxyElementValueNotifier<Stream<T>>();
-  final _streamController = StreamController<T>.broadcast();
 
   @override
   AsyncValue<T> get state => requireState;
@@ -66,8 +61,6 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   @override
   void create({required bool didChangeDependency}) {
     asyncTransition(didChangeDependency: didChangeDependency);
-    // TODO add a Proxy variant that accepts T instead of Result<T>
-    _streamNotifier.result ??= Result.data(_streamController.stream);
 
     // The try/catch is here to handle synchronous exceptions, which can happen
     // if the create function isn't marked with "async".
@@ -89,7 +82,6 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
           // TODO report the error to the ProviderContainer's Zone
           ..ignore(),
       );
-      _streamController.addError(err, stack);
       setState(AsyncError<T>(err, stack));
     }
   }
@@ -112,14 +104,12 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     future.then(
       (value) {
         if (running) {
-          _streamController.add(value);
           setState(AsyncData<T>(value));
         }
       },
       // ignore: avoid_types_on_closure_parameters
       onError: (Object err, StackTrace stack) {
         if (running) {
-          _streamController.addError(err, stack);
           setState(AsyncError<T>(err, stack));
         }
       },
@@ -136,13 +126,6 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
       notifierVisitor: notifierVisitor,
     );
     notifierVisitor(_futureNotifier);
-    notifierVisitor(_streamNotifier);
-  }
-
-  @override
-  void dispose() {
-    _streamController.close();
-    super.dispose();
   }
 }
 

@@ -215,19 +215,6 @@ void main() {
     expect(container.read(provider), const AsyncData(42));
   });
 
-  test('can refresh .stream', () async {
-    var future = Future.value(1);
-    final provider = FutureProvider((ref) => future);
-    final container = createContainer();
-
-    expect(await container.read(provider.stream).first, 1);
-
-    future = Future.value(42);
-
-    expect(await container.refresh(provider.stream).first, 42);
-    expect(container.read(provider), const AsyncData(42));
-  });
-
   test('can be refreshed', () async {
     var result = 0;
     final container = createContainer();

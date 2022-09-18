@@ -23,17 +23,6 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
   );
 }
 
-ProviderElementProxy<AsyncValue<T>, Stream<T>> _stream<T>(
-  _FutureProviderBase<T> that,
-) {
-  return ProviderElementProxy<AsyncValue<T>, Stream<T>>(
-    that,
-    (element) {
-      return (element as FutureProviderElement<T>)._streamNotifier;
-    },
-  );
-}
-
 /// {@template riverpod.futureprovider}
 /// A provider that asynchronously creates a single value.
 ///
@@ -134,15 +123,6 @@ abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
   /// });
   /// ```
   ProviderListenable<Future<T>> get future;
-
-  /// Obtains a [Stream] representation of this provider.
-  ///
-  /// The stream will not emit a value until the future returned by this [FutureProvider]
-  /// resolves at least once.
-  /// Errors inside the providers will be sent to the stream.
-  ///
-  /// If you want to listen to this provider, consider using `ref.listen(futureProvider)` instead.
-  ProviderListenable<Stream<T>> get stream;
 
   FutureOr<T> _create(covariant FutureProviderElement<T> ref);
 }

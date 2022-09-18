@@ -37,9 +37,6 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
 
   @override
   late final Refreshable<Future<T>> future = _future(this);
-
-  @override
-  late final Refreshable<Stream<T>> stream = _stream(this);
 }
 
 /// The [ProviderElementBase] of [AutoDisposeFutureProvider]
