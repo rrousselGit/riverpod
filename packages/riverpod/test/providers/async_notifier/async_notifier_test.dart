@@ -428,7 +428,25 @@ void main() {
 
         test(
           'after manually going back to loading, dispose throws StateError',
-          () {},
+          () async {
+            final container = createContainer();
+            final completer = Completer<int>.sync();
+            final provider = factory.simpleTestProvider<int>(
+              (ref) => completer.future,
+            );
+
+            container.read(provider);
+            container.read(provider.notifier).state = const AsyncData(42);
+            container.read(provider.notifier).state = const AsyncLoading<int>();
+
+            final future = container.read(provider.future);
+
+            container.dispose();
+
+            completer.complete(42);
+
+            await expectLater(future, throwsStateError);
+          },
         );
 
         test(
