@@ -137,7 +137,7 @@ mixin FutureHandlerProviderElementMixin<T>
   /// The purpose of the variable is to handle the case where an [AsyncNotifier]
   /// is disposed while still in loading state.
   ///
-  /// In that scenario, [AsyncNotifier.future] will resolve with [_builtFuture].
+  /// In that scenario, `AsyncNotifier.future` will resolve with [_builtFuture].
   Future<T>? _builtFuture;
 
   void _dataTransition(T value) {
