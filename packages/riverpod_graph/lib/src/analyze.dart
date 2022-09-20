@@ -267,6 +267,7 @@ class ProviderDependencyVisitor extends RecursiveAstVisitor<void> {
   /// The provider that is being visited.
   final VariableElement provider;
 
+  /// The current unit.
   final ResolvedLibraryResult unit;
 
   @override
