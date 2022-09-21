@@ -34,7 +34,7 @@ Future<Package> fetchPackageDetails(
   final cancelToken = ref.cancelToken();
 
   return ref
-      .watch(PubRepositoryProvider)
+      .watch(pubRepositoryProvider)
       .getPackageDetails(packageName: packageName, cancelToken: cancelToken);
 }
 
@@ -43,7 +43,7 @@ Future<List<String>> likedPackages(LikedPackagesRef ref) async {
   final cancelToken = ref.cancelToken();
 
   return ref
-      .watch(PubRepositoryProvider)
+      .watch(pubRepositoryProvider)
       .getLikedPackages(cancelToken: cancelToken);
 }
 
@@ -60,7 +60,7 @@ class PackageMetrics extends _$PackageMetrics {
   @override
   Future<PackageMetricsScore> build({required String packageName}) async {
     final metrics = await ref
-        .watch(PubRepositoryProvider)
+        .watch(pubRepositoryProvider)
         .getPackageMetrics(packageName: packageName);
 
     // Automatically refresh the package metrics page every 5 seconds
@@ -73,7 +73,7 @@ class PackageMetrics extends _$PackageMetrics {
   }
 
   Future<void> like() async {
-    await ref.read(PubRepositoryProvider).like(packageName: packageName);
+    await ref.read(pubRepositoryProvider).like(packageName: packageName);
 
     /// Since the like count as change, we refresh the package metrics.
     /// We could alternatively do something like:
@@ -86,15 +86,15 @@ class PackageMetrics extends _$PackageMetrics {
     // An alternative could be:
     // - convert likedPackages to a class
     // - add a like/unlike methods that updates the list of liked packages
-    // - call ref.read(LikedPackagesProvider).like(packageName);
-    ref.invalidate(LikedPackagesProvider);
+    // - call ref.read(likedPackagesProvider).like(packageName);
+    ref.invalidate(likedPackagesProvider);
   }
 
   Future<void> unlike() async {
-    await ref.read(PubRepositoryProvider).unlike(packageName: packageName);
+    await ref.read(pubRepositoryProvider).unlike(packageName: packageName);
 
     ref.invalidateSelf();
-    ref.invalidate(LikedPackagesProvider);
+    ref.invalidate(likedPackagesProvider);
   }
 }
 
@@ -108,14 +108,12 @@ class PackageDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final package =
-        ref.watch(FetchPackageDetailsProvider(packageName: packageName));
+        ref.watch(fetchPackageDetailsProvider(packageName: packageName));
 
-    final likedPackages = ref.watch(LikedPackagesProvider);
+    final likedPackages = ref.watch(likedPackagesProvider);
     final isLiked = likedPackages.valueOrNull?.contains(packageName) ?? false;
 
-    final metrics = ref.watch(
-      PackageMetricsProviderProvider(packageName: packageName),
-    );
+    final metrics = ref.watch(packageMetricsProvider(packageName: packageName));
 
     return Scaffold(
       appBar: const PubAppbar(),
@@ -127,11 +125,10 @@ class PackageDetailPage extends ConsumerWidget {
             onRefresh: () {
               return Future.wait([
                 ref.refresh(
-                  PackageMetricsProviderProvider(packageName: packageName)
-                      .future,
+                  packageMetricsProvider(packageName: packageName).future,
                 ),
                 ref.refresh(
-                  FetchPackageDetailsProvider(packageName: packageName).future,
+                  fetchPackageDetailsProvider(packageName: packageName).future,
                 ),
               ]);
             },
@@ -156,7 +153,7 @@ class PackageDetailPage extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final packageLikes = ref.read(
-            PackageMetricsProviderProvider(packageName: packageName).notifier,
+            packageMetricsProvider(packageName: packageName).notifier,
           );
 
           if (isLiked) {

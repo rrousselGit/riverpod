@@ -22,7 +22,7 @@ String public(PublicRef ref) {
 /// A generated provider with a '$' in its name.
 @riverpod
 String supports$inNames(Supports$inNamesRef ref) {
-  return ref.watch(PublicProvider);
+  return ref.watch(publicProvider);
 }
 
 /// A generated family provider.
@@ -35,16 +35,16 @@ String family(
   bool forth = true,
   List<String>? fifth,
 }) {
-  ref.watch(PublicProvider);
+  ref.watch(publicProvider);
   return '(first: $first, second: $second, third: $third, forth: $forth, fifth: $fifth)';
 }
 
 /// A private generated provider.
-final AutoDisposeProvider<String> privateProvider = _PrivateProvider;
+final AutoDisposeProvider<String> privateProvider = _privateProvider;
 
 @riverpod
 String _private(_PrivateRef ref) {
-  return ref.watch(PublicProvider);
+  return ref.watch(publicProvider);
 }
 
 /// A generated public provider from a class
@@ -52,18 +52,18 @@ String _private(_PrivateRef ref) {
 class PublicClass extends _$PublicClass {
   @override
   String build() {
-    return ref.watch(PublicProvider);
+    return ref.watch(publicProvider);
   }
 }
 
 /// A private generate provider from a class.
-final privateClassProvider = _PrivateClassProvider;
+final privateClassProvider = _privateClassProvider;
 
 @riverpod
 class _PrivateClass extends _$PrivateClass {
   @override
   String build() {
-    return ref.watch(PublicProvider);
+    return ref.watch(publicProvider);
   }
 }
 
@@ -78,7 +78,7 @@ class FamilyClass extends _$FamilyClass {
     bool forth = true,
     List<String>? fifth,
   }) {
-    ref.watch(PublicProvider);
+    ref.watch(publicProvider);
     return '(first: $first, second: $second, third: $third, forth: $forth, fifth: $fifth)';
   }
 }
@@ -88,6 +88,6 @@ class FamilyClass extends _$FamilyClass {
 class Supports$InClassName extends _$Supports$InClassName {
   @override
   String build() {
-    return ref.watch(PublicProvider);
+    return ref.watch(publicProvider);
   }
 }

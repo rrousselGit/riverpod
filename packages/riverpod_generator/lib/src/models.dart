@@ -71,10 +71,22 @@ class Data {
 
   String get refName => '${rawName.titled}Ref';
 
+  /// foo -> fooProvider
+  /// Foo -> fooProvider
   String get providerName {
-    // _foo -> _FooProvider
-    // foo -> FooProvider
+    return '${rawName.lowerFirst}Provider';
+  }
+
+  /// foo -> FooProvider
+  /// Foo -> FooProvider
+  String get providerTypeNameImpl {
     return '${rawName.titled}Provider';
+  }
+
+  /// foo -> FooFamily
+  /// Foo -> FooFamily
+  String get familyName {
+    return '${rawName.titled}Family';
   }
 
   String get exposedValueDisplayType {
@@ -133,9 +145,6 @@ class Data {
         return '${leading}AsyncNotifierProviderRef';
     }
   }
-
-  late final familyName = '${providerName}Family';
-  late final providerTypeNameImpl = '${providerName}Provider';
 
   late final paramDefinition = [
     ...positionalParameters.map((e) {
@@ -255,6 +264,13 @@ extension on String {
     return replaceFirstMapped(
       RegExp('[a-zA-Z]'),
       (match) => match.group(0)!.toUpperCase(),
+    );
+  }
+
+  String get lowerFirst {
+    return replaceFirstMapped(
+      RegExp('[a-zA-Z]'),
+      (match) => match.group(0)!.toLowerCase(),
     );
   }
 }

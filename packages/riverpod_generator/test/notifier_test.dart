@@ -12,29 +12,29 @@ void main() {
     final container = createContainer();
 
     final AutoDisposeNotifierProvider<PublicClass, String> provider =
-        PublicClassProvider;
-    final String result = container.read(PublicProvider);
+        publicClassProvider;
+    final String result = container.read(publicProvider);
 
     expect(result, 'Hello world');
   });
 
   test('Generates .name for providers', () {
-    expect(PublicClassProvider.name, 'PublicClassProvider');
-    expect(privateClassProvider.name, '_PrivateClassProvider');
+    expect(publicClassProvider.name, 'publicClassProvider');
+    expect(privateClassProvider.name, '_privateClassProvider');
 
-    expect(FamilyClassProvider.name, 'FamilyClassProvider');
-    expect(FamilyClassProvider(42, third: .42).name, 'FamilyClassProvider');
+    expect(familyClassProvider.name, 'familyClassProvider');
+    expect(familyClassProvider(42, third: .42).name, 'familyClassProvider');
   });
 
   test('Sets cacheTime/disposeDelay to null on non-autoDispose providers', () {
-    expect(PublicClassProvider.cacheTime, null);
-    expect(PublicClassProvider.disposeDelay, null);
+    expect(publicClassProvider.cacheTime, null);
+    expect(publicClassProvider.disposeDelay, null);
 
-    expect(FamilyClassProvider.cacheTime, null);
-    expect(FamilyClassProvider.disposeDelay, null);
+    expect(familyClassProvider.cacheTime, null);
+    expect(familyClassProvider.disposeDelay, null);
 
-    expect(FamilyClassProvider(42, third: .42).cacheTime, null);
-    expect(FamilyClassProvider(42, third: .42).disposeDelay, null);
+    expect(familyClassProvider(42, third: .42).cacheTime, null);
+    expect(familyClassProvider(42, third: .42).disposeDelay, null);
   });
 
   test(
@@ -42,27 +42,27 @@ void main() {
       () {
     final container = createContainer();
 
-    final FamilyClassProviderFamily family = FamilyClassProvider;
+    final FamilyClassFamily family = familyClassProvider;
 
-    expect(FamilyClassProvider(42, third: .42).from, FamilyClassProvider);
+    expect(familyClassProvider(42, third: .42).from, familyClassProvider);
 
     expect(
-      FamilyClassProvider(42, third: .42),
-      FamilyClassProvider(42, third: .42),
+      familyClassProvider(42, third: .42),
+      familyClassProvider(42, third: .42),
     );
     expect(
-      FamilyClassProvider(42, third: .42),
-      isNot(FamilyClassProvider(42, third: .21)),
+      familyClassProvider(42, third: .42),
+      isNot(familyClassProvider(42, third: .21)),
     );
     expect(
-      FamilyClassProvider(42, third: .42).hashCode,
-      isNot(FamilyClassProvider(42, third: .21).hashCode),
+      familyClassProvider(42, third: .42).hashCode,
+      isNot(familyClassProvider(42, third: .21).hashCode),
     );
 
     // handle defaults
     expect(
-      FamilyClassProvider(42, third: .42),
-      FamilyClassProvider(
+      familyClassProvider(42, third: .42),
+      familyClassProvider(
         42,
         third: .42,
         // ignore: avoid_redundant_argument_values
@@ -70,8 +70,8 @@ void main() {
       ),
     );
     expect(
-      FamilyClassProvider(42, third: .42).hashCode,
-      FamilyClassProvider(
+      familyClassProvider(42, third: .42).hashCode,
+      familyClassProvider(
         42,
         third: .42,
         // ignore: avoid_redundant_argument_values
@@ -79,7 +79,7 @@ void main() {
       ).hashCode,
     );
 
-    final FamilyClassProviderProvider provider = FamilyClassProvider(
+    final FamilyClassProvider provider = familyClassProvider(
       42,
       second: 'x42',
       third: .42,
@@ -97,7 +97,7 @@ void main() {
     expect(provider.fifth, ['x42']);
 
     final String result = container.read(
-      FamilyClassProvider(
+      familyClassProvider(
         42,
         second: 'x42',
         third: .42,

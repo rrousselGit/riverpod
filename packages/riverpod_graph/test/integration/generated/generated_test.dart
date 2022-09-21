@@ -56,17 +56,17 @@ flowchart TB
   nonGeneratedProvider2[[nonGeneratedProvider2]];
   nonGeneratedProvider ==> nonGeneratedProvider2;
   nonGeneratedProvider[[nonGeneratedProvider]];
-  PublicClassProvider[[PublicClassProvider]];
-  PublicProvider ==> PublicClassProvider;
-  PublicProvider[[PublicProvider]];
-  _PrivateClassProvider[[_PrivateClassProvider]];
-  PublicProvider ==> _PrivateClassProvider;
-  Supports$InClassNameProvider[[Supports$InClassNameProvider]];
-  PublicProvider ==> Supports$InClassNameProvider;
-  Supports$inNamesProvider[[Supports$inNamesProvider]];
-  PublicProvider ==> Supports$inNamesProvider;
-  _PrivateProvider[[_PrivateProvider]];
-  PublicProvider ==> _PrivateProvider;''',
+  publicClassProvider[[publicClassProvider]];
+  publicProvider ==> publicClassProvider;
+  publicProvider[[publicProvider]];
+  _privateClassProvider[[_privateClassProvider]];
+  publicProvider ==> _privateClassProvider;
+  supports$InClassNameProvider[[supports$InClassNameProvider]];
+  publicProvider ==> supports$InClassNameProvider;
+  supports$inNamesProvider[[supports$inNamesProvider]];
+  publicProvider ==> supports$inNamesProvider;
+  _privateProvider[[_privateProvider]];
+  publicProvider ==> _privateProvider;''',
       reason: 'It should log the riverpod graph',
     );
     await process.shouldExit(0);

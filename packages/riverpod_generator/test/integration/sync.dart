@@ -27,7 +27,7 @@ String family(
   return '(first: $first, second: $second, third: $third, fourth: $fourth, fifth: $fifth)';
 }
 
-final privateProvider = _PrivateProvider;
+final privateProvider = _privateProvider;
 
 @riverpod
 String _private(_PrivateRef ref) {
@@ -43,7 +43,7 @@ class PublicClass extends _$PublicClass {
   }
 }
 
-final privateClassProvider = _PrivateClassProvider;
+final privateClassProvider = _privateClassProvider;
 
 @riverpod
 class _PrivateClass extends _$PrivateClass {
