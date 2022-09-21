@@ -53,8 +53,6 @@ class AutoDisposeAsyncNotifierProviderImpl<
     super.from,
     super.argument,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
     super.debugGetCreateSourceHash,
   });
 

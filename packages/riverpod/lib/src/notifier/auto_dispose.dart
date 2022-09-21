@@ -50,8 +50,6 @@ class AutoDisposeNotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     super.from,
     super.argument,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
     super.debugGetCreateSourceHash,
   });
 

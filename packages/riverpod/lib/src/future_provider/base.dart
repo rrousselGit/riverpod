@@ -25,7 +25,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
     super.argument,
     super.dependencies,
     super.debugGetCreateSourceHash,
-  }) : super(cacheTime: null, disposeDelay: null);
+  });
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeFutureProviderBuilder();

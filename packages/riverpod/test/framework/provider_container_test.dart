@@ -27,54 +27,6 @@ void main() {
       verifyOnly(listener, listener(0, 1));
     });
 
-    group('disposeDelay', () {
-      test('defaults to zero', () {
-        final container = createContainer();
-
-        expect(container.disposeDelay, 0);
-      });
-
-      test(
-          'if a parent is specified and no default is passed, use the parent disposeDelay',
-          () {
-        final parent = createContainer(disposeDelay: 5 * 1000);
-        final container = createContainer(
-          parent: parent,
-          disposeDelay: 2 * 1000,
-        );
-
-        expect(container.disposeDelay, 2000);
-
-        final container2 = createContainer(parent: parent);
-
-        expect(container2.disposeDelay, 5000);
-      });
-    });
-
-    group('cacheTime', () {
-      test('defaults to zero', () {
-        final container = createContainer();
-
-        expect(container.cacheTime, 0);
-      });
-
-      test(
-          'if a parent is specified and no default is passed, use the parent cacheTime',
-          () {
-        final parent = createContainer(cacheTime: 5 * 1000);
-        final container = createContainer(
-          parent: parent,
-          cacheTime: 2 * 1000,
-        );
-
-        expect(container.cacheTime, 2000);
-
-        final container2 = createContainer(parent: parent);
-
-        expect(container2.cacheTime, 5000);
-      });
-    });
-
     test(
         'when using overrideWithProvider, handles overriding with a more specific provider type',
         () {

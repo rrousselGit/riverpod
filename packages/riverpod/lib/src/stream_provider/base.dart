@@ -81,7 +81,7 @@ class StreamProvider<T> extends _StreamProviderBase<T>
     super.argument,
     super.dependencies,
     super.debugGetCreateSourceHash,
-  }) : super(cacheTime: null, disposeDelay: null);
+  });
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStreamProviderBuilder();

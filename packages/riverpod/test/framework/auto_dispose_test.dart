@@ -49,32 +49,6 @@ Future<void> main() async {
   });
 
   group('ref.keepAlive', () {
-    test('supports pausing providers if they are not listened', () async {
-      // regression test for https://github.com/rrousselGit/riverpod/issues/1360
-      final container = createContainer();
-      final dep = StateProvider((ref) => 0);
-      var buildCount = 0;
-      final provider = Provider.autoDispose(
-        cacheTime: 5 * 1000,
-        (ref) {
-          buildCount++;
-          ref.watch(dep);
-          ref.keepAlive();
-        },
-      );
-
-      expect(buildCount, 0);
-      container.read(provider);
-      expect(buildCount, 1);
-
-      container.read(dep.notifier).state++;
-      await container.pump();
-
-      expect(buildCount, 1);
-      container.read(provider);
-      expect(buildCount, 2);
-    });
-
     test('when the provider rebuilds, links are cleared', () async {
       final container = createContainer();
       final dep = StateProvider((ref) => 0);

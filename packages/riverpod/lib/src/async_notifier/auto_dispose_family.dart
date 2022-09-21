@@ -39,8 +39,6 @@ class AutoDisposeFamilyAsyncNotifierProviderImpl<
     super.from,
     super.argument,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
     super.debugGetCreateSourceHash,
   });
 
@@ -77,7 +75,5 @@ class AutoDisposeAsyncNotifierProviderFamily<
     super.create, {
     super.name,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
   }) : super(providerFactory: AutoDisposeFamilyAsyncNotifierProvider.new);
 }

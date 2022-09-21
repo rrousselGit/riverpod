@@ -8,8 +8,6 @@
 // You can then use it in your terminal by executing:
 // generate_providers <riverpod/flutter_riverpod/hooks_riverpod> <path to builder file to update>
 
-// ignore_for_file: invalid_use_of_internal_member
-
 import 'package:flutter/foundation.dart';
 import 'internals.dart';
 
@@ -334,15 +332,11 @@ class AutoDisposeChangeNotifierProviderBuilder {
     Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeChangeNotifierProvider<Notifier>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 
@@ -364,15 +358,11 @@ class AutoDisposeChangeNotifierProviderFamilyBuilder {
         create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 }

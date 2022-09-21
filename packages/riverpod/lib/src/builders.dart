@@ -79,15 +79,11 @@ class AutoDisposeAsyncNotifierProviderBuilder {
     NotifierT Function() create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeAsyncNotifierProvider<NotifierT, T>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 
@@ -108,15 +104,11 @@ class AutoDisposeAsyncNotifierProviderFamilyBuilder {
     NotifierT Function() create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeAsyncNotifierProviderFamily<NotifierT, T, Arg>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 }
@@ -187,15 +179,11 @@ class AutoDisposeNotifierProviderBuilder {
     NotifierT Function() create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeNotifierProvider<NotifierT, State>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 
@@ -216,15 +204,11 @@ class AutoDisposeNotifierProviderFamilyBuilder {
     NotifierT Function() create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeNotifierProviderFamily<NotifierT, State, Arg>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 }
@@ -763,15 +747,11 @@ class AutoDisposeStateProviderBuilder {
     Create<State, AutoDisposeStateProviderRef<State>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeStateProvider<State>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 
@@ -791,15 +771,11 @@ class AutoDisposeStateProviderFamilyBuilder {
     FamilyCreate<State, AutoDisposeStateProviderRef<State>, Arg> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeStateProviderFamily<State, Arg>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 }
@@ -816,15 +792,11 @@ class AutoDisposeStateNotifierProviderBuilder {
         create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeStateNotifierProvider<Notifier, State>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 
@@ -847,15 +819,11 @@ class AutoDisposeStateNotifierProviderFamilyBuilder {
         create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeStateNotifierProviderFamily<Notifier, State, Arg>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 }
@@ -870,15 +838,11 @@ class AutoDisposeProviderBuilder {
     Create<State, AutoDisposeProviderRef<State>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeProvider<State>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 
@@ -898,15 +862,11 @@ class AutoDisposeProviderFamilyBuilder {
     FamilyCreate<State, AutoDisposeProviderRef<State>, Arg> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeProviderFamily<State, Arg>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 }
@@ -921,15 +881,11 @@ class AutoDisposeFutureProviderBuilder {
     Create<FutureOr<State>, AutoDisposeFutureProviderRef<State>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeFutureProvider<State>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 
@@ -950,15 +906,11 @@ class AutoDisposeFutureProviderFamilyBuilder {
         create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeFutureProviderFamily<State, Arg>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 }
@@ -973,15 +925,11 @@ class AutoDisposeStreamProviderBuilder {
     Create<Stream<State>, AutoDisposeStreamProviderRef<State>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeStreamProvider<State>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 
@@ -1002,15 +950,11 @@ class AutoDisposeStreamProviderFamilyBuilder {
         create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeStreamProviderFamily<State, Arg>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 }

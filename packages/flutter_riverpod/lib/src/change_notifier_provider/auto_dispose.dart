@@ -19,8 +19,6 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     super.from,
     super.argument,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
     super.debugGetCreateSourceHash,
   });
 
@@ -65,7 +63,5 @@ class AutoDisposeChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?,
     super.create, {
     super.name,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
   }) : super(providerFactory: AutoDisposeChangeNotifierProvider.new);
 }

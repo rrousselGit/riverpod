@@ -13,12 +13,6 @@ abstract class Family<State> extends ProviderOrFamily
   /// A base class for all families
   const Family();
 
-  /// {@macro riverpod.cache_time}
-  int? get cacheTime;
-
-  /// {@macro riverpod.dispose_delay}
-  int? get disposeDelay;
-
   @override
   List<ProviderOrFamily>? get dependencies;
 
@@ -145,12 +139,6 @@ class FamilyBase<RefT extends Ref<R>, R, Arg, Created,
   final String? name;
 
   @override
-  int? get disposeDelay => null;
-
-  @override
-  int? get cacheTime => null;
-
-  @override
   final List<ProviderOrFamily>? dependencies;
 
   @override
@@ -179,14 +167,10 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
       Family from,
       Object? argument,
       List<ProviderOrFamily>? dependencies,
-      int? cacheTime,
-      int? disposeDelay,
     })
         providerFactory,
     required this.name,
     required this.dependencies,
-    required this.cacheTime,
-    required this.disposeDelay,
   }) : _providerFactory = providerFactory;
 
   final ProviderT Function(
@@ -195,8 +179,6 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
     Family from,
     Object? argument,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) _providerFactory;
 
   final Created Function(RefT ref, Arg arg) _createFn;
@@ -208,18 +190,10 @@ class AutoDisposeFamilyBase<RefT extends Ref<R>, R, Arg, Created,
         from: this,
         argument: argument,
         dependencies: dependencies,
-        cacheTime: cacheTime,
-        disposeDelay: disposeDelay,
       );
 
   @override
   final String? name;
-
-  @override
-  final int? disposeDelay;
-
-  @override
-  final int? cacheTime;
 
   @override
   final List<ProviderOrFamily>? dependencies;
@@ -254,8 +228,6 @@ class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
         providerFactory,
     required this.name,
     required this.dependencies,
-    required this.cacheTime,
-    required this.disposeDelay,
   }) : _providerFactory = providerFactory;
 
   final ProviderT Function(
@@ -279,12 +251,6 @@ class AutoDisposeNotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
 
   @override
   final String? name;
-
-  @override
-  final int? disposeDelay;
-
-  @override
-  final int? cacheTime;
 
   @override
   final List<ProviderOrFamily>? dependencies;
@@ -343,13 +309,6 @@ class NotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
   @override
   final String? name;
 
-  @override
-  int? get disposeDelay => null;
-
-  @override
-  int? get cacheTime => null;
-
-  @override
   final List<ProviderOrFamily>? dependencies;
 
   @override
