@@ -21,7 +21,7 @@ void main() {
 
   test('Generates .name for providers', () {
     expect(publicProvider.name, 'publicProvider');
-    expect(privateProvider.name, '_PrivateProvider');
+    expect(privateProvider.name, '_privateProvider');
 
     expect(familyProvider.name, 'familyProvider');
     expect(familyProvider(42, third: .42).name, 'familyProvider');
