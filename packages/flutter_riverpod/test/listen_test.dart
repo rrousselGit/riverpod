@@ -40,6 +40,7 @@ void main() {
     testWidgets('removes listeners on dispose', (tester) async {
       final provider = StateProvider((ref) => 0);
       final listener = Listener<int>();
+      final listener2 = Listener<int>();
 
       late WidgetRef ref;
       await tester.pumpWidget(
@@ -58,11 +59,13 @@ void main() {
       );
 
       ref.listenManual(provider, listener);
+      ref.listenManual(provider, listener2);
 
       await tester.pumpWidget(ProviderScope(child: Container()));
 
       container.read(provider.notifier).state++;
       verifyZeroInteractions(listener);
+      verifyZeroInteractions(listener2);
     });
 
     testWidgets('supports fireImmediately', (tester) async {
