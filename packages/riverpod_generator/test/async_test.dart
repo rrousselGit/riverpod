@@ -12,29 +12,29 @@ void main() {
       () {
     final container = createContainer();
 
-    final AutoDisposeFutureProvider<String> provider = PublicProvider;
-    final AsyncValue<String> result = container.read(PublicProvider);
+    final AutoDisposeFutureProvider<String> provider = publicProvider;
+    final AsyncValue<String> result = container.read(publicProvider);
 
     expect(result, const AsyncData('Hello world'));
   });
 
   test('Generates .name for providers', () {
-    expect(PublicProvider.name, 'PublicProvider');
+    expect(publicProvider.name, 'publicProvider');
     expect(privateProvider.name, '_PrivateProvider');
 
-    expect(FamilyProvider.name, 'FamilyProvider');
-    expect(FamilyProvider(42, third: .42).name, 'FamilyProvider');
+    expect(familyProvider.name, 'familyProvider');
+    expect(familyProvider(42, third: .42).name, 'familyProvider');
   });
 
   test('Sets cacheTime/disposeDelay to null on non-autoDispose providers', () {
-    expect(PublicProvider.cacheTime, null);
-    expect(PublicProvider.disposeDelay, null);
+    expect(publicProvider.cacheTime, null);
+    expect(publicProvider.disposeDelay, null);
 
-    expect(FamilyProvider.cacheTime, null);
-    expect(FamilyProvider.disposeDelay, null);
+    expect(familyProvider.cacheTime, null);
+    expect(familyProvider.disposeDelay, null);
 
-    expect(FamilyProvider(42, third: .42).cacheTime, null);
-    expect(FamilyProvider(42, third: .42).disposeDelay, null);
+    expect(familyProvider(42, third: .42).cacheTime, null);
+    expect(familyProvider(42, third: .42).disposeDelay, null);
   });
 
   test(
@@ -42,27 +42,27 @@ void main() {
       () {
     final container = createContainer();
 
-    final FamilyProviderFamily family = FamilyProvider;
+    final FamilyFamily family = familyProvider;
 
-    expect(FamilyProvider(42, third: .42).from, FamilyProvider);
+    expect(familyProvider(42, third: .42).from, familyProvider);
 
     expect(
-      FamilyProvider(42, third: .42),
-      FamilyProvider(42, third: .42),
+      familyProvider(42, third: .42),
+      familyProvider(42, third: .42),
     );
     expect(
-      FamilyProvider(42, third: .42),
-      isNot(FamilyProvider(42, third: .21)),
+      familyProvider(42, third: .42),
+      isNot(familyProvider(42, third: .21)),
     );
     expect(
-      FamilyProvider(42, third: .42).hashCode,
-      isNot(FamilyProvider(42, third: .21).hashCode),
+      familyProvider(42, third: .42).hashCode,
+      isNot(familyProvider(42, third: .21).hashCode),
     );
 
     // handle defaults
     expect(
-      FamilyProvider(42, third: .42),
-      FamilyProvider(
+      familyProvider(42, third: .42),
+      familyProvider(
         42,
         third: .42,
         // ignore: avoid_redundant_argument_values
@@ -70,8 +70,8 @@ void main() {
       ),
     );
     expect(
-      FamilyProvider(42, third: .42).hashCode,
-      FamilyProvider(
+      familyProvider(42, third: .42).hashCode,
+      familyProvider(
         42,
         third: .42,
         // ignore: avoid_redundant_argument_values
@@ -79,7 +79,7 @@ void main() {
       ).hashCode,
     );
 
-    final FamilyProviderProvider provider = FamilyProvider(
+    final FamilyProvider provider = familyProvider(
       42,
       second: 'x42',
       third: .42,
@@ -95,7 +95,7 @@ void main() {
     expect(provider.fifth, ['x42']);
 
     final AsyncValue<String> result = container.read(
-      FamilyProvider(
+      familyProvider(
         42,
         second: 'x42',
         third: .42,

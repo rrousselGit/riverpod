@@ -35,7 +35,7 @@ import 'package:dio/dio.dart';
 part 'my_file.g.dart';
 
 // Using riverpod_generator, we define Providers by annotating functions with @riverpod.
-// In this example, riverpod_generator will use this function and generate a matching "FetchProductProvider".
+// In this example, riverpod_generator will use this function and generate a matching "fetchProductProvider".
 // The following example would be the equivalent of a "FutureProvider.autoDispose.family"
 @riverpod
 Future<List<Product>> fetchProducts(FetchProductRef ref, {required int page, int limit = 50}) async {
@@ -49,7 +49,7 @@ Future<List<Product>> fetchProducts(FetchProductRef ref, {required int page, int
 // Now that we defined a provider, we can then listen to it inside widgets as usual.
 Consumer(
   builder: (context, ref, child) {
-    AsyncValue<List<Product>> products = ref.watch(FetchProductProvider(page: 1));
+    AsyncValue<List<Product>> products = ref.watch(fetchProductProvider(page: 1));
 
     // Since our provider is async, we need to handle loading/error states
     return products.when(
@@ -149,13 +149,12 @@ class Home extends ConsumerWidget {
     return MaterialApp(
       home: Scaffold(
         // We can then listen to the generated provider in our widgets.
-        body: Text(ref.watch(LabelProvider)),
+        body: Text(ref.watch(labelProvider)),
       ),
     );
   }
 }
 ```
-
 
 [family]: https://riverpod.dev/docs/concepts/modifiers/family
 [provider]: https://github.com/rrousselGit/provider

@@ -8,28 +8,28 @@ import 'utils.dart';
 
 void main() {
   test('Passes cacheTime/disposeDelay from the annotation', () {
-    expect(TimersProvider.cacheTime, 10);
-    expect(TimersProvider.disposeDelay, 20);
+    expect(timersProvider.cacheTime, 10);
+    expect(timersProvider.disposeDelay, 20);
 
-    expect(Timers2Provider.cacheTime, 12);
-    expect(Timers2Provider.disposeDelay, 21);
-    expect(Timers2Provider(42).cacheTime, 12);
-    expect(Timers2Provider(42).disposeDelay, 21);
+    expect(timers2Provider.cacheTime, 12);
+    expect(timers2Provider.disposeDelay, 21);
+    expect(timers2Provider(42).cacheTime, 12);
+    expect(timers2Provider(42).disposeDelay, 21);
   });
 
   test('Respects keepAlive parameter', () {
-    final AutoDisposeProvider<int> provider = TimersProvider;
-    final AutoDisposeProvider<int> provider2 = Timers2Provider(42);
+    final AutoDisposeProvider<int> provider = timersProvider;
+    final AutoDisposeProvider<int> provider2 = timers2Provider(42);
     final container = createContainer();
 
-    container.read(KeepAliveProvider);
+    container.read(keepAliveProvider);
 
     expect(
-      container.readProviderElement(KeepAliveProvider),
+      container.readProviderElement(keepAliveProvider),
       isA<ProviderElement>(),
     );
     expect(
-      container.readProviderElement(KeepAliveProvider),
+      container.readProviderElement(keepAliveProvider),
       isNot(isA<AutoDisposeProviderElement>()),
     );
   });
