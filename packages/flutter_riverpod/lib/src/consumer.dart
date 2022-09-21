@@ -455,7 +455,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   var _dependencies = <ProviderListenable, ProviderSubscription>{};
   Map<ProviderListenable, ProviderSubscription>? _oldDependencies;
   final _listeners = <ProviderSubscription>[];
-  List<_ListenOnce>? _onceListeners;
+  List<_ListenManual>? _manualListeners;
 
   @override
   void didChangeDependencies() {
@@ -513,12 +513,12 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     for (var i = 0; i < _listeners.length; i++) {
       _listeners[i].close();
     }
-    final onceListeners = _onceListeners;
-    if (onceListeners != null) {
-      for (var i = 0; i < onceListeners.length; i++) {
-        onceListeners[i].close();
+    final manualListeners = _manualListeners?.toList();
+    if (manualListeners != null) {
+      for (final listener in manualListeners) {
+        listener.close();
       }
-      _onceListeners = null;
+      _manualListeners = null;
     }
 
     super.unmount();
@@ -564,9 +564,9 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,
   }) {
-    final listeners = _onceListeners ??= [];
+    final listeners = _manualListeners ??= [];
 
-    final sub = _ListenOnce(
+    final sub = _ListenManual(
       ProviderScope.containerOf(this, listen: false).listen(
         provider,
         listener,
@@ -581,8 +581,8 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   }
 }
 
-class _ListenOnce<T> implements ProviderSubscription<T> {
-  _ListenOnce(this._subscription, this._element);
+class _ListenManual<T> implements ProviderSubscription<T> {
+  _ListenManual(this._subscription, this._element);
 
   final ProviderSubscription<T> _subscription;
   final ConsumerStatefulElement _element;
@@ -590,7 +590,7 @@ class _ListenOnce<T> implements ProviderSubscription<T> {
   @override
   void close() {
     _subscription.close();
-    _element._onceListeners?.remove(this);
+    _element._manualListeners?.remove(this);
   }
 
   @override
