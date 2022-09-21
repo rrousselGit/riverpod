@@ -309,6 +309,7 @@ class NotifierFamilyBase<RefT extends Ref<R>, R, Arg, NotifierT,
   @override
   final String? name;
 
+  @override
   final List<ProviderOrFamily>? dependencies;
 
   @override

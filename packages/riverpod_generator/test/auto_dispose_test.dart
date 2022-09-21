@@ -7,19 +7,7 @@ import 'integration/auto_dispose.dart';
 import 'utils.dart';
 
 void main() {
-  test('Passes cacheTime/disposeDelay from the annotation', () {
-    expect(timersProvider.cacheTime, 10);
-    expect(timersProvider.disposeDelay, 20);
-
-    expect(timers2Provider.cacheTime, 12);
-    expect(timers2Provider.disposeDelay, 21);
-    expect(timers2Provider(42).cacheTime, 12);
-    expect(timers2Provider(42).disposeDelay, 21);
-  });
-
   test('Respects keepAlive parameter', () {
-    final AutoDisposeProvider<int> provider = timersProvider;
-    final AutoDisposeProvider<int> provider2 = timers2Provider(42);
     final container = createContainer();
 
     container.read(keepAliveProvider);

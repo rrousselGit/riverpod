@@ -46,10 +46,6 @@ final characterPages = FutureProvider.autoDispose
     );
     return charactersResponse;
   },
-  // When a page is no-longer use, keep it in cache for up to 5 minutes.
-  // After this point, if the list of characters is requested again, a new fetch
-  // will be performed.
-  cacheTime: 5 * 1000 * 60, // 5 minutes
 );
 
 final charactersCount =

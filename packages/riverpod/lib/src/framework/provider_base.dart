@@ -238,7 +238,6 @@ mixin OverrideWithValueMixin<State> on ProviderBase<State> {
   /// ```
   /// {@endtemplate}
   Override overrideWithValue(State value) {
-    // TODO handle autoDispose such that cacheTime is applied
     return ProviderOverride(
       origin: this,
       override: ValueProvider<State>(value),
