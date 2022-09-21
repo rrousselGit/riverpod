@@ -15,8 +15,6 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
     super.from,
     super.argument,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
     super.debugGetCreateSourceHash,
   });
 
@@ -57,7 +55,5 @@ class AutoDisposeStreamProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     super.create, {
     super.name,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
   }) : super(providerFactory: AutoDisposeStreamProvider.new);
 }

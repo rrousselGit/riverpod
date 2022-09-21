@@ -26,8 +26,6 @@ class Data {
     required this.isFamily,
     required this.parameters,
     required this.keepAlive,
-    required this.cacheTime,
-    required this.disposeDelay,
     required this.providerDoc,
     required this.createElement,
     required this.createAst,
@@ -42,8 +40,6 @@ class Data {
     required this.isFamily,
     required this.parameters,
     required this.keepAlive,
-    required this.cacheTime,
-    required this.disposeDelay,
     required this.providerDoc,
     required this.createElement,
     required this.createAst,
@@ -60,8 +56,6 @@ class Data {
   final String valueDisplayType;
   final List<ParameterElement> parameters;
   final bool keepAlive;
-  final int? cacheTime;
-  final int? disposeDelay;
   final String providerDoc;
 
   String get hashFunctionName => '\$${rawName}Hash';

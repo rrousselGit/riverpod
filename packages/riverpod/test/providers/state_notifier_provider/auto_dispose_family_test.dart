@@ -1,48 +1,10 @@
-import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import '../../third_party/fake_async.dart';
 import '../../utils.dart';
 
 void main() {
   group('StateNotifier.family', () {
-    test('supports cacheTime', () async {
-      final onDispose = cacheFamily<int, OnDisposeMock>(
-        (key) => OnDisposeMock(),
-      );
-
-      await fakeAsync((async) async {
-        final container = createContainer();
-        final provider = StateNotifierProvider.autoDispose
-            .family<StateController<int>, int, int>(
-          cacheTime: 5 * 1000,
-          (ref, value) {
-            ref.onDispose(onDispose(value));
-            return StateController(value);
-          },
-        );
-
-        final sub = container.listen<int>(provider(42), (previous, next) {});
-
-        expect(sub.read(), 42);
-
-        verifyZeroInteractions(onDispose(42));
-
-        sub.close();
-
-        async.elapse(const Duration(seconds: 2));
-        await container.pump();
-
-        verifyZeroInteractions(onDispose(42));
-
-        async.elapse(const Duration(seconds: 3));
-        await container.pump();
-
-        verifyOnly(onDispose(42), onDispose(42)());
-      });
-    });
-
     test('specifies `from` & `argument` for related providers', () {
       final provider =
           StateNotifierProvider.autoDispose.family<Counter, int, int>(

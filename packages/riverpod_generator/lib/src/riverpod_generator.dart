@@ -53,14 +53,6 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     return element.getField('keepAlive')?.toBoolValue() ?? false;
   }
 
-  int? _getCacheTime(DartObject element) {
-    return element.getField('cacheTime')?.toIntValue();
-  }
-
-  int? _getDisposeDelay(DartObject element) {
-    return element.getField('disposeDelay')?.toIntValue();
-  }
-
   FutureOr<Data> _parseFunctionElement(
     BuildStep buildStep,
     GlobalData globalData,
@@ -76,8 +68,6 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
           : '${element.documentationComment}\n///\n/// Copied from [${element.name}].',
       rawName: element.name,
       keepAlive: _getKeepAlive(riverpod),
-      cacheTime: _getCacheTime(riverpod),
-      disposeDelay: _getDisposeDelay(riverpod),
       isScoped: element.isExternal,
       // functional providers have a "ref" has paramter, so families have at
       // least 2 parameters.
@@ -130,8 +120,6 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
           ? '/// See also [${element.name}].'
           : '${element.documentationComment}\n///\n/// Copied from [${element.name}].',
       keepAlive: _getKeepAlive(riverpod),
-      cacheTime: _getCacheTime(riverpod),
-      disposeDelay: _getDisposeDelay(riverpod),
       rawName: element.name,
       notifierName: element.name,
       isScoped: buildMethod.isAbstract,

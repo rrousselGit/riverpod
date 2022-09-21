@@ -52,7 +52,7 @@ class StateProvider<T> extends _StateProviderBase<T>
     super.argument,
     super.dependencies,
     super.debugGetCreateSourceHash,
-  }) : super(cacheTime: null, disposeDelay: null);
+  });
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStateProviderBuilder();

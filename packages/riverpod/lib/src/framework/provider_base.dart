@@ -25,8 +25,6 @@ abstract class ProviderBase<State> extends ProviderOrFamily
     required this.name,
     required this.from,
     required this.argument,
-    required this.cacheTime,
-    required this.disposeDelay,
     required this.debugGetCreateSourceHash,
   });
 
@@ -44,34 +42,6 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   ///
   /// This variable is only set by `riverpod_generator`.
   final String Function()? debugGetCreateSourceHash;
-
-  /// {@template riverpod.cache_time}
-  /// The minimum amount of time (in milliseconds) before an `autoDispose` provider
-  /// can be disposed if not listened after the last value change.
-  ///
-  /// If the provider rebuilds (such as when using `ref.watch` or `ref.refresh`)
-  /// or emits a new value, the timer will be refreshed.
-  ///
-  /// If null, use the nearest ancestor [ProviderContainer]'s [cacheTime].
-  /// If no ancestor is found, fallbacks to `0`.
-  ///
-  /// If negative, this is equivalent to "infinite duration".
-  /// {@endtemplate}
-  final int? cacheTime;
-
-  /// {@template riverpod.dispose_delay}
-  /// The amount of time before a provider is disposed after its last listener
-  /// is removed.
-  ///
-  /// If a new listener is added within that duration, the provider will not be
-  /// disposed.
-  ///
-  /// If null, use the nearest ancestor [ProviderContainer]'s [disposeDelay].
-  /// If no ancestor is found, fallbacks to `0`.
-  ///
-  /// If negative, this is equivalent to "infinite duration".
-  /// {@endtemplate}
-  final int? disposeDelay;
 
   /// {@template riverpod.name}
   /// A custom label for providers.
@@ -268,7 +238,6 @@ mixin OverrideWithValueMixin<State> on ProviderBase<State> {
   /// ```
   /// {@endtemplate}
   Override overrideWithValue(State value) {
-    // TODO handle autoDispose such that cacheTime is applied
     return ProviderOverride(
       origin: this,
       override: ValueProvider<State>(value),

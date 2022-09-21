@@ -16,8 +16,6 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
     super.from,
     super.argument,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
     super.debugGetCreateSourceHash,
   });
 
@@ -63,7 +61,5 @@ class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>,
     super.create, {
     super.name,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
   }) : super(providerFactory: AutoDisposeStateNotifierProvider.new);
 }

@@ -38,8 +38,6 @@ abstract class _StreamProviderBase<T> extends ProviderBase<AsyncValue<T>> {
     required super.name,
     required super.from,
     required super.argument,
-    required super.cacheTime,
-    required super.disposeDelay,
     required super.debugGetCreateSourceHash,
   });
 

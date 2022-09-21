@@ -26,7 +26,7 @@ extension CancelTokenX on Ref {
   }
 }
 
-@Riverpod(cacheTime: 30 * 100)
+@riverpod
 Future<Package> fetchPackageDetails(
   FetchPackageDetailsRef ref, {
   required String packageName,
@@ -55,7 +55,7 @@ PubRepository pubRepository(PubRepositoryRef ref) => PubRepository();
 ///
 /// It also exposes utilities to like/unlike a package, assuming the user
 /// is logged-in.
-@Riverpod(cacheTime: 30 * 100)
+@riverpod
 class PackageMetrics extends _$PackageMetrics {
   @override
   Future<PackageMetricsScore> build({required String packageName}) async {

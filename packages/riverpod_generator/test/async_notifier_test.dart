@@ -27,17 +27,6 @@ void main() {
     expect(familyClassProvider(42, third: .42).name, 'familyClassProvider');
   });
 
-  test('Sets cacheTime/disposeDelay to null on non-autoDispose providers', () {
-    expect(publicClassProvider.cacheTime, null);
-    expect(publicClassProvider.disposeDelay, null);
-
-    expect(familyClassProvider.cacheTime, null);
-    expect(familyClassProvider.disposeDelay, null);
-
-    expect(familyClassProvider(42, third: .42).cacheTime, null);
-    expect(familyClassProvider(42, third: .42).disposeDelay, null);
-  });
-
   test(
       'Creates a NotifierProvider.family<T> if @provider is used on a synchronous function with parameters',
       () {

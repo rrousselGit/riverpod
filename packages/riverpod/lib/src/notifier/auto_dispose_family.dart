@@ -37,8 +37,6 @@ class AutoDisposeFamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>,
     super.from,
     super.argument,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
     super.debugGetCreateSourceHash,
   });
 
@@ -68,7 +66,5 @@ class AutoDisposeNotifierProviderFamily<
     super.create, {
     super.name,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
   }) : super(providerFactory: AutoDisposeFamilyNotifierProvider.new);
 }

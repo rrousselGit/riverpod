@@ -80,8 +80,6 @@ class ProviderScope extends StatefulWidget {
     super.key,
     this.overrides = const [],
     this.observers,
-    this.cacheTime,
-    this.disposeDelay,
     this.parent,
     required this.child,
   });
@@ -108,26 +106,6 @@ class ProviderScope extends StatefulWidget {
 
     return scope.container;
   }
-
-  /// The minimum amount of time before an `autoDispose` provider can be
-  /// disposed if not listened.
-  ///
-  /// If the provider rebuilds (such as when using `ref.watch` or `ref.refresh`),
-  /// the timer will be refreshed.
-  ///
-  /// If null, use the nearest ancestor [ProviderScope]'s [cacheTime].
-  /// If no ancestor is found, fallbacks to 0.
-  final int? cacheTime;
-
-  /// The amount of time before a provider is disposed after its last listener
-  /// is removed.
-  ///
-  /// If a new listener is added within that duration, the provider will not be
-  /// disposed.
-  ///
-  /// If null, use the nearest ancestor [ProviderContainer]'s [disposeDelay].
-  /// If no ancestor is found, fallbacks to 0.
-  final int? disposeDelay;
 
   /// Explicitly override the parent [ProviderContainer] that this [ProviderScope]
   /// would be a descendant of.
@@ -199,8 +177,6 @@ class ProviderScopeState extends State<ProviderScope> {
       parent: parent,
       overrides: widget.overrides,
       observers: widget.observers,
-      cacheTime: widget.cacheTime,
-      disposeDelay: widget.disposeDelay,
       // TODO How to report to FlutterError?
       // onError: (dynamic error, stack) {
       //   FlutterError.reportError(

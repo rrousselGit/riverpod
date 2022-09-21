@@ -21,10 +21,6 @@ final ${data.providerName} = ${data.providerTypeDisplayString}(
   ${create()},
   name: r'${data.providerName}',
   debugGetCreateSourceHash: ${data.hashFn},
-  ${[
-      if (data.cacheTime != null) 'cacheTime: ${data.cacheTime},',
-      if (data.disposeDelay != null) 'disposeDelay: ${data.disposeDelay},',
-    ].join()}
 );''';
   }
 
@@ -55,10 +51,6 @@ class ${data.providerTypeNameImpl} extends ${data.providerTypeDisplayString} {
           from: ${data.providerName},
           name: r'${data.providerName}',
           debugGetCreateSourceHash: ${data.hashFn},
-    ${[
-      if (data.cacheTime != null) 'cacheTime: ${data.cacheTime},',
-      if (data.disposeDelay != null) 'disposeDelay: ${data.disposeDelay},',
-    ].join()}
         );
 
 ${data.parameters.map((e) => 'final ${e.type.getDisplayString(withNullability: true)} ${e.name};').join()}

@@ -26,7 +26,7 @@ class Provider<State> extends InternalProvider<State>
     super.from,
     super.argument,
     super.debugGetCreateSourceHash,
-  }) : super(cacheTime: null, disposeDelay: null);
+  });
 
   /// {@macro riverpod.family}
   static const family = ProviderFamilyBuilder();

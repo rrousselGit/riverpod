@@ -16,8 +16,6 @@ class ValueProvider<State> extends ProviderBase<State>
           name: null,
           from: null,
           argument: null,
-          cacheTime: null,
-          disposeDelay: null,
           debugGetCreateSourceHash: null,
         );
 
