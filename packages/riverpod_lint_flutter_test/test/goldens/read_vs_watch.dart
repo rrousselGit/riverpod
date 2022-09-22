@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+part 'read_vs_watch.g.dart';
 
 final provider = Provider((ref) => 0);
 
@@ -127,5 +129,27 @@ class Counter extends StateNotifier<int> {
   void increment() {
     ref.watch(provider);
     ref.read(provider);
+  }
+}
+
+@riverpod
+Future<String> generated(GeneratedRef ref, String value, int otherValue) async {
+  ref.read(provider);
+  ref.watch(provider);
+  return '';
+}
+
+@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  Future<String> build(int i, String b) async {
+    ref.read(provider);
+    ref.watch(provider);
+    return '';
+  }
+
+  void fn() {
+    ref.read(provider);
+    ref.watch(provider);
   }
 }

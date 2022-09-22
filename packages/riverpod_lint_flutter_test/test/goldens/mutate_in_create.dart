@@ -163,26 +163,51 @@ class _GState extends ConsumerState<G> {
   }
 }
 
-@Riverpod(cacheTime: 100)
-class MyNotifier extends _$MyNotifier {
-  @override
-  Future<String> build(int i, String b) async {
+@riverpod
+Future<String> generated(GeneratedRef ref, String value, int otherValue) async {
+  ref.watch(a.notifier).state = 'Other';
+  ref.invalidate(a);
+  ref.refresh(a);
+  await Future.delayed(Duration(seconds: 1));
+  ref.watch(a.notifier).state = 'Other';
+  ref.invalidate(a);
+  ref.refresh(a);
+  return '';
+}
+
+@riverpod
+String generatedSync(GeneratedSyncRef ref, String value, int otherValue) {
+  ref.watch(a.notifier).state = 'Other';
+  ref.invalidate(a);
+  ref.refresh(a);
+  Future.delayed(Duration(seconds: 1), () {
     ref.read(a.notifier).state = 'Other';
     ref.invalidate(a);
     ref.refresh(a);
+  });
+  return '';
+}
+
+@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  Future<String> build(int i, String b) async {
+    ref.watch(a.notifier).state = 'Other';
+    ref.invalidate(a);
+    ref.refresh(a);
     await Future.delayed(Duration(seconds: 1));
-    ref.read(a.notifier).state = 'Other';
+    ref.watch(a.notifier).state = 'Other';
     ref.invalidate(a);
     ref.refresh(a);
     return '';
   }
 }
 
-@Riverpod(cacheTime: 100)
+@riverpod
 class MyNotifier2 extends _$MyNotifier2 {
   @override
   String build(int i, String b) {
-    ref.read(a.notifier).state = 'Other';
+    ref.watch(a.notifier).state = 'Other';
     ref.invalidate(a);
     ref.refresh(a);
     Future.delayed(Duration(seconds: 1), () {

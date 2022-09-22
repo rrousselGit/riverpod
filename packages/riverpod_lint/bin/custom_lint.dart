@@ -101,8 +101,17 @@ mixin _ProviderCreationVisitor<T> on AsyncRecursiveVisitor<T> {
   Stream<T>? visitClassDeclaration(ClassDeclaration node) async* {
     final superStream = super.visitClassDeclaration(node);
     if (superStream != null) yield* superStream;
-    final e = node.declaredElement2;
-    if (e != null && _codegenNotifier.isAssignableFrom(e)) {
+    if (node.isProviderCreation ?? false) {
+      final stream = visitProviderCreation(node);
+      if (stream != null) yield* stream;
+    }
+  }
+
+  @override
+  Stream<T>? visitFunctionDeclaration(FunctionDeclaration node) async* {
+    final superStream = super.visitFunctionDeclaration(node);
+    if (superStream != null) yield* superStream;
+    if (node.isProviderCreation ?? false) {
       final stream = visitProviderCreation(node);
       if (stream != null) yield* stream;
     }
@@ -611,8 +620,14 @@ Then dispose of the listener when you no longer need the autoDispose provider to
 
   @override
   Stream<Lint> visitProviderCreation(AstNode node) async* {
+    if (node is ClassDeclaration || node is FunctionDeclaration) {
+      yield* ProviderSyncMutationVisitor(unit).visitNode(node) ??
+          const Stream<Lint>.empty();
+      return;
+    }
     final variableDeclaration =
         node.parents.whereType<VariableDeclaration>().firstOrNull;
+
     final providerDeclaration = variableDeclaration?.declaredElement2 != null
         ? ProviderDeclaration._(
             variableDeclaration!,
@@ -622,10 +637,8 @@ Then dispose of the listener when you no longer need the autoDispose provider to
     yield* _checkValidProviderDeclaration(node);
 
     if (providerDeclaration != null) {
-      if (providerDeclaration is! ClassDeclaration) {
-        // No need to check for codegen providers
-        yield* _checkProviderDependencies(providerDeclaration);
-      }
+      yield* _checkProviderDependencies(providerDeclaration);
+
       yield* ProviderSyncMutationVisitor(unit).visitNode(node) ??
           const Stream<Lint>.empty();
     }
@@ -1053,6 +1066,36 @@ extension on FunctionExpressionInvocation {
   }
 }
 
+extension on MethodDeclaration {
+  bool? get isProviderCreation {
+    final isBuildMethod = name2.lexeme == 'build';
+    final interface = declaredElement2?.enclosingElement3;
+    if (interface == null) {
+      return null;
+    }
+    return isBuildMethod && _codegenNotifier.isAssignableFrom(interface);
+  }
+}
+
+extension on ClassDeclaration {
+  bool? get isProviderCreation {
+    final interface = declaredElement2;
+    if (interface == null) {
+      return null;
+    }
+    return _codegenNotifier.isAssignableFrom(interface);
+  }
+}
+
+extension on FunctionDeclaration {
+  bool? get isProviderCreation {
+    final annotation = metadata.firstWhereOrNull(
+      (a) => a.name.name == 'riverpod' || a.constructorName?.name == 'Riverpod',
+    );
+    return annotation == null ? null : true;
+  }
+}
+
 extension on AstNode {
   bool? get isWidgetBuild {
     final expr = this;
@@ -1095,7 +1138,13 @@ extension on AstNode {
     if (node is FunctionExpressionInvocation) {
       return node.isProviderCreation;
     }
+    if (node is FunctionDeclaration) {
+      return node.isProviderCreation;
+    }
     if (node is MethodDeclaration) {
+      if (node.isProviderCreation ?? false) {
+        return true;
+      }
       if (hasFoundFunctionExpression || node.name2.lexeme != 'build') {
         return false;
       }
