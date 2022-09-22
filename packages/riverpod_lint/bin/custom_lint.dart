@@ -16,7 +16,7 @@ import 'package:riverpod_lint/src/type_checker.dart';
 const _providerBase =
     TypeChecker.fromName('ProviderBase', packageName: 'riverpod');
 const _autoDispose =
-    TypeChecker.fromName('AutoDisposeProviderBase', packageName: 'riverpod');
+    TypeChecker.fromName('AutoDisposeProvider', packageName: 'riverpod');
 const _family = TypeChecker.fromName('Family', packageName: 'riverpod');
 const _future = TypeChecker.fromUrl(
   'dart:async#Future',
@@ -844,7 +844,8 @@ Then dispose of the listener when you no longer need the autoDispose provider to
   }
 
   Stream<Lint> _checkValidProviderDeclaration(AstNode providerNode) async* {
-    if (providerNode is ClassDeclaration) {
+    if (providerNode is ClassDeclaration ||
+        providerNode is FunctionDeclaration) {
       // Codegen provider
       return;
     }
