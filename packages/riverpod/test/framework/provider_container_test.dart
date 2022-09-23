@@ -7,6 +7,63 @@ import '../utils.dart';
 
 void main() {
   group('ProviderContainer', () {
+    group('debugReassemble', () {
+      test(
+          'reload providers if the debugGetCreateSourceHash of a provider returns a different value',
+          () {
+        final noDebugGetCreateSourceHashBuild = OnBuildMock();
+        final noDebugGetCreateSourceHash = Provider((ref) {
+          noDebugGetCreateSourceHashBuild();
+          return 0;
+        });
+        final constantHashBuild = OnBuildMock();
+        final constantHash = Provider(
+          debugGetCreateSourceHash: () => 'hash',
+          (ref) {
+            constantHashBuild();
+            return 0;
+          },
+        );
+        var hashResult = '42';
+        final changingHashBuild = OnBuildMock();
+        final changingHash = Provider(
+          debugGetCreateSourceHash: () => hashResult,
+          (ref) {
+            changingHashBuild();
+            return 0;
+          },
+        );
+        final container = ProviderContainer();
+
+        container.read(noDebugGetCreateSourceHash);
+        container.read(constantHash);
+        container.read(changingHash);
+
+        clearInteractions(noDebugGetCreateSourceHashBuild);
+        clearInteractions(constantHashBuild);
+        clearInteractions(changingHashBuild);
+
+        hashResult = 'new hash';
+        container.debugReassemble();
+        container.read(noDebugGetCreateSourceHash);
+        container.read(constantHash);
+        container.read(changingHash);
+
+        verifyOnly(changingHashBuild, changingHashBuild());
+        verifyNoMoreInteractions(constantHashBuild);
+        verifyNoMoreInteractions(noDebugGetCreateSourceHashBuild);
+
+        container.debugReassemble();
+        container.read(noDebugGetCreateSourceHash);
+        container.read(constantHash);
+        container.read(changingHash);
+
+        verifyNoMoreInteractions(changingHashBuild);
+        verifyNoMoreInteractions(constantHashBuild);
+        verifyNoMoreInteractions(noDebugGetCreateSourceHashBuild);
+      });
+    });
+
     test('invalidate triggers a rebuild on next frame', () async {
       final container = createContainer();
       final listener = Listener<int>();
