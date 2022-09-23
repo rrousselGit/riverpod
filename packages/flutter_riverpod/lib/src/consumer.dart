@@ -5,6 +5,11 @@ import 'internals.dart';
 
 /// An object that allows widgets to interact with providers.
 abstract class WidgetRef {
+  /// The [BuildContext] of the widget associated to this [WidgetRef].
+  ///
+  /// This is strictly identical to the [BuildContext] passed to [ConsumerWidget.build].
+  BuildContext get context;
+
   /// Returns the value exposed by a provider and rebuild the widget when that
   /// value changes.
   ///
@@ -579,6 +584,9 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 
     return sub;
   }
+
+  @override
+  BuildContext get context => this;
 }
 
 class _ListenManual<T> implements ProviderSubscription<T> {

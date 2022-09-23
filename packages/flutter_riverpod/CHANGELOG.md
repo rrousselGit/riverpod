@@ -4,6 +4,12 @@
 
 - Removed the deprecated `ProviderListener` and `OnProviderChange`.
 
+
+Non-breaking changes:
+
+- Added `WidgetRef.context`. This allows functions that depend on a `WidgetRef`
+  to use the `BuildContext` without having to receive it as paramreter.
+
 # 2.0.0-dev.9
 
 Fix Timer leak when using `cacheTime`/`disposeDelay` and disposing a `ProviderContainer`
