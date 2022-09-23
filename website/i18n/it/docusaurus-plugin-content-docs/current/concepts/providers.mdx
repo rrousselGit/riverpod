@@ -14,7 +14,7 @@ Un provider è un oggetto che incapsula un pezzo di stato e ci permette di ascol
 Avvolgere un pezzo di stato in un provider:
 
 - Permette l'accesso a tale stato facilmente ed in posizioni differenti.
-  I Provider sono un rimpiazzamento completo a Design Patterns come Singleton, 
+  I Provider sono un rimpiazzamento completo a Design Patterns come Singleton,
   Service Locators, Dependency Injection o InheritedWidgets
 
 - Semplifica la combinazione di questo stato con altri.
@@ -27,7 +27,7 @@ Avvolgere un pezzo di stato in un provider:
 
 - Aumento della testabilità della tua applicazione.
   Con i provider, non hai più bisogno di complessi `setUp`/`tearDown`. Inoltre,
-  ogni provider può essere sovrascritto per comportarsi in maniera differente durante i test, che 
+  ogni provider può essere sovrascritto per comportarsi in maniera differente durante i test, che
   permettono di testare un comportamento specifico.
 
 - Integrazione semplice di feature avanzate, come logging e pull-to-refresh.
@@ -58,16 +58,16 @@ Questo snippet consiste in 3 parti:
   I Provider dovrebbero essere sempre `final`.
 
 - `Provider`, il tipo di provider che decidiamo di utilizzare.
-  [Provider] è il più semplice tra i provider. Espone un oggetto che non cambia mai.  
+  [Provider] è il più semplice tra i provider. Espone un oggetto che non cambia mai.
   Potremmo rimpiazzare [Provider] con altri provider come [StreamProvider] o
   [StateNotifierProvider], per cambiare il modo in cui ci si interagisce.
 
 - Una funzione che crea lo stato condiviso.
   Tale funzione ci permetterà di ricevere un oggetto chiamato `ref` come parametro. Questo oggetto
-  ci permette di leggere altri provider, peformare alcune operazioni quando lo stato 
+  ci permette di leggere altri provider, peformare alcune operazioni quando lo stato
   del nostro provider verrà distrutto e molto altro.
 
-Il tipo di oggetto restituito dalla funzione passata al provider dipende 
+Il tipo di oggetto restituito dalla funzione passata al provider dipende
 dal provider utilizzato.
 Per esempio, la funzione di un [Provider] può creare qualsiasi oggetto.
 In modo differente, con la callback di [StreamProvider] ci si aspetta che ritorni uno [Stream].
@@ -86,7 +86,7 @@ Il fatto che entrambi i provider creino una `String` non causa nessun problema.
 :::
 
 :::caution ATTENZIONE
-Per permettere ai provider di funzionare, devi aggiungere [ProviderScope] 
+Per permettere ai provider di funzionare, devi aggiungere [ProviderScope]
 alla radice della tue applicazioni Flutter:
 
 ```dart
@@ -100,9 +100,6 @@ void main() {
 ## Diversi Tipi di Provider
 
 Ci sono diversi tipi di provider per diversi casi d'uso.
-
-With all of these providers available, it is sometimes difficult to understand when to use one provider type over another.
-Use the table below to choose a provider that fits what you want to provide to the widget tree.
 
 Con questo numero di provider disponibili, talvolta può essere difficoltoso capire quando usare un provider
 rispetto ad un altro.
@@ -120,7 +117,7 @@ Usa la seguente tabella per scegliere un provider che coincida col cosa vuoi for
 :::caution ATTENZIONE
 Sebbene tutti i provider abbiano il loro scopo, i [ChangeNotifierProvider]s non sono consigliati per
 applicazioni scalabili a causa dei problemi derivanti dallo stato mutabile.
-È presente nel package `flutter_riverpod` per fornire un facile percorso di migrazione provenendo da `package:provider`, 
+È presente nel package `flutter_riverpod` per fornire un facile percorso di migrazione provenendo da `package:provider`,
 e permette dei casi d'uso specifici di Flutter come l'integrazione di alcuni package per Navigator 2.
 :::
 
@@ -128,7 +125,7 @@ e permette dei casi d'uso specifici di Flutter come l'integrazione di alcuni pac
 
 Tutti i provider hanno una modalità integrata per aggiungere funzionalità in più nei differenti provider.
 
-Potrebbero aggiungere nuove funzionalità all'oggetto `ref` o cambiare leggermente come il provider 
+Potrebbero aggiungere nuove funzionalità all'oggetto `ref` o cambiare leggermente come il provider
 è utilizzato.
 
 I modificatori possono essere utilizzati in tutti i provider, con una sintassi simile a un named constructor:
@@ -140,7 +137,7 @@ final myFamilyProvider = Provider.family<String, int>((ref, id) => '$id');
 
 Per il momento, ci sono due modificatori presenti:
 
-- [`.autoDispose`](/docs/concepts/modifiers/auto_dispose), che farà distruggere automaticamente lo stato del provider 
+- [`.autoDispose`](/docs/concepts/modifiers/auto_dispose), che farà distruggere automaticamente lo stato del provider
   quando non è più in ascolto.
 - [`.family`](/docs/concepts/modifiers/family), che permetterà di creare un provider da parametri esterni.
 
