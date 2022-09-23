@@ -15,8 +15,7 @@ import 'package:riverpod_lint/src/type_checker.dart';
 
 const _providerBase =
     TypeChecker.fromName('ProviderBase', packageName: 'riverpod');
-const _nonAutoDispose = TypeChecker.any([
-  TypeChecker.fromName('AlwaysAliveProviderBase', packageName: 'riverpod'),
+const _alwaysAliveProviderListenable = TypeChecker.any([
   TypeChecker.fromName(
     'AlwaysAliveProviderListenable',
     packageName: 'riverpod',
@@ -591,7 +590,8 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
         final arg =
             node.invocation.argumentList.arguments.firstOrNull?.staticType;
 
-        if (arg != null && !_nonAutoDispose.isAssignableFromType(arg)) {
+        if (arg != null &&
+            !_alwaysAliveProviderListenable.isAssignableFromType(arg)) {
           yield Lint(
             code: 'riverpod_avoid_read_on_autoDispose',
             message: 'Avoid using ref.read on an autoDispose provider',
