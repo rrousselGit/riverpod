@@ -398,7 +398,6 @@ class AsyncError<T> extends AsyncValue<T> {
   @override
   T? get value {
     if (!hasValue) {
-      final stackTrace = this.stackTrace;
       throwErrorWithCombinedStackTrace(error, stackTrace);
     }
     return _value;
