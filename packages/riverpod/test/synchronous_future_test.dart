@@ -46,4 +46,68 @@ void main() {
       );
     });
   });
+
+  test('SynchronousFuture.catchError', () {
+    expect(
+      // ignore: avoid_types_on_closure_parameters
+      SynchronousFuture(42).catchError((Object? err, StackTrace stack) {}),
+      SynchronousFuture(42),
+    );
+  });
+
+  // Imported from Flutter
+  test('SynchronousFuture control test', () async {
+    final Future<int> future = SynchronousFuture<int>(42);
+
+    int? result;
+    // ignore: unawaited_futures
+    future.then<void>((value) {
+      result = value;
+    });
+
+    expect(result, equals(42));
+    result = null;
+
+    final futureWithTimeout = future.timeout(const Duration(milliseconds: 1));
+    // ignore: unawaited_futures
+    futureWithTimeout.then<void>((value) {
+      result = value;
+    });
+    expect(result, isNull);
+    await futureWithTimeout;
+    expect(result, equals(42));
+    result = null;
+
+    final stream = future.asStream();
+
+    expect(await stream.single, equals(42));
+
+    var ranAction = false;
+    // ignore: void_checks
+    final completeResult = future.whenComplete(() {
+      // ignore: void_checks, https://github.com/dart-lang/linter/issues/1675
+      ranAction = true;
+      // verify that whenComplete does NOT propagate its return value:
+      return Future<int>.value(31);
+    });
+
+    expect(ranAction, isTrue);
+    ranAction = false;
+
+    expect(await completeResult, equals(42));
+
+    Object? exception;
+    try {
+      // ignore: void_checks
+      await future.whenComplete(() {
+        // ignore: void_checks, https://github.com/dart-lang/linter/issues/1675
+        throw ArgumentError();
+      });
+      // Unreached.
+      expect(false, isTrue);
+    } catch (e) {
+      exception = e;
+    }
+    expect(exception, isArgumentError);
+  });
 }
