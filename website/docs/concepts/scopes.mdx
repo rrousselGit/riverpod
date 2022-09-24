@@ -1,0 +1,331 @@
+---
+title: Scopes
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+Scoping in Riverpod is a very powerful feature, but like all powerful features, it should be used wisely and intentionally.
+
+Scoping allows you to create new instances of the same provider in different parts of the tree, just like `package:provider` does.
+
+However, before scoping every provider you use, consider carefully why you want to scope the provider.
+In order to do so, you first need to understand what scoping means.
+
+## ProviderScope and ProviderContainer
+
+A scope is introduced by a [ProviderContainer]. This container holds the current state of all of your providers. 
+It manages the lookup and subscriptions between providers.
+
+In Flutter you should use the [ProviderScope] widget, which contains a [ProviderContainer]
+internally, and provides a way to access that container to the rest of the widget tree.
+
+```dart
+final valueProvider = StateProvider((ref) => 0);
+
+// DO this
+void main() {
+  runApp(ProviderScope(child: MyApp()));
+}
+
+//DON'T do this:
+final myProviderContainer = ProviderContainer();
+void main(){
+  runApp(MyApp());
+}
+```
+
+:::warning
+Do not use multiple [ProviderContainer]s, without an understanding of how they work. 
+Each will have it's own separate thread of states, which will not be able to access each other.
+Tests are an example of when you might want to use separate [ProviderContainer]s
+in order to make each test's state independent of the others.
+:::
+
+Only create a [ProviderContainer] without a [ProviderScope] for testing and dart-only usage.
+
+## How Riverpod Finds a Provider
+
+When a widget or provider requests the value of a provider, riverpod looks up the state of that provider in the [ProviderContainer] in the nearest 
+[ProviderScope] widget. If neither the provider nor one of it's explicitly listed dependencies is overridden in that scope riverpod continues it's lookup up the widget tree. 
+If the provider has not been overridden in any Widget subtrees the lookup defaults to the [ProviderContainer] in the root [ProviderScope].
+
+Once this process locates the scope in which the provider should reside it determines if the provider has been created yet. 
+If so, it will return the state of the provider.
+However, if the provider has been invalidated or is not currently initialized it will create the state using the provider's build method.
+
+## Scoping Providers to a Widget Subtree
+
+All providers can be scoped to a widget subtree. However, there are some things to keep in mind while doing so. Especially when it comes to understanding how the dependencies property works.
+
+The easiest way to understand subtree scoping is to go through a todo list example with a simple scoped provider,
+and refactor it to use a scoped provider with dependencies.
+
+
+Let's start with a simple TODO data object and a list of TODOs 
+```dart
+/// A simple Todo class
+class Todo {
+  Todo(this.todo);
+  final String todo;
+}
+
+/// Provides a list of [Todo]s.
+final todoListProvider = StateProvider<List<Todo>>(
+    (ref) => [Todo('this'), Todo('that'), Todo('the other')]);
+```
+
+Next we will create a provider to provide an index for the TODO we want to show in a particular widget subtree. 
+We will use this in a `ListView.builder` to set the index.
+```dart
+/// Provides the index for a todo in a particular portion
+/// of the widget tree
+final todoItemIndexProvider = Provider<int>((ref) =>
+    throw UnimplementedError('Todo index not set'));
+
+/// Widget for the whole todo list
+class TodoListWidget extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final length = ref.watch(todoListProvider.select((list) => list.length));
+    print('Build List');
+    return ListView.builder(
+      itemCount: length,
+      itemBuilder: (context, index) {
+        // Overrides the todoItemIndexProvider
+        // for everything below this in the tree
+        return ProviderScope(
+          overrides: [
+            todoItemIndexProvider.overrideWithValue(index),
+          ],
+          // Using this approach, TodoWidget can now be constant
+          // since no index needs to be passed down
+          child: const TodoWidget(),
+        );
+      },
+    );
+  }
+}
+```
+
+Next we will create a family provider to provide the actual todo object based on their index. 
+This is unnecessary since we could just access the `todoListProvider` directly, 
+but it will be useful to have a separate provider for our refactor.
+```dart
+/// Provides a single todo, so you can watch them individually
+///
+/// This way you will only be notified if the particular todo you
+/// were watching was updated
+final todoProvider = Provider.family<Todo, int>(
+    (ref, index) => ref.watch(todoListProvider).state[index]);
+```
+
+Finally we will create a widget to display the todo.
+Note that it watches the index that has been overridden for the current subtree
+and uses that index to access the particular todo in our family provider.
+
+Already scoping has made it so that our `TodoWidget` can be `const` rather than having to pass down the index.
+While this is premature optimization, it is a useful technique to be aware of. 
+The `TodoWidget` uses it's context and location in the tree to determine which `Todo` to show, rather than using a parameter.
+```dart
+
+/// A widget to show a single todo
+class TodoWidget extends ConsumerWidget {
+  const TodoWidget();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Gets the index of this particular Todo
+    final index = ref.watch(todoItemIndexProvider);
+    print('Building Item $index');
+    // Watches a single todo item
+    final todoItem = ref.watch(todoProvider(index));
+    // Display it!
+    return Text(todoItem.todo);
+  }
+}
+```
+Finally let's create a main function that shows the list and has a `FloatingActionButton` that adds a new todo item to the list.
+```dart
+void main() {
+  runApp(
+    ProviderScope(
+      child: MaterialApp(
+        home: Scaffold(
+          body: TodoListWidget(),
+          floatingActionButton: Consumer(builder: (context, ref, child) {
+            return FloatingActionButton(
+              onPressed: () {
+                ref
+                    .read(todoListProvider)
+                    .update((state) => [...state, Todo('New Todo')]);
+              },
+              child: Icon(Icons.add),
+            );
+          }),
+        ),
+      ),
+    ),
+  );
+}
+```
+
+Running it should print
+
+```
+flutter: Build List
+flutter: Build Item 0
+flutter: Build Item 1
+flutter: Build Item 2
+// After updating item 0 in the todoListProvider by pressing the FloatingActionButton
+// you will then see:
+flutter: Build Item 3
+```
+As can be seen in the logs, flutter does not need to build every item in the list.
+
+
+## Scoping Dependent Providers
+
+In the previous example no other provider depended on the `todoItemIndexProvider`. 
+It was only used in the widget tree for storing the index for a specific widget subtree.
+
+Let's change the example to use a dependent provider rather than a family.
+
+This:
+
+```dart
+/// Provides a single todo, so you can watch them individually
+///
+/// This way you will only be notified if the particular todo you
+/// were watching was updated
+final todoProvider = Provider.family<Todo, int>(
+    (ref, index) => ref.watch(todoListProvider).state[index]);
+```
+
+changes to:
+
+```dart
+/// Provides a single todo based on the todoItemIndexProvider
+final todoProvider = Provider<Todo>(
+    (ref) => ref.watch(todoListProvider).state[ref.watch(todoItemIndexProvider)]);
+```
+which now depends on the todoItemIndexProvider.
+
+and this:
+
+```dart
+/// A widget to show a single todo
+class TodoWidget extends ConsumerWidget {
+  const TodoWidget();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Gets the index of this particular Todo
+    final index = ref.watch(todoItemIndexProvider);
+    print('Building Item $index');
+    // Watches a single todo item
+    final todoItem = ref.watch(todoProvider(index));
+    // Display it!
+    return Text(todoItem.todo);
+  }
+}
+```
+
+changes to:
+
+```dart
+/// A widget to show a single todo
+class TodoWidget extends ConsumerWidget {
+  const TodoWidget();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watches a single todo item
+    final todoItem = ref.watch(todoProvider);
+    // Display it!
+    return Text(todoItem.todo);
+  }
+}
+```
+Much simpler! The todo widget no longer needs to know it's index. That is something that the business logic takes care of now.
+
+However, if we try this with no other changes, we get an exception thrown!
+
+````
+══╡ EXCEPTION CAUGHT BY WIDGETS LIBRARY ╞═══════════════════════════════════════════════════════════
+The following assertion was thrown building TodoWidget(dirty, dependencies:
+[UncontrolledProviderScope], state: _ConsumerState#b120a):
+Tried to read Provider<Todo>#63871 from a place where one of its dependencies were overridden but
+the provider is not.
+
+To fix this error, you can add add "dependencies" to Provider<Todo>#63871 such that we have:
+
+ ```
+final a = Provider(...);
+final b = Provider((ref) => ref.watch(a), dependencies: [a]);
+ ```
+'package:riverpod/src/framework/container.dart':
+Failed assertion: line 479 pos 15: 'targetElement.provider != targetElement.origin ||
+                  dependencyElement ==
+                      targetElement.container
+                          .readProviderElement<Object?>(dependency)'
+
+The relevant error-causing widget was:
+  TodoWidget 
+````
+
+The problem is that riverpod does not know which scope to insert the
+new `todoProvider` that you are trying to access in `TodoWidget`. By
+default it places all providers in the root scope at the root of your
+widget tree. This way you can access the same provider from all parts
+of your app. But in that scope the `todoItemIndexProvider` provider is not overridden otherwise
+you'd have the same todo index for the whole app.
+
+The solution to this problem is to tell riverpod that a new `todoProvider` state should be created for each subtree where the `todoItemIndexProvider` is overridden in, by
+adding the `todoItemIndexProvider` to a dependency list for the `todoProvider`.
+
+When using scoped dependencies for `todoProvider` we need to explicitly specify *all* of the providers our provider depends on
+so that Riverpod knows when overriding a provider which dependent providers also need overrides. This means that we need to also specify `todoListProvider` in the dependencies.
+If you think about it, this makes sense, because if `todoListProvider` was overridden for a subtree we would also want new states for the `todoProvider`s to be created for that subtree that use that particular todo list provider
+
+```dart
+/// Provides a single todo based on the todoItemIndexProvider
+final todoProvider = Provider<Todo>(
+    (ref) => ref.watch(todoListProvider).state[ref.watch(todoItemIndexProvider)],
+  dependencies: [todoItemIndexProvider, todoListProvider]
+);
+```
+
+Now you have a scoped provider!
+
+## Conclusion
+
+While scopes are important to understand, it is easy to get carried away when using scopes. Here are a few questions that you might want to ask yourself.
+
+* Why do I want a scope?
+If you want multiple instances of a provider state depending on where it is in the widget tree you have a few alternatives available to you: `Scoping`, `Families`, or a combination.
+The appropriate choice depends on your use case.
+One major difference is that if you use a family you can potentially show multiple 'todos' in the same subtree by using family parameters to show all the ones you would like. 
+If you do not use families, this requires more boilerplate in your widget tree since you have to wrap each of them in a separate `ProviderScope`.
+
+:::warning
+Remember that scopes introduce a new instance of each provider that is overridden or has listed a dependency on a provider that was overridden. 
+If you override with the same parameter in a different subtree of the app, it will **not** be the same instance of the provider's state. 
+Families are more flexible in general, and with the upcoming code generation feature it is easy to use multiple parameters for a family.
+Often a good combination is to use both families and scoping. Use a family to provide general access to a piece of state anywhere in your app, and then use scoping to
+provide a specific instance of the family's state depending on where you are in the widget tree.
+:::
+
+* Do I have multiple providers that depend on the same provider and I want to have a new instance made when the provider they depend on is overridden?
+If you have many providers that all depend on a single provider, and you want all of them to be overridden when that provider is overridden, you should use scopes. 
+That is what they are there for. 
+Note that if you try to use families for this, you will end up with many families that all have the same parameter, and you could end up passing that parameter all over the widget tree.
+Keep it simple and clean, and use scope.
+
+:::warning
+Once you start using scope, make sure to always list your dependencies and keep them up to date, to prevent runtime exceptions.
+To help with this we have created [riverpod_lint] which will warn you if there is a missing dependency.
+Additionally with [riverpod_generator] the code generator automatically generates the dependency list.
+:::
+
+[ProviderContainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
+[ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[riverpod_lint]: https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint
+[riverpod_generator]: https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_generator
