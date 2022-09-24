@@ -15,8 +15,13 @@ import 'package:riverpod_lint/src/type_checker.dart';
 
 const _providerBase =
     TypeChecker.fromName('ProviderBase', packageName: 'riverpod');
-const _autoDispose =
-    TypeChecker.fromName('AutoDisposeProviderBase', packageName: 'riverpod');
+const _alwaysAliveProviderListenable = TypeChecker.any([
+  TypeChecker.fromName(
+    'AlwaysAliveProviderListenable',
+    packageName: 'riverpod',
+  ),
+]);
+
 const _family = TypeChecker.fromName('Family', packageName: 'riverpod');
 const _future = TypeChecker.fromUrl(
   'dart:async#Future',
@@ -26,6 +31,10 @@ const _stream = TypeChecker.fromUrl(
 );
 const _container =
     TypeChecker.fromName('ProviderContainer', packageName: 'riverpod');
+const _asyncNotifier =
+    TypeChecker.fromName('AsyncNotifierBase', packageName: 'riverpod');
+const _notifier = TypeChecker.fromName('NotifierBase', packageName: 'riverpod');
+const _codegenNotifier = TypeChecker.any([_asyncNotifier, _notifier]);
 const _providerOrFamily = TypeChecker.any([_providerBase, _family]);
 const _futureOrStream = TypeChecker.any([_future, _stream]);
 
@@ -88,6 +97,26 @@ mixin _ProviderCreationVisitor<T> on AsyncRecursiveVisitor<T> {
     final createdType = node.staticType?.element2;
     if (createdType != null &&
         _providerOrFamily.isAssignableFrom(createdType)) {
+      final stream = visitProviderCreation(node);
+      if (stream != null) yield* stream;
+    }
+  }
+
+  @override
+  Stream<T>? visitClassDeclaration(ClassDeclaration node) async* {
+    final superStream = super.visitClassDeclaration(node);
+    if (superStream != null) yield* superStream;
+    if (node.isProviderCreation ?? false) {
+      final stream = visitProviderCreation(node);
+      if (stream != null) yield* stream;
+    }
+  }
+
+  @override
+  Stream<T>? visitFunctionDeclaration(FunctionDeclaration node) async* {
+    final superStream = super.visitFunctionDeclaration(node);
+    if (superStream != null) yield* superStream;
+    if (node.isProviderCreation ?? false) {
       final stream = visitProviderCreation(node);
       if (stream != null) yield* stream;
     }
@@ -561,7 +590,8 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
         final arg =
             node.invocation.argumentList.arguments.firstOrNull?.staticType;
 
-        if (arg != null && _autoDispose.isAssignableFromType(arg)) {
+        if (arg != null &&
+            !_alwaysAliveProviderListenable.isAssignableFromType(arg)) {
           yield Lint(
             code: 'riverpod_avoid_read_on_autoDispose',
             message: 'Avoid using ref.read on an autoDispose provider',
@@ -596,8 +626,14 @@ Then dispose of the listener when you no longer need the autoDispose provider to
 
   @override
   Stream<Lint> visitProviderCreation(AstNode node) async* {
+    if (node is ClassDeclaration || node is FunctionDeclaration) {
+      yield* ProviderSyncMutationVisitor(unit).visitNode(node) ??
+          const Stream<Lint>.empty();
+      return;
+    }
     final variableDeclaration =
         node.parents.whereType<VariableDeclaration>().firstOrNull;
+
     final providerDeclaration = variableDeclaration?.declaredElement2 != null
         ? ProviderDeclaration._(
             variableDeclaration!,
@@ -608,6 +644,7 @@ Then dispose of the listener when you no longer need the autoDispose provider to
 
     if (providerDeclaration != null) {
       yield* _checkProviderDependencies(providerDeclaration);
+
       yield* ProviderSyncMutationVisitor(unit).visitNode(node) ??
           const Stream<Lint>.empty();
     }
@@ -813,6 +850,11 @@ Then dispose of the listener when you no longer need the autoDispose provider to
   }
 
   Stream<Lint> _checkValidProviderDeclaration(AstNode providerNode) async* {
+    if (providerNode is ClassDeclaration ||
+        providerNode is FunctionDeclaration) {
+      // Codegen provider
+      return;
+    }
     final declaration =
         providerNode.parents.whereType<VariableDeclaration>().firstOrNull;
     final variable = declaration?.declaredElement2;
@@ -1031,6 +1073,36 @@ extension on FunctionExpressionInvocation {
   }
 }
 
+extension on MethodDeclaration {
+  bool? get isProviderCreation {
+    final isBuildMethod = name2.lexeme == 'build';
+    final interface = declaredElement2?.enclosingElement3;
+    if (interface == null) {
+      return null;
+    }
+    return isBuildMethod && _codegenNotifier.isAssignableFrom(interface);
+  }
+}
+
+extension on ClassDeclaration {
+  bool? get isProviderCreation {
+    final interface = declaredElement2;
+    if (interface == null) {
+      return null;
+    }
+    return _codegenNotifier.isAssignableFrom(interface);
+  }
+}
+
+extension on FunctionDeclaration {
+  bool? get isProviderCreation {
+    final annotation = metadata.firstWhereOrNull(
+      (a) => a.name.name == 'riverpod' || a.constructorName?.name == 'Riverpod',
+    );
+    return annotation == null ? null : true;
+  }
+}
+
 extension on AstNode {
   bool? get isWidgetBuild {
     final expr = this;
@@ -1073,7 +1145,13 @@ extension on AstNode {
     if (node is FunctionExpressionInvocation) {
       return node.isProviderCreation;
     }
+    if (node is FunctionDeclaration) {
+      return node.isProviderCreation;
+    }
     if (node is MethodDeclaration) {
+      if (node.isProviderCreation ?? false) {
+        return true;
+      }
       if (hasFoundFunctionExpression || node.name2.lexeme != 'build') {
         return false;
       }

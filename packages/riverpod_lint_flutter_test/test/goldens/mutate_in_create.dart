@@ -1,5 +1,8 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'mutate_in_create.g.dart';
 
 final a = StateProvider((ref) => 'String');
 
@@ -157,5 +160,61 @@ class _GState extends ConsumerState<G> {
   @override
   Widget build(BuildContext context) {
     return Container();
+  }
+}
+
+@riverpod
+Future<String> generated(GeneratedRef ref, String value, int otherValue) async {
+  ref.watch(a.notifier).state = 'Other';
+  ref.invalidate(a);
+  ref.refresh(a);
+  await Future.delayed(Duration(seconds: 1));
+  ref.watch(a.notifier).state = 'Other';
+  ref.invalidate(a);
+  ref.refresh(a);
+  return '';
+}
+
+@riverpod
+String generatedSync(GeneratedSyncRef ref, String value, int otherValue) {
+  ref.watch(a.notifier).state = 'Other';
+  ref.invalidate(a);
+  ref.refresh(a);
+  Future.delayed(Duration(seconds: 1), () {
+    ref.read(a.notifier).state = 'Other';
+    ref.invalidate(a);
+    ref.refresh(a);
+  });
+  return '';
+}
+
+@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  Future<String> build(int i, String b) async {
+    ref.watch(a.notifier).state = 'Other';
+    ref.invalidate(a);
+    ref.refresh(a);
+    await Future.delayed(Duration(seconds: 1));
+    ref.watch(a.notifier).state = 'Other';
+    ref.invalidate(a);
+    ref.refresh(a);
+    return '';
+  }
+}
+
+@riverpod
+class MyNotifier2 extends _$MyNotifier2 {
+  @override
+  String build(int i, String b) {
+    ref.watch(a.notifier).state = 'Other';
+    ref.invalidate(a);
+    ref.refresh(a);
+    Future.delayed(Duration(seconds: 1), () {
+      ref.read(a.notifier).state = 'Other';
+      ref.invalidate(a);
+      ref.refresh(a);
+    });
+    return '';
   }
 }
