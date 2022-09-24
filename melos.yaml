@@ -1,5 +1,9 @@
 name: my_project
 
+command:
+  bootstrap:
+    usePubspecOverrides: true
+
 packages:
   - website/**
   - packages/**

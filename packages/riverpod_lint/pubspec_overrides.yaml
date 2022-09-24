@@ -1,0 +1,4 @@
+# melos_managed_dependency_overrides: riverpod
+dependency_overrides:
+  riverpod:
+    path: ../riverpod
