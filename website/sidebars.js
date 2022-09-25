@@ -18,6 +18,7 @@ module.exports = {
           ],
         },
         "concepts/provider_observer",
+        "concepts/provider_lifecycles",
       ],
     },
     {
