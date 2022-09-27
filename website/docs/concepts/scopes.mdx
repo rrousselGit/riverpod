@@ -7,10 +7,19 @@ import TabItem from "@theme/TabItem";
 
 Scoping in Riverpod is a very powerful feature, but like all powerful features, it should be used wisely and intentionally.
 
-Scoping allows you to create new instances of the same provider in different parts of the tree, just like `package:provider` does.
+A few of the things that scoping enables are:
+- Create multiple instances of a provider's state, each scoped to a specific widget subtree (similar to how theming and `InheritedWidgets` work in flutter)
+- Override the state of providers for a specific subtree
+- Optimizing rebuilds of widgets by removing parameters from Widget constructors allowing you to make them `const`
 
-However, before scoping every provider you use, consider carefully why you want to scope the provider.
-In order to do so, you first need to understand what scoping means.
+If you are wanting to use scope for the first point, chances are you can use families instead.
+Families have the advantages of allowing you to access each of those instances of the state from anywhere in the widget tree rather than just the state scoped to the specific subtree that you are in.
+
+Using scope to create multiple instances of a provider's state is similar to how `package:provider` works.
+
+However, using scope to accomplish that task, is more restrictive, as you cannot decide to access other instances from that scope.
+
+As such, before scoping every provider you use, consider carefully why you want to scope the provider.
 
 ## ProviderScope and ProviderContainer
 
@@ -46,8 +55,8 @@ Only create a [ProviderContainer] without a [ProviderScope] for testing and dart
 
 ## How Riverpod Finds a Provider
 
-When a widget or provider requests the value of a provider, riverpod looks up the state of that provider in the [ProviderContainer] in the nearest 
-[ProviderScope] widget. If neither the provider nor one of it's explicitly listed dependencies is overridden in that scope riverpod continues it's lookup up the widget tree. 
+When a widget or provider requests the value of a provider, Riverpod looks up the state of that provider in the nearest 
+[ProviderScope] widget. If neither the provider nor one of it's explicitly listed dependencies is overridden in that scope Riverpod continues it's lookup up the widget tree. 
 If the provider has not been overridden in any Widget subtrees the lookup defaults to the [ProviderContainer] in the root [ProviderScope].
 
 Once this process locates the scope in which the provider should reside it determines if the provider has been created yet. 
@@ -60,7 +69,6 @@ All providers can be scoped to a widget subtree. However, there are some things 
 
 The easiest way to understand subtree scoping is to go through a todo list example with a simple scoped provider,
 and refactor it to use a scoped provider with dependencies.
-
 
 Let's start with a simple TODO data object and a list of TODOs 
 ```dart
@@ -271,14 +279,14 @@ The relevant error-causing widget was:
   TodoWidget 
 ````
 
-The problem is that riverpod does not know which scope to insert the
+The problem is that Riverpod does not know which scope to insert the
 new `todoProvider` that you are trying to access in `TodoWidget`. By
 default it places all providers in the root scope at the root of your
 widget tree. This way you can access the same provider from all parts
 of your app. But in that scope the `todoItemIndexProvider` provider is not overridden otherwise
 you'd have the same todo index for the whole app.
 
-The solution to this problem is to tell riverpod that a new `todoProvider` state should be created for each subtree where the `todoItemIndexProvider` is overridden in, by
+The solution to this problem is to tell Riverpod that a new `todoProvider` state should be created for each subtree where the `todoItemIndexProvider` is overridden in, by
 adding the `todoItemIndexProvider` to a dependency list for the `todoProvider`.
 
 When using scoped dependencies for `todoProvider` we need to explicitly specify *all* of the providers our provider depends on
@@ -295,29 +303,41 @@ final todoProvider = Provider<Todo>(
 
 Now you have a scoped provider!
 
-## Conclusion
+## When to choose Scoped Providers or Families
 
-While scopes are important to understand, it is easy to get carried away when using scopes. Here are a few questions that you might want to ask yourself.
+While scopes are important to understand, it is easy to get carried away when using scopes.
 
-* Why do I want a scope?
-If you want multiple instances of a provider state depending on where it is in the widget tree you have a few alternatives available to you: `Scoping`, `Families`, or a combination.
+If you want a different instance of a provider's state depending on where it is in the widget tree you have a few alternatives available to you: `Scoping`, `Families`, or a combination.
 The appropriate choice depends on your use case.
-One major difference is that if you use a family you can potentially show multiple 'todos' in the same subtree by using family parameters to show all the ones you would like. 
-If you do not use families, this requires more boilerplate in your widget tree since you have to wrap each of them in a separate `ProviderScope`.
+
+Families:
+- Pro: You can show multiple of the states no matter which subtree you are in
+- Pro: This makes it a more flexible and scalable solution for many use cases
+
+Scoping:
+- Con: You end up with more nesting of [ProviderScope] widgets in your widget tree
+- Con: You can only access the one override in your section of the widget tree 
+- Con: You end up having to explicitly list the dependencies of most of your providers
+- Pro: You can reduce the number of parameters in your widget constructors
+- Pro: You get a slight performance advantage, and can potentially make some of your widget constructors `const`
+
+Using a combination of the two approaches, you can get the pros of both approaches, but you still have to deal with the cons of scoping.
 
 :::warning
-Remember that scopes introduce a new instance of each provider that is overridden or has listed a dependency on a provider that was overridden. 
+Remember that scopes introduce a new instance of the state of every provider that is overridden or has listed a dependency on a provider that was overridden.
 If you override with the same parameter in a different subtree of the app, it will **not** be the same instance of the provider's state. 
 Families are more flexible in general, and with the upcoming code generation feature it is easy to use multiple parameters for a family.
 Often a good combination is to use both families and scoping. Use a family to provide general access to a piece of state anywhere in your app, and then use scoping to
 provide a specific instance of the family's state depending on where you are in the widget tree.
 :::
 
-* Do I have multiple providers that depend on the same provider and I want to have a new instance made when the provider they depend on is overridden?
-If you have many providers that all depend on a single provider, and you want all of them to be overridden when that provider is overridden, you should use scopes. 
-That is what they are there for. 
+### Less common usages of Scopes
+
+Sometimes you may want to override a whole set of providers in a specific subtree of your app. 
+By listing a common provider in the dependencies list of each of those providers, you can easily create new states for all of them at once, by overriding the common one.
+
 Note that if you try to use families for this, you will end up with many families that all have the same parameter, and you could end up passing that parameter all over the widget tree.
-Keep it simple and clean, and use scope.
+In this case it is also acceptable to use scopes.
 
 :::warning
 Once you start using scope, make sure to always list your dependencies and keep them up to date, to prevent runtime exceptions.
