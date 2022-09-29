@@ -5,6 +5,7 @@ import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/file_system/physical_file_system.dart';
 import 'package:collection/collection.dart';
 
@@ -38,9 +39,19 @@ Future<void> analyze(String rootDirectory) async {
           )
           .whereType<VariableElement>()
           .where(
-            (variableElement) =>
-                variableElement.type.element?.isFromRiverpod ?? false,
-          );
+        (variableElement) {
+          if (variableElement.type.element?.isFromRiverpod ?? false) {
+            return true;
+          }
+          return variableElement.type.extendsFromRiverpod;
+          //        ||
+          // (this is ClassElement &&
+          //     (this as ClassElement)
+          //         .thisType
+          //         .allSupertypes
+          //         .any((superType) => superType.element.isFromRiverpod))
+        },
+      );
 
       // List of all the consumer widgets of the current file that are either
       // top level element or static element of classes.
@@ -60,7 +71,7 @@ Future<void> analyze(String rootDirectory) async {
         ast?.visitChildren(ConsumerWidgetVisitor(consumer));
       }
 
-      for (final provider in providers) {
+      for (final provider in providers.toList()) {
         final ast = unit.getElementDeclaration(provider)?.node;
         ast?.visitChildren(
           ProviderDependencyVisitor(
@@ -285,7 +296,6 @@ class ProviderDependencyVisitor extends RecursiveAstVisitor<void> {
         // final providerSimpleIdentifier = Provider(myMethod); // Simple identifier.
         // final providerConstructorReference= Provider(MyClass.new); // Constructor reference.
         // ```
-        // TODO(ValentinVignal): Support generated families.
         final firstArgument = node.arguments.firstWhere(
           (argument) => argument is! NamedExpression,
         );
@@ -310,7 +320,7 @@ class ProviderDependencyVisitor extends RecursiveAstVisitor<void> {
           // The created provider is referencing a constructor defined somewhere
           // else:
           // ```dart
-          // final providerConstructorReference= Provider(MyClass.new);
+          // final providerConstructorReference = Provider(MyClass.new);
           // ```
           if (firstArgument.constructorName.staticElement != null) {
             final classDeclaration = unit
@@ -332,8 +342,131 @@ class ProviderDependencyVisitor extends RecursiveAstVisitor<void> {
           }
         }
       }
+    } else if (node.parent is SuperConstructorInvocation) {
+      // We might be visiting a family provider.
+      // super(
+      //   (ref) => family(ref, i),
+      // );
+      if ((node.parent! as SuperConstructorInvocation)
+              .staticElement
+              ?.isFromRiverpod ??
+          false) {
+        final firstArgument = node.arguments.firstWhere(
+          (argument) => argument is! NamedExpression,
+        );
+        if (firstArgument is FunctionExpression &&
+            firstArgument.body is ExpressionFunctionBody) {
+          final bodyExpression =
+              (firstArgument.body as ExpressionFunctionBody).expression;
+          if (bodyExpression is MethodInvocation) {
+            // We are visiting the invocation of `family(ref, i)`. This is
+            // generated from a family method.
+            // ```dart
+            // @riverpod
+            // String family(ref, int i) => 'Hello World';
+            // ```
+            // We now want to visit its declaration.
+            final methodDeclaration = unit
+                .getElementDeclaration(
+                  bodyExpression.methodName.staticElement!,
+                )
+                ?.node;
+            return methodDeclaration?.visitChildren(this);
+          } else {
+            // We need to check whether we are visiting a family provider
+            // generated from a class.
+            // ```dart
+            // class FamilyClass extends _$FamilyClass {
+            //   @override
+            //   String build(i) => 'Hello World';
+            // }
+            // ```
+            if (bodyExpression is CascadeExpression) {
+              // The generated code contains a cascade expression :
+              // ```dart
+              // super(
+              //   () => FamilyClass()..i = i,
+              // );
+              // ```
+              if (bodyExpression.target.staticType is InterfaceType) {
+                final classType =
+                    bodyExpression.target.staticType! as InterfaceType;
+                if (classType.methods.any(
+                  (method) => method.name == 'build' && method.hasOverride,
+                )) {
+                  // The logic is implemented in an overridden `build` method.
+                  // ```dart
+                  // @override
+                  // String build(i) => 'Hello World';
+                  // ```
+                  // We visit the declaration of this method.
+                  final buildMethod = classType.methods.firstWhere(
+                    (method) => method.name == 'build',
+                  );
+                  final methodDeclaration = unit
+                      .getElementDeclaration(
+                        buildMethod,
+                      )
+                      ?.node;
+                  if (methodDeclaration != null) {
+                    return methodDeclaration.visitChildren(this);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
     super.visitArgumentList(node);
+  }
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    if (node.constructorName.type.type?.element?.isFromRiverpod ?? false) {
+      // An "normal" provider is being created.
+      // ```dart
+      // final provider = Provider((ref) => 0);
+      // ```
+      // This case is handled by the `visitArgumentList` method.
+      return super.visitInstanceCreationExpression(node);
+    } else if (node.constructorName.type.type?.extendsFromRiverpod ?? false) {
+      // A generated family provider is being created.
+      final methods = (node.staticType as InterfaceType?)?.methods ?? const [];
+      if (methods.any((method) => method.name == 'call')) {
+        // The provider is generated family provider.
+        // ```dart
+        // @riverpod
+        // String family(ref, int i) => 'Hello World';
+        // ```
+        // This case is handled by the `visitArgumentList` method.
+        final callMethod =
+            methods.firstWhere((method) => method.name == 'call');
+        if (callMethod.returnType is InterfaceType &&
+            (callMethod.returnType as InterfaceType).constructors.any(
+                  (constructor) => constructor.name == '',
+                )) {
+          // The `call` method's returned type is generated provider class.
+          //
+          // The unnamed constructor calls the super constructor, with
+          // ```dart
+          // super(
+          //   (ref) => family(ref, i),
+          // );
+          // ```
+          final unnamedConstructorElement =
+              (callMethod.returnType as InterfaceType).constructors.firstWhere(
+                    (constructor) => constructor.name == '',
+                  );
+          final newNode =
+              unit.getElementDeclaration(unnamedConstructorElement)?.node;
+          // We visit the node of the unnamed constructor and continue in
+          // `visitArgumentList`.
+          return newNode?.visitChildren(this);
+        }
+      }
+    }
+    return super.visitInstanceCreationExpression(node);
   }
 
   @override
@@ -484,4 +617,14 @@ extension on String {
       isNotEmpty && _firstLetter == _firstLetter.toUpperCase();
 
   String get _firstLetter => substring(0, 1);
+}
+
+extension on DartType {
+  /// Returns `true` if the type is extending a type from riverpod.
+  bool get extendsFromRiverpod {
+    return this is InterfaceType &&
+        (this as InterfaceType)
+            .allSupertypes
+            .any((type) => type.element.isFromRiverpod);
+  }
 }
