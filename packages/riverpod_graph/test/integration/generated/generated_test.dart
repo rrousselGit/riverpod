@@ -61,10 +61,14 @@ flowchart TB
   publicProvider[[publicProvider]];
   _privateClassProvider[[_privateClassProvider]];
   publicProvider ==> _privateClassProvider;
+  familyClassProvider[[familyClassProvider]];
+  publicProvider ==> familyClassProvider;
   supports$InClassNameProvider[[supports$InClassNameProvider]];
   publicProvider ==> supports$InClassNameProvider;
   supports$inNamesProvider[[supports$inNamesProvider]];
   publicProvider ==> supports$inNamesProvider;
+  familyProvider[[familyProvider]];
+  publicProvider ==> familyProvider;
   _privateProvider[[_privateProvider]];
   publicProvider ==> _privateProvider;''',
       reason: 'It should log the riverpod graph',
