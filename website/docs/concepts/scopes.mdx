@@ -6,16 +6,17 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import asyncInitialization from "!!raw-loader!/docs/concepts/async_initialization.dart";
-import dialogScope from "!!raw-loader!/docs/concepts/dialog_scoping.dart";
+import dialogScope from "!!raw-loader!/docs/concepts/dialog_scope.dart";
+import themeScope from "!!raw-loader!/docs/concepts/theme_scope.dart";
+import subtreeScope from "!!raw-loader!/docs/concepts/subtree_scope.dart";
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
 Scoping in Riverpod is a very powerful feature, but like all powerful features, it should be used wisely and intentionally.
 
 A few of the things that scoping enables are:
-- Creating synchronous providers for normally async APIs
-- Override the state of providers for a specific subtree
-- Allowing `Dialog`s and `Overlay`s to inherit the state of providers from the widget subtree that cause them to be shown
-- Create multiple instances of a provider's state, each scoped to a specific widget subtree (similar to how theming and `InheritedWidgets` work in flutter)
+- Override the state of providers for a specific subtree (similar to how theming and `InheritedWidgets` work in flutter) [(see example)](#subtree-scope)
+- Creating synchronous providers for normally async APIs [(see example)](#initialization-of-synchronous-provider-for-async-apis)
+- Allowing `Dialog`s and `Overlay`s to inherit the state of providers from the widget subtree that cause them to be shown [(see example)](#showing-dialogs)
 - Optimizing rebuilds of widgets by removing parameters from Widget constructors allowing you to make them `const`
 
 If you are wanting to use scope for the first point, chances are you can use families instead.
@@ -93,6 +94,35 @@ To solve this problem, Riverpod allows you to create a `ProviderScope` that can 
 The following example shows how to use this, to allow a `Dialog` to access the state of a counter from the context that caused the `Dialog` to be shown.
 
 <CodeBlock>{trimSnippet(dialogScope)}</CodeBlock>
+
+## Subtree Scoping
+
+Scoping allows you to override the state of a provider for a specific subtree of your widget tree. 
+In this way it can provide a similar mechanism to `InheritedWidget` from flutter, or the providers from `package:provider`.
+
+For example, in flutter you can override the `Theme` for a particular subtree of your widget tree, by wrapping it in a `Theme` widget.
+
+<CodeBlock>{trimSnippet(themeScope)}</CodeBlock>
+
+Under the hood, `Theme` is an `InheritedWidget` and when widgets look up the `Theme` they get the `Theme` from the nearest `Theme` widget above it in the widget tree.
+
+Riverpod works differently, since all of the state of your application is typically stored in a root [ProviderScope] widget. 
+Don't worry, this doesn't cause your whole application to rebuild when the state changes, it just allows you to access the state from anywhere in your widget tree.
+
+What if you want different providers depending on which page you are in? 
+
+The first thing that you should consider is whether the provided behavior will differ in any way.
+
+If so -> just create a new provider with a different name and use it in that page
+
+If not -> Consider using a family [Learn more about families here](/docs/concepts/modifiers/family). 
+
+Often you start by thinking that you only need a provider on a particular page, but end up wanting to use it in another page later on. 
+Families protect you against this eventuality, and are a major difference in how you should adjust your thinking if you are coming from `package:provider`.
+
+If families really do not fit your use case, the following example shows you how to override a provider for a particular subtree.
+
+<CodeBlock>{trimSnippet(subtreeScope)}</CodeBlock>
 
 ## When to choose Scoped Providers or Families
 
