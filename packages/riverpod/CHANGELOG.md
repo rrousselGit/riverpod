@@ -1,8 +1,14 @@
-# Unreleased major
+# 2.0.0
+
+End of september, the 2.0.0 release is out~.  
+A detailed changelog for the 2.0.0 stable release will be available in the coming days.
+
+In the meantime, here is the list of changes between the 2.0.0 version and the
+2.0.0-dev.9 version.
 
 **Breaking changes**:
 
-- `FutureProvider.stream` is removed
+- `FutureProvider.stream` is removed.
 - `Family` now has a single generic parameter instead of 3.
 - Using `overrideWithProvider`, it is no-longer possible to override a provider
   with a different type of provider (such as overriding `FutureProvider` with a `StreamProvider`).

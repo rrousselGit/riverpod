@@ -1,3 +1,45 @@
+# 2.0.0
+
+End of september, the 2.0.0 release is out~.  
+A detailed changelog for the 2.0.0 stable release will be available in the coming days.
+
+In the meantime, here is the list of changes between the 2.0.0 version and the
+2.0.0-dev.9 version.
+
+**Breaking changes**:
+
+- Removed the deprecated `ProviderListener` and `OnProviderChange`.
+- `FutureProvider.stream` is removed.
+- `Family` now has a single generic parameter instead of 3.
+- Using `overrideWithProvider`, it is no-longer possible to override a provider
+  with a different type of provider (such as overriding `FutureProvider` with a `StreamProvider`).
+- `AsyncError.stackTrace` is now a required positional parameter and non-nullable
+- All `overrideWithValue` methods are removed, besides `Provider.overrideWithValue`.
+  This change is temporary, and these methods will be reintroduced in a later version.
+- Modifiers (`provider.future`, `provider.state`, ...) no-longer are providers, and therefore no-longer
+  appears inside `ProviderObserver`.
+- The `Reader` typedef is removed. Use `Ref` instead.
+- `ProviderListener` is removed. Used `ref.listen` instead.
+- Providers other than `FutureProvider`/`StreamProvider` no-longer override `AsyncValue`s
+  to set `AsyncValue.isRefreshing` when an `AsyncLoading` is emitted.
+- It is no longer possible to pass `provider.future/.notifier/...` to the parameter `dependencies` of provider.
+  Simply pass the provider instead.
+- `cacheTime`/`disposeDelay` are no longer a `Duration` but instead an `int`,
+  representing the `Duration` in milliseconds.
+
+Non-breaking changes:
+
+- Added `WidgetRef.context`. This allows functions that depend on a `WidgetRef`
+  to use the `BuildContext` without having to receive it as paramreter.
+- feat: A new `AutoDisposeRef.keepAlive()` function is added. It is meant to replace
+  `AutoDisposeRef.maintainState` to make logic for preventing the disposal of a provider more reusable.
+- `AutoDisposeRef.maintainState` is deprecated. Use the new `AutoDisposeRef.keepAlive()` instead.
+- feat: Add support for `ref.invalidate(family)` to recompiute an entire family (#1517)
+- fixed a bug where `AsyncValue.whenData` did not preserve `AsyncValue.isLoading/isRefreshing`
+- fix: `StateProvider` and `StateNotifierProvider` no longer notify their listeners
+  on `ref.refresh` if the new result is identical to the old one.
+- fix: potential null exception when using `autoDispose`
+
 # 2.0.0-dev.9
 
 Fix Timer leak when using `cacheTime`/`disposeDelay` and disposing a `ProviderContainer`
