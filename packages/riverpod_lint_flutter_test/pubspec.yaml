@@ -7,8 +7,8 @@ environment:
   flutter: ">=3.0.0"
 
 dependencies:
-  riverpod_annotation: any
-  hooks_riverpod: any
+  riverpod_annotation: ^1.0.2
+  hooks_riverpod: ^2.0.2
   flutter:
     sdk: flutter
 
@@ -20,7 +20,7 @@ dev_dependencies:
   riverpod_lint:
     path: ../riverpod_lint
   build_runner: any
-  riverpod_generator: any
+  riverpod_generator: ^1.0.2
 
 dependency_overrides:
   riverpod_generator:
