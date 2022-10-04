@@ -1,4 +1,10 @@
 {
+  "Code generation": {
+    "message": "Génération de code"
+  },
+  "About code generation": {
+    "message": "À propos de la génération de code"
+  },
   "theme.NotFound.title": {
     "message": "Page introuvable",
     "description": "The title of the 404 page"

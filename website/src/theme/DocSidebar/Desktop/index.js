@@ -6,6 +6,7 @@ import CollapseButton from "@theme/DocSidebar/Desktop/CollapseButton";
 import Content from "@theme/DocSidebar/Desktop/Content";
 import styles from "./styles.module.css";
 import { CodegenContext, FlutterHooksContext } from "../../DocPage/Layout";
+import Translate, { translate } from "@docusaurus/Translate";
 
 function DocSidebarDesktop({ path, sidebar, onCollapse, isHidden }) {
   const {
@@ -26,21 +27,49 @@ function DocSidebarDesktop({ path, sidebar, onCollapse, isHidden }) {
         isHidden && styles.sidebarHidden
       )}
     >
-      <div style={{padding: "10px 10px 0 10px", display: "flex", alignItems: "end", flexDirection: "column"}}>
+      <div
+        style={{
+          padding: "10px 10px 0 10px",
+          display: "flex",
+          alignItems: "end",
+          flexDirection: "column",
+        }}
+      >
         {/* Let's define some toggles for customizing the code output of snippets */}
         <Toggle
           checked={codegen}
           onClick={() => setCodegen(!codegen)}
-          leading={<label>Code generation</label>}
+          leading={
+            <label>
+              <Translate>Code generation</Translate>
+            </label>
+          }
+          docsProps={{
+            href: "/docs/about_code_generation",
+            title: translate({message: "About code generation"}),
+          }}
         ></Toggle>
         <Toggle
           checked={flutterHooks}
           onClick={() => setFlutterHooks(!flutterHooks)}
-          leading={<label>flutter_hooks</label>}
+          leading={
+            <label>
+              <Translate>flutter_hooks</Translate>
+            </label>
+          }
+          docsProps={{
+            href: "/docs/about_hooks",
+            title: translate({message: "About hooks"}),
+          }}
         ></Toggle>
       </div>
 
-      <hr style={{ backgroundColor: "var(--ifm-toc-border-color)", margin: "10px 0" }}></hr>
+      <hr
+        style={{
+          backgroundColor: "var(--ifm-toc-border-color)",
+          margin: "10px 0",
+        }}
+      ></hr>
 
       {hideOnScroll && <Logo tabIndex={-1} className={styles.sidebarLogo} />}
       <Content path={path} sidebar={sidebar} />
@@ -49,15 +78,16 @@ function DocSidebarDesktop({ path, sidebar, onCollapse, isHidden }) {
   );
 }
 
-function Toggle({ checked, onClick, leading }) {
+function Toggle({ checked, onClick, leading, docsProps }) {
   return (
     <div
       style={{
-        padding: "12 16px",
+        padding: "5px 16px",
         paddingRight: 40,
         transition: "background-color .5s",
         borderRadius: 8,
         fontWeight: 600,
+        fontSize: 14,
       }}
     >
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -95,6 +125,21 @@ function Toggle({ checked, onClick, leading }) {
             }}
           ></span>
         </button>
+
+        <a
+          {...docsProps}
+          style={{
+            borderRadius: "100%",
+            border: "green 1px solid",
+            width: 20,
+            height: 20,
+            textAlign: "center",
+            color: "green",
+            fontSize: 12,
+          }}
+        >
+          ?
+        </a>
       </div>
     </div>
   );
