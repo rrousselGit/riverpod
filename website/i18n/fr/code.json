@@ -5,6 +5,9 @@
   "About code generation": {
     "message": "À propos de la génération de code"
   },
+  "About hooks": {
+    "message": "À propos des hooks"
+  },
   "theme.NotFound.title": {
     "message": "Page introuvable",
     "description": "The title of the 404 page"

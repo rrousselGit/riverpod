@@ -46,20 +46,16 @@ function DocSidebarDesktop({ path, sidebar, onCollapse, isHidden }) {
           }
           docsProps={{
             href: "/docs/about_code_generation",
-            title: translate({message: "About code generation"}),
+            title: translate({ message: "About code generation" }),
           }}
         ></Toggle>
         <Toggle
           checked={flutterHooks}
           onClick={() => setFlutterHooks(!flutterHooks)}
-          leading={
-            <label>
-              <Translate>flutter_hooks</Translate>
-            </label>
-          }
+          leading={<label>flutter_hooks</label>}
           docsProps={{
             href: "/docs/about_hooks",
-            title: translate({message: "About hooks"}),
+            title: translate({ message: "About hooks" }),
           }}
         ></Toggle>
       </div>
