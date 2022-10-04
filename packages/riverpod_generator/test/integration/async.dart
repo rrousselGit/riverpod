@@ -8,7 +8,7 @@ FutureOr<String> public(PublicRef ref) {
   return 'Hello world';
 }
 
-final privateProvider = _PrivateProvider;
+final privateProvider = _privateProvider;
 
 @riverpod
 Future<String> _private(_PrivateRef ref) async {
@@ -21,10 +21,10 @@ FutureOr<String> family(
   int first, {
   String? second,
   required double third,
-  bool forth = true,
+  bool fourth = true,
   List<String>? fifth,
 }) {
-  return '(first: $first, second: $second, third: $third, forth: $forth, fifth: $fifth)';
+  return '(first: $first, second: $second, third: $third, fourth: $fourth, fifth: $fifth)';
 }
 
 @riverpod
@@ -35,7 +35,7 @@ class PublicClass extends _$PublicClass {
   }
 }
 
-final privateClassProvider = _PrivateClassProvider;
+final privateClassProvider = _privateClassProvider;
 
 @riverpod
 class _PrivateClass extends _$PrivateClass {
@@ -52,9 +52,9 @@ class FamilyClass extends _$FamilyClass {
     int first, {
     String? second,
     required double third,
-    bool forth = true,
+    bool fourth = true,
     List<String>? fifth,
   }) {
-    return '(first: $first, second: $second, third: $third, forth: $forth, fifth: $fifth)';
+    return '(first: $first, second: $second, third: $third, fourth: $fourth, fifth: $fifth)';
   }
 }

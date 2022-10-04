@@ -8,7 +8,7 @@ import 'package:mockito/mockito.dart';
 import 'utils.dart';
 
 void main() {
-  group('WidgetRef.listenOnce', () {
+  group('WidgetRef.listenManual', () {
     testWidgets('listens to changes', (tester) async {
       final provider = StateProvider((ref) => 0);
       final listener = Listener<int>();
@@ -26,7 +26,7 @@ void main() {
         ),
       );
 
-      ref.listenOnce(provider, listener);
+      ref.listenManual(provider, listener);
 
       ref.read(provider.notifier).state++;
       verifyOnly(listener, listener(0, 1));
@@ -40,6 +40,7 @@ void main() {
     testWidgets('removes listeners on dispose', (tester) async {
       final provider = StateProvider((ref) => 0);
       final listener = Listener<int>();
+      final listener2 = Listener<int>();
 
       late WidgetRef ref;
       await tester.pumpWidget(
@@ -57,12 +58,14 @@ void main() {
         tester.element(find.byType(Consumer)),
       );
 
-      ref.listenOnce(provider, listener);
+      ref.listenManual(provider, listener);
+      ref.listenManual(provider, listener2);
 
       await tester.pumpWidget(ProviderScope(child: Container()));
 
       container.read(provider.notifier).state++;
       verifyZeroInteractions(listener);
+      verifyZeroInteractions(listener2);
     });
 
     testWidgets('supports fireImmediately', (tester) async {
@@ -81,7 +84,7 @@ void main() {
         ),
       );
 
-      ref.listenOnce(provider, listener, fireImmediately: true);
+      ref.listenManual(provider, listener, fireImmediately: true);
 
       verifyOnly(listener, listener(null, 0));
     });
@@ -102,7 +105,7 @@ void main() {
         ),
       );
 
-      final sub = ref.listenOnce(provider, (prev, next) {});
+      final sub = ref.listenManual(provider, (prev, next) {});
 
       expect(sub.read(), 0);
 
@@ -127,7 +130,7 @@ void main() {
         ),
       );
 
-      final sub = ref.listenOnce(provider, listener);
+      final sub = ref.listenManual(provider, listener);
 
       ref.read(provider.notifier).state++;
       verifyOnly(listener, listener(0, 1));

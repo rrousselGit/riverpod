@@ -5,15 +5,16 @@ import 'package:meta/meta.dart';
 import 'builders.dart';
 import 'common.dart';
 import 'framework.dart';
+import 'future_provider.dart' show FutureProvider;
 import 'listenable.dart';
 import 'notifier.dart';
 import 'result.dart';
 import 'synchronous_future.dart';
 
-part 'async_notifier/base.dart';
 part 'async_notifier/auto_dispose.dart';
-part 'async_notifier/family.dart';
 part 'async_notifier/auto_dispose_family.dart';
+part 'async_notifier/base.dart';
+part 'async_notifier/family.dart';
 
 /// A base class for [AsyncNotifier].
 ///
@@ -40,9 +41,8 @@ abstract class AsyncNotifierBase<State> {
   }
 
   @protected
-  set state(AsyncValue<State> value) {
-    // ignore: invalid_use_of_protected_member
-    _element.setState(value);
+  set state(AsyncValue<State> newState) {
+    _element.state = newState;
   }
 
   /// The [Ref] from the provider associated with this [AsyncNotifier].
@@ -113,7 +113,10 @@ abstract class AsyncNotifierBase<State> {
   /// comparison of the previous and new values.
   @protected
   bool updateShouldNotify(AsyncValue<State> previous, AsyncValue<State> next) {
-    return !identical(previous, next);
+    return FutureHandlerProviderElementMixin.handleUpdateShouldNotify(
+      previous,
+      next,
+    );
   }
 }
 
@@ -158,8 +161,6 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
     required super.from,
     required super.argument,
     required this.dependencies,
-    required super.cacheTime,
-    required super.disposeDelay,
     required super.debugGetCreateSourceHash,
   });
 

@@ -1,13 +1,11 @@
 import 'dart:async';
 
+import 'async_notifier.dart';
 import 'builders.dart';
 import 'common.dart';
 import 'framework.dart';
-import 'listenable.dart';
 import 'provider.dart' show Provider;
-import 'result.dart';
 import 'stream_provider.dart' show StreamProvider;
-import 'synchronous_future.dart';
 
 part 'future_provider/auto_dispose.dart';
 part 'future_provider/base.dart';
@@ -18,18 +16,9 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
   return ProviderElementProxy<AsyncValue<T>, Future<T>>(
     that,
     (element) {
-      return (element as FutureProviderElement<T>)._futureNotifier;
-    },
-  );
-}
-
-ProviderElementProxy<AsyncValue<T>, Stream<T>> _stream<T>(
-  _FutureProviderBase<T> that,
-) {
-  return ProviderElementProxy<AsyncValue<T>, Stream<T>>(
-    that,
-    (element) {
-      return (element as FutureProviderElement<T>)._streamNotifier;
+      return FutureHandlerProviderElementMixin.futureNotifierOf(
+        element as FutureHandlerProviderElementMixin<T>,
+      );
     },
   );
 }
@@ -106,8 +95,6 @@ abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
     required super.name,
     required super.from,
     required super.argument,
-    required super.cacheTime,
-    required super.disposeDelay,
     required super.debugGetCreateSourceHash,
   });
 
@@ -134,15 +121,6 @@ abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
   /// });
   /// ```
   ProviderListenable<Future<T>> get future;
-
-  /// Obtains a [Stream] representation of this provider.
-  ///
-  /// The stream will not emit a value until the future returned by this [FutureProvider]
-  /// resolves at least once.
-  /// Errors inside the providers will be sent to the stream.
-  ///
-  /// If you want to listen to this provider, consider using `ref.listen(futureProvider)` instead.
-  ProviderListenable<Stream<T>> get stream;
 
   FutureOr<T> _create(covariant FutureProviderElement<T> ref);
 }

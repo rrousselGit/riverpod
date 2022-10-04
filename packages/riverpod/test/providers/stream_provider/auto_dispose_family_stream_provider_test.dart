@@ -1,49 +1,10 @@
-import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import '../../third_party/fake_async.dart';
 import '../../utils.dart';
 
 void main() {
   group('StreamProvider.autoDispose.family', () {
-    test('supports cacheTime', () async {
-      final onDispose = cacheFamily<int, OnDisposeMock>(
-        (key) => OnDisposeMock(),
-      );
-      await fakeAsync((async) async {
-        final container = createContainer();
-        final provider = StreamProvider.autoDispose.family<int, int>(
-          cacheTime: 5 * 1000,
-          (ref, value) {
-            ref.onDispose(onDispose(value));
-            return Stream.value(value);
-          },
-        );
-
-        final sub = container.listen<Future<int>>(
-          provider(42).future,
-          (previous, next) {},
-        );
-
-        expect(await sub.read(), 42);
-
-        verifyZeroInteractions(onDispose(42));
-
-        sub.close();
-
-        async.elapse(const Duration(seconds: 2));
-        await container.pump();
-
-        verifyZeroInteractions(onDispose(42));
-
-        async.elapse(const Duration(seconds: 3));
-        await container.pump();
-
-        verifyOnly(onDispose(42), onDispose(42)());
-      });
-    });
-
     test('specifies `from` & `argument` for related providers', () {
       final provider = StreamProvider.autoDispose.family<int, int>(
         (ref, _) => Stream.value(0),

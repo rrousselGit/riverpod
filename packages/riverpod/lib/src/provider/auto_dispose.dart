@@ -13,8 +13,6 @@ class AutoDisposeProvider<T> extends InternalProvider<T> {
     super.from,
     super.argument,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
     super.debugGetCreateSourceHash,
   });
 
@@ -45,7 +43,5 @@ class AutoDisposeProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     super.create, {
     super.name,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
   }) : super(providerFactory: AutoDisposeProvider.new);
 }

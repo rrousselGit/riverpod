@@ -7,6 +7,15 @@ import 'package:analyzer/dart/element/element.dart';
 Future<AstNode?> findAstNodeForElement(Element element) async {
   final libraryElement = element.library;
   if (libraryElement == null) return null;
+  final inSdk = element.library?.isInSdk ?? false;
+  if (inSdk) {
+    return null;
+  }
+  final libraryName = element.librarySource?.uri.path ?? '';
+  // We don't need to visit AST nodes in flutter to check for dependencies, ref usage, etc
+  if (libraryName.startsWith('flutter/')) {
+    return null;
+  }
   final parsedLibrary =
       await element.session?.getResolvedLibraryByElement(libraryElement);
   if (parsedLibrary is! ResolvedLibraryResult) return null;

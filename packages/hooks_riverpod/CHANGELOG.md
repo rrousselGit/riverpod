@@ -1,3 +1,90 @@
+## 2.0.2
+
+ - **FIX**: Fixed an assert error if a `family` depends on itself while specifying `dependencies`. (#1721).
+
+# 2.0.2
+
+Fixed an assert error if a `family` depends on itself while specifying `dependencies`.
+
+# 2.0.1
+
+Updated changelog (see 2.0.0)
+
+# 2.0.0
+
+Here is the changelog for all the changes in the 2.0 version.
+An article is in progress and will be linked here once available.
+
+**Breaking changes**:
+
+- `FutureProvider.stream` is removed.
+- Using `overrideWithProvider`, it is no-longer possible to override a provider
+  with a different type of provider (such as overriding `FutureProvider` with a `StreamProvider`).
+- `AsyncError.stackTrace` is now a required positional parameter and non-nullable
+- All `overrideWithValue` methods are removed, besides `Provider.overrideWithValue`.
+  This change is temporary, and these methods will be reintroduced in a later version.
+  In the meantime, you can use `overrideWithProvider`.
+- Modifiers (`provider.future`, `provider.state`, ...) no-longer are providers, and therefore no-longer
+  appear inside `ProviderObserver`.
+- The `Reader` typedef is removed. Use `Ref` instead.
+- `ProviderListener` is removed. Used `ref.listen` instead.
+- Removed the deprecated `ProviderReference`.
+- Providers no-longer throw a `ProviderException` if an exception was thrown while building their value.
+  Instead, they will rethrow the thrown exception and its stacktrace.
+- It is no longer possible to pass `provider.future/.notifier/...` to the parameter `dependencies` of provider.
+  Passing the provider directly is enough.
+- The `Family` type now has a single generic parameter instead of 3.
+
+Non-breaking changes:
+
+- Upgrade minimum required Flutter SDK version to 3.0.0
+- Upgrade minimum required Dart SDK version to 2.17.0
+- Added `WidgetRef.context`. This allows functions that depend on a `WidgetRef`
+  to use the `BuildContext` without having to receive it as paramreter.
+- Added `provider.selectAsync`, which allows to both await an async value
+  while also filtering rebuilds.
+- Added `WidgetRef.listenManual` for listening to providers in a widget
+  outside of `build`.
+- Added `ref.listenSelf`, for subscribing to changes of a provider within
+  that provider.
+  That can be useful for logging purposes or storing the state of a provider
+  in a DB.
+- Added `container.invalidate(provider)`/`ref.invalidate(provider)` and `ref.invalidateSelf()`.
+  These are similar to `ref.refresh` methods, but do not immediately rebuild the provider.
+
+These methods are safer than `ref.refresh` as they can avoid a provider
+rebuilding twice in a quick succession.
+
+- Added `ref.onAddListener`, `ref.onRemoveListener`, `ref.onCancel` and
+  `ref.onResume`. All of which allow performing side-effects when providers
+  are listened or stop being listened.
+
+- A new `AutoDisposeRef.keepAlive()` function is added. It is meant to replace
+  `AutoDisposeRef.maintainState` to make logic for preventing the disposal of a provider more reusable.
+- feat; `AutoDisposeRef.maintainState` is deprecated. Use the new `AutoDisposeRef.keepAlive()` instead.
+- Add support for `ref.invalidate(family)` to recompute an entire family (#1517)
+- Added `AsyncValue.valueOrNull` to obtain the value while ignoring potential errors.
+- Added new functionalities to `AsyncValue`: `hasError`, `hasData`, `asError`, `isLoading`
+  , `copyWithPrevious` and `unwrapPrevious`.
+
+Fixes:
+
+- fixed a bug where `AsyncValue.whenData` did not preserve `AsyncValue.isLoading/isRefreshing`
+- `StateProvider` and `StateNotifierProvider` no longer notify their listeners
+  on `ref.refresh` if the new result is identical to the old one.
+- fixed potential null exception when using `autoDispose`
+- fixed a bug where unmounting a nested ProviderScope could cause an exception (#1400)
+- Fixed an issue where providers were incorrectly allowed to depend on themselves,
+  breaking `autoDispose` in the process.
+- Fixed a memory leak when using `StateProvider.autoDispose`'s `.state`
+- Fix `ProviderObserver.didDisposeProvider` not executing on provider refresh.
+- Fixed an issue where `AsyncValue.value` did not throw if there is an error.
+- Fixed a cast error when overriding a provider with a more specific provider type (#1100)
+- Fixed a bug where `onDispose` listeners could be executed twice under certain
+  conditions when using `autoDispose`.
+- Fixed an issue where refreshing a `provider.future`/`provider.stream` did work properly
+- Fixed false positive with `ref.watch` asserts
+
 # 2.0.0-dev.9
 
 Fix Timer leak when using `cacheTime`/`disposeDelay` and disposing a `ProviderContainer`
@@ -13,7 +100,7 @@ fix: a bug where unmounting a nested ProviderScope could cause an exception (#14
 
 # 2.0.0-dev.6
 
-- Added `WidgetRef.listenOnce` for listening to providers in a widget
+- Added `WidgetRef.listenManual` for listening to providers in a widget
   outside of `build`.
 - Added `AsyncValue.valueOrNull` to obtain the value while ignoring potential errors.
 - Fixed an issue where `AsyncValue.value` did not throw if there is an error.

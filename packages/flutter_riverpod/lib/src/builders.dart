@@ -334,15 +334,11 @@ class AutoDisposeChangeNotifierProviderBuilder {
     Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>> create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeChangeNotifierProvider<Notifier>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 
@@ -364,15 +360,11 @@ class AutoDisposeChangeNotifierProviderFamilyBuilder {
         create, {
     String? name,
     List<ProviderOrFamily>? dependencies,
-    int? cacheTime,
-    int? disposeDelay,
   }) {
     return AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>(
       create,
       name: name,
       dependencies: dependencies,
-      cacheTime: cacheTime,
-      disposeDelay: disposeDelay,
     );
   }
 }

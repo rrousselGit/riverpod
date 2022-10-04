@@ -16,8 +16,6 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
     super.from,
     super.argument,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
     super.debugGetCreateSourceHash,
   });
 
@@ -37,9 +35,6 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
 
   @override
   late final Refreshable<Future<T>> future = _future(this);
-
-  @override
-  late final Refreshable<Stream<T>> stream = _stream(this);
 }
 
 /// The [ProviderElementBase] of [AutoDisposeFutureProvider]
@@ -59,7 +54,5 @@ class AutoDisposeFutureProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     super.create, {
     super.name,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
   }) : super(providerFactory: AutoDisposeFutureProvider.new);
 }

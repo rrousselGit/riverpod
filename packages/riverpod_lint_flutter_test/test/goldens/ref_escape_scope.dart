@@ -27,6 +27,10 @@ class C extends ConsumerWidget {
       BadWidgetB(ref: ref),
     ]);
   }
+
+  void fn(WidgetRef ref) {
+    ref.read(a);
+  }
 }
 
 class BadWidgetA extends StatelessWidget {

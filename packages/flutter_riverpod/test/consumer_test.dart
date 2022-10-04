@@ -6,7 +6,22 @@ import 'package:flutter_test/flutter_test.dart';
 import 'utils.dart';
 
 void main() {
-  test('ref.read should keep providers alive', () {}, skip: true);
+  testWidgets('WidgetRef.context exposes the BuildContext', (tester) async {
+    late WidgetRef ref;
+
+    await tester.pumpWidget(
+      CallbackConsumerWidget(
+        key: const Key('initState'),
+        initState: (ctx, r) {
+          ref = r;
+        },
+      ),
+    );
+
+    final consumerElement = tester.element(find.byType(CallbackConsumerWidget));
+
+    expect(ref.context, same(consumerElement));
+  });
 
   testWidgets('throws if listen is used outside of `build`', (tester) async {
     final provider = Provider((ref) => 0);

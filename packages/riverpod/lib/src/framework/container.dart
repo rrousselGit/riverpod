@@ -107,15 +107,11 @@ class ProviderContainer implements Node {
   /// {@macro riverpod.providercontainer}
   ProviderContainer({
     ProviderContainer? parent,
-    int? cacheTime,
-    int? disposeDelay,
     List<Override> overrides = const [],
     List<ProviderObserver>? observers,
   })  : _debugOverridesLength = overrides.length,
         depth = parent == null ? 0 : parent.depth + 1,
         _parent = parent,
-        cacheTime = cacheTime ?? parent?.cacheTime ?? 0,
-        disposeDelay = disposeDelay ?? parent?.disposeDelay ?? 0,
         _observers = [
           ...?observers,
           if (parent != null) ...parent._observers,
@@ -160,16 +156,6 @@ class ProviderContainer implements Node {
       }
     }
   }
-
-  /// The default value for [ProviderBase.cacheTime].
-  ///
-  /// {@macro riverpod.cache_time}
-  final int cacheTime;
-
-  /// The default value for [ProviderBase.disposeDelay].
-  ///
-  /// {@macro riverpod.dispose_delay}
-  final int disposeDelay;
 
   final int _debugOverridesLength;
 
@@ -354,10 +340,9 @@ class ProviderContainer implements Node {
       // on provider dispose, to avoid memory leak
 
       void removeStateReaderFrom(ProviderContainer container) {
-        container._stateReaders.remove(element._origin);
-
-        for (var i = 0; i < container._children.length; i++) {
-          removeStateReaderFrom(container._children[i]);
+        if (container._stateReaders[element._origin] == reader) {
+          container._stateReaders.remove(element._origin);
+          container._children.forEach(removeStateReaderFrom);
         }
       }
 

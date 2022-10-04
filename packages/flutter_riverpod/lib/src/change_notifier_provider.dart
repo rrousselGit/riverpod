@@ -36,8 +36,6 @@ abstract class _ChangeNotifierProviderBase<NotifierT extends ChangeNotifier?>
     required super.from,
     required super.argument,
     required this.dependencies,
-    required super.cacheTime,
-    required super.disposeDelay,
     required super.debugGetCreateSourceHash,
   });
 

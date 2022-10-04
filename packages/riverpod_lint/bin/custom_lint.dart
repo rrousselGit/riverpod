@@ -13,10 +13,28 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_lint/src/analyzer_utils.dart';
 import 'package:riverpod_lint/src/type_checker.dart';
 
-const _providerBase = TypeChecker.fromRuntime(ProviderBase);
-const _family = TypeChecker.fromRuntime(Family);
-const _future = TypeChecker.fromRuntime(Future);
-const _stream = TypeChecker.fromRuntime(Stream);
+const _providerBase =
+    TypeChecker.fromName('ProviderBase', packageName: 'riverpod');
+const _alwaysAliveProviderListenable = TypeChecker.any([
+  TypeChecker.fromName(
+    'AlwaysAliveProviderListenable',
+    packageName: 'riverpod',
+  ),
+]);
+
+const _family = TypeChecker.fromName('Family', packageName: 'riverpod');
+const _future = TypeChecker.fromUrl(
+  'dart:async#Future',
+);
+const _stream = TypeChecker.fromUrl(
+  'dart:async#Stream',
+);
+const _container =
+    TypeChecker.fromName('ProviderContainer', packageName: 'riverpod');
+const _asyncNotifier =
+    TypeChecker.fromName('AsyncNotifierBase', packageName: 'riverpod');
+const _notifier = TypeChecker.fromName('NotifierBase', packageName: 'riverpod');
+const _codegenNotifier = TypeChecker.any([_asyncNotifier, _notifier]);
 const _providerOrFamily = TypeChecker.any([_providerBase, _family]);
 const _futureOrStream = TypeChecker.any([_future, _stream]);
 
@@ -25,6 +43,7 @@ const _widgetState = TypeChecker.fromName('State', packageName: 'flutter');
 
 const _widgetRef =
     TypeChecker.fromName('WidgetRef', packageName: 'flutter_riverpod');
+const _anyRef = TypeChecker.any([_widgetRef, _ref]);
 
 const _consumerWidget = TypeChecker.fromName(
   'ConsumerWidget',
@@ -34,7 +53,7 @@ const _consumerState = TypeChecker.fromName(
   'ConsumerState',
   packageName: 'flutter_riverpod',
 );
-const _ref = TypeChecker.fromRuntime(Ref);
+const _ref = TypeChecker.fromName('Ref', packageName: 'riverpod');
 
 /// [Ref] methods that can make a provider depend on another provider.
 const _refBinders = {'read', 'watch', 'listen'};
@@ -82,57 +101,85 @@ mixin _ProviderCreationVisitor<T> on AsyncRecursiveVisitor<T> {
       if (stream != null) yield* stream;
     }
   }
+
+  @override
+  Stream<T>? visitClassDeclaration(ClassDeclaration node) async* {
+    final superStream = super.visitClassDeclaration(node);
+    if (superStream != null) yield* superStream;
+    if (node.isProviderCreation ?? false) {
+      final stream = visitProviderCreation(node);
+      if (stream != null) yield* stream;
+    }
+  }
+
+  @override
+  Stream<T>? visitFunctionDeclaration(FunctionDeclaration node) async* {
+    final superStream = super.visitFunctionDeclaration(node);
+    if (superStream != null) yield* superStream;
+    if (node.isProviderCreation ?? false) {
+      final stream = visitProviderCreation(node);
+      if (stream != null) yield* stream;
+    }
+  }
 }
 
 class RefLifecycleInvocation {
   RefLifecycleInvocation._(this.invocation);
 
-  // Whether the invocation is inside or outside the build method of a provider/widget
-  // Null if unknown
-  static bool? _isWithinBuild(AstNode node) {
-    var hasFoundFunctionExpression = false;
-
-    for (final parent in node.parents) {
-      if (parent is FunctionExpression) {
-        if (hasFoundFunctionExpression) return false;
-
-        if (parent.isWidgetBuilder ?? false) {
-          return true;
-        }
-
-        // Since anonymous functions could be the build of a provider,
-        // we need to check their ancestors for more information.
-        hasFoundFunctionExpression = true;
-      }
-      if (parent is InstanceCreationExpression) {
-        return parent.isProviderCreation;
-      }
-      if (parent is FunctionExpressionInvocation) {
-        return parent.isProviderCreation;
-      }
-      if (parent is MethodDeclaration) {
-        if (hasFoundFunctionExpression || parent.name2.lexeme != 'build') {
-          return false;
-        }
-
-        final classElement = parent.parents
-            .whereType<ClassDeclaration>()
-            .firstOrNull
-            ?.declaredElement2;
-
-        if (classElement == null) return null;
-        return _consumerWidget.isAssignableFrom(classElement) ||
-            _consumerState.isAssignableFrom(classElement);
-      }
-    }
-    return null;
-  }
-
   final MethodInvocation invocation;
 
-  late final bool? isWithinBuild = _isWithinBuild(invocation);
+  late final bool? isWithinBuild = invocation.inBuild;
 }
 
+enum AsyncContext {
+  // Synchronous context in build of widget / initState or Provider
+  buildSync,
+  // Synchronous context in callback function
+  callbackSync,
+  // In callback, but after await / await_for
+  callbackAfterAsync;
+
+  bool get isSync => this == buildSync || this == callbackSync;
+  bool get isAsync => this == callbackAfterAsync;
+}
+
+mixin _AsyncContextVisitor<T> on AsyncRecursiveVisitor<T> {
+  AsyncContext context = AsyncContext.buildSync;
+  @override
+  Stream<T>? visitMethodDeclaration(MethodDeclaration node) async* {
+    final last = context;
+    context = AsyncContext.buildSync;
+    yield* super.visitMethodDeclaration(node) ?? const Stream.empty();
+    context = last;
+  }
+
+  @override
+  Stream<T>? visitFunctionExpression(FunctionExpression node) async* {
+    final last = context;
+    if (node.isBuild() ?? false) {
+      context = AsyncContext.buildSync;
+    } else {
+      context = AsyncContext.callbackSync;
+    }
+    yield* super.visitFunctionExpression(node) ?? const Stream.empty();
+    context = last;
+  }
+
+  @override
+  Stream<T>? visitAwaitExpression(AwaitExpression node) async* {
+    yield* super.visitAwaitExpression(node) ?? const Stream.empty();
+    context = AsyncContext.callbackAfterAsync;
+  }
+
+  @override
+  Stream<T>? visitForStatement(ForStatement node) async* {
+    // First time through the loop could be synchronous, so wait till the loop is done
+    yield* super.visitForStatement(node) ?? const Stream.empty();
+    if (node.awaitKeyword != null) {
+      context = AsyncContext.callbackAfterAsync;
+    }
+  }
+}
 mixin _RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
   /// A Ref/WidgetRef method was invoked. It isn't guaranteed to be watch/listen/read
   Stream<T>? visitRefInvocation(RefLifecycleInvocation node);
@@ -148,9 +195,107 @@ mixin _RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
     }
 
     if (_ref.isAssignableFrom(targetType) ||
-        _widgetRef.isAssignableFrom(targetType)) {
+        _widgetRef.isAssignableFrom(targetType) ||
+        _container.isAssignableFrom(targetType)) {
       final refInvocStream = visitRefInvocation(RefLifecycleInvocation._(node));
       if (refInvocStream != null) yield* refInvocStream;
+    }
+  }
+}
+
+mixin _InvocationVisitor<T>
+    on AsyncRecursiveVisitor<T>, _AsyncContextVisitor<T> {
+  // Whether the method is forced async
+  bool forceAsync = false;
+  bool get asyncBad;
+  Stream<T> visitCalledFunction(AstNode node, {required AstNode callingNode});
+  @override
+  Stream<T>? visitPropertyAccess(PropertyAccess node) async* {
+    final method = node.propertyName.staticElement;
+    if (method != null) {
+      final ast = await findAstNodeForElement(method);
+      if (ast != null && ast.refPassed) {
+        yield* visitCalledFunction(ast, callingNode: node);
+      }
+    }
+    yield* super.visitPropertyAccess(node) ?? const Stream.empty();
+  }
+
+  @override
+  Stream<T>? visitPrefixedIdentifier(PrefixedIdentifier node) async* {
+    final method = node.identifier.staticElement;
+    if (method != null) {
+      final ast = await findAstNodeForElement(method);
+      if (ast != null && ast.refPassed) {
+        yield* visitCalledFunction(ast, callingNode: node);
+      }
+    }
+    yield* super.visitPrefixedIdentifier(node) ?? const Stream.empty();
+  }
+
+  @override
+  Stream<T>? visitFunctionExpressionInvocation(
+    FunctionExpressionInvocation node,
+  ) async* {
+    final method = node.staticElement;
+    if (method != null) {
+      final ast = await findAstNodeForElement(method);
+      if (ast != null && ast.refPassed) {
+        yield* visitCalledFunction(
+          ast as FunctionDeclaration,
+          callingNode: node,
+        );
+      }
+    }
+    yield* super.visitFunctionExpressionInvocation(node) ??
+        const Stream.empty();
+  }
+
+  @override
+  Stream<T>? visitMethodInvocation(MethodInvocation node) async* {
+    final method = node.methodName.staticElement;
+    if (method != null) {
+      final ast = await findAstNodeForElement(method.declaration!);
+      if (ast != null && ast.refPassed) {
+        yield* visitCalledFunction(ast, callingNode: node);
+      }
+    }
+
+    yield* super.visitMethodInvocation(node) ?? const Stream.empty();
+  }
+
+  @override
+  Stream<T>? visitInstanceCreationExpression(
+    InstanceCreationExpression node,
+  ) async* {
+    final constructor = node.constructorName.staticElement;
+    if (constructor != null) {
+      if (_futureOrStream.isAssignableFrom(constructor.enclosingElement3)) {
+        if (!asyncBad) {
+          return;
+        } else {
+          for (final arg in node.argumentList.arguments) {
+            // The arguments to a future or stream could be called after a widget is disposed
+            final last = context;
+            final lastAsync = forceAsync;
+            forceAsync = true;
+            context = AsyncContext.callbackAfterAsync;
+            yield* visitExpression(arg) ?? const Stream.empty();
+            context = last;
+            forceAsync = lastAsync;
+          }
+        }
+      } else {
+        final ast = await findAstNodeForElement(constructor.declaration);
+
+        if (ast != null) {
+          yield* visitConstructorDeclaration(ast as ConstructorDeclaration) ??
+              const Stream.empty();
+        }
+        for (final arg in node.argumentList.arguments) {
+          yield* visitExpression(arg) ?? const Stream.empty();
+        }
+      }
     }
   }
 }
@@ -261,118 +406,133 @@ class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
   }
 }
 
-class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
+class RefAsyncUsageVisitor extends AsyncRecursiveVisitor<Lint>
+    with _AsyncContextVisitor, _InvocationVisitor, _RefLifecycleVisitor {
+  RefAsyncUsageVisitor(this.unit);
+  final ResolvedUnitResult unit;
+
+  @override
+  Stream<Lint> visitCalledFunction(
+    AstNode node, {
+    required AstNode callingNode,
+  }) async* {
+    final results = node is MethodDeclaration
+        ? visitMethodDeclaration(node)
+        : node is FunctionDeclaration
+            ? visitFunctionDeclaration(node)
+            : null;
+    if (results != null) {
+      await for (final _ in results) {
+        yield Lint(
+          code: 'riverpod_no_ref_after_async',
+          message:
+              'Do not use ref after async gaps in flutter widgets, a function was called which uses ref after a widget could be disposed',
+          location: unit.lintLocationFromOffset(
+            callingNode.offset,
+            length: callingNode.length,
+          ),
+        );
+        // Only need to report the function once
+        return;
+      }
+    }
+  }
+
+  @override
+  Stream<Lint>? visitRefInvocation(RefLifecycleInvocation node) async* {
+    if (context == AsyncContext.callbackAfterAsync) {
+      // TODO Allow checking mounted in stateful widgets and checking mounted in StateNotifiers
+      yield Lint(
+        code: 'riverpod_no_ref_after_async',
+        message: 'Do not use ref after async gaps in flutter widgets.',
+        location: unit.lintLocationFromOffset(
+          node.invocation.offset,
+          length: node.invocation.length,
+        ),
+      );
+    }
+  }
+
+  @override
+  bool get asyncBad => true;
+}
+
+extension on FormalParameterList {
+  bool get hasRefParameter {
+    return parameters.any((p) {
+      final type = p.declaredElement?.type;
+      return type != null && _anyRef.isAssignableFromType(type);
+    });
+  }
+}
+
+extension on InterfaceOrAugmentationElement {
+  bool get hasRefField =>
+      fields.any((f) => _anyRef.isAssignableFromType(f.type));
+}
+
+extension RefPassed on AstNode {
+  bool get refPassed {
+    final node = this;
+    if (node is MethodDeclaration) {
+      if (!(node.parameters?.hasRefParameter ?? false)) {
+        final enclosingElement = node.declaredElement2?.enclosingElement3;
+        if (enclosingElement is ExtensionElement &&
+            !_anyRef.isAssignableFromType(enclosingElement.extendedType)) {
+          return false; // If ref is not passed in, there is no way the ref could be used within the the called function
+        } else if (enclosingElement is InterfaceOrAugmentationElement &&
+            !enclosingElement.hasRefField) {
+          return false; // If ref is not passed in and not a field, there is no way the ref could be used within the the called function
+        }
+      }
+    } else if (node is FunctionDeclaration) {
+      if (!(node.functionExpression.parameters?.hasRefParameter ?? false)) {
+        return false; // If ref is not passed in, there is no way the ref could be used within the the called function
+      }
+    }
+    return true;
+  }
+}
+
+class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint>
+    with _AsyncContextVisitor, _InvocationVisitor {
   ProviderSyncMutationVisitor(this.unit);
 
   final ResolvedUnitResult unit;
 
   @override
-  Stream<Lint>? visitFunctionExpressionInvocation(
-    FunctionExpressionInvocation node,
-  ) async* {
-    final method = node.staticElement;
-    if (method != null) {
-      final ast = await findAstNodeForElement(method);
-      if (ast != null) {
-        final decl = visitFunctionDeclaration(ast as FunctionDeclaration);
-        if (decl == null) {
-          return;
-        }
-        // If the method mutates synchronously, it is not a problem with the method necessarily, just that we call it synchronously
-        await for (final _ in decl) {
-          yield Lint(
-            code: 'riverpod_no_mutate_sync',
-            message:
-                'Do not mutate a provider synchronously, a function was called which mutates a provider synchronously',
-            location: unit.lintLocationFromOffset(
-              node.offset,
-              length: node.length,
-            ),
-          );
-          return;
-        }
-      }
-    }
-    yield* super.visitFunctionExpressionInvocation(node) ??
-        const Stream.empty();
-  }
-
-  @override
-  Stream<Lint>? visitMethodInvocation(MethodInvocation node) async* {
-    final method = node.methodName.staticElement;
-    if (method != null) {
-      final ast = await findAstNodeForElement(method.declaration!);
-      if (ast != null) {
-        final decl = visitMethodDeclaration(ast as MethodDeclaration);
-        if (decl == null) {
-          return;
-        }
-        // If the method mutates synchronously, it is not a problem with the method necessarily, just that we call it synchronously
-        await for (final _ in decl) {
-          yield Lint(
-            code: 'riverpod_no_mutate_sync',
-            message:
-                'Do not mutate a provider synchronously, a method was called which mutates a provider synchronously',
-            location: unit.lintLocationFromOffset(
-              node.offset,
-              length: node.length,
-            ),
-          );
-          return;
-        }
-      }
-    }
-
-    yield* super.visitMethodInvocation(node) ?? const Stream.empty();
-  }
-
-  @override
-  Stream<Lint>? visitInstanceCreationExpression(
-    InstanceCreationExpression node,
-  ) async* {
-    final constructor = node.constructorName.staticElement;
-    if (constructor != null) {
-      if (_futureOrStream.isAssignableFrom(constructor.enclosingElement3)) {
+  Stream<Lint> visitCalledFunction(
+    AstNode node, {
+    required AstNode callingNode,
+  }) async* {
+    final results = node is MethodDeclaration
+        ? visitMethodDeclaration(node)
+        : node is FunctionDeclaration
+            ? visitFunctionDeclaration(node)
+            : null;
+    if (results != null) {
+      await for (final _ in results) {
+        yield Lint(
+          code: 'riverpod_no_mutate_sync',
+          message:
+              'Do not mutate a provider synchronously, a function was called which mutates a provider synchronously',
+          location: unit.lintLocationFromOffset(
+            callingNode.offset,
+            length: callingNode.length,
+          ),
+        );
+        // Only need to report the function once
         return;
       }
-      final ast = await findAstNodeForElement(constructor.declaration);
-      if (ast != null) {
-        yield* visitConstructorDeclaration(ast as ConstructorDeclaration) ??
-            const Stream.empty();
-      }
-    }
-  }
-
-  bool synchronous = true;
-  @override
-  Stream<Lint>? visitBlockFunctionBody(BlockFunctionBody node) async* {
-    final last = synchronous;
-    synchronous = true;
-    yield* super.visitBlockFunctionBody(node) ?? const Stream.empty();
-    synchronous = last;
-  }
-
-  @override
-  Stream<Lint>? visitAwaitExpression(AwaitExpression node) async* {
-    yield* super.visitAwaitExpression(node) ?? const Stream.empty();
-    synchronous = false;
-  }
-
-  @override
-  Stream<Lint>? visitForStatement(ForStatement node) async* {
-    // First time through the loop could be synchronous, so wait till the loop is done
-    yield* super.visitForStatement(node) ?? const Stream.empty();
-    if (node.awaitKeyword != null) {
-      synchronous = false;
     }
   }
 
   @override
-  Stream<Lint>? visitAssignmentExpression(
-    AssignmentExpression expression,
-  ) async* {
-    final mutate = expression.isMutation ?? false;
-    if (synchronous && mutate) {
+  Stream<Lint>? visitExpression(Expression expression) async* {
+    final lints = super.visitExpression(expression);
+    yield* lints ?? const Stream.empty();
+    final mutate = expression.isMutation;
+    if (!forceAsync && context == AsyncContext.buildSync && (mutate ?? false)) {
       yield Lint(
         code: 'riverpod_no_mutate_sync',
         message: 'Do not mutate a provider synchronously',
@@ -383,6 +543,17 @@ class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint> {
       );
     }
   }
+
+  @override
+  Stream<Lint>? visitNode(AstNode node) {
+    if (!forceAsync && context == AsyncContext.buildSync) {
+      return super.visitNode(node);
+    }
+    return null;
+  }
+
+  @override
+  bool get asyncBad => false;
 }
 
 class _FindProviderCallbackVisitor
@@ -416,6 +587,25 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
             ),
           );
         }
+        final arg =
+            node.invocation.argumentList.arguments.firstOrNull?.staticType;
+
+        if (arg != null &&
+            !_alwaysAliveProviderListenable.isAssignableFromType(arg)) {
+          yield Lint(
+            code: 'riverpod_avoid_read_on_autoDispose',
+            message: 'Avoid using ref.read on an autoDispose provider',
+            correction: '''
+Instead use:
+  final listener = ref.listen(${node.invocation.argumentList.arguments.first}, (_, __){});
+  final currentValue = listener.read();
+Then dispose of the listener when you no longer need the autoDispose provider to be kept alive.''',
+            location: unit.lintLocationFromOffset(
+              node.invocation.offset,
+              length: node.invocation.length,
+            ),
+          );
+        }
         break;
       case 'watch':
         if (node.isWithinBuild == false) {
@@ -436,8 +626,14 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
 
   @override
   Stream<Lint> visitProviderCreation(AstNode node) async* {
+    if (node is ClassDeclaration || node is FunctionDeclaration) {
+      yield* ProviderSyncMutationVisitor(unit).visitNode(node) ??
+          const Stream<Lint>.empty();
+      return;
+    }
     final variableDeclaration =
         node.parents.whereType<VariableDeclaration>().firstOrNull;
+
     final providerDeclaration = variableDeclaration?.declaredElement2 != null
         ? ProviderDeclaration._(
             variableDeclaration!,
@@ -448,6 +644,7 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
 
     if (providerDeclaration != null) {
       yield* _checkProviderDependencies(providerDeclaration);
+
       yield* ProviderSyncMutationVisitor(unit).visitNode(node) ??
           const Stream<Lint>.empty();
     }
@@ -599,7 +796,65 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
     //     'Provider\n - origin: $node\n - expected: ${dependencies.value}\n - dependencies: ${visitor.dependencies}');
   }
 
+  @override
+  Stream<Lint> visitTopLevelVariableDeclaration(
+    TopLevelVariableDeclaration node,
+  ) async* {
+    yield* super.visitTopLevelVariableDeclaration(node) ?? const Stream.empty();
+    for (final variable in node.variables.variables) {
+      final type = variable.declaredElement2?.type;
+
+      if (type != null && _container.isAssignableFromType(type)) {
+        yield Lint(
+          code: 'riverpod_global_container',
+          message: 'This container is global',
+          correction:
+              'Make the container non-global by creating it in your main and assigning it to a UncontrolledProviderScope.',
+          severity: LintSeverity.warning,
+          location: unit.lintLocationFromOffset(
+            variable.offset,
+            length: variable.length,
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  Stream<Lint> visitNode(AstNode node) async* {
+    yield* super.visitNode(node) ?? const Stream.empty();
+    if (node.isWidgetBuild ?? false) {
+      final syncMutationDetector = ProviderSyncMutationVisitor(unit);
+      final results = node is MethodDeclaration
+          ? syncMutationDetector.visitMethodDeclaration(node)
+          : node is FunctionDeclaration
+              ? syncMutationDetector.visitFunctionDeclaration(node)
+              : null;
+      yield* results ?? const Stream<Lint>.empty();
+      final refAfterAsyncGaps = RefAsyncUsageVisitor(unit);
+      final results2 = node is MethodDeclaration
+          ? refAfterAsyncGaps.visitMethodDeclaration(node)
+          : node is FunctionDeclaration
+              ? refAfterAsyncGaps.visitFunctionDeclaration(node)
+              : null;
+      yield* results2 ?? const Stream<Lint>.empty();
+    } else if (node.isInitState ?? false) {
+      final syncMutationDetector = ProviderSyncMutationVisitor(unit);
+      final results = node is MethodDeclaration
+          ? syncMutationDetector.visitMethodDeclaration(node)
+          : node is FunctionDeclaration
+              ? syncMutationDetector.visitFunctionDeclaration(node)
+              : null;
+      yield* results ?? const Stream<Lint>.empty();
+    }
+  }
+
   Stream<Lint> _checkValidProviderDeclaration(AstNode providerNode) async* {
+    if (providerNode is ClassDeclaration ||
+        providerNode is FunctionDeclaration) {
+      // Codegen provider
+      return;
+    }
     final declaration =
         providerNode.parents.whereType<VariableDeclaration>().firstOrNull;
     final variable = declaration?.declaredElement2;
@@ -818,6 +1073,130 @@ extension on FunctionExpressionInvocation {
   }
 }
 
+extension on MethodDeclaration {
+  bool? get isProviderCreation {
+    final isBuildMethod = name2.lexeme == 'build';
+    final interface = declaredElement2?.enclosingElement3;
+    if (interface == null) {
+      return null;
+    }
+    return isBuildMethod && _codegenNotifier.isAssignableFrom(interface);
+  }
+}
+
+extension on ClassDeclaration {
+  bool? get isProviderCreation {
+    final interface = declaredElement2;
+    if (interface == null) {
+      return null;
+    }
+    return _codegenNotifier.isAssignableFrom(interface);
+  }
+}
+
+extension on FunctionDeclaration {
+  bool? get isProviderCreation {
+    final annotation = metadata.firstWhereOrNull(
+      (a) => a.name.name == 'riverpod' || a.constructorName?.name == 'Riverpod',
+    );
+    return annotation == null ? null : true;
+  }
+}
+
+extension on AstNode {
+  bool? get isWidgetBuild {
+    final expr = this;
+    if (expr is FunctionExpression) {
+      return (this as FunctionExpression).isWidgetBuilder;
+    }
+    if (expr is MethodDeclaration) {
+      if (expr.name2.lexeme != 'build') {
+        return false;
+      }
+
+      final classElement = expr.parents
+          .whereType<ClassDeclaration>()
+          .firstOrNull
+          ?.declaredElement2;
+
+      if (classElement == null) return null;
+      return _consumerWidget.isAssignableFrom(classElement) ||
+          _consumerState.isAssignableFrom(classElement);
+    }
+    return null;
+  }
+
+  bool? isBuild({bool hasFoundFunctionExpression = false}) {
+    final node = this;
+
+    if (node is FunctionExpression) {
+      if (hasFoundFunctionExpression) {
+        return false;
+      }
+      if (node.isWidgetBuilder ?? false) {
+        return true;
+      }
+
+      return parent?.isBuild(hasFoundFunctionExpression: true);
+    }
+    if (node is InstanceCreationExpression) {
+      return node.isProviderCreation;
+    }
+    if (node is FunctionExpressionInvocation) {
+      return node.isProviderCreation;
+    }
+    if (node is FunctionDeclaration) {
+      return node.isProviderCreation;
+    }
+    if (node is MethodDeclaration) {
+      if (node.isProviderCreation ?? false) {
+        return true;
+      }
+      if (hasFoundFunctionExpression || node.name2.lexeme != 'build') {
+        return false;
+      }
+
+      final classElement = node.parents
+          .whereType<ClassDeclaration>()
+          .firstOrNull
+          ?.declaredElement2;
+
+      if (classElement == null) return null;
+      return _consumerWidget.isAssignableFrom(classElement) ||
+          _consumerState.isAssignableFrom(classElement);
+    }
+    return parent?.isBuild(
+      hasFoundFunctionExpression: hasFoundFunctionExpression,
+    );
+  }
+
+  bool? get inBuild {
+    final inBuild = parent?.isBuild();
+    if (inBuild ?? false) {
+      return inBuild;
+    }
+    return inBuild;
+  }
+
+  bool? get isInitState {
+    final expr = this;
+    if (expr is MethodDeclaration) {
+      if (expr.name2.lexeme != 'initState') {
+        return false;
+      }
+
+      final classElement = expr.parents
+          .whereType<ClassDeclaration>()
+          .firstOrNull
+          ?.declaredElement2;
+
+      if (classElement == null) return null;
+      return _consumerState.isAssignableFrom(classElement);
+    }
+    return null;
+  }
+}
+
 extension on FunctionExpression {
   /// Null if unknown
   bool? get isWidgetBuilder {
@@ -838,26 +1217,49 @@ extension on InstanceCreationExpression {
   }
 }
 
-extension on AssignmentExpression {
+extension on Expression {
   // ref.watch(a.notifier).state = '';
   bool? get isMutation {
-    final left = leftHandSide;
-    if (left is! PropertyAccess) {
-      return null;
+    final expr = this;
+    if (expr is AssignmentExpression) {
+      final left = expr.leftHandSide;
+      if (left is! PropertyAccess || left.propertyName.name != 'state') {
+        return null;
+      }
+      final targ = left.target;
+      if (targ is! MethodInvocation) {
+        return null;
+      }
+      final methodTarget = targ.methodName.staticElement?.enclosingElement3;
+      if (methodTarget == null || methodTarget is! InterfaceElement) {
+        return null;
+      }
+      if (_ref.isAssignableFromType(methodTarget.thisType) ||
+          _widgetRef.isAssignableFromType(methodTarget.thisType)) {
+        // TODO: Synchronous listen
+        if (targ.methodName.name == 'watch' || targ.methodName.name == 'read') {
+          return true;
+        }
+      }
+      return false;
+    } else if (expr is MethodInvocation) {
+      if (expr.methodName.name == 'refresh' ||
+          expr.methodName.name == 'invalidate' ||
+          expr.methodName.name == 'invalidateSelf') {
+        final methodTarget = expr.methodName.staticElement?.enclosingElement3;
+        if (methodTarget == null || methodTarget is! InterfaceElement) {
+          return null;
+        }
+        if (_ref.isAssignableFromType(methodTarget.thisType) ||
+            _widgetRef.isAssignableFromType(methodTarget.thisType)) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
-    final targ = left.target;
-    if (targ is! MethodInvocation) {
-      return null;
-    }
-    final target = targ.target?.staticType;
-    if (target == null) {
-      return null;
-    }
-    if ((targ.methodName.name == 'watch' || targ.methodName.name == 'read') &&
-        left.propertyName.name == 'state' &&
-        _ref.isAssignableFromType(target)) {
-      return true;
-    }
-    return false;
+    return null;
   }
 }

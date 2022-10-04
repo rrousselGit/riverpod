@@ -7,6 +7,63 @@ import '../utils.dart';
 
 void main() {
   group('ProviderContainer', () {
+    group('debugReassemble', () {
+      test(
+          'reload providers if the debugGetCreateSourceHash of a provider returns a different value',
+          () {
+        final noDebugGetCreateSourceHashBuild = OnBuildMock();
+        final noDebugGetCreateSourceHash = Provider((ref) {
+          noDebugGetCreateSourceHashBuild();
+          return 0;
+        });
+        final constantHashBuild = OnBuildMock();
+        final constantHash = Provider(
+          debugGetCreateSourceHash: () => 'hash',
+          (ref) {
+            constantHashBuild();
+            return 0;
+          },
+        );
+        var hashResult = '42';
+        final changingHashBuild = OnBuildMock();
+        final changingHash = Provider(
+          debugGetCreateSourceHash: () => hashResult,
+          (ref) {
+            changingHashBuild();
+            return 0;
+          },
+        );
+        final container = ProviderContainer();
+
+        container.read(noDebugGetCreateSourceHash);
+        container.read(constantHash);
+        container.read(changingHash);
+
+        clearInteractions(noDebugGetCreateSourceHashBuild);
+        clearInteractions(constantHashBuild);
+        clearInteractions(changingHashBuild);
+
+        hashResult = 'new hash';
+        container.debugReassemble();
+        container.read(noDebugGetCreateSourceHash);
+        container.read(constantHash);
+        container.read(changingHash);
+
+        verifyOnly(changingHashBuild, changingHashBuild());
+        verifyNoMoreInteractions(constantHashBuild);
+        verifyNoMoreInteractions(noDebugGetCreateSourceHashBuild);
+
+        container.debugReassemble();
+        container.read(noDebugGetCreateSourceHash);
+        container.read(constantHash);
+        container.read(changingHash);
+
+        verifyNoMoreInteractions(changingHashBuild);
+        verifyNoMoreInteractions(constantHashBuild);
+        verifyNoMoreInteractions(noDebugGetCreateSourceHashBuild);
+      });
+    });
+
     test('invalidate triggers a rebuild on next frame', () async {
       final container = createContainer();
       final listener = Listener<int>();
@@ -25,54 +82,6 @@ void main() {
       await container.pump();
 
       verifyOnly(listener, listener(0, 1));
-    });
-
-    group('disposeDelay', () {
-      test('defaults to zero', () {
-        final container = createContainer();
-
-        expect(container.disposeDelay, 0);
-      });
-
-      test(
-          'if a parent is specified and no default is passed, use the parent disposeDelay',
-          () {
-        final parent = createContainer(disposeDelay: 5 * 1000);
-        final container = createContainer(
-          parent: parent,
-          disposeDelay: 2 * 1000,
-        );
-
-        expect(container.disposeDelay, 2000);
-
-        final container2 = createContainer(parent: parent);
-
-        expect(container2.disposeDelay, 5000);
-      });
-    });
-
-    group('cacheTime', () {
-      test('defaults to zero', () {
-        final container = createContainer();
-
-        expect(container.cacheTime, 0);
-      });
-
-      test(
-          'if a parent is specified and no default is passed, use the parent cacheTime',
-          () {
-        final parent = createContainer(cacheTime: 5 * 1000);
-        final container = createContainer(
-          parent: parent,
-          cacheTime: 2 * 1000,
-        );
-
-        expect(container.cacheTime, 2000);
-
-        final container2 = createContainer(parent: parent);
-
-        expect(container2.cacheTime, 5000);
-      });
     });
 
     test(

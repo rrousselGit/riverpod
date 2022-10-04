@@ -26,17 +26,10 @@ class ${data.familyName} extends Family<${data.exposedValueDisplayType}> {
   }
 
   @override
-  List<ProviderOrFamily>? get allTransitiveDependencies =>
-      throw UnimplementedError();
+  List<ProviderOrFamily>? get allTransitiveDependencies => null;
 
   @override
-  int? get disposeDelay => ${data.disposeDelay};
-
-  @override
-  int? get cacheTime => ${data.cacheTime};
-
-  @override
-  List<ProviderOrFamily>? get dependencies => throw UnimplementedError();
+  List<ProviderOrFamily>? get dependencies => null;
 
   @override
   String? get name => r'${data.providerName}';

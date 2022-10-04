@@ -22,8 +22,6 @@ abstract class InternalProvider<State> extends ProviderBase<State>
     required super.name,
     required super.from,
     required super.argument,
-    required super.cacheTime,
-    required super.disposeDelay,
     required super.debugGetCreateSourceHash,
   });
 

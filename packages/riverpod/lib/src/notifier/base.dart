@@ -108,7 +108,7 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     super.argument,
     super.dependencies,
     super.debugGetCreateSourceHash,
-  }) : super(cacheTime: null, disposeDelay: null);
+  });
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeNotifierProviderBuilder();

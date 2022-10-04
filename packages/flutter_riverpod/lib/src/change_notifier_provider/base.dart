@@ -87,7 +87,7 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     super.argument,
     super.dependencies,
     super.debugGetCreateSourceHash,
-  }) : super(cacheTime: null, disposeDelay: null);
+  });
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeChangeNotifierProviderBuilder();

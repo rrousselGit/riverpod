@@ -14,8 +14,6 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
     super.from,
     super.argument,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
     super.debugGetCreateSourceHash,
   });
 
@@ -52,7 +50,5 @@ class AutoDisposeStateProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     super.create, {
     super.name,
     super.dependencies,
-    super.cacheTime,
-    super.disposeDelay,
   }) : super(providerFactory: AutoDisposeStateProvider.new);
 }

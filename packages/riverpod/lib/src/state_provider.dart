@@ -21,11 +21,7 @@ ProviderElementProxy<T, StateController<T>> _state<T>(
   return ProviderElementProxy<T, StateController<T>>(
     that,
     (element) {
-      if (element is StateProviderElement<T>) {
-        return element._stateNotifier;
-      }
-
-      throw UnsupportedError('Unknown element type ${element.runtimeType}');
+      return (element as StateProviderElement<T>)._stateNotifier;
     },
   );
 }
@@ -36,8 +32,6 @@ abstract class _StateProviderBase<T> extends ProviderBase<T> {
     required super.from,
     required super.argument,
     required this.dependencies,
-    required super.cacheTime,
-    required super.disposeDelay,
     required super.debugGetCreateSourceHash,
   });
 

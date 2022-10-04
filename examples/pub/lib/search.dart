@@ -25,7 +25,7 @@ Future<List<Package>> fetchPackages(
 
   if (search.isEmpty) {
     return ref
-        .watch(PubRepositoryProvider)
+        .watch(pubRepositoryProvider)
         .getPackages(page: page, cancelToken: cancelToken);
   }
 
@@ -38,7 +38,7 @@ Future<List<Package>> fetchPackages(
   }
 
   final searchedPackages = await ref
-      .watch(PubRepositoryProvider)
+      .watch(pubRepositoryProvider)
       .searchPackages(page: page, search: search, cancelToken: cancelToken);
 
   return Future.wait([
@@ -66,10 +66,10 @@ class SearchPage extends HookConsumerWidget {
             child: RefreshIndicator(
               onRefresh: () {
                 // disposes the pages previously fetched. Next read will refresh them
-                ref.invalidate(FetchPackagesProvider);
+                ref.invalidate(fetchPackagesProvider);
                 // keep showing the progress indicator until the first page is fetched
                 return ref.read(
-                  FetchPackagesProvider(page: 1, search: searchController.text)
+                  fetchPackagesProvider(page: 1, search: searchController.text)
                       .future,
                 );
               },
@@ -83,7 +83,7 @@ class SearchPage extends HookConsumerWidget {
                   final page = index ~/ pageSize + 1;
                   final indexInPage = index % pageSize;
                   final packageList = ref.watch(
-                    FetchPackagesProvider(
+                    fetchPackagesProvider(
                       page: page,
                       search: searchController.text,
                     ),
