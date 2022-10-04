@@ -5,10 +5,16 @@ title: Getting started
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import helloWorldHooks from "!!raw-loader!/docs/getting_started_hello_world_hooks.dart";
-import helloWorldFlutter from "!!raw-loader!/docs/getting_started_hello_world_flutter.dart";
-import helloWorldDart from "!!raw-loader!/docs/getting_started_hello_world_dart.dart";
-import { trimSnippet } from "../src/components/CodeSnippet";
+import helloWorldHooks from "!!raw-loader!./getting_started_hello_world_hooks.dart";
+import helloWorldFlutter from "!!raw-loader!./getting_started_hello_world_flutter.dart";
+import helloWorldDart from "!!raw-loader!./getting_started_hello_world_dart.dart";
+import pubspec from "./getting_started/pubspec";
+import dartPubspec from "./getting_started/dart_pubspec";
+import {
+  trimSnippet,
+  AutoSnippet,
+  ConditionalSnippet,
+} from "../src/components/CodeSnippet";
 
 Before diving into the inner mechanisms of [Riverpod], let's start with the basics:
 Installing [Riverpod], then writing a "Hello world".
@@ -20,10 +26,10 @@ The variant of [Riverpod] that you will want to install depends on the app you a
 
 You can refer to the following table to help you decide which package to use:
 
-| app type                  | package name                                                                       | description                                                                   |
-| ------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| Flutter only              | [flutter_riverpod]                                                                 | A basic way of using [Riverpod] with flutter.                                 |
-| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                   | A way to use both [flutter_hooks] and [Riverpod] together.                    |
+| app type                  | package name                                                                      | description                                                                   |
+| ------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Flutter only              | [flutter_riverpod]                                                                | A basic way of using [Riverpod] with flutter.                                 |
+| Flutter + [flutter_hooks] | [hooks_riverpod]                                                                  | A way to use both [flutter_hooks] and [Riverpod] together.                    |
 | Dart only (No Flutter)    | [riverpod](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod) | A version of [Riverpod] with all the classes related to Flutter stripped out. |
 
 ## Installing the package
@@ -32,57 +38,37 @@ Once you know what package you want to install, proceed to add the following to 
 
 <Tabs
   groupId="riverpod"
-  defaultValue="hooks_riverpod"
+  defaultValue="flutter_riverpod"
   values={[
-    { label: 'Flutter + flutter_hooks', value: 'hooks_riverpod', },
     { label: 'Flutter', value: 'flutter_riverpod', },
     { label: 'Dart only', value: 'riverpod', },
   ]}
 >
-<TabItem value="hooks_riverpod">
-
-```yaml title="pubspec.yaml"
-environment:
-  sdk: ">=2.17.0 <3.0.0"
-  flutter: ">=3.0.0"
-
-dependencies:
-  flutter:
-    sdk: flutter
-  flutter_hooks: ^0.18.0
-  hooks_riverpod: ^2.0.2
-```
-
-Then run `flutter pub get`.
-
-</TabItem>
 <TabItem value="flutter_riverpod">
 
-```yaml title="pubspec.yaml"
-environment:
-  sdk: ">=2.17.0 <3.0.0"
-  flutter: ">=3.0.0"
+<AutoSnippet title="pubspec.yaml" language="yaml" {...pubspec}></AutoSnippet>
 
-dependencies:
-  flutter:
-    sdk: flutter
-  flutter_riverpod: ^2.0.2
-```
+Then install packages with `flutter pub get`.
 
-Then run `flutter pub get`.
+<ConditionalSnippet codegen={true}>
+Finally, run the code-generator with <code>flutter pub run build_runner watch</code>
+</ConditionalSnippet>
 
 </TabItem>
 <TabItem value="riverpod">
 
-```yaml title="pubspec.yaml"
-environment:
-  sdk: ">=2.12.0-0 <3.0.0"
+<AutoSnippet
+  title="pubspec.yaml"
+  language="yaml"
+  {...dartPubspec}
+></AutoSnippet>
 
-dependencies:
-  riverpod: ^2.0.2
-```
+Then install packages with `dart pub get`.
 
-Then run `dart pub get`.
+
+<ConditionalSnippet codegen={true}>
+Finally, run the code-generator with <code>flutter pub run build_runner watch</code>
+</ConditionalSnippet>
 
 </TabItem>
 </Tabs>
