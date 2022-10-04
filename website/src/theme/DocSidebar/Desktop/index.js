@@ -16,9 +16,6 @@ function DocSidebarDesktop({ path, sidebar, onCollapse, isHidden }) {
     },
   } = useThemeConfig();
 
-  const [codegen, setCodegen] = useContext(CodegenContext);
-  const [flutterHooks, setFlutterHooks] = useContext(FlutterHooksContext);
-
   return (
     <div
       className={clsx(
@@ -27,12 +24,31 @@ function DocSidebarDesktop({ path, sidebar, onCollapse, isHidden }) {
         isHidden && styles.sidebarHidden
       )}
     >
+      <SidebarHead />
+
+      {hideOnScroll && <Logo tabIndex={-1} className={styles.sidebarLogo} />}
+      <Content path={path} sidebar={sidebar} />
+      {hideable && <CollapseButton onClick={onCollapse} />}
+    </div>
+  );
+}
+
+export function SidebarHead({ direction }) {
+  direction ??= "vertical";
+
+  const [codegen, setCodegen] = useContext(CodegenContext);
+  const [flutterHooks, setFlutterHooks] = useContext(FlutterHooksContext);
+
+  return (
+    <>
       <div
         style={{
           padding: "10px 10px 0 10px",
           display: "flex",
           alignItems: "end",
-          flexDirection: "column",
+          flexDirection: direction === "horizontal" ? "row" : "column",
+          justifyContent:
+            direction === "horizontal" ? "space-evenly" : undefined,
         }}
       >
         {/* Let's define some toggles for customizing the code output of snippets */}
@@ -66,15 +82,11 @@ function DocSidebarDesktop({ path, sidebar, onCollapse, isHidden }) {
           margin: "10px 0",
         }}
       ></hr>
-
-      {hideOnScroll && <Logo tabIndex={-1} className={styles.sidebarLogo} />}
-      <Content path={path} sidebar={sidebar} />
-      {hideable && <CollapseButton onClick={onCollapse} />}
-    </div>
+    </>
   );
 }
 
-function Toggle({ checked, onClick, leading, docsProps }) {
+export function Toggle({ checked, onClick, leading, docsProps }) {
   return (
     <div
       style={{
