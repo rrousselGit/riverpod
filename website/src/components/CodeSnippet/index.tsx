@@ -1,5 +1,9 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useContext, useEffect, useState } from "react";
 import CodeBlock from "@theme/CodeBlock";
+import {
+  CodegenContext,
+  FlutterHooksContext,
+} from "../../theme/DocPage/Layout";
 
 const SKIP = "/* SKIP */";
 const SKIP_END = "/* SKIP END */";
@@ -43,3 +47,48 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({ snippet, title }) => {
     </div>
   );
 };
+
+export function AutoSnippet(props: {
+  title?: string;
+  language?: string;
+  codegen: string | Array<string>;
+  hooksCodegen: string | Array<string>;
+  raw: string | Array<string>;
+  hooks: string | Array<string>;
+}) {
+  const [codegen] = useContext(CodegenContext);
+  const [hooksEnabled] = useContext(FlutterHooksContext);
+
+  let snippet: string | Array<string>;
+  if (codegen) {
+    snippet = hooksEnabled ? props.hooksCodegen : props.codegen;
+  } else {
+    snippet = hooksEnabled ? props.hooks : props.raw;
+  }
+
+  const code = Array.isArray(snippet) ? snippet.join("\n") : snippet;
+
+  return (
+    <CodeBlock language={props.language} title={props.title}>
+      {trimSnippet(code)}
+    </CodeBlock>
+  );
+}
+
+export function ConditionalSnippet(props: {
+  hooks?: boolean;
+  codegen?: boolean;
+  children: string;
+}) {
+  const [codegen] = useContext(CodegenContext);
+  const [hooks] = useContext(FlutterHooksContext);
+
+  if (
+    (props.codegen == undefined || props.codegen == codegen) &&
+    (props.hooks == undefined || props.hooks == hooks)
+  ) {
+    return props.children
+  }
+
+  return <></>;
+}
