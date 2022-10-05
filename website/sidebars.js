@@ -1,7 +1,7 @@
 module.exports = {
   Sidebar: [
     "getting_started",
-    
+    "about_hooks",
     {
       type: "category",
       label: "Concepts",
