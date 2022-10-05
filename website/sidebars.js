@@ -1,6 +1,7 @@
 module.exports = {
   Sidebar: [
     "getting_started",
+    "about_code_generation",
     "about_hooks",
     {
       type: "category",

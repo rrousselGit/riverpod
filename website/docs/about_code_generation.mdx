@@ -1,0 +1,45 @@
+---
+title: About code generation
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import pubspec from "./getting_started/pubspec";
+import dartHelloWorld from "./getting_started/dart_hello_world";
+import helloWorld from "./getting_started/hello_world";
+import dartPubspec from "./getting_started/dart_pubspec";
+import {
+  trimSnippet,
+  AutoSnippet,
+  ConditionalSnippet,
+} from "../src/components/CodeSnippet";
+
+Code generation is the idea of using a tool to generate code for us. It is typically
+used as a mean to bypass language limitations, to improve the code quality.  
+In Flutter, code generation is often used for things such as encoding/decoding Dart
+objects into/from JSON, or for defining what we call "data classes".
+
+In Dart, code generation comes with the downside of requiring an extra step to
+"compile" an application. Although this problem may be solved in the near future,
+as the Dart team is working on a potential solution to this problem.
+
+When using Riverpod, code generation is completely optional. It is entirely possible
+to use Riverpod without.  
+At the same time, Riverpod embraces code generation and recommends using it.
+By using code generation in Riverpod, the syntax can be simplified – reducing the learning curve.
+It also empowers Riverpod, allowing the implementation of features unique to code generation.
+
+For example, **code generation enables stateful hot-reload** of the code written
+with Riverpod.  
+It also improves debugging, by generating extra metadata that the debugger can
+then pick-up.  
+Finally, as time pass, some features will be available only through code generation,
+such as [this issue](https://github.com/rrousselGit/riverpod/issues/1660).
+
+[hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
+[statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
