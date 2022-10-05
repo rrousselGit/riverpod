@@ -2,15 +2,15 @@
 
  - **FIX**: Fixed an assert error if a `family` depends on itself while specifying `dependencies`. (#1721).
 
-# 2.0.2
+## 2.0.2
 
 Fixed an assert error if a `family` depends on itself while specifying `dependencies`.
 
-# 2.0.1
+## 2.0.1
 
 Updated changelog (see 2.0.0)
 
-# 2.0.0
+## 2.0.0
 
 Here is the changelog for all the changes in the 2.0 version.
 An article is in progress and will be linked here once available.
@@ -80,19 +80,19 @@ Fixes:
 - Fixed an issue where refreshing a `provider.future`/`provider.stream` did work properly
 - Fixed false positive with `ref.watch` asserts
 
-# 2.0.0-dev.9
+## 2.0.0-dev.9
 
 Fix Timer leak when using `cacheTime`/`disposeDelay` and disposing a `ProviderContainer`
 
-# 2.0.0-dev.8
+## 2.0.0-dev.8
 
 fix: a bug where unmounting a nested ProviderScope could cause an exception (#1400)
 
-# 2.0.0-dev.7
+## 2.0.0-dev.7
 
 Upgrade minimum required Dart SDK version to 2.17.0
 
-# 2.0.0-dev.6
+## 2.0.0-dev.6
 
 - Added `AsyncValue.valueOrNull` to obtain the value while ignoring potential errors.
 - Fixed an issue where `AsyncValue.value` did not throw if there is an error.
@@ -100,11 +100,11 @@ Upgrade minimum required Dart SDK version to 2.17.0
 - Fixed a bug where an exception may be thrown asynchronously after a
   `KeepAliveLink` is cancelled.
 
-# 2.0.0-dev.5
+## 2.0.0-dev.5
 
 - Fixed a bug where emitting an `AsyncData` after an `AsyncError` leads to `AsyncValue.hasError` to be true
 
-# 2.0.0-dev.4
+## 2.0.0-dev.4
 
 - Added `ref.listenSelf`, for subscribing to changes of a provider within
   that provider.
@@ -131,12 +131,12 @@ Upgrade minimum required Dart SDK version to 2.17.0
 
 - Fix `ProviderObserver.didDisposeProvider` not executing on provider refresh.
 
-# 2.0.0-dev.3
+## 2.0.0-dev.3
 
 When calling `ref.listen` on a provider, this provider will now properly
 rebuild if one of its dependency had changed.
 
-# 2.0.0-dev.2
+## 2.0.0-dev.2
 
 - Deprecated `ref.maintainState=` in favor of a newly added `ref.keepAlive()`.
   This new `ref.keepAlive()` function is similar to `maintainState` but
@@ -153,7 +153,7 @@ rebuild if one of its dependency had changed.
   `ref.onResume`. All of which allow performing side-effects when providers
   are listened or stop being listened.
 
-# 2.0.0-dev.1
+## 2.0.0-dev.1
 
 - Now requires Dart 2.16
 
@@ -171,7 +171,7 @@ rebuild if one of its dependency had changed.
 - Fixed a bug where `onDispose` listeners could be executed twice under certain
   conditions when using `autoDispose`.
 
-# 2.0.0-dev.0
+## 2.0.0-dev.0
 
 - **Breaking** After a provider has emitted an `AsyncValue.data` or `AsyncValue.error`,
   that provider will no longer emit an `AsyncValue.loading`.
