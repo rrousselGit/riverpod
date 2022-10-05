@@ -16,26 +16,27 @@ import {
 } from "../src/components/CodeSnippet";
 
 Code generation is the idea of using a tool to generate code for us. It is typically
-used as a mean to bypass language limitations, to improve the code quality.  
-In Flutter, code generation is often used for things such as encoding/decoding Dart
-objects into/from JSON, or for defining what we call "data classes".
+used as a mean to bypass language limitations, to improve the code quality.
 
-In Dart, code generation comes with the downside of requiring an extra step to
-"compile" an application. Although this problem may be solved in the near future,
-as the Dart team is working on a potential solution to this problem.
+In Dart, it comes with the downside of requiring an extra step to "compile"
+an application. Although this problem may be solved in the near future, as the
+Dart team is working on a potential solution to this problem.
 
 When using Riverpod, code generation is completely optional. It is entirely possible
 to use Riverpod without.  
 At the same time, Riverpod embraces code generation and recommends using it.
-By using code generation in Riverpod, the syntax can be simplified – reducing the learning curve.
-It also empowers Riverpod, allowing the implementation of features unique to code generation.
 
-For example, **code generation enables stateful hot-reload** of the code written
-with Riverpod.  
-It also improves debugging, by generating extra metadata that the debugger can
-then pick-up.  
-Finally, as time pass, some features will be available only through code generation,
-such as [this issue](https://github.com/rrousselGit/riverpod/issues/1660).
+## Why use code generation with Riverpod?
+
+You may be wondering: "If code generation is optional in Riverpod, why use it?"
+
+As always with packages: To make your life easier.
+This includes but is not limited to:
+
+- better syntax, more readable/flexible and with reduced learning curve
+- **stateful hot-reload** of the code written in Riverpod.
+- better debugging, through the generation of extra metadata that the debugger then picks-up.
+- some Riverpod features will be available only with code generation.
 
 [hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
 [statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
