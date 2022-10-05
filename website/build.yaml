@@ -1,0 +1,7 @@
+targets:
+  $default:
+    sources:
+      - docs/**
+    builders:
+      riverpod_generator:
+        enabled: true

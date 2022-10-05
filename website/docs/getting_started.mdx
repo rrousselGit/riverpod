@@ -5,10 +5,9 @@ title: Getting started
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import helloWorldHooks from "!!raw-loader!./getting_started/hello_world/hooks.dart";
-import helloWorldFlutter from "!!raw-loader!./getting_started/hello_world/flutter.dart";
-import helloWorldDart from "!!raw-loader!./getting_started/hello_world/dart.dart";
 import pubspec from "./getting_started/pubspec";
+import dartHelloWorld from "./getting_started/dart_hello_world";
+import helloWorld from "./getting_started/hello_world";
 import dartPubspec from "./getting_started/dart_pubspec";
 import {
   trimSnippet,
@@ -86,24 +85,19 @@ export const foo = 42;
 
 <Tabs
   groupId="riverpod"
-  defaultValue="hooks_riverpod"
+  defaultValue="flutter_riverpod"
   values={[
-    { label: "Flutter + flutter_hooks", value: "hooks_riverpod" },
     { label: "Flutter", value: "flutter_riverpod" },
     { label: "Dart only", value: "riverpod" },
   ]}
 >
-<TabItem value="hooks_riverpod">
-
-<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldHooks)}</CodeBlock>
-
-Which you can then execute with `flutter run`.  
-This will render "Hello world" on your device.
-
-</TabItem>
 <TabItem value="flutter_riverpod">
 
-<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldFlutter)}</CodeBlock>
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...helloWorld}
+></AutoSnippet>
 
 Which you can then execute with `flutter run`.  
 This will render "Hello world" on your device.
@@ -111,7 +105,12 @@ This will render "Hello world" on your device.
 </TabItem>
 <TabItem value="riverpod">
 
-<CodeBlock title="lib/main.dart">{trimSnippet(helloWorldDart)}</CodeBlock>
+
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...dartHelloWorld}
+></AutoSnippet>
 
 Which you can then execute with `dart lib/main.dart`.  
 This will print "Hello world" in the console.
