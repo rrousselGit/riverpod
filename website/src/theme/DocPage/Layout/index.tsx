@@ -29,7 +29,7 @@ export const FlutterHooksContext = React.createContext<ContextValue<boolean>>([
 
 function Codegen({ children }) {
   const codegen = useState(true);
-  const flutterHooks = useState(true);
+  const flutterHooks = useState(false);
 
   return (
     <CodegenContext.Provider value={codegen}>
