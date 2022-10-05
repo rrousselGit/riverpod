@@ -5,9 +5,9 @@ title: Getting started
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import helloWorldHooks from "!!raw-loader!./getting_started_hello_world_hooks.dart";
-import helloWorldFlutter from "!!raw-loader!./getting_started_hello_world_flutter.dart";
-import helloWorldDart from "!!raw-loader!./getting_started_hello_world_dart.dart";
+import helloWorldHooks from "!!raw-loader!./getting_started/hello_world/hooks.dart";
+import helloWorldFlutter from "!!raw-loader!./getting_started/hello_world/flutter.dart";
+import helloWorldDart from "!!raw-loader!./getting_started/hello_world/dart.dart";
 import pubspec from "./getting_started/pubspec";
 import dartPubspec from "./getting_started/dart_pubspec";
 import {
@@ -51,7 +51,8 @@ Once you know what package you want to install, proceed to add the following to 
 Then install packages with `flutter pub get`.
 
 <ConditionalSnippet codegen={true}>
-Finally, run the code-generator with <code>flutter pub run build_runner watch</code>
+  Finally, run the code-generator with{" "}
+  <code>flutter pub run build_runner watch</code>
 </ConditionalSnippet>
 
 </TabItem>
@@ -65,9 +66,9 @@ Finally, run the code-generator with <code>flutter pub run build_runner watch</c
 
 Then install packages with `dart pub get`.
 
-
 <ConditionalSnippet codegen={true}>
-Finally, run the code-generator with <code>flutter pub run build_runner watch</code>
+  Finally, run the code-generator with{" "}
+  <code>flutter pub run build_runner watch</code>
 </ConditionalSnippet>
 
 </TabItem>
