@@ -1,11 +1,25 @@
 module.exports = {
   Sidebar: [
     "getting_started",
+    {
+      type: "category",
+      label: "All Providers",
+      items: [
+        "providers/provider",
+        "providers/state_notifier_provider",
+        "providers/future_provider",
+        "providers/stream_provider",
+        "providers/state_provider",
+        "providers/change_notifier_provider",
+      ],
+    },
     "about_code_generation",
     "about_hooks",
+
     {
       type: "category",
       label: "Concepts",
+      collapsed: false,
       items: [
         "concepts/providers",
         "concepts/reading",
@@ -29,10 +43,10 @@ module.exports = {
         "cookbooks/testing",
         //"cookbooks/refresh",
       ],
-    }, 
-    { type: "category",
+    },
+    {
+      type: "category",
       label: "Migration",
-      collapsed: false,
       items: ["migration/0.13.0_to_0.14.0", "migration/0.14.0_to_1.0.0"],
     },
     {
@@ -145,43 +159,13 @@ module.exports = {
           type: "link",
           label: "AWS Amplify Storage Gallery App with Riverpod & Freezed",
           href: "https://github.com/offlineprogrammer/amplify_storage_app",
-        },        
+        },
       ],
     },
     {
-      type: "category",
-      label: "Api references",
-      collapsed: false,
-      items: [
-        {
-          type: "category",
-          label: "All Providers",
-          collapsed: true,
-          items: [
-            "providers/provider",
-            "providers/state_notifier_provider",
-            "providers/future_provider",
-            "providers/stream_provider",
-            "providers/state_provider",
-            "providers/change_notifier_provider",
-          ],
-        },
-        {
-          type: "link",
-          label: "riverpod",
-          href: "https://pub.dev/documentation/riverpod/latest/riverpod/riverpod-library.html",
-        },
-        {
-          type: "link",
-          label: "flutter_riverpod",
-          href: "https://pub.dev/documentation//flutter_riverpod/latest/flutter_riverpod/flutter_riverpod-library.html",
-        },
-        {
-          type: "link",
-          label: "hooks_riverpod",
-          href: "https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html",
-        },
-      ],
+      type: "link",
+      label: "API reference",
+      href: "https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html",
     },
   ],
 };
