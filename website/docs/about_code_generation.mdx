@@ -5,14 +5,11 @@ title: About code generation
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import pubspec from "./getting_started/pubspec";
-import dartHelloWorld from "./getting_started/dart_hello_world";
-import helloWorld from "./getting_started/hello_world";
-import dartPubspec from "./getting_started/dart_pubspec";
+import fetchUser from "!!raw-loader!./about_codegen/main.dart";
+import rawFetchUser from "!!raw-loader!./about_codegen/raw.dart";
 import {
   trimSnippet,
-  AutoSnippet,
-  ConditionalSnippet,
+  CodeSnippet,
 } from "../src/components/CodeSnippet";
 
 Code generation is the idea of using a tool to generate code for us.  
@@ -23,22 +20,11 @@ Dart team is working on a potential solution to this problem.
 In the context of Riverpod, code generation is about slightly changing the syntax
 for defining a "provider". For example, instead of:
 
-```dart
-final fetchUserProvider = FutureProvider.autoDispose.family<User, String>((ref, userId) async {
-  final json = json http.get('api/user/$id');
-  return User.fromJson(json);
-});
-```
+<CodeBlock language="dart">{trimSnippet(rawFetchUser)}</CodeBlock>
 
 Using code generation, we would write:
 
-```dart
-@riverpod
-User fetchUser(FetchUserRef ref, {required int userId}) async {
-  final json = json http.get('api/user/$id');
-  return User.fromJson(json);
-}
-```
+<CodeBlock language="dart">{trimSnippet(fetchUser)}</CodeBlock>
 
 When using Riverpod, code generation is completely optional. It is entirely possible
 to use Riverpod without.  

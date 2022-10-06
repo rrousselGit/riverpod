@@ -32,7 +32,7 @@ interface CodeSnippetProps {
   snippet: string;
 }
 
-export const CodeSnippet: React.FC<CodeSnippetProps> = ({ snippet, title }) => {
+export const CodeSnippet: React.FC<CodeSnippetProps> = ({ snippet, title, ...other }) => {
   return (
     <div className={`snippet`}>
       <div className="snippet__title_bar">
@@ -43,7 +43,7 @@ export const CodeSnippet: React.FC<CodeSnippetProps> = ({ snippet, title }) => {
         </div>
         <div className="snippet__title">{title}</div>
       </div>
-      <CodeBlock>{trimSnippet(snippet)}</CodeBlock>
+      <CodeBlock {...other}>{trimSnippet(snippet)}</CodeBlock>
     </div>
   );
 };
