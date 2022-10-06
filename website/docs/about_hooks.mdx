@@ -204,6 +204,77 @@ There are a few interesting things to note in this code:
   If we wanted, we could use that `useFadeIn` function is a completely different
   widget, and it would still work!
 
+## How to use hooks
+
+Hooks comes with unique constraints:
+
+- They can only be used within the `build` method of a widget that extends [HookWidget]:
+
+  **Good**:
+
+  ```dart
+  class Example extends HookWidget {
+    @override
+    Widget build(BuildContext context) {
+      final controller = useAnimationController();
+      ...
+    }
+  }
+  ```
+
+  **Bad**:
+
+  ```dart
+  // Not a HookWidget
+  class Example extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      final controller = useAnimationController();
+      ...
+    }
+  }
+  ```
+
+  **Bad**:
+
+  ```dart
+  class Example extends HookWidget {
+    @override
+    Widget build(BuildContext context) {
+      return ElevatedButton(
+        onPressed: () {
+          // Not _actually_ inside the "build" method, but instead inside
+          // a user interaction lifecycle (here "on pressed").
+          final controller = useAnimationController();
+        },
+        child: Text('click me'),
+      );
+    }
+  }
+  ```
+
+- They cannot be used conditionally or in a loop.
+
+  **Bad**:
+
+  ```dart
+  class Example extends HookWidget {
+    const Example({required this.condition, super.key});
+    final bool condition;
+    @override
+    Widget build(BuildContext context) {
+      if (condition) {
+        // Hooks should not be used inside "if"s/"for"s, ...
+        final controller = useAnimationController();
+      }
+      ...
+    }
+  }
+  ```
+
+
+For more information about hooks, see [flutter_hooks].
+
 [hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
 [statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
 [riverpod]: https://github.com/rrousselgit/riverpod

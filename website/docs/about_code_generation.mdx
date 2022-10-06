@@ -15,12 +15,30 @@ import {
   ConditionalSnippet,
 } from "../src/components/CodeSnippet";
 
-Code generation is the idea of using a tool to generate code for us. It is typically
-used as a mean to bypass language limitations, to improve the code quality.
-
+Code generation is the idea of using a tool to generate code for us.  
 In Dart, it comes with the downside of requiring an extra step to "compile"
 an application. Although this problem may be solved in the near future, as the
 Dart team is working on a potential solution to this problem.
+
+In the context of Riverpod, code generation is about slightly changing the syntax
+for defining a "provider". For example, instead of:
+
+```dart
+final fetchUserProvider = FutureProvider.autoDispose.family<User, String>((ref, userId) async {
+  final json = json http.get('api/user/$id');
+  return User.fromJson(json);
+});
+```
+
+Using code generation, we would write:
+
+```dart
+@riverpod
+User fetchUser(FetchUserRef ref, {required int userId}) async {
+  final json = json http.get('api/user/$id');
+  return User.fromJson(json);
+}
+```
 
 When using Riverpod, code generation is completely optional. It is entirely possible
 to use Riverpod without.  
@@ -37,7 +55,15 @@ You may be wondering: "If code generation is optional in Riverpod, why use it?"
 As always with packages: To make your life easier.
 This includes but is not limited to:
 
-- better syntax, more readable/flexible and with reduced learning curve
+- better syntax, more readable/flexible and with reduced learning curve.
+
+  - No need to worry about `FutureProvider` vs `Provider` vs etc. Write your logic,
+    and Riverpod will pick the most suitable provider for you.
+  - Passing parameters to providers is now unrestricted. Instead of being limited to
+    using [family](./concepts/modifiers/family) and passing a single positional parameter,
+    you can now pass any form of parameter. This includes named parametes, optional ones,
+    and even default values.
+
 - **stateful hot-reload** of the code written in Riverpod.
 - better debugging, through the generation of extra metadata that the debugger then picks-up.
 - some Riverpod features will be available only with code generation.
