@@ -26,6 +26,10 @@ When using Riverpod, code generation is completely optional. It is entirely poss
 to use Riverpod without.  
 At the same time, Riverpod embraces code generation and recommends using it.
 
+For information on how to install and use Riverpod's code generator, refer to
+the [getting started](./getting_started) page. Make sure to enable code generation
+in the documentation's sidebar.
+
 ## Why use code generation with Riverpod?
 
 You may be wondering: "If code generation is optional in Riverpod, why use it?"
@@ -37,6 +41,11 @@ This includes but is not limited to:
 - **stateful hot-reload** of the code written in Riverpod.
 - better debugging, through the generation of extra metadata that the debugger then picks-up.
 - some Riverpod features will be available only with code generation.
+
+At the same time, many applications already use code generation with packages such
+as [Freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable).  
+In that case, your project probably is already setup for code generation, and
+using for Riverpod should be simple.
 
 [hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
 [statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
