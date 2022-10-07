@@ -1,4 +1,4 @@
-name: Build, Verify, and Deploy
+name: Build->Validate->Deploy
 
 concurrency: 
   group: ${{ github.ref }}
@@ -11,8 +11,8 @@ on:
   push:
     branches:
       - master
-    paths-ignore:
-      - '**.md'
+    # paths-ignore:
+    #   - '**.md'
   schedule:
     # runs the CI everyday at 10AM
     - cron: "0 10 * * *"
@@ -45,28 +45,23 @@ jobs:
         run: melos bootstrap --ignore "codemod_riverpod_*,riverpod_cli" 
 
       - name: Check format
-        if: ${{ github.repository_owner }} == 'rrousselGit'
         run: melos exec --ignore="website_snippets" -- "flutter format --set-exit-if-changed ."
 
       - name: Generate
-        if: ${{ github.repository_owner }} == 'rrousselGit'
         run: melos exec --depends-on="build_runner" -- "dart run build_runner build --delete-conflicting-outputs"
 
       - name: Analyze
         run: melos exec --ignore="codemod_riverpod_test*,riverpod_lint_flutter_test" -- "flutter analyze"
 
       - name: Run tests
-        if: ${{ github.repository_owner }} == 'rrousselGit'
         run: melos run test
 
       - name: Upload coverage to codecov
-        # only relevant for repo owner
-        if: ${{ github.repository_owner }} == 'rrousselGit'
         run: curl -s https://codecov.io/bash | bash
 
   verify-changelog-update:
     runs-on: ubuntu-latest
-    needs: build
+    # needs: build
     steps:
       - uses: actions/checkout@v3.1.0
 
