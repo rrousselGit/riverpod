@@ -5,14 +5,15 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  workflow_dispatch:
   pull_request:
     paths-ignore:
       - '**.md'
   push:
     branches:
       - master
-    # paths-ignore:
-    #   - '**.md'
+    paths-ignore:
+      - '**.md'
   schedule:
     # runs the CI everyday at 10AM
     - cron: "0 10 * * *"
@@ -22,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      fail-fast: true
+      # fail-fast: true
       matrix:
         channel:
           - stable
@@ -172,7 +173,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     needs: [
-      # build,
+      build,
       verify-changelog-update,
       validate-changelog-format,
     ]
@@ -180,13 +181,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3.1.0
 
-      - name: prepare version string
+      - name: Sanitize version string
         id: version
         run: |
           export fixed_version=$(echo "${{ needs.validate-changelog-format.outputs.base_riverpod_package_version }}" | sed 's/[Unreleased]//g' | sed 's/[^0-9,a-z,A-Z.$-]//g' | sed 's/ *$//')
           echo ::set-output name=version::$fixed_version
 
-      - name: replace base riverpod version with latest changelog entry
+      - name: Replace base riverpod pubspec version string with latest changelog
         uses: jacobtomlinson/gha-find-replace@v2
         with:
           find: "^.*version.*$"
@@ -194,23 +195,23 @@ jobs:
           include: "packages/riverpod/pubspec.yaml"
           regex: true
 
-      - name: replace flutter riverpod version with latest changelog entry
+      - name: Replace flutter riverpod pubspec version string with latest changelog in pubspec
         uses: jacobtomlinson/gha-find-replace@v2
         with:
           find: "^.*version.*$"
           replace: "\nversion: ${{ steps.version.outputs.version }}\n"
-          include: "packages/riverpod/pubspec.yaml"
+          include: "packages/flutter_riverpod/pubspec.yaml"
           regex: true
 
-      - name: replace hooks riverpod version with latest changelog entry
+      - name: Replace hooks riverpod pubspec version string with latest changelog in pubspec
         uses: jacobtomlinson/gha-find-replace@v2
         with:
           find: "^.*version.*$"
           replace: "\nversion: ${{ steps.version.outputs.version }}\n"
-          include: "packages/riverpod/pubspec.yaml"
+          include: "packages/hooks_riverpod/pubspec.yaml"
           regex: true
       
-      - name: dry run base riverpod
+      - name: Dry run base riverpod
         uses: sakebook/actions-flutter-pub-publisher@v1.4.1
         with:
           credential: ${{ secrets.CREDENTIAL_JSON }}
@@ -219,7 +220,7 @@ jobs:
           dry_run: true
           package_directory: packages/riverpod
 
-      - name: dry run flutter_riverpod
+      - name: Dry run flutter_riverpod
         uses: sakebook/actions-flutter-pub-publisher@v1.4.1
         with:
           credential: ${{ secrets.CREDENTIAL_JSON }}
@@ -228,7 +229,7 @@ jobs:
           dry_run: true
           package_directory: packages/flutter_riverpod
 
-      - name: dry run hooks_riverpod
+      - name: Dry run hooks_riverpod
         uses: sakebook/actions-flutter-pub-publisher@v1.4.1
         with:
           credential: ${{ secrets.CREDENTIAL_JSON }}
@@ -238,7 +239,7 @@ jobs:
           package_directory: packages/hooks_riverpod
 
       
-      - name: publish base riverpod
+      - name: Publish base riverpod
         uses: sakebook/actions-flutter-pub-publisher@v1.4.1
         with:
           credential: ${{ secrets.CREDENTIAL_JSON }}
@@ -247,7 +248,7 @@ jobs:
           dry_run: false
           package_directory: packages/riverpod
 
-      - name: publish flutter_riverpod
+      - name: Publish flutter_riverpod
         uses: sakebook/actions-flutter-pub-publisher@v1.4.1
         with:
           credential: ${{ secrets.CREDENTIAL_JSON }}
@@ -256,7 +257,7 @@ jobs:
           dry_run: false
           package_directory: packages/flutter_riverpod
 
-      - name: publish hooks_riverpod
+      - name: Publish hooks_riverpod
         uses: sakebook/actions-flutter-pub-publisher@v1.4.1
         with:
           credential: ${{ secrets.CREDENTIAL_JSON }}
