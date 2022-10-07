@@ -1,4 +1,4 @@
-name: Publish
+name: Build, Verify, and Deploy
 
 concurrency: 
   group: ${{ github.ref }}
@@ -6,30 +6,110 @@ concurrency:
 
 on:
   pull_request:
+    paths-ignore:
+      - '**.md'
   push:
     branches:
       - master
+    paths-ignore:
+      - '**.md'
   schedule:
+    # runs the CI everyday at 10AM
     - cron: "0 10 * * *"
-  workflow_run:
-    workflows: [Build,Prerelease]
-    types:
-      - completed
 
 jobs:
-  checkup:
-     runs-on: ubuntu-latest
-     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
-     steps:
-      - uses: actions/github-script@v6.3.1
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        channel:
+          - stable
+
+    steps:
+      - uses: actions/checkout@v3.1.0
+        
+      - uses: subosito/flutter-action@v2.7.1
+        with:
+          channel: ${{ matrix.channel }}
+
+      - name: Add pub cache bin to PATH
+        run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
+      - name: Add pub cache to PATH
+        run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
+
+      - run: dart pub global activate melos
+        
+      - name: Install dependencies
+        run: melos bootstrap --ignore "codemod_riverpod_*,riverpod_cli" 
+
+      - name: Check format
+        run: melos exec --ignore="website_snippets" -- "flutter format --set-exit-if-changed ."
+
+      - name: Generate
+        run: melos exec --depends-on="build_runner" -- "dart run build_runner build --delete-conflicting-outputs"
+
+      - name: Analyze
+        run: melos exec --ignore="codemod_riverpod_test*,riverpod_lint_flutter_test" -- "flutter analyze"
+
+      - name: Run tests
+        run: melos run test
+
+      - name: Upload coverage to codecov
+        # only relevant for repo owner
+        if: ${{ github.repository_owner }} == 'rrousselGit'
+        run: curl -s https://codecov.io/bash | bash
+
+  verify-changelog-update:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3.1.0
+
+      - name: Updated both package && changelog?
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            base_riverpod_package:
+              - 'package/riverpod/**'
+            base_riverpod_changelog:
+              - 'package/riverpod/changelog.md'
+            flutter_riverpod_package:
+              - 'package/flutter_riverpod/**'
+            flutter_riverpod_changelog:
+              - 'package/flutter_riverpod/changelog.md'
+            hooks_riverpod_package:
+              - 'package/riverpod/**'
+            hooks_riverpod_changelog:
+              - 'package/hooks_riverpod/changelog.md'
+
+      - name: Check if base riverpod changed
+        if: steps.filter.outputs.base_riverpod_package == 'true' && steps.filter.outputs.base_riverpod_changelog == 'false'
+        id: changelog_base_riverpod
+        run: echo '::set-output name=is_fail::true'
+
+      - name: Check if flutter riverpod changed
+        if: steps.filter.outputs.flutter_riverpod_package == 'true' && steps.filter.outputs.flutter_riverpod_changelog == 'false'
+        id: changelog_flutter_riverpod
+        run: echo '::set-output name=is_fail::true'
+
+      - name: Check if hooks riverpod changed
+        if: steps.filter.outputs.hooks_riverpod_package == 'true' && steps.filter.outputs.hooks_riverpod_changelog == 'false'
+        id: changelog_hooks_riverpod
+        run: echo '::set-output name=is_fail::true'
+
+      - name: Check if updated package AND changelog?
+        uses: actions/github-script@v6.3.1
         if: ${{ steps.changelog_base_riverpod.outputs.is_fail == 'true' || steps.changelog_flutter_riverpod.outputs.is_fail == 'true' || steps.changelog_hooks_riverpod.outputs.is_fail == 'true' }}
         with:
           script: |
             core.setFailed('⚠️Modified a package without updating changelog.⚠️')
 
-  validate:
+  validate-changelog-format:
     runs-on: ubuntu-latest
-    needs: checkup
+    needs: verify-changelog-update
     outputs:
       base_riverpod_package_version: ${{ steps.changelogs.outputs.base_riverpod_version }}
       flutter_riverpod_package_version: ${{ steps.changelogs.outputs.flutter_riverpod_version }}
@@ -74,7 +154,7 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
-    needs: [validate,checkup]
+    needs: validate-changelog-format
 
     steps:
       - uses: actions/checkout@v3.1.0
@@ -83,7 +163,7 @@ jobs:
         uses: jacobtomlinson/gha-find-replace@v2
         with:
           find: "^.*version.*$"
-          replace: "\nversion: ${{ needs.validate.outputs.base_riverpod_package_version }}\n"
+          replace: "\nversion: ${{ needs.validate-changelog-format.outputs.base_riverpod_package_version }}\n"
           include: "packages/riverpod/pubspec.yaml"
           regex: true
 
@@ -91,7 +171,7 @@ jobs:
         uses: jacobtomlinson/gha-find-replace@v2
         with:
           find: "^.*version.*$"
-          replace: "\nversion: ${{ needs.validate.outputs.flutter_riverpod_package_version }}\n"
+          replace: "\nversion: ${{ needs.validate-changelog-format.outputs.flutter_riverpod_package_version }}\n"
           include: "packages/riverpod/pubspec.yaml"
           regex: true
 
@@ -99,7 +179,7 @@ jobs:
         uses: jacobtomlinson/gha-find-replace@v2
         with:
           find: "^.*version.*$"
-          replace: "\nversion: ${{ needs.validate.outputs.hooks_riverpod_package_version }}\n"
+          replace: "\nversion: ${{ needs.validate-changelog-format.outputs.hooks_riverpod_package_version }}\n"
           include: "packages/riverpod/pubspec.yaml"
           regex: true
       
@@ -156,4 +236,4 @@ jobs:
           flutter_package: true
           skip_test: true
           dry_run: false
-          package_directory: packages/hooks_riverpod
+          package_directory: packages/hooks_riverpod            
