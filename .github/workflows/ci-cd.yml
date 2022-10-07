@@ -22,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: true
       matrix:
         channel:
           - stable
@@ -66,19 +67,28 @@ jobs:
       - uses: actions/checkout@v3.1.0
 
       - name: Updated both package && changelog?
-        uses: dorny/paths-filter@6706fee383ac9d79c242931e872a7f367beb0c53
+        uses: henrycpainter/paths-filter@v3.0.0
         id: filter
         with:
           filters: |
             base_riverpod_package:
-              - 'packages/riverpod/lib/**'
-              - '!packages/riverpod/changelog.md'
+              - 
+                paths:
+                  - 'packages/riverpod/lib/**'
+                paths_ignore:
+                  - 'packages/riverpod/changelog.md'
             flutter_riverpod_package:
-              - 'packages/flutter_riverpod/lib/**'
-              - '!packages/flutter_riverpod/changelog.md'
+              -
+                paths: 
+                  - 'packages/flutter_riverpod/lib/**'
+                paths_ignore:
+                  - 'packages/flutter_riverpod/changelog.md'
             hooks_riverpod_package:
-              - 'packages/hooks_riverpod/lib/**'
-              - '!packages/hooks_riverpod/changelog.md'
+              -
+                paths:
+                  - 'packages/hooks_riverpod/lib/**'
+                paths_ignore:
+                  - 'packages/hooks_riverpod/changelog.md'
             base_riverpod_changelog:
               - 'packages/riverpod/changelog.md'
             flutter_riverpod_changelog:
@@ -103,7 +113,10 @@ jobs:
 
       - name: Check if updated package AND changelog?
         uses: actions/github-script@v6.3.1
-        if: steps.changelog_base_riverpod.outputs.is_fail == 'true' || steps.changelog_flutter_riverpod.outputs.is_fail == 'true' || steps.changelog_hooks_riverpod.outputs.is_fail == 'true'
+        if: |
+          steps.changelog_base_riverpod.outputs.is_fail == 'true' ||
+          steps.changelog_flutter_riverpod.outputs.is_fail == 'true' ||
+          steps.changelog_hooks_riverpod.outputs.is_fail == 'true'
         with:
           script: |
             core.setFailed('⚠️Modified a package without updating changelog.⚠️')
