@@ -34,28 +34,28 @@ jobs:
           echo ::set-output name=hooks_riverpod_version::$(head -1 packages/hooks_riverpod/changelog.md)
 
       - name: Validate base riverpod changelog format
-      - uses: actions-ecosystem/action-regex-match@v2.0.2
+        uses: actions-ecosystem/action-regex-match@v2.0.2
         id: base-riverpod-changelog-regex
         with:
           text: ${{ steps.changelogs.outputs.base_riverpod_version }}
           regex: '^# (\[|\d)[A-Za-z0-9 _\/\.\]]*$'
       
       - name: Validate flutter riverpod changelog format
-      - uses: actions-ecosystem/action-regex-match@v2.0.2
+        uses: actions-ecosystem/action-regex-match@v2.0.2
         id: flutter-riverpod-changelog-regex
         with:
           text: ${{ steps.changelogs.outputs.flutter_riverpod_version }}
           regex: '^# (\[|\d)[A-Za-z0-9 _\/\.\]]*$'
 
       - name: Validate hooks riverpod changelog format
-      - uses: actions-ecosystem/action-regex-match@v2.0.2
-        id: flutter-riverpod-changelog-regex
+        uses: actions-ecosystem/action-regex-match@v2.0.2
+        id: hooks-riverpod-changelog-regex
         with:
           text: ${{ steps.changelogs.outputs.hooks_riverpod_version }}
           regex: '^# (\[|\d)[A-Za-z0-9 _\/\.\]]*$'
 
       - name: Is changelog valid?
-      - uses: actions/github-script@v6.3.1
+        uses: actions/github-script@v6.3.1
         if: steps.base-riverpod-changelog-regex.outputs.match != '' || steps.flutter-riverpod-changelog-regex.outputs.match != '' || steps.hooks-riverpod-changelog-regex.outputs.match != ''
         with:
           script: |

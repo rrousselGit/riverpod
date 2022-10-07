@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v3.1.0
 
       - name: Updated both package && changelog?
-      - uses: dorny/paths-filter@v2
+        uses: dorny/paths-filter@v2
         id: filter
         with:
           filters: |
@@ -50,7 +50,7 @@ jobs:
         run: echo '::set-output name=is_fail::true'
 
       - name: Check if updated package AND changelog?
-      - uses: actions/github-script@v6.3.1
+        uses: actions/github-script@v6.3.1
         if: ${{ steps.changelog_base_riverpod.outputs.is_fail == 'true' || steps.changelog_flutter_riverpod.outputs.is_fail == 'true' || steps.changelog_hooks_riverpod.outputs.is_fail == 'true' }}
         with:
           script: |
