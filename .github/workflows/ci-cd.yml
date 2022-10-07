@@ -66,20 +66,29 @@ jobs:
       - uses: actions/checkout@v3.1.0
 
       - name: Updated both package && changelog?
-        uses: dorny/paths-filter@v2
+        uses: henrycpainter/paths-filter@c1883b96b02d6e44ec1dbdf235f3bb729d65b247
         id: filter
         with:
           filters: |
             base_riverpod_package:
-              - 'package/riverpod/**'
+              -
+                paths: ['package/riverpod/lib/**']
+                paths_ignore:
+                  - 'package/riverpod/changelog.md'
             base_riverpod_changelog:
               - 'package/riverpod/changelog.md'
             flutter_riverpod_package:
-              - 'package/flutter_riverpod/**'
+              -
+                paths: ['package/flutter_riverpod/lib/**']
+                paths_ignore:
+                  - 'package/flutter_riverpod/changelog.md'
             flutter_riverpod_changelog:
               - 'package/flutter_riverpod/changelog.md'
             hooks_riverpod_package:
-              - 'package/riverpod/**'
+              -
+                paths: ['package/hooks_riverpod/lib/**']
+                paths_ignore:
+                  - 'package/hooks_riverpod/changelog.md'
             hooks_riverpod_changelog:
               - 'package/hooks_riverpod/changelog.md'
 
