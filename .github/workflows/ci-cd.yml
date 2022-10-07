@@ -62,7 +62,6 @@ jobs:
 
   verify-changelog-update:
     runs-on: ubuntu-latest
-    # needs: build
     steps:
       - uses: actions/checkout@v3.1.0
 
@@ -123,7 +122,8 @@ jobs:
 
   validate-changelog-format:
     runs-on: ubuntu-latest
-    needs: verify-changelog-update
+    env:
+      VALID_CHANGELOG_HEADER_REGEX: '^#+\s(\[|\d)[A-Za-z0-9 _\/\.\]\-\+]*$'
     outputs:
       base_riverpod_package_version: ${{ steps.changelogs.outputs.base_riverpod_version }}
       flutter_riverpod_package_version: ${{ steps.changelogs.outputs.flutter_riverpod_version }}
@@ -143,32 +143,36 @@ jobs:
         id: base-riverpod-changelog-regex
         with:
           text: ${{ steps.changelogs.outputs.base_riverpod_version }}
-          regex: '^#+\s(\[|\d)[A-Za-z0-9 _\/\.\]\-\+]*$'
+          regex: $VALID_CHANGELOG_HEADER_REGEX
       
       - name: Validate flutter riverpod changelog format
         uses: actions-ecosystem/action-regex-match@v2.0.2
         id: flutter-riverpod-changelog-regex
         with:
           text: ${{ steps.changelogs.outputs.flutter_riverpod_version }}
-          regex: '^# (\[|\d)[A-Za-z0-9 _\/\.\]]*$'
+          regex: $VALID_CHANGELOG_HEADER_REGEX
 
       - name: Validate hooks riverpod changelog format
         uses: actions-ecosystem/action-regex-match@v2.0.2
         id: hooks-riverpod-changelog-regex
         with:
           text: ${{ steps.changelogs.outputs.hooks_riverpod_version }}
-          regex: '^# (\[|\d)[A-Za-z0-9 _\/\.\]]*$'
+          regex: $VALID_CHANGELOG_HEADER_REGEX
 
       - name: Is changelog valid?
         uses: actions/github-script@v6.3.1
         if: steps.base-riverpod-changelog-regex.outputs.match != '' || steps.flutter-riverpod-changelog-regex.outputs.match != '' || steps.hooks-riverpod-changelog-regex.outputs.match != ''
         with:
           script: |
-            core.setFailed('⚠️Can't release. Invalid changelog format.⚠️')
+            core.setFailed('⚠️Changelog version header doesn't conform to $VALID_CHANGELOG_HEADER_REGEX format.⚠️')
 
   publish:
     runs-on: ubuntu-latest
-    needs: validate-changelog-format
+    needs: [
+      build,
+      verify-changelog-update,
+      validate-changelog-format,
+    ]
 
     steps:
       - uses: actions/checkout@v3.1.0
