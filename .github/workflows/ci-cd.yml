@@ -75,25 +75,25 @@ jobs:
                 paths:
                   - 'packages/riverpod/lib/**'
                 paths_ignore:
-                  - 'packages/riverpod/changelog.md'
+                  - 'packages/riverpod/CHANGELOG.md'
             flutter_riverpod_package:
               -
                 paths: 
                   - 'packages/flutter_riverpod/lib/**'
                 paths_ignore:
-                  - 'packages/flutter_riverpod/changelog.md'
+                  - 'packages/flutter_riverpod/CHANGELOG.md'
             hooks_riverpod_package:
               -
                 paths:
                   - 'packages/hooks_riverpod/lib/**'
                 paths_ignore:
-                  - 'packages/hooks_riverpod/changelog.md'
+                  - 'packages/hooks_riverpod/CHANGELOG.md'
             base_riverpod_changelog:
-              - 'packages/riverpod/changelog.md'
+              - 'packages/riverpod/CHANGELOG.md'
             flutter_riverpod_changelog:
-              - 'packages/flutter_riverpod/changelog.md'
+              - 'packages/flutter_riverpod/CHANGELOG.md'
             hooks_riverpod_changelog:
-              - 'packages/hooks_riverpod/changelog.md'
+              - 'packages/hooks_riverpod/CHANGELOG.md'
 
       - name: Check if base riverpod changed
         if: steps.filter.outputs.base_riverpod_package == 'true' && steps.filter.outputs.base_riverpod_changelog == 'false'
@@ -134,9 +134,9 @@ jobs:
       - name: Get first line from packages' changelog
         id: changelogs
         run: |
-          echo ::set-output name=base_riverpod_version::$(head -1 packages/riverpod/changelog.md)
-          echo ::set-output name=flutter_riverpod_version::$(head -1 packages/flutter_riverpod/changelog.md)
-          echo ::set-output name=hooks_riverpod_version::$(head -1 packages/hooks_riverpod/changelog.md)
+          echo ::set-output name=base_riverpod_version::$(head -1 packages/riverpod/CHANGELOG.md)
+          echo ::set-output name=flutter_riverpod_version::$(head -1 packages/flutter_riverpod/CHANGELOG.md)
+          echo ::set-output name=hooks_riverpod_version::$(head -1 packages/hooks_riverpod/CHANGELOG.md)
 
       - name: Validate base riverpod changelog format
         uses: actions-ecosystem/action-regex-match@v2.0.2
@@ -161,7 +161,10 @@ jobs:
 
       - name: Is changelog valid?
         uses: actions/github-script@v6.3.1
-        if: steps.base-riverpod-changelog-regex.outputs.match != '' || steps.flutter-riverpod-changelog-regex.outputs.match != '' || steps.hooks-riverpod-changelog-regex.outputs.match != ''
+        if: |
+          steps.base-riverpod-changelog-regex.outputs.match == '' ||
+          steps.flutter-riverpod-changelog-regex.outputs.match == '' ||
+          steps.hooks-riverpod-changelog-regex.outputs.match == ''
         with:
           script: |
             core.setFailed('⚠️Changelog version header doesn't conform to $VALID_CHANGELOG_HEADER_REGEX format.⚠️')
