@@ -1,4 +1,4 @@
-test bad changelog
+test bad changelog 2 validation
 ## 2.0.2
 
  - **FIX**: Fixed an assert error if a `family` depends on itself while specifying `dependencies`. (#1721).
