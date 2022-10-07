@@ -118,7 +118,7 @@ jobs:
           steps.changelog_hooks_riverpod.outputs.is_fail == 'true'
         with:
           script: |
-            core.setFailed('Modified a package without updating changelog.⚠️')
+            core.setFailed("Modified a package without updating changelog.⚠️")
 
   validate-changelog-format:
     runs-on: ubuntu-latest
@@ -167,7 +167,7 @@ jobs:
           steps.hooks-riverpod-changelog-regex.outputs.match == null
         with:
           script: |
-            core.setFailed('Changelog version header doesn't conform to regex format.⚠️')
+            core.setFailed("Changelog version header doesn't conform to regex format.⚠️")
 
   publish:
     runs-on: ubuntu-latest
