@@ -167,7 +167,7 @@ jobs:
           steps.hooks-riverpod-changelog-regex.outputs.match == null
         with:
           script: |
-            core.setFailed("Changelog version header doesn't conform to ${process.env.VALID_CHANGELOG_HEADER_REGEX} regex format.⚠️")
+            core.setFailed("Changelog version header doesn't conform to ${{ env.VALID_CHANGELOG_HEADER_REGEX }} regex format.⚠️")
 
   publish:
     runs-on: ubuntu-latest
