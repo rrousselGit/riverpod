@@ -66,31 +66,25 @@ jobs:
       - uses: actions/checkout@v3.1.0
 
       - name: Updated both package && changelog?
-        uses: henrycpainter/paths-filter@c1883b96b02d6e44ec1dbdf235f3bb729d65b247
+        uses: dorny/paths-filter@6706fee383ac9d79c242931e872a7f367beb0c53
         id: filter
         with:
           filters: |
             base_riverpod_package:
-              -
-                paths: ['package/riverpod/lib/**']
-                paths_ignore:
-                  - 'package/riverpod/changelog.md'
+              - 'packages/riverpod/lib/**'
+              - '!packages/riverpod/changelog.md'
             flutter_riverpod_package:
-              -
-                paths: ['package/flutter_riverpod/lib/**']
-                paths_ignore:
-                  - 'package/flutter_riverpod/changelog.md'
+              - 'packages/flutter_riverpod/lib/**'
+              - '!packages/flutter_riverpod/changelog.md'
             hooks_riverpod_package:
-              -
-                paths: ['package/hooks_riverpod/lib/**']
-                paths_ignore:
-                  - 'package/hooks_riverpod/changelog.md'
+              - 'packages/hooks_riverpod/lib/**'
+              - '!packages/hooks_riverpod/changelog.md'
             base_riverpod_changelog:
-              - 'package/riverpod/changelog.md'
+              - 'packages/riverpod/changelog.md'
             flutter_riverpod_changelog:
-              - 'package/flutter_riverpod/changelog.md'
+              - 'packages/flutter_riverpod/changelog.md'
             hooks_riverpod_changelog:
-              - 'package/hooks_riverpod/changelog.md'
+              - 'packages/hooks_riverpod/changelog.md'
 
       - name: Check if base riverpod changed
         if: steps.filter.outputs.base_riverpod_package == 'true' && steps.filter.outputs.base_riverpod_changelog == 'false'
