@@ -167,7 +167,7 @@ jobs:
           steps.hooks-riverpod-changelog-regex.outputs.match == null
         with:
           script: |
-            core.setFailed('Changelog version header doesn't conform to ${process.env.VALID_CHANGELOG_HEADER_REGEX} regex format.⚠️')
+            core.setFailed('Changelog version header doesn't conform to regex format.⚠️')
 
   publish:
     runs-on: ubuntu-latest
@@ -180,11 +180,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3.1.0
 
+      - name: prepare version string
+        id: version
+        run: |
+          export fixed_version=$(echo ${{ needs.validate-changelog-format.outputs.base_riverpod_package_version }} | sed 's/[Unreleased ]//g' | sed 's/[^0-9,a-z,A-Z.$-]//g')
+          echo ::set-output name=version::$fixed_version
+
       - name: replace base riverpod version with latest changelog entry
         uses: jacobtomlinson/gha-find-replace@v2
         with:
           find: "^.*version.*$"
-          replace: "\nversion: ${{ needs.validate-changelog-format.outputs.base_riverpod_package_version }}\n"
+          replace: "\nversion: ${{ steps.version.outputs.version }}\n"
           include: "packages/riverpod/pubspec.yaml"
           regex: true
 
@@ -192,7 +198,7 @@ jobs:
         uses: jacobtomlinson/gha-find-replace@v2
         with:
           find: "^.*version.*$"
-          replace: "\nversion: ${{ needs.validate-changelog-format.outputs.flutter_riverpod_package_version }}\n"
+          replace: "\nversion: ${{ steps.version.outputs.version }}\n"
           include: "packages/riverpod/pubspec.yaml"
           regex: true
 
@@ -200,7 +206,7 @@ jobs:
         uses: jacobtomlinson/gha-find-replace@v2
         with:
           find: "^.*version.*$"
-          replace: "\nversion: ${{ needs.validate-changelog-format.outputs.hooks_riverpod_package_version }}\n"
+          replace: "\nversion: ${{ steps.version.outputs.version }}\n"
           include: "packages/riverpod/pubspec.yaml"
           regex: true
       
