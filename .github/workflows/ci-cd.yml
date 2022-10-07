@@ -45,15 +45,18 @@ jobs:
         run: melos bootstrap --ignore "codemod_riverpod_*,riverpod_cli" 
 
       - name: Check format
+        if: ${{ github.repository_owner }} == 'rrousselGit'
         run: melos exec --ignore="website_snippets" -- "flutter format --set-exit-if-changed ."
 
       - name: Generate
+        if: ${{ github.repository_owner }} == 'rrousselGit'
         run: melos exec --depends-on="build_runner" -- "dart run build_runner build --delete-conflicting-outputs"
 
       - name: Analyze
         run: melos exec --ignore="codemod_riverpod_test*,riverpod_lint_flutter_test" -- "flutter analyze"
 
       - name: Run tests
+        if: ${{ github.repository_owner }} == 'rrousselGit'
         run: melos run test
 
       - name: Upload coverage to codecov
