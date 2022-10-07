@@ -183,7 +183,7 @@ jobs:
       - name: prepare version string
         id: version
         run: |
-          export fixed_version=$(echo ${{ needs.validate-changelog-format.outputs.base_riverpod_package_version }} | sed 's/[Unreleased ]//g' | sed 's/[^0-9,a-z,A-Z.$-]//g')
+          export fixed_version=$(echo ${{ needs.validate-changelog-format.outputs.base_riverpod_package_version }} | sed 's/[Unreleased]//g' | sed 's/[^0-9,a-z,A-Z.$-]//g' | sed 's/ *$//')
           echo ::set-output name=version::$fixed_version
 
       - name: replace base riverpod version with latest changelog entry
