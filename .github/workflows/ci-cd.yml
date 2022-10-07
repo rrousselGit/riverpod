@@ -75,20 +75,20 @@ jobs:
                 paths: ['package/riverpod/lib/**']
                 paths_ignore:
                   - 'package/riverpod/changelog.md'
-            base_riverpod_changelog:
-              - 'package/riverpod/changelog.md'
             flutter_riverpod_package:
               -
                 paths: ['package/flutter_riverpod/lib/**']
                 paths_ignore:
                   - 'package/flutter_riverpod/changelog.md'
-            flutter_riverpod_changelog:
-              - 'package/flutter_riverpod/changelog.md'
             hooks_riverpod_package:
               -
                 paths: ['package/hooks_riverpod/lib/**']
                 paths_ignore:
                   - 'package/hooks_riverpod/changelog.md'
+            base_riverpod_changelog:
+              - 'package/riverpod/changelog.md'
+            flutter_riverpod_changelog:
+              - 'package/flutter_riverpod/changelog.md'
             hooks_riverpod_changelog:
               - 'package/hooks_riverpod/changelog.md'
 
