@@ -123,7 +123,7 @@ jobs:
   validate-changelog-format:
     runs-on: ubuntu-latest
     env:
-      VALID_CHANGELOG_HEADER_REGEX: ^#+\s(\[|\d)[A-Za-z0-9 _\/\.\]\-\+]*$
+      VALID_CHANGELOG_HEADER_REGEX: '^#+\s(\[|\d)[A-Za-z0-9 _\/\.\]\-\+]*$'
     outputs:
       base_riverpod_package_version: ${{ steps.changelogs.outputs.base_riverpod_version }}
       flutter_riverpod_package_version: ${{ steps.changelogs.outputs.flutter_riverpod_version }}
@@ -162,12 +162,12 @@ jobs:
       - name: Is changelog valid?
         uses: actions/github-script@v6.3.1
         if: |
-          steps.base-riverpod-changelog-regex.outputs.match == '' ||
-          steps.flutter-riverpod-changelog-regex.outputs.match == '' ||
+          steps.base-riverpod-changelog-regex.outputs.match == null ||
+          steps.flutter-riverpod-changelog-regex.outputs.match == null ||
           steps.hooks-riverpod-changelog-regex.outputs.match == null
         with:
           script: |
-            core.setFailed('Changelog version header doesn't conform to '${{ env.VALID_CHANGELOG_HEADER_REGEX }}' regex format.⚠️')
+            core.setFailed('Changelog version header doesn't conform to ${process.env.VALID_CHANGELOG_HEADER_REGEX} regex format.⚠️')
 
   publish:
     runs-on: ubuntu-latest
