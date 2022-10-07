@@ -62,5 +62,3 @@ class _StatefulHookConsumerElement extends ConsumerStatefulElement
         HookElement {
   _StatefulHookConsumerElement(StatefulHookConsumerWidget super.widget);
 }
-
-// test comment for ci cd workflow 9
