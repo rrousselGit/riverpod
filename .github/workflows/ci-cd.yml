@@ -136,7 +136,7 @@ jobs:
         id: base-riverpod-changelog-regex
         with:
           text: ${{ steps.changelogs.outputs.base_riverpod_version }}
-          regex: '^# (\[|\d)[A-Za-z0-9 _\/\.\]]*$'
+          regex: '^#+\s(\[|\d)[A-Za-z0-9 _\/\.\]\-\+]*$'
       
       - name: Validate flutter riverpod changelog format
         uses: actions-ecosystem/action-regex-match@v2.0.2
@@ -190,7 +190,7 @@ jobs:
           include: "packages/riverpod/pubspec.yaml"
           regex: true
       
-      - name: dry run riverpod
+      - name: dry run base riverpod
         uses: sakebook/actions-flutter-pub-publisher@v1.4.1
         with:
           credential: ${{ secrets.CREDENTIAL_JSON }}
@@ -218,7 +218,7 @@ jobs:
           package_directory: packages/hooks_riverpod
 
       
-      - name: publish riverpod
+      - name: publish base riverpod
         uses: sakebook/actions-flutter-pub-publisher@v1.4.1
         with:
           credential: ${{ secrets.CREDENTIAL_JSON }}
