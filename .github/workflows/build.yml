@@ -51,15 +51,12 @@ jobs:
         run: melos exec --depends-on="build_runner" -- "dart run build_runner build --delete-conflicting-outputs"
 
       - name: Analyze
-        # condition to not run to speed up cd-cd debugging
-        if: ${{ github.repository_owner }} == 'rrousselGit'
         run: melos exec --ignore="codemod_riverpod_test*,riverpod_lint_flutter_test" -- "flutter analyze"
 
       - name: Run tests
-        # condition to not run to speed up cd-cd debugging
-        if: ${{ github.repository_owner }} == 'rrousselGit'
         run: melos run test
 
       - name: Upload coverage to codecov
+        # only relevant for repo owner
         if: ${{ github.repository_owner }} == 'rrousselGit'
         run: curl -s https://codecov.io/bash | bash
