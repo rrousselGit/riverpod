@@ -1,0 +1,148 @@
+name: Publish
+
+concurrency: 
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: "0 10 * * *"
+  workflow_run:
+    workflows: [Build,Prerelease]
+    types:
+      - completed
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    outputs:
+      base_riverpod_package_version: ${{ steps.changelogs.outputs.base_riverpod_version }}
+      flutter_riverpod_package_version: ${{ steps.changelogs.outputs.flutter_riverpod_version }}
+      hooks_riverpod_package_version: ${{ steps.changelogs.outputs.hooks_riverpod_version }}
+    steps:
+      - uses: actions/checkout@v3.1.0
+      
+      - name: Get first line from packages' changelog
+        id: changelogs
+        run: |
+          echo ::set-output name=base_riverpod_version::$(head -1 packages/riverpod/changelog.md)
+          echo ::set-output name=flutter_riverpod_version::$(head -1 packages/flutter_riverpod/changelog.md)
+          echo ::set-output name=hooks_riverpod_version::$(head -1 packages/hooks_riverpod/changelog.md)
+
+      - name: Validate base riverpod changelog format
+      - uses: actions-ecosystem/action-regex-match@v2.0.2
+        id: base-riverpod-changelog-regex
+        with:
+          text: ${{ steps.changelogs.outputs.base_riverpod_version }}
+          regex: '^# (\[|\d)[A-Za-z0-9 _\/\.\]]*$'
+      
+      - name: Validate flutter riverpod changelog format
+      - uses: actions-ecosystem/action-regex-match@v2.0.2
+        id: flutter-riverpod-changelog-regex
+        with:
+          text: ${{ steps.changelogs.outputs.flutter_riverpod_version }}
+          regex: '^# (\[|\d)[A-Za-z0-9 _\/\.\]]*$'
+
+      - name: Validate hooks riverpod changelog format
+      - uses: actions-ecosystem/action-regex-match@v2.0.2
+        id: flutter-riverpod-changelog-regex
+        with:
+          text: ${{ steps.changelogs.outputs.hooks_riverpod_version }}
+          regex: '^# (\[|\d)[A-Za-z0-9 _\/\.\]]*$'
+
+      - name: Is changelog valid?
+      - uses: actions/github-script@v6.3.1
+        if: steps.base-riverpod-changelog-regex.outputs.match != '' || steps.flutter-riverpod-changelog-regex.outputs.match != '' || steps.hooks-riverpod-changelog-regex.outputs.match != ''
+        with:
+          script: |
+            core.setFailed('⚠️Can't release. Invalid changelog format.⚠️')
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: validate
+
+    steps:
+      - uses: actions/checkout@v3.1.0
+
+      - name: replace base riverpod version with latest changelog entry
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          find: "^.*version.*$"
+          replace: "\nversion: ${{ needs.validate.outputs.base_riverpod_package_version }}\n"
+          include: "packages/riverpod/pubspec.yaml"
+          regex: true
+
+      - name: replace flutter riverpod version with latest changelog entry
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          find: "^.*version.*$"
+          replace: "\nversion: ${{ needs.validate.outputs.flutter_riverpod_package_version }}\n"
+          include: "packages/riverpod/pubspec.yaml"
+          regex: true
+
+      - name: replace hooks riverpod version with latest changelog entry
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          find: "^.*version.*$"
+          replace: "\nversion: ${{ needs.validate.outputs.hooks_riverpod_package_version }}\n"
+          include: "packages/riverpod/pubspec.yaml"
+          regex: true
+      
+      - name: dry run riverpod
+        uses: sakebook/actions-flutter-pub-publisher@v1.4.1
+        with:
+          credential: ${{ secrets.CREDENTIAL_JSON }}
+          flutter_package: false
+          skip_test: true
+          dry_run: true
+          package_directory: packages/riverpod
+
+      - name: dry run flutter_riverpod
+        uses: sakebook/actions-flutter-pub-publisher@v1.4.1
+        with:
+          credential: ${{ secrets.CREDENTIAL_JSON }}
+          flutter_package: true
+          skip_test: true
+          dry_run: true
+          package_directory: packages/flutter_riverpod
+
+      - name: dry run hooks_riverpod
+        uses: sakebook/actions-flutter-pub-publisher@v1.4.1
+        with:
+          credential: ${{ secrets.CREDENTIAL_JSON }}
+          flutter_package: true
+          skip_test: true
+          dry_run: true
+          package_directory: packages/hooks_riverpod
+
+      
+      - name: publish riverpod
+        uses: sakebook/actions-flutter-pub-publisher@v1.4.1
+        with:
+          credential: ${{ secrets.CREDENTIAL_JSON }}
+          flutter_package: false
+          skip_test: true
+          dry_run: false
+          package_directory: packages/riverpod
+
+      - name: publish flutter_riverpod
+        uses: sakebook/actions-flutter-pub-publisher@v1.4.1
+        with:
+          credential: ${{ secrets.CREDENTIAL_JSON }}
+          flutter_package: true
+          skip_test: true
+          dry_run: false
+          package_directory: packages/flutter_riverpod
+
+      - name: publish hooks_riverpod
+        uses: sakebook/actions-flutter-pub-publisher@v1.4.1
+        with:
+          credential: ${{ secrets.CREDENTIAL_JSON }}
+          flutter_package: true
+          skip_test: true
+          dry_run: false
+          package_directory: packages/hooks_riverpod

@@ -1,5 +1,9 @@
 name: Build
 
+concurrency: 
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     paths-ignore:
@@ -23,9 +27,9 @@ jobs:
           - stable
 
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v3.1.0
+        
+      - uses: subosito/flutter-action@v2.7.1
         with:
           channel: ${{ matrix.channel }}
 
@@ -36,7 +40,7 @@ jobs:
         run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
 
       - run: dart pub global activate melos
-
+        
       - name: Install dependencies
         run: melos bootstrap --ignore "codemod_riverpod_*,riverpod_cli" 
 
@@ -47,10 +51,15 @@ jobs:
         run: melos exec --depends-on="build_runner" -- "dart run build_runner build --delete-conflicting-outputs"
 
       - name: Analyze
+        # condition to not run to speed up cd-cd debugging
+        if: ${{ github.repository_owner }} == 'rrousselGit'
         run: melos exec --ignore="codemod_riverpod_test*,riverpod_lint_flutter_test" -- "flutter analyze"
 
       - name: Run tests
+        # condition to not run to speed up cd-cd debugging
+        if: ${{ github.repository_owner }} == 'rrousselGit'
         run: melos run test
 
       - name: Upload coverage to codecov
+        if: ${{ github.repository_owner }} == 'rrousselGit'
         run: curl -s https://codecov.io/bash | bash

@@ -1,0 +1,57 @@
+name: Prerelease
+
+concurrency: 
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.1.0
+
+      - name: Updated both package && changelog?
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            base_riverpod_package:
+              - 'package/riverpod/**'
+            base_riverpod_changelog:
+              - 'package/riverpod/changelog.md'
+            flutter_riverpod_package:
+              - 'package/flutter_riverpod/**'
+            flutter_riverpod_changelog:
+              - 'package/flutter_riverpod/changelog.md'
+            hooks_riverpod_package:
+              - 'package/riverpod/**'
+            hooks_riverpod_changelog:
+              - 'package/hooks_riverpod/changelog.md'
+
+      - name: Check if base riverpod changed
+        if: steps.filter.outputs.base_riverpod_package == 'true' && steps.filter.outputs.base_riverpod_changelog == 'false'
+        id: changelog_base_riverpod
+        run: echo '::set-output name=is_fail::true'
+
+      - name: Check if flutter riverpod changed
+        if: steps.filter.outputs.flutter_riverpod_package == 'true' && steps.filter.outputs.flutter_riverpod_changelog == 'false'
+        id: changelog_flutter_riverpod
+        run: echo '::set-output name=is_fail::true'
+
+      - name: Check if hooks riverpod changed
+        if: steps.filter.outputs.hooks_riverpod_package == 'true' && steps.filter.outputs.hooks_riverpod_changelog == 'false'
+        id: changelog_hooks_riverpod
+        run: echo '::set-output name=is_fail::true'
+
+      - name: Check if updated package AND changelog?
+      - uses: actions/github-script@v6.3.1
+        if: ${{ steps.changelog_base_riverpod.outputs.is_fail == 'true' || steps.changelog_flutter_riverpod.outputs.is_fail == 'true' || steps.changelog_hooks_riverpod.outputs.is_fail == 'true' }}
+        with:
+          script: |
+            core.setFailed('⚠️Modified a package without updating changelog.⚠️')
