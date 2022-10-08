@@ -41,3 +41,9 @@
 .sidebarLogo {
   display: none;
 }
+
+@media (max-width: 650px) {
+  .sidebar_head {
+    flex-direction: column !important;
+  }
+}

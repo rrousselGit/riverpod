@@ -42,6 +42,7 @@ export function SidebarHead({ direction }) {
   return (
     <>
       <div
+        className={styles.sidebar_head}
         style={{
           padding: "10px 10px 0 10px",
           display: "flex",
