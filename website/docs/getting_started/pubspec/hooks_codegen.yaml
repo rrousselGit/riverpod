@@ -8,8 +8,8 @@ dependencies:
     sdk: flutter
   flutter_hooks: ^0.18.0
   hooks_riverpod: ^2.0.2
-  riverpod_annotation: ^1.0.3
+  riverpod_annotation: ^1.0.4
 
 dev_dependencies:
   build_runner:
-  riverpod_generator: ^1.0.3
+  riverpod_generator: ^1.0.4
