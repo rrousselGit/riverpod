@@ -53,9 +53,6 @@ flowchart TB
     ConsumerWidget((widget));
     Provider[[provider]];
   end
-  nonGeneratedProvider2[[nonGeneratedProvider2]];
-  nonGeneratedProvider ==> nonGeneratedProvider2;
-  nonGeneratedProvider[[nonGeneratedProvider]];
   publicClassProvider[[publicClassProvider]];
   publicProvider ==> publicClassProvider;
   publicProvider[[publicProvider]];
