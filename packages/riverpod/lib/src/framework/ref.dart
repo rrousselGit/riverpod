@@ -131,26 +131,24 @@ abstract class Ref<State extends Object?> {
   ///
   /// ```dart
   /// final configsProvider = FutureProvider(...);
-  /// final myServiceProvider = Provider((ref) {
-  ///   return MyService(ref.read);
-  /// });
+  /// final myServiceProvider = Provider(MyService.new);
   ///
   /// class MyService {
-  ///   MyService(this.read);
+  ///   MyService(this.ref);
   ///
-  ///   final Reader read;
+  ///   final Ref ref;
   ///
   ///   Future<User> fetchUser() {
   ///     // We read the current configurations, but do not care about
   ///     // rebuilding MyService when the configurations changes
-  ///     final configs = read(configsProvider.future);
+  ///     final configs = ref.read(configsProvider.future);
   ///
   ///     return dio.get(configs.host);
   ///   }
   /// }
   /// ```
   ///
-  /// By passing [read] to an object, this allows our object to read other providers.
+  /// By passing [Ref] to an object, this allows our object to read other providers.
   /// But we do not want to re-create our object if any of the provider
   /// obtained changes. We only want to read their current value without doing
   /// anything else.
