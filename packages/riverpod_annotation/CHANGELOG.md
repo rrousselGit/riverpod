@@ -1,3 +1,7 @@
+## 1.0.4
+
+Export more missing types
+
 ## 1.0.3
 
 Export missing types
