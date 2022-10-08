@@ -1,17 +1,6 @@
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'sync.g.dart';
-
-/// A non-generated provider.
-final nonGeneratedProvider = Provider((ref) {
-  return 'normalProvider';
-});
-
-/// Another non-generated provider that depends on [nonGeneratedProvider].
-final nonGeneratedProvider2 = Provider((ref) {
-  return ref.watch(nonGeneratedProvider);
-});
 
 /// A public generated provider.
 @riverpod

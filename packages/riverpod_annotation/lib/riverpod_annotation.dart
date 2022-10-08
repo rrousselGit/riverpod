@@ -3,6 +3,10 @@ export 'dart:async' show FutureOr;
 // ignore: invalid_export_of_internal_element
 export 'package:riverpod/src/internals.dart'
     show
+        // General stuff
+        Family,
+        ProviderOrFamily,
+
         // Provider
         Provider,
         ProviderFamily,
