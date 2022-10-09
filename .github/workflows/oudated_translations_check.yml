@@ -28,6 +28,9 @@ jobs:
       - run: cd website && flutter pub get
         name: Installing website dependencies
 
+      - run: ls
+      - run: pwd
+
       - name: Backing up existing website/src/outdated_translations.json
         run: mv ./src/outdated_translations.js ./src/outdated_translations_back.js
 
@@ -36,4 +39,3 @@ jobs:
 
       - name: Checking that the ./src/outdated_docs_generator.dart backup is identical to the new js
         run: diff ./src/outdated_translations.js ./src/outdated_translations_back.js
-
