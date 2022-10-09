@@ -13,10 +13,12 @@ final translatedDocFiles = Glob('i18n/**.mdx');
 final outFile = File('./src/outdated_translations.js');
 
 void main() async {
-  // final json = .map((e) => e.toJson()).toList();
+  final outdatedTranslations = findOutdatedTranslations().toList()
+    ..sort(
+        (a, b) => a.translation.file.path.compareTo(b.translation.file.path));
 
   final buffer = StringBuffer('export default [');
-  for (final outdatedTranslation in findOutdatedTranslations()) {
+  for (final outdatedTranslation in outdatedTranslations) {
     buffer
       ..write(jsonEncode(outdatedTranslation.toJson()))
       ..write(',');
@@ -33,9 +35,9 @@ Iterable<OutdatedTranslation> findOutdatedTranslations() sync* {
   );
   final englishDocs = decodeDocuments(
     englishDocFiles.listSync().cast<File>(),
-  ).map((key, value) => MapEntry(key, value.single));
+  ).values.map((e) => e.single);
 
-  for (final englishDoc in englishDocs.values) {
+  for (final englishDoc in englishDocs) {
     for (final translatedDoc in translatedDocs[englishDoc.id] ?? <DocMeta>[]) {
       if (englishDoc.version > translatedDoc.version) {
         yield OutdatedTranslation(
