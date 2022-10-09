@@ -43,5 +43,5 @@ jobs:
         working-directory: website
 
       - name: Checking that the ./src/outdated_docs_generator.dart backup is identical to the new js
-        run: diff ./src/outdated_translations.js ./src/outdated_translations_back.js
+        run: diff -w ./src/outdated_translations.js ./src/outdated_translations_back.js
         working-directory: website
