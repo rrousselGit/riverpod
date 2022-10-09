@@ -12,7 +12,8 @@ import {
   useDocsPreferredVersion,
   useDocsVersion,
 } from "@docusaurus/theme-common/internal";
-import {useDoc} from '@docusaurus/theme-common/internal';
+import { useDoc } from "@docusaurus/theme-common/internal";
+import outdatedDocs from "../../outdated_translations.js";
 
 function UnreleasedVersionLabel({ siteTitle, versionMetadata }) {
   return (
@@ -119,6 +120,53 @@ function DocVersionBannerEnabled({ className, versionMetadata }) {
   );
 }
 
+function OutdatedTranslationBanner({ className }) {
+  const doc = useDoc();
+
+  for (const outdatedDoc of outdatedDocs) {
+    if (
+      outdatedDoc.id === doc.metadata.id &&
+      doc.metadata.source.startsWith(`@site/i18n/${outdatedDoc.countryCode}/`)
+    ) {
+      return (
+        <div
+          className={clsx(
+            className,
+            ThemeClassNames.docs.docVersionBanner,
+            "alert alert--warning margin-bottom--md"
+          )}
+          role="alert"
+        >
+          <div>
+            <Translate
+              id="custom.outdatedTranslations"
+              description="The label used inside the outdated translation banner"
+              values={{
+                englishLink: (
+                  // Not using <Link> but instead raw <a> as <Link to="/docs/foo"> redirects to /fr/docs/foo
+                  <a href={outdatedDoc.englishPath}>
+                    <Translate
+                      id="custom.outdatedTranslationLink"
+                      description="The link that redirects to the equivalent English doc"
+                    >
+                      english version
+                    </Translate>
+                  </a>
+                ),
+              }}
+            >
+              {
+                "The content of this page may be outdated. Consider checking out the {englishLink} instead."
+              }
+            </Translate>
+          </div>
+        </div>
+      );
+    }
+  }
+
+  return null;
+}
 
 export default function DocVersionBanner({ className }) {
   const versionMetadata = useDocsVersion();
@@ -131,31 +179,9 @@ export default function DocVersionBanner({ className }) {
     );
   }
 
-  const doc = useDoc();
-  console.log(doc)
-
   return (
-    <div
-      className={clsx(
-        className,
-        ThemeClassNames.docs.docVersionBanner,
-        "alert alert--warning margin-bottom--md"
-      )}
-      role="alert"
-    >
-      <div>
-        Hello world
-        {/* <BannerLabel siteTitle={siteTitle} versionMetadata={versionMetadata} /> */}
-      </div>
-      <div className="margin-top--md">
-        Foo Bar
-        {/* <LatestVersionSuggestionLabel
-          versionLabel={latestVersionSuggestion.label}
-          to={latestVersionSuggestedDoc.path}
-          onClick={() => savePreferredVersionName(latestVersionSuggestion.name)}
-        /> */}
-      </div>
-    </div>
+    <OutdatedTranslationBanner
+      className={className}
+    ></OutdatedTranslationBanner>
   );
-  return null;
 }
