@@ -29,11 +29,11 @@ jobs:
         name: Installing website dependencies
 
       - name: Backing up existing website/src/outdated_translations.json
-        run: mv ./src/outdated_translations.json ./src/outdated_translations_back.json
+        run: mv ./src/outdated_translations.js ./src/outdated_translations_back.js
 
       - name: Running the outdated translation generator
         run: dart ./src/outdated_docs_generator.dart
 
-      - name: Checking that the ./src/outdated_docs_generator.dart backup is identical to the new json
-        run: diff ./src/outdated_translations.json ./src/outdated_translations_back.json
+      - name: Checking that the ./src/outdated_docs_generator.dart backup is identical to the new js
+        run: diff ./src/outdated_translations.js ./src/outdated_translations_back.js
 
