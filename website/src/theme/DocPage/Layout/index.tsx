@@ -1,9 +1,13 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import Layout from "@theme-original/DocPage/Layout";
+// import {useDoc} from '@docusaurus/theme-common/internal';
 
 // Wrapping <Layout> to add custom contexts available for the entire app.
 
 export default function LayoutWrapper(props) {
+  // const doc = useDoc();
+  // console.log('Hello', doc )
+
   return (
     <Codegen>
       <Layout {...props} />
