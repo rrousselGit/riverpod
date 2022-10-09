@@ -1,5 +1,6 @@
 module.exports = {
   Sidebar: [
+    "introduction",
     "getting_started",
     {
       type: "category",
@@ -62,6 +63,11 @@ module.exports = {
           type: "link",
           label: "Todo list",
           href: "https://github.com/rrousselGit/riverpod/tree/master/examples/todos",
+        },
+        {
+          type: "link",
+          label: "Pub.dev client",
+          href: "https://github.com/rrousselGit/riverpod/tree/master/examples/pub",
         },
         {
           type: "link",
