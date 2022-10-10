@@ -1,14 +1,11 @@
-// ignore_for_file: omit_local_variable_types, prefer_final_locals
-
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'config_provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../config_provider/cgen_provider.dart';
 
 /* SNIPPET START */
 
 Widget build(BuildContext context, WidgetRef ref) {
-  AsyncValue<Configuration> config = ref.watch(configProvider);
+  final config = ref.watch(fetchConfigrationProvider);
 
   return config.when(
     loading: () => const CircularProgressIndicator(),
