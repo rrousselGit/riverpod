@@ -4,7 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-part 'cgen_provider.g.dart';
+part 'codegen.g.dart';
 class Configuration {
   Configuration.fromJson(Map<String, Object?> json);
   final String host = '';

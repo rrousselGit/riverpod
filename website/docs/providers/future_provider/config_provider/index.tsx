@@ -1,5 +1,5 @@
-import raw from "!!raw-loader!./raw_config_provider.dart";
-import codegen from "!!raw-loader!./cgen_provider.dart";
+import raw from "!!raw-loader!./raw.dart";
+import codegen from "!!raw-loader!./codegen.dart";
 
 export default {
   raw,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../config_provider/raw_config_provider.dart';
+import '../config_provider/raw.dart';
 
 /* SNIPPET START */
 

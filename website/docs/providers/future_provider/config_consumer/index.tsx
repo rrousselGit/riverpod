@@ -1,7 +1,7 @@
 import raw from "!!raw-loader!./raw.dart";
-import codegen from "!!raw-loader!./cgen_config_consumer.dart";
-import hooks from "!!raw-loader!./hook_config_consumer.dart";
-import hooksCodegen from "!!raw-loader!./hook_cgen_config_consumer.dart"
+import codegen from "!!raw-loader!./codegen.dart";
+import hooks from "!!raw-loader!./hooks.dart";
+import hooksCodegen from "!!raw-loader!./hooks_codegen.dart"
 
 export default {
   raw,
