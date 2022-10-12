@@ -4,11 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /* SNIPPET START */
 
-final counterProvider = StateNotifierProvider<Counter, int>((ref) {
-  return Counter();
-});
-
-class Counter extends StateNotifier<int> {
-  Counter() : super(0);
-  void increment() => state++;
+@@riverpod
+Future<String> boredSuggestion(BoredSuggestionRef ref) async {
+  final response = await http.get(
+    Uri.https('https://www.boredapi.com/api/activity'),
+  );
+  final json = jsonDecode(response.body);
+  return json['activity']! as String;
 }
