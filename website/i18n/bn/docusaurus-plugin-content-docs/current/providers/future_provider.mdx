@@ -1,13 +1,14 @@
 ---
 title: FutureProvider
+version: 1
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import configProvider from "!!raw-loader!./future_provider/config_provider.dart";
-import configConsumer from "!!raw-loader!./future_provider/config_consumer.dart";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+import configProvider from "/docs/providers/future_provider/config_provider";
+import configConsumer from "/docs/providers/future_provider/config_consumer";
+import { trimSnippet,AutoSnippet} from "../../../../../src/components/CodeSnippet";
 
 `FutureProvider` হল [Provider] এর সমতুল্য কিন্তু অ্যাসিঙ্ক্রোনাস কোডের জন্য।
 
@@ -30,11 +31,11 @@ import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 
 কনফিগারেশন তৈরি করা আপনার সাধারণ async/await সিনট্যাক্স দিয়ে করা হবে, কিন্তু প্রভাইডারের ভিতরে। Flutter এর Asset সিস্টেম ব্যবহার করে, এটি হবে:
 
-<CodeBlock>{trimSnippet(configProvider)}</CodeBlock>
+<AutoSnippet language="dart" {...configProvider}></AutoSnippet>
 
 তারপরে, UI এর মতো কনফিগারেশন রিড করতে পারেঃ
 
-<CodeBlock>{trimSnippet(configConsumer)}</CodeBlock>
+<AutoSnippet language="dart" {...configConsumer}></AutoSnippet>
 
 [Future] সম্পূর্ণ হলে এটি স্বয়ংক্রিয়ভাবে UI পুনর্নির্মাণ করবে।
 একই সময়ে, যদি একাধিক উইজেট কনফিগারেশন চায়,
