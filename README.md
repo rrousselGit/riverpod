@@ -40,28 +40,32 @@ For learning how to use [Riverpod], see its documentation: https://riverpod.dev
 
 Long story short:
 
-- Declare your providers as global variables:
+- Define network requests by writing a function annotated with `@riverpod`:
 
   ```dart
-  final counterProvider = StateNotifierProvider((ref) {
-    return Counter();
-  });
-
-  class Counter extends StateNotifier<int> {
-    Counter(): super(0);
-
-    void increment() => state++;
+  @riverpod
+  Future<String> boredSuggestion(BoredSuggestionRef ref) async {
+    final response = await http.get(
+      Uri.https('https://www.boredapi.com/api/activity'),
+    );
+    final json = jsonDecode(response.body);
+    return json['activity']! as String;
   }
   ```
 
-- Use them inside your widgets in a compile time safe way. No runtime exceptions!
+- Listen to the network request in your UI and gracefully handle loading/error states.
 
   ```dart
-  class Example extends ConsumerWidget {
+  class Home extends ConsumerWidget {
     @override
     Widget build(BuildContext context, WidgetRef ref) {
-      final count = ref.watch(counterProvider);
-      return Text(count.toString());
+      final boredSuggestion = ref.watch(boredSuggestionProvider);
+      // Perform a switch-case on the result to handle loading/error states
+      return boredSuggestion.when(
+        loading: () => Text('loading'),
+        error: (error, stackTrace) => Text('error: $error'),
+        data: (data) => Text(data),
+      );
     }
   }
   ```
@@ -175,7 +179,7 @@ and Riverpod could be fused.
 
 ### Will provider be deprecated/stop being supported?
 
-Maybe. 
+Maybe.
 
 Provider has numerous flaws that can't quite be fixed. At the same time,
 Riverpod has proven to fix many of those.  

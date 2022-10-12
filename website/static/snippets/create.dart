@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /* SNIPPET START */
 
-@@riverpod
+@riverpod
 Future<String> boredSuggestion(BoredSuggestionRef ref) async {
   final response = await http.get(
     Uri.https('https://www.boredapi.com/api/activity'),
