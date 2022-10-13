@@ -27,6 +27,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   glob: ^2.1.0
+  http: ^0.13.5
   path: ^1.8.1
   riverpod_generator:
 
