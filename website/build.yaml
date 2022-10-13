@@ -2,6 +2,7 @@ targets:
   $default:
     sources:
       - docs/**
+      - static/**
     builders:
       riverpod_generator:
         enabled: true
