@@ -44,12 +44,6 @@ Future<void> analyze(String rootDirectory) async {
             return true;
           }
           return variableElement.type.extendsFromRiverpod;
-          //        ||
-          // (this is ClassElement &&
-          //     (this as ClassElement)
-          //         .thisType
-          //         .allSupertypes
-          //         .any((superType) => superType.element.isFromRiverpod))
         },
       );
 
