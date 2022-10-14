@@ -1,5 +1,26 @@
 # Roadmap
 
+## Docs
+
+Possible homepage/readme selling points?
+
+- Automatic cache invalidation
+- Error/loading handling by default
+- stateful hot-reload
+- built-in support for complex use-cases
+  pull-to-refresh, cancelling network requests, ...
+- scalable
+  Simple for simple use-cases. Exposes low level APIs for complex use-cases.
+- testable
+- smooth refactoring thanks to compile safety
+- easy error/loading handling inside UI thanks to when/pattern matching.
+- business logic separation from UI
+- (coming) state inspector
+- (coming) documentation graph generator
+- (coming) linter
+- (coming) offline persistence
+- (coming) mutations
+
 ## Linter:
 
 - Don't create providers inside `build` (https://github.com/rrousselGit/riverpod/issues/144#issuecomment-695361486)
