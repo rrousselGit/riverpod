@@ -2,6 +2,7 @@ module.exports = {
   Sidebar: [
     "introduction",
     "getting_started",
+    "riverpod_for_provider_users",
     {
       type: "category",
       label: "All Providers",
