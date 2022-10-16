@@ -238,7 +238,162 @@ Consumer<Model>(
 Notice how `Consumer` gives us a `WidgetRef` object. This is the same object
 as we saw in the previous part related to `ConsumerWidget`.
 
-<!-- TODO explain how to convert ProxyProvider to ref.watch/ref.listen -->
+### Combining providers: ProxyProvider with stateless objects
+
+When using Provider, the official way of combining providers is using the
+`ProxyProvider` widget (or variants such as `ProxyProvider2`).
+
+For example we may define:
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+ChangeNotifierProvider<UserIdNotifier>(create: (context) => UserIdNotifier()),
+```
+
+From there we have two options. We may combine `UserIdNotifier` to create a new
+"stateless" provider (typically an immutable value that possibly override ==).
+Such as:
+
+```dart
+ProxyProvider<UserIdNotifier, String>(
+  update: (context, userIdNotifier, _) {
+    return 'The user ID of the the user is ${userIdNotifier.userId}';
+  }
+)
+```
+
+This provider would automatically return a new `String` whenever
+`UserIdNotifier.userId` changes.
+
+We can do something similar in Riverpod, but the syntax is different.  
+First, in Riverpod, the definition of our `UserIdNotifier` would be:
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+final userIdNotifierProvider = ChangeNotifierProvider<UserIdNotifier>(
+  (ref) => UserIdNotifier(),
+),
+```
+
+From there, to generate our `String` based on the `userId`, we could do:
+
+```dart
+final labelProvider = Provider<String>((ref) {
+  UserIdNotifier userIdNotifier = ref.watch(userIdNotifierProvider);
+  return 'The user ID of the the user is ${userIdNotifier.userId}';
+});
+```
+
+Notice the line doing `ref.watch(userIdNotifierProvider)`.
+
+This line of code tells Riverpod to obtain the content of the `userIdNotifierProvider`
+and that whenever that value changes, `labelProvider` will be recomputed too.
+As such, the `String` emitted by our `labelProvider` will automatically update
+whenever the `userId` changes.
+
+This `ref.watch` line should feel similar. This pattern was covered previously
+when explaining [how to read providers inside widgets](#reading-providers-buildcontext).
+Indeed, providers are now able to listen to other providers in the same way
+that widgets do.
+
+### Combining providers: ProxyProvider with stateful objects
+
+When combining providers, another alternative use-case is to expose
+stateful objects, such as a `ChangeNotifier` instance.
+
+For that, we could use `ChangeNotifierProxyProvider` (or variants such as `ChangeNotifierProxyProvider2`).  
+For example we may define:
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+ChangeNotifierProvider<UserIdNotifier>(create: (context) => UserIdNotifier()),
+```
+
+Then, we can define a new `ChangeNotifier` that is based on `UserIdNotifier.userId`.
+For example we could do:
+
+```dart
+class UserNotifier extends ChangeNotifier {
+  String? _userId;
+
+  void setUserId(String? userId) {
+    if (userId != _userId) {
+      print('The user ID changed from $_userId to $userId');
+      _userId = userId;
+    }
+  }
+}
+
+// ...
+
+ChangeNotifierProxyProvider<UserIdNotifier, UserNotifier>(
+  create: (context) => UserNotifier(),
+  update: (context, userIdNotifier, userNotifier) {
+    return userNotifier!
+      ..setUserId(userIdNotifier.userId);
+  },
+);
+```
+
+This new provider creates a single instance of `UserNotifier` (which is never re-constructed)
+and prints a string whenever the user ID changes.
+
+Doing the same thing in provider is achieved differently.
+First, in Riverpod, the definition of our `UserIdNotifier` would be:
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+final userIdNotifierProvider = ChangeNotifierProvider<UserIdNotifier>(
+  (ref) => UserIdNotifier(),
+),
+```
+
+From there, the equivalent to the previous `ChangeNotifierProxyProvider` would be:
+
+```dart
+class UserNotifier extends ChangeNotifier {}
+
+final userNotfierProvider = ChangeNotifierProvider<UserNotifier>((ref) {
+  final userNotifier = UserNotifier();
+  ref.listen<UserIdNotifier>(
+    userIdNotifierProvider,
+    (previous, next) {
+      if (previous?.userId != next.userId) {
+        print('The user ID changed from ${previous?.userId} to ${next.userId}');
+      }
+    },
+  );
+
+  return userNotifier;
+});
+```
+
+The core of this snippet is the `ref.listen` line.  
+This `ref.listen` function is a utility that allows listening to a provider,
+and whenever the provider changes, executes a function.
+
+The `previous` and `next` parameters of that function correspond to the
+last value before the provider changed and the new value after it changed.
 
 [provider]: https://pub.dev/packages/provider
 [ref.watch]: /docs/concepts/reading#using-refwatch-to-observe-a-provider
