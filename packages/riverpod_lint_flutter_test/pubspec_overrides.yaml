@@ -1,4 +1,4 @@
-# melos_managed_dependency_overrides: riverpod_generator,riverpod,flutter_riverpod,hooks_riverpod,riverpod_annotation,riverpod_lint
+# melos_managed_dependency_overrides: riverpod_generator,riverpod,flutter_riverpod,hooks_riverpod,riverpod_annotation,riverpod_lint,riverpod_analyzer_utils
 dependency_overrides:
   riverpod_generator:
     path: ../riverpod_generator
@@ -12,3 +12,5 @@ dependency_overrides:
     path: ../riverpod_annotation
   riverpod_lint:
     path: ../riverpod_lint
+  riverpod_analyzer_utils:
+    path: ../riverpod_analyzer_utils

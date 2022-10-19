@@ -1,7 +1,11 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:collection/collection.dart';
-import '../riverpod_analysis.dart';
+
+import 'analyzer_utils.dart';
+import 'dependencies.dart';
+import 'extensions.dart';
+import 'riverpod_types.dart';
 
 class RefLifecycleInvocation {
   RefLifecycleInvocation._(this.invocation);

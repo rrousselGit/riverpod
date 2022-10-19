@@ -7,7 +7,8 @@ import 'package:analyzer/dart/element/type.dart';
 // ignore: implementation_imports
 import 'package:build/build.dart';
 import 'package:meta/meta.dart';
-import 'package:riverpod_analysis/riverpod_analysis.dart' hide TypeChecker;
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart'
+    hide TypeChecker;
 // ignore: implementation_imports, safe as we are the one controlling this file
 import 'package:riverpod_annotation/src/riverpod_annotation.dart';
 import 'package:source_gen/source_gen.dart';
