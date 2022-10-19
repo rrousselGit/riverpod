@@ -1,3 +1,4 @@
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'async.g.dart';
@@ -14,7 +15,7 @@ Future<String> _private(_PrivateRef ref) async {
   return 'Hello world';
 }
 
-@riverpod
+@Riverpod(dependencies: [PublicClass, public])
 FutureOr<String> family(
   FamilyRef ref,
   int first, {
@@ -46,7 +47,9 @@ class _PrivateClass extends _$PrivateClass {
   }
 }
 
-@riverpod
+final stateProvider = StateProvider((ref) => '');
+
+@Riverpod(dependencies: [public, family, 'stateProvider'])
 class FamilyClass extends _$FamilyClass {
   @override
   FutureOr<String> build(

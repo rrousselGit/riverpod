@@ -16,8 +16,6 @@ class RefLifecycleInvocation {
 }
 
 mixin RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
-  bool get generatedRef => false;
-
   /// A Ref/WidgetRef method was invoked. It isn't guaranteed to be watch/listen/read
   Stream<T>? visitRefInvocation(RefLifecycleInvocation node);
 
@@ -27,16 +25,12 @@ mixin RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
     if (superStream != null) yield* superStream;
 
     final targetType = node.target?.staticType?.element2;
-    final t = node.target;
 
-    final gen = t is SimpleIdentifier && generatedRef && t.name == 'ref';
-
-    if (targetType == null && !gen) {
+    if (targetType == null) {
       return;
     }
 
-    if (gen ||
-        refType.isAssignableFrom(targetType!) ||
+    if (refType.isAssignableFrom(targetType) ||
         widgetRefType.isAssignableFrom(targetType) ||
         containerType.isAssignableFrom(targetType)) {
       final refInvocStream = visitRefInvocation(RefLifecycleInvocation._(node));
@@ -47,11 +41,9 @@ mixin RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
 
 /// Recursively search all the places where a Provider's `ref` is used
 // TODO handle Ref fn() => ref;
-class ProviderRefUsageVisitor
-    extends GeneralRefUsageVisitor<ProviderDeclaration>
-    with RefLifecycleVisitor {
-  ProviderRefUsageVisitor();
 
+class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
+    with RefLifecycleVisitor {
   @override
   Stream<ProviderDeclaration>? visitRefInvocation(
     RefLifecycleInvocation node,
@@ -60,40 +52,14 @@ class ProviderRefUsageVisitor
     if (refBinders.contains(node.invocation.methodName.name)) {
       final providerExpression = node.invocation.argumentList.arguments.first;
       final providerOrigin =
-          await GeneralProviderDeclaration.tryParse(providerExpression);
+          await ProviderDeclaration.tryParse(providerExpression);
 
       if (providerOrigin != null) yield providerOrigin;
     }
   }
-}
-
-class GeneratedRefUsageVisitor
-    extends GeneralRefUsageVisitor<GeneralProviderDeclaration> {
-  @override
-  bool get generatedRef => true;
 
   @override
-  Stream<GeneralProviderDeclaration>? visitRefInvocation(
-    RefLifecycleInvocation node,
-  ) async* {
-    if (refBinders.contains(node.invocation.methodName.name)) {
-      final providerExpression = node.invocation.argumentList.arguments.first;
-      final providerOrigin = await GeneralProviderDeclaration.tryParseGenerated(
-        providerExpression,
-      );
-
-      if (providerOrigin != null) yield providerOrigin;
-    }
-  }
-}
-
-abstract class GeneralRefUsageVisitor<D extends GeneralProviderDeclaration>
-    extends AsyncRecursiveVisitor<D> with RefLifecycleVisitor {
-  @override
-  bool get generatedRef => true;
-
-  @override
-  Stream<D>? visitArgumentList(ArgumentList node) async* {
+  Stream<ProviderDeclaration>? visitArgumentList(ArgumentList node) async* {
     final superStream = super.visitArgumentList(node);
     if (superStream != null) yield* superStream;
     final providerBody = node.arguments.firstOrNull;
@@ -147,7 +113,7 @@ abstract class GeneralRefUsageVisitor<D extends GeneralProviderDeclaration>
   }
 
   @override
-  Stream<D>? visitAssignmentExpression(
+  Stream<ProviderDeclaration>? visitAssignmentExpression(
     AssignmentExpression node,
   ) async* {
     // print(node);

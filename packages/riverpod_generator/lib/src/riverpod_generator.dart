@@ -7,8 +7,6 @@ import 'package:analyzer/dart/element/type.dart';
 // ignore: implementation_imports
 import 'package:build/build.dart';
 import 'package:meta/meta.dart';
-import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart'
-    hide TypeChecker;
 // ignore: implementation_imports, safe as we are the one controlling this file
 import 'package:riverpod_annotation/src/riverpod_annotation.dart';
 import 'package:source_gen/source_gen.dart';
@@ -22,6 +20,10 @@ import 'templates/provider.dart';
 import 'templates/ref.dart';
 
 const riverpodTypeChecker = TypeChecker.fromRuntime(Riverpod);
+
+extension on String {
+  String get camelCase => '${this[0].toLowerCase()}${substring(1)}';
+}
 
 @immutable
 // ignore: invalid_use_of_internal_member
@@ -63,9 +65,6 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     FunctionElement element,
   ) async {
     final riverpod = riverpodTypeChecker.firstAnnotationOf(element)!;
-    final ast = await buildStep.resolver.astNodeFor(element, resolve: true);
-    final visitor = GeneratedRefUsageVisitor();
-    final actualDependencies = await ast?.accept(visitor)!.toList();
 
     return Data.function(
       createElement: element,
@@ -85,7 +84,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
       parameters: element.parameters.skip(1).toList(),
       valueDisplayType:
           _getUserModelType(element).getDisplayString(withNullability: true),
-      dependencies: actualDependencies ?? [],
+      dependencies: dependencies(riverpod),
     );
   }
 
@@ -104,6 +103,25 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     return returnType.typeArguments.single;
   }
 
+  List<String> dependencies(DartObject riverpodAnnotation) {
+    final dependencies = <String>[];
+    for (final entry
+        in riverpodAnnotation.getField('dependencies')?.toListValue() ??
+            <DartObject>[]) {
+      if (entry.type?.isDartCoreString ?? false) {
+        dependencies.add(entry.toStringValue()!);
+      } else if (entry.type != null && entry.toFunctionValue() != null) {
+        dependencies.add('${entry.toFunctionValue()!.displayName}Provider');
+      } else if (entry.toTypeValue() != null) {
+        dependencies.add(
+          '${entry.toTypeValue()?.getDisplayString(withNullability: false).camelCase}Provider',
+        );
+      }
+    }
+
+    return dependencies;
+  }
+
   FutureOr<Data> _parseClassElement(
     BuildStep buildStep,
     GlobalData globalData,
@@ -120,9 +138,6 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
         element: element,
       ),
     );
-    final ast = await buildStep.resolver.astNodeFor(element);
-    final visitor = GeneratedRefUsageVisitor();
-    final actualDependencies = await ast?.accept(visitor)!.toList();
 
     return Data.notifier(
       createAst: (await buildStep.resolver.astNodeFor(element, resolve: true))!,
@@ -140,7 +155,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
       parameters: buildMethod.parameters,
       valueDisplayType: _getUserModelType(buildMethod)
           .getDisplayString(withNullability: true),
-      dependencies: actualDependencies ?? [],
+      dependencies: dependencies(riverpod),
     );
   }
 

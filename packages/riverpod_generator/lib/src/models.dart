@@ -1,6 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import 'templates/hash.dart';
 
@@ -60,7 +59,7 @@ class Data {
   final List<ParameterElement> parameters;
   final bool keepAlive;
   final String providerDoc;
-  final List<GeneralProviderDeclaration> dependencies;
+  final List<String> dependencies;
 
   String get hashFunctionName => '\$${rawName}Hash';
 
@@ -75,13 +74,9 @@ class Data {
     return '${rawName.lowerFirst}Provider';
   }
 
-  String get _declarations => '[${dependencies.map((e) => e.name).join(',')}]';
+  String get _declarations => '[${dependencies.join(',')}]';
 
   String get dependencyString => dependencies.isEmpty ? 'null' : _declarations;
-
-  String get dependencyVar =>
-      'final List<ProviderOrFamily>? $dependencyVarName = $dependencyString;';
-  String get dependencyVarName => '_${rawName.lowerFirst}Dependencies';
 
   /// foo -> FooProvider
   /// Foo -> FooProvider
