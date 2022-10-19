@@ -21,9 +21,30 @@ class Riverpod {
   /// Defaults to false.
   final bool keepAlive;
 
-  /// A list of the providers that this provider depends on. Use the function name
-  /// or class name of generated providers. Assumes providers start with a lowercase
-  /// identifier except for prefixed identifiers.
+  /// A list of the providers that this provider depends on.
+  ///
+  /// Use the function name or class name of generated providers.
+  ///
+  /// Example:
+  /// ```dart
+  /// final myProvider = Provider((ref) => 0);
+  ///
+  /// @riverpod
+  /// String myGenerated(MyGeneratedProviderRef ref) => '';
+  ///
+  /// @Riverpod(dependencies: [myGenerated])
+  /// class PublicClass extends _$PublicClass {
+  ///   @override
+  ///   String build() {
+  ///     return 'Hello world ${ref.watch(myGeneratedProvider)}';
+  ///   }
+  /// }
+  ///
+  /// @Riverpod(dependencies: ['myProvider', PublicClass])
+  /// String dependant(DependantProviderRef ref) {
+  ///   return '${ref.watch(publicClassProvider)} ${ref.watch(myProvider)}';
+  /// }
+  /// ```
   final List<Object>? dependencies;
 }
 
