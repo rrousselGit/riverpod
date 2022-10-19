@@ -21,6 +21,7 @@ final ${data.providerName} = ${data.providerTypeDisplayString}(
   ${create()},
   name: r'${data.providerName}',
   debugGetCreateSourceHash: ${data.hashFn},
+  dependencies: ${data.dependencyString},
 );''';
   }
 

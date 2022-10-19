@@ -63,7 +63,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
   ) async {
     final riverpod = riverpodTypeChecker.firstAnnotationOf(element)!;
     final ast = await buildStep.resolver.astNodeFor(element, resolve: true);
-    final visitor = ProviderRefUsageVisitor();
+    final visitor = GeneratedRefUsageVisitor();
     final actualDependencies = await ast?.accept(visitor)!.toList();
 
     return Data.function(
@@ -75,7 +75,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
       rawName: element.name,
       keepAlive: _getKeepAlive(riverpod),
       isScoped: element.isExternal,
-      // functional providers have a "ref" has paramter, so families have at
+      // functional providers have a "ref" has parameter, so families have at
       // least 2 parameters.
       isFamily: element.parameters.length > 1,
       isAsync: _isBuildAsync(element),
@@ -120,7 +120,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
       ),
     );
     final ast = await buildStep.resolver.astNodeFor(element);
-    final visitor = ProviderRefUsageVisitor();
+    final visitor = GeneratedRefUsageVisitor();
     final actualDependencies = await ast?.accept(visitor)!.toList();
 
     return Data.notifier(
@@ -169,37 +169,6 @@ class _SystemHash {
   }
 }
 ''';
-  }
-
-  @override
-  Iterable<Object> generateForData(
-    GlobalData globalData,
-    Data data,
-  ) sync* {
-    yield HashTemplate(data, globalData.hash);
-    yield ProviderTemplate(data);
-
-    if (data.isFamily) {
-      yield FamilyTemplate(data);
-    }
-    if (data.isNotifier) {
-      yield NotifierTemplate(data);
-    }
-  }
-}
-
-@immutable
-// ignore: invalid_use_of_internal_member
-class RiverpodRefGenerator extends RiverpodGenerator {
-  RiverpodRefGenerator(super.configs);
-
-  @override
-  Iterable<Object> generateForData(GlobalData globalData, Data data) sync* {
-    yield RefTemplate(data);
-  }
-
-  @override
-  Iterable<Object> generateForAll(GlobalData globalData) sync* {
     yield '''
 List<ProviderOrFamily> _allTransitiveDependencies(
   List<ProviderOrFamily> dependencies,
@@ -226,7 +195,19 @@ List<ProviderOrFamily> _allTransitiveDependencies(
   }
 
   @override
-  GlobalData parseGlobalData(LibraryElement library) {
-    return GlobalData();
+  Iterable<Object> generateForData(
+    GlobalData globalData,
+    Data data,
+  ) sync* {
+    yield RefTemplate(data);
+    yield HashTemplate(data, globalData.hash);
+    yield ProviderTemplate(data);
+
+    if (data.isFamily) {
+      yield FamilyTemplate(data);
+    }
+    if (data.isNotifier) {
+      yield NotifierTemplate(data);
+    }
   }
 }

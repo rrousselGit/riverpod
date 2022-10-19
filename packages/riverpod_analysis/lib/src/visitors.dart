@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:collection/collection.dart';
-import 'package:riverpod_analysis/riverpod_analysis.dart';
+import '../riverpod_analysis.dart';
 
 class RefLifecycleInvocation {
   RefLifecycleInvocation._(this.invocation);
@@ -12,6 +12,8 @@ class RefLifecycleInvocation {
 }
 
 mixin RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
+  bool get generatedRef => false;
+
   /// A Ref/WidgetRef method was invoked. It isn't guaranteed to be watch/listen/read
   Stream<T>? visitRefInvocation(RefLifecycleInvocation node);
 
@@ -21,11 +23,16 @@ mixin RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
     if (superStream != null) yield* superStream;
 
     final targetType = node.target?.staticType?.element2;
-    if (targetType == null) {
+    final t = node.target;
+
+    final gen = t is SimpleIdentifier && generatedRef && t.name == 'ref';
+
+    if (targetType == null && !gen) {
       return;
     }
 
-    if (refType.isAssignableFrom(targetType) ||
+    if (gen ||
+        refType.isAssignableFrom(targetType!) ||
         widgetRefType.isAssignableFrom(targetType) ||
         containerType.isAssignableFrom(targetType)) {
       final refInvocStream = visitRefInvocation(RefLifecycleInvocation._(node));
@@ -36,10 +43,53 @@ mixin RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
 
 /// Recursively search all the places where a Provider's `ref` is used
 // TODO handle Ref fn() => ref;
-class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
+class ProviderRefUsageVisitor
+    extends GeneralRefUsageVisitor<ProviderDeclaration>
     with RefLifecycleVisitor {
+  ProviderRefUsageVisitor();
+
   @override
-  Stream<ProviderDeclaration>? visitArgumentList(ArgumentList node) async* {
+  Stream<ProviderDeclaration>? visitRefInvocation(
+    RefLifecycleInvocation node,
+  ) async* {
+    // print(node);
+    if (refBinders.contains(node.invocation.methodName.name)) {
+      final providerExpression = node.invocation.argumentList.arguments.first;
+      final providerOrigin =
+          await GeneralProviderDeclaration.tryParse(providerExpression);
+
+      if (providerOrigin != null) yield providerOrigin;
+    }
+  }
+}
+
+class GeneratedRefUsageVisitor
+    extends GeneralRefUsageVisitor<GeneralProviderDeclaration> {
+  @override
+  bool get generatedRef => true;
+
+  @override
+  Stream<GeneralProviderDeclaration>? visitRefInvocation(
+    RefLifecycleInvocation node,
+  ) async* {
+    if (refBinders.contains(node.invocation.methodName.name)) {
+      final providerExpression = node.invocation.argumentList.arguments.first;
+      final providerOrigin = await GeneralProviderDeclaration.tryParseGenerated(
+        providerExpression,
+      );
+
+      if (providerOrigin != null) yield providerOrigin;
+    }
+  }
+}
+
+abstract class GeneralRefUsageVisitor<D extends GeneralProviderDeclaration>
+    extends AsyncRecursiveVisitor<D> with RefLifecycleVisitor {
+  @override
+  bool get generatedRef => true;
+
+  @override
+  Stream<D>? visitArgumentList(ArgumentList node) async* {
     final superStream = super.visitArgumentList(node);
     if (superStream != null) yield* superStream;
     final providerBody = node.arguments.firstOrNull;
@@ -93,9 +143,10 @@ class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
   }
 
   @override
-  Stream<ProviderDeclaration>? visitAssignmentExpression(
+  Stream<D>? visitAssignmentExpression(
     AssignmentExpression node,
   ) async* {
+    // print(node);
     final superStream = super.visitAssignmentExpression(node);
     if (superStream != null) yield* superStream;
     final rightType = node.rightHandSide.staticType?.element2;
@@ -123,19 +174,6 @@ class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
           }
         }
       }
-    }
-  }
-
-  @override
-  Stream<ProviderDeclaration>? visitRefInvocation(
-    RefLifecycleInvocation node,
-  ) async* {
-    if (refBinders.contains(node.invocation.methodName.name)) {
-      final providerExpression = node.invocation.argumentList.arguments.first;
-      final providerOrigin =
-          await ProviderDeclaration.tryParse(providerExpression);
-
-      if (providerOrigin != null) yield providerOrigin;
     }
   }
 }

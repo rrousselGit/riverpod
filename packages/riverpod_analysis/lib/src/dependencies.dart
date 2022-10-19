@@ -15,9 +15,8 @@ class Result<T> {
   String toString() => 'Result($value)';
 }
 
-@immutable
-class ProviderDeclaration {
-  ProviderDeclaration(this.node, this.element);
+abstract class GeneralProviderDeclaration {
+  String get name;
 
   /// Decode a provider expression to extract the provider listened.
   ///
@@ -35,10 +34,10 @@ class ProviderDeclaration {
     if (providerExpression is PropertyAccess) {
       // watch(family(0).modifier)
       final target = providerExpression.target;
-      if (target != null) return ProviderDeclaration.tryParse(target);
+      if (target != null) return GeneralProviderDeclaration.tryParse(target);
     } else if (providerExpression is PrefixedIdentifier) {
       // watch(provider.modifier)
-      return ProviderDeclaration.tryParse(providerExpression.prefix);
+      return GeneralProviderDeclaration.tryParse(providerExpression.prefix);
     } else if (providerExpression is Identifier) {
       // watch(variable)
       final Object? staticElement = providerExpression.staticElement;
@@ -57,15 +56,89 @@ class ProviderDeclaration {
       }
     } else if (providerExpression is FunctionExpressionInvocation) {
       // watch(family(id))
-      return ProviderDeclaration.tryParse(providerExpression.function);
+      return GeneralProviderDeclaration.tryParse(providerExpression.function);
     } else if (providerExpression is MethodInvocation) {
       // watch(variable.select(...)) or watch(family(id).select(...))
       final target = providerExpression.target;
-      if (target != null) return ProviderDeclaration.tryParse(target);
+      if (target != null) return GeneralProviderDeclaration.tryParse(target);
     }
 
     return null;
   }
+
+  /// Decode a provider expression to extract the provider listened.
+  ///
+  /// For example, for:
+  ///
+  /// ```dart
+  /// family(42).select(...)
+  /// ```
+  ///
+  /// this will return the variable definition of `family`.
+  ///
+  /// Returns `null` if failed to decode the expression.
+  // TODO fuse with riverpod_graph
+  static FutureOr<GeneralProviderDeclaration?> tryParseGenerated(
+    AstNode providerExpression,
+  ) {
+    if (providerExpression is PropertyAccess) {
+      // watch(family(0).modifier)
+      final target = providerExpression.target;
+      if (target != null) {
+        return GeneralProviderDeclaration.tryParseGenerated(target);
+      }
+    } else if (providerExpression is PrefixedIdentifier) {
+      // watch(provider.modifier)
+      return GeneralProviderDeclaration.tryParseGenerated(
+        providerExpression.prefix,
+      );
+    } else if (providerExpression is Identifier) {
+      // watch(variable)
+      return ProviderDeclarationGenerated(providerExpression.toSource());
+    } else if (providerExpression is FunctionExpressionInvocation) {
+      // watch(family(id))
+      return GeneralProviderDeclaration.tryParseGenerated(
+        providerExpression.function,
+      );
+    } else if (providerExpression is MethodInvocation) {
+      // watch(variable.select(...)) or watch(family(id).select(...))
+      final target = providerExpression.target;
+      if (target != null) {
+        return GeneralProviderDeclaration.tryParseGenerated(target);
+      }
+      return ProviderDeclarationGenerated(providerExpression.methodName.name);
+    }
+    return null;
+  }
+}
+
+@immutable
+class ProviderDeclarationGenerated extends GeneralProviderDeclaration {
+  ProviderDeclarationGenerated(this.name);
+
+  @override
+  final String name;
+
+  @override
+  String toString() {
+    return name;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ProviderDeclarationGenerated && name == other.name;
+  }
+
+  @override
+  int get hashCode => name.hashCode;
+}
+
+@immutable
+class ProviderDeclaration extends GeneralProviderDeclaration {
+  ProviderDeclaration(this.node, this.element);
+
+  final VariableDeclaration node;
+  final VariableElement element;
 
   /// Finds the "dependencies:" expression in a provider creation
   ///
@@ -109,7 +182,7 @@ class ProviderDeclaration {
     return Result(
       await Stream.fromIterable(value.elements)
           .asyncMap((node) async {
-            final origin = await ProviderDeclaration.tryParse(node);
+            final origin = await GeneralProviderDeclaration.tryParse(node);
             if (origin == null) return null;
             return ProviderDependency(origin, node);
           })
@@ -119,9 +192,6 @@ class ProviderDeclaration {
     );
   }
 
-  final VariableDeclaration node;
-  final VariableElement element;
-
   /// The [AstNode] that points to the `dependencies` parameter of a provider
   late final dependenciesExpression = _findDependenciesExpression(node);
 
@@ -130,6 +200,7 @@ class ProviderDeclaration {
 
   late final Future<bool> isScoped = dependencies.then((e) => e?.value != null);
 
+  @override
   String get name => node.name2.lexeme;
 
   @override

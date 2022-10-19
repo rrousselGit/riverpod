@@ -24,6 +24,8 @@ FutureOr<String> family(
   bool fourth = true,
   List<String>? fifth,
 }) {
+  ref.watch(privateClassProvider);
+  ref.watch(publicProvider);
   return '(first: $first, second: $second, third: $third, fourth: $fourth, fifth: $fifth)';
 }
 
@@ -55,7 +57,12 @@ class FamilyClass extends _$FamilyClass {
     bool fourth = true,
     List<String>? fifth,
   }) {
-    ref.watch(privateClassProvider);
+    ref.watch(publicProvider);
+
     return '(first: $first, second: $second, third: $third, fourth: $fourth, fifth: $fifth)';
+  }
+
+  void hi() {
+    ref.read(familyProvider(1, third: 2));
   }
 }

@@ -60,7 +60,7 @@ class Data {
   final List<ParameterElement> parameters;
   final bool keepAlive;
   final String providerDoc;
-  final List<ProviderDeclaration> dependencies;
+  final List<GeneralProviderDeclaration> dependencies;
 
   String get hashFunctionName => '\$${rawName}Hash';
 
@@ -78,6 +78,10 @@ class Data {
   String get _declarations => '[${dependencies.map((e) => e.name).join(',')}]';
 
   String get dependencyString => dependencies.isEmpty ? 'null' : _declarations;
+
+  String get dependencyVar =>
+      'final List<ProviderOrFamily>? $dependencyVarName = $dependencyString;';
+  String get dependencyVarName => '_${rawName.lowerFirst}Dependencies';
 
   /// foo -> FooProvider
   /// Foo -> FooProvider
