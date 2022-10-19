@@ -1,3 +1,11 @@
+## 2.0.2
+
+ - **FIX**: Fixed an assert error if a `family` depends on itself while specifying `dependencies`. (#1721).
+
+# 2.0.2
+
+Fixed an assert error if a `family` depends on itself while specifying `dependencies`.
+
 # 2.0.1
 
 Updated changelog (see 2.0.0)
