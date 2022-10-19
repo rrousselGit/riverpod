@@ -43,5 +43,5 @@ const consumerStateType = TypeChecker.fromName(
 );
 const refType = TypeChecker.fromName('Ref', packageName: 'riverpod');
 
-/// [Ref] methods that can make a provider depend on another provider.
+/// `Ref` methods that can make a provider depend on another provider.
 const refBinders = {'read', 'watch', 'listen'};
