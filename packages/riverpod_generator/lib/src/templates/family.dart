@@ -26,10 +26,11 @@ class ${data.familyName} extends Family<${data.exposedValueDisplayType}> {
   }
 
   @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+  List<ProviderOrFamily>? get allTransitiveDependencies => 
+    dependencies == null ? null : _allTransitiveDependencies(dependencies!);
 
   @override
-  List<ProviderOrFamily>? get dependencies => null;
+  List<ProviderOrFamily>? get dependencies => ${data.dependencyString};
 
   @override
   String? get name => r'${data.providerName}';

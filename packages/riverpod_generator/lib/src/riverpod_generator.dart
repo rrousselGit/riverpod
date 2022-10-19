@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+
+// ignore: implementation_imports
 import 'package:build/build.dart';
 import 'package:meta/meta.dart';
+import 'package:riverpod_analysis/riverpod_analysis.dart' hide TypeChecker;
 // ignore: implementation_imports, safe as we are the one controlling this file
 import 'package:riverpod_annotation/src/riverpod_annotation.dart';
 import 'package:source_gen/source_gen.dart';
@@ -59,6 +62,9 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     FunctionElement element,
   ) async {
     final riverpod = riverpodTypeChecker.firstAnnotationOf(element)!;
+    final ast = await buildStep.resolver.astNodeFor(element, resolve: true);
+    final visitor = ProviderRefUsageVisitor();
+    final actualDependencies = await ast?.accept(visitor)!.toList();
 
     return Data.function(
       createElement: element,
@@ -78,6 +84,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
       parameters: element.parameters.skip(1).toList(),
       valueDisplayType:
           _getUserModelType(element).getDisplayString(withNullability: true),
+      dependencies: actualDependencies ?? [],
     );
   }
 
@@ -112,6 +119,9 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
         element: element,
       ),
     );
+    final ast = await buildStep.resolver.astNodeFor(element);
+    final visitor = ProviderRefUsageVisitor();
+    final actualDependencies = await ast?.accept(visitor)!.toList();
 
     return Data.notifier(
       createAst: (await buildStep.resolver.astNodeFor(element, resolve: true))!,
@@ -129,6 +139,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
       parameters: buildMethod.parameters,
       valueDisplayType: _getUserModelType(buildMethod)
           .getDisplayString(withNullability: true),
+      dependencies: actualDependencies ?? [],
     );
   }
 
@@ -167,7 +178,6 @@ class _SystemHash {
   ) sync* {
     yield HashTemplate(data, globalData.hash);
     yield ProviderTemplate(data);
-    yield RefTemplate(data);
 
     if (data.isFamily) {
       yield FamilyTemplate(data);
@@ -175,5 +185,48 @@ class _SystemHash {
     if (data.isNotifier) {
       yield NotifierTemplate(data);
     }
+  }
+}
+
+@immutable
+// ignore: invalid_use_of_internal_member
+class RiverpodRefGenerator extends RiverpodGenerator {
+  RiverpodRefGenerator(super.configs);
+
+  @override
+  Iterable<Object> generateForData(GlobalData globalData, Data data) sync* {
+    yield RefTemplate(data);
+  }
+
+  @override
+  Iterable<Object> generateForAll(GlobalData globalData) sync* {
+    yield '''
+List<ProviderOrFamily> _allTransitiveDependencies(
+  List<ProviderOrFamily> dependencies,
+) {
+  final result = <ProviderOrFamily>{};
+
+  void visitDependency(ProviderOrFamily dep) {
+    if (result.add(dep) && dep.dependencies != null) {
+      dep.dependencies!.forEach(visitDependency);
+    }
+    final depFamily = dep.from;
+    if (depFamily != null &&
+        result.add(depFamily) &&
+        depFamily.dependencies != null) {
+      depFamily.dependencies!.forEach(visitDependency);
+    }
+  }
+
+  dependencies.forEach(visitDependency);
+
+  return List.unmodifiable(result);
+}
+''';
+  }
+
+  @override
+  GlobalData parseGlobalData(LibraryElement library) {
+    return GlobalData();
   }
 }

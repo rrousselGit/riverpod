@@ -16,6 +16,7 @@ dependencies:
   riverpod: ^2.0.0
   source_span: ^1.8.0
   yaml: ^3.1.1
+  riverpod_analysis: any
 
 dev_dependencies:
   hotreloader: ^3.0.5

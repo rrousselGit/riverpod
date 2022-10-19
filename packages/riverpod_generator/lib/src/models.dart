@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:riverpod_analysis/riverpod_analysis.dart';
 
 import 'templates/hash.dart';
 
@@ -29,6 +30,7 @@ class Data {
     required this.providerDoc,
     required this.createElement,
     required this.createAst,
+    required this.dependencies,
   }) : notifierName = null;
 
   Data.notifier({
@@ -43,6 +45,7 @@ class Data {
     required this.providerDoc,
     required this.createElement,
     required this.createAst,
+    required this.dependencies,
   }) : functionName = null;
 
   final ExecutableElement createElement;
@@ -57,6 +60,7 @@ class Data {
   final List<ParameterElement> parameters;
   final bool keepAlive;
   final String providerDoc;
+  final List<ProviderDeclaration> dependencies;
 
   String get hashFunctionName => '\$${rawName}Hash';
 
@@ -70,6 +74,10 @@ class Data {
   String get providerName {
     return '${rawName.lowerFirst}Provider';
   }
+
+  String get _declarations => '[${dependencies.map((e) => e.name).join(',')}]';
+
+  String get dependencyString => dependencies.isEmpty ? 'null' : _declarations;
 
   /// foo -> FooProvider
   /// Foo -> FooProvider

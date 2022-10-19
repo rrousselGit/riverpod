@@ -10,12 +10,29 @@ targets:
           include:
             - test/integration/*
             - test/integration/**/*
+      riverpod_generator:riverpod_ref_generator:
+        enabled: true
+        generate_for:
+          exclude:
+            - test
+            - example
+          include:
+            - test/integration/*
+            - test/integration/**/*
 
 builders:
   riverpod_generator:
     import: "package:riverpod_generator/builder.dart"
     builder_factories: ["riverpodBuilder"]
     build_extensions: {".dart": [".riverpod.g.part"]}
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]
+  riverpod_ref_generator:
+    import: "package:riverpod_generator/builder.dart"
+    runs_before: ["riverpod_generator:riverpod_generator"]
+    builder_factories: ["riverpodRefBuilder"]
+    build_extensions: {".dart": [".riverpod_ref.g.part"]}
     auto_apply: dependents
     build_to: cache
     applies_builders: ["source_gen|combining_builder"]

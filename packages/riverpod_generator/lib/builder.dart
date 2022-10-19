@@ -10,3 +10,10 @@ Builder riverpodBuilder(BuilderOptions options) {
     'riverpod',
   );
 }
+
+Builder riverpodRefBuilder(BuilderOptions options) {
+  return SharedPartBuilder(
+    [RiverpodRefGenerator(options.config)],
+    'riverpod_ref',
+  );
+}

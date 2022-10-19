@@ -55,6 +55,7 @@ class FamilyClass extends _$FamilyClass {
     bool fourth = true,
     List<String>? fifth,
   }) {
+    ref.watch(privateClassProvider);
     return '(first: $first, second: $second, third: $third, fourth: $fourth, fifth: $fifth)';
   }
 }

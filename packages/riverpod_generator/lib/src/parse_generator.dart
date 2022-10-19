@@ -60,6 +60,7 @@ abstract class ParserGenerator<GlobalData, Data, Annotation>
     BuildStep buildStep,
   ) async* {
     // implemented for source_gen_test – otherwise unused
+
     final globalData = parseGlobalData(element.library!);
     final data = parseElement(buildStep, globalData, element);
 

@@ -3,60 +3,11 @@ import 'dart:isolate';
 
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer_plugin/protocol/protocol_generated.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
-import 'package:meta/meta.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_lint/src/analyzer_utils.dart';
-import 'package:riverpod_lint/src/type_checker.dart';
-
-const _providerBase =
-    TypeChecker.fromName('ProviderBase', packageName: 'riverpod');
-const _alwaysAliveProviderListenable = TypeChecker.any([
-  TypeChecker.fromName(
-    'AlwaysAliveProviderListenable',
-    packageName: 'riverpod',
-  ),
-]);
-
-const _family = TypeChecker.fromName('Family', packageName: 'riverpod');
-const _future = TypeChecker.fromUrl(
-  'dart:async#Future',
-);
-const _stream = TypeChecker.fromUrl(
-  'dart:async#Stream',
-);
-const _container =
-    TypeChecker.fromName('ProviderContainer', packageName: 'riverpod');
-const _asyncNotifier =
-    TypeChecker.fromName('AsyncNotifierBase', packageName: 'riverpod');
-const _notifier = TypeChecker.fromName('NotifierBase', packageName: 'riverpod');
-const _codegenNotifier = TypeChecker.any([_asyncNotifier, _notifier]);
-const _providerOrFamily = TypeChecker.any([_providerBase, _family]);
-const _futureOrStream = TypeChecker.any([_future, _stream]);
-
-const _widget = TypeChecker.fromName('Widget', packageName: 'flutter');
-const _widgetState = TypeChecker.fromName('State', packageName: 'flutter');
-
-const _widgetRef =
-    TypeChecker.fromName('WidgetRef', packageName: 'flutter_riverpod');
-const _anyRef = TypeChecker.any([_widgetRef, _ref]);
-
-const _consumerWidget = TypeChecker.fromName(
-  'ConsumerWidget',
-  packageName: 'flutter_riverpod',
-);
-const _consumerState = TypeChecker.fromName(
-  'ConsumerState',
-  packageName: 'flutter_riverpod',
-);
-const _ref = TypeChecker.fromName('Ref', packageName: 'riverpod');
-
-/// [Ref] methods that can make a provider depend on another provider.
-const _refBinders = {'read', 'watch', 'listen'};
+import 'package:riverpod_analysis/riverpod_analysis.dart';
 
 void main(List<String> args, SendPort sendPort) {
   startPlugin(sendPort, RiverpodLint());
@@ -96,7 +47,7 @@ mixin _ProviderCreationVisitor<T> on AsyncRecursiveVisitor<T> {
 
     final createdType = node.staticType?.element2;
     if (createdType != null &&
-        _providerOrFamily.isAssignableFrom(createdType)) {
+        providerOrFamilyType.isAssignableFrom(createdType)) {
       final stream = visitProviderCreation(node);
       if (stream != null) yield* stream;
     }
@@ -121,14 +72,6 @@ mixin _ProviderCreationVisitor<T> on AsyncRecursiveVisitor<T> {
       if (stream != null) yield* stream;
     }
   }
-}
-
-class RefLifecycleInvocation {
-  RefLifecycleInvocation._(this.invocation);
-
-  final MethodInvocation invocation;
-
-  late final bool? isWithinBuild = invocation.inBuild;
 }
 
 enum AsyncContext {
@@ -177,28 +120,6 @@ mixin _AsyncContextVisitor<T> on AsyncRecursiveVisitor<T> {
     yield* super.visitForStatement(node) ?? const Stream.empty();
     if (node.awaitKeyword != null) {
       context = AsyncContext.callbackAfterAsync;
-    }
-  }
-}
-mixin _RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
-  /// A Ref/WidgetRef method was invoked. It isn't guaranteed to be watch/listen/read
-  Stream<T>? visitRefInvocation(RefLifecycleInvocation node);
-
-  @override
-  Stream<T>? visitMethodInvocation(MethodInvocation node) async* {
-    final superStream = super.visitMethodInvocation(node);
-    if (superStream != null) yield* superStream;
-
-    final targetType = node.target?.staticType?.element2;
-    if (targetType == null) {
-      return;
-    }
-
-    if (_ref.isAssignableFrom(targetType) ||
-        _widgetRef.isAssignableFrom(targetType) ||
-        _container.isAssignableFrom(targetType)) {
-      final refInvocStream = visitRefInvocation(RefLifecycleInvocation._(node));
-      if (refInvocStream != null) yield* refInvocStream;
     }
   }
 }
@@ -270,7 +191,7 @@ mixin _InvocationVisitor<T>
   ) async* {
     final constructor = node.constructorName.staticElement;
     if (constructor != null) {
-      if (_futureOrStream.isAssignableFrom(constructor.enclosingElement3)) {
+      if (futureOrStreamType.isAssignableFrom(constructor.enclosingElement3)) {
         if (!asyncBad) {
           return;
         } else {
@@ -300,114 +221,8 @@ mixin _InvocationVisitor<T>
   }
 }
 
-/// Recursively search all the places where a Provider's `ref` is used
-// TODO handle Ref fn() => ref;
-class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
-    with _RefLifecycleVisitor {
-  @override
-  Stream<ProviderDeclaration>? visitArgumentList(ArgumentList node) async* {
-    final superStream = super.visitArgumentList(node);
-    if (superStream != null) yield* superStream;
-    final providerBody = node.arguments.firstOrNull;
-    if (providerBody is ConstructorReference) {
-      final element = providerBody
-          .constructorName.staticElement?.declaration.enclosingElement3;
-      if (element != null) {
-        final ast = await findAstNodeForElement(element);
-
-        final createdObjectStream = ast?.accept(this);
-        if (createdObjectStream != null) yield* createdObjectStream;
-      }
-    }
-
-    argumentsLoop:
-    for (final arg in node.arguments) {
-      final type = arg.staticType?.element2;
-      if (type != null && _ref.isAssignableFrom(type)) {
-        // "ref" was passed as argument to a constructor/function.
-        // We now will search for the constructor/function invoked, to see how
-        // it uses ref.
-
-        for (final parent in node.parents) {
-          if (parent is MethodInvocation) {
-            final functionExpression = parent.function;
-            final functionElement = functionExpression is Identifier
-                ? functionExpression.staticElement
-                : null;
-
-            if (functionElement != null) {
-              final declaration = await findAstNodeForElement(functionElement);
-              final createdObjectStream = declaration?.accept(this);
-              if (createdObjectStream != null) yield* createdObjectStream;
-            }
-
-            continue argumentsLoop;
-          } else if (parent is InstanceCreationExpression) {
-            final createdObject = parent.staticType?.element2;
-
-            if (createdObject != null) {
-              final ast = await findAstNodeForElement(createdObject);
-              final createdObjectStream = ast?.accept(this);
-              if (createdObjectStream != null) yield* createdObjectStream;
-            }
-
-            continue argumentsLoop;
-          }
-        }
-      }
-    }
-  }
-
-  @override
-  Stream<ProviderDeclaration>? visitAssignmentExpression(
-    AssignmentExpression node,
-  ) async* {
-    final superStream = super.visitAssignmentExpression(node);
-    if (superStream != null) yield* superStream;
-    final rightType = node.rightHandSide.staticType?.element2;
-
-    if (rightType != null && _ref.isAssignableFrom(rightType)) {
-      // "ref" was assigned to a variable or field
-      // We now will see if it is a field, to see how the class the field is assigned to uses ref.
-      for (final parent in node.parents) {
-        if (parent is CascadeExpression) {
-          final classElement = parent.target.staticType?.element2;
-          if (classElement != null) {
-            final declaration = await findAstNodeForElement(classElement);
-            final objectStream = declaration?.accept(this);
-            if (objectStream != null) yield* objectStream;
-          }
-        } else if (parent is ExpressionStatement) {
-          final assignee = node.leftHandSide;
-          if (assignee is PrefixedIdentifier) {
-            final target = assignee.prefix.staticType?.element2;
-            if (target is InterfaceElement) {
-              final declaration = await findAstNodeForElement(target);
-              final objectStream = declaration?.accept(this);
-              if (objectStream != null) yield* objectStream;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  @override
-  Stream<ProviderDeclaration>? visitRefInvocation(
-    RefLifecycleInvocation node,
-  ) async* {
-    if (_refBinders.contains(node.invocation.methodName.name)) {
-      final providerExpression = node.invocation.argumentList.arguments.first;
-      final providerOrigin =
-          await ProviderDeclaration.tryParse(providerExpression);
-
-      if (providerOrigin != null) yield providerOrigin;
-    }
-  }
-}
-
 class RefAsyncUsageVisitor extends AsyncRecursiveVisitor<Lint>
-    with _AsyncContextVisitor, _InvocationVisitor, _RefLifecycleVisitor {
+    with _AsyncContextVisitor, _InvocationVisitor, RefLifecycleVisitor {
   RefAsyncUsageVisitor(this.unit);
   final ResolvedUnitResult unit;
 
@@ -455,43 +270,6 @@ class RefAsyncUsageVisitor extends AsyncRecursiveVisitor<Lint>
 
   @override
   bool get asyncBad => true;
-}
-
-extension on FormalParameterList {
-  bool get hasRefParameter {
-    return parameters.any((p) {
-      final type = p.declaredElement?.type;
-      return type != null && _anyRef.isAssignableFromType(type);
-    });
-  }
-}
-
-extension on InterfaceOrAugmentationElement {
-  bool get hasRefField =>
-      fields.any((f) => _anyRef.isAssignableFromType(f.type));
-}
-
-extension RefPassed on AstNode {
-  bool get refPassed {
-    final node = this;
-    if (node is MethodDeclaration) {
-      if (!(node.parameters?.hasRefParameter ?? false)) {
-        final enclosingElement = node.declaredElement2?.enclosingElement3;
-        if (enclosingElement is ExtensionElement &&
-            !_anyRef.isAssignableFromType(enclosingElement.extendedType)) {
-          return false; // If ref is not passed in, there is no way the ref could be used within the the called function
-        } else if (enclosingElement is InterfaceOrAugmentationElement &&
-            !enclosingElement.hasRefField) {
-          return false; // If ref is not passed in and not a field, there is no way the ref could be used within the the called function
-        }
-      }
-    } else if (node is FunctionDeclaration) {
-      if (!(node.functionExpression.parameters?.hasRefParameter ?? false)) {
-        return false; // If ref is not passed in, there is no way the ref could be used within the the called function
-      }
-    }
-    return true;
-  }
 }
 
 class ProviderSyncMutationVisitor extends AsyncRecursiveVisitor<Lint>
@@ -567,7 +345,7 @@ class _FindProviderCallbackVisitor
 }
 
 class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
-    with _RefLifecycleVisitor, _ProviderCreationVisitor {
+    with RefLifecycleVisitor, _ProviderCreationVisitor {
   RiverpodVisitor(this.unit);
 
   final ResolvedUnitResult unit;
@@ -591,7 +369,7 @@ class RiverpodVisitor extends AsyncRecursiveVisitor<Lint>
             node.invocation.argumentList.arguments.firstOrNull?.staticType;
 
         if (arg != null &&
-            !_alwaysAliveProviderListenable.isAssignableFromType(arg)) {
+            !alwaysAliveProviderListenableType.isAssignableFromType(arg)) {
           yield Lint(
             code: 'riverpod_avoid_read_on_autoDispose',
             message: 'Avoid using ref.read on an autoDispose provider',
@@ -635,7 +413,7 @@ Then dispose of the listener when you no longer need the autoDispose provider to
         node.parents.whereType<VariableDeclaration>().firstOrNull;
 
     final providerDeclaration = variableDeclaration?.declaredElement2 != null
-        ? ProviderDeclaration._(
+        ? ProviderDeclaration(
             variableDeclaration!,
             variableDeclaration.declaredElement2!,
           )
@@ -656,7 +434,7 @@ Then dispose of the listener when you no longer need the autoDispose provider to
     if (superStream != null) yield* superStream;
     final st = node.staticType?.element2;
     if (st != null &&
-        _ref.isAssignableFrom(st) &&
+        refType.isAssignableFrom(st) &&
         (node.parent is ExpressionFunctionBody ||
             node.parent is ReturnStatement)) {
       yield Lint(
@@ -682,11 +460,11 @@ Then dispose of the listener when you no longer need the autoDispose provider to
     for (final param in node.parameters.parameters) {
       final type = param.declaredElement?.type.element2;
 
-      if (type != null && _widgetRef.isAssignableFrom(type)) {
+      if (type != null && widgetRefType.isAssignableFrom(type)) {
         final klass = node.returnType.staticElement;
         if (klass != null &&
-            (_widget.isAssignableFrom(klass) ||
-                _widgetState.isAssignableFrom(klass))) {
+            (widgetType.isAssignableFrom(klass) ||
+                widgetStateType.isAssignableFrom(klass))) {
           yield Lint(
             code: 'riverpod_ref_escape_scope',
             message: 'Ref escaped its scope to another widget.',
@@ -804,7 +582,7 @@ Then dispose of the listener when you no longer need the autoDispose provider to
     for (final variable in node.variables.variables) {
       final type = variable.declaredElement2?.type;
 
-      if (type != null && _container.isAssignableFromType(type)) {
+      if (type != null && containerType.isAssignableFromType(type)) {
         yield Lint(
           code: 'riverpod_global_container',
           message: 'This container is global',
@@ -899,367 +677,5 @@ Then dispose of the listener when you no longer need the autoDispose provider to
         ),
       );
     }
-  }
-}
-
-extension on AstNode {
-  Iterable<AstNode> get parents sync* {
-    for (var node = parent; node != null; node = node.parent) {
-      yield node;
-    }
-  }
-}
-
-class Result<T> {
-  const Result(this.value);
-  final T value;
-
-  @override
-  String toString() => 'Result($value)';
-}
-
-@immutable
-class ProviderDeclaration {
-  ProviderDeclaration._(this.node, this.element);
-
-  /// Decode a provider expression to extract the provider listened.
-  ///
-  /// For example, for:
-  ///
-  /// ```dart
-  /// family(42).select(...)
-  /// ```
-  ///
-  /// this will return the variable definition of `family`.
-  ///
-  /// Returns `null` if failed to decode the expression.
-  // TODO fuse with riverpod_graph
-  static FutureOr<ProviderDeclaration?> tryParse(AstNode providerExpression) {
-    if (providerExpression is PropertyAccess) {
-      // watch(family(0).modifier)
-      final target = providerExpression.target;
-      if (target != null) return ProviderDeclaration.tryParse(target);
-    } else if (providerExpression is PrefixedIdentifier) {
-      // watch(provider.modifier)
-      return ProviderDeclaration.tryParse(providerExpression.prefix);
-    } else if (providerExpression is Identifier) {
-      // watch(variable)
-      final Object? staticElement = providerExpression.staticElement;
-      if (staticElement is PropertyAccessorElement) {
-        // TODO can this be removed?
-        return findAstNodeForElement(staticElement.declaration.variable)
-            .then((ast) {
-          if (ast is VariableDeclaration) {
-            return ProviderDeclaration._(
-              ast,
-              staticElement.declaration.variable,
-            );
-          }
-          return null;
-        });
-      }
-    } else if (providerExpression is FunctionExpressionInvocation) {
-      // watch(family(id))
-      return ProviderDeclaration.tryParse(providerExpression.function);
-    } else if (providerExpression is MethodInvocation) {
-      // watch(variable.select(...)) or watch(family(id).select(...))
-      final target = providerExpression.target;
-      if (target != null) return ProviderDeclaration.tryParse(target);
-    }
-
-    return null;
-  }
-
-  /// Finds the "dependencies:" expression in a provider creation
-  ///
-  /// Returns null if failed to parse.
-  /// Returns Result(null) if successfully passed but no dependencies was specified
-  static Result<NamedExpression?>? _findDependenciesExpression(
-    VariableDeclaration node,
-  ) {
-    final initializer = node.initializer;
-    ArgumentList argumentList;
-
-    if (initializer is InstanceCreationExpression) {
-      argumentList = initializer.argumentList;
-    } else if (initializer is FunctionExpressionInvocation) {
-      argumentList = initializer.argumentList;
-    } else {
-      return null;
-    }
-
-    return Result(
-      argumentList.arguments
-          .whereType<NamedExpression>()
-          .firstWhereOrNull((e) => e.name.label.name == 'dependencies'),
-    );
-  }
-
-  /// Decode the parameter "dependencies" from a provider
-  ///
-  /// Returns null if failed to decode.
-  /// Returns a [Result] with `value` as null if the parameter "dependencies" was
-  /// not specified.
-  static Future<Result<List<ProviderDependency>?>?> _findDependencies(
-    Result<NamedExpression?>? dependenciesExpressionResult,
-  ) async {
-    if (dependenciesExpressionResult == null) return null;
-    final namedExpression = dependenciesExpressionResult.value;
-    if (namedExpression == null) return const Result(null);
-    final value = namedExpression.expression;
-    if (value is! ListLiteral) return null;
-
-    return Result(
-      await Stream.fromIterable(value.elements)
-          .asyncMap((node) async {
-            final origin = await ProviderDeclaration.tryParse(node);
-            if (origin == null) return null;
-            return ProviderDependency(origin, node);
-          })
-          .where((e) => e != null)
-          .cast<ProviderDependency>()
-          .toList(),
-    );
-  }
-
-  final VariableDeclaration node;
-  final VariableElement element;
-
-  /// The [AstNode] that points to the `dependencies` parameter of a provider
-  late final dependenciesExpression = _findDependenciesExpression(node);
-
-  /// The decoded `dependencies` of a provider
-  late final dependencies = _findDependencies(dependenciesExpression);
-
-  late final Future<bool> isScoped = dependencies.then((e) => e?.value != null);
-
-  String get name => node.name2.lexeme;
-
-  @override
-  String toString() => node.toString();
-
-  @override
-  bool operator ==(Object other) {
-    return other is ProviderDeclaration && element == other.element;
-  }
-
-  @override
-  int get hashCode => element.hashCode;
-}
-
-@immutable
-class ProviderDependency {
-  const ProviderDependency(this.origin, this.node);
-
-  /// The provider that is depended on
-  final ProviderDeclaration origin;
-
-  /// The [AstNode] associated with this dependency
-  final AstNode node;
-}
-
-extension on FunctionExpressionInvocation {
-  /// Null if unknown
-  bool? get isProviderCreation {
-    final returnType = staticType?.element2;
-    if (returnType == null) return null;
-
-    final function = this.function;
-
-    return _providerOrFamily.isAssignableFrom(returnType) &&
-        function is PropertyAccess &&
-        (function.propertyName.name == 'autoDispose' ||
-            function.propertyName.name == 'family');
-  }
-}
-
-extension on MethodDeclaration {
-  bool? get isProviderCreation {
-    final isBuildMethod = name2.lexeme == 'build';
-    final interface = declaredElement2?.enclosingElement3;
-    if (interface == null) {
-      return null;
-    }
-    return isBuildMethod && _codegenNotifier.isAssignableFrom(interface);
-  }
-}
-
-extension on ClassDeclaration {
-  bool? get isProviderCreation {
-    final interface = declaredElement2;
-    if (interface == null) {
-      return null;
-    }
-    return _codegenNotifier.isAssignableFrom(interface);
-  }
-}
-
-extension on FunctionDeclaration {
-  bool? get isProviderCreation {
-    final annotation = metadata.firstWhereOrNull(
-      (a) => a.name.name == 'riverpod' || a.constructorName?.name == 'Riverpod',
-    );
-    return annotation == null ? null : true;
-  }
-}
-
-extension on AstNode {
-  bool? get isWidgetBuild {
-    final expr = this;
-    if (expr is FunctionExpression) {
-      return (this as FunctionExpression).isWidgetBuilder;
-    }
-    if (expr is MethodDeclaration) {
-      if (expr.name2.lexeme != 'build') {
-        return false;
-      }
-
-      final classElement = expr.parents
-          .whereType<ClassDeclaration>()
-          .firstOrNull
-          ?.declaredElement2;
-
-      if (classElement == null) return null;
-      return _consumerWidget.isAssignableFrom(classElement) ||
-          _consumerState.isAssignableFrom(classElement);
-    }
-    return null;
-  }
-
-  bool? isBuild({bool hasFoundFunctionExpression = false}) {
-    final node = this;
-
-    if (node is FunctionExpression) {
-      if (hasFoundFunctionExpression) {
-        return false;
-      }
-      if (node.isWidgetBuilder ?? false) {
-        return true;
-      }
-
-      return parent?.isBuild(hasFoundFunctionExpression: true);
-    }
-    if (node is InstanceCreationExpression) {
-      return node.isProviderCreation;
-    }
-    if (node is FunctionExpressionInvocation) {
-      return node.isProviderCreation;
-    }
-    if (node is FunctionDeclaration) {
-      return node.isProviderCreation;
-    }
-    if (node is MethodDeclaration) {
-      if (node.isProviderCreation ?? false) {
-        return true;
-      }
-      if (hasFoundFunctionExpression || node.name2.lexeme != 'build') {
-        return false;
-      }
-
-      final classElement = node.parents
-          .whereType<ClassDeclaration>()
-          .firstOrNull
-          ?.declaredElement2;
-
-      if (classElement == null) return null;
-      return _consumerWidget.isAssignableFrom(classElement) ||
-          _consumerState.isAssignableFrom(classElement);
-    }
-    return parent?.isBuild(
-      hasFoundFunctionExpression: hasFoundFunctionExpression,
-    );
-  }
-
-  bool? get inBuild {
-    final inBuild = parent?.isBuild();
-    if (inBuild ?? false) {
-      return inBuild;
-    }
-    return inBuild;
-  }
-
-  bool? get isInitState {
-    final expr = this;
-    if (expr is MethodDeclaration) {
-      if (expr.name2.lexeme != 'initState') {
-        return false;
-      }
-
-      final classElement = expr.parents
-          .whereType<ClassDeclaration>()
-          .firstOrNull
-          ?.declaredElement2;
-
-      if (classElement == null) return null;
-      return _consumerState.isAssignableFrom(classElement);
-    }
-    return null;
-  }
-}
-
-extension on FunctionExpression {
-  /// Null if unknown
-  bool? get isWidgetBuilder {
-    final returnType = declaredElement?.returnType.element2;
-    if (returnType == null) return null;
-
-    return _widget.isAssignableFrom(returnType);
-  }
-}
-
-extension on InstanceCreationExpression {
-  /// Null if unknown
-  bool? get isProviderCreation {
-    final type = staticType?.element2;
-    if (type == null) return null;
-
-    return _providerOrFamily.isAssignableFrom(type);
-  }
-}
-
-extension on Expression {
-  // ref.watch(a.notifier).state = '';
-  bool? get isMutation {
-    final expr = this;
-    if (expr is AssignmentExpression) {
-      final left = expr.leftHandSide;
-      if (left is! PropertyAccess || left.propertyName.name != 'state') {
-        return null;
-      }
-      final targ = left.target;
-      if (targ is! MethodInvocation) {
-        return null;
-      }
-      final methodTarget = targ.methodName.staticElement?.enclosingElement3;
-      if (methodTarget == null || methodTarget is! InterfaceElement) {
-        return null;
-      }
-      if (_ref.isAssignableFromType(methodTarget.thisType) ||
-          _widgetRef.isAssignableFromType(methodTarget.thisType)) {
-        // TODO: Synchronous listen
-        if (targ.methodName.name == 'watch' || targ.methodName.name == 'read') {
-          return true;
-        }
-      }
-      return false;
-    } else if (expr is MethodInvocation) {
-      if (expr.methodName.name == 'refresh' ||
-          expr.methodName.name == 'invalidate' ||
-          expr.methodName.name == 'invalidateSelf') {
-        final methodTarget = expr.methodName.staticElement?.enclosingElement3;
-        if (methodTarget == null || methodTarget is! InterfaceElement) {
-          return null;
-        }
-        if (_ref.isAssignableFromType(methodTarget.thisType) ||
-            _widgetRef.isAssignableFromType(methodTarget.thisType)) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-    return null;
   }
 }

@@ -2,3 +2,5 @@
 dependency_overrides:
   riverpod:
     path: ../riverpod
+  riverpod_analysis:
+    path: ../riverpod_analysis
