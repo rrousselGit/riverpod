@@ -1,4 +1,3 @@
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'async.g.dart';
@@ -15,7 +14,7 @@ Future<String> _private(_PrivateRef ref) async {
   return 'Hello world';
 }
 
-@Riverpod(dependencies: [PublicClass, public])
+@riverpod
 FutureOr<String> family(
   FamilyRef ref,
   int first, {
@@ -47,9 +46,7 @@ class _PrivateClass extends _$PrivateClass {
   }
 }
 
-final stateProvider = StateProvider((ref) => '');
-
-@Riverpod(dependencies: [public, family, 'stateProvider'])
+@riverpod
 class FamilyClass extends _$FamilyClass {
   @override
   FutureOr<String> build(
@@ -59,12 +56,6 @@ class FamilyClass extends _$FamilyClass {
     bool fourth = true,
     List<String>? fifth,
   }) {
-    ref.watch(publicProvider);
-
     return '(first: $first, second: $second, third: $third, fourth: $fourth, fifth: $fifth)';
-  }
-
-  void hi() {
-    ref.read(familyProvider(1, third: 2));
   }
 }

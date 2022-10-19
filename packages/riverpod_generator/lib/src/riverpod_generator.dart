@@ -103,12 +103,16 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     return returnType.typeArguments.single;
   }
 
-  List<String> dependencies(DartObject riverpodAnnotation) {
+  DependencyInfo dependencies(DartObject riverpodAnnotation) {
+    final deps = riverpodAnnotation.getField('dependencies');
+    if (deps == null) {
+      return DependencyInfo(dependencies: null);
+    }
     final dependencies = <String>[];
-    for (final entry
-        in riverpodAnnotation.getField('dependencies')?.toListValue() ??
-            <DartObject>[]) {
+    var str = false;
+    for (final entry in deps.toListValue() ?? <DartObject>[]) {
       if (entry.type?.isDartCoreString ?? false) {
+        str = true;
         dependencies.add(entry.toStringValue()!);
       } else if (entry.type != null && entry.toFunctionValue() != null) {
         dependencies.add('${entry.toFunctionValue()!.displayName}Provider');
@@ -119,7 +123,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
       }
     }
 
-    return dependencies;
+    return DependencyInfo(dependencies: dependencies, hasStringDependency: str);
   }
 
   FutureOr<Data> _parseClassElement(

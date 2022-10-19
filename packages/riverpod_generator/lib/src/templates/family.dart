@@ -25,12 +25,15 @@ class ${data.familyName} extends Family<${data.exposedValueDisplayType}> {
     return call(${data.paramInvocationFromProvider});
   }
 
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => 
-    dependencies == null ? null : _allTransitiveDependencies(dependencies!);
+  static final _recDeps = ${data.transitiveDependencies};
 
   @override
-  List<ProviderOrFamily>? get dependencies => ${data.dependencyString};
+  List<ProviderOrFamily>? get allTransitiveDependencies => _recDeps;
+
+  static final _deps = ${data.dependencyString};
+
+  @override
+  List<ProviderOrFamily>? get dependencies => _deps;
 
   @override
   String? get name => r'${data.providerName}';

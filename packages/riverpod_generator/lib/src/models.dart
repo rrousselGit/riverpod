@@ -16,6 +16,16 @@ enum ProviderType {
   asyncNotifier,
 }
 
+class DependencyInfo {
+  DependencyInfo({
+    required this.dependencies,
+    this.hasStringDependency = false,
+  });
+
+  final List<String>? dependencies;
+  final bool hasStringDependency;
+}
+
 class Data {
   Data.function({
     required this.rawName,
@@ -59,7 +69,7 @@ class Data {
   final List<ParameterElement> parameters;
   final bool keepAlive;
   final String providerDoc;
-  final List<String> dependencies;
+  final DependencyInfo dependencies;
 
   String get hashFunctionName => '\$${rawName}Hash';
 
@@ -74,9 +84,14 @@ class Data {
     return '${rawName.lowerFirst}Provider';
   }
 
-  String get _declarations => '[${dependencies.join(',')}]';
+  String get dependencyList => dependencies.dependencies!.join(',');
 
-  String get dependencyString => dependencies.isEmpty ? 'null' : _declarations;
+  String get dependencyString => dependencies.dependencies == null
+      ? 'null'
+      : '<ProviderOrFamily>[$dependencyList]';
+
+  String transitiveDependencies =
+      'dependencies == null ? null : _allTransitiveDependencies(dependencies!)';
 
   /// foo -> FooProvider
   /// Foo -> FooProvider
