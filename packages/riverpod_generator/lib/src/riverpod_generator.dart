@@ -22,7 +22,14 @@ import 'templates/ref.dart';
 const riverpodTypeChecker = TypeChecker.fromRuntime(Riverpod);
 
 extension on String {
-  String get camelCase => '${this[0].toLowerCase()}${substring(1)}';
+  String get camelCase {
+    if (startsWith('_')) {
+      final numUnderscores = RegExp('^_*').firstMatch(this)!.group(0)!.length;
+      final underscore = '_' * numUnderscores;
+      return underscore + substring(numUnderscores).camelCase;
+    }
+    return '${this[0].toLowerCase()}${substring(1)}';
+  }
 }
 
 @immutable

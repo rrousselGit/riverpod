@@ -25,7 +25,7 @@ class ${data.familyName} extends Family<${data.exposedValueDisplayType}> {
     return call(${data.paramInvocationFromProvider});
   }
 
-  static final _recDeps = ${data.transitiveDependencies};
+  late final _recDeps = ${data.transitiveDependencies};
 
   @override
   List<ProviderOrFamily>? get allTransitiveDependencies => _recDeps;

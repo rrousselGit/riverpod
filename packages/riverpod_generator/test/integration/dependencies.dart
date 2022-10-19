@@ -25,7 +25,7 @@ Future<String> _private(_PrivateRef ref) async {
   return 'Hello world';
 }
 
-@Riverpod(dependencies: [public])
+@Riverpod(dependencies: [_private])
 class PublicClass extends _$PublicClass {
   @override
   String build() {
@@ -33,7 +33,9 @@ class PublicClass extends _$PublicClass {
   }
 }
 
-@Riverpod(dependencies: [public])
+final privateClassProvider = _privateClassProvider;
+
+@Riverpod(dependencies: [_private])
 class _PrivateClass extends _$PrivateClass {
   @override
   String build() {
@@ -41,7 +43,7 @@ class _PrivateClass extends _$PrivateClass {
   }
 }
 
-@Riverpod(dependencies: [public])
+@Riverpod(dependencies: [_private])
 class FamilyClass extends _$FamilyClass {
   @override
   String build(String value) {
@@ -49,7 +51,7 @@ class FamilyClass extends _$FamilyClass {
   }
 }
 
-@Riverpod(dependencies: [public, 'stateProvider'])
+@Riverpod(dependencies: [_private, 'stateProvider'])
 class FamilyClassString extends _$FamilyClassString {
   @override
   String build(String value) {
