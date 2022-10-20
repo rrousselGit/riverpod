@@ -438,10 +438,27 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     }
   }
 
+  @override
+  void notifyListeners() {
+    final currentResult = getState();
+    // If `notifyListeners` is used during `build`, the result will be null.
+    // Throwing would be unnecesserily inconvenient, so we simply skip it.
+    if (currentResult == null) return;
+
+    if (_didBuild) {
+      _notifyListeners(
+        currentResult,
+        currentResult,
+        checkUpdateShouldNotify: false,
+      );
+    }
+  }
+
   void _notifyListeners(
     Result<State> newState,
-    Result<State>? previousStateResult,
-  ) {
+    Result<State>? previousStateResult, {
+    bool checkUpdateShouldNotify = true,
+  }) {
     assert(
       () {
         if (_debugSkipNotifyListenersAsserts) return true;
@@ -492,7 +509,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       },
     );
 
-    if (previousStateResult != null &&
+    if (checkUpdateShouldNotify &&
+        previousStateResult != null &&
         previousStateResult.hasState &&
         newState.hasState &&
         !updateShouldNotify(

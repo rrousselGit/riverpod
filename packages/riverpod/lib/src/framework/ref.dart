@@ -39,6 +39,23 @@ abstract class Ref<State extends Object?> {
   /// {@endtemplate}
   void invalidate(ProviderOrFamily provider);
 
+  /// Notify depedents that this provider has changed.
+  ///
+  /// This is typically used for mutable state, such as to do:
+  ///
+  /// ```dart
+  /// class TodoList extends Notifier<List<Todo>> {
+  ///   @override
+  ///   List<Todo>> build() => [];
+  ///
+  ///   void addTodo(Todo todo) {
+  ///     state.add(todo);
+  ///     ref.notifyListeners();
+  ///   }
+  /// }
+  /// ```
+  void notifyListeners();
+
   /// Listens to changes on the value exposed by this provider.
   ///
   /// The listener will be called immediately after the provider completes building.
