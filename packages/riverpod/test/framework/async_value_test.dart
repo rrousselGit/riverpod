@@ -892,6 +892,12 @@ void main() {
           .toString(),
       'AsyncError<int>(value: 42, error: 42, stackTrace: )',
     );
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(42), seamless: false)
+          .toString(),
+      'AsyncLoading<int>(value: 42)',
+    );
   });
 
   test('hasValue', () {

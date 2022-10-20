@@ -236,7 +236,7 @@ abstract class AsyncValue<T> {
   @override
   String toString() {
     final content = [
-      if (isLoading) 'isLoading: $isLoading',
+      if (isLoading && this is! AsyncLoading) 'isLoading: $isLoading',
       if (hasValue) 'value: $value',
       if (hasError) ...[
         'error: $error',
@@ -409,11 +409,6 @@ class AsyncLoading<T> extends AsyncValue<T> {
         loading: (e) => e,
       );
     }
-  }
-
-  @override
-  String toString() {
-    return 'AsyncLoading<$T>()';
   }
 }
 
