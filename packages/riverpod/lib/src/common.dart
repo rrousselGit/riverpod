@@ -191,12 +191,31 @@ abstract class AsyncValue<T> {
 
   /// Clone an [AsyncValue], merging it with [previous].
   ///
-  /// This allow an [AsyncData] to also contain an [error], or similarly
-  /// allows [AsyncError] to contain a [value].
+  /// When doing so, the resulting [AsyncValue] can contain the information
+  /// about multiple state at once.
+  /// For example, this allows an [AsyncError] to contain a [value], or even
+  /// [AsyncLoading] to contain both a [value] and an [error].
   ///
-  /// [AsyncLoading] will become an [AsyncData]/[AsyncError] with [isLoading]
-  /// to true if [previous] is an [AsyncData] or [AsyncError].
-  AsyncValue<T> copyWithPrevious(AsyncValue<T> previous);
+  /// Specifying [seamless] (true by default) controls whether the clone should skip
+  /// "loading" cases or not:
+  ///
+  /// ```dart
+  /// print(
+  ///   AsyncLoading<int>()
+  ///     .copyWithPrevious(AsyncData(42))
+  /// ); // AsyncData<int>(isLoading: true, value: 42)
+  ///
+  /// print(
+  ///   AsyncLoading<int>()
+  ///     .copyWithPrevious(AsyncData(42), seamless: false)
+  /// ); // AsyncLoading<int>(isLoading: true, value: 42)
+  /// ```
+  ///
+  /// Setting it to force is useful to force the UI to show a spinner.
+  AsyncValue<T> copyWithPrevious(
+    AsyncValue<T> previous, {
+    bool seamless = true,
+  });
 
   /// The opposite of [copyWithPrevious], reverting to the raw [AsyncValue]
   /// with no information on the previous state.
@@ -210,7 +229,7 @@ abstract class AsyncValue<T> {
         if (e.isLoading) return AsyncLoading<T>();
         return AsyncError(e.error, e.stackTrace);
       },
-      loading: (l) => l,
+      loading: (l) => AsyncLoading<T>(),
     );
   }
 
@@ -298,7 +317,10 @@ class AsyncData<T> extends AsyncValue<T> {
   }
 
   @override
-  AsyncData<T> copyWithPrevious(AsyncValue<T> previous) {
+  AsyncData<T> copyWithPrevious(
+    AsyncValue<T> previous, {
+    bool seamless = true,
+  }) {
     return this;
   }
 }
@@ -310,22 +332,34 @@ class AsyncLoading<T> extends AsyncValue<T> {
   /// Creates an [AsyncValue] in loading state.
   ///
   /// Prefer always using this constructor with the `const` keyword.
-  const AsyncLoading() : super._();
+  const AsyncLoading()
+      : hasValue = false,
+        value = null,
+        error = null,
+        stackTrace = null,
+        super._();
+
+  const AsyncLoading._({
+    required this.hasValue,
+    required this.value,
+    required this.error,
+    required this.stackTrace,
+  }) : super._();
 
   @override
   bool get isLoading => true;
 
   @override
-  bool get hasValue => false;
+  final bool hasValue;
 
   @override
-  T? get value => null;
+  final T? value;
 
   @override
-  Object? get error => null;
+  final Object? error;
 
   @override
-  StackTrace? get stackTrace => null;
+  final StackTrace? stackTrace;
 
   @override
   R map<R>({
@@ -337,23 +371,44 @@ class AsyncLoading<T> extends AsyncValue<T> {
   }
 
   @override
-  AsyncValue<T> copyWithPrevious(AsyncValue<T> previous) {
-    return previous.map(
-      data: (d) => AsyncData._(
-        d.value,
-        isLoading: true,
-        error: d.error,
-        stackTrace: d.stackTrace,
-      ),
-      error: (e) => AsyncError._(
-        e.error,
-        isLoading: true,
-        value: e.valueOrNull,
-        stackTrace: e.stackTrace,
-        hasValue: e.hasValue,
-      ),
-      loading: (_) => this,
-    );
+  AsyncValue<T> copyWithPrevious(
+    AsyncValue<T> previous, {
+    bool seamless = true,
+  }) {
+    if (seamless) {
+      return previous.map(
+        data: (d) => AsyncData._(
+          d.value,
+          isLoading: true,
+          error: d.error,
+          stackTrace: d.stackTrace,
+        ),
+        error: (e) => AsyncError._(
+          e.error,
+          isLoading: true,
+          value: e.valueOrNull,
+          stackTrace: e.stackTrace,
+          hasValue: e.hasValue,
+        ),
+        loading: (_) => this,
+      );
+    } else {
+      return previous.map(
+        data: (d) => AsyncLoading._(
+          hasValue: true,
+          value: d.valueOrNull,
+          error: d.error,
+          stackTrace: d.stackTrace,
+        ),
+        error: (e) => AsyncLoading._(
+          hasValue: e.hasValue,
+          value: e.valueOrNull,
+          error: e.error,
+          stackTrace: e.stackTrace,
+        ),
+        loading: (e) => e,
+      );
+    }
   }
 
   @override
@@ -419,7 +474,10 @@ class AsyncError<T> extends AsyncValue<T> {
   }
 
   @override
-  AsyncError<T> copyWithPrevious(AsyncValue<T> previous) {
+  AsyncError<T> copyWithPrevious(
+    AsyncValue<T> previous, {
+    bool seamless = true,
+  }) {
     return AsyncError._(
       error,
       stackTrace: stackTrace,
