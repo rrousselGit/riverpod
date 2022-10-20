@@ -43,7 +43,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
       return _parseClassElement(buildStep, globalData, element);
     } else {
       throw InvalidGenerationSourceError(
-        '@provider can only be applied on functions and classes. Failing element: ${element.name}',
+        '@riverpod can only be applied on functions and classes. Failing element: ${element.name}',
         element: element,
       );
     }

@@ -9,7 +9,7 @@ import 'utils.dart';
 void main() {
   // TODO test that the generated providers contain the docs from the annotated element
 
-  test('Creates a Provider<T> if @provider is used on a synchronous function',
+  test('Creates a Provider<T> if @riverpod is used on a synchronous function',
       () {
     final container = createContainer();
 
@@ -28,7 +28,7 @@ void main() {
   });
 
   test(
-      'Creates a Provider.family<T> if @provider is used on a synchronous function with parameters',
+      'Creates a Provider.family<T> if @riverpod is used on a synchronous function with parameters',
       () {
     final container = createContainer();
 
