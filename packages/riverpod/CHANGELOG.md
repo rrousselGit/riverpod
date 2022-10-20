@@ -1,6 +1,11 @@
+## [Unreleased minor]
+
+- Added `Ref.notifyListeners()` to forcibly notify dependents.
+  This can be useful for mutable state.
+
 ## 2.0.2
 
- - **FIX**: Fixed an assert error if a `family` depends on itself while specifying `dependencies`. (#1721).
+- **FIX**: Fixed an assert error if a `family` depends on itself while specifying `dependencies`. (#1721).
 
 ## 2.0.2
 
