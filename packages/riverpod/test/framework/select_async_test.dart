@@ -200,7 +200,7 @@ void main() {
     });
 
     expect(buildCount, 0);
-    expect(container.read(b), const AsyncLoading<int>());
+    expect(container.read(a), const AsyncLoading<int>());
     expect(container.read(b), const AsyncLoading<int>());
     expect(await container.read(b.future), 0);
     expect(buildCount, 1);

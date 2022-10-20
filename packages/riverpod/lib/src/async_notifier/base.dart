@@ -151,7 +151,11 @@ mixin FutureHandlerProviderElementMixin<T>
       data: _dataTransition,
     );
 
-    setState(newState);
+    if (newState.isLoading) {
+      setState(newState.copyWithPrevious(requireState, seamless: false));
+    } else {
+      setState(newState);
+    }
   }
 
   void _dataTransition(T value) {

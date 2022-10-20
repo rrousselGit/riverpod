@@ -13,12 +13,15 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     final previous = getState()?.requireState;
 
-    if (previous == null || shouldClearPreviousState) {
+    if (previous == null) {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       setState(AsyncLoading<T>());
     } else {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      setState(AsyncLoading<T>().copyWithPrevious(previous));
+      setState(
+        AsyncLoading<T>()
+            .copyWithPrevious(previous, seamless: !shouldClearPreviousState),
+      );
     }
   }
 }

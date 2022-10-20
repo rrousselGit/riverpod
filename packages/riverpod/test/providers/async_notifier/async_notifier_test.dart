@@ -14,9 +14,9 @@ import 'factory.dart';
 void main() {
   for (final factory in matrix()) {
     group(factory.label, () {
-      group('supports refresh transition', () {
+      group('supports AsyncValue transition', () {
         test(
-            'sets isRefreshing to true if triggered by a ref.invalidate/ref.refresh',
+            'performs seamless copyWithPrevious if triggered by ref.invalidate/ref.refresh',
             () async {
           final container = createContainer();
           var count = 0;
@@ -47,7 +47,28 @@ void main() {
           expect(container.read(provider), const AsyncData(2));
         });
 
-        test('does not set isRefreshing if triggered by a dependency change',
+        test(
+            'performs seamless:false copyWithPrevious on `state = AsyncLoading()`',
+            () async {
+          final container = createContainer();
+          final provider = factory.simpleTestProvider((ref) => Future.value(0));
+
+          final sub = container.listen(provider.notifier, (previous, next) {});
+
+          await expectLater(container.read(provider.future), completion(0));
+          expect(container.read(provider), const AsyncData(0));
+
+          sub.read().state = const AsyncLoading<int>();
+
+          expect(
+            sub.read().state,
+            const AsyncLoading<int>()
+                .copyWithPrevious(const AsyncData(0), seamless: false),
+          );
+        });
+
+        test(
+            'performs seamless:false copyWithPrevious if triggered by a dependency change',
             () async {
           final container = createContainer();
           final dep = StateProvider((ref) => 0);
@@ -61,14 +82,18 @@ void main() {
           expect(container.read(provider), const AsyncData(0));
 
           container.read(dep.notifier).state++;
-          expect(container.read(provider), const AsyncLoading<int>());
+          expect(
+            container.read(provider),
+            const AsyncLoading<int>()
+                .copyWithPrevious(const AsyncData(0), seamless: false),
+          );
 
           await expectLater(container.read(provider.future), completion(1));
           expect(container.read(provider), const AsyncData(1));
         });
 
         test(
-            'does not set isRefreshing if both triggered by a dependency change and ref.refresh',
+            'performs seamless:false copyWithPrevious if both triggered by a dependency change and ref.refresh',
             () async {
           final container = createContainer();
           final dep = StateProvider((ref) => 0);
@@ -82,7 +107,11 @@ void main() {
           expect(container.read(provider), const AsyncData(0));
 
           container.read(dep.notifier).state++;
-          expect(container.refresh(provider), const AsyncLoading<int>());
+          expect(
+            container.refresh(provider),
+            const AsyncLoading<int>()
+                .copyWithPrevious(const AsyncData(0), seamless: false),
+          );
 
           await expectLater(container.read(provider.future), completion(1));
           expect(container.read(provider), const AsyncData(1));
@@ -354,7 +383,11 @@ void main() {
 
           sub.read().state = newLoading;
 
-          expect(sub.read().state, same(newLoading));
+          expect(
+            sub.read().state,
+            const AsyncLoading<int>()
+                .copyWithPrevious(newState, seamless: false),
+          );
 
           sub.read().state = newError;
 
@@ -384,7 +417,11 @@ void main() {
 
           container.read(dep.notifier).state++;
 
-          expect(notifier.state, const AsyncLoading<int>());
+          expect(
+            notifier.state,
+            const AsyncLoading<int>()
+                .copyWithPrevious(const AsyncData(0), seamless: false),
+          );
           expect(await container.read(provider.future), 1);
           expect(notifier.state, const AsyncData(1));
           verify(listener()).called(1);
