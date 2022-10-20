@@ -17,13 +17,30 @@ abstract class Ref<State extends Object?> {
   /// {@template riverpod.refresh}
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
-  /// If you do not care about the new value, prefer [invalidate] instead,
-  /// which makes the invalidation logic more resilient by avoiding
-  /// multiple refreshes at once.
+  /// Writing:
+  ///
+  /// ```dart
+  /// final newValue = ref.refresh(provider);
+  /// ```
+  ///
+  /// is strictly identical to doing:
+  ///
+  /// ```dart
+  /// ref.invalidate(provider);
+  /// final newValue = ref.read(provider);
+  /// ```
+  ///
+  /// If you do not care about the return value of [refresh], use [invalidate] instead.
+  /// Doing so has the benefit of:
+  /// - making the invalidation logic more resilient by avoiding multiple
+  ///   refreshes at once.
+  /// - possibly avoids recomputing a provider if it isn't
+  ///   needed immediately.
   ///
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
   /// {@endtemplate}
+  @useResult
   T refresh<T>(Refreshable<T> provider);
 
   /// {@template riverpod.invalidate}

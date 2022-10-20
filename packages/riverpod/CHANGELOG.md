@@ -2,6 +2,7 @@
 
 - Added `Ref.notifyListeners()` to forcibly notify dependents.
   This can be useful for mutable state.
+- Added `@useResult` to `Ref.refresh`/`WidgetRef.refresh`
 
 ## 2.0.2
 
