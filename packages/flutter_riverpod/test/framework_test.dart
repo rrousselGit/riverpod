@@ -328,7 +328,7 @@ void main() {
 
     future = Future<int>.value(42);
 
-    ref.refresh(provider);
+    ref.invalidate(provider);
     await expectLater(ref.read(provider.future), completion(42));
   });
 
