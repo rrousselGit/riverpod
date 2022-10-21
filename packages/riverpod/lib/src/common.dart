@@ -13,12 +13,15 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     final previous = getState()?.requireState;
 
-    if (previous == null || shouldClearPreviousState) {
+    if (previous == null) {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       setState(AsyncLoading<T>());
     } else {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      setState(AsyncLoading<T>().copyWithPrevious(previous));
+      setState(
+        AsyncLoading<T>()
+            .copyWithPrevious(previous, seamless: !shouldClearPreviousState),
+      );
     }
   }
 }
@@ -89,9 +92,16 @@ abstract class AsyncValue<T> {
   const factory AsyncValue.loading() = AsyncLoading<T>;
   // coverage:ignore-end
 
+  /// {@template asyncvalue.error_ctor}
   /// Creates an [AsyncValue] in the error state.
   ///
-  /// The parameter [error] cannot be `null`.
+  /// _I don't have a [StackTrace], what can I do?_
+  /// You can still construct an [AsyncError] by passing [StackTrace.current]:
+  ///
+  /// ```dart
+  /// AsyncValue.error(error, StackTrace.current);
+  /// ```
+  /// {@endtemplate}
   // coverage:ignore-start
   const factory AsyncValue.error(Object error, StackTrace stackTrace) =
       AsyncError<T>;
@@ -191,12 +201,31 @@ abstract class AsyncValue<T> {
 
   /// Clone an [AsyncValue], merging it with [previous].
   ///
-  /// This allow an [AsyncData] to also contain an [error], or similarly
-  /// allows [AsyncError] to contain a [value].
+  /// When doing so, the resulting [AsyncValue] can contain the information
+  /// about multiple state at once.
+  /// For example, this allows an [AsyncError] to contain a [value], or even
+  /// [AsyncLoading] to contain both a [value] and an [error].
   ///
-  /// [AsyncLoading] will become an [AsyncData]/[AsyncError] with [isLoading]
-  /// to true if [previous] is an [AsyncData] or [AsyncError].
-  AsyncValue<T> copyWithPrevious(AsyncValue<T> previous);
+  /// Specifying [seamless] (true by default) controls whether the clone should skip
+  /// "loading" cases or not:
+  ///
+  /// ```dart
+  /// print(
+  ///   AsyncLoading<int>()
+  ///     .copyWithPrevious(AsyncData(42))
+  /// ); // AsyncData<int>(isLoading: true, value: 42)
+  ///
+  /// print(
+  ///   AsyncLoading<int>()
+  ///     .copyWithPrevious(AsyncData(42), seamless: false)
+  /// ); // AsyncLoading<int>(isLoading: true, value: 42)
+  /// ```
+  ///
+  /// Setting it to force is useful to force the UI to show a spinner.
+  AsyncValue<T> copyWithPrevious(
+    AsyncValue<T> previous, {
+    bool seamless = true,
+  });
 
   /// The opposite of [copyWithPrevious], reverting to the raw [AsyncValue]
   /// with no information on the previous state.
@@ -210,14 +239,14 @@ abstract class AsyncValue<T> {
         if (e.isLoading) return AsyncLoading<T>();
         return AsyncError(e.error, e.stackTrace);
       },
-      loading: (l) => l,
+      loading: (l) => AsyncLoading<T>(),
     );
   }
 
   @override
   String toString() {
     final content = [
-      if (isLoading) 'isLoading: $isLoading',
+      if (isLoading && this is! AsyncLoading) 'isLoading: $isLoading',
       if (hasValue) 'value: $value',
       if (hasError) ...[
         'error: $error',
@@ -298,7 +327,10 @@ class AsyncData<T> extends AsyncValue<T> {
   }
 
   @override
-  AsyncData<T> copyWithPrevious(AsyncValue<T> previous) {
+  AsyncData<T> copyWithPrevious(
+    AsyncValue<T> previous, {
+    bool seamless = true,
+  }) {
     return this;
   }
 }
@@ -310,22 +342,34 @@ class AsyncLoading<T> extends AsyncValue<T> {
   /// Creates an [AsyncValue] in loading state.
   ///
   /// Prefer always using this constructor with the `const` keyword.
-  const AsyncLoading() : super._();
+  const AsyncLoading()
+      : hasValue = false,
+        value = null,
+        error = null,
+        stackTrace = null,
+        super._();
+
+  const AsyncLoading._({
+    required this.hasValue,
+    required this.value,
+    required this.error,
+    required this.stackTrace,
+  }) : super._();
 
   @override
   bool get isLoading => true;
 
   @override
-  bool get hasValue => false;
+  final bool hasValue;
 
   @override
-  T? get value => null;
+  final T? value;
 
   @override
-  Object? get error => null;
+  final Object? error;
 
   @override
-  StackTrace? get stackTrace => null;
+  final StackTrace? stackTrace;
 
   @override
   R map<R>({
@@ -337,38 +381,50 @@ class AsyncLoading<T> extends AsyncValue<T> {
   }
 
   @override
-  AsyncValue<T> copyWithPrevious(AsyncValue<T> previous) {
-    return previous.map(
-      data: (d) => AsyncData._(
-        d.value,
-        isLoading: true,
-        error: d.error,
-        stackTrace: d.stackTrace,
-      ),
-      error: (e) => AsyncError._(
-        e.error,
-        isLoading: true,
-        value: e.valueOrNull,
-        stackTrace: e.stackTrace,
-        hasValue: e.hasValue,
-      ),
-      loading: (_) => this,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'AsyncLoading<$T>()';
+  AsyncValue<T> copyWithPrevious(
+    AsyncValue<T> previous, {
+    bool seamless = true,
+  }) {
+    if (seamless) {
+      return previous.map(
+        data: (d) => AsyncData._(
+          d.value,
+          isLoading: true,
+          error: d.error,
+          stackTrace: d.stackTrace,
+        ),
+        error: (e) => AsyncError._(
+          e.error,
+          isLoading: true,
+          value: e.valueOrNull,
+          stackTrace: e.stackTrace,
+          hasValue: e.hasValue,
+        ),
+        loading: (_) => this,
+      );
+    } else {
+      return previous.map(
+        data: (d) => AsyncLoading._(
+          hasValue: true,
+          value: d.valueOrNull,
+          error: d.error,
+          stackTrace: d.stackTrace,
+        ),
+        error: (e) => AsyncLoading._(
+          hasValue: e.hasValue,
+          value: e.valueOrNull,
+          error: e.error,
+          stackTrace: e.stackTrace,
+        ),
+        loading: (e) => e,
+      );
+    }
   }
 }
 
-/// Creates an [AsyncValue] in the error state.
-///
-/// The parameter [error] cannot be `null`.
+/// {@macro asyncvalue.error_ctor}
 class AsyncError<T> extends AsyncValue<T> {
-  /// Creates an [AsyncValue] in the error state.
-  ///
-  /// The parameter [error] cannot be `null`.
+  /// {@macro asyncvalue.error_ctor}
   const AsyncError(Object error, StackTrace stackTrace)
       : this._(
           error,
@@ -419,7 +475,10 @@ class AsyncError<T> extends AsyncValue<T> {
   }
 
   @override
-  AsyncError<T> copyWithPrevious(AsyncValue<T> previous) {
+  AsyncError<T> copyWithPrevious(
+    AsyncValue<T> previous, {
+    bool seamless = true,
+  }) {
     return AsyncError._(
       error,
       stackTrace: stackTrace,
@@ -432,6 +491,21 @@ class AsyncError<T> extends AsyncValue<T> {
 
 /// An extension that adds methods like [when] to an [AsyncValue].
 extension AsyncValueX<T> on AsyncValue<T> {
+  /// If [hasValue] is true, returns the value. If in error, rethrows the error.
+  /// Otherwise if in loading state, throws a [StateError].
+  ///
+  /// This is typically used for when the UI assumes that [value] is always present.
+  T get requireValue {
+    if (hasValue) return value as T;
+    if (hasError) {
+      throwErrorWithCombinedStackTrace(error!, stackTrace!);
+    }
+
+    throw StateError(
+      'Tried to call `requireValue` on an `AsyncValue` that has no value: $this',
+    );
+  }
+
   /// Return the value, or null if in error/loading state.
   ///
   /// This is different from [value], which will throw if trying to read the value
@@ -515,58 +589,115 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// some cases.
   ///
   /// If [AsyncValue] was in a case that is not handled, will return [orElse].
+  ///
+  /// {@macro asyncvalue.optimistic}
   R maybeWhen<R>({
+    bool? optimistic,
     R Function(T data)? data,
     R Function(Object error, StackTrace stackTrace)? error,
     R Function()? loading,
     required R Function() orElse,
   }) {
-    return map(
-      data: (d) {
-        if (data != null) return data(d.value);
-        return orElse();
-      },
-      error: (e) {
-        if (error != null) return error(e.error, e.stackTrace);
-        return orElse();
-      },
-      loading: (l) {
-        if (loading != null) return loading();
-        return orElse();
-      },
-    );
+    if (optimistic == null) {
+      return map(
+        data: (d) {
+          if (data != null) return data(d.value);
+          return orElse();
+        },
+        error: (e) {
+          if (error != null) return error(e.error, e.stackTrace);
+          return orElse();
+        },
+        loading: (l) {
+          if (loading != null) return loading();
+          return orElse();
+        },
+      );
+    } else if (optimistic) {
+      if (hasError) return error?.call(this.error!, stackTrace!) ?? orElse();
+      if (hasValue) return data?.call(requireValue) ?? orElse();
+      return loading?.call() ?? orElse();
+    } else {
+      if (isLoading) return loading?.call() ?? orElse();
+      if (hasError) return error?.call(this.error!, stackTrace!) ?? orElse();
+      return data?.call(requireValue) ?? orElse();
+    }
   }
 
   /// Performs an action based on the state of the [AsyncValue].
   ///
   /// All cases are required, which allows returning a non-nullable value.
+  ///
+  /// {@template asyncvalue.optimistic}
+  /// The parameter [optimistic] can be optionally be specified to give control
+  /// over whether to read [loading] or [data]/[error].
+  ///
+  /// If `null` (default), the default behavior is to let the provider decide,
+  /// such that:
+  /// - If a provider rebuilds due to [Ref.watch], [when] will invoke [loading].
+  /// - If a provider rebuilds due to [Ref.refresh]/[Ref.invalidate],
+  ///   the [loading] case is skipped and [when] will invoke [data] or [error]
+  ///   with the previous value/error during the refresh.
+  ///
+  /// If `true`, forcibly skips [loading] cases. So even if a provider
+  /// rebuilds because of [Ref.watch], [when] will still skip the [loading]
+  /// case and instead invoke [data]/[error] with the previous value/error.
+  ///
+  /// If `false`, forcibly go into [loading] cases if [isLoading], even if a
+  /// [value] or [error] is available. As such, rebuilding a provider
+  /// with [Ref.refresh] will still cause [when] to invoke [loading], instead
+  /// of invoking [data]/[error] with the previosu value.
+  /// {@endtemplate}
   R when<R>({
+    bool? optimistic,
     required R Function(T data) data,
     required R Function(Object error, StackTrace stackTrace) error,
     required R Function() loading,
   }) {
-    return map(
-      data: (d) => data(d.value),
-      error: (e) => error(e.error, e.stackTrace),
-      loading: (l) => loading(),
-    );
+    if (optimistic == null) {
+      return map(
+        data: (d) => data(d.value),
+        error: (e) => error(e.error, e.stackTrace),
+        loading: (l) => loading(),
+      );
+    } else if (optimistic) {
+      if (hasError) return error(this.error!, stackTrace!);
+      if (hasValue) return data(requireValue);
+      return loading();
+    } else {
+      if (isLoading) return loading();
+      if (hasError) return error(this.error!, stackTrace!);
+      return data(requireValue);
+    }
   }
 
   /// Perform actions conditionally based on the state of the [AsyncValue].
   ///
   /// Returns null if [AsyncValue] was in a state that was not handled.
-  ///
   /// This is similar to [maybeWhen] where `orElse` returns null.
+  ///
+  /// {@macro asyncvalue.optimistic}
   R? whenOrNull<R>({
+    bool? optimistic,
     R Function(T data)? data,
     R Function(Object error, StackTrace stackTrace)? error,
     R Function()? loading,
   }) {
-    return map(
-      data: (d) => data?.call(d.value),
-      error: (e) => error?.call(e.error, e.stackTrace),
-      loading: (l) => loading?.call(),
-    );
+    if (optimistic == null) {
+      return map(
+        data: (d) => data?.call(d.value),
+        error: (e) => error?.call(e.error, e.stackTrace),
+        loading: (l) => loading?.call(),
+      );
+    } else if (optimistic) {
+      if (hasError) return error?.call(this.error!, stackTrace!);
+      if (hasValue) return data?.call(requireValue);
+      return loading?.call();
+    } else {
+      if (isLoading) return loading?.call();
+      if (hasError) return error?.call(this.error!, stackTrace!);
+      return data?.call(requireValue);
+    }
   }
 
   /// Perform some actions based on the state of the [AsyncValue], or call orElse
