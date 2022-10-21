@@ -590,40 +590,62 @@ extension AsyncValueX<T> on AsyncValue<T> {
   ///
   /// If [AsyncValue] was in a case that is not handled, will return [orElse].
   R maybeWhen<R>({
+    bool? optimistic,
     R Function(T data)? data,
     R Function(Object error, StackTrace stackTrace)? error,
     R Function()? loading,
     required R Function() orElse,
   }) {
-    return map(
-      data: (d) {
-        if (data != null) return data(d.value);
-        return orElse();
-      },
-      error: (e) {
-        if (error != null) return error(e.error, e.stackTrace);
-        return orElse();
-      },
-      loading: (l) {
-        if (loading != null) return loading();
-        return orElse();
-      },
-    );
+    if (optimistic == null) {
+      return map(
+        data: (d) {
+          if (data != null) return data(d.value);
+          return orElse();
+        },
+        error: (e) {
+          if (error != null) return error(e.error, e.stackTrace);
+          return orElse();
+        },
+        loading: (l) {
+          if (loading != null) return loading();
+          return orElse();
+        },
+      );
+    } else if (optimistic) {
+      if (hasError) return error?.call(this.error!, stackTrace!) ?? orElse();
+      if (hasValue) return data?.call(requireValue) ?? orElse();
+      return loading?.call() ?? orElse();
+    } else {
+      if (isLoading) return loading?.call() ?? orElse();
+      if (hasError) return error?.call(this.error!, stackTrace!) ?? orElse();
+      return data?.call(requireValue) ?? orElse();
+    }
   }
 
   /// Performs an action based on the state of the [AsyncValue].
   ///
   /// All cases are required, which allows returning a non-nullable value.
   R when<R>({
+    bool? optimistic,
     required R Function(T data) data,
     required R Function(Object error, StackTrace stackTrace) error,
     required R Function() loading,
   }) {
-    return map(
-      data: (d) => data(d.value),
-      error: (e) => error(e.error, e.stackTrace),
-      loading: (l) => loading(),
-    );
+    if (optimistic == null) {
+      return map(
+        data: (d) => data(d.value),
+        error: (e) => error(e.error, e.stackTrace),
+        loading: (l) => loading(),
+      );
+    } else if (optimistic) {
+      if (hasError) return error(this.error!, stackTrace!);
+      if (hasValue) return data(requireValue);
+      return loading();
+    } else {
+      if (isLoading) return loading();
+      if (hasError) return error(this.error!, stackTrace!);
+      return data(requireValue);
+    }
   }
 
   /// Perform actions conditionally based on the state of the [AsyncValue].
@@ -632,15 +654,26 @@ extension AsyncValueX<T> on AsyncValue<T> {
   ///
   /// This is similar to [maybeWhen] where `orElse` returns null.
   R? whenOrNull<R>({
+    bool? optimistic,
     R Function(T data)? data,
     R Function(Object error, StackTrace stackTrace)? error,
     R Function()? loading,
   }) {
-    return map(
-      data: (d) => data?.call(d.value),
-      error: (e) => error?.call(e.error, e.stackTrace),
-      loading: (l) => loading?.call(),
-    );
+    if (optimistic == null) {
+      return map(
+        data: (d) => data?.call(d.value),
+        error: (e) => error?.call(e.error, e.stackTrace),
+        loading: (l) => loading?.call(),
+      );
+    } else if (optimistic) {
+      if (hasError) return error?.call(this.error!, stackTrace!);
+      if (hasValue) return data?.call(requireValue);
+      return loading?.call();
+    } else {
+      if (isLoading) return loading?.call();
+      if (hasError) return error?.call(this.error!, stackTrace!);
+      return data?.call(requireValue);
+    }
   }
 
   /// Perform some actions based on the state of the [AsyncValue], or call orElse
