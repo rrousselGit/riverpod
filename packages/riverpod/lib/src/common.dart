@@ -488,6 +488,21 @@ class AsyncError<T> extends AsyncValue<T> {
 
 /// An extension that adds methods like [when] to an [AsyncValue].
 extension AsyncValueX<T> on AsyncValue<T> {
+  /// If [hasValue] is true, returns the value. If in error, rethrows the error.
+  /// Otherwise if in loading state, throws a [StateError].
+  ///
+  /// This is typically used for when the UI assumes that [value] is always present.
+  T get requireValue {
+    if (hasValue) return value as T;
+    if (hasError) {
+      throwErrorWithCombinedStackTrace(error!, stackTrace!);
+    }
+
+    throw StateError(
+      'Tried to call `requireValue` on an `AsyncValue` that has no value: $this',
+    );
+  }
+
   /// Return the value, or null if in error/loading state.
   ///
   /// This is different from [value], which will throw if trying to read the value

@@ -854,6 +854,41 @@ void main() {
     );
   });
 
+  test('requireValue', () {
+    expect(const AsyncData(42).requireValue, 42);
+
+    expect(
+      () => const AsyncLoading<int>().requireValue,
+      throwsStateError,
+    );
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(42), seamless: true)
+          .requireValue,
+      42,
+    );
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(
+            const AsyncError<int>('err', StackTrace.empty)
+                .copyWithPrevious(const AsyncData(42)),
+            seamless: true,
+          )
+          .requireValue,
+      42,
+    );
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(42), seamless: true)
+          .requireValue,
+      42,
+    );
+    expect(
+      () => const AsyncError<int>('err', StackTrace.empty).requireValue,
+      throwsA('err'),
+    );
+  });
+
   test('toString', () {
     expect(
       const AsyncValue.data(42).toString(),
