@@ -92,9 +92,16 @@ abstract class AsyncValue<T> {
   const factory AsyncValue.loading() = AsyncLoading<T>;
   // coverage:ignore-end
 
+  /// {@template asyncvalue.error_ctor}
   /// Creates an [AsyncValue] in the error state.
   ///
-  /// The parameter [error] cannot be `null`.
+  /// _I don't have a [StackTrace], what can I do?_
+  /// You can still construct an [AsyncError] by passing [StackTrace.current]:
+  ///
+  /// ```dart
+  /// AsyncValue.error(error, StackTrace.current);
+  /// ```
+  /// {@endtemplate}
   // coverage:ignore-start
   const factory AsyncValue.error(Object error, StackTrace stackTrace) =
       AsyncError<T>;
@@ -415,13 +422,9 @@ class AsyncLoading<T> extends AsyncValue<T> {
   }
 }
 
-/// Creates an [AsyncValue] in the error state.
-///
-/// The parameter [error] cannot be `null`.
+/// {@macro asyncvalue.error_ctor}
 class AsyncError<T> extends AsyncValue<T> {
-  /// Creates an [AsyncValue] in the error state.
-  ///
-  /// The parameter [error] cannot be `null`.
+  /// {@macro asyncvalue.error_ctor}
   const AsyncError(Object error, StackTrace stackTrace)
       : this._(
           error,
