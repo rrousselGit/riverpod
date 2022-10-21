@@ -3,11 +3,16 @@
 - Added `Ref.notifyListeners()` to forcibly notify dependents.
   This can be useful for mutable state.
 - Added `@useResult` to `Ref.refresh`/`WidgetRef.refresh`
+- `FutureProvider`, `StreamProvider` and `AsyncNotifierProvider` now preserve the
+  previous data/error when going back to loading.
+  This is done by allowing `AsyncLoading` to optionally contain a value/error.
 - Add `AsyncValue.copyWithPrevious(..., seamless: false)`
   This allows customizing the result. By default, `seamless` is true,
   which makes `copyWithPrevious` skip the `when(loading: ...)` clause.
   Specifying `seamless: false` allows preserving the data/error of an `AsyncValue`
   while forcing the UI to render a loading status.
+- Add `AsyncValue.requireValue`, to forcibly obtain the `value` and throw if in
+  loading/error state
 
 ## 2.0.2
 
