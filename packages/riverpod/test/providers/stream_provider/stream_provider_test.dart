@@ -81,7 +81,11 @@ void main() {
       expect(container.read(provider), const AsyncData(0));
 
       container.read(dep.notifier).state++;
-      expect(container.read(provider), const AsyncLoading<int>());
+      expect(
+        container.read(provider),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncData(0), seamless: false),
+      );
 
       await expectLater(container.read(provider.future), completion(1));
       expect(container.read(provider), const AsyncData(1));
@@ -98,7 +102,11 @@ void main() {
       expect(container.read(provider), const AsyncData(0));
 
       container.read(dep.notifier).state++;
-      expect(container.refresh(provider), const AsyncLoading<int>());
+      expect(
+        container.refresh(provider),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncData(0), seamless: false),
+      );
 
       await expectLater(container.read(provider.future), completion(1));
       expect(container.read(provider), const AsyncData(1));
@@ -128,11 +136,19 @@ void main() {
 
     ref.state = const AsyncLoading<int>();
 
-    expect(ref.state, const AsyncLoading<int>());
+    expect(
+      ref.state,
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(0), seamless: false),
+    );
 
     verifyOnly(
       listener,
-      listener(const AsyncData(0), const AsyncLoading<int>()),
+      listener(
+        const AsyncData(0),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncData(0), seamless: false),
+      ),
     );
   });
 
@@ -179,7 +195,11 @@ void main() {
 
     verifyOnly(
       listener,
-      listener(null, const AsyncLoading<int>()),
+      listener(
+        null,
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncData(42), seamless: false),
+      ),
     );
 
     container.read(dep.state).state = Stream.value(21);

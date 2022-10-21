@@ -121,7 +121,15 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   AsyncValue<T> get state => requireState;
 
   @override
-  set state(AsyncValue<T> state) => setState(state);
+  set state(AsyncValue<T> state) {
+    if (state.isLoading) {
+      setState(
+        state.copyWithPrevious(requireState, seamless: false),
+      );
+    } else {
+      setState(state);
+    }
+  }
 
   @override
   void create({required bool didChangeDependency}) {
