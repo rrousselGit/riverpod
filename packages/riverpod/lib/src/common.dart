@@ -589,6 +589,8 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// some cases.
   ///
   /// If [AsyncValue] was in a case that is not handled, will return [orElse].
+  ///
+  /// {@macro asyncvalue.optimistic}
   R maybeWhen<R>({
     bool? optimistic,
     R Function(T data)? data,
@@ -625,6 +627,27 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// Performs an action based on the state of the [AsyncValue].
   ///
   /// All cases are required, which allows returning a non-nullable value.
+  ///
+  /// {@template asyncvalue.optimistic}
+  /// The parameter [optimistic] can be optionally be specified to give control
+  /// over whether to read [loading] or [data]/[error].
+  ///
+  /// If `null` (default), the default behavior is to let the provider decide,
+  /// such that:
+  /// - If a provider rebuilds due to [Ref.watch], [when] will invoke [loading].
+  /// - If a provider rebuilds due to [Ref.refresh]/[Ref.invalidate],
+  ///   the [loading] case is skipped and [when] will invoke [data] or [error]
+  ///   with the previous value/error during the refresh.
+  ///
+  /// If `true`, forcibly skips [loading] cases. So even if a provider
+  /// rebuilds because of [Ref.watch], [when] will still skip the [loading]
+  /// case and instead invoke [data]/[error] with the previous value/error.
+  ///
+  /// If `false`, forcibly go into [loading] cases if [isLoading], even if a
+  /// [value] or [error] is available. As such, rebuilding a provider
+  /// with [Ref.refresh] will still cause [when] to invoke [loading], instead
+  /// of invoking [data]/[error] with the previosu value.
+  /// {@endtemplate}
   R when<R>({
     bool? optimistic,
     required R Function(T data) data,
@@ -651,8 +674,9 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// Perform actions conditionally based on the state of the [AsyncValue].
   ///
   /// Returns null if [AsyncValue] was in a state that was not handled.
-  ///
   /// This is similar to [maybeWhen] where `orElse` returns null.
+  ///
+  /// {@macro asyncvalue.optimistic}
   R? whenOrNull<R>({
     bool? optimistic,
     R Function(T data)? data,

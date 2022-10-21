@@ -6,6 +6,8 @@
 - `FutureProvider`, `StreamProvider` and `AsyncNotifierProvider` now preserve the
   previous data/error when going back to loading.
   This is done by allowing `AsyncLoading` to optionally contain a value/error.
+- Adding `AsyncValue.when(optimistic: bool?)` flag, to offer control over whether
+  to the UI should show `loading` or `data/error` cases.
 - Add `AsyncValue.copyWithPrevious(..., seamless: false)`
   This allows customizing the result. By default, `seamless` is true,
   which makes `copyWithPrevious` skip the `when(loading: ...)` clause.
