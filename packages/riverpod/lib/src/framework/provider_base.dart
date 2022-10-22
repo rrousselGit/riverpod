@@ -15,6 +15,17 @@ part of '../framework.dart';
 @internal
 typedef Create<T, R extends Ref> = T Function(R ref);
 
+/// A callback used by providers to listen a provider
+/// 
+/// The parameter [prev] can be used as the last state 
+/// and [next] can be used as the current state
+@internal
+typedef ProviderListener = void Function(Object? prev, Object? next);
+
+/// A callback used to catches errors
+@internal
+typedef OnError = void Function(Object, StackTrace);
+
 /// A base class for _all_ providers.
 @immutable
 abstract class ProviderBase<State> extends ProviderOrFamily
@@ -176,6 +187,7 @@ class _ExternalProviderSubscription<State>
   }
 }
 
+
 /// When a provider listens to another provider using `listen`
 class _ProviderListener<State> implements ProviderSubscription<State> {
   _ProviderListener._({
@@ -185,11 +197,10 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
     required this.onError,
   });
 
-// TODO can't we type it properly?
-  final void Function(Object? prev, Object? state) listener;
+  final ProviderListener listener;
   final ProviderElementBase<Object?> dependentElement;
   final ProviderElementBase<State> listenedElement;
-  final void Function(Object, StackTrace) onError;
+  final OnError onError;
 
   @override
   void close() {

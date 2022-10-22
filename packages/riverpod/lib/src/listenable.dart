@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 
+import '../riverpod.dart';
 import 'framework.dart' show ProviderElementBase;
 import 'result.dart';
 
@@ -123,7 +124,7 @@ class _ValueListenable<T> {
   ///    the list of closures that are notified when the object changes.
   void Function() addListener(
     void Function(T?, T) onChange, {
-    required void Function(Object, StackTrace)? onError,
+    required OnError? onError,
     required void Function()? onDependencyMayHaveChanged,
   }) {
     assert(_ValueListenable.debugAssertNotDisposed(this), '');

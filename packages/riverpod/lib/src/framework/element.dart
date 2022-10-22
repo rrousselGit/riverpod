@@ -95,7 +95,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   List<void Function()>? _onAddListeners;
   List<void Function()>? _onRemoveListeners;
   List<void Function(State?, State)>? _onChangeSelfListeners;
-  List<void Function(Object, StackTrace)>? _onErrorSelfListeners;
+  List<OnError>? _onErrorSelfListeners;
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
