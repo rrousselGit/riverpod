@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
-import '../riverpod.dart';
 import 'framework.dart' show ProviderElementBase;
+import 'internals.dart' show OnError;
 import 'result.dart';
 
 /// Listener for [_ValueListenable]
