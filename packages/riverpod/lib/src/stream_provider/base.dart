@@ -179,14 +179,8 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
         if (completer != null) {
           completer.complete(event);
           _completer = null;
-          // TODO test that ref.read(p.future) after an event is emitted
-          // obtains a SynchronousFuture.
-          // Yet listeners of .future added before the first event aren't notified
-          _futureNotifier.UNSAFE_setResultWithoutNotifyingListeners(
-            Result.data(SynchronousFuture(event)),
-          );
         } else {
-          _futureNotifier.result = Result.data(SynchronousFuture(event));
+          _futureNotifier.result = Result.data(Future.value(event));
         }
 
         setState(AsyncData(event));
