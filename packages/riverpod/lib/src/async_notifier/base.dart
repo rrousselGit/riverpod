@@ -165,15 +165,8 @@ mixin FutureHandlerProviderElementMixin<T>
     if (completer != null) {
       completer.complete(value);
       _futureCompleter = null;
-
-      // Silently replace .future by a SynchronousFuture now that a value is
-      // available. No need to notify listeners, as the content of strictly the same.
-      // This allows future read of `.future` to resolve synchronously
-      _futureNotifier.UNSAFE_setResultWithoutNotifyingListeners(
-        Result.data(SynchronousFuture(value)),
-      );
     } else {
-      _futureNotifier.result = Result.data(SynchronousFuture(value));
+      _futureNotifier.result = Result.data(Future.value(value));
     }
   }
 

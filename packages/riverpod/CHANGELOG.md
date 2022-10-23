@@ -15,6 +15,8 @@
   while forcing the UI to render a loading status.
 - Add `AsyncValue.requireValue`, to forcibly obtain the `value` and throw if in
   loading/error state
+- Doing `ref.watch(futureProvider.future)` can no-longer return a `SynchronousFuture`.
+  That behavior could break various `Future` utilities, such as `Future.wait`
 
 ## 2.0.2
 

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/synchronous_future.dart';
 import 'package:test/test.dart';
 
 import '../../utils.dart';
@@ -74,7 +73,7 @@ void main() {
 
       completer2.complete(42);
 
-      await expectLater(container.read(provider.future), SynchronousFuture(42));
+      await expectLater(container.read(provider.future), completion(42));
     });
 
     test(

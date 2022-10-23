@@ -7,7 +7,6 @@ import 'future_provider.dart' show FutureProvider;
 import 'listenable.dart';
 import 'provider.dart' show Provider;
 import 'result.dart';
-import 'synchronous_future.dart';
 
 part 'stream_provider/auto_dispose.dart';
 part 'stream_provider/base.dart';

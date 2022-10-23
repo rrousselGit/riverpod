@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart' hide ErrorListener;
-import 'package:riverpod/src/synchronous_future.dart';
 import 'package:test/test.dart';
 
 import '../../utils.dart';
@@ -255,7 +254,7 @@ void main() {
 
         verifyOnly(listener, listener(null, const AsyncData(0)));
         expect(container.read(provider.notifier).state, const AsyncData(0));
-        expect(container.read(provider.future), SynchronousFuture<int>(0));
+        await expectLater(container.read(provider.future), completion(0));
       });
 
       test(
@@ -564,12 +563,15 @@ void main() {
           final sub = container.listen(provider.notifier, (previous, next) {});
           container.listen(provider.future, listener, fireImmediately: true);
 
-          expect(sub.read().future, SynchronousFuture<int>(0));
-          verifyOnly(listener, listener(null, SynchronousFuture<int>(0)));
+          await expectLater(sub.read().future, completion(0));
+          verifyOnly(
+            listener,
+            listener(argThat(equals(null)), argThat(completion(0))),
+          );
 
           sub.read().state = const AsyncData(1);
 
-          expect(sub.read().future, SynchronousFuture<int>(1));
+          await expectLater(sub.read().future, completion(1));
         });
 
         test('retuns a Future identical to that of .future', () {
