@@ -16,8 +16,8 @@ part of '../framework.dart';
 typedef Create<T, R extends Ref> = T Function(R ref);
 
 /// A callback used by providers to listen a provider
-/// 
-/// The parameter [prev] can be used as the last state 
+///
+/// The parameter [prev] can be used as the last state
 /// and [next] can be used as the current state
 @internal
 typedef ProviderListener = void Function(Object? prev, Object? next);
@@ -186,7 +186,6 @@ class _ExternalProviderSubscription<State>
     return _listenedElement.readSelf();
   }
 }
-
 
 /// When a provider listens to another provider using `listen`
 class _ProviderListener<State> implements ProviderSubscription<State> {
