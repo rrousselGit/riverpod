@@ -292,12 +292,68 @@ void main() {
           .isRefreshing,
       true,
     );
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData<int>(42), seamless: false)
+          .isRefreshing,
+      false,
+    );
 
     expect(const AsyncError<int>('err', StackTrace.empty).isRefreshing, false);
     expect(
       const AsyncLoading<int>()
           .copyWithPrevious(const AsyncError<int>('err', StackTrace.empty))
           .isRefreshing,
+      true,
+    );
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(
+            const AsyncError<int>('err', StackTrace.empty),
+            seamless: false,
+          )
+          .isRefreshing,
+      false,
+    );
+  });
+
+  test('isReloading', () {
+    expect(const AsyncLoading<int>().isRefreshing, false);
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncLoading())
+          .isReloading,
+      false,
+    );
+
+    expect(const AsyncData<int>(42).isReloading, false);
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData<int>(42))
+          .isReloading,
+      false,
+    );
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData<int>(42), seamless: false)
+          .isReloading,
+      true,
+    );
+
+    expect(const AsyncError<int>('err', StackTrace.empty).isReloading, false);
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncError<int>('err', StackTrace.empty))
+          .isReloading,
+      false,
+    );
+    expect(
+      const AsyncLoading<int>()
+          .copyWithPrevious(
+            const AsyncError<int>('err', StackTrace.empty),
+            seamless: false,
+          )
+          .isReloading,
       true,
     );
   });

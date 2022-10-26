@@ -515,15 +515,25 @@ extension AsyncValueX<T> on AsyncValue<T> {
     return null;
   }
 
-  /// Whether an [AsyncData] or [AsyncError] was emitted but the state went
-  /// back to loading state.
+  /// Whehther the associated provider was forced to recompute even though
+  /// none of its dependencies has changed.
   ///
-  /// This is different from [isLoading] in that [isLoading] is for waiting
-  /// the first value to be available, while [isRefreshing] is after a value
-  /// was emitted but a provider refresh was triggered.
-  bool get isRefreshing {
-    return isLoading && (hasValue || hasError);
-  }
+  /// This is usually the case when rebuilding a provider with either
+  /// [Ref.invalidate]/[Ref.refresh].
+  ///
+  /// If a provider rebuilds because one of its dependencies changes (using [Ref.watch]),
+  /// then [isRefreshing] will be false, and instead [isReloading] will be true.
+  bool get isRefreshing =>
+      isLoading && (hasValue || hasError) && this is! AsyncLoading;
+
+  /// Whehther the associated provider was recomputed because of a dependency change
+  /// (using [Ref.watch]), after at least one [value]/[error] was emitted.
+  ///
+  /// If a provider rebuilds because one of its dependencies changes (using [Ref.watch]),
+  /// then [isRefreshing] will be false.
+  ///
+  /// See also [isRefreshing] for manual provider rebuild.
+  bool get isReloading => (hasValue || hasError) && this is AsyncLoading;
 
   /// Whether [value] is set.
   ///
