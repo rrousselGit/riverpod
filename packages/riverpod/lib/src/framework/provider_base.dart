@@ -15,6 +15,10 @@ part of '../framework.dart';
 @internal
 typedef Create<T, R extends Ref> = T Function(R ref);
 
+/// A callback used to catches errors
+@internal
+typedef OnError = void Function(Object, StackTrace);
+
 /// A base class for _all_ providers.
 @immutable
 abstract class ProviderBase<State> extends ProviderOrFamily
@@ -189,7 +193,7 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
   final void Function(Object? prev, Object? state) listener;
   final ProviderElementBase<Object?> dependentElement;
   final ProviderElementBase<State> listenedElement;
-  final void Function(Object, StackTrace) onError;
+  final OnError onError;
 
   @override
   void close() {

@@ -31,7 +31,8 @@ export 'src/framework.dart'
         handleFireImmediately,
         Create,
         Node,
-        ProviderElementProxy;
+        ProviderElementProxy,
+        OnError;
 
 export 'src/future_provider.dart';
 
