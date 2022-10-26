@@ -6,17 +6,15 @@
 - `FutureProvider`, `StreamProvider` and `AsyncNotifierProvider` now preserve the
   previous data/error when going back to loading.
   This is done by allowing `AsyncLoading` to optionally contain a value/error.
-- Adding `AsyncValue.when(optimistic: bool?)` flag, to offer control over whether
-  to the UI should show `loading` or `data/error` cases.
-- Add `AsyncValue.copyWithPrevious(..., seamless: false)`
-  This allows customizing the result. By default, `seamless` is true,
-  which makes `copyWithPrevious` skip the `when(loading: ...)` clause.
-  Specifying `seamless: false` allows preserving the data/error of an `AsyncValue`
-  while forcing the UI to render a loading status.
+- Added `AsyncValue.when(skipLoadingOnReload: bool, skipLoadingOnRefresh: bool, skipError: bool)`
+  flags to give fine control over whether the UI should show `loading`
+  or `data/error` cases.
 - Add `AsyncValue.requireValue`, to forcibly obtain the `value` and throw if in
   loading/error state
 - Doing `ref.watch(futureProvider.future)` can no-longer return a `SynchronousFuture`.
   That behavior could break various `Future` utilities, such as `Future.wait`
+- Add `AsyncValue.copyWithPrevious(..., isRefres: false)` to differentiate
+  rebuilds from `ref.watch` vs rebuilds from `ref.refresh`.  
 
 ## 2.0.2
 
