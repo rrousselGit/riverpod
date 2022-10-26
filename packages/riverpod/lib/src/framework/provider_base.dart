@@ -15,7 +15,6 @@ part of '../framework.dart';
 @internal
 typedef Create<T, R extends Ref> = T Function(R ref);
 
-
 /// A callback used to catches errors
 @internal
 typedef OnError = void Function(Object, StackTrace);
