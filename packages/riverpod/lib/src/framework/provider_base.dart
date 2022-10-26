@@ -189,7 +189,8 @@ class _ProviderListener<State> implements ProviderSubscription<State> {
     required this.onError,
   });
 
-  final ProviderListener listener;
+// TODO can't we type it properly?
+  final void Function(Object? prev, Object? state) listener;
   final ProviderElementBase<Object?> dependentElement;
   final ProviderElementBase<State> listenedElement;
   final OnError onError;
