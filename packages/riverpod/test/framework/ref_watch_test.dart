@@ -568,7 +568,7 @@ void main() {
     expect(
       sub.read(),
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(0), seamless: false),
+          .copyWithPrevious(const AsyncData(0), isRefesh: false),
     );
     expect(callCount, 1);
 

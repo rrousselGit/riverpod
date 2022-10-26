@@ -124,7 +124,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   set state(AsyncValue<T> state) {
     if (state.isLoading) {
       setState(
-        state.copyWithPrevious(requireState, seamless: false),
+        state.copyWithPrevious(requireState, isRefesh: false),
       );
     } else {
       setState(state);

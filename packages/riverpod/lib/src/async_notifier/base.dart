@@ -152,7 +152,7 @@ mixin FutureHandlerProviderElementMixin<T>
     );
 
     if (newState.isLoading) {
-      setState(newState.copyWithPrevious(requireState, seamless: false));
+      setState(newState.copyWithPrevious(requireState, isRefesh: false));
     } else {
       setState(newState);
     }

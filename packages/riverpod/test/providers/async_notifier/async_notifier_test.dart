@@ -62,7 +62,7 @@ void main() {
           expect(
             sub.read().state,
             const AsyncLoading<int>()
-                .copyWithPrevious(const AsyncData(0), seamless: false),
+                .copyWithPrevious(const AsyncData(0), isRefesh: false),
           );
         });
 
@@ -84,7 +84,7 @@ void main() {
           expect(
             container.read(provider),
             const AsyncLoading<int>()
-                .copyWithPrevious(const AsyncData(0), seamless: false),
+                .copyWithPrevious(const AsyncData(0), isRefesh: false),
           );
 
           await expectLater(container.read(provider.future), completion(1));
@@ -109,7 +109,7 @@ void main() {
           expect(
             container.refresh(provider),
             const AsyncLoading<int>()
-                .copyWithPrevious(const AsyncData(0), seamless: false),
+                .copyWithPrevious(const AsyncData(0), isRefesh: false),
           );
 
           await expectLater(container.read(provider.future), completion(1));
@@ -385,7 +385,7 @@ void main() {
           expect(
             sub.read().state,
             const AsyncLoading<int>()
-                .copyWithPrevious(newState, seamless: false),
+                .copyWithPrevious(newState, isRefesh: false),
           );
 
           sub.read().state = newError;
@@ -419,7 +419,7 @@ void main() {
           expect(
             notifier.state,
             const AsyncLoading<int>()
-                .copyWithPrevious(const AsyncData(0), seamless: false),
+                .copyWithPrevious(const AsyncData(0), isRefesh: false),
           );
           expect(await container.read(provider.future), 1);
           expect(notifier.state, const AsyncData(1));
