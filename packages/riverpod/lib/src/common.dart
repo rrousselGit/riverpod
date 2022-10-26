@@ -600,85 +600,77 @@ extension AsyncValueX<T> on AsyncValue<T> {
   ///
   /// If [AsyncValue] was in a case that is not handled, will return [orElse].
   ///
-  /// {@macro asyncvalue.optimistic}
+  /// {@macro asyncvalue.skip_flags}
   R maybeWhen<R>({
-    bool? optimistic,
+    bool skipLoadingOnReload = false,
+    bool skipLoadingOnRefresh = true,
+    bool skipError = false,
     R Function(T data)? data,
     R Function(Object error, StackTrace stackTrace)? error,
     R Function()? loading,
     required R Function() orElse,
   }) {
-    if (optimistic == null) {
-      return map(
-        data: (d) {
-          if (data != null) return data(d.value);
-          return orElse();
-        },
-        error: (e) {
-          if (error != null) return error(e.error, e.stackTrace);
-          return orElse();
-        },
-        loading: (l) {
-          if (loading != null) return loading();
-          return orElse();
-        },
-      );
-    } else if (optimistic) {
-      if (hasError) return error?.call(this.error!, stackTrace!) ?? orElse();
-      if (hasValue) return data?.call(requireValue) ?? orElse();
-      return loading?.call() ?? orElse();
-    } else {
-      if (isLoading) return loading?.call() ?? orElse();
-      if (hasError) return error?.call(this.error!, stackTrace!) ?? orElse();
-      return data?.call(requireValue) ?? orElse();
-    }
+    return when(
+      skipError: skipError,
+      skipLoadingOnRefresh: skipLoadingOnRefresh,
+      skipLoadingOnReload: skipLoadingOnReload,
+      data: data ?? (_) => orElse(),
+      error: error ?? (err, stack) => orElse(),
+      loading: loading ?? () => orElse(),
+    );
   }
 
   /// Performs an action based on the state of the [AsyncValue].
   ///
   /// All cases are required, which allows returning a non-nullable value.
   ///
-  /// {@template asyncvalue.optimistic}
-  /// The parameter [optimistic] can be optionally be specified to give control
-  /// over whether to read [loading] or [data]/[error].
+  /// {@template asyncvalue.skip_flags}
+  /// By default, [when] skips "loading" states if triggered by a [Ref.refresh]
+  /// or [Ref.invalidate] (but does not skip loading states if triggered by [Ref.watch]).
   ///
-  /// If `null` (default), the default behavior is to let the provider decide,
-  /// such that:
-  /// - If a provider rebuilds due to [Ref.watch], [when] will invoke [loading].
-  /// - If a provider rebuilds due to [Ref.refresh]/[Ref.invalidate],
-  ///   the [loading] case is skipped and [when] will invoke [data] or [error]
-  ///   with the previous value/error during the refresh.
+  /// In the event that an [AsyncValue] is in multiple states at once (such as
+  /// when reloading a provider or emitting an error after a valid data),
+  /// [when] offers various flags to customize whether it should call
+  /// [loading]/[error]/[data] :
   ///
-  /// If `true`, forcibly skips [loading] cases. So even if a provider
-  /// rebuilds because of [Ref.watch], [when] will still skip the [loading]
-  /// case and instead invoke [data]/[error] with the previous value/error.
+  /// - [skipLoadingOnReload] (false by default) customizes whether [loading]
+  ///   should be invoked if a provider rebuilds because of [Ref.watch].
+  ///   In that situation, [when] will try to invoke either [error]/[data]
+  ///   with the previous state.
   ///
-  /// If `false`, forcibly go into [loading] cases if [isLoading], even if a
-  /// [value] or [error] is available. As such, rebuilding a provider
-  /// with [Ref.refresh] will still cause [when] to invoke [loading], instead
-  /// of invoking [data]/[error] with the previosu value.
+  /// - [skipLoadingOnRefresh] (true by default) controls whether [loading]
+  ///   should be invoked if a provider rebuilds because of [Ref.watch].
+  ///   In that situation, [when] will try to invoke either [error]/[data]
+  ///   with the previous state.
+  ///
+  /// - [skipError] (false by default) decides whether to invoke [data] instead
+  ///   of [error] if a previous [value] is available.
   /// {@endtemplate}
   R when<R>({
-    bool? optimistic,
+    bool skipLoadingOnReload = false,
+    bool skipLoadingOnRefresh = true,
+    bool skipError = false,
     required R Function(T data) data,
     required R Function(Object error, StackTrace stackTrace) error,
     required R Function() loading,
   }) {
-    if (optimistic == null) {
-      return map(
-        data: (d) => data(d.value),
-        error: (e) => error(e.error, e.stackTrace),
-        loading: (l) => loading(),
-      );
-    } else if (optimistic) {
-      if (hasError) return error(this.error!, stackTrace!);
-      if (hasValue) return data(requireValue);
-      return loading();
-    } else {
-      if (isLoading) return loading();
-      if (hasError) return error(this.error!, stackTrace!);
-      return data(requireValue);
+    if (isLoading) {
+      bool skip;
+      if (isRefreshing) {
+        skip = skipLoadingOnRefresh;
+      } else if (isReloading) {
+        skip = skipLoadingOnReload;
+      } else {
+        skip = false;
+      }
+      if (!skip) return loading();
     }
+
+    if (hasError && (!hasValue || !skipError)) {
+      return error(this.error!, stackTrace!);
+    }
+
+    return data(requireValue);
   }
 
   /// Perform actions conditionally based on the state of the [AsyncValue].
@@ -686,28 +678,23 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// Returns null if [AsyncValue] was in a state that was not handled.
   /// This is similar to [maybeWhen] where `orElse` returns null.
   ///
-  /// {@macro asyncvalue.optimistic}
+  /// {@macro asyncvalue.skip_flags}
   R? whenOrNull<R>({
-    bool? optimistic,
+    bool skipLoadingOnReload = false,
+    bool skipLoadingOnRefresh = true,
+    bool skipError = false,
     R Function(T data)? data,
     R Function(Object error, StackTrace stackTrace)? error,
     R Function()? loading,
   }) {
-    if (optimistic == null) {
-      return map(
-        data: (d) => data?.call(d.value),
-        error: (e) => error?.call(e.error, e.stackTrace),
-        loading: (l) => loading?.call(),
-      );
-    } else if (optimistic) {
-      if (hasError) return error?.call(this.error!, stackTrace!);
-      if (hasValue) return data?.call(requireValue);
-      return loading?.call();
-    } else {
-      if (isLoading) return loading?.call();
-      if (hasError) return error?.call(this.error!, stackTrace!);
-      return data?.call(requireValue);
-    }
+    return when(
+      skipError: skipError,
+      skipLoadingOnRefresh: skipLoadingOnRefresh,
+      skipLoadingOnReload: skipLoadingOnReload,
+      data: data ?? (_) => null,
+      error: error ?? (err, stack) => null,
+      loading: loading ?? () => null,
+    );
   }
 
   /// Perform some actions based on the state of the [AsyncValue], or call orElse
