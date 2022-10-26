@@ -20,7 +20,7 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       setState(
         AsyncLoading<T>()
-            .copyWithPrevious(previous, seamless: !shouldClearPreviousState),
+            .copyWithPrevious(previous, isRefesh: !shouldClearPreviousState),
       );
     }
   }
@@ -206,25 +206,14 @@ abstract class AsyncValue<T> {
   /// For example, this allows an [AsyncError] to contain a [value], or even
   /// [AsyncLoading] to contain both a [value] and an [error].
   ///
-  /// Specifying [seamless] (true by default) controls whether the clone should skip
-  /// "loading" cases or not:
-  ///
-  /// ```dart
-  /// print(
-  ///   AsyncLoading<int>()
-  ///     .copyWithPrevious(AsyncData(42))
-  /// ); // AsyncData<int>(isLoading: true, value: 42)
-  ///
-  /// print(
-  ///   AsyncLoading<int>()
-  ///     .copyWithPrevious(AsyncData(42), seamless: false)
-  /// ); // AsyncLoading<int>(isLoading: true, value: 42)
-  /// ```
-  ///
-  /// Setting it to force is useful to force the UI to show a spinner.
+  /// The optional [isRefesh] flag (true by default) represents whether the
+  /// provider rebuilt by [Ref.refresh]/[Ref.invalidate] (if true)
+  /// or instead by [Ref.watch] (if false).
+  /// This changes the default behavior of [when] and sets the [isReloading]/
+  /// [isRefreshing] flags accordingly.
   AsyncValue<T> copyWithPrevious(
     AsyncValue<T> previous, {
-    bool seamless = true,
+    bool isRefesh = true,
   });
 
   /// The opposite of [copyWithPrevious], reverting to the raw [AsyncValue]
@@ -329,7 +318,7 @@ class AsyncData<T> extends AsyncValue<T> {
   @override
   AsyncData<T> copyWithPrevious(
     AsyncValue<T> previous, {
-    bool seamless = true,
+    bool isRefesh = true,
   }) {
     return this;
   }
@@ -383,9 +372,9 @@ class AsyncLoading<T> extends AsyncValue<T> {
   @override
   AsyncValue<T> copyWithPrevious(
     AsyncValue<T> previous, {
-    bool seamless = true,
+    bool isRefesh = true,
   }) {
-    if (seamless) {
+    if (isRefesh) {
       return previous.map(
         data: (d) => AsyncData._(
           d.value,
@@ -477,7 +466,7 @@ class AsyncError<T> extends AsyncValue<T> {
   @override
   AsyncError<T> copyWithPrevious(
     AsyncValue<T> previous, {
-    bool seamless = true,
+    bool isRefesh = true,
   }) {
     return AsyncError._(
       error,

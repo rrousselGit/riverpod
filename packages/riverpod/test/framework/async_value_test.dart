@@ -45,7 +45,7 @@ void main() {
           .copyWithPrevious(
             const AsyncLoading<int>().copyWithPrevious(
               const AsyncError('err', StackTrace.empty),
-              seamless: false,
+              isRefesh: false,
             ),
           )
           .unwrapPrevious(),
@@ -89,16 +89,16 @@ void main() {
     group('with seamless: false', () {
       test('with AsyncLoading, is identical to the incoming AsyncLoading', () {
         final incomingLoading = const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(42), seamless: false);
+            .copyWithPrevious(const AsyncData(42), isRefesh: false);
         final result = const AsyncLoading<int>()
-            .copyWithPrevious(incomingLoading, seamless: false);
+            .copyWithPrevious(incomingLoading, isRefesh: false);
 
         expect(result, same(incomingLoading));
       });
 
       test('with AsyncData, sets value and hasValue', () {
         final result = const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(42), seamless: false);
+            .copyWithPrevious(const AsyncData(42), isRefesh: false);
 
         expect(result, isA<AsyncLoading<int>>());
         expect(result.hasValue, true);
@@ -115,7 +115,7 @@ void main() {
         final error = const AsyncError<int>(Object(), StackTrace.empty)
             .copyWithPrevious(const AsyncData(42));
         final result =
-            const AsyncLoading<int>().copyWithPrevious(error, seamless: false);
+            const AsyncLoading<int>().copyWithPrevious(error, isRefesh: false);
 
         expect(result, isA<AsyncLoading<int>>());
         expect(result.hasValue, true);
@@ -172,7 +172,7 @@ void main() {
         test('with AsyncLoading', () {
           expect(
             const AsyncData<int>(42)
-                .copyWithPrevious(const AsyncLoading<int>(), seamless: true),
+                .copyWithPrevious(const AsyncLoading<int>(), isRefesh: true),
             const AsyncData<int>(42),
           );
         });
@@ -294,7 +294,7 @@ void main() {
     );
     expect(
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData<int>(42), seamless: false)
+          .copyWithPrevious(const AsyncData<int>(42), isRefesh: false)
           .isRefreshing,
       false,
     );
@@ -310,7 +310,7 @@ void main() {
       const AsyncLoading<int>()
           .copyWithPrevious(
             const AsyncError<int>('err', StackTrace.empty),
-            seamless: false,
+            isRefesh: false,
           )
           .isRefreshing,
       false,
@@ -335,7 +335,7 @@ void main() {
     );
     expect(
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData<int>(42), seamless: false)
+          .copyWithPrevious(const AsyncData<int>(42), isRefesh: false)
           .isReloading,
       true,
     );
@@ -351,7 +351,7 @@ void main() {
       const AsyncLoading<int>()
           .copyWithPrevious(
             const AsyncError<int>('err', StackTrace.empty),
-            seamless: false,
+            isRefesh: false,
           )
           .isReloading,
       true,
@@ -567,7 +567,7 @@ void main() {
       );
       expect(
         const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(42), seamless: false)
+            .copyWithPrevious(const AsyncData(42), isRefesh: false)
             .when(
               data: (value) => throw Error(),
               error: (a, b) => throw Error(),
@@ -589,7 +589,7 @@ void main() {
         const AsyncLoading<int>()
             .copyWithPrevious(
               const AsyncError(42, StackTrace.empty),
-              seamless: false,
+              isRefesh: false,
             )
             .when(
               data: (value) => throw Error(),
@@ -620,7 +620,7 @@ void main() {
       );
       expect(
         const AsyncError<int>('err', StackTrace.empty)
-            .copyWithPrevious(const AsyncData(42), seamless: false)
+            .copyWithPrevious(const AsyncData(42), isRefesh: false)
             .when(
               data: (value) => throw Error(),
               error: (a, b) => a,
@@ -651,7 +651,7 @@ void main() {
       );
       expect(
         const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(42), seamless: false)
+            .copyWithPrevious(const AsyncData(42), isRefesh: false)
             .when(
               skipLoadingOnRefresh: false,
               data: (value) => throw Error(),
@@ -675,7 +675,7 @@ void main() {
         const AsyncLoading<int>()
             .copyWithPrevious(
               const AsyncError(42, StackTrace.empty),
-              seamless: false,
+              isRefesh: false,
             )
             .when(
               skipLoadingOnRefresh: false,
@@ -709,7 +709,7 @@ void main() {
       );
       expect(
         const AsyncError<int>('err', StackTrace.empty)
-            .copyWithPrevious(const AsyncData(42), seamless: false)
+            .copyWithPrevious(const AsyncData(42), isRefesh: false)
             .when(
               skipLoadingOnRefresh: false,
               data: (value) => throw Error(),
@@ -741,7 +741,7 @@ void main() {
       );
       expect(
         const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(42), seamless: false)
+            .copyWithPrevious(const AsyncData(42), isRefesh: false)
             .when(
               skipLoadingOnReload: true,
               data: (value) => value,
@@ -765,7 +765,7 @@ void main() {
         const AsyncLoading<int>()
             .copyWithPrevious(
               const AsyncError('err', StackTrace.empty),
-              seamless: false,
+              isRefesh: false,
             )
             .when(
               skipLoadingOnReload: true,
@@ -799,7 +799,7 @@ void main() {
       );
       expect(
         const AsyncError<int>('err', StackTrace.empty)
-            .copyWithPrevious(const AsyncData(42), seamless: false)
+            .copyWithPrevious(const AsyncData(42), isRefesh: false)
             .when(
               skipLoadingOnReload: true,
               data: (value) => throw Error(),
@@ -833,7 +833,7 @@ void main() {
       );
       expect(
         const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(42), seamless: false)
+            .copyWithPrevious(const AsyncData(42), isRefesh: false)
             .when(
               skipLoadingOnReload: true,
               skipLoadingOnRefresh: false,
@@ -859,7 +859,7 @@ void main() {
         const AsyncLoading<int>()
             .copyWithPrevious(
               const AsyncError('err', StackTrace.empty),
-              seamless: false,
+              isRefesh: false,
             )
             .when(
               skipLoadingOnReload: true,
@@ -896,7 +896,7 @@ void main() {
       );
       expect(
         const AsyncError<int>('err', StackTrace.empty)
-            .copyWithPrevious(const AsyncData(42), seamless: false)
+            .copyWithPrevious(const AsyncData(42), isRefesh: false)
             .when(
               skipLoadingOnReload: true,
               skipLoadingOnRefresh: false,
@@ -933,7 +933,7 @@ void main() {
 
       expect(
         const AsyncError<int>('err', StackTrace.empty)
-            .copyWithPrevious(const AsyncData(42), seamless: false)
+            .copyWithPrevious(const AsyncData(42), isRefesh: false)
             .when(
               skipError: true,
               data: (value) => value,
@@ -1283,7 +1283,7 @@ void main() {
     );
     expect(
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(42), seamless: true)
+          .copyWithPrevious(const AsyncData(42), isRefesh: true)
           .requireValue,
       42,
     );
@@ -1292,14 +1292,14 @@ void main() {
           .copyWithPrevious(
             const AsyncError<int>('err', StackTrace.empty)
                 .copyWithPrevious(const AsyncData(42)),
-            seamless: true,
+            isRefesh: true,
           )
           .requireValue,
       42,
     );
     expect(
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(42), seamless: true)
+          .copyWithPrevious(const AsyncData(42), isRefesh: true)
           .requireValue,
       42,
     );
@@ -1349,7 +1349,7 @@ void main() {
     );
     expect(
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(42), seamless: false)
+          .copyWithPrevious(const AsyncData(42), isRefesh: false)
           .toString(),
       'AsyncLoading<int>(value: 42)',
     );
