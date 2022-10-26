@@ -15,12 +15,6 @@ part of '../framework.dart';
 @internal
 typedef Create<T, R extends Ref> = T Function(R ref);
 
-/// A callback used by providers to listen a provider
-///
-/// The parameter [prev] can be used as the last state
-/// and [next] can be used as the current state
-@internal
-typedef ProviderListener = void Function(Object? prev, Object? next);
 
 /// A callback used to catches errors
 @internal
