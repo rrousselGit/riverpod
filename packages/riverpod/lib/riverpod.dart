@@ -32,8 +32,7 @@ export 'src/framework.dart'
         Create,
         Node,
         ProviderElementProxy,
-        OnError,
-        ProviderListener;
+        OnError;
 
 export 'src/future_provider.dart';
 
