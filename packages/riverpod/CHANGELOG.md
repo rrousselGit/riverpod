@@ -19,6 +19,7 @@
   rebuilds from `ref.watch` vs rebuilds from `ref.refresh`.
 
 - Fixes a stackoverflow on Web caused by Dart (thanks to @leehack)
+- Fixes a bug when the root ProviderContainer is not associated with a ProviderScope.
 
 ## 2.0.2
 

@@ -25,6 +25,13 @@ abstract class Refreshable<T> implements ProviderListenable<T> {
 abstract class AlwaysAliveRefreshable<T>
     implements Refreshable<T>, AlwaysAliveProviderListenable<T> {}
 
+/// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
+/// if it is safe to modify a provider.
+///
+/// This corresponds to all the widgets that a [Provider] is associated with.
+@internal
+void Function()? debugCanModifyProviders;
+
 /// An internal class that handles the state of a provider.
 ///
 /// Do not use.
@@ -473,7 +480,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 ''',
         );
 
-        container.debugCanModifyProviders?.call();
+        debugCanModifyProviders?.call();
         return true;
       }(),
       '',

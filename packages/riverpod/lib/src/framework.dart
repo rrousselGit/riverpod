@@ -22,3 +22,4 @@ part 'framework/proxy_provider_listenable.dart';
 part 'framework/ref.dart';
 part 'framework/selector.dart';
 part 'framework/scheduler.dart';
+part 'framework/value_provider.dart';
