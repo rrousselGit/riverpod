@@ -1,3 +1,8 @@
+## [Unreleased patch]
+
+- Improved the error message when trying to modify a provider inside a
+  widget life-cycle.
+
 ## 2.0.2
 
  - **FIX**: Fixed an assert error if a `family` depends on itself while specifying `dependencies`. (#1721).

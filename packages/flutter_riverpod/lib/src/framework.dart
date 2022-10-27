@@ -356,7 +356,40 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
   }
 
   void _debugCanModifyProviders() {
-    markNeedsBuild();
+    try {
+      markNeedsBuild();
+    } catch (err) {
+      throw FlutterError.fromParts([
+        ErrorSummary(
+          'Tried to modify a provider while the widget tree was building.',
+        ),
+        ErrorDescription(
+          '''
+If you are encountering this error, chances are you tried to modify a provider
+in a widget life-cycle, such as but not limited to:
+- build
+- initState
+- dispose
+- didUpdateWidget
+- didChangeDepedencies
+
+Modifying a provider inside those life-cycles is not allowed, as it could
+lead to an inconsistent UI state. For example, two widgets could listen to the
+same provider, but incorrectly receive different states.
+
+
+To fix this problem, you have one of two solutions:
+- (preferred) Move the logic for modifying your provider outside of a widget
+  life-cycle. For example, maybe you could update your provider inside a button's
+  onPressed instead.
+
+- Delay your modification, such as by encasuplating the modification
+  in a `Future(() {...})`.
+  This will perform your upddate after the widget tree is done building.
+''',
+        ),
+      ]);
+    }
   }
 
   @override
