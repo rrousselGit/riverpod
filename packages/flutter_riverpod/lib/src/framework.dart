@@ -1,9 +1,12 @@
+// ignore_for_file: invalid_use_of_internal_member
+
 import 'package:flutter/foundation.dart' hide describeIdentity;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
-import 'package:riverpod/riverpod.dart';
+
+import 'internals.dart';
 
 /// {@template riverpod.providerscope}
 /// A widget that stores the state of providers.
@@ -299,14 +302,10 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
   @override
   void mount(Element? parent, Object? newSlot) {
     if (kDebugMode) {
-      _containerOf(widget).debugCanModifyProviders = _debugCanModifyProviders;
+      debugCanModifyProviders ??= _debugCanModifyProviders;
     }
-    assert(
-      _containerOf(widget).vsyncOverride == null,
-      'The ProviderContainer was already associated with a different widget',
-    );
-    _containerOf(widget).vsyncOverride = _flutterVsync;
 
+    vsyncOverride ??= _flutterVsync;
     super.mount(parent, newSlot);
   }
 
@@ -320,24 +319,6 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
       }(),
       '',
     );
-  }
-
-  @override
-  void update(ProxyWidget newWidget) {
-    if (kDebugMode) {
-      _containerOf(widget).debugCanModifyProviders = null;
-      _containerOf(newWidget).debugCanModifyProviders =
-          _debugCanModifyProviders;
-    }
-
-    _containerOf(widget).vsyncOverride = null;
-    assert(
-      _containerOf(newWidget).vsyncOverride == null,
-      'The ProviderContainer was already associated with a different widget',
-    );
-    _containerOf(newWidget).vsyncOverride = _flutterVsync;
-
-    super.update(newWidget);
   }
 
   void _flutterVsync(void Function() task) {
@@ -395,11 +376,14 @@ To fix this problem, you have one of two solutions:
   @override
   void unmount() {
     _mounted = false;
-    if (kDebugMode) {
-      _containerOf(widget).debugCanModifyProviders = null;
+    if (kDebugMode && debugCanModifyProviders == _debugCanModifyProviders) {
+      debugCanModifyProviders = null;
     }
 
-    _containerOf(widget).vsyncOverride = null;
+    if (vsyncOverride == _flutterVsync) {
+      vsyncOverride = null;
+    }
+
     super.unmount();
   }
 

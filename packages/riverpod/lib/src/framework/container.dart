@@ -2,10 +2,6 @@ part of '../framework.dart';
 
 ProviderBase? _circularDependencyLock;
 
-void _defaultVsync(void Function() task) {
-  Future(task);
-}
-
 int _debugNextId = 0;
 
 class _FamilyOverrideRef {
@@ -162,17 +158,21 @@ class ProviderContainer implements Node {
   /// A function that controls the refresh rate of providers.
   ///
   /// Defaults to refreshing providers at the end of the next event-loop.
+  @Deprecated('Will be removed in 3.0.0')
+  @internal
   void Function(void Function() task) get vsync {
     return vsyncOverride ?? _defaultVsync;
   }
 
   /// A way to override [vsync], used by Flutter to synchronize a container
   /// with the widget tree.
+  @Deprecated('Will be removed in 3.0.0')
+  @internal
   void Function(void Function() task)? vsyncOverride;
 
   /// The object that handles when providers are refreshed and disposed.
   late final _ProviderScheduler _scheduler =
-      _parent?._scheduler ?? _ProviderScheduler(vsync);
+      _parent?._scheduler ?? _ProviderScheduler();
 
   late final String _debugId;
 
@@ -223,6 +223,8 @@ class ProviderContainer implements Node {
   /// if it is safe to modify a provider.
   ///
   /// This corresponds to all the widgets that a [Provider] is associated with.
+  @Deprecated('Will be removed in 3.0.0')
+  @internal
   void Function()? debugCanModifyProviders;
 
   /// Whether [dispose] was called or not.

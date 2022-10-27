@@ -1,7 +1,9 @@
+// ignore_for_file: invalid_use_of_internal_member
+
 import 'dart:async';
 
 import 'package:flutter/material.dart' hide Listener;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -242,13 +244,11 @@ void main() {
     expect(find.text('1'), findsOneWidget);
   });
 
-  testWidgets(
-      'UncontrolledProviderScope gracefully handles ProviderContainer.vsync',
+  testWidgets('UncontrolledProviderScope gracefully handles vsync',
       (tester) async {
     final container = createContainer();
-    final container2 = createContainer();
 
-    expect(container.vsyncOverride, null);
+    expect(vsyncOverride, null);
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -257,31 +257,19 @@ void main() {
       ),
     );
 
-    expect(container.vsyncOverride, isNotNull);
-
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container2,
-        child: Container(),
-      ),
-    );
-
-    expect(container.vsyncOverride, null);
-    expect(container2.vsyncOverride, isNotNull);
+    expect(vsyncOverride, isNotNull);
 
     await tester.pumpWidget(Container());
 
-    expect(container.vsyncOverride, null);
-    expect(container2.vsyncOverride, null);
+    expect(vsyncOverride, null);
   });
 
   testWidgets(
-      'UncontrolledProviderScope gracefully handles ProviderContainer.debugCanModifyProviders',
+      'UncontrolledProviderScope gracefully handles debugCanModifyProviders',
       (tester) async {
     final container = createContainer();
-    final container2 = createContainer();
 
-    expect(container.debugCanModifyProviders, null);
+    expect(debugCanModifyProviders, null);
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -290,22 +278,11 @@ void main() {
       ),
     );
 
-    expect(container.debugCanModifyProviders, isNotNull);
-
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container2,
-        child: Container(),
-      ),
-    );
-
-    expect(container.debugCanModifyProviders, null);
-    expect(container2.debugCanModifyProviders, isNotNull);
+    expect(debugCanModifyProviders, isNotNull);
 
     await tester.pumpWidget(Container());
 
-    expect(container.debugCanModifyProviders, null);
-    expect(container2.debugCanModifyProviders, null);
+    expect(debugCanModifyProviders, null);
   });
 
   testWidgets('ref.refresh forces a provider to refresh', (tester) async {
