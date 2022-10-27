@@ -81,7 +81,7 @@ void main() {
         final container = createContainer();
         Object? err;
         final provider = Provider<int>((ref) {
-          if (ref.watch(dep.state).state) {
+          if (ref.watch(dep)) {
             try {
               ref.state;
             } catch (e) {
@@ -94,7 +94,7 @@ void main() {
         container.read(provider);
         expect(err, isNull);
 
-        container.read(dep.state).state = true;
+        container.read(dep.notifier).state = true;
         container.read(provider);
 
         expect(err, isStateError);

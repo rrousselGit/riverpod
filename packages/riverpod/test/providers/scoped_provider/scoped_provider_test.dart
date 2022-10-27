@@ -227,7 +227,7 @@ void main() {
       final listener = Listener<int>();
       final provider = StateProvider((ref) => 1);
       final provider2 = Provider((ref) {
-        return ref.watch(provider.state).state * 2;
+        return ref.watch(provider) * 2;
       });
       final root = createContainer();
       final container = createContainer(parent: root, overrides: [provider2]);
@@ -236,7 +236,7 @@ void main() {
 
       verifyOnly(listener, listener(null, 2));
 
-      root.read(provider.state).state++;
+      root.read(provider.notifier).state++;
 
       await container.pump();
 

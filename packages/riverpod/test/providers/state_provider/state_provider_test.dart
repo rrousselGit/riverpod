@@ -58,11 +58,13 @@ void main() {
 
     container.listen(provider.notifier, (previous, next) {});
 
+    // ignore: deprecated_member_use_from_same_package
     container.read(provider.state);
     await container.pump();
 
     verifyZeroInteractions(listener);
 
+    // ignore: deprecated_member_use_from_same_package
     container.listen(provider.state, listener);
 
     container.read(provider.notifier).state++;
@@ -83,13 +85,13 @@ void main() {
       overrides: [dep.overrideWithValue(42)],
     );
 
-    expect(container.read(provider.state).state, 42);
+    expect(container.read(provider), 42);
     expect(container.read(provider.notifier).state, 42);
 
     expect(root.getAllProviderElements(), isEmpty);
   });
 
-  group('ref.state', () {
+  group('ref.controller', () {
     test('can read and change current value', () {
       final container = createContainer();
       final listener = Listener<int>();
@@ -99,17 +101,14 @@ void main() {
         return 0;
       });
 
-      container.listen<StateController<int>>(
-        provider.state,
-        (prev, value) => listener(prev?.state, value.state),
-      );
+      container.listen<int>(provider, listener);
       verifyZeroInteractions(listener);
 
-      expect(ref.controller, container.read(provider.state));
+      expect(ref.controller, container.read(provider.notifier));
 
       ref.controller.state = 42;
 
-      verifyOnly(listener, listener(42, 42));
+      verifyOnly(listener, listener(0, 42));
 
       expect(ref.controller.state, 42);
     });
@@ -136,7 +135,7 @@ void main() {
       final container = createContainer();
       Object? err;
       final provider = StateProvider<int>((ref) {
-        if (ref.watch(dep.state).state) {
+        if (ref.watch(dep)) {
           try {
             ref.controller;
           } catch (e) {
@@ -149,7 +148,7 @@ void main() {
       container.read(provider);
       expect(err, isNull);
 
-      container.read(dep.state).state = true;
+      container.read(dep.notifier).state = true;
       container.read(provider);
 
       expect(err, isStateError);
@@ -180,11 +179,11 @@ void main() {
       final container = createContainer();
 
       expect(container.read(provider), 1);
-      expect(container.read(provider.state).debugState, 1);
+      expect(container.read(provider.notifier).debugState, 1);
 
       initialValue = 42;
 
-      expect(container.refresh(provider.state).debugState, 42);
+      expect(container.refresh(provider.notifier).debugState, 42);
       expect(container.read(provider), 42);
     },
   );
@@ -195,13 +194,13 @@ void main() {
     final provider = StateProvider<int>((ref) => result);
 
     final notifier = container.read(provider.notifier);
-    expect(container.read(provider.state).state, 0);
+    expect(container.read(provider), 0);
     expect(notifier.state, 0);
 
     result = 42;
     expect(container.refresh(provider), 42);
 
-    expect(container.read(provider.state).state, 42);
+    expect(container.read(provider), 42);
     expect(container.read(provider.notifier), isNot(notifier));
     expect(container.read(provider.notifier).state, 42);
   });
@@ -213,7 +212,7 @@ void main() {
       final container = createContainer(parent: root, overrides: [provider]);
 
       expect(container.read(provider.notifier).state, 0);
-      expect(container.read(provider.state).state, 0);
+      expect(container.read(provider), 0);
       expect(root.getAllProviderElements(), isEmpty);
       expect(
         container.getAllProviderElements(),
@@ -232,7 +231,7 @@ void main() {
     //   ]);
 
     //   expect(container.read(provider.notifier).state, 42);
-    //   expect(container.read(provider.state).state, 42);
+    //   expect(container.read(provider), 42);
     //   expect(root.getAllProviderElements(), isEmpty);
     //   expect(
     //     container.getAllProviderElements(),
@@ -258,7 +257,7 @@ void main() {
       );
 
       expect(container.read(provider.notifier).state, 42);
-      expect(container.read(provider.state).state, 42);
+      expect(container.read(provider), 42);
       expect(root.getAllProviderElements(), isEmpty);
       expect(
         container.getAllProviderElements(),
@@ -287,7 +286,7 @@ void main() {
 
   //     verifyOnly(listener, listener(null, 42));
 
-  //     container.read(provider.state).state++;
+  //     container.read(provider.notifier).state++;
 
   //     verifyOnly(listener, listener(43, 43));
   //   },
@@ -310,7 +309,7 @@ void main() {
 
     //   expect(container.read(provider.notifier), override);
     //   expect(container.read(provider), 21);
-    //   expect(container2.read(provider.state).state, 42);
+    //   expect(container2.read(provider), 42);
     // });
 
     test(
@@ -335,24 +334,24 @@ void main() {
   test('Expose a state and allows modifying it', () {
     final container = createContainer();
     final provider = StateProvider((ref) => 0);
-    final listener = Listener<StateController<int>>();
+    final listener = Listener<int>();
 
-    final controller = container.read(provider.state);
+    final controller = container.read(provider.notifier);
     expect(controller.state, 0);
 
-    container.listen(provider.state, listener, fireImmediately: true);
-    verifyOnly(listener, listener(null, controller));
+    container.listen(provider, listener, fireImmediately: true);
+    verifyOnly(listener, listener(null, 0));
 
     controller.state = 42;
 
-    verifyOnly(listener, listener(controller, controller));
+    verifyOnly(listener, listener(0, 42));
   });
 
   test('disposes the controller when the container is disposed', () {
     final container = createContainer();
     final provider = StateProvider((ref) => 0);
 
-    final controller = container.read(provider.state);
+    final controller = container.read(provider.notifier);
 
     expect(controller.mounted, true);
 
@@ -364,12 +363,12 @@ void main() {
   test('disposes the controller when the provider is re-evaluated', () {
     final container = createContainer();
     final other = StateProvider((ref) => 0);
-    final provider = StateProvider((ref) => ref.watch(other.state).state * 2);
+    final provider = StateProvider((ref) => ref.watch(other) * 2);
 
-    final otherController = container.read(other.state);
-    final firstController = container.read(provider.state);
+    final otherController = container.read(other.notifier);
+    final firstController = container.read(provider.notifier);
 
-    final sub = container.listen(provider.state, (_, __) {});
+    final sub = container.listen(provider.notifier, (_, __) {});
 
     expect(sub.read(), firstController);
     expect(firstController.mounted, true);
@@ -398,7 +397,7 @@ void main() {
         (_, __) => callCount++,
       );
 
-      final controller = container.read(provider.state);
+      final controller = container.read(provider.notifier);
 
       expect(sub.read(), controller);
       expect(callCount, 0);
@@ -408,9 +407,9 @@ void main() {
       await container.pump();
       expect(callCount, 0);
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
 
-      final controller2 = container.read(provider.state);
+      final controller2 = container.read(provider.notifier);
       expect(controller2, isNot(controller));
 
       await container.pump();
@@ -434,7 +433,7 @@ void main() {
         (_, __) => callCount++,
       );
 
-      final controller = container.read(provider.state);
+      final controller = container.read(provider.notifier);
 
       expect(sub.read(), controller);
       expect(callCount, 0);
@@ -444,9 +443,9 @@ void main() {
       await container.pump();
       expect(callCount, 0);
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
 
-      final controller2 = container.read(provider.state);
+      final controller2 = container.read(provider.notifier);
       expect(controller2, isNot(controller));
 
       await container.pump();
@@ -458,7 +457,7 @@ void main() {
       final container = createContainer();
       final provider = StateProvider.autoDispose((ref) => 0);
 
-      final sub = container.listen(provider.state, (_, __) {});
+      final sub = container.listen(provider.notifier, (_, __) {});
       final first = sub.read();
 
       first.state++;
@@ -468,7 +467,7 @@ void main() {
       sub.close();
       await container.pump();
 
-      final second = container.read(provider.state);
+      final second = container.read(provider.notifier);
 
       expect(first.mounted, false);
       expect(second, isNot(first));
@@ -488,8 +487,8 @@ void main() {
       final provider =
           StateProvider.autoDispose.family<int, int>((ref, id) => id);
 
-      final sub = container.listen(provider(0).state, (_, __) {});
-      final sub2 = container.listen(provider(42).state, (_, __) {});
+      final sub = container.listen(provider(0).notifier, (_, __) {});
+      final sub2 = container.listen(provider(42).notifier, (_, __) {});
       final first = sub.read();
 
       first.state++;
@@ -500,7 +499,7 @@ void main() {
       sub.close();
       await container.pump();
 
-      final second = container.read(provider(0).state);
+      final second = container.read(provider(0).notifier);
 
       expect(first.mounted, false);
       expect(second, isNot(first));

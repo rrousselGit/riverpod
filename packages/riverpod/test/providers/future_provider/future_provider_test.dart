@@ -264,7 +264,7 @@ void main() {
 
     verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
@@ -286,7 +286,7 @@ void main() {
 
     verifyOnly(listener, listener(any, any));
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
@@ -455,15 +455,14 @@ void main() {
     test('update dependents when the future changes', () async {
       final futureProvider = StateProvider((ref) => Future.value(42));
       // a FutureProvider that can rebuild with a new future
-      final provider =
-          FutureProvider<int>((ref) => ref.watch(futureProvider.state).state);
+      final provider = FutureProvider<int>((ref) => ref.watch(futureProvider));
       var callCount = 0;
       final dependent = Provider<Future<int>>((ref) {
         callCount++;
         return ref.watch(provider.future);
       });
       final container = createContainer();
-      final futureController = container.read(futureProvider.state);
+      final futureController = container.read(futureProvider.notifier);
 
       await expectLater(container.read(dependent), completion(42));
       expect(callCount, 1);
@@ -484,7 +483,7 @@ void main() {
       // a FutureProvider that can rebuild with a new future
       final provider = FutureProvider.autoDispose(
         name: 'provider',
-        (ref) => ref.watch(futureProvider.state).state,
+        (ref) => ref.watch(futureProvider),
       );
       var callCount = 0;
       final dependent = Provider.autoDispose(name: 'dependent', (ref) {
@@ -493,7 +492,7 @@ void main() {
       });
       final container = createContainer();
 
-      final futureController = container.read(futureProvider.state);
+      final futureController = container.read(futureProvider.notifier);
 
       final sub = container.listen(dependent, (_, __) {});
 

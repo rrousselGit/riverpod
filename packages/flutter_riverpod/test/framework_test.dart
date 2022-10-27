@@ -195,7 +195,7 @@ void main() {
           container: container,
           child: Consumer(
             builder: (context, ref, _) {
-              ref.watch(provider.state).state++;
+              ref.watch(provider.notifier).state++;
               return Container();
             },
           ),
@@ -212,7 +212,7 @@ void main() {
       (tester) async {
     final container = createContainer();
     final dep = StateProvider((ref) => 0);
-    final provider = Provider((ref) => ref.watch(dep.state).state);
+    final provider = Provider((ref) => ref.watch(dep));
 
     // reading `provider` but not listening to it, so that it is active
     // but with no listener – causing "ref.watch" inside Consumer to flush it
@@ -222,7 +222,7 @@ void main() {
     // yet, so the WidgetTester is preventing the scheduler from start microtasks
     await tester.runAsync<void>(() async {
       // marking `provider` as out of date
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
     });
 
     await tester.pumpWidget(
@@ -691,7 +691,7 @@ void main() {
           navigatorKey: key,
           home: Consumer(
             builder: (context, ref, _) {
-              final count = ref.watch(counterProvider.state).state;
+              final count = ref.watch(counterProvider);
               return Text('$count');
             },
           ),
@@ -701,7 +701,7 @@ void main() {
 
     expect(find.text('0'), findsOneWidget);
 
-    container.read(counterProvider.state).state++;
+    container.read(counterProvider.notifier).state++;
     await tester.pump();
 
     expect(find.text('1'), findsOneWidget);
@@ -712,7 +712,7 @@ void main() {
         pageBuilder: (_, __, ___) {
           return Consumer(
             builder: (context, ref, _) {
-              final count = ref.watch(counterProvider.state).state;
+              final count = ref.watch(counterProvider);
               return Text('new $count');
             },
           );

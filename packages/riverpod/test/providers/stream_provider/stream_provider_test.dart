@@ -175,7 +175,7 @@ void main() {
       'when going from AsyncLoading to AsyncLoading, does not notify listeners',
       () async {
     final dep = StateProvider((ref) => Stream.value(42));
-    final provider = StreamProvider((ref) => ref.watch(dep.state).state);
+    final provider = StreamProvider((ref) => ref.watch(dep));
     final container = createContainer();
     final listener = Listener<AsyncValue<int>>();
     final controller = StreamController<int>();
@@ -190,7 +190,7 @@ void main() {
       const AsyncData<int>(42),
     );
 
-    container.read(dep.state).state = controller.stream;
+    container.read(dep.notifier).state = controller.stream;
     container.listen(provider, listener, fireImmediately: true);
 
     verifyOnly(
@@ -202,7 +202,7 @@ void main() {
       ),
     );
 
-    container.read(dep.state).state = Stream.value(21);
+    container.read(dep.notifier).state = Stream.value(21);
 
     verifyNoMoreInteractions(listener);
 
@@ -573,7 +573,7 @@ void main() {
 
     verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
@@ -593,7 +593,7 @@ void main() {
 
     verifyOnly(listener, listener(any, any));
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);
@@ -614,7 +614,7 @@ void main() {
 
     verifyOnly(listener, listener(any, any));
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);

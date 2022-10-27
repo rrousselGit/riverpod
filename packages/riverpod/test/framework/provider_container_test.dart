@@ -194,7 +194,7 @@ void main() {
         () async {
       final container = createContainer();
       final dep = StateProvider((ref) => 0);
-      final provider = Provider((ref) => ref.watch(dep.state).state);
+      final provider = Provider((ref) => ref.watch(dep));
       final listener = Listener<int>();
       final child = createContainer(parent: container);
 
@@ -204,7 +204,7 @@ void main() {
 
       child.dispose();
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
       await container.pump();
 
       verifyOnly(listener, listener(0, 1));
@@ -232,18 +232,18 @@ void main() {
         'flushes listened-to providers even if they have no external listeners (with ProviderListenable)',
         () async {
       final dep = StateProvider((ref) => 0);
-      final provider = Provider((ref) => ref.watch(dep.state).state);
+      final provider = Provider((ref) => ref.watch(dep));
       final another = StateProvider<int>((ref) {
         ref.listen(provider, (prev, value) => ref.controller.state++);
         return 0;
       });
       final container = createContainer();
 
-      expect(container.read(another.state).state, 0);
+      expect(container.read(another), 0);
 
-      container.read(dep.state).state = 42;
+      container.read(dep.notifier).state = 42;
 
-      expect(container.read(another.state).state, 1);
+      expect(container.read(another), 1);
     });
 
     group('.pump', () {
@@ -251,8 +251,8 @@ void main() {
           'waits for providers to rebuild or get disposed, no matter from which container they are associated in the graph',
           () async {
         final dep = StateProvider((ref) => 0);
-        final a = Provider((ref) => ref.watch(dep.state).state);
-        final b = Provider((ref) => ref.watch(dep.state).state);
+        final a = Provider((ref) => ref.watch(dep));
+        final b = Provider((ref) => ref.watch(dep));
         final aListener = Listener<int>();
         final bListener = Listener<int>();
 
@@ -265,13 +265,13 @@ void main() {
         verifyOnly(aListener, aListener(null, 0));
         verifyOnly(bListener, bListener(null, 0));
 
-        root.read(dep.state).state++;
+        root.read(dep.notifier).state++;
         await root.pump();
 
         verifyOnly(aListener, aListener(0, 1));
         verifyOnly(bListener, bListener(0, 1));
 
-        scoped.read(dep.state).state++;
+        scoped.read(dep.notifier).state++;
         await scoped.pump();
 
         verifyOnly(aListener, aListener(1, 2));
@@ -469,7 +469,7 @@ void main() {
 
       verifyZeroInteractions(listener);
 
-      container.read(provider.state).state++;
+      container.read(provider.notifier).state++;
 
       verifyOnly(listener, listener(any, any));
     });
@@ -560,14 +560,14 @@ void main() {
         final dep = StateProvider((ref) => 0);
         final provider = Provider((ref) {
           buildCount++;
-          return ref.watch(dep.state).state;
+          return ref.watch(dep);
         });
 
         container.read(provider);
 
         expect(buildCount, 1);
 
-        container.read(dep.state).state++;
+        container.read(dep.notifier).state++;
         await container.pump();
 
         expect(buildCount, 1);

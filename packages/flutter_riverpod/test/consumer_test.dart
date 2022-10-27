@@ -125,7 +125,7 @@ void main() {
         child: Consumer(
           builder: (c, ref, _) {
             buildCount++;
-            final state = ref.watch(stateProvider.state).state;
+            final state = ref.watch(stateProvider);
             final value =
                 state == 0 ? ref.watch(provider0) : ref.watch(provider1);
 
@@ -167,7 +167,7 @@ void main() {
     expect(buildCount, 2);
 
     // changing the provider that computed is subscribed to
-    container.read(stateProvider.state).state = 1;
+    container.read(stateProvider.notifier).state = 1;
     await tester.pump();
 
     expect(buildCount, 3);
@@ -209,7 +209,7 @@ void main() {
         child: Consumer(
           builder: (c, ref, _) {
             buildCount++;
-            final state = ref.watch(stateProvider.state).state;
+            final state = ref.watch(stateProvider);
             final result = state == 0 //
                 ? ref.watch(provider0)
                 : ref.watch(provider1);
@@ -248,7 +248,7 @@ void main() {
     expect(buildCount, 2);
 
     // changing the provider that computed is subscribed to
-    container.read(stateProvider.state).state = 1;
+    container.read(stateProvider.notifier).state = 1;
     await tester.pump();
 
     expect(buildCount, 3);
