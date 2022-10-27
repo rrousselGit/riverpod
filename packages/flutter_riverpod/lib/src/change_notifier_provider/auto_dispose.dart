@@ -44,9 +44,15 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 
 /// The element of [AutoDisposeChangeNotifierProvider].
 class AutoDisposeChangeNotifierProviderElement<
-        NotifierT extends ChangeNotifier?> = ChangeNotifierProviderElement<NotifierT>
+        NotifierT extends ChangeNotifier?>
+    extends ChangeNotifierProviderElement<NotifierT>
     with AutoDisposeProviderElementMixin<NotifierT>
-    implements AutoDisposeChangeNotifierProviderRef<NotifierT>;
+    implements AutoDisposeChangeNotifierProviderRef<NotifierT> {
+  /// The [ProviderElementBase] for [ChangeNotifier]
+  AutoDisposeChangeNotifierProviderElement._(
+    AutoDisposeChangeNotifierProvider<NotifierT> super.provider,
+  ) : super._();
+}
 
 // ignore: subtype_of_sealed_class
 /// The [Family] of [AutoDisposeChangeNotifierProvider].

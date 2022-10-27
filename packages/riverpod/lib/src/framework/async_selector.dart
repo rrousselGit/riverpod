@@ -65,8 +65,15 @@ mixin AlwaysAliveAsyncSelector<Input>
   }
 }
 
-class _AlwaysAliveAsyncSelector<Input, Output> = _AsyncSelector<Input, Output>
-    with AlwaysAliveProviderListenable<Future<Output>>;
+class _AlwaysAliveAsyncSelector<Input, Output>
+    extends _AsyncSelector<Input, Output>
+    with AlwaysAliveProviderListenable<Future<Output>> {
+  _AlwaysAliveAsyncSelector({
+    required super.provider,
+    required super.future,
+    required super.selector,
+  });
+}
 
 /// An internal class for `ProviderBase.selectAsync`.
 @sealed

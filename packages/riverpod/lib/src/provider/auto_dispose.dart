@@ -31,9 +31,13 @@ class AutoDisposeProvider<T> extends InternalProvider<T> {
 }
 
 /// The element of [AutoDisposeProvider]
-class AutoDisposeProviderElement<T> = ProviderElement<T>
+class AutoDisposeProviderElement<T> extends ProviderElement<T>
     with AutoDisposeProviderElementMixin<T>
-    implements AutoDisposeProviderRef<T>;
+    implements AutoDisposeProviderRef<T> {
+  /// The [ProviderElementBase] for [Provider]
+  AutoDisposeProviderElement._(AutoDisposeProvider<T> super.provider)
+      : super._();
+}
 
 /// The [Family] of [AutoDisposeProvider]
 class AutoDisposeProviderFamily<R, Arg> extends AutoDisposeFamilyBase<

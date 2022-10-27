@@ -16,6 +16,8 @@
 - Add `AsyncValue.copyWithPrevious(..., isRefres: false)` to differentiate
   rebuilds from `ref.watch` vs rebuilds from `ref.refresh`.  
 
+- Fixes a stackoverflow on Web caused by Dart (thanks to @leehack)
+
 ## 2.0.2
 
 - **FIX**: Fixed an assert error if a `family` depends on itself while specifying `dependencies`. (#1721).

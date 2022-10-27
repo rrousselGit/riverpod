@@ -79,6 +79,9 @@ class AutoDisposeAsyncNotifierProviderImpl<
 /// The element of [AutoDisposeAsyncNotifierProvider].
 class AutoDisposeAsyncNotifierProviderElement<
         NotifierT extends AsyncNotifierBase<T>,
-        T> = AsyncNotifierProviderElement<NotifierT, T>
+        T> extends AsyncNotifierProviderElement<NotifierT, T>
     with AutoDisposeProviderElementMixin<AsyncValue<T>>
-    implements AutoDisposeAsyncNotifierProviderRef<T>;
+    implements AutoDisposeAsyncNotifierProviderRef<T> {
+  /// The [ProviderElementBase] for [AsyncNotifierProvider]
+  AutoDisposeAsyncNotifierProviderElement._(super.provider) : super._();
+}
