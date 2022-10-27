@@ -19,6 +19,8 @@ export 'src/framework.dart'
         debugCanModifyProviders,
         vsync,
         vsyncOverride,
+        ValueProviderElement,
+        ValueProvider,
         FamilyCreate,
         AsyncSelector,
         FamilyBase,
