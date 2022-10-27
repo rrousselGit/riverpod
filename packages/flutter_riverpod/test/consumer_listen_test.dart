@@ -99,9 +99,9 @@ void main() {
       container.read(provider.notifier).state++;
 
       verifyInOrder([
-        onChange(1, 1),
-        onChange(2, 2),
-        onChange(3, 3),
+        onChange(0, 1),
+        onChange(1, 2),
+        onChange(2, 3),
       ]);
       verifyNoMoreInteractions(onChange);
     });
