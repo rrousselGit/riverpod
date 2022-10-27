@@ -27,7 +27,7 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
 
   @override
   AutoDisposeStateProviderElement<T> createElement() {
-    return AutoDisposeStateProviderElement._(this);
+    return AutoDisposeStateProviderElement(this);
   }
 
   @override
@@ -38,9 +38,13 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
 }
 
 /// The element of [StateProvider].
-class AutoDisposeStateProviderElement<T> = StateProviderElement<T>
+class AutoDisposeStateProviderElement<T> extends StateProviderElement<T>
     with AutoDisposeProviderElementMixin<T>
-    implements AutoDisposeStateProviderRef<T>;
+    implements AutoDisposeStateProviderRef<T> {
+  /// The [ProviderElementBase] for [StateProvider]
+  AutoDisposeStateProviderElement(AutoDisposeStateProvider<T> super.provider)
+      : super._();
+}
 
 /// The [Family] of [StateProvider].
 class AutoDisposeStateProviderFamily<R, Arg> extends AutoDisposeFamilyBase<

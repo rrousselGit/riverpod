@@ -67,7 +67,7 @@ class AutoDisposeAsyncNotifierProviderImpl<
 
   @override
   AutoDisposeAsyncNotifierProviderElement<NotifierT, T> createElement() {
-    return AutoDisposeAsyncNotifierProviderElement._(this);
+    return AutoDisposeAsyncNotifierProviderElement(this);
   }
 
   @override
@@ -79,6 +79,9 @@ class AutoDisposeAsyncNotifierProviderImpl<
 /// The element of [AutoDisposeAsyncNotifierProvider].
 class AutoDisposeAsyncNotifierProviderElement<
         NotifierT extends AsyncNotifierBase<T>,
-        T> = AsyncNotifierProviderElement<NotifierT, T>
+        T> extends AsyncNotifierProviderElement<NotifierT, T>
     with AutoDisposeProviderElementMixin<AsyncValue<T>>
-    implements AutoDisposeAsyncNotifierProviderRef<T>;
+    implements AutoDisposeAsyncNotifierProviderRef<T> {
+  /// The [ProviderElementBase] for [AsyncNotifierProvider]
+  AutoDisposeAsyncNotifierProviderElement(super.provider) : super._();
+}
