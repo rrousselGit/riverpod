@@ -1228,7 +1228,7 @@ void main() {
 
     final dep = StateProvider((ref) => 0);
     final provider = Provider((ref) {
-      ref.watch(dep.state).state;
+      ref.watch(dep);
       return ref.state = 0;
     });
 
@@ -1236,7 +1236,7 @@ void main() {
 
     verifyOnly(listener, listener(null, 0));
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
     await container.pump();
 
     verifyNoMoreInteractions(listener);

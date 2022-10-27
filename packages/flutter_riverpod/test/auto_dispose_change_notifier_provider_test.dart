@@ -67,7 +67,7 @@ void main() {
     final notifier = TestNotifier();
     final notifier2 = TestNotifier();
     final provider = ChangeNotifierProvider.autoDispose((ref) {
-      return ref.watch(dep.state).state == 0 ? notifier : notifier2;
+      return ref.watch(dep) == 0 ? notifier : notifier2;
     });
     final container = createContainer();
     addTearDown(container.dispose);
@@ -86,7 +86,7 @@ void main() {
     await container.pump();
     expect(callCount, 0);
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
 
     expect(sub.read(), notifier2);
 

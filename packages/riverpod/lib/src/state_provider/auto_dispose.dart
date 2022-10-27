@@ -33,6 +33,10 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
   @override
   late final Refreshable<StateController<T>> notifier = _notifier(this);
 
+  @Deprecated(
+    'Will be removed in 3.0.0. '
+    'Use either `ref.watch(provider)` or `ref.read(provider.notifier)` instead',
+  )
   @override
   late final Refreshable<StateController<T>> state = _state(this);
 }

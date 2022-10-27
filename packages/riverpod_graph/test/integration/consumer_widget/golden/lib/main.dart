@@ -14,12 +14,12 @@ class CounterWidget extends ConsumerWidget {
     return Scaffold(
       body: Consumer(
         builder: (context, ref, _) {
-          final count = ref.watch(counterProvider.state).state;
+          final count = ref.watch(counterProvider);
           return Text('$count');
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => ref.read(counterProvider.state).state++,
+        onPressed: () => ref.read(counterProvider.notifier).state++,
         child: const Icon(Icons.add),
       ),
     );

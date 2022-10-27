@@ -1,5 +1,7 @@
 ## [Unreleased minor]
 
+- Deprecate `StateProvider.state`
+  Instead, use either `ref.watch(stateProvider)` or `ref.read(stateProvider.notifier).state =`
 - Added `Ref.notifyListeners()` to forcibly notify dependents.
   This can be useful for mutable state.
 - Added `@useResult` to `Ref.refresh`/`WidgetRef.refresh`
@@ -14,7 +16,7 @@
 - Doing `ref.watch(futureProvider.future)` can no-longer return a `SynchronousFuture`.
   That behavior could break various `Future` utilities, such as `Future.wait`
 - Add `AsyncValue.copyWithPrevious(..., isRefres: false)` to differentiate
-  rebuilds from `ref.watch` vs rebuilds from `ref.refresh`.  
+  rebuilds from `ref.watch` vs rebuilds from `ref.refresh`.
 
 - Fixes a stackoverflow on Web caused by Dart (thanks to @leehack)
 
