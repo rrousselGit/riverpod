@@ -41,7 +41,7 @@ final futureProvider = FutureProvider<int>((FutureProviderRef<int> ref) async {
 final streamProvider = StreamProvider<int>((StreamProviderRef<int> ref) async* {
   yield 0;
   await Future<void>.delayed(const Duration(seconds: 1));
-  final state = ref.watch(stateProvider);
+  final state = ref.watch(stateProvider.state).state;
   yield 1;
 });
 final plainProvider = Provider<String>((ProviderRef<String> ref) => '');
@@ -93,7 +93,7 @@ class ConsumerWatch extends ConsumerWidget {
     final countNotifier = ref.watch(counterProvider.notifier);
     final count = ref.watch(counterProvider);
     final fam = ref.watch(plainProviderFamilyAD(''));
-    final state = ref.watch(stateProvider);
+    final state = ref.watch(stateProvider.state).state;
     return Column(
       children: [
         const ImageProvider(),
