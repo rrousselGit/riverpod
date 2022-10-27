@@ -50,7 +50,7 @@ class AutoDisposeFamilyAsyncNotifierProviderImpl<
 
   @override
   AutoDisposeAsyncNotifierProviderElement<NotifierT, T> createElement() {
-    return AutoDisposeAsyncNotifierProviderElement(this);
+    return AutoDisposeAsyncNotifierProviderElement._(this);
   }
 
   @override

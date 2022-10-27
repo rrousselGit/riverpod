@@ -45,7 +45,7 @@ class AutoDisposeFamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>,
 
   @override
   AutoDisposeNotifierProviderElement<NotifierT, T> createElement() {
-    return AutoDisposeNotifierProviderElement(this);
+    return AutoDisposeNotifierProviderElement._(this);
   }
 
   @override

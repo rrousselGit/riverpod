@@ -26,7 +26,7 @@ class AutoDisposeProvider<T> extends InternalProvider<T> {
 
   @override
   AutoDisposeProviderElement<T> createElement() {
-    return AutoDisposeProviderElement(this);
+    return AutoDisposeProviderElement._(this);
   }
 }
 
@@ -35,7 +35,8 @@ class AutoDisposeProviderElement<T> extends ProviderElement<T>
     with AutoDisposeProviderElementMixin<T>
     implements AutoDisposeProviderRef<T> {
   /// The [ProviderElementBase] for [Provider]
-  AutoDisposeProviderElement(AutoDisposeProvider<T> super.provider) : super._();
+  AutoDisposeProviderElement._(AutoDisposeProvider<T> super.provider)
+      : super._();
 }
 
 /// The [Family] of [AutoDisposeProvider]

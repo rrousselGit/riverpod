@@ -35,7 +35,7 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 
   @override
   AutoDisposeChangeNotifierProviderElement<NotifierT> createElement() {
-    return AutoDisposeChangeNotifierProviderElement<NotifierT>(this);
+    return AutoDisposeChangeNotifierProviderElement<NotifierT>._(this);
   }
 
   @override
@@ -49,7 +49,7 @@ class AutoDisposeChangeNotifierProviderElement<
     with AutoDisposeProviderElementMixin<NotifierT>
     implements AutoDisposeChangeNotifierProviderRef<NotifierT> {
   /// The [ProviderElementBase] for [ChangeNotifier]
-  AutoDisposeChangeNotifierProviderElement(
+  AutoDisposeChangeNotifierProviderElement._(
     AutoDisposeChangeNotifierProvider<NotifierT> super.provider,
   ) : super._();
 }
