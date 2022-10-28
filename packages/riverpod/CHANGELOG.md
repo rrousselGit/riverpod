@@ -20,6 +20,7 @@
 
 - Fixes a stackoverflow on Web caused by Dart (thanks to @leehack)
 - Fixes a bug when the root ProviderContainer is not associated with a ProviderScope.
+- Fixes a case where a circular dependency between providers was incorrectly allowed (#1766)
 
 ## 2.0.2
 

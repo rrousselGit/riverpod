@@ -613,10 +613,18 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
-  bool _debugAssertCanDependOn(ProviderListenable listenable) {
+  bool _debugAssertCanDependOn(ProviderListenable<Object?> listenable) {
     assert(
       () {
-        if (listenable is! ProviderBase) return true;
+        if (listenable is! ProviderBase<Object?>) return true;
+
+        try {
+          // Initializating the provider, to make sure its dependencies are setup.
+          _container.readProviderElement(listenable);
+        } catch (err) {
+          // We don't care whether the provider is in error or not. We're just
+          // checking whether we're not in a circular dependency.
+        }
 
         assert(
           listenable._origin != origin,
