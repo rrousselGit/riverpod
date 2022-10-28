@@ -13,6 +13,32 @@ void main() {
     container.dispose();
   });
 
+  test(
+      'Catches circular dependency when dependencies are setup during provider initialization',
+      () {
+    // regression for #1766
+    final container = createContainer();
+
+    final authInterceptorProvider = Provider((ref) => ref);
+
+    final dioProvider = Provider<int>((ref) {
+      ref.watch(authInterceptorProvider);
+      return 0;
+    });
+
+    final accessTokenProvider = Provider<int>((ref) {
+      return ref.watch(dioProvider);
+    });
+
+    container.read(dioProvider);
+    final interceptor = container.read(authInterceptorProvider);
+
+    expect(
+      () => interceptor.read(accessTokenProvider),
+      throwsA(isA<CircularDependencyError>()),
+    );
+  });
+
   group('ProviderContainer.debugVsyncs', () {
     // test('are called before modifying a provider', () {
     //   final provider = StateProvider((ref) => 0);
