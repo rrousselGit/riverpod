@@ -7,15 +7,21 @@ part 'pub_repository.g.dart';
 
 class PubRepository {
   final dio = Dio();
+  final scheme="https";
+  final host='pub.dartlang.org';
+  final packagesPath='api/packages';
+  final searchPath='api/search';
+  final likesPath='api/account/likes';
+
 
   Future<List<Package>> getPackages({
     required int page,
     CancelToken? cancelToken,
   }) async {
     final uri = Uri(
-      scheme: 'https',
-      host: 'pub.dartlang.org',
-      path: 'api/packages',
+      scheme: scheme,
+      host: host,
+      path: packagesPath,
       queryParameters: <String, String>{'page': '$page'},
     );
 
@@ -34,9 +40,9 @@ class PubRepository {
     CancelToken? cancelToken,
   }) async {
     final uri = Uri(
-      scheme: 'https',
-      host: 'pub.dartlang.org',
-      path: 'api/search',
+      scheme: scheme,
+      host: host,
+      path: searchPath,
       queryParameters: <String, String>{'page': '$page', 'q': search},
     );
     // Returns {packages: [{ package: string }]}
@@ -55,9 +61,9 @@ class PubRepository {
   }) async {
     final dio = Dio();
     final uri = Uri(
-      scheme: 'https',
-      host: 'pub.dartlang.org',
-      path: 'api/packages/$packageName',
+      scheme: scheme,
+      host: host,
+      path: '$packagesPath/$packageName',
     );
 
     final response = await dio.getUri<Map<String, Object?>>(
@@ -74,9 +80,9 @@ class PubRepository {
     CancelToken? cancelToken,
   }) async {
     final uri = Uri(
-      scheme: 'https',
-      host: 'pub.dartlang.org',
-      path: 'api/packages/$packageName/metrics',
+      scheme: scheme,
+      host: host,
+      path: '$packagesPath/$packageName/metrics',
     );
 
     final responseFuture = dio.getUri<Map<String, Object?>>(
@@ -85,9 +91,9 @@ class PubRepository {
     );
 
     final likesUri = Uri(
-      scheme: 'https',
-      host: 'pub.dartlang.org',
-      path: 'api/packages/$packageName/likes',
+      scheme: scheme,
+      host: host,
+      path: '$packagesPath/$packageName/likes',
     );
 
     /// Although the metrics request does include the likes count, it seems that
@@ -100,7 +106,7 @@ class PubRepository {
     );
 
     final metricsResponse =
-        PackageMetricsResponse.fromJson((await responseFuture).data!);
+    PackageMetricsResponse.fromJson((await responseFuture).data!);
     return metricsResponse.score.copyWith(
       likeCount: (await likesResponsFuture).data!['likes']! as int,
     );
@@ -111,9 +117,9 @@ class PubRepository {
     CancelToken? cancelToken,
   }) async {
     final uri = Uri(
-      scheme: 'https',
-      host: 'pub.dartlang.org',
-      path: 'api/account/likes/$packageName',
+      scheme: scheme,
+      host: host,
+      path: '$likesPath/$packageName',
     );
 
     await dio.putUri<void>(
@@ -130,9 +136,9 @@ class PubRepository {
     CancelToken? cancelToken,
   }) async {
     final uri = Uri(
-      scheme: 'https',
-      host: 'pub.dartlang.org',
-      path: 'api/account/likes/$packageName',
+      scheme: scheme,
+      host: host,
+      path: '$likesPath/$packageName',
     );
 
     await dio.deleteUri<void>(
@@ -144,9 +150,9 @@ class PubRepository {
 
   Future<List<String>> getLikedPackages({CancelToken? cancelToken}) async {
     final uri = Uri(
-      scheme: 'https',
-      host: 'pub.dartlang.org',
-      path: 'api/account/likes',
+      scheme: scheme,
+      host: host,
+      path: '$likesPath',
     );
 
     final response = await dio.getUri<Map<String, Object?>>(
@@ -213,7 +219,7 @@ class Package with _$Package {
 @freezed
 class LikedPackage with _$LikedPackage {
   factory LikedPackage({required String package, required bool liked}) =
-      _LikedPackage;
+  _LikedPackage;
 
   factory LikedPackage.fromJson(Map<String, Object?> json) =>
       _$LikedPackageFromJson(json);
@@ -222,7 +228,7 @@ class LikedPackage with _$LikedPackage {
 @freezed
 class LikedPackagesResponse with _$LikedPackagesResponse {
   factory LikedPackagesResponse({required List<LikedPackage> likedPackages}) =
-      _LikesPackagesResponse;
+  _LikesPackagesResponse;
 
   factory LikedPackagesResponse.fromJson(Map<String, Object?> json) =>
       _$LikedPackagesResponseFromJson(json);
