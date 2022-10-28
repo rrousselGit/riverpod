@@ -7,6 +7,15 @@ import '../utils.dart';
 
 void main() {
   group('ProviderContainer', () {
+    test('Supports unmounting containers in reverse order', () {
+      final container = createContainer();
+
+      final child = createContainer(parent: container);
+
+      container.dispose();
+      child.dispose();
+    });
+
     group('debugReassemble', () {
       test(
           'reload providers if the debugGetCreateSourceHash of a provider returns a different value',

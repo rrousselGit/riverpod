@@ -630,11 +630,6 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
     if (_disposed) {
       return;
     }
-    if (_children.isNotEmpty) {
-      throw StateError(
-        'Tried to dispose a ProviderContainer that still has children containers.',
-      );
-    }
 
     assert(
       () {
