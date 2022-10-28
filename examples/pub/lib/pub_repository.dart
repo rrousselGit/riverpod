@@ -5,13 +5,12 @@ import 'package:pubspec_parse/pubspec_parse.dart';
 part 'pub_repository.freezed.dart';
 part 'pub_repository.g.dart';
 
+
 class PubRepository {
   final dio = Dio();
-  final scheme="https";
-  final host='pub.dartlang.org';
-  final packagesPath='api/packages';
-  final searchPath='api/search';
-  final likesPath='api/account/likes';
+
+  static String _scheme="https";
+  static String _host='pub.dartlang.org';
 
 
   Future<List<Package>> getPackages({
@@ -19,9 +18,9 @@ class PubRepository {
     CancelToken? cancelToken,
   }) async {
     final uri = Uri(
-      scheme: scheme,
-      host: host,
-      path: packagesPath,
+      scheme: _scheme,
+      host: _host,
+      path: 'api/packages',
       queryParameters: <String, String>{'page': '$page'},
     );
 
@@ -40,9 +39,9 @@ class PubRepository {
     CancelToken? cancelToken,
   }) async {
     final uri = Uri(
-      scheme: scheme,
-      host: host,
-      path: searchPath,
+      scheme: _scheme,
+      host: _host,
+      path: 'api/search',
       queryParameters: <String, String>{'page': '$page', 'q': search},
     );
     // Returns {packages: [{ package: string }]}
@@ -61,9 +60,9 @@ class PubRepository {
   }) async {
     final dio = Dio();
     final uri = Uri(
-      scheme: scheme,
-      host: host,
-      path: '$packagesPath/$packageName',
+      scheme: _scheme,
+      host: _host,
+      path: 'api/packages/$packageName',
     );
 
     final response = await dio.getUri<Map<String, Object?>>(
@@ -80,9 +79,9 @@ class PubRepository {
     CancelToken? cancelToken,
   }) async {
     final uri = Uri(
-      scheme: scheme,
-      host: host,
-      path: '$packagesPath/$packageName/metrics',
+      scheme: _scheme,
+      host: _host,
+      path: 'api/packages/$packageName/metrics',
     );
 
     final responseFuture = dio.getUri<Map<String, Object?>>(
@@ -91,9 +90,9 @@ class PubRepository {
     );
 
     final likesUri = Uri(
-      scheme: scheme,
-      host: host,
-      path: '$packagesPath/$packageName/likes',
+      scheme: _scheme,
+      host: _host,
+      path: 'api/packages/$packageName/likes',
     );
 
     /// Although the metrics request does include the likes count, it seems that
@@ -117,9 +116,9 @@ class PubRepository {
     CancelToken? cancelToken,
   }) async {
     final uri = Uri(
-      scheme: scheme,
-      host: host,
-      path: '$likesPath/$packageName',
+      scheme: _scheme,
+      host: _host,
+      path: 'api/account/likes/$packageName',
     );
 
     await dio.putUri<void>(
@@ -136,9 +135,9 @@ class PubRepository {
     CancelToken? cancelToken,
   }) async {
     final uri = Uri(
-      scheme: scheme,
-      host: host,
-      path: '$likesPath/$packageName',
+      scheme: _scheme,
+      host: _host,
+      path: 'api/account/likes/$packageName',
     );
 
     await dio.deleteUri<void>(
@@ -150,9 +149,9 @@ class PubRepository {
 
   Future<List<String>> getLikedPackages({CancelToken? cancelToken}) async {
     final uri = Uri(
-      scheme: scheme,
-      host: host,
-      path: '$likesPath',
+      scheme: _scheme,
+      host: _host,
+      path: 'api/account/likes',
     );
 
     final response = await dio.getUri<Map<String, Object?>>(
