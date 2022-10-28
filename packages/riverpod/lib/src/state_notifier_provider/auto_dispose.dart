@@ -38,6 +38,19 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
 
   @override
   late final Refreshable<NotifierT> notifier = _notifier(this);
+
+  Override overrideWith(
+    Create<NotifierT, AutoDisposeStateNotifierProviderRef<NotifierT, T>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: AutoDisposeStateNotifierProvider<NotifierT, T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [AutoDisposeStateNotifierProvider].

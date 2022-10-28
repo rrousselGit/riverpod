@@ -99,6 +99,17 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   FutureOr<T> runNotifierBuild(AsyncNotifierBase<T> notifier) {
     return (notifier as AsyncNotifier<T>).build();
   }
+
+  Override overrideWithNotifier(NotifierT Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: AsyncNotifierProviderImpl<NotifierT, T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// A mixin shared by [AsyncNotifierProvider] and [FutureProvider] for dealing with

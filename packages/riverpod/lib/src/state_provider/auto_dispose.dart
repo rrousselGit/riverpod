@@ -39,6 +39,19 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
   )
   @override
   late final Refreshable<StateController<T>> state = _state(this);
+
+  Override overrideWith(
+    Create<T, AutoDisposeStateProviderRef<T>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: AutoDisposeStateProvider<T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [StateProvider].

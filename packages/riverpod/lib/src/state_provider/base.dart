@@ -78,6 +78,19 @@ class StateProvider<T> extends _StateProviderBase<T>
   )
   @override
   late final AlwaysAliveRefreshable<StateController<T>> state = _state(this);
+
+  Override overrideWith(
+    Create<T, StateProviderRef<T>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: StateProvider<T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [StateProvider].

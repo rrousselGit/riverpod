@@ -28,6 +28,19 @@ class AutoDisposeProvider<T> extends InternalProvider<T> {
   AutoDisposeProviderElement<T> createElement() {
     return AutoDisposeProviderElement._(this);
   }
+
+  Override overrideWith(
+    Create<T, AutoDisposeProviderRef<T>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: AutoDisposeProvider<T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [AutoDisposeProvider]

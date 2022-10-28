@@ -40,6 +40,19 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 
   @override
   late final Refreshable<NotifierT> notifier = _notifier<NotifierT>(this);
+
+  Override overrideWith(
+    Create<NotifierT, AutoDisposeChangeNotifierProviderRef<NotifierT>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: AutoDisposeChangeNotifierProvider<NotifierT>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [AutoDisposeChangeNotifierProvider].

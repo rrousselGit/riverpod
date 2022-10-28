@@ -102,6 +102,17 @@ class StreamProvider<T> extends _StreamProviderBase<T>
 
   @override
   StreamProviderElement<T> createElement() => StreamProviderElement._(this);
+
+  Override overrideWith(Create<Stream<T>, StreamProviderRef<T>> create) {
+    return ProviderOverride(
+      origin: this,
+      override: StreamProvider<T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [StreamProvider].

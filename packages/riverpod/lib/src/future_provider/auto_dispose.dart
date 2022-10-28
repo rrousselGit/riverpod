@@ -22,7 +22,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
   /// {@macro riverpod.family}
   static const family = AutoDisposeFutureProviderFamily.new;
 
-  final FutureOr<T> Function(AutoDisposeFutureProviderRef<T> ref) _createFn;
+  final Create<FutureOr<T>, AutoDisposeFutureProviderRef<T>> _createFn;
 
   @override
   FutureOr<T> _create(AutoDisposeFutureProviderElement<T> ref) =>
@@ -35,6 +35,19 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
 
   @override
   late final Refreshable<Future<T>> future = _future(this);
+
+  Override overrideWith(
+    Create<FutureOr<T>, AutoDisposeFutureProviderRef<T>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: AutoDisposeFutureProvider(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The [ProviderElementBase] of [AutoDisposeFutureProvider]

@@ -107,6 +107,19 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
 
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier = _notifier(this);
+
+  Override overrideWith(
+    Create<NotifierT, StateNotifierProviderRef<NotifierT, T>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: StateNotifierProvider<NotifierT, T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [StateNotifierProvider].

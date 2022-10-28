@@ -110,6 +110,19 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier =
       _notifier<NotifierT>(this);
+
+  Override overrideWith(
+    Create<NotifierT, ChangeNotifierProviderRef<NotifierT>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ChangeNotifierProvider<NotifierT>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [ChangeNotifierProvider].

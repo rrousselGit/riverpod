@@ -36,6 +36,19 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
 
   @override
   late final Refreshable<Stream<T>> stream = _stream(this);
+
+  Override overrideWith(
+    Create<Stream<T>, AutoDisposeStreamProviderRef<T>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: AutoDisposeStreamProvider<T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [AutoDisposeStreamProvider].
