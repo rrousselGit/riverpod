@@ -17,6 +17,7 @@
   That behavior could break various `Future` utilities, such as `Future.wait`
 - Add `AsyncValue.copyWithPrevious(..., isRefres: false)` to differentiate
   rebuilds from `ref.watch` vs rebuilds from `ref.refresh`.
+- ProviderContainer no-longer throws when disposed if it has an undisposed child ProviderContainer.
 
 - Fixes a stackoverflow on Web caused by Dart (thanks to @leehack)
 - Fixes a bug when the root ProviderContainer is not associated with a ProviderScope.
