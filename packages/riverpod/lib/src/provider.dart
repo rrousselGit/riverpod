@@ -12,8 +12,7 @@ part 'provider/base.dart';
 ///
 /// Not meant for public consumption
 @internal
-abstract class InternalProvider<State> extends ProviderBase<State>
-    with OverrideWithValueMixin<State> {
+abstract class InternalProvider<State> extends ProviderBase<State> {
   /// A base class for [Provider]
   ///
   /// Not meant for public consumption
