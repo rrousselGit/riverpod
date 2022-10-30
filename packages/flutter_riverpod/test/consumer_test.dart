@@ -6,6 +6,31 @@ import 'package:flutter_test/flutter_test.dart';
 import 'utils.dart';
 
 void main() {
+  group('WidgetRef.exists', () {
+    testWidgets('simple use-case', (tester) async {
+      late WidgetRef ref;
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(
+            builder: (context, r, child) {
+              ref = r;
+              return Container();
+            },
+          ),
+        ),
+      );
+
+      final provider = Provider((ref) => 0);
+
+      expect(ref.exists(provider), false);
+      expect(ref.exists(provider), false);
+
+      ref.read(provider);
+
+      expect(ref.exists(provider), true);
+    });
+  });
+
   testWidgets('WidgetRef.context exposes the BuildContext', (tester) async {
     late WidgetRef ref;
 

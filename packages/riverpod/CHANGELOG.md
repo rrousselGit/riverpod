@@ -7,6 +7,7 @@
 - Added `Ref.notifyListeners()` to forcibly notify dependents.
   This can be useful for mutable state.
 - Added `@useResult` to `Ref.refresh`/`WidgetRef.refresh`
+- Added `Ref.exists` to check whether a provider is initialized or not.
 - `FutureProvider`, `StreamProvider` and `AsyncNotifierProvider` now preserve the
   previous data/error when going back to loading.
   This is done by allowing `AsyncLoading` to optionally contain a value/error.

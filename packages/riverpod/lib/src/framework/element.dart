@@ -683,6 +683,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
+  bool exists(ProviderBase<Object?> provider) => _container.exists(provider);
+
+  @override
   T watch<T>(ProviderListenable<T> listenable) {
     _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.watch inside a selector');

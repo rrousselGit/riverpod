@@ -20,6 +20,39 @@ abstract class WidgetRef {
   /// - [listen], to react to changes on a provider, such as for showing modals.
   T watch<T>(ProviderListenable<T> provider);
 
+  /// Determines whether a provider is initialized or not.
+  ///
+  /// Writing logic that conditionally depends on the existence of a provider
+  /// is generally unsafe and should be avoided.
+  /// The problem is that once the provider gets initialized, logic that
+  /// depends on the existence or not of a provider won't be rerun; possibly
+  /// causing your state to get out of date.
+  ///
+  /// But it can be useful in some cases, such as to avoid re-fetching an
+  /// object if a different network request already obtained it:
+  ///
+  /// ```dart
+  /// final fetchItemList = FutureProvider<List<Item>>(...);
+  ///
+  /// final fetchItem = FutureProvider.autoDispose.family<Item, String>((ref, id) async {
+  ///   if (ref.exists(fetchItemList)) {
+  ///     // If `fetchItemList` is initialized, we look into its state
+  ///     // and return the already obtained item.
+  ///     final itemFromItemList = ref.watch(
+  ///       fetchItemList.selectAsync((items) => items.firstWhereOrNull((item) => item.id == id)),
+  ///     );
+  ///     if (itemFromItemList != null) return itemFromItemList;
+  ///   }
+  ///
+  ///   // If `fetchItemList` is not initialized, perform a network request for
+  ///   // "id" separately
+  ///
+  ///   final json = await http.get('api/items/$id');
+  ///   return Item.fromJson(json);
+  /// });
+  /// ```
+  bool exists(ProviderBase<Object?> provider);
+
   /// Listen to a provider and call `listener` whenever its value changes,
   /// without having to take care of removing the listener.
   ///
@@ -562,6 +595,11 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     // want to call the listener on every rebuild.
     final sub = _container.listen<T>(provider, listener, onError: onError);
     _listeners.add(sub);
+  }
+
+  @override
+  bool exists(ProviderBase<Object?> provider) {
+    return ProviderScope.containerOf(this, listen: false).exists(provider);
   }
 
   @override

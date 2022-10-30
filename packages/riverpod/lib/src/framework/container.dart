@@ -251,6 +251,13 @@ class ProviderContainer implements Node {
     return provider.read(this);
   }
 
+  /// {@macro riverpod.exists}
+  bool exists(ProviderBase<Object?> provider) {
+    final element = _stateReaders[provider]?._element;
+
+    return element != null;
+  }
+
   /// Executes [ProviderElementBase.debugReassemble] on all the providers.
   void debugReassemble() {
 // TODO hot-reload handle provider type change
