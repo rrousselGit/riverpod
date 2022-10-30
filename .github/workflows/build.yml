@@ -60,7 +60,7 @@ jobs:
         run: flutter pub get
 
       - name: Check format
-        run: melos exec --ignore="website_snippets" -- "flutter format --set-exit-if-changed ."
+        run: flutter format --set-exit-if-changed .
         if: ${{ matrix.package_path }} != "website"
 
       - name: Analyze
