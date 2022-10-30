@@ -216,7 +216,7 @@ class Package with _$Package {
 @freezed
 class LikedPackage with _$LikedPackage {
   factory LikedPackage({required String package, required bool liked}) =
-  _LikedPackage;
+      _LikedPackage;
 
   factory LikedPackage.fromJson(Map<String, Object?> json) =>
       _$LikedPackageFromJson(json);
@@ -225,7 +225,7 @@ class LikedPackage with _$LikedPackage {
 @freezed
 class LikedPackagesResponse with _$LikedPackagesResponse {
   factory LikedPackagesResponse({required List<LikedPackage> likedPackages}) =
-  _LikesPackagesResponse;
+      _LikesPackagesResponse;
 
   factory LikedPackagesResponse.fromJson(Map<String, Object?> json) =>
       _$LikedPackagesResponseFromJson(json);
