@@ -51,15 +51,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3.1.0
-      - uses: subosito/flutter-action@v2.7.1
-        with:
-          channel: ${{ matrix.channel }}
-      - name: Add pub cache bin to PATH
-        run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
-      - name: Add pub cache to PATH
-        run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
+      # - uses: subosito/flutter-action@v2.7.1
+      #   with:
+      #     channel: ${{ matrix.channel }}
+      # - name: Add pub cache bin to PATH
+      #   run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+      # - name: Add pub cache to PATH
+      #   run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
 
-      - run: echo ${{github.path}}
+      - run: pwd
+      - run: echo ${{github.workspace}}
+      - run: cd -
+      - run: pwd
 
       # - name: Install dependencies
       #   run: flutter pub get
