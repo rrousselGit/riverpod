@@ -6,10 +6,10 @@ part 'pub_repository.freezed.dart';
 part 'pub_repository.g.dart';
 
 class PubRepository {
-  final dio = Dio();
-
   static String _scheme = 'https';
   static String _host = 'pub.dartlang.org';
+
+  final dio = Dio();
 
   Future<List<Package>> getPackages({
     required int page,
