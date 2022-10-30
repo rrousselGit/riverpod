@@ -131,14 +131,16 @@ mixin FutureHandlerProviderElementMixin<T>
     return true;
   }
 
-  /// An internal function used to obtain the private [_futureNotifier] from the mixin
+  /// An internal function used to obtain the private [futureNotifier] from the mixin
   static ProxyElementValueNotifier<Future<T>> futureNotifierOf<T>(
     FutureHandlerProviderElementMixin<T> handler,
   ) {
-    return handler._futureNotifier;
+    return handler.futureNotifier;
   }
 
-  final _futureNotifier = ProxyElementValueNotifier<Future<T>>();
+  /// An observable for [FutureProvider.future].
+  @internal
+  final futureNotifier = ProxyElementValueNotifier<Future<T>>();
   Completer<T>? _futureCompleter;
 
   /// The latest [Future] returned by [AsyncNotifier.build].
@@ -178,14 +180,14 @@ mixin FutureHandlerProviderElementMixin<T>
       completer.complete(value);
       _futureCompleter = null;
     } else {
-      _futureNotifier.result = Result.data(Future.value(value));
+      futureNotifier.result = Result.data(Future.value(value));
     }
   }
 
   void _loadingTransition() {
     if (_futureCompleter == null) {
       final completer = _futureCompleter = Completer();
-      _futureNotifier.result = ResultData(completer.future);
+      futureNotifier.result = ResultData(completer.future);
     }
   }
 
@@ -201,7 +203,7 @@ mixin FutureHandlerProviderElementMixin<T>
       _futureCompleter = null;
       // TODO SynchronousFuture.error
     } else {
-      _futureNotifier.result = Result.data(
+      futureNotifier.result = Result.data(
         // TODO test ignore
         Future.error(err, stackTrace)..ignore(),
       );
@@ -306,7 +308,7 @@ mixin FutureHandlerProviderElementMixin<T>
       elementVisitor: elementVisitor,
       notifierVisitor: notifierVisitor,
     );
-    notifierVisitor(_futureNotifier);
+    notifierVisitor(futureNotifier);
   }
 }
 
