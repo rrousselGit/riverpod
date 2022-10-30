@@ -103,7 +103,7 @@ class PubRepository {
     );
 
     final metricsResponse =
-    PackageMetricsResponse.fromJson((await responseFuture).data!);
+        PackageMetricsResponse.fromJson((await responseFuture).data!);
     return metricsResponse.score.copyWith(
       likeCount: (await likesResponsFuture).data!['likes']! as int,
     );
