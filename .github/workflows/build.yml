@@ -68,7 +68,7 @@ jobs:
         run: flutter analyze
 
       - name: Run tests
-        run: flutter test
+        run: flutter test --coverage
         if: test -d "test"
 
       - name: Upload coverage to codecov
