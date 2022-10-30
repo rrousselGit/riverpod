@@ -20,6 +20,7 @@ dependencies:
     path: ../packages/riverpod
 
 dev_dependencies:
+  build_verify: ^3.0.0
   flutter_test:
     sdk: flutter
 
