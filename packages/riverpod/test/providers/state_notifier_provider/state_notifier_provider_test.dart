@@ -215,6 +215,7 @@ void main() {
         final container = createContainer(
           parent: root,
           overrides: [
+            // ignore: deprecated_member_use_from_same_package
             provider.overrideWithProvider(
               StateNotifierProvider.autoDispose<StateController<int>, int>(
                 (ref) => controllerOverride,
@@ -427,6 +428,7 @@ void main() {
     final notifier2 = TestNotifier(21);
     final container = createContainer(
       overrides: [
+        // ignore: deprecated_member_use_from_same_package
         provider.overrideWithProvider(
           StateNotifierProvider<TestNotifier, int>((_) {
             return notifier;
@@ -449,6 +451,7 @@ void main() {
     verifyOnly(listener, listener(42, 43));
 
     container.updateOverrides([
+      // ignore: deprecated_member_use_from_same_package
       provider.overrideWithProvider(
         StateNotifierProvider<TestNotifier, int>((_) {
           return notifier2;

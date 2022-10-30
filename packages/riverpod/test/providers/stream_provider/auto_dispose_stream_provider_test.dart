@@ -253,6 +253,7 @@ void main() {
         final container = createContainer(
           parent: root,
           overrides: [
+            // ignore: deprecated_member_use_from_same_package
             provider.overrideWithProvider(
               StreamProvider.autoDispose((ref) => Stream.value(42)),
             ),

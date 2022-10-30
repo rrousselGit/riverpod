@@ -193,6 +193,7 @@ void main() {
       final container = createContainer(
         parent: root,
         overrides: [
+          // ignore: deprecated_member_use
           provider.overrideWithProvider(
             ChangeNotifierProvider((ref) => ValueNotifier(42)),
           ),
@@ -415,6 +416,7 @@ void main() {
     final notifier2 = TestNotifier();
     final container = createContainer(
       overrides: [
+        // ignore: deprecated_member_use
         provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier)),
       ],
     );
@@ -434,6 +436,7 @@ void main() {
     expect(callCount, 1);
 
     container.updateOverrides([
+      // ignore: deprecated_member_use
       provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier2)),
     ]);
 
