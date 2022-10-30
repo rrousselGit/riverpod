@@ -27,7 +27,8 @@ jobs:
           - stable
         package_path:
           - examples/counter
-          - examples/marvel
+          # TODO(rrousselGit) run CI on marvel once test 
+          # - examples/marvel
           - examples/pub
           - examples/random_number
           - examples/stackoverflow
