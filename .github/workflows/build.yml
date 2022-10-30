@@ -67,13 +67,18 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
-      - name: Check test folder exists
-        run: test -d "test"
-
       - name: Run tests
-        run: flutter test --coverage
-        if: success()
+        run: |
+          if test -d "test"; then
+            if grep -q flutter "pubspec.yaml"; then
+              flutter test --coverage
+            else
+              dart test
+            fi
+          fi
 
       - name: Upload coverage to codecov
-        run: curl -s https://codecov.io/bash | bash
-        if: test -d "test"
+        run: |
+          if test -d "test"; then
+            curl -s https://codecov.io/bash | bash
+          fi
