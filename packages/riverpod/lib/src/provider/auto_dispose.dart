@@ -29,6 +29,7 @@ class AutoDisposeProvider<T> extends InternalProvider<T> {
     return AutoDisposeProviderElement._(this);
   }
 
+  /// {@macro riverpod.overridewith}
   Override overrideWith(
     Create<T, AutoDisposeProviderRef<T>> create,
   ) {

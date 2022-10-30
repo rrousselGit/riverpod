@@ -79,6 +79,7 @@ class StateProvider<T> extends _StateProviderBase<T>
   @override
   late final AlwaysAliveRefreshable<StateController<T>> state = _state(this);
 
+  /// {@macro riverpod.overridewith}
   Override overrideWith(
     Create<T, StateProviderRef<T>> create,
   ) {

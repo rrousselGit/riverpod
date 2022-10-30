@@ -40,6 +40,7 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
   @override
   late final Refreshable<StateController<T>> state = _state(this);
 
+  /// {@macro riverpod.overridewith}
   Override overrideWith(
     Create<T, AutoDisposeStateProviderRef<T>> create,
   ) {

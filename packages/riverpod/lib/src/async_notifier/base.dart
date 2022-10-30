@@ -100,6 +100,7 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     return (notifier as AsyncNotifier<T>).build();
   }
 
+  /// {@macro riverpod.overridewith}
   Override overrideWithNotifier(NotifierT Function() create) {
     return ProviderOverride(
       origin: this,

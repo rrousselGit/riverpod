@@ -39,6 +39,7 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   @override
   late final Refreshable<NotifierT> notifier = _notifier(this);
 
+  /// {@macro riverpod.overridewith}
   Override overrideWith(
     Create<NotifierT, AutoDisposeStateNotifierProviderRef<NotifierT, T>> create,
   ) {

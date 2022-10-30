@@ -108,6 +108,7 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier = _notifier(this);
 
+  /// {@macro riverpod.overridewith}
   Override overrideWith(
     Create<NotifierT, StateNotifierProviderRef<NotifierT, T>> create,
   ) {

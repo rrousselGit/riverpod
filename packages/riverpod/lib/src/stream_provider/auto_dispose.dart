@@ -37,6 +37,7 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
   @override
   late final Refreshable<Stream<T>> stream = _stream(this);
 
+  /// {@macro riverpod.overridewith}
   Override overrideWith(
     Create<Stream<T>, AutoDisposeStreamProviderRef<T>> create,
   ) {

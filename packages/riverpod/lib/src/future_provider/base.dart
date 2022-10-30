@@ -44,6 +44,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   @override
   FutureProviderElement<T> createElement() => FutureProviderElement._(this);
 
+  /// {@macro riverpod.overridewith}
   Override overrideWith(Create<FutureOr<T>, FutureProviderRef<T>> create) {
     return ProviderOverride(
       origin: this,

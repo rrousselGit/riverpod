@@ -103,6 +103,7 @@ class StreamProvider<T> extends _StreamProviderBase<T>
   @override
   StreamProviderElement<T> createElement() => StreamProviderElement._(this);
 
+  /// {@macro riverpod.overridewith}
   Override overrideWith(Create<Stream<T>, StreamProviderRef<T>> create) {
     return ProviderOverride(
       origin: this,
