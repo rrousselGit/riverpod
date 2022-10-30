@@ -42,7 +42,8 @@ jobs:
           - packages/riverpod_annotation
           - packages/riverpod_cli
           - packages/riverpod_generator
-          - packages/riverpod_graph
+          # TODO(rrousselGit) update riverpod_graph test setup to be supported by the CI
+          # - packages/riverpod_graph
           - packages/riverpod_lint
           - packages/riverpod_lint_flutter_test
           - website
