@@ -11,7 +11,6 @@ class PubRepository {
   static String _scheme = 'https';
   static String _host = 'pub.dartlang.org';
 
-
   Future<List<Package>> getPackages({
     required int page,
     CancelToken? cancelToken,
