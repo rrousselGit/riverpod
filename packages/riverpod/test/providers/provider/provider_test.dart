@@ -24,6 +24,24 @@ void main() {
       expect(container.read(autoDispose), 84);
     });
 
+    test('supports family overrideWith', () {
+      final family = Provider.family<String, int>((ref, arg) => '0 $arg');
+      final autoDisposeFamily = Provider.autoDispose.family<String, int>(
+        (ref, arg) => '0 $arg',
+      );
+      final container = createContainer(
+        overrides: [
+          family.overrideWith((ProviderRef<String> ref, int arg) => '42 $arg'),
+          autoDisposeFamily.overrideWith(
+            (AutoDisposeProviderRef<String> ref, int arg) => '84 $arg',
+          ),
+        ],
+      );
+
+      expect(container.read(family(10)), '42 10');
+      expect(container.read(autoDisposeFamily(10)), '84 10');
+    });
+
     test('can be refreshed', () async {
       var result = 0;
       final container = createContainer();

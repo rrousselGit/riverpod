@@ -371,6 +371,29 @@ void main() {
     expect(container.read(autoDispose), 84);
   });
 
+  test('supports family overrideWith', () {
+    final family = NotifierProvider.family<TestNotifierFamily<int>, int, int>(
+      () => TestNotifierFamily<int>((ref) => 0),
+    );
+    final autoDisposeFamily = NotifierProvider.autoDispose
+        .family<AutoDisposeTestNotifierFamily<int>, int, int>(
+      () => AutoDisposeTestNotifierFamily<int>((ref) => 0),
+    );
+    final container = createContainer(
+      overrides: [
+        family.overrideWithNotifier(
+          () => TestNotifierFamily<int>((ref) => 42),
+        ),
+        autoDisposeFamily.overrideWithNotifier(
+          () => AutoDisposeTestNotifierFamily<int>((ref) => 84),
+        ),
+      ],
+    );
+
+    expect(container.read(family(10)), 42);
+    expect(container.read(autoDisposeFamily(10)), 84);
+  });
+
   group('modifiers', () {
     void canBeAssignedToAlwaysAliveRefreshable<T>(
       AlwaysAliveRefreshable<T> provider,

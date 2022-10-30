@@ -333,4 +333,18 @@ class ProviderFamily<R, Arg>
     super.name,
     super.dependencies,
   }) : super(providerFactory: Provider.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    R Function(ProviderRef<R> ref, Arg arg) create,
+  ) {
+    return FamilyOverrideImpl<R, Arg, Provider<R>>(
+      this,
+      (arg) => Provider<R>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

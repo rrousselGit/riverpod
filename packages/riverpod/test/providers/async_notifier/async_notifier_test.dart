@@ -826,6 +826,30 @@ void main() {
     expect(container.read(autoDispose).value, 84);
   });
 
+  test('supports family overrideWith', () {
+    final family =
+        AsyncNotifierProvider.family<AsyncTestNotifierFamily<int>, int, int>(
+      () => AsyncTestNotifierFamily<int>((ref) => 0),
+    );
+    final autoDisposeFamily = AsyncNotifierProvider.autoDispose
+        .family<AutoDisposeAsyncTestNotifierFamily<int>, int, int>(
+      () => AutoDisposeAsyncTestNotifierFamily<int>((ref) => 0),
+    );
+    final container = createContainer(
+      overrides: [
+        family.overrideWithNotifier(
+          () => AsyncTestNotifierFamily<int>((ref) => 42),
+        ),
+        autoDisposeFamily.overrideWithNotifier(
+          () => AutoDisposeAsyncTestNotifierFamily<int>((ref) => 84),
+        ),
+      ],
+    );
+
+    expect(container.read(family(10)).value, 42);
+    expect(container.read(autoDisposeFamily(10)).value, 84);
+  });
+
   group('AutoDispose variant', () {
     test('can watch autoDispose providers', () {
       final dep = Provider.autoDispose((ref) => 0);

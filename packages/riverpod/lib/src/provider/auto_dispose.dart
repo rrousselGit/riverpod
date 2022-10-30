@@ -62,4 +62,18 @@ class AutoDisposeProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     super.name,
     super.dependencies,
   }) : super(providerFactory: AutoDisposeProvider.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    R Function(AutoDisposeProviderRef<R> ref, Arg arg) create,
+  ) {
+    return FamilyOverrideImpl<R, Arg, AutoDisposeProvider<R>>(
+      this,
+      (arg) => AutoDisposeProvider<R>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

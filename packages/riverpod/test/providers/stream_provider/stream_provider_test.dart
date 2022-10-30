@@ -53,6 +53,38 @@ void main() {
     expect(container.read(autoDispose).value, 84);
   });
 
+  test('supports family overrideWith', () {
+    final family = StreamProvider.family<String, int>((ref, arg) {
+      ref.state = AsyncData('0 $arg');
+      return Stream.value('1 $arg');
+    });
+    final autoDisposeFamily = StreamProvider.autoDispose.family<String, int>(
+      (ref, arg) {
+        ref.state = AsyncData('0 $arg');
+        return Stream.value('1 $arg');
+      },
+    );
+    final container = createContainer(
+      overrides: [
+        family.overrideWith(
+          (StreamProviderRef<String> ref, int arg) {
+            ref.state = AsyncData('42 $arg');
+            return Stream.value('43 $arg');
+          },
+        ),
+        autoDisposeFamily.overrideWith(
+          (AutoDisposeStreamProviderRef<String> ref, int arg) {
+            ref.state = AsyncData('84 $arg');
+            return Stream.value('85 $arg');
+          },
+        ),
+      ],
+    );
+
+    expect(container.read(family(10)).value, '42 10');
+    expect(container.read(autoDisposeFamily(10)).value, '84 10');
+  });
+
   test('Emits AsyncLoading before the create function is executed', () async {
     final container = createContainer();
     late AsyncValue<int> state;

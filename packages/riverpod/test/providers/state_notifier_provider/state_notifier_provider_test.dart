@@ -30,6 +30,34 @@ void main() {
     expect(container.read(autoDispose), 84);
   });
 
+  test('supports family overrideWith', () {
+    final family = StateNotifierProvider.family<TestNotifier, int, int>(
+      (ref, arg) => TestNotifier(0 + arg),
+    );
+    final autoDisposeFamily =
+        StateNotifierProvider.autoDispose.family<TestNotifier, int, int>(
+      (ref, arg) => TestNotifier(0 + arg),
+    );
+    final container = createContainer(
+      overrides: [
+        family.overrideWith(
+          (StateNotifierProviderRef<TestNotifier, int> ref, int arg) =>
+              TestNotifier(42 + arg),
+        ),
+        autoDisposeFamily.overrideWith(
+          (
+            AutoDisposeStateNotifierProviderRef<TestNotifier, int> ref,
+            int arg,
+          ) =>
+              TestNotifier(84 + arg),
+        ),
+      ],
+    );
+
+    expect(container.read(family(10)), 52);
+    expect(container.read(autoDisposeFamily(10)), 94);
+  });
+
   test(
       'on refresh, does not notify listeners if the new value is identical to the previous one',
       () {

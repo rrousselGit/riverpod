@@ -234,4 +234,20 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
     super.name,
     super.dependencies,
   }) : super(providerFactory: ChangeNotifierProvider.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    NotifierT Function(ChangeNotifierProviderRef<NotifierT> ref, Arg arg)
+        create,
+  ) {
+    return FamilyOverrideImpl<NotifierT, Arg,
+        ChangeNotifierProvider<NotifierT>>(
+      this,
+      (arg) => ChangeNotifierProvider<NotifierT>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

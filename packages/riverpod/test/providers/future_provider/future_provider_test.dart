@@ -25,6 +25,26 @@ void main() {
     expect(container.read(autoDispose).value, 84);
   });
 
+  test('supports family overrideWith', () {
+    final family = FutureProvider.family<String, int>((ref, arg) => '0 $arg');
+    final autoDisposeFamily = FutureProvider.autoDispose.family<String, int>(
+      (ref, arg) => '0 $arg',
+    );
+    final container = createContainer(
+      overrides: [
+        family.overrideWith(
+          (FutureProviderRef<String> ref, int arg) => '42 $arg',
+        ),
+        autoDisposeFamily.overrideWith(
+          (AutoDisposeFutureProviderRef<String> ref, int arg) => '84 $arg',
+        ),
+      ],
+    );
+
+    expect(container.read(family(10)).value, '42 10');
+    expect(container.read(autoDisposeFamily(10)).value, '84 10');
+  });
+
   test('Emits AsyncLoading before the create function is executed', () async {
     final container = createContainer();
     late AsyncValue<int> state;

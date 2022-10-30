@@ -196,4 +196,19 @@ class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
     super.name,
     super.dependencies,
   }) : super(providerFactory: StateNotifierProvider.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    NotifierT Function(StateNotifierProviderRef<NotifierT, T> ref, Arg arg)
+        create,
+  ) {
+    return FamilyOverrideImpl<T, Arg, StateNotifierProvider<NotifierT, T>>(
+      this,
+      (arg) => StateNotifierProvider<NotifierT, T>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

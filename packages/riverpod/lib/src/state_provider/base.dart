@@ -163,4 +163,18 @@ class StateProviderFamily<R, Arg>
     super.name,
     super.dependencies,
   }) : super(providerFactory: StateProvider.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    R Function(StateProviderRef<R> ref, Arg arg) create,
+  ) {
+    return FamilyOverrideImpl<R, Arg, StateProvider<R>>(
+      this,
+      (arg) => StateProvider<R>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

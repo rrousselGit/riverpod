@@ -261,4 +261,18 @@ class StreamProviderFamily<R, Arg> extends FamilyBase<StreamProviderRef<R>,
     super.name,
     super.dependencies,
   }) : super(providerFactory: StreamProvider<R>.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    Stream<R> Function(StreamProviderRef<R> ref, Arg arg) create,
+  ) {
+    return FamilyOverrideImpl<AsyncValue<R>, Arg, StreamProvider<R>>(
+      this,
+      (arg) => StreamProvider<R>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

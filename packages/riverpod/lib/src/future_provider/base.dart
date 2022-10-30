@@ -94,4 +94,18 @@ class FutureProviderFamily<R, Arg> extends FamilyBase<FutureProviderRef<R>,
     super.name,
     super.dependencies,
   }) : super(providerFactory: FutureProvider<R>.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    FutureOr<R> Function(FutureProviderRef<R> ref, Arg arg) create,
+  ) {
+    return FamilyOverrideImpl<AsyncValue<R>, Arg, FutureProvider<R>>(
+      this,
+      (arg) => FutureProvider<R>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

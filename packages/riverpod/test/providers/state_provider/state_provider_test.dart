@@ -25,6 +25,26 @@ void main() {
     expect(container.read(autoDispose), 84);
   });
 
+  test('supports family overrideWith', () {
+    final family = StateProvider.family<String, int>((ref, arg) => '0 $arg');
+    final autoDisposeFamily = StateProvider.autoDispose.family<String, int>(
+      (ref, arg) => '0 $arg',
+    );
+    final container = createContainer(
+      overrides: [
+        family.overrideWith(
+          (StateProviderRef<String> ref, int arg) => '42 $arg',
+        ),
+        autoDisposeFamily.overrideWith(
+          (AutoDisposeStateProviderRef<String> ref, int arg) => '84 $arg',
+        ),
+      ],
+    );
+
+    expect(container.read(family(10)), '42 10');
+    expect(container.read(autoDisposeFamily(10)), '84 10');
+  });
+
   test(
       'on refresh, does not notify listeners if the new value is identical to the previous one',
       () {

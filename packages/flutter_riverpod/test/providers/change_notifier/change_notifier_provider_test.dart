@@ -32,6 +32,34 @@ void main() {
     expect(container.read(autoDispose).value, 84);
   });
 
+  test('supports family overrideWith', () {
+    final family = ChangeNotifierProvider.family<ValueNotifier<String>, int>(
+      (ref, arg) => ValueNotifier('0 $arg'),
+    );
+    final autoDisposeFamily =
+        ChangeNotifierProvider.autoDispose.family<ValueNotifier<String>, int>(
+      (ref, arg) => ValueNotifier('0 $arg'),
+    );
+    final container = createContainer(
+      overrides: [
+        family.overrideWith(
+          (ChangeNotifierProviderRef<ValueNotifier<String>> ref, int arg) =>
+              ValueNotifier('42 $arg'),
+        ),
+        autoDisposeFamily.overrideWith(
+          (
+            AutoDisposeChangeNotifierProviderRef<ValueNotifier<String>> ref,
+            int arg,
+          ) =>
+              ValueNotifier('84 $arg'),
+        ),
+      ],
+    );
+
+    expect(container.read(family(10)).value, '42 10');
+    expect(container.read(autoDisposeFamily(10)).value, '84 10');
+  });
+
   test('ref.listenSelf listens to state changes', () {
     final listener = Listener<ValueNotifier<int>>();
     final container = createContainer();
