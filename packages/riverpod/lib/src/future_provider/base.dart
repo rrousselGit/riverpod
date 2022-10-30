@@ -12,6 +12,12 @@ abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
   /// Will throw if the provider threw during creation.
   AsyncValue<State> get state;
   set state(AsyncValue<State> newState);
+
+  /// Obtains the [Future] associated to this provider.
+  ///
+  /// This is equivalent to doing `ref.read(myProvider.future)`.
+  /// See also [FutureProvider.future].
+  Future<State> get future;
 }
 
 /// {@macro riverpod.futureprovider}
@@ -65,6 +71,12 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   @override
   AsyncValue<T> get state => requireState;
+
+  @override
+  Future<T> get future {
+    flush();
+    return futureNotifier.value;
+  }
 
   @override
   bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {

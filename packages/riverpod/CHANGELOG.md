@@ -1,6 +1,7 @@
 ## [Unreleased minor]
 
 - Added `provider.overrideWith((ref) => state`)
+- Added `FutureProviderRef.future`.
 - Deprecated `StateProvider.state`
   Instead, use either `ref.watch(stateProvider)` or `ref.read(stateProvider.notifier).state =`
 - Deprecated `provider.overrideWithProvider`. Instead use `provider.overrideWith`

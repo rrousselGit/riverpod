@@ -9,6 +9,55 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  group('FutureProviderRef.future', () {
+    test('returns the pending future', () async {
+      final container = createContainer();
+      Future<int>? future;
+      int? value;
+      final provider = FutureProvider<int>((ref) {
+        future = ref.future;
+        if (value == null) return ref.future;
+        return value;
+      });
+
+      container.read(provider);
+
+      expect(
+        future,
+        same(container.read(provider.future)),
+      );
+      expect(future, completion(42));
+
+      value = 42;
+      container.refresh(provider);
+
+      expect(
+        future,
+        same(container.read(provider.future)),
+      );
+      expect(future, completion(42));
+    });
+
+    test('flushes the provider when reading ref.future', () async {
+      final container = createContainer();
+      var result = Future.value(42);
+      late FutureProviderRef<int> ref;
+      final provider = FutureProvider<int>((r) {
+        ref = r;
+        return result;
+      });
+
+      container.read(provider);
+
+      await expectLater(ref.future, completion(42));
+
+      result = Future.value(21);
+      container.invalidate(provider);
+
+      expect(ref.future, completion(21));
+    });
+  });
+
   test('supports overrideWith', () {
     final provider = FutureProvider<int>((ref) => 0);
     final autoDispose = FutureProvider.autoDispose<int>((ref) => 0);
