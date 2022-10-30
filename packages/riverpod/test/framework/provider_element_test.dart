@@ -7,6 +7,28 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
+  group('Ref.exists', () {
+    test('simple use-case', () {
+      final container = createContainer();
+      final provider = Provider((ref) => 0);
+      final refProvider = Provider((ref) => ref);
+
+      final ref = container.read(refProvider);
+
+      expect(
+        container.getAllProviderElements().map((e) => e.origin),
+        [refProvider],
+      );
+      expect(container.exists(refProvider), true);
+      expect(ref.exists(provider), false);
+
+      ref.read(provider);
+
+      expect(ref.exists(refProvider), true);
+      expect(ref.exists(provider), true);
+    });
+  });
+
   group('ref.notifyListeners', () {
     test('If called after initialization, notify listeners', () {
       final observer = ProviderObserverMock();
