@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_types_on_closure_parameters
+
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
@@ -7,6 +9,22 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('supports overrideWith', () {
+    final provider = FutureProvider<int>((ref) => 0);
+    final autoDispose = FutureProvider.autoDispose<int>((ref) => 0);
+    final container = createContainer(
+      overrides: [
+        provider.overrideWith((FutureProviderRef<int> ref) => 42),
+        autoDispose.overrideWith(
+          (AutoDisposeFutureProviderRef<int> ref) => 84,
+        ),
+      ],
+    );
+
+    expect(container.read(provider).value, 42);
+    expect(container.read(autoDispose).value, 84);
+  });
+
   test('Emits AsyncLoading before the create function is executed', () async {
     final container = createContainer();
     late AsyncValue<int> state;

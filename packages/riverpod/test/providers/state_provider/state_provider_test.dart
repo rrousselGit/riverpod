@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_types_on_closure_parameters
+
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
@@ -5,6 +7,24 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('supports overrideWith', () {
+    final provider = StateProvider<int>(
+      (ref) => 0,
+    );
+    final autoDispose = StateProvider.autoDispose<int>(
+      (ref) => 0,
+    );
+    final container = createContainer(
+      overrides: [
+        provider.overrideWith((StateProviderRef<int> ref) => 42),
+        autoDispose.overrideWith((AutoDisposeStateProviderRef<int> ref) => 84),
+      ],
+    );
+
+    expect(container.read(provider), 42);
+    expect(container.read(autoDispose), 84);
+  });
+
   test(
       'on refresh, does not notify listeners if the new value is identical to the previous one',
       () {

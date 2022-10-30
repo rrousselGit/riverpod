@@ -1,4 +1,4 @@
-// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: invalid_use_of_internal_member, avoid_types_on_closure_parameters
 
 import 'package:flutter/widgets.dart' hide Listener;
 import 'package:flutter_riverpod/src/internals.dart';
@@ -8,6 +8,30 @@ import 'package:mockito/mockito.dart';
 import '../../utils.dart';
 
 void main() {
+  test('supports overrideWith', () {
+    final provider =
+        ChangeNotifierProvider<ValueNotifier<int>>((ref) => ValueNotifier(0));
+    final autoDispose = ChangeNotifierProvider.autoDispose<ValueNotifier<int>>(
+      (ref) => ValueNotifier(0),
+    );
+
+    final container = createContainer(
+      overrides: [
+        provider.overrideWith(
+          (ChangeNotifierProviderRef<ValueNotifier<int>> ref) =>
+              ValueNotifier(42),
+        ),
+        autoDispose.overrideWith(
+          (AutoDisposeChangeNotifierProviderRef<ValueNotifier<int>> ref) =>
+              ValueNotifier(84),
+        ),
+      ],
+    );
+
+    expect(container.read(provider).value, 42);
+    expect(container.read(autoDispose).value, 84);
+  });
+
   test('ref.listenSelf listens to state changes', () {
     final listener = Listener<ValueNotifier<int>>();
     final container = createContainer();

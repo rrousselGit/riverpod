@@ -805,6 +805,27 @@ void main() {
     });
   }
 
+  test('supports overrideWithNotifier', () {
+    final provider = AsyncNotifierProvider<AsyncTestNotifier<int>, int>(
+      () => AsyncTestNotifier((ref) => 0),
+    );
+    final autoDispose = AsyncNotifierProvider.autoDispose<
+        AutoDisposeAsyncTestNotifier<int>, int>(
+      () => AutoDisposeAsyncTestNotifier((ref) => 0),
+    );
+    final container = createContainer(
+      overrides: [
+        provider.overrideWithNotifier(() => AsyncTestNotifier((ref) => 42)),
+        autoDispose.overrideWithNotifier(
+          () => AutoDisposeAsyncTestNotifier((ref) => 84),
+        ),
+      ],
+    );
+
+    expect(container.read(provider).value, 42);
+    expect(container.read(autoDispose).value, 84);
+  });
+
   group('AutoDispose variant', () {
     test('can watch autoDispose providers', () {
       final dep = Provider.autoDispose((ref) => 0);

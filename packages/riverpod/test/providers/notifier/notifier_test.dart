@@ -350,6 +350,27 @@ void main() {
     }
   }
 
+  test('supports overrideWithNotifier', () {
+    final provider = NotifierProvider<TestNotifier<int>, int>(
+      () => TestNotifier((ref) => 0),
+    );
+    final autoDispose =
+        NotifierProvider.autoDispose<AutoDisposeTestNotifier<int>, int>(
+      () => AutoDisposeTestNotifier((ref) => 0),
+    );
+    final container = createContainer(
+      overrides: [
+        provider.overrideWithNotifier(() => TestNotifier((ref) => 42)),
+        autoDispose.overrideWithNotifier(
+          () => AutoDisposeTestNotifier((ref) => 84),
+        ),
+      ],
+    );
+
+    expect(container.read(provider), 42);
+    expect(container.read(autoDispose), 84);
+  });
+
   group('modifiers', () {
     void canBeAssignedToAlwaysAliveRefreshable<T>(
       AlwaysAliveRefreshable<T> provider,

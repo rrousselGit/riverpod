@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_types_on_closure_parameters
+
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
@@ -6,6 +8,22 @@ import '../../utils.dart';
 
 void main() {
   group('Provider', () {
+    test('supports overrideWith', () {
+      final provider = Provider<int>((ref) => 0);
+      final autoDispose = Provider.autoDispose<int>((ref) => 0);
+      final container = createContainer(
+        overrides: [
+          provider.overrideWith((ProviderRef<int> ref) => 42),
+          autoDispose.overrideWith(
+            (AutoDisposeProviderRef<int> ref) => 84,
+          ),
+        ],
+      );
+
+      expect(container.read(provider), 42);
+      expect(container.read(autoDispose), 84);
+    });
+
     test('can be refreshed', () async {
       var result = 0;
       final container = createContainer();

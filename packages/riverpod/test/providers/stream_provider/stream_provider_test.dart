@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_types_on_closure_parameters
+
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
@@ -19,6 +21,36 @@ void main() {
   tearDown(() {
     container.dispose();
     controller.close();
+  });
+
+  test('supports overrideWith', () {
+    final provider = StreamProvider<int>(
+      (ref) {
+        ref.state = const AsyncData(0);
+        return Stream.value(1);
+      },
+    );
+    final autoDispose = StreamProvider.autoDispose<int>(
+      (ref) {
+        ref.state = const AsyncData(0);
+        return Stream.value(1);
+      },
+    );
+    final container = createContainer(
+      overrides: [
+        provider.overrideWith((StreamProviderRef<int> ref) {
+          ref.state = const AsyncData(42);
+          return Stream.value(43);
+        }),
+        autoDispose.overrideWith((AutoDisposeStreamProviderRef<int> ref) {
+          ref.state = const AsyncData(84);
+          return Stream.value(85);
+        }),
+      ],
+    );
+
+    expect(container.read(provider).value, 42);
+    expect(container.read(autoDispose).value, 84);
   });
 
   test('Emits AsyncLoading before the create function is executed', () async {
@@ -621,7 +653,7 @@ void main() {
 
     // No value were emitted, so the future will fail. Catching the error to
     // avoid false positive.
-    // ignore: unawaited_futures, avoid_types_on_closure_parameters
+    // ignore: unawaited_futures
     container.read(provider.future).catchError((Object _) => 0);
   });
 
