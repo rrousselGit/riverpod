@@ -40,6 +40,20 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 
   @override
   late final Refreshable<NotifierT> notifier = _notifier<NotifierT>(this);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    Create<NotifierT, AutoDisposeChangeNotifierProviderRef<NotifierT>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: AutoDisposeChangeNotifierProvider<NotifierT>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [AutoDisposeChangeNotifierProvider].
@@ -70,4 +84,23 @@ class AutoDisposeChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?,
     super.name,
     super.dependencies,
   }) : super(providerFactory: AutoDisposeChangeNotifierProvider.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    NotifierT Function(
+      AutoDisposeChangeNotifierProviderRef<NotifierT> ref,
+      Arg arg,
+    )
+        create,
+  ) {
+    return FamilyOverrideImpl<NotifierT, Arg,
+        AutoDisposeChangeNotifierProvider<NotifierT>>(
+      this,
+      (arg) => AutoDisposeChangeNotifierProvider<NotifierT>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

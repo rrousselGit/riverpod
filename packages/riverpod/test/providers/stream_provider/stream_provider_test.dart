@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_types_on_closure_parameters
+
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
@@ -19,6 +21,68 @@ void main() {
   tearDown(() {
     container.dispose();
     controller.close();
+  });
+
+  test('supports overrideWith', () {
+    final provider = StreamProvider<int>(
+      (ref) {
+        ref.state = const AsyncData(0);
+        return Stream.value(1);
+      },
+    );
+    final autoDispose = StreamProvider.autoDispose<int>(
+      (ref) {
+        ref.state = const AsyncData(0);
+        return Stream.value(1);
+      },
+    );
+    final container = createContainer(
+      overrides: [
+        provider.overrideWith((StreamProviderRef<int> ref) {
+          ref.state = const AsyncData(42);
+          return Stream.value(43);
+        }),
+        autoDispose.overrideWith((AutoDisposeStreamProviderRef<int> ref) {
+          ref.state = const AsyncData(84);
+          return Stream.value(85);
+        }),
+      ],
+    );
+
+    expect(container.read(provider).value, 42);
+    expect(container.read(autoDispose).value, 84);
+  });
+
+  test('supports family overrideWith', () {
+    final family = StreamProvider.family<String, int>((ref, arg) {
+      ref.state = AsyncData('0 $arg');
+      return Stream.value('1 $arg');
+    });
+    final autoDisposeFamily = StreamProvider.autoDispose.family<String, int>(
+      (ref, arg) {
+        ref.state = AsyncData('0 $arg');
+        return Stream.value('1 $arg');
+      },
+    );
+    final container = createContainer(
+      overrides: [
+        family.overrideWith(
+          (StreamProviderRef<String> ref, int arg) {
+            ref.state = AsyncData('42 $arg');
+            return Stream.value('43 $arg');
+          },
+        ),
+        autoDisposeFamily.overrideWith(
+          (AutoDisposeStreamProviderRef<String> ref, int arg) {
+            ref.state = AsyncData('84 $arg');
+            return Stream.value('85 $arg');
+          },
+        ),
+      ],
+    );
+
+    expect(container.read(family(10)).value, '42 10');
+    expect(container.read(autoDisposeFamily(10)).value, '84 10');
   });
 
   test('Emits AsyncLoading before the create function is executed', () async {
@@ -286,6 +350,7 @@ void main() {
         parent: root,
         overrides: [
           provider
+              // ignore: deprecated_member_use_from_same_package
               .overrideWithProvider(StreamProvider((ref) => Stream.value(42))),
         ],
       );
@@ -621,7 +686,7 @@ void main() {
 
     // No value were emitted, so the future will fail. Catching the error to
     // avoid false positive.
-    // ignore: unawaited_futures, avoid_types_on_closure_parameters
+    // ignore: unawaited_futures
     container.read(provider.future).catchError((Object _) => 0);
   });
 

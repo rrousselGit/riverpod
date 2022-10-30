@@ -249,6 +249,7 @@ void main() {
         parent: root,
         overrides: [
           provider
+              // ignore: deprecated_member_use_from_same_package
               .overrideWithProvider(FutureProvider.autoDispose((ref) => 42)),
         ],
       );

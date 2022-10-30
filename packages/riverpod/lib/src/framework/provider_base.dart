@@ -249,7 +249,7 @@ mixin OverrideWithValueMixin<State> on ProviderBase<State> {
   }
 }
 
-/// A mixin to add [overrideWithProvider] capability to providers.
+/// A mixin to add `overrideWithProvider` capability to providers.
 extension OverrideWithProviderExtension<State,
     ProviderType extends ProviderBase<State>> on ProviderType {
   /// {@template riverpod.overridewithprovider}
@@ -288,6 +288,7 @@ extension OverrideWithProviderExtension<State,
   /// );
   /// ```
   /// {@endtemplate}
+  @Deprecated('Will be removed in 3.0.0. Use overrideWith instead.')
   Override overrideWithProvider(ProviderType override) {
     assert(
       override.dependencies == null,

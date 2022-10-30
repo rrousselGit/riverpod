@@ -1,7 +1,9 @@
 ## [Unreleased minor]
 
-- Deprecate `StateProvider.state`
+- Added `provider.overrideWith((ref) => state`)
+- Deprecated `StateProvider.state`
   Instead, use either `ref.watch(stateProvider)` or `ref.read(stateProvider.notifier).state =`
+- Deprecated `provider.overrideWithProvider`. Instead use `provider.overrideWith`
 - Added `Ref.notifyListeners()` to forcibly notify dependents.
   This can be useful for mutable state.
 - Added `@useResult` to `Ref.refresh`/`WidgetRef.refresh`

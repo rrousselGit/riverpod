@@ -151,6 +151,7 @@ void main() {
         final container = createContainer(
           parent: root,
           overrides: [
+            // ignore: deprecated_member_use_from_same_package
             provider.overrideWithProvider(Provider.autoDispose((ref) => 42)),
           ],
         );
@@ -170,6 +171,7 @@ void main() {
       });
       final container = createContainer(
         overrides: [
+          // ignore: deprecated_member_use_from_same_package
           provider.overrideWithProvider(override),
         ],
       );

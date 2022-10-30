@@ -33,7 +33,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   /// {@macro riverpod.family}
   static const family = FutureProviderFamilyBuilder();
 
-  final FutureOr<T> Function(FutureProviderRef<T> ref) _createFn;
+  final Create<FutureOr<T>, FutureProviderRef<T>> _createFn;
 
   @override
   late final AlwaysAliveRefreshable<Future<T>> future = _future(this);
@@ -43,6 +43,18 @@ class FutureProvider<T> extends _FutureProviderBase<T>
 
   @override
   FutureProviderElement<T> createElement() => FutureProviderElement._(this);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(Create<FutureOr<T>, FutureProviderRef<T>> create) {
+    return ProviderOverride(
+      origin: this,
+      override: FutureProvider(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of a [FutureProvider]
@@ -82,4 +94,18 @@ class FutureProviderFamily<R, Arg> extends FamilyBase<FutureProviderRef<R>,
     super.name,
     super.dependencies,
   }) : super(providerFactory: FutureProvider<R>.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    FutureOr<R> Function(FutureProviderRef<R> ref, Arg arg) create,
+  ) {
+    return FamilyOverrideImpl<AsyncValue<R>, Arg, FutureProvider<R>>(
+      this,
+      (arg) => FutureProvider<R>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

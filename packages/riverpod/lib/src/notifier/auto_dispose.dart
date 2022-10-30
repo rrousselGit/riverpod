@@ -68,6 +68,18 @@ class AutoDisposeNotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   T runNotifierBuild(NotifierBase<T> notifier) {
     return (notifier as AutoDisposeNotifier<T>).build();
   }
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWithNotifier(NotifierT Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: AutoDisposeNotifierProviderImpl<NotifierT, T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [AutoDisposeNotifierProvider]

@@ -100,6 +100,7 @@ void main() {
 
       final container = createContainer(
         overrides: [
+          // ignore: deprecated_member_use_from_same_package
           fooProvider.overrideWithProvider(
             Provider<Bar>((ref) => Bar()),
           ),

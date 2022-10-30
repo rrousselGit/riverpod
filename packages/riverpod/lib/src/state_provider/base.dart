@@ -78,6 +78,20 @@ class StateProvider<T> extends _StateProviderBase<T>
   )
   @override
   late final AlwaysAliveRefreshable<StateController<T>> state = _state(this);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    Create<T, StateProviderRef<T>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: StateProvider<T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [StateProvider].
@@ -149,4 +163,18 @@ class StateProviderFamily<R, Arg>
     super.name,
     super.dependencies,
   }) : super(providerFactory: StateProvider.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    R Function(StateProviderRef<R> ref, Arg arg) create,
+  ) {
+    return FamilyOverrideImpl<R, Arg, StateProvider<R>>(
+      this,
+      (arg) => StateProvider<R>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

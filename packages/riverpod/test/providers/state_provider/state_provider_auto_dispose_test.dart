@@ -178,6 +178,7 @@ void main() {
       final container = createContainer(
         parent: root,
         overrides: [
+          // ignore: deprecated_member_use_from_same_package
           provider.overrideWithProvider(
             StateProvider.autoDispose((ref) => 42, name: 'meh'),
           ),

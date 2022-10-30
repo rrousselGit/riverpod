@@ -102,6 +102,18 @@ class StreamProvider<T> extends _StreamProviderBase<T>
 
   @override
   StreamProviderElement<T> createElement() => StreamProviderElement._(this);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(Create<Stream<T>, StreamProviderRef<T>> create) {
+    return ProviderOverride(
+      origin: this,
+      override: StreamProvider<T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [StreamProvider].
@@ -249,4 +261,18 @@ class StreamProviderFamily<R, Arg> extends FamilyBase<StreamProviderRef<R>,
     super.name,
     super.dependencies,
   }) : super(providerFactory: StreamProvider<R>.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    Stream<R> Function(StreamProviderRef<R> ref, Arg arg) create,
+  ) {
+    return FamilyOverrideImpl<AsyncValue<R>, Arg, StreamProvider<R>>(
+      this,
+      (arg) => StreamProvider<R>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }
