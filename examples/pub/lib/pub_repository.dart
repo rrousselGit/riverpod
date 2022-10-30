@@ -6,6 +6,9 @@ part 'pub_repository.freezed.dart';
 part 'pub_repository.g.dart';
 
 class PubRepository {
+  static const _scheme = 'https';
+  static const _host = 'pub.dartlang.org';
+
   final dio = Dio();
 
   Future<List<Package>> getPackages({
@@ -13,8 +16,8 @@ class PubRepository {
     CancelToken? cancelToken,
   }) async {
     final uri = Uri(
-      scheme: 'https',
-      host: 'pub.dartlang.org',
+      scheme: _scheme,
+      host: _host,
       path: 'api/packages',
       queryParameters: <String, String>{'page': '$page'},
     );
@@ -34,8 +37,8 @@ class PubRepository {
     CancelToken? cancelToken,
   }) async {
     final uri = Uri(
-      scheme: 'https',
-      host: 'pub.dartlang.org',
+      scheme: _scheme,
+      host: _host,
       path: 'api/search',
       queryParameters: <String, String>{'page': '$page', 'q': search},
     );
@@ -55,8 +58,8 @@ class PubRepository {
   }) async {
     final dio = Dio();
     final uri = Uri(
-      scheme: 'https',
-      host: 'pub.dartlang.org',
+      scheme: _scheme,
+      host: _host,
       path: 'api/packages/$packageName',
     );
 
@@ -74,8 +77,8 @@ class PubRepository {
     CancelToken? cancelToken,
   }) async {
     final uri = Uri(
-      scheme: 'https',
-      host: 'pub.dartlang.org',
+      scheme: _scheme,
+      host: _host,
       path: 'api/packages/$packageName/metrics',
     );
 
@@ -85,8 +88,8 @@ class PubRepository {
     );
 
     final likesUri = Uri(
-      scheme: 'https',
-      host: 'pub.dartlang.org',
+      scheme: _scheme,
+      host: _host,
       path: 'api/packages/$packageName/likes',
     );
 
@@ -111,8 +114,8 @@ class PubRepository {
     CancelToken? cancelToken,
   }) async {
     final uri = Uri(
-      scheme: 'https',
-      host: 'pub.dartlang.org',
+      scheme: _scheme,
+      host: _host,
       path: 'api/account/likes/$packageName',
     );
 
@@ -130,8 +133,8 @@ class PubRepository {
     CancelToken? cancelToken,
   }) async {
     final uri = Uri(
-      scheme: 'https',
-      host: 'pub.dartlang.org',
+      scheme: _scheme,
+      host: _host,
       path: 'api/account/likes/$packageName',
     );
 
@@ -144,8 +147,8 @@ class PubRepository {
 
   Future<List<String>> getLikedPackages({CancelToken? cancelToken}) async {
     final uri = Uri(
-      scheme: 'https',
-      host: 'pub.dartlang.org',
+      scheme: _scheme,
+      host: _host,
       path: 'api/account/likes',
     );
 
