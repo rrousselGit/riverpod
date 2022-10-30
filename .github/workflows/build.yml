@@ -19,7 +19,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ${{ package_path }}
+        working-directory: ${{ matrix.package_path }}
 
     strategy:
       matrix:
@@ -61,7 +61,7 @@ jobs:
 
       - name: Check format
         run: melos exec --ignore="website_snippets" -- "flutter format --set-exit-if-changed ."
-        if: ${{ matrix.channel }} != "website"
+        if: ${{ matrix.package_path }} != "website"
 
       - name: Analyze
         run: flutter analyze
