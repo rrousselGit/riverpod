@@ -59,28 +59,31 @@ jobs:
       - name: Add pub cache to PATH
         run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
 
-      - name: Install dependencies
-        run: flutter pub get
+      - name: log
+        run: pwd
 
-      - name: Check format
-        run: flutter format --set-exit-if-changed .
-        if: matrix.package_path != 'website'
+      # - name: Install dependencies
+      #   run: flutter pub get
 
-      - name: Analyze
-        run: flutter analyze
+      # - name: Check format
+      #   run: flutter format --set-exit-if-changed .
+      #   if: matrix.package_path != 'website'
 
-      - name: Run tests
-        run: |
-          if test -d "test"; then
-            if grep -q flutter "pubspec.yaml"; then
-              flutter test --coverage
-            else
-              dart test
-            fi
-          fi
+      # - name: Analyze
+      #   run: flutter analyze
 
-      - name: Upload coverage to codecov
-        run: |
-          if test -d "test"; then
-            curl -s https://codecov.io/bash | bash
-          fi
+      # - name: Run tests
+      #   run: |
+      #     if test -d "test"; then
+      #       if grep -q flutter "pubspec.yaml"; then
+      #         flutter test --coverage
+      #       else
+      #         dart test
+      #       fi
+      #     fi
+
+      # - name: Upload coverage to codecov
+      #   run: |
+      #     if test -d "test"; then
+      #       curl -s https://codecov.io/bash | bash
+      #     fi
