@@ -67,9 +67,12 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
+      - name: Check test folder exists
+        run: test -d "test"
+
       - name: Run tests
         run: flutter test --coverage
-        if: ${{ test -d "test" }}
+        if: success()
 
       - name: Upload coverage to codecov
         run: curl -s https://codecov.io/bash | bash
