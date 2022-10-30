@@ -6,8 +6,8 @@ part 'pub_repository.freezed.dart';
 part 'pub_repository.g.dart';
 
 class PubRepository {
-  static String _scheme = 'https';
-  static String _host = 'pub.dartlang.org';
+  static const _scheme = 'https';
+  static const _host = 'pub.dartlang.org';
 
   final dio = Dio();
 
