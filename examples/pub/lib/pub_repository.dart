@@ -5,12 +5,11 @@ import 'package:pubspec_parse/pubspec_parse.dart';
 part 'pub_repository.freezed.dart';
 part 'pub_repository.g.dart';
 
-
 class PubRepository {
   final dio = Dio();
 
-  static String _scheme="https";
-  static String _host='pub.dartlang.org';
+  static String _scheme = 'https';
+  static String _host = 'pub.dartlang.org';
 
 
   Future<List<Package>> getPackages({
