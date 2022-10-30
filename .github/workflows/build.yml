@@ -61,7 +61,7 @@ jobs:
 
       - name: Check format
         run: flutter format --set-exit-if-changed .
-        if: matrix.package_path != "website"
+        if: matrix.package_path != 'website'
 
       - name: Analyze
         run: flutter analyze
