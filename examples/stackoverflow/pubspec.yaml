@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter
   flutter_hooks: ^0.18.0
   freezed_annotation: ^2.1.0
-  hooks_riverpod: ^2.0.2
+  hooks_riverpod: ^2.1.0
   html: ^0.15.0
   json_annotation: ^4.6.0
   riverpod_annotation:

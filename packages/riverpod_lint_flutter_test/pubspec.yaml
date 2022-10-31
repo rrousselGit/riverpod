@@ -8,7 +8,7 @@ environment:
 
 dependencies:
   riverpod_annotation: ^1.0.3
-  hooks_riverpod: ^2.0.2
+  hooks_riverpod: ^2.1.0
   flutter:
     sdk: flutter
 
