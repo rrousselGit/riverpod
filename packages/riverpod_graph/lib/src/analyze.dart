@@ -236,7 +236,7 @@ class ConsumerWidgetVisitor extends RecursiveAstVisitor<void> {
               .add(graph.providerNode(consumedProvider));
           return;
         default:
-          throw FallThroughError();
+          throw UnsupportedError('Unknown ref method ${node.methodName.name}');
       }
     }
   }
@@ -496,7 +496,7 @@ class ProviderDependencyVisitor extends RecursiveAstVisitor<void> {
               .add(graph.providerNode(consumedProvider));
           return;
         default:
-          throw FallThroughError();
+          throw UnsupportedError('Unknown ref method ${node.methodName.name}');
       }
     }
   }

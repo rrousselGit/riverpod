@@ -649,7 +649,7 @@ import 'internals.dart';
       );
       break;
     default:
-      throw FallThroughError();
+      throw UnsupportedError('Unknown package ${args.first}');
   }
 
   builder.writeAll(generateAll(matrix), '\n');
