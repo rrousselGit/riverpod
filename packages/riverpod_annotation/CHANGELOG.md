@@ -1,3 +1,7 @@
+## 1.0.5
+
+Upgrade Riverpod to latest
+
 ## 1.0.4
 
 Export more missing types

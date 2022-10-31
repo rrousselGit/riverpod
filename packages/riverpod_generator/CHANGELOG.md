@@ -1,3 +1,7 @@
+## 1.0.5
+
+- Upgrade Riverpod and annotation package to latest
+
 ## 1.0.4
 
 - Update dependencies.
