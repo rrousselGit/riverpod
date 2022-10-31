@@ -88,7 +88,7 @@ class AsyncNotifierProviderFamily<NotifierT extends FamilyAsyncNotifier<T, Arg>,
   }) : super(providerFactory: AsyncNotifierFamilyProvider.new);
 
   /// {@macro riverpod.overridewith}
-  Override overrideWithNotifier(NotifierT Function() create) {
+  Override overrideWith(NotifierT Function() create) {
     return FamilyOverrideImpl<AsyncValue<T>, Arg,
         AsyncNotifierFamilyProvider<NotifierT, T, Arg>>(
       this,

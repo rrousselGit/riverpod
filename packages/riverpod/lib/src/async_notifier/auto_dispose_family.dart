@@ -78,7 +78,7 @@ class AutoDisposeAsyncNotifierProviderFamily<
   }) : super(providerFactory: AutoDisposeFamilyAsyncNotifierProvider.new);
 
   /// {@macro riverpod.overridewith}
-  Override overrideWithNotifier(NotifierT Function() create) {
+  Override overrideWith(NotifierT Function() create) {
     return FamilyOverrideImpl<AsyncValue<T>, Arg,
         AutoDisposeFamilyAsyncNotifierProvider<NotifierT, T, Arg>>(
       this,

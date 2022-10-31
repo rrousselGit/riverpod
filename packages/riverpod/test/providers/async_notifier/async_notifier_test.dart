@@ -805,7 +805,7 @@ void main() {
     });
   }
 
-  test('supports overrideWithNotifier', () {
+  test('supports overrideWith', () {
     final provider = AsyncNotifierProvider<AsyncTestNotifier<int>, int>(
       () => AsyncTestNotifier((ref) => 0),
     );
@@ -815,8 +815,8 @@ void main() {
     );
     final container = createContainer(
       overrides: [
-        provider.overrideWithNotifier(() => AsyncTestNotifier((ref) => 42)),
-        autoDispose.overrideWithNotifier(
+        provider.overrideWith(() => AsyncTestNotifier((ref) => 42)),
+        autoDispose.overrideWith(
           () => AutoDisposeAsyncTestNotifier((ref) => 84),
         ),
       ],
@@ -837,10 +837,10 @@ void main() {
     );
     final container = createContainer(
       overrides: [
-        family.overrideWithNotifier(
+        family.overrideWith(
           () => AsyncTestNotifierFamily<int>((ref) => 42),
         ),
-        autoDisposeFamily.overrideWithNotifier(
+        autoDisposeFamily.overrideWith(
           () => AutoDisposeAsyncTestNotifierFamily<int>((ref) => 84),
         ),
       ],
