@@ -19,8 +19,8 @@ dependencies:
   pubspec_parse: ^1.0.0
 
 dev_dependencies:
-  dart_style:
-  test:
+  dart_style: any
+  test: any
 
 executables:
   riverpod: riverpod_cli
