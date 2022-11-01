@@ -6,6 +6,31 @@ import 'package:flutter_test/flutter_test.dart';
 import 'utils.dart';
 
 void main() {
+  group('WidgetRef.exists', () {
+    testWidgets('simple use-case', (tester) async {
+      late WidgetRef ref;
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(
+            builder: (context, r, child) {
+              ref = r;
+              return Container();
+            },
+          ),
+        ),
+      );
+
+      final provider = Provider((ref) => 0);
+
+      expect(ref.exists(provider), false);
+      expect(ref.exists(provider), false);
+
+      ref.read(provider);
+
+      expect(ref.exists(provider), true);
+    });
+  });
+
   testWidgets('WidgetRef.context exposes the BuildContext', (tester) async {
     late WidgetRef ref;
 
@@ -125,7 +150,7 @@ void main() {
         child: Consumer(
           builder: (c, ref, _) {
             buildCount++;
-            final state = ref.watch(stateProvider.state).state;
+            final state = ref.watch(stateProvider);
             final value =
                 state == 0 ? ref.watch(provider0) : ref.watch(provider1);
 
@@ -167,7 +192,7 @@ void main() {
     expect(buildCount, 2);
 
     // changing the provider that computed is subscribed to
-    container.read(stateProvider.state).state = 1;
+    container.read(stateProvider.notifier).state = 1;
     await tester.pump();
 
     expect(buildCount, 3);
@@ -209,7 +234,7 @@ void main() {
         child: Consumer(
           builder: (c, ref, _) {
             buildCount++;
-            final state = ref.watch(stateProvider.state).state;
+            final state = ref.watch(stateProvider);
             final result = state == 0 //
                 ? ref.watch(provider0)
                 : ref.watch(provider1);
@@ -248,7 +273,7 @@ void main() {
     expect(buildCount, 2);
 
     // changing the provider that computed is subscribed to
-    container.read(stateProvider.state).state = 1;
+    container.read(stateProvider.notifier).state = 1;
     await tester.pump();
 
     expect(buildCount, 3);

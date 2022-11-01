@@ -59,20 +59,20 @@ void main() {
     final count2 = StateProvider((ref) => 0);
 
     final provider = Provider((ref) {
-      final first = ref.watch(count.state).state;
-      final second = ref.watch(count2.state).state;
+      final first = ref.watch(count);
+      final second = ref.watch(count2);
 
       return '$first $second';
     });
 
     expect(container.read(provider), '0 0');
 
-    container.read(count.state).state++;
+    container.read(count.notifier).state++;
     await container.pump();
 
     expect(container.read(provider), '1 0');
 
-    container.read(count2.state).state++;
+    container.read(count2.notifier).state++;
     await container.pump();
 
     expect(container.read(provider), '1 1');
@@ -85,7 +85,7 @@ void main() {
     var buildCount = 0;
     final provider = Provider((ref) {
       buildCount++;
-      return ref.watch(count.state).state.isEven;
+      return ref.watch(count).isEven;
     });
 
     final container = ProviderContainer();
@@ -96,7 +96,7 @@ void main() {
     expect(container.read(provider), true);
     expect(buildCount, 1);
 
-    container.read(count.state).state++;
+    container.read(count.notifier).state++;
     await container.pump();
 
     expect(container.read(provider), false);
@@ -128,7 +128,7 @@ void main() {
     final container = createContainer();
     final throws = StateProvider((ref) => true);
     final provider = Provider((ref) {
-      if (ref.watch(throws.state).state) {
+      if (ref.watch(throws)) {
         throw UnimplementedError();
       }
       return 0;
@@ -143,7 +143,7 @@ void main() {
       throwsUnimplementedError,
     );
 
-    container.read(throws.state).state = false;
+    container.read(throws.notifier).state = false;
 
     expect(container.read(dep), 0);
   });
@@ -154,7 +154,7 @@ void main() {
     final container = createContainer();
     final throws = StateProvider((ref) => true);
     final provider = Provider((ref) {
-      if (ref.watch(throws.state).state) {
+      if (ref.watch(throws)) {
         throw UnimplementedError();
       }
       return 0;
@@ -169,7 +169,7 @@ void main() {
       throwsUnimplementedError,
     );
 
-    container.read(throws.state).state = false;
+    container.read(throws.notifier).state = false;
 
     expect(container.read(dep), 0);
   });
@@ -188,12 +188,12 @@ void main() {
 
     container.read(provider);
 
-    container.read(dep.state).state++;
+    container.read(dep.notifier).state++;
 
     verifyOnly(onDispose, onDispose());
 
-    container.read(dep.state).state++;
-    container.read(dep2.state).state++;
+    container.read(dep.notifier).state++;
+    container.read(dep2.notifier).state++;
 
     verifyNoMoreInteractions(onDispose);
   });
@@ -328,7 +328,7 @@ void main() {
     var computedBuildCount = 0;
     final computed = Provider((ref) {
       computedBuildCount++;
-      final state = ref.watch(stateProvider.state).state;
+      final state = ref.watch(stateProvider);
       final value = state == 0 ? ref.watch(provider0) : ref.watch(provider1);
       return '${ref.watch(provider0)} $value';
     });
@@ -361,7 +361,7 @@ void main() {
     verifyNoMoreInteractions(computedListener);
 
     // changing the provider that computed is subscribed to
-    container.read(stateProvider.state).state = 1;
+    container.read(stateProvider.notifier).state = 1;
     await container.pump();
 
     verifyOnly(computedListener, computedListener('1 1', '1 43'));
@@ -399,7 +399,7 @@ void main() {
     var computedBuildCount = 0;
     final computed = Provider((ref) {
       computedBuildCount++;
-      final state = ref.watch(stateProvider.state).state;
+      final state = ref.watch(stateProvider);
       return state == 0 ? ref.watch(provider0) : ref.watch(provider1);
     });
 
@@ -429,7 +429,7 @@ void main() {
     verifyNoMoreInteractions(computedListener);
 
     // changing the provider that computed is subscribed to
-    container.read(stateProvider.state).state = 1;
+    container.read(stateProvider.notifier).state = 1;
     await container.pump();
 
     expect(computedBuildCount, 3);
@@ -512,7 +512,7 @@ void main() {
     var firstCallCount = 0;
     final first = Provider((ref) {
       firstCallCount++;
-      ref.watch(state.state).state;
+      ref.watch(state);
       return 0;
     });
     var secondCallCount = 0;
@@ -522,7 +522,7 @@ void main() {
     });
     final container = createContainer();
 
-    final controller = container.read(state.state);
+    final controller = container.read(state.notifier);
 
     expect(container.read(second), '0');
     expect(firstCallCount, 1);
@@ -565,7 +565,11 @@ void main() {
     notifier.setState(42);
     await container.pump();
 
-    expect(sub.read(), const AsyncLoading<int>());
+    expect(
+      sub.read(),
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(0), isRefresh: false),
+    );
     expect(callCount, 1);
 
     await container.read(computed.stream).first;

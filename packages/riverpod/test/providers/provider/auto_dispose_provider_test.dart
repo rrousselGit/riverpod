@@ -50,7 +50,7 @@ void main() {
         final container = createContainer();
         Object? err;
         final provider = Provider.autoDispose<int>((ref) {
-          if (ref.watch(dep.state).state) {
+          if (ref.watch(dep)) {
             try {
               ref.state;
             } catch (e) {
@@ -63,7 +63,7 @@ void main() {
         container.read(provider);
         expect(err, isNull);
 
-        container.read(dep.state).state = true;
+        container.read(dep.notifier).state = true;
         container.read(provider);
 
         expect(err, isStateError);
@@ -151,6 +151,7 @@ void main() {
         final container = createContainer(
           parent: root,
           overrides: [
+            // ignore: deprecated_member_use_from_same_package
             provider.overrideWithProvider(Provider.autoDispose((ref) => 42)),
           ],
         );
@@ -170,6 +171,7 @@ void main() {
       });
       final container = createContainer(
         overrides: [
+          // ignore: deprecated_member_use_from_same_package
           provider.overrideWithProvider(override),
         ],
       );

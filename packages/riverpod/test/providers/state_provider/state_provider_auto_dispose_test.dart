@@ -28,7 +28,7 @@ void main() {
       overrides: [dep.overrideWithValue(42)],
     );
 
-    expect(container.read(provider.state).state, 42);
+    expect(container.read(provider), 42);
     expect(container.read(provider.notifier).state, 42);
 
     expect(root.getAllProviderElements(), isEmpty);
@@ -44,17 +44,14 @@ void main() {
         return 0;
       });
 
-      container.listen<StateController<int>>(
-        provider.state,
-        (prev, value) => listener(prev?.state, value.state),
-      );
+      container.listen<int>(provider, listener);
       verifyZeroInteractions(listener);
 
       expect(ref.controller, container.read(provider.notifier));
 
       ref.controller.state = 42;
 
-      verifyOnly(listener, listener(42, 42));
+      verifyOnly(listener, listener(0, 42));
 
       expect(ref.controller.state, 42);
     });
@@ -81,7 +78,7 @@ void main() {
       final container = createContainer();
       Object? err;
       final provider = StateProvider.autoDispose<int>((ref) {
-        if (ref.watch(dep.state).state) {
+        if (ref.watch(dep)) {
           try {
             ref.controller;
           } catch (e) {
@@ -94,7 +91,7 @@ void main() {
       container.read(provider);
       expect(err, isNull);
 
-      container.read(dep.state).state = true;
+      container.read(dep.notifier).state = true;
       container.read(provider);
 
       expect(err, isStateError);
@@ -117,40 +114,19 @@ void main() {
     expect(container.read(provider), 42);
   });
 
-  test(
-    'can refresh .state',
-    skip: 'TODO',
-    () async {
-      // TODO fix this test
-      var initialValue = 1;
-      final provider = StateProvider.autoDispose<int>((ref) => initialValue);
-      final container = createContainer();
-
-      container.listen(provider.state, (prev, value) {});
-
-      expect(container.read(provider), 1);
-      expect(container.read(provider.state).debugState, 1);
-
-      initialValue = 42;
-
-      expect(container.refresh(provider.state).debugState, 42);
-      expect(container.read(provider), 42);
-    },
-  );
-
   test('can be refreshed', () async {
     var result = 0;
     final container = createContainer();
     final provider = StateProvider.autoDispose<int>((ref) => result);
 
     final notifier = container.read(provider.notifier);
-    expect(container.read(provider.state).state, 0);
+    expect(container.read(provider), 0);
     expect(notifier.state, 0);
 
     result = 42;
     expect(container.refresh(provider), 42);
 
-    expect(container.read(provider.state).state, 42);
+    expect(container.read(provider), 42);
     expect(container.read(provider.notifier), isNot(notifier));
     expect(container.read(provider.notifier).state, 42);
   });
@@ -162,7 +138,6 @@ void main() {
       final container = createContainer(parent: root, overrides: [provider]);
 
       expect(container.read(provider.notifier).state, 0);
-      expect(container.read(provider.state).state, 0);
       expect(container.read(provider), 0);
       expect(root.getAllProviderElements(), isEmpty);
       expect(
@@ -182,7 +157,6 @@ void main() {
     //   ]);
 
     //   expect(container.read(provider.notifier).state, 42);
-    //   expect(container.read(provider.state).state, 42);
     //   expect(container.read(provider), 42);
     //   expect(root.getAllProviderElements(), isEmpty);
     //   expect(
@@ -204,6 +178,7 @@ void main() {
       final container = createContainer(
         parent: root,
         overrides: [
+          // ignore: deprecated_member_use_from_same_package
           provider.overrideWithProvider(
             StateProvider.autoDispose((ref) => 42, name: 'meh'),
           ),
@@ -211,7 +186,6 @@ void main() {
       );
 
       expect(container.read(provider.notifier).state, 42);
-      expect(container.read(provider.state).state, 42);
       expect(container.read(provider), 42);
       expect(
         container.getAllProviderElements(),
@@ -241,7 +215,6 @@ void main() {
 
     //   expect(container.read(provider), 42);
     //   expect(container.read(provider.notifier), override);
-    //   expect(container2.read(provider.state).state, 42);
     // });
 
     test(

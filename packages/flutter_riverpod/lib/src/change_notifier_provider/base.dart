@@ -110,6 +110,53 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   @override
   late final AlwaysAliveRefreshable<NotifierT> notifier =
       _notifier<NotifierT>(this);
+
+  /// {@template riverpod.overridewith}
+  /// Override the provider with a new initialization function.
+  ///
+  /// This will also disable the auto-scoping mechanism, meaning that if the
+  /// overridden provider specified `dependencies`, it will have no effect.
+  ///
+  /// The override must not specify a `dependencies`.
+  ///
+  /// Some common use-cases are:
+  /// - testing, by replacing a service with a fake implementation, or to reach
+  ///   a very specific state easily.
+  /// - multiple environments, by changing the implementation of a class
+  ///   based on the platform or other parameters.
+  ///
+  /// This function should be used in combination with `ProviderScope.overrides`
+  /// or `ProviderContainer.overrides`:
+  ///
+  /// ```dart
+  /// final myService = Provider((ref) => MyService());
+  ///
+  /// runApp(
+  ///   ProviderScope(
+  ///     overrides: [
+  ///       // Replace the implementation of the provider with a different one
+  ///       myService.overrideWithProvider((ref) {
+  ///         ref.watch('other');
+  ///         return MyFakeService(),
+  ///       })),
+  ///     ],
+  ///     child: MyApp(),
+  ///   ),
+  /// );
+  /// ```
+  /// {@endtemplate}
+  Override overrideWith(
+    Create<NotifierT, ChangeNotifierProviderRef<NotifierT>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ChangeNotifierProvider<NotifierT>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [ChangeNotifierProvider].
@@ -187,4 +234,20 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
     super.name,
     super.dependencies,
   }) : super(providerFactory: ChangeNotifierProvider.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    NotifierT Function(ChangeNotifierProviderRef<NotifierT> ref, Arg arg)
+        create,
+  ) {
+    return FamilyOverrideImpl<NotifierT, Arg,
+        ChangeNotifierProvider<NotifierT>>(
+      this,
+      (arg) => ChangeNotifierProvider<NotifierT>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

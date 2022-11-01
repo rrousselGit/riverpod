@@ -36,12 +36,31 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
 
   @override
   late final Refreshable<Stream<T>> stream = _stream(this);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    Create<Stream<T>, AutoDisposeStreamProviderRef<T>> create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: AutoDisposeStreamProvider<T>(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of [AutoDisposeStreamProvider].
-class AutoDisposeStreamProviderElement<T> = StreamProviderElement<T>
+class AutoDisposeStreamProviderElement<T> extends StreamProviderElement<T>
     with AutoDisposeProviderElementMixin<AsyncValue<T>>
-    implements AutoDisposeStreamProviderRef<T>;
+    implements AutoDisposeStreamProviderRef<T> {
+  /// The [ProviderElementBase] for [StreamProvider]
+  AutoDisposeStreamProviderElement._(
+    AutoDisposeStreamProvider<T> super.provider,
+  ) : super._();
+}
 
 /// The [Family] of [AutoDisposeStreamProvider].
 class AutoDisposeStreamProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
@@ -56,4 +75,18 @@ class AutoDisposeStreamProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     super.name,
     super.dependencies,
   }) : super(providerFactory: AutoDisposeStreamProvider.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    Stream<R> Function(AutoDisposeStreamProviderRef<R> ref, Arg arg) create,
+  ) {
+    return FamilyOverrideImpl<AsyncValue<R>, Arg, AutoDisposeStreamProvider<R>>(
+      this,
+      (arg) => AutoDisposeStreamProvider<R>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

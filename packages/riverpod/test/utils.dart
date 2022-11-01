@@ -42,6 +42,8 @@ List<Object> errorsOf(void Function() cb) {
   return [...errors];
 }
 
+class ProviderObserverMock extends Mock implements ProviderObserver {}
+
 class OnBuildMock extends Mock {
   void call();
 }

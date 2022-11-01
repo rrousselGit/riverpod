@@ -755,6 +755,7 @@ final b = Provider(
     final a = Provider((ref) => 0);
 
     expect(
+      // ignore: deprecated_member_use_from_same_package
       () => provider.overrideWithProvider(
         Provider((ref) => 0, dependencies: [a]),
       ),
@@ -771,6 +772,7 @@ final b = Provider(
     final root = createContainer(
       overrides: [
         b.overrideWithValue(21),
+        // ignore: deprecated_member_use_from_same_package
         c.overrideWithProvider(Provider((ref) => ref.watch(another) + 10)),
       ],
     );

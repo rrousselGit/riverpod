@@ -31,11 +31,19 @@ void main() {
 
       ref.state = const AsyncLoading<int>();
 
-      expect(ref.state, const AsyncLoading<int>());
+      expect(
+        ref.state,
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncData(0), isRefresh: false),
+      );
 
       verifyOnly(
         listener,
-        listener(const AsyncData(0), const AsyncLoading<int>()),
+        listener(
+          const AsyncData(0),
+          const AsyncLoading<int>()
+              .copyWithPrevious(const AsyncData(0), isRefresh: false),
+        ),
       );
     });
 
@@ -62,8 +70,7 @@ void main() {
         'when going from AsyncLoading to AsyncLoading, does not notify listeners',
         () async {
       final dep = StateProvider((ref) => Stream.value(42));
-      final provider =
-          StreamProvider.autoDispose((ref) => ref.watch(dep.state).state);
+      final provider = StreamProvider.autoDispose((ref) => ref.watch(dep));
       final container = createContainer();
       final listener = Listener<AsyncValue<int>>();
       final controller = StreamController<int>();
@@ -80,15 +87,19 @@ void main() {
         const AsyncData<int>(42),
       );
 
-      container.read(dep.state).state = controller.stream;
+      container.read(dep.notifier).state = controller.stream;
       container.listen(provider, listener, fireImmediately: true);
 
       verifyOnly(
         listener,
-        listener(null, const AsyncLoading<int>()),
+        listener(
+          null,
+          const AsyncLoading<int>()
+              .copyWithPrevious(const AsyncData(42), isRefresh: false),
+        ),
       );
 
-      container.read(dep.state).state = Stream.value(21);
+      container.read(dep.notifier).state = Stream.value(21);
 
       verifyNoMoreInteractions(listener);
 
@@ -140,7 +151,7 @@ void main() {
 
       verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
       await container.pump();
 
       verifyNoMoreInteractions(listener);
@@ -161,7 +172,7 @@ void main() {
 
       verifyOnly(listener, listener(any, any));
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
       await container.pump();
 
       verifyNoMoreInteractions(listener);
@@ -182,7 +193,7 @@ void main() {
 
       verifyOnly(listener, listener(any, any));
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
       await container.pump();
 
       verifyNoMoreInteractions(listener);
@@ -242,6 +253,7 @@ void main() {
         final container = createContainer(
           parent: root,
           overrides: [
+            // ignore: deprecated_member_use_from_same_package
             provider.overrideWithProvider(
               StreamProvider.autoDispose((ref) => Stream.value(42)),
             ),

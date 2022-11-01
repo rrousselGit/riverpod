@@ -12,6 +12,12 @@ abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
   /// Will throw if the provider threw during creation.
   AsyncValue<State> get state;
   set state(AsyncValue<State> newState);
+
+  /// Obtains the [Future] associated to this provider.
+  ///
+  /// This is equivalent to doing `ref.read(myProvider.future)`.
+  /// See also [FutureProvider.future].
+  Future<State> get future;
 }
 
 /// {@macro riverpod.futureprovider}
@@ -33,7 +39,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   /// {@macro riverpod.family}
   static const family = FutureProviderFamilyBuilder();
 
-  final FutureOr<T> Function(FutureProviderRef<T> ref) _createFn;
+  final Create<FutureOr<T>, FutureProviderRef<T>> _createFn;
 
   @override
   late final AlwaysAliveRefreshable<Future<T>> future = _future(this);
@@ -43,6 +49,18 @@ class FutureProvider<T> extends _FutureProviderBase<T>
 
   @override
   FutureProviderElement<T> createElement() => FutureProviderElement._(this);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(Create<FutureOr<T>, FutureProviderRef<T>> create) {
+    return ProviderOverride(
+      origin: this,
+      override: FutureProvider(
+        create,
+        from: from,
+        argument: argument,
+      ),
+    );
+  }
 }
 
 /// The element of a [FutureProvider]
@@ -53,6 +71,12 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   @override
   AsyncValue<T> get state => requireState;
+
+  @override
+  Future<T> get future {
+    flush();
+    return futureNotifier.value;
+  }
 
   @override
   bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
@@ -82,4 +106,18 @@ class FutureProviderFamily<R, Arg> extends FamilyBase<FutureProviderRef<R>,
     super.name,
     super.dependencies,
   }) : super(providerFactory: FutureProvider<R>.new);
+
+  /// {@macro riverpod.overridewith}
+  Override overrideWith(
+    FutureOr<R> Function(FutureProviderRef<R> ref, Arg arg) create,
+  ) {
+    return FamilyOverrideImpl<AsyncValue<R>, Arg, FutureProvider<R>>(
+      this,
+      (arg) => FutureProvider<R>(
+        (ref) => create(ref, arg),
+        from: from,
+        argument: arg,
+      ),
+    );
+  }
 }

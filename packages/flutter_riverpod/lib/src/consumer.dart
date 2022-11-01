@@ -20,6 +20,39 @@ abstract class WidgetRef {
   /// - [listen], to react to changes on a provider, such as for showing modals.
   T watch<T>(ProviderListenable<T> provider);
 
+  /// Determines whether a provider is initialized or not.
+  ///
+  /// Writing logic that conditionally depends on the existence of a provider
+  /// is generally unsafe and should be avoided.
+  /// The problem is that once the provider gets initialized, logic that
+  /// depends on the existence or not of a provider won't be rerun; possibly
+  /// causing your state to get out of date.
+  ///
+  /// But it can be useful in some cases, such as to avoid re-fetching an
+  /// object if a different network request already obtained it:
+  ///
+  /// ```dart
+  /// final fetchItemList = FutureProvider<List<Item>>(...);
+  ///
+  /// final fetchItem = FutureProvider.autoDispose.family<Item, String>((ref, id) async {
+  ///   if (ref.exists(fetchItemList)) {
+  ///     // If `fetchItemList` is initialized, we look into its state
+  ///     // and return the already obtained item.
+  ///     final itemFromItemList = ref.watch(
+  ///       fetchItemList.selectAsync((items) => items.firstWhereOrNull((item) => item.id == id)),
+  ///     );
+  ///     if (itemFromItemList != null) return itemFromItemList;
+  ///   }
+  ///
+  ///   // If `fetchItemList` is not initialized, perform a network request for
+  ///   // "id" separately
+  ///
+  ///   final json = await http.get('api/items/$id');
+  ///   return Item.fromJson(json);
+  /// });
+  /// ```
+  bool exists(ProviderBase<Object?> provider);
+
   /// Listen to a provider and call `listener` whenever its value changes,
   /// without having to take care of removing the listener.
   ///
@@ -140,15 +173,31 @@ abstract class WidgetRef {
 
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
-  /// If you do not care about the new value, prefer [invalidate] instead,
-  /// which makes the invalidation logic more resilient by avoiding
-  /// multiple refreshes at once.
+  /// Writing:
+  ///
+  /// ```dart
+  /// final newValue = ref.refresh(provider);
+  /// ```
+  ///
+  /// is strictly identical to doing:
+  ///
+  /// ```dart
+  /// ref.invalidate(provider);
+  /// final newValue = ref.read(provider);
+  /// ```
+  ///
+  /// If you do not care about the return value of [refresh], use [invalidate] instead.
+  /// Doing so has the benefit of:
+  /// - making the invalidation logic more resilient by avoiding multiple
+  ///   refreshes at once.
+  /// - possibly avoids recomputing a provider if it isn't
+  ///   needed immediately.
   ///
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
   ///
   /// For example, a pull-to-refresh may be implemented by combining
-  /// [FutureProvider] and a [RefreshIndicator]:
+  /// [FutureProvider] and a `RefreshIndicator`:
   ///
   /// ```dart
   /// final productsProvider = FutureProvider((ref) async {
@@ -172,6 +221,7 @@ abstract class WidgetRef {
   ///   }
   /// }
   /// ```
+  @useResult
   State refresh<State>(Refreshable<State> provider);
 
   /// Invalidates the state of the provider, causing it to refresh.
@@ -279,7 +329,7 @@ typedef ConsumerBuilder = Widget Function(
 ///               builder: (BuildContext context, WidgetRef ref, Widget? child) {
 ///                 // This builder will only get called when the counterProvider
 ///                 // is updated.
-///                 final count = ref.watch(counterProvider.state).state;
+///                 final count = ref.watch(counterProvider);
 ///
 ///                 return Row(
 ///                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -299,7 +349,7 @@ typedef ConsumerBuilder = Widget Function(
 ///       ),
 ///       floatingActionButton: FloatingActionButton(
 ///         child: Icon(Icons.plus_one),
-///         onPressed: () => ref.read(counterProvider.state).state++,
+///         onPressed: () => ref.read(counterProvider.notifier).state++,
 ///       ),
 ///     );
 ///   }
@@ -545,6 +595,11 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     // want to call the listener on every rebuild.
     final sub = _container.listen<T>(provider, listener, onError: onError);
     _listeners.add(sub);
+  }
+
+  @override
+  bool exists(ProviderBase<Object?> provider) {
+    return ProviderScope.containerOf(this, listen: false).exists(provider);
   }
 
   @override

@@ -25,6 +25,13 @@ abstract class Refreshable<T> implements ProviderListenable<T> {
 abstract class AlwaysAliveRefreshable<T>
     implements Refreshable<T>, AlwaysAliveProviderListenable<T> {}
 
+/// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
+/// if it is safe to modify a provider.
+///
+/// This corresponds to all the widgets that a [Provider] is associated with.
+@internal
+void Function()? debugCanModifyProviders;
+
 /// An internal class that handles the state of a provider.
 ///
 /// Do not use.
@@ -95,7 +102,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   List<void Function()>? _onAddListeners;
   List<void Function()>? _onRemoveListeners;
   List<void Function(State?, State)>? _onChangeSelfListeners;
-  List<void Function(Object, StackTrace)>? _onErrorSelfListeners;
+  List<OnError>? _onErrorSelfListeners;
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
@@ -438,10 +445,27 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     }
   }
 
+  @override
+  void notifyListeners() {
+    final currentResult = getState();
+    // If `notifyListeners` is used during `build`, the result will be null.
+    // Throwing would be unnecesserily inconvenient, so we simply skip it.
+    if (currentResult == null) return;
+
+    if (_didBuild) {
+      _notifyListeners(
+        currentResult,
+        currentResult,
+        checkUpdateShouldNotify: false,
+      );
+    }
+  }
+
   void _notifyListeners(
     Result<State> newState,
-    Result<State>? previousStateResult,
-  ) {
+    Result<State>? previousStateResult, {
+    bool checkUpdateShouldNotify = true,
+  }) {
     assert(
       () {
         if (_debugSkipNotifyListenersAsserts) return true;
@@ -456,7 +480,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 ''',
         );
 
-        container.debugCanModifyProviders?.call();
+        debugCanModifyProviders?.call();
         return true;
       }(),
       '',
@@ -492,7 +516,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       },
     );
 
-    if (previousStateResult != null &&
+    if (checkUpdateShouldNotify &&
+        previousStateResult != null &&
         previousStateResult.hasState &&
         newState.hasState &&
         !updateShouldNotify(
@@ -588,10 +613,18 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
-  bool _debugAssertCanDependOn(ProviderListenable listenable) {
+  bool _debugAssertCanDependOn(ProviderListenable<Object?> listenable) {
     assert(
       () {
-        if (listenable is! ProviderBase) return true;
+        if (listenable is! ProviderBase<Object?>) return true;
+
+        try {
+          // Initializating the provider, to make sure its dependencies are setup.
+          _container.readProviderElement(listenable);
+        } catch (err) {
+          // We don't care whether the provider is in error or not. We're just
+          // checking whether we're not in a circular dependency.
+        }
 
         assert(
           listenable._origin != origin,
@@ -648,6 +681,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     assert(_debugAssertCanDependOn(provider), '');
     return _container.read(provider);
   }
+
+  @override
+  bool exists(ProviderBase<Object?> provider) => _container.exists(provider);
 
   @override
   T watch<T>(ProviderListenable<T> listenable) {

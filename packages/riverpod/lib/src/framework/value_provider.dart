@@ -1,7 +1,4 @@
-import 'package:meta/meta.dart';
-
-import 'framework.dart';
-import 'result.dart';
+part of '../framework.dart';
 
 /// A provider that is driven by a value instead of a function.
 ///
@@ -50,7 +47,25 @@ class ValueProviderElement<State> extends ProviderElementBase<State> {
     final previousState = getState()! as ResultData<State>;
 
     if (newValue != previousState.state) {
+      assert(
+        () {
+          // Asserts would otherwise prevent a provider rebuild from updating
+          // other providers
+          _debugSkipNotifyListenersAsserts = true;
+          return true;
+        }(),
+        '',
+      );
       setState(newValue);
+      assert(
+        () {
+          // Asserts would otherwise prevent a provider rebuild from updating
+          // other providers
+          _debugSkipNotifyListenersAsserts = false;
+          return true;
+        }(),
+        '',
+      );
       onChange?.call(newValue);
     }
   }

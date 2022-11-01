@@ -3,12 +3,12 @@ name: Build
 on:
   pull_request:
     paths-ignore:
-      - '**.md'
+      - "**.md"
   push:
     branches:
       - master
     paths-ignore:
-      - '**.md'
+      - "**.md"
   schedule:
     # runs the CI everyday at 10AM
     - cron: "0 10 * * *"
@@ -17,40 +17,71 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ${{ matrix.package_path }}
+
     strategy:
       matrix:
         channel:
           - stable
+        package_path:
+          - examples/counter
+          - examples/marvel
+          - examples/pub
+          - examples/random_number
+          - examples/stackoverflow
+          - examples/todos
+          - packages/riverpod
+          - packages/riverpod/example
+          - packages/flutter_riverpod
+          - packages/flutter_riverpod/example
+          - packages/hooks_riverpod
+          - packages/hooks_riverpod/example
+          - packages/riverpod_annotation
+          # TODO(rrousselGit) update riverpod_cli test setup to be supported by the CI
+          # - packages/riverpod_cli
+          - packages/riverpod_generator
+          # TODO(rrousselGit) update riverpod_graph test setup to be supported by the CI
+          # - packages/riverpod_graph
+          - packages/riverpod_lint
+          # TODO(rousselGit) blocked by https://github.com/invertase/dart_custom_lint/issues/16
+          # - packages/riverpod_lint_flutter_test
+          - website
 
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v3.1.0
+        with:
+          fetch-depth: 2
+      - uses: subosito/flutter-action@v2.7.1
         with:
           channel: ${{ matrix.channel }}
-
       - name: Add pub cache bin to PATH
         run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
-
       - name: Add pub cache to PATH
         run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
-
-      - run: dart pub global activate melos
-
       - name: Install dependencies
-        run: melos bootstrap --ignore "codemod_riverpod_*,riverpod_cli" 
+        run: flutter pub get
 
       - name: Check format
-        run: melos exec --ignore="website_snippets" -- "flutter format --set-exit-if-changed ."
-
-      - name: Generate
-        run: melos exec --depends-on="build_runner" -- "dart run build_runner build --delete-conflicting-outputs"
+        run: flutter format --set-exit-if-changed .
+        if: matrix.package_path != 'website'
 
       - name: Analyze
-        run: melos exec --ignore="codemod_riverpod_test*,riverpod_lint_flutter_test" -- "flutter analyze"
+        run: flutter analyze
 
       - name: Run tests
-        run: melos run test
+        run: |
+          if test -d "test"; then
+            if grep -q flutter "pubspec.yaml"; then
+              flutter test --coverage
+            else
+              ${{github.workspace}}/scripts/coverage.sh
+            fi
+          fi
 
       - name: Upload coverage to codecov
-        run: curl -s https://codecov.io/bash | bash
+        run: |
+          if test -d "test"; then
+            curl -s https://codecov.io/bash | bash
+          fi

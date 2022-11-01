@@ -118,6 +118,7 @@ void main() {
         final container = createContainer(
           parent: root,
           overrides: [
+            // ignore: deprecated_member_use
             provider.overrideWithProvider(
               ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(42)),
             ),

@@ -221,7 +221,7 @@ void main() {
       () {
     var callCount = 0;
     final atom = StateProvider((ref) => 0);
-    final dependency = Provider((ref) => ref.watch(atom.state).state);
+    final dependency = Provider((ref) => ref.watch(atom));
     final provider = Provider((ref) {
       callCount++;
       ref.watch(dependency);
@@ -233,7 +233,7 @@ void main() {
     expect(() => container.read(provider), throwsStateError);
     expect(callCount, 1);
 
-    container.read(atom.state).state = 0;
+    container.read(atom.notifier).state = 0;
 
     expect(() => container.read(provider), throwsStateError);
     expect(callCount, 1);
@@ -270,7 +270,7 @@ void main() {
     expect(secondDependents, [computedElement]);
     expect(secondElement.hasListeners, true);
 
-    container.read(first.state).state++;
+    container.read(first.notifier).state++;
     expect(sub.read(), 'fallback');
 
     firstDependents = <ProviderElementBase>[];
@@ -344,7 +344,7 @@ void main() {
       () async {
     final provider = StateProvider.autoDispose((ref) => 0);
 
-    final state = container.read(provider.state);
+    final state = container.read(provider.notifier);
 
     expect(state.mounted, true);
 
@@ -595,7 +595,7 @@ void main() {
 
       expect(callCount, 1);
 
-      container.read(dep.state).state++;
+      container.read(dep.notifier).state++;
       future = Future.value(21);
 
       expect(callCount, 1);
