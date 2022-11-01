@@ -2,7 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:path/path.dart' as p;
@@ -34,21 +33,19 @@ String typeNameOf(DartType type) {
   throw UnimplementedError('(${type.runtimeType}) $type');
 }
 
-bool hasExpectedPartDirective(CompilationUnit unit, String part) =>
-    unit.directives
-        .whereType<PartDirective>()
-        .any((e) => e.uri.stringValue == part);
-
 /// Returns a URL representing [element].
-String urlOfElement(Element element) => element.kind == ElementKind.DYNAMIC
-    ? 'dart:core#dynamic'
-    : element.kind == ElementKind.NEVER
-        ? 'dart:core#Never'
-        // using librarySource.uri – in case the element is in a part
-        : normalizeUrl(element.librarySource!.uri)
-            .replace(fragment: element.name)
-            .toString();
+String urlOfElement(Element element) {
+  return element.kind == ElementKind.DYNAMIC
+      ? 'dart:core#dynamic'
+      : element.kind == ElementKind.NEVER
+          ? 'dart:core#Never'
+          // using librarySource.uri – in case the element is in a part
+          : normalizeUrl(element.librarySource!.uri)
+              .replace(fragment: element.name)
+              .toString();
+}
 
+/// Normalizes an [Uri]
 Uri normalizeUrl(Uri url) {
   switch (url.scheme) {
     case 'dart':

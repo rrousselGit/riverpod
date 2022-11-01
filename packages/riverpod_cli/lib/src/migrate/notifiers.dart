@@ -27,12 +27,13 @@ class RiverpodNotifierChangesMigrationSuggestor
     final nodeType = node.staticType!.getDisplayString(withNullability: true);
     if (nodeType.contains('StateNotifierProvider')) {
       final providerType = node.staticType as InterfaceType?;
-      final notifierType = providerType!.typeArguments.first as InterfaceType?;
-      final stateType = notifierType!.superclass!.typeArguments.first;
+      final notifierBaseType =
+          providerType!.typeArguments.first as InterfaceType?;
+      final stateType = notifierBaseType!.superclass!.typeArguments.first;
 
       if (nodeType.contains('Family')) {
         yieldPatch(
-          '<${notifierType.getDisplayString(withNullability: true)}, ${stateType.getDisplayString(withNullability: true)}, ${providerType.typeArguments.last.getDisplayString(withNullability: true)}>',
+          '<${notifierBaseType.getDisplayString(withNullability: true)}, ${stateType.getDisplayString(withNullability: true)}, ${providerType.typeArguments.last.getDisplayString(withNullability: true)}>',
           node.typeArguments!.offset,
           node.argumentList.offset,
         );
@@ -41,7 +42,7 @@ class RiverpodNotifierChangesMigrationSuggestor
           // Make sure it is variable declaration so we don't add type params
           // on family accesses
           yieldPatch(
-            '<${notifierType.getDisplayString(withNullability: true)}, ${stateType.getDisplayString(withNullability: true)}>',
+            '<${notifierBaseType.getDisplayString(withNullability: true)}, ${stateType.getDisplayString(withNullability: true)}>',
             node.function.end,
             node.argumentList.offset,
           );
@@ -57,11 +58,12 @@ class RiverpodNotifierChangesMigrationSuggestor
     final nodeType = node.staticType!.getDisplayString(withNullability: true);
     if (nodeType.contains('StateNotifierProvider')) {
       final providerType = node.staticType as InterfaceType?;
-      final notifierType = providerType!.typeArguments.first as InterfaceType?;
-      final stateType = notifierType!.superclass!.typeArguments.first;
+      final notifierBaseType =
+          providerType!.typeArguments.first as InterfaceType?;
+      final stateType = notifierBaseType!.superclass!.typeArguments.first;
       final constructorTypeArguments = node.constructorName.type.typeArguments;
       yieldPatch(
-        '<${notifierType.getDisplayString(withNullability: true)}, ${stateType.getDisplayString(withNullability: true)}>',
+        '<${notifierBaseType.getDisplayString(withNullability: true)}, ${stateType.getDisplayString(withNullability: true)}>',
         constructorTypeArguments != null
             ? constructorTypeArguments.offset
             : node.constructorName.end,

@@ -127,7 +127,7 @@ class Data {
 
   bool get isNotifier => functionName == null;
 
-  String notifierType({bool generics = true}) {
+  String notifierBaseType({bool generics = true}) {
     final trailing = generics ? '<$valueDisplayType>' : '';
     final leading = keepAlive ? '' : 'AutoDispose';
 

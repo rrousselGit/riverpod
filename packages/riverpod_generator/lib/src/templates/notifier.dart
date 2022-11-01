@@ -8,7 +8,7 @@ class NotifierTemplate {
   @override
   String toString() {
     return '''
-abstract class ${data.notifierBaseName} extends ${data.notifierType()} {
+abstract class ${data.notifierBaseName} extends ${data.notifierBaseType()} {
 ${data.parameters.map((e) => 'late final ${e.type.getDisplayString(withNullability: true)} ${e.name};').join()}
 
   ${data.isFamily ? '' : '@override'}

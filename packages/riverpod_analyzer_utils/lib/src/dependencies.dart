@@ -7,19 +7,28 @@ import 'package:meta/meta.dart';
 
 import 'analyzer_utils.dart';
 
-class Result<T> {
-  const Result(this.value);
-  final T value;
+/// A class used to differentiate "no value" from "value but null".
+class Optional<T> {
+  /// A class used to differentiate "no value" from "value but null".
+  const Optional(this.value);
+
+  /// The value
+  final T? value;
 
   @override
-  String toString() => 'Result($value)';
+  String toString() => 'Optional($value)';
 }
 
+/// The representation of a provider definition
 @immutable
 class ProviderDeclaration {
+  /// The representation of a provider definition
   ProviderDeclaration(this.node, this.element);
 
+  /// The [AstNode] for the provider definition.
   final VariableDeclaration node;
+
+  /// The [Element] that defines the provieer
   final VariableElement element;
 
   /// Decode a provider expression to extract the provider listened.
@@ -74,7 +83,7 @@ class ProviderDeclaration {
   ///
   /// Returns null if failed to parse.
   /// Returns Result(null) if successfully passed but no dependencies was specified
-  static Result<NamedExpression?>? _findDependenciesExpression(
+  static Optional<NamedExpression>? _findDependenciesExpression(
     VariableDeclaration node,
   ) {
     final initializer = node.initializer;
@@ -88,7 +97,7 @@ class ProviderDeclaration {
       return null;
     }
 
-    return Result(
+    return Optional(
       argumentList.arguments
           .whereType<NamedExpression>()
           .firstWhereOrNull((e) => e.name.label.name == 'dependencies'),
@@ -98,18 +107,18 @@ class ProviderDeclaration {
   /// Decode the parameter "dependencies" from a provider
   ///
   /// Returns null if failed to decode.
-  /// Returns a [Result] with `value` as null if the parameter "dependencies" was
+  /// Returns a [Optional] with `value` as null if the parameter "dependencies" was
   /// not specified.
-  static Future<Result<List<ProviderDependency>?>?> _findDependencies(
-    Result<NamedExpression?>? dependenciesExpressionResult,
+  static Future<Optional<List<ProviderDependency>>?> _findDependencies(
+    Optional<NamedExpression>? dependenciesExpressionResult,
   ) async {
     if (dependenciesExpressionResult == null) return null;
     final namedExpression = dependenciesExpressionResult.value;
-    if (namedExpression == null) return const Result(null);
+    if (namedExpression == null) return const Optional(null);
     final value = namedExpression.expression;
     if (value is! ListLiteral) return null;
 
-    return Result(
+    return Optional(
       await Stream.fromIterable(value.elements)
           .asyncMap((node) async {
             final origin = await ProviderDeclaration.tryParse(node);
@@ -125,11 +134,16 @@ class ProviderDeclaration {
   /// The [AstNode] that points to the `dependencies` parameter of a provider
   late final dependenciesExpression = _findDependenciesExpression(node);
 
-  /// The decoded `dependencies` of a provider
+  /// The statically analyzed `dependencies` parameter a provider receives.
   late final dependencies = _findDependencies(dependenciesExpression);
 
+  /// Is the provider possibly non-root (such as if it defines a `dependencies`).
   late final Future<bool> isScoped = dependencies.then((e) => e?.value != null);
 
+  /// The provider name.
+  ///
+  /// This is not equivalent to `ProviderBase.name` but instead the static
+  /// name.
   String get name => node.name2.lexeme;
 
   @override
@@ -144,8 +158,10 @@ class ProviderDeclaration {
   int get hashCode => element.hashCode;
 }
 
+/// Metadata about a `dependency` parameter.
 @immutable
 class ProviderDependency {
+  /// Metadata about a `dependency` parameter.
   const ProviderDependency(this.origin, this.node);
 
   /// The provider that is depended on

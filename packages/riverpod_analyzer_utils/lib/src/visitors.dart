@@ -7,14 +7,19 @@ import 'dependencies.dart';
 import 'extensions.dart';
 import 'riverpod_types.dart';
 
+/// Metadata about the invocation of a Ref method
 class RefLifecycleInvocation {
   RefLifecycleInvocation._(this.invocation);
 
+  /// The method invocation
   final MethodInvocation invocation;
 
+  /// Whether the Ref invocation was used during either `Widget.build`,
+  /// inside a provider initialialization, or within a `Notifier.build`.
   late final bool? isWithinBuild = invocation.inBuild;
 }
 
+/// Adds [visitRefInvocation] for visiting Ref usages
 mixin RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
   /// A Ref/WidgetRef method was invoked. It isn't guaranteed to be watch/listen/read
   Stream<T>? visitRefInvocation(RefLifecycleInvocation node);

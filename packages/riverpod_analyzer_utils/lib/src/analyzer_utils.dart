@@ -24,6 +24,10 @@ Future<AstNode?> findAstNodeForElement(Element element) async {
   return declaration?.node;
 }
 
+/// A [GeneralizingAstVisitor] that returns a [Stream] containing the combination
+/// of all events.
+///
+/// See also [CombiningRecursiveVisitor] for a synchronous variant.
 class AsyncRecursiveVisitor<T> extends GeneralizingAstVisitor<Stream<T>> {
   @override
   Stream<T>? visitNode(AstNode node) {
@@ -35,6 +39,10 @@ class AsyncRecursiveVisitor<T> extends GeneralizingAstVisitor<Stream<T>> {
   }
 }
 
+/// A [CombiningRecursiveVisitor] that returns an [Iterable] containing the combination
+/// of all events.
+///
+/// See also [AsyncRecursiveVisitor] for a asynchronous variant.
 class CombiningRecursiveVisitor<T> extends GeneralizingAstVisitor<Iterable<T>> {
   @override
   Iterable<T> visitNode(AstNode node) {

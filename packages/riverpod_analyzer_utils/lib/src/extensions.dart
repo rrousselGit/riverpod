@@ -1,9 +1,12 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:collection/collection.dart';
 
 import 'riverpod_types.dart';
 
+/// Adds [isProviderCreation] to
 extension FunctionExpressionInvocationRiverpodX
     on FunctionExpressionInvocation {
   /// Null if unknown
@@ -27,7 +30,7 @@ extension MethodDeclarationRiverpodX on MethodDeclaration {
     if (interface == null) {
       return null;
     }
-    return isBuildMethod && codegenNotifierType.isAssignableFrom(interface);
+    return isBuildMethod && anyNotifierType.isAssignableFrom(interface);
   }
 }
 
@@ -37,7 +40,7 @@ extension ClassDeclarationRiverpodX on ClassDeclaration {
     if (interface == null) {
       return null;
     }
-    return codegenNotifierType.isAssignableFrom(interface);
+    return anyNotifierType.isAssignableFrom(interface);
   }
 }
 
