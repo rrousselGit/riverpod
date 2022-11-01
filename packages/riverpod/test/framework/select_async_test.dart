@@ -209,7 +209,7 @@ void main() {
     expect(
       container.read(a),
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(0), isRefesh: false),
+          .copyWithPrevious(const AsyncData(0), isRefresh: false),
     );
     expect(container.read(b), const AsyncData(0));
     expect(buildCount, 1);
@@ -222,7 +222,7 @@ void main() {
     expect(
       container.read(a),
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(1), isRefesh: false),
+          .copyWithPrevious(const AsyncData(1), isRefresh: false),
     );
     expect(container.read(b), const AsyncData(1));
     expect(buildCount, 2);
@@ -235,7 +235,7 @@ void main() {
     expect(
       container.read(a),
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(11), isRefesh: false),
+          .copyWithPrevious(const AsyncData(11), isRefresh: false),
     );
     expect(container.read(b), const AsyncData(1));
     expect(buildCount, 2);
@@ -265,7 +265,7 @@ void main() {
     expect(
       container.read(a),
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(0), isRefesh: false),
+          .copyWithPrevious(const AsyncData(0), isRefresh: false),
     );
     expect(container.read(b), const AsyncData(0));
     expect(buildCount, 1);
@@ -278,7 +278,7 @@ void main() {
     expect(
       container.read(a),
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(1), isRefesh: false),
+          .copyWithPrevious(const AsyncData(1), isRefresh: false),
     );
     expect(container.read(b), const AsyncData(1));
     expect(buildCount, 2);
@@ -291,7 +291,7 @@ void main() {
     expect(
       container.read(a),
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(11), isRefesh: false),
+          .copyWithPrevious(const AsyncData(11), isRefresh: false),
     );
     expect(container.read(b), const AsyncData(1));
     expect(buildCount, 2);

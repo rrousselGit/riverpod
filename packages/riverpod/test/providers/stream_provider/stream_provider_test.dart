@@ -148,7 +148,7 @@ void main() {
       expect(
         container.read(provider),
         const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(0), isRefesh: false),
+            .copyWithPrevious(const AsyncData(0), isRefresh: false),
       );
 
       await expectLater(container.read(provider.future), completion(1));
@@ -169,7 +169,7 @@ void main() {
       expect(
         container.refresh(provider),
         const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(0), isRefesh: false),
+            .copyWithPrevious(const AsyncData(0), isRefresh: false),
       );
 
       await expectLater(container.read(provider.future), completion(1));
@@ -203,7 +203,7 @@ void main() {
     expect(
       ref.state,
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(0), isRefesh: false),
+          .copyWithPrevious(const AsyncData(0), isRefresh: false),
     );
 
     verifyOnly(
@@ -211,7 +211,7 @@ void main() {
       listener(
         const AsyncData(0),
         const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(0), isRefesh: false),
+            .copyWithPrevious(const AsyncData(0), isRefresh: false),
       ),
     );
   });
@@ -262,7 +262,7 @@ void main() {
       listener(
         null,
         const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(42), isRefesh: false),
+            .copyWithPrevious(const AsyncData(42), isRefresh: false),
       ),
     );
 

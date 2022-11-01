@@ -21,7 +21,7 @@ A small release adding missing utilities and fixing some web related issues.
   loading/error state
 - Doing `ref.watch(futureProvider.future)` can no-longer return a `SynchronousFuture`.
   That behavior could break various `Future` utilities, such as `Future.wait`
-- Add `AsyncValue.copyWithPrevious(..., isRefres: false)` to differentiate
+- Add `AsyncValue.copyWithPrevious(..., isRefresh: false)` to differentiate
   rebuilds from `ref.watch` vs rebuilds from `ref.refresh`.
 - ProviderContainer no-longer throws when disposed if it has an undisposed child ProviderContainer.
 - Improved the error message when trying to modify a provider inside a
