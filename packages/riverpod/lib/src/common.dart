@@ -20,7 +20,7 @@ extension AsyncTransition<T> on ProviderElementBase<AsyncValue<T>> {
       // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       setState(
         AsyncLoading<T>()
-            .copyWithPrevious(previous, isRefesh: !shouldClearPreviousState),
+            .copyWithPrevious(previous, isRefresh: !shouldClearPreviousState),
       );
     }
   }
@@ -206,14 +206,14 @@ abstract class AsyncValue<T> {
   /// For example, this allows an [AsyncError] to contain a [value], or even
   /// [AsyncLoading] to contain both a [value] and an [error].
   ///
-  /// The optional [isRefesh] flag (true by default) represents whether the
+  /// The optional [isRefresh] flag (true by default) represents whether the
   /// provider rebuilt by [Ref.refresh]/[Ref.invalidate] (if true)
   /// or instead by [Ref.watch] (if false).
   /// This changes the default behavior of [when] and sets the [isReloading]/
   /// [isRefreshing] flags accordingly.
   AsyncValue<T> copyWithPrevious(
     AsyncValue<T> previous, {
-    bool isRefesh = true,
+    bool isRefresh = true,
   });
 
   /// The opposite of [copyWithPrevious], reverting to the raw [AsyncValue]
@@ -318,7 +318,7 @@ class AsyncData<T> extends AsyncValue<T> {
   @override
   AsyncData<T> copyWithPrevious(
     AsyncValue<T> previous, {
-    bool isRefesh = true,
+    bool isRefresh = true,
   }) {
     return this;
   }
@@ -372,9 +372,9 @@ class AsyncLoading<T> extends AsyncValue<T> {
   @override
   AsyncValue<T> copyWithPrevious(
     AsyncValue<T> previous, {
-    bool isRefesh = true,
+    bool isRefresh = true,
   }) {
-    if (isRefesh) {
+    if (isRefresh) {
       return previous.map(
         data: (d) => AsyncData._(
           d.value,
@@ -466,7 +466,7 @@ class AsyncError<T> extends AsyncValue<T> {
   @override
   AsyncError<T> copyWithPrevious(
     AsyncValue<T> previous, {
-    bool isRefesh = true,
+    bool isRefresh = true,
   }) {
     return AsyncError._(
       error,

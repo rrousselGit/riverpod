@@ -166,7 +166,7 @@ mixin FutureHandlerProviderElementMixin<T>
     );
 
     if (newState.isLoading) {
-      setState(newState.copyWithPrevious(requireState, isRefesh: false));
+      setState(newState.copyWithPrevious(requireState, isRefresh: false));
     } else {
       setState(newState);
     }
