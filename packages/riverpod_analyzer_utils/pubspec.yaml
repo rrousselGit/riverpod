@@ -1,7 +1,6 @@
 name: riverpod_analyzer_utils
 description: A sample command-line application.
-version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+version: 0.0.1
 
 environment:
   sdk: '>=2.18.0 <3.0.0'

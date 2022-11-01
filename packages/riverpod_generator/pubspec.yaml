@@ -12,7 +12,7 @@ dependencies:
   collection: ^1.15.0
   crypto: ^3.0.2
   meta: ^1.7.0
-  riverpod_analyzer_utils: any
+  riverpod_analyzer_utils: ^0.0.1
   riverpod_annotation: ^1.0.6
   source_gen: ^1.2.0
 

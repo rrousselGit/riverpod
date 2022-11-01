@@ -9,7 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_hooks: any
+  flutter_hooks: ^0.18.5
   flutter_riverpod: ^0.13.0
   hooks_riverpod: ^0.13.0
   riverpod: ^0.13.0
