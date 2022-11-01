@@ -1,3 +1,7 @@
+## 2.1.1
+
+Fix typos
+
 ## 2.1.0
 
 A small release adding missing utilities and fixing some web related issues.

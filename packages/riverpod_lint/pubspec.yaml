@@ -15,7 +15,7 @@ dependencies:
   custom_lint_builder: ^0.0.8
   meta: ^1.7.0
   path: ^1.8.1
-  riverpod: ^2.1.0
+  riverpod: ^2.1.1
   source_span: ^1.8.0
   yaml: ^3.1.1
 
