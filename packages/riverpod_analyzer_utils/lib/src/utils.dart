@@ -2,36 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/type.dart';
-import 'package:path/path.dart' as p;
-
-/// Returns a non-null name for the provided [type].
-///
-/// In newer versions of the Dart analyzer, a `typedef` does not keep the
-/// existing `name`, because it is used an alias:
-/// ```
-/// // Used to return `VoidFunc` for name, is now `null`.
-/// typedef VoidFunc = void Function();
-/// ```
-///
-/// This function will return `'VoidFunc'`, unlike [DartType.element.name].
-String typeNameOf(DartType type) {
-  final aliasElement = type.alias?.element;
-  if (aliasElement != null) {
-    return aliasElement.name;
-  }
-  if (type is DynamicType) {
-    return 'dynamic';
-  }
-  if (type is InterfaceType) {
-    return type.element2.name;
-  }
-  if (type is TypeParameterType) {
-    return type.element2.name;
-  }
-  throw UnimplementedError('(${type.runtimeType}) $type');
-}
+part of 'type_checker.dart';
 
 /// Returns a URL representing [element].
 String urlOfElement(Element element) {
@@ -40,18 +11,18 @@ String urlOfElement(Element element) {
       : element.kind == ElementKind.NEVER
           ? 'dart:core#Never'
           // using librarySource.uri – in case the element is in a part
-          : normalizeUrl(element.librarySource!.uri)
+          : _normalizeUrl(element.librarySource!.uri)
               .replace(fragment: element.name)
               .toString();
 }
 
 /// Normalizes an [Uri]
-Uri normalizeUrl(Uri url) {
+Uri _normalizeUrl(Uri url) {
   switch (url.scheme) {
     case 'dart':
       return _normalizeDartUrl(url);
     case 'package':
-      return packageToAssetUrl(url);
+      return _packageToAssetUrl(url);
     case 'file':
       return _fileToAssetUrl(url);
     default:
@@ -87,34 +58,15 @@ Uri _fileToAssetUrl(Uri url) {
 ///
 /// For example, this transforms `package:source_gen/source_gen.dart` into:
 /// `asset:source_gen/lib/source_gen.dart`.
-Uri packageToAssetUrl(Uri url) => url.scheme == 'package'
-    ? url.replace(
-        scheme: 'asset',
-        pathSegments: <String>[
-          url.pathSegments.first,
-          'lib',
-          ...url.pathSegments.skip(1),
-        ],
-      )
-    : url;
-
-/// Returns a `asset:` URL converted to a `package:` URL.
-///
-/// For example, this transformers `asset:source_gen/lib/source_gen.dart' into:
-/// `package:source_gen/source_gen.dart`. Asset URLs that aren't pointing to a
-/// file in the 'lib' folder are not modified.
-///
-/// Asset URLs come from `package:build`, as they are able to describe URLs that
-/// are not describable using `package:...`, such as files in the `bin`, `tool`,
-/// `web`, or even root directory of a package - `asset:some_lib/web/main.dart`.
-Uri assetToPackageUrl(Uri url) => url.scheme == 'asset' &&
-        url.pathSegments.isNotEmpty &&
-        url.pathSegments[1] == 'lib'
-    ? url.replace(
-        scheme: 'package',
-        pathSegments: [
-          url.pathSegments.first,
-          ...url.pathSegments.skip(2),
-        ],
-      )
-    : url;
+Uri _packageToAssetUrl(Uri url) {
+  return url.scheme == 'package'
+      ? url.replace(
+          scheme: 'asset',
+          pathSegments: <String>[
+            url.pathSegments.first,
+            'lib',
+            ...url.pathSegments.skip(1),
+          ],
+        )
+      : url;
+}

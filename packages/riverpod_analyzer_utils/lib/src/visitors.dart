@@ -44,9 +44,8 @@ mixin RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
   }
 }
 
-/// Recursively search all the places where a Provider's `ref` is used
 // TODO handle Ref fn() => ref;
-
+/// Recursively search all the places where a Provider's `ref` is used
 class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
     with RefLifecycleVisitor {
   @override

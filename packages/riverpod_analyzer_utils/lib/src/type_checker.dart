@@ -10,9 +10,10 @@ import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:meta/meta.dart';
+import 'package:path/path.dart' as p;
 import 'package:source_span/source_span.dart';
 
-import 'utils.dart';
+part 'utils.dart';
 
 /// An abstraction around doing static type checking at compile/build time.
 abstract class TypeChecker {
@@ -270,12 +271,12 @@ class _UriTypeChecker extends TypeChecker {
   final String _url;
 
   /// Url as a [Uri] object, lazily constructed.
-  Uri get uri => _cache[this] ??= normalizeUrl(Uri.parse(_url));
+  Uri get uri => _cache[this] ??= _normalizeUrl(Uri.parse(_url));
 
   /// Returns whether this type represents the same as [url].
   bool hasSameUrl(dynamic url) =>
       uri.toString() ==
-      (url is String ? url : normalizeUrl(url as Uri).toString());
+      (url is String ? url : _normalizeUrl(url as Uri).toString());
 
   @override
   bool isExactly(Element element) => hasSameUrl(urlOfElement(element));
