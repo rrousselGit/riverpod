@@ -11,10 +11,7 @@ import 'package:meta/meta_meta.dart';
 @Target({TargetKind.classType, TargetKind.function})
 class Riverpod {
   /// {@macro riverpod_annotation.provider}
-  const Riverpod({
-    this.keepAlive = false,
-    this.dependencies,
-  });
+  const Riverpod({this.keepAlive = false, this.dependencies});
 
   /// Whether the state of the provider should be maintained if it is no-longer used.
   ///
