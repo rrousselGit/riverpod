@@ -29,6 +29,29 @@ class _SystemHash {
   }
 }
 
+List<ProviderOrFamily> _allTransitiveDependencies(
+  List<ProviderOrFamily> dependencies,
+) {
+  final result = <ProviderOrFamily>{};
+
+  void visitDependency(ProviderOrFamily dep) {
+    if (result.add(dep) && dep.dependencies != null) {
+      dep.dependencies!.forEach(visitDependency);
+    }
+    final depFamily = dep.from;
+    if (depFamily != null &&
+        result.add(depFamily) &&
+        depFamily.dependencies != null) {
+      depFamily.dependencies!.forEach(visitDependency);
+    }
+  }
+
+  dependencies.forEach(visitDependency);
+
+  return List.unmodifiable(result);
+}
+
+typedef KeepAliveRef = ProviderRef<int>;
 String $keepAliveHash() => r'72dd192676126d487c24c7695a91d59410c62696';
 
 /// See also [keepAlive].
@@ -37,8 +60,9 @@ final keepAliveProvider = Provider<int>(
   name: r'keepAliveProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : $keepAliveHash,
+  dependencies: <ProviderOrFamily>[],
 );
-typedef KeepAliveRef = ProviderRef<int>;
+typedef NotKeepAliveRef = AutoDisposeProviderRef<int>;
 String $notKeepAliveHash() => r'1ccc497d7c651f8e730ec1bcecf271ffe9615d83';
 
 /// See also [notKeepAlive].
@@ -47,5 +71,5 @@ final notKeepAliveProvider = AutoDisposeProvider<int>(
   name: r'notKeepAliveProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : $notKeepAliveHash,
+  dependencies: <ProviderOrFamily>[],
 );
-typedef NotKeepAliveRef = AutoDisposeProviderRef<int>;

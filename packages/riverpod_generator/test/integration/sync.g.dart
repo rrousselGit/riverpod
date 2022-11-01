@@ -29,6 +29,29 @@ class _SystemHash {
   }
 }
 
+List<ProviderOrFamily> _allTransitiveDependencies(
+  List<ProviderOrFamily> dependencies,
+) {
+  final result = <ProviderOrFamily>{};
+
+  void visitDependency(ProviderOrFamily dep) {
+    if (result.add(dep) && dep.dependencies != null) {
+      dep.dependencies!.forEach(visitDependency);
+    }
+    final depFamily = dep.from;
+    if (depFamily != null &&
+        result.add(depFamily) &&
+        depFamily.dependencies != null) {
+      depFamily.dependencies!.forEach(visitDependency);
+    }
+  }
+
+  dependencies.forEach(visitDependency);
+
+  return List.unmodifiable(result);
+}
+
+typedef PublicClassRef = AutoDisposeNotifierProviderRef<String>;
 String $PublicClassHash() => r'f04884c039e6200ad3537feeecfc6e83828b5eb5';
 
 /// This is some documentation
@@ -39,14 +62,15 @@ final publicClassProvider = AutoDisposeNotifierProvider<PublicClass, String>(
   name: r'publicClassProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : $PublicClassHash,
+  dependencies: <ProviderOrFamily>[],
 );
-typedef PublicClassRef = AutoDisposeNotifierProviderRef<String>;
 
 abstract class _$PublicClass extends AutoDisposeNotifier<String> {
   @override
   String build();
 }
 
+typedef _PrivateClassRef = AutoDisposeNotifierProviderRef<String>;
 String $_PrivateClassHash() => r'6d41def3ffdc1f79e593beaefb3304ce4b211a77';
 
 /// See also [_PrivateClass].
@@ -56,14 +80,15 @@ final _privateClassProvider =
   name: r'_privateClassProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : $_PrivateClassHash,
+  dependencies: <ProviderOrFamily>[],
 );
-typedef _PrivateClassRef = AutoDisposeNotifierProviderRef<String>;
 
 abstract class _$PrivateClass extends AutoDisposeNotifier<String> {
   @override
   String build();
 }
 
+typedef FamilyClassRef = AutoDisposeNotifierProviderRef<String>;
 String $FamilyClassHash() => r'7dd0013dba8f45e82e8e39fbb2635e5a7f4b9cac';
 
 /// This is some documentation
@@ -134,8 +159,6 @@ class FamilyClassProvider
   }
 }
 
-typedef FamilyClassRef = AutoDisposeNotifierProviderRef<String>;
-
 /// This is some documentation
 ///
 /// Copied from [FamilyClass].
@@ -173,11 +196,16 @@ class FamilyClassFamily extends Family<String> {
     );
   }
 
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+  late final _recDeps =
+      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
 
   @override
-  List<ProviderOrFamily>? get dependencies => null;
+  List<ProviderOrFamily>? get allTransitiveDependencies => _recDeps;
+
+  static final _deps = <ProviderOrFamily>[];
+
+  @override
+  List<ProviderOrFamily>? get dependencies => _deps;
 
   @override
   String? get name => r'familyClassProvider';
@@ -199,6 +227,7 @@ abstract class _$FamilyClass extends BuildlessAutoDisposeNotifier<String> {
   });
 }
 
+typedef Supports$InClassNameRef = AutoDisposeNotifierProviderRef<String>;
 String $Supports$InClassNameHash() =>
     r'4e99f433d9cb3598faaf4d172edf9f28b9e68091';
 
@@ -210,14 +239,15 @@ final supports$InClassNameProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : $Supports$InClassNameHash,
+  dependencies: <ProviderOrFamily>[],
 );
-typedef Supports$InClassNameRef = AutoDisposeNotifierProviderRef<String>;
 
 abstract class _$Supports$InClassName extends AutoDisposeNotifier<String> {
   @override
   String build();
 }
 
+typedef PublicRef = AutoDisposeProviderRef<String>;
 String $publicHash() => r'138be35943899793ab085e711fe3f3d22696a3ba';
 
 /// This is some documentation
@@ -228,8 +258,9 @@ final publicProvider = AutoDisposeProvider<String>(
   name: r'publicProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : $publicHash,
+  dependencies: <ProviderOrFamily>[],
 );
-typedef PublicRef = AutoDisposeProviderRef<String>;
+typedef Supports$inNamesRef = AutoDisposeProviderRef<String>;
 String $supports$inNamesHash() => r'cbf929802fcbd0aa949ad72743d096fb3ef5f28f';
 
 /// See also [supports$inNames].
@@ -239,8 +270,9 @@ final supports$inNamesProvider = AutoDisposeProvider<String>(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : $supports$inNamesHash,
+  dependencies: <ProviderOrFamily>[],
 );
-typedef Supports$inNamesRef = AutoDisposeProviderRef<String>;
+typedef FamilyRef = AutoDisposeProviderRef<String>;
 String $familyHash() => r'14d1ee238ca608d547630d0e222ef4c5866e9e61';
 
 /// This is some documentation
@@ -299,8 +331,6 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   }
 }
 
-typedef FamilyRef = AutoDisposeProviderRef<String>;
-
 /// This is some documentation
 ///
 /// Copied from [family].
@@ -338,16 +368,22 @@ class FamilyFamily extends Family<String> {
     );
   }
 
-  @override
-  List<ProviderOrFamily>? get allTransitiveDependencies => null;
+  late final _recDeps =
+      dependencies == null ? null : _allTransitiveDependencies(dependencies!);
 
   @override
-  List<ProviderOrFamily>? get dependencies => null;
+  List<ProviderOrFamily>? get allTransitiveDependencies => _recDeps;
+
+  static final _deps = <ProviderOrFamily>[];
+
+  @override
+  List<ProviderOrFamily>? get dependencies => _deps;
 
   @override
   String? get name => r'familyProvider';
 }
 
+typedef _PrivateRef = AutoDisposeProviderRef<String>;
 String $_privateHash() => r'519561bc7e88e394d7f75ca2102a5c0acc832c66';
 
 /// See also [_private].
@@ -356,5 +392,5 @@ final _privateProvider = AutoDisposeProvider<String>(
   name: r'_privateProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : $_privateHash,
+  dependencies: <ProviderOrFamily>[],
 );
-typedef _PrivateRef = AutoDisposeProviderRef<String>;

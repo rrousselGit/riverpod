@@ -29,6 +29,29 @@ class _SystemHash {
   }
 }
 
+List<ProviderOrFamily> _allTransitiveDependencies(
+  List<ProviderOrFamily> dependencies,
+) {
+  final result = <ProviderOrFamily>{};
+
+  void visitDependency(ProviderOrFamily dep) {
+    if (result.add(dep) && dep.dependencies != null) {
+      dep.dependencies!.forEach(visitDependency);
+    }
+    final depFamily = dep.from;
+    if (depFamily != null &&
+        result.add(depFamily) &&
+        depFamily.dependencies != null) {
+      depFamily.dependencies!.forEach(visitDependency);
+    }
+  }
+
+  dependencies.forEach(visitDependency);
+
+  return List.unmodifiable(result);
+}
+
+typedef SimpleClassRef = AutoDisposeNotifierProviderRef<String>;
 String $SimpleClassHash() => r'958123cd6179c5b88da040cfeb71eb3061765277';
 
 /// See also [SimpleClass].
@@ -37,14 +60,15 @@ final simpleClassProvider = AutoDisposeNotifierProvider<SimpleClass, String>(
   name: r'simpleClassProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : $SimpleClassHash,
+  dependencies: <ProviderOrFamily>[],
 );
-typedef SimpleClassRef = AutoDisposeNotifierProviderRef<String>;
 
 abstract class _$SimpleClass extends AutoDisposeNotifier<String> {
   @override
   String build();
 }
 
+typedef SimpleRef = AutoDisposeProviderRef<String>;
 String $simpleHash() => r'ff9f7451526aef5b3af6646814631a502ad76a5f';
 
 /// See also [simple].
@@ -53,8 +77,9 @@ final simpleProvider = AutoDisposeProvider<String>(
   name: r'simpleProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : $simpleHash,
+  dependencies: <ProviderOrFamily>[],
 );
-typedef SimpleRef = AutoDisposeProviderRef<String>;
+typedef Simple2Ref = AutoDisposeProviderRef<String>;
 String $simple2Hash() => r'06327442776394c5c9cbb33b048d7a42e709e7fd';
 
 /// See also [simple2].
@@ -63,5 +88,5 @@ final simple2Provider = AutoDisposeProvider<String>(
   name: r'simple2Provider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : $simple2Hash,
+  dependencies: <ProviderOrFamily>[],
 );
-typedef Simple2Ref = AutoDisposeProviderRef<String>;
