@@ -16,14 +16,45 @@ enum ProviderType {
   asyncNotifier,
 }
 
-class DependencyInfo {
-  DependencyInfo({
-    required this.dependencies,
-    this.hasStringDependency = false,
-  });
+class ProviderDependency {
+  R map<R>({
+    required R Function(StringProviderDependency dependency) stringDependency,
+    required R Function(ReferenceProviderDependency dependency)
+        referenceDependency,
+  }) {
+    final that = this;
+    if (that is StringProviderDependency) return stringDependency(that);
+    return referenceDependency(that as ReferenceProviderDependency);
+  }
+}
 
-  final List<String>? dependencies;
-  final bool hasStringDependency;
+/// `@Riverpod(dependencies: ["string"])`
+class StringProviderDependency extends ProviderDependency {
+  StringProviderDependency(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+/// `@Riverpod(dependencies: [provider])`
+class ReferenceProviderDependency extends ProviderDependency {
+  ReferenceProviderDependency(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+class ProviderDependencies {
+  ProviderDependencies(this.dependencies);
+
+  final List<ProviderDependency>? dependencies;
+
+  late final bool hasTransitiveStringDependency =
+      dependencies == null || dependencies!.any((element) => false);
 }
 
 class Data {
@@ -69,7 +100,7 @@ class Data {
   final List<ParameterElement> parameters;
   final bool keepAlive;
   final String providerDoc;
-  final DependencyInfo dependencies;
+  final ProviderDependencies dependencies;
 
   String get hashFunctionName => '\$${rawName}Hash';
 

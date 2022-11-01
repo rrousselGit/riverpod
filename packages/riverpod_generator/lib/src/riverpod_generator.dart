@@ -110,27 +110,40 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
     return returnType.typeArguments.single;
   }
 
-  DependencyInfo dependencies(DartObject riverpodAnnotation) {
-    final deps = riverpodAnnotation.getField('dependencies');
-    if (deps == null) {
-      return DependencyInfo(dependencies: null);
-    }
-    final dependencies = <String>[];
-    var str = false;
-    for (final entry in deps.toListValue() ?? <DartObject>[]) {
-      if (entry.type?.isDartCoreString ?? false) {
-        str = true;
-        dependencies.add(entry.toStringValue()!);
-      } else if (entry.type != null && entry.toFunctionValue() != null) {
-        dependencies.add('${entry.toFunctionValue()!.displayName}Provider');
-      } else if (entry.toTypeValue() != null) {
-        dependencies.add(
-          '${entry.toTypeValue()?.getDisplayString(withNullability: false).camelCase}Provider',
-        );
-      }
-    }
+  ProviderDependencies dependencies(DartObject riverpodAnnotation) {
+    final dependencies =
+        riverpodAnnotation.getField('dependencies')?.toListValue();
+    if (dependencies == null) return ProviderDependencies(null);
 
-    return DependencyInfo(dependencies: dependencies, hasStringDependency: str);
+    return ProviderDependencies(
+      dependencies.map<ProviderDependency>((entry) {
+        if (entry.type?.isDartCoreString ?? false) {
+          // dependencies: ["string"]
+          return StringProviderDependency(entry.toStringValue()!);
+        } else if (entry.type != null && entry.toFunctionValue() != null) {
+          // @riverpod
+          // function(ref) {...}
+          //
+          // @Riverpod(dependencies: [function])
+          return ReferenceProviderDependency(
+            '${entry.toFunctionValue()!.displayName}Provider',
+          );
+        } else if (entry.toTypeValue() != null) {
+          // @riverpod
+          // class Class {...}
+          //
+          // @Riverpod(dependencies: [Class])
+          return ReferenceProviderDependency(
+            '${entry.toTypeValue()?.getDisplayString(withNullability: false).camelCase}Provider',
+          );
+        }
+
+        throw InvalidGenerationSourceError(
+          'Unsupported dependency. Only Strings or elements annotated by @riverpod are supported.',
+          element: entry.variable,
+        );
+      }).toList(),
+    );
   }
 
   FutureOr<Data> _parseClassElement(
