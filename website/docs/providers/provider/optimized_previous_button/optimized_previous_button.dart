@@ -8,8 +8,15 @@ part 'optimized_previous_button.g.dart';
 /* SNIPPET START */
 
 @riverpod
-int pageIndex(PageIndexRef ref) {
-  return 0;
+class PageIndex extends _$PageIndex {
+  @override
+  int build() {
+    return 0;
+  }
+
+  void goToPreviousPage() {
+    state = state - 1;
+  }
 }
 
 // A provider which computes whether the user is allowed to go to the previous page
@@ -32,7 +39,7 @@ class PreviousButton extends ConsumerWidget {
 /* highlight-end */
 
     void goToPreviousPage() {
-      ref.read(pageIndexProvider.notifier).update((state) => state - 1);
+      ref.read(pageIndexProvider.notifier).goToPreviousPage();
     }
 
     return ElevatedButton(
