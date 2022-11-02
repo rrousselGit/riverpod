@@ -38,7 +38,7 @@ abstract class WidgetRef {
   ///   if (ref.exists(fetchItemList)) {
   ///     // If `fetchItemList` is initialized, we look into its state
   ///     // and return the already obtained item.
-  ///     final itemFromItemList = ref.watch(
+  ///     final itemFromItemList = await ref.watch(
   ///       fetchItemList.selectAsync((items) => items.firstWhereOrNull((item) => item.id == id)),
   ///     );
   ///     if (itemFromItemList != null) return itemFromItemList;
