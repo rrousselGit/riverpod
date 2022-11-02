@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../unoptimized_previous_button.dart';
+part 'optimized_previous_button.g.dart';
 
 /* SNIPPET START */
 

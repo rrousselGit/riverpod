@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../todo/raw.dart';
+part 'completed_todos.g.dart';
 
 /* SNIPPET START */
 
