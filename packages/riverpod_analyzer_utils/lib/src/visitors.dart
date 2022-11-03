@@ -3,8 +3,8 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:collection/collection.dart';
 
 import 'analyzer_utils.dart';
-import 'dependencies.dart';
 import 'extensions.dart';
+import 'provider_expression.dart';
 import 'riverpod_types.dart';
 
 /// Metadata about the invocation of a Ref method
@@ -46,24 +46,24 @@ mixin RefLifecycleVisitor<T> on AsyncRecursiveVisitor<T> {
 
 // TODO handle Ref fn() => ref;
 /// Recursively search all the places where a Provider's `ref` is used
-class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
+class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderExpression>
     with RefLifecycleVisitor {
   @override
-  Stream<ProviderDeclaration>? visitRefInvocation(
+  Stream<ProviderExpression>? visitRefInvocation(
     RefLifecycleInvocation node,
   ) async* {
     // print(node);
     if (refBinders.contains(node.invocation.methodName.name)) {
       final providerExpression = node.invocation.argumentList.arguments.first;
       final providerOrigin =
-          await ProviderDeclaration.tryParse(providerExpression);
+          await ProviderExpression.tryParse(providerExpression);
 
       if (providerOrigin != null) yield providerOrigin;
     }
   }
 
   @override
-  Stream<ProviderDeclaration>? visitArgumentList(ArgumentList node) async* {
+  Stream<ProviderExpression>? visitArgumentList(ArgumentList node) async* {
     final superStream = super.visitArgumentList(node);
     if (superStream != null) yield* superStream;
     final providerBody = node.arguments.firstOrNull;
@@ -117,7 +117,7 @@ class ProviderRefUsageVisitor extends AsyncRecursiveVisitor<ProviderDeclaration>
   }
 
   @override
-  Stream<ProviderDeclaration>? visitAssignmentExpression(
+  Stream<ProviderExpression>? visitAssignmentExpression(
     AssignmentExpression node,
   ) async* {
     // print(node);

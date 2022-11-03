@@ -413,7 +413,7 @@ Then dispose of the listener when you no longer need the autoDispose provider to
         node.parents.whereType<VariableDeclaration>().firstOrNull;
 
     final providerDeclaration = variableDeclaration?.declaredElement2 != null
-        ? ProviderDeclaration(
+        ? ProviderExpression(
             variableDeclaration!,
             variableDeclaration.declaredElement2!,
           )
@@ -480,7 +480,7 @@ Then dispose of the listener when you no longer need the autoDispose provider to
     }
   }
 
-  Stream<Lint> _checkProviderDependencies(ProviderDeclaration provider) async* {
+  Stream<Lint> _checkProviderDependencies(ProviderExpression provider) async* {
     final providerDependencies = await provider.dependencies;
     if (providerDependencies == null) return;
     final expectedDependencies = providerDependencies.value;
