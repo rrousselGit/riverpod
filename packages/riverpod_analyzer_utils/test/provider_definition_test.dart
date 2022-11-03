@@ -425,9 +425,6 @@ extension on Resolver {
       throw StateError('No library found or name "$libraryName"');
     }
 
-    // print(library.source.uri);
-    // print(library.source.fullName);
-
     final errorResult = await library.session
         .getErrors('/_resolve_source/lib/_resolve_source.dart');
 
@@ -450,6 +447,3 @@ extension on LibraryElement {
     );
   }
 }
-
-// String _assetPath(AssetId assetId) =>
-//     p.posix.join('/${assetId.package}', assetId.path);
