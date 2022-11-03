@@ -628,7 +628,8 @@ extension AsyncValueX<T> on AsyncValue<T> {
   ///   with the previous state.
   ///
   /// - [skipLoadingOnRefresh] (true by default) controls whether [loading]
-  ///   should be invoked if a provider rebuilds because of [Ref.watch].
+  ///   should be invoked if a provider rebuilds because of [Ref.refresh]
+  ///   or [Ref.invalidate].
   ///   In that situation, [when] will try to invoke either [error]/[data]
   ///   with the previous state.
   ///
