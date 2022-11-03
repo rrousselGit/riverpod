@@ -480,7 +480,7 @@ class ProviderContainer implements Node {
                 '''
 Tried to read $provider from a place where one of its dependencies were overridden but the provider is not.
 
-To fix this error, you can add add "dependencies" to $provider such that we have:
+To fix this error, you can add "dependencies" to $provider such that we have:
 
 ```
 final a = Provider(...);
