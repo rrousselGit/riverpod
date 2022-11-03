@@ -1,6 +1,7 @@
 name: riverpod_generator
 description: A code generator for Riverpod. This both simplifies the syntax empowers it, such as allowing stateful hot-reload.
 version: 1.0.6
+repository: https://github.com/rrousselGit/riverpod
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
