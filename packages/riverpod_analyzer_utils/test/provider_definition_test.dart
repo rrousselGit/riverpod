@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -326,7 +327,7 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) 
       }
     });
 
-    testSource('Decode isFamily', source: '''
+    testSource('Decode families', source: '''
 import 'package:riverpod/riverpod.dart';
 
 final alwaysAliveProvider = Provider<int>((ref) => 0);
@@ -354,17 +355,29 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) 
       ]);
 
       for (final provider in providers.entries) {
+        final value = provider.value as LegacyProviderDefinition;
         expect(
-          provider.value.isFamily,
+          value.isFamily,
           false,
           reason: '${provider.key} is not a family',
         );
+        expect(
+          value.familyArgumentType,
+          null,
+          reason: '${provider.key} has no parameter',
+        );
       }
       for (final provider in families.entries) {
+        final value = provider.value as LegacyProviderDefinition;
         expect(
-          provider.value.isFamily,
+          value.isFamily,
           true,
           reason: '${provider.key} is a family',
+        );
+        expect(
+          value.familyArgumentType,
+          isA<DartType>().having((e) => e.isDartCoreInt, 'is int', true),
+          reason: '${provider.key} has int parameters',
         );
       }
     });

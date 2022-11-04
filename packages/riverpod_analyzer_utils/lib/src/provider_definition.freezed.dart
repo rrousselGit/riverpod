@@ -18,26 +18,26 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$ProviderDefinition {
   String get name => throw _privateConstructorUsedError;
   bool get isAutoDispose => throw _privateConstructorUsedError;
-  bool get isFamily => throw _privateConstructorUsedError;
+  DartType? get familyArgumentType => throw _privateConstructorUsedError;
   LegacyProviderType get providerType => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String name, bool isAutoDispose, bool isFamily,
-            LegacyProviderType providerType)
+    required TResult Function(String name, bool isAutoDispose,
+            DartType? familyArgumentType, LegacyProviderType providerType)
         legacy,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String name, bool isAutoDispose, bool isFamily,
-            LegacyProviderType providerType)?
+    TResult? Function(String name, bool isAutoDispose,
+            DartType? familyArgumentType, LegacyProviderType providerType)?
         legacy,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String name, bool isAutoDispose, bool isFamily,
-            LegacyProviderType providerType)?
+    TResult Function(String name, bool isAutoDispose,
+            DartType? familyArgumentType, LegacyProviderType providerType)?
         legacy,
     required TResult orElse(),
   }) =>
@@ -73,7 +73,7 @@ abstract class $ProviderDefinitionCopyWith<$Res> {
   $Res call(
       {String name,
       bool isAutoDispose,
-      bool isFamily,
+      DartType? familyArgumentType,
       LegacyProviderType providerType});
 }
 
@@ -92,7 +92,7 @@ class _$ProviderDefinitionCopyWithImpl<$Res, $Val extends ProviderDefinition>
   $Res call({
     Object? name = null,
     Object? isAutoDispose = null,
-    Object? isFamily = null,
+    Object? familyArgumentType = freezed,
     Object? providerType = null,
   }) {
     return _then(_value.copyWith(
@@ -104,10 +104,10 @@ class _$ProviderDefinitionCopyWithImpl<$Res, $Val extends ProviderDefinition>
           ? _value.isAutoDispose
           : isAutoDispose // ignore: cast_nullable_to_non_nullable
               as bool,
-      isFamily: null == isFamily
-          ? _value.isFamily
-          : isFamily // ignore: cast_nullable_to_non_nullable
-              as bool,
+      familyArgumentType: freezed == familyArgumentType
+          ? _value.familyArgumentType
+          : familyArgumentType // ignore: cast_nullable_to_non_nullable
+              as DartType?,
       providerType: null == providerType
           ? _value.providerType
           : providerType // ignore: cast_nullable_to_non_nullable
@@ -127,7 +127,7 @@ abstract class _$$LegacyProviderDefinitionCopyWith<$Res>
   $Res call(
       {String name,
       bool isAutoDispose,
-      bool isFamily,
+      DartType? familyArgumentType,
       LegacyProviderType providerType});
 }
 
@@ -144,7 +144,7 @@ class __$$LegacyProviderDefinitionCopyWithImpl<$Res>
   $Res call({
     Object? name = null,
     Object? isAutoDispose = null,
-    Object? isFamily = null,
+    Object? familyArgumentType = freezed,
     Object? providerType = null,
   }) {
     return _then(_$LegacyProviderDefinition(
@@ -156,10 +156,10 @@ class __$$LegacyProviderDefinitionCopyWithImpl<$Res>
           ? _value.isAutoDispose
           : isAutoDispose // ignore: cast_nullable_to_non_nullable
               as bool,
-      isFamily: null == isFamily
-          ? _value.isFamily
-          : isFamily // ignore: cast_nullable_to_non_nullable
-              as bool,
+      familyArgumentType: freezed == familyArgumentType
+          ? _value.familyArgumentType
+          : familyArgumentType // ignore: cast_nullable_to_non_nullable
+              as DartType?,
       providerType: null == providerType
           ? _value.providerType
           : providerType // ignore: cast_nullable_to_non_nullable
@@ -175,7 +175,7 @@ class _$LegacyProviderDefinition extends LegacyProviderDefinition {
   _$LegacyProviderDefinition(
       {required this.name,
       required this.isAutoDispose,
-      required this.isFamily,
+      required this.familyArgumentType,
       required this.providerType})
       : super._();
 
@@ -184,13 +184,13 @@ class _$LegacyProviderDefinition extends LegacyProviderDefinition {
   @override
   final bool isAutoDispose;
   @override
-  final bool isFamily;
+  final DartType? familyArgumentType;
   @override
   final LegacyProviderType providerType;
 
   @override
   String toString() {
-    return 'ProviderDefinition.legacy(name: $name, isAutoDispose: $isAutoDispose, isFamily: $isFamily, providerType: $providerType)';
+    return 'ProviderDefinition.legacy(name: $name, isAutoDispose: $isAutoDispose, familyArgumentType: $familyArgumentType, providerType: $providerType)';
   }
 
   @override
@@ -201,15 +201,15 @@ class _$LegacyProviderDefinition extends LegacyProviderDefinition {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.isAutoDispose, isAutoDispose) ||
                 other.isAutoDispose == isAutoDispose) &&
-            (identical(other.isFamily, isFamily) ||
-                other.isFamily == isFamily) &&
+            (identical(other.familyArgumentType, familyArgumentType) ||
+                other.familyArgumentType == familyArgumentType) &&
             (identical(other.providerType, providerType) ||
                 other.providerType == providerType));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, name, isAutoDispose, isFamily, providerType);
+  int get hashCode => Object.hash(
+      runtimeType, name, isAutoDispose, familyArgumentType, providerType);
 
   @JsonKey(ignore: true)
   @override
@@ -222,33 +222,33 @@ class _$LegacyProviderDefinition extends LegacyProviderDefinition {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String name, bool isAutoDispose, bool isFamily,
-            LegacyProviderType providerType)
+    required TResult Function(String name, bool isAutoDispose,
+            DartType? familyArgumentType, LegacyProviderType providerType)
         legacy,
   }) {
-    return legacy(name, isAutoDispose, isFamily, providerType);
+    return legacy(name, isAutoDispose, familyArgumentType, providerType);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String name, bool isAutoDispose, bool isFamily,
-            LegacyProviderType providerType)?
+    TResult? Function(String name, bool isAutoDispose,
+            DartType? familyArgumentType, LegacyProviderType providerType)?
         legacy,
   }) {
-    return legacy?.call(name, isAutoDispose, isFamily, providerType);
+    return legacy?.call(name, isAutoDispose, familyArgumentType, providerType);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String name, bool isAutoDispose, bool isFamily,
-            LegacyProviderType providerType)?
+    TResult Function(String name, bool isAutoDispose,
+            DartType? familyArgumentType, LegacyProviderType providerType)?
         legacy,
     required TResult orElse(),
   }) {
     if (legacy != null) {
-      return legacy(name, isAutoDispose, isFamily, providerType);
+      return legacy(name, isAutoDispose, familyArgumentType, providerType);
     }
     return orElse();
   }
@@ -286,7 +286,7 @@ abstract class LegacyProviderDefinition extends ProviderDefinition {
   factory LegacyProviderDefinition(
           {required final String name,
           required final bool isAutoDispose,
-          required final bool isFamily,
+          required final DartType? familyArgumentType,
           required final LegacyProviderType providerType}) =
       _$LegacyProviderDefinition;
   LegacyProviderDefinition._() : super._();
@@ -296,7 +296,7 @@ abstract class LegacyProviderDefinition extends ProviderDefinition {
   @override
   bool get isAutoDispose;
   @override
-  bool get isFamily;
+  DartType? get familyArgumentType;
   @override
   LegacyProviderType get providerType;
   @override

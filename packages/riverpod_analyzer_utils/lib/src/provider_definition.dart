@@ -67,6 +67,13 @@ enum LegacyProviderType {
   }
 }
 
+class _FamilyMetadata {
+  _FamilyMetadata({required this.providerType, required this.argumentType});
+
+  final DartType providerType;
+  final DartType argumentType;
+}
+
 /// A Dart representation of a provider definition.
 @freezed
 class ProviderDefinition with _$ProviderDefinition {
@@ -75,7 +82,7 @@ class ProviderDefinition with _$ProviderDefinition {
   factory ProviderDefinition.legacy({
     required String name,
     required bool isAutoDispose,
-    required bool isFamily,
+    required DartType? familyArgumentType,
     required LegacyProviderType providerType,
   }) = LegacyProviderDefinition;
 
@@ -125,6 +132,9 @@ class ProviderDefinition with _$ProviderDefinition {
         ? element.type
         : _getFamilyProviderType(element.type.element2! as InterfaceElement);
 
+    final familyArgumentType =
+        isProvider ? null : (element.type as InterfaceType).typeArguments.last;
+
     final initializer = astNode.initializer;
     final isAutoDispose =
         !alwaysAliveProviderListenableType.isAssignableFromType(providerType);
@@ -140,7 +150,7 @@ class ProviderDefinition with _$ProviderDefinition {
     return ProviderDefinition.legacy(
       name: element.name,
       isAutoDispose: isAutoDispose,
-      isFamily: isFamily,
+      familyArgumentType: familyArgumentType,
       providerType: LegacyProviderType._parse(providerType),
     );
   }
@@ -156,6 +166,12 @@ class ProviderDefinition with _$ProviderDefinition {
 
     return callMethod.returnType;
   }
+}
+
+/// Adds extensions to [LegacyProviderDefinition]
+extension LegacyProviderDefinitionX on LegacyProviderDefinition {
+  /// Whether the provider uses the family modifier
+  bool get isFamily => familyArgumentType != null;
 }
 
 /// {@template ProviderDefinitionFormatException}
