@@ -9,7 +9,9 @@ abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
   ///
   /// Cannot be called while a provider is creating, unless the setter was called first.
   ///
-  /// Will throw if the provider threw during creation.
+  /// Will return [AsyncLoading] if used during the first initialization.
+  /// Subsequent initializations will contain an [AsyncValue] with the previous
+  /// state and [AsyncValueX.isRefreshing]/[AsyncValueX.isReloading] set accordingly.
   AsyncValue<State> get state;
   set state(AsyncValue<State> newState);
 
