@@ -51,8 +51,9 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) 
       ]);
 
       for (final provider in providers.entries) {
+        final value = provider.value as LegacyProviderDefinition;
         expect(
-          provider.value.providerType,
+          value.providerType,
           LegacyProviderType.provider,
           reason: '${provider.key} is a Provider',
         );
@@ -83,8 +84,9 @@ final explicitAutoDisposeFamily = AutoDisposeFutureProviderFamily<int, int>((ref
       ]);
 
       for (final provider in providers.entries) {
+        final value = provider.value as LegacyProviderDefinition;
         expect(
-          provider.value.providerType,
+          value.providerType,
           LegacyProviderType.futureProvider,
           reason: '${provider.key} is a FutureProvider',
         );
@@ -115,8 +117,9 @@ final explicitAutoDisposeFamily = AutoDisposeStateProviderFamily<int, int>((ref,
       ]);
 
       for (final provider in providers.entries) {
+        final value = provider.value as LegacyProviderDefinition;
         expect(
-          provider.value.providerType,
+          value.providerType,
           LegacyProviderType.stateProvider,
           reason: '${provider.key} is a StateProvider',
         );
@@ -147,8 +150,9 @@ final explicitAutoDisposeFamily = AutoDisposeStreamProviderFamily<int, int>((ref
       ]);
 
       for (final provider in providers.entries) {
+        final value = provider.value as LegacyProviderDefinition;
         expect(
-          provider.value.providerType,
+          value.providerType,
           LegacyProviderType.streamProvider,
           reason: '${provider.key} is a StreamProvider',
         );
@@ -179,8 +183,9 @@ final explicitAutoDisposeFamily = AutoDisposeNotifierProviderFamily<AutoDisposeF
       ]);
 
       for (final provider in providers.entries) {
+        final value = provider.value as LegacyProviderDefinition;
         expect(
-          provider.value.providerType,
+          value.providerType,
           LegacyProviderType.notifierProvider,
           reason: '${provider.key} is a NotifierProvider',
         );
@@ -211,8 +216,9 @@ final explicitAutoDisposeFamily = AutoDisposeAsyncNotifierProviderFamily<AutoDis
       ]);
 
       for (final provider in providers.entries) {
+        final value = provider.value as LegacyProviderDefinition;
         expect(
-          provider.value.providerType,
+          value.providerType,
           LegacyProviderType.asyncNotifierProvider,
           reason: '${provider.key} is an AsyncNotifierProvider',
         );
@@ -244,8 +250,9 @@ final explicitAutoDisposeFamily = AutoDisposeChangeNotifierProviderFamily<ValueN
       ]);
 
       for (final provider in providers.entries) {
+        final value = provider.value as LegacyProviderDefinition;
         expect(
-          provider.value.providerType,
+          value.providerType,
           LegacyProviderType.changeNotifierProvider,
           reason: '${provider.key} is a ChangeNotifierProvider',
         );
@@ -276,8 +283,9 @@ final explicitAutoDisposeFamily = AutoDisposeStateNotifierProviderFamily<StateCo
       ]);
 
       for (final provider in providers.entries) {
+        final value = provider.value as LegacyProviderDefinition;
         expect(
-          provider.value.providerType,
+          value.providerType,
           LegacyProviderType.stateNotifierProvider,
           reason: '${provider.key} is a StreamProvider',
         );

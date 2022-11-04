@@ -70,7 +70,7 @@ enum LegacyProviderType {
 /// A Dart representation of a provider definition.
 @freezed
 class ProviderDefinition with _$ProviderDefinition {
-  /// A Dart representation of a provider definition.
+  /// Manually defined providers
   @internal
   factory ProviderDefinition.legacy({
     required String name,
@@ -78,6 +78,13 @@ class ProviderDefinition with _$ProviderDefinition {
     required DartType? familyArgumentType,
     required LegacyProviderType providerType,
   }) = LegacyProviderDefinition;
+
+  /// Providers defined using the code generator
+  @internal
+  factory ProviderDefinition.generator({
+    required String name,
+    required bool isAutoDispose,
+  }) = GeneratorProviderDefinition;
 
   ProviderDefinition._();
 
