@@ -67,13 +67,6 @@ enum LegacyProviderType {
   }
 }
 
-class _FamilyMetadata {
-  _FamilyMetadata({required this.providerType, required this.argumentType});
-
-  final DartType providerType;
-  final DartType argumentType;
-}
-
 /// A Dart representation of a provider definition.
 @freezed
 class ProviderDefinition with _$ProviderDefinition {
