@@ -10,10 +10,9 @@ Widget build(BuildContext context, WidgetRef ref) {
   return AppBar(actions: [
 /* SNIPPET START */
 DropdownButton<ProductSortType>(
-  // When the sort type changes, this will rebuild the dropdown
-  // to update the icon shown.
+  // При изменении типа сортировки произойдет перестройка DropdownButton
   value: ref.watch(productSortTypeProvider),
-  // When the user interacts with the dropdown, we update the provider state.
+  // Обновляем состояние провайдера при взаимодействии пользователя с DropdownButton
   onChanged: (value) =>
       ref.read(productSortTypeProvider.notifier).state = value!,
   items: [

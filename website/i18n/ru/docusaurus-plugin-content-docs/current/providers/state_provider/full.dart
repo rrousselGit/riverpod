@@ -41,7 +41,7 @@ enum ProductSortType {
 }
 
 final productSortTypeProvider = StateProvider<ProductSortType>(
-  // We return the default sort type, here name.
+  // Возвращаем тип сортировки по умолчанию (name)
   (ref) => ProductSortType.name,
 );
 
@@ -66,10 +66,9 @@ class MyHomePage extends ConsumerWidget {
         title: const Text('Products'),
         actions: [
           DropdownButton<ProductSortType>(
-            // When the sort type changes, this will rebuild the dropdown
-            // to update the icon shown.
+            // При изменении типа сортировки произойдет перестройка DropdownButton
             value: ref.watch(productSortTypeProvider),
-            // When the user interacts with the dropdown, we update the provider state.
+            // Мы обновляем состояние провайдера при взаимодействии пользователя с DropdownButton
             onChanged: (value) =>
                 ref.read(productSortTypeProvider.notifier).state = value!,
             items: const [

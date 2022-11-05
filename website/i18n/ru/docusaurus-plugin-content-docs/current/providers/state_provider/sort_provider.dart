@@ -5,6 +5,6 @@ import 'dropdown.dart';
 /* SNIPPET START */
 
 final productSortTypeProvider = StateProvider<ProductSortType>(
-  // We return the default sort type, here name.
+  // Возвращаем тип сортировки по умолчанию (name)
   (ref) => ProductSortType.name,
 );
