@@ -1,11 +1,11 @@
 ---
-title: ^0.13.0 to ^0.14.0
+title: С ^0.13.0 на ^0.14.0
 ---
 
-With the release of version `0.14.0` of Riverpod, the syntax for using [StateNotifierProvider] changed
-(see https://github.com/rrousselGit/riverpod/issues/341 for the explanation).
+С появлением `0.14.0` версии Riverpod синтаксис использования [StateNotifierProvider] изменился
+(объяснение: https://github.com/rrousselGit/riverpod/issues/341).
 
-For the entire article, consider the following [StateNotifier]:
+В этой статье рассмотрим следующий [StateNotifier]:
 
 ```dart
 class MyModel {}
@@ -15,12 +15,12 @@ class MyStateNotifier extends StateNotifier<MyModel> {
 }
 ```
 
-## The changes
+## Изменения
 
-- [StateNotifierProvider] takes an extra generic parameter, which should be
-  the type of the state of your [StateNotifier].
+- [StateNotifierProvider] принимает дополнительный generic параметр, который должен являться
+  типом состояния нашего [StateNotifier].
 
-  Before:
+  Раньше:
 
   ```dart
   final provider = StateNotifierProvider<MyStateNotifier>((ref) {
@@ -28,7 +28,7 @@ class MyStateNotifier extends StateNotifier<MyModel> {
   });
   ```
 
-  After:
+  Теперь:
 
   ```dart
   final provider = StateNotifierProvider<MyStateNotifier, MyModel>((ref) {
@@ -36,9 +36,9 @@ class MyStateNotifier extends StateNotifier<MyModel> {
   });
   ```
 
-- to obtain the [StateNotifier], you should now read `myProvider.notifier` instead of just `myProvider`:
+- для доступа к [StateNotifier] теперь нужно обращаться к `myProvider.notifier` вместо `myProvider`:
 
-  Before:
+  Раньше:
 
   ```dart
   Widget build(BuildContext context, ScopedReader watch) {
@@ -46,7 +46,7 @@ class MyStateNotifier extends StateNotifier<MyModel> {
   }
   ```
 
-  After:
+  Теперь:
 
   ```dart
   Widget build(BuildContext context, ScopedReader watch) {
@@ -54,9 +54,9 @@ class MyStateNotifier extends StateNotifier<MyModel> {
   }
   ```
 
-- to listen to the state of the [StateNotifier], you should now read `myProvider` instead of `myProvider.state`:
+- для доступа к состоянию [StateNotifier] теперь нужно обращаться к `myProvider` вместо `myProvider.state`:
 
-  Before:
+  Раньше:
 
   ```dart
   Widget build(BuildContext context, ScopedReader watch) {
@@ -64,7 +64,7 @@ class MyStateNotifier extends StateNotifier<MyModel> {
   }
   ```
 
-  After:
+  Теперь:
 
   ```dart
   Widget build(BuildContext context, ScopedReader watch) {
@@ -72,39 +72,40 @@ class MyStateNotifier extends StateNotifier<MyModel> {
   }
   ```
 
-## Using the migration tool to automatically upgrade your projects to the new syntax
+## Использование инструмента миграции для автоматического обновления синтаксиса в вашем проекте
 
-With version 0.14.0 came the release of a command line tool for Riverpod,
-which can help you migrate your projects.
+С выходом версии 0.14.0 появилась утилита командной строки для Riverpod,
+которая может помочь с миграцией ваших проектов.
 
-### Installing the command line
+### Установка инструмента командной строки
 
-To install the migration tool, run:
+Для установки инструмента миграции выполните:
 
 ```sh
 dart pub global activate riverpod_cli
 ```
 
-You should now be able to run:
+Теперь вы можете выполнить:
 
 ```sh
 riverpod --help
 ```
 
-### Usage
+### Использование
 
-Now that the command line is installed, we can start using it.
+Когда инструмент установлен, мы можем начать использовать его.
 
-- First, open the project you want to migrate in your terminal.
-- **Do not** upgrade Riverpod.  
-  The migration tool will upgrade the version of Riverpod for you.
-- Make sure that your project does not contain errors.
-- Execute:
+- Для начала, откройте в терминале проект, который необходимо мигрировать.
+- **Не** обновляйте Riverpod.
+  Инструмент миграции сам обновит версию Riverpod.
+- Убедитесь, что проект не содержит ошибок.
+- Выполните:
   ```sh
   riverpod migrate
   ```
 
-The tool will then analyze your project and suggest changes. For example you may see:
+Данный инструмент проанализирует ваш проект и предложит изменения.
+Например вы можете увидеть:
 
 ```diff
 Widget build(BuildContext context, ScopedReader watch) {
@@ -115,7 +116,8 @@ Widget build(BuildContext context, ScopedReader watch) {
 Accept change (y = yes, n = no [default], A = yes to all, q = quit)? 
 ```
 
-To accept the change, simply press <kbd>y</kbd>. Otherwise to reject it, press <kbd>n</kbd>.
+Чтобы применить изменение, просто нажмите <kbd>y</kbd>.
+Чтобы отклонить изменение, нажмите <kbd>n</kbd>.
 
 
 [statenotifierprovider]: ../providers/state_notifier_provider
