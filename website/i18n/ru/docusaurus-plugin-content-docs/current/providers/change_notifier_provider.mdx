@@ -9,37 +9,39 @@ import todos from "!!raw-loader!/docs/providers/change_notifier_provider/todos.d
 import todosConsumer from "!!raw-loader!/docs/providers/change_notifier_provider/todos_consumer.dart";
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
-`ChangeNotifierProvider` (flutter_riverpod/hooks_riverpod only) is a provider that
-is used to listen to and expose a [ChangeNotifier] from Flutter itself.
+`ChangeNotifierProvider` (есть только в flutter_riverpod/hooks_riverpod) - это
+провайдер, который можно прослушивать, а также он хранит в себе [ChangeNotifier]
+из Flutter.
 
-Using `ChangeNotifierProvider` is discouraged by Riverpod and exists primarily for:
+Использование `ChangeNotifierProvider` не поощряется Riverpod. Но все же этот провайдер
+нужен для:
 
-- an easy transition from `package:provider` when using its `ChangeNotifierProvider`
-- supporting mutable state, even though immutable state is preferred
+- простого перехода с `package:provider` и его `ChangeNotifierProvider`
+- поддержки изменяемых состояний, хотя неизменяемые - предпочтительней
 
 :::info
-Prefer using [StateNotifierProvider] instead.  
-Consider using `ChangeNotifierProvider` only if you are absolutely certain
-that you want mutable state.
+Рекомендуется использовать [StateNotifierProvider].
+Используйте `ChangeNotifierProvider` только, когда вы абсолютно уверены,
+что вам нужно изменяемое состояние.
 :::
 
-Using mutable state instead of immutable state can sometimes be more efficient.
-The downside is, it can be harder to maintain and may break various features.  
-For example, using `provider.select` to optimize rebuilds of your widgets
-may not work if your state is mutable, as `select` will think that the value
-hasn't changed.  
-As such, using immutable data structures can sometimes be faster. Therefore
-it is important to make benchmarks specific to your use-case, to make sure
-that you are truly gaining performance by using `ChangeNotifierProvider`.
+Использование изменяемого состояние вместо неизменяемого иногда может быть более
+эффективно. Минус заключается в том, что с изменяемым состоянием бывает сложнее
+поддерживать приложение, а также это может поломать некоторый функционал.
+Например использование `provider.select` для оптимизации перестроек виджетов
+может не сработать, если ваше состояние изменяемо, т. к. `select` не заметит
+изменения состояния.
+Использование неизменяемых структур данных иногда работает быстрее.
+Поэтому важно делать бенчмарки конкретно вашего случая, чтобы убедиться,
+действительно ли вы повышаете производительность, используя `ChangeNotifierProvider`.
 
-As a usage example, we could use `ChangeNotifierProvider` to implement a todo-list.
-Doing so would allow us to expose methods such as `addTodo` to let the UI
-modify the list of todos on user interactions:
+В качестве примера мы можем использовать `ChangeNotifierProvider` для реализации
+списка задач.
 
 <CodeBlock>{trimSnippet(todos)}</CodeBlock>
 
-Now that we have defined a `ChangeNotifierProvider`, we can use it to interact
-with the list of todos in our UI:
+Теперь, когда мы объявили `ChangeNotifierProvider`, мы можем использовать его
+для взаимодействия со списком задач:
 
 <CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
 
