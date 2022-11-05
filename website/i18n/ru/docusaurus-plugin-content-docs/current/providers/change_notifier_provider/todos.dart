@@ -18,19 +18,19 @@ class Todo {
 class TodosNotifier extends ChangeNotifier {
   final todos = <Todo>[];
 
-  // Let's allow the UI to add todos.
+  // Добавление задач
   void addTodo(Todo todo) {
     todos.add(todo);
     notifyListeners();
   }
 
-  // Let's allow removing todos
+  // Удаление задач
   void removeTodo(String todoId) {
     todos.remove(todos.firstWhere((element) => element.id == todoId));
     notifyListeners();
   }
 
-  // Let's mark a todo as completed
+  // Задача выполнена/не выполнена
   void toggle(String todoId) {
     for (final todo in todos) {
       if (todo.id == todoId) {
@@ -41,8 +41,7 @@ class TodosNotifier extends ChangeNotifier {
   }
 }
 
-// Finally, we are using StateNotifierProvider to allow the UI to interact with
-// our TodosNotifier class.
+// Используем ChangeNotifierProvider для взаимодействия с TodosNotifier
 final todosProvider = ChangeNotifierProvider<TodosNotifier>((ref) {
   return TodosNotifier();
 });
