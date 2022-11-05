@@ -1,4 +1,4 @@
-// A provider that controls the current page
+// Провайдер, контролирующий текущую страницу
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final pageIndexProvider = StateProvider<int>((ref) => 0);
 
-// A provider which computes whether the user is allowed to go to the previous page
+// Провайдер, который определяет, может ли пользователь вернуться на
+// предыдущую страницу
 /* highlight-start */
 final canGoToPreviousPageProvider = Provider<bool>((ref) {
 /* highlight-end */
@@ -18,8 +19,9 @@ class PreviousButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // We are now watching our new Provider
-    // Our widget is no longer calculating whether we can go to the previous page.
+    // Наблюдаем за нашим провайдером
+    // Наш виджет больше не определяет, можно ли вернуться на 
+    // предыдущую страницу или нет
 /* highlight-start */
     final canGoToPreviousPage = ref.watch(canGoToPreviousPageProvider);
 /* highlight-end */

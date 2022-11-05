@@ -10,7 +10,7 @@ return
 /* SNIPPET START */
 Consumer(builder: (context, ref, child) {
   final completedTodos = ref.watch(completedTodosProvider);
-  // TODO show the todos using a ListView/GridView/.../* SKIP */
+  // TODO: отобразить задачи с помощью ListView/GridView/.../* SKIP */
   return Container();
   /* SKIP END */
 });

@@ -1,4 +1,4 @@
-// A provider that controls the current page
+// Провайдер, контролирующий текущую страницу
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,7 +11,8 @@ class PreviousButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // if not on first page, the previous button is active
+    // Если мы не на первой странице, тогда кнопка перехода
+    // на предыдущую страницу активна
     final canGoToPreviousPage = ref.watch(pageIndexProvider) != 0;
 
     void goToPreviousPage() {
