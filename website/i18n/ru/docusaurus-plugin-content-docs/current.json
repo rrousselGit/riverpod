@@ -1,38 +1,38 @@
 {
   "version.label": {
-    "message": "Weiter",
+    "message": "Далее",
     "description": "The label for version current"
   },
   "sidebar.Sidebar.category.Guides": {
-    "message": "Leidfäden",
+    "message": "Гайды",
     "description": "The label for category Guides in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Concepts": {
-    "message": "Konzepte",
+    "message": "Понятия",
     "description": "The label for category Concepts in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Modifiers": {
-    "message": "Modifikatoren",
+    "message": "Модификаторы",
     "description": "The label for category Modifiers in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Migration": {
-    "message": "Migration",
+    "message": "Миграция",
     "description": "The label for category Migration in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Official examples": {
-    "message": "Offizielle Beispiele",
+    "message": "Официальные примеры",
     "description": "The label for category Official examples in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Third party examples": {
-    "message": "Beispiele von Dritten",
+    "message": "Неофициальные примеры",
     "description": "The label for category Third party examples in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Api references": {
-    "message": "API Referenzen",
+    "message": "Ссылки на API",
     "description": "The label for category Api references in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.All Providers": {
-    "message": "Alle Provider",
+    "message": "Провайдеры",
     "description": "The label for category All Providers in sidebar Sidebar"
   },
   "sidebar.Sidebar.link.Counter": {
