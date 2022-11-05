@@ -1,42 +1,42 @@
 ---
-title: Providers
+title: Провайдеры
 ---
 
-Now that we have installed [Riverpod], let's talk about "providers".
+Теперь, когда мы установили [Riverpod], давайте поговорим о провайдерах.
 
-Providers are the most important part of a [Riverpod] application.
-A provider is an object that encapsulates a piece of state and allows listening
-to that state.
+Провайдеры - самая важная составляющая [Riverpod] приложения.
+Провайдер - объект, который инкапсулирует часть состояния и позволяет наблюдать
+за этим состоянием.
 
-## Why use providers?
+## Зачем использовать провайдеры?
 
-Wrapping a piece of state in a provider:
+Инкапсуляция части состояния в провайдере:
 
-- Allows easily accessing that state in multiple locations.
-  Providers are a complete replacement for patterns like Singletons,
-  Service Locators, Dependency Injection or InheritedWidgets.
+- Предоставляет легкий доступ к этому состоянию из разных мест.
+  Провайдеры являются полной заменой таким паттернам, как Singleton,
+  Service Locator, Dependency Injection и InheritedWidget.
 
-- Simplifies combining this state with others.
-  Ever struggled to merge multiple objects into one? This scenario is built
-  directly inside providers.
+- Упрощает совместное использование данного состояния с другими.
+  Пытались когда-нибудь объединить несколько объектов в один? Данный сценарий
+  реализован внутри провайдеров.
 
-- Enables performance optimizations.
-  Whether for filtering widget rebuilds or for caching expensive state computations;
-  providers ensure that only what is impacted by a state change is recomputed.
+- Повышение производительности.
+  Отслеживание перестроек виджетов или кэширование результатов затратных вычислений.
+  Провайдеры гарантируют, что только изменение состояния вызывает перестойку/перевычисление.
 
-- Increases the testability of your application.
-  With providers, you do not need complex `setUp`/`tearDown` steps. Furthermore,
-  any provider can be overridden to behave differently during a test, which
-  allows easily testing a very specific behavior.
+- Повышение тестируемости вашего приложения.
+  С провайдерами вам больше не нужны `setUp`/`tearDown`. Более того, можно изменить
+  поведение любого провайдера во время теста, что позволяет легко протестировать
+  конкретное поведение.
 
-- Allows easy integration with advanced features, such as logging or
-  pull-to-refresh.
+- Простое внедрение дополнительное функционала, как логгирование или pull-to-refresh.
 
-## Creating a provider
+## Создание провайдера
 
-Providers come in many variants, but they all work the same way.
+Существует множество различных провайдеров, но все они работают одинаково.
 
-The most common usage is to declare them as global constants like so:
+Самый распространенный вариант использования это объявление провайдера в виде
+глобальной константы:
 
 ```dart
 final myProvider = Provider((ref) {
@@ -45,49 +45,49 @@ final myProvider = Provider((ref) {
 ```
 
 :::note
-Do not be frightened by the global aspect of providers.
-Providers are fully immutable. Declaring a provider is no different from declaring
-a function, and providers are testable and maintainable.
+Не переживайте, что провайдеры создаются как глобальные переменные.
+Провайдеры полностью неизменяемы. Объявление провайдера ничем не отличается
+от объявления функции. Провайдеры поддаются тестированию и сопровождению.
 :::
 
-This snippet consists of three components:
+Данный отрывок кода состоит из трех частей:
 
-- `final myProvider`, the declaration of a variable.
-  This variable is what we will use in the future to read the state of our provider.
-  Providers should always be `final`.
+- `final myProvider` - объявление переменной.
+  В дальнейшем мы будем использовать ее для чтения состояния нашего провайдера.
+  Провайдеры всегда должны быть объявлены с `final`.
 
-- `Provider`, the provider that we decided to use.
-  [Provider] is the most basic of all providers. It exposes an object that never
-  changes.
-  We could replace [Provider] with other providers like [StreamProvider] or
-  [StateNotifierProvider], to change how the value is interacted with.
+- `Provider` - тип провайдера, который мы решили использовать.
+  [Provider] самый простой провайдер. Он предоставляет объект,
+  который никогда не изменится.
+  Мы можем заменить [Provider] другим провайдером, например [StreamProvider] или
+  [StateNotifierProvider], для иного взаимодействия со значением.
 
-- A function that creates the shared state.
-  That function will always receive an object called `ref` as a parameter. This object
-  allows us to read other providers, perform some operations when the state
-  of our provider will be destroyed, and much more.
+- Функция, которая создает состояние.
+  Эта функция всегда получает `ref` в качестве параметра. `ref` дает нам
+  возможность читать другие провайдеры, выполнять какие-либо операции при
+  аннулировании состояния нашего провайдера и т. п.
 
-The type of the object returned by the function passed to a provider depends on
-the provider used.
-For example, the function of a [Provider] can create any object.
-On the other hand, [StreamProvider]'s callback will be expected to return a [Stream].
+Тип возвращаемого значения данной функции определяется типом провайдера, который
+мы используем.
+Например, для [Provider] функция может создавать объект любого типа.
+Однако для [StreamProvider] функция должна возвращать [Stream].
 
 :::info
-You can declare as many providers as you want without limitations.
-As opposed to when using `package:provider`, [Riverpod] allows creating multiple
-providers exposing a state of the same "type":
+Вы можете объявить сколько угодно провайдеров без ограничения.
+[Riverpod], в отличие от `package:provider`, позволяет создавать несколько
+провайдеров, хранящих один и тот же тип:
 
 ```dart
 final cityProvider = Provider((ref) => 'London');
 final countryProvider = Provider((ref) => 'England');
 ```
 
-The fact that both providers create a `String` does not cause any problem.
+Два провайдера со значением типа `String` не вызовут ошибку.
 :::
 
 :::caution
-For providers to work, you must add [ProviderScope] at the root of your
-Flutter applications:
+Для работы с провайдерами мы должны добавить [ProviderScope] в корень
+вашего Flutter приложения:
 
 ```dart
 void main() {
@@ -97,50 +97,51 @@ void main() {
 
 :::
 
-## Different Types of Providers
+## Разнообразие провайдеров
 
-There are multiple types of providers for multiple different use cases.
+Существует множество разных провайдеров для различных случаев применения.
 
-With all of these providers available, it is sometimes difficult to understand when to use one provider type over another.
-Use the table below to choose a provider that fits what you want to provide to the widget tree.
+С таким большим набором провайдеров иногда бывает сложно определить, какой
+тип предпочтительней использовать.
+Чтобы выбрать подходящий провайдер, воспользуйтесь данной таблицей.
 
-| Provider Type            | Provider Create Function             | Example Use Case                                                     |
-| ------------------------ | ------------------------------------ | -------------------------------------------------------------------- |
-| [Provider]               | Returns any type                     | A service class / computed property (filtered list)                  |
-| [StateProvider]          | Returns any type                     | A filter condition / simple state object                             |
-| [FutureProvider]         | Returns a Future of any type         | A result from an API call                                            |
-| [StreamProvider]         | Returns a Stream of any type         | A stream of results from an API                                      |
-| [StateNotifierProvider]  | Returns a subclass of StateNotifier  | A complex state object that is immutable except through an interface |
-| [ChangeNotifierProvider] | Returns a subclass of ChangeNotifier | A complex state object that requires mutability                      |
+| Тип Провайдера           | Функция создания провайдера          | Пример использования                                                     |
+| ------------------------ | ------------------------------------ | ------------------------------------------------------------------------ |
+| [Provider]               | Возвращает любой тип                 | Класс сервиса / вычисленное значение (отфильтрованный список)            |
+| [StateProvider]          | Возвращает любой тип                 | Условие фильтрации / простейший объект состояния                         |
+| [FutureProvider]         | Возвращает Future любого типа        | Результат обращения к API                                                |
+| [StreamProvider]         | Возвращает Stream любого типа        | Stream результатов, полученных с API                                     |
+| [StateNotifierProvider]  | Возвращает подкласс StateNotifier    | Сложный объект состояния, который можно изменить только через интерфейс  |
+| [ChangeNotifierProvider] | Возвращает подкласс ChangeNotifier   | Сложный объект состояния, который можно изменить напрямую                |
 
 :::caution
-While all providers have their purpose, [ChangeNotifierProvider]s are not recommended for scalable applications, 
-because of issues with mutable state.
-It exists in the `flutter_riverpod` package to provide an easy migration path from `package:provider`, and allows
-for some flutter specific use-cases such as integration with some Navigator 2 packages.
+Не смотря на то что каждый провайдер имеет свое предназначение, [ChangeNotifierProvider] не рекомендуется
+использовать в масштабируемых приложениях из-за проблем с изменяемым состоянием.
+Этот провайдер есть в пакете `flutter_riverpod` для легкой миграции с `package:provider`, также он необходим
+для специфичных случаев, таких как взаимодействие с пакетами Navigator 2.
 :::
 
-## Provider Modifiers
+## Модификаторы провайдера
 
-All Providers have a built-in way to add extra functionalities to your different providers.
+Все провайдеры имеют встроенную возможность расширения функционала.
 
-They may add new features to the `ref` object or change slightly how the provider
-is consumed.
-Modifiers can be used on all providers, with a syntax similar to named constructor:
+Можно добавить новые свойства к объекту `ref` или же слегка изменить чтение провайдера.
+Модификаторы можно использовать с любым провайдером. Синтаксис их использования
+похож на именованный конструктор:
 
 ```dart
 final myAutoDisposeProvider = StateProvider.autoDispose<int>((ref) => 0);
 final myFamilyProvider = Provider.family<String, int>((ref, id) => '$id');
 ```
 
-At the moment, there are two modifiers available:
+На данный момент существует лишь два модификатора:
 
-- [`.autoDispose`](/docs/concepts/modifiers/auto_dispose), which will make the provider automatically destroy its state
-  when it is no longer being listened to.
-- [`.family`](/docs/concepts/modifiers/family), which allows creating a provider from external parameters.
+- [`.autoDispose`](/docs/concepts/modifiers/auto_dispose), который автоматически аннулирует состояние провайдера, если он больше
+  никем не прослушивается.
+- [`.family`](/docs/concepts/modifiers/family), который позволяет создать провайдер с использованием дополнительных параметров.
 
 :::note
-A provider can use multiple modifiers at once:
+Можно применить сразу несколько модификаторов к одному провайдеру:
 
 ```dart
 final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) async {
@@ -150,10 +151,11 @@ final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) 
 
 :::
 
-That's it for this guide!
 
-You can continue with [How to read a provider](/docs/concepts/reading).
-Alternatively, you can see [How to combine providers](/docs/concepts/combining_providers).
+На этом заканчивается данный гайд!
+
+Также вы можете изучить [Как читать провайдер](/docs/concepts/reading).
+Посмотрите еще [Как комбинировать провайдеры](/docs/concepts/combining_providers).
 
 [get_it]: http://pub.dev/packages/get_it
 [inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
