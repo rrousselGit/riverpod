@@ -1,54 +1,55 @@
 ---
-title: Combining Provider States
+title: Объединение состояний провайдеров
 ---
 
-Make sure to [read about Providers](/docs/concepts/providers) first.  
-In this guide, we will learn about combining provider states.
+Сначала ознакомьтесь с [провайдерами](/docs/concepts/providers).
+В этом гайде мы научимся объединять состояния провайдеров.
 
-## Combining provider states
+## Объединение состояний провайдеров
 
-We've previously seen how to create a simple provider. But the reality is,
-in many situations a provider will want to read the state of another provider.
+Мы недавно рассматривали, как создать простейший провайдер. Но на практике
+часто провайдеру необходимо состояние другого провайдера.
 
-To do that, we can use the [ref] object passed to the callback of our provider,
-and use its [watch] method.
+Чтобы реализовать это, мы можем использовать [ref], переданный в callback
+нашего провайдера, и метод [watch].
 
-As an example, consider the following provider:
+В качестве примера рассмотрим следующий провайдер:
 
 ```dart
 final cityProvider = Provider((ref) => 'London');
 ```
 
-We can now create another provider that will consume our `cityProvider`:
+Теперь мы можем создать другой провайдер, который будет использовать
+наш `cityProvider`:
 
 ```dart
 final weatherProvider = FutureProvider((ref) async {
-  // We use `ref.watch` to listen to another provider, and we pass it the provider
-  // that we want to consume. Here: cityProvider
+  // Мы используем `ref.watch`, чтобы следить за другим провайдером.
+  // В `ref.watch` мы передаем провайдер, за которым хотим наблюдать.
+  // В данном случае это cityProvider
   final city = ref.watch(cityProvider);
 
-  // We can then use the result to do something based on the value of `cityProvider`.
+  // Теперь мы можем делать что-либо, основываясь на полученном состоянии `cityProvider`
   return fetchWeather(city: city);
 });
 ```
 
-That's it. We've created a provider that depends on another provider.
+На этом все! Мы только что создали провайдер, который зависит от другого провайдера.
 
 ## FAQ
 
-### What if the value being listened to changes over time?
+### Что, если значение, за которым мы наблюдаем, меняется со временем?
 
-Depending on the provider that you are listening to, the value obtained may
-change over time.
-For example, you may be listening to a [StateNotifierProvider], or the provider
-being listened to may have been forced to refresh through the use of
-[ProviderContainer.refresh]/[ref.refresh].
+В зависимости от провайдера, за которым вы наблюдаете, вы будете получать новое
+значение каждый раз.
+Например, вы можете следить за [StateNotifierProvider] или же принудительно обновить
+наблюдаемый провайдер, вызвав [ProviderContainer.refresh]/[ref.refresh].
 
-When using [watch], Riverpod is able to detect that the value being listened to changed
-and will _automatically_ re-execute the provider's creation callback when needed.
+При использовании [watch] Riverpod замечает, когда наблюдаемое значение изменилось, и
+_автоматически_ повторно вызывает callback создания провайдера.
 
-This can be useful for computed states.
-For example, consider a [StateNotifierProvider] that exposes a todo-list:
+Это может быть полезно для вычисляемых состояний.
+Например, рассмотрим [StateNotifierProvider], который предоставляет список задач:
 
 ```dart
 class TodoList extends StateNotifier<List<Todo>> {
@@ -58,12 +59,13 @@ class TodoList extends StateNotifier<List<Todo>> {
 final todoListProvider = StateNotifierProvider((ref) => TodoList());
 ```
 
-A common use-case would be to have the UI filter the list of todos to show
-only the completed/uncompleted todos.
+Распространенным случаем может быть ситуация, когда нам необходимо отфильтровать
+список и отобразить только выполненные/невыполненные задачи.
 
-An easy way to implement such a scenario would be to:
 
-- create a [StateProvider], which exposes the currently selected filter method:
+Простой реализацией данной задачи было бы:
+
+- создать [StateProvider], который предоставляет выбранный тип фильтрации:
 
   ```dart
   enum Filter {
@@ -75,8 +77,8 @@ An easy way to implement such a scenario would be to:
   final filterProvider = StateProvider((ref) => Filter.none);
   ```
 
-- make a separate provider which combines the filter method and the todo-list
-  to expose the filtered todo-list:
+- создать отдельный провайдер, зависящий от типа фильтрации и списка задач, который
+предоставляет отфильтрованный список задач:
 
   ```dart
   final filteredTodoListProvider = Provider<List<Todo>>((ref) {
@@ -94,24 +96,25 @@ An easy way to implement such a scenario would be to:
   });
   ```
 
-Then, our UI can listen to `filteredTodoListProvider` to listen to the filtered todo-list.  
-Using such an approach, the UI will automatically update when either the filter
-or the todo-list changes.
+Теперь наш UI может наблюдать за `filteredTodoListProvider`, чтобы получать текущий
+отфильтрованный список задач.
+Используя данный подход, UI будет автоматически обновляться при изменении типа фильтрации
+или списка задач.
 
-To see this approach in action, you can look at the source code of the [Todo List
-example](https://github.com/rrousselGit/riverpod/tree/master/examples/todos).
+Чтобы увидеть данный подход в действии, вы можете изучить исходный код [примера со списком
+задач](https://github.com/rrousselGit/riverpod/tree/master/examples/todos).
 
 :::info
-This behavior is not specific to [Provider], and works with all providers.
+Такое поведение не является особенностью [Provider], оно присуще все провайдерам.
 
-For example, you could combine [watch] with [FutureProvider] to implement a search
-feature that supports live-configuration changes:
+Например, вы можете использовать [watch] с [FutureProvider] для реализации поиска,
+который работает с меняющейся в реальном времени конфигурацией:
 
 ```dart
-// The current search filter
+// Текущий поисковый запрос
 final searchProvider = StateProvider((ref) => '');
 
-/// Configurations which can change over time
+/// Конфигурация, которая может меняться со временем
 final configsProvider = StreamProvider<Configuration>(...);
 
 final charactersProvider = FutureProvider<List<Character>>((ref) async {
@@ -123,38 +126,40 @@ final charactersProvider = FutureProvider<List<Character>>((ref) async {
 });
 ```
 
-This code will fetch a list of characters from the service, and automatically
-re-fetch the list whenever the configurations change or when the search query changes.
+Данный фрагмент кода получает список персонажей и при изменении конфигурации
+или поискового запроса снова делает запрос для получения новых данных.
 :::
 
-### Can I read a provider without listening to it?
+### Могу ли я прочесть значение провайдера, не наблюдая за ним?
 
-Sometimes, we want to read the content of a provider, but without re-creating
-the value exposed when the value obtained changes.
+Иногда мы хотим получить содержимое провайдера единожды без подписки на 
+обновления его состояния.
 
-An example would be a `Repository`, which reads from another provider the user token
-for authentication.  
-We could use [watch] and create a new `Repository` whenever the user token changes,
-but there is little to no use in doing that.
+В качестве примера возьмем `Repository`, который для авторизации получает токен
+пользователя из другого провайдера.
+Мы могли бы использовать [watch] и тогда каждый раз создавать новый `Repository` при
+изменении токена, но это нерационально.
 
-In this situation, we can use [read], which is similar to [watch], but will not
-cause the provider to recreate the value it exposes when the value obtained changes.
+В данной ситуации мы можем воспользоваться [read], который схож с [watch], за исключением того,
+что [read] не вынуждает провайдер пересоздавать свое состояние, когда наблюдаемое значение
+изменяется.
 
-In that case, a common practice is to pass the provider's `Ref` to the object created.
-The object created will then be able to read providers whenever it wants.
+В таком случае обыденной практикой является передача `ref.read` при создании объекта.
+Тогда созданный объект сможет в любой момент прочесть значение какого-либо провайдера.
 
 ```dart
 final userTokenProvider = StateProvider<String>((ref) => null);
 
-final repositoryProvider = Provider(Repository.new);
+final repositoryProvider = Provider((ref) => Repository(ref.read));
 
 class Repository {
-  Repository(this.ref);
+  Repository(this.read);
 
-  final Ref ref;
+  /// Функция `ref.read`
+  final Reader read;
 
   Future<Catalog> fetchCatalog() async {
-    String token = ref.read(userTokenProvider);
+    String token = read(userTokenProvider);
 
     final response = await dio.get('/path', queryParameters: {
       'token': token,
@@ -165,26 +170,43 @@ class Repository {
 }
 ```
 
-:::danger **DON'T** call [read] inside the body of a provider
+:::note
+Также вы можете передавать в объект `ref`, а не `ref.read`:
+
+```dart
+final repositoryProvider = Provider((ref) => Repository(ref));
+
+class Repository {
+  Repository(this.ref);
+
+  final Ref ref;
+}
+```
+
+Единственное различие заключается в том, что передача `ref.read` гарантирует,
+что объект никогда не будет использовать `ref.watch`.
+:::
+
+:::danger **НЕ** используйте [read] внутри провайдера
 
 ```dart
 final myProvider = Provider((ref) {
-  // Bad practice to call `read` here
+  // Тут не рекомендуется использовать `read`
   final value = ref.read(anotherProvider);
 });
 ```
 
-If you used [read] as an attempt to avoid unwanted rebuilds of your object,
-refer to [My provider updates too often, what can I do?](#my-provider-updates-too-often-what-can-i-do)
+Если вы используете [read] как попытку избежать лишнего пересоздания объекта,
+прочтите [Мой провайдер обновляется слишком часто, что мне делать?](#my-provider-updates-too-often-what-can-i-do)
 :::
 
-### How to test an object that receives [read] as a parameter of its constructor?
+### Как тестировать объект, который принимает [read] в качестве параметра конструктора?
 
-If you are using the pattern described in [Can I read a provider without listening to it?](#can-i-read-a-provider-without-listening-to-it),
-you may be wondering how to write tests for your object.
+Если вы используете паттерн, описанный в [Могу ли я читать провайдер, не наблюдая за ним?](#can-i-read-a-provider-without-listening-to-it),
+вы наверное задумывались о том, как тестировать ваш объект.
 
-In this scenario, consider testing the provider directly instead of the raw object.
-You can do so by using the [ProviderContainer] class:
+Попробуйте тестировать провайдер, а не хранимый объект.
+Для этого можете использовать [ProviderContainer]:
 
 ```dart
 final repositoryProvider = Provider((ref) => Repository(ref.read));
@@ -202,28 +224,26 @@ test('fetches catalog', () async {
 });
 ```
 
-### My provider updates too often, what can I do?
+### Мой провайдер обновляется слишком часто, что мне делать?
 
-If your object is re-created too often your provider is likely listening
-to objects that it doesn't care about.
+Если ваш объект пересоздается слишком часто, скорей всего ваш провайдер наблюдает за
+объектами, которые неважны.
 
-For example, you may be listening to a `Configuration` object, but only use the `host`
-property.  
-By listening to the entire `Configuration` object, if a property other than `host`
-changes, this still causes your provider to be re-evaluated – which may be
-undesired.
+Например, вы наблюдаете за объектом `Configuration`, но вам нужно только его поле `host`.
+Таким образом, изменение какого-либо поля `Configuration` вызывает перестойку провайдера,
+что нежелательно.
 
-The solution to this problem is to create a separate provider that exposes _only_
-what you need in `Configuration` (so `host`):
+Решением данной проблемы является создание отдельного провайдера, который будет хранить
+_только_ то, что вам нужно от `Configuration` (т.е. поле `host`):
 
-**AVOID** listening to the entire object:
+**НЕ НАБЛЮДАЙТЕ** за объектом целиком:
 
 ```dart
 final configProvider = StreamProvider<Configuration>(...);
 
 final productsProvider = FutureProvider<List<Product>>((ref) async {
-  // Will cause productsProvider to re-fetch the products if anything in the
-  // configurations changes
+  // Любое изменение Configuration заставит productsProvider
+  // повторно осуществить запрос
   final configs = await ref.watch(configProvider.future);
 
   return dio.get('${configs.host}/products');
@@ -231,21 +251,21 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
 ```
 
 
-**PREFER** using select when you only need a single property of an object:
+**РЕКОМЕНДУЕТСЯ** использовать select, когда вам необходимо только поле объекта, а не сам объект:
 
 ```dart
 final configProvider = StreamProvider<Configuration>(...);
 
 final productsProvider = FutureProvider<List<Product>>((ref) async {
-  // Listens only to the host. If something else in the configurations
-  // changes, this will not pointlessly re-evaluate our provider.
+  // Осуществляется наблюдение только за полем host. Изменение какого-либо
+  // другого поля Configuration не вызовет пересоздание провайдера.
   final host = await ref.watch(configProvider.selectAsync((config) => config.host));
 
   return dio.get('$host/products');
 });
 ```
 
-This will only rebuild the `productsProvider` when the `host` changes.
+Таким образом, `productsProvider` перестраивается, только когда изменяется `host`.
 
 [provider]: ../providers/provider
 [stateprovider]: ../providers/state_provider
