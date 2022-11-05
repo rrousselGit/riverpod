@@ -23,13 +23,14 @@ testWidgets('override repositoryProvider', (tester) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
-        // Override the behavior of repositoryProvider to return
-        // FakeRepository instead of Repository.
+        // Переопределяем поведение repositoryProvider, чтобы он
+        // возвращал FakeRepository вместо Repository.
         /* highlight-start */
         repositoryProvider.overrideWithValue(FakeRepository())
         /* highlight-end */
-        // We do not have to override `todoListProvider`, it will automatically
-        // use the overridden repositoryProvider
+        // Нам не нужно переопределять `todoListProvider`.
+        // Он автоматически будет использовать
+        // переопределенный repositoryProvider
       ],
       child: MyApp(),
     ),

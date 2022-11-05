@@ -6,14 +6,15 @@ import 'package:flutter_test/flutter_test.dart';
 
 /* SNIPPET START */
 
-// A Counter implemented and tested using Flutter
+// Счетчик, реализованный и протестированный с использованием Flutter
 
-// We declared a provider globally, and we will use it in two tests, to see
-// if the state correctly resets to `0` between tests.
+// Объявляем провайдер глобально.
+// Используем этот провайдер в двух тестах, чтобы проверить, правильно ли
+// состояние сбрасывается до нуля между тестами.
 
 final counterProvider = StateProvider((ref) => 0);
 
-// Renders the current state and a button that allows incrementing the state
+// Отрисовывает текущее состояние и кнопку для увеличения счетчика
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -33,15 +34,15 @@ void main() {
   testWidgets('update the UI when incrementing the state', (tester) async {
     await tester.pumpWidget(ProviderScope(child: MyApp()));
 
-    // The default value is `0`, as declared in our provider
+    // `0` - значение по умолчанию, как это было объявлено в провайдере
     expect(find.text('0'), findsOneWidget);
     expect(find.text('1'), findsNothing);
 
-    // Increment the state and re-render
+    // Увеличение счетчика и переотрисовка
     await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
 
-    // The state have properly incremented
+    // Состояние счетчика действительно увеличилось
     expect(find.text('1'), findsOneWidget);
     expect(find.text('0'), findsNothing);
   });
@@ -49,7 +50,8 @@ void main() {
   testWidgets('the counter state is not shared between tests', (tester) async {
     await tester.pumpWidget(ProviderScope(child: MyApp()));
 
-    // The state is `0` once again, with no tearDown/setUp needed
+    // Состояние счетчика снова стало равно `0`
+    // без использования tearDown/setUp
     expect(find.text('0'), findsOneWidget);
     expect(find.text('1'), findsNothing);
   });

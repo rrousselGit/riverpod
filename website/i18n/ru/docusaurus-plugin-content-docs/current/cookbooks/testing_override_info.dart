@@ -34,7 +34,8 @@ final foo =
 /* SKIP END */
     ProviderScope(
   overrides: [
-    /// Allows overriding a FutureProvider to return a fixed value
+    /// Можно переопределить FutureProvider, чтобы он возвращал
+    /// определенное значение
     todoListProvider.overrideWithValue(
       AsyncValue.data([Todo(id: '42', label: 'Hello', completed: true)]),
     ),

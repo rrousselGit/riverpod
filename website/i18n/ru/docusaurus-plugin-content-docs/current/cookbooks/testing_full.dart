@@ -19,20 +19,20 @@ class Todo {
   final bool completed;
 }
 
-// We expose our instance of Repository in a provider
+// Храним экземпляр Repository в провайдере
 final repositoryProvider = Provider((ref) => Repository());
 
-/// The list of todos. Here, we are simply fetching them from the server using
-/// [Repository] and doing nothing else.
+/// Список задач. Мы просто получаем задачи с сервера,
+/// используя [Repository].
 final todoListProvider = FutureProvider((ref) async {
-  // Obtains the Repository instance
+  // Получение экземпляра Repository
   final repository = ref.read(repositoryProvider);
 
-  // Fetch the todos and expose them to the UI.
+  // Получение задач и передача их в UI.
   return repository.fetchTodos();
 });
 
-/// A mocked implementation of Repository that returns a pre-defined list of todos
+/// Mock реализация Repository, которая возвращает предопределенный список задач
 class FakeRepository implements Repository {
   @override
   Future<List<Todo>> fetchTodos() async {
@@ -58,13 +58,14 @@ void main() {
         overrides: [
           repositoryProvider.overrideWithValue(FakeRepository())
         ],
-        // Our application, which will read from todoListProvider to display the todo-list.
-        // You may extract this into a MyApp widget
+        // Наше приложение, которые читает значение todoListProvider
+        // для отображение списка задач.
+        // Вы можете вынести это в отдельный MyApp виджет
         child: MaterialApp(
           home: Scaffold(
             body: Consumer(builder: (context, ref, _) {
               final todos = ref.watch(todoListProvider);
-              // The list of todos is loading or in error
+              // Список задач загружается, либо случилась ошибка
               if (todos.asData == null) {
                 return const CircularProgressIndicator();
               }
@@ -79,16 +80,16 @@ void main() {
       ),
     );
 
-    // The first frame is a loading state.
+    // Первый кадр - состояние загрузки
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-    // Re-render. TodoListProvider should have finished fetching the todos by now
+    // Перерисовка. TodoListProvider уже должен получить задачи
     await tester.pump();
 
-    // No longer loading
+    // Загрузка закончилась
     expect(find.byType(CircularProgressIndicator), findsNothing);
 
-    // Rendered one TodoItem with the data returned by FakeRepository
+    // Переотрисовка одного TodoItem с данными, пришедшими из FakeRepository
     expect(tester.widgetList(find.byType(TodoItem)), [
       isA<TodoItem>()
           .having((s) => s.todo.id, 'todo.id', '42')

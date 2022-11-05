@@ -8,15 +8,15 @@ class Repository {
   Future<List<Todo>> fetchTodos() async => [];
 }
 
-// We expose our instance of Repository in a provider
+// Храним экземпляр Repository в провайдере
 final repositoryProvider = Provider((ref) => Repository());
 
-/// The list of todos. Here, we are simply fetching them from the server using
-/// [Repository] and doing nothing else.
+/// Список задач. Мы просто получаем задачи с сервера,
+/// используя [Repository].
 final todoListProvider = FutureProvider((ref) async {
-  // Obtains the Repository instance
+  // Получение экземпляра Repository
   final repository = ref.watch(repositoryProvider);
 
-  // Fetch the todos and expose them to the UI.
+  // Получение задач и передача их в UI.
   return repository.fetchTodos();
 });

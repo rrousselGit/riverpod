@@ -19,26 +19,28 @@ void main() {
 test('override repositoryProvider', () async {
   final container = ProviderContainer(
     overrides: [
-      // Override the behavior of repositoryProvider to return
-      // FakeRepository instead of Repository.
+      // Переопределяем поведение repositoryProvider, чтобы он
+      // возвращал FakeRepository вместо Repository.
       /* highlight-start */
       repositoryProvider.overrideWithValue(FakeRepository())
       /* highlight-end */
-      // We do not have to override `todoListProvider`, it will automatically
-      // use the overridden repositoryProvider
+      // Нам не нужно переопределять `todoListProvider`.
+      // Он автоматически будет использовать
+      // переопределенный repositoryProvider
     ],
   );
 
-  // The first read if the loading state
+  // Первое получение значения
+  // Проверка: является ли состояние состоянием загрузки
   expect(
     container.read(todoListProvider),
     const AsyncValue<List<Todo>>.loading(),
   );
 
-  /// Wait for the request to finish
+  // Ждем окончания запроса
   await container.read(todoListProvider.future);
 
-  // Exposes the data fetched
+  // Читаем полученные данные
   expect(container.read(todoListProvider).value, [
     isA<Todo>()
         .having((s) => s.id, 'id', '42')
