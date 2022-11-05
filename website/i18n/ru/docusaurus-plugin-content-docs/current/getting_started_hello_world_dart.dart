@@ -4,15 +4,15 @@
 
 import 'package:riverpod/riverpod.dart';
 
-// We create a "provider", which will store a value (here "Hello world").
-// By using a provider, this allows us to mock/override the value exposed.
+// Мы создаем "provider", который будет хранить значение (т.е. "Hello world").
+// Использование provider позволяет нам имитировать/переопределять хранимое значение.
 final helloWorldProvider = Provider((_) => 'Hello world');
 
 void main() {
-  // This object is where the state of our providers will be stored.
+  // В данном объекте хранятся состояния наших провайдеров.
   final container = ProviderContainer();
 
-  // Thanks to "container", we can read our provider.
+  // Благодаря "container", мы можем узнать/прочесть значение нашего провайдера.
   final value = container.read(helloWorldProvider);
 
   print(value); // Hello world
