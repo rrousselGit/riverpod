@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /* SNIPPET START */
 
-// A Counter example implemented with riverpod with Logger
+// Пример со счетчиком с использованием логгера и riverpod
 
 class Logger extends ProviderObserver {
   @override
@@ -25,8 +25,8 @@ class Logger extends ProviderObserver {
 
 void main() {
   runApp(
-    // Adding ProviderScope enables Riverpod for the entire project
-    // Adding our Logger to the list of observers
+    // Добавление ProviderScope делает Riverpod доступным для всего проекта
+    // Добавление логгера в список наблюдателей
     ProviderScope(observers: [Logger()], child: const MyApp()),
   );
 }
