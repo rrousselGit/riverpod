@@ -25,7 +25,7 @@ class HomeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // use ref to listen to a provider
+    // использование ref для прослушивания провайдера
     final counter = ref.watch(counterProvider);
 
     return Text('$counter');

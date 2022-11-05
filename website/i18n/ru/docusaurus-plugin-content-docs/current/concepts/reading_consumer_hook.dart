@@ -16,10 +16,10 @@ return
 Scaffold(
   body: HookConsumer(
     builder: (context, ref, child) {
-      // Like HookConsumerWidget, we can use hooks inside the builder
+      // Мы можем использовать хуки внутри builder, как и в HookConsumerWidget
       final state = useState(0);
 
-      // We can also use the ref parameter to listen to providers.
+      // Также мы можем использовать ref для прослушивания провайдеров.
       final counter = ref.watch(counterProvider);
       return Text('$counter');
     },

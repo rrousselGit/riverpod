@@ -21,16 +21,16 @@ final filterTypeProvider = StateProvider<FilterType>((ref) => FilterType.none);
 final todosProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) => TodoList());
 
 final filteredTodoListProvider = Provider((ref) {
-  // obtains both the filter and the list of todos
+  // получение фильтра и полного списка задач
   final FilterType filter = ref.watch(filterTypeProvider);
   final List<Todo> todos = ref.watch(todosProvider);
 
   switch (filter) {
     case FilterType.completed:
-      // return the completed list of todos
+      // возвращает список выполненных задач
       return todos.where((todo) => todo.isCompleted).toList();
     case FilterType.none:
-      // returns the unfiltered list of todos
+      // возвращает полный список всех задач
       return todos;
   }
 });

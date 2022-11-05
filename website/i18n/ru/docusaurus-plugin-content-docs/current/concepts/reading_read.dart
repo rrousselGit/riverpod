@@ -17,7 +17,7 @@ class HomeView extends ConsumerWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Call `increment()` on the `Counter` class
+          // Вызов `increment()` класса `Counter`
           ref.read(counterProvider.notifier).increment();
         },
       ),
