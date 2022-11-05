@@ -1,34 +1,38 @@
-A real world example could be to use `FutureProvider` to implement a searchbar.
+---
+title: Поиск во мере ввода
+---
 
-## Usage example: "Search as we type" searchbar
+Реальный пример использования `FutureProvider` для реализации поисковой строки.
 
-Implementing a "search as we type" can seem daunting at first when using
-conventional means.  
-There are lots of moving parts, such as:
+## Пример использования: "Поиск во мере ввода"
 
-- handling errors.
-- debouncing the user input to avoid making network requests on every keystroke.
-- cancelling previously pending network requests when the search field changes.
+Реализация "поиска во мере ввода" поначалу может показаться сложной задачей.
+Следует учесть несколько важных моментов:
 
-But the combination of `FutureProvider` and the power of [ref.watch] can
-significantly simplify this task.
+- обработка ошибок.
+- использование debounce при вводе, чтобы избежать отправки запроса при нажатии
+  каждой клавиши.
+- отмена предыдущего незавершенного запроса при изменении поисковой фразы.
 
-A common pattern wanting to perform an asynchronous requests
-is to split it into multiple providers:
+Однако с помощью `FutureProvider` и [ref.watch] мы можем значительно упростить
+эту задачу.
 
-- a [StateNotifierProvider] or `StateProvider` for the parameters of your request
-  (or alternatively use [family])
-- a `FutureProvider`, which will do the request by reading the parameters from
-  the other providers/[family].
+Распространенным случаем выполнения асинхронных запросов является использование
+нескольких провайдеров:
 
-The first step would be to store the user input somewhere. For this example,
-we will use `StateProvider` (as the search state is only a single `String`):
+- [StateNotifierProvider] или `StateProvider` для параметров запроса
+  (либо модификатор [family])
+- `FutureProvider`, который будет осуществлять запрос, получая параметры из
+  других провайдеров/[family].
+
+Во-первых, пользовательский ввод нужно где-то хранить. Например воспользуемся
+`StateProvider` (т. к. состояние поиска выражается только в виде `String`):
 
 ```dart
 final searchInputProvider = StateProvider<String>((ref) => '');
 ```
 
-We can then connect this provider to a [TextField] by doing:
+Теперь мы можем связать провайдер и [TextField]:
 
 ```dart
 Consumer(
@@ -40,7 +44,7 @@ Consumer(
 )
 ```
 
-Then, we can create our `FutureProvider` which will take care of the request:
+Далее мы можем создать `FutureProvider`, который будет осуществлять запросы:
 
 ```dart
 final searchProvider = FutureProvider<
