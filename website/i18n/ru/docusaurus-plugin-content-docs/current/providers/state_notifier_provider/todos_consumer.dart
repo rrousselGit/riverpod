@@ -12,16 +12,17 @@ class TodoListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // rebuild the widget when the todo list changes
+    // перестройка виджета, когда список задач изменился
     List<Todo> todos = ref.watch(todosProvider);
 
-    // Let's render the todos in a scrollable list view
+    // Отображение задач в прокручиваемом списке
     return ListView(
       children: [
         for (final todo in todos)
           CheckboxListTile(
             value: todo.completed,
-            // When tapping on the todo, change its completed status
+            // По клику меняем статус задачи
+            // выполнена/не выполнена
             onChanged: (value) => ref.read(todosProvider.notifier).toggle(todo.id),
             title: Text(todo.description),
           ),
