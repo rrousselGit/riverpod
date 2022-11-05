@@ -9,27 +9,24 @@ import todos from "!!raw-loader!/docs/providers/state_notifier_provider/todos.da
 import todosConsumer from "!!raw-loader!/docs/providers/state_notifier_provider/todos_consumer.dart";
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
-`StateNotifierProvider` is a provider that is used to listen to and expose a
-[StateNotifier] (from the package [state_notifier], which Riverpod re-exports).  
-`StateNotifierProvider` along with [StateNotifier] is Riverpod's recommended solution
-for managing state which may change in reaction to a user interaction.
+`StateNotifierProvider` - провайдер, который можно слушать, а также он хранит в
+себе [StateNotifier] (из пакета [state_notifier], который Riverpod экспортирует).
+`StateNotifierProvider` с [StateNotifier] рекомендуется Riverpod для
+управления состоянием, которое может изменяться в ответ на действие пользователя.
 
-It is typically used for:
+Обычно он используется для:
 
-- exposing an **immutable** state which can change over time after reacting to
-  custom events.
-- centralizing the logic for modifying some state (aka "business logic") in a
-  single place, improving maintainability over time.
+- хранения **неизменяемого** состояния, которое может быть изменено в ответ на
+  определенное событие
+- расположения логики модификации состояния (бизнес логики) в одном месте,
+  тем самым упрощая поддержку кода
 
-
-As a usage example, we could use `StateNotifierProvider` to implement a todo-list.
-Doing so would allow us to expose methods such as `addTodo` to let the UI
-modify the list of todos on user interactions:
+В качестве примера, воспользуемся `StateNotifierProvider` для реализации списка задач.
 
 <CodeBlock>{trimSnippet(todos)}</CodeBlock>
 
-Now that we have defined a `StateNotifierProvider`, we can use it to interact
-with the list of todos in our UI:
+Теперь, когда мы объявили `StateNotifierProvider`, мы можем использовать его
+для взаимодействия со списком задач:
 
 <CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
 
