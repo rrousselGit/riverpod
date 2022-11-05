@@ -9,28 +9,25 @@ import configProvider from "!!raw-loader!/docs/providers/future_provider/config_
 import configConsumer from "!!raw-loader!/docs/providers/future_provider/config_consumer.dart";
 import { trimSnippet } from "../../src/components/CodeSnippet";
 
-`StreamProvider` is similar to [FutureProvider] but for [Stream]s instead of
-[Future]s.
+`StreamProvider` - это тот же [FutureProvider], но возвращающий [Stream] вместо [Future].
 
-`StreamProvider` is usually used for:
+`StreamProvider` обычно используется для:
 
-- listening to Firebase or web-sockets
-- rebuilding another provider every few seconds
+- прослушивания Firebase или веб-сокетов
+- перестройки другого провайдера каждые N секунд
 
-Since [Stream]s naturally expose a way for listening to updates, some may think
-that using `StreamProvider` has a low value. In particular, you may believe that
-Flutter's [StreamBuilder] would work just as well for listening to a [Stream], but
-this is a mistake.
+Т. к. [Stream] сам по себе предоставляет возможность наблюдать за изменениями,
+вы можете подумать, что `StreamProvider` особо и не нужен. В частности, вам может
+показаться, что [StreamBuilder] будет также работать со [Stream], но это мнение ошибочно.
 
-Using `StreamProvider` over [StreamBuilder] has numerous benefits:
+Использование `StreamProvider` вместо [StreamBuilder] имеет несколько преимуществ:
 
-- it allows other providers to listen to the stream using [ref.watch].
-- it ensures that loading and error cases are properly handled, thanks to [AsyncValue].
-- it removes the need for having to differentiate broadcast streams vs normal streams.
-- it caches the latest value emitted by the stream, ensuring that if a
-  listener is added after an event is emitted, the listener will still have
-  immediate access to the most up-to-date event.
-- it allows easily mocking the stream during tests by overriding the `StreamProvider`.
+- возможность другим провайдерам слушать данный [Stream] с помощью [ref.watch].
+- гарантия того, что загрузка и ошибки будут надлежащим образом обработаны благодаря [AsyncValue].
+- не нужно уточнять: broadcast или не broadcast [Stream].
+- последнее значение [Stream] сохраняется, т. е. каждый добавленный слушатель
+  может сразу получить последние актуальные данные.
+- легко мокать такой [Stream] во время тестирования путем переопределения `StreamProvider`.
 
 [ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
 [statenotifierprovider]: ./state_notifier_provider
