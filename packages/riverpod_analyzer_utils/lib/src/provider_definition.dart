@@ -77,6 +77,7 @@ class ProviderDefinition with _$ProviderDefinition {
     required bool isAutoDispose,
     required DartType? familyArgumentType,
     required LegacyProviderType providerType,
+    List<int>? list,
   }) = LegacyProviderDefinition;
 
   /// Providers defined using the code generator
