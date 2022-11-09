@@ -1,0 +1,94 @@
+---
+title: Provider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todo from "!!raw-loader!/docs/providers/provider/todo.dart";
+import completedTodos from "!!raw-loader!/docs/providers/provider/completed_todos.dart";
+import todosConsumer from "!!raw-loader!/docs/providers/provider/todos_consumer.dart";
+import unoptimizedPreviousButton from "!!raw-loader!/docs/providers/provider/unoptimized_previous_button.dart";
+import optimizedPreviousButton from "!!raw-loader!/docs/providers/provider/optimized_previous_button.dart";
+import { trimSnippet } from "../../src/components/CodeSnippet";
+
+`Provider` самый простой из всех провайдеров. Он создает значение... И на этом все.
+
+`Provider` обычно используется для:
+
+- кэширования вычислений
+- предоставления значение другим провайдерам (например `Repository`/`HttpClient`)
+- предоставления возможности изменения своего значения
+- уменьшения количество перестроек провайдеров/виджетов без надобности использовать `select`
+
+## Использование `Provider` для кэширования вычислений
+
+`Provider` в комбинации с [ref.watch] является мощным инструментом
+для кэширования синхронных операций
+
+Примером может быть фильтрация списка задач.
+Т. к. фильтрация списка может быть достаточно затратной, не стоит фильтровать
+список каждый раз, когда приложение перерисовывается.
+В данном случае мы можем воспользоваться `Provider`.
+
+Предположим, что у нас уже есть [StateNotifierProvider], который управляет
+списком задач:
+
+<CodeBlock>{trimSnippet(todo)}</CodeBlock>
+
+Тут мы можем воспользоваться `Provider` для хранения выполненных задач:
+
+<CodeBlock>{trimSnippet(completedTodos)}</CodeBlock>
+
+Теперь наш UI может отобразить список выполненных задач, прослушивая `completedTodosProvider`:
+
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
+
+Самое интересное заключается в том, что теперь отфильтрованный список закэширован.
+
+Это означает, что список выполненных задач не будет перевычислен, пока
+не будет выполнено увеличение / уменьшение / обновление списка задач. Даже многократное
+чтение списка завершенных задач не повлечет за собой перевычисление.
+
+Обратите внимание на то, что нам не нужно вручную обновлять закэшированное значение.
+Благодаря [ref.watch] `Provider` сам знает, когда ему нужно осуществить перевычисление.
+
+## Уменьшение количества перестроек провайдера/виджета с помощью `Provider`
+
+Особенность `Provider` заключается в том, что он не перестраивает виджеты/провайдеры
+пока не закончит перевычисление.
+
+Реальным примером может послужить активация/деактивация кнопок "следующая/предыдущая страница"
+для реализации пагинации:
+
+![пример пагинации](https://user-images.githubusercontent.com/134939/47580830-31263a00-d950-11e8-9b61-0eaddab2709e.png)
+
+В нашем случае сфокусируемся на кнопке "предыдущая страница".
+Самый простой вариант реализации - виджет, который получает текущий индекс
+страницы, и, если индекс равен 0, кнопка становится неактивна.
+
+Код будет выглядеть так:
+
+<CodeBlock>{trimSnippet(unoptimizedPreviousButton)}</CodeBlock>
+
+Проблема в том, что наша кнопка будет перестраиваться каждый раз при изменении страницы.
+В идеале кнопка должна перестраиваться, только когда нужно сделать ее активной/неактивной.
+
+Корень данной проблемы в том, что мы определяем состояние кнопки внутри виджета.
+
+Лучшим решением будет перемещение логики кнопки в `Provider`:
+
+<CodeBlock>{trimSnippet(optimizedPreviousButton)}</CodeBlock>
+
+После небольшого рефакторинга `PreviousButton` больше не перестраивается каждый раз
+при изменение индекса страницы благодаря `Provider`.
+
+Теперь каждый раз при изменении индекса значение `canGoToPreviousPageProvider`
+перевычисляется. А `PreviousButton` перестраивается, только когда
+значение `canGoToPreviousPageProvider` изменяется.
+
+Данное изменение повысило производительность нашей кнопки и позволило вынести
+логику из виджета.
+
+[ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
+[statenotifierprovider]: ./state_notifier_provider

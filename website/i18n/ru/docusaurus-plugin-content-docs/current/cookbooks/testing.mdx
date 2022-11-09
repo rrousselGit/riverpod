@@ -1,0 +1,160 @@
+---
+title: Тестирование
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import testingOriginalTestFlutter from "!!raw-loader!/docs/cookbooks/testing_original_test_flutter.dart";
+import testingOriginalTestDart from "!!raw-loader!/docs/cookbooks/testing_original_test_dart.dart";
+import repositorySnippet from "!!raw-loader!/docs/cookbooks/testing_repository.dart";
+import testFlutter from "!!raw-loader!/docs/cookbooks/testing_flutter.dart";
+import testDart from "!!raw-loader!/docs/cookbooks/testing_dart.dart";
+import testFull from "!!raw-loader!/docs/cookbooks/testing_full.dart";
+import testOverrideInfo from "!!raw-loader!/docs/cookbooks/testing_override_info.dart";
+import { trimSnippet } from "../../src/components/CodeSnippet";
+
+Любое приложение среднего размера необходимо тестировать.
+
+Чтобы успешно протестировать наше приложение, необходимо следовать 
+следующим правилам:
+
+- Ни одно состояние не должно быть изменено между `test`/`testWidgets`.
+  Либо не должно быть глобального состояния приложения, либо
+  все глобальные состояния должны сбрасываться после каждого теста.
+
+- Должна быть возможность заменять состояние провайдера на необходимое нам
+  либо через mock, либо путем манипуляций над провайдером для создания желаемого состояния.
+
+Давайте рассмотрим, как [Riverpod] может помочь нам в этом.
+
+## Ни одно состояние не должно быть изменено между `test`/`testWidgets`.
+
+То что провайдеры обычно объявляются как глобальные переменные может вас беспокоить.
+В конце концов, глобальное состояние усложняет тестирование, т. к. тогда требуется
+`setUp`/`tearDown`.
+
+Но в реальности, несмотря на то, что провайдеры объявляются как глобальные переменные,
+состояние провайдера **не** является глобальным.
+
+Состояние хранится в объекте [ProviderContainer], который вы возможно уже видели, когда
+смотрели примеры кода только для dart.
+Если же вы не встречались с этим объектом ранее, запомните, что [ProviderScope]
+создает [ProviderContainer].
+
+Т. е. два `testWidgets`, использующих одни и те же провайдеры, не разделяют общее состояние.
+Поэтому нет никакой нужды в использовании `setUp`/`tearDown`.
+
+Лучше показать это на примере:
+
+<Tabs
+  defaultValue="testWidgets"
+  values={[
+    { label: 'testWidgets (Flutter)', value: 'testWidgets', },
+    { label: 'test (Dart only)', value: 'test', },
+  ]}
+>
+<TabItem value="testWidgets">
+
+<CodeBlock>{trimSnippet(testingOriginalTestFlutter)}</CodeBlock>
+
+</TabItem>
+<TabItem value="test">
+
+<CodeBlock>{trimSnippet(testingOriginalTestDart)}</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+Как вы можете наблюдать, `counterProvider` объявлен в виде глобальной переменной,
+но ни одно состояние не разделяется между тестами.
+Таким образом, нам не нужно беспокоиться о том, что наши тесты будут вести себя 
+по-разному в зависимости от того, в каком порядке мы их расположим. Каждый
+тест изолирован.
+
+## Переопределение поведения провайдера при выполнении теста.
+
+Обычное приложение может иметь следующие объекты:
+
+- Класс `Repository`, который предоставляет простое API для осуществления
+  HTTP запросов.
+
+- Объект, который управляет состояние приложения и может использовать `Repository`
+  для выполнения HTTP запросов, основываясь на различных факторах.
+  Это может быть `ChangeNotifier`, `Bloc` или же провайдер.
+
+С  [Riverpod] это может быть реализовано следующим образом:
+
+<CodeBlock>{trimSnippet(repositorySnippet)}</CodeBlock>
+
+При написании unit/widget тестов нам необходимо заменить наш `Repository` на
+тестировочного дублера, который будет возвращать предопределенный ответ
+вместо осуществления реального HTTP запроса.
+
+Тогда нам нужно, чтобы `todoListProvider` или его эквивалент использовал мок
+реализацию `Repository`.
+
+Для достижения нашей цели можно воспользоваться `overrides` параметром
+[ProviderScope]/[ProviderContainer], чтобы переопределить поведение `repositoryProvider`:
+
+<Tabs
+  defaultValue="ProviderScope"
+  values={[
+    { label: 'ProviderScope (Flutter)', value: 'ProviderScope', },
+    { label: 'ProviderContainer (Dart only)', value: 'ProviderContainer', },
+  ]}
+>
+<TabItem value="ProviderScope">
+
+<CodeBlock>{trimSnippet(testFlutter)}</CodeBlock>
+
+</TabItem>
+<TabItem value="ProviderContainer">
+
+<CodeBlock>{trimSnippet(testDart)}</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+В выделенной строке вы можете увидеть, как [ProviderScope]/[ProviderContainer]
+позволяют переопределять поведение провайдера.
+
+:::info
+Некоторые провайдеры предоставляют упрощенные способы переопределения поведения.
+Например [FutureProvider] позволяет изменять свое значение на `AsyncValue`:
+
+<CodeBlock>{trimSnippet(testOverrideInfo)}</CodeBlock>
+
+**Note**:В рамках версии 2.0.0 `overrideWithValue` методы временно исключены. Они будут возвращены в более поздних версиях.
+
+:::
+
+:::info
+Синтаксис переопределения провайдера с модификатором `family`
+немного отличается.
+
+Если вы используете провайдер таким образом:
+
+```dart
+final response = ref.watch(myProvider('12345'));
+```
+
+Вы можете переопределить провайдер так:
+
+```dart
+myProvider('12345').overrideWithValue(...));
+```
+
+:::
+
+## Полный пример widget тестирования
+
+В итоге мы получаем такой код:
+
+<CodeBlock>{trimSnippet(testFull)}</CodeBlock>
+
+[riverpod]: https://github.com/rrousselgit/riverpod
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
+[futureprovider]: ../providers/future_provider
+[zone]: https://api.flutter.dev/flutter/dart-async/Zone-class.html

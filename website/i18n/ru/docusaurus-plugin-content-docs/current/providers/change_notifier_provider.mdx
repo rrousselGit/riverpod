@@ -1,0 +1,52 @@
+---
+title: ChangeNotifierProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todos from "!!raw-loader!/docs/providers/change_notifier_provider/todos.dart";
+import todosConsumer from "!!raw-loader!/docs/providers/change_notifier_provider/todos_consumer.dart";
+import { trimSnippet } from "../../src/components/CodeSnippet";
+
+`ChangeNotifierProvider` (есть только в flutter_riverpod/hooks_riverpod) - это
+провайдер, который можно прослушивать, а также он хранит в себе [ChangeNotifier]
+из Flutter.
+
+Использование `ChangeNotifierProvider` не поощряется Riverpod. Но все же этот провайдер
+нужен для:
+
+- простого перехода с `package:provider` и его `ChangeNotifierProvider`
+- поддержки изменяемых состояний, хотя неизменяемые - предпочтительней
+
+:::info
+Рекомендуется использовать [StateNotifierProvider].
+Используйте `ChangeNotifierProvider` только, когда вы абсолютно уверены,
+что вам нужно изменяемое состояние.
+:::
+
+Использование изменяемого состояние вместо неизменяемого иногда может быть более
+эффективно. Минус заключается в том, что с изменяемым состоянием бывает сложнее
+поддерживать приложение, а также это может поломать некоторый функционал.
+Например использование `provider.select` для оптимизации перестроек виджетов
+может не сработать, если ваше состояние изменяемо, т. к. `select` не заметит
+изменения состояния.
+Использование неизменяемых структур данных иногда работает быстрее.
+Поэтому важно делать бенчмарки конкретно вашего случая, чтобы убедиться,
+действительно ли вы повышаете производительность, используя `ChangeNotifierProvider`.
+
+В качестве примера мы можем использовать `ChangeNotifierProvider` для реализации
+списка задач.
+
+<CodeBlock>{trimSnippet(todos)}</CodeBlock>
+
+Теперь, когда мы объявили `ChangeNotifierProvider`, мы можем использовать его
+для взаимодействия со списком задач:
+
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
+
+[state_notifier]: https://pub.dev/packages/state_notifier
+[statenotifierprovider]: ./state_notifier_provider
+[changenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/ChangeNotifier-class.html
+[provider]: ./provider
+[futureprovider]: ./future_provider

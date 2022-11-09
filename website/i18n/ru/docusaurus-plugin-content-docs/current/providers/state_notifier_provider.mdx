@@ -1,0 +1,36 @@
+---
+title: StateNotifierProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todos from "!!raw-loader!/docs/providers/state_notifier_provider/todos.dart";
+import todosConsumer from "!!raw-loader!/docs/providers/state_notifier_provider/todos_consumer.dart";
+import { trimSnippet } from "../../src/components/CodeSnippet";
+
+`StateNotifierProvider` - провайдер, который можно слушать, а также он хранит в
+себе [StateNotifier] (из пакета [state_notifier], который Riverpod экспортирует).
+`StateNotifierProvider` с [StateNotifier] рекомендуется Riverpod для
+управления состоянием, которое может изменяться в ответ на действие пользователя.
+
+Обычно он используется для:
+
+- хранения **неизменяемого** состояния, которое может быть изменено в ответ на
+  определенное событие
+- расположения логики модификации состояния (бизнес логики) в одном месте,
+  тем самым упрощая поддержку кода
+
+В качестве примера, воспользуемся `StateNotifierProvider` для реализации списка задач.
+
+<CodeBlock>{trimSnippet(todos)}</CodeBlock>
+
+Теперь, когда мы объявили `StateNotifierProvider`, мы можем использовать его
+для взаимодействия со списком задач:
+
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
+
+[state_notifier]: https://pub.dev/packages/state_notifier
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[provider]: ./provider
+[futureprovider]: ./future_provider

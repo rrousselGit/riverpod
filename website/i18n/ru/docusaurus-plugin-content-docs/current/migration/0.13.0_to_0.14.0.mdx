@@ -1,0 +1,124 @@
+---
+title: С ^0.13.0 на ^0.14.0
+---
+
+С появлением `0.14.0` версии Riverpod синтаксис использования [StateNotifierProvider] изменился
+(объяснение: https://github.com/rrousselGit/riverpod/issues/341).
+
+В этой статье рассмотрим следующий [StateNotifier]:
+
+```dart
+class MyModel {}
+
+class MyStateNotifier extends StateNotifier<MyModel> {
+  MyStateNotifier(): super(MyModel());
+}
+```
+
+## Изменения
+
+- [StateNotifierProvider] принимает дополнительный generic параметр, который должен являться
+  типом состояния нашего [StateNotifier].
+
+  Раньше:
+
+  ```dart
+  final provider = StateNotifierProvider<MyStateNotifier>((ref) {
+    return MyStateNotifier();
+  });
+  ```
+
+  Теперь:
+
+  ```dart
+  final provider = StateNotifierProvider<MyStateNotifier, MyModel>((ref) {
+    return MyStateNotifier();
+  });
+  ```
+
+- для доступа к [StateNotifier] теперь нужно обращаться к `myProvider.notifier` вместо `myProvider`:
+
+  Раньше:
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyStateNotifier notifier = watch(provider);
+  }
+  ```
+
+  Теперь:
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyStateNotifier notifier = watch(provider.notifier);
+  }
+  ```
+
+- для доступа к состоянию [StateNotifier] теперь нужно обращаться к `myProvider` вместо `myProvider.state`:
+
+  Раньше:
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyModel state = watch(provider.state);
+  }
+  ```
+
+  Теперь:
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyModel state = watch(provider);
+  }
+  ```
+
+## Использование инструмента миграции для автоматического обновления синтаксиса в вашем проекте
+
+С выходом версии 0.14.0 появилась утилита командной строки для Riverpod,
+которая может помочь с миграцией ваших проектов.
+
+### Установка инструмента командной строки
+
+Для установки инструмента миграции выполните:
+
+```sh
+dart pub global activate riverpod_cli
+```
+
+Теперь вы можете выполнить:
+
+```sh
+riverpod --help
+```
+
+### Использование
+
+Когда инструмент установлен, мы можем начать использовать его.
+
+- Для начала, откройте в терминале проект, который необходимо мигрировать.
+- **Не** обновляйте Riverpod.
+  Инструмент миграции сам обновит версию Riverpod.
+- Убедитесь, что проект не содержит ошибок.
+- Выполните:
+  ```sh
+  riverpod migrate
+  ```
+
+Данный инструмент проанализирует ваш проект и предложит изменения.
+Например вы можете увидеть:
+
+```diff
+Widget build(BuildContext context, ScopedReader watch) {
+-  MyModel state = watch(provider.state);
++  MyModel state = watch(provider);
+}
+
+Accept change (y = yes, n = no [default], A = yes to all, q = quit)? 
+```
+
+Чтобы применить изменение, просто нажмите <kbd>y</kbd>.
+Чтобы отклонить изменение, нажмите <kbd>n</kbd>.
+
+
+[statenotifierprovider]: ../providers/state_notifier_provider
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html

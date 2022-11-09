@@ -1,0 +1,123 @@
+---
+title: StateProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import product from "!!raw-loader!/docs/providers/state_provider/product.dart";
+import productListView from "!!raw-loader!/docs/providers/state_provider/product_list_view.dart";
+import dropdown from "!!raw-loader!/docs/providers/state_provider/dropdown.dart";
+import sortProvider from "!!raw-loader!/docs/providers/state_provider/sort_provider.dart";
+import connectedDropdown from "!!raw-loader!/docs/providers/state_provider/connected_dropdown.dart";
+import sortedProductProvider from "!!raw-loader!/docs/providers/state_provider/sorted_product_provider.dart";
+import updateReadTwice from "!!raw-loader!/docs/providers/state_provider/update_read_twice.dart";
+import updateReadOnce from "!!raw-loader!/docs/providers/state_provider/update_read_once.dart";
+import { trimSnippet } from "../../src/components/CodeSnippet";
+
+`StateProvider` - провайдер, который предоставляет способ модифицировать
+свое состояние. Это упрощенный [StateNotifierProvider], придуманный, чтобы не
+создавать [StateNotifier] для самых простых случаев использования.
+
+`StateProvider` создан для модификации **простых** переменных.
+Состояние `StateProvider` обычно является:
+
+- перечислением, например тип фильтра
+- строкой, например содержимое текстового поля
+- булевым значением, например для чекбокса
+- числом, например для пагинации или поля возраста
+
+`StateProvider` не следует использовать, если:
+
+- состояние нуждается в валидации
+- состояние является сложным объектом (кастомный класс, список/мапа, ...)
+- логика модификации состояние более сложная, чем просто `count++`.
+
+Для более сложных ситуаций используйте [StateNotifierProvider] с [StateNotifier].
+Несмотря на бойлерплейт, наличие [StateNotifier] играет важную роль в долгосрочной
+поддержке проекта, т. к. [StateNotifier] является единым местом хранения бизнес
+логики состояния.
+
+## Пример использования: Изменение типа фильтра с помощью выпадающего списка
+
+В реальных проектах `StateProvider` часто используется для работы с
+выпадающим списком / текстовым полем / чекбоксом.
+Например, рассмотрим реализацию выпадающего списка сортировки продуктов.
+
+Для простоты будем брать продукты из предопределенного списка:
+
+<CodeBlock>{trimSnippet(product)}</CodeBlock>
+
+В реальном приложении такой список мы обычно получаем с помощью
+[FutureProvider] путем осуществления сетевого запроса.
+
+Теперь мы можем отобразить наш список продуктов следующим образом:
+
+<CodeBlock>{trimSnippet(productListView)}</CodeBlock>
+
+Добавим выпадающий список, с помощью которого
+мы сможем сортировать наши продукты по цене или имени.
+Воспользуемся [DropDownButton](https://api.flutter.dev/flutter/material/DropdownButton-class.html).
+
+<CodeBlock>{trimSnippet(dropdown)}</CodeBlock>
+
+Далее создадим `StateProvider` и свяжем DropDownButton с провайдером.
+
+Начнем с `StateProvider`:
+
+<CodeBlock>{trimSnippet(sortProvider)}</CodeBlock>
+
+Затем соединим провайдер и выпадающий список:
+
+<CodeBlock>{trimSnippet(connectedDropdown)}</CodeBlock>
+
+Теперь мы можем менять тип сортировки.
+Однако это пока что никак не влияет на список продуктов.
+Так что попробуем заставить `productsProvider` реагировать на
+изменение сортировки.
+
+Здесь нам понадобится [ref.watch], чтобы `productsProvider` мог
+мгновенно реагировать на изменение типа сортировки.
+
+Выглядеть это будет так:
+
+<CodeBlock>{trimSnippet(sortedProductProvider)}</CodeBlock>
+
+На этом все! Этого достаточно для того, чтобы в ответ на действие пользователя
+список продуктов сортировался по заданному параметру.
+
+Полный листинг кода на Dartpad:
+
+<iframe
+  src="https://dartpad.dev/embed-flutter.html?gh_owner=rrousselGit&gh_repo=riverpod&gh_path=website%2Fdocs%2Fproviders%2Fstate_provider"
+  style={{ border: 0, width: "100%", aspectRatio: "2/1.5" }}
+></iframe>
+
+## Как обновлять состояние провайдера на основе предыдущего, не читая значение провайдера дважды
+
+В некоторых случаях вам может понадобится обновить состояние `StateProvider`, основываясь
+на предыдущем значении.
+Тогда вы можете написать что-то вроде этого:
+
+<CodeBlock>{trimSnippet(updateReadTwice)}</CodeBlock>
+
+Хотя все сделано верно, синтаксис все же неудобен.
+
+В таком случае вы можете воспользоваться функцией `update`.
+Эта функция принимает коллбэк, который в свою очередь принимает текущее состояние
+и должен вернуть новое.
+Зная это, мы может отрефакторить наш код следующим образом:
+
+<CodeBlock>{trimSnippet(updateReadOnce)}</CodeBlock>
+
+Мы получили тот же результат при более красивом коде.
+
+[ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
+[ref.read]: ../concepts/reading#using-refread-to-obtain-the-state-of-a-provider-once
+[statenotifierprovider]: ./state_notifier_provider
+[futureprovider]: ./future_provider
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[provider]: ./provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[family]: ../concepts/modifiers/family
