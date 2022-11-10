@@ -1,4 +1,3 @@
-import 'package:analyzer/dart/element/type.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
@@ -9,12 +8,8 @@ void main() {
     testSource('Decode name', source: r'''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-
 @riverpod
 int first(FirstRef ref) => 0;
-
-@riverpod
-int second(SecondRef ref) => 0;
 
 @riverpod
 class Counter extends _$Counter {
@@ -23,13 +18,13 @@ class Counter extends _$Counter {
 }
 ''', (resolver) async {
       final providers = await resolver
-          .parseAllGeneratorProviderDefinitions(['first', 'second']);
+          .parseAllGeneratorProviderDefinitions(['first', 'Counter']);
 
       expect(providers, {
-        'first': isA<GeneratorProviderDefinition>()
+        'first': isA<FunctionalGeneratorProviderDefinition>()
             .having((e) => e.name, 'name', 'first'),
-        'second': isA<GeneratorProviderDefinition>()
-            .having((e) => e.name, 'name', 'second'),
+        'Counter': isA<NotifierGeneratorProviderDefinition>()
+            .having((e) => e.name, 'name', 'Counter'),
       });
     });
 /*

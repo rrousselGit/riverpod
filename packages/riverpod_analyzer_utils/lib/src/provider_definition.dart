@@ -149,8 +149,27 @@ class LegacyProviderDefinition with _$LegacyProviderDefinition {
 ///
 @freezed
 class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
-  factory GeneratorProviderDefinition._({required String name}) =
-      _GeneratorProviderDefinition;
+  /// A function-based generated provider definition, such as:
+  ///
+  /// ```dart
+  /// @riverpod
+  /// int counter(CounterRef ref) => 0;
+  @internal
+  factory GeneratorProviderDefinition.functional({required String name}) =
+      FunctionalGeneratorProviderDefinition;
+
+  /// A class-based generated provider definition, such as:
+  ///
+  /// ```dart
+  /// @riverpod
+  /// class Counter extends _$Counter {
+  ///   @override
+  ///   int count() => 0;
+  /// }
+  /// ```
+  @internal
+  factory GeneratorProviderDefinition.notifier({required String name}) =
+      NotifierGeneratorProviderDefinition;
 
   /// Parses code-generator definitions, rejecting manual provider definitions.
   ///
@@ -158,15 +177,17 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
   static Future<GeneratorProviderDefinition> parse(
     Element element, {
     required AstResolver resolver,
-  }) {
+  }) async {
     final annotations = riverpodType.annotationsOf(element);
     if (annotations.isNotEmpty) {
       if (element is FunctionElement) {
         // @riverpod
         // Model provider(ProviderRef ref) {...}
+        return FunctionalGeneratorProviderDefinition(name: element.name);
       } else if (element is ClassElement) {
         // @riverpod
-        // Model provider(ProviderRef ref) {...}
+        // class Counter extends _$Counter {...}
+        return NotifierGeneratorProviderDefinition(name: element.name);
       }
       throw GeneratorProviderDefinitionFormatException.neitherClassNorFunction(
         element,

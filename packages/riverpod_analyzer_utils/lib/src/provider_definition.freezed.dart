@@ -207,6 +207,46 @@ abstract class _LegacyProviderDefinition implements LegacyProviderDefinition {
 /// @nodoc
 mixin _$GeneratorProviderDefinition {
   String get name => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String name) functional,
+    required TResult Function(String name) notifier,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String name)? functional,
+    TResult? Function(String name)? notifier,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String name)? functional,
+    TResult Function(String name)? notifier,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(FunctionalGeneratorProviderDefinition value)
+        functional,
+    required TResult Function(NotifierGeneratorProviderDefinition value)
+        notifier,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(FunctionalGeneratorProviderDefinition value)? functional,
+    TResult? Function(NotifierGeneratorProviderDefinition value)? notifier,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(FunctionalGeneratorProviderDefinition value)? functional,
+    TResult Function(NotifierGeneratorProviderDefinition value)? notifier,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $GeneratorProviderDefinitionCopyWith<GeneratorProviderDefinition>
@@ -250,25 +290,25 @@ class _$GeneratorProviderDefinitionCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_GeneratorProviderDefinitionCopyWith<$Res>
+abstract class _$$FunctionalGeneratorProviderDefinitionCopyWith<$Res>
     implements $GeneratorProviderDefinitionCopyWith<$Res> {
-  factory _$$_GeneratorProviderDefinitionCopyWith(
-          _$_GeneratorProviderDefinition value,
-          $Res Function(_$_GeneratorProviderDefinition) then) =
-      __$$_GeneratorProviderDefinitionCopyWithImpl<$Res>;
+  factory _$$FunctionalGeneratorProviderDefinitionCopyWith(
+          _$FunctionalGeneratorProviderDefinition value,
+          $Res Function(_$FunctionalGeneratorProviderDefinition) then) =
+      __$$FunctionalGeneratorProviderDefinitionCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String name});
 }
 
 /// @nodoc
-class __$$_GeneratorProviderDefinitionCopyWithImpl<$Res>
+class __$$FunctionalGeneratorProviderDefinitionCopyWithImpl<$Res>
     extends _$GeneratorProviderDefinitionCopyWithImpl<$Res,
-        _$_GeneratorProviderDefinition>
-    implements _$$_GeneratorProviderDefinitionCopyWith<$Res> {
-  __$$_GeneratorProviderDefinitionCopyWithImpl(
-      _$_GeneratorProviderDefinition _value,
-      $Res Function(_$_GeneratorProviderDefinition) _then)
+        _$FunctionalGeneratorProviderDefinition>
+    implements _$$FunctionalGeneratorProviderDefinitionCopyWith<$Res> {
+  __$$FunctionalGeneratorProviderDefinitionCopyWithImpl(
+      _$FunctionalGeneratorProviderDefinition _value,
+      $Res Function(_$FunctionalGeneratorProviderDefinition) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -276,7 +316,7 @@ class __$$_GeneratorProviderDefinitionCopyWithImpl<$Res>
   $Res call({
     Object? name = null,
   }) {
-    return _then(_$_GeneratorProviderDefinition(
+    return _then(_$FunctionalGeneratorProviderDefinition(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -287,22 +327,24 @@ class __$$_GeneratorProviderDefinitionCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_GeneratorProviderDefinition implements _GeneratorProviderDefinition {
-  _$_GeneratorProviderDefinition({required this.name});
+@internal
+class _$FunctionalGeneratorProviderDefinition
+    implements FunctionalGeneratorProviderDefinition {
+  _$FunctionalGeneratorProviderDefinition({required this.name});
 
   @override
   final String name;
 
   @override
   String toString() {
-    return 'GeneratorProviderDefinition._(name: $name)';
+    return 'GeneratorProviderDefinition.functional(name: $name)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_GeneratorProviderDefinition &&
+            other is _$FunctionalGeneratorProviderDefinition &&
             (identical(other.name, name) || other.name == name));
   }
 
@@ -312,21 +354,236 @@ class _$_GeneratorProviderDefinition implements _GeneratorProviderDefinition {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_GeneratorProviderDefinitionCopyWith<_$_GeneratorProviderDefinition>
-      get copyWith => __$$_GeneratorProviderDefinitionCopyWithImpl<
-          _$_GeneratorProviderDefinition>(this, _$identity);
+  _$$FunctionalGeneratorProviderDefinitionCopyWith<
+          _$FunctionalGeneratorProviderDefinition>
+      get copyWith => __$$FunctionalGeneratorProviderDefinitionCopyWithImpl<
+          _$FunctionalGeneratorProviderDefinition>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String name) functional,
+    required TResult Function(String name) notifier,
+  }) {
+    return functional(name);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String name)? functional,
+    TResult? Function(String name)? notifier,
+  }) {
+    return functional?.call(name);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String name)? functional,
+    TResult Function(String name)? notifier,
+    required TResult orElse(),
+  }) {
+    if (functional != null) {
+      return functional(name);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(FunctionalGeneratorProviderDefinition value)
+        functional,
+    required TResult Function(NotifierGeneratorProviderDefinition value)
+        notifier,
+  }) {
+    return functional(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(FunctionalGeneratorProviderDefinition value)? functional,
+    TResult? Function(NotifierGeneratorProviderDefinition value)? notifier,
+  }) {
+    return functional?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(FunctionalGeneratorProviderDefinition value)? functional,
+    TResult Function(NotifierGeneratorProviderDefinition value)? notifier,
+    required TResult orElse(),
+  }) {
+    if (functional != null) {
+      return functional(this);
+    }
+    return orElse();
+  }
 }
 
-abstract class _GeneratorProviderDefinition
+abstract class FunctionalGeneratorProviderDefinition
     implements GeneratorProviderDefinition {
-  factory _GeneratorProviderDefinition({required final String name}) =
-      _$_GeneratorProviderDefinition;
+  factory FunctionalGeneratorProviderDefinition({required final String name}) =
+      _$FunctionalGeneratorProviderDefinition;
 
   @override
   String get name;
   @override
   @JsonKey(ignore: true)
-  _$$_GeneratorProviderDefinitionCopyWith<_$_GeneratorProviderDefinition>
+  _$$FunctionalGeneratorProviderDefinitionCopyWith<
+          _$FunctionalGeneratorProviderDefinition>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$NotifierGeneratorProviderDefinitionCopyWith<$Res>
+    implements $GeneratorProviderDefinitionCopyWith<$Res> {
+  factory _$$NotifierGeneratorProviderDefinitionCopyWith(
+          _$NotifierGeneratorProviderDefinition value,
+          $Res Function(_$NotifierGeneratorProviderDefinition) then) =
+      __$$NotifierGeneratorProviderDefinitionCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String name});
+}
+
+/// @nodoc
+class __$$NotifierGeneratorProviderDefinitionCopyWithImpl<$Res>
+    extends _$GeneratorProviderDefinitionCopyWithImpl<$Res,
+        _$NotifierGeneratorProviderDefinition>
+    implements _$$NotifierGeneratorProviderDefinitionCopyWith<$Res> {
+  __$$NotifierGeneratorProviderDefinitionCopyWithImpl(
+      _$NotifierGeneratorProviderDefinition _value,
+      $Res Function(_$NotifierGeneratorProviderDefinition) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+  }) {
+    return _then(_$NotifierGeneratorProviderDefinition(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+@internal
+class _$NotifierGeneratorProviderDefinition
+    implements NotifierGeneratorProviderDefinition {
+  _$NotifierGeneratorProviderDefinition({required this.name});
+
+  @override
+  final String name;
+
+  @override
+  String toString() {
+    return 'GeneratorProviderDefinition.notifier(name: $name)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$NotifierGeneratorProviderDefinition &&
+            (identical(other.name, name) || other.name == name));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, name);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$NotifierGeneratorProviderDefinitionCopyWith<
+          _$NotifierGeneratorProviderDefinition>
+      get copyWith => __$$NotifierGeneratorProviderDefinitionCopyWithImpl<
+          _$NotifierGeneratorProviderDefinition>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String name) functional,
+    required TResult Function(String name) notifier,
+  }) {
+    return notifier(name);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String name)? functional,
+    TResult? Function(String name)? notifier,
+  }) {
+    return notifier?.call(name);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String name)? functional,
+    TResult Function(String name)? notifier,
+    required TResult orElse(),
+  }) {
+    if (notifier != null) {
+      return notifier(name);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(FunctionalGeneratorProviderDefinition value)
+        functional,
+    required TResult Function(NotifierGeneratorProviderDefinition value)
+        notifier,
+  }) {
+    return notifier(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(FunctionalGeneratorProviderDefinition value)? functional,
+    TResult? Function(NotifierGeneratorProviderDefinition value)? notifier,
+  }) {
+    return notifier?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(FunctionalGeneratorProviderDefinition value)? functional,
+    TResult Function(NotifierGeneratorProviderDefinition value)? notifier,
+    required TResult orElse(),
+  }) {
+    if (notifier != null) {
+      return notifier(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class NotifierGeneratorProviderDefinition
+    implements GeneratorProviderDefinition {
+  factory NotifierGeneratorProviderDefinition({required final String name}) =
+      _$NotifierGeneratorProviderDefinition;
+
+  @override
+  String get name;
+  @override
+  @JsonKey(ignore: true)
+  _$$NotifierGeneratorProviderDefinitionCopyWith<
+          _$NotifierGeneratorProviderDefinition>
       get copyWith => throw _privateConstructorUsedError;
 }
 
