@@ -27,6 +27,52 @@ class Counter extends _$Counter {
             .having((e) => e.name, 'name', 'Counter'),
       });
     });
+
+    testSource('Decode isAutoDispose', source: r'''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+@riverpod
+int autoDispose(FirstRef ref) => 0;
+
+@Riverpod(keepAlive: true)
+int keepAlive(FirstRef ref) => 0;
+
+@riverpod
+class AutoDisposeNotifier extends _$AutoDisposeNotifier {
+  @override
+  int build() => 0;
+}
+
+@Riverpod(keepAlive: true)
+class KeepAliveNotifier extends _$AutoDisposeNotifier {
+  @override
+  int build() => 0;
+}
+''', (resolver) async {
+      final autoDispose = await resolver.parseAllGeneratorProviderDefinitions([
+        'autoDispose',
+        'AutoDisposeNotifier',
+      ]);
+      final keepAlive = await resolver.parseAllGeneratorProviderDefinitions([
+        'keepAlive',
+        'KeepAliveNotifier',
+      ]);
+
+      for (final provider in autoDispose.entries) {
+        expect(
+          provider.value.isAutoDispose,
+          true,
+          reason: '${provider.key} is a Provider',
+        );
+      }
+      for (final provider in keepAlive.entries) {
+        expect(
+          provider.value.isAutoDispose,
+          false,
+          reason: '${provider.key} is a Provider',
+        );
+      }
+    });
 /*
     testSource('Decode LegacyProviderType.provider', source: '''
 import 'package:riverpod_annotation/riverpod_annotation.dart';

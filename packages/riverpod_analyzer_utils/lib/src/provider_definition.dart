@@ -155,8 +155,10 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
   /// @riverpod
   /// int counter(CounterRef ref) => 0;
   @internal
-  factory GeneratorProviderDefinition.functional({required String name}) =
-      FunctionalGeneratorProviderDefinition;
+  factory GeneratorProviderDefinition.functional({
+    required String name,
+    required bool isAutoDispose,
+  }) = FunctionalGeneratorProviderDefinition;
 
   /// A class-based generated provider definition, such as:
   ///
@@ -168,8 +170,10 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
   /// }
   /// ```
   @internal
-  factory GeneratorProviderDefinition.notifier({required String name}) =
-      NotifierGeneratorProviderDefinition;
+  factory GeneratorProviderDefinition.notifier({
+    required String name,
+    required bool isAutoDispose,
+  }) = NotifierGeneratorProviderDefinition;
 
   /// Parses code-generator definitions, rejecting manual provider definitions.
   ///
@@ -179,22 +183,36 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
     required AstResolver resolver,
   }) async {
     final annotations = riverpodType.annotationsOf(element);
-    if (annotations.isNotEmpty) {
-      if (element is FunctionElement) {
-        // @riverpod
-        // Model provider(ProviderRef ref) {...}
-        return FunctionalGeneratorProviderDefinition(name: element.name);
-      } else if (element is ClassElement) {
-        // @riverpod
-        // class Counter extends _$Counter {...}
-        return NotifierGeneratorProviderDefinition(name: element.name);
-      }
-      throw GeneratorProviderDefinitionFormatException.neitherClassNorFunction(
+    if (annotations.isEmpty) {
+      throw GeneratorProviderDefinitionFormatException.notAProvider(element);
+    }
+    if (annotations.length > 1) {
+      throw GeneratorProviderDefinitionFormatException.tooManyAnnotations(
         element,
       );
     }
 
-    throw GeneratorProviderDefinitionFormatException.notAProvider(element);
+    final annotation = annotations.single;
+    final keepAlive = annotation.getField('keepAlive')?.toBoolValue() ?? false;
+
+    if (element is FunctionElement) {
+      // @riverpod
+      // Model provider(ProviderRef ref) {...}
+      return FunctionalGeneratorProviderDefinition(
+        name: element.name,
+        isAutoDispose: !keepAlive,
+      );
+    } else if (element is ClassElement) {
+      // @riverpod
+      // class Counter extends _$Counter {...}
+      return NotifierGeneratorProviderDefinition(
+        name: element.name,
+        isAutoDispose: !keepAlive,
+      );
+    }
+    throw GeneratorProviderDefinitionFormatException.neitherClassNorFunction(
+      element,
+    );
   }
 }
 
@@ -312,7 +330,10 @@ class GeneratorProviderDefinitionFormatException
     Element element,
   ) = NeitherClassNorFunctionGeneratorProviderDefinitionFormatException;
 
-  GeneratorProviderDefinitionFormatException._();
+  /// The element was annotated with @riverpod more than once
+  factory GeneratorProviderDefinitionFormatException.tooManyAnnotations(
+    Element element,
+  ) = TooManyAnnotationGeneratorProviderDefinitionFormatException;
 }
 
 /// {@template ProviderDefinitionFormatException}
