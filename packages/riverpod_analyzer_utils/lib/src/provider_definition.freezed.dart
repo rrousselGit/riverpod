@@ -15,84 +15,35 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$ProviderDefinition {
+mixin _$LegacyProviderDefinition {
   String get name => throw _privateConstructorUsedError;
   bool get isAutoDispose => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(
-            String name,
-            bool isAutoDispose,
-            DartType? familyArgumentType,
-            LegacyProviderType providerType,
-            List<int>? list)
-        legacy,
-    required TResult Function(String name, bool isAutoDispose) generator,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String name,
-            bool isAutoDispose,
-            DartType? familyArgumentType,
-            LegacyProviderType providerType,
-            List<int>? list)?
-        legacy,
-    TResult? Function(String name, bool isAutoDispose)? generator,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String name,
-            bool isAutoDispose,
-            DartType? familyArgumentType,
-            LegacyProviderType providerType,
-            List<int>? list)?
-        legacy,
-    TResult Function(String name, bool isAutoDispose)? generator,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(LegacyProviderDefinition value) legacy,
-    required TResult Function(GeneratorProviderDefinition value) generator,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(LegacyProviderDefinition value)? legacy,
-    TResult? Function(GeneratorProviderDefinition value)? generator,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(LegacyProviderDefinition value)? legacy,
-    TResult Function(GeneratorProviderDefinition value)? generator,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  DartType? get familyArgumentType => throw _privateConstructorUsedError;
+  LegacyProviderType get providerType => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $ProviderDefinitionCopyWith<ProviderDefinition> get copyWith =>
+  $LegacyProviderDefinitionCopyWith<LegacyProviderDefinition> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $ProviderDefinitionCopyWith<$Res> {
-  factory $ProviderDefinitionCopyWith(
-          ProviderDefinition value, $Res Function(ProviderDefinition) then) =
-      _$ProviderDefinitionCopyWithImpl<$Res, ProviderDefinition>;
+abstract class $LegacyProviderDefinitionCopyWith<$Res> {
+  factory $LegacyProviderDefinitionCopyWith(LegacyProviderDefinition value,
+          $Res Function(LegacyProviderDefinition) then) =
+      _$LegacyProviderDefinitionCopyWithImpl<$Res, LegacyProviderDefinition>;
   @useResult
-  $Res call({String name, bool isAutoDispose});
+  $Res call(
+      {String name,
+      bool isAutoDispose,
+      DartType? familyArgumentType,
+      LegacyProviderType providerType});
 }
 
 /// @nodoc
-class _$ProviderDefinitionCopyWithImpl<$Res, $Val extends ProviderDefinition>
-    implements $ProviderDefinitionCopyWith<$Res> {
-  _$ProviderDefinitionCopyWithImpl(this._value, this._then);
+class _$LegacyProviderDefinitionCopyWithImpl<$Res,
+        $Val extends LegacyProviderDefinition>
+    implements $LegacyProviderDefinitionCopyWith<$Res> {
+  _$LegacyProviderDefinitionCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -104,54 +55,10 @@ class _$ProviderDefinitionCopyWithImpl<$Res, $Val extends ProviderDefinition>
   $Res call({
     Object? name = null,
     Object? isAutoDispose = null,
-  }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      isAutoDispose: null == isAutoDispose
-          ? _value.isAutoDispose
-          : isAutoDispose // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$LegacyProviderDefinitionCopyWith<$Res>
-    implements $ProviderDefinitionCopyWith<$Res> {
-  factory _$$LegacyProviderDefinitionCopyWith(_$LegacyProviderDefinition value,
-          $Res Function(_$LegacyProviderDefinition) then) =
-      __$$LegacyProviderDefinitionCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String name,
-      bool isAutoDispose,
-      DartType? familyArgumentType,
-      LegacyProviderType providerType,
-      List<int>? list});
-}
-
-/// @nodoc
-class __$$LegacyProviderDefinitionCopyWithImpl<$Res>
-    extends _$ProviderDefinitionCopyWithImpl<$Res, _$LegacyProviderDefinition>
-    implements _$$LegacyProviderDefinitionCopyWith<$Res> {
-  __$$LegacyProviderDefinitionCopyWithImpl(_$LegacyProviderDefinition _value,
-      $Res Function(_$LegacyProviderDefinition) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? name = null,
-    Object? isAutoDispose = null,
     Object? familyArgumentType = freezed,
     Object? providerType = null,
-    Object? list = freezed,
   }) {
-    return _then(_$LegacyProviderDefinition(
+    return _then(_value.copyWith(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -168,26 +75,72 @@ class __$$LegacyProviderDefinitionCopyWithImpl<$Res>
           ? _value.providerType
           : providerType // ignore: cast_nullable_to_non_nullable
               as LegacyProviderType,
-      list: freezed == list
-          ? _value._list
-          : list // ignore: cast_nullable_to_non_nullable
-              as List<int>?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$_LegacyProviderDefinitionCopyWith<$Res>
+    implements $LegacyProviderDefinitionCopyWith<$Res> {
+  factory _$$_LegacyProviderDefinitionCopyWith(
+          _$_LegacyProviderDefinition value,
+          $Res Function(_$_LegacyProviderDefinition) then) =
+      __$$_LegacyProviderDefinitionCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {String name,
+      bool isAutoDispose,
+      DartType? familyArgumentType,
+      LegacyProviderType providerType});
+}
+
+/// @nodoc
+class __$$_LegacyProviderDefinitionCopyWithImpl<$Res>
+    extends _$LegacyProviderDefinitionCopyWithImpl<$Res,
+        _$_LegacyProviderDefinition>
+    implements _$$_LegacyProviderDefinitionCopyWith<$Res> {
+  __$$_LegacyProviderDefinitionCopyWithImpl(_$_LegacyProviderDefinition _value,
+      $Res Function(_$_LegacyProviderDefinition) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? isAutoDispose = null,
+    Object? familyArgumentType = freezed,
+    Object? providerType = null,
+  }) {
+    return _then(_$_LegacyProviderDefinition(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      isAutoDispose: null == isAutoDispose
+          ? _value.isAutoDispose
+          : isAutoDispose // ignore: cast_nullable_to_non_nullable
+              as bool,
+      familyArgumentType: freezed == familyArgumentType
+          ? _value.familyArgumentType
+          : familyArgumentType // ignore: cast_nullable_to_non_nullable
+              as DartType?,
+      providerType: null == providerType
+          ? _value.providerType
+          : providerType // ignore: cast_nullable_to_non_nullable
+              as LegacyProviderType,
     ));
   }
 }
 
 /// @nodoc
 
-@internal
-class _$LegacyProviderDefinition extends LegacyProviderDefinition {
-  _$LegacyProviderDefinition(
+class _$_LegacyProviderDefinition implements _LegacyProviderDefinition {
+  _$_LegacyProviderDefinition(
       {required this.name,
       required this.isAutoDispose,
       required this.familyArgumentType,
-      required this.providerType,
-      final List<int>? list})
-      : _list = list,
-        super._();
+      required this.providerType});
 
   @override
   final String name;
@@ -197,394 +150,85 @@ class _$LegacyProviderDefinition extends LegacyProviderDefinition {
   final DartType? familyArgumentType;
   @override
   final LegacyProviderType providerType;
-  final List<int>? _list;
-  @override
-  List<int>? get list {
-    final value = _list;
-    if (value == null) return null;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
 
   @override
   String toString() {
-    return 'ProviderDefinition.legacy(name: $name, isAutoDispose: $isAutoDispose, familyArgumentType: $familyArgumentType, providerType: $providerType, list: $list)';
+    return 'LegacyProviderDefinition._(name: $name, isAutoDispose: $isAutoDispose, familyArgumentType: $familyArgumentType, providerType: $providerType)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$LegacyProviderDefinition &&
+            other is _$_LegacyProviderDefinition &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.isAutoDispose, isAutoDispose) ||
                 other.isAutoDispose == isAutoDispose) &&
             (identical(other.familyArgumentType, familyArgumentType) ||
                 other.familyArgumentType == familyArgumentType) &&
             (identical(other.providerType, providerType) ||
-                other.providerType == providerType) &&
-            const DeepCollectionEquality().equals(other._list, _list));
+                other.providerType == providerType));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      name,
-      isAutoDispose,
-      familyArgumentType,
-      providerType,
-      const DeepCollectionEquality().hash(_list));
+      runtimeType, name, isAutoDispose, familyArgumentType, providerType);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$LegacyProviderDefinitionCopyWith<_$LegacyProviderDefinition>
-      get copyWith =>
-          __$$LegacyProviderDefinitionCopyWithImpl<_$LegacyProviderDefinition>(
-              this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(
-            String name,
-            bool isAutoDispose,
-            DartType? familyArgumentType,
-            LegacyProviderType providerType,
-            List<int>? list)
-        legacy,
-    required TResult Function(String name, bool isAutoDispose) generator,
-  }) {
-    return legacy(name, isAutoDispose, familyArgumentType, providerType, list);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String name,
-            bool isAutoDispose,
-            DartType? familyArgumentType,
-            LegacyProviderType providerType,
-            List<int>? list)?
-        legacy,
-    TResult? Function(String name, bool isAutoDispose)? generator,
-  }) {
-    return legacy?.call(
-        name, isAutoDispose, familyArgumentType, providerType, list);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String name,
-            bool isAutoDispose,
-            DartType? familyArgumentType,
-            LegacyProviderType providerType,
-            List<int>? list)?
-        legacy,
-    TResult Function(String name, bool isAutoDispose)? generator,
-    required TResult orElse(),
-  }) {
-    if (legacy != null) {
-      return legacy(
-          name, isAutoDispose, familyArgumentType, providerType, list);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(LegacyProviderDefinition value) legacy,
-    required TResult Function(GeneratorProviderDefinition value) generator,
-  }) {
-    return legacy(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(LegacyProviderDefinition value)? legacy,
-    TResult? Function(GeneratorProviderDefinition value)? generator,
-  }) {
-    return legacy?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(LegacyProviderDefinition value)? legacy,
-    TResult Function(GeneratorProviderDefinition value)? generator,
-    required TResult orElse(),
-  }) {
-    if (legacy != null) {
-      return legacy(this);
-    }
-    return orElse();
-  }
+  _$$_LegacyProviderDefinitionCopyWith<_$_LegacyProviderDefinition>
+      get copyWith => __$$_LegacyProviderDefinitionCopyWithImpl<
+          _$_LegacyProviderDefinition>(this, _$identity);
 }
 
-abstract class LegacyProviderDefinition extends ProviderDefinition {
-  factory LegacyProviderDefinition(
-      {required final String name,
-      required final bool isAutoDispose,
-      required final DartType? familyArgumentType,
-      required final LegacyProviderType providerType,
-      final List<int>? list}) = _$LegacyProviderDefinition;
-  LegacyProviderDefinition._() : super._();
+abstract class _LegacyProviderDefinition implements LegacyProviderDefinition {
+  factory _LegacyProviderDefinition(
+          {required final String name,
+          required final bool isAutoDispose,
+          required final DartType? familyArgumentType,
+          required final LegacyProviderType providerType}) =
+      _$_LegacyProviderDefinition;
 
   @override
   String get name;
   @override
   bool get isAutoDispose;
+  @override
   DartType? get familyArgumentType;
+  @override
   LegacyProviderType get providerType;
-  List<int>? get list;
   @override
   @JsonKey(ignore: true)
-  _$$LegacyProviderDefinitionCopyWith<_$LegacyProviderDefinition>
+  _$$_LegacyProviderDefinitionCopyWith<_$_LegacyProviderDefinition>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$GeneratorProviderDefinitionCopyWith<$Res>
-    implements $ProviderDefinitionCopyWith<$Res> {
-  factory _$$GeneratorProviderDefinitionCopyWith(
-          _$GeneratorProviderDefinition value,
-          $Res Function(_$GeneratorProviderDefinition) then) =
-      __$$GeneratorProviderDefinitionCopyWithImpl<$Res>;
-  @override
+mixin _$GeneratorProviderDefinition {
+  String get name => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $GeneratorProviderDefinitionCopyWith<GeneratorProviderDefinition>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $GeneratorProviderDefinitionCopyWith<$Res> {
+  factory $GeneratorProviderDefinitionCopyWith(
+          GeneratorProviderDefinition value,
+          $Res Function(GeneratorProviderDefinition) then) =
+      _$GeneratorProviderDefinitionCopyWithImpl<$Res,
+          GeneratorProviderDefinition>;
   @useResult
-  $Res call({String name, bool isAutoDispose});
+  $Res call({String name});
 }
 
 /// @nodoc
-class __$$GeneratorProviderDefinitionCopyWithImpl<$Res>
-    extends _$ProviderDefinitionCopyWithImpl<$Res,
-        _$GeneratorProviderDefinition>
-    implements _$$GeneratorProviderDefinitionCopyWith<$Res> {
-  __$$GeneratorProviderDefinitionCopyWithImpl(
-      _$GeneratorProviderDefinition _value,
-      $Res Function(_$GeneratorProviderDefinition) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? name = null,
-    Object? isAutoDispose = null,
-  }) {
-    return _then(_$GeneratorProviderDefinition(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      isAutoDispose: null == isAutoDispose
-          ? _value.isAutoDispose
-          : isAutoDispose // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
-  }
-}
-
-/// @nodoc
-
-@internal
-class _$GeneratorProviderDefinition extends GeneratorProviderDefinition {
-  _$GeneratorProviderDefinition(
-      {required this.name, required this.isAutoDispose})
-      : super._();
-
-  @override
-  final String name;
-  @override
-  final bool isAutoDispose;
-
-  @override
-  String toString() {
-    return 'ProviderDefinition.generator(name: $name, isAutoDispose: $isAutoDispose)';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$GeneratorProviderDefinition &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.isAutoDispose, isAutoDispose) ||
-                other.isAutoDispose == isAutoDispose));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, name, isAutoDispose);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$GeneratorProviderDefinitionCopyWith<_$GeneratorProviderDefinition>
-      get copyWith => __$$GeneratorProviderDefinitionCopyWithImpl<
-          _$GeneratorProviderDefinition>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(
-            String name,
-            bool isAutoDispose,
-            DartType? familyArgumentType,
-            LegacyProviderType providerType,
-            List<int>? list)
-        legacy,
-    required TResult Function(String name, bool isAutoDispose) generator,
-  }) {
-    return generator(name, isAutoDispose);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String name,
-            bool isAutoDispose,
-            DartType? familyArgumentType,
-            LegacyProviderType providerType,
-            List<int>? list)?
-        legacy,
-    TResult? Function(String name, bool isAutoDispose)? generator,
-  }) {
-    return generator?.call(name, isAutoDispose);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String name,
-            bool isAutoDispose,
-            DartType? familyArgumentType,
-            LegacyProviderType providerType,
-            List<int>? list)?
-        legacy,
-    TResult Function(String name, bool isAutoDispose)? generator,
-    required TResult orElse(),
-  }) {
-    if (generator != null) {
-      return generator(name, isAutoDispose);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(LegacyProviderDefinition value) legacy,
-    required TResult Function(GeneratorProviderDefinition value) generator,
-  }) {
-    return generator(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(LegacyProviderDefinition value)? legacy,
-    TResult? Function(GeneratorProviderDefinition value)? generator,
-  }) {
-    return generator?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(LegacyProviderDefinition value)? legacy,
-    TResult Function(GeneratorProviderDefinition value)? generator,
-    required TResult orElse(),
-  }) {
-    if (generator != null) {
-      return generator(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class GeneratorProviderDefinition extends ProviderDefinition {
-  factory GeneratorProviderDefinition(
-      {required final String name,
-      required final bool isAutoDispose}) = _$GeneratorProviderDefinition;
-  GeneratorProviderDefinition._() : super._();
-
-  @override
-  String get name;
-  @override
-  bool get isAutoDispose;
-  @override
-  @JsonKey(ignore: true)
-  _$$GeneratorProviderDefinitionCopyWith<_$GeneratorProviderDefinition>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-mixin _$ProviderDefinitionFormatException {
-  Element get element => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(Element element) notAProvider,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Element element)? notAProvider,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Element element)? notAProvider,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(
-            NotAProviderProviderDefinitionFormatException value)
-        notAProvider,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(NotAProviderProviderDefinitionFormatException value)?
-        notAProvider,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(NotAProviderProviderDefinitionFormatException value)?
-        notAProvider,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-
-  @JsonKey(ignore: true)
-  $ProviderDefinitionFormatExceptionCopyWith<ProviderDefinitionFormatException>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $ProviderDefinitionFormatExceptionCopyWith<$Res> {
-  factory $ProviderDefinitionFormatExceptionCopyWith(
-          ProviderDefinitionFormatException value,
-          $Res Function(ProviderDefinitionFormatException) then) =
-      _$ProviderDefinitionFormatExceptionCopyWithImpl<$Res,
-          ProviderDefinitionFormatException>;
-  @useResult
-  $Res call({Element element});
-}
-
-/// @nodoc
-class _$ProviderDefinitionFormatExceptionCopyWithImpl<$Res,
-        $Val extends ProviderDefinitionFormatException>
-    implements $ProviderDefinitionFormatExceptionCopyWith<$Res> {
-  _$ProviderDefinitionFormatExceptionCopyWithImpl(this._value, this._then);
+class _$GeneratorProviderDefinitionCopyWithImpl<$Res,
+        $Val extends GeneratorProviderDefinition>
+    implements $GeneratorProviderDefinitionCopyWith<$Res> {
+  _$GeneratorProviderDefinitionCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -594,32 +238,923 @@ class _$ProviderDefinitionFormatExceptionCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? element = null,
+    Object? name = null,
   }) {
     return _then(_value.copyWith(
-      element: null == element
-          ? _value.element
-          : element // ignore: cast_nullable_to_non_nullable
-              as Element,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$NotAProviderProviderDefinitionFormatExceptionCopyWith<$Res>
-    implements $ProviderDefinitionFormatExceptionCopyWith<$Res> {
+abstract class _$$_GeneratorProviderDefinitionCopyWith<$Res>
+    implements $GeneratorProviderDefinitionCopyWith<$Res> {
+  factory _$$_GeneratorProviderDefinitionCopyWith(
+          _$_GeneratorProviderDefinition value,
+          $Res Function(_$_GeneratorProviderDefinition) then) =
+      __$$_GeneratorProviderDefinitionCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String name});
+}
+
+/// @nodoc
+class __$$_GeneratorProviderDefinitionCopyWithImpl<$Res>
+    extends _$GeneratorProviderDefinitionCopyWithImpl<$Res,
+        _$_GeneratorProviderDefinition>
+    implements _$$_GeneratorProviderDefinitionCopyWith<$Res> {
+  __$$_GeneratorProviderDefinitionCopyWithImpl(
+      _$_GeneratorProviderDefinition _value,
+      $Res Function(_$_GeneratorProviderDefinition) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+  }) {
+    return _then(_$_GeneratorProviderDefinition(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$_GeneratorProviderDefinition implements _GeneratorProviderDefinition {
+  _$_GeneratorProviderDefinition({required this.name});
+
+  @override
+  final String name;
+
+  @override
+  String toString() {
+    return 'GeneratorProviderDefinition._(name: $name)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_GeneratorProviderDefinition &&
+            (identical(other.name, name) || other.name == name));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, name);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_GeneratorProviderDefinitionCopyWith<_$_GeneratorProviderDefinition>
+      get copyWith => __$$_GeneratorProviderDefinitionCopyWithImpl<
+          _$_GeneratorProviderDefinition>(this, _$identity);
+}
+
+abstract class _GeneratorProviderDefinition
+    implements GeneratorProviderDefinition {
+  factory _GeneratorProviderDefinition({required final String name}) =
+      _$_GeneratorProviderDefinition;
+
+  @override
+  String get name;
+  @override
+  @JsonKey(ignore: true)
+  _$$_GeneratorProviderDefinitionCopyWith<_$_GeneratorProviderDefinition>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$AnyProviderDefinition {
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(LegacyProviderDefinition value) legacy,
+    required TResult Function(GeneratorProviderDefinition value) generator,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(LegacyProviderDefinition value)? legacy,
+    TResult? Function(GeneratorProviderDefinition value)? generator,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(LegacyProviderDefinition value)? legacy,
+    TResult Function(GeneratorProviderDefinition value)? generator,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(LegacyAnyProviderDefinition value) legacy,
+    required TResult Function(GeneratorAnyProviderDefinition value) generator,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(LegacyAnyProviderDefinition value)? legacy,
+    TResult? Function(GeneratorAnyProviderDefinition value)? generator,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(LegacyAnyProviderDefinition value)? legacy,
+    TResult Function(GeneratorAnyProviderDefinition value)? generator,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $AnyProviderDefinitionCopyWith<$Res> {
+  factory $AnyProviderDefinitionCopyWith(AnyProviderDefinition value,
+          $Res Function(AnyProviderDefinition) then) =
+      _$AnyProviderDefinitionCopyWithImpl<$Res, AnyProviderDefinition>;
+}
+
+/// @nodoc
+class _$AnyProviderDefinitionCopyWithImpl<$Res,
+        $Val extends AnyProviderDefinition>
+    implements $AnyProviderDefinitionCopyWith<$Res> {
+  _$AnyProviderDefinitionCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+}
+
+/// @nodoc
+abstract class _$$LegacyAnyProviderDefinitionCopyWith<$Res> {
+  factory _$$LegacyAnyProviderDefinitionCopyWith(
+          _$LegacyAnyProviderDefinition value,
+          $Res Function(_$LegacyAnyProviderDefinition) then) =
+      __$$LegacyAnyProviderDefinitionCopyWithImpl<$Res>;
+  @useResult
+  $Res call({LegacyProviderDefinition value});
+
+  $LegacyProviderDefinitionCopyWith<$Res> get value;
+}
+
+/// @nodoc
+class __$$LegacyAnyProviderDefinitionCopyWithImpl<$Res>
+    extends _$AnyProviderDefinitionCopyWithImpl<$Res,
+        _$LegacyAnyProviderDefinition>
+    implements _$$LegacyAnyProviderDefinitionCopyWith<$Res> {
+  __$$LegacyAnyProviderDefinitionCopyWithImpl(
+      _$LegacyAnyProviderDefinition _value,
+      $Res Function(_$LegacyAnyProviderDefinition) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? value = null,
+  }) {
+    return _then(_$LegacyAnyProviderDefinition(
+      null == value
+          ? _value.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as LegacyProviderDefinition,
+    ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $LegacyProviderDefinitionCopyWith<$Res> get value {
+    return $LegacyProviderDefinitionCopyWith<$Res>(_value.value, (value) {
+      return _then(_value.copyWith(value: value));
+    });
+  }
+}
+
+/// @nodoc
+
+@internal
+class _$LegacyAnyProviderDefinition extends LegacyAnyProviderDefinition {
+  _$LegacyAnyProviderDefinition(this.value) : super._();
+
+  @override
+  final LegacyProviderDefinition value;
+
+  @override
+  String toString() {
+    return 'AnyProviderDefinition.legacy(value: $value)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$LegacyAnyProviderDefinition &&
+            (identical(other.value, value) || other.value == value));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, value);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$LegacyAnyProviderDefinitionCopyWith<_$LegacyAnyProviderDefinition>
+      get copyWith => __$$LegacyAnyProviderDefinitionCopyWithImpl<
+          _$LegacyAnyProviderDefinition>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(LegacyProviderDefinition value) legacy,
+    required TResult Function(GeneratorProviderDefinition value) generator,
+  }) {
+    return legacy(value);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(LegacyProviderDefinition value)? legacy,
+    TResult? Function(GeneratorProviderDefinition value)? generator,
+  }) {
+    return legacy?.call(value);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(LegacyProviderDefinition value)? legacy,
+    TResult Function(GeneratorProviderDefinition value)? generator,
+    required TResult orElse(),
+  }) {
+    if (legacy != null) {
+      return legacy(value);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(LegacyAnyProviderDefinition value) legacy,
+    required TResult Function(GeneratorAnyProviderDefinition value) generator,
+  }) {
+    return legacy(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(LegacyAnyProviderDefinition value)? legacy,
+    TResult? Function(GeneratorAnyProviderDefinition value)? generator,
+  }) {
+    return legacy?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(LegacyAnyProviderDefinition value)? legacy,
+    TResult Function(GeneratorAnyProviderDefinition value)? generator,
+    required TResult orElse(),
+  }) {
+    if (legacy != null) {
+      return legacy(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class LegacyAnyProviderDefinition extends AnyProviderDefinition {
+  factory LegacyAnyProviderDefinition(final LegacyProviderDefinition value) =
+      _$LegacyAnyProviderDefinition;
+  LegacyAnyProviderDefinition._() : super._();
+
+  LegacyProviderDefinition get value;
+  @JsonKey(ignore: true)
+  _$$LegacyAnyProviderDefinitionCopyWith<_$LegacyAnyProviderDefinition>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$GeneratorAnyProviderDefinitionCopyWith<$Res> {
+  factory _$$GeneratorAnyProviderDefinitionCopyWith(
+          _$GeneratorAnyProviderDefinition value,
+          $Res Function(_$GeneratorAnyProviderDefinition) then) =
+      __$$GeneratorAnyProviderDefinitionCopyWithImpl<$Res>;
+  @useResult
+  $Res call({GeneratorProviderDefinition value});
+
+  $GeneratorProviderDefinitionCopyWith<$Res> get value;
+}
+
+/// @nodoc
+class __$$GeneratorAnyProviderDefinitionCopyWithImpl<$Res>
+    extends _$AnyProviderDefinitionCopyWithImpl<$Res,
+        _$GeneratorAnyProviderDefinition>
+    implements _$$GeneratorAnyProviderDefinitionCopyWith<$Res> {
+  __$$GeneratorAnyProviderDefinitionCopyWithImpl(
+      _$GeneratorAnyProviderDefinition _value,
+      $Res Function(_$GeneratorAnyProviderDefinition) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? value = null,
+  }) {
+    return _then(_$GeneratorAnyProviderDefinition(
+      null == value
+          ? _value.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as GeneratorProviderDefinition,
+    ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $GeneratorProviderDefinitionCopyWith<$Res> get value {
+    return $GeneratorProviderDefinitionCopyWith<$Res>(_value.value, (value) {
+      return _then(_value.copyWith(value: value));
+    });
+  }
+}
+
+/// @nodoc
+
+@internal
+class _$GeneratorAnyProviderDefinition extends GeneratorAnyProviderDefinition {
+  _$GeneratorAnyProviderDefinition(this.value) : super._();
+
+  @override
+  final GeneratorProviderDefinition value;
+
+  @override
+  String toString() {
+    return 'AnyProviderDefinition.generator(value: $value)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GeneratorAnyProviderDefinition &&
+            (identical(other.value, value) || other.value == value));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, value);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GeneratorAnyProviderDefinitionCopyWith<_$GeneratorAnyProviderDefinition>
+      get copyWith => __$$GeneratorAnyProviderDefinitionCopyWithImpl<
+          _$GeneratorAnyProviderDefinition>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(LegacyProviderDefinition value) legacy,
+    required TResult Function(GeneratorProviderDefinition value) generator,
+  }) {
+    return generator(value);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(LegacyProviderDefinition value)? legacy,
+    TResult? Function(GeneratorProviderDefinition value)? generator,
+  }) {
+    return generator?.call(value);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(LegacyProviderDefinition value)? legacy,
+    TResult Function(GeneratorProviderDefinition value)? generator,
+    required TResult orElse(),
+  }) {
+    if (generator != null) {
+      return generator(value);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(LegacyAnyProviderDefinition value) legacy,
+    required TResult Function(GeneratorAnyProviderDefinition value) generator,
+  }) {
+    return generator(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(LegacyAnyProviderDefinition value)? legacy,
+    TResult? Function(GeneratorAnyProviderDefinition value)? generator,
+  }) {
+    return generator?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(LegacyAnyProviderDefinition value)? legacy,
+    TResult Function(GeneratorAnyProviderDefinition value)? generator,
+    required TResult orElse(),
+  }) {
+    if (generator != null) {
+      return generator(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class GeneratorAnyProviderDefinition extends AnyProviderDefinition {
+  factory GeneratorAnyProviderDefinition(
+          final GeneratorProviderDefinition value) =
+      _$GeneratorAnyProviderDefinition;
+  GeneratorAnyProviderDefinition._() : super._();
+
+  GeneratorProviderDefinition get value;
+  @JsonKey(ignore: true)
+  _$$GeneratorAnyProviderDefinitionCopyWith<_$GeneratorAnyProviderDefinition>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$AnyProviderDefinitionFormatException {
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(
+            GeneratorProviderDefinitionFormatException exception)
+        generatorException,
+    required TResult Function(LegacyProviderDefinitionFormatException exception)
+        legacyException,
+    required TResult Function(Element element) notAProvider,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(GeneratorProviderDefinitionFormatException exception)?
+        generatorException,
+    TResult? Function(LegacyProviderDefinitionFormatException exception)?
+        legacyException,
+    TResult? Function(Element element)? notAProvider,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(GeneratorProviderDefinitionFormatException exception)?
+        generatorException,
+    TResult Function(LegacyProviderDefinitionFormatException exception)?
+        legacyException,
+    TResult Function(Element element)? notAProvider,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(
+            GeneratorAnyProviderDefinitionFormatException value)
+        generatorException,
+    required TResult Function(LegacyAnyProviderDefinitionFormatException value)
+        legacyException,
+    required TResult Function(
+            NotAProviderProviderDefinitionFormatException value)
+        notAProvider,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(GeneratorAnyProviderDefinitionFormatException value)?
+        generatorException,
+    TResult? Function(LegacyAnyProviderDefinitionFormatException value)?
+        legacyException,
+    TResult? Function(NotAProviderProviderDefinitionFormatException value)?
+        notAProvider,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(GeneratorAnyProviderDefinitionFormatException value)?
+        generatorException,
+    TResult Function(LegacyAnyProviderDefinitionFormatException value)?
+        legacyException,
+    TResult Function(NotAProviderProviderDefinitionFormatException value)?
+        notAProvider,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $AnyProviderDefinitionFormatExceptionCopyWith<$Res> {
+  factory $AnyProviderDefinitionFormatExceptionCopyWith(
+          AnyProviderDefinitionFormatException value,
+          $Res Function(AnyProviderDefinitionFormatException) then) =
+      _$AnyProviderDefinitionFormatExceptionCopyWithImpl<$Res,
+          AnyProviderDefinitionFormatException>;
+}
+
+/// @nodoc
+class _$AnyProviderDefinitionFormatExceptionCopyWithImpl<$Res,
+        $Val extends AnyProviderDefinitionFormatException>
+    implements $AnyProviderDefinitionFormatExceptionCopyWith<$Res> {
+  _$AnyProviderDefinitionFormatExceptionCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+}
+
+/// @nodoc
+abstract class _$$GeneratorAnyProviderDefinitionFormatExceptionCopyWith<$Res> {
+  factory _$$GeneratorAnyProviderDefinitionFormatExceptionCopyWith(
+          _$GeneratorAnyProviderDefinitionFormatException value,
+          $Res Function(_$GeneratorAnyProviderDefinitionFormatException) then) =
+      __$$GeneratorAnyProviderDefinitionFormatExceptionCopyWithImpl<$Res>;
+  @useResult
+  $Res call({GeneratorProviderDefinitionFormatException exception});
+
+  $GeneratorProviderDefinitionFormatExceptionCopyWith<$Res> get exception;
+}
+
+/// @nodoc
+class __$$GeneratorAnyProviderDefinitionFormatExceptionCopyWithImpl<$Res>
+    extends _$AnyProviderDefinitionFormatExceptionCopyWithImpl<$Res,
+        _$GeneratorAnyProviderDefinitionFormatException>
+    implements _$$GeneratorAnyProviderDefinitionFormatExceptionCopyWith<$Res> {
+  __$$GeneratorAnyProviderDefinitionFormatExceptionCopyWithImpl(
+      _$GeneratorAnyProviderDefinitionFormatException _value,
+      $Res Function(_$GeneratorAnyProviderDefinitionFormatException) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? exception = null,
+  }) {
+    return _then(_$GeneratorAnyProviderDefinitionFormatException(
+      null == exception
+          ? _value.exception
+          : exception // ignore: cast_nullable_to_non_nullable
+              as GeneratorProviderDefinitionFormatException,
+    ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $GeneratorProviderDefinitionFormatExceptionCopyWith<$Res> get exception {
+    return $GeneratorProviderDefinitionFormatExceptionCopyWith<$Res>(
+        _value.exception, (value) {
+      return _then(_value.copyWith(exception: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$GeneratorAnyProviderDefinitionFormatException
+    extends GeneratorAnyProviderDefinitionFormatException {
+  _$GeneratorAnyProviderDefinitionFormatException(this.exception) : super._();
+
+  @override
+  final GeneratorProviderDefinitionFormatException exception;
+
+  @override
+  String toString() {
+    return 'AnyProviderDefinitionFormatException.generatorException(exception: $exception)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$GeneratorAnyProviderDefinitionFormatException &&
+            (identical(other.exception, exception) ||
+                other.exception == exception));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, exception);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$GeneratorAnyProviderDefinitionFormatExceptionCopyWith<
+          _$GeneratorAnyProviderDefinitionFormatException>
+      get copyWith =>
+          __$$GeneratorAnyProviderDefinitionFormatExceptionCopyWithImpl<
+                  _$GeneratorAnyProviderDefinitionFormatException>(
+              this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(
+            GeneratorProviderDefinitionFormatException exception)
+        generatorException,
+    required TResult Function(LegacyProviderDefinitionFormatException exception)
+        legacyException,
+    required TResult Function(Element element) notAProvider,
+  }) {
+    return generatorException(exception);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(GeneratorProviderDefinitionFormatException exception)?
+        generatorException,
+    TResult? Function(LegacyProviderDefinitionFormatException exception)?
+        legacyException,
+    TResult? Function(Element element)? notAProvider,
+  }) {
+    return generatorException?.call(exception);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(GeneratorProviderDefinitionFormatException exception)?
+        generatorException,
+    TResult Function(LegacyProviderDefinitionFormatException exception)?
+        legacyException,
+    TResult Function(Element element)? notAProvider,
+    required TResult orElse(),
+  }) {
+    if (generatorException != null) {
+      return generatorException(exception);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(
+            GeneratorAnyProviderDefinitionFormatException value)
+        generatorException,
+    required TResult Function(LegacyAnyProviderDefinitionFormatException value)
+        legacyException,
+    required TResult Function(
+            NotAProviderProviderDefinitionFormatException value)
+        notAProvider,
+  }) {
+    return generatorException(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(GeneratorAnyProviderDefinitionFormatException value)?
+        generatorException,
+    TResult? Function(LegacyAnyProviderDefinitionFormatException value)?
+        legacyException,
+    TResult? Function(NotAProviderProviderDefinitionFormatException value)?
+        notAProvider,
+  }) {
+    return generatorException?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(GeneratorAnyProviderDefinitionFormatException value)?
+        generatorException,
+    TResult Function(LegacyAnyProviderDefinitionFormatException value)?
+        legacyException,
+    TResult Function(NotAProviderProviderDefinitionFormatException value)?
+        notAProvider,
+    required TResult orElse(),
+  }) {
+    if (generatorException != null) {
+      return generatorException(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class GeneratorAnyProviderDefinitionFormatException
+    extends AnyProviderDefinitionFormatException {
+  factory GeneratorAnyProviderDefinitionFormatException(
+          final GeneratorProviderDefinitionFormatException exception) =
+      _$GeneratorAnyProviderDefinitionFormatException;
+  GeneratorAnyProviderDefinitionFormatException._() : super._();
+
+  GeneratorProviderDefinitionFormatException get exception;
+  @JsonKey(ignore: true)
+  _$$GeneratorAnyProviderDefinitionFormatExceptionCopyWith<
+          _$GeneratorAnyProviderDefinitionFormatException>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$LegacyAnyProviderDefinitionFormatExceptionCopyWith<$Res> {
+  factory _$$LegacyAnyProviderDefinitionFormatExceptionCopyWith(
+          _$LegacyAnyProviderDefinitionFormatException value,
+          $Res Function(_$LegacyAnyProviderDefinitionFormatException) then) =
+      __$$LegacyAnyProviderDefinitionFormatExceptionCopyWithImpl<$Res>;
+  @useResult
+  $Res call({LegacyProviderDefinitionFormatException exception});
+
+  $LegacyProviderDefinitionFormatExceptionCopyWith<$Res> get exception;
+}
+
+/// @nodoc
+class __$$LegacyAnyProviderDefinitionFormatExceptionCopyWithImpl<$Res>
+    extends _$AnyProviderDefinitionFormatExceptionCopyWithImpl<$Res,
+        _$LegacyAnyProviderDefinitionFormatException>
+    implements _$$LegacyAnyProviderDefinitionFormatExceptionCopyWith<$Res> {
+  __$$LegacyAnyProviderDefinitionFormatExceptionCopyWithImpl(
+      _$LegacyAnyProviderDefinitionFormatException _value,
+      $Res Function(_$LegacyAnyProviderDefinitionFormatException) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? exception = null,
+  }) {
+    return _then(_$LegacyAnyProviderDefinitionFormatException(
+      null == exception
+          ? _value.exception
+          : exception // ignore: cast_nullable_to_non_nullable
+              as LegacyProviderDefinitionFormatException,
+    ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $LegacyProviderDefinitionFormatExceptionCopyWith<$Res> get exception {
+    return $LegacyProviderDefinitionFormatExceptionCopyWith<$Res>(
+        _value.exception, (value) {
+      return _then(_value.copyWith(exception: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$LegacyAnyProviderDefinitionFormatException
+    extends LegacyAnyProviderDefinitionFormatException {
+  _$LegacyAnyProviderDefinitionFormatException(this.exception) : super._();
+
+  @override
+  final LegacyProviderDefinitionFormatException exception;
+
+  @override
+  String toString() {
+    return 'AnyProviderDefinitionFormatException.legacyException(exception: $exception)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$LegacyAnyProviderDefinitionFormatException &&
+            (identical(other.exception, exception) ||
+                other.exception == exception));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, exception);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$LegacyAnyProviderDefinitionFormatExceptionCopyWith<
+          _$LegacyAnyProviderDefinitionFormatException>
+      get copyWith =>
+          __$$LegacyAnyProviderDefinitionFormatExceptionCopyWithImpl<
+              _$LegacyAnyProviderDefinitionFormatException>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(
+            GeneratorProviderDefinitionFormatException exception)
+        generatorException,
+    required TResult Function(LegacyProviderDefinitionFormatException exception)
+        legacyException,
+    required TResult Function(Element element) notAProvider,
+  }) {
+    return legacyException(exception);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(GeneratorProviderDefinitionFormatException exception)?
+        generatorException,
+    TResult? Function(LegacyProviderDefinitionFormatException exception)?
+        legacyException,
+    TResult? Function(Element element)? notAProvider,
+  }) {
+    return legacyException?.call(exception);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(GeneratorProviderDefinitionFormatException exception)?
+        generatorException,
+    TResult Function(LegacyProviderDefinitionFormatException exception)?
+        legacyException,
+    TResult Function(Element element)? notAProvider,
+    required TResult orElse(),
+  }) {
+    if (legacyException != null) {
+      return legacyException(exception);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(
+            GeneratorAnyProviderDefinitionFormatException value)
+        generatorException,
+    required TResult Function(LegacyAnyProviderDefinitionFormatException value)
+        legacyException,
+    required TResult Function(
+            NotAProviderProviderDefinitionFormatException value)
+        notAProvider,
+  }) {
+    return legacyException(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(GeneratorAnyProviderDefinitionFormatException value)?
+        generatorException,
+    TResult? Function(LegacyAnyProviderDefinitionFormatException value)?
+        legacyException,
+    TResult? Function(NotAProviderProviderDefinitionFormatException value)?
+        notAProvider,
+  }) {
+    return legacyException?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(GeneratorAnyProviderDefinitionFormatException value)?
+        generatorException,
+    TResult Function(LegacyAnyProviderDefinitionFormatException value)?
+        legacyException,
+    TResult Function(NotAProviderProviderDefinitionFormatException value)?
+        notAProvider,
+    required TResult orElse(),
+  }) {
+    if (legacyException != null) {
+      return legacyException(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class LegacyAnyProviderDefinitionFormatException
+    extends AnyProviderDefinitionFormatException {
+  factory LegacyAnyProviderDefinitionFormatException(
+          final LegacyProviderDefinitionFormatException exception) =
+      _$LegacyAnyProviderDefinitionFormatException;
+  LegacyAnyProviderDefinitionFormatException._() : super._();
+
+  LegacyProviderDefinitionFormatException get exception;
+  @JsonKey(ignore: true)
+  _$$LegacyAnyProviderDefinitionFormatExceptionCopyWith<
+          _$LegacyAnyProviderDefinitionFormatException>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$NotAProviderProviderDefinitionFormatExceptionCopyWith<$Res> {
   factory _$$NotAProviderProviderDefinitionFormatExceptionCopyWith(
           _$NotAProviderProviderDefinitionFormatException value,
           $Res Function(_$NotAProviderProviderDefinitionFormatException) then) =
       __$$NotAProviderProviderDefinitionFormatExceptionCopyWithImpl<$Res>;
-  @override
   @useResult
   $Res call({Element element});
 }
 
 /// @nodoc
 class __$$NotAProviderProviderDefinitionFormatExceptionCopyWithImpl<$Res>
-    extends _$ProviderDefinitionFormatExceptionCopyWithImpl<$Res,
+    extends _$AnyProviderDefinitionFormatExceptionCopyWithImpl<$Res,
         _$NotAProviderProviderDefinitionFormatException>
     implements _$$NotAProviderProviderDefinitionFormatExceptionCopyWith<$Res> {
   __$$NotAProviderProviderDefinitionFormatExceptionCopyWithImpl(
@@ -652,7 +1187,7 @@ class _$NotAProviderProviderDefinitionFormatException
 
   @override
   String toString() {
-    return 'ProviderDefinitionFormatException.notAProvider(element: $element)';
+    return 'AnyProviderDefinitionFormatException.notAProvider(element: $element)';
   }
 
   @override
@@ -674,6 +1209,717 @@ class _$NotAProviderProviderDefinitionFormatException
       get copyWith =>
           __$$NotAProviderProviderDefinitionFormatExceptionCopyWithImpl<
                   _$NotAProviderProviderDefinitionFormatException>(
+              this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(
+            GeneratorProviderDefinitionFormatException exception)
+        generatorException,
+    required TResult Function(LegacyProviderDefinitionFormatException exception)
+        legacyException,
+    required TResult Function(Element element) notAProvider,
+  }) {
+    return notAProvider(element);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(GeneratorProviderDefinitionFormatException exception)?
+        generatorException,
+    TResult? Function(LegacyProviderDefinitionFormatException exception)?
+        legacyException,
+    TResult? Function(Element element)? notAProvider,
+  }) {
+    return notAProvider?.call(element);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(GeneratorProviderDefinitionFormatException exception)?
+        generatorException,
+    TResult Function(LegacyProviderDefinitionFormatException exception)?
+        legacyException,
+    TResult Function(Element element)? notAProvider,
+    required TResult orElse(),
+  }) {
+    if (notAProvider != null) {
+      return notAProvider(element);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(
+            GeneratorAnyProviderDefinitionFormatException value)
+        generatorException,
+    required TResult Function(LegacyAnyProviderDefinitionFormatException value)
+        legacyException,
+    required TResult Function(
+            NotAProviderProviderDefinitionFormatException value)
+        notAProvider,
+  }) {
+    return notAProvider(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(GeneratorAnyProviderDefinitionFormatException value)?
+        generatorException,
+    TResult? Function(LegacyAnyProviderDefinitionFormatException value)?
+        legacyException,
+    TResult? Function(NotAProviderProviderDefinitionFormatException value)?
+        notAProvider,
+  }) {
+    return notAProvider?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(GeneratorAnyProviderDefinitionFormatException value)?
+        generatorException,
+    TResult Function(LegacyAnyProviderDefinitionFormatException value)?
+        legacyException,
+    TResult Function(NotAProviderProviderDefinitionFormatException value)?
+        notAProvider,
+    required TResult orElse(),
+  }) {
+    if (notAProvider != null) {
+      return notAProvider(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class NotAProviderProviderDefinitionFormatException
+    extends AnyProviderDefinitionFormatException {
+  factory NotAProviderProviderDefinitionFormatException(final Element element) =
+      _$NotAProviderProviderDefinitionFormatException;
+  NotAProviderProviderDefinitionFormatException._() : super._();
+
+  Element get element;
+  @JsonKey(ignore: true)
+  _$$NotAProviderProviderDefinitionFormatExceptionCopyWith<
+          _$NotAProviderProviderDefinitionFormatException>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$GeneratorProviderDefinitionFormatException {
+  Element get element => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(Element element) notAProvider,
+    required TResult Function(Element element) neitherClassNorFunction,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(Element element)? notAProvider,
+    TResult? Function(Element element)? neitherClassNorFunction,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(Element element)? notAProvider,
+    TResult Function(Element element)? neitherClassNorFunction,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(
+            NotAProviderGeneratorProviderDefinitionFormatException value)
+        notAProvider,
+    required TResult Function(
+            NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+                value)
+        neitherClassNorFunction,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(
+            NotAProviderGeneratorProviderDefinitionFormatException value)?
+        notAProvider,
+    TResult? Function(
+            NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+                value)?
+        neitherClassNorFunction,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(
+            NotAProviderGeneratorProviderDefinitionFormatException value)?
+        notAProvider,
+    TResult Function(
+            NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+                value)?
+        neitherClassNorFunction,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $GeneratorProviderDefinitionFormatExceptionCopyWith<
+          GeneratorProviderDefinitionFormatException>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $GeneratorProviderDefinitionFormatExceptionCopyWith<$Res> {
+  factory $GeneratorProviderDefinitionFormatExceptionCopyWith(
+          GeneratorProviderDefinitionFormatException value,
+          $Res Function(GeneratorProviderDefinitionFormatException) then) =
+      _$GeneratorProviderDefinitionFormatExceptionCopyWithImpl<$Res,
+          GeneratorProviderDefinitionFormatException>;
+  @useResult
+  $Res call({Element element});
+}
+
+/// @nodoc
+class _$GeneratorProviderDefinitionFormatExceptionCopyWithImpl<$Res,
+        $Val extends GeneratorProviderDefinitionFormatException>
+    implements $GeneratorProviderDefinitionFormatExceptionCopyWith<$Res> {
+  _$GeneratorProviderDefinitionFormatExceptionCopyWithImpl(
+      this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? element = null,
+  }) {
+    return _then(_value.copyWith(
+      element: null == element
+          ? _value.element
+          : element // ignore: cast_nullable_to_non_nullable
+              as Element,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$NotAProviderGeneratorProviderDefinitionFormatExceptionCopyWith<
+    $Res> implements $GeneratorProviderDefinitionFormatExceptionCopyWith<$Res> {
+  factory _$$NotAProviderGeneratorProviderDefinitionFormatExceptionCopyWith(
+          _$NotAProviderGeneratorProviderDefinitionFormatException value,
+          $Res Function(
+                  _$NotAProviderGeneratorProviderDefinitionFormatException)
+              then) =
+      __$$NotAProviderGeneratorProviderDefinitionFormatExceptionCopyWithImpl<
+          $Res>;
+  @override
+  @useResult
+  $Res call({Element element});
+}
+
+/// @nodoc
+class __$$NotAProviderGeneratorProviderDefinitionFormatExceptionCopyWithImpl<
+        $Res>
+    extends _$GeneratorProviderDefinitionFormatExceptionCopyWithImpl<$Res,
+        _$NotAProviderGeneratorProviderDefinitionFormatException>
+    implements
+        _$$NotAProviderGeneratorProviderDefinitionFormatExceptionCopyWith<
+            $Res> {
+  __$$NotAProviderGeneratorProviderDefinitionFormatExceptionCopyWithImpl(
+      _$NotAProviderGeneratorProviderDefinitionFormatException _value,
+      $Res Function(_$NotAProviderGeneratorProviderDefinitionFormatException)
+          _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? element = null,
+  }) {
+    return _then(_$NotAProviderGeneratorProviderDefinitionFormatException(
+      null == element
+          ? _value.element
+          : element // ignore: cast_nullable_to_non_nullable
+              as Element,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$NotAProviderGeneratorProviderDefinitionFormatException
+    extends NotAProviderGeneratorProviderDefinitionFormatException {
+  _$NotAProviderGeneratorProviderDefinitionFormatException(this.element)
+      : super._();
+
+  @override
+  final Element element;
+
+  @override
+  String toString() {
+    return 'GeneratorProviderDefinitionFormatException.notAProvider(element: $element)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$NotAProviderGeneratorProviderDefinitionFormatException &&
+            (identical(other.element, element) || other.element == element));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, element);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$NotAProviderGeneratorProviderDefinitionFormatExceptionCopyWith<
+          _$NotAProviderGeneratorProviderDefinitionFormatException>
+      get copyWith =>
+          __$$NotAProviderGeneratorProviderDefinitionFormatExceptionCopyWithImpl<
+                  _$NotAProviderGeneratorProviderDefinitionFormatException>(
+              this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(Element element) notAProvider,
+    required TResult Function(Element element) neitherClassNorFunction,
+  }) {
+    return notAProvider(element);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(Element element)? notAProvider,
+    TResult? Function(Element element)? neitherClassNorFunction,
+  }) {
+    return notAProvider?.call(element);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(Element element)? notAProvider,
+    TResult Function(Element element)? neitherClassNorFunction,
+    required TResult orElse(),
+  }) {
+    if (notAProvider != null) {
+      return notAProvider(element);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(
+            NotAProviderGeneratorProviderDefinitionFormatException value)
+        notAProvider,
+    required TResult Function(
+            NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+                value)
+        neitherClassNorFunction,
+  }) {
+    return notAProvider(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(
+            NotAProviderGeneratorProviderDefinitionFormatException value)?
+        notAProvider,
+    TResult? Function(
+            NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+                value)?
+        neitherClassNorFunction,
+  }) {
+    return notAProvider?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(
+            NotAProviderGeneratorProviderDefinitionFormatException value)?
+        notAProvider,
+    TResult Function(
+            NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+                value)?
+        neitherClassNorFunction,
+    required TResult orElse(),
+  }) {
+    if (notAProvider != null) {
+      return notAProvider(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class NotAProviderGeneratorProviderDefinitionFormatException
+    extends GeneratorProviderDefinitionFormatException {
+  factory NotAProviderGeneratorProviderDefinitionFormatException(
+          final Element element) =
+      _$NotAProviderGeneratorProviderDefinitionFormatException;
+  NotAProviderGeneratorProviderDefinitionFormatException._() : super._();
+
+  @override
+  Element get element;
+  @override
+  @JsonKey(ignore: true)
+  _$$NotAProviderGeneratorProviderDefinitionFormatExceptionCopyWith<
+          _$NotAProviderGeneratorProviderDefinitionFormatException>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$NeitherClassNorFunctionGeneratorProviderDefinitionFormatExceptionCopyWith<
+    $Res> implements $GeneratorProviderDefinitionFormatExceptionCopyWith<$Res> {
+  factory _$$NeitherClassNorFunctionGeneratorProviderDefinitionFormatExceptionCopyWith(
+          _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException value,
+          $Res Function(
+                  _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException)
+              then) =
+      __$$NeitherClassNorFunctionGeneratorProviderDefinitionFormatExceptionCopyWithImpl<
+          $Res>;
+  @override
+  @useResult
+  $Res call({Element element});
+}
+
+/// @nodoc
+class __$$NeitherClassNorFunctionGeneratorProviderDefinitionFormatExceptionCopyWithImpl<
+        $Res>
+    extends _$GeneratorProviderDefinitionFormatExceptionCopyWithImpl<$Res,
+        _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException>
+    implements
+        _$$NeitherClassNorFunctionGeneratorProviderDefinitionFormatExceptionCopyWith<
+            $Res> {
+  __$$NeitherClassNorFunctionGeneratorProviderDefinitionFormatExceptionCopyWithImpl(
+      _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+          _value,
+      $Res Function(
+              _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException)
+          _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? element = null,
+  }) {
+    return _then(
+        _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException(
+      null == element
+          ? _value.element
+          : element // ignore: cast_nullable_to_non_nullable
+              as Element,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+    extends NeitherClassNorFunctionGeneratorProviderDefinitionFormatException {
+  _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException(
+      this.element)
+      : super._();
+
+  @override
+  final Element element;
+
+  @override
+  String toString() {
+    return 'GeneratorProviderDefinitionFormatException.neitherClassNorFunction(element: $element)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other
+                is _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException &&
+            (identical(other.element, element) || other.element == element));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, element);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$NeitherClassNorFunctionGeneratorProviderDefinitionFormatExceptionCopyWith<
+          _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException>
+      get copyWith =>
+          __$$NeitherClassNorFunctionGeneratorProviderDefinitionFormatExceptionCopyWithImpl<
+                  _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException>(
+              this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(Element element) notAProvider,
+    required TResult Function(Element element) neitherClassNorFunction,
+  }) {
+    return neitherClassNorFunction(element);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(Element element)? notAProvider,
+    TResult? Function(Element element)? neitherClassNorFunction,
+  }) {
+    return neitherClassNorFunction?.call(element);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(Element element)? notAProvider,
+    TResult Function(Element element)? neitherClassNorFunction,
+    required TResult orElse(),
+  }) {
+    if (neitherClassNorFunction != null) {
+      return neitherClassNorFunction(element);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(
+            NotAProviderGeneratorProviderDefinitionFormatException value)
+        notAProvider,
+    required TResult Function(
+            NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+                value)
+        neitherClassNorFunction,
+  }) {
+    return neitherClassNorFunction(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(
+            NotAProviderGeneratorProviderDefinitionFormatException value)?
+        notAProvider,
+    TResult? Function(
+            NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+                value)?
+        neitherClassNorFunction,
+  }) {
+    return neitherClassNorFunction?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(
+            NotAProviderGeneratorProviderDefinitionFormatException value)?
+        notAProvider,
+    TResult Function(
+            NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+                value)?
+        neitherClassNorFunction,
+    required TResult orElse(),
+  }) {
+    if (neitherClassNorFunction != null) {
+      return neitherClassNorFunction(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+    extends GeneratorProviderDefinitionFormatException {
+  factory NeitherClassNorFunctionGeneratorProviderDefinitionFormatException(
+          final Element element) =
+      _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException;
+  NeitherClassNorFunctionGeneratorProviderDefinitionFormatException._()
+      : super._();
+
+  @override
+  Element get element;
+  @override
+  @JsonKey(ignore: true)
+  _$$NeitherClassNorFunctionGeneratorProviderDefinitionFormatExceptionCopyWith<
+          _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$LegacyProviderDefinitionFormatException {
+  Element get element => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(Element element) notAProvider,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(Element element)? notAProvider,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(Element element)? notAProvider,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(
+            NotAProviderLegacyProviderDefinitionFormatException value)
+        notAProvider,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(
+            NotAProviderLegacyProviderDefinitionFormatException value)?
+        notAProvider,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(NotAProviderLegacyProviderDefinitionFormatException value)?
+        notAProvider,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $LegacyProviderDefinitionFormatExceptionCopyWith<
+          LegacyProviderDefinitionFormatException>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $LegacyProviderDefinitionFormatExceptionCopyWith<$Res> {
+  factory $LegacyProviderDefinitionFormatExceptionCopyWith(
+          LegacyProviderDefinitionFormatException value,
+          $Res Function(LegacyProviderDefinitionFormatException) then) =
+      _$LegacyProviderDefinitionFormatExceptionCopyWithImpl<$Res,
+          LegacyProviderDefinitionFormatException>;
+  @useResult
+  $Res call({Element element});
+}
+
+/// @nodoc
+class _$LegacyProviderDefinitionFormatExceptionCopyWithImpl<$Res,
+        $Val extends LegacyProviderDefinitionFormatException>
+    implements $LegacyProviderDefinitionFormatExceptionCopyWith<$Res> {
+  _$LegacyProviderDefinitionFormatExceptionCopyWithImpl(
+      this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? element = null,
+  }) {
+    return _then(_value.copyWith(
+      element: null == element
+          ? _value.element
+          : element // ignore: cast_nullable_to_non_nullable
+              as Element,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$NotAProviderLegacyProviderDefinitionFormatExceptionCopyWith<
+    $Res> implements $LegacyProviderDefinitionFormatExceptionCopyWith<$Res> {
+  factory _$$NotAProviderLegacyProviderDefinitionFormatExceptionCopyWith(
+          _$NotAProviderLegacyProviderDefinitionFormatException value,
+          $Res Function(_$NotAProviderLegacyProviderDefinitionFormatException)
+              then) =
+      __$$NotAProviderLegacyProviderDefinitionFormatExceptionCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({Element element});
+}
+
+/// @nodoc
+class __$$NotAProviderLegacyProviderDefinitionFormatExceptionCopyWithImpl<$Res>
+    extends _$LegacyProviderDefinitionFormatExceptionCopyWithImpl<$Res,
+        _$NotAProviderLegacyProviderDefinitionFormatException>
+    implements
+        _$$NotAProviderLegacyProviderDefinitionFormatExceptionCopyWith<$Res> {
+  __$$NotAProviderLegacyProviderDefinitionFormatExceptionCopyWithImpl(
+      _$NotAProviderLegacyProviderDefinitionFormatException _value,
+      $Res Function(_$NotAProviderLegacyProviderDefinitionFormatException)
+          _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? element = null,
+  }) {
+    return _then(_$NotAProviderLegacyProviderDefinitionFormatException(
+      null == element
+          ? _value.element
+          : element // ignore: cast_nullable_to_non_nullable
+              as Element,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$NotAProviderLegacyProviderDefinitionFormatException
+    extends NotAProviderLegacyProviderDefinitionFormatException {
+  _$NotAProviderLegacyProviderDefinitionFormatException(this.element)
+      : super._();
+
+  @override
+  final Element element;
+
+  @override
+  String toString() {
+    return 'LegacyProviderDefinitionFormatException.notAProvider(element: $element)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$NotAProviderLegacyProviderDefinitionFormatException &&
+            (identical(other.element, element) || other.element == element));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, element);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$NotAProviderLegacyProviderDefinitionFormatExceptionCopyWith<
+          _$NotAProviderLegacyProviderDefinitionFormatException>
+      get copyWith =>
+          __$$NotAProviderLegacyProviderDefinitionFormatExceptionCopyWithImpl<
+                  _$NotAProviderLegacyProviderDefinitionFormatException>(
               this, _$identity);
 
   @override
@@ -708,7 +1954,7 @@ class _$NotAProviderProviderDefinitionFormatException
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(
-            NotAProviderProviderDefinitionFormatException value)
+            NotAProviderLegacyProviderDefinitionFormatException value)
         notAProvider,
   }) {
     return notAProvider(this);
@@ -717,7 +1963,8 @@ class _$NotAProviderProviderDefinitionFormatException
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(NotAProviderProviderDefinitionFormatException value)?
+    TResult? Function(
+            NotAProviderLegacyProviderDefinitionFormatException value)?
         notAProvider,
   }) {
     return notAProvider?.call(this);
@@ -726,7 +1973,7 @@ class _$NotAProviderProviderDefinitionFormatException
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(NotAProviderProviderDefinitionFormatException value)?
+    TResult Function(NotAProviderLegacyProviderDefinitionFormatException value)?
         notAProvider,
     required TResult orElse(),
   }) {
@@ -737,17 +1984,18 @@ class _$NotAProviderProviderDefinitionFormatException
   }
 }
 
-abstract class NotAProviderProviderDefinitionFormatException
-    extends ProviderDefinitionFormatException {
-  factory NotAProviderProviderDefinitionFormatException(final Element element) =
-      _$NotAProviderProviderDefinitionFormatException;
-  NotAProviderProviderDefinitionFormatException._() : super._();
+abstract class NotAProviderLegacyProviderDefinitionFormatException
+    extends LegacyProviderDefinitionFormatException {
+  factory NotAProviderLegacyProviderDefinitionFormatException(
+          final Element element) =
+      _$NotAProviderLegacyProviderDefinitionFormatException;
+  NotAProviderLegacyProviderDefinitionFormatException._() : super._();
 
   @override
   Element get element;
   @override
   @JsonKey(ignore: true)
-  _$$NotAProviderProviderDefinitionFormatExceptionCopyWith<
-          _$NotAProviderProviderDefinitionFormatException>
+  _$$NotAProviderLegacyProviderDefinitionFormatExceptionCopyWith<
+          _$NotAProviderLegacyProviderDefinitionFormatException>
       get copyWith => throw _privateConstructorUsedError;
 }

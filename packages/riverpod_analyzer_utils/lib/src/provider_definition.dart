@@ -67,55 +67,31 @@ enum LegacyProviderType {
   }
 }
 
-/// A Dart representation of a provider definition.
+/// A dart representation for manually defined providers
 @freezed
-class ProviderDefinition with _$ProviderDefinition {
-  /// Manually defined providers
-  @internal
-  factory ProviderDefinition.legacy({
+class LegacyProviderDefinition with _$LegacyProviderDefinition {
+  factory LegacyProviderDefinition._({
     required String name,
     required bool isAutoDispose,
     required DartType? familyArgumentType,
     required LegacyProviderType providerType,
-    List<int>? list,
-  }) = LegacyProviderDefinition;
+  }) = _LegacyProviderDefinition;
 
-  /// Providers defined using the code generator
-  @internal
-  factory ProviderDefinition.generator({
-    required String name,
-    required bool isAutoDispose,
-  }) = GeneratorProviderDefinition;
-
-  ProviderDefinition._();
-
-  /// Decode static analysis into a more humanly readable representation of a provider.
+  /// Parses code-generator definitions, rejecting manual provider definitions.
   ///
-  /// This function will throw if the input is not a valid provider definition.
-  ///
-  /// The supported inputs as:
-  ///
-  /// - Variables, such as `final provider = Provider(...)`
-  /// - Classes and functions annoted by `@riverpod`
-  static Future<ProviderDefinition> parse(
+  /// May throw a [LegacyProviderDefinitionFormatException].
+  static Future<LegacyProviderDefinition> parse(
     Element element, {
     required AstResolver resolver,
-  }) async {
+  }) {
     if (element is VariableElement) {
-      return _parseVariable(element, resolver: resolver);
       // final provider = Provider(...);
-    } else if (element is FunctionElement) {
-      // @riverpod
-      // Model provider(ProviderRef ref) {...}
-    } else if (element is ClassElement) {
-      // @riverpod
-      // Model provider(ProviderRef ref) {...}
+      return _parseVariable(element, resolver: resolver);
     }
-
-    throw ProviderDefinitionFormatException.notAProvider(element);
+    throw LegacyProviderDefinitionFormatException.notAProvider(element);
   }
 
-  static Future<ProviderDefinition> _parseVariable(
+  static Future<LegacyProviderDefinition> _parseVariable(
     VariableElement element, {
     required AstResolver resolver,
   }) async {
@@ -123,7 +99,7 @@ class ProviderDefinition with _$ProviderDefinition {
     final isProvider = providerBaseType.isAssignableFromType(element.type);
 
     if (!isFamily && !isProvider) {
-      throw ProviderDefinitionFormatException.notAProvider(element);
+      throw LegacyProviderDefinitionFormatException.notAProvider(element);
     }
 
     final astNode = await resolver(element, resolve: true)
@@ -148,7 +124,7 @@ class ProviderDefinition with _$ProviderDefinition {
       throw UnsupportedError('Unknown type ${initializer.runtimeType}');
     }
 
-    return ProviderDefinition.legacy(
+    return LegacyProviderDefinition._(
       name: element.name,
       isAutoDispose: isAutoDispose,
       familyArgumentType: familyArgumentType,
@@ -169,6 +145,100 @@ class ProviderDefinition with _$ProviderDefinition {
   }
 }
 
+/// A dart representation for providers that needs code-generation
+///
+@freezed
+class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
+  factory GeneratorProviderDefinition._({required String name}) =
+      _GeneratorProviderDefinition;
+
+  /// Parses code-generator definitions, rejecting manual provider definitions.
+  ///
+  /// May throw a [GeneratorProviderDefinitionFormatException].
+  static Future<GeneratorProviderDefinition> parse(
+    Element element, {
+    required AstResolver resolver,
+  }) {
+    final annotations = riverpodType.annotationsOf(element);
+    if (annotations.isNotEmpty) {
+      if (element is FunctionElement) {
+        // @riverpod
+        // Model provider(ProviderRef ref) {...}
+      } else if (element is ClassElement) {
+        // @riverpod
+        // Model provider(ProviderRef ref) {...}
+      }
+      throw GeneratorProviderDefinitionFormatException.neitherClassNorFunction(
+        element,
+      );
+    }
+
+    throw GeneratorProviderDefinitionFormatException.notAProvider(element);
+  }
+}
+
+/// A dart representation of either code-gen-based providers or manually defined providers.
+@freezed
+class AnyProviderDefinition with _$AnyProviderDefinition {
+  /// Manually defined providers
+  @internal
+  factory AnyProviderDefinition.legacy(LegacyProviderDefinition value) =
+      LegacyAnyProviderDefinition;
+
+  /// Providers defined using the code generator
+  @internal
+  factory AnyProviderDefinition.generator(GeneratorProviderDefinition value) =
+      GeneratorAnyProviderDefinition;
+
+  AnyProviderDefinition._();
+
+  /// Decode static analysis into a more humanly readable representation of a provider.
+  ///
+  /// This function will throw if the input is not a valid provider definition.
+  ///
+  /// The supported inputs as:
+  ///
+  /// - Variables, such as `final provider = Provider(...)`
+  /// - Classes and functions annoted by `@riverpod`
+  static Future<AnyProviderDefinition> parse(
+    Element element, {
+    required AstResolver resolver,
+  }) async {
+    try {
+      return GeneratorAnyProviderDefinition(
+        await GeneratorProviderDefinition.parse(element, resolver: resolver),
+      );
+    } on NotAProviderGeneratorProviderDefinitionFormatException {
+      // The element is not a code-generation-based provider. Let's try another
+      // decoding mechanism.
+      // For readability, let's not nest try-catch blocks
+    } on GeneratorProviderDefinitionFormatException catch (err, stack) {
+      Error.throwWithStackTrace(
+        AnyProviderDefinitionFormatException.generatorException(err),
+        stack,
+      );
+    }
+
+    try {
+      return LegacyAnyProviderDefinition(
+        await LegacyProviderDefinition.parse(
+          element,
+          resolver: resolver,
+        ),
+      );
+    } on NotAProviderLegacyProviderDefinitionFormatException {
+      // We reached the end of the possible decoding mechanism, so element is 100%
+      // not a provider.
+      throw AnyProviderDefinitionFormatException.notAProvider(element);
+    } on LegacyProviderDefinitionFormatException catch (err, stack) {
+      Error.throwWithStackTrace(
+        AnyProviderDefinitionFormatException.legacyException(err),
+        stack,
+      );
+    }
+  }
+}
+
 /// Adds extensions to [LegacyProviderDefinition]
 extension LegacyProviderDefinitionX on LegacyProviderDefinition {
   /// Whether the provider uses the family modifier
@@ -176,17 +246,67 @@ extension LegacyProviderDefinitionX on LegacyProviderDefinition {
 }
 
 /// {@template ProviderDefinitionFormatException}
-/// An exception thrown by [ProviderDefinition.parse] if it failed to parse the input.
+/// An exception thrown by [AnyProviderDefinition.parse] if it failed to parse the input.
 ///
 /// The exception contains the failure reason.
 /// {@endtemplate}
 @freezed
-class ProviderDefinitionFormatException
-    with _$ProviderDefinitionFormatException
+class AnyProviderDefinitionFormatException
+    with _$AnyProviderDefinitionFormatException
     implements Exception {
-  /// {@macro ProviderDefinitionFormatException}
-  factory ProviderDefinitionFormatException.notAProvider(Element element) =
+  /// The element does not represent a provider definition.
+  factory AnyProviderDefinitionFormatException.generatorException(
+    GeneratorProviderDefinitionFormatException exception,
+  ) = GeneratorAnyProviderDefinitionFormatException;
+
+  /// The element does not represent a provider definition.
+  factory AnyProviderDefinitionFormatException.legacyException(
+    LegacyProviderDefinitionFormatException exception,
+  ) = LegacyAnyProviderDefinitionFormatException;
+
+  /// The element does not represent a provider definition.
+  factory AnyProviderDefinitionFormatException.notAProvider(Element element) =
       NotAProviderProviderDefinitionFormatException;
 
-  ProviderDefinitionFormatException._();
+  AnyProviderDefinitionFormatException._();
+}
+
+/// {@template ProviderDefinitionFormatException}
+/// An exception thrown by [AnyProviderDefinition.parse] if it failed to parse the input.
+///
+/// The exception contains the failure reason.
+/// {@endtemplate}
+@freezed
+class GeneratorProviderDefinitionFormatException
+    with _$GeneratorProviderDefinitionFormatException
+    implements Exception {
+  /// The element does not represent a provider definition.
+  factory GeneratorProviderDefinitionFormatException.notAProvider(
+    Element element,
+  ) = NotAProviderGeneratorProviderDefinitionFormatException;
+
+  /// The element is correctly annotated by @riverpod, but is neither a class
+  /// nor a function.
+  factory GeneratorProviderDefinitionFormatException.neitherClassNorFunction(
+    Element element,
+  ) = NeitherClassNorFunctionGeneratorProviderDefinitionFormatException;
+
+  GeneratorProviderDefinitionFormatException._();
+}
+
+/// {@template ProviderDefinitionFormatException}
+/// An exception thrown by [AnyProviderDefinition.parse] if it failed to parse the input.
+///
+/// The exception contains the failure reason.
+/// {@endtemplate}
+@freezed
+class LegacyProviderDefinitionFormatException
+    with _$LegacyProviderDefinitionFormatException
+    implements Exception {
+  /// The element does not represent a provider definition.
+  factory LegacyProviderDefinitionFormatException.notAProvider(
+    Element element,
+  ) = NotAProviderLegacyProviderDefinitionFormatException;
+
+  LegacyProviderDefinitionFormatException._();
 }

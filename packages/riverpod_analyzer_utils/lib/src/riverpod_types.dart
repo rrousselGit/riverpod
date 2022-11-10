@@ -1,5 +1,9 @@
 import 'type_checker.dart';
 
+/// Matches with the `Riverpod` annotation from riverpod_annotation.
+const riverpodType =
+    TypeChecker.fromName('Riverpod', packageName: 'riverpod_annotation');
+
 /// [TypeChecker] for `ProviderBase`
 const providerBaseType =
     TypeChecker.fromName('ProviderBase', packageName: 'riverpod');

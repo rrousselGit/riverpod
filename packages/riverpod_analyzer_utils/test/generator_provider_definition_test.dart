@@ -6,25 +6,35 @@ import 'analyser_test_utils.dart';
 
 void main() {
   group('ProviderDefinition.parse', () {
-    testSource('Decode name', source: '''
-import 'package:riverpod/riverpod.dart';
+    testSource('Decode name', source: r'''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final first = Provider<int>((ref) => 0);
-final second = Provider<int>((ref) => 0);
+
+@riverpod
+int first(FirstRef ref) => 0;
+
+@riverpod
+int second(SecondRef ref) => 0;
+
+@riverpod
+class Counter extends _$Counter {
+  @override
+  int build() => 0;
+}
 ''', (resolver) async {
-      final providers =
-          await resolver.parseAllProviderDefinitions(['first', 'second']);
+      final providers = await resolver
+          .parseAllGeneratorProviderDefinitions(['first', 'second']);
 
       expect(providers, {
-        'first':
-            isA<ProviderDefinition>().having((e) => e.name, 'name', 'first'),
-        'second':
-            isA<ProviderDefinition>().having((e) => e.name, 'name', 'second'),
+        'first': isA<GeneratorProviderDefinition>()
+            .having((e) => e.name, 'name', 'first'),
+        'second': isA<GeneratorProviderDefinition>()
+            .having((e) => e.name, 'name', 'second'),
       });
     });
-
+/*
     testSource('Decode LegacyProviderType.provider', source: '''
-import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 final alwaysAliveProvider = Provider<int>((ref) => 0);
 final alwaysAliveFamily = Provider.family<int, int>((ref, id) => 0);
@@ -57,7 +67,7 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) 
     });
 
     testSource('Decode LegacyProviderType.futureProvider', source: '''
-import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 final alwaysAliveProvider = FutureProvider<int>((ref) => 0);
 final alwaysAliveFamily = FutureProvider.family<int, int>((ref, id) => 0);
@@ -90,7 +100,7 @@ final explicitAutoDisposeFamily = AutoDisposeFutureProviderFamily<int, int>((ref
     });
 
     testSource('Decode LegacyProviderType.stateProvider', source: '''
-import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 final alwaysAliveProvider = StateProvider<int>((ref) => 0);
 final alwaysAliveFamily = StateProvider.family<int, int>((ref, id) => 0);
@@ -123,7 +133,7 @@ final explicitAutoDisposeFamily = AutoDisposeStateProviderFamily<int, int>((ref,
     });
 
     testSource('Decode LegacyProviderType.streamProvider', source: '''
-import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 final alwaysAliveProvider = StreamProvider<int>((ref) => Stream.empty());
 final alwaysAliveFamily = StreamProvider.family<int, int>((ref, id) => Stream.empty());
@@ -156,7 +166,7 @@ final explicitAutoDisposeFamily = AutoDisposeStreamProviderFamily<int, int>((ref
     });
 
     testSource('Decode LegacyProviderType.notifierProvider', source: '''
-import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 final alwaysAliveProvider = NotifierProvider<Notifier<int>, int>(() => throw UnimplementedError());
 final alwaysAliveFamily = NotifierProvider.family<FamilyNotifier<int, int>, int, int>(() => throw UnimplementedError());
@@ -189,7 +199,7 @@ final explicitAutoDisposeFamily = AutoDisposeNotifierProviderFamily<AutoDisposeF
     });
 
     testSource('Decode LegacyProviderType.asyncNotifierProvider', source: '''
-import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 final alwaysAliveProvider = AsyncNotifierProvider<AsyncNotifier<int>, int>(() => throw UnimplementedError());
 final alwaysAliveFamily = AsyncNotifierProvider.family<FamilyAsyncNotifier<int, int>, int, int>(() => throw UnimplementedError());
@@ -256,7 +266,7 @@ final explicitAutoDisposeFamily = AutoDisposeChangeNotifierProviderFamily<ValueN
     });
 
     testSource('Decode LegacyProviderType.stateNotifierProvider', source: '''
-import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 final alwaysAliveProvider = StateNotifierProvider<StateController<int>, int>((ref) => StateController(0));
 final alwaysAliveFamily = StateNotifierProvider.family<StateController<int>, int, int>((ref, id) => StateController(0));
@@ -289,7 +299,7 @@ final explicitAutoDisposeFamily = AutoDisposeStateNotifierProviderFamily<StateCo
     });
 
     testSource('Decode isAutoDispose', source: '''
-import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 final alwaysAliveProvider = Provider<int>((ref) => 0);
 final alwaysAliveFamily = Provider.family<int, int>((ref, id) => 0);
@@ -332,7 +342,7 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) 
     });
 
     testSource('Decode families', source: '''
-import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 final alwaysAliveProvider = Provider<int>((ref) => 0);
 final autoDisposeProvider = Provider.autoDispose<int>((ref) => 0);
@@ -384,6 +394,6 @@ final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>((ref, id) 
           reason: '${provider.key} has int parameters',
         );
       }
-    });
+    });*/
   });
 }
