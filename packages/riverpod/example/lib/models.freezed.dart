@@ -33,34 +33,37 @@ mixin _$Configuration {
 abstract class $ConfigurationCopyWith<$Res> {
   factory $ConfigurationCopyWith(
           Configuration value, $Res Function(Configuration) then) =
-      _$ConfigurationCopyWithImpl<$Res>;
+      _$ConfigurationCopyWithImpl<$Res, Configuration>;
+  @useResult
   $Res call({String publicKey, String privateKey});
 }
 
 /// @nodoc
-class _$ConfigurationCopyWithImpl<$Res>
+class _$ConfigurationCopyWithImpl<$Res, $Val extends Configuration>
     implements $ConfigurationCopyWith<$Res> {
   _$ConfigurationCopyWithImpl(this._value, this._then);
 
-  final Configuration _value;
   // ignore: unused_field
-  final $Res Function(Configuration) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? publicKey = freezed,
-    Object? privateKey = freezed,
+    Object? publicKey = null,
+    Object? privateKey = null,
   }) {
     return _then(_value.copyWith(
-      publicKey: publicKey == freezed
+      publicKey: null == publicKey
           ? _value.publicKey
           : publicKey // ignore: cast_nullable_to_non_nullable
               as String,
-      privateKey: privateKey == freezed
+      privateKey: null == privateKey
           ? _value.privateKey
           : privateKey // ignore: cast_nullable_to_non_nullable
               as String,
-    ));
+    ) as $Val);
   }
 }
 
@@ -71,31 +74,30 @@ abstract class _$$_ConfigurationCopyWith<$Res>
           _$_Configuration value, $Res Function(_$_Configuration) then) =
       __$$_ConfigurationCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({String publicKey, String privateKey});
 }
 
 /// @nodoc
 class __$$_ConfigurationCopyWithImpl<$Res>
-    extends _$ConfigurationCopyWithImpl<$Res>
+    extends _$ConfigurationCopyWithImpl<$Res, _$_Configuration>
     implements _$$_ConfigurationCopyWith<$Res> {
   __$$_ConfigurationCopyWithImpl(
       _$_Configuration _value, $Res Function(_$_Configuration) _then)
-      : super(_value, (v) => _then(v as _$_Configuration));
+      : super(_value, _then);
 
-  @override
-  _$_Configuration get _value => super._value as _$_Configuration;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? publicKey = freezed,
-    Object? privateKey = freezed,
+    Object? publicKey = null,
+    Object? privateKey = null,
   }) {
     return _then(_$_Configuration(
-      publicKey: publicKey == freezed
+      publicKey: null == publicKey
           ? _value.publicKey
           : publicKey // ignore: cast_nullable_to_non_nullable
               as String,
-      privateKey: privateKey == freezed
+      privateKey: null == privateKey
           ? _value.privateKey
           : privateKey // ignore: cast_nullable_to_non_nullable
               as String,
@@ -127,20 +129,19 @@ class _$_Configuration implements _Configuration {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_Configuration &&
-            const DeepCollectionEquality().equals(other.publicKey, publicKey) &&
-            const DeepCollectionEquality()
-                .equals(other.privateKey, privateKey));
+            (identical(other.publicKey, publicKey) ||
+                other.publicKey == publicKey) &&
+            (identical(other.privateKey, privateKey) ||
+                other.privateKey == privateKey));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(publicKey),
-      const DeepCollectionEquality().hash(privateKey));
+  int get hashCode => Object.hash(runtimeType, publicKey, privateKey);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_ConfigurationCopyWith<_$_Configuration> get copyWith =>
       __$$_ConfigurationCopyWithImpl<_$_Configuration>(this, _$identity);
 
@@ -188,37 +189,41 @@ mixin _$MarvelResponse {
 abstract class $MarvelResponseCopyWith<$Res> {
   factory $MarvelResponseCopyWith(
           MarvelResponse value, $Res Function(MarvelResponse) then) =
-      _$MarvelResponseCopyWithImpl<$Res>;
+      _$MarvelResponseCopyWithImpl<$Res, MarvelResponse>;
+  @useResult
   $Res call({MarvelData data});
 
   $MarvelDataCopyWith<$Res> get data;
 }
 
 /// @nodoc
-class _$MarvelResponseCopyWithImpl<$Res>
+class _$MarvelResponseCopyWithImpl<$Res, $Val extends MarvelResponse>
     implements $MarvelResponseCopyWith<$Res> {
   _$MarvelResponseCopyWithImpl(this._value, this._then);
 
-  final MarvelResponse _value;
   // ignore: unused_field
-  final $Res Function(MarvelResponse) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? data = freezed,
+    Object? data = null,
   }) {
     return _then(_value.copyWith(
-      data: data == freezed
+      data: null == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
               as MarvelData,
-    ));
+    ) as $Val);
   }
 
   @override
+  @pragma('vm:prefer-inline')
   $MarvelDataCopyWith<$Res> get data {
     return $MarvelDataCopyWith<$Res>(_value.data, (value) {
-      return _then(_value.copyWith(data: value));
+      return _then(_value.copyWith(data: value) as $Val);
     });
   }
 }
@@ -230,6 +235,7 @@ abstract class _$$_MarvelResponseCopyWith<$Res>
           _$_MarvelResponse value, $Res Function(_$_MarvelResponse) then) =
       __$$_MarvelResponseCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({MarvelData data});
 
   @override
@@ -238,21 +244,19 @@ abstract class _$$_MarvelResponseCopyWith<$Res>
 
 /// @nodoc
 class __$$_MarvelResponseCopyWithImpl<$Res>
-    extends _$MarvelResponseCopyWithImpl<$Res>
+    extends _$MarvelResponseCopyWithImpl<$Res, _$_MarvelResponse>
     implements _$$_MarvelResponseCopyWith<$Res> {
   __$$_MarvelResponseCopyWithImpl(
       _$_MarvelResponse _value, $Res Function(_$_MarvelResponse) _then)
-      : super(_value, (v) => _then(v as _$_MarvelResponse));
+      : super(_value, _then);
 
-  @override
-  _$_MarvelResponse get _value => super._value as _$_MarvelResponse;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? data = freezed,
+    Object? data = null,
   }) {
     return _then(_$_MarvelResponse(
-      data == freezed
+      null == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
               as MarvelData,
@@ -281,16 +285,16 @@ class _$_MarvelResponse implements _MarvelResponse {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_MarvelResponse &&
-            const DeepCollectionEquality().equals(other.data, data));
+            (identical(other.data, data) || other.data == data));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(data));
+  int get hashCode => Object.hash(runtimeType, data);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_MarvelResponseCopyWith<_$_MarvelResponse> get copyWith =>
       __$$_MarvelResponseCopyWithImpl<_$_MarvelResponse>(this, _$identity);
 
@@ -334,28 +338,32 @@ mixin _$MarvelData {
 abstract class $MarvelDataCopyWith<$Res> {
   factory $MarvelDataCopyWith(
           MarvelData value, $Res Function(MarvelData) then) =
-      _$MarvelDataCopyWithImpl<$Res>;
+      _$MarvelDataCopyWithImpl<$Res, MarvelData>;
+  @useResult
   $Res call({List<Map<String, Object?>> results});
 }
 
 /// @nodoc
-class _$MarvelDataCopyWithImpl<$Res> implements $MarvelDataCopyWith<$Res> {
+class _$MarvelDataCopyWithImpl<$Res, $Val extends MarvelData>
+    implements $MarvelDataCopyWith<$Res> {
   _$MarvelDataCopyWithImpl(this._value, this._then);
 
-  final MarvelData _value;
   // ignore: unused_field
-  final $Res Function(MarvelData) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? results = freezed,
+    Object? results = null,
   }) {
     return _then(_value.copyWith(
-      results: results == freezed
+      results: null == results
           ? _value.results
           : results // ignore: cast_nullable_to_non_nullable
               as List<Map<String, Object?>>,
-    ));
+    ) as $Val);
   }
 }
 
@@ -366,25 +374,25 @@ abstract class _$$_MarvelDataCopyWith<$Res>
           _$_MarvelData value, $Res Function(_$_MarvelData) then) =
       __$$_MarvelDataCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({List<Map<String, Object?>> results});
 }
 
 /// @nodoc
-class __$$_MarvelDataCopyWithImpl<$Res> extends _$MarvelDataCopyWithImpl<$Res>
+class __$$_MarvelDataCopyWithImpl<$Res>
+    extends _$MarvelDataCopyWithImpl<$Res, _$_MarvelData>
     implements _$$_MarvelDataCopyWith<$Res> {
   __$$_MarvelDataCopyWithImpl(
       _$_MarvelData _value, $Res Function(_$_MarvelData) _then)
-      : super(_value, (v) => _then(v as _$_MarvelData));
+      : super(_value, _then);
 
-  @override
-  _$_MarvelData get _value => super._value as _$_MarvelData;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? results = freezed,
+    Object? results = null,
   }) {
     return _then(_$_MarvelData(
-      results == freezed
+      null == results
           ? _value._results
           : results // ignore: cast_nullable_to_non_nullable
               as List<Map<String, Object?>>,
@@ -427,6 +435,7 @@ class _$_MarvelData implements _MarvelData {
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_MarvelDataCopyWith<_$_MarvelData> get copyWith =>
       __$$_MarvelDataCopyWithImpl<_$_MarvelData>(this, _$identity);
 
@@ -469,33 +478,37 @@ mixin _$Comic {
 /// @nodoc
 abstract class $ComicCopyWith<$Res> {
   factory $ComicCopyWith(Comic value, $Res Function(Comic) then) =
-      _$ComicCopyWithImpl<$Res>;
+      _$ComicCopyWithImpl<$Res, Comic>;
+  @useResult
   $Res call({int id, String title});
 }
 
 /// @nodoc
-class _$ComicCopyWithImpl<$Res> implements $ComicCopyWith<$Res> {
+class _$ComicCopyWithImpl<$Res, $Val extends Comic>
+    implements $ComicCopyWith<$Res> {
   _$ComicCopyWithImpl(this._value, this._then);
 
-  final Comic _value;
   // ignore: unused_field
-  final $Res Function(Comic) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
-    Object? title = freezed,
+    Object? id = null,
+    Object? title = null,
   }) {
     return _then(_value.copyWith(
-      id: id == freezed
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      title: title == freezed
+      title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-    ));
+    ) as $Val);
   }
 }
 
@@ -504,29 +517,28 @@ abstract class _$$_ComicCopyWith<$Res> implements $ComicCopyWith<$Res> {
   factory _$$_ComicCopyWith(_$_Comic value, $Res Function(_$_Comic) then) =
       __$$_ComicCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({int id, String title});
 }
 
 /// @nodoc
-class __$$_ComicCopyWithImpl<$Res> extends _$ComicCopyWithImpl<$Res>
+class __$$_ComicCopyWithImpl<$Res> extends _$ComicCopyWithImpl<$Res, _$_Comic>
     implements _$$_ComicCopyWith<$Res> {
   __$$_ComicCopyWithImpl(_$_Comic _value, $Res Function(_$_Comic) _then)
-      : super(_value, (v) => _then(v as _$_Comic));
+      : super(_value, _then);
 
-  @override
-  _$_Comic get _value => super._value as _$_Comic;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
-    Object? title = freezed,
+    Object? id = null,
+    Object? title = null,
   }) {
     return _then(_$_Comic(
-      id: id == freezed
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      title: title == freezed
+      title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
@@ -557,19 +569,17 @@ class _$_Comic implements _Comic {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_Comic &&
-            const DeepCollectionEquality().equals(other.id, id) &&
-            const DeepCollectionEquality().equals(other.title, title));
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.title, title) || other.title == title));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(id),
-      const DeepCollectionEquality().hash(title));
+  int get hashCode => Object.hash(runtimeType, id, title);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_ComicCopyWith<_$_Comic> get copyWith =>
       __$$_ComicCopyWithImpl<_$_Comic>(this, _$identity);
 

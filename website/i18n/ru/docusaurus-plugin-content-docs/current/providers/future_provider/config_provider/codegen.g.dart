@@ -29,14 +29,14 @@ class _SystemHash {
   }
 }
 
-String $fetchConfigrationHash() => r'924bbed412597a6359d5468329c9be1a074da987';
+String $fetchconfigurationHash() => r'924bbed412597a6359d5468329c9be1a074da987';
 
-/// See also [fetchConfigration].
-final fetchConfigrationProvider = AutoDisposeFutureProvider<Configuration>(
-  fetchConfigration,
-  name: r'fetchConfigrationProvider',
+/// See also [fetchconfiguration].
+final fetchconfigurationProvider = AutoDisposeFutureProvider<Configuration>(
+  fetchconfiguration,
+  name: r'fetchconfigurationProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : $fetchConfigrationHash,
+      : $fetchconfigurationHash,
 );
-typedef FetchConfigrationRef = AutoDisposeFutureProviderRef<Configuration>;
+typedef FetchconfigurationRef = AutoDisposeFutureProviderRef<Configuration>;
