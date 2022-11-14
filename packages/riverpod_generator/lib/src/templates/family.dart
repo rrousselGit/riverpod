@@ -1,14 +1,16 @@
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
+
 import '../models.dart';
 
 class FamilyTemplate {
   FamilyTemplate(this.data);
 
-  final Data data;
+  final GeneratorProviderDefinition data;
 
   @override
   String toString() {
     return '''
-${data.providerDoc}
+${data.docs}
 final ${data.providerName} = ${data.familyName}();
 
 class ${data.familyName} extends Family<${data.exposedValueDisplayType}> {

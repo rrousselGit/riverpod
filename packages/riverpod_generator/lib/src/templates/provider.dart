@@ -20,7 +20,7 @@ final ${data.providerName} = ${data.providerTypeDisplayString}(
   $create,
   name: r'${data.providerName}',
   debugGetCreateSourceHash: ${data.hashFn},
-  dependencies: ${null /* data.dependencyString */},
+  dependencies: ${throw 42},
 );''';
   }
 

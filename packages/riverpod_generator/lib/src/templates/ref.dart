@@ -15,14 +15,12 @@ class RefTemplate {
       functional: (fn) {
         return fn.type.map(
           (_) => 'ProviderRef',
-          futureOr: (_) => 'FutureProviderRef',
           future: (_) => 'FutureProviderRef',
         );
       },
       notifier: (notifier) {
         return notifier.type.map(
           (_) => 'NotifierProviderRef',
-          futureOr: (_) => 'AsyncNotifierProviderRef',
           future: (_) => 'AsyncNotifierProviderRef',
         );
       },
