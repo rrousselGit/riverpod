@@ -62,7 +62,7 @@ class RiverpodGenerator
           Error.throwWithStackTrace(
             InvalidGenerationSourceError(
               '@riverpod used on something that is not a provider',
-              element: e.element,
+              element: element,
             ),
             stack,
           );
@@ -71,7 +71,7 @@ class RiverpodGenerator
           Error.throwWithStackTrace(
             InvalidGenerationSourceError(
               '@riverpod can only be applied on functions and classes. Failing element: ${element.name}',
-              element: e.element,
+              element: element,
             ),
             stack,
           );
@@ -80,7 +80,7 @@ class RiverpodGenerator
           Error.throwWithStackTrace(
             InvalidGenerationSourceError(
               '@riverpod can only be used once per element',
-              element: e.element,
+              element: element,
             ),
             stack,
           );
@@ -89,7 +89,7 @@ class RiverpodGenerator
           Error.throwWithStackTrace(
             InvalidGenerationSourceError(
               '@riverpod classes must define a build method',
-              element: e.element,
+              element: element,
             ),
             stack,
           );

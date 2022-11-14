@@ -88,7 +88,7 @@ class LegacyProviderDefinition with _$LegacyProviderDefinition {
       // final provider = Provider(...);
       return _parseVariable(element, resolver: resolver);
     }
-    throw LegacyProviderDefinitionFormatException.notAProvider(element);
+    throw LegacyProviderDefinitionFormatException.notAProvider();
   }
 
   static Future<LegacyProviderDefinition> _parseVariable(
@@ -99,7 +99,7 @@ class LegacyProviderDefinition with _$LegacyProviderDefinition {
     final isProvider = providerBaseType.isAssignableFromType(element.type);
 
     if (!isFamily && !isProvider) {
-      throw LegacyProviderDefinitionFormatException.notAProvider(element);
+      throw LegacyProviderDefinitionFormatException.notAProvider();
     }
 
     final astNode = await resolver(element, resolve: true)
@@ -265,12 +265,10 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
   }) async {
     final annotations = riverpodType.annotationsOf(element);
     if (annotations.isEmpty) {
-      throw GeneratorProviderDefinitionFormatException.notAProvider(element);
+      throw GeneratorProviderDefinitionFormatException.notAProvider();
     }
     if (annotations.length > 1) {
-      throw GeneratorProviderDefinitionFormatException.tooManyAnnotations(
-        element,
-      );
+      throw GeneratorProviderDefinitionFormatException.tooManyAnnotations();
     }
 
     final annotation = annotations.single;
@@ -304,9 +302,7 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
         docs: element.documentationComment,
       );
     }
-    throw GeneratorProviderDefinitionFormatException.neitherClassNorFunction(
-      element,
-    );
+    throw GeneratorProviderDefinitionFormatException.neitherClassNorFunction();
   }
 
   static GeneratorCreatedType _parseStateTypeFromReturnType(
@@ -330,7 +326,7 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
     return element.methods.firstWhere(
       (element) => element.name == 'build',
       orElse: () {
-        throw GeneratorProviderDefinitionFormatException.noBuildMethod(element);
+        throw GeneratorProviderDefinitionFormatException.noBuildMethod();
       },
     );
   }
@@ -446,25 +442,21 @@ class GeneratorProviderDefinitionFormatException
     with _$GeneratorProviderDefinitionFormatException
     implements Exception {
   /// The element does not represent a provider definition.
-  factory GeneratorProviderDefinitionFormatException.notAProvider(
-    Element element,
-  ) = NotAProviderGeneratorProviderDefinitionFormatException;
+  factory GeneratorProviderDefinitionFormatException.notAProvider() =
+      NotAProviderGeneratorProviderDefinitionFormatException;
 
   /// The element is correctly annotated by @riverpod, but is neither a class
   /// nor a function.
-  factory GeneratorProviderDefinitionFormatException.neitherClassNorFunction(
-    Element element,
-  ) = NeitherClassNorFunctionGeneratorProviderDefinitionFormatException;
+  factory GeneratorProviderDefinitionFormatException.neitherClassNorFunction() =
+      NeitherClassNorFunctionGeneratorProviderDefinitionFormatException;
 
   /// The element was annotated with @riverpod more than once
-  factory GeneratorProviderDefinitionFormatException.tooManyAnnotations(
-    Element element,
-  ) = TooManyAnnotationGeneratorProviderDefinitionFormatException;
+  factory GeneratorProviderDefinitionFormatException.tooManyAnnotations() =
+      TooManyAnnotationGeneratorProviderDefinitionFormatException;
 
   /// The element was annotated with @riverpod more than once
-  factory GeneratorProviderDefinitionFormatException.noBuildMethod(
-    Element element,
-  ) = NoBuildMethodGeneratorProviderDefinitionFormatException;
+  factory GeneratorProviderDefinitionFormatException.noBuildMethod() =
+      NoBuildMethodGeneratorProviderDefinitionFormatException;
 }
 
 /// {@template ProviderDefinitionFormatException}
@@ -477,9 +469,8 @@ class LegacyProviderDefinitionFormatException
     with _$LegacyProviderDefinitionFormatException
     implements Exception {
   /// The element does not represent a provider definition.
-  factory LegacyProviderDefinitionFormatException.notAProvider(
-    Element element,
-  ) = NotAProviderLegacyProviderDefinitionFormatException;
+  factory LegacyProviderDefinitionFormatException.notAProvider() =
+      NotAProviderLegacyProviderDefinitionFormatException;
 
   LegacyProviderDefinitionFormatException._();
 }
