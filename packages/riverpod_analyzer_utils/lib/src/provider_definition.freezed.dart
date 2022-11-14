@@ -205,6 +205,294 @@ abstract class _LegacyProviderDefinition implements LegacyProviderDefinition {
 }
 
 /// @nodoc
+mixin _$GeneratorProviderDependency {
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() provider,
+    required TResult Function() string,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? provider,
+    TResult? Function()? string,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? provider,
+    TResult Function()? string,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ProviderPlainGeneratorProviderDependency value)
+        provider,
+    required TResult Function(StringGeneratorProviderDependency value) string,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ProviderPlainGeneratorProviderDependency value)? provider,
+    TResult? Function(StringGeneratorProviderDependency value)? string,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ProviderPlainGeneratorProviderDependency value)? provider,
+    TResult Function(StringGeneratorProviderDependency value)? string,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $GeneratorProviderDependencyCopyWith<$Res> {
+  factory $GeneratorProviderDependencyCopyWith(
+          GeneratorProviderDependency value,
+          $Res Function(GeneratorProviderDependency) then) =
+      _$GeneratorProviderDependencyCopyWithImpl<$Res,
+          GeneratorProviderDependency>;
+}
+
+/// @nodoc
+class _$GeneratorProviderDependencyCopyWithImpl<$Res,
+        $Val extends GeneratorProviderDependency>
+    implements $GeneratorProviderDependencyCopyWith<$Res> {
+  _$GeneratorProviderDependencyCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+}
+
+/// @nodoc
+abstract class _$$ProviderPlainGeneratorProviderDependencyCopyWith<$Res> {
+  factory _$$ProviderPlainGeneratorProviderDependencyCopyWith(
+          _$ProviderPlainGeneratorProviderDependency value,
+          $Res Function(_$ProviderPlainGeneratorProviderDependency) then) =
+      __$$ProviderPlainGeneratorProviderDependencyCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$ProviderPlainGeneratorProviderDependencyCopyWithImpl<$Res>
+    extends _$GeneratorProviderDependencyCopyWithImpl<$Res,
+        _$ProviderPlainGeneratorProviderDependency>
+    implements _$$ProviderPlainGeneratorProviderDependencyCopyWith<$Res> {
+  __$$ProviderPlainGeneratorProviderDependencyCopyWithImpl(
+      _$ProviderPlainGeneratorProviderDependency _value,
+      $Res Function(_$ProviderPlainGeneratorProviderDependency) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+@internal
+class _$ProviderPlainGeneratorProviderDependency
+    extends ProviderPlainGeneratorProviderDependency {
+  _$ProviderPlainGeneratorProviderDependency() : super._();
+
+  @override
+  String toString() {
+    return 'GeneratorProviderDependency.provider()';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ProviderPlainGeneratorProviderDependency);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() provider,
+    required TResult Function() string,
+  }) {
+    return provider();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? provider,
+    TResult? Function()? string,
+  }) {
+    return provider?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? provider,
+    TResult Function()? string,
+    required TResult orElse(),
+  }) {
+    if (provider != null) {
+      return provider();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ProviderPlainGeneratorProviderDependency value)
+        provider,
+    required TResult Function(StringGeneratorProviderDependency value) string,
+  }) {
+    return provider(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ProviderPlainGeneratorProviderDependency value)? provider,
+    TResult? Function(StringGeneratorProviderDependency value)? string,
+  }) {
+    return provider?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ProviderPlainGeneratorProviderDependency value)? provider,
+    TResult Function(StringGeneratorProviderDependency value)? string,
+    required TResult orElse(),
+  }) {
+    if (provider != null) {
+      return provider(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class ProviderPlainGeneratorProviderDependency
+    extends GeneratorProviderDependency {
+  factory ProviderPlainGeneratorProviderDependency() =
+      _$ProviderPlainGeneratorProviderDependency;
+  ProviderPlainGeneratorProviderDependency._() : super._();
+}
+
+/// @nodoc
+abstract class _$$StringGeneratorProviderDependencyCopyWith<$Res> {
+  factory _$$StringGeneratorProviderDependencyCopyWith(
+          _$StringGeneratorProviderDependency value,
+          $Res Function(_$StringGeneratorProviderDependency) then) =
+      __$$StringGeneratorProviderDependencyCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$StringGeneratorProviderDependencyCopyWithImpl<$Res>
+    extends _$GeneratorProviderDependencyCopyWithImpl<$Res,
+        _$StringGeneratorProviderDependency>
+    implements _$$StringGeneratorProviderDependencyCopyWith<$Res> {
+  __$$StringGeneratorProviderDependencyCopyWithImpl(
+      _$StringGeneratorProviderDependency _value,
+      $Res Function(_$StringGeneratorProviderDependency) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+@internal
+class _$StringGeneratorProviderDependency
+    extends StringGeneratorProviderDependency {
+  _$StringGeneratorProviderDependency() : super._();
+
+  @override
+  String toString() {
+    return 'GeneratorProviderDependency.string()';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$StringGeneratorProviderDependency);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() provider,
+    required TResult Function() string,
+  }) {
+    return string();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? provider,
+    TResult? Function()? string,
+  }) {
+    return string?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? provider,
+    TResult Function()? string,
+    required TResult orElse(),
+  }) {
+    if (string != null) {
+      return string();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ProviderPlainGeneratorProviderDependency value)
+        provider,
+    required TResult Function(StringGeneratorProviderDependency value) string,
+  }) {
+    return string(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ProviderPlainGeneratorProviderDependency value)? provider,
+    TResult? Function(StringGeneratorProviderDependency value)? string,
+  }) {
+    return string?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ProviderPlainGeneratorProviderDependency value)? provider,
+    TResult Function(StringGeneratorProviderDependency value)? string,
+    required TResult orElse(),
+  }) {
+    if (string != null) {
+      return string(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class StringGeneratorProviderDependency
+    extends GeneratorProviderDependency {
+  factory StringGeneratorProviderDependency() =
+      _$StringGeneratorProviderDependency;
+  StringGeneratorProviderDependency._() : super._();
+}
+
+/// @nodoc
 mixin _$GeneratorCreatedType {
   DartType get stateType => throw _privateConstructorUsedError;
   @optionalTypeArgs

@@ -145,6 +145,30 @@ class LegacyProviderDefinition with _$LegacyProviderDefinition {
   }
 }
 
+/// Represents the possible values of `@Riverpod(dependencies: [...])`
+@freezed
+class GeneratorProviderDependency with _$GeneratorProviderDependency {
+  /// A provider variable was passed in:
+  ///
+  /// ```dart
+  /// @Riverpod(dependencies: [function, Notifier])
+  /// ```
+  @internal
+  factory GeneratorProviderDependency.provider() =
+      ProviderPlainGeneratorProviderDependency;
+
+  GeneratorProviderDependency._();
+
+  /// A [String] was passed as dependency
+  ///
+  /// ```dart
+  /// @Riverpod(dependencies: [function, Notifier])
+  /// ```
+  @internal
+  factory GeneratorProviderDependency.string() =
+      StringGeneratorProviderDependency;
+}
+
 /// A dart representation for providers that needs code-generation
 @freezed
 class GeneratorCreatedType with _$GeneratorCreatedType {
