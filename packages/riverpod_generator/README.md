@@ -158,7 +158,7 @@ class Home extends ConsumerWidget {
 
 ## Global configuration
 
-You can change provider name suffix in the build.yaml file
+You can change provider name suffix in the build.yaml file:
 
 ```yaml
 targets:
@@ -166,7 +166,7 @@ targets:
     builders:
       riverpod_generator:
         options:
-          provider_name_suffix: "Foo" // "Provider" is default
+          provider_name_suffix: "Provider" # (default)
 ```
 
 [family]: https://riverpod.dev/docs/concepts/modifiers/family
