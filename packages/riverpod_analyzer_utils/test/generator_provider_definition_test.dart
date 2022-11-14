@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/element/element.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
@@ -70,6 +71,131 @@ class KeepAliveNotifier extends _$KeepAliveNotifier {
           provider.value.isAutoDispose,
           false,
           reason: '${provider.key} is a Provider',
+        );
+      }
+    });
+
+    testSource('Decodes arguments', source: r'''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'dart:async';
+
+@riverpod
+int plain(IntegerRef ref) => 0;
+
+@riverpod
+class PlainNotifier extends _$PlainNotifier {
+  @override
+  int build() => 0;
+}
+
+@riverpod
+int family1(IntegerRef ref, int a, {String? b, double c = 42}) => 0;
+
+@riverpod
+class FamilyNotifier1 extends _$FamilyNotifier1 {
+  @override
+  int build(int a, {String? b, double c = 42}) => 0;
+}
+
+@riverpod
+int family2(IntegerRef ref, int a, [String? b, double c = 42]) => 0;
+
+@riverpod
+class FamilyNotifier2 extends _$FamilyNotifier2 {
+  @override
+  int build(int a, [String? b, double c = 42]) => 0;
+}
+''', (resolver) async {
+      final typeProvider =
+          await resolver.libraries.first.then((value) => value.typeProvider);
+
+      final plain = await resolver.parseAllGeneratorProviderDefinitions([
+        'plain',
+        'PlainNotifier',
+      ]);
+      final namedParams = await resolver.parseAllGeneratorProviderDefinitions([
+        'family1',
+        'FamilyNotifier1',
+      ]);
+      final positionalParams =
+          await resolver.parseAllGeneratorProviderDefinitions([
+        'family2',
+        'FamilyNotifier2',
+      ]);
+
+      for (final provider in plain.entries) {
+        expect(
+          provider.value.parameters,
+          isEmpty,
+          reason: '${provider.key} has no param',
+        );
+      }
+      for (final provider in namedParams.entries) {
+        expect(
+          provider.value.parameters,
+          [
+            isA<ParameterElement>()
+                .having((e) => e.name, 'name', 'a')
+                .having((e) => e.type, 'type', typeProvider.intType)
+                .having(
+                  (e) => e.isRequiredPositional,
+                  'isRequiredPositional',
+                  true,
+                )
+                .having((e) => e.hasDefaultValue, 'hasDefaultValue', false),
+            isA<ParameterElement>()
+                .having((e) => e.name, 'name', 'b')
+                .having(
+                  (e) => e.isOptionalNamed,
+                  'isOptionalNamed',
+                  true,
+                )
+                .having((e) => e.hasDefaultValue, 'hasDefaultValue', false),
+            isA<ParameterElement>()
+                .having((e) => e.name, 'name', 'c')
+                .having((e) => e.type, 'type', typeProvider.doubleType)
+                .having(
+                  (e) => e.isOptionalNamed,
+                  'isOptionalNamed',
+                  true,
+                )
+                .having((e) => e.hasDefaultValue, 'hasDefaultValue', true),
+          ],
+          reason: '${provider.key} has no param',
+        );
+      }
+      for (final provider in positionalParams.entries) {
+        expect(
+          provider.value.parameters,
+          [
+            isA<ParameterElement>()
+                .having((e) => e.name, 'name', 'a')
+                .having((e) => e.type, 'type', typeProvider.intType)
+                .having(
+                  (e) => e.isRequiredPositional,
+                  'isRequiredPositional',
+                  true,
+                )
+                .having((e) => e.hasDefaultValue, 'hasDefaultValue', false),
+            isA<ParameterElement>()
+                .having((e) => e.name, 'name', 'b')
+                .having(
+                  (e) => e.isOptionalPositional,
+                  'isOptionalPositional',
+                  true,
+                )
+                .having((e) => e.hasDefaultValue, 'hasDefaultValue', false),
+            isA<ParameterElement>()
+                .having((e) => e.name, 'name', 'c')
+                .having((e) => e.type, 'type', typeProvider.doubleType)
+                .having(
+                  (e) => e.isOptionalPositional,
+                  'isOptionalPositional',
+                  true,
+                )
+                .having((e) => e.hasDefaultValue, 'hasDefaultValue', true),
+          ],
+          reason: '${provider.key} has no param',
         );
       }
     });

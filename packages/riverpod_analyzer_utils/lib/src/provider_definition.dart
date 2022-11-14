@@ -211,6 +211,7 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
     /// Information about the type of the value exposed
     required GeneratorCreatedType type,
     required bool isAutoDispose,
+    required List<ParameterElement> parameters,
   }) = FunctionalGeneratorProviderDefinition;
 
   /// A class-based generated provider definition, such as:
@@ -229,6 +230,7 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
     /// Information about the type of the value exposed
     required GeneratorCreatedType type,
     required bool isAutoDispose,
+    required List<ParameterElement> parameters,
   }) = NotifierGeneratorProviderDefinition;
 
   /// Parses code-generator definitions, rejecting manual provider definitions.
@@ -252,12 +254,18 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
     final keepAlive = annotation.getField('keepAlive')?.toBoolValue() ?? false;
 
     if (element is FunctionElement) {
+      // TODO throw if "ref" is not a positional parameter or has a type mismatch
+
       // @riverpod
       // Model provider(ProviderRef ref) {...}
       return FunctionalGeneratorProviderDefinition(
         name: element.name,
         isAutoDispose: !keepAlive,
         type: _parseStateTypeFromReturnType(element.returnType),
+        parameters: element.parameters
+            // Removing the "ref" parameter
+            .skip(1)
+            .toList(),
       );
     } else if (element is ClassElement) {
       final buildMethod = _findNotifierBuildMethod(element);
@@ -268,6 +276,7 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
         name: element.name,
         isAutoDispose: !keepAlive,
         type: _parseStateTypeFromReturnType(buildMethod.returnType),
+        parameters: buildMethod.parameters,
       );
     }
     throw GeneratorProviderDefinitionFormatException.neitherClassNorFunction(
