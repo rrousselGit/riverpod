@@ -1,27 +1,26 @@
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
+
 import '../models.dart';
 
 class ProviderTemplate {
   ProviderTemplate(this.data);
-  final Data data;
+  final GeneratorProviderDefinition data;
 
   @override
   String toString() {
-    if (data.isFamily) {
+    if (data.parameters.isNotEmpty) {
       return _familyClass();
     }
 
-    String create() {
-      if (data.isNotifier) return '${data.rawName}.new';
-      return data.rawName;
-    }
+    final create = data.isNotifier ? '${data.name}.new' : data.name;
 
     return '''
-${data.providerDoc}
+${data.docs}
 final ${data.providerName} = ${data.providerTypeDisplayString}(
-  ${create()},
+  $create,
   name: r'${data.providerName}',
   debugGetCreateSourceHash: ${data.hashFn},
-  dependencies: ${data.dependencyString},
+  dependencies: ${null /* data.dependencyString */},
 );''';
   }
 
@@ -45,7 +44,7 @@ final ${data.providerName} = ${data.providerTypeDisplayString}(
 
   String _familyClass() {
     return '''
-${data.providerDoc}
+${data.docs}
 class ${data.providerTypeNameImpl} extends ${data.providerTypeDisplayString} {
   ${data.providerTypeNameImpl}(${data.thisParamDefinition}) : super(
           $superConstructor,
@@ -78,19 +77,14 @@ ${data.parameters.map((e) => 'hash = _SystemHash.combine(hash, ${e.name}.hashCod
   }
 
   String get superConstructor {
-    switch (data.providerType) {
-      case ProviderType.futureProvider:
-      case ProviderType.provider:
-        return '''
-(ref) => ${data.rawName}(ref, ${data.paramInvocationPassAround})
-''';
-
-      case ProviderType.asyncNotifier:
-      case ProviderType.notifier:
-        return '''
-() => ${data.rawName}()
+    return data.map(
+      functional: (data) => '''
+(ref) => ${data.name}(ref, ${data.paramInvocationPassAround})
+''',
+      notifier: (data) => '''
+() => ${data.name}()
   ${data.parameters.map((e) => '..${e.name} = ${e.name}').join()}
-''';
-    }
+''',
+    );
   }
 }

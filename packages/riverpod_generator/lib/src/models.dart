@@ -1,5 +1,5 @@
-import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import 'templates/hash.dart';
 
@@ -57,120 +57,82 @@ class ProviderDependencies {
       dependencies == null || dependencies!.any((element) => false);
 }
 
-class Data {
-  Data.function({
-    required this.rawName,
-    required this.functionName,
-    required this.valueDisplayType,
-    required this.isAsync,
-    required this.isScoped,
-    required this.isFamily,
-    required this.parameters,
-    required this.keepAlive,
-    required this.providerDoc,
-    required this.createElement,
-    required this.createAst,
-    required this.dependencies,
-  }) : notifierName = null;
+extension GeneratorNames on GeneratorProviderDefinition {
+  String get _valueDisplayType =>
+      type.createdType.getDisplayString(withNullability: true);
 
-  Data.notifier({
-    required this.rawName,
-    required this.notifierName,
-    required this.valueDisplayType,
-    required this.isAsync,
-    required this.isScoped,
-    required this.isFamily,
-    required this.parameters,
-    required this.keepAlive,
-    required this.providerDoc,
-    required this.createElement,
-    required this.createAst,
-    required this.dependencies,
-  }) : functionName = null;
-
-  final ExecutableElement createElement;
-  final AstNode createAst;
-  final bool isScoped;
-  final bool isAsync;
-  final bool isFamily;
-  final String rawName;
-  final String? functionName;
-  final String? notifierName;
-  final String valueDisplayType;
-  final List<ParameterElement> parameters;
-  final bool keepAlive;
-  final String providerDoc;
-  final ProviderDependencies dependencies;
-
-  String get hashFunctionName => '\$${rawName}Hash';
+  String get hashFunctionName => '\$${name}Hash';
 
   String get hashFn => "const bool.fromEnvironment('dart.vm.product') ? "
       'null : $hashFunctionName';
 
-  String get refName => '${rawName.titled}Ref';
+  String get refName => '${name.titled}Ref';
 
   /// foo -> fooProvider
   /// Foo -> fooProvider
   String get providerName {
-    return '${rawName.lowerFirst}Provider';
+    return '${name.lowerFirst}Provider';
   }
 
-  String get dependencyList => dependencies.dependencies!.join(',');
+  // String get dependencyList => dependencies.dependencies!.join(',');
 
-  String get dependencyString => dependencies.dependencies == null
-      ? 'null'
-      : '<ProviderOrFamily>[$dependencyList]';
+  // String get dependencyString => dependencies.dependencies == null
+  //     ? 'null'
+  //     : '<ProviderOrFamily>[$dependencyList]';
 
-  String transitiveDependencies =
-      'dependencies == null ? null : _allTransitiveDependencies(dependencies!)';
+  // String transitiveDependencies =
+  //     'dependencies == null ? null : _allTransitiveDependencies(dependencies!)';
 
   /// foo -> FooProvider
   /// Foo -> FooProvider
   String get providerTypeNameImpl {
-    return '${rawName.titled}Provider';
+    return '${name.titled}Provider';
   }
 
   /// foo -> FooFamily
   /// Foo -> FooFamily
   String get familyName {
-    return '${rawName.titled}Family';
+    return '${name.titled}Family';
   }
 
   String get exposedValueDisplayType {
-    return isAsync ? 'AsyncValue<$valueDisplayType>' : valueDisplayType;
+    return type.map(
+      (value) => _valueDisplayType,
+      future: (_) => 'AsyncValue<$_valueDisplayType>',
+    );
   }
 
   String get buildValueDisplayType {
-    return isAsync ? 'FutureOr<$valueDisplayType>' : valueDisplayType;
+    return type.map(
+      (value) => _valueDisplayType,
+      future: (_) => 'FutureOr<$_valueDisplayType>',
+    );
   }
 
-  late final String notifierBaseName =
-      '_\$${rawName.replaceFirst(RegExp('_*'), '')}';
+  String get notifierBaseName => '_\$${name.replaceFirst(RegExp('_*'), '')}';
 
-  late final List<ParameterElement> positionalParameters =
+  List<ParameterElement> get positionalParameters =>
       parameters.where((e) => e.isPositional && e.isRequired).toList();
 
-  late final List<ParameterElement> optionalPositionalParameters =
+  List<ParameterElement> get optionalPositionalParameters =>
       parameters.where((e) => e.isPositional && e.isOptional).toList();
 
-  late final List<ParameterElement> namedParameters =
+  List<ParameterElement> get namedParameters =>
       parameters.where((e) => e.isNamed).toList();
 
-  bool get isNotifier => functionName == null;
-
   String notifierBaseType({bool generics = true}) {
-    final trailing = generics ? '<$valueDisplayType>' : '';
-    final leading = keepAlive ? '' : 'AutoDispose';
+    final trailing = generics ? '<$_valueDisplayType>' : '';
+    final leading = isAutoDispose ? 'AutoDispose' : '';
 
     switch (providerType) {
       case ProviderType.notifier:
-        if (isFamily) {
+        if (parameters.isNotEmpty) {
           return 'Buildless${leading}Notifier$trailing';
         }
         return '${leading}Notifier$trailing';
       case ProviderType.asyncNotifier:
-        final trailing = generics ? '<$valueDisplayType>' : '';
-        if (isFamily) {
+        final trailing = generics ? '<$_valueDisplayType>' : '';
+        if (parameters.isNotEmpty) {
           return 'Buildless${leading}AsyncNotifier$trailing';
         }
         return '${leading}AsyncNotifier$trailing';
@@ -180,7 +142,7 @@ class Data {
   }
 
   String get refType {
-    final leading = keepAlive ? '' : 'AutoDispose';
+    final leading = isAutoDispose ? 'AutoDispose' : '';
     switch (providerType) {
       case ProviderType.provider:
         return '${leading}ProviderRef';
@@ -193,96 +155,96 @@ class Data {
     }
   }
 
-  late final paramDefinition = [
-    ...positionalParameters.map((e) {
-      return '${e.type.getDisplayString(withNullability: true)} ${e.name},';
-    }),
-    if (optionalPositionalParameters.isNotEmpty) ...[
-      '[',
-      ...optionalPositionalParameters.map((e) {
-        final defaultValue =
-            e.defaultValueCode != null ? '= ${e.defaultValueCode}' : '';
+  String get paramDefinition => [
+        ...positionalParameters.map((e) {
+          return '${e.type.getDisplayString(withNullability: true)} ${e.name},';
+        }),
+        if (optionalPositionalParameters.isNotEmpty) ...[
+          '[',
+          ...optionalPositionalParameters.map((e) {
+            final defaultValue =
+                e.defaultValueCode != null ? '= ${e.defaultValueCode}' : '';
 
-        return '${e.type.getDisplayString(withNullability: true)} ${e.name} $defaultValue,';
-      }),
-      ']',
-    ],
-    if (namedParameters.isNotEmpty) ...[
-      '{',
-      ...namedParameters.map((e) {
-        final defaultValue =
-            e.defaultValueCode != null ? '= ${e.defaultValueCode}' : '';
+            return '${e.type.getDisplayString(withNullability: true)} ${e.name} $defaultValue,';
+          }),
+          ']',
+        ],
+        if (namedParameters.isNotEmpty) ...[
+          '{',
+          ...namedParameters.map((e) {
+            final defaultValue =
+                e.defaultValueCode != null ? '= ${e.defaultValueCode}' : '';
 
-        final leading = e.isRequired ? 'required' : '';
+            final leading = e.isRequired ? 'required' : '';
 
-        return '$leading ${e.type.getDisplayString(withNullability: true)} ${e.name} $defaultValue,';
-      }),
-      '}',
-    ],
-  ].join();
+            return '$leading ${e.type.getDisplayString(withNullability: true)} ${e.name} $defaultValue,';
+          }),
+          '}',
+        ],
+      ].join();
 
-  late final thisParamDefinition = [
-    ...positionalParameters.map((e) {
-      return 'this.${e.name},';
-    }),
-    if (optionalPositionalParameters.isNotEmpty) ...[
-      '[',
-      ...optionalPositionalParameters.map((e) {
-        final defaultValue =
-            e.defaultValueCode != null ? '= ${e.defaultValueCode}' : '';
+  String get thisParamDefinition => <String>[
+        ...positionalParameters.map((e) {
+          return 'this.${e.name},';
+        }),
+        if (optionalPositionalParameters.isNotEmpty) ...[
+          '[',
+          ...optionalPositionalParameters.map((e) {
+            final defaultValue =
+                e.defaultValueCode != null ? '= ${e.defaultValueCode}' : '';
 
-        return 'this.${e.name} $defaultValue,';
-      }),
-      ']',
-    ],
-    if (namedParameters.isNotEmpty) ...[
-      '{',
-      ...namedParameters.map((e) {
-        final defaultValue =
-            e.defaultValueCode != null ? '= ${e.defaultValueCode}' : '';
+            return 'this.${e.name} $defaultValue,';
+          }),
+          ']',
+        ],
+        if (namedParameters.isNotEmpty) ...[
+          '{',
+          ...namedParameters.map((e) {
+            final defaultValue =
+                e.defaultValueCode != null ? '= ${e.defaultValueCode}' : '';
 
-        final leading = e.isRequired ? 'required' : '';
+            final leading = e.isRequired ? 'required' : '';
 
-        return '$leading this.${e.name} $defaultValue,';
-      }),
-      '}',
-    ],
-  ].join();
+            return '$leading this.${e.name} $defaultValue,';
+          }),
+          '}',
+        ],
+      ].join();
 
-  late final paramInvocationPassAround = parameters.map((e) {
-    if (e.isNamed) {
-      return '${e.name}: ${e.name},';
-    }
-    return '${e.name},';
-  }).join();
+  String get paramInvocationPassAround => parameters.map((e) {
+        if (e.isNamed) {
+          return '${e.name}: ${e.name},';
+        }
+        return '${e.name},';
+      }).join();
 
-  late final paramInvocationFromProvider = parameters.map((e) {
-    if (e.isNamed) {
-      return '${e.name}: provider.${e.name},';
-    }
-    return 'provider.${e.name},';
-  }).join();
+  String get paramInvocationFromProvider => parameters.map((e) {
+        if (e.isNamed) {
+          return '${e.name}: provider.${e.name},';
+        }
+        return 'provider.${e.name},';
+      }).join();
 
   ProviderType get providerType {
     if (isNotifier) {
-      if (isAsync) {
+      if (type.createsFuture) {
         return ProviderType.asyncNotifier;
       }
       return ProviderType.notifier;
     } else {
-      if (isAsync) return ProviderType.futureProvider;
+      if (type.createsFuture) return ProviderType.futureProvider;
       return ProviderType.provider;
     }
   }
 
   String get providerTypeDisplayString {
-    final leading = keepAlive ? '' : 'AutoDispose';
+    final leading = isAutoDispose ? 'AutoDispose' : '';
 
     String trailing;
     if (isNotifier) {
-      trailing = '<$rawName, $valueDisplayType>';
+      trailing = '<$name, $_valueDisplayType>';
     } else {
-      trailing = '<$valueDisplayType>';
+      trailing = '<$_valueDisplayType>';
     }
 
     switch (providerType) {
@@ -291,10 +253,14 @@ class Data {
       case ProviderType.futureProvider:
         return '${leading}FutureProvider$trailing';
       case ProviderType.notifier:
-        if (isFamily) return '${leading}NotifierProviderImpl$trailing';
+        if (parameters.isNotEmpty) {
+          return '${leading}NotifierProviderImpl$trailing';
+        }
         return '${leading}NotifierProvider$trailing';
       case ProviderType.asyncNotifier:
-        if (isFamily) return '${leading}AsyncNotifierProviderImpl$trailing';
+        if (parameters.isNotEmpty) {
+          return '${leading}AsyncNotifierProviderImpl$trailing';
+        }
         return '${leading}AsyncNotifierProvider$trailing';
     }
   }

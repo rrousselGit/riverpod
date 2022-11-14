@@ -158,13 +158,6 @@ class GeneratorCreatedType with _$GeneratorCreatedType {
 
   GeneratorCreatedType._();
 
-  /// A user-defined FutureOr<T>
-  @internal
-  factory GeneratorCreatedType.futureOr({
-    required InterfaceType createdType,
-    required DartType stateType,
-  }) = FutureGeneratorCreatedType;
-
   /// A user-defined Future<T>
   @internal
   factory GeneratorCreatedType.future({
@@ -176,7 +169,6 @@ class GeneratorCreatedType with _$GeneratorCreatedType {
   DartType get createdType {
     return map(
       (value) => value.createdType,
-      futureOr: (value) => value.createdType,
       future: (value) => value.createdType,
     );
   }
@@ -194,6 +186,9 @@ class GeneratorCreatedType with _$GeneratorCreatedType {
   /// all have `int` as [stateType].
   @override
   DartType get stateType;
+
+  /// Creates a Future/FutureOr
+  bool get createsFuture => map((_) => false, future: (_) => true);
 }
 
 /// A dart representation for providers that needs code-generation
@@ -293,13 +288,7 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
   static GeneratorCreatedType _parseStateTypeFromReturnType(
     DartType returnType,
   ) {
-    if (returnType.isDartAsyncFutureOr) {
-      final interfaceType = returnType as InterfaceType;
-      return GeneratorCreatedType.futureOr(
-        stateType: interfaceType.typeArguments.single,
-        createdType: interfaceType,
-      );
-    } else if (returnType.isDartAsyncFuture) {
+    if (returnType.isDartAsyncFutureOr || returnType.isDartAsyncFuture) {
       final interfaceType = returnType as InterfaceType;
       return GeneratorCreatedType.future(
         stateType: interfaceType.typeArguments.single,
@@ -334,7 +323,7 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
 class AnyProviderDefinition with _$AnyProviderDefinition {
   /// Manually defined providers
   @internal
-  factory AnyProviderDefinition.legacy(LegacyProviderDefinition value) =
+  factory AnyProviderDefinition.legacy(LegacyProviderDefinition _) =
       LegacyAnyProviderDefinition;
 
   /// Providers defined using the code generator

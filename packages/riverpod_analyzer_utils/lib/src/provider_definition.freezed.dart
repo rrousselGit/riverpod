@@ -211,22 +211,18 @@ mixin _$GeneratorCreatedType {
   TResult when<TResult extends Object?>(
     TResult Function(DartType createdType, DartType stateType) $default, {
     required TResult Function(InterfaceType createdType, DartType stateType)
-        futureOr,
-    required TResult Function(InterfaceType createdType, DartType stateType)
         future,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(DartType createdType, DartType stateType)? $default, {
-    TResult? Function(InterfaceType createdType, DartType stateType)? futureOr,
     TResult? Function(InterfaceType createdType, DartType stateType)? future,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(DartType createdType, DartType stateType)? $default, {
-    TResult Function(InterfaceType createdType, DartType stateType)? futureOr,
     TResult Function(InterfaceType createdType, DartType stateType)? future,
     required TResult orElse(),
   }) =>
@@ -234,21 +230,18 @@ mixin _$GeneratorCreatedType {
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
     TResult Function(PlainGeneratorCreatedType value) $default, {
-    required TResult Function(FutureGeneratorCreatedType value) futureOr,
     required TResult Function(FutureOrGeneratorCreatedType value) future,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
     TResult? Function(PlainGeneratorCreatedType value)? $default, {
-    TResult? Function(FutureGeneratorCreatedType value)? futureOr,
     TResult? Function(FutureOrGeneratorCreatedType value)? future,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
     TResult Function(PlainGeneratorCreatedType value)? $default, {
-    TResult Function(FutureGeneratorCreatedType value)? futureOr,
     TResult Function(FutureOrGeneratorCreatedType value)? future,
     required TResult orElse(),
   }) =>
@@ -378,8 +371,6 @@ class _$PlainGeneratorCreatedType extends PlainGeneratorCreatedType {
   TResult when<TResult extends Object?>(
     TResult Function(DartType createdType, DartType stateType) $default, {
     required TResult Function(InterfaceType createdType, DartType stateType)
-        futureOr,
-    required TResult Function(InterfaceType createdType, DartType stateType)
         future,
   }) {
     return $default(createdType, stateType);
@@ -389,7 +380,6 @@ class _$PlainGeneratorCreatedType extends PlainGeneratorCreatedType {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(DartType createdType, DartType stateType)? $default, {
-    TResult? Function(InterfaceType createdType, DartType stateType)? futureOr,
     TResult? Function(InterfaceType createdType, DartType stateType)? future,
   }) {
     return $default?.call(createdType, stateType);
@@ -399,7 +389,6 @@ class _$PlainGeneratorCreatedType extends PlainGeneratorCreatedType {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(DartType createdType, DartType stateType)? $default, {
-    TResult Function(InterfaceType createdType, DartType stateType)? futureOr,
     TResult Function(InterfaceType createdType, DartType stateType)? future,
     required TResult orElse(),
   }) {
@@ -413,7 +402,6 @@ class _$PlainGeneratorCreatedType extends PlainGeneratorCreatedType {
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
     TResult Function(PlainGeneratorCreatedType value) $default, {
-    required TResult Function(FutureGeneratorCreatedType value) futureOr,
     required TResult Function(FutureOrGeneratorCreatedType value) future,
   }) {
     return $default(this);
@@ -423,7 +411,6 @@ class _$PlainGeneratorCreatedType extends PlainGeneratorCreatedType {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
     TResult? Function(PlainGeneratorCreatedType value)? $default, {
-    TResult? Function(FutureGeneratorCreatedType value)? futureOr,
     TResult? Function(FutureOrGeneratorCreatedType value)? future,
   }) {
     return $default?.call(this);
@@ -433,7 +420,6 @@ class _$PlainGeneratorCreatedType extends PlainGeneratorCreatedType {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
     TResult Function(PlainGeneratorCreatedType value)? $default, {
-    TResult Function(FutureGeneratorCreatedType value)? futureOr,
     TResult Function(FutureOrGeneratorCreatedType value)? future,
     required TResult orElse(),
   }) {
@@ -456,172 +442,6 @@ abstract class PlainGeneratorCreatedType extends GeneratorCreatedType {
   @override
   @JsonKey(ignore: true)
   _$$PlainGeneratorCreatedTypeCopyWith<_$PlainGeneratorCreatedType>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$FutureGeneratorCreatedTypeCopyWith<$Res>
-    implements $GeneratorCreatedTypeCopyWith<$Res> {
-  factory _$$FutureGeneratorCreatedTypeCopyWith(
-          _$FutureGeneratorCreatedType value,
-          $Res Function(_$FutureGeneratorCreatedType) then) =
-      __$$FutureGeneratorCreatedTypeCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({InterfaceType createdType, DartType stateType});
-}
-
-/// @nodoc
-class __$$FutureGeneratorCreatedTypeCopyWithImpl<$Res>
-    extends _$GeneratorCreatedTypeCopyWithImpl<$Res,
-        _$FutureGeneratorCreatedType>
-    implements _$$FutureGeneratorCreatedTypeCopyWith<$Res> {
-  __$$FutureGeneratorCreatedTypeCopyWithImpl(
-      _$FutureGeneratorCreatedType _value,
-      $Res Function(_$FutureGeneratorCreatedType) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? createdType = null,
-    Object? stateType = null,
-  }) {
-    return _then(_$FutureGeneratorCreatedType(
-      createdType: null == createdType
-          ? _value.createdType
-          : createdType // ignore: cast_nullable_to_non_nullable
-              as InterfaceType,
-      stateType: null == stateType
-          ? _value.stateType
-          : stateType // ignore: cast_nullable_to_non_nullable
-              as DartType,
-    ));
-  }
-}
-
-/// @nodoc
-
-@internal
-class _$FutureGeneratorCreatedType extends FutureGeneratorCreatedType {
-  _$FutureGeneratorCreatedType(
-      {required this.createdType, required this.stateType})
-      : super._();
-
-  @override
-  final InterfaceType createdType;
-  @override
-  final DartType stateType;
-
-  @override
-  String toString() {
-    return 'GeneratorCreatedType.futureOr(createdType: $createdType, stateType: $stateType)';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$FutureGeneratorCreatedType &&
-            (identical(other.createdType, createdType) ||
-                other.createdType == createdType) &&
-            (identical(other.stateType, stateType) ||
-                other.stateType == stateType));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, createdType, stateType);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$FutureGeneratorCreatedTypeCopyWith<_$FutureGeneratorCreatedType>
-      get copyWith => __$$FutureGeneratorCreatedTypeCopyWithImpl<
-          _$FutureGeneratorCreatedType>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>(
-    TResult Function(DartType createdType, DartType stateType) $default, {
-    required TResult Function(InterfaceType createdType, DartType stateType)
-        futureOr,
-    required TResult Function(InterfaceType createdType, DartType stateType)
-        future,
-  }) {
-    return futureOr(createdType, stateType);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(DartType createdType, DartType stateType)? $default, {
-    TResult? Function(InterfaceType createdType, DartType stateType)? futureOr,
-    TResult? Function(InterfaceType createdType, DartType stateType)? future,
-  }) {
-    return futureOr?.call(createdType, stateType);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>(
-    TResult Function(DartType createdType, DartType stateType)? $default, {
-    TResult Function(InterfaceType createdType, DartType stateType)? futureOr,
-    TResult Function(InterfaceType createdType, DartType stateType)? future,
-    required TResult orElse(),
-  }) {
-    if (futureOr != null) {
-      return futureOr(createdType, stateType);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(PlainGeneratorCreatedType value) $default, {
-    required TResult Function(FutureGeneratorCreatedType value) futureOr,
-    required TResult Function(FutureOrGeneratorCreatedType value) future,
-  }) {
-    return futureOr(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(PlainGeneratorCreatedType value)? $default, {
-    TResult? Function(FutureGeneratorCreatedType value)? futureOr,
-    TResult? Function(FutureOrGeneratorCreatedType value)? future,
-  }) {
-    return futureOr?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>(
-    TResult Function(PlainGeneratorCreatedType value)? $default, {
-    TResult Function(FutureGeneratorCreatedType value)? futureOr,
-    TResult Function(FutureOrGeneratorCreatedType value)? future,
-    required TResult orElse(),
-  }) {
-    if (futureOr != null) {
-      return futureOr(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class FutureGeneratorCreatedType extends GeneratorCreatedType {
-  factory FutureGeneratorCreatedType(
-      {required final InterfaceType createdType,
-      required final DartType stateType}) = _$FutureGeneratorCreatedType;
-  FutureGeneratorCreatedType._() : super._();
-
-  InterfaceType get createdType;
-  @override
-  DartType get stateType;
-  @override
-  @JsonKey(ignore: true)
-  _$$FutureGeneratorCreatedTypeCopyWith<_$FutureGeneratorCreatedType>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -710,8 +530,6 @@ class _$FutureOrGeneratorCreatedType extends FutureOrGeneratorCreatedType {
   TResult when<TResult extends Object?>(
     TResult Function(DartType createdType, DartType stateType) $default, {
     required TResult Function(InterfaceType createdType, DartType stateType)
-        futureOr,
-    required TResult Function(InterfaceType createdType, DartType stateType)
         future,
   }) {
     return future(createdType, stateType);
@@ -721,7 +539,6 @@ class _$FutureOrGeneratorCreatedType extends FutureOrGeneratorCreatedType {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(DartType createdType, DartType stateType)? $default, {
-    TResult? Function(InterfaceType createdType, DartType stateType)? futureOr,
     TResult? Function(InterfaceType createdType, DartType stateType)? future,
   }) {
     return future?.call(createdType, stateType);
@@ -731,7 +548,6 @@ class _$FutureOrGeneratorCreatedType extends FutureOrGeneratorCreatedType {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(DartType createdType, DartType stateType)? $default, {
-    TResult Function(InterfaceType createdType, DartType stateType)? futureOr,
     TResult Function(InterfaceType createdType, DartType stateType)? future,
     required TResult orElse(),
   }) {
@@ -745,7 +561,6 @@ class _$FutureOrGeneratorCreatedType extends FutureOrGeneratorCreatedType {
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
     TResult Function(PlainGeneratorCreatedType value) $default, {
-    required TResult Function(FutureGeneratorCreatedType value) futureOr,
     required TResult Function(FutureOrGeneratorCreatedType value) future,
   }) {
     return future(this);
@@ -755,7 +570,6 @@ class _$FutureOrGeneratorCreatedType extends FutureOrGeneratorCreatedType {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
     TResult? Function(PlainGeneratorCreatedType value)? $default, {
-    TResult? Function(FutureGeneratorCreatedType value)? futureOr,
     TResult? Function(FutureOrGeneratorCreatedType value)? future,
   }) {
     return future?.call(this);
@@ -765,7 +579,6 @@ class _$FutureOrGeneratorCreatedType extends FutureOrGeneratorCreatedType {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
     TResult Function(PlainGeneratorCreatedType value)? $default, {
-    TResult Function(FutureGeneratorCreatedType value)? futureOr,
     TResult Function(FutureOrGeneratorCreatedType value)? future,
     required TResult orElse(),
   }) {
@@ -1423,19 +1236,19 @@ abstract class NotifierGeneratorProviderDefinition
 mixin _$AnyProviderDefinition {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(LegacyProviderDefinition value) legacy,
+    required TResult Function(LegacyProviderDefinition _) legacy,
     required TResult Function(GeneratorProviderDefinition value) generator,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(LegacyProviderDefinition value)? legacy,
+    TResult? Function(LegacyProviderDefinition _)? legacy,
     TResult? Function(GeneratorProviderDefinition value)? generator,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(LegacyProviderDefinition value)? legacy,
+    TResult Function(LegacyProviderDefinition _)? legacy,
     TResult Function(GeneratorProviderDefinition value)? generator,
     required TResult orElse(),
   }) =>
@@ -1487,9 +1300,9 @@ abstract class _$$LegacyAnyProviderDefinitionCopyWith<$Res> {
           $Res Function(_$LegacyAnyProviderDefinition) then) =
       __$$LegacyAnyProviderDefinitionCopyWithImpl<$Res>;
   @useResult
-  $Res call({LegacyProviderDefinition value});
+  $Res call({LegacyProviderDefinition _});
 
-  $LegacyProviderDefinitionCopyWith<$Res> get value;
+  $LegacyProviderDefinitionCopyWith<$Res> get _;
 }
 
 /// @nodoc
@@ -1505,21 +1318,21 @@ class __$$LegacyAnyProviderDefinitionCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? value = null,
+    Object? _ = null,
   }) {
     return _then(_$LegacyAnyProviderDefinition(
-      null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
+      null == _
+          ? _value._
+          : _ // ignore: cast_nullable_to_non_nullable
               as LegacyProviderDefinition,
     ));
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $LegacyProviderDefinitionCopyWith<$Res> get value {
-    return $LegacyProviderDefinitionCopyWith<$Res>(_value.value, (value) {
-      return _then(_value.copyWith(value: value));
+  $LegacyProviderDefinitionCopyWith<$Res> get _ {
+    return $LegacyProviderDefinitionCopyWith<$Res>(_value._, (value) {
+      return _then(_value.copyWith(_: value));
     });
   }
 }
@@ -1528,14 +1341,14 @@ class __$$LegacyAnyProviderDefinitionCopyWithImpl<$Res>
 
 @internal
 class _$LegacyAnyProviderDefinition extends LegacyAnyProviderDefinition {
-  _$LegacyAnyProviderDefinition(this.value) : super._();
+  _$LegacyAnyProviderDefinition(this._) : super._();
 
   @override
-  final LegacyProviderDefinition value;
+  final LegacyProviderDefinition _;
 
   @override
   String toString() {
-    return 'AnyProviderDefinition.legacy(value: $value)';
+    return 'AnyProviderDefinition.legacy(_: $_)';
   }
 
   @override
@@ -1543,11 +1356,11 @@ class _$LegacyAnyProviderDefinition extends LegacyAnyProviderDefinition {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LegacyAnyProviderDefinition &&
-            (identical(other.value, value) || other.value == value));
+            (identical(other._, _) || other._ == _));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, value);
+  int get hashCode => Object.hash(runtimeType, _);
 
   @JsonKey(ignore: true)
   @override
@@ -1559,30 +1372,30 @@ class _$LegacyAnyProviderDefinition extends LegacyAnyProviderDefinition {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(LegacyProviderDefinition value) legacy,
+    required TResult Function(LegacyProviderDefinition _) legacy,
     required TResult Function(GeneratorProviderDefinition value) generator,
   }) {
-    return legacy(value);
+    return legacy(_);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(LegacyProviderDefinition value)? legacy,
+    TResult? Function(LegacyProviderDefinition _)? legacy,
     TResult? Function(GeneratorProviderDefinition value)? generator,
   }) {
-    return legacy?.call(value);
+    return legacy?.call(_);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(LegacyProviderDefinition value)? legacy,
+    TResult Function(LegacyProviderDefinition _)? legacy,
     TResult Function(GeneratorProviderDefinition value)? generator,
     required TResult orElse(),
   }) {
     if (legacy != null) {
-      return legacy(value);
+      return legacy(_);
     }
     return orElse();
   }
@@ -1620,11 +1433,11 @@ class _$LegacyAnyProviderDefinition extends LegacyAnyProviderDefinition {
 }
 
 abstract class LegacyAnyProviderDefinition extends AnyProviderDefinition {
-  factory LegacyAnyProviderDefinition(final LegacyProviderDefinition value) =
+  factory LegacyAnyProviderDefinition(final LegacyProviderDefinition _) =
       _$LegacyAnyProviderDefinition;
   LegacyAnyProviderDefinition._() : super._();
 
-  LegacyProviderDefinition get value;
+  LegacyProviderDefinition get _;
   @JsonKey(ignore: true)
   _$$LegacyAnyProviderDefinitionCopyWith<_$LegacyAnyProviderDefinition>
       get copyWith => throw _privateConstructorUsedError;
@@ -1709,7 +1522,7 @@ class _$GeneratorAnyProviderDefinition extends GeneratorAnyProviderDefinition {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(LegacyProviderDefinition value) legacy,
+    required TResult Function(LegacyProviderDefinition _) legacy,
     required TResult Function(GeneratorProviderDefinition value) generator,
   }) {
     return generator(value);
@@ -1718,7 +1531,7 @@ class _$GeneratorAnyProviderDefinition extends GeneratorAnyProviderDefinition {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(LegacyProviderDefinition value)? legacy,
+    TResult? Function(LegacyProviderDefinition _)? legacy,
     TResult? Function(GeneratorProviderDefinition value)? generator,
   }) {
     return generator?.call(value);
@@ -1727,7 +1540,7 @@ class _$GeneratorAnyProviderDefinition extends GeneratorAnyProviderDefinition {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(LegacyProviderDefinition value)? legacy,
+    TResult Function(LegacyProviderDefinition _)? legacy,
     TResult Function(GeneratorProviderDefinition value)? generator,
     required TResult orElse(),
   }) {

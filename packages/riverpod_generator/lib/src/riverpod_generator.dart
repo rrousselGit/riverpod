@@ -85,6 +85,15 @@ class RiverpodGenerator
             stack,
           );
         },
+        noBuildMethod: (e) {
+          Error.throwWithStackTrace(
+            InvalidGenerationSourceError(
+              '@riverpod classes must define a build method',
+              element: e.element,
+            ),
+            stack,
+          );
+        },
       );
     }
 
@@ -281,7 +290,7 @@ List<ProviderOrFamily> _allTransitiveDependencies(
     yield HashTemplate(data, globalData.hash);
     yield ProviderTemplate(data);
 
-    if (data.isFamily) {
+    if (data.parameters.isNotEmpty) {
       yield FamilyTemplate(data);
     }
     if (data.isNotifier) {
