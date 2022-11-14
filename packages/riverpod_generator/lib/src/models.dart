@@ -306,7 +306,7 @@ class GlobalData {
   final ElementHash hash = ElementHash();
 }
 
-extension on String {
+extension StringExtension on String {
   String get titled {
     return replaceFirstMapped(
       RegExp('[a-zA-Z]'),

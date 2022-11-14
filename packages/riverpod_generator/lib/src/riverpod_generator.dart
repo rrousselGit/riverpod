@@ -45,24 +45,16 @@ class RiverpodGenerator
   }
 
   @override
-  Future<Data> parseElement(
+  Future<GeneratorProviderDefinition> parseElement(
     BuildStep buildStep,
     GlobalData globalData,
     Element element,
   ) async {
     try {
-      final result = await GeneratorProviderDefinition.parse(
+      // Necessary await for the try/catch to catch async errors
+      return await GeneratorProviderDefinition.parse(
         element,
         resolver: buildStep.resolver.astNodeFor,
-      );
-
-      return result.map(
-        functional: (e) {
-          return Data.function();
-        },
-        notifier: (e) {
-          return Data.notifier();
-        },
       );
     } on GeneratorProviderDefinitionFormatException catch (err, stack) {
       err.map(
