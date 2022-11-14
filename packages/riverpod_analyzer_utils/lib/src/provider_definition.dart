@@ -97,7 +97,6 @@ class LegacyProviderDefinition with _$LegacyProviderDefinition {
         // final provider = Provider(...);
         return _parseVariable(element, resolver: resolver);
       }
-      print('Oy ${element} ${element.isSynthetic} ${element.runtimeType}');
 
       throw LegacyProviderDefinitionFormatException.notAProvider();
     });
@@ -598,7 +597,7 @@ class GeneratorProviderDefinitionFormatException
     StackTrace? stackTrace,
   }) = FailedToParseDependencyGeneratorProviderDefinitionFormatException;
 
-  /// The element was annotated with @riverpod more than once
+  /// `@Riverpod(dependencies: [...])` only accepts Symbols, Functions and Classes
   factory GeneratorProviderDefinitionFormatException.notAProviderDependency() =
       NotAProviderDependencyGeneratorProviderDefinitionFormatException;
 
