@@ -901,13 +901,25 @@ mixin _$GeneratorProviderDefinition {
   bool get isAutoDispose => throw _privateConstructorUsedError;
   List<ParameterElement> get parameters => throw _privateConstructorUsedError;
   String? get docs => throw _privateConstructorUsedError;
+  List<GeneratorProviderDependency>? get dependencies =>
+      throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters, String? docs)
+    required TResult Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)
         functional,
-    required TResult Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters, String? docs)
+    required TResult Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)
         notifier,
   }) =>
       throw _privateConstructorUsedError;
@@ -918,24 +930,36 @@ mixin _$GeneratorProviderDefinition {
             GeneratorCreatedType type,
             bool isAutoDispose,
             List<ParameterElement> parameters,
-            String? docs)?
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)?
         functional,
     TResult? Function(
             String name,
             GeneratorCreatedType type,
             bool isAutoDispose,
             List<ParameterElement> parameters,
-            String? docs)?
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)?
         notifier,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String name, GeneratorCreatedType type, bool isAutoDispose,
-            List<ParameterElement> parameters, String? docs)?
+    TResult Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)?
         functional,
-    TResult Function(String name, GeneratorCreatedType type, bool isAutoDispose,
-            List<ParameterElement> parameters, String? docs)?
+    TResult Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)?
         notifier,
     required TResult orElse(),
   }) =>
@@ -980,7 +1004,8 @@ abstract class $GeneratorProviderDefinitionCopyWith<$Res> {
       GeneratorCreatedType type,
       bool isAutoDispose,
       List<ParameterElement> parameters,
-      String? docs});
+      String? docs,
+      List<GeneratorProviderDependency>? dependencies});
 
   $GeneratorCreatedTypeCopyWith<$Res> get type;
 }
@@ -1004,6 +1029,7 @@ class _$GeneratorProviderDefinitionCopyWithImpl<$Res,
     Object? isAutoDispose = null,
     Object? parameters = null,
     Object? docs = freezed,
+    Object? dependencies = freezed,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -1026,6 +1052,10 @@ class _$GeneratorProviderDefinitionCopyWithImpl<$Res,
           ? _value.docs
           : docs // ignore: cast_nullable_to_non_nullable
               as String?,
+      dependencies: freezed == dependencies
+          ? _value.dependencies
+          : dependencies // ignore: cast_nullable_to_non_nullable
+              as List<GeneratorProviderDependency>?,
     ) as $Val);
   }
 
@@ -1052,7 +1082,8 @@ abstract class _$$FunctionalGeneratorProviderDefinitionCopyWith<$Res>
       GeneratorCreatedType type,
       bool isAutoDispose,
       List<ParameterElement> parameters,
-      String? docs});
+      String? docs,
+      List<GeneratorProviderDependency>? dependencies});
 
   @override
   $GeneratorCreatedTypeCopyWith<$Res> get type;
@@ -1076,6 +1107,7 @@ class __$$FunctionalGeneratorProviderDefinitionCopyWithImpl<$Res>
     Object? isAutoDispose = null,
     Object? parameters = null,
     Object? docs = freezed,
+    Object? dependencies = freezed,
   }) {
     return _then(_$FunctionalGeneratorProviderDefinition(
       name: null == name
@@ -1098,6 +1130,10 @@ class __$$FunctionalGeneratorProviderDefinitionCopyWithImpl<$Res>
           ? _value.docs
           : docs // ignore: cast_nullable_to_non_nullable
               as String?,
+      dependencies: freezed == dependencies
+          ? _value._dependencies
+          : dependencies // ignore: cast_nullable_to_non_nullable
+              as List<GeneratorProviderDependency>?,
     ));
   }
 }
@@ -1112,8 +1148,10 @@ class _$FunctionalGeneratorProviderDefinition
       required this.type,
       required this.isAutoDispose,
       required final List<ParameterElement> parameters,
-      required this.docs})
+      required this.docs,
+      required final List<GeneratorProviderDependency>? dependencies})
       : _parameters = parameters,
+        _dependencies = dependencies,
         super._();
 
   @override
@@ -1133,10 +1171,18 @@ class _$FunctionalGeneratorProviderDefinition
 
   @override
   final String? docs;
+  final List<GeneratorProviderDependency>? _dependencies;
+  @override
+  List<GeneratorProviderDependency>? get dependencies {
+    final value = _dependencies;
+    if (value == null) return null;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
-    return 'GeneratorProviderDefinition.functional(name: $name, type: $type, isAutoDispose: $isAutoDispose, parameters: $parameters, docs: $docs)';
+    return 'GeneratorProviderDefinition.functional(name: $name, type: $type, isAutoDispose: $isAutoDispose, parameters: $parameters, docs: $docs, dependencies: $dependencies)';
   }
 
   @override
@@ -1150,12 +1196,20 @@ class _$FunctionalGeneratorProviderDefinition
                 other.isAutoDispose == isAutoDispose) &&
             const DeepCollectionEquality()
                 .equals(other._parameters, _parameters) &&
-            (identical(other.docs, docs) || other.docs == docs));
+            (identical(other.docs, docs) || other.docs == docs) &&
+            const DeepCollectionEquality()
+                .equals(other._dependencies, _dependencies));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, name, type, isAutoDispose,
-      const DeepCollectionEquality().hash(_parameters), docs);
+  int get hashCode => Object.hash(
+      runtimeType,
+      name,
+      type,
+      isAutoDispose,
+      const DeepCollectionEquality().hash(_parameters),
+      docs,
+      const DeepCollectionEquality().hash(_dependencies));
 
   @JsonKey(ignore: true)
   @override
@@ -1168,14 +1222,25 @@ class _$FunctionalGeneratorProviderDefinition
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters, String? docs)
+    required TResult Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)
         functional,
-    required TResult Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters, String? docs)
+    required TResult Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)
         notifier,
   }) {
-    return functional(name, type, isAutoDispose, parameters, docs);
+    return functional(
+        name, type, isAutoDispose, parameters, docs, dependencies);
   }
 
   @override
@@ -1186,32 +1251,46 @@ class _$FunctionalGeneratorProviderDefinition
             GeneratorCreatedType type,
             bool isAutoDispose,
             List<ParameterElement> parameters,
-            String? docs)?
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)?
         functional,
     TResult? Function(
             String name,
             GeneratorCreatedType type,
             bool isAutoDispose,
             List<ParameterElement> parameters,
-            String? docs)?
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)?
         notifier,
   }) {
-    return functional?.call(name, type, isAutoDispose, parameters, docs);
+    return functional?.call(
+        name, type, isAutoDispose, parameters, docs, dependencies);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String name, GeneratorCreatedType type, bool isAutoDispose,
-            List<ParameterElement> parameters, String? docs)?
+    TResult Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)?
         functional,
-    TResult Function(String name, GeneratorCreatedType type, bool isAutoDispose,
-            List<ParameterElement> parameters, String? docs)?
+    TResult Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)?
         notifier,
     required TResult orElse(),
   }) {
     if (functional != null) {
-      return functional(name, type, isAutoDispose, parameters, docs);
+      return functional(
+          name, type, isAutoDispose, parameters, docs, dependencies);
     }
     return orElse();
   }
@@ -1253,11 +1332,13 @@ class _$FunctionalGeneratorProviderDefinition
 abstract class FunctionalGeneratorProviderDefinition
     extends GeneratorProviderDefinition {
   factory FunctionalGeneratorProviderDefinition(
-      {required final String name,
-      required final GeneratorCreatedType type,
-      required final bool isAutoDispose,
-      required final List<ParameterElement> parameters,
-      required final String? docs}) = _$FunctionalGeneratorProviderDefinition;
+          {required final String name,
+          required final GeneratorCreatedType type,
+          required final bool isAutoDispose,
+          required final List<ParameterElement> parameters,
+          required final String? docs,
+          required final List<GeneratorProviderDependency>? dependencies}) =
+      _$FunctionalGeneratorProviderDefinition;
   FunctionalGeneratorProviderDefinition._() : super._();
 
   @override
@@ -1272,6 +1353,8 @@ abstract class FunctionalGeneratorProviderDefinition
   List<ParameterElement> get parameters;
   @override
   String? get docs;
+  @override
+  List<GeneratorProviderDependency>? get dependencies;
   @override
   @JsonKey(ignore: true)
   _$$FunctionalGeneratorProviderDefinitionCopyWith<
@@ -1293,7 +1376,8 @@ abstract class _$$NotifierGeneratorProviderDefinitionCopyWith<$Res>
       GeneratorCreatedType type,
       bool isAutoDispose,
       List<ParameterElement> parameters,
-      String? docs});
+      String? docs,
+      List<GeneratorProviderDependency>? dependencies});
 
   @override
   $GeneratorCreatedTypeCopyWith<$Res> get type;
@@ -1317,6 +1401,7 @@ class __$$NotifierGeneratorProviderDefinitionCopyWithImpl<$Res>
     Object? isAutoDispose = null,
     Object? parameters = null,
     Object? docs = freezed,
+    Object? dependencies = freezed,
   }) {
     return _then(_$NotifierGeneratorProviderDefinition(
       name: null == name
@@ -1339,6 +1424,10 @@ class __$$NotifierGeneratorProviderDefinitionCopyWithImpl<$Res>
           ? _value.docs
           : docs // ignore: cast_nullable_to_non_nullable
               as String?,
+      dependencies: freezed == dependencies
+          ? _value._dependencies
+          : dependencies // ignore: cast_nullable_to_non_nullable
+              as List<GeneratorProviderDependency>?,
     ));
   }
 }
@@ -1353,8 +1442,10 @@ class _$NotifierGeneratorProviderDefinition
       required this.type,
       required this.isAutoDispose,
       required final List<ParameterElement> parameters,
-      required this.docs})
+      required this.docs,
+      required final List<GeneratorProviderDependency>? dependencies})
       : _parameters = parameters,
+        _dependencies = dependencies,
         super._();
 
   @override
@@ -1374,10 +1465,18 @@ class _$NotifierGeneratorProviderDefinition
 
   @override
   final String? docs;
+  final List<GeneratorProviderDependency>? _dependencies;
+  @override
+  List<GeneratorProviderDependency>? get dependencies {
+    final value = _dependencies;
+    if (value == null) return null;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
-    return 'GeneratorProviderDefinition.notifier(name: $name, type: $type, isAutoDispose: $isAutoDispose, parameters: $parameters, docs: $docs)';
+    return 'GeneratorProviderDefinition.notifier(name: $name, type: $type, isAutoDispose: $isAutoDispose, parameters: $parameters, docs: $docs, dependencies: $dependencies)';
   }
 
   @override
@@ -1391,12 +1490,20 @@ class _$NotifierGeneratorProviderDefinition
                 other.isAutoDispose == isAutoDispose) &&
             const DeepCollectionEquality()
                 .equals(other._parameters, _parameters) &&
-            (identical(other.docs, docs) || other.docs == docs));
+            (identical(other.docs, docs) || other.docs == docs) &&
+            const DeepCollectionEquality()
+                .equals(other._dependencies, _dependencies));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, name, type, isAutoDispose,
-      const DeepCollectionEquality().hash(_parameters), docs);
+  int get hashCode => Object.hash(
+      runtimeType,
+      name,
+      type,
+      isAutoDispose,
+      const DeepCollectionEquality().hash(_parameters),
+      docs,
+      const DeepCollectionEquality().hash(_dependencies));
 
   @JsonKey(ignore: true)
   @override
@@ -1409,14 +1516,24 @@ class _$NotifierGeneratorProviderDefinition
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters, String? docs)
+    required TResult Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)
         functional,
-    required TResult Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters, String? docs)
+    required TResult Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)
         notifier,
   }) {
-    return notifier(name, type, isAutoDispose, parameters, docs);
+    return notifier(name, type, isAutoDispose, parameters, docs, dependencies);
   }
 
   @override
@@ -1427,32 +1544,46 @@ class _$NotifierGeneratorProviderDefinition
             GeneratorCreatedType type,
             bool isAutoDispose,
             List<ParameterElement> parameters,
-            String? docs)?
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)?
         functional,
     TResult? Function(
             String name,
             GeneratorCreatedType type,
             bool isAutoDispose,
             List<ParameterElement> parameters,
-            String? docs)?
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)?
         notifier,
   }) {
-    return notifier?.call(name, type, isAutoDispose, parameters, docs);
+    return notifier?.call(
+        name, type, isAutoDispose, parameters, docs, dependencies);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String name, GeneratorCreatedType type, bool isAutoDispose,
-            List<ParameterElement> parameters, String? docs)?
+    TResult Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)?
         functional,
-    TResult Function(String name, GeneratorCreatedType type, bool isAutoDispose,
-            List<ParameterElement> parameters, String? docs)?
+    TResult Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs,
+            List<GeneratorProviderDependency>? dependencies)?
         notifier,
     required TResult orElse(),
   }) {
     if (notifier != null) {
-      return notifier(name, type, isAutoDispose, parameters, docs);
+      return notifier(
+          name, type, isAutoDispose, parameters, docs, dependencies);
     }
     return orElse();
   }
@@ -1494,11 +1625,13 @@ class _$NotifierGeneratorProviderDefinition
 abstract class NotifierGeneratorProviderDefinition
     extends GeneratorProviderDefinition {
   factory NotifierGeneratorProviderDefinition(
-      {required final String name,
-      required final GeneratorCreatedType type,
-      required final bool isAutoDispose,
-      required final List<ParameterElement> parameters,
-      required final String? docs}) = _$NotifierGeneratorProviderDefinition;
+          {required final String name,
+          required final GeneratorCreatedType type,
+          required final bool isAutoDispose,
+          required final List<ParameterElement> parameters,
+          required final String? docs,
+          required final List<GeneratorProviderDependency>? dependencies}) =
+      _$NotifierGeneratorProviderDefinition;
   NotifierGeneratorProviderDefinition._() : super._();
 
   @override
@@ -1514,6 +1647,8 @@ abstract class NotifierGeneratorProviderDefinition
   @override
   String? get docs;
   @override
+  List<GeneratorProviderDependency>? get dependencies;
+  @override
   @JsonKey(ignore: true)
   _$$NotifierGeneratorProviderDefinitionCopyWith<
           _$NotifierGeneratorProviderDefinition>
@@ -1524,19 +1659,19 @@ abstract class NotifierGeneratorProviderDefinition
 mixin _$AnyProviderDefinition {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(LegacyProviderDefinition _) legacy,
+    required TResult Function(LegacyProviderDefinition value) legacy,
     required TResult Function(GeneratorProviderDefinition value) generator,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(LegacyProviderDefinition _)? legacy,
+    TResult? Function(LegacyProviderDefinition value)? legacy,
     TResult? Function(GeneratorProviderDefinition value)? generator,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(LegacyProviderDefinition _)? legacy,
+    TResult Function(LegacyProviderDefinition value)? legacy,
     TResult Function(GeneratorProviderDefinition value)? generator,
     required TResult orElse(),
   }) =>
@@ -1588,9 +1723,9 @@ abstract class _$$LegacyAnyProviderDefinitionCopyWith<$Res> {
           $Res Function(_$LegacyAnyProviderDefinition) then) =
       __$$LegacyAnyProviderDefinitionCopyWithImpl<$Res>;
   @useResult
-  $Res call({LegacyProviderDefinition _});
+  $Res call({LegacyProviderDefinition value});
 
-  $LegacyProviderDefinitionCopyWith<$Res> get _;
+  $LegacyProviderDefinitionCopyWith<$Res> get value;
 }
 
 /// @nodoc
@@ -1606,21 +1741,21 @@ class __$$LegacyAnyProviderDefinitionCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? _ = null,
+    Object? value = null,
   }) {
     return _then(_$LegacyAnyProviderDefinition(
-      null == _
-          ? _value._
-          : _ // ignore: cast_nullable_to_non_nullable
+      null == value
+          ? _value.value
+          : value // ignore: cast_nullable_to_non_nullable
               as LegacyProviderDefinition,
     ));
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $LegacyProviderDefinitionCopyWith<$Res> get _ {
-    return $LegacyProviderDefinitionCopyWith<$Res>(_value._, (value) {
-      return _then(_value.copyWith(_: value));
+  $LegacyProviderDefinitionCopyWith<$Res> get value {
+    return $LegacyProviderDefinitionCopyWith<$Res>(_value.value, (value) {
+      return _then(_value.copyWith(value: value));
     });
   }
 }
@@ -1629,14 +1764,14 @@ class __$$LegacyAnyProviderDefinitionCopyWithImpl<$Res>
 
 @internal
 class _$LegacyAnyProviderDefinition extends LegacyAnyProviderDefinition {
-  _$LegacyAnyProviderDefinition(this._) : super._();
+  _$LegacyAnyProviderDefinition(this.value) : super._();
 
   @override
-  final LegacyProviderDefinition _;
+  final LegacyProviderDefinition value;
 
   @override
   String toString() {
-    return 'AnyProviderDefinition.legacy(_: $_)';
+    return 'AnyProviderDefinition.legacy(value: $value)';
   }
 
   @override
@@ -1644,11 +1779,11 @@ class _$LegacyAnyProviderDefinition extends LegacyAnyProviderDefinition {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LegacyAnyProviderDefinition &&
-            (identical(other._, _) || other._ == _));
+            (identical(other.value, value) || other.value == value));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, _);
+  int get hashCode => Object.hash(runtimeType, value);
 
   @JsonKey(ignore: true)
   @override
@@ -1660,30 +1795,30 @@ class _$LegacyAnyProviderDefinition extends LegacyAnyProviderDefinition {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(LegacyProviderDefinition _) legacy,
+    required TResult Function(LegacyProviderDefinition value) legacy,
     required TResult Function(GeneratorProviderDefinition value) generator,
   }) {
-    return legacy(_);
+    return legacy(value);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(LegacyProviderDefinition _)? legacy,
+    TResult? Function(LegacyProviderDefinition value)? legacy,
     TResult? Function(GeneratorProviderDefinition value)? generator,
   }) {
-    return legacy?.call(_);
+    return legacy?.call(value);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(LegacyProviderDefinition _)? legacy,
+    TResult Function(LegacyProviderDefinition value)? legacy,
     TResult Function(GeneratorProviderDefinition value)? generator,
     required TResult orElse(),
   }) {
     if (legacy != null) {
-      return legacy(_);
+      return legacy(value);
     }
     return orElse();
   }
@@ -1721,11 +1856,11 @@ class _$LegacyAnyProviderDefinition extends LegacyAnyProviderDefinition {
 }
 
 abstract class LegacyAnyProviderDefinition extends AnyProviderDefinition {
-  factory LegacyAnyProviderDefinition(final LegacyProviderDefinition _) =
+  factory LegacyAnyProviderDefinition(final LegacyProviderDefinition value) =
       _$LegacyAnyProviderDefinition;
   LegacyAnyProviderDefinition._() : super._();
 
-  LegacyProviderDefinition get _;
+  LegacyProviderDefinition get value;
   @JsonKey(ignore: true)
   _$$LegacyAnyProviderDefinitionCopyWith<_$LegacyAnyProviderDefinition>
       get copyWith => throw _privateConstructorUsedError;
@@ -1810,7 +1945,7 @@ class _$GeneratorAnyProviderDefinition extends GeneratorAnyProviderDefinition {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(LegacyProviderDefinition _) legacy,
+    required TResult Function(LegacyProviderDefinition value) legacy,
     required TResult Function(GeneratorProviderDefinition value) generator,
   }) {
     return generator(value);
@@ -1819,7 +1954,7 @@ class _$GeneratorAnyProviderDefinition extends GeneratorAnyProviderDefinition {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(LegacyProviderDefinition _)? legacy,
+    TResult? Function(LegacyProviderDefinition value)? legacy,
     TResult? Function(GeneratorProviderDefinition value)? generator,
   }) {
     return generator?.call(value);
@@ -1828,7 +1963,7 @@ class _$GeneratorAnyProviderDefinition extends GeneratorAnyProviderDefinition {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(LegacyProviderDefinition _)? legacy,
+    TResult Function(LegacyProviderDefinition value)? legacy,
     TResult Function(GeneratorProviderDefinition value)? generator,
     required TResult orElse(),
   }) {
@@ -1891,7 +2026,7 @@ mixin _$AnyProviderDefinitionFormatException {
         generatorException,
     required TResult Function(LegacyProviderDefinitionFormatException exception)
         legacyException,
-    required TResult Function(Element element) notAProvider,
+    required TResult Function() notAProvider,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -1900,7 +2035,7 @@ mixin _$AnyProviderDefinitionFormatException {
         generatorException,
     TResult? Function(LegacyProviderDefinitionFormatException exception)?
         legacyException,
-    TResult? Function(Element element)? notAProvider,
+    TResult? Function()? notAProvider,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -1909,7 +2044,7 @@ mixin _$AnyProviderDefinitionFormatException {
         generatorException,
     TResult Function(LegacyProviderDefinitionFormatException exception)?
         legacyException,
-    TResult Function(Element element)? notAProvider,
+    TResult Function()? notAProvider,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -2058,7 +2193,7 @@ class _$GeneratorAnyProviderDefinitionFormatException
         generatorException,
     required TResult Function(LegacyProviderDefinitionFormatException exception)
         legacyException,
-    required TResult Function(Element element) notAProvider,
+    required TResult Function() notAProvider,
   }) {
     return generatorException(exception);
   }
@@ -2070,7 +2205,7 @@ class _$GeneratorAnyProviderDefinitionFormatException
         generatorException,
     TResult? Function(LegacyProviderDefinitionFormatException exception)?
         legacyException,
-    TResult? Function(Element element)? notAProvider,
+    TResult? Function()? notAProvider,
   }) {
     return generatorException?.call(exception);
   }
@@ -2082,7 +2217,7 @@ class _$GeneratorAnyProviderDefinitionFormatException
         generatorException,
     TResult Function(LegacyProviderDefinitionFormatException exception)?
         legacyException,
-    TResult Function(Element element)? notAProvider,
+    TResult Function()? notAProvider,
     required TResult orElse(),
   }) {
     if (generatorException != null) {
@@ -2239,7 +2374,7 @@ class _$LegacyAnyProviderDefinitionFormatException
         generatorException,
     required TResult Function(LegacyProviderDefinitionFormatException exception)
         legacyException,
-    required TResult Function(Element element) notAProvider,
+    required TResult Function() notAProvider,
   }) {
     return legacyException(exception);
   }
@@ -2251,7 +2386,7 @@ class _$LegacyAnyProviderDefinitionFormatException
         generatorException,
     TResult? Function(LegacyProviderDefinitionFormatException exception)?
         legacyException,
-    TResult? Function(Element element)? notAProvider,
+    TResult? Function()? notAProvider,
   }) {
     return legacyException?.call(exception);
   }
@@ -2263,7 +2398,7 @@ class _$LegacyAnyProviderDefinitionFormatException
         generatorException,
     TResult Function(LegacyProviderDefinitionFormatException exception)?
         legacyException,
-    TResult Function(Element element)? notAProvider,
+    TResult Function()? notAProvider,
     required TResult orElse(),
   }) {
     if (legacyException != null) {
@@ -2338,8 +2473,6 @@ abstract class _$$NotAProviderProviderDefinitionFormatExceptionCopyWith<$Res> {
           _$NotAProviderProviderDefinitionFormatException value,
           $Res Function(_$NotAProviderProviderDefinitionFormatException) then) =
       __$$NotAProviderProviderDefinitionFormatExceptionCopyWithImpl<$Res>;
-  @useResult
-  $Res call({Element element});
 }
 
 /// @nodoc
@@ -2351,55 +2484,28 @@ class __$$NotAProviderProviderDefinitionFormatExceptionCopyWithImpl<$Res>
       _$NotAProviderProviderDefinitionFormatException _value,
       $Res Function(_$NotAProviderProviderDefinitionFormatException) _then)
       : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? element = null,
-  }) {
-    return _then(_$NotAProviderProviderDefinitionFormatException(
-      null == element
-          ? _value.element
-          : element // ignore: cast_nullable_to_non_nullable
-              as Element,
-    ));
-  }
 }
 
 /// @nodoc
 
 class _$NotAProviderProviderDefinitionFormatException
     extends NotAProviderProviderDefinitionFormatException {
-  _$NotAProviderProviderDefinitionFormatException(this.element) : super._();
-
-  @override
-  final Element element;
+  _$NotAProviderProviderDefinitionFormatException() : super._();
 
   @override
   String toString() {
-    return 'AnyProviderDefinitionFormatException.notAProvider(element: $element)';
+    return 'AnyProviderDefinitionFormatException.notAProvider()';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$NotAProviderProviderDefinitionFormatException &&
-            (identical(other.element, element) || other.element == element));
+            other is _$NotAProviderProviderDefinitionFormatException);
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, element);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$NotAProviderProviderDefinitionFormatExceptionCopyWith<
-          _$NotAProviderProviderDefinitionFormatException>
-      get copyWith =>
-          __$$NotAProviderProviderDefinitionFormatExceptionCopyWithImpl<
-                  _$NotAProviderProviderDefinitionFormatException>(
-              this, _$identity);
+  int get hashCode => runtimeType.hashCode;
 
   @override
   @optionalTypeArgs
@@ -2409,9 +2515,9 @@ class _$NotAProviderProviderDefinitionFormatException
         generatorException,
     required TResult Function(LegacyProviderDefinitionFormatException exception)
         legacyException,
-    required TResult Function(Element element) notAProvider,
+    required TResult Function() notAProvider,
   }) {
-    return notAProvider(element);
+    return notAProvider();
   }
 
   @override
@@ -2421,9 +2527,9 @@ class _$NotAProviderProviderDefinitionFormatException
         generatorException,
     TResult? Function(LegacyProviderDefinitionFormatException exception)?
         legacyException,
-    TResult? Function(Element element)? notAProvider,
+    TResult? Function()? notAProvider,
   }) {
-    return notAProvider?.call(element);
+    return notAProvider?.call();
   }
 
   @override
@@ -2433,11 +2539,11 @@ class _$NotAProviderProviderDefinitionFormatException
         generatorException,
     TResult Function(LegacyProviderDefinitionFormatException exception)?
         legacyException,
-    TResult Function(Element element)? notAProvider,
+    TResult Function()? notAProvider,
     required TResult orElse(),
   }) {
     if (notAProvider != null) {
-      return notAProvider(element);
+      return notAProvider();
     }
     return orElse();
   }
@@ -2490,15 +2596,9 @@ class _$NotAProviderProviderDefinitionFormatException
 
 abstract class NotAProviderProviderDefinitionFormatException
     extends AnyProviderDefinitionFormatException {
-  factory NotAProviderProviderDefinitionFormatException(final Element element) =
+  factory NotAProviderProviderDefinitionFormatException() =
       _$NotAProviderProviderDefinitionFormatException;
   NotAProviderProviderDefinitionFormatException._() : super._();
-
-  Element get element;
-  @JsonKey(ignore: true)
-  _$$NotAProviderProviderDefinitionFormatExceptionCopyWith<
-          _$NotAProviderProviderDefinitionFormatException>
-      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc

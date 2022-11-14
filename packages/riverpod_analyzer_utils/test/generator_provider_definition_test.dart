@@ -123,6 +123,32 @@ class KeepAliveNotifier extends _$KeepAliveNotifier {
       }
     });
 
+    testSource('Decode dependencies', source: r'''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+@riverpod
+int root(FirstRef ref) => 0;
+
+@riverpod
+class RootNotifier extends _$RootNotifier {
+  @override
+  int build() => 0;
+}
+''', (resolver) async {
+      final roots = await resolver.parseAllGeneratorProviderDefinitions([
+        'root',
+        'RootNotifier',
+      ]);
+
+      for (final provider in roots.entries) {
+        expect(
+          provider.value.dependencies,
+          null,
+          reason: '${provider.key} has no dependency',
+        );
+      }
+    });
+
     testSource('Decodes arguments', source: r'''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'dart:async';

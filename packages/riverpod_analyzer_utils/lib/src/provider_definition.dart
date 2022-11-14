@@ -234,6 +234,7 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
     required bool isAutoDispose,
     required List<ParameterElement> parameters,
     required String? docs,
+    required List<GeneratorProviderDependency>? dependencies,
   }) = FunctionalGeneratorProviderDefinition;
 
   /// A class-based generated provider definition, such as:
@@ -254,6 +255,7 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
     required bool isAutoDispose,
     required List<ParameterElement> parameters,
     required String? docs,
+    required List<GeneratorProviderDependency>? dependencies,
   }) = NotifierGeneratorProviderDefinition;
 
   /// Parses code-generator definitions, rejecting manual provider definitions.
@@ -288,6 +290,7 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
             .skip(1)
             .toList(),
         docs: element.documentationComment,
+        dependencies: null,
       );
     } else if (element is ClassElement) {
       final buildMethod = _findNotifierBuildMethod(element);
@@ -300,6 +303,7 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
         type: _parseStateTypeFromReturnType(buildMethod.returnType),
         parameters: buildMethod.parameters,
         docs: element.documentationComment,
+        dependencies: null,
       );
     }
     throw GeneratorProviderDefinitionFormatException.neitherClassNorFunction();
@@ -343,7 +347,7 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
 class AnyProviderDefinition with _$AnyProviderDefinition {
   /// Manually defined providers
   @internal
-  factory AnyProviderDefinition.legacy(LegacyProviderDefinition _) =
+  factory AnyProviderDefinition.legacy(LegacyProviderDefinition value) =
       LegacyAnyProviderDefinition;
 
   /// Providers defined using the code generator
@@ -390,7 +394,7 @@ class AnyProviderDefinition with _$AnyProviderDefinition {
     } on NotAProviderLegacyProviderDefinitionFormatException {
       // We reached the end of the possible decoding mechanism, so element is 100%
       // not a provider.
-      throw AnyProviderDefinitionFormatException.notAProvider(element);
+      throw AnyProviderDefinitionFormatException.notAProvider();
     } on LegacyProviderDefinitionFormatException catch (err, stack) {
       Error.throwWithStackTrace(
         AnyProviderDefinitionFormatException.legacyException(err),
@@ -426,7 +430,7 @@ class AnyProviderDefinitionFormatException
   ) = LegacyAnyProviderDefinitionFormatException;
 
   /// The element does not represent a provider definition.
-  factory AnyProviderDefinitionFormatException.notAProvider(Element element) =
+  factory AnyProviderDefinitionFormatException.notAProvider() =
       NotAProviderProviderDefinitionFormatException;
 
   AnyProviderDefinitionFormatException._();
