@@ -1,4 +1,6 @@
+import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -77,6 +79,8 @@ class LegacyProviderDefinition with _$LegacyProviderDefinition {
     required LegacyProviderType providerType,
   }) = _LegacyProviderDefinition;
 
+  static final _definitionCache = Expando<Future<LegacyProviderDefinition>>();
+
   /// Parses code-generator definitions, rejecting manual provider definitions.
   ///
   /// May throw a [LegacyProviderDefinitionFormatException].
@@ -84,11 +88,16 @@ class LegacyProviderDefinition with _$LegacyProviderDefinition {
     Element element, {
     required AstResolver resolver,
   }) {
-    if (element is VariableElement) {
-      // final provider = Provider(...);
-      return _parseVariable(element, resolver: resolver);
-    }
-    throw LegacyProviderDefinitionFormatException.notAProvider();
+    final cache = _definitionCache[element];
+    if (cache != null) return cache;
+
+    return _definitionCache[element] = Future(() {
+      if (element is VariableElement) {
+        // final provider = Provider(...);
+        return _parseVariable(element, resolver: resolver);
+      }
+      throw LegacyProviderDefinitionFormatException.notAProvider();
+    });
   }
 
   static Future<LegacyProviderDefinition> _parseVariable(
@@ -154,8 +163,9 @@ class GeneratorProviderDependency with _$GeneratorProviderDependency {
   /// @Riverpod(dependencies: [function, Notifier])
   /// ```
   @internal
-  factory GeneratorProviderDependency.provider() =
-      ProviderPlainGeneratorProviderDependency;
+  factory GeneratorProviderDependency.provider(
+    GeneratorProviderDefinition definition,
+  ) = ProviderGeneratorProviderDependency;
 
   GeneratorProviderDependency._();
 
@@ -165,7 +175,7 @@ class GeneratorProviderDependency with _$GeneratorProviderDependency {
   /// @Riverpod(dependencies: [function, Notifier])
   /// ```
   @internal
-  factory GeneratorProviderDependency.string() =
+  factory GeneratorProviderDependency.string(String value) =
       StringGeneratorProviderDependency;
 }
 
@@ -258,55 +268,117 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
     required List<GeneratorProviderDependency>? dependencies,
   }) = NotifierGeneratorProviderDefinition;
 
+  static final _definitionCache =
+      Expando<Future<GeneratorProviderDefinition>>();
+
   /// Parses code-generator definitions, rejecting manual provider definitions.
   ///
   /// May throw a [GeneratorProviderDefinitionFormatException].
   static Future<GeneratorProviderDefinition> parse(
     Element element, {
     required AstResolver resolver,
+  }) {
+    final cache = _definitionCache[element];
+    if (cache != null) return cache;
+
+    return _definitionCache[element] = Future(() async {
+      final annotations = riverpodType.annotationsOf(element);
+      if (annotations.isEmpty) {
+        throw GeneratorProviderDefinitionFormatException.notAProvider();
+      }
+      if (annotations.length > 1) {
+        throw GeneratorProviderDefinitionFormatException.tooManyAnnotations();
+      }
+
+      final annotation = annotations.single;
+      final keepAlive =
+          annotation.getField('keepAlive')?.toBoolValue() ?? false;
+      final dependencies =
+          await _parseDependencies(annotation, resolver: resolver);
+
+      if (element is FunctionElement) {
+        // TODO throw if "ref" is not a positional parameter or has a type mismatch
+
+        // @riverpod
+        // Model provider(ProviderRef ref) {...}
+        return FunctionalGeneratorProviderDefinition(
+          name: element.name,
+          isAutoDispose: !keepAlive,
+          type: _parseStateTypeFromReturnType(element.returnType),
+          parameters: element.parameters
+              // Removing the "ref" parameter
+              .skip(1)
+              .toList(),
+          docs: element.documentationComment,
+          dependencies: dependencies,
+        );
+      } else if (element is ClassElement) {
+        final buildMethod = _findNotifierBuildMethod(element);
+
+        // @riverpod
+        // class Counter extends _$Counter {...}
+        return NotifierGeneratorProviderDefinition(
+          name: element.name,
+          isAutoDispose: !keepAlive,
+          type: _parseStateTypeFromReturnType(buildMethod.returnType),
+          parameters: buildMethod.parameters,
+          docs: element.documentationComment,
+          dependencies: dependencies,
+        );
+      }
+      throw GeneratorProviderDefinitionFormatException
+          .neitherClassNorFunction();
+    });
+  }
+
+  static Future<List<GeneratorProviderDependency>?> _parseDependencies(
+    DartObject annotation, {
+    // required ResolvedLibraryResult libraryResult,
+    required AstResolver resolver,
   }) async {
-    final annotations = riverpodType.annotationsOf(element);
-    if (annotations.isEmpty) {
-      throw GeneratorProviderDefinitionFormatException.notAProvider();
-    }
-    if (annotations.length > 1) {
-      throw GeneratorProviderDefinitionFormatException.tooManyAnnotations();
-    }
+    final dependencies = annotation.getField('dependencies')?.toListValue();
+    if (dependencies == null) return null;
 
-    final annotation = annotations.single;
-    final keepAlive = annotation.getField('keepAlive')?.toBoolValue() ?? false;
+    return Stream.fromIterable(dependencies).asyncMap((dependency) async {
+      final type = dependency.type;
+      if (type == null) {
+        throw GeneratorProviderDefinitionFormatException
+            .failedToParseDependency();
+      }
 
-    if (element is FunctionElement) {
-      // TODO throw if "ref" is not a positional parameter or has a type mismatch
+      if (type.isDartCoreString) {
+        if (false) {
+          // TODO validate that the string points to a known provider
+          // TODO throw on circular dependency
+        }
+        return GeneratorProviderDependency.string(dependency.toStringValue()!);
+      }
 
-      // @riverpod
-      // Model provider(ProviderRef ref) {...}
-      return FunctionalGeneratorProviderDefinition(
-        name: element.name,
-        isAutoDispose: !keepAlive,
-        type: _parseStateTypeFromReturnType(element.returnType),
-        parameters: element.parameters
-            // Removing the "ref" parameter
-            .skip(1)
-            .toList(),
-        docs: element.documentationComment,
-        dependencies: null,
-      );
-    } else if (element is ClassElement) {
-      final buildMethod = _findNotifierBuildMethod(element);
+      Element? dependencyElement;
+      if (type is FunctionType) {
+        dependencyElement = dependency.toFunctionValue();
+      } else if (type is InterfaceType) {
+        dependencyElement = dependency.toTypeValue()?.element2;
+      }
 
-      // @riverpod
-      // class Counter extends _$Counter {...}
-      return NotifierGeneratorProviderDefinition(
-        name: element.name,
-        isAutoDispose: !keepAlive,
-        type: _parseStateTypeFromReturnType(buildMethod.returnType),
-        parameters: buildMethod.parameters,
-        docs: element.documentationComment,
-        dependencies: null,
-      );
-    }
-    throw GeneratorProviderDefinitionFormatException.neitherClassNorFunction();
+      if (dependencyElement == null) {
+        throw GeneratorProviderDefinitionFormatException
+            .notAProviderDependency();
+      }
+
+      try {
+        // TODO throw on circular dependency
+        final dependencyDefinition = await GeneratorProviderDefinition.parse(
+          dependencyElement,
+          resolver: resolver,
+        );
+
+        return GeneratorProviderDependency.provider(dependencyDefinition);
+      } on GeneratorProviderDefinitionFormatException catch (err, stack) {
+        throw GeneratorProviderDefinitionFormatException
+            .failedToParseDependency(error: err, stackTrace: stack);
+      }
+    }).toList();
   }
 
   static GeneratorCreatedType _parseStateTypeFromReturnType(
@@ -461,6 +533,20 @@ class GeneratorProviderDefinitionFormatException
   /// The element was annotated with @riverpod more than once
   factory GeneratorProviderDefinitionFormatException.noBuildMethod() =
       NoBuildMethodGeneratorProviderDefinitionFormatException;
+
+  /// The element was annotated with @riverpod more than once
+  @Assert(
+    '(error == null && stackTrace == null) || (error != null && stackTrace != null)',
+    'If error is specified, stackTrace must be specified too',
+  )
+  factory GeneratorProviderDefinitionFormatException.failedToParseDependency({
+    Object? error,
+    StackTrace? stackTrace,
+  }) = FailedToParseDependencyGeneratorProviderDefinitionFormatException;
+
+  /// The element was annotated with @riverpod more than once
+  factory GeneratorProviderDefinitionFormatException.notAProviderDependency() =
+      NotAProviderDependencyGeneratorProviderDefinitionFormatException;
 }
 
 /// {@template ProviderDefinitionFormatException}

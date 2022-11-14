@@ -81,7 +81,7 @@ class Counter2 extends _$Counter2 {
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 @riverpod
-int autoDispose(FirstRef ref) => 0;
+int autoDispose(AutoDisposeRef ref) => 0;
 
 @Riverpod(keepAlive: true)
 int keepAlive(KeepAliveRef ref) => 0;
@@ -127,10 +127,46 @@ class KeepAliveNotifier extends _$KeepAliveNotifier {
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 @riverpod
-int root(FirstRef ref) => 0;
+int root(RootRef ref) => 0;
 
 @riverpod
 class RootNotifier extends _$RootNotifier {
+  @override
+  int build() => 0;
+}
+
+@Riverpod(dependencies: [])
+int empty(EmptyRef ref) => 0;
+
+@Riverpod(dependencies: [])
+class EmptyNotifier extends _$EmptyNotifier {
+  @override
+  int build() => 0;
+}
+
+@Riverpod(dependencies: ['emptyProvider'])
+int string(StringRef ref) => 0;
+
+@Riverpod(dependencies: ['emptyProvider'])
+class StringNotifier extends _$StringNotifier {
+  @override
+  int build() => 0;
+}
+
+@Riverpod(dependencies: [empty, EmptyNotifier])
+int providerDependency(ProviderDependencyRef ref) => 0;
+
+@Riverpod(dependencies: [empty, EmptyNotifier])
+class ProviderDependencyNotifier extends _$ProviderDependencyNotifier {
+  @override
+  int build() => 0;
+}
+
+@Riverpod(dependencies: [providerDependency, ProviderDependencyNotifier])
+int nestedDependency(NestedDependencyRef ref) => 0;
+
+@Riverpod(dependencies: [providerDependency, ProviderDependencyNotifier])
+class NestedDependencyNotifier extends _$NestedDependencyNotifier {
   @override
   int build() => 0;
 }
@@ -139,12 +175,100 @@ class RootNotifier extends _$RootNotifier {
         'root',
         'RootNotifier',
       ]);
+      final empty = await resolver.parseAllGeneratorProviderDefinitions([
+        'empty',
+        'EmptyNotifier',
+      ]);
+      final string = await resolver.parseAllGeneratorProviderDefinitions([
+        'string',
+        'StringNotifier',
+      ]);
+      final providers = await resolver.parseAllGeneratorProviderDefinitions([
+        'providerDependency',
+        'ProviderDependencyNotifier',
+      ]);
+      final nesteds = await resolver.parseAllGeneratorProviderDefinitions([
+        'nestedDependency',
+        'NestedDependencyNotifier',
+      ]);
 
       for (final provider in roots.entries) {
         expect(
           provider.value.dependencies,
           null,
           reason: '${provider.key} has no dependency',
+        );
+      }
+      for (final provider in empty.entries) {
+        expect(
+          provider.value.dependencies,
+          isEmpty,
+          reason: '${provider.key} has an empty list of dependencies',
+        );
+      }
+      for (final provider in string.entries) {
+        expect(
+          provider.value.dependencies,
+          [
+            isA<StringGeneratorProviderDependency>()
+                .having((e) => e.value, 'value', 'emptyProvider')
+          ],
+          reason:
+              '${provider.key} has a unique string dependency on emptyProvider',
+        );
+      }
+
+      for (final provider in providers.entries) {
+        expect(
+          provider.value.dependencies,
+          hasLength(2),
+          reason: '${provider.key} has two explicit dependencies',
+        );
+        expect(
+          provider.value.dependencies?[0],
+          isA<ProviderGeneratorProviderDependency>().having(
+            (e) => e.definition,
+            'definition',
+            same(empty['empty']),
+          ),
+          reason: '${provider.key} has `empty` as first dependency',
+        );
+        expect(
+          provider.value.dependencies?[1],
+          isA<ProviderGeneratorProviderDependency>().having(
+            (e) => e.definition,
+            'definition',
+            same(empty['EmptyNotifier']),
+          ),
+          reason: '${provider.key} has `EmptyNotifier` as second dependency',
+        );
+      }
+
+      for (final provider in nesteds.entries) {
+        expect(
+          provider.value.dependencies,
+          hasLength(2),
+          reason: '${provider.key} has two explicit dependencies',
+        );
+        expect(
+          provider.value.dependencies?[0],
+          isA<ProviderGeneratorProviderDependency>().having(
+            (e) => e.definition,
+            'definition',
+            same(providers['providerDependency']),
+          ),
+          reason:
+              '${provider.key} has `providerDependency` as first dependency',
+        );
+        expect(
+          provider.value.dependencies?[1],
+          isA<ProviderGeneratorProviderDependency>().having(
+            (e) => e.definition,
+            'definition',
+            same(providers['ProviderDependencyNotifier']),
+          ),
+          reason:
+              '${provider.key} has `ProviderDependencyNotifier` as second dependency',
         );
       }
     });
