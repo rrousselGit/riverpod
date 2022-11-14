@@ -322,8 +322,10 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
     );
   }
 
+  /// Is this provider defintion pointing to a notifier definition
   bool get isNotifier => map(functional: (_) => false, notifier: (_) => true);
 
+  /// Is this provider defintion pointing to a plain function
   bool get isFunctional => map(functional: (_) => true, notifier: (_) => false);
 }
 
