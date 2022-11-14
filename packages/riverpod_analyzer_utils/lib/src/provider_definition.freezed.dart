@@ -799,33 +799,42 @@ mixin _$GeneratorProviderDefinition {
   GeneratorCreatedType get type => throw _privateConstructorUsedError;
   bool get isAutoDispose => throw _privateConstructorUsedError;
   List<ParameterElement> get parameters => throw _privateConstructorUsedError;
+  String? get docs => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters)
+            bool isAutoDispose, List<ParameterElement> parameters, String? docs)
         functional,
     required TResult Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters)
+            bool isAutoDispose, List<ParameterElement> parameters, String? docs)
         notifier,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters)?
+    TResult? Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs)?
         functional,
-    TResult? Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters)?
+    TResult? Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs)?
         notifier,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String name, GeneratorCreatedType type, bool isAutoDispose,
-            List<ParameterElement> parameters)?
+            List<ParameterElement> parameters, String? docs)?
         functional,
     TResult Function(String name, GeneratorCreatedType type, bool isAutoDispose,
-            List<ParameterElement> parameters)?
+            List<ParameterElement> parameters, String? docs)?
         notifier,
     required TResult orElse(),
   }) =>
@@ -869,7 +878,8 @@ abstract class $GeneratorProviderDefinitionCopyWith<$Res> {
       {String name,
       GeneratorCreatedType type,
       bool isAutoDispose,
-      List<ParameterElement> parameters});
+      List<ParameterElement> parameters,
+      String? docs});
 
   $GeneratorCreatedTypeCopyWith<$Res> get type;
 }
@@ -892,6 +902,7 @@ class _$GeneratorProviderDefinitionCopyWithImpl<$Res,
     Object? type = null,
     Object? isAutoDispose = null,
     Object? parameters = null,
+    Object? docs = freezed,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -910,6 +921,10 @@ class _$GeneratorProviderDefinitionCopyWithImpl<$Res,
           ? _value.parameters
           : parameters // ignore: cast_nullable_to_non_nullable
               as List<ParameterElement>,
+      docs: freezed == docs
+          ? _value.docs
+          : docs // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 
@@ -935,7 +950,8 @@ abstract class _$$FunctionalGeneratorProviderDefinitionCopyWith<$Res>
       {String name,
       GeneratorCreatedType type,
       bool isAutoDispose,
-      List<ParameterElement> parameters});
+      List<ParameterElement> parameters,
+      String? docs});
 
   @override
   $GeneratorCreatedTypeCopyWith<$Res> get type;
@@ -958,6 +974,7 @@ class __$$FunctionalGeneratorProviderDefinitionCopyWithImpl<$Res>
     Object? type = null,
     Object? isAutoDispose = null,
     Object? parameters = null,
+    Object? docs = freezed,
   }) {
     return _then(_$FunctionalGeneratorProviderDefinition(
       name: null == name
@@ -976,6 +993,10 @@ class __$$FunctionalGeneratorProviderDefinitionCopyWithImpl<$Res>
           ? _value._parameters
           : parameters // ignore: cast_nullable_to_non_nullable
               as List<ParameterElement>,
+      docs: freezed == docs
+          ? _value.docs
+          : docs // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -989,7 +1010,8 @@ class _$FunctionalGeneratorProviderDefinition
       {required this.name,
       required this.type,
       required this.isAutoDispose,
-      required final List<ParameterElement> parameters})
+      required final List<ParameterElement> parameters,
+      required this.docs})
       : _parameters = parameters;
 
   @override
@@ -1008,8 +1030,11 @@ class _$FunctionalGeneratorProviderDefinition
   }
 
   @override
+  final String? docs;
+
+  @override
   String toString() {
-    return 'GeneratorProviderDefinition.functional(name: $name, type: $type, isAutoDispose: $isAutoDispose, parameters: $parameters)';
+    return 'GeneratorProviderDefinition.functional(name: $name, type: $type, isAutoDispose: $isAutoDispose, parameters: $parameters, docs: $docs)';
   }
 
   @override
@@ -1022,12 +1047,13 @@ class _$FunctionalGeneratorProviderDefinition
             (identical(other.isAutoDispose, isAutoDispose) ||
                 other.isAutoDispose == isAutoDispose) &&
             const DeepCollectionEquality()
-                .equals(other._parameters, _parameters));
+                .equals(other._parameters, _parameters) &&
+            (identical(other.docs, docs) || other.docs == docs));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, name, type, isAutoDispose,
-      const DeepCollectionEquality().hash(_parameters));
+      const DeepCollectionEquality().hash(_parameters), docs);
 
   @JsonKey(ignore: true)
   @override
@@ -1041,41 +1067,49 @@ class _$FunctionalGeneratorProviderDefinition
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters)
+            bool isAutoDispose, List<ParameterElement> parameters, String? docs)
         functional,
     required TResult Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters)
+            bool isAutoDispose, List<ParameterElement> parameters, String? docs)
         notifier,
   }) {
-    return functional(name, type, isAutoDispose, parameters);
+    return functional(name, type, isAutoDispose, parameters, docs);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters)?
+    TResult? Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs)?
         functional,
-    TResult? Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters)?
+    TResult? Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs)?
         notifier,
   }) {
-    return functional?.call(name, type, isAutoDispose, parameters);
+    return functional?.call(name, type, isAutoDispose, parameters, docs);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String name, GeneratorCreatedType type, bool isAutoDispose,
-            List<ParameterElement> parameters)?
+            List<ParameterElement> parameters, String? docs)?
         functional,
     TResult Function(String name, GeneratorCreatedType type, bool isAutoDispose,
-            List<ParameterElement> parameters)?
+            List<ParameterElement> parameters, String? docs)?
         notifier,
     required TResult orElse(),
   }) {
     if (functional != null) {
-      return functional(name, type, isAutoDispose, parameters);
+      return functional(name, type, isAutoDispose, parameters, docs);
     }
     return orElse();
   }
@@ -1117,11 +1151,11 @@ class _$FunctionalGeneratorProviderDefinition
 abstract class FunctionalGeneratorProviderDefinition
     implements GeneratorProviderDefinition {
   factory FunctionalGeneratorProviderDefinition(
-          {required final String name,
-          required final GeneratorCreatedType type,
-          required final bool isAutoDispose,
-          required final List<ParameterElement> parameters}) =
-      _$FunctionalGeneratorProviderDefinition;
+      {required final String name,
+      required final GeneratorCreatedType type,
+      required final bool isAutoDispose,
+      required final List<ParameterElement> parameters,
+      required final String? docs}) = _$FunctionalGeneratorProviderDefinition;
 
   @override
   String get name;
@@ -1133,6 +1167,8 @@ abstract class FunctionalGeneratorProviderDefinition
   bool get isAutoDispose;
   @override
   List<ParameterElement> get parameters;
+  @override
+  String? get docs;
   @override
   @JsonKey(ignore: true)
   _$$FunctionalGeneratorProviderDefinitionCopyWith<
@@ -1153,7 +1189,8 @@ abstract class _$$NotifierGeneratorProviderDefinitionCopyWith<$Res>
       {String name,
       GeneratorCreatedType type,
       bool isAutoDispose,
-      List<ParameterElement> parameters});
+      List<ParameterElement> parameters,
+      String? docs});
 
   @override
   $GeneratorCreatedTypeCopyWith<$Res> get type;
@@ -1176,6 +1213,7 @@ class __$$NotifierGeneratorProviderDefinitionCopyWithImpl<$Res>
     Object? type = null,
     Object? isAutoDispose = null,
     Object? parameters = null,
+    Object? docs = freezed,
   }) {
     return _then(_$NotifierGeneratorProviderDefinition(
       name: null == name
@@ -1194,6 +1232,10 @@ class __$$NotifierGeneratorProviderDefinitionCopyWithImpl<$Res>
           ? _value._parameters
           : parameters // ignore: cast_nullable_to_non_nullable
               as List<ParameterElement>,
+      docs: freezed == docs
+          ? _value.docs
+          : docs // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -1207,7 +1249,8 @@ class _$NotifierGeneratorProviderDefinition
       {required this.name,
       required this.type,
       required this.isAutoDispose,
-      required final List<ParameterElement> parameters})
+      required final List<ParameterElement> parameters,
+      required this.docs})
       : _parameters = parameters;
 
   @override
@@ -1226,8 +1269,11 @@ class _$NotifierGeneratorProviderDefinition
   }
 
   @override
+  final String? docs;
+
+  @override
   String toString() {
-    return 'GeneratorProviderDefinition.notifier(name: $name, type: $type, isAutoDispose: $isAutoDispose, parameters: $parameters)';
+    return 'GeneratorProviderDefinition.notifier(name: $name, type: $type, isAutoDispose: $isAutoDispose, parameters: $parameters, docs: $docs)';
   }
 
   @override
@@ -1240,12 +1286,13 @@ class _$NotifierGeneratorProviderDefinition
             (identical(other.isAutoDispose, isAutoDispose) ||
                 other.isAutoDispose == isAutoDispose) &&
             const DeepCollectionEquality()
-                .equals(other._parameters, _parameters));
+                .equals(other._parameters, _parameters) &&
+            (identical(other.docs, docs) || other.docs == docs));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, name, type, isAutoDispose,
-      const DeepCollectionEquality().hash(_parameters));
+      const DeepCollectionEquality().hash(_parameters), docs);
 
   @JsonKey(ignore: true)
   @override
@@ -1259,41 +1306,49 @@ class _$NotifierGeneratorProviderDefinition
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters)
+            bool isAutoDispose, List<ParameterElement> parameters, String? docs)
         functional,
     required TResult Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters)
+            bool isAutoDispose, List<ParameterElement> parameters, String? docs)
         notifier,
   }) {
-    return notifier(name, type, isAutoDispose, parameters);
+    return notifier(name, type, isAutoDispose, parameters, docs);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters)?
+    TResult? Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs)?
         functional,
-    TResult? Function(String name, GeneratorCreatedType type,
-            bool isAutoDispose, List<ParameterElement> parameters)?
+    TResult? Function(
+            String name,
+            GeneratorCreatedType type,
+            bool isAutoDispose,
+            List<ParameterElement> parameters,
+            String? docs)?
         notifier,
   }) {
-    return notifier?.call(name, type, isAutoDispose, parameters);
+    return notifier?.call(name, type, isAutoDispose, parameters, docs);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String name, GeneratorCreatedType type, bool isAutoDispose,
-            List<ParameterElement> parameters)?
+            List<ParameterElement> parameters, String? docs)?
         functional,
     TResult Function(String name, GeneratorCreatedType type, bool isAutoDispose,
-            List<ParameterElement> parameters)?
+            List<ParameterElement> parameters, String? docs)?
         notifier,
     required TResult orElse(),
   }) {
     if (notifier != null) {
-      return notifier(name, type, isAutoDispose, parameters);
+      return notifier(name, type, isAutoDispose, parameters, docs);
     }
     return orElse();
   }
@@ -1335,11 +1390,11 @@ class _$NotifierGeneratorProviderDefinition
 abstract class NotifierGeneratorProviderDefinition
     implements GeneratorProviderDefinition {
   factory NotifierGeneratorProviderDefinition(
-          {required final String name,
-          required final GeneratorCreatedType type,
-          required final bool isAutoDispose,
-          required final List<ParameterElement> parameters}) =
-      _$NotifierGeneratorProviderDefinition;
+      {required final String name,
+      required final GeneratorCreatedType type,
+      required final bool isAutoDispose,
+      required final List<ParameterElement> parameters,
+      required final String? docs}) = _$NotifierGeneratorProviderDefinition;
 
   @override
   String get name;
@@ -1351,6 +1406,8 @@ abstract class NotifierGeneratorProviderDefinition
   bool get isAutoDispose;
   @override
   List<ParameterElement> get parameters;
+  @override
+  String? get docs;
   @override
   @JsonKey(ignore: true)
   _$$NotifierGeneratorProviderDefinitionCopyWith<

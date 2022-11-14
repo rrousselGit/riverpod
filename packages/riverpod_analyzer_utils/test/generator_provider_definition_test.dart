@@ -29,6 +29,50 @@ class Counter extends _$Counter {
       });
     });
 
+    testSource('Decodes docs', source: r'''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+/// Hello world
+@riverpod
+int first(FirstRef ref) => 0;
+
+@riverpod
+int second(FirstRef ref) => 0;
+
+/// Hello world
+@riverpod
+class Counter extends _$Counter {
+  @override
+  int build() => 0;
+}
+
+@riverpod
+class Counter2 extends _$Counter2 {
+  @override
+  int build() => 0;
+}
+''', (resolver) async {
+      final helloWorldDocs = await resolver
+          .parseAllGeneratorProviderDefinitions(['first', 'Counter']);
+      final noDocs = await resolver
+          .parseAllGeneratorProviderDefinitions(['second', 'Counter2']);
+
+      for (final provider in helloWorldDocs.entries) {
+        expect(
+          provider.value.docs,
+          '/// Hello world',
+          reason: '${provider.key} has "Hello world" for docs',
+        );
+      }
+      for (final provider in noDocs.entries) {
+        expect(
+          provider.value.docs,
+          null,
+          reason: '${provider.key} has no docs',
+        );
+      }
+    });
+
     testSource('Decode isAutoDispose', source: r'''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
