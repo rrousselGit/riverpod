@@ -166,6 +166,8 @@ targets:
     builders:
       riverpod_generator:
         options:
+          # Could be changed to "Pod", such that riverpod_generator
+          # would generate "countPod" instead of "countProvider"
           provider_name_suffix: "Provider" # (default)
 ```
 
