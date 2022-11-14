@@ -35,7 +35,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 int autoDispose(FirstRef ref) => 0;
 
 @Riverpod(keepAlive: true)
-int keepAlive(FirstRef ref) => 0;
+int keepAlive(KeepAliveRef ref) => 0;
 
 @riverpod
 class AutoDisposeNotifier extends _$AutoDisposeNotifier {
@@ -44,7 +44,7 @@ class AutoDisposeNotifier extends _$AutoDisposeNotifier {
 }
 
 @Riverpod(keepAlive: true)
-class KeepAliveNotifier extends _$AutoDisposeNotifier {
+class KeepAliveNotifier extends _$KeepAliveNotifier {
   @override
   int build() => 0;
 }
@@ -70,6 +70,96 @@ class KeepAliveNotifier extends _$AutoDisposeNotifier {
           provider.value.isAutoDispose,
           false,
           reason: '${provider.key} is a Provider',
+        );
+      }
+    });
+
+    testSource('Decodes stateType', source: r'''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'dart:async';
+
+@riverpod
+int integer(IntegerRef ref) => 0;
+
+@riverpod
+FutureOr<int> futureOrInt(FutureOrIntRef ref) => 0;
+
+@riverpod
+Future<int> futureInt(FutureIntRef ref) async => 0;
+
+@riverpod
+class Integer extends _$Integer {
+  @override
+  int build() => 0;
+}
+
+@riverpod
+class FutureOrInt extends _$FutureOrInt {
+  @override
+  FutureOr<int> build() => 0;
+}
+
+@riverpod
+class FutureInt extends _$FutureInt {
+  @override
+  Future<int> build() async => 0;
+}
+''', (resolver) async {
+      final typeProvider =
+          await resolver.libraries.first.then((value) => value.typeProvider);
+
+      final integers = await resolver.parseAllGeneratorProviderDefinitions([
+        'integer',
+        'Integer',
+      ]);
+      final futures = await resolver.parseAllGeneratorProviderDefinitions([
+        'futureInt',
+        'FutureInt',
+      ]);
+      final futureOrs = await resolver.parseAllGeneratorProviderDefinitions([
+        'futureOrInt',
+        'FutureOrInt',
+      ]);
+
+      final all = {...integers, ...futures, ...futureOrs};
+
+      for (final provider in all.entries) {
+        expect(
+          provider.value.type.stateType,
+          typeProvider.intType,
+          reason: '${provider.key} has an int type',
+        );
+      }
+
+      for (final provider in integers.entries) {
+        expect(
+          provider.value.type.createdType,
+          typeProvider.intType,
+          reason: '${provider.key} creates an int',
+        );
+      }
+      for (final provider in futureOrs.entries) {
+        expect(
+          provider.value.type.createdType.isDartAsyncFutureOr,
+          true,
+          reason: '${provider.key} creates a FutureOr<int>',
+        );
+        expect(
+          provider.value.type.createdType.toString(),
+          'FutureOr<int>',
+          reason: '${provider.key} creates a FutureOr<int>',
+        );
+      }
+      for (final provider in futures.entries) {
+        expect(
+          provider.value.type.createdType.toString(),
+          'Future<int>',
+          reason: '${provider.key} creates a Future<int>',
+        );
+        expect(
+          provider.value.type.createdType.isDartAsyncFuture,
+          true,
+          reason: '${provider.key} creates a Future<int>',
         );
       }
     });

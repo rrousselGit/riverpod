@@ -146,7 +146,57 @@ class LegacyProviderDefinition with _$LegacyProviderDefinition {
 }
 
 /// A dart representation for providers that needs code-generation
-///
+@freezed
+class GeneratorCreatedType with _$GeneratorCreatedType {
+  /// A value that is not any other valid known type.
+  @Assert('createdType == stateType')
+  @internal
+  factory GeneratorCreatedType({
+    required DartType createdType,
+    required DartType stateType,
+  }) = PlainGeneratorCreatedType;
+
+  GeneratorCreatedType._();
+
+  /// A user-defined FutureOr<T>
+  @internal
+  factory GeneratorCreatedType.futureOr({
+    required InterfaceType createdType,
+    required DartType stateType,
+  }) = FutureGeneratorCreatedType;
+
+  /// A user-defined Future<T>
+  @internal
+  factory GeneratorCreatedType.future({
+    required InterfaceType createdType,
+    required DartType stateType,
+  }) = FutureOrGeneratorCreatedType;
+
+  /// [createdType] is the raw [DartType] corresponding to the return value of the "create" function
+  DartType get createdType {
+    return map(
+      (value) => value.createdType,
+      futureOr: (value) => value.createdType,
+      future: (value) => value.createdType,
+    );
+  }
+
+  /// [stateType] is the user-defined provider type trimmed from the encapsulating type.
+  ///
+  /// Such that:
+  ///
+  /// ```dart
+  /// int provider(ref) {...}
+  /// Future<int> provider(ref) {...}
+  /// FutureOr<int> provider(ref) {...}
+  /// ```
+  ///
+  /// all have `int` as [stateType].
+  @override
+  DartType get stateType;
+}
+
+/// A dart representation for providers that needs code-generation
 @freezed
 class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
   /// A function-based generated provider definition, such as:
@@ -157,6 +207,9 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
   @internal
   factory GeneratorProviderDefinition.functional({
     required String name,
+
+    /// Information about the type of the value exposed
+    required GeneratorCreatedType type,
     required bool isAutoDispose,
   }) = FunctionalGeneratorProviderDefinition;
 
@@ -172,6 +225,9 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
   @internal
   factory GeneratorProviderDefinition.notifier({
     required String name,
+
+    /// Information about the type of the value exposed
+    required GeneratorCreatedType type,
     required bool isAutoDispose,
   }) = NotifierGeneratorProviderDefinition;
 
@@ -201,17 +257,53 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
       return FunctionalGeneratorProviderDefinition(
         name: element.name,
         isAutoDispose: !keepAlive,
+        type: _parseStateTypeFromReturnType(element.returnType),
       );
     } else if (element is ClassElement) {
+      final buildMethod = _findNotifierBuildMethod(element);
+
       // @riverpod
       // class Counter extends _$Counter {...}
       return NotifierGeneratorProviderDefinition(
         name: element.name,
         isAutoDispose: !keepAlive,
+        type: _parseStateTypeFromReturnType(buildMethod.returnType),
       );
     }
     throw GeneratorProviderDefinitionFormatException.neitherClassNorFunction(
       element,
+    );
+  }
+
+  static GeneratorCreatedType _parseStateTypeFromReturnType(
+    DartType returnType,
+  ) {
+    if (returnType.isDartAsyncFutureOr) {
+      final interfaceType = returnType as InterfaceType;
+      return GeneratorCreatedType.futureOr(
+        stateType: interfaceType.typeArguments.single,
+        createdType: interfaceType,
+      );
+    } else if (returnType.isDartAsyncFuture) {
+      final interfaceType = returnType as InterfaceType;
+      return GeneratorCreatedType.future(
+        stateType: interfaceType.typeArguments.single,
+        createdType: interfaceType,
+      );
+    } else {
+      return GeneratorCreatedType(
+        stateType: returnType,
+        createdType: returnType,
+      );
+    }
+  }
+
+  static MethodElement _findNotifierBuildMethod(ClassElement element) {
+    return element.methods.firstWhere(
+      (element) => element.name == 'build',
+      orElse: () {
+        throw GeneratorProviderDefinitionFormatException.noBuildMethod(element);
+      },
     );
   }
 }
@@ -334,6 +426,11 @@ class GeneratorProviderDefinitionFormatException
   factory GeneratorProviderDefinitionFormatException.tooManyAnnotations(
     Element element,
   ) = TooManyAnnotationGeneratorProviderDefinitionFormatException;
+
+  /// The element was annotated with @riverpod more than once
+  factory GeneratorProviderDefinitionFormatException.noBuildMethod(
+    Element element,
+  ) = NoBuildMethodGeneratorProviderDefinitionFormatException;
 }
 
 /// {@template ProviderDefinitionFormatException}

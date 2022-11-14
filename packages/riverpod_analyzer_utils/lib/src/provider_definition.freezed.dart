@@ -205,25 +205,627 @@ abstract class _LegacyProviderDefinition implements LegacyProviderDefinition {
 }
 
 /// @nodoc
+mixin _$GeneratorCreatedType {
+  DartType get stateType => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(DartType createdType, DartType stateType) $default, {
+    required TResult Function(InterfaceType createdType, DartType stateType)
+        futureOr,
+    required TResult Function(InterfaceType createdType, DartType stateType)
+        future,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(DartType createdType, DartType stateType)? $default, {
+    TResult? Function(InterfaceType createdType, DartType stateType)? futureOr,
+    TResult? Function(InterfaceType createdType, DartType stateType)? future,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(DartType createdType, DartType stateType)? $default, {
+    TResult Function(InterfaceType createdType, DartType stateType)? futureOr,
+    TResult Function(InterfaceType createdType, DartType stateType)? future,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(PlainGeneratorCreatedType value) $default, {
+    required TResult Function(FutureGeneratorCreatedType value) futureOr,
+    required TResult Function(FutureOrGeneratorCreatedType value) future,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(PlainGeneratorCreatedType value)? $default, {
+    TResult? Function(FutureGeneratorCreatedType value)? futureOr,
+    TResult? Function(FutureOrGeneratorCreatedType value)? future,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(PlainGeneratorCreatedType value)? $default, {
+    TResult Function(FutureGeneratorCreatedType value)? futureOr,
+    TResult Function(FutureOrGeneratorCreatedType value)? future,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $GeneratorCreatedTypeCopyWith<GeneratorCreatedType> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $GeneratorCreatedTypeCopyWith<$Res> {
+  factory $GeneratorCreatedTypeCopyWith(GeneratorCreatedType value,
+          $Res Function(GeneratorCreatedType) then) =
+      _$GeneratorCreatedTypeCopyWithImpl<$Res, GeneratorCreatedType>;
+  @useResult
+  $Res call({DartType stateType});
+}
+
+/// @nodoc
+class _$GeneratorCreatedTypeCopyWithImpl<$Res,
+        $Val extends GeneratorCreatedType>
+    implements $GeneratorCreatedTypeCopyWith<$Res> {
+  _$GeneratorCreatedTypeCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? stateType = null,
+  }) {
+    return _then(_value.copyWith(
+      stateType: null == stateType
+          ? _value.stateType
+          : stateType // ignore: cast_nullable_to_non_nullable
+              as DartType,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$PlainGeneratorCreatedTypeCopyWith<$Res>
+    implements $GeneratorCreatedTypeCopyWith<$Res> {
+  factory _$$PlainGeneratorCreatedTypeCopyWith(
+          _$PlainGeneratorCreatedType value,
+          $Res Function(_$PlainGeneratorCreatedType) then) =
+      __$$PlainGeneratorCreatedTypeCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({DartType createdType, DartType stateType});
+}
+
+/// @nodoc
+class __$$PlainGeneratorCreatedTypeCopyWithImpl<$Res>
+    extends _$GeneratorCreatedTypeCopyWithImpl<$Res,
+        _$PlainGeneratorCreatedType>
+    implements _$$PlainGeneratorCreatedTypeCopyWith<$Res> {
+  __$$PlainGeneratorCreatedTypeCopyWithImpl(_$PlainGeneratorCreatedType _value,
+      $Res Function(_$PlainGeneratorCreatedType) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? createdType = null,
+    Object? stateType = null,
+  }) {
+    return _then(_$PlainGeneratorCreatedType(
+      createdType: null == createdType
+          ? _value.createdType
+          : createdType // ignore: cast_nullable_to_non_nullable
+              as DartType,
+      stateType: null == stateType
+          ? _value.stateType
+          : stateType // ignore: cast_nullable_to_non_nullable
+              as DartType,
+    ));
+  }
+}
+
+/// @nodoc
+
+@internal
+class _$PlainGeneratorCreatedType extends PlainGeneratorCreatedType {
+  _$PlainGeneratorCreatedType(
+      {required this.createdType, required this.stateType})
+      : assert(createdType == stateType),
+        super._();
+
+  @override
+  final DartType createdType;
+  @override
+  final DartType stateType;
+
+  @override
+  String toString() {
+    return 'GeneratorCreatedType(createdType: $createdType, stateType: $stateType)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$PlainGeneratorCreatedType &&
+            (identical(other.createdType, createdType) ||
+                other.createdType == createdType) &&
+            (identical(other.stateType, stateType) ||
+                other.stateType == stateType));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, createdType, stateType);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$PlainGeneratorCreatedTypeCopyWith<_$PlainGeneratorCreatedType>
+      get copyWith => __$$PlainGeneratorCreatedTypeCopyWithImpl<
+          _$PlainGeneratorCreatedType>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(DartType createdType, DartType stateType) $default, {
+    required TResult Function(InterfaceType createdType, DartType stateType)
+        futureOr,
+    required TResult Function(InterfaceType createdType, DartType stateType)
+        future,
+  }) {
+    return $default(createdType, stateType);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(DartType createdType, DartType stateType)? $default, {
+    TResult? Function(InterfaceType createdType, DartType stateType)? futureOr,
+    TResult? Function(InterfaceType createdType, DartType stateType)? future,
+  }) {
+    return $default?.call(createdType, stateType);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(DartType createdType, DartType stateType)? $default, {
+    TResult Function(InterfaceType createdType, DartType stateType)? futureOr,
+    TResult Function(InterfaceType createdType, DartType stateType)? future,
+    required TResult orElse(),
+  }) {
+    if ($default != null) {
+      return $default(createdType, stateType);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(PlainGeneratorCreatedType value) $default, {
+    required TResult Function(FutureGeneratorCreatedType value) futureOr,
+    required TResult Function(FutureOrGeneratorCreatedType value) future,
+  }) {
+    return $default(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(PlainGeneratorCreatedType value)? $default, {
+    TResult? Function(FutureGeneratorCreatedType value)? futureOr,
+    TResult? Function(FutureOrGeneratorCreatedType value)? future,
+  }) {
+    return $default?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(PlainGeneratorCreatedType value)? $default, {
+    TResult Function(FutureGeneratorCreatedType value)? futureOr,
+    TResult Function(FutureOrGeneratorCreatedType value)? future,
+    required TResult orElse(),
+  }) {
+    if ($default != null) {
+      return $default(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class PlainGeneratorCreatedType extends GeneratorCreatedType {
+  factory PlainGeneratorCreatedType(
+      {required final DartType createdType,
+      required final DartType stateType}) = _$PlainGeneratorCreatedType;
+  PlainGeneratorCreatedType._() : super._();
+
+  DartType get createdType;
+  @override
+  DartType get stateType;
+  @override
+  @JsonKey(ignore: true)
+  _$$PlainGeneratorCreatedTypeCopyWith<_$PlainGeneratorCreatedType>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$FutureGeneratorCreatedTypeCopyWith<$Res>
+    implements $GeneratorCreatedTypeCopyWith<$Res> {
+  factory _$$FutureGeneratorCreatedTypeCopyWith(
+          _$FutureGeneratorCreatedType value,
+          $Res Function(_$FutureGeneratorCreatedType) then) =
+      __$$FutureGeneratorCreatedTypeCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({InterfaceType createdType, DartType stateType});
+}
+
+/// @nodoc
+class __$$FutureGeneratorCreatedTypeCopyWithImpl<$Res>
+    extends _$GeneratorCreatedTypeCopyWithImpl<$Res,
+        _$FutureGeneratorCreatedType>
+    implements _$$FutureGeneratorCreatedTypeCopyWith<$Res> {
+  __$$FutureGeneratorCreatedTypeCopyWithImpl(
+      _$FutureGeneratorCreatedType _value,
+      $Res Function(_$FutureGeneratorCreatedType) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? createdType = null,
+    Object? stateType = null,
+  }) {
+    return _then(_$FutureGeneratorCreatedType(
+      createdType: null == createdType
+          ? _value.createdType
+          : createdType // ignore: cast_nullable_to_non_nullable
+              as InterfaceType,
+      stateType: null == stateType
+          ? _value.stateType
+          : stateType // ignore: cast_nullable_to_non_nullable
+              as DartType,
+    ));
+  }
+}
+
+/// @nodoc
+
+@internal
+class _$FutureGeneratorCreatedType extends FutureGeneratorCreatedType {
+  _$FutureGeneratorCreatedType(
+      {required this.createdType, required this.stateType})
+      : super._();
+
+  @override
+  final InterfaceType createdType;
+  @override
+  final DartType stateType;
+
+  @override
+  String toString() {
+    return 'GeneratorCreatedType.futureOr(createdType: $createdType, stateType: $stateType)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$FutureGeneratorCreatedType &&
+            (identical(other.createdType, createdType) ||
+                other.createdType == createdType) &&
+            (identical(other.stateType, stateType) ||
+                other.stateType == stateType));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, createdType, stateType);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$FutureGeneratorCreatedTypeCopyWith<_$FutureGeneratorCreatedType>
+      get copyWith => __$$FutureGeneratorCreatedTypeCopyWithImpl<
+          _$FutureGeneratorCreatedType>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(DartType createdType, DartType stateType) $default, {
+    required TResult Function(InterfaceType createdType, DartType stateType)
+        futureOr,
+    required TResult Function(InterfaceType createdType, DartType stateType)
+        future,
+  }) {
+    return futureOr(createdType, stateType);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(DartType createdType, DartType stateType)? $default, {
+    TResult? Function(InterfaceType createdType, DartType stateType)? futureOr,
+    TResult? Function(InterfaceType createdType, DartType stateType)? future,
+  }) {
+    return futureOr?.call(createdType, stateType);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(DartType createdType, DartType stateType)? $default, {
+    TResult Function(InterfaceType createdType, DartType stateType)? futureOr,
+    TResult Function(InterfaceType createdType, DartType stateType)? future,
+    required TResult orElse(),
+  }) {
+    if (futureOr != null) {
+      return futureOr(createdType, stateType);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(PlainGeneratorCreatedType value) $default, {
+    required TResult Function(FutureGeneratorCreatedType value) futureOr,
+    required TResult Function(FutureOrGeneratorCreatedType value) future,
+  }) {
+    return futureOr(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(PlainGeneratorCreatedType value)? $default, {
+    TResult? Function(FutureGeneratorCreatedType value)? futureOr,
+    TResult? Function(FutureOrGeneratorCreatedType value)? future,
+  }) {
+    return futureOr?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(PlainGeneratorCreatedType value)? $default, {
+    TResult Function(FutureGeneratorCreatedType value)? futureOr,
+    TResult Function(FutureOrGeneratorCreatedType value)? future,
+    required TResult orElse(),
+  }) {
+    if (futureOr != null) {
+      return futureOr(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class FutureGeneratorCreatedType extends GeneratorCreatedType {
+  factory FutureGeneratorCreatedType(
+      {required final InterfaceType createdType,
+      required final DartType stateType}) = _$FutureGeneratorCreatedType;
+  FutureGeneratorCreatedType._() : super._();
+
+  InterfaceType get createdType;
+  @override
+  DartType get stateType;
+  @override
+  @JsonKey(ignore: true)
+  _$$FutureGeneratorCreatedTypeCopyWith<_$FutureGeneratorCreatedType>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$FutureOrGeneratorCreatedTypeCopyWith<$Res>
+    implements $GeneratorCreatedTypeCopyWith<$Res> {
+  factory _$$FutureOrGeneratorCreatedTypeCopyWith(
+          _$FutureOrGeneratorCreatedType value,
+          $Res Function(_$FutureOrGeneratorCreatedType) then) =
+      __$$FutureOrGeneratorCreatedTypeCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({InterfaceType createdType, DartType stateType});
+}
+
+/// @nodoc
+class __$$FutureOrGeneratorCreatedTypeCopyWithImpl<$Res>
+    extends _$GeneratorCreatedTypeCopyWithImpl<$Res,
+        _$FutureOrGeneratorCreatedType>
+    implements _$$FutureOrGeneratorCreatedTypeCopyWith<$Res> {
+  __$$FutureOrGeneratorCreatedTypeCopyWithImpl(
+      _$FutureOrGeneratorCreatedType _value,
+      $Res Function(_$FutureOrGeneratorCreatedType) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? createdType = null,
+    Object? stateType = null,
+  }) {
+    return _then(_$FutureOrGeneratorCreatedType(
+      createdType: null == createdType
+          ? _value.createdType
+          : createdType // ignore: cast_nullable_to_non_nullable
+              as InterfaceType,
+      stateType: null == stateType
+          ? _value.stateType
+          : stateType // ignore: cast_nullable_to_non_nullable
+              as DartType,
+    ));
+  }
+}
+
+/// @nodoc
+
+@internal
+class _$FutureOrGeneratorCreatedType extends FutureOrGeneratorCreatedType {
+  _$FutureOrGeneratorCreatedType(
+      {required this.createdType, required this.stateType})
+      : super._();
+
+  @override
+  final InterfaceType createdType;
+  @override
+  final DartType stateType;
+
+  @override
+  String toString() {
+    return 'GeneratorCreatedType.future(createdType: $createdType, stateType: $stateType)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$FutureOrGeneratorCreatedType &&
+            (identical(other.createdType, createdType) ||
+                other.createdType == createdType) &&
+            (identical(other.stateType, stateType) ||
+                other.stateType == stateType));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, createdType, stateType);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$FutureOrGeneratorCreatedTypeCopyWith<_$FutureOrGeneratorCreatedType>
+      get copyWith => __$$FutureOrGeneratorCreatedTypeCopyWithImpl<
+          _$FutureOrGeneratorCreatedType>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(DartType createdType, DartType stateType) $default, {
+    required TResult Function(InterfaceType createdType, DartType stateType)
+        futureOr,
+    required TResult Function(InterfaceType createdType, DartType stateType)
+        future,
+  }) {
+    return future(createdType, stateType);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(DartType createdType, DartType stateType)? $default, {
+    TResult? Function(InterfaceType createdType, DartType stateType)? futureOr,
+    TResult? Function(InterfaceType createdType, DartType stateType)? future,
+  }) {
+    return future?.call(createdType, stateType);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(DartType createdType, DartType stateType)? $default, {
+    TResult Function(InterfaceType createdType, DartType stateType)? futureOr,
+    TResult Function(InterfaceType createdType, DartType stateType)? future,
+    required TResult orElse(),
+  }) {
+    if (future != null) {
+      return future(createdType, stateType);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(PlainGeneratorCreatedType value) $default, {
+    required TResult Function(FutureGeneratorCreatedType value) futureOr,
+    required TResult Function(FutureOrGeneratorCreatedType value) future,
+  }) {
+    return future(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(PlainGeneratorCreatedType value)? $default, {
+    TResult? Function(FutureGeneratorCreatedType value)? futureOr,
+    TResult? Function(FutureOrGeneratorCreatedType value)? future,
+  }) {
+    return future?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(PlainGeneratorCreatedType value)? $default, {
+    TResult Function(FutureGeneratorCreatedType value)? futureOr,
+    TResult Function(FutureOrGeneratorCreatedType value)? future,
+    required TResult orElse(),
+  }) {
+    if (future != null) {
+      return future(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class FutureOrGeneratorCreatedType extends GeneratorCreatedType {
+  factory FutureOrGeneratorCreatedType(
+      {required final InterfaceType createdType,
+      required final DartType stateType}) = _$FutureOrGeneratorCreatedType;
+  FutureOrGeneratorCreatedType._() : super._();
+
+  InterfaceType get createdType;
+  @override
+  DartType get stateType;
+  @override
+  @JsonKey(ignore: true)
+  _$$FutureOrGeneratorCreatedTypeCopyWith<_$FutureOrGeneratorCreatedType>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
 mixin _$GeneratorProviderDefinition {
   String get name => throw _privateConstructorUsedError;
+
+  /// Information about the type of the value exposed
+  GeneratorCreatedType get type => throw _privateConstructorUsedError;
   bool get isAutoDispose => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String name, bool isAutoDispose) functional,
-    required TResult Function(String name, bool isAutoDispose) notifier,
+    required TResult Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)
+        functional,
+    required TResult Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)
+        notifier,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String name, bool isAutoDispose)? functional,
-    TResult? Function(String name, bool isAutoDispose)? notifier,
+    TResult? Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)?
+        functional,
+    TResult? Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)?
+        notifier,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String name, bool isAutoDispose)? functional,
-    TResult Function(String name, bool isAutoDispose)? notifier,
+    TResult Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)?
+        functional,
+    TResult Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)?
+        notifier,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -262,7 +864,9 @@ abstract class $GeneratorProviderDefinitionCopyWith<$Res> {
       _$GeneratorProviderDefinitionCopyWithImpl<$Res,
           GeneratorProviderDefinition>;
   @useResult
-  $Res call({String name, bool isAutoDispose});
+  $Res call({String name, GeneratorCreatedType type, bool isAutoDispose});
+
+  $GeneratorCreatedTypeCopyWith<$Res> get type;
 }
 
 /// @nodoc
@@ -280,6 +884,7 @@ class _$GeneratorProviderDefinitionCopyWithImpl<$Res,
   @override
   $Res call({
     Object? name = null,
+    Object? type = null,
     Object? isAutoDispose = null,
   }) {
     return _then(_value.copyWith(
@@ -287,11 +892,23 @@ class _$GeneratorProviderDefinitionCopyWithImpl<$Res,
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as GeneratorCreatedType,
       isAutoDispose: null == isAutoDispose
           ? _value.isAutoDispose
           : isAutoDispose // ignore: cast_nullable_to_non_nullable
               as bool,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $GeneratorCreatedTypeCopyWith<$Res> get type {
+    return $GeneratorCreatedTypeCopyWith<$Res>(_value.type, (value) {
+      return _then(_value.copyWith(type: value) as $Val);
+    });
   }
 }
 
@@ -304,7 +921,10 @@ abstract class _$$FunctionalGeneratorProviderDefinitionCopyWith<$Res>
       __$$FunctionalGeneratorProviderDefinitionCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String name, bool isAutoDispose});
+  $Res call({String name, GeneratorCreatedType type, bool isAutoDispose});
+
+  @override
+  $GeneratorCreatedTypeCopyWith<$Res> get type;
 }
 
 /// @nodoc
@@ -321,6 +941,7 @@ class __$$FunctionalGeneratorProviderDefinitionCopyWithImpl<$Res>
   @override
   $Res call({
     Object? name = null,
+    Object? type = null,
     Object? isAutoDispose = null,
   }) {
     return _then(_$FunctionalGeneratorProviderDefinition(
@@ -328,6 +949,10 @@ class __$$FunctionalGeneratorProviderDefinitionCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as GeneratorCreatedType,
       isAutoDispose: null == isAutoDispose
           ? _value.isAutoDispose
           : isAutoDispose // ignore: cast_nullable_to_non_nullable
@@ -342,16 +967,20 @@ class __$$FunctionalGeneratorProviderDefinitionCopyWithImpl<$Res>
 class _$FunctionalGeneratorProviderDefinition
     implements FunctionalGeneratorProviderDefinition {
   _$FunctionalGeneratorProviderDefinition(
-      {required this.name, required this.isAutoDispose});
+      {required this.name, required this.type, required this.isAutoDispose});
 
   @override
   final String name;
+
+  /// Information about the type of the value exposed
+  @override
+  final GeneratorCreatedType type;
   @override
   final bool isAutoDispose;
 
   @override
   String toString() {
-    return 'GeneratorProviderDefinition.functional(name: $name, isAutoDispose: $isAutoDispose)';
+    return 'GeneratorProviderDefinition.functional(name: $name, type: $type, isAutoDispose: $isAutoDispose)';
   }
 
   @override
@@ -360,12 +989,13 @@ class _$FunctionalGeneratorProviderDefinition
         (other.runtimeType == runtimeType &&
             other is _$FunctionalGeneratorProviderDefinition &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.type, type) || other.type == type) &&
             (identical(other.isAutoDispose, isAutoDispose) ||
                 other.isAutoDispose == isAutoDispose));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, name, isAutoDispose);
+  int get hashCode => Object.hash(runtimeType, name, type, isAutoDispose);
 
   @JsonKey(ignore: true)
   @override
@@ -378,30 +1008,42 @@ class _$FunctionalGeneratorProviderDefinition
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String name, bool isAutoDispose) functional,
-    required TResult Function(String name, bool isAutoDispose) notifier,
+    required TResult Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)
+        functional,
+    required TResult Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)
+        notifier,
   }) {
-    return functional(name, isAutoDispose);
+    return functional(name, type, isAutoDispose);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String name, bool isAutoDispose)? functional,
-    TResult? Function(String name, bool isAutoDispose)? notifier,
+    TResult? Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)?
+        functional,
+    TResult? Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)?
+        notifier,
   }) {
-    return functional?.call(name, isAutoDispose);
+    return functional?.call(name, type, isAutoDispose);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String name, bool isAutoDispose)? functional,
-    TResult Function(String name, bool isAutoDispose)? notifier,
+    TResult Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)?
+        functional,
+    TResult Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)?
+        notifier,
     required TResult orElse(),
   }) {
     if (functional != null) {
-      return functional(name, isAutoDispose);
+      return functional(name, type, isAutoDispose);
     }
     return orElse();
   }
@@ -443,11 +1085,17 @@ class _$FunctionalGeneratorProviderDefinition
 abstract class FunctionalGeneratorProviderDefinition
     implements GeneratorProviderDefinition {
   factory FunctionalGeneratorProviderDefinition(
-          {required final String name, required final bool isAutoDispose}) =
+          {required final String name,
+          required final GeneratorCreatedType type,
+          required final bool isAutoDispose}) =
       _$FunctionalGeneratorProviderDefinition;
 
   @override
   String get name;
+  @override
+
+  /// Information about the type of the value exposed
+  GeneratorCreatedType get type;
   @override
   bool get isAutoDispose;
   @override
@@ -466,7 +1114,10 @@ abstract class _$$NotifierGeneratorProviderDefinitionCopyWith<$Res>
       __$$NotifierGeneratorProviderDefinitionCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String name, bool isAutoDispose});
+  $Res call({String name, GeneratorCreatedType type, bool isAutoDispose});
+
+  @override
+  $GeneratorCreatedTypeCopyWith<$Res> get type;
 }
 
 /// @nodoc
@@ -483,6 +1134,7 @@ class __$$NotifierGeneratorProviderDefinitionCopyWithImpl<$Res>
   @override
   $Res call({
     Object? name = null,
+    Object? type = null,
     Object? isAutoDispose = null,
   }) {
     return _then(_$NotifierGeneratorProviderDefinition(
@@ -490,6 +1142,10 @@ class __$$NotifierGeneratorProviderDefinitionCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as GeneratorCreatedType,
       isAutoDispose: null == isAutoDispose
           ? _value.isAutoDispose
           : isAutoDispose // ignore: cast_nullable_to_non_nullable
@@ -504,16 +1160,20 @@ class __$$NotifierGeneratorProviderDefinitionCopyWithImpl<$Res>
 class _$NotifierGeneratorProviderDefinition
     implements NotifierGeneratorProviderDefinition {
   _$NotifierGeneratorProviderDefinition(
-      {required this.name, required this.isAutoDispose});
+      {required this.name, required this.type, required this.isAutoDispose});
 
   @override
   final String name;
+
+  /// Information about the type of the value exposed
+  @override
+  final GeneratorCreatedType type;
   @override
   final bool isAutoDispose;
 
   @override
   String toString() {
-    return 'GeneratorProviderDefinition.notifier(name: $name, isAutoDispose: $isAutoDispose)';
+    return 'GeneratorProviderDefinition.notifier(name: $name, type: $type, isAutoDispose: $isAutoDispose)';
   }
 
   @override
@@ -522,12 +1182,13 @@ class _$NotifierGeneratorProviderDefinition
         (other.runtimeType == runtimeType &&
             other is _$NotifierGeneratorProviderDefinition &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.type, type) || other.type == type) &&
             (identical(other.isAutoDispose, isAutoDispose) ||
                 other.isAutoDispose == isAutoDispose));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, name, isAutoDispose);
+  int get hashCode => Object.hash(runtimeType, name, type, isAutoDispose);
 
   @JsonKey(ignore: true)
   @override
@@ -540,30 +1201,42 @@ class _$NotifierGeneratorProviderDefinition
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String name, bool isAutoDispose) functional,
-    required TResult Function(String name, bool isAutoDispose) notifier,
+    required TResult Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)
+        functional,
+    required TResult Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)
+        notifier,
   }) {
-    return notifier(name, isAutoDispose);
+    return notifier(name, type, isAutoDispose);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String name, bool isAutoDispose)? functional,
-    TResult? Function(String name, bool isAutoDispose)? notifier,
+    TResult? Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)?
+        functional,
+    TResult? Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)?
+        notifier,
   }) {
-    return notifier?.call(name, isAutoDispose);
+    return notifier?.call(name, type, isAutoDispose);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String name, bool isAutoDispose)? functional,
-    TResult Function(String name, bool isAutoDispose)? notifier,
+    TResult Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)?
+        functional,
+    TResult Function(
+            String name, GeneratorCreatedType type, bool isAutoDispose)?
+        notifier,
     required TResult orElse(),
   }) {
     if (notifier != null) {
-      return notifier(name, isAutoDispose);
+      return notifier(name, type, isAutoDispose);
     }
     return orElse();
   }
@@ -605,11 +1278,17 @@ class _$NotifierGeneratorProviderDefinition
 abstract class NotifierGeneratorProviderDefinition
     implements GeneratorProviderDefinition {
   factory NotifierGeneratorProviderDefinition(
-          {required final String name, required final bool isAutoDispose}) =
+          {required final String name,
+          required final GeneratorCreatedType type,
+          required final bool isAutoDispose}) =
       _$NotifierGeneratorProviderDefinition;
 
   @override
   String get name;
+  @override
+
+  /// Information about the type of the value exposed
+  GeneratorCreatedType get type;
   @override
   bool get isAutoDispose;
   @override
@@ -1608,6 +2287,7 @@ mixin _$GeneratorProviderDefinitionFormatException {
     required TResult Function(Element element) notAProvider,
     required TResult Function(Element element) neitherClassNorFunction,
     required TResult Function(Element element) tooManyAnnotations,
+    required TResult Function(Element element) noBuildMethod,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -1615,6 +2295,7 @@ mixin _$GeneratorProviderDefinitionFormatException {
     TResult? Function(Element element)? notAProvider,
     TResult? Function(Element element)? neitherClassNorFunction,
     TResult? Function(Element element)? tooManyAnnotations,
+    TResult? Function(Element element)? noBuildMethod,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -1622,6 +2303,7 @@ mixin _$GeneratorProviderDefinitionFormatException {
     TResult Function(Element element)? notAProvider,
     TResult Function(Element element)? neitherClassNorFunction,
     TResult Function(Element element)? tooManyAnnotations,
+    TResult Function(Element element)? noBuildMethod,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -1637,6 +2319,9 @@ mixin _$GeneratorProviderDefinitionFormatException {
     required TResult Function(
             TooManyAnnotationGeneratorProviderDefinitionFormatException value)
         tooManyAnnotations,
+    required TResult Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)
+        noBuildMethod,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -1651,6 +2336,9 @@ mixin _$GeneratorProviderDefinitionFormatException {
     TResult? Function(
             TooManyAnnotationGeneratorProviderDefinitionFormatException value)?
         tooManyAnnotations,
+    TResult? Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)?
+        noBuildMethod,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -1665,6 +2353,9 @@ mixin _$GeneratorProviderDefinitionFormatException {
     TResult Function(
             TooManyAnnotationGeneratorProviderDefinitionFormatException value)?
         tooManyAnnotations,
+    TResult Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)?
+        noBuildMethod,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -1796,6 +2487,7 @@ class _$NotAProviderGeneratorProviderDefinitionFormatException
     required TResult Function(Element element) notAProvider,
     required TResult Function(Element element) neitherClassNorFunction,
     required TResult Function(Element element) tooManyAnnotations,
+    required TResult Function(Element element) noBuildMethod,
   }) {
     return notAProvider(element);
   }
@@ -1806,6 +2498,7 @@ class _$NotAProviderGeneratorProviderDefinitionFormatException
     TResult? Function(Element element)? notAProvider,
     TResult? Function(Element element)? neitherClassNorFunction,
     TResult? Function(Element element)? tooManyAnnotations,
+    TResult? Function(Element element)? noBuildMethod,
   }) {
     return notAProvider?.call(element);
   }
@@ -1816,6 +2509,7 @@ class _$NotAProviderGeneratorProviderDefinitionFormatException
     TResult Function(Element element)? notAProvider,
     TResult Function(Element element)? neitherClassNorFunction,
     TResult Function(Element element)? tooManyAnnotations,
+    TResult Function(Element element)? noBuildMethod,
     required TResult orElse(),
   }) {
     if (notAProvider != null) {
@@ -1837,6 +2531,9 @@ class _$NotAProviderGeneratorProviderDefinitionFormatException
     required TResult Function(
             TooManyAnnotationGeneratorProviderDefinitionFormatException value)
         tooManyAnnotations,
+    required TResult Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)
+        noBuildMethod,
   }) {
     return notAProvider(this);
   }
@@ -1854,6 +2551,9 @@ class _$NotAProviderGeneratorProviderDefinitionFormatException
     TResult? Function(
             TooManyAnnotationGeneratorProviderDefinitionFormatException value)?
         tooManyAnnotations,
+    TResult? Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)?
+        noBuildMethod,
   }) {
     return notAProvider?.call(this);
   }
@@ -1871,6 +2571,9 @@ class _$NotAProviderGeneratorProviderDefinitionFormatException
     TResult Function(
             TooManyAnnotationGeneratorProviderDefinitionFormatException value)?
         tooManyAnnotations,
+    TResult Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)?
+        noBuildMethod,
     required TResult orElse(),
   }) {
     if (notAProvider != null) {
@@ -1985,6 +2688,7 @@ class _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
     required TResult Function(Element element) notAProvider,
     required TResult Function(Element element) neitherClassNorFunction,
     required TResult Function(Element element) tooManyAnnotations,
+    required TResult Function(Element element) noBuildMethod,
   }) {
     return neitherClassNorFunction(element);
   }
@@ -1995,6 +2699,7 @@ class _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
     TResult? Function(Element element)? notAProvider,
     TResult? Function(Element element)? neitherClassNorFunction,
     TResult? Function(Element element)? tooManyAnnotations,
+    TResult? Function(Element element)? noBuildMethod,
   }) {
     return neitherClassNorFunction?.call(element);
   }
@@ -2005,6 +2710,7 @@ class _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
     TResult Function(Element element)? notAProvider,
     TResult Function(Element element)? neitherClassNorFunction,
     TResult Function(Element element)? tooManyAnnotations,
+    TResult Function(Element element)? noBuildMethod,
     required TResult orElse(),
   }) {
     if (neitherClassNorFunction != null) {
@@ -2026,6 +2732,9 @@ class _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
     required TResult Function(
             TooManyAnnotationGeneratorProviderDefinitionFormatException value)
         tooManyAnnotations,
+    required TResult Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)
+        noBuildMethod,
   }) {
     return neitherClassNorFunction(this);
   }
@@ -2043,6 +2752,9 @@ class _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
     TResult? Function(
             TooManyAnnotationGeneratorProviderDefinitionFormatException value)?
         tooManyAnnotations,
+    TResult? Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)?
+        noBuildMethod,
   }) {
     return neitherClassNorFunction?.call(this);
   }
@@ -2060,6 +2772,9 @@ class _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
     TResult Function(
             TooManyAnnotationGeneratorProviderDefinitionFormatException value)?
         tooManyAnnotations,
+    TResult Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)?
+        noBuildMethod,
     required TResult orElse(),
   }) {
     if (neitherClassNorFunction != null) {
@@ -2170,6 +2885,7 @@ class _$TooManyAnnotationGeneratorProviderDefinitionFormatException
     required TResult Function(Element element) notAProvider,
     required TResult Function(Element element) neitherClassNorFunction,
     required TResult Function(Element element) tooManyAnnotations,
+    required TResult Function(Element element) noBuildMethod,
   }) {
     return tooManyAnnotations(element);
   }
@@ -2180,6 +2896,7 @@ class _$TooManyAnnotationGeneratorProviderDefinitionFormatException
     TResult? Function(Element element)? notAProvider,
     TResult? Function(Element element)? neitherClassNorFunction,
     TResult? Function(Element element)? tooManyAnnotations,
+    TResult? Function(Element element)? noBuildMethod,
   }) {
     return tooManyAnnotations?.call(element);
   }
@@ -2190,6 +2907,7 @@ class _$TooManyAnnotationGeneratorProviderDefinitionFormatException
     TResult Function(Element element)? notAProvider,
     TResult Function(Element element)? neitherClassNorFunction,
     TResult Function(Element element)? tooManyAnnotations,
+    TResult Function(Element element)? noBuildMethod,
     required TResult orElse(),
   }) {
     if (tooManyAnnotations != null) {
@@ -2211,6 +2929,9 @@ class _$TooManyAnnotationGeneratorProviderDefinitionFormatException
     required TResult Function(
             TooManyAnnotationGeneratorProviderDefinitionFormatException value)
         tooManyAnnotations,
+    required TResult Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)
+        noBuildMethod,
   }) {
     return tooManyAnnotations(this);
   }
@@ -2228,6 +2949,9 @@ class _$TooManyAnnotationGeneratorProviderDefinitionFormatException
     TResult? Function(
             TooManyAnnotationGeneratorProviderDefinitionFormatException value)?
         tooManyAnnotations,
+    TResult? Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)?
+        noBuildMethod,
   }) {
     return tooManyAnnotations?.call(this);
   }
@@ -2245,6 +2969,9 @@ class _$TooManyAnnotationGeneratorProviderDefinitionFormatException
     TResult Function(
             TooManyAnnotationGeneratorProviderDefinitionFormatException value)?
         tooManyAnnotations,
+    TResult Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)?
+        noBuildMethod,
     required TResult orElse(),
   }) {
     if (tooManyAnnotations != null) {
@@ -2266,6 +2993,202 @@ abstract class TooManyAnnotationGeneratorProviderDefinitionFormatException
   @JsonKey(ignore: true)
   _$$TooManyAnnotationGeneratorProviderDefinitionFormatExceptionCopyWith<
           _$TooManyAnnotationGeneratorProviderDefinitionFormatException>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$NoBuildMethodGeneratorProviderDefinitionFormatExceptionCopyWith<
+    $Res> implements $GeneratorProviderDefinitionFormatExceptionCopyWith<$Res> {
+  factory _$$NoBuildMethodGeneratorProviderDefinitionFormatExceptionCopyWith(
+          _$NoBuildMethodGeneratorProviderDefinitionFormatException value,
+          $Res Function(
+                  _$NoBuildMethodGeneratorProviderDefinitionFormatException)
+              then) =
+      __$$NoBuildMethodGeneratorProviderDefinitionFormatExceptionCopyWithImpl<
+          $Res>;
+  @override
+  @useResult
+  $Res call({Element element});
+}
+
+/// @nodoc
+class __$$NoBuildMethodGeneratorProviderDefinitionFormatExceptionCopyWithImpl<
+        $Res>
+    extends _$GeneratorProviderDefinitionFormatExceptionCopyWithImpl<$Res,
+        _$NoBuildMethodGeneratorProviderDefinitionFormatException>
+    implements
+        _$$NoBuildMethodGeneratorProviderDefinitionFormatExceptionCopyWith<
+            $Res> {
+  __$$NoBuildMethodGeneratorProviderDefinitionFormatExceptionCopyWithImpl(
+      _$NoBuildMethodGeneratorProviderDefinitionFormatException _value,
+      $Res Function(_$NoBuildMethodGeneratorProviderDefinitionFormatException)
+          _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? element = null,
+  }) {
+    return _then(_$NoBuildMethodGeneratorProviderDefinitionFormatException(
+      null == element
+          ? _value.element
+          : element // ignore: cast_nullable_to_non_nullable
+              as Element,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$NoBuildMethodGeneratorProviderDefinitionFormatException
+    implements NoBuildMethodGeneratorProviderDefinitionFormatException {
+  _$NoBuildMethodGeneratorProviderDefinitionFormatException(this.element);
+
+  @override
+  final Element element;
+
+  @override
+  String toString() {
+    return 'GeneratorProviderDefinitionFormatException.noBuildMethod(element: $element)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other
+                is _$NoBuildMethodGeneratorProviderDefinitionFormatException &&
+            (identical(other.element, element) || other.element == element));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, element);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$NoBuildMethodGeneratorProviderDefinitionFormatExceptionCopyWith<
+          _$NoBuildMethodGeneratorProviderDefinitionFormatException>
+      get copyWith =>
+          __$$NoBuildMethodGeneratorProviderDefinitionFormatExceptionCopyWithImpl<
+                  _$NoBuildMethodGeneratorProviderDefinitionFormatException>(
+              this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(Element element) notAProvider,
+    required TResult Function(Element element) neitherClassNorFunction,
+    required TResult Function(Element element) tooManyAnnotations,
+    required TResult Function(Element element) noBuildMethod,
+  }) {
+    return noBuildMethod(element);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(Element element)? notAProvider,
+    TResult? Function(Element element)? neitherClassNorFunction,
+    TResult? Function(Element element)? tooManyAnnotations,
+    TResult? Function(Element element)? noBuildMethod,
+  }) {
+    return noBuildMethod?.call(element);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(Element element)? notAProvider,
+    TResult Function(Element element)? neitherClassNorFunction,
+    TResult Function(Element element)? tooManyAnnotations,
+    TResult Function(Element element)? noBuildMethod,
+    required TResult orElse(),
+  }) {
+    if (noBuildMethod != null) {
+      return noBuildMethod(element);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(
+            NotAProviderGeneratorProviderDefinitionFormatException value)
+        notAProvider,
+    required TResult Function(
+            NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+                value)
+        neitherClassNorFunction,
+    required TResult Function(
+            TooManyAnnotationGeneratorProviderDefinitionFormatException value)
+        tooManyAnnotations,
+    required TResult Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)
+        noBuildMethod,
+  }) {
+    return noBuildMethod(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(
+            NotAProviderGeneratorProviderDefinitionFormatException value)?
+        notAProvider,
+    TResult? Function(
+            NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+                value)?
+        neitherClassNorFunction,
+    TResult? Function(
+            TooManyAnnotationGeneratorProviderDefinitionFormatException value)?
+        tooManyAnnotations,
+    TResult? Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)?
+        noBuildMethod,
+  }) {
+    return noBuildMethod?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(
+            NotAProviderGeneratorProviderDefinitionFormatException value)?
+        notAProvider,
+    TResult Function(
+            NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+                value)?
+        neitherClassNorFunction,
+    TResult Function(
+            TooManyAnnotationGeneratorProviderDefinitionFormatException value)?
+        tooManyAnnotations,
+    TResult Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)?
+        noBuildMethod,
+    required TResult orElse(),
+  }) {
+    if (noBuildMethod != null) {
+      return noBuildMethod(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class NoBuildMethodGeneratorProviderDefinitionFormatException
+    implements GeneratorProviderDefinitionFormatException {
+  factory NoBuildMethodGeneratorProviderDefinitionFormatException(
+          final Element element) =
+      _$NoBuildMethodGeneratorProviderDefinitionFormatException;
+
+  @override
+  Element get element;
+  @override
+  @JsonKey(ignore: true)
+  _$$NoBuildMethodGeneratorProviderDefinitionFormatExceptionCopyWith<
+          _$NoBuildMethodGeneratorProviderDefinitionFormatException>
       get copyWith => throw _privateConstructorUsedError;
 }
 
