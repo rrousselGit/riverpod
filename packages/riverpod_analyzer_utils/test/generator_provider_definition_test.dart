@@ -23,8 +23,12 @@ class Counter extends _$Counter {
 
       expect(providers, {
         'first': isA<FunctionalGeneratorProviderDefinition>()
+            .having((e) => e.isNotifier, 'isNotifier', false)
+            .having((e) => e.isFunctional, 'isFunctional', true)
             .having((e) => e.name, 'name', 'first'),
         'Counter': isA<NotifierGeneratorProviderDefinition>()
+            .having((e) => e.isNotifier, 'isNotifier', true)
+            .having((e) => e.isFunctional, 'isFunctional', false)
             .having((e) => e.name, 'name', 'Counter'),
       });
     });

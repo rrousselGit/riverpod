@@ -1005,14 +1005,15 @@ class __$$FunctionalGeneratorProviderDefinitionCopyWithImpl<$Res>
 
 @internal
 class _$FunctionalGeneratorProviderDefinition
-    implements FunctionalGeneratorProviderDefinition {
+    extends FunctionalGeneratorProviderDefinition {
   _$FunctionalGeneratorProviderDefinition(
       {required this.name,
       required this.type,
       required this.isAutoDispose,
       required final List<ParameterElement> parameters,
       required this.docs})
-      : _parameters = parameters;
+      : _parameters = parameters,
+        super._();
 
   @override
   final String name;
@@ -1149,13 +1150,14 @@ class _$FunctionalGeneratorProviderDefinition
 }
 
 abstract class FunctionalGeneratorProviderDefinition
-    implements GeneratorProviderDefinition {
+    extends GeneratorProviderDefinition {
   factory FunctionalGeneratorProviderDefinition(
       {required final String name,
       required final GeneratorCreatedType type,
       required final bool isAutoDispose,
       required final List<ParameterElement> parameters,
       required final String? docs}) = _$FunctionalGeneratorProviderDefinition;
+  FunctionalGeneratorProviderDefinition._() : super._();
 
   @override
   String get name;
@@ -1244,14 +1246,15 @@ class __$$NotifierGeneratorProviderDefinitionCopyWithImpl<$Res>
 
 @internal
 class _$NotifierGeneratorProviderDefinition
-    implements NotifierGeneratorProviderDefinition {
+    extends NotifierGeneratorProviderDefinition {
   _$NotifierGeneratorProviderDefinition(
       {required this.name,
       required this.type,
       required this.isAutoDispose,
       required final List<ParameterElement> parameters,
       required this.docs})
-      : _parameters = parameters;
+      : _parameters = parameters,
+        super._();
 
   @override
   final String name;
@@ -1388,13 +1391,14 @@ class _$NotifierGeneratorProviderDefinition
 }
 
 abstract class NotifierGeneratorProviderDefinition
-    implements GeneratorProviderDefinition {
+    extends GeneratorProviderDefinition {
   factory NotifierGeneratorProviderDefinition(
       {required final String name,
       required final GeneratorCreatedType type,
       required final bool isAutoDispose,
       required final List<ParameterElement> parameters,
       required final String? docs}) = _$NotifierGeneratorProviderDefinition;
+  NotifierGeneratorProviderDefinition._() : super._();
 
   @override
   String get name;

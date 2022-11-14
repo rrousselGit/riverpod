@@ -199,6 +199,8 @@ class GeneratorCreatedType with _$GeneratorCreatedType {
 /// A dart representation for providers that needs code-generation
 @freezed
 class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
+  GeneratorProviderDefinition._();
+
   /// A function-based generated provider definition, such as:
   ///
   /// ```dart
@@ -319,6 +321,10 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
       },
     );
   }
+
+  bool get isNotifier => map(functional: (_) => false, notifier: (_) => true);
+
+  bool get isFunctional => map(functional: (_) => true, notifier: (_) => false);
 }
 
 /// A dart representation of either code-gen-based providers or manually defined providers.
