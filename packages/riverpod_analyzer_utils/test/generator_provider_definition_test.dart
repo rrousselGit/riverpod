@@ -144,11 +144,13 @@ class EmptyNotifier extends _$EmptyNotifier {
   int build() => 0;
 }
 
-@Riverpod(dependencies: ['emptyProvider'])
-int string(StringRef ref) => 0;
+final legacyProvider = Provider<int>((ref) => 0);
 
-@Riverpod(dependencies: ['emptyProvider'])
-class StringNotifier extends _$StringNotifier {
+@Riverpod(dependencies: [#legacyProvider])
+int symbol(StringRef ref) => 0;
+
+@Riverpod(dependencies: [#legacyProvider])
+class SymbolNotifier extends _$SymbolNotifier {
   @override
   int build() => 0;
 }
@@ -179,9 +181,12 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
         'empty',
         'EmptyNotifier',
       ]);
-      final string = await resolver.parseAllGeneratorProviderDefinitions([
-        'string',
-        'StringNotifier',
+      final legacy = await resolver //
+          .parseAllLegacyProviderDefinitions(['legacyProvider']) //
+          .then((value) => value.values.single);
+      final symbols = await resolver.parseAllGeneratorProviderDefinitions([
+        'symbol',
+        'SymbolNotifier',
       ]);
       final providers = await resolver.parseAllGeneratorProviderDefinitions([
         'providerDependency',
@@ -206,15 +211,15 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
           reason: '${provider.key} has an empty list of dependencies',
         );
       }
-      for (final provider in string.entries) {
+      for (final provider in symbols.entries) {
         expect(
           provider.value.dependencies,
           [
-            isA<StringGeneratorProviderDependency>()
-                .having((e) => e.value, 'value', 'emptyProvider')
+            isA<SymbolGeneratorProviderDependency>()
+                .having((e) => e.definition, 'definition', same(legacy))
           ],
           reason:
-              '${provider.key} has a unique string dependency on emptyProvider',
+              '${provider.key} has a unique symbol dependency on legacyProvider',
         );
       }
 

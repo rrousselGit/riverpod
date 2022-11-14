@@ -20,7 +20,8 @@ class Riverpod {
 
   /// A list of the providers that this provider depends on.
   ///
-  /// Use the function name or class name of generated providers.
+  /// Values can either be a function or class annotated by `@riverpod`, or a Symbol
+  /// representing the variable name of a provider.
   ///
   /// Example:
   /// ```dart
@@ -37,11 +38,17 @@ class Riverpod {
   ///   }
   /// }
   ///
-  /// @Riverpod(dependencies: ['myProvider', PublicClass])
+  /// @Riverpod(dependencies: [#myProvider, PublicClass])
   /// String dependant(DependantProviderRef ref) {
   ///   return '${ref.watch(publicClassProvider)} ${ref.watch(myProvider)}';
   /// }
   /// ```
+  ///
+  ///
+  /// **Note**:
+  /// When specifying providers using a String, the provider variable must:
+  /// - not be coming from any import alias
+  /// - be a top-level variable (so no `MyClass.provider`)
   final List<Object>? dependencies;
 }
 

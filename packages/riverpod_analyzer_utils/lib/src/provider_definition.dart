@@ -1,12 +1,13 @@
-import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../riverpod_analyzer_utils.dart';
 import 'ast_resolver.dart';
+import 'recursive_import_locator.dart';
 
 part 'provider_definition.freezed.dart';
 
@@ -96,6 +97,8 @@ class LegacyProviderDefinition with _$LegacyProviderDefinition {
         // final provider = Provider(...);
         return _parseVariable(element, resolver: resolver);
       }
+      print('Oy ${element} ${element.isSynthetic} ${element.runtimeType}');
+
       throw LegacyProviderDefinitionFormatException.notAProvider();
     });
   }
@@ -169,14 +172,15 @@ class GeneratorProviderDependency with _$GeneratorProviderDependency {
 
   GeneratorProviderDependency._();
 
-  /// A [String] was passed as dependency
+  /// A [Symbol] was passed as dependency
   ///
   /// ```dart
-  /// @Riverpod(dependencies: [function, Notifier])
+  /// @Riverpod(dependencies: [#provider])
   /// ```
   @internal
-  factory GeneratorProviderDependency.string(String value) =
-      StringGeneratorProviderDependency;
+  factory GeneratorProviderDependency.symbol(
+    LegacyProviderDefinition definition,
+  ) = SymbolGeneratorProviderDependency;
 }
 
 /// A dart representation for providers that needs code-generation
@@ -293,8 +297,6 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
       final annotation = annotations.single;
       final keepAlive =
           annotation.getField('keepAlive')?.toBoolValue() ?? false;
-      final dependencies =
-          await _parseDependencies(annotation, resolver: resolver);
 
       if (element is FunctionElement) {
         // TODO throw if "ref" is not a positional parameter or has a type mismatch
@@ -310,7 +312,11 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
               .skip(1)
               .toList(),
           docs: element.documentationComment,
-          dependencies: dependencies,
+          dependencies: await _parseDependencies(
+            element.library,
+            annotation,
+            resolver: resolver,
+          ),
         );
       } else if (element is ClassElement) {
         final buildMethod = _findNotifierBuildMethod(element);
@@ -323,7 +329,11 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
           type: _parseStateTypeFromReturnType(buildMethod.returnType),
           parameters: buildMethod.parameters,
           docs: element.documentationComment,
-          dependencies: dependencies,
+          dependencies: await _parseDependencies(
+            element.library,
+            annotation,
+            resolver: resolver,
+          ),
         );
       }
       throw GeneratorProviderDefinitionFormatException
@@ -331,9 +341,10 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
     });
   }
 
+  /// Decode `dependencies: <Symbol | Function | Class>[...]`
   static Future<List<GeneratorProviderDependency>?> _parseDependencies(
+    LibraryElement library,
     DartObject annotation, {
-    // required ResolvedLibraryResult libraryResult,
     required AstResolver resolver,
   }) async {
     final dependencies = annotation.getField('dependencies')?.toListValue();
@@ -346,39 +357,82 @@ class GeneratorProviderDefinition with _$GeneratorProviderDefinition {
             .failedToParseDependency();
       }
 
-      if (type.isDartCoreString) {
-        if (false) {
-          // TODO validate that the string points to a known provider
-          // TODO throw on circular dependency
-        }
-        return GeneratorProviderDependency.string(dependency.toStringValue()!);
+      if (type.isDartCoreSymbol) {
+        return _parseSymbolDependency(library, dependency, resolver: resolver);
       }
 
-      Element? dependencyElement;
-      if (type is FunctionType) {
-        dependencyElement = dependency.toFunctionValue();
-      } else if (type is InterfaceType) {
-        dependencyElement = dependency.toTypeValue()?.element2;
-      }
-
-      if (dependencyElement == null) {
-        throw GeneratorProviderDefinitionFormatException
-            .notAProviderDependency();
-      }
-
-      try {
-        // TODO throw on circular dependency
-        final dependencyDefinition = await GeneratorProviderDefinition.parse(
-          dependencyElement,
-          resolver: resolver,
-        );
-
-        return GeneratorProviderDependency.provider(dependencyDefinition);
-      } on GeneratorProviderDefinitionFormatException catch (err, stack) {
-        throw GeneratorProviderDefinitionFormatException
-            .failedToParseDependency(error: err, stackTrace: stack);
-      }
+      return _parseProviderDependency(
+        dependency,
+        resolver: resolver,
+      );
     }).toList();
+  }
+
+  static Future<ProviderGeneratorProviderDependency> _parseProviderDependency(
+    DartObject dependency, {
+    required AstResolver resolver,
+  }) async {
+    final dependencyElement =
+        dependency.toFunctionValue() ?? dependency.toTypeValue()?.element2;
+
+    if (dependencyElement == null) {
+      throw GeneratorProviderDefinitionFormatException.notAProviderDependency();
+    }
+
+    try {
+      // TODO throw on circular dependency
+      final dependencyDefinition = await GeneratorProviderDefinition.parse(
+        dependencyElement,
+        resolver: resolver,
+      );
+
+      return ProviderGeneratorProviderDependency(dependencyDefinition);
+    } on GeneratorProviderDefinitionFormatException catch (err, stack) {
+      throw GeneratorProviderDefinitionFormatException.failedToParseDependency(
+        error: err,
+        stackTrace: stack,
+      );
+    }
+  }
+
+  static Future<SymbolGeneratorProviderDependency> _parseSymbolDependency(
+    LibraryElement library,
+    DartObject dependency, {
+    required AstResolver resolver,
+  }) async {
+    if (false) {
+      // TODO throw on circular dependency
+    }
+
+    final dependencySymbolString = dependency.toSymbolValue()!;
+
+    final symbolProviderElement =
+        library.findAllAvailableTopLevelElements().firstWhereOrNull(
+              (e) => !e.isSynthetic && e.name == dependencySymbolString,
+            );
+
+    if (symbolProviderElement == null) {
+      throw GeneratorProviderDefinitionFormatException
+          .symbolDependencyNotFoundInScope(
+        dependencySymbolString,
+        library,
+      );
+    }
+
+    try {
+      // TODO throw on circular dependency
+      final dependencyDefinition = await LegacyProviderDefinition.parse(
+        symbolProviderElement,
+        resolver: resolver,
+      );
+
+      return SymbolGeneratorProviderDependency(dependencyDefinition);
+    } on LegacyProviderDefinitionFormatException catch (err, stack) {
+      throw GeneratorProviderDefinitionFormatException.failedToParseDependency(
+        error: err,
+        stackTrace: stack,
+      );
+    }
   }
 
   static GeneratorCreatedType _parseStateTypeFromReturnType(
@@ -547,6 +601,13 @@ class GeneratorProviderDefinitionFormatException
   /// The element was annotated with @riverpod more than once
   factory GeneratorProviderDefinitionFormatException.notAProviderDependency() =
       NotAProviderDependencyGeneratorProviderDefinitionFormatException;
+
+  /// A [Symbol] dependency was specified, but the provider does not seem to exist
+  /// or is not imported.
+  factory GeneratorProviderDefinitionFormatException.symbolDependencyNotFoundInScope(
+    String dependency,
+    LibraryElement scope,
+  ) = SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException;
 }
 
 /// {@template ProviderDefinitionFormatException}

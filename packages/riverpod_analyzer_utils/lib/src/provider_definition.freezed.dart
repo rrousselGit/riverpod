@@ -209,19 +209,19 @@ mixin _$GeneratorProviderDependency {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(GeneratorProviderDefinition definition) provider,
-    required TResult Function(String value) string,
+    required TResult Function(LegacyProviderDefinition definition) symbol,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(GeneratorProviderDefinition definition)? provider,
-    TResult? Function(String value)? string,
+    TResult? Function(LegacyProviderDefinition definition)? symbol,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(GeneratorProviderDefinition definition)? provider,
-    TResult Function(String value)? string,
+    TResult Function(LegacyProviderDefinition definition)? symbol,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -229,19 +229,19 @@ mixin _$GeneratorProviderDependency {
   TResult map<TResult extends Object?>({
     required TResult Function(ProviderGeneratorProviderDependency value)
         provider,
-    required TResult Function(StringGeneratorProviderDependency value) string,
+    required TResult Function(SymbolGeneratorProviderDependency value) symbol,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(ProviderGeneratorProviderDependency value)? provider,
-    TResult? Function(StringGeneratorProviderDependency value)? string,
+    TResult? Function(SymbolGeneratorProviderDependency value)? symbol,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(ProviderGeneratorProviderDependency value)? provider,
-    TResult Function(StringGeneratorProviderDependency value)? string,
+    TResult Function(SymbolGeneratorProviderDependency value)? symbol,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -352,7 +352,7 @@ class _$ProviderGeneratorProviderDependency
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(GeneratorProviderDefinition definition) provider,
-    required TResult Function(String value) string,
+    required TResult Function(LegacyProviderDefinition definition) symbol,
   }) {
     return provider(definition);
   }
@@ -361,7 +361,7 @@ class _$ProviderGeneratorProviderDependency
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(GeneratorProviderDefinition definition)? provider,
-    TResult? Function(String value)? string,
+    TResult? Function(LegacyProviderDefinition definition)? symbol,
   }) {
     return provider?.call(definition);
   }
@@ -370,7 +370,7 @@ class _$ProviderGeneratorProviderDependency
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(GeneratorProviderDefinition definition)? provider,
-    TResult Function(String value)? string,
+    TResult Function(LegacyProviderDefinition definition)? symbol,
     required TResult orElse(),
   }) {
     if (provider != null) {
@@ -384,7 +384,7 @@ class _$ProviderGeneratorProviderDependency
   TResult map<TResult extends Object?>({
     required TResult Function(ProviderGeneratorProviderDependency value)
         provider,
-    required TResult Function(StringGeneratorProviderDependency value) string,
+    required TResult Function(SymbolGeneratorProviderDependency value) symbol,
   }) {
     return provider(this);
   }
@@ -393,7 +393,7 @@ class _$ProviderGeneratorProviderDependency
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(ProviderGeneratorProviderDependency value)? provider,
-    TResult? Function(StringGeneratorProviderDependency value)? string,
+    TResult? Function(SymbolGeneratorProviderDependency value)? symbol,
   }) {
     return provider?.call(this);
   }
@@ -402,7 +402,7 @@ class _$ProviderGeneratorProviderDependency
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(ProviderGeneratorProviderDependency value)? provider,
-    TResult Function(StringGeneratorProviderDependency value)? string,
+    TResult Function(SymbolGeneratorProviderDependency value)? symbol,
     required TResult orElse(),
   }) {
     if (provider != null) {
@@ -427,100 +427,111 @@ abstract class ProviderGeneratorProviderDependency
 }
 
 /// @nodoc
-abstract class _$$StringGeneratorProviderDependencyCopyWith<$Res> {
-  factory _$$StringGeneratorProviderDependencyCopyWith(
-          _$StringGeneratorProviderDependency value,
-          $Res Function(_$StringGeneratorProviderDependency) then) =
-      __$$StringGeneratorProviderDependencyCopyWithImpl<$Res>;
+abstract class _$$SymbolGeneratorProviderDependencyCopyWith<$Res> {
+  factory _$$SymbolGeneratorProviderDependencyCopyWith(
+          _$SymbolGeneratorProviderDependency value,
+          $Res Function(_$SymbolGeneratorProviderDependency) then) =
+      __$$SymbolGeneratorProviderDependencyCopyWithImpl<$Res>;
   @useResult
-  $Res call({String value});
+  $Res call({LegacyProviderDefinition definition});
+
+  $LegacyProviderDefinitionCopyWith<$Res> get definition;
 }
 
 /// @nodoc
-class __$$StringGeneratorProviderDependencyCopyWithImpl<$Res>
+class __$$SymbolGeneratorProviderDependencyCopyWithImpl<$Res>
     extends _$GeneratorProviderDependencyCopyWithImpl<$Res,
-        _$StringGeneratorProviderDependency>
-    implements _$$StringGeneratorProviderDependencyCopyWith<$Res> {
-  __$$StringGeneratorProviderDependencyCopyWithImpl(
-      _$StringGeneratorProviderDependency _value,
-      $Res Function(_$StringGeneratorProviderDependency) _then)
+        _$SymbolGeneratorProviderDependency>
+    implements _$$SymbolGeneratorProviderDependencyCopyWith<$Res> {
+  __$$SymbolGeneratorProviderDependencyCopyWithImpl(
+      _$SymbolGeneratorProviderDependency _value,
+      $Res Function(_$SymbolGeneratorProviderDependency) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? value = null,
+    Object? definition = null,
   }) {
-    return _then(_$StringGeneratorProviderDependency(
-      null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as String,
+    return _then(_$SymbolGeneratorProviderDependency(
+      null == definition
+          ? _value.definition
+          : definition // ignore: cast_nullable_to_non_nullable
+              as LegacyProviderDefinition,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $LegacyProviderDefinitionCopyWith<$Res> get definition {
+    return $LegacyProviderDefinitionCopyWith<$Res>(_value.definition, (value) {
+      return _then(_value.copyWith(definition: value));
+    });
   }
 }
 
 /// @nodoc
 
 @internal
-class _$StringGeneratorProviderDependency
-    extends StringGeneratorProviderDependency {
-  _$StringGeneratorProviderDependency(this.value) : super._();
+class _$SymbolGeneratorProviderDependency
+    extends SymbolGeneratorProviderDependency {
+  _$SymbolGeneratorProviderDependency(this.definition) : super._();
 
   @override
-  final String value;
+  final LegacyProviderDefinition definition;
 
   @override
   String toString() {
-    return 'GeneratorProviderDependency.string(value: $value)';
+    return 'GeneratorProviderDependency.symbol(definition: $definition)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$StringGeneratorProviderDependency &&
-            (identical(other.value, value) || other.value == value));
+            other is _$SymbolGeneratorProviderDependency &&
+            (identical(other.definition, definition) ||
+                other.definition == definition));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, value);
+  int get hashCode => Object.hash(runtimeType, definition);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$StringGeneratorProviderDependencyCopyWith<
-          _$StringGeneratorProviderDependency>
-      get copyWith => __$$StringGeneratorProviderDependencyCopyWithImpl<
-          _$StringGeneratorProviderDependency>(this, _$identity);
+  _$$SymbolGeneratorProviderDependencyCopyWith<
+          _$SymbolGeneratorProviderDependency>
+      get copyWith => __$$SymbolGeneratorProviderDependencyCopyWithImpl<
+          _$SymbolGeneratorProviderDependency>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(GeneratorProviderDefinition definition) provider,
-    required TResult Function(String value) string,
+    required TResult Function(LegacyProviderDefinition definition) symbol,
   }) {
-    return string(value);
+    return symbol(definition);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(GeneratorProviderDefinition definition)? provider,
-    TResult? Function(String value)? string,
+    TResult? Function(LegacyProviderDefinition definition)? symbol,
   }) {
-    return string?.call(value);
+    return symbol?.call(definition);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(GeneratorProviderDefinition definition)? provider,
-    TResult Function(String value)? string,
+    TResult Function(LegacyProviderDefinition definition)? symbol,
     required TResult orElse(),
   }) {
-    if (string != null) {
-      return string(value);
+    if (symbol != null) {
+      return symbol(definition);
     }
     return orElse();
   }
@@ -530,44 +541,45 @@ class _$StringGeneratorProviderDependency
   TResult map<TResult extends Object?>({
     required TResult Function(ProviderGeneratorProviderDependency value)
         provider,
-    required TResult Function(StringGeneratorProviderDependency value) string,
+    required TResult Function(SymbolGeneratorProviderDependency value) symbol,
   }) {
-    return string(this);
+    return symbol(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(ProviderGeneratorProviderDependency value)? provider,
-    TResult? Function(StringGeneratorProviderDependency value)? string,
+    TResult? Function(SymbolGeneratorProviderDependency value)? symbol,
   }) {
-    return string?.call(this);
+    return symbol?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(ProviderGeneratorProviderDependency value)? provider,
-    TResult Function(StringGeneratorProviderDependency value)? string,
+    TResult Function(SymbolGeneratorProviderDependency value)? symbol,
     required TResult orElse(),
   }) {
-    if (string != null) {
-      return string(this);
+    if (symbol != null) {
+      return symbol(this);
     }
     return orElse();
   }
 }
 
-abstract class StringGeneratorProviderDependency
+abstract class SymbolGeneratorProviderDependency
     extends GeneratorProviderDependency {
-  factory StringGeneratorProviderDependency(final String value) =
-      _$StringGeneratorProviderDependency;
-  StringGeneratorProviderDependency._() : super._();
+  factory SymbolGeneratorProviderDependency(
+          final LegacyProviderDefinition definition) =
+      _$SymbolGeneratorProviderDependency;
+  SymbolGeneratorProviderDependency._() : super._();
 
-  String get value;
+  LegacyProviderDefinition get definition;
   @JsonKey(ignore: true)
-  _$$StringGeneratorProviderDependencyCopyWith<
-          _$StringGeneratorProviderDependency>
+  _$$SymbolGeneratorProviderDependencyCopyWith<
+          _$SymbolGeneratorProviderDependency>
       get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -2691,6 +2703,8 @@ mixin _$GeneratorProviderDefinitionFormatException {
     required TResult Function(Object? error, StackTrace? stackTrace)
         failedToParseDependency,
     required TResult Function() notAProviderDependency,
+    required TResult Function(String dependency, LibraryElement scope)
+        symbolDependencyNotFoundInScope,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -2702,6 +2716,8 @@ mixin _$GeneratorProviderDefinitionFormatException {
     TResult? Function(Object? error, StackTrace? stackTrace)?
         failedToParseDependency,
     TResult? Function()? notAProviderDependency,
+    TResult? Function(String dependency, LibraryElement scope)?
+        symbolDependencyNotFoundInScope,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -2713,6 +2729,8 @@ mixin _$GeneratorProviderDefinitionFormatException {
     TResult Function(Object? error, StackTrace? stackTrace)?
         failedToParseDependency,
     TResult Function()? notAProviderDependency,
+    TResult Function(String dependency, LibraryElement scope)?
+        symbolDependencyNotFoundInScope,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -2739,6 +2757,10 @@ mixin _$GeneratorProviderDefinitionFormatException {
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)
         notAProviderDependency,
+    required TResult Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)
+        symbolDependencyNotFoundInScope,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -2764,6 +2786,10 @@ mixin _$GeneratorProviderDefinitionFormatException {
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)?
         notAProviderDependency,
+    TResult? Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)?
+        symbolDependencyNotFoundInScope,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -2789,6 +2815,10 @@ mixin _$GeneratorProviderDefinitionFormatException {
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)?
         notAProviderDependency,
+    TResult Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)?
+        symbolDependencyNotFoundInScope,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -2874,6 +2904,8 @@ class _$NotAProviderGeneratorProviderDefinitionFormatException
     required TResult Function(Object? error, StackTrace? stackTrace)
         failedToParseDependency,
     required TResult Function() notAProviderDependency,
+    required TResult Function(String dependency, LibraryElement scope)
+        symbolDependencyNotFoundInScope,
   }) {
     return notAProvider();
   }
@@ -2888,6 +2920,8 @@ class _$NotAProviderGeneratorProviderDefinitionFormatException
     TResult? Function(Object? error, StackTrace? stackTrace)?
         failedToParseDependency,
     TResult? Function()? notAProviderDependency,
+    TResult? Function(String dependency, LibraryElement scope)?
+        symbolDependencyNotFoundInScope,
   }) {
     return notAProvider?.call();
   }
@@ -2902,6 +2936,8 @@ class _$NotAProviderGeneratorProviderDefinitionFormatException
     TResult Function(Object? error, StackTrace? stackTrace)?
         failedToParseDependency,
     TResult Function()? notAProviderDependency,
+    TResult Function(String dependency, LibraryElement scope)?
+        symbolDependencyNotFoundInScope,
     required TResult orElse(),
   }) {
     if (notAProvider != null) {
@@ -2934,6 +2970,10 @@ class _$NotAProviderGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)
         notAProviderDependency,
+    required TResult Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)
+        symbolDependencyNotFoundInScope,
   }) {
     return notAProvider(this);
   }
@@ -2962,6 +3002,10 @@ class _$NotAProviderGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)?
         notAProviderDependency,
+    TResult? Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)?
+        symbolDependencyNotFoundInScope,
   }) {
     return notAProvider?.call(this);
   }
@@ -2990,6 +3034,10 @@ class _$NotAProviderGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)?
         notAProviderDependency,
+    TResult Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)?
+        symbolDependencyNotFoundInScope,
     required TResult orElse(),
   }) {
     if (notAProvider != null) {
@@ -3067,6 +3115,8 @@ class _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
     required TResult Function(Object? error, StackTrace? stackTrace)
         failedToParseDependency,
     required TResult Function() notAProviderDependency,
+    required TResult Function(String dependency, LibraryElement scope)
+        symbolDependencyNotFoundInScope,
   }) {
     return neitherClassNorFunction();
   }
@@ -3081,6 +3131,8 @@ class _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
     TResult? Function(Object? error, StackTrace? stackTrace)?
         failedToParseDependency,
     TResult? Function()? notAProviderDependency,
+    TResult? Function(String dependency, LibraryElement scope)?
+        symbolDependencyNotFoundInScope,
   }) {
     return neitherClassNorFunction?.call();
   }
@@ -3095,6 +3147,8 @@ class _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
     TResult Function(Object? error, StackTrace? stackTrace)?
         failedToParseDependency,
     TResult Function()? notAProviderDependency,
+    TResult Function(String dependency, LibraryElement scope)?
+        symbolDependencyNotFoundInScope,
     required TResult orElse(),
   }) {
     if (neitherClassNorFunction != null) {
@@ -3127,6 +3181,10 @@ class _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)
         notAProviderDependency,
+    required TResult Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)
+        symbolDependencyNotFoundInScope,
   }) {
     return neitherClassNorFunction(this);
   }
@@ -3155,6 +3213,10 @@ class _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)?
         notAProviderDependency,
+    TResult? Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)?
+        symbolDependencyNotFoundInScope,
   }) {
     return neitherClassNorFunction?.call(this);
   }
@@ -3183,6 +3245,10 @@ class _$NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)?
         notAProviderDependency,
+    TResult Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)?
+        symbolDependencyNotFoundInScope,
     required TResult orElse(),
   }) {
     if (neitherClassNorFunction != null) {
@@ -3258,6 +3324,8 @@ class _$TooManyAnnotationGeneratorProviderDefinitionFormatException
     required TResult Function(Object? error, StackTrace? stackTrace)
         failedToParseDependency,
     required TResult Function() notAProviderDependency,
+    required TResult Function(String dependency, LibraryElement scope)
+        symbolDependencyNotFoundInScope,
   }) {
     return tooManyAnnotations();
   }
@@ -3272,6 +3340,8 @@ class _$TooManyAnnotationGeneratorProviderDefinitionFormatException
     TResult? Function(Object? error, StackTrace? stackTrace)?
         failedToParseDependency,
     TResult? Function()? notAProviderDependency,
+    TResult? Function(String dependency, LibraryElement scope)?
+        symbolDependencyNotFoundInScope,
   }) {
     return tooManyAnnotations?.call();
   }
@@ -3286,6 +3356,8 @@ class _$TooManyAnnotationGeneratorProviderDefinitionFormatException
     TResult Function(Object? error, StackTrace? stackTrace)?
         failedToParseDependency,
     TResult Function()? notAProviderDependency,
+    TResult Function(String dependency, LibraryElement scope)?
+        symbolDependencyNotFoundInScope,
     required TResult orElse(),
   }) {
     if (tooManyAnnotations != null) {
@@ -3318,6 +3390,10 @@ class _$TooManyAnnotationGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)
         notAProviderDependency,
+    required TResult Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)
+        symbolDependencyNotFoundInScope,
   }) {
     return tooManyAnnotations(this);
   }
@@ -3346,6 +3422,10 @@ class _$TooManyAnnotationGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)?
         notAProviderDependency,
+    TResult? Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)?
+        symbolDependencyNotFoundInScope,
   }) {
     return tooManyAnnotations?.call(this);
   }
@@ -3374,6 +3454,10 @@ class _$TooManyAnnotationGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)?
         notAProviderDependency,
+    TResult Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)?
+        symbolDependencyNotFoundInScope,
     required TResult orElse(),
   }) {
     if (tooManyAnnotations != null) {
@@ -3447,6 +3531,8 @@ class _$NoBuildMethodGeneratorProviderDefinitionFormatException
     required TResult Function(Object? error, StackTrace? stackTrace)
         failedToParseDependency,
     required TResult Function() notAProviderDependency,
+    required TResult Function(String dependency, LibraryElement scope)
+        symbolDependencyNotFoundInScope,
   }) {
     return noBuildMethod();
   }
@@ -3461,6 +3547,8 @@ class _$NoBuildMethodGeneratorProviderDefinitionFormatException
     TResult? Function(Object? error, StackTrace? stackTrace)?
         failedToParseDependency,
     TResult? Function()? notAProviderDependency,
+    TResult? Function(String dependency, LibraryElement scope)?
+        symbolDependencyNotFoundInScope,
   }) {
     return noBuildMethod?.call();
   }
@@ -3475,6 +3563,8 @@ class _$NoBuildMethodGeneratorProviderDefinitionFormatException
     TResult Function(Object? error, StackTrace? stackTrace)?
         failedToParseDependency,
     TResult Function()? notAProviderDependency,
+    TResult Function(String dependency, LibraryElement scope)?
+        symbolDependencyNotFoundInScope,
     required TResult orElse(),
   }) {
     if (noBuildMethod != null) {
@@ -3507,6 +3597,10 @@ class _$NoBuildMethodGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)
         notAProviderDependency,
+    required TResult Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)
+        symbolDependencyNotFoundInScope,
   }) {
     return noBuildMethod(this);
   }
@@ -3535,6 +3629,10 @@ class _$NoBuildMethodGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)?
         notAProviderDependency,
+    TResult? Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)?
+        symbolDependencyNotFoundInScope,
   }) {
     return noBuildMethod?.call(this);
   }
@@ -3563,6 +3661,10 @@ class _$NoBuildMethodGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)?
         notAProviderDependency,
+    TResult Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)?
+        symbolDependencyNotFoundInScope,
     required TResult orElse(),
   }) {
     if (noBuildMethod != null) {
@@ -3682,6 +3784,8 @@ class _$FailedToParseDependencyGeneratorProviderDefinitionFormatException
     required TResult Function(Object? error, StackTrace? stackTrace)
         failedToParseDependency,
     required TResult Function() notAProviderDependency,
+    required TResult Function(String dependency, LibraryElement scope)
+        symbolDependencyNotFoundInScope,
   }) {
     return failedToParseDependency(error, stackTrace);
   }
@@ -3696,6 +3800,8 @@ class _$FailedToParseDependencyGeneratorProviderDefinitionFormatException
     TResult? Function(Object? error, StackTrace? stackTrace)?
         failedToParseDependency,
     TResult? Function()? notAProviderDependency,
+    TResult? Function(String dependency, LibraryElement scope)?
+        symbolDependencyNotFoundInScope,
   }) {
     return failedToParseDependency?.call(error, stackTrace);
   }
@@ -3710,6 +3816,8 @@ class _$FailedToParseDependencyGeneratorProviderDefinitionFormatException
     TResult Function(Object? error, StackTrace? stackTrace)?
         failedToParseDependency,
     TResult Function()? notAProviderDependency,
+    TResult Function(String dependency, LibraryElement scope)?
+        symbolDependencyNotFoundInScope,
     required TResult orElse(),
   }) {
     if (failedToParseDependency != null) {
@@ -3742,6 +3850,10 @@ class _$FailedToParseDependencyGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)
         notAProviderDependency,
+    required TResult Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)
+        symbolDependencyNotFoundInScope,
   }) {
     return failedToParseDependency(this);
   }
@@ -3770,6 +3882,10 @@ class _$FailedToParseDependencyGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)?
         notAProviderDependency,
+    TResult? Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)?
+        symbolDependencyNotFoundInScope,
   }) {
     return failedToParseDependency?.call(this);
   }
@@ -3798,6 +3914,10 @@ class _$FailedToParseDependencyGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)?
         notAProviderDependency,
+    TResult Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)?
+        symbolDependencyNotFoundInScope,
     required TResult orElse(),
   }) {
     if (failedToParseDependency != null) {
@@ -3882,6 +4002,8 @@ class _$NotAProviderDependencyGeneratorProviderDefinitionFormatException
     required TResult Function(Object? error, StackTrace? stackTrace)
         failedToParseDependency,
     required TResult Function() notAProviderDependency,
+    required TResult Function(String dependency, LibraryElement scope)
+        symbolDependencyNotFoundInScope,
   }) {
     return notAProviderDependency();
   }
@@ -3896,6 +4018,8 @@ class _$NotAProviderDependencyGeneratorProviderDefinitionFormatException
     TResult? Function(Object? error, StackTrace? stackTrace)?
         failedToParseDependency,
     TResult? Function()? notAProviderDependency,
+    TResult? Function(String dependency, LibraryElement scope)?
+        symbolDependencyNotFoundInScope,
   }) {
     return notAProviderDependency?.call();
   }
@@ -3910,6 +4034,8 @@ class _$NotAProviderDependencyGeneratorProviderDefinitionFormatException
     TResult Function(Object? error, StackTrace? stackTrace)?
         failedToParseDependency,
     TResult Function()? notAProviderDependency,
+    TResult Function(String dependency, LibraryElement scope)?
+        symbolDependencyNotFoundInScope,
     required TResult orElse(),
   }) {
     if (notAProviderDependency != null) {
@@ -3942,6 +4068,10 @@ class _$NotAProviderDependencyGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)
         notAProviderDependency,
+    required TResult Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)
+        symbolDependencyNotFoundInScope,
   }) {
     return notAProviderDependency(this);
   }
@@ -3970,6 +4100,10 @@ class _$NotAProviderDependencyGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)?
         notAProviderDependency,
+    TResult? Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)?
+        symbolDependencyNotFoundInScope,
   }) {
     return notAProviderDependency?.call(this);
   }
@@ -3998,6 +4132,10 @@ class _$NotAProviderDependencyGeneratorProviderDefinitionFormatException
             NotAProviderDependencyGeneratorProviderDefinitionFormatException
                 value)?
         notAProviderDependency,
+    TResult Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)?
+        symbolDependencyNotFoundInScope,
     required TResult orElse(),
   }) {
     if (notAProviderDependency != null) {
@@ -4011,6 +4149,266 @@ abstract class NotAProviderDependencyGeneratorProviderDefinitionFormatException
     implements GeneratorProviderDefinitionFormatException {
   factory NotAProviderDependencyGeneratorProviderDefinitionFormatException() =
       _$NotAProviderDependencyGeneratorProviderDefinitionFormatException;
+}
+
+/// @nodoc
+abstract class _$$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatExceptionCopyWith<
+    $Res> {
+  factory _$$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatExceptionCopyWith(
+          _$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+              value,
+          $Res Function(
+                  _$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException)
+              then) =
+      __$$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatExceptionCopyWithImpl<
+          $Res>;
+  @useResult
+  $Res call({String dependency, LibraryElement scope});
+}
+
+/// @nodoc
+class __$$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatExceptionCopyWithImpl<
+        $Res>
+    extends _$GeneratorProviderDefinitionFormatExceptionCopyWithImpl<$Res,
+        _$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException>
+    implements
+        _$$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatExceptionCopyWith<
+            $Res> {
+  __$$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatExceptionCopyWithImpl(
+      _$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+          _value,
+      $Res Function(
+              _$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException)
+          _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? dependency = null,
+    Object? scope = null,
+  }) {
+    return _then(
+        _$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException(
+      null == dependency
+          ? _value.dependency
+          : dependency // ignore: cast_nullable_to_non_nullable
+              as String,
+      null == scope
+          ? _value.scope
+          : scope // ignore: cast_nullable_to_non_nullable
+              as LibraryElement,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+    implements
+        SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException {
+  _$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException(
+      this.dependency, this.scope);
+
+  @override
+  final String dependency;
+  @override
+  final LibraryElement scope;
+
+  @override
+  String toString() {
+    return 'GeneratorProviderDefinitionFormatException.symbolDependencyNotFoundInScope(dependency: $dependency, scope: $scope)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other
+                is _$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException &&
+            (identical(other.dependency, dependency) ||
+                other.dependency == dependency) &&
+            (identical(other.scope, scope) || other.scope == scope));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, dependency, scope);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatExceptionCopyWith<
+          _$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException>
+      get copyWith =>
+          __$$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatExceptionCopyWithImpl<
+                  _$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException>(
+              this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() notAProvider,
+    required TResult Function() neitherClassNorFunction,
+    required TResult Function() tooManyAnnotations,
+    required TResult Function() noBuildMethod,
+    required TResult Function(Object? error, StackTrace? stackTrace)
+        failedToParseDependency,
+    required TResult Function() notAProviderDependency,
+    required TResult Function(String dependency, LibraryElement scope)
+        symbolDependencyNotFoundInScope,
+  }) {
+    return symbolDependencyNotFoundInScope(dependency, scope);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? notAProvider,
+    TResult? Function()? neitherClassNorFunction,
+    TResult? Function()? tooManyAnnotations,
+    TResult? Function()? noBuildMethod,
+    TResult? Function(Object? error, StackTrace? stackTrace)?
+        failedToParseDependency,
+    TResult? Function()? notAProviderDependency,
+    TResult? Function(String dependency, LibraryElement scope)?
+        symbolDependencyNotFoundInScope,
+  }) {
+    return symbolDependencyNotFoundInScope?.call(dependency, scope);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? notAProvider,
+    TResult Function()? neitherClassNorFunction,
+    TResult Function()? tooManyAnnotations,
+    TResult Function()? noBuildMethod,
+    TResult Function(Object? error, StackTrace? stackTrace)?
+        failedToParseDependency,
+    TResult Function()? notAProviderDependency,
+    TResult Function(String dependency, LibraryElement scope)?
+        symbolDependencyNotFoundInScope,
+    required TResult orElse(),
+  }) {
+    if (symbolDependencyNotFoundInScope != null) {
+      return symbolDependencyNotFoundInScope(dependency, scope);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(
+            NotAProviderGeneratorProviderDefinitionFormatException value)
+        notAProvider,
+    required TResult Function(
+            NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+                value)
+        neitherClassNorFunction,
+    required TResult Function(
+            TooManyAnnotationGeneratorProviderDefinitionFormatException value)
+        tooManyAnnotations,
+    required TResult Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)
+        noBuildMethod,
+    required TResult Function(
+            FailedToParseDependencyGeneratorProviderDefinitionFormatException
+                value)
+        failedToParseDependency,
+    required TResult Function(
+            NotAProviderDependencyGeneratorProviderDefinitionFormatException
+                value)
+        notAProviderDependency,
+    required TResult Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)
+        symbolDependencyNotFoundInScope,
+  }) {
+    return symbolDependencyNotFoundInScope(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(
+            NotAProviderGeneratorProviderDefinitionFormatException value)?
+        notAProvider,
+    TResult? Function(
+            NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+                value)?
+        neitherClassNorFunction,
+    TResult? Function(
+            TooManyAnnotationGeneratorProviderDefinitionFormatException value)?
+        tooManyAnnotations,
+    TResult? Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)?
+        noBuildMethod,
+    TResult? Function(
+            FailedToParseDependencyGeneratorProviderDefinitionFormatException
+                value)?
+        failedToParseDependency,
+    TResult? Function(
+            NotAProviderDependencyGeneratorProviderDefinitionFormatException
+                value)?
+        notAProviderDependency,
+    TResult? Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)?
+        symbolDependencyNotFoundInScope,
+  }) {
+    return symbolDependencyNotFoundInScope?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(
+            NotAProviderGeneratorProviderDefinitionFormatException value)?
+        notAProvider,
+    TResult Function(
+            NeitherClassNorFunctionGeneratorProviderDefinitionFormatException
+                value)?
+        neitherClassNorFunction,
+    TResult Function(
+            TooManyAnnotationGeneratorProviderDefinitionFormatException value)?
+        tooManyAnnotations,
+    TResult Function(
+            NoBuildMethodGeneratorProviderDefinitionFormatException value)?
+        noBuildMethod,
+    TResult Function(
+            FailedToParseDependencyGeneratorProviderDefinitionFormatException
+                value)?
+        failedToParseDependency,
+    TResult Function(
+            NotAProviderDependencyGeneratorProviderDefinitionFormatException
+                value)?
+        notAProviderDependency,
+    TResult Function(
+            SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+                value)?
+        symbolDependencyNotFoundInScope,
+    required TResult orElse(),
+  }) {
+    if (symbolDependencyNotFoundInScope != null) {
+      return symbolDependencyNotFoundInScope(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException
+    implements GeneratorProviderDefinitionFormatException {
+  factory SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException(
+          final String dependency, final LibraryElement scope) =
+      _$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException;
+
+  String get dependency;
+  LibraryElement get scope;
+  @JsonKey(ignore: true)
+  _$$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatExceptionCopyWith<
+          _$SymbolDependencyNotFoundInScopeGeneratorProviderDefinitionFormatException>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
