@@ -15,11 +15,915 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
+mixin _$LegacyProviderDependency {
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(AnyProviderDefinition definition) provider,
+    required TResult Function(CollectionElement expression) unknown,
+    required TResult Function(Object error, StackTrace stackTrace) errored,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(AnyProviderDefinition definition)? provider,
+    TResult? Function(CollectionElement expression)? unknown,
+    TResult? Function(Object error, StackTrace stackTrace)? errored,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(AnyProviderDefinition definition)? provider,
+    TResult Function(CollectionElement expression)? unknown,
+    TResult Function(Object error, StackTrace stackTrace)? errored,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ProviderLegacyProviderDependency value) provider,
+    required TResult Function(UnknownLegacyProviderDependency value) unknown,
+    required TResult Function(ErroredLegacyProviderDependency value) errored,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ProviderLegacyProviderDependency value)? provider,
+    TResult? Function(UnknownLegacyProviderDependency value)? unknown,
+    TResult? Function(ErroredLegacyProviderDependency value)? errored,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ProviderLegacyProviderDependency value)? provider,
+    TResult Function(UnknownLegacyProviderDependency value)? unknown,
+    TResult Function(ErroredLegacyProviderDependency value)? errored,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $LegacyProviderDependencyCopyWith<$Res> {
+  factory $LegacyProviderDependencyCopyWith(LegacyProviderDependency value,
+          $Res Function(LegacyProviderDependency) then) =
+      _$LegacyProviderDependencyCopyWithImpl<$Res, LegacyProviderDependency>;
+}
+
+/// @nodoc
+class _$LegacyProviderDependencyCopyWithImpl<$Res,
+        $Val extends LegacyProviderDependency>
+    implements $LegacyProviderDependencyCopyWith<$Res> {
+  _$LegacyProviderDependencyCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+}
+
+/// @nodoc
+abstract class _$$ProviderLegacyProviderDependencyCopyWith<$Res> {
+  factory _$$ProviderLegacyProviderDependencyCopyWith(
+          _$ProviderLegacyProviderDependency value,
+          $Res Function(_$ProviderLegacyProviderDependency) then) =
+      __$$ProviderLegacyProviderDependencyCopyWithImpl<$Res>;
+  @useResult
+  $Res call({AnyProviderDefinition definition});
+
+  $AnyProviderDefinitionCopyWith<$Res> get definition;
+}
+
+/// @nodoc
+class __$$ProviderLegacyProviderDependencyCopyWithImpl<$Res>
+    extends _$LegacyProviderDependencyCopyWithImpl<$Res,
+        _$ProviderLegacyProviderDependency>
+    implements _$$ProviderLegacyProviderDependencyCopyWith<$Res> {
+  __$$ProviderLegacyProviderDependencyCopyWithImpl(
+      _$ProviderLegacyProviderDependency _value,
+      $Res Function(_$ProviderLegacyProviderDependency) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? definition = null,
+  }) {
+    return _then(_$ProviderLegacyProviderDependency(
+      null == definition
+          ? _value.definition
+          : definition // ignore: cast_nullable_to_non_nullable
+              as AnyProviderDefinition,
+    ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $AnyProviderDefinitionCopyWith<$Res> get definition {
+    return $AnyProviderDefinitionCopyWith<$Res>(_value.definition, (value) {
+      return _then(_value.copyWith(definition: value));
+    });
+  }
+}
+
+/// @nodoc
+
+@internal
+class _$ProviderLegacyProviderDependency
+    implements ProviderLegacyProviderDependency {
+  _$ProviderLegacyProviderDependency(this.definition);
+
+  @override
+  final AnyProviderDefinition definition;
+
+  @override
+  String toString() {
+    return 'LegacyProviderDependency.provider(definition: $definition)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ProviderLegacyProviderDependency &&
+            (identical(other.definition, definition) ||
+                other.definition == definition));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, definition);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ProviderLegacyProviderDependencyCopyWith<
+          _$ProviderLegacyProviderDependency>
+      get copyWith => __$$ProviderLegacyProviderDependencyCopyWithImpl<
+          _$ProviderLegacyProviderDependency>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(AnyProviderDefinition definition) provider,
+    required TResult Function(CollectionElement expression) unknown,
+    required TResult Function(Object error, StackTrace stackTrace) errored,
+  }) {
+    return provider(definition);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(AnyProviderDefinition definition)? provider,
+    TResult? Function(CollectionElement expression)? unknown,
+    TResult? Function(Object error, StackTrace stackTrace)? errored,
+  }) {
+    return provider?.call(definition);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(AnyProviderDefinition definition)? provider,
+    TResult Function(CollectionElement expression)? unknown,
+    TResult Function(Object error, StackTrace stackTrace)? errored,
+    required TResult orElse(),
+  }) {
+    if (provider != null) {
+      return provider(definition);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ProviderLegacyProviderDependency value) provider,
+    required TResult Function(UnknownLegacyProviderDependency value) unknown,
+    required TResult Function(ErroredLegacyProviderDependency value) errored,
+  }) {
+    return provider(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ProviderLegacyProviderDependency value)? provider,
+    TResult? Function(UnknownLegacyProviderDependency value)? unknown,
+    TResult? Function(ErroredLegacyProviderDependency value)? errored,
+  }) {
+    return provider?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ProviderLegacyProviderDependency value)? provider,
+    TResult Function(UnknownLegacyProviderDependency value)? unknown,
+    TResult Function(ErroredLegacyProviderDependency value)? errored,
+    required TResult orElse(),
+  }) {
+    if (provider != null) {
+      return provider(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class ProviderLegacyProviderDependency
+    implements LegacyProviderDependency {
+  factory ProviderLegacyProviderDependency(
+          final AnyProviderDefinition definition) =
+      _$ProviderLegacyProviderDependency;
+
+  AnyProviderDefinition get definition;
+  @JsonKey(ignore: true)
+  _$$ProviderLegacyProviderDependencyCopyWith<
+          _$ProviderLegacyProviderDependency>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$UnknownLegacyProviderDependencyCopyWith<$Res> {
+  factory _$$UnknownLegacyProviderDependencyCopyWith(
+          _$UnknownLegacyProviderDependency value,
+          $Res Function(_$UnknownLegacyProviderDependency) then) =
+      __$$UnknownLegacyProviderDependencyCopyWithImpl<$Res>;
+  @useResult
+  $Res call({CollectionElement expression});
+}
+
+/// @nodoc
+class __$$UnknownLegacyProviderDependencyCopyWithImpl<$Res>
+    extends _$LegacyProviderDependencyCopyWithImpl<$Res,
+        _$UnknownLegacyProviderDependency>
+    implements _$$UnknownLegacyProviderDependencyCopyWith<$Res> {
+  __$$UnknownLegacyProviderDependencyCopyWithImpl(
+      _$UnknownLegacyProviderDependency _value,
+      $Res Function(_$UnknownLegacyProviderDependency) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? expression = null,
+  }) {
+    return _then(_$UnknownLegacyProviderDependency(
+      null == expression
+          ? _value.expression
+          : expression // ignore: cast_nullable_to_non_nullable
+              as CollectionElement,
+    ));
+  }
+}
+
+/// @nodoc
+
+@internal
+class _$UnknownLegacyProviderDependency
+    implements UnknownLegacyProviderDependency {
+  _$UnknownLegacyProviderDependency(this.expression);
+
+  @override
+  final CollectionElement expression;
+
+  @override
+  String toString() {
+    return 'LegacyProviderDependency.unknown(expression: $expression)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$UnknownLegacyProviderDependency &&
+            (identical(other.expression, expression) ||
+                other.expression == expression));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, expression);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$UnknownLegacyProviderDependencyCopyWith<_$UnknownLegacyProviderDependency>
+      get copyWith => __$$UnknownLegacyProviderDependencyCopyWithImpl<
+          _$UnknownLegacyProviderDependency>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(AnyProviderDefinition definition) provider,
+    required TResult Function(CollectionElement expression) unknown,
+    required TResult Function(Object error, StackTrace stackTrace) errored,
+  }) {
+    return unknown(expression);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(AnyProviderDefinition definition)? provider,
+    TResult? Function(CollectionElement expression)? unknown,
+    TResult? Function(Object error, StackTrace stackTrace)? errored,
+  }) {
+    return unknown?.call(expression);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(AnyProviderDefinition definition)? provider,
+    TResult Function(CollectionElement expression)? unknown,
+    TResult Function(Object error, StackTrace stackTrace)? errored,
+    required TResult orElse(),
+  }) {
+    if (unknown != null) {
+      return unknown(expression);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ProviderLegacyProviderDependency value) provider,
+    required TResult Function(UnknownLegacyProviderDependency value) unknown,
+    required TResult Function(ErroredLegacyProviderDependency value) errored,
+  }) {
+    return unknown(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ProviderLegacyProviderDependency value)? provider,
+    TResult? Function(UnknownLegacyProviderDependency value)? unknown,
+    TResult? Function(ErroredLegacyProviderDependency value)? errored,
+  }) {
+    return unknown?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ProviderLegacyProviderDependency value)? provider,
+    TResult Function(UnknownLegacyProviderDependency value)? unknown,
+    TResult Function(ErroredLegacyProviderDependency value)? errored,
+    required TResult orElse(),
+  }) {
+    if (unknown != null) {
+      return unknown(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class UnknownLegacyProviderDependency
+    implements LegacyProviderDependency {
+  factory UnknownLegacyProviderDependency(final CollectionElement expression) =
+      _$UnknownLegacyProviderDependency;
+
+  CollectionElement get expression;
+  @JsonKey(ignore: true)
+  _$$UnknownLegacyProviderDependencyCopyWith<_$UnknownLegacyProviderDependency>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$ErroredLegacyProviderDependencyCopyWith<$Res> {
+  factory _$$ErroredLegacyProviderDependencyCopyWith(
+          _$ErroredLegacyProviderDependency value,
+          $Res Function(_$ErroredLegacyProviderDependency) then) =
+      __$$ErroredLegacyProviderDependencyCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Object error, StackTrace stackTrace});
+}
+
+/// @nodoc
+class __$$ErroredLegacyProviderDependencyCopyWithImpl<$Res>
+    extends _$LegacyProviderDependencyCopyWithImpl<$Res,
+        _$ErroredLegacyProviderDependency>
+    implements _$$ErroredLegacyProviderDependencyCopyWith<$Res> {
+  __$$ErroredLegacyProviderDependencyCopyWithImpl(
+      _$ErroredLegacyProviderDependency _value,
+      $Res Function(_$ErroredLegacyProviderDependency) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? error = null,
+    Object? stackTrace = null,
+  }) {
+    return _then(_$ErroredLegacyProviderDependency(
+      null == error ? _value.error : error,
+      null == stackTrace
+          ? _value.stackTrace
+          : stackTrace // ignore: cast_nullable_to_non_nullable
+              as StackTrace,
+    ));
+  }
+}
+
+/// @nodoc
+
+@internal
+class _$ErroredLegacyProviderDependency
+    implements ErroredLegacyProviderDependency {
+  _$ErroredLegacyProviderDependency(this.error, this.stackTrace);
+
+  @override
+  final Object error;
+  @override
+  final StackTrace stackTrace;
+
+  @override
+  String toString() {
+    return 'LegacyProviderDependency.errored(error: $error, stackTrace: $stackTrace)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ErroredLegacyProviderDependency &&
+            const DeepCollectionEquality().equals(other.error, error) &&
+            (identical(other.stackTrace, stackTrace) ||
+                other.stackTrace == stackTrace));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(error), stackTrace);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ErroredLegacyProviderDependencyCopyWith<_$ErroredLegacyProviderDependency>
+      get copyWith => __$$ErroredLegacyProviderDependencyCopyWithImpl<
+          _$ErroredLegacyProviderDependency>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(AnyProviderDefinition definition) provider,
+    required TResult Function(CollectionElement expression) unknown,
+    required TResult Function(Object error, StackTrace stackTrace) errored,
+  }) {
+    return errored(error, stackTrace);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(AnyProviderDefinition definition)? provider,
+    TResult? Function(CollectionElement expression)? unknown,
+    TResult? Function(Object error, StackTrace stackTrace)? errored,
+  }) {
+    return errored?.call(error, stackTrace);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(AnyProviderDefinition definition)? provider,
+    TResult Function(CollectionElement expression)? unknown,
+    TResult Function(Object error, StackTrace stackTrace)? errored,
+    required TResult orElse(),
+  }) {
+    if (errored != null) {
+      return errored(error, stackTrace);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ProviderLegacyProviderDependency value) provider,
+    required TResult Function(UnknownLegacyProviderDependency value) unknown,
+    required TResult Function(ErroredLegacyProviderDependency value) errored,
+  }) {
+    return errored(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ProviderLegacyProviderDependency value)? provider,
+    TResult? Function(UnknownLegacyProviderDependency value)? unknown,
+    TResult? Function(ErroredLegacyProviderDependency value)? errored,
+  }) {
+    return errored?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ProviderLegacyProviderDependency value)? provider,
+    TResult Function(UnknownLegacyProviderDependency value)? unknown,
+    TResult Function(ErroredLegacyProviderDependency value)? errored,
+    required TResult orElse(),
+  }) {
+    if (errored != null) {
+      return errored(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class ErroredLegacyProviderDependency
+    implements LegacyProviderDependency {
+  factory ErroredLegacyProviderDependency(
+          final Object error, final StackTrace stackTrace) =
+      _$ErroredLegacyProviderDependency;
+
+  Object get error;
+  StackTrace get stackTrace;
+  @JsonKey(ignore: true)
+  _$$ErroredLegacyProviderDependencyCopyWith<_$ErroredLegacyProviderDependency>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$LegacyProviderDependencyList {
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(List<LegacyProviderDependency> list) listLitteral,
+    required TResult Function(Expression expression) unknown,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(List<LegacyProviderDependency> list)? listLitteral,
+    TResult? Function(Expression expression)? unknown,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(List<LegacyProviderDependency> list)? listLitteral,
+    TResult Function(Expression expression)? unknown,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ListLitteralLegacyProviderDependencyList value)
+        listLitteral,
+    required TResult Function(UnknownLegacyProviderDependencyList value)
+        unknown,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ListLitteralLegacyProviderDependencyList value)?
+        listLitteral,
+    TResult? Function(UnknownLegacyProviderDependencyList value)? unknown,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ListLitteralLegacyProviderDependencyList value)?
+        listLitteral,
+    TResult Function(UnknownLegacyProviderDependencyList value)? unknown,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $LegacyProviderDependencyListCopyWith<$Res> {
+  factory $LegacyProviderDependencyListCopyWith(
+          LegacyProviderDependencyList value,
+          $Res Function(LegacyProviderDependencyList) then) =
+      _$LegacyProviderDependencyListCopyWithImpl<$Res,
+          LegacyProviderDependencyList>;
+}
+
+/// @nodoc
+class _$LegacyProviderDependencyListCopyWithImpl<$Res,
+        $Val extends LegacyProviderDependencyList>
+    implements $LegacyProviderDependencyListCopyWith<$Res> {
+  _$LegacyProviderDependencyListCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+}
+
+/// @nodoc
+abstract class _$$ListLitteralLegacyProviderDependencyListCopyWith<$Res> {
+  factory _$$ListLitteralLegacyProviderDependencyListCopyWith(
+          _$ListLitteralLegacyProviderDependencyList value,
+          $Res Function(_$ListLitteralLegacyProviderDependencyList) then) =
+      __$$ListLitteralLegacyProviderDependencyListCopyWithImpl<$Res>;
+  @useResult
+  $Res call({List<LegacyProviderDependency> list});
+}
+
+/// @nodoc
+class __$$ListLitteralLegacyProviderDependencyListCopyWithImpl<$Res>
+    extends _$LegacyProviderDependencyListCopyWithImpl<$Res,
+        _$ListLitteralLegacyProviderDependencyList>
+    implements _$$ListLitteralLegacyProviderDependencyListCopyWith<$Res> {
+  __$$ListLitteralLegacyProviderDependencyListCopyWithImpl(
+      _$ListLitteralLegacyProviderDependencyList _value,
+      $Res Function(_$ListLitteralLegacyProviderDependencyList) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? list = null,
+  }) {
+    return _then(_$ListLitteralLegacyProviderDependencyList(
+      null == list
+          ? _value._list
+          : list // ignore: cast_nullable_to_non_nullable
+              as List<LegacyProviderDependency>,
+    ));
+  }
+}
+
+/// @nodoc
+
+@internal
+class _$ListLitteralLegacyProviderDependencyList
+    implements ListLitteralLegacyProviderDependencyList {
+  _$ListLitteralLegacyProviderDependencyList(
+      final List<LegacyProviderDependency> list)
+      : _list = list;
+
+  final List<LegacyProviderDependency> _list;
+  @override
+  List<LegacyProviderDependency> get list {
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_list);
+  }
+
+  @override
+  String toString() {
+    return 'LegacyProviderDependencyList.listLitteral(list: $list)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ListLitteralLegacyProviderDependencyList &&
+            const DeepCollectionEquality().equals(other._list, _list));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_list));
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ListLitteralLegacyProviderDependencyListCopyWith<
+          _$ListLitteralLegacyProviderDependencyList>
+      get copyWith => __$$ListLitteralLegacyProviderDependencyListCopyWithImpl<
+          _$ListLitteralLegacyProviderDependencyList>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(List<LegacyProviderDependency> list) listLitteral,
+    required TResult Function(Expression expression) unknown,
+  }) {
+    return listLitteral(list);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(List<LegacyProviderDependency> list)? listLitteral,
+    TResult? Function(Expression expression)? unknown,
+  }) {
+    return listLitteral?.call(list);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(List<LegacyProviderDependency> list)? listLitteral,
+    TResult Function(Expression expression)? unknown,
+    required TResult orElse(),
+  }) {
+    if (listLitteral != null) {
+      return listLitteral(list);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ListLitteralLegacyProviderDependencyList value)
+        listLitteral,
+    required TResult Function(UnknownLegacyProviderDependencyList value)
+        unknown,
+  }) {
+    return listLitteral(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ListLitteralLegacyProviderDependencyList value)?
+        listLitteral,
+    TResult? Function(UnknownLegacyProviderDependencyList value)? unknown,
+  }) {
+    return listLitteral?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ListLitteralLegacyProviderDependencyList value)?
+        listLitteral,
+    TResult Function(UnknownLegacyProviderDependencyList value)? unknown,
+    required TResult orElse(),
+  }) {
+    if (listLitteral != null) {
+      return listLitteral(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class ListLitteralLegacyProviderDependencyList
+    implements LegacyProviderDependencyList {
+  factory ListLitteralLegacyProviderDependencyList(
+          final List<LegacyProviderDependency> list) =
+      _$ListLitteralLegacyProviderDependencyList;
+
+  List<LegacyProviderDependency> get list;
+  @JsonKey(ignore: true)
+  _$$ListLitteralLegacyProviderDependencyListCopyWith<
+          _$ListLitteralLegacyProviderDependencyList>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$UnknownLegacyProviderDependencyListCopyWith<$Res> {
+  factory _$$UnknownLegacyProviderDependencyListCopyWith(
+          _$UnknownLegacyProviderDependencyList value,
+          $Res Function(_$UnknownLegacyProviderDependencyList) then) =
+      __$$UnknownLegacyProviderDependencyListCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Expression expression});
+}
+
+/// @nodoc
+class __$$UnknownLegacyProviderDependencyListCopyWithImpl<$Res>
+    extends _$LegacyProviderDependencyListCopyWithImpl<$Res,
+        _$UnknownLegacyProviderDependencyList>
+    implements _$$UnknownLegacyProviderDependencyListCopyWith<$Res> {
+  __$$UnknownLegacyProviderDependencyListCopyWithImpl(
+      _$UnknownLegacyProviderDependencyList _value,
+      $Res Function(_$UnknownLegacyProviderDependencyList) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? expression = null,
+  }) {
+    return _then(_$UnknownLegacyProviderDependencyList(
+      null == expression
+          ? _value.expression
+          : expression // ignore: cast_nullable_to_non_nullable
+              as Expression,
+    ));
+  }
+}
+
+/// @nodoc
+
+@internal
+class _$UnknownLegacyProviderDependencyList
+    implements UnknownLegacyProviderDependencyList {
+  _$UnknownLegacyProviderDependencyList(this.expression);
+
+  @override
+  final Expression expression;
+
+  @override
+  String toString() {
+    return 'LegacyProviderDependencyList.unknown(expression: $expression)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$UnknownLegacyProviderDependencyList &&
+            (identical(other.expression, expression) ||
+                other.expression == expression));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, expression);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$UnknownLegacyProviderDependencyListCopyWith<
+          _$UnknownLegacyProviderDependencyList>
+      get copyWith => __$$UnknownLegacyProviderDependencyListCopyWithImpl<
+          _$UnknownLegacyProviderDependencyList>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(List<LegacyProviderDependency> list) listLitteral,
+    required TResult Function(Expression expression) unknown,
+  }) {
+    return unknown(expression);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(List<LegacyProviderDependency> list)? listLitteral,
+    TResult? Function(Expression expression)? unknown,
+  }) {
+    return unknown?.call(expression);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(List<LegacyProviderDependency> list)? listLitteral,
+    TResult Function(Expression expression)? unknown,
+    required TResult orElse(),
+  }) {
+    if (unknown != null) {
+      return unknown(expression);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(ListLitteralLegacyProviderDependencyList value)
+        listLitteral,
+    required TResult Function(UnknownLegacyProviderDependencyList value)
+        unknown,
+  }) {
+    return unknown(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(ListLitteralLegacyProviderDependencyList value)?
+        listLitteral,
+    TResult? Function(UnknownLegacyProviderDependencyList value)? unknown,
+  }) {
+    return unknown?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(ListLitteralLegacyProviderDependencyList value)?
+        listLitteral,
+    TResult Function(UnknownLegacyProviderDependencyList value)? unknown,
+    required TResult orElse(),
+  }) {
+    if (unknown != null) {
+      return unknown(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class UnknownLegacyProviderDependencyList
+    implements LegacyProviderDependencyList {
+  factory UnknownLegacyProviderDependencyList(final Expression expression) =
+      _$UnknownLegacyProviderDependencyList;
+
+  Expression get expression;
+  @JsonKey(ignore: true)
+  _$$UnknownLegacyProviderDependencyListCopyWith<
+          _$UnknownLegacyProviderDependencyList>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
 mixin _$LegacyProviderDefinition {
   String get name => throw _privateConstructorUsedError;
   bool get isAutoDispose => throw _privateConstructorUsedError;
   DartType? get familyArgumentType => throw _privateConstructorUsedError;
   LegacyProviderType get providerType => throw _privateConstructorUsedError;
+  LegacyProviderDependencyList? get dependencies =>
+      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $LegacyProviderDefinitionCopyWith<LegacyProviderDefinition> get copyWith =>
@@ -36,7 +940,10 @@ abstract class $LegacyProviderDefinitionCopyWith<$Res> {
       {String name,
       bool isAutoDispose,
       DartType? familyArgumentType,
-      LegacyProviderType providerType});
+      LegacyProviderType providerType,
+      LegacyProviderDependencyList? dependencies});
+
+  $LegacyProviderDependencyListCopyWith<$Res>? get dependencies;
 }
 
 /// @nodoc
@@ -57,6 +964,7 @@ class _$LegacyProviderDefinitionCopyWithImpl<$Res,
     Object? isAutoDispose = null,
     Object? familyArgumentType = freezed,
     Object? providerType = null,
+    Object? dependencies = freezed,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -75,7 +983,24 @@ class _$LegacyProviderDefinitionCopyWithImpl<$Res,
           ? _value.providerType
           : providerType // ignore: cast_nullable_to_non_nullable
               as LegacyProviderType,
+      dependencies: freezed == dependencies
+          ? _value.dependencies
+          : dependencies // ignore: cast_nullable_to_non_nullable
+              as LegacyProviderDependencyList?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $LegacyProviderDependencyListCopyWith<$Res>? get dependencies {
+    if (_value.dependencies == null) {
+      return null;
+    }
+
+    return $LegacyProviderDependencyListCopyWith<$Res>(_value.dependencies!,
+        (value) {
+      return _then(_value.copyWith(dependencies: value) as $Val);
+    });
   }
 }
 
@@ -92,7 +1017,11 @@ abstract class _$$_LegacyProviderDefinitionCopyWith<$Res>
       {String name,
       bool isAutoDispose,
       DartType? familyArgumentType,
-      LegacyProviderType providerType});
+      LegacyProviderType providerType,
+      LegacyProviderDependencyList? dependencies});
+
+  @override
+  $LegacyProviderDependencyListCopyWith<$Res>? get dependencies;
 }
 
 /// @nodoc
@@ -111,6 +1040,7 @@ class __$$_LegacyProviderDefinitionCopyWithImpl<$Res>
     Object? isAutoDispose = null,
     Object? familyArgumentType = freezed,
     Object? providerType = null,
+    Object? dependencies = freezed,
   }) {
     return _then(_$_LegacyProviderDefinition(
       name: null == name
@@ -129,6 +1059,10 @@ class __$$_LegacyProviderDefinitionCopyWithImpl<$Res>
           ? _value.providerType
           : providerType // ignore: cast_nullable_to_non_nullable
               as LegacyProviderType,
+      dependencies: freezed == dependencies
+          ? _value.dependencies
+          : dependencies // ignore: cast_nullable_to_non_nullable
+              as LegacyProviderDependencyList?,
     ));
   }
 }
@@ -140,7 +1074,8 @@ class _$_LegacyProviderDefinition implements _LegacyProviderDefinition {
       {required this.name,
       required this.isAutoDispose,
       required this.familyArgumentType,
-      required this.providerType});
+      required this.providerType,
+      required this.dependencies});
 
   @override
   final String name;
@@ -150,10 +1085,12 @@ class _$_LegacyProviderDefinition implements _LegacyProviderDefinition {
   final DartType? familyArgumentType;
   @override
   final LegacyProviderType providerType;
+  @override
+  final LegacyProviderDependencyList? dependencies;
 
   @override
   String toString() {
-    return 'LegacyProviderDefinition._(name: $name, isAutoDispose: $isAutoDispose, familyArgumentType: $familyArgumentType, providerType: $providerType)';
+    return 'LegacyProviderDefinition._(name: $name, isAutoDispose: $isAutoDispose, familyArgumentType: $familyArgumentType, providerType: $providerType, dependencies: $dependencies)';
   }
 
   @override
@@ -167,12 +1104,14 @@ class _$_LegacyProviderDefinition implements _LegacyProviderDefinition {
             (identical(other.familyArgumentType, familyArgumentType) ||
                 other.familyArgumentType == familyArgumentType) &&
             (identical(other.providerType, providerType) ||
-                other.providerType == providerType));
+                other.providerType == providerType) &&
+            (identical(other.dependencies, dependencies) ||
+                other.dependencies == dependencies));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, name, isAutoDispose, familyArgumentType, providerType);
+  int get hashCode => Object.hash(runtimeType, name, isAutoDispose,
+      familyArgumentType, providerType, dependencies);
 
   @JsonKey(ignore: true)
   @override
@@ -187,7 +1126,8 @@ abstract class _LegacyProviderDefinition implements LegacyProviderDefinition {
           {required final String name,
           required final bool isAutoDispose,
           required final DartType? familyArgumentType,
-          required final LegacyProviderType providerType}) =
+          required final LegacyProviderType providerType,
+          required final LegacyProviderDependencyList? dependencies}) =
       _$_LegacyProviderDefinition;
 
   @override
@@ -198,6 +1138,8 @@ abstract class _LegacyProviderDefinition implements LegacyProviderDefinition {
   DartType? get familyArgumentType;
   @override
   LegacyProviderType get providerType;
+  @override
+  LegacyProviderDependencyList? get dependencies;
   @override
   @JsonKey(ignore: true)
   _$$_LegacyProviderDefinitionCopyWith<_$_LegacyProviderDefinition>

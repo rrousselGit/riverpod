@@ -72,12 +72,49 @@ enum LegacyProviderType {
 
 /// A dart representation for manually defined providers
 @freezed
+class LegacyProviderDependency with _$LegacyProviderDependency {
+  /// A known provider definition, such as `dependencies: [provider, family]`
+  @internal
+  factory LegacyProviderDependency.provider(AnyProviderDefinition definition) =
+      ProviderLegacyProviderDependency;
+
+  /// A dependency that cannot be resolved statically, such as `[getProvider(), family(param)]`
+  @internal
+  factory LegacyProviderDependency.unknown(CollectionElement expression) =
+      UnknownLegacyProviderDependency;
+
+  /// A known provider definition, but the definition failed to parse
+  @internal
+  factory LegacyProviderDependency.errored(
+    Object error,
+    StackTrace stackTrace,
+  ) = ErroredLegacyProviderDependency;
+}
+
+/// A list of dependencies for legacy providers
+@freezed
+class LegacyProviderDependencyList with _$LegacyProviderDependencyList {
+  /// A list of dependencies defined using a list litteral: `dependencies: [...]`
+  @internal
+  factory LegacyProviderDependencyList.listLitteral(
+    List<LegacyProviderDependency> list,
+  ) = ListLitteralLegacyProviderDependencyList;
+
+  /// A dependency list that cannot be resolved statically, such as `dependencies: fn()`
+  @internal
+  factory LegacyProviderDependencyList.unknown(Expression expression) =
+      UnknownLegacyProviderDependencyList;
+}
+
+/// A dart representation for manually defined providers
+@freezed
 class LegacyProviderDefinition with _$LegacyProviderDefinition {
   factory LegacyProviderDefinition._({
     required String name,
     required bool isAutoDispose,
     required DartType? familyArgumentType,
     required LegacyProviderType providerType,
+    required LegacyProviderDependencyList? dependencies,
   }) = _LegacyProviderDefinition;
 
   static final _definitionCache = Expando<Future<LegacyProviderDefinition>>();
@@ -122,25 +159,76 @@ class LegacyProviderDefinition with _$LegacyProviderDefinition {
 
     final familyArgumentType =
         isProvider ? null : (element.type as InterfaceType).typeArguments.last;
-
     final initializer = astNode.initializer;
     final isAutoDispose =
         !alwaysAliveProviderListenableType.isAssignableFromType(providerType);
 
+    ArgumentList? arguments;
     if (initializer is InstanceCreationExpression) {
       // Provider((ref) => ...)
+      arguments = initializer.argumentList;
     } else if (initializer is FunctionExpressionInvocation) {
       // Provider.modifier()
+      arguments = initializer.argumentList;
     } else {
       throw UnsupportedError('Unknown type ${initializer.runtimeType}');
     }
+
+    final dependenciesElement = arguments.arguments
+        .whereType<NamedExpression>()
+        .firstWhereOrNull((e) => e.name.label.name == 'dependencies');
 
     return LegacyProviderDefinition._(
       name: element.name,
       isAutoDispose: isAutoDispose,
       familyArgumentType: familyArgumentType,
       providerType: LegacyProviderType._parse(providerType),
+      dependencies: dependenciesElement == null
+          ? null
+          : await _parseDependencies(
+              dependenciesElement.expression,
+              resolver: resolver,
+            ),
     );
+  }
+
+  static Future<LegacyProviderDependencyList?> _parseDependencies(
+    Expression expression, {
+    required AstResolver resolver,
+  }) async {
+    if (expression is! ListLiteral) {
+      // Unknown expressions such as `dependencies: function()`
+      return LegacyProviderDependencyList.unknown(expression);
+    }
+
+    return LegacyProviderDependencyList.listLitteral(
+      await Future.wait(
+        expression.elements.map((e) => _parseDependency(e, resolver: resolver)),
+      ),
+    );
+  }
+
+  static Future<LegacyProviderDependency> _parseDependency(
+    CollectionElement dependencyElement, {
+    required AstResolver resolver,
+  }) async {
+    if (dependencyElement is! SimpleIdentifier) {
+      // Unknown expressions, such as `dependencies: [fn()]
+      return LegacyProviderDependency.unknown(dependencyElement);
+    }
+
+    try {
+      // print(dependencyElement.staticElement?.nonSynthetic);
+      // print(dependencyElement.staticElement?.nonSynthetic.runtimeType);
+      // print('---');
+      final definition = await AnyProviderDefinition.parse(
+        dependencyElement.staticElement!.nonSynthetic,
+        resolver: resolver,
+      );
+      return LegacyProviderDependency.provider(definition);
+    } catch (err, stack) {
+      return LegacyProviderDependency.errored(err, stack);
+    }
   }
 
   static DartType _getFamilyProviderType(InterfaceElement element) {
@@ -526,6 +614,11 @@ class AnyProviderDefinition with _$AnyProviderDefinition {
         stack,
       );
     }
+  }
+
+  /// Either a [LegacyProviderDefinition] or a [GeneratorProviderDefinition]
+  Object get value {
+    return map(legacy: (e) => e.value, generator: (e) => e.value);
   }
 }
 

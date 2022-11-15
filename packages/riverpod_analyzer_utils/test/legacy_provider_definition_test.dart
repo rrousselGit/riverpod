@@ -23,6 +23,97 @@ final second = Provider<int>((ref) => 0);
       });
     });
 
+    testSource('Decodes dependencies', source: '''
+import 'package:riverpod/riverpod.dart';
+
+final dep = Provider<int>((ref) => 0);
+final family = Provider.family<int, int>((ref, id) => 0);
+
+final alwaysAliveProvider = Provider<int>(
+  (ref) => 0,
+  dependencies: [dep, family, family(42)],
+);
+final alwaysAliveFamily = Provider.family<int, int>(
+  (ref, id) => 0,
+  dependencies: [dep, family, family(42)],
+);
+final explicitAlwaysAliveFamily = ProviderFamily<int, int>(
+  (ref, id) => 0,
+  dependencies: [dep, family, family(42)],
+);
+final autoDisposeProvider = Provider.autoDispose<int>(
+  (ref) => 0,
+  dependencies: [dep, family, family(42)],
+);
+final explicitAutoDisposeProvider = AutoDisposeProvider<int>(
+  (ref) => 0,
+  dependencies: [dep, family, family(42)],
+);
+final autoDisposeFamily = Provider.autoDispose.family<int, int>(
+  (ref, id) => 0,
+  dependencies: [dep, family, family(42)],
+);
+final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
+  (ref, id) => 0,
+  dependencies: [dep, family, family(42)],
+);
+final explicitAutoDisposeFamily = AutoDisposeProviderFamily<int, int>(
+  (ref, id) => 0,
+  dependencies: [dep, family, family(42)],
+);
+''', (resolver) async {
+      final deps = await resolver.parseAllLegacyProviderDefinitions([
+        'dep',
+        'family',
+      ]);
+      final providers = await resolver.parseAllLegacyProviderDefinitions([
+        'alwaysAliveProvider',
+        'alwaysAliveFamily',
+        'explicitAlwaysAliveFamily',
+        'autoDisposeProvider',
+        'explicitAutoDisposeProvider',
+        'autoDisposeFamily',
+        'autoDisposeFamily2',
+        'explicitAutoDisposeFamily',
+      ]);
+
+      for (final provider in providers.entries) {
+        // Let's unwrap the type
+        final dependencies = provider.value.dependencies!
+            as ListLitteralLegacyProviderDependencyList;
+
+        expect(
+          dependencies.list,
+          hasLength(3),
+          reason: '${provider.key} has 3 dependencies',
+        );
+
+        expect(
+          dependencies.list[0],
+          isA<ProviderLegacyProviderDependency>().having(
+            (e) => e.definition.value,
+            'definition',
+            same(deps['dep']),
+          ),
+          reason: '${provider.key} has "dep" as first dependency',
+        );
+        expect(
+          dependencies.list[1],
+          isA<ProviderLegacyProviderDependency>().having(
+            (e) => e.definition.value,
+            'definition',
+            same(deps['family']),
+          ),
+          reason: '${provider.key} has "family" as second dependency',
+        );
+        expect(
+          dependencies.list[2],
+          isA<UnknownLegacyProviderDependency>(),
+          reason: '${provider.key} has an unknown third dependency',
+        );
+      }
+    });
+
     testSource('Decode LegacyProviderType.provider', source: '''
 import 'package:riverpod/riverpod.dart';
 
