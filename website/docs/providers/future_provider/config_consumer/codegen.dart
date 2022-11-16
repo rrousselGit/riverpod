@@ -7,7 +7,7 @@ import '../config_provider/codegen.dart';
 /* SNIPPET START */
 
 Widget build(BuildContext context, WidgetRef ref) {
-  final config = ref.watch(fetchConfigrationProvider);
+  final config = ref.watch(fetchConfigurationProvider);
 
   return config.when(
     loading: () => const CircularProgressIndicator(),
