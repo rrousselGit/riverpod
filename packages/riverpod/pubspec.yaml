@@ -13,7 +13,7 @@ dependencies:
   collection: ^1.15.0
   meta: ^1.4.0
   stack_trace: ^1.10.0
-  state_notifier: ^0.7.0
+  state_notifier: ^0.7.2
 
 dev_dependencies:
   analyzer: ^4.6.0
