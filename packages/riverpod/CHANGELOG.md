@@ -1,4 +1,4 @@
-## 2.1.2
+## [Unreleased patch]
 
 - Update dependencies.
 
