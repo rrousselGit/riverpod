@@ -1,3 +1,7 @@
+## [Unreleased patch]
+
+- Update dependencies.
+
 ## 2.1.1
 
 Fix typos
