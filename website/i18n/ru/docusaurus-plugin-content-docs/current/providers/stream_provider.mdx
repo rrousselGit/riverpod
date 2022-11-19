@@ -5,8 +5,8 @@ title: StreamProvider
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import configProvider from "./future_provider/config_provider.dart";
-import configConsumer from "./future_provider/config_consumer.dart";
+import configProvider from "!!raw-loader!./future_provider/config_provider.dart";
+import configConsumer from "!!raw-loader!./future_provider/config_consumer.dart";
 import { trimSnippet } from "../../../../../src/components/CodeSnippet";
 
 `StreamProvider` - это тот же [FutureProvider], но возвращающий [Stream] вместо [Future].
