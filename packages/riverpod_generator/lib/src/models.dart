@@ -29,6 +29,7 @@ class Data {
     required this.providerDoc,
     required this.createElement,
     required this.createAst,
+    required this.providerPostfix,
   }) : notifierName = null;
 
   Data.notifier({
@@ -43,6 +44,7 @@ class Data {
     required this.providerDoc,
     required this.createElement,
     required this.createAst,
+    required this.providerPostfix,
   }) : functionName = null;
 
   final ExecutableElement createElement;
@@ -58,6 +60,9 @@ class Data {
   final bool keepAlive;
   final String providerDoc;
 
+  /// The postfix to add to the provider name.
+  final String providerPostfix;
+
   String get hashFunctionName => '\$${rawName}Hash';
 
   String get hashFn => "const bool.fromEnvironment('dart.vm.product') ? "
@@ -68,13 +73,13 @@ class Data {
   /// foo -> fooProvider
   /// Foo -> fooProvider
   String get providerName {
-    return '${rawName.lowerFirst}Provider';
+    return '${rawName.lowerFirst}$providerPostfix';
   }
 
   /// foo -> FooProvider
   /// Foo -> FooProvider
   String get providerTypeNameImpl {
-    return '${rawName.titled}Provider';
+    return '${rawName.titled}$providerPostfix';
   }
 
   /// foo -> FooFamily

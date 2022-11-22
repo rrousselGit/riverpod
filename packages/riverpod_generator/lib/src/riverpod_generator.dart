@@ -9,6 +9,7 @@ import 'package:meta/meta.dart';
 import 'package:riverpod_annotation/src/riverpod_annotation.dart';
 import 'package:source_gen/source_gen.dart';
 
+import 'builder_configs.dart';
 import 'models.dart';
 import 'parse_generator.dart';
 import 'templates/family.dart';
@@ -24,7 +25,7 @@ const riverpodTypeChecker = TypeChecker.fromRuntime(Riverpod);
 class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
   RiverpodGenerator(this.configs);
 
-  final Map<String, Object?> configs;
+  final BuilderConfigs configs;
 
   @override
   GlobalData parseGlobalData(LibraryElement library) {
@@ -78,6 +79,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
       parameters: element.parameters.skip(1).toList(),
       valueDisplayType:
           _getUserModelType(element).getDisplayString(withNullability: true),
+      providerPostfix: configs.providerPostfix,
     );
   }
 
@@ -129,6 +131,7 @@ class RiverpodGenerator extends ParserGenerator<GlobalData, Data, Riverpod> {
       parameters: buildMethod.parameters,
       valueDisplayType: _getUserModelType(buildMethod)
           .getDisplayString(withNullability: true),
+      providerPostfix: configs.providerPostfix,
     );
   }
 
