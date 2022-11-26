@@ -85,9 +85,6 @@ mixin ProviderListenable<State> {
 
   /// Partially listen to a provider.
   ///
-  /// Note: This method of listening to an object is currently only supported
-  /// by `ref.watch(` from `hooks_riverpod` and [ProviderContainer.listen].
-  ///
   /// The [select] function allows filtering unwanted rebuilds of a Widget
   /// by reading only the properties that we care about.
   ///
