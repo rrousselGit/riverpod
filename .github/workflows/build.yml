@@ -42,6 +42,7 @@ jobs:
           # TODO(rrousselGit) update riverpod_cli test setup to be supported by the CI
           # - packages/riverpod_cli
           - packages/riverpod_generator
+          - packages/riverpod_generator/examples/build_yaml
           # TODO(rrousselGit) update riverpod_graph test setup to be supported by the CI
           # - packages/riverpod_graph
           - packages/riverpod_lint
