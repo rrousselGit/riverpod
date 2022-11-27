@@ -6,7 +6,8 @@ void main() {
   test(
     'ensure_build',
     () => expectBuildClean(
-      packageRelativeDirectory: 'examples/build_yaml',
+      packageRelativeDirectory:
+          'packages/riverpod_generator/examples/build_yaml',
     ),
   );
 
