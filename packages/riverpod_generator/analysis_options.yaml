@@ -1,4 +1,8 @@
 include: ../../analysis_options.yaml
+
+exclude:
+  - examples/**/**.dart
+
 linter:
   rules:
     # We don't really have public API
