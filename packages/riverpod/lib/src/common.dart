@@ -504,7 +504,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
     return null;
   }
 
-  /// Whehther the associated provider was forced to recompute even though
+  /// Whether the associated provider was forced to recompute even though
   /// none of its dependencies has changed.
   ///
   /// This is usually the case when rebuilding a provider with either
@@ -515,7 +515,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
   bool get isRefreshing =>
       isLoading && (hasValue || hasError) && this is! AsyncLoading;
 
-  /// Whehther the associated provider was recomputed because of a dependency change
+  /// Whether the associated provider was recomputed because of a dependency change
   /// (using [Ref.watch]), after at least one [value]/[error] was emitted.
   ///
   /// If a provider rebuilds because one of its dependencies changes (using [Ref.watch]),
@@ -524,7 +524,7 @@ extension AsyncValueX<T> on AsyncValue<T> {
   /// See also [isRefreshing] for manual provider rebuild.
   bool get isReloading => (hasValue || hasError) && this is AsyncLoading;
 
-  /// Whether [value] is set.
+  /// Whether [error] is not null.
   ///
   /// Even if [hasError] is true, it is still possible for [hasValue]/[isLoading]
   /// to also be true.
