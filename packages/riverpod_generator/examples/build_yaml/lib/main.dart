@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'build_yaml.g.dart';
+part 'main.g.dart';
 
 @riverpod
 int count(CountRef ref) {

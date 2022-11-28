@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'build_yaml.dart';
+part of 'main.dart';
 
 // **************************************************************************
 // RiverpodGenerator
