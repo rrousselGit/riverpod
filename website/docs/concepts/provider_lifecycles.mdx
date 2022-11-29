@@ -42,14 +42,13 @@ This is very similar to how flutter widgets work. You only pay for the definitio
 
 When your provider is **Alive**, changes to its state will cause dependent providers and/or the dependent UI to rebuild.
 
-From the other perspective, you can watch other providers to have the provider recreate itself whenever one of it's dependencies changes.
-This is what makes it a reactive framework.
+From the other perspective, as a reactive framework, you can watch other providers to have the provider recreate itself whenever one of it's dependencies changes.
 
 If you need to have some long-lived state that depends on other state you can use Ref's [listen] method to subscribe for changes on another provider without causing a rebuild of the provider.
 
 If you need to use the state from another provider in a side-effect, you can use Ref's [read] method to obtain the current state from another provider.
 
-Typically when constructing a `Notifier` class you should pass in the `ref` to allow the Notifier to obtain the current value of dependencies as needed.
+Typically when constructing a [StateNotifier] or [ChangeNotifier] class you should pass in the `ref` to allow the Notifier to obtain the current value of dependencies as needed. By using the new [Notifier] and [AsyncNotifier] classes from Riverpod 2.0, the ref is already available as an instance member of the class.
 
 ### Alive -> Paused
 When an **Alive** provider is no longer listened to by other providers or the UI, it goes into a **Paused** state. 
@@ -93,8 +92,11 @@ For example, [StateNotifierProvider] will call the `dispose` method of the retur
 [onCancel]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/onCancel.html
 [onResume]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/onResume.html
 [ProviderContainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
+[Notifier]: https://pub.dev/documentation/riverpod/latest/riverpod/Notifier-class.html
+[AsyncNotifier]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier-class.html
 [ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
 [WidgetRef]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef-class.html
 [StateNotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
 [StateNotifierProvider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateNotifierProvider-class.html
 [StreamController]: https://api.dart.dev/stable/2.15.1/dart-async/StreamController-class.html
+[ChangeNotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html
