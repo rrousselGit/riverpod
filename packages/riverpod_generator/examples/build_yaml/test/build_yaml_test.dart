@@ -9,6 +9,7 @@ void main() {
       packageRelativeDirectory:
           'packages/riverpod_generator/examples/build_yaml',
     ),
+    timeout: const Timeout(Duration(minutes: 1)),
   );
 
   test('provider names', () {
