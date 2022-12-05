@@ -366,7 +366,7 @@ To fix this problem, you have one of two solutions:
 
 - Delay your modification, such as by encasuplating the modification
   in a `Future(() {...})`.
-  This will perform your upddate after the widget tree is done building.
+  This will perform your update after the widget tree is done building.
 ''',
         ),
       ]);
