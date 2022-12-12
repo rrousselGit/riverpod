@@ -1,13 +1,27 @@
 ---
 title: 시작하기
+version: 1
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import dartHelloWorld from "/docs/getting_started/dart_hello_world";
-import helloWorld from "/docs/getting_started/hello_world";
-import { trimSnippet } from "../../../../src/components/CodeSnippet";
+
+import pubspec from "../../../../i18n/ko/docusaurus-plugin-content-docs/current/getting_started/pubspec";
+import dartHelloWorld from "../../../../i18n/ko/docusaurus-plugin-content-docs/current/getting_started/dart_hello_world";
+import helloWorld from "../../../../i18n/ko/docusaurus-plugin-content-docs/current/getting_started/hello_world";
+import dartPubspec from "../../../../i18n/ko/docusaurus-plugin-content-docs/current/getting_started/dart_pubspec";
+
+import { 
+  trimSnippet,
+  AutoSnippet,
+  ConditionalSnippet } from "../../../../src/components/CodeSnippet";
+
+---
+
+## Try Riverpod online
+
+To get a feel of Riverpod, try it online on [Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2).
 
 [Riverpod]의 내부 메커니즘에 들어가기 앞서, 우선 [Riverpod]을 설치하는 방법과
 "Hello world"를 표시하는 방법부터 함께 시작해봅시다.
@@ -23,7 +37,7 @@ import { trimSnippet } from "../../../../src/components/CodeSnippet";
 | ------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------ |
 | Flutter + [flutter_hooks] | [hooks_riverpod]                                                                  | [flutter_hooks] 과 [Riverpod]을 함께 병용한 패키지           |
 | Flutter                   | [flutter_riverpod]                                                                | Flutter 앱에 [Riverpod] 을 사용할 경우의 기본 패키지         |
-| Dart（Flutter 사용안함）  | [riverpod](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod) | Flutter 에 관련된 모든 클래스가 완전제거된 [Riverpod] 패키지 |
+| Dart(Flutter 사용안함）   | [riverpod](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod) | Flutter 에 관련된 모든 클래스가 완전제거된 [Riverpod] 패키지 |
 
 ## 패키지 설치 방법
 
@@ -31,57 +45,38 @@ import { trimSnippet } from "../../../../src/components/CodeSnippet";
 
 <Tabs
   groupId="riverpod"
-  defaultValue="hooks_riverpod"
+  defaultValue="flutter_riverpod"
   values={[
-    { label: 'Flutter + flutter_hooks', value: 'hooks_riverpod', },
     { label: 'Flutter', value: 'flutter_riverpod', },
-    { label: 'Dart', value: 'riverpod', },
+    { label: 'Dart only', value: 'riverpod', },
   ]}
 >
-<TabItem value="hooks_riverpod">
-
-```yaml title="pubspec.yaml"
-environment:
-  sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=2.0.0"
-
-dependencies:
-  flutter:
-    sdk: flutter
-  flutter_hooks: ^0.18.0
-  hooks_riverpod: ^2.0.0-dev.9
-```
-
-그리고 `dart pub get` 명령을 실행해주세요.
-
-</TabItem>
 <TabItem value="flutter_riverpod">
 
-```yaml title="pubspec.yaml"
-environment:
-  sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=2.0.0"
+<AutoSnippet title="pubspec.yaml" language="yaml" {...pubspec}></AutoSnippet>
 
-dependencies:
-  flutter:
-    sdk: flutter
-  flutter_riverpod: ^2.0.0-dev.9
-```
+패키지 추가 후 `flutter pub get` 를 실행해주세요.
 
-그리고 `dart pub get` 명령을 실행해주세요.
+<ConditionalSnippet codegen={true}>
+  마지막으로, {" "}를 실행하여 코드를 생성합니다.
+  <code>flutter pub run build_runner watch</code>
+</ConditionalSnippet>
 
 </TabItem>
 <TabItem value="riverpod">
 
-```yaml title="pubspec.yaml"
-environment:
-  sdk: ">=2.12.0-0 <3.0.0"
+<AutoSnippet
+  title="pubspec.yaml"
+  language="yaml"
+  {...dartPubspec}
+></AutoSnippet>
 
-dependencies:
-  riverpod: ^2.0.0-dev.9
-```
+패키지 추가 후 `dart pub get`를 실행해주세요.
 
-그리고 `dart pub get` 명령을 실행해주세요.
+<ConditionalSnippet codegen={true}>
+  마지막으로, {" "}를 실행하여 코드를 생성합니다.
+  <code>flutter pub run build_runner watch</code>
+</ConditionalSnippet>
 
 </TabItem>
 </Tabs>
@@ -140,6 +135,18 @@ export const foo = 42;
 를 설치하여 사용할 수 있습니다.
 
 ![img](/img/snippets/greetingProvider.gif)
+
+
+## 다음 단계 선택하기 
+
+기본 컨셉에대해 확인하기:
+
+- [Learn more about providers](/docs/concepts/providers)
+
+cookbook 따라가기:
+
+- [How to test providers](/docs/cookbooks/testing)
+
 
 [riverpod]: https://github.com/rrousselgit/riverpod
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
