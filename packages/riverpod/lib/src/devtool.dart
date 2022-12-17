@@ -16,10 +16,12 @@ void debugPostEvent(
   String eventKind, [
   Map<Object?, Object?> event = const {},
 ]) {
+  // HACK: https://github.com/rrousselGit/riverpod/issues/2003
+  final _event = {...event};
   if (_debugPostEventOverride != null) {
-    _debugPostEventOverride!(eventKind, event);
+    _debugPostEventOverride!(eventKind, _event);
   } else {
-    developer.postEvent(eventKind, event);
+    developer.postEvent(eventKind, _event);
   }
 }
 
