@@ -23,7 +23,7 @@
 
 Welcome!
 
-This project is a side-package for Riverpod, meant to offer a different syntax for defining "providers" by relying on code-generation.
+This project is a side package for Riverpod, meant to offer a different syntax for defining "providers" by relying on code generation.
 
 Without any delay, here is how you
 
@@ -81,13 +81,13 @@ This new syntax has all the power of Riverpod, but also:
   and use all the features of function parameters. Including named parameters, optional
   parameters, default values, ...
 
-This project is entirely optional. But if you don't mind code-generation, definitely consider using it
+This project is entirely optional. But if you don't mind code generation, definitely consider using it
 over the default Riverpod syntax.
 
 - [Riverpod generator](#riverpod-generator)
 - [Getting started](#getting-started)
   - [Installing riverpod_generator](#installing-riverpod_generator)
-  - [Starting the code-generator](#starting-the-code-generator)
+  - [Starting the code generator](#starting-the-code-generator)
   - [Defining our first "provider"](#defining-our-first-provider)
 
 # Getting started
@@ -104,7 +104,7 @@ dependencies:
   riverpod_annotation:
 
 dev_dependencies:
-  # a tool for running code-generators
+  # a tool for running code generators
   build_runner:
   # the code generator
   riverpod_generator:
@@ -112,9 +112,9 @@ dev_dependencies:
 
 Don't forget to run `flutter pub get` / `dart pub get`.
 
-## Starting the code-generator
+## Starting the code generator
 
-To start the code-generator, run the following command:
+To start the code generator, run the following command:
 
 ```sh
 dart pub run build_runner watch
@@ -122,7 +122,7 @@ dart pub run build_runner watch
 
 ## Defining our first "provider"
 
-Now that we have installed riverpod_generator and started the code-generator,
+Now that we have installed riverpod_generator and started the code generator,
 we can start defining providers.
 
 Let's make a hello world using riverpod_generator:

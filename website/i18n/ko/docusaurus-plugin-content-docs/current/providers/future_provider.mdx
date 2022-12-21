@@ -1,13 +1,14 @@
 ---
 title: FutureProvider
+version: 1
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import configProvider from "!!raw-loader!/docs/providers/future_provider/config_provider.dart";
-import configConsumer from "!!raw-loader!/docs/providers/future_provider/config_consumer.dart";
-import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+import configProvider from "/docs/providers/future_provider/config_provider";
+import configConsumer from "/docs/providers/future_provider/config_consumer";
+import { trimSnippet,AutoSnippet } from "../../../../../src/components/CodeSnippet";
 
 `FutureProvider` is the equivalent of [Provider] but for asynchronous code.
 
@@ -36,11 +37,11 @@ Creating the configuration would be done with your typical async/await
 syntax, but inside the provider.
 Using Flutter's asset system, this would be:
 
-<CodeBlock>{trimSnippet(configProvider)}</CodeBlock>
+<AutoSnippet language="dart" {...configProvider}></AutoSnippet>
 
 Then, the UI can listen to configurations like so:
 
-<CodeBlock>{trimSnippet(configConsumer)}</CodeBlock>
+<AutoSnippet language="dart" {...configConsumer}></AutoSnippet>
 
 This will automatically rebuild the UI when the [Future] completes.
 At the same time, if multiple widgets want the configurations,

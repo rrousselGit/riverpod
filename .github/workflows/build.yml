@@ -3,12 +3,15 @@ name: Build
 on:
   pull_request:
     paths-ignore:
-      - '**.md'
+      - "**.md"
+      - "**.mdx"
   push:
     branches:
       - master
     paths-ignore:
-      - '**.md'
+      - "**.md"
+      - "**.mdx"
+
   schedule:
     # runs the CI everyday at 10AM
     - cron: "0 10 * * *"
@@ -38,7 +41,7 @@ jobs:
       - run: dart pub global activate melos
 
       - name: Install dependencies
-        run: melos bootstrap --ignore "codemod_riverpod_*,riverpod_cli" 
+        run: melos bootstrap --ignore "codemod_riverpod_*,riverpod_cli"
 
       - name: Check format
         run: melos exec --ignore="website_snippets" -- "flutter format --set-exit-if-changed ."

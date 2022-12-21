@@ -1,0 +1,10 @@
+# melos_managed_dependency_overrides: flutter_riverpod,hooks_riverpod,riverpod,riverpod_lint
+dependency_overrides:
+  flutter_riverpod:
+    path: ../../packages/flutter_riverpod
+  hooks_riverpod:
+    path: ../../packages/hooks_riverpod
+  riverpod:
+    path: ../../packages/riverpod
+  riverpod_lint:
+    path: ../../packages/riverpod_lint
