@@ -140,7 +140,7 @@ part 'main.g.dart';
 String label(LabelRef ref) => 'Hello world';
 
 void main() {
-  runApp(ProviderScope(Home()));
+  runApp(ProviderScope(child: Home()));
 }
 
 class Home extends ConsumerWidget {

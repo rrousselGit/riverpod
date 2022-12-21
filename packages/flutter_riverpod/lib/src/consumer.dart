@@ -562,6 +562,10 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 
   @override
   void unmount() {
+    /// Calling `super.unmount()` will call `dispose` on the state
+    /// And [ListenManual] subscriptions should be closed after `dispose`
+    super.unmount();
+
     for (final dependency in _dependencies.values) {
       dependency.close();
     }
@@ -575,8 +579,6 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
       }
       _manualListeners = null;
     }
-
-    super.unmount();
   }
 
   @override

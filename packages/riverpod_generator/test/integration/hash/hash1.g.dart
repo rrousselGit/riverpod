@@ -29,14 +29,14 @@ class _SystemHash {
   }
 }
 
-String $SimpleClassHash() => r'958123cd6179c5b88da040cfeb71eb3061765277';
+String _$SimpleClassHash() => r'958123cd6179c5b88da040cfeb71eb3061765277';
 
 /// See also [SimpleClass].
 final simpleClassProvider = AutoDisposeNotifierProvider<SimpleClass, String>(
   SimpleClass.new,
   name: r'simpleClassProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $SimpleClassHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$SimpleClassHash,
 );
 typedef SimpleClassRef = AutoDisposeNotifierProviderRef<String>;
 
@@ -45,23 +45,23 @@ abstract class _$SimpleClass extends AutoDisposeNotifier<String> {
   String build();
 }
 
-String $simpleHash() => r'ff9f7451526aef5b3af6646814631a502ad76a5f';
+String _$simpleHash() => r'ff9f7451526aef5b3af6646814631a502ad76a5f';
 
 /// See also [simple].
 final simpleProvider = AutoDisposeProvider<String>(
   simple,
   name: r'simpleProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $simpleHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$simpleHash,
 );
 typedef SimpleRef = AutoDisposeProviderRef<String>;
-String $simple2Hash() => r'06327442776394c5c9cbb33b048d7a42e709e7fd';
+String _$simple2Hash() => r'06327442776394c5c9cbb33b048d7a42e709e7fd';
 
 /// See also [simple2].
 final simple2Provider = AutoDisposeProvider<String>(
   simple2,
   name: r'simple2Provider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $simple2Hash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$simple2Hash,
 );
 typedef Simple2Ref = AutoDisposeProviderRef<String>;
