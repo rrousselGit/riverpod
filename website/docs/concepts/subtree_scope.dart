@@ -36,17 +36,15 @@ class Home extends ConsumerWidget {
         ),
         ProviderScope(
           // You can change the provider's behavior in a particular subtree
-          overrides: [
-            counterProvider.overrideWithProvider(StateProvider((ref) => 1))
-          ],
+          overrides: [counterProvider.overrideWith((ref) => 1)],
           child: const CounterDisplay(),
         ),
         ProviderScope(
           overrides: [
             counterProvider,
             // You can also change dependent provider's behaviors
-            adjustedCountProvider.overrideWithProvider(
-              Provider((ref) => ref.watch(counterProvider) * 3),
+            adjustedCountProvider.overrideWith(
+              (ref) => ref.watch(counterProvider) * 3,
             ),
           ],
           child: const CounterDisplay(),

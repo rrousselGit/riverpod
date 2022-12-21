@@ -23,9 +23,9 @@ dependencies:
 
 dev_dependencies:
   build_runner:
+  build_verify: ^3.0.0
   cosmic_frontmatter:
     path: third-party/cosmic_frontmatter
-  build_verify: ^3.0.0
   flutter_test:
     sdk: flutter
   glob: ^2.1.0
