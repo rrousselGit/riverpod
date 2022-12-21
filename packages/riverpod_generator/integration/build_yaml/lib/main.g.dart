@@ -29,14 +29,15 @@ class _SystemHash {
   }
 }
 
-String $CountNotifierHash() => r'a8dd7a66ee0002b8af657245c4affaa206fd99ec';
+String _$CountNotifierHash() => r'a8dd7a66ee0002b8af657245c4affaa206fd99ec';
 
 /// See also [CountNotifier].
 final countNotifierPod = AutoDisposeNotifierProvider<CountNotifier, int>(
   CountNotifier.new,
   name: r'countNotifierPod',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $CountNotifierHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$CountNotifierHash,
 );
 typedef CountNotifierRef = AutoDisposeNotifierProviderRef<int>;
 
@@ -45,7 +46,8 @@ abstract class _$CountNotifier extends AutoDisposeNotifier<int> {
   int build();
 }
 
-String $CountAsyncNotifierHash() => r'2a7049d864bf396e44a5937b4001efb4774a5f29';
+String _$CountAsyncNotifierHash() =>
+    r'2a7049d864bf396e44a5937b4001efb4774a5f29';
 
 /// See also [CountAsyncNotifier].
 final countAsyncNotifierPod =
@@ -54,7 +56,7 @@ final countAsyncNotifierPod =
   name: r'countAsyncNotifierPod',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : $CountAsyncNotifierHash,
+      : _$CountAsyncNotifierHash,
 );
 typedef CountAsyncNotifierRef = AutoDisposeAsyncNotifierProviderRef<int>;
 
@@ -63,23 +65,23 @@ abstract class _$CountAsyncNotifier extends AutoDisposeAsyncNotifier<int> {
   FutureOr<int> build();
 }
 
-String $countHash() => r'4c7e72b275767a60ece5e8662ab1e28f73cf7e44';
+String _$countHash() => r'4c7e72b275767a60ece5e8662ab1e28f73cf7e44';
 
 /// See also [count].
 final countPod = AutoDisposeProvider<int>(
   count,
   name: r'countPod',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $countHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$countHash,
 );
 typedef CountRef = AutoDisposeProviderRef<int>;
-String $countFutureHash() => r'ec7cc31ce1c1a10607f1dcb35dd217acd2877729';
+String _$countFutureHash() => r'ec7cc31ce1c1a10607f1dcb35dd217acd2877729';
 
 /// See also [countFuture].
 final countFuturePod = AutoDisposeFutureProvider<int>(
   countFuture,
   name: r'countFuturePod',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $countFutureHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$countFutureHash,
 );
 typedef CountFutureRef = AutoDisposeFutureProviderRef<int>;
