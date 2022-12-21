@@ -29,7 +29,7 @@ class _SystemHash {
   }
 }
 
-String $PublicClassHash() => r'f04884c039e6200ad3537feeecfc6e83828b5eb5';
+String _$PublicClassHash() => r'f04884c039e6200ad3537feeecfc6e83828b5eb5';
 
 /// This is some documentation
 ///
@@ -38,7 +38,7 @@ final publicClassProvider = AutoDisposeNotifierProvider<PublicClass, String>(
   PublicClass.new,
   name: r'publicClassProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $PublicClassHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$PublicClassHash,
 );
 typedef PublicClassRef = AutoDisposeNotifierProviderRef<String>;
 
@@ -47,15 +47,16 @@ abstract class _$PublicClass extends AutoDisposeNotifier<String> {
   String build();
 }
 
-String $_PrivateClassHash() => r'6d41def3ffdc1f79e593beaefb3304ce4b211a77';
+String _$_PrivateClassHash() => r'6d41def3ffdc1f79e593beaefb3304ce4b211a77';
 
 /// See also [_PrivateClass].
 final _privateClassProvider =
     AutoDisposeNotifierProvider<_PrivateClass, String>(
   _PrivateClass.new,
   name: r'_privateClassProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $_PrivateClassHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$_PrivateClassHash,
 );
 typedef _PrivateClassRef = AutoDisposeNotifierProviderRef<String>;
 
@@ -64,7 +65,7 @@ abstract class _$PrivateClass extends AutoDisposeNotifier<String> {
   String build();
 }
 
-String $FamilyClassHash() => r'7dd0013dba8f45e82e8e39fbb2635e5a7f4b9cac';
+String _$FamilyClassHash() => r'7dd0013dba8f45e82e8e39fbb2635e5a7f4b9cac';
 
 /// This is some documentation
 ///
@@ -89,7 +90,7 @@ class FamilyClassProvider
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $FamilyClassHash,
+                  : _$FamilyClassHash,
         );
 
   final int first;
@@ -199,7 +200,7 @@ abstract class _$FamilyClass extends BuildlessAutoDisposeNotifier<String> {
   });
 }
 
-String $Supports$InClassNameHash() =>
+String _$Supports$InClassNameHash() =>
     r'4e99f433d9cb3598faaf4d172edf9f28b9e68091';
 
 /// See also [Supports$InClassName].
@@ -209,7 +210,7 @@ final supports$InClassNameProvider =
   name: r'supports$InClassNameProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : $Supports$InClassNameHash,
+      : _$Supports$InClassNameHash,
 );
 typedef Supports$InClassNameRef = AutoDisposeNotifierProviderRef<String>;
 
@@ -218,7 +219,7 @@ abstract class _$Supports$InClassName extends AutoDisposeNotifier<String> {
   String build();
 }
 
-String $publicHash() => r'138be35943899793ab085e711fe3f3d22696a3ba';
+String _$publicHash() => r'138be35943899793ab085e711fe3f3d22696a3ba';
 
 /// This is some documentation
 ///
@@ -227,10 +228,10 @@ final publicProvider = AutoDisposeProvider<String>(
   public,
   name: r'publicProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $publicHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$publicHash,
 );
 typedef PublicRef = AutoDisposeProviderRef<String>;
-String $supports$inNamesHash() => r'cbf929802fcbd0aa949ad72743d096fb3ef5f28f';
+String _$supports$inNamesHash() => r'cbf929802fcbd0aa949ad72743d096fb3ef5f28f';
 
 /// See also [supports$inNames].
 final supports$inNamesProvider = AutoDisposeProvider<String>(
@@ -238,10 +239,10 @@ final supports$inNamesProvider = AutoDisposeProvider<String>(
   name: r'supports$inNamesProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : $supports$inNamesHash,
+      : _$supports$inNamesHash,
 );
 typedef Supports$inNamesRef = AutoDisposeProviderRef<String>;
-String $familyHash() => r'14d1ee238ca608d547630d0e222ef4c5866e9e61';
+String _$familyHash() => r'14d1ee238ca608d547630d0e222ef4c5866e9e61';
 
 /// This is some documentation
 ///
@@ -267,7 +268,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : $familyHash,
+                  : _$familyHash,
         );
 
   final int first;
@@ -348,13 +349,13 @@ class FamilyFamily extends Family<String> {
   String? get name => r'familyProvider';
 }
 
-String $_privateHash() => r'519561bc7e88e394d7f75ca2102a5c0acc832c66';
+String _$_privateHash() => r'519561bc7e88e394d7f75ca2102a5c0acc832c66';
 
 /// See also [_private].
 final _privateProvider = AutoDisposeProvider<String>(
   _private,
   name: r'_privateProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : $_privateHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$_privateHash,
 );
 typedef _PrivateRef = AutoDisposeProviderRef<String>;

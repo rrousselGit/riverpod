@@ -2,8 +2,6 @@ part of '../framework.dart';
 
 ProviderBase? _circularDependencyLock;
 
-int _debugNextId = 0;
-
 class _FamilyOverrideRef {
   _FamilyOverrideRef(this.override, this.container);
 
@@ -118,18 +116,6 @@ class ProviderContainer implements Node {
               if (!entry.value.isDynamicallyCreated) entry.key: entry.value,
         },
         _root = parent?._root ?? parent {
-    assert(
-      () {
-        _debugId = '${_debugNextId++}';
-        RiverpodBinding.debugInstance.containers = {
-          ...RiverpodBinding.debugInstance.containers,
-          _debugId: this,
-        };
-        return true;
-      }(),
-      '',
-    );
-
     if (parent != null) {
       parent._children.add(this);
       _overrideForFamily.addAll(parent._overrideForFamily);
@@ -174,30 +160,10 @@ class ProviderContainer implements Node {
   late final _ProviderScheduler _scheduler =
       _parent?._scheduler ?? _ProviderScheduler();
 
-  late final String _debugId;
-
   /// How deep this [ProviderContainer] is in the graph of containers.
   ///
   /// Starts at 0.
   final int depth;
-
-  /// A unique ID for this object, used by the devtool to differentiate two [ProviderContainer].
-  ///
-  /// Should not be used.
-  @visibleForTesting
-  String get debugId {
-    String? id;
-    assert(
-      () {
-        id = _debugId;
-        return true;
-      }(),
-      '',
-    );
-
-    return id!;
-  }
-
   final ProviderContainer? _root;
   final ProviderContainer? _parent;
 
@@ -637,16 +603,6 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
     if (_disposed) {
       return;
     }
-
-    assert(
-      () {
-        RiverpodBinding.debugInstance.containers =
-            Map.from(RiverpodBinding.debugInstance.containers)
-              ..remove(_debugId);
-        return true;
-      }(),
-      '',
-    );
 
     _parent?._children.remove(this);
 

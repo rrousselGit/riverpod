@@ -58,7 +58,7 @@ class Data {
   final bool keepAlive;
   final String providerDoc;
 
-  String get hashFunctionName => '\$${rawName}Hash';
+  String get hashFunctionName => '_\$${rawName}Hash';
 
   String get hashFn => "const bool.fromEnvironment('dart.vm.product') ? "
       'null : $hashFunctionName';

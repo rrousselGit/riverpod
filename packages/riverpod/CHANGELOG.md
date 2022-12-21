@@ -1,6 +1,7 @@
 ## [Unreleased patch]
 
 - Update dependencies.
+- fixes an exception on newer Dart versions
 
 ## 2.1.1
 
