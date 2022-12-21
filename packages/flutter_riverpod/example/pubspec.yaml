@@ -8,7 +8,6 @@ environment:
   sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
-  cupertino_icons: ^0.1.3
   flutter:
     sdk: flutter
   flutter_riverpod:
