@@ -74,6 +74,33 @@ void main() {
     expect(container.read(autoDispose).value, 84);
   });
 
+  test('Does not skip return value if ref.state was set', () async {
+    final completer = Completer<void>();
+    final provider = FutureProvider<int>((ref) async {
+      await Future<void>.value();
+      ref.state = const AsyncData(1);
+      await Future<void>.value();
+      ref.state = const AsyncData(2);
+      await Future<void>.value();
+      completer.complete();
+      return 3;
+    });
+    final container = createContainer();
+    final listener = Listener<AsyncValue<int>>();
+
+    container.listen(provider, listener, fireImmediately: true);
+
+    await completer.future;
+    await container.pump();
+
+    verifyInOrder([
+      listener(null, const AsyncLoading<int>()),
+      listener(const AsyncLoading<int>(), const AsyncData(1)),
+      listener(const AsyncData(1), const AsyncData(2)),
+      listener(const AsyncData(2), const AsyncData(3)),
+    ]);
+  });
+
   test('supports family overrideWith', () {
     final family = FutureProvider.family<String, int>((ref, arg) => '0 $arg');
     final autoDisposeFamily = FutureProvider.autoDispose.family<String, int>(
